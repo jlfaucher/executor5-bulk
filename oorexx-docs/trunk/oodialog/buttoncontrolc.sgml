@@ -1,0 +1,756 @@
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: OODialog Reference SGML file.
+    #
+    # Copyright (c) 2005-2006, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    # Author(s):
+    #      W. David Ashley <dashley@us.ibm.com>
+    #
+    #########################################################################
+-->
+<chapter id="buttoncontrolc"><title>ButtonControl Class</title>
+<indexterm><primary>ButtonControl class</primary></indexterm>
+<para>The ButtonControl class provides methods to query
+and modify push button controls. It inherits all methods of the DialogControl
+class (see <link linkend="dialogcontrolc">DialogControl Class</link>).</para>
+<para>Use the GetButtonControl method (see
+<link linkend="getbuttoncontrol">GetButtonControl</link>) to retrieve
+an object of the ButtonControl class.</para>
+<variablelist>
+<varlistentry><term>Requires:</term>
+<listitem><para>The ButtonControl class requires the class definition
+file <computeroutput>oodwin32.cls</computeroutput>:
+<programlisting>
+<![CDATA[
+::requires "oodwin32.cls"
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>Methods:</term>
+<listitem><para>Instances of the ButtonControl class implement
+the methods listed in the
+<link linkend="t000023">ButtonControl Instance Methods</link> table.</para>
+
+<table id="t000023" frame="all">
+<title>ButtonControl Instance Methods</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Method...</entry>
+<entry>...on page</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>ChangeBitmap</entry>
+<entry><link linkend="changebitmap">ChangeBitmap</link></entry>
+</row>
+<row>
+<entry>DimBitmap</entry>
+<entry><link linkend="dimbitmap">DimBitmap</link></entry>
+</row>
+<row>
+<entry>DisplaceBitmap</entry>
+<entry><link linkend="displacebitmap">DisplaceBitmap</link></entry>
+</row>
+<row>
+<entry>DrawBitmap</entry>
+<entry><link linkend="drawbitmap">DrawBitmap</link></entry>
+</row>
+<row>
+<entry>GetBitmapSizeX</entry>
+<entry><link linkend="getbitmapsizex">GetBitmapSizeX</link></entry>
+</row>
+<row>
+<entry>GetBitmapSizeY</entry>
+<entry><link linkend="getbitmapsizey">GetBitmapSizeY</link></entry>
+</row>
+<row>
+<entry>GetBmpDisplacement</entry>
+<entry><link linkend="getbmpdisplacement">GetBmpDisplacement</link></entry>
+</row>
+<row>
+<entry>Scroll</entry>
+<entry><link linkend="scrollbc">Scroll</link></entry>
+</row>
+<row>
+<entry>ScrollBitmapFromTo</entry>
+<entry><link linkend="scrollbitmapfromto">ScrollBitmapFromTo</link></entry>
+</row>
+<row>
+<entry>ScrollText</entry>
+<entry><link linkend="scrolltextbc">ScrollText</link></entry>
+</row>
+<row>
+<entry>State</entry>
+<entry><link linkend="state">State</link></entry>
+</row>
+<row>
+<entry>State=</entry>
+<entry><link linkend="statenew">State=</link></entry>
+</row>
+<row>
+<entry>Style=</entry>
+<entry><link linkend="stylenew">Style=</link></entry>
+</row>
+</tbody></tgroup>
+</table>
+</listitem></varlistentry>
+</variablelist>
+
+<section id="state"><title>State</title>
+<indexterm><primary>State</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aButtonControl~State----------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The State method retrieves the current state of
+the associated button control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>A text string that can contain one or more of the following keywords,
+separated by blanks:
+<variablelist>
+<varlistentry><term>&quot;CHECKED&quot;</term>
+<listitem><para>The radio button is selected or the check box is checked.
+</para></listitem></varlistentry>
+<varlistentry><term>&quot;UNCHECKED&quot;</term>
+<listitem><para>The radio button is not selected or the check box is unchecked.
+</para></listitem></varlistentry>
+<varlistentry><term>&quot;INDETERMINATE&quot;</term>
+<listitem><para>The Auto-3-State button is neither checked nor unchecked, but
+grayed.
+</para></listitem></varlistentry>
+<varlistentry><term>&quot;PUSHED&quot;</term>
+<listitem><para>The cursor is positioned on the button and the left mouse button is
+pressed and held.
+</para></listitem></varlistentry>
+<varlistentry><term>&quot;FOCUS&quot;</term>
+<listitem><para>The button has the keyboard focus.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem>
+<programlisting>
+<![CDATA[
+button = MyDialog~GetButtonControl("IDOK")
+if button == .Nil then return
+say button~State
+]]>
+</programlisting>
+<para>The result could be &quot;UNCHECKED FOCUS&quot;.</para>
+</listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="statenew"><title>State=</title>
+<indexterm><primary>State=</primary></indexterm>
+<programlisting>
+<![CDATA[
+                             +-------------------+
+                             V                   |
+>>-aButtonControl~State=--'----+-CHECKED-------+-+--'----------><
+                               +-UNCHECKED-----+
+                               +-INDETERMINATE-+
+                               +-PUSHED--------+
+                               +-FOCUS---------+
+
+
+]]>
+</programlisting>
+
+<para>The State= method sets the state for the associated
+button control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>new_State</term>
+<listitem><para>A text string that contains one or more of the following
+keywords, separated by a blank:
+<variablelist>
+<varlistentry><term>CHECKED</term>
+<listitem><para>The radio button is to be selected or the check box
+is to be checked.
+</para></listitem></varlistentry>
+<varlistentry><term>UNCHECKED</term>
+<listitem><para>The radio button is not to be selected or the check
+box is to be unchecked.
+</para></listitem></varlistentry>
+<varlistentry><term>INDETERMINATE</term>
+<listitem><para>The Auto-3-State button is to be set to the grayed state.
+</para></listitem></varlistentry>
+<varlistentry><term>PUSHED</term>
+<listitem><para>The button is to be set to the &quot;pushed&quot; state.
+</para></listitem></varlistentry>
+<varlistentry><term>FOCUS</term>
+<listitem><para>The button is to be set to the &quot;focused&quot; state.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>
+<programlisting>
+<![CDATA[
+button = MyDialog~GetButtonControl("IDOK")
+if button == .Nil then return
+button~State="FOCUS PUSHED"
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="stylenew"><title>Style=</title>
+<indexterm><primary>Style=</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aButtonControl~Style=--'--+-DEFPUSHBUTTON---+--'------------><
+                             +-CHECKBOX--------+
+                             +-AUTOCHECKBOX----+
+                             +-RADIOBUTTON-----+
+                             +-AUTORADIOBUTTON-+
+                             +-3STATE----------+
+                             +-AUTO3STATE------+
+                             +-GROUPBOX--------+
+                             +-OWNERDRAW-------+
+
+
+]]>
+</programlisting>
+
+<para>The Style= method changes the style of the associated
+button control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>new_Style</term>
+<listitem><para>A text string that contains one of the following keywords:
+<variablelist>
+<varlistentry><term>DEFPUSHBUTTON</term>
+<listitem><para>A default push button that is pushed when the Enter key is pressed.
+</para></listitem></varlistentry>
+<varlistentry><term>CHECKBOX</term>
+<listitem><para>A check box the state of which has to be maintained by the program.
+</para></listitem></varlistentry>
+<varlistentry><term>AUTOCHECKBOX</term>
+<listitem><para>A check box the check state of which toggles between checked and unchecked
+each time the user selects the check box.
+</para></listitem></varlistentry>
+<varlistentry><term>RADIOBUTTON</term>
+<listitem><para>A radio button the state of which has to be maintained by the program.
+</para></listitem></varlistentry>
+<varlistentry><term>AUTORADIOBUTTON</term>
+<listitem><para>A radio button that sets the check state of the button to checked and
+the check state for all other buttons in the same group to unchecked each
+time the user selects this radio button.
+</para></listitem></varlistentry>
+<varlistentry><term>3STATE</term>
+<listitem><para>A button that is equal to a check box except that the check box can
+be grayed as well as checked or unchecked.
+</para></listitem></varlistentry>
+<varlistentry><term>AUTO3STATE</term>
+<listitem><para>A button that is equal to a three-state check box except that the check
+box changes its state when the user selects it. The state cycles through checked,
+grayed, and unchecked.
+</para></listitem></varlistentry>
+<varlistentry><term>GROUPBOX</term>
+<listitem><para>A rectangle in which other controls can be grouped. A label is displayed
+in the upper left corner of the rectangle.
+</para></listitem></varlistentry>
+<varlistentry><term>OWNERDRAW</term>
+<listitem><para>An owner-drawn button that can be used to display a bitmap or graphics.
+If none of the previous values is specified, the push-button style is set
+for the associated button control.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example makes the OK button the default button:
+<programlisting>
+<![CDATA[
+button = MyDialog~GetButtonControl("IDOK")
+if button == .Nil then return
+button~Style="DEFPUSHBUTTON"
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="changebitmap"><title>ChangeBitmap</title>
+<indexterm><primary>ChangeBitmap</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aButtonControl~ChangeBitmap(--bmpNormal--,--+------------+--,-->
+                                               +-bmpFocused-+
+
+>--+-------------+--,--+-------------+--+-----------------+--)-><
+   +-bmpSelected-+     +-bmpDisabled-+  +-,--+-FRAME----+-+
+                                             +-USEPAL---+
+                                             +-INMEMORY-+
+                                             +-STRETCH--+
+
+
+]]>
+</programlisting>
+
+<para>The ChangeBitmap method changes the bitmap of a
+bitmap button.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>bmpNormal</term>
+<listitem><para>The (alphanumeric) name, (numeric) resource ID, or handle of a bitmap
+that is displayed when the button is neither selected, nor focused, nor disabled.
+If you specify the bitmap handle, the INMEMORY option must be specified.</para>
+<para>This option is used if none of the other arguments is specified.</para>
+</listitem></varlistentry>
+<varlistentry><term>bmpFocused</term>
+<listitem><para>The (alphanumeric) name, (numeric) resource ID, or handle of a bitmap
+that is displayed when the button is focused. The focused button is activated
+when the Enter key is pressed. If you specify the bitmap handle, the INMEMORY
+option must be specified.
+</para></listitem></varlistentry>
+<varlistentry><term>bmpSelected</term>
+<listitem><para>The (alphanumeric) name, (numeric) resource ID, or handle of a bitmap
+that is displayed when the button is clicked and held. If you specify the
+bitmap handle, the INMEMORY option must be specified.
+</para></listitem></varlistentry>
+<varlistentry><term>bmpDisabled</term>
+<listitem><para>The (alphanumeric) name, (numeric) resource ID, or handle of a bitmap
+that is displayed when the button is disabled. If you specify the bitmap handle,
+the INMEMORY option must be specified.
+</para></listitem></varlistentry>
+<varlistentry><term>styleOptions</term>
+<listitem><para>The last argument can be one of the following:
+<variablelist>
+<varlistentry><term>FRAME</term>
+<listitem><para>Draws a frame around the button. When you use this option, the bitmap
+button behaves like a normal Windows button except that a bitmap is
+shown instead of text.
+</para></listitem></varlistentry>
+<varlistentry><term>USEPAL</term>
+<listitem><para>Takes the colors of the bitmap file and stores them as the system color
+palette. This option is needed when the bitmap was created with a palette
+other than the default Windows color palette. Use it for one
+button only because only one color palette can be active at a time.</para>
+<para>This
+option is not valid for a bitmap loaded from a dynamic-link library.</para>
+</listitem></varlistentry>
+<varlistentry><term>INMEMORY</term>
+<listitem><para>This option must be used if the named bitmaps are already loaded into
+memory by using the LoadBitmap method (see
+<link linkend="h000667">LoadBitmap</link>).
+In this case, you must specify a bitmap handle instead of a file name or ID.
+</para></listitem></varlistentry>
+<varlistentry><term>STRETCH</term>
+<listitem><para>If this option is specified and the extent of the bitmap is smaller
+than the extent of the button rectangle, the bitmap is adapted to match the
+extent of the button. This option has no effect on bitmaps loaded from a dynamic-link
+library.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>
+<programlisting>
+<![CDATA[
+button = MyDialog~GetButtonControl("IDOK")
+if button == .Nil then return
+button~ChangeBitmap("AddBut_n.bmp", "AddBut_f.bmp", "AddBut_s.bmp", ,
+"AddBut_d.bmp", "FRAME")
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+<para>See also <link linkend="h000156">ConnectBitmapButton</link>.</para>
+</section>
+
+<section id="displacebitmap"><title>DisplaceBitmap</title>
+<indexterm><primary>DisplaceBitmap</primary>
+<secondary>ButtonControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aButtonControl~DisplaceBitmap(--x--,--y--)------------------><
+
+
+]]>
+</programlisting>
+
+<para>The DisplaceBitmap method sets the position of
+a bitmap within a bitmap button.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>x</term>
+<listitem><para>The horizontal displacement, in screen pixels. A negative value can
+also be used.
+</para></listitem></varlistentry>
+<varlistentry><term>y</term>
+<listitem><para>The vertical displacement, in screen pixels. A negative value can also
+be used.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example moves the bitmap within the associated bitmap
+button 4 screen pixels to the right and 3 pixels upward:
+<programlisting>
+<![CDATA[
+button = MyDialog~GetButtonControl("IDOK")
+if button == .Nil then return
+parse value button~GetBmpDisplacement with dx dy
+button~DisplacementBitmap(244, dx+4, dy-3)
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="getbmpdisplacement"><title>GetBmpDisplacement</title>
+<indexterm><primary>GetBmpDisplacement</primary>
+<secondary>ButtonControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aButtonControl~GetBmpDisplacement---------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The GetBmpDisplacement method retrieves the position
+of a bitmap within a bitmap button.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The horizontal and vertical positions of the bitmap, in screen pixels
+and separated by a blank.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>See <link linkend="displacebitmap">DisplaceBitmap</link>.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="scrollbc"><title>Scroll</title>
+<indexterm><primary>Scroll</primary>
+<secondary>ButtonControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aButtonControl~Scroll(--xPos--,--yPos--,--left--,--top--,--right--,--bottom--)-><
+
+
+]]>
+</programlisting>
+
+<para>The Scroll method moves the rectangle within the
+associated button and redraws the uncovered area with the button background
+color. It is used to move bitmaps within bitmap buttons.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>xPos, yPos</term>
+<listitem><para>The new position of the rectangle, in screen pixels.
+</para></listitem></varlistentry>
+<varlistentry><term>left, top, right, bottom</term>
+<listitem><para>The upper left and lower right corner of the rectangle to be moved.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="scrolltextbc"><title>ScrollText</title>
+<indexterm><primary>ScrollText</primary>
+<secondary>ButtonControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+                                                         +-10-------+
+>>-aButtonControl~ScrollText(--text--,--+----------+--,--+----------+--,------>
+                                        +-fontName-+     +-fontSize-+
+
+                                    +-0---------+     +-4----+     +-10----+
+>--+--------------------------+--,--+-----------+--,--+------+--,--+-------+-->
+   |    +----------------+    |     +-displaceY-+     +-step-+     +-sleep-+
+   |    V                |    |
+   +-'----+-THIN-------+-+--'-+
+          +-EXTRALIGHT-+
+          +-LIGHT------+
+          +-MEDIUM-----+
+          +-SEMIBOLD---+
+          +-EXTRABOLD--+
+          +-BOLD-------+
+          +-HEAVY------+
+          +-UNDERLINE--+
+          +-ITALIC-----+
+          +-STRIKEOUT--+
+
+      +-0-----+
+>--,--+-------+--)----------------------------------------------------------><
+      +-color-+
+
+
+]]>
+</programlisting>
+
+<para>The ScrollText method scrolls text in the associated
+button with the given font, size, and color. The text is scrolled from right
+to left. If the method is started concurrently, call it a second time to stop
+scrolling. The associated button must have the OWNERDRAWN style.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>text</term>
+<listitem><para>A text string that is displayed and scrolled.
+</para></listitem></varlistentry>
+<varlistentry><term>fontName</term>
+<listitem><para>The name of the font used to write the text. If omitted, the system
+font is used.
+</para></listitem></varlistentry>
+<varlistentry><term>fontSize</term>
+<listitem><para>The size of the font used to write the text. If omitted, the standard
+size (10) is used.
+</para></listitem></varlistentry>
+<varlistentry><term>fontStyle</term>
+<listitem><para>This argument can be one or more of the keywords listed in the syntax
+diagram. If you use more than one keyword, put them in one string, separated
+by blanks.
+</para></listitem></varlistentry>
+<varlistentry><term>displaceY</term>
+<listitem><para>The vertical displacement of the text relative to the top of the client
+area of the window. The default is 0.
+</para></listitem></varlistentry>
+<varlistentry><term>step</term>
+<listitem><para>The amount of screen pixels that the text is moved in each cycle. The
+default is 4.
+</para></listitem></varlistentry>
+<varlistentry><term>sleep</term>
+<listitem><para>The time, in milliseconds, that the program waits after each movement
+to determine the scrolling speed. The default is 10.
+</para></listitem></varlistentry>
+<varlistentry><term>color</term>
+<listitem><para>The color index used for the text. The default is 0, which is black.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example scrolls the string "Hello world!" from left to
+right within the associated button. The text is located 2 pixels below the
+top of the client area, one move is 3 screen pixels, and the delay time after
+each movement is 15 ms.
+<programlisting>
+<![CDATA[
+button = MyDialog~GetButtonControl("IFOK")
+if button == .Nil then return
+button~ScrollText("Hello world!", "Arial", 36, "BOLD ITALIC", 2, 3, 15, 4)
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="getbitmapsizex"><title>GetBitmapSizeX</title>
+<indexterm><primary>GetBitmapSizeX</primary>
+<secondary>ButtonControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aButtonControl~GetBitmapSizeX-------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The GetBitmapSizeX method retrieves the width of
+the bitmap that is set for the associated button.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The width of the bitmap, in screen pixels.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="getbitmapsizey"><title>GetBitmapSizeY</title>
+<indexterm><primary>GetBitmapSizeY</primary>
+<secondary>ButtonControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aButtonControl~GetBitmapSizeY-------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The GetBitmapSizeY method retrieves the height
+of the bitmap that is set for the associated button.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The height of the bitmap, in screen pixels.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="drawbitmap"><title>DrawBitmap</title>
+<indexterm><primary>DrawBitmap</primary>
+<secondary>ButtonControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+                               +-0----+     +-0----+     +-0----+
+>>-aButtonControl~DrawBitmap(--+------+--,--+------+--,--+------+--,-->
+                               +-tarx-+     +-tary-+     +-srcx-+
+
+   +-0----+     +-0-----+     +-0------+
+>--+------+--,--+-------+--,--+--------+--)--------------------><
+   +-srcy-+     +-width-+     +-height-+
+
+
+]]>
+</programlisting>
+
+<para>The DrawBitmap method draws the bitmap of the associated
+bitmap button. You can also use this method to move a bitmap or part of it.</para>
+<para>Contrary to the method <link linkend="displacebitmap">DisplaceBitmap</link>, which sets a permanent
+position for the bitmap, DrawBitmap immediately draws the bitmap, or part
+of it, at the specified position. If the button must be refreshed, the bitmap
+is drawn at the position set with DisplaceBitmap. DrawBitmap is used by <link linkend="scrollbitmapfromto">ScrollBitmapFromTo</link>, for example.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>tarx,tary</term>
+<listitem><para>The position relative to the client area of the button where the bitmap
+is to be displayed. The default is 0,0.
+</para></listitem></varlistentry>
+<varlistentry><term>srcx,srcy</term>
+<listitem><para>The offsets that specify the first pixel in the bitmap to be displayed.
+If you omit these arguments, the pixel at position 0,0 is the first pixel
+displayed.
+</para></listitem></varlistentry>
+<varlistentry><term>width,height</term>
+<listitem><para>The width and height of the bitmap. If you omit these arguments or specify
+0, the entire bitmap is displayed at the specified position. You can use these
+arguments to display only parts of the bitmap.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>0 if the bitmap could be drawn.
+</para></listitem></varlistentry>
+</variablelist>
+
+<note><title>Note</title><para>
+You can use the DrawBitmap method to animate a bitmap by providing
+a bitmap that contains several images and use the offset and extension arguments
+to display a single image of the bitmap.
+</para></note>
+</section>
+
+<section id="dimbitmap"><title>DimBitmap</title>
+<indexterm><primary>DimBitmap</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aButtonControl~DimBitmap(--bmpHandle--,--width--,--height--,-->
+
+   +-2-----+     +-2-----+     +-10----+
+>--+-------+--,--+-------+--,--+-------+--)--------------------><
+   +-stepx-+     +-stepy-+     +-steps-+
+
+
+]]>
+</programlisting>
+
+<para>The DimBitmap method draws a bitmap step by step.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>bmpHandle</term>
+<listitem><para>A handle to the bitmap loaded with
+<link linkend="h000667">LoadBitmap</link>.
+</para></listitem></varlistentry>
+<varlistentry><term>width, height</term>
+<listitem><para>The extensions of the bitmap.
+</para></listitem></varlistentry>
+<varlistentry><term>stepx, stepy</term>
+<listitem><para>The number of incremental pixels displayed at each step.
+The default is 2,2.
+</para></listitem></varlistentry>
+<varlistentry><term>steps</term>
+<listitem><para>The number of iterations used to display the bitmap.
+The default is 10.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>This method does not return a value.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="scrollbitmapfromto"><title>ScrollBitmapFromTo</title>
+<indexterm><primary>ScrollBitmapFromTo</primary>
+<secondary>ButtonControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aButtonControl~ScrollBitmapFromTo(--fromX--,--fromY--,--toX--,--toY--,-->
+
+>--stepx--,--stepy--,--delay--,--displace--)-------------------><
+
+
+]]>
+</programlisting>
+
+<para>The ScrollBitmapFromTo method scrolls the bitmap
+within the associated bitmap button from one position to another.</para>
+<para>For an explanation of the arguments, refer to
+<link linkend="h001172">ScrollBitmapFromTo</link>.</para>
+</section>
+</chapter>

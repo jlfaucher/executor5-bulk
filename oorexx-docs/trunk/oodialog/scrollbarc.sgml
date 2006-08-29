@@ -1,0 +1,280 @@
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: OODialog Reference SGML file.
+    #
+    # Copyright (c) 2005-2006, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    # Author(s):
+    #      W. David Ashley <dashley@us.ibm.com>
+    #
+    #########################################################################
+-->
+<chapter id="scrollbarc"><title>ScrollBar Class</title>
+<indexterm><primary>ScrollBar class</primary></indexterm>
+<para>The ScrollBar class provides methods to query and
+modify scroll bars. It inherits all methods of the DialogControl class (see
+page <link linkend="dialogcontrolc">DialogControl Class</link>).</para>
+<para>Use the <link linkend="getscrollbar">GetScrollBar</link>
+method to retrieve an object of the ScrollBar class.</para>
+<variablelist>
+<varlistentry><term>Requires:</term>
+<listitem><para>The ScrollBar class requires the class definition
+file <computeroutput>oodwin32.cls</computeroutput>:
+<programlisting>
+<![CDATA[
+::requires "oodwin32.cls"
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>Methods:</term>
+<listitem><para>Instances of the ScrollBar class implement the
+methods listed in the
+<link linkend="t000027">ScrollBar Instance Methods</link> table.</para>
+
+<table id="t000027" frame="all">
+<title>ScrollBar Instance Methods</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Method...</entry>
+<entry>...on page</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>DeterminePosition</entry>
+<entry><link linkend="determineposition">DeterminePosition</link></entry>
+</row>
+<row>
+<entry>Position</entry>
+<entry><link linkend="position">Position</link></entry>
+</row>
+<row>
+<entry>Range</entry>
+<entry><link linkend="range">Range</link></entry>
+</row>
+<row>
+<entry>SetRange</entry>
+<entry><link linkend="setrange">SetRange</link></entry>
+</row>
+<row>
+<entry>SetPos</entry>
+<entry><link linkend="setpos">SetPos</link></entry>
+</row>
+</tbody></tgroup>
+</table>
+</listitem></varlistentry>
+</variablelist>
+
+<section id="setrange"><title>SetRange</title>
+<indexterm><primary>SetRange</primary>
+<secondary>ScrollBar class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aScrollBar~SetRange(--min--,--max--+-----------+--)---------><
+                                      +-,--redraw-+
+
+
+]]>
+</programlisting>
+
+<para>The SetRange method sets the minimum and maximum
+positions for the associated scroll bar.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>min</term>
+<listitem><para>The minimum position to which the scroll bar can be moved.
+</para></listitem></varlistentry>
+<varlistentry><term>max</term>
+<listitem><para>The maximum position to which the scroll bar can be moved.
+</para></listitem></varlistentry>
+<varlistentry><term>redraw</term>
+<listitem><para>If you specify 1 or Y, the scroll bar is redrawn using the new range.
+Otherwise, the range is set but the scroll bar display is not updated. The
+default value is 1.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Setting the range was successful.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>For all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="range"><title>Range</title>
+<indexterm><primary>Range</primary>
+<secondary>ScrollBar class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aScrollBar~Range--------------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The Range method retrieves the minimum and maximum
+positions of the associated scroll bar.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The minimum and maximum positions, separated by a blank.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="setpos"><title>SetPos</title>
+<indexterm><primary>SetPos</primary>
+<secondary>ScrollBar class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aScrollBar~SetPos(--position--+-----------+--)--------------><
+                                 +-,--redraw-+
+
+
+]]>
+</programlisting>
+
+<para>The SetPos method sets the position of the scroll
+box for the associated scroll bar.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>position</term>
+<listitem><para>The position to which the scroll box is to be moved.
+</para></listitem></varlistentry>
+<varlistentry><term>redraw</term>
+<listitem><para>If you specify 1 or Y, the scroll bar is redrawn using the new position.
+Otherwise, the new position is set, but the scroll bar display is not updated.
+The default value is 1.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Setting the position was successful.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>For all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="position"><title>Position</title>
+<indexterm><primary>Position</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aScrollBar~Position-----------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The Position method retrieves the position of the
+scroll box in the associated scroll bar.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The position of the scroll box.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="determineposition"><title>DeterminePosition</title>
+<indexterm><primary>DeterminePosition</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aScrollBar~DeterminePosition(--posdata----------------------->
+
+>--+------------------------------------+--)-------------------><
+   +-,--+------------+--+-------------+-+
+        +-singleStep-+  +-,--pageStep-+
+
+
+]]>
+</programlisting>
+
+<para>The DeterminePosition method determines the new
+position of the scroll box based on the position sent with the scroll bar
+notification messages.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>posdata</term>
+<listitem><para>The position sent with the scroll bar notification messages.
+</para></listitem></varlistentry>
+<varlistentry><term>singleStep</term>
+<listitem><para>The value by which the scroll box position is increased or decreased
+when the user performs a single-step event like using the Down or Up arrow
+keys or clicking on the arrow buttons of the scroll bar.
+</para></listitem></varlistentry>
+<varlistentry><term>pageStep</term>
+<listitem><para>The value by which the scroll box position is increased or decreased
+when the user performs a page-step event like using the PgDn or
+PgUp arrow keys or clicking on an area in the scroll bar that is not occupied
+by the scroll box or the arrow buttons.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The resulting position based on
+<emphasis role="italic">posdata</emphasis> and the current position.
+</para></listitem></varlistentry>
+</variablelist>
+
+
+<note><title>Note</title><para>
+The position of a scroll bar cannot be modified directly by
+a user. The Object Rexx program must react to the notification that is the
+result of the user interaction and set the resulting position of the scroll
+box using <link linkend="setpos">SetPos</link>. Use the DeterminePosition
+method to determine the resulting position within your notification handler
+for the scroll bar notification messages.
+</para></note>
+</section>
+</chapter>

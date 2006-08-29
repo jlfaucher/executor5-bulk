@@ -1,0 +1,45 @@
+                     Open Object Rexx Developer Notes
+		        created by W. David Ashley
+
+
+Updating the Version of ooRexx
+------------------------------
+
+There are a number of files that need to be updated when the version of Open
+Object Rexx changes. Here is the list:
+
+configure.ac
+oorexx.ver
+shared/windows/verinfo_exe.rc
+shared/windows/verinfo_dll.rc
+rexxapi/daemon/RexxService.h
+
+
+
+Building ooRexx on Linux/Unix
+-----------------------------
+
+ooRexx uses the standard autoconf build mechanism for Linux/Unix. Here are the
+steps:
+
+./bootstrap               (only nneded if configure is not present)
+./configure
+./make
+./make install            (only needed if you want to install ooRexx)
+
+
+Building ooRexx on Windows
+--------------------------
+
+ooRexx uses a fairly standard Visual C++ build process under Windows. Here are
+the steps.
+
+make                      (run the make.bat batch file)
+
+This invokes NMAKE with the correct arguments.
+
+If you are using Visual C++ 7.x or later be sure to read the contents of the
+Nmake.inc file, you may want to take advantage of some of the features you
+find documented there. This is also the place to specify a 64-bit Windows
+build.
+

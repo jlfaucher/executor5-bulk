@@ -1,0 +1,230 @@
+#----------------------------------------------------------------------------
+#
+# Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.
+#
+# This program and the accompanying materials are made available under
+# the terms of the Common Public License v1.0 which accompanies this
+# distribution. A copy is also available at the following address:
+# http://www.ibm.com/developerworks/oss/CPLv1.0.htm
+#
+# Redistribution and use in source and binary forms, with or
+# without modification, are permitted provided that the following
+# conditions are met:
+#
+# Redistributions of source code must retain the above copyright
+# notice, this list of conditions and the following disclaimer.
+# Redistributions in binary form must reproduce the above copyright
+# notice, this list of conditions and the following disclaimer in
+# the documentation and/or other materials provided with the distribution.
+#
+# Neither the name of Rexx Language Association nor the names
+# of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+# FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+# TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+# OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+# OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+# NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+# SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+#----------------------------------------------------------------------------
+
+
+# This is a part of the ooRexx Windows build
+
+
+!include $(top_srcdir)\Nmake.inc
+
+INCLUDES = $(OOREXXINC) \
+           /I$(top_srcdir)\kernel\messages \
+           /I$(top_srcdir)\rexxapi \
+           /I$(top_srcdir)\rexxapi\api \
+           /I$(top_srcdir)\rexxapi\api\platform\windows \
+           /I$(top_srcdir)\rexxapi\daemon \
+           /I$(top_srcdir)\rexxapi\daemon\platform\windows
+
+DLLOBJS = LocalAPIContext.obj SysLocalAPIManager.obj LocalAPIManager.obj LocalMacroSpaceManager.obj \
+          LocalQueueManager.obj LocalRegistrationManager.obj MacroSpaceApi.obj \
+	  QueuesAPI.obj RegistrationAPI.obj RexxLegacyAPI.obj SysLegacyAPI.obj ClientMessage.obj
+
+EXEOBJS = APIServer.obj APIService.obj APIServerInstance.obj MacroSpaceManager.obj QueueManager.obj \
+	  RegistrationManager.obj
+
+COMMONOBJS = ServiceMessage.obj
+
+SHAREDLIB = $(top_srcdir)\shared\windows\rxshared.lib
+
+SHAREDDLLVER = $(top_srcdir)\shared\windows\verinfo_dll.res
+SHAREDEXEVER = $(top_srcdir)\shared\windows\verinfo_exe.res
+
+#################### build rexxapi.dll and rxapi.exe ##########################
+
+all: rexxapi.dll rexxapi.lib rxapi.exe
+
+rexxapi.dll rexxapi.lib: $(DLLOBJS) $(COMMONOBJS) $(SHAREDLIB) $(SHAREDVER) \
+                         api\platform\windows\rexxapi.def
+	$(LD) /DLL $(LFLAGS) $(DLLOBJS) $(COMMONOBJS) $(SHAREDLIB) \
+	$(WINLIBS) $(SHAREDDLLVER) /SUBSYSTEM:WINDOWS \
+        /DEF:api\platform\windows\rexxapi.def /OUT:rexxapi.dll
+
+rxapi.exe: $(EXEOBJS) $(COMMONOBJS) $(SHAREDLIB) rexxapi.lib $(SHAREDEXEVER)
+	$(LD) $(LFLAGS) $(EXEOBJS) $(COMMONOBJS) $(SHAREDLIB) rexxapi.lib \
+        $(WINLIBS) $(SHAREDEXEVER) /SUBSYSTEM:WINDOWS /DELAYLOAD:advapi32.dll \
+        /OUT:rxapi.exe
+
+APIServer.obj: daemon\APIServer.cpp \
+		daemon\APIServer.hpp \
+		daemon\APIServerInstance.hpp \
+		ServiceMessage.hpp \
+		ServiceException.hpp \
+		daemon\MacroSpaceManager.hpp \
+		daemon\RegistrationManager.hpp \
+	        daemon\QueueManager.hpp \
+		$(COMMONHEADERS)
+	$(CC) $(CFLAGS) daemon\APIServer.cpp /o $@
+
+APIServerInstance.obj: daemon\APIServerInstance.cpp \
+		daemon\APIServer.hpp \
+		daemon\APIServerInstance.hpp \
+		ServiceMessage.hpp \
+		ServiceException.hpp \
+		daemon\MacroSpaceManager.hpp \
+		daemon\RegistrationManager.hpp \
+	        daemon\QueueManager.hpp \
+		$(COMMONHEADERS)
+	$(CC) $(CFLAGS) daemon\APIServerInstance.cpp /o $@
+
+APIService.obj: daemon\platform\windows\APIService.cpp \
+		daemon\APIServer.hpp \
+		$(COMMONHEADERS)
+	$(CC) $(CFLAGS) daemon\platform\windows\APIService.cpp /o $@
+
+ServiceMessage.obj: ServiceMessage.cpp \
+		ServiceMessage.hpp \
+		$(COMMONHEADERS)
+	$(CC) $(CFLAGS) ServiceMessage.cpp /o $@
+
+ClientMessage.obj: api\ClientMessage.cpp \
+		ServiceMessage.hpp \
+		api\ClientMessage.hpp \
+		api\LocalAPIManager.hpp \
+		$(COMMONHEADERS)
+	$(CC) $(CFLAGS) api\ClientMessage.cpp /o $@
+
+LocalAPIContext.obj: api\LocalAPIContext.cpp \
+		api\LocalAPIContext.hpp \
+		ServiceException.hpp \
+                api\LocalAPIManager.hpp \
+		ServiceMessage.hpp \
+		$(COMMONHEADERS)
+	$(CC) $(CFLAGS) api\LocalAPIContext.cpp /o $@
+
+LocalAPIManager.obj: api\LocalAPIManager.cpp \
+		api\LocalAPIManager.hpp \
+		ServiceMessage.hpp \
+		api\ClientMessage.hpp \
+		api\platform\windows\SysLocalAPIManager.hpp \
+		api\LocalRegistrationManager.hpp \
+		api\LocalQueueManager.hpp \
+		api\LocalMacroSpaceManager.hpp \
+		$(COMMONHEADERS)
+	$(CC) $(CFLAGS) api\LocalAPIManager.cpp /o $@
+
+SysLocalAPIManager.obj: api\platform\windows\SysLocalAPIManager.cpp \
+		api\platform\windows\SysLocalAPIManager.hpp \
+		$(COMMONHEADERS)
+	$(CC) $(CFLAGS) api\platform\windows\SysLocalAPIManager.cpp /o $@
+
+LocalMacroSpaceManager.obj: api\LocalMacroSpaceManager.cpp \
+		api\LocalMacroSpaceManager.hpp \
+                api\LocalAPIManager.hpp \
+		api\LocalAPISubsystem.hpp \
+		ServiceMessage.hpp \
+		api\ClientMessage.hpp \
+		$(COMMONHEADERS)
+	$(CC) $(CFLAGS) api\LocalMacroSpaceManager.cpp /o $@
+
+LocalQueueManager.obj: api\LocalQueueManager.cpp \
+		api\LocalQueueManager.hpp \
+                Encodings.hpp \
+		api\LocalAPIManager.hpp \
+		api\LocalAPISubsystem.hpp \
+		ServiceMessage.hpp \
+		api\ClientMessage.hpp \
+		$(COMMONHEADERS)
+	$(CC) $(CFLAGS) api\LocalQueueManager.cpp /o $@
+
+LocalRegistrationManager.obj: api\LocalRegistrationManager.cpp \
+		api\LocalRegistrationManager.hpp \
+                api\LocalAPIManager.hpp \
+		ServiceMessage.hpp \
+		api\ClientMessage.hpp \
+		api\LocalAPISubsystem.hpp \
+		$(COMMONHEADERS)
+	$(CC) $(CFLAGS) api\LocalRegistrationManager.cpp /o $@
+
+MacroSpaceApi.obj: api\MacroSpaceApi.cpp \
+		api\LocalMacroSpaceManager.hpp \
+                api\LocalAPIManager.hpp \
+		api\LocalAPIContext.hpp \
+		$(COMMONHEADERS)
+	$(CC) $(CFLAGS) api\MacroSpaceApi.cpp /o $@
+
+MacroSpaceManager.obj: daemon\MacroSpaceManager.cpp \
+		daemon\MacroSpaceManager.hpp \
+		ServiceMessage.hpp \
+		$(COMMONHEADERS)
+	$(CC) $(CFLAGS) daemon\MacroSpaceManager.cpp /o $@
+
+QueueManager.obj: daemon\QueueManager.cpp \
+		daemon\QueueManager.hpp \
+		ServiceMessage.hpp \
+		$(COMMONHEADERS)
+	$(CC) $(CFLAGS) daemon\QueueManager.cpp /o $@
+
+QueuesAPI.obj: api\QueuesAPI.cpp \
+		api\LocalAPIManager.hpp \
+		api\LocalQueueManager.hpp \
+                api\LocalAPIContext.hpp \
+		$(COMMONHEADERS)
+	$(CC) $(CFLAGS) api\QueuesAPI.cpp /o $@
+
+RegistrationAPI.obj: api\RegistrationAPI.cpp \
+		api\LocalAPIManager.hpp \
+                api\LocalRegistrationManager.hpp \
+		api\LocalAPIContext.hpp \
+		api\RexxLegacyAPI.hpp \
+		ServiceMessage.hpp \
+		api\ClientMessage.hpp \
+		$(COMMONHEADERS)
+	$(CC) $(CFLAGS) api\RegistrationAPI.cpp /o $@
+
+RegistrationManager.obj: daemon\RegistrationManager.cpp \
+		daemon\RegistrationManager.hpp \
+                ServiceMessage.hpp \
+		ServiceException.hpp \
+		$(COMMONHEADERS)
+	$(CC) $(CFLAGS) daemon\RegistrationManager.cpp /o $@
+
+RexxLegacyAPI.obj: api\RexxLegacyAPI.cpp \
+		api\RexxLegacyAPI.hpp \
+		$(COMMONHEADERS)
+	$(CC) $(CFLAGS) api\RexxLegacyAPI.cpp /o $@
+
+SysLegacyAPI.obj: api\platform\windows\SysLegacyAPI.cpp \
+		api\RexxLegacyAPI.hpp \
+		$(COMMONHEADERS)
+	$(CC) $(CFLAGS) api\platform\windows\SysLegacyAPI.cpp /o $@
+
+
+#################### clean #########################
+
+clean:
+	del $(CLEAN)
+

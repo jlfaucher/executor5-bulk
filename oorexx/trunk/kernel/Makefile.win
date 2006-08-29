@@ -1,0 +1,1743 @@
+#----------------------------------------------------------------------------
+#
+# Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.
+#
+# This program and the accompanying materials are made available under
+# the terms of the Common Public License v1.0 which accompanies this
+# distribution. A copy is also available at the following address:
+# http://www.ibm.com/developerworks/oss/CPLv1.0.htm
+#
+# Redistribution and use in source and binary forms, with or
+# without modification, are permitted provided that the following
+# conditions are met:
+#
+# Redistributions of source code must retain the above copyright
+# notice, this list of conditions and the following disclaimer.
+# Redistributions in binary form must reproduce the above copyright
+# notice, this list of conditions and the following disclaimer in
+# the documentation and/or other materials provided with the distribution.
+#
+# Neither the name of Rexx Language Association nor the names
+# of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+# FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+# TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+# OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+# OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+# NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+# SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+#----------------------------------------------------------------------------
+
+
+# This is a part of the ooRexx Windows build
+
+
+!include $(top_srcdir)\Nmake.inc
+
+INCLUDES = $(OOREXXINC) \
+           /I$(top_srcdir)\kernel\api \
+           /I$(top_srcdir)\kernel\classes \
+           /I$(top_srcdir)\kernel\expression \
+           /I$(top_srcdir)\kernel\instructions \
+           /I$(top_srcdir)\kernel\messages \
+           /I$(top_srcdir)\kernel\parser \
+           /I$(top_srcdir)\kernel\platform\windows \
+           /I$(top_srcdir)\kernel\RexxClasses \
+           /I$(top_srcdir)\kernel\runtime \
+           /I$(top_srcdir)\kernel\streamLibrary
+
+COMMONOBJS = CallContextStubs.obj InterpreterApi.obj InterpreterInstanceStubs.obj \
+          ThreadContextStubs.obj MethodContextStubs.obj VariablePool.obj ArrayClass.obj \
+	  ASCIIDBCSStrings.obj ClassClass.obj DirectoryClass.obj \
+	  IntegerClass.obj ListClass.obj MessageClass.obj MethodClass.obj \
+	  MutableBufferClass.obj NumberStringClass.obj NumberStringMath.obj \
+	  NumberStringMath2.obj ObjectClass.obj PointerClass.obj QueueClass.obj \
+	  RelationClass.obj StackClass.obj StemClass.obj StringClass.obj \
+	  StringClassBit.obj StringClassConversion.obj StringClassMisc.obj \
+	  StringClassSub.obj StringClassUtil.obj StringClassWord.obj \
+	  SupplierClass.obj TableClass.obj BuiltinFunctions.obj \
+	  CommonSysUtils.obj ExpressionCompoundVariable.obj \
+	  ExpressionDotVariable.obj ExpressionFunction.obj ExpressionMessage.obj \
+	  ExpressionOperator.obj ExpressionStack.obj ExpressionStem.obj \
+	  ExpressionVariable.obj IndirectVariableReference.obj QueueFunctions.obj \
+	  AddressInstruction.obj AssignmentInstruction.obj CallInstruction.obj \
+	  CommandInstruction.obj DoBlock.obj DoInstruction.obj \
+	  DropInstruction.obj ElseInstruction.obj EndIf.obj EndInstruction.obj \
+	  ExitInstruction.obj ExposeInstruction.obj ForwardInstruction.obj \
+	  GuardInstruction.obj IfInstruction.obj InterpretInstruction.obj \
+	  LabelInstruction.obj LeaveInstruction.obj MessageInstruction.obj \
+	  NopInstruction.obj NumericInstruction.obj OptionsInstruction.obj \
+	  OtherwiseInstruction.obj ParseInstruction.obj Parsetarget.obj \
+	  parseTrigger.obj ProcedureInstruction.obj QueueInstruction.obj \
+	  RaiseInstruction.obj ReplyInstruction.obj ReturnInstruction.obj \
+	  RexxInstruction.obj SayInstruction.obj SelectInstruction.obj \
+	  SignalInstruction.obj ThenInstruction.obj TraceInstruction.obj \
+	  UseInstruction.obj Clause.obj InstructionParser.obj Scanner.obj \
+	  SourceFile.obj Token.obj DBCSSupport.obj ErrorMessages.obj \
+	  ExternalFunctions.obj FileSystem.obj MemorySupport.obj \
+	  MiscSystem.obj RexxMain.obj RexxUtil.obj SysActivity.obj \
+	  SysInterpreter.obj SystemCommands.obj SystemInitialization.obj \
+	  TimeSupport.obj UseridFunction.obj ValueFunction.obj \
+	  ActivityTable.obj DeadObject.obj Errors.obj Exithandler.obj \
+	  ExternalFunctionSearch.obj FunctionActivator.obj GlobalData.obj \
+	  GlobalNames.obj InternalPackage.obj Interpreter.obj \
+	  InterpreterInstance.obj MemorySegment.obj MemoryStats.obj \
+	  Numerics.obj Package.obj PrimitiveBehaviours.obj RexxActivation.obj \
+	  RexxActivationStack.obj RexxActivity.obj RexxBehaviour.obj \
+	  RexxBuffer.obj RexxCode.obj RexxCollection.obj RexxCompoundElement.obj \
+	  RexxCompoundTable.obj RexxCompoundTail.obj RexxConstants.obj \
+	  RexxEnvelope.obj RexxHashTable.obj RexxInternalStack.obj \
+	  RexxListTable.obj RexxLocalVariables.obj RexxMemory.obj \
+	  RexxNativeActivation.obj RexxNativeCode.obj RexxSmartBuffer.obj \
+	  RexxThread.obj RexxVariable.obj RexxVariableDictionary.obj \
+	  RootImage.obj Setup.obj TranslatedImage.obj Utilities.obj Version.obj \
+	  VirtualFunctionTable.obj WeakReference.obj StreamCommandParser.obj \
+	  StreamNative.obj
+
+GENERATEDHEADERS = messages\RexxErrorCodes.h messages\RexxMessageNumbers.h messages\RexxMessageTable.h \
+   runtime\ClassTypeCodes.h runtime\PrimitiveBehaviourNames.h runtime\RexxCore.h ..\api\oorexxerrors.h
+
+DLL32OBJS = InterpreterLegacy.obj LegacyExitHandler.obj
+
+DLL64OBJS =
+
+SHAREDDLLVER = $(top_srcdir)\shared\windows\verinfo_dll.res
+
+!IF $(OOREXX_BIT_SIZE) == 64
+DLLOBJS = $(COMMONOBJS) $(DLL64OBJS)
+!ELSE
+DLLOBJS = $(COMMONOBJS) $(DLL32OBJS)
+!ENDIF
+
+DEPHEADERS = $(GENERATEDHEADERS) $(COMMONHEADERS)
+
+
+#################### build rexx.dll ##########################
+
+all: rexx.dll
+
+rexx.dll rexx.lib: $(DLLOBJS) $(SHAREDDLLLIB) $(REXXAPILIB) $(SHAREDVER) \
+                   $(GENERATEDHEADERS) platform\windows\wrexx.def
+	$(LD) /DLL $(LFLAGS) $(DLLOBJS) $(SHAREDLIB) $(REXXAPILIB) $(WINLIBS) \
+	$(SHAREDDLLVER) /SUBSYSTEM:WINDOWS /DEF:platform\windows\wrexx.def \
+	/OUT:rexx.dll
+
+CallContextStubs.obj: api\CallContextStubs.cpp \
+                api\ContextApi.hpp \
+                runtime\RexxNativeActivation.hpp \
+		classes\SupplierClass.hpp \
+                runtime\Interpreter.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) api\CallContextStubs.cpp /o $@
+
+InterpreterApi.obj: api\InterpreterApi.cpp \
+                runtime\RexxNativeActivation.hpp \
+                runtime\RexxActivation.hpp \
+                runtime\RexxActivity.hpp \
+                runtime\Interpreter.hpp \
+                runtime\ExitHandler.hpp \
+                platform\windows\SysInterpreter.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) api\InterpreterApi.cpp /o $@
+
+InterpreterInstanceStubs.obj: api\InterpreterInstanceStubs.cpp \
+                api\ContextApi.hpp \
+                runtime\Interpreter.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) api\InterpreterInstanceStubs.cpp /o $@
+
+InterpreterLegacy.obj: api\InterpreterLegacy.cpp \
+                runtime\RexxActivity.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) api\InterpreterLegacy.cpp /o $@
+
+LegacyExitHandler.obj: api\LegacyExitHandler.cpp \
+                runtime\ExitHandler.hpp \
+                platform\windows\SysInterpreter.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) api\LegacyExitHandler.cpp /o $@
+
+MethodContextStubs.obj: api\MethodContextStubs.cpp \
+                api\ContextApi.hpp \
+                runtime\RexxNativeActivation.hpp \
+                runtime\RexxActivity.hpp \
+                classes\StringClass.hpp \
+                classes\IntegerClass.hpp \
+                runtime\RexxBuffer.hpp \
+                classes\SupplierClass.hpp \
+                classes\ArrayClass.hpp \
+                classes\DirectoryClass.hpp \
+                classes\TableClass.hpp \
+                classes\MethodClass.hpp \
+                classes\PointerClass.hpp \
+                runtime\Interpreter.hpp \
+                platform\windows\SysInterpreter.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) api\MethodContextStubs.cpp /o $@
+
+ThreadContextStubs.obj: api\ThreadContextStubs.cpp \
+                api\ContextApi.hpp \
+                runtime\RexxNativeActivation.hpp \
+                runtime\RexxActivity.hpp \
+                classes\StringClass.hpp \
+                classes\IntegerClass.hpp \
+                runtime\RexxBuffer.hpp \
+                classes\SupplierClass.hpp \
+                classes\ArrayClass.hpp \
+                classes\DirectoryClass.hpp \
+                classes\TableClass.hpp \
+                classes\MethodClass.hpp \
+                classes\PointerClass.hpp \
+                runtime\Interpreter.hpp \
+                platform\windows\SysInterpreter.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) api\ThreadContextStubs.cpp /o $@
+
+VariablePool.obj: api\VariablePool.cpp \
+                api\ContextApi.hpp \
+                runtime\Interpreter.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) api\VariablePool.cpp /o $@
+
+ArrayClass.obj: classes\ArrayClass.cpp \
+                classes\ArrayClass.hpp \
+                runtime\RexxActivity.hpp \
+                classes\IntegerClass.hpp \
+                classes\SupplierClass.hpp \
+                classes\ArrayClass.hpp \
+                classes\MutableBufferClass.hpp \
+                runtime\Interpreter.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) classes\ArrayClass.cpp /o $@
+
+ASCIIDBCSStrings.obj: classes\ASCIIDBCSStrings.cpp \
+                classes\ASCIIDBCSStrings.hpp \
+                classes\StringClass.hpp \
+                runtime\ArgumentUtilities.hpp \
+                runtime\Interpreter.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) classes\ASCIIDBCSStrings.cpp /o $@
+
+ClassClass.obj: classes\ClassClass.cpp \
+                classes\ClassClass.hpp \
+                classes\StringClass.hpp \
+                classes\ListClass.hpp \
+                classes\TableClass.hpp \
+                classes\DirectoryClass.hpp \
+                classes\RelationClass.hpp \
+                classes\ArrayClass.hpp \
+                classes\SupplierClass.hpp \
+                classes\MethodClass.hpp \
+                runtime\RexxActivity.hpp \
+                runtime\WeakReference.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) classes\ClassClass.cpp /o $@
+
+DirectoryClass.obj: classes\DirectoryClass.cpp \
+                classes\DirectoryClass.hpp \
+                runtime\RexxCollection.hpp \
+                classes\StringClass.hpp \
+                classes\ArrayClass.hpp \
+                classes\MethodClass.hpp \
+                runtime\RexxActivation.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) classes\DirectoryClass.cpp /o $@
+
+IntegerClass.obj: classes\IntegerClass.cpp \
+                classes\IntegerClass.hpp \
+                classes\StringClass.hpp \
+                classes\ArrayClass.hpp \
+                runtime\RexxActivation.hpp \
+                runtime\RexxActivity.hpp \
+                runtime\ArgumentUtilities.hpp \
+                runtime\Numerics.hpp \
+                runtime\Interpreter.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) classes\IntegerClass.cpp /o $@
+
+ListClass.obj: classes\ListClass.cpp \
+                classes\ListClass.hpp \
+                runtime\RexxListTable.hpp \
+                classes\IntegerClass.hpp \
+                classes\ArrayClass.hpp \
+                classes\SupplierClass.hpp \
+                runtime\WeakReference.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) classes\ListClass.cpp /o $@
+
+MessageClass.obj: classes\MessageClass.cpp \
+                classes\MessageClass.hpp \
+                classes\StringClass.hpp \
+                classes\DirectoryClass.hpp \
+                classes\ArrayClass.hpp \
+                classes\ListClass.hpp \
+                classes\MethodClass.hpp \
+                runtime\RexxActivity.hpp \
+                runtime\RexxActivation.hpp \
+                runtime\RexxNativeActivation.hpp \
+                classes\MessageClass.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) classes\MessageClass.cpp /o $@
+
+MethodClass.obj: classes\MethodClass.cpp \
+                classes\MethodClass.hpp \
+                runtime\RexxNativeCode.hpp \
+                classes\StringClass.hpp \
+                classes\ArrayClass.hpp \
+                runtime\RexxCode.hpp \
+                runtime\RexxActivity.hpp \
+                runtime\RexxActivation.hpp \
+                runtime\RexxNativeActivation.hpp \
+                parser\SourceFile.hpp \
+                classes\DirectoryClass.hpp \
+                runtime\Interpreter.hpp \
+                runtime\FunctionActivator.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) classes\MethodClass.cpp /o $@
+
+MutableBufferClass.obj: classes\MutableBufferClass.cpp \
+                classes\MutableBufferClass.hpp \
+                classes\StringClass.hpp \
+                classes\IntegerClass.hpp \
+                runtime\ArgumentUtilities.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) classes\MutableBufferClass.cpp /o $@
+
+NumberStringClass.obj: classes\NumberStringClass.cpp \
+                classes\NumberStringClass.hpp \
+                runtime\RexxActivity.hpp \
+                classes\StringClass.hpp \
+                runtime\RexxBuffer.hpp \
+                runtime\RexxActivation.hpp \
+                classes\NumberStringMath.hpp \
+                runtime\ArgumentUtilities.hpp \
+                runtime\Interpreter.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) classes\NumberStringClass.cpp /o $@
+
+NumberStringMath.obj: classes\NumberStringMath.cpp \
+                classes\NumberStringMath.hpp \
+                classes\StringClass.hpp \
+                classes\NumberStringClass.hpp \
+                classes\ArrayClass.hpp \
+                runtime\RexxActivity.hpp \
+                runtime\RexxBuffer.hpp \
+                runtime\Interpreter.hpp \
+                runtime\RexxActivation.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) classes\NumberStringMath.cpp /o $@
+
+NumberStringMath2.obj: classes\NumberStringMath2.cpp \
+                classes\NumberStringClass.hpp \
+                classes\ArrayClass.hpp \
+                runtime\RexxBuffer.hpp \
+                runtime\RexxActivity.hpp \
+                classes\NumberStringMath.hpp \
+                runtime\Interpreter.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) classes\NumberStringMath2.cpp /o $@
+
+ObjectClass.obj: classes\ObjectClass.cpp \
+                classes\ObjectClass.hpp \
+                runtime\Numerics.hpp \
+                classes\StringClass.hpp \
+                runtime\RexxBuffer.hpp \
+                runtime\RexxSmartBuffer.hpp \
+                classes\DirectoryClass.hpp \
+                runtime\RexxVariableDictionary.hpp \
+                classes\ArrayClass.hpp \
+                runtime\RexxActivity.hpp \
+                runtime\RexxActivation.hpp \
+                classes\MessageClass.hpp \
+                classes\MethodClass.hpp \
+                parser\SourceFile.hpp \
+                runtime\Interpreter.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) classes\ObjectClass.cpp /o $@
+
+PointerClass.obj: classes\PointerClass.cpp \
+                classes\PointerClass.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) classes\PointerClass.cpp /o $@
+
+QueueClass.obj: classes\QueueClass.cpp \
+                classes\QueueClass.hpp \
+                classes\ListClass.hpp \
+                classes\IntegerClass.hpp \
+                classes\SupplierClass.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) classes\QueueClass.cpp /o $@
+
+RelationClass.obj: classes\RelationClass.cpp \
+                classes\RelationClass.hpp \
+                classes\TableClass.hpp \
+                classes\IntegerClass.hpp \
+                classes\ArrayClass.hpp \
+                classes\SupplierClass.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) classes\RelationClass.cpp /o $@
+
+StackClass.obj: classes\StackClass.cpp \
+                classes\StackClass.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) classes\StackClass.cpp /o $@
+
+StemClass.obj: classes\StemClass.cpp \
+                classes\StemClass.hpp \
+                runtime\RexxCompoundElement.hpp \
+                runtime\RexxCompoundTable.hpp \
+                runtime\RexxCompoundTail.hpp \
+                expression\ExpressionStem.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) classes\StemClass.cpp /o $@
+
+StringClass.obj: classes\StringClass.cpp \
+                classes\StringClass.hpp \
+                runtime\RexxActivity.hpp \
+                classes\NumberStringClass.hpp \
+                classes\IntegerClass.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) classes\StringClass.cpp /o $@
+
+StringClassBit.obj: classes\StringClassBit.cpp \
+                classes\StringClass.hpp \
+                runtime\ArgumentUtilities.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) classes\StringClassBit.cpp /o $@
+
+StringClassConversion.obj: classes\StringClassConversion.cpp \
+                classes\StringClass.hpp \
+                runtime\RexxBuffer.hpp \
+                runtime\ArgumentUtilities.hpp \
+                runtime\Interpreter.hpp \
+                classes\NumberStringMath.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) classes\StringClassConversion.cpp /o $@
+
+StringClassMisc.obj: classes\StringClassMisc.cpp \
+                classes\StringClass.hpp \
+                classes\ASCIIDBCSStrings.hpp \
+                runtime\ArgumentUtilities.hpp \
+                parser\SourceFile.hpp \
+                runtime\Interpreter.hpp \
+                platform\windows\SysInterpreter.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) classes\StringClassMisc.cpp /o $@
+
+StringClassSub.obj: classes\StringClassSub.cpp \
+                classes\StringClass.hpp \
+                classes\ASCIIDBCSStrings.hpp \
+                runtime\ArgumentUtilities.hpp \
+                runtime\Interpreter.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) classes\StringClassSub.cpp /o $@
+
+StringClassUtil.obj: classes\StringClassUtil.cpp \
+                classes\StringClass.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) classes\StringClassUtil.cpp /o $@
+
+StringClassWord.obj: classes\StringClassWord.cpp \
+                classes\StringClass.hpp \
+                classes\ASCIIDBCSStrings.hpp \
+                runtime\ArgumentUtilities.hpp \
+                runtime\Interpreter.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) classes\StringClassWord.cpp /o $@
+
+SupplierClass.obj: classes\SupplierClass.cpp \
+                classes\SupplierClass.hpp \
+                classes\IntegerClass.hpp \
+                classes\ArrayClass.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) classes\SupplierClass.cpp /o $@
+
+TableClass.obj: classes\TableClass.cpp \
+                classes\TableClass.hpp \
+                runtime\RexxCollection.hpp \
+                classes\IntegerClass.hpp \
+                runtime\RexxActivity.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) classes\TableClass.cpp /o $@
+
+BuiltinFunctions.obj: expression\BuiltinFunctions.cpp \
+                expression\BuiltinFunctions.hpp \
+                classes\StringClass.hpp \
+                classes\DirectoryClass.hpp \
+                classes\ArrayClass.hpp \
+                runtime\RexxVariableDictionary.hpp \
+                runtime\RexxActivation.hpp \
+                runtime\RexxActivity.hpp \
+                expression\ExpressionBaseVariable.hpp \
+                parser\SourceFile.hpp \
+                runtime\Numerics.hpp \
+                platform\windows\SysInterpreter.hpp \
+                runtime\Interpreter.hpp \
+                runtime\Package.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) expression\BuiltinFunctions.cpp /o $@
+
+CommonSysUtils.obj: expression\CommonSysUtils.cpp \
+                expression\CommonSysUtils.h \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) expression\CommonSysUtils.cpp /o $@
+
+ExpressionCompoundVariable.obj: expression\ExpressionCompoundVariable.cpp \
+                expression\ExpressionCompoundVariable.hpp \
+                expression\ExpressionBaseVariable.hpp \
+                classes\StringClass.hpp \
+                classes\QueueClass.hpp \
+                classes\StemClass.hpp \
+                runtime\RexxVariableDictionary.hpp \
+                runtime\RexxActivation.hpp \
+                runtime\RexxActivity.hpp \
+                expression\ExpressionVariable.hpp \
+                runtime\RexxVariable.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) expression\ExpressionCompoundVariable.cpp /o $@
+
+ExpressionDotVariable.obj: expression\ExpressionDotVariable.cpp \
+                expression\ExpressionDotVariable.hpp \
+                expression\ExpressionBaseVariable.hpp \
+                classes\StringClass.hpp \
+                runtime\RexxActivation.hpp \
+                parser\SourceFile.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) expression\ExpressionDotVariable.cpp /o $@
+
+ExpressionFunction.obj: expression\ExpressionFunction.cpp \
+                expression\ExpressionFunction.hpp \
+                classes\StringClass.hpp \
+                classes\QueueClass.hpp \
+                classes\DirectoryClass.hpp \
+                runtime\RexxActivation.hpp \
+                parser\Token.hpp \
+                classes\StackClass.hpp \
+                runtime\RexxActivity.hpp \
+                expression\BuiltinFunctions.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) expression\ExpressionFunction.cpp /o $@
+
+ExpressionMessage.obj: expression\ExpressionMessage.cpp \
+                expression\ExpressionMessage.hpp \
+                classes\StringClass.hpp \
+                classes\QueueClass.hpp \
+                runtime\RexxActivation.hpp \
+                parser\Token.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) expression\ExpressionMessage.cpp /o $@
+
+ExpressionOperator.obj: expression\ExpressionOperator.cpp \
+                expression\ExpressionOperator.hpp \
+                runtime\RexxActivation.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) expression\ExpressionOperator.cpp /o $@
+
+ExpressionStack.obj: expression\ExpressionStack.cpp \
+                expression\ExpressionStack.hpp \
+                classes\ArrayClass.hpp \
+                runtime\RexxActivity.hpp \
+                classes\StringClass.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) expression\ExpressionStack.cpp /o $@
+
+ExpressionStem.obj: expression\ExpressionStem.cpp \
+                expression\ExpressionStem.hpp \
+                expression\ExpressionBaseVariable.hpp \
+                classes\StringClass.hpp \
+                runtime\RexxActivation.hpp \
+                runtime\RexxVariable.hpp \
+                runtime\RexxVariableDictionary.hpp \
+                classes\StemClass.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) expression\ExpressionStem.cpp /o $@
+
+ExpressionVariable.obj: expression\ExpressionVariable.cpp \
+                expression\ExpressionVariable.hpp \
+                expression\ExpressionBaseVariable.hpp \
+                classes\StringClass.hpp \
+                runtime\RexxActivation.hpp \
+                runtime\RexxActivity.hpp \
+                runtime\RexxVariableDictionary.hpp \
+                runtime\RexxVariable.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) expression\ExpressionVariable.cpp /o $@
+
+IndirectVariableReference.obj: expression\IndirectVariableReference.cpp \
+                expression\IndirectVariableReference.hpp \
+                classes\StringClass.hpp \
+                classes\ArrayClass.hpp \
+                runtime\RexxActivation.hpp \
+                runtime\RexxActivity.hpp \
+                runtime\RexxVariableDictionary.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) expression\IndirectVariableReference.cpp /o $@
+
+QueueFunctions.obj: expression\QueueFunctions.cpp \
+                classes\StringClass.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) expression\QueueFunctions.cpp /o $@
+
+AddressInstruction.obj: instructions\AddressInstruction.cpp \
+                instructions\AddressInstruction.hpp \
+                instructions\RexxInstruction.hpp \
+                classes\StringClass.hpp \
+                runtime\RexxActivation.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) instructions\AddressInstruction.cpp /o $@
+
+AssignmentInstruction.obj: instructions\AssignmentInstruction.cpp \
+                instructions\AssignmentInstruction.hpp \
+                instructions\RexxInstruction.hpp \
+                expression\ExpressionBaseVariable.hpp \
+                runtime\RexxActivation.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) instructions\AssignmentInstruction.cpp /o $@
+
+CallInstruction.obj: instructions\CallInstruction.cpp \
+                instructions\CallInstruction.hpp \
+                instructions\RexxInstruction.hpp \
+                classes\StringClass.hpp \
+                classes\DirectoryClass.hpp \
+                classes\ArrayClass.hpp \
+                runtime\RexxVariableDictionary.hpp \
+                runtime\RexxActivation.hpp \
+                runtime\RexxActivity.hpp \
+                parser\SourceFile.hpp \
+                expression\BuiltinFunctions.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) instructions\CallInstruction.cpp /o $@
+
+CommandInstruction.obj: instructions\CommandInstruction.cpp \
+                instructions\CommandInstruction.hpp \
+                instructions\RexxInstruction.hpp \
+                runtime\RexxActivation.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) instructions\CommandInstruction.cpp /o $@
+
+DoBlock.obj: instructions\DoBlock.cpp \
+                instructions\DoBlock.hpp \
+                instructions\DoInstruction.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) instructions\DoBlock.cpp /o $@
+
+DoInstruction.obj: instructions\DoInstruction.cpp \
+                instructions\DoInstruction.hpp \
+                instructions\RexxInstruction.hpp \
+                classes\StringClass.hpp \
+                classes\ArrayClass.hpp \
+                runtime\RexxActivation.hpp \
+                runtime\RexxActivity.hpp \
+                instructions\DoBlock.hpp \
+                parser\Token.hpp \
+                parser\SourceFile.hpp \
+                expression\ExpressionBaseVariable.hpp \
+                runtime\Interpreter.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) instructions\DoInstruction.cpp /o $@
+
+DropInstruction.obj: instructions\DropInstruction.cpp \
+                instructions\DropInstruction.hpp \
+                instructions\RexxInstruction.hpp \
+                classes\QueueClass.hpp \
+                runtime\RexxActivation.hpp \
+                expression\ExpressionBaseVariable.hpp \
+                classes\StackClass.hpp \
+                runtime\RexxActivity.hpp \
+                runtime\RexxBuffer.hpp \
+                runtime\Interpreter.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) instructions\DropInstruction.cpp /o $@
+
+ElseInstruction.obj: instructions\ElseInstruction.cpp \
+                instructions\ElseInstruction.hpp \
+                instructions\RexxInstruction.hpp \
+                runtime\RexxActivation.hpp \
+                instructions\IfInstruction.hpp \
+                parser\Token.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) instructions\ElseInstruction.cpp /o $@
+
+EndIf.obj: instructions\EndIf.cpp \
+                instructions\EndIf.hpp \
+                instructions\RexxInstruction.hpp \
+                runtime\RexxActivation.hpp \
+                instructions\IfInstruction.hpp \
+                parser\Token.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) instructions\EndIf.cpp /o $@
+
+EndInstruction.obj: instructions\EndInstruction.cpp \
+                instructions\EndInstruction.hpp \
+                instructions\RexxInstruction.hpp \
+                classes\StringClass.hpp \
+                runtime\RexxActivation.hpp \
+                instructions\DoInstruction.hpp \
+                instructions\DoBlock.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) instructions\EndInstruction.cpp /o $@
+
+ExitInstruction.obj: instructions\ExitInstruction.cpp \
+                instructions\ExitInstruction.hpp \
+                instructions\RexxInstruction.hpp \
+                runtime\RexxActivation.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) instructions\ExitInstruction.cpp /o $@
+
+ExposeInstruction.obj: instructions\ExposeInstruction.cpp \
+                instructions\ExposeInstruction.hpp \
+                instructions\RexxInstruction.hpp \
+                runtime\RexxActivation.hpp \
+                classes\QueueClass.hpp \
+                expression\ExpressionBaseVariable.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) instructions\ExposeInstruction.cpp /o $@
+
+ForwardInstruction.obj: instructions\ForwardInstruction.cpp \
+                instructions\ForwardInstruction.hpp \
+                instructions\RexxInstruction.hpp \
+                classes\StringClass.hpp \
+                classes\ArrayClass.hpp \
+                runtime\RexxVariableDictionary.hpp \
+                runtime\RexxActivation.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) instructions\ForwardInstruction.cpp /o $@
+
+GuardInstruction.obj: instructions\GuardInstruction.cpp \
+                instructions\GuardInstruction.hpp \
+                instructions\RexxInstruction.hpp \
+                classes\ArrayClass.hpp \
+                runtime\RexxActivity.hpp \
+                runtime\RexxActivation.hpp \
+                expression\ExpressionBaseVariable.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) instructions\GuardInstruction.cpp /o $@
+
+IfInstruction.obj: instructions\IfInstruction.cpp \
+                instructions\IfInstruction.hpp \
+                instructions\RexxInstruction.hpp \
+                instructions\EndIf.hpp \
+                runtime\RexxActivation.hpp \
+                parser\Token.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) instructions\IfInstruction.cpp /o $@
+
+InterpretInstruction.obj: instructions\InterpretInstruction.cpp \
+                instructions\InterpretInstruction.hpp \
+                instructions\RexxInstruction.hpp \
+                classes\StringClass.hpp \
+                runtime\RexxActivation.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) instructions\InterpretInstruction.cpp /o $@
+
+LabelInstruction.obj: instructions\LabelInstruction.cpp \
+                instructions\LabelInstruction.hpp \
+                instructions\RexxInstruction.hpp \
+                runtime\RexxActivation.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) instructions\LabelInstruction.cpp /o $@
+
+LeaveInstruction.obj: instructions\LeaveInstruction.cpp \
+                instructions\LeaveInstruction.hpp \
+                instructions\RexxInstruction.hpp \
+                classes\StringClass.hpp \
+                runtime\RexxActivation.hpp \
+                parser\Token.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) instructions\LeaveInstruction.cpp /o $@
+
+MessageInstruction.obj: instructions\MessageInstruction.cpp \
+                instructions\MessageInstruction.hpp \
+                instructions\RexxInstruction.hpp \
+                classes\StringClass.hpp \
+                runtime\RexxActivation.hpp \
+                runtime\RexxVariableDictionary.hpp \
+                expression\ExpressionMessage.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) instructions\MessageInstruction.cpp /o $@
+
+NopInstruction.obj: instructions\NopInstruction.cpp \
+                instructions\NopInstruction.hpp \
+                instructions\RexxInstruction.hpp \
+                runtime\RexxActivation.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) instructions\NopInstruction.cpp /o $@
+
+NumericInstruction.obj: instructions\NumericInstruction.cpp \
+                instructions\NumericInstruction.hpp \
+                instructions\RexxInstruction.hpp \
+                classes\StringClass.hpp \
+                runtime\RexxActivation.hpp \
+                parser\Token.hpp \
+                runtime\Numerics.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) instructions\NumericInstruction.cpp /o $@
+
+OptionsInstruction.obj: instructions\OptionsInstruction.cpp \
+                instructions\OptionsInstruction.hpp \
+                instructions\RexxInstruction.hpp \
+                classes\StringClass.hpp \
+                runtime\RexxActivation.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) instructions\OptionsInstruction.cpp /o $@
+
+OtherwiseInstruction.obj: instructions\OtherwiseInstruction.cpp \
+                instructions\OtherwiseInstruction.hpp \
+                instructions\RexxInstruction.hpp \
+                classes\StringClass.hpp \
+                runtime\RexxActivation.hpp \
+                parser\Token.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) instructions\OtherwiseInstruction.cpp /o $@
+
+ParseInstruction.obj: instructions\ParseInstruction.cpp \
+                instructions\ParseInstruction.hpp \
+                instructions\RexxInstruction.hpp \
+                classes\StringClass.hpp \
+                classes\QueueClass.hpp \
+                classes\DirectoryClass.hpp \
+                runtime\RexxActivation.hpp \
+                runtime\RexxActivity.hpp \
+                instructions\ParseTrigger.hpp \
+                instructions\ParseTarget.hpp \
+                parser\Token.hpp \
+                runtime\Interpreter.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) instructions\ParseInstruction.cpp /o $@
+
+ParseTarget.obj: instructions\ParseTarget.cpp \
+                instructions\ParseTarget.hpp \
+                classes\StringClass.hpp \
+                classes\ArrayClass.hpp \
+                runtime\RexxActivation.hpp \
+                instructions\ParseInstruction.hpp \
+                runtime\Interpreter.hpp \
+                classes\ASCIIDBCSStrings.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) instructions\ParseTarget.cpp /o $@
+
+ParseTrigger.obj: instructions\ParseTrigger.cpp \
+                instructions\ParseTrigger.hpp \
+                classes\StringClass.hpp \
+                classes\QueueClass.hpp \
+                runtime\RexxActivation.hpp \
+                instructions\ParseTarget.hpp \
+                expression\ExpressionBaseVariable.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) instructions\ParseTrigger.cpp /o $@
+
+ProcedureInstruction.obj: instructions\ProcedureInstruction.cpp \
+                instructions\ProcedureInstruction.hpp \
+                instructions\RexxInstruction.hpp \
+                classes\QueueClass.hpp \
+                runtime\RexxActivation.hpp \
+                expression\ExpressionBaseVariable.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) instructions\ProcedureInstruction.cpp /o $@
+
+QueueInstruction.obj: instructions\QueueInstruction.cpp \
+                instructions\QueueInstruction.hpp \
+                instructions\RexxInstruction.hpp \
+                classes\StringClass.hpp \
+                runtime\RexxActivation.hpp \
+                runtime\RexxActivity.hpp \
+                runtime\Interpreter.hpp \
+                classes\ASCIIDBCSStrings.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) instructions\QueueInstruction.cpp /o $@
+
+RaiseInstruction.obj: instructions\RaiseInstruction.cpp \
+                instructions\RaiseInstruction.hpp \
+                instructions\RexxInstruction.hpp \
+                classes\StringClass.hpp \
+                classes\DirectoryClass.hpp \
+                classes\ArrayClass.hpp \
+                classes\QueueClass.hpp \
+                runtime\RexxActivation.hpp \
+                runtime\Interpreter.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) instructions\RaiseInstruction.cpp /o $@
+
+ReplyInstruction.obj: instructions\ReplyInstruction.cpp \
+                instructions\ReplyInstruction.hpp \
+                instructions\RexxInstruction.hpp \
+                runtime\RexxActivation.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) instructions\ReplyInstruction.cpp /o $@
+
+ReturnInstruction.obj: instructions\ReturnInstruction.cpp \
+                instructions\ReturnInstruction.hpp \
+                instructions\RexxInstruction.hpp \
+                runtime\RexxActivation.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) instructions\ReturnInstruction.cpp /o $@
+
+RexxInstruction.obj: instructions\RexxInstruction.cpp \
+                instructions\RexxInstruction.hpp \
+                parser\Clause.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) instructions\RexxInstruction.cpp /o $@
+
+SayInstruction.obj: instructions\SayInstruction.cpp \
+                instructions\SayInstruction.hpp \
+                instructions\RexxInstruction.hpp \
+                runtime\RexxActivity.hpp \
+                runtime\RexxActivation.hpp \
+                runtime\Interpreter.hpp \
+                classes\ASCIIDBCSStrings.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) instructions\SayInstruction.cpp /o $@
+
+SelectInstruction.obj: instructions\SelectInstruction.cpp \
+                instructions\SelectInstruction.hpp \
+                instructions\RexxInstruction.hpp \
+                runtime\RexxActivity.hpp \
+                runtime\RexxActivation.hpp \
+                classes\QueueClass.hpp \
+                classes\IntegerClass.hpp \
+                instructions\EndInstruction.hpp \
+                instructions\IfInstruction.hpp \
+                instructions\OtherwiseInstruction.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) instructions\SelectInstruction.cpp /o $@
+
+SignalInstruction.obj: instructions\SignalInstruction.cpp \
+                instructions\SignalInstruction.hpp \
+                instructions\RexxInstruction.hpp \
+                instructions\CallInstruction.hpp \
+                classes\StringClass.hpp \
+                runtime\RexxActivation.hpp \
+                classes\DirectoryClass.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) instructions\SignalInstruction.cpp /o $@
+
+ThenInstruction.obj: instructions\ThenInstruction.cpp \
+                instructions\ThenInstruction.hpp \
+                instructions\RexxInstruction.hpp \
+                runtime\RexxActivation.hpp \
+                instructions\ElseInstruction.hpp \
+                instructions\IfInstruction.hpp \
+                parser\Token.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) instructions\ThenInstruction.cpp /o $@
+
+TraceInstruction.obj: instructions\TraceInstruction.cpp \
+                instructions\TraceInstruction.hpp \
+                instructions\RexxInstruction.hpp \
+                runtime\RexxActivation.hpp \
+                parser\SourceFile.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) instructions\TraceInstruction.cpp /o $@
+
+UseInstruction.obj: instructions\UseInstruction.cpp \
+                instructions\UseInstruction.hpp \
+                instructions\RexxInstruction.hpp \
+                classes\ArrayClass.hpp \
+                classes\QueueClass.hpp \
+                runtime\RexxActivation.hpp \
+                expression\ExpressionBaseVariable.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) instructions\UseInstruction.cpp /o $@
+
+Clause.obj: parser\Clause.cpp \
+                parser\Clause.hpp \
+                classes\ArrayClass.hpp \
+                parser\Token.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) parser\Clause.cpp /o $@
+
+InstructionParser.obj: parser\InstructionParser.cpp \
+                classes\StringClass.hpp \
+                classes\ArrayClass.hpp \
+                runtime\RexxActivation.hpp \
+                parser\SourceFile.hpp \
+                expression\ExpressionMessage.hpp \
+                instructions\RexxInstruction.hpp \
+                instructions\AssignmentInstruction.hpp \
+                instructions\CommandInstruction.hpp \
+                instructions\ExitInstruction.hpp \
+                instructions\InterpretInstruction.hpp \
+                instructions\OptionsInstruction.hpp \
+                instructions\ReplyInstruction.hpp \
+                instructions\ReturnInstruction.hpp \
+                instructions\SayInstruction.hpp \
+                instructions\AddressInstruction.hpp \
+                instructions\DropInstruction.hpp \
+                instructions\ExposeInstruction.hpp \
+                instructions\ForwardInstruction.hpp \
+                instructions\GuardInstruction.hpp \
+                instructions\LabelInstruction.hpp \
+                instructions\LeaveInstruction.hpp \
+                instructions\MessageInstruction.hpp \
+                instructions\NopInstruction.hpp \
+                instructions\NumericInstruction.hpp \
+                instructions\ProcedureInstruction.hpp \
+                instructions\QueueInstruction.hpp \
+                instructions\RaiseInstruction.hpp \
+                instructions\TraceInstruction.hpp \
+                instructions\UseInstruction.hpp \
+                instructions\CallInstruction.hpp \
+                instructions\SignalInstruction.hpp \
+                instructions\ParseInstruction.hpp \
+                instructions\ParseTarget.hpp \
+                instructions\ParseTrigger.hpp \
+                instructions\ElseInstruction.hpp \
+                instructions\EndIf.hpp \
+                instructions\IfInstruction.hpp \
+                instructions\ThenInstruction.hpp \
+                instructions\DoBlock.hpp \
+                instructions\DoInstruction.hpp \
+                instructions\EndInstruction.hpp \
+                instructions\OtherwiseInstruction.hpp \
+                instructions\SelectInstruction.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) parser\InstructionParser.cpp /o $@
+
+Scanner.obj: parser\Scanner.cpp \
+                classes\StringClass.hpp \
+                classes\ArrayClass.hpp \
+                parser\SourceFile.hpp \
+                runtime\Interpreter.hpp \
+                classes\ASCIIDBCSStrings.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) parser\Scanner.cpp /o $@
+
+SourceFile.obj: parser\SourceFile.cpp \
+                parser\SourceFile.hpp \
+                classes\StringClass.hpp \
+                classes\ArrayClass.hpp \
+                classes\DirectoryClass.hpp \
+                runtime\RexxBuffer.hpp \
+                runtime\RexxActivity.hpp \
+                runtime\RexxActivation.hpp \
+                classes\MethodClass.hpp \
+                runtime\RexxNativeCode.hpp \
+                runtime\RexxCode.hpp \
+                runtime\RexxVariableDictionary.hpp \
+                runtime\RexxSmartBuffer.hpp \
+                expression\ExpressionFunction.hpp \
+                expression\ExpressionMessage.hpp \
+                expression\ExpressionOperator.hpp \
+                expression\ExpressionBaseVariable.hpp \
+                expression\ExpressionCompoundVariable.hpp \
+                expression\ExpressionDotVariable.hpp \
+                expression\ExpressionVariable.hpp \
+                expression\IndirectVariableReference.hpp \
+                expression\ExpressionStem.hpp \
+                instructions\RexxInstruction.hpp \
+                instructions\SelectInstruction.hpp \
+                instructions\ElseInstruction.hpp \
+                instructions\EndIf.hpp \
+                instructions\DoInstruction.hpp \
+                instructions\CallInstruction.hpp \
+                platform\windows\SysInterpreter.hpp \
+                runtime\Interpreter.hpp \
+                classes\ASCIIDBCSStrings.hpp \
+                runtime\Package.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) parser\SourceFile.cpp /o $@
+
+Token.obj: parser\Token.cpp \
+                parser\Token.hpp \
+                classes\StringClass.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) parser\Token.cpp /o $@
+
+DBCSSupport.obj: platform\windows\DBCSSupport.cpp \
+                platform\windows\SysInterpreter.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) platform\windows\DBCSSupport.cpp /o $@
+
+ErrorMessages.obj: platform\windows\ErrorMessages.cpp \
+                messages\RexxMessageNumbers.h \
+                classes\StringClass.hpp \
+                platform\windows\SysInterpreter.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) platform\windows\ErrorMessages.cpp /o $@
+
+ExternalFunctions.obj: platform\windows\ExternalFunctions.cpp \
+                classes\StringClass.hpp \
+                platform\windows\SysInterpreter.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) platform\windows\ExternalFunctions.cpp /o $@
+
+FileSystem.obj: platform\windows\FileSystem.cpp \
+                classes\StringClass.hpp \
+                runtime\RexxBuffer.hpp \
+                platform\windows\SysInterpreter.hpp \
+                runtime\Interpreter.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) platform\windows\FileSystem.cpp /o $@
+
+MemorySupport.obj: platform\windows\MemorySupport.cpp \
+                runtime\RexxMemory.hpp \
+                platform\windows\SysInterpreter.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) platform\windows\MemorySupport.cpp /o $@
+
+MiscSystem.obj: platform\windows\MiscSystem.cpp \
+                classes\StringClass.hpp \
+                classes\DirectoryClass.hpp \
+                runtime\RexxActivity.hpp \
+                runtime\RexxActivation.hpp \
+                runtime\ActivityTable.hpp \
+                platform\windows\SysInterpreter.hpp \
+                runtime\Interpreter.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) platform\windows\MiscSystem.cpp /o $@
+
+RexxMain.obj: platform\windows\RexxMain.cpp \
+                platform\windows\SysInterpreter.hpp \
+                runtime\Interpreter.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) platform\windows\RexxMain.cpp /o $@
+
+RexxUtil.obj: platform\windows\RexxUtil.cpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) platform\windows\RexxUtil.cpp /o $@
+
+SysActivity.obj: platform\windows\SysActivity.cpp \
+                platform\windows\SysActivity.hpp \
+                platform\windows\PlatformTypes.h \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) platform\windows\SysActivity.cpp /o $@
+
+SysInterpreter.obj: platform\windows\SysInterpreter.cpp \
+                platform\windows\SysInterpreter.hpp \
+                runtime\Interpreter.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) platform\windows\SysInterpreter.cpp /o $@
+
+SystemCommands.obj: platform\windows\SystemCommands.cpp \
+                classes\StringClass.hpp \
+                platform\windows\SysInterpreter.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) platform\windows\SystemCommands.cpp /o $@
+
+SystemInitialization.obj: platform\windows\SystemInitialization.cpp \
+                platform\windows\SysInterpreter.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) platform\windows\SystemInitialization.cpp /o $@
+
+TimeSupport.obj: platform\windows\TimeSupport.cpp \
+                classes\IntegerClass.hpp \
+                platform\windows\SysInterpreter.hpp \
+                runtime\Interpreter.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) platform\windows\TimeSupport.cpp /o $@
+
+UseridFunction.obj: platform\windows\UseridFunction.cpp \
+                classes\StringClass.hpp \
+                platform\windows\SysInterpreter.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) platform\windows\UseridFunction.cpp /o $@
+
+ValueFunction.obj: platform\windows\ValueFunction.cpp \
+                classes\StringClass.hpp \
+                platform\windows\SysInterpreter.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) platform\windows\ValueFunction.cpp /o $@
+
+ActivityTable.obj: runtime\ActivityTable.cpp \
+                runtime\ActivityTable.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) runtime\ActivityTable.cpp /o $@
+
+DeadObject.obj: runtime\DeadObject.cpp \
+                runtime\DeadObject.hpp \
+                runtime\RexxMemory.hpp \
+                runtime\Interpreter.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) runtime\DeadObject.cpp /o $@
+
+Errors.obj: runtime\Errors.cpp \
+                classes\StringClass.hpp \
+                messages\RexxMessageNumbers.h \
+                runtime\Interpreter.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) runtime\Errors.cpp /o $@
+
+Exithandler.obj: runtime\Exithandler.cpp \
+                runtime\Exithandler.hpp \
+                platform\windows\SysInterpreter.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) runtime\ExitHandler.cpp /o $@
+
+ExternalFunctionSearch.obj: runtime\ExternalFunctionSearch.cpp \
+                classes\StringClass.hpp \
+                classes\ArrayClass.hpp \
+                classes\MethodClass.hpp \
+                parser\SourceFile.hpp \
+                runtime\RexxActivity.hpp \
+                runtime\RexxActivation.hpp \
+                runtime\FunctionActivator.hpp \
+                runtime\Interpreter.hpp \
+                runtime\Package.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) runtime\ExternalFunctionSearch.cpp /o $@
+
+FunctionActivator.obj: runtime\FunctionActivator.cpp \
+                runtime\FunctionActivator.hpp \
+                platform\windows\SysInterpreter.hpp \
+                runtime\RexxActivation.hpp \
+                runtime\RexxNativeActivation.hpp \
+                runtime\RexxActivity.hpp \
+                runtime\WeakReference.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) runtime\FunctionActivator.cpp /o $@
+
+GlobalData.obj: runtime\GlobalData.cpp \
+                classes\StringClass.hpp \
+                classes\DirectoryClass.hpp \
+                classes\TableClass.hpp \
+                classes\IntegerClass.hpp \
+                classes\ArrayClass.hpp \
+                classes\NumberStringClass.hpp \
+                classes\ListClass.hpp \
+                classes\MessageClass.hpp \
+                classes\PointerClass.hpp \
+                classes\MutableBufferClass.hpp \
+                classes\RelationClass.hpp \
+                classes\QueueClass.hpp \
+                classes\SupplierClass.hpp \
+                runtime\Interpreter.hpp \
+                runtime\RexxNativeCode.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) runtime\GlobalData.cpp /o $@
+
+GlobalNames.obj: runtime\GlobalNames.cpp \
+                runtime\GlobalNames.h \
+                runtime\GlobalNames.hpp \
+                runtime\Interpreter.hpp \
+                classes\DirectoryClass.hpp \
+                classes\ArrayClass.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) runtime\GlobalNames.cpp /o $@
+
+InternalPackage.obj: runtime\InternalPackage.cpp \
+                runtime\NativeMethods.h \
+                platform\windows\SysNativeMethods.h \
+                platform\windows\SysNativeFunctions.h \
+                expression\CommonSysUtils.h \
+                platform\windows\PlatformSysUtils.h \
+                runtime\Package.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) runtime\InternalPackage.cpp /o $@
+
+Interpreter.obj: runtime\Interpreter.cpp \
+                runtime\Interpreter.hpp \
+                classes\DirectoryClass.hpp \
+                ..\shared\windows\SysThread.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) runtime\Interpreter.cpp /o $@
+
+InterpreterInstance.obj: runtime\InterpreterInstance.cpp \
+                runtime\InterpreterInstance.hpp \
+                runtime\Exithandler.hpp \
+                runtime\Interpreter.hpp \
+                platform\windows\SysInterpreter.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) runtime\InterpreterInstance.cpp /o $@
+
+MemorySegment.obj: runtime\MemorySegment.cpp \
+                runtime\MemorySegment.hpp \
+                runtime\DeadObject.hpp \
+                runtime\Interpreter.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) runtime\MemorySegment.cpp /o $@
+
+MemoryStats.obj: runtime\MemoryStats.cpp \
+                runtime\MemoryStats.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) runtime\MemoryStats.cpp /o $@
+
+Numerics.obj: runtime\Numerics.cpp \
+                runtime\Numerics.hpp \
+                classes\NumberStringClass.hpp \
+                classes\IntegerClass.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) runtime\Numerics.cpp /o $@
+
+Package.obj: runtime\Package.cpp \
+                runtime\Package.hpp \
+                ..\shared\windows\SysLibrary.hpp \
+                runtime\Interpreter.hpp \
+                runtime\RexxNativeCode.hpp \
+                runtime\FunctionActivator.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) runtime\Package.cpp /o $@
+
+PrimitiveBehaviours.obj: runtime\PrimitiveBehaviours.cpp \
+                runtime\RexxBehaviour.hpp \
+                classes\StringClass.hpp \
+                classes\IntegerClass.hpp \
+                classes\NumberStringClass.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) runtime\PrimitiveBehaviours.cpp /o $@
+
+RexxActivation.obj: runtime\RexxActivation.cpp \
+                runtime\RexxActivation.hpp \
+                expression\ExpressionStack.hpp \
+                instructions\DoBlock.hpp \
+                runtime\RexxLocalVariables.hpp \
+                runtime\ActivationBase.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) runtime\RexxActivation.cpp /o $@
+
+RexxActivationStack.obj: runtime\RexxActivationStack.cpp \
+                runtime\RexxActivationStack.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) runtime\RexxActivationStack.cpp /o $@
+
+RexxActivity.obj: runtime\RexxActivity.cpp \
+                runtime\RexxActivity.hpp \
+                runtime\RexxThread.hpp \
+                classes\ListClass.hpp \
+                runtime\RexxInternalStack.hpp \
+                runtime\RexxActivationStack.hpp \
+                expression\ExpressionStack.hpp \
+                runtime\RexxLocalVariables.hpp \
+                runtime\Exithandler.hpp \
+                runtime\ActivityTable.hpp \
+                runtime\RexxNativeActivation.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) runtime\RexxActivity.cpp /o $@
+
+RexxBehaviour.obj: runtime\RexxBehaviour.cpp \
+                runtime\RexxBehaviour.hpp \
+                classes\StringClass.hpp \
+                classes\MethodClass.hpp \
+                classes\ArrayClass.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) runtime\RexxBehaviour.cpp /o $@
+
+RexxBuffer.obj: runtime\RexxBuffer.cpp \
+                runtime\RexxBuffer.hpp \
+                runtime\RexxActivity.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) runtime\RexxBuffer.cpp /o $@
+
+RexxCode.obj: runtime\RexxCode.cpp \
+                runtime\RexxCode.hpp \
+                classes\ArrayClass.hpp \
+                classes\DirectoryClass.hpp \
+                instructions\RexxInstruction.hpp \
+                parser\SourceFile.hpp \
+                runtime\FunctionActivator.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) runtime\RexxCode.cpp /o $@
+
+RexxCollection.obj: runtime\RexxCollection.cpp \
+                runtime\RexxCollection.hpp \
+                runtime\RexxHashTable.hpp \
+                classes\StringClass.hpp \
+                classes\ArrayClass.hpp \
+                classes\DirectoryClass.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) runtime\RexxCollection.cpp /o $@
+
+RexxCompoundElement.obj: runtime\RexxCompoundElement.cpp \
+                runtime\RexxCompoundElement.hpp \
+                runtime\RexxVariable.hpp \
+                classes\StringClass.hpp \
+                runtime\RexxActivity.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) runtime\RexxCompoundElement.cpp /o $@
+
+RexxCompoundTable.obj: runtime\RexxCompoundTable.cpp \
+                runtime\RexxCompoundTable.hpp \
+                runtime\RexxCompoundTail.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) runtime\RexxCompoundTable.cpp /o $@
+
+RexxCompoundTail.obj: runtime\RexxCompoundTail.cpp \
+                runtime\RexxCompoundTail.hpp \
+                classes\StringClass.hpp \
+                runtime\RexxBuffer.hpp \
+                runtime\Numerics.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) runtime\RexxCompoundTail.cpp /o $@
+
+RexxConstants.obj: runtime\RexxConstants.cpp \
+                runtime\RexxConstants.hpp \
+                parser\Token.hpp \
+                parser\SourceFile.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) runtime\RexxConstants.cpp /o $@
+
+RexxEnvelope.obj: runtime\RexxEnvelope.cpp \
+                runtime\RexxEnvelope.hpp \
+                runtime\RexxSmartBuffer.hpp \
+                classes\StackClass.hpp \
+                classes\StringClass.hpp \
+                runtime\RexxBuffer.hpp \
+                classes\ArrayClass.hpp \
+                classes\MethodClass.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) runtime\RexxEnvelope.cpp /o $@
+
+RexxHashTable.obj: runtime\RexxHashTable.cpp \
+                runtime\RexxHashTable.hpp \
+                classes\ArrayClass.hpp \
+                classes\SupplierClass.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) runtime\RexxHashTable.cpp /o $@
+
+RexxInternalStack.obj: runtime\RexxInternalStack.cpp \
+                runtime\RexxInternalStack.hpp \
+                classes\StringClass.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) runtime\RexxInternalStack.cpp /o $@
+
+RexxListTable.obj: runtime\RexxListTable.cpp \
+                runtime\RexxListTable.hpp \
+                classes\ObjectClass.hpp \
+                classes\ListClass.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) runtime\RexxListTable.cpp /o $@
+
+RexxLocalVariables.obj: runtime\RexxLocalVariables.cpp \
+                runtime\RexxLocalVariables.hpp \
+                runtime\RexxVariableDictionary.hpp \
+                classes\StringClass.hpp \
+                runtime\RexxActivation.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) runtime\RexxLocalVariables.cpp /o $@
+
+RexxMemory.obj: runtime\RexxMemory.cpp \
+                runtime\RexxMemory.hpp \
+                classes\TableClass.hpp \
+                classes\StackClass.hpp \
+                ..\shared\windows\SysSemaphore.hpp \
+                runtime\RootImage.hpp \
+                classes\StringClass.hpp \
+                classes\MutableBufferClass.hpp \
+                classes\DirectoryClass.hpp \
+                runtime\RexxNativeCode.hpp \
+                runtime\RexxActivity.hpp \
+                classes\IntegerClass.hpp \
+                classes\ArrayClass.hpp \
+                classes\TableClass.hpp \
+                runtime\Interpreter.hpp \
+                runtime\WeakReference.hpp \
+                platform\windows\SysInterpreter.hpp \
+                ..\shared\windows\SysFileSystem.hpp \
+                classes\PointerClass.hpp \
+                classes\RelationClass.hpp \
+                classes\QueueClass.hpp \
+                classes\MessageClass.hpp \
+                classes\SupplierClass.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) runtime\RexxMemory.cpp /o $@
+
+RexxNativeActivation.obj: runtime\RexxNativeActivation.cpp \
+                runtime\RexxNativeActivation.hpp \
+                runtime\ActivationBase.hpp \
+                runtime\RexxActivity.hpp \
+                classes\MethodClass.hpp \
+                runtime\RexxActivity.hpp \
+                runtime\ActivityState.hpp \
+                runtime\ActivationApiContexts.hpp \
+                classes\StringClass.hpp \
+                classes\ArrayClass.hpp \
+                classes\DirectoryClass.hpp \
+                classes\MethodClass.hpp \
+                runtime\RexxNativeCode.hpp \
+                runtime\RexxActivation.hpp \
+                runtime\RexxBuffer.hpp \
+                classes\MessageClass.hpp \
+                runtime\RexxVariableDictionary.hpp \
+                parser\SourceFile.hpp \
+                runtime\RexxCode.hpp \
+                instructions\RexxInstruction.hpp \
+                expression\ExpressionBaseVariable.hpp \
+                classes\PointerClass.hpp \
+                runtime\Interpreter.hpp \
+                platform\windows\SysInterpreter.hpp \
+                classes\ASCIIDBCSStrings.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) runtime\RexxNativeActivation.cpp /o $@
+
+RexxNativeCode.obj: runtime\RexxNativeCode.cpp \
+                runtime\RexxNativeCode.hpp \
+                runtime\RexxNativeActivation.hpp \
+                classes\StringClass.hpp \
+                classes\DirectoryClass.hpp \
+                runtime\Package.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) runtime\RexxNativeCode.cpp /o $@
+
+RexxSmartBuffer.obj: runtime\RexxSmartBuffer.cpp \
+                runtime\RexxSmartBuffer.hpp \
+                runtime\RexxBuffer.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) runtime\RexxSmartBuffer.cpp /o $@
+
+RexxThread.obj: runtime\RexxThread.cpp \
+                runtime\RexxThread.hpp \
+                ..\shared\windows\SysThread.hpp \
+                runtime\RexxActivity.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) runtime\RexxThread.cpp /o $@
+
+RexxVariable.obj: runtime\RexxVariable.cpp \
+                runtime\RexxVariable.hpp \
+                runtime\RexxActivity.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) runtime\RexxVariable.cpp /o $@
+
+RexxVariableDictionary.obj: runtime\RexxVariableDictionary.cpp \
+                runtime\RexxVariableDictionary.hpp \
+                runtime\RexxVariable.hpp \
+                runtime\RexxCompoundTail.hpp \
+                classes\StemClass.hpp \
+                classes\StringClass.hpp \
+                classes\DirectoryClass.hpp \
+                runtime\RexxNativeActivation.hpp \
+                runtime\RexxActivity.hpp \
+                classes\ArrayClass.hpp \
+                classes\ListClass.hpp \
+                runtime\RexxVariableDictionary.hpp \
+                expression\ExpressionStem.hpp \
+                expression\ExpressionVariable.hpp \
+                expression\ExpressionCompoundVariable.hpp \
+                classes\SupplierClass.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) runtime\RexxVariableDictionary.cpp /o $@
+
+RootImage.obj: runtime\RootImage.cpp \
+                runtime\RootImage.hpp \
+                classes\DirectoryClass.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) runtime\RootImage.cpp /o $@
+
+Setup.obj: runtime\Setup.cpp \
+                classes\TableClass.hpp \
+                runtime\RexxMemory.hpp \
+                runtime\RexxBehaviour.hpp \
+                classes\ClassClass.hpp \
+                classes\NumberStringClass.hpp \
+                classes\IntegerClass.hpp \
+                classes\StringClass.hpp \
+                classes\MutableBufferClass.hpp \
+                classes\ArrayClass.hpp \
+                classes\DirectoryClass.hpp \
+                classes\RelationClass.hpp \
+                classes\ListClass.hpp \
+                classes\QueueClass.hpp \
+                classes\SupplierClass.hpp \
+                classes\MethodClass.hpp \
+                runtime\RexxEnvelope.hpp \
+                classes\MessageClass.hpp \
+                classes\StemClass.hpp \
+                runtime\RexxNativeCode.hpp \
+                runtime\RexxActivity.hpp \
+                runtime\RexxNativeActivation.hpp \
+                runtime\RexxVariableDictionary.hpp \
+                expression\ExpressionVariable.hpp \
+                runtime\RexxLocalVariables.hpp \
+                classes\PointerClass.hpp \
+                platform\windows\SysInterpreter.hpp \
+                runtime\Interpreter.hpp \
+                runtime\RexxMemory.hpp \
+                runtime\Package.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) runtime\Setup.cpp /o $@
+
+TranslatedImage.obj: runtime\TranslatedImage.cpp \
+                classes\StringClass.hpp \
+                runtime\RexxBuffer.hpp \
+                runtime\RexxSmartBuffer.hpp \
+                classes\MethodClass.hpp \
+                runtime\RexxCode.hpp \
+                runtime\RexxActivity.hpp \
+                parser\SourceFile.hpp \
+                platform\windows\SysInterpreter.hpp \
+                runtime\Interpreter.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) runtime\TranslatedImage.cpp /o $@
+
+Utilities.obj: runtime\Utilities.cpp \
+                classes\StringClass.hpp \
+                runtime\RexxActivity.hpp \
+                classes\ArrayClass.hpp \
+                runtime\RexxNativeActivation.hpp \
+                runtime\Interpreter.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) runtime\Utilities.cpp /o $@
+
+Version.obj: runtime\Version.cpp \
+                classes\StringClass.hpp \
+                runtime\Interpreter.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) runtime\Version.cpp /o $@
+
+VirtualFunctionTable.obj: runtime\VirtualFunctionTable.cpp \
+                classes\ObjectClass.hpp \
+                classes\ClassClass.hpp \
+                classes\ArrayClass.hpp \
+                classes\DirectoryClass.hpp \
+                classes\IntegerClass.hpp \
+                classes\ListClass.hpp \
+                classes\MessageClass.hpp \
+                classes\MethodClass.hpp \
+                classes\NumberStringClass.hpp \
+                classes\QueueClass.hpp \
+                classes\StemClass.hpp \
+                classes\StringClass.hpp \
+                classes\SupplierClass.hpp \
+                classes\TableClass.hpp \
+                classes\RelationClass.hpp \
+                classes\MutableBufferClass.hpp \
+                classes\PointerClass.hpp \
+                runtime\RexxActivity.hpp \
+                runtime\RexxBehaviour.hpp \
+                runtime\RexxBuffer.hpp \
+                runtime\RexxHashTable.hpp \
+                runtime\RexxListTable.hpp \
+                runtime\RexxCode.hpp \
+                runtime\RexxNativeCode.hpp \
+                runtime\Package.hpp \
+                runtime\RexxSmartBuffer.hpp \
+                classes\StackClass.hpp \
+                runtime\RexxVariable.hpp \
+                runtime\RexxVariableDictionary.hpp \
+                parser\Clause.hpp \
+                parser\SourceFile.hpp \
+                parser\Token.hpp \
+                instructions\RexxInstruction.hpp \
+                instructions\AddressInstruction.hpp \
+                instructions\AssignmentInstruction.hpp \
+                instructions\CallInstruction.hpp \
+                instructions\CommandInstruction.hpp \
+                expression\ExpressionCompoundVariable.hpp \
+                instructions\DoInstruction.hpp \
+                expression\ExpressionDotVariable.hpp \
+                instructions\DropInstruction.hpp \
+                instructions\ElseInstruction.hpp \
+                instructions\EndInstruction.hpp \
+                instructions\EndIf.hpp \
+                instructions\ExitInstruction.hpp \
+                instructions\ExposeInstruction.hpp \
+                instructions\ForwardInstruction.hpp \
+                expression\ExpressionFunction.hpp \
+                instructions\GuardInstruction.hpp \
+                instructions\IfInstruction.hpp \
+                instructions\InterpretInstruction.hpp \
+                instructions\LabelInstruction.hpp \
+                instructions\LeaveInstruction.hpp \
+                instructions\MessageInstruction.hpp \
+                expression\ExpressionMessage.hpp \
+                instructions\NopInstruction.hpp \
+                instructions\NumericInstruction.hpp \
+                instructions\OptionsInstruction.hpp \
+                instructions\OtherwiseInstruction.hpp \
+                instructions\ParseInstruction.hpp \
+                instructions\ProcedureInstruction.hpp \
+                instructions\QueueInstruction.hpp \
+                instructions\RaiseInstruction.hpp \
+                instructions\ReplyInstruction.hpp \
+                instructions\ReturnInstruction.hpp \
+                instructions\SayInstruction.hpp \
+                instructions\SelectInstruction.hpp \
+                instructions\SignalInstruction.hpp \
+                expression\ExpressionStem.hpp \
+                instructions\ThenInstruction.hpp \
+                instructions\ParseTrigger.hpp \
+                instructions\UseInstruction.hpp \
+                expression\ExpressionVariable.hpp \
+                expression\IndirectVariableReference.hpp \
+                runtime\RexxCompoundElement.hpp \
+                expression\ExpressionOperator.hpp \
+                runtime\RootImage.hpp \
+                runtime\WeakReference.hpp \
+                runtime\FunctionActivator.hpp \
+                instructions\DoBlock.hpp \
+                runtime\RexxMemory.hpp \
+                runtime\RexxActivation.hpp \
+                runtime\RexxNativeActivation.hpp \
+                runtime\RexxActivationStack.hpp \
+                runtime\RexxEnvelope.hpp \
+                runtime\RexxInternalStack.hpp \
+                runtime\InterpreterInstance.hpp \
+                runtime\Interpreter.hpp \
+                instructions\ParseTarget.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) runtime\VirtualFunctionTable.cpp /o $@
+
+WeakReference.obj: runtime\WeakReference.cpp \
+                runtime\WeakReference.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) runtime\WeakReference.cpp /o $@
+
+StreamCommandParser.obj: streamLibrary\StreamCommandParser.cpp \
+                streamLibrary\StreamCommandParser.h \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) streamLibrary\StreamCommandParser.cpp /o $@
+
+StreamNative.obj: streamLibrary\StreamNative.cpp \
+                streamLibrary\StreamNative.hpp \
+                ..\shared\windows\SysFileSystem.hpp \
+                ..\shared\windows\SysFile.hpp \
+                streamLibrary\StreamCommandParser.h \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) streamLibrary\StreamNative.cpp /o $@
+
+platform\windows\winmsgtb.rc: platform\windows\WinMessageResource.xsl messages\rexxmsg.xml
+    @ECHO .
+    @ECHO Generating $(@)
+    xalan -o $(@) messages\rexxmsg.xml $(KWINDOWS)\WinMessageResource.xsl
+
+runtime\PrimitiveBehaviourNames.h: runtime\PrimitiveBehaviourNames.xsl runtime\PrimitiveClasses.xml
+    @ECHO .
+    @ECHO Generating $(@)
+    xalan -o $(@) runtime\PrimitiveClasses.xml runtime\PrimitiveBehaviourNames.xsl
+
+runtime\PrimitiveBehaviours.cpp: runtime\PrimitiveBehaviours.xsl runtime\PrimitiveClasses.xml
+    @ECHO .
+    @ECHO Generating $(@)
+    xalan -o $(@) runtime\PrimitiveClasses.xml runtime\PrimitiveBehaviours.xsl
+
+runtime\VirtualFunctionTable.cpp: runtime\VirtualFunctionTable.xsl runtime\PrimitiveClasses.xml
+    @ECHO .
+    @ECHO Generating $(@)
+    xalan -o $(@) runtime\PrimitiveClasses.xml runtime\VirtualFunctionTable.xsl
+
+runtime\ClassTypeCodes.h: runtime\ClassTypeIds.xsl runtime\PrimitiveClasses.xml
+    @ECHO .
+    @ECHO Generating $(@)
+    xalan -o $(@) runtime\PrimitiveClasses.xml runtime\ClassTypeIds.xsl
+
+messages\RexxErrorCodes.h: messages\RexxErrorCodes.xsl messages\rexxmsg.xml
+    @ECHO .
+    @ECHO Generating $(@)
+    xalan -o $(@) messages\rexxmsg.xml messages\RexxErrorCodes.xsl
+
+..\api\oorexxerrors.h: messages\ApiErrorCodes.xsl messages\rexxmsg.xml
+    @ECHO .
+    @ECHO Generating $(@)
+    xalan -o $(@) messages\rexxmsg.xml messages\ApiErrorCodes.xsl
+
+messages\RexxMessageNumbers.h: messages\RexxMessageNumbers.xsl messages\rexxmsg.xml
+    @ECHO .
+    @ECHO Generating $(@)
+    xalan -o $(@) messages\rexxmsg.xml messages\RexxMessageNumbers.xsl
+
+messages\RexxMessageTable.h: messages\RexxMessageTable.xsl messages\rexxmsg.xml
+    @ECHO .
+    @ECHO Generating $(@)
+    xalan -o $(@) messages\rexxmsg.xml messages\RexxMessageTable.xsl
+
+
+#################### clean #########################
+
+clean:
+	del $(CLEAN)
+

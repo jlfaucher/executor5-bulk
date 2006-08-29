@@ -1,0 +1,476 @@
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
+/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+/******************************************************************************/
+/* REXX Macros                                                  oryxb.orx     */
+/*                                                                            */
+/* Create the Rexx base (Object/Class) classes.                               */
+/*                                                                            */
+/******************************************************************************/
+
+use arg kernel_methods
+
+say ('creating the system specific methods ...')
+                                       /* name the common objects           */
+.environment~objectname = "The environment"
+.kernel~objectname = "The kernel directory"
+.nil~objectname = "The NIL object"
+
+say ('Adding setlike methods to table, relation, and directory')
+set_methods = .table~new               /* get a table directory             */
+                                       /* add the single item methods       */
+set_methods~put(.methods~single_union,        'UNION')
+set_methods~put(.methods~single_subset,       'SUBSET')
+set_methods~put(.methods~single_intersection, 'INTERSECTION')
+set_methods~put(.methods~single_difference,   'DIFFERENCE')
+set_methods~put(.methods~single_xor,          'XOR')
+.table~!define_methods(set_methods)    /* add to both table and directory   */
+.directory~!define_methods(set_methods)
+
+                                       /* now repeat with the many item ones*/
+set_methods~put(.methods~many_union,        'UNION')
+set_methods~put(.methods~many_subset,       'SUBSET')
+set_methods~put(.methods~many_intersection, 'INTERSECTION')
+set_methods~put(.methods~many_difference,   'DIFFERENCE')
+set_methods~put(.methods~many_xor,          'XOR')
+.relation~!define_methods(set_methods) /* add to relation                   */
+
+                                       /* make sure the classes don't       */
+.table~!rexxdefined                    /* get changed by users              */
+.directory~!rexxdefined
+.relation~!rexxdefined
+
+/* Call the system dependant routine to define addition methods */
+systemMethods = 'SystemMethods.orx'()           /* case sensitive           */
+
+/* load the system objects */
+call 'SystemObjects.orx'                           /* all lower case for Unix  @MAE002M */
+
+call 'PlatformObjects.orx'                   -- now load platform-specific builtin classes
+
+say ('Base objects created')
+
+exit
+
+/* ********************************************************************************************* */
+/* ********************************************************************************************* */
+/* *** Start of unattached METHOD definitions for the various enhanced objects created above *** */
+/* ********************************************************************************************* */
+/* ********************************************************************************************* */
+
+/*============================================================================*/
+/*    S I N G L E I T E M   M E T H O D S      (for Directory, and Table)     */
+/*============================================================================*/
+
+/*****************************************/
+/* DIFFERENCE method                     */
+/*****************************************/
+::METHOD single_difference             /* take the difference of collections*/
+use arg other                          /* get the companion object          */
+
+signal on syntax /*@CHM004M*/          /* trap unknown method calls         */
+if (arg() < 1)                         /* no index given?                   */
+  then raise syntax 93.901 array (1)   /* raise an error                    */
+if (arg() > 1)                         /* too many arguments?               */
+  then raise syntax 93.902 array (1)   /* raise an error                    */
+
+if \other~hasmethod("hasindex")        /* is other a collection?            */
+  then raise syntax 93.948 array(1, "Collection") /* no, complain about it  */
+
+new = self~copy                        /* make a new collection             */
+do index over other                    /* loop over the other collection    */
+  new~remove(index)                    /* "subtract" this item              */
+end
+
+return new                             /* return the difference collection  */
+
+syntax:                                /* unknown method sent               */
+  raise propagate                      /* just send on to the caller        */
+
+/*****************************************/
+/* XOR        method                     */
+/*****************************************/
+::METHOD single_xor                    /* take the exclusive or of a set    */
+use arg other                          /* get the companion object          */
+
+signal on syntax /*@CHM004M*/          /* trap unknown method calls         */
+if (arg() < 1)                         /* no index given?                   */
+  then raise syntax 93.901 array (1)   /* raise an error                    */
+if (arg() > 1)                         /* too many arguments?               */
+  then raise syntax 93.902 array (1)   /* raise an error                    */
+if \other~hasmethod("hasindex")        /* is other a collection?            */
+  then raise syntax 93.948 array(1, "Collection") /* no, complain about it  */
+
+new = self~copy
+if other~hasmethod("union") then       /* is other non-primitive collection?*/
+do index over other                    /* do for directory, table, relation */
+  if self~hasindex(index) then         /* in this collection?               */
+    new~remove(index)                  /* remove from the reference set     */
+  else
+    new~put(other[index], index)       /* add non-located                   */
+end
+else do index over other               /* do it for array, queue, and list  */
+  if self~hasindex(index) then         /* in this collection?               */
+    new~remove(index)                  /* remove from the reference set     */
+  else
+    new~put(index, index)              /* add non-located                   */
+end
+
+return new                             /* return the XOR collection         */
+
+syntax:                                /* unknown method sent               */
+  raise propagate                      /* just send on to the caller        */
+
+/*****************************************/
+/* INTERSECTION  method                  */
+/*****************************************/
+::METHOD single_intersection           /* take the intersection of sets     */
+use arg other                          /* get the other collection          */
+
+signal on syntax /*@CHM004M*/          /* trap unknown method calls         */
+if (arg() < 1)                         /* no index given?                   */
+  then raise syntax 93.901 array (1)   /* raise an error                    */
+if (arg() > 1)                         /* too many arguments?               */
+  then raise syntax 93.902 array (1)   /* raise an error                    */
+
+if \other~hasmethod("hasindex")        /* is other a collection?            */
+  then raise syntax 93.948 array(1, "Collection") /* no, complain about it  */
+
+new = self~class~new                   /* create a new collection           */
+do index over other                    /* loop over the other collection    */
+  if self~hasindex(index) then         /* in this collection?               */
+    new~put(self[index], index)        /* add to the intersection collection*/
+end
+
+return new                             /* return the result collection      */
+
+syntax:                                /* unknown method sent               */
+  raise propagate                      /* just send on to the caller        */
+
+/*****************************************/
+/* UNION         method                  */
+/*****************************************/
+::METHOD single_union                  /* take the union of sets            */
+use arg other                          /* get the other collection          */
+
+signal on syntax /*@CHM004M*/          /* trap unknown method calls         */
+if (arg() < 1)                         /* no index given?                   */
+  then raise syntax 93.901 array (1)   /* raise an error                    */
+if (arg() > 1)                         /* too many arguments?               */
+  then raise syntax 93.902 array (1)   /* raise an error                    */
+
+if \other~hasmethod("hasindex")        /* is other a collection?            */
+  then raise syntax 93.948 array(1, "Collection") /* no, complain about it  */
+
+new = self~copy                        /* copy the collection               */
+if other~hasmethod("union") then       /* is other non-primitive collection?*/
+do index over other                    /* do for directory, table, relation */
+  if \new~hasindex(index) then         /* not already there?                */
+    new~put(other[index], index)       /* add to the target collection      */
+end
+else do index over other               /* do it for array, queue, and list  */
+  if \new~hasindex(index) then         /* not already there?                */
+    new~put(index, index)              /* add to the target collection      */
+end
+
+return new                             /* return the target collection      */
+
+syntax:                                /* unknown method sent               */
+  raise propagate                      /* just send on to the caller        */
+
+/*****************************************/
+/* SUBSET        method                  */
+/*****************************************/
+::METHOD single_subset                 /* do we have a subset?              */
+use arg other                          /* get the other collection          */
+
+signal on syntax /*@CHM004M*/          /* trap unknown method calls         */
+if (arg() < 1)                         /* no index given?                   */
+  then raise syntax 93.901 array (1)   /* raise an error                    */
+if (arg() > 1)                         /* too many arguments?               */
+  then raise syntax 93.902 array (1)   /* raise an error                    */
+
+if \other~hasmethod("hasindex")        /* is other a collection?            */
+  then raise syntax 93.948 array(1, "Collection") /* no, complain about it  */
+
+if other~hasmethod("union") then       /* is other non-primitive collection?*/
+do index over self                     /* do for directory, table, relation */
+  if \other~hasindex(index) then       /* not in the other collection?      */
+    return 0                           /* return false (no subset)          */
+end
+else do                                /* do it for array, queue, and list  */
+  object = self~copy                   /* make a copy of this object        */
+  do index over other                  /* loop over the other collection    */
+    object~remove(index)               /* remove from the target collection */
+  end
+  return 0=object~items                /* if nothing left -> proper subset  */
+end
+
+return 1                               /* collection is a proper subset     */
+
+syntax:                                /* unknown method sent               */
+  raise propagate                      /* just send on to the caller        */
+
+/*============================================================================*/
+/*    M A N Y I T E M       M I X I N         (for Relation)                  */
+/*============================================================================*/
+
+/*****************************************/
+/* UNION         method                  */
+/*****************************************/
+::METHOD many_union
+use arg other                          /* get the other collection          */
+
+signal on syntax /*@CHM004M*/          /* trap unknown method requests      */
+if (arg() < 1)                         /* no index given?                   */
+  then raise syntax 93.901 array (1)   /* raise an error                    */
+if (arg() > 1)                         /* too many arguments?               */
+  then raise syntax 93.902 array (1)   /* raise an error                    */
+
+if \other~hasmethod("hasindex")        /* is other a collection?            */
+  then raise syntax 93.948 array(1, "Collection") /* no, complain about it  */
+
+new = self~copy                        /* copy ourself                      */
+if other~hasmethod("union") then       /* is other non-primitive collection?*/
+do                                     /* do for directory, table, relation */
+  supplier = other~supplier            /* get a supplier                    */
+  do while supplier~available          /* loop over the other collection    */
+                                       /* add to the target collection      */
+    new~put(supplier~item, supplier~index)
+    supplier~next                      /* step to the next item             */
+  end
+end
+else do index over other               /* do it for array, queue, and list  */
+  new~put(index, index)                /* add to the target collection      */
+end
+return new                             /* return the union collection       */
+
+syntax:                                /* unknown method sent               */
+  raise propagate                      /* just send on to the caller        */
+
+/*****************************************/
+/* DIFFERENCE    method                  */
+/*****************************************/
+::METHOD many_difference               /* take the difference of collections*/
+use arg other                          /* get the companion object          */
+
+signal on syntax /*@CHM004M*/          /* trap unknown method requests      */
+if (arg() < 1)                         /* no index given?                   */
+  then raise syntax 93.901 array (1)   /* raise an error                    */
+if (arg() > 1)                         /* too many arguments?               */
+  then raise syntax 93.902 array (1)   /* raise an error                    */
+
+if \other~hasmethod("hasindex")        /* is other a collection?            */
+  then raise syntax 93.948 array(1, "Collection") /* no, complain about it  */
+
+new = self~copy                        /* make a new set                    */
+if other~hasmethod("union") then       /* is other non-primitive collection?*/
+do                                     /* do for directory, table, relation */
+  supplier = other~supplier            /* get an object supplier            */
+  do while supplier~available          /* loop over the other collection    */
+                                       /* remove from the target collection */
+    new~removeitem(supplier~item, supplier~index)
+    supplier~next                      /* step to the next item             */
+  end
+end
+else do index over other               /* do it for array, queue, and list  */
+  new~removeitem(index, index)         /* remove from the target collection */
+end
+return new                             /* return the difference collection  */
+
+syntax:                                /* unknown method sent               */
+  raise propagate                      /* just send on to the caller        */
+
+/*****************************************/
+/* XOR           method                  */
+/*****************************************/
+::METHOD many_xor                      /* take the exclusive or of a set    */
+use arg other                          /* get the companion object          */
+
+signal on syntax /*@CHM004M*/          /* trap unknown method calls         */
+if (arg() < 1)                         /* no index given?                   */
+  then raise syntax 93.901 array (1)   /* raise an error                    */
+if (arg() > 1)                         /* too many arguments?               */
+  then raise syntax 93.902 array (1)   /* raise an error                    */
+
+if \other~hasmethod("hasindex")        /* is other a collection?            */
+  then raise syntax 93.948 array(1, "Collection") /* no, complain about it  */
+
+new = self~copy
+catcher = self~class~new               /* create a new empty one            */
+if other~hasmethod("union") then       /* is other non-primitive collection?*/
+do                                     /* do for directory, table, relation */
+  supplier = other~supplier            /* get an object supplier            */
+  do while supplier~available          /* loop over the other collection    */
+    index = supplier~index             /* get the index                     */
+    value = supplier~item              /* and the value                     */
+    if new~hasitem(value, index) then  /* in the reference collection?      */
+      new~removeitem(value, index)     /* remove from the reference set     */
+    else
+      catcher~put(value, index)        /* add non-located to the catcher    */
+    supplier~next                      /* step to the next item             */
+  end
+end
+else do index over other               /* do it for array, queue, and list  */
+  if new~hasitem(index, index) then    /* in the other collection?          */
+    new~removeitem(index, index)       /* remove from the reference set     */
+  else
+    catcher~put(index, index)          /* add non-located to the catcher    */
+end
+return new~union(catcher)              /* now remerge these collections     */
+
+syntax:                                /* unknown method sent               */
+  raise propagate                      /* just send on to the caller        */
+
+/*****************************************/
+/* INTERSECTION  method                  */
+/*****************************************/
+::METHOD many_intersection             /* take the intersection of sets     */
+use arg other                          /* get the other collection          */
+
+signal on syntax /*@CHM004M*/          /* trap unknown method calls         */
+if (arg() < 1)                         /* no index given?                   */
+  then raise syntax 93.901 array (1)   /* raise an error                    */
+if (arg() > 1)                         /* too many arguments?               */
+  then raise syntax 93.902 array (1)   /* raise an error                    */
+
+if \other~hasmethod("hasindex")        /* is other a collection?            */
+  then raise syntax 93.948 array(1, "Collection") /* no, complain about it  */
+
+new = self~class~new                   /* start with a new collection       */
+object = self~copy                     /* copy the target collection        */
+if other~hasmethod("union") then       /* is other non-primitive collection?*/
+do                                     /* do for directory, table, relation */
+  supplier = other~supplier            /* get an other supplier             */
+  do while supplier~available          /* loop over the other collection    */
+    index = supplier~index             /* get the index                     */
+    value = supplier~item              /* and the value                     */
+                                       /* in the reference collection?      */
+    if object~hasitem(value, index) then do
+      new~put(value, index)            /* add to the new collection         */
+      object~removeitem(value, index)  /* remove from the reference set     */
+    end
+    supplier~next                      /* step to the next item             */
+  end
+end
+else do index over other               /* do it for array, queue, and list  */
+                                       /* in the reference collection?      */
+  if object~hasitem(index, index) then do
+    new~put(index, index)              /* add to the new collection         */
+    object~removeitem(index, index)    /* remove from the reference set     */
+  end
+end
+return new                             /* return the new collection         */
+
+syntax:                                /* unknown method sent               */
+  raise propagate                      /* just send on to the caller        */
+
+/*****************************************/
+/* SUBSET        method                  */
+/*****************************************/
+::METHOD many_subset                   /* do we have a subset?              */
+use arg other                          /* get the other collection          */
+
+signal on syntax /*@CHM004M*/          /* trap unknown method calls         */
+if (arg() < 1)                         /* no index given?                   */
+  then raise syntax 93.901 array (1)   /* raise an error                    */
+if (arg() > 1)                         /* too many arguments?               */
+  then raise syntax 93.902 array (1)   /* raise an error                    */
+if \other~hasmethod("hasindex")        /* is other a collection?            */
+  then raise syntax 93.948 array(1, "Collection") /* no, complain about it  */
+
+object = self~copy                     /* make a copy of this object        */
+if other~hasmethod("union") then       /* is other non-primitive collection?*/
+do                                     /* do for directory, table, relation */
+  supplier = other~supplier            /* get an other supplier             */
+  do while supplier~available          /* loop over the other collection    */
+                                       /* remove from target collection     */
+    object~removeitem(supplier~item, supplier~index)
+    supplier~next                      /* step to the next item             */
+  end
+end
+else do index over other               /* do it for array, queue, and list  */
+  object~removeitem(index, index)      /* remove from the target collection */
+end
+return 0=object~items                  /* if nothing left -> proper subset  */
+
+syntax:                                /* unknown method sent               */
+  raise propagate                      /* just send on to the caller        */
+
+
+/* **************************************** */
+/*    F U N C T I O N    M E T H O D S      */
+/* **************************************** */
+
+::method function_rxqueue
+  use arg keyword, queue_name
+  parse upper var keyword keyword
+  signal on syntax
+  if arg() > 2 then
+     raise syntax 40.004 array ('RXQUEUE', 2)
+
+  if substr(keyword,1,1) = 'G' then
+    if arg() > 1 then
+      raise syntax 40.004 array ('RXQUEUE', 1)
+    else
+      return .stdque~get
+
+  if substr(keyword,1,1) = 'S' then do
+    queue_name = !queueexit(queue_name)/* give the exit a pass     */
+    if symbol(queue_name) = 'BAD' then
+      raise syntax 40.026 array ('RXQUEUE', 2, queue_name)
+    return .stdque~set(queue_name)
+  end
+
+  if substr(keyword,1,1) = 'C' then do
+    if symbol(queue_name) = 'BAD' then
+      raise syntax 40.026 array ('RXQUEUE', 2, queue_name)
+    if (Arg(2,'o') = 1) then
+      queue_name = 'S00001Q0000000001'
+    return .stdque~create(queue_name)
+  end
+
+  if substr(keyword,1,1) = 'D' then do
+    if symbol(queue_name) = 'BAD' then
+      raise syntax 40.026 array ('RXQUEUE', 2, queue_name)
+    return .stdque~delete(queue_name)
+  end
+  raise syntax 40.904 array ('RXQUEUE', 1, 'CDGS', keyword)
+  return
+
+syntax: raise propagate
+

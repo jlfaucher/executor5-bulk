@@ -1,0 +1,1579 @@
+<?xml version="1.0" standalone="no">
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook V4.2//EN"
+[
+<!ENTITY legalstuff SYSTEM "../shared/legalstuff.sgml">
+<!ENTITY gethelp    SYSTEM "../shared/gethelp.sgml">
+<!ENTITY notices    SYSTEM "../shared/notices.sgml">
+<!ENTITY cpl        SYSTEM "../shared/CPLv1.0.sgml">
+<!ENTITY genindex   SYSTEM "genindex.sgml">
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: FTP Class Library SGML File
+    #
+    # Copyright (c) 2005-2006, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    # Author(s):
+    #      W. David Ashley <dashley@us.ibm.com>
+    #
+    #########################################################################
+-->
+<book>
+<bookinfo>
+<title>Open Object Rexx</title>
+<subtitle>RxFtp Class Library Reference</subtitle>
+
+&legalstuff;
+
+</bookinfo>
+
+<preface id="preface"><title>About This Book</title>
+<para>This book describes the Open Object Rexx RxFtp Class Library and its
+methods.</para>
+<para>This book is intended for people who plan to develop applications using
+Rexx and FTP. Its users range from the novice, who might have experience in some programming
+language but no Rexx or FTP experience, to the experienced application developer,
+who might have had some experience with Object Rexx and FTP.</para>
+<para>This book is a reference rather than a tutorial. It assumes you are already
+familiar with object-oriented programming concepts.</para>
+<para>Descriptions include the use and syntax of the language and explain how
+the language processor &quot;interprets&quot; the language as a program is running.</para>
+
+<section id="relinf"><title>Related Information</title>
+<para>See also:
+<citetitle pubwork="book">Open Object Rexx: Reference</citetitle></para>
+</section>
+
+<section id="readsy"><title>How to Read the Syntax Diagrams</title>
+<para>Throughout this book, syntax is described using the structure defined below. </para>
+<itemizedlist>
+<listitem><para>Read the syntax diagrams from left to right, from top to bottom, following
+the path of the line. </para>
+<para>The <computeroutput>&gt;&gt;---</computeroutput> symbol
+indicates the beginning of a statement.</para>
+<para>The <computeroutput>---&gt;</computeroutput> symbol indicates that the statement syntax is continued on the
+next line.</para>
+<para>The <computeroutput>&gt;---</computeroutput> symbol indicates
+that a statement is continued from the previous line.</para>
+<para>The <computeroutput>---&gt;&lt;</computeroutput> symbol indicates the end of a statement.</para>
+<para>Diagrams of syntactical units other than complete statements start
+with the  <computeroutput>&gt;---</computeroutput> symbol and end with
+the  <computeroutput>---&gt;</computeroutput> symbol.</para></listitem>
+<listitem><para>Required items appear on the horizontal line (the main path).
+
+<programlisting>
+<![CDATA[
+>>-STATEMENT--required_item------------------------------------><
+]]>
+</programlisting>
+
+</para></listitem>
+<listitem><para>Optional items appear below the main path. </para>
+
+<programlisting>
+<![CDATA[
+>>-STATEMENT--+---------------+--------------------------------><
+              +-optional_item-+
+]]>
+</programlisting>
+
+</listitem>
+<listitem><para>If you can choose from two or more items, they appear vertically, in a
+stack. If you must choose one of the items, one
+item of the stack appears on the main path.</para>
+
+<programlisting>
+<![CDATA[
+>>-STATEMENT--+-required_choice1-+-----------------------------><
+              +-required_choice2-+
+]]>
+</programlisting>
+
+</listitem>
+<listitem><para>If choosing one of the items is optional, the entire stack appears below
+the main path.</para>
+
+<programlisting>
+<![CDATA[
+>>-STATEMENT--+------------------+-----------------------------><
+              +-optional_choice1-+
+              +-optional_choice2-+
+]]>
+</programlisting>
+
+</listitem>
+<listitem><para>If one of the items is the default, it appears above the main path and
+the remaining choices are shown below. </para>
+
+<programlisting>
+<![CDATA[
+              +-default_choice--+
+>>-STATEMENT--+-----------------+------------------------------><
+              +-optional_choice-+
+              +-optional_choice-+
+]]>
+</programlisting>
+
+</listitem>
+<listitem><para>An arrow returning to the left above the main line indicates an item that
+can be repeated.</para>
+
+<programlisting>
+<![CDATA[
+              +-----------------+
+              V                 |
+>>-STATEMENT----repeatable_item-+------------------------------><
+]]>
+</programlisting>
+
+<para>A repeat arrow above a stack indicates that you can repeat the
+items in the stack.</para></listitem>
+<listitem><para>A set of vertical bars around an item indicates that the item is a fragment, a part of the syntax diagram that appears in
+greater detail below the main diagram.</para>
+
+<programlisting>
+<![CDATA[
+>>-STATEMENT--| fragment |-------------------------------------><
+]]>
+</programlisting>
+
+<para><emphasis role="italic">fragment:</emphasis></para>
+
+<programlisting>
+|--expansion_provides_greater_detail----------------------------|
+</programlisting>
+</listitem>
+<listitem><para>Keywords appear in uppercase (for example,
+<computeroutput>PARM1</computeroutput>). They must
+be spelled exactly as shown but you can type them in upper, lower, or mixed
+case. Variables appear in all lowercase letters (for example,
+<computeroutput>parmx</computeroutput>). They represent user-supplied names or values.</para></listitem>
+<listitem><para>If punctuation marks, parentheses, arithmetic operators, or such symbols
+are shown, you must enter them as part of the syntax.</para></listitem></itemizedlist>
+
+<para>The following example shows how the syntax is described:</para>
+
+<programlisting>
+<![CDATA[
+         +-,------+
+         V        |
+>>-MAX(----number-+--)-----------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section><title>A Note About Program Examples in this Document</title>
+<para>The program examples in this document are rendered in a mono-spaced
+font that is not completely compatible for cut-and-paste functionality.
+Pasteing text into an editor could result in some characters outside of
+the standard ASCII character set. Specifically, single-qoute characters
+are known to be incorrectly converted when pasted into an editor.</para>
+
+</section>
+
+&gethelp;
+
+</preface>
+
+<chapter><title>What is RxFtp?</title>
+<para>RxFtp is an Object Rexx Class library providing access to the TCP/IP FTP
+interface based on RFC 959.
+</para>
+
+<para>It is assumed that you are familiar with the basic FTP functionality and can reference
+those specific to the system. For more information, refer to the book
+<citetitle>Internetworking
+with TCP/IP, Volume I: Principles, Protocols and Architecture</citetitle>
+by Douglas Comer (Prentice Hall PTR).</para>
+
+<indexterm><primary>requirements, RxFtp</primary></indexterm>
+<indexterm><primary>RxFtp requirements</primary></indexterm>
+<para>The RxFtp package requires the RxSock external function package supplied
+with Open Object Rexx.</para>
+</chapter>
+
+<chapter><title>Installation</title>
+<indexterm><primary>RxFtp installation</primary></indexterm>
+<indexterm><primary>installation, RxFtp</primary></indexterm>
+<para>The RxFtp package is contained in the file
+<emphasis role="italic">rxftp.cls</emphasis>. This file must be placed in
+a directory listed in your PATH. To get access to the class and methods in the RxFtp
+package you must include a ::REQUIRES directive in any Object Rexx script that
+uses the class:
+<indexterm><primary>::REQUIRES directive, RxFtp</primary></indexterm>
+<programlisting>
+     .
+     .
+     .
+::requires "rxftp.cls"
+</programlisting></para>
+
+<para>You instantiate an instance of the class using the normal Object Rexx
+conventions.
+<programlisting>
+myftpobj = .rxftp~new
+</programlisting></para>
+<para>Each instance of the class completely encapsulates a connection to an
+FTP server. This means that you can instaniate multiples instance of the class
+and have multiple open connections to FTP servers simultaneously.</para>
+
+<section><title>Notes on Using RxFtp</title>
+<indexterm><primary>RxFtp notes</primary></indexterm>
+<indexterm><primary>notes, RxFtp</primary></indexterm>
+<orderedlist>
+<listitem><para>
+The FtpProxy method does not exist in the RxFtp class.
+</para></listitem>
+<listitem><para>
+Firewalls can prevent many of the RxFtp methods from working
+properly. Active and passive mode transfers can both be restricted by the use
+of firewalls. This especially applies to active mode transfers when the client
+is running a firewall locally (like WindowsXP SP2 or any modern Linux
+distribution).
+</para></listitem>
+<listitem><para>
+Each instance of the RxFtp class you
+instaniate has its own connection to an FTP server. Thus
+you can instaniate multiple instance of this class and
+connect to multiple FTP servers simultaneously. Also, each
+instance can be reused - the FtpLogoff method reinitializes
+the instance and a following FtpSetUser method can establish
+a new connection to an FTP server.
+</para></listitem>
+</orderedlist>
+</section>
+</chapter>
+
+<chapter><title>RxFtp Method Reference</title>
+<para>The following sections describe how the individual methods available in RxFtp
+are invoked from the Rexx programming environment:
+<itemizedlist>
+<listitem><para><link linkend="ftpappend">FtpAppend</link></para></listitem>
+<listitem><para><link linkend="ftpchdir">FtpChDir</link></para></listitem>
+<listitem><para><link linkend="ftpdelete">FtpDelete</link></para></listitem>
+<listitem><para><link linkend="ftpdir">FtpDir</link></para></listitem>
+<listitem><para><link linkend="ftpget">FtpGet</link></para></listitem>
+<listitem><para><link linkend="ftpgetmode">FtpGetMode</link></para></listitem>
+<listitem><para><link linkend="ftpgettype">FtpGetType</link></para></listitem>
+<listitem><para><link linkend="ftplogoff">FtpLogoff</link></para></listitem>
+<listitem><para><link linkend="ftpls">FtpLs</link></para></listitem>
+<listitem><para><link linkend="ftpmkdir">FtpMkDir</link></para></listitem>
+<listitem><para><link linkend="ftpput">FtpPut</link></para></listitem>
+<listitem><para><link linkend="ftpputunique">FtpPutUnique</link></para></listitem>
+<listitem><para><link linkend="ftppwd">FtpPwd</link></para></listitem>
+<listitem><para><link linkend="ftpquote">FtpQuote</link></para></listitem>
+<listitem><para><link linkend="ftprename">FtpRename</link></para></listitem>
+<listitem><para><link linkend="ftprmdir">FtpRmDir</link></para></listitem>
+<listitem><para><link linkend="ftpsetmode">FtpSetMode</link></para></listitem>
+<listitem><para><link linkend="ftpsettype">FtpSetType</link></para></listitem>
+<listitem><para><link linkend="ftpsetuser">FtpSetUser</link></para></listitem>
+<listitem><para><link linkend="ftpsite">FtpSite</link></para></listitem>
+<listitem><para><link linkend="ftpsys">FtpSys</link></para></listitem>
+<listitem><para><link linkend="ftptrace">FtpTrace</link></para></listitem>
+<listitem><para><link linkend="ftptracelog">FtpTraceLog</link></para></listitem>
+<listitem><para><link linkend="ftptracelogoff">FtpTraceLogoff</link></para></listitem>
+<listitem><para><link linkend="ftpversion">FtpVersion</link></para></listitem>
+</itemizedlist></para>
+
+<section id="ftpappend"><title>FtpAppend</title>
+<indexterm><primary>FtpAppend</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>FtpAppend</secondary></indexterm>
+<indexterm><primary>appending a file to a file on the server</primary></indexterm>
+<para>The FtpAppend method appends a file to another file on the FTP server.
+If the target file on the server soes not exist it is created.
+</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--myftpobj~FtpAppend(--localfilename, remotefilename--+----------+--)--><
+                                                        +--, mode--+
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>localfilename</term>
+      <listitem><para>The filename and optional path where the source file
+                      is stored.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>remotefilename</term>
+      <listitem><para>The filename and optional path of the target file for
+                      the append operation on the FTP server.
+                      If the path is not given the
+                      current directory on the ftp server will be used.
+                      If the file does not exist it will be created.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>mode</term>
+      <listitem><para>The file transfer mode, either 'ASCII' or 'BINARY'. If the
+                      argument is not given the the current mode will be used.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Return Values:</emphasis></para>
+<para>A value of 0 indicates successful execution of the method. The value -1 indicates an
+error. You can get the specific error code by inspection of the method
+FtpErrno. Possible values:</para>
+<variablelist>
+   <varlistentry>
+      <term>FTPCOMMAND</term>
+      <listitem><para>The internal FTP command
+                      or the arguments to the method are in error.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="ftpchdir"><title>FtpChDir</title>
+<indexterm><primary>FtpChDir</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>FtpChDir</secondary></indexterm>
+<indexterm><primary>changing directories on the server</primary></indexterm>
+<para>The FtpChDir method changes the current directory on the FTP server.
+If this command fails the directory on the server remains unchanged.
+</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>-- myftpobj~FtpChDir(newdir)-------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>newdir</term>
+      <listitem><para>The directory name and optional path to the directory
+                      to be made the current directory.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Return Values:</emphasis></para>
+<para>A value of 0 indicates successful execution of the method. The value -1 indicates an
+error. You can get the specific error code by inspection of the method
+FtpErrno. Possible values:</para>
+<variablelist>
+   <varlistentry>
+      <term>FTPCOMMAND</term>
+      <listitem><para>The internal FTP command
+                      or the arguments to the method are in error.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="ftpdelete"><title>FtpDelete</title>
+<indexterm><primary>FtpDelete</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>FtpDelete</secondary></indexterm>
+<indexterm><primary>deleting a file on the server</primary></indexterm>
+<indexterm><primary>removing a file on the server</primary></indexterm>
+<para>The FtpDelete method deletes the specified file on the
+FTP server.
+</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--myftpobj~FtpDelete(filename)-----------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>filename</term>
+      <listitem><para>The filename and optional path to the file to be deleted.
+                      If the path is not given the file will be deleted from the
+                      current directory on the ftp server.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Return Values:</emphasis></para>
+<para>A value of 0 indicates successful execution of the method. The value -1 indicates an
+error. You can get the specific error code by inspection of the method
+FtpErrno. Possible values:</para>
+<variablelist>
+   <varlistentry>
+      <term>FTPCOMMAND</term>
+      <listitem><para>The internal FTP command
+                      or the arguments to the method are in error.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="ftpdir"><title>FtpDir</title>
+<indexterm><primary>FtpDir</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>FtpDir</secondary></indexterm>
+<indexterm><primary>directory listing from the server</primary></indexterm>
+<para>The FtpDir method returns a listing (in long format) of a
+directory on the server. The directory listing
+is placed in the attribute <emphasis role="italic">Response</emphasis>
+as an Object Rexx array of lines.
+The array will be empty if this method encounters an error.
+</para>
+<para>The format of the returned directory listing depends on the operating
+system running on the FTP server machine.
+</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>-- myftpobj~FtpDir(--+-----------+--)----------------------------------><
+                       +--pattern--+
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>pattern</term>
+      <listitem><para>The filename pattern to use to filter the directory
+                      listing. You can use the standard '*' and '?' wildcard
+                      characters in the pattern. This argument is optional.
+                      If this argument is not specified the default pattern
+                      './*' will be used.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Return Values:</emphasis></para>
+<para>A value of 0 indicates successful execution of the method. The value -1 indicates an
+error. You can get the specific error code by inspection of the method
+FtpErrno. Possible values:</para>
+<variablelist>
+   <varlistentry>
+      <term>FTPCOMMAND</term>
+      <listitem><para>The internal FTP command
+                      or the arguments to the method are in error.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="ftpget"><title>FtpGet</title>
+<indexterm><primary>FtpGet</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>FtpGet</secondary></indexterm>
+<indexterm><primary>getting a file from the server</primary></indexterm>
+<indexterm><primary>download a file from the server</primary></indexterm>
+<para>The FtpGet method gets a single file from the FTP server.
+</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>-- myftpobj~FtpGet(localfilename, remotefilename--+----------+--)------><
+                                                    +--, mode--+
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>localfilename</term>
+      <listitem><para>The filename and optional path where the retrieved file
+                      will be stored.
+                      If the path is not given the file will be placed in the
+                      user's current directory.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>remotefilename</term>
+      <listitem><para>The filename and optional path to the file to be retrieved.
+                      If the path is not given the file will be retrieved from the
+                      current directory on the ftp server.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>mode</term>
+      <listitem><para>The file transfer mode, either 'ASCII' or 'BINARY'. If the
+                      argument is not given the the current mode will be used.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Return Values:</emphasis></para>
+<para>A value of 0 indicates successful execution of the method. The value -1 indicates an
+error. You can get the specific error code by inspection of the method
+FtpErrno. Possible values:</para>
+<variablelist>
+   <varlistentry>
+      <term>FTPCOMMAND</term>
+      <listitem><para>The internal FTP command
+                      or the arguments to the method are in error.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="ftpgetmode"><title>FtpGetMode</title>
+<indexterm><primary>FtpGetMode</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>FtpGetMode</secondary></indexterm>
+<indexterm><primary>file transfer mode, getting the</primary></indexterm>
+<indexterm><primary>mode, getting the file transfer mode</primary></indexterm>
+<indexterm><primary>Passive mode</primary></indexterm>
+<indexterm><primary>Active mode</primary></indexterm>
+<para>The FtpSetType method returns the file transfer mode on the
+FTP server.
+</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>-- myftpobj~FtpGetMode()-----------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Return Values:</emphasis></para>
+<para>Returns one of the following strings.</para>
+<variablelist>
+   <varlistentry>
+      <term>'ACTIVE'</term>
+      <listitem><para>The current transfer mode is active.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>'PASSIVE'</term>
+      <listitem><para>The current transfer mode is passive.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="ftpgettype"><title>FtpGetType</title>
+<indexterm><primary>FtpGetType</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>FtpGetType</secondary></indexterm>
+<indexterm><primary>file transfer type, getting the</primary></indexterm>
+<indexterm><primary>type, getting the file transfer mode</primary></indexterm>
+<indexterm><primary>ASCII transfer type</primary></indexterm>
+<indexterm><primary>Binary transfer type</primary></indexterm>
+<para>The FtpSetType method returns the file transfer type on the
+FTP server.
+</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>-- myftpobj~FtpGetType()-----------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Return Values:</emphasis></para>
+<para>Returns one of the following strings.</para>
+<variablelist>
+   <varlistentry>
+      <term>'ASCII'</term>
+      <listitem><para>The current type is ASCII.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>'BINARY'</term>
+      <listitem><para>The current type is binary.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="ftplogoff"><title>FtpLogoff</title>
+<indexterm><primary>FtpLogoff</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>FtpLogoff</secondary></indexterm>
+<indexterm><primary>logoff the server</primary></indexterm>
+<indexterm><primary>disconnect from the server</primary></indexterm>
+<para>The FtpLogoff method logs off the FTP server and closes the connection.
+It also reinitializes the instance of the class so it can be used again.
+</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>-- myftpobj~FtpLogoff()------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Return Values:</emphasis></para>
+<para>A value of 0 indicates successful execution of the method. The value -1 indicates an
+error. You can get the specific error code by inspection of the method
+FtpErrno. Possible values:</para>
+<variablelist>
+   <varlistentry>
+      <term>FTPCOMMAND</term>
+      <listitem><para>The internal FTP command
+                      or the arguments to the method are in error.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="ftpls"><title>FtpLs</title>
+<indexterm><primary>FtpLs</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>FtpLs</secondary></indexterm>
+<indexterm><primary>directory listing from the server</primary></indexterm>
+<para>The FtpLs method returns a listing (in short format) of a
+directory on the server. The directory listing
+is placed in the attribute <emphasis role="italic">Response</emphasis>
+as an Object Rexx array of lines.
+The array will be empty if this method encounters an error.
+</para>
+<para>Each member of the array containing the directory listing usually only
+contains the name of a file in the specified directory.
+But the format may be different in some cases.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>-- myftpobj~FtpLs(--+-----------+--)-----------------------------------><
+                      +--pattern--+
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>pattern</term>
+      <listitem><para>The filename pattern to use to filter the directory
+                      listing. You can use the standard '*' and '?' wildcard
+                      characters in the pattern. This argument is optional.
+                      If this argument is not specified the default pattern
+                      './*' will be used.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Return Values:</emphasis></para>
+<para>A value of 0 indicates successful execution of the method. The value -1 indicates an
+error. You can get the specific error code by inspection of the method
+FtpErrno. Possible values:</para>
+<variablelist>
+   <varlistentry>
+      <term>FTPCOMMAND</term>
+      <listitem><para>The internal FTP command
+                      or the arguments to the method are in error.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="ftpmkdir"><title>FtpMkDir</title>
+<indexterm><primary>FtpMkDir</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>FtpMkDir</secondary></indexterm>
+<indexterm><primary>make a directory on the server</primary></indexterm>
+<indexterm><primary>directory on the server, make a</primary></indexterm>
+<para>The FtpMkDir method creates a new subdirectory on the FTP server.
+</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>-- myftpobj~FtpMkDir(newdir)-------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>newdir</term>
+      <listitem><para>The name and optional path to the new directory.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Return Values:</emphasis></para>
+<para>A value of 0 indicates successful execution of the method. The value -1 indicates an
+error. You can get the specific error code by inspection of the method
+FtpErrno. Possible values:</para>
+<variablelist>
+   <varlistentry>
+      <term>FTPCOMMAND</term>
+      <listitem><para>The internal FTP command
+                      or the arguments to the method are in error.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="ftpput"><title>FtpPut</title>
+<indexterm><primary>FtpPut</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>FtpPut</secondary></indexterm>
+<indexterm><primary>sending a file to the server</primary></indexterm>
+<indexterm><primary>upload a file to the server</primary></indexterm>
+<para>The FtpPut method sends a single file to the FTP server.
+</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>-- myftpobj~FtpPut(localfilename, remotefilename--+----------+--)------><
+                                                    +--, mode--+
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>localfilename</term>
+      <listitem><para>The filename and optional path where the source file
+                      is stored.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>remotefilename</term>
+      <listitem><para>The filename and optional path used to store the file on the FTP server.
+                      If the path is not given the file will be stored in the
+                      current directory on the ftp server.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>mode</term>
+      <listitem><para>The file transfer mode, either 'ASCII' or 'BINARY'. If the
+                      argument is not given the the current mode will be used.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Return Values:</emphasis></para>
+<para>A value of 0 indicates successful execution of the method. The value -1 indicates an
+error. You can get the specific error code by inspection of the method
+FtpErrno. Possible values:</para>
+<variablelist>
+   <varlistentry>
+      <term>FTPCOMMAND</term>
+      <listitem><para>The internal FTP command
+                      or the arguments to the method are in error.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="ftpputunique"><title>FtpPutUnique</title>
+<indexterm><primary>FtpPutUnique</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>FtpPutUnique</secondary></indexterm>
+<indexterm><primary>sending a unique file to the server</primary></indexterm>
+<indexterm><primary>upload a unique file to the server</primary></indexterm>
+<para>The FtpPut method sends a single file to the FTP server.
+If the file exists on the server it is not replaced and a new name is assigned
+to the file sent from the client.
+</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>-- myftpobj~FtpPutUnique(localfilename, remotefilename--+----------+--)--><
+                                                          +--, mode--+
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>localfilename</term>
+      <listitem><para>The filename and optional path where the source file
+                      is stored.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>remotefilename</term>
+      <listitem><para>The filename and optional path used to store the file on the FTP server.
+                      If the filename exists then a new filename is used.
+                      If the path is not given the file will be stored in the
+                      current directory on the ftp server.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>mode</term>
+      <listitem><para>The file transfer mode, either 'ASCII' or 'BINARY'. If the
+                      argument is not given the the current mode will be used.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Return Values:</emphasis></para>
+<para>A value of 0 indicates successful execution of the method. The value -1 indicates an
+error. You can get the specific error code by inspection of the method
+FtpErrno. Possible values:</para>
+<variablelist>
+   <varlistentry>
+      <term>FTPCOMMAND</term>
+      <listitem><para>The internal FTP command
+                      or the arguments to the method are in error.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="ftppwd"><title>FtpPwd</title>
+<indexterm><primary>FtpPwd</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>FtpPwd</secondary></indexterm>
+<indexterm><primary>return the current directory on the server</primary></indexterm>
+<indexterm><primary>current directory on the server, return the</primary></indexterm>
+<indexterm><primary>directory on the server, return the current</primary></indexterm>
+<para>The FtpPwd method returns the current directory name and path on the
+FTP server. The information is placed
+in the attribute Response as an Object Rexx array of lines.
+However, this method always returns a single line to the array if it succeeds.
+The array will be empty if this method encounters an error.
+</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>-- myftpobj~FtpPwd()---------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Return Values:</emphasis></para>
+<para>A value of 0 indicates successful execution of the method. The value -1 indicates an
+error. You can get the specific error code by inspection of the method
+FtpErrno. Possible values:</para>
+<variablelist>
+   <varlistentry>
+      <term>FTPCOMMAND</term>
+      <listitem><para>The internal FTP command
+                      or the arguments to the method are in error.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="ftpquote"><title>FtpQuote</title>
+<indexterm><primary>FtpQuote</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>FtpQuote</secondary></indexterm>
+<indexterm><primary>send a command to the server</primary></indexterm>
+<indexterm><primary>command to the server, send a</primary></indexterm>
+<indexterm><primary>server command</primary></indexterm>
+<para>The FtpQuote method sends a command to the FTP server.
+</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>-- myftpobj~FtpQuote(cmd)----------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>cmd</term>
+      <listitem><para>The command to be executed on the server.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Return Values:</emphasis></para>
+<para>A value of 0 indicates successful execution of the method. The value -1 indicates an
+error. You can get the specific error code by inspection of the method
+FtpErrno. Possible values:</para>
+<variablelist>
+   <varlistentry>
+      <term>FTPCOMMAND</term>
+      <listitem><para>The internal FTP command
+                      or the arguments to the method are in error.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="ftprename"><title>FtpRename</title>
+<indexterm><primary>FtpRename</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>FtpRename</secondary></indexterm>
+<indexterm><primary>rename a file on the server</primary></indexterm>
+<indexterm><primary>move a file on the server</primary></indexterm>
+<para>The FtpRename method renames an existing file on the FTP server.
+On Unix FTP server this command can also move a file from one subdirectory
+to another with either a new or its old name.
+</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>-- myftpobj~FtpRename(oldfile, newfile)--------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>oldfile</term>
+      <listitem><para>The name and optional path of the file to be renamed.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>newfile</term>
+      <listitem><para>The new name and optional path of the file.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Return Values:</emphasis></para>
+<para>A value of 0 indicates successful execution of the method. The value -1 indicates an
+error. You can get the specific error code by inspection of the method
+FtpErrno. Possible values:</para>
+<variablelist>
+   <varlistentry>
+      <term>FTPCOMMAND</term>
+      <listitem><para>The internal FTP command
+                      or the arguments to the method are in error.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="ftprmdir"><title>FtpRmDir</title>
+<indexterm><primary>FtpRmDir</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>FtpRmDir</secondary></indexterm>
+<indexterm><primary>remove an empty directory on the server</primary></indexterm>
+<para>The FtpRmDir method removes a subdirectory on the FTP server.
+</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>-- myftpobj~FtpRmDir(newdir)-------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>newdir</term>
+      <listitem><para>The name and optional path to the directory to be removed.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Return Values:</emphasis></para>
+<para>A value of 0 indicates successful execution of the method. The value -1 indicates an
+error. You can get the specific error code by inspection of the method
+FtpErrno. Possible values:</para>
+<variablelist>
+   <varlistentry>
+      <term>FTPCOMMAND</term>
+      <listitem><para>The internal FTP command
+                      or the arguments to the method are in error.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="ftpsetmode"><title>FtpSetMode</title>
+<indexterm><primary>FtpSetMode</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>FtpSetMode</secondary></indexterm>
+<indexterm><primary>file transfer mode, setting the</primary></indexterm>
+<indexterm><primary>mode, setting the file transfer mode</primary></indexterm>
+<indexterm><primary>Passive mode</primary></indexterm>
+<indexterm><primary>Active mode</primary></indexterm>
+<para>The FtpSetMode method changes the passive/active mode used for file
+tranfers to/from the FTP server.
+</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>-- myftpobj~FtpSetMode(--+--'PASSIVE'--+--)----------------------------><
+                           +--'ACTIVE'---+
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>'PASSIVE'</term>
+      <listitem><para>Sets passive mode for file transfers.
+                      Only the first letter of the argument is significant and
+                      it is not case-sensitive.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>'ACTIVE'</term>
+      <listitem><para>Sets active mode for file transfers.
+                      Only the first letter of the argument is significant and
+                      it is not case-sensitive.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Return Values:</emphasis></para>
+<para>A value of 0 indicates successful execution of the method. The value -1 indicates an
+error. You can get the specific error code by inspection of the method
+FtpErrno. Possible values:</para>
+<variablelist>
+   <varlistentry>
+      <term>FTPCOMMAND</term>
+      <listitem><para>The internal FTP command
+                      or the arguments to the method are in error.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+<para>If an error is returned the mode remains unchanged.</para>
+</section>
+
+<section id="ftpsettype"><title>FtpSetType</title>
+<indexterm><primary>FtpSetType</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>FtpSetType</secondary></indexterm>
+<indexterm><primary>file transfer type, setting the</primary></indexterm>
+<indexterm><primary>type, setting the file transfer mode</primary></indexterm>
+<indexterm><primary>ASCII transfer type</primary></indexterm>
+<indexterm><primary>Binary transfer type</primary></indexterm>
+<para>The FtpSetType method changes the file transfer type on the
+FTP server.
+</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>-- myftpobj~FtpSetType(--+--'ASCII'---+--)-----------------------------><
+                           +--'BINARY'--+
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>'ASCII'</term>
+      <listitem><para>Changes the file transfer type on the FTP server to ASCII.
+                      Only the first letter of the argument is significant and
+                      it is not case-sensitive.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>'BINARY'</term>
+      <listitem><para>Changes the file transfer mode on the FTP server to binary.
+                      Only the first letter of the argument is significant and
+                      it is not case-sensitive.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Return Values:</emphasis></para>
+<para>A value of 0 indicates successful execution of the method. The value -1 indicates an
+error. You can get the specific error code by inspection of the method
+FtpErrno. Possible values:</para>
+<variablelist>
+   <varlistentry>
+      <term>FTPCOMMAND</term>
+      <listitem><para>The internal FTP command
+                      or the arguments to the method are in error.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+<para>If an error is returned the type remains unchanged.</para>
+</section>
+
+<section id="ftpsetuser"><title>FtpSetUser</title>
+<indexterm><primary>FtpSetUser</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>FtpSetUser</secondary></indexterm>
+<indexterm><primary>logon to the server</primary></indexterm>
+<indexterm><primary>connect to the server</primary></indexterm>
+<indexterm><primary>server logon</primary></indexterm>
+<indexterm><primary>server connect</primary></indexterm>
+<para>The FtpSetUser method creates a session with an FTP server and logs
+the user on.
+</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>-- myftpobj~FtpSetUser(host, user--+-------------------------+--)------><
+                                     +--, password--+----------+
+                                                    +--, acct--+
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>host</term>
+      <listitem><para>The host name or TCP/IP address of the FTP server.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>user</term>
+      <listitem><para>The user name for the server.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>password</term>
+      <listitem><para>(optional) The user password.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>acct</term>
+      <listitem><para>(optional) The accounting information for the user.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Return Values:</emphasis></para>
+<para>A value of 0 indicates successful execution of the method. The value -1 indicates an
+error. You can get the specific error code by inspection of the method
+FtpErrno. Possible values:</para>
+<variablelist>
+   <varlistentry>
+      <term>FTPCOMMAND</term>
+      <listitem><para>Yhe internal FTP command
+                      or the arguments to the method are in error.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>FTPHOST</term>
+      <listitem><para>Unknown <emphasis role="italic">host</emphasis>
+                      name or server not responding.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>FTPSOCKET</term>
+      <listitem><para>RxSock function error.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>FTPCONNECT</term>
+      <listitem><para>Server not responding or not available.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>FTPLOGIN</term>
+       <listitem><para><emphasis role="italic">user</emphasis>,
+                       <emphasis role="italic">password</emphasis> or
+                       <emphasis role="italic">acct</emphasis> information is invalid.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="ftpsite"><title>FtpSite</title>
+<indexterm><primary>FtpSite</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>FtpSite</secondary></indexterm>
+<indexterm><primary>sending a site command to the server</primary></indexterm>
+<indexterm><primary>site command to the server, sending a</primary></indexterm>
+<para>The FtpSite method sends a Site command to the FTP server.
+</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--myftpobj~FtpSite(cmd)------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>cmd</term>
+      <listitem><para>The Site command to be executed on the server.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Return Values:</emphasis></para>
+<para>A value of 0 indicates successful execution of the method. The value -1 indicates an
+error. You can get the specific error code by inspection of the method
+FtpErrno. Possible values:</para>
+<variablelist>
+   <varlistentry>
+      <term>FTPCOMMAND</term>
+      <listitem><para>The internal FTP command
+                      or the arguments to the method are in error.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="ftpsys"><title>FtpSys</title>
+<indexterm><primary>FtpSys</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>FtpSys</secondary></indexterm>
+<indexterm><primary>server operating system, getting the</primary></indexterm>
+<indexterm><primary>operating system, getting the server</primary></indexterm>
+<indexterm><primary>getting the server operating system, getting</primary></indexterm>
+<para>The FtpSys method returns the operating system description information
+from FTP server. The information is placed
+in the attribute Response as an Object Rexx array of lines.
+However, this method always returns a single line to the array if it succeeds.
+The array will be empty if this method encounters an error.
+</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>-- myftpobj~FtpSys()---------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Return Values:</emphasis></para>
+<para>A value of 0 indicates successful execution of the method. The value -1 indicates an
+error. You can get the specific error code by inspection of the method
+FtpErrno. Possible values:</para>
+<variablelist>
+   <varlistentry>
+      <term>FTPCOMMAND</term>
+      <listitem><para>The internal FTP command
+                      or the arguments to the method are in error.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="ftptrace"><title>FtpTrace</title>
+<indexterm><primary>FtpTrace</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>FtpTrace</secondary></indexterm>
+<indexterm><primary>tracing, starting</primary></indexterm>
+<indexterm><primary>starting tracing</primary></indexterm>
+<para>The FtpTrace method starts the tracing of FTP commands. The initial state
+is off. If tracing is on the the FTP commands sent to the server and their
+responses will be displayed.
+</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>-- myftpobj~FtpTrace()-------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Return Values:</emphasis></para>
+<para>A value of 0 indicates successful execution of the method. The value -1 indicates an
+error. You can get the specific error code by inspection of the method
+FtpErrno. Possible values:</para>
+<variablelist>
+   <varlistentry>
+      <term>FTPCOMMAND</term>
+      <listitem><para>The internal FTP command
+                      or the arguments to the method are in error.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="ftptracelog"><title>FtpTraceLog</title>
+<indexterm><primary>FtpTraceLog</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>FtpTraceLog</secondary></indexterm>
+<indexterm><primary>specifying the trace log file</primary></indexterm>
+<indexterm><primary>trace log file, specifying the</primary></indexterm>
+<indexterm><primary>writing the trace log file</primary></indexterm>
+<indexterm><primary>trace log file, writing the</primary></indexterm>
+<para>The FtpTraceLog method causes all FTP commands and responses in the current trace
+buffer to be written to a log file.
+</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--myftpobj~FtpTraceLog(filename--+---------------+--)------------------><
+                                   +--, 'REPLACE'--+
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>filename</term>
+      <listitem><para>The filename and optional path to the log file.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>'REPLACE'</term>
+      <listitem><para>If this argument is given then if the log file exists
+                      it will be replaced. The default is to append the trace
+                      output to the log file. Only the first letter of the
+                      argument is significant.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Return Values:</emphasis></para>
+<para>A value of 0 indicates successful execution of the method. The value -1 indicates an
+error. You can get the specific error code by inspection of the method
+FtpErrno. Possible values:</para>
+<variablelist>
+   <varlistentry>
+      <term>FTPCOMMAND</term>
+      <listitem><para>The internal FTP command
+                      or the arguments to the method are in error.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="ftptracelogoff"><title>FtpTraceLogoff</title>
+<indexterm><primary>FtpTraceLogoff</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>FtpTraceLogoff</secondary></indexterm>
+<indexterm><primary>tracing, stopping</primary></indexterm>
+<indexterm><primary>stopping tracing</primary></indexterm>
+<para>The FtpTraceLogoff method stops the tracing of FTP commands.
+</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>-- myftpobj~FtpTraceLogoff()-------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Return Values:</emphasis></para>
+<para>A value of 0 indicates successful execution of the method. The value -1 indicates an
+error. You can get the specific error code by inspection of the method
+FtpErrno. Possible values:</para>
+<variablelist>
+   <varlistentry>
+      <term>FTPCOMMAND</term>
+      <listitem><para>The internal FTP command
+                      or the arguments to the method are in error.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="ftpversion"><title>FtpVersion</title>
+<indexterm><primary>FtpVersion</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>FtpVersion</secondary></indexterm>
+<indexterm><primary>RxFtp class version</primary></indexterm>
+<indexterm><primary>class version, RxFtp</primary></indexterm>
+<para>The FtpVersion method returns the version number of the RxFtp class
+in the form of <emphasis role="italic">x.x.x</emphasis>.
+</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--myftpobj~FtpVersion()------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>
+None.
+</para>
+</section>
+</chapter>
+
+<chapter><title>RxFtp Additional Method Attributes</title>
+<para>The following sections describe the additional method attributes available
+in the RxFtp class.
+<itemizedlist>
+<listitem><para>CmdResponse      </para></listitem>
+<listitem><para>CR_Remove        </para></listitem>
+<listitem><para>Debug            </para></listitem>
+<listitem><para>FtpErrno         </para></listitem>
+<listitem><para>Response         </para></listitem>
+</itemizedlist></para>
+
+<section id="cmdresponse"><title>CmdResponse</title>
+<indexterm><primary>CmdResponse</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>CmdResponse</secondary></indexterm>
+<indexterm><primary>server responses</primary></indexterm>
+<indexterm><primary>responses, server</primary></indexterm>
+<para>The CmdResponse method attribute is an Object Rexx array which contains
+the commands sent to the FTP server and the responses recieved from the
+server. Items are continually added to this array for each method invoked
+during the session with the server.
+</para>
+<para>This array is a complete record of the command/response
+activity between the client and the server.
+</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<para>The following will display the CmdResponse array.</para>
+<programlisting>
+<![CDATA[
+do i = 1 to myftpobj~cmdresponse~items
+   say myftpobj~cmdresponse[i]
+end
+]]>
+</programlisting>
+</section>
+
+<section id="crremove"><title>CR_Remove</title>
+<indexterm><primary>CR_Remove</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>CR_Remove</secondary></indexterm>
+<indexterm><primary>removing carriage returns from files</primary></indexterm>
+<indexterm><primary>carriage returns from files, removing</primary></indexterm>
+<para>The CR_Remove method attribute is always in one of two states. If it is
+set to .true then carriage return characters ('0D'x) are removed from ASCII
+downloads when the class is running on a Unix platform. If it is set to .false
+then CR bytes are retained in the locally stored file.
+</para>
+<para>This attribute is ignored for non-Unix machines.
+</para>
+<para>The default value is .true.
+</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<para>The following will disable the removal of CR bytes.</para>
+<programlisting>
+<![CDATA[
+myftpobj~cr_remove = .false
+]]>
+</programlisting>
+</section>
+
+<section id="debug"><title>Debug</title>
+<indexterm><primary>Debug</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>Debug</secondary></indexterm>
+<indexterm><primary>start debug messages</primary></indexterm>
+<indexterm><primary>debug messages, start</primary></indexterm>
+<indexterm><primary>stop debug messages</primary></indexterm>
+<indexterm><primary>debug messages, stop</primary></indexterm>
+<para>The Debug method attribute is always in one of two states. If it is
+set to .true then debug messages will be sent to STDOUT. If it is set to .false
+then all debugging messages will be suppressed.
+</para>
+<para>The default value is .false.
+</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<para>The following will enable the debugging messages.</para>
+<programlisting>
+<![CDATA[
+myftpobj~debug = .true
+]]>
+</programlisting>
+</section>
+
+<section id="ftperrno"><title>FtpErrno</title>
+<indexterm><primary>FtpErrno</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>FtpErrno</secondary></indexterm>
+<indexterm><primary>error messages</primary></indexterm>
+<indexterm><primary>error codes</primary></indexterm>
+<para>The FtpErrno method attribute contains extended information when a
+method return an error. It is a simple string value or a zero-length string
+when the method is successful.
+</para>
+<para>These are the possible values for FtpErrno.</para>
+<variablelist>
+   <varlistentry>
+      <term>FTPCOMMAND</term>
+      <listitem><para>The internal FTP command
+                      or the arguments to the method are in error.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>FTPHOST</term>
+      <listitem><para>Unknown <emphasis role="italic">host</emphasis>
+                      name or server not responding.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>FTPSOCKET</term>
+      <listitem><para>RxSock function error.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>FTPCONNECT</term>
+      <listitem><para>Server not responding or not available.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>FTPLOGIN</term>
+       <listitem><para>Invalid login information was supplied.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Example:</emphasis></para>
+<para>The following will display the FtpErrno.</para>
+<programlisting>
+<![CDATA[
+if myftpobj~ftperrno <> "" then say myftpobj~errno
+]]>
+</programlisting>
+</section>
+
+<section id="response"><title>Response</title>
+<indexterm><primary>Response</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>Response</secondary></indexterm>
+<indexterm><primary>server response</primary></indexterm>
+<indexterm><primary>response, server</primary></indexterm>
+<para>The Response method attribute is always in one of two states. If it is
+set to .nil then the command did not generate a response. In all other cases
+the Response is an Object Rexx array object with each array entry containing
+a single line of the response.
+</para>
+<para>A typical value for Response would be the lines from the server directory
+listing in response to invoking the FtpDir method.
+</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<para>The following will display the Response array.</para>
+<programlisting>
+<![CDATA[
+if myftpobj~response <> .nil then do i = 1 to myftpobj~response~items
+   say myftpobj~response[i]
+   end
+]]>
+</programlisting>
+</section>
+</chapter>
+
+<appendix><title>Sample RxFtp Program</title>
+<indexterm><primary>RxFtp example program</primary></indexterm>
+<indexterm><primary>example</primary>
+<secondary>RxFtp program</secondary></indexterm>
+<indexterm><primary>using RxFtp</primary></indexterm>
+<para>The following is a sample program using REXX FTP Class Library
+methods.</para>
+<programlisting>
+<![CDATA[
+/*==============================================================*/
+/* Basic RxFTP sample to send a file with cmd/reply logging     */
+/*==============================================================*/
+/* Define the variables for: */
+server = "127.0.0.1" /* IP address or server name */
+userid = "remote_user_ID"
+passwd = "password_of_remote_user"
+trclog = "logfile.txt" /* Trace log file name */
+retc = 0 /* Set return code to 0 */
+
+myftp = .rxftp~new()
+
+/* Start tracing FTP commands and logging of replies */
+retc = myftp~FtpTrace()
+retc = myftp~FtpTraceLog( trclog, "1")
+If retc = 0 then Say " Replies will be written to log file: "trclog"."
+Else Say " No writing to log file: "trclog" possible."
+
+/* Define remote host and user to be used during the session */
+retc = myftp~FtpSetUser(server, userid, passwd)
+If retc = 0 then Say " Connection established."
+Else Call Terminate " *** Connection failed."
+
+/* Transfer an ASCII file to the remote ftp server */
+retc = myftp~FtpPut("sample.rex", "sample.put", "ASCII")
+If retc = 0 then Call Terminate " File has been sent. "
+Else Call Terminate " *** File has NOT been sent."
+
+/* Terminate the file transfer */
+Terminate:
+Parse Arg Message
+Say Message
+
+retc = myftp~FtpLogoff()
+
+retc = myftp~FtpTraceLogoff()
+retc = myftp~FtpTrace()
+
+exit retc
+
+::requires "rxftp.cls"
+]]>
+</programlisting>
+</appendix>
+
+
+
+&notices;
+&cpl;
+
+&genindex;
+
+</book>

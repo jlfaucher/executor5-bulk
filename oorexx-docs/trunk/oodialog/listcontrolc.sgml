@@ -1,0 +1,3045 @@
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: OODialog Reference SGML file.
+    #
+    # Copyright (c) 2005-2006, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    # Author(s):
+    #      W. David Ashley <dashley@us.ibm.com>
+    #
+    #########################################################################
+-->
+<chapter id="listcontrolc"><title>ListControl Class</title>
+<indexterm><primary>ListControl class</primary></indexterm>
+<para>A list view control is a window that displays a collection of items, with
+each item consisting of an icon and a label. It provides several ways of arranging
+and displaying items. Refer to OODLIST.REX in the OODIALOG\SAMPLES directory
+for an example.</para>
+<variablelist>
+<varlistentry><term>Requires:</term>
+<listitem><para>The ListControl class requires the class definition
+file <computeroutput>oodwin32.cls</computeroutput>:
+<programlisting>
+<![CDATA[
+::requires "oodwin32.cls"
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>Methods:</term>
+<listitem><para>Instances of the ListControl class implement
+the methods listed in the
+<link linkend="t000028">ListControl Instance Methods</link> table.
+
+<table id="t000028" frame="all">
+<title>ListControl Instance Methods</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Method...</entry>
+<entry>...on page</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>Add</entry>
+<entry><link linkend="addlc">Add</link></entry>
+</row>
+<row>
+<entry>AddRow</entry>
+<entry><link linkend="addrow">AddRow</link></entry>
+</row>
+<row>
+<entry>AddStyle</entry>
+<entry><link linkend="addstyle">AddStyle</link></entry>
+</row>
+<row>
+<entry>AlignLeft</entry>
+<entry><link linkend="alignleft">AlignLeft</link></entry>
+</row>
+<row>
+<entry>AlignTop</entry>
+<entry><link linkend="aligntop">AlignTop</link></entry>
+</row>
+<row>
+<entry>Arrange</entry>
+<entry><link linkend="arrange">Arrange</link></entry>
+</row>
+<row>
+<entry>BkColor</entry>
+<entry><link linkend="bkcolor">BkColor</link></entry>
+</row>
+<row>
+<entry>BkColor=</entry>
+<entry><link linkend="bkcolornew">BkColor=</link></entry>
+</row>
+<row>
+<entry>ColumnInfo</entry>
+<entry><link linkend="columninfo">ColumnInfo</link></entry>
+</row>
+<row>
+<entry>ColumnWidth</entry>
+<entry><link linkend="columnwidth">ColumnWidth</link></entry>
+</row>
+<row>
+<entry>Delete</entry>
+<entry><link linkend="deletelc">Delete</link></entry>
+</row>
+<row>
+<entry>DeleteAll</entry>
+<entry><link linkend="deletealllc">DeleteAll</link></entry>
+</row>
+<row>
+<entry>DeleteColumn</entry>
+<entry><link linkend="deletecolumn">DeleteColumn</link></entry>
+</row>
+<row>
+<entry>Deselect</entry>
+<entry><link linkend="deselect">Deselect</link></entry>
+</row>
+<row>
+<entry>DropHighlighted</entry>
+<entry><link linkend="drophighlighted">DropHighlighted</link></entry>
+</row>
+<row>
+<entry>Edit</entry>
+<entry><link linkend="edit">Edit</link></entry>
+</row>
+<row>
+<entry>EndEdit</entry>
+<entry><link linkend="endedit">EndEdit</link></entry>
+</row>
+<row>
+<entry>EnsureVisible</entry>
+<entry><link linkend="ensurevisible">EnsureVisible</link></entry>
+</row>
+<row>
+<entry>Find</entry>
+<entry><link linkend="findlc">Find</link></entry>
+</row>
+<row>
+<entry>FindNearestXY</entry>
+<entry><link linkend="findnearestxy">FindNearestXY</link></entry>
+</row>
+<row>
+<entry>FindPartial</entry>
+<entry><link linkend="findpartial">FindPartial</link></entry>
+</row>
+<row>
+<entry>FirstVisible</entry>
+<entry><link linkend="firstvisible">FirstVisible</link></entry>
+</row>
+<row>
+<entry>Focus</entry>
+<entry><link linkend="focus">Focus</link></entry>
+</row>
+<row>
+<entry>Focused</entry>
+<entry><link linkend="focused">Focused</link></entry>
+</row>
+<row>
+<entry>Insert</entry>
+<entry><link linkend="insertlc">Insert</link></entry>
+</row>
+<row>
+<entry>InsertColumn</entry>
+<entry><link linkend="insertcolumn">InsertColumn</link></entry>
+</row>
+<row>
+<entry>ItemInfo</entry>
+<entry><link linkend="iteminfo">ItemInfo</link></entry>
+</row>
+<row>
+<entry>ItemPos</entry>
+<entry><link linkend="itempos">ItemPos</link></entry>
+</row>
+<row>
+<entry>ItemState</entry>
+<entry><link linkend="itemstate">ItemState</link></entry>
+</row>
+<row>
+<entry>ItemText</entry>
+<entry><link linkend="itemtext">ItemText</link></entry>
+</row>
+<row>
+<entry>Items</entry>
+<entry><link linkend="itemslc">Items</link></entry>
+</row>
+<row>
+<entry>ItemsPerPage</entry>
+<entry><link linkend="itemsperpage">ItemsPerPage</link></entry>
+</row>
+<row>
+<entry>Last</entry>
+<entry><link linkend="last">Last</link></entry>
+</row>
+<row>
+<entry>LastSelected</entry>
+<entry><link linkend="lastselected">LastSelected</link></entry>
+</row>
+<row>
+<entry>Modify</entry>
+<entry><link linkend="modifylc">Modify</link></entry>
+</row>
+<row>
+<entry>ModifyColumn</entry>
+<entry><link linkend="modifycolumn">ModifyColumn</link></entry>
+</row>
+<row>
+<entry>Next</entry>
+<entry><link linkend="next">Next</link></entry>
+</row>
+<row>
+<entry>NextLeft</entry>
+<entry><link linkend="nextleft">NextLeft</link></entry>
+</row>
+<row>
+<entry>NextRight</entry>
+<entry><link linkend="nextright">NextRight</link></entry>
+</row>
+<row>
+<entry>NextSelected</entry>
+<entry><link linkend="nextselected">NextSelected</link></entry>
+</row>
+<row>
+<entry>Prepare4nItems</entry>
+<entry><link linkend="prepare4nitems">Prepare4nItems</link></entry>
+</row>
+<row>
+<entry>Previous</entry>
+<entry><link linkend="previous">Previous</link></entry>
+</row>
+<row>
+<entry>PreviousSelected</entry>
+<entry><link linkend="previousselected">PreviousSelected</link></entry>
+</row>
+<row>
+<entry>RedrawItems</entry>
+<entry><link linkend="redrawitems">RedrawItems</link></entry>
+</row>
+<row>
+<entry>RemoveImages</entry>
+<entry><link linkend="removeimages">RemoveImages</link></entry>
+</row>
+<row>
+<entry>RemoveStyle</entry>
+<entry><link linkend="removestyle">RemoveStyle</link></entry>
+</row>
+<row>
+<entry>RemoveSmallImages</entry>
+<entry><link linkend="removesmallimages">RemoveSmallImages</link></entry>
+</row>
+<row>
+<entry>ReplaceStyle</entry>
+<entry><link linkend="replacestyle">ReplaceStyle</link></entry>
+</row>
+<row>
+<entry>RestoreEditClass</entry>
+<entry><link linkend="restoreeditclass">RestoreEditClass</link></entry>
+</row>
+<row>
+<entry>Scroll</entry>
+<entry><link linkend="scrolllc">Scroll</link></entry>
+</row>
+<row>
+<entry>Select</entry>
+<entry><link linkend="selectlc">Select</link></entry>
+</row>
+<row>
+<entry>Selected</entry>
+<entry><link linkend="selectedlc">Selected</link></entry>
+</row>
+<row>
+<entry>SelectedItems</entry>
+<entry><link linkend="selecteditemslc">SelectedItems</link></entry>
+</row>
+<row>
+<entry>SetColumnWidth</entry>
+<entry><link linkend="setcolumnwidth">SetColumnWidth</link></entry>
+</row>
+<row>
+<entry>SetImages</entry>
+<entry><link linkend="setimages">SetImages</link></entry>
+</row>
+<row>
+<entry>SetItemPos</entry>
+<entry><link linkend="setitempos">SetItemPos</link></entry>
+</row>
+<row>
+<entry>SetItemState</entry>
+<entry><link linkend="setitemstate">SetItemState</link></entry>
+</row>
+<row>
+<entry>SetItemText</entry>
+<entry><link linkend="setitemtext">SetItemText</link></entry>
+</row>
+<row>
+<entry>SetSmallImages</entry>
+<entry><link linkend="setsmallimages">SetSmallImages</link></entry>
+</row>
+<row>
+<entry>SmallSpacing</entry>
+<entry><link linkend="smallspacing">SmallSpacing</link></entry>
+</row>
+<row>
+<entry>SnapToGrid</entry>
+<entry><link linkend="snaptogrid">SnapToGrid</link></entry>
+</row>
+<row>
+<entry>Spacing</entry>
+<entry><link linkend="spacing">Spacing</link></entry>
+</row>
+<row>
+<entry>StringWidth</entry>
+<entry><link linkend="stringwidth">StringWidth</link></entry>
+</row>
+<row>
+<entry>SubclassEdit</entry>
+<entry><link linkend="subclassedit">SubclassEdit</link></entry>
+</row>
+<row>
+<entry>TextBkColor</entry>
+<entry><link linkend="textbkcolor">TextBkColor</link></entry>
+</row>
+<row>
+<entry>TextBkColor=</entry>
+<entry><link linkend="textbkcolornew">TextBkColor=</link></entry>
+</row>
+<row>
+<entry>TextColor</entry>
+<entry><link linkend="textcolor">TextColor</link></entry>
+</row>
+<row>
+<entry>TextColor=</entry>
+<entry><link linkend="textcolornew">TextColor=</link></entry>
+</row>
+<row>
+<entry>Update</entry>
+<entry><link linkend="updatelc">Update</link></entry>
+</row>
+<row>
+<entry>UpdateItem</entry>
+<entry><link linkend="updateitem">UpdateItem</link></entry>
+</row>
+</tbody></tgroup>
+</table>
+</para></listitem></varlistentry>
+</variablelist>
+
+<section id="viewstyles"><title>View Styles</title>
+<indexterm><primary>view styles</primary></indexterm>
+<para>List view controls can display their contents in different views. The current
+view is specified by the window style of the control. Additional window styles
+define the alignment of the items and the functionality of the list view control.
+The different views are:</para>
+<variablelist>
+<varlistentry><term>Icon view</term>
+<listitem><para>Each item appears as a full-sized icon with a label below it. The user
+can drag the items to any location in the list view.
+</para></listitem></varlistentry>
+<varlistentry><term>Small-icon view</term>
+<listitem><para>Each item appears as a small icon with a label to the left of it. The
+user can drag the items to any location.
+</para></listitem></varlistentry>
+<varlistentry><term>List view</term>
+<listitem><para>Each item appears as a small icon with a label to the left of it. The
+user cannot drag the items.
+</para></listitem></varlistentry>
+<varlistentry><term>Report view</term>
+<listitem><para>Each item appears on a separate line with information arranged in columns.
+The leftmost column contains the small icon and the label. All following columns
+contain subitems as specified by the application.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="listcontrolmeth"><title>Methods of the ListControl Class</title>
+<para>The following sections describe the individual methods.</para>
+
+<section id="replacestyle"><title>ReplaceStyle</title>
+<indexterm><primary>ReplaceStyle</primary></indexterm>
+<programlisting>
+<![CDATA[
+                                               +-------------------+
+                                               V                   |
+>>-aListControl~ReplaceStyle(--oldStyle--,--'----+-ICON----------+-+--'--)-><
+                                                 +-SMALLICON-----+
+                                                 +-LIST----------+
+                                                 +-REPORT--------+
+                                                 +-ALIGNLEFT-----+
+                                                 +-ALIGNTOP------+
+                                                 +-AUTOARRANGE---+
+                                                 +-ASCENDING-----+
+                                                 +-DESCENDING----+
+                                                 +-EDIT----------+
+                                                 +-HSCROLL-------+
+                                                 +-VSCROLL-------+
+                                                 +-NOSCROLL------+
+                                                 +-NOHEADER------+
+                                                 +-NOSORTHEADER--+
+                                                 +-NOWRAP--------+
+                                                 +-SINGLESEL-----+
+                                                 +-SHOWSELALWAYS-+
+                                                 +-SHAREIMAGES---+
+                                                 +-GROUP---------+
+                                                 +-HIDDEN--------+
+                                                 +-NOTAB---------+
+                                                 +-NOBORDER------+
+
+
+]]>
+</programlisting>
+
+<para>The ReplaceStyle method removes a window style
+of a list view control and sets new styles.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>oldStyle</term>
+<listitem><para>The window style to be removed.
+</para></listitem></varlistentry>
+<varlistentry><term>newStyle</term>
+<listitem><para>The new window styles to be set, which is one or more of the styles
+listed in the syntax diagram, separated by blanks. For an explanation
+of the different styles, refer to <link linkend="addlistcontrol">AddListControl</link>.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>0 if this method fails.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example replaces a small-icon list with an icon list and
+connects the new bitmap file:
+<programlisting>
+<![CDATA[
+::method Icon
+  curList = self~GetListControl(104)
+  curList~SetImages("ilist.bmp",16,12)
+  curList~ReplaceStyle("SMALLICON","ICON")
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="addstyle"><title>AddStyle</title>
+<indexterm><primary>AddStyle</primary></indexterm>
+<programlisting>
+<![CDATA[
+                              +-------------------+
+                              V                   |
+>>-aListControl~AddStyle(--'----+-ICON----------+-+--'--)------><
+                                +-SMALLICON-----+
+                                +-LIST----------+
+                                +-REPORT--------+
+                                +-ALIGNLEFT-----+
+                                +-ALIGNTOP------+
+                                +-AUTOARRANGE---+
+                                +-ASCENDING-----+
+                                +-DESCENDING----+
+                                +-EDIT----------+
+                                +-HSCROLL-------+
+                                +-VSCROLL-------+
+                                +-NOSCROLL------+
+                                +-NOHEADER------+
+                                +-NOSORTHEADER--+
+                                +-NOWRAP--------+
+                                +-SINGLESEL-----+
+                                +-SHOWSELALWAYS-+
+                                +-SHAREIMAGES---+
+                                +-GROUP---------+
+                                +-HIDDEN--------+
+                                +-NOTAB---------+
+                                +-NOBORDER------+
+
+
+]]>
+</programlisting>
+
+<para>The AddStyle method adds new window styles to a
+list view control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>style</term>
+<listitem><para>The window styles to be added, which is one or more of the styles listed
+in the syntax diagram, separated by blanks. For an explanation of the different
+styles, refer to <link linkend="addlistcontrol">AddListControl</link>.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>0 if this method fails.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="removestyle"><title>RemoveStyle</title>
+<indexterm><primary>RemoveStyle</primary></indexterm>
+<programlisting>
+<![CDATA[
+                                 +-------------------+
+                                 V                   |
+>>-aListControl~RemoveStyle(--'----+-ICON----------+-+--'--)---><
+                                   +-SMALLICON-----+
+                                   +-LIST----------+
+                                   +-REPORT--------+
+                                   +-ALIGNLEFT-----+
+                                   +-ALIGNTOP------+
+                                   +-AUTOARRANGE---+
+                                   +-ASCENDING-----+
+                                   +-DESCENDING----+
+                                   +-EDIT----------+
+                                   +-HSCROLL-------+
+                                   +-VSCROLL-------+
+                                   +-NOSCROLL------+
+                                   +-NOHEADER------+
+                                   +-NOSORTHEADER--+
+                                   +-NOWRAP--------+
+                                   +-SINGLESEL-----+
+                                   +-SHOWSELALWAYS-+
+                                   +-SHAREIMAGES---+
+                                   +-GROUP---------+
+                                   +-HIDDEN--------+
+                                   +-NOTAB---------+
+                                   +-NOBORDER------+
+
+
+]]>
+</programlisting>
+
+<para>The RemoveStyle method removes one or more window
+styles of a list view control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>style</term>
+<listitem><para>The window styles to be removed, which is one or more of the styles
+listed in the syntax diagram, separated by blanks. For an explanation of the
+different styles, refer to <link linkend="addlistcontrol">AddListControl</link>.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>0 if this method fails.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="insertcolumn"><title>InsertColumn</title>
+<indexterm><primary>InsertColumn</primary></indexterm>
+<programlisting>
+<![CDATA[
+                               +-0------+
+>>-aListControl~InsertColumn(--+--------+--,--text--,-->
+                               +-column-+
+
+>--,--width--+---------------------+--)---------------><
+             |       +-LEFT---+    |
+             +-,--'--+-CENTER-+--'-+
+                     +-RIGHT--+
+
+
+]]>
+</programlisting>
+
+<para>The InsertColumn method sets the attributes of
+a report list view column.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>column</term>
+<listitem><para>The number of the column. 0 is the first column and the default.
+</para></listitem></varlistentry>
+<varlistentry><term>text</term>
+<listitem><para>The text of the column heading.
+</para></listitem></varlistentry>
+<varlistentry><term>width</term>
+<listitem><para>The width of the column, in pixels.
+</para></listitem></varlistentry>
+<varlistentry><term>align</term>
+<listitem><para>The alignment of the column heading and the subitem text within the
+column. It can be one of the following values:
+<variablelist>
+<varlistentry><term>CENTER</term>
+<listitem><para>The text is centered.
+</para></listitem></varlistentry>
+<varlistentry><term>LEFT</term>
+<listitem><para>The text is left-aligned, which is the default.
+</para></listitem></varlistentry>
+<varlistentry><term>RIGHT</term>
+<listitem><para>The text is right-aligned.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The number of the new column, or 0 if this method fails.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example adds three columns to a report list:
+<programlisting>
+<![CDATA[
+::method InitReport
+  curList = self~GetListControl(102)
+  if curList \= .Nil then
+  do
+    curList~InsertColumn(0,"First Name",50)
+    curList~InsertColumn(1,"Last Name",50)
+    curList~InsertColumn(2,"Age",50)
+  end
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="deletecolumn"><title>DeleteColumn</title>
+<indexterm><primary>DeleteColumn</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~DeleteColumn(--column--)-----------------------><
+
+
+]]>
+</programlisting>
+
+<para>The DeleteColumn method removes a column from a
+list view control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>column</term>
+<listitem><para>The number of the column to be deleted. The first column must be deleted
+last.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The column was deleted.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>You did not specify <emphasis role="italic">column</emphasis>.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>For all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="modifycolumn"><title>ModifyColumn</title>
+<indexterm><primary>ModifyColumn</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~ModifyColumn(--column--,--+------+--,--width---->
+                                          +-text-+
+
+>--+---------------------+--)----------------------------------><
+   |       +-LEFT---.    |
+   +-,--'--+-CENTER-+--'-+
+           +-RIGHT--+
+
+
+]]>
+</programlisting>
+
+<para>The ModifyColumn method sets new attributes for
+a column of a list view control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>column</term>
+<listitem><para>The number of the column. 0 is the first column.
+</para></listitem></varlistentry>
+<varlistentry><term>text</term>
+<listitem><para>The text of the column heading. If you omit this argument, the heading
+is not changed.
+</para></listitem></varlistentry>
+<varlistentry><term>width</term>
+<listitem><para>The width of the column, in pixels.
+</para></listitem></varlistentry>
+<varlistentry><term>align</term>
+<listitem><para>The alignment of the column heading and the subitem text within the
+column. It can be one of the following values:
+<variablelist>
+<varlistentry><term>CENTER</term>
+<listitem><para>The text is centered.
+</para></listitem></varlistentry>
+<varlistentry><term>LEFT</term>
+<listitem><para>The text is left-aligned, which is the default.
+</para></listitem></varlistentry>
+<varlistentry><term>RIGHT</term>
+<listitem><para>The text is right-aligned.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The column was modified.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>You did not specify <emphasis role="italic">column</emphasis>.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>For all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example changes the title, size, and alignment of the
+first column in a report list:
+<programlisting>
+<![CDATA[
+::method ChangeColumn
+  curList = self~GetListControl(102)
+  curList~ModifyColumn(0,"New Title",100,"RIGHT")
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="columninfo"><title>ColumnInfo</title>
+<indexterm><primary>ColumnInfo</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~ColumnInfo(--column--)-------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The ColumnInfo method retrieves the attributes
+of a column of a list view control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>column</term>
+<listitem><para>The number of the column of which the attributes are to be retrieved.
+0 is the first column.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>A compound variable that stores the attributes of the item.
+If attributes for a column are not available or an error occurs, then the
+RetStem.!WIDTH variable will be set to 0.
+<variablelist>
+<varlistentry><term>RetStem.!TEXT</term>
+<listitem><para>The heading of the column.
+</para></listitem></varlistentry>
+<varlistentry><term>RetStem.!COLUMN</term>
+<listitem><para>The column number.
+</para></listitem></varlistentry>
+<varlistentry><term>RetStem.!WIDTH</term>
+<listitem><para>The width of the column.
+</para></listitem></varlistentry>
+<varlistentry><term>RetStem.!ALIGN</term>
+<listitem><para>The alignment of the column: &quot;LEFT&quot;, &quot;RIGHT&quot;, or &quot;CENTER&quot;.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example displays the column attributes in an information
+box when the column is clicked on:
+<programlisting>
+<![CDATA[
+::method OnColumnClick
+  use arg id, column
+  curList = self~GetListControl(102)
+  info. = curList~ColumnInfo(column)
+  call InfoDialog("Column Title : " info.!Text"d"x,
+                  "Column Number: " info.!Column"d"x,
+                  "Column Width : " info.!Width"d"x,
+                  "Alignment    : " info.!Align)
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="columnwidth"><title>ColumnWidth</title>
+<indexterm><primary>ColumnWidth</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~ColumnWidth(--column--)------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The ColumnWidth method retrieves the width of a
+column in a report or list view.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>column</term>
+<listitem><para>The number of the column of which the width is to be retrieved. 0 is
+the first column.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The column width, or -1 if you did not specify <emphasis role="italic">column</emphasis>,
+or 0 in all other cases.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example displays the column width in an information box
+when the column is clicked on:
+<programlisting>
+<![CDATA[
+::method OnColumnClick
+  use arg id, column
+  curList = self~GetListControl(102)
+  call InfoDialog(curList~ColumnWidth(column))
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="setcolumnwidth"><title>SetColumnWidth</title>
+<indexterm><primary>SetColumnWidth</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~SetColumnWidth(--column--+----------+--)-------><
+                                         +-,--width-+
+
+
+]]>
+</programlisting>
+
+<para>The SetColumnWidth method sets the width of a column
+in a report or list view.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>column</term>
+<listitem><para>The number of the column of which the width is to be set. 0 is the first
+column.
+</para></listitem></varlistentry>
+<varlistentry><term>width</term>
+<listitem><para>The width of the column, in pixels. If you omit this argument, the column
+is sized automatically.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The column width was set.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>You did not specify <emphasis role="italic">column</emphasis>.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>For all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example enlarges the selected column by 10:
+<programlisting>
+<![CDATA[
+::method OnColumnClick
+  use arg id, column
+  curList = self~GetListControl(102)
+  curList~SetColumnWidth(column,curList~ColumnWidth(column)+10)
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="stringwidth"><title>StringWidth</title>
+<indexterm><primary>StringWidth</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~StringWidth(--text--)--------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The StringWidth method determines the width of
+a specified string using the current font of the list view control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>text</term>
+<listitem><para>The text string of which the width is to be determined.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The string width, or -1 if you did not specify a <emphasis role="italic">text</emphasis>,
+or 0 in all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="insertlc"><title>Insert</title>
+<indexterm><primary>Insert</primary>
+<secondary>ListControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+                                      +-0------+              +-0----+
+>>-aListControl~Insert(--+------+--,--+--------+--,--text--,--+------+--)-><
+                         +-item-+     +-column-+              +-icon-+
+
+
+]]>
+</programlisting>
+
+<para>The Insert method inserts a new item in a list
+view control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>item</term>
+<listitem><para>The number of the item. If you omit this argument, the number of the
+last item is increased by 1.
+</para></listitem></varlistentry>
+<varlistentry><term>column</term>
+<listitem><para>The number of the column. If you omit this argument, 0 is assumed. This
+argument only applies to report views.
+</para></listitem></varlistentry>
+<varlistentry><term>text</term>
+<listitem><para>The text of the item.
+</para></listitem></varlistentry>
+<varlistentry><term>icon</term>
+<listitem><para>The index of the icon of the list view item within the bitmap file,
+set with the SetImages or SetSmallImages method (see page <link linkend="setsmallimages">SetSmallImages</link>). The SetImages method must be used for the icon view and
+the SetSmallImages for the list, report, and small-icon views.</para>
+<para>In a report
+view, this argument can only be used for the first column.</para>
+<para>If you omit
+this argument, 0 is assumed.</para>
+</listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The index of the new item, or -1 in all other cases.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example inserts items in a list:
+<programlisting>
+<![CDATA[
+::method InitReport
+  curList = self~GetListControl(102)
+  if curList \= .Nil then
+  do
+    curList~Insert(, ,"First")
+    curList~Insert(, ,"Second")
+    curList~Insert(, ,"Third")
+  end
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="modifylc"><title>Modify</title>
+<indexterm><primary>Modify</primary>
+<secondary>ListControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+                                      +-0------+
+>>-aListControl~Modify(--+------+--,--+--------+--,--text--------->
+                         +-item-+     +-column-+
+
+      +-0----+
+>--,--+------+--)------------------------------------------------><
+      +-icon-+
+
+
+]]>
+</programlisting>
+
+<para>The Modify method sets some or all attributes of
+a list view item.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>item</term>
+<listitem><para>The number of the item. If you omit this argument, the selected item
+is used.
+</para></listitem></varlistentry>
+<varlistentry><term>column</term>
+<listitem><para>The number of the column. If you omit this argument, 0 is assumed. This
+argument only applies to report views.
+</para></listitem></varlistentry>
+<varlistentry><term>text</term>
+<listitem><para>The new text for the item.
+</para></listitem></varlistentry>
+<varlistentry><term>icon</term>
+<listitem><para>The new index for the icon of the list view item within the bitmap file,
+set with the SetImages or SetSmallImages method (see page <link linkend="setsmallimages">SetSmallImages</link>). The SetImages method must be used for the icon view and
+the SetSmallImages method for the list, report, and small-icon views.</para>
+<para>In
+a report view, this argument can only be used for the first column.</para>
+<para>If you omit this argument, 0 is assumed.</para>
+</listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The modification was successful.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>For all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example modifies the icon of the item that is double-clicked:
+<programlisting>
+<![CDATA[
+::method OnActivate
+  curList = self~GetListControl(102)
+  if curList \= .Nil then
+  do
+    si = curlist~Focused
+    curList~Modify(si, , ,2)
+  end
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="setitemtext"><title>SetItemText</title>
+<indexterm><primary>SetItemText</primary></indexterm>
+<programlisting>
+<![CDATA[
+                                       +-0------+
+>>-aListControl~SetItemText(--item--,--+--------+--,--text--)--><
+                                       +-column-+
+
+
+]]>
+</programlisting>
+
+<para>The SetItemText method changes the text of a list
+view item or a column.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>item</term>
+<listitem><para>The number of the item.
+</para></listitem></varlistentry>
+<varlistentry><term>column</term>
+<listitem><para>The number of the column. If you omit this argument, 0 is assumed. This
+argument only applies to report views.
+</para></listitem></varlistentry>
+<varlistentry><term>text</term>
+<listitem><para>The text of the item or a column.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The change was successful.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>You did not specify <emphasis role="italic">column</emphasis>.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>For all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="setitemstate"><title>SetItemState</title>
+<indexterm><primary>SetItemState</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~SetItemState(--item--+------------------------------+--)-><
+                                     |       +-----------------+    |
+                                     |       V                 |    |
+                                     +-,--'----+-CUT---------+-+--'-+
+                                               +-NOTCUT------+
+                                               +-DROP--------+
+                                               +-NOTDROP-----+
+                                               +-FOCUSED-----+
+                                               +-NOTFOCUSED--+
+                                               +-SELECTED----+
+                                               +-NOTSELECTED-+
+
+
+]]>
+</programlisting>
+
+<para>The SetItemState method sets the state of a list
+view item.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>item</term>
+<listitem><para>The number of the item.
+</para></listitem></varlistentry>
+<varlistentry><term>state</term>
+<listitem><para>The state of the item, which can be one or more of the following values,
+separated by blanks:
+<variablelist>
+<varlistentry><term>CUT</term>
+<listitem><para>The item is marked for a cut-and-paste operation.
+</para></listitem></varlistentry>
+<varlistentry><term>NOTCUT</term>
+<listitem><para>The item cannot be used for a cut-and-paste operation.
+</para></listitem></varlistentry>
+<varlistentry><term>DROP</term>
+<listitem><para>The item is highlighted as a drag-and-drop target.
+</para></listitem></varlistentry>
+<varlistentry><term>NOTDROP</term>
+<listitem><para>The item is not highlighted as a drag-and-drop target.
+</para></listitem></varlistentry>
+<varlistentry><term>FOCUSED</term>
+<listitem><para>The item has the focus and is therefore surrounded by the standard focus
+rectangle. Only one item can have the focus.
+</para></listitem></varlistentry>
+<varlistentry><term>NOTFOCUSED</term>
+<listitem><para>The item does not have the focus.
+</para></listitem></varlistentry>
+<varlistentry><term>SELECTED</term>
+<listitem><para>The item is selected. Its appearance depends on whether it has the focus
+and on the system colors used for a selection.
+</para></listitem></varlistentry>
+<varlistentry><term>NOTSELECTED</term>
+<listitem><para>The item is not selected.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The state was set successfully.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>You did not specify <emphasis role="italic">item</emphasis>.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>For all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="addlc"><title>Add</title>
+<indexterm><primary>Add</primary>
+<secondary>ListControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+                      +-------+
+                      V       |              +-0----+
+>>-aListControl~Add(----+---+-+--,--text--,--+------+--)-------><
+                        +-,-+                +-icon-+
+
+
+]]>
+</programlisting>
+
+<para>The Add method adds a new item to the report view.
+It can be used to fill a list view or report view sequentially.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>,</term>
+<listitem><para>The number of commas specifies in which column the text of the item
+is to be placed. For example, one comma specifies that the text of the item
+is to be placed in the first column.
+</para></listitem></varlistentry>
+<varlistentry><term>text</term>
+<listitem><para>The text for the item.
+</para></listitem></varlistentry>
+<varlistentry><term>icon</term>
+<listitem><para>The index of the icon of the list view item within the bitmap file,
+set with the SetImages or SetSmallImages method (see page <link linkend="setsmallimages">SetSmallImages</link>). The SetImages method must be used for the icon view and
+the SetSmallImages method for the list, report, and small-icon views.</para>
+<para>In
+a report view, this argument can only be used for the first column.</para>
+<para>If you omit this argument, 0 is assumed.</para>
+</listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example adds three columns and two items to a report list
+control. To get the following result:</para>
+
+<informaltable frame="all">
+<tgroup cols="3">
+<thead>
+<row>
+<entry>First Name</entry>
+<entry>Last Name</entry>
+<entry>Age</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>Mike</entry>
+<entry>Miller</entry>
+<entry>30</entry>
+</row>
+<row>
+<entry>Sue</entry>
+<entry>Thaxtor</entry>
+<entry>29</entry>
+</row>
+</tbody></tgroup>
+</informaltable>
+<para>you must specify the following:</para>
+<programlisting>
+<![CDATA[
+::method InitDialog
+  InitDlgRet = self~InitDialog:super
+
+  curList = self~GetListControl("IDC_LIST_REP")
+  if curList \= .Nil then
+  do
+    curList~SetSmallImages("E:\oodlist\oodlist.BMP",16,12)
+    curList~InsertColumn(0,"First Name",50)
+    curList~InsertColumn(1,"Last Name",50)
+    curList~InsertColumn(2,"Age",50)
+    curList~Add("Mike")
+    curList~Add(,"Miller")
+    curList~Add(, ,"30")
+    curList~~Add("Sue")~~Add(,"Thaxton")~~Add(, ,"29")
+  end
+  return InitDlgRet
+]]>
+</programlisting>
+</listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="addrow"><title>AddRow</title>
+<indexterm><primary>AddRow</primary></indexterm>
+<programlisting>
+<![CDATA[
+                                               +-,----+
+                                               V      |
+>>-aListControl~AddRow(--+------+--,--icon--,----text-+--)-----><
+                         +-item-+
+
+
+]]>
+</programlisting>
+
+<para>The AddRow method adds a new item to a list.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>item</term>
+<listitem><para>The number of the item. If you omit this argument, the number of the
+last item is increased by 1.
+</para></listitem></varlistentry>
+<varlistentry><term>icon</term>
+<listitem><para>The index of the icon of the list view item within the bitmap file,
+set with the SetImages or SetSmallImages method (see page <link linkend="setsmallimages">SetSmallImages</link>). The SetImages method must be used for the icon view and
+the SetSmallImages method for the list, report, and small icon views.</para>
+<para>In
+a report view, this argument can only be used for the first column.</para>
+</listitem></varlistentry>
+<varlistentry><term>text</term>
+<listitem><para>Any number of text strings. The first is used for the first column,
+the second for the second column, and so on. If you specify more text entries
+than there are columns, the extra entries are ignored.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The index of the new item, or -1 in all other cases.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example adds three items to a report list with two columns:
+<programlisting>
+<![CDATA[
+::method InitList
+  curList = self~GetListControl(101)
+  curList~AddRow(, ,"Mike","Miller")
+  curList~AddRow(, ,"Sue","Muller")
+  curList~AddRow(, ,"Chris","Watson")
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="deletelc"><title>Delete</title>
+<indexterm><primary>Delete</primary>
+<secondary>ListControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~Delete(--item--)-------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The Delete method removes an item from a list view
+control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>item</term>
+<listitem><para>The number of the item.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The item was deleted.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>You did not specify <emphasis role="italic">item</emphasis>.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>For all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example deletes the selected item in a list control:
+<programlisting>
+<![CDATA[
+::method DeleteSelectedItem
+  curList = self~GetListControl(102)
+  curList~Delete(curList~Selected)
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="deletealllc"><title>DeleteAll</title>
+<indexterm><primary>DeleteAll</primary>
+<secondary>ListControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~DeleteAll--------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The DeleteAll method removes all items from a list
+view control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The items were deleted.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>No item was available.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>For all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="itemslc"><title>Items</title>
+<indexterm><primary>Items</primary>
+<secondary>ListControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~Items------------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The Items method retrieves the number of items
+in a list view control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The number of items.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="last"><title>Last</title>
+<indexterm><primary>Last</primary>
+<secondary>ListControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~Last-------------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The Last method retrieves the number of the last
+item in a list view control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The number of the last item.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="prepare4nitems"><title>Prepare4nItems</title>
+<indexterm><primary>Prepare4nItems</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~Prepare4nItems(--items--)----------------------><
+
+
+]]>
+</programlisting>
+
+<para>The Prepare4nItems method prepares a list view
+control for adding a large number of items.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>items</term>
+<listitem><para>The number of the items to be added later.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The list view control was prepared.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>You did not specify <emphasis role="italic">items</emphasis>.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="selecteditemslc"><title>SelectedItems</title>
+<indexterm><primary>SelectedItems</primary>
+<secondary>ListControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~SelectedItems----------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The SelectedItems method determines the number
+of selected items in a list view control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The number of selected items.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="iteminfo"><title>ItemInfo</title>
+<indexterm><primary>ItemInfo</primary>
+<secondary>ListControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+                                    +-0------+
+>>-aListControl~ItemInfo(--item--,--+--------+--)--------------><
+                                    +-column-+
+
+
+]]>
+</programlisting>
+
+<para>The ItemInfo method retrieves the attributes of
+a list view item.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>item</term>
+<listitem><para>The number of the item.
+</para></listitem></varlistentry>
+<varlistentry><term>column</term>
+<listitem><para>The number of the column. If you omit this argument, 0 is assumed.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>A compound variable that stores the attributes of the item, or -1
+in all other cases. The compound variable can be:
+<variablelist>
+<varlistentry><term>RetStem.!TEXT</term>
+<listitem><para>The item text.
+</para></listitem></varlistentry>
+<varlistentry><term>RetStem.!IMAGE</term>
+<listitem><para>The index of the icon of the list view item within the bitmap file,
+set with the SetImages or SetSmallImages method (see page <link linkend="setsmallimages">SetSmallImages</link>). The SetImages method must be used for the icon view and
+the SetSmallImages method for the list, report, and small icon views.</para>
+<para>In
+a report view, this argument can only be used for the first column.</para>
+</listitem></varlistentry>
+<varlistentry><term>RetStem.!STATE</term>
+<listitem><para>One or more of the following values:
+<variablelist>
+<varlistentry><term>CUT</term>
+<listitem><para>The item is marked for a cut-and-paste operation.
+</para></listitem></varlistentry>
+<varlistentry><term>DROPPED</term>
+<listitem><para>The item is highlighted as a drag-and-drop target.
+</para></listitem></varlistentry>
+<varlistentry><term>FOCUSED</term>
+<listitem><para>The item has the focus and is therefore surrounded by the standard focus
+rectangle. Only one item can have the focus.
+</para></listitem></varlistentry>
+<varlistentry><term>SELECTED</term>
+<listitem><para>The item is selected. Its appearance depends on whether it has the focus
+and on the system colors used for a selection.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example displays the item text, icon index, and the item
+state in a message box:
+<programlisting>
+<![CDATA[
+::method DisplayItemInfo
+  curList = self~GetListControl(104)
+  itemInfo. = curList~ItemInfo(curList~Selected)
+  call InfoDialog("Item Text   : " itemInfo.!Text"d"x,
+                  "Image Index : " itemInfo.!Image"d"x,
+                  "Item State  : " itemInfo.!State)
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="itemtext"><title>ItemText</title>
+<indexterm><primary>ItemText</primary></indexterm>
+<programlisting>
+<![CDATA[
+                                    +-0------+
+>>-aListControl~ItemText(--item--,--+--------+--)--------------><
+                                    +-column-+
+
+
+]]>
+</programlisting>
+
+<para>The ItemText method retrieves the text of a list
+view item or a column.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>item</term>
+<listitem><para>The number of the item.
+</para></listitem></varlistentry>
+<varlistentry><term>column</term>
+<listitem><para>The number of the column. If you omit this argument, 0 is assumed.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The item or column text, or -1 if you did not specify <emphasis role="italic">item</emphasis>.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="itemstate"><title>ItemState</title>
+<indexterm><primary>ItemState</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~ItemState(--item--)----------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The ItemState method retrieves the state of a list
+view item.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>item</term>
+<listitem><para>The number of the item.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The state of the item, which can be one or more of the following values:
+<variablelist>
+<varlistentry><term>CUT</term>
+<listitem><para>The item can be used in a cut-and-paste operation.
+</para></listitem></varlistentry>
+<varlistentry><term>DROPPED</term>
+<listitem><para>The item is highlighted as a drag-and-drop target.
+</para></listitem></varlistentry>
+<varlistentry><term>FOCUSED</term>
+<listitem><para>The item has the focus and is therefore surrounded by the standard focus
+rectangle. Only one item can have the focus.
+</para></listitem></varlistentry>
+<varlistentry><term>SELECTED</term>
+<listitem><para>The item is selected. Its appearance depends on whether it has the focus
+and on the system colors used for a selection.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="selectlc"><title>Select</title>
+<indexterm><primary>Select</primary>
+<secondary>ListControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~Select(--item--)-------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The Select method selects an item.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>item</term>
+<listitem><para>The number of the item.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The item was selected.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>You did not specify <emphasis role="italic">item</emphasis>.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>For all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="deselect"><title>Deselect</title>
+<indexterm><primary>Deselect</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~Deselect(--item--)-----------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The Deselect method deselects an item.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>item</term>
+<listitem><para>The number of the item.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The item was selected.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>You did not specify <emphasis role="italic">item</emphasis>.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>For all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="selectedlc"><title>Selected</title>
+<indexterm><primary>Selected</primary>
+<secondary>ListControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~Selected---------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The Selected method returns the number of the selected
+item.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The number of the item selected last, or -1 in all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="lastselected"><title>LastSelected</title>
+<indexterm><primary>LastSelected</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~LastSelected-----------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The LastSelected method returns the number of the
+item selected last.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The number of the item selected last, or -1 in all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="focused"><title>Focused</title>
+<indexterm><primary>Focused</primary>
+<secondary>ListControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~Focused----------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The Focused method retrieves the number of the
+item that has currently the focus.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The number of the item with the focus, or -1 in all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="focus"><title>Focus</title>
+<indexterm><primary>Focus</primary>
+<secondary>ListControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~Focus(--item--)--------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The Focus method assigns the focus to the specified
+item, which is then surrounded by the standard focus rectangle. Although more
+than one item can be selected, only one item can have the focus.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>item</term>
+<listitem><para>The number of the item to receive the focus.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The specified item received the focus.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>You did not specify <emphasis role="italic">item</emphasis>.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>For all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="drophighlighted"><title>DropHighlighted</title>
+<indexterm><primary>DropHighlighted</primary>
+<secondary>ListControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~DropHighlighted--------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The DropHighlighted method retrieves the item that
+is highlighted as a drag-and-drop target.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The number of the selected item, or -1 in all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="firstvisible"><title>FirstVisible</title>
+<indexterm><primary>FirstVisible</primary>
+<secondary>ListControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~FirstVisible-----------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The FirstVisible method retrieves the number of
+the first item visible in a list or report view.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The number of the first item visible, or 0 if the list view control
+is in icon or small-icon view.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="nextselected"><title>NextSelected</title>
+<indexterm><primary>NextSelected</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~NextSelected(--item--)-------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The NextSelected method retrieves the selected
+item that follows, or is to the right of, <emphasis role="italic">item</emphasis>.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>item</term>
+<listitem><para>The number of the item at which the search is to start. The specified
+item itself is excluded from the search.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The number of the selected item, or -1 in all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="previousselected"><title>PreviousSelected</title>
+<indexterm><primary>PreviousSelected</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~PreviousSelected(--item--)---------------------><
+
+
+]]>
+</programlisting>
+
+<para>The PreviousSelected method retrieves the selected
+item that precedes, or is to the left of, <emphasis role="italic">item</emphasis>.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>item</term>
+<listitem><para>The number of the item at which the search is to start. The specified
+item itself is excluded from the search.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The number of the selected item, or -1 in all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="next"><title>Next</title>
+<indexterm><primary>Next</primary>
+<secondary>ListControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~Next(--item--)---------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The Next method retrieves the item that follows,
+or is to the right of, <emphasis role="italic">item</emphasis>.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>item</term>
+<listitem><para>The number of the item at which the search is to start.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The number of the following item, or -1 in all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="previous"><title>Previous</title>
+<indexterm><primary>Previous</primary>
+<secondary>ListControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~Previous(--item--)-----------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The Previous method retrieves the item that precedes,
+or is to the left of, <emphasis role="italic">item</emphasis>.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>item</term>
+<listitem><para>The number of the item at which the search is to start.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The number of the previous item, or -1 in all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="nextleft"><title>NextLeft</title>
+<indexterm><primary>NextLeft</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~NextLeft(--item--)-----------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The NextLeft method retrieves the item left to <emphasis role="italic">item</emphasis>.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>item</term>
+<listitem><para>The number of the item at which the search is to start. The specified
+item itself is excluded from the search.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The number of the next item to the left, or -1 in all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="nextright"><title>NextRight</title>
+<indexterm><primary>NextRight</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~NextRight(--item--)----------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The NextRight method retrieves the item right to <emphasis role="italic">item</emphasis>.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>item</term>
+<listitem><para>The number of the item at which the search is to start. The specified
+item itself is excluded from the search.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The number of the next item to the right, or -1 in all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="smallspacing"><title>SmallSpacing</title>
+<indexterm><primary>SmallSpacing</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~SmallSpacing-----------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The SmallSpacing method determines the spacing
+between items in a small-icon list view control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The amount of spacing between the items.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="spacing"><title>Spacing</title>
+<indexterm><primary>Spacing</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~Spacing----------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The Spacing method determines the spacing between
+items in an icon list view control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The amount of spacing between the items.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="redrawitems"><title>RedrawItems</title>
+<indexterm><primary>RedrawItems</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~RedrawItems--+--------------------------+------><
+                             +-(--first--+---------+--)-+
+                                         +-,--last-+
+
+
+]]>
+</programlisting>
+
+<para>The RedrawItems method forces a list view control
+to redraw a range of items.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>first</term>
+<listitem><para>The number of the first item to be redrawn. The default is 0.
+</para></listitem></varlistentry>
+<varlistentry><term>last</term>
+<listitem><para>The number of the last item to be redrawn. The default is 0.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The specified range of items was redrawn.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>For all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="updateitem"><title>UpdateItem</title>
+<indexterm><primary>UpdateItem</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~UpdateItem(--item--)---------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The UpdateItem method updates a list view item.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>item</term>
+<listitem><para>The number of the item to be updated.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The item was updated.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>You did not specify <emphasis role="italic">item</emphasis>.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>For all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="updatelc"><title>Update</title>
+<indexterm><primary>Update</primary>
+<secondary>ListControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~Update-----------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The Update method updates a list view control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>0.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="ensurevisible"><title>EnsureVisible</title>
+<indexterm><primary>EnsureVisible</primary>
+<secondary>ListControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+                                         +-0-+
+>>-aListControl~EnsureVisible(--item--,--+---+--)--------------><
+                                         +-1-+
+
+
+]]>
+</programlisting>
+
+<para>The EnsureVisible method ensures that a list view
+item is entirely or partially visible by scrolling the list view control,
+if necessary.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>item</term>
+<listitem><para>The number of the item visible.
+</para></listitem></varlistentry>
+<varlistentry><term>partial</term>
+<listitem><para>Specifies whether the item must be entirely visible:
+<variablelist>
+<varlistentry><term>1</term>
+<listitem><para>The list view control is not scrolled if the item is at least partially
+visible.
+</para></listitem></varlistentry>
+<varlistentry><term>0</term>
+<listitem><para>The list view control is scrolled if the item is only partially visible.
+This is the default.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The item is visible.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>You did not specify <emphasis role="italic">item</emphasis>.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>For all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="setsmallimages"><title>SetSmallImages</title>
+<indexterm><primary>SetSmallImages</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~SetSmallImages(--bitmap--+-----------------------------+--)-><
+                                         +-,--+-------+--+-----------+-+
+                                              +-width-+  +-,--height-+
+
+
+]]>
+</programlisting>
+
+<para>The SetSmallImages method assigns an image list
+to a small-icon list view control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>bitmap</term>
+<listitem><para>The name of, or handle to, a bitmap file that has already been loaded
+using the <link linkend="h000667">LoadBitmap</link> method.
+</para></listitem></varlistentry>
+<varlistentry><term>width</term>
+<listitem><para>The width of each image, in pixels. If you do not specify this argument
+or specify 0, the width of the image in the image file is used.
+</para></listitem></varlistentry>
+<varlistentry><term>height</term>
+<listitem><para>The height of each image, in pixels. If you do not specify this argument
+or specify 0, the height of the image in the image file is used.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The handle to the image list, or -1 if you did not specify <emphasis role="italic">bitmap</emphasis>, or 0 in all other cases.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example connects a bitmap file with a small-icon list:
+<programlisting>
+<![CDATA[
+::method InitSmallIconList
+  curList = self~GetListControl(104)
+  curList~SetSmallImages("oodlist.BMP",16,12)
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="setimages"><title>SetImages</title>
+<indexterm><primary>SetImages</primary>
+<secondary>ListControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~SetImages(--bitmap--+-----------------------------+--)-><
+                                    +-,--+-------+--+-----------+-+
+                                         +-width-+  +-,--height-+
+
+
+]]>
+</programlisting>
+
+<para>The SetImages method assigns an image list to an
+icon list view control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>bitmap</term>
+<listitem><para>The name of, or handle to, a bitmap file that has already been loaded
+using the <link linkend="h000667">LoadBitmap</link> method.
+</para></listitem></varlistentry>
+<varlistentry><term>width</term>
+<listitem><para>The width of each image, in pixels. If you do not specify this argument
+or specify 0, the width of the image in the image file is used.
+</para></listitem></varlistentry>
+<varlistentry><term>height</term>
+<listitem><para>The height of each image, in pixels. If you do not specify this argument
+or specify 0, the height of the image in the image file is used.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The handle to the image list, or -1 if you did not specify <emphasis role="italic">bitmap</emphasis>, or 0 in all other cases.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example connects a bitmap file with an icon list:
+<programlisting>
+<![CDATA[
+::method InitIconList
+  curList = self~GetListControl(104)
+  curList~SetImages("oodlist.BMP",16,12)
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="removesmallimages"><title>RemoveSmallImages</title>
+<indexterm><primary>RemoveSmallImages</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~RemoveSmallImages------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The RemoveSmallImages method erases an image list
+of a small-icon list view control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The image list was erased.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>For all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="removeimages"><title>RemoveImages</title>
+<indexterm><primary>RemoveImages</primary>
+<secondary>ListControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~RemoveImages-----------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The RemoveImages method erases an image list of
+an icon list view control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The image list was erased.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>For all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="findlc"><title>Find</title>
+<indexterm><primary>Find</primary>
+<secondary>ListControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+                                +- -1--+     +-0-+
+>>-aListControl~Find(--text--,--+------+--,--+---+--)----------><
+                                +-item-+     +-1-+
+
+
+]]>
+</programlisting>
+
+<para>The Find method searches for a list view item containing <emphasis role="italic">text</emphasis>. The text of this item must exactly match <emphasis role="italic">text</emphasis>.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>text</term>
+<listitem><para>The text of the item to be searched for.
+</para></listitem></varlistentry>
+<varlistentry><term>item</term>
+<listitem><para>Specify the number of the item at which the search is to be started.
+Specify -1 or omit this argument to start the search at the beginning.
+</para></listitem></varlistentry>
+<varlistentry><term>wrap</term>
+<listitem><para>Specify 1 if the search is to be continued at the beginning if no match
+is found. Specify 0 or omit this argument if the search is to stop at the
+end of the list.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The number of the item, or -1 in all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="findpartial"><title>FindPartial</title>
+<indexterm><primary>FindPartial</primary></indexterm>
+<programlisting>
+<![CDATA[
+                                       +- -1--+     +-0-+
+>>-aListControl~FindPartial(--text--,--+------+--,--+---+--)---><
+                                       +-item-+     +-1-+
+
+
+]]>
+</programlisting>
+
+<para>The FindPartial method searches for a list view
+item containing <emphasis role="italic">text</emphasis>. An item matches if its text begins with <emphasis role="italic">text</emphasis>.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>text</term>
+<listitem><para>The text of the item to be searched for.
+</para></listitem></varlistentry>
+<varlistentry><term>item</term>
+<listitem><para>Specify the number of the item at which the search is to be started.
+Specify -1 or omit this argument to start the search at the beginning.
+</para></listitem></varlistentry>
+<varlistentry><term>wrap</term>
+<listitem><para>Specify 1 if the search is to be continued at the beginning if no match
+is found. Specify 0 or omit this argument if the search is to stop at the
+end of the list.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The number of the item, or -1 in all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="findnearestxy"><title>FindNearestXY</title>
+<indexterm><primary>FindNearestXY</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~FindNearestXY(--x--,--y--+--------------------+--)-><
+                                         |       +-DOWN--+    |
+                                         +-,--'--+-UP----+--'-+
+                                                 +-LEFT--+
+                                                 +-RIGHT-+
+
+
+]]>
+</programlisting>
+
+<para>The FindNearestXY method searches, in the specified
+direction, for the item nearest to the specified position.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>x</term>
+<listitem><para>The x-coordinate of the position at which the search is to be started.
+</para></listitem></varlistentry>
+<varlistentry><term>y</term>
+<listitem><para>The y-coordinate of the position at which the search is to be started.
+</para></listitem></varlistentry>
+<varlistentry><term>direction</term>
+<listitem><para>The direction in which the search should proceed.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The index of the item, or -1 in all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="arrange"><title>Arrange</title>
+<indexterm><primary>Arrange</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~Arrange----------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The Arrange method aligns items according to the
+current alignment style of the list view control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The items were aligned.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>For all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="snaptogrid"><title>SnapToGrid</title>
+<indexterm><primary>SnapToGrid</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~SnapToGrid-------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The SnapToGrid method snaps all icons to the nearest
+grid position.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The items were snapped.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>For all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="alignleft"><title>AlignLeft</title>
+<indexterm><primary>AlignLeft</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~AlignLeft--------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The AlignLeft method aligns items along the left
+window border.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The items were aligned.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>For all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="aligntop"><title>AlignTop</title>
+<indexterm><primary>AlignTop</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~AlignTop---------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The AlignTop method aligns items along the upper
+window border.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The items were aligned.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>For all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="itempos"><title>ItemPos</title>
+<indexterm><primary>ItemPos</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~ItemPos(--item--)------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The ItemPos method retrieves the position of the
+upper left corner of the item.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>item</term>
+<listitem><para>The number of the item.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The x- and y-coordinates of the upper left corner of the item, or -1
+if you did not specify <emphasis role="italic">item</emphasis>, or 0 in all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+
+<note><title>Note</title><para>
+Use <link linkend="deflistdraghandler">DefListDragHandler</link> to support default dragging:
+</para></note>
+<programlisting>
+<![CDATA[
+self~ConnectListNotify(104,"BEGINDRAG","DefListDragHandler")
+]]>
+</programlisting>
+</section>
+
+<section id="setitempos"><title>SetItemPos</title>
+<indexterm><primary>SetItemPos</primary></indexterm>
+<programlisting>
+<![CDATA[
+                                      +-0-+     +-0-+
+>>-aListControl~SetItemPos(--item--,--+---+--,--+---+--)-------><
+                                      +-x-+     +-y-+
+
+
+]]>
+</programlisting>
+
+<para>The SetItemPos method moves an item to a specified
+position in a list view control, which must be in icon or small-icon view.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>item</term>
+<listitem><para>The number of the item.
+</para></listitem></varlistentry>
+<varlistentry><term>x</term>
+<listitem><para>The x-coordinate of the new position of the upper left corner of the
+item, in view coordinates. The default is 0.
+</para></listitem></varlistentry>
+<varlistentry><term>y</term>
+<listitem><para>The y-coordinate of the new position of the upper left corner of the
+item, in view coordinates. The default is 0.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The item was moved.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>You did not specify <emphasis role="italic">item</emphasis>.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>For all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+
+<note><title>Note</title><para>
+Use <link linkend="deflistdraghandler">DefListDragHandler</link> to support default dragging:
+</para></note>
+<programlisting>
+<![CDATA[
+self~ConnectListNotify(104,"BEGINDRAG","DefListDragHandler")
+]]>
+</programlisting>
+</section>
+
+<section id="edit"><title>Edit</title>
+<indexterm><primary>Edit</primary>
+<secondary>ListControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~Edit(--item--)---------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The Edit method begins editing of the text of the
+specified list view item.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>item</term>
+<listitem><para>The number of the item.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The handle of the edit control used to edit the item text, or 0 in all
+other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="endedit"><title>EndEdit</title>
+<indexterm><primary>EndEdit</primary>
+<secondary>ListControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~EndEdit----------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The EndEdit method cancels editing of the list
+view item that is being edited.</para>
+</section>
+
+<section id="subclassedit"><title>SubclassEdit</title>
+<indexterm><primary>SubclassEdit</primary>
+<secondary>ListControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~SubclassEdit-----------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The SubclassEdit method is used by the DefListEditHandler
+to correct an operating system problem if the Esc or Enter key was pressed
+in an active edit control.</para>
+</section>
+
+<section id="restoreeditclass"><title>RestoreEditClass</title>
+<indexterm><primary>RestoreEditClass</primary>
+<secondary>ListControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~RestoreEditClass-------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The RestoreEditClass method is used by the DefListEditHandler
+to correct an operating system problem if the Esc or Enter key was pressed
+in an active edit item.</para>
+</section>
+
+<section id="itemsperpage"><title>ItemsPerPage</title>
+<indexterm><primary>ItemsPerPage</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~ItemsPerPage-----------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The ItemsPerPage method calculates the number of
+items that vertically fit the visible area of a list view control that is
+in list or report view. Only fully visible items are counted.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The number of fully visible items. If the current view is an icon or
+small-icon view, the return value is the total number of items in the list
+view control.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="scrolllc"><title>Scroll</title>
+<indexterm><primary>Scroll</primary>
+<secondary>ListControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+                         +-0-+     +-0-+
+>>-aListControl~Scroll(--+---+--,--+---+--)--------------------><
+                         +-x-+     +-y-+
+
+
+]]>
+</programlisting>
+
+<para>The Scroll method scrolls the content of a list
+view control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>x</term>
+<listitem><para>An integer value specifying the amount of horizontal scrolling. If the
+control is in icon, small-icon, or report view, this value specifies the number
+of pixels to be scrolled. If it is in list view, this value specifies the
+number of columns to be scrolled. The default value is 0.
+</para></listitem></varlistentry>
+<varlistentry><term>y</term>
+<listitem><para>An integer value specifying the amount of vertical scrolling. If the
+control is in icon, small-icon, or report view, this value specifies the number
+of pixels to be scrolled. If it is in list view, this value specifies the
+number of lines to be scrolled. The default value is 0.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Scrolling was successful.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>Scrolling failed.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="bkcolor"><title>BkColor</title>
+<indexterm><primary>BkColor</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~BkColor----------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The BkColor method retrieves the background color
+for a list view control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The color-palette index specifier (0 to 18). For more information on
+color palettes, refer to <link linkend="termdef">Definition of Terms</link>.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="bkcolornew"><title>BkColor=</title>
+<indexterm><primary>BkColor=</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~BkColor=(--color--)----------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The BkColor= method sets the background color of
+a list view control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>color</term>
+<listitem><para>The new background color. Specify the color-palette index specifier
+(0 to 18).  For more information on color palettes, refer to <link linkend="termdef">Definition of Terms</link>.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example sets the background color of a list control to
+yellow:
+<programlisting>
+<![CDATA[
+::method Yellow
+  curList = self~GetListControl(104)
+  curList~BkColor = 15
+  curList~Update
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="textcolor"><title>TextColor</title>
+<indexterm><primary>TextColor</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~TextColor--------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The TextColor method retrieves the text color of
+a list view control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The color-palette index specifier (0 to 18). For more information on
+color palettes, refer to <link linkend="termdef">Definition of Terms</link>.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="textcolornew"><title>TextColor=</title>
+<indexterm><primary>TextColor=</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~TextColor=(--color--)--------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The TextColor= method sets the text color of a
+list view control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>color</term>
+<listitem><para>The new text color. Specify the color-palette index specifier (0 to
+18). For more information on color palettes, refer to <link linkend="termdef">Definition of Terms</link>.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example sets the text color of a list control to light
+blue:
+<programlisting>
+<![CDATA[
+::method LightBlue
+  curList = self~GetListControl(104)
+  curList~BkColor = 9
+  curList~Update
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="textbkcolor"><title>TextBkColor</title>
+<indexterm><primary>TextBkColor</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~TextBkColor------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The TextBkColor method retrieves the background
+color of the text in a list view control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The color-palette index specifier (0 to 18). For more information on
+color palettes, refer to <link linkend="termdef">Definition of Terms</link>.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="textbkcolornew"><title>TextBkColor=</title>
+<indexterm><primary>TextBkColor=</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~TextBkColor=(--color--)------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The TextBkColor= method sets the background color
+for the text in a list view control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>color</term>
+<listitem><para>The new background color for text. Specify the color-palette index specifier
+(0 to 18). For more information on color palettes, refer to <link linkend="termdef">Definition of Terms</link>.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+</section>
+
+<section id="notifmsg"><title>Notification Messages</title>
+<indexterm><primary>modification messages</primary>
+<secondary>ListControl class</secondary></indexterm>
+<para>The list view control sends notification messages to notify about events.
+For more information on notification messages, refer to <link linkend="connectlistnotify">ConnectListNotify</link>.</para>
+<para>The following example shows how to connect the list view notification messages
+with the corresponding message:</para>
+<programlisting>
+<![CDATA[
+::method Init
+  use arg InitStem.
+  if Arg(1,"o") = 1 then
+     InitRet = self~Init:super
+  else
+     InitRet = self~Init:super(InitStem.)
+
+  if self~Load("list.rc", ) \= 0 then do
+     self~InitCode = 1
+    return
+  end
+
+  /* Connect dialog control items to class methods */
+  self~ConnectListNotify("IDC_LIST","Changing","OnChanging_IDC_LIST")
+  self~ConnectListNotify("IDC_LIST","Changed","OnChanged_IDC_LIST")
+  self~ConnectListNotify("IDC_LIST","DefaultEdit")
+  self~ConnectListNotify("IDC_LIST","Delete","OnDelete_IDC_LIST")
+  self~ConnectListNotify("IDC_LIST","KeyDown","OnKeyDown_IDC_LIST")
+  self~ConnectButton("IDC_PB_NEW","IDC_PB_NEW")
+  self~ConnectButton("IDC_PB_DELETE","IDC_PB_DELETE")
+  self~ConnectButton(2,"Cancel")
+  self~ConnectButton(9,"Help")
+  self~ConnectButton(1,"OK")
+  return InitRet
+]]>
+</programlisting>
+</section>
+</chapter>

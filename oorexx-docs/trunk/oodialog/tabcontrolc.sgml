@@ -1,0 +1,974 @@
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: OODialog Reference SGML file.
+    #
+    # Copyright (c) 2005-2006, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    # Author(s):
+    #      W. David Ashley <dashley@us.ibm.com>
+    #
+    #########################################################################
+-->
+<chapter id="tabcontrolc"><title>TabControl Class</title>
+<indexterm><primary>TabControl class</primary></indexterm>
+<para>A tab control can be compared to a divider in a notebook or a label in
+a file cabinet. By using a tab control, an application can define several
+pages for the same area of a dialog or dialog control.  Each page consists
+of a set of information or a group of controls that the application displays
+when the user selects the corresponding tab.</para>
+<para>A special type of tab control displays tabs that look like buttons. Clicking
+a button immediately performs a command instead of displaying a page.</para>
+<para>You can apply specific characteristics to tab controls by specifying tab
+control styles. For example, you can specify the alignment and general appearance
+of the tabs in a tab control.</para>
+<para>By default, a tab control displays only one row of tabs. If not all tabs
+can be shown at once, the tab control displays an up-and-down control so that
+the user can scroll to view additional tabs.</para>
+<para>Refer to PROPDEMO.REX in the OODIALOG\SAMPLES directory for an example.</para>
+<para>The TabControl class sends notification messages
+to notify about the event. For information about notification messages, refer
+to <link linkend="connectlistnotify">ConnectListNotify</link>.</para>
+<variablelist>
+<varlistentry><term>Requires:</term>
+<listitem><para>The TabControl class requires the class definition
+file <computeroutput>oodwin32.cls</computeroutput>:
+<programlisting>
+<![CDATA[
+::requires "oodwin32.cls"
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>Methods:</term>
+<listitem><para>Instances of the TabControl class implement
+the methods listed in the
+<link linkend="t000031">TabControl Instance Methods</link> table.</para>
+
+<table id="t000031" frame="all">
+<title>TabControl Instance Methods</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Method...</entry>
+<entry>...on page</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>AddFullSeq</entry>
+<entry><link linkend="addfullseq">AddFullSeq</link></entry>
+</row>
+<row>
+<entry>AddSequence</entry>
+<entry><link linkend="addsequence">AddSequence</link></entry>
+</row>
+<row>
+<entry>AdjustToRectangle</entry>
+<entry><link linkend="adjusttorectangle">AdjustToRectangle</link></entry>
+</row>
+<row>
+<entry>Delete</entry>
+<entry><link linkend="deletetc">Delete</link></entry>
+</row>
+<row>
+<entry>DeleteAll</entry>
+<entry><link linkend="deletealltc">DeleteAll</link></entry>
+</row>
+<row>
+<entry>Focus</entry>
+<entry><link linkend="focustc">Focus</link></entry>
+</row>
+<row>
+<entry>Focused</entry>
+<entry><link linkend="focusedtc">Focused</link></entry>
+</row>
+<row>
+<entry>Insert</entry>
+<entry><link linkend="inserttc">Insert</link></entry>
+</row>
+<row>
+<entry>ItemInfo</entry>
+<entry><link linkend="iteminfotc">ItemInfo</link></entry>
+</row>
+<row>
+<entry>Items</entry>
+<entry><link linkend="itemstc">Items</link></entry>
+</row>
+<row>
+<entry>Last</entry>
+<entry><link linkend="lasttc">Last</link></entry>
+</row>
+<row>
+<entry>Modify</entry>
+<entry><link linkend="modifytc">Modify</link></entry>
+</row>
+<row>
+<entry>PosRectangle</entry>
+<entry><link linkend="posrectangle">PosRectangle</link></entry>
+</row>
+<row>
+<entry>RemoveImages</entry>
+<entry><link linkend="removeimagestc">RemoveImages</link></entry>
+</row>
+<row>
+<entry>RequiredWindowSize</entry>
+<entry><link linkend="requiredwindowsize">RequiredWindowSize</link></entry>
+</row>
+<row>
+<entry>Rows</entry>
+<entry><link linkend="rows">Rows</link></entry>
+</row>
+<row>
+<entry>Select</entry>
+<entry><link linkend="selecttc">Select</link></entry>
+</row>
+<row>
+<entry>SelectIndex</entry>
+<entry><link linkend="selectindextc">SelectIndex</link></entry>
+</row>
+<row>
+<entry>Selected</entry>
+<entry><link linkend="selectedtc">Selected</link></entry>
+</row>
+<row>
+<entry>SelectedIndex</entry>
+<entry><link linkend="selectedindextc">SelectedIndex</link></entry>
+</row>
+<row>
+<entry>SetImages</entry>
+<entry><link linkend="setimagestc">SetImages</link></entry>
+</row>
+<row>
+<entry>SetPadding</entry>
+<entry><link linkend="setpadding">SetPadding</link></entry>
+</row>
+<row>
+<entry>SetSize</entry>
+<entry><link linkend="setsize">SetSize</link></entry>
+</row>
+</tbody></tgroup>
+</table>
+</listitem></varlistentry>
+</variablelist>
+
+<section id="inserttc"><title>Insert</title>
+<indexterm><primary>Insert</primary>
+<secondary>TabControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aTabControl~Insert(--+-----+--,--text--,--icon--,--numValue--)-><
+                        +-tab-+
+
+
+]]>
+</programlisting>
+
+<para>The Insert method inserts a new tab in a tab control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>tab</term>
+<listitem><para>The number of the tab. If you omit this argument, the number of the
+last tab is increased by 1, starting with 0.
+</para></listitem></varlistentry>
+<varlistentry><term>text</term>
+<listitem><para>The label text for the inserted tab.
+</para></listitem></varlistentry>
+<varlistentry><term>icon</term>
+<listitem><para>The index of the icon in the image list of the tab control, set with
+the SetImages method (see <link linkend="setimagestc">SetImages</link>).
+</para></listitem></varlistentry>
+<varlistentry><term>numValue</term>
+<listitem><para>An integer value stored together with the tab to save
+information.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The number of the new tab, or -1 for all other cases.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example inserts three tabs in a tab control
+with the specified text and a specific item:
+<programlisting>
+<![CDATA[
+::method InitDialog
+  InitDlgRet = self~InitDialog:super
+  curTab = self~GetTabControl("ID_TAB")
+  if curTab \= .Nil then do
+    curTab~SetImages("oodtab.BMP",16,16)
+    curTab~Insert(,"First Tab",0)
+    curTab~Insert(,"Second Tab",1)
+    curTab~Insert(,"Third Tab",2)
+  end
+return InitDlgRet
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="modifytc"><title>Modify</title>
+<indexterm><primary>Modify</primary>
+<secondary>TabControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aTabControl~Modify(--tab--,--text--,--icon--,--numValue--)--><
+
+
+]]>
+</programlisting>
+
+<para>The Modify method sets some or all of the attributes
+of a tab.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>tab</term>
+<listitem><para>The number of the tab.
+</para></listitem></varlistentry>
+<varlistentry><term>text</term>
+<listitem><para>The label text for the tab.
+</para></listitem></varlistentry>
+<varlistentry><term>icon</term>
+<listitem><para>The index of the icon in the image list of the tab control, set with
+the SetImages method (see <link linkend="setimagestc">SetImages</link>).
+</para></listitem></varlistentry>
+<varlistentry><term>numValue</term>
+<listitem><para>An integer value stored together with the tab to save information.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The attributes were set.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>You did not specify <emphasis role="italic">tab</emphasis>.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>In all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="addsequence"><title>AddSequence</title>
+<indexterm><primary>AddSequence</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aTabControl~AddSequence(--text1--,--text2--,--text3--,--...--)-><
+
+
+]]>
+</programlisting>
+
+<para>The AddSequence method inserts a sequence of tabs
+in a tab control for which you can only specify the label text. The number
+of the tab inserted last is increased by 1.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>text</term>
+<listitem><para>The label text for the inserted tab.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The number of the tab inserted last, or -1 for all other cases.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example inserts three tabs in a tab control:</para>
+<programlisting>
+<![CDATA[
+::method InitDialog
+  InitDlgRet = self~InitDialog:super
+  curTab = self~GetTabControl("ID_TAB")
+  if curTab \= .Nil then do
+    curTab~AddSequence("First Tab","Second Tab","Third Tab")
+  end
+return InitDlgRet
+]]>
+</programlisting>
+</listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="addfullseq"><title>AddFullSeq</title>
+<indexterm><primary>AddFullSeq</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aTabControl~AddFullSeq(--text_1--,--icon_1--,--numValue_1--,--text_2-->
+
+>--,--icon_2--,--numValue_2--,--...--)----------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The AddFullSeq method inserts a sequence of tabs
+in a tab control for which you can specify the number, label text, and integer
+value.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>text</term>
+<listitem><para>The label text for the inserted tab.
+</para></listitem></varlistentry>
+<varlistentry><term>icon</term>
+<listitem><para>The index of the icon in the image list of the tab control, set with
+the SetImages method (see <link linkend="setimagestc">SetImages</link>).
+</para></listitem></varlistentry>
+<varlistentry><term>numValue</term>
+<listitem><para>An integer value stored together with the tab to save information.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The number of the tab inserted last, or -1 for all other cases.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example adds a sequence of tabs and sets their text and
+icon:
+<programlisting>
+<![CDATA[
+::method InitDialog
+  InitDlgRet = self~InitDialog:super
+  curTab = self~GetTabControl("ID_TAB")
+  if curTab \= .Nil then do
+    curTab~SetImages("oodtab.BMP",16,16)
+    curTab~AddFullSeq("s11", 0, , "s12", 1, , "s13", 2, , "s14", 3)
+  end
+return InitDlgRet
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="itemstc"><title>Items</title>
+<indexterm><primary>Items</primary>
+<secondary>TabControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aTabControl~Items-------------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The Items method retrieves the number of tabs in
+a tab control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The number of the tabs, or 0 for all other cases.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example displays the number of tabs:
+<programlisting>
+<![CDATA[
+::method DisplayTabNum
+  curTab = self~GetTabControl("ID_TAB")
+  if curTab \= .Nil then do
+    say curTab~Items
+  end
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="rows"><title>Rows</title>
+<indexterm><primary>Rows</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aTabControl~Rows--------------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The Rows method retrieves the current number of
+rows of tabs in a tab control. Only tab controls with multiline style can
+have several rows of tabs.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The number of the tab rows.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="iteminfotc"><title>ItemInfo</title>
+<indexterm><primary>ItemInfo</primary>
+<secondary>TabControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aTabControl~ItemInfo(--tab--)-------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The ItemInfo method retrieves information about
+a tab in a tab control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>text</term>
+<listitem><para>The number of the tab.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>A compound variable that stores the attributes of the tab, or -1
+in all other cases. The compound variable can be:
+<variablelist>
+<varlistentry><term>RetStem.!TEXT</term>
+<listitem><para>The label text for the tab.
+</para></listitem></varlistentry>
+<varlistentry><term>RetStem.!IMAGE</term>
+<listitem><para>The index of the tab in the image list of the tab control, or -1
+if the tab does not have an image.
+</para></listitem></varlistentry>
+<varlistentry><term>RetStem.!PARAM</term>
+<listitem><para>An integer value stored together with the tab to save information:
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example displays the text of all tabs:
+<programlisting>
+<![CDATA[
+::method DisplayText
+  curTab = self~GetTabControl("ID_TAB")
+  if curTab \= .Nil then do
+    do i = 0 to curTab~Items - 1
+       ItemInfo. = curTab~ItemInfo(i)
+       say ItemInfo.!Text
+    end
+  end
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="deletetc"><title>Delete</title>
+<indexterm><primary>Delete</primary>
+<secondary>TabControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aTabControl~Delete(--tab--)---------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The Delete method removes a tab from a tab control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>tab</term>
+<listitem><para>The number of the tab to be removed.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The tab was removed.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>You did not specify <emphasis role="italic">tab</emphasis>
+or there is no tab available.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>For all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="deletealltc"><title>DeleteAll</title>
+<indexterm><primary>DeleteAll</primary>
+<secondary>TabControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aTabControl~DeleteAll---------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The DeleteAll method removes all tabs from a tab
+control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The tabs were removed.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>For all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="lasttc"><title>Last</title>
+<indexterm><primary>Last</primary>
+<secondary>TabControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aTabControl~Last--------------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The Last method retrieves the number of the last
+tab in a tab control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The number of the last tab, or 0 in all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="selectedtc"><title>Selected</title>
+<indexterm><primary>Selected</primary>
+<secondary>TabControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aTabControl~Selected----------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The Selected method retrieves the label text of
+the currently selected tab.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The label text of the currently selected tab, or 0 in all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="selectedindextc"><title>SelectedIndex</title>
+<indexterm><primary>SelectedIndex</primary>
+<secondary>TabControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aTabControl~SelectedIndex-----------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The SelectedIndex method retrieves the number of
+the currently selected tab.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The number of the currently selected tab, or 0 in all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="selecttc"><title>Select</title>
+<indexterm><primary>Select</primary>
+<secondary>TabControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aTabControl~Select(--text--)--------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The Select method selects the tab with the specified
+label text.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>text</term>
+<listitem><para>The label text of the tab to be selected.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The number of the selected tab, or 0 in all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="selectindextc"><title>SelectIndex</title>
+<indexterm><primary>SelectIndex</primary>
+<secondary>TabControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aTabControl~SelectIndex(--tab--)----------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The SelectIndex method selects the specified tab
+in a tab control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>tab</term>
+<listitem><para>The number of the tab to be selected.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The number of the previously selected tab, or -1 in all other
+cases.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="focustc"><title>Focus</title>
+<indexterm><primary>Focus</primary>
+<secondary>TabControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aTabControl~Focus(--tab--)----------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The Focus method sets the focus to the specified
+tab in a tab control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>tab</term>
+<listitem><para>The number of the tab to receive the focus.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>0.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="focusedtc"><title>Focused</title>
+<indexterm><primary>Focused</primary>
+<secondary>TabControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aTabControl~Focused-----------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The Focused method returns the number of the tab
+that has the focus. The tab with the focus can differ from the selected tab.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The number of the tab having the focus.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="setimagestc"><title>SetImages</title>
+<indexterm><primary>SetImages</primary>
+<secondary>TabControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+                                      +-0-----+     +-0------+
+>>-aTabControl~SetImages(--bitmap--,--+-------+--,--+--------+--)-><
+                                      +-width-+     +-height-+
+
+
+]]>
+</programlisting>
+
+<para>The SetImages method assigns an image list to a
+tab control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>bitmap</term>
+<listitem><para>The name of, or the handle to, a bitmap file that is already loaded
+with LoadBitmap method (see <link linkend="h000667">LoadBitmap</link>).
+</para></listitem></varlistentry>
+<varlistentry><term>width</term>
+<listitem><para>The width, in pixels, of each image. If you specify 0 or omit
+this argument, the width of the image in the image file is used.
+</para></listitem></varlistentry>
+<varlistentry><term>height</term>
+<listitem><para>The height, in pixels, of each image. If you specify 0 or omit this
+argument, the height of the image in the image file is used.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The handle to the previous image list, or 0 for all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="removeimagestc"><title>RemoveImages</title>
+<indexterm><primary>RemoveImages</primary>
+<secondary>TabControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aTabControl~RemoveImages------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The RemoveImages method deletes an image list of
+a tab control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The image list was removed.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>In all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="setpadding"><title>SetPadding</title>
+<indexterm><primary>SetPadding</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aTabControl~SetPadding(--padX--,--padY--)-------------------><
+
+
+]]>
+</programlisting>
+
+<para>The SetPadding method sets the amount of space
+(padding) around the icon and the label of a tab.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>padX</term>
+<listitem><para>The amount of horizontal padding, in pixels.
+</para></listitem></varlistentry>
+<varlistentry><term>padY</term>
+<listitem><para>The amount of vertical padding, in pixels.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>0.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="setsize"><title>SetSize</title>
+<indexterm><primary>SetSize</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aTabControl~SetSize(--width--,--height--)-------------------><
+
+
+]]>
+</programlisting>
+
+<para>The SetSize method sets the width and height of
+tabs in a fixed-width or owner-drawn tab control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>width</term>
+<listitem><para>The new width, in pixels.
+</para></listitem></varlistentry>
+<varlistentry><term>height</term>
+<listitem><para>The new height, in pixels.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The old width and height as a string, in pixels.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="posrectangle"><title>PosRectangle</title>
+<indexterm><primary>PosRectangle</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aTabControl~PosRectangle(--tab--)---------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The PosRectangle method retrieves the rectangle
+around a tab in a tab control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>tab</term>
+<listitem><para>The number of the tab.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>A string containing the coordinates of the rectangle, or an empty string.
+The coordinates are separated by blanks and are in the following order:
+<itemizedlist>
+<listitem><para>X-coordinate of the upper left corner of the rectangle</para></listitem>
+<listitem><para>Y-coordinate of the upper left corner of the rectangle</para></listitem>
+<listitem><para>X-coordinate of the lower right corner of the rectangle</para></listitem>
+<listitem><para>Y-coordinate of the lower right corner of the rectangle</para></listitem>
+</itemizedlist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="adjusttorectangle"><title>AdjustToRectangle</title>
+<indexterm><primary>AdjustToRectangle</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aTabControl~AdjustToRectangle(--left--,--top--,--right--,--bottom--)-><
+
+
+]]>
+</programlisting>
+
+<para>The AdjustToRectangle method calculates the window
+rectangle of a tab control that corresponds to the specified display rectangle.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>left</term>
+<listitem><para>The x-coordinate of the upper left corner of the display rectangle.
+</para></listitem></varlistentry>
+<varlistentry><term>top</term>
+<listitem><para>The y-coordinate of the upper left corner of the display rectangle.
+</para></listitem></varlistentry>
+<varlistentry><term>right</term>
+<listitem><para>The x-coordinate of the lower right corner of the display rectangle.
+</para></listitem></varlistentry>
+<varlistentry><term>bottom</term>
+<listitem><para>The y-coordinate of the lower right corner of the display rectangle.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>A string containing the coordinates of the window rectangle, or an empty
+string. The coordinates are separated by blanks and are in the following order:
+<itemizedlist>
+<listitem><para>X-coordinate of the upper left corner of the rectangle</para></listitem>
+<listitem><para>Y-coordinate of the upper left corner of the rectangle</para></listitem>
+<listitem><para>X-coordinate of the lower right corner of the rectangle</para></listitem>
+<listitem><para>Y-coordinate of the lower right corner of the rectangle</para></listitem>
+</itemizedlist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="requiredwindowsize"><title>RequiredWindowSize</title>
+<indexterm><primary>RequiredWindowSize</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aTabControl~RequiredWindowSize(--left--,--top--,--right--,--bottom--)-><
+
+
+]]>
+</programlisting>
+
+<para>The RequiredWindowSize method calculates the display
+rectangle of a tab control that corresponds to the specified window rectangle.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>left</term>
+<listitem><para>The x-coordinate of the upper left corner of the window rectangle.
+</para></listitem></varlistentry>
+<varlistentry><term>top</term>
+<listitem><para>The y-coordinate of the upper left corner of the window rectangle.
+</para></listitem></varlistentry>
+<varlistentry><term>right</term>
+<listitem><para>The x-coordinate of the lower right corner of the window rectangle.
+</para></listitem></varlistentry>
+<varlistentry><term>bottom</term>
+<listitem><para>The y-coordinate of the lower right corner of the window rectangle.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>A string containing the coordinates of the display rectangle, or an
+empty string. The coordinates are separated by blanks and are in the following
+order:
+<itemizedlist>
+<listitem><para>X-coordinate of the upper left corner of the rectangle</para></listitem>
+<listitem><para>Y-coordinate of the upper left corner of the rectangle</para></listitem>
+<listitem><para>X-coordinate of the lower right corner of the rectangle</para></listitem>
+<listitem><para>Y-coordinate of the lower right corner of the rectangle</para></listitem>
+</itemizedlist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+</chapter>

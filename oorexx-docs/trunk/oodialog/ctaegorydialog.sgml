@@ -1,0 +1,1744 @@
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: OODialog Reference SGML file.
+    #
+    # Copyright (c) 2005-2006, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    # Author(s):
+    #      W. David Ashley <dashley@us.ibm.com>
+    #
+    #########################################################################
+-->
+<chapter id="h100002"><title>CategoryDialog Class</title>
+<indexterm><primary>CategoryDialog class</primary></indexterm>
+<para>The CategoryDialog class creates and controls a
+dialog that has more than one panel. It is similar to the notebook control available in OS/2 or the property sheet available in the Windows 95 user interface.</para>
+<para>Depending on the style you choose, you can switch among different pages
+by either clicking radio buttons or selecting an item from a drop down list.
+Each page has its own window controls. </para>
+<variablelist>
+<varlistentry><term>Requires:</term>
+<listitem><para><computeroutput>CatDlg.cls</computeroutput> is the source file of this class. Use the tokenized
+version of OODialog, <computeroutput>oodialog.cls</computeroutput>, to shorten your dialog's startup
+time:
+<programlisting>
+<![CDATA[
+::requires "oodialog.cls"
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>Subclass:</term>
+<listitem><para>The CategoryDialog class is a subclass of UserDialog (see <link linkend="h001511">UserDialog Class</link>).
+</para></listitem></varlistentry>
+<varlistentry><term>Attributes:</term>
+<listitem><para>Instances of the CategoryDialog class have the
+following attributes:
+<variablelist>
+<varlistentry><term>Catalog</term>
+<listitem><para>A directory describing the layout and behavior of the dialog. This directory
+is usually set up in the InitCategories method of
+the dialog (see <link linkend="h100085">InitCategories</link> for more information).
+</para></listitem></varlistentry>
+<varlistentry><term>StaticID</term>
+<listitem><para>An internal counter
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term>Methods:</term>
+<listitem><para>Instances of the CategoryDialog class implement
+the methods listed in the following table.
+
+<note><title>Note</title><para>
+In fact, most of the methods do the same as the methods in the parent class, UserDialog, except that they are enabled to work with
+a category dialog.
+</para></note>
+
+<informaltable frame="all">
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Method...</entry>
+<entry>...on page</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>AddCategoryComboEntry</entry>
+<entry><link linkend="h100181">AddCategoryComboEntry</link></entry>
+</row>
+<row>
+<entry>AddCategoryListEntry</entry>
+<entry><link linkend="h100261">AddCategoryListEntry</link></entry>
+</row>
+<row>
+<entry>CategoryComboAddDirectory</entry>
+<entry><link linkend="h100242">CategoryComboAddDirectory</link></entry>
+</row>
+<row>
+<entry>CategoryComboDrop</entry>
+<entry><link linkend="h100253">CategoryComboDrop</link></entry>
+</row>
+<row>
+<entry>CategoryListAddDirectory</entry>
+<entry><link linkend="h100335">CategoryListAddDirectory</link></entry>
+</row>
+<row>
+<entry>CategoryListDrop</entry>
+<entry><link linkend="h100346">CategoryListDrop</link></entry>
+</row>
+<row>
+<entry>CategoryPage</entry>
+<entry><link linkend="h100040">CategoryPage</link></entry>
+</row>
+<row>
+<entry>ChangeCategoryComboEntry</entry>
+<entry><link linkend="h100231">ChangeCategoryComboEntry</link></entry>
+</row>
+<row>
+<entry>ChangeCategoryListEntry</entry>
+<entry><link linkend="h100311">ChangeCategoryListEntry</link></entry>
+</row>
+<row>
+<entry>ChangePage</entry>
+<entry><link linkend="h100105">ChangePage</link></entry>
+</row>
+<row>
+<entry>CreateCategoryDialog</entry>
+<entry><link linkend="h100063">CreateCategoryDialog</link></entry>
+</row>
+<row>
+<entry>CurrentCategory</entry>
+<entry><link linkend="h100035">CurrentCategory</link></entry>
+</row>
+<row>
+<entry>DefineDialog</entry>
+<entry><link linkend="h100029">DefineDialog</link></entry>
+</row>
+<row>
+<entry>DeleteCategoryComboEntry</entry>
+<entry><link linkend="h100202">DeleteCategoryComboEntry</link></entry>
+</row>
+<row>
+<entry>DeleteCategoryListEntry</entry>
+<entry><link linkend="h100282">DeleteCategoryListEntry</link></entry>
+</row>
+<row>
+<entry>DisableCategoryItem</entry>
+<entry><link linkend="h100525">DisableCategoryItem</link></entry>
+</row>
+<row>
+<entry>EnableCategoryItem</entry>
+<entry><link linkend="h100516">EnableCategoryItem</link></entry>
+</row>
+<row>
+<entry>FindCategoryComboEntry</entry>
+<entry><link linkend="h100212">FindCategoryComboEntry</link></entry>
+</row>
+<row>
+<entry>FindCategoryListEntry</entry>
+<entry><link linkend="h100292">FindCategoryListEntry</link></entry>
+</row>
+<row>
+<entry>FocusCategoryItem</entry>
+<entry><link linkend="fci">FocusCategoryItem</link></entry>
+</row>
+<row>
+<entry>GetCategoryAttrib</entry>
+<entry><link linkend="h100418">GetCategoryAttrib</link></entry>
+</row>
+<row>
+<entry>GetCategoryCheckBox</entry>
+<entry><link linkend="h100382">GetCategoryCheckBox</link></entry>
+</row>
+<row>
+<entry>GetCategoryComboEntry</entry>
+<entry><link linkend="gccem">GetCategoryComboEntry</link></entry>
+</row>
+<row>
+<entry>GetCategoryComboItems</entry>
+<entry><link linkend="h100213">GetCategoryComboItems</link></entry>
+</row>
+<row>
+<entry>GetCategoryComboLine</entry>
+<entry><link linkend="h100373">GetCategoryComboLine</link></entry>
+</row>
+<row>
+<entry>GetCategoryEntryLine</entry>
+<entry><link linkend="h100355">GetCategoryEntryLine</link></entry>
+</row>
+<row>
+<entry>GetCategoryListEntry</entry>
+<entry><link linkend="gclem">GetCategoryListEntry</link></entry>
+</row>
+<row>
+<entry>GetCategoryListItems</entry>
+<entry><link linkend="h100293">GetCategoryListItems</link></entry>
+</row>
+<row>
+<entry>GetCategoryListLine</entry>
+<entry><link linkend="h100364">GetCategoryListLine</link></entry>
+</row>
+<row>
+<entry>GetCategoryMultiList</entry>
+<entry><link linkend="h100400">GetCategoryMultiList</link></entry>
+</row>
+<row>
+<entry>GetCategoryRadioButton</entry>
+<entry><link linkend="h100391">GetCategoryRadioButton</link></entry>
+</row>
+<row>
+<entry>GetCategoryValue</entry>
+<entry><link linkend="h100409">GetCategoryValue</link></entry>
+</row>
+<row>
+<entry>GetCurrentCategoryComboIndex</entry>
+<entry><link linkend="h100222">GetCurrentCategoryComboIndex</link></entry>
+</row>
+<row>
+<entry>GetCurrentCategoryListIndex</entry>
+<entry><link linkend="h100302">GetCurrentCategoryListIndex</link></entry>
+</row>
+<row>
+<entry>GetSelectedPage</entry>
+<entry><link linkend="h100100">GetSelectedPage</link></entry>
+</row>
+<row>
+<entry>HideCategoryItem</entry>
+<entry><link linkend="h100534">HideCategoryItem</link></entry>
+</row>
+<row>
+<entry>Init</entry>
+<entry><link linkend="h100015">Init</link></entry>
+</row>
+<row>
+<entry>InitCategories</entry>
+<entry><link linkend="h100085">InitCategories</link></entry>
+</row>
+<row>
+<entry>InitDialog</entry>
+<entry><link linkend="h100079">InitDialog</link></entry>
+</row>
+<row>
+<entry>InsertCategoryComboEntry</entry>
+<entry><link linkend="h100191">InsertCategoryComboEntry</link></entry>
+</row>
+<row>
+<entry>InsertCategoryListEntry</entry>
+<entry><link linkend="h100271">InsertCategoryListEntry</link></entry>
+</row>
+<row>
+<entry>MoveCategoryItem</entry>
+<entry><link linkend="mci">MoveCategoryItem</link></entry>
+</row>
+<row>
+<entry>NextPage</entry>
+<entry><link linkend="h100036">NextPage</link></entry>
+</row>
+<row>
+<entry>PageHasChanged</entry>
+<entry><link linkend="h100106">PageHasChanged</link></entry>
+</row>
+<row>
+<entry>PreviousPage</entry>
+<entry><link linkend="h100037">PreviousPage</link></entry>
+</row>
+<row>
+<entry>ResizeCategoryItem</entry>
+<entry><link linkend="rci">ResizeCategoryItem</link></entry>
+</row>
+<row>
+<entry>SendMessageToCategoryItem</entry>
+<entry><link linkend="smtci">SendMessageToCategoryItem</link></entry>
+</row>
+<row>
+<entry>SetCategoryAttrib</entry>
+<entry><link linkend="h100507">SetCategoryAttrib</link></entry>
+</row>
+<row>
+<entry>SetCategoryCheckBox</entry>
+<entry><link linkend="h100467">SetCategoryCheckBox</link></entry>
+</row>
+<row>
+<entry>SetCategoryComboLine</entry>
+<entry><link linkend="h100457">SetCategoryComboLine</link></entry>
+</row>
+<row>
+<entry>SetCategoryEntryLine</entry>
+<entry><link linkend="h100437">SetCategoryEntryLine</link></entry>
+</row>
+<row>
+<entry>SetCategoryItemFont</entry>
+<entry><link linkend="scif">SetCategoryItemFont</link></entry>
+</row>
+<row>
+<entry>SetCategoryListLine</entry>
+<entry><link linkend="h100447">SetCategoryListLine</link></entry>
+</row>
+<row>
+<entry>SetCategoryListTabulators</entry>
+<entry><link linkend="h100322">SetCategoryListTabulators</link></entry>
+</row>
+<row>
+<entry>SetCategoryMultiList</entry>
+<entry><link linkend="h100487">SetCategoryMultiList</link></entry>
+</row>
+<row>
+<entry>SetCategoryRadioButton</entry>
+<entry><link linkend="h100477">SetCategoryRadioButton</link></entry>
+</row>
+<row>
+<entry>SetCategoryStaticText</entry>
+<entry><link linkend="h100427">SetCategoryStaticText</link></entry>
+</row>
+<row>
+<entry>SetCategoryValue</entry>
+<entry><link linkend="h100497">SetCategoryValue</link></entry>
+</row>
+<row>
+<entry>SetCurrentCategoryComboIndex</entry>
+<entry><link linkend="h100223">SetCurrentCategoryComboIndex</link></entry>
+</row>
+<row>
+<entry>SetCurrentCategoryListIndex</entry>
+<entry><link linkend="h100303">SetCurrentCategoryListIndex</link></entry>
+</row>
+<row>
+<entry>ShowCategoryItem</entry>
+<entry><link linkend="h100543">ShowCategoryItem</link></entry>
+</row>
+<row>
+<entry>StartIt</entry>
+<entry><link linkend="h100113">StartIt</link></entry>
+</row>
+</tbody></tgroup>
+</informaltable>
+</para></listitem></varlistentry>
+</variablelist>
+
+<section id="h100004"><title>Setting Up the Dialog</title>
+<indexterm><primary>Setting up the dialog</primary></indexterm>
+<para>The following methods are used to set up the pages of the dialog and start
+it.</para>
+
+<section id="h100015"><title>Init</title>
+<indexterm><primary>Init</primary>
+<secondary>CategoryDialog class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~Init(--+----------+--,--+------+--,--+------+--,--+-------+--,-->
+                          +-DlgData.-+     +-catx-+     +-caty-+     +-catcx-+
+
+>--+--------------------+--,--+----------+--,--+----------+--,--+--------+--)-><
+   +-'--+-DROPDOWN-+--'-+     +-cattable-+     +-catlabel-+     +-catmax-+
+        +-TOPLINE--+
+        +-WIZARD---+
+
+
+]]>
+</programlisting>
+
+<para>The Init method initializes the category dialog
+object. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>DlgData.</term>
+<listitem><para>A stem variable (do not forget the trailing period) that contains initialization
+data for some or all dialog items. If the dialog is terminated by means of
+the OK button, the values of the dialog's data fields
+are copied to this variable. The ID of the dialog items is used to name the
+entry within the stem.
+</para></listitem></varlistentry>
+<varlistentry><term>catx, caty</term>
+<listitem><para>The position of the category selection control group (radio buttons
+or combo box). The defaults are 10 and 4.
+</para></listitem></varlistentry>
+<varlistentry><term>catcx</term>
+<listitem><para>This argument sets the length of one item of the control group (calculated
+if omitted)
+</para></listitem></varlistentry>
+<varlistentry><term>style</term>
+<listitem><para>This argument determines the style of the category dialog. Without one
+of the following keywords, the category selection is done by a vertical radio
+button group:</para>
+<variablelist>
+<varlistentry><term>DROPDOWN</term>
+<listitem><para>Creates a drop-down list at the top (useful if there are many categories)
+</para></listitem></varlistentry>
+<varlistentry><term>TOPLINE</term>
+<listitem><para>Draws a horizontal radio button group at the top of the client area
+</para></listitem></varlistentry>
+<varlistentry><term>WIZARD</term>
+<listitem><para>Adds Backward and Forward buttons with IDs 11 and 12 to switch between category pages
+</para></listitem></varlistentry>
+</variablelist>
+<para>Without DROPDOWN and TOPLINE the default category selection is done by a vertical radio button group,
+with the dialog pages to the right of the radio buttons.</para>
+</listitem></varlistentry>
+<varlistentry><term>cattable</term>
+<listitem><para>This argument can be used to set the category names separated by blanks.
+If omitted, set the category names in the <link linkend="h100085">InitCategories</link> method.
+</para></listitem></varlistentry>
+<varlistentry><term>catlabel</term>
+<listitem><para>This argument defines the label for the combo box in DROPDOWN style (default is &quot;Page:&quot;)
+</para></listitem></varlistentry>
+<varlistentry><term>catmax</term>
+<listitem><para>This argument sets the split point of the radio button group in default
+style, or the number of entries in the combo box drop-down list.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example creates a category dialog, using a combo box as
+the selection control:
+
+<programlisting>
+<![CDATA[
+dlg = MyCategoryDialog~new(MyData., , , ,"DROPDOWN", ,
+"Movies Cinemas Days Ticket","Dialog panel:")
+dlg~createCenter(200,180,"Let's go to the movies")
+dlg~execute("SHOWTOP")
+...
+::class MyCategoryDialog subclass CategoryDialog
+
+::method Movies        /* define the Movies page  */
+...
+::method Cinemas       /* define the Cinemas page */
+...
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="h100085"><title>InitCategories</title>
+<indexterm><primary>InitCategories</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~InitCategories------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The InitCategories method is called by Init to set the characteristics of the category dialog. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
+<listitem><para>This method is protected.
+</para></listitem></varlistentry>
+<varlistentry><term>Catalog directory:</term>
+<listitem><para>The InitCategories should set up the Catalog directory with information about the layout and the behavior
+of the dialog. The directory entries are:</para>
+<variablelist>
+<varlistentry><term>names</term>
+<listitem><para>An array containing the names of the categories. The array
+is initialized with the names given in the Init method
+(argument cattable). These names are used as labels
+for page selection control and as messages sent to the object to define the
+single pages.</para>
+<para>Your subclass must provide a method for each category page--with
+the same name as the label in this directory--to define the dialog page
+using <link linkend="h001636">LoadItems</link> to load the dialog items from a resource
+script or Add... methods. Notice that blanks are removed
+when you call the Define... methods.</para>
+<para>If your
+subclass provides methods with the prefix Init followed by the name of the
+categories (blanks removed), these methods are called by <link linkend="h100079">InitDialog</link> to initialize the dialog (each page is a dialog) that contains
+the corresponding category.</para>
+<para>Unless you already specified the categories
+with the Init method, you must assign an array to
+this Catalog entry.</para>
+</listitem></varlistentry>
+<varlistentry><term>count</term>
+<listitem><para>Number of categories
+</para></listitem></varlistentry>
+<varlistentry><term>handles</term>
+<listitem><para>For internal use only
+</para></listitem></varlistentry>
+<varlistentry><term>id</term>
+<listitem><para>For internal use only
+</para></listitem></varlistentry>
+<varlistentry><term>category</term>
+<listitem><para>For internal use only
+</para></listitem></varlistentry>
+<varlistentry><term>page</term>
+<listitem><para>A directory with the following entries:</para>
+<variablelist>
+<varlistentry><term>font</term>
+<listitem><para>Name of the font used for the dialog
+</para></listitem></varlistentry>
+<varlistentry><term>fsize</term>
+<listitem><para>Size of the font
+</para></listitem></varlistentry>
+<varlistentry><term>style</term>
+<listitem><para>Style of the dialog (see <link linkend="h001545">Create</link>)
+</para></listitem></varlistentry>
+<varlistentry><term>expected</term>
+<listitem><para>Total number of expected dialog items of all category pages (200)
+</para></listitem></varlistentry>
+<varlistentry><term>btnwidth</term>
+<listitem><para>Width of Backward and Forward push buttons (see WIZARD in Init method)
+</para></listitem></varlistentry>
+<varlistentry><term>leftbtntext</term>
+<listitem><para>Alternate label of Backward button
+</para></listitem></varlistentry>
+<varlistentry><term>rightbtntext</term>
+<listitem><para>Alternate label of Forward button
+</para></listitem></varlistentry>
+</variablelist>
+<para>The next four entries should not be modified: </para>
+<variablelist>
+<varlistentry><term>x</term>
+<listitem><para>Horizontal position of the category pages relative to the parent dialog
+</para></listitem></varlistentry>
+<varlistentry><term>y</term>
+<listitem><para>Vertical position of the category pages relative to the parent dialog
+</para></listitem></varlistentry>
+<varlistentry><term>w</term>
+<listitem><para>Width of the category pages
+</para></listitem></varlistentry>
+<varlistentry><term>h</term>
+<listitem><para>Height of the category pages
+</para></listitem></varlistentry>
+</variablelist>
+</listitem></varlistentry>
+</variablelist>
+</listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example sets the category names to Text Editor, Compiler, Linker, and Debugger.
+The subclass of CategoryDialog must define four methods
+named after them.
+
+<programlisting>
+<![CDATA[
+::class MyCategoryDialog subclass CategoryDialog
+::method InitCategories
+   self~catalog["names"]= .array~of("Text Editor","Compiler","Linker", ,
+   "Debugger")
+   self~catalog["page"]["leftbtntext"] = "&Previous"
+   self~catalog["page"]["rightbtntext"] = "&Next"
+
+::method TextEditor       /* blanks are removed when the message is sent
+                             from DefineDialog */
+                          /* add control to the first page */
+      .
+      .
+      .
+::method Compiler
+      .
+      .
+      .
+::method InitTextEditor   /* called by InitDialog */
+                          /* initialize the first dialog */
+      .
+      .
+      .
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="h100029"><title>DefineDialog</title>
+<indexterm><primary>DefineDialog</primary>
+<secondary>CategoryDialog class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~DefineDialog--------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The DefineDialog method is called
+after the main dialog has been created. This method must not be overwritten
+in a subclass because it defines the layout of the frame window and calls
+the definition methods for each category page.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
+<listitem><para>This method is protected.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>Assume that you have the categories &quot;Common Data&quot;, &quot;Company
+Data&quot;, and &quot;Special&quot;. The following methods are automatically
+called by DefineDialog to add dialog items to the
+associated page:</para>
+<variablelist>
+<varlistentry><term>CommonData</term>
+<listitem><para>to add controls to the first category page.
+</para></listitem></varlistentry>
+<varlistentry><term>CompanyData</term>
+<listitem><para>to add controls to the second category page.
+</para></listitem></varlistentry>
+<varlistentry><term>Special</term>
+<listitem><para>to add controls to the third category page.
+</para></listitem></varlistentry>
+</variablelist>
+<para>See <link linkend="h100085">InitCategories</link> for more information.</para>
+</listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="h100040"><title>CategoryPage</title>
+<indexterm><primary>CategoryPage</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~CategoryPage--------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The CategoryPage method adds controls to the base
+window of a Category Dialog. It is used to define the layout of the parent
+dialog that contains the single pages. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
+<listitem><para>This method is protected and should not be overwritten or called. Use
+the <link linkend="h100085">InitCategories</link> method to set up the dialog.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="h100063"><title>CreateCategoryDialog</title>
+<indexterm><primary>CreateCategoryDialog</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~CreateCategoryDialog(--x--,--y--,--cx--,--cy--,-->
+
+>--+----------+--,--+----------+--,--options--,--expected--)---><
+   +-fontName-+     +-fontSize-+
+
+
+]]>
+</programlisting>
+
+<para>The CreateCategoryDialog method creates the category
+dialog. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
+<listitem><para>This method is protected. It is called by another method and usually
+does not have to be called manually.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="h100079"><title>InitDialog</title>
+<indexterm><primary>InitDialog</primary>
+<secondary>CategoryDialog class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~InitDialog----------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The InitDialog method is called after
+the Windows dialog has been created and before the category dialog is to
+be displayed.</para>
+<para>Do not override this method to initialize your category dialog
+pages but define an Init... method for each of your
+pages that you want to initialize like adding combo and list box items. If
+your subclassed dialog defines a method that has the prefix &quot;Init&quot;
+followed by the name of the category (without blanks), this method is called
+by InitDialog to handle the initialization of the
+corresponding page. If you use a method that requires a category specifier,
+such as AddCategoryComboEntry or GetTreeControl, and you omit the category,
+OODialog assumes that the dialog item addressed is part of the page that contains
+the current category.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
+<listitem><para>This method is protected.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>Assume that you have the categories &quot;Common Data&quot;, &quot;Company
+Data&quot;, and &quot;Special&quot;. The following methods are automatically
+called when provided by the subclass:</para>
+<variablelist>
+<varlistentry><term>InitCommonData</term>
+<listitem><para>to initialize the first category.
+</para></listitem></varlistentry>
+<varlistentry><term>InitCompanyData</term>
+<listitem><para>to initialize the second category.
+</para></listitem></varlistentry>
+<varlistentry><term>InitSpecial</term>
+<listitem><para>to initialize the third category.
+</para></listitem></varlistentry>
+</variablelist>
+<para>See <link linkend="h100085">InitCategories</link> for more information.</para>
+</listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="h100100"><title>GetSelectedPage</title>
+<indexterm><primary>GetSelectedPage</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~GetSelectedPage-----------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The GetSelectedPage method is used internally to
+return the currently selected page using the combo box or radio buttons (1
+indicates the first page).</para>
+</section>
+
+<section id="h100035"><title>CurrentCategory</title>
+<indexterm><primary>CurrentCategory</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~CurrentCategory-----------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The CurrentCategory method returns the number of
+the current dialog page. The first page is numbered 1. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example tests the current page number:
+
+<programlisting>
+<![CDATA[
+if MyCategoryDialog~CurrentCategory=2 then do ...
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="h100036"><title>NextPage</title>
+<indexterm><primary>NextPage</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~NextPage------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The NextPage method switches the dialog to the
+next category page.</para>
+</section>
+
+<section id="h100037"><title>PreviousPage</title>
+<indexterm><primary>PreviousPage</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~PreviousPage--------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The PreviousPage method switches the dialog to
+the previous category page.</para>
+</section>
+
+<section id="h100105"><title>ChangePage</title>
+<indexterm><primary>ChangePage</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~ChangePage(--+---------+--)-----------------><
+                                +-NewPage-+
+
+
+]]>
+</programlisting>
+
+<para>The ChangePage method switches the dialog to another
+page and returns the new page number. It is also called by selection control
+to activate the selected page. ChangePage invokes <link linkend="h100106">PageHasChanged</link> after the new page is activated. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>NewPage</term>
+<listitem><para>The page number of the new page (default is the page selected by the
+combo box or radio button)
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example activates the second category page:
+
+<programlisting>
+<![CDATA[
+MyCategoryDialog~ChangePage(2)
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="h100106"><title>PageHasChanged</title>
+<indexterm><primary>PageHasChanged</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~PageHasChanged(--oldpage--,--newpage--)-----><
+
+
+]]>
+</programlisting>
+
+<para>The PageHasChanged method is invoked by <link linkend="h100105">ChangePage</link> when  a new page is activated. The default implementation returns
+without an action. The user can override this method to react to page changes. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>oldpage</term>
+<listitem><para>The page number of the previous page
+</para></listitem></varlistentry>
+<varlistentry><term>newpage</term>
+<listitem><para>The page number of the new page
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="h100113"><title>StartIt</title>
+<indexterm><primary>StartIt</primary>
+<secondary>CategoryDialog class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~StartIt-------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The StartIt method is called by <link linkend="h000048">Execute</link> to create a real Windows object based on the dialog template.
+You might override it in your subclass, but be sure to forward the message
+to the parent method. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
+<listitem><para>This method is protected.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>This is a template for overwriting base methods:
+
+<programlisting>
+<![CDATA[
+::class MyCatDlg subclass CatergoryDialog
+::method StartIt
+   say "this is method "StartIt" !"
+   self~StartIt:super()
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+</section>
+
+<section id="connectmeth"><title>Connect... Methods</title>
+<indexterm><primary>Connect... methods</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~Connect...(--id--,--fname--)----------------><
+
+
+]]>
+</programlisting>
+
+<para>The Connect... methods connect data dialog items
+of certain types with the dialog object. The Connect... methods should be placed into the user-defined methods with the names
+of the categories defined in the <link linkend="h100085">InitCategories</link> method.
+The Connect... methods are defined for the BaseDialog class. For more information, see <link linkend="h000002">BaseDialog Class</link>. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The ID of the dialog item
+</para></listitem></varlistentry>
+<varlistentry><term>fname</term>
+<listitem><para>The name of the object attribute
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example connects an entry line in the Movies page with the FIRSTNAME object attribute:
+
+<programlisting>
+<![CDATA[
+::method InitCategories
+   self~catalog["names"] = .array~of("Movies",...)
+...
+::method Movies
+  self~ConnectEntryLine(101, "FIRSTNAME")
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+
+<note><title>Note</title><para>
+IDs for dialog elements need not be unique across all pages.
+However, IDs for buttons and list boxes that are connected to methods must
+be unique for the whole category dialog.
+</para></note>
+</section>
+
+<section id="dialogitemmeth"><title>Methods for Dialog Items</title>
+<indexterm><primary>methods for dialog items</primary></indexterm>
+<para>The methods listed in this section deal with individual dialog items on
+one of the pages of the category dialog.</para>
+<para>The methods correspond to methods with similar names of the BaseDialog class; the word Category is inserted
+between the verb and the dialog item in the method name. For example, AddCategoryComboEntry for the CategoryDialog class has the same function as AddComboEntry of
+the BaseDialog class.</para>
+
+<note><title>Note</title><para>
+The methods listed here have the same parameters as the corresponding
+methods of the BaseDialog class, with the number of
+the category page as an extra parameter.
+</para></note>
+<para>Another way to directly address dialog items of a category
+dialog is to retrieve an object of the DialogControl class (see page <link linkend="dialogcontrolc">DialogControl Class</link>) or one of its derivates that is associated
+with the requested dialog control. To retrieve such an object, you can call
+one of the following methods depending on the requested control:</para>
+<itemizedlist>
+<listitem><para><link linkend="getstaticcontrol">GetStaticControl</link></para></listitem>
+<listitem><para><link linkend="geteditcontrol">GetEditControl</link></para></listitem>
+<listitem><para><link linkend="getbuttoncontrol">GetButtonControl</link></para></listitem>
+<listitem><para><link linkend="getradiocontrol">GetRadioControl</link></para></listitem>
+<listitem><para><link linkend="getcheckcontrol">GetCheckControl</link></para></listitem>
+<listitem><para><link linkend="getlistbox">GetListBox</link></para></listitem>
+<listitem><para><link linkend="getcombobox">GetComboBox</link></para></listitem>
+<listitem><para><link linkend="getscrollbar">GetScrollBar</link></para></listitem>
+<listitem><para><link linkend="gettreecontrol">GetTreeControl</link></para></listitem>
+<listitem><para><link linkend="getlistcontrol">GetListControl</link></para></listitem>
+<listitem><para><link linkend="getprogressbar">GetProgressBar</link></para></listitem>
+<listitem><para><link linkend="getslidercontrol">GetSliderControl</link></para></listitem>
+<listitem><para><link linkend="gettabcontrol">GetTabControl</link></para></listitem></itemizedlist>
+<para>To use these methods and the resulting objects, your category
+dialog must inherit from the mixin class AdvancedControls. You can do this by adding the keyword &quot;inherit&quot; followed by
+the mixin class name &quot;AdvancedControls&quot;. For example:</para>
+<programlisting>
+<![CDATA[
+::class MyCategory subclass CategoryDialog public inherit AdvancedControls
+]]>
+</programlisting>
+</section>
+
+<section id="getsmeth"><title>Get and Set Methods</title>
+<indexterm><primary>set methods</primary>
+<secondary>CategoryDialog class</secondary></indexterm>
+<indexterm><primary>get methods</primary>
+<secondary>CategoryDialog class</secondary></indexterm>
+<para>The following sections describe the individual Get and Set methods.</para>
+
+<section id="h100427"><title>SetCategoryStaticText</title>
+<indexterm><primary>SetCategoryStaticText</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~SetCategoryStaticText(--id--,--data--,--category-->
+
+>--)-----------------------------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>For more information, see <link linkend="h000255">SetStaticText</link>.</para>
+</section>
+
+<section id="h100355"><title>GetCategoryEntryLine</title>
+<indexterm><primary>GetCategoryEntryLine</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~GetCategoryEntryLine(--id--,--category--)---><
+
+
+]]>
+</programlisting>
+
+<para>For more information, see <link linkend="h000466">GetEntryLine</link>.</para>
+</section>
+
+<section id="h100437"><title>SetCategoryEntryLine</title>
+<indexterm><primary>SetCategoryEntryLine</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~SetCategoryEntryLine(--id--,--data--,--category-->
+
+>--)-----------------------------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>For more information, see <link linkend="h000530">SetEntryLine</link>.</para>
+</section>
+
+<section id="h100364"><title>GetCategoryListLine</title>
+<indexterm><primary>GetCategoryListLine</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~GetCategoryListLine(--id--,--category--)----><
+
+
+]]>
+</programlisting>
+
+<para>For more information, see <link linkend="h000474">GetListLine</link>.</para>
+</section>
+
+<section id="h100447"><title>SetCategoryListLine</title>
+<indexterm><primary>SetCategoryListLine</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~SetCategoryListLine(--id--,--data--,--category--)-><
+
+
+]]>
+</programlisting>
+
+<para>For more information, see <link linkend="h000539">SetListLine</link>.</para>
+</section>
+
+<section id="getcatlstwdth"><title>GetCategoryListWidth</title>
+<indexterm><primary>GetCategoryListWidth</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~GetCategoryListWidth(--id--,--category--)---><
+
+
+]]>
+</programlisting>
+
+<para>For more information, see <link linkend="getlistwidth">GetListWidth</link>.</para>
+</section>
+
+<section id="setcatlstwdth"><title>SetCategoryListWidth</title>
+<indexterm><primary>SetCategoryListWidth</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~SetCategoryListWidth(--id--,--scrollwidth--,--category--)-><
+
+
+]]>
+</programlisting>
+
+<para>For more information, see <link linkend="setlistwidth">SetListWidth</link>.</para>
+</section>
+
+<section id="h100400"><title>GetCategoryMultiList</title>
+<indexterm><primary>GetCategoryMultiList</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~GetCategoryMultiList(--id--,--category--)---><
+
+
+]]>
+</programlisting>
+
+<para>For more information, see <link linkend="h000506">GetMultiList</link>.</para>
+</section>
+
+<section id="h100487"><title>SetCategoryMultiList</title>
+<indexterm><primary>SetCategoryMultiList</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~SetCategoryMultiList(--id--,--data--,--category-->
+
+>--)-----------------------------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>For more information, see <link linkend="h000575">SetMultiList</link>.</para>
+</section>
+
+<section id="h100373"><title>GetCategoryComboLine</title>
+<indexterm><primary>GetCategoryComboLine</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~GetCategoryComboLine(--id--,--category--)---><
+
+
+]]>
+</programlisting>
+
+<para>For more information, see <link linkend="h000482">GetComboLine</link>.</para>
+</section>
+
+<section id="h100457"><title>SetCategoryComboLine</title>
+<indexterm><primary>SetCategoryComboLine</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~SetCategoryComboLine(--id--,--data--,--category-->
+
+>--)-----------------------------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>For more information, see <link linkend="h000548">SetComboLine</link>.</para>
+</section>
+
+<section id="h100391"><title>GetCategoryRadioButton</title>
+<indexterm><primary>GetCategoryRadioButton</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~GetCategoryRadioButton(--id--,--category--)-><
+
+
+]]>
+</programlisting>
+
+<para>For more information, see <link linkend="h000498">GetRadioButton</link>.</para>
+</section>
+
+<section id="h100477"><title>SetCategoryRadioButton</title>
+<indexterm><primary>SetCategoryRadioButton</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~SetCategoryRadioButton(--id--,--data--,------>
+
+>--category--)-------------------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>For more information, see <link linkend="h000566">SetRadioButton</link>.</para>
+</section>
+
+<section id="h100382"><title>GetCategoryCheckBox</title>
+<indexterm><primary>GetCategoryCheckBox</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~GetCategoryCheckBox(--id--,--category--)----><
+
+
+]]>
+</programlisting>
+
+<para>For more information, see <link linkend="h000490">GetCheckBox</link>.</para>
+</section>
+
+<section id="h100467"><title>SetCategoryCheckBox</title>
+<indexterm><primary>SetCategoryCheckBox</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~SetCategoryCheckBox(--id--,--data--,--category-->
+
+>--)-----------------------------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>For more information, see <link linkend="h000557">SetCheckBox</link>.</para>
+</section>
+
+<section id="h100409"><title>GetCategoryValue</title>
+<indexterm><primary>GetCategoryValue</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~GetCategoryValue(--id--,--category--)-------><
+
+
+]]>
+</programlisting>
+
+<para>For more information, see <link linkend="h000514">GetValue</link>.</para>
+</section>
+
+<section id="h100497"><title>SetCategoryValue</title>
+<indexterm><primary>SetCategoryValue</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~SetCategoryValue(--id--,--data--,--category--)-><
+
+
+]]>
+</programlisting>
+
+<para>For more information, see <link linkend="h000584">SetValue</link>.</para>
+</section>
+
+<section id="h100418"><title>GetCategoryAttrib</title>
+<indexterm><primary>GetCategoryAttrib</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~GetCategoryAttrib(--aname--,--category--)---><
+
+
+]]>
+</programlisting>
+
+<para>For more information, see <link linkend="h000522">GetAttrib</link>.</para>
+</section>
+
+<section id="h100507"><title>SetCategoryAttrib</title>
+<indexterm><primary>SetCategoryAttrib</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~SetCategoryAttrib(--attributename--,--category--)-><
+
+
+]]>
+</programlisting>
+
+<para>For more information, see <link linkend="h000593">SetAttrib</link>.</para>
+</section>
+</section>
+
+<section id="combometh"><title>Combo Box Methods</title>
+<indexterm><primary>combo box methods</primary></indexterm>
+<para>The following sections describe the individual combo box methods.</para>
+
+<section id="h100181"><title>AddCategoryComboEntry</title>
+<indexterm><primary>AddCategoryComboEntry</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~AddCategoryComboEntry(--id--,--data--,--category-->
+
+>--)-----------------------------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>For more information, see <link linkend="h000307">AddComboEntry</link>. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The ID of the combo box
+</para></listitem></varlistentry>
+<varlistentry><term>data</term>
+<listitem><para>The text string that is added to the combo box
+</para></listitem></varlistentry>
+<varlistentry><term>category</term>
+<listitem><para>The category page number where the combo box is located
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example adds a text string to the list of the combo box
+101 in the third category page.
+</para></listitem></varlistentry>
+</variablelist>
+
+<programlisting>
+<![CDATA[
+MyCategoryDialog~AddCategoryComboEntry(101, "I'm one of the choices", 3)
+]]>
+</programlisting>
+</section>
+
+<section id="h100191"><title>InsertCategoryComboEntry</title>
+<indexterm><primary>InsertCategoryComboEntry</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~InsertCategoryComboEntry(--id--,--item--,--data--,-->
+
+>--category--)-------------------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>For more information, see <link linkend="h000316">InsertComboEntry</link>.</para>
+</section>
+
+<section id="h100202"><title>DeleteCategoryComboEntry</title>
+<indexterm><primary>DeleteCategoryComboEntry</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~DeleteCategoryComboEntry(--id--,--index--,--->
+
+>--category--)-------------------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>For more information, see method <link linkend="h000326">DeleteComboEntry</link>.</para>
+</section>
+
+<section id="h100212"><title>FindCategoryComboEntry</title>
+<indexterm><primary>FindCategoryComboEntry</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~FindCategoryComboEntry(--id--,--data--,------>
+
+>--category--)-------------------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>For more information, see <link linkend="h000335">FindComboEntry</link>.</para>
+</section>
+
+<section id="gccem"><title>GetCategoryComboEntry</title>
+<indexterm><primary>GetCategoryComboEntry</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~GetCategoryComboEntry(--id--,--index--)-----><
+
+
+]]>
+</programlisting>
+
+<para>For more information, see <link linkend="gcem">GetComboEntry</link>.</para>
+</section>
+
+<section id="h100213"><title>GetCategoryComboItems</title>
+<indexterm><primary>GetCategoryComboItems</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~GetCategoryComboItems(--id--,--category--)--><
+
+
+]]>
+</programlisting>
+
+<para>For more information, see <link linkend="h000336">GetComboItems</link>.</para>
+</section>
+
+<section id="h100222"><title>GetCurrentCategoryComboIndex</title>
+<indexterm><primary>GetCurrentCategoryComboIndex</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~GetCurrentCategoryComboIndex(--id--,--category-->
+
+>--)-----------------------------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>For more information, see <link linkend="h000344">GetCurrentComboIndex</link>.</para>
+</section>
+
+<section id="h100223"><title>SetCurrentCategoryComboIndex</title>
+<indexterm><primary>SetCurrentCategoryComboIndex</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~SetCurrentCategoryComboIndex(--id--,--+-------+-->
+                                                         +-index-+
+
+>--,--category--)----------------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>For more information, see <link linkend="h000345">SetCurrentComboIndex</link>.</para>
+</section>
+
+<section id="h100231"><title>ChangeCategoryComboEntry</title>
+<indexterm><primary>ChangeCategoryComboEntry</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~ChangeCategoryComboEntry(--id--,--item--,--data-->
+
+>--,--category--)----------------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>For more information, see <link linkend="h000352">ChangeComboEntry</link>.</para>
+</section>
+
+<section id="h100242"><title>CategoryComboAddDirectory</title>
+<indexterm><primary>CategoryComboAddDirectory</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~CategoryComboAddDirectory(--id--,--drvpath--,-->
+
+>--fileAttributes--,--category--)------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>For more information, see <link linkend="h000362">ComboAddDirectory</link>.</para>
+</section>
+
+<section id="h100253"><title>CategoryComboDrop</title>
+<indexterm><primary>CategoryComboDrop</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~CategoryComboDrop(--id--,--category--)------><
+
+
+]]>
+</programlisting>
+
+<para>For more information, see <link linkend="h000372">ComboDrop</link>.</para>
+</section>
+</section>
+
+<section id="listbmeth"><title>List Box Methods</title>
+<indexterm><primary>list box methods</primary></indexterm>
+<para>The following sections describe the individual list box methods.</para>
+
+<section id="h100261"><title>AddCategoryListEntry</title>
+<indexterm><primary>AddCategoryListEntry</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~AddCategoryListEntry(--id--,--data--,--category-->
+
+>--)-----------------------------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>For more information, see <link linkend="h000380">AddListEntry</link>.</para>
+</section>
+
+<section id="h100271"><title>InsertCategoryListEntry</title>
+<indexterm><primary>InsertCategoryListEntry</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~InsertCategoryListEntry(--id--,--item--,--data-->
+
+>--,--category--)----------------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>For more information, see <link linkend="h000389">InsertListEntry</link>.</para>
+</section>
+
+<section id="h100282"><title>DeleteCategoryListEntry</title>
+<indexterm><primary>DeleteCategoryListEntry</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~DeleteCategoryListEntry(--id--,--index--,---->
+
+>--category--)-------------------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>For more information, see <link linkend="h000399">DeleteListEntry</link>.</para>
+</section>
+
+<section id="h100292"><title>FindCategoryListEntry</title>
+<indexterm><primary>FindCategoryListEntry</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~FindCategoryListEntry(--id--,--data--,--category-->
+
+>--)-----------------------------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>For more information, see <link linkend="h000408">FindListEntry</link>.</para>
+</section>
+
+<section id="gclem"><title>GetCategoryListEntry</title>
+<indexterm><primary>GetCategoryListEntry</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~GetCategoryListEntry(--id--,--ndx--,--category-->
+
+>--)-----------------------------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>For more information, see <link linkend="glem">GetListEntry</link>.</para>
+</section>
+
+<section id="h100293"><title>GetCategoryListItems</title>
+<indexterm><primary>GetCategoryListItems</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~GetCategoryListItems(--id--,--category--)---><
+
+
+]]>
+</programlisting>
+
+<para>For more information, see <link linkend="h000409">GetListItems</link>.</para>
+</section>
+
+<section id="h100302"><title>GetCurrentCategoryListIndex</title>
+<indexterm><primary>GetCurrentCategoryListIndex</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~GetCurrentCategoryListIndex(--id--,--category--)-><
+
+
+]]>
+</programlisting>
+
+<para>For more information, see <link linkend="h000417">GetCurrentListIndex</link>.</para>
+</section>
+
+<section id="h100303"><title>SetCurrentCategoryListIndex</title>
+<indexterm><primary>SetCurrentCategoryListIndex</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~SetCurrentCategoryListIndex(--id--,--+-------+-->
+                                                        +-index-+
+
+>--,--category--)----------------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>For more information, see <link linkend="h000418">SetCurrentListIndex</link>.</para>
+</section>
+
+<section id="h100311"><title>ChangeCategoryListEntry</title>
+<indexterm><primary>ChangeCategoryListEntry</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~ChangeCategoryListEntry(--id--,--item--,--data-->
+
+>--,--category--)----------------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>For more information, see <link linkend="h000425">ChangeListEntry</link>.</para>
+</section>
+
+<section id="h100322"><title>SetCategoryListTabulators</title>
+<indexterm><primary>SetCategoryListTabulators</primary></indexterm>
+<programlisting>
+<![CDATA[
+                                                      +-,---+
+                                                      V     |
+>>-aCategoryDialog~SetCategoryListTabulators(--id--,----tab-+--->
+
+>--,--category--)----------------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>For more information, see <link linkend="h000435">SetListTabulators</link>.</para>
+</section>
+
+<section id="h100335"><title>CategoryListAddDirectory</title>
+<indexterm><primary>CategoryListAddDirectory</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~CategoryListAddDirectory(--id--,--drvpath--,-->
+
+>--fileAttributes--,--category--)------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>For more information, see <link linkend="h000448">ListAddDirectory</link>.</para>
+</section>
+
+<section id="h100346"><title>CategoryListDrop</title>
+<indexterm><primary>CategoryListDrop</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~CategoryListDrop(--id--,--category--)-------><
+
+
+]]>
+</programlisting>
+
+<para>For more information, see <link linkend="h000458">ListDrop</link>.</para>
+</section>
+</section>
+
+<section id="appearancemodmeth"><title>Appearance Modification Methods</title>
+<indexterm><primary>enable methods</primary>
+<secondary>CategoryDialog class</secondary></indexterm>
+<indexterm><primary>disable methods</primary>
+<secondary>CategoryDialog class</secondary></indexterm>
+<indexterm><primary>show methods</primary>
+<secondary>CategoryDialog class</secondary></indexterm>
+<indexterm><primary>hide methods</primary>
+<secondary>CategoryDialog class</secondary></indexterm>
+<para>The following sections describe the methods affecting the appearance of
+the item.</para>
+
+<section id="h100516"><title>EnableCategoryItem</title>
+<indexterm><primary>EnableCategoryItem</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~EnableCategoryItem(--id--,--category--)-----><
+
+
+]]>
+</programlisting>
+
+<para>For more information, see <link linkend="h001221">EnableItem</link>.</para>
+</section>
+
+<section id="h100525"><title>DisableCategoryItem</title>
+<indexterm><primary>DisableCategoryItem</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~DisableCategoryItem(--id--,--category--)----><
+
+
+]]>
+</programlisting>
+
+<para>For more information, see <link linkend="h001229">DisableItem</link>.</para>
+</section>
+
+<section id="h100543"><title>ShowCategoryItem</title>
+<indexterm><primary>ShowCategoryItem</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~ShowCategoryItem(--id--,--category--)-------><
+
+
+]]>
+</programlisting>
+
+<para>For more information, see <link linkend="h001245">ShowItem</link>.</para>
+</section>
+
+<section id="h100534"><title>HideCategoryItem</title>
+<indexterm><primary>HideCategoryItem</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~HideCategoryItem(--id--,--category--)-------><
+
+
+]]>
+</programlisting>
+
+<para>For more information, see <link linkend="h001237">HideItem</link>.</para>
+</section>
+
+<section id="scif"><title>SetCategoryItemFont</title>
+<indexterm><primary>SetCategoryItemFont</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~SetCategoryItemFont(--id--,--fonthandle--,--redraw--,-->
+
+>--category--)-------------------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>For more information, see <link linkend="sifm">SetItemFont</link>.</para>
+</section>
+
+<section id="fci"><title>FocusCategoryItem</title>
+<indexterm><primary>FocusCategoryItem</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~FocusCategoryItem(--id--,--category--)------><
+
+
+]]>
+</programlisting>
+
+<para>For more information, see <link linkend="focusitem">FocusItem</link>.</para>
+</section>
+
+<section id="rci"><title>ResizeCategoryItem</title>
+<indexterm><primary>ResizeCategoryItem</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~ResizeCategoryItem(--id--,--width--,--height--,-->
+
+>--+----------------------+--,--category--)--------------------><
+   +-'--+-HIDEWINDOW-+--'-+
+        +-SHOWWINDOW-+
+        +-NOREDRAW---+
+
+
+]]>
+</programlisting>
+
+<para>For more information, see <link linkend="h001301">ResizeItem</link>.</para>
+</section>
+
+<section id="mci"><title>MoveCategoryItem</title>
+<indexterm><primary>MoveCategoryItem</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~MoveCategoryItem(--id--,--xPos--,--yPos--,--->
+
+>--+----------------------+--,--category--)--------------------><
+   +-'--+-HIDEWINDOW-+--'-+
+        +-SHOWWINDOW-+
+        +-NOREDRAW---+
+
+
+]]>
+</programlisting>
+
+<para>For more information, see <link linkend="h001322">MoveItem</link>.</para>
+</section>
+
+<section id="smtci"><title>SendMessageToCategoryItem</title>
+<indexterm><primary>SendMessageToCategoryItem</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCategoryDialog~SendMessageToCategoryItem(--id--,--msg--,--wp--,--lp-->
+
+>--,--category--)----------------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>For more information, see <link linkend="h000614">SendMessageToItem</link>.</para>
+</section>
+</section>
+</chapter>

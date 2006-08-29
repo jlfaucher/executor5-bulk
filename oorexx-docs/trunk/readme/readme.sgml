@@ -1,0 +1,251 @@
+<?xml version="1.0" standalone="no">
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook V4.2//EN"
+[
+<!ENTITY windows          SYSTEM "windows.sgml">
+<!ENTITY unix             SYSTEM "unix.sgml">
+<!ENTITY gethelp          SYSTEM "../shared/gethelp.sgml">
+<!ENTITY notices          SYSTEM "../shared/notices.sgml">
+<!ENTITY cplv10           SYSTEM "../shared/CPLv1.0.sgml">
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Release Notes SGML File
+    #
+    # Copyright (c) 2005-2006, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    # Author(s):
+    #      W. David Ashley <dashley@us.ibm.com>
+    #
+    #########################################################################
+-->
+<article>
+<articleinfo>
+<title>Open Object Rexx</title>
+<subtitle>Release Notes</subtitle>
+
+<orgname>Rexx Language Association</orgname>
+<copyright>
+   <year>2005</year>
+   <year>2006</year>
+   <holder>Rexx Language Association. All rights reserved.</holder>
+</copyright>
+
+<!--#######################################################################
+    # The following need to be modified for each release!
+    #######################################################################-->
+<releaseinfo>Version 3.1.0</releaseinfo>
+<edition>Version 3.1.0</edition>
+<pubdate>August 15, 2006</pubdate>
+<!--#######################################################################
+    # End of modification area.
+    #######################################################################-->
+
+<legalnotice>
+<para>This program and the accompanying materials are made available under the
+terms of the <link linkend="cplv10" endterm="cplv10.title"></link>.
+</para>
+</legalnotice>
+
+</articleinfo>
+
+<section><title>About The 3.1.0 Release</title>
+<para>
+Open Object Rexx Version 3.1.0 is based on the previous version
+of ooRexx (3.0.0).
+Version 3.0.0 was based on IBM's Object REXX for Windows(R) Version 2.1.3
+and Object REXX for Linux Version 2.3.4.
+</para>
+<note><title>IMPORTANT</title>
+<para>If you already have an earlier version of Object Rexx or Open Object Rexx
+installed on your system, you must remove it before
+starting with the installation of this package. Note that this may change in
+future releases.
+</para></note>
+
+
+<section><title>New in this Release</title>
+<para>
+This section describes the enhancements introduced since Open Object Rexx
+3.0.0 for Unix/Linux. and 3.0.1 for Windows.
+</para>
+<para>You should refer to the CHANGES document accompanying the release for
+a complete list of the changes and bug fixes.
+</para>
+
+<section><title>New Installation Path for Unix/Linux</title>
+<para>
+The installation path for the Unix/Linux version of ooRexx has been changed
+from /usr/local to /opt/ooRexx. This will make ooRexx much more compliant
+with the Linux Standard Base.
+</para>
+</section>
+
+<section><title>Additions to the REXXUTIL Function Package</title>
+<para>
+There are some new functions included in the RexxUtil library. They begin with
+the prefix SysIs*.
+</para>
+</section>
+
+<section><title>Getting Help Documentation</title>
+<para>
+Each document in the ooRexx documentation set now contains a section on getting
+help for ooRexx. It is located in the preface of each document.
+</para>
+</section>
+</section>
+</section>
+
+<!-- Install/config info for Windows -->
+&windows;
+
+<!-- Install/config info for Unix/Linux -->
+&unix;
+
+<section><title>Known Limitations, Problems and Workarounds</title>
+<itemizedlist>
+<listitem><para>The global directory .environment is process local.
+</para></listitem>
+<listitem><para>When you start Open Object Rexx, a file called RXAPI
+(RXAPI.EXE on Windows) is started.
+The process executing this file remains open after your Open Object Rexx
+program terminates if:</para>
+<itemizedlist>
+<listitem><para>an external function is registered (including REXXUTIL),
+</para></listitem>
+<listitem><para>a queue contains data entries,
+</para></listitem>
+<listitem><para>a named queue exists,
+</para></listitem>
+<listitem><para>a system exit is installed,
+</para></listitem>
+<listitem><para>a subcommand handler is installed, or
+</para></listitem>
+<listitem><para>a macro space is loaded.
+</para></listitem>
+</itemizedlist>
+<para>If you need RXAPI to be closed, remove any global data (see list above)
+before leaving your program. Don't forget to call SysDropFuncs().
+</para></listitem>
+<listitem><para>Windows Scripting Host</para>
+<para>The support for the Windows Scripting Host has the following limitations:
+<itemizedlist>
+<listitem><para>Do not rely on a global availability of objects provided
+by the host.
+</para></listitem>
+<listitem><para>Running ActiveX objects, like the Open Object Rexx scripting engine,
+may pose a security threat. If you do not want the engine to be
+enabled on your machine, do not select the ActiveX component
+at installation time ("ApplicationFiles\WSHFiles"). You can
+manually unregister the scripting DLL from the system by stating
+"regsvr32 /u orxscrpt.dll" on the command line (re-registration
+can be done with "regsvr32 orxscrpt.dll").
+</para></listitem>
+<listitem><para>You will find several sample scripts that describe how to use
+Open Object Rexx with the Windows Scripting Host (WSH) in the directory
+SAMPLES\WSH\.
+</para></listitem>
+</itemizedlist>
+<listitem><para>Under Unix/Linux only piped "|" input
+can be evaluated by Open Object Rexx. Redirected input ("&gt;" or "&lt;")
+can not be evaluated. Output redirection is fully supported.
+</para></listitem>
+<listitem><para>
+Open Object Rexx on Unix/Linux uses a shared memory for function
+registration and data exchange between different Rexx processes.
+If a running Rexx process must be interrupted (by using the command
+"kill -9 pid"), the shared memory might be left in disorder.  In this
+case, the interpreter tries to restore the shared memory. If this
+fails, use the binary "rxdelipc" to delete the shared memory.
+</para></listitem>
+</itemizedlist>
+</section>
+
+<section><title>Documentation</title>
+<para>
+All documentation is now contained in PDF files and zipped HTML package
+files and is available online at
+http://www.oorexx.org/docs.html.
+</para>
+<para>
+The following documents are available:
+</para>
+<variablelist>
+<varlistentry>
+<term>rexxref.pdf</term>
+<listitem><para>This is the <citetitle>Open Object Rexx: Reference</citetitle>.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term>rexxpg.pdf</term>
+<listitem><para>This is the <citetitle>Open Object Rexx: Programming Guide</citetitle>.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term>oodialog.pdf</term>
+<listitem><para>This is the <citetitle>Open Object Rexx: Windows OODialog Reference</citetitle>.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term>rxsock.pdf</term>
+<listitem><para>This is the <citetitle>Open Object Rexx: TCP/IP Socket Library Functions Reference</citetitle>.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term>rxftp.pdf</term>
+<listitem><para>This is the <citetitle>Open Object Rexx: FTP Class Library Reference</citetitle>.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term>rxmath.pdf</term>
+<listitem><para>This is the <citetitle>Open Object Rexx: Mathematical Functions Reference</citetitle>.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term>readme.pdf</term>
+<listitem><para>This document in PDF format.
+</para></listitem>
+</varlistentry>
+</variablelist>
+</section>
+
+&gethelp;
+
+&notices;
+
+&cplv10;
+
+</article>
+
