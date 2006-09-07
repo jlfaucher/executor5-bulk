@@ -2852,14 +2852,30 @@ that are character strings.</para>
 compound variable is used. For example: </para>
 <programlisting>
 a.1 = 2
-</programlisting><para> creates a new stem collection
-and assigns it to the Rexx variable <computeroutput>A.</computeroutput>;
-it also assigns the value <computeroutput>2</computeroutput> to entry
-<computeroutput>1</computeroutput> in the collection.</para>
-<para>In addition to the items assigned to the collection indexes, a stem also
-has a default value that is used for all uninitialized indexes of the
-collection. You can assign a default value to the stem with the []= method and
-retrieve the default value with the [] method.</para>
+</programlisting>
+<para>creates a new stem collection with the name <computeroutput>A.</computeroutput>
+and assigns it to the Rexx variable <computeroutput>A.</computeroutput>; it also assigns
+the value 2 to entry 1 in the collection.</para>
+<para>The value of an uninitialied stem index is the stem object NAME
+concatenated with the derived stem index.  For
+example</para>para>
+<programlisting>
+say a.[1,2]  -- implcitly creates stem object with name "A."
+-- displays "A.1.2"
+
+a = .stem~new("B.")
+say a[1,2]     -- displays "B.1.2"
+</programlisting>
+<para>In addition to the items explicitly assigned to the
+collection indexes,
+a value may be assigned to all possible stem indexes.  The
+<computeroutput>[]=</computeroutput> method (with no index argument)
+will assign the target value to all possible stem indexes.
+Following assignment, a reference to any index will return the new value until
+another value is assigned or the index is dropped.</para>
+<para>The <computeroutput>[]</computeroutput> method (with no index specified) will retrieve any
+globally assigned value.  By default, this
+returns the stem NAME value.</para>
 <para>In addition to the methods defined in the following, the Stem class removes
 the methods =, ==, \=, \==, &lt;>, and >&lt; using the DEFINE method.</para>
 <para><emphasis role="bold">Methods the Stem class defines:</emphasis></para>
