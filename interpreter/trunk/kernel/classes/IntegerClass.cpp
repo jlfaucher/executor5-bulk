@@ -336,6 +336,20 @@ void RexxInteger::setString(
    SetObjectHasReferences(this);       /* we now have references            */
 }
 
+
+
+/**
+ * Test if the object is a value logical value as defined
+ * for IF, WHEN, etc.
+ *
+ * @return Returns true if this is the integer 0 or 1, false otherwise.
+ */
+bool RexxInteger::isLogical()
+{
+    return this->value == 0 || this-value == 1;
+}
+
+
 bool RexxInteger::truthValue(
     wholenumber_t errorcode )          /* error to raise if not good        */
 /******************************************************************************/

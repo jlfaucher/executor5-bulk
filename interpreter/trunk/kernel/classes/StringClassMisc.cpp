@@ -369,6 +369,14 @@ RexxObject *DataType(
         Answer = (RexxObject *)TheTrueObject;
       break;
 
+      case DATATYPE_LOGICAL:           // Test for a valid logical.
+          // true if it's a valid logical value
+          if (String->isLogical())
+          {
+              Answer = (RexxObject *)TheTrueObject;
+          }
+          break;
+
     default  :                         /* unsupported option                */
       reportException(Error_Incorrect_method_option, (stringchar_t *)"ABCDLMNSUVWX9", new_string((stringchar_t *)&Option,1));
   }

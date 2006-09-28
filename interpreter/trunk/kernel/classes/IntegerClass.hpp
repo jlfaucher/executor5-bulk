@@ -75,6 +75,7 @@ class RexxInteger : public RexxObject {
   RexxInteger *hasMethod(RexxString *);
   RexxString  *primitiveMakeString();
   RexxString  *stringValue();
+  bool         isLogical();
   bool         truthValue(wholenumber_t);
 
   bool        isEqual(RexxObject *);

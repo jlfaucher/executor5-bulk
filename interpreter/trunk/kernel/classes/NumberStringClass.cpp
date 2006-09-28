@@ -1047,6 +1047,27 @@ bool RexxNumberString::doubleValue(double *result)
     }
 }
 
+/**
+ * Test if the object is a value logical value as defined
+ * for IF, WHEN, etc.
+ *
+ * @return Returns true if this is the integer 0 or 1, false otherwise.
+ */
+bool  RexxNumberString::isLogical()
+{
+    if (this->sign == 0 )                 // exactly zero is good
+    {
+        return true;
+    }
+                                          // if exactly 1, this value too.
+    if (this->sign == 1 && this->exp == 0 && this->length == 1 && *(this->number) == 1)
+    {
+        return true;
+
+    }
+    return false;                         // not a valid logical
+}
+
 bool  RexxNumberString::truthValue(
     wholenumber_t  errorcode )         /* error to raise if not good        */
 /******************************************************************************/

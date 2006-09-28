@@ -109,6 +109,7 @@
    RexxString  *primitiveMakeString();
    void         copyIntoTail(RexxCompoundTail *buffer);
    RexxString  *stringValue();
+   bool         isLogical();
    bool         truthValue(wholenumber_t);
 
    bool        isEqual(RexxObject *);

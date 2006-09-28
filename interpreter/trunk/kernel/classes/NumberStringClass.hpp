@@ -93,6 +93,7 @@ const uint32_t NumberRounded     = 0x00000010;       /* Indicate the number was 
     RexxInteger *hasMethod(RexxString *);
     RexxString  *primitiveMakeString();
     RexxString  *stringValue();
+    bool         isLogical();
     bool         truthValue(wholenumber_t);
 
     bool        isEqual(RexxObject *);

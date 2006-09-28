@@ -1047,6 +1047,38 @@ RexxString *RexxString::concatBlank(RexxObject *otherObj)
   return result;
 }
 
+
+
+/**
+ * Test if the object is a value logical value as defined
+ * for IF, WHEN, etc.
+ *
+ * @return Returns true if this is the integer 0 or 1, false otherwise.
+ */
+bool RexxString::isLogical()
+{
+    RexxString *testString;              /* string to test                    */
+
+    if (!isString(this))                 /*  a nonprimitive object?           */
+    {
+        testString = this->requestString();/* get the real string value         */
+
+    }
+    else
+    {
+        testString = this;               /* just use the string directly      */
+    }
+
+    if (testString->getLength() != 1)    // logicals must be just a single character
+    {
+        return false;
+    }
+
+    // must be either '0' or '1' to be valid
+    return testString->getChar(0) == '0' || testString->getChar(0) == '1' ;
+}
+
+
 bool RexxString::truthValue(wholenumber_t errorCode)
 /******************************************************************************/
 /* Function:  Determine the truth value of a string object, raising the       */

@@ -195,6 +195,30 @@ RexxInteger *RexxObject::notEqual(RexxObject *other)
    return this != other ? TheTrueObject : TheFalseObject;
 }
 
+
+/**
+ * Test if the object is a value logical value as defined
+ * for IF, WHEN, etc.
+ *
+ * @return Always returns false for internal objects.
+ */
+bool RexxInternalObject::isLogical()
+{
+    return false;
+}
+
+
+/**
+ * Test if the object is a value logical value as defined
+ * for IF, WHEN, etc.
+ *
+ * @return Returns of the test on the string value of the object.
+ */
+bool RexxObject::isLogical()
+{
+    return REQUEST_STRING(this)->isLogical();
+}
+
 bool RexxInternalObject::truthValue(
     wholenumber_t   errorCode )        /* error to issue for bad conversion */
 /******************************************************************************/

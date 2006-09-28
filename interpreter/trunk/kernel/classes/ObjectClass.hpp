@@ -223,6 +223,7 @@ protected:
      virtual HashCode      hash()  { return this->hashvalue; }
              HashCode      getHashValue()  { return this->hashvalue; }
 
+     virtual bool         isLogical();
      virtual bool         truthValue(wholenumber_t);
      virtual RexxString  *makeString();
      virtual void         copyIntoTail(RexxCompoundTail *buffer);
@@ -326,6 +327,7 @@ class RexxObject : public RexxInternalObject {
 #if defined(REXX_DEBUG)
      HashCode     hash() { fprintf(stderr,"*** RexxObject::hash called ***\n"); }
 #endif
+     bool         isLogical();
      bool         truthValue(wholenumber_t);
      virtual bool numberValue(wholenumber_t *result, size_t precision);
      virtual bool numberValue(wholenumber_t *result);
