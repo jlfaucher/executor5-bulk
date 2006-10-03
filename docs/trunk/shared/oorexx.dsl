@@ -50,11 +50,10 @@
 	(normalize "editor")))
 
 (define %mono-font-family%
-  ;; This change eliminates curly double-quotes from program listings but
-  ;; still leaves curly single-quotes intact. This is the best that can be
-  ;; done with the supplied fonts in FC3. I will continue looking for a
-  ;; font that uses straight characters for both single and double quotes.
-  "Computer-Modern-Typewriter")
+  ;; The default of "Courier New" causes curly double and single quotes in
+  ;; the output. This change eliminates that problem so that the text can be
+  ;; successfully cut-and-paste in the Windows environment.
+  "Courier")
 
 
 </style-specification-body>

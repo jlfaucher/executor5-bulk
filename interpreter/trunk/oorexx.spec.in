@@ -34,22 +34,19 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #******************************************************************************
 
-# The following unconditionally overrides the default prefix with our own.
-# This will make us LSB compliant as far as where we install stuff when we are
-# not an official part of a Linux distribution.
-# If this RPM is for a Linux distribution you should replace "/opt/ooRexx"
-# with "/"
+# The following unconditionally overrides the default prefix with the one.
+# specified in configure.ac (this is probably /opt/ooRexx).
 %undefine _prefix
-%define _prefix /opt/ooRexx
+%define _prefix @OOREXX_PREFIX@
 
 # Specify the package version
-%define orx_major 4
-%define orx_minor 0
-%define orx_mod_lvl 0
+%define orx_major @OOREXX_VERSION_MAJOR@
+%define orx_minor @OOREXX_VERSION_MINOR@
+%define orx_mod_lvl @OOREXX_VERSION_REVISION@
 
 # Specify the libtool library version
-%define orx_current 4
-%define orx_revision 0
+%define orx_current @OOREXX_VERSION_MAJOR@
+%define orx_revision @OOREXX_VERSION_MINOR@
 %define orx_age 0
 # the order of these looks wrong, but that is how it comes out!
 %define orx_libversion %{orx_current}.%{orx_age}.%{orx_revision}
@@ -238,8 +235,8 @@ rm -rf /usr/share/ooRexx
 
 %postun
 ldconfig
-# Do no change this to rm -rf %{_prefix}
-# If you do you could wipe out the all the /usr subdirs!
+# Do not change this to rm -rf %{_prefix}
+# If you do you could wipe out all the /usr files and subdirs!
 if [ -d /opt/ooRexx ]; then
    rm -rf /opt/ooRexx
 fi

@@ -33,8 +33,21 @@ dnl NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 dnl SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 dnl
 
+PACKAGE=ooRexx
+OOREXX_VERSION_MAJOR=4
+OOREXX_VERSION_MINOR=0
+OOREXX_VERSION_REVISION=0
+OOREXX_VERSION=$OOREXX_VERSION_MAJOR.$OOREXX_VERSION_MINOR.$OOREXX_VERSION_REVISION
+OOREXX_LIB_VERSION=$OOREXX_VERSION_MAJOR:0:0
+
 dnl Process this file with autoconf to produce a configure script
-AC_INIT(oorexx, 4.0.0)
+AC_INIT($PACKAGE, $OOREXX_VERSION)
+
+AC_SUBST(OOREXX_VERSION_MAJOR)
+AC_SUBST(OOREXX_VERSION_MINOR)
+AC_SUBST(OOREXX_VERSION_REVISION)
+AC_SUBST(OOREXX_VERSION)
+AC_SUBST(OOREXX_LIB_VERSION)
 
 dnl Set the default prefix for the installation directory. The setting here
 dnl is designed to make us compliant with the Linux Standards Base.
@@ -42,12 +55,6 @@ case $prefix in
   NONE) prefix=/opt/ooRexx
 esac
 AC_SUBST(OOREXX_PREFIX,$prefix)
-
-PACKAGE=ooRexx
-OOREXX_VERSION=4.0.0
-AC_SUBST(OOREXX_VERSION)
-OOREXX_LIB_VERSION=4:0:0
-AC_SUBST(OOREXX_LIB_VERSION)
 
 AC_CANONICAL_SYSTEM
 
@@ -70,13 +77,14 @@ dnl AC_MSG_CHECKING(pointer size)
 OOREXX_SET_SIZES
 AC_SUBST(OOREXX_SIZEOF_POINTER, $OOREXX_SIZEOF_POINTER)
 
+dnl set the defaults for Linux
 GENERIC_OS="-DLINUX"
 GENERIC_OPSYS="-DOPSYS_LINUX"
 GENERIC_DEFINES="-DNOOPT -DPTHREAD_KERNEL \
                  -DSHARED -D_POSIX_THREAD -D_REENTRANT -DHIGHTID  \
                  -D_GNU_SOURCE"
 
-dnl Now we throw in a bunch of warnings.  C and C++ need
+dnl Now we throw in a bunch of warnings. C and C++ need
 dnl different sets here
 GCC_WARNINGS="\
         -Wall \
@@ -251,6 +259,7 @@ AC_CONFIG_FILES([
         shared/Makefile \
         rexxapi/Makefile \
         kernel/Makefile \
+        oorexx.spec \
 	])
 
 AC_OUTPUT
