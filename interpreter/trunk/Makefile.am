@@ -48,8 +48,6 @@ MOSTLYCLEANFILES        = tags
 include $(top_srcdir)/oorexx.ver
 
 VERSION = $(MAJOR).$(MINOR)
-driver_name = oorexx-$(MAJOR).$(MINOR).$(MOD_LVL).0-$(BLD_LVL)
-
 VERSION_INFO = -version-info $(MAJOR):$(MINOR):$(MOD_LVL)
 
 SUBDIRS = shared rexxapi kernel utilities

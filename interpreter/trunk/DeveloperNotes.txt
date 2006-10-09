@@ -24,22 +24,29 @@ steps:
 
 ./bootstrap               (only nneded if configure is not present)
 ./configure
-./make
-./make install            (only needed if you want to install ooRexx)
+make
+make dist                 (only needed if you want create a tar file or an rpm)
+make rpm                  (only needed if you want create an rpm)
+
+It is also possible (but NOT recommended) for you to install ooRexx via make.
+
+make install               (NOT recommended!)
+
 
 
 Building ooRexx on Windows
 --------------------------
 
-ooRexx uses a fairly standard Visual C++ build process under Windows. Here are
-the steps.
+ooRexx requires Microsoft Visual C++ V 7.0 plus service packs. ooRexx uses a
+fairly standard Visual C++ build process under Windows. Here are the steps.
 
 make                      (run the make.bat batch file)
 
 This invokes NMAKE with the correct arguments.
 
-If you are using Visual C++ 7.x or later be sure to read the contents of the
-Nmake.inc file, you may want to take advantage of some of the features you
-find documented there. This is also the place to specify a 64-bit Windows
-build.
+Packaging ooRexx requires NSIS 2.0.3 or grater
+
+Be sure to read the contents of the Nmake.inc file. You may want to take
+advantage of some of the features you find documented there. This is also
+the place to specify a 64-bit Windows build (the default is a 32-bit build).
 

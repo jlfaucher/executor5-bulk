@@ -42,24 +42,15 @@ Under SGI seems to be LD_LIBRARYN32_PATH.
 
 Platform Specifc Notes
 ----------------------
-AIX:
-If using gcc/g++ compilers you need to ensure that a thread-safe compile is done
-with the 32bit compiler. Before running configure set the following:
-% export CC="gcc -maix32 -mthreads"
-% export CXX="g++ -maix32 -mthreads"
-
 DEC/HP Alpha:
 ooRexx currently cannot be built on this platform. ooRexx assumes pointers and
 longs are 32bit, and as the Alpha has never had a 32bit mode, it is not possible
 to force pointers and longs to 32 bits.
 
 AMD Opteron:
-This is also a 64bit architecture, but it is possible to build and run ooRexx as
-a 32bit process. Before running configure set the following:
-% export CC="gcc -m32"
-% export CXX="g++ -m32"
-The configure script will then use the -m32 switch to force pointers and longs to
-32bit.
+ooRexx can be built as either a 32-bit or a 64-bit application in this environment.
+Use the -m32 option to force a 32-bit compilation. The configure script will
+dynamically choose the -m32 or -m64 flag depending on the compile environment.
 
 *BSD Platforms:
 ooRexx cannot be built on these platforms yet. ooRexx uses some members of internal
@@ -137,3 +128,4 @@ Solaris - PKG
 -------------
 The "make $DESTDIR=`pwd`/tmp package" above will also create:
 ./tmp/ooRexx-x.y.z.pkg suitable for Solaris' "pkgadd"
+

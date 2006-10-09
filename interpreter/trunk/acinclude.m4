@@ -121,7 +121,7 @@ AC_DEFUN([ORX_SEMUN_DEFINED],
 
 
 dnl
-dnl Check which values are valid for pthread_mutexattr_settype() arg 4 are valid
+dnl Check which values are valid for pthread_mutexattr_settype() arg 4
 dnl
 AC_DEFUN([ORX_PTHREAD_MUTEXATTR_SETTYPE_ARG2],
     [

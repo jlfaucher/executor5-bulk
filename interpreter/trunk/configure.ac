@@ -77,7 +77,7 @@ dnl AC_MSG_CHECKING(pointer size)
 OOREXX_SET_SIZES
 AC_SUBST(OOREXX_SIZEOF_POINTER, $OOREXX_SIZEOF_POINTER)
 
-dnl set the defaults for Linux
+dnl set the defaults to Linux
 GENERIC_OS="-DLINUX"
 GENERIC_OPSYS="-DOPSYS_LINUX"
 GENERIC_DEFINES="-DNOOPT -DPTHREAD_KERNEL \
@@ -134,8 +134,8 @@ case "$target" in
       GENERIC_DEFINES="$GENERIC_DEFINES -DOPSYS_AIX43"
       case "$CXX" in
          g++)
-            CC_WARNINGS="-maix32 -mthreads $GCC_WARNINGS"
-            CXX_WARNINGS="-maix32 -mthreads $GCXX_WARNINGS"
+            CC_WARNINGS="-maix64 -mthreads $GCC_WARNINGS"
+            CXX_WARNINGS="-maix64 -mthreads $GCXX_WARNINGS"
             ;;
          xlC_r)
             CC_WARNINGS="$XLC_WARNINGS"
@@ -145,8 +145,6 @@ case "$target" in
 dnl         AC_MSG_ERROR("Compiler $CXX is not supported on this platform")
             ;;
       esac
-      ;;
-   *dec-osf*)
       ;;
    *solaris*)
       GENERIC_OPSYS="$GENERIC_OPSYS -DOPSYS_SUN"
@@ -160,23 +158,13 @@ dnl         AC_MSG_ERROR("Compiler $CXX is not supported on this platform")
             ;;
       esac
       ;;
-   sparc*sunos*)
-      ;;
    i*86-*linux*)
-      CC_WARNINGS="$GCC_WARNINGS"
-      CXX_WARNINGS="$GCXX_WARNINGS"
-      ;;
-   *86_64-*linux*)
       CC_WARNINGS="-m32 $GCC_WARNINGS"
       CXX_WARNINGS="-m32 $GCXX_WARNINGS"
       ;;
-   alpha*-*linux*)
-      ;;
-   *nto-qnx*)
-      ;;
-   *qnx*)
-      ;;
-   *beos*)
+   *86_64-*linux*)
+      CC_WARNINGS="-m64 $GCC_WARNINGS"
+      CXX_WARNINGS="-m64 $GCXX_WARNINGS"
       ;;
    *cygnus*)
       CC_WARNINGS="$GCC_WARNINGS"
