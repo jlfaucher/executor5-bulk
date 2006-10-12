@@ -40,31 +40,70 @@
 /* Script context object used for external scripting applications             */
 /*                                                                            */
 /*******************************************************************************/
-#ifndef Included_ScriptContext
-#define Included_ScriptContext
 
-class ScriptContext : public RexxInternalObject
+#include "ScriptContext.hpp"
+#include "RexxActivation.hpp"
+
+
+/**
+ * Add a variable binding to the script context.
+ *
+ * @param name   The name of the bound variable (only simple variables supported).
+ * @param value  The variables initial value.
+ */
+void ScriptContext::addVariableBinding(RexxString *name, RexxObject *value)
 {
-public:
+    boundVariables->set(name, value);
+}
 
-    inline void *operator new(size_t, void *ptr) { return ptr; }
-    inline void  operator delete(void *, void *) { ; }
-    void *operator new(size_t, size_t);
-    inline void operator delete(void *, size_t) { ; }
 
-    ScriptContext(RexxInterpreter *);
-    inline ScriptContext() { ; };
-    inline ScriptContext(RESTORETYPE restoreType) { ; };
-    void live();
-    void liveGeneral();
-    void flatten(RexxEnvelope*);
+/**
+ * Update a ScriptContext variable binding.
+ *
+ * @param name   The name of the target variable.
+ * @param value  The new variable value.
+ */
+void ScriptContext::setBoundValue(RexxString *name, RexxObject *value)
+{
+    boundVariables->set(name, value);
+}
 
-protected:
 
-    RexxDirectory *routines;             // routines defined in this script context
-                                         // external variable bindings
-    RexxVariableDictionary *boundVariables;
-};
+/**
+ * Get the current value for a bound variable.
+ *
+ * @param name   The name of the variable..
+ *
+ * @return The current variable value.  Returns null if the variable has
+ *         been dropped.
+ */
+RexxObject *Scriptcontext::getBoundValue(RexxString *name)
+{
+    return boundVariables->realValue(name);
 
-#endif
+}
 
+
+/**
+ * Remove a variable from the active bindings list.  This variable
+ * will be dropped, and the reference removed from the script
+ * context.
+ *
+ * @param name   The target variable name.
+ */
+void ScriptContext::removeVariableBinding(RexxString *name)
+{
+    boundValues->removeVariable(name);
+}
+
+
+/**
+ * Bind the script context variable bindings into a new activation
+ * context.
+ *
+ * @param context The new activation.
+ */
+void ScriptContext::bindScriptVariables(RexxActivation *context)
+{
+    boundValues->bindScriptVariables(context);
+}

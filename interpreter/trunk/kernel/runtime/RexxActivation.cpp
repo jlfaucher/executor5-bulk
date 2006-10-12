@@ -254,7 +254,8 @@ void RexxActivation::initScriptCall(RexxMethod *method, ScriptContext *context) 
 }
 
 
-void RexxActivation::bindScriptVariables(RexxVariableDictionary *scriptVariables) {
+void RexxActivation::bindScriptVariables(RexxVariableDictionary *scriptVariables)
+{
 
 }
 

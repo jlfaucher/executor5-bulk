@@ -204,6 +204,24 @@ void RexxVariableDictionary::drop(RexxString *name)
 }
 
 
+/**
+ * Remove a variable from a variable dictionary.  This completely
+ * removes the variable, so this is more than a drop operation.
+ * The variable is handled as a drop (since it might be in use
+ * in the current context), but additionally, the variable object
+ * is removed from this dictionary.
+ *
+ * @param name   The target variable name.
+ */
+void RexxVariableDictionary::remove(RexxString *name)
+{
+    drop(name);
+    removeVariable(name);
+
+}
+
+
+
 RexxCompoundElement *RexxVariableDictionary::getCompoundVariable(
      RexxString *stem,                 /* name of stem for compound         */
      RexxObject **tail,                /* tail of the compound element      */

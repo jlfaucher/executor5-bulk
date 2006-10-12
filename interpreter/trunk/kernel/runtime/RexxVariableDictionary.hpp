@@ -72,6 +72,11 @@ class RexxVariableDictionary : public RexxInternalObject {
       return (RexxVariable *)contents->stringGet(name);
   }
 
+  inline RexxVariable *removeVariable(RexxString *name)
+  {
+      return (RexxVariable *)contents->stringGet(name);
+  }
+
   inline RexxVariable *getVariable(RexxString *name)
     {
       RexxVariable *variable;              /* resolved variable item            */
@@ -114,6 +119,7 @@ class RexxVariableDictionary : public RexxInternalObject {
   RexxVariable *nextVariable(RexxNativeActivation *);
   void         set(RexxString *, RexxObject *);
   void         drop(RexxString *);
+  void         remove(RexxString *);
   void         reserve(RexxActivity *);
   void         release(RexxActivity *);
   bool         transfer(RexxActivity *);
@@ -127,6 +133,8 @@ class RexxVariableDictionary : public RexxInternalObject {
   inline bool isScope(RexxObject *otherScope) { return this->scope == otherScope; }
   inline RexxVariableDictionary *getNextDictionary() { return next; }
   void setNextDictionary(RexxVariableDictionary *next);
+
+  void bindScriptVariables(RexxActivation *context);
 
 
   static RexxVariableDictionary *newInstance(size_t s);
