@@ -379,6 +379,7 @@ RexxString *RexxString::encodeBase64()
     stringchar_t *destination = retval->getStringData();
     while (inputLength > 0)
     {              /* while more string                 */
+        int buflen = 0;
         for (i = 0; i < 3; i++)
         {        /* get the next 3 characters         */
             if (inputLength)
@@ -386,21 +387,24 @@ RexxString *RexxString::encodeBase64()
                 inc[i] = *source;
                 inputLength--;
                 source++;
+                buflen++;
             }
             else
             {
                 inc[i] = '\0';
             }
         }
-        /* now perform the base64 conversion to the next 4 output string chars */
-        *destination = cb64[ inc[0] >> 2 ];
-        destination++;
-        *destination = cb64[ ((inc[0] & 0x03) << 4) | ((inc[1] & 0xf0) >> 4) ];
-        destination++;
-        *destination = (stringchar_t) (inputLength > 1 ? cb64[ ((inc[1] & 0x0f) << 2) | ((inc[2] & 0xc0) >> 6) ] : '=');
-        destination++;
-        *destination = (stringchar_t) (inputLength > 2 ? cb64[ inc[2] & 0x3f ] : '=');
-        destination++;
+        if (buflen) {
+            /* now perform the base64 conversion to the next 4 output string chars */
+            *destination = cb64[ inc[0] >> 2 ];
+            destination++;
+            *destination = cb64[ ((inc[0] & 0x03) << 4) | ((inc[1] & 0xf0) >> 4) ];
+            destination++;
+            *destination = (stringchar_t) (buflen > 1 ? cb64[ ((inc[1] & 0x0f) << 2) | ((inc[2] & 0xc0) >> 6) ] : '=');
+            destination++;
+            *destination = (stringchar_t) (buflen > 2 ? cb64[ inc[2] & 0x3f ] : '=');
+            destination++;
+        }
     }                                  /* done building the string          */
     return retval;                       /* return converted string           */
 }
