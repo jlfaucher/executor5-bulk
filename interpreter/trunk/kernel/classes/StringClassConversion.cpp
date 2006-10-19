@@ -367,7 +367,7 @@ RexxString *RexxString::encodeBase64()
         return OREF_NULLSTRING;
     }
     /* figure out the output string length */
-    stringsize_t outputLength = ((inputLength / 3) * 4) + 1;
+    stringsize_t outputLength = (inputLength / 3) * 4;
     if (inputLength % 3 > 0)
     {
         outputLength += 4;
@@ -406,7 +406,6 @@ RexxString *RexxString::encodeBase64()
             destination++;
         }
     }                                  /* done building the string          */
-    *destination = '\0';  // null terminate the string
     return retval;                       /* return converted string           */
 }
 
@@ -431,7 +430,7 @@ RexxString *RexxString::decodeBase64()
     }
     stringchar_t *source = (stringchar_t *)this->getStringData();
     /* figure out the output string length */
-    stringsize_t outputLength = ((inputLength / 4) * 3) + 1;
+    stringsize_t outputLength = (inputLength / 4) * 3;
     if (*(source + inputLength - 3) == '=')
     {
         outputLength -= 2;
@@ -493,7 +492,6 @@ RexxString *RexxString::decodeBase64()
         source += 4;
         inputLength -= 4;
     }                                  /* done building the string          */
-    *destination = '\0';  // null terminate the string
     return retval;                       /* return converted string           */
 }
 
