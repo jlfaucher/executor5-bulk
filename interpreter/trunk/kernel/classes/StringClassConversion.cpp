@@ -428,6 +428,10 @@ RexxString *RexxString::decodeBase64()
     {
         return OREF_NULLSTRING;          // this encodes as a null string
     }
+    else if (inputLength % 4 > 0)
+    {
+        reportException(Error_Incorrect_method_invbase64);
+    }
     stringchar_t *source = (stringchar_t *)this->getStringData();
     /* figure out the output string length */
     stringsize_t outputLength = (inputLength / 4) * 3;
@@ -480,10 +484,11 @@ RexxString *RexxString::decodeBase64()
                 case 2:
                     *destination |= (stringchar_t)(j >> 2);
                     destination++;
-                    *destination |= (stringchar_t)(j << 4);
+                    *destination = (stringchar_t)(j << 6);
                     break;
                 case 3:
                     *destination |= (stringchar_t)j;
+                    destination++;
                     break;
                 default: /* not really necessary but here anyway */
                     break;
