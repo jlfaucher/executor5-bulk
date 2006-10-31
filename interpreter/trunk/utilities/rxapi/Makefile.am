@@ -38,7 +38,7 @@
 
 MAINTAINERCLEANFILES = Makefile.in
 
-SUBDIRS = rexx rexxc rexxhide rexximg rxapi rxqueue rxsubcom
-DIST_SUBDIRS = rexx rexxc rexxhide rexximg rxapi rxqueue rxsubcom
+SUBDIRS = platform
+DIST_SUBDIRS = platform
 
 
