@@ -36,9 +36,43 @@
 #----------------------------------------------------------------------------
 
 
+DIST_SUBDIRS = platform
+
 MAINTAINERCLEANFILES = Makefile.in
 
-SUBDIRS = platform
-DIST_SUBDIRS = platform
+# get version details from our external file
+include $(top_srcdir)/oorexx.ver
+
+INCLUDES = @OOREXX_INCLUDES@ \
+           -I$(top_srcdir)/kernel/api \
+           -I$(top_srcdir)/shared \
+           -I$(top_srcdir)/shared/unix
+
+
+#################### librexxapi.la #########################
+
+pkglib_LTLIBRARIES = librexxapi.la
+
+#
+# Sources for librexxapi.la
+#
+librexxapi_la_SOURCES = platform/unix/SysLegacy.cpp \
+                        RexxLegacyAPI.cpp
+
+#
+# C++ compiler flags for librexxapi.la sources
+#
+librexxapi_la_CXXFLAGS =
+
+#
+# linker flags for librexxapi.la objects
+#
+librexxapi_la_LDFLAGS = -version-info @OOREXX_LIB_VERSION@ -no-undefined \
+                        @OOREXX_LINK_LIBS@
+
+#
+# additional libraries for librexxapi.la objects
+#
+librexxapi_la_LIBADD  = -lrxshared
 
 

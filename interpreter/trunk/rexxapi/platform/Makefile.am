@@ -38,7 +38,6 @@
 
 MAINTAINERCLEANFILES = Makefile.in
 
-SUBDIRS = unix
 DIST_SUBDIRS = unix windows
 
 

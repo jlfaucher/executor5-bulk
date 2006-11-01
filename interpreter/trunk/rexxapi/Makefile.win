@@ -36,41 +36,45 @@
 #----------------------------------------------------------------------------
 
 
-MAINTAINERCLEANFILES = Makefile.in
-
-# get version details from our external file
-include $(top_srcdir)/oorexx.ver
-
-INCLUDES = @OOREXX_INCLUDES@ \
-           -I$(top_srcdir)/kernel/api \
-           -I$(top_srcdir)/shared \
-           -I$(top_srcdir)/shared/unix
+# This is a part of the ooRexx Windows build
 
 
-#################### librexxapi.la #########################
+!include $(top_srcdir)\Nmake.inc
 
-pkglib_LTLIBRARIES = librexxapi.la
+INCLUDES = $(OOREXXINC) \
+           /I$(top_srcdir)\kernel\messages \
+           /I$(top_srcdir)\rexxapi \
+           /I$(top_srcdir)\kernel\api
 
-#
-# Sources for librexxapi.la
-#
-librexxapi_la_SOURCES = SysLegacy.cpp \
-                        $(top_srcdir)/rexxapi/RexxLegacyAPI.cpp
+DLLOBJS = RexxLegacyAPI.obj SysLegacyAPI.obj
 
-#
-# C++ compiler flags for librexxapi.la sources
-#
-librexxapi_la_CXXFLAGS =
+SHAREDLIB = $(top_srcdir)\shared\windows\rxshared.lib
 
-#
-# linker flags for librexxapi.la objects
-#
-librexxapi_la_LDFLAGS = -version-info @OOREXX_LIB_VERSION@ -no-undefined \
-                        @OOREXX_LINK_LIBS@
+SHAREDDLLVER = $(top_srcdir)\shared\windows\verinfo_dll.res
 
-#
-# additional libraries for librexxapi.la objects
-#
-librexxapi_la_LIBADD  = -lrxshared
+#################### build rexxapi.dll ########################################
 
+all: rexxapi.dll rexxapi.lib
+
+rexxapi.dll rexxapi.lib: $(DLLOBJS) $(COMMONOBJS) $(SHAREDLIB) $(SHAREDDLLVER) \
+                         rexxapi.def
+	$(LD) /DLL $(LFLAGS) $(DLLOBJS) $(COMMONOBJS) $(SHAREDLIB) \
+	$(WINLIBS) $(SHAREDDLLVER) /SUBSYSTEM:WINDOWS \
+        /DEF:rexxapi.def /OUT:rexxapi.dll
+
+RexxLegacyAPI.obj: RexxLegacyAPI.cpp \
+                   $(top_srcdir)\kernel\api\RexxLegacyAPI.hpp \
+		   $(COMMONHEADERS)
+	$(CC) $(CFLAGS) ..\..\RexxLegacyAPI.cpp /o $@
+
+SysLegacyAPI.obj: platform\windows\SysLegacyAPI.cpp \
+                  $(top_srcdir)\kernel\api\RexxLegacyAPI.hpp \
+		  $(COMMONHEADERS)
+	$(CC) $(CFLAGS) platform/windows/SysLegacyAPI.cpp /o $@
+
+
+#################### clean #########################
+
+clean:
+	del $(CLEAN)
 
