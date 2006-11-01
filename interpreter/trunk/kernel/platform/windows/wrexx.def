@@ -42,22 +42,49 @@ LIBRARY   rexx BASE=0x6B000000
 ;
 ;* Documented API's into REXX
 EXPORTS
-RexxStart                      @1
-RexxVariablePool               @2
-RexxSetHalt                    @3
-RexxSetTrace                   @4
-RexxResetTrace                 @5
-;
-ooRexxStart                    @7
-ooRexxVariablePool             @8
-;
-ooRexxCompileProgram           @12
-ooRexxTranslateSource          @13
-;
-
-ooRexxStemSort                 @14
-ooRexxGetVersionInformation    @15
-ooRexxSaveImage                @16
+     RexxStart                      @1
+     RexxVariablePool               @2
+     RexxSetHalt                    @3
+     RexxSetTrace                   @4
+     RexxResetTrace                 @5
+     ooRexxStart                    @7
+     ooRexxVariablePool             @8
+     ooRexxCompileProgram           @12
+     ooRexxTranslateSource          @13
+     ooRexxStemSort                 @14
+     ooRexxGetVersionInformation    @15
+     ooRexxSaveImage                @16
+     ooRexxCreateQueue
+     ooRexxDeleteQueue
+     ooRexxAddQueue
+     ooRexxPullQueue
+     ooRexxQueryQueue
+     ooRexxRegisterLibrarySubcom
+     ooRexxRegisterSubcom
+     ooRexxQuerySubcom
+     ooRexxDeregisterSubcom
+     ooRexxRegisterLibraryExit
+     ooRexxRegisterExit
+     ooRexxDeregisterExit
+     ooRexxQueryExit
+     ooRexxResolveExit
+     ooRexxResolveSubcom
+     ooRexxResolveFunction
+     ooRexxRegisterLibraryFunction
+     ooRexxRegisterFunction
+     ooRexxDeregisterFunction
+     ooRexxQueryFunction
+     ooRexxAddMacro
+     ooRexxDropMacro
+     ooRexxClearMacroSpace
+     ooRexxLoadMacroSpace
+     ooRexxQueryMacro
+     ooRexxReorderMacro
+     ooRexxSaveMacroSpace
+     ooRexxResolveMacroFunction
+     ooRexxShutDownAPI
+     ooRexxAllocateMemory
+     ooRexxFreeMemory
 
 SECTIONS
    .sdata READ WRITE SHARED
