@@ -237,6 +237,12 @@ OOREXX_LIBS="-L\$(top_srcdir)/shared \
             -ldl"
 AC_SUBST(OOREXX_LIBS)
 
+OOREXX_LINK_LIBS="-L\$(top_srcdir)/shared \
+            -L\$(top_srcdir)/kernel \
+            -lpthread \
+            -ldl"
+AC_SUBST(OOREXX_LINK_LIBS)
+
 
 
 

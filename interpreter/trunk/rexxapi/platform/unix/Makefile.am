@@ -55,20 +55,18 @@ pkglib_LTLIBRARIES = librexxapi.la
 # Sources for librexxapi.la
 #
 librexxapi_la_SOURCES = SysLegacy.cpp \
-                        $(top_srcdir)/rexxapi/RexxLegacyAPI.hpp \
                         $(top_srcdir)/rexxapi/RexxLegacyAPI.cpp
 
 #
 # C++ compiler flags for librexxapi.la sources
 #
-librexxapi_la_CXXFLAGS = -DORX_VER=$(MAJOR) -DORX_REL=$(MINOR) \
-                         -DORX_MOD=$(MOD_LVL)
+librexxapi_la_CXXFLAGS =
 
 #
 # linker flags for librexxapi.la objects
 #
 librexxapi_la_LDFLAGS = -version-info @OOREXX_LIB_VERSION@ -no-undefined \
-                        @OOREXX_LIBS@
+                        @OOREXX_LINK_LIBS@
 
 #
 # additional libraries for librexxapi.la objects

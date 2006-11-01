@@ -44,183 +44,33 @@
 INCLUDES = $(OOREXXINC) \
            /I$(top_srcdir)\kernel\messages \
            /I$(top_srcdir)\rexxapi \
-           /I$(top_srcdir)\rexxapi\api \
-           /I$(top_srcdir)\rexxapi\api\platform\windows \
-           /I$(top_srcdir)\rexxapi\daemon \
-           /I$(top_srcdir)\rexxapi\daemon\platform\windows
+           /I$(top_srcdir)\kernel\api
 
-DLLOBJS = LocalAPIContext.obj SysLocalAPIManager.obj LocalAPIManager.obj LocalMacroSpaceManager.obj \
-          LocalQueueManager.obj LocalRegistrationManager.obj MacroSpaceApi.obj \
-	  QueuesAPI.obj RegistrationAPI.obj RexxLegacyAPI.obj SysLegacyAPI.obj ClientMessage.obj
-
-EXEOBJS = APIServer.obj APIService.obj APIServerInstance.obj MacroSpaceManager.obj QueueManager.obj \
-	  RegistrationManager.obj
-
-COMMONOBJS = ServiceMessage.obj
+DLLOBJS = RexxLegacyAPI.obj SysLegacyAPI.obj
 
 SHAREDLIB = $(top_srcdir)\shared\windows\rxshared.lib
 
 SHAREDDLLVER = $(top_srcdir)\shared\windows\verinfo_dll.res
-SHAREDEXEVER = $(top_srcdir)\shared\windows\verinfo_exe.res
 
-#################### build rexxapi.dll and rxapi.exe ##########################
+#################### build rexxapi.dll ########################################
 
-all: rexxapi.dll rexxapi.lib rxapi.exe
+all: rexxapi.dll rexxapi.lib
 
-rexxapi.dll rexxapi.lib: $(DLLOBJS) $(COMMONOBJS) $(SHAREDLIB) $(SHAREDVER) \
-                         api\platform\windows\rexxapi.def
+rexxapi.dll rexxapi.lib: $(DLLOBJS) $(COMMONOBJS) $(SHAREDLIB) $(SHAREDDLLVER) \
+                         rexxapi.def
 	$(LD) /DLL $(LFLAGS) $(DLLOBJS) $(COMMONOBJS) $(SHAREDLIB) \
 	$(WINLIBS) $(SHAREDDLLVER) /SUBSYSTEM:WINDOWS \
-        /DEF:api\platform\windows\rexxapi.def /OUT:rexxapi.dll
+        /DEF:rexxapi.def /OUT:rexxapi.dll
 
-rxapi.exe: $(EXEOBJS) $(COMMONOBJS) $(SHAREDLIB) rexxapi.lib $(SHAREDEXEVER)
-	$(LD) $(LFLAGS) $(EXEOBJS) $(COMMONOBJS) $(SHAREDLIB) rexxapi.lib \
-        $(WINLIBS) $(SHAREDEXEVER) /SUBSYSTEM:WINDOWS /DELAYLOAD:advapi32.dll \
-        /OUT:rxapi.exe
-
-APIServer.obj: daemon\APIServer.cpp \
-		daemon\APIServer.hpp \
-		daemon\APIServerInstance.hpp \
-		ServiceMessage.hpp \
-		ServiceException.hpp \
-		daemon\MacroSpaceManager.hpp \
-		daemon\RegistrationManager.hpp \
-	        daemon\QueueManager.hpp \
-		$(COMMONHEADERS)
-	$(CC) $(CFLAGS) daemon\APIServer.cpp /o $@
-
-APIServerInstance.obj: daemon\APIServerInstance.cpp \
-		daemon\APIServer.hpp \
-		daemon\APIServerInstance.hpp \
-		ServiceMessage.hpp \
-		ServiceException.hpp \
-		daemon\MacroSpaceManager.hpp \
-		daemon\RegistrationManager.hpp \
-	        daemon\QueueManager.hpp \
-		$(COMMONHEADERS)
-	$(CC) $(CFLAGS) daemon\APIServerInstance.cpp /o $@
-
-APIService.obj: daemon\platform\windows\APIService.cpp \
-		daemon\APIServer.hpp \
-		$(COMMONHEADERS)
-	$(CC) $(CFLAGS) daemon\platform\windows\APIService.cpp /o $@
-
-ServiceMessage.obj: ServiceMessage.cpp \
-		ServiceMessage.hpp \
-		$(COMMONHEADERS)
-	$(CC) $(CFLAGS) ServiceMessage.cpp /o $@
-
-ClientMessage.obj: api\ClientMessage.cpp \
-		ServiceMessage.hpp \
-		api\ClientMessage.hpp \
-		api\LocalAPIManager.hpp \
-		$(COMMONHEADERS)
-	$(CC) $(CFLAGS) api\ClientMessage.cpp /o $@
-
-LocalAPIContext.obj: api\LocalAPIContext.cpp \
-		api\LocalAPIContext.hpp \
-		ServiceException.hpp \
-                api\LocalAPIManager.hpp \
-		ServiceMessage.hpp \
-		$(COMMONHEADERS)
-	$(CC) $(CFLAGS) api\LocalAPIContext.cpp /o $@
-
-LocalAPIManager.obj: api\LocalAPIManager.cpp \
-		api\LocalAPIManager.hpp \
-		ServiceMessage.hpp \
-		api\ClientMessage.hpp \
-		api\platform\windows\SysLocalAPIManager.hpp \
-		api\LocalRegistrationManager.hpp \
-		api\LocalQueueManager.hpp \
-		api\LocalMacroSpaceManager.hpp \
-		$(COMMONHEADERS)
-	$(CC) $(CFLAGS) api\LocalAPIManager.cpp /o $@
-
-SysLocalAPIManager.obj: api\platform\windows\SysLocalAPIManager.cpp \
-		api\platform\windows\SysLocalAPIManager.hpp \
-		$(COMMONHEADERS)
-	$(CC) $(CFLAGS) api\platform\windows\SysLocalAPIManager.cpp /o $@
-
-LocalMacroSpaceManager.obj: api\LocalMacroSpaceManager.cpp \
-		api\LocalMacroSpaceManager.hpp \
-                api\LocalAPIManager.hpp \
-		api\LocalAPISubsystem.hpp \
-		ServiceMessage.hpp \
-		api\ClientMessage.hpp \
-		$(COMMONHEADERS)
-	$(CC) $(CFLAGS) api\LocalMacroSpaceManager.cpp /o $@
-
-LocalQueueManager.obj: api\LocalQueueManager.cpp \
-		api\LocalQueueManager.hpp \
-                Encodings.hpp \
-		api\LocalAPIManager.hpp \
-		api\LocalAPISubsystem.hpp \
-		ServiceMessage.hpp \
-		api\ClientMessage.hpp \
-		$(COMMONHEADERS)
-	$(CC) $(CFLAGS) api\LocalQueueManager.cpp /o $@
-
-LocalRegistrationManager.obj: api\LocalRegistrationManager.cpp \
-		api\LocalRegistrationManager.hpp \
-                api\LocalAPIManager.hpp \
-		ServiceMessage.hpp \
-		api\ClientMessage.hpp \
-		api\LocalAPISubsystem.hpp \
-		$(COMMONHEADERS)
-	$(CC) $(CFLAGS) api\LocalRegistrationManager.cpp /o $@
-
-MacroSpaceApi.obj: api\MacroSpaceApi.cpp \
-		api\LocalMacroSpaceManager.hpp \
-                api\LocalAPIManager.hpp \
-		api\LocalAPIContext.hpp \
-		$(COMMONHEADERS)
-	$(CC) $(CFLAGS) api\MacroSpaceApi.cpp /o $@
-
-MacroSpaceManager.obj: daemon\MacroSpaceManager.cpp \
-		daemon\MacroSpaceManager.hpp \
-		ServiceMessage.hpp \
-		$(COMMONHEADERS)
-	$(CC) $(CFLAGS) daemon\MacroSpaceManager.cpp /o $@
-
-QueueManager.obj: daemon\QueueManager.cpp \
-		daemon\QueueManager.hpp \
-		ServiceMessage.hpp \
-		$(COMMONHEADERS)
-	$(CC) $(CFLAGS) daemon\QueueManager.cpp /o $@
-
-QueuesAPI.obj: api\QueuesAPI.cpp \
-		api\LocalAPIManager.hpp \
-		api\LocalQueueManager.hpp \
-                api\LocalAPIContext.hpp \
-		$(COMMONHEADERS)
-	$(CC) $(CFLAGS) api\QueuesAPI.cpp /o $@
-
-RegistrationAPI.obj: api\RegistrationAPI.cpp \
-		api\LocalAPIManager.hpp \
-                api\LocalRegistrationManager.hpp \
-		api\LocalAPIContext.hpp \
-		api\RexxLegacyAPI.hpp \
-		ServiceMessage.hpp \
-		api\ClientMessage.hpp \
-		$(COMMONHEADERS)
-	$(CC) $(CFLAGS) api\RegistrationAPI.cpp /o $@
-
-RegistrationManager.obj: daemon\RegistrationManager.cpp \
-		daemon\RegistrationManager.hpp \
-                ServiceMessage.hpp \
-		ServiceException.hpp \
-		$(COMMONHEADERS)
-	$(CC) $(CFLAGS) daemon\RegistrationManager.cpp /o $@
-
-RexxLegacyAPI.obj: api\RexxLegacyAPI.cpp \
-		api\RexxLegacyAPI.hpp \
-		$(COMMONHEADERS)
-	$(CC) $(CFLAGS) api\RexxLegacyAPI.cpp /o $@
+RexxLegacyAPI.obj: ..\..\RexxLegacyAPI.cpp \
+                   $(top_srcdir)\kernel\api\RexxLegacyAPI.hpp \
+		   $(COMMONHEADERS)
+	$(CC) $(CFLAGS) ..\..\RexxLegacyAPI.cpp /o $@
 
 SysLegacyAPI.obj: api\platform\windows\SysLegacyAPI.cpp \
-		api\RexxLegacyAPI.hpp \
-		$(COMMONHEADERS)
-	$(CC) $(CFLAGS) api\platform\windows\SysLegacyAPI.cpp /o $@
+                  $(top_srcdir)\kernel\api\RexxLegacyAPI.hpp \
+		  $(COMMONHEADERS)
+	$(CC) $(CFLAGS) SysLegacyAPI.cpp /o $@
 
 
 #################### clean #########################
