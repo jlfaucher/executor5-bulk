@@ -727,7 +727,18 @@ APIRET APIENTRY RexxReorderMacro(
     return ooRexxReorderMacro(const_cast<RexxStringPointer>(name), pos);
 }
 
-/* try to shutdown the RXAPI.EXE */
+
+/*********************************************************************/
+/*                                                                   */
+/*  Function Name:      RexxShutdownAPI                              */
+/*                                                                   */
+/*  Description:        try to shutdown the interpreter.             */
+/*                                                                   */
+/*  Entry Point:        RexxShutdownAPI                              */
+/*                                                                   */
+/*  Output:             return code                                  */
+/*                                                                   */
+/*********************************************************************/
 
 unsigned long APIENTRY RexxShutDownAPI(void)
 {
