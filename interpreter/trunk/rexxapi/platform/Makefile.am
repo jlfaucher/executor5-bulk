@@ -38,7 +38,7 @@
 
 MAINTAINERCLEANFILES = Makefile.in
 
-SUBDIRS = platform
-DIST_SUBDIRS = platform
+SUBDIRS = unix
+DIST_SUBDIRS = unix windows
 
 
