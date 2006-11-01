@@ -42,11 +42,7 @@ MAINTAINERCLEANFILES = Makefile.in
 include $(top_srcdir)/oorexx.ver
 
 INCLUDES = @OOREXX_INCLUDES@ \
-           -I$(top_srcdir)/rexxapi \
-           -I$(top_srcdir)/rexxapi/api \
-           -I$(top_srcdir)/rexxapi/api/platform/unix \
-           -I$(top_srcdir)/rexxapi/daemon \
-           -I$(top_srcdir)/rexxapi/daemon/platform/unix \
+           -I$(top_srcdir)/kernel/api \
            -I$(top_srcdir)/shared \
            -I$(top_srcdir)/shared/unix
 
@@ -58,31 +54,9 @@ pkglib_LTLIBRARIES = librexxapi.la
 #
 # Sources for librexxapi.la
 #
-librexxapi_la_SOURCES = Encodings.hpp \
-                        ServiceException.hpp \
-                        ServiceMessage.cpp \
-                        ServiceMessage.hpp \
-                        api/ClientMessage.cpp \
-                        api/ClientMessage.hpp \
-                        api/LocalAPIContext.cpp \
-                        api/LocalAPIContext.hpp \
-                        api/LocalAPIManager.cpp \
-                        api/LocalAPIManager.hpp \
-                        api/LocalAPISubsystem.hpp \
-                        api/LocalMacroSpaceManager.cpp \
-                        api/LocalMacroSpaceManager.hpp \
-                        api/LocalQueueManager.cpp \
-                        api/LocalQueueManager.hpp \
-                        api/LocalRegistrationManager.cpp \
-                        api/LocalRegistrationManager.hpp \
-                        api/MacroSpaceApi.cpp \
-                        api/QueuesAPI.cpp \
-                        api/RegistrationAPI.cpp \
-                        api/RexxAPI.h \
-                        api/RexxLegacyAPI.cpp \
-                        api/RexxLegacyAPI.hpp \
-                        api/platform/unix/SysLocalAPIManager.cpp \
-                        api/platform/unix/SysLocalAPIManager.hpp
+librexxapi_la_SOURCES = SysLegacy.cpp \
+                        $(top_srcdir)/rexxapi/RexxLegacyAPI.hpp \
+                        $(top_srcdir)/rexxapi/RexxLegacyAPI.cpp
 
 #
 # C++ compiler flags for librexxapi.la sources
@@ -100,45 +74,5 @@ librexxapi_la_LDFLAGS = -version-info @OOREXX_LIB_VERSION@ -no-undefined \
 # additional libraries for librexxapi.la objects
 #
 librexxapi_la_LIBADD  = -lrxshared
-
-
-#################### rxapi #########################
-
-bin_PROGRAMS = rxapi
-
-#
-# Sources for rxapi
-#
-rxapi_SOURCES = Encodings.hpp \
-                ServiceException.hpp \
-                ServiceMessage.cpp \
-                ServiceMessage.hpp \
-                daemon/APIServer.cpp \
-                daemon/APIServer.hpp \
-                daemon/APIServerInstance.cpp \
-                daemon/APIServerInstance.hpp \
-                daemon/MacroSpaceManager.cpp \
-                daemon/MacroSpaceManager.hpp \
-                daemon/QueueManager.cpp \
-                daemon/QueueManager.hpp \
-                daemon/RegistrationManager.cpp \
-                daemon/RegistrationManager.hpp \
-                daemon/platform/unix/APIService.cpp
-
-#
-# C++ compiler flags for rxapi sources
-#
-rxapi_CXXFLAGS = -DORX_VER=$(MAJOR) -DORX_REL=$(MINOR) \
-                 -DORX_MOD=$(MOD_LVL)
-
-#
-# additional libraries for rxapi objects
-#
-rxapi_LDADD  = -lrxshared -lrexxapi @OOREXX_LIBS@
-
-#
-# linker flags for rxapi objects
-#
-rxapi_LDFLAGS =
 
 
