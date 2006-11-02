@@ -41,4 +41,56 @@ MAINTAINERCLEANFILES = Makefile.in
 SUBDIRS = platform
 DIST_SUBDIRS = platform
 
+# get version details from our external file
+include $(top_srcdir)/oorexx.ver
+
+INCLUDES = @OOREXX_INCLUDES@ \
+           -I$(top_srcdir)/rexxapi \
+           -I$(top_srcdir)/rexxapi/api \
+           -I$(top_srcdir)/rexxapi/api/platform/unix \
+           -I$(top_srcdir)/rexxapi/daemon \
+           -I$(top_srcdir)/rexxapi/daemon/platform/unix \
+           -I$(top_srcdir)/shared \
+           -I$(top_srcdir)/shared/unix
+
+
+#################### rxapi #########################
+
+bin_PROGRAMS = rxapi
+
+#
+# Sources for rxapi
+#
+rxapi_SOURCES = Encodings.hpp \
+                ServiceException.hpp \
+                ServiceMessage.cpp \
+                ServiceMessage.hpp \
+                ../../APIServer.cpp \
+                ../../APIServer.hpp \
+                ../..APIServerInstance.cpp \
+                ../../APIServerInstance.hpp \
+                ../../MacroSpaceManager.cpp \
+                ../../MacroSpaceManager.hpp \
+                ../../QueueManager.cpp \
+                ../../QueueManager.hpp \
+                ../../RegistrationManager.cpp \
+                ../../RegistrationManager.hpp \
+                ../../platform/unix/APIService.cpp
+
+#
+# C++ compiler flags for rxapi sources
+#
+rxapi_CXXFLAGS = -DORX_VER=$(MAJOR) -DORX_REL=$(MINOR) \
+                 -DORX_MOD=$(MOD_LVL)
+
+#
+# additional libraries for rxapi objects
+#
+rxapi_LDADD  = -lrxshared -lrexxapi @OOREXX_LIBS@
+
+#
+# linker flags for rxapi objects
+#
+rxapi_LDFLAGS =
+
 
