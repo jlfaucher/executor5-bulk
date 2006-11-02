@@ -38,20 +38,12 @@
 
 MAINTAINERCLEANFILES = Makefile.in
 
-SUBDIRS = platform
 DIST_SUBDIRS = platform
 
 # get version details from our external file
 include $(top_srcdir)/oorexx.ver
 
-INCLUDES = @OOREXX_INCLUDES@ \
-           -I$(top_srcdir)/rexxapi \
-           -I$(top_srcdir)/rexxapi/api \
-           -I$(top_srcdir)/rexxapi/api/platform/unix \
-           -I$(top_srcdir)/rexxapi/daemon \
-           -I$(top_srcdir)/rexxapi/daemon/platform/unix \
-           -I$(top_srcdir)/shared \
-           -I$(top_srcdir)/shared/unix
+INCLUDES = @OOREXX_INCLUDES@
 
 
 #################### rxapi #########################
@@ -61,32 +53,35 @@ bin_PROGRAMS = rxapi
 #
 # Sources for rxapi
 #
-rxapi_SOURCES = Encodings.hpp \
-                ServiceException.hpp \
-                ServiceMessage.cpp \
-                ServiceMessage.hpp \
-                ../../APIServer.cpp \
-                ../../APIServer.hpp \
-                ../..APIServerInstance.cpp \
-                ../../APIServerInstance.hpp \
-                ../../MacroSpaceManager.cpp \
-                ../../MacroSpaceManager.hpp \
-                ../../QueueManager.cpp \
-                ../../QueueManager.hpp \
-                ../../RegistrationManager.cpp \
-                ../../RegistrationManager.hpp \
-                ../../platform/unix/APIService.cpp
+rxapi_SOURCES = $(top_srcdir)/shared/ClientMessage.cpp \
+                $(top_srcdir)/shared/ClientMessage.hpp \
+                $(top_srcdir)/shared/Encodings.hpp \
+                $(top_srcdir)/shared/ServiceException.hpp \
+                $(top_srcdir)/shared/ServiceMessage.cpp \
+                $(top_srcdir)/shared/ServiceMessage.hpp \
+                APIServer.cpp \
+                APIServer.hpp \
+                APIServerInstance.cpp \
+                APIServerInstance.hpp \
+                MacroSpaceManager.cpp \
+                MacroSpaceManager.hpp \
+                QueueManager.cpp \
+                QueueManager.hpp \
+                RegistrationManager.cpp \
+                RegistrationManager.hpp \
+                RexxService.h \
+                platform/unix/APIService.cpp
 
 #
 # C++ compiler flags for rxapi sources
 #
-rxapi_CXXFLAGS = -DORX_VER=$(MAJOR) -DORX_REL=$(MINOR) \
-                 -DORX_MOD=$(MOD_LVL)
+rxapi_CXXFLAGS = -DORX_VER=$(MAJOR) -DORX_REL=$(MINOR) -DORX_MOD=$(MOD_LVL) \
+                 $(INCLUDES)
 
 #
 # additional libraries for rxapi objects
 #
-rxapi_LDADD  = -lrxshared -lrexxapi @OOREXX_LIBS@
+rxapi_LDADD  = -lrexx @OOREXX_LIBS@
 
 #
 # linker flags for rxapi objects

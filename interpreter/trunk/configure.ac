@@ -215,7 +215,8 @@ CFLAGS="$CFLAGS $CC_WARNINGS $GENERAL_CFLAGS"
 
 OOREXX_INCLUDES="-I\$(top_srcdir)/api \
                  -I\$(top_srcdir)/api/platform/unix \
-		 -I\$(top_srcdir)/kernel/messages"
+		 -I\$(top_srcdir)/kernel/messages \
+		 -I\$(top_srcdir)/shared"
 AC_SUBST(OOREXX_INCLUDES)
 
 OOREXX_COMMONHEADERS="\$(top_srcdir)/api/InternalAPI.hpp \
@@ -230,18 +231,11 @@ OOREXX_COMMONHEADERS="\$(top_srcdir)/api/InternalAPI.hpp \
               \$(top_srcdir)/shared/SystemException.hpp"
 AC_SUBST(OOREXX_COMMONHEADERS)
 
-OOREXX_LIBS="-L\$(top_srcdir)/shared \
-            -L\$(top_srcdir)/rexxapi \
+OOREXX_LIBS="-L\$(top_srcdir)/rexxapi \
             -L\$(top_srcdir)/kernel \
             -lpthread \
             -ldl"
 AC_SUBST(OOREXX_LIBS)
-
-OOREXX_LINK_LIBS="-L\$(top_srcdir)/shared \
-            -L\$(top_srcdir)/kernel \
-            -lpthread \
-            -ldl"
-AC_SUBST(OOREXX_LINK_LIBS)
 
 
 
