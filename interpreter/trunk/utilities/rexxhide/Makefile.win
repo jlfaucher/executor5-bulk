@@ -36,31 +36,31 @@
 #----------------------------------------------------------------------------
 
 
-MAINTAINERCLEANFILES = Makefile.in
-
-INCLUDES = -I$(top_srcdir)/api \
-           -I$(top_srcdir)/shared \
-           -I$(top_srcdir)/kernel/messages
+# This is a part of the ooRexx Windows build
 
 
-#################### rexx.exe ##########################
+!include $(top_srcdir)\Nmake.inc
 
-# Note: do not add the .exe extension here!
-bin_PROGRAMS = rexx
+INCLUDES = $(OOREXXINC)
 
-#
-# Sources for rexx
-#
-rexx_SOURCES = rexx.cpp
+EXEOBJS = rexxhide.obj
 
-#
-# Extra linker flags for rexx
-#
-rexx_LDFLAGS = -ldl -lpthread
+SHAREDEXEVER = $(top_srcdir)\shared\windows\verinfo_exe.res
 
-#
-# Extra libraries for rexx
-#
-rexx_LDADD = librexx.la librexxapi.la
+#################### build rexxhide.exe ##########################
+
+all: rexxhide.exe
+
+rexxhide.exe: $(EXEOBJS) $(OOREXXLIBS) $(SHAREDEXEVER)
+	$(LD) $(LFLAGS) $(EXEOBJS) $(SHAREDEXEVER) $(REXXLIBS) $(WINLIBS) \
+	/SUBSYSTEM:WINDOWS /OUT:rexxhide.exe
+
+rexxhide.obj: rexxhide.cpp \
+          $(COMMONHEADERS)
+	$(CC) $(CFLAGS) rexxhide.cpp /o $@
 
 
+#################### clean #########################
+
+clean:
+	del $(CLEAN)

@@ -36,31 +36,33 @@
 #----------------------------------------------------------------------------
 
 
-MAINTAINERCLEANFILES = Makefile.in
-
-INCLUDES = -I$(top_srcdir)/api \
-           -I$(top_srcdir)/shared \
-           -I$(top_srcdir)/kernel/messages
+# This is a part of the ooRexx Windows build
 
 
-#################### rxsubcom.exe ##########################
+!include $(top_srcdir)\Nmake.inc
 
-# Note: do not add the .exe extension here!
-bin_PROGRAMS = rxsubcom
+INCLUDES = $(OOREXXINC) \
+           /I$(top_srcdir)\kernel\messages
 
-#
-# Sources for rxsubcom
-#
-rxsubcom_SOURCES = SUBCOMCommand.cpp
+EXEOBJS = rxsubcom.obj
 
-#
-# Extra link flags for rxsubcom
-#
-rxsubcom_LDFLAGS = -ldl -lpthread
-
-#
-# Extra libraries for rxsubcom
-#
-rxsubcom_LDADD = librexx.la librexxapi.la
+SHAREDEXEVER = $(top_srcdir)\shared\windows\verinfo_exe.res
 
 
+#################### build rxsubcom.exe ##########################
+
+all: rxsubcom.exe
+
+rxsubcom.exe: $(EXEOBJS) $(OOREXXLIBS) $(SHAREDEXEVER)
+	$(LD) $(LFLAGS) $(EXEOBJS) $(SHAREDEXEVER) $(REXXLIBS) $(WINLIBS) \
+	/SUBSYSTEM:WINDOWS /OUT:rxsubcom.exe
+
+rxsubcom.obj: platform\windows\SUBCOMCommand.c \
+          $(COMMONHEADERS)
+	$(CC) $(CFLAGS) platform\windows\SUBCOMCommand.c /o $@
+
+
+#################### clean #########################
+
+clean:
+	del $(CLEAN)

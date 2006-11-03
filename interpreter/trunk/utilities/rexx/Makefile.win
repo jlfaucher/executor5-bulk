@@ -41,25 +41,26 @@
 
 !include $(top_srcdir)\Nmake.inc
 
-INCLUDES = $(OOREXXINC) \
-           /I$(top_srcdir)\kernel\messages
+INCLUDES = $(OOREXXINC)
 
-EXEOBJS = rxsubcom.obj
+EXEOBJS = rexx.obj
+
+SRCDIR = $(top_srcdir)\utilities\rexx\platform\windows
 
 SHAREDEXEVER = $(top_srcdir)\shared\windows\verinfo_exe.res
 
+#################### build rexx.exe ##########################
 
-#################### build rxsubcom.exe ##########################
+all: rexx.exe
 
-all: rxsubcom.exe
+rexx.exe: $(EXEOBJS) $(SHAREDLIB) $(OOREXXLIBS) $(SHAREDEXEVER)
+	$(LD) $(LFLAGS) $(EXEOBJS) $(SHAREDEXEVER) $(SHAREDLIB) $(OOREXXLIBS) $(WINLIBS) \
+	/SUBSYSTEM:Console /OUT:rexx.exe
 
-rxsubcom.exe: $(EXEOBJS) $(OOREXXLIBS) $(SHAREDEXEVER)
-	$(LD) $(LFLAGS) $(EXEOBJS) $(SHAREDEXEVER) $(REXXLIBS) $(WINLIBS) \
-	/SUBSYSTEM:WINDOWS /OUT:rxsubcom.exe
-
-rxsubcom.obj: SUBCOMCommand.c \
+rexx.obj: $(SRCDIR)/rexx.cpp \
+          $(SRCDIR)\ArgumentParser.h \
           $(COMMONHEADERS)
-	$(CC) $(CFLAGS) SUBCOMCommand.c /o $@
+	$(CC) $(CFLAGS) $(SRCDIR)\rexx.cpp /o $@
 
 
 #################### clean #########################

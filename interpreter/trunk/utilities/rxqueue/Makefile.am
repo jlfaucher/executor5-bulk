@@ -38,7 +38,31 @@
 
 MAINTAINERCLEANFILES = Makefile.in
 
-SUBDIRS = platform
 DIST_SUBDIRS = platform
+
+INCLUDES = -I$(top_srcdir)/api \
+           -I$(top_srcdir)/shared \
+           -I$(top_srcdir)/kernel/messages
+
+
+#################### rxqueue.exe ##########################
+
+# Note: do not add the .exe extension here!
+bin_PROGRAMS = rxqueue
+
+#
+# Sources for rxqueue
+#
+rxqueue_SOURCES = platform/unix/QueueCommand.cpp
+
+#
+# Extra linker flags for rxqueue
+#
+rxqueue_LDFLAGS = -ldl -lpthread
+
+#
+# Extra libraries for rxqueue
+#
+rxqueue_LDADD = librexx.la
 
 

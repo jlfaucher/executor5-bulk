@@ -43,7 +43,6 @@
 #include <fcntl.h>
 #include <signal.h>
 #include "APIServer.hpp"
-#include "RexxService.h"
 #include "stdio.h"
 
 // For testing purposes comment out the following line to force RXAPI to

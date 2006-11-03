@@ -38,7 +38,30 @@
 
 MAINTAINERCLEANFILES = Makefile.in
 
-SUBDIRS = platform
 DIST_SUBDIRS = platform
+
+INCLUDES = -I$(top_srcdir)/api \
+           -I$(top_srcdir)/shared \
+           -I$(top_srcdir)/kernel/messages
+
+
+#################### rexxc.exe ##########################
+
+bin_PROGRAMS = rexxc
+
+#
+# Sources for rexxc
+#
+rexxc_SOURCES = rexxc.cpp
+
+#
+# Extra linker flags for rexxc
+#
+rexxc_LDFLAGS = -ldl -lpthread
+
+#
+# Extra libraries for rexxc
+#
+rexxc_LDADD = librexx.la
 
 

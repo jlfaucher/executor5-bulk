@@ -41,24 +41,61 @@
 
 !include $(top_srcdir)\Nmake.inc
 
-INCLUDES = $(OOREXXINC) \
-           /I$(top_srcdir)\kernel\messages
+INCLUDES = $(OOREXXINC)
 
-EXEOBJS = rxqueue.obj
+EXEOBJS = APIService.obj APIServer.obj APIServerInstance.obj \
+          MacroSpaceManager.obj QueueManager.obj RegistrationManager.obj
 
 SHAREDEXEVER = $(top_srcdir)\shared\windows\verinfo_exe.res
 
-#################### build rxqueue.exe ##########################
+#################### build rexxhide.exe ##########################
 
-all: rxqueue.exe
+all: rxapi.exe
 
-rxqueue.exe: $(EXEOBJS) $(OOREXXLIBS) $(SHAREDEXEVER)
+rxapi.exe: $(EXEOBJS) $(OOREXXLIBS) $(SHAREDEXEVER)
 	$(LD) $(LFLAGS) $(EXEOBJS) $(SHAREDEXEVER) $(REXXLIBS) $(WINLIBS) \
-	/SUBSYSTEM:WINDOWS /OUT:rxqueue.exe
+	/SUBSYSTEM:WINDOWS /OUT:rexxhide.exe
 
-rxqueue.obj: QueueCommand.c \
+APIService.obj: platform\windows\APIService.cpp \
+          APIServer.hpp \
           $(COMMONHEADERS)
-	$(CC) $(CFLAGS) QueueCommand.c /o $@
+	$(CC) $(CFLAGS) platform\windows\APIService.cpp /o $@
+
+APIServer.obj: APIServer.cpp \
+          APIServer.hpp \
+          APIServerInstance.hpp \
+          $(top_srcdir)\shared\ServiceException.hpp \
+          $(top_srcdir)\shared\ServiceMessage.cpp \
+          $(COMMONHEADERS)
+	$(CC) $(CFLAGS) APIServer.cpp /o $@
+
+APIServerInstance.obj: APIServerInstance.cpp \
+          APIServerInstance.hpp \
+          APIServerInstance.hpp \
+          $(top_srcdir)\shared\ServiceException.hpp \
+          $(top_srcdir)\shared\ServiceMessage.cpp \
+          $(COMMONHEADERS)
+	$(CC) $(CFLAGS) APIServerInstance.cpp /o $@
+
+MacroSpaceManager.obj: MacroSpaceManager.cpp \
+          MacroSpaceManager.hpp \
+          $(top_srcdir)\shared\ServiceMessage.cpp \
+          $(COMMONHEADERS)
+	$(CC) $(CFLAGS) MacroSpaceManager.cpp /o $@
+
+QueueManager.obj: QueueManager.cpp \
+          QueueManager.hpp \
+          APIServer.hpp \
+          $(top_srcdir)\shared\ServiceMessage.cpp \
+          $(COMMONHEADERS)
+	$(CC) $(CFLAGS) QueueManager.cpp /o $@
+
+RegistrationManager.obj: RegistrationManager.cpp \
+          RegistrationManager.hpp \
+          $(top_srcdir)\shared\ServiceException.hpp \
+          $(top_srcdir)\shared\ServiceMessage.cpp \
+          $(COMMONHEADERS)
+	$(CC) $(CFLAGS) RegistrationManager.cpp /o $@
 
 
 #################### clean #########################

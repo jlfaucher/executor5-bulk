@@ -38,7 +38,31 @@
 
 MAINTAINERCLEANFILES = Makefile.in
 
-SUBDIRS = platform
 DIST_SUBDIRS = platform
+
+INCLUDES = -I$(top_srcdir)/api \
+           -I$(top_srcdir)/shared \
+           -I$(top_srcdir)/kernel/messages
+
+
+#################### rxsubcom.exe ##########################
+
+# Note: do not add the .exe extension here!
+bin_PROGRAMS = rxsubcom
+
+#
+# Sources for rxsubcom
+#
+rxsubcom_SOURCES = platform/unix/SUBCOMCommand.cpp
+
+#
+# Extra link flags for rxsubcom
+#
+rxsubcom_LDFLAGS = -ldl -lpthread
+
+#
+# Extra libraries for rxsubcom
+#
+rxsubcom_LDADD = librexx.la
 
 

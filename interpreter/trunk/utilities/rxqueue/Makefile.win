@@ -41,23 +41,24 @@
 
 !include $(top_srcdir)\Nmake.inc
 
-INCLUDES = $(OOREXXINC)
+INCLUDES = $(OOREXXINC) \
+           /I$(top_srcdir)\kernel\messages
 
-EXEOBJS = rexxc.obj
+EXEOBJS = rxqueue.obj
 
 SHAREDEXEVER = $(top_srcdir)\shared\windows\verinfo_exe.res
 
-#################### build rexxc.exe ##########################
+#################### build rxqueue.exe ##########################
 
-all: rexxc.exe
+all: rxqueue.exe
 
-rexxc.exe: $(EXEOBJS) $(OOREXXLIBS) $(SHAREDEXEVER)
+rxqueue.exe: $(EXEOBJS) $(OOREXXLIBS) $(SHAREDEXEVER)
 	$(LD) $(LFLAGS) $(EXEOBJS) $(SHAREDEXEVER) $(REXXLIBS) $(WINLIBS) \
-	/SUBSYSTEM:WINDOWS /OUT:rexxc.exe
+	/SUBSYSTEM:WINDOWS /OUT:rxqueue.exe
 
-rexxc.obj: RexxCompiler.cpp \
+rxqueue.obj: platform\windows\QueueCommand.c \
           $(COMMONHEADERS)
-	$(CC) $(CFLAGS) RexxCompiler.cpp /o $@
+	$(CC) $(CFLAGS) platform\windows\QueueCommand.c /o $@
 
 
 #################### clean #########################

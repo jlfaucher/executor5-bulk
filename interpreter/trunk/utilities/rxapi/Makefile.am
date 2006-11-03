@@ -69,7 +69,6 @@ rxapi_SOURCES = $(top_srcdir)/shared/ClientMessage.cpp \
                 QueueManager.hpp \
                 RegistrationManager.cpp \
                 RegistrationManager.hpp \
-                RexxService.h \
                 platform/unix/APIService.cpp
 
 #
