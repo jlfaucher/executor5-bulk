@@ -41,6 +41,10 @@ MAINTAINERCLEANFILES = Makefile.in
 # get version details from our external file
 include $(top_srcdir)/oorexx.ver
 
+SUBDIRS = messages
+DIST_SUBDIRS = api classes client expression extras instructions messages \
+               parser platform RexxClasses runtime script streamLibrary
+
 INCLUDES = @OOREXX_INCLUDES@ \
            -I$(top_srcdir)/kernel/api \
            -I$(top_srcdir)/kernel/classes \
@@ -67,6 +71,17 @@ pkglib_LTLIBRARIES = librexx.la
 # Sources for librexx.so
 #
 librexx_la_SOURCES = $(unix_@OOREXX_SIZEOF_POINTER@_sources) \
+                Rxstring.hpp \
+		SynchronizedBlock.hpp \
+		SystemException.hpp \
+		SysUtil.cpp \
+		SysUtil.hpp \
+		$(top_srcdir)/shared/ClientMessage.cpp \
+		$(top_srcdir)/shared/ClientMessage.hpp \
+		$(top_srcdir)/shared/Encodings.hpp \
+		$(top_srcdir)/shared/ServiceException.hpp \
+		$(top_srcdir)/shared/ServiceMessage.cpp \
+		$(top_srcdir)/shared/ServiceMessage.hpp \
                 platform/unix/APIDefinitions.h \
                 platform/unix/DBCSSupport.cpp \
                 platform/unix/ErrorMessages.cpp \
@@ -83,18 +98,41 @@ librexx_la_SOURCES = $(unix_@OOREXX_SIZEOF_POINTER@_sources) \
                 platform/unix/SharedMemorySupport.h \
                 platform/unix/SysActivity.cpp \
                 platform/unix/SysActivity.hpp \
-                platform/unix/SysCommands.cpp \
-                platform/unix/SysCommands.h \
+                platform/unix/SysCriticalSection.cpp \
+                platform/unix/SysCriticalSection.hpp \
+                platform/unix/SysCSStream.cpp \
+                platform/unix/SysCSStream.hpp \
+                platform/unix/SysFile.cpp \
+                platform/unix/SysFile.hpp \
+                platform/unix/SysFileSystem.cpp \
+                platform/unix/SysFileSystem.hpp \
                 platform/unix/SysInterpreter.cpp \
                 platform/unix/SysInterpreter.hpp \
+                platform/unix/SysLibrary.cpp \
+                platform/unix/SysLibrary.hpp \
+                platform/unix/SysLocalAPIManager.cpp \
+                platform/unix/SysLocalAPIManager.hpp \
+                platform/unix/SysProcess.cpp \
+                platform/unix/SysProcess.hpp \
+                platform/unix/SysSemaphore.cpp \
+                platform/unix/SysSemaphore.hpp \
+                platform/unix/SystemCommands.cpp \
+                platform/unix/SystemCommands.h \
+                platform/unix/SysThread.cpp \
+                platform/unix/SysThread.hpp \
                 platform/unix/TimeSupport.cpp \
                 platform/unix/UseridFunction.cpp \
                 platform/unix/ValueFunction.cpp \
                 api/CallContextStubs.cpp \
-     		api/ContextAPI.hpp \
+     		api/ContextApi.hpp \
      		api/InterpreterAPI.cpp \
      		api/InterpreterInstanceStubs.cpp \
+     		api/MacroSpaceApi.cpp \
      		api/MethodContextStubs.cpp \
+     		api/QueuesAPI.cpp \
+     		api/RegistrationAPI.cpp \
+     		api/RexxAPI.h \
+     		api/RexxLegacyAPI.hpp \
      		api/ThreadContextStubs.cpp \
      		api/VariablePool.cpp \
      		classes/ArrayClass.cpp \
@@ -144,6 +182,17 @@ librexx_la_SOURCES = $(unix_@OOREXX_SIZEOF_POINTER@_sources) \
      		classes/SupplierClass.hpp \
      		classes/TableClass.cpp \
      		classes/TableClass.hpp \
+     		client/LocalAPIContext.cpp \
+     		client/LocalAPIContext.hpp \
+     		client/LocalAPIManager.cpp \
+     		client/LocalAPIManager.hpp \
+     		client/LocalAPISubsystem.hpp \
+     		client/LocalMacroSpaceManager.cpp \
+     		client/LocalMacroSpaceManager.hpp \
+     		client/LocalQueueManager.cpp \
+     		client/LocalQueueManager.hpp \
+     		client/LocalRegistrationManager.cpp \
+     		client/LocalRegistrationManager.hpp \
      		expression/BuiltinFunctions.cpp \
      		expression/BuiltinFunctions.hpp \
      		expression/CommonSysUtils.cpp \
@@ -330,10 +379,6 @@ librexx_la_SOURCES = $(unix_@OOREXX_SIZEOF_POINTER@_sources) \
      		runtime/RexxNativeCode.hpp \
      		runtime/RexxSmartBuffer.cpp \
      		runtime/RexxSmartBuffer.hpp \
-     		runtime/RexxSOMCode.hpp \
-     		runtime/RexxSOMProxy.hpp \
-     		runtime/RexxSOMServer.cpp \
-     		runtime/RexxSOMServer.hpp \
      		runtime/RexxThread.cpp \
      		runtime/RexxThread.hpp \
      		runtime/RexxVariable.cpp \
@@ -349,6 +394,8 @@ librexx_la_SOURCES = $(unix_@OOREXX_SIZEOF_POINTER@_sources) \
      		runtime/VirtualFunctionTable.cpp \
      		runtime/WeakReference.cpp \
      		runtime/WeakReference.hpp \
+     		script/ScriptContext.cpp \
+     		script/ScriptContext.hpp \
      		streamLibrary/StreamCommandParser.cpp \
      		streamLibrary/StreamCommandParser.h \
      		streamLibrary/StreamNative.cpp \

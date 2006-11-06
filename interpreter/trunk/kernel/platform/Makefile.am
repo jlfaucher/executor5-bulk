@@ -38,48 +38,5 @@
 
 MAINTAINERCLEANFILES = Makefile.in
 
-# get version details from our external file
-include $(top_srcdir)/oorexx.ver
-
-INCLUDES = @OOREXX_INCLUDES@
-
-
-#################### librxshared.la #########################
-
-noinst_LTLIBRARIES = librxshared.la
-
-#
-# Sources for librxshared.la
-#
-librxshared_la_SOURCES = SysUtil.cpp \
-                         SysUtil.hpp \
-                         platform/unix/PlatformTypes.h \
-                         platform/unix/SysCriticalSection.cpp \
-                         platform/unix/SysCriticalSection.hpp \
-                         platform/unix/SysCSStream.cpp \
-                         platform/unix/SysCSStream.hpp \
-                         platform/unix/SysFile.cpp \
-                         platform/unix/SysFile.hpp \
-                         platform/unix/SysFileSystem.cpp \
-                         platform/unix/SysFileSystem.hpp \
-                         platform/unix/SysLibrary.cpp \
-                         platform/unix/SysLibrary.hpp \
-                         platform/unix/SysSemaphore.cpp \
-                         platform/unix/SysSemaphore.hpp \
-                         platform/unix/SysThread.cpp \
-                         platform/unix/SysThread.hpp \
-                         platform/unix/SysProcess.cpp \
-                         platform/unix/SysProcess.hpp
-
-#
-# C++ compiler flags for librxshared.la sources
-#
-librxshared_la_CXXFLAGS = -DORX_VER=$(MAJOR) -DORX_REL=$(MINOR) \
-                          -DORX_MOD=$(MOD_LVL)
-
-#
-# linker flags for librxshared.la objects
-#
-librxshared_la_LDFLAGS = $(VERSION_INFO) -no-undefined -static
-
+DIST_SUBDIRS = unix windows
 

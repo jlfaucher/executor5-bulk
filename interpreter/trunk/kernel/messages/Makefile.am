@@ -36,42 +36,27 @@
 #----------------------------------------------------------------------------
 
 
-AUTOMAKE_OPTIONS	= foreign dist-zip
-
-MAINTAINERCLEANFILES 	= Makefile.in aclocal.m4 configure config.guess config.sub \
-			depcomp install-sh ltmain.sh missing mkinstalldirs config.h.in \
-			stamp-h.in cscope.files cscope.out $(distdir).tar.gz
-
-MOSTLYCLEANFILES        = tags
+MAINTAINERCLEANFILES = Makefile.in
 
 # get version details from our external file
 include $(top_srcdir)/oorexx.ver
 
-VERSION = $(MAJOR).$(MINOR)
-VERSION_INFO = -version-info $(MAJOR):$(MINOR):$(MOD_LVL)
+#
+# explicit targets:
+#
+RexxErrorCodes.h: RexxErrorCodes.xsl rexxmsg.xml
+	$(top_srcdir)/xsl.sh $(@) rexxmsg.xml RexxErrorCodes.xsl
 
-SUBDIRS = kernel rexxapi utilities extensions
-DIST_SUBDIRS = shared rexxapi kernel utilities extensions api samples
+RexxMessageNumbers.h: RexxMessageNumbers.xsl rexxmsg.xml
+	sh ./xsl.sh $(@) rexxmsg.xml RexxMessageNumbers.xsl
 
+RexxMessageTable.h: RexxMessageTable.xsl rexxmsg.xml
+	$(top_srcdir)/xsl.sh $(@) rexxmsg.xml RexxMessageTable.xsl
 
-clean-local: am_config_clean-local
+gencat.inp: $(top_srcdir)/kernel/platform/unix/UnixGencat.xsl rexxmsg.xml
+	$(top_srcdir)/xsl.sh $(@) rexxmsg.xml $(top_srcdir/kernel/platform/unix/UnixGencat.xsl
 
-am_config_clean-local:
-	rm -fr $(PACKAGE)-*.tar.gz
+rexx.cat: gencat.inp
+	-gencat $(@) gencat.inp
 
-report:
-	$(MAKE) -C test report
-
-tags:   FORCE
-	@echo making tags
-	ctags $(ALLSOURCES)
-TAGS:   FORCE
-	@echo making TAGS
-	etags $(ALLSOURCES)
-cscope: FORCE
-	@echo making cscope
-	echo "$(ALLSOURCES)" | sed -e 's/[ ]\+/\n/g' > cscope.files
-	cscope -b
-
-.PHONY: FORCE
 

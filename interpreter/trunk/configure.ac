@@ -197,6 +197,26 @@ else
   AC_DEFINE(HAVE_NANOSLEEP, 1, "Define to 1 if you have nanosleep function")
 fi
 
+dnl Check for Xalan or xalan for xsl files
+xsl=''
+AC_PATH_PROGS([xsl], [Xalan xalan])
+if test -z "$xsl"; then
+   AC_MSG_WARN([cannot find xalan, Xalan])
+else
+   # $1="OUT" $2="XML" $3="XSL"
+   case "$xsl" in
+      *Xalan)
+         xsl="$xsl -o \$1 \$2 \$3"
+         ;;
+      *xalan)
+         xsl="$xsl -OUT \$1 -IN \$2 -XSL \$3"
+         ;;
+      *)
+         xsl="echo Cannot transform XSL as Xalan not installed;exit 1"
+         ;;
+   esac
+fi
+
 dnl Checks for other helper programs
 AC_PATH_PROGS(RPM, rpmbuild)
 
@@ -215,6 +235,7 @@ CFLAGS="$CFLAGS $CC_WARNINGS $GENERAL_CFLAGS"
 
 OOREXX_INCLUDES="-I\$(top_srcdir)/api \
                  -I\$(top_srcdir)/api/platform/unix \
+		 -I\$(top_srcdir)/kernel \
 		 -I\$(top_srcdir)/kernel/messages \
 		 -I\$(top_srcdir)/shared"
 AC_SUBST(OOREXX_INCLUDES)
@@ -226,9 +247,9 @@ OOREXX_COMMONHEADERS="\$(top_srcdir)/api/InternalAPI.hpp \
               \$(top_srcdir)/api/rexx.h \
               \$(top_srcdir)/api/rexxapidefs.h \
               \$(top_srcdir)/api/platform/unix/rexxapitypes.h \
-              \$(top_srcdir)/shared/Rxstring.hpp \
-              \$(top_srcdir)/shared/SynchronizedBlock.hpp \
-              \$(top_srcdir)/shared/SystemException.hpp"
+              \$(top_srcdir)/kernel/Rxstring.hpp \
+              \$(top_srcdir)/kernel/SynchronizedBlock.hpp \
+              \$(top_srcdir)/kernel/SystemException.hpp"
 AC_SUBST(OOREXX_COMMONHEADERS)
 
 OOREXX_LIBS="-L\$(top_srcdir)/rexxapi \
@@ -241,13 +262,14 @@ AC_SUBST(OOREXX_LIBS)
 
 
 AC_CONFIG_FILES([
-        ooRexx.pc \
-        rexxapi/daemon/platform/unix/rxapid.sh \
-        Makefile \
-        shared/Makefile \
-        rexxapi/Makefile \
-        kernel/Makefile \
         oorexx.spec \
+        ooRexx.pc \
+        Makefile \
+        kernel/Makefile \
+        rexxapi/Makefile \
+        utilities/rxapi/Makefile \
+        utilities/rxapi/platform/unix/rxapid.sh \
+	xsl.sh
 	])
 
 AC_OUTPUT
