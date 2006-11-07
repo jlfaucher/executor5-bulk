@@ -158,8 +158,8 @@ typedef struct _ooRexxMethodEntry
     END_EXTERN_C()
 
 
-typedef RexxReturnCode (RexxEntry *RexxPackageLoader(RexxThreadContext *);
-typedef RexxReturnCode (RexxEntry *RexxPackageUnloader(RexxThreadContext *);
+typedef RexxReturnCode (RexxEntry *RexxPackageLoader(RexxThreadContext *));
+typedef RexxReturnCode (RexxEntry *RexxPackageUnloader(RexxThreadContext *));
 
 typedef struct _ooRexxPackageEntry
 {
@@ -315,7 +315,7 @@ typedef struct
 
     void        (RexxEntry *Terminate)(RexxInstance  *);
     RexxBoolean (RexxEntry *AttachThread)(RexxInstance *, RexxThreadContext **);
-    RexxBoolean (RexxEntry *CreateScriptContext)(RexxInstance *, RexxScriptContext **, , RexxOption *);
+    RexxBoolean (RexxEntry *CreateScriptContext)(RexxInstance *, RexxScriptContext **, RexxOption *);
     void        (RexxEntry *Halt)(RexxInstance *);
     void        (RexxEntry *SetTrace)(RexxInstance *, RexxBoolean);
 } RexxInstanceInterface;
@@ -541,9 +541,9 @@ struct RexxInstance_
     {
         return functions->AttachThread(this, tc);
     }
-    RexxBoolean CreateScriptContext(RexxScriptContext **sc)
+    RexxBoolean CreateScriptContext(RexxScriptContext **sc, RexxOption *ro)
     {
-        return functions->CreateScriptContext(this, sc);
+        return functions->CreateScriptContext(this, sc, ro);
     }
     void Halt()
     {
@@ -558,6 +558,7 @@ struct RexxInstance_
 
 
 struct RexxScriptContext_
+{
     RexxInstance *instance;             // the owning instance
     RexxScriptInterface *functions;     // the interface function vector
 #ifdef __cplusplus
