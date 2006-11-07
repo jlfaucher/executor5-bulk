@@ -44,6 +44,9 @@ include $(top_srcdir)/oorexx.ver
 #
 # explicit targets:
 #
+all: RexxErrorCodes.h RexxMessageNumbers.h RexxMessageTable.h gencat.inp \
+     rexx.cat
+
 RexxErrorCodes.h: RexxErrorCodes.xsl rexxmsg.xml
 	$(top_srcdir)/xsl.sh $(@) rexxmsg.xml RexxErrorCodes.xsl
 
