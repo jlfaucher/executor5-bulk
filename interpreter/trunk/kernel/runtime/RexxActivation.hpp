@@ -137,9 +137,9 @@ class ACTSETTINGS {
       ACTIVATION_SETTINGS global_settings; /* globally effective settings       */
       REXXDATETIME elapsed_time;           /* elapsed time clock                */
       REXXDATETIME timestamp;              /* current timestamp                 */
-      bool intermediate_trace;           /* very quick test for intermediate trace */
+      bool intermediate_trace;             /* very quick test for intermediate trace */
       RexxLocalVariables local_variables;  /* the local variables for this activation */
-      ScriptContext *scriptContext;        // a potential script context
+      RexxScriptContext *scriptContext;    // a potential script context
 };
 typedef ACTSETTINGS *PSETT;
 
@@ -366,7 +366,7 @@ typedef ACTSETTINGS *PSETT;
 
    inline void RexxActivation::debugMethodEnter()
           {
-              RexxActivation *parent = newacta->parentActivation;
+//              RexxActivation *parent = newacta->parentActivation;
               if (parentActivation != OREF_NULL)
               {
                   parentActivation->debugEnterSubroutine();

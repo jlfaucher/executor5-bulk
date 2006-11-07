@@ -48,11 +48,14 @@ DIST_SUBDIRS = api classes client expression extras instructions messages \
 INCLUDES = @OOREXX_INCLUDES@ \
            -I$(top_srcdir)/kernel/api \
            -I$(top_srcdir)/kernel/classes \
+           -I$(top_srcdir)/kernel/client \
            -I$(top_srcdir)/kernel/expression \
            -I$(top_srcdir)/kernel/instructions \
            -I$(top_srcdir)/kernel/parser \
 	   -I$(top_srcdir)/kernel/platform/unix \
+           -I$(top_srcdir)/kernel/RexxClasses \
            -I$(top_srcdir)/kernel/runtime \
+           -I$(top_srcdir)/kernel/script \
            -I$(top_srcdir)/kernel/streamLibrary \
            -I$(top_srcdir)/shared \
 	   -I$(top_srcdir)/shared/unix
