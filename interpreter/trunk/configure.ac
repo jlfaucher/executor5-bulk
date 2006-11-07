@@ -266,6 +266,7 @@ AC_CONFIG_FILES([
         ooRexx.pc \
         Makefile \
         kernel/Makefile \
+        kernel/messages/Makefile \
         rexxapi/Makefile \
         utilities/rxapi/Makefile \
         utilities/rxapi/platform/unix/rxapid.sh \
