@@ -44,7 +44,8 @@
 INCLUDES = $(OOREXXINC)
 
 EXEOBJS = APIService.obj APIServer.obj APIServerInstance.obj \
-          MacroSpaceManager.obj QueueManager.obj RegistrationManager.obj
+          MacroSpaceManager.obj QueueManager.obj RegistrationManager.obj \
+	  ClientMessage.obj ServiceMessage.obj
 
 SHAREDEXEVER = $(top_srcdir)\shared\windows\verinfo_exe.res
 
@@ -96,6 +97,20 @@ RegistrationManager.obj: RegistrationManager.cpp \
           $(top_srcdir)\shared\ServiceMessage.cpp \
           $(COMMONHEADERS)
 	$(CC) $(CFLAGS) RegistrationManager.cpp /o $@
+
+ClientMessage.obj: $(topSrcdir)\shared\ClientMessage.cpp \
+          $(top_srcdir)\shared\ClientMessage.hpp \
+          $(top_srcdir)\kernel\client\LocalAPIManager.hpp \
+          $(top_srcdir)\shared\ServiceException.hpp \
+          $(top_srcdir)\shared\ServiceMessage.cpp \
+          $(COMMONHEADERS)
+	$(CC) $(CFLAGS) $(topSrcdir)\shared\ClientMessage.cpp /o $@
+
+ServiceMessage.obj: $(topSrcdir)\shared\ServiceMessage.cpp \
+          $(top_srcdir)\shared\ServiceException.hpp \
+          $(top_srcdir)\shared\ServiceMessage.cpp \
+          $(COMMONHEADERS)
+	$(CC) $(CFLAGS) $(topSrcdir)\shared\ServiceMessage.cpp /o $@
 
 
 #################### clean #########################

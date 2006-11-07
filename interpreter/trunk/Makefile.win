@@ -45,99 +45,64 @@ top_srcdir = $(MAKEDIR)
 
 
 # Note: the order here is important!
+# Add in the kernel\messages build later
 all:
-	cd shared\platform\windows
+	cd kernel
         nmake /F Makefile.win top_srcdir=$(top_srcdir)
 	cd $(top_srcdir)
 	cd rexxapi
         nmake /F Makefile.win top_srcdir=$(top_srcdir)
 	cd $(top_srcdir)
-	cd kernel
+	cd utilities\rexx
+        nmake /F Makefile.win top_srcdir=$(top_srcdir)
+	cd $(top_srcdir)
+	cd utilities\rexxc
+        nmake /F Makefile.win top_srcdir=$(top_srcdir)
+	cd $(top_srcdir)
+	cd utilities\rexxhide
+        nmake /F Makefile.win top_srcdir=$(top_srcdir)
+	cd $(top_srcdir)
+	cd utilities\rcapi
+        nmake /F Makefile.win top_srcdir=$(top_srcdir)
+	cd $(top_srcdir)
+	cd utilities\rcqueue
+        nmake /F Makefile.win top_srcdir=$(top_srcdir)
+	cd $(top_srcdir)
+	cd utilities\rcsubcom
         nmake /F Makefile.win top_srcdir=$(top_srcdir)
 	cd $(top_srcdir)
 	cd utilities\rexximg
         nmake /F Makefile.win top_srcdir=$(top_srcdir)
 	cd $(top_srcdir)
-	cd utilities\platform\windows\rexx
-        nmake /F Makefile.win top_srcdir=$(top_srcdir)
-	cd $(top_srcdir)
-
-# Note: the order here is important!
-debug:
-	cd shared\platform\windows
-        nmake /F Makefile.win top_srcdir=$(top_srcdir) debug=1
-	cd $(top_srcdir)
-	cd rexxapi
-        nmake /F Makefile.win top_srcdir=$(top_srcdir) debug=1
-	cd $(top_srcdir)
-	cd kernel
-        nmake /F Makefile.win top_srcdir=$(top_srcdir) debug=1
-	cd $(top_srcdir)
-	cd utilities\rexximg
-        nmake /F Makefile.win top_srcdir=$(top_srcdir) debug=1
-	cd $(top_srcdir)
-	cd utilities\platform\windows\rexx
-        nmake /F Makefile.win top_srcdir=$(top_srcdir) debug=1
-	cd $(top_srcdir)
-
-image: image\rexx.img
-
-image\rexx.img: shared rexxapi rexx rexximg
-	cd image
-        nmake /F Makefile.win top_srcdir=$(top_srcdir) DEBUG=$(DBG)
-	cd $(top_srcdir)
-
-shared:
-	cd shared\windows
-        nmake /F Makefile.win top_srcdir=$(top_srcdir) debug=1
-	cd $(top_srcdir)
-
-rexxapi:
-	cd rexxapi
-        nmake /F Makefile.win top_srcdir=$(top_srcdir) debug=1
-	cd $(top_srcdir)
-
-
-rexx:
-	cd kernel
-        nmake /F Makefile.win top_srcdir=$(top_srcdir)
-	cd $(top_srcdir)
-
-rexximg:
-
-utilities\rexximg\rexximg.exe:
-
-
-kernel\RexxClasses\CoreClasses.orx:
-
-
-kernel\RexxClasses\StreamClasses.orx:
-
-
-kernel\RexxClasses\SystemObjects.orx:
-
-
-kernel\platform\windows\PlatformObjects.orx:
-
-
-extensions\windows\ole\orexxole.cls:
 
 
 !CMDSWITCHES +I
 clean:
-	cd utilities\platform\windows\rexx
-        nmake /F Makefile.win top_srcdir=$(top_srcdir) clean
-	cd $(top_srcdir)
-	cd utilities\rexximg
-        nmake /F Makefile.win top_srcdir=$(top_srcdir) clean
-	cd $(top_srcdir)
 	cd kernel
         nmake /F Makefile.win top_srcdir=$(top_srcdir) clean
 	cd $(top_srcdir)
 	cd rexxapi
         nmake /F Makefile.win top_srcdir=$(top_srcdir) clean
 	cd $(top_srcdir)
-	cd shared\platform\windows
+	cd utilities\rexx
+        nmake /F Makefile.win top_srcdir=$(top_srcdir) clean
+	cd $(top_srcdir)
+	cd utilities\rexxc
+        nmake /F Makefile.win top_srcdir=$(top_srcdir) clean
+	cd $(top_srcdir)
+	cd utilities\rexxhide
+        nmake /F Makefile.win top_srcdir=$(top_srcdir) clean
+	cd $(top_srcdir)
+	cd utilities\rcapi
+        nmake /F Makefile.win top_srcdir=$(top_srcdir) clean
+	cd $(top_srcdir)
+	cd utilities\rcqueue
+        nmake /F Makefile.win top_srcdir=$(top_srcdir) clean
+	cd $(top_srcdir)
+	cd utilities\rcsubcom
+        nmake /F Makefile.win top_srcdir=$(top_srcdir) clean
+	cd $(top_srcdir)
+	cd utilities\rexximg
         nmake /F Makefile.win top_srcdir=$(top_srcdir) clean
 	cd $(top_srcdir)
 

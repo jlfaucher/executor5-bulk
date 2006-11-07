@@ -42,8 +42,10 @@
 !include $(top_srcdir)\Nmake.inc
 
 INCLUDES = $(OOREXXINC) \
+           /I$(top_srcdir)\kernel \
            /I$(top_srcdir)\kernel\api \
            /I$(top_srcdir)\kernel\classes \
+           /I$(top_srcdir)\kernel\client \
            /I$(top_srcdir)\kernel\expression \
            /I$(top_srcdir)\kernel\instructions \
            /I$(top_srcdir)\kernel\messages \
@@ -51,7 +53,9 @@ INCLUDES = $(OOREXXINC) \
            /I$(top_srcdir)\kernel\platform\windows \
            /I$(top_srcdir)\kernel\RexxClasses \
            /I$(top_srcdir)\kernel\runtime \
-           /I$(top_srcdir)\kernel\streamLibrary
+           /I$(top_srcdir)\kernel\script \
+           /I$(top_srcdir)\kernel\streamLibrary \
+           /I$(top_srcdir)\shared
 
 COMMONOBJS = CallContextStubs.obj InterpreterApi.obj InterpreterInstanceStubs.obj \
           ThreadContextStubs.obj MethodContextStubs.obj VariablePool.obj ArrayClass.obj \
@@ -99,7 +103,12 @@ COMMONOBJS = CallContextStubs.obj InterpreterApi.obj InterpreterInstanceStubs.ob
 	  RexxThread.obj RexxVariable.obj RexxVariableDictionary.obj \
 	  RootImage.obj Setup.obj TranslatedImage.obj Utilities.obj Version.obj \
 	  VirtualFunctionTable.obj WeakReference.obj StreamCommandParser.obj \
-	  StreamNative.obj
+	  StreamNative.obj MacroSpaceApi.obj QueuesAPI.obj RegistrationAPI.obj \
+	  LocalAPIContext.obj LocalAPIManager.obj LocalMacroSpaceManager.obj \
+	  LocalQueueManager.obj LocalRegistrationManager SysCriticalSection.obj \
+	  SysCSStream.obj SysFile.obj SysFileSystem.obj SysLibrary.obj \
+	  SysLocalAPIManager.obj SysProcess.obj SysSemaphore.obj SysThread.obj \
+	  ScriptContext.obj
 
 GENERATEDHEADERS = messages\RexxErrorCodes.h messages\RexxMessageNumbers.h messages\RexxMessageTable.h \
    runtime\ClassTypeCodes.h runtime\PrimitiveBehaviourNames.h runtime\RexxCore.h ..\api\oorexxerrors.h
@@ -164,6 +173,13 @@ LegacyExitHandler.obj: api\LegacyExitHandler.cpp \
 		$(DEPHEADERS)
 	$(CC) $(CFLAGS) api\LegacyExitHandler.cpp /o $@
 
+MacroSpaceApi.obj: api\MacroSpaceApi.cpp \
+                client\LocapAPIManager.hpp \
+                client\LocapMacroSpaceManager.hpp \
+                client\LocalAPIContext.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) api\MacroSpaceApi.cpp /o $@
+
 MethodContextStubs.obj: api\MethodContextStubs.cpp \
                 api\ContextApi.hpp \
                 runtime\RexxNativeActivation.hpp \
@@ -181,6 +197,25 @@ MethodContextStubs.obj: api\MethodContextStubs.cpp \
                 platform\windows\SysInterpreter.hpp \
 		$(DEPHEADERS)
 	$(CC) $(CFLAGS) api\MethodContextStubs.cpp /o $@
+
+QueuesAPI.obj: api\QueuesAPI.cpp \
+                client\LocapAPIManager.hpp \
+                client\LocapMacroSpaceManager.hpp \
+                client\LocalAPIContext.hpp \
+		api\RexxAPI.h \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) api\QueuesAPI.cpp /o $@
+
+RegistrationAPI.obj: api\RegistrationAPI.cpp \
+                client\LocapAPIManager.hpp \
+                client\LocapMacroSpaceManager.hpp \
+                client\LocalAPIContext.hpp \
+		api\RexxAPI.h \
+		api\RexxLegacyAPI.h \
+		platform\windows\SysLocalAPIManager.hpp \
+		$(top_srcdir)\shared\ClientMessage.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) api\RegistrationAPI.cpp /o $@
 
 ThreadContextStubs.obj: api\ThreadContextStubs.cpp \
                 api\ContextApi.hpp \
@@ -466,6 +501,46 @@ TableClass.obj: classes\TableClass.cpp \
                 runtime\RexxActivity.hpp \
 		$(DEPHEADERS)
 	$(CC) $(CFLAGS) classes\TableClass.cpp /o $@
+
+LocalAPIContext.obj: client\LocalAPIContext.cpp \
+                client\LocalAPIContext.hpp \
+                $(top_srcdir)\shared\ServiceException.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) client\LocalAPIContext.cpp /o $@
+
+LocalAPIManager.obj: client\LocalAPIManager.cpp \
+                client\LocalAPIManager.hpp \
+                $(top_srcdir)\shared\ServiceException.hpp \
+                platform\windows\SysLocalAPIManager.hpp \
+                SynchronizedBlock.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) client\LocalAPIManager.cpp /o $@
+
+LocalMacroSpaceManager.obj: client\LocalMacroSpaceManager.cpp \
+                client\LocalMacroSpaceManager.hpp \
+                client\LocalAPIManager.hpp \
+                $(top_srcdir)\shared\ClientMessage.hpp \
+		platform\windows\SysFile.hpp \
+		platform\windows\SysLibrary.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) client\LocalMacroSpaceManager.cpp /o $@
+
+LocalQueuManager.obj: client\LocalQueueManager.cpp \
+                client\LocalQueueManager.hpp \
+                client\LocalAPIManager.hpp \
+                platform\windows\SysLocalAPIManager.hpp \
+                $(top_srcdir)\shared\ClientMessage.hpp \
+		SysUtil.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) client\LocalQueueManager.cpp /o $@
+
+LocalRegistrationManager.obj: client\LocalRegistrationManager.cpp \
+                client\LocalRegistrationManager.hpp \
+                client\LocalAPIManager.hpp \
+                platform\windows\SysLibrary.hpp \
+                $(top_srcdir)\shared\ClientMessage.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) client\LocalRegistrationManager.cpp /o $@
 
 BuiltinFunctions.obj: expression\BuiltinFunctions.cpp \
                 expression\BuiltinFunctions.hpp \
@@ -1109,11 +1184,59 @@ SysActivity.obj: platform\windows\SysActivity.cpp \
 		$(DEPHEADERS)
 	$(CC) $(CFLAGS) platform\windows\SysActivity.cpp /o $@
 
+SysCriticalSection.obj: platform\windows\SysCriticalSection.cpp \
+                platform\windows\SysCriticalSection.hpp \
+                platform\windows\PlatformTypes.h \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) platform\windows\SysCriticalSection.cpp /o $@
+
+SysCSStream.obj: platform\windows\SysCSStream.cpp \
+                platform\windows\SysCSStream.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) platform\windows\SysCSStream.cpp /o $@
+
+SysFile.obj: platform\windows\SysFile.cpp \
+                platform\windows\SysFile.hpp \
+                platform\windows\SysFileSystem.hpp \
+                platform\windows\SysProcess.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) platform\windows\SysFile.cpp /o $@
+
+SysFileSystem.obj: platform\windows\SysFileSystem.cpp \
+                platform\windows\SysFileSystem.hpp \
+                platform\windows\SysProcess.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) platform\windows\SysFileSystem.cpp /o $@
+
 SysInterpreter.obj: platform\windows\SysInterpreter.cpp \
                 platform\windows\SysInterpreter.hpp \
                 runtime\Interpreter.hpp \
 		$(DEPHEADERS)
 	$(CC) $(CFLAGS) platform\windows\SysInterpreter.cpp /o $@
+
+SysLibrary.obj: platform\windows\SysLibrary.cpp \
+                platform\windows\SysLibrary.hpp \
+                platform\windows\PlatformTypes.h \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) platform\windows\SysLibrary.cpp /o $@
+
+SysLocalAPIManager.obj: platform\windows\SysLocalAPIManager.cpp \
+                platform\windows\SysLocalAPIManager.hpp \
+                client\LocalQueueManager.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) platform\windows\SysLocalAPIManager.cpp /o $@
+
+SysProcess.obj: platform\windows\SysProcess.cpp \
+                platform\windows\SysProcess.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) platform\windows\SysProcess.cpp /o $@
+
+SysSemaphore.obj: platform\windows\SysSemaphore.cpp \
+                platform\windows\SysSemaphore.hpp \
+                platform\windows\SysProcess.hpp \
+                platform\windows\PlatformTypes.h \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) platform\windows\SysSemaphore.cpp /o $@
 
 SystemCommands.obj: platform\windows\SystemCommands.cpp \
                 classes\StringClass.hpp \
@@ -1125,6 +1248,12 @@ SystemInitialization.obj: platform\windows\SystemInitialization.cpp \
                 platform\windows\SysInterpreter.hpp \
 		$(DEPHEADERS)
 	$(CC) $(CFLAGS) platform\windows\SystemInitialization.cpp /o $@
+
+SysThread.obj: platform\windows\SysThread.cpp \
+                platform\windows\SysThread.hpp \
+                platform\windows\PlatformTypes.h \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) platform\windows\SysThread.cpp /o $@
 
 TimeSupport.obj: platform\windows\TimeSupport.cpp \
                 classes\IntegerClass.hpp \
@@ -1677,6 +1806,12 @@ WeakReference.obj: runtime\WeakReference.cpp \
 		$(DEPHEADERS)
 	$(CC) $(CFLAGS) runtime\WeakReference.cpp /o $@
 
+ScriptContext.obj: script\ScriptContext.cpp \
+                script\ScriptContext.hpp \
+                runtime\RexxActivation.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) script\ScriptContext.cpp /o $@
+
 StreamCommandParser.obj: streamLibrary\StreamCommandParser.cpp \
                 streamLibrary\StreamCommandParser.h \
 		$(DEPHEADERS)
@@ -1720,7 +1855,7 @@ messages\RexxErrorCodes.h: messages\RexxErrorCodes.xsl messages\rexxmsg.xml
     @ECHO Generating $(@)
     xalan -o $(@) messages\rexxmsg.xml messages\RexxErrorCodes.xsl
 
-..\api\oorexxerrors.h: messages\ApiErrorCodes.xsl messages\rexxmsg.xml
+$(top_srcdir)\api\oorexxerrors.h: messages\ApiErrorCodes.xsl messages\rexxmsg.xml
     @ECHO .
     @ECHO Generating $(@)
     xalan -o $(@) messages\rexxmsg.xml messages\ApiErrorCodes.xsl

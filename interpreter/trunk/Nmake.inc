@@ -48,6 +48,11 @@ VCPP6 =
 #VCPP7_64 =
 
 #
+# If you want debugging activated do it here
+#
+#DEBUG = 1
+
+#
 # Set up stuff based on the compiler.
 #
 !IFDEF VCPP7

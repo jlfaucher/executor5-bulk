@@ -41,4 +41,30 @@ MAINTAINERCLEANFILES = Makefile.in
 SUBDIRS = platform
 DIST_SUBDIRS = platform
 
+!include $(top_srcdir)\Nmake.inc
+
+INCLUDES = $(OOREXXINC)
+
+EXEOBJS = rexximg.obj
+
+SRCDIR = $(top_srcdir)\utilities\rexximg
+
+SHAREDEXEVER = $(top_srcdir)\shared\windows\verinfo_exe.res
+
+#################### build rexximg.exe ##########################
+
+all: rexximg.exe
+
+rexximg.exe: $(EXEOBJS) $(SHAREDLIB) $(OOREXXLIBS) $(SHAREDEXEVER)
+        $(LD) $(LFLAGS) $(EXEOBJS) $(SHAREDEXEVER) $(SHAREDLIB) $(OOREXXLIBS) $(WINLIBS) \
+        /SUBSYSTEM:Console /OUT:rexximg.exe
+
+rexximg.obj: rexximg.cpp
+	$(CC) $(CFLAGS) $(SRCDIR)\rexximg.cpp /o $@
+
+
+#################### clean #########################
+
+clean:
+	del $(CLEAN)
 

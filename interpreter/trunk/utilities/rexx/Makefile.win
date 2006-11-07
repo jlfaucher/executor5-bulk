@@ -45,8 +45,6 @@ INCLUDES = $(OOREXXINC)
 
 EXEOBJS = rexx.obj
 
-SRCDIR = $(top_srcdir)\utilities\rexx\platform\windows
-
 SHAREDEXEVER = $(top_srcdir)\shared\windows\verinfo_exe.res
 
 #################### build rexx.exe ##########################
@@ -57,10 +55,11 @@ rexx.exe: $(EXEOBJS) $(SHAREDLIB) $(OOREXXLIBS) $(SHAREDEXEVER)
 	$(LD) $(LFLAGS) $(EXEOBJS) $(SHAREDEXEVER) $(SHAREDLIB) $(OOREXXLIBS) $(WINLIBS) \
 	/SUBSYSTEM:Console /OUT:rexx.exe
 
-rexx.obj: $(SRCDIR)/rexx.cpp \
-          $(SRCDIR)\ArgumentParser.h \
+rexx.obj: platform\windows\rexx.cpp \
+          platform\windows\ArgumentParser.h \
+	  $(top_srcdir)\kernel\platform\windows\SysProcess.hpp \
           $(COMMONHEADERS)
-	$(CC) $(CFLAGS) $(SRCDIR)\rexx.cpp /o $@
+	$(CC) $(CFLAGS) platform\windows\rexx.cpp /o $@
 
 
 #################### clean #########################

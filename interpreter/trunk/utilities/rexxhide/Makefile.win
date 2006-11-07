@@ -41,7 +41,7 @@
 
 !include $(top_srcdir)\Nmake.inc
 
-INCLUDES = $(OOREXXINC)
+INCLUDES = $(OOREXXINC) /I$(top_srcdir)\utilities\rexx\platform\windows
 
 EXEOBJS = rexxhide.obj
 
@@ -55,7 +55,8 @@ rexxhide.exe: $(EXEOBJS) $(OOREXXLIBS) $(SHAREDEXEVER)
 	$(LD) $(LFLAGS) $(EXEOBJS) $(SHAREDEXEVER) $(REXXLIBS) $(WINLIBS) \
 	/SUBSYSTEM:WINDOWS /OUT:rexxhide.exe
 
-rexxhide.obj: rexxhide.cpp \
+rexxhide.obj: platform\windows\rexxhide.cpp \
+          $(top_srcdir)\utilities\rexx\platform\windows\ArgumentParser.h \
           $(COMMONHEADERS)
 	$(CC) $(CFLAGS) rexxhide.cpp /o $@
 
