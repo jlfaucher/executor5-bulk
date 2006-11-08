@@ -35,7 +35,7 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-#include "ooRexxDispID.hpp"
+#include "orxdispid.hpp"
 
 ooRexxDispID::~ooRexxDispID()
 {

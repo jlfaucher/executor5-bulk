@@ -35,7 +35,7 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-#include "ooRexxScrptError.hpp"
+#include "orxscrpterror.hpp"
 
 
 ooRexxScriptError::ooRexxScriptError(FILE *Stream, ConditionData *info, bool *Exists)  :
