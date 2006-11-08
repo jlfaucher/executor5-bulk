@@ -268,14 +268,28 @@ AC_CONFIG_FILES([
         kernel/Makefile \
         kernel/messages/Makefile \
         rexxapi/Makefile \
+	extensions/Makefile \
+	extensions/platform/Makefile \
+	extensions/platform/windows/Makefile \
+	extensions/rxmath/Makefile \
+	extensions/rxregexp/Makefile \
+	extensions/rxsock/Makefile \
         utilities/Makefile \
         utilities/rexx/Makefile \
+        utilities/rexx/platform/Makefile \
         utilities/rexxc/Makefile \
+        utilities/rexxc/platform/Makefile \
+        utilities/rexxhide/platform/Makefile \
+        utilities/rexxhide/Makefile \
         utilities/rexximg/Makefile \
+        utilities/rexximg/platform/Makefile \
         utilities/rxapi/Makefile \
+        utilities/rxapi/platform/Makefile \
         utilities/rxapi/platform/unix/rxapid.sh \
         utilities/rxqueue/Makefile \
+        utilities/rxqueue/platform/Makefile \
         utilities/rxsubcom/Makefile \
+        utilities/rxsubcom/platform/Makefile \
 	xsl.sh
 	])
 

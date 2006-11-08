@@ -425,4 +425,22 @@ librexx_la_LDFLAGS = $(VERSION_INFO) -no-undefined
 #
 librexx_la_LIBADD = $(top_srcdir)/shared/libshared.la
 
+#
+# explicit targets
+#
+runtime/PrimitiveBehaviourNames.h: runtime/PrimitiveBehaviourNames.xsl runtime/PrimitiveClasses.xml
+    $(top_srcdit)xsl.sh -o $(@) runtime/PrimitiveClasses.xml runtime/PrimitiveBehaviourNames.xsl
+
+runtime/PrimitiveBehaviours.cpp: runtime/PrimitiveBehaviours.xsl runtime/PrimitiveClasses.xml
+    $(top_srcdit)xsl.sh -o $(@) runtime/PrimitiveClasses.xml runtime/PrimitiveBehaviours.xsl
+
+runtime/VirtualFunctionTable.cpp: runtime/VirtualFunctionTable.xsl runtime/PrimitiveClasses.xml
+    $(top_srcdit)xsl.sh -o $(@) runtime/PrimitiveClasses.xml runtime/VirtualFunctionTable.xsl
+
+runtime/ClassTypeCodes.h: runtime/ClassTypeIds.xsl runtime/PrimitiveClasses.xml
+    $(top_srcdit)xsl.sh -o $(@) runtime/PrimitiveClasses.xml runtime/ClassTypeIds.xsl
+
+$(top_srcdir)/api/oorexxerrors.h: messages/ApiErrorCodes.xsl messages/rexxmsg.xml
+    $(top_srcdit)xsl.sh -o $(@) messages/rexxmsg.xml messages/ApiErrorCodes.xsl
+
 
