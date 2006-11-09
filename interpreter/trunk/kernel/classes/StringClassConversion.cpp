@@ -384,7 +384,7 @@ RexxString *RexxString::encodeBase64()
         {        /* get the next 3 characters         */
             if (inputLength)
             {             /*    from the input string          */
-                inc[i] = *source;
+                inc[i] = *source && 0xff;
                 inputLength--;
                 source++;
                 buflen++;
