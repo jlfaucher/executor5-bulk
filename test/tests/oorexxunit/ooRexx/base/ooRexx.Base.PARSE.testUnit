@@ -1,0 +1,434 @@
+/*
+   name:             ooRexx.Base.PARSE.testUnit
+   author:           Rony G. Flatscher
+   date:             2005-11-08
+   version:          0.0.1
+
+-- line commented lines are ignored, when building the directory of infos from this header
+   changed:
+
+   languageLevel:    6.0
+   purpose:          Test the PARSE keyword statement
+   remark:           Initially uses documentation examples only
+
+
+   license:          CPL 1.0 (Common Public License v1.0, see below)
+   link:
+
+   category1:        ooRexx
+   category2:        Base
+   category3:        PARSE
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2005 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+
+
+-------------------------------------------------------------------------------------------
+-- ===> adapt the "testUnitList" to your testCase classes; each element in the list is <===
+-- ===> an array object, the first element containing the testCase class object, the   <===
+-- ===> second element is a list of test method names which are regarded to be         <===
+-- ===> mandatory (if the list remains empty all test methods are mandatory)           <===
+
+   /* list of array objects, each containing the testUnit class object and an
+      optional list of mandatory test case methods name                       */
+
+mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
+testUnitList=.list~of( .array~of(.ooRexx.Base.PARSE.testUnit,  mandatoryTestMethods) )
+
+
+-------------------------------------------------------------------------------------------
+-- ===> the following code needs not to be individualized                              <===
+
+   -- read top comment, containing infos about this program
+arrLines=.array~new
+do i=1 to 150 until arrLines[i]="*/"
+   arrLines[i]=sourceline(i)
+end
+      -- supply information for the testClass(es) in this file; the class attribute
+      -- "TestCaseInfo" (a directory object, index points to a queue) will store
+      -- the parsed infos
+aTestUnitClass=testUnitList~at(testUnitList~first)[1] -- get first testClass
+
+   -- will parse the array lines and store result in class object
+call makeDirTestInfo aTestUnitClass, arrLines
+tmpDir=aTestUnitClass~TestCaseInfo
+parse source s   -- op_sys invocationType fullPathToThisFile
+tmpDir~setentry("test_Case-source", s)
+
+   -- now add this directory to other testCase classes, if any left
+do arr over testUnitList
+   if arr[1]=aTestUnitClass then iterate  -- already handled
+   arr[1]~TestCaseInfo=tmpDir             -- save info in class object
+end
+
+-- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
+-- and set it to .false; this way the independent local invocation of the tests is inhibited
+if .local~hasentry("bRunTestsLocally")=.false then
+   .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
+
+if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
+do
+   ts=.testSuite~new             -- create a testSuite
+   do arr over testUnitList
+      -- create a testSuite for the given test case class, use all its testmethods
+      ts~addTest( .testSuite~new(arr[1]))
+   end
+   -- testResult=.testSuite~new(testUnitClass)~run
+   testResult=ts~run       -- now run all the tests
+
+   call simpleDumpTestResults testResult
+end
+
+   /* return list of array objects containing test case classes and
+      optionally list of mandatory test methods                      */
+return testUnitList
+
+
+
+::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+
+::class "ooRexx.Base.PARSE.testUnit" subclass TestCase public
+
+  -- ---> ---> begin: from "rexxref" (v.3.0.0 rev2 2005-05-31, chapter 10 Parsing: begin <--- <---
+  -- pp 403ff
+::method "test_PARSE_simple"
+
+   parse value 'time and tide' with var1 var2 var3
+   self~assertSame("subTest1", 'time' , var1 )
+   self~assertSame("subTest2", 'and'  , var2 )
+   self~assertSame("subTest3", 'tide' , var3 )
+
+
+   /* PARSE VALUE using a variable as the source string to parse    */
+   string='time and tide'
+   parse value string with var1 var2 var3           /* same results */
+   self~assertSame("subTest4", 'time' , var1)
+   self~assertSame("subTest5", 'and'  , var2)
+   self~assertSame("subTest6", 'tide' , var3)
+
+
+   /* PARSE VAR example                                             */
+   stars='Sirius Polaris Rigil'
+   parse var stars star1 star2 star3
+   self~assertSame("subTest7", 'Sirius'  , star1)
+   self~assertSame("subTest8", 'Polaris' , star2)
+   self~assertSame("subTest9", 'Rigil'   , star3)
+
+
+   /* More variables in template than (words in) the source string  */
+   satellite='moon'
+   parse var satellite Earth Mercury               /* Earth='moon'  */
+   self~assertSame("subTest10", '', Mercury)
+
+
+   /* More (words in the) source string than variables in template  */
+   satellites='moon Io Europa Callisto...'
+   parse var satellites Earth Jupiter              /* Earth='moon'  */
+   self~assertSame("subTest11",  'Io Europa Callisto...', Jupiter)
+
+
+   /* Preserving extra blanks                                       */
+   solar5='Mercury Venus  Earth   Mars     Jupiter  '
+   parse var solar5 var1 var2 var3 var4
+   self~assertSame("subTest12", 'Mercury'              , var1)
+   self~assertSame("subTest13", 'Venus'                , var2)
+   self~assertSame("subTest14", 'Earth'                , var3)
+   self~assertSame("subTest15", '  Mars     Jupiter  ' , var4)
+
+
+   parse value '   Pluto   ' with var1
+   self~assertSame("subTest16", '   Pluto   ', var1 )
+
+
+   /* Period as a placeholder                                       */
+   stars='Arcturus Betelgeuse Sirius Rigil'
+   parse var stars . . brightest .
+   self~assertSame("subTest17", 'Sirius', brightest )
+
+
+   /* Alternative to period as placeholder                          */
+   stars='Arcturus Betelgeuse Sirius Rigil'
+   parse var stars drop junk brightest rest
+   self~assertSame("subTest18",  'Sirius', brightest )
+
+
+
+::method "test_PARSE_String_Patterns"
+   /* Simple template                                               */
+   name='Smith, John'
+   parse var name ln fn
+   self~assertSame("subTest1", 'Smith,' , ln )
+   self~assertSame("subTest2", 'John'   , fn )
+
+
+   /* Template with literal string pattern                          */
+   name='Smith, John'
+   parse var name ln ', ' fn
+   self~assertSame("subTest3", 'Smith' , ln  )
+   self~assertSame("subTest4", 'John'  , fn   )
+
+
+
+::method "test_PARSE_Positional_Patterns"
+         --  1234+6789!1234+6789!1234+6789!1234+6789!
+   record.1='Clemens   Samuel    Mark Twain          '
+   var.1.1 ='Clemens   '
+   var.1.2 ='Samuel    '
+   var.1.3 ='Mark Twain          '
+
+   record.2='Evans     Mary Ann  George Eliot        '
+   var.2.1 ='Evans     '
+   var.2.2 ='Mary Ann  '
+   var.2.3 ='George Eliot        '
+
+   record.3='Munro     H.H.      Saki                '
+   var.3.1 ='Munro     '
+   var.3.2 ='H.H.      '
+   var.3.3 ='Saki                '
+
+   /* Parsing with absolute positional patterns in template         */
+   do n=1 to 3
+     parse var record.n lastname 11 firstname 21 pseudonym
+     self~assertSame("subTest.1/"n"/"1, var.n.1, lastname  )
+     self~assertSame("subTest.1/"n"/"2, var.n.2, firstname )
+     self~assertSame("subTest.1/"n"/"3, var.n.3, pseudonym )
+   end
+
+
+   /* Parsing with absolute positional patterns in template         */
+   do n=1 to 3
+     parse var record.n lastname +10 firstname + 10 pseudonym
+     self~assertSame("subTest.2/"n"/"1, var.n.1, lastname  )
+     self~assertSame("subTest.2/"n"/"2, var.n.2, firstname )
+     self~assertSame("subTest.2/"n"/"3, var.n.3, pseudonym )
+   end
+
+
+   /* Backing up to an earlier position (with absolute positional)  */
+   string='astronomers'
+   parse var string 2 var1 4 1 var2 2 4 var3 5 11 var4
+   res1=string 'study' var1||var2||var3||var4
+   self~assertSame("subTest.3", res1, "astronomers study stars" )
+
+
+   /* Backing up to an earlier position (with relative positional)  */
+   string='astronomers'
+   parse var string 2 var1 +2 -3 var2 +1 +2 var3 +1 +6 var4
+   res2=string 'study' var1||var2||var3||var4
+   self~assertSame("subTest.4", res2, "astronomers study stars" )
+
+
+   /* Making several assignments                                    */
+   books='Silas Marner, Felix Holt, Daniel Deronda, Middlemarch'
+   parse var books 1 Eliot 1 Evans
+   /* Assigns the (entire) value of books to Eliot and to Evans.    */
+   self~assertSame("subTest.5", Eliot, Evans)
+
+
+
+::method "test_PARSE_Combine_Patterns_and_Parsing_into_words"
+   /* Combining string pattern and parsing into words               */
+   name='    John      Q.   Public'
+   parse var name fn init '.' ln        /* Assigns: fn='John'       */
+   self~assertSame("subTest1", 'John'     , fn  )
+   self~assertSame("subTest2", '     Q'   , init)
+   self~assertSame("subTest3", '   Public', ln  )
+
+
+   /* Combining positional patterns with parsing into words         */
+   string='R E X X'
+   parse var string var1 var2 4 var3 6 var4
+   self~assertSame("subTest4", 'R' , var1)
+   self~assertSame("subTest5", 'E' , var2)
+   self~assertSame("subTest6", ' X', var3)
+   self~assertSame("subTest7", ' X', var4)
+
+
+
+::method "test_PARSE_variable_patterns"
+
+   /* Using a variable as a string pattern                          */
+   /*  The variable (delim) is set in the same template             */
+   -- SAY "Enter a date (mm/dd/yy format). =====> " /* assume 11/15/98 */
+   PUSH "11/15/98" -- rgf: push assumed date
+   pull date
+   parse var date month 3 delim +1 day +2 (delim) year
+   /* Sets: month='11'; delim='/'; day='15'; year='98'  */
+   self~assertSame("subTest1", '11', month )
+   self~assertSame("subTest2", '/' , delim )
+   self~assertSame("subTest3", '15', day   )
+   self~assertSame("subTest4", '98', year  )
+
+
+   /* Using a variable as a positional pattern                      */
+   dataline = '12 26 .....Samuel ClemensMark Twain'
+   parse var dataline pos1 pos2 6 =(pos1) realname =(pos2) pseudonym
+   /* Assigns: realname='Samuel Clemens'; pseudonym='Mark Twain'    */
+   self~assertSame("subTest5", 'Samuel Clemens', realname )
+   self~assertSame("subTest6", 'Mark Twain'    , pseudonym)
+
+
+::method "test_PARSE_upper_lower_caseless"
+   string="AnToN-BeRtA-CaEsAr"
+   PARSE UPPER VAR string "c" rest
+   self~assertSame("subTest1", '', rest)
+
+   PARSE UPPER VAR string "C" rest
+   self~assertSame("subTest2", 'AESAR', rest)
+
+   PARSE LOWER VAR string "C" rest
+   self~assertSame("subTest3", '', rest)
+
+   PARSE LOWER VAR string "c" rest
+   self~assertSame("subTest4", 'aesar', rest)
+
+   PARSE CASELESS VAR string "c" rest
+   self~assertSame("subTest5", 'aEsAr', rest)
+
+   PARSE CASELESS VAR string "C" rest
+   self~assertSame("subTest6", 'aEsAr', rest)
+
+
+
+
+::method "test_PARSE_instruction_examples"
+
+    -- test ARG and PARSE ARG
+    call arg_sub "aHa" olala, "AHA", "OLALA", 1, "aHa"
+
+    -- LINEIN: needs to read from STDIN
+    call do_test_linein self     -- supply testcase object for carrying out assertion
+
+    -- PULL
+    push "80 4"
+    parse pull one two
+    self~assertSame("subTest-10", "80", one)
+    self~assertSame("subTest-11", "4",  two)
+
+    push "anton"
+    parse pull var1
+    self~assertSame("subTest-11-01", "anton",  var1)
+
+    push "anton"
+    pull var1
+    self~assertSame("subTest-11-02", "ANTON",  var1)
+
+
+    -- SOURCE
+    PARSE SOURCE opSys invocation path
+    self~assertEquals("subTest-12", "METHOD", invocation)
+
+    -- VALUE
+    PARSE VALUE WITH a b c
+    self~assertSame("subTest-13", "", a)
+    self~assertSame("subTest-14", "", b)
+    self~assertSame("subTest-15", "", c)
+
+    PARSE VALUE 1+20 WITH a +1 b
+    self~assertSame("subTest-16", "2", a)
+    self~assertSame("subTest-17", "1", b)
+
+    -- VERSION
+    PARSE VERSION language +4 .
+    self~assertSame("subTest-18", "REXX", language)
+
+
+
+   exit -- exit testcase
+
+
+ arg_sub:
+      /* ARG with source string named in Rexx program invocation       */
+      /*  Program name is PALETTE.  Specify 2 primary colors (yellow,  */
+      /*   red, blue) on call.   Assume call is: palette red blue      */
+      arg var1 var2, var1a, var2a, run          /* Assigns: var1='RED'; var2='BLUE' */
+      self~assertSame("subTest"run, var1a, var1)
+      run=run+1
+      self~assertSame("subTest"run, var2a, var2)
+
+      run=run+1
+      -- do not uppercase
+      parse arg var1 ., ., ., ., var1a with
+      self~assertSame("subTest"run, var1a, var1)
+      return
+
+
+do_test_linein: procedure             -- create external Rexx program for testing
+   use arg objTC                       -- retrieve object representing this testCase
+
+   filename="tmpTestPARSElinein"
+   fileInput=filename||"_input.txt"
+   filename=filename||".rex"
+
+      ------------------------------
+     -- create input file
+   s=.stream~new(fileInput)~~open("replace")   -- create empty file
+   s~~lineout("a=8 c=9")~close
+
+      ------------------------------
+     -- create rexx-file containing PARSE LINEIN, will set RC=17 if successful
+   s=.stream~new(fileName)~~open("replace")   -- create empty file
+   s~~lineout("/*" date("S") time() ", ---rgf */")~~lineout
+
+   s~~lineout("parse linein 'a=' num1 'c=' num2     /* Assume: 8 and 9          */")
+   s~~lineout("sum=num1+num2                        /* Enter: a=8 b=9 as input  */")
+   s~~lineout("exit sum   -- set RC to '17'") ~~lineout
+   s~close
+
+      ------------------------------
+     -- invoke program which does the PARSE LINEIN and returns the sum of the parsed values
+   address cmd "rexx" filename "<"fileinput   -- run as external command redirect input
+   tmpRC=rc       -- should be 17 (8+9)
+
+      ------------------------------
+     -- delete the files just created (clean up)
+   call sysFileDelete fileName  -- delete file
+   call sysFileDelete fileInput -- delete file
+
+   objTC~assertSame("subTest-do_test_linein-procedure", 17, tmpRC)
+   return
+
+
+  -- ---> ---> END: from "rexxref" (v.3.0.0 rev2 2005-05-31, chapter 10 Parsing: END <--- <---
+
+
+-- from here on the next "::method testXYZ" testCase methods may follow
+
+
+
+
