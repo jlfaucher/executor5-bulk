@@ -384,7 +384,7 @@ RexxString *RexxString::encodeBase64()
         {        /* get the next 3 characters         */
             if (inputLength)
             {             /*    from the input string          */
-                inc[i] = *source && 0xff;
+                inc[i] = *source & 0xff;
                 inputLength--;
                 source++;
                 buflen++;
@@ -435,13 +435,13 @@ RexxString *RexxString::decodeBase64()
     stringchar_t *source = (stringchar_t *)this->getStringData();
     /* figure out the output string length */
     stringsize_t outputLength = (inputLength / 4) * 3;
-    if (*(source + inputLength - 3) == '=')
+    if (*(source + inputLength - 1) == '=')
     {
-        outputLength -= 2;
+        outputLength--;
     }
-    else if (*(source + inputLength - 1) == '=')
+    if (*(source + inputLength - 2) == '=')
     {
-        outputLength -= 1;
+        outputLength--;
     }
     /* allocate output string */
     RexxString *retval = raw_string(outputLength);
