@@ -2,7 +2,7 @@
    name:             ooRexx.Base.String.testUnit
    author:           Rony G. Flatscher
    date:             2005-08-07
-   version:          0.9.2
+   version:          0.9.3
 
 -- line commented lines are ignored, when building the directory of infos from this header
    changed:          2005-08-21, ---rgf, renamed the testUnit-class to match exactly the
@@ -15,7 +15,7 @@
                      2005-10-11, ---rgf, finished first round of testing the documentation
                              BIF examples
                      2005-10-17, ---rgf, added Walter Pachl's Errornumber()-tests
-
+                     2006-11-12, ---rgf, removed a wrong comment
    languageLevel:    6.0
    purpose:          Test the String functions.
    remark:           Initial test unit for demonstration purposes, needs to be completed.
@@ -1072,7 +1072,7 @@ return testUnitList
     self~assertEquals("subTest9" , VALUE('FRED', ,share), 7 ) /* says '7' */
 
     call value 'FRED', .nil, share  -- delete 'FRED' from environment
-    self~assertSame("subTest10", VALUE('FRED', ,share), "" ) /* says '7' */
+    self~assertSame("subTest10", VALUE('FRED', ,share), "" )
 
    -- test set/getting .environment-entries
     call value 'UhU', 1, ''         -- define entry 'UHU' in .environment
