@@ -189,6 +189,37 @@ AC_CHECK_FUNCS([gettimeofday memset strdup getpwuid geteuid \
 dnl Checks for other helper programs
 AC_PATH_PROGS(RPM, rpmbuild)
 
+dnl Special check for nanosleep
+AC_CHECK_FUNC(nanosleep)
+if test x"$ac_cv_func_nanosleep" = xno; then
+  AC_CHECK_LIB(rt, nanosleep)
+  if test x"$ac_cv_lib_rt_nanosleep" = xyes; then
+    AC_DEFINE(HAVE_NANOSLEEP, 1, "Define to 1 if you have nanosleep function")
+  fi
+else
+  AC_DEFINE(HAVE_NANOSLEEP, 1, "Define to 1 if you have nanosleep function")
+fi
+
+dnl Check for Xalan or xalan for xsl files
+xsl=''
+AC_PATH_PROGS([xsl], [Xalan xalan])
+if test -z "$xsl"; then
+   AC_MSG_WARN([cannot find xalan, Xalan])
+else
+   # $1="OUT" $2="XML" $3="XSL"
+   case "$xsl" in
+      *Xalan)
+         xsl="$xsl -o \$1 \$2 \$3"
+         ;;
+      *xalan)
+         xsl="$xsl -OUT \$1 -IN \$2 -XSL \$3"
+         ;;
+      *)
+         xsl="echo Cannot transform XSL as Xalan not installed;exit 1"
+         ;;
+   esac
+fi
+
 dnl remerge the warnings into the FLAGS
 GENERAL_CXXFLAGS="\
               $GENERIC_DEFINES \
@@ -239,6 +270,7 @@ AC_CONFIG_FILES([
         rexxapi/Makefile \
 	extensions/Makefile \
 	extensions/platform/Makefile \
+	extensions/platform/unix/Makefile \
 	extensions/platform/windows/Makefile \
 	extensions/rxmath/Makefile \
 	extensions/rxregexp/Makefile \
