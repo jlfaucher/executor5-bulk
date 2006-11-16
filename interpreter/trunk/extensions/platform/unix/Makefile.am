@@ -38,7 +38,9 @@
 
 MAINTAINERCLEANFILES = Makefile.in
 
-SUBDIRS = platform rxftp rxmath rxregexp rxsock
-DIST_SUBDIRS = platform rxftp rxmath rxregexp rxsock
+EXTRA_DIST = rexx.1 \
+             rexxc.1 \
+	     rxqueue.1 \
+	     rxsubcom.1
 
 

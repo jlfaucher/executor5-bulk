@@ -38,7 +38,21 @@
 
 MAINTAINERCLEANFILES = Makefile.in
 
-SUBDIRS = platform rxftp rxmath rxregexp rxsock
-DIST_SUBDIRS = platform rxftp rxmath rxregexp rxsock
+EXTRA_DIST = ccreply.rex \
+             complex.rex \
+	     factor.rex \
+	     greply.rex \
+	     guess.rex \
+	     ktguard.rex \
+	     makestring.rex \
+	     month.rex \
+	     philfork.rex \
+	     pipe.rex \
+	     qdate.rex \
+	     qtime.rex \
+	     semcls.rex \
+	     stack.rex \
+	     usecomp.rex \
+	     usepipe.rex
 
 

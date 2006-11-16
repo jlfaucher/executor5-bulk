@@ -41,7 +41,7 @@ OOREXX_VERSION=$OOREXX_VERSION_MAJOR.$OOREXX_VERSION_MINOR.$OOREXX_VERSION_REVIS
 OOREXX_LIB_VERSION=$OOREXX_VERSION_MAJOR:0:0
 
 dnl Process this file with autoconf to produce a configure script
-AC_INIT($PACKAGE, $OOREXX_VERSION)
+AC_INIT()
 
 AC_SUBST(OOREXX_VERSION_MAJOR)
 AC_SUBST(OOREXX_VERSION_MINOR)
@@ -58,7 +58,7 @@ AC_SUBST(OOREXX_PREFIX,$prefix)
 
 AC_CANONICAL_SYSTEM
 
-AM_INIT_AUTOMAKE($PACKAGE, $VERSION)
+AM_INIT_AUTOMAKE($PACKAGE, $OOREXX_VERSION)
 
 AM_CONFIG_HEADER(config.h)
 
@@ -186,37 +186,6 @@ AC_HEADER_TIME
 AC_CHECK_FUNCS([gettimeofday memset strdup getpwuid geteuid \
                 nsleep IDtouser getpgrp])
 
-dnl Special check for nanosleep
-AC_CHECK_FUNC(nanosleep)
-if test x"$ac_cv_func_nanosleep" = xno; then
-  AC_CHECK_LIB(rt, nanosleep)
-  if test x"$ac_cv_lib_rt_nanosleep" = xyes; then
-    AC_DEFINE(HAVE_NANOSLEEP, 1, "Define to 1 if you have nanosleep function")
-  fi
-else
-  AC_DEFINE(HAVE_NANOSLEEP, 1, "Define to 1 if you have nanosleep function")
-fi
-
-dnl Check for Xalan or xalan for xsl files
-xsl=''
-AC_PATH_PROGS([xsl], [Xalan xalan])
-if test -z "$xsl"; then
-   AC_MSG_WARN([cannot find xalan, Xalan])
-else
-   # $1="OUT" $2="XML" $3="XSL"
-   case "$xsl" in
-      *Xalan)
-         xsl="$xsl -o \$1 \$2 \$3"
-         ;;
-      *xalan)
-         xsl="$xsl -OUT \$1 -IN \$2 -XSL \$3"
-         ;;
-      *)
-         xsl="echo Cannot transform XSL as Xalan not installed;exit 1"
-         ;;
-   esac
-fi
-
 dnl Checks for other helper programs
 AC_PATH_PROGS(RPM, rpmbuild)
 
@@ -274,6 +243,7 @@ AC_CONFIG_FILES([
 	extensions/rxmath/Makefile \
 	extensions/rxregexp/Makefile \
 	extensions/rxsock/Makefile \
+	samples/Makefile \
         utilities/Makefile \
         utilities/rexx/Makefile \
         utilities/rexx/platform/Makefile \
