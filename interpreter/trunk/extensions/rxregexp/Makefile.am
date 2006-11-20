@@ -38,17 +38,18 @@
 
 MAINTAINERCLEANFILES = Makefile.in
 
+pkglib_LTLIBRARIES = librxregexp.la
+
 librxregexp_la_SOURCES = automation.cpp \
                          automation.hpp \
 			 dblqueue.cpp \
 			 dblqueue.hpp \
 			 regexp.hpp \
-			 rxregexp.cpp \
-                         @OOREXX_COMMONHEADERS@
+			 rxregexp.cpp
 
 librxregexp_la_CXXFLAGS = @OOREXX_INCLUDES@
 
-librxregexp_la_LIBADD  = @OOREXX_LIBS@
-librxregexp_la_LDFLAGS = $(OOREXX_LIB_VERSION) @ORX_LDFLAGS_LIBRARY@
+librxregexp_la_LDFLAGS = $(OOREXX_LIB_VERSION) @ORX_LDFLAGS_LIBRARY@ \
+                         @OOREXX_LIBS@
 
 

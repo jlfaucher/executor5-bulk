@@ -418,12 +418,7 @@ librexx_la_CXXFLAGS = -DORX_VER=$(MAJOR) -DORX_REL=$(MINOR) -DORX_MOD=$(MOD_LVL)
 #
 # linker flags for librexx.so objects
 #
-librexx_la_LDFLAGS = $(VERSION_INFO) -no-undefined
-
-#
-# additional libraries for librexx.so
-#
-librexx_la_LIBADD = $(top_srcdir)/shared/libshared.la
+librexx_la_LDFLAGS = $(VERSION_INFO) -no-undefined -lpthread
 
 #
 # explicit targets

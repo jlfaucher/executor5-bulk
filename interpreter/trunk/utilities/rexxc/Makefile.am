@@ -57,11 +57,6 @@ rexxc_SOURCES = rexxc.cpp
 #
 # Extra linker flags for rexxc
 #
-rexxc_LDFLAGS = -ldl -lpthread
-
-#
-# Extra libraries for rexxc
-#
-rexxc_LDADD = librexx.la
+rexxc_LDFLAGS = -ldl -lpthread -L$(top_srcdir)/kernel -lrexx
 
 

@@ -38,10 +38,12 @@
 
 MAINTAINERCLEANFILES = Makefile.in
 
-librxsock_la_SOURCES = rxsock.cpp rxsockfn.cpp rxsock.h @OOREXX_COMMONHEADERS@
+pkglib_LTLIBRARIES = librxsock.la
+
+librxsock_la_SOURCES = rxsock.cpp rxsockfn.cpp rxsock.h
 
 librxsock_la_CXXFLAGS = @OOREXX_INCLUDES@
 
-librxsock_la_LIBADD  = @OOREXX_LIBS@
-librxsock_la_LDFLAGS = $(OOREXX_LIB_VERSION) @ORX_LDFLAGS_LIBRARY@
+librxsock_la_LDFLAGS = $(OOREXX_LIB_VERSION) @ORX_LDFLAGS_LIBRARY@ \
+                       @OOREXX_LIBS@
 

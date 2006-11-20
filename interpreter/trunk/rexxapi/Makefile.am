@@ -70,9 +70,4 @@ librexxapi_la_CXXFLAGS =
 librexxapi_la_LDFLAGS = -version-info @OOREXX_LIB_VERSION@ -no-undefined \
                         @OOREXX_LINK_LIBS@
 
-#
-# additional libraries for librexxapi.la objects
-#
-librexxapi_la_LIBADD  = -lrxshared
-
 

@@ -38,10 +38,12 @@
 
 MAINTAINERCLEANFILES = Makefile.in
 
-librxmath_la_SOURCES = rxmath.cpp @OOREXX_COMMONHEADERS@
+pkglib_LTLIBRARIES = librxmath.la
+
+librxmath_la_SOURCES = rxmath.cpp
 
 librxmath_la_CXXFLAGS = @OOREXX_INCLUDES@
 
-librxmath_la_LIBADD  = @OOREXX_LIBS@
-librxmath_la_LDFLAGS = $(OOREXX_LIB_VERSION) @ORX_LDFLAGS_LIBRARY@
+librxmath_la_LDFLAGS = $(OOREXX_LIB_VERSION) @ORX_LDFLAGS_LIBRARY@ \
+                       @OOREXX_LIBS@
 

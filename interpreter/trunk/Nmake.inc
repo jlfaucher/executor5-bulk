@@ -96,7 +96,7 @@ WIN32LIBS = user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib uuid.lib
 WIN64LIBS =
 
 !IF $(OOREXX_BIT_SIZE) == 64
-WINLIBS = $(WIN32LIBS)
+WINLIBS = $(WIN64LIBS)
 !ELSE
 WINLIBS = $(WIN32LIBS)
 !ENDIF
@@ -108,11 +108,10 @@ COMMONHEADERS = $(top_srcdir)\api\InternalAPI.hpp \
                 $(top_srcdir)\api\rexx.h \
                 $(top_srcdir)\api\rexxapidefs.h \
                 $(top_srcdir)\api\platform\windows\rexxapitypes.h \
+                $(top_srcdir)\api\platform\windows\rexxplatformapis.h \
                 $(top_srcdir)\shared\Rxstring.hpp \
                 $(top_srcdir)\shared\SynchronizedBlock.hpp \
                 $(top_srcdir)\shared\SystemException.hpp
-
-SHAREDLIB = $(top_srcdir)\shared\windows\rxshared.lib
 
 REXXAPILIB = $(top_srcdir)\rexxapi\rexxapi.lib
 
@@ -122,8 +121,7 @@ OOREXXLIBS = $(top_srcdir)\rexxapi\rexxapi.lib \
 APIINC  = /I$(top_srcdir)\api \
           /I$(top_srcdir)\api\platform\windows
 
-SHAREDINC =  /I$(top_srcdir)\shared \
-             /I$(top_srcdir)\shared\windows
+SHAREDINC =  /I$(top_srcdir)\shared
 
 OOREXXINC = $(APIINC) $(SHAREDINC)
 

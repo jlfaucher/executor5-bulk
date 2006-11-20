@@ -58,11 +58,6 @@ rxsubcom_SOURCES = platform/unix/SUBCOMCommand.cpp
 #
 # Extra link flags for rxsubcom
 #
-rxsubcom_LDFLAGS = -ldl -lpthread
-
-#
-# Extra libraries for rxsubcom
-#
-rxsubcom_LDADD = librexx.la
+rxsubcom_LDFLAGS = -ldl -lpthread -L$(top_srcdir)/kernel -lrexx
 
 

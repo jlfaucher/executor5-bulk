@@ -33,16 +33,18 @@ dnl NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 dnl SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 dnl
 
-PACKAGE=ooRexx
+OOREXX_PACKAGE=ooRexx
 OOREXX_VERSION_MAJOR=4
 OOREXX_VERSION_MINOR=0
 OOREXX_VERSION_REVISION=0
 OOREXX_VERSION=$OOREXX_VERSION_MAJOR.$OOREXX_VERSION_MINOR.$OOREXX_VERSION_REVISION
 OOREXX_LIB_VERSION=$OOREXX_VERSION_MAJOR:0:0
+OOREXX_DEFAULT_PREFIX=/opt/ooRexx
 
 dnl Process this file with autoconf to produce a configure script
 AC_INIT()
 
+AC_SUBST(OOREXX_PACKAGE)
 AC_SUBST(OOREXX_VERSION_MAJOR)
 AC_SUBST(OOREXX_VERSION_MINOR)
 AC_SUBST(OOREXX_VERSION_REVISION)
@@ -51,10 +53,8 @@ AC_SUBST(OOREXX_LIB_VERSION)
 
 dnl Set the default prefix for the installation directory. The setting here
 dnl is designed to make us compliant with the Linux Standards Base.
-case $prefix in
-  NONE) prefix=/opt/ooRexx
-esac
-AC_SUBST(OOREXX_PREFIX,$prefix)
+AC_PREFIX_DEFAULT($OOREXX_DEFAULT_PREFIX)
+AC_SUBST(OOREXX_DEFAOUT_PREFIX,$prefix)
 
 AC_CANONICAL_SYSTEM
 
@@ -253,7 +253,9 @@ OOREXX_COMMONHEADERS="\$(top_srcdir)/api/InternalAPI.hpp \
 AC_SUBST(OOREXX_COMMONHEADERS)
 
 OOREXX_LIBS="-L\$(top_srcdir)/rexxapi \
+            -lrexxapi \
             -L\$(top_srcdir)/kernel \
+	    -lrexx \
             -lpthread \
             -ldl"
 AC_SUBST(OOREXX_LIBS)

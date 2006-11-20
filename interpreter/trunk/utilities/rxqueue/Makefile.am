@@ -58,11 +58,6 @@ rxqueue_SOURCES = platform/unix/QueueCommand.cpp
 #
 # Extra linker flags for rxqueue
 #
-rxqueue_LDFLAGS = -ldl -lpthread
-
-#
-# Extra libraries for rxqueue
-#
-rxqueue_LDADD = librexx.la
+rxqueue_LDFLAGS = -ldl -lpthread -L$(top_srcdir)/kernel -lrexx
 
 

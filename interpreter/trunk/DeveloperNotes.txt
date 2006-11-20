@@ -12,7 +12,6 @@ configure.ac
 oorexx.ver
 shared/windows/verinfo_exe.rc
 shared/windows/verinfo_dll.rc
-rexxapi/daemon/RexxService.h
 
 
 
@@ -32,6 +31,11 @@ It is also possible (but NOT recommended) for you to install ooRexx via make.
 
 make install               (NOT recommended!)
 
+Installing ooRexx using "make install" will install ooRexx in such a way that
+on most Linux distribution the rexx environment will not be properly set for
+execution via any system daemons. This is because the /usr/local/bin subdir is
+not in the PATH for daemons on most Linux distributions.
+
 
 
 Building ooRexx on Windows
@@ -44,9 +48,10 @@ make                      (run the make.bat batch file)
 
 This invokes NMAKE with the correct arguments.
 
-Packaging ooRexx requires NSIS 2.0.3 or grater
+Packaging ooRexx requires NSIS 2.0.3 or greater
 
 Be sure to read the contents of the Nmake.inc file. You may want to take
 advantage of some of the features you find documented there. This is also
-the place to specify a 64-bit Windows build (the default is a 32-bit build).
+the place to specify a 64-bit Windows build (the default is a 32-bit build)
+or a debugging build.
 
