@@ -58,6 +58,6 @@ rxqueue_SOURCES = platform/unix/QueueCommand.cpp
 #
 # Extra linker flags for rxqueue
 #
-rxqueue_LDFLAGS = -ldl -lpthread -L$(top_srcdir)/kernel -lrexx
+rxqueue_LDFLAGS = @OOREXX_LIBS@
 
 

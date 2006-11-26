@@ -54,7 +54,7 @@ AC_SUBST(OOREXX_LIB_VERSION)
 dnl Set the default prefix for the installation directory. The setting here
 dnl is designed to make us compliant with the Linux Standards Base.
 AC_PREFIX_DEFAULT($OOREXX_DEFAULT_PREFIX)
-AC_SUBST(OOREXX_DEFAOUT_PREFIX,$prefix)
+AC_SUBST(OOREXX_PREFIX,$prefix)
 
 AC_CANONICAL_SYSTEM
 
@@ -240,28 +240,11 @@ OOREXX_INCLUDES="-I\$(top_srcdir)/api \
 		 -I\$(top_srcdir)/shared"
 AC_SUBST(OOREXX_INCLUDES)
 
-OOREXX_COMMONHEADERS="\$(top_srcdir)/api/InternalAPI.hpp \
-              \$(top_srcdir)/api/oorexx.h \
-              \$(top_srcdir)/api/oorexxapi.h \
-              \$(top_srcdir)/api/oorexxerrors.h \
-              \$(top_srcdir)/api/rexx.h \
-              \$(top_srcdir)/api/rexxapidefs.h \
-              \$(top_srcdir)/api/platform/unix/rexxapitypes.h \
-              \$(top_srcdir)/kernel/Rxstring.hpp \
-              \$(top_srcdir)/kernel/SynchronizedBlock.hpp \
-              \$(top_srcdir)/kernel/SystemException.hpp"
-AC_SUBST(OOREXX_COMMONHEADERS)
-
-OOREXX_LIBS="-L\$(top_srcdir)/rexxapi \
-            -lrexxapi \
-            -L\$(top_srcdir)/kernel \
+OOREXX_LIBS="-L\$(top_srcdir)/kernel \
 	    -lrexx \
             -lpthread \
             -ldl"
 AC_SUBST(OOREXX_LIBS)
-
-
-
 
 AC_CONFIG_FILES([
         oorexx.spec \

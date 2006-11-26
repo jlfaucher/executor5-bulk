@@ -58,6 +58,6 @@ rxsubcom_SOURCES = platform/unix/SUBCOMCommand.cpp
 #
 # Extra link flags for rxsubcom
 #
-rxsubcom_LDFLAGS = -ldl -lpthread -L$(top_srcdir)/kernel -lrexx
+rxsubcom_LDFLAGS = @OOREXX_LIBS@
 
 

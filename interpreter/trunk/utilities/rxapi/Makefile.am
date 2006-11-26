@@ -80,6 +80,6 @@ rxapi_CXXFLAGS = -DORX_VER=$(MAJOR) -DORX_REL=$(MINOR) -DORX_MOD=$(MOD_LVL) \
 #
 # linker flags for rxapi objects
 #
-rxapi_LDFLAGS = -L$(top_srcdir)/kernel -lrexx
+rxapi_LDFLAGS = -@OOREXX_LIBS@
 
 

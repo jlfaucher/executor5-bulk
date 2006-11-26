@@ -58,6 +58,6 @@ rexx_SOURCES = platform/unix/rexx.cpp
 #
 # Extra linker flags for rexx
 #
-rexx_LDFLAGS = -ldl -lpthread -L$(top_srcdir)/kernel -lrexx
+rexx_LDFLAGS = @OOREXX_LIBS@
 
 

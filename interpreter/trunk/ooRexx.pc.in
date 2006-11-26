@@ -7,13 +7,11 @@
 
 prefix=@OOREXX_PREFIX@
 exec_prefix=${prefix}
-libdir=${prefix}/lib
-includedir=${prefix}/include
 target=bash
 
 Name: ooRexx
 Description: Open Object Rexx
 Requires:
 Version: @OOREXX_VERSION@
-Libs: -L${libdir} -lrexx -lrexxapi
-Cflags: -I${includedir}
+Libs: -lrexx
+Cflags:
