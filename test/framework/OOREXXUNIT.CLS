@@ -37,6 +37,7 @@
                                            in square brackets anymore
                                          - failure message encodings, if given, now use the string "--->"
                                            as an eye catcher for parsing and is not enquoted in square brackets anymore
+                     2006-11-27, ---rgf, - changed Assert[Not]Same to show ObjectID in failure message to ease comparison
 
    language-level:   6.0
    needs:            ooRexx 3.1 or later (introduced syntax error # 93.964, which is exploited)
@@ -307,7 +308,7 @@
 
   if .bWalterPachl=.true then
   do
-     sTmp=" @assertFailure assertNotNull: expected="ppp("not .nil")", received="ppp(".nil")
+     sTmp=" @assertFailure assertNotNull: not expected="ppp(".nil")", received="ppp(".nil")
   end
   else
      sTmp=""
@@ -335,7 +336,8 @@
 
   if .bWalterPachl=.true then
   do
-     sTmp=" @assertFailure assertNotSame: expected="ppp(arg(2))", received="ppp(arg(3))
+     -- sTmp=" @assertFailure assertNotSame: expected="ppp(arg(2))", received="ppp(arg(3))
+     sTmp=" @assertFailure assertNotSame: not expected="ppp(arg(2)~string "<objectid:" arg(2)~"=="~c2x">")", received="ppp(arg(3)~string "<objectid:" arg(3)~"=="~c2x">")
   end
   else
      sTmp=""
@@ -395,7 +397,7 @@
 -- say "arg(2):" arg(2)~"=="~c2x "arg(3):" arg(3)~"=="~c2x "<--- <--- <---"
 -- say "       " arg(2)~c2x "|" arg(3)~c2x
 
-     sTmp=" @assertFailure assertSame: expected="ppp(arg(2))", received="ppp(arg(3))
+     sTmp=" @assertFailure assertSame: expected="ppp(arg(2)~string "<objectid:" arg(2)~"=="~c2x">")", received="ppp(arg(3)~string "<objectid:" arg(3)~"=="~c2x">")
   end
   else
      sTmp=""
