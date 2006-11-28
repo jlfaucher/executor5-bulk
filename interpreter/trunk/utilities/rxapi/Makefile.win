@@ -54,7 +54,7 @@ SHAREDEXEVER = $(top_srcdir)\shared\windows\verinfo_exe.res
 all: rxapi.exe
 
 rxapi.exe: $(EXEOBJS) $(OOREXXLIBS) $(SHAREDEXEVER)
-	$(LD) $(LFLAGS) $(EXEOBJS) $(SHAREDEXEVER) $(REXXLIBS) $(WINLIBS) \
+	$(LD) $(LFLAGS) $(EXEOBJS) $(SHAREDEXEVER) $(OOREXXLIBS) $(WINLIBS) \
 	/SUBSYSTEM:WINDOWS /OUT:rexxhide.exe
 
 APIService.obj: platform\windows\APIService.cpp \

@@ -27,14 +27,18 @@ make
 make dist                 (only needed if you want create a tar file or an rpm)
 make rpm                  (only needed if you want create an rpm)
 
+The default prefix for the configure command is /opt/ooRexx, NOT /usr/local. If
+you do not set a prefix on the configure command line it will default to
+/opt/ooRexx.
+
 It is also possible (but NOT recommended) for you to install ooRexx via make.
 
 make install               (NOT recommended!)
 
-Installing ooRexx using "make install" will install ooRexx in such a way that
-on most Linux distribution the rexx environment will not be properly set for
-execution via any system daemons. This is because the /usr/local/bin subdir is
-not in the PATH for daemons on most Linux distributions.
+Installing ooRexx using "make install" (especially with the default prefix of
+/opt/ooRexx) will probably not give you a proper execution environment for
+ooRexx. You will have to create some links for the ooRexx binaries and
+libraries and run "ldconfig" to get a working installation.
 
 
 

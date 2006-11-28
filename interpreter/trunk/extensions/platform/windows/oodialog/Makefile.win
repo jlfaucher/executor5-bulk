@@ -54,9 +54,9 @@ SHAREDDLLVER = $(top_srcdir)\shared\windows\verinfo_dll.res
 all: oodialog.dll oodialog.lib
 
 oodialog.dll oodialog.lib: $(DLLOBJS) $(COMMONOBJS) $(SHAREDDLLVER) \
-                       oodialog.def
+                       $(OOREXXLIBS) oodialog.def
 	$(LD) /DLL $(LFLAGS) $(DLLOBJS) $(COMMONOBJS) $(SHAREDLIB) \
-	$(WINLIBS) $(SHAREDDLLVER) /SUBSYSTEM:WINDOWS \
+	$(WINLIBS) $(SHAREDDLLVER) $(OOREXXLIBS) /SUBSYSTEM:WINDOWS \
         /DEF:oovutil.def /OUT:oodialog.dll
 
 oovbmp.obj: oovbmp.c \

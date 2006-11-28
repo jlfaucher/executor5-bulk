@@ -42,9 +42,9 @@
 
 #
 # Set your Windows compiler here.
+# Microsoft Visual C++ 7.0 with service packs is required!
 #
-VCPP6 =
-#VCPP7 =
+VCPP7 =
 #VCPP7_64 =
 
 #
@@ -55,18 +55,11 @@ VCPP6 =
 #
 # Set up stuff based on the compiler.
 #
-!IFDEF VCPP7
-WP64 = /Wp64
 !IFDEF VCPP_64
 # TODO: set the compiler into 64-bit mode here
 VCPP_64_FLAG =
 OOREXX_BIT_SIZE = 64
 !ELSE
-VCPP_64_FLAG =
-OOREXX_BIT_SIZE = 32
-!ENDIF
-!ELSE
-WP64 =
 VCPP_64_FLAG =
 OOREXX_BIT_SIZE = 32
 !ENDIF
@@ -77,7 +70,7 @@ OOREXX_BIT_SIZE = 32
 #
 CC = cl
 GLOBALCFLAGS = /DORX_VER=$(MAJOR) /DORX_REL=$(MINOR) /DORX_MOD=$(MOD_LVL) \
-               $(WP64) $(VCPP_64_FLAG) /GX /Wp64
+               $(VCPP_64_FLAG) /GX /Wp64
 
 !IF "$(DEBUG)" == "1"
 CFLAGS = /c $(GLOBALCFLAGS) $(INCLUDES) /Zi /Od
@@ -90,15 +83,12 @@ LFLAGS =
 LD = link
 LIBUTIL = lib
 
-WIN32LIBS = user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib uuid.lib \
-            ole32.lib oleaut32.lib shell32.lib kernel32.lib delayimp.lib wsock32.lib
-# TODO: set the 64-bit libraries here
-WIN64LIBS =
-
 !IF "$(OOREXX_BIT_SIZE)" == "64"
-WINLIBS = $(WIN64LIBS)
+# TODO: set the 64-bit libraries here
+WINLIBS =
 !ELSE
-WINLIBS = $(WIN32LIBS)
+WINLIBS = user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib uuid.lib \
+          ole32.lib oleaut32.lib shell32.lib kernel32.lib delayimp.lib wsock32.lib
 !ENDIF
 
 COMMONHEADERS = $(top_srcdir)\api\InternalAPI.hpp \
@@ -113,17 +103,11 @@ COMMONHEADERS = $(top_srcdir)\api\InternalAPI.hpp \
                 $(top_srcdir)\shared\SynchronizedBlock.hpp \
                 $(top_srcdir)\shared\SystemException.hpp
 
-REXXAPILIB = $(top_srcdir)\rexxapi\rexxapi.lib
+OOREXXLIBS = $(top_srcdir)\kernel\rexx.lib
 
-OOREXXLIBS = $(top_srcdir)\rexxapi\rexxapi.lib \
-             $(top_srcdir)\kernel\rexx.lib
-
-APIINC  = /I$(top_srcdir)\api \
-          /I$(top_srcdir)\api\platform\windows
-
-SHAREDINC =  /I$(top_srcdir)\shared
-
-OOREXXINC = $(APIINC) $(SHAREDINC)
+OOREXXINC =  /I$(top_srcdir)\api \
+             /I$(top_srcdir)\api\platform\windows \
+             /I$(top_srcdir)\shared
 
 CLEAN = *.obj *.exe *.dll *.lib *.res *.exp *.pdb
 

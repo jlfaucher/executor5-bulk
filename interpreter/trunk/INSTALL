@@ -126,6 +126,16 @@ as root:
 
 Solaris - PKG
 -------------
-The "make $DESTDIR=`pwd`/tmp package" above will also create:
-./tmp/ooRexx-x.y.z.pkg suitable for Solaris' "pkgadd"
+When building ooRexx for packaging, configure the build as follows:
+% ./configure --disable-static --prefix=/opt/sfw
+
+The "make DESTDIR=`pwd`/tmp package" above will also create:
+a gzipped ./ooRexx-x.y.z.pkg suitable for Solaris' "pkgadd"
+
+Later versions of g++ build in a dependency between ooRexx and g++
+shared libraries; libstdc++.so.x and libgcc_s.so.x.
+These shared libraries may be required to be installed on machines that
+do not have the version of g++ installed that ooRexx was built with.
+
+The ooRexx package will include these dependencies in the base ooRexx package.
 

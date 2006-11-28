@@ -53,7 +53,7 @@ SHAREDEXEVER = $(top_srcdir)\shared\windows\verinfo_exe.res
 all: rxqueue.exe
 
 rxqueue.exe: $(EXEOBJS) $(OOREXXLIBS) $(SHAREDEXEVER)
-	$(LD) $(LFLAGS) $(EXEOBJS) $(SHAREDEXEVER) $(REXXLIBS) $(WINLIBS) \
+	$(LD) $(LFLAGS) $(EXEOBJS) $(SHAREDEXEVER) $(OOREXXLIBS) $(WINLIBS) \
 	/SUBSYSTEM:WINDOWS /OUT:rxqueue.exe
 
 rxqueue.obj: platform\windows\QueueCommand.c \

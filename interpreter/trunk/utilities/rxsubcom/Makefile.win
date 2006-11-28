@@ -54,7 +54,7 @@ SHAREDEXEVER = $(top_srcdir)\shared\windows\verinfo_exe.res
 all: rxsubcom.exe
 
 rxsubcom.exe: $(EXEOBJS) $(OOREXXLIBS) $(SHAREDEXEVER)
-	$(LD) $(LFLAGS) $(EXEOBJS) $(SHAREDEXEVER) $(REXXLIBS) $(WINLIBS) \
+	$(LD) $(LFLAGS) $(EXEOBJS) $(SHAREDEXEVER) $(OOREXXLIBS) $(WINLIBS) \
 	/SUBSYSTEM:WINDOWS /OUT:rxsubcom.exe
 
 rxsubcom.obj: platform\windows\SUBCOMCommand.c \

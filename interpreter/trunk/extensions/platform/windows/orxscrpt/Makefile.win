@@ -54,9 +54,9 @@ SHAREDDLLVER = $(top_srcdir)\shared\windows\verinfo_dll.res
 all: orxscript.dll orxscript.lib
 
 orxscript.dll orxscript.lib: $(DLLOBJS) $(COMMONOBJS) $(SHAREDDLLVER) \
-                       orxscript.def
+                       $(OOREXXLIBS) orxscript.def
 	$(LD) /DLL $(LFLAGS) $(DLLOBJS) $(COMMONOBJS) $(SHAREDLIB) \
-	$(WINLIBS) $(SHAREDDLLVER) /SUBSYSTEM:WINDOWS \
+	$(WINLIBS) $(SHAREDDLLVER) $(OOREXXLIBS) /SUBSYSTEM:WINDOWS \
         /DEF:orxscript.def /OUT:orxscript.dll
 
 classdactory.obj: classfactory.cpp \

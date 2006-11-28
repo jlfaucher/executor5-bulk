@@ -52,9 +52,9 @@ SHAREDDLLVER = $(top_srcdir)\shared\windows\verinfo_dll.res
 all: rexxole.dll rexxole.lib
 
 rexxole.dll rexxole.lib: $(DLLOBJS) $(COMMONOBJS) $(SHAREDDLLVER) \
-                       rexxole.def
+                       $(OOREXXLIBS) rexxole.def
 	$(LD) /DLL $(LFLAGS) $(DLLOBJS) $(COMMONOBJS) $(SHAREDLIB) \
-	$(WINLIBS) $(SHAREDDLLVER) /SUBSYSTEM:WINDOWS \
+	$(WINLIBS) $(SHAREDDLLVER) $(OOREXXLIBS) /SUBSYSTEM:WINDOWS \
         /DEF:rexxole.def /OUT:rexxole.dll
 
 rexxole.obj: rexxole.c \

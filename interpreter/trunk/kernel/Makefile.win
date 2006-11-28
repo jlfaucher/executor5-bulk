@@ -54,8 +54,7 @@ INCLUDES = $(OOREXXINC) \
            /I$(top_srcdir)\kernel\RexxClasses \
            /I$(top_srcdir)\kernel\runtime \
            /I$(top_srcdir)\kernel\script \
-           /I$(top_srcdir)\kernel\streamLibrary \
-           /I$(top_srcdir)\shared
+           /I$(top_srcdir)\kernel\streamLibrary
 
 COMMONOBJS = CallContextStubs.obj InterpreterApi.obj InterpreterInstanceStubs.obj \
           ThreadContextStubs.obj MethodContextStubs.obj VariablePool.obj ArrayClass.obj \
@@ -132,9 +131,9 @@ DEPHEADERS = $(GENERATEDHEADERS) $(COMMONHEADERS)
 
 all: rexx.dll
 
-rexx.dll rexx.lib: $(DLLOBJS) $(SHAREDDLLLIB) $(REXXAPILIB) $(SHAREDVER) \
+rexx.dll rexx.lib: $(DLLOBJS) $(SHAREDDLLLIB) $(SHAREDVER) \
                    $(GENERATEDHEADERS) platform\windows\wrexx.def
-	$(LD) /DLL $(LFLAGS) $(DLLOBJS) $(SHAREDLIB) $(REXXAPILIB) $(WINLIBS) \
+	$(LD) /DLL $(LFLAGS) $(DLLOBJS) $(SHAREDLIB) $(WINLIBS) \
 	$(SHAREDDLLVER) /SUBSYSTEM:WINDOWS /DEF:platform\windows\wrexx.def \
 	/OUT:rexx.dll
 

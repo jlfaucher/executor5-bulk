@@ -52,9 +52,9 @@ SHAREDDLLVER = $(top_srcdir)\shared\windows\verinfo_dll.res
 all: rxwinsys.dll rxwinsys.lib
 
 rxwinsys.dll rxwinsys.lib: $(DLLOBJS) $(COMMONOBJS) $(SHAREDDLLVER) \
-                       rxwinsys.def
+                       $(OOREXXLIBS) rxwinsys.def
 	$(LD) /DLL $(LFLAGS) $(DLLOBJS) $(COMMONOBJS) $(SHAREDLIB) \
-	$(WINLIBS) $(SHAREDDLLVER) /SUBSYSTEM:WINDOWS \
+	$(WINLIBS) $(SHAREDDLLVER) $(OOREXXLIBS) /SUBSYSTEM:WINDOWS \
         /DEF:rxwinsys.def /OUT:rxwinsys.dll
 
 rxwinsys.obj: rxwinsys.cpp \
