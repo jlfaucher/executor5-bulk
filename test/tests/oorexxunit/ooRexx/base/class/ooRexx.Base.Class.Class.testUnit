@@ -2,9 +2,10 @@
    name:             ooRexx.Base.Class.CircularQueue.testUnit
    author:           Rony G. Flatscher
    date:             2006-11-26
-   version:          1.0.0
+   version:          1.0.1
 
 -- line commented lines are ignored, when building the directory of infos from this header
+   changed:          2006-11-28, ---rgf, added new test case methods
 
    languageLevel:    6.0
    purpose:          Test the methods of the class CircularQueue.
@@ -402,10 +403,41 @@ any:
    self~assertEquals("subTest_33", tmp_drive, avo~drive    )
    self~assertEquals("subTest_34", tmp_swim , avo~swim     )
 
+::METHOD "test_INHERIT_01"
+   self~expectSyntax(97.1)
+   .object~inherit(.String)
 
-/* TODO */
+::METHOD "test_INHERIT_02"
+   self~expectSyntax(98.942)
+   .amphibianVehicle~inherit(.object)
 
-::method "test_INIT"
+::METHOD "test_INHERIT_03"
+    self~expectSyntax(98.944)
+   .amphibianVehicle~inherit(.roadVehicle)
+
+
+::method "test_INIT_01"
+  self~expectSyntax(93.901)
+  cl=.class~new
+
+
+::method "test_INIT_02"
+  self~expectSyntax(93.902)
+  cl=.class~new("what a wonderful world!", "oops.")
+
+
+::method "test_METACLASS"
+   self~assertSame("subTest_01", .class, .object~metaclass)
+   self~assertSame("subTest_02", .class, .class~metaclass)
+
+   cl=.object~mixinclass("test_mixin_01",    .counter)
+   self~assertSame("subTest_03", .counter,   cl~metaclass)
+   cl=.object~mixinclass("test_mixin_01",    .singleton)
+   self~assertSame("subTest_04", .singleton, cl~metaclass)
+
+   self~assertSame("subTest_05", .class, .counter~class)
+
+
 ::method "test_METHOD"
 
    self~assertNotNull("subTest_01", m=.WaterVehicle~method("swim"))
@@ -438,6 +470,8 @@ any:
       self~assertTrue("subTest_07_"i, tmp~subset(a_wv_all[i]))
       self~assertTrue("subTest_07_"i, a_wv_all[i]~subset(tmp))
    end
+
+   self~assertEquals("subTest_08", a_wv_all[1]~items, a_o[1]~items + a_v[1]~items + a_wv[1]~items)
 
    return
 
@@ -491,6 +525,17 @@ getBags: procedure         -- return indices in an index bag, and method items i
    self~assertSame("subTest_04", a1, a2)  -- test whether instances are singletons
 
 
+::method "test_MIXINCLASS_01"
+   self~expectSyntax(99.927)
+   cl=.object~mixinclass("subTest_01", not_an_existing_class)
+
+
+::method "test_MIXINCLASS_02"
+   self~expectSyntax(99.927)
+   cl=.object~mixinclass("subTest_01", .object)
+
+
+
 ::method "test_MIXINCLASS_MULTIPLE_INHERITANCE_ON_METACLASSES_01"    -- just the arguments, rest already tested
       -- test counter metaclass
    cl=.object~mixinclass("test_mixin_01", .counterSingleton_mixinclass)
@@ -517,7 +562,7 @@ getBags: procedure         -- return indices in an index bag, and method items i
 
 ::method "test_MIXINCLASS_MULTIPLE_INHERITANCE_ON_METACLASSES_03"    -- just the arguments, rest already tested
       -- test counter metaclass
-   cl=.object~subclass("test_subclass_01", .counterSingleton_subclass)
+   cl=.object~mixinclass("test_subclass_01", .counterSingleton_subclass)
    a1=cl~new
    i=4
    do i
@@ -529,13 +574,12 @@ getBags: procedure         -- return indices in an index bag, and method items i
 
 ::method "test_MIXINCLASS_MULTIPLE_INHERITANCE_ON_METACLASSES_04"    -- just the arguments, rest already tested
       -- test counter metaclass
-   cl=.object~subclass("test_subclass_01", .SingletonCounter_subclass)
+   cl=.object~mixinclass("test_subclass_01", .SingletonCounter_subclass)
    a1=cl~new
    i=4
    do i
       a2=cl~new      -- create an object
    end
-   self~assertNotSame("subTest_01", a1, a1)  -- test whether singleton instances
    self~assertSame("subTest_01", a1, a2)  -- test whether singleton instances
    self~assertEquals("subTest_02", 1, cl~counter)  -- test whether five instances have been created
 
@@ -574,6 +618,16 @@ getBags: procedure         -- return indices in an index bag, and method items i
       a2=cl~new      -- create an object
    end
    self~assertSame("subTest_04", a1, a2)  -- test whether instances are singletons
+
+
+::method "test_SUBCLASS_01"
+   self~expectSyntax(99.927)
+   cl=.object~subclass("subtest_01", not_an_existing_class)
+
+::method "test_SUBCLASS_02"
+   self~expectSyntax(99.927)
+   cl=.object~subclass("subtest_01", .object)
+
 
 
 ::method "test_SUBCLASS_MULTIPLE_INHERITANCE_ON_METACLASSES_01"    -- just the arguments, rest already tested
@@ -620,9 +674,10 @@ getBags: procedure         -- return indices in an index bag, and method items i
    do i
       a2=cl~new      -- create an object
    end
-   self~assertNotSame("subTest_01", a1, a1)  -- test whether singleton instances
    self~assertSame("subTest_01", a1, a2)  -- test whether singleton instances
    self~assertEquals("subTest_02", 1, cl~counter)  -- test whether five instances have been created
+
+
 
 
 ::method "test_SUBCLASSES"
@@ -635,6 +690,53 @@ getBags: procedure         -- return indices in an index bag, and method items i
 ::method "test_SUPERCLASSES"
    self~assertTrue("subTest_01: '.object~superclasses~items=0'", .object~superclasses~items=0)
    self~assertTrue("subTest_02: '.relation~superclasses~items=1'", .relation~superclasses~items=1)
+
+
+
+::method "test_UNINHERIT_01"
+   -- create a base test_class
+   vehicle_Name="RGF_VEHICLE"
+   rgf_vehicle=.object~subclass(vehicle_Name)
+
+   -- create RoadVehicle
+   road_Vehicle_Name="RGF_ROADVEHICLE"
+   rgf_road_vehicle=rgf_vehicle~mixinclass(road_Vehicle_Name)
+
+   -- create WaterVehicle
+   water_Vehicle_Name="RGF_WaterVehicle"
+   rgf_water_vehicle=rgf_vehicle~mixinclass(water_Vehicle_Name)
+
+   -- create AmphibianVehicle
+   amphibian_Vehicle_Name="RgF_AmPhIbIaNvEhIcLe"
+   rgf_amphibian_vehicle=rgf_road_vehicle~subclass(amphibian_Vehicle_Name)
+   rgf_amphibian_vehicle~inherit(rgf_water_vehicle)
+
+   self~expectSyntax(98.945)
+   rgf_amphibian_vehicle~uninherit("class that does not exist")
+
+
+::method "test_UNINHERIT_02"
+   -- create a base test_class
+   vehicle_Name="RGF_VEHICLE"
+   rgf_vehicle=.object~subclass(vehicle_Name)
+
+   -- create RoadVehicle
+   road_Vehicle_Name="RGF_ROADVEHICLE"
+   rgf_road_vehicle=rgf_vehicle~mixinclass(road_Vehicle_Name)
+
+   -- create WaterVehicle
+   water_Vehicle_Name="RGF_WaterVehicle"
+   rgf_water_vehicle=rgf_vehicle~mixinclass(water_Vehicle_Name)
+
+   -- create AmphibianVehicle
+   amphibian_Vehicle_Name="RgF_AmPhIbIaNvEhIcLe"
+   rgf_amphibian_vehicle=rgf_road_vehicle~subclass(amphibian_Vehicle_Name)
+   rgf_amphibian_vehicle~inherit(rgf_water_vehicle)
+
+   rgf_amphibian_vehicle~uninherit(rgf_water_vehicle)
+
+   self~expectSyntax(98.945)
+   rgf_amphibian_vehicle~uninherit(rgf_water_vehicle)
 
 
 
