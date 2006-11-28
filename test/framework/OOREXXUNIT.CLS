@@ -38,6 +38,7 @@
                                          - failure message encodings, if given, now use the string "--->"
                                            as an eye catcher for parsing and is not enquoted in square brackets anymore
                      2006-11-27, ---rgf, - changed Assert[Not]Same to show ObjectID in failure message to ease comparison
+                     2006-11-28, ---rgf, - corrected logic to intercept any condition from running a test case
 
    language-level:   6.0
    needs:            ooRexx 3.1 or later (introduced syntax error # 93.964, which is exploited)
@@ -568,6 +569,8 @@ doTheTest: procedure    -- make sure exceptions are trapped locally
    -- user exception not interceptable at this stage anymore, hence using SYNTAX exceptions
    -- signal on user AssertionFailedError name exceptionHandler
 
+  signal on any name exceptionHandler
+/*
    -- signal on any
    -- signal on novalue
    signal on error      name exceptionHandler
@@ -577,6 +580,7 @@ doTheTest: procedure    -- make sure exceptions are trapped locally
    -- signal on nostring   name exceptionHandler
    signal on notready   name exceptionHandler
    signal on syntax     name exceptionHandler
+*/
 
 -- say "self="pp(self) "strM="pp(strM)"..." "self~hasMethod(strM)="self~hasMethod(strM)
 
@@ -616,26 +620,23 @@ exceptionHandler:
    end
    else     -- unexpected/untested failure, ie. an "error"
    do
-      tmpInfo=co~condition "ERROR"
+      tmpInfo=co~condition
+      if tmpInfo="SYNTAX" then
+         tmpInfo=tmpInfo "ERROR"
+      else
+         tmpInfo=pp(tmpInfo) "condition"
+
       if co~hasentry("CODE") then
          tmpInfo=tmpInfo co~code
 
-      tmpInfo=tmpInfo":" co~message    -- add error message
+      if .nil<>co~message then
+         tmpInfo=tmpInfo":" co~message    -- add error message
+      else
+         tmpInfo=tmpInfo "raised unexpectedly"
 
       tmpString=pp(date("S") time("L"))":" pp("error")~left(11) self~string "--->" tmpInfo
       co~setentry("OOREXXUNIT.CONDITION", tmpString)  -- add ooRexxUnit-infos with condition object
       aTestResult~addError(self, co)      -- save the condition object
-      /*
-
-do idx over co
-  say "*** ***" idx":" co~entry(idx)
-end
-if co~hasentry("TRACEBACK") then
-do line over co~traceback
-   say "\\\ Traceback ///" line
-
-end
-*/
    end
 
    return aTestResult   -- rgf, 2006-04-08

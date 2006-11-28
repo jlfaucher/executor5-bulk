@@ -2,13 +2,14 @@
    name:             ooRexx.Base.runTests
    author:           Rony G. Flatscher
    date:             2005-08-07
-   version:          0.0.5
+   version:          0.0.6
 
    changed:          2005-08-21, ---rgf, changed logic, offloaded creation of standard testSuite
                      2005-08-30, ---rgf, added determination of slashes, if using subdirs in
                                          "testCaseFileList"
                      2005-10-09, ---rgf, reflect renaming from ".String." to ".BIF." testcase
                      2006-11-08, ---rgf, corrected "!slash!" assignment thanks to Rene V. Jansen
+                     2006-11-28, ---rgf, added new testUnits
 
    license:          CPL 1.0 (Common Public License v1.0, see below)
 
@@ -66,8 +67,10 @@ testCaseFileList = .list~of(                                                    
                              "ooRexx.Base.BIF.testUnit"                               , -
                              "ooRexx.Base.PARSE.testUnit"                             , -
                              "ooRexx.Base.RESULT_RC_SIGL.testUnit"                    , -
-                             "class"!slash!"ooRexx.Base.Class.String.testUnit"        , -
                              "class"!slash!"ooRexx.Base.Class.CircularQueue.testUnit" , -
+                             "class"!slash!"ooRexx.Base.Class.Class.testUnit"         , -
+                             "class"!slash!"ooRexx.Base.Class.Queue.testUnit"         , -
+                             "class"!slash!"ooRexx.Base.Class.String.testUnit"        , -
                                                                                         -
                             )
 

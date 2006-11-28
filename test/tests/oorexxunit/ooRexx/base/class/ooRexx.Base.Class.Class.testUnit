@@ -1,8 +1,8 @@
 /*
    name:             ooRexx.Base.Class.CircularQueue.testUnit
    author:           Rony G. Flatscher
-   date:             2006-11-26
-   version:          1.0.1
+   date:             2006-11-28
+   version:          1.0.3
 
 -- line commented lines are ignored, when building the directory of infos from this header
    changed:          2006-11-28, ---rgf, added new test case methods
@@ -438,6 +438,33 @@ any:
    self~assertSame("subTest_05", .class, .counter~class)
 
 
+
+::method "test_METACLASS_CounterSingleton_via_normal_inheritance"
+      -- test counter metaclass
+   cl=.object~mixinclass("test_01", .SingletonCounter_via_normal_inheritance)
+   a1=cl~new
+   i=4
+   do i
+      a2=cl~new      -- create an object
+   end
+   self~assertEquals("subTest_01", 5, cl~counter)  -- test whether five instances have been created
+   self~assertSame("subTest_02", a1, a2)  -- test whether singleton instances
+
+
+::method "test_METACLASS_SingletonCounter_via_normal_inheritance"
+      -- test counter metaclass
+   cl=.object~mixinclass("test_01", .CounterSingleton_via_normal_inheritance)
+   a1=cl~new
+   i=4
+   do i
+      a2=cl~new      -- create an object
+   end
+   self~assertSame(  "subTest_01", a1, a2)  -- test whether singleton instances
+   self~assertEquals("subTest_02", 1, cl~counter)  -- test whether five instances have been created
+
+
+
+
 ::method "test_METHOD"
 
    self~assertNotNull("subTest_01", m=.WaterVehicle~method("swim"))
@@ -544,7 +571,7 @@ getBags: procedure         -- return indices in an index bag, and method items i
    do i
       a2=cl~new      -- create an object
    end
-   self~assertEquals("subTest_01", 5, cl~counter)  -- test whether five instances have been created
+   self~assertEquals("subTest_01", 1, cl~counter)  -- test whether five instances have been created
    self~assertSame("subTest_02", a1, a2)  -- test whether singleton instances
 
 
@@ -557,7 +584,7 @@ getBags: procedure         -- return indices in an index bag, and method items i
       a2=cl~new      -- create an object
    end
    self~assertSame(  "subTest_01", a1, a2)  -- test whether singleton instances
-   self~assertEquals("subTest_02", 1, cl~counter)  -- test whether five instances have been created
+   self~assertEquals("subTest_02", 5, cl~counter)  -- test whether five instances have been created
 
 
 ::method "test_MIXINCLASS_MULTIPLE_INHERITANCE_ON_METACLASSES_03"    -- just the arguments, rest already tested
@@ -568,7 +595,7 @@ getBags: procedure         -- return indices in an index bag, and method items i
    do i
       a2=cl~new      -- create an object
    end
-   self~assertEquals("subTest_01", 5, cl~counter)  -- test whether five instances have been created
+   self~assertEquals("subTest_01", 1, cl~counter)  -- test whether five instances have been created
    self~assertSame("subTest_02", a1, a2)  -- test whether singleton instances
 
 
@@ -581,7 +608,7 @@ getBags: procedure         -- return indices in an index bag, and method items i
       a2=cl~new      -- create an object
    end
    self~assertSame("subTest_01", a1, a2)  -- test whether singleton instances
-   self~assertEquals("subTest_02", 1, cl~counter)  -- test whether five instances have been created
+   self~assertEquals("subTest_02", 5, cl~counter)  -- test whether five instances have been created
 
 
 
@@ -638,7 +665,7 @@ getBags: procedure         -- return indices in an index bag, and method items i
    do i
       a2=cl~new      -- create an object
    end
-   self~assertEquals("subTest_01", 5, cl~counter)  -- test whether five instances have been created
+   self~assertEquals("subTest_01", 1, cl~counter)  -- test whether five instances have been created
    self~assertSame("subTest_02", a1, a2)  -- test whether singleton instances
 
 
@@ -651,7 +678,7 @@ getBags: procedure         -- return indices in an index bag, and method items i
       a2=cl~new      -- create an object
    end
    self~assertSame(  "subTest_01", a1, a2)  -- test whether singleton instances
-   self~assertEquals("subTest_02", 1, cl~counter)  -- test whether five instances have been created
+   self~assertEquals("subTest_02", 5, cl~counter)  -- test whether five instances have been created
 
 
 ::method "test_SUBCLASS_MULTIPLE_INHERITANCE_ON_METACLASSES_03"    -- just the arguments, rest already tested
@@ -662,7 +689,7 @@ getBags: procedure         -- return indices in an index bag, and method items i
    do i
       a2=cl~new      -- create an object
    end
-   self~assertEquals("subTest_01", 5, cl~counter)  -- test whether five instances have been created
+   self~assertEquals("subTest_01", 1, cl~counter)  -- test whether five instances have been created
    self~assertSame("subTest_02", a1, a2)  -- test whether singleton instances
 
 
@@ -675,9 +702,7 @@ getBags: procedure         -- return indices in an index bag, and method items i
       a2=cl~new      -- create an object
    end
    self~assertSame("subTest_01", a1, a2)  -- test whether singleton instances
-   self~assertEquals("subTest_02", 1, cl~counter)  -- test whether five instances have been created
-
-
+   self~assertEquals("subTest_02", 5, cl~counter)  -- test whether five instances have been created
 
 
 ::method "test_SUBCLASSES"
@@ -885,6 +910,50 @@ getBags: procedure         -- return indices in an index bag, and method items i
    /* Return singleton instance, count number of instances (<=1)
       Uses SUBCLASS. */
 ::class SingletonCounter_subclass subclass Singleton inherit Counter
+
+
+
+   /* This time do not use multiple inheritance, but physically copy the
+      singleton code, such that the semantics are: count number of new-messages,
+      return singleton instance
+   */
+::class CounterSingleton_via_normal_inheritance mixinclass counter
+::method init                 -- initialize attribute
+  expose singleton
+  singleton=.nil
+  forward class (super)       -- let the superclass initialize
+
+::method singleton attribute  -- define attribute
+
+::method new                  -- implement singleton semantics
+  expose singleton
+
+  if .nil=singleton then      -- an instance has not been created
+  do
+     forward class (super) continue    -- create an instance
+     singleton=result                  -- save the instance
+  end
+  return singleton            -- return the (singleton) instance
+
+
+
+   /* This time do not use multiple inheritance, but physically copy the
+      counter code, such that the semantics are: return singleton instance,
+      count number of instances (<=1)
+   */
+::class SingletonCounter_via_normal_inheritance mixinclass singleton
+::method init                 -- initialize attribute
+  expose counter
+  counter=0
+  forward class (super)       -- let the superclass initialize
+
+::method counter attribute    -- define attribute
+
+::method new                  -- count number of instances
+  expose counter
+  counter=counter+1
+  forward class (super)
+
 
 
 
