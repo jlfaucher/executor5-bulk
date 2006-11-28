@@ -79,7 +79,7 @@ CC = cl
 GLOBALCFLAGS = /DORX_VER=$(MAJOR) /DORX_REL=$(MINOR) /DORX_MOD=$(MOD_LVL) \
                $(WP64) $(VCPP_64_FLAG) /GX /Wp64
 
-!IF $(DEBUG) == 1
+!IF "$(DEBUG)" == "1"
 CFLAGS = /c $(GLOBALCFLAGS) $(INCLUDES) /Zi /Od
 LFLAGS = /DEBUG
 !ELSE
@@ -95,7 +95,7 @@ WIN32LIBS = user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib uuid.lib
 # TODO: set the 64-bit libraries here
 WIN64LIBS =
 
-!IF $(OOREXX_BIT_SIZE) == 64
+!IF "$(OOREXX_BIT_SIZE)" == "64"
 WINLIBS = $(WIN64LIBS)
 !ELSE
 WINLIBS = $(WIN32LIBS)
