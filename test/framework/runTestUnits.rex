@@ -1,11 +1,12 @@
 /*
-   name:             runAllTests.rex
+   name:             runTestUnits.rex
    author:           Rony G. Flatscher
    date:             2005-08-20
    version:          1.0.1
 
    changed:          2005-10-19, ---rgf, fixed a little bug: if "-r" is given without a directory,
                                          start with current directory (instead of root directory!)
+                     2006-11-29, ---rgf, changed name to indicate what this program is meant for
 
    license:          CPL 1.0 (Common Public License v1.0, see below)
 
