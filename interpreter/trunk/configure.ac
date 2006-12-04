@@ -176,7 +176,8 @@ esac
 
 dnl Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS([fcntl.h stdlib.h string.h time.h sys/time.h unistd.h stdarg.h netinet/in.h pwd.h stropts.h])
+AC_CHECK_HEADERS([fcntl.h stdlib.h string.h time.h sys/time.h unistd.h \
+                  stdarg.h netinet/in.h pwd.h stropts.h semaphore.h])
 
 dnl Checks for library functions.
 AC_FUNC_ERROR_AT_LINE

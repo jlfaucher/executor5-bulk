@@ -78,7 +78,7 @@
 #include <stddef.h>
 #include <sys/types.h>
 #include <sys/ipc.h>
-#include <sys/sem.h>
+#include <semaphore.h>
 #include <dirent.h>                    /* directory functions        */
 #include <sys/time.h>                  /* needed for the select func */
 
@@ -211,11 +211,18 @@ typedef struct RxTreeData {
 typedef struct _GetFileData {
     char *        buffer;              /* file read buffer           */
     unsigned long size;                /* file size                  */
-    unsigned long data;                /* data left in buffer        */
+    off_t         data;                /* data left in buffer        */
     unsigned long residual;            /* size left to read          */
     char *        scan;                /* current scan position      */
     FILE          *handle;             /* file handle                */
 } GetFileData;
+
+
+/*********************************************************************/
+/* Rexx default message file.                                        */
+/*********************************************************************/
+
+#define REXXMESSAGEFILE    "rexx.cat"
 
 
 /********************************************************************
@@ -230,7 +237,7 @@ typedef struct _GetFileData {
 static int ReadNextBuffer(
     GetFileData  *filedata )            /* global file information   */
 {
-    unsigned long size;                 /* size to read              */
+    off_t         size;                 /* size to read              */
     char *        endptr;               /* end of file pointer       */
 
     /* get size of this read */
@@ -363,11 +370,11 @@ static void CloseFile(
 
 static int GetLine(
     char *        line,                /* returned line              */
-    unsigned long size,                /* size of line buffer        */
+    off_t         size,                /* size of line buffer        */
     GetFileData   *filedata )          /* file handle                */
 {
     char *        scan;                /* current scan pointer       */
-    unsigned long length;              /* line length                */
+    off_t         length;              /* line length                */
     unsigned long copylength;          /* copied length              */
 
     if (!(filedata->data)) {           /* if out of current buffer   */
@@ -384,7 +391,12 @@ static int GetLine(
     if (scan) {                        /* found one                  */
         /* calculate the length */
         length = (unsigned long)(scan - filedata->scan);
-        copylength = min(length, size);/* get length to copy         */
+        if (length < size) {
+            copylength = length;       /* get length to copy         */
+        }
+        else {
+            copylength = size;         /* get length to copy         */
+        }
         /* copy over the data */
         memcpy(line, filedata->scan, copylength);
         line[copylength] = '\0';       /* make into ASCIIZ string    */
@@ -439,7 +451,12 @@ static int GetLine(
                 return GetLine(line + copylength, size - copylength, filedata);
         }
         else {  /* the line is full, scan until LF found but no copy */
-            copylength = min(size, filedata->data);
+            if (size < filedata->data) {
+                copylength = size;
+            }
+            else {
+                copylength = filedata->data;
+            }
             /* copy over the data */
             memcpy(line, filedata->scan, copylength);
             line[copylength] = '\0';   /* make into ASCIIZ string    */
@@ -576,7 +593,7 @@ static int SearchPath(
                      if(!getcwd(buf,buf_size)) /* copy the cwd to return buf */
                          return rc;      /* failed, get out            */
                      length = strlen(buf); /* get the length of the path */
-                     if((length+2+strlen(filename))>buf_size)/* check buf space */
+                     if((int)(length+2+strlen(filename))>buf_size)/* check buf space */
                          return rc;      /* not enough, get out        */
                      buf[length] = '/';  /* add a slash                */
                      buf[length+1] = '\0';/* and update the terminater */
@@ -601,11 +618,11 @@ static int SearchPath(
             while(ep = readdir(dp)){     /* while entries in the dir   */
                 /* if we have a match */
                 if(!strcmp(ep->d_name,filename)){
-                    if(strlen(path_buf)>buf_size)/* check the size     */
+                    if((int)strlen(path_buf)>buf_size)/* check the size     */
                         return rc;       /* get out                    */
                     strcpy(buf,path_buf);/* copy path to the return buf*/
                     length = strlen(buf);/* get the length of the path */
-                    if((length+2+strlen(filename))>buf_size)/* check buf space */
+                    if((int)(length+2+strlen(filename))>buf_size)/* check buf space */
                         return rc;       /* not enough, get out        */
                     buf[length] = '/';   /* add a slash                */
                     buf[length+1] = '\0';/* and update the terminater  */
@@ -618,86 +635,6 @@ static int SearchPath(
         }
     }
     return rc;                           /* return not found           */
-}
-
-
-/*************************************************************************
-* Function:  initUtilSems                                                *
-*                                                                        *
-* Purpose:  get a semaphore set form the system if neccessary.           *
-*                                                                        *
-* Return:   0 - semaphore set is aviable                                 *
-*           1 - system limit reached                                     *
-*************************************************************************/
-
-static int initUtilSems()
-{
-    int rc = 0;
-    int semId;
-
-    if(!apidata->rexxutilsems) {       /* if no semaphore set aviable    */
-                                       /* create one                     */
-        rc = createsem(&semId, IPC_PRIVATE, MAXUTILSEM);
-        if(rc){                        /* if system limit reached        */
-            return rc;
-        }
-        apidata->rexxutilsems = semId; /* remember the ID                */
-        /* reset the semaphore control array */
-        for(int i=0;i<MAXUTILSEM;i++) { /* for the whole array           */
-            /* clear the name array */
-            memset((apidata->utilsemfree[i]).name,NULL,MAXNAME);
-            (apidata->utilsemfree[i]).usecount = NULL; /* reset usecount */
-        }
-    }
-    return rc;
-}
-
-
-/*************************************************************************
-* Function:  dead                                                        *
-*                                                                        *
-* Purpose:   signal handling routine for the tout function. Kills the    *
-*            timeout thread.                                             *
-*                                                                        *
-* Return:   none                                                         *
-*************************************************************************/
-static void dead(int sig)
-{
-    void *status = NULL;
-
-    pthread_exit(status);               /* exit timeout thread           */
-}
-
-
-/*************************************************************************
-* Function:  tout (timeout)                                              *
-*                                                                        *
-* Purpose:   timer thread for the semaphore functions                    *
-*                                                                        *
-* Return:   none                                                         *
-*************************************************************************/
-
-static void * tout(void * brk){
-    struct timeval tv;               /* time for the select func   */
-    int    *bk;
-
-    signal(SIGUSR1,dead);
-
-    bk = (int *)brk;
-    bk[1] = bk[1] * 1000;            /* convert to mircoseconds    */
-    if(bk[1]<1000000){               /* less than one second ?     */
-        tv.tv_sec = 0;               /* set seconds to NULL        */
-        tv.tv_usec = bk[1];          /* set the microseconds       */
-    }
-    else {
-        tv.tv_usec = bk[1]%1000000;  /* set the microsecs and      */
-        bk[1] = bk[1]-tv.tv_usec;    /* substract them             */
-        tv.tv_sec = bk[1]/1000000;   /* now set the seconds        */
-    }
-    select(0,(fd_set*)0,(fd_set*)0,(fd_set*)0,&tv); /* do the sleep*/
-    bk[0] = 1;                       /* break                      */
-    sleep(10);                       /* wait for death             */
-    return((void *) NULL);
 }
 
 
@@ -970,7 +907,7 @@ static unsigned long FormatFile(
     /* Place new string in Stem */
     ldp->vlen = strlen(ldp->Temp);
     ldp->count++;
-    sprintf(ldp->varname+ldp->stemlen, "%d\0", ldp->count);
+    sprintf(ldp->varname+ldp->stemlen, "%ld", ldp->count);
     ldp->shvb.shvnext = NULL;
     ldp->shvb.shvname.strptr = ldp->varname;
     ldp->shvb.shvname.strlength = strlen(ldp->varname);
@@ -1235,9 +1172,9 @@ RexxMethod1(int, SysSleep, double, timein)
     long nano;
 
 
-    secs = (l9ng)timein;                     /* get non-fractional part    */
+    secs = (long)timein;                     /* get non-fractional part    */
     timein -= (double)secs;                    /* get the fractional part    */
-    nanoseconds = timein * 100000000;
+    nanoseconds = (long)(timein * 100000000);
 #if defined( HAVE_NANOSLEEP )
     Rqtp.tv_sec = secs;
     Rqtp.tv_nsec = nanoseconds;
@@ -1471,7 +1408,7 @@ RexxFunction4(int, SysFileSearch, CSTRING, target, CSTRING, file, RexxStemObject
     if (OpenFile(file, &filedata)) {   /* open the file              */
         if(dir_buf)                    /* did we allocate ?          */
             free(dir_buf);             /* free it                    */
-        return ERROR_FILEOPEN;
+        return 3;
     }
 
     line = (char *) malloc(4096 * sizeof(char));
@@ -1481,13 +1418,23 @@ RexxFunction4(int, SysFileSearch, CSTRING, target, CSTRING, file, RexxStemObject
         len = strlen(line);
         num++;
 
-        ptr = mystrstr(line, target, len, target, sensitive);
+        ptr = mystrstr(line, target, len, strlen(target), sensitive);
         if (ptr != '\0') {
             if (linenums) {
                 sprintf(ldp.ibuf, "%d ", num);
                 len2 = strlen(ldp.ibuf);
-                memcpy(ldp.ibuf+len2, line, min(len, IBUF_LEN-len2));
-                ldp.vlen = min(IBUF_LEN, len+len2);
+                if (len < IBUF_LEN-len2) {
+                    memcpy(ldp.ibuf+len2, line, len);
+                }
+                else {
+                    memcpy(ldp.ibuf+len2, line, IBUF_LEN-len2);
+                }
+                if (IBUF_LEN < len + len2) {
+                    ldp.vlen = IBUF_LEN;
+                }
+                else {
+                    ldp.vlen = len + len2;
+                }
             }
             else {
                 memcpy(ldp.ibuf, line, len);
@@ -1502,7 +1449,7 @@ RexxFunction4(int, SysFileSearch, CSTRING, target, CSTRING, file, RexxStemObject
     free(line);
     CloseFile(&filedata);              /* Close that file            */
     /* set stem.0 to lines read   */
-    context->SetStemArrayElement(stem, 0, context->NumberToRexxObject(ldp.count);
+    context->SetStemArrayElement(stem, 0, context->NumberToObject(ldp.count);
     if(dir_buf)                        /* did we allocate ?          */
         free(dir_buf);                 /* free it                    */
     return 0;                          /* no error on call           */
@@ -1545,12 +1492,11 @@ RexxFunction3(RexxStringObject, SysSearchPath, CSTRING, path, CSTRING, file, OPT
             SearchFlag = CURRENT_DIR_FIRST;
                                        /* search current 1st(default)*/
         else {
-            contest->InvalidRoutine();
+            context->InvalidRoutine();
             return NULL;
         }
     }
-
-    ulRc = SearchPath(SearchFlag, args[0].strptr, args[1].strptr,
+    ulRc = SearchPath(SearchFlag, path, file,
                       (char *)buf, sizeof(buf));
 
     /* if environment variable could not be found, try again with    */
@@ -1573,23 +1519,33 @@ RexxFunction3(RexxStringObject, SysSearchPath, CSTRING, path, CSTRING, file, OPT
 * Return:    Operating System name (LINUX/AIX/WINDOWS) and Version       *
 *************************************************************************/
 
-RexxFunction0(RexxStringObject, SysVersion)
+RexxFunction0(RexxObjectPtr, SysVersion)
 {
     struct utsname info;               /* info structur              */
     char   retbuf[256];
 
-    if(uname(&info)<NULL) {            /* if no info stored          */
+    if(uname(&info) < 0) {             /* if no info stored          */
         context->InvalidRoutine();
-        return context->NullString;
+        return context->NewStringFromAsciiz("");
     }
 
 #ifdef AIX
-    snprintf(retbuf, "%s %s.%s",sizeof(retbuf),info.sysname,info.version, info.release);
+    snprintf(retbuf, sizeof(retbuf),"%s %s.%s",info.sysname,info.version, info.release);
 #else
-    snprintf(retbuf, "%s %s",sizeof(retbuf),info.sysname,info.release);
+    snprintf(retbuf, sizeof(retbuf),"%s %s",info.sysname,info.release);
 #endif
     return context->NewStringFromAsciiz(retbuf);
 }
+
+
+/*************************************************************************
+* Semaphore data struct                                                  *
+*************************************************************************/
+
+typedef struct RxSemData {
+    bool          named;               /* Named semaphore?           */
+    sem_t *       handle;              /* Semaphore pointer          */
+} RXSEMDATA;
 
 
 /*************************************************************************
@@ -1605,99 +1561,37 @@ RexxFunction0(RexxStringObject, SysVersion)
 *            '' - Empty string in case of any error                      *
 *************************************************************************/
 
-RexxFunction2(int, SysCreateEventSem, OPTIONAL_CSTRING, name, OPTIONAL_CSTRING, reset)
+RexxFunction2(RexxObjectPtr, SysCreateEventSem, OPTIONAL_CSTRING, name, OPTIONAL_CSTRING, reset)
 {
-    int handle;                        /* semaphore handle           */
-    int i;                             /* counter                    */
-    bool bwaitreset = false;
-    int val = 1;
+    RXSEMDATA *semdata;
+    int rc;
 
-    if(initUtilSems()) {               /* if system limit reached    */
+    // Note that the reset arg has no meaning on Unix/Linux and is unused.
+    semdata = (RXSEMDATA *)malloc(sizeof(RXSEMDATA));
+    if (semdata == NULL) {
         return 0;
     }
-
-    if (strlen(reset) >0) {
-        bwaitreset = true;
+    if (strlen(name) == 0) {
+        /* this is an unnamed semaphore */
+        semdata->handle = (sem_t *)malloc(sizeof(sem_t));
+        rc = sem_init(semdata->handle, 0, 0);
+        if (rc == -1) {
+            free(semdata);
+            return context->NewStringFromAsciiz("");
+        }
+        semdata->named = false;
     }
-
-    if (strlen(name) > 0) {
-        /* if name to long or zero    */
-        if(strlen(name)>MAXNAME-1) {
-            context->InvalidRoutine();
-            return 0;
+    else {
+        /* this is a named semaphore */
+        sem_unlink(name);
+        semdata->handle = sem_open(name, (O_CREAT | O_EXCL), (S_IRWXU | S_IRWXG), 0);
+        if (semdata->handle == SEM_FAILED ) {
+            free(semdata);
+            return context->NewStringFromAsciiz("");
         }
-        /* check wheather semaphore exists                           */
-        handle = -1;                   /* reset handle               */
-        for(i=0;i<MAXUTILSEM;i++) {    /* for all semaphores         */
-            if(((apidata->utilsemfree[i]).usecount > NULL) &&/* a used */
-             ((apidata->utilsemfree[i]).type == EVENT)) {/*event sem ?*/
-                /* if we have a match         */
-                if(!strcmp((apidata->utilsemfree[i]).name,args[0].strptr)){
-                    handle = i;        /* remember the handle        */
-                    break;             /* for max sem                */
-                }
-            }
-        }
-        if(handle != -1) {             /* if semaphore exists        */
-            (apidata->utilsemfree[handle]).usecount++;/* increment usecount*/
-            (opencnt[handle][0])++;    /* and privat open count      */
-                                       /* format the result          */
-            return handle+OFFSET;
-        }
-        else {                         /* semaphore doesn't exists   */
-            handle = -1;               /* reset the handle           */
-            /* looking for a unused semaphore */
-            for(i=0;i<MAXUTILSEM;i++) {/* for all semaphores         */
-                                       /* found a unused one ?       */
-                if((apidata->utilsemfree[i]).usecount == 0 ) {                              /* for max sem        */
-                    handle = i;        /* remember the handle        */
-                    break;             /* for max sem                */
-                }                      /* for max sem                */
-            }
-            if(handle == -1){          /* all semaphores used        */
-                return 0;
-            }
-                                       /* copy the name over         */
-            strcpy((apidata->utilsemfree[handle]).name,name);
-            (apidata->utilsemfree[handle]).usecount++;/*increment usecount */
-            (opencnt[handle][0])++;    /* and privat open count      */
-            (apidata->utilsemfree[handle]).type = EVENT;/* set the type */
-            (apidata->utilsemfree[handle]).waitandreset = bwaitreset;/* set the type */
-
-#if defined(PPC) || defined(OPSYS_SUN)
-            semctl(apidata->rexxutilsems, handle, SETVAL, &val);
-#else
-            semctl(apidata->rexxutilsems, handle, SETVAL, 1);
-#endif
-            return handle+OFFSET;
-        }
+        semdata->named = true;
     }
-    else {                             /* unnamed semaphore          */
-        handle = -1;                   /* reset the handle           */
-        /* looking for a unused semaphore */
-        for(i=0;i<MAXUTILSEM;i++) {    /* for all semaphores         */
-                                       /* found a unused one ?       */
-            if((apidata->utilsemfree[i]).usecount == 0 ) {                              /* for max sem        */
-                handle = i;            /* remember the handle        */
-                break;                 /* for max sem                */
-            }                          /* for max sem                */
-        }
-        if(handle == -1) {             /* all semaphores used        */
-            return 0;
-        }
-        (apidata->utilsemfree[handle]).usecount++;/*increment usecount */
-        (opencnt[handle][0])++;        /* and privat open count      */
-        (apidata->utilsemfree[handle]).type = EVENT; /* set the type */
-        (apidata->utilsemfree[handle]).waitandreset = bwaitreset;/* set the type */
-
-        /* semctl is fine, now everyone can catch the semaphore */
-#if defined(PPC) || defined(OPSYS_SUN)
-        semctl(apidata->rexxutilsems, handle, SETVAL, &val);
-#else
-        semctl(apidata->rexxutilsems, handle, SETVAL, 1);
-#endif
-        return handle+OFFSET;
-    }
+    return context->UintptrToObject((uintptr_t)semdata);
 }
 
 
@@ -1711,30 +1605,20 @@ RexxFunction2(int, SysCreateEventSem, OPTIONAL_CSTRING, name, OPTIONAL_CSTRING, 
 * Return:    result - return code from DosOpenEventSem                   *
 *************************************************************************/
 
-RexxMethod1(int, SysOpenEventSem, int, handle)
+RexxMethod1(int, SysOpenEventSem, CSTRING, name)
 {
-    int rc = 0;
+    RXSEMDATA *semdata;
 
-    handle = handle - OFFSET;          /* make it real               */
-    if (handle < 0 || handle >= MAXUTILSEM){/* if bad handle      */
-        return context->NewStringFromAsciiz("6"); /* say so          */
+    semdata = (RXSEMDATA *)malloc(sizeof(RXSEMDATA));
+    if (semdata == NULL) {
+        return 0;
     }
-    if(!apidata->rexxutilsems){        /* no sems created until now  */
-        return 6;                                 /* invalid handle  */
+    semdata->handle = sem_open(name, 0);
+    if (semdata->handle == SEM_FAILED ) {
+        return 0;
     }
-    /* if the semaphore is unused or isn't a event semaphore */
-    if(((apidata->utilsemfree[handle]).usecount == 0 ) ||
-     ((apidata->utilsemfree[handle]).type != EVENT)){
-        return 6;                                 /* invalid handle  */
-    }
-    if((apidata->utilsemfree[handle]).usecount < MAXUSECOUNT){
-        (apidata->utilsemfree[handle]).usecount++;/* increment usecount */
-        (opencnt[handle][0])++;        /* and privat open count      */
-        rc = 0;                            /* no errors              */
-    }
-    else
-        rc = 291;                           /* to many opens         */
-    return rc;
+    semdata->named = true;
+    return (uintptr_t)semdata->handle;
 }
 
 
@@ -1748,34 +1632,12 @@ RexxMethod1(int, SysOpenEventSem, int, handle)
 * Return:    result - return code from DosResetEventSem                  *
 *************************************************************************/
 
-RexxMethod1(int, SysResetEventSem, int, handle)
+RexxMethod1(int, SysResetEventSem, POINTER, vhandle)
 {
+    RXSEMDATA *semdata = (RXSEMDATA *)vhandle;
 
-    handle = handle - OFFSET;          /* make it real               */
-    if (handle < NULL || handle >= MAXUTILSEM){/* if bad handle      */
-        return 6;                      /* say so                     */
-    }
-    if(!apidata->rexxutilsems){        /* no sems created until now  */
-        return 6;                      /* invalid handle             */
-    }
-    /* if the semaphore is unused or isn't a event semaphore         */
-    if(((apidata->utilsemfree[handle]).usecount == 0 ) ||
-     ((apidata->utilsemfree[handle]).type != EVENT)){
-        return 6;                      /* invalid handle             */
-    }
-    if(!(opencnt[handle][0])){         /* if I haven't open the sem  */
-        return 6;                      /* invalid handle             */
-    }
-    if(!getval(apidata->rexxutilsems, handle)){/* already reset      */
-        return 300;                      /* say so                   */
-    }
-#if defined(PPC) || defined(OPSYS_SUN)
-    semctl(apidata->rexxutilsems, handle, SETVAL, &val);
-#else
-    semctl(apidata->rexxutilsems, handle, SETVAL, 1);
-#endif
-    locksem(apidata->rexxutilsems, handle);/* lock the semaphore */
-    return 0;                                     /* no errors       */
+    sem_init(semdata->handle, 1, 0);
+    return 0;
 }
 
 
@@ -1789,30 +1651,16 @@ RexxMethod1(int, SysResetEventSem, int, handle)
 * Return:    result - return code from DosPostEventSem                   *
 *************************************************************************/
 
-RexxMethod1(int, SysPostEventSem, int, handle)
+RexxMethod1(int, SysPostEventSem, POINTER, vhandle)
 {
+    RXSEMDATA *semdata = (RXSEMDATA *)vhandle;
+    int rc;
 
-    handle = handle - OFFSET;          /* make it real               */
-    if (handle < 0 || handle >= MAXUTILSEM){/* if bad handle      */
-        return 6;                      /* say so                     */
+    rc = sem_post(semdata->handle);
+    if (rc) {
+        return 6;
     }
-    if(!apidata->rexxutilsems){        /* no sems created until now  */
-        return 6;                     /* invalid handle              */
-    }
-    /* if the semaphore is unused or isn't a event semaphore */
-    if(((apidata->utilsemfree[handle]).usecount == 0 ) ||
-     ((apidata->utilsemfree[handle]).type != EVENT)){
-        return 6;                     /* invalid handle              */
-    }
-    if(!(opencnt[handle][0])){         /* if I haven't open the sem  */
-        return 6;                     /* invalid handle              */
-    }
-    if(!getval(apidata->rexxutilsems, handle)){/* if sem is locked   */
-        /* unlock the sem to wake the one who waits */
-        unlocksem(apidata->rexxutilsems, handle);
-        return 0;                     /* no errors                   */
-    }
-    return 299;                       /* already posted              */
+    return 0;
 }
 
 
@@ -1826,70 +1674,38 @@ RexxMethod1(int, SysPostEventSem, int, handle)
 * Return:    result - return code from DosCloseEventSem                  *
 *************************************************************************/
 
-RexxMethod1(int, SysCloseEventSem, int, handle)
+RexxMethod1(int, SysCloseEventSem, POINTER, vhandle)
 {
-    int i;                             /* counter                    */
-    int val = 1;
-    int used = NULL;
-    int       rc;
+    RXSEMDATA *semdata = (RXSEMDATA *)vhandle;
 
-    handle = handle - OFFSET;          /* make it real               */
-    if (handle < 0 || handle >= MAXUTILSEM){/* if bad handle      */
-        return 6;                      /* say so                     */
-    }
-    if(!apidata->rexxutilsems){        /* no sems created until now  */
-        return 6;                      /* invalid handle             */
-    }
-    /* if the semaphore is unused or isn't a event semaphore         */
-    if(((apidata->utilsemfree[handle]).usecount == 0 ) ||
-     ((apidata->utilsemfree[handle]).type != EVENT)){
-        return 6;                      /* invalid handle             */
-    }
-    /* if this will be the final close */
-    if((apidata->utilsemfree[handle]).usecount == 1){
-        /* if another thread in the process is waiting on the sem    */
-        if(semgetnumberwaiting(apidata->rexxutilsems,handle))
-            rc = 301;                          /* error sem busy     */
-        else {                         /* we can close               */
-            if((opencnt[handle][0])){  /* if I have it open          */
-                --((apidata->utilsemfree[handle]).usecount);/* decrement usecount*/
-                --(opencnt[handle][0]);/* and privat open count      */
-                rc = 0;                            /* no errors      */
+    if (semdata->named == false) {
+        /* this is an unnamed semaphore so we must free the target */
+        if (sem_destroy(semdata->handle)) {
+            if (errno == EINVAL) {
+                return 6;
             }
-            else
-                rc = 6;                            /* invalid handle */
+            else if (errno) {
+                return 102;
+            }
         }
     }
     else {
-        if((opencnt[handle][0])){      /* if I have it open          */
-            --((apidata->utilsemfree[handle]).usecount);/* decrement usecount*/
-            --(opencnt[handle][0]);    /* and privat open count      */
-            rc = 0;                            /* no errors          */
+        /* this is a named semaphore */
+        if (sem_close(semdata->handle)) {
+            if (errno == EINVAL) {
+                return 6;
+            }
+            else if (errno) {
+                return 102;
+            }
         }
-        else
-            rc = 6;                            /* invalid handle     */
     }
-    if(!(apidata->utilsemfree[handle]).usecount){ /* sem now unused? */
-        /* clear the name array */
-        memset((apidata->utilsemfree[handle]).name,NULL,MAXNAME);
-#if defined(PPC) || defined(OPSYS_SUN)
-        semctl(apidata->rexxutilsems, handle, SETVAL, &val);
-#else
-        semctl(apidata->rexxutilsems, handle, SETVAL, 1);
-#endif
-    }
-    /* Possibly this was the last used sem. So we can remove the     */
-    /* semaphore set. Check this possibility.                        */
-    for(i=0;i<MAXUTILSEM;i++){         /* for all semaphores         */
-        if((apidata->utilsemfree[i]).usecount != 0 )/* a used one ?  */
-            used = 1;                  /* remember it                */
-    }
-    if(!used){                         /* if all sems are unused     */
-        removesem(apidata->rexxutilsems); /* remove the semaphore set */
-        apidata->rexxutilsems = NULL;  /* delete the old ID          */
-    }
-    return rc;
+    free(semdata);
+    return 0;
 }
+
+
+#define SEM_WAIT_PERIOD 100 /* POSIX says this should be 10ms */
 
 
 /*************************************************************************
@@ -1902,77 +1718,37 @@ RexxMethod1(int, SysCloseEventSem, int, handle)
 * Return:    result - return code from DosWaitEventSem                   *
 *************************************************************************/
 
-RexxFunction1(int, SysRequestMutexSem, int, handle, OPTIONAL_INT, timeout)
+RexxFunction2(int, SysWaitEventSem, POINTER, vhandle, OPTIONAL_int, timeout)
 {
-    pid_t     pid;                     /* id of the child process    */
-    struct sigaction timer;            /* action for the signal      */
-    sigset_t block_mask;               /* signals to block           */
-    char     *character;
-    char      c[2]={'\0','\0'};
-    pthread_t  thread;                 /* timeout thread             */
-    bool bwaitandreset = FALSE;
-    int       rc;
+    RXSEMDATA *semdata = (RXSEMDATA *)vhandle;
+    int rc;
 
-    handle = handle - OFFSET;          /* make it real               */
-    if (handle < NULL || handle >= MAXUTILSEM){/* if bad handle      */
-        return 6;                      /* invalid handle             */
-    }
-    if(!apidata->rexxutilsems){        /* no sems created until now  */
-        return 6;                      /* invalid handle             */
-    }
-    /* if the semaphore is unused or isn't a event semaphore */
-    if(((apidata->utilsemfree[handle]).usecount == 0 ) ||
-     ((apidata->utilsemfree[handle]).type != EVENT)){
-        return 6;                      /* invalid handle             */
-    }
-    if(!(opencnt[handle][0])){         /* if I haven't open the sem  */
-        return 6;                      /* invalid handle             */
-    }
-    bwaitandreset = apidata->utilsemfree[handle].waitandreset;
-    if(timeout == 0){                  /* indefinit wait             */
-        /* try to lock the sem to do the wait                        */
-        locksem(apidata->rexxutilsems, handle);
-        /* take care, if WAITANDRESET == TRUE don't unlock           */
-        if(!bwaitandreset) {
-            unlocksem(apidata->rexxutilsems, handle);
-        }
-        return 0;
-    }
-    else {                             /* need timeout               */
-        INT brk[2];                    /* timeout flag and value     */
-        struct sembuf sem_lock = {handle, -1,IPC_NOWAIT};
-
-        if((!timeout) || (timeout > INT_MAX/1000)){/* if zero timeout*/
-            return 640;                /* error timeout              */
-        }
-        brk[0]=0;                      /* reset the timeout flag     */
-        brk[1]=timeout;                /* set the requested timeout  */
-                                       /* start the timeout thread   */
-        if(pthread_create(&thread,NULL,tout,(void*)brk)){
-//          APICLEANUP(MACROCHAIN);    /* release the shared resouces*/
-            return 95;                 /* error not enough memory    */
-        }
-                                       /* while no success           */
-        while(semop(apidata->rexxutilsems,&sem_lock,1) != 0 ){
-            if((errno) && (errno != EAGAIN)){/* if there was a real error */
-                    return 95;         /* error not enough memory    */
+    if (timeout != 0) {
+        /* this looping construct will cause us to wait longer than the */
+        /* specified timeout due to the latency involved in the loop,   */
+        /* but that cannot be helped                                    */
+        while (timeout > 0) {
+            rc = sem_trywait(semdata->handle);
+            if (rc == 0) {
+                break;
             }
-            else {
-                SysThreadYield();      /* free the processor         */
-                if(brk[0])             /* if time out                */
-                break;                 /*no longer tying to get the sem*/
+            if (usleep(SEM_WAIT_PERIOD * 1000)) {
+                timeout -= SEM_WAIT_PERIOD;
             }
         }
-        pthread_kill(thread,SIGUSR1);  /* kill the timer thread      */
-        if(brk[0]){
-            return 640;                /* error timeout              */
-        }
-        /* take care, if WAITANDRESET == TRUE don't unlock       */
-        if(!bwaitandreset) {
-            unlocksem(apidata->rexxutilsems, handle);
-        }
-        return 0;
     }
+    else {
+        rc = sem_wait(semdata->handle);
+    }
+    if (rc) {
+        if (errno == EAGAIN) {
+            return 121;
+        }
+        else if (errno == EINVAL) {
+            return 6;
+        }
+    }
+    return 0;
 }
 
 
@@ -1989,89 +1765,37 @@ RexxFunction1(int, SysRequestMutexSem, int, handle, OPTIONAL_INT, timeout)
 *            '' - Empty string in case of any error                      *
 *************************************************************************/
 
-RexxFunction1(int, SysCreateMutexSem, OPTIONAL_CSTRING, name)
+RexxFunction1(RexxObjectPtr, SysCreateMutexSem, OPTIONAL_CSTRING, name)
 {
-    int handle;                        /* semaphore handle           */
-    int i;                             /* counter                    */
-    int val = 1;
+    RXSEMDATA *semdata;
+    int rc;
 
-    if(initUtilSems()) {               /* if system limit reached    */
-        return -1;
+    semdata = (RXSEMDATA *)malloc(sizeof(RXSEMDATA));
+    if (semdata == NULL) {
+        return context->NewStringFromAsciiz("");
     }
-
-    if (name != NULL) {                /* request for named sem      */
-                                       /* if name to long or zero    */
-        if(strlen(name)>MAXNAME-1)){
-            return -1;
+    if (strlen(name) == 0) {
+        /* this is an unnamed semaphore */
+        semdata->handle = (sem_t *)malloc(sizeof(sem_t));
+        rc = sem_init(semdata->handle, 0, 0);
+        if (rc == -1) {
+            free(semdata);
+            return context->NewStringFromAsciiz("");
         }
-        /* check wheather semaphore exists */
-        handle = -1;                   /* reset handle               */
-        for(i=0;i<MAXUTILSEM;i++){     /* for all semaphores         */
-            if(((apidata->utilsemfree[i]).usecount > NULL) && /* a used */
-             ((apidata->utilsemfree[i]).type == MUTEX)){/*mutex sem ?*/
-                                       /* if we have a match         */
-                if(!strcmp((apidata->utilsemfree[i]).name,args[0].strptr)){
-                    handle = i;        /* remember the handle        */
-                    break;             /*         for max sem        */
-                }
-            }
-        }
-        if(handle != -1){              /* if semaphore exists        */
-            (apidata->utilsemfree[handle]).usecount++;/* increment usecount*/
-            (opencnt[handle][0])++;    /* and privat open count      */
-                                       /* format the result          */
-            return handle+OFFSET;
-        }
-        else {                         /* semaphore doesn't exists   */
-            handle = -1;               /* reset the handle           */
-            /*looking for a unused semaphore */
-            for(i=0;i<MAXUTILSEM;i++){ /* for all semaphores         */
-                                       /* found a unused one ?       */
-                if((apidata->utilsemfree[i]).usecount == 0 ) {                              /* for max sem        */
-                    handle = i;        /* remember the handle        */
-                    break;             /* for max sem                */
-                }                      /* for max sem                */
-            }
-            if(handle == -1){          /* all semaphores used        */
-                return -1;
-            }
-            /* copy the name over */
-            strcpy((apidata->utilsemfree[handle]).name,name);
-            (apidata->utilsemfree[handle]).usecount++;/*increment usecount */
-            (opencnt[handle][0])++;    /* and privat open count      */
-            (apidata->utilsemfree[handle]).type = MUTEX;/* set the type */
-            /* reset the semaphore */
-#if defined(PPC) || defined(OPSYS_SUN)
-            semctl(apidata->rexxutilsems, handle, SETVAL, &val);
-#else
-            semctl(apidata->rexxutilsems, handle, SETVAL, 1);
-#endif
-            return handle+OFFSET;
-        }
+        semdata->named = false;
     }
-    else {                             /* unnamed semaphore          */
-        handle = -1;                   /* reset the handle           */
-        /*looking for a unused semaphore */
-        for(i=0;i<MAXUTILSEM;i++){     /* for all semaphores         */
-                                       /* found a unused one ?       */
-            if((apidata->utilsemfree[i]).usecount == 0 ) {
-                handle = i;            /* remember the handle        */
-                break;                 /*         for max sem        */
-            }
+    else {
+        /* this is a named semaphore */
+        sem_unlink(name);
+        semdata->handle = sem_open(name, (O_CREAT | O_EXCL), (S_IRWXU | S_IRWXG), 0);
+        if (semdata->handle == SEM_FAILED ) {
+            free(semdata);
+            return context->NewStringFromAsciiz("");
         }
-        if(handle == -1){              /* all semaphores used        */
-            return -1;
-        }
-        (apidata->utilsemfree[handle]).usecount++; /*increment usecount */
-        (opencnt[handle][0])++;        /* and privat open count      */
-        (apidata->utilsemfree[handle]).type = MUTEX; /* set the type */
-#if defined(PPC) || defined(OPSYS_SUN)
-        semctl(apidata->rexxutilsems, handle, SETVAL, &val);
-#else
-        semctl(apidata->rexxutilsems, handle, SETVAL, 1);
-#endif
-        return handle+OFFSET;
+        semdata->named = true;
     }
+    rc = sem_post(semdata->handle);
+    return context->UintptrToObject((uintptr_t)semdata);
 }
 
 
@@ -2085,27 +1809,20 @@ RexxFunction1(int, SysCreateMutexSem, OPTIONAL_CSTRING, name)
 * Return:    result - return code from DosOpenEventSem                   *
 *************************************************************************/
 
-RexxFunction1(int, SysOpenMutexSem, int, handle)
+RexxFunction1(int, SysOpenMutexSem, CSTRING, name)
 {
+    RXSEMDATA *semdata;
 
-    handle = handle - OFFSET;          /* make it real               */
-    if (handle < 0 || handle >= MAXUTILSEM){/* if bad handle      */
-        return context->NewStringFromAsciiz("6"); /* say so          */
+    semdata = (RXSEMDATA *)malloc(sizeof(RXSEMDATA));
+    if (semdata == NULL) {
+        return 0;
     }
-    if(!apidata->rexxutilsems){        /* no sems created until now  */
-        return 6;                                 /* invalid handle  */
+    semdata->handle = sem_open(name, 0);
+    if (semdata->handle == SEM_FAILED ) {
+        return 0;
     }
-    /* if the semaphore is unused or isn't a mutex semaphore         */
-    if(((apidata->utilsemfree[handle]).usecount == 0 ) ||
-     ((apidata->utilsemfree[handle]).type != MUTEX)){
-            return 6;                             /* invalid handle  */
-    }
-    if((apidata->utilsemfree[handle]).usecount < MAXUSECOUNT){
-        (apidata->utilsemfree[handle]).usecount++;/* increment usecount  */
-        (opencnt[handle][0])++;        /* and privat open count      */
-        return 0;                                 /* no errors       */
-    }
-    return 291;                                 /* too many opens    */
+    semdata->named = true;
+    return (uintptr_t)semdata->handle;
 }
 
 
@@ -2119,100 +1836,37 @@ RexxFunction1(int, SysOpenMutexSem, int, handle)
 * Return:    result - return code from DosWaitEventSem                   *
 *************************************************************************/
 
-RexxFunction1(int, SysRequestMutexSem, int, handle, OPTIONAL_INT, timeout)
+RexxFunction2(int, SysRequestMutexSem, POINTER, vhandle, OPTIONAL_int, timeout)
 {
-    pid_t     pid;                     /* id of the child process    */
-    struct sigaction timer;            /* action for the signal      */
-    pthread_t thread;                  /* timeout thread             */
-    int       rc;
+    RXSEMDATA *semdata = (RXSEMDATA *)vhandle;
+    int rc;
 
-    handle = handle - OFFSET;          /* make it real               */
-    if (handle < NULL || handle >= MAXUTILSEM){/* if bad handle      */
-        return 6;                      /* say so                     */
-    }
-    if(!apidata->rexxutilsems){        /* no sems created until now  */
-        return 6;                      /* invalid handle             */
-    }
-    /* if the semaphore is unused or isn't a mutex semaphore */
-    if(((apidata->utilsemfree[handle]).usecount == 0 ) ||
-     ((apidata->utilsemfree[handle]).type != MUTEX)){
-        return 6;                      /* invalid handle             */
-    }
-    if(!(opencnt[handle][0])){         /* if I haven't open the sem  */
-        return 6;                      /* invalid handle             */
-    }
-    if(timeout == 0){                  /* indefinit wait             */
-
-        if(!getval(apidata->rexxutilsems, handle)){/* if sem is      */
-                                      /* locked and I'm the owner    */
-            if((opencnt[handle][1])== SysQueryThreadID()){
-                rc = 0;               /* no errors                   */
+    if (timeout != 0) {
+        /* this looping construct will cause us to wait longer than the */
+        /* specified timeout due to the latency involved in the loop,   */
+        /* but that cannot be helped                                    */
+        while (timeout > 0) {
+            rc = sem_trywait(semdata->handle);
+            if (rc == 0) {
+                break;
             }
-            else {                     /* wait for it                */
-                /* try to lock the sem */
-                locksem(apidata->rexxutilsems, handle);
-                (opencnt[handle][1])= SysQueryThreadID();/* TID of the owner */
-                rc = 0;               /* no errors                   */
+            if (usleep(SEM_WAIT_PERIOD * 1000)) {
+                timeout -= SEM_WAIT_PERIOD;
             }
         }
-        else {                         /* sem unlocked               */
-            /* lock the sem */
-            locksem(apidata->rexxutilsems, handle);
-            (opencnt[handle][1])= SysQueryThreadID();/* TID of the owner */
-            rc = 0;               /* no errors                   */
-        }
-        return rc;
     }
-    else {                             /* need timeout porcess       */
-        if(!getval(apidata->rexxutilsems, handle)){/* if sem is      */
-                                       /* locked and I'm the owner   */
-            if((opencnt[handle][1])== SysQueryThreadID()){
-                rc = 0;               /* no errors                   */
-            }
-            else {                     /* wait for it                */
-                int brk[2];
-                struct sembuf sem_lock = {handle, -1,IPC_NOWAIT};
-                if((!timeout) || (timeout > INT_MAX/1000)){/* if zero timeout*/
-                    return 640;        /* error timeout              */
-                }
-                brk[0]=0;              /* reset the timeout flag     */
-                brk[1]=timeout;        /* set the requested timeout  */
-                                       /* start the timeout thread   */
-                if(pthread_create(&thread,NULL,tout,(void*)brk)){
-                    return 95;         /* error not enough memory    */
-                }
-                SysThreadYield();      /* free the processor         */
-                SysThreadYield();      /* free the processor         */
-                /* while no success */
-                while(semop(apidata->rexxutilsems,&sem_lock,1) != 0 ){
-                    if((errno) && (errno != EAGAIN)){/* if there was a real error  */
-                        return 95;     /* error not enough memory    */
-                    }
-                    else {
-                        SysThreadYield(); /* free the processor      */
-                        if(brk[0])     /* if time out                */
-                            break;     /*no longer tying to get the sem*/
-                    }
-                }
-                pthread_kill(thread,SIGUSR1);/* kill the timer thread */
-                if(brk[0]){
-                    rc = 640;          /* error timeout              */
-                }
-                else {                 /* got it                     */
-                    (opencnt[handle][1])= SysQueryThreadID();/*TID of the owner*/
-                    rc = 0;            /* no error                   */
-                }
-                return context->NewStringFromAsciiz(strptr);
-            }
-        }
-        else {                         /* sem unlocked               */
-            /* lock the sem */
-            locksem(apidata->rexxutilsems, handle);
-            (opencnt[handle][1])= SysQueryThreadID();/* TID of the owner */
-            rc = 0;                    /* no errors                  */
-        }
-        return rc;
+    else {
+        rc = sem_wait(semdata->handle);
     }
+    if (rc) {
+        if (errno == EAGAIN) {
+            return 121;
+        }
+        else if (errno == EINVAL) {
+            return 6;
+        }
+    }
+    return 0;
 }
 
 
@@ -2226,38 +1880,29 @@ RexxFunction1(int, SysRequestMutexSem, int, handle, OPTIONAL_INT, timeout)
 * Return:    result - return code from DosCloseEventSem                  *
 *************************************************************************/
 
-RexxFunction1(int, SysReleaseMutexSem, int, handle)
+RexxFunction1(int, SysReleaseMutexSem, POINTER, vhandle)
 {
-    int i;                             /* counter                    */
-    int used = 0;
+    RXSEMDATA *semdata = (RXSEMDATA *)vhandle;
+    int rc;
+    int val;
 
-    handle = handle - OFFSET;          /* make it real               */
-    if (handle < 0 || handle >= MAXUTILSEM){/* if bad handle      */
-        return 6;                      /* say so                     */
-    }
-    if(!apidata->rexxutilsems){        /* no sems created until now  */
-            return 6;                  /* invalid handle             */
-    }
-    /* if the semaphore is unused or isn't a mutex semaphore */
-    if(((apidata->utilsemfree[handle]).usecount == 0 ) ||
-     ((apidata->utilsemfree[handle]).type != MUTEX)){
-        return 6;                  /* invalid handle             */
-    }
-    if(!(opencnt[handle][0])){         /* if I haven't open the sem  */
-        return 6;                  /* invalid handle             */
-    }
-    if(!getval(apidata->rexxutilsems, handle)){/* if sem is locked   */
-                                       /* and I'm the owner          */
-        if((opencnt[handle][1])== SysQueryThreadID()){
-            /* unlock the sem  */
-            unlocksem(apidata->rexxutilsems, handle);
-            (opencnt[handle][1])= 0;   /* reset the owner TID        */
-            return 0;                  /* no error                   */
+    rc = sem_getvalue(semdata->handle, &val);
+    if (rc) {
+        if (errno == EINVAL) {
+            return 6;
         }
-        else
-            return 288;                /*  error not owner           */
+        else {
+            return 288;
+        }
     }
-    return 288;                        /*  error not owner           */
+    if (val == 0) {
+        rc = sem_post(semdata->handle);
+        if (rc) {
+            return 6;
+        }
+    }
+    return 0;
+
 }
 
 
@@ -2271,72 +1916,34 @@ RexxFunction1(int, SysReleaseMutexSem, int, handle)
 * Return:    result - return code from DosCloseEventSem                  *
 *************************************************************************/
 
-RexxFunction1(int, SysCloseMutexSem, int, handle)
+RexxFunction1(int, SysCloseMutexSem, POINTER, vhandle)
 {
-    int i;                             /* counter                    */
-    int val = 1;
-    int used = 0;
-    int       rc;
+    RXSEMDATA *semdata = (RXSEMDATA *)vhandle;
 
-    handle = handle - OFFSET;          /* make it real               */
-    if (handle < 0 || handle >= MAXUTILSEM){/* if bad handle      */
-        return 6;                      /* invalid handle             */
-    }
-    if(!apidata->rexxutilsems){        /* no sems created until now  */
-        return 6;                      /* invalid handle             */
-    }
-    /* if the semaphore is unused or isn't a mutex semaphore         */
-    if(((apidata->utilsemfree[handle]).usecount == 0 ) ||
-     ((apidata->utilsemfree[handle]).type != MUTEX)){
-        return 6;                      /* invalid handle             */
-    }
-    /* if this will be the final close */
-    if((apidata->utilsemfree[handle]).usecount == 1){
-        /* if another thread in the process is the owner  (sem locked) */
-        if(!getval(apidata->rexxutilsems, handle))
-            rc = 301;                  /* error sem busy             */
-        else {                         /* we can close               */
-            if((opencnt[handle][0])){  /* if I have it open          */
-                --((apidata->utilsemfree[handle]).usecount);/* decrement usecount*/
-                --(opencnt[handle][0]);/* and privat open count      */
-                rc = 0;                /* no errors                  */
+    if (semdata->named == false) {
+        /* this is an unnamed semaphore so we must free the target */
+        if (sem_destroy(semdata->handle)) {
+            if (errno == EINVAL) {
+                return 6;
             }
-            else
-                rc = 6;                /* invalid handle              */
+            else if (errno) {
+                return 102;
+            }
         }
     }
     else {
-        if((opencnt[handle][0])){      /* if I have it open          */
-            --((apidata->utilsemfree[handle]).usecount);/* decrement usecount*/
-            --(opencnt[handle][0]);    /* and privat open count      */
-            rc = 0;                    /* no errors                  */
+        /* this is a named semaphore */
+        if (sem_close(semdata->handle)) {
+            if (errno == EINVAL) {
+                return 6;
+            }
+            else if (errno) {
+                return 102;
+            }
         }
-        else
-            rc = 6;                    /* invalid handle             */
     }
-    if(!(apidata->utilsemfree[handle]).usecount){/*sem now unused ?  */
-        /* clear the name array */
-        memset((apidata->utilsemfree[handle]).name,NULL,MAXNAME);
-        /* make sure the sem  is in a clear state                    */
-#if defined(PPC) || defined(OPSYS_SUN)
-        semctl(apidata->rexxutilsems, handle, SETVAL, &val);
-#else
-        semctl(apidata->rexxutilsems, handle, SETVAL, 1);
-#endif
-    }
-    /* Possibly this was the last used sem. So we can remove the     */
-    /* semaphore set. Check this possibility.                        */
-    for(i=0;i<MAXUTILSEM;i++){         /* for all semaphores         */
-        if((apidata->utilsemfree[i]).usecount != 0 ) { /* a used one? */
-            used = 1;                  /* remember it                */
-            break;                     /* for max sem                */
-        }                              /* for max sem                */
-    }
-    if(!used){                         /* if all sems are unused     */
-        removesem(apidata->rexxutilsems);  /* remove the semaphore set */
-        apidata->rexxutilsems = NULL;  /* delete the old ID          */
-    }
-    return rc;
+    free(semdata);
+    return 0;
 }
 
 
@@ -2518,7 +2125,7 @@ RexxFunction2(RexxStringObject, SysTempFileName, CSTRING, ltemplate, OPTIONAL_CS
                                        /* get the file id            */
     dir = (char*) malloc(strlen(ltemplate) + 1);
     if (dir == NULL){                  /* if something went wrong    */
-        return context->NullString;
+        return context->NullString();
     }
 
     strcpy(dir, ltemplate);       /* copy the string            */
@@ -2541,23 +2148,23 @@ RexxFunction2(RexxStringObject, SysTempFileName, CSTRING, ltemplate, OPTIONAL_CS
 
         switch (j) {
             case 1:
-                sprintf(numstr, "%01u", num);
+                sprintf(numstr, "%01lu", num);
                 break;
             case 2:
-                sprintf(numstr, "%02u", num);
+                sprintf(numstr, "%02lu", num);
                 break;
             case 3:
-                sprintf(numstr, "%03u", num);
+                sprintf(numstr, "%03lu", num);
                 break;
             case 4:
-                sprintf(numstr, "%04u", num);
+                sprintf(numstr, "%04lu", num);
                 break;
             case 5:
-                sprintf(numstr, "%05u", num);
+                sprintf(numstr, "%05lu", num);
                 break;
             default:
 //              return INVALID_ROUTINE;/* raise error condition      */
-                return context->NullString;
+                return context->NullString();
         }                              /* for compatibility          */
 
         for (x = 0; tmp[x] !=0; x++) {
@@ -2671,7 +2278,7 @@ RexxFunction2(int, SysSetPriority, RexxObjectPtr, classArg, RexxObjectPtr, level
 *            Reason: keep portability                                    *
 *************************************************************************/
 
-RexxFunction3(RexxStringObject, SysGetMessage,
+RexxFunction3(RexxObjectPtr, SysGetMessage,
               OPTIONAL_CSTRING, filename,
               RexxUnsignedNumber, msgnum,
               ARGLIST, ins_string)
@@ -2765,7 +2372,8 @@ RexxFunction3(RexxStringObject, SysGetMessage,
 
     /* alloc needed space for the return message (add 100 for default msgs) */
     if(!(retbuf = (char *)malloc(msg_length+100))){
-        return context->NewStringFromAsciiz("Error: No memory");
+        strcpy(retbuf, "Error: No memory");
+        return context->NewStringFromAsciiz(retbuf);
     }
 
     /* check for too much '%s' in the message */
@@ -2799,36 +2407,36 @@ RexxFunction3(RexxStringObject, SysGetMessage,
                 strcpy(retbuf, error_insertions);
             break;
         case(3):
-            if(sprintf(retstr->strptr, msg, ins_string[0], ins_string[1], ins_string[2]) != msg_length)
+            if(sprintf(retbuf, msg, ins_string[0], ins_string[1], ins_string[2]) != msg_length)
                 strcpy(retbuf, error_insertions);
             break;
         case(4):
-            if(sprintf(retstr->strptr, msg, ins_string[0], ins_string[1], ins_string[2],
+            if(sprintf(retbuf, msg, ins_string[0], ins_string[1], ins_string[2],
                        ins_string[3]) != msg_length)
                 strcpy(retbuf, error_insertions);
             break;
         case(5):
-            if(sprintf(retstr->strptr, msg, ins_string[0], ins_string[1], ins_string[2],
+            if(sprintf(retbuf, msg, ins_string[0], ins_string[1], ins_string[2],
                        ins_string[3], ins_string[4]) != msg_length)
                 strcpy(retbuf, error_insertions);
             break;
         case(6):
-            if(sprintf(retstr->strptr, msg, ins_string[0], ins_string[1], ins_string[2],
+            if(sprintf(retbuf, msg, ins_string[0], ins_string[1], ins_string[2],
                        ins_string[3], ins_string[4], ins_string[5]) != msg_length)
                 strcpy(retbuf, error_insertions);
             break;
         case(7):
-            if(sprintf(retstr->strptr, msg, ins_string[0], ins_string[1], ins_string[2],
+            if(sprintf(retbuf, msg, ins_string[0], ins_string[1], ins_string[2],
                        ins_string[3], ins_string[4], ins_string[5], ins_string[6]) != msg_length)
                 strcpy(retbuf, error_insertions);
             break;
         case(8):
-            if(sprintf(retstr->strptr, msg, ins_string[0], ins_string[1], ins_string[2],
+            if(sprintf(retbuf, msg, ins_string[0], ins_string[1], ins_string[2],
                        ins_string[3], ins_string[4], ins_string[5], ins_string[6], ins_string[7]) != msg_length)
                 strcpy(retbuf, error_insertions);
             break;
         case(9):
-            if(sprintf(retstr->strptr, msg, ins_string[0], ins_string[1], ins_string[2],
+            if(sprintf(retbuf, msg, ins_string[0], ins_string[1], ins_string[2],
                        ins_string[3], ins_string[4], ins_string[5], ins_string[6], ins_string[7], ins_string[8]) != msg_length)
                 strcpy(retbuf, error_insertions);
             break;
@@ -2836,7 +2444,7 @@ RexxFunction3(RexxStringObject, SysGetMessage,
             strcpy(retbuf, error_insertions); /* error case */
             break;
         default:
-            strcpy(retstr->strptr, msg);
+            strcpy(retbuf, msg);
             break;
     }
 
@@ -2863,17 +2471,11 @@ RexxFunction3(RexxStringObject, SysGetMessage,
 *            supports the selection of a set in the msg catalog.         *
 *************************************************************************/
 
-RexxFunction4(RexxStringObject, SysGetMessageX,
+RexxFunction4(RexxObjectPtr, SysGetMessageX,
               OPTIONAL_CSTRING, filename,
               RexxNumber, setnum,
               RexxUnsignedNumber, msgnum,
               ARGLIST, ins_string)
-LONG APIENTRY SysGetMessageX(
-    char     *name,                    /* Function name              */
-    long      numargs,                 /* Number of arguments        */
-    RXSTRING  args[],                  /* Argument array             */
-    char     *queuename,               /* Current queue              */
-    PRXSTRING retstr )                 /* Return RXSTRING            */
 {
         nl_catd catalog;                   /* catalog handle             */
                                            /* default error msg          */
@@ -2888,7 +2490,7 @@ LONG APIENTRY SysGetMessageX(
         char *msg;                         /* msg retrieved from catalog */
         int icount;                        /* number of insertions       */
         int msg_length = 0;                /* length of the return msg   */
-        char *msgfile;                     /* name of the message file   */
+        const char *msgfile;               /* name of the message file   */
         char *temp;
         int count = 0;                     /* number of '%s' in the msg  */
         char *retbuf;
@@ -2896,7 +2498,7 @@ LONG APIENTRY SysGetMessageX(
         /* get message number */
         if (msgnum < 0)
             context->InvalidRoutine();
-            return context->NullString;
+            return context->NullString();
 
         /* Get message file name. Use "rexx.cat if not given */
         if (filename != NULL)
@@ -2923,39 +2525,39 @@ LONG APIENTRY SysGetMessageX(
 
         /* calculate length of the return message */
         if (ins_string[0] != NULL) {
-            msg_length += strlen(ins_string[0]);
+            msg_length += strlen(context->ObjectToStringValue(ins_string[0]));
             icount++;
         }
         if (ins_string[1] != NULL) {
-            msg_length += strlen(ins_string[1]);
+            msg_length += strlen(context->ObjectToStringValue(ins_string[1]));
             icount++;
         }
         if (ins_string[2] != NULL) {
-            msg_length += strlen(ins_string[2]);
+            msg_length += strlen(context->ObjectToStringValue(ins_string[2]));
             icount++;
         }
         if (ins_string[3] != NULL) {
-            msg_length += strlen(ins_string[3]);
+            msg_length += strlen(context->ObjectToStringValue(ins_string[3]));
             icount++;
         }
         if (ins_string[4] != NULL) {
-            msg_length += strlen(ins_string[4]);
+            msg_length += strlen(context->ObjectToStringValue(ins_string[4]));
             icount++;
         }
         if (ins_string[5] != NULL) {
-            msg_length += strlen(ins_string[5]);
+            msg_length += strlen(context->ObjectToStringValue(ins_string[5]));
             icount++;
         }
         if (ins_string[6] != NULL) {
-            msg_length += strlen(ins_string[6]);
+            msg_length += strlen(context->ObjectToStringValue(ins_string[6]));
             icount++;
         }
         if (ins_string[7] != NULL) {
-            msg_length += strlen(ins_string[7]);
+            msg_length += strlen(context->ObjectToStringValue(ins_string[7]));
             icount++;
         }
         if (ins_string[8] != NULL) {
-            msg_length += strlen(ins_string[8]);
+            msg_length += strlen(context->ObjectToStringValue(ins_string[8]));
             icount++;
         }
         msg_length += strlen(msg);
@@ -2963,7 +2565,8 @@ LONG APIENTRY SysGetMessageX(
 
         /* alloc needed space for the return message (add 100 for default msgs) */
         if(!(retbuf = (char *)malloc(msg_length+100))){
-            return context->NewStringFromAsciiz("Error: No memory");
+            strcpy(retbuf, "Error: No memory");
+            return context->NewStringFromAsciiz(retbuf);
         }
 
         /* check for too much '%s' in the message */
@@ -2997,44 +2600,52 @@ LONG APIENTRY SysGetMessageX(
                     strcpy(retbuf, error_insertions);
                 break;
             case(3):
-                if(sprintf(retstr->strptr, msg, ins_string[0], ins_string[1], ins_string[2]) != msg_length)
+                if(sprintf(retbuf, msg, ins_string[0], ins_string[1], ins_string[2]) != msg_length)
                     strcpy(retbuf, error_insertions);
                 break;
             case(4):
-                if(sprintf(retstr->strptr, msg, ins_string[0], ins_string[1], ins_string[2],
+                if(sprintf(retbuf, msg, ins_string[0], ins_string[1], ins_string[2],
                            ins_string[3]) != msg_length)
                     strcpy(retbuf, error_insertions);
                 break;
             case(5):
-                if(sprintf(retstr->strptr, msg, ins_string[0], ins_string[1], ins_string[2],
+                if(sprintf(retbuf, msg, ins_string[0], ins_string[1], ins_string[2],
                            ins_string[3], ins_string[4]) != msg_length)
                     strcpy(retbuf, error_insertions);
                 break;
             case(6):
-                if(sprintf(retstr->strptr, msg, ins_string[0], ins_string[1], ins_string[2],
+                if(sprintf(retbuf, msg, ins_string[0], ins_string[1], ins_string[2],
                            ins_string[3], ins_string[4], ins_string[5]) != msg_length)
                     strcpy(retbuf, error_insertions);
                 break;
             case(7):
-                if(sprintf(retstr->strptr, msg, ins_string[0], ins_string[1], ins_string[2],
+                if(sprintf(retbuf, msg, ins_string[0], ins_string[1], ins_string[2],
                            ins_string[3], ins_string[4], ins_string[5], ins_string[6]) != msg_length)
                     strcpy(retbuf, error_insertions);
                 break;
             case(8):
-                if(sprintf(retstr->strptr, msg, ins_string[0], ins_string[1], ins_string[2],
+                if(sprintf(retbuf, msg, ins_string[0], ins_string[1], ins_string[2],
                            ins_string[3], ins_string[4], ins_string[5], ins_string[6], ins_string[7]) != msg_length)
                     strcpy(retbuf, error_insertions);
                 break;
             case(9):
-                if(sprintf(retstr->strptr, msg, ins_string[0], ins_string[1], ins_string[2],
-                           ins_string[3], ins_string[4], ins_string[5], ins_string[6], ins_string[7], ins_string[8]) != msg_length)
+                if(sprintf(retbuf, msg,
+                           ins_string[0],
+                           ins_string[1],
+                           ins_string[2],
+                           ins_string[3],
+                           ins_string[4],
+                           ins_string[5],
+                           ins_string[6],
+                           ins_string[7],
+                           ins_string[8]) != msg_length)
                     strcpy(retbuf, error_insertions);
                 break;
             case(10):
                 strcpy(retbuf, error_insertions); /* error case */
                 break;
             default:
-                strcpy(retstr->strptr, msg);
+                strcpy(retbuf, msg);
                 break;
         }
 
@@ -3055,25 +2666,44 @@ LONG APIENTRY SysGetMessageX(
 * Return:    The key striked.                                            *
 *************************************************************************/
 
-RexxFunction1(RexxStringObject, SysGetKey, OPTIONAL_CSTRING, strecho)
+RexxFunction1(RexxObjectPtr, SysGetKey, OPTIONAL_CSTRING, strecho)
 {
+    static RXSEMDATA *semdata = NULL;;
+    int val, rc;
     bool      echo = true;             /* Set to false if we         */
-                                       /* shouldn't echo             */
-    RexxMutex *mutex;                  /* serialization semaphore    */
     char retbuf[256];
 
-    mutex = &SysGetKeySemaphore;
-    mutex->request();                  /* request the seamphore      */
-
+    /* create the mutex semaphore, if necessary */
+    if (semdata == NULL) {
+        semdata = (RXSEMDATA *)malloc(sizeof(RXSEMDATA));
+        /* this is an unnamed semaphore */
+        semdata->handle = (sem_t *)malloc(sizeof(sem_t));
+        rc = sem_init(semdata->handle, 0, 0);
+        if (rc == -1) {
+            free(semdata);
+            return context->NullString();
+        }
+        semdata->named = false;
+        rc = sem_post(semdata->handle);
+    }
+    /* request the semaphore */
+    rc = sem_wait(semdata->handle);
+    /* get the key */
     if (strcasecmp(strecho,"NOECHO") == 0)
         echo = false;
     else if (strcasecmp(strecho, "ECHO")) {
         context->InvalidRoutine();
-        return context->NullString;
+        return context->NullString();
     }
-
     getkey(retbuf,echo);       /* call the complicated part  */
-    mutex->release();                  /* release the seamphore      */
+    /* release the semaphore */
+    rc = sem_getvalue(semdata->handle, &val);
+    if (val == 0) {
+        rc = sem_post(semdata->handle);
+        if (rc) {
+            return context->NullString();
+        }
+    }
 
     return context->NewStringFromAsciiz(retbuf);
 }
@@ -3089,12 +2719,10 @@ RexxFunction1(RexxStringObject, SysGetKey, OPTIONAL_CSTRING, strecho)
 * Return:    Process_ID   ( to parent child''s ID / to child the ID 0 )  *
 *************************************************************************/
 
-RexxFunction0(RexxStringObject, SysFork)
+RexxFunction0(int, SysFork)
 {
-    int rc;
 
-    rc = fork();
-    return context->ObjectToStringValue(NumberToObject((RexxNumber)(rc)));
+    return fork();
 }
 
 
@@ -3108,12 +2736,12 @@ RexxFunction0(RexxStringObject, SysFork)
 * Return:    exit code of child                                          *
 *************************************************************************/
 
-RexxFunction0(RexxStringObject, SysWait)
+RexxFunction0(int, SysWait)
 {
     int iStatus;
 
     wait( &iStatus );
-    return context->ObjectToStringValue(NumberToObject((RexxNumber)(iStatus)));
+    return iStatus;
 }
 
 
@@ -3128,7 +2756,7 @@ RexxFunction0(RexxStringObject, SysWait)
 * Return:    'handle handle'     ( handle for read and handle for write )*
 *************************************************************************/
 
-RexxFunction1(RexxStringObject, SysCreatePipe, CSTRING opt)
+RexxFunction1(RexxObjectPtr, SysCreatePipe, CSTRING, opt)
 {
     int  iStatus;
     int  iaH[2];
@@ -3145,7 +2773,8 @@ RexxFunction1(RexxStringObject, SysCreatePipe, CSTRING opt)
         cBlocking = 0;                 /* Wants non-blocking         */
 
     if (pipe(iaH)) {                   /* Create the pipe            */
-        return context->NewStringFromAsciiz("*** ERROR: Creating pipe");
+        strcpy(retbuf, "*** ERROR: Creating pipe");
+        return context->NewStringFromAsciiz(retbuf);
     }
     if (!cBlocking) {                  /* Non-blocking?              */
         /* Get file status flags ---------- */
@@ -3153,7 +2782,8 @@ RexxFunction1(RexxStringObject, SysCreatePipe, CSTRING opt)
         iStatus |= O_NONBLOCK;         /* Turn on NONBLOCK flag      */
         /* Does set work? ----------------- */
         if (fcntl(iaH[0], F_SETFL, iStatus) == -1) {
-            return context->NewStringFromAsciiz("*** ERROR: Setting NONBLOCK flag");
+            strcpy(retbuf, "*** ERROR: Setting NONBLOCK flag");
+            return context->NewStringFromAsciiz(retbuf);
         }
     }
 
@@ -3173,19 +2803,19 @@ RexxFunction1(RexxStringObject, SysCreatePipe, CSTRING opt)
 *            other - date and time as YYYY-MM-DD HH:MM:SS                *
 *************************************************************************/
 
-RexxFunction2(RexxStringObject, SysGetFileDateTime, CSTRING filename, OPTIONAL_CSTRING, selector)
+RexxFunction2(RexxObjectPtr, SysGetFileDateTime, CSTRING, filename, OPTIONAL_CSTRING, selector)
 {
     long      rc;                      /* Ret code                   */
     struct    stat buf;
     struct    tm *newtime;
     char     *dir_buf = NULL;          /* full directory path        */
-    bool      fOk = TRUE;
-    bool      alloc_Flag = FALSE;
+    bool      fOk = true;
+    bool      alloc_Flag = false;
     char      retbuf[256];
 
     if(*filename == '~') {
         dir_buf = resolve_tilde(filename);
-        alloc_Flag = TRUE;
+        alloc_Flag = true;
     }
     else {
         dir_buf = filename;
@@ -3197,7 +2827,7 @@ RexxFunction2(RexxStringObject, SysGetFileDateTime, CSTRING filename, OPTIONAL_C
 
     if(fOk) {
         if (strlen(selector)) {
-            switch (selector) {
+            switch (*selector) {
                 case 'a':
                 case 'A':
                     newtime = localtime(&(buf.st_atime));
@@ -3208,7 +2838,7 @@ RexxFunction2(RexxStringObject, SysGetFileDateTime, CSTRING filename, OPTIONAL_C
                     break;
                 default:
                     context->InvalidRoutine();   /* raise error condition      */
-                    return context->NullString;
+                    return context->NullString();
             }
         }
         else
@@ -3221,10 +2851,10 @@ RexxFunction2(RexxStringObject, SysGetFileDateTime, CSTRING filename, OPTIONAL_C
                 newtime->tm_year, newtime->tm_mon, newtime->tm_mday,
                 newtime->tm_hour, newtime->tm_min, newtime->tm_sec);
     }
-    if( (dir_buf) && (alloc_Flag == TRUE) )
+    if( (dir_buf) && (alloc_Flag == true) )
         free(dir_buf);                         /* free the buffer memory  */
     if (!fOk)
-        return context->NewStringFromAsciiz("-1");
+        strcpy(retbuf, "-1");
     return context->NewStringFromAsciiz(retbuf);
 }
 
@@ -3279,7 +2909,7 @@ RexxFunction3(int, SysSetFileDateTime, CSTRING, filename, OPTIONAL_CSTRING, newd
         }
     }
     else {
-        newtime = localtime(&(buf.st_mtime));
+        newtime = ctime(&(buf.st_mtime));
         if (strlen(newdate) > 0) {
             /* parse new date */
             if (sscanf(newdate, "%4d-%2d-%2d", &tmptime->tm_year,
@@ -3301,7 +2931,7 @@ RexxFunction3(int, SysSetFileDateTime, CSTRING, filename, OPTIONAL_CSTRING, newd
         }
     }
 
-    if( (dir_buf) && (alloc_Flag == TRUE) )
+    if( (dir_buf) && (alloc_Flag == true) )
         free(dir_buf);                 /* free the buffer memory     */
     if (!fOk)
         return -1;
@@ -3338,16 +2968,16 @@ RexxFunction1(RexxObjectPtr, SysQueryProcess, OPTIONAL_CSTRING, option)
     char errbuf[256];
 
     if (!strcasecmp(option, "PID")) {
-        return ontext->NumberToObject((RexxNumber)(getpid()));
+        return context->NumberToObject((RexxNumber)(getpid()));
     }
     else if (!strcasecmp(option, "PPID")) {
-        return ontext->NumberToObject((RexxNumber)(getppid()));
+        return context->NumberToObject((RexxNumber)(getppid()));
     }
     else if (!strcasecmp(option, "PGID")) {
-        return ontext->NumberToObject((RexxNumber)(getpgid(getppid())));
+        return context->NumberToObject((RexxNumber)(getpgid(getppid())));
     }
     else if (!strcasecmp(option, "PPRIO")) {
-        return ontext->NumberToObject((RexxNumber)(getpriority(PRIO_PROCESS, 0)));
+        return context->NumberToObject((RexxNumber)(getpriority(PRIO_PROCESS, 0)));
     }
 
     /* --------------------------------------------------------------- */
@@ -3412,23 +3042,23 @@ RexxFunction1(RexxObjectPtr, SysQueryProcess, OPTIONAL_CSTRING, option)
         return context->NewStringFromAsciiz(errbuf);
     }
     else if (!strcasecmp(option, "PMEM")) { /* Show max memory RSS used */
-        snprintf(errbub, sizeof(errbuf), "Max_Memory_RSS: %d",
+        snprintf(errbuf, sizeof(errbuf), "Max_Memory_RSS: %ld",
                  struResUse.ru_maxrss);
         return context->NewStringFromAsciiz(errbuf);
     }
     else if (!strcasecmp(option, "PSWAPS")) {/* Memory has been swapped */
-        snprintf(errbuf, sizeof(errbuf), "Memory_swaps: %d",
+        snprintf(errbuf, sizeof(errbuf), "Memory_swaps: %ld",
                  struResUse.ru_nswap);
         return context->NewStringFromAsciiz(errbuf);
     }
-    else if (!strcasecmp(args[0].strptr, "PRCVDSIG")) {/* Process received signals*/
-        snprintf(errbuf, sizeof(errbuf), "Received_signals: %d",
+    else if (!strcasecmp(option, "PRCVDSIG")) {/* Process received signals*/
+        snprintf(errbuf, sizeof(errbuf), "Received_signals: %ld",
                  struResUse.ru_nsignals);
         return context->NewStringFromAsciiz(errbuf);
     }
 
     context->InvalidRoutine();
-    return context->NullString;
+    return context->NullString();
 }
 
 
@@ -3448,7 +3078,7 @@ RexxFunction1(RexxStringObject, SysGetErrortext, int, errnum)
 
     errmsg = strerror( errnum );
     if (errmsg == NULL )
-        return context->NullString;
+        return context->NullString();
     return context->NewStringFromAsciiz(errmsg);
 }
 
@@ -3469,14 +3099,14 @@ RexxFunction1(RexxStringObject, SysGetErrortext, int, errnum)
 * Return:    Linux Version                                               *
 *************************************************************************/
 
-RexxFunction0(CSTRING, SysLinVer)
+RexxFunction0(RexxObjectPtr, SysLinVer)
 {
     struct utsname info;               /* info structur              */
     char retbuf[256];
 
-    if(uname(&info)<NULL) {            /* if no info stored          */
+    if(uname(&info) < 0) {             /* if no info stored          */
         context->InvalidRoutine();
-        return context->NullString;
+        return context->NullString();
     }
 
     sprintf(retbuf, "%s %s",info.sysname,info.release);
