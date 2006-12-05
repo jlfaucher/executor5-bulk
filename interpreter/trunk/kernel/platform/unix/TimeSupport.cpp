@@ -53,6 +53,7 @@
 #include "RexxCore.h"
 #include "IntegerClass.hpp"
 #include "RexxNativeAPI.h"                    /* Method macros */
+#include "SysInterpreter.hpp"
 
 #ifdef AIX
 #include <time.h>
@@ -60,7 +61,7 @@
 #include <sys/time.h>
 #endif
 
-static INT dayc[] = { 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334 };
+static int dayc[] = { 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334 };
 
 void SysInterpeter::getCurrentTime(
   REXXDATETIME *Date )                 /* returned data structure    */

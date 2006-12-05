@@ -61,11 +61,13 @@
 #include "RexxCore.h"                         /* global REXX declarations       */
 #include "StringClass.hpp"
 #include "RexxActivity.hpp"
-#include "RexxNativeAPI.h"                           /* Lot's of useful REXX macros    */
+#include "SysProcess.hpp"
+#include "SysInterpreter.hpp"
 
 #include "oorexx.h"                         /* Include REXX header            */
 #include "SystemCommands.h"
 #include "InternalAPI.hpp"                    /* Get private REXX API's         */
+#include "SysUtil.hpp"
 #include <sys/types.h>
 #include <pwd.h>
 #include <limits.h>
@@ -76,7 +78,7 @@
 
 #define UNKNOWN_COMMAND 127                 /* unknown command return code    */
 
-#define SYSENV "command"                    /* Default cmd environment        */
+#define SYSENV "bash"                       /* Default cmd environment        */
 #define SHELL  "SHELL"                      /* UNIX cmd handler env. var. name*/
 #define EXPORT_FLAG 1
 #define SET_FLAG    2
@@ -86,7 +88,7 @@
 
 //TODO: what are these?
 
-extern INT putflag;
+extern int putflag;
 
 extern char **environ;
 
@@ -94,7 +96,7 @@ extern char achRexxCurDir[ CCHMAXPATH+2 ];  /* Save current working direct    */
 
 char * args[MAX_COMMAND_ARGS+1];            /* Array for argument parsing */
 
-LONG sys_command(char *cmd, CMD_TYPE local_env_type);
+long sys_command(char *cmd, CMD_TYPE local_env_type);
 void scan_cmd(char *parm_cmd, char **args);
 
 /******************************************************************************/
@@ -115,13 +117,13 @@ void scan_cmd(char *parm_cmd, char **args);
 /******************************************************************************/
 RexxObject * SysInterpreter::executeSystemCommand(
   RexxActivity      * activity,        /* activity running on               */
-  char              * current_address, /* target address                    */
+  RexxString        * current_address, /* target address                    */
   RexxString        * command,         /* command to issue                  */
   RexxString       ** error_failure )  /* error or failure flags            */
 {
   int          rc    = 0;              /* Return code from call             */
   CMD_TYPE     local_env_type;
-  int          i;
+  unsigned int i;
   RexxObject * result;
 
   *error_failure = OREF_NULL;          /* default to clean call             */
@@ -132,7 +134,7 @@ RexxObject * SysInterpreter::executeSystemCommand(
   //TODO:  What is the reg_envtable?
   for (i = 0; i < REG_ENVTABLE_SIZE; i++)     /* scan the table for a match */
   {
-      if (strcmp(current_address, reg_envtable[i].envname) == 0)
+      if (strcmp((char *)current_address->getStringData(), reg_envtable[i].envname) == 0)
       {
           local_env_type = reg_envtable[i].envtype;
           break;
@@ -144,7 +146,7 @@ RexxObject * SysInterpreter::executeSystemCommand(
       {
           // NO kernel access this section
           UnsafeBlock ublock;
-          rc = sys_command(command->getStringData(), local_env_type);     /* issue the command */
+          rc = sys_command((char *)command->getStringData(), local_env_type);     /* issue the command */
       }
       result = new_integer(rc);              /* get the command return code */
 
@@ -165,21 +167,21 @@ RexxObject * SysInterpreter::executeSystemCommand(
 }
 
 /* Handle "export" command in same process */
-bool sys_process_export(char * cmd, LONG * rc, int flag)
+bool sys_process_export(char * cmd, long * rc, int flag)
 {
   char *  Env_Var_String = NULL;        /* Environment variable string for   */
-  ULONG size, allocsize;               /* size of the string                */
+  unsigned long size, allocsize;        /* size of the string                */
   char *      * Environment;            /* environment pointer               */
-  char *  np;
-  INT    i,j,k,l,iLength, copyval;
-  CHAR   namebufcurr[1281];             /* buf for extracted name            */
-  CHAR   cmd_name[1281];                /* name of the envvariable setting   */
-  CHAR   *array, *runarray, *runptr, *endptr, *maxptr;
-  CHAR   temparray[1281];
-  CHAR   *st;
-  CHAR   *tmpptr;
-  CHAR   name[1281];                    /* is the name + value + =           */
-  CHAR   value[1281];                   /* is the part behind =              */
+  char *  np = NULL;
+  int    i,j,k,l,iLength, copyval;
+  char   namebufcurr[1281];             /* buf for extracted name            */
+  char   cmd_name[1281];                /* name of the envvariable setting   */
+  char   *array, *runarray, *runptr, *endptr, *maxptr;
+  char   temparray[1281];
+  char   *st;
+  char   *tmpptr;
+  char   name[1281];                    /* is the name + value + =           */
+  char   value[1281];                   /* is the part behind =              */
   char *  del = NULL;                   /* ptr to old unused memory          */
   char *  hit = NULL;
   bool   HitFlag = false;
@@ -295,7 +297,7 @@ bool sys_process_export(char * cmd, LONG * rc, int flag)
        }
        memcpy(runarray,runptr, copyval);
        runarray= runarray + copyval; /* a new place to copy */
-       *runarray = NULL;
+       *runarray = 0;
        runptr = tmpptr;              /* now runptr is at the place of $ */
     }
     runptr++;
@@ -339,7 +341,7 @@ bool sys_process_export(char * cmd, LONG * rc, int flag)
        }
        strcpy(runarray, np);
        runarray = runarray + strlen(np);
-       *runarray = NULL;
+       *runarray = 0;
        hit = NULL;
     }
   }   /* end while loop */
@@ -357,7 +359,7 @@ bool sys_process_export(char * cmd, LONG * rc, int flag)
        }
        strcpy(runarray, runptr);      /* if there is a part after a var */
        runarray = runarray + strlen(runptr);
-       *runarray = NULL;
+       *runarray = 0;
     }
   }
   else   /* no hit so lets copy the value as it is                     */
@@ -371,7 +373,7 @@ bool sys_process_export(char * cmd, LONG * rc, int flag)
      }
      strcpy(runarray,value);
      runarray = runarray + strlen(runptr);
-     *runarray = NULL;
+     *runarray = 0;
   }
 
   Environment = environ;            /* get the beginning of the environment*/
@@ -416,14 +418,14 @@ bool sys_process_export(char * cmd, LONG * rc, int flag)
 
 
 /* Handle "cd XXX" command in same process */
-bool sys_process_cd(char * cmd, LONG * rc)
+bool sys_process_cd(char * cmd, long * rc)
 {
     char * st;
     char *  home_dir = NULL;            /* home directory path        */
     char *  dir_buf = NULL;             /* full directory path        */
     char *  slash;                      /* ptr to '/'                 */
     struct passwd *ppwd;
-    INT alloc_flag = 0;
+    int alloc_flag = 0;
 
     st = &cmd[3];
     while ((*st) && (*st == ' ')) st++;
@@ -521,9 +523,9 @@ bool sys_process_cd(char * cmd, LONG * rc)
 /*             and invoke the shell indicated by the local_env_type argument. */
 /*             This is modeled after command handling done in Classic REXX.   */
 /******************************************************************************/
-LONG sys_command(char *cmd, CMD_TYPE local_env_type)
+long sys_command(char *cmd, CMD_TYPE local_env_type)
 {
-  LONG        rc;                      /* Return code                       */
+  long        rc;                      /* Return code                       */
   int         pid;                     /* process id of child from fork     */
   int         status;
   int         cmdlength;
@@ -532,7 +534,7 @@ LONG sys_command(char *cmd, CMD_TYPE local_env_type)
 #endif
 
   /* execute 'cd' in the same process */
-  CHAR        tmp[8];
+  char        tmp[8];
 
 
   if(strlen(cmd) == 2)
@@ -563,14 +565,14 @@ LONG sys_command(char *cmd, CMD_TYPE local_env_type)
      }
      strncpy(tmp, cmd, 6);
      tmp[6] = '\0';
-     if (!stricmp("unset ", tmp))
+     if (!SysUtil::stricmp("unset ", tmp))
      {
         if (sys_process_export(cmd, &rc, UNSET_FLAG))
              return rc;
      }
      strncpy(tmp, cmd, 7);
      tmp[7] = '\0';
-     if (!stricmp("export ", tmp))
+     if (!SysUtil::stricmp("export ", tmp))
      {
         if (sys_process_export(cmd, &rc, EXPORT_FLAG))
              return rc;
@@ -653,7 +655,7 @@ LONG sys_command(char *cmd, CMD_TYPE local_env_type)
 /* a shell to invoke its commands.                                   */
 /*********************************************************************/
 
-void scan_cmd(char *parm_cmd, char **args)
+void scan_cmd(char *parm_cmd, char **cmdargs)
 {
   char * pos;                          /* Current position in command*/
   char * end;                          /* End of command             */
@@ -689,7 +691,7 @@ void scan_cmd(char *parm_cmd, char **args)
     if (i==MAX_COMMAND_ARGS)
       reportException(MSG_TOO_MANY_CMD_ARGS);
 
-    args[i++] = pos;                   /* Point to current argument  */
+    cmdargs[i++] = pos;                   /* Point to current argument  */
                                        /* and advance i to next      */
                                        /* element of args[]          */
 
@@ -702,7 +704,7 @@ void scan_cmd(char *parm_cmd, char **args)
   } /* endfor */
 
   /* Finally, put a null pointer in args[] to indicate the end.      */
-  args[i] = NULL;
+  cmdargs[i] = NULL;
 }
 
 

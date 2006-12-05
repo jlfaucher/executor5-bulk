@@ -55,10 +55,6 @@ class RexxBuffer;
 class SysInterpreter
 {
 public:
-    static int exceptionFilter(int code);
-
-
-
     inline static void timeSliceElapsed()
     {
         timerElapsed = true;               // just set the flag
@@ -111,7 +107,7 @@ public:
     static void terminateProcessEnvironment();
     static RexxObject *pushEnvironment(RexxActivation *);
     static RexxObject *popEnvironment(RexxActivation *);
-    static char *metaVersion;
+    static const char *metaVersion;
 
 protected:
     static bool handleExceptions;         // Global switch for Exception Handling

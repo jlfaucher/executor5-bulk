@@ -55,9 +55,9 @@ bool SysInterpreter::handleExceptions = true;
 bool SysInterpreter::signaled = false;
 bool SysInterpreter::timerElapsed = false;
 bool SysInterpreter::running = false;
-int SysInterpreter::resourceBundle = NULL;
-int SysInterpreter::timerOwner = NULL;
-char *SysInterpreter::metaVersion = "UNIX ";
+int SysInterpreter::resourceBundle = 0;
+int SysInterpreter::timerOwner = 0;
+const char *SysInterpreter::metaVersion = "UNIX ";
 
 /**
  * Do one-time process specific intialization of the environment.
@@ -83,29 +83,14 @@ void SysInterpreter::terminateProcessEnvironment()
 }
 
 
-int SysInterpreter::exceptionFilter( int xCode )
-/******************************************************************************/
-/* Function:  Exception Filter used by Windows exception handling             */
-/******************************************************************************/
-{
-  int nRtn = EXCEPTION_CONTINUE_SEARCH;
-  if (!SysInterpreter::handleExceptions)
-    nRtn = EXCEPTION_CONTINUE_EXECUTION;
-
-  /* Put any needed code for special handling here */
-  return nRtn;
-}
-
-
 bool SysInterpreter::savingPrograms()
 /******************************************************************************/
 /* Function:  Check to see if program saving is enabled for this user         */
 /******************************************************************************/
 {
-    char  savetok[65];
-    savetok[0] = '\0';
+    char  *savetok;
     /* don't save tokens if environment variable isn't set */
-    GetEnvironmentVariable("RXSAVETOKENS", savetok, sizeof(savetok));
+    savetok = getenv("RXSAVETOKENS");
     return strcmp("YES",savetok) == 0;
 }
 
