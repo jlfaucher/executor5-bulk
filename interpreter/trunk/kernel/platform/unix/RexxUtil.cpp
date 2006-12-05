@@ -54,6 +54,7 @@
 // Needed by all platforms
 #include "oorexx.h"
 #include "rexx.h"
+#include "SysFileSystem.hpp"
 
 #ifdef LINUX
 #include <sys/wait.h>
@@ -105,6 +106,8 @@
 
 extern int opencnt[][2];               /* open count array for sems  */
 extern char *resolve_tilde(char *);
+
+extern void SysInitialize(void);
 
 #define INVALID_ROUTINE 40
 #define  MAX_DIGITS     9
@@ -1064,6 +1067,14 @@ static long RecursiveFindFile(
 }
 
 
+void restore_terminal(int signal){
+
+  stty(STDIN_FILENO,&in_orig);          /* restore the terminal settings        */
+  SysInitialize();                      /* restore all signal handler           */
+  raise(signal);                        /* propagate signal                     */
+}
+
+
 /******************************************************************************/
 /* getkey                                                                     */
 /******************************************************************************/
@@ -1372,18 +1383,20 @@ RexxMethod1(int, SysFileDelete, CSTRING, path)
 RexxFunction4(int, SysFileSearch, CSTRING, target, CSTRING, file, RexxStemObject, stem, OPTIONAL_CSTRING, opts)
 {
     unsigned long ptr;                 /* Pointer to char str found  */
-    unsigned long num = 0;             /* Line number                */
+    int           num = 0;             /* Line number                */
     unsigned long len;                 /* Length of string           */
     unsigned long len2;                /* Length of string           */
+    char          ibuf[1024];
     bool          linenums = false;    /* Set true for linenums in   */
                                        /* output                     */
     bool          sensitive = false;   /* Set true for case-sens     */
                                        /* search                     */
-    RXSTEMDATA    ldp;                 /* stem data                  */
     GetFileData   filedata;            /* file read information      */
     char          *home_dir;           /* ptr to the environment     */
     char          *dir_buf = NULL;     /* directory buffer           */
     char          *line = NULL;        /* Line read from file        */
+    size_t        count = 0;           /* number of stem members     */
+    size_t        vlen;
 
     if (opts != NULL)                  /* process options            */
     {
@@ -1399,12 +1412,6 @@ RexxFunction4(int, SysFileSearch, CSTRING, target, CSTRING, file, RexxStemObject
         file = dir_buf;                /* full path to the file      */
     }
                                        /* Initialize data area       */
-    ldp.count = 0;
-    strcpy(ldp.varname, stem);
-    ldp.stemlen = strlen(stem);
-    strupr(ldp.varname);               /* uppercase the name         */
-    if (ldp.varname[ldp.stemlen-1] != '.')
-        ldp.varname[ldp.stemlen++] = '.';
     if (OpenFile(file, &filedata)) {   /* open the file              */
         if(dir_buf)                    /* did we allocate ?          */
             free(dir_buf);             /* free it                    */
@@ -1421,35 +1428,37 @@ RexxFunction4(int, SysFileSearch, CSTRING, target, CSTRING, file, RexxStemObject
         ptr = mystrstr(line, target, len, strlen(target), sensitive);
         if (ptr != '\0') {
             if (linenums) {
-                sprintf(ldp.ibuf, "%d ", num);
-                len2 = strlen(ldp.ibuf);
-                if (len < IBUF_LEN-len2) {
-                    memcpy(ldp.ibuf+len2, line, len);
+                sprintf(ibuf, "%d ", num);
+                len2 = strlen(ibuf);
+                if (len < sizeof(ibuf) - len2) {
+                    memcpy(ibuf+len2, line, len);
                 }
                 else {
-                    memcpy(ldp.ibuf+len2, line, IBUF_LEN-len2);
+                    memcpy(ibuf+len2, line, sizeof(ibuf) - len2);
                 }
-                if (IBUF_LEN < len + len2) {
-                    ldp.vlen = IBUF_LEN;
+                if (sizeof(ibuf) < len + len2) {
+                    vlen = sizeof(ibuf);
                 }
                 else {
-                    ldp.vlen = len + len2;
+                    vlen = len + len2;
                 }
             }
             else {
-                memcpy(ldp.ibuf, line, len);
-                ldp.vlen = len;
+                memcpy(ibuf, line, len);
+                vlen = len;
             }
-            ldp.count++;
-            if (ldp.ibuf[ldp.vlen-1] == '\n')
-              ldp.vlen--;
-            context->SetStemArrayElement(stem, stemCount, context->NewString(ldp.ibuf, ldp.vlen));
+            count++;
+            if (ibuf[vlen - 1] == '\n')
+            {
+                vlen--;
+            }
+            context->SetStemArrayElement(stem, count, context->NewString(ibuf, vlen));
         }
     }
     free(line);
     CloseFile(&filedata);              /* Close that file            */
     /* set stem.0 to lines read   */
-    context->SetStemArrayElement(stem, 0, context->NumberToObject(ldp.count);
+    context->SetStemArrayElement(stem, 0, context->NumberToObject(count));
     if(dir_buf)                        /* did we allocate ?          */
         free(dir_buf);                 /* free it                    */
     return 0;                          /* no error on call           */
@@ -1493,7 +1502,7 @@ RexxFunction3(RexxStringObject, SysSearchPath, CSTRING, path, CSTRING, file, OPT
                                        /* search current 1st(default)*/
         else {
             context->InvalidRoutine();
-            return NULL;
+            return context->NullString();
         }
     }
     ulRc = SearchPath(SearchFlag, path, file,
@@ -1526,7 +1535,7 @@ RexxFunction0(RexxObjectPtr, SysVersion)
 
     if(uname(&info) < 0) {             /* if no info stored          */
         context->InvalidRoutine();
-        return context->NewStringFromAsciiz("");
+        return context->NullString();
     }
 
 #ifdef AIX
@@ -1577,7 +1586,7 @@ RexxFunction2(RexxObjectPtr, SysCreateEventSem, OPTIONAL_CSTRING, name, OPTIONAL
         rc = sem_init(semdata->handle, 0, 0);
         if (rc == -1) {
             free(semdata);
-            return context->NewStringFromAsciiz("");
+            return context->NullString();
         }
         semdata->named = false;
     }
@@ -1587,7 +1596,7 @@ RexxFunction2(RexxObjectPtr, SysCreateEventSem, OPTIONAL_CSTRING, name, OPTIONAL
         semdata->handle = sem_open(name, (O_CREAT | O_EXCL), (S_IRWXU | S_IRWXG), 0);
         if (semdata->handle == SEM_FAILED ) {
             free(semdata);
-            return context->NewStringFromAsciiz("");
+            return context->NullString();
         }
         semdata->named = true;
     }
@@ -1721,7 +1730,7 @@ RexxMethod1(int, SysCloseEventSem, POINTER, vhandle)
 RexxFunction2(int, SysWaitEventSem, POINTER, vhandle, OPTIONAL_int, timeout)
 {
     RXSEMDATA *semdata = (RXSEMDATA *)vhandle;
-    int rc;
+    int rc = 0;
 
     if (timeout != 0) {
         /* this looping construct will cause us to wait longer than the */
@@ -1765,14 +1774,14 @@ RexxFunction2(int, SysWaitEventSem, POINTER, vhandle, OPTIONAL_int, timeout)
 *            '' - Empty string in case of any error                      *
 *************************************************************************/
 
-RexxFunction1(RexxObjectPtr, SysCreateMutexSem, OPTIONAL_CSTRING, name)
+RexxFunction1(RexxStringObject, SysCreateMutexSem, OPTIONAL_CSTRING, name)
 {
     RXSEMDATA *semdata;
     int rc;
 
     semdata = (RXSEMDATA *)malloc(sizeof(RXSEMDATA));
     if (semdata == NULL) {
-        return context->NewStringFromAsciiz("");
+        return context->NullString();
     }
     if (strlen(name) == 0) {
         /* this is an unnamed semaphore */
@@ -1780,7 +1789,7 @@ RexxFunction1(RexxObjectPtr, SysCreateMutexSem, OPTIONAL_CSTRING, name)
         rc = sem_init(semdata->handle, 0, 0);
         if (rc == -1) {
             free(semdata);
-            return context->NewStringFromAsciiz("");
+            return context->NullString();
         }
         semdata->named = false;
     }
@@ -1790,7 +1799,7 @@ RexxFunction1(RexxObjectPtr, SysCreateMutexSem, OPTIONAL_CSTRING, name)
         semdata->handle = sem_open(name, (O_CREAT | O_EXCL), (S_IRWXU | S_IRWXG), 0);
         if (semdata->handle == SEM_FAILED ) {
             free(semdata);
-            return context->NewStringFromAsciiz("");
+            return context->NullString();
         }
         semdata->named = true;
     }
@@ -1839,7 +1848,7 @@ RexxFunction1(int, SysOpenMutexSem, CSTRING, name)
 RexxFunction2(int, SysRequestMutexSem, POINTER, vhandle, OPTIONAL_int, timeout)
 {
     RXSEMDATA *semdata = (RXSEMDATA *)vhandle;
-    int rc;
+    int rc = 0;
 
     if (timeout != 0) {
         /* this looping construct will cause us to wait longer than the */
@@ -1969,13 +1978,13 @@ RexxFunction1(int, SysCloseMutexSem, POINTER, vhandle)
 
 RexxFunction5(int, SysFileTree, CSTRING, filespec, RexxStemObject, stem, OPTIONAL_CSTRING, stroptions, OPTIONAL_CSTRING, mask, OPTIONAL_CSTRING, newMask)
 {
-    char          path[IBUF_LEN];      /* path to search along       */
+    char          path[SysFileSystem::MaximumFileNameBuffer]; /* path to search along       */
     char          *optptr;             /* option scan pointer        */
     unsigned long options;             /* Mask of options            */
     unsigned long y;                   /* Temp counter (II)          */
     int           smask[5];            /* Source attribute mask      */
     int           dmask[5];            /* Target attribute mask      */
-    RXTREEDATA    ldp;                 /* local data                 */
+    RxTreeData    ldp;                 /* local data                 */
     char          *temp;
     int           rc;
 
@@ -1985,6 +1994,7 @@ RexxFunction5(int, SysFileTree, CSTRING, filespec, RexxStemObject, stem, OPTIONA
     dmask[0] = IGNORE;                 /* No mask unless specified   */
     path[0] = '\0';                    /* no path yet                */
     rc = 0;                            /* pass back result           */
+    char FileSpec[SysFileSystem::MaximumFileNameBuffer];
 
                                        /* validate arguments         */
     if (strlen(filespec) > 255) {
@@ -1993,11 +2003,11 @@ RexxFunction5(int, SysFileTree, CSTRING, filespec, RexxStemObject, stem, OPTIONA
     }
     /* initialize data area */
     ldp.count = 0;
-    strcpy(ldp.varname, stem);
-    ldp.stemlen = strlen(stem);
+    strcpy(ldp.varname, context->ObjectToStringValue(context->GetStemValue(stem)));
+    ldp.stemlen = strlen(ldp.varname);
     /* uppercase the name  */
     temp = ldp.varname;
-    for(int k=0;k<strlen(ldp.varname);k++) {/* loop through mem and  */
+    for(unsigned int k=0;k<strlen(ldp.varname);k++) {/* loop through mem and  */
         *temp = toupper(*temp);        /* uppercase each char        */
         temp++;
     }
@@ -2065,7 +2075,7 @@ RexxFunction5(int, SysFileTree, CSTRING, filespec, RexxStemObject, stem, OPTIONA
         return 0;
     }
     /* return lines read */
-    sprintf(ldp.Temp, "%d", ldp.count);
+    sprintf(ldp.Temp, "%d", (int)ldp.count);
     ldp.varname[ldp.stemlen] = '0';
     ldp.varname[ldp.stemlen+1] = 0;
     ldp.shvb.shvnext = NULL;
@@ -2226,14 +2236,9 @@ RexxFunction2(RexxStringObject, SysTempFileName, CSTRING, ltemplate, OPTIONAL_CS
 *                                                                        *
 *************************************************************************/
 
-RexxFunction2(int, SysSetPriority, RexxObjectPtr, classArg, RexxObjectPtr, levelArg)
+RexxFunction2(int, SysSetPriority, int32_t, pclass, int32_t, level)
 {
-    long          pclass;              /* priority class             */
-    long          level;               /* priority level             */
     unsigned long rc = 0;              /* creation return code       */
-
-    pclass = atol(classArg);
-    level = atol(levelArg);
 
     if ((unsigned long)pclass == 0){   /* class 0 -> no change       */
       rc = 0;                          /* no error                   */
@@ -2257,199 +2262,6 @@ RexxFunction2(int, SysSetPriority, RexxObjectPtr, classArg, RexxObjectPtr, level
     }
 
     return rc;
-}
-
-
-/*************************************************************************
-* Function:  SysGetMessage                                               *
-*                                                                        *
-* Syntax:    call SysGetMessage msgnum [,file] [,str1]...[,str9]         *
-*                                                                        *
-* Params:    file           - Name of message file to get message from.  *
-*                              Default is OSO001.MSG.                    *
-*            msgnum         - Number of message being queried.           *
-*            str1 ... str9  - Insertion strings.  For messages which     *
-*                              contain %1, %2, etc, the str1, str2, etc  *
-*                              strings will be inserted (if given).      *
-*                                                                        *
-* Return:    The message with the inserted strings (if given).           *
-* Note:      The set number ist always 1. Therefore the interface        *
-*            remains the same as in OS/2 and Win.                        *
-*            Reason: keep portability                                    *
-*************************************************************************/
-
-RexxFunction3(RexxObjectPtr, SysGetMessage,
-              OPTIONAL_CSTRING, filename,
-              RexxUnsignedNumber, msgnum,
-              ARGLIST, ins_string)
-{
-    int setnum = 1;                    /* Set number (const 1)       */
-    nl_catd catalog;                   /* catalog handle             */
-                                       /* default error msg          */
-    char default_message[] = {"Error: Message catalog not open !\0"};
-                                       /* msg not found  msg         */
-    char not_found_message[] = {"Error: Message not found !\0"};
-                                       /* insertion error  msg       */
-    char error_insertions[] = {"Error: Unable to generate message \
-                              (wrong insertions)\0"};
-                                       /* cat not found  msg         */
-    char cat_not_found_message[] = {"Error: Message catalog not found !\0"};
-    char *msg;                         /* msg retrieved from catalog */
-    int icount;                        /* number of insertions       */
-    int msg_length = 0;                /* length of the return msg   */
-    char *msgfile;                     /* name of the message file   */
-    char *temp;
-    int count = 0;                     /* number of '%s' in the msg  */
-    char *retbuf;
-
-    /* get message number */
-    if (msgnum < 0)
-        context->InvalidRoutine();
-        return context->NullString();
-
-    /* Get message file name. Use "rexx.cat if not given */
-    if (filename != NULL)
-        msgfile = filename;            /* use provided message file  */
-    else
-        msgfile = REXXMESSAGEFILE;
-
-#ifdef AIX
-    setlocale(LC_ALL, "en_US");
-#endif
-                                       /* open the catalog           */
-    if((catalog = catopen(msgfile, NL_CAT_LOCALE)) == (nl_catd)-1){
-        return context->NewStringFromAsciiz(cat_not_found_message);
-    }
-
-    /* retrieve msg from catalog */
-    msg = catgets(catalog, setnum, (int)msgnum, default_message);
-
-    if(*msg == '\0')                   /* if empty string returned   */
-        msg = not_found_message;       /* it means msg not found     */
-
-    /* set number of insertions */
-    icount = 0;
-
-    /* calculate length of the return message */
-    if (ins_string[0] != NULL) {
-        msg_length += strlen(ins_string[0]);
-        icount++;
-    }
-    if (ins_string[1] != NULL) {
-        msg_length += strlen(ins_string[1]);
-        icount++;
-    }
-    if (ins_string[2] != NULL) {
-        msg_length += strlen(ins_string[2]);
-        icount++;
-    }
-    if (ins_string[3] != NULL) {
-        msg_length += strlen(ins_string[3]);
-        icount++;
-    }
-    if (ins_string[4] != NULL) {
-        msg_length += strlen(ins_string[4]);
-        icount++;
-    }
-    if (ins_string[5] != NULL) {
-        msg_length += strlen(ins_string[5]);
-        icount++;
-    }
-    if (ins_string[6] != NULL) {
-        msg_length += strlen(ins_string[6]);
-        icount++;
-    }
-    if (ins_string[7] != NULL) {
-        msg_length += strlen(ins_string[7]);
-        icount++;
-    }
-    if (ins_string[8] != NULL) {
-        msg_length += strlen(ins_string[8]);
-        icount++;
-    }
-    msg_length += strlen(msg);
-    msg_length -= icount*2;
-
-    /* alloc needed space for the return message (add 100 for default msgs) */
-    if(!(retbuf = (char *)malloc(msg_length+100))){
-        strcpy(retbuf, "Error: No memory");
-        return context->NewStringFromAsciiz(retbuf);
-    }
-
-    /* check for too much '%s' in the message */
-    temp = msg;
-    /* replace all &1..&9 with %s */
-    while(temp = strstr(temp, "&")){
-        if(isdigit(*(temp+1))){        /* replace &1..&9 ?           */
-            *(temp++) = '%';
-            *(temp++) = 's';           /* %s expected                */
-        }
-        else
-            temp++;
-    }
-    /* now look for number of replacement variables                  */
-    temp = msg;                        /* reset temp pointer         */
-    while(temp = strstr(temp,"%s")){   /* search for the %s          */
-        count ++;                      /* increment counter          */
-        temp += 2;                     /* jump over %s               */
-    }
-    if(count > icount)
-        icount = 10;                   /* go to error case           */
-
-    /* generate full message with insertions */
-    switch(icount){
-        case(1):
-            if(sprintf(retbuf, msg, ins_string[0]) != msg_length)
-                strcpy(retbuf, error_insertions);
-            break;
-        case(2):
-            if(sprintf(retbuf, msg, ins_string[0], ins_string[1]) != msg_length)
-                strcpy(retbuf, error_insertions);
-            break;
-        case(3):
-            if(sprintf(retbuf, msg, ins_string[0], ins_string[1], ins_string[2]) != msg_length)
-                strcpy(retbuf, error_insertions);
-            break;
-        case(4):
-            if(sprintf(retbuf, msg, ins_string[0], ins_string[1], ins_string[2],
-                       ins_string[3]) != msg_length)
-                strcpy(retbuf, error_insertions);
-            break;
-        case(5):
-            if(sprintf(retbuf, msg, ins_string[0], ins_string[1], ins_string[2],
-                       ins_string[3], ins_string[4]) != msg_length)
-                strcpy(retbuf, error_insertions);
-            break;
-        case(6):
-            if(sprintf(retbuf, msg, ins_string[0], ins_string[1], ins_string[2],
-                       ins_string[3], ins_string[4], ins_string[5]) != msg_length)
-                strcpy(retbuf, error_insertions);
-            break;
-        case(7):
-            if(sprintf(retbuf, msg, ins_string[0], ins_string[1], ins_string[2],
-                       ins_string[3], ins_string[4], ins_string[5], ins_string[6]) != msg_length)
-                strcpy(retbuf, error_insertions);
-            break;
-        case(8):
-            if(sprintf(retbuf, msg, ins_string[0], ins_string[1], ins_string[2],
-                       ins_string[3], ins_string[4], ins_string[5], ins_string[6], ins_string[7]) != msg_length)
-                strcpy(retbuf, error_insertions);
-            break;
-        case(9):
-            if(sprintf(retbuf, msg, ins_string[0], ins_string[1], ins_string[2],
-                       ins_string[3], ins_string[4], ins_string[5], ins_string[6], ins_string[7], ins_string[8]) != msg_length)
-                strcpy(retbuf, error_insertions);
-            break;
-        case(10):
-            strcpy(retbuf, error_insertions); /* error case */
-            break;
-        default:
-            strcpy(retbuf, msg);
-            break;
-    }
-
-    catclose(catalog);                 /* close the catalog          */
-    return context->NewStringFromAsciiz(retbuf);
 }
 
 
@@ -2521,44 +2333,11 @@ RexxFunction4(RexxObjectPtr, SysGetMessageX,
             msg = not_found_message;       /* it means msg not found     */
 
         /* set number of insertions */
-        icount = 0;
+        icount = context->ArraySize(ins_string);
 
         /* calculate length of the return message */
-        if (ins_string[0] != NULL) {
-            msg_length += strlen(context->ObjectToStringValue(ins_string[0]));
-            icount++;
-        }
-        if (ins_string[1] != NULL) {
-            msg_length += strlen(context->ObjectToStringValue(ins_string[1]));
-            icount++;
-        }
-        if (ins_string[2] != NULL) {
-            msg_length += strlen(context->ObjectToStringValue(ins_string[2]));
-            icount++;
-        }
-        if (ins_string[3] != NULL) {
-            msg_length += strlen(context->ObjectToStringValue(ins_string[3]));
-            icount++;
-        }
-        if (ins_string[4] != NULL) {
-            msg_length += strlen(context->ObjectToStringValue(ins_string[4]));
-            icount++;
-        }
-        if (ins_string[5] != NULL) {
-            msg_length += strlen(context->ObjectToStringValue(ins_string[5]));
-            icount++;
-        }
-        if (ins_string[6] != NULL) {
-            msg_length += strlen(context->ObjectToStringValue(ins_string[6]));
-            icount++;
-        }
-        if (ins_string[7] != NULL) {
-            msg_length += strlen(context->ObjectToStringValue(ins_string[7]));
-            icount++;
-        }
-        if (ins_string[8] != NULL) {
-            msg_length += strlen(context->ObjectToStringValue(ins_string[8]));
-            icount++;
+        for (int i = 0; i < icount; i++) {
+            msg_length += strlen(context->ObjectToStringValue(context->ArrayAt(ins_string, i)));
         }
         msg_length += strlen(msg);
         msg_length -= icount*2;
@@ -2592,53 +2371,93 @@ RexxFunction4(RexxObjectPtr, SysGetMessageX,
         /* generate full message with insertions */
         switch(icount){
             case(1):
-                if(sprintf(retbuf, msg, ins_string[0]) != msg_length)
+                if(sprintf(retbuf, msg,
+                           context->ObjectToStringValue(context->ArrayAt(ins_string, 0)))
+                   != msg_length)
                     strcpy(retbuf, error_insertions);
                 break;
             case(2):
-                if(sprintf(retbuf, msg, ins_string[0], ins_string[1]) != msg_length)
+                if(sprintf(retbuf, msg,
+                           context->ObjectToStringValue(context->ArrayAt(ins_string, 0)),
+                           context->ObjectToStringValue(context->ArrayAt(ins_string, 1)))
+                   != msg_length)
                     strcpy(retbuf, error_insertions);
                 break;
             case(3):
-                if(sprintf(retbuf, msg, ins_string[0], ins_string[1], ins_string[2]) != msg_length)
+                if(sprintf(retbuf, msg,
+                           context->ObjectToStringValue(context->ArrayAt(ins_string, 0)),
+                           context->ObjectToStringValue(context->ArrayAt(ins_string, 1)),
+                           context->ObjectToStringValue(context->ArrayAt(ins_string, 2)))
+                   != msg_length)
                     strcpy(retbuf, error_insertions);
                 break;
             case(4):
-                if(sprintf(retbuf, msg, ins_string[0], ins_string[1], ins_string[2],
-                           ins_string[3]) != msg_length)
+                if(sprintf(retbuf, msg,
+                           context->ObjectToStringValue(context->ArrayAt(ins_string, 0)),
+                           context->ObjectToStringValue(context->ArrayAt(ins_string, 1)),
+                           context->ObjectToStringValue(context->ArrayAt(ins_string, 2)),
+                           context->ObjectToStringValue(context->ArrayAt(ins_string, 3)))
+                   != msg_length)
                     strcpy(retbuf, error_insertions);
                 break;
             case(5):
-                if(sprintf(retbuf, msg, ins_string[0], ins_string[1], ins_string[2],
-                           ins_string[3], ins_string[4]) != msg_length)
+                if(sprintf(retbuf, msg,
+                           context->ObjectToStringValue(context->ArrayAt(ins_string, 0)),
+                           context->ObjectToStringValue(context->ArrayAt(ins_string, 1)),
+                           context->ObjectToStringValue(context->ArrayAt(ins_string, 2)),
+                           context->ObjectToStringValue(context->ArrayAt(ins_string, 3)),
+                           context->ObjectToStringValue(context->ArrayAt(ins_string, 4)))
+                   != msg_length)
                     strcpy(retbuf, error_insertions);
                 break;
             case(6):
-                if(sprintf(retbuf, msg, ins_string[0], ins_string[1], ins_string[2],
-                           ins_string[3], ins_string[4], ins_string[5]) != msg_length)
+                if(sprintf(retbuf, msg,
+                           context->ObjectToStringValue(context->ArrayAt(ins_string, 0)),
+                           context->ObjectToStringValue(context->ArrayAt(ins_string, 1)),
+                           context->ObjectToStringValue(context->ArrayAt(ins_string, 2)),
+                           context->ObjectToStringValue(context->ArrayAt(ins_string, 3)),
+                           context->ObjectToStringValue(context->ArrayAt(ins_string, 4)),
+                           context->ObjectToStringValue(context->ArrayAt(ins_string, 5)))
+                   != msg_length)
                     strcpy(retbuf, error_insertions);
                 break;
             case(7):
-                if(sprintf(retbuf, msg, ins_string[0], ins_string[1], ins_string[2],
-                           ins_string[3], ins_string[4], ins_string[5], ins_string[6]) != msg_length)
+                if(sprintf(retbuf, msg,
+                           context->ObjectToStringValue(context->ArrayAt(ins_string, 0)),
+                           context->ObjectToStringValue(context->ArrayAt(ins_string, 1)),
+                           context->ObjectToStringValue(context->ArrayAt(ins_string, 2)),
+                           context->ObjectToStringValue(context->ArrayAt(ins_string, 3)),
+                           context->ObjectToStringValue(context->ArrayAt(ins_string, 4)),
+                           context->ObjectToStringValue(context->ArrayAt(ins_string, 5)),
+                           context->ObjectToStringValue(context->ArrayAt(ins_string, 6)))
+                   != msg_length)
                     strcpy(retbuf, error_insertions);
                 break;
             case(8):
-                if(sprintf(retbuf, msg, ins_string[0], ins_string[1], ins_string[2],
-                           ins_string[3], ins_string[4], ins_string[5], ins_string[6], ins_string[7]) != msg_length)
+                if(sprintf(retbuf, msg,
+                           context->ObjectToStringValue(context->ArrayAt(ins_string, 0)),
+                           context->ObjectToStringValue(context->ArrayAt(ins_string, 1)),
+                           context->ObjectToStringValue(context->ArrayAt(ins_string, 2)),
+                           context->ObjectToStringValue(context->ArrayAt(ins_string, 3)),
+                           context->ObjectToStringValue(context->ArrayAt(ins_string, 4)),
+                           context->ObjectToStringValue(context->ArrayAt(ins_string, 5)),
+                           context->ObjectToStringValue(context->ArrayAt(ins_string, 6)),
+                           context->ObjectToStringValue(context->ArrayAt(ins_string, 7)))
+                   != msg_length)
                     strcpy(retbuf, error_insertions);
                 break;
             case(9):
                 if(sprintf(retbuf, msg,
-                           ins_string[0],
-                           ins_string[1],
-                           ins_string[2],
-                           ins_string[3],
-                           ins_string[4],
-                           ins_string[5],
-                           ins_string[6],
-                           ins_string[7],
-                           ins_string[8]) != msg_length)
+                           context->ObjectToStringValue(context->ArrayAt(ins_string, 0)),
+                           context->ObjectToStringValue(context->ArrayAt(ins_string, 1)),
+                           context->ObjectToStringValue(context->ArrayAt(ins_string, 2)),
+                           context->ObjectToStringValue(context->ArrayAt(ins_string, 3)),
+                           context->ObjectToStringValue(context->ArrayAt(ins_string, 4)),
+                           context->ObjectToStringValue(context->ArrayAt(ins_string, 5)),
+                           context->ObjectToStringValue(context->ArrayAt(ins_string, 6)),
+                           context->ObjectToStringValue(context->ArrayAt(ins_string, 7)),
+                           context->ObjectToStringValue(context->ArrayAt(ins_string, 8)))
+                   != msg_length)
                     strcpy(retbuf, error_insertions);
                 break;
             case(10):
@@ -2651,6 +2470,33 @@ RexxFunction4(RexxObjectPtr, SysGetMessageX,
 
         catclose(catalog);                 /* close the catalog          */
         return context->NewStringFromAsciiz(retbuf);
+}
+
+
+/*************************************************************************
+* Function:  SysGetMessage                                               *
+*                                                                        *
+* Syntax:    call SysGetMessage msgnum [,file] [,str1]...[,str9]         *
+*                                                                        *
+* Params:    file           - Name of message file to get message from.  *
+*                              Default is OSO001.MSG.                    *
+*            msgnum         - Number of message being queried.           *
+*            str1 ... str9  - Insertion strings.  For messages which     *
+*                              contain %1, %2, etc, the str1, str2, etc  *
+*                              strings will be inserted (if given).      *
+*                                                                        *
+* Return:    The message with the inserted strings (if given).           *
+* Note:      The set number ist always 1. Therefore the interface        *
+*            remains the same as in OS/2 and Win.                        *
+*            Reason: keep portability                                    *
+*************************************************************************/
+
+RexxFunction3(RexxObjectPtr, SysGetMessage,
+              OPTIONAL_CSTRING, filename,
+              RexxUnsignedNumber, msgnum,
+              ARGLIST, ins_string)
+{
+    return SysGetMessageX_impl(context, filename, 1, msgnum, ins_string);
 }
 
 
@@ -2760,7 +2606,7 @@ RexxFunction1(RexxObjectPtr, SysCreatePipe, CSTRING, opt)
 {
     int  iStatus;
     int  iaH[2];
-    char cBlocking;
+    char cBlocking = 0;
     char retbuf[256];
 
     if (opt == NULL )                  /* No arg?                    */
@@ -2878,7 +2724,7 @@ RexxFunction3(int, SysSetFileDateTime, CSTRING, filename, OPTIONAL_CSTRING, newd
     bool      fOk = true;
     bool      fCloseFile = false;
     struct utimbuf timebuf;
-    struct tm *tmptime;
+    struct tm tmptime;
     time_t ltime;
     struct stat buf;
     char  *dir_buf = NULL;
@@ -2912,19 +2758,19 @@ RexxFunction3(int, SysSetFileDateTime, CSTRING, filename, OPTIONAL_CSTRING, newd
         newtime = ctime(&(buf.st_mtime));
         if (strlen(newdate) > 0) {
             /* parse new date */
-            if (sscanf(newdate, "%4d-%2d-%2d", &tmptime->tm_year,
-                       &tmptime->tm_mon, &tmptime->tm_mday) != 3)
+            if (sscanf(newdate, "%4d-%2d-%2d", &tmptime.tm_year,
+                       &tmptime.tm_mon, &tmptime.tm_mday) != 3)
                 fOk = false;
-            tmptime->tm_year -= 1900;
-            tmptime->tm_mon -= 1;
+            tmptime.tm_year -= 1900;
+            tmptime.tm_mon -= 1;
         }
         if (strlen(newtime) > 0) {
             /* parse new time */
-            if (sscanf(newtime, "%2d:%2d:%2d", &tmptime->tm_hour,
-                       &tmptime->tm_min, &tmptime->tm_sec) != 3)
+            if (sscanf(newtime, "%2d:%2d:%2d", &tmptime.tm_hour,
+                       &tmptime.tm_min, &tmptime.tm_sec) != 3)
                 fOk = false;
         }
-        ltime = mktime(tmptime);
+        ltime = mktime(&tmptime);
         timebuf.modtime = ltime;
         if (utime(dir_buf, &timebuf) < 0) {
             fOk = false;
