@@ -540,6 +540,22 @@ syntax:
 
 
 
+::method "test_RAISE_SYNTAX_ERROR_01"
+  self~expectSyntax(25.906)
+  interpret "raise exit novalue"    -- otherwise scanner throws up before running the program
+
+
+::method "test_RAISE_SYNTAX_ERROR_02"
+  self~expectSyntax(35.1)
+  interpret "raise novalue exit return"
+
+
+::method "test_RAISE_SYNTAX_ERROR_03"
+  self~expectSyntax(25.909)
+  a=.array~new
+  interpret "raise novalue additional (a) array (one, two, three)"
+
+
 ::method "test_RAISE_USER"
   self~expectCondition("USER RGF")
   raise UseR rGf
