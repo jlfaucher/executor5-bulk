@@ -99,9 +99,9 @@ COMMONHEADERS = $(top_srcdir)\api\InternalAPI.hpp \
                 $(top_srcdir)\api\rexxapidefs.h \
                 $(top_srcdir)\api\platform\windows\rexxapitypes.h \
                 $(top_srcdir)\api\platform\windows\rexxplatformapis.h \
-                $(top_srcdir)\shared\Rxstring.hpp \
-                $(top_srcdir)\shared\SynchronizedBlock.hpp \
-                $(top_srcdir)\shared\SystemException.hpp
+                $(top_srcdir)\kernel\Rxstring.hpp \
+                $(top_srcdir)\kernel\SynchronizedBlock.hpp \
+                $(top_srcdir)\kernel\SystemException.hpp
 
 OOREXXLIBS = $(top_srcdir)\kernel\rexx.lib
 
