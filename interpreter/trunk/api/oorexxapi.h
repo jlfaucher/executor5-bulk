@@ -158,13 +158,13 @@ typedef struct _ooRexxMethodEntry
     END_EXTERN_C()
 
 
-typedef RexxReturnCode (RexxEntry *RexxPackageLoader(RexxThreadContext *));
-typedef RexxReturnCode (RexxEntry *RexxPackageUnloader(RexxThreadContext *));
+typedef RexxReturnCode (*(RexxEntry RexxPackageLoader(RexxThreadContext *)));
+typedef RexxReturnCode (*(RexxEntry RexxPackageUnloader(RexxThreadContext *)));
 
 typedef struct _ooRexxPackageEntry
 {
     int size;                      // size of the structure...help compatibility
-	int apiVersion;                // version this was compiled with
+    int apiVersion;                // version this was compiled with
     char *packageName;             // package identifier
     char  *packageVersion;         // package version #
     RexxPackageLoader loader;      // the package loader

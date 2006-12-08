@@ -71,12 +71,12 @@ public:
    static void setSystemVersion();
    static void getUserID(char *buffer);
    static void sleep(int milliseconds);
-   static inline getPid()
+   static inline int getPid()
    {
        return _getpid();
    }
 
-   static inline runningNT()
+   static inline bool runningNT()
    {
        if (platformVersion == NoSystem)
        {
@@ -85,7 +85,7 @@ public:
        return platformVersion == WindowsNT;
    }
 
-   static inline running98()
+   static inline bool running98()
    {
        if (platformVersion == NoSystem)
        {
