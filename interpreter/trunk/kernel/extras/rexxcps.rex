@@ -38,8 +38,8 @@
 /* */
 rexxcps=2.1    /* REXXCPS version; quotable only if code unchanged */
 trace o
-count=3
-averaging=5
+count=30
+averaging=100
 tracevar='o'
 signal on novalue
 parse source  source  1 system .
