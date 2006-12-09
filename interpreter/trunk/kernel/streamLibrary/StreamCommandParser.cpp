@@ -124,8 +124,9 @@ int parser(TokenDefinition *ttsp, const char *tokenString, void *userparms)
                                         /* Process each token in tokenstring */
     while (tokenizer.nextToken())
     {
+        TokenDefinition *def;
         // check each of the table elements
-        for (TokenDefinition *def = ttsp; def->isValid() && !tokenizer.equals(def->token); def++);
+        for ( def = ttsp; def->isValid() && !tokenizer.equals(def->token); def++);
 
         if (!def->isValid())              /* no token found?                   */
         {

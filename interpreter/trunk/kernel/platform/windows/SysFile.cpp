@@ -512,7 +512,8 @@ bool SysFile::putLine(char *buffer, size_t len, size_t &bytesWritten)
 
 bool SysFile::gets(char *buffer, size_t bufferLen, size_t &bytesRead)
 {
-    for (size_t i = 0; i < bufferLen - 1; i++)
+    size_t i;
+    for ( i = 0; i < bufferLen - 1; i++)
     {
         size_t len;
 
