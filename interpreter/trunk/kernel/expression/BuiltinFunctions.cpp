@@ -2062,20 +2062,21 @@ BUILTIN(RANDOM) {
 
   fixArgs(RANDOM);                     /* expand arguments to full value    */
 
-  (argcount == 1)
+  if (argcount == 1)
   {
                                        /* get the maximum value             */
       maximum = optionalInteger(RANDOM, maximum);
       return context->random(DEFAULT_MIN, maximum->wholeNumber(), OREF_NULL);
   }
-  else {
+  else
+  {
                                        /* get the minimum value             */
       minimum = optionalInteger(RANDOM, minimum);
                                        /* get the maximum value             */
       maximum = optionalInteger(RANDOM, maximum);
 
-      wholenumber _t minValue = DEFAULT_MIN;
-      wholenumber _t maxValue = DEFAULT_MAX;
+      wholenumber_t minValue = DEFAULT_MIN;
+      wholenumber_t maxValue = DEFAULT_MAX;
 
       if (minimum != OREF_NULL)
       {

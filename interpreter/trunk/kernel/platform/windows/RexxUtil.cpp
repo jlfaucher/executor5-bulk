@@ -3547,7 +3547,7 @@ RexxFunction5(int, SysFromUniCode, RexxStringObject, source, OPTIONAL_CSTRING, c
     int codePage;
     char  szUsedDefChar[2];
 
-    char *sourcePtr = context->StringData(source);
+    char *sourceStr = context->StringData(source);
     size_t length = context->StringLength(source);
 
     // evaluate codepage
@@ -3597,7 +3597,7 @@ RexxFunction5(int, SysFromUniCode, RexxStringObject, source, OPTIONAL_CSTRING, c
     /* Query the number of bytes required to store the Dest string */
     iBytesNeeded = WideCharToMultiByte( codePage,
         dwFlags,
-        (LPWSTR) sourcePtr,
+        (LPWSTR) sourceStr,
         length,
         NULL,
         0,
@@ -3606,12 +3606,11 @@ RexxFunction5(int, SysFromUniCode, RexxStringObject, source, OPTIONAL_CSTRING, c
 
     if (iBytesNeeded == 0) return GetLastError();  // call to function fails
 
-    char * resultStr = (char *)GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT, iBytesNeeded + 4));
+    char * resultStr = (char *)GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT, (iBytesNeeded + 4));
 
     // hard error, stop
     if (resultStr == NULL)
     {
-        GlobalFree(strptr);          // free allocated string
         context->InvalidRoutine();
         return 0;
     }
@@ -3655,7 +3654,7 @@ RexxFunction5(int, SysFromUniCode, RexxStringObject, source, OPTIONAL_CSTRING, c
     szUsedDefChar[1] ='\0';
 
     context->SetStemElement(stem, "!USEDDEFAULTchar", context->NewStringFromAsciiz(szUsedDefChar));
-    context->SetStemElement(stem, "!TEST", context->NewString((RexxStringPointer)resultStr, (RexxStringLength)iBytesDestination))
+    context->SetStemElement(stem, "!TEST", context->NewString((RexxStringPointer)resultStr, (RexxStringLength)iBytesDestination));
 
     GlobalFree(resultStr);       // free allocated string
     return 0;
