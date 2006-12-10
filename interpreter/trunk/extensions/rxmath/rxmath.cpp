@@ -72,6 +72,12 @@ extern int errno;
 /*------------------------------------------------------------------
  * program defines
  *------------------------------------------------------------------*/
+#if defined(OPSYS_AIX) || defined(OPSYS_LINUX)
+    #define PROG_NAME "rxmath"
+#else
+    #define PROG_NAME "RxMath"
+#endif
+
 
 #define PROG_DESC "REXX mathematical function package"
 #define PROG_VERS "1.1"

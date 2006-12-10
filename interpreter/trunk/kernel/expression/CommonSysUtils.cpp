@@ -913,8 +913,9 @@ RexxFunction3(int, SysStemDelete, RexxStemObject, toStem, size_t, start, OPTIONA
       return 0;
   }
 
+  size_t index;
   /* now copy the remaining indices up front */
-  for (size_t index = start;  index + count <= items; index++)
+  for ( index = start;  index + count <= items; index++)
   {
       // copy from the old index to the new index
       RexxObjectPtr value = context->GetStemArrayElement(toStem, index + count);
@@ -927,7 +928,7 @@ RexxFunction3(int, SysStemDelete, RexxStemObject, toStem, size_t, start, OPTIONA
       context->SetStemArrayElement(toStem, index, value);
   }
 
-      /* now delete the items at the end */
+  /* now delete the items at the end */
   for (index = items - count + 1; index <= items; index++)
   {
       context->DropStemArrayElement(toStem, index);

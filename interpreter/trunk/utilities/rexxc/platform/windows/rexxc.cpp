@@ -46,6 +46,8 @@
 #include <string.h>
 #include "windows.h"
 #include "oorexx.h"
+#include "PlatformTypes.h"
+#include "RexxErrorCodes.h"
 #include "InternalAPI.hpp"
 
 #define DLLNAME "rexx.dll"

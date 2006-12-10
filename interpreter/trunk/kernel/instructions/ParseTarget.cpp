@@ -68,8 +68,8 @@ void RexxTarget::init(
   this->argcount = argcount;
   this->string = (RexxString *)string; /* save the string also              */
   this->next_argument = 1;             /* start with the first argument     */
-  this->stack = s;                     // save the expression stack for saving object references in
-  this->stackTop = s->location();      // save the stack top for resets
+  this->stack = stack;                 // save the expression stack for saving object references in
+  this->stackTop = stack->location();  // save the stack top for resets
   this->next(context);                 /* go perform needed resets          */
 }
 
