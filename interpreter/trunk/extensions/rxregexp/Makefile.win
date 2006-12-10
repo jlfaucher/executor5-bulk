@@ -42,10 +42,14 @@
 !include $(top_srcdir)\Nmake.inc
 
 INCLUDES = $(OOREXXINC) \
-           /I$(top_srcdir)/kernel/runtime \
-           /I$(top_srcdir)/kernel/classes
+           /I$(top_srcdir)\kernel \
+           /I$(top_srcdir)\kernel\classes \
+           /I$(top_srcdir)\kernel\expression \
+           /I$(top_srcdir)\kernel\messages \
+           /I$(top_srcdir)\kernel\runtime \
+           /I$(top_srcdir)\kernel\platform\windows
 
-DLLOBJS = rxregexp.obj automation.obj dblqueue.obj
+DLLOBJS = rxregexp.obj automaton.obj dblqueue.obj
 
 SHAREDDLLVER = $(top_srcdir)\shared\windows\verinfo_dll.res
 
@@ -60,7 +64,7 @@ rxregexp.dll rxregexp.lib: $(DLLOBJS) $(COMMONOBJS) $(SHAREDDLLVER) \
         /DEF:rxregexp.def /OUT:rxregexp.dll
 
 rxregexp.obj: rxregexp.cpp \
-            automation.hpp \
+            automaton.hpp \
 	    dblqueue.hpp \
 	    regexp.hpp \
 	    $(top_srcdir)/kernel/runtime/RexxCore.h \
@@ -69,11 +73,11 @@ rxregexp.obj: rxregexp.cpp \
 	    $(COMMONHEADERS)
 	$(CC) $(CFLAGS) rxregexp.cpp /o $@
 
-automation.obj: automation.cpp \
-            automation.hpp \
+automaton.obj: automaton.cpp \
+            automaton.hpp \
 	    regexp.hpp \
 	    $(COMMONHEADERS)
-	$(CC) $(CFLAGS) automation.cpp /o $@
+	$(CC) $(CFLAGS) automaton.cpp /o $@
 
 dblqueue.obj: dblqueue.cpp \
             dblqueue.hpp \

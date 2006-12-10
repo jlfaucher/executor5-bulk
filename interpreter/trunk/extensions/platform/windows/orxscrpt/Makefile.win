@@ -41,7 +41,8 @@
 
 !include $(top_srcdir)\Nmake.inc
 
-INCLUDES = $(OOREXXINC)
+INCLUDES = $(OOREXXINC) \
+           /I$(top_srcdir)\kernel\platform\windows
 
 DLLOBJS = classfactory.obj dllfuncs.obj eng2rexx.obj engfact.obj nameditem.obj \
           orxdispid.obj orxevents.obj orxdispatch.obj orxscrpt.obj \
@@ -59,7 +60,7 @@ orxscript.dll orxscript.lib: $(DLLOBJS) $(COMMONOBJS) $(SHAREDDLLVER) \
 	$(WINLIBS) $(SHAREDDLLVER) $(OOREXXLIBS) /SUBSYSTEM:WINDOWS \
         /DEF:orxscript.def /OUT:orxscript.dll
 
-classdactory.obj: classfactory.cpp \
+classfactory.obj: classfactory.cpp \
             classfactory.hpp \
 	    orxscrpt_main.hpp \
 	    $(COMMONHEADERS)

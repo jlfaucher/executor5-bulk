@@ -65,7 +65,7 @@ rexxapi.dll rexxapi.lib: $(DLLOBJS) $(COMMONOBJS) $(SHAREDLIB) $(SHAREDDLLVER) \
 RexxLegacyAPI.obj: RexxLegacyAPI.cpp \
                    $(top_srcdir)\kernel\api\RexxLegacyAPI.hpp \
 		   $(COMMONHEADERS)
-	$(CC) $(CFLAGS) ..\..\RexxLegacyAPI.cpp /o $@
+	$(CC) $(CFLAGS) RexxLegacyAPI.cpp /o $@
 
 SysLegacyAPI.obj: platform\windows\SysLegacyAPI.cpp \
                   $(top_srcdir)\kernel\api\RexxLegacyAPI.hpp \

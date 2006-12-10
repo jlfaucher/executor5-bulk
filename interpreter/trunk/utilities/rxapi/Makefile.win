@@ -41,7 +41,10 @@
 
 !include $(top_srcdir)\Nmake.inc
 
-INCLUDES = $(OOREXXINC)
+INCLUDES = $(OOREXXINC) \
+           /I$(top_srcdir)\kernel \
+           /I$(top_srcdir)\utilities\rxapi \
+           /I$(top_srcdir)\kernel\platform\windows
 
 EXEOBJS = APIService.obj APIServer.obj APIServerInstance.obj \
           MacroSpaceManager.obj QueueManager.obj RegistrationManager.obj \

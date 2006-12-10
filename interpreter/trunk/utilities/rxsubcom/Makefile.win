@@ -57,9 +57,9 @@ rxsubcom.exe: $(EXEOBJS) $(OOREXXLIBS) $(SHAREDEXEVER)
 	$(LD) $(LFLAGS) $(EXEOBJS) $(SHAREDEXEVER) $(OOREXXLIBS) $(WINLIBS) \
 	/SUBSYSTEM:WINDOWS /OUT:rxsubcom.exe
 
-rxsubcom.obj: platform\windows\SUBCOMCommand.c \
+rxsubcom.obj: platform\windows\rxsubcom.cpp \
           $(COMMONHEADERS)
-	$(CC) $(CFLAGS) platform\windows\SUBCOMCommand.c /o $@
+	$(CC) $(CFLAGS) platform\windows\rxsubcom.cpp /o $@
 
 
 #################### clean #########################

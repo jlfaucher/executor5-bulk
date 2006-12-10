@@ -41,7 +41,9 @@
 
 !include $(top_srcdir)\Nmake.inc
 
-INCLUDES = $(OOREXXINC)
+INCLUDES = $(OOREXXINC) \
+           /I$(top_srcdir)\kernel\messages \
+           /I$(top_srcdir)\kernel\platform\windows
 
 EXEOBJS = rexxc.obj
 
@@ -57,7 +59,7 @@ rexxc.exe: $(EXEOBJS) $(OOREXXLIBS) $(SHAREDEXEVER)
 
 rexxc.obj: platform\windows\rexxc.cpp \
           $(COMMONHEADERS)
-	$(CC) $(CFLAGS) rexxc.cpp /o $@
+	$(CC) $(CFLAGS) platform\windows\rexxc.cpp /o $@
 
 
 #################### clean #########################
