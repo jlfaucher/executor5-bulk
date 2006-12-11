@@ -1362,7 +1362,7 @@ InternalPackage.obj: runtime\InternalPackage.cpp \
 Interpreter.obj: runtime\Interpreter.cpp \
                 runtime\Interpreter.hpp \
                 classes\DirectoryClass.hpp \
-                ..\shared\windows\SysThread.hpp \
+                platform\windows\SysThread.hpp \
 		$(DEPHEADERS)
 	$(CC) $(CFLAGS) runtime\Interpreter.cpp /o $@
 
@@ -1395,7 +1395,7 @@ Numerics.obj: runtime\Numerics.cpp \
 
 Package.obj: runtime\Package.cpp \
                 runtime\Package.hpp \
-                ..\shared\windows\SysLibrary.hpp \
+                platform\windows\SysLibrary.hpp \
                 runtime\Interpreter.hpp \
                 runtime\RexxNativeCode.hpp \
                 runtime\FunctionActivator.hpp \
@@ -1543,7 +1543,7 @@ RexxMemory.obj: runtime\RexxMemory.cpp \
                 runtime\RexxMemory.hpp \
                 classes\TableClass.hpp \
                 classes\StackClass.hpp \
-                ..\shared\windows\SysSemaphore.hpp \
+                platform\windows\SysSemaphore.hpp \
                 runtime\RootImage.hpp \
                 classes\StringClass.hpp \
                 classes\MutableBufferClass.hpp \
@@ -1610,7 +1610,7 @@ RexxSmartBuffer.obj: runtime\RexxSmartBuffer.cpp \
 
 RexxThread.obj: runtime\RexxThread.cpp \
                 runtime\RexxThread.hpp \
-                ..\shared\windows\SysThread.hpp \
+                platform\windows\SysThread.hpp \
                 runtime\RexxActivity.hpp \
 		$(DEPHEADERS)
 	$(CC) $(CFLAGS) runtime\RexxThread.cpp /o $@

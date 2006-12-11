@@ -101,19 +101,19 @@ RegistrationManager.obj: RegistrationManager.cpp \
           $(COMMONHEADERS)
 	$(CC) $(CFLAGS) RegistrationManager.cpp /o $@
 
-ClientMessage.obj: $(topSrcdir)\shared\ClientMessage.cpp \
+ClientMessage.obj: $(top_Srcdir)\shared\ClientMessage.cpp \
           $(top_srcdir)\shared\ClientMessage.hpp \
           $(top_srcdir)\kernel\client\LocalAPIManager.hpp \
           $(top_srcdir)\shared\ServiceException.hpp \
           $(top_srcdir)\shared\ServiceMessage.cpp \
           $(COMMONHEADERS)
-	$(CC) $(CFLAGS) $(topSrcdir)\shared\ClientMessage.cpp /o $@
+	$(CC) $(CFLAGS) $(top_Srcdir)\shared\ClientMessage.cpp /o $@
 
-ServiceMessage.obj: $(topSrcdir)\shared\ServiceMessage.cpp \
+ServiceMessage.obj: $(top_Srcdir)\shared\ServiceMessage.cpp \
           $(top_srcdir)\shared\ServiceException.hpp \
           $(top_srcdir)\shared\ServiceMessage.cpp \
           $(COMMONHEADERS)
-	$(CC) $(CFLAGS) $(topSrcdir)\shared\ServiceMessage.cpp /o $@
+	$(CC) $(CFLAGS) $(top_Srcdir)\shared\ServiceMessage.cpp /o $@
 
 
 #################### clean #########################
