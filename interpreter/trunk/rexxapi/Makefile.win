@@ -57,10 +57,10 @@ SHAREDDLLVER = $(top_srcdir)\shared\windows\verinfo_dll.res
 all: rexxapi.dll rexxapi.lib
 
 rexxapi.dll rexxapi.lib: $(DLLOBJS) $(COMMONOBJS) $(SHAREDLIB) $(SHAREDDLLVER) \
-                         $(OOREXXLIBS) rexxapi.def
+                         $(OOREXXLIBS) platform\windows\rexxapi.def
 	$(LD) /DLL $(LFLAGS) $(DLLOBJS) $(COMMONOBJS) $(SHAREDLIB) \
 	$(WINLIBS) $(SHAREDDLLVER) $(OOREXXLIBS) /SUBSYSTEM:WINDOWS \
-        /DEF:rexxapi.def /OUT:rexxapi.dll
+        /DEF:platform\windows\rexxapi.def /OUT:rexxapi.dll
 
 RexxLegacyAPI.obj: RexxLegacyAPI.cpp \
                    $(top_srcdir)\kernel\api\RexxLegacyAPI.hpp \

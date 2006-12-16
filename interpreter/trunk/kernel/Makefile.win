@@ -104,7 +104,7 @@ COMMONOBJS = CallContextStubs.obj InterpreterApi.obj InterpreterInstanceStubs.ob
 	  VirtualFunctionTable.obj WeakReference.obj StreamCommandParser.obj \
 	  StreamNative.obj MacroSpaceApi.obj QueuesAPI.obj RegistrationAPI.obj \
 	  LocalAPIContext.obj LocalAPIManager.obj LocalMacroSpaceManager.obj \
-	  LocalQueueManager.obj LocalRegistrationManager SysCriticalSection.obj \
+	  LocalQueueManager.obj LocalRegistrationManager.obj SysCriticalSection.obj \
 	  SysCSStream.obj SysFile.obj SysFileSystem.obj SysLibrary.obj \
 	  SysLocalAPIManager.obj SysProcess.obj SysSemaphore.obj SysThread.obj \
 	  ScriptContext.obj
@@ -173,8 +173,8 @@ LegacyExitHandler.obj: api\LegacyExitHandler.cpp \
 	$(CC) $(CFLAGS) api\LegacyExitHandler.cpp /o $@
 
 MacroSpaceApi.obj: api\MacroSpaceApi.cpp \
-                client\LocapAPIManager.hpp \
-                client\LocapMacroSpaceManager.hpp \
+                client\LocalAPIManager.hpp \
+                client\LocalMacroSpaceManager.hpp \
                 client\LocalAPIContext.hpp \
 		$(DEPHEADERS)
 	$(CC) $(CFLAGS) api\MacroSpaceApi.cpp /o $@
@@ -198,16 +198,16 @@ MethodContextStubs.obj: api\MethodContextStubs.cpp \
 	$(CC) $(CFLAGS) api\MethodContextStubs.cpp /o $@
 
 QueuesAPI.obj: api\QueuesAPI.cpp \
-                client\LocapAPIManager.hpp \
-                client\LocapMacroSpaceManager.hpp \
+                client\LocalAPIManager.hpp \
+                client\LocalMacroSpaceManager.hpp \
                 client\LocalAPIContext.hpp \
 		api\RexxAPI.h \
 		$(DEPHEADERS)
 	$(CC) $(CFLAGS) api\QueuesAPI.cpp /o $@
 
 RegistrationAPI.obj: api\RegistrationAPI.cpp \
-                client\LocapAPIManager.hpp \
-                client\LocapMacroSpaceManager.hpp \
+                client\LocalAPIManager.hpp \
+                client\LocalMacroSpaceManager.hpp \
                 client\LocalAPIContext.hpp \
 		api\RexxAPI.h \
 		api\RexxLegacyAPI.h \
@@ -1556,7 +1556,7 @@ RexxMemory.obj: runtime\RexxMemory.cpp \
                 runtime\Interpreter.hpp \
                 runtime\WeakReference.hpp \
                 platform\windows\SysInterpreter.hpp \
-                ..\shared\windows\SysFileSystem.hpp \
+                platform\windows\SysFileSystem.hpp \
                 classes\PointerClass.hpp \
                 classes\RelationClass.hpp \
                 classes\QueueClass.hpp \
@@ -1818,8 +1818,8 @@ StreamCommandParser.obj: streamLibrary\StreamCommandParser.cpp \
 
 StreamNative.obj: streamLibrary\StreamNative.cpp \
                 streamLibrary\StreamNative.hpp \
-                ..\shared\windows\SysFileSystem.hpp \
-                ..\shared\windows\SysFile.hpp \
+                platform\windows\SysFileSystem.hpp \
+                platform\windows\SysFile.hpp \
                 streamLibrary\StreamCommandParser.h \
 		$(DEPHEADERS)
 	$(CC) $(CFLAGS) streamLibrary\StreamNative.cpp /o $@
