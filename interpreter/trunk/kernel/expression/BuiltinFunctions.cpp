@@ -269,7 +269,7 @@ BUILTIN(LASTPOS) {
                                        /* start position is optional        */
   start = optionalInteger(LASTPOS, start);
                                        /* go perform the lastpos function   */
-  return haystack->lastPos(needle, start);
+  return haystack->lastPosRexx(needle, start);
 }
 
 #define REVERSE_MIN 1

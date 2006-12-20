@@ -139,8 +139,12 @@
    RexxString *concatBlank(RexxObject *);
    bool        checkLower();
    RexxString *upper();
+   RexxString *upper(stringsize_t, stringsize_t);
+   RexxString *upperRexx(RexxInteger *, RexxInteger *);
    RexxString *stringTrace();
    RexxString *lower();
+   RexxString *lower(stringsize_t, stringsize_t);
+   RexxString *lowerRexx(RexxInteger *, RexxInteger *);
    void        setNumberString(RexxObject *);
    RexxString *concatWith(RexxString *, stringchar_t);
 
@@ -196,7 +200,8 @@
    RexxInteger *compare(RexxString *, RexxString *);
    RexxString  *copies(RexxInteger *);
    RexxObject  *dataType(RexxString *);
-   RexxInteger *lastPos(RexxString *, RexxInteger *);
+   stringsize_t lastPos(RexxString *);
+   RexxInteger *lastPosRexx(RexxString *, RexxInteger *);
    RexxInteger *posRexx(RexxString *, RexxInteger *);
    RexxString  *translate(RexxString *, RexxString *, RexxString *);
    RexxInteger *verify(RexxString *, RexxString *, RexxInteger *);

@@ -69,7 +69,7 @@ int DBCS_MemiCmp(
                                        /* compare the two bytes             */
             rc = memcmp(String1, String2, DBCS_BYTELEN);
             if (rc) {                        /* mismatch?                         */
-                break; 
+                break;
             }	  /* quit if not equal                 */
             String1 += DBCS_BYTELEN;       /* step the pointer                  */
             String2 += DBCS_BYTELEN;       /* step second pointer               */
@@ -89,7 +89,7 @@ int DBCS_MemiCmp(
                                        /* if characters aren't equal        */
                 rc = (tolower(*String1++) - tolower(*String2++));
                 if (rc) {                        /* mismatch?                         */
-                    break; 
+                    break;
                 }	  /* quit the loop                     */
                 String1++;                     /* step the pointer                  */
                 String2++;                     /* step second pointer               */
@@ -106,49 +106,42 @@ int   DBCS_Type(
 /* Function: Do DBCS string type validation                          */
 /*********************************************************************/
 {
-    //CStr;                       /* current scan location             */
-    //EndStr;                     /* end location                      */
-    //ChkFlag;                    /* Invalid string flag.              */
-    //StrLen;                     /* Input String length.              */
-    //DBCSNum;                    /* Number of DBCS bytes.             */
-	
     stringsize_t StrLen = STRLEN(String);             /* get the length                    */
-    bool ChkFlag = false;                     /* still valid                       */
     stringsize_t DBCSNum = 0;                         /* no DBCS bytes                     */
-    EndStr = CStr + StrLen;              /* point to end of string            */
+    stringchar_t *CStr = STRPTR(String);
+    stringchar_t *EndStr = CStr + StrLen;              /* point to end of string            */
 
-    /* initialize & declare at same time is faster as only calls one constructor
-     * also a for loop limits scope of local variables
-     * can declare two variables of same type in the <initialization> section of a for loop */
-    for(stringchar_t * CStr = STRPTR(Sting), 
-	EndStr = CStr + StrLen; CStr < EndStr;) {  /* scan until invalid status         */
-        if (IsDBCS(*CStr)) {               /* Current byte DBCS 1st?            */
-            if (++CStr >= EndStr) {          /* but only byte left?               */
-                ChkFlag = true;                /* flag the error                    */
-                break;                         /* and quit                          */
+    while (CStr < EndStr)
+    {
+        if (IsDBCS(*CStr)) {                 /* Current byte DBCS 1st?            */
+            // if we have a dangling final char, we can quit now
+            if (++CStr >= EndStr)
+            {
+                return INV_MIXED;
             }
-            else {
+            else
+            {
                 DBCSNum += 2;                  /* bump the DBCS count               */
             }
         }
         CStr++;                            /* step one more character           */
     }
 
-    if (ChkFlag) {                         /* not valid?                        */
-        return INV_MIXED;
-    }	/* String is invalid.                */
-    else {                               /* String is valid                   */
-        if (!DBCSNum) {                     /* Pure SBCS?                        */
-            return PURE_SBCS;
-	}
-        else if (DBCSNum == StrLen) {        /* Pure DBCS?                        */
-            return PURE_DBCS;
-	}
-        else {
-            return MIXED;                      /* DBCS & SBCS combined.             */
-	}
+
+    if (DBCSNum == 0)                      // no DBCS is pure single byte
+    {
+        return PURE_SBCS;
+    }
+    else if (DBCSNum == StrLen)            // if the DBCS byte count is the entire string, this is pure
+    {
+        return PURE_DBCS;
+    }
+    else // we have the two combined
+    {
+        return MIXED;
     }
 }
+
 
 stringsize_t RexxString::validDBCS()
 /*********************************************************************/
@@ -160,29 +153,25 @@ stringsize_t RexxString::validDBCS()
     {
         return this->getLength();               /* return quickly                    */
     }
-    
-    //EndStr;             /* end location                      */
-    //String;             /* string scan pointer               */
-    //Length;               /* byte length of the string         */
-    //CharLength;           /* Input HugeString length.          */
-    //BadChar[4];                 /* working buffer for errors         */
-    //HexBadChar[4];              /* working buffer for errors         */
-    //HasDBCS;                    /* found a DBCS character            */
 
     stringsize_t Length = STRLEN(this);               /* and the length                    */
     stringsize_t CharLength = 0;                      /* no characters yet                 */
     bool HasDBCS = false;                     /* no DBCS yet                       */
+    stringchar_t *String = STRPTR(this);
+    stringchar_t *EndStr = String + Length;
 
-    for(stringchar_t * String = STRPTR(this),
-        EndStr = String + Length; String < Length;) { /* scan until invalid status         */
-        if (IsDBCS(*String)) {             /* Current byte DBCS 1st?            */
-            if (++String >= EndStr) {        /* but only byte left?               */
-                                       /* get as character data (and hex)   */
-		char BadChar[4];
-	        char HexBadChar[4];	
+    while (String < EndStr)
+    {
+        if (IsDBCS(*String))
+        {             /* Current byte DBCS 1st?            */
+            if (++String >= EndStr)
+            {        /* but only byte left?               */
+                /* get as character data (and hex)   */
+                char BadChar[4];
+                char HexBadChar[4];
                 sprintf(BadChar, "%c", *String);
                 sprintf(HexBadChar, "%2X", *String);
-                                       /* raise an error                    */
+                /* raise an error                    */
                 reportException(Error_Invalid_character_char,
                                 new_string(BadChar),
                                 new_string(HexBadChar));
@@ -192,13 +181,14 @@ stringsize_t RexxString::validDBCS()
         String++;                          /* step one more byte                */
         CharLength++;                      /* count a character                 */
     }
-  
+
     if (!HasDBCS)                        /* no DBCS characters found?         */
     {
         this->Attributes |= STRING_NODBCS; /* flag as no DBCS possible          */
     }
     return CharLength;                   /* return the length                 */
 }
+
 
 stringsize_t DBCS_CharacterCount(
   stringchar_t *   String,                     /* string scan pointer               */
@@ -208,9 +198,6 @@ stringsize_t DBCS_CharacterCount(
 /*                   string                                          */
 /*********************************************************************/
 {
-    //EndStr;                     /* end location                      */
-    //CharLength;                 /* Input HugeString length.          */
-
     stringsize_t CharLength = 0;                      /* no characters yet                 */
 
     for(stringchar_t * EndStr = String + Length;
@@ -223,6 +210,7 @@ stringsize_t DBCS_CharacterCount(
     }
     return CharLength;                   /* return the length                 */
 }
+
 
 RexxString *RequiredArg(
   RexxString *ArgString,               /* validated argument string         */
@@ -238,6 +226,7 @@ RexxString *RequiredArg(
     *Length = ValidDBCS(ArgString);      /* now validate the string           */
     return ArgString;                    /* return the string value           */
 }
+
 
 RexxString *OptionalArg(
   RexxString *ArgString,               /* validated argument string         */
@@ -290,15 +279,12 @@ void DBCS_IncChar(
 /*              of characters                                        */
 /*********************************************************************/
 {
-    //CStr;                      /* current string location           */
-    //EndStr;                    /* end of string                     */
-
     stringchar_t * CStr = *String;                      /* point to the string               */
     stringchar_t * EndStr = CStr + *Length;             /* point to the end of string        */
 
     while (*CharLen) {                   /* while more characters             */
         if (CStr >= EndStr) {                /* reached the end                   */
-            break;           
+            break;
         }	    /* This failed                       */
                                        /* DBCS character?                   */
         if (IsDBCS(*CStr)) {
@@ -311,7 +297,6 @@ void DBCS_IncChar(
     }
     *Length -= CStr - *String;           /* reduce the length                 */
     *String = CStr;                      /* set the new pointer               */
-    /* finished                          */
 }
 
 void DBCS_IncByte(
@@ -323,9 +308,6 @@ void DBCS_IncByte(
 /*              of bytes.  Will not split a DBCS character           */
 /*********************************************************************/
 {
-    //CStr;                      /* current string location           */
-    //EndStr;                    /* end of string                     */
-
     stringchar_t * CStr = *String;                      /* copy the pointer                  */
     stringchar_t * EndStr = CStr + *Length;             /* point to the end of string        */
 
@@ -358,14 +340,9 @@ void DBCS_SkipBlanks(
 /*                      count.                                       */
 /*********************************************************************/
 {
-  //stringchar_t *   Scan;                       /* scan pointer                      */
-  //stringsize_t   Length;                     /* length to scan                    */
-
     stringchar_t * Scan = *String;                      /* point to data                     */
-
-    for(stringsize_t Length = *StringLength;
-        Length;) {                     /* scan entire string                */
-	  
+    stringsize_t Length = *StringLength;
+    while (Length > 0) {
         if (*Scan == ch_SPACE) {           /* if SBCS blank                     */
             Length--;                        /* reduce the length by one          */
             Scan++;                          /* step the pointer one              */
@@ -375,7 +352,7 @@ void DBCS_SkipBlanks(
             Scan += DBCS_BYTELEN;            /* step pointer also                 */
         }
         else {                               /* found a non-blank                 */
-            break; 
+            break;
         }	  /* just quit the loop                */
     }
                                        /* fell through, all blanks          */
@@ -390,27 +367,29 @@ void DBCS_SkipNonBlanks(
 /*   Function:          Skip SBCS/DBCS non-blanks and decrement size.*/
 /*********************************************************************/
 {
-    //Scan;                       /* scan pointer                      */
-
     stringchar_t * Scan = *String;                      /* point to data                     */
+    stringsize_t Length = *StringLength;
 
-    for(stringsize_t Length = *StringLength;
-        Length;) {                     /* scan entire string                */
+    while (Length > 0)
+    {
         if (*Scan == ch_SPACE ||           /* either SBCS or                    */
-            IsDBCSBlank(Scan)) {             /* DBCS blank?                       */
-		
+            IsDBCSBlank(Scan))
+        {             /* DBCS blank?                       */
+
             break;
-        }	    /* done                              */
-        else if (IsDBCS(*Scan)) {          /* DBCS character?                   */
+        }       /* done                              */
+        else if (IsDBCS(*Scan))
+        {          /* DBCS character?                   */
             Length -= DBCS_BYTELEN;          /* reduce length two                 */
             Scan += DBCS_BYTELEN;            /* step pointer also                 */
         }
-        else {                             /* if SBCS blank                     */
+        else
+        {                             /* if SBCS blank                     */
             Length--;                        /* reduce the length by one          */
             Scan++;                          /* step the pointer one              */
         }
     }
-                                       /* fell through, all blanks          */
+    /* fell through, all blanks          */
     *String = Scan;                      /* set pointer one past              */
     *StringLength = Length;              /* update the length                 */
 }
@@ -422,16 +401,12 @@ void DBCS_StripBlanks(
 /*   Function:          Adjust string length, removing blanks        */
 /*********************************************************************/
 {
-    //Count;                      /* size to scan                      */
-    //BlankStr;                   /* start of last blank part          */
-    //Scan;                       /* scan pointer                      */
-
     stringchar_t * BlankStr = NULL;                     /* null the pointer                  */
     stringchar_t * Scan = *String;                      /* copy the pointer                  */
                                        /* loop through entire string        */
     for (stringsize_t Count = *StringLength; Count; ) {
 
-	/* should handle the same cases as the commented section below */    
+	/* should handle the same cases as the commented section below */
         if(IsDBCSBlank(Scan) || IsDBCS(*Scan)) {
 	    if (!BlankStr) {
                 BlankStr = Scan;
@@ -496,41 +471,36 @@ int DBCS_CaselessCompare(
 
     int rc = COMP_EQUAL;                     /* Comparison default.               */
 
-                                       /* while still characters            */
-                                       /* left and they still compare       */
-    while (Length && rc == COMP_EQUAL) {
-	Cnt1 = IsDBCS(*Str1) ? DBCS_BYTELEN : SBCS_BYTELEN;    
-        //if (IsDBCS(*Str1)) {                /* if DBCS, then                     */
-        //    Cnt1 = DBCS_BYTELEN;             /* compare two bytes                 */
-	//}
-        //else {
-        //    Cnt1 = SBCS_BYTELEN;             /* else just a single byte           */
-        //}
-	Cnt2 = IsDBCS(*Str2) ? DBCS_BYTELEN : SBCS_BYTELEN;
-	//if (IsDBCS(*Str2)) {                 /* if DBCS, then                     */
-        //    Cnt2 = DBCS_BYTELEN;             /* compare two bytes                 */
-	//}
-        //else {
-        //    Cnt2 = SBCS_BYTELEN;             /* else just a single byte           */
-	//}
-        if (Cnt1 == Cnt2) {                /* equal length?                     */
-            if (Cnt1 == DBCS_BYTELEN) {      /* Comparing DBCS characters?        */
+    /* while still characters            */
+    /* left and they still compare       */
+    while (Length && rc == COMP_EQUAL)
+    {
+        Cnt1 = IsDBCS(*Str1) ? DBCS_BYTELEN : SBCS_BYTELEN;
+        Cnt2 = IsDBCS(*Str2) ? DBCS_BYTELEN : SBCS_BYTELEN;
+        if (Cnt1 == Cnt2)
+        {                /* equal length?                     */
+            if (Cnt1 == DBCS_BYTELEN)
+            {      /* Comparing DBCS characters?        */
                 rc = *Str1++ == *Str2++;       /* do the comparision                */
-                if (rc == 0) {                   /* compared equal?                   */
+                if (rc == 0)
+                {                   /* compared equal?                   */
                     rc = *Str1++ == *Str2++;     /* compare the second bytes          */
-		}
+                }
             }
-            else {                             /* compare the uppercase versions    */
+            else
+            {                             /* compare the uppercase versions    */
                 rc = toupper(*Str1++) == toupper(*Str2++);
             }
             Length -= Cnt1;                  /* reduce the length                 */
         }
-        else if (Cnt1 == DBCS_BYTELEN) {     /* 1st DBCS and 2nd SBCS?            */
+        else if (Cnt1 == DBCS_BYTELEN)
+        {     /* 1st DBCS and 2nd SBCS?            */
             return COMP_GREATER;               /* the first is greater              */
-	}
-        else {                               /* 1st SBCS and 2nd DBCS             */
+        }
+        else
+        {                               /* 1st SBCS and 2nd DBCS             */
             return COMP_LESS;                  /* 2nd is the larger                 */
-	}
+        }
     }
     return  rc;                          /* Return the result.                */
 }
@@ -554,10 +524,10 @@ int  DBCS_CharCompare(
 
     *Diff = 0;                           /* Different position                */
     int rc = COMP_EQUAL;                     /* Comparison default.               */
-    
+
     /* if no Pad, then PadSize 0 */
     stringsize_t PadSize = (!Pad) ? 0 : strlen((char *)Pad);
-    
+
     /* while still characters            */
                                        /* left and they still compare       */
     while (((Len1) || (Len2)) && (rc == COMP_EQUAL)) {
@@ -582,7 +552,7 @@ int  DBCS_CharCompare(
             Cnt1 = PadSize;                  /* use the pad length                */
             Comp1 = Pad;                     /* set compare location              */
         }
-      
+
         if (Len2) {                        /* now repeat for Str2               */
             Comp2 = Str2;                    /* set compare location              */
             if (IsDBCS(*Str2)) {             /* if DBCS, then                     */
@@ -603,7 +573,7 @@ int  DBCS_CharCompare(
             Cnt2 = PadSize;                  /* use the pad length                */
             Comp2 = Pad;                     /* set compare location              */
         }
-      
+
         if (Cnt1 == Cnt2) {                /* equal length?                     */
             if (*Comp1 == *Comp2) {          /* both equal?                       */
                 if (Cnt1 == DBCS_BYTELEN) {    /* might be DBCS                     */
@@ -622,14 +592,14 @@ int  DBCS_CharCompare(
                 }		/* bump char position                */
             }
             else {
-		rc = (*Comp1 > *Comp2) ? COMP_GREATER : COMP_LESS;    
+		rc = (*Comp1 > *Comp2) ? COMP_GREATER : COMP_LESS;
 	    }
         }
-        else {                              
+        else {
             rc = (Cnt1 == DBCS_BYTELEN) ? COMP_GREATER : COMP_LESS;
         }
     }
-  
+
     if (rc == COMP_EQUAL) {                /* still equal?                      */
         *Diff = 0;
     }	/* no difference point               */
@@ -652,13 +622,11 @@ stringchar_t * DBCS_StrStr(
 /*                              returned                             */
 /*********************************************************************/
 {
-    //End;                        /* end of string                     */
-
     stringchar_t * Retval = NULL;                       /* set default return value          */
-    
+
     if (NeedleLen <= HaystackLen) {      /* short enough to search?           */
                                        /* point to end position             */
-	for (stringchar_t * End = Haystack + (HaystackLen - NeedleLen); 
+	for (stringchar_t * End = Haystack + (HaystackLen - NeedleLen);
 	     Haystack < End;) {
                                        /* check this position               */
             if (!memcmp(Haystack, Needle, NeedleLen)) {
@@ -705,10 +673,6 @@ stringsize_t  DBCS_MemChar(
   stringchar_t *    String,                    /* searched string                   */
   stringsize_t    Length )                   /* size to search                    */
 {
-    //EndStr;                    /* search end position               */
-    //Position;                  /* located position                  */
-    //Count;                     /* character count                   */
-
     stringchar_t * EndStr = String + Length;            /* step to the end                   */
     stringsize_t Position = 0;                        /* set default position              */
     stringsize_t Count = 0;                           /* set initial character count       */
@@ -1253,7 +1217,7 @@ void DBCS_ConvToDBCS(
         stringchar_t conv[2];              /* DBCS 1ST and 2ND byte.            */
     }
     convert;
-    
+
     int    TableNum;                     /* current country table             */
     int    TableChr;                     /* Table number for character.       */
 
@@ -1318,13 +1282,13 @@ void DBCS_ConvToSBCS(
   stringchar_t *   *output )                   /* Target SBCS.                      */
 {
     stringsize_t i;                            /* Use for index of table.           */
-  
+
     union convert {                      /* Use to get DBCS bytes             */
         uint16_t convchar;                 /* From unsigned int DBCS            */
         stringchar_t conv[2];              /* DBCS 1ST and 2ND byte.            */
     }
     convert;
-  
+
     stringsize_t TableNum;
 
     stringchar_t * outspot = *output;                   /* copy the pointer                  */
@@ -1393,10 +1357,10 @@ stringsize_t RexxString::DBCSmovePointer(stringsize_t   Start,
 
     if (CharLen >= 1) {                  /* If Charlen is zero or             */
                                        /* minus, NOP.                       */
-	    
+
         stringsize_t    TailLen;             /* length of tail string             */
         stringchar_t *  Cpos;                /* character position                */
-        
+
 	if (Direction < 0) {               /* Left.                             */
                                        /* get front character length        */
             stringsize_t BaseLen = DBCS_CharacterCount(STRPTR(this), Start);
@@ -1600,7 +1564,7 @@ RexxString *RexxString::DBCSsubstr(RexxInteger *position,
                                        /* validate the pad character        */
     stringchar_t * PadChar = ValidatePad(pad, (const stringchar_t *)" ");
     stringsize_t PadSize = strlen((char *)PadChar);   /* get the pad size too              */
-    
+
     if (!SubstrSize) {                     /* zero bytes requested?             */
         Retval = OREF_NULLSTRING;          /* this is a null string             */
     }
@@ -1645,15 +1609,6 @@ RexxString *RexxString::DBCSsubstr(RexxInteger *position,
 RexxString *RexxString::DBCSdelstr(RexxInteger *position,
                                    RexxInteger *plength)
 {
-    //StringChar;                 /* size of input string              */
-    //StartPos;                   /* substr start position             */
-    //DeleteSize;                 /* size of deletion                  */
-    //StringLength;               /* length of input string            */
-    //FrontLength;                /* length of front part              */
-    //BackLength;                 /* length of back part               */
-    //FrontEnd;                   /* end of front part                 */
-    //BackEnd;                    /* end of back part                  */
-    //BackStart;                  /* start of back part                */
     RexxString *Retval;                  /* return string                     */
 
     stringsize_t StringChar = ValidDBCS(this);        /* get string length                 */
@@ -1668,7 +1623,7 @@ RexxString *RexxString::DBCSdelstr(RexxInteger *position,
                                        /* step to the start                 */
     DBCS_IncChar(&FrontEnd, &StringLength, &StartPos);
     if (StartPos) {                        /* skip everything?                  */
-        Retval = this; 
+        Retval = this;
     }    /* return string unchanged           */
     else {
         stringchar_t * BackStart = FrontEnd;              /* copy the pointer                  */
@@ -1702,14 +1657,6 @@ RexxString *RexxString::DBCSdelstr(RexxInteger *position,
 RexxString *RexxString::DBCSsubWord(RexxInteger *position,
                                     RexxInteger *plength)
 {
-    //StringChar;                 /* size of input string              */
-    //StartPos;                   /* substr start position             */
-    //SubwordSize;                /* size of substring                 */
-    //StringLength;               /* byte length of input string       */
-    //Scan;                       /* scan pointer                      */
-    //SubwordPtr;                 /* pointer to subword part           */
-    //WordPtr;                    /* pointer to word end               */
-    // WordLength;                 /* length of word start              */
     RexxString *Retval;                  /* return string                     */
 
     stringsize_t StringChar = ValidDBCS(this);        /* get size of input string          */
@@ -1771,15 +1718,6 @@ RexxString *RexxString::DBCSsubWord(RexxInteger *position,
 RexxString *RexxString::DBCSdelWord(RexxInteger *position,
                                     RexxInteger *plength)
 {
-    //StringChar;                 /* size of input string              */
-    //StartPos;                   /* substr start position             */
-    //DeleteSize;                 /* size of deletion                  */
-    //StringLength;               /* length of input string            */
-    //FrontLength;                /* length of front part              */
-    //BackStart;                  /* start of back part                */
-    //FrontPtr;                   /* start of front part               */
-    //Scan;                       /* scanning pointer                  */
-    //CopyPtr;                    /* pointer for copying strings       */
     RexxString *Retval;                  /* return string                     */
 
     stringsize_t StringChar = ValidDBCS(this);        /* get string length                 */
@@ -2086,9 +2024,8 @@ RexxInteger *RexxString::DBCSdatatype(int  DataType )
     else {                               /* looking for pure DBCS             */
         return (MixedType == PURE_DBCS) ?
 	      TheTrueObject :
-              TheFalseObject;	      
+              TheFalseObject;
     }
-    return Retval;                       /* Return DBCS_datatype              */
 }
 
 /*********************************************************************/

@@ -72,6 +72,12 @@ void RexxEntry SetTrace(RexxInstance *c, RexxBoolean setting)
     context.instance->setTrace(setting != 0);
 }
 
+
+RexxBoolean RexxEntry CreateScriptContext(RexxInstance *c, RexxScriptContext **sc, RexxOption *o)
+{
+    return (RexxBoolean)false;
+}
+
 END_EXTERN_C()
 
 
@@ -80,6 +86,7 @@ RexxInstanceInterface InterpreterInstance::interfaceVector =
     INSTANCE_INTERFACE_VERSION,
     Terminate,
     AttachThread,
+    CreateScriptContext,
     Halt,
     SetTrace,
 };

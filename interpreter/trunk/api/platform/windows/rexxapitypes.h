@@ -74,7 +74,9 @@ typedef size_t (RexxEntry *PFN)();
 }
 #endif
 
+#ifndef SIZE_MAX
 #define SIZE_MAX		(~((size_t)0))
+#endif
 #define SSIZE_MAX		((ssize_t)(SIZE_MAX >> 1))
 #define SSIZE_MIN		((ssize_t)SIZE_MAX)
 

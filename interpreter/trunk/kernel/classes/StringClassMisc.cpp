@@ -590,7 +590,8 @@ stringchar_t *  LStrStrb(
   return Retval;                       /* fall through, not found           */
 }
 
-RexxInteger *RexxString::lastPos(
+
+RexxInteger *RexxString::lastPosRexx(
     RexxString  *needle,               /* target search string              */
     RexxInteger *start)                /* starting position                 */
 /******************************************************************************/
@@ -633,6 +634,46 @@ RexxInteger *RexxString::lastPos(
   }
   return Retval;                       /* return match location             */
 }
+
+
+/**
+ * Primitive implementation of a lastpos search.
+ *
+ * @param needle The search needle.
+ * @param start  The starting position (origin 1).
+ *
+ * @return Returns the last match position, searching back from the start
+ *         position.  The starting position is the right-most character
+ *         of the past possible match (as if the string was truncated
+ *         at start).
+ */
+stringsize_t*RexxString::lastPos(RexxString  *needle, stringsize_t start)
+{
+    stringsize_t haystackLen = this->getLength();          /* get the haystack length           */
+    stringsize_t needleLen = needle->getLength();          /* and get the length too            */
+
+    // no match possible if either string is null
+    if (needleLen == 0 || haystackLen == 0)
+    {
+        return 0;
+    }
+    else
+    {
+        // get the start position for the search.
+        start = min(start, haystackLen);
+                                         /* do the search                     */
+        stringchar_t *matchLocation = LStrStrb(needle->getStringData(), needleLen, (stringchar_t *)this->getStringData(), haystackLen);
+        if (matchLocation == NULL)
+        {
+            return 0;
+        }
+        else
+        {
+            return matchLocation - this->getStringData() + 1;
+        }
+    }
+}
+
 
 stringsize_t RexxString::countStr(RexxString *needle)
 /******************************************************************************/
@@ -738,6 +779,160 @@ RexxInteger *RexxString::posRexx(
                                        /* and return as an integer object   */
   return new_integer(this->pos(needle, start - 1));
 }
+
+
+/**
+ * Extract the substring that occurs before a needle match postion.
+ *
+ * @param needle The search needle.  If this is a null string, it will match to the end.
+ *
+ * @return The substring before the match needle match position.  If the
+ *         needle is not found, the entire string is returned.  Like the
+ *         parse instruction, a null string matches to the end.
+ */
+RexxString *RexxString::before(
+    RexxString  *needle,
+    RexxInteger *start)
+{
+
+    // the needle must be a string value
+    needle = REQUIRED_STRING(needle, ARG_ONE);
+
+    stringsize_t searchStart = optionalPositionArgument(start, 1, ARG_TWO);
+
+    // if this a null string, it matches everything.
+    if (needle->getLength() == 0)
+    {
+        if (searchStart == 1)
+        {
+            return this;
+        }
+        else {
+            return this->extract(searchStart - 1, strLength() - (searchStart - 1));
+        }
+    }
+
+    // look for the first match
+    match = this->pos(needle, searchStart - 1);
+    // no match, we return the entire string
+    if (match == 0)
+    {
+        if (searchStart == 1)
+        {
+            return this;
+        }
+        else {
+            return this->extract(searchStart - 1, strLength() - (searchStart - 1));
+        }
+    }
+    else
+    {
+        // just extract the substring
+        return this->extract(searchStart - 1, match - searchStart);
+    }
+}
+
+
+
+/**
+ * Extract the substring that occurs before a last needle match
+ * postion.
+ *
+ * @param needle The search needle.  If this is a null string,
+ *               it will match to the beginning.
+ *
+ * @return The substring before the match needle match position.  If the
+ *         needle is not found, the entire string is returned.  Like the
+ *         parse instruction, a null string matches to the end.
+ */
+RexxString *RexxString::beforeLast(
+    RexxString  *needle)
+{
+
+    // the needle must be a string value
+    needle = REQUIRED_STRING(needle, ARG_ONE);
+
+    // if this a null string, it matches everything.
+    if (needle->getLength() == 0)
+    {
+        return this;
+    }
+    // look for the first match
+    match = this->pos(needle, 0);
+    // no match, we return the entire string
+    if (match == 0)
+    {
+        return this;
+    }
+    else
+    {
+        // just extract the substring
+        return this->extract(0, match - 1);
+    }
+}
+
+
+
+
+/**
+ * Extract the substring that occurs after a needle match
+ * postion.
+ *
+ * @param needle The search needle.  If this is a null string, it will match to the end.
+ *
+ * @return The substring before the match needle match position.  If the
+ *         needle is not found, a null string is returned. Like
+ *         the parse instruction, a null string matches to the
+ *         end.
+ */
+RexxString *RexxString::after(
+    RexxString  *needle,
+    RexxInteger *start)
+{
+    // the needle must be a string value
+    needle = REQUIRED_STRING(needle, ARG_ONE);
+
+    stringsize_t searchStart = optionalPositionArgument(start, 0, ARG_TWO);
+
+    // if this a null string, it matches to the end, so there's no
+    // "after life"
+    if (needle->getLength() == 0)
+    {
+        return OREF_NULLSTRING;
+    }
+
+    // look for the first match
+    match = this->pos(needle, searchStart - 1);
+    // no match, we return a null string
+    if (match == 0)
+    {
+        if (searchStart == 1)
+        {
+            return this;
+        }
+        else {
+            return this->extract(searchStart - 1, strLength() - searchStart + 1);
+        }
+    }
+    else
+    {
+        // convert this to a 0-based offset for the extract, positioned after the needle.
+        match = match + needle->getLength() - 1;
+        stringsize_t length = this->getLength() - match;
+
+        if (length == 0)
+        {
+            return OREF_NULLSTRING;
+        }
+        else
+        {
+            // just extract the substring
+            return this->extract(match, length);
+
+        }
+    }
+}
+
 
 stringsize_t RexxString::pos(
     RexxString *needle,                /* Target needle string              */

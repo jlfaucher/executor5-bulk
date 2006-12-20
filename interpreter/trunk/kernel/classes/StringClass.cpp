@@ -1157,6 +1157,8 @@ RexxString *RexxString::upper()
   return this;                         /* return this unchanged             */
 }
 
+
+
 RexxString *RexxString::stringTrace()
 /******************************************************************************/
 /* Function:  Translate a string to "traceable" form, removing non-displayable*/
@@ -1220,6 +1222,7 @@ RexxString *RexxString::stringTrace()
   return newCopy;                      /* return the converted string       */
 }
 
+
 RexxString *RexxString::lower()
 /******************************************************************************/
 /* Function:  Translate a string to lower case                                */
@@ -1272,6 +1275,128 @@ RexxString *RexxString::lower()
     newstring = this;                  /* return untranslated string        */
   return newstring;                    /* return the new copy               */
 }
+
+
+/**
+ * Rexx exported method stub for the lower() method.
+ *
+ * @param start  The optional starting location.  Defaults to the first character
+ *               if not specified.
+ * @param length The length to convert.  Defaults to the segment from the start
+ *               position to the end of the string.
+ *
+ * @return A new string object with the case conversion applied.
+ */
+RexxString *RexxString::lowerRexx(RexxInteger *start, RexxInteger *length)
+{
+    stringsize_t startPos = optionalPositionArgument(start, 1, ARG_ONE) - 1;
+    stringsize_t rangeLength = optionalLengthArgument(length, strLength(), ARG_TWO);
+
+    // if we're starting beyond the end bounds, return unchanged
+    if (startPos > strLength())
+    {
+        return this;
+    }
+
+    rangeLength = min(rangeLength, strLength() - startPos);
+
+    // a zero length value is also a non-change.
+    if (rangeLength == 0)
+    {
+        return this;
+    }
+
+    return lower(startPos, rangeLength);
+}
+
+
+/**
+ * Rexx exported method stub for the upper() method.
+ *
+ * @param start  The optional starting location.  Defaults to the first character
+ *               if not specified.
+ * @param length The length to convert.  Defaults to the segment from the start
+ *               position to the end of the string.
+ *
+ * @return A new string object with the case conversion applied.
+ */
+RexxString *RexxString::upperRexx(RexxInteger *start, RexxInteger *length)
+{
+    stringsize_t startPos = optionalPositionArgument(start, 1, ARG_ONE) - 1;
+    stringsize_t rangeLength = optionalLengthArgument(length, strLength(), ARG_TWO);
+
+    // if we're starting beyond the end bounds, return unchanged
+    if (startPos > strLength())
+    {
+        return this;
+    }
+
+    rangeLength = min(rangeLength, strLength() - startPos);
+
+    // a zero length value is also a non-change.
+    if (rangeLength == 0)
+    {
+        return this;
+    }
+
+    return upper(startPos, rangeLength);
+}
+
+
+
+/**
+ * Lowercase a portion of a Rexx string, returning a new string object.  This
+ * method assumes the offset and length are already valid
+ * for this string object.
+ *
+ * @param start  The starting offset of the segment to lowercase (origin 0).
+ *
+ * @param length The length to lowercase.
+ *
+ * @return A new string object with the case conversion applied.
+ */
+RexxString *RexxString::lower(stringsize_t offset, stringsize_t length)
+{
+    // get a copy of the string
+    RexxString *newstring = extract(0, strLength());
+
+    stringchar_t *data = (stringchar_t *)newstring->getStringData() + offset;
+    // now uppercase in place
+    for (i = 0; i < length; i++) {
+        *data = tolower(*data);
+        data++;
+    }
+    return newstring;
+}
+
+
+
+/**
+ * Uppercase a portion of a Rexx string, returning a new string
+ * object.  This method assumes the offset and length are
+ * already valid for this string object.
+ *
+ * @param start  The starting offset of the segment to uppercase
+ *               (origin 0).
+ *
+ * @param length The length to lowercase.
+ *
+ * @return A new string object with the case conversion applied.
+ */
+RexxString *RexxString::upper(stringsize_t offset, stringsize_t length)
+{
+    // get a copy of the string
+    RexxString *newstring = extract(0, strLength());
+
+    stringchar_t *data = (stringchar_t *)newstring->getStringData() + offset;
+    // now uppercase in place
+    for (i = 0; i < length; i++) {
+        *data = tolower(*data);
+        data++;
+    }
+    return newstring;
+}
+
 
 RexxInteger *RexxString::integerValue(
     stringsize_t digits)                     /* precision to use                  */

@@ -611,7 +611,7 @@ bool RexxInterpreter::exportBaseClasses()
   defineKernelMethod(CHAR_COMPARE                      ,TheStringBehaviour, CPPM(RexxString::compare), 2);
   defineKernelMethod(CHAR_COPIES                       ,TheStringBehaviour, CPPM(RexxString::copies), 1);
   defineKernelMethod(CHAR_COUNTSTR                     ,TheStringBehaviour, CPPM(RexxString::countStrRexx), 1);
-  defineKernelMethod(CHAR_LASTPOS                      ,TheStringBehaviour, CPPM(RexxString::lastPos), 2);
+  defineKernelMethod(CHAR_LASTPOS                      ,TheStringBehaviour, CPPM(RexxString::lastPosRexx), 2);
   defineKernelMethod(CHAR_POS                          ,TheStringBehaviour, CPPM(RexxString::posRexx), 2);
   defineKernelMethod(CHAR_TRANSLATE                    ,TheStringBehaviour, CPPM(RexxString::translate), 3);
   defineKernelMethod(CHAR_VERIFY                       ,TheStringBehaviour, CPPM(RexxString::verify), 3);
@@ -628,6 +628,8 @@ bool RexxInterpreter::exportBaseClasses()
   defineKernelMethod(CHAR_X2D                          ,TheStringBehaviour, CPPM(RexxString::x2d), 1);
   defineKernelMethod(CHAR_ENCODEBASE64                 ,TheStringBehaviour, CPPM(RexxString::encodebase64), 0);
   defineKernelMethod(CHAR_DECODEBASE64                 ,TheStringBehaviour, CPPM(RexxString::decodebase64), 0);
+  defineKernelMethod(CHAR_LOWER                        ,TheStringBehaviour, CPPM(RexxString::lowerRexx), 0);
+  defineKernelMethod(CHAR_UPPER                        ,TheStringBehaviour, CPPM(RexxString::upperRexx), 0);
   defineKernelMethod(CHAR_MAKESTRING                   ,TheStringBehaviour, CPPM(RexxObject::makeStringRexx), 0);
   defineKernelMethod(CHAR_ABS                          ,TheStringBehaviour, CPPM(RexxString::abs), 0);
   defineKernelMethod(CHAR_MAX                          ,TheStringBehaviour, CPPM(RexxString::Max), A_COUNT);
