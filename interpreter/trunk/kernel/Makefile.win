@@ -116,7 +116,7 @@ DLL32OBJS = InterpreterLegacy.obj LegacyExitHandler.obj
 
 DLL64OBJS =
 
-SHAREDDLLVER = $(top_srcdir)\shared\windows\verinfo_dll.res
+SHAREDDLLVER = $(top_srcdir)\shared\verinfo_dll.res
 
 !IF $(OOREXX_BIT_SIZE) == 64
 DLLOBJS = $(COMMONOBJS) $(DLL64OBJS)
@@ -210,7 +210,7 @@ RegistrationAPI.obj: api\RegistrationAPI.cpp \
                 client\LocalMacroSpaceManager.hpp \
                 client\LocalAPIContext.hpp \
 		api\RexxAPI.h \
-		api\RexxLegacyAPI.h \
+		api\RexxLegacyAPI.hpp \
 		platform\windows\SysLocalAPIManager.hpp \
 		$(top_srcdir)\shared\ClientMessage.hpp \
 		$(DEPHEADERS)
