@@ -1633,7 +1633,15 @@ bool fExploreTypeAttr( ITypeInfo *pTypeInfo, TYPEATTR *pTypeAttr, POLECLASSINFO 
                 {
                     for (iParmIdx = 0; iParmIdx < pFuncDesc->cParams; iParmIdx++)
                     {
-                        pFuncInfo->pOptVt[iParmIdx] = pFuncDesc->lprgelemdescParam[iParmIdx].tdesc.vt;
+                        if ( pFuncDesc->lprgelemdescParam[iParmIdx].tdesc.vt == VT_USERDEFINED )
+                        {
+                            pFuncInfo->pOptVt[iParmIdx] =
+                                getUserDefinedVT(pTypeInfo, pFuncDesc->lprgelemdescParam[iParmIdx].tdesc.hreftype);
+                        }
+                        else
+                        {
+                            pFuncInfo->pOptVt[iParmIdx] = pFuncDesc->lprgelemdescParam[iParmIdx].tdesc.vt;
+                        }
                         pFuncInfo->pusOptFlags[iParmIdx] = pFuncDesc->lprgelemdescParam[iParmIdx].paramdesc.wParamFlags;
 
                     } /* endfor */
@@ -1684,6 +1692,51 @@ bool fExploreTypeAttr( ITypeInfo *pTypeInfo, TYPEATTR *pTypeAttr, POLECLASSINFO 
     } /* endfor */
 
     return fOk;
+}
+
+/* Determines the Automation Variant Type to use for VT_USERDEFINED based on the
+ * TYPEKIND of the referenced type.  For instance, if the referenced type is
+ * TKIND_ENUM, the variant type to use is VT_I4.  (Reference Knowledge Base
+ * article 237771, KB237771 in MSDN.)
+ */
+VARTYPE getUserDefinedVT( ITypeInfo *pTypeInfo, HREFTYPE hrt )
+{
+  VARTYPE    vt = VT_USERDEFINED;
+  TYPEATTR  *pTypeAttr = NULL;
+  ITypeInfo *pTypeInfo2 = NULL;
+  HRESULT    hResult;
+
+  hResult = pTypeInfo->GetRefTypeInfo(hrt, &pTypeInfo2);
+  if ( SUCCEEDED(hResult) && pTypeInfo2 )
+  {
+    hResult = pTypeInfo2->GetTypeAttr(&pTypeAttr);
+    if ( SUCCEEDED(hResult) && pTypeAttr )
+    {
+      switch ( pTypeAttr->typekind )
+      {
+        case TKIND_ENUM :
+          vt = VT_I4;
+          break;
+        case TKIND_INTERFACE :
+          vt = VT_UNKNOWN;
+          break;
+        case TKIND_DISPATCH :
+          vt = VT_DISPATCH;
+          break;
+        case TKIND_ALIAS:
+          if ( pTypeAttr->tdescAlias.vt == VT_USERDEFINED )
+            vt = getUserDefinedVT(pTypeInfo2, pTypeAttr->tdescAlias.hreftype);
+          else
+            vt = pTypeAttr->tdescAlias.vt;
+        default :
+          break;
+      }
+      pTypeInfo2->ReleaseTypeAttr(pTypeAttr);
+    }
+    pTypeInfo2->Release();
+  }
+
+  return vt;
 }
 
 
