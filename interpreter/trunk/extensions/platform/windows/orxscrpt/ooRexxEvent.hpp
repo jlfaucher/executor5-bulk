@@ -36,15 +36,15 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 class ESource;               // Forward declaration
-class ooRexxScript;             // Forward declaration
-class ooRexxEvent;              // Forward declaration
+class ooRexxScript;          // Forward declaration
+class ooRexxEvent;           // Forward declaration
 
 
-#ifndef ORXEVENTS_HPP
-#define ORXEVENTS_HPP
+#ifndef OOREXXEVENT_HPP
+#define OOREXXEVENT_HPP
 
 
-#include "orxscrpt.hpp"
+#include "ooRexxScript.hpp"
 
 
 
@@ -323,4 +323,4 @@ private:
   };
 
 
-#endif    // ifndef ORXEVENTS_HPP
+#endif  // ifndef OOREXXEVENT_HPP

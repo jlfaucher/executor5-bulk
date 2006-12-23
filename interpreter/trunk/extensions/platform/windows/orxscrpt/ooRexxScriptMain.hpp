@@ -35,40 +35,34 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-#ifndef ENGFACT
-#define ENGFACT
+#ifndef OOREXXSCRIPTMAIN_HPP
+#define OOREXXSCRIPTMAIN_HPP
 
-// #include <dispex.h>
-#include "orxscrpt.hpp"
-#include "classfactory.hpp"
-#include "guids.hpp"
-#include "dllfuncs.hpp"
+#include "WinOnlyBasePrototypes.h"
 
 
-/* serverkey and servername not used for the engine */
-#define szSERVERKEY
-#define szSERVERNAME          "OS"
+#ifdef DLLFUNCTIONS_CPP
+#  define DEFAULTnumSUFFIX = 0
+#  define DEFAULTPREFIX
+#else
+#  define DEFAULTnumSUFFIX
+#  define DEFAULTPREFIX extern
+#  endif
 
-#define MYCLASSID             CLSID_ObjectREXX
-#define szCLASSID             szCLSID_ObjectREXX
+//  There is a single copy of these globals for the whole *.dll,
+// regardless of how many engines are started.
+DEFAULTPREFIX ULONG ulDllReferences DEFAULTnumSUFFIX;
+DEFAULTPREFIX ULONG ulDllLocks DEFAULTnumSUFFIX;
 
-class ooRexxEngineClassFactory : public ooRexxClassFactory {
+//#define DEBUGC                  // Small conditional debug info (c for call stack)
+//#define DEBUGZ                  // Turn on all of the stops. (a to z)
 
-  public:
-  ooRexxEngineClassFactory() :
-    ooRexxClassFactory(szSERVERNAME, MYCLASSID, szCLASSID, szDESCRIPTION,
-                    szEXTENSION, szLANGFILE, szFILEDESCRIPTION, szDLLNAME,
-                    szLANGNAME, szALTERNATELANGNAME)
-  {
-  }
+DEFAULTPREFIX FILE *DLLlogfile DEFAULTnumSUFFIX; /* Dump DEBUGx output to this file.  It is opened and
+                                    maintained by DllMain().                          */
+DEFAULTPREFIX FILE *CurrentObj_logfile; // Same log as the most recent engine.
 
-  /* overwritten methods */
-  REFIID GetClassID();
-  STDMETHODIMP CreateInstance(IUnknown *, REFIID, LPVOID *);
-  };
+#include "ScriptDebug.hpp"
+#include "ScriptUtilities.hpp"
 
 
-/* external definition of CreateClassFactory function */
-ooRexxClassFactory *CreateClassFactory(void);
-
-#endif
+#endif  // ifndef OOREXXSCRIPTMAIN_HPP

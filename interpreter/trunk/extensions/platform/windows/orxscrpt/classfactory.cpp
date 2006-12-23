@@ -35,7 +35,7 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-#include "classfactory.hpp"
+#include "ClassFactory.hpp"
 
 
 /* constants used for class registration */

@@ -36,15 +36,15 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-#ifndef ORXSCRPT
-#define ORXSCRPT
+#ifndef OOREXXSCRIPT_HPP
+#define OOREXXSCRIPT_HPP
 
-#include "orxscrpt_main.hpp"
+#include "ooRexxScriptMain.hpp"
 #include <objsafe.h>
 #include <dispex.h>        // IDispatchEx
 
-#include "nameditem.hpp"
-#include "eng2rexx.hpp"
+#include "NamedItem.hpp"
+#include "Engine2Rexx.hpp"
 #include "ooRexxDispID.hpp"
 #include "ooRexxEvents.hpp"
 #include "ooRexxScrptError.hpp"
@@ -362,4 +362,4 @@ STDMETHODIMP LocalParseProcedureText(
 
 
 
-#endif
+#endif  // ifndef OOREXXSCRIPT_HPP

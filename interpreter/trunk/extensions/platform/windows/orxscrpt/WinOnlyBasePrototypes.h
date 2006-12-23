@@ -35,38 +35,34 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-#ifndef REXX_GUIDS
-#define REXX_GUIDS
+// Windows, only base prototypes
+#ifndef WINONLYBASEPROTOTYPES_H
+#define WINONLYBASEPROTOTYPES_H
 
-// also contains some registry information!
+#if _MSC_VER > 1000
+#pragma once
+#endif // _MSC_VER > 1000
 
-// Us, in Windows Speak.  "Wie der Softwaregeier kennen uns"
-DEFINE_GUID(CLSID_ObjectREXX, 0x13dad011, 0xb0c9, 0x11d4, 0xa8, 0x29, 0x00, 0x06, 0x29, 0x86, 0x97, 0x85);
-#define szCLSID_ObjectREXX "{13dad011-b0c9-11d4-a829-000629869785}"
 
-#define szLANGNAME            "Object Rexx"
-#define szALTERNATELANGNAME   "ObjectRexxScript"
-#define szDESCRIPTION         "Object Rexx Script Language"
-#define szEXTENSION           ".RXS"
-#define szLANGFILE            "ObjectRexxScriptFile"
-#define szFILEDESCRIPTION     "Object Rexx Script File"
-#define szDLLNAME             "ORXSCRPT.DLL"
+#ifndef WIN32_LEAN_AND_MEAN
+#  define WIN32_LEAN_AND_MEAN  // Exclude rarely-used stuff from Windows headers
+#  endif
 
-#if 0
-DEFINE_GUID(CLSID_ObjectREXX, 0x17df3540, 0xb0c9, 0x11d4, 0xa8, 0x29, 0x00, 0x06, 0x29, 0x86, 0x97, 0x85);
-#define szCLSID_ObjectREXX "{17df3540-b0c9-11d4-a829-000629869785}"
+#define INC_OLE2               /* for windows.h */
+#define CONST_VTABLE           /* for objbase.h */
 
-DEFINE_GUID(CLSID_ObjectREXX, 0x13dad010, 0xb0c9, 0x11d4, 0xa8, 0x29, 0x00, 0x06, 0x29, 0x86, 0x97, 0x85);
-#define szCLSID_ObjectREXX "{13dad010-b0c9-11d4-a829-000629869785}"
+#include <windows.h>
+#include <stdio.h>
+#include <string.h>
+#include <memory.h>
+#include <process.h>
+#include <stdlib.h>
+#include <direct.h>
+#include <objbase.h>
+#include <assert.h>
+#include <comcat.h>
+#include <activscp.h>          /* Brings in the compiled *.idl and support files
+                                * for the ActiveX Scripting Engine.
+                                */
 
-#define szLANGNAME            "T-Rexx"
-#define szALTERNATELANGNAME   "TestObjectRexxScript"
-#define szDESCRIPTION         "Object Rexx Test Script Language"
-#define szEXTENSION           ".trx"
-#define szLANGFILE            "TestObjectRexxScriptFile"
-#define szFILEDESCRIPTION     "Object Rexx Test Script File"
-#define szDLLNAME             "tORXSCRPT.DLL"
-
-#endif
-
-#endif
+#endif  // ifndef WINONLYBASEPROTOTYPES_H

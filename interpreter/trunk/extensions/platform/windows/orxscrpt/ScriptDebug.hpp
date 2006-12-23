@@ -35,10 +35,10 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-#ifndef SCRPTDEBUG
-#define SCRPTDEBUG
+#ifndef SCRIPTDEBUG_HPP
+#define SCRIPTDEBUG_HPP
 
-#include "WObaseproto.h"     // Need for the advanced data types (DWORD, etc.)
+#include "WinOnlyBasePrototypes.h"     // Need for the advanced data types (DWORD, etc.)
 #include <dispex.h>
 
 /****************************************************************************
@@ -238,7 +238,7 @@ void PrntDispParams(FILE *Stream, DISPPARAMS *Parms);
  *****************************************************************************/
 void EnumerateProperty(FILE *Stream, IDispatchEx *DispEx, LCID Lang);
 
-#include "orxscrpt_main.hpp"           //  Needed for some global variables that this sets,
+#include "ooRexxScriptMain.hpp"        //  Needed for some global variables that this sets,
                                        // however, this can't come first since some items in
                                        // it depend on these definitions.
-#endif
+#endif  // ifndef SCRIPTDEBUG_HPP

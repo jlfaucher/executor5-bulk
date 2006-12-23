@@ -37,7 +37,7 @@
 /*----------------------------------------------------------------------------*/
 
 
-#include "nameditem.hpp"
+#include "NamedItem.hpp"
 
 
 ooRexxNamedItem::ooRexxNamedItem(ooRexxScript *pEngine, FILE *Stream) : Engine(pEngine), logfile(Stream)

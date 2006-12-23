@@ -35,66 +35,32 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-#define INITGUID        /*  The invocation of <initguid.h> have been removed.  That
-                           header always defined the macro DEFINE_GUID() to generate
-                           an initial value, so if the macro was in a header that
-                           was included by all of the programs, then the linker
-                           freaked out due to redefinitions.  Using the default
-                           macro that comes with <basetyps.h> only a reference to
-                           the GUID will be generated, no initial value.
-                           This will cause the DEFINE_GUID() macro to generate the text
-                           of the macro instead of a reference.
-                        */
-#include "engfact.hpp"
-#include <stdio.h>
 
+#ifndef ENGINE2REXX_HPP
+#define ENGINE2REXX_HPP
 
-STDMETHODIMP ooRexxEngineClassFactory::CreateInstance(IUnknown *punkOuter,
-    REFIID riid,
-    LPVOID *ppvObj)
-{
-    HRESULT      hr;
-    ooRexxScript   *pmyobject;
-    ListItem    *Next;
+#include "ScriptingAPI.h"
 
+#include "ooRexxScript.hpp"
+#include "ooRexxScrptError.hpp"
+class ooRexxScript;
 
-    if (ppvObj == NULL)
-        return ResultFromScode(E_POINTER);
+extern HANDLE mutex;
+extern Index *thread2EngineList;
 
-    *ppvObj = NULL;
+RexxReturnCode RexxEntry RexxCatchExit(RexxNumber, RexxNumber, RexxExitParm *);
+RexxReturnCode RexxEntry RexxCatchExternalFunc(RexxNumber, RexxNumber, RexxExitParm *);
+REXXOBJECT RexxEntry engineDispatch(REXXOBJECT);
+REXXOBJECT RexxEntry propertyChange(REXXOBJECT, REXXOBJECT, int, int *);
+int __stdcall scriptSecurity(CLSID,IUnknown*);
+RexxObject* Create_securityObject(ooRexxScript *, FILE *);
+void __stdcall parseText(void*);
+void __stdcall createCode(void*);
+void __stdcall runMethod(void*);
 
-    if (punkOuter != NULL)
-        return ResultFromScode(E_INVALIDARG);    // Aggregation not supported
+// these three come from orexxole.c
+RexxObject *Variant2Rexx(VARIANT *);
+void Rexx2Variant(RexxObject *, VARIANT *, VARTYPE, INT);
+void setCreationCallback(int (__stdcall *f)(CLSID, IUnknown*));
 
-    pmyobject = new ooRexxScript;                 // create instance of engine
-    // and its associated COM Dispatcher.
-
-    if (pmyobject == NULL)
-    {
-        if (pmyobject != NULL) delete pmyobject;
-        return E_OUTOFMEMORY;
-    }
-
-    Next = EngineChain->AddItem("Don't care about a name",LinkedList::End,(void *)pmyobject);
-    //  Make sure the Event can tell people if it goes away prematurely.
-    pmyobject->SetDestructor(EngineChain, (void *)pmyobject);
-
-    hr = pmyobject->QueryInterface(riid, ppvObj);
-
-    pmyobject->Release();   // ppvObj now is only reference
-                            // (if QI failed, object is destroyed)
-
-    return hr;
-}
-
-
-REFIID ooRexxEngineClassFactory::GetClassID()
-{
-    return CLSID_ObjectREXX;
-}
-
-
-ooRexxClassFactory *CreateClassFactory()
-{
-    return new ooRexxEngineClassFactory();
-}
+#endif  // ifndef ENGINE2REXX_HPP

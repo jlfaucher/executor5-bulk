@@ -35,11 +35,11 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-#ifndef ORXDISPID_HPP
-#define ORXDISPID_HPP
+#ifndef OOREXXDISPID_HPP
+#define OOREXXDISPID_HPP
 
-#include "WObaseproto.h"
-#include "orxscrpt_main.hpp"
+#include "WinOnlyBasePrototypes.h"
+#include "ooRexxScriptMain.hpp"
 #include "oorexx.h"
 
 /*
@@ -141,4 +141,4 @@ private:
   };
 
 
-#endif     //    ifndef OXRDISPID_HPP
+#endif  // ifndef OOREXXDISPID_HPP

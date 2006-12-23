@@ -37,10 +37,10 @@
 /*----------------------------------------------------------------------------*/
 
 class ooRexxNamedItem;         // Forward declaration
-#ifndef NAMED_ITEM
-#define NAMED_ITEM
+#ifndef NAMEDITEM_HPP
+#define NAMEDITEM_HPP
 
-#include "orxscrpt.hpp"
+#include "ooRexxScript.hpp"
 class ooRexxScript;             // Forward declaration
 
 //   Wrapper class that hides the linked list holding the NamedItems.
@@ -159,4 +159,4 @@ typedef struct NAMEDITEM_STRUCT {
     /* out */ PNID      *pbNamedItem); //
 };
 
-#endif
+#endif  // ifndef NAMEDITEM_HPP

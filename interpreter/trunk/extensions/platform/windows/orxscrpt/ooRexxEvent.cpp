@@ -42,7 +42,7 @@
 *
 *
 ******************************************************************************/
-#include "orxEvents.hpp"
+#include "ooRexxEvent.hpp"
 
 #define EVENTNAMECONVERT(Item,SubItem,OurName) \
   sprintf(OurName,"%S<-Item (AddScriptlet Event) SubItem->%S",Item,SubItem);

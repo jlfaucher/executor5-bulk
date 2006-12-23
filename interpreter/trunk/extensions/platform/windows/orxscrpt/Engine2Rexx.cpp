@@ -37,8 +37,8 @@
 /*----------------------------------------------------------------------------*/
 
 #include <process.h>
-#include "eng2rexx.hpp"
-#include "scriptutil.hpp"
+#include "Engine2Rexx.hpp"
+#include "ScriptUtilities.hpp"
 
 #undef DEBUGC
 #undef DEBUGZ

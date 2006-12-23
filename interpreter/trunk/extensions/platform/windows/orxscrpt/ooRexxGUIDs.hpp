@@ -35,32 +35,38 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+#ifndef OOREXXGUIDS_HPP
+#define OOREXXGUIDS_HPP
 
-#ifndef ENG2REXX
-#define ENG2REXX
+// also contains some registry information!
 
-#include "ScriptingAPI.h"
+// Us, in Windows Speak.  "Wie der Softwaregeier kennen uns"
+DEFINE_GUID(CLSID_ObjectREXX, 0x13dad011, 0xb0c9, 0x11d4, 0xa8, 0x29, 0x00, 0x06, 0x29, 0x86, 0x97, 0x85);
+#define szCLSID_ObjectREXX "{13dad011-b0c9-11d4-a829-000629869785}"
 
-#include "orxscrpt.hpp"
-#include "ooRexxScrptError.hpp"
-class ooRexxScript;
+#define szLANGNAME            "Object Rexx"
+#define szALTERNATELANGNAME   "ObjectRexxScript"
+#define szDESCRIPTION         "Object Rexx Script Language"
+#define szEXTENSION           ".RXS"
+#define szLANGFILE            "ObjectRexxScriptFile"
+#define szFILEDESCRIPTION     "Object Rexx Script File"
+#define szDLLNAME             "ORXSCRPT.DLL"
 
-extern HANDLE mutex;
-extern Index *thread2EngineList;
+#if 0
+DEFINE_GUID(CLSID_ObjectREXX, 0x17df3540, 0xb0c9, 0x11d4, 0xa8, 0x29, 0x00, 0x06, 0x29, 0x86, 0x97, 0x85);
+#define szCLSID_ObjectREXX "{17df3540-b0c9-11d4-a829-000629869785}"
 
-RexxReturnCode RexxEntry RexxCatchExit(RexxNumber, RexxNumber, RexxExitParm *);
-RexxReturnCode RexxEntry RexxCatchExternalFunc(RexxNumber, RexxNumber, RexxExitParm *);
-REXXOBJECT RexxEntry engineDispatch(REXXOBJECT);
-REXXOBJECT RexxEntry propertyChange(REXXOBJECT, REXXOBJECT, int, int *);
-int __stdcall scriptSecurity(CLSID,IUnknown*);
-RexxObject* Create_securityObject(ooRexxScript *, FILE *);
-void __stdcall parseText(void*);
-void __stdcall createCode(void*);
-void __stdcall runMethod(void*);
+DEFINE_GUID(CLSID_ObjectREXX, 0x13dad010, 0xb0c9, 0x11d4, 0xa8, 0x29, 0x00, 0x06, 0x29, 0x86, 0x97, 0x85);
+#define szCLSID_ObjectREXX "{13dad010-b0c9-11d4-a829-000629869785}"
 
-// these three come from orexxole.c
-RexxObject *Variant2Rexx(VARIANT *);
-void Rexx2Variant(RexxObject *, VARIANT *, VARTYPE, INT);
-void setCreationCallback(int (__stdcall *f)(CLSID, IUnknown*));
+#define szLANGNAME            "T-Rexx"
+#define szALTERNATELANGNAME   "TestObjectRexxScript"
+#define szDESCRIPTION         "Object Rexx Test Script Language"
+#define szEXTENSION           ".trx"
+#define szLANGFILE            "TestObjectRexxScriptFile"
+#define szFILEDESCRIPTION     "Object Rexx Test Script File"
+#define szDLLNAME             "tORXSCRPT.DLL"
 
 #endif
+
+#endif  // ifndef OOREXXGUIDS_HPP

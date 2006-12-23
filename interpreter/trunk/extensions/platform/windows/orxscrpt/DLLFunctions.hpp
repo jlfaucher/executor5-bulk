@@ -35,33 +35,30 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-// Windows Only base proto
-#ifndef WObaseproto_h
-#define WObaseproto_h
+#ifndef DLLFUNCTIONS_HPP
+#define DLLFUNCTIONS_HPP
 
-#if _MSC_VER > 1000
-#pragma once
-#endif // _MSC_VER > 1000
+#include "ooRexxScriptMain.hpp"
+#include "EngineFactory.hpp"       // Builds the ClassFactory object (which can contain the Engine)
 
-
-#ifndef WIN32_LEAN_AND_MEAN
-#  define WIN32_LEAN_AND_MEAN           // Exclude rarely-used stuff from Windows headers
+#ifdef DLLFUNCTIONS_CPP
+#  define DEFAULTnumSUFFIX = 0
+#  define DEFAULTPREFIX
+#else
+#  define DEFAULTnumSUFFIX
+#  define DEFAULTPREFIX extern
 #  endif
 
-#define INC_OLE2                 /* for windows.h */
-#define CONST_VTABLE             /* for objbase.h */
 
-#include <windows.h>
-#include <stdio.h>
-#include <string.h>
-#include <memory.h>
-#include <process.h>
-#include <stdlib.h>
-#include <direct.h>
-#include <objbase.h>
-#include <assert.h>
-#include <comcat.h>
-#include <activscp.h>            /* Brings in the compiled *.idl and support files for
-                                    the ActiveX Scripting Engine.                     */
+class RexxEngineInfo
+{
+public:
 
-#endif
+    LinkedList *functionList;       // list of names we recognize in a script.
+};
+
+//  There is a single copy of these globals for the whole *.dll,
+// regardless of how many engines are started.
+DEFAULTPREFIX LooseLinkedList *EngineChain DEFAULTnumSUFFIX;
+
+#endif  // ifndef DLLFUNCTIONS_HPP

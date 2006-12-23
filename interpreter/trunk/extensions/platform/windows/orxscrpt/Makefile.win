@@ -44,104 +44,105 @@
 INCLUDES = $(OOREXXINC) \
            /I$(top_srcdir)\kernel\platform\windows
 
-DLLOBJS = classfactory.obj dllfuncs.obj eng2rexx.obj engfact.obj nameditem.obj \
-          orxdispid.obj orxevents.obj orxdispatch.obj orxscrpt.obj \
-	  orxscrpterror.obj scriptutil.obj scrptdebug.obj
+DLLOBJS = ClassFactory.obj DLLFunctions.obj Engine2Rexx.obj EngineFactory.obj \
+          NamedItem.obj ooRexxDispID.obj ooRexxEvent.obj ooRexxIDispatch.obj  \
+          ooRexxScript.obj ooRexxScriptError.obj ScriptUtilities.obj          \
+          ScriptDebug.obj
 
 SHAREDDLLVER = $(top_srcdir)\shared\verinfo_dll.res
 
-#################### build orxscript.dll ########################################
+#################### build orxscrpt.dll ########################################
 
-all: orxscript.dll orxscript.lib
+all: orxscrpt.dll orxscrpt.lib
 
-orxscript.dll orxscript.lib: $(DLLOBJS) $(COMMONOBJS) $(SHAREDDLLVER) \
-                       $(OOREXXLIBS) orxscript.def
-	$(LD) /DLL $(LFLAGS) $(DLLOBJS) $(COMMONOBJS) $(SHAREDLIB) \
-	$(WINLIBS) $(SHAREDDLLVER) $(OOREXXLIBS) /SUBSYSTEM:WINDOWS \
-        /DEF:orxscript.def /OUT:orxscript.dll
+orxscrpt.dll orxscrpt.lib: $(DLLOBJS) $(COMMONOBJS) $(SHAREDDLLVER) \
+                           $(OOREXXLIBS) ooRexxScript.def
+    $(LD) /DLL $(LFLAGS) $(DLLOBJS) $(COMMONOBJS) $(SHAREDLIB) $(WINLIBS) \
+        $(SHAREDDLLVER) $(OOREXXLIBS) /SUBSYSTEM:WINDOWS /DEF:ooRexxScript.def \
+        /OUT:orxscrpt.dll
 
-classfactory.obj: classfactory.cpp \
-            classfactory.hpp \
-	    orxscrpt_main.hpp \
-	    $(COMMONHEADERS)
-	$(CC) $(CFLAGS) classfactory.cpp /o $@
+ClassFactory.obj: ClassFactory.cpp \
+                  ClassFactory.hpp \
+                  ooRexxScriptMain.hpp \
+                  $(COMMONHEADERS)
+    $(CC) $(CFLAGS) ClassFactory.cpp /o $@
 
-dllfuncs.obj: dllfuncs.cpp \
-            dllfuncs.hpp \
-	    orxscrpt_main.hpp \
-            eng2rexx.hpp \
-            engfact.hpp \
-	    $(COMMONHEADERS)
-	$(CC) $(CFLAGS) dllfuncs.cpp /o $@
+DLLFunctions.obj: DLLFunctions.cpp \
+                  DLLFunctions.hpp \
+                  ooRexxScriptMain.hpp \
+                  Engine2Rexx.hpp \
+                  EngineFactory.hpp \
+                  $(COMMONHEADERS)
+    $(CC) $(CFLAGS) DLLFunctions.cpp /o $@
 
-eng2rexx.obj: eng2rexx.cpp \
-            eng2rexx.hpp \
-            scriptutil.hpp \
-            orxscrpt.hpp \
-	    $(COMMONHEADERS)
-	$(CC) $(CFLAGS) eng2rexx.cpp /o $@
+Engine2Rexx.obj: Engine2Rexx.cpp \
+                 Engine2Rexx.hpp \
+                 ScriptUtilities.hpp \
+                 ooRexxScript.hpp \
+                 $(COMMONHEADERS)
+    $(CC) $(CFLAGS) Engine2Rexx.cpp /o $@
 
-engfact.obj: engfact.cpp \
-            engfact.hpp \
-            orxscrpt.hpp \
-            classfactory.hpp \
-            dllfuncs.hpp \
-	    guids.hpp \
-	    $(COMMONHEADERS)
-	$(CC) $(CFLAGS) engfact.cpp /o $@
+EngineFactory.obj: EngineFactory.cpp \
+                   EngineFactory.hpp \
+                   ooRexxScript.hpp \
+                   ClassFactory.hpp \
+                   DLLFunctions.hpp \
+                   ooRexxGUIDs.hpp \
+                   $(COMMONHEADERS)
+    $(CC) $(CFLAGS) EngineFactory.cpp /o $@
 
-nameditem.obj: nameditem.cpp \
-            nameditem.hpp \
-            orxscrpt.hpp \
-	    $(COMMONHEADERS)
-	$(CC) $(CFLAGS) nameditem.cpp /o $@
+NamedItem.obj: NamedItem.cpp \
+               NamedItem.hpp \
+               ooRexxScript.hpp \
+               $(COMMONHEADERS)
+    $(CC) $(CFLAGS) NamedItem.cpp /o $@
 
-orxdispid.obj: orxdispid.cpp \
-            orxdispid.hpp \
-	    orxscrpt_main.hpp \
-	    wobaseproto.h \
-	    $(COMMONHEADERS)
-	$(CC) $(CFLAGS) orxdispid.cpp /o $@
+ooRexxDispID.obj: ooRexxDispID.cpp \
+                  ooRexxDispID.hpp \
+                  ooRexxScriptMain.hpp \
+                  WinOnlyBasePrototypes.h \
+                  $(COMMONHEADERS)
+    $(CC) $(CFLAGS) ooRexxDispID.cpp /o $@
 
-orxevents.obj: orxevents.cpp \
-            orxevents.hpp \
-            orxscrpt.hpp \
-	    $(COMMONHEADERS)
-	$(CC) $(CFLAGS) orxevents.cpp /o $@
+ooRexxEvent.obj: ooRexxEvent.cpp \
+                 ooRexxEvent.hpp \
+                 ooRexxScript.hpp \
+                 $(COMMONHEADERS)
+    $(CC) $(CFLAGS) ooRexxEvent.cpp /o $@
 
-orxdispatch.obj: orxdispatch.cpp \
-            orxscrpt.hpp \
-	    $(COMMONHEADERS)
-	$(CC) $(CFLAGS) orxdispatch.cpp /o $@
+ooRexxIDispatch.obj: ooRexxIDispatch.cpp \
+                     ooRexxScript.hpp \
+ 	                   $(COMMONHEADERS)
+    $(CC) $(CFLAGS) ooRexxIDispatch.cpp /o $@
 
-orxscrpt.obj: orxscrpt.cpp \
-            orxscrpt.hpp \
-	    security.inc \
-	    $(COMMONHEADERS)
-	$(CC) $(CFLAGS) orxscrpt.cpp /o $@
+ooRexxScript.obj: ooRexxScript.cpp \
+                  ooRexxScript.hpp \
+                  security.inc \
+                  $(COMMONHEADERS)
+  $(CC) $(CFLAGS) ooRexxScript.cpp /o $@
 
-orxscrpterror.obj: orxscrpterror.cpp \
-            orxscrpterror.hpp \
-	    orxscrpt_main.hpp \
-            eng2rexx.hpp \
-	    $(COMMONHEADERS)
-	$(CC) $(CFLAGS) orxscrpterror.cpp /o $@
+ooRexxScriptError.obj: ooRexxScriptError.cpp \
+                       ooRexxScriptError.hpp \
+ 	                     ooRexxScriptMain.hpp \
+                       Engine2Rexx.hpp \
+                       $(COMMONHEADERS)
+    $(CC) $(CFLAGS) ooRexxScriptError.cpp /o $@
 
-scriptutil.obj: scriptutil.cpp \
-            scriptutil.hpp \
-	    orxscrpt_main.hpp \
-	    $(COMMONHEADERS)
-	$(CC) $(CFLAGS) scriptutil.cpp /o $@
+ScriptUtilities.obj: ScriptUtilities.cpp \
+                     ScriptUtilities.hpp \
+                     ooRexxScriptMain.hpp \
+                     $(COMMONHEADERS)
+    $(CC) $(CFLAGS) ScriptUtilities.cpp /o $@
 
-scrptdebug.obj: scrptdebug.cpp \
-            scrptdebug.hpp \
-	    wobaseproto.h \
-	    $(COMMONHEADERS)
-	$(CC) $(CFLAGS) scrptdebug.cpp /o $@
+ScriptDebug.obj: ScriptDebug.cpp \
+                 ScriptDebug.hpp \
+                 WinOnlyBasePrototypes.h \
+                 $(COMMONHEADERS)
+    $(CC) $(CFLAGS) ScriptDebug.cpp /o $@
 
 
 #################### clean #########################
 
 clean:
-	del $(CLEAN)
+    del $(CLEAN)
 

@@ -35,34 +35,66 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-#ifndef ORXSCRPT_MAIN
-#define ORXSCRPT_MAIN
-
-#include "WObaseproto.h"
-
-
-#ifdef DLLFUNCS_CPP
-#  define DEFAULTnumSUFFIX = 0
-#  define DEFAULTPREFIX
-#else
-#  define DEFAULTnumSUFFIX
-#  define DEFAULTPREFIX extern
-#  endif
-
-//  There is a single copy of these globals for the whole *.dll,
-// regardless of how many engines are started.
-DEFAULTPREFIX ULONG ulDllReferences DEFAULTnumSUFFIX;
-DEFAULTPREFIX ULONG ulDllLocks DEFAULTnumSUFFIX;
-
-//#define DEBUGC                  // Small conditional debug info (c for call stack)
-//#define DEBUGZ                  // Turn on all of the stops. (a to z)
-
-DEFAULTPREFIX FILE *DLLlogfile DEFAULTnumSUFFIX; /* Dump DEBUGx output to this file.  It is opened and
-                                    maintained by DllMain().                          */
-DEFAULTPREFIX FILE *CurrentObj_logfile; // Same log as the most recent engine.
-
-#include "scrptdebug.hpp"
-#include "scriptutil.hpp"
+#define INITGUID        /*  The invocation of <initguid.h> have been removed.  That
+                           header always defined the macro DEFINE_GUID() to generate
+                           an initial value, so if the macro was in a header that
+                           was included by all of the programs, then the linker
+                           freaked out due to redefinitions.  Using the default
+                           macro that comes with <basetyps.h> only a reference to
+                           the GUID will be generated, no initial value.
+                           This will cause the DEFINE_GUID() macro to generate the text
+                           of the macro instead of a reference.
+                        */
+#include "EngineFactory.hpp"
+#include <stdio.h>
 
 
-#endif  // IFNDEF ORXSCRPT_MAIN
+STDMETHODIMP ooRexxEngineClassFactory::CreateInstance(IUnknown *punkOuter,
+    REFIID riid,
+    LPVOID *ppvObj)
+{
+    HRESULT      hr;
+    ooRexxScript   *pmyobject;
+    ListItem    *Next;
+
+
+    if (ppvObj == NULL)
+        return ResultFromScode(E_POINTER);
+
+    *ppvObj = NULL;
+
+    if (punkOuter != NULL)
+        return ResultFromScode(E_INVALIDARG);    // Aggregation not supported
+
+    pmyobject = new ooRexxScript;                 // create instance of engine
+    // and its associated COM Dispatcher.
+
+    if (pmyobject == NULL)
+    {
+        if (pmyobject != NULL) delete pmyobject;
+        return E_OUTOFMEMORY;
+    }
+
+    Next = EngineChain->AddItem("Don't care about a name",LinkedList::End,(void *)pmyobject);
+    //  Make sure the Event can tell people if it goes away prematurely.
+    pmyobject->SetDestructor(EngineChain, (void *)pmyobject);
+
+    hr = pmyobject->QueryInterface(riid, ppvObj);
+
+    pmyobject->Release();   // ppvObj now is only reference
+                            // (if QI failed, object is destroyed)
+
+    return hr;
+}
+
+
+REFIID ooRexxEngineClassFactory::GetClassID()
+{
+    return CLSID_ObjectREXX;
+}
+
+
+ooRexxClassFactory *CreateClassFactory()
+{
+    return new ooRexxEngineClassFactory();
+}

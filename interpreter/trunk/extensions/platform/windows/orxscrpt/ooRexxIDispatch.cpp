@@ -37,14 +37,14 @@
 /*----------------------------------------------------------------------------*/
 /******************************************************************************
 *
-*     This file is a continuation of orxscrpt.cpp.  The class was too large
+*     This file is a continuation of ooRexxScript.cpp.  The class was too large
 *  and too complicated to define all of the methods in one source file.
 *
 *
 ******************************************************************************/
 
 // #define ooRexxIDispatch_cpp
-#include "orxscrpt.hpp"
+#include "ooRexxScript.hpp"
 
 FL DispatchInvoke[] = {           // H - orizontal flags
   {DISPATCH_METHOD,"Method"},
@@ -567,7 +567,7 @@ STDMETHODIMP ooRexxScript::CommonInvoke(
                 //  IActiveScriptSite OnEnterScript()/OnLeaveScript() called by InvokeMethod().
                 RetCode = InvokeMethod(DispIDData, pArgs, pbResults, pbErrInfo);
                 break;
-                //  This satisfies someone asking us for properties.  See Eng2Rexx for when
+                //  This satisfies someone asking us for properties.  See Engine2Rexx for when
                 // Rexx wants a a property.
             case DISPATCH_PROPERTYGET:
                 RetCode = E_FAIL;
@@ -590,7 +590,7 @@ STDMETHODIMP ooRexxScript::CommonInvoke(
                     RetCode = VariantCopy(pbResults,(VARIANT *)&(((PGVARIANT)(DispIDData->RexxCode))->Mutant));
                 }
                 break;
-                //  This satisfies someone sets one of our properties.  See Eng2Rexx for when
+                //  This satisfies someone sets one of our properties.  See Engine2Rexx for when
                 // Rexx sets a a property.
             case DISPATCH_PROPERTYPUT:
                 RetCode = E_FAIL;

@@ -35,9 +35,9 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-#define  DLLFUNCS_CPP
-#include "dllfuncs.hpp"
-#include "eng2rexx.hpp"
+#define  DLLFUNCTIONS_CPP
+#include "DLLFunctions.hpp"
+#include "Engine2Rexx.hpp"
 
 
 CRITICAL_SECTION EngineSection = { 0};

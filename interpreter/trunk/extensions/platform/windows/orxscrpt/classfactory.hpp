@@ -39,7 +39,7 @@
 #define REXX_CLASSFACTORY
 
 
-#include "orxscrpt_main.hpp"
+#include "ooRexxScriptMain.hpp"
 
 // some misc registry information
 #define szDEFAULTICON         "%SystemRoot%\\System32\\WScript.exe,3"

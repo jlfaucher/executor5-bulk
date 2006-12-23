@@ -35,11 +35,11 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-#ifndef ORXSCRPTERROR
-#define ORXSCRPTERROR
+#ifndef OREXXSCRIPTERROR_HPP
+#define OREXXSCRIPTERROR_HPP
 
-#include "orxscrpt_main.hpp"
-#include "eng2rexx.hpp"
+#include "ooRexxScriptMain.hpp"
+#include "Engine2Rexx.hpp"
 
 
 /*
@@ -117,4 +117,4 @@ class ooRexxScriptError : public IActiveScriptError {
 
 
 
-#endif     // ifndef ORXSCRPTERROR
+#endif  // ifndef OREXXSCRIPTERROR_HPP

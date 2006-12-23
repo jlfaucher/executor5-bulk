@@ -35,7 +35,7 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-#include "scrptdebug.hpp"
+#include "ScriptDebug.hpp"
 
 extern FL VariantFlags[];
 

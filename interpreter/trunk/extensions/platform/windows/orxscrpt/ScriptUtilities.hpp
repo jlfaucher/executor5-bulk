@@ -35,11 +35,11 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-#ifndef UTILITIES_HPP
-#define UTILITIES_HPP
+#ifndef SCRIPTUTILITIES_HPP
+#define SCRIPTUTILITIES_HPP
 
-// #include "WObaseproto.h"
-#include "orxscrpt_main.hpp"
+// #include "WinOnlyBasePrototypes.h"
+#include "ooRexxScriptMain.hpp"
 // #define NULL 0
 
 class ListItem {
@@ -418,4 +418,4 @@ STDMETHODIMP DropNamedPut(
   /*  [in]  */ DISPPARAMS  *OrigDP,
   /*[in/out]*/ DISPPARAMS  *DP);
 
-#endif    //    ifndef UTILITIES_HPP
+#endif  // ifndef SCRIPTUTILITIES_HPP

@@ -35,30 +35,40 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-#ifndef DLLFUNCS_HPP
-#define DLLFUNCS_HPP
+#ifndef ENGINEFACTORY_HPP
+#define ENGINEFACTORY_HPP
 
-#include "orxscrpt_main.hpp"
-#include "engfact.hpp"       // Builds the ClassFactory object (which can contain the Engine)
-
-#ifdef DLLFUNCS_CPP
-#  define DEFAULTnumSUFFIX = 0
-#  define DEFAULTPREFIX
-#else
-#  define DEFAULTnumSUFFIX
-#  define DEFAULTPREFIX extern
-#  endif
+// #include <dispex.h>
+#include "ooRexxScript.hpp"
+#include "ClassFactory.hpp"
+#include "ooRexxGUIDs.hpp"
+#include "DLLFunctions.hpp"
 
 
-class RexxEngineInfo
-{
-public:
+/* serverkey and servername not used for the engine */
+#define szSERVERKEY
+#define szSERVERNAME          "OS"
 
-    LinkedList *functionList;       // list of names we recognize in a script.
-};
+#define MYCLASSID             CLSID_ObjectREXX
+#define szCLASSID             szCLSID_ObjectREXX
 
-//  There is a single copy of these globals for the whole *.dll,
-// regardless of how many engines are started.
-DEFAULTPREFIX LooseLinkedList *EngineChain DEFAULTnumSUFFIX;
+class ooRexxEngineClassFactory : public ooRexxClassFactory {
 
-#endif     //  ifndef DLLFUNCS_HPP
+  public:
+  ooRexxEngineClassFactory() :
+    ooRexxClassFactory(szSERVERNAME, MYCLASSID, szCLASSID, szDESCRIPTION,
+                    szEXTENSION, szLANGFILE, szFILEDESCRIPTION, szDLLNAME,
+                    szLANGNAME, szALTERNATELANGNAME)
+  {
+  }
+
+  /* overwritten methods */
+  REFIID GetClassID();
+  STDMETHODIMP CreateInstance(IUnknown *, REFIID, LPVOID *);
+  };
+
+
+/* external definition of CreateClassFactory function */
+ooRexxClassFactory *CreateClassFactory(void);
+
+#endif  // ifndef ENGINEFACTORY_HPP

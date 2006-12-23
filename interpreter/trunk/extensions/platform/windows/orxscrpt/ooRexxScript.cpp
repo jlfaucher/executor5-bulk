@@ -36,7 +36,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-#include "orxscrpt.hpp"
+#include "ooRexxScript.hpp"
 #include "security.inc"  // REXX source of security manager (OLECHAR *szSecurityCode)
 
 extern CRITICAL_SECTION EngineSection;
@@ -402,7 +402,7 @@ STDMETHODIMP ooRexxScript::SetScriptSite(IActiveScriptSite *pActiveScriptSite)
                 {
                     // set the callback in the OLE code
                     // this will try to get back to the engine with it's registration
-                    // of id and thread in the table used in eng2rexx
+                    // of id and thread in the table used in Engine2Rexx
                     ::setCreationCallback(scriptSecurity);
                 }
                 pProvider->Release();
