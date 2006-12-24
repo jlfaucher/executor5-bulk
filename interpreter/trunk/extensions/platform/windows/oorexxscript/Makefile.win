@@ -51,15 +51,15 @@ DLLOBJS = ClassFactory.obj DLLFunctions.obj Engine2Rexx.obj EngineFactory.obj \
 
 SHAREDDLLVER = $(top_srcdir)\shared\verinfo_dll.res
 
-#################### build orxscrpt.dll ########################################
+#################### build ooScript.dll ########################################
 
-all: orxscrpt.dll orxscrpt.lib
+all: ooScript.dll ooScript.lib
 
-orxscrpt.dll orxscrpt.lib: $(DLLOBJS) $(COMMONOBJS) $(SHAREDDLLVER) \
+ooScript.dll ooScript.lib: $(DLLOBJS) $(COMMONOBJS) $(SHAREDDLLVER) \
                            $(OOREXXLIBS) ooRexxScript.def
     $(LD) /DLL $(LFLAGS) $(DLLOBJS) $(COMMONOBJS) $(SHAREDLIB) $(WINLIBS) \
         $(SHAREDDLLVER) $(OOREXXLIBS) /SUBSYSTEM:WINDOWS /DEF:ooRexxScript.def \
-        /OUT:orxscrpt.dll
+        /OUT:ooScript.dll
 
 ClassFactory.obj: ClassFactory.cpp \
                   ClassFactory.hpp \

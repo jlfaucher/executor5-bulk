@@ -42,7 +42,7 @@
 #include "ScriptingAPI.h"
 
 #include "ooRexxScript.hpp"
-#include "ooRexxScrptError.hpp"
+#include "ooRexxScriptError.hpp"
 class ooRexxScript;
 
 extern HANDLE mutex;

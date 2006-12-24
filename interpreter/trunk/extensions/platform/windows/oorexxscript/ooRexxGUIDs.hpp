@@ -50,7 +50,7 @@ DEFINE_GUID(CLSID_ObjectREXX, 0x13dad011, 0xb0c9, 0x11d4, 0xa8, 0x29, 0x00, 0x06
 #define szEXTENSION           ".RXS"
 #define szLANGFILE            "ObjectRexxScriptFile"
 #define szFILEDESCRIPTION     "Object Rexx Script File"
-#define szDLLNAME             "ORXSCRPT.DLL"
+#define szDLLNAME             "ooScript.DLL"
 
 #if 0
 DEFINE_GUID(CLSID_ObjectREXX, 0x17df3540, 0xb0c9, 0x11d4, 0xa8, 0x29, 0x00, 0x06, 0x29, 0x86, 0x97, 0x85);
@@ -65,7 +65,7 @@ DEFINE_GUID(CLSID_ObjectREXX, 0x13dad010, 0xb0c9, 0x11d4, 0xa8, 0x29, 0x00, 0x06
 #define szEXTENSION           ".trx"
 #define szLANGFILE            "TestObjectRexxScriptFile"
 #define szFILEDESCRIPTION     "Object Rexx Test Script File"
-#define szDLLNAME             "tORXSCRPT.DLL"
+#define szDLLNAME             "tooScript.DLL"
 
 #endif
 

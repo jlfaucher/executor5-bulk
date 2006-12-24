@@ -626,8 +626,8 @@ bool RexxInterpreter::exportBaseClasses()
   defineKernelMethod(CHAR_X2B                          ,TheStringBehaviour, CPPM(RexxString::x2b), 0);
   defineKernelMethod(CHAR_X2C                          ,TheStringBehaviour, CPPM(RexxString::x2c), 0);
   defineKernelMethod(CHAR_X2D                          ,TheStringBehaviour, CPPM(RexxString::x2d), 1);
-  defineKernelMethod(CHAR_ENCODEBASE64                 ,TheStringBehaviour, CPPM(RexxString::encodebase64), 0);
-  defineKernelMethod(CHAR_DECODEBASE64                 ,TheStringBehaviour, CPPM(RexxString::decodebase64), 0);
+  defineKernelMethod(CHAR_ENCODEBASE64                 ,TheStringBehaviour, CPPM(RexxString::encodeBase64), 0);
+  defineKernelMethod(CHAR_DECODEBASE64                 ,TheStringBehaviour, CPPM(RexxString::decodeBase64), 0);
   defineKernelMethod(CHAR_LOWER                        ,TheStringBehaviour, CPPM(RexxString::lowerRexx), 0);
   defineKernelMethod(CHAR_UPPER                        ,TheStringBehaviour, CPPM(RexxString::upperRexx), 0);
   defineKernelMethod(CHAR_MAKESTRING                   ,TheStringBehaviour, CPPM(RexxObject::makeStringRexx), 0);

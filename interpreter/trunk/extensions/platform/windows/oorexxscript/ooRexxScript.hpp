@@ -46,8 +46,8 @@
 #include "NamedItem.hpp"
 #include "Engine2Rexx.hpp"
 #include "ooRexxDispID.hpp"
-#include "ooRexxEvents.hpp"
-#include "ooRexxScrptError.hpp"
+#include "ooRexxEvent.hpp"
+#include "ooRexxScriptError.hpp"
 static int iEngineCount = 0;
 
 
