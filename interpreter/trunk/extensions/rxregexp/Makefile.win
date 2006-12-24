@@ -71,19 +71,19 @@ rxregexp.obj: rxregexp.cpp \
 	    $(top_srcdir)/kernel/classes/ObjectClass.hpp \
 	    $(top_srcdir)/kernel/classes/StringClass.hpp \
 	    $(COMMONHEADERS)
-	$(CC) $(CFLAGS) rxregexp.cpp /o $@
+	$(CC) $(CFLAGS) rxregexp.cpp $(OUTFLAG)
 
 automaton.obj: automaton.cpp \
             automaton.hpp \
 	    regexp.hpp \
 	    $(COMMONHEADERS)
-	$(CC) $(CFLAGS) automaton.cpp /o $@
+	$(CC) $(CFLAGS) automaton.cpp $(OUTFLAG)
 
 dblqueue.obj: dblqueue.cpp \
             dblqueue.hpp \
 	    regexp.hpp \
 	    $(COMMONHEADERS)
-	$(CC) $(CFLAGS) dblqueue.cpp /o $@
+	$(CC) $(CFLAGS) dblqueue.cpp $(OUTFLAG)
 
 
 #################### clean #########################

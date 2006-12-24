@@ -42,10 +42,12 @@
 
 #
 # Set your Windows compiler here.
-# Microsoft Visual C++ 7.0 with service packs is required!
+# Microsoft Visual C++ >= 7.0 with service packs is required!
 #
 VCPP7 =
 #VCPP7_64 =
+#VCPP8 =
+#VCPP8_64 =
 
 #
 # If you want debugging activated do it here
@@ -53,24 +55,70 @@ VCPP7 =
 #DEBUG = 1
 
 #
+# By default informational messages like MicroSoft's copyright notice, messages
+# concerning MicroSoft's security-enhanced CRT functions, etc. are suppressed.
+#
+# Uncomment VERBOSE to remove the suppression.
+#
+# You can also adjust which messages are suppressed by editing the
+# TERSENESS and / or NMAKEFLAGS macros.
+#
+#VERBOSE =
+
+#
+# Defining QUIET suppresses almost all informational messages.  Uncomment to
+# further reduce the noise when compiling.  QUIET is ignored if VERBOSE is
+# defined
+#
+#QUIET =
+
+#
 # Set up stuff based on the compiler.
 #
-!IFDEF VCPP_64
+!IFDEF VCPP7_64
 # TODO: set the compiler into 64-bit mode here
 VCPP_64_FLAG =
 OOREXX_BIT_SIZE = 64
-!ELSE
+COMPILER_UNIQUE_FLAGS = /GX
+OUTFLAG = /o $@
+!ELSEIFDEF VCPP7
 VCPP_64_FLAG =
 OOREXX_BIT_SIZE = 32
+COMPILER_UNIQUE_FLAGS = /GX
+OUTFLAG = /o $@
+!ELSEIFDEF VCPP8_64
+# TODO: set the compiler into 64-bit mode here
+VCPP_64_FLAG =
+OOREXX_BIT_SIZE = 64
+COMPILER_UNIQUE_FLAGS = /EHsc
+OUTFLAG =
+!ELSEIFDEF VCPP8
+VCPP_64_FLAG =
+OOREXX_BIT_SIZE = 32
+COMPILER_UNIQUE_FLAGS = /EHsc
+OUTFLAG =
+!ELSE
+!ERROR You must define your compiler in $(top_srcdir)\Nmake.inc
 !ENDIF
-
 
 #
 # Now set everything else.
 #
 CC = cl
+
+!IFDEF VERBOSE
+NMAKEFLAGS =
+TERSENESS =
+!ELSE
+NMAKEFLAGS = /nologo
+TERSENESS = /nologo /D_CRT_SECURE_NO_DEPRECATE /D_CRT_NONSTDC_NO_DEPRECATE
+!IFDEF QUIET
+NMAKEFLAGS = $(NMAKEFLAGS) /S
+!ENDIF
+!ENDIF
+
 GLOBALCFLAGS = /DORX_VER=$(MAJOR) /DORX_REL=$(MINOR) /DORX_MOD=$(MOD_LVL) \
-               $(VCPP_64_FLAG) /GX /Wp64 /D_CRT_SECURE_NO_DEPRECATE
+               $(VCPP_64_FLAG) $(COMPILER_UNIQUE_FLAGS) /Wp64 $(TERSENESS)
 
 !IF "$(DEBUG)" == "1"
 CFLAGS = /c $(GLOBALCFLAGS) $(INCLUDES) /Zi /Od

@@ -60,7 +60,7 @@ rexxhide.exe: $(EXEOBJS) $(OOREXXLIBS) $(SHAREDEXEVER)
 rexxhide.obj: platform\windows\rexxhide.cpp \
           $(top_srcdir)\utilities\rexx\platform\windows\ArgumentParser.h \
           $(COMMONHEADERS)
-	$(CC) $(CFLAGS) platform\windows\rexxhide.cpp /o $@
+	$(CC) $(CFLAGS) platform\windows\rexxhide.cpp $(OUTFLAG)
 
 
 #################### clean #########################

@@ -43,108 +43,107 @@ top_srcdir = $(MAKEDIR)
 
 !include $(top_srcdir)\Nmake.inc
 
-
 # Note: the order here is important!
 # Add in the kernel\messages build later
 all:
 	cd kernel
-        nmake /F Makefile.win top_srcdir=$(top_srcdir)
+        nmake $(NMAKEFLAGS) /F Makefile.win top_srcdir=$(top_srcdir)
 	cd $(top_srcdir)
 	cd rexxapi
-        nmake /F Makefile.win top_srcdir=$(top_srcdir)
+        nmake $(NMAKEFLAGS) /F Makefile.win top_srcdir=$(top_srcdir)
 	cd $(top_srcdir)
 	cd utilities\rexx
-        nmake /F Makefile.win top_srcdir=$(top_srcdir)
+        nmake $(NMAKEFLAGS) /F Makefile.win top_srcdir=$(top_srcdir)
 	cd $(top_srcdir)
 	cd utilities\rexxc
-        nmake /F Makefile.win top_srcdir=$(top_srcdir)
+        nmake $(NMAKEFLAGS) /F Makefile.win top_srcdir=$(top_srcdir)
 	cd $(top_srcdir)
 	cd utilities\rexxhide
-        nmake /F Makefile.win top_srcdir=$(top_srcdir)
+        nmake $(NMAKEFLAGS) /F Makefile.win top_srcdir=$(top_srcdir)
 	cd $(top_srcdir)
 	cd utilities\rxapi
-        nmake /F Makefile.win top_srcdir=$(top_srcdir)
+        nmake $(NMAKEFLAGS) /F Makefile.win top_srcdir=$(top_srcdir)
 	cd $(top_srcdir)
 	cd utilities\rxqueue
-        nmake /F Makefile.win top_srcdir=$(top_srcdir)
+        nmake $(NMAKEFLAGS) /F Makefile.win top_srcdir=$(top_srcdir)
 	cd $(top_srcdir)
 	cd utilities\rxsubcom
-        nmake /F Makefile.win top_srcdir=$(top_srcdir)
+        nmake $(NMAKEFLAGS) /F Makefile.win top_srcdir=$(top_srcdir)
 	cd $(top_srcdir)
 	cd utilities\rexximg
-        nmake /F Makefile.win top_srcdir=$(top_srcdir)
+        nmake $(NMAKEFLAGS) /F Makefile.win top_srcdir=$(top_srcdir)
 	cd $(top_srcdir)
 	cd extensions\rxmath
-        nmake /F Makefile.win top_srcdir=$(top_srcdir)
+        nmake $(NMAKEFLAGS) /F Makefile.win top_srcdir=$(top_srcdir)
 	cd $(top_srcdir)
 	cd extensions\rxregexp
-        nmake /F Makefile.win top_srcdir=$(top_srcdir)
+        nmake $(NMAKEFLAGS) /F Makefile.win top_srcdir=$(top_srcdir)
 	cd $(top_srcdir)
 	cd extensions\rxsock
-        nmake /F Makefile.win top_srcdir=$(top_srcdir)
+        nmake $(NMAKEFLAGS) /F Makefile.win top_srcdir=$(top_srcdir)
 	cd $(top_srcdir)
 	cd extensions\platform\windows\ole
-        nmake /F Makefile.win top_srcdir=$(top_srcdir)
+        nmake $(NMAKEFLAGS) /F Makefile.win top_srcdir=$(top_srcdir)
 	cd $(top_srcdir)
 	cd extensions\platform\windows\oodialog
-        nmake /F Makefile.win top_srcdir=$(top_srcdir)
+        nmake $(NMAKEFLAGS) /F Makefile.win top_srcdir=$(top_srcdir)
 	cd $(top_srcdir)
 	cd extensions\platform\windows\oorexxscript
-        nmake /F Makefile.win top_srcdir=$(top_srcdir)
+        nmake $(NMAKEFLAGS) /F Makefile.win top_srcdir=$(top_srcdir)
 	cd $(top_srcdir)
 	cd extensions\platform\windows\rxwinsys
-        nmake /F Makefile.win top_srcdir=$(top_srcdir)
+        nmake $(NMAKEFLAGS) /F Makefile.win top_srcdir=$(top_srcdir)
 	cd $(top_srcdir)
 
 
 !CMDSWITCHES +I
 clean:
 	cd kernel
-        nmake /F Makefile.win top_srcdir=$(top_srcdir) clean
+        nmake $(NMAKEFLAGS) /F Makefile.win top_srcdir=$(top_srcdir) clean
 	cd $(top_srcdir)
 	cd rexxapi
-        nmake /F Makefile.win top_srcdir=$(top_srcdir) clean
+        nmake $(NMAKEFLAGS) /F Makefile.win top_srcdir=$(top_srcdir) clean
 	cd $(top_srcdir)
 	cd utilities\rexx
-        nmake /F Makefile.win top_srcdir=$(top_srcdir) clean
+        nmake $(NMAKEFLAGS) /F Makefile.win top_srcdir=$(top_srcdir) clean
 	cd $(top_srcdir)
 	cd utilities\rexxc
-        nmake /F Makefile.win top_srcdir=$(top_srcdir) clean
+        nmake $(NMAKEFLAGS) /F Makefile.win top_srcdir=$(top_srcdir) clean
 	cd $(top_srcdir)
 	cd utilities\rexxhide
-        nmake /F Makefile.win top_srcdir=$(top_srcdir) clean
+        nmake $(NMAKEFLAGS) /F Makefile.win top_srcdir=$(top_srcdir) clean
 	cd $(top_srcdir)
 	cd utilities\rxapi
-        nmake /F Makefile.win top_srcdir=$(top_srcdir) clean
+        nmake $(NMAKEFLAGS) /F Makefile.win top_srcdir=$(top_srcdir) clean
 	cd $(top_srcdir)
 	cd utilities\rxqueue
-        nmake /F Makefile.win top_srcdir=$(top_srcdir) clean
+        nmake $(NMAKEFLAGS) /F Makefile.win top_srcdir=$(top_srcdir) clean
 	cd $(top_srcdir)
 	cd utilities\rxsubcom
-        nmake /F Makefile.win top_srcdir=$(top_srcdir) clean
+        nmake $(NMAKEFLAGS) /F Makefile.win top_srcdir=$(top_srcdir) clean
 	cd $(top_srcdir)
 	cd utilities\rexximg
-        nmake /F Makefile.win top_srcdir=$(top_srcdir) clean
+        nmake $(NMAKEFLAGS) /F Makefile.win top_srcdir=$(top_srcdir) clean
 	cd $(top_srcdir)
 	cd extensions\rxmath
-        nmake /F Makefile.win top_srcdir=$(top_srcdir) clean
+        nmake $(NMAKEFLAGS) /F Makefile.win top_srcdir=$(top_srcdir) clean
 	cd $(top_srcdir)
 	cd extensions\rxregexp
-        nmake /F Makefile.win top_srcdir=$(top_srcdir) clean
+        nmake $(NMAKEFLAGS) /F Makefile.win top_srcdir=$(top_srcdir) clean
 	cd $(top_srcdir)
 	cd extensions\rxsock
-        nmake /F Makefile.win top_srcdir=$(top_srcdir) clean
+        nmake $(NMAKEFLAGS) /F Makefile.win top_srcdir=$(top_srcdir) clean
 	cd $(top_srcdir)
 	cd extensions\platform\windows\ole
-        nmake /F Makefile.win top_srcdir=$(top_srcdir) clean
+        nmake $(NMAKEFLAGS) /F Makefile.win top_srcdir=$(top_srcdir) clean
 	cd $(top_srcdir)
 	cd extensions\platform\windows\oodialog
-        nmake /F Makefile.win top_srcdir=$(top_srcdir) clean
+        nmake $(NMAKEFLAGS) /F Makefile.win top_srcdir=$(top_srcdir) clean
 	cd $(top_srcdir)
 	cd extensions\platform\windows\oorexxscript
-        nmake /F Makefile.win top_srcdir=$(top_srcdir) clean
+        nmake $(NMAKEFLAGS) /F Makefile.win top_srcdir=$(top_srcdir) clean
 	cd $(top_srcdir)
 	cd extensions\platform\windows\rxwinsys
-        nmake /F Makefile.win top_srcdir=$(top_srcdir) clean
+        nmake $(NMAKEFLAGS) /F Makefile.win top_srcdir=$(top_srcdir) clean
 	cd $(top_srcdir)
 

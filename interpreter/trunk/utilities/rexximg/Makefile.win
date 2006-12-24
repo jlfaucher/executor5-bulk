@@ -59,7 +59,7 @@ rexximg.exe: $(EXEOBJS) $(OOREXXLIBS) $(SHAREDEXEVER)
 
 rexximg.obj: platform\windows\rexximg.cpp \
           $(COMMONHEADERS)
-	$(CC) $(CFLAGS) platform\windows\rexximg.cpp /o $@
+	$(CC) $(CFLAGS) platform\windows\rexximg.cpp $(OUTFLAG)
 
 
 #################### clean #########################

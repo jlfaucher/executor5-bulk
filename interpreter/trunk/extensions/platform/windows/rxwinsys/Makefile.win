@@ -59,7 +59,7 @@ rxwinsys.dll rxwinsys.lib: $(DLLOBJS) $(COMMONOBJS) $(SHAREDDLLVER) \
 
 rxwinsys.obj: rxwinsys.cpp \
 	    $(COMMONHEADERS)
-	$(CC) $(CFLAGS) rxwinsys.cpp /o $@
+	$(CC) $(CFLAGS) rxwinsys.cpp $(OUTFLAG)
 
 
 #################### clean #########################

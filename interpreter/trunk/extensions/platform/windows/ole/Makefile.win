@@ -60,12 +60,12 @@ rexxole.dll rexxole.lib: $(DLLOBJS) $(COMMONOBJS) $(SHAREDDLLVER) \
 rexxole.obj: rexxole.c \
             events.h \
 	    $(COMMONHEADERS)
-	$(CC) $(CFLAGS) rexxole.c /o $@
+	$(CC) $(CFLAGS) rexxole.c $(OUTFLAG)
 
 events.obj: events.cpp \
             events.h \
 	    $(COMMONHEADERS)
-	$(CC) $(CFLAGS) rexxole.cpp /o $@
+	$(CC) $(CFLAGS) rexxole.cpp $(OUTFLAG)
 
 
 #################### clean #########################

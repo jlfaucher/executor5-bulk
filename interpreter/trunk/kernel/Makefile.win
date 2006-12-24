@@ -143,7 +143,7 @@ CallContextStubs.obj: api\CallContextStubs.cpp \
 		classes\SupplierClass.hpp \
                 runtime\Interpreter.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) api\CallContextStubs.cpp /o $@
+	$(CC) $(CFLAGS) api\CallContextStubs.cpp $(OUTFLAG)
 
 InterpreterApi.obj: api\InterpreterApi.cpp \
                 runtime\RexxNativeActivation.hpp \
@@ -153,31 +153,31 @@ InterpreterApi.obj: api\InterpreterApi.cpp \
                 runtime\ExitHandler.hpp \
                 platform\windows\SysInterpreter.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) api\InterpreterApi.cpp /o $@
+	$(CC) $(CFLAGS) api\InterpreterApi.cpp $(OUTFLAG)
 
 InterpreterInstanceStubs.obj: api\InterpreterInstanceStubs.cpp \
                 api\ContextApi.hpp \
                 runtime\Interpreter.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) api\InterpreterInstanceStubs.cpp /o $@
+	$(CC) $(CFLAGS) api\InterpreterInstanceStubs.cpp $(OUTFLAG)
 
 InterpreterLegacy.obj: api\InterpreterLegacy.cpp \
                 runtime\RexxActivity.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) api\InterpreterLegacy.cpp /o $@
+	$(CC) $(CFLAGS) api\InterpreterLegacy.cpp $(OUTFLAG)
 
 LegacyExitHandler.obj: api\LegacyExitHandler.cpp \
                 runtime\ExitHandler.hpp \
                 platform\windows\SysInterpreter.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) api\LegacyExitHandler.cpp /o $@
+	$(CC) $(CFLAGS) api\LegacyExitHandler.cpp $(OUTFLAG)
 
 MacroSpaceApi.obj: api\MacroSpaceApi.cpp \
                 client\LocalAPIManager.hpp \
                 client\LocalMacroSpaceManager.hpp \
                 client\LocalAPIContext.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) api\MacroSpaceApi.cpp /o $@
+	$(CC) $(CFLAGS) api\MacroSpaceApi.cpp $(OUTFLAG)
 
 MethodContextStubs.obj: api\MethodContextStubs.cpp \
                 api\ContextApi.hpp \
@@ -195,7 +195,7 @@ MethodContextStubs.obj: api\MethodContextStubs.cpp \
                 runtime\Interpreter.hpp \
                 platform\windows\SysInterpreter.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) api\MethodContextStubs.cpp /o $@
+	$(CC) $(CFLAGS) api\MethodContextStubs.cpp $(OUTFLAG)
 
 QueuesAPI.obj: api\QueuesAPI.cpp \
                 client\LocalAPIManager.hpp \
@@ -203,7 +203,7 @@ QueuesAPI.obj: api\QueuesAPI.cpp \
                 client\LocalAPIContext.hpp \
 		api\RexxAPI.h \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) api\QueuesAPI.cpp /o $@
+	$(CC) $(CFLAGS) api\QueuesAPI.cpp $(OUTFLAG)
 
 RegistrationAPI.obj: api\RegistrationAPI.cpp \
                 client\LocalAPIManager.hpp \
@@ -214,7 +214,7 @@ RegistrationAPI.obj: api\RegistrationAPI.cpp \
 		platform\windows\SysLocalAPIManager.hpp \
 		$(top_srcdir)\shared\ClientMessage.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) api\RegistrationAPI.cpp /o $@
+	$(CC) $(CFLAGS) api\RegistrationAPI.cpp $(OUTFLAG)
 
 ThreadContextStubs.obj: api\ThreadContextStubs.cpp \
                 api\ContextApi.hpp \
@@ -232,13 +232,13 @@ ThreadContextStubs.obj: api\ThreadContextStubs.cpp \
                 runtime\Interpreter.hpp \
                 platform\windows\SysInterpreter.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) api\ThreadContextStubs.cpp /o $@
+	$(CC) $(CFLAGS) api\ThreadContextStubs.cpp $(OUTFLAG)
 
 VariablePool.obj: api\VariablePool.cpp \
                 api\ContextApi.hpp \
                 runtime\Interpreter.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) api\VariablePool.cpp /o $@
+	$(CC) $(CFLAGS) api\VariablePool.cpp $(OUTFLAG)
 
 ArrayClass.obj: classes\ArrayClass.cpp \
                 classes\ArrayClass.hpp \
@@ -249,7 +249,7 @@ ArrayClass.obj: classes\ArrayClass.cpp \
                 classes\MutableBufferClass.hpp \
                 runtime\Interpreter.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) classes\ArrayClass.cpp /o $@
+	$(CC) $(CFLAGS) classes\ArrayClass.cpp $(OUTFLAG)
 
 ASCIIDBCSStrings.obj: classes\ASCIIDBCSStrings.cpp \
                 classes\ASCIIDBCSStrings.hpp \
@@ -257,7 +257,7 @@ ASCIIDBCSStrings.obj: classes\ASCIIDBCSStrings.cpp \
                 runtime\ArgumentUtilities.hpp \
                 runtime\Interpreter.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) classes\ASCIIDBCSStrings.cpp /o $@
+	$(CC) $(CFLAGS) classes\ASCIIDBCSStrings.cpp $(OUTFLAG)
 
 ClassClass.obj: classes\ClassClass.cpp \
                 classes\ClassClass.hpp \
@@ -272,7 +272,7 @@ ClassClass.obj: classes\ClassClass.cpp \
                 runtime\RexxActivity.hpp \
                 runtime\WeakReference.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) classes\ClassClass.cpp /o $@
+	$(CC) $(CFLAGS) classes\ClassClass.cpp $(OUTFLAG)
 
 DirectoryClass.obj: classes\DirectoryClass.cpp \
                 classes\DirectoryClass.hpp \
@@ -282,7 +282,7 @@ DirectoryClass.obj: classes\DirectoryClass.cpp \
                 classes\MethodClass.hpp \
                 runtime\RexxActivation.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) classes\DirectoryClass.cpp /o $@
+	$(CC) $(CFLAGS) classes\DirectoryClass.cpp $(OUTFLAG)
 
 IntegerClass.obj: classes\IntegerClass.cpp \
                 classes\IntegerClass.hpp \
@@ -294,7 +294,7 @@ IntegerClass.obj: classes\IntegerClass.cpp \
                 runtime\Numerics.hpp \
                 runtime\Interpreter.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) classes\IntegerClass.cpp /o $@
+	$(CC) $(CFLAGS) classes\IntegerClass.cpp $(OUTFLAG)
 
 ListClass.obj: classes\ListClass.cpp \
                 classes\ListClass.hpp \
@@ -304,7 +304,7 @@ ListClass.obj: classes\ListClass.cpp \
                 classes\SupplierClass.hpp \
                 runtime\WeakReference.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) classes\ListClass.cpp /o $@
+	$(CC) $(CFLAGS) classes\ListClass.cpp $(OUTFLAG)
 
 MessageClass.obj: classes\MessageClass.cpp \
                 classes\MessageClass.hpp \
@@ -318,7 +318,7 @@ MessageClass.obj: classes\MessageClass.cpp \
                 runtime\RexxNativeActivation.hpp \
                 classes\MessageClass.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) classes\MessageClass.cpp /o $@
+	$(CC) $(CFLAGS) classes\MessageClass.cpp $(OUTFLAG)
 
 MethodClass.obj: classes\MethodClass.cpp \
                 classes\MethodClass.hpp \
@@ -334,7 +334,7 @@ MethodClass.obj: classes\MethodClass.cpp \
                 runtime\Interpreter.hpp \
                 runtime\FunctionActivator.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) classes\MethodClass.cpp /o $@
+	$(CC) $(CFLAGS) classes\MethodClass.cpp $(OUTFLAG)
 
 MutableBufferClass.obj: classes\MutableBufferClass.cpp \
                 classes\MutableBufferClass.hpp \
@@ -342,7 +342,7 @@ MutableBufferClass.obj: classes\MutableBufferClass.cpp \
                 classes\IntegerClass.hpp \
                 runtime\ArgumentUtilities.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) classes\MutableBufferClass.cpp /o $@
+	$(CC) $(CFLAGS) classes\MutableBufferClass.cpp $(OUTFLAG)
 
 NumberStringClass.obj: classes\NumberStringClass.cpp \
                 classes\NumberStringClass.hpp \
@@ -354,7 +354,7 @@ NumberStringClass.obj: classes\NumberStringClass.cpp \
                 runtime\ArgumentUtilities.hpp \
                 runtime\Interpreter.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) classes\NumberStringClass.cpp /o $@
+	$(CC) $(CFLAGS) classes\NumberStringClass.cpp $(OUTFLAG)
 
 NumberStringMath.obj: classes\NumberStringMath.cpp \
                 classes\NumberStringMath.hpp \
@@ -366,7 +366,7 @@ NumberStringMath.obj: classes\NumberStringMath.cpp \
                 runtime\Interpreter.hpp \
                 runtime\RexxActivation.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) classes\NumberStringMath.cpp /o $@
+	$(CC) $(CFLAGS) classes\NumberStringMath.cpp $(OUTFLAG)
 
 NumberStringMath2.obj: classes\NumberStringMath2.cpp \
                 classes\NumberStringClass.hpp \
@@ -376,7 +376,7 @@ NumberStringMath2.obj: classes\NumberStringMath2.cpp \
                 classes\NumberStringMath.hpp \
                 runtime\Interpreter.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) classes\NumberStringMath2.cpp /o $@
+	$(CC) $(CFLAGS) classes\NumberStringMath2.cpp $(OUTFLAG)
 
 ObjectClass.obj: classes\ObjectClass.cpp \
                 classes\ObjectClass.hpp \
@@ -394,12 +394,12 @@ ObjectClass.obj: classes\ObjectClass.cpp \
                 parser\SourceFile.hpp \
                 runtime\Interpreter.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) classes\ObjectClass.cpp /o $@
+	$(CC) $(CFLAGS) classes\ObjectClass.cpp $(OUTFLAG)
 
 PointerClass.obj: classes\PointerClass.cpp \
                 classes\PointerClass.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) classes\PointerClass.cpp /o $@
+	$(CC) $(CFLAGS) classes\PointerClass.cpp $(OUTFLAG)
 
 QueueClass.obj: classes\QueueClass.cpp \
                 classes\QueueClass.hpp \
@@ -407,7 +407,7 @@ QueueClass.obj: classes\QueueClass.cpp \
                 classes\IntegerClass.hpp \
                 classes\SupplierClass.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) classes\QueueClass.cpp /o $@
+	$(CC) $(CFLAGS) classes\QueueClass.cpp $(OUTFLAG)
 
 RelationClass.obj: classes\RelationClass.cpp \
                 classes\RelationClass.hpp \
@@ -416,12 +416,12 @@ RelationClass.obj: classes\RelationClass.cpp \
                 classes\ArrayClass.hpp \
                 classes\SupplierClass.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) classes\RelationClass.cpp /o $@
+	$(CC) $(CFLAGS) classes\RelationClass.cpp $(OUTFLAG)
 
 StackClass.obj: classes\StackClass.cpp \
                 classes\StackClass.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) classes\StackClass.cpp /o $@
+	$(CC) $(CFLAGS) classes\StackClass.cpp $(OUTFLAG)
 
 StemClass.obj: classes\StemClass.cpp \
                 classes\StemClass.hpp \
@@ -430,7 +430,7 @@ StemClass.obj: classes\StemClass.cpp \
                 runtime\RexxCompoundTail.hpp \
                 expression\ExpressionStem.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) classes\StemClass.cpp /o $@
+	$(CC) $(CFLAGS) classes\StemClass.cpp $(OUTFLAG)
 
 StringClass.obj: classes\StringClass.cpp \
                 classes\StringClass.hpp \
@@ -438,13 +438,13 @@ StringClass.obj: classes\StringClass.cpp \
                 classes\NumberStringClass.hpp \
                 classes\IntegerClass.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) classes\StringClass.cpp /o $@
+	$(CC) $(CFLAGS) classes\StringClass.cpp $(OUTFLAG)
 
 StringClassBit.obj: classes\StringClassBit.cpp \
                 classes\StringClass.hpp \
                 runtime\ArgumentUtilities.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) classes\StringClassBit.cpp /o $@
+	$(CC) $(CFLAGS) classes\StringClassBit.cpp $(OUTFLAG)
 
 StringClassConversion.obj: classes\StringClassConversion.cpp \
                 classes\StringClass.hpp \
@@ -453,7 +453,7 @@ StringClassConversion.obj: classes\StringClassConversion.cpp \
                 runtime\Interpreter.hpp \
                 classes\NumberStringMath.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) classes\StringClassConversion.cpp /o $@
+	$(CC) $(CFLAGS) classes\StringClassConversion.cpp $(OUTFLAG)
 
 StringClassMisc.obj: classes\StringClassMisc.cpp \
                 classes\StringClass.hpp \
@@ -463,7 +463,7 @@ StringClassMisc.obj: classes\StringClassMisc.cpp \
                 runtime\Interpreter.hpp \
                 platform\windows\SysInterpreter.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) classes\StringClassMisc.cpp /o $@
+	$(CC) $(CFLAGS) classes\StringClassMisc.cpp $(OUTFLAG)
 
 StringClassSub.obj: classes\StringClassSub.cpp \
                 classes\StringClass.hpp \
@@ -471,12 +471,12 @@ StringClassSub.obj: classes\StringClassSub.cpp \
                 runtime\ArgumentUtilities.hpp \
                 runtime\Interpreter.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) classes\StringClassSub.cpp /o $@
+	$(CC) $(CFLAGS) classes\StringClassSub.cpp $(OUTFLAG)
 
 StringClassUtil.obj: classes\StringClassUtil.cpp \
                 classes\StringClass.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) classes\StringClassUtil.cpp /o $@
+	$(CC) $(CFLAGS) classes\StringClassUtil.cpp $(OUTFLAG)
 
 StringClassWord.obj: classes\StringClassWord.cpp \
                 classes\StringClass.hpp \
@@ -484,14 +484,14 @@ StringClassWord.obj: classes\StringClassWord.cpp \
                 runtime\ArgumentUtilities.hpp \
                 runtime\Interpreter.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) classes\StringClassWord.cpp /o $@
+	$(CC) $(CFLAGS) classes\StringClassWord.cpp $(OUTFLAG)
 
 SupplierClass.obj: classes\SupplierClass.cpp \
                 classes\SupplierClass.hpp \
                 classes\IntegerClass.hpp \
                 classes\ArrayClass.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) classes\SupplierClass.cpp /o $@
+	$(CC) $(CFLAGS) classes\SupplierClass.cpp $(OUTFLAG)
 
 TableClass.obj: classes\TableClass.cpp \
                 classes\TableClass.hpp \
@@ -499,13 +499,13 @@ TableClass.obj: classes\TableClass.cpp \
                 classes\IntegerClass.hpp \
                 runtime\RexxActivity.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) classes\TableClass.cpp /o $@
+	$(CC) $(CFLAGS) classes\TableClass.cpp $(OUTFLAG)
 
 LocalAPIContext.obj: client\LocalAPIContext.cpp \
                 client\LocalAPIContext.hpp \
                 $(top_srcdir)\shared\ServiceException.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) client\LocalAPIContext.cpp /o $@
+	$(CC) $(CFLAGS) client\LocalAPIContext.cpp $(OUTFLAG)
 
 LocalAPIManager.obj: client\LocalAPIManager.cpp \
                 client\LocalAPIManager.hpp \
@@ -513,7 +513,7 @@ LocalAPIManager.obj: client\LocalAPIManager.cpp \
                 platform\windows\SysLocalAPIManager.hpp \
                 SynchronizedBlock.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) client\LocalAPIManager.cpp /o $@
+	$(CC) $(CFLAGS) client\LocalAPIManager.cpp $(OUTFLAG)
 
 LocalMacroSpaceManager.obj: client\LocalMacroSpaceManager.cpp \
                 client\LocalMacroSpaceManager.hpp \
@@ -522,7 +522,7 @@ LocalMacroSpaceManager.obj: client\LocalMacroSpaceManager.cpp \
 		platform\windows\SysFile.hpp \
 		platform\windows\SysLibrary.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) client\LocalMacroSpaceManager.cpp /o $@
+	$(CC) $(CFLAGS) client\LocalMacroSpaceManager.cpp $(OUTFLAG)
 
 LocalQueuManager.obj: client\LocalQueueManager.cpp \
                 client\LocalQueueManager.hpp \
@@ -531,7 +531,7 @@ LocalQueuManager.obj: client\LocalQueueManager.cpp \
                 $(top_srcdir)\shared\ClientMessage.hpp \
 		SysUtil.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) client\LocalQueueManager.cpp /o $@
+	$(CC) $(CFLAGS) client\LocalQueueManager.cpp $(OUTFLAG)
 
 LocalRegistrationManager.obj: client\LocalRegistrationManager.cpp \
                 client\LocalRegistrationManager.hpp \
@@ -539,7 +539,7 @@ LocalRegistrationManager.obj: client\LocalRegistrationManager.cpp \
                 platform\windows\SysLibrary.hpp \
                 $(top_srcdir)\shared\ClientMessage.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) client\LocalRegistrationManager.cpp /o $@
+	$(CC) $(CFLAGS) client\LocalRegistrationManager.cpp $(OUTFLAG)
 
 BuiltinFunctions.obj: expression\BuiltinFunctions.cpp \
                 expression\BuiltinFunctions.hpp \
@@ -556,12 +556,12 @@ BuiltinFunctions.obj: expression\BuiltinFunctions.cpp \
                 runtime\Interpreter.hpp \
                 runtime\Package.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) expression\BuiltinFunctions.cpp /o $@
+	$(CC) $(CFLAGS) expression\BuiltinFunctions.cpp $(OUTFLAG)
 
 CommonSysUtils.obj: expression\CommonSysUtils.cpp \
                 expression\CommonSysUtils.h \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) expression\CommonSysUtils.cpp /o $@
+	$(CC) $(CFLAGS) expression\CommonSysUtils.cpp $(OUTFLAG)
 
 ExpressionCompoundVariable.obj: expression\ExpressionCompoundVariable.cpp \
                 expression\ExpressionCompoundVariable.hpp \
@@ -575,7 +575,7 @@ ExpressionCompoundVariable.obj: expression\ExpressionCompoundVariable.cpp \
                 expression\ExpressionVariable.hpp \
                 runtime\RexxVariable.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) expression\ExpressionCompoundVariable.cpp /o $@
+	$(CC) $(CFLAGS) expression\ExpressionCompoundVariable.cpp $(OUTFLAG)
 
 ExpressionDotVariable.obj: expression\ExpressionDotVariable.cpp \
                 expression\ExpressionDotVariable.hpp \
@@ -584,7 +584,7 @@ ExpressionDotVariable.obj: expression\ExpressionDotVariable.cpp \
                 runtime\RexxActivation.hpp \
                 parser\SourceFile.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) expression\ExpressionDotVariable.cpp /o $@
+	$(CC) $(CFLAGS) expression\ExpressionDotVariable.cpp $(OUTFLAG)
 
 ExpressionFunction.obj: expression\ExpressionFunction.cpp \
                 expression\ExpressionFunction.hpp \
@@ -597,7 +597,7 @@ ExpressionFunction.obj: expression\ExpressionFunction.cpp \
                 runtime\RexxActivity.hpp \
                 expression\BuiltinFunctions.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) expression\ExpressionFunction.cpp /o $@
+	$(CC) $(CFLAGS) expression\ExpressionFunction.cpp $(OUTFLAG)
 
 ExpressionMessage.obj: expression\ExpressionMessage.cpp \
                 expression\ExpressionMessage.hpp \
@@ -606,13 +606,13 @@ ExpressionMessage.obj: expression\ExpressionMessage.cpp \
                 runtime\RexxActivation.hpp \
                 parser\Token.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) expression\ExpressionMessage.cpp /o $@
+	$(CC) $(CFLAGS) expression\ExpressionMessage.cpp $(OUTFLAG)
 
 ExpressionOperator.obj: expression\ExpressionOperator.cpp \
                 expression\ExpressionOperator.hpp \
                 runtime\RexxActivation.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) expression\ExpressionOperator.cpp /o $@
+	$(CC) $(CFLAGS) expression\ExpressionOperator.cpp $(OUTFLAG)
 
 ExpressionStack.obj: expression\ExpressionStack.cpp \
                 expression\ExpressionStack.hpp \
@@ -620,7 +620,7 @@ ExpressionStack.obj: expression\ExpressionStack.cpp \
                 runtime\RexxActivity.hpp \
                 classes\StringClass.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) expression\ExpressionStack.cpp /o $@
+	$(CC) $(CFLAGS) expression\ExpressionStack.cpp $(OUTFLAG)
 
 ExpressionStem.obj: expression\ExpressionStem.cpp \
                 expression\ExpressionStem.hpp \
@@ -631,7 +631,7 @@ ExpressionStem.obj: expression\ExpressionStem.cpp \
                 runtime\RexxVariableDictionary.hpp \
                 classes\StemClass.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) expression\ExpressionStem.cpp /o $@
+	$(CC) $(CFLAGS) expression\ExpressionStem.cpp $(OUTFLAG)
 
 ExpressionVariable.obj: expression\ExpressionVariable.cpp \
                 expression\ExpressionVariable.hpp \
@@ -642,7 +642,7 @@ ExpressionVariable.obj: expression\ExpressionVariable.cpp \
                 runtime\RexxVariableDictionary.hpp \
                 runtime\RexxVariable.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) expression\ExpressionVariable.cpp /o $@
+	$(CC) $(CFLAGS) expression\ExpressionVariable.cpp $(OUTFLAG)
 
 IndirectVariableReference.obj: expression\IndirectVariableReference.cpp \
                 expression\IndirectVariableReference.hpp \
@@ -652,12 +652,12 @@ IndirectVariableReference.obj: expression\IndirectVariableReference.cpp \
                 runtime\RexxActivity.hpp \
                 runtime\RexxVariableDictionary.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) expression\IndirectVariableReference.cpp /o $@
+	$(CC) $(CFLAGS) expression\IndirectVariableReference.cpp $(OUTFLAG)
 
 QueueFunctions.obj: expression\QueueFunctions.cpp \
                 classes\StringClass.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) expression\QueueFunctions.cpp /o $@
+	$(CC) $(CFLAGS) expression\QueueFunctions.cpp $(OUTFLAG)
 
 AddressInstruction.obj: instructions\AddressInstruction.cpp \
                 instructions\AddressInstruction.hpp \
@@ -665,7 +665,7 @@ AddressInstruction.obj: instructions\AddressInstruction.cpp \
                 classes\StringClass.hpp \
                 runtime\RexxActivation.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) instructions\AddressInstruction.cpp /o $@
+	$(CC) $(CFLAGS) instructions\AddressInstruction.cpp $(OUTFLAG)
 
 AssignmentInstruction.obj: instructions\AssignmentInstruction.cpp \
                 instructions\AssignmentInstruction.hpp \
@@ -673,7 +673,7 @@ AssignmentInstruction.obj: instructions\AssignmentInstruction.cpp \
                 expression\ExpressionBaseVariable.hpp \
                 runtime\RexxActivation.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) instructions\AssignmentInstruction.cpp /o $@
+	$(CC) $(CFLAGS) instructions\AssignmentInstruction.cpp $(OUTFLAG)
 
 CallInstruction.obj: instructions\CallInstruction.cpp \
                 instructions\CallInstruction.hpp \
@@ -687,20 +687,20 @@ CallInstruction.obj: instructions\CallInstruction.cpp \
                 parser\SourceFile.hpp \
                 expression\BuiltinFunctions.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) instructions\CallInstruction.cpp /o $@
+	$(CC) $(CFLAGS) instructions\CallInstruction.cpp $(OUTFLAG)
 
 CommandInstruction.obj: instructions\CommandInstruction.cpp \
                 instructions\CommandInstruction.hpp \
                 instructions\RexxInstruction.hpp \
                 runtime\RexxActivation.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) instructions\CommandInstruction.cpp /o $@
+	$(CC) $(CFLAGS) instructions\CommandInstruction.cpp $(OUTFLAG)
 
 DoBlock.obj: instructions\DoBlock.cpp \
                 instructions\DoBlock.hpp \
                 instructions\DoInstruction.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) instructions\DoBlock.cpp /o $@
+	$(CC) $(CFLAGS) instructions\DoBlock.cpp $(OUTFLAG)
 
 DoInstruction.obj: instructions\DoInstruction.cpp \
                 instructions\DoInstruction.hpp \
@@ -715,7 +715,7 @@ DoInstruction.obj: instructions\DoInstruction.cpp \
                 expression\ExpressionBaseVariable.hpp \
                 runtime\Interpreter.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) instructions\DoInstruction.cpp /o $@
+	$(CC) $(CFLAGS) instructions\DoInstruction.cpp $(OUTFLAG)
 
 DropInstruction.obj: instructions\DropInstruction.cpp \
                 instructions\DropInstruction.hpp \
@@ -728,7 +728,7 @@ DropInstruction.obj: instructions\DropInstruction.cpp \
                 runtime\RexxBuffer.hpp \
                 runtime\Interpreter.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) instructions\DropInstruction.cpp /o $@
+	$(CC) $(CFLAGS) instructions\DropInstruction.cpp $(OUTFLAG)
 
 ElseInstruction.obj: instructions\ElseInstruction.cpp \
                 instructions\ElseInstruction.hpp \
@@ -737,7 +737,7 @@ ElseInstruction.obj: instructions\ElseInstruction.cpp \
                 instructions\IfInstruction.hpp \
                 parser\Token.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) instructions\ElseInstruction.cpp /o $@
+	$(CC) $(CFLAGS) instructions\ElseInstruction.cpp $(OUTFLAG)
 
 EndIf.obj: instructions\EndIf.cpp \
                 instructions\EndIf.hpp \
@@ -746,7 +746,7 @@ EndIf.obj: instructions\EndIf.cpp \
                 instructions\IfInstruction.hpp \
                 parser\Token.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) instructions\EndIf.cpp /o $@
+	$(CC) $(CFLAGS) instructions\EndIf.cpp $(OUTFLAG)
 
 EndInstruction.obj: instructions\EndInstruction.cpp \
                 instructions\EndInstruction.hpp \
@@ -756,14 +756,14 @@ EndInstruction.obj: instructions\EndInstruction.cpp \
                 instructions\DoInstruction.hpp \
                 instructions\DoBlock.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) instructions\EndInstruction.cpp /o $@
+	$(CC) $(CFLAGS) instructions\EndInstruction.cpp $(OUTFLAG)
 
 ExitInstruction.obj: instructions\ExitInstruction.cpp \
                 instructions\ExitInstruction.hpp \
                 instructions\RexxInstruction.hpp \
                 runtime\RexxActivation.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) instructions\ExitInstruction.cpp /o $@
+	$(CC) $(CFLAGS) instructions\ExitInstruction.cpp $(OUTFLAG)
 
 ExposeInstruction.obj: instructions\ExposeInstruction.cpp \
                 instructions\ExposeInstruction.hpp \
@@ -772,7 +772,7 @@ ExposeInstruction.obj: instructions\ExposeInstruction.cpp \
                 classes\QueueClass.hpp \
                 expression\ExpressionBaseVariable.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) instructions\ExposeInstruction.cpp /o $@
+	$(CC) $(CFLAGS) instructions\ExposeInstruction.cpp $(OUTFLAG)
 
 ForwardInstruction.obj: instructions\ForwardInstruction.cpp \
                 instructions\ForwardInstruction.hpp \
@@ -782,7 +782,7 @@ ForwardInstruction.obj: instructions\ForwardInstruction.cpp \
                 runtime\RexxVariableDictionary.hpp \
                 runtime\RexxActivation.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) instructions\ForwardInstruction.cpp /o $@
+	$(CC) $(CFLAGS) instructions\ForwardInstruction.cpp $(OUTFLAG)
 
 GuardInstruction.obj: instructions\GuardInstruction.cpp \
                 instructions\GuardInstruction.hpp \
@@ -792,7 +792,7 @@ GuardInstruction.obj: instructions\GuardInstruction.cpp \
                 runtime\RexxActivation.hpp \
                 expression\ExpressionBaseVariable.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) instructions\GuardInstruction.cpp /o $@
+	$(CC) $(CFLAGS) instructions\GuardInstruction.cpp $(OUTFLAG)
 
 IfInstruction.obj: instructions\IfInstruction.cpp \
                 instructions\IfInstruction.hpp \
@@ -801,7 +801,7 @@ IfInstruction.obj: instructions\IfInstruction.cpp \
                 runtime\RexxActivation.hpp \
                 parser\Token.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) instructions\IfInstruction.cpp /o $@
+	$(CC) $(CFLAGS) instructions\IfInstruction.cpp $(OUTFLAG)
 
 InterpretInstruction.obj: instructions\InterpretInstruction.cpp \
                 instructions\InterpretInstruction.hpp \
@@ -809,14 +809,14 @@ InterpretInstruction.obj: instructions\InterpretInstruction.cpp \
                 classes\StringClass.hpp \
                 runtime\RexxActivation.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) instructions\InterpretInstruction.cpp /o $@
+	$(CC) $(CFLAGS) instructions\InterpretInstruction.cpp $(OUTFLAG)
 
 LabelInstruction.obj: instructions\LabelInstruction.cpp \
                 instructions\LabelInstruction.hpp \
                 instructions\RexxInstruction.hpp \
                 runtime\RexxActivation.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) instructions\LabelInstruction.cpp /o $@
+	$(CC) $(CFLAGS) instructions\LabelInstruction.cpp $(OUTFLAG)
 
 LeaveInstruction.obj: instructions\LeaveInstruction.cpp \
                 instructions\LeaveInstruction.hpp \
@@ -825,7 +825,7 @@ LeaveInstruction.obj: instructions\LeaveInstruction.cpp \
                 runtime\RexxActivation.hpp \
                 parser\Token.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) instructions\LeaveInstruction.cpp /o $@
+	$(CC) $(CFLAGS) instructions\LeaveInstruction.cpp $(OUTFLAG)
 
 MessageInstruction.obj: instructions\MessageInstruction.cpp \
                 instructions\MessageInstruction.hpp \
@@ -835,14 +835,14 @@ MessageInstruction.obj: instructions\MessageInstruction.cpp \
                 runtime\RexxVariableDictionary.hpp \
                 expression\ExpressionMessage.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) instructions\MessageInstruction.cpp /o $@
+	$(CC) $(CFLAGS) instructions\MessageInstruction.cpp $(OUTFLAG)
 
 NopInstruction.obj: instructions\NopInstruction.cpp \
                 instructions\NopInstruction.hpp \
                 instructions\RexxInstruction.hpp \
                 runtime\RexxActivation.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) instructions\NopInstruction.cpp /o $@
+	$(CC) $(CFLAGS) instructions\NopInstruction.cpp $(OUTFLAG)
 
 NumericInstruction.obj: instructions\NumericInstruction.cpp \
                 instructions\NumericInstruction.hpp \
@@ -852,7 +852,7 @@ NumericInstruction.obj: instructions\NumericInstruction.cpp \
                 parser\Token.hpp \
                 runtime\Numerics.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) instructions\NumericInstruction.cpp /o $@
+	$(CC) $(CFLAGS) instructions\NumericInstruction.cpp $(OUTFLAG)
 
 OptionsInstruction.obj: instructions\OptionsInstruction.cpp \
                 instructions\OptionsInstruction.hpp \
@@ -860,7 +860,7 @@ OptionsInstruction.obj: instructions\OptionsInstruction.cpp \
                 classes\StringClass.hpp \
                 runtime\RexxActivation.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) instructions\OptionsInstruction.cpp /o $@
+	$(CC) $(CFLAGS) instructions\OptionsInstruction.cpp $(OUTFLAG)
 
 OtherwiseInstruction.obj: instructions\OtherwiseInstruction.cpp \
                 instructions\OtherwiseInstruction.hpp \
@@ -869,7 +869,7 @@ OtherwiseInstruction.obj: instructions\OtherwiseInstruction.cpp \
                 runtime\RexxActivation.hpp \
                 parser\Token.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) instructions\OtherwiseInstruction.cpp /o $@
+	$(CC) $(CFLAGS) instructions\OtherwiseInstruction.cpp $(OUTFLAG)
 
 ParseInstruction.obj: instructions\ParseInstruction.cpp \
                 instructions\ParseInstruction.hpp \
@@ -884,7 +884,7 @@ ParseInstruction.obj: instructions\ParseInstruction.cpp \
                 parser\Token.hpp \
                 runtime\Interpreter.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) instructions\ParseInstruction.cpp /o $@
+	$(CC) $(CFLAGS) instructions\ParseInstruction.cpp $(OUTFLAG)
 
 ParseTarget.obj: instructions\ParseTarget.cpp \
                 instructions\ParseTarget.hpp \
@@ -895,7 +895,7 @@ ParseTarget.obj: instructions\ParseTarget.cpp \
                 runtime\Interpreter.hpp \
                 classes\ASCIIDBCSStrings.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) instructions\ParseTarget.cpp /o $@
+	$(CC) $(CFLAGS) instructions\ParseTarget.cpp $(OUTFLAG)
 
 ParseTrigger.obj: instructions\ParseTrigger.cpp \
                 instructions\ParseTrigger.hpp \
@@ -905,7 +905,7 @@ ParseTrigger.obj: instructions\ParseTrigger.cpp \
                 instructions\ParseTarget.hpp \
                 expression\ExpressionBaseVariable.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) instructions\ParseTrigger.cpp /o $@
+	$(CC) $(CFLAGS) instructions\ParseTrigger.cpp $(OUTFLAG)
 
 ProcedureInstruction.obj: instructions\ProcedureInstruction.cpp \
                 instructions\ProcedureInstruction.hpp \
@@ -914,7 +914,7 @@ ProcedureInstruction.obj: instructions\ProcedureInstruction.cpp \
                 runtime\RexxActivation.hpp \
                 expression\ExpressionBaseVariable.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) instructions\ProcedureInstruction.cpp /o $@
+	$(CC) $(CFLAGS) instructions\ProcedureInstruction.cpp $(OUTFLAG)
 
 QueueInstruction.obj: instructions\QueueInstruction.cpp \
                 instructions\QueueInstruction.hpp \
@@ -925,7 +925,7 @@ QueueInstruction.obj: instructions\QueueInstruction.cpp \
                 runtime\Interpreter.hpp \
                 classes\ASCIIDBCSStrings.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) instructions\QueueInstruction.cpp /o $@
+	$(CC) $(CFLAGS) instructions\QueueInstruction.cpp $(OUTFLAG)
 
 RaiseInstruction.obj: instructions\RaiseInstruction.cpp \
                 instructions\RaiseInstruction.hpp \
@@ -937,27 +937,27 @@ RaiseInstruction.obj: instructions\RaiseInstruction.cpp \
                 runtime\RexxActivation.hpp \
                 runtime\Interpreter.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) instructions\RaiseInstruction.cpp /o $@
+	$(CC) $(CFLAGS) instructions\RaiseInstruction.cpp $(OUTFLAG)
 
 ReplyInstruction.obj: instructions\ReplyInstruction.cpp \
                 instructions\ReplyInstruction.hpp \
                 instructions\RexxInstruction.hpp \
                 runtime\RexxActivation.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) instructions\ReplyInstruction.cpp /o $@
+	$(CC) $(CFLAGS) instructions\ReplyInstruction.cpp $(OUTFLAG)
 
 ReturnInstruction.obj: instructions\ReturnInstruction.cpp \
                 instructions\ReturnInstruction.hpp \
                 instructions\RexxInstruction.hpp \
                 runtime\RexxActivation.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) instructions\ReturnInstruction.cpp /o $@
+	$(CC) $(CFLAGS) instructions\ReturnInstruction.cpp $(OUTFLAG)
 
 RexxInstruction.obj: instructions\RexxInstruction.cpp \
                 instructions\RexxInstruction.hpp \
                 parser\Clause.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) instructions\RexxInstruction.cpp /o $@
+	$(CC) $(CFLAGS) instructions\RexxInstruction.cpp $(OUTFLAG)
 
 SayInstruction.obj: instructions\SayInstruction.cpp \
                 instructions\SayInstruction.hpp \
@@ -967,7 +967,7 @@ SayInstruction.obj: instructions\SayInstruction.cpp \
                 runtime\Interpreter.hpp \
                 classes\ASCIIDBCSStrings.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) instructions\SayInstruction.cpp /o $@
+	$(CC) $(CFLAGS) instructions\SayInstruction.cpp $(OUTFLAG)
 
 SelectInstruction.obj: instructions\SelectInstruction.cpp \
                 instructions\SelectInstruction.hpp \
@@ -980,7 +980,7 @@ SelectInstruction.obj: instructions\SelectInstruction.cpp \
                 instructions\IfInstruction.hpp \
                 instructions\OtherwiseInstruction.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) instructions\SelectInstruction.cpp /o $@
+	$(CC) $(CFLAGS) instructions\SelectInstruction.cpp $(OUTFLAG)
 
 SignalInstruction.obj: instructions\SignalInstruction.cpp \
                 instructions\SignalInstruction.hpp \
@@ -990,7 +990,7 @@ SignalInstruction.obj: instructions\SignalInstruction.cpp \
                 runtime\RexxActivation.hpp \
                 classes\DirectoryClass.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) instructions\SignalInstruction.cpp /o $@
+	$(CC) $(CFLAGS) instructions\SignalInstruction.cpp $(OUTFLAG)
 
 ThenInstruction.obj: instructions\ThenInstruction.cpp \
                 instructions\ThenInstruction.hpp \
@@ -1000,7 +1000,7 @@ ThenInstruction.obj: instructions\ThenInstruction.cpp \
                 instructions\IfInstruction.hpp \
                 parser\Token.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) instructions\ThenInstruction.cpp /o $@
+	$(CC) $(CFLAGS) instructions\ThenInstruction.cpp $(OUTFLAG)
 
 TraceInstruction.obj: instructions\TraceInstruction.cpp \
                 instructions\TraceInstruction.hpp \
@@ -1008,7 +1008,7 @@ TraceInstruction.obj: instructions\TraceInstruction.cpp \
                 runtime\RexxActivation.hpp \
                 parser\SourceFile.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) instructions\TraceInstruction.cpp /o $@
+	$(CC) $(CFLAGS) instructions\TraceInstruction.cpp $(OUTFLAG)
 
 UseInstruction.obj: instructions\UseInstruction.cpp \
                 instructions\UseInstruction.hpp \
@@ -1018,14 +1018,14 @@ UseInstruction.obj: instructions\UseInstruction.cpp \
                 runtime\RexxActivation.hpp \
                 expression\ExpressionBaseVariable.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) instructions\UseInstruction.cpp /o $@
+	$(CC) $(CFLAGS) instructions\UseInstruction.cpp $(OUTFLAG)
 
 Clause.obj: parser\Clause.cpp \
                 parser\Clause.hpp \
                 classes\ArrayClass.hpp \
                 parser\Token.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) parser\Clause.cpp /o $@
+	$(CC) $(CFLAGS) parser\Clause.cpp $(OUTFLAG)
 
 InstructionParser.obj: parser\InstructionParser.cpp \
                 classes\StringClass.hpp \
@@ -1072,7 +1072,7 @@ InstructionParser.obj: parser\InstructionParser.cpp \
                 instructions\OtherwiseInstruction.hpp \
                 instructions\SelectInstruction.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) parser\InstructionParser.cpp /o $@
+	$(CC) $(CFLAGS) parser\InstructionParser.cpp $(OUTFLAG)
 
 Scanner.obj: parser\Scanner.cpp \
                 classes\StringClass.hpp \
@@ -1081,7 +1081,7 @@ Scanner.obj: parser\Scanner.cpp \
                 runtime\Interpreter.hpp \
                 classes\ASCIIDBCSStrings.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) parser\Scanner.cpp /o $@
+	$(CC) $(CFLAGS) parser\Scanner.cpp $(OUTFLAG)
 
 SourceFile.obj: parser\SourceFile.cpp \
                 parser\SourceFile.hpp \
@@ -1116,31 +1116,31 @@ SourceFile.obj: parser\SourceFile.cpp \
                 classes\ASCIIDBCSStrings.hpp \
                 runtime\Package.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) parser\SourceFile.cpp /o $@
+	$(CC) $(CFLAGS) parser\SourceFile.cpp $(OUTFLAG)
 
 Token.obj: parser\Token.cpp \
                 parser\Token.hpp \
                 classes\StringClass.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) parser\Token.cpp /o $@
+	$(CC) $(CFLAGS) parser\Token.cpp $(OUTFLAG)
 
 DBCSSupport.obj: platform\windows\DBCSSupport.cpp \
                 platform\windows\SysInterpreter.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) platform\windows\DBCSSupport.cpp /o $@
+	$(CC) $(CFLAGS) platform\windows\DBCSSupport.cpp $(OUTFLAG)
 
 ErrorMessages.obj: platform\windows\ErrorMessages.cpp \
                 messages\RexxMessageNumbers.h \
                 classes\StringClass.hpp \
                 platform\windows\SysInterpreter.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) platform\windows\ErrorMessages.cpp /o $@
+	$(CC) $(CFLAGS) platform\windows\ErrorMessages.cpp $(OUTFLAG)
 
 ExternalFunctions.obj: platform\windows\ExternalFunctions.cpp \
                 classes\StringClass.hpp \
                 platform\windows\SysInterpreter.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) platform\windows\ExternalFunctions.cpp /o $@
+	$(CC) $(CFLAGS) platform\windows\ExternalFunctions.cpp $(OUTFLAG)
 
 FileSystem.obj: platform\windows\FileSystem.cpp \
                 classes\StringClass.hpp \
@@ -1148,13 +1148,13 @@ FileSystem.obj: platform\windows\FileSystem.cpp \
                 platform\windows\SysInterpreter.hpp \
                 runtime\Interpreter.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) platform\windows\FileSystem.cpp /o $@
+	$(CC) $(CFLAGS) platform\windows\FileSystem.cpp $(OUTFLAG)
 
 MemorySupport.obj: platform\windows\MemorySupport.cpp \
                 runtime\RexxMemory.hpp \
                 platform\windows\SysInterpreter.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) platform\windows\MemorySupport.cpp /o $@
+	$(CC) $(CFLAGS) platform\windows\MemorySupport.cpp $(OUTFLAG)
 
 MiscSystem.obj: platform\windows\MiscSystem.cpp \
                 classes\StringClass.hpp \
@@ -1165,138 +1165,138 @@ MiscSystem.obj: platform\windows\MiscSystem.cpp \
                 platform\windows\SysInterpreter.hpp \
                 runtime\Interpreter.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) platform\windows\MiscSystem.cpp /o $@
+	$(CC) $(CFLAGS) platform\windows\MiscSystem.cpp $(OUTFLAG)
 
 RexxMain.obj: platform\windows\RexxMain.cpp \
                 platform\windows\SysInterpreter.hpp \
                 runtime\Interpreter.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) platform\windows\RexxMain.cpp /o $@
+	$(CC) $(CFLAGS) platform\windows\RexxMain.cpp $(OUTFLAG)
 
 RexxUtil.obj: platform\windows\RexxUtil.cpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) platform\windows\RexxUtil.cpp /o $@
+	$(CC) $(CFLAGS) platform\windows\RexxUtil.cpp $(OUTFLAG)
 
 SysActivity.obj: platform\windows\SysActivity.cpp \
                 platform\windows\SysActivity.hpp \
                 platform\windows\PlatformTypes.h \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) platform\windows\SysActivity.cpp /o $@
+	$(CC) $(CFLAGS) platform\windows\SysActivity.cpp $(OUTFLAG)
 
 SysCriticalSection.obj: platform\windows\SysCriticalSection.cpp \
                 platform\windows\SysCriticalSection.hpp \
                 platform\windows\PlatformTypes.h \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) platform\windows\SysCriticalSection.cpp /o $@
+	$(CC) $(CFLAGS) platform\windows\SysCriticalSection.cpp $(OUTFLAG)
 
 SysCSStream.obj: platform\windows\SysCSStream.cpp \
                 platform\windows\SysCSStream.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) platform\windows\SysCSStream.cpp /o $@
+	$(CC) $(CFLAGS) platform\windows\SysCSStream.cpp $(OUTFLAG)
 
 SysFile.obj: platform\windows\SysFile.cpp \
                 platform\windows\SysFile.hpp \
                 platform\windows\SysFileSystem.hpp \
                 platform\windows\SysProcess.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) platform\windows\SysFile.cpp /o $@
+	$(CC) $(CFLAGS) platform\windows\SysFile.cpp $(OUTFLAG)
 
 SysFileSystem.obj: platform\windows\SysFileSystem.cpp \
                 platform\windows\SysFileSystem.hpp \
                 platform\windows\SysProcess.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) platform\windows\SysFileSystem.cpp /o $@
+	$(CC) $(CFLAGS) platform\windows\SysFileSystem.cpp $(OUTFLAG)
 
 SysInterpreter.obj: platform\windows\SysInterpreter.cpp \
                 platform\windows\SysInterpreter.hpp \
                 runtime\Interpreter.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) platform\windows\SysInterpreter.cpp /o $@
+	$(CC) $(CFLAGS) platform\windows\SysInterpreter.cpp $(OUTFLAG)
 
 SysLibrary.obj: platform\windows\SysLibrary.cpp \
                 platform\windows\SysLibrary.hpp \
                 platform\windows\PlatformTypes.h \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) platform\windows\SysLibrary.cpp /o $@
+	$(CC) $(CFLAGS) platform\windows\SysLibrary.cpp $(OUTFLAG)
 
 SysLocalAPIManager.obj: platform\windows\SysLocalAPIManager.cpp \
                 platform\windows\SysLocalAPIManager.hpp \
                 client\LocalQueueManager.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) platform\windows\SysLocalAPIManager.cpp /o $@
+	$(CC) $(CFLAGS) platform\windows\SysLocalAPIManager.cpp $(OUTFLAG)
 
 SysProcess.obj: platform\windows\SysProcess.cpp \
                 platform\windows\SysProcess.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) platform\windows\SysProcess.cpp /o $@
+	$(CC) $(CFLAGS) platform\windows\SysProcess.cpp $(OUTFLAG)
 
 SysSemaphore.obj: platform\windows\SysSemaphore.cpp \
                 platform\windows\SysSemaphore.hpp \
                 platform\windows\SysProcess.hpp \
                 platform\windows\PlatformTypes.h \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) platform\windows\SysSemaphore.cpp /o $@
+	$(CC) $(CFLAGS) platform\windows\SysSemaphore.cpp $(OUTFLAG)
 
 SystemCommands.obj: platform\windows\SystemCommands.cpp \
                 classes\StringClass.hpp \
                 platform\windows\SysInterpreter.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) platform\windows\SystemCommands.cpp /o $@
+	$(CC) $(CFLAGS) platform\windows\SystemCommands.cpp $(OUTFLAG)
 
 SystemInitialization.obj: platform\windows\SystemInitialization.cpp \
                 platform\windows\SysInterpreter.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) platform\windows\SystemInitialization.cpp /o $@
+	$(CC) $(CFLAGS) platform\windows\SystemInitialization.cpp $(OUTFLAG)
 
 SysThread.obj: platform\windows\SysThread.cpp \
                 platform\windows\SysThread.hpp \
                 platform\windows\PlatformTypes.h \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) platform\windows\SysThread.cpp /o $@
+	$(CC) $(CFLAGS) platform\windows\SysThread.cpp $(OUTFLAG)
 
 TimeSupport.obj: platform\windows\TimeSupport.cpp \
                 classes\IntegerClass.hpp \
                 platform\windows\SysInterpreter.hpp \
                 runtime\Interpreter.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) platform\windows\TimeSupport.cpp /o $@
+	$(CC) $(CFLAGS) platform\windows\TimeSupport.cpp $(OUTFLAG)
 
 UseridFunction.obj: platform\windows\UseridFunction.cpp \
                 classes\StringClass.hpp \
                 platform\windows\SysInterpreter.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) platform\windows\UseridFunction.cpp /o $@
+	$(CC) $(CFLAGS) platform\windows\UseridFunction.cpp $(OUTFLAG)
 
 ValueFunction.obj: platform\windows\ValueFunction.cpp \
                 classes\StringClass.hpp \
                 platform\windows\SysInterpreter.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) platform\windows\ValueFunction.cpp /o $@
+	$(CC) $(CFLAGS) platform\windows\ValueFunction.cpp $(OUTFLAG)
 
 ActivityTable.obj: runtime\ActivityTable.cpp \
                 runtime\ActivityTable.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) runtime\ActivityTable.cpp /o $@
+	$(CC) $(CFLAGS) runtime\ActivityTable.cpp $(OUTFLAG)
 
 DeadObject.obj: runtime\DeadObject.cpp \
                 runtime\DeadObject.hpp \
                 runtime\RexxMemory.hpp \
                 runtime\Interpreter.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) runtime\DeadObject.cpp /o $@
+	$(CC) $(CFLAGS) runtime\DeadObject.cpp $(OUTFLAG)
 
 Errors.obj: runtime\Errors.cpp \
                 classes\StringClass.hpp \
                 messages\RexxMessageNumbers.h \
                 runtime\Interpreter.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) runtime\Errors.cpp /o $@
+	$(CC) $(CFLAGS) runtime\Errors.cpp $(OUTFLAG)
 
 Exithandler.obj: runtime\Exithandler.cpp \
                 runtime\Exithandler.hpp \
                 platform\windows\SysInterpreter.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) runtime\ExitHandler.cpp /o $@
+	$(CC) $(CFLAGS) runtime\ExitHandler.cpp $(OUTFLAG)
 
 ExternalFunctionSearch.obj: runtime\ExternalFunctionSearch.cpp \
                 classes\StringClass.hpp \
@@ -1309,7 +1309,7 @@ ExternalFunctionSearch.obj: runtime\ExternalFunctionSearch.cpp \
                 runtime\Interpreter.hpp \
                 runtime\Package.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) runtime\ExternalFunctionSearch.cpp /o $@
+	$(CC) $(CFLAGS) runtime\ExternalFunctionSearch.cpp $(OUTFLAG)
 
 FunctionActivator.obj: runtime\FunctionActivator.cpp \
                 runtime\FunctionActivator.hpp \
@@ -1319,7 +1319,7 @@ FunctionActivator.obj: runtime\FunctionActivator.cpp \
                 runtime\RexxActivity.hpp \
                 runtime\WeakReference.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) runtime\FunctionActivator.cpp /o $@
+	$(CC) $(CFLAGS) runtime\FunctionActivator.cpp $(OUTFLAG)
 
 GlobalData.obj: runtime\GlobalData.cpp \
                 classes\StringClass.hpp \
@@ -1338,7 +1338,7 @@ GlobalData.obj: runtime\GlobalData.cpp \
                 runtime\Interpreter.hpp \
                 runtime\RexxNativeCode.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) runtime\GlobalData.cpp /o $@
+	$(CC) $(CFLAGS) runtime\GlobalData.cpp $(OUTFLAG)
 
 GlobalNames.obj: runtime\GlobalNames.cpp \
                 runtime\GlobalNames.h \
@@ -1347,7 +1347,7 @@ GlobalNames.obj: runtime\GlobalNames.cpp \
                 classes\DirectoryClass.hpp \
                 classes\ArrayClass.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) runtime\GlobalNames.cpp /o $@
+	$(CC) $(CFLAGS) runtime\GlobalNames.cpp $(OUTFLAG)
 
 InternalPackage.obj: runtime\InternalPackage.cpp \
                 runtime\NativeMethods.h \
@@ -1357,14 +1357,14 @@ InternalPackage.obj: runtime\InternalPackage.cpp \
                 platform\windows\PlatformSysUtils.h \
                 runtime\Package.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) runtime\InternalPackage.cpp /o $@
+	$(CC) $(CFLAGS) runtime\InternalPackage.cpp $(OUTFLAG)
 
 Interpreter.obj: runtime\Interpreter.cpp \
                 runtime\Interpreter.hpp \
                 classes\DirectoryClass.hpp \
                 platform\windows\SysThread.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) runtime\Interpreter.cpp /o $@
+	$(CC) $(CFLAGS) runtime\Interpreter.cpp $(OUTFLAG)
 
 InterpreterInstance.obj: runtime\InterpreterInstance.cpp \
                 runtime\InterpreterInstance.hpp \
@@ -1372,26 +1372,26 @@ InterpreterInstance.obj: runtime\InterpreterInstance.cpp \
                 runtime\Interpreter.hpp \
                 platform\windows\SysInterpreter.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) runtime\InterpreterInstance.cpp /o $@
+	$(CC) $(CFLAGS) runtime\InterpreterInstance.cpp $(OUTFLAG)
 
 MemorySegment.obj: runtime\MemorySegment.cpp \
                 runtime\MemorySegment.hpp \
                 runtime\DeadObject.hpp \
                 runtime\Interpreter.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) runtime\MemorySegment.cpp /o $@
+	$(CC) $(CFLAGS) runtime\MemorySegment.cpp $(OUTFLAG)
 
 MemoryStats.obj: runtime\MemoryStats.cpp \
                 runtime\MemoryStats.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) runtime\MemoryStats.cpp /o $@
+	$(CC) $(CFLAGS) runtime\MemoryStats.cpp $(OUTFLAG)
 
 Numerics.obj: runtime\Numerics.cpp \
                 runtime\Numerics.hpp \
                 classes\NumberStringClass.hpp \
                 classes\IntegerClass.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) runtime\Numerics.cpp /o $@
+	$(CC) $(CFLAGS) runtime\Numerics.cpp $(OUTFLAG)
 
 Package.obj: runtime\Package.cpp \
                 runtime\Package.hpp \
@@ -1400,7 +1400,7 @@ Package.obj: runtime\Package.cpp \
                 runtime\RexxNativeCode.hpp \
                 runtime\FunctionActivator.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) runtime\Package.cpp /o $@
+	$(CC) $(CFLAGS) runtime\Package.cpp $(OUTFLAG)
 
 PrimitiveBehaviours.obj: runtime\PrimitiveBehaviours.cpp \
                 runtime\RexxBehaviour.hpp \
@@ -1408,7 +1408,7 @@ PrimitiveBehaviours.obj: runtime\PrimitiveBehaviours.cpp \
                 classes\IntegerClass.hpp \
                 classes\NumberStringClass.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) runtime\PrimitiveBehaviours.cpp /o $@
+	$(CC) $(CFLAGS) runtime\PrimitiveBehaviours.cpp $(OUTFLAG)
 
 RexxActivation.obj: runtime\RexxActivation.cpp \
                 runtime\RexxActivation.hpp \
@@ -1417,12 +1417,12 @@ RexxActivation.obj: runtime\RexxActivation.cpp \
                 runtime\RexxLocalVariables.hpp \
                 runtime\ActivationBase.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) runtime\RexxActivation.cpp /o $@
+	$(CC) $(CFLAGS) runtime\RexxActivation.cpp $(OUTFLAG)
 
 RexxActivationStack.obj: runtime\RexxActivationStack.cpp \
                 runtime\RexxActivationStack.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) runtime\RexxActivationStack.cpp /o $@
+	$(CC) $(CFLAGS) runtime\RexxActivationStack.cpp $(OUTFLAG)
 
 RexxActivity.obj: runtime\RexxActivity.cpp \
                 runtime\RexxActivity.hpp \
@@ -1436,7 +1436,7 @@ RexxActivity.obj: runtime\RexxActivity.cpp \
                 runtime\ActivityTable.hpp \
                 runtime\RexxNativeActivation.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) runtime\RexxActivity.cpp /o $@
+	$(CC) $(CFLAGS) runtime\RexxActivity.cpp $(OUTFLAG)
 
 RexxBehaviour.obj: runtime\RexxBehaviour.cpp \
                 runtime\RexxBehaviour.hpp \
@@ -1444,13 +1444,13 @@ RexxBehaviour.obj: runtime\RexxBehaviour.cpp \
                 classes\MethodClass.hpp \
                 classes\ArrayClass.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) runtime\RexxBehaviour.cpp /o $@
+	$(CC) $(CFLAGS) runtime\RexxBehaviour.cpp $(OUTFLAG)
 
 RexxBuffer.obj: runtime\RexxBuffer.cpp \
                 runtime\RexxBuffer.hpp \
                 runtime\RexxActivity.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) runtime\RexxBuffer.cpp /o $@
+	$(CC) $(CFLAGS) runtime\RexxBuffer.cpp $(OUTFLAG)
 
 RexxCode.obj: runtime\RexxCode.cpp \
                 runtime\RexxCode.hpp \
@@ -1460,7 +1460,7 @@ RexxCode.obj: runtime\RexxCode.cpp \
                 parser\SourceFile.hpp \
                 runtime\FunctionActivator.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) runtime\RexxCode.cpp /o $@
+	$(CC) $(CFLAGS) runtime\RexxCode.cpp $(OUTFLAG)
 
 RexxCollection.obj: runtime\RexxCollection.cpp \
                 runtime\RexxCollection.hpp \
@@ -1469,7 +1469,7 @@ RexxCollection.obj: runtime\RexxCollection.cpp \
                 classes\ArrayClass.hpp \
                 classes\DirectoryClass.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) runtime\RexxCollection.cpp /o $@
+	$(CC) $(CFLAGS) runtime\RexxCollection.cpp $(OUTFLAG)
 
 RexxCompoundElement.obj: runtime\RexxCompoundElement.cpp \
                 runtime\RexxCompoundElement.hpp \
@@ -1477,13 +1477,13 @@ RexxCompoundElement.obj: runtime\RexxCompoundElement.cpp \
                 classes\StringClass.hpp \
                 runtime\RexxActivity.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) runtime\RexxCompoundElement.cpp /o $@
+	$(CC) $(CFLAGS) runtime\RexxCompoundElement.cpp $(OUTFLAG)
 
 RexxCompoundTable.obj: runtime\RexxCompoundTable.cpp \
                 runtime\RexxCompoundTable.hpp \
                 runtime\RexxCompoundTail.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) runtime\RexxCompoundTable.cpp /o $@
+	$(CC) $(CFLAGS) runtime\RexxCompoundTable.cpp $(OUTFLAG)
 
 RexxCompoundTail.obj: runtime\RexxCompoundTail.cpp \
                 runtime\RexxCompoundTail.hpp \
@@ -1491,14 +1491,14 @@ RexxCompoundTail.obj: runtime\RexxCompoundTail.cpp \
                 runtime\RexxBuffer.hpp \
                 runtime\Numerics.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) runtime\RexxCompoundTail.cpp /o $@
+	$(CC) $(CFLAGS) runtime\RexxCompoundTail.cpp $(OUTFLAG)
 
 RexxConstants.obj: runtime\RexxConstants.cpp \
                 runtime\RexxConstants.hpp \
                 parser\Token.hpp \
                 parser\SourceFile.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) runtime\RexxConstants.cpp /o $@
+	$(CC) $(CFLAGS) runtime\RexxConstants.cpp $(OUTFLAG)
 
 RexxEnvelope.obj: runtime\RexxEnvelope.cpp \
                 runtime\RexxEnvelope.hpp \
@@ -1509,27 +1509,27 @@ RexxEnvelope.obj: runtime\RexxEnvelope.cpp \
                 classes\ArrayClass.hpp \
                 classes\MethodClass.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) runtime\RexxEnvelope.cpp /o $@
+	$(CC) $(CFLAGS) runtime\RexxEnvelope.cpp $(OUTFLAG)
 
 RexxHashTable.obj: runtime\RexxHashTable.cpp \
                 runtime\RexxHashTable.hpp \
                 classes\ArrayClass.hpp \
                 classes\SupplierClass.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) runtime\RexxHashTable.cpp /o $@
+	$(CC) $(CFLAGS) runtime\RexxHashTable.cpp $(OUTFLAG)
 
 RexxInternalStack.obj: runtime\RexxInternalStack.cpp \
                 runtime\RexxInternalStack.hpp \
                 classes\StringClass.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) runtime\RexxInternalStack.cpp /o $@
+	$(CC) $(CFLAGS) runtime\RexxInternalStack.cpp $(OUTFLAG)
 
 RexxListTable.obj: runtime\RexxListTable.cpp \
                 runtime\RexxListTable.hpp \
                 classes\ObjectClass.hpp \
                 classes\ListClass.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) runtime\RexxListTable.cpp /o $@
+	$(CC) $(CFLAGS) runtime\RexxListTable.cpp $(OUTFLAG)
 
 RexxLocalVariables.obj: runtime\RexxLocalVariables.cpp \
                 runtime\RexxLocalVariables.hpp \
@@ -1537,7 +1537,7 @@ RexxLocalVariables.obj: runtime\RexxLocalVariables.cpp \
                 classes\StringClass.hpp \
                 runtime\RexxActivation.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) runtime\RexxLocalVariables.cpp /o $@
+	$(CC) $(CFLAGS) runtime\RexxLocalVariables.cpp $(OUTFLAG)
 
 RexxMemory.obj: runtime\RexxMemory.cpp \
                 runtime\RexxMemory.hpp \
@@ -1563,7 +1563,7 @@ RexxMemory.obj: runtime\RexxMemory.cpp \
                 classes\MessageClass.hpp \
                 classes\SupplierClass.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) runtime\RexxMemory.cpp /o $@
+	$(CC) $(CFLAGS) runtime\RexxMemory.cpp $(OUTFLAG)
 
 RexxNativeActivation.obj: runtime\RexxNativeActivation.cpp \
                 runtime\RexxNativeActivation.hpp \
@@ -1591,7 +1591,7 @@ RexxNativeActivation.obj: runtime\RexxNativeActivation.cpp \
                 platform\windows\SysInterpreter.hpp \
                 classes\ASCIIDBCSStrings.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) runtime\RexxNativeActivation.cpp /o $@
+	$(CC) $(CFLAGS) runtime\RexxNativeActivation.cpp $(OUTFLAG)
 
 RexxNativeCode.obj: runtime\RexxNativeCode.cpp \
                 runtime\RexxNativeCode.hpp \
@@ -1600,26 +1600,26 @@ RexxNativeCode.obj: runtime\RexxNativeCode.cpp \
                 classes\DirectoryClass.hpp \
                 runtime\Package.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) runtime\RexxNativeCode.cpp /o $@
+	$(CC) $(CFLAGS) runtime\RexxNativeCode.cpp $(OUTFLAG)
 
 RexxSmartBuffer.obj: runtime\RexxSmartBuffer.cpp \
                 runtime\RexxSmartBuffer.hpp \
                 runtime\RexxBuffer.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) runtime\RexxSmartBuffer.cpp /o $@
+	$(CC) $(CFLAGS) runtime\RexxSmartBuffer.cpp $(OUTFLAG)
 
 RexxThread.obj: runtime\RexxThread.cpp \
                 runtime\RexxThread.hpp \
                 platform\windows\SysThread.hpp \
                 runtime\RexxActivity.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) runtime\RexxThread.cpp /o $@
+	$(CC) $(CFLAGS) runtime\RexxThread.cpp $(OUTFLAG)
 
 RexxVariable.obj: runtime\RexxVariable.cpp \
                 runtime\RexxVariable.hpp \
                 runtime\RexxActivity.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) runtime\RexxVariable.cpp /o $@
+	$(CC) $(CFLAGS) runtime\RexxVariable.cpp $(OUTFLAG)
 
 RexxVariableDictionary.obj: runtime\RexxVariableDictionary.cpp \
                 runtime\RexxVariableDictionary.hpp \
@@ -1638,13 +1638,13 @@ RexxVariableDictionary.obj: runtime\RexxVariableDictionary.cpp \
                 expression\ExpressionCompoundVariable.hpp \
                 classes\SupplierClass.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) runtime\RexxVariableDictionary.cpp /o $@
+	$(CC) $(CFLAGS) runtime\RexxVariableDictionary.cpp $(OUTFLAG)
 
 RootImage.obj: runtime\RootImage.cpp \
                 runtime\RootImage.hpp \
                 classes\DirectoryClass.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) runtime\RootImage.cpp /o $@
+	$(CC) $(CFLAGS) runtime\RootImage.cpp $(OUTFLAG)
 
 Setup.obj: runtime\Setup.cpp \
                 classes\TableClass.hpp \
@@ -1677,7 +1677,7 @@ Setup.obj: runtime\Setup.cpp \
                 runtime\RexxMemory.hpp \
                 runtime\Package.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) runtime\Setup.cpp /o $@
+	$(CC) $(CFLAGS) runtime\Setup.cpp $(OUTFLAG)
 
 TranslatedImage.obj: runtime\TranslatedImage.cpp \
                 classes\StringClass.hpp \
@@ -1690,7 +1690,7 @@ TranslatedImage.obj: runtime\TranslatedImage.cpp \
                 platform\windows\SysInterpreter.hpp \
                 runtime\Interpreter.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) runtime\TranslatedImage.cpp /o $@
+	$(CC) $(CFLAGS) runtime\TranslatedImage.cpp $(OUTFLAG)
 
 Utilities.obj: runtime\Utilities.cpp \
                 classes\StringClass.hpp \
@@ -1699,13 +1699,13 @@ Utilities.obj: runtime\Utilities.cpp \
                 runtime\RexxNativeActivation.hpp \
                 runtime\Interpreter.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) runtime\Utilities.cpp /o $@
+	$(CC) $(CFLAGS) runtime\Utilities.cpp $(OUTFLAG)
 
 Version.obj: runtime\Version.cpp \
                 classes\StringClass.hpp \
                 runtime\Interpreter.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) runtime\Version.cpp /o $@
+	$(CC) $(CFLAGS) runtime\Version.cpp $(OUTFLAG)
 
 VirtualFunctionTable.obj: runtime\VirtualFunctionTable.cpp \
                 classes\ObjectClass.hpp \
@@ -1798,23 +1798,23 @@ VirtualFunctionTable.obj: runtime\VirtualFunctionTable.cpp \
                 runtime\Interpreter.hpp \
                 instructions\ParseTarget.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) runtime\VirtualFunctionTable.cpp /o $@
+	$(CC) $(CFLAGS) runtime\VirtualFunctionTable.cpp $(OUTFLAG)
 
 WeakReference.obj: runtime\WeakReference.cpp \
                 runtime\WeakReference.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) runtime\WeakReference.cpp /o $@
+	$(CC) $(CFLAGS) runtime\WeakReference.cpp $(OUTFLAG)
 
 ScriptContext.obj: script\ScriptContext.cpp \
                 script\ScriptContext.hpp \
                 runtime\RexxActivation.hpp \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) script\ScriptContext.cpp /o $@
+	$(CC) $(CFLAGS) script\ScriptContext.cpp $(OUTFLAG)
 
 StreamCommandParser.obj: streamLibrary\StreamCommandParser.cpp \
                 streamLibrary\StreamCommandParser.h \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) streamLibrary\StreamCommandParser.cpp /o $@
+	$(CC) $(CFLAGS) streamLibrary\StreamCommandParser.cpp $(OUTFLAG)
 
 StreamNative.obj: streamLibrary\StreamNative.cpp \
                 streamLibrary\StreamNative.hpp \
@@ -1822,7 +1822,7 @@ StreamNative.obj: streamLibrary\StreamNative.cpp \
                 platform\windows\SysFile.hpp \
                 streamLibrary\StreamCommandParser.h \
 		$(DEPHEADERS)
-	$(CC) $(CFLAGS) streamLibrary\StreamNative.cpp /o $@
+	$(CC) $(CFLAGS) streamLibrary\StreamNative.cpp $(OUTFLAG)
 
 platform\windows\winmsgtb.rc: platform\windows\WinMessageResource.xsl messages\rexxmsg.xml
     @ECHO .

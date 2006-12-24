@@ -60,11 +60,11 @@ rxsock.dll rxsock.lib: $(DLLOBJS) $(COMMONOBJS) $(SHAREDDLLVER) \
 rxsock.obj: rxsock.cpp \
             rxsock.h \
 	    $(COMMONHEADERS)
-	$(CC) $(CFLAGS) rxsock.cpp /o $@
+	$(CC) $(CFLAGS) rxsock.cpp $(OUTFLAG)
 
 rxsockfn.obj: rxsockfn.cpp \
 	    $(COMMONHEADERS)
-	$(CC) $(CFLAGS) rxsockfn.cpp /o $@
+	$(CC) $(CFLAGS) rxsockfn.cpp $(OUTFLAG)
 
 
 #################### clean #########################

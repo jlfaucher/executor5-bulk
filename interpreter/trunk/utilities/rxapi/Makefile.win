@@ -63,7 +63,7 @@ rxapi.exe: $(EXEOBJS) $(OOREXXLIBS) $(SHAREDEXEVER)
 APIService.obj: platform\windows\APIService.cpp \
           APIServer.hpp \
           $(COMMONHEADERS)
-	$(CC) $(CFLAGS) platform\windows\APIService.cpp /o $@
+	$(CC) $(CFLAGS) platform\windows\APIService.cpp $(OUTFLAG)
 
 APIServer.obj: APIServer.cpp \
           APIServer.hpp \
@@ -71,7 +71,7 @@ APIServer.obj: APIServer.cpp \
           $(top_srcdir)\shared\ServiceException.hpp \
           $(top_srcdir)\shared\ServiceMessage.cpp \
           $(COMMONHEADERS)
-	$(CC) $(CFLAGS) APIServer.cpp /o $@
+	$(CC) $(CFLAGS) APIServer.cpp $(OUTFLAG)
 
 APIServerInstance.obj: APIServerInstance.cpp \
           APIServerInstance.hpp \
@@ -79,27 +79,27 @@ APIServerInstance.obj: APIServerInstance.cpp \
           $(top_srcdir)\shared\ServiceException.hpp \
           $(top_srcdir)\shared\ServiceMessage.cpp \
           $(COMMONHEADERS)
-	$(CC) $(CFLAGS) APIServerInstance.cpp /o $@
+	$(CC) $(CFLAGS) APIServerInstance.cpp $(OUTFLAG)
 
 MacroSpaceManager.obj: MacroSpaceManager.cpp \
           MacroSpaceManager.hpp \
           $(top_srcdir)\shared\ServiceMessage.cpp \
           $(COMMONHEADERS)
-	$(CC) $(CFLAGS) MacroSpaceManager.cpp /o $@
+	$(CC) $(CFLAGS) MacroSpaceManager.cpp $(OUTFLAG)
 
 QueueManager.obj: QueueManager.cpp \
           QueueManager.hpp \
           APIServer.hpp \
           $(top_srcdir)\shared\ServiceMessage.cpp \
           $(COMMONHEADERS)
-	$(CC) $(CFLAGS) QueueManager.cpp /o $@
+	$(CC) $(CFLAGS) QueueManager.cpp $(OUTFLAG)
 
 RegistrationManager.obj: RegistrationManager.cpp \
           RegistrationManager.hpp \
           $(top_srcdir)\shared\ServiceException.hpp \
           $(top_srcdir)\shared\ServiceMessage.cpp \
           $(COMMONHEADERS)
-	$(CC) $(CFLAGS) RegistrationManager.cpp /o $@
+	$(CC) $(CFLAGS) RegistrationManager.cpp $(OUTFLAG)
 
 ClientMessage.obj: $(top_srcdir)\shared\ClientMessage.cpp \
           $(top_srcdir)\shared\ClientMessage.hpp \
@@ -107,13 +107,13 @@ ClientMessage.obj: $(top_srcdir)\shared\ClientMessage.cpp \
           $(top_srcdir)\shared\ServiceException.hpp \
           $(top_srcdir)\shared\ServiceMessage.cpp \
           $(COMMONHEADERS)
-	$(CC) $(CFLAGS) $(top_srcdir)\shared\ClientMessage.cpp /o $@
+	$(CC) $(CFLAGS) $(top_srcdir)\shared\ClientMessage.cpp $(OUTFLAG)
 
 ServiceMessage.obj: $(top_srcdir)\shared\ServiceMessage.cpp \
           $(top_srcdir)\shared\ServiceException.hpp \
           $(top_srcdir)\shared\ServiceMessage.cpp \
           $(COMMONHEADERS)
-	$(CC) $(CFLAGS) $(top_srcdir)\shared\ServiceMessage.cpp /o $@
+	$(CC) $(CFLAGS) $(top_srcdir)\shared\ServiceMessage.cpp $(OUTFLAG)
 
 
 #################### clean #########################

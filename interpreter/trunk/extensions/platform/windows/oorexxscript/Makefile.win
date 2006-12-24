@@ -65,7 +65,7 @@ ClassFactory.obj: ClassFactory.cpp \
                   ClassFactory.hpp \
                   ooRexxScriptMain.hpp \
                   $(COMMONHEADERS)
-    $(CC) $(CFLAGS) ClassFactory.cpp /o $@
+    $(CC) $(CFLAGS) ClassFactory.cpp $(OUTFLAG)
 
 DLLFunctions.obj: DLLFunctions.cpp \
                   DLLFunctions.hpp \
@@ -73,14 +73,14 @@ DLLFunctions.obj: DLLFunctions.cpp \
                   Engine2Rexx.hpp \
                   EngineFactory.hpp \
                   $(COMMONHEADERS)
-    $(CC) $(CFLAGS) DLLFunctions.cpp /o $@
+    $(CC) $(CFLAGS) DLLFunctions.cpp $(OUTFLAG)
 
 Engine2Rexx.obj: Engine2Rexx.cpp \
                  Engine2Rexx.hpp \
                  ScriptUtilities.hpp \
                  ooRexxScript.hpp \
                  $(COMMONHEADERS)
-    $(CC) $(CFLAGS) Engine2Rexx.cpp /o $@
+    $(CC) $(CFLAGS) Engine2Rexx.cpp $(OUTFLAG)
 
 EngineFactory.obj: EngineFactory.cpp \
                    EngineFactory.hpp \
@@ -89,56 +89,56 @@ EngineFactory.obj: EngineFactory.cpp \
                    DLLFunctions.hpp \
                    ooRexxGUIDs.hpp \
                    $(COMMONHEADERS)
-    $(CC) $(CFLAGS) EngineFactory.cpp /o $@
+    $(CC) $(CFLAGS) EngineFactory.cpp $(OUTFLAG)
 
 NamedItem.obj: NamedItem.cpp \
                NamedItem.hpp \
                ooRexxScript.hpp \
                $(COMMONHEADERS)
-    $(CC) $(CFLAGS) NamedItem.cpp /o $@
+    $(CC) $(CFLAGS) NamedItem.cpp $(OUTFLAG)
 
 ooRexxDispID.obj: ooRexxDispID.cpp \
                   ooRexxDispID.hpp \
                   ooRexxScriptMain.hpp \
                   WinOnlyBasePrototypes.h \
                   $(COMMONHEADERS)
-    $(CC) $(CFLAGS) ooRexxDispID.cpp /o $@
+    $(CC) $(CFLAGS) ooRexxDispID.cpp $(OUTFLAG)
 
 ooRexxEvent.obj: ooRexxEvent.cpp \
                  ooRexxEvent.hpp \
                  ooRexxScript.hpp \
                  $(COMMONHEADERS)
-    $(CC) $(CFLAGS) ooRexxEvent.cpp /o $@
+    $(CC) $(CFLAGS) ooRexxEvent.cpp $(OUTFLAG)
 
 ooRexxIDispatch.obj: ooRexxIDispatch.cpp \
                      ooRexxScript.hpp \
  	                   $(COMMONHEADERS)
-    $(CC) $(CFLAGS) ooRexxIDispatch.cpp /o $@
+    $(CC) $(CFLAGS) ooRexxIDispatch.cpp $(OUTFLAG)
 
 ooRexxScript.obj: ooRexxScript.cpp \
                   ooRexxScript.hpp \
                   security.inc \
                   $(COMMONHEADERS)
-  $(CC) $(CFLAGS) ooRexxScript.cpp /o $@
+  $(CC) $(CFLAGS) ooRexxScript.cpp $(OUTFLAG)
 
 ooRexxScriptError.obj: ooRexxScriptError.cpp \
                        ooRexxScriptError.hpp \
  	                     ooRexxScriptMain.hpp \
                        Engine2Rexx.hpp \
                        $(COMMONHEADERS)
-    $(CC) $(CFLAGS) ooRexxScriptError.cpp /o $@
+    $(CC) $(CFLAGS) ooRexxScriptError.cpp $(OUTFLAG)
 
 ScriptUtilities.obj: ScriptUtilities.cpp \
                      ScriptUtilities.hpp \
                      ooRexxScriptMain.hpp \
                      $(COMMONHEADERS)
-    $(CC) $(CFLAGS) ScriptUtilities.cpp /o $@
+    $(CC) $(CFLAGS) ScriptUtilities.cpp $(OUTFLAG)
 
 ScriptDebug.obj: ScriptDebug.cpp \
                  ScriptDebug.hpp \
                  WinOnlyBasePrototypes.h \
                  $(COMMONHEADERS)
-    $(CC) $(CFLAGS) ScriptDebug.cpp /o $@
+    $(CC) $(CFLAGS) ScriptDebug.cpp $(OUTFLAG)
 
 
 #################### clean #########################
