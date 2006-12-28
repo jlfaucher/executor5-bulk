@@ -53,6 +53,10 @@
 /*    sys_command - Run a command through system command processor.           */
 /******************************************************************************/
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include <string.h>                         /* Get strcpy, strcat, etc.       */
 #include <sys/wait.h>
 #include <stdlib.h>

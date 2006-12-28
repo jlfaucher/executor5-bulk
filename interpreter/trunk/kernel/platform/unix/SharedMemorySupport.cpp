@@ -45,6 +45,9 @@
 /* so it should work the same way on both systems.      (weigold)            */
 /*****************************************************************************/
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
 #include <stdio.h>
 #include "SharedMemorySupport.h"

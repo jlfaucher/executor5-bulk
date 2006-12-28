@@ -44,16 +44,17 @@
 /*                                                                   */
 /*********************************************************************/
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include <pthread.h>
 #if defined(OPSYS_SUN)
 #include <sched.h>
 #endif
-#include "PlatformDefinitions.h"
-#include "ThreadSupport.hpp"
 #include "RexxCore.h"
-#include "IntegerClass.hpp"
-#include "RexxNativeAPI.h"                    /* Method macros */
 #include "SysInterpreter.hpp"
+#include "SysSemaphore.hpp"
 
 #ifdef AIX
 #include <time.h>
@@ -63,7 +64,7 @@
 
 static int dayc[] = { 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334 };
 
-void SysInterpeter::getCurrentTime(
+void SysInterpreter::getCurrentTime(
   REXXDATETIME *Date )                 /* returned data structure    */
 {
 //  time_t Tp;                         /* long int for               */
@@ -97,7 +98,7 @@ void SysInterpeter::getCurrentTime(
 }
 
 typedef struct {
-  SysSemaphore *;                      /* semaphore to wait on              */
+  SysSemaphore *sem;                      /* semaphore to wait on              */
   int32_t time;                        /* timeout value                     */
 } ASYNC_TIMER_INFO;
 
@@ -133,64 +134,52 @@ void* async_timer(void *i)
 /*                       semaphore is posted                         */
 /*********************************************************************/
 
-RexxMethod2(void, alarm_startTimer,
-                  int32_t, numdays,
-                  int32_t, alarmtime)
+RexxMethod2(int, alarm_startTimer,
+            int32_t, numdays, int32_t, alarmtime)
 {
-  APIRET rc;                           /* return code                       */
-  SysSemaphore sem;                    /* Event-semaphore                   */
+  SysSemaphore *sem;                   /* Event-semaphore                   */
   uint32_t msecInADay = 86400000;      /* number of milliseconds in a day   */
-  REXXOBJECT cancelObj;                /* place object to check for cancel  */
-  uint32_t cancelVal;                  /* value of cancel                   */
+  RexxObject *cancelObj;               /* place object to check for cancel  */
+  RexxNumber cancelVal;                /* value of cancel                   */
   ASYNC_TIMER_INFO tinfo;              /* info for the timer thread         */
+  RexxThread timerThread;
 
-  sem.create();                        // create the semaphore
+  sem = new SysSemaphore;
+  sem->create();                        // create the semaphore
                                        /* set the state variables           */
-  RexxVarSet("EVENTSEMHANDLE",RexxPointer((void *)&sem));
-  RexxVarSet("TIMERSTARTED",RexxTrue);
+  context->SetObjectVariable("EVENTSEMHANDLE", context->NewPointer(&sem));
+  context->SetObjectVariable("TIMERSTARTED", context->TrueObject());
   /* setup the info for the timer thread                                    */
-  tinfo.sem = semHandle;
+  tinfo.sem = sem;
   tinfo.time = msecInADay;
 
   //TODO:  needs to be redone....
   while (numdays > 0) {                /* is it some future day?            */
 
-      RexxThread timerThread;
+      // INCORRECT!!!!!!!!!!!!!!!!!!!!
+      timerThread.createThread((RexxActivity *)async_timer); // create the thread
 
-      if (!timerThread.create(async_timer)) // create the thread
-      {
-                                           /* raise error                       */
-          send_exception(Error_System_service);
-          return;
+      sem->wait();                      /* wait for semaphore to be posted   */
 
-      }
-
-      sem.wait();                      /* wait for semaphore to be posted   */
-
-    cancelObj = RexxVarValue("CANCELED");
-    cancelVal = integer_value(cancelObj);
+    cancelObj = context->GetObjectVariable("CANCELED");
+    context->ObjectToNumber(cancelObj, &cancelVal);
 
     if (cancelVal == 1) {              /* If alarm cancelled?               */
-      return;                          /* get out                           */
+      return 0;                          /* get out                           */
     }
     else {
-      sem.reset();                     /* Reset the event semaphore         */
+      sem->reset();                     /* Reset the event semaphore         */
     }
     numdays--;                         /* Decrement number of days          */
   }
-  tinfo.sem = &sem;                    /* setup the info for timer thread   */
+  tinfo.sem = sem;                     /* setup the info for timer thread   */
   tinfo.time = alarmtime;
 
-  if (!timerThread.create(async_timer)) // create the thread
-  {
-                                       /* raise error                       */
-     send_exception(Error_System_service);
-     return;
-  }
-  sem.wait();                          /* wait for semaphore to be posted   */
+  timerThread.createThread((RexxActivity *)async_timer); // create the thread
+  sem->wait();                          /* wait for semaphore to be posted   */
                                        /* clear the semaphore state         */
-  RexxVarSet("EVENTSEMHANDLE", OREF_NULL);
-  return;
+  context->DropObjectVariable("EVENTSEMHANDLE");
+  return 0;
 }
 
 /*********************************************************************/
@@ -205,17 +194,17 @@ RexxMethod2(void, alarm_startTimer,
 /*********************************************************************/
 
 
-RexxMethod0(void, alarm_stopTimer)
+RexxMethod0(int, alarm_stopTimer)
 {
                                        /* clear the semaphore state         */
-  RexxObject *sem = RexxVarGet("EVENTSEMHANDLE");
+  RexxObjectPtr sem = context->GetObjectVariable("EVENTSEMHANDLE");
   if (sem != NULLOBJECT)
   {
-      APIRET rc;                           /* return code                       */
-      SysSemaphore * hev = (SysSemaphore *)pointer_value(sem);    /* event semaphore handle            */
+      SysSemaphore * hev = (SysSemaphore *)sem;    /* event semaphore handle            */
 
-      hev.post();
+      hev->post();
   }
+  return 0;
 }
 
 

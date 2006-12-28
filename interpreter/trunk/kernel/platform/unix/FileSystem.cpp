@@ -41,6 +41,11 @@
 /* Unix specific file related routines.                                       */
 /*                                                                            */
 /******************************************************************************/
+
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include "RexxCore.h"
 #include "StringClass.hpp"
 #include "RexxBuffer.hpp"

@@ -33,16 +33,28 @@ dnl NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 dnl SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 dnl
 
-OOREXX_PACKAGE=ooRexx
+dnl Process this file with autoconf to produce a configure script
+AC_INIT()
+
+dnl ***************************************************************************
+dnl The following should be checked for each release!
+dnl Note: Some of the values have duplicate definitions so check them all!!!!
+dnl ***************************************************************************
+
 OOREXX_VERSION_MAJOR=4
 OOREXX_VERSION_MINOR=0
 OOREXX_VERSION_REVISION=0
-OOREXX_VERSION=$OOREXX_VERSION_MAJOR.$OOREXX_VERSION_MINOR.$OOREXX_VERSION_REVISION
+AC_DEFINE_UNQUOTED(VERSION,"4.0.0")
 OOREXX_LIB_VERSION=$OOREXX_VERSION_MAJOR:0:0
-OOREXX_DEFAULT_PREFIX=/opt/ooRexx
 
-dnl Process this file with autoconf to produce a configure script
-AC_INIT()
+dnl ***************************************************************************
+dnl End of the values that need to be checked for each release.
+dnl ***************************************************************************
+
+OOREXX_PACKAGE=ooRexx
+AC_DEFINE_UNQUOTED(PACKAGE,"ooRexx")
+OOREXX_VERSION=$OOREXX_VERSION_MAJOR.$OOREXX_VERSION_MINOR.$OOREXX_VERSION_REVISION
+OOREXX_DEFAULT_PREFIX=/opt/ooRexx
 
 AC_SUBST(OOREXX_PACKAGE)
 AC_SUBST(OOREXX_VERSION_MAJOR)
@@ -58,7 +70,7 @@ AC_SUBST(OOREXX_PREFIX,$prefix)
 
 AC_CANONICAL_SYSTEM
 
-AM_INIT_AUTOMAKE($PACKAGE, $OOREXX_VERSION)
+AM_INIT_AUTOMAKE($OOREXX_PACKAGE, $OOREXX_VERSION)
 
 AM_CONFIG_HEADER(config.h)
 

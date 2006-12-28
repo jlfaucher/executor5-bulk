@@ -36,7 +36,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /*****************************************************************************/
-/* REXX Windows Support                                                      */
+/* REXX Unix/Linux Support                                                   */
 /*                                                                           */
 /* System interpreter control.  This is the preferred location for all       */
 /* system specific global variables, as well as specialized.  Processing     */
@@ -45,6 +45,10 @@
 /* needs to provide at least a placeholder implementation of this class.     */
 /*                                                                           */
 /*****************************************************************************/
+
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
 #include "RexxCore.h"
 #include "SysInterpreter.hpp"

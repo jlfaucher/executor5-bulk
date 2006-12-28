@@ -42,14 +42,9 @@
 /*                                                                            */
 /******************************************************************************/
 
-/*********************************************************************/
-/*                                                                   */
-/*   Subroutine Name:   valueFunction                                */
-/*                                                                   */
-/*   Function:          process the VALUE function selector          */
-/*                      function                                     */
-/*                                                                   */
-/*********************************************************************/
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
 #include "RexxCore.h"
 #include "StringClass.hpp"
