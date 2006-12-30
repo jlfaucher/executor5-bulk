@@ -1,12 +1,16 @@
+
 /*
    name:             runTestUnits.rex
    author:           Rony G. Flatscher
    date:             2005-08-20
-   version:          1.0.1
+   version:          1.0.3
 
    changed:          2005-10-19, ---rgf, fixed a little bug: if "-r" is given without a directory,
                                          start with current directory (instead of root directory!)
                      2006-11-29, ---rgf, changed name to indicate what this program is meant for
+                     2006-12-12, ---rgf, changed title for brief test results slightly
+                     2006-12-13, ---rgf, added elapsed time information (for running all test units)
+                     2006-12-14, ---rgf, added hashbang line
 
    license:          CPL 1.0 (Common Public License v1.0, see below)
 
@@ -100,11 +104,15 @@ do i=1 to tests.0
 end
 
 ts=makeTestSuiteFromFileList(list)  -- create the testSuite object
+call time "Reset"    -- start timer
 tr=ts~run   -- run all the tests in the testSuite, retrieve the testResult object
+e=time("Elapsed")
 
             -- show brief results
-call simpleDumpTestResults tr, "ooRexxBase.runTests (run all of the base testUnit tests)"
-
+parse source . . s                  -- get full path to this program
+this=filespec("Name", s)            -- extract file name
+call simpleDumpTestResults tr, pp(this) "processed:" pp(searchFile) "with" pp(switches),
+                               "found" pp(tests.0) "file(s), elapsed time:" pp(e) "sec(s)"
 
 ::requires ooRexxUnit.cls
 

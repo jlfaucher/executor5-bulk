@@ -1,3 +1,4 @@
+#!/usr/bin/rexx
 /*
 -- this is a ooRexx line comment, will get ignored by pre-processor which analyzes this header
 -- enclosed between the very first block comment, i.e. everything between the first "/*" .. "*/"
@@ -5,7 +6,7 @@
    name:             ooRexxUnit.cls
    author:           Rony G. Flatscher, Rick McGuire
    date:             2005-08-07
-   version:          0.2.0
+   version:          1.0.1
    changed1:         2005-08-07, ---rgf, moved assertion routines to a class "Assert", which
                                  serves as a superclass for TestCase: this is the junit-approach
                      2005-08-20, ---rgf, added license, assertCount, corrected some little bugs
@@ -39,6 +40,22 @@
                                            as an eye catcher for parsing and is not enquoted in square brackets anymore
                      2006-11-27, ---rgf, - changed Assert[Not]Same to show ObjectID in failure message to ease comparison
                      2006-11-28, ---rgf, - corrected logic to intercept any condition from running a test case
+                     2006-12-13, ---rgf, - changed wording from "expected condition...was not received" to
+                                           "expected condition...was not raised"
+                                         - made sure that "makeTestSuiteFromFileList()" will create an own test suite per
+                                           test class for which mandatory test methods got listed
+                     2006-12-14, ---rgf, added hashbang line
+                     2006-12-26/27/28, ---rgf, - removed "bWalterPachl" flag (to show reason of failure) as
+                                           reason of failures are always shown; even if no failure message
+                                           is supplied the assertion methods will still supply the "@assertionFailure"
+                                           string to indicate expected and (not matching) received values
+                                         - enhanced "assertEquals" to work on ordered and unordered collections:
+                                           - unordered collections (of any type) are regarded to be equal, if both contain
+                                             the same number of the same index/value pairs;
+                                           - ordered collections (of any type) are regarded to be equal, if the items
+                                             in the MAKEARRAY object are the same in the same order
+                     2006-12-30, ---rgf, added method assertNotEquals to Assert class (ooRexxUnit only, makes it easier
+                                         to test for unequal collection values)
 
    language-level:   6.0
    needs:            ooRexx 3.1 or later (introduced syntax error # 93.964, which is exploited)
@@ -68,7 +85,7 @@
 
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2005 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -103,9 +120,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-.local~bWalterPachl=.true   -- tell why assertion failed, suggested by Walter Pachl
 .local~chars.NonPrintable=xrange("00"x, "1F"x) || "FF"x  -- define non-printable chars
-
 
 
 
@@ -156,7 +171,7 @@
 
   dateTime=pp(date("s") time("L"))
   TestCaseTable[aTestCase]~queue(dateTime": endTest")
-  dir=.directory~new ~~setentry("OOREXXUNIT.CONDITION", dateTime":" pp("endTest")~left(11) makeTestCaseString(aTestCase) )
+  dir=.directory~new ~~setentry("OOREXXUNIT.CONDITION", dateTime":" pp("endTest") makeTestCaseString(aTestCase) )
   logQueue~queue(dir)
   fAssertions=fAssertions+aTestCase~assertCount
   fStop=.false          -- reset indicator
@@ -201,7 +216,7 @@
 
   dateTime=pp(date("s") time("L"))
   TestCaseTable[aTestCase]~queue(dateTime": startTest")
-  dir=.directory~new ~~setentry("OOREXXUNIT.CONDITION", dateTime":" pp("startTest")~left(11) makeTestCaseString(aTestCase))
+  dir=.directory~new ~~setentry("OOREXXUNIT.CONDITION", dateTime":" pp("startTest") makeTestCaseString(aTestCase))
   logQueue~queue(dir)
 
   fStop=.false          -- reset indicator
@@ -223,54 +238,64 @@
 ::class "Assert" public
 
 ::method init
-  expose fAssertions           -- count assertions, ooRexxUnit only
+  expose fAssertions          -- count assertions, ooRexxUnit only
   fAssertions=0
 
-::method assertCount        -- ooRex only
-  expose fAssertions           -- count assertions, ooRexxUnit only
+::method assertCount          -- ooRex only
+  expose fAssertions          -- count assertions, ooRexxUnit only
   return fAssertions
 
 ::method fAssertions attribute private    -- ooRexxUnit only
 
    -- assertions will raise a user error, if they do not hold
 ::method assertEquals
-  expose fAssertions           -- count assertions, ooRexxUnit only
-  if arg()=2 then
+  expose fAssertions          -- count assertions, ooRexxUnit only
+  if arg()=2 then             -- no failure message supplied
   do
-     if (arg(1)=arg(2)) then
+     bEquals=(arg(1)=arg(2))
+         -- values are not equal, but both are collections, test for equality
+     if \bEquals then
+     do
+         bEquals=isCollEqual(arg(1), arg(2))
+     end
+
+     if bEquals then
      do
         fAssertions=fAssertions+1
         return -- assertion holds
      end
-     self~fail                      -- fail without a msg
+     self~fail("@assertFailure assertEquals: expected="formatObjectInfo(arg(1))", actual="formatObjectInfo(arg(2))"."||"09"x)
   end
 
-  if (arg(2)=arg(3)) then
+  bEquals=(arg(2)=arg(3))
+         -- values are not equal, but both are collections, test for equality
+  if \bEquals then
+  do
+      bEquals=isCollEqual(arg(2), arg(3))
+  end
+
+  if bEquals then
   do
      fAssertions=fAssertions+1
      return    -- assertion holds
   end
 
-  if .bWalterPachl=.true then
-  do
-     sTmp=" @assertFailure assertEquals: expected="ppp(arg(2))", received="ppp(arg(3))
-  end
-  else
-     sTmp=""
+  sTmp="@assertFailure assertEquals: expected="formatObjectInfo(arg(2))", actual="formatObjectInfo(arg(3))"."||"09"x
+  self~fail(sTmp || arg(1))      -- fail with msg
 
-  self~fail(arg(1) || sTmp)      -- fail with msg
+
 
 
 ::method assertFalse
-  expose fAssertions           -- count assertions, ooRexxUnit only
-  if arg()=1 then
+  expose fAssertions          -- count assertions, ooRexxUnit only
+  if arg()=1 then             -- no failure message supplied
   do
      if arg(1)=.false then
      do
         fAssertions=fAssertions+1
         return   -- assertion holds
      end
-     self~fail                      -- fail without a msg
+     self~fail("@assertFailure assertFalse: expected=[0], actual="ppp(arg(1))"."||"09"x)
   end
 
   if arg(2)=.false then
@@ -279,26 +304,58 @@
      return      -- assertion holds
   end
 
-  if .bWalterPachl=.true then
-  do
-     sTmp=" @assertFailure assertFalse: expected="ppp(.false)", received="ppp(arg(2))
-  end
-  else
-     sTmp=""
+  sTmp="@assertFailure assertFalse: expected=[0], actual="ppp(arg(2))"."||"09"x
+  self~fail(sTmp || arg(1))      -- fail with msg
 
-  self~fail(arg(1) || sTmp)                 -- fail with msg
+
+   -- assertions will raise a user error, if they do not hold
+::method assertNotEquals      -- ooRexxUnit only, 2006-12-30
+  expose fAssertions          -- count assertions, ooRexxUnit only
+  if arg()=2 then             -- no failure message supplied
+  do
+     bEquals=(arg(1)=arg(2))
+         -- values are not equal, but both are collections, test for equality
+     if \bEquals then
+     do
+         bEquals=isCollEqual(arg(1), arg(2))
+     end
+
+     if \bEquals then
+     do
+        fAssertions=fAssertions+1
+        return -- assertion holds
+     end
+     self~fail("@assertFailure assertNotEquals: expected="formatObjectInfo(arg(1), "\= ")", actual="formatObjectInfo(arg(2))"."||"09"x)
+  end
+
+  bEquals=(arg(2)=arg(3))
+         -- values are not equal, but both are collections, test for equality
+  if \bEquals then
+  do
+      bEquals=isCollEqual(arg(2), arg(3))
+  end
+
+  if \bEquals then
+  do
+     fAssertions=fAssertions+1
+     return    -- assertion holds
+  end
+
+  sTmp="@assertFailure assertNotEquals: expected=["formatObjectInfo(arg(2), "\= ")", actual="formatObjectInfo(arg(3))"."||"09"x
+  self~fail(sTmp || arg(1))      -- fail with msg
+
 
 
 ::method assertNotNull
-  expose fAssertions           -- count assertions, ooRexxUnit only
-  if arg()=1 then
+  expose fAssertions          -- count assertions, ooRexxUnit only
+  if arg()=1 then             -- no failure message supplied
   do
      if .nil<>arg(1) then
      do
         fAssertions=fAssertions+1
         return    -- assertion holds
      end
-     self~fail                      -- fail without a msg
+     self~fail("@assertFailure assertNotNull: expected=[\= [.nil]], actual=[.nil]."||"09"x)
   end
 
   if .nil<>arg(2) then
@@ -307,26 +364,23 @@
      return       -- assertion holds
   end
 
-  if .bWalterPachl=.true then
-  do
-     sTmp=" @assertFailure assertNotNull: not expected="ppp(".nil")", received="ppp(".nil")
-  end
-  else
-     sTmp=""
-
-  self~fail(arg(1))                 -- fail with msg
+  sTmp="@assertFailure assertNotNull: expected=[\= [.nil]], actual=[.nil]."||"09"x
+  self~fail(sTmp || arg(1))      -- fail with msg
 
 
 ::method assertNotSame
-  expose fAssertions           -- count assertions, ooRexxUnit only
-  if arg()=2 then
+  expose fAssertions          -- count assertions, ooRexxUnit only
+  if arg()=2 then             -- no failure message supplied
   do
      if (arg(1)==arg(2))=.false then
      do
         fAssertions=fAssertions+1
         return  -- assertion holds
      end
-     self~fail                      -- fail without a msg
+
+     self~fail("@assertFailure assertNotSame: expected="formatObjectInfo(arg(1), "\== ")", actual="formatObjectInfo(arg(2))"."||"09"x)
+
+     -- self~fail("@assertFailure assertNotSame: not expected="ppp(arg(1)~string "<hashValue:" getEscapedhashValue(arg(1))">")", received="ppp(arg(2)~string "<hashValue:" getEscapedhashValue(arg(2))">")"."||"09"x)
   end
 
   if (arg(2)==arg(3))=.false then
@@ -335,27 +389,22 @@
      return     -- assertion holds
   end
 
-  if .bWalterPachl=.true then
-  do
-     -- sTmp=" @assertFailure assertNotSame: expected="ppp(arg(2))", received="ppp(arg(3))
-     sTmp=" @assertFailure assertNotSame: not expected="ppp(arg(2)~string "<objectid:" arg(2)~"=="~c2x">")", received="ppp(arg(3)~string "<objectid:" arg(3)~"=="~c2x">")
-  end
-  else
-     sTmp=""
+  -- sTmp="@assertFailure assertNotSame: not expected="ppp(arg(2)~string "<hashValue:" getEscapedhashValue(arg(2))">")", received="ppp(arg(3)~string "<hashValue:" getEscapedhashValue(arg(3))">")"."||"09"x
 
-  self~fail(arg(1) || sTmp)                 -- fail with msg
+  sTmp="@assertFailure assertNotSame: expected="formatObjectInfo(arg(2), "\== ")", actual="formatObjectInfo(arg(3))"."||"09"x
+  self~fail(sTmp || arg(1))      -- fail with msg
 
 
 ::method assertNull
-  expose fAssertions           -- count assertions, ooRexxUnit only
-  if arg()=1 then
+  expose fAssertions          -- count assertions, ooRexxUnit only
+  if arg()=1 then             -- no failure message supplied
   do
      if .nil=arg(1) then
      do
         fAssertions=fAssertions+1
         return     -- assertion holds
      end
-     self~fail                      -- fail without a msg
+     self~fail("@assertFailure assertNull: expected=[.nil], actual="ppp(arg(1))"."||"09"x)
   end
 
   if .nil=arg(2)then
@@ -364,27 +413,21 @@
      return         -- assertion holds
   end
 
-  if .bWalterPachl=.true then
-  do
-     sTmp=" @assertFailure assertNull: expected="ppp(".nil")", received="ppp(arg(2))
-  end
-  else
-     sTmp=""
-
-  self~fail(arg(1) || sTmp)                 -- fail with msg
+  sTmp="@assertFailure assertNull: expected=[.nil], actual="ppp(arg(2))"."||"09"x
+  self~fail(sTmp || arg(1))      -- fail with msg
 
 
 ::method assertSame
-  expose fAssertions           -- count assertions, ooRexxUnit only
-  if arg()=2 then
+  expose fAssertions          -- count assertions, ooRexxUnit only
+  if arg()=2 then             -- no failure message supplied
   do
      if (arg(1)==arg(2))=.true then
      do
         fAssertions=fAssertions+1
         return-- assertion holds
      end
--- say "a1, a2:" pp(arg(1)) pp(arg(2))
-     self~fail                      -- fail without a msg
+     -- self~fail("@assertFailure assertSame: expected="ppp(arg(1)~string "<hashValue:" getEscapedhashValue(arg(1))">")", received="ppp(arg(2)~string "<hashValue:" getEscapedhashValue(arg(2))">")"."||"09"x)
+     self~fail("@assertFailure assertSame: expected="formatObjectInfo(arg(1))", actual="formatObjectInfo(arg(2))"."||"09"x)
   end
 
   if (arg(2)==arg(3))=.true then
@@ -393,30 +436,20 @@
      return   -- assertion holds
   end
 
-  if .bWalterPachl=.true then
-  do
--- say "arg(2):" arg(2)~"=="~c2x "arg(3):" arg(3)~"=="~c2x "<--- <--- <---"
--- say "       " arg(2)~c2x "|" arg(3)~c2x
-
-     sTmp=" @assertFailure assertSame: expected="ppp(arg(2)~string "<objectid:" arg(2)~"=="~c2x">")", received="ppp(arg(3)~string "<objectid:" arg(3)~"=="~c2x">")
-  end
-  else
-     sTmp=""
-
--- say "a1, a2, a3:" pp(arg(1)) pp(arg(2))"=="pp(arg(3)) ":" pp(arg(2)==arg(3))
-  self~fail(arg(1) || sTmp)                 -- fail with msg
+  sTmp="@assertFailure assertSame: expected="formatObjectInfo(arg(2))", actual="formatObjectInfo(arg(3))"."||"09"x
+  self~fail(sTmp || arg(1))      -- fail with msg
 
 
 ::method assertTrue
-  expose fAssertions           -- count assertions, ooRexxUnit only
-  if arg()=1 then
+  expose fAssertions          -- count assertions, ooRexxUnit only
+  if arg()=1 then             -- no failure message supplied
   do
      if arg(1)=.true then
      do
         fAssertions=fAssertions+1
         return    -- assertion holds
      end
-     self~fail                      -- fail without a msg
+     self~fail("@assertFailure assertTrue: expected=[1], actual="ppp(arg(1))"."||"09"x)
   end
 
   if arg(2)=.true then
@@ -425,15 +458,8 @@
      return       -- assertion holds
   end
 
-
-  if .bWalterPachl=.true then
-  do
-     sTmp=" @assertFailure assertTrue: expected="ppp(.true)", received="ppp(arg(2))
-  end
-  else
-     sTmp=""
-
-  self~fail(arg(1) || sTmp)                 -- fail with msg
+  sTmp="@assertFailure assertTrue: expected=[1], actual="ppp(arg(2))"."||"09"x
+  self~fail(sTmp || arg(1))      -- fail with msg
 
 
 ::method fail
@@ -498,10 +524,7 @@
      else
         tmpStr=conditionName
 
-     if .bWalterPachl=.true then
-        sTmp="@assertFailure check4ConditionFailure: expected condition" pp(tmpStr) "was not received"
-     else
-        sTmp="Expected condition" pp(tmpStr) "was not received."
+     sTmp="@assertFailure check4ConditionFailure: expected condition" pp(tmpStr) "was not raised."||"09"x
 
      self~fail(sTmp)                -- fail with msg
   end
@@ -614,27 +637,27 @@ exceptionHandler:
 
    if co~code=93.964 then     -- o.k. an own raised exception (using new ooRexx 3.1 application defined syntax error)
    do
-      tmpString=pp(date("S") time("L"))":" pp("failure")~left(11) self~string || iif(strAdditional="", "", " --->" strAdditional)
+      -- tmpString=pp(date("S") time("L"))":" pp("failure")~left(11) self~string || iif(strAdditional="", "", " --->" strAdditional)
+      tmpString=pp(date("S") time("L"))":" pp("failure") self~string || iif(strAdditional="", "", " --->" strAdditional)
       co~setentry("OOREXXUNIT.CONDITION", tmpString)  -- add ooRexxUnit-infos with condition object
       aTestResult~addFailure(self, co)    -- save the condition object
    end
    else     -- unexpected/untested failure, ie. an "error"
    do
       tmpInfo=co~condition
-      if tmpInfo="SYNTAX" then
-         tmpInfo=tmpInfo "ERROR"
-      else
-         tmpInfo=pp(tmpInfo) "condition"
+
+      -- if tmpInfo="SYNTAX" then tmpInfo=tmpInfo "ERROR"
 
       if co~hasentry("CODE") then
          tmpInfo=tmpInfo co~code
 
-      if .nil<>co~message then
-         tmpInfo=tmpInfo":" co~message    -- add error message
-      else
-         tmpInfo=tmpInfo "raised unexpectedly"
+      tmpInfo="condition" pp(tmpInfo) "raised unexpectedly." || "09"x
 
-      tmpString=pp(date("S") time("L"))":" pp("error")~left(11) self~string "--->" tmpInfo
+      if .nil<>co~message then
+         tmpInfo=tmpInfo || co~message   -- add error message
+
+      -- tmpString=pp(date("S") time("L"))":" pp("error")~left(11) self~string "--->" tmpInfo
+      tmpString=pp(date("S") time("L"))":" pp("error") self~string "--->" tmpInfo
       co~setentry("OOREXXUNIT.CONDITION", tmpString)  -- add ooRexxUnit-infos with condition object
       aTestResult~addError(self, co)      -- save the condition object
    end
@@ -761,11 +784,11 @@ exceptionHandler:
   parse arg string    -- retrieve string value of argument
 
   if verify(string, .chars.NonPrintable, "Match")>0 then
-     return "[" || editString(string) || "]" -- escape non-printable characters
+     return "[" || escapeString(string) || "]" -- escape non-printable characters
 
   return "[" || string || "]"
 
-editString: procedure   -- escape non-printable characters in string
+::routine escapeString        public   -- escape non-printable characters in string
   parse arg str
   tmpStr=.mutableBuffer~new
 
@@ -798,13 +821,118 @@ editString: procedure   -- escape non-printable characters in string
      do
         if tmpStr~length<>0 then tmpStr~~append(" || ")~~append(enquote(str))
                             else tmpStr~append(str)
-        str=""
+        leave         -- str=""
      end
   end
   return tmpStr~string
 
-enQuote: procedure
+-- enQuote: procedure
+::routine enQuote             public
   return '"' || arg(1) || '"'
+
+/*
+-- return hash value as a Rexx hex literal
+::routine getEscapedhashValue  public
+  use arg o
+  return enQuote(o~"=="~c2x)"x"
+*/
+
+-- create
+::routine formatObjectInfo public
+  use arg o, hint
+  if arg(2, 'omitted') then hint=""
+
+  return pp(hint || ppp(o~string)", hashValue="enQuote(o~"=="~c2x)"x")
+
+-- ppp(arg(1)~string "<hashValue:" getEscapedhashValue(arg(1))">")
+
+
+
+   /* function returning .true, if both collections can be regarded to be the same,
+      .false else
+      logic: - if both values have the method SUBSET, assume unordered collection;
+               proceed with test, if both values also possess the method SUPPLIER;
+               each value can be of any collection type: returns .true only, if the
+               same number of the same index/value pairs is present in both collections,
+               .false else
+               [there is a short-circuit logic if either value is of .set/.bag type
+                in which case the test for equality is carried out directly with the
+                help of the SUBSET method]
+
+             - if above does not apply, but both values have the MAKEARRAY method assume
+               an ordered collection: values of MAKEARRAY must occur in the same sequence
+               (and both need to have the same number of items) to return .true, .false else
+   */
+::routine IsCollEqual public
+  use arg expected, received
+
+      -- both collections with "SUPPLIER", if so, sequence should not matter
+  if expected~hasmethod("SUBSET") & received~hasmethod("SUBSET") then
+  do
+     if expected~hasmethod("SUPPLIER") & received~hasmethod("SUPPLIER") then
+     do
+         -- if both are either of type .set and/or .bag, then test directly with SUBSET for equality
+        mS=.set~of(.set, .bag)
+        if mS~hasindex(expected~class) & mS~hasindex(received~class) then
+        do
+           if expected~subset(received) then       -- equal, if each is a subset of the other
+           do
+              if received~subset(expected) then
+                 return .true
+           end
+
+           return .false
+        end
+
+            /* create a bag rendering of both collections such, that the resulting
+               bags can be used to test whether each is a subset of the other, hence
+               can be regarded to be the same collection; the encoding takes the hex-value
+               of the index object and concatenates it with a blank with the hex-value of
+               the item object, creating a uniquely identifiable bag element
+            */
+        eBag=.bag~new               -- create a bag rendering for the expected value
+        eSupp=expected~supplier
+        do while eSupp~available
+           eBag~put( eSupp~index~"==" eSupp~item~"==" )
+           eSupp~next
+        end
+
+        rBag=.bag~new               -- create a bag rendering for the received value
+        rSupp=received~supplier
+        do while rSupp~available
+           rBag~put( rSupp~index~"==" rSupp~item~"==" )
+           rSupp~next
+        end
+
+            /* test whether both collections can be regarded to be the same: if both bags are
+               subsets of each other, both values are regarded to be the same
+            */
+        if eBag~subset(rBag) then
+        do
+           if rBag~subset(eBag) then
+              return .true
+        end
+        return .false
+     end
+  end
+
+      -- maybe both collections with MAKEARRAY, if so, sequence matters
+  if expected~hasmethod("MAKEARRAY") & received~hasmethod("MAKEARRAY") then
+  do
+     eArr=expected~makearray
+     rArr=received~makearray
+     if eArr~items<>rArr~items then
+        return .false
+
+     do i=1 to eArr~items
+        if eArr[i]<>rArr[i] then
+           return .false
+     end
+     return .true
+  end
+
+  return .false
+
 
 
 
@@ -935,9 +1063,11 @@ enQuote: procedure
 
           if bMandatoryTests then   -- mandatory tests available, just use them to create testCases
           do
+            tsMand=.testSuite~new     -- create a test suite for this test class
             do testMethodName over mandatoryTests
-               ts~addTest( classObject~new(testMethodName) )   -- create and add testCase
+               tsMand~addTest( classObject~new(testMethodName) )   -- create and add testCase
             end
+            ts~addTest(tsMand)      -- now add the test suite of mandatory methods to the overall test suite
           end
           else    -- no mandatory tests defined, hence use all testmethods
           do
