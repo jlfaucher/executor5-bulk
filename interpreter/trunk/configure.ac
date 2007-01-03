@@ -263,6 +263,7 @@ AC_CONFIG_FILES([
         oorexx.spec \
         ooRexx.pc \
         Makefile \
+        api/Makefile \
         kernel/Makefile \
         kernel/messages/Makefile \
         rexxapi/Makefile \
