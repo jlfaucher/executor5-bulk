@@ -50,7 +50,7 @@ include $(top_srcdir)/oorexx.ver
 VERSION = $(MAJOR).$(MINOR)
 VERSION_INFO = -version-info $(MAJOR):$(MINOR):$(MOD_LVL)
 
-SUBDIRS = kernel rexxapi utilities extensions samples
+SUBDIRS = api kernel rexxapi utilities extensions samples
 DIST_SUBDIRS = shared rexxapi kernel utilities extensions api samples
 
 

@@ -38,6 +38,6 @@
 
 MAINTAINERCLEANFILES = Makefile.in
 
-DIST_SUBDIRS = ole oodialog orxscrpt rxwinsys
+DIST_SUBDIRS = ole oodialog oorexxscript rxwinsys
 
 
