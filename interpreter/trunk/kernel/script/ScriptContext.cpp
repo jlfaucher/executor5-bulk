@@ -103,7 +103,22 @@ void ScriptContext::removeVariableBinding(RexxString *name)
  *
  * @param context The new activation.
  */
-void ScriptContext::bindScriptVariables(RexxActivation *context)
+void ScriptContext::setInitialVariableContext(RexxActivation *context)
 {
-    boundValues->bindScriptVariables(context);
+    // set the bound objects in first, followed by the context variables.  We want to
+    // preserve any local context objects that were set by previous fragment executions,
+    // regardless of any new bindings that may have been added since then.
+    boundVariables->bindScriptVariables(context);
+    contextVariables->bindSctriptVariables(context);
 }
+
+
+void ScriptContext::updateScriptVariableContext(RexxActivation *context)
+{
+    RexxVariableDictionary *locals = context->getLocalVariables);
+
+
+
+
+}
+

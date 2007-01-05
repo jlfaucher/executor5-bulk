@@ -81,6 +81,18 @@ void *ClassicNativeActivator::operator new(size_t size)
  *
  * @return Pointer to new object storage.
  */
+void *ScriptNativeActivator::operator new(size_t size)
+{
+    return new_object(size, TheScriptNativeActivatorBehaviour);
+}
+
+/**
+ * Create a new object instance.
+ *
+ * @param size   Size of the object.
+ *
+ * @return Pointer to new object storage.
+ */
 void *ObjectNativeActivator::operator new(size_t size)
 {
     return new_object(size, TheObjectNativeActivatorBehaviour);
@@ -252,6 +264,40 @@ void ObjectNativeActivator::call(RexxActivation *activation, RexxObject ** argum
         reportException(Error_Incorrect_call_external, name);
     }
 }
+
+void ScriptNativeActivator::call(RexxActivation *activation, RexxObject ** arguments,
+    size_t argcount, RexxString *calltype, ProtectedObject &result)
+{
+    RexxObject *resultObject = OREF_NULL;
+
+    // our calling context
+    CallContext context;
+
+/* CRITICAL window here -->>  ABSOLUTELY NO KERNEL CALLS ALLOWED            */
+
+    // create the calling context (including a native activation), and
+    // release access to the interpreter
+    activation->activity->createCallContext(&context);
+
+    ooRexxScriptFunctionHandler *functionAddress = (ooRexxScriptFunctionHandler *)entryPoint;
+    RexxReturnCode functionRc = (*functionAddress)((RexxCallContext *)&context, argcount,
+        (RexxObjectPtr *)arguments, descriptor, (RexxObjectPtr *)&resultObject);
+
+    // anchor this as the protected object before releasing the context that is
+    // protecting this
+    result = resultObject;
+    // now reenter for Rexx code execution again
+    activation->activity->destroyCallContext(&context);
+
+/* END CRITICAL window here -->>  kernel calls now allowed again            */
+
+    // raise an error is one was signaled
+    if (functionRc != 0)
+    {
+        reportException(Error_Incorrect_call_external, name);
+    }
+}
+
 
 void TypedNativeActivator::call(RexxActivation *activation, RexxObject ** arguments,
     size_t argcount, RexxString *calltype, ProtectedObject &result)

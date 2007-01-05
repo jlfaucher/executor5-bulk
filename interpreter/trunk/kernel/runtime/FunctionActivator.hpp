@@ -53,6 +53,9 @@ class RexxString;
 typedef RexxReturnCode RexxEntry ooRexxObjectFunctionHandler(RexxCallContext *,
     RexxNumber, RexxObjectPtr *, RexxObjectPtr *);
 
+typedef RexxReturnCode RexxEntry ooRexxScriptFunctionHandler(RexxCallContext *,
+    RexxNumber, RexxObjectPtr *, void **, RexxObjectPtr *);
+
 class FunctionActivator : public RexxInternalObject
 {
 public:
@@ -113,6 +116,7 @@ public:
     virtual void call(RexxActivation *, RexxObject **, size_t, RexxString *, ProtectedObject &);
 };
 
+
 // call a native function in the type marshalled Object Rexx style
 class TypedNativeActivator : public NativeActivator
 {
@@ -124,6 +128,23 @@ public:
     inline TypedNativeActivator(RESTORETYPE restoreType) : NativeActivator(restoreType) { ; };
     inline TypedNativeActivator(RexxString *n, PFN e) : NativeActivator(n, e) { ; }
     virtual void call(RexxActivation *, RexxObject **, size_t, RexxString *, ProtectedObject &);
+};
+
+
+// call a native function registered as part of a script context
+class ScriptNativeActivator : public NativeActivator
+{
+public:
+    inline void *operator new(size_t, void *ptr) {return ptr;}
+    inline void  operator delete(void *, void *) {;}
+    void *operator new(size_t);
+    inline void  operator delete(void *) {;}
+    inline ScriptNativeActivator(RESTORETYPE restoreType) : NativeActivator(restoreType) { ; };
+    inline ScriptNativeActivator(RexxString *n, PFN e, void **d) : NativeActivator(n, e) , descriptor = d { ; }
+    virtual void call(RexxActivation *, RexxObject **, size_t, RexxString *, ProtectedObject &);
+
+protected:
+    void **descriptor;             // external environment attached opaque descriptor
 };
 
 
@@ -176,6 +197,22 @@ public:
 protected:
     WeakReference *resolvedMethod;      // weakly anchored method object
     RexxString *fileName;               // the resolved file name
+};
+
+// abstract class for native functions registered with a script context
+class ScriptNativeActivator : public FunctionActivator
+{
+public:
+    inline void *operator new(size_t, void *ptr) {return ptr;}
+    inline void  operator delete(void *, void *) {;}
+    void *operator new(size_t);
+    inline void  operator delete(void *) {;}
+    inline NativeActivator(RESTORETYPE restoreType) : FunctionActivator(restoreType) { ; };
+    inline NativeActivator(RexxString *n, PFN e) : FunctionActivator(n), entryPoint(e) { ; }
+    inline void updateEntryPoint(PFN e) { entryPoint = e; }
+
+protected:
+    void **descriptor;         // registered opaque data descriptor
 };
 
 #endif

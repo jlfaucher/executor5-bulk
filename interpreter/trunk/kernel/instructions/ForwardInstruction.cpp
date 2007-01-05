@@ -114,7 +114,7 @@ void RexxInstructionForward::execute(
   RexxObject **arguments;
 
   context->traceInstruction(this);     /* trace if necessary                */
-  if (!context->inMethod())            /* is this a method clause?          */
+  if (!context->isMethod())            /* is this a method clause?          */
                                        /* raise an error                    */
     reportException(Error_Execution_forward);
   target = OREF_NULL;                  /* no object yet                     */

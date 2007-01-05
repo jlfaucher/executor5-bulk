@@ -305,6 +305,7 @@ void RexxLocalVariables::updateVariable(RexxVariable *variable)
     dictionary->put(variable, name);
 }
 
+
 void RexxLocalVariables::createDictionary()
 /******************************************************************************/
 /* Function:  Create a variable dictionary for this method activation to      */

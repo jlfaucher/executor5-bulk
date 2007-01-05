@@ -168,9 +168,43 @@ void RexxVariableDictionary::bindScriptVariables(RexxActivation *context)
         // get the next variable from the dictionary
         variable = (RexxVariable *)this->contents->value(i);
         // set this variable in the local context so it has an initial value.
-        context->putLocalVariable(variable);
+        context->updateLocalVariable(variable);
     }
 }
+
+
+/**
+ * Merge the variables of a local activation back into the
+ * script context.  This only updates the local script context
+ * with the non-bound variables in the list.
+ *
+ * @param contextVars
+ *                  The script context's context variable list.
+ * @param boundVars The script context's bound variable list, used for merge
+ *                  filtering.
+ */
+void RexxVariableDictionary::mergeScriptVariables(RexxVariableDictionary *contextVars, RexxVariableDictionary *boundVars)
+{
+    HashLink    i;                       /* loop counter                      */
+
+                                         /* loop through the hash table       */
+    for (i = this->contents->first();
+         i < this->contents->totalSlotsSize();
+         i = this->contents->next(i))
+    {
+        // get the next variable from the dictionary
+        RexxVariable *variable = (RexxVariable *)this->contents->value(i);
+        RexxString *name = variable->getName();
+        // if this is not in the bound variable list, we need to push it into the
+        // context list
+        if (!boundVars.hasVariable(name))
+        {
+            contextVars->put(variable, name);
+        }
+    }
+}
+
+
 
 
 RexxObject  *RexxVariableDictionary::realValue(

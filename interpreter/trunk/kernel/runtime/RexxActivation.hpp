@@ -158,7 +158,7 @@ typedef ACTSETTINGS *PSETT;
                                        /* check for top level execution     */
 #define TOP_LEVEL_CALL (PROGRAMCALL | METHODCALL | EXTERNALCALL | SCRIPTCALL)
                                        /* non-method top level execution    */
-#define PROGRAM_LEVEL_CALL (PROGRAMCALL | EXTERNALCALL | SCRIPTCALL)
+#define PROGRAM_LEVEL_CALL (PROGRAMCALL | EXTERNALCALL)
                                        /* non-method top level execution    */
 #define PROGRAM_OR_METHOD  (PROGRAMCALL | METHODCALL | SCRIPTCALL)
                                        /* call is within an activation      */
@@ -261,9 +261,9 @@ typedef ACTSETTINGS *PSETT;
    {
      /* at a main program level or completing an INTERPRET */
      /* instruction? */
-     if (this->activation_context&TOP_LEVEL_CALL || this->activation_context == INTERPRET) {
+     if (this->isTopLevelCall() || this->isInterpret()) {
                                           /* real program call?                */
-         if (this->activation_context&PROGRAM_LEVEL_CALL) {
+         if (this->isProgramCall()) {
                                           /* run termination exit              */
              this->activity->callTerminationExit(this);
          }
@@ -320,7 +320,6 @@ typedef ACTSETTINGS *PSETT;
    inline void              newDo(RexxDoBlock *block) { this->pushBlock(block); this->blockNest++; this->settings.traceindent++;}
    inline void              removeBlock() { this->blockNest--; };
    inline void              addBlock()    { this->blockNest++; };
-   inline bool            inMethod()  {return this->activation_context == METHODCALL; }
    inline RexxSource *      getSource() {return this->settings.parent_source; };
    inline void              indent() {this->settings.traceindent++; };
    inline void              unindent() {this->settings.traceindent--; };
@@ -407,10 +406,22 @@ typedef ACTSETTINGS *PSETT;
 
    inline bool              hasSecurityManager() { return this->settings.securityManager != OREF_NULL; }
    inline bool              isTopLevel() { return (this->activation_context&TOP_LEVEL_CALL) != 0; }
+   inline bool              isInternalActivation() { return (this->activation_context&INTERNAL_LEVEL_CALL) != 0; }
+   inline bool              isScript() { return (this->activation_context&SCRIPTCALL) != 0; }
+   inline bool              isInterpret() { return (this->activation_context&INTERPRET) != 0; }
+   inline bool              isDebugPause() { return (this->activation_context&DEBUGPAUSE) != 0; }
+   inline bool              isMethod() { return (this->activation_context&METHODCALL) != 0; }
+   inline bool              isInternalCall() { return (this->activation_context&INTERNALCALL) != 0; }
+   inline bool              isExternalCall() { return (this->activation_context&EXTERNALCALL) != 0; }
    inline bool              isForwarded() { return (this->settings.flags&forwarded) != 0; }
    inline bool              isExternalTraceOn() { return (this->settings.flags&trace_on) != 0; }
    inline void              setExternalTraceOn() { this->settings.flags |= trace_on; }
    inline void              setExternalTraceOff() { this->settings.flags &= ~trace_on; }
+
+
+   inline bool              isActive() { return execution_state == ACTIVE; }
+   inline bool              isReturned() { return execution_state == RETURNED; }
+   inline bool              isReplied() { return execution_state == REPLIED; }
           bool              isTraceable();
           RexxString       *getProgramName();
 

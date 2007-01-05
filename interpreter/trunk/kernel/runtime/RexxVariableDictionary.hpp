@@ -72,6 +72,11 @@ class RexxVariableDictionary : public RexxInternalObject {
       return (RexxVariable *)contents->stringGet(name);
   }
 
+  inline bool hasVariable(RexxString *name)
+  {
+      return resolveVariable(name) != OREF_NULL;
+  }
+
   inline RexxVariable *removeVariable(RexxString *name)
   {
       return (RexxVariable *)contents->stringGet(name);

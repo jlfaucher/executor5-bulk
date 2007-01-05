@@ -706,6 +706,7 @@ RexxMethod *RexxMethod::newRexxBuffer(
     reportException(Error_Incorrect_method_noarg, IntegerTwo);
                                        /* create a source object            */
   newSource = RexxSource::classNewBuffered(pgmname, source);
+  ProtectedObject p1(newSource);
                                        /* now complete method creation      */
   return newRexxMethod(newSource);
 }
@@ -716,6 +717,7 @@ RexxMethod *RexxMethod::newMethod(stringchar_t *source, stringsize_t length)
     RexxBuffer *buffer = new_buffer(source, length);
                                        /* create a source object            */
     RexxSource *newSource = RexxSource::classNewBuffered(OREF_NULLSTRING, buffer);
+    ProtectedObject p1(newSource);
                                        /* now complete method creation      */
     return newSource->method();
 }

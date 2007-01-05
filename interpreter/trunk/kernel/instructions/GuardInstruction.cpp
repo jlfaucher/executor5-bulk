@@ -92,7 +92,7 @@ void RexxInstructionGuard::execute(
 #else
 
   context->traceInstruction(this);     /* trace if necessary                */
-  if (!context->inMethod())            /* is this a method clause?          */
+  if (!context->isMethod())            /* is this a method clause?          */
                                        /* raise an error                    */
     reportException(Error_Translation_guard_guard);
                                        /* non-expression form?              */

@@ -62,9 +62,15 @@ public:
 protected:
 
     RexxDirectory *routines;             // routines defined in this script context
+    RexxDirectory *registeredFunctions;  // routines registred by the hosting environment
+    RexxDirectory *functionCache;        // created function activators
                                          // external variable bindings
     RexxVariableDictionary *boundVariables;
+                                         // "local" variables associated with the script context.
+    RexxVariableDictionary *contextVariables;
+
+    RexxDirectory *classes;               // classes defined in this script context
 };
 
 #endif
-
+                 h
