@@ -42,6 +42,7 @@ MyDlg~DeInstall
 
 exit
 ::requires 'oodwin32.CLS'
+::requires 'DlgAreaU.CLS'
 /* ========================================================================= */
 ::class MyDialog Subclass UserDialog Inherit AdvancedControls
 /* ========================================================================= */
@@ -70,7 +71,6 @@ b=.dlgArea~new(u~x('70%'),u~y       ,u~wr      ,u~hr      )   /* button area */
 self~AddEntryLine(12,'text',e~x,e~y,e~w,e~h,'multiline')
 self~AddText(s~x,s~y,s~w,s~h,'Status info appears here',,11)
 
-i=15
 self~addButton(13,b~x,b~y('00%'),b~w,b~h('9%'),'Button' 0,'Button'||0)
 self~addButton(14,b~x,b~y('10%'),b~w,b~h('9%'),'Button' 1,'Button'||1)
 self~addButton(15,b~x,b~y('20%'),b~w,b~h('9%'),'Button' 2,'Button'||2)
