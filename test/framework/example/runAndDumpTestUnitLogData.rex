@@ -1,3 +1,4 @@
+#!/usr/bin/rexx
 /*
    name:    runAndDumpTestUnitLogData.rex (was: 'test4RainerKegel.rex')
    date:    2006-03-25

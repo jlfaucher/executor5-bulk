@@ -1,3 +1,4 @@
+#!/usr/bin/rexx
 /*
    name:             ooRexx.framework.CreateAllFailureMessages.rex
    author:           Rony G. Flatscher

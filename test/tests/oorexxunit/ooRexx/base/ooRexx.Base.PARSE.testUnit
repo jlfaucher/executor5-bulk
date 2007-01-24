@@ -1,11 +1,13 @@
+#!/usr/bin/rexx
 /*
    name:             ooRexx.Base.PARSE.testUnit
    author:           Rony G. Flatscher
    date:             2005-11-08
-   version:          0.0.1
+   version:          0.1.0
+   changed:          2007-01-24, --rgf, using "ooRexxUnit.getShellName()" for determining the
+                                        shell to ADDRESS
 
 -- line commented lines are ignored, when building the directory of infos from this header
-   changed:
 
    languageLevel:    6.0
    purpose:          Test the PARSE keyword statement
@@ -21,7 +23,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2005 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2005-2007 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -412,8 +414,16 @@ do_test_linein: procedure             -- create external Rexx program for testin
 
       ------------------------------
      -- invoke program which does the PARSE LINEIN and returns the sum of the parsed values
-   address cmd "rexx" filename "<"fileinput   -- run as external command redirect input
+   parse upper source opsys +1
+
+   currentEnvironment=address()              -- save current environment
+   address (ooRexxUnit.getShellName())       -- set environment to shell
+
+   -- address cmd "rexx" filename "<"fileinput  -- run as external command redirect input
+   "rexx" filename "<"fileinput  -- run as external command redirect input
    tmpRC=rc       -- should be 17 (8+9)
+
+   address (currentEnvironment)              -- restore current environment
 
       ------------------------------
      -- delete the files just created (clean up)

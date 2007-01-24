@@ -1,12 +1,13 @@
+#!/usr/bin/rexx
 /*
    name:             ooRexx.Base.String.testUnit
    author:           Rony G. Flatscher
    date:             2005-10-22
    version:          0.9.1
+   changed:          2007-01-24, --rgf, using "ooRexxUnit.getShellName()" for determining the
+                                        shell to ADDRESS
 
 -- line commented lines are ignored, when building the directory of infos from this header
-   changed:          ---
-
 
    languageLevel:    6.0
    purpose:          Test the setting of the Rexx variable named "RESULT", "RC" and "SIGL"
@@ -22,7 +23,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2005 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2005-2007 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -318,7 +319,11 @@ return testUnitList
 ::method "test_Result_with_Exit_ADDRESSING_ExternalFile"
    expose fileName
 
-   ADDRESS CMD "rexx" fileName
+   currentEnvironment=address()              -- save current environment
+   address (ooRexxUnit.getShellName())       -- set environment to shell
+
+   -- ADDRESS CMD "rexx" fileName
+   "rexx" fileName
 
    if var("RESULT") then tmpResult=result -- save value of "result"
    if var("RC")     then tmpRC    =RC     -- save value of "result"
@@ -326,10 +331,12 @@ return testUnitList
 -- say "tmpresult="pp(tmpresult) var("tmpresult")
 -- say "tmprc    ="pp(tmprc)     var("tmprc")
 
-   self~assertTrue("subTest2", var("TMPRC"))
-   self~assertSame("subTest3", tmpRC, "1234")  -- value of EXIT in external file
+   address (currentEnvironment)              -- restore current environment
+
 --say pp(var("TMPRESULT"))
    self~assertFalse("subTest1", var("TMPRESULT"))
+   self~assertTrue("subTest2", var("TMPRC"))
+   self~assertSame("subTest3", "1234", tmpRC)  -- value of EXIT in external file
 
 
    -- check whether SIGL points to the correct lines

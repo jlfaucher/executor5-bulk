@@ -1,4 +1,4 @@
-
+#!/usr/bin/rexx
 /*
    name:             runTestUnits.rex
    author:           Rony G. Flatscher

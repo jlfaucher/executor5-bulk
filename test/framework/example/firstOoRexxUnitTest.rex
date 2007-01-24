@@ -1,3 +1,4 @@
+#!/usr/bin/rexx
 /*
    name:             firstOoRexxUnitTest.rex
    author:           Rony G. Flatscher

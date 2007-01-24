@@ -6,7 +6,7 @@
    name:             ooRexxUnit.cls
    author:           Rony G. Flatscher, Rick McGuire
    date:             2005-08-07
-   version:          1.0.1
+   version:          1.0.2
    changed1:         2005-08-07, ---rgf, moved assertion routines to a class "Assert", which
                                  serves as a superclass for TestCase: this is the junit-approach
                      2005-08-20, ---rgf, added license, assertCount, corrected some little bugs
@@ -56,6 +56,10 @@
                                              in the MAKEARRAY object are the same in the same order
                      2006-12-30, ---rgf, added method assertNotEquals to Assert class (ooRexxUnit only, makes it easier
                                          to test for unequal collection values)
+                     2007-01-24, ---rgf, - changed EOL to Unix style (to make hash-bang work on Unix)
+                                         - added a function ooRexxUnit.getShellName(): central routine to return
+                                           the name of the shell to ADDRESS to
+
 
    language-level:   6.0
    needs:            ooRexx 3.1 or later (introduced syntax error # 93.964, which is exploited)
@@ -85,7 +89,7 @@
 
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2007 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -121,7 +125,7 @@
 /*----------------------------------------------------------------------------*/
 
 .local~chars.NonPrintable=xrange("00"x, "1F"x) || "FF"x  -- define non-printable chars
-
+.local~ooRexxUnit.version=102.20070124    -- define the version number
 
 
 /* *********************************************************************************** */
@@ -1076,4 +1080,22 @@ exceptionHandler:
        end
    end
    return ts      -- return the testSuite object
+
+
+
+/* Determine and return the shell name to be used in ADDRESS keyword statements. This
+   is a central location to make it easy to maintain in the future, in case a non-Windows
+   and non-Unix compatible operating systems comes up, or new shell variants develop.
+*/
+::routine ooRexxUnit.getShellName public
+
+      -- make sure we address the shell
+   shell="CMD"          -- default to the OS2/Windows shell
+   if pos(opsys, "WO")=0 then    -- if not running under OS/2 or Windows assume Unix
+   do
+      unixShell=value("SHELL", , "environment")    -- get the fully qualified shell
+      shell=substr(unixShell, 1+lastpos("/", unixShell))    -- extract name of shell
+   end
+
+   return shell
 

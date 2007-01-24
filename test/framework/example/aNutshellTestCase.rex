@@ -1,3 +1,4 @@
+#!/usr/bin/rexx
 /*
    name:             aNutshellTestCase.rex
    author:           Rony G. Flatscher
