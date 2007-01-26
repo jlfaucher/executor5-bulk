@@ -60,6 +60,7 @@ class RexxCode;
 class RexxClass;
 class ProtectedObject;
 class FunctionActivator;
+class RexxInstruction;
 
 // opaque kernel dispatching function
                                        /* pointer to method function        */
@@ -107,6 +108,15 @@ class RexxMethod : public RexxObject {
 
   void          run(RexxActivity *,  RexxObject *, RexxString *,  size_t, RexxObject **, ProtectedObject &);
   void          call(RexxActivity *,  RexxString *,  RexxObject **, size_t, RexxString *, RexxString *, uint32_t, ProtectedObject &);
+  void          callProgram(RexxActivity *activity, RexxString *routineName, RexxObject**arguments, size_t argcount, RexxString *calltype,
+                    RexxString *environment, uint32_t context, ProtectedObject &result);
+  void          callExternalRoutine(RexxActivity *activity, RexxString *routineName, RexxObject**arguments, size_t argcount,
+                    RexxString *calltype, RexxString *environment, ProtectedObject &result);
+  void          callNativeMethod(RexxActivity *activity, RexxString *routineName, RexxObject**arguments,
+                    size_t argcount, ProtectedObject &result);
+  void          callInternalRoutine(RexxActivity *activity, RexxInstruction *target, RexxObject**arguments, size_t argcount,
+                    RexxActivation *parent, ProtectedObject &result);
+  void          callInterpret(RexxActivity *activity, RexxActivation *parent, ProtectedObject &result, bool debug);
   RexxMethod   *newScope(RexxClass  *);
   void          setAttribute(RexxVariableBase *variable) {OrefSet(this, this->attribute, variable); }
   RexxVariableBase *getAttribute() { return this->attribute; };

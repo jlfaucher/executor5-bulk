@@ -1290,15 +1290,15 @@ RexxString *RexxString::lower()
 RexxString *RexxString::lowerRexx(RexxInteger *start, RexxInteger *length)
 {
     stringsize_t startPos = optionalPositionArgument(start, 1, ARG_ONE) - 1;
-    stringsize_t rangeLength = optionalLengthArgument(length, strLength(), ARG_TWO);
+    stringsize_t rangeLength = optionalLengthArgument(length, getLength(), ARG_TWO);
 
     // if we're starting beyond the end bounds, return unchanged
-    if (startPos > strLength())
+    if (startPos > getLength())
     {
         return this;
     }
 
-    rangeLength = min(rangeLength, strLength() - startPos);
+    rangeLength = min(rangeLength, getLength() - startPos);
 
     // a zero length value is also a non-change.
     if (rangeLength == 0)
@@ -1323,15 +1323,15 @@ RexxString *RexxString::lowerRexx(RexxInteger *start, RexxInteger *length)
 RexxString *RexxString::upperRexx(RexxInteger *start, RexxInteger *length)
 {
     stringsize_t startPos = optionalPositionArgument(start, 1, ARG_ONE) - 1;
-    stringsize_t rangeLength = optionalLengthArgument(length, strLength(), ARG_TWO);
+    stringsize_t rangeLength = optionalLengthArgument(length, getLength(), ARG_TWO);
 
     // if we're starting beyond the end bounds, return unchanged
-    if (startPos > strLength())
+    if (startPos > getLength())
     {
         return this;
     }
 
-    rangeLength = min(rangeLength, strLength() - startPos);
+    rangeLength = min(rangeLength, getLength() - startPos);
 
     // a zero length value is also a non-change.
     if (rangeLength == 0)
@@ -1358,11 +1358,11 @@ RexxString *RexxString::upperRexx(RexxInteger *start, RexxInteger *length)
 RexxString *RexxString::lower(stringsize_t offset, stringsize_t length)
 {
     // get a copy of the string
-    RexxString *newstring = extract(0, strLength());
+    RexxString *newstring = extract(0, getLength());
 
     stringchar_t *data = (stringchar_t *)newstring->getStringData() + offset;
     // now uppercase in place
-    for (i = 0; i < length; i++) {
+    for (stringsize_t i = 0; i < length; i++) {
         *data = tolower(*data);
         data++;
     }
@@ -1386,11 +1386,11 @@ RexxString *RexxString::lower(stringsize_t offset, stringsize_t length)
 RexxString *RexxString::upper(stringsize_t offset, stringsize_t length)
 {
     // get a copy of the string
-    RexxString *newstring = extract(0, strLength());
+    RexxString *newstring = extract(0, getLength());
 
     stringchar_t *data = (stringchar_t *)newstring->getStringData() + offset;
     // now uppercase in place
-    for (i = 0; i < length; i++) {
+    for (stringsize_t i = 0; i < length; i++) {
         *data = tolower(*data);
         data++;
     }

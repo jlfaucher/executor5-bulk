@@ -75,6 +75,7 @@ class RexxDirectory : public RexxHashTableCollection {
   RexxObject   *unknown(RexxString *, RexxArray *);
   RexxSupplier *supplier();
   RexxArray    *values();
+  RexxArray    *allIndices();
   void          reset();
   static RexxDirectory   *newInstance();
 

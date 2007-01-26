@@ -116,6 +116,24 @@ RexxArray *RexxHashTableCollection::makeArray(void)
   return this->contents->makeArray();
 }
 
+
+RexxArray *RexxHashTableCollection::allItems(void)
+/******************************************************************************/
+/* Function:  Return all of the collection values  in an array                */
+/******************************************************************************/
+{
+  return this->contents->values();
+}
+
+
+RexxArray *RexxHashTableCollection::allIndices(void)
+/******************************************************************************/
+/* Function:  Return all of the collection indices in an array                */
+/******************************************************************************/
+{
+  return this->contents->allItems();
+}
+
 RexxObject *RexxHashTableCollection::mergeItem(RexxObject *value, RexxObject *index)
 /******************************************************************************/
 /* Arguments:  Value, index                                                   */

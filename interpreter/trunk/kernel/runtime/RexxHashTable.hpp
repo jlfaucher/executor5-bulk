@@ -53,6 +53,7 @@
 class RexxHashTableCollection;
 class RexxSupplier;
 class RexxTable;
+class RexxArray;
 
 /* The type for the reference links */
 typedef size_t HashLink;
@@ -73,6 +74,7 @@ typedef size_t HashLink;
    void         liveGeneral();
    void         flatten(RexxEnvelope *);
    RexxArray  * makeArray();
+   RexxArray  * allIndices();
 
    HashLink       next(HashLink position);
    RexxObject    *value(HashLink position);
@@ -106,6 +108,7 @@ typedef size_t HashLink;
    RexxHashTable *reHash();
    RexxHashTable *putNodupe(RexxObject *value, RexxObject *key);
    RexxArray     *values();
+   RexxArray     *allItems();
    RexxSupplier  *supplier();
    RexxObject    *removeItem(RexxObject *value, RexxObject *key);
    RexxObject    *stringGet(RexxString *key);

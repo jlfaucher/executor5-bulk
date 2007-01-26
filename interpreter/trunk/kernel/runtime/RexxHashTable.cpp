@@ -1658,6 +1658,25 @@ RexxArray *RexxHashTable::makeArray(void)
 /* Function:  Create an array containing the hash table indexes.              */
 /******************************************************************************/
 {
+    // this just returns the index values
+    return this->allIndices();
+}
+
+RexxArray *RexxHashTable::allItems(void)
+/******************************************************************************/
+/* Function:  Create an array containing the hash table indexes.              */
+/******************************************************************************/
+{
+    // this just returns the values
+    return this->values();
+}
+
+
+RexxArray *RexxHashTable::allIndices(void)
+/******************************************************************************/
+/* Function:  Create an array containing the hash table indexes.              */
+/******************************************************************************/
+{
   size_t count;                        /* count of values                   */
   size_t i;                            /* loop counter                      */
   size_t j;                            /* loop counter                      */

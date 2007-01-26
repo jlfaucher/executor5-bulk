@@ -140,7 +140,7 @@ public:
     void *operator new(size_t);
     inline void  operator delete(void *) {;}
     inline ScriptNativeActivator(RESTORETYPE restoreType) : NativeActivator(restoreType) { ; };
-    inline ScriptNativeActivator(RexxString *n, PFN e, void **d) : NativeActivator(n, e) , descriptor = d { ; }
+    inline ScriptNativeActivator(RexxString *n, PFN e, void **d) : NativeActivator(n, e) , descriptor(d) { ; }
     virtual void call(RexxActivation *, RexxObject **, size_t, RexxString *, ProtectedObject &);
 
 protected:
@@ -199,21 +199,6 @@ protected:
     RexxString *fileName;               // the resolved file name
 };
 
-// abstract class for native functions registered with a script context
-class ScriptNativeActivator : public FunctionActivator
-{
-public:
-    inline void *operator new(size_t, void *ptr) {return ptr;}
-    inline void  operator delete(void *, void *) {;}
-    void *operator new(size_t);
-    inline void  operator delete(void *) {;}
-    inline NativeActivator(RESTORETYPE restoreType) : FunctionActivator(restoreType) { ; };
-    inline NativeActivator(RexxString *n, PFN e) : FunctionActivator(n), entryPoint(e) { ; }
-    inline void updateEntryPoint(PFN e) { entryPoint = e; }
-
-protected:
-    void **descriptor;         // registered opaque data descriptor
-};
 
 #endif
 

@@ -755,22 +755,54 @@ RexxArray *RexxList::makeArray(void)
 /* Function:  Return all of the list values in an array                       */
 /******************************************************************************/
 {
-  RexxArray *array;                    /* returned array value              */
-  LISTENTRY *element;                  /* current working entry             */
-  size_t      i;                       /* loop counter                      */
-  size_t      next;                    /* next item to process              */
-
-                                       /* allocate proper sized array       */
-  array = (RexxArray *)new_array(this->count);
-  next = this->firstIndex;                  /* point to the first element        */
-  for (i = 1; i <= this->count; i++) { /* step through the array elements   */
-    element = ENTRY_POINTER(next);     /* get the next item                 */
-                                       /* copy over to the array            */
-    array->put(element->value, i);
-    next = element->next;              /* get the next pointer              */
-  }
-  return array;                        /* return the array element          */
+    return this->allItems();           // this is just all of the array items.
 }
+
+
+/**
+ * Return an array containing all elements contained in the list,
+ * in sorted order.
+ *
+ * @return An array with the list elements.
+ */
+RexxArray *RexxList::allItems(void)
+{
+    // just iterate through the list, copying the elements.
+    RexxArray *array = (RexxArray *)new_array(this->count);
+    size_t next = this->firstIndex;
+    for (size_t i = 1; i <= this->count; i++)
+    {
+        LISTENTRY *element = ENTRY_POINTER(next);
+        array->put(element->value, i);
+        next = element->next;
+    }
+    return array;
+}
+
+
+/**
+ * Return an array containing all elements contained in the list,
+ * in sorted order.
+ *
+ * @return An array with the list elements.
+ */
+RexxArray *RexxList::allIndices(void)
+{
+    // just iterate through the list, copying the elements.
+    RexxArray *array = (RexxArray *)new_array(this->count);
+    // this requires protecting, since we're going to be creating new
+    // integer objects.
+    ProtectedObject p1(array);
+    size_t next = this->firstIndex;
+    for (size_t i = 1; i <= this->count; i++)
+    {
+        LISTENTRY *element = ENTRY_POINTER(next);
+        array->put((RexxObject *)new_integer(next), i);
+        next = element->next;
+    }
+    return array;
+}
+
 
 RexxArray *RexxList::weakReferenceArray()
 /******************************************************************************/
@@ -848,42 +880,19 @@ RexxObject *RexxList::indexOfValue(
   return OREF_NULL;
 }
 
-RexxArray  *RexxList::makeArrayIndices()
-/******************************************************************************/
-/* Function:  Return an array containing all of the list indices              */
-/******************************************************************************/
-{
-  RexxArray *array;                    /* returned array value              */
-  LISTENTRY *element;                  /* current working entry             */
-  size_t      i;                       /* loop counter                      */
-  size_t      next;                    /* next item to process              */
-
-                                       /* allocate proper sized array       */
-  array = (RexxArray *)new_array(this->count);
-  ProtectedObject p1(array);
-  next = this->firstIndex;                  /* point to the first element        */
-  for (i = 1; i <= this->count; i++) { /* step through the array elements   */
-    element = ENTRY_POINTER(next);     /* get the next item                 */
-                                       /* create an index item              */
-    array->put((RexxObject *)new_integer(next), i);
-    next = element->next;              /* get the next pointer              */
-  }
-  return array;                        /* return the array element          */
-}
-
 RexxSupplier *RexxList::supplier(void)
 /******************************************************************************/
 /* Function:  Create a supplier object for this list                          */
 /******************************************************************************/
 {
-  RexxArray *values;                   /* array of value items              */
-  RexxArray *indices;                  /* array of index items              */
+    // get arrays of both elements and indices
+    RexxArray *indices = this->allIndices();
+    RexxArray *values = this->allItems();
 
-                                       /* and all of the indices            */
-  indices = this->makeArrayIndices();
-  values = this->makeArray();          /* get the list values               */
-                                       /* return the supplier values        */
-  return (RexxSupplier *)new_supplier(values, indices);
+    ProtectedObject p1(indices);         // protect both of these
+    ProtectedObject p2(values);
+    // and create a supplier object from them.
+    return (RexxSupplier *)new_supplier(values, indices);
 }
 
 RexxObject *RexxList::itemsRexx(void)
@@ -893,6 +902,17 @@ RexxObject *RexxList::itemsRexx(void)
 {
                                        /* return the item count             */
   return (RexxObject *)new_integer(this->count);
+}
+
+
+/**
+ * Return the number of items in the list.
+ *
+ * @return The item count.
+ */
+arraysize_t RexxList::items()
+{
+    return this->count;     // this is the item count
 }
 
 void *RexxList::operator new(size_t size)

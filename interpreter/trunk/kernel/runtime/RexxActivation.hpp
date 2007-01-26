@@ -53,6 +53,7 @@
 class RexxInstruction;
 class RexxInstructionCallBase;
 class RexxQueue;
+class ScriptContext;
 
 #define trace_debug         0x00000001 /* interactive trace mode flag       */
 #define trace_all           0x00000002 /* trace all instructions            */
@@ -180,7 +181,14 @@ typedef ACTSETTINGS *PSETT;
    RexxActivation(RexxActivity *, RexxActivation *, RexxMethod *, RexxString *, RexxString *, int);
    RexxActivation(RexxActivity *, RexxObject *, RexxMethod *, RexxString *);
 
-   void init(RexxObject *, RexxObject *, RexxObject *, RexxObject *, RexxObject *, int);
+   void initMethodCall(RexxObject *receiver, RexxMethod *method, RexxString *msgname);
+   void initDefaultSettings();
+   void initCommon(RexxMethod *method, int context, RexxString *callContextName);
+   void initDebugCall(RexxActivation *parent, RexxMethod *method);
+   void initInterpret(RexxActivation *parent, RexxMethod *method);
+   void initTopLevelCall(RexxMethod *method, RexxString *type, RexxString *initialEnvironment, int context);
+   void initInternalCall(RexxActivation *parent, RexxMethod *method);
+   void initScriptCall(RexxMethod *method, ScriptContext *context);
    void live();
    void liveGeneral();
    void flatten(RexxEnvelope *);
@@ -261,7 +269,7 @@ typedef ACTSETTINGS *PSETT;
    {
      /* at a main program level or completing an INTERPRET */
      /* instruction? */
-     if (this->isTopLevelCall() || this->isInterpret()) {
+     if (this->isTopLevel() || this->isInterpret()) {
                                           /* real program call?                */
          if (this->isProgramCall()) {
                                           /* run termination exit              */
@@ -406,6 +414,7 @@ typedef ACTSETTINGS *PSETT;
 
    inline bool              hasSecurityManager() { return this->settings.securityManager != OREF_NULL; }
    inline bool              isTopLevel() { return (this->activation_context&TOP_LEVEL_CALL) != 0; }
+   inline bool              isProgramCall() { return (this->activation_context&PROGRAM_LEVEL_CALL) != 0; }
    inline bool              isInternalActivation() { return (this->activation_context&INTERNAL_LEVEL_CALL) != 0; }
    inline bool              isScript() { return (this->activation_context&SCRIPTCALL) != 0; }
    inline bool              isInterpret() { return (this->activation_context&INTERPRET) != 0; }

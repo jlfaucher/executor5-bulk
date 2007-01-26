@@ -256,15 +256,11 @@ void RexxMethod::run(
     return;                            /* and return the result             */
   }
   else if (this->isRexxMethod()) {     /* written in REXX?                  */
-
-
-    newacta = new RexxActivation(activity, receiver, this, msgname);
                                        /* add to the activity stack         */
-
-    activity->pushStackFrame(newacta);
+    newacta = activity->pushStackFrame();
     // initialize for a method call.
-    newacta.initMethodCall(receiver, this, msgname);
-    newacta.debugMethodEnter();
+    newacta->initMethodCall(receiver, this, msgname);
+    newacta->debugMethodEnter();
                                        /* run the method and return result  */
     if (!newacta->run(arguments, count, OREF_NULL, result))
     {
@@ -272,7 +268,7 @@ void RexxMethod::run(
         activity->popStackFrame(newacta);
     }
 
-    newacta.debugMethodExit();
+    newacta->debugMethodExit();
     activity->yield();        /* yield control now */
   }
   else {                               /* native activation                 */
@@ -287,18 +283,23 @@ void RexxMethod::run(
 }
 
 
-void RexxMethod::callProgram(
-    RexxActivity *activity,            /* activity running under            */
-    RexxString *routineName,           /* routine name                      */
-    RexxObject**arguments,             /* arguments to the method           */
-    size_t      argcount,              /* the count of arguments            */
-    RexxString *calltype,              /* COMMAND/ROUTINE/FUNCTION          */
-    RexxString *environment,           // initial command environment
-    uint32_t context,                  /* type of context                   */
-    ProtectedObject &result)           // return result value
-/******************************************************************************/
-/* Function:  Call a method as a top level program or external function call  */
-/******************************************************************************/
+/**
+ * Call a top-level program execution.  This is a call that
+ * will be the bottom of the execution stack.
+ *
+ * @param activity  The activity this is running under.
+ * @param routineName
+ *                  The name of the program.
+ * @param arguments The arguments to the program.
+ * @param argcount  The argument count.
+ * @param calltype  The type call being made (COMMAND, SCRIPT, etc.).
+ * @param environment
+ *                  The initial command environment.
+ * @param context   The call context type.
+ * @param result    A protected object reference used to return a result.
+ */
+void RexxMethod::callProgram(RexxActivity *activity, RexxString *routineName, RexxObject**arguments,
+    size_t argcount, RexxString *calltype, RexxString *environment, uint32_t context, ProtectedObject &result)
 {
     if (!this->isRexxMethod())
     {
@@ -308,7 +309,7 @@ void RexxMethod::callProgram(
     // get a new activation from the activity.
     RexxActivation *newacta = activity->pushStackFrame();
 
-    newacta.initTopLevelCall(this, calltype, environment, context);
+    newacta->initTopLevelCall(this, calltype, environment, context);
     /* run the method and return result  */
     newacta->run(arguments, argcount, OREF_NULL, result);
 
@@ -316,29 +317,33 @@ void RexxMethod::callProgram(
 }
 
 
-void RexxMethod::callExternalRoutine(
-    RexxActivity *activity,            /* activity running under            */
-    RexxString *routineName,           /* routine name                      */
-    RexxObject**arguments,             /* arguments to the method           */
-    size_t      argcount,              /* the count of arguments            */
-    RexxString *calltype,              /* COMMAND/ROUTINE/FUNCTION          */
-    RexxString *environment,           // initial command environment
-    ProtectedObject &result)           // return result value
-/******************************************************************************/
-/* Function:  Call a method as a top level program or external function call  */
-/******************************************************************************/
+/**
+ * Call a method as an external routine or function.
+ *
+ * @param activity  The activity the call's being made on.
+ * @param routineName
+ *                  The name this routine was called with.
+ * @param arguments The arguments to the call.
+ * @param argcount  The count of arguments.
+ * @param calltype  The type of call (FUNCTION or ROUTINE).
+ * @param environment
+ *                  The inherited environment string.
+ * @param result    A protected object for returning the routine result.
+ */
+void RexxMethod::callExternalRoutine(RexxActivity *activity, RexxString *routineName, RexxObject**arguments, size_t argcount,
+    RexxString *calltype, RexxString *environment, ProtectedObject &result)
 {
     if (this->isRexxMethod())
     {
         // get a new activation from the activity.
         RexxActivation *newacta = activity->pushStackFrame();
 
-        newacta.debugMethodEnter();
-        newacta.initTopLevelCall(this, calltype, environment, EXTERNALCALL);
+        newacta->debugMethodEnter();
+        newacta->initTopLevelCall(this, calltype, environment, EXTERNALCALL);
 
         /* run the method and return result  */
         newacta->run(arguments, argcount, OREF_NULL, result);
-        newacta.debugMethodExit();
+        newacta->debugMethodExit();
         activity->popStackFrame(newacta);
     }
     else if (this->isNativeMethod())
@@ -354,6 +359,16 @@ void RexxMethod::callExternalRoutine(
 }
 
 
+/**
+ * Call an internal routine or function.
+ *
+ * @param activity  The activity this is running on.
+ * @param target    The target first instruction of the call (a label).
+ * @param arguments The arguments to the call.
+ * @param argcount  The argument count.
+ * @param parent    The parent activation.
+ * @param result    A protected object used for the return value.
+ */
 void RexxMethod::callInternalRoutine(RexxActivity *activity, RexxInstruction *target, RexxObject**arguments, size_t argcount,
     RexxActivation *parent, ProtectedObject &result)
 {
@@ -365,36 +380,55 @@ void RexxMethod::callInternalRoutine(RexxActivity *activity, RexxInstruction *ta
     // get a new activation from the activity.
     RexxActivation *newacta = activity->pushStackFrame();
 
-    newacta.initInternalCall(parent, this);
-    newActivation->debugDisableStepOver();
+    newacta->initInternalCall(parent, this);
+    newacta->debugDisableStepOver();
     parent->debugEnterSubroutine();
     /* run the method and return result  */
     newacta->run(arguments, argcount, target, result);
     parent->debugLeaveSubroutine();
-    newacta->debugPassTrace2Parent(this);
+    newacta->debugPassTrace2Parent(parent);
     activity->popStackFrame(newacta);
 }
 
 
+/**
+ * Run a method created for an interpret instruction.
+ *
+ * @param activity The activity we're running on.
+ * @param parent   The parent context of the interpret.
+ * @param result   A protected object for a return result (not typical, but this
+ *                 could be an interpreted return or exit.
+ * @param debug    Whether this interpret is an interpret instruction or a debug pause.
+ */
 void RexxMethod::callInterpret(RexxActivity *activity, RexxActivation *parent, ProtectedObject &result, bool debug)
 {
     // get a new activation from the activity.
     RexxActivation *newacta = activity->pushStackFrame();
     if (debug)
     {
-        newacta.initDebugCall(parent, this);
+        newacta->initDebugCall(parent, this);
 
     }
     else
     {
-        newacta.initInterpret(parent, this);
+        newacta->initInterpret(parent, this);
     }
     /* run the method and return result  */
-    newacta->run(arguments, argcount, OREF_NULL, result);
+    newacta->run(NULL, 0, OREF_NULL, result);
     activity->popStackFrame(newacta);
 }
 
 
+/**
+ * Call a native method.
+ *
+ * @param activity  The current activity.
+ * @param routineName
+ *                  The name this is called under.
+ * @param arguments The routine arguments.
+ * @param argcount  The count of arguments.
+ * @param result    A protected object used for the return result.
+ */
 void RexxMethod::callNativeMethod(RexxActivity *activity, RexxString *routineName, RexxObject**arguments, size_t argcount, ProtectedObject &result)
 {
     /* create a new native activation    */

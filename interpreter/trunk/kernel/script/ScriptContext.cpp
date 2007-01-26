@@ -115,7 +115,7 @@ void ScriptContext::setInitialVariableContext(RexxActivation *context)
 
 void ScriptContext::updateScriptVariableContext(RexxActivation *context)
 {
-    RexxVariableDictionary *locals = context->getLocalVariables);
+    RexxVariableDictionary *locals = context->getLocalVariables();
 
 
 

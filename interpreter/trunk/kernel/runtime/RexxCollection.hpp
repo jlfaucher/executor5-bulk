@@ -54,6 +54,8 @@
     RexxObject * unflatten(RexxEnvelope *);
     RexxObject * copy();
     RexxArray  * makeArray();
+    RexxArray  * allIndices();
+    RexxArray  * allItems();
 
     virtual RexxObject *mergeItem(RexxObject *, RexxObject *);
 

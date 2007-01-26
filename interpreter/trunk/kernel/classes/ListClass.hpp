@@ -78,6 +78,8 @@ class RexxSupplier;
    void          flatten(RexxEnvelope *);
    RexxObject   *copy();
    RexxArray    *makeArray();
+   RexxArray    *allItems();
+   RexxArray    *allIndices();
    RexxArray    *weakReferenceArray();
    RexxArray    *requestArray();
 
@@ -97,6 +99,7 @@ class RexxSupplier;
    RexxObject   *hasIndex(RexxObject *);
    RexxSupplier *supplier();
    RexxObject   *itemsRexx();
+   arraysize_t   items();
    RexxObject   *insert(RexxObject *, RexxObject *);
    RexxObject   *put(RexxObject *, RexxObject *);
    RexxObject   *section(RexxObject *, RexxObject *);
@@ -105,7 +108,6 @@ class RexxSupplier;
    RexxObject   *lastItem();
    RexxObject   *insertRexx(RexxObject *, RexxObject *);
    void          partitionBuffer(size_t, size_t);
-   RexxArray    *makeArrayIndices();
    size_t        getFree();
    RexxObject   *add(RexxObject *, RexxObject *);
    RexxObject   *removeFirst() { return (this->firstIndex != LIST_END) ? this->primitiveRemove(ENTRY_POINTER(this->firstIndex)) : TheNilObject; }

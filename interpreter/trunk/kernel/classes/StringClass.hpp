@@ -200,7 +200,10 @@
    RexxInteger *compare(RexxString *, RexxString *);
    RexxString  *copies(RexxInteger *);
    RexxObject  *dataType(RexxString *);
-   stringsize_t lastPos(RexxString *);
+   stringsize_t lastPos(RexxString *, stringsize_t);
+   stringsize_t caselessLastPos(RexxString *, stringsize_t);
+   stringchar_t *lastPos(stringchar_t *, stringsize_t, stringchar_t *, stringsize_t);
+   stringchar_t *caselessLastPos(stringchar_t *, stringsize_t, stringchar_t *, stringsize_t);
    RexxInteger *lastPosRexx(RexxString *, RexxInteger *);
    RexxInteger *posRexx(RexxString *, RexxInteger *);
    RexxString  *translate(RexxString *, RexxString *, RexxString *);
@@ -225,6 +228,10 @@
    RexxString  *x2c();
    RexxString  *x2d(RexxInteger *);
    RexxString  *x2dC2d(RexxInteger *, bool);
+
+   RexxString *before(RexxString  *needle, RexxInteger *start);
+   RexxString *beforeLast(RexxString  *needle);
+   RexxString *after(RexxString  *needle, RexxInteger *start);
 
    RexxArray   *makeArray(RexxString *);
    void         copyIntoRxString(RxString *target);

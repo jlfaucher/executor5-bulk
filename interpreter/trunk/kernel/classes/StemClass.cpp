@@ -82,6 +82,9 @@ RexxObject *RexxStem::copy(void)
                                        /* make a copy of ourself (this also */
                                        /* copies the object variables       */
   newObject = (RexxStem *)this->RexxObject::copy();
+
+  ProtectedObject p1(newObject);
+
   newObject->tails.copy(newObject, this);/* have the tail table copy itself   */
   return newObject;                    /* return the new object             */
 }
@@ -359,6 +362,15 @@ void RexxStem::setElement(stringsize_t tail, RexxObject *value)
 
 
 RexxArray  *RexxStem::makeArray()
+/******************************************************************************/
+/* Function:  Extract as an array the tails of a stem.                        */
+/******************************************************************************/
+{
+  return this->tailArray();            /* extract the array item            */
+}
+
+
+RexxArray  *RexxStem::allIndices()
 /******************************************************************************/
 /* Function:  Extract as an array the tails of a stem.                        */
 /******************************************************************************/
@@ -690,6 +702,39 @@ RexxArray *RexxStem::tailArray()
       if (variable->getVariableValue() != OREF_NULL)
           /* add to our array                  */
           array->put(variable->getName(), count++);
+      variable = tails.next(variable); /* go get the next one               */
+  }
+  return array;                        /* return the array item             */
+}
+
+RexxArray *RexxStem::allItems()
+/******************************************************************************/
+/* Function:  Return all values as an array                                   */
+/******************************************************************************/
+{
+  RexxCompoundElement *variable;       /* table variable entry              */
+  RexxArray  *array;                   /* returned array                    */
+  arraysize_t   count;                 /* count of variables                */
+                                       /* traverse through all of the items */
+                                       /* in the stem variable dictionary,  */
+                                       /* counting each real variable       */
+  count = 0;                           /* start with zero                   */
+  variable = tails.first();            /* get the first variable            */
+  while (variable != OREF_NULL) {      /* while more values to process      */
+                                       /* this a real variable?             */
+      if (variable->getVariableValue() != OREF_NULL)
+          count++;                     /* count this variable               */
+      variable = tails.next(variable); /* go get the next one               */
+  }
+  array = new_array(count);            /* get the array                     */
+  count = 1;                           /* start at the beginning again      */
+
+  variable = tails.first();            /* get the first variable            */
+  while (variable != OREF_NULL) {      /* while more values to process      */
+                                       /* this a real variable?             */
+      if (variable->getVariableValue() != OREF_NULL)
+          /* add to our array                  */
+          array->put(variable->getVariableValue(), count++);
       variable = tails.next(variable); /* go get the next one               */
   }
   return array;                        /* return the array item             */

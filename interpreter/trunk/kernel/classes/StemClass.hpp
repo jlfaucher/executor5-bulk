@@ -90,6 +90,8 @@
   RexxInteger *integerValue(stringsize_t);
   RexxString  *stringValue();
   RexxArray   *makeArray();
+  RexxArray   *allItems();
+  RexxArray   *allIndices();
   RexxSupplier *supplier();
   RexxObject  *request(RexxString *);
   void setElement(stringchar_t *tail, RexxObject *value);
