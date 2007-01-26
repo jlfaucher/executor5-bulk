@@ -137,7 +137,7 @@ return testUnitList
 
   s=.stream~new(fileName)~~open("replace")   -- create empty file
   s~~lineout("/*" date("S") time() ", ---rgf */")~~lineout
-  s~~lineout("exit 1234") ~~lineout          -- return value "1234"
+  s~~lineout("exit 234") ~~lineout          -- return value "234" (Linux restriction: 0-255)
 
   s~~lineout("::routine testExternalWithReturn public")
   s~~lineout("  return 'ReturnValue'") ~~lineout
@@ -274,7 +274,7 @@ return testUnitList
 
    self~assertTrue("subTest1", var("TMPRESULT"))
    self~assertFalse("subTest1b", var("TMPRC"))
-   self~assertSame("subTest2", tmpResult, "1234")  -- value of EXIT in external file
+   self~assertSame("subTest2", tmpResult, "234")  -- value of EXIT in external file
 
       -- routine
    self~assertSame("subTest5",   testExternalWithReturn()    , "ReturnValue"       )
@@ -299,7 +299,7 @@ return testUnitList
 
    self~assertTrue("subTest1", var("TMPRESULT"))
    self~assertFalse("subTest1b", var("TMPRC"))
-   self~assertSame("subTest2", tmpResult, "1234")  -- value of EXIT in external file
+   self~assertSame("subTest2", tmpResult, "234")  -- value of EXIT in external file
 
       -- routine
    self~assertSame("subTest3",   testExternalWithExit()    , "ExitValue"       )
@@ -336,7 +336,7 @@ return testUnitList
 --say pp(var("TMPRESULT"))
    self~assertFalse("subTest1", var("TMPRESULT"))
    self~assertTrue("subTest2", var("TMPRC"))
-   self~assertSame("subTest3", "1234", tmpRC)  -- value of EXIT in external file
+   self~assertSame("subTest3", "234", tmpRC)  -- value of EXIT in external file
 
 
    -- check whether SIGL points to the correct lines
