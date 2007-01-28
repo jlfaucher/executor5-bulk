@@ -59,6 +59,13 @@ public:
     void liveGeneral();
     void flatten(RexxEnvelope*);
 
+    void addVariableBinding(RexxString *, RexxObject *);
+    void setBoundValue(RexxString *, RexxObject *);
+    RexxObject *getBoundValue(RexxString *);
+    void removeVariableBinding(RexxString *);
+    void setInitialVariableContext(RexxActivation *);
+    void updateScriptVariableContext(RexxActivation *);
+
 protected:
 
     RexxDirectory *routines;             // routines defined in this script context
@@ -71,6 +78,4 @@ protected:
 
     RexxDirectory *classes;               // classes defined in this script context
 };
-
 #endif
-                 h

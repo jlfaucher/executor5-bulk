@@ -41,6 +41,7 @@
 /*                                                                            */
 /*******************************************************************************/
 
+#include "RexxCore.h"
 #include "ScriptContext.hpp"
 #include "RexxActivation.hpp"
 
@@ -77,7 +78,7 @@ void ScriptContext::setBoundValue(RexxString *name, RexxObject *value)
  * @return The current variable value.  Returns null if the variable has
  *         been dropped.
  */
-RexxObject *Scriptcontext::getBoundValue(RexxString *name)
+RexxObject *ScriptContext::getBoundValue(RexxString *name)
 {
     return boundVariables->realValue(name);
 
@@ -93,7 +94,7 @@ RexxObject *Scriptcontext::getBoundValue(RexxString *name)
  */
 void ScriptContext::removeVariableBinding(RexxString *name)
 {
-    boundValues->removeVariable(name);
+    boundVariables->removeVariable(name);
 }
 
 
@@ -109,7 +110,7 @@ void ScriptContext::setInitialVariableContext(RexxActivation *context)
     // preserve any local context objects that were set by previous fragment executions,
     // regardless of any new bindings that may have been added since then.
     boundVariables->bindScriptVariables(context);
-    contextVariables->bindSctriptVariables(context);
+    contextVariables->bindScriptVariables(context);
 }
 
 
