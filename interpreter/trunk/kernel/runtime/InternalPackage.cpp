@@ -85,8 +85,10 @@ ooRexxPackageEntry rexx_package_entry =
     STANDARD_PACKAGE_HEADER
     "REXX",                              // name of the package
     "4.0",                               // package information
-    rexx_functions,                      // the exported
-    rexx_methods
+    NULL,                                // no load/unload functions
+    NULL,
+    rexx_functions,                      // the exported functions
+    rexx_methods                         // the exported methods
 };
 
 #undef INTERNAL_FUNCTION

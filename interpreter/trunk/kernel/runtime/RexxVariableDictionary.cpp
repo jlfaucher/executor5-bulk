@@ -45,6 +45,7 @@
 #include "StringClass.hpp"
 #include "DirectoryClass.hpp"
 #include "RexxNativeActivation.hpp"
+#include "RexxActivation.hpp"
 #include "RexxActivity.hpp"
 #include "ArrayClass.hpp"
 #include "ListClass.hpp"
@@ -197,7 +198,7 @@ void RexxVariableDictionary::mergeScriptVariables(RexxVariableDictionary *contex
         RexxString *name = variable->getName();
         // if this is not in the bound variable list, we need to push it into the
         // context list
-        if (!boundVars.hasVariable(name))
+        if (!boundVars->hasVariable(name))
         {
             contextVars->put(variable, name);
         }

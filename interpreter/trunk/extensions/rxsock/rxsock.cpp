@@ -711,6 +711,8 @@ ooRexxPackageEntry rxsock_package_entry ={
     STANDARD_PACKAGE_HEADER
     "RXSOCK",                            // name of the package
     "1.3",                               // package information
+    NULL,                                // no load/unload functions
+    NULL,
     rxsock_functions,                    // the exported functions
     NULL                                 // no methods in this package
 };

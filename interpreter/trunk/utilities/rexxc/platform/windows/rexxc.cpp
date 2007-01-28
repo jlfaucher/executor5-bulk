@@ -120,7 +120,7 @@ int SysCallV main(int argc, char **argv)
 
   if ((argc == 2) || ((argc==3) && silent) )  /* just doing a syntax check? */
                                        /* go perform the translation        */
-    return ooRexxCompileProgram(argv[1], NULL, NULL);
+    return ooRexxCompileProgram(argv[1], NULL);
   else                                 /* translate and save the output     */
-    return ooRexxCompileProgram(argv[1], argv[2], NULL);
+    return ooRexxCompileProgram(argv[1], argv[2]);
 }

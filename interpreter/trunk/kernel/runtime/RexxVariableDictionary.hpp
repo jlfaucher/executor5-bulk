@@ -140,6 +140,7 @@ class RexxVariableDictionary : public RexxInternalObject {
   void setNextDictionary(RexxVariableDictionary *next);
 
   void bindScriptVariables(RexxActivation *context);
+  void mergeScriptVariables(RexxVariableDictionary *contextVars, RexxVariableDictionary *boundVars);
 
 
   static RexxVariableDictionary *newInstance(size_t s);

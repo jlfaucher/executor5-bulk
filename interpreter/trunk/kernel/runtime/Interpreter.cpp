@@ -385,7 +385,7 @@ void RexxInterpreter::createImage(InterpreterInstance *instance)
     }
     else
     {
-        fatalError("Error building kernel image.  Image not saved.");
+        fatalError((stringchar_t *)"Error building kernel image.  Image not saved.");
     }
     // and go shutdown the instance.
     instance->exitCurrentThread();

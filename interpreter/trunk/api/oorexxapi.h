@@ -154,12 +154,12 @@ typedef struct _ooRexxMethodEntry
 
 #define OOREXX_GET_PACKAGE(name) \
     BEGIN_EXTERN_C()\
-	ooRexxPackageEntry *RexxEntry ooRexxGetPackage(void) { return &name##_module_entry; }\
+	ooRexxPackageEntry *RexxEntry ooRexxGetPackage(void) { return &name##_package_entry; }\
     END_EXTERN_C()
 
 
-typedef RexxReturnCode (*(RexxEntry RexxPackageLoader(RexxThreadContext *)));
-typedef RexxReturnCode (*(RexxEntry RexxPackageUnloader(RexxThreadContext *)));
+typedef RexxReturnCode (RexxEntry *RexxPackageLoader)(RexxThreadContext *);
+typedef RexxReturnCode (RexxEntry *RexxPackageUnloader)(RexxThreadContext *);
 
 typedef struct _ooRexxPackageEntry
 {
