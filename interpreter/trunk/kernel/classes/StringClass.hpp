@@ -115,10 +115,17 @@
    bool        isEqual(RexxObject *);
    bool        isEqual(char *);
    bool        primitiveIsEqual(RexxObject *);
+   bool        primitiveIsEqualCaseless(RexxObject *);
    int         strictComp(RexxObject *);
    int         comp(RexxObject *);
    RexxInteger *equal(RexxObject *);
    RexxInteger *strictEqual(RexxObject *);
+   RexxInteger *equals(RexxString *);
+   RexxInteger *equalsCaseless(RexxString *);
+   RexxInteger *regionMatches(RexxInteger *start_, RexxString *other, RexxInteger *offset_, RexxInteger *len_);
+   RexxInteger *regionMatchesCaseless(RexxInteger *start_, RexxString *other, RexxInteger *offset_, RexxInteger *len_);
+   bool         primitiveMatch(stringsize_t start, RexxString *other, stringsize_t offset, stringsize_t len);
+   bool         primitiveCaselessMatch(stringsize_t start, RexxString *other, stringsize_t offset, stringsize_t len);
    RexxInteger *notEqual(RexxObject *);
    RexxInteger *strictNotEqual(RexxObject *);
    RexxInteger *isGreaterThan(RexxObject *);
@@ -188,6 +195,7 @@
    RexxString  *delWord(RexxInteger *, RexxInteger *);
    RexxString  *space(RexxInteger *, RexxString *);
    RexxString  *subWord(RexxInteger *, RexxInteger *);
+   RexxArray   *extractWords(RexxInteger *, RexxInteger *);
    RexxString  *word(RexxInteger *);
    RexxInteger *wordIndex(RexxInteger *);
    RexxInteger *wordLength(RexxInteger *);

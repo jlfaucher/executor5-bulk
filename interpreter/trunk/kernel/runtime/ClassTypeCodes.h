@@ -165,25 +165,27 @@ typedef enum
     T_MethodActivator = 103,
     T_RexxFunctionActivator = 104,
     T_WeakRexxActivator = 105,
+    T_ScriptNativeActivator = 106,
 
-    T_Last_Internal_Class = 105,
+    T_Last_Internal_Class = 106,
     
-    T_First_Transient_Class = 106,
+    T_First_Transient_Class = 107,
 
-    T_DoBlock = 106,
-    T_Memory = 107,
-    T_Activation = 108,
-    T_Activity = 109,
-    T_NativeActivation = 110,
-    T_ActivationFrameBuffer = 111,
-    T_Envelope = 112,
-    T_InternalStack = 113,
-    T_InterpreterInstance = 114,
-    T_Interpreter = 115,
-    T_ParseTarget = 116,
+    T_DoBlock = 107,
+    T_Memory = 108,
+    T_Activation = 109,
+    T_Activity = 110,
+    T_NativeActivation = 111,
+    T_ActivationFrameBuffer = 112,
+    T_Envelope = 113,
+    T_InternalStack = 114,
+    T_InterpreterInstance = 115,
+    T_Interpreter = 116,
+    T_ParseTarget = 117,
+    T_ScriptContext = 118,
 
-    T_Last_Transient_Class = 116,
-    T_Last_Primitive_Class = 116,
+    T_Last_Transient_Class = 118,
+    T_Last_Primitive_Class = 118,
     
 } ClassTypeCode;
 

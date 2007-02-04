@@ -155,6 +155,7 @@
 #define TheMethodActivatorBehaviour      ((RexxBehaviour *)(&RexxBehaviour::primitiveBehaviours[T_MethodActivator]))
 #define TheRexxFunctionActivatorBehaviour      ((RexxBehaviour *)(&RexxBehaviour::primitiveBehaviours[T_RexxFunctionActivator]))
 #define TheWeakRexxActivatorBehaviour      ((RexxBehaviour *)(&RexxBehaviour::primitiveBehaviours[T_WeakRexxActivator]))
+#define TheScriptNativeActivatorBehaviour      ((RexxBehaviour *)(&RexxBehaviour::primitiveBehaviours[T_ScriptNativeActivator]))
 #define TheDoBlockBehaviour      ((RexxBehaviour *)(&RexxBehaviour::primitiveBehaviours[T_DoBlock]))
 #define TheMemoryBehaviour      ((RexxBehaviour *)(&RexxBehaviour::primitiveBehaviours[T_Memory]))
 #define TheActivationBehaviour      ((RexxBehaviour *)(&RexxBehaviour::primitiveBehaviours[T_Activation]))
@@ -166,6 +167,7 @@
 #define TheInterpreterInstanceBehaviour      ((RexxBehaviour *)(&RexxBehaviour::primitiveBehaviours[T_InterpreterInstance]))
 #define TheInterpreterBehaviour      ((RexxBehaviour *)(&RexxBehaviour::primitiveBehaviours[T_Interpreter]))
 #define TheParseTargetBehaviour      ((RexxBehaviour *)(&RexxBehaviour::primitiveBehaviours[T_ParseTarget]))
+#define TheScriptContextBehaviour      ((RexxBehaviour *)(&RexxBehaviour::primitiveBehaviours[T_ScriptContext]))
 
 
 /* -------------------------------------------------------------------------- */

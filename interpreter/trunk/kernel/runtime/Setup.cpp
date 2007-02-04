@@ -611,6 +611,7 @@ bool RexxInterpreter::exportBaseClasses()
   defineKernelMethod(CHAR_SUBSTR                       ,TheStringBehaviour, CPPM(RexxString::substr), 3);
   defineKernelMethod(CHAR_DELWORD                      ,TheStringBehaviour, CPPM(RexxString::delWord), 2);
   defineKernelMethod(CHAR_SPACE                        ,TheStringBehaviour, CPPM(RexxString::space), 2);
+  defineKernelMethod(CHAR_EXTRACTWORDS                 ,TheStringBehaviour, CPPM(RexxString::extractWords), 2);
   defineKernelMethod(CHAR_SUBWORD                      ,TheStringBehaviour, CPPM(RexxString::subWord), 2);
   defineKernelMethod(CHAR_TRUNC                        ,TheStringBehaviour, CPPM(RexxString::trunc), 1);
   defineKernelMethod(CHAR_WORD                         ,TheStringBehaviour, CPPM(RexxString::word), 1);
@@ -677,6 +678,8 @@ bool RexxInterpreter::exportBaseClasses()
   defineKernelMethod(CHAR_OR                           ,TheStringBehaviour, CPPM(RexxString::orOp), 1);
   defineKernelMethod(CHAR_XOR                          ,TheStringBehaviour, CPPM(RexxString::xorOp), 1);
   defineKernelMethod(CHAR_MAKEARRAY                    ,TheStringBehaviour, CPPM(RexxString::makeArray), 1);
+  defineKernelMethod(CHAR_EQUALS                       ,TheStringBehaviour, CPPM(RexxString::equals), 1);
+  defineKernelMethod(CHAR_EQUALSCASELESS               ,TheStringBehaviour, CPPM(RexxString::equalsCaseless), 1);
                                        /* set the scope of the methods to   */
                                        /* this classes oref                 */
   TheStringBehaviour->setMethodDictionaryScope(TheStringClass);

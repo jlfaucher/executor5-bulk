@@ -395,6 +395,61 @@ RexxString *RexxString::subWord(RexxInteger *position,
   return Retval;                       /* return extracted string           */
 }
 
+
+
+RexxArray *RexxString::extractWords(RexxInteger *position, RexxInteger *plength)
+{
+    // process the input arguments
+    stringsize_t wordPos = optionalPositionArgument(position, ARG_ONE, 1);
+    stringsize_t count = optionalLengthArgument(plength, Numerics::MAX_WHOLENUMBER, ARG_TWO);
+
+    stringsize_t strLength = getLength();
+
+    // if this is a null string, or we've been asked to return zero words, return an
+    // empty array
+    if (strLength == 0 || count == 0)
+    {
+        return new_array((arraysize_t)0);
+    }
+
+
+    // need to scan for words
+    stringchar_t *word = getStringData();
+    stringchar_t *nextSite = NULL;
+                                       /* get the first word                */
+    stringsize_t wordLength = NextWord(&word, &strLength, &nextSite);
+    // ok, loop until we either run out of string or hit our target word position.
+    while (--wordPos && wordLength != 0)
+    {
+        // just shift to the next word and rescan
+        word = nextSite;
+        wordLength = NextWord(&word, &strLength, &nextSite);
+    }
+
+    // didn't even make it to the target, so return an empty array
+    if (wordPos > 0)
+    {
+        return new_array((arraysize_t)0);
+    }
+
+    // get a list accumulator
+    RexxList *list = new_list();
+    ProtectedObject p1(list);
+
+    // now extract each word and add to our list
+    while (count > 0 && wordLength > 0)
+    {
+        // add the current word to the accumulator as a string
+        list->addLast(new_string(word, wordLength));
+        // now scan for another word
+        word = nextSite;
+        wordLength = NextWord(&word, &wordLength, &nextSite);
+    }
+    // convert the accumulator to an array item.
+    return list->makeArray();
+}
+
+
 /* the WORD function */
 /******************************************************************************/
 /* Arguments:  which word we want.                                            */

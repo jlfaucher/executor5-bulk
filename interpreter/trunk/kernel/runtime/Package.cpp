@@ -170,11 +170,11 @@ bool Package::load(PackageManager *manager)
 void Package::unload()
 {
     // call an unloader, if we have one.
-    if (p->unloader != NULL)
+    if (unloader != NULL)
     {
         ActivityContext *context = currentActivity()->getActivityContext();
         // unload the package
-        p->unloader(context);
+        unloader(context);
         currentActivity()->releaseActivityContext(context);
     }
     lib.unload();
