@@ -102,7 +102,7 @@ typedef struct copyElelmentParm {
    RexxObject  *copy();
    RexxArray   *makeArray();
    RexxArray   *allItems();
-   RexxArray   *allIndices();
+   RexxArray   *allIndexes();
    RexxString  *makeString(RexxString *);
    RexxString  *primitiveMakeString();
    RexxObject  *getRexx(RexxObject **, arraysize_t);

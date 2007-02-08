@@ -65,7 +65,7 @@ class RexxQueue : public RexxList {
  RexxObject *hasindex(RexxObject *);
  RexxObject *peek();
  RexxObject *newRexx(RexxObject **, size_t);
- RexxArray  *allIndices();
+ RexxArray  *allIndexes();
  RexxObject *supplier();
 
  inline RexxObject *pop() { return this->removeFirst();};

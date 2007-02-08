@@ -126,7 +126,7 @@ RexxArray *RexxHashTableCollection::allItems(void)
 }
 
 
-RexxArray *RexxHashTableCollection::allIndices(void)
+RexxArray *RexxHashTableCollection::allIndexes(void)
 /******************************************************************************/
 /* Function:  Return all of the collection indices in an array                */
 /******************************************************************************/

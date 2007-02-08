@@ -308,7 +308,7 @@ bool RexxInterpreter::exportBaseClasses()
   defineKernelMethod(CHAR_ITEMS        ,TheArrayBehaviour, CPPM(RexxArray::items), 0);
   defineKernelMethod(CHAR_MAKEARRAY    ,TheArrayBehaviour, CPPM(RexxObject::makeArrayRexx), 0);
   defineKernelMethod(CHAR_ALLITEMS     ,TheArrayBehaviour, CPPM(RexxArray::allItems), 0);
-  defineKernelMethod(CHAR_ALLINDICES   ,TheArrayBehaviour, CPPM(RexxArray::allIndices), 0);
+  defineKernelMethod(CHAR_ALLINDEXES   ,TheArrayBehaviour, CPPM(RexxArray::allIndexes), 0);
   defineKernelMethod(CHAR_PUT          ,TheArrayBehaviour, CPPM(RexxArray::putRexx), A_COUNT);
   defineKernelMethod(CHAR_REMOVE       ,TheArrayBehaviour, CPPM(RexxArray::removeRexx), A_COUNT);
   defineKernelMethod(CHAR_SECTION      ,TheArrayBehaviour, CPPM(RexxArray::sectionRexx), 2);
@@ -347,7 +347,7 @@ bool RexxInterpreter::exportBaseClasses()
   defineKernelMethod(CHAR_ITEMS         , TheDirectoryBehaviour, CPPM(RexxDirectory::itemsRexx), 0);
   defineKernelMethod(CHAR_MAKEARRAY     , TheDirectoryBehaviour, CPPM(RexxObject::makeArrayRexx), 0);
   defineKernelMethod(CHAR_ALLITEMS      , TheDirectoryBehaviour, CPPM(RexxDirectory::values), 0);
-  defineKernelMethod(CHAR_ALLINDICES    , TheDirectoryBehaviour, CPPM(RexxDirectory::allIndices), 0);
+  defineKernelMethod(CHAR_ALLINDEXES    , TheDirectoryBehaviour, CPPM(RexxDirectory::allIndexes), 0);
   defineKernelMethod(CHAR_PUT           , TheDirectoryBehaviour, CPPM(RexxDirectory::put), 2);
   defineKernelMethod(CHAR_REMOVE        , TheDirectoryBehaviour, CPPM(RexxDirectory::remove), 1);
   defineKernelMethod(CHAR_SETENTRY      , TheDirectoryBehaviour, CPPM(RexxDirectory::setEntry), 2);
@@ -382,7 +382,7 @@ bool RexxInterpreter::exportBaseClasses()
   defineKernelMethod(CHAR_BRACKETSEQUAL,TheListBehaviour, CPPM(RexxList::put), 2);
   defineKernelMethod(CHAR_MAKEARRAY    ,TheListBehaviour, CPPM(RexxObject::makeArrayRexx), 0);
   defineKernelMethod(CHAR_ALLITEMS     ,TheListBehaviour, CPPM(RexxList::allItems), 0);
-  defineKernelMethod(CHAR_ALLINDICES   ,TheListBehaviour, CPPM(RexxList::allIndices), 0);
+  defineKernelMethod(CHAR_ALLINDEXES   ,TheListBehaviour, CPPM(RexxList::allIndexes), 0);
   defineKernelMethod(CHAR_AT           ,TheListBehaviour, CPPM(RexxList::value), 1);
   defineKernelMethod(CHAR_FIRST        ,TheListBehaviour, CPPM(RexxList::firstRexx), 0);
   defineKernelMethod(CHAR_FIRSTITEM    ,TheListBehaviour, CPPM(RexxList::firstItem), 0);
@@ -479,7 +479,7 @@ bool RexxInterpreter::exportBaseClasses()
 
   defineKernelMethod(CHAR_MAKEARRAY     ,TheQueueBehaviour, CPPM(RexxObject::makeArrayRexx), 0);
   defineKernelMethod(CHAR_ALLITEMS      ,TheQueueBehaviour, CPPM(RexxList::allItems), 0);
-  defineKernelMethod(CHAR_ALLINDICES    ,TheQueueBehaviour, CPPM(RexxQueue::allIndices), 0);
+  defineKernelMethod(CHAR_ALLINDEXES    ,TheQueueBehaviour, CPPM(RexxQueue::allIndexes), 0);
   defineKernelMethod(CHAR_ITEMS         ,TheQueueBehaviour, CPPM(RexxList::itemsRexx), 0);
   defineKernelMethod(CHAR_SUPPLIER      ,TheQueueBehaviour, CPPM(RexxQueue::supplier), 0);
   defineKernelMethod(CHAR_PUSH          ,TheQueueBehaviour, CPPM(RexxQueue::pushRexx), 1);
@@ -520,7 +520,7 @@ bool RexxInterpreter::exportBaseClasses()
   defineKernelMethod(CHAR_ALLAT        , TheRelationBehaviour, CPPM(RexxHashTableCollection::allAt), 1);
   defineKernelMethod(CHAR_ALLINDEX     , TheRelationBehaviour, CPPM(RexxRelation::allIndex), 1);
   defineKernelMethod(CHAR_ALLITEMS     , TheRelationBehaviour, CPPM(RexxHashTableCollection::allItems), 0);
-  defineKernelMethod(CHAR_ALLINDICES   , TheRelationBehaviour, CPPM(RexxHashTableCollection::allIndices), 0);
+  defineKernelMethod(CHAR_ALLINDEXES   , TheRelationBehaviour, CPPM(RexxHashTableCollection::allIndexes), 0);
   defineKernelMethod(CHAR_MAKEARRAY    , TheRelationBehaviour, CPPM(RexxObject::makeArrayRexx), 0);
   defineKernelMethod(CHAR_AT           , TheRelationBehaviour, CPPM(RexxHashTableCollection::getRexx), 1);
   defineKernelMethod(CHAR_HASINDEX     , TheRelationBehaviour, CPPM(RexxHashTableCollection::hasIndex), 1);
@@ -557,7 +557,7 @@ bool RexxInterpreter::exportBaseClasses()
   defineKernelMethod(CHAR_BRACKETSEQUAL ,TheStemBehaviour, CPPM(RexxStem::bracketEqual), A_COUNT);
   defineKernelMethod(CHAR_MAKEARRAY     ,TheStemBehaviour, CPPM(RexxObject::makeArrayRexx), 0);
   defineKernelMethod(CHAR_ALLITEMS      ,TheStemBehaviour, CPPM(RexxStem::allItems), 0);
-  defineKernelMethod(CHAR_ALLINDICES    ,TheStemBehaviour, CPPM(RexxStem::allIndices), 0);
+  defineKernelMethod(CHAR_ALLINDEXES    ,TheStemBehaviour, CPPM(RexxStem::allIndexes), 0);
   defineKernelMethod(CHAR_REQUEST       ,TheStemBehaviour, CPPM(RexxStem::request), 1);
   defineKernelMethod(CHAR_UNKNOWN       ,TheStemBehaviour, CPPM(RexxObject::unknownRexx), 2);
   defineKernelMethod(CHAR_SUPPLIER      ,TheStemBehaviour, CPPM(RexxStem::supplier), 0);
@@ -908,7 +908,7 @@ bool RexxInterpreter::exportBaseClasses()
   defineKernelMethod(CHAR_BRACKETSEQUAL, TheTableBehaviour, CPPM(RexxHashTableCollection::put), 2);
   defineKernelMethod(CHAR_MAKEARRAY    , TheTableBehaviour, CPPM(RexxObject::makeArrayRexx), 0);
   defineKernelMethod(CHAR_ALLITEMS     , TheTableBehaviour, CPPM(RexxHashTableCollection::allItems), 0);
-  defineKernelMethod(CHAR_ALLINDICES   , TheTableBehaviour, CPPM(RexxHashTableCollection::allIndices), 0);
+  defineKernelMethod(CHAR_ALLINDEXES   , TheTableBehaviour, CPPM(RexxHashTableCollection::allIndexes), 0);
   defineKernelMethod(CHAR_AT           , TheTableBehaviour, CPPM(RexxHashTableCollection::getRexx), 1);
   defineKernelMethod(CHAR_HASINDEX     , TheTableBehaviour, CPPM(RexxHashTableCollection::hasIndex), 1);
   defineKernelMethod(CHAR_ITEMS        , TheTableBehaviour, CPPM(RexxTable::itemsRexx), 0);

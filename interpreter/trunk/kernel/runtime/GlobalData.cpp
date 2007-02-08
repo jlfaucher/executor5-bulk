@@ -129,7 +129,7 @@ CPPM(RexxArray::firstRexx),
 CPPM(RexxArray::lastRexx),
 CPPM(RexxArray::nextRexx),
 CPPM(RexxArray::allItems),
-CPPM(RexxArray::allIndices),
+CPPM(RexxArray::allIndexes),
 CPPM(RexxArray::previousRexx),
 
 CPPM(RexxArray::newRexx),
@@ -149,7 +149,7 @@ CPPM(RexxDirectory::setEntry),
 CPPM(RexxDirectory::setMethod),
 CPPM(RexxDirectory::supplier),
 CPPM(RexxDirectory::allItems),
-CPPM(RexxDirectory::allIndices),
+CPPM(RexxDirectory::allIndexes),
 
 CPPM(RexxDirectory::newRexx),
 
@@ -200,7 +200,7 @@ CPPM(RexxList::firstItem),
 CPPM(RexxList::lastItem),
 CPPM(RexxList::insertRexx),
 CPPM(RexxList::allItems),
-CPPM(RexxList::allIndices),
+CPPM(RexxList::allIndexes),
 
 CPPM(RexxList::newRexx),
 CPPM(RexxList::classOf),
@@ -266,7 +266,7 @@ CPPM(RexxQueue::put),
 CPPM(RexxQueue::at),
 CPPM(RexxQueue::hasindex),
 CPPM(RexxQueue::remove),
-CPPM(RexxQueue::allIndices),
+CPPM(RexxQueue::allIndexes),
 
 CPPM(RexxQueue::newRexx),
 
@@ -275,7 +275,7 @@ CPPM(RexxStem::bracketEqual),
 CPPM(RexxStem::request),
 CPPM(RexxStem::supplier),
 CPPM(RexxStem::allItems),
-CPPM(RexxStem::allIndices),
+CPPM(RexxStem::allIndexes),
 
 CPPM(RexxStem::newRexx),
 
@@ -407,7 +407,7 @@ CPPM(RexxTable::itemsRexx),
 CPPM(RexxHashTableCollection::merge),
 CPPM(RexxHashTableCollection::supplier),
 CPPM(RexxHashTableCollection::allItems),
-CPPM(RexxHashTableCollection::allIndices),
+CPPM(RexxHashTableCollection::allIndexes),
 
 CPPM(RexxTable::newRexx),
 

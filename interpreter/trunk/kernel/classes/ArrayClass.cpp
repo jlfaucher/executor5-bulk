@@ -1042,7 +1042,7 @@ RexxArray *RexxArray::allItems(void)
  *
  * @return An array with all of the array indices (non-sparse).
  */
-RexxArray *RexxArray::allIndices(void)
+RexxArray *RexxArray::allIndexes(void)
 {
     // get a result array of the appropriate size
     RexxArray *newArray = (RexxArray *)new_array(this->numItems());

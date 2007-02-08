@@ -370,7 +370,7 @@ RexxArray  *RexxStem::makeArray()
 }
 
 
-RexxArray  *RexxStem::allIndices()
+RexxArray  *RexxStem::allIndexes()
 /******************************************************************************/
 /* Function:  Extract as an array the tails of a stem.                        */
 /******************************************************************************/

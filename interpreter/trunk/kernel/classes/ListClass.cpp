@@ -786,7 +786,7 @@ RexxArray *RexxList::allItems(void)
  *
  * @return An array with the list elements.
  */
-RexxArray *RexxList::allIndices(void)
+RexxArray *RexxList::allIndexes(void)
 {
     // just iterate through the list, copying the elements.
     RexxArray *array = (RexxArray *)new_array(this->count);
@@ -886,7 +886,7 @@ RexxSupplier *RexxList::supplier(void)
 /******************************************************************************/
 {
     // get arrays of both elements and indices
-    RexxArray *indices = this->allIndices();
+    RexxArray *indices = this->allIndexes();
     RexxArray *values = this->allItems();
 
     ProtectedObject p1(indices);         // protect both of these

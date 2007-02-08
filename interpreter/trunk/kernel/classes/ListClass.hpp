@@ -79,7 +79,7 @@ class RexxSupplier;
    RexxObject   *copy();
    RexxArray    *makeArray();
    RexxArray    *allItems();
-   RexxArray    *allIndices();
+   RexxArray    *allIndexes();
    RexxArray    *weakReferenceArray();
    RexxArray    *requestArray();
 

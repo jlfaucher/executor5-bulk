@@ -265,7 +265,7 @@ RexxArray *RexxDirectory::makeArray(void)
 /*            of all the SETMETHOD methods.                                   */
 /******************************************************************************/
 {
-    return this->allIndices();
+    return this->allIndexes();
 }
 
 
@@ -275,7 +275,7 @@ RexxArray *RexxDirectory::makeArray(void)
  *
  * @return An array containing all of the directory indices.
  */
-RexxArray *RexxDirectory::allIndices(void)
+RexxArray *RexxDirectory::allIndexes(void)
 {
     // get a result array of the appropriate size
     wholenumber_t count = this->items();

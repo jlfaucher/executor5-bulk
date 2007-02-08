@@ -228,7 +228,7 @@ RexxObject *RexxQueue::supplier()
  *
  * @return An array containing all of the queue indices.
  */
-RexxArray *RexxQueue::allIndices()
+RexxArray *RexxQueue::allIndexes()
 {
     // create an array and protect it.
     arraysize_t size = this->items();

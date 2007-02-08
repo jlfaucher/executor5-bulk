@@ -74,7 +74,7 @@ typedef size_t HashLink;
    void         liveGeneral();
    void         flatten(RexxEnvelope *);
    RexxArray  * makeArray();
-   RexxArray  * allIndices();
+   RexxArray  * allIndexes();
 
    HashLink       next(HashLink position);
    RexxObject    *value(HashLink position);

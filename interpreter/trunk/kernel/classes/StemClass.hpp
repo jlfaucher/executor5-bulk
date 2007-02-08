@@ -91,7 +91,7 @@
   RexxString  *stringValue();
   RexxArray   *makeArray();
   RexxArray   *allItems();
-  RexxArray   *allIndices();
+  RexxArray   *allIndexes();
   RexxSupplier *supplier();
   RexxObject  *request(RexxString *);
   void setElement(stringchar_t *tail, RexxObject *value);

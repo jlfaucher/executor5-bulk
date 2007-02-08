@@ -1659,7 +1659,7 @@ RexxArray *RexxHashTable::makeArray(void)
 /******************************************************************************/
 {
     // this just returns the index values
-    return this->allIndices();
+    return this->allIndexes();
 }
 
 RexxArray *RexxHashTable::allItems(void)
@@ -1672,7 +1672,7 @@ RexxArray *RexxHashTable::allItems(void)
 }
 
 
-RexxArray *RexxHashTable::allIndices(void)
+RexxArray *RexxHashTable::allIndexes(void)
 /******************************************************************************/
 /* Function:  Create an array containing the hash table indexes.              */
 /******************************************************************************/
