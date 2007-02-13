@@ -414,6 +414,47 @@ RexxObject *RexxMessage::completed(void)
    return (RexxObject *)TheFalseObject;/* nope return false.                */
 }
 
+
+/**
+ * Check to see if a message has an error condition.  Return false
+ * if the message has not completed yet.
+ *
+ * @return True if the message has terminated with an error condition,
+ *         false if it is still running or has completed without error.
+ */
+RexxObject *RexxMessage::hasError()
+{
+    if (this->raiseError())
+    {
+        return TheTrueObject;
+    }
+    else
+    {
+        return TheFalseObject;
+    }
+}
+
+/**
+ * Return any error condition information associated with the
+ * message.  This method will not block until completion, and
+ * will return .nil if the message is still running.
+ *
+ * @return Any condition object from a terminating error, or .nil if
+ *         there was no error or the message is still running.
+ */
+RexxObject *RexxMessage::errorCondition()
+{
+    if (this->condition == OREF_NULL)
+    {
+        return TheNilObject;
+    }
+    else
+    {
+        return this->condition;
+    }
+
+}
+
 void *RexxMessage::operator new(size_t size)
 /******************************************************************************/
 /* Function:  Construct a new message object                                  */

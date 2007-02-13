@@ -421,8 +421,10 @@ bool RexxInterpreter::exportBaseClasses()
                                        /* instance behaviour mdict          */
 
   defineKernelMethod(CHAR_COMPLETED, TheMessageBehaviour, CPPM(RexxMessage::completed), 0);
+  defineKernelMethod(CHAR_HASERROR,  TheMessageBehaviour, CPPMSG(RexxMessage::hasError), 0);
   defineKernelMethod(CHAR_NOTIFY   , TheMessageBehaviour, CPPM(RexxMessage::notify), 1);
   defineKernelMethod(CHAR_RESULT   , TheMessageBehaviour, CPPM(RexxMessage::result), 0);
+  defineKernelMethod(CHAR_ERRORCONDITION , TheMessageBehaviour, CPPMSG(RexxMessage::errorCondition), 0);
   defineKernelMethod(CHAR_SEND     , TheMessageBehaviour, CPPM(RexxMessage::send), 1);
   defineKernelMethod(CHAR_START    , TheMessageBehaviour, CPPM(RexxMessage::start), 1);
 

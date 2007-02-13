@@ -210,6 +210,8 @@ CPPM(RexxMessage::result),
 CPPM(RexxMessage::send),
 CPPM(RexxMessage::start),
 CPPM(RexxMessage::completed),
+CPPM(RexxMessage::hasError),
+CPPM(RexxMessage::errorCondition),
 
 CPPM(RexxMessage::newRexx),
 
