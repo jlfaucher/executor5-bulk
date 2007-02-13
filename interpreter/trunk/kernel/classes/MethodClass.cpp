@@ -717,7 +717,11 @@ RexxMethod *RexxMethod::newRexx(
     processNewArgs(init_args, initCount, &init_args, &initCount, 1, (RexxObject **)&option, NULL);
                                        /* go create a method                */
   newMethod = this->newRexxCode(pgmname, source, IntegerTwo, option);
-   if (TheMethodClass->uninitDefined()) {/* does object have an UNINT method  */
+
+  ProtectedObject p1(newMethod);
+                                       /* Give new object its behaviour     */
+  BehaviourSet(newMethod, ((RexxClass *)this)->instanceBehaviour);
+   if (((RexxClass *)this)->uninitDefined()) {/* does object have an UNINT method  */
      newMethod->hasUninit();           /* Make sure everyone is notified.   */
    }
                                        /* now send an INIT message          */
@@ -818,7 +822,19 @@ RexxMethod *RexxMethod::newFile(
  */
 RexxMethod *RexxMethod::newFileRexx(RexxString *filename)
 {
-    return newFile(filename);
+                                       /* get the method name as a string   */
+    filename = REQUIRED_STRING(filename, ARG_ONE);
+    RexxMethod *newMethod = newFile(filename);
+
+    ProtectedObject p1(newMethod);
+                                         /* Give new object its behaviour     */
+    BehaviourSet(newMethod, ((RexxClass *)this)->instanceBehaviour);
+     if (((RexxClass *)this)->uninitDefined()) {/* does object have an UNINT method  */
+       newMethod->hasUninit();           /* Make sure everyone is notified.   */
+     }
+                                         /* now send an INIT message          */
+    newMethod->sendMessage(RexxActivityManager::currentActivity, OREF_INIT, init_args, initCount);
+    return newMethod;                    /* return the new method             */
 }
 
 RexxMethod * RexxMethod::createKernelMethod(
