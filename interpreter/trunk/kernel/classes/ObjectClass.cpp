@@ -1507,6 +1507,9 @@ RexxObject  *RexxObject::run(
                                        /* ensure correct scope on method    */
     methobj = methobj->newScope((RexxClass *)TheNilObject);
 
+  ProtectedObject p1(methobj);
+  ProtectedObject p2;
+
   if (argCount > 1) {                  /* if any arguments passed           */
                                        /* get the 1st one, its the option   */
     option = (RexxString *)arguments[1];
@@ -1526,6 +1529,8 @@ RexxObject  *RexxObject::run(
         arglist = (RexxArray *)arguments[2];
                                        /* force to array form               */
         arglist = arglist->requestArray();
+
+        p2 = arglist;   // protect this
                                        /* not an array?                     */
         if (arglist == TheNilObject || arglist->getDimension() != 1)
                                        /* raise an error                    */
@@ -1538,7 +1543,7 @@ RexxObject  *RexxObject::run(
       case 'I':                        /* args are "strung out"             */
         /* point to the array data for the second value */
         argumentPtr = arguments + 2;
-        argcount = argcount - 2;
+        argcount = argCount - 2;
         break;
 
       default:
