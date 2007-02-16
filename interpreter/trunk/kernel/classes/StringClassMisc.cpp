@@ -370,15 +370,19 @@ RexxObject *DataType(
       break;
 
       case DATATYPE_LOGICAL:           // Test for a valid logical.
-          // true if it's a valid logical value
-          if (String->isLogical())
+          if (Len != 1 || (*Scanp != '1' && *Scanp != '0'))
           {
-              Answer = (RexxObject *)TheTrueObject;
+              Answer = TheFalseObject;
           }
+          else
+          {
+              Answer = TheTrueObject;
+          }
+
           break;
 
     default  :                         /* unsupported option                */
-      reportException(Error_Incorrect_method_option, (stringchar_t *)"ABCDLMNSUVWX9", new_string((stringchar_t *)&Option,1));
+      reportException(Error_Incorrect_method_option, (stringchar_t *)"ABCDLMNOSUVWX9", new_string((stringchar_t *)&Option,1));
   }
   return Answer;                       /* return validation answer          */
 }
