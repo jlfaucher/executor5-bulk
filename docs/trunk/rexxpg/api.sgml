@@ -470,7 +470,6 @@ also for programs that are not expected to use concurrency.</para>
 <para>The following example demonstrates how to call MyCMD.CMD from a Cobol program
 (Rexx is running in the same process as the Cobol program).</para>
 <programlisting>
-<![CDATA[
        PROCESS PGMNAME(MIXED)
       * You need to specify Rexx.LIB when you link this program,
       * for example on the COB2 command.
@@ -479,7 +478,7 @@ also for programs that are not expected to use concurrency.</para>
       *************************************************************
        IDENTIFICATION DIVISION.
       *************************************************************
-       PROGRAM-ID.    'CALLRexx'
+       PROGRAM-ID.    &apos;CALLRexx&apos;
        AUTHOR.        IBM VISUALAGE FOR COBOL.
 
       *************************************************************
@@ -505,10 +504,8 @@ also for programs that are not expected to use concurrency.</para>
        WORKING-STORAGE SECTION.
 
 
-]]>
 </programlisting>
 <programlisting>
-<![CDATA[
       *************************************************************
       *  INTERNAL VARIABLES                                       *
       *************************************************************
@@ -516,8 +513,8 @@ also for programs that are not expected to use concurrency.</para>
        01  WS-WORK-FIELDS.
            05  WS-RESULT-AREA          PIC X(255)     VALUE SPACES.
            05  WS-ARGUMENT-AREA        PIC X(255)     VALUE SPACES.
-           05  WS-PARM1                PIC X(50)      VALUE '55'.
-           05  WS-PARM2                PIC X(8)       VALUE '66'.
+           05  WS-PARM1                PIC X(50)      VALUE &apos;55&apos;.
+           05  WS-PARM2                PIC X(8)       VALUE &apos;66&apos;.
        01  WS-RexxSTART-PARAMETERS.
            05  WS-Rexx-ARGUMENT-COUNT  PIC S9(9)      VALUE +1  COMP-5.
            05  WS-Rexx-ARGUMENT-LIST.
@@ -537,16 +534,16 @@ also for programs that are not expected to use concurrency.</para>
             MOVE LENGTH OF WS-ARGUMENT-AREA
                                         TO WS-ARG-LENGTH.
             STRING WS-PARM1                  DELIMITED BY SPACE
-                   ' '                       DELIMITED BY SIZE
+                   &apos; &apos;                       DELIMITED BY SIZE
                    WS-PARM2                  DELIMITED BY SPACE
                                              INTO WS-ARGUMENT-AREA
             END-STRING.
-            STRING 'MYCMD'                   DELIMITED BY SIZE
-                   X'00'                     DELIMITED BY SIZE
+            STRING &apos;MYCMD&apos;                   DELIMITED BY SIZE
+                   X&apos;00&apos;                     DELIMITED BY SIZE
                                              INTO WS-Rexx-PROGRAM-NAME
             END-STRING.
-            STRING 'CGISRV'                  DELIMITED BY SIZE
-                   X'00'                     DELIMITED BY SIZE
+            STRING &apos;CGISRV&apos;                  DELIMITED BY SIZE
+                   X&apos;00&apos;                     DELIMITED BY SIZE
                                              INTO WS-Rexx-ENV-NAME
             END-STRING.
             SET WS-RESULT-POINTER            TO
@@ -554,12 +551,10 @@ also for programs that are not expected to use concurrency.</para>
             MOVE LENGTH OF WS-RESULT-AREA    TO WS-RESULT-LENGTH.
 
 
-]]>
 </programlisting>
 <programlisting>
-<![CDATA[
       * Note that the name RexxStart is case sensitive
-            CALL 'RexxStart'   USING
+            CALL &apos;RexxStart&apos;   USING
                          BY VALUE     WS-Rexx-ARGUMENT-COUNT
                          BY REFERENCE WS-Rexx-ARGUMENT-LIST
                          BY REFERENCE WS-Rexx-PROGRAM-NAME
@@ -570,11 +565,10 @@ also for programs that are not expected to use concurrency.</para>
                          BY REFERENCE WS-Rexx-RETURN-CODE
                          BY REFERENCE WS-Rexx-RESULT
                          RETURNING    WS-Rexx-INTERPRETER-RC.
-            DISPLAY WS-Rexx-RETURN-CODE ' ' WS-Rexx-INTERPRETER-RC.
+            DISPLAY WS-Rexx-RETURN-CODE &apos; &apos; WS-Rexx-INTERPRETER-RC.
             DISPLAY WS-RESULT-LENGTH.
             DISPLAY WS-RESULT-AREA.
             GOBACK.
-]]>
 </programlisting>
 </section>
 </section>

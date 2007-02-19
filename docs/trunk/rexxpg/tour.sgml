@@ -239,10 +239,8 @@ say "Hello"; say "Goodbye"  /* Two clauses on one line */
 <indexterm><primary>splitting clauses</primary></indexterm>
 <indexterm><primary>continuing a clause</primary></indexterm>
 <programlisting>
-<![CDATA[
 say,             /* Continuation */
-"It isn't so"
-]]>
+"It isn&apos;t so"
 </programlisting>
 <indexterm><primary>strings</primary></indexterm>
 <para>If you need to continue a literal string,
@@ -351,34 +349,28 @@ or lowercase characters. A variable name in uppercase characters, for example,
 can also be queried in lowercase or mixed-case characters. If you query a
 variable name that has not yet been set, the name is returned in uppercase
 characters.</para>
-<indexterm><primary>' (single quotation mark)</primary></indexterm>
-<indexterm><primary>single quotation mark (')</primary></indexterm>
+<indexterm><primary>&apos; (single quotation mark)</primary></indexterm>
+<indexterm><primary>single quotation mark (&apos;)</primary></indexterm>
 <indexterm><primary>" (double quotation mark)</primary></indexterm>
 <indexterm><primary>double quotation mark (")</primary></indexterm>
-<para>Literal strings in Rexx are delimited by quotation marks (either ' or
+<para>Literal strings in Rexx are delimited by quotation marks (either &apos; or
 "). Examples of literal strings are: </para>
 <programlisting>
-<![CDATA[
-'Hello'
+&apos;Hello&apos;
 "Final result:"
-]]>
 </programlisting>
 <para>If you need to use quotation marks within a literal string, use quotation
 marks of the other type to delimit the string. For example: </para>
 <programlisting>
-<![CDATA[
-"Don't panic"
-'He said, "Bother"'
-]]>
+"Don&apos;t panic"
+&apos;He said, "Bother"&apos;
 </programlisting>
 <para>There is another way to do this. Within a literal string, a pair of quotation
 marks (the same type that delimits the string) is interpreted as one of that
 type. For example: </para>
 <programlisting>
-<![CDATA[
-'Don''t panic'                 (same as "Don't panic"      )
-"He said, ""Bother"""          (same as 'He said, "Bother"')
-]]>
+&apos;Don&apos;&apos;t panic&apos;                 (same as "Don&apos;t panic"      )
+"He said, ""Bother"""          (same as &apos;He said, "Bother"&apos;)
 </programlisting>
 </section>
 
@@ -532,12 +524,11 @@ DO, IF, and SELECT to control your program. Here is a
 typical Rexx IF instruction: </para>
 <programlisting>
 <![CDATA[
-if a>1 & b<0 then do
+if a>1 & b<0 then do]]>
 say "Whoops, A is greater than 1 while B is less than 0!"
-say "I'm ending with a return code of 99."
+say "I&apos;m ending with a return code of 99."
 exit 99
 end
-]]>
 </programlisting>
 <para>The Rexx relational operator for a logical AND is different from the operator
 in C, which is &amp;&amp;. Other relational operators differ as well, so you
@@ -622,16 +613,15 @@ keyword is always required.</para>
 <para>Here is an IF instruction with an ELSE: </para>
 <programlisting>
 <![CDATA[
-if a>1 & b<0 then do
+if a>1 & b<0 then do]]>
     say "Whoops, A is greater than 1 while B is less than 0!"
-    say "I'm ending with a return code of 99."
+    say "I&apos;m ending with a return code of 99."
     exit 99
 end
 else do
     say "A and B are okay."
     say "On with the rest of the program."
 end  /* if */
-]]>
 </programlisting>
 <para>You can omit the DO/END pairs if only one clause follows the THEN or ELSE
 keyword: </para>
@@ -662,15 +652,13 @@ differs from the equivalent statements in Basic and C in that the SELECT keyword
 is not followed by an expression. Instead, expressions are placed in WHEN
 clauses:</para>
 <programlisting>
-<![CDATA[
 select
 when name="Bob" then
-    say "It's Bob!"
+    say "It&apos;s Bob!"
 when name="Mary" then
     say "Hello, Mary."
 otherwise
 end /* select */
-]]>
 </programlisting>
 <para>WHEN clauses are evaluated sequentially. When one of the expressions is
 true, the statement, or block of statements, is executed. All the other blocks
@@ -685,25 +673,22 @@ include an OTHERWISE.</para>
 within SELECT cases. You do not need a DO/END pair if several clauses follow
 the OTHERWISE keyword: </para>
 <programlisting>
-<![CDATA[
 select
 when name="Bob" then
-    say "It's Bob"
+    say "It&apos;s Bob"
 when name="Mary" then do
     say "Hello Mary"
     marycount=marycount+1
     end
 otherwise
-    say "I'm sorry.  I don't know you."
+    say "I&apos;m sorry.  I don&apos;t know you."
     anonymous=anonymous+1
 end /* select */
-]]>
 </programlisting>
 <para>Many Basic implementations have several different instructions for loops.
 Rexx only knows the DO/END pair. All of the traditional looping variations
 are incorporated into the DO instruction: </para>
 <programlisting>
-<![CDATA[
 do i=1 to 10         /* Simple loop            */
    say i
 end
@@ -713,9 +698,9 @@ do i=1 to 10 by 2    /* Increment count by two */
 end
 
 b=3; a=0             /* DO WHILE - the conditional expression  */
-do while a<b         /* is evaluated before the instructions   */
+<![CDATA[do while a<b         /* is evaluated before the instructions   */]]>
    say a             /* in the loop are executed.  If the      */
-   a=a+1             /* expression isn't true at the outset,   */
+   a=a+1             /* expression isn&apos;t true at the outset,   */
 end                  /* instructions are not executed at all.  */
 
 a=5                  /* DO UNTIL - like many other languages,  */
@@ -723,24 +708,21 @@ b=4                  /* a Rexx DO UNTIL block is executed at   */
 do until a>b         /* least once.  The expression is         */
    say "Until loop"  /* evaluated at the end of the loop.      */
 end
-]]>
 </programlisting>
 <para>Rexx also has a FOREVER keyword. Use the LEAVE, RETURN, or EXIT
 instructions to break out of the loop:</para>
 <programlisting>
-<![CDATA[
                   /* Program to emulate your five-year-old child */
 num=random(1,10)  /* To emulate a three-year-old, move this inside the loop! */
 do forever
   say "What number from 1 to 10 am I thinking of?"
   pull guess
   if guess=num then do
-     say "That's correct"
+     say "That&apos;s correct"
      leave
   end
   say "No, guess again..."
 end
-]]>
 </programlisting>
 <para>Rexx also includes an
 <indexterm><primary>ITERATE instructions</primary></indexterm>

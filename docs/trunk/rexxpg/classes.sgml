@@ -364,10 +364,9 @@ by Rexx using INIT and deleted by Rexx using UNINIT. This program makes visible
 Rexx's automatic invocation of INIT and UNINIT by revealing its processing
 on the screen using the SAY instruction: </para>
 <programlisting>
-<![CDATA[
 /* UNINIT.CMD - example of UNINIT processing */
 
-a=.scratchpad~new("Of all the things I've lost")
+a=.scratchpad~new("Of all the things I&apos;ve lost")
 a=.scratchpad~new("I miss my mind the most")
 say "Exiting program."
 exit
@@ -383,7 +382,6 @@ exit
     expose text
     say "Forgetting" text
     return
-]]>
 </programlisting>
 <para>Whether uninitialization processing is needed depends on the circumstances,
 for example when a message object holds an unreported error that should be
