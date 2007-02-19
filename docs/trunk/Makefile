@@ -1,6 +1,6 @@
 #----------------------------------------------------------------------------
 #
-# Description: Makefile for all the Object Rexx Documentation Documents.
+# Description: Makefile for all the Object Rexx Documentation PDFs
 #
 # Copyright (c) 2005-2006, Rexx Language Association. All rights reserved.
 #

@@ -50,10 +50,11 @@
 	(normalize "editor")))
 
 (define %mono-font-family%
-  ;; The default of "Courier New" causes curly double and single quotes in
-  ;; the output. This change eliminates that problem so that the text can be
-  ;; successfully cut-and-paste in the Windows environment.
-  "Courier")
+  ;; This change eliminates curly double-quotes from program listings but
+  ;; still leaves curly single-quotes intact. This means that all mono-space
+  ;; font sections (like programlisting) need to use the apos entity for
+  ;; single quotes. Otherwise the character used is not comapaable with Windows.
+  "Computer-Modern-Typewriter")
 
 
 </style-specification-body>

@@ -1,5 +1,5 @@
 ---------------------------------------------------------
-Version 4.0.0
+Version 3.1.1
 ---------------------------------------------------------
 This release provides documentation for Open Object Rexx.
 
@@ -59,7 +59,7 @@ task the resulting rexxref.pdf file will turn out to be corrupt.
 BUILD / INSTALLATION
 ---------------------------------------------------------
 
-Whether you downloaded a tarball or a Subversion extract, the build procedure
+Whether you downloaded a tarball or a CVS extract, the build procedure
 is the same. Use the standard Linux make mechanism:
 
         make
