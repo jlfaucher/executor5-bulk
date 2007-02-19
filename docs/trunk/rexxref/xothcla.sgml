@@ -49,6 +49,7 @@
 <listitem><para>Message class</para></listitem>
 <listitem><para>Method class</para></listitem>
 <listitem><para>Monitor class</para></listitem>
+<listitem><para>MutableBuffer class</para></listitem>
 <listitem><para>Object class</para></listitem>
 <listitem><para>Regular Expression class</para></listitem>
 <listitem><para>Stem class</para></listitem>
@@ -134,10 +135,10 @@ takes no action if the specified time has already been reached.</para>
 object sends the message that <emphasis role="italic">message</emphasis>,
 a message object, specifies. (See <link linkend="agent">The Message Class</link>.)
 The <emphasis role="italic">atime</emphasis> is a string. You can specify
-this in the default format (<computeroutput>'hh:mm:ss'</computeroutput>) or as
+this in the default format (<computeroutput>&apos;hh:mm:ss&apos;</computeroutput>) or as
 a number of seconds
 starting at the present time. If you use the default format, you can specify
-a date in the default format (<computeroutput>'dd Mmm yyyy'</computeroutput>)
+a date in the default format (<computeroutput>&apos;dd Mmm yyyy&apos;</computeroutput>)
 after the time with a single blank separating the time and date. Leading and
 trailing blanks are not allowed in the
 <emphasis role="italic">atime</emphasis>. If you do not
@@ -317,7 +318,7 @@ their method definitions.</para></listitem>
 <secondary>DEFINE method</secondary></indexterm>
 <programlisting>
 bank_account=.object~subclass("Account")
-bank_account~define("TYPE",'return "a bank account"')
+bank_account~define("TYPE",&apos;return "a bank account"&apos;)
 </programlisting>
 </section>
 
@@ -354,7 +355,7 @@ cannot delete inherited methods the target's superclasses define.</para>
 <secondary>DELETE method</secondary></indexterm>
 <programlisting>
 myclass=.object~subclass("Myclass")        /* After creating a class  */
-myclass~define("TYPE",'return "my class"') /* and defining a method   */
+myclass~define("TYPE",&apos;return "my class"&apos;) /* and defining a method   */
 myclass~delete("TYPE")                     /* this deletes the method */
 </programlisting>
 </section>
@@ -832,7 +833,7 @@ room~UNINHERIT(location)
 </section>
 </section>
 
-<section id="menuobjectcl"><title>The MenuObject Class</title>
+<section id="menuobjectcl"><title>The WindowsMenuObject Class</title>
 <indexterm><primary>MenuObject class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>MenuObject class</secondary></indexterm>
@@ -1030,6 +1031,8 @@ a subclass of the Object class.</para>
 </para>
 <simplelist>
 <member>COMPLETED</member>
+<member>ERRORCONDITION</member>
+<member>HASERROR</member>
 <member>INIT (Overrides Object class method)</member>
 <member>NOTIFY</member>
 <member>RESULT</member>
@@ -1070,11 +1073,45 @@ metaclass, the Class class, defines.</para></note>
 >>-COMPLETED---------------------------------------------------><
 ]]>
 </programlisting>
-
 <para>Returns <computeroutput>1</computeroutput> if the message object has
 completed its message, or <computeroutput>0</computeroutput>. You can use this
 method instead of sending RESULT and waiting for
 the message to complete.</para>
+</section>
+
+<section id="msgerrcond"><title>ERRORCONDITION</title>
+<indexterm><primary>ERRORCONDITION method</primary>
+<secondary>of Message class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>ERRORCONDITION method</secondary>
+<tertiary>of Message class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-ERRORCONDITION----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns an error condition object from an execution error in the message
+object's message. If the message completed normally, or is still executing,
+ERRORCONDITION returns the .nil object.</para>
+</section>
+
+<section id="msghaserr"><title>HASERROR</title>
+<indexterm><primary>HASERROR method</primary>
+<secondary>of Message class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>HASERROR method</secondary>
+<tertiary>of Message class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-HASERROR----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>1</computeroutput> if the message object's
+message was terminated with an error condition. Returns
+<computeroutput>0</computeroutput> if the message has not completed or
+completed without error.</para>
 </section>
 
 <section id="aginita"><title>INIT</title>
@@ -1175,7 +1212,7 @@ SEND or START.</para>
     say "Hello," name
   end
 
-  say 'Enter your name ("quit" to quit):'
+  say &apos;Enter your name ("quit" to quit):&apos;
 
   /* Send the public default object .INPUT a LINEIN message asynchronously */
   msg=.message~new(.input,"LINEIN")~~start
@@ -1183,7 +1220,7 @@ SEND or START.</para>
   /* Sends self~prompt(msg) when data available   */
   msg~notify(.message~new(self,"PROMPT","I",msg))
 
-  /* Don't leave until user has entered "quit"    */
+  /* Don&apos;t leave until user has entered "quit"    */
   guard on when name="quit"
   </programlisting>
 </section>
@@ -2424,10 +2461,10 @@ method in <link linkend="mesetp">SETPRIVATE</link>  for details.</para>
 </section>
 </section>
 
-<section id="regecpcls"><title>The RegularExpressions Class</title>
-<indexterm><primary>RegularExpressions class</primary></indexterm>
+<section id="regecpcls"><title>The RegularExpression Class</title>
+<indexterm><primary>RegularExpression class</primary></indexterm>
 <indexterm><primary>class</primary>
-<secondary>RegularExpressions class</secondary></indexterm>
+<secondary>RegularExpression class</secondary></indexterm>
 
 <para>This class provides support for regular expressions. A regular
 expression is a pattern you can use to match strings.</para>
@@ -2459,15 +2496,15 @@ expression is a pattern you can use to match strings.</para>
 <varlistentry><term>[]</term>
 <listitem><para>Set definition: matches any single character out of the defined
 set.</para>
-<para>A '^' right after the opening bracket means that none of the
+<para>A &apos;^&apos; right after the opening bracket means that none of the
 following characters should be matched.</para>
-<para>A '-' (if not used with '\') defines a range between the last
-specified character and the one following '-'. If it is the
+<para>A &apos;-&apos; (if not used with &apos;\&apos;) defines a range between the last
+specified character and the one following &apos;-&apos;. If it is the
 first character in the set definition, it is used literally.
 </para></listitem></varlistentry>
 </variablelist>
 
-<para>The following symbolic names (they must start and end with ':') can
+<para>The following symbolic names (they must start and end with &apos;:&apos;) can
 be used to abbreviate common sets:</para>
 
 <variablelist>
@@ -2511,7 +2548,7 @@ be used to abbreviate common sets:</para>
 
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>RegularExpressions class</secondary></indexterm>
+<secondary>RegularExpression class</secondary></indexterm>
 <programlisting>
 <![CDATA[
      "(Hi|Hello) World"      Matches "Hi World" and
@@ -2562,10 +2599,10 @@ in the RXREGEXP.CLS file. This means, you must use a
 
 <section><title>INIT</title>
 <indexterm><primary>INIT method</primary>
-<secondary>of RegularExpressions class</secondary></indexterm>
+<secondary>of RegularExpression class</secondary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>INIT method</secondary>
-<tertiary>of RegularExpressions class</tertiary></indexterm>
+<tertiary>of RegularExpression class</tertiary></indexterm>
 
 <programlisting>
 <![CDATA[
@@ -2594,10 +2631,10 @@ myRE2 = .RegularExpression~new("Hello?*")
 
 <section><title>MATCH</title>
 <indexterm><primary>MATCH method</primary>
-<secondary>of RegularExpressions class</secondary></indexterm>
+<secondary>of RegularExpression class</secondary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>MATCH method</secondary>
-<tertiary>of RegularExpressions class</tertiary></indexterm>
+<tertiary>of RegularExpression class</tertiary></indexterm>
 
 <programlisting>
 <![CDATA[
@@ -2615,10 +2652,10 @@ on a successful match. For an example see
 
 <section id="regexppars"><title>PARSE</title>
 <indexterm><primary>PARSE method</primary>
-<secondary>of RegularExpressions class</secondary></indexterm>
+<secondary>of RegularExpression class</secondary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>PARSE method</secondary>
-<tertiary>of RegularExpressions class</tertiary></indexterm>
+<tertiary>of RegularExpression class</tertiary></indexterm>
 
 <programlisting>
 <![CDATA[
@@ -2647,7 +2684,7 @@ matching behavior.</para>
 <listitem><para>An unexpected symbol was met during parsing.
 </para></listitem></varlistentry>
 <varlistentry><term>2</term>
-<listitem><para>A missing ')' was found.
+<listitem><para>A missing &apos;)&apos; was found.
 </para></listitem></varlistentry>
 <varlistentry><term>3</term>
 <listitem><para>An illegal set was defined.
@@ -2663,7 +2700,7 @@ matching behavior.</para>
 
 <para><emphasis role="bold">Example 1:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>RegularExpressions class</secondary></indexterm>
+<secondary>RegularExpression class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 a.0 = "does not match regular expression"
@@ -2702,7 +2739,7 @@ Hi there!                >> Does not match regular expression
 
 <para><emphasis role="bold">Example 2:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>RegularExpressions class</secondary></indexterm>
+<secondary>RegularExpression class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 a.0 = "an invalid number!"
@@ -2733,7 +2770,7 @@ exit
 
 <para><emphasis role="bold">Example 3:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>RegularExpressions class</secondary></indexterm>
+<secondary>RegularExpression class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 str = "<p>Paragraph 1</p><p>Paragraph 2</p>"
@@ -2762,10 +2799,10 @@ myRE2 (maximal) matched <p>Paragraph 1</p><p>Paragraph 2</p>
 
 <section><title>POS</title>
 <indexterm><primary>POS method</primary>
-<secondary>of RegularExpressions class</secondary></indexterm>
+<secondary>of RegularExpression class</secondary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>POS method</secondary>
-<tertiary>of RegularExpressions class</tertiary></indexterm>
+<tertiary>of RegularExpression class</tertiary></indexterm>
 
 <programlisting>
 <![CDATA[
@@ -2806,10 +2843,10 @@ Found the number 2002 in this sentence.
 
 <section id="regexppos"><title>POSITION</title>
 <indexterm><primary>POSITION method</primary>
-<secondary>of RegularExpressions class</secondary></indexterm>
+<secondary>of RegularExpression class</secondary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>POSITION method</secondary>
-<tertiary>of RegularExpressions class</tertiary></indexterm>
+<tertiary>of RegularExpression class</tertiary></indexterm>
 
 <programlisting>
 <![CDATA[
@@ -2858,7 +2895,7 @@ and assigns it to the Rexx variable <computeroutput>A.</computeroutput>; it also
 the value 2 to entry 1 in the collection.</para>
 <para>The value of an uninitialied stem index is the stem object NAME
 concatenated with the derived stem index.  For
-example</para>para>
+example</para>
 <programlisting>
 say a.[1,2]  -- implcitly creates stem object with name "A."
 -- displays "A.1.2"
@@ -3079,7 +3116,7 @@ discussion of Rexx input and output.)</para>
 <member>Operator methods:&nbsp;&nbsp;=, ==, \=, >&lt;, &lt;>, \==</member>
 <member>CLASS</member>
 <member>COPY</member>
-<member>DEFAULTNAME></member>
+<member>DEFAULTNAME</member>
 <member>HASMETHOD</member>
 <member>OBJECTNAME</member>
 <member>OBJECTNAME=</member>
@@ -3337,7 +3374,7 @@ that corresponds to the following diagram:</para>
 <computeroutput>READY:</computeroutput>. (If unsuccessful, the previous
 information about return codes applies.)
 The default for OPEN is to open the stream for both reading and writing data,
-for example: <computeroutput>'OPEN BOTH'</computeroutput>. To specify that the
+for example: <computeroutput>&apos;OPEN BOTH&apos;</computeroutput>. To specify that the
 <emphasis role="italic">stream_name</emphasis> receiving the message can be
 only read or written to, add READ or WRITE, to the command string. </para>
 <para>The following is a description of the options for
@@ -3868,7 +3905,7 @@ a numeric return code. This return code is the value of
 which is set whenever one of the file system primitives returns with a
 <computeroutput>-1</computeroutput>.</para>
 <para>By default, OPEN opens the stream for both reading and writing data, for
-example: <computeroutput>'OPEN BOTH'</computeroutput>. To specify that the
+example: <computeroutput>&apos;OPEN BOTH&apos;</computeroutput>. To specify that the
 stream receiving
 the message can be only read or only written to, specify READ or WRITE.</para>
 <para>The options for the OPEN method are: </para>
@@ -5194,7 +5231,7 @@ to a whole number, which can therefore be negative. The receiving string is
 padded on the left with "00"x characters (not &quot;sign-extended&quot;),
 or truncated on the left to <emphasis role="italic">n</emphasis> characters.
 This padding or truncation is as though
-<computeroutput>receiving_string~RIGHT(n,'00'x)</computeroutput> had
+<computeroutput>receiving_string~RIGHT(n,&apos;00&apos;x)</computeroutput> had
 been processed. If <emphasis role="italic">n</emphasis> is
 <computeroutput>0</computeroutput>, C2D always returns
 <computeroutput>0</computeroutput>.</para>
@@ -5603,7 +5640,7 @@ for which DATATYPE returns <computeroutput>1</computeroutput> for
 a null string). The following are valid
 <emphasis role="italic">type</emphasis>s. You need to specify
 only the capitalized letter, or the number of the last type listed. The language
-processor ignores all characters following it.</para>
+processor ignores all characters surrounding it.</para>
 <variablelist>
 <varlistentry><term>Alphanumeric</term>
 <listitem><para>returns <computeroutput>1</computeroutput> if the receiving
@@ -5634,6 +5671,11 @@ string contains only characters from the ranges
 <listitem><para>returns <computeroutput>1</computeroutput> if
 <computeroutput>receiving_string~DATATYPE</computeroutput> returns
 <computeroutput>NUM</computeroutput>.
+</para></listitem></varlistentry>
+<varlistentry><term>lOgical</term>
+<listitem><para>returns <computeroutput>1</computeroutput> if
+the receiving string is exactly "0" or "1". Otherwise it returns
+<computeroutput>0</computeroutput>.
 </para></listitem></varlistentry>
 <varlistentry><term>Symbol</term>
 <listitem><para>returns <computeroutput>1</computeroutput> if the receiving
@@ -5689,6 +5731,8 @@ the receiving string is a null string.
 "?20K"~DATATYPE("s")     ->    1
 "BCd3"~DATATYPE("X")     ->    1
 "BC d3"~DATATYPE("X")    ->    1
+"1"~DATATYPE("O")        ->    1
+"11"~DATATYPE("O")        ->   0
 ]]>
 </programlisting><para> </para>
 
@@ -7637,8 +7681,8 @@ say evl~Events~items "records read"
 do i=1 to evl~Events~items
   say "============================================================="
   temp = evl~Events[i]
-  parse var temp type date time "'" sourcename"'" id,
-  userid computer "'" string "'" "'" data "'"
+  parse var temp type date time "&apos;" sourcename"&apos;" id,
+  userid computer "&apos;" string "&apos;" "&apos;" data "&apos;"
   say "Type	: "type
   say "Date	: "date
   say "Time	: "time
@@ -8740,14 +8784,14 @@ ID of a menu item.</para>
 <tertiary>of WindowsObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
-                      +-'LEFT'---+     +-'DBLCLK'-+
->>-SENDMOUSECLICK--(--+-'RIGHT'--+--,--+-'UP'-----+----,--x--,--y-->
-                      +-'MIDDLE'-+     +-'DOWN'---+
+                      +-"LEFT"---+     +-"DBLCLK"-+
+>>-SENDMOUSECLICK--(--+-"RIGHT"--+--,--+-"UP"-----+----,--x--,--y-->
+                      +-"MIDDLE"-+     +-"DOWN"---+
 
 >--+-----------------------------+--)--------------------------><
    |       +----------------+    |
    |       V                |    |
-   +-,--'----+-LEFTDOWN---+-+--'-+
+   +-,--"----+-LEFTDOWN---+-+--"-+
              +-RIGHTDOWN--+
              +-MIDDLEDOWN-+
              +-SHIFT------+
@@ -8800,7 +8844,7 @@ coordinates, relative to the upper left corner of the window.
 <tertiary>of WindowsObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-SENDSYSCOMMAND--(--'--+-SIZE--------+--'--)-----------------><
+>>-SENDSYSCOMMAND--(--"--+-SIZE--------+--"--)-----------------><
                          +-MOVE--------+
                          +-MINIMIZE----+
                          +-MAXIMIZE----+
@@ -9146,10 +9190,10 @@ in the <computeroutput>ooRexx\SAMPLES</computeroutput> directory.</para>
                                              +-iconfile-+     +-iconnr-+
 
 >--+--------------------------------------------------------------------------+-)-><
-   |                 +-'PERSONAL'-+                           +-'NORMAL'----+ |
+   |                 +-"PERSONAL"-+                           +-"NORMAL"----+ |
    +-,-+---------+-,-+------------+-,-+------+-,-+--------+-,-+-------------+-+
-       +-workdir-+   +-'COMMON'---+   +-args-+   +-hotkey-+   +-'MAXIMIZED'-+
-                                                              +-'MINIMIZED'-+
+       +-workdir-+   +-"COMMON"---+   +-args-+   +-hotkey-+   +-"MAXIMIZED"-+
+                                                              +-"MINIMIZED"-+
 ]]>
 </programlisting>
 
@@ -9222,10 +9266,10 @@ default is &quot;NORMAL&quot;.
        +-iconfile-+   +-iconnr-+   +-workdir-+   +-args-+   +-hotkey-+
 
 >-------------------+--)-------------------------------------------------><
-    +-'NORMAL'----+ |
+    +-"NORMAL"----+ |
 >---+-------------+-+
-    +-'MAXIMIZED'-+
-    +-'MINIMIZED'-+
+    +-"MAXIMIZED"-+
+    +-"MINIMIZED"-+
 ]]>
 </programlisting>
 
@@ -10531,7 +10575,7 @@ omitted, the key and all its subkeys will be replaced.</para>
 <programlisting>
 <![CDATA[
 >>-RESTORE(-+------------+-,filename-+-------------+-)---------><
-            +-key_handle-+           +-,'VOLATILE'-+
+            +-key_handle-+           +-,"VOLATILE"-+
 ]]>
 </programlisting>
 
@@ -10748,9 +10792,9 @@ Dispatches a method with the optionally supplied arguments.
 <tertiary>of OLEObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
-                    +-, 'NOEVENTS'---+
+                    +-, "NOEVENTS"---+
 >>-INIT(-+-ProgID-+-+----------------+-)-----------------------><
-         +-CLSID--+ +-, 'WITHEVENTS'-+
+         +-CLSID--+ +-, "WITHEVENTS"-+
 ]]>
 </programlisting>
 
@@ -10758,8 +10802,8 @@ Dispatches a method with the optionally supplied arguments.
 fails, an error will be raised (see list of OLE specific errors on page
 <link linkend="ERR92">***</link>).</para>
 <para>The optional parameter "events" defines whether events are to be used or
-not. Allowed values for events are <computeroutput>'NOEVENTS'</computeroutput>
-(the default) and <computeroutput>'WITHEVENTS'</computeroutput>.</para>
+not. Allowed values for events are <computeroutput>&apos;NOEVENTS&apos;</computeroutput>
+(the default) and <computeroutput>&apos;WITHEVENTS&apos;</computeroutput>.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
 myOLEObject = .OLEObject~new("InternetExplorer.Application")
@@ -11061,7 +11105,7 @@ find out which object has to be created or, if it is already running, addressed.
 The moniker itself tells OLE which type of object is required. The optional
 parameter class can be used to specify a subclass of OLEObject, and can be
 used to obtain an OLE object that supports events (the
-<computeroutput>'WITHEVENTS'</computeroutput> option
+<computeroutput>&apos;WITHEVENTS&apos;</computeroutput> option
 will be used in this case).  This method is similar to the
 <computeroutput>Init</computeroutput> method
 where you have to specify a ProgID or CLSID.</para>

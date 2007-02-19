@@ -1209,7 +1209,6 @@ letter is needed; all characters following it are ignored.)
 </indexterm>
 
 <programlisting>
-<![CDATA[
   -- create a circular buffer with five items
 u=.circularQueue~of("a", "b", "c", "d", "e")
 say "content: ["u"]," "content (LIFO): ["u~string("->","L")"]"
@@ -1232,16 +1231,15 @@ say
 
 u~resize(2)             -- resize lifo-style (keep oldest)
 say "after resizing to 2, size="u~size "and items="u~items
-u~~queue('x')~~queue('y')~~queue('z')
-say "after queuing the three items 'x', 'y', 'z':"
+u~~queue(&apos;x&apos;)~~queue(&apos;y&apos;)~~queue(&apos;z&apos;)
+say "after queuing the three items &apos;x&apos;, &apos;y&apos;, &apos;z&apos;:"
 say "content: ["u"]," "content (LIFO): ["u~string("->","L")"]"
 say
 
-u~~push('1')~~push('2')~~push('3')
-say "after pushing the three items '1', '2', '3':"
+u~~push(&apos;1&apos;)~~push(&apos;2&apos;)~~push(&apos;3&apos;)
+say "after pushing the three items &apos;1&apos;, &apos;2&apos;, &apos;3&apos;:"
 say "content: ["u"]," "content (LIFO): ["u~string("->","L")"]"
 say
-]]>
 </programlisting>
 
 <para>
@@ -1249,7 +1247,6 @@ Output:
 </para>
 
 <programlisting>
-<![CDATA[
 content: [a,b,c,d,e], content (LIFO): [e->d->c->b->a]
 
 after resizing to 4 items in FIFO style (keeping the newest):
@@ -1262,12 +1259,11 @@ after resizing to 0 items, thereby deleting all items:
 content: [], content (LIFO): []
 
 after resizing to 2, size=2 and items=0
-after queuing the three items 'x', 'y', 'z':
+after queuing the three items &apos;x&apos;, &apos;y&apos;, &apos;z&apos;:
 content: [y,z], content (LIFO): [z->y]
 
-after pushing the three items '1', '2', '3':
+after pushing the three items &apos;1&apos;, &apos;2&apos;, &apos;3&apos;:
 content: [3,2], content (LIFO): [2->3]
-]]>
 </programlisting>
 </section>
 </section>
@@ -2008,23 +2004,23 @@ musketeers=.list~of(Porthos,Athos,Aramis) /* Creates list MUSKETEERS        */
                                           /*                Athos           */
                                           /*                Aramis          */
 index=musketeers~first                    /* Gives index of first item      */
-musketeers~insert("D'Artagnan",index)     /* Adds D'Artagnan after Porthos  */
+musketeers~insert("D&apos;Artagnan",index)     /* Adds D&apos;Artagnan after Porthos  */
                                           /* List is now: Porthos           */
-                                          /*              D'Artagnan        */
+                                          /*              D&apos;Artagnan        */
                                           /*              Athos             */
                                           /*              Aramis            */
 /* Alternately, you could use */
-musketeers~insert("D'Artagnan",.nil)      /* Adds D'Artagnan before Porthos */
-                                          /* List is now:  D'Artagnan       */
+musketeers~insert("D&apos;Artagnan",.nil)      /* Adds D&apos;Artagnan before Porthos */
+                                          /* List is now:  D&apos;Artagnan       */
                                           /*               Porthos          */
                                           /*               Athos            */
                                           /*               Aramis           */
 /* Alternately, you could use */
-musketeers~insert("D'Artagnan")           /* Adds D'Artagnan after Aramis   */
+musketeers~insert("D&apos;Artagnan")           /* Adds D&apos;Artagnan after Aramis   */
                                           /* List is now:  Porthos          */
                                           /*               Athos            */
                                           /*               Aramis           */
-                                          /*               D'Artagnan       */
+                                          /*               D&apos;Artagnan       */
 </programlisting>
 </section>
 
@@ -2908,9 +2904,9 @@ All index-item pairs that appear in both collections are removed. The
 <programlisting>
 /* Use a relation to express parent-child relationships */
 family = .relation~new
-family["Henry"] = "Peter"    /* Peter is Henry's child   */
-family["Peter"] = "Bridget"  /* Bridget is Peter's child */
-family["Henry"] = "Jane"     /* Jane is Henry's child    */
+family["Henry"] = "Peter"    /* Peter is Henry&apos;s child   */
+family["Peter"] = "Bridget"  /* Bridget is Peter&apos;s child */
+family["Henry"] = "Jane"     /* Jane is Henry&apos;s child    */
 
 /* Show all children of Henry recorded in the family relation */
 henrys_kids = family~allat("Henry")
@@ -2931,9 +2927,9 @@ checked_for_grandkids = .set~new         /* Records those we have checked      *
 Do grandparent Over family               /* Iterate for each index in family   */
   If checked_for_grandkids~hasindex(grandparent)
     Then Iterate                         /* Already checked this one           */
-  kids = family~allat(grandparent)       /* Current grandparent's children     */
+  kids = family~allat(grandparent)       /* Current grandparent&apos;s children     */
   Do kid Over kids                       /* Iterate for each item in kids      */
-    grandkids = family~allat(kid)        /* Current kid's children             */
+    grandkids = family~allat(kid)        /* Current kid&apos;s children             */
     Do grandkid Over grandkids           /* Iterate for each item in grandkids */
       Say grandparent "has a grandchild named" grandkid"."
     End

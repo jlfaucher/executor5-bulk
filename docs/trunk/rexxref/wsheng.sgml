@@ -195,7 +195,7 @@ paragraph, when it leaves the second, and when it is used to click the third.
   &lt;P onmouseout="alert("Cursor left paragraph")" LANGUAGE="Object Rexx">
   Event takes place when cursor leaves this paragraph.&lt;/P>
 
-  &lt;P onmouseover="a = Display('Cursor is over paragraph')"
+  &lt;P onmouseover="a = Display(&apos;Cursor is over paragraph&apos;)"
 LANGUAGE="Object Rexx">
 Event takes place when cursor moves over this paragraph.&lt;/P>
 
@@ -367,7 +367,7 @@ WScript~Echo("Done!")
 <listitem><para>Accept the two XML tags
 (<computeroutput>&lt;? ... ?></computeroutput>) at the beginning
 as boilerplate, although the <computeroutput>debug="true"</computeroutput>
-can also be <computeroutput>'debug="false"</computeroutput> without any
+can also be <computeroutput>debug="false"</computeroutput> without any
 detrimental effect.</para></listitem>
 <listitem><para>All XML tag names and attributes are in lower case.</para>
 </listitem>
@@ -440,8 +440,8 @@ Consider the following example.</para>
   ---  that appear when this file is right-clicked.
   ---
   ---    The value of progid= is how the world will find us.
-  ---  Two GUID's are needed, one for the COM object, and one
-  ---  for the Typelib that will be generated. The routine's
+  ---  Two GUID&apos;s are needed, one for the COM object, and one
+  ---  for the Typelib that will be generated. The routine&apos;s
   ---  Register and Unregister mimic those required in a COM
   ---  *.dll.  Even within these routines, there is full
   ---  Object Rexx capability.
@@ -472,7 +472,7 @@ Consider the following example.</para>
      Typelib~GUID = "{6550bac5-b31d-11d4-9306-b9d506515f14}"
      Typelib~Write()
      Typelib~Reset()
-     Shell~Popup("We've really done it n o w . . . .")
+     Shell~Popup("We&apos;ve really done it n o w . . . .")
 
    ::Routine Unregister Public
      Shell = .OLEObject~New("WScript.Shell")
@@ -592,12 +592,12 @@ XML wrapper as described in the section on
 <computeroutput>.wsf</computeroutput> files.</para>
 <para>Consider what happens when a file named
 <computeroutput>WSH.rex</computeroutput> contains the single line:
-<computeroutput>'WScript~Echo("WSH is available.")'</computeroutput>; another
+<computeroutput>&apos;WScript~Echo("WSH is available.")&apos;</computeroutput>; another
 file named <computeroutput>WSH.wsf</computeroutput>
 contains the same line of code in the .wsf wrapper
 described above; and another file, <computeroutput>Safe.rex</computeroutput>,
 contains the line
-<computeroutput>"Say 'Conventional Rexx file' Arg(1)"</computeroutput>.</para>
+<computeroutput>"Say &apos;Conventional Rexx file&apos; Arg(1)"</computeroutput>.</para>
 
 <section id="asconorf"><title>As a Conventional Object Rexx File</title>
 <para>From a command prompt, <computeroutput>"Rexx WSH.rex"</computeroutput>,
@@ -859,7 +859,7 @@ see the documentation for the corresponding tag.</para>
 &lt;script language="Object Rexx"&gt;
 ::Routine RxMouseOver Public
 Use Arg This
-Text = "This is a &lt;"This~tagName"&gt; tag named '"THIS~id"'"
+Text = "This is a &lt;"This~tagName"&gt; tag named &apos;"THIS~id"&apos;"
 a = RxMessageBox(Text,"RxMouseOver","OK",)
 Return "OK"
 &lt;/script&gt;
@@ -1052,7 +1052,7 @@ languages will not have to be discarded.</para>
 <para>All of the features normally associated with Object Rexx are available
 when Object Rexx is loaded by WSH. In addition, OLE support is loaded automatically.
 Scripts do not need to include
-<computeroutput>'::requires "ORexxOLE.CLS"'</computeroutput>. However,
+<computeroutput>&apos;::requires "ORexxOLE.CLS"&apos;</computeroutput>. However,
 when Object Rexx is invoked by Internet Explorer, it honors the "sandbox"
 settings that the user has set in the browser's security panel. Access to
 I/O, the file system, external commands, and COM objects may not be granted.

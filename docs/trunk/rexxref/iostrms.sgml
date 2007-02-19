@@ -319,7 +319,7 @@ the number of items remaining in the queue.</para></listitem>
 /* push/pull WITHOUT multiprogramming support                                 */
 /*                                                                            */
 push date() time()                                /* push date and time       */
-do 1000                                           /* let's pass some time     */
+do 1000                                           /* let&apos;s pass some time     */
   nop                                             /* doing nothing            */
 end                                               /* end of loop              */
 pull a b                                          /* pull them                */
@@ -332,7 +332,7 @@ say "Pushed at " a b ", Pulled at " date() time() /* say now and then         */
 newq = RXQUEUE("Create")                          /* create a unique queue    */
 oq = RXQUEUE("Set",newq)                          /* establish new queue      */
 push date() time()                                /* push date and time       */
-do 1000                                           /* let's spend some time    */
+do 1000                                           /* let&apos;s spend some time    */
   nop                                             /* doing nothing            */
 end                                               /* end of loop              */
 pull a b                                          /* get pushed information   */

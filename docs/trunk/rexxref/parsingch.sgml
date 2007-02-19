@@ -893,7 +893,7 @@ END
 Say new; exit                              /* Displays: "purple" */
 
 Err:
-say 'Input error--color is not "red" or "blue" or "yellow"'; exit
+say &apos;Input error--color is not "red" or "blue" or "yellow"&apos;; exit
 </programlisting>
 <para>ARG converts alphabetic characters to uppercase before parsing. An example
 of ARG with the arguments in the CALL to a subroutine is in
@@ -963,9 +963,9 @@ to the next string.</para>
 <programlisting>
 /* Parsing several strings in a subroutine                       */
 num="3"
-musketeers="Porthos Athos Aramis D'Artagnan"
+musketeers="Porthos Athos Aramis D&apos;Artagnan"
 CALL Sub num,musketeers  /* Passes num and musketeers to sub     */
-SAY total; say fourth /* Displays: "4" and " D'Artagnan"         */
+SAY total; say fourth /* Displays: "4" and " D&apos;Artagnan"         */
 EXIT
 
 Sub:

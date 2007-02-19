@@ -2160,7 +2160,7 @@ returned and stores these elements in
 <para>Queries a single key value.</para>
 <programlisting>
 <![CDATA[
->>-SysIni(-+---------+-,app,key--,'DELETE:'-)------------------><
+>>-SysIni(-+---------+-,app,key--,"DELETE:"-)------------------><
            +-inifile-+
 ]]>
 </programlisting>
@@ -2169,14 +2169,14 @@ returned and stores these elements in
 <programlisting>
 <![CDATA[
 >>-SysIni(-+---------+-,app-+------------+-)-------------------><
-           +-inifile-+      +-,'DELETE:'-+
+           +-inifile-+      +-,"DELETE:"-+
 ]]>
 </programlisting>
 
 <para>Deletes an application and all associated keys.</para>
 <programlisting>
 <![CDATA[
->>-SysIni(-+---------+-,app--,'ALL:'--,'stem'-)----------------><
+>>-SysIni(-+---------+-,app--,"ALL:"--,"stem"-)----------------><
            +-inifile-+
 ]]>
 </programlisting>
@@ -2184,7 +2184,7 @@ returned and stores these elements in
 <para>Queries names of all keys associated with a certain application.</para>
 <programlisting>
 <![CDATA[
->>-SysIni(-+---------+-,'ALL:'--,'stem'-)----------------------><
+>>-SysIni(-+---------+-,"ALL:"--,"stem"-)----------------------><
            +-inifile-+
 ]]>
 </programlisting>
@@ -2847,7 +2847,7 @@ by SysCreateEventSem.
 <programlisting>
 <![CDATA[
                       +-PID---+
->>-SysQueryProcess(' -+-TID---+- ')----------------------------><
+>>-SysQueryProcess(" -+-TID---+- ")----------------------------><
                       +-PPRIO-+
                       +-TPRIO-+
                       +-PTIME-+
@@ -2858,7 +2858,7 @@ by SysCreateEventSem.
 <programlisting>
 <![CDATA[
                       +-PID------+
->>-SysQueryProcess(' -+----------+- ')-------------------------><
+>>-SysQueryProcess(" -+----------+- ")-------------------------><
                       +-PPID-----+
                       +-PPRIO----+
                       +-PTIME----+
@@ -3472,7 +3472,7 @@ Call SysSleep 0.12345678 -- Error 40: Incorrect call to routine
    +-,--+------+--+-------------------------------------------------+-+
         +-from-+  +-,--+----+--+----------------------------------+-+
                        +-to-+  +-,--+-------+--+----------------+-+
-                                    +-count-+  +-,--'--+-I-+--'-+
+                                    +-count-+  +-,--"--+-I-+--"-+
                                                        +-O-+
 ]]>
 </programlisting>
@@ -3651,7 +3651,7 @@ Call SysStemInsert "MyStem.", 5, "New value for item 5"
 <programlisting>
 <![CDATA[
                                +-A-+           +-C-+        +-1-----+
->>-SysStemSort--(--stem--,--'--+-D-+--'--,--'--+-I-+--'--,--+-start-+-->
+>>-SysStemSort--(--stem--,--"--+-D-+--"--,--"--+-I-+--"--,--+-start-+-->
 
               +-1--------+
 >--,--end--,--+-firstcol-+--,--lastcol--)-----------------------------><
@@ -3718,7 +3718,7 @@ Call SysStemSort "MyStem.", "D", , , ,5, 10
 Call SysStemSort "MyStem.", "A", "I"
 
 /* sort elements 10 to 20 ascending, use cols 1 to 10 as key */
-Call SysStemSort "MyStem.", ,,10, 20, 1, 10
+Call SysStemSort "MyStem.", , ,10, 20, 1, 10
 </programlisting>
 </section>
 
@@ -4071,7 +4071,7 @@ SysWinVer(), and SysLinVer().</para></note>
 <secondary>SysVolumeLabel</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-SysVolumeLabel('drive')-------------------------------------><
+>>-SysVolumeLabel("drive")-------------------------------------><
 ]]>
 </programlisting>
 

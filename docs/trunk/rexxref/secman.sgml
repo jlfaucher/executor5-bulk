@@ -310,7 +310,7 @@ return 0                               /* allow this to proceed             */
 ::class noWay
 ::method unknown                       /* everything trapped by unknown     */
                                        /* and everything is an error        */
-  raise syntax 98.948 array("You didn't say the magic word!")
+  raise syntax 98.948 array("You didn&apos;t say the magic word!")
 ::class replacer subclass noWay        /* inherit restrictive UNKNOWN method*/
 ::method command                       /* issuing commands                  */
   use arg info                         /* access the directory              */
@@ -320,7 +320,7 @@ return 0                               /* allow this to proceed             */
 ::method call                          /* external function/routine call    */
   use arg info                         /* access the directory              */
                                        /* all results are the same          */
-  info~setentry("RESULT","uh, uh, uh...you didn't say the magic word")
+  info~setentry("RESULT","uh, uh, uh...you didn&apos;t say the magic word")
   return 1                              /* return "handled" return value    */
 ::method stream                        /* I/O function stream lookup        */
   use arg info                         /* access the directory              */
@@ -337,7 +337,7 @@ return 1
 ::method method                        /* protected method invocation       */
   use arg info                         /* access the directory              */
                                        /* all results are the same          */
-  info~setentry("RESULT","uh, uh, uh...you didn't say the magic word")
+  info~setentry("RESULT","uh, uh, uh...you didn&apos;t say the magic word")
   return 1                             /* return "handled" return value     */
 ::method requires                      /* REQUIRES directive                */
   use arg info                         /* access the directory              */

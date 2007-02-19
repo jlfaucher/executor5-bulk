@@ -608,7 +608,7 @@ ARG(1,"e")    ->    0
 ARG(1,"O")    ->    1
 ARG(1,"a")    ->    .array~of()
 
-/*  following "Call name 'a', ,'b';" */
+/*  following "Call name &apos;a&apos;, ,&apos;b&apos;;" */
 ARG()         ->    3
 ARG(1)        ->    "a"
 ARG(2)        ->    ""
@@ -1716,7 +1716,7 @@ or <computeroutput>B</computeroutput>, for which DATATYPE returns
 <computeroutput>1</computeroutput> for a null
 string). The following are valid <emphasis role="italic">type</emphasis>s.
 (Only the capitalized letter,
-or the number of the last type listed, is needed; all characters following
+or the number of the last type listed, is needed; all characters surrounding
 it are ignored. Note that for the <computeroutput>hexadecimal</computeroutput>
 option, you must start your string specifying the name of the option with
 <computeroutput>x</computeroutput> rather
@@ -1753,6 +1753,11 @@ and <computeroutput>A</computeroutput>-<computeroutput>Z</computeroutput>.
 <listitem><para>returns <computeroutput>1</computeroutput> if
 <computeroutput>DATATYPE(string)</computeroutput> returns
 <computeroutput>NUM</computeroutput>.
+</para></listitem></varlistentry>
+<varlistentry><term>lOgical</term>
+<listitem><para>returns <computeroutput>1</computeroutput> if
+the string is exactly "0" or "1". Otherwise it returns
+<computeroutput>0</computeroutput>.
 </para></listitem></varlistentry>
 <varlistentry><term>Symbol</term>
 <listitem><para>returns <computeroutput>1</computeroutput> if
@@ -1813,6 +1818,8 @@ DATATYPE("Fred","L")     ->    0
 DATATYPE("?20K","s")     ->    1
 DATATYPE("BCd3","X")     ->    1
 DATATYPE("BC d3","X")    ->    1
+DATATYPE("1","O")        ->    1
+DATATYPE("11,"O")        ->    0
 </programlisting>
 
 <note><title>Note</title>
@@ -2216,7 +2223,7 @@ if newdir = "/usr/games" then
   call directory curdir
 end
 else
-  say "Can't find /usr/games"
+  say "Can&apos;t find /usr/games"
 </programlisting>
 </section>
 
@@ -3043,7 +3050,7 @@ MIN(21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1)   ->   1
 which, starting at the <emphasis role="italic">n</emphasis>th character,
 is overlaid with the string <emphasis role="italic">new</emphasis>, padded
 or truncated to length <emphasis role="italic">length</emphasis>. The overlay
-must extend beyond the end of the original
+may extend beyond the end of the original
 <emphasis role="italic">target</emphasis> string. If you specify
 <emphasis role="italic">length</emphasis>,
 it must be a positive whole number or zero. The default value for

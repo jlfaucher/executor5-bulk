@@ -538,15 +538,15 @@ of a line. Example:</para>
 <secondary>line comments</secondary></indexterm>
 <programlisting>
 "Fred"
-"Don't Panic!"
-'You shouldn''t'        -- Same as "You shouldn't"
+"Don&apos;t Panic!"
+&apos;You shouldn&apos;&apos;t&apos;        -- Same as "You shouldn&apos;t"
 ""
 </programlisting>
 <para>In this example, the language processor processes the statements
-from <computeroutput>'Fred'</computeroutput> to
-<computeroutput>'You shouldn''t'</computeroutput>, ignores the words following
+from <computeroutput>&apos;Fred&apos;</computeroutput> to
+<computeroutput>&apos;You shouldn&apos;&apos;t&apos;</computeroutput>, ignores the words following
 the line comment, and continues to process the statement
-<computeroutput>''</computeroutput>.</para>
+<computeroutput>&apos;&apos;</computeroutput>.</para>
 <para>A <emphasis>standard comment</emphasis> is a sequence of characters
 (on one or more lines) delimited by /* and */. Within these delimiters any
 characters are allowed.
@@ -601,12 +601,12 @@ you nest the two types, the type of comment that comes first takes precedence
 over the one nested. Here is an example:</para>
 <programlisting>
 "Fred"
-"Don't Panic!"
-'You shouldn''t'        /* Same as "You shouldn't"
+"Don&apos;t Panic!"
+&apos;You shouldn&apos;&apos;t&apos;        /* Same as "You shouldn&apos;t"
 ""                      -- The null string         */
 </programlisting>
 <para>In this example, the language processor ignores everything after
-<computeroutput>'You shouldn''t'</computeroutput> up to the end of the last
+<computeroutput>&apos;You shouldn&apos;&apos;t&apos;</computeroutput> up to the end of the last
 line. In this case, the standard comment has precedence over the line comment.
 </para>
 <para>When nesting the two comment types, make sure that the start
@@ -615,8 +615,8 @@ in the line commented out with the line comment signs.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
 "Fred"
-"Don't Panic!"
-'You shouldn''t'        -- Same as /* "You shouldn't"
+"Don&apos;t Panic!"
+&apos;You shouldn&apos;&apos;t&apos;        -- Same as /* "You shouldn&apos;t"
 ""                      The null string         */
 </programlisting>
 <para>This example produces an error because the language processor
@@ -660,15 +660,15 @@ The classes of tokens are:</para>
 <secondary>quotations marks in</secondary></indexterm>
 <para>A literal string is a sequence including <emphasis>any</emphasis>
 characters except line feed (X"10") and delimited by a single quotation mark
-(<computeroutput>'</computeroutput>) or a double quotation mark
+(<computeroutput>&apos;</computeroutput>) or a double quotation mark
 (<computeroutput>&quot;</computeroutput>). You use
 two consecutive double quotation marks
 (<computeroutput>&quot;&quot;</computeroutput>) to represent
 one double quotation mark (<computeroutput>"</computeroutput>)
 within a string delimited by double
 quotation marks. Similarly, you use two consecutive single quotation marks
-(<computeroutput>''</computeroutput>) to represent one single quotation mark
-(<computeroutput>'</computeroutput>) within a string delimited by single
+(<computeroutput>&apos;&apos;</computeroutput>) to represent one single quotation mark
+(<computeroutput>&apos;</computeroutput>) within a string delimited by single
 quotation marks. A literal string
 is a constant and its contents are never modified when it is processed. Literal
 strings must be complete on a single line. This means that unmatched quotation
@@ -679,8 +679,8 @@ marks can be detected on the line where they occur.</para>
 <para>These are valid strings: </para>
 <programlisting>
 "Fred"
-"Don't Panic!"
-'You shouldn''t'        /* Same as "You shouldn't" */
+"Don&apos;t Panic!"
+&apos;You shouldn&apos;&apos;t&apos;        /* Same as "You shouldn&apos;t" */
 ""                      /* The null string         */
 </programlisting>
 <para><emphasis role="bold">Implementation maximum:</emphasis>
@@ -1875,8 +1875,8 @@ object.</para>
 </para>
 <programlisting>
 c="escape"
-a="Position of 'e' is:" c~pos("e",3)
-/* would set A to "Position of 'e' is: 6" */
+a="Position of &apos;e&apos; is:" c~pos("e",3)
+/* would set A to "Position of &apos;e&apos; is: 6" */
 </programlisting>
 <para>If the message term uses ~~, the receiver needs not return
 a result object. Any result object is discarded, and the receiver object is

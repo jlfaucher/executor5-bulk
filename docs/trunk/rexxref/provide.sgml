@@ -419,7 +419,7 @@ to <computeroutput>mycost</computeroutput>: </para>
 
 <programlisting>
 cost=.object~subclass("A cost")
-cost~define("%", 'expose p; say "Enter a price."; pull p; say p*1.07;')
+cost~define("%", &apos;expose p; say "Enter a price."; pull p; say p*1.07;&apos;)
 mycost=cost~new
 mycost~"%"        /* Produces:  Enter a price.             */
                   /* If the user specifies a price of 100, */
@@ -505,11 +505,11 @@ class, define a TYPE method for the Account class, and create the Savings class
 that is a subclass of Account. You could define a TYPE method for the Savings
 class as follows: </para>
 <programlisting>
-savings~define("TYPE", 'return "a savings account"')
+savings~define("TYPE", &apos;return "a savings account"&apos;)
 </programlisting>
 <para>You could change the search order by using the following line: </para>
 <programlisting>
-savings~define("TYPE", 'return self~type:super "(savings)"')
+savings~define("TYPE", &apos;return self~type:super "(savings)"&apos;)
 </programlisting>
 <para>This changes the search order so that the language processor searches for
 the TYPE method first in the Account superclass (rather than in the Savings
@@ -855,7 +855,6 @@ UNKNOWN      INIT               MAKEARRAY  CHAROUT
 <figure float="1">
 <title>Classes and Inheritance of Methods (Part 4 of 4)</title>
 <programlisting>
-<![CDATA[
 +-----------------------------------------------------------------------------+
 | Object (continued)                                                          |
 +-----------------------------+-----------------------------------------------+
@@ -867,7 +866,7 @@ NEW               FORMAT      NEW*
 "" (abuttal)      INSERT      AVAILABLE
 (arithmetic:)     LASTPOS     INDEX
 + - * / % // **   LEFT        ITEM
-' ' (blank)       LENGTH      NEXT
+&apos; &apos; (blank)       LENGTH      NEXT
 ABBREV            (logical:)
 ABS               & && |
 BITAND            \
@@ -878,12 +877,12 @@ CENTER            OVERLAY
 CHANGESTR         POS
 COMPARE           REVERSE
 (comparison:)     RIGHT
-= \= <> ><        SIGN
+<![CDATA[= \= <> ><        SIGN
 > >= \>           SPACE
 < <= \<           STRING
 == \==            STRIP
 >> \>> >>=        SUBSTR
-<< \<< <<=        SUBWORD
+<< \<< <<=        SUBWORD]]>
 (concatenation:)  TRANSLATE
 ||                TRUNC
 COPIES            VERIFY
@@ -895,12 +894,13 @@ DELSTR            WORDS
 DELWORD           X2B
 D2C               X2C
 D2X               X2D
+DECODEBASE64
+ENCODEBASE64
 
 
 
 * All of the methods under the Class class are both class and instance
   methods.NEW and OF are class methods.
-]]>
 </programlisting>
 </figure>
 </section>
@@ -1084,6 +1084,10 @@ methods except where noted.</para>
 <entry><link linkend="stdata">String</link></entry>
 </row>
 <row>
+<entry>DECODEBASE64</entry>
+<entry><link linkend="stdata">String</link></entry>
+</row>
+<row>
 <entry>DEFAULTNAME</entry>
 <entry><link linkend="cldena">Class</link>,
 <link linkend="obdena">Object</link></entry>
@@ -1130,6 +1134,10 @@ methods except where noted.</para>
 <row>
 <entry>D2X</entry>
 <entry><link linkend="std2x">String</link></entry>
+</row>
+<row>
+<entry>ENCODEBASE64</entry>
+<entry><link linkend="stdata">String</link></entry>
 </row>
 <row>
 <entry>ENHANCED</entry>

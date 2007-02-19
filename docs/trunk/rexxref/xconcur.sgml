@@ -515,7 +515,7 @@ Synchronization often uses semaphores. Here is an example of a semaphore class:
 /* this class:                                                                 */
 /*   init - Initializes a new semaphore.  Accepts the following positional     */
 /*          parameters:                                                        */
-/*                             'name' - global name for this semaphore         */
+/*                             &apos;name&apos; - global name for this semaphore         */
 /*                                if named default to set name in              */
 /*                                the class semDirectory                       */
 /*                             noshare -  do not define named semaphore        */
@@ -703,7 +703,7 @@ return waits                                /* Return number of objects waiting 
   Do forever                                /* Do until we get the semaphore  */
     owned = self~setSem
     if Owned = 0                            /* Was semaphore already set?     */
-      Then leave                            /* Wasn't owned; we now have it   */
+      Then leave                            /* Wasn&apos;t owned; we now have it   */
     else Do
       self~incWaits
       guard off                             /* Turn off guard status to let   */

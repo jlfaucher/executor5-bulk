@@ -1375,18 +1375,17 @@ can be helpful in interpreting the results you get.</para>
 Trace Int
 name="Kitty"
 indirect="name"
-interpret 'say "Hello"' indirect'"!"'
+interpret &apos;say "Hello"&apos; indirect&apos;"!"&apos;
 </programlisting>
 <para>When this is
 run, you get the following trace: </para>
 <programlisting>
-<![CDATA[
 C:\>RexxC kitty
-3 *-* name='Kitty'
+3 *-* name=&apos;Kitty&apos;
   >L>   "Kitty"
-4 *-* indirect='name'
+4 *-* indirect=&apos;name&apos;
   >L>   "name"
-5 *-* interpret 'say "Hello"' indirect'"!"'
+5 *-* interpret &apos;say "Hello"&apos; indirect&apos;"!"&apos;
   >L>   "say "Hello""
   >V>   "name"
   >O>   "say "Hello" name"
@@ -1400,7 +1399,6 @@ C:\>RexxC kitty
   >O>    "Hello Kitty!"
 Hello Kitty!
 C:\>
-]]>
 </programlisting>
 <para>Lines 3 and 4 set the variables used in line 5. Execution
 of line 5 then proceeds in two stages. First the string to be interpreted
@@ -2113,7 +2111,7 @@ exit
 lucky7:Procedure Expose i j a. c.
 /* This exposes I, J, and all variables whose     */
 /* names start with A. or C.                      */
-A.1="7"  /* This sets A.1 in the caller's         */
+A.1="7"  /* This sets A.1 in the caller&apos;s         */
          /* environment, even if it did not       */
          /* previously exist.                     */
 return
