@@ -46,10 +46,10 @@ HTML_STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/html/docbook.dsl
 
 
 SGML_FILES = classes.sgml \
+             api.sgml \
 	     command.sgml \
 	     concept.sgml \
 	     meet.sgml \
-	     os2api.sgml \
 	     preface.sgml \
 	     provide.sgml \
 	     rexio.sgml \

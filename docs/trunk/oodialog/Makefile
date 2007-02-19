@@ -47,34 +47,32 @@ HTML_STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/html/docbook.dsl
 
 SGML_FILES = advcntlc.sgml \
 	     anibut.sgml \
+	     basedialog.sgml \
 	     buttoncontrolc.sgml \
+	     categorydialog.sgml \
 	     checkboxc.sgml \
 	     comboboxc.sgml \
 	     dialogcontrolc.sgml \
 	     editcontrolc.sgml \
-	     h000002.sgml \
-	     h001478.sgml \
-	     h001511.sgml \
-	     h100002.sgml \
 	     listboxc.sgml \
 	     listcontrolc.sgml \
-	     man0099.sgml \
 	     mesextcl.sgml \
 	     oodfct.sgml \
 	     oodialog.sgml \
-	     othercls.sgml \
 	     plainuserdialogc.sgml \
 	     preface.sgml \
 	     progressbarcontrolc.sgml \
 	     propertysheetc.sgml \
 	     radiobuttonc.sgml \
 	     reference.sgml \
+	     resdialog.sgml \
 	     scrollbarc.sgml \
 	     slidercontrolc.sgml \
 	     staticcontrolc.sgml \
 	     tabcontrolc.sgml \
 	     termdef.sgml \
 	     treecontrolc.sgml \
+	     userdialog.sgml \
 	     virtualkeycodesc.sgml \
 	     ../shared/oorexx.dsl \
 	     ../shared/notices.sgml \
