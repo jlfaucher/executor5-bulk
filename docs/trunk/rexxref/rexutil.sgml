@@ -579,7 +579,7 @@ Then Exit                          /* quit option given, exit    */
 ]]>
 </programlisting>
 
-<para>Runs the application as specified in
+<para>Starts (executes) the application as specified in
 <emphasis role="italic">cmdline</emphasis>.</para>
 <para><emphasis role="bold">Parameters:</emphasis></para>
 <variablelist>
@@ -639,12 +639,13 @@ window in the Z order.
 </para></listitem></varlistentry>
 </variablelist>
 <para><emphasis role="bold">Return codes:</emphasis></para>
-<para>If the function succeeds, the return value is greater than 31; otherwise,
-it is one of the following: </para>
+<para>If the application is started successfully, the process id (PID) is
+returned.If an error occurs the returned value is less than 32.</para>
+<para>Error return codes correspond to Windows system error codes. If the
+Windown system error code is greater than 32 it is negated. This is to prevent
+confusion between a legitimate error code and a PID.</para>
+<para>Common error returns for this function are as follows.</para>
 <variablelist>
-<varlistentry><term>0</term>
-<listitem><para>The system is out of memory or resources.
-</para></listitem></varlistentry>
 <varlistentry><term>2</term>
 <listitem><para>The specified file was not found.
 </para></listitem></varlistentry>
@@ -653,6 +654,9 @@ it is one of the following: </para>
 </para></listitem></varlistentry>
 <varlistentry><term>11</term>
 <listitem><para>The EXE file is invalid.
+</para></listitem></varlistentry>
+<varlistentry><term>-53</term>
+<listitem><para>The network path is invalid.
 </para></listitem></varlistentry>
 </variablelist>
 </section>
