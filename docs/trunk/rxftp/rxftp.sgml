@@ -198,8 +198,9 @@ are shown, you must enter them as part of the syntax.</para></listitem></itemize
 <para>The program examples in this document are rendered in a mono-spaced
 font that is not completely compatible for cut-and-paste functionality.
 Pasteing text into an editor could result in some characters outside of
-the standard ASCII character set. Specifically, single-qoute characters
-are known to be incorrectly converted when pasted into an editor.</para>
+the standard ASCII character set. Specifically, single-qoute and
+double-quote characters are sometimes converted incorrectly when
+pasted into an editor.</para>
 
 </section>
 
@@ -341,7 +342,7 @@ If the target file on the server soes not exist it is created.
    </varlistentry>
    <varlistentry>
       <term>mode</term>
-      <listitem><para>The file transfer mode, either 'ASCII' or 'BINARY'. If the
+      <listitem><para>The file transfer mode, either &apos;ASCII&apos; or &apos;BINARY&apos;. If the
                       argument is not given the the current mode will be used.
       </para></listitem>
    </varlistentry>
@@ -462,10 +463,10 @@ system running on the FTP server machine.
    <varlistentry>
       <term>pattern</term>
       <listitem><para>The filename pattern to use to filter the directory
-                      listing. You can use the standard '*' and '?' wildcard
+                      listing. You can use the standard &apos;*&apos; and &apos;?&apos; wildcard
                       characters in the pattern. This argument is optional.
                       If this argument is not specified the default pattern
-                      './*' will be used.
+                      &apos;./*&apos; will be used.
       </para></listitem>
    </varlistentry>
 </variablelist>
@@ -517,7 +518,7 @@ FtpErrno. Possible values:</para>
    </varlistentry>
    <varlistentry>
       <term>mode</term>
-      <listitem><para>The file transfer mode, either 'ASCII' or 'BINARY'. If the
+      <listitem><para>The file transfer mode, either &apos;ASCII&apos; or &apos;BINARY&apos;. If the
                       argument is not given the the current mode will be used.
       </para></listitem>
    </varlistentry>
@@ -559,12 +560,12 @@ FTP server.
 <para>Returns one of the following strings.</para>
 <variablelist>
    <varlistentry>
-      <term>'ACTIVE'</term>
+      <term>&apos;ACTIVE&apos;</term>
       <listitem><para>The current transfer mode is active.
       </para></listitem>
    </varlistentry>
    <varlistentry>
-      <term>'PASSIVE'</term>
+      <term>&apos;PASSIVE&apos;</term>
       <listitem><para>The current transfer mode is passive.
       </para></listitem>
    </varlistentry>
@@ -594,12 +595,12 @@ FTP server.
 <para>Returns one of the following strings.</para>
 <variablelist>
    <varlistentry>
-      <term>'ASCII'</term>
+      <term>&apos;ASCII&apos;</term>
       <listitem><para>The current type is ASCII.
       </para></listitem>
    </varlistentry>
    <varlistentry>
-      <term>'BINARY'</term>
+      <term>&apos;BINARY&apos;</term>
       <listitem><para>The current type is binary.
       </para></listitem>
    </varlistentry>
@@ -663,10 +664,10 @@ But the format may be different in some cases.</para>
    <varlistentry>
       <term>pattern</term>
       <listitem><para>The filename pattern to use to filter the directory
-                      listing. You can use the standard '*' and '?' wildcard
+                      listing. You can use the standard &apos;*&apos; and &apos;?&apos; wildcard
                       characters in the pattern. This argument is optional.
                       If this argument is not specified the default pattern
-                      './*' will be used.
+                      &apos;./*&apos; will be used.
       </para></listitem>
    </varlistentry>
 </variablelist>
@@ -752,7 +753,7 @@ FtpErrno. Possible values:</para>
    </varlistentry>
    <varlistentry>
       <term>mode</term>
-      <listitem><para>The file transfer mode, either 'ASCII' or 'BINARY'. If the
+      <listitem><para>The file transfer mode, either &apos;ASCII&apos; or &apos;BINARY&apos;. If the
                       argument is not given the the current mode will be used.
       </para></listitem>
    </varlistentry>
@@ -806,7 +807,7 @@ to the file sent from the client.
    </varlistentry>
    <varlistentry>
       <term>mode</term>
-      <listitem><para>The file transfer mode, either 'ASCII' or 'BINARY'. If the
+      <listitem><para>The file transfer mode, either &apos;ASCII&apos; or &apos;BINARY&apos;. If the
                       argument is not given the the current mode will be used.
       </para></listitem>
    </varlistentry>
@@ -989,21 +990,21 @@ tranfers to/from the FTP server.
 <para><emphasis role="bold">Syntax:</emphasis></para>
 <programlisting>
 <![CDATA[
->>-- myftpobj~FtpSetMode(--+--'PASSIVE'--+--)----------------------------><
-                           +--'ACTIVE'---+
+>>-- myftpobj~FtpSetMode(--+--"PASSIVE"--+--)----------------------------><
+                           +--"ACTIVE"---+
 ]]>
 </programlisting>
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
-      <term>'PASSIVE'</term>
+      <term>&apos;PASSIVE&apos;</term>
       <listitem><para>Sets passive mode for file transfers.
                       Only the first letter of the argument is significant and
                       it is not case-sensitive.
       </para></listitem>
    </varlistentry>
    <varlistentry>
-      <term>'ACTIVE'</term>
+      <term>&apos;ACTIVE&apos;</term>
       <listitem><para>Sets active mode for file transfers.
                       Only the first letter of the argument is significant and
                       it is not case-sensitive.
@@ -1039,21 +1040,21 @@ FTP server.
 <para><emphasis role="bold">Syntax:</emphasis></para>
 <programlisting>
 <![CDATA[
->>-- myftpobj~FtpSetType(--+--'ASCII'---+--)-----------------------------><
-                           +--'BINARY'--+
+>>-- myftpobj~FtpSetType(--+--"ASCII"---+--)-----------------------------><
+                           +--"BINARY"--+
 ]]>
 </programlisting>
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
-      <term>'ASCII'</term>
+      <term>&apos;ASCII&apos;</term>
       <listitem><para>Changes the file transfer type on the FTP server to ASCII.
                       Only the first letter of the argument is significant and
                       it is not case-sensitive.
       </para></listitem>
    </varlistentry>
    <varlistentry>
-      <term>'BINARY'</term>
+      <term>&apos;BINARY&apos;</term>
       <listitem><para>Changes the file transfer mode on the FTP server to binary.
                       Only the first letter of the argument is significant and
                       it is not case-sensitive.
@@ -1272,7 +1273,7 @@ buffer to be written to a log file.
 <programlisting>
 <![CDATA[
 >>--myftpobj~FtpTraceLog(filename--+---------------+--)------------------><
-                                   +--, 'REPLACE'--+
+                                   +--, "REPLACE"--+
 ]]>
 </programlisting>
 <para><emphasis role="bold">Arguments:</emphasis></para>
@@ -1283,7 +1284,7 @@ buffer to be written to a log file.
       </para></listitem>
    </varlistentry>
    <varlistentry>
-      <term>'REPLACE'</term>
+      <term>&apos;REPLACE&apos;</term>
       <listitem><para>If this argument is given then if the log file exists
                       it will be replaced. The default is to append the trace
                       output to the log file. Only the first letter of the
@@ -1400,7 +1401,7 @@ end
 <indexterm><primary>removing carriage returns from files</primary></indexterm>
 <indexterm><primary>carriage returns from files, removing</primary></indexterm>
 <para>The CR_Remove method attribute is always in one of two states. If it is
-set to .true then carriage return characters ('0D'x) are removed from ASCII
+set to .true then carriage return characters (&apos;0D&apos;x) are removed from ASCII
 downloads when the class is running on a Unix platform. If it is set to .false
 then CR bytes are retained in the locally stored file.
 </para>
