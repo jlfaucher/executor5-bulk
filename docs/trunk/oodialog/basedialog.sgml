@@ -1208,7 +1208,7 @@ is called by <link linkend="h000048">Execute</link>.
 <programlisting>
 <![CDATA[
                             +-DEFAULT--+
->>-aBaseDialog~Execute(--'--+----------+--'--+---------+--)----><
+>>-aBaseDialog~Execute(--"--+----------+--"--+---------+--)----><
                             +-NORMAL---+     +-,--icon-+
                             +-SHOWTOP--+
                             +-HIDE-----+
@@ -1282,7 +1282,7 @@ MyDialog~Execute("SHOWTOP")
    +-+----------------------------------------+--)-+
      +-,--+--------------------+--+---------+-+
           |    +-DEFAULT--+    |  +-,--icon-+
-          +-'--+-NORMAL---+--'-+
+          +-"--+-NORMAL---+--"-+
                +-SHOWTOP--+
                +-HIDE-----+
                +-MIN------+
@@ -1382,7 +1382,7 @@ waits until the user terminates it. </para>
 <programlisting>
 <![CDATA[
                           +-DEFAULT--+
->>-aBaseDialog~Popup(--'--+----------+--'--+-------------------------------+--)-><
+>>-aBaseDialog~Popup(--"--+----------+--"--+-------------------------------+--)-><
                           +-NORMAL---+     +-,--+-----------+--+---------+-+
                           +-SHOWTOP--+          +-sleeptime-+  +-,--icon-+
                           +-HIDE-----+
@@ -1444,7 +1444,7 @@ of dialog A. If dialog A is closed, MyDialog remains unaffected and active.
 <programlisting>
 <![CDATA[
                                             +-DEFAULT--+
->>-aBaseDialog~PopupAsChild(--parent--,--'--+----------+--'----->
+>>-aBaseDialog~PopupAsChild(--parent--,--"--+----------+--"----->
                                             +-NORMAL---+
                                             +-SHOWTOP--+
                                             +-HIDE-----+
@@ -1569,7 +1569,7 @@ the user terminates the dialog. </para>
 <programlisting>
 <![CDATA[
                          +-DEFAULT--+
->>-aBaseDialog~Show(--'--+----------+--'--)--------------------><
+>>-aBaseDialog~Show(--"--+----------+--"--)--------------------><
                          +-NORMAL---+
                          +-SHOWTOP--+
                          +-HIDE-----+
@@ -1641,7 +1641,6 @@ dialog. </para>
 of an alarm event:
 
 <programlisting>
-<![CDATA[
 aDialog = .MyDialog~new
 msg = .Message~new(aDialog, "Remind")
 a = .Alarm~new("17:30:00", msg)
@@ -1651,9 +1650,8 @@ a = .Alarm~new("17:30:00", msg)
       .
       .
 ::method Remind
-  self~SetStaticText(102, "Don't forget to go home!")
+  self~SetStaticText(102, "Don&apos;t forget to go home!")
   self~ToTheTop
-]]>
 </programlisting>
 
 <note><title>Note</title><para>
@@ -2471,7 +2469,7 @@ say MyDialog~Name
 <![CDATA[
 >>-aBaseDialog~ConnectComboBox(--id--+-------------------------------------+-->
                                      +-,--+---------------+--+-----------+-+
-                                          +-attributeName-+  +-,--'LIST'-+
+                                          +-attributeName-+  +-,--"LIST"-+
 
 >--)-----------------------------------------------------------><
 
@@ -4223,7 +4221,7 @@ the currently selected line of combo box 230 to the value in entry line 250:
 
       +---------------+
       V               |
->--'----+-READWRITE-+-+--'--)-----------------------------------><
+>--"----+-READWRITE-+-+--"--)-----------------------------------><
         +-READONLY--+
         +-HIDDEN----+
         +-SYSTEM----+
@@ -4793,7 +4791,7 @@ var2  "09"x  ,
 <![CDATA[
                                                         +---------------+
                                                         V               |
->>-aBaseDialog~ListAddDirectory(--id--,--drvPath--,--'----+-READWRITE-+-+--'--)-><
+>>-aBaseDialog~ListAddDirectory(--id--,--drvPath--,--"----+-READWRITE-+-+--"--)-><
                                                           +-READONLY--+
                                                           +-HIDDEN----+
                                                           +-SYSTEM----+
@@ -5565,7 +5563,7 @@ the <link linkend="h001261">HideWindowFast</link> method.</para>
 >--+-----------------------------+--)--------------------------------><
    |       +----------------+    |
    |       V                |    |
-   +-,--'----+-NOMOVE-----+-+--'-+
+   +-,--"----+-NOMOVE-----+-+--"-+
              +-NOSIZE-----+
              +-HIDEWINDOW-+
              +-SHOWWINDOW-+
@@ -5669,7 +5667,7 @@ by blanks:
 <programlisting>
 <![CDATA[
 >>-aBaseDialog~ResizeItem(--id--,--width--,--height--+-------------------------+--)-><
-                                                     +-,--'--+-HIDEWINDOW-+--'-+
+                                                     +-,--"--+-HIDEWINDOW-+--"-+
                                                              +-SHOWWINDOW-+
                                                              +-NOREDRAW---+
 
@@ -5723,7 +5721,7 @@ MyDialog~ResizeItem(123, 40, 30, "SHOWWINDOW")
 <programlisting>
 <![CDATA[
 >>-aBaseDialog~MoveItem(--id--,--xPos--,--yPos--+-------------------------+--)-><
-                                                +-,--'--+-HIDEWINDOW-+--'-+
+                                                +-,--"--+-HIDEWINDOW-+--"-+
                                                         +-SHOWWINDOW-+
                                                         +-NOREDRAW---+
 
@@ -5767,7 +5765,7 @@ to manually update the display.
 <indexterm><primary>Center</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~Center(--'--+-HIDEWINDOW-+--'--)---------------><
+>>-aBaseDialog~Center(--"--+-HIDEWINDOW-+--"--)---------------><
                            +-SHOWWINDOW-+
                            +-NOREDRAW---+
 
@@ -6288,7 +6286,7 @@ less than the size of the background, the bitmap is drawn repetitively. </para>
 >>-aBaseDialog~BackgroundBitmap(--bmpFilename------------------->
 
 >--+-------------+--)------------------------------------------><
-   +-,--'USEPAL'-+
+   +-,--"USEPAL"-+
 
 
 ]]>
@@ -6522,13 +6520,13 @@ a device context.</para>
 >>-aBaseDialog~Write(--xPos--,--yPos--,--text---------------------------------->
 
 >--+------------------------------------------------------------------------+-->
-   |    +-'SYSTEM'-+                                                        |
+   |    +-"SYSTEM"-+                                                        |
    +-,--+----------+--+---------------------------------------------------+-+
         +-fontName-+  |    +-10-------+                                   |
                       +-,--+----------+--+------------------------------+-+
                            +-fontSize-+  |       +-----------------+    |
                                          |       V +-OPAQUE------+ |    |
-                                         +-,--'----+-THIN--------+-+--'-+
+                                         +-,--"----+-THIN--------+-+--"-+
                                                    +-EXTRALIGHT--+
                                                    +-LIGHT-------+
                                                    +-MEDIUM------+
@@ -6569,7 +6567,7 @@ not take a handle or an ID; it always writes to the dialog window. </para>
 >--,--+--------------------------+------------------------------------------->
       |    +----------------+    |
       |    V                |    |
-      +-'----+-THIN-------+-+--'-+
+      +-"----+-THIN-------+-+--"-+
              +-EXTRALIGHT-+
              +-LIGHT------+
              +-MEDIUM-----+
@@ -6650,7 +6648,7 @@ with the first given interval.
 >--+----------+--,--+--------------------------+---------------->
    +-fontSize-+     |    +----------------+    |
                     |    V                |    |
-                    +-'----+-THIN-------+-+--'-+
+                    +-"----+-THIN-------+-+--"-+
                            +-EXTRALIGHT-+
                            +-LIGHT------+
                            +-MEDIUM-----+
@@ -7334,8 +7332,8 @@ To specify multiple filter patterns for a single display string, use a semicolon
 to separate the patterns (for example, &quot;*.TXT;*.DOC;*.BAK&quot;). A pattern
 string can be a combination of valid file name characters and the asterisk
 (*) wildcard character. Do not include spaces in the pattern string.</para>
-<para>If omitted, <computeroutput>&quot;Text Files (*.TXT)&quot;'0'x&quot;*.TXT&quot;'0'x&quot;All
-Files (*.*)&quot;'0'x&quot;*.*&quot; </computeroutput> is used as the filter.
+<para>If omitted, <computeroutput>&quot;Text Files (*.TXT)&quot;&apos;0&apos;x&quot;*.TXT&quot;&apos;0&apos;x&quot;All
+Files (*.*)&quot;&apos;0&apos;x&quot;*.*&quot; </computeroutput> is used as the filter.
 </para></listitem></varlistentry>
 <varlistentry><term>loadorsave</term>
 <listitem><para>Specifies which dialog should be displayed.

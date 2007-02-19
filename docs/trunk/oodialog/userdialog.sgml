@@ -396,7 +396,7 @@ self~NoAutoDetection
 >--+---------------------------+--,--+----------+--------------->
    |    .-----------------.    |     +-dlgClass-+
    |    V                 |    |
-   +-'----+-NOMENU------+-+--'-+
+   +-"----+-NOMENU------+-+--"-+
           +-VISIBLE-----+
           +-NOTMODAL----+
           +-SYSTEMMODAL-+
@@ -501,7 +501,7 @@ if rc <> 0 then MyDialog~Execute
 >--+---------------------------+--,--+----------+--------------->
    |    .-----------------.    |     +-dlgClass-+
    |    V                 |    |
-   +-'----+-NOMENU------+-+--'-+
+   +-"----+-NOMENU------+-+--"-+
           +-VISIBLE-----+
           +-NOTMODAL----+
           +-SYSTEMMODAL-+
@@ -573,7 +573,7 @@ self~AddEntryLine(402, INPUT_1, 20, 170, 150)
    +-,--+------------------------------+--+-------------+-+
         |    .--------------------.    |  +-,--expected-+
         |    V                    |    |
-        +-'----+-CENTER---------+-+--'-+
+        +-"----+-CENTER---------+-+--"-+
                +-CONNECTBUTTONS-+
                +-CONNECTRADIOS--+
                +-CONNECTCHECKS--+
@@ -712,7 +712,7 @@ self~LoadFrame("Dialog2.rc", 100, "CENTER", 20)
    +-,--+----------+--+---------------------------------+-+
         +-dialogId-+  |       .--------------------.    |
                       |       V                    |    |
-                      +-,--'----+-CONNECTBUTTONS-+-+--'-+
+                      +-,--"----+-CONNECTBUTTONS-+-+--"-+
                                 +-CONNECTRADIOS--+
                                 +-CONNECTCHECKS--+
 
@@ -780,7 +780,7 @@ explicitly.
    +-,--msgToRaise--+---------------------------+-+
                     |       .--------------+    |
                     |       V              |    |
-                    +-,--'----+-DEFAULT--+-+--'-+
+                    +-,--"----+-DEFAULT--+-+--"-+
                               +-OWNER----+
                               +-HIDDEN---+
                               +-DISABLED-+
@@ -870,7 +870,7 @@ MyDialog~AddButton(555, 100, 80, 40, 15, "&Get new Info", ,
 >--+---------------------------+--)----------------------------><
    |       .--------------.    |
    |       V              |    |
-   +-,--'----+-DEFAULT--+-+--'-+
+   +-,--"----+-DEFAULT--+-+--"-+
              +-HIDDEN---+
              +-DISABLED-+
              +-NOTAB----+
@@ -947,7 +947,7 @@ the DisableItem method, see page <link linkend="h001229">DisableItem</link>), th
 <programlisting>
 <![CDATA[
 MyDialog~AddBitmapButton(601, 20, 317, 80, 30, , "BmpPushed", ,
-                         "Button1.bmp", ,,"Button1D.bmp","FRAME USEPAL")
+                         "Button1.bmp", , ,"Button1D.bmp","FRAME USEPAL")
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -961,7 +961,7 @@ MyDialog~AddBitmapButton(601, 20, 317, 80, 30, , "BmpPushed", ,
 >>-aUserDialog~AddGroupBox(--x--,--y--,--cx--,--cy--,--text----->
 
 >--+------------------------+--)-------------------------------><
-   +-,--'BORDER'--+-------+-+
+   +-,--"BORDER"--+-------+-+
                   +-,--id-+
 
 
@@ -1002,7 +1002,7 @@ with the changes listed below:
    +-,--+----------------------+--+-------+-+
         |    .------------.    |  +-,--id-+
         |    V            |    |
-        +-'----+-HIDDEN-+-+--'-+
+        +-"----+-HIDDEN-+-+--"-+
                +-SIMPLE-+
                +-RIGHT--+
                +-CENTER-+
@@ -1063,7 +1063,7 @@ is aligned to the left.
    +-,--+----+--+------------------------------+-+
         +-cy-+  |       +-----------------+    |
                 |       V                 |    |
-                +-,--'----+-MULTILINE---+-+--'-+
+                +-,--"----+-MULTILINE---+-+--"-+
                           +-AUTOSCROLLH-+
                           +-HSCROLL-----+
                           +-AUTOSCROLLV-+
@@ -1204,7 +1204,7 @@ instead. </para>
 >--cy--+---------------------------+-- )-----------------------><
        |       +--------------+    |
        |       V              |    |
-       +-,--'----+-MULTI----+-+--'-+
+       +-,--"----+-MULTI----+-+--"-+
                  +-NOTIFY---+
                  +-SORT-----+
                  +-COLUMNS--+
@@ -1287,7 +1287,7 @@ A list box does not support a horizontal scroll bar.
 >--+--------------------------+--)-------------------------------------><
    |       +-------------+    |
    |       V             |    |
-   +-,--'----+-SIMPLE--+-+--'-+
+   +-,--"----+-SIMPLE--+-+--"-+
              +-LIST----+
              +-SORT----+
              +-VSCROLL-+
@@ -1336,7 +1336,7 @@ items only.
 >--+----+--,--text--+------------------------+--)----------------------><
    +-cy-+           |       +-----------+    |
                     |       V           |    |
-                    +-,--'------GROUP---+--'-+
+                    +-,--"------GROUP---+--"-+
 
 
 ]]>
@@ -1369,7 +1369,7 @@ used.
                                        +-name-+
 
 >--,--cy--,--text--+----------------+--)---------------------------><
-                   +-,--'--GROUP--'-+
+                   +-,--"--GROUP--"-+
 
 
 ]]>
@@ -1438,9 +1438,9 @@ automatically (see the <link linkend="h001873">AddRadioGroup</link> method below
 
          +------+
          V      |
->--,--'----text-+--'--+----------------------------------+--)--><
+>--,--"----text-+--"--+----------------------------------+--)--><
                       +-,--+------------+--+-----------+-+
-                           +-'NOBORDER'-+  +-,--idstat-+
+                           +-"NOBORDER"-+  +-,--idstat-+
 
 
 ]]>
@@ -1514,9 +1514,9 @@ MyDialog~Execute
 
       +------+
       V      |
->--'----text-+--'--+----------------------------------+-- )----><
+>--"----text-+--"--+----------------------------------+-- )----><
                    +-,--+------------+--+-----------+-+
-                        +-'NOBORDER'-+  +-,--idstat-+
+                        +-"NOBORDER"-+  +-,--idstat-+
 
 
 ]]>
@@ -1647,9 +1647,9 @@ MyUserDialog~AddInput(402, , 20, 30, , 150, , "Your eMail address")
 
          +------+
          V      |
->--,--'----text-+--'--+----------------------------------+--)----><
+>--,--"----text-+--"--+----------------------------------+--)----><
                       +-,--+------------+--+-----------+-+
-                           +-'NOBORDER'-+  +-,--idstat-+
+                           +-"NOBORDER"-+  +-,--idstat-+
 
 
 ]]>
@@ -1721,7 +1721,7 @@ Name&quot; instead of &quot;FirstName&quot;), use the <link linkend="h001950">Ad
    +-,--+-----------------------+--+-----------+-+
         |    +-------------+    |  +-,--idstat-+
         |    V             |    |
-        +-'----+-SIMPLE--+-+--'-+
+        +-"----+-SIMPLE--+-+--"-+
                +-LIST----+
                +-SORT----+
                +-VSCROLL-+
@@ -1940,7 +1940,7 @@ and an example.</para>
 >--+------------------------------+-- )------------------------><
    |       +-----------------+    |
    |       V                 |    |
-   +-,--'----+-VERTICAL----+-+--'-+
+   +-,--"----+-VERTICAL----+-+--"-+
              +-HORIZONTAL--+
              +-TOPLEFT-----+
              +-BOTTOMRIGHT-+
@@ -2000,12 +2000,12 @@ and has a predetermined width (if vertical) or height (if horizontal)
 <indexterm><primary>AddButtonGroup</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aUserDialog~AddButtonGroup(--x--,--y--,--+----+--,--+----+--,--'-->
+>>-aUserDialog~AddButtonGroup(--x--,--y--,--+----+--,--+----+--,--"-->
                                             +-cx-+     +-cy-+
 
    +---------------------+
    V                     |
->----text-- --id-- --msg-+--'---------------------------------------->
+>----text-- --id-- --msg-+--"---------------------------------------->
 
 >--+-------------------------------+--)-----------------------------><
    +-,--+--------+--+------------+-+
@@ -2091,7 +2091,7 @@ There is currently no difference between rectangles and frames.
 >--+------------------------------------+--)-------------------><
    |       +------------+               |
    |       V            |               |
-   +-,--'----+-HIDDEN-+-+--'--+-------+-+
+   +-,--"----+-HIDDEN-+-+--"--+-------+-+
              +-BORDER-+       +-,--id-+
 
 
@@ -2146,7 +2146,7 @@ to the <link linkend="h001709">AddWhiteRect</link> method.</para>
    +-,--+----------------------+--+-------+-+
         |    +------------+    |  +-,--id-+
         |    V            |    |
-        +-'----+-HIDDEN-+-+--'-+
+        +-"----+-HIDDEN-+-+--"-+
                +-BORDER-+
 
 
@@ -2178,7 +2178,7 @@ to the <link linkend="h001722">AddGreyRect</link> method.</para>
    +-,--+----------------------+--+-------+-+
         |    +------------+    |  +-,--id-+
         |    V            |    |
-        +-'----+-HIDDEN-+-+--'-+
+        +-"----+-HIDDEN-+-+--"-+
                +-BORDER-+
 
 
@@ -2381,7 +2381,7 @@ with the dialog. </para>
 <indexterm><primary>AddPopupMenu</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aUserDialog~AddPopupMenu(--name--,--'--options--'--)--------><
+>>-aUserDialog~AddPopupMenu(--name--,--"--options--"--)--------><
 
 
 ]]>
@@ -2408,7 +2408,7 @@ with the dialog. </para>
 <indexterm><primary>AddMenuItem</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aUserDialog~AddMenuItem(--name--,--id--,--'--options--'--,--msgToRaise--)-><
+>>-aUserDialog~AddMenuItem(--name--,--id--,--"--options--"--,--msgToRaise--)-><
 
 
 ]]>
@@ -2474,7 +2474,7 @@ displaces the rest of the dialog items.</para>
 
 >--+-------------------------------------+--)------------------><
    +-,--+----------------+--+----------+-+
-        +-'CONNECTITEMS'-+  +-,--count-+
+        +-"CONNECTITEMS"-+  +-,--count-+
 
 
 ]]>

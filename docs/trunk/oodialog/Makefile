@@ -1,6 +1,6 @@
 #----------------------------------------------------------------------------
 #
-# Description: Makefile for the Object Rexx OODialog Reference Documents.
+# Description: Makefile for the Object Rexx OODialog Reference PDF
 #
 # Copyright (c) 2005-2006, Rexx Language Association. All rights reserved.
 #
@@ -97,9 +97,8 @@ IMAGE_FILES = rxou0s12.jpg \
 	      rxou0s20.jpg \
 	      rxou0s24.jpg \
 	      rxou0s25.jpg \
- 	      oorexx.jpg \
  	      docbook-1.png \
-	      new_rexxla.jpg
+	      oorexx.jpg
 
 JADETEXFMT  = ./pdfjadetex.fmt
 HYPERREFCFG = ./hyperref.cfg
@@ -121,7 +120,7 @@ book1.htm: $(IMAGE_FILES) $(HTML_STYLESHEET) genindex.sgml
 	docbook2html -d $(HTML_STYLESHEET) oodialog.sgml
 
 oodialog-html.zip: book1.htm
-	zip oodialog-html *.htm *.jpg
+	zip oodialog-html *.htm *.jpg *.png
 
 $(JADETEXFMT): $(HYPERREFCFG)
 	pdftex -ini \&pdflatex pdfjadetex.ini

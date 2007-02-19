@@ -361,7 +361,7 @@ it.</para>
                           +-DlgData.-+     +-catx-+     +-caty-+     +-catcx-+
 
 >--+--------------------+--,--+----------+--,--+----------+--,--+--------+--)-><
-   +-'--+-DROPDOWN-+--'-+     +-cattable-+     +-catlabel-+     +-catmax-+
+   +-"--+-DROPDOWN-+--"-+     +-cattable-+     +-catlabel-+     +-catmax-+
         +-TOPLINE--+
         +-WIZARD---+
 
@@ -426,10 +426,9 @@ style, or the number of entries in the combo box drop-down list.
 the selection control:
 
 <programlisting>
-<![CDATA[
 dlg = MyCategoryDialog~new(MyData., , , ,"DROPDOWN", ,
 "Movies Cinemas Days Ticket","Dialog panel:")
-dlg~createCenter(200,180,"Let's go to the movies")
+dlg~createCenter(200,180,"Let&apos;s go to the movies")
 dlg~execute("SHOWTOP")
 ...
 ::class MyCategoryDialog subclass CategoryDialog
@@ -438,7 +437,6 @@ dlg~execute("SHOWTOP")
 ...
 ::method Cinemas       /* define the Cinemas page */
 ...
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -1264,9 +1262,7 @@ the mixin class name &quot;AdvancedControls&quot;. For example:</para>
 </variablelist>
 
 <programlisting>
-<![CDATA[
-MyCategoryDialog~AddCategoryComboEntry(101, "I'm one of the choices", 3)
-]]>
+MyCategoryDialog~AddCategoryComboEntry(101, "I&apos;m one of the choices", 3)
 </programlisting>
 </section>
 
@@ -1697,7 +1693,7 @@ the item.</para>
 >>-aCategoryDialog~ResizeCategoryItem(--id--,--width--,--height--,-->
 
 >--+----------------------+--,--category--)--------------------><
-   +-'--+-HIDEWINDOW-+--'-+
+   +-"--+-HIDEWINDOW-+--"-+
         +-SHOWWINDOW-+
         +-NOREDRAW---+
 
@@ -1715,7 +1711,7 @@ the item.</para>
 >>-aCategoryDialog~MoveCategoryItem(--id--,--xPos--,--yPos--,--->
 
 >--+----------------------+--,--category--)--------------------><
-   +-'--+-HIDEWINDOW-+--'-+
+   +-"--+-HIDEWINDOW-+--"-+
         +-SHOWWINDOW-+
         +-NOREDRAW---+
 

@@ -653,7 +653,7 @@ lst.4 = "Thursday" ; lst.5 = "Friday" ;  lst.6 = "Saturday"
 lst.7 = "Sunday"
 
 dlg = .MultiListChoice~new("Select the days you are working this week", ,
-                           "YourMultipleChoice",lst., ,,"2 5")
+                           "YourMultipleChoice",lst., , ,"2 5")
 s = dlg~execute
 if s <> "" then do while s \= ""
                   parse var s res s
@@ -1664,7 +1664,7 @@ exit
 ::method Init
 /* ------------------------------------------------------------------------- */
   self~Init:super
-  rc=self~CreateCenter(250,250,"MyDialog","ThickFrame",,"MS Sans Serif",8)
+  rc=self~CreateCenter(250,250,"MyDialog","ThickFrame", ,"MS Sans Serif",8)
   self~InitCode=(rc=0)
   self~connectResize("OnResize")
 
@@ -1680,7 +1680,7 @@ s=.dlgArea~new(u~x       ,u~y("90%"),u~w("70%"),u~hr      )   /* status area */
 b=.dlgArea~new(u~x("70%"),u~y       ,u~wr      ,u~hr      )   /* button area */
 
 self~AddEntryLine(12,"text",e~x,e~y,e~w,e~h,"multiline")
-self~AddText(s~x,s~y,s~w,s~h,"Status info appears here",,11)
+self~AddText(s~x,s~y,s~w,s~h,"Status info appears here", ,11)
 
 self~addButton(13,b~x,b~y("00%"),b~w,b~h("9%"),"Button" 0,"Button"||0)
 self~addButton(14,b~x,b~y("10%"),b~w,b~h("9%"),"Button" 1,"Button"||1)

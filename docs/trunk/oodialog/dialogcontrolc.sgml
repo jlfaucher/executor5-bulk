@@ -691,8 +691,8 @@ say MyDialog~GetButtonControl("IDOK")~GetID
 <para>Retrieves the dimensions of the rectangle surrounding the associated
 dialog or dialog control. The coordinates are relative to the upper left corner
 of the screen and are specified in screen pixels. The order is: left, top,
-right, bottom; where 'left' and 'top' are the x and y coordinates of the upper
-left-hand corner of the rectangle, and 'right' and 'bottom' are the coordinates
+right, bottom; where &apos;left&apos; and &apos;top&apos; are the x and y coordinates of the upper
+left-hand corner of the rectangle, and &apos;right&apos; and &apos;bottom&apos; are the coordinates
 of the bottom right-hand corner.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
@@ -721,7 +721,7 @@ height = bottom - top
 >--+-----------------------------+--)--------------------><
    |       +----------------+    |
    |       V                |    |
-   +-,--'----+-NOMOVE-----+-+--'-+
+   +-,--"----+-NOMOVE-----+-+--"-+
              +-NOSIZE-----+
              +-HIDEWINDOW-+
              +-SHOWWINDOW-+
@@ -1059,7 +1059,7 @@ MyDialog~Update
 <indexterm><primary>Display</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aDialogControl~Display(--'--+-DEFAULT--+------+--+--'--)----><
+>>-aDialogControl~Display(--"--+-DEFAULT--+------+--+--"--)----><
                                |          +-FAST-+  |
                                +-NORMAL--+------+---+
                                |         +-FAST-+   |
@@ -1181,7 +1181,7 @@ MyDialog~GetTreeControl("FILES")~Display("MIN FAST")
 >>-aDialogControl~Resize(--width--,--height--+-----------------------------+--)-><
                                              |       +----------------+    |
                                              |       V                |    |
-                                             +-,--'----+-HIDEWINDOW-+-+--'-+
+                                             +-,--"----+-HIDEWINDOW-+-+--"-+
                                                        +-SHOWWINDOW-+
                                                        +-NOREDRAW---+
 
@@ -1317,7 +1317,7 @@ to the current foreground window.</para>
 >>-aDialogControl~Move(--xPos--,--yPos--+----------------------------+--)-><
                                         |      +----------------+    |
                                         |      V                |    |
-                                        +-,-'----+-HIDEWINDOW-+-+--'-+
+                                        +-,-"----+-HIDEWINDOW-+-+--"-+
                                                  +-SHOWWINDOW-+
                                                  +-NOREDRAW---+
 
@@ -2337,7 +2337,7 @@ control that captured the mouse.</para>
 <indexterm><primary>IsMouseButtonDown</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aDialogControl~IsMouseButtonDown(--'--+-LEFT---+--'--)------><
+>>-aDialogControl~IsMouseButtonDown(--"--+-LEFT---+--"--)------><
                                          +-MIDDLE-+
                                          +-RIGHT--+
 
@@ -2380,7 +2380,7 @@ on whether a mouse button is pressed.</para>
 <programlisting>
 <![CDATA[
 >>-aDialogControl~LoadBitmap(--bmpFilename--+-------------+--)-><
-                                            +-,--'USEPAL'-+
+                                            +-,--"USEPAL"-+
 
 
 ]]>
@@ -2551,7 +2551,7 @@ a device context.</para>
 >>-aDialogControl~Write(--xPos--,--yPos--,--text---------------->
 
 >--+--------------------------------------+--------------------->
-   |    +-'SYSTEM'-+                      |
+   |    +-"SYSTEM"-+                      |
    +-,--+----------+--+-----------------+-+
         +-fontName-+  |    +-10-------+ |
                       +-,--+----------+-+
@@ -2562,7 +2562,7 @@ a device context.</para>
      +-+------------------------------------------------------------------+-+
        |       +-----------------+                                        |
        |       V +-OPAQUE------+ |                                        |
-       +-,--'----+-THIN--------+-+--'--+--------------------------------+-+
+       +-,--"----+-THIN--------+-+--"--+--------------------------------+-+
                  +-EXTRALIGHT--+       +-,--+---------+--+------------+-+
                  +-LIGHT-------+            +-fgColor-+  +-,--bkColor-+
                  +-MEDIUM------+
@@ -2728,7 +2728,7 @@ transparent mode was set using <link linkend="h000841">TransparentText</link>. <
 >>-aDialogControl~WriteToWindow(--hwnd--,--xPos--,--yPos--,--text-->
 
 >--+--------------------------------------+--------------------->
-   |    +-'SYSTEM'-+                      |
+   |    +-"SYSTEM"-+                      |
    +-,--+----------+--+-----------------+-+
         +-fontName-+  |    +-10-------+ |
                       +-,--+----------+-+
@@ -2739,7 +2739,7 @@ transparent mode was set using <link linkend="h000841">TransparentText</link>. <
      +-+------------------------------------------------------------------+-+
        |       +-----------------+                                        |
        |       V +-OPAQUE------+ |                                        |
-       +-,--'----+-THIN--------+-+--'--+--------------------------------+-+
+       +-,--"----+-THIN--------+-+--"--+--------------------------------+-+
                  +-EXTRALIGHT--+       +-,--+---------+--+------------+-+
                  +-LIGHT-------+            +-fgColor-+  +-,--bkColor-+
                  +-MEDIUM------+
@@ -2821,7 +2821,7 @@ MyDialog~WriteToWindow(hwnd, 23, 15, "Hello world!", ,
 >>-aDialogControl~WriteToButton(--id--,--xPos--,--yPos--,--text-->
 
 >--+--------------------------------------+--------------------->
-   |    +-'SYSTEM'-+                      |
+   |    +-"SYSTEM"-+                      |
    +-,--+----------+--+-----------------+-+
         +-fontName-+  |    +-10-------+ |
                       +-,--+----------+-+
@@ -2832,7 +2832,7 @@ MyDialog~WriteToWindow(hwnd, 23, 15, "Hello world!", ,
      +-+------------------------------------------------------------------+-+
        |       +-----------------+                                        |
        |       V +-OPAQUE------+ |                                        |
-       +-,--'----+-THIN--------+-+--'--+--------------------------------+-+
+       +-,--"----+-THIN--------+-+--"--+--------------------------------+-+
                  +-EXTRALIGHT--+       +-,--+---------+--+------------+-+
                  +-LIGHT-------+            +-fgColor-+  +-,--bkColor-+
                  +-MEDIUM------+
@@ -2962,13 +2962,13 @@ MyDialog~GetTreeControl("FILES")~SetFont(hfnt, 1)
 <indexterm><primary>CreateFont</primary></indexterm>
 <programlisting>
 <![CDATA[
-<                              +-'SYSTEM'-+     +-10-------+
+<                              +-"SYSTEM"-+     +-10-------+
 >>-aDialogControl~CreateFont(--+----------+--,--+----------+--,-->
                                +-fontName-+     +-fontSize-+
 
       +----------------+
       V                |
->--'----+-THIN-------+-+--'--+--------------+--)---------------><
+>--"----+-THIN-------+-+--"--+--------------+--)---------------><
         +-EXTRALIGHT-+       +-,--fontWidth-+
         +-LIGHT------+
         +-MEDIUM-----+
@@ -3185,7 +3185,7 @@ this argument is omitted, a solid brush with the specified color is created.</pa
                               +-1-----+
 >>-aDialogControl~CreatePen(--+-------+--,--+----------------------+--,-->
                               +-width-+     |    +-SOLID------+    |
-                                            +-'--+-DASH-------+--'-+
+                                            +-"--+-DASH-------+--"-+
                                                  +-DOT--------+
                                                  +-DASHDOT----+
                                                  +-DASHDOTDOT-+
@@ -3321,7 +3321,7 @@ it is easier to define a button filling the window, and then draw on the button.
 <programlisting>
 <![CDATA[
 >>-aDialogControl~Rectangle(--dc--,--x--,--y--,--x2--,--y2--+-----------+--)-><
-                                                            +-,--'FILL'-+
+                                                            +-,--"FILL"-+
 
 
 ]]>
@@ -3549,7 +3549,7 @@ drawing direction for the
 <indexterm><primary>SetArcDirection</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aDialogControl~SetArcDirection(--dc--,--'--+-COUNTERCLOCKWISE-+--'--)-><
+>>-aDialogControl~SetArcDirection(--dc--,--"--+-COUNTERCLOCKWISE-+--"--)-><
                                               +-CLOCKWISE--------+
 
 

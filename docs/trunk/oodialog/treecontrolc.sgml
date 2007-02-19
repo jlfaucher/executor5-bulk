@@ -240,16 +240,16 @@ class.</para>
 <secondary>TreeControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
-                                    +-'LAST'--+     +-""---+     +-0-----+
+                                    +-"LAST"--+     +-""---+     +-0-----+
 >>-aTreeControl~Insert(--parent--,--+-after---+--,--+------+--,--+-------+--,-->
-                                    +-'FIRST'-+     +-text-+     +-image-+
-                                    +-'SORT'--+
+                                    +-"FIRST"-+     +-text-+     +-image-+
+                                    +-"SORT"--+
 
-                                                   +-'0'-+
+                                                   +-"0"-+
 >--+----------+--,--+------------------------+--,--+-----+--)--><
-   +-selImage-+     |    +--------------+    |     +-'1'-+
+   +-selImage-+     |    +--------------+    |     +-"1"-+
                     |    V              |    |
-                    +-'----+-EXPANDED-+-+--'-+
+                    +-"----+-EXPANDED-+-+--"-+
                            +-BOLD-----+
 
 
@@ -365,11 +365,11 @@ is expanded. The text strings for the items are loaded from a file.
 >>-aTreeControl~Add(----+---+-+--,--+------+--,--+-------+--,--->
                         +-,-+       +-text-+     +-image-+
 
-                                                   +-'0'-+
+                                                   +-"0"-+
 >--+----------+--,--+------------------------+--,--+-----+--)--><
-   +-selImage-+     |    +--------------+    |     +-'1'-+
+   +-selImage-+     |    +--------------+    |     +-"1"-+
                     |    V              |    |
-                    +-'----+-EXPANDED-+-+--'-+
+                    +-"----+-EXPANDED-+-+--"-+
                            +-BOLD-----+
 
 
@@ -501,11 +501,11 @@ end
 >>-aTreeControl~Modify(--hItem--,--+------+--,--+-------+--,--+----------+--,-->
                                    +-text-+     +-image-+     +-selImage-+
 
-                                         +-'0'-+
+                                         +-"0"-+
 >--+-------------------------------+--,--+-----+--)------------><
-   |    +---------------------+    |     +-'1'-+
+   |    +---------------------+    |     +-"1"-+
    |    V                     |    |
-   +-'----+-BOLD------------+-+--'-+
+   +-"----+-BOLD------------+-+--"-+
           +-NOTBOLD---------+
           +-DROP------------+
           +-NOTDROP---------+
@@ -1901,8 +1901,8 @@ following strings if an item occupies the specified point:
 <programlisting>
 <![CDATA[
 >>-aTreeControl~MoveItem(--hItem--,--hNewParent--,--redraw--+---------------+--)-><
-                                                            +-,--'NODELETE'-+
-                                                            +-,--'SIBLINGS'-+
+                                                            +-,--"NODELETE"-+
+                                                            +-,--"SIBLINGS"-+
 
 
 ]]>

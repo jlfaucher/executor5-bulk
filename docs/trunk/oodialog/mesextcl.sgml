@@ -132,7 +132,7 @@ the methods listed in
 <indexterm><primary>ConnectCommonNotify</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aMessageExtensions~ConnectCommonNotify(--id--,--'--+-OUTOFMEMORY-+-->
+>>-aMessageExtensions~ConnectCommonNotify(--id--,--"--+-OUTOFMEMORY-+-->
                                                       +-CLICK-------+
                                                       +-DBLCLK------+
                                                       +-ENTER-------+
@@ -141,7 +141,7 @@ the methods listed in
                                                       +-GOTFOCUS----+
                                                       +-LOSTFOCUS---+
 
->--'--+---------------+--)-------------------------------------><
+>--"--+---------------+--)-------------------------------------><
       +-,--msgToRaise-+
 
 
@@ -232,7 +232,7 @@ but not before init:super has been called.
 <indexterm><primary>ConnectTreeNotify</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aMessageExtensions~ConnectTreeNotify(--id--,--'--+-BEGINDRAG---+--'-->
+>>-aMessageExtensions~ConnectTreeNotify(--id--,--"--+-BEGINDRAG---+--"-->
                                                     +-BEGINRDRAG--+
                                                     +-BEGINEDIT---+
                                                     +-ENDEDIT-----+
@@ -418,7 +418,6 @@ You can cancel the drag operation by clicking the other mouse button while
 holding the button that started the drag operation.</para>
 <para>The DefTreeDragHandler is implemented as follows:</para>
 <programlisting>
-<![CDATA[
 ::method DefTreeDragHandler
    use arg id, item, pt
    tc = self~GetTreeControl(id)
@@ -437,7 +436,7 @@ holding the button that started the drag operation.</para>
       if ht \= 0 & ht~wordpos("ONITEM") > 0 then do
           parse var ht newParent where
           /* check if droptarget is the current parent or one of the dragged
-             item's children */
+             item&apos;s children */
           if newParent \= Item & newParent \= tc~Parent(Item) & tc~IsAncestor,
              (Item,newParent) = 0
           then do
@@ -476,7 +475,7 @@ holding the button that started the drag operation.</para>
           fvItem = tc~FirstVisible
           if (ybottom) & (tc~NextVisible(fvItem) \= 0) then do
               tc~MakeFirstVisible(tc~NextVisible(fvItem))
-              if y-bottom < 200 then call sleepms 200-(y-bottom)
+<![CDATA[              if y-bottom < 200 then call sleepms 200-(y-bottom)]]>
           end
       end
       lmb = self~IsMouseButtonDown("LEFT")
@@ -493,7 +492,6 @@ holding the button that started the drag operation.</para>
    pos = self~CursorPos
    parse var pos x y
    self~SetCursorPos(x+1, y+1)  /* move cursor to force redraw */
-]]>
 </programlisting>
 </section>
 
@@ -501,7 +499,7 @@ holding the button that started the drag operation.</para>
 <indexterm><primary>ConnectListNotify</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aMessageExtensions~ConnectListNotify(--id--,--'--+-ACTIVATE----+--'-->
+>>-aMessageExtensions~ConnectListNotify(--id--,--"--+-ACTIVATE----+--"-->
                                                     +-BEGINDRAG---+
                                                     +-BEGINRDRAG--+
                                                     +-BEGINEDIT---+
@@ -758,7 +756,7 @@ view control has the AUTOARRANGE style.</para>
 <indexterm><primary>ConnectButtonNotify</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aMessageExtensions~ConnectButtonNotify(--id--,--'--+-CLICKED---+--'-->
+>>-aMessageExtensions~ConnectButtonNotify(--id--,--"--+-CLICKED---+--"-->
                                                       +-DBLCLK----+
                                                       +-DISABLE---+
                                                       +-GOTFOCUS--+
@@ -865,7 +863,7 @@ before init:super has been called.</para></listitem>
 <indexterm><primary>ConnectEditNotify</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aMessageExtensions~ConnectEditNotify(--id--,--'--+-CHANGE----+--'-->
+>>-aMessageExtensions~ConnectEditNotify(--id--,--"--+-CHANGE----+--"-->
                                                     +-UPDATE----+
                                                     +-ERRSPACE--+
                                                     +-MAXTEXT---+
@@ -988,7 +986,7 @@ before init:super has been called.</para></listitem>
 <indexterm><primary>ConnectListBoxNotify</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aMessageExtensions~ConnectListBoxNotify(--id--,--'--+-DBLCLK----+--'-->
+>>-aMessageExtensions~ConnectListBoxNotify(--id--,--"--+-DBLCLK----+--"-->
                                                        +-ERRSPACE--+
                                                        +-GOTFOCUS--+
                                                        +-LOSTFOCUS-+
@@ -1087,7 +1085,7 @@ before init:super has been called.</para></listitem>
 <indexterm><primary>ConnectComboBoxNotify</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aMessageExtensions~ConnectComboBoxNotify(--id--,--'--+-CHANGE-------+--'-->
+>>-aMessageExtensions~ConnectComboBoxNotify(--id--,--"--+-CHANGE-------+--"-->
                                                         +-UPDATE-------+
                                                         +-CLOSEUP------+
                                                         +-DROPDOWN-----+
@@ -1205,7 +1203,7 @@ box (extract the low-order word) and the handle to the combo box. Example:
 <indexterm><primary>ConnectScrollBarNotify</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aMessageExtensions~ConnectScrollBarNotify(--id--,--'--+-UP--------+--'-->
+>>-aMessageExtensions~ConnectScrollBarNotify(--id--,--"--+-UP--------+--"-->
                                                          +-DOWN------+
                                                          +-TOP-------+
                                                          +-BOTTOM----+
@@ -1327,7 +1325,7 @@ keep the selected position.</para></listitem>
 <indexterm><primary>ConnectTabNotify</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aMessageExtensions~ConnectTabNotify(--id--,--'--+-KEYDOWN-----+--'-->
+>>-aMessageExtensions~ConnectTabNotify(--id--,--"--+-KEYDOWN-----+--"-->
                                                    +-SELCHANGE---+
                                                    +-SELCHANGING-+
 
@@ -1424,7 +1422,7 @@ Example:
 <indexterm><primary>ConnectSliderNotify</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aMessageExtensions~ConnectSliderNotify(--id--,--'--+-UP-------+--'-->
+>>-aMessageExtensions~ConnectSliderNotify(--id--,--"--+-UP-------+--"-->
                                                       +-DOWN-----+
                                                       +-TOP------+
                                                       +-BOTTOM---+
