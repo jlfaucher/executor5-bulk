@@ -74,10 +74,17 @@ ret = ErrorMessage("another error message")
 <listitem><para>Displays a message and ask the user for a YES or NO answer:
 <programlisting>
 <![CDATA[
-ret = YesNoMessage("press Yes or No")
+ret = YesNoMessage("Delete these files?", "No")
 if ret=1 then /* this is yes */
 ]]>
 </programlisting>
+</para>
+<para>The second argument is optional and can have a value of either Yes or
+No. An argument of Yes gives the Yes button the default focus, No gives the No
+button the default focus. If the argument is omitted the Yes button is given
+the default focus. Only the first letter of the argument is significant
+and case is not significant. See also the function
+<link linkend="askdialog">AskDialog</link>.
 </para></listitem></varlistentry>
 <varlistentry><term>GetScreenSize
 <indexterm><primary>GetScreenSize</primary></indexterm>

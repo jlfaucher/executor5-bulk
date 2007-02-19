@@ -7260,8 +7260,8 @@ an error symbol.</para>
 a No Button.</para>
 <programlisting>
 <![CDATA[
->>-AskDialog(--question--)------------------------------------><
-
+>>-AskDialog(--question--+-------------------+--)-------------><
+                         +--, defaultbutton--+
 
 ]]>
 </programlisting>
@@ -7273,6 +7273,12 @@ a No Button.</para>
 <variablelist>
 <varlistentry><term>question</term>
 <listitem><para>Text to be displayed in the message box.
+</para></listitem></varlistentry>
+<varlistentry><term>defaultbutton</term>
+<listitem><para>Specifies which button, the Yes or the No button, has the
+default focus when the message box pops up. This argumen can be Yes or No and
+is optional. If the argument is omitted, the Yes button will be given the focus.
+Only the first letter of the option is needed and case is not significant.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
