@@ -611,6 +611,7 @@ bool RexxInterpreter::exportBaseClasses()
   defineKernelMethod(CHAR_RIGHT                        ,TheStringBehaviour, CPPM(RexxString::right), 2);
   defineKernelMethod(CHAR_STRIP                        ,TheStringBehaviour, CPPM(RexxString::strip), 2);
   defineKernelMethod(CHAR_SUBSTR                       ,TheStringBehaviour, CPPM(RexxString::substr), 3);
+  defineKernelMethod(CHAR_SUBCHAR                      ,TheStringBehaviour, CPPM(RexxString::subchar), 1);
   defineKernelMethod(CHAR_DELWORD                      ,TheStringBehaviour, CPPM(RexxString::delWord), 2);
   defineKernelMethod(CHAR_SPACE                        ,TheStringBehaviour, CPPM(RexxString::space), 2);
   defineKernelMethod(CHAR_EXTRACTWORDS                 ,TheStringBehaviour, CPPM(RexxString::extractWords), 2);
@@ -710,6 +711,7 @@ bool RexxInterpreter::exportBaseClasses()
   defineKernelMethod(CHAR_OVERLAY                      ,TheMutableBufferBehaviour, CPPM(RexxMutableBuffer::overlay), 4);
   defineKernelMethod(CHAR_DELETE                       ,TheMutableBufferBehaviour, CPPM(RexxMutableBuffer::mydelete), 2);
   defineKernelMethod(CHAR_SUBSTR                       ,TheMutableBufferBehaviour, CPPM(RexxMutableBuffer::substr), 3);
+  defineKernelMethod(CHAR_SUBCHAR                      ,TheMutableBufferBehaviour, CPPM(RexxMutableBuffer::subchar), 1);
   defineKernelMethod(CHAR_GETBUFFERSIZE                , TheMutableBufferBehaviour, CPPM(RexxMutableBuffer::getBufferSize), 0);
   defineKernelMethod(CHAR_SETBUFFERSIZE                , TheMutableBufferBehaviour, CPPM(RexxMutableBuffer::setBufferSize), 1);
 

@@ -192,6 +192,7 @@
    RexxString  *right(RexxInteger *, RexxString *);
    RexxString  *strip(RexxString *, RexxString *);
    RexxString  *substr(RexxInteger *, RexxInteger *, RexxString *);
+   RexxString  *subchar(RexxInteger *);
    RexxString  *delWord(RexxInteger *, RexxInteger *);
    RexxString  *space(RexxInteger *, RexxString *);
    RexxString  *subWord(RexxInteger *, RexxInteger *);

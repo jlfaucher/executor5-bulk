@@ -70,9 +70,9 @@ RexxString *RexxInterpreter::versionString()
           day++;                             /* step over it                      */
                                              /* format the result                 */
       #ifdef NOTHREADSUPPORT
-        sprintf(buffer, "REXX-ooRexx_%d.%d 6.00 %s %s %s", ORX_VER, ORX_REL, day, month, year);
+        sprintf(buffer, "REXX-ooRexx_%d.%d 6.01 %s %s %s", ORX_VER, ORX_REL, day, month, year);
       #else
-        sprintf(buffer, "REXX-ooRexx_%d.%d(MT) 6.00 %s %s %s", ORX_VER, ORX_REL, day, month, year);
+        sprintf(buffer, "REXX-ooRexx_%d.%d(MT) 6.01 %s %s %s", ORX_VER, ORX_REL, day, month, year);
       #endif
         singleInstance->versionID = new_string(buffer);  /* return as a rexx string           */
     }

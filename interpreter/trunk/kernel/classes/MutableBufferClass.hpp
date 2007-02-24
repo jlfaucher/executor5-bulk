@@ -46,6 +46,7 @@
 
 #include "StringClass.hpp"
 #include "IntegerClass.hpp"
+#include "RexxBuffer.hpp"
 
  class RexxMutableBuffer : public RexxObject {
   public:
@@ -76,11 +77,15 @@
    RexxString        *makeString();
    RexxArray         *makeArray(RexxString *div);
 
+   stringchar_t      *getData() { return data->address(); }
+   RexxString *extract(stringsize_t offset, stringsize_t sublength) { return newString(this->getData() + offset, sublength); }
+
    RexxMutableBuffer *append(RexxObject*);
    RexxMutableBuffer *insert(RexxObject*, RexxObject*, RexxObject*, RexxObject*);
    RexxMutableBuffer *overlay(RexxObject*, RexxObject*, RexxObject*, RexxObject*);
    RexxMutableBuffer *mydelete(RexxObject*, RexxObject*);
    RexxString        *substr(RexxInteger *startPosition, RexxInteger *len, RexxString *pad);
+   RexxString        *subchar(RexxInteger *startPosition);
 
    RexxInteger       *getBufferSize() { return new_integer(bufferLength); }
    RexxObject        *setBufferSize(RexxInteger*);
