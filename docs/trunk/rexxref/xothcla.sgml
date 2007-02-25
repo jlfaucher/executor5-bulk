@@ -1708,6 +1708,7 @@ class might result in weak performance, large memory allocation, or both.)
 <member>Overlay</member>
 <member>SetBufferSize</member>
 <member>String</member>
+<member>Subchar</member>
 <member>Substr</member>
 </simplelist>
 
@@ -1918,6 +1919,25 @@ in the INIT method.</para>
 </programlisting>
 
 <para>Retrieves the content of the buffer (a string).</para>
+</section>
+
+<section><title>SUBCHAR</title>
+<indexterm><primary>STRING method</primary>
+<secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>SUBCHAR method</secondary>
+<tertiary>of MutableBuffer class</tertiary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-SUBCHAR(n)----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the <emphasis>n</emphasis>'th character of the receiving
+string. <emphasis>n</emphasis> must be a positive whole number. If
+<emphasis>n</emphasis> is greater that the length of the receiving string
+then a zero-length string is returned.</para>
 </section>
 
 <section><title>SUBSTR</title>
@@ -4397,6 +4417,7 @@ descriptions.</para>
 <member>SPACE</member>
 <member>STRING (Overrides Object class method)</member>
 <member>STRIP</member>
+<member>SUBCHAR</member>
 <member>SUBSTR</member>
 <member>SUBWORD</member>
 <member>TRANSLATE</member>
@@ -6508,6 +6529,25 @@ and the default <emphasis role="italic">pad</emphasis> character is a blank.
 </programlisting>
 <para>(See <link linkend="space">SPACE</link>
 for information about the SPACE built-in function.)</para>
+</section>
+
+<section><title>SUBCHAR</title>
+<indexterm><primary>STRING method</primary>
+<secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>SUBCHAR method</secondary>
+<tertiary>of String</tertiary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-SUBCHAR(n)----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the <emphasis>n</emphasis>'th character of the receiving
+string. <emphasis>n</emphasis> must be a positive whole number. If
+<emphasis>n</emphasis> is greater that the length of the receiving string
+then a zero-length string is returned.</para>
 </section>
 
 <section id="ststrn"><title>STRING</title>
