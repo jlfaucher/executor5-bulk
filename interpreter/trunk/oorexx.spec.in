@@ -43,6 +43,9 @@
 # /usr/local/bin is NOT in the PATH of daemons on most Linux distributions and
 # therefore ooRexx cannot be executed from a daemon.
 
+# Specify a top dir so we can build the RPM as a non-root user
+$_define _topdir @TOP_SRCDIR@/rpm
+
 # Specify the package version
 %define orx_major @OOREXX_VERSION_MAJOR@
 %define orx_minor @OOREXX_VERSION_MINOR@

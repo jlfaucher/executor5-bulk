@@ -259,6 +259,8 @@ OOREXX_LIBS="-L\$(top_srcdir)/kernel \
             -ldl"
 AC_SUBST(OOREXX_LIBS)
 
+AC_SUBST(TOP_SRCDIR,$top_srcdir)
+
 AC_CONFIG_FILES([
         oorexx.spec \
         ooRexx.pc \

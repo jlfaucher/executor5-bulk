@@ -62,6 +62,17 @@ am_config_clean-local:
 report:
 	$(MAKE) -C test report
 
+rpm: dist
+	rm -fr $(top_srcdir)/rpm
+	mkdir rpm
+	mkdir rpm/BUILD
+	mkdir rpm/RPMS
+	mkdir rpm/SOURCES
+	mkdir rpm/SPECS
+	mkdir rpm/SRPMS
+	cp ooRexx*.tar.gz rpm/SOURCES
+	rpmbuild -ba oorexx.spec
+
 tags:   FORCE
 	@echo making tags
 	ctags $(ALLSOURCES)
