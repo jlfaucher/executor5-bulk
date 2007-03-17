@@ -71,6 +71,9 @@
    RexxObject   *completed();
    RexxObject   *hasError();
    RexxObject   *errorCondition();
+   RexxObject   *messageTarget();
+   RexxString   *messageName();
+   RexxArray    *arguments();
    void          sendNotification();
    void          error(RexxDirectory *);
    RexxObject   *newRexx(RexxObject **, size_t);

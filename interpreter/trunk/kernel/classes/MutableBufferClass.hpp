@@ -89,6 +89,7 @@
 
    RexxInteger       *getBufferSize() { return new_integer(bufferLength); }
    RexxObject        *setBufferSize(RexxInteger*);
+   RexxInteger       *posRexx(RexxString *, RexxInteger *);
    RexxMutableBuffer *newRexx(RexxObject**, size_t);
    void               ensureCapacity(stringsize_t addedLength);
    static RexxClass  *classInstance;     // singleton class instance

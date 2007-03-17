@@ -212,6 +212,9 @@ CPPM(RexxMessage::start),
 CPPM(RexxMessage::completed),
 CPPM(RexxMessage::hasError),
 CPPM(RexxMessage::errorCondition),
+CPPMSG(RexxMessage::messageTarget),
+CPPMSG(RexxMessage::messageName),
+CPPMSG(RexxMessage::arguments),
 
 CPPM(RexxMessage::newRexx),
 

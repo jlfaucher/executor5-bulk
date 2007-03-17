@@ -427,6 +427,9 @@ bool RexxInterpreter::exportBaseClasses()
   defineKernelMethod(CHAR_ERRORCONDITION , TheMessageBehaviour, CPPMSG(RexxMessage::errorCondition), 0);
   defineKernelMethod(CHAR_SEND     , TheMessageBehaviour, CPPM(RexxMessage::send), 1);
   defineKernelMethod(CHAR_START    , TheMessageBehaviour, CPPM(RexxMessage::start), 1);
+  defineKernelMethod(CHAR_TARGET   , TheMessageBehaviour, CPPMSG(RexxMessage::messageTarget), 0);
+  defineKernelMethod(CHAR_MESSAGENAME  , TheMessageBehaviour, CPPMSG(RexxMessage::messageName), 0);
+  defineKernelMethod(CHAR_ARGUMENTS  , TheMessageBehaviour, CPPMSG(RexxMessage::arguments), 0);
 
                                        /* set the scope of the methods to   */
                                        /* this classes oref                 */
