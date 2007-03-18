@@ -73,7 +73,7 @@ RexxMemory RexxMemory::memoryObject;
 #define SaveStackSize 20             /* newly created objects to save */
 #define SaveStackAllocSize 500       /* pre-allocation for save stack  */
 
-#define MaxImageSize 500000          /* maximum startup image size */
+#define MaxImageSize 800000          /* maximum startup image size */
 
 bool  RexxMemory::saveimage = false;       /* saving the image                  */
 bool  RexxMemory::restoreimage = false;    /* restoring the image               */
@@ -1419,6 +1419,12 @@ void RexxMemory::saveImageMark(RexxObject *markObject, RexxObject **pMarkObject)
 
         /* address the copy in the image */
         bufferReference = (RexxObject *)(image_buffer + image_offset);
+        // we allocated a hard coded buffer, so we need to make sure we don't blow
+        // the buffer size.
+        if (image_offset + size> MaxImageSize)
+        {
+            logic_error("Rexx saved image exceeds expected maximum");
+        }
         /* Copy object to image buffer. */
         memcpy(bufferReference, markObject, size);
         /* clear the mark in the copy        */
