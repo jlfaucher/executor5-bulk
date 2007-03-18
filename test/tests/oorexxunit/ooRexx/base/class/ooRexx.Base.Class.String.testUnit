@@ -99,7 +99,7 @@ aTestUnitClass=testUnitList~at(testUnitList~first)[1] -- get first testClass
 call makeDirTestInfo aTestUnitClass, arrLines
 tmpDir=aTestUnitClass~TestCaseInfo
 parse source s   -- op_sys invocationType fullPathToThisFile
-tmpDir~setentry("testCase-source", s)
+tmpDir~setentry("test_Case-source", s)
 
    -- now add this directory to other testCase classes, if any left
 do arr over testUnitList
