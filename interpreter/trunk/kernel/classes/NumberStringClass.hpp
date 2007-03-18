@@ -127,6 +127,7 @@ const uint32_t NumberRounded     = 0x00000010;       /* Indicate the number was 
     RexxObject *trunc(RexxObject *);
     RexxObject *truncInternal(size_t);
     RexxObject *unknown(RexxString *, RexxArray *);
+    bool        isInstanceOf(RexxClass *);
 
     inline RexxNumberString *checkNumber(stringsize_t digits, bool rounding)
     {

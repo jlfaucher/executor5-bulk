@@ -241,7 +241,8 @@ protected:
      virtual bool         numberValueNoNOSTRING(wholenumber_t *result) { return this->numberValue(result);};
      virtual bool         doubleValueNoNOSTRING(double *result) { return this->doubleValue(result);};
 
-     virtual bool       isEqual(RexxObject *);
+     virtual bool         isEqual(RexxObject *);
+     virtual bool         isInstanceOf(RexxClass *);
 
              RexxObject  *hasUninit();
              void         removedUninit();
@@ -358,6 +359,8 @@ class RexxObject : public RexxInternalObject {
      stringsize_t  requiredNonNegative(size_t, size_t precision = Numerics::DEFAULT_DIGITS);
 
      bool       isEqual(RexxObject *);
+     bool         isInstanceOf(RexxClass *);
+     RexxObject  *isInstanceOfRexx(RexxClass *);
      RexxString  *objectName();
      RexxObject  *objectNameEquals(RexxObject *);
      RexxClass   *classObject();

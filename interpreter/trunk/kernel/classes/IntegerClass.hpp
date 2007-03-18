@@ -77,6 +77,7 @@ class RexxInteger : public RexxObject {
   RexxString  *stringValue();
   bool         isLogical();
   bool         truthValue(wholenumber_t);
+  bool         isInstanceOf(RexxClass *);
 
   bool        isEqual(RexxObject *);
   int         strictComp(RexxObject *);

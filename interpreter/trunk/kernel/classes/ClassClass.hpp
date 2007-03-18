@@ -108,6 +108,7 @@
    RexxClass  *newRexx(RexxObject **args, size_t argCount);
    void        setMetaClass(RexxClass *);
    bool        instanceOf(RexxObject *o);
+   bool        isCompatibleWith(RexxClass *other);
 
    inline bool         rexxDefined() { return (this->class_info & REXX_DEFINED) != 0; };
    inline bool         queryMixin()  { return (this->class_info & MIXIN) != 0; };
