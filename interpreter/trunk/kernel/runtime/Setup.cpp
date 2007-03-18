@@ -715,6 +715,8 @@ bool RexxInterpreter::exportBaseClasses()
   defineKernelMethod(CHAR_DELETE                       ,TheMutableBufferBehaviour, CPPM(RexxMutableBuffer::mydelete), 2);
   defineKernelMethod(CHAR_SUBSTR                       ,TheMutableBufferBehaviour, CPPM(RexxMutableBuffer::substr), 3);
   defineKernelMethod(CHAR_SUBCHAR                      ,TheMutableBufferBehaviour, CPPM(RexxMutableBuffer::subchar), 1);
+  defineKernelMethod(CHAR_POS                          ,TheMutableBufferBehaviour, CPPM(RexxMutableBuffer::posRexx), 2);
+  defineKernelMethod(CHAR_LASTPOS                      ,TheMutableBufferBehaviour, CPPM(RexxMutableBuffer::lastPosRexx), 2);
   defineKernelMethod(CHAR_GETBUFFERSIZE                , TheMutableBufferBehaviour, CPPM(RexxMutableBuffer::getBufferSize), 0);
   defineKernelMethod(CHAR_SETBUFFERSIZE                , TheMutableBufferBehaviour, CPPM(RexxMutableBuffer::setBufferSize), 1);
 

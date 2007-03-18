@@ -209,7 +209,7 @@
    RexxInteger *compare(RexxString *, RexxString *);
    RexxString  *copies(RexxInteger *);
    RexxObject  *dataType(RexxString *);
-   stringsize_t lastPos(RexxString *, stringsize_t);
+   static stringsize_t lastPos(RexxString *, stringsize_t);
    stringsize_t caselessLastPos(RexxString *, stringsize_t);
    stringchar_t *lastPos(stringchar_t *, stringsize_t, stringchar_t *, stringsize_t);
    stringchar_t *caselessLastPos(stringchar_t *, stringsize_t, stringchar_t *, stringsize_t);

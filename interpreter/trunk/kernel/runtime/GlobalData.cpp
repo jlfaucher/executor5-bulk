@@ -388,6 +388,8 @@ CPPM(RexxMutableBuffer::overlay),
 CPPM(RexxMutableBuffer::mydelete),
 CPPM(RexxMutableBuffer::substr),
 CPPM(RexxMutableBuffer::subchar),
+CPPM(RexxMutableBuffer::posRexx),
+CPPM(RexxMutableBuffer::lastposRexx),
 CPPM(RexxMutableBuffer::getBufferSize),
 CPPM(RexxMutableBuffer::setBufferSize),
 

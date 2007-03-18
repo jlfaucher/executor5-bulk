@@ -78,6 +78,7 @@
    RexxArray         *makeArray(RexxString *div);
 
    stringchar_t      *getData() { return data->address(); }
+   stringsize_t       getLength() { return dataLength; }
    RexxString *extract(stringsize_t offset, stringsize_t sublength) { return newString(this->getData() + offset, sublength); }
 
    RexxMutableBuffer *append(RexxObject*);
@@ -86,6 +87,8 @@
    RexxMutableBuffer *mydelete(RexxObject*, RexxObject*);
    RexxString        *substr(RexxInteger *startPosition, RexxInteger *len, RexxString *pad);
    RexxString        *subchar(RexxInteger *startPosition);
+   RexxInteger       *lastPosRexx(RexxString *needle, RexxInteger *start);
+   RexxInteger       *posRexx(RexxString *needle, RexxInteger *start);
 
    RexxInteger       *getBufferSize() { return new_integer(bufferLength); }
    RexxObject        *setBufferSize(RexxInteger*);

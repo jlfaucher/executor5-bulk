@@ -671,7 +671,7 @@ RexxInteger *RexxString::lastPosRexx(
                                        /* do the search                     */
     MatchLocation = lastPos(needle->getStringData(), NeedleLen, (stringchar_t *)this->getStringData(), HaystackLen);
 
-    if (!MatchLocation == NULL)        /* no match?                         */
+    if (MatchLocation == NULL)         /* no match?                         */
       Retval = IntegerZero;            /* this is zero                      */
     else {                             /* format match point                */
                                        /* place holder to invoke new_integer*/

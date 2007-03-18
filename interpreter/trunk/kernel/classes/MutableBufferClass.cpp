@@ -562,3 +562,94 @@ RexxString *RexxMutableBuffer::subchar(RexxInteger *positionArg)
     return new_string(data->address() + position, substrLength);
     return this->extract(position, 1);
 }
+
+
+/**
+ * Return the position of a string within this mutable buffer.
+ *
+ * @param needle The search string.
+ * @param pstart The optional starting position.
+ *
+ * @return The match position, or zero if there is no match.
+ */
+RexxInteger *RexxString::posRexx(RexxString  *needle, RexxInteger *pstart)
+{
+    // must be a string
+    needle = REQUIRED_STRING(needle, ARG_ONE);
+    // and the optional starting position
+    stringsize_t start = optionalPositionArgument(pstart, 1, ARG_TWO) - 1;
+    // get the lengths
+    stringsize_t haystack_length = this->getLength();
+    stringsize_t needle_length = needle->getLength();
+    // Quick checks ...
+    // if needle is bigger than haystack
+    // or needle is null or
+    // start+needle is bigger than hay
+    // impossible to match, return 0
+    if (needle_length > haystack_length + start ||
+        needle_length == 0 ||
+        start + needle_length > haystack_length) {
+        return IntegerZero;
+    }
+
+    stringchar_t *haypointer = this->getData() + start;
+    stringchar_t *needlepointer = needle->getStringData();
+    stringsize_t location = start + 1;
+
+                                         /* calculate max number of searches  */
+    stringsize_t count = (haystack_length - start) - needle_length + 1;
+    stringchar_t firstNeedleChar = *needlepointer;    /* get the first character           */
+
+    while (count--) {                    /* while still room                  */
+                                         /* get a hit?                        */
+        if (firstNeedleChar == *haypointer && !memcmp((stringchar_t *)haypointer, (stringchar_t *)needlepointer, needle_length))
+        {
+            return new_integer(location);
+
+        }
+        location++;                        /* step the location                 */
+        haypointer++;                      /* step the position                 */
+    }
+    return IntegerZero;                  /* no match, return zero             */
+}
+
+
+
+
+/**
+ * Return the last position of a string within this mutable
+ * buffer.
+ *
+ * @param needle The search string.
+ * @param pstart The optional starting position.
+ *
+ * @return The match position, or zero if there is no match.
+ */
+RexxInteger *RexxString::lastPosRexx(RexxString  *needle,RexxInteger *start)
+{
+    stringsize_t haystackLen = this->getLength();
+    needle = stringArgument(needle, ARG_ONE);
+    stringsize_t needleLen = needle->getLength();
+                                       /* find our where to start looking   */
+                                       /* default the end of source         */
+    startPos = optionalPositionArgument(start, HaystackLen, ARG_TWO);
+                                       /* match impossible?                 */
+    if (needleLen == 0 || haystackLen == 0)
+    {
+        return IntegerZero;
+    }
+                                       /* adjust for start position         */
+    haystackLen = min(haystackLen, startPos);
+                                       /* do the search                     */
+    matchLocation = RexxString::lastPos(needle->getStringData(), meedleLen, this->getData(), haystackLen);
+
+    if (matchLocation == NULL)         /* no match?                         */
+    {
+        return IntegerZero;
+    }
+    else
+    {                             /* format match point                */
+                                       /* place holder to invoke new_integer*/
+      return new_integer(matchLocation - (stringchar_t *)this->getData() + 1);
+    }
+}
