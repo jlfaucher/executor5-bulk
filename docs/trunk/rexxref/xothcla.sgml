@@ -1704,8 +1704,10 @@ class might result in weak performance, large memory allocation, or both.)
 <member>Delete</member>
 <member>GetBufferSize</member>
 <member>Insert</member>
+<member>Lastpos</member>
 <member>Length</member>
 <member>Overlay</member>
+<member>Pos</member>
 <member>SetBufferSize</member>
 <member>String</member>
 <member>Subchar</member>
@@ -1840,6 +1842,52 @@ to length <emphasis>length</emphasis>. The default
 <emphasis>pad</emphasis> character is a blank.</para>
 </section>
 
+<section id="mblast"><title>LASTPOS</title>
+<indexterm><primary>LASTPOS method</primary>
+<secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>LASTPOS method</secondary>
+<tertiary>of MutableBuffer class</tertiary></indexterm>
+<indexterm><primary>position</primary>
+<secondary>last occurrence of a string</secondary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-LASTPOS(needle-+--------+-)---------------------------------><
+                  +-,start-+
+]]>
+</programlisting>
+
+<para>Returns the position of the last occurrence of a string,
+<emphasis role="italic">needle</emphasis>,
+in the receiving buffer. (See also <link linkend="mbpos">POS</link>.) It
+returns <computeroutput>0</computeroutput> if
+<emphasis role="italic">needle</emphasis> is the null string or not found.
+By default, the search starts at the last character of the receiving buffer
+and scans backward. You can override this by specifying
+<emphasis role="italic">start</emphasis>, the point at which the
+backward scan starts. The <emphasis role="italic">start</emphasis> must be a
+positive whole number and defaults to
+<computeroutput>receiving_buffer~length</computeroutput> if larger than that
+value or omitted.</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>LASTPOS method</secondary></indexterm>
+<programlisting>
+x1 - .mutablebuffer~new()
+x1 = "abc def ghi"
+x1~LASTPOS(" ")      ->    8
+x1 = "abcdefghi"
+x1~LASTPOS(" ")      ->    0
+x1 = "efgxyz"
+x1~LASTPOS("xy")     ->    4
+x1 = "abc def ghi"
+x1~LASTPOS(" ",7)    ->    4
+</programlisting>
+<para>(See <link linkend="lastpos">LASTPOS (Last Position)</link>
+for information about the LASTPOS built-in function.)</para>
+</section>
+
 <section><title>LENGTH</title>
 <indexterm><primary>LENGTH method</primary>
 <secondary>of MutableBuffer class</secondary></indexterm>
@@ -1883,6 +1931,54 @@ greater than the length of the buffer content, padding is
 added before the new string. The default <emphasis>pad</emphasis> character is
 a blank, and the default value for <emphasis>n</emphasis> is 1. If you specify
 <emphasis>n</emphasis>, it must be a positive integer.</para>
+</section>
+
+<section id="mbpos"><title>POS</title>
+<indexterm><primary>POS method</primary>
+<secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>POS method</secondary>
+<tertiary>of MutableBuffer class</tertiary></indexterm>
+<indexterm><primary>finding</primary>
+<secondary>string in a MutableBuffer</secondary></indexterm>
+<indexterm><primary>locating</primary>
+<secondary>string in a MutableBuffer</secondary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-POS(needle-+--------+-)-------------------------------------><
+              +-,start-+
+]]>
+</programlisting>
+
+<para>Returns the position in the receiving buffer of another string,
+<emphasis role="italic">needle</emphasis>. (See also
+<link linkend="mblast">LASTPOS</link>.) It returns
+<computeroutput>0</computeroutput> if
+<emphasis role="italic">needle</emphasis> is the null string or is not found
+or if <emphasis role="italic">start</emphasis> is greater than
+the length of the receiving buffer. By default, the search starts at the first
+character of the receiving buffer (that is, the value of
+<emphasis role="italic">start</emphasis> is <computeroutput>1</computeroutput>).
+You can override this by specifying <emphasis role="italic">start</emphasis>
+(which must be
+a positive whole number), the point at which the search starts.</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>POS method</secondary></indexterm>
+<programlisting>
+x1 = .mutablebuffer~new()
+x1 = "Saturday"
+x1~POS("day")       ->    6
+x1 = "abc def ghi"
+x1~POS("x")         ->    0
+x1 = "abc def ghi"
+x1~POS(" ")         ->    4
+x1 = "abc def ghi"
+x1~POS(" ",5)       ->    8
+</programlisting>
+<para>(See <link linkend="pos">POS (Position)</link>
+for information about the POS built-in function.)</para>
 </section>
 
 <section><title>SETBUFFERSIZE</title>
