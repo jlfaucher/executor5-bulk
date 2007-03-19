@@ -2080,6 +2080,7 @@ of the Object class are, therefore, available on all objects.</para>
 <member>DEFAULTNAME</member>
 <member>HASMETHOD</member>
 <member>INIT</member>
+<member>ISINSTANCEOF</member>
 <member>OBJECTNAME</member>
 <member>OBJECTNAME=</member>
 <member>REQUEST</member>
@@ -2277,6 +2278,36 @@ returns <computeroutput>1</computeroutput> (true).</para></note>
 
 <para>Performs any required object initialization. Subclasses of the Object
 class can override this method.</para>
+</section>
+
+<section id="obisinstanceof"><title>ISINSTANCEOF</title>
+<indexterm><primary>ISINSTANCEOF method</primary>
+<secondary>of Object class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>ISINSTANCEOF method</secondary>
+<tertiary>of Object class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-ISINSTANCEOF(class)-----------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns .true ("1") if the object is an instance of the specified
+<emphasis role="italic">class</emphasis>.
+Returns .false ("0") if the object is not an instance of the specified
+<emphasis role="italic">class</emphasis>.
+An object is an instance of a class if the object is directly an instance of the
+specified <emphasis role="italic">class</emphasis> or if the
+<emphasis role="italic">class</emphasis> is in the object's direct or mixin
+class inheritance chain. For example:
+<programlisting>
+<![CDATA[
+"abc"~isinstanceof(.string)             ->  1
+"abc"~isinstanceof(.object)             ->  1
+"abc"~isinstanceof(.mutablebuffer)      ->  0
+]]>
+</programlisting>
+</para>
 </section>
 
 <section id="obname"><title>OBJECTNAME</title>
