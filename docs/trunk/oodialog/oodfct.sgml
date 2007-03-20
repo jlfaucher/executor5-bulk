@@ -144,8 +144,30 @@ file = GetFileNameWindow(filename,handle,filter,loadorsave,title, ,
 <para>Parameters (optional):</para>
 <variablelist>
 <varlistentry><term><emphasis role="italic">filename</emphasis></term>
-<listitem><para>A preselected name.
-</para></listitem></varlistentry>
+<listitem><para>A preselected file name and / or initial directory information.</para>
+<para>This argument places a preselected file name in the &quot;File name&quot;
+field of the file selection dialog.  In addition this argument can also be used
+to specify the initial directory (folder) the dialog opens in.</para>
+<para>When this argument contains no path information, then the File name field
+will contain the argument and the initial directory is determined by the
+operating system.  Which directory the operating system picks varies slightly
+between Windows 98, Windows NT, Windows XP, etc.  But, in general, it will be a
+directory previously used in one of the Windows common dialogs, or a directory
+in the users My Documents.  (The exact behavior is documented by Microsoft.)</para>
+<para>If the argument contains file name and path information, the initial
+directory will be determined by the path information and the File name field
+will contain the file information.  When the filename argument contains only path
+information and no file name information, i.e. the argument ends with a back
+slash (&quot;\&quot;), then the initial directory will be that path and the File
+name field will be left blank.</para>
+<para>In cases where the argument contains incorrect path information the
+initial directory is determined as if no path information had been supplied and
+the entire value of the argument is placed in the File name field.</para>
+<note><title>Note</title><para>
+Windows treats normal wild card characters as valid for file names.  Therefore,
+values such as C:\*.* or C:\Windows\*.exe are acceptable for this argument.
+</para></note>
+</listitem></varlistentry>
 <varlistentry><term><emphasis role="italic">handle</emphasis></term>
 <listitem><para>The parent window handle.
 </para></listitem></varlistentry>
