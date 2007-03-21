@@ -334,7 +334,7 @@ return testUnitList
 
 
 
-::method "test_load_and_save_via_instanceMethod"
+::method "test_load_and_save_via_instanceMethod_using_Stream_Objects"
   self~internal_setup
 
   str=.stream~new(.testData~files[1])
@@ -359,6 +359,7 @@ return testUnitList
 
   str2=.stream~new(.testData~files[2])
   props2=.properties~new~~load(str2)
+  str2~close
 
   n=0
   do idx over props
@@ -367,7 +368,38 @@ return testUnitList
      val2=props2[idx]
      self~assertEquals("props2-subtest_"right(n,2,0), val1, val2)
   end
-  str2~close
+  self~internal_tearDown
+
+
+::method "test_load_and_save_via_instanceMethod_using_String_to_contain_name"
+  self~internal_setup
+
+  str=.testData~files[1]
+  props=.properties~new
+  props~load(str)
+  self~assertEquals("subtest_01 - using class method 'load'", 2, props~items)
+
+  s=.testData~dirData~supplier   -- were the entries retrieved correctly?
+  n=1
+  do while s~available
+     n=n+1
+     self~assertTrue("props-subtest_"right(n,2,0), props~hasIndex(s~index))
+     self~assertSame("props-subtest_"right(n,2,0), s~item, props[s~index])
+     s~next
+  end
+
+   -- save properties with property file
+  str2=.testData~files[2]
+  props~save(str2)
+  props2=.properties~new~~load(str2)
+
+  n=0
+  do idx over props
+     n=n+1
+     val1=props[idx]
+     val2=props2[idx]
+     self~assertEquals("props2-subtest_"right(n,2,0), val1, val2)
+  end
   self~internal_tearDown
 
 
