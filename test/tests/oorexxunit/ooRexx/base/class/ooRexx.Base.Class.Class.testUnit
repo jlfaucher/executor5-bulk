@@ -724,8 +724,9 @@ getBags: procedure         -- return indices in an index bag, and method items i
 
 ::method "test_SUBCLASSES"
 
-   self~assertTrue("subTest_01: '.object~subclasses~items>15'", .object~subclasses~items>15)
+   self~assertTrue("subTest_01: '.object~subclasses~items>15'",  .object~subclasses~items>15)
    self~assertTrue("subTest_02: '.relation~subclasses~items>0'", .relation~subclasses~items>0)
+   self~assertTrue("subTest_03: '.alarm~subclasses~items=0'",    .alarm~subclasses~items=0)
 
 
 

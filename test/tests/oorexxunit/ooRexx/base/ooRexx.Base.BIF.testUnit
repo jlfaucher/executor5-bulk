@@ -18,6 +18,7 @@
                      2005-10-17, ---rgf, added Walter Pachl's Errornumber()-tests
                      2006-11-12, ---rgf, removed a wrong comment
                      2007-01-20, ---rgf, adapted "test_SOURCELINE" to cater for hash-bang processing
+                     2007-03-21, ---rgf, added 6.01 datatype(value, 'O') test
    languageLevel:    6.0
    purpose:          Test the String functions.
    remark:           Initial test unit for demonstration purposes, needs to be completed.
@@ -37,7 +38,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2005 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2005-2007 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -444,6 +445,12 @@ return testUnitList
     self~assertTrue("subTest61" ,   DATATYPE("1234567890.1234", "N" )    ) -- Numeric
     self~assertFalse("subTest61" ,  DATATYPE(""               , "N" )    ) -- Numeric
     numeric digits a
+
+    self~assertTrue("subtest62",    DATATYPE(0,  "O") )  -- Logical (Boolean)
+    self~assertTrue("subtest63",    DATATYPE(1,  "O") )  -- Logical (Boolean)
+    self~assertFalse("subtest64",   DATATYPE(2,  "O") )  -- Logical (Boolean)
+    self~assertFalse("subtest65",   DATATYPE(-1, "O") )  -- Logical (Boolean)
+    self~assertFalse("subtest66",   DATATYPE("", "O") )  -- Logical (Boolean)
 
 
    -- test the BIF, using examples from the documentation
@@ -908,12 +915,11 @@ return testUnitList
     if pos(opsys, "WO")=0 then      -- assuming Unix based operating system
     do
          -- assuming hash-bang characters get removed on Unix by the opsys/shell
-       self~assertEquals("subTest3 (Unix-based)" , ""  , SOURCELINE(1)  )
+       self~assertEquals("subTest3a (Unix-based)" , ""  , SOURCELINE(1)  )
     end
     else                            -- Windows or OS/2
     do
-       self~assertEquals("subTest3a (Windows)" , "/usr/bin/rexx"   , SOURCELINE(1)~substr(3)  )
-       self~assertEquals("subTest3b (Windows)" , "#!/usr/bin/rexx" , SOURCELINE(1)  )
+       self~assertEquals("subTest3b (Windows)" , "/usr/bin/rexx"   , SOURCELINE(1)~substr(3)  )
     end
 
 
