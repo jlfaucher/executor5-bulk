@@ -449,11 +449,18 @@ search for files is case-insensitive to case. Therefore, when using CALL to
 run a Rexx subroutine contained on a disk file (external routine), the case
 does not matter.</para>
 <para>For Unix, file names can be in uppercase, lowercase, or mixed case. The
-search for files is case-sensitive to case. Therefore, when using CALL to
-run a Rexx subroutine contained on a disk file (external routine), specify the
-filename that contains lowercase or mixed-case characters in quotes, for
-example, "myprogram". Otherwise the filename is translated to uppercase
-characters and the call fails.</para>
+search for files uses the following rules:</para>
+<orderedlist>
+<listitem><para>If the <emphasis role="italic">name</emphasis> is a quoted
+string then no conversion of the <emphasis role="italic">name</emphasis>
+is performed prior to the search for the file.</para></listitem>
+<listitem><para>If the <emphasis role="italic">name</emphasis> is unquoted then
+it is first converted to all uppercase and then the search is performed. If the
+<emphasis role="italic">name</emphasis> is not found then it is converted
+to all lowercase and searched for again. A mixed case
+<emphasis role="italic">name</emphasis> search is NOT performed.
+</para></listitem>
+</orderedlist>
 <para>You can also specify (<emphasis role="italic">var</emphasis>),
 a single variable name enclosed in
 parentheses. The variable is evaluated before any of the argument expressions,

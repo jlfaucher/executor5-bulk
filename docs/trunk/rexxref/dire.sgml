@@ -320,6 +320,22 @@ be any string or symbol that is valid as the target of a CALL instruction.
 The program <emphasis role="italic">programname</emphasis> is called as an
 external routine with no arguments. The main program code, which precedes the
 first directive instruction, is run.</para>
+<para>On Linux/Unix when the interpreter searches for the
+<emphasis role="italic">programname</emphasis> it follows the following rules:
+</para>
+<orderedlist>
+<listitem><para>If the <emphasis role="italic">programname</emphasis> is a quoted
+string then no conversion of the <emphasis role="italic">programname</emphasis>
+is performed prior to the search for the file.</para></listitem>
+<listitem><para>If the <emphasis role="italic">programname</emphasis> is unquoted then
+it is first converted to all uppercase and then the search is performed. If the
+<emphasis role="italic">programname</emphasis> is not found then it is converted
+to all lowercase and searched for again. A mixed case
+<emphasis role="italic">programname</emphasis> search is NOT performed.
+</para></listitem>
+</orderedlist>
+<para>On Windows the filesystems are essentually caseless so no conversions are
+necessary.</para>
 <para>Any ::REQUIRES directive must precede all ::CLASS, ::METHOD, and ::ROUTINE
 directives. The order of ::REQUIRES directives determines the search order
 for classes and routines defined in the named programs.</para>
