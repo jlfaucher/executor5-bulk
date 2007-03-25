@@ -11510,4 +11510,312 @@ The programmer need not worry about this passing by reference, the OLE support
 handles this transparently.</para>
 </section>
 </section>
+
+<section id="olevariant"><title>The Windows OLEVariant Class</title>
+<indexterm><primary>OLEVariant Class</primary></indexterm>
+
+<para>
+The OLEVariant class enhances the support for OLE Automation provided by the
+OLEObject class [Link to OLEObject class] and is used in conjuction with
+that class.  An OLEVariant object is used as a parameter in a method call of
+an OLEObject object.  In the OLEObject's role as a proxy for a OLE / COM
+object, the parameters in method calls are forwarded on to the actual OLE /
+COM object.  (OLE / COM objects will be referred to simply as COM objects.)
+</para>
+<para>
+There are two areas where the OLEVariant adds to the capabilities of
+OLEObject method calls.</para>
+<itemizedlist>
+<listitem><para>Parameters forwarded on to COM objects must be converted to and from
+the proper datatypes.  This conversion is done automatically [Link to
+<link linkend="oleobjc">OLEObject Type Conversion</link>.
+Occasionally this automatic conversion is
+incorrect.  The OLEVariant allows the ooRexx programmer to override the
+automatic conversion by specifying how the conversion should be done.
+</para></listitem>
+<listitem><para>COM objects can return data to the caller in "out" parameters ([OUT]
+parameters.)  The OLEVariant can be used to transport this returned data
+back to the calling ooRexx program.
+</para></listitem>
+</itemizedlist>
+<para>
+In general, the automatic type conversion in the OLE support uses type
+libraries to determine how to format the parameters being sent to an OLE
+object in a method call.  The information in a type library specifies the
+variant type an ooRexx object, used as a parameter, needs to be converted
+to.  Type libraries also detail how a parameter is to be flagged when it is
+sent to the COM object.
+</para>
+<para>
+However, COM objects are not required to supply type libraries.  When there
+is no type library, ooRexx uses an educated guess to determine this
+information.  On rare occasions this guess is wrong and the method call
+fails.  In theses cases, if the ooRexx programmer knows what the correct
+information is, the programmer can use an OLEVariant to specify this
+information.  The programmer can supply either or both of these pieces of
+information by specifying the variant type for the converted ooRexx object
+and the parameter flags.
+</para>
+<para>
+The following is a real world example where the automatic conversion in the
+OLE support does not work and shows how the OLEVariant is used to specify
+the correct conversion.  The snippet comes from code to automate a CICS
+client.  In this case the variant type that the ooRexx object needs to be
+converted to is specified.  The parameter flags are omitted.  The fourth
+parameter to the ~link method call is the parameter where the default
+conversion was failing.
+</para>
+<programlisting>
+  connect  = .OLEObject~new("Ccl.Connect")
+  flow     = .OLEObject~new("Ccl.Flow")
+  buffer   = .OLEObject~new("Ccl.Buffer")
+
+  uow      = .OLEVariant~New(.nil, VT_DISPATCH)
+  ...
+  connect~link(flow, "FOO", buffer, uow)
+</programlisting>
+<note><para>
+It is extremely rare that the OLE support fails to do the right thing
+with its automatic conversion.  99.999% of the time the ooRexx programmer
+does not need to use an OLEVariant object to specify the type conversion.
+This use of the OLEVariant is provided for those few times when it is
+necessary to override the default conversion.  Furthermore, if the ooRexx
+programmer does not know what variant type to specify, this usage will not
+be much help.  Normally the ooRexx programmer would know what type to
+specify through the documentation for the COM class the programmer is using.
+</para></note>
+<para>
+The next example shows how the OLEVariant can be used to transport the data
+returned in an "out" parameter back to the calling ooRexx program.  This
+usage will be more common and does not require that the ooRexx have a lot of
+detailed knowledge of the COM object.  Obviously, the programmer does need
+to know that the parameter is an out parameter.  This example comes from
+updating a MS Access database where the number of records affected by the
+update is returned in an "out" parameter.  Here the out parameter is the
+second parameter in the ~execute method call.
+</para>
+<programlisting>
+  sql = "update myTable set id=id*3 where id > 7"
+  param = .OLEVariant~new(0)
+  conn~execute(sql, param)
+  count = param~!varValue_
+  say count "record(s) were affected."
+</programlisting>
+<para>
+Finally an example where the OLE support does not use the correct parameter
+flags for the method call.  The Windows Management Instrumentation,
+Win32_Process COM class does not supply a type library.  The fourth
+parameter in the ~create method call is an "out" parameter.  That
+information is known by the ooRexx programmer through the documentation of
+the class.  However, without a type library, ooRexx has no way to know that.
+Here the variant type specification is omitted (signaling ooRexx to go
+ahead and use its automatic conversion) and the parameter flags are
+specified.  Since this an out parameter, the OLEVariant object is also used
+to transport the returned data back to the calling program.
+</para>
+<programlisting>
+  objProcess = .oleObject~getObject("WinMgmts:Win32_Process")
+
+  param = .OLEVariant~new( 0, , "IN,OUT" )
+  ret = objProcess~create('notepad.exe', .nil, .nil, param)
+  if ret == 0 then do
+    pid = param~!varValue_
+    say 'The notepad process was created and its PID is' pid
+  end
+</programlisting>
+<para>
+<emphasis role="bold">Methods available to the OLEVariant class</emphasis>
+</para>
+<simplelist>
+<member>new</member>
+<member>!varValue_</member>
+<member>!varValue_=</member>
+<member>!varType_</member>
+<member>!varType_=</member>
+<member>!paramFlags_</member>
+<member>!paramFlags_=</member>
+</simplelist>
+<note><para>
+A possible future enhancement of the OLEVariant class requires that
+its method names be unique, which is the reason for the method name style.
+In normal usage the ooRexx programmer would only be concerned with the new
+and the !varValue methods.  Therefore the slightly unorthodox method names
+should not present a problem.
+</para></note>
+
+<section id="olevarnew"><title>NEW Class method</title>
+<programlisting>
+<![CDATA[
+>>-NEW(valueObject-+----------+--+-------------+-)-------------><
+                   +-,varType-+  +-,paramFlags-+
+]]>
+</programlisting>
+<para>
+Instantiates a new OLEVariant object to be used as a parameter in an
+OLEObject method call.  The first argument is the ooRexx object to be
+converted to a variant type for the method call.  It is the object to be
+used in the method call.  This argument is required.  The varType and
+paramFlags arguments are optional.
+</para>
+<para>
+The varType argument is used to specify the type of the variant that the
+valueObject is to be converted to.  If this argument is omitted or is .nil
+then ooRexx will use the default conversion for the valueObject.  If it is
+not omitted it must be a valid OLE Automation variant type and ooRexx will
+attempt to convert the valueObject to this variant type.
+</para>
+<para>
+The valid variant type symbols are listed in Table
+<link linkend="oleobtypconv">OLE/Rexx Types</link>.
+In addition any of those symbols can be combined with the
+VT_BYREF or the VT_ARRAY symbol.  When symbols are combined a comma is used
+to separate the two symbols.  This of course necessitates that the argument
+be quoted.  Case does not matter for this argument.  For example vt_bool,
+VT_bool, or VT_BOOL are all treated the same.
+</para>
+<para>
+The paramFlags argument is used to specify the flags for the parameter.  The
+flags are separated by a comma.  Although any combination of valid
+PARAMFLAGS as defined for OLE Automation will be accepted, in practice the
+ooRexx programmer will probably only need to use "IN,OUT" for this argument.
+</para>
+<para>
+The PARAMFLAGS defined for OLE Automation:
+</para>
+<simplelist>
+<member>PARAMFLAG_NONE</member>
+<member>PARAMFLAG_FIN</member>
+<member>PARAMFLAG_FOUT</member>
+<member>PARAMFLAG_FLCID</member>
+<member>PARAMFLAG_FRETVAL</member>
+<member>PARAMFLAG_FOPT</member>
+<member>PARAMFLAG_FHASDEFAULT</member>
+<member>PARAMFLAG_FHASCUSTDATA</member>
+</simplelist>
+<para>
+The ooRexx programmer should only use the last portion of the symbol.  I.e.,
+NONE, IN, OUT, LCID, RETVAL, OPT, HASDEFAULT, or HASCUSTOMDATA.  Case also
+does not matter for this argument and "in,out" is equivalent to "IN,OUT"
+</para>
+<para>
+If the paramFlags argument is omitted or .nil, (the normal case,) ooRexx
+will determine the flags for the parameter through its default mechanism.
+If the argument is not omitted, ooRexx will use the specified flags
+unconditionally.
+</para>
+<note><para>
+If either the varType or paramFlags arguments are used, and not the
+.nil object, they must be valid variant types or param flags for OLE
+Automation.  If they are not valid, a syntax error will be raised.
+</para></note>
+<programlisting>
+manager = .oleObject~new("com.sun.star.ServiceManager", "WITHEVENTS")
+cf = manager~createInstance("com.sun.star.reflection.CoreReflection")
+...
+classSize = .cf~forName("com.sun.star.awt.Size")
+
+param = .OLEVariant~new(.nil, "VT_DISPATCH,VT_BYREF", "IN,OUT")
+
+retVal = classSize~createObject(param)
+</programlisting>
+</section>
+
+<section><title>!VARVALUE_</title>
+
+<programlisting>
+<![CDATA[
+>>-!VARVALUE_--------------------------------------------------><
+]]>
+</programlisting>
+<para>
+Returns the value object set within an instance of an OLEVariant.  If the
+parameter in a COM method call that the OLEVariant was used for is an "out"
+parameter, than the value object of the instance will be the data returned
+by the COM object.  Otherwise, the value object is that set by the ooRexx
+programmer.
+</para>
+<programlisting>
+manager = .oleObject~new("com.sun.star.ServiceManager", "WITHEVENTS")
+cf = manager~createInstance("com.sun.star.reflection.CoreReflection")
+...
+classSize = .cf~forName("com.sun.star.awt.Size")
+
+param = .OLEVariant~new(.nil, "VT_DISPATCH,VT_BYREF", "IN,OUT")
+
+retVal = classSize~createObject(param)
+size = param~!varValue_
+</programlisting>
+</section>
+
+<section><title>!VARVALUE_=</title>
+
+<programlisting>
+<![CDATA[
+>>-!VARVALUE_=-------------------------------------------------><
+]]>
+</programlisting>
+<para>
+Sets the value object an instance of an OLEVariant contains.
+</para>
+</section>
+
+<section><title>!VARTYPE_</title>
+
+<programlisting>
+<![CDATA[
+>>-!VARTYPE_---------------------------------------------------><
+]]>
+</programlisting>
+<para>
+Returns the variant type specification of the OLEVariant instance.
+</para>
+</section>
+
+<section><title>!VARTYPE_=</title>
+
+<programlisting>
+<![CDATA[
+>>-!VARTYPE_=--------------------------------------------------><
+]]>
+</programlisting>
+<para>
+Sets the variant type specification of an OLEVariant instance.  This serves
+the same purpose as the second argument to the
+<link linkend="olevarnew">new method</link>
+and follows the same rules as specified in the documentation of the
+new method.  I.e., the value must be a valid variant type used in OLE
+Automation, or .nil.  If not a syntax error is raised.
+</para>
+</section>
+
+<section><title>!PARAMFLAGS_</title>
+
+<programlisting>
+<![CDATA[
+>>-!PARAMFLAGS_------------------------------------------------><
+]]>
+</programlisting>
+<para>
+Returns the parameter flags specification of the OLEVariant instance.
+</para>
+</section>
+
+<section><title>!PARAMFLAGS_=</title>
+
+<programlisting>
+<![CDATA[
+>>-!PARAMFLAGS_=-----------------------------------------------><
+]]>
+</programlisting>
+<para>
+Sets the flags specification of an OLEVariant instance.  This serves the
+same purpose as the third argument to the
+<link linkend="olevarnew">new method</link>
+and follows the same rules as specified in the documentation of the new
+method.  I.e., the value must be a valid combination of PARAMFLAG types as
+documented for use in OLE Automation, or .nil.  If not a syntax error is
+raised.
+</para>
+</section>
+</section>
 </chapter>
