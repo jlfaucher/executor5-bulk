@@ -1739,7 +1739,7 @@ PCHAR RexxGetVersionInformation(void)
   #else
     char vbuf1[] = "\nBuild date: ";
   #endif
-    char vbuf2[] = "\nCopyright (c) IBM Corporation 1995, 2004.\nCopyright (c) RexxLA 2005-2006.\nAll Rights Reserved.";
+    char vbuf2[] = "\nCopyright (c) IBM Corporation 1995, 2004.\nCopyright (c) RexxLA 2005-2007.\nAll Rights Reserved.";
     char vbuf3[] = "\nThis program and the accompanying materials";
     char vbuf4[] = "\nare made available under the terms of the Common Public License v1.0";
     char vbuf5[] = "\nwhich accompanies this distribution.";
