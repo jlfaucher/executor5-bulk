@@ -11384,8 +11384,9 @@ when invoking this method.</para>
 <para>Unlike Rexx, OLE uses strict typing of data. Conversion to and from these
 types is done automatically, if conversion is possible. OLE types are called
 variants, because they are stored in one structure that
-gets flagged with the type it represents. The following is a list of common
-types that OLE uses and the Rexx objects that they are converted into.</para>
+gets flagged with the type it represents. The following is a list of all variant
+types valid for use with OLE Automation and the Rexx objects that they are
+converted from or into.</para>
 
 <table frame="all">
 <title>OLE/Rexx Types</title>
@@ -11406,7 +11407,7 @@ types that OLE uses and the Rexx objects that they are converted into.</para>
 <entry>.NIL</entry>
 </row>
 <row>
-<entry>VT_VOID</entry>
+<entry>VT_ERROR</entry>
 <entry>.NIL</entry>
 </row>
 <row>
@@ -11442,6 +11443,18 @@ types that OLE uses and the Rexx objects that they are converted into.</para>
 <entry>Rexx string (a whole, positive number)</entry>
 </row>
 <row>
+<entry>VT_INT</entry>
+<entry>Rexx string (a whole number)</entry>
+</row>
+<row>
+<entry>VT_UINT</entry>
+<entry>Rexx string (a whole, positive number)</entry>
+</row>
+<row>
+<entry>VT_DECIMAL</entry>
+<entry>Rexx string (a decimal number)</entry>
+</row>
+<row>
 <entry>VT_R4</entry>
 <entry>Rexx string (a real number)</entry>
 </row>
@@ -11451,12 +11464,12 @@ types that OLE uses and the Rexx objects that they are converted into.</para>
 </row>
 <row>
 <entry>VT_CY</entry>
-<entry>Rexx string (a fixed-point number with 15 digits to
+<entry>Rexx string (currency, a fixed-point number with 15 digits to
 the left of the decimal point and 4 digits to the right)</entry>
 </row>
 <row>
 <entry>VT_DATE</entry>
-<entry>Rexx string</entry>
+<entry>Rexx string (a date)</entry>
 </row>
 <row>
 <entry>VT_BSTR</entry>
@@ -11468,25 +11481,33 @@ the left of the decimal point and 4 digits to the right)</entry>
 </row>
 <row>
 <entry>VT_BOOL</entry>
-<entry>.TRUE or .FALSE *</entry>
+<entry>.TRUE or .FALSE</entry>
 </row>
 <row>
 <entry>VT_VARIANT</entry>
 <entry>Any Rexx object that can be represented as a VARIANT</entry>
 </row>
 <row>
-<entry>VT_PTR</entry>
-<entry>see VT_VARIANT</entry>
+<entry>VT_UNKNOWN</entry>
+<entry>OLEObject</entry>
 </row>
 <row>
-<entry>VT_SAFEARRAY</entry>
+<entry>VT_ARRAY *</entry>
 <entry>Rexx Array</entry>
+</row>
+<row>
+<entry>VT_BYREF *</entry>
+<entry>Any Rexx object</entry>
 </row>
 </tbody>
 </tgroup>
 </table>
-<para>* When you pass .TRUE or .FALSE to an OLE object, these get passed as 1
-or 0, respectively.</para>
+<para>* VT_ARRY and VT_BYREF are combined with any of the other variant types
+and never used alone. VT_ARRAY and another variant type are used for a SAFEARRAY
+datatype, an array of the other variant type.  VT_BYREF and another variant type
+are used to pass the other variant type to or from an OLE object by reference.
+The programmer need not worry about this passing by reference, the OLE support
+handles this transparently.</para>
 </section>
 </section>
 </chapter>
