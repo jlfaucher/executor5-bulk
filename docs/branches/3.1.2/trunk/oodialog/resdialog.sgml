@@ -1,0 +1,167 @@
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: OODialog Reference SGML file.
+    #
+    # Copyright (c) 2005-2007, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    # Author(s):
+    #      W. David Ashley <dashley@us.ibm.com>
+    #
+    #########################################################################
+-->
+<chapter id="h001478"><title>ResDialog Class</title>
+<indexterm><primary>ResDialog class</primary></indexterm>
+<para>The ResDialog class is designed to be used together
+with a binary (compiled) resource. A binary dialog resource is linked to a
+DLL (that is, a file with the extension .DLL). </para>
+<variablelist>
+<varlistentry><term>Requires:</term>
+<listitem><para><computeroutput>ResDlg.cls</computeroutput> is the source file of this class.
+<programlisting>
+<![CDATA[
+::requires "oodialog.cls"
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>Subclass:</term>
+<listitem><para>The ResDialog class is a subclass of BaseDialog.
+</para></listitem></varlistentry>
+</variablelist>
+
+<section id="h001491"><title>Init</title>
+<indexterm><primary>Init</primary>
+<secondary>ResDialog class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aResDialog~Init(--Library--,--Resource--+-------------+--)--><
+                                           +-,--DlgData.-+
+
+
+]]>
+</programlisting>
+
+<para>The Init method of the parent class, BaseDialog, has been overwritten. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments you have to pass to the new method
+of the class when creating a new dialog instance are:
+<variablelist>
+<varlistentry><term>Library</term>
+<listitem><para>The file name of the DLL where the resource is located
+</para></listitem></varlistentry>
+<varlistentry><term>Resource</term>
+<listitem><para>The ID of the resource.  This is a unique number you assigned to the
+(dialog) resource while creating it.
+</para></listitem></varlistentry>
+<varlistentry><term>DlgData.</term>
+<listitem><para>A stem variable (don't forget the trailing period) that contains initialization
+data. See <link linkend="h000025">Init</link> for more details.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>This sample code creates a new dialog object from the ResDialog class. It uses dialog resource 100 in the <computeroutput>MYDLG.DLL</computeroutput> file.
+The dialog is initialized with the values of the MyDlgData. stem variable.
+
+<programlisting>
+<![CDATA[
+MyDlgData.101="1"
+MyDlgData.102="Please enter your password."
+MyDlgData.103=""
+
+dlg = ResDialog~new("MYDLG.DLL", 100, MyDlgData.)
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="h001501"><title>StartIt</title>
+<indexterm><primary>Startit</primary>
+<secondary>ResDialog class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aResDialog~StartIt(--+------+--)----------------------------><
+                        +-icon-+
+
+
+]]>
+</programlisting>
+
+<para>The StartIt method is for internal use only. It
+is necessary to create a real Windows object based on the dialog template. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
+<listitem><para>This method is protected and cannot be called from outside the instance.
+It can be overwritten, although that is not recommended.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>There is only one argument:
+<variablelist>
+<varlistentry><term>icon</term>
+<listitem><para>This argument is currently not used.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="rdsmm"><title>SetMenu</title>
+<indexterm><primary>SetMenu</primary>
+<secondary>ResDialog class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aResDialog~SetMenu(--resid--)-------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The SetMenu method adds a menu resource, that is
+stored in the same DLL, to the dialog. Note that the menu needs additional
+space and therefore displaces the rest of the dialog items.</para>
+<para>SetMenu can be called in the InitDialog method only. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>There is only one argument:
+<variablelist>
+<varlistentry><term>resid</term>
+<listitem><para>ID of the menu resource stored in the same DLL as the dialog.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+</chapter>

@@ -1,0 +1,1735 @@
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Reference SGML file.
+    #
+    # Copyright (c) 2005-2007, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    # Author(s):
+    #      W. David Ashley <dashley@us.ibm.com>
+    #
+    #########################################################################
+-->
+<chapter id="provide"><title>Objects and Classes</title>
+<indexterm><primary>object method</primary></indexterm>
+<para>This chapter provides an overview of the Rexx class structure.</para>
+<para>A Rexx object consists of object methods
+<indexterm><primary>class methods</primary></indexterm>
+and object variables. Sending
+a message to an object causes the object to perform some action; a method
+whose name matches the message name defines the action that is performed.
+Only an object's methods can access the object variables belonging to
+an object. EXPOSE instructions within an object's methods specify object
+variables. Any variables not exposed are dropped on return from a method.</para>
+<para>You can create
+an object by sending a message to a class object. An object created from a
+class is an <emphasis>instance</emphasis> of that class. Classes define
+the methods and method names for their instances. The methods a class defines
+for its instances are called the <emphasis>instance methods</emphasis>
+<indexterm><primary>instance methods</primary></indexterm>
+of that class. These are the object methods for the instances. Classes can also
+define <emphasis>class methods</emphasis>, which are a class's own
+object methods.</para>
+
+<note><title>Note</title>
+<para>When referring to object methods (for objects
+other than classes) or instance methods (for classes), this book uses the
+term <emphasis>methods</emphasis> when the meaning is clear from the context.
+When referring to object methods and class methods of classes, this book uses
+the qualified terms to avoid possible confusion.</para></note>
+
+<section id="typcla"><title>Types of Classes</title>
+<para>There are three kinds of classes: </para>
+<itemizedlist>
+<listitem><para>Object classes</para></listitem>
+<listitem><para>Mixin classes</para></listitem>
+<listitem><para>Abstract classes</para></listitem></itemizedlist>
+<para> The following sections explain these.</para>
+
+<section id="objcla"><title>Object Classes</title>
+<indexterm><primary>object classes</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>types</secondary>
+<tertiary>object</tertiary></indexterm>
+<para>An <emphasis>object class</emphasis> is like a factory
+for producing objects. An object class creates objects (instances) and provides
+methods that these objects can use. An object acquires the instance methods
+of the class to which it belongs at the time of its creation. If a class gains
+additional methods, objects created before the definition of these methods
+do not acquire these methods.</para>
+<para>Because the object methods also define the object variables, object
+classes are factories for creating Rexx objects. The Array class (see
+<link linkend="xarray">The Array Class</link>)
+is an example of an object class.</para>
+</section>
+
+<section id="xmixin"><title>Mixin Classes</title>
+<indexterm><primary>mixin classes</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>types</secondary>
+<tertiary>mixin</tertiary></indexterm>
+<para>Classes can inherit from more than the single superclass from
+which they were created. This is called
+<emphasis>multiple inheritance</emphasis>. Classes designed
+to add a set of instance and class
+methods to other classes are called <emphasis>mixin classes</emphasis>,
+or simply mixins.</para>
+<para>You can add mixin methods to an existing class by sending an INHERIT
+message or using the INHERIT option on the ::CLASS directive. (See
+<link linkend="dire">Directives</link>.)
+In either case, the class to be inherited must be a mixin. During both class
+creation and multiple inheritance, subclasses inherit both class and instance
+methods from their superclasses.</para>
+<para>Mixins are always associated
+<indexterm><primary>base class for mixins</primary></indexterm>
+with a <emphasis>base class</emphasis>, which is the mixin's first non-mixin
+superclass. Any subclass of the mixin's base class can (directly or indirectly)
+inherit a mixin; other classes cannot.</para>
+<para>To create a new mixin class, you send a MIXINCLASS message to an existing
+class or use the ::CLASS directive with the MIXINCLASS option. A mixin class
+is also an object class and can create instances of the class.</para>
+</section>
+
+<section id="abscla"><title>Abstract Classes</title>
+<indexterm><primary>abstract class, definition</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>types</secondary>
+<tertiary>abstract</tertiary></indexterm>
+<para><emphasis>Abstract classes</emphasis> provide definitions for instance
+methods and class methods
+but are not intended to create instances. Abstract classes often define the
+message interfaces that subclasses should implement.</para>
+<para>You create an abstract class like object or mixin classes. No extra
+messages or keywords on the ::CLASS directive are necessary. Rexx does not
+prevent users from creating instances of abstract classes.</para>
+
+<section id="xmetac"><title>Metaclasses</title>
+<indexterm><primary>metaclasses</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>types</secondary>
+<tertiary>metaclass</tertiary></indexterm>
+<para>A <emphasis>metaclass</emphasis> is a class you
+can use to create another class. The only metaclass that Rexx provides is
+.class, the Class class. The Class class is the metaclass of all the classes
+Rexx provides. This means that instances of .class are themselves classes.
+The Class class is like a factory for producing the factories that produce
+objects.</para>
+<para>To change the behavior of an object that is an instance, you generally
+use subclassing. For example, you can create Statarray, a subclass of the
+Array class (see <link linkend="xarray">The Array Class</link>).
+The Statarray class can include a
+method for computing a total of all the numeric elements of an array.</para>
+<programlisting>
+/* Creating an array subclass for statistics */
+
+::class statarray subclass array public
+
+::method init    /*  Initialize running total and forward to superclass */
+expose total
+total = 0
+/* <link linkend="aginita">INIT</link>  describes the INIT method.  */
+forward class (super)
+
+::method put     /*  Modify to increment running total */
+expose total
+use arg value
+total = total + value  /* Should verify that value is numeric!!! */
+forward class (super)
+
+::method "[]="   /*  Modify to increment running total */
+forward message "PUT"
+
+::method remove  /*  Modify to decrement running total */
+expose total
+use arg index
+forward message "AT" continue
+total = total - result
+forward class (super)
+
+::method average /*  Return the average of the array elements */
+expose total
+return total / self~items
+
+::method total   /*  Return the running total of the array elements */
+expose total
+return total
+</programlisting>
+<para>You can use this method on the individual array
+<emphasis>instances</emphasis>, so it is an
+<emphasis>instance method</emphasis>.</para>
+<para>However, if you want to change the behavior of the factory producing the
+arrays, you need a new class method. One way to do
+this is to use the ::METHOD directive with the CLASS option. Another way to
+add a <emphasis>class</emphasis> method is to create a new metaclass that
+changes the behavior
+of the Statarray class. A new metaclass is a subclass of .class.</para>
+<para>You can use a metaclass by specifying it in a SUBCLASS or MIXINCLASS
+message or on a ::CLASS directive with the METACLASS option.</para>
+<para>If you are adding a highly specialized class method useful only for a
+particular class, use the ::METHOD directive with the CLASS option. However,
+if you are adding a class method that would be useful for many classes, such
+as an instance counter that counts how many instances a class creates,
+you use a metaclass.</para>
+<para>The following examples add a class method that keeps a running total of
+instances created. The first version uses the ::METHOD directive with the
+CLASS option. The second version uses a metaclass.</para>
+<para>Version 1</para>
+<indexterm><primary>examples</primary>
+<secondary>metaclass</secondary></indexterm>
+<programlisting>
+/* Adding a class method using ::METHOD */
+
+a = .point~new(1,1)                   /* Create some point instances  */
+say "Created point instance" a
+b = .point~new(2,2)
+say "Created point instance" b
+c = .point~new(3,3)
+say "Created point instance" c
+                                  /* Ask the point class how many */
+                                  /* instances it has created     */
+say "The point class has created" .point~instances "instances."
+
+
+
+::class point public                /* Create Point class           */
+
+::method init class
+expose instanceCount
+instanceCount = 0                   /* Initialize instanceCount     */
+forward class (super)               /* Forward INIT to superclass   */
+
+::method new class
+expose instanceCount                /* Creating a new instance      */
+instanceCount = instanceCount + 1   /* Bump the count               */
+forward class (super)               /* Forward NEW to superclass    */
+
+::method instances class
+expose instanceCount                /* Return the instance count    */
+return instanceCount
+
+
+::method init
+expose xVal yVal                    /* Set object variables         */
+use arg xVal, yVal                  /* as passed on NEW             */
+
+::method string
+expose xVal yVal                    /* Use object variables         */
+return "("xVal","yVal")"            /* to return string value       */
+</programlisting>
+<para>Version 2</para>
+<programlisting>
+/* Adding a class method using a metaclass  */
+
+a = .point~new(1,1)     /* Create some point instances  */
+say "Created point instance" a
+b = .point~new(2,2)
+say "Created point instance" b
+c = .point~new(3,3)
+say "Created point instance" c
+                                       /* Ask the point class how many */
+                                       /* instances it has created     */
+say "The point class has created" .point~instances "instances."
+
+
+::class InstanceCounter subclass class /* Create a new metaclass that */
+                                       /* will count its instances     */
+::method init
+expose instanceCount
+instanceCount = 0                      /* Initialize instanceCount     */
+forward class (super)                  /* Forward INIT to superclass   */
+
+::method new
+expose instanceCount                   /* Creating a new instance      */
+instanceCount = instanceCount + 1      /* Bump the count               */
+forward class (super)                  /* Forward NEW to superclass    */
+
+::method instances
+expose instanceCount                   /* Return the instance count    */
+return instanceCount
+
+
+::class point public metaclass InstanceCounter  /* Create Point class */
+                                       /* using InstanceCounter metaclass */
+::method init
+expose xVal yVal                       /* Set object variables         */
+use arg xVal, yVal                     /* as passed on NEW             */
+
+::method string
+expose xVal yVal                       /* Use object variables         */
+return "("xVal","yVal")"               /* to return string value       */
+</programlisting>
+</section>
+
+<section id="xcremet"><title>Creating Classes and Methods</title>
+<para>You can define a class using either directives or messages.</para>
+<para>To define a class using directives, you place a ::CLASS directive at the
+end of your source program:</para>
+<programlisting>
+::class "Account"
+</programlisting>
+<para>This creates an Account class that is a subclass of the Object class.
+(See <link linkend="objc">The Object Class</link> for a description of the
+Object class.)  The string &quot;Account&quot;
+is a string identifier for the new class.</para>
+<para>Now you can use ::METHOD directives to add methods to your new class. The
+::METHOD directives must immediately follow the ::CLASS directive that creates
+the class. </para>
+<programlisting>
+::method type
+return "an account"
+
+::method "name="
+expose name
+use arg name
+
+::method name
+expose name
+return name
+</programlisting>
+<para>This adds the methods TYPE, NAME, and NAME= to the Account class.</para>
+<para>You can create a subclass of the Account class and define a method for
+it: </para>
+<programlisting>
+::class "Savings" subclass account
+::method type
+return "a savings account"
+</programlisting>
+<para>Now you can create an instance of the Savings class with the NEW method
+(see <link linkend="coconw">NEW</link>) and send TYPE, NAME, and NAME= messages
+to that instance:</para>
+<programlisting>
+asav = .savings~new
+say asav~type
+asav~name = "John Smith"
+</programlisting>
+<para>The Account class methods NAME and NAME= create a pair of access methods
+to the account object variable NAME. The following directive sequence creates
+the NAME and NAME= methods: </para>
+<programlisting>
+::method "name="
+expose name
+use arg name
+
+::method name
+expose name
+return name
+</programlisting>
+
+<para>You can replace this with a single ::METHOD directive with
+the ATTRIBUTE option. For example, the directive </para>
+<programlisting>
+::method name attribute
+</programlisting>
+<para>adds two methods, NAME and NAME= to a class. These methods perform the
+same function as the NAME and NAME= methods in the original example. The NAME
+method returns the current value of the object variable NAME; the NAME= method
+assigns a new value to the object variable NAME.</para>
+</section>
+
+<section id="usingcl"><title>Using Classes</title>
+<para>When you create a new class, it is always a subclass of an existing class.
+You can create new classes with the ::CLASS directive or by sending the SUBCLASS
+or MIXINCLASS message to an existing class. If you specify neither the SUBCLASS
+nor the MIXINCLASS option on the ::CLASS directive, the superclass for the
+new class is the Object class, and it is not a mixin class.</para>
+<para>Example of creating a new class using a message: </para>
+<programlisting>
+persistence = .object~mixinclass("Persistence")
+myarray=.array~subclass("myarray")~~inherit(persistence)
+</programlisting>
+<para>Example of creating a new class using the directive:</para>
+<programlisting>
+::class persistence mixinclass object
+::class myarray subclass array inherit persistence
+</programlisting>
+</section>
+
+<section id="xscope"><title>Scope</title>
+<indexterm><primary>method</primary>
+<secondary>scope</secondary></indexterm>
+<indexterm><primary>scope</primary>
+<secondary>description</secondary></indexterm>
+<para>A <emphasis>scope</emphasis> is the methods
+and object variables defined in a single class. Only methods defined in a
+particular scope can access object variables within that scope. This means
+that object variables in a subclass can have the same names as object variables
+in a superclass, because the object variables are at different scopes.</para>
+</section>
+
+<section id="usesem">
+<title>Defining Instance Methods with SETMETHOD or ENHANCED</title>
+<para>In Rexx, methods are usually associated with instances using classes, but
+it is also possible to add methods directly to an instance using the SETMETHOD
+(see <link linkend="obsetm">SETMETHOD</link>) or ENHANCED (see
+<link linkend="obccen">ENHANCED</link>) method.</para>
+<para>All subclasses of the Object class inherit SETMETHOD. You can use
+SETMETHOD to create one-off objects, objects that must be absolutely
+unique so that a class that is capable of creating other instances is not
+necessary. The Class class also provides an ENHANCED method that lets you
+create new instances of a class with additional methods. The methods and the
+object variables defined on an object with SETMETHOD or ENHANCED form a separate
+scope, like the scopes the class hierarchy defines.</para>
+</section>
+
+<section id="methna"><title>Method Names</title>
+<para>A method
+name can be any string. When an object receives a message, the language processor
+searches for a method whose name matches the message name in uppercase.</para>
+
+<note><title>Note</title>
+<para>The language processor also translates the specified name of all
+methods added to objects into uppercase characters.</para></note>
+<para>You must surround a method name with quotation marks when it contains
+characters that are not allowed in a symbol (for example, the operator
+characters). The following example creates a new class (the Cost class),
+defines a new method (%), creates an instance of the Cost class (mycost),
+and sends a <computeroutput>%</computeroutput> message
+to <computeroutput>mycost</computeroutput>: </para>
+
+<programlisting>
+cost=.object~subclass("A cost")
+cost~define("%", &apos;expose p; say "Enter a price."; pull p; say p*1.07;&apos;)
+mycost=cost~new
+mycost~"%"        /* Produces:  Enter a price.             */
+                  /* If the user specifies a price of 100, */
+                  /* produces: 107.00                      */
+		  </programlisting>
+</section>
+
+<section id="xmeths"><title>Default Search Order for Method Selection</title>
+<indexterm><primary>method</primary>
+<secondary>search order</secondary>
+<tertiary>changing</tertiary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>selection</secondary>
+<tertiary>search order</tertiary></indexterm>
+<indexterm><primary>default</primary>
+<secondary>search order for methods</secondary></indexterm>
+<indexterm><primary>search order</primary>
+<secondary>for methods</secondary>
+<tertiary>default</tertiary></indexterm>
+<para>The search order for a method name matching the message is for: </para>
+<orderedlist>
+<listitem><para>A method the object itself defines with SETMETHOD or ENHANCED.
+(See <link linkend="obsetm">SETMETHOD</link> .)</para></listitem>
+<listitem><para>A method the object's class defines. (Note that an object
+acquires the instance methods of the class to which it belongs at the time of
+its creation. If a class gains additional methods, objects created before the
+definition of these methods do not acquire these methods.)</para></listitem>
+<listitem><para>A method that a superclass of the object's class defines.
+This is also limited to methods that were available when the object was
+created. The order of the INHERIT (see
+<link linkend="clinhe">INHERIT</link>) messages sent to an object's
+class determines the search order of the superclass method definitions.
+</para></listitem></orderedlist>
+<para>This search order places methods of a class before methods of its
+superclasses so that a class can supplement or override inherited methods.
+</para>
+<para>If the language processor does not find a match for the message name, the
+language processor checks the object for a method name UNKNOWN. If it exists,
+the language processor calls the UNKNOWN method and returns as the message
+result any result the UNKNOWN method returns. The UNKNOWN method arguments
+are the original message name and a Rexx array containing the original message
+arguments.</para>
+<para>If the object does not have an UNKNOWN method, the language processor
+raises a NOMETHOD condition.</para>
+</section>
+
+<section id="unkno"><title>Defining an UNKNOWN Method</title>
+<para>When an object that receives a message does not have a matching message
+name, the language processor checks if the object has a method named UNKNOWN.
+If the object has an UNKNOWN method, the language processor calls UNKNOWN,
+passing two arguments. The first argument is the name of the method that was
+not located. The second argument is an array containing the arguments passed
+with the original message.</para>
+<para>If you define an UNKNOWN method, you can use the following syntax:</para>
+<programlisting>
+<![CDATA[
+>>-UNKNOWN(messagename,messageargs)----------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="chsrod"><title>Changing the Search Order for Methods</title>
+<indexterm><primary>search order</primary>
+<secondary>for methods</secondary>
+<tertiary>changing</tertiary></indexterm>
+<indexterm><primary>changing the search order for methods</primary></indexterm>
+<para>You can change the usual search order for methods by: </para>
+<orderedlist>
+<listitem><para>Ensuring that the receiver object is the sender object.
+(You usually do this by specifying the special variable SELF--see
+<link linkend="xself">SELF</link>.)</para></listitem>
+<listitem><para>Specifying a colon and a class symbol after the message name.
+The class symbol can be a variable name or an environment symbol. It identifies
+the class object to be used as the starting point for the method search.</para>
+<para>The class object must be a superclass of the class defining the active
+method, or, if you used SETMETHOD to define the active method, the object's own
+class. The class symbol is usually the special variable SUPER
+(see <link linkend="xsuper">SUPER</link>) but it can be any environment
+symbol or variable name whose value is a valid class.</para></listitem>
+</orderedlist>
+<para>Suppose you create an Account class that is a subclass of the Object
+class, define a TYPE method for the Account class, and create the Savings class
+that is a subclass of Account. You could define a TYPE method for the Savings
+class as follows: </para>
+<programlisting>
+savings~define("TYPE", &apos;return "a savings account"&apos;)
+</programlisting>
+<para>You could change the search order by using the following line: </para>
+<programlisting>
+savings~define("TYPE", &apos;return self~type:super "(savings)"&apos;)
+</programlisting>
+<para>This changes the search order so that the language processor searches for
+the TYPE method first in the Account superclass (rather than in the Savings
+subclass). When you create an instance of the Savings class
+(<computeroutput>asav</computeroutput>)
+and send a TYPE message to <computeroutput>asav</computeroutput>:</para>
+<programlisting>
+say asav~type
+</programlisting>
+<para><computeroutput>an account (savings)</computeroutput> is displayed.
+The TYPE method of the Savings class calls the TYPE method of the Account
+class, and adds the string <computeroutput>(savings)</computeroutput> to the
+results.</para>
+</section>
+
+<section id="pubpri"><title>Public and Private Methods</title>
+<indexterm><primary>method</primary>
+<secondary>public</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>private</secondary></indexterm>
+<indexterm><primary>public method</primary></indexterm>
+<indexterm><primary>private method</primary></indexterm>
+<para>A method can be public or private.
+Any object can send a message that runs a <emphasis>public</emphasis> method.
+A <emphasis>private</emphasis> method runs only when an object sends a
+message to itself (that is, using the variable SELF as the message receiver).
+Private methods include methods at different scopes within the same object.
+(Superclasses can make private methods available to their subclasses while
+hiding those methods from other objects.) A private method is like an internal
+subroutine. It provides common functions to the object methods but is hidden
+from other programs.</para>
+</section>
+
+<section id="chi"><title>The Class Hierarchy</title>
+<para>Rexx provides the following classes belonging to the object class:</para>
+<itemizedlist>
+<listitem><para>Alarm class</para></listitem>
+<listitem><para>Class class</para></listitem>
+<listitem><para>Array class</para></listitem>
+<listitem><para>List class</para></listitem>
+<listitem><para>Queue class</para></listitem>
+<listitem><para>Table class
+<itemizedlist>
+<listitem><para>Set class</para></listitem></itemizedlist></para></listitem>
+<listitem><para>Directory class</para></listitem>
+<listitem><para>Relation class
+<itemizedlist>
+<listitem><para>Bag class</para></listitem></itemizedlist></para></listitem>
+<listitem><para>Message class</para></listitem>
+<listitem><para>Method class</para></listitem>
+<listitem><para>Monitor class</para></listitem>
+<listitem><para>Stem class</para></listitem>
+<listitem><para>Stream class</para></listitem>
+<listitem><para>String class</para></listitem>
+<listitem><para>Supplier class</para></listitem></itemizedlist>
+<para>(The classes are in a class hierarchy with subclasses indented below their
+superclasses.)</para>
+<para>Note that there might also be other classes in the system.</para>
+</section>
+
+<section id="creo"><title>Initialization</title>
+<para>Any object requiring initialization at creation time must define an INIT
+method. If this method is defined, the class object runs the INIT method after
+the object is created. If an object has more than one INIT method (for example,
+it is defined in several classes), each INIT method must forward the INIT
+message up the hierarchy to complete the object's initialization.</para>
+
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+asav = .savings~new(1000.00, 6.25)
+say asav~type
+asav~name = "John Smith"
+
+::class Account
+
+::method INIT
+expose balance
+use arg balance
+
+::method TYPE
+return "an account"
+
+::method name attribute
+
+::class Savings subclass Account
+
+::method INIT
+expose interest_rate
+use arg balance, interest_rate
+self~init:super(balance)
+
+::method type
+return "a savings account"
+</programlisting>
+<para>The NEW method of the Savings class object creates a new Savings object
+and calls the INIT method of the new object. The INIT method arguments are
+the arguments specified on the NEW method. In the Savings INIT method, the
+line: </para>
+<programlisting>
+self~init:super(balance)
+</programlisting>
+<para> calls the INIT method of
+the Account class, using just the balance argument specified on the NEW message.
+</para>
+</section>
+
+<section id="obdes"><title>Object Destruction and Uninitialization</title>
+<para>Object destruction is implicit. When an object is no longer in use, Rexx
+automatically reclaims its storage. If the object has allocated other system
+resources, you must release them at this time. (Rexx cannot release these
+resources, because it is unaware that the object has allocated them.)</para>
+<para>Similarly, other uninitialization processing may be needed, for example,
+by a message object holding an unreported error. An object requiring
+uninitialization
+should define an UNINIT method. If this method is defined, Rexx runs it before
+reclaiming the object's storage. If an object has more than one UNINIT method
+(defined in several classes), each UNINIT method is responsible for sending
+the UNINIT method up the object hierarchy.</para>
+</section>
+
+<section id="reqstr"><title>Required String Values</title>
+<para>Rexx requires a string value in a number of contexts within instructions
+and built-in function calls. </para>
+<itemizedlist>
+<listitem><para>DO statements containing
+<emphasis role="italic">exprr</emphasis> or
+<emphasis role="italic">exprf</emphasis></para></listitem>
+<listitem><para>Substituted values in compound variable names</para></listitem>
+<listitem><para>Commands to external environments</para></listitem>
+<listitem><para>Commands and environment names on ADDRESS instructions
+</para></listitem>
+<listitem><para>Strings for ARG, PARSE, and PULL instructions to be parsed
+</para></listitem>
+<listitem><para>Parenthesized targets on CALL instructions</para></listitem>
+<listitem><para>Subsidiary variable lists on DROP, EXPOSE, and PROCEDURE
+instructions</para></listitem>
+<listitem><para>Instruction strings on INTERPRET instructions</para></listitem>
+<listitem><para>DIGITS, FORM, and FUZZ values on NUMERIC instructions</para>
+</listitem>
+<listitem><para>Options strings on OPTIONS instructions</para></listitem>
+<listitem><para>Data queue strings on PUSH and QUEUE instructions</para>
+</listitem>
+<listitem><para>Label names on SIGNAL VALUE instructions</para></listitem>
+<listitem><para>Trace settings on TRACE VALUE instructions</para></listitem>
+<listitem><para>Arguments to built-in functions</para></listitem>
+<listitem><para>Variable references in parsing templates</para></listitem>
+<listitem><para>Data for PUSH and QUEUE instructions to be processed</para>
+</listitem>
+<listitem><para>Data for the SAY instruction to be displayed</para></listitem>
+<listitem><para>Rexx dyadic operators when the receiving object (the object to
+the left of the operator) is a string</para></listitem></itemizedlist>
+<para>If you supply an object other than a string in these contexts, by default
+the language processor converts it to some string representation and uses
+this. However, the programmer can cause the language processor to raise the
+NOSTRING condition when the supplied object does not have an equivalent string
+value.</para>
+<para>To obtain a string value, the language processor sends a REQUEST("STRING")
+message to the object. Strings and other objects that have string values return
+the appropriate string value for Rexx to use. (This happens automatically
+for strings and for subclasses of the String class because they inherit a
+suitable MAKESTRING method from the String class.) For this mechanism to work
+correctly, you must provide a MAKESTRING method for any other objects with
+string values.</para>
+<para>For other objects without string values (that is, without a MAKESTRING
+method), the action taken depends on the setting of the NOSTRING condition
+trap. If the NOSTRING condition is being trapped (see
+<link linkend="condtra">Conditions and Condition Traps</link>),
+the language processor raises the NOSTRING condition. If the NOSTRING condition
+is not being trapped, the language processor sends a STRING message to the
+object to obtain its readable string representation (see the STRING method
+of the Object class <link linkend="obstri">STRING</link>) and uses this string.
+</para>
+<para>When comparing a string object with the .nil object, if
+the NOSTRING condition is being trapped, then</para>
+<programlisting>
+if string = .nil
+</programlisting>
+<para>will raise the NOSTRING condition, whereas</para>
+<programlisting>
+if .nil = string
+</programlisting>
+<para>will not as the .nil objects "=" method does not expect
+a string as an argument.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+d = .directory~new
+say substr(d,5,7)         /* Produces "rectory" from "a Directory" */
+signal on nostring
+say substr(d,5,7)         /* Raises the NOSTRING condition */
+say substr(d~string,3,6)  /* Displays "Direct" */
+</programlisting>
+<para>For arguments to Rexx object methods, different rules apply. When a
+method expects a string as an argument, the argument object is sent the
+REQUEST("STRING") message. If REQUEST returns the NIL object, then the
+method raises an error.</para>
+</section>
+
+<section id="concurr"><title>Concurrency</title>
+<para>Rexx supports concurrency, multiple methods running
+simultaneously on a single object. See
+<link linkend="xconcur">Concurrency</link>  for a full
+description of concurrency.</para>
+</section>
+
+<section id="classmeth"><title>Classes and Methods Provided by Rexx</title>
+<para>The following figure shows all the classes and their methods.</para>
+
+<figure float="1">
+<title id="meths">Classes and Inheritance of Methods (part 1 of 4)</title>
+<programlisting>
+<![CDATA[
++-----------------------------------------------------------------------------+
+| Object                                                                      |
++-----------+----------+----------------+----------+----------+---------------+
+NEW*        |          |                |          |          |
+=           +-------+  +--------+       +-------+  +------+   +-------+
+==          | Alarm |  | Class* |       | Array |  | List |   | Queue |
+\=          +-------+  +--------+       +-------+  +------+   +-------+
+<>          CANCEL     BASECLASS        NEW        OF*        | []
+><          INIT       DEFAULTNAME      OF*        []         | []=
+\==                    DEFINE           []         []=        | AT
+CLASS                  DELETE           []=        AT         | HASINDEX
+COPY                   ENHANCED         AT         FIRST      | ITEMS
+DEFAULTNAME            ID               DIMENSION  FIRSTITEM  | MAKEARRAY
+HASMETHOD              INHERIT          FIRST      HASINDEX   | PEEK
+INIT                   INIT             HASINDEX   INSERT     | PULL
+OBJECTNAME             METACLASS        ITEMS      ITEMS      | PUSH
+OBJECTNAME=            METHOD           LAST       LAST       | PUT
+REQUEST                METHODS          MAKEARRAY  LASTITEM   | QUEUE
+RUN                    MIXINCLASS       NEXT       MAKEARRAY  | REMOVE
+SETMETHOD              NEW              PREVIOUS   NEXT       | SUPPLIER
+START                  QUERYMIXINCLASS  PUT        PREVIOUS   |
+STRING                 SUBCLASS         REMOVE     PUT        +---------------+
+UNSETMETHOD            SUBCLASSES       SECTION    REMOVE     | CircularQueue |
+                       SUPERCLASSES     SIZE       SECTION    +---------------+
+                       UNINHERIT        SUPPLIER   SUPPLIER   OF*
+                                                              INIT
+                                                              RESIZE
+                                                              SIZE
+                                                              STRING
+                                                              METHODS
+
+
+
+* All of the methods under the Class class are both class and instance
+  methods.NEW and OF are class methods.
+]]>
+</programlisting>
+</figure>
+
+<figure float="1">
+<title>Classes and Inheritance of Methods (Part 2 of 4)</title>
+<programlisting>
+<![CDATA[
++-----------------------------------------------------------------------------+
+| Object (continued)                                                          |
++---------------+--------------+---------------+------------+-----------------+
+|               |              |               |            |
++-------+       +-----------+  +----------+    +---------+  +--------+
+| Table |       | Directory |  | Relation |    | Message |  | Method |
++-------+       +-----------+  +----------+    +---------+  +--------+
+| []            []             | []            COMPLETED    NEW*
+| []=           []=            | []=           INIT         NEWFILE
+| AT            DIFFERENCE     | ALLAT         NOTIFY       SETGUARDED
+| DIFFERENCE    HASINDEX       | ALLINDEX      RESULT       SETPRIVATE
+| HASINDEX      INTERSECTION   | AT            SEND         SETPROTECTED
+| INTERSECTION  ITEMS          | DIFFERENCE    START        SETSECURITYMANAGER
+| ITEMS         MAKEARRAY      | HASINDEX                   SETUNGUARDED
+| MAKEARRAY     PUT            | HASITEM                    SOURCE
+| PUT           REMOVE         | INDEX
+| REMOVE        SETENTRY       | INTERSECTION
+| SUBSET        SETMETHOD      | ITEMS
+| SUPPLIER      SUBSET         | MAKEARRAY
+| UNION         SUPPLIER       | PUT
+| XOR           UNION          | REMOVE
+|               UNKNOWN        | REMOVEITM
++-----+         XOR            | SUBSET
+| Set |                        | SUPPLIER
++-----+                        | UNION
+OF*                            | XOR
+[]                             |
+[]=                            +-----+
+AT                             | Bag |
+HASINDEX                       +-----+
+ITEMS                          OF*
+MAKEARRAY                      []
+PUT                            []=
+REMOVE                         HASINDEX
+SUPPLIER                       MAKEARRAY
+                               PUT
+                               SUPPLIER
+
+
+
+* All of the methods under the Class class are both class and instance
+  methods.NEW and OF are class methods.
+]]>
+</programlisting>
+</figure>
+
+<figure float="1">
+<title>Classes and Inheritance of Methods (Part 3 of 4)</title>
+<programlisting>
+<![CDATA[
++-----------------------------------------------------------------------------+
+| Object (continued)                                                          |
++------------+------------------+----------+----------------------------------+
+|            |                  |          |
++---------+  +---------------+  +------+   +--------+
+| Monitor |  | MutableBuffer |  | Stem |   | Stream |
++---------+  +---------------+  +------+   +--------+
+CURRENT      APPEND             NEW*       ARRAYIN
+DESTINATION  DELETE             []         ARRAYOUT
+INIT         GETBUFFERSIZE      []=        CHARIN
+UNKNOWN      INIT               MAKEARRAY  CHAROUT
+             INSERT             REQUEST    CHARS
+             LENGTH             UNKNOWN    CLOSE
+             OVERLAY                       COMMAND
+             SETBUFFERSIZE                 DESCRIPTION
+             STRING                        FLUSH
+             SUBSTR                        INIT
+                                           LINEIN
+                                           LINEOUT
+                                           LINES
+                                           MAKEARRAY
+                                           OPEN
+                                           POSITION
+                                           QUALIFY
+                                           QUERY
+                                           SAY
+                                           SEEK
+                                           STATE
+                                           SUPPLIER
+
+
+
+* All of the methods under the Class class are both class and instance
+  methods.NEW and OF are class methods.
+]]>
+</programlisting>
+</figure>
+
+<figure float="1">
+<title>Classes and Inheritance of Methods (Part 4 of 4)</title>
+<programlisting>
++-----------------------------------------------------------------------------+
+| Object (continued)                                                          |
++-----------------------------+-----------------------------------------------+
+|                             |
++-------------------------+   +----------+
+| String                  |   | Supplier |
++-------------------------+   +----------+
+NEW               FORMAT      NEW*
+"" (abuttal)      INSERT      AVAILABLE
+(arithmetic:)     LASTPOS     INDEX
++ - * / % // **   LEFT        ITEM
+&apos; &apos; (blank)       LENGTH      NEXT
+ABBREV            (logical:)
+ABS               & && |
+BITAND            \
+BITOR             MAKESTRING
+BITXOR            MAX
+B2X               MIN
+CENTER            OVERLAY
+CHANGESTR         POS
+COMPARE           REVERSE
+(comparison:)     RIGHT
+<![CDATA[= \= <> ><        SIGN
+> >= \>           SPACE
+< <= \<           STRING
+== \==            STRIP
+>> \>> >>=        SUBSTR
+<< \<< <<=        SUBWORD]]>
+(concatenation:)  TRANSLATE
+||                TRUNC
+COPIES            VERIFY
+COUNSTR           WORD
+C2D               WORDINDEX
+C2X               WORDLENGTH
+DATATYPE          WORDPOS
+DELSTR            WORDS
+DELWORD           X2B
+D2C               X2C
+D2X               X2D
+DECODEBASE64
+ENCODEBASE64
+
+
+
+* All of the methods under the Class class are both class and instance
+  methods.NEW and OF are class methods.
+</programlisting>
+</figure>
+</section>
+
+<section id="methodsbyclass"><title>Summary of Methods by Class</title>
+<indexterm><primary>summary</primary>
+<secondary>methods by class</secondary></indexterm>
+<para>The following table lists
+all the methods and the classes that define them. All methods are instance
+methods except where noted.</para>
+
+<table frame="all">
+<title>Summary of Methods and the Classes Defining Them</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Method Name</entry>
+<entry>Class(es)</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>[]</entry>
+<entry><link linkend="xarlbrk">Array</link>,
+<link linkend="babrak">Bag</link>,
+<link linkend="rxcqcl">CircularQueue</link>,
+<link linkend="dibrak">Directory</link>,
+<link linkend="librak">List</link>,
+<link linkend="qubrak">Queue</link>,
+<link linkend="rebrak">Relation</link>,
+<link linkend="sebrak">Set</link>,
+<link linkend="stlbrk">Stem</link>,
+<link linkend="tabrak">Table</link></entry>
+</row>
+<row>
+<entry>[]=</entry>
+<entry><link linkend="arlbre">Array</link>,
+<link linkend="balbe">Bag</link>,
+<link linkend="rxcqcl">CircularQueue</link>,
+<link linkend="dibrae">Directory</link>,
+<link linkend="librae">List</link>,
+<link linkend="qubrae">Queue</link>,
+<link linkend="rebrae">Relation</link>,
+<link linkend="selbe">Set</link>,
+<link linkend="lreqsm">Stem</link>,
+<link linkend="tabrae">Table</link></entry>
+</row>
+<row>
+<entry>ABBREV</entry>
+<entry><link linkend="stabbr">String</link></entry>
+</row>
+<row>
+<entry>ABS</entry>
+<entry><link linkend="stabs">String</link></entry>
+</row>
+<row>
+<entry>ALLAT</entry>
+<entry><link linkend="realla">Relation</link></entry>
+</row>
+<row>
+<entry>ALLINDEX</entry>
+<entry><link linkend="realin">Relation</link></entry>
+</row>
+<row>
+<entry>APPEND</entry>
+<entry><link linkend="mutablebuffer">MutableBuffer</link></entry>
+</row>
+<row>
+<entry>ARRAYIN</entry>
+<entry><link linkend="stmari">Stream</link></entry>
+</row>
+<row>
+<entry>ARRAYOUT</entry>
+<entry><link linkend="stmaro">Stream</link></entry>
+</row>
+<row>
+<entry>AT(R)</entry>
+<entry><link linkend="arat">Array</link>,
+<link linkend="rxcqcl">CircularQueue</link>,
+<link linkend="diat">Directory</link>,
+<link linkend="liat">List</link>,
+<link linkend="quat">Queue</link>,
+<link linkend="reat">Relation</link>,
+<link linkend="seat">Set</link>,
+<link linkend="taat">Table</link></entry>
+</row>
+<row>
+<entry>AVAILABLE</entry>
+<entry><link linkend="suavai">Supplier</link></entry>
+</row>
+<row>
+<entry>BASECLASS</entry>
+<entry><link linkend="clbase">Class</link></entry>
+</row>
+<row>
+<entry>BITAND</entry>
+<entry><link linkend="stbita">String</link></entry>
+</row>
+<row>
+<entry>BITOR</entry>
+<entry><link linkend="stbito">String</link></entry>
+</row>
+<row>
+<entry>BITXOR</entry>
+<entry><link linkend="stbitx">String</link></entry>
+</row>
+<row>
+<entry>B2X</entry>
+<entry><link linkend="stb2x">String</link></entry>
+</row>
+<row>
+<entry>CANCEL</entry>
+<entry><link linkend="alcan">Alarm</link></entry>
+</row>
+<row>
+<entry>CENTER</entry>
+<entry><link linkend="stcent">String</link></entry>
+</row>
+<row>
+<entry>CHANGESTR</entry>
+<entry><link linkend="stchst">String</link></entry>
+</row>
+<row>
+<entry>CHARIN</entry>
+<entry><link linkend="charim">Stream</link></entry>
+</row>
+<row>
+<entry>CHAROUT</entry>
+<entry><link linkend="charom">Stream</link></entry>
+</row>
+<row>
+<entry>CHARS</entry>
+<entry><link linkend="charsm">Stream</link></entry>
+</row>
+<row>
+<entry>CLASS</entry>
+<entry><link linkend="obclas">Object</link></entry>
+</row>
+<row>
+<entry>CLOSE</entry>
+<entry><link linkend="stclos">Stream</link></entry>
+</row>
+<row>
+<entry>COMMAND</entry>
+<entry><link linkend="cmdmet">Stream</link></entry>
+</row>
+<row>
+<entry>COMPARE</entry>
+<entry><link linkend="stcomp">String</link></entry>
+</row>
+<row>
+<entry>COMPLETED</entry>
+<entry><link linkend="mescom">Message</link></entry>
+</row>
+<row>
+<entry>COPIES</entry>
+<entry><link linkend="stcopi">String</link></entry>
+</row>
+<row>
+<entry>COPY</entry>
+<entry><link linkend="obcopy">Object</link></entry>
+</row>
+<row>
+<entry>COUNTSTR</entry>
+<entry><link linkend="stcous">String</link></entry>
+</row>
+<row>
+<entry>CURRENT</entry>
+<entry><link linkend="moncur">Monitor</link></entry>
+</row>
+<row>
+<entry>C2D</entry>
+<entry><link linkend="stc2d">String</link></entry>
+</row>
+<row>
+<entry>C2X</entry>
+<entry><link linkend="stc2x">String</link></entry>
+</row>
+<row>
+<entry>DATATYPE</entry>
+<entry><link linkend="stdata">String</link></entry>
+</row>
+<row>
+<entry>DECODEBASE64</entry>
+<entry><link linkend="stdata">String</link></entry>
+</row>
+<row>
+<entry>DEFAULTNAME</entry>
+<entry><link linkend="cldena">Class</link>,
+<link linkend="obdena">Object</link></entry>
+</row>
+<row>
+<entry>DEFINE</entry>
+<entry><link linkend="cldefi">Class (class and instance method)</link></entry>
+</row>
+<row>
+<entry>DELETE</entry>
+<entry><link linkend="cldele">Class (class and instance method)</link>,
+<link linkend="mutablebuffer">MutableBuffer</link></entry>
+</row>
+<row>
+<entry>DELSTR</entry>
+<entry><link linkend="stdels">String</link></entry>
+</row>
+<row>
+<entry>DELWORD</entry>
+<entry><link linkend="stdelw">String</link></entry>
+</row>
+<row>
+<entry>DESCRIPTION</entry>
+<entry><link linkend="desmet">Stream</link></entry>
+</row>
+<row>
+<entry>DESTINATION</entry>
+<entry><link linkend="mondes">Monitor</link></entry>
+</row>
+<row>
+<entry>DIFFERENCE</entry>
+<entry><link linkend="didiff">Directory</link>,
+<link linkend="rediff">Relation</link>,
+<link linkend="tadiff">Table</link></entry>
+</row>
+<row>
+<entry>DIMENSION</entry>
+<entry><link linkend="adim">Array</link></entry>
+</row>
+<row>
+<entry>D2C</entry>
+<entry><link linkend="std2c">String</link></entry>
+</row>
+<row>
+<entry>D2X</entry>
+<entry><link linkend="std2x">String</link></entry>
+</row>
+<row>
+<entry>ENCODEBASE64</entry>
+<entry><link linkend="stdata">String</link></entry>
+</row>
+<row>
+<entry>ENHANCED</entry>
+<entry><link linkend="obccen">Class (class and instance method)</link></entry>
+</row>
+<row>
+<entry>ENTRY</entry>
+<entry><link linkend="dientr">Directory</link></entry>
+</row>
+<row>
+<entry>FIRST</entry>
+<entry><link linkend="arfirs">Array</link>,
+<link linkend="lifirs">List</link></entry>
+</row>
+<row>
+<entry>FIRSTITEM</entry>
+<entry><link linkend="lifiri">List</link></entry>
+</row>
+<row>
+<entry>FLUSH</entry>
+<entry><link linkend="stflus">Stream</link></entry>
+</row>
+<row>
+<entry>FORMAT</entry>
+<entry><link linkend="stform">String</link></entry>
+</row>
+<row>
+<entry>GETBUFFERSIZE</entry>
+<entry><link linkend="mutablebuffer">MutableBuffer</link></entry>
+</row>
+<row>
+<entry>HASENTRY</entry>
+<entry><link linkend="dihase">Directory</link></entry>
+</row>
+<row>
+<entry>HASINDEX</entry>
+<entry><link linkend="arhasi">Array</link>,
+<link linkend="bahasi">Bag</link>,
+<link linkend="rxcqcl">CircularQueue</link>,
+<link linkend="dihasi">Directory</link>,
+<link linkend="lihasi">List</link>,
+<link linkend="quhasi">Queue</link>,
+<link linkend="rehasi">Relation</link>,
+<link linkend="sehasi">Set</link>,
+<link linkend="tahasi">Table</link></entry>
+</row>
+<row>
+<entry>HASITEM</entry>
+<entry><link linkend="hasite">Relation</link></entry>
+</row>
+<row>
+<entry>HASMETHOD</entry>
+<entry><link linkend="obhasm">Object</link></entry>
+</row>
+<row>
+<entry>ID</entry>
+<entry><link linkend="clid">Class (class and instance method)</link></entry>
+</row>
+<row>
+<entry>INDEX</entry>
+<entry><link linkend="reindx">Relation</link>,
+<link linkend="suinde">Supplier</link></entry>
+</row>
+<row>
+<entry>INHERIT</entry>
+<entry><link linkend="clinhe">Class (class and instance method)</link></entry>
+</row>
+<row>
+<entry>INIT</entry>
+<entry><link linkend="alini">Alarm</link>,
+<link linkend="rxcqcl">CircularQueue</link>,
+<link linkend="clina">Class</link>,
+<link linkend="aginita">Message</link>,
+<link linkend="monini">Monitor</link>,
+<link linkend="obinit">Object</link>,
+<link linkend="intsmt">Stream</link></entry>
+</row>
+<row>
+<entry>INSERT</entry>
+<entry><link linkend="liinse">List</link>,
+<link linkend="stinse">String</link>,
+<link linkend="mutablebuffer">MutableBuffer</link></entry>
+</row>
+<row>
+<entry>INTERSECTION</entry>
+<entry><link linkend="diinte">Directory</link>,
+<link linkend="reinte">Relation</link>,
+<link linkend="tainte">Table</link></entry>
+</row>
+<row>
+<entry>ITEM</entry>
+<entry><link linkend="supitm">Supplier</link></entry>
+</row>
+<row>
+<entry>ITEMS</entry>
+<entry><link linkend="aritms">Array</link>,
+<link linkend="rxcqcl">CircularQueue</link>,
+<link linkend="diitms">Directory</link>,
+<link linkend="liitms">List</link>,
+<link linkend="quitms">Queue</link>,
+<link linkend="reitms">Relation</link>,
+<link linkend="seitms">Set</link>,
+<link linkend="taitms">Table</link></entry>
+</row>
+<row>
+<entry>LAST</entry>
+<entry><link linkend="arlast">Array</link>,
+<link linkend="lilast">List</link></entry>
+</row>
+<row>
+<entry>LASTITEM</entry>
+<entry><link linkend="lilasi">List</link></entry>
+</row>
+<row>
+<entry>LASTPOS</entry>
+<entry><link linkend="stlast">String</link></entry>
+</row>
+<row>
+<entry>LEFT</entry>
+<entry><link linkend="stleft">String</link></entry>
+</row>
+<row>
+<entry>LENGTH</entry>
+<entry><link linkend="stleng">String</link>,
+<link linkend="mutablebuffer">MutableBuffer</link></entry>
+</row>
+<row>
+<entry>LINEIN</entry>
+<entry><link linkend="linein1">Stream</link></entry>
+</row>
+<row>
+<entry>LINEOUT</entry>
+<entry><link linkend="lineom">Stream</link></entry>
+</row>
+<row>
+<entry>LINES</entry>
+<entry><link linkend="linesm">Stream</link></entry>
+</row>
+<row>
+<entry>MAKEARRAY</entry>
+<entry><link linkend="armaka">Array</link>,
+<link linkend="bamaka">Bag</link>,
+<link linkend="rxcqcl">CircularQueue</link>,
+<link linkend="dimaka">Directory</link>,
+<link linkend="lima">List</link>,
+<link linkend="qumaka">Queue</link>,
+<link linkend="remaka">Relation</link>,
+<link linkend="semaka">Set</link>,
+<link linkend="makasm">Stem</link>,
+<link linkend="stasfa">Stream</link>,
+<link linkend="tamaka">Table</link></entry>
+</row>
+<row>
+<entry>MAKESTRING</entry>
+<entry><link linkend="stmaks">String</link></entry>
+</row>
+<row>
+<entry>MAX</entry>
+<entry><link linkend="stmax">String</link></entry>
+</row>
+<row>
+<entry>METACLASS</entry>
+<entry><link linkend="clmeta">Class</link></entry>
+</row>
+<row>
+<entry>METHOD</entry>
+<entry><link linkend="clmeth">Class (class and instance method)</link></entry>
+</row>
+<row>
+<entry>METHODS</entry>
+<entry><link linkend="clmets">Class (class and instance method)</link></entry>
+</row>
+<row>
+<entry>MIN</entry>
+<entry><link linkend="stmin">String</link></entry>
+</row>
+<row>
+<entry>MIXINCLASS</entry>
+<entry><link linkend="clmixi">Class</link></entry>
+</row>
+<row>
+<entry>NEW</entry>
+<entry><link linkend="anew">Array (Class Method)</link>,
+<link linkend="coconw">Class (class and instance method)</link>,
+<link linkend="menew">Method</link>,
+<link linkend="obnew">Object</link>,
+<link linkend="newste">Stem (Class Method)</link>,
+<link linkend="stinew">String (Class Method)</link>,
+<link linkend="sunew">Supplier (Class Method)</link></entry>
+</row>
+<row>
+<entry>NEWFILE</entry>
+<entry><link linkend="newfile">Method</link></entry>
+</row>
+<row>
+<entry>NEXT</entry>
+<entry><link linkend="arnx">Array</link>,
+<link linkend="linx">List</link>,
+<link linkend="sunext">Supplier</link></entry>
+</row>
+<row>
+<entry>NOTIFY</entry>
+<entry><link linkend="agnoti">Message</link></entry>
+</row>
+<row>
+<entry>OBJECTNAME</entry>
+<entry><link linkend="obname">Object</link></entry>
+</row>
+<row>
+<entry>OBJECTNAME=</entry>
+<entry><link linkend="obqnam">Object</link></entry>
+</row>
+<row>
+<entry>OF</entry>
+<entry><link linkend="arof">Array (Class Method)</link>,
+<link linkend="baof">Bag (Class Method)</link>,
+<link linkend="rxcqcl">CircularQueue</link>,
+<link linkend="liof">List (Class Method)</link>,
+<link linkend="setof">Set (Class Method)</link></entry>
+</row>
+<row>
+<entry>OPEN</entry>
+<entry><link linkend="stopen">Stream</link></entry>
+</row>
+<row>
+<entry>Operator Methods (Arithmetic): +, -,
+*, /, %, //, **, prefix&nbsp;+, prefix&nbsp;-</entry>
+<entry><link linkend="aritcso">String</link></entry>
+</row>
+<row>
+<entry>Operator Methods (Comparison): =, \=, >&lt;, &lt;>,
+==, and \==</entry>
+<entry><link linkend="coo">Object</link>,
+<link linkend="aritcso">String</link></entry>
+</row>
+<row>
+<entry>Operator Methods (Comparison): >, &lt;, >=,
+\&lt;, &lt;=, \>, >>, &lt;&lt;,  >>=, \&lt;&lt;, &lt;&lt;=, and \>></entry>
+<entry><link linkend="commeth">String</link></entry>
+</row>
+<row>
+<entry>Operator Methods (Concatenation): &quot;&quot;
+(abuttal), ||, and &quot; &quot; (blank)</entry>
+<entry><link linkend="concmeth">String</link></entry>
+</row>
+<row>
+<entry>Operator Methods (Logical): &amp;, |, &amp;&amp;,
+and prefix \</entry>
+<entry><link linkend="logmeth">String</link></entry>
+</row>
+<row>
+<entry>Operator Methods (Other): == (unary)</entry>
+<entry><link linkend="coo">Object</link></entry>
+</row>
+<row>
+<entry>OVERLAY</entry>
+<entry><link linkend="stover">String</link>,
+<link linkend="mutablebuffer">MutableBuffer</link></entry>
+</row>
+<row>
+<entry>PEEK</entry>
+<entry><link linkend="qupeek">Queue</link>,
+<link linkend="rxcqcl">CircularQueue</link></entry>
+</row>
+<row>
+<entry>POS</entry>
+<entry><link linkend="stpos">String</link></entry>
+</row>
+<row>
+<entry>POSITION</entry>
+<entry><link linkend="stposi">Stream</link></entry>
+</row>
+<row>
+<entry>PREVIOUS</entry>
+<entry><link linkend="arprev">Array</link>,
+<link linkend="liprev">List</link></entry>
+</row>
+<row>
+<entry>PULL</entry>
+<entry><link linkend="qupul">Queue</link>,
+<link linkend="rxcqcl">CircularQueue</link></entry>
+</row>
+<row>
+<entry>PUSH</entry>
+<entry><link linkend="qupush">Queue</link>,
+<link linkend="rxcqcl">CircularQueue</link></entry>
+</row>
+<row>
+<entry>PUT</entry>
+<entry><link linkend="arput">Array</link>,
+<link linkend="baput">Bag</link>,
+<link linkend="rxcqcl">CircularQueue</link>,
+<link linkend="dirput">Directory</link>,
+<link linkend="liput">List</link>,
+<link linkend="quput">Queue</link>,
+<link linkend="reput">Relation</link>,
+<link linkend="seput">Set</link>,
+<link linkend="taput">Table</link></entry>
+</row>
+<row>
+<entry>QUALIFY</entry>
+<entry><link linkend="qualm">Stream</link></entry>
+</row>
+<row>
+<entry>QUERY</entry>
+<entry><link linkend="stquer">Stream</link></entry>
+</row>
+<row>
+<entry>QUERYMIXINCLASS</entry>
+<entry><link linkend="clqmc">Class</link></entry>
+</row>
+<row>
+<entry>QUEUE</entry>
+<entry><link linkend="quque">Queue</link>,
+<link linkend="rxcqcl">CircularQueue</link></entry>
+</row>
+<row>
+<entry>REMOVE</entry>
+<entry><link linkend="arremo">Array</link>,
+<link linkend="rxcqcl">CircularQueue</link>,
+<link linkend="dirrem">Directory</link>,
+<link linkend="liremo">List</link>,
+<link linkend="quremo">Queue</link>,
+<link linkend="reremo">Relation</link>,
+<link linkend="seremo">Set</link>,
+<link linkend="taremo">Table</link></entry>
+</row>
+<row>
+<entry>REMOVEITEM</entry>
+<entry><link linkend="reremi">Relation</link></entry>
+</row>
+<row>
+<entry>REQUEST</entry>
+<entry><link linkend="obreq">Object</link>,
+<link linkend="reqsm">Stem</link></entry>
+</row>
+<row>
+<entry>RESIZE</entry>
+<entry><link linkend="rxcqcl">CircularQueue</link></entry>
+</row>
+<row>
+<entry>RESULT</entry>
+<entry><link linkend="agresu">Message</link></entry>
+</row>
+<row>
+<entry>REVERSE</entry>
+<entry><link linkend="streve">String</link></entry>
+</row>
+<row>
+<entry>RIGHT</entry>
+<entry><link linkend="strigh">String</link></entry>
+</row>
+<row>
+<entry>RUN</entry>
+<entry><link linkend="obrun">Object</link></entry>
+</row>
+<row>
+<entry>SAY</entry>
+<entry><link linkend="strmsay">Stream</link></entry>
+</row>
+<row>
+<entry>SECTION</entry>
+<entry><link linkend="arsect">Array</link>,
+<link linkend="lisect">List</link></entry>
+</row>
+<row>
+<entry>SEEK</entry>
+<entry><link linkend="stseek">Stream</link></entry>
+</row>
+<row>
+<entry>SEND</entry>
+<entry><link linkend="mssend">Message</link></entry>
+</row>
+<row>
+<entry>SETBUFFERSIZE</entry>
+<entry><link linkend="mutablebuffer">MutableBuffer</link></entry>
+</row>
+<row>
+<entry>SETENTRY</entry>
+<entry><link linkend="disete">Directory</link></entry>
+</row>
+<row>
+<entry>SETGUARDED</entry>
+<entry><link linkend="setgua">Method</link></entry>
+</row>
+<row>
+<entry>SETMETHOD</entry>
+<entry><link linkend="disetm">Directory</link>,
+<link linkend="obsetm">Object</link></entry>
+</row>
+<row>
+<entry>SETPRIVATE</entry>
+<entry><link linkend="mesetp">Method</link></entry>
+</row>
+<row>
+<entry>SETPROTECTED</entry>
+<entry><link linkend="mesetpro">Method</link></entry>
+</row>
+<row>
+<entry>SETSECURITYMANAGER</entry>
+<entry><link linkend="mesetsec">Method</link></entry>
+</row>
+<row>
+<entry>SETUNGUARDED</entry>
+<entry><link linkend="setnow">Method</link></entry>
+</row>
+<row>
+<entry>SIGN</entry>
+<entry><link linkend="stsign">String</link></entry>
+</row>
+<row>
+<entry>SIZE</entry>
+<entry><link linkend="asiz">Array</link>,
+<link linkend="rxcqcl">CircularQueue</link></entry>
+</row>
+<row>
+<entry>SOURCE</entry>
+<entry><link linkend="mesour">Method</link></entry>
+</row>
+<row>
+<entry>SPACE</entry>
+<entry><link linkend="stspac">String</link></entry>
+</row>
+<row>
+<entry>START</entry>
+<entry><link linkend="msstrt">Message</link>,
+<link linkend="obstar">Object</link></entry>
+</row>
+<row>
+<entry>STATE</entry>
+<entry><link linkend="statsm">Stream</link></entry>
+</row>
+<row>
+<entry>STRING</entry>
+<entry><link linkend="obstri">Object</link>,
+<link linkend="rxcqcl">CircularQueue</link>,
+<link linkend="mutablebuffer">MutableBuffer</link>,
+<link linkend="ststrn">String</link></entry>
+</row>
+<row>
+<entry>STRIP</entry>
+<entry><link linkend="stripm">String</link></entry>
+</row>
+<row>
+<entry>SUBCLASS</entry>
+<entry><link linkend="clsubc">Class (class and instance method)</link></entry>
+</row>
+<row>
+<entry>SUBCLASSES</entry>
+<entry><link linkend="clsubs">Class (class and instance method)</link></entry>
+</row>
+<row>
+<entry>SUBSET</entry>
+<entry><link linkend="disubs">Directory</link>,
+<link linkend="resubs">Relation</link>,
+<link linkend="tasubs">Table</link></entry>
+</row>
+<row>
+<entry>SUBSTR</entry>
+<entry><link linkend="stsubs">String</link>,
+<link linkend="mutablebuffer">MutableBuffer</link></entry>
+</row>
+<row>
+<entry>SUBWORD</entry>
+<entry><link linkend="stsubw">String</link></entry>
+</row>
+<row>
+<entry>SUPERCLASSES</entry>
+<entry><link linkend="clsupe">Class (class and instance method)</link></entry>
+</row>
+<row>
+<entry>SUPPLIER</entry>
+<entry><link linkend="arclsu">Array</link>,
+<link linkend="basupp">Bag</link>,
+<link linkend="rxcqcl">CircularQueue</link>,
+<link linkend="disupp">Directory</link>,
+<link linkend="lisu">List</link>,
+<link linkend="qusupp">Queue</link>,
+<link linkend="resupp">Relation</link>,
+<link linkend="sesupp">Set</link>,
+<link linkend="stsup">Stream</link>,
+<link linkend="tasupp">Table</link></entry>
+</row>
+<row>
+<entry>TRANSLATE</entry>
+<entry><link linkend="sttran">String</link></entry>
+</row>
+<row>
+<entry>TRUNC</entry>
+<entry><link linkend="sttrun">String</link></entry>
+</row>
+<row>
+<entry>UNINHERIT</entry>
+<entry><link linkend="clunin">Class (class and instance method)</link></entry>
+</row>
+<row>
+<entry>UNION</entry>
+<entry><link linkend="diunio">Directory</link>,
+<link linkend="reunio">Relation</link>,
+<link linkend="taunio">Table</link></entry>
+</row>
+<row>
+<entry>UNKNOWN</entry>
+<entry><link linkend="diunkn">Directory</link>,
+<link linkend="monunk">Monitor</link>,
+<link linkend="unkstm">Stem</link></entry>
+</row>
+<row>
+<entry>UNSETMETHOD</entry>
+<entry><link linkend="obunse">Object</link></entry>
+</row>
+<row>
+<entry>VERIFY</entry>
+<entry><link linkend="stveri">String</link></entry>
+</row>
+<row>
+<entry>WORD</entry>
+<entry><link linkend="stword">String</link></entry>
+</row>
+<row>
+<entry>WORDINDEX</entry>
+<entry><link linkend="stwori">String</link></entry>
+</row>
+<row>
+<entry>WORDLENGTH</entry>
+<entry><link linkend="stworl">String</link></entry>
+</row>
+<row>
+<entry>WORDPOS</entry>
+<entry><link linkend="stworp">String</link></entry>
+</row>
+<row>
+<entry>WORDS</entry>
+<entry><link linkend="stwors">String</link></entry>
+</row>
+<row>
+<entry>XOR</entry>
+<entry><link linkend="dixor">Directory</link>,
+<link linkend="rexor">Relation</link>,
+<link linkend="taxor">Table</link></entry>
+</row>
+<row>
+<entry>X2B</entry>
+<entry><link linkend="stx2b">String</link></entry>
+</row>
+<row>
+<entry>X2C</entry>
+<entry><link linkend="stx2c">String</link></entry>
+</row>
+<row>
+<entry>X2D</entry>
+<entry><link linkend="stx2d">String</link></entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+<para>The chapters that follow describe the classes and other objects that Rexx
+provides and their available methods. Rexx provides the objects listed in
+these sections and they are generally available to all methods through
+environment symbols (see <link linkend="ensym">Environment Symbols</link>).
+</para>
+
+<para><emphasis role="bold">Notes:</emphasis></para>
+<orderedlist>
+<listitem><para>In the method descriptions in the chapters that follow, methods
+that return a result begin with the word "returns".</para></listitem>
+<listitem><para>For [] and []= methods, the syntax diagrams include
+the index or indexes within the brackets. These diagrams are intended to show
+how you can use these methods. For example, to retrieve the first element
+of a one-dimensional array named Array1, you would typically use the syntax:
+<programlisting>
+Array1[1]
+</programlisting>
+rather than:
+<programlisting>
+Array1~&quot;[]&quot;(1)
+</programlisting>
+even though the latter is valid and equivalent. For more information,
+see <link linkend="mssg">Message Terms</link> and
+<link linkend="msgit">Message Instructions</link>.</para></listitem>
+<listitem><para>When the argument of a method must be a specific kind of object (such
+as array, class, method, or string) the variable you specify must be of the
+same class as the required object or be able to produce an object of the
+required kind in response to a conversion message. In particular, subclasses
+are acceptable in place of superclasses (unless overridden in a way that
+changes superclass behavior), because they inherit a suitable conversion method
+from their Rexx superclass.</para>
+<para>The REQUEST method of the Object class (see
+<link linkend="obreq">REQUEST</link>)
+can perform this validation.</para></listitem>
+</orderedlist>
+</section>
+</section>
+</section>
+</chapter>

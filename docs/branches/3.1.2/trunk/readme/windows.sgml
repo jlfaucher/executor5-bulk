@@ -1,0 +1,344 @@
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Release Notes SGML File
+    #
+    # Copyright (c) 2005-2007, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    # Author(s):
+    #      W. David Ashley <dashley@us.ibm.com>
+    #
+    #########################################################################
+-->
+
+<section><title>Windows Requirements, Installation and Configuration</title>
+
+<section><title>Hardware Requirements</title>
+<itemizedlist>
+<listitem><para>22 MB free disk space for the program</para></listitem>
+<listitem><para>13.5 MB free disk space for online documentation</para></listitem>
+<listitem><para>IBM-compatible, Pentium or AMD processor,
+or higher</para></listitem>
+</itemizedlist>
+</section>
+
+<section><title>Software Requirements</title>
+<itemizedlist>
+<listitem><para>Windows 98</para></listitem>
+<listitem><para>Windows Me</para></listitem>
+<listitem><para>Windows NT(R) 4.0</para></listitem>
+<listitem><para>Windows 2000</para></listitem>
+<listitem><para>Windows 2003</para></listitem>
+<listitem><para>Windows XP</para></listitem>
+</itemizedlist>
+</section>
+
+<section><title>Installation, Update and Configuration Information</title>
+<para>
+This new version of Open Object Rexx cannot coexist with a previous version
+of Open Object Rexx or IBM Object REXX in your installation.
+If you have previously installed Open Object Rexx, you must first
+uninstall the Open Object Rexx program. If there are two different
+versions of Open Object Rexx installed, this leads to unpredictable results.
+The installation program of Open Object Rexx starts and the Open Object Rexx Installation
+logo appears on your screen (this automatic startup may take a while).
+Follow the installation program instructions to complete the Open Object Rexx
+installation. Open Object Rexx can be installed as a common or as a personal
+program. To install Open Object Rexx as a common program, the current user
+must have administrator rights.
+</para>
+
+<para>
+It is highly recommended that ooRexx be installed into Windows while logged on
+as a user with Administrator rights. Additional installation steps are performed
+when an Administrator installs ooRexx that cannot be performed when installed
+as a user without Administrator rights. They are:</para>
+
+<orderedlist>
+<listitem><para>The subdirectory that ooRexx is installed into is added to the
+System PATH environment variable.
+</para></listitem>
+<listitem><para>The file extension REX is added to the System PATHEXT environment
+variable.
+</para></listitem>
+<listitem><para>The rxapi Service installation page is shown allowing rxapi to
+be installed as a Windows service.
+</para></listitem>
+<listitem><para>The environment variable REXX_HOME is set for all users.
+</para></listitem>
+</orderedlist>
+
+<para>It is important that if ooRexx is installed by a user with Administrative
+rights, that ooRexx is uninstalled by a user with Administrative rights,
+otherwise the installation steps described above will not be undone when ooRexx
+is uninstalled.
+</para>
+
+<section><title>Running the Installation Program on Windows</title>
+<para>To install Open Object Rexx with the default settings, simply
+double-click on ooRexx310.exe from Windows Explorer.</para>
+<para>The Windows installer has two options when installing. If you want to
+specify the options on installation, then open a command prompt or select
+"Start/Run" from the taskbar
+and type in ooRexx310.exe with the parameters described below.</para>
+<variablelist>
+<varlistentry>
+<term>/S : Silent mode</term>
+<listitem><para>This will install Open Object Rexx without any user
+intervention with default values for any user-selectable values.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term>/D : Default directory</term>
+<listitem><para>If you wish to install Open Object Rexx into a different
+directory than the default (C:\Program Files\ooRexx), then specify the
+directory after this switch. This must be the last parameter used in the
+command line and must not contain any quotes, even if the path contains
+spaces.
+</para></listitem>
+</varlistentry>
+</variablelist>
+</section>
+
+<section><title>Windows Uninstallation Information</title>
+<para>
+Select <quote>Start->Settings->Control Panel->Add Remove Programs</quote>
+on the Windows Desktop. Select <quote>Open Object Rexx for Windows</quote>
+and then select <quote>Remove</quote>.
+</para>
+</section>
+</section>
+
+<section><title>Running Open Object Rexx as a Child Process of a Service
+on Windows</title>
+<para>
+The memory manager of Open Object Rexx can share out some resources among all
+the Open Object Rexx processes to enable global functions, system exits,
+subcommand handlers, and global queues to take place. If you start
+Open Object Rexx from a service, two or more Open Object Rexx processes might
+run under different user accounts. Therefore it is required that the
+memory manager is not protected and can be  accessed by every user.
+This means that Open Object Rexx global data is system global and unsecured.
+</para>
+<para>
+If you want Open Object Rexx to be started from  a service, Open Object Rexx must
+be installed as a common program or you must modify the system path
+manually to include the directory where Open Object Rexx has been installed.
+</para>
+<para>
+If you are writing a service that calls RexxStart(), ensure that the
+SERVICE_INTERACTIVE_PROCESS flag is set for your service.
+To prevent access violations, use a NULL security descriptor and assign
+it to your service process.
+</para>
+</section>
+
+<section><title>Open Object Rexx and Other Rexx Interpreters</title>
+<para>
+If you have other Rexx interpreters installed, you may have to set the
+PATH manually because Open Object Rexx and the other Rexx
+interpreters may both use the name <quote>rexx</quote> for invoking the interpreter.
+Interpreter error messages that begin with <quote>Rexx: </quote> indicate that another
+Rexx interpreter was called instead of Open Object Rexx. You can verify which
+Rexx interpreter is running either by the form of the error messages, by running
+<computeroutput>rexxtry.rex</computeroutput> and executing SAY VERSION,
+or by invoking <computeroutput>rexx /V</computeroutput>,
+which then should display information about the Rexx interpreter that is
+invoked. If no information is displayed, it is not Open Object Rexx. If you
+don't want the other Rexx interpreter to be invoked, you should remove
+it from the PATH, delete it, or rename
+<computeroutput>rexx.exe</computeroutput> in the ObjRexx directory to
+<computeroutput>orx.exe</computeroutput> and use
+<computeroutput>orx</computeroutput> to invoke the interpreter.
+</para>
+</section>
+
+<section><title>Exploring Open Object Rexx</title>
+<para>
+Once you have installed the Open Object Rexx files you can run Object Rexx
+scripts by issuing the command REXX followed by your Object Rexx script
+at the command prompt. To interactively try Object Rexx statements,
+enter <computeroutput>rexx rexxtry.rex</computeroutput>on the command line.
+Enter <computeroutput>exit</computeroutput> to end the program.
+</para>
+<para>
+To help you explore programming in Open Object Rexx, the following sample
+programs are provided :
+</para>
+<variablelist>
+<varlistentry>
+<term><varname>ccreply.rex</varname></term>
+<listitem><para>concurrent program using REPLY
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>complex.rex</varname></term>
+<listitem><para>complex number class
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>deskicon.rex</varname></term>
+<listitem><para>AddDesktopIcon method of the WindowsProgramManager class
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>desktop.rex</varname></term>
+<listitem><para>uses the WindowsProgramManager class
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>drives.rex</varname></term>
+<listitem><para>demonstrates the usage of Sys functions
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>eventlog.rex</varname></term>
+<listitem><para>uses the WindowsEventLog class
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>factor.rex</varname></term>
+<listitem><para>factorial program
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>greply.rex</varname></term>
+<listitem><para>concurrent program using WAIT and NOWAIT
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>guess.rex</varname></term>
+<listitem><para>a guessing game
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>makestring.rex</varname></term>
+<listitem><para>demonstrated the usage of the makestring method
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>ktguard.rex</varname></term>
+<listitem><para>concurrent program using START and GUARD
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>month.rex</varname></term>
+<listitem><para>displays a calendar for the month of January
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>philfork.rex</varname></term>
+<listitem><para>program that demonstrates Open Object Rexx concurrency
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>pipe.rex</varname></term>
+<listitem><para>a pipeline implementation
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>qdate.rex</varname></term>
+<listitem><para>date query program
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>qtime.rex</varname></term>
+<listitem><para>time query program
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>registry.rex</varname></term>
+<listitem><para>uses the WindowsRegistry class
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>rexxtry.rex</varname></term>
+<listitem><para>interactively try out Rexx statements
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>semcls.rex</varname></term>
+<listitem><para>semaphore class
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>stack.rex</varname></term>
+<listitem><para>program that uses a stack class
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>usecomp.rex</varname></term>
+<listitem><para>program that uses the complex number class (see note below)
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>usepipe.rex</varname></term>
+<listitem><para>program that uses the pipeline implementation (see note below)
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>usewmgr.rex</varname></term>
+<listitem><para>program that uses the WindowsManager class
+</para></listitem>
+</varlistentry>
+</variablelist>
+
+<note><para>
+To run these programs, you must either add the
+<computeroutput>samples</computeroutput> directory
+to the PATH or execute them directly from the
+<computeroutput>samples</computeroutput> directory.
+</para></note>
+<para>
+The directory <computeroutput>samples\ole\</computeroutput>
+contains samples for the Open Object Rexx OLE/ActiveX Interface.
+Open the sample programs; They contain comments.
+The directory <computeroutput>samples\wsh\</computeroutput>
+contains samples for Windows Scripting Host.
+</para>
+<para>
+Open Object Rexx also installs several samples that demonstrate the use of OODialog.
+You can explore these samples by launching the
+<quote>OODialog Samples</quote> icon in the
+Object Rexx for Windows\Samples group.
+</para>
+<para>
+To help you with programming external function libraries, the WPIPE
+samples are provided in the
+<computeroutput>samples\api\wpipe</computeroutput> directory.
+See the README.TXT in this directory.
+</para>
+</section>
+</section>
+

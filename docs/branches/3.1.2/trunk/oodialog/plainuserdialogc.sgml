@@ -1,0 +1,706 @@
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: OODialog Reference SGML file.
+    #
+    # Copyright (c) 2005-2007, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    # Author(s):
+    #      W. David Ashley <dashley@us.ibm.com>
+    #
+    #########################################################################
+-->
+<chapter id="plainuserdialogc"><title>PlainUserDialog Class and PlainBaseDialog Class</title>
+<indexterm><primary>PlainUserDialog class</primary></indexterm>
+<para>The PlainUserDialog class subclasses from PlainBaseDialog class and provides
+all the methods that normally are required to execute a dialog  that is either
+created dynamically or loaded from a resource script (.RC). In other words
+it is a limited version of  <link linkend="h001511">UserDialog Class</link>.
+Use <computeroutput>::requires "OODPLAIN.CLS"</computeroutput> in your script
+to get access to the PlainUserDialog class.</para>
+<note><title>Note</title>
+<para>If you use <computeroutput>::requires "OODWIN32.CLS"</computeroutput> you
+do not need to specify the <computeroutput>::requires "OODIALOG.CLS"</computeroutput>
+directive because OODIALOG.CLS is included from OODWIN32.CLS.</para>
+</note>
+<note><title>Note</title>
+<para>If you use <computeroutput>::requires "OODIALOG.CLS"</computeroutput> you
+do not need to specify the <computeroutput>::requires "OODPLAIN.CLS"</computeroutput>
+directive because OODPLAIN.CLS is included from OODIALOG.CLS.</para>
+</note>
+<para>UserDialog includes all the methods PlainUserDialog does plus all the methods
+defined in the DialogExtensions class. These are more specific methods that
+ cover asynchronous dialog execution, scroll bar support, resizing and repositioning,
+bitmaps, graphics (device context related methods), scrolling text, and menus
+(action bars).</para>
+<para>The reason for splitting the functionality into two classes is to provide
+ a smaller package which requires less system resources for ordinary user
+interfaces like the standard dialogs.</para>
+<para>The following table lists all the methods that are provided by the  PlainUserDialog
+class. The individual methods are documented in
+<link linkend="h000002">BaseDialog Class</link> or
+<link linkend="h001511">UserDialog Class</link>.</para>
+<variablelist>
+<varlistentry><term>Attributes:</term>
+<listitem><para>Instances of the PlainUserDialog class have
+the following attributes:
+<variablelist>
+<varlistentry><term>AutoDetect</term>
+<listitem><para>Automatic data field detection on (=1, default) or off (=0).
+For the UserDialog subclass the default is off and Connect... methods or a
+resource script are usually used.
+</para></listitem></varlistentry>
+<varlistentry><term>AutomaticMethods</term>
+<listitem><para>A queue containing the methods that are started concurrently
+before the execution of the dialog
+</para></listitem></varlistentry>
+<varlistentry><term>ConstDir</term>
+<listitem><para>A directory string storing the numerical values assigned to symbolic
+IDs (#define-statements in the resource script)
+</para></listitem></varlistentry>
+<varlistentry><term>DataConnection</term>
+<listitem><para>Protected attribute to store connections between dialog items and the
+attributes of the dialog instance
+</para></listitem></varlistentry>
+<varlistentry><term>DlgHandle</term>
+<listitem><para>A handle to the dialog
+</para></listitem></varlistentry>
+<varlistentry><term>Finished</term>
+<listitem><para>0 if dialog is executing, 1 if terminated with OK, and 2 if canceled
+</para></listitem></varlistentry>
+<varlistentry><term>InitCode</term>
+<listitem><para>Result of the init method; in case init failed, its value is 1.
+</para></listitem></varlistentry>
+<varlistentry><term>UseStem</term>
+<listitem><para>Protected attribute that is true (=1) if a stem variable was passed
+to init
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term>Methods:</term>
+<listitem><para>Instances of the PlainUserDialog class implement
+the methods listed in
+<link linkend="t9b">PlainUserDialog and PlainBaseDialog Class Methods</link> table.
+</para></listitem></varlistentry>
+</variablelist>
+
+<table id="t9b" frame="all">
+<title>PlainUserDialog and PlainBaseDialog Class Methods</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Method...</entry>
+<entry>...on page</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>AddAttribute</entry>
+<entry><link linkend="h000274">AddAttribute</link></entry>
+</row>
+<row>
+<entry>AddBitmapButton</entry>
+<entry><link linkend="h001662">AddBitmapButton</link></entry>
+</row>
+<row>
+<entry>AddBlackFrame</entry>
+<entry><link linkend="h001774">AddBlackFrame</link></entry>
+</row>
+<row>
+<entry>AddBlackRect</entry>
+<entry><link linkend="h001735">AddBlackRect</link></entry>
+</row>
+<row>
+<entry>AddButton</entry>
+<entry><link linkend="h001647">AddButton</link></entry>
+</row>
+<row>
+<entry>AddButtonGroup</entry>
+<entry><link linkend="h001999">AddButtonGroup</link></entry>
+</row>
+<row>
+<entry>AddCheckBox</entry>
+<entry><link linkend="h001843">AddCheckBox</link></entry>
+</row>
+<row>
+<entry>AddCheckBoxStem</entry>
+<entry><link linkend="h001965">AddCheckBoxStem</link></entry>
+</row>
+<row>
+<entry>AddCheckGroup</entry>
+<entry><link linkend="h001887">AddCheckGroup</link></entry>
+</row>
+<row>
+<entry>AddComboBox</entry>
+<entry><link linkend="h001829">AddComboBox</link></entry>
+</row>
+<row>
+<entry>AddComboEntry</entry>
+<entry><link linkend="h000307">AddComboEntry</link></entry>
+</row>
+<row>
+<entry>AddComboInput</entry>
+<entry><link linkend="h001933">AddComboInput</link></entry>
+</row>
+<row>
+<entry>AddEntryLine</entry>
+<entry><link linkend="h001787">AddEntryLine</link></entry>
+</row>
+<row>
+<entry>AddGrayFrame</entry>
+<entry><link linkend="h001761">AddGreyFrame</link></entry>
+</row>
+<row>
+<entry>AddGrayRect</entry>
+<entry><link linkend="h001722">AddGrayRect</link></entry>
+</row>
+<row>
+<entry>AddGroupBox</entry>
+<entry><link linkend="h001681">AddGroupBox</link></entry>
+</row>
+<row>
+<entry>AddInput</entry>
+<entry><link linkend="h001901">AddInput</link></entry>
+</row>
+<row>
+<entry>AddInputGroup</entry>
+<entry><link linkend="h001918">AddInputGroup</link></entry>
+</row>
+<row>
+<entry>AddInputStem</entry>
+<entry><link linkend="h001950">AddInputStem</link></entry>
+</row>
+<row>
+<entry>AddListBox</entry>
+<entry><link linkend="h001815">AddListBox</link></entry>
+</row>
+<row>
+<entry>AddListEntry</entry>
+<entry><link linkend="h000380">AddListEntry</link></entry>
+</row>
+<row>
+<entry>AddMenuItem</entry>
+<entry><link linkend="amim">AddMenuItem</link></entry>
+</row>
+<row>
+<entry>AddMenuSeparator</entry>
+<entry><link linkend="amsm">AddMenuSeparator</link></entry>
+</row>
+<row>
+<entry>AddOkCancelLeftBottom</entry>
+<entry><link linkend="h002018">AddOkCancelLeftBottom</link></entry>
+</row>
+<row>
+<entry>AddOkCancelLeftTop</entry>
+<entry><link linkend="h002028">AddOkCancelLeftTop</link></entry>
+</row>
+<row>
+<entry>AddOkCancelRightBottom</entry>
+<entry><link linkend="h002013">AddOkCancelRightBottom</link></entry>
+</row>
+<row>
+<entry>AddOkCancelRightTop</entry>
+<entry><link linkend="h002023">AddOkCancelRightTop</link></entry>
+</row>
+<row>
+<entry>AddPasswordLine</entry>
+<entry><link linkend="h001801">AddPasswordLine</link></entry>
+</row>
+<row>
+<entry>AddPopupMenu</entry>
+<entry><link linkend="apumm">AddPopupMenu</link></entry>
+</row>
+<row>
+<entry>AddRadioButton</entry>
+<entry><link linkend="h001858">AddRadioButton</link></entry>
+</row>
+<row>
+<entry>AddRadioGroup</entry>
+<entry><link linkend="h001873">AddRadioGroup</link></entry>
+</row>
+<row>
+<entry>AddRadioStem</entry>
+<entry><link linkend="h001982">AddRadioStem</link></entry>
+</row>
+<row>
+<entry>AddScrollBar</entry>
+<entry><link linkend="h001983">AddScrollBar</link></entry>
+</row>
+<row>
+<entry>AddText</entry>
+<entry><link linkend="h001695">AddText</link></entry>
+</row>
+<row>
+<entry>AddUserMsg</entry>
+<entry><link linkend="h000141">AddUserMsg</link></entry>
+</row>
+<row>
+<entry>AddWhiteFrame</entry>
+<entry><link linkend="h001748">AddWhiteFrame</link></entry>
+</row>
+<row>
+<entry>AddWhiteRect</entry>
+<entry><link linkend="h001709">AddWhiteRect</link></entry>
+</row>
+<row>
+<entry>AssignWindow</entry>
+<entry><link linkend="assignwindow">AssignWindow</link></entry>
+</row>
+<row>
+<entry>AutoDetection</entry>
+<entry><link linkend="h001439">AutoDetection</link></entry>
+</row>
+<row>
+<entry>Cancel</entry>
+<entry><link linkend="h001450">Cancel</link></entry>
+</row>
+<row>
+<entry>Center</entry>
+<entry><link linkend="h001370">Center</link></entry>
+</row>
+<row>
+<entry>ChangeComboEntry</entry>
+<entry><link linkend="h000352">ChangeComboEntry</link></entry>
+</row>
+<row>
+<entry>ChangeListEntry</entry>
+<entry><link linkend="h000425">ChangeListEntry</link></entry>
+</row>
+<row>
+<entry>ClearMessages</entry>
+<entry><link linkend="h000763">ClearMessages</link></entry>
+</row>
+<row>
+<entry>ComboAddDirectory</entry>
+<entry><link linkend="h000362">ComboAddDirectory</link></entry>
+</row>
+<row>
+<entry>ComboDrop</entry>
+<entry><link linkend="h000372">ComboDrop</link></entry>
+</row>
+<row>
+<entry>ConnectButton</entry>
+<entry><link linkend="h000114">ConnectButton</link></entry>
+</row>
+<row>
+<entry>ConnectCheckBox</entry>
+<entry><link linkend="h000202">ConnectCheckBox</link></entry>
+</row>
+<row>
+<entry>ConnectComboBox</entry>
+<entry><link linkend="h000193">ConnectComboBox</link></entry>
+</row>
+<row>
+<entry>ConnectControl</entry>
+<entry><link linkend="h000123">ConnectControl</link></entry>
+</row>
+<row>
+<entry>ConnectEntryLine</entry>
+<entry><link linkend="h000184">ConnectEntryLine</link></entry>
+</row>
+<row>
+<entry>ConnectList</entry>
+<entry><link linkend="h000132">ConnectList</link></entry>
+</row>
+<row>
+<entry>ConnectListBox</entry>
+<entry><link linkend="h000220">ConnectListBox</link></entry>
+</row>
+<row>
+<entry>ConnectListLeftDoubleClick</entry>
+<entry><link linkend="clldcm">ConnectListLeftDoubleClick</link></entry>
+</row>
+<row>
+<entry>ConnectMultiListBox</entry>
+<entry><link linkend="h000229">ConnectMultiListBox</link></entry>
+</row>
+<row>
+<entry>ConnectRadioButton</entry>
+<entry><link linkend="h000211">ConnectRadioButton</link></entry>
+</row>
+<row>
+<entry>Create</entry>
+<entry><link linkend="h001545">Create</link></entry>
+</row>
+<row>
+<entry>CreateCenter</entry>
+<entry><link linkend="h001562">CreateCenter</link></entry>
+</row>
+<row>
+<entry>CreateMenu</entry>
+<entry><link linkend="cmm">CreateMenu</link></entry>
+</row>
+<row>
+<entry>DefineDialog</entry>
+<entry><link linkend="h001506">DefineDialog</link></entry>
+</row>
+<row>
+<entry>DeInstall</entry>
+<entry><link linkend="h001468">DeInstall</link></entry>
+</row>
+<row>
+<entry>DeleteComboEntry</entry>
+<entry><link linkend="h000326">DeleteComboEntry</link></entry>
+</row>
+<row>
+<entry>DeleteListEntry</entry>
+<entry><link linkend="h000399">DeleteListEntry</link></entry>
+</row>
+<row>
+<entry>Disable</entry>
+<entry><link linkend="disable">Disable</link></entry>
+</row>
+<row>
+<entry>DisableItem</entry>
+<entry><link linkend="h001229">DisableItem</link></entry>
+</row>
+<row>
+<entry>Enable</entry>
+<entry><link linkend="enable">Enable</link></entry>
+</row>
+<row>
+<entry>EnableItem</entry>
+<entry><link linkend="h001221">EnableItem</link></entry>
+</row>
+<row>
+<entry>Execute</entry>
+<entry><link linkend="h000048">Execute</link></entry>
+</row>
+<row>
+<entry>FindComboEntry</entry>
+<entry><link linkend="h000335">FindComboEntry</link></entry>
+</row>
+<row>
+<entry>FindListEntry</entry>
+<entry><link linkend="h000408">FindListEntry</link></entry>
+</row>
+<row>
+<entry>FocusItem</entry>
+<entry><link linkend="focusitem">FocusItem</link></entry>
+</row>
+<row>
+<entry>Get</entry>
+<entry><link linkend="h000086">Get</link></entry>
+</row>
+<row>
+<entry>GetAttrib</entry>
+<entry><link linkend="h000522">GetAttrib</link></entry>
+</row>
+<row>
+<entry>GetButtonRect</entry>
+<entry><link linkend="h000703">GetButtonRect</link></entry>
+</row>
+<row>
+<entry>GetCheckBox</entry>
+<entry><link linkend="h000490">GetCheckBox</link></entry>
+</row>
+<row>
+<entry>GetComboEntry</entry>
+<entry><link linkend="gcem">GetComboEntry</link></entry>
+</row>
+<row>
+<entry>GetComboItems</entry>
+<entry><link linkend="h000336">GetComboItems</link></entry>
+</row>
+<row>
+<entry>GetComboLine</entry>
+<entry><link linkend="h000482">GetComboLine</link></entry>
+</row>
+<row>
+<entry>GetCurrentComboIndex</entry>
+<entry><link linkend="h000344">GetCurrentComboIndex</link></entry>
+</row>
+<row>
+<entry>GetCurrentListIndex</entry>
+<entry><link linkend="h000417">GetCurrentListIndex</link></entry>
+</row>
+<row>
+<entry>GetData</entry>
+<entry><link linkend="h000269">GetData</link></entry>
+</row>
+<row>
+<entry>GetDataStem</entry>
+<entry><link linkend="h000298">GetDataStem</link></entry>
+</row>
+<row>
+<entry>GetEntryLine</entry>
+<entry><link linkend="h000466">GetEntryLine</link></entry>
+</row>
+<row>
+<entry>GetID</entry>
+<entry><link linkend="getid">GetID</link></entry>
+</row>
+<row>
+<entry>GetItem</entry>
+<entry><link linkend="h000091">GetItem</link></entry>
+</row>
+<row>
+<entry>GetListEntry</entry>
+<entry><link linkend="glem">GetListEntry</link></entry>
+</row>
+<row>
+<entry>GetListItems</entry>
+<entry><link linkend="h000409">GetListItems</link></entry>
+</row>
+<row>
+<entry>GetListLine</entry>
+<entry><link linkend="h000474">GetListLine</link></entry>
+</row>
+<row>
+<entry>GetMultiList</entry>
+<entry><link linkend="h000506">GetMultiList</link></entry>
+</row>
+<row>
+<entry>GetPos</entry>
+<entry><link linkend="getpos">GetPos</link></entry>
+</row>
+<row>
+<entry>GetRadioButton</entry>
+<entry><link linkend="h000498">GetRadioButton</link></entry>
+</row>
+<row>
+<entry>GetSize</entry>
+<entry><link linkend="getsize">GetSize</link></entry>
+</row>
+<row>
+<entry>GetTextSize</entry>
+<entry><link linkend="gettextsize">GetTextSize</link></entry>
+</row>
+<row>
+<entry>GetValue</entry>
+<entry><link linkend="h000514">GetValue</link></entry>
+</row>
+<row>
+<entry>HandleMessages</entry>
+<entry><link linkend="h000756">HandleMessages</link></entry>
+</row>
+<row>
+<entry>Help</entry>
+<entry><link linkend="h001456">Help</link></entry>
+</row>
+<row>
+<entry>Hide</entry>
+<entry><link linkend="hide">Hide</link></entry>
+</row>
+<row>
+<entry>HideItem</entry>
+<entry><link linkend="h001237">HideItem</link></entry>
+</row>
+<row>
+<entry>HideWindow</entry>
+<entry><link linkend="h001253">HideWindow</link></entry>
+</row>
+<row>
+<entry>Init</entry>
+<entry><link linkend="h000025">Init</link></entry>
+</row>
+<row>
+<entry>InitAutoDetection</entry>
+<entry><link linkend="h001428">InitAutoDetection</link></entry>
+</row>
+<row>
+<entry>InitDialog</entry>
+<entry><link linkend="h000035">InitDialog</link></entry>
+</row>
+<row>
+<entry>InsertComboEntry</entry>
+<entry><link linkend="h000316">InsertComboEntry</link></entry>
+</row>
+<row>
+<entry>InsertListEntry</entry>
+<entry><link linkend="h000389">InsertListEntry</link></entry>
+</row>
+<row>
+<entry>IsDialogActive</entry>
+<entry><link linkend="h000721">IsDialogActive</link></entry>
+</row>
+<row>
+<entry>ItemTitle</entry>
+<entry><link linkend="h001348">ItemTitle</link></entry>
+</row>
+<row>
+<entry>Leaving</entry>
+<entry><link linkend="leavi">Leaving</link></entry>
+</row>
+<row>
+<entry>ListAddDirectory</entry>
+<entry><link linkend="h000448">ListAddDirectory</link></entry>
+</row>
+<row>
+<entry>ListDrop</entry>
+<entry><link linkend="h000458">ListDrop</link></entry>
+</row>
+<row>
+<entry>Load</entry>
+<entry><link linkend="h001613">Load</link></entry>
+</row>
+<row>
+<entry>LoadFrame</entry>
+<entry><link linkend="h001624">LoadFrame</link></entry>
+</row>
+<row>
+<entry>LoadItems</entry>
+<entry><link linkend="h001636">LoadItems</link></entry>
+</row>
+<row>
+<entry>LoadMenu</entry>
+<entry><link linkend="lmm">LoadMenu</link></entry>
+</row>
+<row>
+<entry>Move</entry>
+<entry><link linkend="move">Move</link></entry>
+</row>
+<row>
+<entry>NoAutoDetection</entry>
+<entry><link linkend="h001434">NoAutoDetection</link></entry>
+</row>
+<row>
+<entry>OK</entry>
+<entry><link linkend="h001444">OK</link></entry>
+</row>
+<row>
+<entry>Resize</entry>
+<entry><link linkend="resize">Resize</link></entry>
+</row>
+<row>
+<entry>Run</entry>
+<entry><link linkend="h000041">Run</link></entry>
+</row>
+<row>
+<entry>SetAttrib</entry>
+<entry><link linkend="h000593">SetAttrib</link></entry>
+</row>
+<row>
+<entry>SetCheckBox</entry>
+<entry><link linkend="h000557">SetCheckBox</link></entry>
+</row>
+<row>
+<entry>SetComboLine</entry>
+<entry><link linkend="h000548">SetComboLine</link></entry>
+</row>
+<row>
+<entry>SetCurrentComboIndex</entry>
+<entry><link linkend="h000345">SetCurrentComboIndex</link></entry>
+</row>
+<row>
+<entry>SetCurrentListIndex</entry>
+<entry><link linkend="h000418">SetCurrentListIndex</link></entry>
+</row>
+<row>
+<entry>SetData</entry>
+<entry><link linkend="h000264">SetData</link></entry>
+</row>
+<row>
+<entry>SetDataStem</entry>
+<entry><link linkend="h000289">SetDataStem</link></entry>
+</row>
+<row>
+<entry>SetEntryLine</entry>
+<entry><link linkend="h000530">SetEntryLine</link></entry>
+</row>
+<row>
+<entry>SetListLine</entry>
+<entry><link linkend="h000539">SetListLine</link></entry>
+</row>
+<row>
+<entry>SetListTabulators</entry>
+<entry><link linkend="h000435">SetListTabulators</link></entry>
+</row>
+<row>
+<entry>SetMenu</entry>
+<entry><link linkend="smm">SetMenu</link></entry>
+</row>
+<row>
+<entry>SetMultiList</entry>
+<entry><link linkend="h000575">SetMultiList</link></entry>
+</row>
+<row>
+<entry>SetRadioButton</entry>
+<entry><link linkend="h000566">SetRadioButton</link></entry>
+</row>
+<row>
+<entry>SetStaticText</entry>
+<entry><link linkend="h000255">SetStaticText</link></entry>
+</row>
+<row>
+<entry>SetTitle</entry>
+<entry><link linkend="settitle">SetTitle</link></entry>
+</row>
+<row>
+<entry>SetValue</entry>
+<entry><link linkend="h000584">SetValue</link></entry>
+</row>
+<row>
+<entry>SetWindowTitle</entry>
+<entry><link linkend="h000246">SetWindowTitle</link></entry>
+</row>
+<row>
+<entry>Show</entry>
+<entry><link linkend="show">Show</link></entry>
+</row>
+<row>
+<entry>ShowItem</entry>
+<entry><link linkend="h001245">ShowItem</link></entry>
+</row>
+<row>
+<entry>ShowWindow</entry>
+<entry><link linkend="h001269">ShowWindow</link></entry>
+</row>
+<row>
+<entry>StartIt</entry>
+<entry><link linkend="h002048">StartIt</link></entry>
+</row>
+<row>
+<entry>StopIt</entry>
+<entry><link linkend="h000073">StopIt</link></entry>
+</row>
+<row>
+<entry>Title</entry>
+<entry><link linkend="title">Title</link></entry>
+</row>
+<row>
+<entry>Title=</entry>
+<entry><link linkend="titlenew">Title=</link></entry>
+</row>
+<row>
+<entry>Update</entry>
+<entry><link linkend="update">Update</link></entry>
+</row>
+<row>
+<entry>Validate</entry>
+<entry><link linkend="h001462">Validate</link></entry>
+</row>
+</tbody></tgroup>
+</table>
+</chapter>

@@ -1,0 +1,912 @@
+<?xml version="1.0" standalone="no">
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook V4.2//EN"
+[
+<!ENTITY legalstuff SYSTEM "../shared/legalstuff.sgml">
+<!ENTITY notices    SYSTEM "../shared/notices.sgml">
+<!ENTITY cpl        SYSTEM "../shared/CPLv1.0.sgml">
+<!ENTITY gethelp    SYSTEM "../shared/gethelp.sgml">
+<!ENTITY genindex   SYSTEM "genindex.sgml">
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object RexxMath Library Functions SGML file.
+    #
+    # Copyright (c) 2005-2007, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    # Author(s):
+    #      W. David Ashley <dashley@us.ibm.com>
+    #
+    #########################################################################
+-->
+<book>
+<bookinfo>
+<title>Open Object Rexx</title>
+<subtitle>RxMath Math Functions Reference</subtitle>
+
+&legalstuff;
+
+</bookinfo>
+
+<preface id="preface"><title>About This Book</title>
+<para>This book describes the Open Object Rexx Math Function Library.
+</para>
+<para>This book is intended for people who plan to develop applications using
+Rexx. Its users range from the novice, who might have experience in some programming
+language but no Rexx experience, to the experienced application developer,
+who might have had some experience with Object Rexx.</para>
+<para>This book is a reference rather than a tutorial. It assumes you are already
+familiar with object-oriented programming concepts.</para>
+<para>Descriptions include the use and syntax of the language and explain how
+the language processor &quot;interprets&quot; the language as a program is running.</para>
+
+<section id="relinf"><title>Related Information</title>
+<para>See also:
+<citetitle pubwork="book">Open Object Rexx: Reference</citetitle></para>
+</section>
+
+<section id="readsy"><title>How to Read the Syntax Diagrams</title>
+<para>Throughout this book, syntax is described using the structure defined below. </para>
+<itemizedlist>
+<listitem><para>Read the syntax diagrams from left to right, from top to bottom, following
+the path of the line. </para>
+<para>The <computeroutput>&gt;&gt;---</computeroutput> symbol
+indicates the beginning of a statement.</para>
+<para>The <computeroutput>---&gt;</computeroutput> symbol indicates that the statement syntax is continued on the
+next line.</para>
+<para>The <computeroutput>&gt;---</computeroutput> symbol indicates
+that a statement is continued from the previous line.</para>
+<para>The <computeroutput>---&gt;&lt;</computeroutput> symbol indicates the end of a statement.</para>
+<para>Diagrams of syntactical units other than complete statements start
+with the  <computeroutput>&gt;---</computeroutput> symbol and end with
+the  <computeroutput>---&gt;</computeroutput> symbol.</para></listitem>
+<listitem><para>Required items appear on the horizontal line (the main path).
+
+<programlisting>
+<![CDATA[
+>>-STATEMENT--required_item------------------------------------><
+]]>
+</programlisting>
+
+</para></listitem>
+<listitem><para>Optional items appear below the main path. </para>
+
+<programlisting>
+<![CDATA[
+>>-STATEMENT--+---------------+--------------------------------><
+              +-optional_item-+
+]]>
+</programlisting>
+
+</listitem>
+<listitem><para>If you can choose from two or more items, they appear vertically, in a
+stack. If you must choose one of the items, one
+item of the stack appears on the main path.</para>
+
+<programlisting>
+<![CDATA[
+>>-STATEMENT--+-required_choice1-+-----------------------------><
+              +-required_choice2-+
+]]>
+</programlisting>
+
+</listitem>
+<listitem><para>If choosing one of the items is optional, the entire stack appears below
+the main path.</para>
+
+<programlisting>
+<![CDATA[
+>>-STATEMENT--+------------------+-----------------------------><
+              +-optional_choice1-+
+              +-optional_choice2-+
+]]>
+</programlisting>
+
+</listitem>
+<listitem><para>If one of the items is the default, it appears above the main path and
+the remaining choices are shown below. </para>
+
+<programlisting>
+<![CDATA[
+              +-default_choice--+
+>>-STATEMENT--+-----------------+------------------------------><
+              +-optional_choice-+
+              +-optional_choice-+
+]]>
+</programlisting>
+
+</listitem>
+<listitem><para>An arrow returning to the left above the main line indicates an item that
+can be repeated.</para>
+
+<programlisting>
+<![CDATA[
+              +-----------------+
+              V                 |
+>>-STATEMENT----repeatable_item-+------------------------------><
+]]>
+</programlisting>
+
+<para>A repeat arrow above a stack indicates that you can repeat the
+items in the stack.</para></listitem>
+<listitem><para>A set of vertical bars around an item indicates that the item is a fragment, a part of the syntax diagram that appears in
+greater detail below the main diagram.</para>
+
+<programlisting>
+<![CDATA[
+>>-STATEMENT--| fragment |-------------------------------------><
+]]>
+</programlisting>
+
+<para><emphasis role="italic">fragment:</emphasis></para>
+
+<programlisting>
+|--expansion_provides_greater_detail----------------------------|
+</programlisting>
+</listitem>
+<listitem><para>Keywords appear in uppercase (for example, <computeroutput>PARM1</computeroutput>). They must
+be spelled exactly as shown but you can type them in upper, lower, or mixed
+case. Variables appear in all lowercase letters (for example, <computeroutput>parmx</computeroutput>). They represent user-supplied names or values.</para></listitem>
+<listitem><para>If punctuation marks, parentheses, arithmetic operators, or such symbols
+are shown, you must enter them as part of the syntax.</para></listitem></itemizedlist>
+
+<para>The following example shows how the syntax is described:</para>
+
+<programlisting>
+<![CDATA[
+         +-,------+
+         V        |
+>>-MAX(----number-+--)-----------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section><title>A Note About Program Examples in this Document</title>
+<para>The program examples in this document are rendered in a mono-spaced
+font that is not completely compatible for cut-and-paste functionality.
+Pasteing text into an editor could result in some characters outside of
+the standard ASCII character set. Specifically, single-qoute and
+double-quote characters are sometimes converted incorrectly when
+pasted into an editor.</para>
+
+</section>
+
+&gethelp;
+
+</preface>
+
+<chapter><title>Introduction</title>
+<para>RxMath is a Rexx utility package that enables you to use enhanced mathematical
+functions.</para>
+<para>The function names in the Rexx Mathematical Functions package are similar to
+the names of their corresponding mathematical functions.</para>
+<para>The precision of calculation depends on:</para>
+<itemizedlist>
+<listitem><para>The value specified when the command is issued</para></listitem>
+<listitem><para>The numeric digits settings of the calling Rexx activity</para></listitem>
+</itemizedlist>
+<note><para>Precision is limited to 16 digits.</para></note>
+
+<section><title>Installation and Removal</title>
+<para>The Rexx Mathematical Functions package is contained in the file rxmath.dll. This
+dynamic link library (DLL) must be placed in a directory listed in your PATH. To
+get access to the functions in the Rexx Mathematical Functions package, execute
+the following Rexx code:</para>
+<programlisting>
+call RxFuncAdd "MathLoadFuncs","rxmath","MathLoadFuncs"
+call MathLoadFuncs
+</programlisting>
+<para>To unload the DLL, call the MathDropFuncs function and then exit all CMD.EXE
+shells. After you have exited from all command shells, the DLL is dropped by
+Windows® and can be deleted or replaced.</para>
+</section>
+<section><title>Error Handling</title>
+<para>Error 40 (Incorrect call to routine) is raised if either the wrong number of
+arguments or incorrect data is passed to a function.</para>
+<para>If a mathematical function fails, the Rexx Mathematical Functions package returns
+ERROR.</para>
+<para>Where an error occurs, the variable MATHERRNO is set with additional
+information that further defines the source of the error.</para>
+</section>
+</chapter>
+
+<chapter><title>Functions</title>
+<para>Most function names in the Rexx Mathematical Functions package are similar to
+the names of their corresponding mathematical functions.</para>
+<itemizedlist>
+<listitem><para>MathLoadFuncs()</para></listitem>
+<listitem><para>MathDropFuncs()</para></listitem>
+<listitem><para>RxCalcSqrt()   </para></listitem>
+<listitem><para>RxCalcExp()    </para></listitem>
+<listitem><para>RxCalcLog()    </para></listitem>
+<listitem><para>RxCalcLog10()  </para></listitem>
+<listitem><para>RxCalcSinH()   </para></listitem>
+<listitem><para>RxCalcCosH()   </para></listitem>
+<listitem><para>RxCalcTanH()   </para></listitem>
+<listitem><para>RxCalcPower()  </para></listitem>
+<listitem><para>RxCalcSin()    </para></listitem>
+<listitem><para>RxCalcCos()    </para></listitem>
+<listitem><para>RxCalcTan()    </para></listitem>
+<listitem><para>RxCalcCotan()  </para></listitem>
+<listitem><para>RxCalcPi()     </para></listitem>
+<listitem><para>RxCalcArcSin() </para></listitem>
+<listitem><para>RxCalcArcCos() </para></listitem>
+<listitem><para>RxCalcArcTan() </para></listitem>
+</itemizedlist>
+
+<section><title>MathLoadFuncs()</title>
+<indexterm><primary>MathLoadFuncs</primary></indexterm>
+<indexterm><primary>functions</primary>
+<secondary>MathLoadFuncs</secondary></indexterm>
+<indexterm><primary>load functions</primary></indexterm>
+<indexterm><primary>register functions</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-MathLoadFuncs()---------------------------------------------><
+]]>
+</programlisting>
+<para>Loads all functions in the Rexx Mathematical Functions package.</para>
+<para>If you supply any parameters, they will be used only to deliver copyright
+information.</para>
+</section>
+
+<section><title>MathDropFuncs()</title>
+<indexterm><primary>MathDropFuncs</primary></indexterm>
+<indexterm><primary>functions</primary>
+<secondary>MathDropFuncs</secondary></indexterm>
+<indexterm><primary>unload functions</primary></indexterm>
+<indexterm><primary>deregister functions</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-MathDropFuncs()---------------------------------------------><
+]]>
+</programlisting>
+<para>Drops all functions in the Rexx Mathematical Functions package.</para>
+</section>
+
+<section><title>RxCalcSqrt()</title>
+<indexterm><primary>RxCalcSqrt</primary></indexterm>
+<indexterm><primary>functions</primary>
+<secondary>RxCalcSqrt</secondary></indexterm>
+<indexterm><primary>square root of a number</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-RxCalcSqrt(number--+---------------+--)---------------------><
+                      +--, precision--+
+]]>
+</programlisting>
+<para>Returns the absolute value of the square root of number.</para>
+<para>Parameters:</para>
+<variablelist>
+   <varlistentry>
+      <term>number</term>
+      <listitem><para>The number whose square root you wish to calculate.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>precision</term>
+      <listitem><para>The precision of the calculation. If a value is not specified, the precision of
+      the calling Rexx activity is used. If the precision exceeds 16 digits, the call
+      will fail.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section><title>RxCalcExp()</title>
+<indexterm><primary>RxCalcExp</primary></indexterm>
+<indexterm><primary>functions</primary>
+<secondary>RxCalcExp</secondary></indexterm>
+<indexterm><primary>exponential</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-RxCalcExp(number--+---------------+--)----------------------><
+                     +--, precision--+
+]]>
+</programlisting>
+<para>Returns the exponential function of number.</para>
+<para>Parameters:</para>
+<variablelist>
+   <varlistentry>
+      <term>number</term>
+      <listitem><para>The number for which you wish to calculate the exponential function.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>precision</term>
+      <listitem><para>The precision of the calculation. If a value is not specified, the precision of
+      the calling Rexx activity is used. If the precision exceeds 16 digits, the call
+      will fail.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section><title>RxCalcLog()</title>
+<indexterm><primary>RxCalcLog</primary></indexterm>
+<indexterm><primary>functions</primary>
+<secondary>RxCalcLog</secondary></indexterm>
+<indexterm><primary>natural logarithm</primary></indexterm>
+<indexterm><primary>logarithm, natural</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-RxCalcLog(number--+---------------+--)----------------------><
+                     +--, precision--+
+]]>
+</programlisting>
+<para>Returns the natural logarithm (base e) of number.</para>
+<para>Parameters:</para>
+<variablelist>
+   <varlistentry>
+      <term>number</term>
+      <listitem><para>The number for which you wish to calculate the natural logarithm.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>precision</term>
+      <listitem><para>The precision of the calculation. If a value is not specified, the precision of
+      the calling Rexx activity is used. If the precision exceeds 16 digits, the call
+      will fail.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section><title>RxCalcLog10()</title>
+<indexterm><primary>RxCalcLog10</primary></indexterm>
+<indexterm><primary>functions</primary>
+<secondary>RxCalcLog10</secondary></indexterm>
+<indexterm><primary>base 10 logarithm</primary></indexterm>
+<indexterm><primary>logarithm, base 10</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-RxCalcLog10(number--+---------------+--)--------------------><
+                       +--, precision--+
+]]>
+</programlisting>
+<para>Returns the base 10 logarithm of number.</para>
+<para>Parameters:</para>
+<variablelist>
+   <varlistentry>
+      <term>number</term>
+      <listitem><para>The number for which you wish to calculate the base 10 logarithm.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>precision</term>
+      <listitem><para>The precision of the calculation. If a value is not specified, the precision of
+      the calling Rexx activity is used. If the precision exceeds 16 digits, the call
+      will fail.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section><title>RxCalcSinH()</title>
+<indexterm><primary>RxCalcSinH</primary></indexterm>
+<indexterm><primary>functions</primary>
+<secondary>RxCalcSinH</secondary></indexterm>
+<indexterm><primary>hyperbolic sine of a number</primary></indexterm>
+<indexterm><primary>number, hyperbolic sine of a</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-RxCalcSinH(number--+---------------+--)---------------------><
+                      +--, precision--+
+]]>
+</programlisting>
+<para>Returns the hyperbolic sine of number, expressed in radians.</para>
+<para>Parameters:</para>
+<variablelist>
+   <varlistentry>
+      <term>number</term>
+      <listitem><para>The number for which you wish to calculate the hyperbolic sine.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>precision</term>
+      <listitem><para>The precision of the calculation. If a value is not specified, the precision of
+      the calling Rexx activity is used. If the precision exceeds 16 digits, the call
+      will fail.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section><title>RxCalcCosH()</title>
+<indexterm><primary>RxCalcCosH</primary></indexterm>
+<indexterm><primary>functions</primary>
+<secondary>RxCalcCosH</secondary></indexterm>
+<indexterm><primary>hyperbolic cosine of a number</primary></indexterm>
+<indexterm><primary>number, hyperbolic cosine of a</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-RxCalcCosH(number--+---------------+--)---------------------><
+                      +--, precision--+
+]]>
+</programlisting>
+<para>Returns the hyperbolic cosine of number, expressed in radians.</para>
+<para>Parameters:</para>
+<variablelist>
+   <varlistentry>
+      <term>number</term>
+      <listitem><para>The number for which you wish to calculate the hyperbolic cosine.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>precision</term>
+      <listitem><para>The precision of the calculation. If a value is not specified, the precision of
+      the calling Rexx activity is used. If the precision exceeds 16 digits, the call
+      will fail.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section><title>RxCalcTanH()</title>
+<indexterm><primary>RxCalcTanH</primary></indexterm>
+<indexterm><primary>functions</primary>
+<secondary>RxCalcTanH</secondary></indexterm>
+<indexterm><primary>hyperbolic tangent of a number</primary></indexterm>
+<indexterm><primary>number, hyperbolic tangent of a</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-RxCalcTanH(number--+---------------+--)---------------------><
+                      +--, precision--+
+]]>
+</programlisting>
+<para>Returns the hyperbolic tangent of number, expressed in radians.</para>
+<para>Parameters:</para>
+<variablelist>
+   <varlistentry>
+      <term>number</term>
+      <listitem><para>The number for which you wish to calculate the hyperbolic tangent.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>precision</term>
+      <listitem><para>The precision of the calculation. If a value is not specified, the precision of
+      the calling Rexx activity is used. If the precision exceeds 16 digits, the call
+      will fail.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section><title>RxCalcPower()</title>
+<indexterm><primary>RxCalcPower</primary></indexterm>
+<indexterm><primary>functions</primary>
+<secondary>RxCalcPower</secondary></indexterm>
+<indexterm><primary>raise a number to a power</primary></indexterm>
+<indexterm><primary>number to a power, raise a</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-RxCalcPower(number1, number2--+---------------+--)----------><
+                                 +--, precision--+
+]]>
+</programlisting>
+<para> Returns the value of mathematical expression number1 raised to the power of
+exponent number2.</para>
+<para>Parameters:</para>
+<variablelist>
+   <varlistentry>
+      <term>number1</term>
+      <listitem><para>The mathematical expression to be raised to the power of exponent
+      number2.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>number2</term>
+      <listitem><para>The exponent to which number1 is to be raised.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>precision</term>
+      <listitem><para>The precision of the calculation. If a value is not specified, the precision of
+      the calling Rexx activity is used. If the precision exceeds 16 digits, the call
+      will fail.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section><title>RxCalcSin()</title>
+<indexterm><primary>RxCalcSin</primary></indexterm>
+<indexterm><primary>functions</primary>
+<secondary>RxCalcSin</secondary></indexterm>
+<indexterm><primary>sine value of a number</primary></indexterm>
+<indexterm><primary>number, sine value of a</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-RxCalcSin(number--+--------------------------+--)-----------><
+                     |                 +--D--+  |
+                     +--, precision, --+--R--+--+
+                                       +--G--+
+]]>
+</programlisting>
+<para>Returns the sine value for number, where number is the angle size, expressed in
+degree [D], radian [R], or grade [G] units.</para>
+<para>Parameters:</para>
+<variablelist>
+   <varlistentry>
+      <term>number</term>
+      <listitem><para>The angle size, expressed in degree [D], radian [R], or grade [G] units.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>precision</term>
+      <listitem><para>The precision of the calculation. If a value is not specified, the precision of
+      the calling Rexx activity is used. If the precision exceeds 16 digits, the call
+      will fail.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>D</term>
+      <listitem><para>Indicates that the angle size is expressed in degrees. This is the default.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>R</term>
+      <listitem><para>Indicates that the angle size is expressed in radians.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>G</term>
+      <listitem><para>Indicates that the angle size is expressed in grades.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section><title>RxCalcCos()</title>
+<indexterm><primary>RxCalcCos</primary></indexterm>
+<indexterm><primary>functions</primary>
+<secondary>RxCalcCos</secondary></indexterm>
+<indexterm><primary>cosine value of a number</primary></indexterm>
+<indexterm><primary>number, cosine value of a</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-RxCalcCos(number--+--------------------------+--)-----------><
+                     |                 +--D--+  |
+                     +--, precision, --+--R--+--+
+                                       +--G--+
+]]>
+</programlisting>
+<para>Returns the cosine value for number, where number is the angle size, expressed in
+degree [D], radian [R], or grade [G] units.</para>
+<para>Parameters:</para>
+<variablelist>
+   <varlistentry>
+      <term>number</term>
+      <listitem><para>The angle size, expressed in degree [D], radian [R], or grade [G] units.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>precision</term>
+      <listitem><para>The precision of the calculation. If a value is not specified, the precision of
+      the calling Rexx activity is used. If the precision exceeds 16 digits, the call
+      will fail.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>D</term>
+      <listitem><para>Indicates that the angle size is expressed in degrees. This is the default.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>R</term>
+      <listitem><para>Indicates that the angle size is expressed in radians.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>G</term>
+      <listitem><para>Indicates that the angle size is expressed in grades.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section><title>RxCalcTan()</title>
+<indexterm><primary>RxCalcTan</primary></indexterm>
+<indexterm><primary>functions</primary>
+<secondary>RxCalcTan</secondary></indexterm>
+<indexterm><primary>tangent value of a number</primary></indexterm>
+<indexterm><primary>number, tangent value of a</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-RxCalcTan(number--+--------------------------+--)-----------><
+                     |                 +--D--+  |
+                     +--, precision, --+--R--+--+
+                                       +--G--+
+]]>
+</programlisting>
+<para>Returns the tangent value for number, where number is the angle size, expressed in
+degree [D], radian [R], or grade [G] units.</para>
+<para>Parameters:</para>
+<variablelist>
+   <varlistentry>
+      <term>number</term>
+      <listitem><para>The angle size, expressed in degree [D], radian [R], or grade [G] units.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>precision</term>
+      <listitem><para>The precision of the calculation. If a value is not specified, the precision of
+      the calling Rexx activity is used. If the precision exceeds 16 digits, the call
+      will fail.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>D</term>
+      <listitem><para>Indicates that the angle size is expressed in degrees. This is the default.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>R</term>
+      <listitem><para>Indicates that the angle size is expressed in radians.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>G</term>
+      <listitem><para>Indicates that the angle size is expressed in grades.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section><title>RxCalcCotan()</title>
+<indexterm><primary>RxCalcCotan</primary></indexterm>
+<indexterm><primary>functions</primary>
+<secondary>RxCalcCotan</secondary></indexterm>
+<indexterm><primary>cotangent value of a number</primary></indexterm>
+<indexterm><primary>number, cotangent value of a</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-RxCalcCotan(number--+--------------------------+--)---------><
+                       |                 +--D--+  |
+                       +--, precision, --+--R--+--+
+                                         +--G--+
+]]>
+</programlisting>
+<para>Returns the cotangent value for number, where number is the angle size, expressed
+in degree [D], radian [R], or grade [G] units.</para>
+<para>Parameters:</para>
+<variablelist>
+   <varlistentry>
+      <term>number</term>
+      <listitem><para>The angle size, expressed in degree [D], radian [R], or grade [G] units.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>precision</term>
+      <listitem><para>The precision of the calculation. If a value is not specified, the precision of
+      the calling Rexx activity is used. If the precision exceeds 16 digits, the call
+      will fail.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>D</term>
+      <listitem><para>Indicates that the angle size is expressed in degrees. This is the default.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>R</term>
+      <listitem><para>Indicates that the angle size is expressed in radians.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>G</term>
+      <listitem><para>Indicates that the angle size is expressed in grades.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section><title>RxCalcPi()</title>
+<indexterm><primary>RxCalcPi</primary></indexterm>
+<indexterm><primary>functions</primary>
+<secondary>RxCalcPi</secondary></indexterm>
+<indexterm><primary>value of pi</primary></indexterm>
+<indexterm><primary>pi, value of</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-RxCalcPi(--+---------------+--)-----------------------------><
+              +--, precision--+
+]]>
+</programlisting>
+<para>Returns the value of pi.</para>
+<para>Parameters:</para>
+<variablelist>
+   <varlistentry>
+      <term>precision</term>
+      <listitem><para>The precision of the calculation. If a value is not specified, the precision of
+      the calling Rexx activity is used. If the precision exceeds 16 digits, the call
+      will fail.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section><title>RxCalcArcSin()</title>
+<indexterm><primary>RxCalcArcSin</primary></indexterm>
+<indexterm><primary>functions</primary>
+<secondary>RxCalcArcSin</secondary></indexterm>
+<indexterm><primary>arcsine value of a number</primary></indexterm>
+<indexterm><primary>number, arcsine value of a</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-RxCalcArcSin(number--+--------------------------+--)--------><
+                        |                 +--D--+  |
+                        +--, precision, --+--R--+--+
+                                          +--G--+
+]]>
+</programlisting>
+<para> Returns the arcsine of number, where the result can be expressed in degree [D],
+radian [R], or grade [G] units.</para>
+<para>Parameters:</para>
+<variablelist>
+   <varlistentry>
+      <term>number</term>
+      <listitem><para>The number for which the arcsine is to be calculated.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>precision</term>
+      <listitem><para>The precision of the calculation. If a value is not specified, the precision of
+      the calling Rexx activity is used. If the precision exceeds 16 digits, the call
+      will fail.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>D</term>
+      <listitem><para>Indicates that the result is expressed in degrees. This is the default.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>R</term>
+      <listitem><para>Indicates that the result is expressed in radians.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>G</term>
+      <listitem><para>Indicates that the result is expressed in grades.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section><title>RxCalcArcCos()</title>
+<indexterm><primary>RxCalcArcCos</primary></indexterm>
+<indexterm><primary>functions</primary>
+<secondary>RxCalcArcCos</secondary></indexterm>
+<indexterm><primary>arccosine value of a number</primary></indexterm>
+<indexterm><primary>number, arccosine value of a</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-RxCalcArcCos(number--+--------------------------+--)--------><
+                        |                 +--D--+  |
+                        +--, precision, --+--R--+--+
+                                          +--G--+
+]]>
+</programlisting>
+<para>Returns the arccosine of number, where the result can be expressed in degree [D],
+radian [R], or grade [G] units.</para>
+<para>Parameters:</para>
+<variablelist>
+   <varlistentry>
+      <term>number</term>
+      <listitem><para>The number for which the arccosine is to be calculated.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>precision</term>
+      <listitem><para>The precision of the calculation. If a value is not specified, the precision of
+      the calling Rexx activity is used. If the precision exceeds 16 digits, the call
+      will fail.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>D</term>
+      <listitem><para>Indicates that the result is expressed in degrees. This is the default.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>R</term>
+      <listitem><para>Indicates that the result is expressed in radians.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>G</term>
+      <listitem><para>Indicates that the result is expressed in grades.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section><title>RxCalcArcTan()</title>
+<indexterm><primary>RxCalcArcTan</primary></indexterm>
+<indexterm><primary>functions</primary>
+<secondary>RxCalcArcTan</secondary></indexterm>
+<indexterm><primary>arctangent value of a number</primary></indexterm>
+<indexterm><primary>number, arctangent value of a</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-RxCalcArcTan(number--+--------------------------+--)--------><
+                        |                 +--D--+  |
+                        +--, precision, --+--R--+--+
+                                          +--G--+
+]]>
+</programlisting>
+<para>Returns the arctangent of number, where the result can be expressed in degree [D],
+radian [R], or grade [G] units.</para>
+<para>Parameters:</para>
+<variablelist>
+   <varlistentry>
+      <term>number</term>
+      <listitem><para>The number for which the arctangent is to be calculated.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>precision</term>
+      <listitem><para>The precision of the calculation. If a value is not specified, the precision of
+      the calling Rexx activity is used. If the precision exceeds 16 digits, the call
+      will fail.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>D</term>
+      <listitem><para>Indicates that the result is expressed in degrees. This is the default.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>R</term>
+      <listitem><para>Indicates that the result is expressed in radians.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>G</term>
+      <listitem><para>Indicates that the result is expressed in grades.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+</chapter>
+
+&notices;
+&cpl;
+
+&genindex;
+
+</book>
+

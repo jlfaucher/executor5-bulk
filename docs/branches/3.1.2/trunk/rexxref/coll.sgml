@@ -1,0 +1,3778 @@
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Reference SGML file.
+    #
+    # Copyright (c) 2005-2007, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    # Author(s):
+    #      W. David Ashley <dashley@us.ibm.com>
+    #
+    #########################################################################
+-->
+<chapter id="coll"><title>The Collection Classes</title>
+<indexterm><primary>collection classes</primary></indexterm>
+<para>A collection is an object that contains a number of
+<emphasis role="italic">items</emphasis>, which can be any objects. Every item
+stored in a Rexx collection has an associated index that you can use to
+retrieve the item from the collection with the AT or [] methods.</para>
+<para>Each collection defines its own acceptable index types. Rexx provides the
+following collection classes:</para>
+
+<formalpara><title>Collections that do not have set operations:</title>
+<para>
+<variablelist>
+<varlistentry><term>Array</term>
+<listitem><para>A sequenced collection of objects ordered by whole-number
+indexes. See <link linkend="xarray">The Array Class</link> for details.
+</para></listitem></varlistentry>
+<varlistentry><term>List</term>
+<listitem><para>A sequenced collection that lets you add new items at any position in
+the sequence. A list generates and returns an index value for each item placed
+in the list. The returned index remains valid until the item is removed from
+the list. See <link linkend="list">The List Class</link> for details.
+</para></listitem></varlistentry>
+<varlistentry><term>Queue</term>
+<listitem><para>A sequenced collection with the items ordered as a queue. You can remove
+items from the head of the queue and add items at either its tail or its head.
+Queues index the items with whole-number indexes, in the order in which the
+items would be removed. The current head of the queue has index 1, the item
+after the head item has index 2, up to the number of items in the queue. See
+<link linkend="rxqcl">The Queue Class</link> for details.
+</para></listitem></varlistentry>
+<varlistentry><term>CircularQueue</term>
+<listitem><para>
+The CircularQueue class allows for storing objects in a circular queue
+of a predefined size. Once the end of the queue has been reached, new item
+objects are inserted from the beginning, replacing earlier entries.
+The collected objects can be processed in FIFO (first in, first out) or in a
+stack-like LIFO (last in, first out) order.
+See <link linkend="rxcqcl">The CircularQueue Class</link> for details
+</para></listitem>
+</varlistentry>
+</variablelist>
+</para>
+</formalpara>
+
+<formalpara><title>Collections that have set operations:</title>
+<para>
+<variablelist>
+<varlistentry><term>Table</term>
+<listitem><para>A collection with indexes that can be any object. For example, string
+objects, array objects, alarm objects, or any user-created object can be a
+table index.  The table class determines the index match by using the == comparison
+method. A table contains no duplicate indexes. See
+<link linkend="table1">The Table Class</link> for details.
+</para></listitem></varlistentry>
+<varlistentry><term>Directory</term>
+<listitem><para>A collection with character string indexes. Index comparisons are performed
+using the string == comparison method. See
+<link linkend="diro">The Directory Class</link> for details.
+</para></listitem></varlistentry>
+<varlistentry><term>Relation</term>
+<listitem><para>A collection with indexes that can be any object (as with the table
+class). A relation can contain duplicate indexes. See
+<link linkend="relati">The Relation Class</link> for details.
+</para></listitem></varlistentry>
+<varlistentry><term>Set</term>
+<listitem><para>A collection where the index and the item are the same object. Set indexes
+can be any object (as with the table class) and each index is unique. See
+<link linkend="setcl">The Set Class</link> for details.
+</para></listitem></varlistentry>
+<varlistentry><term>Bag</term>
+<listitem><para>A collection where the index and the item are the same object. Bag indexes
+can be any object (as with the table class) and each index can appear more
+than once. See <link linkend="clbag">The Bag Class</link> for details.
+</para></listitem></varlistentry>
+</variablelist>
+</para>
+</formalpara>
+
+<para>The following sections describe the individual collection classes in
+alphabetical order and the methods that they define and inherit. It also
+describes the concept of set operations.</para>
+
+<section id="xarray"><title>The Array Class</title>
+<indexterm><primary>Array class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>Array class</secondary></indexterm>
+<para> An array is a possibly sparse collection with indexes
+that are positive whole numbers. You can reference array items by using one
+or more indexes. The number of indexes is the same as the number of dimensions
+of the array. This number is called the dimensionality of the array.</para>
+<para>Array objects are variable-sized. The dimensionality of an array is fixed,
+but the size of each dimension is variable. When you create an array, you
+can specify a hint about how many elements you expect to put into the array
+or the array's dimensionality. However, you do not need to specify a size
+or dimensionality of an array when you are creating it. You can use any
+whole-number indexes to reference items in an array.</para>
+<para><emphasis role="bold">Methods the Array class defines:</emphasis></para>
+<simplelist>
+<member>NEW (Class method.&nbsp;&nbsp;Overrides Object class method.)</member>
+<member>OF (Class method)</member>
+<member>[]</member>
+<member>[]=</member>
+<member>AT</member>
+<member>DIMENSION</member>
+<member>FIRST</member>
+<member>HASINDEX</member>
+<member>ITEMS</member>
+<member>LAST</member>
+<member>MAKEARRAY</member>
+<member>MAKESTRING</member>
+<member>NEXT</member>
+<member>PREVIOUS</member>
+<member>PUT</member>
+<member>REMOVE</member>
+<member>SECTION</member>
+<member>SIZE</member>
+<member>SUPPLIER</member>
+</simplelist>
+<para><emphasis role="bold">Methods inherited from the Object class:</emphasis>
+</para>
+<simplelist>
+<member>Operator methods: =, ==, \=, &gt;&lt;, &lt;&gt;, \==</member>
+<member>CLASS</member>
+<member>COPY</member>
+<member>DEFAULTNAME</member>
+<member>HASMETHOD</member>
+<member>OBJECTNAME</member>
+<member>OBJECTNAME=</member>
+<member>REQUEST</member>
+<member>RUN</member>
+<member>SETMETHOD</member>
+<member>START</member>
+<member>STRING</member>
+<member>UNSETMETHOD</member>
+</simplelist>
+
+
+<note><title>Note</title>
+<para>The Array class also has available class methods that its
+metaclass, the Class class, defines.</para></note>
+
+<section id="anew"><title>NEW (Class Method)</title>
+<indexterm><primary>NEW method</primary>
+<secondary>of Array class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>NEW method</secondary>
+<tertiary>of Array class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-NEW-+----------------+--------------------------------------><
+       |    +-,----+    |
+       |    V      |    |
+       +-(----size-+--)-+
+]]>
+</programlisting>
+
+<para> Returns a new empty array. If you specify
+any <emphasis role="italic">size</emphasis>,
+the size is taken as a hint about how big each dimension
+should be. The language processor uses this only to allocate the array object
+initially. For multiple dimension arrays, you can also specify how much space
+is to be allocated initially for each dimension of the array.</para>
+<para>Each <emphasis role="italic">size</emphasis> argument must be
+<computeroutput>0</computeroutput> or a positive whole number.
+If it is <computeroutput>0</computeroutput>, the corresponding dimension is
+initially empty.</para>
+</section>
+
+<section id="arof"><title>OF (Class Method)</title>
+<indexterm><primary>OF method</primary>
+<secondary>of Array class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>OF method</secondary>
+<tertiary>of Array class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-OF-+----------------+---------------------------------------><
+      |    +-,----+    |
+      |    V      |    |
+      +-(----item-+--)-+
+]]>
+</programlisting>
+
+<para>Returns a newly created
+single-index array containing the specified
+<emphasis role="italic">item</emphasis> objects. The first
+<emphasis role="italic">item</emphasis> has index 1, the second has index 2,
+and so on.</para>
+<para>If you use the OF method and omit any argument items, the returned array
+does not include the indexes corresponding to those you omitted.</para>
+</section>
+
+<section id="xarlbrk"><title>[]</title>
+<indexterm><primary>[] method</primary>
+<secondary>of Array class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>[] method</secondary>
+<tertiary>of Array class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+     +-,-----+
+     V       |
+>>-[---index-+-]-----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the same value as the AT method, which follows. See
+<link linkend="arat">AT</link>.</para>
+</section>
+
+<section id="arlbre"><title>[]=</title>
+<indexterm><primary>[]= method</primary>
+<secondary>of Array class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>[]= method</secondary>
+<tertiary>of Array class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+     +-,-----+
+     V       |
+>>-[---index-+-]=value-----------------------------------------><
+]]>
+</programlisting>
+
+<para>This method is the same as the PUT method, which follows. See
+<link linkend="arput">PUT</link>.</para>
+</section>
+
+<section id="arat"><title>AT</title>
+<indexterm><primary>AT method</primary>
+<secondary>of Array class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>AT method</secondary>
+<tertiary>of Array class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+       +-,-----+
+       V       |
+>>-AT(---index-+-)---------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the item associated with the specified
+<emphasis role="italic">index</emphasis> or
+<emphasis role="italic">index</emphasis>es. If the array has no item associated
+with the specified <emphasis role="italic">index</emphasis> or
+<emphasis role="italic">index</emphasis>es, this method returns the
+NIL object.</para>
+</section>
+
+<section id="adim"><title>DIMENSION</title>
+<indexterm><primary>DIMENSION method</primary>
+<secondary>of Array class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>DIMENSION method</secondary>
+<tertiary>of Array class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-DIMENSION-+-----+-------------------------------------------><
+             +-(n)-+
+]]>
+</programlisting>
+
+<para>Returns the current size (upper bound) of dimension
+<emphasis role="italic">n</emphasis> (a positive
+whole number). If you omit <emphasis role="italic">n</emphasis>,
+this method returns the dimensionality
+(number of dimensions) of the array. If the number of dimensions has not been
+determined, DIMENSION returns <computeroutput>0</computeroutput>.</para>
+</section>
+
+<section id="arfirs"><title>FIRST</title>
+<indexterm><primary>FIRST method</primary>
+<secondary>of Array class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>FIRST method</secondary>
+<tertiary>of Array class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-FIRST-------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the index of the first item in the array or the NIL object if the
+array is empty. The FIRST method is valid only for single-index arrays.</para>
+</section>
+
+<section id="arhasi"><title>HASINDEX</title>
+<indexterm><primary>HASINDEX method</primary>
+<secondary>of Array class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>HASINDEX method</secondary>
+<tertiary>of Array class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+             +-,-----+
+             V       |
+>>-HASINDEX(---index-+-)---------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>1</computeroutput> (true) if the array contains
+an item associated with the specified index or indexes. Returns
+<computeroutput>0</computeroutput> (false) otherwise.</para>
+</section>
+
+<section id="aritms"><title>ITEMS</title>
+<indexterm><primary>ITEMS method</primary>
+<secondary>of Array class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>ITEMS method</secondary>
+<tertiary>of Array class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-ITEMS-------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the number of items in the collection.</para>
+</section>
+
+<section id="arlast"><title>LAST</title>
+<indexterm><primary>LAST method</primary>
+<secondary>of Array class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>LAST method</secondary>
+<tertiary>of Array class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-LAST--------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the index of the last item in the array or the NIL object if the
+array is empty. The LAST method is valid only for single-index arrays.</para>
+</section>
+
+<section id="armaka"><title>MAKEARRAY</title>
+<indexterm><primary>MAKEARRAY method</primary>
+<secondary>of Array class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>MAKEARRAY method</secondary>
+<tertiary>of Array class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-MAKEARRAY---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a single-index array with the same number of items as the receiver
+object. Any index with no associated item is omitted from the new array.
+Items in the new array will have the same order as the source array.
+</para>
+</section>
+
+<section id="armks"><title>MAKESTRING</title>
+<indexterm><primary>MAKESTRING method</primary>
+<secondary>of Array class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>MAKESTRING method</secondary>
+<tertiary>of Array class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+                 +-(LINE)--+
+>>-MAKESTRING----+---------+------><
+                 +-(CHAR)--+
+]]>
+</programlisting>
+
+<para>Returns a stream that contains the data of an array (one to n dimensional).
+The elements of the array are treated either in line or character format,
+starting at the first element in the array. The line format is the default.</para>
+</section>
+
+<section id="arnx"><title>NEXT</title>
+<indexterm><primary>NEXT method</primary>
+<secondary>of Array class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>NEXT method</secondary>
+<tertiary>of Array class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-NEXT(index)-------------------------------------------------><
+]]>
+</programlisting>
+
+<para>  Returns the index of the item that
+follows the array item having index <emphasis role="italic">index</emphasis>
+or returns the NIL object if the item having that index is last in the array.
+The NEXT method is valid only for single-index arrays.</para>
+</section>
+
+<section id="arprev"><title>PREVIOUS</title>
+<indexterm><primary>PREVIOUS method</primary>
+<secondary>of Array class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>PREVIOUS method</secondary>
+<tertiary>of Array class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-PREVIOUS(index)---------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the index of the item that precedes the array item having index
+<emphasis role="italic">index</emphasis> or the NIL object if the
+item having that index is first in the
+array. The PREVIOUS method is valid only for single-index arrays.</para>
+</section>
+
+<section id="arput"><title>PUT</title>
+<indexterm><primary>PUT method</primary>
+<secondary>of Array class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>PUT method</secondary>
+<tertiary>of Array class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+            +--------+
+            V        |
+>>-PUT(item---,index-+-)---------------------------------------><
+]]>
+</programlisting>
+
+<para>Makes the object <emphasis role="italic">item</emphasis>
+a member item of the array and associates it with the specified
+<emphasis role="italic">index</emphasis> or
+<emphasis role="italic">index</emphasis>es. This replaces any
+existing item associated with the specified
+<emphasis role="italic">index</emphasis> or
+<emphasis role="italic">index</emphasis>es
+with the new item. If the <emphasis role="italic">index</emphasis> for a
+particular dimension is greater than the current size of
+that dimension, the array is expanded to the new dimension size.</para>
+</section>
+
+<section id="arremo"><title>REMOVE</title>
+<indexterm><primary>REMOVE method</primary>
+<secondary>of Array class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>REMOVE method</secondary>
+<tertiary>of Array class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+           +-,-----+
+           V       |
+>>-REMOVE(---index-+-)-----------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns and removes the member item with the specified
+<emphasis role="italic">index</emphasis> or
+<emphasis role="italic">index</emphasis>es from the array. If there is no
+item with the specified <emphasis role="italic">index</emphasis> or
+<emphasis role="italic">index</emphasis>es, the NIL object is returned and
+no item is removed.</para>
+</section>
+
+<section id="arsect"><title>SECTION</title>
+<indexterm><primary>SECTION method</primary>
+<secondary>of Array class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>SECTION method</secondary>
+<tertiary>of Array class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SECTION(start-+--------+-)----------------------------------><
+                 +-,items-+
+]]>
+</programlisting>
+
+<para>Returns a new array (of the same class as the receiver) containing selected
+items from the receiver array. The first item in the new array is the item
+corresponding to index <emphasis role="italic">start</emphasis>
+in the receiver array. Subsequent items in the new array correspond to those
+in the receiver array (in the same sequence). If you specify the whole number
+<emphasis role="italic">items</emphasis>, the new array contains only
+this number of items (or the number of subsequent items in the receiver array,
+if this is less than <emphasis role="italic">items</emphasis>).
+If you do not specify <emphasis role="italic">items</emphasis>,
+the new array contains all subsequent items of the receiver array. The receiver
+array remains unchanged. The SECTION method is valid only for single-index
+arrays.</para>
+</section>
+
+<section id="asiz"><title>SIZE</title>
+<indexterm><primary>SIZE method</primary>
+<secondary>of Array class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>SIZE method</secondary>
+<tertiary>of Array class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SIZE--------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the number of items that can be placed in the array before it needs
+to be extended. This value is the same as the product of the sizes of the
+dimensions in the array.</para>
+</section>
+
+<section id="arclsu"><title>SUPPLIER</title>
+<indexterm><primary>SUPPLIER method</primary>
+<secondary>of Array class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>SUPPLIER method</secondary>
+<tertiary>of Array class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+-SUPPLIER----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a supplier object for the collection. After you have obtained a
+supplier, you can send it messages (see
+<link linkend="supp">The Supplier Class</link>) to enumerate
+all the items that were in the array at the time of the supplier's creation.
+The supplier enumerates the array items in their sequenced order.</para>
+</section>
+
+<section id="arex"><title>Examples</title>
+<indexterm><primary>examples</primary>
+<secondary>of Array class</secondary></indexterm>
+<programlisting>
+array1=.array~of(1,2,3,4)  /* Loads the array */
+
+/* Alternative way to create and load an array */
+array2=.array~new(4)  /* Creates array2, containing 4 items */
+do i=1 to 4                   /* Loads the array */
+  array2[i]=i
+end
+</programlisting>
+<para>You can produce the elements loaded into an array, for example: </para>
+<programlisting>
+do i=1 to 4
+  say array1[i]
+end
+</programlisting>
+<para>If you omit any argument values before arguments you supply, the corresponding
+indexes are skipped in the returned array: </para>
+<programlisting>
+directions=.array~of("North","South", ,"West")
+do i=1 to 4                                  /* Produces: North          */
+  say directions[i]                          /*           South          */
+                                             /*           The NIL object */
+end                                          /*           West           */
+</programlisting>
+
+<para>Here is an example using the ~~: </para>
+<programlisting>
+z=.array~of(1,2,3)~~put(4,4)
+do i = 1 to z~size
+  say z[i]              /* Produces:  1 2 3 4 */
+end
+</programlisting>
+</section>
+</section>
+
+<section id="clbag"><title>The Bag Class</title>
+<indexterm><primary>Bag class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>Bag class</secondary></indexterm>
+<para>A bag is a collection that restricts the elements
+to having an item that is the same as the index. Any object can be placed
+in a bag, and the same object can be placed in a bag several times.</para>
+<para>The Bag class is a subclass of the Relation class. In addition to its own
+methods, it inherits the methods of the Object class and the Relation class.</para>
+<para><emphasis role="bold">Methods the Bag class defines:</emphasis></para>
+<simplelist>
+<member>OF (Class method)</member>
+<member>[]</member>
+<member>[]= (Overrides Relation class method)</member>
+<member>HASINDEX</member>
+<member>MAKEARRAY</member>
+<member>PUT (Overrides Relation class method)</member>
+<member>SUPPLIER</member>
+</simplelist>
+<para><emphasis role="bold">Methods inherited from the Relation class:</emphasis>
+</para>
+<simplelist>
+<member>ALLAT</member>
+<member>ALLINDEX</member>
+<member>AT</member>
+<member>HASITEM</member>
+<member>INDEX</member>
+<member>ITEMS</member>
+<member>REMOVE</member>
+<member>REMOVEITEM</member>
+</simplelist>
+<para><emphasis role="bold">Set-operator methods inherited from the Relation class:</emphasis>
+</para>
+<simplelist>
+<member>DIFFERENCE</member>
+<member>INTERSECTION</member>
+<member>SUBSET</member>
+<member>UNION</member>
+<member>XOR</member>
+</simplelist>
+<para><emphasis role="bold">Methods inherited from the Object class:</emphasis>
+</para>
+<simplelist>
+<member>NEW (Class method)</member>
+<member>Operator methods: =, ==, \=, >&lt;, &lt;&gt;, \==</member>
+<member>CLASS</member>
+<member>COPY</member>
+<member>DEFAULTNAME</member>
+<member>HASMETHOD</member>
+<member>INIT</member>
+<member>OBJECTNAME</member>
+<member>OBJECTNAME=</member>
+<member>REQUEST</member>
+<member>RUN</member>
+<member>SETMETHOD</member>
+<member>START</member>
+<member>STRING</member>
+<member>UNSETMETHOD</member>
+</simplelist>
+
+<note><title>Note</title>
+<para>The Bag class also has available class methods that its metaclass,
+the Class class, defines.</para></note>
+
+<section id="baof"><title>OF (Class Method)</title>
+<indexterm><primary>OF method</primary>
+<secondary>of Bag class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>OF method</secondary>
+<tertiary>of Bag class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+       +-,----+
+       V      |
+>>-OF(---item-+-)----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a newly created bag containing the specified
+<emphasis role="italic">item</emphasis> objects.</para>
+</section>
+
+<section id="babrak"><title>[]</title>
+<indexterm><primary>[] method</primary>
+<secondary>of Bag class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>[] method</secondary>
+<tertiary>of Bag class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-[index]-----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the same value as the AT method in the Relation class. See
+<link linkend="reat">AT</link>.</para>
+</section>
+
+<section id="balbe"><title>[]=</title>
+<indexterm><primary>[]= method</primary>
+<secondary>of Bag class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>[]= method</secondary>
+<tertiary>of Bag class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-[index]=item------------------------------------------------><
+]]>
+</programlisting>
+
+<para>This method is the same as the PUT method. See
+<link linkend="baput">PUT</link>.</para>
+</section>
+
+<section id="bahasi"><title>HASINDEX</title>
+<indexterm><primary>HASINDEX method</primary>
+<secondary>of Bag class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>HASINDEX method</secondary>
+<tertiary>of Bag class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-HASINDEX(index)---------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>1</computeroutput> (true) if the collection
+contains any item associated with index <emphasis role="italic">index</emphasis>,
+or <computeroutput>0</computeroutput> (false).</para>
+</section>
+
+<section id="bamaka"><title>MAKEARRAY</title>
+<indexterm><primary>MAKEARRAY method</primary>
+<secondary>of Bag class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>MAKEARRAY method</secondary>
+<tertiary>of Bag class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-MAKEARRAY---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a single-index array containing the index objects. The array indexes
+range from <computeroutput>1</computeroutput> to the number of items.
+The collection items appear in the array in an unspecified order. (The program
+should not rely on any order.)</para>
+</section>
+
+<section id="baput"><title>PUT</title>
+<indexterm><primary>PUT method</primary>
+<secondary>of Bag class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>PUT method</secondary>
+<tertiary>of Bag class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-PUT(item-+--------+-)---------------------------------------><
+            +-,index-+
+]]>
+</programlisting>
+
+<para>Makes the object <emphasis role="italic">item</emphasis> a member item of
+the collection and associates it with index
+<emphasis role="italic">index</emphasis>. If you specify
+<emphasis role="italic">index</emphasis>, it must be the
+same as <emphasis role="italic">item</emphasis>.</para>
+</section>
+
+<section id="basupp"><title>SUPPLIER</title>
+<indexterm><primary>SUPPLIER method</primary>
+<secondary>of Bag class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>SUPPLIER method</secondary>
+<tertiary>of Bag class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SUPPLIER----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a supplier object for the collection. After you have obtained a
+supplier, you can send it messages (see
+<link linkend="supp">The Supplier Class</link>) to enumerate
+all the items that were in the collection at the time of the supplier's
+creation. The supplier enumerates the items in an unspecified order. (The
+program should not rely on any order.)</para>
+</section>
+
+<section id="bagex"><title>Examples</title>
+<indexterm><primary>examples</primary>
+<secondary>of Bag class</secondary></indexterm>
+<programlisting>
+/* Create a bag of fruit */
+fruit = .bag~of("Apple", "Orange", "Apple", "Pear")
+say fruit~items          /* How many pieces? (4)      */
+say fruit~items("Apple") /* How many apples? (2)      */
+fruit~remove("Apple")    /* Remove one of the apples. */
+fruit~~put("Banana")~put("Orange") /* Add a couple.   */
+say fruit~items          /* How many pieces? (5)      */
+</programlisting>
+</section>
+</section>
+
+<section id="rxcqcl"><title>The CircularQueue Class</title>
+<indexterm>
+<primary>class</primary>
+<secondary>CircularQueue class</secondary>
+</indexterm>
+<indexterm>
+<primary>CircularQueue class</primary>
+</indexterm>
+
+<para>
+The CircularQueue class allows for storing objects in a circular queue
+of a predefined size. Once the end of the queue has been reached, new item
+objects are inserted from the beginning, replacing earlier entries.
+</para>
+<para>
+The collected objects can be processed in FIFO (first in, first out) or in a
+stack-like LIFO (last in, first out) order.
+</para>
+<para>
+The CircularQueue class is a subclass of the Queue class. In addition to its own
+methods it inherits the methods of the Queue class (see <link linkend="rxqcl">The Queue class</link>)
+and the Object class (see <link linkend="objc">The Object Class</link>)
+</para>
+
+<para><emphasis role="bold">Methods the CircularQueue class defines:</emphasis></para>
+<simplelist>
+<member>OF (Class method)</member>
+<member>INIT</member>
+<member>MAKEARRAY</member>
+<member>PUSH</member>
+<member>QUEUE</member>
+<member>RESIZE</member>
+<member>SIZE</member>
+<member>STRING</member>
+<member>SUPPLIER</member>
+</simplelist>
+
+<para><emphasis role="bold">Methods inherited from the Queue class:</emphasis></para>
+<simplelist>
+<member>[]</member>
+<member>[]=</member>
+<member>AT</member>
+<member>HASINDEX</member>
+<member>ITEMS</member>
+<member>MAKEARRAY</member>
+<member>PEEK</member>
+<member>PULL</member>
+<member>PUSH</member>
+<member>PUT</member>
+<member>QUEUE</member>
+<member>REMOVE</member>
+<member>SUPPLIER</member>
+</simplelist>
+
+<para><emphasis role="bold">Methods inherited from the Object class:</emphasis></para>
+<simplelist>
+<member>NEW (Class method)</member>
+<member>Operator methods: =, ==, \=, &gt;&lt;, &lt;&gt;, \==</member>
+<member>CLASS</member>
+<member>COPY</member>
+<member>DEFAULTNAME</member>
+<member>HASMETHOD</member>
+<member>INIT</member>
+<member>OBJECTNAME</member>
+<member>OBJECTNAME=</member>
+<member>REQUEST</member>
+<member>RUN</member>
+<member>SETMETHOD</member>
+<member>START</member>
+<member>STRING</member>
+<member>UNSETMETHOD</member>
+</simplelist>
+
+<note><title>Note</title>
+<para>
+The CircularQueue class also has available class methods that its
+metaclass, the Class class, defines.
+</para>
+</note>
+
+<section id="cquof"><title>OF (Class Method)</title>
+<indexterm><primary>OF method</primary>
+<secondary>of CircularQueue class</secondary>
+</indexterm>
+<indexterm><primary>method</primary>
+<secondary>OF method</secondary>
+<tertiary>of CircularQueue class</tertiary>
+</indexterm>
+
+<programlisting>
+<![CDATA[
+>>-OF-+----------------+---------------------------------------><
+      |    +-,----+    |
+      |    V      |    |
+      +-(----item-+--)-+
+]]>
+</programlisting>
+
+<para>
+Returns a newly created circular queue containing the specified
+<emphasis role="italic">item</emphasis> objects. The first
+<emphasis role="italic">item</emphasis> has index 1, the second has index 2,
+and so on. The number of <emphasis role="italic">item</emphasis> objects
+determines the <emphasis role="italic">size</emphasis> of the circular queue.
+</para>
+</section>
+
+<section id="cquini"><title>INIT</title>
+<indexterm><primary>INIT method</primary>
+<secondary>of CircularQueue class</secondary>
+</indexterm>
+<indexterm><primary>method</primary>
+<secondary>INIT method</secondary>
+<tertiary>of CircularQueue class</tertiary>
+</indexterm>
+
+<programlisting>
+<![CDATA[
+>>-INIT(size)--------------------------------------------------><
+]]>
+</programlisting>
+
+<para>
+Constructor method invoked by the NEW method, which determines the
+<emphasis role="italic">size</emphasis> of the circular queue.
+</para>
+</section>
+
+
+<section id="cqumak"><title>MAKEARRAY</title>
+<indexterm><primary>MAKEARRAY method</primary>
+<secondary>of CircularQueue class</secondary>
+</indexterm>
+<indexterm><primary>method</primary>
+<secondary>MAKEARRAY method</secondary>
+<tertiary>of CircularQueue class</tertiary>
+</indexterm>
+
+<programlisting>
+<![CDATA[
+              +-Fifo----+
+>>-MAKEARRAY(-+---------+-)------------------------------------><
+              +--order--+
+]]>
+</programlisting>
+
+<para>
+Returns a single-index array containing the items of the circular queue in the
+specified <emphasis role="italic">order</emphasis>.
+</para>
+
+<para>
+The following <emphasis role="italic">order</emphasis> can be used. (Only
+the capitalized letter is needed; all characters following it are ignored.)
+</para>
+
+<variablelist>
+<varlistentry><term>Fifo</term>
+<listitem>
+<para>First-in, first-out, default
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Lifo</term>
+<listitem>
+<para>Last-in, first-out (stacklike)
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</section>
+
+<section id="cqupush"><title>PUSH</title>
+<indexterm><primary>PUSH method</primary>
+<secondary>of CircularQueue class</secondary>
+</indexterm>
+<indexterm><primary>method</primary>
+<secondary>PUSH method</secondary>
+<tertiary>of CircularQueue class</tertiary>
+</indexterm>
+
+<programlisting>
+<![CDATA[
+>>-PUSH(item)--------------------------------------------------><
+]]>
+</programlisting>
+
+<para>
+Makes the object <emphasis role="italic">item</emphasis> a member item of
+the circular queue, inserting the item object in front of the first item in
+the queue. The pushed item object will be the new first item in the circular queue.
+</para>
+
+<para>
+If the circular queue is full, than the last item stored in the circular queue
+will be deleted, before the insertion takes place. In this case the
+<emphasis role="italic">deleted item</emphasis> will be returned, otherwise
+<emphasis role="italic">.nil</emphasis>.
+</para>
+</section>
+
+
+<section id="cquque"><title>QUEUE</title>
+<indexterm><primary>QUEUE method</primary>
+<secondary>of CircularQueue class</secondary>
+</indexterm>
+<indexterm><primary>method</primary>
+<secondary>QUEUE method</secondary>
+<tertiary>of CircularQueue class</tertiary>
+</indexterm>
+
+<programlisting>
+<![CDATA[
+>>-QUEUE(item)-------------------------------------------------><
+]]>
+</programlisting>
+
+<para>
+Makes the object <emphasis role="italic">item</emphasis> a member item of the circular queue, inserting the item
+at the end of the circular queue.
+</para>
+
+<para>
+If the circular queue is full, than the first item will be deleted, before the
+insertion takes place.  In this case the <emphasis role="italic">deleted item</emphasis>
+will be returned, otherwise <emphasis role="italic">.nil</emphasis>.
+</para>
+</section>
+
+<section id="cqures"><title>RESIZE</title>
+<indexterm><primary>RESIZE method</primary>
+<secondary>of CircularQueue class</secondary>
+</indexterm>
+<indexterm><primary>method</primary>
+<secondary>RESIZE method</secondary>
+<tertiary>of CircularQueue class</tertiary>
+</indexterm>
+
+<programlisting>
+<![CDATA[
+                   +--,Fifo---+
+>>-RESIZE(-newSize-+----------+-)------------------------------><
+                   +--,order--+
+]]>
+</programlisting>
+
+<para>
+Resizes the circular queue object to be able to contain
+<emphasis role="italic">newSize</emphasis> items.
+If the previous size was larger than <emphasis role="italic">newSize</emphasis>,
+then the now superfluous items are removed in the specified
+<emphasis role="italic">order</emphasis>.
+</para>
+
+<para>
+The following <emphasis role="italic">order</emphasis> can be used. (Only
+the capitalized letter is needed; all characters following it are ignored.)
+</para>
+
+<variablelist>
+<varlistentry><term>Fifo</term>
+<listitem>
+<para>First-in, first-out, default: keeps the newest entries
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Lifo</term>
+<listitem>
+<para>Last-in, first-out (stacklike): keeps the oldest entries
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+
+<note><title>Note:</title>
+<para>
+Resizing with a value of <computeroutput>0</computeroutput> effectively removes all
+items from the circular queue.
+</para>
+</note>
+</section>
+
+<section id="cqusize"><title>SIZE</title>
+<indexterm><primary>SIZE method</primary>
+<secondary>of CircularQueue class</secondary>
+</indexterm>
+<indexterm><primary>method</primary>
+<secondary>SIZE method</secondary>
+<tertiary>of CircularQueue class</tertiary>
+</indexterm>
+
+<programlisting>
+<![CDATA[
+>>-SIZE--------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>
+Returns the maximum number of objects that can be stored in the circular queue.
+</para>
+</section>
+
+<section id="cqustr"><title>STRING</title>
+<indexterm><primary>STRING method</primary>
+<secondary>of CircularQueue class</secondary>
+</indexterm>
+<indexterm><primary>method</primary>
+<secondary>STRING method</secondary>
+<tertiary>of CircularQueue class</tertiary>
+</indexterm>
+
+<programlisting>
+<![CDATA[
+           +--","------+  +-,-Fifo--+
+>>-STRING(-+-----------+--+---------+-)------------------------><
+           +-delimiter-+  +-,-order-+
+]]>
+</programlisting>
+
+<para>
+Returns a string object that concatenates the string values of the collected
+item objects, using the <emphasis role="italic">delimiter</emphasis> string
+to delimit them, in the specified <emphasis role="italic">order</emphasis>.
+The default <emphasis role="italic">delimiter</emphasis> is a single comma.
+</para>
+
+<para>
+If the delimiter string argument is omitted the comma character
+(<computeroutput>","</computeroutput>) is used as the default delimiter string.
+</para>
+
+<para>
+The following <emphasis role="italic">order</emphasis> can be used. (Only
+the capitalized letter is needed; all characters following it are ignored.)
+</para>
+
+<variablelist>
+<varlistentry><term>Fifo</term>
+<listitem>
+<para>First-in, first-out, default
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Lifo</term>
+<listitem>
+<para>Last-in, first-out (stacklike)
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</section>
+
+<section id="cqusupp"><title>SUPPLIER</title>
+<indexterm><primary>SUPPLIER method</primary>
+<secondary>of CircularQueue class</secondary>
+</indexterm>
+<indexterm><primary>method</primary>
+<secondary>SUPPLIER method</secondary>
+<tertiary>of CircularQueue class</tertiary>
+</indexterm>
+
+<programlisting>
+<![CDATA[
+             +--Fifo----+
+>>-SUPPLIER(-+----------+-)------------------------------------><
+             +--order---+
+]]>
+</programlisting>
+
+<para>
+Returns a supplier object for the collection. After you have obtained a
+supplier, you can send it messages (see
+<link linkend="supp">The Supplier Class</link>) to enumerate
+all the items that were in the queue at the time of the supplier's creation.
+</para>
+
+<para>
+The supplier will enumerate the items in the specified
+<emphasis role="italic">order</emphasis>. (Only the capitalized
+letter is needed; all characters following it are ignored.)
+</para>
+
+<variablelist>
+<varlistentry><term>Fifo</term>
+<listitem>
+<para>First-in, first-out, default
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Lifo</term>
+<listitem>
+<para>Last-in, first-out (stacklike)
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</section>
+
+<section id="cquex"><title>Example</title>
+<indexterm>
+<primary>examples</primary>
+<secondary>of CircularQueue class</secondary>
+</indexterm>
+
+<programlisting>
+  -- create a circular buffer with five items
+u=.circularQueue~of("a", "b", "c", "d", "e")
+say "content: ["u"]," "content (LIFO): ["u~string("->","L")"]"
+say
+
+u~resize(4, "FIFO")     -- resize fifo-style (keep newest)
+say "after resizing to 4 items in FIFO style (keeping the newest):"
+say "content: ["u"]," "content (LIFO): ["u~string("->","L")"]"
+say
+
+u~resize(2, "LILO")     -- resize lifo-style (keep oldest)
+say "after resizing to 2 items in LIFO style (keeping the oldest):"
+say "content: ["u"]," "content (LIFO): ["u~string("->","L")"]"
+say
+
+u~resize(0)             -- resize lifo-style (keep oldest)
+say "after resizing to 0 items, thereby deleting all items:"
+say "content: ["u"]," "content (LIFO): ["u~string("->","L")"]"
+say
+
+u~resize(2)             -- resize lifo-style (keep oldest)
+say "after resizing to 2, size="u~size "and items="u~items
+u~~queue(&apos;x&apos;)~~queue(&apos;y&apos;)~~queue(&apos;z&apos;)
+say "after queuing the three items &apos;x&apos;, &apos;y&apos;, &apos;z&apos;:"
+say "content: ["u"]," "content (LIFO): ["u~string("->","L")"]"
+say
+
+u~~push(&apos;1&apos;)~~push(&apos;2&apos;)~~push(&apos;3&apos;)
+say "after pushing the three items &apos;1&apos;, &apos;2&apos;, &apos;3&apos;:"
+say "content: ["u"]," "content (LIFO): ["u~string("->","L")"]"
+say
+</programlisting>
+
+<para>
+Output:
+</para>
+
+<programlisting>
+content: [a,b,c,d,e], content (LIFO): [e->d->c->b->a]
+
+after resizing to 4 items in FIFO style (keeping the newest):
+content: [b,c,d,e], content (LIFO): [e->d->c->b]
+
+after resizing to 2 items in LIFO style (keeping the oldest):
+content: [b,c], content (LIFO): [c->b]
+
+after resizing to 0 items, thereby deleting all items:
+content: [], content (LIFO): []
+
+after resizing to 2, size=2 and items=0
+after queuing the three items &apos;x&apos;, &apos;y&apos;, &apos;z&apos;:
+content: [y,z], content (LIFO): [z->y]
+
+after pushing the three items &apos;1&apos;, &apos;2&apos;, &apos;3&apos;:
+content: [3,2], content (LIFO): [2->3]
+</programlisting>
+</section>
+</section>
+
+<section id="diro"><title>The Directory Class</title>
+<indexterm><primary>Directory class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>Directory class</secondary></indexterm>
+<para>A directory is a collection with unique
+indexes that are character strings representing names.</para>
+<para>Directories let you refer to objects by name, for example:</para>
+<programlisting>
+.environment~array
+</programlisting>
+<para>For directories, items are often referred to as entries.</para>
+<para><emphasis role="bold">Methods the Directory class defines:</emphasis>
+</para>
+<simplelist>
+<member>[]</member>
+<member>[]=</member>
+<member>AT</member>
+<member>ENTRY</member>
+<member>HASENTRY</member>
+<member>HASINDEX</member>
+<member>ITEMS</member>
+<member>MAKEARRAY</member>
+<member>PUT</member>
+<member>REMOVE</member>
+<member>SETENTRY</member>
+<member>SETMETHOD (Overrides Object class method)</member>
+<member>SUPPLIER</member>
+<member>UNKNOWN</member>
+</simplelist>
+<para><emphasis role="bold">Set-operator methods the Directory class defines:</emphasis>
+</para>
+<simplelist>
+<member>DIFFERENCE</member>
+<member>INTERSECTION</member>
+<member>SUBSET</member>
+<member>UNION</member>
+<member>XOR</member>
+</simplelist>
+<para><emphasis role="bold">Methods Inherited from the Object Class:</emphasis>
+</para>
+<simplelist>
+<member>NEW (Class method)</member>
+<member>Operator methods: =, ==, \=, &gt;&lt;, &lt;&gt;, \==</member>
+<member>CLASS</member>
+<member>COPY</member>
+<member>DEFAULTNAME</member>
+<member>HASMETHOD</member>
+<member>INIT</member>
+<member>OBJECTNAME</member>
+<member>OBJECTNAME=</member>
+<member>REQUEST</member>
+<member>RUN</member>
+<member>START</member>
+<member>STRING</member>
+<member>UNSETMETHOD</member>
+</simplelist>
+
+<note><title>Note</title>
+<para>The Directory class also has available class methods that
+its metaclass, the Class class, defines.</para></note>
+
+<section id="dibrak"><title>[]</title>
+<indexterm><primary>[] method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>[] method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-[name]------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the same item as the AT method, which follows. See
+<link linkend="diat">AT</link>.</para>
+</section>
+
+<section id="dibrae"><title>[]=</title>
+<indexterm><primary>[]= method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>[]= method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-[name]=item-------------------------------------------------><
+]]>
+</programlisting>
+
+<para>This method is the same as the PUT method. See
+<link linkend="dirput">PUT</link>.</para>
+</section>
+
+<section id="diat"><title>AT</title>
+<indexterm><primary>AT method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>AT method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-AT(name)----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the item associated with index
+<emphasis role="italic">name</emphasis>. If a method that
+SETMETHOD supplies is associated with index
+<emphasis role="italic">name</emphasis>, the result of running
+this method is returned. If the collection has no item or method associated
+with index <emphasis role="italic">name</emphasis>, this method returns
+the NIL object.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+say .environment~AT("OBJECT")   /* Produces: "The Object class" */
+</programlisting>
+</section>
+
+<section id="dientr"><title>ENTRY</title>
+<indexterm><primary>ENTRY method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>ENTRY method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-ENTRY(name)-------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the directory entry with name
+<emphasis role="italic">name</emphasis> (translated to uppercase).
+If there is no such entry, <emphasis role="italic">name</emphasis>
+returns the item for any method that SETMETHOD supplied. If there is
+neither an entry nor a method for <emphasis role="italic">name</emphasis>
+or for UNKNOWN, the language processor raises an error.</para>
+</section>
+
+<section id="dihase"><title>HASENTRY</title>
+<indexterm><primary>HASENTRY method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>HASENTRY method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-HASENTRY(name)----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>1</computeroutput> (true) if the directory has
+an entry or a method for name <emphasis role="italic">name</emphasis>
+(translated to uppercase), or <computeroutput>0</computeroutput> (false).</para>
+</section>
+
+<section id="dihasi"><title>HASINDEX</title>
+<indexterm><primary>HASINDEX method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>HASINDEX method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-HASINDEX(name)----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>1</computeroutput> (true) if the collection
+contains any item associated with index
+<emphasis role="italic">name</emphasis>, or <computeroutput>0</computeroutput>
+(false).</para>
+</section>
+
+<section id="diitms"><title>ITEMS</title>
+<indexterm><primary>ITEMS method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>ITEMS method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-ITEMS-------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the number of items in the collection.</para>
+</section>
+
+<section id="dimaka"><title>MAKEARRAY</title>
+<indexterm><primary>MAKEARRAY method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>MAKEARRAY method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-MAKEARRAY---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a single-index array containing the index objects. The array
+indexes range from <computeroutput>1</computeroutput> to the number of items.
+The collection items appear in the array in an unspecified order.
+(The program should not rely on any order.)</para>
+</section>
+
+<section id="dirput"><title>PUT</title>
+<indexterm><primary>PUT method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>PUT method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-PUT(item,name)----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Makes the object <emphasis role="italic">item</emphasis>
+a member item of the collection and associates
+it with index <emphasis role="italic">name</emphasis>.
+The new item replaces any existing item or method
+associated with index <emphasis role="italic">name</emphasis>.</para>
+</section>
+
+<section id="dirrem"><title>REMOVE</title>
+<indexterm><primary>REMOVE method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>REMOVE method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-REMOVE(name)------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns and removes the member item with index
+<emphasis role="italic">name</emphasis> from a collection.
+If a method is associated with SETMETHOD for index
+<emphasis role="italic">name</emphasis>, REMOVE removes
+the method and returns the result of running it. If there is no item or method
+with index <emphasis role="italic">name</emphasis>, the UNKNOWN method returns
+the NIL object and removes nothing.</para>
+</section>
+
+<section id="disete"><title>SETENTRY</title>
+<indexterm><primary>SETENTRY method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>SETENTRY method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SETENTRY(name-+--------+-)----------------------------------><
+                 +-,entry-+
+]]>
+</programlisting>
+
+<para>Sets the directory entry with name
+<emphasis role="italic">name</emphasis> (translated to uppercase)
+to the object <emphasis role="italic">entry</emphasis>, replacing any existing
+entry or method for <emphasis role="italic">name</emphasis>. If you omit
+<emphasis role="italic">entry</emphasis>, this method removes any entry or
+method with this <emphasis role="italic">name</emphasis>.</para>
+</section>
+
+<section id="disetm"><title>SETMETHOD</title>
+<indexterm><primary>SETMETHOD method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>SETMETHOD method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SETMETHOD(name-+---------+-)--------------------------------><
+                  +-,method-+
+]]>
+</programlisting>
+
+<para>Associates entry name <emphasis role="italic">name</emphasis>
+(translated to uppercase) with method <emphasis role="italic">method</emphasis>.
+Thus, the language processor returns the result of running
+<emphasis role="italic">method</emphasis> when you access this entry.
+This occurs when you specify <emphasis role="italic">name</emphasis> on the
+AT, ENTRY, or REMOVE method. This method replaces any existing
+item or method for <emphasis role="italic">name</emphasis>.</para>
+<para>You can specify the name UNKNOWN as
+<emphasis role="italic">name</emphasis>. Doing so supplies a
+method to run whenever an AT or ENTRY message specifies a name for which no item
+or method exists in the collection. This method's first argument is the
+specified directory index. This method has no effect on the action of any
+HASENTRY, HASINDEX, ITEMS, REMOVE, or SUPPLIER message sent to the collection.
+</para>
+<para>The <emphasis role="italic">method</emphasis> can be a
+string containing a method source line instead
+of a method object. Alternatively, an array of strings containing individual
+method lines can be passed. In either case, SETMETHOD creates an equivalent
+method object.</para>
+<para>If you omit <emphasis role="italic">method</emphasis>,
+SETMETHOD removes the entry with the specified
+<emphasis role="italic">name</emphasis>.</para>
+</section>
+
+<section id="disupp"><title>SUPPLIER</title>
+<indexterm><primary>SUPPLIER method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>SUPPLIER method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SUPPLIER----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a supplier object for the collection. After you have obtained a
+supplier, you can send it messages (see
+<link linkend="supp">The Supplier Class</link>) to enumerate
+all the items that were in the collection at the time of the supplier's
+creation. The supplier enumerates the items in an unspecified order. (The
+program should not rely on any order.)</para>
+</section>
+
+<section id="diunkn"><title>UNKNOWN</title>
+<indexterm><primary>UNKNOWN method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>UNKNOWN method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-UNKNOWN(messagename,messageargs)----------------------------><
+]]>
+</programlisting>
+
+<para>Runs either the ENTRY or SETENTRY method, depending on whether
+<emphasis role="italic">messagename</emphasis> ends with an equal sign. If
+<emphasis role="italic">messagename</emphasis> does not end with an
+equal sign, this method runs the ENTRY method, passing
+<emphasis role="italic">messagename</emphasis> as
+its argument. The language processor ignores any arguments specified in the
+array <emphasis role="italic">messageargs</emphasis>. In this case, UNKNOWN
+returns the result of the ENTRY method.</para>
+<para>If <emphasis role="italic">messagename</emphasis> does end with an equal
+sign, this method runs the SETENTRY method, passing the first part of
+<emphasis role="italic">messagename</emphasis> (up to, but
+not including, the final equal sign) as its first argument, and the first
+item in the array <emphasis role="italic">messageargs</emphasis>
+as its second argument. In this case, UNKNOWN returns no result.</para>
+</section>
+
+<section id="didiff"><title>DIFFERENCE</title>
+<indexterm><primary>DIFFERENCE method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>DIFFERENCE method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-DIFFERENCE(argument)----------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a new collection (of the same class as the receiver) containing
+only those items from the receiver whose indexes the
+<emphasis role="italic">argument</emphasis> collection
+does not contain. The <emphasis role="italic">argument</emphasis> can be any
+object described in
+<link linkend="parmcoll">The Argument Collection Classes</link>. The
+<emphasis role="italic">argument</emphasis> must also
+allow all of the index values in the receiver collection.</para>
+</section>
+
+<section id="diinte"><title>INTERSECTION</title>
+<indexterm><primary>INTERSECTION method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>INTERSECTION method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-INTERSECTION(argument)--------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a new collection (of the same class as the receiver) containing
+only those items from the receiver whose indexes are in both the receiver
+collection and the <emphasis role="italic">argument</emphasis> collection.
+The <emphasis role="italic">argument</emphasis> can be any object described
+in <link linkend="parmcoll">The Argument Collection Classes</link>.
+The <emphasis role="italic">argument</emphasis> must also allow all of the
+index values in the receiver collection.</para>
+</section>
+
+<section id="disubs"><title>SUBSET</title>
+<indexterm><primary>SUBSET method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>SUBSET method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SUBSET(argument)--------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>1</computeroutput> (true) if all indexes in the
+receiver collection are also contained in the
+<emphasis role="italic">argument</emphasis> collection; returns
+<computeroutput>0</computeroutput> (false) otherwise. The
+<emphasis role="italic">argument</emphasis> can be any object described in
+<link linkend="parmcoll">The Argument Collection Classes</link>.
+The <emphasis role="italic">argument</emphasis> must also allow all of the
+index values in the receiver collection.</para>
+</section>
+
+<section id="diunio"><title>UNION</title>
+<indexterm><primary>UNION method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>UNION method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-UNION(argument)---------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a new collection of the same class as the receiver that contains
+all the items from the receiver collection and selected items from the
+<emphasis role="italic">argument</emphasis> collection. This method includes
+an item from <emphasis role="italic">argument</emphasis> in
+the new collection only if there is no item with the same associated index
+in the receiver collection and the method has not already included an item
+with the same index. The order in which this method selects items in
+<emphasis role="italic">argument</emphasis> is unspecified. (The program
+should not rely on any order.) See also the UNION method of the Table
+(<link linkend="taunio">UNION</link>) and Relation
+(<link linkend="reunio">UNION</link>) classes. The
+<emphasis role="italic">argument</emphasis> can be any object described
+in <link linkend="parmcoll">The Argument Collection Classes</link>. The
+<emphasis role="italic">argument</emphasis> must also allow all of the
+index values in the receiver collection.</para>
+</section>
+
+<section id="dixor"><title>XOR</title>
+<indexterm><primary>XOR method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>XOR method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-XOR(argument)-----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a new collection of the same class as the receiver that contains
+all items from the receiver collection and the
+<emphasis role="italic">argument</emphasis> collection;
+all indexes that appear in both collections are removed. The
+<emphasis role="italic">argument</emphasis> can be any object described in
+<link linkend="parmcoll">The Argument Collection Classes</link>.
+The <emphasis role="italic">argument</emphasis> must also allow all of the
+index values in the receiver collection.</para>
+</section>
+
+<section id="direx"><title>Examples</title>
+<indexterm><primary>examples</primary>
+<secondary>of Directory class</secondary></indexterm>
+<programlisting>
+/******************************************************************************/
+/*  A Phone Book Directory program                                            */
+/*  This program demonstrates use of the directory class.                     */
+/******************************************************************************/
+
+/* Define an UNKNOWN method that adds an abbreviation lookup feature.         */
+/* Directories do not have to have an UNKNOWN method.                         */
+book = .directory~new~~setmethod("UNKNOWN", .methods["UNKNOWN"])
+
+book["ANN" ] = "Ann B. ....... 555-6220"
+book["ann" ] = "Little annie . 555-1234"
+book["JEFF"] = "Jeff G. ...... 555-5115"
+book["MARK"] = "Mark C. ...... 555-5017"
+book["MIKE"] = "Mike H. ...... 555-6123"
+book~Rick    = "Rick M. ...... 555-5110"  /* Same as book["RICK"] = ...       */
+
+Do i over book                 /* Iterate over the collection                 */
+  Say book[i]
+end i
+
+Say ""                         /* Index lookup is case sensitive...           */
+Say book~entry("Mike")         /* ENTRY method uppercases before lookup       */
+Say book["ANN"]                /* Exact match                                 */
+Say book~ann                   /* Message sends uppercase before lookup       */
+Say book["ann"]                /* Exact match with lowercase index            */
+
+Say ""
+Say book["M"]                  /* Uses UNKNOWN method for lookup              */
+Say book["Z"]
+Exit
+
+/* Define an unknown method to handle indexes not found.                      */
+/* Check for abbreviations or indicate listing not found                      */
+::Method UNKNOWN
+  Parse arg at_index
+  value = ""
+  Do i over self
+    If abbrev(i, at_index) then do
+      If value &lt;> "" then value = value", "
+      value = value || self~at(i)
+    end
+  end i
+  If value = "" then value = "No listing found for" at_index
+  Return value
+</programlisting>
+</section>
+</section>
+
+<section id="list"><title>The List Class</title>
+<indexterm><primary>List class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>List class</secondary></indexterm>
+<para>A list is a non-sparse sequenced collection similar to the
+<link linkend="xarray">The Array Class</link> to which you
+can add new items at any position in the sequence. The collection supplies
+the list indexes at the time items are added with the INSERT method. The FIRST,
+LAST, and NEXT methods can also retrieve list indexes. Only indexes the list
+object generates are valid i.e. the list is never a sparse list and the list
+object may modify idexes for items in the list.</para>
+<para><emphasis role="bold">Methods the List class defines:</emphasis></para>
+<simplelist>
+<member>OF (Class method)</member>
+<member>[]</member>
+<member>[]=</member>
+<member>AT</member>
+<member>FIRST</member>
+<member>FIRSTITEM</member>
+<member>HASINDEX</member>
+<member>INSERT</member>
+<member>ITEMS</member>
+<member>LAST</member>
+<member>LASTITEM</member>
+<member>MAKEARRAY</member>
+<member>NEXT</member>
+<member>PREVIOUS</member>
+<member>PUT</member>
+<member>REMOVE</member>
+<member>SECTION</member>
+<member>SUPPLIER</member>
+</simplelist>
+<para><emphasis role="bold">Methods inherited from the Object class:</emphasis>
+</para>
+<simplelist>
+<member>NEW (Class method)</member>
+<member>Operator methods: =, ==, \=, &gt;&lt;, &lt;&gt;, \==</member>
+<member>CLASS</member>
+<member>COPY</member>
+<member>DEFAULTNAME</member>
+<member>HASMETHOD</member>
+<member>INIT</member>
+<member>OBJECTNAME</member>
+<member>OBJECTNAME=</member>
+<member>REQUEST</member>
+<member>RUN</member>
+<member>SETMETHOD</member>
+<member>START</member>
+<member>STRING</member>
+<member>UNSETMETHOD</member>
+</simplelist>
+
+<note><title>Note</title>
+<para>The List class also has available class methods that its metaclass,
+the Class class, defines.</para></note>
+
+<section id="liof"><title>OF (Class Method)</title>
+<indexterm><primary>OF method</primary>
+<secondary>of LIST class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>OF method</secondary>
+<tertiary>of List class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+       +-,----+
+       V      |
+>>-OF(---item-+-)----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a newly created list containing the specified
+<emphasis role="italic">item</emphasis> objects in the order specified.</para>
+</section>
+
+<section id="librak"><title>[]</title>
+<indexterm><primary>[] method</primary>
+<secondary>of List class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>[] method</secondary>
+<tertiary>of List class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-[index]-----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the same item as the AT method. See
+<link linkend="liat">AT</link>.</para>
+</section>
+
+<section id="librae"><title>[]=</title>
+<indexterm><primary>[]= method</primary>
+<secondary>of List class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>[]= method</secondary>
+<tertiary>of List class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-[index]=item------------------------------------------------><
+]]>
+</programlisting>
+
+<para>This method is the same as the PUT method. See
+<link linkend="liput">PUT</link>.</para>
+</section>
+
+<section id="liat"><title>AT</title>
+<indexterm><primary>AT method</primary>
+<secondary>of List class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>AT method</secondary>
+<tertiary>of List class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-AT(index)---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the item associated with index
+<emphasis role="italic">index</emphasis>. If the collection
+has no item associated with <emphasis role="italic">index</emphasis>,
+this method returns the NIL object.</para>
+</section>
+
+<section id="lifirs"><title>FIRST</title>
+<indexterm><primary>FIRST method</primary>
+<secondary>of List class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>FIRST method</secondary>
+<tertiary>of List class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-FIRST-------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the index of the first item in the list or the NIL object if the
+list is empty. The example for INSERT (see <link linkend="liinse">INSERT</link>) includes
+FIRST.</para>
+</section>
+
+<section id="lifiri"><title>FIRSTITEM</title>
+<indexterm><primary>FIRSTITEM method</primary>
+<secondary>of List class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>FIRSTITEM method</secondary>
+<tertiary>of List class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-FIRSTITEM---------------------------------------------------><
+]]>
+</programlisting>
+
+<para> </para>
+<para>Returns the first item in the list or the NIL object if the list is
+empty.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+musketeers=.list~of(Porthos,Athos,Aramis) /* Creates list MUSKETEERS      */
+item=musketeers~firstitem                 /* Gives first item in list     */
+                                          /* (Assigns "Porthos" to item)  */
+</programlisting>
+</section>
+
+<section id="lihasi"><title>HASINDEX</title>
+<indexterm><primary>HASINDEX method</primary>
+<secondary>of List class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>HASINDEX method</secondary>
+<tertiary>of List class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-HASINDEX(index)---------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>1</computeroutput> (true) if the collection
+contains any item associated with index
+<emphasis role="italic">index</emphasis>, or
+<computeroutput>0</computeroutput> (false).</para>
+</section>
+
+<section id="liinse"><title>INSERT</title>
+<indexterm><primary>INSERT method</primary>
+<secondary>of List class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>INSERT method</secondary>
+<tertiary>of List class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-INSERT(item-+--------+-)------------------------------------><
+               +-,index-+
+]]>
+</programlisting>
+
+<para>Returns a list-supplied index for a new item
+<emphasis role="italic">item</emphasis>, which is added to the list. The new
+item follows the existing item with index
+<emphasis role="italic">index</emphasis> in the list ordering.
+If <emphasis role="italic">index</emphasis> is the NIL object, the new item
+becomes the first item in the list. If you omit
+<emphasis role="italic">index</emphasis>, the new item becomes the last item in
+the list. </para>
+<para>Inserting an item in the list at position
+<emphasis role="italic">index</emphasis> will cause the items in the list after
+position <emphasis role="italic">index</emphasis> to have their indexes modified
+by the list object.</para>
+<indexterm><primary>examples</primary>
+<secondary>INSERT method</secondary>
+<tertiary>of List class</tertiary></indexterm>
+<programlisting>
+musketeers=.list~of(Porthos,Athos,Aramis) /* Creates list MUSKETEERS        */
+                                          /* consisting of: Porthos         */
+                                          /*                Athos           */
+                                          /*                Aramis          */
+index=musketeers~first                    /* Gives index of first item      */
+musketeers~insert("D&apos;Artagnan",index)     /* Adds D&apos;Artagnan after Porthos  */
+                                          /* List is now: Porthos           */
+                                          /*              D&apos;Artagnan        */
+                                          /*              Athos             */
+                                          /*              Aramis            */
+/* Alternately, you could use */
+musketeers~insert("D&apos;Artagnan",.nil)      /* Adds D&apos;Artagnan before Porthos */
+                                          /* List is now:  D&apos;Artagnan       */
+                                          /*               Porthos          */
+                                          /*               Athos            */
+                                          /*               Aramis           */
+/* Alternately, you could use */
+musketeers~insert("D&apos;Artagnan")           /* Adds D&apos;Artagnan after Aramis   */
+                                          /* List is now:  Porthos          */
+                                          /*               Athos            */
+                                          /*               Aramis           */
+                                          /*               D&apos;Artagnan       */
+</programlisting>
+</section>
+
+<section id="liitms"><title>ITEMS</title>
+<indexterm><primary>ITEMS method</primary>
+<secondary>of List class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>ITEMS method</secondary>
+<tertiary>of List class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-ITEMS-------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the number of items in the collection.</para>
+</section>
+
+<section id="lilast"><title>LAST</title>
+<indexterm><primary>LAST method</primary>
+<secondary>of List class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>LAST method</secondary>
+<tertiary>of List class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-LAST--------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the index of the last item in the list or the NIL object if the
+list is empty.</para>
+</section>
+
+<section id="lilasi"><title>LASTITEM</title>
+<indexterm><primary>LASTITEM method</primary>
+<secondary>of List class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>LASTITEM method</secondary>
+<tertiary>of List class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-LASTITEM----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the last item in the list or the NIL object if the list is empty.
+</para>
+</section>
+
+<section id="lima"><title>MAKEARRAY</title>
+<indexterm><primary>MAKEARRAY method</primary>
+<secondary>of List class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>MAKEARRAY method</secondary>
+<tertiary>of List class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-MAKEARRAY---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a single-index array containing the receiver collection items.
+The array indexes range from <computeroutput>1</computeroutput> to the number
+of items. The order in which the collection items appear in the array is the
+same as their sequence in the list collection.</para>
+</section>
+
+<section id="linx"><title>NEXT</title>
+<indexterm><primary>NEXT method</primary>
+<secondary>of List class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>NEXT method</secondary>
+<tertiary>of List class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-NEXT(index)-------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the index of the item that follows the list item having index
+<emphasis role="italic">index</emphasis> or returns the NIL object if the
+item having that index is last in the list.</para>
+</section>
+
+<section id="liprev"><title>PREVIOUS</title>
+<indexterm><primary>PREVIOUS method</primary>
+<secondary>of List class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>PREVIOUS method</secondary>
+<tertiary>of List class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-PREVIOUS(index)---------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the index of the item that precedes the list item having index
+<emphasis role="italic">index</emphasis> or the NIL object if the item having
+that index is first in the list.</para>
+</section>
+
+<section id="liput"><title>PUT</title>
+<indexterm><primary>PUT method</primary>
+<secondary>of List class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>PUT method</secondary>
+<tertiary>of List class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-PUT(item,index)---------------------------------------------><
+]]>
+</programlisting>
+
+<para>Replaces any existing item associated with the specified
+<emphasis role="italic">index</emphasis> with
+the new item <emphasis role="italic">item</emphasis>. If the
+<emphasis role="italic">index</emphasis> does not exist in the list,
+an error is raised.</para>
+</section>
+
+<section id="liremo"><title>REMOVE</title>
+<indexterm><primary>REMOVE method</primary>
+<secondary>of List class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>REMOVE method</secondary>
+<tertiary>of List class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-REMOVE(index)-----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns and removes from a collection the member item with index
+<emphasis role="italic">index</emphasis>. If no item has index
+<emphasis role="italic">index</emphasis>, this method returns
+the NIL object and removes no item.</para>
+<para>Removinf an item from the list at position
+<emphasis role="italic">index</emphasis> will cause the items in the list after
+position <emphasis role="italic">index</emphasis> to have their indexes modified
+by the list object.</para>
+</section>
+
+<section id="lisect"><title>SECTION</title>
+<indexterm><primary>SECTION method</primary>
+<secondary>of List class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>SECTION method</secondary>
+<tertiary>of List class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SECTION(start-+--------+-)----------------------------------><
+                 +-,items-+
+]]>
+</programlisting>
+
+<para>Returns a new list (of the same class as the receiver) containing selected
+items from the receiver list. The first item in the new list is the item corresponding
+to index <emphasis role="italic">start</emphasis> in the receiver list.
+Subsequent items in the new list correspond to those in the receiver list
+(in the same sequence). If you specify the whole number
+<emphasis role="italic">items</emphasis>, the new list contains only this
+number of items (or the number of subsequent items in the receiver list, if this
+is less than <emphasis role="italic">items</emphasis>). If you do not specify
+<emphasis role="italic">items</emphasis>, the new
+list contains all subsequent items from the receiver list. The receiver list
+remains unchanged.</para>
+</section>
+
+<section id="lisu"><title>SUPPLIER</title>
+<indexterm><primary>SUPPLIER method</primary>
+<secondary>of List class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>SUPPLIER method</secondary>
+<tertiary>of List class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SUPPLIER----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a supplier object for the list. If you send appropriate messages
+to the supplier (see <link linkend="supp">The Supplier Class</link>), the
+supplier enumerates all the items in the list at the time of the supplier's
+creation. The supplier enumerates the items in their sequenced order.</para>
+</section>
+</section>
+
+<section id="rxqcl"><title>The Queue Class</title>
+<indexterm><primary>class</primary>
+<secondary>Queue class</secondary></indexterm>
+<indexterm><primary>Queue class</primary></indexterm>
+<para>A queue is a non-sparse sequenced collection with whole-number
+indexes. The indexes specify the position of an item relative to the head
+(first item) of the queue. Adding or removing an item changes the association
+of an index to its queue item. You can add items at either the tail or the
+head of the queue.</para>
+<para><emphasis role="bold">Methods the Queue class defines:</emphasis></para>
+<simplelist>
+<member>[]</member>
+<member>[]=</member>
+<member>AT</member>
+<member>HASINDEX</member>
+<member>ITEMS</member>
+<member>MAKEARRAY</member>
+<member>PEEK</member>
+<member>PULL</member>
+<member>PUSH</member>
+<member>PUT</member>
+<member>QUEUE</member>
+<member>REMOVE</member>
+<member>SUPPLIER</member>
+</simplelist>
+<para><emphasis role="bold">Methods inherited from the Object class:</emphasis>
+</para>
+<simplelist>
+<member>NEW (Class method)</member>
+<member>Operator methods: =, ==, \=, &gt;&lt;, &lt;&gt;, \==</member>
+<member>CLASS</member>
+<member>COPY</member>
+<member>DEFAULTNAME</member>
+<member>HASMETHOD</member>
+<member>INIT</member>
+<member>OBJECTNAME</member>
+<member>OBJECTNAME=</member>
+<member>REQUEST</member>
+<member>RUN</member>
+<member>SETMETHOD</member>
+<member>START</member>
+<member>STRING</member>
+<member>UNSETMETHOD</member>
+</simplelist>
+
+<note><title>Note</title>
+<para>The Queue class also has available class methods that its
+metaclass, the Class class, defines.</para></note>
+
+<section id="qubrak"><title>[]</title>
+<indexterm><primary>[] method</primary>
+<secondary>of Queue class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>[] method</secondary>
+<tertiary>of Queue class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-[index]-----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the same value as the AT method. See
+<link linkend="quat">AT</link>.</para>
+<para>The order in which the queue items appear in the array is the same as their
+queuing order, with the head of the queue as index 1.</para>
+</section>
+
+<section id="qubrae"><title>[]=</title>
+<indexterm><primary>[]= method</primary>
+<secondary>of Queue class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>[]= method</secondary>
+<tertiary>of Queue class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-[index]=item------------------------------------------------><
+]]>
+</programlisting>
+
+<para>This method is the same as the PUT method. See <link linkend="quput">PUT</link>.
+</para>
+</section>
+
+<section id="quat"><title>AT</title>
+<indexterm><primary>AT method</primary>
+<secondary>of Queue class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>AT method</secondary>
+<tertiary>of Queue class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-AT(index)---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the item associated with index
+<emphasis role="italic">index</emphasis>. If the collection has no item associated with
+<emphasis role="italic">index</emphasis>, this method returns the NIL object.</para>
+</section>
+
+<section id="quhasi"><title>HASINDEX</title>
+<indexterm><primary>HASINDEX method</primary>
+<secondary>of Queue class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>HASINDEX method</secondary>
+<tertiary>of Queue class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-HASINDEX(index)---------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>1</computeroutput> (true) if the collection
+contains any item associated with index <emphasis role="italic">index</emphasis>,
+or <computeroutput>0</computeroutput> (false).</para>
+</section>
+
+<section id="quitms"><title>ITEMS</title>
+<indexterm><primary>ITEMS method</primary>
+<secondary>of Queue class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>ITEMS method</secondary>
+<tertiary>of Queue class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-ITEMS-------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the number of items in the collection.</para>
+</section>
+
+<section id="qumaka"><title>MAKEARRAY</title>
+<indexterm><primary>MAKEARRAY method</primary>
+<secondary>of Queue class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>MAKEARRAY method</secondary>
+<tertiary>of Queue class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-MAKEARRAY---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a single-index array containing the receiver queue items. The array
+indexes range from <computeroutput>1</computeroutput> to the number of items.
+The order in which the queue items appear in the array is the same as their
+queuing order, with the head of the queue as index 1.</para>
+</section>
+
+<section id="qupeek"><title>PEEK</title>
+<indexterm><primary>PEEK method</primary>
+<secondary>of Queue class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>PEEK method</secondary>
+<tertiary>of Queue class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-PEEK--------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the item at the head of the queue. If the queue is empty then
+the method returns the .NIL object.
+The collection remains unchanged.</para>
+</section>
+
+<section id="qupul"><title>PULL</title>
+<indexterm><primary>PULL method</primary>
+<secondary>of Queue class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>PULL method</secondary>
+<tertiary>of Queue class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-PULL--------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns and removes the item at the head of the queue. If the queue is
+empty then the method returns the .NIL object</para>
+</section>
+
+<section id="qupush"><title>PUSH</title>
+<indexterm><primary>PUSH method</primary>
+<secondary>of Queue class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>PUSH method</secondary>
+<tertiary>of Queue class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-PUSH(item)--------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Adds the object <emphasis role="italic">item</emphasis> to the head of
+the queue.</para>
+</section>
+
+<section id="quput"><title>PUT</title>
+<indexterm><primary>PUT method</primary>
+<secondary>of Queue class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>PUT method</secondary>
+<tertiary>of Queue class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-PUT(item,index)---------------------------------------------><
+]]>
+</programlisting>
+
+<para>Replaces any existing item associated with the specified
+<emphasis role="italic">index</emphasis> with
+the new item. If the <emphasis role="italic">index</emphasis> does not exist
+in the queue, an error is raised.</para>
+</section>
+
+<section id="quque"><title>QUEUE</title>
+<indexterm><primary>QUEUE method</primary>
+<secondary>of Queue class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>QUEUE method</secondary>
+<tertiary>of Queue class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-QUEUE(item)-------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Adds the object <emphasis role="italic">item</emphasis> to the tail of
+the queue.</para>
+</section>
+
+<section id="quremo"><title>REMOVE</title>
+<indexterm><primary>REMOVE method</primary>
+<secondary>of Queue class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>REMOVE method</secondary>
+<tertiary>of Queue class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-REMOVE(index)-----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns and removes from a collection the member item with index
+<emphasis role="italic">index</emphasis>. If no item has index
+<emphasis role="italic">index</emphasis>, this method returns
+the NIL object and removes no item.</para>
+</section>
+
+<section id="qusupp"><title>SUPPLIER</title>
+<indexterm><primary>SUPPLIER method</primary>
+<secondary>of Queue class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>SUPPLIER method</secondary>
+<tertiary>of Queue class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SUPPLIER----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a supplier object for the collection. After you have obtained a
+supplier, you can send it messages (see
+<link linkend="supp">The Supplier Class</link>) to enumerate
+all the items that were in the queue at the time of the supplier's creation.
+The supplier enumerates the items in their queuing order, with the head of
+the queue first.</para>
+</section>
+</section>
+
+<section id="relati"><title>The Relation Class</title>
+<indexterm><primary>Relation class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>Relation class</secondary></indexterm>
+<para>A relation is a collection with indexes that can
+be any objects the user supplies. In a relation, each item is associated with
+a single index, but there can be more than one item with the same index (unlike
+a table, which can contain only one item for any index).</para>
+<para><emphasis role="bold">Methods the Relation class defines:</emphasis></para>
+<simplelist>
+<member>[]</member>
+<member>[]=</member>
+<member>ALLAT</member>
+<member>ALLINDEX</member>
+<member>AT</member>
+<member>HASINDEX</member>
+<member>HASITEM</member>
+<member>INDEX</member>
+<member>ITEMS</member>
+<member>MAKEARRAY</member>
+<member>PUT</member>
+<member>REMOVE</member>
+<member>REMOVEITEM</member>
+<member>SUPPLIER</member>
+</simplelist>
+<para><emphasis role="bold">Set-operator methods the Relation class defines:</emphasis>
+</para>
+<simplelist>
+<member>DIFFERENCE</member>
+<member>INTERSECTION</member>
+<member>SUBSET</member>
+<member>UNION</member>
+<member>XOR</member>
+</simplelist>
+<para><emphasis role="bold">Methods inherited from the Object class:</emphasis>
+</para>
+<simplelist>
+<member>NEW (Class method)</member>
+<member>Operator methods: =, ==, \=, &gt;&lt;, &lt;&gt;, \==</member>
+<member>CLASS</member>
+<member>COPY</member>
+<member>DEFAULTNAME</member>
+<member>HASMETHOD</member>
+<member>INIT</member>
+<member>OBJECTNAME</member>
+<member>OBJECTNAME=</member>
+<member>REQUEST</member>
+<member>RUN</member>
+<member>SETMETHOD</member>
+<member>START</member>
+<member>STRING</member>
+<member>UNSETMETHOD</member>
+</simplelist>
+
+<note><title>Note</title>
+<para>The Relation class also has available class methods that its
+metaclass, the Class class, defines.</para></note>
+
+<section id="rebrak"><title>[]</title>
+<indexterm><primary>[] method</primary>
+<secondary>of Relation class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>[] method</secondary>
+<tertiary>of Relation class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-[index]-----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the same item as the AT method. See
+<link linkend="reat">AT</link>.</para>
+</section>
+
+<section id="rebrae"><title>[]=</title>
+<indexterm><primary>[]= method</primary>
+<secondary>of Relation class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>[]= method</secondary>
+<tertiary>of Relation class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-[index]=item------------------------------------------------><
+]]>
+</programlisting>
+
+<para>This method is the same as the PUT method. See
+<link linkend="reput">PUT</link>.</para>
+</section>
+
+<section id="realla"><title>ALLAT</title>
+<indexterm><primary>ALLAT method</primary>
+<secondary>of Relation class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>ALLAT method</secondary>
+<tertiary>of Relation class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-ALLAT(index)------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a single-index array containing all the items associated with
+index <emphasis role="italic">index</emphasis>. The indexes of the returned
+array range from <computeroutput>1</computeroutput> to the
+number of items. Items in the array appear in an unspecified order.</para>
+</section>
+
+<section id="realin"><title>ALLINDEX</title>
+<indexterm><primary>ALLINDEX method</primary>
+<secondary>of Relation class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>ALLINDEX method</secondary>
+<tertiary>of Relation class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-ALLINDEX(item)----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a single-index array containing all indexes for item
+<emphasis role="italic">item</emphasis>,
+in an unspecified order. (The program should not rely on any order.)</para>
+</section>
+
+<section id="reat"><title>AT</title>
+<indexterm><primary>AT method</primary>
+<secondary>of Relation class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>AT method</secondary>
+<tertiary>of Relation class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-AT(index)---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the item associated with index
+<emphasis role="italic">index</emphasis>. If the relation
+contains more than one item associated with index
+<emphasis role="italic">index</emphasis>, the item
+returned is unspecified. (The program should not rely on any particular item
+being returned.) If the relation has no item associated with index
+<emphasis role="italic">index</emphasis>, this method returns the NIL object.</para>
+</section>
+
+<section id="rehasi"><title>HASINDEX</title>
+<indexterm><primary>HASINDEX method</primary>
+<secondary>of Relation class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>HASINDEX method</secondary>
+<tertiary>of Relation class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-HASINDEX(index)---------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>1</computeroutput> (true) if the collection
+contains any item associated with index
+<emphasis role="italic">index</emphasis>, or <computeroutput>0</computeroutput>
+(false).</para>
+</section>
+
+<section id="hasite"><title>HASITEM</title>
+<indexterm><primary>HASITEM method</primary>
+<secondary>of Relation class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>HASITEM method</secondary>
+<tertiary>of Relation class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-HASITEM(item,index)-----------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>1</computeroutput> (true) if the relation contains the member item <emphasis role="italic">item</emphasis> (associated with index <emphasis role="italic">index</emphasis>, or <computeroutput>0</computeroutput> (false).</para>
+</section>
+
+<section id="reindx"><title>INDEX</title>
+<indexterm><primary>INDEX method</primary>
+<secondary>of Relation class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>INDEX method</secondary>
+<tertiary>of Relation class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-INDEX(item)-------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the index for item <emphasis role="italic">item</emphasis>.
+If there is more than one index associated with item
+<emphasis role="italic">item</emphasis>, the one this method returns is not
+defined.</para>
+</section>
+
+<section id="reitms"><title>ITEMS</title>
+<indexterm><primary>ITEMS method</primary>
+<secondary>of Relation class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>ITEMS method</secondary>
+<tertiary>of Relation class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-ITEMS-+---------+-------------------------------------------><
+         +-(index)-+
+]]>
+</programlisting>
+
+<para>Returns the number of relation items with index
+<emphasis role="italic">index</emphasis>. If you
+specify no <emphasis role="italic">index</emphasis>, this method returns the
+total number of items associated with all indexes in the relation.</para>
+</section>
+
+<section id="remaka"><title>MAKEARRAY</title>
+<indexterm><primary>MAKEARRAY method</primary>
+<secondary>of Relation class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>MAKEARRAY method</secondary>
+<tertiary>of Relation class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-MAKEARRAY---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a single-index array containing the index objects. The array
+indexes range from <computeroutput>1</computeroutput> to the number of items.
+The collection items appear in the array in an unspecified order. (The program
+should not rely on any order.)</para>
+</section>
+
+<section id="reput"><title>PUT</title>
+<indexterm><primary>PUT method</primary>
+<secondary>of Relation class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>PUT method</secondary>
+<tertiary>of Relation class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-PUT(item,index)---------------------------------------------><
+]]>
+</programlisting>
+
+<para>Makes the object <emphasis role="italic">item</emphasis>
+a member item of the relation and associates it with index
+<emphasis role="italic">index</emphasis>. If the relation already contains
+any items with index
+<emphasis role="italic">index</emphasis>, this method adds a new member item
+<emphasis role="italic">item</emphasis> with
+the same index, without removing any existing member items.</para>
+</section>
+
+<section id="reremo"><title>REMOVE</title>
+<indexterm><primary>REMOVE method</primary>
+<secondary>of Relation class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>REMOVE method</secondary>
+<tertiary>of Relation class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-REMOVE(index)-----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns and removes from a relation the member item with index
+<emphasis role="italic">index</emphasis>. If the relation contains more than
+one item associated with index <emphasis role="italic">index</emphasis>,
+the item returned and removed is unspecified. If no item has index
+<emphasis role="italic">index</emphasis>, this method returns the NIL object
+and removes nothing.</para>
+</section>
+
+<section id="reremi"><title>REMOVEITEM</title>
+<indexterm><primary>REMOVEITEM method</primary>
+<secondary>of Relation class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>REMOVEITEM method</secondary>
+<tertiary>of Relation class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-REMOVEITEM(item,index)--------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns and removes from a relation the member item
+<emphasis role="italic">item</emphasis> (associated with index
+<emphasis role="italic">index</emphasis>). If
+<emphasis role="italic">value</emphasis> is not a member item associated
+with index <emphasis role="italic">index</emphasis>, this method returns
+the NIL object and removes no item.</para>
+</section>
+
+<section id="resupp"><title>SUPPLIER</title>
+<indexterm><primary>SUPPLIER method</primary>
+<secondary>of Relation class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>SUPPLIER method</secondary>
+<tertiary>of Relation class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SUPPLIER--+---------+---------------------------------------><
+             +-(index)-+
+]]>
+</programlisting>
+
+<para>Returns a supplier object for the collection. After you have obtained a
+supplier, you can send it messages (see
+<link linkend="supp">The Supplier Class</link>) to enumerate
+all the items that were in the collection at the time of the supplier's
+creation. The supplier enumerates the items in an unspecified order. (The
+program should not rely on any order.) If you specify
+<emphasis role="italic">index</emphasis>, the
+supplier enumerates all of the items in the relation with the specified index.
+</para>
+</section>
+
+<section id="rediff"><title>DIFFERENCE</title>
+<indexterm><primary>DIFFERNCE method</primary>
+<secondary>of Relation class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>DIFFERENCE method</secondary>
+<tertiary>of Relation class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-DIFFERENCE(argument)----------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a new collection (of the same class as the receiver) containing
+only those items that the <emphasis role="italic">argument</emphasis>
+collection does not contain (with the same associated index). The
+<emphasis role="italic">argument</emphasis> can be any object described in
+<link linkend="parmcoll">The Argument Collection Classes</link>.</para>
+</section>
+
+<section id="reinte"><title>INTERSECTION</title>
+<indexterm><primary>INTERSECTION method</primary>
+<secondary>of Relation class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>INTERSECTION method</secondary>
+<tertiary>of Relation class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-INTERSECTION(argument)--------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a new collection (of the same class as the receiver) containing
+only those items that are in both the receiver collection
+and the <emphasis role="italic">argument</emphasis> collection with the
+same associated index. The <emphasis role="italic">argument</emphasis>
+can be any object described in
+<link linkend="parmcoll">The Argument Collection Classes</link>.</para>
+</section>
+
+<section id="resubs"><title>SUBSET</title>
+<indexterm><primary>SUBSET method</primary>
+<secondary>of Relation class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>SUBSET method</secondary>
+<tertiary>of Relation class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SUBSET(argument)--------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>1</computeroutput> (true) if all items in the
+receiver collection are also contained in the
+<emphasis role="italic">argument</emphasis> collection with the same associated
+index; returns <computeroutput>0</computeroutput> (false) otherwise. The
+<emphasis role="italic">argument</emphasis> can be any object described in
+<link linkend="parmcoll">The Argument Collection Classes</link>.</para>
+</section>
+
+<section id="reunio"><title>UNION</title>
+<indexterm><primary>UNION method</primary>
+<secondary>of Relation class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>UNION method</secondary>
+<tertiary>of Relation class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-UNION(argument)---------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a new collection containing all items from the receiver collection
+and the <emphasis role="italic">argument</emphasis> collection. The
+<emphasis role="italic">argument</emphasis> can be any object
+described in <link linkend="parmcoll">The Argument Collection Classes</link>.
+</para>
+</section>
+
+<section id="rexor"><title>XOR</title>
+<indexterm><primary>XOR method</primary>
+<secondary>of Relation class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>XOR method</secondary>
+<tertiary>of Relation class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-XOR(argument)-----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a new collection of the same class as the receiver that contains
+all items from the receiver collection and the
+<emphasis role="italic">argument</emphasis> collection.
+All index-item pairs that appear in both collections are removed. The
+<emphasis role="italic">argument</emphasis> can be any object described in
+<link linkend="parmcoll">The Argument Collection Classes</link>.</para>
+</section>
+
+<section id="relex"><title>Examples</title>
+<indexterm><primary>examples</primary>
+<secondary>of Relation class</secondary></indexterm>
+<programlisting>
+/* Use a relation to express parent-child relationships */
+family = .relation~new
+family["Henry"] = "Peter"    /* Peter is Henry&apos;s child   */
+family["Peter"] = "Bridget"  /* Bridget is Peter&apos;s child */
+family["Henry"] = "Jane"     /* Jane is Henry&apos;s child    */
+
+/* Show all children of Henry recorded in the family relation */
+henrys_kids = family~allat("Henry")
+Say "Here are all the listed children of Henry:"
+Do kid Over henrys_kids
+  Say " "kid
+End
+
+/* Show all parents of Bridget recorded in the family relation */
+bridgets_parents = family~allindex("Bridget")
+Say "Here are all the listed parents of Bridget:"
+Do parent Over bridgets_parents
+  Say " "parent
+End
+
+/* Display all the grandparent relationships we know about. */
+checked_for_grandkids = .set~new         /* Records those we have checked      */
+Do grandparent Over family               /* Iterate for each index in family   */
+  If checked_for_grandkids~hasindex(grandparent)
+    Then Iterate                         /* Already checked this one           */
+  kids = family~allat(grandparent)       /* Current grandparent&apos;s children     */
+  Do kid Over kids                       /* Iterate for each item in kids      */
+    grandkids = family~allat(kid)        /* Current kid&apos;s children             */
+    Do grandkid Over grandkids           /* Iterate for each item in grandkids */
+      Say grandparent "has a grandchild named" grandkid"."
+    End
+  End
+  checked_for_grandkids~put(grandparent) /* Add to already-checked set         */
+End
+</programlisting>
+</section>
+</section>
+
+<section id="setcl"><title>The Set Class</title>
+<indexterm><primary>Set class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>Set class</secondary></indexterm>
+<para>A set is a collection containing the member items
+where the index is the same as the item. Any object can be placed in a set.
+ There can be only one occurrence of any object in a set. </para>
+<para>The Set class is a subclass of the Table class. In addition to its own
+methods, it inherits the methods of the Object class (see
+<link linkend="objc">The Object Class</link>)
+and the Table class.</para>
+<para><emphasis role="bold">Methods the Set class defines:</emphasis></para>
+<simplelist>
+<member>OF (Class method)</member>
+<member>[]</member>
+<member>[]=</member>
+<member>AT</member>
+<member>HASINDEX</member>
+<member>ITEMS</member>
+<member>MAKEARRAY</member>
+<member>PUT</member>
+<member>REMOVE</member>
+<member>SUPPLIER</member>
+</simplelist>
+<para><emphasis role="bold">Set-operator methods inherited from the Table class:</emphasis>
+</para>
+<simplelist>
+<member>DIFFERENCE</member>
+<member>INTERSECTION</member>
+<member>SUBSET</member>
+<member>UNION</member>
+<member>XOR</member>
+</simplelist>
+<para><emphasis role="bold">Methods inherited from the Object class:</emphasis>
+</para>
+<simplelist>
+<member>NEW (Class method)</member>
+<member>Operator methods: =, ==, \=, &gt;&lt;, &lt;&gt;, \==</member>
+<member>CLASS</member>
+<member>COPY</member>
+<member>DEFAULTNAME</member>
+<member>HASMETHOD</member>
+<member>INIT</member>
+<member>OBJECTNAME</member>
+<member>OBJECTNAME=</member>
+<member>REQUEST</member>
+<member>RUN</member>
+<member>SETMETHOD</member>
+<member>START</member>
+<member>STRING</member>
+<member>UNSETMETHOD</member>
+</simplelist>
+
+<note><title>Note</title>
+<para>The Set class also has available class methods that its metaclass,
+the Class class, defines.</para></note>
+
+<section id="setof"><title>OF (Class Method)</title>
+<indexterm><primary>OF method</primary>
+<secondary>of Set class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>OF method</secondary>
+<tertiary>of Set class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+       +-,----+
+       V      |
+>>-OF(---item-+-)----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a newly created set containing the specified
+<emphasis role="italic">item</emphasis> objects.</para>
+</section>
+
+<section id="sebrak"><title>[]</title>
+<indexterm><primary>[] method</primary>
+<secondary>of Set class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>[] method</secondary>
+<tertiary>of Set class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-[index]-----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the same item as the AT method. See
+<link linkend="seat">AT</link>.</para>
+</section>
+
+<section id="selbe"><title>[]=</title>
+<indexterm><primary>[]= method</primary>
+<secondary>of Set class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>[]= method</secondary>
+<tertiary>of Set class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-[index]=item------------------------------------------------><
+]]>
+</programlisting>
+
+<para>This method is the same as the PUT method. See
+<link linkend="seput">PUT</link>.</para>
+</section>
+
+<section id="seat"><title>AT</title>
+<indexterm><primary>AT method</primary>
+<secondary>of Set class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>AT method</secondary>
+<tertiary>of Set class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-AT(index)---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the item associated with index
+<emphasis role="italic">index</emphasis>. If the collection
+has no item associated with <emphasis role="italic">index</emphasis>,
+this method returns the NIL object.</para>
+</section>
+
+<section id="sehasi"><title>HASINDEX</title>
+<indexterm><primary>HASINDEX method</primary>
+<secondary>of Set class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>HASINDEX method</secondary>
+<tertiary>of Set class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-HASINDEX(index)---------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>1</computeroutput> (true) if the collection
+contains any item associated with index
+<emphasis role="italic">index</emphasis>, or <computeroutput>0</computeroutput>
+(false).</para>
+</section>
+
+<section id="seitms"><title>ITEMS</title>
+<indexterm><primary>ITEMS method</primary>
+<secondary>of Set class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>ITEMS method</secondary>
+<tertiary>of Set class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-ITEMS-------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the number of items in the collection.</para>
+</section>
+
+<section id="semaka"><title>MAKEARRAY</title>
+<indexterm><primary>MAKEARRAY method</primary>
+<secondary>of Set class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>MAKEARRAY method</secondary>
+<tertiary>of Set class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-MAKEARRAY---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a single-index array containing the index objects. The array
+indexes range from <computeroutput>1</computeroutput> to the number of items.
+The collection items appear in the array in an unspecified order.
+(The program should not rely on any order.)</para>
+</section>
+
+<section id="seput"><title>PUT</title>
+<indexterm><primary>PUT method</primary>
+<secondary>of Set class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>PUT method</secondary>
+<tertiary>of Set class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-PUT(item-+--------+-)---------------------------------------><
+            +-,index-+
+]]>
+</programlisting>
+
+<para>Makes the object <emphasis role="italic">item</emphasis> a member item of
+the collection and associates it with index
+<emphasis role="italic">index</emphasis>. If you specify
+<emphasis role="italic">index</emphasis>, it must be the
+same as <emphasis role="italic">item</emphasis>.</para>
+</section>
+
+<section id="seremo"><title>REMOVE</title>
+<indexterm><primary>REMOVE method</primary>
+<secondary>of Set class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>REMOVE method</secondary>
+<tertiary>of Set class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-REMOVE(index)-----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns and removes from a collection the member item with index
+<emphasis role="italic">index</emphasis>. If no item has index
+<emphasis role="italic">index</emphasis>, this method returns
+the NIL object and removes no item.</para>
+</section>
+
+<section id="sesupp"><title>SUPPLIER</title>
+<indexterm><primary>SUPPLIER method</primary>
+<secondary>of Set class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>SUPPLIER method</secondary>
+<tertiary>of Set class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SUPPLIER----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a supplier object for the collection. After you have obtained a
+supplier, you can send it messages (see
+<link linkend="supp">The Supplier Class</link>) to enumerate
+all the items that were in the collection at the time of the supplier's
+creation. The supplier enumerates the items in an unspecified order. (The
+program should not rely on any order.)</para>
+</section>
+</section>
+
+<section id="table1"><title>The Table Class</title>
+<indexterm><primary>Table class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>Table class</secondary></indexterm>
+<para>A table is a collection with indexes
+that can be any object the user supplies. In a table, each item is associated
+with a single index, and there can be only one item for each index (unlike
+a relation, which can contain more than one item with the same index).</para>
+<para><emphasis role="bold">Methods the Table class defines:</emphasis></para>
+<simplelist>
+<member>[]</member>
+<member>[]=</member>
+<member>AT</member>
+<member>HASINDEX</member>
+<member>ITEMS</member>
+<member>MAKEARRAY</member>
+<member>PUT</member>
+<member>REMOVE</member>
+<member>SUPPLIER</member>
+</simplelist>
+<para><emphasis role="bold">Set-operator methods the Table class defines:</emphasis>
+</para>
+<simplelist>
+<member>DIFFERENCE</member>
+<member>INTERSECTION</member>
+<member>SUBSET</member>
+<member>UNION</member>
+<member>XOR</member>
+</simplelist>
+<para><emphasis role="bold">Methods inherited from the Object class:</emphasis>
+</para>
+<simplelist>
+<member>NEW (Class method)</member>
+<member>Operator methods: =, ==, \=, &gt;&lt;, &lt;&gt;, \==</member>
+<member>CLASS</member>
+<member>COPY</member>
+<member>DEFAULTNAME</member>
+<member>HASMETHOD</member>
+<member>INIT</member>
+<member>OBJECTNAME</member>
+<member>OBJECTNAME=</member>
+<member>REQUEST</member>
+<member>RUN</member>
+<member>SETMETHOD</member>
+<member>START</member>
+<member>STRING</member>
+<member>UNSETMETHOD</member>
+</simplelist>
+
+<note><title>Note</title>
+<para>The Table class also has available class methods that its
+metaclass, the Class class, defines.</para></note>
+
+<section id="tabrak"><title>[]</title>
+<indexterm><primary>[] method</primary>
+<secondary>of Table class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>[] method</secondary>
+<tertiary>of Table class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-[index]-----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the same item as the AT method. See
+<link linkend="taat">AT</link>.</para>
+</section>
+
+<section id="tabrae"><title>[]=</title>
+<indexterm><primary>[]= method</primary>
+<secondary>of Table class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>[]= method</secondary>
+<tertiary>of Table class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-[index]=item------------------------------------------------><
+]]>
+</programlisting>
+
+<para>This method is the same as the PUT method. See
+<link linkend="taput">PUT</link>.</para>
+</section>
+
+<section id="taat"><title>AT</title>
+<indexterm><primary>AT method</primary>
+<secondary>of Table class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>AT method</secondary>
+<tertiary>of Table class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-AT(index)---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the item associated with index
+<emphasis role="italic">index</emphasis>. If the collection
+has no item associated with <emphasis role="italic">index</emphasis>, this
+method returns the NIL object.</para>
+</section>
+
+<section id="tahasi"><title>HASINDEX</title>
+<indexterm><primary>HASINDEX method</primary>
+<secondary>of Table class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>HASINDEX method</secondary>
+<tertiary>of Table class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-HASINDEX(index)---------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>1</computeroutput> (true) if the collection
+contains any item associated with index <emphasis role="italic">index</emphasis>,
+or <computeroutput>0</computeroutput> (false).</para>
+</section>
+
+<section id="taitms"><title>ITEMS</title>
+<indexterm><primary>ITEMS method</primary>
+<secondary>of Table class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>ITEMS method</secondary>
+<tertiary>of Table class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-ITEMS-------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the number of items in the collection.</para>
+</section>
+
+<section id="tamaka"><title>MAKEARRAY</title>
+<indexterm><primary>MAKEARRAY method</primary>
+<secondary>of Table class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>MAKEARRAY method</secondary>
+<tertiary>of Table class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-MAKEARRAY---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a single-index array containing the index objects. The array
+indexes range from <computeroutput>1</computeroutput> to the number of items.
+The collection items appear in the array in an unspecified order. (The program
+should not rely on any order.)</para>
+</section>
+
+<section id="taput"><title>PUT</title>
+<indexterm><primary>PUT method</primary>
+<secondary>of Table class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>PUT method</secondary>
+<tertiary>of Table class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-PUT(item,index)---------------------------------------------><
+]]>
+</programlisting>
+
+<para>Makes the object <emphasis role="italic">item</emphasis>
+a member item of the collection and associates it with index
+<emphasis role="italic">index</emphasis>. The new item replaces any existing
+items associated with index <emphasis role="italic">index</emphasis>.</para>
+</section>
+
+<section id="taremo"><title>REMOVE</title>
+<indexterm><primary>REMOVE method</primary>
+<secondary>of Table class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>REMOVE method</secondary>
+<tertiary>of Table class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-REMOVE(index)-----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns and removes from a collection the member item with index
+<emphasis role="italic">index</emphasis>. If no item has index
+<emphasis role="italic">index</emphasis>, this method returns
+the NIL object and removes no item.</para>
+</section>
+
+<section id="tasupp"><title>SUPPLIER</title>
+<indexterm><primary>SUPPLIER method</primary>
+<secondary>of Table class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>SUPPLIER method</secondary>
+<tertiary>of Table class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SUPPLIER----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a supplier object for the collection. After you have obtained a
+supplier, you can send it messages (see
+<link linkend="supp">The Supplier Class</link>) to enumerate
+all the items that were in the collection at the time of the supplier's
+creation. The supplier enumerates the items in an unspecified order. (The
+program should not rely on any order.)</para>
+</section>
+
+<section id="tadiff"><title>DIFFERENCE</title>
+<indexterm><primary>DIFFERENCE method</primary>
+<secondary>of Table class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>DIFFERENCE method</secondary>
+<tertiary>of Table class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-DIFFERENCE(argument)----------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a new collection (of the same class as the receiver) containing
+only those index-item pairs of the receiver whose indexes the
+<emphasis role="italic">argument</emphasis> collection does not contain. The
+<emphasis role="italic">argument</emphasis> can be any object described in
+<link linkend="parmcoll">The Argument Collection Classes</link>. The
+<emphasis role="italic">argument</emphasis> must also allow all of the index
+values in the receiver collection.</para>
+</section>
+
+<section id="tainte"><title>INTERSECTION</title>
+<indexterm><primary>INTERSECTION method</primary>
+<secondary>of Table class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>INTERSECTION method</secondary>
+<tertiary>of Table class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-INTERSECTION(argument)--------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a new collection (of the same class as the receiver) containing
+only those index-item pairs of the receiver whose indexes are in both the
+receiver collection and the <emphasis role="italic">argument</emphasis>
+collection. The <emphasis role="italic">argument</emphasis> can be any object
+described in <link linkend="parmcoll">The Argument Collection Classes</link>.
+The <emphasis role="italic">argument</emphasis> must also allow all of the
+index values in the receiver collection.</para>
+</section>
+
+<section id="tasubs"><title>SUBSET</title>
+<indexterm><primary>SUBSET method</primary>
+<secondary>of Table class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>SUBSET method</secondary>
+<tertiary>of Table class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SUBSET(argument)--------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>1</computeroutput> (true) if all indexes in the
+receiver collection are also contained in the
+<emphasis role="italic">argument</emphasis> collection; returns
+<computeroutput>0</computeroutput> (false) otherwise. The
+<emphasis role="italic">argument</emphasis> can be any object described in
+<link linkend="parmcoll">The Argument Collection Classes</link>.
+The <emphasis role="italic">argument</emphasis> must also allow all of the
+index values in the receiver collection.</para>
+</section>
+
+<section id="taunio"><title>UNION</title>
+<indexterm><primary>UNION method</primary>
+<secondary>of Table class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>UNION method</secondary>
+<tertiary>of Table class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-UNION(argument)---------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a new collection of the same class as the receiver that contains
+all the items from the receiver collection and selected items from the
+<emphasis role="italic">argument</emphasis> collection. This method includes an
+item from <emphasis role="italic">argument</emphasis> in
+the new collection only if there is no item with the same associated index
+in the receiver collection and the method has not already included an item
+with the same index. The order in which this method selects items in
+<emphasis role="italic">argument</emphasis> is unspecified. (The program should
+not rely on any order.) See also the UNION method of the Directory (see
+<link linkend="diunio">UNION</link>) and
+Relation (see <link linkend="reunio">UNION</link>) classes. The
+<emphasis role="italic">other</emphasis> can be any object described in
+<link linkend="parmcoll">The Argument Collection Classes</link>. The
+<emphasis role="italic">argument</emphasis> must also
+allow all of the index values in the receiver collection.</para>
+</section>
+
+<section id="taxor"><title>XOR</title>
+<indexterm><primary>XOR method</primary>
+<secondary>of Table class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>XOR method</secondary>
+<tertiary>of Table class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-XOR(argument)-----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a new collection of the same class as the receiver that contains
+all items from the receiver collection and the
+<emphasis role="italic">argument</emphasis> collection;
+all indexes that appear in both collections are removed. The
+<emphasis role="italic">argument</emphasis> can be any object described in
+<link linkend="parmcoll">The Argument Collection Classes</link>. The
+<emphasis role="italic">argument</emphasis> must also allow all of the index
+values in the receiver collection.</para>
+</section>
+</section>
+
+<section id="setop"><title>The Concept of Set Operations</title>
+<indexterm><primary>examples</primary>
+<secondary>set operations</secondary>
+<tertiary>concepts</tertiary></indexterm>
+<indexterm><primary>set-operator methods</primary></indexterm>
+<para>The following sections describe the concept of set operations to help you
+work with set operators, in particular if the receiver collection class differs
+from the argument collection class.</para>
+<para>Rexx provides the following set-operator methods:</para>
+<itemizedlist>
+<listitem><para>DIFFERENCE</para></listitem>
+<listitem><para>INTERSECTION</para></listitem>
+<listitem><para>SUBSET</para></listitem>
+<listitem><para>UNION</para></listitem>
+<listitem><para>XOR</para></listitem></itemizedlist>
+<para>These methods are only available to instances of the following collection
+classes:</para>
+<itemizedlist>
+<listitem><para>Directory</para></listitem>
+<listitem><para>Table and its subclass Set</para></listitem>
+<listitem><para>Relation and its subclass Bag</para></listitem></itemizedlist>
+<para>The collection classes Array, List, and Queue do not have set-operator
+methods but their instances can be used as the argument collections.</para>
+<para>Set operations have the following form:</para>
+<programlisting>
+result = receiver~setoperator(argument)
+</programlisting>
+<para>where:</para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">receiver</emphasis></term>
+<listitem><para>is the collection receiving the set-operator message. It can be
+an instance of the Directory, Relation, Table, Set, or Bag collection class.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">setoperator</emphasis></term>
+<listitem><para>is the set-operator method used.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">argument</emphasis></term>
+<listitem><para>is the argument collection supplied to the method. It can be an
+instance of one of the receiver collection classes or of a collection class
+that does not have set-operator methods, namely Array, List, or Queue.
+</para></listitem></varlistentry>
+</variablelist>
+<para>The resulting collection is of the same class as the receiver collection.
+</para>
+
+<section id="princoper"><title>The Principles of Operation</title>
+<indexterm><primary>examples</primary>
+<secondary>set operations</secondary>
+<tertiary>principals</tertiary></indexterm>
+<para>A set operation is performed by iterating over the elements of the receiver
+collection to compare each element of the receiver collection with each element
+of the argument collection. The element is defined as the tuple &lt;
+<emphasis role="italic">index,item</emphasis>> (see
+<link linkend="idit">Determining the Identity of an Item</link>).
+Depending on the set-operator method and
+the result of the comparison, an element of the receiver collection is, or
+is not, included in the resulting collection. A receiver collection that allows
+for duplicate elements can, depending on the set-operator method, also accept
+elements of the argument collection after they have been coerced to the type
+of the receiver collection.</para>
+<para>The following examples are to help you understand the semantics of set
+operations. The collections are represented as a list of elements enclosed
+in curly brackets. The list elements are separated by a comma.</para>
+
+<section id="opercoll"><title>Set Operations on Collections without Duplicates</title>
+<indexterm><primary>examples</primary>
+<secondary>set operations</secondary>
+<tertiary>eliminating duplicates</tertiary></indexterm>
+<para>Assume that the example sets are <computeroutput>A={a,b}</computeroutput>
+and <computeroutput>B={b,c,d}</computeroutput>. The result of a set operation
+is another set. The only exception is a subset resulting in a Boolean .true
+or .false. Using the collection <computeroutput>A</computeroutput> and
+<computeroutput>B</computeroutput>, the different set operators produce the
+following: </para>
+<variablelist>
+<varlistentry><term>UNION operation</term>
+<listitem><para>All elements of <computeroutput>A</computeroutput> and
+<computeroutput>B</computeroutput> are united:
+<programlisting>
+A UNION B = {a,b,c,d}
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>DIFFERENCE operation</term>
+<listitem><para>The resulting collection contains all elements of the first set except
+for those that also appear in the second set. The system iterates over the
+elements of the second set and removes them from the first set one by one.
+<programlisting>
+A DIFFERENCE B = {a}
+B DIFFERENCE A = {c,d}
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>XOR operation</term>
+<listitem><para>The resulting collection contains all elements of the first set that
+are not in the second set and all elements of the second set that are not
+in the first set:
+<programlisting>
+A XOR B = {a,c,d}
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>INTERSECTION operation</term>
+<listitem><para>The resulting collection contains all elements that appear in both sets:
+<programlisting>
+A INTERSECTION B = {b}
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>SUBSET operation</term>
+<listitem><para>Returns <computeroutput>.true</computeroutput>
+if the first set contains only elements that also appear in the second set,
+otherwise it returns <computeroutput>.false</computeroutput>:
+<programlisting>
+A SUBSET B = .false
+B SUBSET A = .false
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="setlike"><title>Set-Like Operations on Collections with Duplicates</title>
+<indexterm><primary>examples</primary>
+<secondary>set operations</secondary>
+<tertiary>with duplicates</tertiary></indexterm>
+<para>Assume that the example bags are
+<computeroutput>A={a,b,b}</computeroutput> and
+<computeroutput>B={b,b,c,c,d}</computeroutput>. The result of any set-like
+operation is a collection, in this case
+a bag. The only exception is SUBSET resulting in a Boolean .true or .false.
+Using the collections <computeroutput>A</computeroutput> and
+<computeroutput>B</computeroutput>, the different set-like
+operators produce the following: </para>
+<variablelist>
+<varlistentry><term>UNION operation</term>
+<listitem><para>All elements of <computeroutput>A</computeroutput> and
+<computeroutput>B</computeroutput> are united:
+<programlisting>
+A UNION B = {a,b,b,b,b,c,c,d}
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>DIFFERENCE operation</term>
+<listitem><para>The resulting collection contains all elements of the first bag except
+for those that also appear in the second bag. The system iterates over the
+elements of the second bag and removes them from the first bag one by one.
+<programlisting>
+A DIFFERENCE B = {a}
+B DIFFERENCE A = {c,c,d}
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>XOR operation</term>
+<listitem><para>The resulting collection contains all elements of the first
+bag that are not in the second bag and all elements of the second bag that
+are not in the second bag:
+<programlisting>
+A XOR B = {a,c,c,d}
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>INTERSECTION operation</term>
+<listitem><para>The resulting collection contains all elements that appear in
+both bags:
+<programlisting>
+A INTERSECTION B = {b,b}
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>SUBSET operation</term>
+<listitem><para>Returns <computeroutput>.true</computeroutput>
+if the first set contains only elements that also appear in the second set,
+otherwise it returns <computeroutput>.false</computeroutput>:
+<programlisting>
+A SUBSET B = .false
+B SUBSET A = .false
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+</section>
+
+<section id="idit"><title>Determining the Identity of an Item</title>
+<para>Set operations require the definition of the identity of an element to
+determine whether a certain element exists in the receiver collection. The
+element of a collection is conceived as the tuple
+&lt;<emphasis role="italic">index,item</emphasis>>.
+The <emphasis role="italic">index</emphasis> is used as the identification
+tag associated with the item.
+Depending on the collection class, the index is an instance of a particular
+class, for example, the string class for a directory element, an integer for
+an array, or any arbitrary class for a relation. The Array class is an exception
+because it can be multidimensional having more than one index. However, as
+a collection, it is conceptionally linearized by the set operator.</para>
+<para>For collections of collection classes that require unique indexes, namely
+the Set, Table, and Directory classes, an item is identified by its
+<emphasis role="italic">index</emphasis>. For collections of collection classes
+that allow several items to have the same index, namely the Relation class,
+an item is identified by both its <emphasis role="italic">index</emphasis>
+and its <emphasis role="italic">item</emphasis>. For the Bag and the Set
+subclasses, where several items can have the same index but
+<emphasis role="italic">index</emphasis> and
+<emphasis role="italic">item</emphasis> must
+be identical, the item is identified by its
+<emphasis role="italic">index</emphasis>. According to this
+concept, an item of a collection is identified as follows:</para>
+<itemizedlist>
+<listitem><para>HASINDEX(<emphasis role="italic">index</emphasis>) for Bag,
+Directory, Set, and Table collections</para></listitem>
+<listitem><para>HASITEM(<emphasis role="italic">item,index)</emphasis> for the
+Relation collections</para></listitem></itemizedlist>
+<para>Items of the Array, List, and Queue collections are identified by the
+<emphasis role="italic">item</emphasis>, not the
+<emphasis role="italic">index</emphasis>. The index is only used as a means
+to access the item but carries no semantics. In a Queue collection class, for
+example, the index of a particular item changes when another item is added to
+the queue and therefore is not a permanent identification of an item.</para>
+</section>
+
+<section id="parmcoll"><title>The Argument Collection Classes</title>
+<para>A argument collection can be an instance of any collection class, including
+the Array, List, and Queue classes, which do not have set-operator methods.</para>
+<para>If the collection does not contain a UNION method, the following must apply:</para>
+<itemizedlist>
+<listitem><para>The collection must support the MAKEARRAY method so that the
+set or set-like operator can iterate over the supplied elements.</para></listitem>
+<listitem><para>The collection must conceptionally be coerced into a bag-like collection
+before the set operation. Conceptionally, sparse arrays are condensed and
+multidimensional arrays are linearized.</para></listitem></itemizedlist>
+<para>Collections having the UNION method must support the SUPPLIER method.</para>
+</section>
+
+<section id="recoll"><title>The Receiver Collection Classes</title>
+<para>In addition to the set and set-like methods, a collection must support
+the following methods to qualify as a receiver collection:</para>
+<itemizedlist>
+<listitem><para>Methods for collections not allowing elements with duplicate
+indexes:
+<itemizedlist>
+<listitem><para>HASINDEX</para></listitem>
+<listitem><para>PUT or []=</para></listitem>
+<listitem><para>REMOVE</para></listitem>
+<listitem><para>ITEMS</para></listitem></itemizedlist></para></listitem>
+<listitem><para>Methods for collections allowing elements with duplicate indexes:
+<itemizedlist>
+<listitem><para>HASITEM; for bags, HASINDEX is sufficient</para></listitem>
+<listitem><para>AT or []</para></listitem>
+<listitem><para>PUT or []=</para></listitem>
+<listitem><para>REMOVEITEM; for bags, REMOVE is sufficient</para></listitem>
+<listitem><para>ITEMS</para></listitem></itemizedlist></para></listitem>
+</itemizedlist>
+</section>
+
+<section id="classcoll"><title>Classifying Collections</title>
+<para>To determine whether the items in a collection class can be used in a set
+operation, check the following criteria:</para>
+<itemizedlist>
+<listitem><para>Is an object a collection?</para>
+<para>To answer this question, send the HASMETHOD
+method with parameter &quot;hasindex&quot; to
+<emphasis role="italic">object</emphasis>:</para>
+<programlisting>
+::ROUTINE isCollection
+use arg object
+return object~hasmethod("hasindex")
+</programlisting>
+<para>This function
+returns TRUE if the object is an instance of the Array, List, Queue, Set,
+Bag, Relation, or Table collection class.</para></listitem>
+<listitem><para>Does the collection class have set-operator methods?</para>
+<para>To answer this
+question, send the HASMETHOD method with parameter &quot;union&quot; to
+<emphasis role="italic">object</emphasis>:</para>
+<programlisting>
+::ROUTINE hasSetOperators
+use arg object
+return object~hasmethod("union")
+</programlisting>
+<para>This function
+returns TRUE if the object is an instance of the Set, Bag, Relation, or Table
+collection class.</para></listitem></itemizedlist>
+</section>
+</section>
+</chapter>

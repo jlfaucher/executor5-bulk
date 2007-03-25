@@ -1,0 +1,2506 @@
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: OODialog Reference SGML file.
+    #
+    # Copyright (c) 2005-2007, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    # Author(s):
+    #      W. David Ashley <dashley@us.ibm.com>
+    #
+    #########################################################################
+-->
+<chapter id="h001511"><title>UserDialog Class</title>
+<indexterm><primary>UserDialog class</primary></indexterm>
+<para>The UserDialog class extends the BaseDialog class. It provides methods to create a dialog with these control
+elements: </para>
+<itemizedlist>
+<listitem><para>Entry lines</para></listitem>
+<listitem><para>Push buttons</para></listitem>
+<listitem><para>Check boxes</para></listitem>
+<listitem><para>Radio buttons</para></listitem>
+<listitem><para>List boxes</para></listitem>
+<listitem><para>Combo boxes</para></listitem>
+<listitem><para>Frames and rectangles</para></listitem></itemizedlist>
+
+<note><title>Note</title><para>
+The class also inherits the methods of its parent class: the
+<link linkend="h000002">BaseDialog class</link>.
+</para></note>
+<para>There are two ways of creating a dialog: </para>
+<itemizedlist>
+<listitem><para>Load the dialog from a resource script using the
+<link linkend="h001613">Load</link> method.
+</para></listitem>
+<listitem><para>Invoke Add... methods to an instance of this class
+or a subclass and create the dialog step by step, one method for one dialog
+item. The best place to invoke these Add... methods
+is to override the DefineDialog method. The DefineDialog method is called
+automatically when the instance is created.</para>
+<para>There are also methods that enable you to define a group of the same dialog
+elements together. The names of these methods end with Group or Stem.
+</para></listitem></itemizedlist>
+<para>You can also combine loading a dialog from a resource script and adding
+elements dynamically. </para>
+<variablelist>
+<varlistentry><term>Requires:</term>
+<listitem><para><computeroutput>UserDlg.cls</computeroutput> is the source file of this class.
+<programlisting>
+<![CDATA[
+::requires "oodialog.cls"
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>Subclass:</term>
+<listitem><para>The UserDialog class is a subclass of BaseDialog.
+</para></listitem></varlistentry>
+<varlistentry><term>Attributes:</term>
+<listitem><para>Instances of the UserDialog class have the following
+attributes:
+<variablelist>
+<varlistentry><term>AktPtr</term>
+<listitem><para>An attribute for internal use
+</para></listitem></varlistentry>
+<varlistentry><term>BasePtr</term>
+<listitem><para>An attribute for internal use
+</para></listitem></varlistentry>
+<varlistentry><term>DialogItemCount</term>
+<listitem><para>An attribute for internal use
+</para></listitem></varlistentry>
+<varlistentry><term>FactorX</term>
+<listitem><para>Horizontal size of one dialog unit (in pixels)
+</para></listitem></varlistentry>
+<varlistentry><term>FactorY</term>
+<listitem><para>Vertical size of one dialog unit (in pixels)
+</para></listitem></varlistentry>
+<varlistentry><term>SizeX</term>
+<listitem><para>Width of the dialog in dialog units
+</para></listitem></varlistentry>
+<varlistentry><term>SizeY</term>
+<listitem><para>Height of the dialog in dialog units
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term>Methods:</term>
+<listitem><para>Instances of the UserDialog class implement
+the methods listed in the following table.
+
+<informaltable frame="all">
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Method...</entry>
+<entry>...on page</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>AddBitmapButton</entry>
+<entry><link linkend="h001662">AddBitmapButton</link></entry>
+</row>
+<row>
+<entry>AddBlackFrame</entry>
+<entry><link linkend="h001774">AddBlackFrame</link></entry>
+</row>
+<row>
+<entry>AddBlackRect</entry>
+<entry><link linkend="h001735">AddBlackRect</link></entry>
+</row>
+<row>
+<entry>AddButton</entry>
+<entry><link linkend="h001647">AddButton</link></entry>
+</row>
+<row>
+<entry>AddButtonGroup</entry>
+<entry><link linkend="h001999">AddButtonGroup</link></entry>
+</row>
+<row>
+<entry>AddCheckBox</entry>
+<entry><link linkend="h001843">AddCheckBox</link></entry>
+</row>
+<row>
+<entry>AddCheckBoxStem</entry>
+<entry><link linkend="h001965">AddCheckBoxStem</link></entry>
+</row>
+<row>
+<entry>AddCheckGroup</entry>
+<entry><link linkend="h001887">AddCheckGroup</link></entry>
+</row>
+<row>
+<entry>AddComboBox</entry>
+<entry><link linkend="h001829">AddComboBox</link></entry>
+</row>
+<row>
+<entry>AddComboInput</entry>
+<entry><link linkend="h001933">AddComboInput</link></entry>
+</row>
+<row>
+<entry>AddEntryLine</entry>
+<entry><link linkend="h001787">AddEntryLine</link></entry>
+</row>
+<row>
+<entry>AddGrayFrame</entry>
+<entry><link linkend="h001761">AddGreyFrame</link></entry>
+</row>
+<row>
+<entry>AddGrayRect</entry>
+<entry><link linkend="h001722">AddGrayRect</link></entry>
+</row>
+<row>
+<entry>AddGroupBox</entry>
+<entry><link linkend="h001681">AddGroupBox</link></entry>
+</row>
+<row>
+<entry>AddInput</entry>
+<entry><link linkend="h001901">AddInput</link></entry>
+</row>
+<row>
+<entry>AddInputGroup</entry>
+<entry><link linkend="h001918">AddInputGroup</link></entry>
+</row>
+<row>
+<entry>AddInputStem</entry>
+<entry><link linkend="h001950">AddInputStem</link></entry>
+</row>
+<row>
+<entry>AddListBox</entry>
+<entry><link linkend="h001815">AddListBox</link></entry>
+</row>
+<row>
+<entry>AddMenuItem</entry>
+<entry><link linkend="amim">AddMenuItem</link></entry>
+</row>
+<row>
+<entry>AddMenuSeparator</entry>
+<entry><link linkend="amsm">AddMenuSeparator</link></entry>
+</row>
+<row>
+<entry>AddOkCancelLeftBottom</entry>
+<entry><link linkend="h002018">AddOkCancelLeftBottom</link></entry>
+</row>
+<row>
+<entry>AddOkCancelLeftTop</entry>
+<entry><link linkend="h002028">AddOkCancelLeftTop</link></entry>
+</row>
+<row>
+<entry>AddOkCancelRightBottom</entry>
+<entry><link linkend="h002013">AddOkCancelRightBottom</link></entry>
+</row>
+<row>
+<entry>AddOkCancelRightTop</entry>
+<entry><link linkend="h002023">AddOkCancelRightTop</link></entry>
+</row>
+<row>
+<entry>AddPasswordLine</entry>
+<entry><link linkend="h001801">AddPasswordLine</link></entry>
+</row>
+<row>
+<entry>AddPopupMenu</entry>
+<entry><link linkend="apumm">AddPopupMenu</link></entry>
+</row>
+<row>
+<entry>AddRadioButton</entry>
+<entry><link linkend="h001858">AddRadioButton</link></entry>
+</row>
+<row>
+<entry>AddRadioGroup</entry>
+<entry><link linkend="h001873">AddRadioGroup</link></entry>
+</row>
+<row>
+<entry>AddRadioStem</entry>
+<entry><link linkend="h001982">AddRadioStem</link></entry>
+</row>
+<row>
+<entry>AddScrollBar</entry>
+<entry><link linkend="h001983">AddScrollBar</link></entry>
+</row>
+<row>
+<entry>AddText</entry>
+<entry><link linkend="h001695">AddText</link></entry>
+</row>
+<row>
+<entry>AddWhiteFrame</entry>
+<entry><link linkend="h001748">AddWhiteFrame</link></entry>
+</row>
+<row>
+<entry>AddWhiteRect</entry>
+<entry><link linkend="h001709">AddWhiteRect</link></entry>
+</row>
+<row>
+<entry>Create</entry>
+<entry><link linkend="h001545">Create</link></entry>
+</row>
+<row>
+<entry>CreateCenter</entry>
+<entry><link linkend="h001562">CreateCenter</link></entry>
+</row>
+<row>
+<entry>CreateMenu</entry>
+<entry><link linkend="cmm">CreateMenu</link></entry>
+</row>
+<row>
+<entry>DefineDialog</entry>
+<entry><link linkend="h001506">DefineDialog</link></entry>
+</row>
+<row>
+<entry>Init</entry>
+<entry><link linkend="h001531">Init</link></entry>
+</row>
+<row>
+<entry>InitAutoDetection</entry>
+<entry><link linkend="h001539">InitAutoDetection</link></entry>
+</row>
+<row>
+<entry>Load</entry>
+<entry><link linkend="h001613">Load</link></entry>
+</row>
+<row>
+<entry>LoadFrame</entry>
+<entry><link linkend="h001624">LoadFrame</link></entry>
+</row>
+<row>
+<entry>LoadItems</entry>
+<entry><link linkend="h001636">LoadItems</link></entry>
+</row>
+<row>
+<entry>LoadMenu</entry>
+<entry><link linkend="lmm">LoadMenu</link></entry>
+</row>
+<row>
+<entry>SetMenu</entry>
+<entry><link linkend="smm">SetMenu</link></entry>
+</row>
+<row>
+<entry>StartIt</entry>
+<entry><link linkend="h002048">StartIt</link></entry>
+</row>
+<row>
+<entry>StopIt</entry>
+<entry><link linkend="h002057">StopIt</link></entry>
+</row>
+</tbody></tgroup>
+</informaltable>
+</para></listitem></varlistentry>
+</variablelist>
+
+<section id="h001531"><title>Init</title>
+<indexterm><primary>Init</primary>
+<secondary>UserDialog class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aUserDialog~Init(--+----------+--)--------------------------><
+                      +-DlgData.-+
+
+
+]]>
+</programlisting>
+
+<para>The Init method initializes a new dialog object. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>DlgData.</term>
+<listitem><para>A stem variable that is used to initialize the data fields of the dialog.
+If the dialog is terminated by means of the OK button,
+the values of the dialog's data fields are copied to this variable. The ID
+of the dialog items is used to name the entry within the stem.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example creates a new dialog object:
+
+<programlisting>
+<![CDATA[
+MyDialog=.UserDialog~new(aStem.)
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="h001539"><title>InitAutoDetection</title>
+<indexterm><primary>InitAutoDetection</primary>
+<secondary>UserDialog class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aUserDialog~InitAutoDetection-------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The InitAutoDetection method is called by the Init to determine whether or not automatic data field
+detection should be used. For a UserDialog, autodetection
+is disabled. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
+<listitem><para>This method is protected. It is called by the class itself and can be
+overwritten.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example overrides the method to switch off auto detection:
+
+<programlisting>
+<![CDATA[
+::class MyClass subclass UserDialog
+
+::method InitAutoDetection
+self~NoAutoDetection
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="h001545"><title>Create</title>
+<indexterm><primary>Create</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aUserDialog~Create(--x--,--y--,--cx--,--cy--,--title--,------>
+
+>--+---------------------------+--,--+----------+--------------->
+   |    .-----------------.    |     +-dlgClass-+
+   |    V                 |    |
+   +-"----+-NOMENU------+-+--"-+
+          +-VISIBLE-----+
+          +-NOTMODAL----+
+          +-SYSTEMMODAL-+
+          +-THICKFRAME--+
+          +-MINIMIZEBOX-+
+          +-MAXIMIZEBOX-+
+
+>--,--+----------+--,--+----------+--,--+----------+--)--------><
+      +-fontName-+     +-fontSize-+     +-expected-+
+
+
+]]>
+</programlisting>
+
+<para>The Create method creates the Windows dialog
+you previously defined with Add... methods. You can
+set the size, title, and style of the dialog. If the return code of Create
+is 0 the dialog creation failed and you should not try to execute the dialog
+object.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>x, y</term>
+<listitem><para>The position of the upper-left edge of the dialog in dialog units
+</para></listitem></varlistentry>
+<varlistentry><term>cx, cy</term>
+<listitem><para>The extent (width and height) of the dialog in dialog units
+</para></listitem></varlistentry>
+<varlistentry><term>title</term>
+<listitem><para>The dialog's title that is displayed in the title bar
+</para></listitem></varlistentry>
+<varlistentry><term>options</term>
+<listitem><para>One or more of the keywords listed in the syntax diagram, separated
+by blanks:
+<variablelist>
+<varlistentry><term>NOMENU</term>
+<listitem><para>Creates a dialog without a system menu
+</para></listitem></varlistentry>
+<varlistentry><term>VISIBLE</term>
+<listitem><para>Creates a visible dialog
+</para></listitem></varlistentry>
+<varlistentry><term>NOTMODAL</term>
+<listitem><para>Creates a dialog with a normal window frame
+</para></listitem></varlistentry>
+<varlistentry><term>SYSTEMMODAL</term>
+<listitem><para>Creates a dialog that blocks all other windows
+</para></listitem></varlistentry>
+<varlistentry><term>THICKFRAME</term>
+<listitem><para>Creates a dialog with a thick frame
+</para></listitem></varlistentry>
+<varlistentry><term>MINIMIZEBOX</term>
+<listitem><para>Creates a dialog with a minimize button.
+</para></listitem></varlistentry>
+<varlistentry><term>MAXIMIZEBOX</term>
+<listitem><para>Creates a dialog with a maximize button.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term>dlgClass</term>
+<listitem><para>Name of the window class used for the dialog. This argument must be
+omitted or an empty string.
+</para></listitem></varlistentry>
+<varlistentry><term>fontName</term>
+<listitem><para>The name of a font used by the dialog for all text. The default font
+is System.
+</para></listitem></varlistentry>
+<varlistentry><term>fontSize</term>
+<listitem><para>The size of the font used by the dialog. The default value is 8.
+</para></listitem></varlistentry>
+<varlistentry><term>expected</term>
+<listitem><para>This argument determines the maximum number of dialog elements (static
+text, entry lines, list boxes, and the like) the dialog can handle. The default
+value is 200. If your dialog has more than 200 elements, you must set this
+value; otherwise, the dialog fails.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example creates a dialog with a size of 300 by 200 dialog
+units. The dialog has no system menu in its upper-left corner. It has a thick
+frame (therefore the dialog will get resizable) and a 12-point font. The dialog
+has capabilities for up to 100 elements.
+
+<programlisting>
+<![CDATA[
+rc = MyDialog~Create(20, 20, 300, 200, "My first Dialog", ,
+  "THICKFRAME NOMENU", , "Courier", 12, 100)
+if rc <> 0 then MyDialog~Execute
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="h001562"><title>CreateCenter</title>
+<indexterm><primary>CreateCenter</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aUserDialog~CreateCenter(--cx--,--cy--,--title--,------------>
+
+>--+---------------------------+--,--+----------+--------------->
+   |    .-----------------.    |     +-dlgClass-+
+   |    V                 |    |
+   +-"----+-NOMENU------+-+--"-+
+          +-VISIBLE-----+
+          +-NOTMODAL----+
+          +-SYSTEMMODAL-+
+          +-THICKFRAME--+
+          +-MINIMIZEBOX-+
+          +-MAXIMIZEBOX-+
+
+>--+-----------------------------------------------+--)--------><
+   +-,--fontName--+------------------------------+-+
+                  +-,--fontSize--+-------------+-+
+                                 +-,--expected-+
+
+
+]]>
+</programlisting>
+
+<para>The CreateCenter method creates a dialog and centers
+its position. See <link linkend="h001545">Create</link> for a description of all arguments
+and an example.</para>
+</section>
+
+<section id="h001506"><title>DefineDialog</title>
+<indexterm><primary>DefineDialog</primary>
+<secondary>UserDialog class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aUserDialog~DefineDialog------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The DefineDialog method is called by Create. It is designed to be overwritten in a subclass of UserDialog. You should do all or additional dialog definitions, such
+as adding dialog items to the dialog, within this method.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
+<listitem><para>This method is protected. There is no need to call this method from
+anywhere else than Create.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>When the dialog is created, a push button and an entry line are added
+to its client area:
+
+<programlisting>
+<![CDATA[
+::class MyDialog subclass UserDialog
+     .
+     .
+     .
+::method DefineDialog
+self~AddButton(401, 20, 235, 40, 15, "&More...")
+self~AddEntryLine(402, INPUT_1, 20, 170, 150)
+     .
+     .
+     .
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="h001613"><title>Load</title>
+<indexterm><primary>Load</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aUserDialog~Load(--resourceFileName--,--dialogId------------->
+
+>--+------------------------------------------------------+----->
+   +-,--+------------------------------+--+-------------+-+
+        |    .--------------------.    |  +-,--expected-+
+        |    V                    |    |
+        +-"----+-CENTER---------+-+--"-+
+               +-CONNECTBUTTONS-+
+               +-CONNECTRADIOS--+
+               +-CONNECTCHECKS--+
+
+>--)-----------------------------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The <link linkend="h001613">Load</link> method creates the dialog based
+on the data of a given resource script (a file with the extension .RC). It
+calls the LoadFrame and LoadItems methods to retrieve the dialog data from the file.</para>
+<variablelist>
+<varlistentry><term>Return code:</term>
+<listitem><para>The return code is 0 for a successful load and 1 otherwise
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>resourceFileName</term>
+<listitem><para>The name of the resource script of the dialog
+</para></listitem></varlistentry>
+<varlistentry><term>dialogId</term>
+<listitem><para>The ID (number) of the dialog. Note that each dialog has a unique ID
+assigned to it. There can be more than one dialog definition in one resource
+file. If there is only one dialog resource in the resource file, you do not
+have to indicate the ID.
+</para></listitem></varlistentry>
+<varlistentry><term>options</term>
+<listitem><para>One or more of the keywords listed in the syntax diagram, separated
+by blanks:
+<variablelist>
+<varlistentry><term>CENTER</term>
+<listitem><para>The dialog is positioned in the center.
+</para></listitem></varlistentry>
+<varlistentry><term>CONNECTBUTTONS</term>
+<listitem><para>For each button a connection to an object method is established automatically.
+See <link linkend="h000123">ConnectControl</link> for a description of connecting buttons
+to a method.
+</para></listitem></varlistentry>
+<varlistentry><term>CONNECTRADIOS</term>
+<listitem><para>Similar to CONNECTBUTTONS, this option enforces
+the method to connect the radio buttons.
+</para></listitem></varlistentry>
+<varlistentry><term>CONNECTCHECKS</term>
+<listitem><para>This option connects the check box controls.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term>expected</term>
+<listitem><para>This is the maximum number of dialog elements the dialog object can
+handle. See <link linkend="h001545">Create</link>.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example creates a dialog based on the values for dialog <computeroutput>100</computeroutput> in <computeroutput>Dialog1.rc</computeroutput>. It also connects the push and radio buttons
+to a message named after the buttons' title.
+
+<programlisting>
+<![CDATA[
+MyDlg = .UserDialog~new()
+MyDlg~Load("Dialog1.rc", 100, "CONNECTBUTTONS CONNECTRADIOS")
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="h001624"><title>LoadFrame</title>
+<indexterm><primary>LoadFrame</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aUserDialog~LoadFrame(--resfile------------------------------>
+
+>--+-------------------------------------------------------+---->
+   +-,--+----------+--+----------------------------------+-+
+        +-dialogid-+  +-,--+----------+--+-------------+-+
+                           +-"CENTER"-+  +-,--expected-+
+
+>--)-----------------------------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The LoadFrame method creates the window frame using
+the data of the given dialog resource with dialogid in
+file resfile. It is usually called by the <link linkend="h001613">Load</link> method.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
+<listitem><para>This method is protected. It can only be used internally within a class
+method.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>resfile</term>
+<listitem><para>The name of the resource file
+</para></listitem></varlistentry>
+<varlistentry><term>dialogid</term>
+<listitem><para>The ID of the dialog. It can be omitted if there is just one dialog;
+otherwise it has to be specified.
+</para></listitem></varlistentry>
+<varlistentry><term>expected</term>
+<listitem><para>The number of expected dialog items
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example overrides the <link linkend="h001613">Load</link> method,
+so it loads the dialog window (just the frame) but not its contents:
+
+<programlisting>
+<![CDATA[
+::class WindowOnlyDialog subclass UserDialog
+     .
+     .
+     .
+::method Load
+self~LoadFrame("Dialog2.rc", 100, "CENTER", 20)
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="h001636"><title>LoadItems</title>
+<indexterm><primary>LoadItems</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aUserDialog~LoadItems(--resFile------------------------------>
+
+>--+------------------------------------------------------+----->
+   +-,--+----------+--+---------------------------------+-+
+        +-dialogId-+  |       .--------------------.    |
+                      |       V                    |    |
+                      +-,--"----+-CONNECTBUTTONS-+-+--"-+
+                                +-CONNECTRADIOS--+
+                                +-CONNECTCHECKS--+
+
+>--)-----------------------------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The LoadItems method creates the dialog items,
+using the data of the given resource script. It is either called by the <link linkend="h001613">Load</link> method, or it can be used in the context of a
+category dialog.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
+<listitem><para>This method cannot be called from outside the class.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>See <link linkend="h001613">Load</link> for a description.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>In the following example the dialog is created either with the items
+of dialog 200 or dialog 300, depending on the argument:
+
+<programlisting>
+<![CDATA[
+::class MyDialog subclass UserDialog
+      .
+      .
+      .
+::method Load
+   use arg view
+   self~LoadFrame("Dialog2.rc", 200, "CENTER", 200)
+   if view="special" then
+      self~LoadItems("Dialog2.rc", 200, "CONNECTBUTTONS")
+   else
+      self~LoadItems("Dialog2.rc", 300, "CONNECTBUTTONS")
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="addmeth"><title>Add... Methods</title>
+<indexterm><primary>Add... methods</primary></indexterm>
+<para>The methods listed below (all starting with Add)
+can be used to create a dialog dynamically without any resource script (.RC
+file). They can also be used in addition to a loaded dialog.</para>
+<para>The recommended way to create a dialog is to subclass from UserDialog and put all Add... statements into DefineDialog method, which is executed when the dialog
+is about to be created.</para>
+<para>Add... methods call the matching Connect... methods to create the associated Object Rexx attribute. Add... methods cannot be used after <link linkend="h000048">Execute</link> has
+started.</para>
+
+<note><title>Note</title><para>
+The coordinates are usually set in dialog units, if not mentioned
+explicitly.
+</para></note>
+
+<section id="h001647"><title>AddButton</title>
+<indexterm><primary>AddButton</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aUserDialog~AddButton(--id--,--x--,--y--,--cx--,--cy--,--text-->
+
+>--+----------------------------------------------+--)---------><
+   +-,--msgToRaise--+---------------------------+-+
+                    |       .--------------+    |
+                    |       V              |    |
+                    +-,--"----+-DEFAULT--+-+--"-+
+                              +-OWNER----+
+                              +-HIDDEN---+
+                              +-DISABLED-+
+                              +-NOTAB----+
+
+
+]]>
+</programlisting>
+
+<para>The AddButton method adds a push button to the
+dialog and connects it with a method that is processed whenever the button
+is clicked. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>A unique number you have to assign to the button. You need the ID to
+refer to this control in other methods.
+</para></listitem></varlistentry>
+<varlistentry><term>x, y</term>
+<listitem><para>The position of the button's upper-left corner relative to the dialog
+measured in dialog units
+</para></listitem></varlistentry>
+<varlistentry><term>cx, cy</term>
+<listitem><para>The size of the button in dialog units
+</para></listitem></varlistentry>
+<varlistentry><term>text</term>
+<listitem><para>The button's title that is displayed on the button
+</para></listitem></varlistentry>
+<varlistentry><term>msgToRaise</term>
+<listitem><para>The name of a method that is processed whenever the button is clicked
+</para></listitem></varlistentry>
+<varlistentry><term>options</term>
+<listitem><para>The last argument can be one or more of:
+<variablelist>
+<varlistentry><term>DEFAULT</term>
+<listitem><para>The button becomes the default button in the dialog.
+</para></listitem></varlistentry>
+<varlistentry><term>OWNER</term>
+<listitem><para>The button is owner-drawn. This option is used
+for bitmap buttons.
+</para></listitem></varlistentry>
+<varlistentry><term>HIDDEN</term>
+<listitem><para>The button is not visible at startup time.
+</para></listitem></varlistentry>
+<varlistentry><term>DISABLED</term>
+<listitem><para>The button is disabled at startup time.
+</para></listitem></varlistentry>
+<varlistentry><term>NOTAB</term>
+<listitem><para>There is no tabstop at the button, so you cannot get to the button by
+using just the keyboard (tab key).
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example creates a push button
+entitled "Get new Info" at position x=100, y=80 and size
+width=40, height=15. The button's ID is 555, and if the button is clicked,
+the getInfo message is sent to the dialog object.
+
+<programlisting>
+<![CDATA[
+MyDialog~AddButton(555, 100, 80, 40, 15, "&Get new Info", ,
+"getInfo", "NOTAB")
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="h001662"><title>AddBitmapButton</title>
+<indexterm><primary>AddBitmapButton</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aUserDialog~AddBitmapButton(--id--,--x--,--y--,--+----+--,--->
+                                                    +-cx-+
+
+>--+----+--,--+------+--,--+------------+--,--bmpNormal--,------>
+   +-cy-+     +-text-+     +-msgToRaise-+
+
+>--+------------+--,--+-------------+--,--+-------------+------->
+   +-bmpFocused-+     +-bmpSelected-+     +-bmpDisabled-+
+
+>--+---------------------------+--)----------------------------><
+   |       .--------------.    |
+   |       V              |    |
+   +-,--"----+-DEFAULT--+-+--"-+
+             +-HIDDEN---+
+             +-DISABLED-+
+             +-NOTAB----+
+             +-FRAME----+
+             +-USEPAL---+
+             +-INMEMORY-+
+             +-STRETCH--+
+
+
+]]>
+</programlisting>
+
+<para>The AddBitmapButton method adds a push button with
+a bitmap (instead of plain text) to the dialog. You can provide four different
+bitmaps representing the four states of a button.</para>
+<para>The bitmaps can be specified by either a file name or a bitmap handle.
+You can retrieve a bitmap handle by loading a bitmap stored in a file into
+memory, using the method <link linkend="h000667">LoadBitmap</link>). If you pass a bitmap handle
+to the method, you must use the INMEMORY option. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are the same as for AddButton,
+with the changes listed below:</para>
+<variablelist>
+<varlistentry><term>bmpNormal</term>
+<listitem><para>A bitmap that is displayed
+</para></listitem></varlistentry>
+<varlistentry><term>bmpFocused</term>
+<listitem><para>A bitmap that is displayed if the button is focused. Having the focus
+means that the button is clicked by using the Enter key. Normally the focused
+button is surrounded by a dashed frame.
+</para></listitem></varlistentry>
+<varlistentry><term>bmpSelected</term>
+<listitem><para>A bitmap that is displayed while the button is clicked and held
+</para></listitem></varlistentry>
+<varlistentry><term>bmpDisabled</term>
+<listitem><para>A bitmap that is displayed if the button is disabled
+</para></listitem></varlistentry>
+<varlistentry><term>options</term>
+<listitem><para>In addition to AddButton, there are four more
+options:</para>
+<variablelist>
+<varlistentry><term>FRAME</term>
+<listitem><para>The button has a 3D frame. This gives your bitmap the same behavior
+as a standard Windows button.
+</para></listitem></varlistentry>
+<varlistentry><term>USEPAL</term>
+<listitem><para>The color palette of the bitmap is loaded and used. This argument should
+be specified for just one of the dialog buttons, because only one color palette
+can be active at any time.
+</para></listitem></varlistentry>
+<varlistentry><term>INMEMORY</term>
+<listitem><para>Specifies that the bitmap was loaded into memory before. If you switch
+often between different bitmaps within one button, the loading of all bitmaps
+into memory increases performance.
+</para></listitem></varlistentry>
+<varlistentry><term>STRETCH</term>
+<listitem><para>If this option is specified and the extent of the bitmap is smaller
+than the extent of the button rectangle, the bitmap is adapted to match the
+extent of the button.</para>
+</listitem></varlistentry>
+</variablelist>
+</listitem></varlistentry>
+</variablelist>
+<para>See <link linkend="h001647">AddButton</link> for a description of the other
+arguments.</para>
+</listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example defines a button with ID 601. The bitmap
+in the <computeroutput>Button1.bmp</computeroutput> file is displayed for the push button instead
+of a black text on a grey background. If the button is disabled (by using
+the DisableItem method, see page <link linkend="h001229">DisableItem</link>), the bitmap is exchanged and Button1D.bmp is shown instead. If the button is clicked, the BmpPushed message is sent.
+
+<programlisting>
+<![CDATA[
+MyDialog~AddBitmapButton(601, 20, 317, 80, 30, , "BmpPushed", ,
+                         "Button1.bmp", , ,"Button1D.bmp","FRAME USEPAL")
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="h001681"><title>AddGroupBox</title>
+<indexterm><primary>AddGroupBox</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aUserDialog~AddGroupBox(--x--,--y--,--cx--,--cy--,--text----->
+
+>--+------------------------+--)-------------------------------><
+   +-,--"BORDER"--+-------+-+
+                  +-,--id-+
+
+
+]]>
+</programlisting>
+
+<para>The AddGroupBox method adds a group box to the
+dialog. A group box has a frame and a title. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are the same as for <link linkend="h001647">AddButton</link>,
+with the changes listed below:
+<variablelist>
+<varlistentry><term>text</term>
+<listitem><para>The title of the group box
+</para></listitem></varlistentry>
+<varlistentry><term>options</term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>BORDER</term>
+<listitem><para>A rectangle is drawn around the group box
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="h001695"><title>AddText</title>
+<indexterm><primary>AddText</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aUserDialog~AddText(--x--,--y--,--+----+--,--+----+--,--text-->
+                                     +-cx-+     +-cy-+
+
+>--+----------------------------------------+--)----------------><
+   +-,--+----------------------+--+-------+-+
+        |    .------------.    |  +-,--id-+
+        |    V            |    |
+        +-"----+-HIDDEN-+-+--"-+
+               +-SIMPLE-+
+               +-RIGHT--+
+               +-CENTER-+
+               +-BORDER-+
+
+
+]]>
+</programlisting>
+
+<para>The AddText method adds a static text element to
+the dialog. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are the same as for <link linkend="h001647">AddButton</link>,
+with the changes listed below:</para>
+<variablelist>
+<varlistentry><term>text</term>
+<listitem><para>The text string to be displayed
+</para></listitem></varlistentry>
+<varlistentry><term>options</term>
+<listitem><para>This argument can be one or more of:</para>
+<variablelist>
+<varlistentry><term>HIDDEN</term>
+<listitem><para>The text is not visible at startup time
+</para></listitem></varlistentry>
+<varlistentry><term>SIMPLE</term>
+<listitem><para>Simple text field
+</para></listitem></varlistentry>
+<varlistentry><term>RIGHT</term>
+<listitem><para>The text is aligned to the right
+</para></listitem></varlistentry>
+<varlistentry><term>CENTER</term>
+<listitem><para>The text is centered. If neither RIGHT or CENTER is specified, the text
+is aligned to the left.
+</para></listitem></varlistentry>
+<varlistentry><term>BORDER</term>
+<listitem><para>A rectangle is drawn around the text
+</para></listitem></varlistentry>
+</variablelist>
+<para>If not specified RIGHT or CENTER, the text is aligned to the left.</para>
+</listitem></varlistentry>
+<varlistentry><term>id</term>
+<listitem><para>If omitted, ID -1 is used.
+</para></listitem></varlistentry>
+</variablelist>
+</listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="h001787"><title>AddEntryLine</title>
+<indexterm><primary>AddEntryLine</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aUserDialog~AddEntryLine(--id--,--+------+--,--x--,--y--,--cx-->
+                                     +-name-+
+
+>--+---------------------------------------------+---)-----------><
+   +-,--+----+--+------------------------------+-+
+        +-cy-+  |       +-----------------+    |
+                |       V                 |    |
+                +-,--"----+-MULTILINE---+-+--"-+
+                          +-AUTOSCROLLH-+
+                          +-HSCROLL-----+
+                          +-AUTOSCROLLV-+
+                          +-VSCROLL-----+
+                          +-READONLY----+
+                          +-DISABLED----+
+                          +-CENTER------+
+                          +-RIGHT-------+
+                          +-UPPER-------+
+                          +-LOWER-------+
+                          +-NOBORDER----+
+
+
+]]>
+</programlisting>
+
+<para>The AddEntryLine method adds an entry line to the
+dialog. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>This must be a unique number.
+</para></listitem></varlistentry>
+<varlistentry><term>name</term>
+<listitem><para>This is the name of the entry line. An attribute with exactly this name
+is added to the object and provides data for the dialog item automatically.
+See <link linkend="h000184">ConnectEntryLine</link>.
+</para></listitem></varlistentry>
+<varlistentry><term>x, y</term>
+<listitem><para>The position of the upper-left corner relative to the dialog's client
+area measured in dialog units
+</para></listitem></varlistentry>
+<varlistentry><term>cx</term>
+<listitem><para>The length of the entry line in dialog units
+</para></listitem></varlistentry>
+<varlistentry><term>cy</term>
+<listitem><para>The height of the entry line. If this argument is omitted or equal to
+0, the height is calculated to fit the font's height.
+</para></listitem></varlistentry>
+<varlistentry><term>Options</term>
+<listitem><para>The last argument can be one or more (separated by a blank) of:
+<variablelist>
+<varlistentry><term>MULTILINE</term>
+<listitem><para>Designates a multiple-line edit control. (The default is single line.)
+</para></listitem></varlistentry>
+<varlistentry><term>AUTOSCROLLH</term>
+<listitem><para>Automatically scrolls text to the right by 10 characters when the user
+types a character at the end of the line. When the user presses the ENTER
+key, the control scrolls all text back to position 0.
+</para></listitem></varlistentry>
+<varlistentry><term>HSCROLL</term>
+<listitem><para>Combines a horizontal scroll bar with the entry line.
+</para></listitem></varlistentry>
+<varlistentry><term>AUTOSCROLLV</term>
+<listitem><para>Automatically scrolls text up one page when the user presses ENTER on
+the last line.
+</para></listitem></varlistentry>
+<varlistentry><term>VSCROLL</term>
+<listitem><para>Combines a vertical scroll bar with the entry line.
+</para></listitem></varlistentry>
+<varlistentry><term>READONLY</term>
+<listitem><para>Prevents the user from entering or editing text in the edit control.
+</para></listitem></varlistentry>
+<varlistentry><term>DISABLED</term>
+<listitem><para>Initially disables the entry line.
+</para></listitem></varlistentry>
+<varlistentry><term>CENTER</term>
+<listitem><para>Centers text in a multiline edit control.
+</para></listitem></varlistentry>
+<varlistentry><term>RIGHT</term>
+<listitem><para>Aligns text flush right in a multiline edit control.
+</para></listitem></varlistentry>
+<varlistentry><term>UPPER</term>
+<listitem><para>Converts all characters to uppercase as they are typed into the edit
+control.
+</para></listitem></varlistentry>
+<varlistentry><term>LOWER</term>
+<listitem><para>Converts all characters to lowercase as they are typed into the edit
+control.
+</para></listitem></varlistentry>
+<varlistentry><term>NOBORDER</term>
+<listitem><para>The rectangle is not drawn around the entry field.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example puts the entry line with ID 201 and length of
+150 dialog units close to the upper-left corner of the dialog's client area.
+The FIRSTNAME attribute is created and connected to
+the dialog item. If the entered data is longer than 150 dialog units, the
+entryline is scrolled horizontally.
+</para></listitem></varlistentry>
+</variablelist>
+
+<programlisting>
+<![CDATA[
+MyDialog~AddEntryLine(201, "FIRSTNAME", 12, 14, 150, ,"AUTOSCROLLH")
+]]>
+</programlisting>
+</section>
+
+<section id="h001801"><title>AddPasswordLine</title>
+<indexterm><primary>AddPasswordLine</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aUserDialog~AddPasswordLine(--id--,--+------+--,--x--,--y--,--cx-->
+                                        +-name-+
+
+>--+---------------------------+-- )--------------------------------><
+   +-,--+----+--+------------+-+
+        +-cy-+  +-,--options-+
+
+
+]]>
+</programlisting>
+
+<para>The AddPasswordLine method adds a password entry
+line that does not echo the characters entered but displays asterisks (*)
+instead. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>See <link linkend="h001787">AddEntryLine</link> for a description of the arguments.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="h001815"><title>AddListBox</title>
+<indexterm><primary>AddListBox</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aUserDialog~AddListBox(--id--,--+------+--,--x--,--y--,--cx--,-->
+                                   +-name-+
+
+>--cy--+---------------------------+-- )-----------------------><
+       |       +--------------+    |
+       |       V              |    |
+       +-,--"----+-MULTI----+-+--"-+
+                 +-NOTIFY---+
+                 +-SORT-----+
+                 +-COLUMNS--+
+                 +-VSCROLL--+
+                 +-HSCROLL--+
+                 +-NOBORDER-+
+                 +-MCOLUMN--+
+                 +-PARTIAL--+
+                 +-SBALWAYS-+
+
+
+]]>
+</programlisting>
+
+<para>Adds a list box to the dialog. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are the same as for <link linkend="h001787">AddEntryLine</link>,
+with the changes listed below:
+<variablelist>
+<varlistentry><term>Options</term>
+<listitem><para>The last argument can be one or more of:
+<variablelist>
+<varlistentry><term>MULTI</term>
+<listitem><para>Makes the list box a multiple choice list box, that is, you can select
+more than one line.
+</para></listitem></varlistentry>
+<varlistentry><term>NOTIFY</term>
+<listitem><para>A message is posted whenever the user selects an item of the list box.
+To use this feature you have to connect the list to a method (see <link linkend="h000132">ConnectList</link>).
+</para></listitem></varlistentry>
+<varlistentry><term>SORT</term>
+<listitem><para>The items in the dialog are listed in the noted order.
+</para></listitem></varlistentry>
+<varlistentry><term>COLUMNS</term>
+<listitem><para>The list box can handle tab characters ("09"x). Use this option
+together with the SetListTabulators method (see page <link linkend="h000435">SetListTabulators</link>) to have more than one column in a list.
+</para></listitem></varlistentry>
+<varlistentry><term>VSCROLL</term>
+<listitem><para>Adds a vertical scroll bar to the list box. Scroll bars appear only
+if the list contains more lines than can fit in the available space.
+</para></listitem></varlistentry>
+<varlistentry><term>HSCROLL</term>
+<listitem><para>Adds a horizontal scroll bar to the list box. See also <link linkend="setlistwidth">SetListWidth</link>.
+</para></listitem></varlistentry>
+<varlistentry><term>NOBORDER</term>
+<listitem><para>Draw list without drawing a rectangle around it.
+</para></listitem></varlistentry>
+<varlistentry><term>MCOLUMN</term>
+<listitem><para>Makes the list box a multicolumn list box that can be scrolled horizontally. <link linkend="setlistcolumnwidth">SetListColumnWidth</link> sets the width of the columns.
+</para></listitem></varlistentry>
+<varlistentry><term>PARTIAL</term>
+<listitem><para>The size of the list box equals the size specified by the application
+when it created the list box. Windows usually sizes a list box such
+that the list box does not display partial items.
+</para></listitem></varlistentry>
+<varlistentry><term>SBALWAYS</term>
+<listitem><para>The list box shows a disabled scroll bar if there is no need to scroll.
+If you do not specify this option, the scroll bar is hidden when the list
+box does not contain enough items.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+
+<note><title>Note</title><para>
+A list box does not support a horizontal scroll bar.
+</para></note>
+</section>
+
+<section id="h001829"><title>AddComboBox</title>
+<indexterm><primary>AddComboBox</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aUserDialog~AddComboBox(--id--,--+------+--,--x--,--y--,--cx--,--cy-->
+                                    +-name-+
+
+>--+--------------------------+--)-------------------------------------><
+   |       +-------------+    |
+   |       V             |    |
+   +-,--"----+-SIMPLE--+-+--"-+
+             +-LIST----+
+             +-SORT----+
+             +-VSCROLL-+
+
+
+]]>
+</programlisting>
+
+<para>The AddComboBox method adds a combo box to the
+dialog. A combo box is a combination of an entry line and a list box. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are the same as for <link linkend="h001787">AddEntryLine</link>,
+with the changes listed below:
+<variablelist>
+<varlistentry><term>options</term>
+<listitem><para>The last argument can be one or more of:
+<variablelist>
+<varlistentry><term>SIMPLE</term>
+<listitem><para>Displays the list box all the time.
+</para></listitem></varlistentry>
+<varlistentry><term>LIST</term>
+<listitem><para>No free text can be entered in the entry line; the list contains selectable
+items only.
+</para></listitem></varlistentry>
+<varlistentry><term>SORT</term>
+<listitem><para>The items in the list are sorted by the combo box itself.
+</para></listitem></varlistentry>
+<varlistentry><term>VSCROLL</term>
+<listitem><para>Adds a vertical scroll bar to the combo box.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="h001843"><title>AddCheckBox</title>
+<indexterm><primary>AddCheckBox</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aUserDialog~AddCheckBox(--id--,--+------+--,--x--,--y--,--+----+--,-->
+                                    +-name-+                 +-cx-+
+
+>--+----+--,--text--+------------------------+--)----------------------><
+   +-cy-+           |       +-----------+    |
+                    |       V           |    |
+                    +-,--"------GROUP---+--"-+
+
+
+]]>
+</programlisting>
+
+<para>The AddCheckBox method adds a check box to the
+dialog. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are the same as for <link linkend="h001787">AddEntryLine</link>,
+with the changes listed below:
+<variablelist>
+<varlistentry><term>name</term>
+<listitem><para>The name of the check box. If omitted, text is
+used.
+</para></listitem></varlistentry>
+<varlistentry><term>text</term>
+<listitem><para>The text that is displayed next to the check box.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="h001858"><title>AddRadioButton</title>
+<indexterm><primary>AddRadioButton</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aUserDialog~AddRadioButton(--id--,--+------+--,--x--,--y--,--cx-->
+                                       +-name-+
+
+>--,--cy--,--text--+----------------+--)---------------------------><
+                   +-,--"--GROUP--"-+
+
+
+]]>
+</programlisting>
+
+<para>The AddRadioButton method adds a radio button to
+the dialog. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are the same as for <link linkend="h001787">AddEntryLine</link>,
+with the changes listed below:
+<variablelist>
+<varlistentry><term>name</term>
+<listitem><para>The name of the radio button
+</para></listitem></varlistentry>
+<varlistentry><term>text</term>
+<listitem><para>The text that is displayed next to the radio button
+</para></listitem></varlistentry>
+<varlistentry><term>options</term>
+<listitem><para>Valid values for the last argument are:
+<variablelist>
+<varlistentry><term>GROUP</term>
+<listitem><para>Makes the radio button the beginning of a new group. Use this option
+just for the first radio button if you want to make all radio buttons dependent.
+In each group if you select a radio button, the previously selected button
+is automatically deselected.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example defines seven radio buttons with IDs 501 through
+507:
+
+<programlisting>
+<![CDATA[
+RText.1="Monday"
+RText.2="Tuesday"
+RText.3="Wednesday"
+RText.4="Thursday"
+RText.5="Friday"
+RText.6="Saturday"
+RText.7="Sunday"
+
+do i=1 to 7
+ MyDialog~AddRadioButton(500+i, , 20, i*15+13, 40, 14, RText.i)
+end
+]]>
+</programlisting>
+
+<note><title>Note</title><para>
+There are also methods that create a whole group
+automatically (see the <link linkend="h001873">AddRadioGroup</link> method below and <link linkend="h001982">AddRadioStem</link>).
+</para></note>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="h001873"><title>AddRadioGroup</title>
+<indexterm><primary>AddRadioGroup</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aUserDialog~AddRadioGroup(--startId--,--x--,--y--,--+----+--->
+                                                       +-cx-+
+
+         +------+
+         V      |
+>--,--"----text-+--"--+----------------------------------+--)--><
+                      +-,--+------------+--+-----------+-+
+                           +-"NOBORDER"-+  +-,--idstat-+
+
+
+]]>
+</programlisting>
+
+<para>The AddRadioGroup method creates a group of radio
+buttons. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>startId</term>
+<listitem><para>The ID of the first radio button. The startId is
+increased by 1 for each additional radio button and then assigned to the dialog
+item.
+</para></listitem></varlistentry>
+<varlistentry><term>x, y</term>
+<listitem><para>The position of the first radio button control. The other radio buttons
+are positioned automatically.
+</para></listitem></varlistentry>
+<varlistentry><term>cx</term>
+<listitem><para>The length of the radio button plus text. If omitted, the space needed
+is calculated.
+</para></listitem></varlistentry>
+<varlistentry><term>text</term>
+<listitem><para>The text string for each radio button. Single strings have to be separated
+by blank spaces. This argument determines the number of radio buttons in total.
+</para></listitem></varlistentry>
+<varlistentry><term>options</term>
+<listitem><para>The only option is NOBORDER, which prevents
+the method from placing a group box around the group.
+</para></listitem></varlistentry>
+<varlistentry><term>idstat</term>
+<listitem><para>This argument is used to set the static frame ID.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example adds a group of three radio buttons with IDs 301,
+302, and 303 to the dialog (see <link linkend="fig53">Sample Radio Button Group</link>):
+
+<programlisting>
+<![CDATA[
+MyDialog = .UserDialog~new
+MyDialog~Create(100,100,80,60,"Radio Button Group")
+MyDialog~AddRadioGroup(301, 23, 18, ,"Fast Medium Slow")
+MyDialog~fast = 1
+MyDialog~Execute
+]]>
+</programlisting>
+
+<figure id="fig53"><title>Sample Radio Button Group</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="rxou0s17.jpg" scale="70">
+</imageobject>
+</mediaobject>
+</figure>
+
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="h001887"><title>AddCheckGroup</title>
+<indexterm><primary>AddCheckGroup</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aUserDialog~AddCheckGroup(--startId--,--x--,--y--,--+----+--,-->
+                                                       +-cx-+
+
+      +------+
+      V      |
+>--"----text-+--"--+----------------------------------+-- )----><
+                   +-,--+------------+--+-----------+-+
+                        +-"NOBORDER"-+  +-,--idstat-+
+
+
+]]>
+</programlisting>
+
+<para>The AddCheckGroup method creates a group of check
+boxes. See <link linkend="h001873">AddRadioGroup</link> for a full description. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example adds a group with four check boxes to the dialog.
+Two check boxes are preselected (see <link linkend="fig54">Sample Check Box Group</link>):
+</para></listitem></varlistentry>
+</variablelist>
+<programlisting>
+<![CDATA[
+MyDialog~AddCheckGroup(401, 23, 18, ,"Smalltalk C++ ObjectRexx OO-COBOL")
+MyDialog~smalltalk = 1
+MyDialog~objectrexx = 1
+]]>
+</programlisting>
+
+<figure id="fig54"><title>Sample Check Box Group</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="rxou0s18.jpg" scale="70">
+</imageobject>
+</mediaobject>
+</figure>
+
+</section>
+
+<section id="h001901"><title>AddInput</title>
+<indexterm><primary>AddInput</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aUserDialog~AddInput(--id--,--+----------+--,--x--,--y--,---->
+                                 +-attrName-+
+
+>--+-----+--,--cx2--,--+----+--,--text-------------------------->
+   +-cx1-+             +-cy-+
+
+>--+---------------------------+-- )---------------------------><
+   +-,--options--+-----------+-+
+                 +-,--idstat-+
+
+
+]]>
+</programlisting>
+
+<para>The AddInput method adds an entry line with a label
+(a static text) to the dialog. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:</para>
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The unique ID of the entry line
+</para></listitem></varlistentry>
+<varlistentry><term>attrName</term>
+<listitem><para>The attrName is used to create an attribute
+in the dialog object that reflects the contents of the entry line (see <link linkend="h001787">AddEntryLine</link>). If it is skipped, the text label
+is used as the attribute name.
+</para></listitem></varlistentry>
+<varlistentry><term>x, y</term>
+<listitem><para>The position of the upper-left edge of the label. The entry line is
+aligned automatically.
+</para></listitem></varlistentry>
+<varlistentry><term>cx1</term>
+<listitem><para>The length of the label. If omitted, the length is calculated.
+</para></listitem></varlistentry>
+<varlistentry><term>cx2</term>
+<listitem><para>The length of the entry field
+</para></listitem></varlistentry>
+<varlistentry><term>cy</term>
+<listitem><para>The height of the entry field. If omitted, the height is calculated.
+</para></listitem></varlistentry>
+<varlistentry><term>text</term>
+<listitem><para>The label displayed in front of the entry field
+</para></listitem></varlistentry>
+<varlistentry><term>options</term>
+<listitem><para>Possible options are:</para>
+<variablelist>
+<varlistentry><term>HIDDEN</term>
+<listitem><para>Makes the input group invisible
+</para></listitem></varlistentry>
+<varlistentry><term>PASSWORD</term>
+<listitem><para>Displays asterisks instead of the typed-in characters
+</para></listitem></varlistentry>
+</variablelist>
+<para>For further options see <link linkend="h001787">AddEntryLine</link>.</para>
+</listitem></varlistentry>
+<varlistentry><term>idstat</term>
+<listitem><para>An ID for the label
+</para></listitem></varlistentry>
+</variablelist>
+</listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example creates an entry field and the label Your e-mail address (placed on the entry field's left side). It also
+creates an attribute with the name YOUREMAILADDRESS.
+The height of the elements is calculated. (See <link linkend="fig55">Sample Input Field</link>.)
+
+<programlisting>
+<![CDATA[
+MyUserDialog~AddInput(402, , 20, 30, , 150, , "Your eMail address")
+]]>
+</programlisting>
+
+<figure id="fig55"><title>Sample Input Field</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="rxou0s19.jpg" scale="70">
+</imageobject>
+</mediaobject>
+</figure>
+
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="h001918"><title>AddInputGroup</title>
+<indexterm><primary>AddInputGroup</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aUserDialog~AddInputGroup(--startid--,--x--,--y--,--+----+--,-->
+                                                       +-cx-+
+
+         +------+
+         V      |
+>--,--"----text-+--"--+----------------------------------+--)----><
+                      +-,--+------------+--+-----------+-+
+                           +-"NOBORDER"-+  +-,--idstat-+
+
+
+]]>
+</programlisting>
+
+<para>The AddInputGroup method creates a group of one
+or more entry lines. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>startid</term>
+<listitem><para>An ID that is assigned to the first entry line. Consecutive numbers
+are assigned to the other entry fields.
+</para></listitem></varlistentry>
+<varlistentry><term>x, y</term>
+<listitem><para>Position of the input group's upper-left corner
+</para></listitem></varlistentry>
+<varlistentry><term>cx1</term>
+<listitem><para>Length of the entry field label. If omitted, the length is calculated.
+</para></listitem></varlistentry>
+<varlistentry><term>cx2</term>
+<listitem><para>Length of the entry field in dialog units
+</para></listitem></varlistentry>
+<varlistentry><term>text</term>
+<listitem><para>The text strings used for each entry field's label. The single strings
+are to be separated by blank spaces. This argument determines the number of
+entry fields in total.
+</para></listitem></varlistentry>
+<varlistentry><term>options</term>
+<listitem><para>In addition to the options of <link linkend="h001901">AddInput</link>, NOBORDER can be used to prevent the method from placing
+a group box around the group.
+</para></listitem></varlistentry>
+<varlistentry><term>idstat</term>
+<listitem><para>The ID of the first label. Usually you do not have to specify this value
+because labels are static controls.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example creates a four-line input group. The single entry
+lines are accessible by IDs 301 through 304.
+</para></listitem></varlistentry>
+</variablelist>
+
+<programlisting>
+<![CDATA[
+MyDialog~AddInputGroup(301, 20, 20, ,130, "Name FirstName Street City")
+]]>
+</programlisting>
+
+<note><title>Note</title><para>
+If you want to use labels that include blanks (for example, &quot;First
+Name&quot; instead of &quot;FirstName&quot;), use the <link linkend="h001950">AddInputStem</link> method.
+</para></note>
+</section>
+
+<section id="h001933"><title>AddComboInput</title>
+<indexterm><primary>AddComboInput</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aUserDialog~AddComboInput(--id--,--+----------+--,--x--,--y--,-->
+                                      +-attrName-+
+
+>--+-----+--,--cx2--,--+--------+--,--text--,---------------------->
+   +-cx1-+             +-clines-+
+
+>--+---------------------------------------------+--)-------------><
+   +-,--+-----------------------+--+-----------+-+
+        |    +-------------+    |  +-,--idstat-+
+        |    V             |    |
+        +-"----+-SIMPLE--+-+--"-+
+               +-LIST----+
+               +-SORT----+
+               +-VSCROLL-+
+
+
+]]>
+</programlisting>
+
+<para>The AddComboInput method adds a combo box and a
+label string to the dialog. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The ID of the combo box
+</para></listitem></varlistentry>
+<varlistentry><term>attrName</term>
+<listitem><para>The name of the combo box. This name is used as an object attribute
+name.
+</para></listitem></varlistentry>
+<varlistentry><term>x, y</term>
+<listitem><para>Position of the group (text string of combo box)
+</para></listitem></varlistentry>
+<varlistentry><term>cx1</term>
+<listitem><para>Length of the text string
+</para></listitem></varlistentry>
+<varlistentry><term>cx2</term>
+<listitem><para>Width of the combo box
+</para></listitem></varlistentry>
+<varlistentry><term>clines</term>
+<listitem><para>Vertical length of the combo box in number of lines
+</para></listitem></varlistentry>
+<varlistentry><term>text</term>
+<listitem><para>Label being displayed on the left-hand side of the combo box
+</para></listitem></varlistentry>
+<varlistentry><term>options</term>
+<listitem><para>See <link linkend="h001829">AddComboBox</link>
+</para></listitem></varlistentry>
+<varlistentry><term>idstat</term>
+<listitem><para>The ID of the label. Usually you do not have to specify this value because
+labels are static controls.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="h001950"><title>AddInputStem</title>
+<indexterm><primary>AddInputStem</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aUserDialog~AddInputStem(--startid--,--x--,--y--,--+-----+--,-->
+                                                      +-cx1-+
+
+>--cx2--,--textStem.--+-------------------------------+--)-----><
+                      +-,--+---------+--+-----------+-+
+                           +-options-+  +-,--idstat-+
+
+
+]]>
+</programlisting>
+
+<para>The AddInputStem method adds a group of input fields
+to the dialog. The difference between this method and the <link linkend="h001918">AddInputGroup</link> method is that the titles (and names) of the single lines are
+passed to the method in a stem variable. Thus it is possible to use strings
+containing blank spaces. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>startid</term>
+<listitem><para>The ID of the first entry line
+</para></listitem></varlistentry>
+<varlistentry><term>x, y</term>
+<listitem><para>The position of the whole group (upper-left corner)
+</para></listitem></varlistentry>
+<varlistentry><term>cx1</term>
+<listitem><para>The length of the text strings. If omitted, the size is calculated.
+</para></listitem></varlistentry>
+<varlistentry><term>cx2</term>
+<listitem><para>The width of the entry fields
+</para></listitem></varlistentry>
+<varlistentry><term>textStem.</term>
+<listitem><para>A stem variable containing all labels for the entry fields. The object
+attribute for each field is created on the basis of this string.
+</para></listitem></varlistentry>
+<varlistentry><term>options</term>
+<listitem><para>In addition to the options of the <link linkend="h001901">AddInput</link> method, NOBORDER can be used to prevent the method from placing
+a group box around the group.
+</para></listitem></varlistentry>
+<varlistentry><term>idstat</term>
+<listitem><para>The ID of the first label. Usually you do not have to specify this value
+because labels are static controls.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example shows how to use AddInputStem. It creates a four-line input group. For each entry line (with IDs 401
+through 404) an object attribute is provided. The names might be different
+from the title because not all characters can be used for Object Rexx symbols.
+In this example the NAME, FIRSTNAME, STREETNUMBER, and CITYZIP attributes are added to the object.
+
+<programlisting>
+<![CDATA[
+FNames.1="Name"
+FNames.2="First Name"
+FNames.3="Street & Number"
+FNames.4="City & ZIP"
+
+MyDialog~AddInputStem(401, 20, 20, , 150, FNames.)
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="h001965"><title>AddCheckBoxStem</title>
+<indexterm><primary>AddCheckBoxStem</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aUserDialog~AddCheckBoxStem(--startid--,--x--,--y--,--------->
+
+>--+----+--,--textStem.--,--max--+----------------+------------->
+   +-cx-+                        +-,--+---------+-+
+                                      +-options-+
+
+>--+---------------------------------------------------------+-->
+   +-+-----------------------------------------------------+-+
+     +-,--+--------+--+----------------------------------+-+
+          +-idstat-+  +-,--+----------+--+-------------+-+
+                           +-fontName-+  +-,--fontSize-+
+
+>--)-----------------------------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The AddCheckBoxStem method creates a group of check
+box controls. Unlike the <link linkend="h001887">AddCheckGroup</link> method you pass
+the titles of the check boxes in a stem variable instead of using a string.
+Thus you can use labels including blanks. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>See <link linkend="h001887">AddCheckGroup</link> for a description of the arguments.
+The new arguments are:
+<variablelist>
+<varlistentry><term>textStem.</term>
+<listitem><para>A stem variable containing all labels for the check boxes. The object
+attribute for each check box is created on the basis of this string.
+</para></listitem></varlistentry>
+<varlistentry><term>max</term>
+<listitem><para>The maximum number of check box items in one column. If textStem has more items than max, a second column
+is created.
+</para></listitem></varlistentry>
+<varlistentry><term>fontName</term>
+<listitem><para>The name of the font used within the dialog
+</para></listitem></varlistentry>
+<varlistentry><term>fontSize</term>
+<listitem><para>The size of the font used within the dialog
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example creates a three-column check box group:
+
+<programlisting>
+<![CDATA[
+CBNames.1="C"
+CBNames.2="Pascal"
+CBNames.3="Cobol"
+CBNames.4="Rexx"
+CBNames.5="Basic"
+CBNames.6="Fortran"
+
+MyDialog~AddCheckBoxStem(501, 20, 20, ,CBNames, 2, ,
+"NOBORDER", 551, "Courier New", 12)
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="h001982"><title>AddRadioStem</title>
+<indexterm><primary>AddRadioStem</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aUserDialog~AddRadioStem(--startid--,--x--,--y--,--+----+--,--textStem.--,--max-->
+                                                      +-cx-+
+
+>--+-------------------------------------------------------------------------+-->
+   +-,--+---------+--+-----------------------------------------------------+-+
+        +-options-+  +-,--+--------+--+----------------------------------+-+
+                          +-idstat-+  +-,--+----------+--+-------------+-+
+                                           +-fontName-+  +-,--fontSize-+
+
+>--)-----------------------------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The AddRadioStem method adds a group of radio button
+controls to the dialog.</para>
+<para>See <link linkend="h001873">AddRadioGroup</link> for a description of the arguments
+and an example.</para>
+</section>
+
+<section id="h001983"><title>AddScrollBar</title>
+<indexterm><primary>AddScrollBar</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aUserDialog~AddScrollBar(--id--,--x--,--y--,--cx--,--cy------>
+
+>--+------------------------------+-- )------------------------><
+   |       +-----------------+    |
+   |       V                 |    |
+   +-,--"----+-VERTICAL----+-+--"-+
+             +-HORIZONTAL--+
+             +-TOPLEFT-----+
+             +-BOTTOMRIGHT-+
+             +-TAB---------+
+
+
+]]>
+</programlisting>
+
+<para>The AddScrollBar method adds a scroll bar to the
+dialog. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>This must be a unique number
+</para></listitem></varlistentry>
+<varlistentry><term>x, y</term>
+<listitem><para>The position of the upper-left corner relative to the dialog's client
+area measured in dialog units
+</para></listitem></varlistentry>
+<varlistentry><term>cx</term>
+<listitem><para>The horizontal size of the scroll bar in dialog units
+</para></listitem></varlistentry>
+<varlistentry><term>cy</term>
+<listitem><para>The vertical size of the scroll bar
+</para></listitem></varlistentry>
+<varlistentry><term>options</term>
+<listitem><para>The last argument can be one or more of:
+<variablelist>
+<varlistentry><term>VERTICAL</term>
+<listitem><para>The scroll bar is positioned vertically (default)
+</para></listitem></varlistentry>
+<varlistentry><term>HORIZONTAL</term>
+<listitem><para>The scroll bar is positioned horizontally
+</para></listitem></varlistentry>
+<varlistentry><term>TOPLEFT</term>
+<listitem><para>The scroll bar is aligned to the top left of the given rectangle and
+has a predetermined width (if vertical) or height (if horizontal)
+</para></listitem></varlistentry>
+<varlistentry><term>BOTTOMRIGHT</term>
+<listitem><para>The scroll bar is aligned to the bottom right of the given rectangle
+and has a predetermined width (if vertical) or height (if horizontal)
+</para></listitem></varlistentry>
+<varlistentry><term>TAB</term>
+<listitem><para>The scroll bar is assigned a tab stop
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="h001999"><title>AddButtonGroup</title>
+<indexterm><primary>AddButtonGroup</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aUserDialog~AddButtonGroup(--x--,--y--,--+----+--,--+----+--,--"-->
+                                            +-cx-+     +-cy-+
+
+   +---------------------+
+   V                     |
+>----text-- --id-- --msg-+--"---------------------------------------->
+
+>--+-------------------------------+--)-----------------------------><
+   +-,--+--------+--+------------+-+
+        +-bottom-+  +-,--options-+
+
+
+]]>
+</programlisting>
+
+<para>Use the AddButtonGroup method to add more than
+one push button at once to the dialog. The buttons are arranged in a row or
+in a column. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>x, y</term>
+<listitem><para>The position of the entire button group
+</para></listitem></varlistentry>
+<varlistentry><term>cx, cy</term>
+<listitem><para>The size of a single button. One or both arguments can be skipped. If
+so, the default values (cx=40, cy=12) are taken.
+</para></listitem></varlistentry>
+<varlistentry><term>text ID msg</term>
+<listitem><para>These arguments are interpreted as one string
+containing three words (separated by blanks) for each
+button. The first word is the text that is displayed on the button, the second
+is the ID of the button, and the third is the name of a message that is sent
+to the object whenever the button is clicked. The fourth to sixth words are
+for the next button, and so forth.
+</para></listitem></varlistentry>
+<varlistentry><term>bottom</term>
+<listitem><para>This is a flag to switch between a vertical (=0) or horizontal (=1)
+placement of the buttons.
+</para></listitem></varlistentry>
+<varlistentry><term>options</term>
+<listitem><para>If DEFAULT is used, the first button becomes
+the default button. For the other options, see <link linkend="h001647">AddButton</link>.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example creates three buttons (Add, Delete, and Update):
+</para></listitem></varlistentry>
+</variablelist>
+
+<programlisting>
+<![CDATA[
+MyDialog~AddButtonGroup(20, 235, , , "&Add 301 AddItem"  ,
+"&Delete 302 DeleteItem"  ,
+"&Update 303 UpdateItem")
+]]>
+</programlisting>
+</section>
+</section>
+
+<section id="man0007"><title>Frames and Rectangles</title>
+<indexterm><primary>Frames</primary></indexterm>
+<indexterm><primary>Rectangles</primary></indexterm>
+<para>The methods listed below add simple graphical elements to the dialog. They
+are useful for giving the dialog a nice finish. Use <link linkend="fig56">Frames and Rectangles in 3D Style</link> to
+help you find the right element.</para>
+
+<figure id="fig56"><title>Frames and Rectangles in 3D Style</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="rxou0s20.jpg" scale="70">
+</imageobject>
+</mediaobject>
+</figure>
+
+<note><title>Note</title><para>
+There is currently no difference between rectangles and frames.
+</para></note>
+
+<section id="h001709"><title>AddWhiteRect</title>
+<indexterm><primary>AddWhiteRect</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aUserDialog~AddWhiteRect(--x--,--y--,--cx--,--cy------------->
+
+>--+------------------------------------+--)-------------------><
+   |       +------------+               |
+   |       V            |               |
+   +-,--"----+-HIDDEN-+-+--"--+-------+-+
+             +-BORDER-+       +-,--id-+
+
+
+]]>
+</programlisting>
+
+<para>The AddWhiteRect method adds a white rectangle
+to the dialog. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>x, y</term>
+<listitem><para>The position of the rectangle's upper-left corner relative to the dialog
+measured in dialog units
+</para></listitem></varlistentry>
+<varlistentry><term>cx, cy</term>
+<listitem><para>The size of the rectangle in dialog units
+</para></listitem></varlistentry>
+<varlistentry><term>options</term>
+<listitem><para>The options can be:
+<variablelist>
+<varlistentry><term>HIDDEN</term>
+<listitem><para>The frame or rectangle is not visible at startup time
+</para></listitem></varlistentry>
+<varlistentry><term>BORDER</term>
+<listitem><para>A border is drawn around the rectangle or frame
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term>id</term>
+<listitem><para>The ID of the item, -1 is used by default
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="h001748"><title>AddWhiteFrame</title>
+<indexterm><primary>AddWhiteFrame</primary></indexterm>
+<para>The AddWhiteFrame method is currently identical
+to the <link linkend="h001709">AddWhiteRect</link> method.</para>
+</section>
+
+<section id="h001722"><title>AddGrayRect</title>
+<indexterm><primary>AddGrayRect</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aUserDialog~AddGrayRect(--x--,--y--,--cx--,--cy-------------->
+
+>--+----------------------------------------+--)---------------><
+   +-,--+----------------------+--+-------+-+
+        |    +------------+    |  +-,--id-+
+        |    V            |    |
+        +-"----+-HIDDEN-+-+--"-+
+               +-BORDER-+
+
+
+]]>
+</programlisting>
+
+<para>The AddGrayRect method adds a gray rectangle to
+the dialog. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>See <link linkend="h001709">AddWhiteRect</link> for a description of the arguments.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="h001761"><title>AddGreyFrame</title>
+<indexterm><primary>AddGrayFrame</primary></indexterm>
+<para>The AddGreyFrame method is currently identical
+to the <link linkend="h001722">AddGreyRect</link> method.</para>
+</section>
+
+<section id="h001735"><title>AddBlackRect</title>
+<indexterm><primary>AddBlackRect</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aUserDialog~AddBlackRect(--x--,--y--,--cx--,--cy------------->
+
+>--+----------------------------------------+--)---------------><
+   +-,--+----------------------+--+-------+-+
+        |    +------------+    |  +-,--id-+
+        |    V            |    |
+        +-"----+-HIDDEN-+-+--"-+
+               +-BORDER-+
+
+
+]]>
+</programlisting>
+
+<para>The AddBlackRect method adds a black rectangle
+to the dialog. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>See <link linkend="h001709">AddWhiteRect</link> for a description of the arguments.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="h001774"><title>AddBlackFrame</title>
+<indexterm><primary>AddBlackFrame</primary></indexterm>
+<para>The AddBlackFrame method is currently identical
+to the <link linkend="h001735">AddBlackRect</link> method.</para>
+</section>
+</section>
+
+<section id="pkcancelbutton"><title>OK and Cancel Push Buttons</title>
+<indexterm><primary>Cancel push buttons</primary></indexterm>
+<indexterm><primary>Ok push buttons</primary></indexterm>
+<para>The four methods described in this section add OK and Cancel push buttons to the dialog. The standard IDs (1 for
+OK and 2 for Cancel) are assigned to the buttons.</para>
+
+<section id="h002013"><title>AddOkCancelRightBottom</title>
+<indexterm><primary>AddOkCancelRightBottom</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aUserDialog~AddOkCancelRightBottom--------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The AddOkCancelRightBottom method adds an OK and a Cancel push button to the lower-right
+edge of the dialog. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example adds the two push buttons to the bottom of the
+dialog. It further overrides the standard OK and Cancel methods.
+</para></listitem></varlistentry>
+</variablelist>
+
+<programlisting>
+<![CDATA[
+::class MyClass subclass UserDialog
+
+::method DefineDialog
+      .
+      .
+      .
+   self~AddOkCancelRightBottom
+
+::method OK
+   ret = MessageBox("Are you sure?", "Please confirm", "OK")
+   if ret=1 then self~OK:super
+
+::method Cancel
+   ret = MessageBox("Do you really want to quit?", "Please confirm", "OK")
+   if ret=1 then self~CANCEL:super
+]]>
+</programlisting>
+</section>
+
+<section id="h002018"><title>AddOkCancelLeftBottom</title>
+<indexterm><primary>AddOkCancelLeftBottom</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aUserDialog~AddOkCancelLeftBottom---------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The AddOkCancelLeftBottom method adds an OK and a Cancel push button to the lower-left edge
+of the dialog.</para>
+</section>
+
+<section id="h002023"><title>AddOkCancelRightTop</title>
+<indexterm><primary>AddOkCancelRightTop</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aUserDialog~AddOkCancelRightTop-----------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The AddOkCancelRightTop method adds an OK and a Cancel push button vertically to the upper-right
+edge of the dialog.</para>
+</section>
+
+<section id="h002028"><title>AddOkCancelLeftTop</title>
+<indexterm><primary>AddOkCancelLeftTop</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aUserDialog~AddOkCancelLeftTop------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The AddOkCancelLeftTop method adds an OK and a Cancel push button vertically to the upper-left
+edge of the dialog.</para>
+</section>
+</section>
+
+<section id="dialogcontrolmeth"><title>Dialog Control Methods</title>
+<indexterm><primary>dialog control methods</primary></indexterm>
+<para>The methods described in this section control the execution of the dialog;
+they are for internal use only.</para>
+
+<section id="h002048"><title>StartIt</title>
+<indexterm><primary>StartIt</primary>
+<secondary>UserDialog class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aUserDialog~StartIt(--+------+--)---------------------------><
+                         +-icon-+
+
+
+]]>
+</programlisting>
+
+<para>The StartIt method is for internal use only. It
+is necessary to create a real Windows object based on the dialog template. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
+<listitem><para>This method is protected and cannot be called from outside the instance.
+It can be overwritten, although this is not recommended.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>There is only one argument:
+<variablelist>
+<varlistentry><term>icon</term>
+<listitem><para>This argument is currently not used.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="h002057"><title>StopIt</title>
+<indexterm><primary>Stopit</primary>
+<secondary>UserDialog class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aUserDialog~StopIt------------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The StopIt method is for internal use only. It
+is the counterpart to the BaseDialog class StopIt method to remove the Windows object. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
+<listitem><para>This method is protected and cannot be called from outside the instance.
+It can be overwritten, although this is not recommended.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+</section>
+
+<section id="menumeth"><title>Menu Methods</title>
+<indexterm><primary>Menu methods</primary></indexterm>
+<para>The methods described in this section are for creating dialog menus.</para>
+
+<section id="cmm"><title>CreateMenu</title>
+<indexterm><primary>CreateMenu</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aUserDialog~CreateMenu(--+-------+--)-----------------------><
+                            +-count-+
+
+
+]]>
+</programlisting>
+
+<para>This method initializes the creation of a menu. When you have finished
+adding menu items, call <link linkend="smm">SetMenu</link> to combine the menu
+with the dialog. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>There is only one argument:
+<variablelist>
+<varlistentry><term>count</term>
+<listitem><para>Maximum number of menu items that can be added
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="apumm"><title>AddPopupMenu</title>
+<indexterm><primary>AddPopupMenu</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aUserDialog~AddPopupMenu(--name--,--"--options--"--)--------><
+
+
+]]>
+</programlisting>
+
+<para>This method adds a popup menu to the menu.</para>
+<para>The last popup menu must have the option "END" specified. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>name</term>
+<listitem><para>The name of the popup menu
+</para></listitem></varlistentry>
+<varlistentry><term>options</term>
+<listitem><para>GRAYED DISABLED END
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="amim"><title>AddMenuItem</title>
+<indexterm><primary>AddMenuItem</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aUserDialog~AddMenuItem(--name--,--id--,--"--options--"--,--msgToRaise--)-><
+
+
+]]>
+</programlisting>
+
+<para>This method adds a new menu item after the last added item.</para>
+<para>The last menu item in a popup menu must have the option "END" specified. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>name</term>
+<listitem><para>The name of the menu item. The name can include &amp;.
+</para></listitem></varlistentry>
+<varlistentry><term>id</term>
+<listitem><para>The ID of the menu item
+</para></listitem></varlistentry>
+<varlistentry><term>options</term>
+<listitem><para>GRAYED DISABLED END CHECKED
+</para></listitem></varlistentry>
+<varlistentry><term>msgToRaise</term>
+<listitem><para>Method to be called when the menu item is selected. See <link linkend="cmim">ConnectMenuItem</link>.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="amsm"><title>AddMenuSeparator</title>
+<indexterm><primary>AddMenuSeparator</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aUserDialog~AddMenuSeparator--------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>This method adds a menu separator to the menu after the last added item.</para>
+</section>
+
+<section id="smm"><title>SetMenu</title>
+<indexterm><primary>SetMenu</primary>
+<secondary>UserDialog class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aUserDialog~SetMenu-----------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>This method adds the menu that was created or loaded for the current dialog
+to the dialog window. Note that the menu needs additional space and therefore
+displaces the rest of the dialog items.</para>
+</section>
+
+<section id="lmm"><title>LoadMenu</title>
+<indexterm><primary>LoadMenu</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aUserDialog~LoadMenu(--resfile--,--menuid-------------------->
+
+>--+-------------------------------------+--)------------------><
+   +-,--+----------------+--+----------+-+
+        +-"CONNECTITEMS"-+  +-,--count-+
+
+
+]]>
+</programlisting>
+
+<para>This method loads a menu resource out of a resource script.</para>
+<para>To combine the menu with the dialog, you must call <link linkend="smm">SetMenu</link>. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>resfile</term>
+<listitem><para>The name of a resource script.
+</para></listitem></varlistentry>
+<varlistentry><term>menuid</term>
+<listitem><para>The ID of the menu resource.
+</para></listitem></varlistentry>
+<varlistentry><term>CONNECTITEMS</term>
+<listitem><para>The menu items are automatically connected to methods named after the
+name of the menu item. See <link linkend="h001636">LoadItems</link> for further
+details.
+</para></listitem></varlistentry>
+<varlistentry><term>count</term>
+<listitem><para>The maximum number of menu items that can be loaded.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+</section>
+</chapter>

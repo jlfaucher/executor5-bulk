@@ -1,0 +1,151 @@
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: OODialog Reference SGML file.
+    #
+    # Copyright (c) 2005-2007, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    # Author(s):
+    #      W. David Ashley <dashley@us.ibm.com>
+    #
+    #########################################################################
+-->
+<chapter id="propertysheetc"><title>PropertySheet Class</title>
+<indexterm><primary>PropertySheet class</primary></indexterm>
+<para>The PropertySheet class provides methods to control
+a property sheet. It is a subclass of the CategoryDialog class (see
+<link linkend="h100002">CategoryDialog Class</link>).
+A property sheet is similar to a category
+dialog that spreads its dialog items over several pages (categories), where
+the individual pages are controlled by a tab control instead of radio buttons
+or combo box lists.</para>
+<para>Refer to PROPDEMO.REX in the OODIALOG\SAMPLES directory for an example.</para>
+<para>The PropertySheet class requires the class definition
+file <computeroutput>oodwin32.cls</computeroutput>:</para>
+<programlisting>
+<![CDATA[
+::requires "oodwin32.cls"
+]]>
+</programlisting>
+<para>Use an object of the DialogControl class or one
+of its subclasses to work with an individual dialog item of the sheets. To
+retrieve such an object, you can call one of the following methods depending
+on the requested control:</para>
+<itemizedlist>
+<listitem><para><link linkend="getstaticcontrol">GetStaticControl</link></para></listitem>
+<listitem><para><link linkend="geteditcontrol">GetEditControl</link></para></listitem>
+<listitem><para><link linkend="getbuttoncontrol">GetButtonControl</link></para></listitem>
+<listitem><para><link linkend="getradiocontrol">GetRadioControl</link></para></listitem>
+<listitem><para><link linkend="getcheckcontrol">GetCheckControl</link></para></listitem>
+<listitem><para><link linkend="getlistbox">GetListBox</link></para></listitem>
+<listitem><para><link linkend="getcombobox">GetComboBox</link></para></listitem>
+<listitem><para><link linkend="getscrollbar">GetScrollBar</link></para></listitem>
+<listitem><para><link linkend="gettreecontrol">GetTreeControl</link></para></listitem>
+<listitem><para><link linkend="getlistcontrol">GetListControl</link></para></listitem>
+<listitem><para><link linkend="getprogressbar">GetProgressBar</link></para></listitem>
+<listitem><para><link linkend="getslidercontrol">GetSliderControl</link></para></listitem>
+<listitem><para><link linkend="gettabcontrol">GetTabControl</link></para></listitem>
+</itemizedlist>
+
+<section id="initps"><title>Init</title>
+<programlisting>
+<![CDATA[
+                                                           +-10---+
+>>-aPropertySheet~Init(--+----------+--,--+----------+--,--+------+--,-->
+                         +-DlgData.-+     +-cattable-+     +-tabx-+
+
+   +-4----+
+>--+------+--,--+-------+--)-----------------------------------><
+   +-taby-+     +-style-+
+
+
+]]>
+</programlisting>
+
+<para>The Init method is called when a new instance of
+the PropertySheet class is created and initializes the property sheet object.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>DlgData.</term>
+<listitem><para>An optional stem variable containing the initial values for some or
+all dialog items. If the dialog is terminated with the OK button, the values
+in the data fields of the dialog are copied to this variable. The ID of the
+dialog items is used to name the entry within the stem.
+</para></listitem></varlistentry>
+<varlistentry><term>cattable</term>
+<listitem><para>You can use this argument to set the category names, separated by blanks.
+Your class, which is a subclass of PropertySheet, must provide a method for
+each of the categories in the string to define the dialog items of the related
+category page. The name of the method is equal to the category name in the
+string.</para>
+<para>If you omit this argument, set the category names to the catalog
+directory in the InitCategories method (see
+<link linkend="h100085">InitCategories</link>).</para>
+</listitem></varlistentry>
+<varlistentry><term>tabx, taby</term>
+<listitem><para>The position of the tab control that is used to select the
+category. The default is 10,4.
+</para></listitem></varlistentry>
+<varlistentry><term>style</term>
+<listitem><para>Determines the style of the property sheet and the tab control used
+to select the visible category. The style must be specified as a text string
+that can contain tab control options (see
+<link linkend="addtabcontrol">AddTabControl</link>) or
+the option WIZARD, which adds a backward and a forward button with ID 11 and
+12 to the dialog to switch between the category pages.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example creates a property sheet dialog with 4 sheets:
+<programlisting>
+dlg = MyProperty~new(MyData.,"Movies Cinemas Days Ticket", , ,"WIZARD")
+dlg~createCenter(200,180,"Let&apos;s go to the movies")
+dlg~execute("SHOWTOP")
+     .
+     .
+     .
+::class MyProperty subclass PropertySheet
+::method Movies    /* define the Movies page */
+::method Cinemas   /* define the Cinemas page */
+     .
+     .
+     .
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+</chapter>

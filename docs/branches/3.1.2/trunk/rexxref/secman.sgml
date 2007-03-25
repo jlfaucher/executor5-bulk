@@ -1,0 +1,352 @@
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Reference SGML file.
+    #
+    # Copyright (c) 2005-2007, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    # Author(s):
+    #      W. David Ashley <dashley@us.ibm.com>
+    #
+    #########################################################################
+-->
+<chapter id="secman"><title>The Security Manager</title>
+<indexterm><primary>Security Manager</primary></indexterm>
+<para>The security manager provides a special environment that is safe even if
+agent programs try to perform unexpected actions. The security manager is
+called if an agent program tries to: </para>
+<itemizedlist>
+<listitem><para>Call an external function</para></listitem>
+<listitem><para>Use a host command</para></listitem>
+<listitem><para>Use the ::REQUIRES directive</para></listitem>
+<listitem><para>Access the .LOCAL directory</para></listitem>
+<listitem><para>Access the .ENVIRONMENT directory</para></listitem>
+<listitem><para>Use a stream name in the input and output built-in functions
+(CHARIN, CHAROUT, CHARS, LINEIN, LINEOUT, LINES, and STREAM)</para></listitem>
+</itemizedlist>
+
+<section id="callsm"><title>Calls to the Security Manager</title>
+<indexterm><primary>Security Manager</primary>
+<secondary>calls to</secondary></indexterm>
+<para>When the language processor reaches any of the defined security
+checkpoints, it sends a message to the security manager for the particular
+checkpoint. The message has a single argument, a directory of information that
+pertains to the checkpoint. If the security manager chooses to handle the
+action instead of the language processor, the security manager uses the
+checkpoint information directory to pass information back to the language
+processor.</para>
+<para>Security manager methods must return a value of either
+<computeroutput>0</computeroutput> or <computeroutput>1</computeroutput>
+to the language processor. A value of <computeroutput>0</computeroutput>
+indicates that the program is authorized to perform the indicated action.
+In this case, processing continues as usual. A value of
+<computeroutput>1</computeroutput> indicates that the security manager
+performed the action itself. The security manager sets entries in the
+information directory to pass results for the action back to the language
+processor. The security manager can also use the RAISE instruction to raise a
+program error for a prohibited access. Error message 98.948 indicates
+authorization failures.</para>
+<para>The defined checkpoints, with their arguments and return values, are:
+</para>
+
+<variablelist>
+<varlistentry><term>CALL
+<indexterm><primary>calls to the Security Manager</primary></indexterm>
+</term>
+<listitem><para>sent for all external function calls. The information directory
+contains the following entries:
+
+<variablelist>
+<varlistentry><term>NAME</term>
+<listitem><para>The name of the invoked function.
+</para></listitem></varlistentry>
+<varlistentry><term>ARGUMENTS</term>
+<listitem><para>An array of the function arguments.</para>
+<para>When the CALL method returns <computeroutput>1</computeroutput>,
+indicating that it handled the external call, the security manager
+places the function result in the information directory as the entry RESULT.
+</para>
+</listitem></varlistentry>
+</variablelist>
+
+</para></listitem></varlistentry>
+<varlistentry><term>COMMAND</term>
+<listitem><para>sent for all host command instructions. The information
+directory contains the following entries:
+<variablelist>
+<varlistentry><term>COMMAND</term>
+<listitem><para>The string that represents the host command.
+</para></listitem></varlistentry>
+<varlistentry><term>ADDRESS</term>
+<listitem><para>The name of the target ADDRESS environment for the command.
+</para>
+<para>When the COMMAND method returns <computeroutput>1</computeroutput>,
+indicating that it handled the command, the security manager uses the following
+information directory entries to return the command results:
+
+<variablelist>
+<varlistentry><term>RC</term>
+<listitem><para>The command return code. If the entry is not set, a return code
+of <computeroutput>0</computeroutput> is used.
+</para></listitem></varlistentry>
+<varlistentry><term>FAILURE</term>
+<listitem><para>If a FAILURE entry is added to the information directory, a
+Rexx FAILURE condition is raised.
+</para></listitem></varlistentry>
+<varlistentry><term>ERROR</term>
+<listitem><para>If an ERROR entry is added to the information directory, a
+Rexx ERROR condition is raised. The ERROR condition is raised only if the
+FAILURE entry is not set.
+</para></listitem></varlistentry>
+</variablelist>
+
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+
+<varlistentry><term>REQUIRES</term>
+<listitem><para>sent whenever a ::REQUIRES directive in the file is processed.
+The information directory contains the following entry:
+<variablelist>
+<varlistentry><term>NAME</term>
+<listitem><para>The name of the file specified on the ::REQUIRES directive.
+</para></listitem></varlistentry>
+</variablelist>
+
+When the REQUIRES method returns
+<computeroutput>1</computeroutput>, indicating that it
+handled the request, the entry NAME in the information directory is replaced
+with the name of the actual file to load for the request. The REQUIRES method
+can also provide a security manager to be used for the program loaded by the
+::REQUIRES directive by setting the information direction entry SECURITYMANAGER
+into the desired security manager object.</para>
+</listitem></varlistentry>
+<varlistentry><term>LOCAL</term>
+<listitem><para>sent whenever Rexx is going to access an entry in the .LOCAL
+directory as part of the resolution of the environment symbol name. The
+information directory contains the following entry:
+
+<variablelist>
+<varlistentry><term>NAME</term>
+<listitem><para>The name of the target directory entry.
+</para></listitem></varlistentry>
+</variablelist>
+When the LOCAL method returns
+<computeroutput>1</computeroutput>, indicating that it handled
+the request, the information directory entry RESULT contains the directory
+entry. When RESULT is not set and the method returns
+<computeroutput>1</computeroutput>, this is
+the same as a failure to find an entry in the .LOCAL directory. Rexx continues
+with the next step in the name resolution.</para>
+</listitem></varlistentry>
+<varlistentry><term>ENVIRONMENT</term>
+<listitem><para>sent whenever Rexx is going to access an entry in
+the .ENVIRONMENT directory as part of the resolution of the environment symbol
+name. The information directory contains the following entry:
+<variablelist>
+<varlistentry><term>NAME</term>
+<listitem><para>The name of the target directory entry.
+</para></listitem></varlistentry>
+</variablelist>
+
+When the ENVIRONMENT method returns
+<computeroutput>1</computeroutput>, indicating that
+it handled the request, the information directory entry RESULT contains the
+directory entry. When RESULT is not set and the method returns
+<computeroutput>1</computeroutput>,
+this is the same as a failure to find an entry in the .ENVIRONMENT directory.
+Rexx continues with the next step in the name resolution.</para>
+</listitem></varlistentry>
+<varlistentry><term>STREAM</term>
+<listitem><para>sent whenever one of the Rexx input and output built-in
+functions (CHARIN, CHAROUT, CHARS, LINEIN, LINEOUT, LINES, or STREAM) needs to
+resolve a stream name. The information directory contains the following entry:
+
+<variablelist>
+<varlistentry><term>NAME</term>
+<listitem><para>The name of the target stream.
+</para></listitem></varlistentry>
+</variablelist>
+
+When the STREAM method returns
+<computeroutput>1</computeroutput>, the information directory
+STREAM must be set to an object to be used as the stream target. This should
+be a stream object or another object that supports the Stream class methods.
+</para>
+</listitem></varlistentry>
+<varlistentry><term>METHOD</term>
+<listitem><para>sent whenever a secure program attempts to send a message for
+a protected method (see the ::METHOD directive
+<link linkend="methd">::METHOD</link>) to an object. The
+information directory contains the following entries:
+<variablelist>
+<varlistentry><term>OBJECT</term>
+<listitem><para>The object the protected method is issued against.
+</para></listitem></varlistentry>
+<varlistentry><term>NAME</term>
+<listitem><para>The name of the protected method.
+</para></listitem></varlistentry>
+<varlistentry><term>ARGUMENTS</term>
+<listitem><para>An array containing the method arguments.
+</para></listitem></varlistentry>
+</variablelist>
+
+When the METHOD method returns
+<computeroutput>1</computeroutput>, indicating that it handled
+the external call, the function result can be placed in the information
+directory as the method RESULT.</para>
+</listitem></varlistentry>
+</variablelist>
+
+<section id="callsmexmp"><title>Example</title>
+<para>The following agent program includes all the actions for which the
+security manager defines checkpoints (for example, by calling an external
+function).</para>
+
+<figure><title>Agent Program</title>
+<programlisting>
+/* Agent */
+interpret "echo Hello There"
+"dir foo.bar"
+call rxfuncadd sysloadfuncs, rexxutil, sysloadfuncs
+say result
+say syssleep(1)
+say linein("c:\profile")
+say .array
+.object~setmethod("SETMETHOD")
+::requires agent2.cmd
+</programlisting>
+</figure>
+<para>The following server implements the security manager with three levels
+of security. For each action the security manager must check (for example,
+by calling an external routine): </para>
+<orderedlist>
+<listitem><para>The audit manager (Dumper class) writes a record of the event
+but then permits the action.</para></listitem>
+<listitem><para>The closed cell manager (noWay class) does not permit the
+action to take place and raises an error.</para></listitem>
+<listitem><para>The replacement execution environment (Replacer class, a
+subclass of the noWay class) replaces the prohibited action with a different
+action.</para></listitem>
+</orderedlist>
+
+<figure id="servex"><title>Example of Server Implementing Security Manager</title>
+<programlisting>
+/* Server implements security manager */
+parse arg program
+method = .method~newfile(program)
+say "Calling program" program "with an audit manager:"
+pull
+method~setSecurityManager(.dumper~new(.output))
+.go~new~~run(method)
+say "Calling program" program "with a function replacement execution environment:"
+pull
+method~setSecurityManager(.replacer~new)
+.go~new~~run(method)
+say "Calling program" program "with a closed cell manager:"
+pull
+signal on syntax
+method~setSecurityManager(.noWay~new)
+.go~new~~run(method)
+exit
+
+syntax:
+  say "Agent program terminated with an authorization failure"
+  exit
+
+::class go subclass object
+
+::method run         -- this is a NON-PRIVATE method!
+  use arg m
+  self~run:super(m)  -- a PRIVATE method is called here!
+
+::class dumper
+::method init
+  expose stream                        /* target stream for output          */
+  use arg stream                       /* hook up the output stream         */
+::method unknown                       /* generic unknown method            */
+  expose stream                        /* need the global stream            */
+  use arg name, args                   /* get the message and arguments     */
+                                       /* write out the audit event         */
+  stream~lineout(time() date() "Called for event" name)
+  stream~lineout("Arguments are:")     /* write out the arguments           */
+  info = args[1]                       /* info directory is the first arg   */
+  do name over info                    /* dump the info directory           */
+    stream~lineout("Item" name":" info[name])
+  end
+return 0                               /* allow this to proceed             */
+
+::class noWay
+::method unknown                       /* everything trapped by unknown     */
+                                       /* and everything is an error        */
+  raise syntax 98.948 array("You didn&apos;t say the magic word!")
+::class replacer subclass noWay        /* inherit restrictive UNKNOWN method*/
+::method command                       /* issuing commands                  */
+  use arg info                         /* access the directory              */
+  info~rc = 1234                       /* set the command return code       */
+  info~failure = .true                 /* raise a FAILURE condition         */
+  return 1                             /* return "handled" return value     */
+::method call                          /* external function/routine call    */
+  use arg info                         /* access the directory              */
+                                       /* all results are the same          */
+  info~setentry("RESULT","uh, uh, uh...you didn&apos;t say the magic word")
+  return 1                              /* return "handled" return value    */
+::method stream                        /* I/O function stream lookup        */
+  use arg info                         /* access the directory              */
+                                       /* replace with a different stream   */
+  info~stream = .stream~new("c:\sample.txt")
+return 1
+                                       /* return "handled" return value     */
+::method local                         /* .LOCAL variable lookup            */
+                                       /* no value returned at all          */
+  return 1                             /* return "handled" return value     */
+::method environment                   /* .ENVIRONMENT variable lookup      */
+                                       /* no value returned at all          */
+  return 1                             /* return "handled" return value     */
+::method method                        /* protected method invocation       */
+  use arg info                         /* access the directory              */
+                                       /* all results are the same          */
+  info~setentry("RESULT","uh, uh, uh...you didn&apos;t say the magic word")
+  return 1                             /* return "handled" return value     */
+::method requires                      /* REQUIRES directive                */
+  use arg info                         /* access the directory              */
+                                       /* switch to load a different file   */
+  info~name = "c:\samples\agent.cmd"
+  info~securitymanager = self          /* load under this authority         */
+  return 1                             /* return "handled" return value     */
+</programlisting>
+</figure>
+</section>
+</section>
+</chapter>
