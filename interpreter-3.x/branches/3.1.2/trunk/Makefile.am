@@ -819,6 +819,7 @@ rpm: dist
 	mkdir rpm/SOURCES
 	mkdir rpm/SPECS
 	mkdir rpm/SRPMS
-	cp ooRexx*.tar.gz rpm/SOURCES
-	rpmbuild -ba oorexx.spec
+	cp $(top_srcdir)/platform/unix/oorexx.spec ./
+	rpmbuild -ba oorexx.spec < /dev/null;
+	rm oorexx.spec
 
