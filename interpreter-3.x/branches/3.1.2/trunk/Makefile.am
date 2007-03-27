@@ -788,6 +788,8 @@ clean-local: am_config_clean-local
 
 am_config_clean-local:
 	rm -fr $(PACKAGE)-*.tar.gz
+	rm -fr $(PACKAGE)-*.zip
+	rm -fr $(top_srcdir)/rpm
 
 install-exec-local:
 	echo $(DESTDIR) is destdir
@@ -819,7 +821,5 @@ rpm: dist
 	mkdir rpm/SOURCES
 	mkdir rpm/SPECS
 	mkdir rpm/SRPMS
-	cp $(top_srcdir)/platform/unix/oorexx.spec ./
-	rpmbuild -ba oorexx.spec < /dev/null;
-	rm oorexx.spec
+	rpmbuild -ba platform/unix/oorexx.spec < /dev/null;
 
