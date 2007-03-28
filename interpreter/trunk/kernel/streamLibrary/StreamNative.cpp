@@ -3156,12 +3156,54 @@ RexxStringObject StreamInfo::getDescription()
         break;
 
         case StreamNotready:               /* had some sort of notready         */
-        result = (char *)work;            /* use the work buffer               */
-                                         /* format the result string          */
-        sprintf(work, "NOTREADY:%d", fileInfo.errorInfo());
-        break;
+        {
+            result = (char *)work;            /* use the work buffer               */
+            char *error = NULL;
+
+            if (stream_info->error != 0)
+            {
+                error = strerror(stream_info->error);
+            }
+
+            if (error != NULL)
+            {
+                                                 /* format the result string          */
+                sprintf(work, "NOTREADY:%d %s", stream_info->error, error);
+            }
+            else
+            {
+                                                 /* format the result string          */
+                sprintf(work, "NOTREADY:%d", stream_info->error);
+
+            }
+            break;
+
+        }
 
         case StreamError:                  /* had a stream error                */
+        {
+            result = (char *)work;            /* use the work buffer               */
+            char *error = NULL;
+
+            if (stream_info->error != 0)
+            {
+                error = strerror(stream_info->error);
+            }
+
+            if (error != NULL)
+            {
+                                                 /* format the result string          */
+                sprintf(work, "ERROR:%d %s", stream_info->error, error);
+            }
+            else
+            {
+                                                 /* format the result string          */
+                sprintf(work, "ERROR:%d", stream_info->error);
+
+            }
+            break;
+
+        }
         result = (char *)work;            /* use the work buffer               */
                                          /* format the result string          */
         sprintf(work, "ERROR:%d", fileInfo.errorInfo());

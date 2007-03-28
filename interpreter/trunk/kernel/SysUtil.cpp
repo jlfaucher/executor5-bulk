@@ -100,7 +100,7 @@ int SysUtil::memicmp(void *mem1, void *mem2, size_t len)
  *
  * @return The address of the str unput argument.
  */
-void SysUtil::strupr(char *str)
+void SysUtil::strupper(char *str)
 {
     while (*str)
     {
@@ -111,3 +111,21 @@ void SysUtil::strupr(char *str)
     return;
 }
 
+
+/**
+ * Portable implementation of an ascii-z string to uppercase (in place).
+ *
+ * @param str    String argument
+ *
+ * @return The address of the str unput argument.
+ */
+void SysUtil::strlower(char *str)
+{
+    while (*str)
+    {
+        *str = tolower(*str);
+        str++;
+    }
+
+    return;
+}

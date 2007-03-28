@@ -47,7 +47,8 @@ class SysUtil
 public:
     static int stricmp(const char *opt1, const char *opt2);
     static int memicmp(void *opt1, void *opt2, size_t len);
-    static void strupr(char *str);
+    static void strupper(char *str);
+    static void strlower(char *str);
 };
 
 #endif
