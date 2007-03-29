@@ -1,5 +1,5 @@
 ---------------------------------------------------------
-Version 3.1.1
+Version 3.1.2
 ---------------------------------------------------------
 This release provides documentation for Open Object Rexx.
 
@@ -28,7 +28,7 @@ will make most of the examples compatible for cut and paste operations
 on most platforms.
 
 Although the text source files all have an SGML extension, they are all
-actually XML documents (see the DTD for each document).
+treated as if they were XML documents.
 
 Feedback, as always, is welcome and encouraged.
 
