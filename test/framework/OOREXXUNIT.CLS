@@ -1089,6 +1089,8 @@ exceptionHandler:
 */
 ::routine ooRexxUnit.getShellName public
 
+    parse upper source opsys +1
+
       -- make sure we address the shell
    shell="CMD"          -- default to the OS2/Windows shell
    if pos(opsys, "WO")=0 then    -- if not running under OS/2 or Windows assume Unix
