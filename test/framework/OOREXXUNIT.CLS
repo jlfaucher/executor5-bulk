@@ -1101,3 +1101,16 @@ exceptionHandler:
 
    return shell
 
+/* Determine and return the operating system under which the currently executing
+   program is running.  Provides an uniform method for test cases to determine
+   which operating system they are executing on.
+
+   Returns: WINDOWS, LINUX, SUNOS, or AIX.  (As of ooRexx 3.1.2)
+*/
+::routine ooRexxUnit.getOSName public
+
+  parse upper source os .
+  if os~abbrev("WIN") then
+    return "WINDOWS"
+
+  return os
