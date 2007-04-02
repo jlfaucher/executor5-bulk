@@ -132,6 +132,7 @@ CPPM(RexxArray::nextRexx),
 CPPM(RexxArray::allItems),
 CPPM(RexxArray::allIndexes),
 CPPM(RexxArray::previousRexx),
+CPPM(RexxArray::append),
 
 CPPM(RexxArray::newRexx),
 CPPM(RexxArray::makeString),
@@ -202,6 +203,7 @@ CPPM(RexxList::lastItem),
 CPPM(RexxList::insertRexx),
 CPPM(RexxList::allItems),
 CPPM(RexxList::allIndexes),
+CPPM(RexxList::append),
 
 CPPM(RexxList::newRexx),
 CPPM(RexxList::classOf),
@@ -273,6 +275,7 @@ CPPM(RexxQueue::at),
 CPPM(RexxQueue::hasindex),
 CPPM(RexxQueue::remove),
 CPPM(RexxQueue::allIndexes),
+CPPM(RexxQueue::append),
 
 CPPM(RexxQueue::newRexx),
 

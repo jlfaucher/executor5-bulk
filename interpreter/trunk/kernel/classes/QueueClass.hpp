@@ -36,7 +36,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Kernel                                                  QueueClass.hpp   */
+/* REXX Kernel                                               QueueClass.hpp   */
 /*                                                                            */
 /* Primitive Queue Class Definitions                                          */
 /*                                                                            */
@@ -67,6 +67,7 @@ class RexxQueue : public RexxList {
  RexxObject *newRexx(RexxObject **, size_t);
  RexxArray  *allIndexes();
  RexxObject *supplier();
+ RexxObject *append(RexxObject *);
 
  inline RexxObject *pop() { return this->removeFirst();};
  inline void push(RexxObject *obj) { this->addFirst(obj);};

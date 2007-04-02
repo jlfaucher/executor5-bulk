@@ -246,6 +246,61 @@ RexxObject  *RexxArray::putRexx(RexxObject **arguments, arraysize_t argCount)
   return OREF_NULL;                    /* Make sure RESULT gets dropped     */
 }
 
+
+/**
+ * Append an item after the last item in the array.
+ *
+ * @param value  The value to append.
+ *
+ * @return The index of the appended item.
+ */
+RexxObject  *RexxArray::append(RexxObject *value)
+{
+    required_arg(value, ONE);
+
+    RexxObject *lastIndex = lastRexx();
+
+    size_t newIndex;
+
+    // empty array, so just insert at the first element
+    if (lastIndex == TheNilObject)
+    {
+        newIndex = 1;
+    }
+    else
+    {
+        // the index requires validation
+        newIndex = ((RexxInteger *)lastIndex)->value + 1;
+    }
+
+    ensureSpace(newIndex);
+    put(value, newIndex);
+    return new_integer(newIndex);
+}
+
+
+/**
+ * Make sure that the array has been expanded to sufficient
+ * size for a primitive put operation.
+ *
+ * @param newSize The new required size.
+ */
+void RexxArray::ensureSpace(size_t newSize)
+{
+    /* out of bounds?                    */
+    if (newSize > this->size())
+    {
+        if (newSize >= MAX_FIXEDARRAY_SIZE)
+        {
+            report_exception(Error_Incorrect_method_array_too_big);
+        }
+        /* yes, compute amount to expand     */
+        this->extend(newSize - this->size());
+
+    }
+}
+
+
 RexxObject  *RexxArray::getRexx(RexxObject **arguments, arraysize_t argCount)
 /******************************************************************************/
 /* Function:  Performs REXX-level gets from arrays.                           */

@@ -121,6 +121,7 @@ class RexxSupplier;
    void          addLast(RexxObject *value);
    void          addFirst(RexxObject *value);
    inline size_t getSize() {return this->count;}
+   RexxObject   *append(RexxObject *);
 
    RexxListTable *table;               /* list table  item                  */
    size_t        firstIndex;           /* first real element index          */

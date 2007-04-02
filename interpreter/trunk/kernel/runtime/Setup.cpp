@@ -319,7 +319,10 @@ bool RexxInterpreter::exportBaseClasses()
   defineKernelMethod(CHAR_LAST         ,TheArrayBehaviour, CPPM(RexxArray::lastRexx), 0);
   defineKernelMethod(CHAR_NEXT         ,TheArrayBehaviour, CPPM(RexxArray::nextRexx), 1);
   defineKernelMethod(CHAR_PREVIOUS     ,TheArrayBehaviour, CPPM(RexxArray::previousRexx), 1);
+  defineKernelMethod(CHAR_APPEND       ,TheArrayBehaviour, CPPMA(RexxArray::append), 1);
   defineKernelMethod(CHAR_MAKESTRING   ,TheArrayBehaviour, CPPM(RexxArray::makeString), 1);   /*THU006*/
+  defineKernelMethod(CHAR_APPEND       ,TheListBehaviour, CPPMA(RexxList::append), 1);
+  defineKernelMethod(CHAR_APPEND        ,TheQueueBehaviour, CPPMA(RexxQueue::append), 1);
                                        /* set the scope of the methods to   */
                                        /* this classes oref                 */
   TheArrayBehaviour->setMethodDictionaryScope(TheArrayClass);

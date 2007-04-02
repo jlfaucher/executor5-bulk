@@ -111,6 +111,7 @@ typedef struct copyElelmentParm {
    RexxObject  *putRexx(RexxObject **, arraysize_t);
    RexxObject  *remove(size_t);
    RexxObject  *removeRexx(RexxObject **, arraysize_t);
+   RexxObject  *append(RexxObject *);
    void         setExpansion(RexxObject * expansion);
    RexxInteger *available(size_t position);
    bool         validateIndex(RexxObject **, arraysize_t, arraysize_t, arraysize_t *, arraysize_t);
@@ -139,6 +140,7 @@ typedef struct copyElelmentParm {
    void         insertItem(RexxObject *, arraysize_t);
    RexxArray   *extendMulti(RexxObject **, arraysize_t, arraysize_t);
    void         resize();
+   void         ensureSpace(size_t newSize);
    RexxObject  *newRexx(RexxObject **, arraysize_t);
    RexxObject  *of(RexxObject **, arraysize_t);
 
