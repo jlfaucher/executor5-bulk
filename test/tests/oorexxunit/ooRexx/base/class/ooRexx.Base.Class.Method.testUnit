@@ -3,10 +3,10 @@
    name:             ooRexx.Base.Class.Method.testUnit
    author:           Rony G. Flatscher
    date:             2007-03-21
-   version:          0.0.1
+   version:          0.0.2
 
 -- line commented lines are ignored, when building the directory of infos from this header
-   changed:          ---
+   changed:          2007-04-03, ---rgf, fixed coding error in "test_New_And_Source"
 
    languageLevel:    6.0.1
    purpose:          Test the methods of the class CircularQueue.
@@ -140,17 +140,17 @@ return testUnitList
   self~assertEquals("subtest_02", value2, m2~source)
 
 
-  value3=.array~of("EXPOSE logLevel; parse arg logLevel;" ,
-                   "a=b", -- <-- *NO* semi-colon at end!
-                   "-- some line comment " ,
+  value3=.array~of("EXPOSE logLevel; parse arg logLevel;" ,-
+                   "a=b",- -- <-- *NO* semi-colon at end!
+                   "-- some line comment " ,-
                    "say 'hello world' " )
   m3=.method~new(key, value3)
   self~assertEquals("subtest_03", value3, m3~source)
 
 
-  value4=.array~of("EXPOSE logLevel; parse arg logLevel;" ,
-                   "a=b;", -- <-- semi-colon at end!
-                   "-- some line comment " ,
+  value4=.array~of("EXPOSE logLevel; parse arg logLevel;" ,-
+                   "a=b;",- -- <-- semi-colon at end!
+                   "-- some line comment " ,-
                    "say 'hello world' " )
   m4=.method~new(key, value4)
   src4=m4~source
