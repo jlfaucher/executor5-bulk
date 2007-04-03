@@ -1369,6 +1369,14 @@ RexxInstruction *RexxSource::parseNew(
           trigger_type = TRIGGER_ABSOLUTE;
           break;
 
+        case OPERATOR_LESSTHAN:        // <num or <(var)
+          trigger_type = TRIGGER_MINUS_LENGTH;
+          break;
+
+        case OPERATOR_GREATERTHAN:     // >num or >(var)
+          trigger_type = TRIGGER_PLUS_LENGTH;
+          break;
+
         default:                       /* something unrecognized            */
                                        /* this is invalid                   */
           reportTokenError(Error_Invalid_template_trigger, token);
@@ -1377,28 +1385,14 @@ RexxInstruction *RexxSource::parseNew(
       token = nextReal();              /* get the next token                */
                                        /* have a variable trigger?          */
       if (token->classId == TOKEN_LEFT) {
-        token = nextReal();            /* get the next token                */
-                                       /* not a symbol?                     */
-        if (token->classId != TOKEN_SYMBOL)
-                                       /* must be a symbol here             */
-          reportError(Error_Symbol_expected_varref);
-        /* allow also dot symbols here */
-        this->needVariableOrDotSymbol(token); /* must have variable form    */
-                                       /* create the appropriate trigger    */
-        trigger = new (variableCount) RexxTrigger(trigger_type, this->addText(token), variableCount, variables);
+          // parse off an expression in the parens.
+          RexxObject *subExpr = this->parenExpression(token);
+                                         /* create the appropriate trigger    */
+          trigger = new (variableCount) RexxTrigger(trigger_type, subExpr, variableCount, variables);
         variableCount = 0;             /* have a new set of variables       */
                                        /* add this to the trigger list      */
         parse_template->push((RexxObject *)trigger);
         templateCount++;               /* add this one in                   */
-        token = nextReal();            /* get the next token                */
-                                       /* nothing following?                */
-        if (token->classId == TOKEN_EOC)
-                                       /* report the missing paren          */
-          reportError(Error_Variable_reference_missing);
-                                       /* must be a right paren here        */
-        else if (token->classId != TOKEN_RIGHT)
-                                       /* this is an error                  */
-          reportTokenError(Error_Variable_reference_extra, token);
       }
                                        /* have a symbol?                    */
       else if (token->classId == TOKEN_SYMBOL) {
@@ -1424,27 +1418,14 @@ RexxInstruction *RexxSource::parseNew(
     }
                                        /* variable string trigger?          */
     else if (token->classId == TOKEN_LEFT) {
-      token = nextReal();              /* get the next token                */
-                                       /* not a symbol?                     */
-      if (token->classId != TOKEN_SYMBOL)
-                                       /* must be a symbol here             */
-        reportError(Error_Symbol_expected_varref);
-      /* allow also dot symbols here */
-      this->needVariableOrDotSymbol(token); /* check this is a variable form*/
+      // parse off an expression in the parens.
+      RexxObject *subExpr = this->parenExpression(token);
                                        /* create the appropriate trigger    */
-      trigger = new (variableCount) RexxTrigger(flags&parse_caseless ? TRIGGER_MIXED : TRIGGER_STRING, this->addText(token), variableCount, variables);
+      trigger = new (variableCount) RexxTrigger(flags&parse_caseless ? TRIGGER_MIXED : TRIGGER_STRING, subExpr, variableCount, variables);
       variableCount = 0;               /* have a new set of variables       */
                                        /* add this to the trigger list      */
       parse_template->push((RexxObject *)trigger);
       templateCount++;                 /* step the counter                  */
-      token = nextReal();              /* get the next token                */
-      if (token->classId == TOKEN_EOC) /* at the end?                       */
-                                       /* report the missing paren          */
-        reportError(Error_Variable_reference_missing);
-                                       /* must be a right paren here        */
-      else if (token->classId != TOKEN_RIGHT)
-                                       /* this is an error                  */
-        reportTokenError(Error_Variable_reference_extra, token);
     }
     else if (token->isLiteral()) {     /* non-variable string trigger?      */
                                        /* create the appropriate trigger    */

@@ -56,8 +56,10 @@ class RexxTarget {
   void        next(RexxActivation *);
   void        moveToEnd();
   void        forward(wholenumber_t);
+  void        backwardLength(wholenumber_t);
   void        absolute(wholenumber_t);
   void        backward(wholenumber_t);
+  void        backwardLength(wholenumber_t);
   void        search(RexxString *);
   void        caselessSearch(RexxString *);
   RexxString *getWord();

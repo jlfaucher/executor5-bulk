@@ -159,6 +159,23 @@ void RexxTarget::forward(
   this->subcurrent = this->start;      /* set the subpiece pointer          */
 }
 
+
+void RexxTarget::forwardLength(
+    wholenumber_t offset)               /* offset to move                    */
+/******************************************************************************/
+/* Arguments:  distance to move the parse pointer                             */
+/******************************************************************************/
+{
+  this->start = this->pattern_start;   /* start position is last position   */
+  this->end = this->start + offset;    /* set the end position              */
+  if (this->end >= this->string_length)/* take us past the end?             */
+    this->end = this->string_length;   /* just use the end position         */
+  this->pattern_start = this->end;     /* this is new start position        */
+                                       /* and have a zero length pattern    */
+  this->pattern_end = this->pattern_start;
+  this->subcurrent = this->start;      /* set the subpiece pointer          */
+}
+
 void RexxTarget::absolute(
     wholenumber_t offset)              /* offset to move                    */
 /******************************************************************************/
@@ -208,6 +225,30 @@ void RexxTarget::backward(
     else
       this->pattern_start -= offset;   /* just back up                      */
   }
+                                       /* and have a zero length pattern    */
+  this->pattern_end = this->pattern_start;
+  this->subcurrent = this->start;      /* set the subpiece pointer          */
+}
+
+
+void RexxTarget::backwardLength(
+    wholenumber_t offset)              /* offset to move                    */
+/******************************************************************************/
+/* Arguments:  distance to move the parse pointer                             */
+/******************************************************************************/
+{
+  this->start = this->pattern_start;   /* start position is last position   */
+  this->end = this->string_length;     /* negatives always use to the end   */
+                                       /* go past start of string?          */
+  if ((size_t)offset > this->pattern_start)
+  {
+      this->start = 0;
+  }
+  else
+  {
+      this->start = this->pattern_start - (size_t)offset;
+  }
+  this->end = this->pattern_start;     // the end is the starting location
                                        /* and have a zero length pattern    */
   this->pattern_end = this->pattern_start;
   this->subcurrent = this->start;      /* set the subpiece pointer          */

@@ -70,22 +70,39 @@ RexxTrigger::RexxTrigger(
   }
 }
 
-stringsize_t RexxTrigger::integer(
+
+stringsize_t RexxTrigger::integerTrigger(
     RexxObject *value)                 /* value to be converted             */
 /******************************************************************************/
 /* Function:  Convert a trigger value to an integer, with appopriate error    */
 /*            reporting.                                                      */
 /******************************************************************************/
 {
-  wholenumber_t result;                /* converted result                  */
+    wholenumber_t result;                /* converted result                  */
 
-                                       /* convert the value                 */
-  if (!value->requestNumber(&result) || result < 0)
-                                       /* bad value or negative?            */
-                                       /* report an exception               */
-    reportException(Error_Invalid_whole_number_parse, value);
-  return (stringsize_t)result;         /* finished                          */
+                                         /* convert the value                 */
+    if (!value->requestNumber(&result) || result < 0)
+    {
+                                           /* bad value or negative?            */
+                                           /* report an exception               */
+        reportException(Error_Invalid_whole_number_parse, value);
+
+    }
+    return (stringsize_t)result;         /* finished                          */
 }
+
+
+RexxString *RexxTrigger::stringTrigger(
+    RexxObject *value)                 /* value to be converted             */
+/******************************************************************************/
+/* Function:  Convert a trigger expression to a String, with appopriate error */
+/*            reporting.                                                      */
+/******************************************************************************/
+{
+                                       /* force to string form              */
+  return REQUEST_STRING(value);
+}
+
 
 void RexxTrigger::parse(
     RexxActivation      *context,      /* current execution context         */
@@ -115,23 +132,33 @@ void RexxTrigger::parse(
       break;
 
     case TRIGGER_PLUS:                 /* positive relative target          */
-      integer = this->integer(value);  /* get binary version of trigger     */
+      integer = this->integerTrigger(value);  /* get binary version of trigger     */
       target->forward(integer);        /* move the position                 */
       break;
 
     case TRIGGER_MINUS:                /* negative relative target          */
-      integer = this->integer(value);  /* get binary version of trigger     */
+      integer = this->integerTrigger(value);  /* get binary version of trigger     */
       target->backward(integer);       /* move the position                 */
       break;
 
+    case TRIGGER_PLUS_LENGTH:          /* positive length                   */
+      integer = this->integerTrigger(value);  /* get binary version of trigger     */
+      target->forwardLength(integer);  /* move the position                 */
+      break;
+
+    case TRIGGER_MINUS_LENGTH:         /* negative relative target          */
+      integer = this->integerTrigger(value);  /* get binary version of trigger     */
+      target->backwardLength(integer); /* move the position                 */
+      break;
+
     case TRIGGER_ABSOLUTE:             /* absolute column position          */
-      integer = this->integer(value);  /* get binary version of trigger     */
+      integer = this->integerTrigger(value);  /* get binary version of trigger     */
       target->absolute(integer);       /* move the position                 */
       break;
 
     case TRIGGER_STRING:               /* string search                     */
                                        /* force to string form              */
-      stringvalue = REQUEST_STRING(value);
+      stringvalue = this->stringTrigger(value);
       target->search(stringvalue);     /* perform the search                */
       break;
 

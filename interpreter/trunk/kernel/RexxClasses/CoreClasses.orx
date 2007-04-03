@@ -58,13 +58,14 @@ appendMethods~put(.methods~ordered_appendall, 'APPENDALL')
 .list~!define_methods(appendMethods)
 .queue~!define_methods(appendMethods)
 
-say 'Adding putAll methods to TABLE, DIRECTORY, and RELATION'
+say 'Adding putAll methods to TABLE, DIRECTORY, RELATION, and STEM'
 putMethods = .table~new
 putMethods~put(.methods~collection_putall, 'PUTALL')
 
 .table~!define_methods(putMethods)
 .directory~!define_methods(putMethods)
 .relation~!define_methods(putMethods)
+.stem~!define_methods(putMethods)
 
 
 say ('Adding setlike methods to table, relation, and directory')
@@ -90,6 +91,7 @@ set_methods~put(.methods~many_xor,          'XOR')
 .table~!rexxdefined                    /* get changed by users              */
 .directory~!rexxdefined
 .relation~!rexxdefined
+.stem~!rexxdefined
 .array~!rexxdefined
 .list~!rexxdefined
 .queue~!rexxdefined
@@ -481,7 +483,7 @@ syntax:                                /* unknown method sent               */
     then raise syntax 93.902 array (1)   /* raise an error                    */
   supplier = other~supplier              /* get an other supplier             */
   do while supplier~available            /* loop over the other collection    */
-    self~put(supplier~item, supplier~index)   -- putting the item using the same index
+    self[supplier~index] = supplier~item  -- putting the item using the same index
     supplier~next
   end
 
