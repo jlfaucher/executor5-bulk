@@ -895,8 +895,14 @@ void RexxActivity::raiseException(wholenumber_t errcode, LocationInfo *location,
                                            /* fill in the arguments             */
     exobj->put(description, OREF_DESCRIPTION);
     exobj->put(additional, OREF_ADDITIONAL);
-    exobj->put((RexxObject *)source, OREF_SOURCENAME);
-    exobj->put(result, OREF_RESULT);
+    if (source != OREF_NULL)
+    {
+        exobj->put((RexxObject *)source, OREF_SOURCENAME);
+    }
+    if (result != OREF_NULL)
+    {
+        exobj->put(result, OREF_RESULT);
+    }
 
     RexxInteger *position = OREF_NULL;
     if (location != NULL)
