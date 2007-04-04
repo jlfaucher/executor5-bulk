@@ -1,0 +1,112 @@
+#------------------------------------------------------------------------------*
+#
+# Copyright (c) 2007 Rexx Language Association. All rights reserved.
+#
+# This program and the accompanying materials are made available under
+# the terms of the Common Public License v1.0 which accompanies this
+# distribution. A copy is also available at the following address:
+# http://www.oorexx.org/license.html
+#
+# Redistribution and use in source and binary forms, with or
+# without modification, are permitted provided that the following
+# conditions are met:
+#
+# Redistributions of source code must retain the above copyright
+# notice, this list of conditions and the following disclaimer.
+# Redistributions in binary form must reproduce the above copyright
+# notice, this list of conditions and the following disclaimer in
+# the documentation and/or other materials provided with the distribution.
+#
+# Neither the name of Rexx Language Association nor the names
+# of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+# FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+# TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+# OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+# OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+# NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+# SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+#------------------------------------------------------------------------------*
+
+# Top level make file for the Windows ooRexx build utilities.  This is meant to
+# be expanded, at this point there is very little to make.
+
+TOPDIR = $(MAKEDIR)
+
+!include $(TOPDIR)\Nmake.inc
+
+EXE_FILES = $(BINDIR)\stouch.exe
+
+
+all : $(OBJDIR) $(BINDIR) $(EXE_FILES)
+
+touchheaders : $(BINDIR)\stouch.exe $(ooRexx_SRCDIR)
+    $(BINDIR)\stouch $(ooRexx_SRCDIR)\kernel\messages\RexxErrorCodes.h
+    $(BINDIR)\stouch $(ooRexx_SRCDIR)\kernel\messages\RexxMessageNumbers.h
+    $(BINDIR)\stouch $(ooRexx_SRCDIR)\kernel\messages\RexxMessageTable.h
+    $(BINDIR)\stouch $(ooRexx_SRCDIR)\kernel\platform\windows\winmsgtb.rc
+    $(BINDIR)\stouch $(ooRexx_SRCDIR)\kernel\platform\unix\rexx.cat
+
+clean :
+    @if exist $(OBJDIR) del $(OBJDIR)\*.obj 1>nul 2>&1
+    @if exist $(BINDIR) del $(BINDIR)\*.exe 1>nul 2>&1
+
+    @echo clean: deleted all *.obj and *.exe files
+
+distclean : clean
+    @if exist $(OBJDIR) rd /q /s $(OBJDIR)
+    @if exist $(BINDIR) rd /q /s $(BINDIR)
+
+    cd $(ASMDIR)
+    $(MAKE) /nologo /F Makefile.win TOPDIR=$(TOPDIR) clean
+    cd $(TOPDIR)
+
+    @echo distclean: removed build destination directories
+
+# maintainers-clean will delete the Nmake Helper Command executables.  A version
+# of Microsoft's Macro Assembler is needed to build these executables.
+maintainers-clean : distclean
+    @if exist NMAKE_stop.exe del /f /q NMAKE_stop.exe
+    @if exist NMAKE_lineout.exe del /f /q NMAKE_lineout.exe
+
+    @echo maintainers-clean: deleted all Nmake Helper Commands
+
+$(BINDIR) :
+    @if not exist $(BINDIR) md $(BINDIR)
+    copy NMAKE_stop.exe $(BINDIR)
+    copy NMAKE_lineout.exe $(BINDIR)
+
+$(OBJDIR) :
+    @if not exist $(OBJDIR) md $(OBJDIR)
+
+$(BINDIR)\stouch.exe : $(BINDIR) $(OBJDIR) $(OBJDIR)\stouch.obj
+    $(LD) /SUBSYSTEM:Console /out:$(BINDIR)\stouch.exe $(OBJDIR)\stouch.obj setargv.obj
+
+$(OBJDIR)\stouch.obj : $(SRCDIR)\stouch.c $(SRCDIR)\stouch.h
+    $(CC) $(CFLAGS) /O1 $(SRCDIR)\stouch.c
+
+$(ooRexx_SRCDIR) :
+    @NMAKE_lineout
+    @echo ERROR:  The ooRexx_SRCDIR macro does not point to the root ooRexx build directory.
+    @echo ERROR:  The directory: $(ooRexx_SRCDIR) does not exist.
+    @echo To fix this:  Set the macro ooRexx_SRCDIR to the root of the ooRexx build directory.
+    @echo Either:
+    @echo 1.) Change the default value of the macro in: $(TOPDIR)\Nmake.inc
+    @echo or
+    @echo 2.) Define the macro on the command line, for example:
+    @echo nmake /F Makefile.win ooRexx_SRCDIR=E:\work\oorexx-3.1.2 touchheaders
+    @NMAKE_lineout
+    @NMAKE_stop
+
+
+nmake_helper :
+    cd $(ASMDIR)
+    nmake /nologo /F Makefile.win TOPDIR=$(TOPDIR) all
+    cd $(TOPDIR)

@@ -1,0 +1,152 @@
+
+* In addition to this lengthy document, there is a bare bones procedure to
+build ooRexx and package it.  It uses a script to automate the process,
+and is documented in pkgDeb.quickstart.
+
+
+1.)  Building and Packaging Open Object Rexx on a Debian system
+---------------------------------------------------------------------------
+
+These notes are derived using Debian GNU/Linux 3.1 (‘sarge’) and Kubuntu
+6.10 which are the respective current, stable, releases for those two
+distributions.
+
+One of the primary purposes of this text is to document the process of
+building an Open Object Rexx Debian package for the maintainers of Open
+Object Rexx in its entirety.  As such, some of the sections may go
+into more detail than an experienced user on a Debian system may need.
+
+Instructions on installing Debian and managing packages on a Debian system
+are beyond the scope of this document.  In addition, the author has limited
+experience working on Debian Linux.  However, since additional packages
+beyond the base Debian install are needed to build and package Open Object
+Rexx, some documentation on how to upgrade a base installation with the
+necessary packages is included.
+
+Those familiar with Debian should skip over the next section, go straight
+to the "3.) Necessary Packages ..." section, and use their preferred
+method to ensure the system has the needed packages.
+
+
+2.)  Installing Debian and Packages for the Debian Novice
+---------------------------------------------------------------------------
+
+Note that this process is the process the author used, it is by no means
+the only way, or even the best way, to install Debian.  It is provided to
+document a workable process for the Open Object Rexx maintainers.
+
+Installation:
+-------------
+
+* Debian Sarge:  Go to http://www.debian.org/
+
+* Kubuntu:       Go to http://www.kubuntu.org/
+
+* Follow the links to download ISO install images for the current stable
+release.
+
+* Download and burn the ISO image for CD number 1 only.  Kubuntu only has 1
+install CD.  With Debian Sarge you can download ISO images for everything,
+however installing completely from CD did not set up the online
+repositories correctly.  (User error?) This made the attempt to add the
+necessary packages difficult with limited knowledge of Debian.  Installing
+the base from 1 CD and finishing the installation over the network was a
+better way to go about things.
+
+* Install.  The process is very similar to most Linux installations.
+
+Debian Sarge: When the minimal installation is finished, select to finish
+the base install over the network.  (Requires a working network connection
+obviously.)
+
+Kubuntu:  Installing from the 1 CD leaves the user with a fully functional
+OS.
+
+Updating Packages
+-----------------
+
+These instructions are based on a desire to use a KDE desktop and the
+Synaptic package manager.
+
+Debian
+------
+* After logging in to the initial system, go to console window and run
+aptitude.  Select to install KDE, if not already installed.  In addition,
+use the u option for update.  The combination of these two steps resulted
+in the Synaptic package manager being installed on the system.  (There may
+be a simpler way to do this.)
+
+* Log into a KDE desktop.
+
+* The Synaptic package manager can be found by going to the main menu,
+
+  Debian -> Apps -> System -> Synaptic Package Manager
+
+* Once Synaptic starts, use the search feature to find and mark for install
+the necessary packages.
+
+Kubuntu
+-------
+
+* Log on after the initial install.  From the KMenu select: Add / Remove
+Programs.  This starts the Adept Installer.  Use the 'Search' feature and
+search for Synaptic.  Select to install that package.
+
+* Start Synaptic.  Once Synaptic is installed, it can be started through
+the K Menu, under the System section.
+
+* Push the "Reload" button in the upper left corner of the Synaptic window.
+This refreshes the 'repositories' list.
+
+* Push the "Mark All Upgrades" button and then the "Apply" button.  This
+will bring the system up to date.
+
+
+3.)  Necessary Packages to Build and Package Open Object Rexx
+---------------------------------------------------------------------------
+
+Debian:
+
+This list comprises the extra packages installed after finishing a basic or
+standard install.  Note that this is what is needed to do everything
+completely from scratch.  (This version of xalan does not work,
+touchheaders.sh was used.)
+
+autoconf 2.59a-3
+automake 1.9.5-1
+build-essential 10.1
+debhelper 4.2.32
+dh-make 0.38
+fakeroot 1.2.10
+libtool 1.5.6-6
+subversion 1.1.4-2
+xalan 1.8-4
+
+Not necessary, but also added:
+
+unzip 5.52-1sarge4
+zip 2.31-1
+
+Kubuntu:
+
+autoconf (versions to be added)
+automake
+build-essential
+debhelper
+dh-make
+fakeroot
+libtool
+subversion
+xalan
+
+Not necessary, but also added:
+
+unzip
+zip
+
+
+
+4.) Building ooRexx and Creating the Debian Package
+---------------------------------------------------------------------------
+
+[Not finished, to be continued]
