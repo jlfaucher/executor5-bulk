@@ -70,6 +70,8 @@ class RexxClause : public RexxInternalObject {
   inline void        setLocation(LocationInfo * locallocation) { this->location = *locallocation; }
   inline void        previous() { this->current--; }
   inline RexxToken  *next() { return (RexxToken *)this->tokens->get(this->current++); }
+  inline size_t      mark() { return current; }
+  inline void        reset(size_t position) { current = position; }
 
   LocationInfo location;               /* position of the clause            */
   size_t current;                      /* index of current token of clause  */

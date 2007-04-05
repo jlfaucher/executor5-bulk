@@ -164,6 +164,7 @@ class RexxSource : public RexxInternalObject {
   RexxToken  *getToken(int, int);
   RexxObject *message(RexxObject *, int, int);
   RexxObject *messageTerm();
+  RexxObject *variableOrMessageTerm();
   RexxObject *messageSubterm(int);
   RexxObject *subTerm(int);
   void        pushTerm(RexxObject *);
@@ -210,6 +211,8 @@ class RexxSource : public RexxInternalObject {
   inline void        previousToken() { this->clause->previous(); }
   inline void        firstToken() { this->clause->firstToken(); }
   inline void        trimClause() { this->clause->trim(); }
+  inline size_t      markPosition() { return clause->mark(); }
+  inline void        resetPosition(size_t p) { clause->reset(p); }
 
   RexxInstruction *addressNew(ProtectedObject &);
   RexxInstruction *assignmentNew(RexxToken *, ProtectedObject &);
