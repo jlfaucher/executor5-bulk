@@ -94,6 +94,7 @@ class RexxTable;
    inline RexxObjectTable  *getScopes()       { return this->scopes; };
    inline RexxTable  *getMethodDictionary()   { return this->methodDictionary; };
    inline void        setMethodDictionary(RexxTable * m) { OrefSet(this, this->methodDictionary, m); };
+   inline RexxTable  *getInstanceMethodDictionary()   { return this->instanceMethodDictionary; };
    inline void        setInstanceMethodDictionary(RexxTable * m) { OrefSet(this, this->instanceMethodDictionary, m); };
    inline RexxClass  *getCreateClass()        { return this->createClass;};
    inline void        setClass(RexxClass *c)  { OrefSet(this, this->createClass,  c); };

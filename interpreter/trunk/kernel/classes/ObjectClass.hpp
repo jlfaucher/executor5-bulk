@@ -76,6 +76,7 @@
   class RexxActivity;
   class RexxString;
   class ProtectedObject;
+  class RexxSupplier;
 
                                        /* pointer to method function        */
  typedef RexxObject *  (VLARexxEntry RexxObject::*PCPPM) (...);
@@ -243,6 +244,8 @@ protected:
 
      virtual bool         isEqual(RexxObject *);
      virtual bool         isInstanceOf(RexxClass *);
+     virtual RexxMethod   *instanceMethod(RexxString *);
+     virtual RexxSupplier *instanceMethods(RexxClass *);
 
              RexxObject  *hasUninit();
              void         removedUninit();
@@ -358,9 +361,13 @@ class RexxObject : public RexxInternalObject {
      stringsize_t  requiredPositive(size_t, stringsize_t precision = Numerics::DEFAULT_DIGITS);
      stringsize_t  requiredNonNegative(size_t, size_t precision = Numerics::DEFAULT_DIGITS);
 
-     bool       isEqual(RexxObject *);
+     bool         isEqual(RexxObject *);
      bool         isInstanceOf(RexxClass *);
      RexxObject  *isInstanceOfRexx(RexxClass *);
+     RexxMethod   *instanceMethod(RexxString *);
+     RexxSupplier *instanceMethods(RexxClass *);
+     RexxMethod   *instanceMethodRexx(RexxString *);
+     RexxSupplier *instanceMethodsRexx(RexxClass *);
      RexxString  *objectName();
      RexxObject  *objectNameEquals(RexxObject *);
      RexxClass   *classObject();

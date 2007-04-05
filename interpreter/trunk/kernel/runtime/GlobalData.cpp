@@ -90,6 +90,8 @@ CPPM(RexxObject::copyRexx),
 CPPM(RexxObject::defaultNameRexx),
 CPPM(RexxObject::unknownRexx),
 CPPM(RexxObject::isInstanceOfRexx),
+CPPM(RexxObject::instanceMethodRexx),
+CPPM(RexxObject::instanceMethodsRexx),
 
 CPPM(RexxObject::newRexx),
 
