@@ -1577,7 +1577,7 @@ RexxString *RexxString::upper(stringsize_t offset, stringsize_t length)
     stringchar_t *data = (stringchar_t *)newstring->getStringData() + offset;
     // now uppercase in place
     for (stringsize_t i = 0; i < length; i++) {
-        *data = tolower(*data);
+        *data = toupper(*data);
         data++;
     }
     return newstring;
