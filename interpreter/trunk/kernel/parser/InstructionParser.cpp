@@ -1019,11 +1019,8 @@ RexxInstruction *RexxSource::messageNew(
 /* Function:  Create a new MESSAGE instruction translator object            */
 /****************************************************************************/
 {
-  size_t      argument_count;          /* number of arguments               */
-                                       /* get the argument count            */
-  argument_count = message->argumentCount;
                                        /* allocate a new object             */
-  newObject = new_variable_instruction(MESSAGE, Message, sizeof(RexxInstructionMessage) + (argument_count - 1) * sizeof(RexxObject *));
+  newObject = new_variable_instruction(MESSAGE, Message, sizeof(RexxInstructionMessage) + (message->argument_count - 1) * sizeof(RexxObject *));
                                        /* Initialize this new method        */
   new ((void *)newObject) RexxInstructionMessage(message);
   return (RexxInstruction *)newObject; /* done, return this                 */
@@ -1037,20 +1034,14 @@ RexxInstruction *RexxSource::messageAssignmentNew(
 /* Function:  Create a new MESSAGE assignment translator object             */
 /****************************************************************************/
 {
-  size_t      argument_count;          /* number of arguments               */
-  RexxString *name;                    /* message name used                 */
-
-  name = (RexxString *)message->u_name; /* get the name                     */
-                                       /* need to add an equal sign to name */
-  name = this->commonString(name->concat(OREF_EQUAL));
-                                       /* get the argument count            */
-  argument_count = message->argumentCount + 1;
-                                       /* allocate a new object             */
-  newObject = new_variable_instruction(MESSAGE, Message, sizeof(RexxInstructionMessage) + (argument_count - 1) * sizeof(RexxObject *));
+  message->makeAssignment(this);       // convert into an assignment message
+  // allocate a new object.  NB:  a message instruction gets an extra argument, so we don't subtract one.
+  newObject = new_variable_instruction(MESSAGE, Message, sizeof(RexxInstructionMessage) + (message->argumentCount) * sizeof(OREF));
                                        /* Initialize this new method        */
-  new ((void *)newObject) RexxInstructionMessage(message, name, expression);
+  new ((void *)newObject) RexxInstructionMessage(message, expression);
   return (RexxInstruction *)newObject; /* done, return this                 */
 }
+
 
 RexxInstruction *RexxSource::nopNew(ProtectedObject &newObject)
 /****************************************************************************/

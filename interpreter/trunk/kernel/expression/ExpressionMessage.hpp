@@ -44,7 +44,7 @@
 #ifndef Included_RexxExpressionMessage
 #define Included_RexxExpressionMessage
 
-class RexxExpressionMessage : public RexxInternalObject {
+class RexxExpressionMessage : public RexxVariableBase {
  public:
   inline void *operator new(size_t, void *ptr) {return ptr;}
   inline void  operator delete(void *, void *) {;}
@@ -57,6 +57,8 @@ class RexxExpressionMessage : public RexxInternalObject {
   void        liveGeneral();
   void        flatten(RexxEnvelope *);
   RexxObject *evaluate(RexxActivation *, RexxExpressionStack *);
+  void assign(RexxActivation *, RexxExpressionStack *, RexxObject *);
+  void makeAssignment(RexxSource *source);
 
   RexxObject * target;                 /* target subexpression              */
   RexxObject * super;                  /* super class target                */

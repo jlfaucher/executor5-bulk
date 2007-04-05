@@ -295,6 +295,7 @@ bool RexxCompoundVariable::exists(
 
 void RexxCompoundVariable::assign(
     RexxActivation *context,           /* current activation context        */
+    RexxExpressionStack *stack,        /* current evaluation stack          */
     RexxObject     *value )            /* new value to assign               */
 /******************************************************************************/
 /* Function:  Assign a value to a compound variable                           */

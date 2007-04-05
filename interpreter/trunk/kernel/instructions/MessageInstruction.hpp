@@ -54,7 +54,7 @@ class RexxExpressionMessage;
 class RexxInstructionMessage : public RexxInstruction {
  public:
   RexxInstructionMessage(RexxExpressionMessage *);
-  RexxInstructionMessage(RexxExpressionMessage *, RexxString *, RexxObject *);
+  RexxInstructionMessage(RexxExpressionMessage *, RexxObject *);
   inline RexxInstructionMessage(RESTORETYPE restoreType) { ; };
   void live();
   void liveGeneral();

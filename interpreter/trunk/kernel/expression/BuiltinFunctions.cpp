@@ -2223,7 +2223,7 @@ BUILTIN(VALUE) {
       result = retriever->getValue(context);
       if (newvalue != OREF_NULL)       /* have a new value to assign?       */
                                        /* do the assignment                 */
-        retriever->assign(context, newvalue);
+        retriever->assign(context, stack, newvalue);
     }
   }
   else if (selector->getLength() == 0) {    /* null string selector?             */
