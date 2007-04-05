@@ -1,3 +1,141 @@
 
+    Build ooRexx and Package as a Debian Package (pkgDeb) Quick Start
 
-    [ Place holder needs to be written ]
+A brief 1 2 3 recipe for building ooRexx on a Debian system and creating a
+.deb package.  This process uses the command line apt-get to install the
+needed packages and a shell script from the ooRexx build-utilities pkgDeb
+utility to build and package ooRexx.
+
+It is anticipated that the actions in the script will eventually be moved
+into the make file for ooRexx.  Until that time, the script provides a
+convenient way to build and package.
+
+It has been tested and used on both Debian Sarge and K/Ubuntu.  If it does
+not work for you, reading the more detailed debian-build.txt doc may
+provide better information.
+
+This document does *not* explain how to do a regular build of ooRexx.  The
+deb_build.sh script does that transparently.  Read the script or one of
+the other ooRexx documents for details on how to build ooRexx using the
+Makefile if that is what you are interested in.
+
+From a command prompt in a console:
+
+/* Need to be root to install these packages.  Need to specify automake1.9,
+ * rather than just automake or else apt-get installs 1.4, instead of the
+ * latest.
+ *
+ * Depending on your system, some of these packages may be already installed.
+ * It does no harm to do apt-get for them, if they are already installed they
+ * will just be skipped.  On a test on a newly installed Kubuntu system, the
+ * build failed because g++ was not installed.  So you may as well run apt-get
+ * for all the packages and be sure they are installed.
+ */
+
+root@Loon:~# apt-get install g++ gcc
+root@Loon:~# apt-get install subversion autoconf automake1.4 debhelper fakeroot libtool
+
+/* These packages are not needed, but don't hurt.
+ *
+ * xalan installed on Kubuntu will work correctly in the build.  On Debian the
+ * xalan installed is too old and will fail.  The build/package script will use
+ * touchheaders.sh so xalan does *not* need to be installed.  I always like to
+ * have zip and unzip on my systems.
+ */
+root@Loon:~# apt-get install xalan zip unzip
+
+root@Loon:~# svn --version
+svn, version 1.3.2 (r19776)
+   compiled Oct  4 2006, 23:52:00
+
+root@Loon:~# autoconf --version
+autoconf (GNU Autoconf) 2.60
+
+root@Loon:~# automake --version
+automake (GNU automake) 1.9.6
+
+debhelper version 5.0.37.3
+
+root@Loon:~# fakeroot -v
+fakeroot version 1.5.9
+
+root@Loon:~# libtool --version
+ltmain.sh (GNU libtool) 1.5.22
+
+root@Loon:~# xalan -v
+
+Xalan version 1.10.0
+Xerces version 2.7.0
+
+/* The rest needs to be done as a regular user, *not* root.  For a debian
+ * package, there is a strict naming convention for the directory the source is
+ * in.  So, the directory must be: ooRexx-3.1.2  (As of 4/2/2007, the script
+ * only works for the 3.1.2 release.  That restriction will be fixed shortly and
+ * this comment removed.)
+ *
+ * Check out the needed files from svn:
+ */
+
+miesfeld@Loon:~/work.ooRexx/wc$ svn co https://oorexx.svn.sourceforge.net/svnroot/oorexx/svnconfig svnconfg
+
+miesfeld@Loon:~/work.ooRexx/wc$ cp svnconfg/config /home/miesfeld/.subversion/config
+
+miesfeld@Loon:~/work.ooRexx/wc$ svn co https://oorexx.svn.sourceforge.net/svnroot/oorexx/interpreter-3.x/branches/3.1.2/trunk oorexx-3.1.2
+miesfeld@Loon:~/work.ooRexx/wc$ svn co https://oorexx.svn.sourceforge.net/svnroot/oorexx/build-utilities/trunk/platform/linux/pkgDeb pkgDeb
+
+/* CD to pkgDeb and run the script.  The script takes care of bootstrap,
+ * configure, etc.  Do *not* run ./configure for ooRexx first.
+ */
+miesfeld@Loon:~/work.ooRexx/wc$ cd pkgDeb
+miesfeld@Loon:~/work.ooRexx/wc/pkgDeb$ ./deb_build.sh bootstrap
++ libtoolize --copy --force --automake
+  ...
+dpkg-deb: building package `oorexx' in `../oorexx_3.1.2-1_i386.deb'.
+tar: -: file name read contains nul character
+
+/* The package is created */
+miesfeld@Loon:~/work.ooRexx/wc/pkgDeb$ cd ../
+miesfeld@Loon:~/work.ooRexx/wc$ ll
+total 668
+drwxr-xr-x  6 miesfeld miesfeld   4096 2007-04-04 12:01 .
+drwxr-xr-x  4 miesfeld miesfeld   4096 2007-04-04 12:00 ..
+drwxr-xr-x 13 miesfeld miesfeld   8192 2007-04-04 12:10 oorexx-3.1.2
+-rw-r--r--  1 miesfeld miesfeld 651150 2007-04-04 12:10 oorexx_3.1.2-1_i386.deb
+drwxr-xr-x  4 miesfeld miesfeld   4096 2007-04-04 11:58 pkgDeb
+drwxr-xr-x  3 miesfeld miesfeld   4096 2007-04-04 11:51 svnconfg
+
+/* To install, you need to be root again: */
+root@Loon:/home/miesfeld/work.ooRexx/wc# dpkg -i oorexx_3.1.2-1_i386.deb
+Selecting previously deselected package oorexx.
+  ...
+Setting up oorexx (3.1.2-1) ...
+
+root@Loon:/home/miesfeld/work.ooRexx/wc# rexx -v
+Open Object Rexx Interpreter Version 3.1.2 for LINUX
+  ...
+
+/* Notes on ./deb_build.sh */
+
+Executing deb_build.sh with no arguments will supply the syntax.  Currently the
+script is hard coded so it only works for the 3.1.2 release.  That will either
+be fixed, or the process will be moved into the make file.
+
+
+  Syntax: ./deb_build.sh MODE [buildDir]"
+  Default for buildDir is: ../oorexx-3.1.2"
+  Base name for build directory *must* be oorexx-3.1.2"
+  MODE: bootstrap || all || config || build || package"
+    bootstrap:  setup, run ./bootstrap, ./configure, build, and package"
+    all:        setup, run ./configure, build, and package"
+    config:     run ./configure, build, and package"
+    build:      build and package"
+    package:    package only"
+
+The directory for the source of ooRexx needs to be specified if it is not
+../oorexx-3.1.2.
+
+The first time either the bootstrap MODE or the all MODE must be used.  After
+the first execution, the script is no longer needed.  The regular build, clean,
+etc., using the ooRexx make file can be done, then just run the script in the
+package mode to produce the *.deb package.  Or the script can still be used to
+build and package by running it in the build MODE.
