@@ -375,6 +375,52 @@ BUILTIN(SUBSTR) {
   return string->substr(n, length, pad);
 }
 
+#define LOWER_MIN 2
+#define LOWER_MAX 3
+#define LOWER_string 1
+#define LOWER_n      2
+#define LOWER_length 3
+
+
+BUILTIN(LOWER) {
+  RexxString  *string;                 /* target string                     */
+  RexxInteger *n;                      /* start position                    */
+  RexxInteger *length;                 /* target string length              */
+
+  fixArgs(LOWER);                      /* check on required number of args  */
+                                       /* must have the first argument      */
+  string = requiredString(LOWER, string);
+  n = optionalInteger(LOWER, n);       /* position is optional              */
+                                       /* length is optional                */
+  length = optionalInteger(LOWER, length);
+                                       /* do the LOWER function            */
+  return string->lowerRexx(n, length);
+}
+
+
+#define UPPER_MIN 2
+#define UPPER_MAX 3
+#define UPPER_string 1
+#define UPPER_n      2
+#define UPPER_length 3
+
+
+BUILTIN(UPPER) {
+  RexxString  *string;                 /* target string                     */
+  RexxInteger *n;                      /* start position                    */
+  RexxInteger *length;                 /* target string length              */
+
+  fixArgs(UPPER);                      /* check on required number of args  */
+                                       /* must have the first argument      */
+  string = requiredString(UPPER, string);
+  n = optionalInteger(UPPER, n);       /* position is optional              */
+                                       /* length is optional                */
+  length = optionalInteger(UPPER, length);
+                                       /* do the UPPER function            */
+  return string->upperRexx(n, length);
+}
+
+
 #define SUBWORD_MIN 2
 #define SUBWORD_MAX 3
 #define SUBWORD_string 1
@@ -3439,6 +3485,7 @@ BuiltinFunction *BuiltinFunctions::builtinFunctions[] = {
   &builtin_function_LINEIN           ,
   &builtin_function_LINEOUT          ,
   &builtin_function_LINES            ,
+  &builtin_function_LOWER            ,
   &builtin_function_MAX              ,
   &builtin_function_MIN              ,
   &builtin_function_OVERLAY          ,
@@ -3464,6 +3511,7 @@ BuiltinFunction *BuiltinFunctions::builtinFunctions[] = {
   &builtin_function_TRACE            ,
   &builtin_function_TRANSLATE        ,
   &builtin_function_TRUNC            ,
+  &builtin_function_UPPER            ,
   &builtin_function_USERID           ,
   &builtin_function_VALUE            ,
   &builtin_function_VAR              ,
