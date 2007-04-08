@@ -68,7 +68,7 @@ COMMONOBJS = CallContextStubs.obj InterpreterApi.obj InterpreterInstanceStubs.ob
 	  SupplierClass.obj TableClass.obj BuiltinFunctions.obj \
 	  CommonSysUtils.obj ExpressionCompoundVariable.obj \
 	  ExpressionDotVariable.obj ExpressionFunction.obj ExpressionMessage.obj \
-	  ExpressionOperator.obj ExpressionStack.obj ExpressionStem.obj \
+	  ExpressionOperator.obj ExpressionStack.obj ExpressionStem.obj ExpressionLogical.obj \
 	  ExpressionVariable.obj IndirectVariableReference.obj QueueFunctions.obj \
 	  AddressInstruction.obj AssignmentInstruction.obj CallInstruction.obj \
 	  CommandInstruction.obj DoBlock.obj DoInstruction.obj \
@@ -599,6 +599,19 @@ ExpressionFunction.obj: expression\ExpressionFunction.cpp \
 		$(DEPHEADERS)
 	$(CC) $(CFLAGS) expression\ExpressionFunction.cpp $(OUTFLAG)
 
+ExpressionLogical.obj: expression\ExpressionLogical.cpp \
+                expression\ExpressionLogical.hpp \
+                classes\StringClass.hpp \
+                classes\QueueClass.hpp \
+                runtime\RexxActivation.hpp \
+                parser\Token.hpp \
+                parser\SourceFile.hpp \
+                classes\StackClass.hpp \
+                runtime\RexxActivity.hpp \
+                expression\BuiltinFunctions.hpp \
+		$(DEPHEADERS)
+	$(CC) $(CFLAGS) expression\ExpressionLogical.cpp $(OUTFLAG)
+
 ExpressionMessage.obj: expression\ExpressionMessage.cpp \
                 expression\ExpressionMessage.hpp \
                 classes\StringClass.hpp \
@@ -1097,6 +1110,7 @@ SourceFile.obj: parser\SourceFile.cpp \
                 runtime\RexxVariableDictionary.hpp \
                 runtime\RexxSmartBuffer.hpp \
                 expression\ExpressionFunction.hpp \
+                expression\ExpressionLogical.hpp \
                 expression\ExpressionMessage.hpp \
                 expression\ExpressionOperator.hpp \
                 expression\ExpressionBaseVariable.hpp \
@@ -1757,6 +1771,7 @@ VirtualFunctionTable.obj: runtime\VirtualFunctionTable.cpp \
                 instructions\ExposeInstruction.hpp \
                 instructions\ForwardInstruction.hpp \
                 expression\ExpressionFunction.hpp \
+                expression\ExpressionLogical.hpp \
                 instructions\GuardInstruction.hpp \
                 instructions\IfInstruction.hpp \
                 instructions\InterpretInstruction.hpp \

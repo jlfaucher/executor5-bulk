@@ -998,7 +998,7 @@ RexxInstruction *RexxSource::ifNew(
   RexxToken  *token;                   /* working token                     */
 
                                        /* process the expression            */
-  condition = this->expression(TERM_EOC | TERM_THEN | TERM_KEYWORD, condition);
+  condition = this->parseLogical(TERM_IF, condition);
   if ((RexxObject *)condition == OREF_NULL) {        /* no expression here?               */
     if (type == KEYWORD_IF)            /* IF form?                          */
                                        /* issue the IF message              */

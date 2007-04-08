@@ -188,6 +188,7 @@ class RexxSource : public RexxInternalObject {
   void        parseTraceSetting(RexxString *, int *, int *);
   size_t      processVariableList(int);
   RexxObject *parseConditional(int *, int);
+  RexxObject *RexxSource::parseLogical(int terminators, ProtectedObject &);
   bool        terminator(int, RexxToken *);
   bool        traceable(void);
   int         resolveKeyword(stringchar_t *name, size_t length, KWDTABLE *table, size_t tableSize);

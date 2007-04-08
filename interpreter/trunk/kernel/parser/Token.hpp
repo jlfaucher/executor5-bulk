@@ -66,6 +66,8 @@
 #define   TERM_CONTROL (TERM_KEYWORD | TERM_TO | TERM_BY | TERM_FOR | TERM_WHILE | TERM_EOC)
 /* terminate on DO conditionals      */
 #define   TERM_COND    (TERM_KEYWORD | TERM_WHILE | TERM_EOC)
+// terminate on IF/WHEN keywords
++#define  TERM_IF      (TERM_KEYWORD | TERM_THEN | TERM_EOC)
 
 /* token types */
 enum
