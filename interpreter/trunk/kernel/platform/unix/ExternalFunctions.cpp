@@ -118,6 +118,7 @@ char * resolve_tilde(char * path)
     char *  home_dir = NULL;            /* home directory path        */
     char *  dir_buf = NULL;             /* full directory path        */
     char *  slash;
+    char    username[100];
     struct passwd *ppwd;
     int alloc_flag = 0;
 
@@ -169,8 +170,13 @@ char * resolve_tilde(char * path)
         alloc_flag = 1;
       }
       else{                            /* there is a slash           */
-        *slash = '\0';                 /* teminate to get username   */
-        ppwd = getpwnam(st);           /* get info about the user    */
+                                       /* copy the username into a   */
+                                       /* local buffer; 100 bytes    */
+                                       /* should be big enough       */
+                                       /* fixes bug 1695834          */
+        memcpy(username, st, slash-st);
+        username[slash-st] = '\0';
+        ppwd = getpwnam(username);     /* get info about the user    */
         slash++;                       /* step over the slash        */
                                        /* get space for the buf      */
         dir_buf = (char *)malloc(strlen(ppwd->pw_dir)+strlen(slash)+2);
