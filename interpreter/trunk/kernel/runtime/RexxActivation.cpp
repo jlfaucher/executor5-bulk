@@ -901,19 +901,35 @@ void RexxActivation::iterate(
 /******************************************************************************/
 {
   RexxDoBlock       * doblock;         /* current DO block                  */
-  RexxInstructionDo * loop;            /* actual loop instruction           */
+  RexxBlockInstruction * loop;         /* actual loop instruction           */
 
   doblock = this->topBlock();          /* get the first stack item          */
 
   while (doblock != OREF_NULL) {       /* while still DO blocks to process  */
     loop = doblock->getParent();       /* get the actual loop instruction   */
-                                       /* have a matching block?            */
-    if (name == OREF_NULL || loop->isName(name)) {
+    if (name == OREF_NULL)             // leaving the inner-most loop?
+    {
+        // we only recognize LOOP constructs for this.
+        if (loop->isLoop())
+        {
                                        /* reset the indentation             */
-      this->setIndent(doblock->getIndent());
-                                       /* pass on the reexecution           */
-      loop->reExecute(this, &this->stack, doblock);
-      return;                          /* we're finished                    */
+            this->setIndent(doblock->getIndent());
+            ((RexxInstructionDo *)loop)->reExecute(this, &this->stack, doblock);
+            return;                          /* we're finished                    */
+        }
+
+    }
+    // a named LEAVE can be either a labeled block or a loop.
+    else if (loop->isLabel(name))
+    {
+        if (!loop->isLoop())
+        {
+            report_exception1(Error_Invalid_leave_iterate_name, name);
+        }
+                                   /* reset the indentation             */
+        this->setIndent(doblock->getIndent());
+        ((RexxInstructionDo *)loop)->reExecute(this, &this->stack, doblock);
+        return;                          /* we're finished                    */
     }
     this->popBlock();                  /* cause termination cleanup         */
     this->removeBlock();               /* remove the execution nest         */
@@ -934,28 +950,39 @@ void RexxActivation::leaveLoop(
 /* Function:  Process a REXX LEAVE instruction                                */
 /******************************************************************************/
 {
-  RexxDoBlock       * doblock;         /* current DO block                  */
-  RexxInstructionDo * loop;            /* actual loop instruction           */
+    RexxDoBlock       * doblock;         /* current DO block                  */
 
-  doblock = this->topBlock();          /* get the first stack item          */
+    doblock = this->topBlock();          /* get the first stack item          */
 
-  while (doblock != OREF_NULL) {       /* while still DO blocks to process  */
-    loop = doblock->getParent();       /* get the actual loop instruction   */
-    if (name == OREF_NULL || loop->isName(name)) {
-      loop->terminate(this, doblock);  /* terminate the loop                */
-      return;                          /* we're finished                    */
+    while (doblock != OREF_NULL) {       /* while still DO blocks to process  */
+      RexxBlockInstruction *loop = doblock->getParent();       /* get the actual loop instruction   */
+      if (name == OREF_NULL)             // leaving the inner-most loop?
+      {
+          // we only recognize LOOP constructs for this.
+          if (loop->isLoop())
+          {
+              loop->terminate(this, doblock);  /* terminate the loop                */
+              return;                          /* we're finished                    */
+          }
+
+      }
+      // a named LEAVE can be either a labeled block or a loop.
+      else if (loop->isLabel(name))
+      {
+          loop->terminate(this, doblock);  /* terminate the loop                */
+          return;                          /* we're finished                    */
+      }
+      this->popBlock();                  /* cause termination cleanup         */
+      this->removeBlock();               /* remove the execution nest         */
+                                         /* get the first stack item again    */
+      doblock = this->topBlock();        /* get the new stack top             */
     }
-    this->popBlock();                  /* cause termination cleanup         */
-    this->removeBlock();               /* remove the execution nest         */
-                                       /* get the first stack item again    */
-    doblock = this->topBlock();        /* get the new stack top             */
-  }
-  if (name != OREF_NULL)               /* have a name?                      */
-                                       /* report exception with the name    */
-    reportException(Error_Invalid_leave_leavevar, name);
-  else
-                                       /* have a misplaced LEAVE            */
-    reportException(Error_Invalid_leave_leave);
+    if (name != OREF_NULL)               /* have a name?                      */
+                                         /* report exception with the name    */
+      report_exception1(Error_Invalid_leave_leavevar, name);
+    else
+                                         /* have a misplaced LEAVE            */
+      report_exception(Error_Invalid_leave_leave);
 }
 
 size_t RexxActivation::currentLine()

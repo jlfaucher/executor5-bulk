@@ -202,6 +202,7 @@ enum
     KEYWORD_INSTRUCTION         ,
     KEYWORD_FORWARD             ,
     KEYWORD_PACKAGE             ,
+    KEYWORD_LOOP                ,
 
 };
 
@@ -253,6 +254,7 @@ enum
     SUBKEY_CLASS          ,
     SUBKEY_MESSAGE        ,
     SUBKEY_ARGUMENTS      ,
+    SUBKEY_LABEL          ,
 };
 
 

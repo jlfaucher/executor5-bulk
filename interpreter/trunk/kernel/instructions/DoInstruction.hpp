@@ -68,17 +68,21 @@ class RexxDoBlock;
 
 class RexxInstructionEnd;
 
-class RexxInstructionDo : public RexxInstruction {
+class RexxInstructionDo : public RexxBlockInstruction {
  public:
 
   inline RexxInstructionDo(void) { ; }
   inline RexxInstructionDo(RESTORETYPE restoreType) { ; };
-  void matchName(RexxInstructionEnd *, RexxSource *);
-  inline bool isName(RexxString *name) { return name == this->name; }
+
+  void matchEnd(RexxInstructionEnd *, RexxSource *);
+  bool    isLabel(RexxString *name);
+  RexxString *getLabel();
+  bool    isLoop();
+  void terminate(RexxActivation *, RexxDoBlock *);
+
   void live();
   void liveGeneral();
   void flatten(RexxEnvelope *);
-  void terminate(RexxActivation *, RexxDoBlock *);
   void execute(RexxActivation *, RexxExpressionStack *);
   void controlSetup(RexxActivation *, RexxExpressionStack *, RexxDoBlock *);
   bool checkOver(RexxActivation *, RexxExpressionStack *, RexxDoBlock *);
@@ -87,18 +91,19 @@ class RexxInstructionDo : public RexxInstruction {
   bool whileCondition(RexxActivation *, RexxExpressionStack *);
   bool untilCondition(RexxActivation *, RexxExpressionStack *);
   void matchEnd(RexxInstructionEnd *, RexxSource *);
-  RexxObject *checkEnd(RexxObject *);
   RexxInstruction *getEnd();
+  void matchLabel(RexxInstructionEnd *end, RexxSource *source );
 
   RexxObject       *initial;           /* initial control expression        */
   RexxObject       *to;                /* final target value                */
   RexxObject       *by;                /* control increment value           */
   RexxVariableBase *control;           /* control variable retriever        */
-  RexxString       *name;              /* control variable name             */
+  RexxString       *label;             /* control variable name             */
   RexxObject       *conditional;       /* while/until expression            */
   RexxInstruction  *end;               /* matching END instruction          */
   RexxObject       *forcount;          /* number of iterations              */
-  BYTE              type;              /* type of loop                      */
-  BYTE              expressions[3];    /* controlled loop expression order  */
+  int8_t            type;              /* type of loop                      */
+  int8_t            expressions[3];    /* controlled loop expression order  */
 };
+
 #endif

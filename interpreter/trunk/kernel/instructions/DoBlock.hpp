@@ -44,7 +44,7 @@
 #ifndef Included_RexxDoBlock
 #define Included_RexxDoBlock
 
-class RexxInstructionDo;
+class RexxBlockInstruction;
 
 class RexxDoBlock : public RexxInternalObject {
  public:
@@ -53,7 +53,7 @@ class RexxDoBlock : public RexxInternalObject {
   void *operator new(size_t);
   inline void  operator delete(void *) {;}
 
-  RexxDoBlock(RexxInstructionDo *, stringsize_t);
+  RexxDoBlock(RexxBlockInstruction *, stringsize_t);
   inline RexxDoBlock(RESTORETYPE restoreType) { ; };
   void live();
   void liveGeneral();
@@ -63,7 +63,7 @@ class RexxDoBlock : public RexxInternalObject {
   inline wholenumber_t getFor() {return this->forcount;};
   inline int  getCompare() {return this->compare;};
   inline RexxObject * getBy() {return this->by;};
-  inline RexxInstructionDo * getParent() {return this->parent;};
+  inline RexxBlockInstruction * getParent() {return this->parent;};
   inline void setTo(RexxObject * value) {this->to = value;};
   inline void setBy(RexxObject * value) {this->by = value;};
   inline void setCompare(int value) {this->compare = (uint16_t)value;};
@@ -73,7 +73,7 @@ class RexxDoBlock : public RexxInternalObject {
   inline void setPrevious(RexxDoBlock *block) { this->previous = block; }
 
   RexxDoBlock       *previous;         /* previous stacked Do Block         */
-  RexxInstructionDo *parent;           /* parent instruction                */
+  RexxBlockInstruction *parent;        /* parent instruction                */
   RexxObject        *to;               /* final target value                */
   RexxObject        *by;               /* control increment value           */
   wholenumber_t      forcount;         /* number of iterations              */

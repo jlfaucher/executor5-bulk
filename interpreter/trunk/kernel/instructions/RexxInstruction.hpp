@@ -83,6 +83,25 @@ class RexxInstruction : public RexxInternalObject {
   RexxInstruction  *nextInstruction;   /* next instruction object           */
 };
 
+
+class RexxDoBlock;
+class RexxInstructionEnd;
+class RexxSource;
+
+class RexxBlockInstruction : public RexxInstruction {
+public:
+    RexxBlockInstruction() {;};
+    RexxBlockInstruction(RESTORETYPE restoreType) { ; };
+
+    virtual bool isLabel(RexxString *) { return false; }
+    virtual RexxString *getLabel() { return OREF_NULL; };
+    virtual bool isLoop() { return false; };
+    virtual void matchEnd(RexxInstructionEnd *, RexxSource *) { ; };
+    virtual void terminate(RexxActivation *, RexxDoBlock *) { ; };
+};
+
+
+
 class RexxInstructionEndIf;
 
 class RexxInstructionSet : public RexxInstruction {

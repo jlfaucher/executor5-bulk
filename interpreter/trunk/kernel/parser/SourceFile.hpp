@@ -146,6 +146,7 @@ class RexxSource : public RexxInternalObject {
   void        expose(RexxString *);
   RexxString *commonString(RexxString *);
   RexxObject *addText(RexxToken *);
+  RexxObject *addVariable(RexxToken *);
   void        addClause(RexxInstruction *);
   void        addLabel(RexxInstruction *, RexxString *);
   RexxInstruction *findLabel(RexxString *);
@@ -219,7 +220,9 @@ class RexxSource : public RexxInternalObject {
   RexxInstruction *callNew(ProtectedObject &);
   RexxInstruction *commandNew(ProtectedObject &);
   RexxInstruction *doNew(ProtectedObject &);
-  void        RexxInstructionDoCreate(RexxInstructionDo *);
+  RexxInstruction *loopNew();
+  RexxInstruction *RexxSource::createLoop();
+  RexxInstruction *createDoLoop(RexxInstructionDo *, bool);
   RexxInstruction *dropNew(ProtectedObject &);
   RexxInstruction *elseNew(RexxToken *, ProtectedObject &);
   RexxInstruction *endNew(ProtectedObject &);

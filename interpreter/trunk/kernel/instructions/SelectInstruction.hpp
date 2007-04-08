@@ -50,21 +50,28 @@ class RexxInstructionEnd;
 class RexxInstructionIf;
 class RexxInstructionOtherwise;
 
-class RexxInstructionSelect : public RexxInstruction {
- public:
-  RexxInstructionSelect();
-  inline RexxInstructionSelect(RESTORETYPE restoreType) { ; };
-  void live();
-  void liveGeneral();
-  void flatten(RexxEnvelope*);
-  void execute(RexxActivation *, RexxExpressionStack *);
-  void matchEnd(RexxInstructionEnd *, RexxSource *);
-  RexxObject *checkend(RexxObject *);
-  void setOtherwise(RexxInstructionOtherwise *);
-  void addWhen(RexxInstructionIf *);
+class RexxInstructionSelect : public RexxBlockInstruction
+{
+public:
+    inline void *operator new(size_t size, void *ptr) {return ptr;};
+    RexxInstructionSelect(RexxString *);
+    inline RexxInstructionSelect(RESTORETYPE restoreType) { ; };
+    void live();
+    void liveGeneral();
+    void flatten(RexxEnvelope*);
+    void execute(RexxActivation *, RexxExpressionStack *);
 
-  RexxQueue                *when_list; /* list of WHEN end targets          */
-  RexxInstructionEnd       *end;       /* END matching the SELECT           */
-  RexxInstructionOtherwise *otherwise; /* OTHERWISE matching the SELECT     */
+    void matchEnd(RexxInstructionEnd *, RexxSource *);
+    bool isLabel(RexxString *name);
+    RexxString *getLabel();
+    bool isLoop();
+    void terminate(RexxActivation *, RexxDoBlock *);
+
+    void setOtherwise(RexxInstructionOtherWise *);
+    void addWhen(RexxInstructionIf *);
+
+    RexxQueue                *when_list; /* list of WHEN end targets          */
+    RexxInstructionEnd       *end;       /* END matching the SELECT           */
+    RexxInstructionOtherWise *otherwise; /* OTHERWISE matching the SELECT     */
 };
 #endif

@@ -324,7 +324,7 @@ typedef ACTSETTINGS *PSETT;
    inline void              pushBlock(RexxDoBlock *block) { block->setPrevious(this->dostack); this->dostack = block; }
    inline void              popBlock() { RexxDoBlock *temp; temp = this->dostack; this->dostack = temp->previous; SetObjectHasNoReferences(temp); }
    inline RexxDoBlock     * topBlock() { return this->dostack; }
-   inline void              terminateDo(stringsize_t localindent) { this->popBlock(); this->blockNest--; this->settings.traceindent = localindent; }
+   inline void              terminateBlock(stringsize_t localindent) { this->popBlock(); this->blockNest--; this->settings.traceindent = localindent; }
    inline void              newDo(RexxDoBlock *block) { this->pushBlock(block); this->blockNest++; this->settings.traceindent++;}
    inline void              removeBlock() { this->blockNest--; };
    inline void              addBlock()    { this->blockNest++; };

@@ -51,14 +51,16 @@
 #include "EndInstruction.hpp"
 #include "IfInstruction.hpp"
 #include "OtherwiseInstruction.hpp"
+#include "DoBlock.hpp"
 
-RexxInstructionSelect::RexxInstructionSelect()
+RexxInstructionSelect::RexxInstructionSelect(RexxString *name)
 /******************************************************************************/
 /* Function:  Initialize a SELECT instruction object                          */
 /******************************************************************************/
 {
                                        /* create a list of WHEN targets     */
   OrefSet(this, this->when_list, new_queue());
+  OrefSet(this, this->label, name);
 }
 
 void RexxInstructionSelect::live()
@@ -71,6 +73,7 @@ void RexxInstructionSelect::live()
   memory_mark(this->when_list);
   memory_mark(this->end);
   memory_mark(this->otherwise);
+  memory_mark(this->label);
   cleanUpMemoryMark
 }
 
@@ -85,6 +88,7 @@ void RexxInstructionSelect::liveGeneral()
   memory_mark_general(this->when_list);
   memory_mark_general(this->end);
   memory_mark_general(this->otherwise);
+  memory_mark_general(this->label);
   cleanUpMemoryMarkGeneral
 }
 
@@ -99,9 +103,61 @@ void RexxInstructionSelect::flatten(RexxEnvelope *envelope)
   flatten_reference(newThis->when_list, envelope);
   flatten_reference(newThis->end, envelope);
   flatten_reference(newThis->otherwise, envelope);
+  flatten_reference(newThis->label, envelope);
 
   cleanUpFlatten
 }
+
+
+/**
+ * Get label from SELECT statement.
+ *
+ * @return Always returns OREF_NULL.
+ */
+RexxString *RexxInstructionSelect::getLabel()
+{
+    return label;
+}
+
+
+/**
+ * Tests to see if this is a loop instruction.
+ *
+ * @return True if this is a repetitive loop, false otherwise.
+ */
+bool RexxInstructionSelect::isLoop()
+{
+    return false;
+}
+
+
+/**
+ * Check for a label match on a block instruction.
+ *
+ * @param name   The target block name.
+ *
+ * @return True if this is a name match, false otherwise.
+ */
+bool RexxInstructionSelect::isLabel(RexxString *name)
+{
+    return label == name;
+}
+
+
+void RexxInstructionSelect::terminate(
+     RexxActivation *context,          /* current execution context         */
+     RexxDoBlock    *doblock )         /* active do block                   */
+/******************************************************************************/
+/* Function:  Terminate an active do loop                                     */
+/******************************************************************************/
+{
+                                       /* perform cleanup                   */
+  context->terminateBlock(doblock->indent);
+                                       /* jump to the loop end              */
+  context->setNext(this->end->nextInstruction);
+}
+
+
 
 void RexxInstructionSelect::execute(
     RexxActivation      *context,      /* current activation context        */
@@ -110,17 +166,35 @@ void RexxInstructionSelect::execute(
 /* Function:  Execute a REXX SELECT instruction                             */
 /****************************************************************************/
 {
-  context->traceInstruction(this);     /* trace if necessary                */
-  context->indent();                   /* indent on tracing                 */
-  context->addBlock();                 /* add to the loop nesting           */
-                                       /* do debug pause if necessary       */
+    RexxDoBlock *doblock = OREF_NULL;
 
-                                       /* have to re-execute?               */
-  if (context->conditionalPauseInstruction()) {
-    context->removeBlock();            /* cause termination cleanup         */
-    context->unindent();               /* step back trace indentation       */
-  }
+    context->traceInstruction(this);     /* trace if necessary                */
+    if (getLabel() != OREF_NULL)
+    {
+                                           /* create an active DO block         */
+        doblock = new RexxDoBlock (this, context->getIndent());
+        context->newDo(doblock);           /* set the new block                 */
+    }
+    else
+    {
+        context->indent();                   /* indent on tracing                 */
+        context->addBlock();               /* step the nesting level            */
+    }
+
+    if (context->conditionalPauseInstruction())
+    {
+        if (doblock != OREF_NULL)
+        {
+            this->terminate(context, doblock); /* cause termination cleanup         */
+        }
+        else
+        {
+            context->removeBlock();        /* cause termination cleanup         */
+            context->unindent();               /* step back trace indentation       */
+        }
+    }
 }
+
 
 void RexxInstructionSelect::matchEnd(
      RexxInstructionEnd *partner,      /* end to match up                   */
@@ -135,9 +209,20 @@ void RexxInstructionSelect::matchEnd(
 
   partner->getLocation(&location);     /* get location of END instruction   */
   lineNum = this->lineNumber;          /* get the instruction line number   */
-  if (partner->name != OREF_NULL)      /* END had a name specified?         */
-                                       /* misplaced END instruction         */
-    contextActivity()->raiseException(Error_Unexpected_end_select, &location, source, OREF_NULL, new_array(partner->name, new_integer(lineNum)), OREF_NULL);
+
+  RexxString *name = partner->name;    /* get then END name                 */
+  if (name != OREF_NULL) {             /* was a name given?                 */
+    lineNum = this->lineNumber;        /* Instruction line number           */
+    RexxString *myLabel = getLabel();
+    if (myLabel == OREF_NULL)          /* name given on non-control form?   */
+    {
+        CurrentActivity->raiseException(Error_Unexpected_end_select_nolabel, &location, source, OREF_NULL, new_array2(partner->name, new_integer(lineNum)), OREF_NULL);
+    }
+    else if (name != myLabel)          /* not the same name?                */
+    {
+        CurrentActivity->raiseException(Error_Unexpected_end_select, &location, source, OREF_NULL, new_array3(name, myLabel, new_integer(lineNum)), OREF_NULL);
+    }
+  }
   OrefSet(this, this->end, partner);   /* match up with the END instruction */
                                        /* get first item off of WHEN list   */
   when = (RexxInstructionIf *)(this->when_list->pullRexx());
@@ -157,9 +242,25 @@ void RexxInstructionSelect::matchEnd(
                                        /* get rid of the lists              */
   OrefSet(this, this->when_list, OREF_NULL);
   if (this->otherwise != OREF_NULL)    /* an other wise block?              */
-    partner->setStyle(OTHERWISE_BLOCK);/* END closes the OTHERWISE          */
+  {
+      // for the END terminator on an OTHERWISE, we need to see if this
+      // select has a label.  If it does, this needs special handling.
+      if (getLabel() == OREF_NULL)
+      {
+          partner->setStyle(OTHERWISE_BLOCK);
+      }
+      else
+      {
+          partner->setStyle(LABELED_OTHERWISE_BLOCK);
+      }
+  }
   else
-    partner->setStyle(SELECT_BLOCK);   /* SELECT with no otherwise          */
+  {
+      // the SELECT style will raise an error if hit, since it means
+      // there is not OTHERWISE clause.  This doesn't matter if there
+      // is a label or not.
+      partner->setStyle(SELECT_BLOCK);
+  }
 }
 
 void RexxInstructionSelect::addWhen(
