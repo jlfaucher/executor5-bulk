@@ -309,6 +309,7 @@ typedef ACTSETTINGS *PSETT;
    RexxVariableDictionary * getObjectVariables();
    RexxDirectory   * getLabels();
    RexxString      * programName();
+   inline RexxString *getCallname() {return this->settings.msgname;};
    RexxObject      * popControl();
    void              pushControl(RexxObject *);
    void              closeStreams();

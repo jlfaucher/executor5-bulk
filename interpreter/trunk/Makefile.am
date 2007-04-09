@@ -48,7 +48,7 @@ MOSTLYCLEANFILES        = tags
 include $(top_srcdir)/oorexx.ver
 
 VERSION = $(MAJOR).$(MINOR)
-VERSION_INFO = -version-info $(MAJOR):$(MINOR):$(MOD_LVL)
+VERSION_INFO = -version-info $(ORX_MAJOR):$(ORX_MINOR):$(ORX_MOD_LVL)
 
 SUBDIRS = api kernel rexxapi utilities extensions samples
 DIST_SUBDIRS = shared rexxapi kernel utilities extensions api samples

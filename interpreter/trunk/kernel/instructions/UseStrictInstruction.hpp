@@ -6,7 +6,7 @@
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/* http://www.oorexx.org/license.html                          */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -36,45 +36,43 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Kernel                                                                */
+/* REXX Kernel                                       UseStrictInstruction.hpp */
 /*                                                                            */
-/* Version Identification                                                     */
+/* Primitive USE STRICT instruction Class Definitions                         */
 /*                                                                            */
 /******************************************************************************/
-#include "RexxCore.h"
-#include "StringClass.hpp"
-#include "Interpreter.hpp"
+#ifndef Included_RexxInstructionUseStrict
+#define Included_RexxInstructionUseStrict
 
+#include "RexxInstruction.hpp"
 
-RexxString *RexxInterpreter::versionString()
-/******************************************************************************/
-/* Arguments:  None                                                           */
-/*                                                                            */
-/*  Returned:  Version string                                                 */
-/******************************************************************************/
+class UseVariable
 {
-    if (singleInstance->versionID == OREF_NULL)
-    {
-        char *build_date = __DATE__;   // date of last build
-        char   buffer[100];            /* buffer for building the string    */
-        char   work[20];               /* working buffer                    */
-        char * month;                  /* month of the build                */
-        char * day;                    /* day of the build                  */
-        char * year;                   /* year of the build                 */
+public:
+    RexxVariableBase *variable;        // the variable accessor
+    RexxObject *defaultValue;          // default value for optional variables
+    RexxObject *assertion;             // optional assertion to validate the value.
+};
 
-        strcpy(work, build_date);            /* copy the build date               */
-        month = strtok(work, " ");           /* get the month                     */
-        day = strtok(NULL, " ");             /* get the build day                 */
-        year = strtok(NULL, " ");            /* and the year                      */
-        if (*day == '0')                     /* day have a leading zero?          */
-          day++;                             /* step over it                      */
-                                             /* format the result                 */
-      #ifdef NOTHREADSUPPORT
-        sprintf(buffer, "REXX-ooRexx_%d.%d.%d 6.02 %s %s %s", ORX_VER, ORX_REL, ORX_MOD, day, month, year);
-      #else
-        sprintf(buffer, "REXX-ooRexx_%d.%d.%d(MT) 6.02 %s %s %s", ORX_VER, ORX_REL, ORX_MOD,day, month, year);
-      #endif
-        singleInstance->versionID = new_string(buffer);  /* return as a rexx string           */
-    }
-    return singleInstance->versionID;
-}
+
+class RexxInstructionUseStrict : public RexxInstruction {
+public:
+    inline void *operator new(size_t size, void *ptr) {return ptr;};
+    RexxInstructionUseStrict(size_t, bool, RexxQueue *, RexxQueue *, RexxQueue *);
+    inline RexxInstructionUseStrict(RESTORETYPE restoreType) { ; };
+    void live();
+    void liveGeneral();
+    void flatten(RexxEnvelope *);
+    void execute(RexxActivation *, RexxExpressionStack *);
+
+protected:
+    RexxObject *getArgument(RexxObject **arglist, size_t count, size_t target);
+    void checkAssertion(size_t position, RexxActivation *context, RexxExpressionStack *stack);
+
+    size_t variableCount;            // count of variables to process
+    size_t minimumRequired;          // the minimum number of require arguments
+    bool variableSize;               // additional arguments allowed after last
+    UseVariable variables[1];        // List of variables for USE
+};
+#endif
+

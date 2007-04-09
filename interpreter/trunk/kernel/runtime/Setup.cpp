@@ -277,6 +277,7 @@ bool RexxInterpreter::exportBaseClasses()
   defineKernelMethod(CHAR_START                  ,TheObjectBehaviour, CPPM(RexxObject::start), A_COUNT);
   defineKernelMethod(CHAR_STRING                 ,TheObjectBehaviour, CPPM(RexxObject::stringRexx), 0);
   defineKernelMethod(CHAR_ISINSTANCEOF           ,TheObjectBehaviour, CPPM(RexxObject::isInstanceOfRexx), 1);
+  defineKernelMethod(CHAR_ISA                    ,TheObjectBehaviour, CPPM(RexxObject::isInstanceOfRexx), 1);
   definePrivateKernelMethod(CHAR_RUN             ,TheObjectBehaviour, CPPM(RexxObject::run), A_COUNT);
   definePrivateKernelMethod(CHAR_SETMETHOD       ,TheObjectBehaviour, CPPM(RexxObject::setMethod), 3);
   definePrivateKernelMethod(CHAR_UNSETMETHOD     ,TheObjectBehaviour, CPPM(RexxObject::unsetMethod), 1);
@@ -319,10 +320,8 @@ bool RexxInterpreter::exportBaseClasses()
   defineKernelMethod(CHAR_LAST         ,TheArrayBehaviour, CPPM(RexxArray::lastRexx), 0);
   defineKernelMethod(CHAR_NEXT         ,TheArrayBehaviour, CPPM(RexxArray::nextRexx), 1);
   defineKernelMethod(CHAR_PREVIOUS     ,TheArrayBehaviour, CPPM(RexxArray::previousRexx), 1);
-  defineKernelMethod(CHAR_APPEND       ,TheArrayBehaviour, CPPMA(RexxArray::append), 1);
+  defineKernelMethod(CHAR_APPEND       ,TheArrayBehaviour, CPPM(RexxArray::append), 1);
   defineKernelMethod(CHAR_MAKESTRING   ,TheArrayBehaviour, CPPM(RexxArray::makeString), 1);   /*THU006*/
-  defineKernelMethod(CHAR_APPEND       ,TheListBehaviour, CPPMA(RexxList::append), 1);
-  defineKernelMethod(CHAR_APPEND        ,TheQueueBehaviour, CPPMA(RexxQueue::append), 1);
                                        /* set the scope of the methods to   */
                                        /* this classes oref                 */
   TheArrayBehaviour->setMethodDictionaryScope(TheArrayClass);
@@ -401,6 +400,7 @@ bool RexxInterpreter::exportBaseClasses()
   defineKernelMethod(CHAR_REMOVE       ,TheListBehaviour, CPPM(RexxList::remove), 1);
   defineKernelMethod(CHAR_SECTION      ,TheListBehaviour, CPPM(RexxList::section), 2);
   defineKernelMethod(CHAR_SUPPLIER     ,TheListBehaviour, CPPM(RexxList::supplier), 0);
+  defineKernelMethod(CHAR_APPEND       ,TheListBehaviour, CPPM(RexxList::append), 1);
                                        /* set the scope of the methods to   */
                                        /* this classes oref                 */
   TheListBehaviour->setMethodDictionaryScope(TheListClass);
@@ -432,8 +432,8 @@ bool RexxInterpreter::exportBaseClasses()
   defineKernelMethod(CHAR_SEND     , TheMessageBehaviour, CPPM(RexxMessage::send), 1);
   defineKernelMethod(CHAR_START    , TheMessageBehaviour, CPPM(RexxMessage::start), 1);
   defineKernelMethod(CHAR_TARGET   , TheMessageBehaviour, CPPMSG(RexxMessage::messageTarget), 0);
-  defineKernelMethod(CHAR_MESSAGENAME  , TheMessageBehaviour, CPPMSG(RexxMessage::messageName), 0);
-  defineKernelMethod(CHAR_ARGUMENTS  , TheMessageBehaviour, CPPMSG(RexxMessage::arguments), 0);
+  defineKernelMethod(CHAR_MESSAGENAME  , TheMessageBehaviour, CPPM(RexxMessage::messageName), 0);
+  defineKernelMethod(CHAR_ARGUMENTS  , TheMessageBehaviour, CPPM(RexxMessage::arguments), 0);
 
                                        /* set the scope of the methods to   */
                                        /* this classes oref                 */
@@ -501,6 +501,7 @@ bool RexxInterpreter::exportBaseClasses()
   defineKernelMethod(CHAR_HASINDEX      ,TheQueueBehaviour, CPPM(RexxQueue::hasindex), 1);
   defineKernelMethod(CHAR_PUT           ,TheQueueBehaviour, CPPM(RexxQueue::put), 2);
   defineKernelMethod(CHAR_REMOVE        ,TheQueueBehaviour, CPPM(RexxQueue::remove), 1);
+  defineKernelMethod(CHAR_APPEND        ,TheQueueBehaviour, CPPM(RexxQueue::append), 1);
 
                                        /* set the scope of the methods to   */
                                        /* this classes oref                 */

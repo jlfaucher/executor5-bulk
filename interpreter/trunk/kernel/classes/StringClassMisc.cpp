@@ -607,7 +607,7 @@ stringchar_t *  RexxString::lastPos(
  * @return A pointer to the match location.  Returns NULL of the needle
  *         is not found.
  */
-stringchar_t *  RexxString::caselessLastPos(stringchar_t *needle,
+stringchar_t *RexxString::caselessLastPos(stringchar_t *needle,
     stringsize_t needleLen, stringchar_t *haystack, stringsize_t haystackLen)
 {
     // too large to be a match, return a nonmatch indicator

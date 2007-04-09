@@ -413,7 +413,7 @@ EXTRA_librexx_la_SOURCES = platform/unix/UnixGencat.xsl \
 #
 # C++ compiler flags for librexx.so sources
 #
-librexx_la_CXXFLAGS = -DORX_VER=$(MAJOR) -DORX_REL=$(MINOR) -DORX_MOD=$(MOD_LVL)
+librexx_la_CXXFLAGS = -DORX_VER=$(ORX_MAJOR) -DORX_REL=$(ORX_MINOR) -DORX_MOD=$(ORX_MOD_LVL) -DOOREXX_COPY_YEAR=\"$(ORX_COPY_YEAR)\"
 
 #
 # linker flags for librexx.so objects

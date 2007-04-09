@@ -74,7 +74,7 @@ rxapi_SOURCES = $(top_srcdir)/shared/ClientMessage.cpp \
 #
 # C++ compiler flags for rxapi sources
 #
-rxapi_CXXFLAGS = -DORX_VER=$(MAJOR) -DORX_REL=$(MINOR) -DORX_MOD=$(MOD_LVL) \
+rxapi_CXXFLAGS = -DORX_VER=$(ORX_MAJOR) -DORX_REL=$(ORX_MINOR) -DORX_MOD=$(ORX_MOD_LVL) \
                  $(INCLUDES)
 
 #
