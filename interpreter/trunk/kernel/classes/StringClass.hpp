@@ -209,12 +209,20 @@
    RexxInteger *compare(RexxString *, RexxString *);
    RexxString  *copies(RexxInteger *);
    RexxObject  *dataType(RexxString *);
-   static stringsize_t lastPos(RexxString *, stringsize_t);
-   stringsize_t caselessLastPos(RexxString *, stringsize_t);
-   stringchar_t *lastPos(stringchar_t *, stringsize_t, stringchar_t *, stringsize_t);
-   stringchar_t *caselessLastPos(stringchar_t *, stringsize_t, stringchar_t *, stringsize_t);
+
+
    RexxInteger *lastPosRexx(RexxString *, RexxInteger *);
+   RexxInteger *caselessLastPosRexx(RexxString *, RexxInteger *);
+   stringsize_t  lastPos(RexxString  *needle, stringsize_t start);
+   stringsize_t  caselessLastPos(RexxString  *needle, stringsize_t start);
+   stringchar_t *lastPos(stringchar_t * needle, size_t needleLen, stringchar_t *  haystack, stringsize_t haystackLen);
+   stringchar_t *caselessLastPos(stringchar_t * needle, stringsize_t needleLen, stringchar_t *  haystack, stringsize_t haystackLen);
+
    RexxInteger *posRexx(RexxString *, RexxInteger *);
+   RexxInteger *caselessPosRexx(RexxString *, RexxInteger *);
+   stringsize_t pos(RexxString *, stringsize_t);
+   stringsize_t caselessPos(RexxString *, stringsize_t);
+
    RexxString  *translate(RexxString *, RexxString *, RexxString *);
    RexxInteger *verify(RexxString *, RexxString *, RexxInteger *);
    RexxInteger *countStrRexx(RexxString *);
