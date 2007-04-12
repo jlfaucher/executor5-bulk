@@ -42,7 +42,7 @@ TOPDIR = $(MAKEDIR)
 
 !include $(TOPDIR)\Nmake.inc
 
-EXE_FILES = $(BINDIR)\stouch.exe
+EXE_FILES = $(BINDIR)\stouch.exe $(BINDIR)\killer.exe
 
 
 all : $(OBJDIR) $(BINDIR) $(EXE_FILES)
@@ -91,6 +91,12 @@ $(BINDIR)\stouch.exe : $(BINDIR) $(OBJDIR) $(OBJDIR)\stouch.obj
 
 $(OBJDIR)\stouch.obj : $(SRCDIR)\stouch.c $(SRCDIR)\stouch.h
     $(CC) $(CFLAGS) /O1 $(SRCDIR)\stouch.c
+
+$(BINDIR)\killer.exe : $(BINDIR) $(OBJDIR) $(OBJDIR)\killer.obj
+    $(LD) /SUBSYSTEM:Console /out:$(BINDIR)\killer.exe $(OBJDIR)\killer.obj psapi.lib
+
+$(OBJDIR)\killer.obj : $(SRCDIR)\killer.c
+    $(CC) $(CFLAGS) $(SRCDIR)\killer.c
 
 $(ooRexx_SRCDIR) :
     @NMAKE_lineout
