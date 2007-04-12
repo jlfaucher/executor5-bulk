@@ -69,7 +69,7 @@ SET MKDEBUG=1
 IF %SRC_DRV%x == x GOTO HELP_SRC_DRV
 REM regedit /s %SRC_DRV%%SRC_DIR%\fullprev_ver.reg
 rem ECHO Generating message files with GENRXMSG
-kill rxapi.exe
+taskkill /F /IM rxapi.exe
 
 IF %MKNODEBUG% == 0 GOTO :BLDDEBUG
 
@@ -83,7 +83,7 @@ SET MKASM=0
 SET BLDRELEASE=0
 
 :STARTBUILD
-kill rxapi.exe
+taskkill /F /IM rxapi.exe
 CALL ORXDB %BLDRELEASE%
 
 GOTO END
