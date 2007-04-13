@@ -41,27 +41,27 @@
     #
     #########################################################################
 -->
-<chapter id="progressbarcontrolc"><title>ProgressBarControl Class</title>
-<indexterm><primary>ProgressBarControl class</primary></indexterm>
+<chapter id="progressbarc"><title>ProgressBar Class</title>
+<indexterm><primary>ProgressBar class</primary></indexterm>
 <para>A progress bar is a window that an application can use to indicate the
 progress of a lengthy operation. It consists of a rectangle that is gradually
 filled, from left to right, with the system highlight color as an operation
 progresses. It has a range and a current position. The range represents the
 entire duration of the operation, and the current position represents the
 progress that the application has made toward completing the operation.</para>
-<para>The ProgressBarControl class provides methods to
+<para>The ProgressBar class provides methods to
 change the range and the current position of the progress bar. The window
 procedure uses the range and the current position to determine the percentage
 of the progress bar.  The highest possible range or current position value
 is 65,535.</para>
 <para>Refer to OODPBAR.REX and PROPDEMO.REX in the OODIALOG\SAMPLES directory
 for an example.</para>
-<para>The ProgressBarControl class does not send any
+<para>The ProgressBar class does not send any
 notification messages. For information about notification messages, refer
 to <link linkend="connectlistnotify">ConnectListNotify</link>.</para>
 <variablelist>
 <varlistentry><term>Requires:</term>
-<listitem><para>The ProgressBarControl class requires the class
+<listitem><para>The ProgressBar class requires the class
 definition file <computeroutput>oodwin32.cls</computeroutput>:
 <programlisting>
 <![CDATA[
@@ -70,12 +70,12 @@ definition file <computeroutput>oodwin32.cls</computeroutput>:
 </programlisting>
 </para></listitem></varlistentry>
 <varlistentry><term>Methods:</term>
-<listitem><para>Instances of the ProgressBarControl class implement
+<listitem><para>Instances of the ProgressBar class implement
 the methods listed in the
-<link linkend="t000029">ProgressBarControl Instance Methods</link> table.</para>
+<link linkend="t000029">ProgressBar Instance Methods</link> table.</para>
 
 <table id="t000029" frame="all">
-<title>ProgressBarControl Instance Methods</title>
+<title>ProgressBar Instance Methods</title>
 <tgroup cols="2">
 <thead>
 <row>
@@ -140,7 +140,7 @@ starts at the beginning again.
 
 <section id="setpospbc"><title>SetPos</title>
 <indexterm><primary>SetPos</primary>
-<secondary>ProgressBarControl class</secondary></indexterm>
+<secondary>ProgressBar class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aProgressBarControl~SetPos(--newpos--)----------------------><
@@ -200,7 +200,7 @@ bar increases its current position whenever the method is called.</para>
 
 <section id="setrangepbc"><title>SetRange</title>
 <indexterm><primary>SetRange</primary>
-<secondary>ProgressBarControl class</secondary></indexterm>
+<secondary>ProgressBar class</secondary></indexterm>
 <programlisting>
 <![CDATA[
                                   +-0---+     +-100-+

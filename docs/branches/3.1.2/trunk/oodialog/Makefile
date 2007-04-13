@@ -61,7 +61,7 @@ SGML_FILES = advcntlc.sgml \
 	     oodialog.sgml \
 	     plainuserdialogc.sgml \
 	     preface.sgml \
-	     progressbarcontrolc.sgml \
+	     progressbarc.sgml \
 	     propertysheetc.sgml \
 	     radiobuttonc.sgml \
 	     reference.sgml \
