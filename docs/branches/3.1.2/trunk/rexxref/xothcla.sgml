@@ -3255,6 +3255,7 @@ discussion of Rexx input and output.)</para>
 <member>SEEK</member>
 <member>STATE</member>
 <member>SUPPLIER</member>
+<member>UNINIT</member>
 </simplelist>
 <para><emphasis role="bold">Methods inherited from the Object class:</emphasis>
 </para>
@@ -4498,6 +4499,24 @@ represents i.e. the name of the file.
 messages to the supplier object (see
 <link linkend="supp">The Supplier Class</link>), it enumerates all the lines
 in the stream object. The supplier enumerates the items in their line order.
+</para>
+</section>
+
+<section id="strmuninit"><title>UNINIT</title>
+<indexterm><primary>UNINIT method</primary>
+<secondary>of Stream class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>UNINIT method</secondary>
+<tertiary>of Stream class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-UNINIT------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>This method cleans up the object when it is garbage collected. It should
+not be invoked directly except via an UNINIT method of a subclass of the Stream
+object.
 </para>
 </section>
 </section>
