@@ -1712,6 +1712,7 @@ class might result in weak performance, large memory allocation, or both.)
 <member>String</member>
 <member>Subchar</member>
 <member>Substr</member>
+<member>Uninit</member>
 </simplelist>
 
 <para><emphasis role="bold">Methods inherited from the Object class:</emphasis>
@@ -2060,6 +2061,24 @@ than receiving_string~LENGTH, only <emphasis>pad</emphasis> characters
 are returned. If you omit <emphasis>length</emphasis>, the remaining
 buffer content is returned.
 The default <emphasis>pad</emphasis> character is a blank.</para>
+</section>
+
+<section id="mutmuninit"><title>UNINIT</title>
+<indexterm><primary>UNINIT method</primary>
+<secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>UNINIT method</secondary>
+<tertiary>of MutableBuffer class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-UNINIT------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>This method cleans up the object when it is garbage collected. It should
+not be invoked directly except via an UNINIT method of a subclass of the
+MutableBuffer class.
+</para>
 </section>
 
 </section>
@@ -4516,7 +4535,7 @@ in the stream object. The supplier enumerates the items in their line order.
 
 <para>This method cleans up the object when it is garbage collected. It should
 not be invoked directly except via an UNINIT method of a subclass of the Stream
-object.
+class.
 </para>
 </section>
 </section>
