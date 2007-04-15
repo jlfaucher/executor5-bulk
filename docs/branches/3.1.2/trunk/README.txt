@@ -73,10 +73,9 @@ modify the makefiles to create other kinds of output.
 WARNING!!!!!!!!
 
 The standard /usr/share/texmf/web2c/texmf.cnf file contains settings
-that are too small to process the rexxref documentation. You should
-replace the contents of the /usr/share/texmf/web2c/texmf.cnf file with
-the contents of the supplied replacement file. If you do not perform this
-task the resulting rexxref.pdf file will turn out to be corrupt.
+that are too small to process the rexxref documentation. Please reference the
+texmf.cnf file in the trunk of the docs repository for the entries that need
+to be modified.
 
 
 ---------------------------------------------------------

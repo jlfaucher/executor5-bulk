@@ -61,8 +61,8 @@
 <listitem><para>WindowsEventLog class</para></listitem>
 <listitem><para>WindowsManager class</para></listitem>
 <listitem><para>WindowsObject class</para></listitem>
-<listitem><para>WindowsMenuObject class</para></listitem>
 <listitem><para>WindowsClipboard class</para></listitem>
+<listitem><para>Windows MenuObject class</para></listitem>
 <listitem><para>Windows OLEObject class</para></listitem></itemizedlist>
 
 <section id="xalcl"><title>The Alarm Class</title>
@@ -833,191 +833,6 @@ room~UNINHERIT(location)
 </section>
 </section>
 
-<section id="menuobjectcl"><title>The WindowsMenuObject Class</title>
-<indexterm><primary>MenuObject class</primary></indexterm>
-<indexterm><primary>class</primary>
-<secondary>MenuObject class</secondary></indexterm>
-<para>The MenuObject class provides methods to query, manipulate, and  interact
-with the menu or submenu of a window.</para>
-<para><emphasis role="bold">Methods the MenuObject Class Defines</emphasis>
-</para>
-<itemizedlist>
-<listitem><para>FINDITEM</para></listitem>
-<listitem><para>FINDSUBMENU</para></listitem>
-<listitem><para>IDOF</para></listitem>
-<listitem><para>ISMENU</para></listitem>
-<listitem><para>ITEMS</para></listitem>
-<listitem><para>PROCESSITEM</para></listitem>
-<listitem><para>SUBMENU</para></listitem>
-<listitem><para>TEXTOF(id)</para></listitem>
-<listitem><para>TEXTOF(position)</para></listitem></itemizedlist>
-
-<section id="ismenumo"><title>ISMENU</title>
-<indexterm><primary>ISMENU method</primary>
-<secondary>of MenuObject class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>ISMENU method</secondary>
-<tertiary>of MenuObject class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-ISMENU------------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns 1 if the associated window is a menu, otherwise 0.</para>
-</section>
-
-<section id="itemsmo"><title>ITEMS</title>
-<indexterm><primary>ITEMS method</primary>
-<secondary>of MenuObject class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>ITEMS method</secondary>
-<tertiary>of MenuObject class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-ITEMS-------------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns the number of menu items contained in the associated menu.</para>
-</section>
-
-<section id="idofmo"><title>IDOF</title>
-<indexterm><primary>IDOF method</primary>
-<secondary>of MenuObject class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>IDOF method</secondary>
-<tertiary>of MenuObject class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-IDOF--(--position--)----------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns the ID of the menu item at the specified
-<emphasis role="italic">position</emphasis>, starting with 0.</para>
-</section>
-
-<section id="textofpositionmo"><title>TEXTOF(position)</title>
-<indexterm><primary>TEXTOF(position) method</primary>
-<secondary>of MenuObject class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>TEXTOF(position) method</secondary>
-<tertiary>of MenuObject class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-TEXTOF--(--position--)--------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns the text of the menu item at the specified
-<emphasis role="italic">position</emphasis>, starting
-with 0. A mnemonic (underscored letter) is represented by a leading ampersand
-(&amp;). If the menu item contains an accelerator, it is separated by a tab.
-</para>
-</section>
-
-<section id="textofidmo"><title>TEXTOF(id)</title>
-<indexterm><primary>TEXTOF(id) method</primary>
-<secondary>of MenuObject class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>TEXTOF(id) method</secondary>
-<tertiary>of MenuObject class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-TEXTOF--(--id--)--------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns the text of menu item <emphasis role="italic">id</emphasis>.
-A mnemonic is represented by a leading ampersand (&amp;). If the menu item
-contains an accelerator, it is separated by a tab.</para>
-</section>
-
-<section id="submenumo"><title>SUBMENU</title>
-<indexterm><primary>SUBMENU method</primary>
-<secondary>of MenuObject class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>SUBMENU method</secondary>
-<tertiary>of MenuObject class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-SUBMENU--(--position--)-------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns an instance of the MenuObject class that is associated with the
-submenu at the specified <emphasis role="italic">position</emphasis>,
-starting with 0. If no submenu
-exists at this position, the .NIL object is returned.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
-<programlisting>
-sub = menu~Submenu(5)
-    if sub \= .Nil then do
-         say "Items:" sub~items
-    end
-</programlisting>
-</section>
-
-<section id="findsubmenumo"><title>FINDSUBMENU</title>
-<indexterm><primary>FINDSUBMENU method</primary>
-<secondary>of MenuObject class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>FINDSUBMENU method</secondary>
-<tertiary>of MenuObject class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-FINDSUBMENU--(--label--)------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns an instance of the MenuObject class that is associated with the
-submenu with the specified <emphasis role="italic">label</emphasis>.
-If the associated menu does not
-contain such a submenu, the .NIL object is returned.</para>
-</section>
-
-<section id="finditemmo"><title>FINDITEM</title>
-<indexterm><primary>FINDITEM method</primary>
-<secondary>of MenuObject class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>FINDITEM method</secondary>
-<tertiary>of MenuObject class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-FINDITEM--(--label--)---------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns the ID of the menu item <emphasis role="italic">label</emphasis>.
-If the specified label
-does not include an accelerator, the comparison excludes the accelerators
-of the menu items. If no menu item is found that matches the specified label,
-0 is returned.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
-<programlisting>
-f = menu~FindItem("&amp;Tools" || "9"x || "Ctrl+T")
-    if f \= 0 then menu~ProcessItem(f)
-</programlisting>
-</section>
-
-<section id="processitemmo"><title>PROCESSITEM</title>
-<indexterm><primary>PROCESSITEM method</primary>
-<secondary>of MenuObject class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>PROCESSITEM method</secondary>
-<tertiary>of MenuObject class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-PROCESSITEM--(--id--)---------------------------------------><
-]]>
-</programlisting>
-
-<para>Selects the menu item <emphasis role="italic">id</emphasis>. This causes
-a WM_COMMAND to be sent to the window owning the menu.</para>
-</section>
-</section>
-
 <section id="agent"><title>The Message Class</title>
 <indexterm><primary>Message class</primary></indexterm>
 <indexterm><primary>class</primary>
@@ -1356,6 +1171,191 @@ Hello, Stan!
 Bye Bye, Ollie...
 Goodbye, Stan...
 </programlisting>
+</section>
+</section>
+
+<section id="menuobjectcl"><title>The Windows MenuObject Class</title>
+<indexterm><primary>MenuObject class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>MenuObject class</secondary></indexterm>
+<para>The MenuObject class provides methods to query, manipulate, and  interact
+with the menu or submenu of a window.</para>
+<para><emphasis role="bold">Methods the MenuObject Class Defines</emphasis>
+</para>
+<itemizedlist>
+<listitem><para>FINDITEM</para></listitem>
+<listitem><para>FINDSUBMENU</para></listitem>
+<listitem><para>IDOF</para></listitem>
+<listitem><para>ISMENU</para></listitem>
+<listitem><para>ITEMS</para></listitem>
+<listitem><para>PROCESSITEM</para></listitem>
+<listitem><para>SUBMENU</para></listitem>
+<listitem><para>TEXTOF(id)</para></listitem>
+<listitem><para>TEXTOF(position)</para></listitem></itemizedlist>
+
+<section id="ismenumo"><title>ISMENU</title>
+<indexterm><primary>ISMENU method</primary>
+<secondary>of MenuObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>ISMENU method</secondary>
+<tertiary>of MenuObject class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-ISMENU------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns 1 if the associated window is a menu, otherwise 0.</para>
+</section>
+
+<section id="itemsmo"><title>ITEMS</title>
+<indexterm><primary>ITEMS method</primary>
+<secondary>of MenuObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>ITEMS method</secondary>
+<tertiary>of MenuObject class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-ITEMS-------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the number of menu items contained in the associated menu.</para>
+</section>
+
+<section id="idofmo"><title>IDOF</title>
+<indexterm><primary>IDOF method</primary>
+<secondary>of MenuObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>IDOF method</secondary>
+<tertiary>of MenuObject class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-IDOF--(--position--)----------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the ID of the menu item at the specified
+<emphasis role="italic">position</emphasis>, starting with 0.</para>
+</section>
+
+<section id="textofpositionmo"><title>TEXTOF(position)</title>
+<indexterm><primary>TEXTOF(position) method</primary>
+<secondary>of MenuObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>TEXTOF(position) method</secondary>
+<tertiary>of MenuObject class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-TEXTOF--(--position--)--------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the text of the menu item at the specified
+<emphasis role="italic">position</emphasis>, starting
+with 0. A mnemonic (underscored letter) is represented by a leading ampersand
+(&amp;). If the menu item contains an accelerator, it is separated by a tab.
+</para>
+</section>
+
+<section id="textofidmo"><title>TEXTOF(id)</title>
+<indexterm><primary>TEXTOF(id) method</primary>
+<secondary>of MenuObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>TEXTOF(id) method</secondary>
+<tertiary>of MenuObject class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-TEXTOF--(--id--)--------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the text of menu item <emphasis role="italic">id</emphasis>.
+A mnemonic is represented by a leading ampersand (&amp;). If the menu item
+contains an accelerator, it is separated by a tab.</para>
+</section>
+
+<section id="submenumo"><title>SUBMENU</title>
+<indexterm><primary>SUBMENU method</primary>
+<secondary>of MenuObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>SUBMENU method</secondary>
+<tertiary>of MenuObject class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SUBMENU--(--position--)-------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns an instance of the MenuObject class that is associated with the
+submenu at the specified <emphasis role="italic">position</emphasis>,
+starting with 0. If no submenu
+exists at this position, the .NIL object is returned.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+sub = menu~Submenu(5)
+    if sub \= .Nil then do
+         say "Items:" sub~items
+    end
+</programlisting>
+</section>
+
+<section id="findsubmenumo"><title>FINDSUBMENU</title>
+<indexterm><primary>FINDSUBMENU method</primary>
+<secondary>of MenuObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>FINDSUBMENU method</secondary>
+<tertiary>of MenuObject class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-FINDSUBMENU--(--label--)------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns an instance of the MenuObject class that is associated with the
+submenu with the specified <emphasis role="italic">label</emphasis>.
+If the associated menu does not
+contain such a submenu, the .NIL object is returned.</para>
+</section>
+
+<section id="finditemmo"><title>FINDITEM</title>
+<indexterm><primary>FINDITEM method</primary>
+<secondary>of MenuObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>FINDITEM method</secondary>
+<tertiary>of MenuObject class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-FINDITEM--(--label--)---------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the ID of the menu item <emphasis role="italic">label</emphasis>.
+If the specified label
+does not include an accelerator, the comparison excludes the accelerators
+of the menu items. If no menu item is found that matches the specified label,
+0 is returned.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+f = menu~FindItem("&amp;Tools" || "9"x || "Ctrl+T")
+    if f \= 0 then menu~ProcessItem(f)
+</programlisting>
+</section>
+
+<section id="processitemmo"><title>PROCESSITEM</title>
+<indexterm><primary>PROCESSITEM method</primary>
+<secondary>of MenuObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>PROCESSITEM method</secondary>
+<tertiary>of MenuObject class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-PROCESSITEM--(--id--)---------------------------------------><
+]]>
+</programlisting>
+
+<para>Selects the menu item <emphasis role="italic">id</emphasis>. This causes
+a WM_COMMAND to be sent to the window owning the menu.</para>
 </section>
 </section>
 
