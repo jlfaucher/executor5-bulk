@@ -2079,9 +2079,9 @@ The default <emphasis>pad</emphasis> character is a blank.</para>
 not be invoked directly except via an UNINIT method of a subclass of the
 MutableBuffer class.
 </para>
-<para>If the MutableBuffer class is subclassed the subclass must provide an UNINIT
-method and the UNINIT method of the super class must be invoked from that
-method. The following example shows how to accomplish this.</para>
+<para>If the MutableBuffer class is subclassed and the subclass provides an UNINIT
+method then that method must invoke the superclass UNINIT method.
+The following example shows how to accomplish this.</para>
 <programlisting>
 <![CDATA[
 ::class CustomMutableBuffer subclass MutableBuffer
@@ -4552,9 +4552,9 @@ in the stream object. The supplier enumerates the items in their line order.
 not be invoked directly except via an UNINIT method of a subclass of the Stream
 class.
 </para>
-<para>If the Stream class is subclassed the subclass must provide an UNINIT
-method and the UNINIT method of the super class must be invoked from that
-method. The following example shows how to accomplish this.</para>
+<para>If the Stream class is subclassed and the subclass provides an UNINIT
+method then that method must invoke the superclass UNINIT method.
+The following example shows how to accomplish this.</para>
 <programlisting>
 <![CDATA[
 ::class CustomStream subclass Stream
