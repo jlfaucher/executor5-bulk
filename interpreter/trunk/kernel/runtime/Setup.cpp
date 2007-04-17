@@ -637,6 +637,8 @@ bool RexxInterpreter::exportBaseClasses()
   defineKernelMethod(CHAR_COUNTSTR                     ,TheStringBehaviour, CPPM(RexxString::countStrRexx), 1);
   defineKernelMethod(CHAR_LASTPOS                      ,TheStringBehaviour, CPPM(RexxString::lastPosRexx), 2);
   defineKernelMethod(CHAR_POS                          ,TheStringBehaviour, CPPM(RexxString::posRexx), 2);
+  defineKernelMethod(CHAR_CASELESSLASTPOS              ,TheStringBehaviour, CPPM(RexxString::caselessLastPosRexx), 2);
+  defineKernelMethod(CHAR_CASELESSPOS                  ,TheStringBehaviour, CPPM(RexxString::caselessPosRexx), 2);
   defineKernelMethod(CHAR_TRANSLATE                    ,TheStringBehaviour, CPPM(RexxString::translate), 3);
   defineKernelMethod(CHAR_VERIFY                       ,TheStringBehaviour, CPPM(RexxString::verify), 3);
   defineKernelMethod(CHAR_BITAND                       ,TheStringBehaviour, CPPM(RexxString::bitAnd), 2);
@@ -691,6 +693,10 @@ bool RexxInterpreter::exportBaseClasses()
   defineKernelMethod(CHAR_MAKEARRAY                    ,TheStringBehaviour, CPPM(RexxString::makeArray), 1);
   defineKernelMethod(CHAR_EQUALS                       ,TheStringBehaviour, CPPM(RexxString::equals), 1);
   defineKernelMethod(CHAR_EQUALSCASELESS               ,TheStringBehaviour, CPPM(RexxString::equalsCaseless), 1);
+  defineKernelMethod(CHAR_MATCH                        ,TheStringBehaviour, CPPM(RexxString::match), 4);
+  defineKernelMethod(CHAR_CASELESSMATCH                ,TheStringBehaviour, CPPM(RexxString::caselessMatch), 4);
+  defineKernelMethod(CHAR_MATCHCHAR                    ,TheStringBehaviour, CPPM(RexxString::matchChar), 2);
+  defineKernelMethod(CHAR_CASELESSMATCHCHAR            ,TheStringBehaviour, CPPM(RexxString::caselessMatchChar), 2);
                                        /* set the scope of the methods to   */
                                        /* this classes oref                 */
   TheStringBehaviour->setMethodDictionaryScope(TheStringClass);

@@ -4362,7 +4362,7 @@ RexxObject *RexxSource::parseConditional(
 
        case SUBKEY_WHILE:              /* DO WHILE exprw                    */
                                        /* get next subexpression            */
-         condition = this->parseLogical(TERM_COND, condition);
+         condition = this->parseLogical(OREF_NULL, TERM_COND, condition);
          if ((RexxObject *)condition == OREF_NULL) /* nothing really there?             */
                                        /* another invalid DO                */
            reportError(Error_Invalid_expression_while);
@@ -4376,7 +4376,7 @@ RexxObject *RexxSource::parseConditional(
        case SUBKEY_UNTIL:              /* DO UNTIL expru                    */
                                        /* get next subexpression            */
                                        /* get next subexpression            */
-         condition = this->parseLogical(TERM_COND, condition);
+         condition = this->parseLogical(OREF_NULL, TERM_COND, condition);
 
          if ((RexxObject *)condition == OREF_NULL)   /* nothing really there?             */
                                        /* another invalid DO                */
@@ -4462,9 +4462,9 @@ RexxDirectory *RexxSource::getClassesApi()
  *         element if a single expression is located, and a complex
  *         logical expression operator for a list of expressions.
  */
-RexxObject *RexxSource::parseLogical(int terminators, ProtectedObject &expr)
+RexxObject *RexxSource::parseLogical(RexxToken *first, int terminators, ProtectedObject &expr)
 {
-    size_t count = argList(OREF_NULL, terminators);
+    size_t count = argList(first, terminators);
     // arglist has swallowed the terminator token, so we need to back up one.
     previousToken();
     // let the caller deal with completely missing expressions

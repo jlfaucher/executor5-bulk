@@ -207,6 +207,8 @@ librexx_la_SOURCES = $(unix_@OOREXX_SIZEOF_POINTER@_sources) \
      		expression/ExpressionDotVariable.hpp \
      		expression/ExpressionFunction.cpp \
      		expression/ExpressionFunction.hpp \
+     		expression/ExpressionLogical.cpp \
+     		expression/ExpressionLogical.hpp \
      		expression/ExpressionMessage.cpp \
      		expression/ExpressionMessage.hpp \
      		expression/ExpressionOperator.cpp \

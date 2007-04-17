@@ -324,6 +324,12 @@ CPPM(RexxString::Min),
 CPPM(RexxString::isInteger),
 CPPM(RexxString::equals),
 CPPM(RexxString::equalsCaseless),
+CPPM(RexxString::match),
+CPPM(RexxString::caselessMatch),
+CPPM(RexxString::matchChar),
+CPPM(RexxString::caselessMatchChar),
+CPPM(RexxString::caselessPos),
+CPPM(RexxString::caselessLastPos),
 
                                           /* All BIF methods start here.  They */
                                           /*  will be arranged according to the*/

@@ -211,17 +211,25 @@
    RexxObject  *dataType(RexxString *);
 
 
-   RexxInteger *lastPosRexx(RexxString *, RexxInteger *);
-   RexxInteger *caselessLastPosRexx(RexxString *, RexxInteger *);
+   RexxInteger  *lastPosRexx(RexxString *, RexxInteger *);
+   RexxInteger  *caselessLastPosRexx(RexxString *, RexxInteger *);
    stringsize_t  lastPos(RexxString  *needle, stringsize_t start);
    stringsize_t  caselessLastPos(RexxString  *needle, stringsize_t start);
-   stringchar_t *lastPos(stringchar_t * needle, size_t needleLen, stringchar_t *  haystack, stringsize_t haystackLen);
+   stringchar_t *lastPos(stringchar_t* needle, stringsize_t needleLen, stringchar_t *  haystack, stringsize_t haystackLen);
    stringchar_t *caselessLastPos(stringchar_t * needle, stringsize_t needleLen, stringchar_t *  haystack, stringsize_t haystackLen);
 
-   RexxInteger *posRexx(RexxString *, RexxInteger *);
-   RexxInteger *caselessPosRexx(RexxString *, RexxInteger *);
-   stringsize_t pos(RexxString *, stringsize_t);
-   stringsize_t caselessPos(RexxString *, stringsize_t);
+   RexxInteger  *posRexx(RexxString *, RexxInteger *);
+   RexxInteger  *caselessPosRexx(RexxString *, RexxInteger *);
+   stringsize_t  pos(RexxString *, stringsize_t);
+   stringsize_t  caselessPos(RexxString *, stringsize_t);
+
+   RexxInteger  *match(RexxInteger *start_, RexxString *other, RexxInteger *offset_, RexxInteger *len_);
+   RexxInteger  *caselessMatch(RexxInteger *start_, RexxString *other, RexxInteger *offset_, RexxInteger *len_);
+   bool primitiveMatch(stringsize_t start, RexxString *other, stringsize_t offset, stringsize_t len);
+   bool primitiveCaselessMatch(stringsize_t start, RexxString *other, stringsize_t offset, stringsize_t len);
+   RexxInteger  *matchChar(RexxInteger *position_, RexxString *matchSet);
+   RexxInteger  *caselessMatchChar(RexxInteger *position_, RexxString *matchSet);
+
 
    RexxString  *translate(RexxString *, RexxString *, RexxString *);
    RexxInteger *verify(RexxString *, RexxString *, RexxInteger *);
@@ -246,10 +254,6 @@
    RexxString  *x2d(RexxInteger *);
    RexxString  *x2dC2d(RexxInteger *, bool);
 
-   RexxString *before(RexxString  *needle, RexxInteger *start);
-   RexxString *beforeLast(RexxString  *needle);
-   RexxString *after(RexxString  *needle, RexxInteger *start);
-
    RexxArray   *makeArray(RexxString *);
    void         copyIntoRxString(RxString *target);
 
@@ -259,8 +263,6 @@
 /*                                                                          */
 /****************************************************************************/
    int         isSymbol();
-   stringsize_t pos(RexxString *, stringsize_t);
-   stringsize_t caselessPos(RexxString *, stringsize_t);
 
    stringsize_t       validDBCS();
    RexxString  *DBCSreverse();

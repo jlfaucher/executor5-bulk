@@ -201,7 +201,7 @@ RexxSupplier *RexxDirectory::supplier(void)
   return result->supplier();           /* convert this to a supplier        */
 }
 
-RexxArray *RexxDirectory::values(void)
+RexxArray *RexxDirectory::allItems()
 /******************************************************************************/
 /* Function:  Create an array of all of the directory values, including the   */
 /*            values of all the SETMETHOD methods                             */
