@@ -246,6 +246,7 @@ RexxArray *RexxQueue::allIndexes()
 }
 
 
+
 RexxObject *RexxQueue::newRexx(RexxObject **init_args, size_t argCount)
 /******************************************************************************/
 /* Function:  Create an instance of a queue                                   */
@@ -263,6 +264,56 @@ RexxObject *RexxQueue::newRexx(RexxObject **init_args, size_t argCount)
   newObject->sendMessage(OREF_INIT, init_args, argCount);
   return (RexxObject *)newObject;      /* return the new object             */
 }
+
+
+RexxQueue *RexxQueue::ofRexx(
+     RexxObject **args,                /* array of list items               */
+     size_t       argCount)            /* size of the argument array        */
+/******************************************************************************/
+/* Function:  Create a new queue containing the given items                   */
+/******************************************************************************/
+{
+  size_t   size;                       /* size of the array                 */
+  size_t   i;                          /* loop counter                      */
+  RexxQueue *newQueue;                 /* newly created list                */
+  RexxObject *item;                    /* item to add                       */
+
+  ProtectedObject q;
+
+  if (TheQueueClass == ((RexxClass *)this)) {        /* creating an internel list item?   */
+    size = argCount;                   /* get the array size                */
+    newQueue = new RexxQueue;          /* get a new list                    */
+    q = newQueue;                      /* protect from garbage collection   */
+    for (i = 0; i < size; i++) {       /* step through the array            */
+      item = args[i];                  /* get the next item                 */
+      if (item == OREF_NULL) {         /* omitted item?                     */
+        discard(newQueue);             /* release the new list              */
+                                       /* raise an error on this            */
+        report_exception1(Error_Incorrect_method_noarg, new_integer(i + 1));
+      }
+                                       /* add this to the list end          */
+      newQueue->addLast(item);
+    }
+  }
+  else {
+    size = argCount;                   /* get the array size                */
+                                       /* get a new list                    */
+    newQueue = (RexxQueue *)send_message0(this, OREF_NEW);
+    q = newQueue;                      /* protect from garbage collection   */
+    for (i = 0; i < size; i++) {       /* step through the array            */
+      item = args[i];                  /* get the next item                 */
+      if (item == OREF_NULL) {         /* omitted item?                     */
+        discard(newQueue);             /* release the new list              */
+                                       /* raise an error on this            */
+        report_exception1(Error_Incorrect_method_noarg, new_integer(i + 1));
+      }
+                                       /* add this to the list end          */
+      send_message1(newQueue, OREF_QUEUENAME, item);
+    }
+  }
+  return newQueue;                     /* give back the list                */
+}
+
 
 void *RexxQueue::operator new(size_t size)
 /******************************************************************************/

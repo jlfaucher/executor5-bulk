@@ -1623,28 +1623,15 @@ RexxObject *RexxHashTable::replace(
   return OREF_NULL;                    /* always return nothing             */
 }
 
-RexxArray  *RexxHashTable::values(void)
+RexxArray  *RexxHashTable::allItems()
 /******************************************************************************/
 /* Function:  Create an array containing the hash table values                */
 /******************************************************************************/
 {
-  size_t count;                        /* count of values                   */
-  size_t i;                            /* loop counter                      */
-  size_t j;                            /* loop counter                      */
-  RexxArray *result;                   /* result array                      */
-
-  count = 0;                           /* no items yet                      */
+  RexxObject *result = new_array(items());         /* get a new array                   */
+  size_t j = 0;                        /* set the insertion point           */
                                        /* loop through all of the items     */
-  for (i = 0; i < this->totalSlotsSize(); i++) {
-                                       /* is this a real entry?             */
-    if (this->entries[i].index != OREF_NULL)
-      count++;                         /* add to the counter                */
-  }
-
-  result = new_array(count);           /* get a new array                   */
-  j = 0;                               /* set the insertion point           */
-                                       /* loop through all of the items     */
-  for (i = 0; i < this->totalSlotsSize(); i++) {
+  for (size_t i = 0; i < this->totalSlotsSize(); i++) {
                                        /* real entry?                       */
     if (this->entries[i].index != OREF_NULL)
                                        /* copy the value into the array     */
@@ -1652,6 +1639,74 @@ RexxArray  *RexxHashTable::values(void)
   }
   return result;                       /* return the result array           */
 }
+
+
+/**
+ * Empty an individual hashtable bucket.  This will clear
+ * the entire chain.
+ *
+ * @param position The hash table bucket to clear.
+ */
+void RexxHashTable::emptySlot(HashLink position)
+{
+    if (this->entries[position].index != OREF_NULL)
+    {
+        // we have an initial link, so clear those entries out
+        OrefSet(this,this->entries[position].index,OREF_NULL);
+        OrefSet(this,this->entries[position].value,OREF_NULL);
+        // we have at least a head element, so run the chain
+        // clearing everything out
+
+        // step to the next link.  The remainder are cleared out and
+        // returned to the free pool.
+        HashLink next = entries[position].next;
+        // and make sure the link is severed.
+        entries[position].next = NO_MORE;
+        while (next != NO_MORE)
+        {
+            position = next;
+            // clear the entries out
+            OrefSet(this,this->entries[position].index,OREF_NULL);
+            OrefSet(this,this->entries[position].value,OREF_NULL);
+
+            // get the next link, and clear the link info in the current
+            next = entries[position].next;
+            entries[position].next = NO_MORE;
+            // if this creates a new highwater mark, move the free pointer.
+            if (position > this->free)
+            {
+                this->free = position;
+            }
+
+        }
+    }
+}
+
+
+/**
+ * Empty a HashTable.
+ */
+void RexxHashTable::empty()
+{
+    // run the main hash bucket clearing the links
+    for (HashLink i = 0; i < mainSlotsSize(); i++)
+    {
+        emptySlot(i);
+    }
+}
+
+
+/**
+ * Test if the hash table is empty.
+ *
+ * @return
+ */
+bool RexxHashTable::isEmpty()
+{
+    return items() == 0;
+}
+
+
 
 RexxArray *RexxHashTable::makeArray(void)
 /******************************************************************************/
@@ -1662,38 +1717,16 @@ RexxArray *RexxHashTable::makeArray(void)
     return this->allIndexes();
 }
 
-RexxArray *RexxHashTable::allItems(void)
-/******************************************************************************/
-/* Function:  Create an array containing the hash table indexes.              */
-/******************************************************************************/
-{
-    // this just returns the values
-    return this->values();
-}
-
 
 RexxArray *RexxHashTable::allIndexes(void)
 /******************************************************************************/
 /* Function:  Create an array containing the hash table indexes.              */
 /******************************************************************************/
 {
-  size_t count;                        /* count of values                   */
-  size_t i;                            /* loop counter                      */
-  size_t j;                            /* loop counter                      */
-  RexxArray *result;                   /* result array                      */
-
-  count = 0;                           /* no items yet                      */
+  RexxObject *result = new_array(items());         /* get a new array                   */
+  size_t j = 0                         /* set the insertion point           */
                                        /* loop through all of the items     */
-  for (i = 0; i < this->totalSlotsSize(); i++) {
-                                       /* is this a real entry?             */
-    if (this->entries[i].index != OREF_NULL)
-      count++;                         /* add to the counter                */
-  }
-
-  result = new_array(count);           /* get a new array                   */
-  j = 0;                               /* set the insertion point           */
-                                       /* loop through all of the items     */
-  for (i = 0; i < this->totalSlotsSize(); i++) {
+  for (size_t i = 0; i < this->totalSlotsSize(); i++) {
                                        /* real entry?                       */
     if (this->entries[i].index != OREF_NULL)
                                        /* copy the index into the array     */
@@ -1701,6 +1734,30 @@ RexxArray *RexxHashTable::allIndexes(void)
   }
   return result;                       /* return the result array           */
 }
+
+
+/**
+ * Empty a hash table collection.
+ *
+ * @return nothing
+ */
+RexxObject *RexxHashTableCollection::empty()
+{
+    contents->empty();
+    return OREF_NULL;
+}
+
+
+/**
+ * Test if a HashTableCollection is empty.
+ *
+ * @return
+ */
+RexxObject *RexxHashTableCollection::isEmpty()
+{
+    return contents->isEmpty() ? TheTrueObject : TheFalseObject;
+}
+
 
 RexxSupplier *RexxHashTable::supplier(void)
 /******************************************************************************/

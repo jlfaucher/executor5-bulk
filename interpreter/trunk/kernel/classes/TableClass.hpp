@@ -61,9 +61,6 @@ class RexxTable : public RexxHashTableCollection {
    RexxObject * replace(RexxObject *newValue, HashLink pos) {return this->contents->replace(newValue, pos); };
    RexxArray  * allAt(RexxObject *key)  { return this->contents->getAll(key); }
    void         reHash();
-   RexxArray  * values() { return this->contents->values(); };
-   RexxArray  * allItems() { return this->contents->values(); };
-   RexxArray  * allIndexes() { return this->contents->values(); };
    RexxArray  * requestArray();
    inline RexxArray  * stringGetAll(RexxString *key) {return this->contents->stringGetAll(key); };
    inline       RexxObject * stringGet(RexxString *key) {return this->contents->stringGet(key); };

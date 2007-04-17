@@ -286,8 +286,8 @@ bool RexxInterpreter::exportBaseClasses()
   TheObjectBehaviour->setMethodDictionaryScope(TheObjectClass);
                                        /* Now call the class subclassable   */
                                        /* method for OBJECT then CLASS      */
-  TheObjectClass->subClassable((stringchar_t *)"Object");
-  TheClassClass->subClassable((stringchar_t *)"Class");
+  TheObjectClass->subClassable((stringchar_t *)"Object", true);
+  TheClassClass->subClassable((stringchar_t *)"Class", true);
 
   /************************************** The rest of the classes can now be */
   /************************************** set up.                            */
@@ -321,14 +321,16 @@ bool RexxInterpreter::exportBaseClasses()
   defineKernelMethod(CHAR_NEXT         ,TheArrayBehaviour, CPPM(RexxArray::nextRexx), 1);
   defineKernelMethod(CHAR_PREVIOUS     ,TheArrayBehaviour, CPPM(RexxArray::previousRexx), 1);
   defineKernelMethod(CHAR_APPEND       ,TheArrayBehaviour, CPPM(RexxArray::append), 1);
-  defineKernelMethod(CHAR_MAKESTRING   ,TheArrayBehaviour, CPPM(RexxArray::makeString), 1);   /*THU006*/
+  defineKernelMethod(CHAR_MAKESTRING   ,TheArrayBehaviour, CPPM(RexxArray::makeString), 1);
+  defineKernelMethod(CHAR_EMPTY        ,TheArrayBehaviour, CPPM(RexxArray::empty), 0);
+  defineKernelMethod(CHAR_ISEMPTY      ,TheArrayBehaviour, CPPM(RexxArray::isEmpty), 0);
                                        /* set the scope of the methods to   */
                                        /* this classes oref                 */
   TheArrayBehaviour->setMethodDictionaryScope(TheArrayClass);
 
                                        /* Now call the class subclassable   */
                                        /* method                            */
-  TheArrayClass->subClassable((stringchar_t *)"Array");
+  TheArrayClass->subClassable((stringchar_t *)"Array", false);
 
   /***************************************************************************/
   /*           DIRECTORY                                                     */
@@ -349,11 +351,13 @@ bool RexxInterpreter::exportBaseClasses()
   defineKernelMethod(CHAR_HASINDEX      , TheDirectoryBehaviour, CPPM(RexxDirectory::hasIndex), 1);
   defineKernelMethod(CHAR_ITEMS         , TheDirectoryBehaviour, CPPM(RexxDirectory::itemsRexx), 0);
   defineKernelMethod(CHAR_MAKEARRAY     , TheDirectoryBehaviour, CPPM(RexxObject::makeArrayRexx), 0);
-  defineKernelMethod(CHAR_ALLITEMS      , TheDirectoryBehaviour, CPPM(RexxDirectory::values), 0);
+  defineKernelMethod(CHAR_ALLITEMS      , TheDirectoryBehaviour, CPPM(RexxDirectory::allItems), 0);
   defineKernelMethod(CHAR_ALLINDEXES    , TheDirectoryBehaviour, CPPM(RexxDirectory::allIndexes), 0);
   defineKernelMethod(CHAR_PUT           , TheDirectoryBehaviour, CPPM(RexxDirectory::put), 2);
   defineKernelMethod(CHAR_REMOVE        , TheDirectoryBehaviour, CPPM(RexxDirectory::remove), 1);
   defineKernelMethod(CHAR_SETENTRY      , TheDirectoryBehaviour, CPPM(RexxDirectory::setEntry), 2);
+  defineKernelMethod(CHAR_EMPTY         , TheDirectoryBehaviour, CPPM(RexxDirectory::empty), 0);
+  defineKernelMethod(CHAR_ISEMPTY       , TheDirectoryBehaviour, CPPM(RexxDirectory::isEmpty), 0);
   defineProtectedKernelMethod(CHAR_SETMETHOD   , TheDirectoryBehaviour, CPPM(RexxDirectory::setMethod), 2);
   defineKernelMethod(CHAR_SUPPLIER      , TheDirectoryBehaviour, CPPM(RexxDirectory::supplier), 0);
   defineKernelMethod(CHAR_UNKNOWN       , TheDirectoryBehaviour, CPPM(RexxObject::unknownRexx), 2);
@@ -365,7 +369,7 @@ bool RexxInterpreter::exportBaseClasses()
 
                                        /* Now call the class subclassable   */
                                        /* method                            */
-  TheDirectoryClass->subClassable((stringchar_t *)"Directory");
+  TheDirectoryClass->subClassable((stringchar_t *)"Directory", false);
 
 
   /***************************************************************************/
@@ -401,13 +405,15 @@ bool RexxInterpreter::exportBaseClasses()
   defineKernelMethod(CHAR_SECTION      ,TheListBehaviour, CPPM(RexxList::section), 2);
   defineKernelMethod(CHAR_SUPPLIER     ,TheListBehaviour, CPPM(RexxList::supplier), 0);
   defineKernelMethod(CHAR_APPEND       ,TheListBehaviour, CPPM(RexxList::append), 1);
+  defineKernelMethod(CHAR_EMPTY        ,TheListBehaviour, CPPM(RexxList::empty), 0);
+  defineKernelMethod(CHAR_ISEMPTY      ,TheListBehaviour, CPPM(RexxList::isEmpty), 0);
                                        /* set the scope of the methods to   */
                                        /* this classes oref                 */
   TheListBehaviour->setMethodDictionaryScope(TheListClass);
 
                                        /* Now call the class subclassable   */
                                        /* method                            */
-  TheListClass->subClassable((stringchar_t *)"List");
+  TheListClass->subClassable((stringchar_t *)"List", false);
 
   /***************************************************************************/
   /*           MESSAGE                                                       */
@@ -441,7 +447,7 @@ bool RexxInterpreter::exportBaseClasses()
 
                                        /* Now call the class subclassable   */
                                        /* method                            */
-  TheMessageClass->subClassable((stringchar_t *)"Message");
+  TheMessageClass->subClassable((stringchar_t *)"Message", true);
 
   /***************************************************************************/
   /*           METHOD                                                        */
@@ -469,7 +475,7 @@ bool RexxInterpreter::exportBaseClasses()
 
                                        /* Now call the class subclassable   */
                                        /* method                            */
-  TheMethodClass->subClassable((stringchar_t *)"Method");
+  TheMethodClass->subClassable((stringchar_t *)"Method", true);
 
   /***************************************************************************/
   /*           QUEUE                                                         */
@@ -502,6 +508,8 @@ bool RexxInterpreter::exportBaseClasses()
   defineKernelMethod(CHAR_PUT           ,TheQueueBehaviour, CPPM(RexxQueue::put), 2);
   defineKernelMethod(CHAR_REMOVE        ,TheQueueBehaviour, CPPM(RexxQueue::remove), 1);
   defineKernelMethod(CHAR_APPEND        ,TheQueueBehaviour, CPPM(RexxQueue::append), 1);
+  defineKernelMethod(CHAR_EMPTY         ,TheQueueBehaviour, CPPM(RexxList::empty), 0);
+  defineKernelMethod(CHAR_ISEMPTY       ,TheQueueBehaviour, CPPM(RexxList::isEmpty), 0);
 
                                        /* set the scope of the methods to   */
                                        /* this classes oref                 */
@@ -509,7 +517,7 @@ bool RexxInterpreter::exportBaseClasses()
 
                                        /* Now call the class subclassable   */
                                        /* method                            */
-  TheQueueClass->subClassable((stringchar_t *)"Queue");
+  TheQueueClass->subClassable((stringchar_t *)"Queue", false);
 
   /***************************************************************************/
   /*           RELATION                                                      */
@@ -541,6 +549,8 @@ bool RexxInterpreter::exportBaseClasses()
   defineKernelMethod(CHAR_REMOVE       , TheRelationBehaviour, CPPM(RexxHashTableCollection::removeRexx), 1);
   defineKernelMethod(CHAR_REMOVEITEM   , TheRelationBehaviour, CPPM(RexxRelation::removeItemRexx), 2);
   defineKernelMethod(CHAR_SUPPLIER     , TheRelationBehaviour, CPPM(RexxRelation::supplier), 1);
+  defineKernelMethod(CHAR_EMPTY        , TheRelationBehaviour, CPPM(RexxHashTableCollection::empty), 0);
+  defineKernelMethod(CHAR_ISEMPTY      , TheRelationBehaviour, CPPM(RexxHashTableCollection::isEmpty), 0);
 
                                        /* set the scope of the methods to   */
                                        /* this classes oref                 */
@@ -548,7 +558,7 @@ bool RexxInterpreter::exportBaseClasses()
 
                                        /* Now call the class subclassable   */
                                        /* method                            */
-  TheRelationClass->subClassable((stringchar_t *)"Relation");
+  TheRelationClass->subClassable((stringchar_t *)"Relation", false);
 
   /***************************************************************************/
   /*           STEM                                                          */
@@ -571,6 +581,8 @@ bool RexxInterpreter::exportBaseClasses()
   defineKernelMethod(CHAR_REQUEST       ,TheStemBehaviour, CPPM(RexxStem::request), 1);
   defineKernelMethod(CHAR_UNKNOWN       ,TheStemBehaviour, CPPM(RexxObject::unknownRexx), 2);
   defineKernelMethod(CHAR_SUPPLIER      ,TheStemBehaviour, CPPM(RexxStem::supplier), 0);
+  defineKernelMethod(CHAR_EMPTY         ,TheStemBehaviour, CPPMSTEM(RexxStem::empty), 0);
+  defineKernelMethod(CHAR_ISEMPTY       ,TheStemBehaviour, CPPMSTEM(RexxStem::isEmpty), 0);
 
                                        /* set the scope of the methods to   */
                                        /* this classes oref                 */
@@ -587,7 +599,7 @@ bool RexxInterpreter::exportBaseClasses()
 
                                        /* Now call the class subclassable   */
                                        /* method                            */
-  TheStemClass->subClassable((stringchar_t *)"Stem");
+  TheStemClass->subClassable((stringchar_t *)"Stem", false);
 
   /***************************************************************************/
   /*           STRING                                                        */
@@ -703,7 +715,7 @@ bool RexxInterpreter::exportBaseClasses()
 
                                        /* Now call the class subclassable   */
                                        /* method                            */
-  TheStringClass->subClassable((stringchar_t *)"String");
+  TheStringClass->subClassable((stringchar_t *)"String", true);
 
 
   /***************************************************************************/
@@ -757,7 +769,7 @@ bool RexxInterpreter::exportBaseClasses()
   ThePointerBehaviour->setMethodDictionaryScope(ThePointerClass);
                                        /* Now call the class subclassable   */
                                        /* method                            */
-  ThePointerClass->subClassable((stringchar_t *)"Pointer");
+  ThePointerClass->subClassable((stringchar_t *)"Pointer", true);
 
   /***************************************************************************/
   /*             INTEGER                                                     */
@@ -821,7 +833,7 @@ bool RexxInterpreter::exportBaseClasses()
 
                                        /* Now call the class subclassable   */
                                        /* method                            */
-  TheIntegerClass->subClassable((stringchar_t *)"String");
+  TheIntegerClass->subClassable((stringchar_t *)"String", true);
 
   /***************************************************************************/
   /*             NUMBERSTRING                                                */
@@ -885,7 +897,7 @@ bool RexxInterpreter::exportBaseClasses()
 
                                        /* Now call the class subclassable   */
                                        /* method                            */
-  TheNumberStringClass->subClassable((stringchar_t *)"String");
+  TheNumberStringClass->subClassable((stringchar_t *)"String", true);
 
   /***************************************************************************/
   /*           SUPPLIER                                                      */
@@ -908,7 +920,7 @@ bool RexxInterpreter::exportBaseClasses()
 
                                        /* Now call the class subclassable   */
                                        /* method                            */
-  TheSupplierClass->subClassable((stringchar_t *)"Supplier");
+  TheSupplierClass->subClassable((stringchar_t *)"Supplier", true);
 
   /***************************************************************************/
   /*           TABLE                                                         */
@@ -935,6 +947,8 @@ bool RexxInterpreter::exportBaseClasses()
   defineKernelMethod(CHAR_PUT          , TheTableBehaviour, CPPM(RexxHashTableCollection::put), 2);
   defineKernelMethod(CHAR_REMOVE       , TheTableBehaviour, CPPM(RexxHashTableCollection::removeRexx), 1);
   defineKernelMethod(CHAR_SUPPLIER     , TheTableBehaviour, CPPM(RexxHashTableCollection::supplier), 0);
+  defineKernelMethod(CHAR_EMPTY        , TheTableBehaviour, CPPMHC(RexxHashTableCollection::empty), 0);
+  defineKernelMethod(CHAR_ISEMPTY      , TheTableBehaviour, CPPMHC(RexxHashTableCollection::isEmpty), 0);
 
                                        /* set the scope of the methods to   */
                                        /* this classes oref                 */
@@ -942,7 +956,7 @@ bool RexxInterpreter::exportBaseClasses()
 
                                        /* Now call the class subclassable   */
                                        /* method                            */
-  TheTableClass->subClassable((stringchar_t *)"Table");
+  TheTableClass->subClassable((stringchar_t *)"Table", false);
 
   /***************************************************************************/
   /***************************************************************************/
@@ -1018,6 +1032,7 @@ bool RexxInterpreter::exportBaseClasses()
   {
                                            /* create a method object out of this*/
       meth = RexxMethod::newFile(programName);
+      ProtectedObject p(meth);
       ProtectedObject result;
                                            /* now call BaseClasses to finish the image*/
       RexxActivityManager::currentActivity->runProgram(meth, OREF_SCRIPT, OREF_SCRIPT, OREF_NULL, (RexxObject **)&kernel_methods, 1, result);
@@ -1028,6 +1043,36 @@ bool RexxInterpreter::exportBaseClasses()
       TheNilObject->defMethod(addGlobalName(CHAR_COPY), (RexxMethod *)TheNilObject);
       TheNilObject->defMethod(addGlobalName(CHAR_START), (RexxMethod *)TheNilObject);
       TheNilObject->defMethod(addGlobalName(CHAR_OBJECTNAMEEQUALS), (RexxMethod *)TheNilObject);
+
+      RexxClass *ordered = (RexxClass *)TheEnvironment->get(kernel_name(CHAR_ORDEREDCOLLECTION));
+
+      TheArrayClass->inherit(ordered, OREF_NULL);
+      TheArrayClass->setRexxDefined();
+
+      TheQueueClass->inherit(ordered, OREF_NULL);
+      TheQueueClass->setRexxDefined();
+
+      TheListClass->inherit(ordered, OREF_NULL);
+      TheListClass->setRexxDefined();
+
+      RexxClass *map = (RexxClass *)TheEnvironment->get(kernel_name(CHAR_MAPCOLLECTION));
+
+      TheTableClass->inherit(map, OREF_NULL);
+      TheTableClass->setRexxDefined();
+
+      TheRelationClass->inherit(map, OREF_NULL);
+      TheRelationClass->setRexxDefined();
+
+      TheDirectoryClass->inherit(map, OREF_NULL);
+      TheDirectoryClass->setRexxDefined();
+
+      TheStemClass->inherit(map, OREF_NULL);
+      TheStemClass->setRexxDefined();
+
+      // this has been protecting every thing critical
+      // from GC events thus far, but now we remove it because
+      // it contains things we don't want to save in the image.
+      TheEnvironment->remove(kernel_name(CHAR_KERNEL));
       return true;
   }
   catch (ActivityException)

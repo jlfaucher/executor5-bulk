@@ -369,7 +369,7 @@ Say NOT EQUALS
         <Component>Rexx</Component>
         <Severity>Warning</Severity>
         <SymbolicName>Error_Unexpected_end_control</SymbolicName>
-        <Text>Symbol following END (<q><Sub position="1" name="symbol"/></q>) must either label of block specification (<q><Sub position="2" name="control_variable"/></q> on line <Sub position="3" name="line_number"/>) or be omitted</Text>
+        <Text>Symbol following END (<q><Sub position="1" name="symbol"/></q>) must either match control variable or LABEL of block specification (<q><Sub position="2" name="control_variable"/></q> on line <Sub position="3" name="line_number"/>) or be omitted</Text>
       </SubMessage>
       <SubMessage>
         <Code>10</Code>
@@ -1570,15 +1570,6 @@ special character (such as a parenthesis).
         <SymbolicName>Error_Invalid_subkeyword_select</SymbolicName>
         <Text>SELECT must be followed by the keyword LABEL; found <q><Sub position="1" name="word"/></q></Text>
       </SubMessage>
-      <SubMessage>
-        <Code>25</Code>
-        <Subcode>924</Subcode>
-        <MessageNumber>297</MessageNumber>
-        <Component>Rexx</Component>
-        <Severity>Warning</Severity>
-        <SymbolicName>Error_Invalid_subkeyword_use_strict_option</SymbolicName>
-        <Text>USE STRICT argument option must be ASSERT; found <q><Sub position="1" name="word"/></q></Text>
-      </SubMessage>
     </Subcodes>
   </Message>
   <Message>
@@ -1765,7 +1756,7 @@ special character (such as a parenthesis).
         <Component>Rexx</Component>
         <Severity>Warning</Severity>
         <SymbolicName>Error_Invalid_leave_iterate</SymbolicName>
-        <Text>ITERATE is valid only within a repetitive DO loop</Text>
+        <Text>ITERATE is valid only within a repetitive loop</Text>
       </SubMessage>
       <SubMessage>
         <Code>28</Code>
@@ -3012,7 +3003,7 @@ special character (such as a parenthesis).
         <Component>Rexx</Component>
         <Severity>Warning</Severity>
         <SymbolicName>Error_Conversion_raise</SymbolicName>
-        <Text>Value of RAISE SYNTAX expression of DO instruction must be numeric; found <q><Sub position="1" name="value"/></q></Text>
+        <Text>Value of RAISE instruction SYNTAX expression must be numeric; found <q><Sub position="1" name="value"/></q></Text>
       </SubMessage>
     </Subcodes>
   </Message>
@@ -3454,7 +3445,7 @@ special character (such as a parenthesis).
         <Severity>Error</Severity>
         <SymbolicName>Error_Unknown_OLE_Error</SymbolicName>
         <Text>An unknown OLE error occured (HRESULT=<Sub position="1" name="hresult"/>).</Text>
-        <Explanation><para>The HRESULT contains the original error code provided by OLE.</para></Explanation>
+        <Explanation><para>An unexpected OLE error occurred.  HRESULT contains the original error code provided by OLE.</para></Explanation>
       </SubMessage>
       <SubMessage>
         <Code>92</Code>
@@ -3463,7 +3454,7 @@ special character (such as a parenthesis).
         <Component>OLE</Component>
         <Severity>Error</Severity>
         <SymbolicName>Error_Variant2Rexx</SymbolicName>
-        <Text>Cannot convert VARIANT to REXX object: The conversion of the VARIANT type <Sub position="1" name="varianttype"/> into a REXX object failed.</Text>
+        <Text>Cannot convert OLE VARIANT to REXX object: The conversion of the VARIANT type <Sub position="1" name="varianttype"/> into a REXX object failed.</Text>
       </SubMessage>
       <SubMessage>
         <Code>92</Code>
@@ -3472,7 +3463,7 @@ special character (such as a parenthesis).
         <Component>OLE</Component>
         <Severity>Warning</Severity>
         <SymbolicName>Error_Rexx2Variant</SymbolicName>
-        <Text>Cannot convert REXX object to VARIANT: The conversion of <Sub position="1" name="rexx_object"/> into a VARIANT failed.</Text>
+        <Text>Cannot convert REXX object to OLE VARIANT: The conversion of <Sub position="1" name="rexx_object"/> into a VARIANT failed.</Text>
       </SubMessage>
       <SubMessage>
         <Code>92</Code>
@@ -3567,7 +3558,7 @@ special character (such as a parenthesis).
     <Severity>Warning</Severity>
     <SymbolicName>Error_Incorrect_method</SymbolicName>
     <Text>Incorrect call to method</Text>
-    <Explanation><para>The specified method exists, but you used it incorrectly.</para></Explanation>
+    <Explanation><para>The specified method or built-in or external routine exists, but you used it incorrectly.</para></Explanation>
     <Subcodes>
       <SubMessage>
         <Code>93</Code>
@@ -4109,6 +4100,15 @@ special character (such as a parenthesis).
         <SymbolicName>Error_Application_error</SymbolicName>
         <Text>Application error:  <Sub position="1" name="message"/></Text>
       </SubMessage>
+      <SubMessage>
+        <Code>93</Code>
+        <Subcode>965</Subcode>
+        <MessageNumber>665</MessageNumber>
+        <Component>Rexx</Component>
+        <Severity>Warning</Severity>
+        <SymbolicName>Error_Incorrect_method_abstract</SymbolicName>
+        <Text>Method <Sub position="1" name="name"/> is ABSTRACT and cannot be directly invoked</Text>
+      </SubMessage>
     </Subcodes>
   </Message>
   <Message>
@@ -4159,6 +4159,15 @@ special character (such as a parenthesis).
         <Severity>Warning</Severity>
         <SymbolicName>Error_Execution_user_defined</SymbolicName>
         <Text><Sub position="1" name="message"/></Text>
+      </SubMessage>
+      <SubMessage>
+        <Code>98</Code>
+        <Subcode>901</Subcode>
+        <MessageNumber>477</MessageNumber>
+        <Component>SOM</Component>
+        <Severity>Warning</Severity>
+        <SymbolicName>Error_Execution_nosomobj</SymbolicName>
+        <Text>SOM object <q><Sub position="1" name="object"/></q> is no longer available</Text>
       </SubMessage>
       <SubMessage>
         <Code>98</Code>
@@ -4810,6 +4819,15 @@ special character (such as a parenthesis).
         <Severity>Error</Severity>
         <SymbolicName>Error_Translation_class_external_bad_class_server</SymbolicName>
         <Text>Incorrect class external; invalid class server <q><Sub position="1" name="servername"/></q></Text>
+      </SubMessage>
+      <SubMessage>
+        <Code>99</Code>
+        <Subcode>930</Subcode>
+        <MessageNumber>663</MessageNumber>
+        <Component>Rexx</Component>
+        <Severity>Error</Severity>
+        <SymbolicName>Error_Translation_use_strict_ellipsis</SymbolicName>
+        <Text>The <q>...</q> argument marker can only appear at the end of the argument list</Text>
       </SubMessage>
     </Subcodes>
   </Message>

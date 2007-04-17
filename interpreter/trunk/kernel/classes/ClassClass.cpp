@@ -355,11 +355,16 @@ RexxTable *RexxClass::getBehaviourDictionary()
     return (RexxTable *)methods->copy();
 }
 
-void RexxClass::subClassable(
-    stringchar_t * class_id)                    /* name of this class                */
-/*****************************************************************************/
-/* Function:   Initialize a Rexx subclassable class                          */
-/*****************************************************************************/
++/**
++ * Initialize a base Rexx class.
++ *
++ * @param class_id   The name of the class.
++ * @param restricted Whether we should turn the RexxRestricted flag on at this time.
++ *                   Some classes get additional customization after initial
++ *                   creation, so we delay setting this attribute until the
++ *                   class is fully constructed.
++ */
++void RexxClass::subClassable(stringchar_t *class_id, bool restricted)
 {
                                        /* get a copy of the class instance   */
                                        /* behaviour mdict before the merge   */
@@ -451,15 +456,10 @@ void RexxClass::subClassable(
   this->instanceBehaviour->setClass(this);
                                        /* and the class behaviour to CLASS   */
   this->behaviour->setClass(TheClassClass);
-                                       /* The class_info for Rexx classes    */
-                                       /* is updated with rexxdefined        */
-                                       /* for all the classes except         */
-                                       /* TABLE DIRECTORY AND RELATION       */
-                                       /* this will be done in BaseClasses.orx     */
-                                       /* after they inherit from singleitem */
-                                       /* or manyitem mixin class            */
-  if (this != TheTableClass && this != TheDirectoryClass && this != TheRelationClass)
-    this->class_info |= REXX_DEFINED;
+  if (restricted)
+  {
+      this->class_info |= REXX_DEFINED;
+  }
 
   if (this == TheClassClass)           /* mark CLASS as a meta class        */
     this->setMeta();

@@ -280,7 +280,7 @@ RexxArray *RexxDirectory::allIndexes(void)
     // get a result array of the appropriate size
     wholenumber_t count = this->items();
     RexxArray *result = (RexxArray *)new_array(count);
-    ProtectedObject p1(result);
+    ProtectedObject p(result);
     arraysize_t i = 1;
     // we're working directly off of the contents.
     RexxHashTable *hashTab = this->contents;
@@ -620,15 +620,46 @@ RexxObject *RexxDirectory::put(
   return OREF_NULL;                    /* this returns nothing              */
 }
 
-void RexxDirectory::reset(void)
+void RexxDirectory::reset()
 /******************************************************************************/
 /* Function:  Reset a directory to a "pristine" empty state                   */
 /******************************************************************************/
 {
-  OrefSet(this, this->contents, new_hashtab(DEFAULT_HASH_SIZE));
-  OrefSet(this, this->method_table, OREF_NULL);
-  OrefSet(this, this->unknown_method, OREF_NULL);
+    // empty the hashtables without reallocating.
+    contents->empty();
+    if (method_table != OREF_NULL)
+    {
+        method_table->empty();
+    }
+    // clear out the unknown method.
+    OrefSet(this, this->unknown_method, OREF_NULL);
 }
+
+
+/**
+ * Empty a directory
+ *
+ * @return nothing
+ */
+RexxObject *RexxDirectory::empty()
+{
+    reset();
+    return OREF_NULL;
+}
+
+
+/**
+ * Test if a directory is empty
+ *
+ * @return
+ */
+RexxObject *RexxDirectory::isEmpty()
+{
+    return items() == 0 ? TheTrueObject : TheFalseObject;
+}
+
+
+
 
 RexxObject *RexxDirectory::newRexx(
     RexxObject **init_args,

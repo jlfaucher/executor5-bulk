@@ -776,8 +776,39 @@ RexxArray *RexxList::makeArray(void)
 
 
 /**
+ * Empty all of the items from a list.
+ *
+ * @return No return value.
+ */
+RexxObject *RexxList::empty()
+{
+    // just iterate through the list, copying the elements.
+    RexxArray *array = (RexxArray *)new_array(this->count);
+    while (this->first != LIST_END)
+    {
+        // get the list entry and remove the value
+        LISTENTRY *element = ENTRY_POINTER(this->first);
+        primitiveRemove(element);
+    }
+    return OREF_NULL;
+}
+
+
+/**
+ * Test if a list is empty.
+ *
+ * @return True if the list is empty, false otherwise
+ */
+RexxObject *RexxList::isEmpty()
+{
+    return (count == 0) ? TheTrueObject : TheFalseObject;
+}
+
+
+
+/**
  * Return an array containing all elements contained in the list,
- * in sorted order.
+ * in original list order.
  *
  * @return An array with the list elements.
  */
@@ -785,7 +816,7 @@ RexxArray *RexxList::allItems(void)
 {
     // just iterate through the list, copying the elements.
     RexxArray *array = (RexxArray *)new_array(this->count);
-    size_t next = this->firstIndex;
+    size_t next = this->first;
     for (size_t i = 1; i <= this->count; i++)
     {
         LISTENTRY *element = ENTRY_POINTER(next);
@@ -798,7 +829,7 @@ RexxArray *RexxList::allItems(void)
 
 /**
  * Return an array containing all elements contained in the list,
- * in sorted order.
+ * in original list order.
  *
  * @return An array with the list elements.
  */
@@ -808,8 +839,8 @@ RexxArray *RexxList::allIndexes(void)
     RexxArray *array = (RexxArray *)new_array(this->count);
     // this requires protecting, since we're going to be creating new
     // integer objects.
-    ProtectedObject p1(array);
-    size_t next = this->firstIndex;
+    ProtectedObject p(array);
+    size_t next = this->first;
     for (size_t i = 1; i <= this->count; i++)
     {
         LISTENTRY *element = ENTRY_POINTER(next);
@@ -920,16 +951,6 @@ RexxObject *RexxList::itemsRexx(void)
   return (RexxObject *)new_integer(this->count);
 }
 
-
-/**
- * Return the number of items in the list.
- *
- * @return The item count.
- */
-arraysize_t RexxList::items()
-{
-    return this->count;     // this is the item count
-}
 
 void *RexxList::operator new(size_t size)
 /******************************************************************************/

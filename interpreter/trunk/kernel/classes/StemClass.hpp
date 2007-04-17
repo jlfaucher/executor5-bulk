@@ -92,6 +92,9 @@
   RexxArray   *makeArray();
   RexxArray   *allItems();
   RexxArray   *allIndexes();
+  RexxObject   *empty();
+  RexxObject   *isEmpty();
+  arraysize_t  items();
   RexxSupplier *supplier();
   RexxObject  *request(RexxString *);
   void setElement(stringchar_t *tail, RexxObject *value);

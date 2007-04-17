@@ -122,7 +122,7 @@ RexxArray *RexxHashTableCollection::allItems(void)
 /* Function:  Return all of the collection values  in an array                */
 /******************************************************************************/
 {
-  return this->contents->values();
+  return this->contents->allItems();
 }
 
 
@@ -131,7 +131,7 @@ RexxArray *RexxHashTableCollection::allIndexes(void)
 /* Function:  Return all of the collection indices in an array                */
 /******************************************************************************/
 {
-  return this->contents->allItems();
+  return this->contents->allIndexes();
 }
 
 RexxObject *RexxHashTableCollection::mergeItem(RexxObject *value, RexxObject *index)
@@ -295,4 +295,21 @@ RexxSupplier *RexxHashTableCollection::supplier()
 {
                                        /* get the hashtab supplier          */
   return this->contents->supplier();
+}
+
+
+RexxArray *RexxHashTableCollection::allItems()
+/******************************************************************************/
+/* Function:  retrieve all items of the collection.                           */
+/******************************************************************************/
+{
+  return this->contents->allItems();
+}
+
+RexxArray *RexxHashTableCollection::allIndexes()
+/******************************************************************************/
+/* Function:  retrieve all indexes of the collection.                         */
+/******************************************************************************/
+{
+  return this->contents->allIndexes();
 }

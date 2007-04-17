@@ -636,43 +636,136 @@ void RexxStem::setCompoundVariable(
   variable->set(value);                /* and perform the set               */
 }
 
-RexxSupplier *RexxStem::supplier()
-/******************************************************************************/
-/* Function:  Create a supplier for a stem, returning the tails and values    */
-/*            of each item.                                                   */
-/******************************************************************************/
-{
-    RexxCompoundElement *variable;       /* table variable entry              */
-    arraysize_t   count;                 /* count of variables                */
-                                         /* traverse through all of the items */
-                                         /* in the stem variable dictionary,  */
-                                         /* counting each real variable       */
-    count = 0;                           /* start with zero                   */
-    variable = tails.first();            /* get the first variable            */
-    while (variable != OREF_NULL) {      /* while more values to process      */
-                                         /* this a real variable?             */
-        if (variable->getVariableValue() != OREF_NULL)
-            count++;                     /* count this variable               */
-        variable = tails.next(variable); /* go get the next one               */
-    }
-    RexxArray *tailValues = new_array(count);  /* get and array for both the        */
-    RexxArray *values = new_array(count); /* tails and the values              */
-    count = 1;                           /* start at the beginning again      */
 
-    variable = tails.first();            /* get the first variable            */
-    while (variable != OREF_NULL) {      /* while more values to process      */
-                                         /* this a real variable?             */
+/**
+ * Return all items in the stem.
+ *
+ * @return An array of all items in the stem.
+ */
+RexxArray *RexxStem::allItems()
+{
+    // now we know how big the return result will be, get an array and
+    // populate it, using the same traversal logic as before
+    RexxArray *array = new_array(items());
+    // we index the array with a origin-one index, so we start with one this time
+    arraysize_t count = 1;
+
+    variable = tails.first();
+    while (variable != OREF_NULL)
+    {
+        // only add the real values
         if (variable->getVariableValue() != OREF_NULL)
         {
-            /* add to our array                  */
+            array->put(variable->getVariableValue(), count++);
+        }
+        variable = tails.next(variable);
+    }
+    return array;    // tada, finished
+}
+
+
+/**
+ * Create an array of all indexes of the stem.
+ *
+ * @return An array of all tail names used in the stem.
+ */
+RexxArray  *RexxStem::allIndexes()
+{
+  return this->tailArray();            /* extract the array item            */
+}
+
+
+/**
+ * Get the count of non-dropped items in the stem.
+ *
+ * @return The number of non-dropped items.
+ */
+arraysize_t RexxStem::items()
+{
+    arraysize_t count = 0;
+
+    RexxCompoundElement *variable = tails.first();
+   while (variable != OREF_NULL)
+   {
+        // we only want to include the non-dropped compounds, so we only count
+        // elements with real values.
+       if (variable->getVariableValue() != OREF_NULL)
+       {
+            count++;
+       }
+        // and keep iterating
+       variable = tails.next(variable);
+   }
+    return count;
+}
+
+
+/**
+ * Empty the stem.  This also clears dropped and exposed tails,
+ *
+ * @return Nothing.
+ */
+RexxObject *RexxStem::empty()
+{
+    tails.clear();      // just clear the tails.
+    return OREF_NULL;
+}
+
+
+/**
+ * Test if the stem is empty.
+ *
+ * @return True if the stem is empty, false otherwise.
+ */
+RexxObject *RexxStem::isEmpty()
+{
+    return (items() == 0) ? TheTrueObject : TheFalseObject;
+}
+
+
+
+/**
+ * Create a supplier for the stem, returning the tail names as
+ * the indexes and the values as the items.
+ *
+ * @return A supplier instance.
+ */
+RexxSupplier *RexxStem::supplier()
+{
+    // essentially the same logic as allItems(), but both the item and the
+    // tail value are accumulated.
+    arraysize_t count = 0;
+    RexxCompoundElement *variable = tails.first();
+    while (variable != OREF_NULL)
+    {
+        // again, get the variable count
+        if (variable->getVariableValue() != OREF_NULL)
+        {
+            count++;                     /* count this variable               */
+        }
+        variable = tails.next(variable);
+    }
+
+    // to create the supplier, we need 2 arrays
+    RexxArray *tailValues = new_array(count);
+    RexxArray *values = new_array(count);
+    count = 1;                           // we fill in using 1-based indexes
+
+    variable = tails.first();
+    while (variable != OREF_NULL)
+    {
+        // now grab both the tail and value and put them in the respective arrays
+        if (variable->getVariableValue() != OREF_NULL)
+        {
             tailValues->put(variable->getName(), count);
-            /* add to our array                  */
             values->put(variable->getVariableValue(), count++);
         }
-        variable = tails.next(variable); /* go get the next one               */
+        variable = tails.next(variable);
     }
-    return new_supplier(values, tailValues);  /* return supplier item              */
+    // two arrays become one supplier
+    return new_supplier(values, tailValues);
 }
+
 
 RexxArray *RexxStem::tailArray()
 /******************************************************************************/
@@ -702,39 +795,6 @@ RexxArray *RexxStem::tailArray()
       if (variable->getVariableValue() != OREF_NULL)
           /* add to our array                  */
           array->put(variable->getName(), count++);
-      variable = tails.next(variable); /* go get the next one               */
-  }
-  return array;                        /* return the array item             */
-}
-
-RexxArray *RexxStem::allItems()
-/******************************************************************************/
-/* Function:  Return all values as an array                                   */
-/******************************************************************************/
-{
-  RexxCompoundElement *variable;       /* table variable entry              */
-  RexxArray  *array;                   /* returned array                    */
-  arraysize_t   count;                 /* count of variables                */
-                                       /* traverse through all of the items */
-                                       /* in the stem variable dictionary,  */
-                                       /* counting each real variable       */
-  count = 0;                           /* start with zero                   */
-  variable = tails.first();            /* get the first variable            */
-  while (variable != OREF_NULL) {      /* while more values to process      */
-                                       /* this a real variable?             */
-      if (variable->getVariableValue() != OREF_NULL)
-          count++;                     /* count this variable               */
-      variable = tails.next(variable); /* go get the next one               */
-  }
-  array = new_array(count);            /* get the array                     */
-  count = 1;                           /* start at the beginning again      */
-
-  variable = tails.first();            /* get the first variable            */
-  while (variable != OREF_NULL) {      /* while more values to process      */
-                                       /* this a real variable?             */
-      if (variable->getVariableValue() != OREF_NULL)
-          /* add to our array                  */
-          array->put(variable->getVariableValue(), count++);
       variable = tails.next(variable); /* go get the next one               */
   }
   return array;                        /* return the array item             */

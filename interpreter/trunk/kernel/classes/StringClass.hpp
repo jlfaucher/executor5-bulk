@@ -115,7 +115,8 @@
    bool        isEqual(RexxObject *);
    bool        isEqual(char *);
    bool        primitiveIsEqual(RexxObject *);
-   bool        primitiveIsEqualCaseless(RexxObject *);
+   bool        primitiveCaselessIsEqual(RexxObject *);
+
    int         strictComp(RexxObject *);
    int         comp(RexxObject *);
    RexxInteger *equal(RexxObject *);
@@ -230,6 +231,8 @@
    RexxInteger  *matchChar(RexxInteger *position_, RexxString *matchSet);
    RexxInteger  *caselessMatchChar(RexxInteger *position_, RexxString *matchSet);
 
+   RexxInteger  *equals(RexxString *other);
+   RexxInteger  *caselessEquals(RexxString *other);
 
    RexxString  *translate(RexxString *, RexxString *, RexxString *);
    RexxInteger *verify(RexxString *, RexxString *, RexxInteger *);

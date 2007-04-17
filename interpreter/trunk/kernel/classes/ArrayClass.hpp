@@ -111,6 +111,8 @@ typedef struct copyElelmentParm {
    RexxObject  *putRexx(RexxObject **, arraysize_t);
    RexxObject  *remove(size_t);
    RexxObject  *removeRexx(RexxObject **, arraysize_t);
+   RexxObject  *empty();
+   RexxObject  *isEmpty();
    RexxObject  *append(RexxObject *);
    void         setExpansion(RexxObject * expansion);
    RexxInteger *available(size_t position);
