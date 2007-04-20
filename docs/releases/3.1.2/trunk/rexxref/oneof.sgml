@@ -1,0 +1,460 @@
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Reference SGML file.
+    #
+    # Copyright (c) 2005-2007, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    # Author(s):
+    #      W. David Ashley <dashley@us.ibm.com>
+    #
+    #########################################################################
+-->
+<chapter id="oneof"><title>Other Objects</title>
+<para>In addition to the class objects described in the previous chapter, Rexx
+also provides the following objects: </para>
+<itemizedlist>
+<listitem><para>The Environment object</para></listitem>
+<listitem><para>The NIL object</para></listitem>
+<listitem><para>The Local environment object</para></listitem>
+<listitem><para>The Error object</para></listitem>
+<listitem><para>The Input object</para></listitem>
+<listitem><para>The Output object</para></listitem></itemizedlist>
+
+<section id="envo"><title>The Environment Object (.ENVIRONMENT)</title>
+<indexterm><primary>.ENVIRONMENT object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.ENVIRONMENT object</secondary></indexterm>
+<para>The Environment object is a directory of public
+objects that are always accessible. To access the entries of the Environment
+object, you can use environment symbols. An environment
+symbol starts with a period and has at least one other character, which cannot
+be a digit. For example, the term: </para>
+<programlisting>
+.method   /* Same as .METHOD */
+</programlisting>
+<para>refers to the Method class.</para>
+
+<note><title>Note</title>
+<para>All environment objects that Rexx provides are single symbols.
+Users are recommended to use compound symbols when creating environment objects.
+</para></note>
+<para>(See <link linkend="ensym">Environment Symbols</link> for details about
+environment symbols.) Rexx provides the following public objects:</para>
+<indexterm><primary>public object</primary></indexterm>
+<variablelist>
+<varlistentry><term>.ALARM
+<indexterm><primary>public object</primary>
+<secondary>.ALARM object</secondary></indexterm>
+</term>
+<listitem><para>The Alarm class. See
+<link linkend="xalcl">The Alarm Class</link>.
+</para></listitem></varlistentry>
+<varlistentry><term>.ARRAY
+<indexterm><primary>public object</primary>
+<secondary>.ARRAY object</secondary></indexterm>
+</term>
+<listitem><para>The Array class. See
+<link linkend="xarray">The Array Class</link>.
+</para></listitem></varlistentry>
+<varlistentry><term>.BAG
+<indexterm><primary>public object</primary>
+<secondary>.BAG object</secondary></indexterm>
+</term>
+<listitem><para>The Bag class. See <link linkend="clbag">The Bag Class</link>.
+</para></listitem></varlistentry>
+<varlistentry><term>.CLASS
+<indexterm><primary>public object</primary>
+<secondary>.CLASS object</secondary></indexterm>
+</term>
+<listitem><para>The Class class. See
+<link linkend="clss">The Class Class</link>.
+</para></listitem></varlistentry>
+<varlistentry><term>.DIRECTORY
+<indexterm><primary>public object</primary>
+<secondary>.DIRECTORY object</secondary></indexterm>
+</term>
+<listitem><para>The Directory class. See
+<link linkend="diro">The Directory Class</link>.
+</para></listitem></varlistentry>
+<varlistentry><term>.ENVIRONMENT
+<indexterm><primary>public object</primary>
+<secondary>.ENVIRONMENT object</secondary></indexterm>
+</term>
+<listitem><para>The Environment directory.
+</para></listitem></varlistentry>
+<varlistentry><term>.ERROR
+<indexterm><primary>public object</primary>
+<secondary>.ERROR object</secondary></indexterm>
+</term>
+<listitem><para>The Error object
+</para></listitem></varlistentry>
+<varlistentry><term>.FALSE
+<indexterm><primary>public object</primary>
+<secondary>.FALSE object</secondary></indexterm>
+</term>
+<listitem><para>The FALSE object (the value <computeroutput>0</computeroutput>).
+</para></listitem></varlistentry>
+<varlistentry><term>.INPUT
+<indexterm><primary>public object</primary>
+<secondary>.INPUT object</secondary></indexterm>
+</term>
+<listitem><para>The INPUT object
+</para></listitem></varlistentry>
+<varlistentry><term>.LIST
+<indexterm><primary>public object</primary>
+<secondary>.LIST object</secondary></indexterm>
+</term>
+<listitem><para>The List class. See <link linkend="list">The List Class</link>.
+</para></listitem></varlistentry>
+<varlistentry><term>.LOCAL
+<indexterm><primary>public object</primary>
+<secondary>.LOCAL object</secondary></indexterm>
+</term>
+<listitem><para>The Local environment directory. See
+<link linkend="locenv">The Local Environment Object  (.LOCAL)</link>.
+</para></listitem></varlistentry>
+<varlistentry><term>.MESSAGE
+<indexterm><primary>public object</primary>
+<secondary>.MESSAGE object</secondary></indexterm>
+</term>
+<listitem><para>The Message class. See
+<link linkend="agent">The Message Class</link>.
+</para></listitem></varlistentry>
+<varlistentry><term>.METHOD
+<indexterm><primary>public class</primary>
+<secondary>.METHOD class</secondary></indexterm>
+</term>
+<listitem><para>The Method class. See
+<link linkend="mcls">The Method Class</link>.
+</para></listitem></varlistentry>
+<varlistentry><term>.METHODS
+<indexterm><primary>public object</primary>
+<secondary>.METHODS object</secondary></indexterm>
+<indexterm><primary>symbols</primary>
+<secondary>.METHODS</secondary></indexterm>
+</term>
+<listitem><para>The Methods object.
+</para></listitem></varlistentry>
+<varlistentry><term>.MONITOR
+<indexterm><primary>public object</primary>
+<secondary>.MONITOR object</secondary></indexterm>
+</term>
+<listitem><para>The Monitor class. See
+<link linkend="moncla">The Monitor Class</link>.
+</para></listitem></varlistentry>
+<varlistentry><term>.NIL
+<indexterm><primary>public object</primary>
+<secondary>.NIL object</secondary></indexterm>
+</term>
+<listitem><para>The NIL object. See <link linkend="nil">The NIL Object</link>.
+</para></listitem></varlistentry>
+<varlistentry><term>.OBJECT
+<indexterm><primary>public object</primary>
+<secondary>.OBJECT object</secondary></indexterm>
+</term>
+<listitem><para>The Object class. See
+<link linkend="objc">The Object Class</link>.
+</para></listitem></varlistentry>
+<varlistentry><term>.OLEOBJECT
+<indexterm><primary>public object</primary>
+<secondary>.OLEBJECT object</secondary></indexterm>
+</term>
+<listitem><para>The OLEObject class. See
+<link linkend="oleobjc">The OLEObject Class</link>.
+</para></listitem></varlistentry>
+<varlistentry><term>.OUTPUT
+<indexterm><primary>public object</primary>
+<secondary>.OUTPUT object</secondary></indexterm>
+</term>
+<listitem><para>The OUTPUT class.
+</para></listitem></varlistentry>
+<varlistentry><term>.QUEUE
+<indexterm><primary>public object</primary>
+<secondary>.QUEUE object</secondary></indexterm>
+</term>
+<listitem><para>The Queue class. See
+<link linkend="rxqcl">The Queue Class</link>.
+</para></listitem></varlistentry>
+<varlistentry><term>.RELATION
+<indexterm><primary>public object</primary>
+<secondary>.RELATION object</secondary></indexterm>
+</term>
+<listitem><para>The Relation class. See
+<link linkend="relati">The Relation Class</link>.
+</para></listitem></varlistentry>
+<varlistentry><term>.RS
+<indexterm><primary>public object</primary>
+<secondary>.RS object</secondary></indexterm>
+</term>
+<listitem><para>The Rs class.
+</para></listitem></varlistentry>
+<varlistentry><term>.SET
+<indexterm><primary>public object</primary>
+<secondary>.SET object</secondary></indexterm>
+</term>
+<listitem><para>The Set class. See <link linkend="setcl">The Set Class</link>.
+</para></listitem></varlistentry>
+<varlistentry><term>.STEM
+<indexterm><primary>public object</primary>
+<secondary>.STEM object</secondary></indexterm>
+</term>
+<listitem><para>The Stem class. See
+<link linkend="stemcl">The Stem Class</link>.
+</para></listitem></varlistentry>
+<varlistentry><term>.STREAM
+<indexterm><primary>public object</primary>
+<secondary>.STREAM object</secondary></indexterm>
+</term>
+<listitem><para>The Stream class. See
+<link linkend="strcl">The Stream Class</link>.
+</para></listitem></varlistentry>
+<varlistentry><term>.STRING
+<indexterm><primary>public object</primary>
+<secondary>.STRING object</secondary></indexterm>
+</term>
+<listitem><para>The String class. See
+<link linkend="strc">The String Class</link>.
+</para></listitem></varlistentry>
+<varlistentry><term>.SUPPLIER
+<indexterm><primary>public object</primary>
+<secondary>.SUPPLIER object</secondary></indexterm>
+</term>
+<listitem><para>The Supplier class. See
+<link linkend="supp">The Supplier Class</link>.
+</para></listitem></varlistentry>
+<varlistentry><term>.TABLE
+<indexterm><primary>public object</primary>
+<secondary>.TABLE object</secondary></indexterm>
+</term>
+<listitem><para>The Table class. See
+<link linkend="table1">The Table Class</link>.
+</para></listitem></varlistentry>
+<varlistentry><term>.TRUE
+<indexterm><primary>public object</primary>
+<secondary>.TRUE object</secondary></indexterm>
+</term>
+<listitem><para>The TRUE object (the value <computeroutput>1</computeroutput>).
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="locenv"><title>The Local Environment Object (.LOCAL)</title>
+<indexterm><primary>.LOCAL object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.LOCAL object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.LOCAL object</secondary></indexterm>
+<para>The Local environment object is a directory of process-specific
+objects that are always accessible.  You can access objects in the Local
+environment object in the same way as objects in the Environment object. Rexx
+provides the following objects in the Local environment object:</para>
+<variablelist>
+<varlistentry><term>.ERROR</term>
+<listitem><para>The Error object (default error stream). See
+<link linkend="erobj">The Error Object</link>. This
+is the object to which Rexx error messages and trace output are written.
+</para></listitem></varlistentry>
+<varlistentry><term>.INPUT</term>
+<listitem><para>The Input object (default input stream). See
+<link linkend="inputt">The Input Object</link>.
+</para></listitem></varlistentry>
+<varlistentry><term>.OUTPUT</term>
+<listitem><para>The Output object (default output stream). See
+<link linkend="outp">The Output Object</link>.
+</para></listitem></varlistentry>
+<varlistentry><term>.STDERR</term>
+<listitem><para>The Error object (default error stream). See
+<link linkend="erobj">The Error Object</link>. This
+is the object to which Rexx error messages and trace output are written.
+</para></listitem></varlistentry>
+<varlistentry><term>.STDIN</term>
+<listitem><para>The Input object (default input stream). See
+<link linkend="inputt">The Input Object</link>.
+</para></listitem></varlistentry>
+<varlistentry><term>.STDOUT</term>
+<listitem><para>The Output object (default output stream). See
+<link linkend="outp">The Output Object</link>.
+</para></listitem></varlistentry>
+<varlistentry><term>.STDQUE</term>
+<listitem><para>The current default Rexx Queue.
+</para></listitem></varlistentry>
+</variablelist><para> Objects in the Environment object and objects in the Local
+environment object are available only to programs running within the same
+process.</para>
+<para>Because both of these environment objects are directory objects, you can
+place objects into, or retrieve objects from, these environments by using
+any of the directory messages ([],[]=, PUT, AT, SETENTRY, ENTRY,
+or SETMETHOD). To avoid potential name clashes with built-in objects and public
+objects that Rexx provides, each object that your programs add to these
+environments should have a period in its index.</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<programlisting>
+/* .LOCAL example--places something in the Local environment directory */
+.local~my.alarm = theAlarm
+/* To retrieve it                                                      */
+say .local~my.alarm
+</programlisting>
+<programlisting>
+/* Another .LOCAL example */
+.environment["MYAPP.PASSWORD"] = "topsecret"
+.environment["MYAPP.UID"] = 200
+                                       /* Create a local directory for */
+                                       /*  my stuff.                   */
+.local["MYAPP.LOCAL"] = .directory~new
+/* Add log file for my local directory                                 */
+.myapp.local["LOG"] = .stream~new("C:\MYAPP.LOG")
+say .myapp.password                    /* Displays "topsecret"         */
+say .myapp.uid                         /* Displays "200"               */
+/* Write a line to the log file */
+.myapp.local~log~lineout("Logon at "time()" on "date())
+
+/* Redirect SAY lines into a file:  */
+.local["OUTPUT"] = .stream~new("C:\SAY_REDIRECT.TXT")
+say &quot;This goes into a file, and not onto the screen!&quot;
+</programlisting>
+
+<section id="erobj"><title>The Error Object (.ERROR)</title>
+<indexterm><primary>.ERROR object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.ERROR object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.ERROR object</secondary></indexterm>
+<para>This monitor object (see
+<link linkend="moncla">The Monitor Class</link>) holds the trace stream
+object. You can redirect the trace output in the same way as with the output
+object in the Monitor class example.</para>
+</section>
+
+<section id="inputt"><title>The Input Object (.INPUT)</title>
+<indexterm><primary>input object</primary></indexterm>
+<indexterm><primary>.INPUT object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.INTPUT object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.INPUT object</secondary></indexterm>
+<para>This monitor object (see
+<link linkend="moncla">The Monitor Class</link>) holds the default input stream
+object (see <link linkend="iostrms">Input and Output Streams</link>).
+This input stream is the source for the PARSE LINEIN instruction, the LINEIN
+method of the Stream class, and, if you specify no stream name, the LINEIN
+built-in function. It is also the source for the PULL and PARSE PULL
+instructions if the external data queue is empty.</para>
+</section>
+
+<section id="outp"><title>The Output Object (.OUTPUT)</title>
+<indexterm><primary>.OUTPUT object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.OUTPUT object</secondary></indexterm>
+<indexterm><primary>output</primary>
+<secondary>object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.OUTPUT object</secondary></indexterm>
+<para>This monitor object (see <link linkend="moncla">The Monitor Class</link>)
+holds the default output stream object (see
+<link linkend="iostrms">Input and Output Streams</link>). This
+is the destination for output from the SAY instruction, the LINEOUT method
+(.OUTPUT~LINEOUT), and, if you specify no stream name, the
+LINEOUT built-in function. You can replace this object in the environment
+to direct such output elsewhere (for example, to a transcript window).</para>
+</section>
+</section>
+
+<section id="methe"><title>.METHODS</title>
+<indexterm><primary>.METHODS object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.METHODS object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.METHOD object</secondary></indexterm>
+<para>The .METHODS environment symbol identifies a directory (see
+<link linkend="diro">The Directory Class</link>) of methods
+that ::METHOD directives in the currently running program define. The
+directory indexes are the method names. The directory
+values are the method objects. See
+<link linkend="mcls">The Method Class</link>.</para>
+<para>Only methods that are not preceded by a ::CLASS directive are in
+the .METHODS directory. If there are no such methods,
+the .METHODS symbol has the default value of
+<computeroutput>.METHODS</computeroutput>.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+use arg class, methname
+class~define(methname,.methods["a"])
+::method a
+use arg text
+say text
+</programlisting>
+</section>
+
+<section id="nil"><title>The NIL Object (.NIL)</title>
+<indexterm><primary>.NIL object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.NIL object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.NIL object</secondary></indexterm>
+<para>The NIL object is a special
+object that does not contain data. It usually represents the absence of an
+object, as a null string represents a string with no characters. It has only
+the methods of the Object class. Note that you use the .NIL object
+(rather than the null string (&quot;&quot;)) to test for the absence of data
+in an array entry: </para>
+<programlisting>
+if .nil = board[row,col]   /* .NIL rather than "" */
+then ...
+</programlisting>
+</section>
+
+<section id="rs"><title>.RS</title>
+<indexterm><primary>.RS object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.RS object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.RS object</secondary></indexterm>
+<para>.RS is set to the return status from any executed command (including
+those submitted with the ADDRESS instruction). The .RS environment
+symbol has a value of <computeroutput>-1</computeroutput>
+when a command returns a FAILURE condition,
+a value of <computeroutput>1</computeroutput> when a command returns
+an ERROR condition, and a value of <computeroutput>0</computeroutput> when a
+command indicates successful completion. The value
+of .RS is also available after trapping the ERROR or FAILURE condition.</para>
+
+<note><title>Note</title>
+<para>Commands executed manually during interactive tracing do not change
+the value of .RS. The initial value of .RS is
+<computeroutput>.RS</computeroutput>.
+</para></note>
+</section>
+
+</chapter>

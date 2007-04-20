@@ -1,0 +1,114 @@
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: OODialog Reference SGML file.
+    #
+    # Copyright (c) 2005-2007, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    # Author(s):
+    #      W. David Ashley <dashley@us.ibm.com>
+    #
+    #########################################################################
+-->
+<chapter id="termdef"><title>Definition of Terms</title>
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The identification number of a dialog item.
+You assign an ID when you create the resource definition for your dialog.
+IDs 1, 2, and 9 are reserved for the OK, Cancel, and Help push buttons. An
+ID can be either numerical (for example, 100) or symbolic (for example,
+"Bankaccount_Entry").
+</para></listitem></varlistentry>
+<varlistentry><term>handle</term>
+<listitem><para>A unique reference to a Windows object assigned by the system.
+It can be a reference to a dialog, a particular dialog item, or a graphic
+object (pen, brush, font). Handles are required for certain methods; they
+can be retrieved from the system when needed.
+</para></listitem></varlistentry>
+<varlistentry><term>device context</term>
+<listitem><para>Stores information about the graphic objects that are displayed, such
+as bitmaps, lines, and pixels, and the tools used to display them, such as
+pens, brushes, and fonts. A device context can be acquired for a dialog or
+a button; it must be explicitly freed when the text or graphic operations
+are completed.
+</para></listitem></varlistentry>
+<varlistentry><term>pixel</term>
+<listitem><para>Individual addressable point within a window. VGA screens support 640
+by 480 pixels, SVGA screens support higher resolutions, such as 800 by 600,
+1024 by 768, 1280 by 1024, and 1600 by 1200. Pixel values in a dialog start
+at the top left corner and include the window title and border.
+</para></listitem></varlistentry>
+<varlistentry><term>dialog unit</term>
+<listitem><para>Used within dialog box templates to define the size and position of
+the dialog box and its controls. There is a horizontal and a vertical dialog
+base unit to convert width and height of dialog boxes and controls from dialog
+units to pixels and vice versa. The value of these base units depend on the
+screen resolution and the active system font; they are stored in attributes
+of the UserDialog class.
+<programlisting>
+<![CDATA[
+xPixels = xDialogUnits * self~FactorX
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>color</term>
+<listitem><para>Each color supported by the Windows operating system is assigned a
+number. Sample color indexes are 0 (black), 1 (dark red), 2 (dark green),
+3 (dark yellow), 4 (dark blue), 5 (purple), 6 (blue grey), 7 (light grey),
+8 (pale green), 9 (light blue), 10 (white), 11 (grey), 12 (dark grey), 13
+(red), 14 (light green), 15 (yellow), 16 (blue), 17 (pink), 18 (turquoise).
+</para></listitem></varlistentry>
+<varlistentry><term>color palette</term>
+<listitem><para>An array that contains color values identifying the colors that can
+currently be displayed or drawn on the output device.</para>
+<para>Color palettes are
+used by devices that can generate many colors but can only display or draw
+a subset of them at a time. For such devices, Windows maintains a system palette to
+track and manage the current colors of the device.</para>
+<para>Applications do not
+have direct access to this system palette. Instead, Windows associates
+a default palette with each device context. Applications can use the colors
+in the default palette.</para>
+<para>The default palette is an array of color values
+identifying the colors that can be used with a device context by default.
+Windows associates the default palette with a context whenever an application
+creates a context for a device that supports color palettes. The default palette
+ensures that colors are available for use by an application without any further
+action. The default palette typically has 20 entries (colors), but the exact
+number of entries can vary from device to device.  The colors in the default
+palette depend on the device. Display devices, for example, often use the
+16 standard colors of the VGA display and 4 other colors defined by Windows.
+</para></listitem></varlistentry>
+</variablelist>
+</chapter>
