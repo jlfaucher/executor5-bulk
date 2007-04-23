@@ -60,7 +60,8 @@ use arg cmdLine;
 
   -- This is a Windows specific test case.  If not on Windows, don't execute and
   -- return an empty list to a, possible, caller.
-  if ooRexxUnit.getOSName( ) <> "WINDOWS" then do
+  os = ooRexxUnit.getOSName( );
+  if os <> "WINDOWS" then do
     say ".ooRexx.extensions.ole.OLEVariant.testUnit:";
     say "  Windows specific test unit not executing on" os;
     return .list~new;
