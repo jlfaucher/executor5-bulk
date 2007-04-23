@@ -33,14 +33,15 @@ From a command prompt in a console:
  */
 
 root@Loon:~# apt-get install g++ gcc
-root@Loon:~# apt-get install subversion autoconf automake1.4 debhelper fakeroot libtool
+root@Loon:~# apt-get install subversion autoconf automake1.9 debhelper fakeroot libtool
 
 /* These packages are not needed, but don't hurt.
  *
- * xalan installed on Kubuntu will work correctly in the build.  On Debian the
- * xalan installed is too old and will fail.  The build/package script will use
- * touchheaders.sh so xalan does *not* need to be installed.  I always like to
- * have zip and unzip on my systems.
+ * xalan installed on Kubuntu will work correctly in the build.  On Debian 3.10
+ * the xalan installed is too old and will fail.  However, on Debian 4.0, the
+ * xalan installed will work.  The build/package script will use touchheaders.sh
+ * so xalan does *not* need to be installed.  I always like to have zip and
+ * unzip on my systems.
  */
 root@Loon:~# apt-get install xalan zip unzip
 
