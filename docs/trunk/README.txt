@@ -1,5 +1,5 @@
 ---------------------------------------------------------
-Version 3.1.1
+Version 3.1.2
 ---------------------------------------------------------
 This release provides documentation for Open Object Rexx.
 
@@ -28,7 +28,7 @@ will make most of the examples compatible for cut and paste operations
 on most platforms.
 
 Although the text source files all have an SGML extension, they are all
-actually XML documents (see the DTD for each document).
+treated as if they were XML documents.
 
 Feedback, as always, is welcome and encouraged.
 
@@ -49,10 +49,9 @@ The above configuration is available in Fedora Core 3 and later.
 WARNING!!!!!!!!
 
 The standard /usr/share/texmf/web2c/texmf.cnf file contains settings
-that are too small to process the rexxref documentation. You should
-replace the contents of the /usr/share/texmf/web2c/texmf.cnf file with
-the contents of the supplied replacement file. If you do not perform this
-task the resulting rexxref.pdf file will turn out to be corrupt.
+that are too small to process the rexxref documentation. Please reference the
+texmf.cnf file in the trunk of the docs repository for the entries that need
+to be modified.
 
 
 ---------------------------------------------------------
@@ -73,10 +72,9 @@ modify the makefiles to create other kinds of output.
 WARNING!!!!!!!!
 
 The standard /usr/share/texmf/web2c/texmf.cnf file contains settings
-that are too small to process the rexxref documentation. You should
-replace the contents of the /usr/share/texmf/web2c/texmf.cnf file with
-the contents of the supplied replacement file. If you do not perform this
-task the resulting rexxref.pdf file will turn out to be corrupt.
+that are too small to process the rexxref documentation. Please reference the
+texmf.cnf file in the trunk of the docs repository for the entries that need
+to be modified.
 
 
 ---------------------------------------------------------
@@ -99,7 +97,7 @@ contributions this project would not have been possible.
 RexxLA would also like to thank the open source community for their
 review and contributions to this documentation.
 
-These documents are maintained by primarily by W. David Ashley
+These documents are maintained primarily by W. David Ashley
 <dashley@us.ibm.com> with the help and collaboration of the entire
 ooRexx project team. Problems with these documents should be reported
 via the bug reporting tool at
