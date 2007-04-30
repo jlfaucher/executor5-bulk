@@ -6,7 +6,7 @@
    name:             ooRexxUnit.cls
    author:           Rony G. Flatscher, Rick McGuire
    date:             2005-08-07
-   version:          1.0.2
+   version:          1.0.3
    changed1:         2005-08-07, ---rgf, moved assertion routines to a class "Assert", which
                                  serves as a superclass for TestCase: this is the junit-approach
                      2005-08-20, ---rgf, added license, assertCount, corrected some little bugs
@@ -59,6 +59,12 @@
                      2007-01-24, ---rgf, - changed EOL to Unix style (to make hash-bang work on Unix)
                                          - added a function ooRexxUnit.getShellName(): central routine to return
                                            the name of the shell to ADDRESS to
+                     2007-01-??, Mark Miesfeld, - added ooRexxUnit.getShellName()
+                                                - added ooRexxUnit.getOSName()
+                     2007-04-28, ---rgf, - makeTestSuiteFromFileList(): if required files are missing
+                                           in testUnit's, then program does not abend, rather it ignores
+                                           that testUnit, displying the condition on STDERR
+                                         - added ooRexxUnit.formatConditionObject()
 
 
    language-level:   6.0
@@ -1048,8 +1054,12 @@ exceptionHandler:
    .local~bRunTestsLocally=.false   -- do not run tests, if calling/requiring the testUnit files
 
    do fileName over testCaseFileList
+/*
        call (fileName)        -- call file
        testUnitList=result    -- retrieve result (a list of array objects)
+*/
+       testUnitList=callTestUnit(fileName)
+
        do arr over testUnitList  -- loop over array objects
           classObject   =arr[1]  -- a class object
           mandatoryTests=arr[2]  -- a list
@@ -1080,6 +1090,20 @@ exceptionHandler:
        end
    end
    return ts      -- return the testSuite object
+
+
+callTestUnit: procedure -- rgf, 2007-04-28: possible, that a ::requires causes program to fail
+   parse arg fileName
+   signal on syntax
+   call (fileName)      -- call file
+   return result        -- return its return value
+
+syntax:
+   .error~say("ooRexxUnit's routine 'makeTestSuiteFromFileList', 'callTestUnit()':")
+   .error~say("    testUnit-file: ["fileName"]")
+   .error~say(ooRexxUnit.formatConditionObject(condition("O")))
+
+   return .array~new    -- return empty array so no testsuite gets built for this testUnit
 
 
 
@@ -1114,3 +1138,86 @@ exceptionHandler:
     return "WINDOWS"
 
   return os
+
+
+
+
+/* Sorts the keys in ascending order, and then creates and returns a text (default),
+   HTML ("h") or XML ("x") encoded string.
+*/
+::routine ooRexxUnit.formatConditionObject public  /* dump condition object */
+   use arg co
+
+   stem.=sortByIndex(co)            -- sort by index
+   len=length(stem.0)
+   indent1=12
+   sumIndent=len+indent1+2
+
+   blanks=copies(" ", sumIndent) "--> "
+   res=.mutableBuffer~new
+
+
+   NL="0a"x
+   TAB1="09"x
+   TAB2=TAB1~copies(2)
+   TAB3=TAB1~copies(3)
+   TAB4=TAB1~copies(4)
+
+   do i=1 to stem.0
+      o=co~entry(stem.i)
+      if o~hasmethod('ITEMS') then items=o~items
+                              else items=""
+
+      tmpString=.MutableBuffer~new
+
+      -- would show sequence number of (sorted) entry
+      -- tmpString~~append(TAB3) ~~append((i~right(len))"." (stem.i~left(indent1,"."))) ~~append(pp(o))
+      tmpString~~append(TAB3) ~~append(stem.i~left(indent1,".")) ~~append(pp(o))
+      if items<>"" then tmpString~~append(" containing ") ~~append(items) ~~append(" item(s)")
+
+      if res~length=0 then    -- first value to assign
+      do
+         res~~append(tmpString~string)
+      end
+      else                    -- value already available
+      do
+         res~~append(NL) ~~append(tmpString~string)
+      end
+
+      if items<>"" then       -- a collection object in hand?
+      do
+         nr=0
+         do item over o       -- list items
+            nr=nr+1
+            res~~append(NL) ~~append(TAB3) ~~append(blanks) ~~append(pp(item))
+         end
+
+         res ~~append(TAB3)
+      end
+   end
+
+   return res~string
+
+
+pp: procedure
+   use arg a
+   if .nil=a then return "[.nil]"
+   return "[" || a~string || "]"
+
+
+-- sortIndices: procedure
+--::method sortByIndex -- running 'test5ConsoleAppender.rex'
+sortByIndex: procedure
+  use arg co
+
+  stem.="0"          -- define default value
+  i=0                -- get all indices first, sort them into ascending order
+  do idx over co
+    i=i+1
+    stem.i=idx       -- save index
+  end
+  stem.0=i
+
+  call sysStemSort "stem.", "A", "I"  -- ascending, ignore case
+  return stem.
+
