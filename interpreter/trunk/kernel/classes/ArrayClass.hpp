@@ -103,8 +103,12 @@ typedef struct copyElelmentParm {
    RexxArray   *makeArray();
    RexxArray   *allItems();
    RexxArray   *allIndexes();
+   RexxString  *toString(RexxString *);
    RexxString  *makeString(RexxString *);
+// Temporary bypass for BUG #1700606
+#if 0
    RexxString  *primitiveMakeString();
+#endif
    RexxObject  *getRexx(RexxObject **, arraysize_t);
    void         put(RexxObject * eref, arraysize_t pos);
    void         putApi(RexxObject * eref, arraysize_t pos);
@@ -113,6 +117,8 @@ typedef struct copyElelmentParm {
    RexxObject  *removeRexx(RexxObject **, arraysize_t);
    RexxObject  *empty();
    RexxObject  *isEmpty();
+   RexxObject  *index(RexxObject *);
+   RexxObject  *hasItem(RexxObject *);
    RexxObject  *append(RexxObject *);
    void         setExpansion(RexxObject * expansion);
    RexxInteger *available(size_t position);
@@ -155,7 +161,8 @@ typedef struct copyElelmentParm {
    inline RexxObject **data() { return this->expansionArray->objects; }
    inline RexxObject **data(arraysize_t pos) { return &((this->data())[pos-1]);}
    inline RexxArray   *getExpansion() { return this->expansionArray; }
-   inline RexxString  *indexToStringRep(arraysize_t, char*, arraysize_t*);  // def. 1048
+   arraysize_t         findSingleIndexItem(RexxObject *item);
+   RexxObject*         indexToArray(size_t idx);
    static void createInstance(RootImage *rootImage);
 
    arraysize_t arraySize;              /* current size of array         */

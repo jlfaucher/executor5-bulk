@@ -357,6 +357,7 @@ class RexxObject : public RexxInternalObject {
      bool         requestNumber(wholenumber_t *);
      RexxArray   *requestArray();
      RexxString  *requiredString(size_t);
+     RexxString  *requiredString();
      RexxInteger *requiredInteger(size_t, stringsize_t);
      wholenumber_t requiredNumber(size_t, stringsize_t precision = Numerics::DEFAULT_DIGITS);
      stringsize_t  requiredPositive(size_t, stringsize_t precision = Numerics::DEFAULT_DIGITS);
@@ -435,6 +436,13 @@ class RexxObject : public RexxInternalObject {
      RexxObject  *unknownRexx(RexxString *, RexxArray *);
      RexxObject  *hasMethodRexx(RexxString *);
      bool       callSecurityManager(RexxString *, RexxDirectory *);
+     // compare 2 values for equality, potentially falling back on the
+     // "==" method for the test.
+     bool inline equalValue(RexxObject *other)
+     {
+         // test first for direct equality, followed by value equality.
+         return (this == other) || this->isEqual(other);
+     }
 
  // Define operator methods here.
 

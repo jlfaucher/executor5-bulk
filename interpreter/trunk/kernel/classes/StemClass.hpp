@@ -56,6 +56,7 @@
 #define SORT_DECENDING 1
 
  class RexxNativeActivation;
+ class RexxSupplier;
 
  class SortData
  {
