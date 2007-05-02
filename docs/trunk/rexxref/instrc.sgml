@@ -932,6 +932,11 @@ string is returned.
 <indexterm><primary>bottom of program reached during execution
 </primary></indexterm>
 </para></listitem>
+<listitem><para>On Unix/Linux systems the returned value is limited to a
+numerical value between 0 and 255 (an unsigned byte). if no
+<emphasis role="italic">expression is given the the default value returned to
+the operating system is zero.
+</para></listitem>
 </orderedlist>
 </section>
 
@@ -2608,6 +2613,12 @@ or internal function), all variables of the current generation are dropped
 (and those of the previous generation are exposed) after
 <emphasis role="italic">expression</emphasis> is
 evaluated and before the result is used or assigned to RESULT.</para>
+<note><para>If the RETURN statement causes the program to return to the operating
+system on a Unix/Linux system the value returned is limited to a numerical
+value between 0 and 255 (an unsigned byte). If no
+<emphasis role="italic">expression</emphasis> is supplied then the default value
+returne to the operating system is zero.
+</para></note>
 </section>
 
 <section id="say"><title>SAY</title>
