@@ -48,7 +48,6 @@
 #include "RexxActivation.hpp"
 #include "SayInstruction.hpp"
 #include "Interpreter.hpp"
-#include "ASCIIDBCSStrings.hpp"
 
 RexxInstructionSay::RexxInstructionSay(
     RexxObject *expression)            /* assciated expression              */
@@ -78,9 +77,6 @@ void  RexxInstructionSay::execute(
   else
                                        /* use a NULL string                 */
     value = (RexxString *)OREF_NULLSTRING;
-  if (DBCS_MODE) {                     /* need to use DBCS?                 */
-    ValidDBCS(value);                  /* validate the string               */
-  }
   context->traceResult(value);         /* trace the output value            */
                                        /* write out the line                */
   context->activity->sayOutput(context, value);

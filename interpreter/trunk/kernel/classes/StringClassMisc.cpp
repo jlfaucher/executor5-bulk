@@ -48,7 +48,6 @@
 #include <math.h>
 #include "RexxCore.h"
 #include "StringClass.hpp"
-#include "ASCIIDBCSStrings.hpp"
 #include "ArgumentUtilities.hpp"                     /* General purpose BIF Header file   */
 #include "SourceFile.hpp"
 #include "Interpreter.hpp"
@@ -283,16 +282,6 @@ RexxObject *DataType(
         Answer = (RexxObject *)TheTrueObject;
       break;
 
-    case DATATYPE_MIXED_DBCS:          /* Mixed SBCS/DBCS string            */
-                                       /* pass on to the DBCS function      */
-      Answer = String->DBCSdatatype(DATATYPE_MIXED_DBCS);
-      break;
-
-    case DATATYPE_PURE_DBCS:           /* Pure DBCS string                  */
-                                       /* pass on to the DBCS function      */
-      Answer = String->DBCSdatatype(DATATYPE_PURE_DBCS);
-      break;
-
     case DATATYPE_LOWERCASE:           /* Lowercase                         */
       if (Len != 0 && !Memcpbrk(Scanp, LOWER_ALPHA, Len))
                                        /* this is a good string             */
@@ -399,10 +388,6 @@ RexxInteger *RexxString::abbrev(
   stringsize_t   ChkLen;               /* required check length             */
   int      rc;                         /* compare result                    */
 
-  if (DBCS_MODE)                       /* need to use DBCS?                 */
-                                       /* do the DBCS version               */
-    return this->DBCSabbrev(info, length);
-
   info = stringArgument(info, ARG_ONE);    /* process the information string    */
   Len2 = info->getLength();                 /* get the length also               */
                                        /* get the optional check length     */
@@ -441,10 +426,6 @@ RexxInteger *RexxString::compare(
   stringsize_t   i;                          /* loop index                        */
   stringsize_t   Length1;                    /* first string length               */
   stringsize_t   Length2;                    /* second string length              */
-
-  if (DBCS_MODE)                       /* need to use DBCS?                 */
-                                       /* do the DBCS version               */
-    return this->DBCScompare(string2, pad);
 
   Length1 = this->getLength();              /* get this strings length           */
                                        /* validate the compare string       */
@@ -499,8 +480,6 @@ RexxString *RexxString::copies(RexxInteger *copies)
   stringsize_t   Len;                        /* copy string length                */
   stringchar_t *    Temp;                       /* copy location                     */
 
-  if (DBCS_SELF)                       /* need to use DBCS?                 */
-    ValidDBCS(this);                   /* validate the DBCS string          */
   requiredArg(copies, ONE);           /* the count is required             */
                                        /* get the copies count              */
   Count = copies->requiredNonNegative(ARG_ONE);
@@ -550,6 +529,185 @@ RexxObject *RexxString::dataType(RexxString *ptype)
  return (DataType(this, 'N') == TheTrueObject
          ? new_string((stringchar_t *)"NUM",3)         /* if so we return NUM               */
          : new_string((stringchar_t *)"CHAR",4));      /* otherwise we return CHAR          */
+}
+
+RexxInteger *RexxString::lastPosRexx(RexxString  *needle, RexxInteger *start)
+{
+    needle = REQUIRED_STRING(needle, ARG_ONE);
+    // find out where to start the search. The default is at the very end.
+    stringsize_t startPos = optional_position(start, getLength(), ARG_TWO);
+    // now perform the actual search.
+    return new_integer(lastPos(needle, startPos));
+}
+
+
+RexxInteger *RexxString::caselessLastPosRexx(RexxString  *needle, RexxInteger *start)
+{
+    // validate that this is a good string argument
+    needle = REQUIRED_STRING(needle, ARG_ONE);
+    // find out where to start the search. The default is at the very end.
+    stringsize_t startPos = optional_position(start, getLength(), ARG_TWO);
+    // now perform the actual search.
+    return new_integer(caselessLastPos(needle, startPos));
+}
+
+
+
+/**
+ * Primitive implementation of a lastpos search.
+ *
+ * @param needle The search needle.
+ * @param start  The starting position (origin 1).
+ *
+ * @return Returns the last match position, searching back from the start
+ *         position.  The starting position is the right-most character
+ *         of the past possible match (as if the string was truncated
+ *         at start).
+ */
+stringsize_t RexxString::lastPos(RexxString  *needle, stringsize_t start)
+{
+    stringsize_t haystackLen = this->getLength();          /* get the haystack length           */
+    stringsize_t needleLen = needle->getLength();          /* and get the length too            */
+
+    // no match possible if either string is null
+    if (needleLen == 0 || haystackLen == 0)
+    {
+        return 0;
+    }
+    else
+    {
+        // get the start position for the search.
+        start = min(start, haystackLen);
+                                         /* do the search                     */
+        stringchar_t * matchLocation = lastPos((stringchar_t *)needle->getStringData(), needleLen, (stringchar_t * )this->getStringData(), haystackLen);
+        if (matchLocation == NULL)
+        {
+            return 0;
+        }
+        else
+        {
+            return matchLocation - (stringchar_t *)this->getStringData() + 1;
+        }
+    }
+}
+
+
+/**
+ * Primitive implementation of a caseless lastpos search.
+ *
+ * @param needle The search needle.
+ * @param start  The starting position (origin 1).
+ *
+ * @return Returns the last match position, searching back from the start
+ *         position.  The starting position is the right-most character
+ *         of the past possible match (as if the string was truncated
+ *         at start).
+ */
+stringsize_t RexxString::caselessLastPos(RexxString *needle, stringsize_t start)
+{
+    stringsize_t haystackLen = this->getLength();          /* get the haystack length           */
+    stringsize_t needleLen = needle->getLength();          /* and get the length too            */
+
+    // no match possible if either string is null
+    if (needleLen == 0 || haystackLen == 0)
+    {
+        return 0;
+    }
+    else
+    {
+        // get the start position for the search.
+        start = min(start, haystackLen);
+                                         /* do the search                     */
+        stringchar_t * matchLocation = caselessLastPos((stringchar_t *)needle->getStringData(), needleLen, (stringchar_t * )this->getStringData(), haystackLen);
+        if (matchLocation == NULL)
+        {
+            return 0;
+        }
+        else
+        {
+            return matchLocation - (stringchar_t *)this->getStringData() + 1;
+        }
+    }
+}
+
+
+/**
+ * Absolutely most primitive version of a lastpos search.  This
+ * version searches directly in a buffer rather than a Rexx
+ * String.
+ *
+ * @param needle    Pointer to the needle string.
+ * @param needleLen Length of the needle string.
+ * @param haystack  The pointer to the haystack string.
+ * @param haystackLen
+ *                  The length of the haystack string.
+ *
+ * @return A pointer to the match location or NULL if there is no match.
+ */
+stringchar_t * RexxString::lastPos(stringchar_t * needle, stringsize_t needleLen, stringchar_t *  haystack, stringsize_t haystackLen)
+{
+    // if the needle's longer than the haystack, no chance of a match
+    if (needleLen > haystackLen)
+    {
+        return NULL;
+    }
+    // set the search startpoing point relative to the end of the search string
+    haystack = haystack + haystackLen - needleLen;
+    // this is the possible number of compares we might need to perform
+    stringsize_t count = haystackLen - needleLen + 1;
+    // now scan backward
+    while (count > 0)
+    {
+        // got a match at this position, return it directly
+        if (memcmp(haystack, needle, needleLen) == 0)
+        {
+            return haystack;
+        }
+        // decrement count and position
+        count--;
+        haystack--;
+    }
+    return NULL;   // nothing to see here folks, move along
+}
+
+
+/**
+ * Absolutely most primitive version of a caseless lastpos
+ * search. This version searches directly in a buffer rather
+ * than a Rexx String.
+ *
+ * @param needle    Pointer to the needle string.
+ * @param needleLen Length of the needle string.
+ * @param haystack  The pointer to the haystack string.
+ * @param haystackLen
+ *                  The length of the haystack string.
+ *
+ * @return A pointer to the match location or NULL if there is no match.
+ */
+stringchar_t * RexxString::caselessLastPos(stringchar_t * needle, stringsize_t needleLen, stringchar_t *  haystack, stringsize_t haystackLen)
+{
+    // if the needle's longer than the haystack, no chance of a match
+    if (needleLen > haystackLen)
+    {
+        return NULL;
+    }
+    // set the search startpoing point relative to the end of the search string
+    haystack = haystack + haystackLen - needleLen;
+    // this is the possible number of compares we might need to perform
+    stringsize_t count = haystackLen - needleLen + 1;
+    // now scan backward
+    while (count > 0)
+    {
+        // got a match at this position, return it directly
+        if (CaselessCompare(haystack, needle, needleLen) == 0)
+        {
+            return haystack;
+        }
+        // decrement count and position
+        count--;
+        haystack--;
+    }
+    return NULL;   // nothing to see here folks, move along
 }
 
 stringsize_t RexxString::countStr(RexxString *needle)
@@ -682,11 +840,6 @@ RexxString *RexxString::translate(
   stringchar_t     ch;                        /* current character                 */
   stringsize_t    Position;                  /* table position                    */
 
-  if (DBCS_MODE)                       /* need to use DBCS?                 */
-                                       /* do the DBCS version               */
-    return (RexxString *)this->DBCStranslate(tableo, tablei, pad);
-
-
                                        /* just a simple uppercase?          */
  if (tableo == OREF_NULL && tablei == OREF_NULL && pad == OREF_NULL)
    return this->upper();               /* return the uppercase version      */
@@ -746,10 +899,6 @@ RexxInteger *RexxString::verify(
   stringchar_t *     Current;                   /* current scan position             */
   stringchar_t      ch;                        /* scan character                    */
   bool      Match;                     /* found a match                     */
-
-  if (DBCS_MODE)                       /* need to use DBCS?                 */
-                                       /* do the DBCS version               */
-    return this->DBCSverify(ref, option, start);
 
   ref = stringArgument(ref, ARG_ONE);      /* get the reference string          */
   ReferenceLen = ref->getLength();          /* get a length also                 */
@@ -837,18 +986,12 @@ void RexxString::copyIntoRxString(RxString *target)
  */
 RexxInteger *RexxString::lastPosRexx(RexxString  *needle, RexxInteger *start)
 {
-    // if DBCS mode is turned on...pass it on.
-    if (DBCS_MODE)
-    {
-        return this->DBCSlastPos(needle, start);
-    }
     needle = REQUIRED_STRING(needle, ARG_ONE);
     // find out where to start the search. The default is at the very end.
     stringsize_t startPos = optional_position(start, getLength(), ARG_TWO);
     // now perform the actual search.
     return new_integer(lastPos(needle, startPos));
 }
-
 
 
 /**
@@ -868,7 +1011,6 @@ RexxInteger *RexxString::caselessLastPosRexx(RexxString  *needle, RexxInteger *s
     // now perform the actual search.
     return new_integer(caselessLastPos(needle, startPos));
 }
-
 
 
 /**
@@ -1079,12 +1221,6 @@ RexxInteger *RexxString::caselessPosRexx(RexxString  *needle, RexxInteger *pstar
 
 stringsize_t RexxString::pos(RexxString *needle, stringsize_t start)
 {
-    // DBCS mode is handled elsewhere
-    if (DBCS_MODE)
-    {
-        return this->DBCSpos(needle, start);
-    }
-
     // get the two working lengths
     stringsize_t haystack_length = getLength();
     stringsize_t needle_length = needle->getLength();
@@ -1123,12 +1259,6 @@ stringsize_t RexxString::pos(RexxString *needle, stringsize_t start)
 
 stringsize_t RexxString::caselessPos(RexxString *needle, stringsize_t start)
 {
-    // DBCS mode is handled elsewhere
-    if (DBCS_MODE)
-    {
-        return this->DBCScaselessPos(needle, start);
-    }
-
     // get the two working lengths
     stringsize_t haystack_length = getLength();
     stringsize_t needle_length = needle->getLength();

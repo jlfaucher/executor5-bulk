@@ -65,7 +65,6 @@ class RexxInstructionDo;
 #define _interpret       0x00000002    /* this is interpret translation     */
 #define _install         0x00000004    /* installation stuff required       */
 #define reclaimed        0x00000008    /* last clause only partially used   */
-#define DBCS_scanning    0x00000010    /* need to scan in DBCS mode         */
 #define reclaim_possible 0x00000020    /* can re-establish source connect   */
 #define no_clause        0x00000040    /* last clause of a block reached    */
 
@@ -91,7 +90,6 @@ class RexxSource : public RexxInternalObject {
   void        setBufferedSource(RexxBuffer *newSource);
   void        interpretLine(size_t);
   void        comment();
-  void        DBCScomment();
   void        needVariable(RexxToken *);
   void        needVariableOrDotSymbol(RexxToken *);
   bool        terminator(int, RexxObject *);

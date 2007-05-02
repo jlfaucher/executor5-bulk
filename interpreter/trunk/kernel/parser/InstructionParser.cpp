@@ -1271,21 +1271,6 @@ RexxInstruction *RexxSource::optionsNew(ProtectedObject &newObject)
   nextToken();                         /* step past the first token         */
   first = nextReal();                  /* get the first token               */
                                        /* first token a string?             */
-  if (first->classId == TOKEN_LITERAL) {
-    second = nextReal();               /* get the next token                */
-    if (second->classId == TOKEN_EOC) {/* literal the only token?           */
-                                       /* could have "options 'ETMODE'" or  */
-                                       /* "options 'NOETMODE'"              */
-      value = first->value;            /* get the literal value             */
-      if (value->strICompare((stringchar_t *)"ETMODE")) /* have ETMODE?                     */
-                                       /* turn on DBCS processing           */
-        this->flags |= DBCS_scanning;  /* set the flag indicator            */
-                                       /* have NOETMODE?                    */
-      else if (value->strICompare((stringchar_t*)"NOETMODE"))
-                                       /* turn off DBCS processing          */
-        this->flags &= ~DBCS_scanning; /* set the flag indicator            */
-    }
-  }
                                        /* create a new translator object    */
   newObject = new_instruction(OPTIONS, Options);
                                        /* now complete this                 */

@@ -48,7 +48,6 @@
 #include "RexxActivity.hpp"
 #include "QueueInstruction.hpp"
 #include "Interpreter.hpp"
-#include "ASCIIDBCSStrings.hpp"
 
 RexxInstructionQueue::RexxInstructionQueue(
   RexxObject *expression,              /* expresion to evaluate             */
@@ -80,9 +79,6 @@ void RexxInstructionQueue::execute(
   }
   else
     value =  OREF_NULLSTRING;          /* use a NULL string                 */
-  if (DBCS_MODE) {                     /* need to use DBCS?                 */
-    ValidDBCS(value);                  /* validate the string               */
-  }
   context->traceResult(value);         /* trace if necessary                */
                                        /* write out the line                */
   context->activity->queue(context, value, queue_type);

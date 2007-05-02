@@ -78,13 +78,6 @@ void RexxInstructionOptions::execute(
     word = (RexxString *)(stringValue->word(new_integer(i)));
     if (word->getLength() == 0)             /* get the length of the word        */
       break;                           /* if length of word = 0 then stop   */
-
-    if (word->strICompare(CHAR_EXMODE)) /* is this EXMODE?                  */
-
-      context->setDBCS(true);          /* turn on DBCS processing           */
-                                       /* have NOEXMODE?                    */
-    else if (word->strICompare(CHAR_NOEXMODE))
-      context->setDBCS(false);         /* turn off DBCS processing          */
 #ifdef _DEBUG
     else if (word->strICompare(CHAR_DUMPMEMORY)) {
       RexxMemory::memoryObject.dumpEnable = true;

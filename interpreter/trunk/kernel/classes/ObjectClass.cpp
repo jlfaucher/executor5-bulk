@@ -1407,6 +1407,23 @@ RexxObject  *RexxObject::getAttribute()
     return method->getAttribute()->getValue(this->getObjectVariables(method->getScope()));
 }
 
+
+/**
+ * Generic abstract method for raising an error if
+ * not overriddeen.
+ *
+ * @param args   The array of arguments (ignored)
+ * @param count  The cound of arguments.
+ *
+ * @return Never returns if invoked.
+ */
+RexxObject  *RexxObject::abstractMethod(RexxObject **args, size_t count)
+{
+    report_exception1(Error_Incorrect_method_abstract, last_msgname());
+    return OREF_NULL;
+}
+
+
 RexxString  *RexxObject::defaultName()
 /******************************************************************************/
 /* Function:  Handle "final" string coercion level                            */

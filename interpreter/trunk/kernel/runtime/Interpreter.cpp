@@ -72,9 +72,6 @@ SysMutex RexxInterpreter::resourceLock;                // global control block m
 SysMutex RexxInterpreter::initializationLock;          // semaphore to protect startup/shutdown phases
 SysSemaphore RexxInterpreter::terminationSem;          // shutdown completion semaphore
 SysCriticalSection RexxInterpreter::criticalSection;   // critical section for thread sync
-bool RexxInterpreter::DBCS_codepage = false;           // DBCS code page possible
-uint32_t RexxInterpreter::codepage = 0;                // current activity codepage
-stringchar_t RexxInterpreter::DBCS_table[256];         // current DBCS vector table
 
 
 RexxInterpreter *RexxInterpreter::singleInstance = OREF_NULL; // the single instance for this process
@@ -225,8 +222,6 @@ void RexxInterpreter::initializeInterpreter(InterpreterInstance *instance, Initi
     {
         restoreImage();                      // make sure we have a restored image
     }
-                                             // get the DBCS information
-    DBCS_codepage = SysInterpreter::getDBCSInformation(&codepage, DBCS_table);
     initialized = true;                     // we're now initialized
 }
 

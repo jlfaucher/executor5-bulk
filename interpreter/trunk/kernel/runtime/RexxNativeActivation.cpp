@@ -61,7 +61,6 @@
 #include "Interpreter.hpp"
 #include "SysInterpreter.hpp"
 
-#include "ASCIIDBCSStrings.hpp"
 #include "oorexx.h"
 
 void * RexxNativeActivation::operator new(size_t size)

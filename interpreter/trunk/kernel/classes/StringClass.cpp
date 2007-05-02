@@ -51,7 +51,6 @@
 #include "DirectoryClass.hpp"
 #include "RexxActivation.hpp"
 #include "RexxActivity.hpp"
-#include "ASCIIDBCSStrings.hpp"
 #include "Interpreter.hpp"
 #include "ArgumentUtilities.hpp"
 #include "QueueClass.hpp"
@@ -370,14 +369,8 @@ RexxObject *RexxString::lengthRexx()
 /* Function:  Return the length of a string as an integer object              */
 /******************************************************************************/
 {
-  stringsize_t tempLen;
-
-  if (DBCS_SELF)                       /* need to use DBCS?                 */
-                                       /* return the DBCS count             */
-    return this->DBCSlength();
-  tempLen = this->getLength();
                                        /* return string byte length         */
-  return (RexxObject *) new_integer(tempLen);
+  return (RexxObject *) new_integer(getLength());
 }
 
 bool RexxString::isEqual(
@@ -396,11 +389,6 @@ bool RexxString::isEqual(
     return this->sendMessage(OREF_STRICT_EQUAL, otherObj)->truthValue(Error_Logical_value_method);
 
   other = REQUEST_STRING(otherObj);    /* force into string form            */
-  if (DBCS_MODE) {                     /* need to use DBCS?                 */
-    ValidDBCS(this);                   /* validate the string               */
-    ValidDBCS(other);                  /* and the other string too          */
-  }
-
   otherLen = other->getLength();            /* get length of second string.      */
                                        /* do quick compare on the hash      */
   if (this->hashvalue != other->hashvalue)
@@ -440,11 +428,6 @@ bool RexxString::primitiveIsEqual(
 
   requiredArg(otherObj, ONE);         /* this is required.                 */
   other = REQUEST_STRING(otherObj);    /* force into string form            */
-  if (DBCS_MODE) {                     /* need to use DBCS?                 */
-    ValidDBCS(this);                   /* validate the string               */
-    ValidDBCS(other);                  /* and the other string too          */
-  }
-
   otherLen = other->getLength();            /* get length of second string.      */
                                        /* do quick compare on the hash      */
   if (this->hashvalue != other->hashvalue)
@@ -554,11 +537,6 @@ bool RexxString::primitiveIsEqualCaseless(
 
   requiredArg(otherObj, ONE);         /* this is required.                 */
   other = REQUEST_STRING(otherObj);    /* force into string form            */
-  if (DBCS_MODE) {                     /* need to use DBCS?                 */
-    ValidDBCS(this);                   /* validate the string               */
-    ValidDBCS(other);                  /* and the other string too          */
-  }
-
   otherLen = other->getLength();            /* get length of second string.      */
     return false;                      /* can't be equal                    */
   if (otherLen != this->getLength())        /* lengths different?                */
@@ -654,9 +632,6 @@ int RexxString::comp(RexxObject *other)
                                        /* the compare                       */
     return (int) firstNum->comp(secondNum);
   second = REQUEST_STRING(other);      /* yes, get a string object.         */
-  if (DBCS_MODE)                       /* need to use DBCS?                 */
-                                       /* do the DBCS comparison            */
-     return this->DBCSstringCompare(second);
                                        /* objects are converted.  now strip */
                                        /* any leading/trailing blanks.      */
 
@@ -729,15 +704,10 @@ int  RexxString::strictComp(RexxObject *otherObj)
   int  result;                         /* compare result                    */
   RexxString *other;                   /* converted string value            */
 
-  requiredArg(otherObj, ONE);         /* this is required.                 */
+  requiredArg(otherObj, ONE);          /* this is required.                 */
   other = REQUEST_STRING(otherObj);    /* force into string form            */
-  if (DBCS_MODE) {                     /* need to use DBCS?                 */
-    ValidDBCS(this);                   /* validate the string               */
-    ValidDBCS(other);                  /* and the other string too          */
-  }
-
-  otherLen = other->getLength();            /* get length of second string.      */
-  otherData = other->getStringData();       /* get pointer to start of data.     */
+  otherLen = other->getLength();       /* get length of second string.      */
+  otherData = other->getStringData();  /* get pointer to start of data.     */
 
   if (this->getLength() >= otherLen) {      /* determine the longer string.      */
                                        /* first string is larger,           */
@@ -1117,11 +1087,6 @@ RexxString *RexxString::concatRexx(RexxObject *otherObj)
   if (other == OREF_NULL)
     reportException(Error_Incorrect_method_nostring, IntegerOne);
 
-  if (DBCS_MODE) {                     /* need to use DBCS?                 */
-    ValidDBCS(this);                   /* validate the string               */
-    ValidDBCS(other);                  /* and the other string too          */
-  }
-
                                        /* the following logic also appears  */
                                        /* in string_concat, but is repeated */
                                        /* here because this is a VERY high  */
@@ -1200,11 +1165,6 @@ RexxString *RexxString::concatBlank(RexxObject *otherObj)
   /* added error checking for NULL pointer (from NilObject) */
   if (other == OREF_NULL)
     reportException(Error_Incorrect_method_nostring, IntegerOne);
-
-  if (DBCS_MODE) {                     /* need to use DBCS?                 */
-    ValidDBCS(this);                   /* validate the string               */
-    ValidDBCS(other);                  /* and the other string too          */
-  }
 
                                        /* ensure a string value             */
   other = (RexxString *)REQUEST_STRING(otherObj);
@@ -1317,24 +1277,6 @@ RexxString *RexxString::upper()
 /*            string if characters actually have to be translated.            */
 /******************************************************************************/
 {
-  RexxString *newstring;               /* newly created string              */
-
-  if (DBCS_SELF) {                     /* need to use DBCS?                 */
-    ValidDBCS(this);                   /* validate the string               */
-                                       /* actually have DBCS and need to    */
-                                       /* uppercase?                        */
-    if (!noDBCS() & !upperOnly()) {
-                                       /* create a new string               */
-      newstring = new_string((stringchar_t *)this->getStringData(), this->getLength());
-                                       /* do DBCS uppercasing               */
-      DBCS_MemUpper(STRPTR(newstring), STRLEN(newstring));
-                                       /* rebuild the hash value            */
-                                       /* flag the string as uppercased     */
-      newstring->setUpperOnly();
-      return newstring;                /* return the new string             */
-    }                                  /* (single byte only falls through)  */
-  }
-                                       /* something to uppercase?           */
   if (!this->upperOnly() && (this->hasLower() || this->checkLower()))
   {
       // just construct a new string here.
@@ -1361,18 +1303,6 @@ RexxString *RexxString::stringTrace()
   NonDisplay = false;                  /* no non-displayable characters     */
 
   for (; i > 0; i--) {                 /* loop for the entire string        */
-    if (DBCS_SELF) {                   /* this string have DBCS characters  */
-      if (IsDBCS(*Current)) {          /* leave DBCS alone                  */
-        i--;                           /* reduce length one more            */
-        Current++;                     /* and the pointer too               */
-      }
-                                       /* control character?                */
-      else if ((stringchar_t)*Current < (stringchar_t)' ') {
-        NonDisplay = true;             /* got a non-displayable             */
-        break;                         /* get out of here                   */
-       }
-    }
-    else                               /*no DBCS characters                 */
                                        /* control character?                */
     if ((stringchar_t)*Current < (stringchar_t)' ') {
       NonDisplay = true;               /* got a non-displayable             */
@@ -1389,19 +1319,8 @@ RexxString *RexxString::stringTrace()
   Current = (stringchar_t *)newCopy->getStringData();
 
   for (; i > 0; i--) {                 /* loop for the entire string        */
-    if(DBCS_MODE) {
-      if (IsDBCS(*Current)) {          /* leave DBCS alone                  */
-        i--;                           /* reduce length one more            */
-        Current++;                     /* and the pointer too               */
-       }
                                        /* control character?                */
-      else if ((stringchar_t)*Current < (stringchar_t)' ' && (stringchar_t)*Current != '\t')
-        *Current = '?';                /* yes, change to question           */
-      Current++;                       /* step the pointer                  */
-    }
-                                       /* no DBCS characters                */
-                                       /* control character?                */
-    else if ((stringchar_t)*Current < (stringchar_t)' ' && (stringchar_t)*Current != '\t')
+    if ((stringchar_t)*Current < (stringchar_t)' ' && (stringchar_t)*Current != '\t')
         *Current = '?';                /* yes, change to question           */
       Current++;                       /* step the pointer                  */
   }
@@ -1419,20 +1338,6 @@ RexxString *RexxString::lower()
   stringchar_t * outdata;                      /* output data                       */
   stringsize_t i;                            /* loop counter                      */
   bool   translate;                    /* translation required              */
-
-  if (DBCS_SELF) {                     /* need to use DBCS?                 */
-    ValidDBCS(this);                   /* validate the string               */
-    if (!noDBCS()) {                   /* actually have DBCS characters?    */
-                                       /* create a new string               */
-      newstring = (RexxString *)raw_string(this->getLength());
-                                       /* copy the data                     */
-      memcpy(STRPTR(newstring), STRPTR(this), STRLEN(this));
-                                       /* do DBCS lowercasing               */
-      DBCS_MemLower(STRPTR(newstring), STRLEN(newstring));
-                                       /* rebuild the hash value            */
-      return newstring;                /* return the new string             */
-    }                                  /* (single byte only falls through)  */
-  }
 
   data = (stringchar_t *)this->getStringData();     /* point to the string               */
   translate = false;                   /* no translation required           */

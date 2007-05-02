@@ -68,6 +68,9 @@ PCPPM RexxMethod::exportedMethods[] = {            /* start of exported methods 
                                        /* predictable location              */
 CPPM(RexxObject::getAttribute),
 CPPM(RexxObject::setAttribute),
+CPPM(RexxObject::abstractMethod),      // also must be at this location ALWAYS
+
+// end of the section where the indices must be fixed.
 CPPM(RexxObject::objectName),
 CPPM(RexxObject::objectNameEquals),
 CPPM(RexxObject::run),

@@ -88,13 +88,11 @@ class ACTIVATION_SETTINGS {            /* activation "global" settings      */
           digits = Numerics::DEFAULT_DIGITS;
           fuzz = Numerics::DEFAULT_FUZZ;
           form = Numerics::DEFAULT_FORM;
-          exmode = false;
       }
 
       stringsize_t digits;                 /* numeric digits setting            */
       stringsize_t fuzz;                   /* numeric fuzz setting              */
       bool form;                           /* numeric form setting              */
-      bool exmode;                         /* DBCS string processing flag       */
 };                                         /* global activation settings        */
 
 

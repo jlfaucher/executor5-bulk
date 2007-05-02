@@ -82,7 +82,6 @@ public:
     static RexxString *qualifyFileSystemName(RexxString *name);
     static void        shutdown();
     static inline void initializeInterpreter() { ; }
-    static bool getDBCSInformation(uint32_t *codePage, stringchar_t *DBCS_Table);
     static void shutdownEnvironment();
     static void restoreEnvironment(void *);
     static void loadImage(char *name, char *&imageBuffer, size_t &size);

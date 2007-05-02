@@ -48,7 +48,6 @@
 #include <math.h>
 #include "RexxCore.h"
 #include "StringClass.hpp"
-#include "ASCIIDBCSStrings.hpp"
 #include "ArgumentUtilities.hpp"
 #include "Interpreter.hpp"
 
@@ -69,9 +68,6 @@ RexxString *RexxString::center(RexxInteger *length,
   stringsize_t   Len;                        /* string length                     */
   RexxString *Retval;                  /* return string                     */
 
-  if (DBCS_MODE)                       /* need to use DBCS?                 */
-                                       /* do the DBCS version               */
-    return (RexxString *)this->DBCScenter(length, pad);
                                        /* see how long result should be     */
   Width = lengthArgument(length, ARG_ONE);
 
@@ -131,10 +127,6 @@ RexxString *RexxString::delstr(RexxInteger *position,
   stringsize_t   DeleteLen;                  /* deleted length                    */
   stringsize_t   DeletePos;                  /* delete position                   */
   stringchar_t *    Current;                    /* current copy position             */
-
-  if (DBCS_SELF)                       /* need to use DBCS?                 */
-                                       /* do the DBCS version               */
-    return this->DBCSdelstr(position, length);
 
   StringLen = this->getLength();            /* get string length                 */
                                        /* get start string position         */
@@ -199,10 +191,6 @@ RexxString *RexxString::insert(RexxString  *newStrObj,
   stringsize_t   BuffSiz;                    /* Estimated result area size.       */
   stringsize_t   NChar;                      /* Character position.               */
   stringchar_t *    Current;                    /* current copy location             */
-
-  if (DBCS_MODE)                       /* need to use DBCS?                 */
-                                       /* do the DBCS version               */
-    return this->DBCSinsert(newStrObj, position, length, pad);
 
   TCharLen = this->getLength();             /* get the target string length      */
                                        /* get the needle string (and length)*/
@@ -289,10 +277,6 @@ RexxString *RexxString::left(RexxInteger *length,
   stringchar_t *     Current;                   /* current copy location             */
   stringsize_t    CopyLength;                /* length to copy                    */
 
-  if (DBCS_MODE)                       /* need to use DBCS?                 */
-                                       /* do the DBCS version               */
-    return this->DBCSleft(length, pad);
-
                                        /* get the target length             */
   Size = lengthArgument(length, ARG_ONE);
 
@@ -340,10 +324,6 @@ RexxString *RexxString::overlay(
   stringsize_t   BackPad;                    /* back pad length                   */
   stringchar_t     PadChar;                    /* pad character                     */
   stringchar_t *    Current;                    /* current copy location             */
-
-  if (DBCS_MODE)                       /* need to use DBCS?                 */
-                                       /* do the DBCS version               */
-    return this->DBCSoverlay(newStrObj, position, length, pad);
 
   TargetLen = this->getLength();            /* get the haystack length           */
                                        /* get the overlay string value      */
@@ -426,10 +406,6 @@ RexxString *RexxString::reverse()
   stringchar_t *      String;                   /* current location                */
   stringchar_t *      End;                      /* string end position             */
 
-  if (DBCS_SELF)                       /* need to use DBCS?                 */
-                                       /* do the DBCS version               */
-    return this->DBCSreverse();
-
   Length = this->getLength();               /* get first argument              */
   if (Length) {                        /* if really data                  */
     Retval = raw_string(Length);       /* get result storage              */
@@ -462,10 +438,6 @@ RexxString *RexxString::right(RexxInteger *length,
   RexxString *Retval;                  /* returned result                   */
   stringchar_t *     Current;                   /* current copy location             */
   stringsize_t    CopyLength;                /* length to copy                    */
-
-  if (DBCS_MODE)                       /* need to use DBCS?                 */
-                                       /* do the DBCS version               */
-    return this->DBCSright(length, pad);
 
                                        /* get the target length             */
   Size = lengthArgument(length, ARG_ONE);
@@ -512,10 +484,6 @@ RexxString *RexxString::strip(RexxString *option,
   stringchar_t        RemoveChar;              /* character to remove               */
   stringchar_t        Option;                  /* strip option                      */
   RexxString *Retval;                  /* return value                      */
-
-  if (DBCS_MODE)                       /* need to use DBCS?                 */
-                                       /* do the DBCS version               */
-    return this->DBCSstrip(option, stripchar);
 
                                        /* get the option character          */
   Option = optionArgument(option, STRIP_BOTH, ARG_ONE);
@@ -578,10 +546,6 @@ RexxString *RexxString::substr(RexxInteger *position,
   stringsize_t   SubstrLength;               /* length plucked from string        */
   stringsize_t   PadCount;                   /* number of pad characters          */
   RexxString *Retval;                  /* returned value                    */
-
-  if (DBCS_MODE)                       /* need to use DBCS?                 */
-                                       /* do the DBCS version               */
-    return this->DBCSsubstr(position, length, pad);
 
                                        /* get starting position             */
   Position = positionArgument(position, ARG_ONE) - 1;

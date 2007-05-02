@@ -191,9 +191,6 @@ friend class RexxMemory;
     static ACTIVATION_SETTINGS defaultSettings;
                                            // default active settings
     static ACTIVATION_SETTINGS *currentSettings;
-    static bool DBCS_codepage;             // DBCS code page possible
-    static uint32_t codepage;              // current activity codepage
-    static stringchar_t DBCS_table[256];   // current DBCS vector table
     static ErrorMessage messageMappingTable[];   // mapping of error codes to message number
 
 protected:

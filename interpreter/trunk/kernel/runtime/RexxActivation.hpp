@@ -299,7 +299,6 @@ typedef ACTSETTINGS *PSETT;
    void              setDefaultAddress(RexxString *);
    bool              internalMethod();
    void              loadRequired(RexxString *, RexxInstruction *);
-   void              setDBCS(bool);
    RexxObject      * rexxVariable(RexxString *);
    void              pushEnvironment(RexxObject *);
    RexxObject      * popEnvironment();

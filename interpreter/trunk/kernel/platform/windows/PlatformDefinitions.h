@@ -73,12 +73,6 @@
 /******************************************************************************/
 #define THREADS
 
-
-/******************************************************************************/
-/* OPTIONAL:  If the implementation supports DBCS mode, include this define.  */
-/******************************************************************************/
-#define HAVE_DBCS
-
 /******************************************************************************/
 /* OPTIONAL:  Perform stack bounds checking on new message invocations.  If   */
 /* this is a non-stack based calling convention, or it is not possible to     */

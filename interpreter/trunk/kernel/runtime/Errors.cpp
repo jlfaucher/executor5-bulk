@@ -142,17 +142,13 @@ RexxString *RexxInterpreter::messageSubstitution(
   RexxString *back;                    /* back message part                 */
   RexxObject *value;                   /* substituted message value         */
   RexxString *stringValue;             /* converted substitution value      */
-  bool     isDBCS;
 
   substitutions = additional->size();  /* get the substitution count        */
   newmessage = OREF_NULLSTRING;        /* start with a null string          */
                                        /* loop through and substitute values*/
   for (i = 1; i <= substitutions; i++) {
                                        /* search for a substitution         */
-    isDBCS = RexxInterpreter::currentSettings->exmode; /* save EXMODE setting */
-    RexxInterpreter::currentSettings->exmode = false;  /* don't use DBCSpos */
     subposition = message->pos(OREF_AND, 0);
-    RexxInterpreter::currentSettings->exmode = isDBCS; /* restore EXMODE setting */
     if (subposition == 0)              /* not found?                        */
       break;                           /* get outta here...                 */
                                        /* get the leading part              */

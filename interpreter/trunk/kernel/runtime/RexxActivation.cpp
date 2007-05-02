@@ -2824,17 +2824,6 @@ void RexxActivation::setErrorListener(
   this->errorListener = listener;
 }
 
-
-void RexxActivation::setDBCS(
-     bool  setting )                   /* DBCS ON/OFF flag                  */
-/******************************************************************************/
-/* Function:  Set the DBCS string processing state.                           */
-/******************************************************************************/
-{
-                                       /* set the flag indicator            */
-  this->settings.global_settings.exmode = setting;
-}
-
 void RexxActivation::pushEnvironment(
      RexxObject * environment)         /* new local environment buffer        */
 /******************************************************************************/

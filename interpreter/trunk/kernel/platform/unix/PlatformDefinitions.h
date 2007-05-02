@@ -77,12 +77,6 @@
 
 #define THREADS
 
-
-/******************************************************************************/
-/* OPTIONAL:  If the implementation supports DBCS mode, include this define.  */
-/******************************************************************************/
-//#define HAVE_DBCS
-
 /******************************************************************************/
 /* OPTIONAL:  Perform stack checking on new message invocations.  If this type*/
 /* of information is not available, then do not include this define           */

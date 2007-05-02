@@ -78,7 +78,6 @@
 #include "SysInterpreter.hpp"
 #include "Interpreter.hpp"
 
-#include "ASCIIDBCSStrings.hpp"
 #include "SysFileSystem.hpp"
 #include "Package.hpp"
 
@@ -1711,6 +1710,7 @@ void RexxSource::methodDirective()
     int guard = DEFAULT_GUARD;       /* default is guarding               */
     bool Class = false;              /* default is an instance method     */
     bool Attribute = false;          /* init Attribute flag               */
+    bool abstractMethod = false;     // this is an abstract method
     RexxToken *token = nextReal();   /* get the next token                */
     RexxString *externalname = OREF_NULL;       /* not an external method yet        */
     RexxVariableBase *retriever = OREF_NULL;    /* no associated retriever yet       */
@@ -1747,7 +1747,7 @@ void RexxSource::methodDirective()
                     /* ::METHOD name EXTERNAL extname    */
                 case SUBDIRECTIVE_EXTERNAL:
                     /* already had an external?          */
-                    if (externalname != OREF_NULL)
+                    if (externalname != OREF_NULL || abstractMethod || Attribute)
                         /* duplicates are invalid            */
                         reportTokenError(Error_Invalid_subkeyword_method, token);
                     if (Attribute)           /* ATTRIBUTE already specified ?     */
@@ -1800,7 +1800,7 @@ void RexxSource::methodDirective()
                                              /* duplicates are invalid            */
                         reportTokenError(Error_Invalid_subkeyword_method, token);
                     /* EXTERNAL already specified ?      */
-                    if (externalname != OREF_NULL)
+                    if (externalname != OREF_NULL || abstractMethod)
                         /* EXTERNAL and ATTRIBUTE are        */
                         /* mutually exclusive                */
                         reportTokenError(Error_Invalid_subkeyword_method, token);
@@ -1808,6 +1808,22 @@ void RexxSource::methodDirective()
                     retriever = this->getRetriever(internalname);
                     Attribute = true;        /* flag for later processing         */
                     break;
+
+                                           /* ::METHOD name ABSTRACT            */
+                case SUBDIRECTIVE_ABSTRACT:
+
+                    if (abstractMethod || externalName != OREF_NULL)
+                    {
+                        report_error_token(Error_Invalid_subkeyword_method, token);
+                    }
+                    // not compatible with ATTRIBUTE or EXTERNAL
+                    if (externalname != OREF_NULL || Attribute)
+                    {
+                        report_error_token(Error_Invalid_subkeyword_method, token);
+                    }
+                    abstractMethod = true;   /* flag for later processing         */
+                    break;
+
 
                 default:                   /* invalid keyword                   */
                     /* this is an error                  */
@@ -1864,6 +1880,13 @@ void RexxSource::methodDirective()
         method = new RexxMethod(getAttributeIndex, CPPM(RexxObject::getAttribute), 0);
         // attach this to the source so other values are retrievable
         method->setSource(this);
+    }
+    // abstract method?
+    else if (abstractMethod)
+    {
+                                       /* Go check the next clause to make  */
+        this->checkDirective();        /* sure that no code follows         */
+        method = new_method(abstractIndex, CPPM(RexxObject::abstractMethod), A_COUNT, OREF_NULL);
     }
     /* not an external method?           */
     else if (externalname == OREF_NULL)
