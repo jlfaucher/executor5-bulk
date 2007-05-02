@@ -115,6 +115,7 @@ typedef size_t HashLink;
    void           emptySlot(HashLink);
    RexxSupplier  *supplier();
    RexxObject    *removeItem(RexxObject *value, RexxObject *key);
+   RexxObject    *removeItem(RexxObject *value);
    RexxObject    *stringGet(RexxString *key);
    RexxHashTable *stringPut(RexxObject *value, RexxString *key);
    RexxHashTable *stringAdd(RexxObject *value, RexxString *key);

@@ -789,6 +789,37 @@ RexxObject *RexxHashTable::hasItem(RexxObject *value)
 }
 
 
+/**
+ * Removes an item from the hash table.
+ *
+ * @param value  The test value.
+ *
+ * @return .true if it exists, .false otherwise.
+ */
+RexxObject *RexxHashTable::removeItem(RexxObject *value)
+{
+    // our size
+    size_t size = this->totalSlotsSize();
+
+    TABENTRY *ep = this->entries;
+    TABENTRY *endp = ep + size;
+                                         /* loop through all of the entries   */
+    for (; ep < endp; ep++)
+    {
+        // if we have an item, see if it's the one we're looking for.
+        if (ep->index != OREF_NULL)
+        {
+            if (EQUAL_VALUE(value, ep->value))
+            {
+                // this is complicated, so it's easier to just remove
+                // this using the fully qualified tuple.
+                return removeItem(value, ep->index);
+            }
+        }
+    }
+    return TheNilObject;
+}
+
 
 RexxObject *RexxHashTable::nextItem(
   RexxObject *value,                   /* item to locate                    */

@@ -327,6 +327,7 @@ bool RexxInterpreter::exportBaseClasses()
   defineKernelMethod(CHAR_TOSTRING     ,TheArrayBehaviour, CPPM(RexxArray::toString), 1);
   defineKernelMethod(CHAR_INDEX        ,TheArrayBehaviour, CPPM(RexxArray::index), 1);
   defineKernelMethod(CHAR_HASITEM      ,TheArrayBehaviour, CPPM(RexxArray::hasItem), 1);
+  defineKernelMethod(CHAR_REMOVEITEM   ,TheArrayBehaviour, CPPMA(RexxArray::removeItem), 1);
                                        /* set the scope of the methods to   */
                                        /* this classes oref                 */
   TheArrayBehaviour->setMethodDictionaryScope(TheArrayClass);
@@ -367,6 +368,7 @@ bool RexxInterpreter::exportBaseClasses()
   defineProtectedKernelMethod(CHAR_UNSETMETHOD   , TheDirectoryBehaviour, CPPM(RexxDirectory::remove), 1);
   defineKernelMethod(CHAR_INDEX        , TheDirectoryBehaviour, CPPM(RexxDirectory::indexRexx), 1);
   defineKernelMethod(CHAR_HASITEM      , TheDirectoryBehaviour, CPPM(RexxDirectory::hasItem), 1);
+  defineKernelMethod(CHAR_REMOVEITEM   , TheDirectoryBehaviour, CPPM(RexxDirectory::removeItem), 1);
 
                                        /* set the scope of the methods to   */
                                        /* this classes oref                 */
@@ -414,6 +416,7 @@ bool RexxInterpreter::exportBaseClasses()
   defineKernelMethod(CHAR_ISEMPTY      ,TheListBehaviour, CPPM(RexxList::isEmpty), 0);
   defineKernelMethod(CHAR_INDEX        ,TheListBehaviour, CPPM(RexxList::index), 1);
   defineKernelMethod(CHAR_HASITEM      ,TheListBehaviour, CPPM(RexxList::hasItem), 1);
+  defineKernelMethod(CHAR_REMOVEITEM   ,TheListBehaviour, CPPM(RexxList::removeItem), 1);
                                        /* set the scope of the methods to   */
                                        /* this classes oref                 */
   TheListBehaviour->setMethodDictionaryScope(TheListClass);
@@ -519,6 +522,7 @@ bool RexxInterpreter::exportBaseClasses()
   defineKernelMethod(CHAR_ISEMPTY       ,TheQueueBehaviour, CPPM(RexxList::isEmpty), 0);
   defineKernelMethod(CHAR_INDEX         ,TheQueueBehaviour, CPPM(RexxQueue::index), 1);
   defineKernelMethod(CHAR_HASITEM       ,TheQueueBehaviour, CPPM(RexxList::hasItem), 1);
+  defineKernelMethod(CHAR_REMOVEITEM    ,TheQueueBehaviour, CPPM(RexxList::removeItem), 1);
 
                                        /* set the scope of the methods to   */
                                        /* this classes oref                 */
@@ -587,14 +591,22 @@ bool RexxInterpreter::exportBaseClasses()
                                        /* instance behaviour mdict          */
   defineKernelMethod(CHAR_BRACKETS      ,TheStemBehaviour, CPPM(RexxStem::bracket), A_COUNT);
   defineKernelMethod(CHAR_BRACKETSEQUAL ,TheStemBehaviour, CPPM(RexxStem::bracketEqual), A_COUNT);
+  defineKernelMethod(CHAR_AT            ,TheStemBehaviour, CPPM(RexxStem::bracket), A_COUNT);
+  defineKernelMethod(CHAR_PUT           ,TheStemBehaviour, CPPM(RexxStem::bracketEqual), A_COUNT);
   defineKernelMethod(CHAR_MAKEARRAY     ,TheStemBehaviour, CPPM(RexxObject::makeArrayRexx), 0);
   defineKernelMethod(CHAR_ALLITEMS      ,TheStemBehaviour, CPPM(RexxStem::allItems), 0);
   defineKernelMethod(CHAR_ALLINDEXES    ,TheStemBehaviour, CPPM(RexxStem::allIndexes), 0);
   defineKernelMethod(CHAR_REQUEST       ,TheStemBehaviour, CPPM(RexxStem::request), 1);
   defineKernelMethod(CHAR_UNKNOWN       ,TheStemBehaviour, CPPM(RexxObject::unknownRexx), 2);
   defineKernelMethod(CHAR_SUPPLIER      ,TheStemBehaviour, CPPM(RexxStem::supplier), 0);
-  defineKernelMethod(CHAR_EMPTY         ,TheStemBehaviour, CPPMSTEM(RexxStem::empty), 0);
-  defineKernelMethod(CHAR_ISEMPTY       ,TheStemBehaviour, CPPMSTEM(RexxStem::isEmpty), 0);
+  defineKernelMethod(CHAR_EMPTY         ,TheStemBehaviour, CPPM(RexxStem::empty), 0);
+  defineKernelMethod(CHAR_ISEMPTY       ,TheStemBehaviour, CPPM(RexxStem::isEmpty), 0);
+  defineKernelMethod(CHAR_ITEMS         ,TheStemBehaviour, CPPM(RexxStem::itemsRexx), 0);
+  defineKernelMethod(CHAR_HASINDEX      ,TheStemBehaviour, CPPM(RexxStem::hasIndex), A_COUNT);
+  defineKernelMethod(CHAR_REMOVE        ,TheStemBehaviour, CPPM(RexxStem::remove), A_COUNT);
+  defineKernelMethod(CHAR_INDEX         ,TheStemBehaviour, CPPM(RexxStem::index), 1);
+  defineKernelMethod(CHAR_HASITEM       ,TheStemBehaviour, CPPM(RexxStem::hasItem), 1);
+  defineKernelMethod(CHAR_REMOVEITEM    ,TheStemBehaviour, CPPMSTEM(RexxStem::removeItem), 1);
 
                                        /* set the scope of the methods to   */
                                        /* this classes oref                 */
@@ -963,6 +975,7 @@ bool RexxInterpreter::exportBaseClasses()
   defineKernelMethod(CHAR_ISEMPTY      , TheTableBehaviour, CPPM(RexxHashTableCollection::isEmpty), 0);
   defineKernelMethod(CHAR_INDEX        , TheTableBehaviour, CPPM(RexxHashTableCollection::indexRexx), 1);
   defineKernelMethod(CHAR_HASITEM      , TheTableBehaviour, CPPM(RexxHashTableCollection::hasItem), 1);
+  defineKernelMethod(CHAR_REMOVEITEM   , TheTableBehaviour, CPPM(RexxHashTableCollection::removeItem), 1);
 
                                        /* set the scope of the methods to   */
                                        /* this classes oref                 */

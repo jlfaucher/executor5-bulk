@@ -505,9 +505,6 @@ RexxObject *RexxArray::supplier()
   RexxObject *item;                    /* inserted value item               */
   arraysize_t      i;                       /* loop counter                      */
   arraysize_t      count;                   /* count added to the array          */
-  bool       fMultiDim;                /* is array multidimensional?        */
-  char       *buffer;                  /* buffer to hold string rep.of indic*/
-  arraysize_t     *multiIndex;              /* numeric representation of indices */
 
   size = this->size();                 /* get the array size                */
   items = this->numItems();            /* and the actual count in the array */
@@ -518,49 +515,15 @@ RexxObject *RexxArray::supplier()
   ProtectedObject v(values);           // protect these values
   ProtectedObject vi(indexes);
 
-  if (this->dimensions == OREF_NULL || this->dimensions->size() == 1) {
-    fMultiDim = false;                 /* not multidimensional              */
-  } else {
-    arraysize_t len = 128;                  /* initial buffer size               */
-    arraysize_t dims = this->dimensions->size();
-    fMultiDim = true;
-
-    multiIndex = (arraysize_t*) malloc(sizeof(arraysize_t)*dims);
-    buffer = (char*) malloc(sizeof(char)*len);
-
-    char *pos = buffer;
-                                       /* create a char* buffer that is big */
-    while (dims != 0) {                /* enough for all indices            */
-      sprintf(pos,"%d,", ((RexxInteger *)this->dimensions->get(dims))->stringSize());
-      if (strlen(buffer) > len - 32) { /* enlarge if buffer doesn't have at */
-        len *= 2;                      /* least 32 digits free              */
-        buffer = (char*) realloc(buffer, sizeof(char*)*len);
-      }
-      pos = pos + strlen(pos);
-      dims--;
-    }
-
-  }
-
   count = 1;                           /* next place to add                 */
   for (i = 1; i <= size; i++) {        /* loop through the array            */
     item = this->get(i);               /* get the next item                 */
     if (item != OREF_NULL) {           /* got an item here                  */
       values->put(item, count);        /* copy over to the values array     */
 
-      if (fMultiDim) {
-                                       /* add the index location            */
-        indexes->put((RexxObject*) indexToArray(i), count);
-      } else {
-                                       /* add the index location            */
-        indexes->put((RexxObject*) new_integer(i), count);
-      }
+      indexes->put((RexxObject*)convertIndex(i), count);
       count++;                         /* step the location                 */
     }
-  }
-  if (fMultiDim) {
-    free(buffer);
-    free(multiIndex);
   }
   return (RexxObject *)new_supplier(values, indexes);
 }
@@ -603,6 +566,18 @@ bool RexxArray::validateIndex(              /* validate an array index          
   arraysize_t  offset;                      /* accumulated offset                */
   arraysize_t  dimension;                   /* current working dimension         */
   arraysize_t  numSize;                     /* temporary long variable           */
+
+
+  // do we really have a single index item given as an array?
+  if (indexCount == 1 && index[0] != OREF_NULL && OTYPE(Array, index[0]))
+  {
+      // we process this exactly the same way, but swap the count and
+      // pointers around to be the array data.
+      RexxArray *indirect = (RexxArray *)index[0];
+      indexCount = indirect->numItems();
+      index = indirect->data();
+  }
+
                                        /* Is this array one-dimensional?    */
   if (this->dimensions == OREF_NULL || this->dimensions->size() == 1) {
                                        /* Too many subscripts?  Say so.     */
@@ -1114,7 +1089,7 @@ RexxArray *RexxArray::allIndexes(void)
         // result collection.
         if (item[iterator] != OREF_NULL)
         {
-            newArray->put(new_integer(iterator+1), ++count);
+            newArray->put(convertIndex(iterator+1), ++count);
         }
     }
     return newArray;
@@ -1441,6 +1416,29 @@ arraysize_t RexxArray::findSingleIndexItem(RexxObject *item)
 
 
 /**
+ * Convert an internal index item into "external" form.  Handles
+ * both single- and multi-dimensional arrays.
+ *
+ * @param idx    The internal index to convert.
+ *
+ * @return An index object proper for the array type.
+ */
+RexxObject *RexxArray::convertIndex(size_t idx)
+{
+    // single dimension array?  This is easy
+    if (this->dimensions == OREF_NULL || this->dimensions->size() == 1)
+    {
+        return new_integer(idx);
+    }
+    else
+    {
+        // compose a composite index
+        return indexToArray(idx);
+    }
+}
+
+
+/**
  * Convert a multi-dimensional array index into an array
  * of index values for the flattened dimension.
  *
@@ -1498,17 +1496,35 @@ RexxObject *RexxArray::index(RexxObject *target)
     {
         return TheNilObject;
     }
-    // single dimensional arrays are easy, we return
-    if (this->dimensions == OREF_NULL || this->dimensions->size() == 1)
-    {
-        return new_integer(index);
-    }
-    else
-    {
-        // convert this into an array of integers
-        return indexToArray(index);
-    }
+    return convertIndex(index);
 }
+
+
+/**
+ * Remove the target object from the collection.
+ *
+ * @param target The target object.
+ *
+ * @return The removed object (same as target).
+ */
+RexxObject *RexxArray::removeItem(RexxObject *target)
+{
+    // we require the index to be there.
+    required_arg(target, ONE);
+    // see if we have this item.  If not, then
+    // we return .nil.
+    arraysize_t index = findSingleIndexItem(target);
+
+    if (index == 0)
+    {
+        return TheNilObject;
+    }
+    // remove the item at the location
+    OrefSet(this, objects[index - 1], OREF_NULL);
+    return target;
+}
+
+
 
 
 /**

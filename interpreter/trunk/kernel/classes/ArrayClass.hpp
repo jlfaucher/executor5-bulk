@@ -119,6 +119,7 @@ typedef struct copyElelmentParm {
    RexxObject  *isEmpty();
    RexxObject  *index(RexxObject *);
    RexxObject  *hasItem(RexxObject *);
+   RexxObject  *removeItem(RexxObject *);
    RexxObject  *append(RexxObject *);
    void         setExpansion(RexxObject * expansion);
    RexxInteger *available(size_t position);
@@ -162,7 +163,8 @@ typedef struct copyElelmentParm {
    inline RexxObject **data(arraysize_t pos) { return &((this->data())[pos-1]);}
    inline RexxArray   *getExpansion() { return this->expansionArray; }
    arraysize_t         findSingleIndexItem(RexxObject *item);
-   RexxObject*         indexToArray(size_t idx);
+   RexxObject *        indexToArray(size_t idx);
+   RexxObject *        convertIndex(size_t idx);
    static void createInstance(RootImage *rootImage);
 
    arraysize_t arraySize;              /* current size of array         */

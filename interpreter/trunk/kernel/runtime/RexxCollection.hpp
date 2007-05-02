@@ -69,6 +69,7 @@
     RexxObject   *hasIndex(RexxObject *);
     RexxSupplier *supplier();
     RexxObject   *merge(RexxHashTableCollection *);
+    RexxObject   *removeItem(RexxObject *value);
 
     inline size_t items() { return this->contents->totalEntries(); };
     inline HashLink first() { return this->contents->first(); };

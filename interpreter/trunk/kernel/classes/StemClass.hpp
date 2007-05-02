@@ -92,6 +92,7 @@
   RexxString  *stringValue();
   RexxArray   *makeArray();
   RexxArray   *allItems();
+  RexxObject *removeItem(RexxObject *);
   RexxArray   *allIndexes();
   RexxObject   *empty();
   RexxObject   *isEmpty();
@@ -112,6 +113,13 @@
   RexxObject *unknown (RexxString *, RexxArray *);
   RexxObject *bracket (RexxObject **, size_t);
   RexxObject *bracketEqual(RexxObject **, size_t);
+
+  RexxObject *hasIndex(RexxObject **, size_t);
+  RexxObject *remove(RexxObject **, size_t);
+  RexxObject *hasItem(RexxObject *);
+  RexxObject *index(RexxObject *);
+  RexxObject *itemsRexx();
+
   RexxString *tail(RexxArray *, size_t);
   RexxObject *newRexx(RexxObject **, size_t);
   RexxObject *evaluateCompoundVariableValue(RexxActivation *context, RexxCompoundTail *resolved_tail);
@@ -121,6 +129,7 @@
   RexxCompoundElement *getCompoundVariable(RexxCompoundTail *name);
   RexxCompoundElement *exposeCompoundVariable(RexxCompoundTail *name);
   RexxCompoundElement *findCompoundVariable(RexxCompoundTail *name);
+  RexxCompoundElement *findByValue(RexxObject *target);
   void        dropCompoundVariable(RexxCompoundTail *name);
   void        setCompoundVariable(RexxCompoundTail *name, RexxObject *value);
   void        setValue(RexxObject *value);

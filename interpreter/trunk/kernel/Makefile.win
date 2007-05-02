@@ -1885,6 +1885,11 @@ messages\RexxMessageTable.h: messages\RexxMessageTable.xsl messages\rexxmsg.xml
     @ECHO Generating $(@)
     xalan -o $(@) messages\rexxmsg.xml messages\RexxMessageTable.xsl
 
+messages\DocErrorMessages.sgml: DocBookErrors.xsl messages\rexxmsg.xml
+    @ECHO .
+    @ECHO Generating $(@)
+    xalan -o $(@) messages\rexxmsg.xml messages\DocBookErrors.xsl
+
 
 #################### clean #########################
 
