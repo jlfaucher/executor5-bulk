@@ -123,6 +123,7 @@ typedef size_t HashLink;
    void           objectMerge(RexxHashTable *target);
    void           primitiveMerge(RexxHashTable *target);
    RexxObject    *hasItem(RexxObject * value, RexxObject *key);
+   RexxObject    *hasItem(RexxObject * value);
    void           reMerge(RexxHashTable *target);
    RexxHashTable *insert(RexxObject *value, RexxObject *index, HashLink position, int type);
    RexxObject    *nextItem(RexxObject *, RexxObject *);

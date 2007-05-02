@@ -65,6 +65,7 @@
     RexxObject   *put(RexxObject *, RexxObject *);
     RexxObject   *add(RexxObject *, RexxObject *);
     RexxObject   *allAt(RexxObject *);
+    RexxObject   *hasItem(RexxObject *);
     RexxObject   *hasIndex(RexxObject *);
     RexxSupplier *supplier();
     RexxObject   *merge(RexxHashTableCollection *);

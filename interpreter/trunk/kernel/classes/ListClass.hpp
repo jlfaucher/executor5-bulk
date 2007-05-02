@@ -102,6 +102,8 @@ class RexxSupplier;
    inline size_t items() { return (size_t)count; };
    RexxObject   *empty();
    RexxObject   *isEmpty();
+   RexxObject  *index(RexxObject *);
+   RexxObject  *hasItem(RexxObject *);
    RexxObject   *insert(RexxObject *, RexxObject *);
    RexxObject   *put(RexxObject *, RexxObject *);
    RexxObject   *section(RexxObject *, RexxObject *);

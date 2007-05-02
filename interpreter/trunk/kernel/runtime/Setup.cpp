@@ -364,7 +364,9 @@ bool RexxInterpreter::exportBaseClasses()
   defineProtectedKernelMethod(CHAR_SETMETHOD   , TheDirectoryBehaviour, CPPM(RexxDirectory::setMethod), 2);
   defineKernelMethod(CHAR_SUPPLIER      , TheDirectoryBehaviour, CPPM(RexxDirectory::supplier), 0);
   defineKernelMethod(CHAR_UNKNOWN       , TheDirectoryBehaviour, CPPM(RexxObject::unknownRexx), 2);
-  defineProtectedKernelMethod(CHAR_UNSETMETHOD   , TheDirectoryBehaviour, CPPM(RexxDirectory::remove), 1);  // ENG004M
+  defineProtectedKernelMethod(CHAR_UNSETMETHOD   , TheDirectoryBehaviour, CPPM(RexxDirectory::remove), 1);
+  defineKernelMethod(CHAR_INDEX        , TheDirectoryBehaviour, CPPM(RexxDirectory::indexRexx), 1);
+  defineKernelMethod(CHAR_HASITEM      , TheDirectoryBehaviour, CPPM(RexxDirectory::hasItem), 1);
 
                                        /* set the scope of the methods to   */
                                        /* this classes oref                 */
@@ -410,6 +412,8 @@ bool RexxInterpreter::exportBaseClasses()
   defineKernelMethod(CHAR_APPEND       ,TheListBehaviour, CPPM(RexxList::append), 1);
   defineKernelMethod(CHAR_EMPTY        ,TheListBehaviour, CPPM(RexxList::empty), 0);
   defineKernelMethod(CHAR_ISEMPTY      ,TheListBehaviour, CPPM(RexxList::isEmpty), 0);
+  defineKernelMethod(CHAR_INDEX        ,TheListBehaviour, CPPM(RexxList::index), 1);
+  defineKernelMethod(CHAR_HASITEM      ,TheListBehaviour, CPPM(RexxList::hasItem), 1);
                                        /* set the scope of the methods to   */
                                        /* this classes oref                 */
   TheListBehaviour->setMethodDictionaryScope(TheListClass);
@@ -513,6 +517,8 @@ bool RexxInterpreter::exportBaseClasses()
   defineKernelMethod(CHAR_APPEND        ,TheQueueBehaviour, CPPM(RexxQueue::append), 1);
   defineKernelMethod(CHAR_EMPTY         ,TheQueueBehaviour, CPPM(RexxList::empty), 0);
   defineKernelMethod(CHAR_ISEMPTY       ,TheQueueBehaviour, CPPM(RexxList::isEmpty), 0);
+  defineKernelMethod(CHAR_INDEX         ,TheQueueBehaviour, CPPM(RexxQueue::index), 1);
+  defineKernelMethod(CHAR_HASITEM       ,TheQueueBehaviour, CPPM(RexxList::hasItem), 1);
 
                                        /* set the scope of the methods to   */
                                        /* this classes oref                 */
@@ -554,6 +560,9 @@ bool RexxInterpreter::exportBaseClasses()
   defineKernelMethod(CHAR_SUPPLIER     , TheRelationBehaviour, CPPM(RexxRelation::supplier), 1);
   defineKernelMethod(CHAR_EMPTY        , TheRelationBehaviour, CPPM(RexxHashTableCollection::empty), 0);
   defineKernelMethod(CHAR_ISEMPTY      , TheRelationBehaviour, CPPM(RexxHashTableCollection::isEmpty), 0);
+  defineKernelMethod(CHAR_INDEX        , TheRelationBehaviour, CPPM(RexxHashTableCollection::indexRexx), 1);
+  defineKernelMethod(CHAR_INDEX        , TheTableBehaviour, CPPMHC(RexxHashTableCollection::indexRexx), 1);
+  defineKernelMethod(CHAR_HASITEM      , TheTableBehaviour, CPPMHC(RexxHashTableCollection::hasItem), 1);
 
                                        /* set the scope of the methods to   */
                                        /* this classes oref                 */
@@ -950,8 +959,10 @@ bool RexxInterpreter::exportBaseClasses()
   defineKernelMethod(CHAR_PUT          , TheTableBehaviour, CPPM(RexxHashTableCollection::put), 2);
   defineKernelMethod(CHAR_REMOVE       , TheTableBehaviour, CPPM(RexxHashTableCollection::removeRexx), 1);
   defineKernelMethod(CHAR_SUPPLIER     , TheTableBehaviour, CPPM(RexxHashTableCollection::supplier), 0);
-  defineKernelMethod(CHAR_EMPTY        , TheTableBehaviour, CPPMHC(RexxHashTableCollection::empty), 0);
-  defineKernelMethod(CHAR_ISEMPTY      , TheTableBehaviour, CPPMHC(RexxHashTableCollection::isEmpty), 0);
+  defineKernelMethod(CHAR_EMPTY        , TheTableBehaviour, CPPM(RexxHashTableCollection::empty), 0);
+  defineKernelMethod(CHAR_ISEMPTY      , TheTableBehaviour, CPPM(RexxHashTableCollection::isEmpty), 0);
+  defineKernelMethod(CHAR_INDEX        , TheTableBehaviour, CPPM(RexxHashTableCollection::indexRexx), 1);
+  defineKernelMethod(CHAR_HASITEM      , TheTableBehaviour, CPPM(RexxHashTableCollection::hasItem), 1);
 
                                        /* set the scope of the methods to   */
                                        /* this classes oref                 */
