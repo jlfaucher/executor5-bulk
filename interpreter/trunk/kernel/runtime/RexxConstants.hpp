@@ -523,4 +523,5 @@ const stringchar_t ch_ONE    = '1';            /* Define the One   character.   
 const stringchar_t ch_FIVE   = '5';            /* Define the Five  character.          */
 const stringchar_t ch_NINE   = '9';            /* Define the Nine  character.          */
 const stringchar_t ch_EXPONENT = 'E';          /* Define the exponent marker.          */
+const stringchar_t ch_TAB    = '\t';           /* Define a Blank character.            */
 #endif

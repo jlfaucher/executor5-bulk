@@ -114,7 +114,7 @@ bool valSet(
       if (c != '\0' && strchr((char *)Set, c) != NULL)
         Count++;                       /* bump count                        */
       else {
-        if (c == ' ') {                /* if c blank                        */
+        if (c == ' ' || c == '\t') {   /* if c blank                        */
           if (!SpaceFound) {           /* if 1st blank                      */
                                        /* save position                     */
             Residue = (Count % Modulus);
@@ -133,7 +133,7 @@ bool valSet(
       }
     }
     if (rc) {                          /* still good?                       */
-      if (c == ' ')                    /* if trailing blank                 */
+      if (c == ' ' || c == '\t')       /* if trailing blank                 */
         rc = false;                    /* report error                      */
       else if (SpaceFound && (Count % Modulus) != Residue)
         rc = false;                    /* grouping problem                  */

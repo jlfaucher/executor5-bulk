@@ -1211,13 +1211,6 @@ bool  validateDateFormat(              /* validate the date format          */
 
             switch (*formatscan)
             {           /* process each format piece         */
-//      case ' ':                      /* blank to skip                     */
-//      case '/':                      /* slash to skip                     */
-//      case ':':                      /* colon to skip                     */
-//      case '.':                      /* period to skip                    */
-//                                     /* code moved to otherwise           */
-//        break;                       /* go around                         */
-
                 case 'm':                      /* month spec                        */
                     /* test and convert                  */
                     output->month = (int16_t) getNumber(inputscan, MONTH_SIZE, &invalid);

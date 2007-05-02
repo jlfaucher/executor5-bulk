@@ -312,7 +312,7 @@ RexxString *RexxTarget::getWord()
     /* scan for nonblanks is guaranteed to stop before getting into */
     /* trouble, which eliminates the need to check against the */
     /* length */
-    while (*scan == ' ') {
+    while (*scan == ' ' || *scan == '\t') {
       scan++;                          /* step for each match found         */
     }
                                        /* set the new location              */
@@ -321,7 +321,18 @@ RexxString *RexxTarget::getWord()
       word = OREF_NULLSTRING;          /* just return a null string         */
     else {                             /* have a real word                  */
                                        /* look for the next blank           */
-      endScan = (stringchar_t *)memchr(scan, ' ', this->end - this->subcurrent);
+      endScan = NULL;
+      stringchar_t *scanner = scan;
+      stringchar_t *endPosition = string->getStringData() + this->end;
+      while (scanner < endPosition)
+      {
+          if (*scanner == ' ' || *scanner == '\t')
+          {
+              endScan = scanner;
+              break;
+          }
+          scanner++;
+      }
       if (endScan == NULL) {           /* no match?                         */
                                        /* calculate the length              */
         length = this->end - this->subcurrent;
@@ -366,14 +377,25 @@ void RexxTarget::skipWord()
     /* scan for nonblanks is guaranteed to stop before getting into */
     /* trouble, which eliminates the need to check against the */
     /* length */
-    while (*scan == ' ') {
+    while (*scan == ' ' && *scan != '\t') {
       scan++;                          /* step for each match found         */
     }
                                        /* set the new location              */
     this->subcurrent = scan - (this->string->getStringData());
     if (this->subcurrent < this->end) {/* something left over?              */
                                        /* look for the next blank           */
-      endScan = (stringchar_t *)memchr(scan, ' ', this->end - this->subcurrent);
+      endScan = NULL;
+      stringchar_t *scanner = scan;
+      stringchar_t *endPosition = string->getStringData() + this->end;
+      while (scanner < endPosition)
+      {
+          if (*scanner == ' ' || *scanner == '\t')
+          {
+              endScan = scanner;
+              break;
+          }
+          scanner++;
+      }
       if (endScan == NULL)             /* no match?                         */
         this->subcurrent = this->end;  /* use the rest of it                */
       else
