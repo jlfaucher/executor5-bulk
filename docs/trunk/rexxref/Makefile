@@ -49,7 +49,7 @@ SGML_FILES = collclasses.sgml \
 	     condtra.sgml \
 	     classes.sgml \
 	     classicclasses.sgml \
-	     miscclasses.sgml \
+	     utilityclasses.sgml \
 	     winclasses.sgml \
 	     dire.sgml \
 	     errnum.sgml \
