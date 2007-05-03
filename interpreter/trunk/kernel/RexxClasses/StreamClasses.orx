@@ -53,7 +53,7 @@
                                        /*environment                        */
 .environment~setentry('STREAM', .Stream)
 .environment~setentry('STREAM_SUPPLIER', .Stream_Supplier)
-.environment~setentry('RX_QUEUE', .rx_queue)
+.environment~setentry('REXXQUEUE', .rx_queue)
 
 /***************************************************/
 /* Create the stream class                         */
@@ -354,6 +354,19 @@ if \available then                     /* already reached the end?          */
 /* Create the rx_queue class and define its associated methods */
 /*****************************************************************/
 ::CLASS rx_queue
+::METHOD create  CLASS   EXTERNAL 'REXX rexx_create_queue'
+::METHOD delete  CLASS   EXTERNAL 'REXX rexx_delete_queue'
+
+::METHOD init
+  use strict arg name = "SESSION"
+  name = name~upper
+  if name \= 'SESSION' then do
+      createdName = self~class~create(name)
+      if createdName \= name then do
+          self~class~delete(createdName)
+      end
+  end
+  self~set(name)
 
 ::METHOD get                           /* get the queue name                */
   expose named_queue                   /* just expose and return            */
@@ -367,10 +380,21 @@ if \available then                     /* already reached the end?          */
   self~objectname = new_queue          /* and also set as an object name    */
   return old_queue                     /* and return the old one            */
 
+-- delete the named queue when finished
+::method delete
+  exposed named_queue
+  if named_queue \= 'SESSION' then do
+      self~class~delete(named_queue)
+  end
+
+::METHOD lineout
+  forward message 'QUEUE'
+
+::METHOD say
+  forward message 'QUEUE'
+
 ::METHOD push            EXTERNAL 'REXX rexx_push_queue'
 ::METHOD queue           EXTERNAL 'REXX rexx_queue_queue'
-::METHOD create          EXTERNAL 'REXX rexx_create_queue'
-::METHOD delete          EXTERNAL 'REXX rexx_delete_queue'
 ::METHOD pull            EXTERNAL 'REXX rexx_pull_queue'
 ::METHOD linein          EXTERNAL 'REXX rexx_linein_queue'
-::METHOD query           EXTERNAL 'REXX rexx_query_queue'
+::METHOD queued          EXTERNAL 'REXX rexx_query_queue'

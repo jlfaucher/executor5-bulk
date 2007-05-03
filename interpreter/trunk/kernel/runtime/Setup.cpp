@@ -237,6 +237,7 @@ bool RexxInterpreter::exportBaseClasses()
   defineKernelMethod(CHAR_LESSTHAN_GREATERTHAN   ,TheClassBehaviour, CPPM(RexxClass::notEqual), 1);
   defineKernelMethod(CHAR_GREATERTHAN_LESSTHAN   ,TheClassBehaviour, CPPM(RexxClass::notEqual), 1);
   defineKernelMethod(CHAR_STRICT_BACKSLASH_EQUAL ,TheClassBehaviour, CPPM(RexxClass::notEqual), 1);
+  defineKernelMethod(CHAR_ISSUBCLASSOF           ,TheClassBehaviour, CPPM(RexxClass::isSubclassOf), 1);
                                        /* and the private class methods     */
   defineProtectedKernelMethod(CHAR_SHRIEKREXXDEFINED,TheClassBehaviour, CPPM(RexxClass::setRexxDefined), 0);
 
@@ -728,7 +729,7 @@ bool RexxInterpreter::exportBaseClasses()
   defineKernelMethod(CHAR_XOR                          ,TheStringBehaviour, CPPM(RexxString::xorOp), 1);
   defineKernelMethod(CHAR_MAKEARRAY                    ,TheStringBehaviour, CPPM(RexxString::makeArray), 1);
   defineKernelMethod(CHAR_EQUALS                       ,TheStringBehaviour, CPPM(RexxString::equals), 1);
-  defineKernelMethod(CHAR_EQUALSCASELESS               ,TheStringBehaviour, CPPM(RexxString::equalsCaseless), 1);
+  defineKernelMethod(CHAR_CASELSESSEQUALS              ,TheStringBehaviour, CPPM(RexxString::caselessEquals), 1);
   defineKernelMethod(CHAR_MATCH                        ,TheStringBehaviour, CPPM(RexxString::match), 4);
   defineKernelMethod(CHAR_CASELESSMATCH                ,TheStringBehaviour, CPPM(RexxString::caselessMatch), 4);
   defineKernelMethod(CHAR_MATCHCHAR                    ,TheStringBehaviour, CPPM(RexxString::matchChar), 2);

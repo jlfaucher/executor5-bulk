@@ -135,6 +135,18 @@ server~!rexxdefined                     /* Mark as unchangeable          */
 .environment~setentry('PROPERTIES', .Properties)
 .environment~setentry('ALARM', .Alarm)
 
+functions = .kernel~functions          /* get the function table            */
+  /**************************************************************/
+  /* Define the Windows system specific functions               */
+  /**************************************************************/
+functions['BEEP']         = .methods~function_beep
+functions['DIRECTORY']    = .methods~function_directory
+functions['RXQUEUE']      = .methods~function_rxqueue
+functions['RXFUNCADD']    = .methods~function_rxfuncadd
+functions['RXFUNCDROP']   = .methods~function_rxfuncdrop
+functions['RXFUNCQUERY']  = .methods~function_rxfuncquery
+functions['!QUEUEEXIT']   = .methods~function_queueexit
+
 call 'StreamClasses.orx'
 
 say 'Stream methods setup'
@@ -737,6 +749,56 @@ use strict arg index, value=(index)    /* get the index                     */
   .local~setentry('ERROR', .monitor~new(.stderr))
 
   .local~setentry('STDQUE',.rx_queue~new~~set('SESSION'))
+
+/* **************************************** */
+/*    F U N C T I O N    M E T H O D S      */
+/* **************************************** */
+
+::method function_rxqueue
+  use arg keyword, queue_name
+  parse upper var keyword keyword
+  signal on syntax
+  if arg() > 2 then
+     raise syntax 40.004 array ('RXQUEUE', 2)
+
+  if substr(keyword,1,1) = 'G' then
+    if arg() > 1 then
+      raise syntax 40.004 array ('RXQUEUE', 1)
+    else
+      return .stdque~get
+
+  if substr(keyword,1,1) = 'S' then do
+    queue_name = !queueexit(queue_name)/* give the exit a pass     */
+    if symbol(queue_name) = 'BAD' then
+      raise syntax 40.026 array ('RXQUEUE', 2, queue_name)
+    return .stdque~set(queue_name)
+  end
+
+  if substr(keyword,1,1) = 'C' then do
+    if symbol(queue_name) = 'BAD' then
+      raise syntax 40.026 array ('RXQUEUE', 2, queue_name)
+    if (Arg(2,'o') = 1) then
+      queue_name = 'S00001Q0000000001'
+    return .RexxQueue~create(queue_name)
+  end
+
+  if substr(keyword,1,1) = 'D' then do
+    if symbol(queue_name) = 'BAD' then
+      raise syntax 40.026 array ('RXQUEUE', 2, queue_name)
+    return .RexxQueue~delete(queue_name)
+  end
+  raise syntax 40.904 array ('RXQUEUE', 1, 'CDGS', keyword)
+  return
+
+syntax: raise propagate
+
+::method function_queueexit     EXTERNAL 'REXX function_queueExit'
+::method function_rxfuncadd     EXTERNAL 'REXX sysRxfuncadd'
+::method function_rxfuncdrop    EXTERNAL 'REXX sysRxfuncdrop'
+::method function_rxfuncquery   EXTERNAL 'REXX sysRxfuncquery'
+
+::method function_beep          EXTERNAL 'REXX sysBeep'
+::method function_directory     EXTERNAL 'REXX sysDirectory'
 
 -- tagging classes for Collection class types
 ::CLASS Collection MIXINCLASS Object

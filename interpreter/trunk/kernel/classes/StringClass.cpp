@@ -593,6 +593,29 @@ bool RexxString::primitiveCaselessMatch(stringsize_t start, RexxString *other, s
 }
 
 
+/**
+ * Primitive string caseless comparison.
+ *
+ * @param otherObj The other string to compare.
+ *
+ * @return true if the strings compare, false otherwise.
+ */
+bool RexxString::primitiveCaselessIsEqual(RexxObject *otherObj)
+{
+    // we have one required string object
+    required_arg(otherObj, ONE);
+    RexxString *other = REQUEST_STRING(otherObj);
+    stringsize_t otherLen = other->getLength();
+    // can't compare equal if different lengths
+    if (otherLen != this->getLength())
+    {
+        return false;
+    }
+    // do the actual string compare
+    return CaselessCompare((PUCHAR)this->getStringData(), (PUCHAR)other->getStringData(), otherLen) == 0;
+}
+
+
 int RexxString::comp(RexxObject *other)
 /******************************************************************************/
 /* Function:  Do a value comparison of two strings for the non-strict         */
@@ -952,6 +975,35 @@ RexxInteger *RexxString::strictEqual(RexxObject *other)
   else
     return this->primitiveIsEqual(other) ? TheTrueObject : TheFalseObject;
 }
+
+
+/**
+ * The string equals() method, which does a strict compare with
+ * another string object.
+ *
+ * @param other  The other string object.
+ *
+ * @return True if the strings are equal, false for inequality.
+ */
+RexxInteger *RexxString::equals(RexxString *other)
+{
+    return this->primitiveIsEqual(other) ? TheTrueObject : TheFalseObject;
+}
+
+/**
+ * The string equals() method, which does a strict caseless
+ * compare with another string object.
+ *
+ * @param other  The other string object.
+ *
+ * @return True if the strings are equal, false for inequality.
+ */
+RexxInteger *RexxString::caselessEquals(RexxString *other)
+{
+    return this->primitiveCaselessIsEqual(other) ? TheTrueObject : TheFalseObject;
+}
+
+
 
 RexxInteger *RexxString::strictNotEqual(RexxObject *other)
 /******************************************************************************/

@@ -2750,7 +2750,7 @@ BUILTIN(LINES) {
                                        /* get the default output stream     */
     stream = context->getFromLocalEnvironment(OREF_REXXQUEUE);
                                        /* return count on the queue         */
-    result = (RexxInteger *)stream->sendMessage(OREF_QUERY);
+    result = (RexxInteger *)stream->sendMessage(OREF_QUEUED);
   }
   else
   {
