@@ -45,8 +45,12 @@ STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/print/docbook.dsl
 HTML_STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/html/docbook.dsl
 
 
-SGML_FILES = coll.sgml \
+SGML_FILES = collclasses.sgml \
 	     condtra.sgml \
+	     classes.sgml \
+	     classicclasses.sgml \
+	     miscclasses.sgml \
+	     winclasses.sgml \
 	     dire.sgml \
 	     errnum.sgml \
 	     errnums.sgml \
@@ -69,7 +73,6 @@ SGML_FILES = coll.sgml \
 	     wsheng.sgml \
 	     xconcur.sgml \
 	     xintdeb.sgml \
-	     xothcla.sgml \
 	     ../shared/oorexx.xsl \
 	     ../shared/legalstuff.sgml \
 	     ../shared/notices.sgml \

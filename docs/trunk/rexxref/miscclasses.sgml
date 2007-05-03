@@ -1,0 +1,1116 @@
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Reference SGML file.
+    #
+    # Copyright (c) 2005-2007, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    # Author(s):
+    #      W. David Ashley <dashley@us.ibm.com>
+    #
+    #########################################################################
+-->
+<section id="miscclasses"><title>The Miscellaneous Classes</title>
+<para>This section describes the miscellaneous classes supplied by ooRexx.</para>
+
+<section id="xalcl"><title>The Alarm Class</title>
+<indexterm><primary>Alarm class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>Alarm class</secondary></indexterm>
+<para>An alarm object provides timing and
+notification capability by supplying a facility to send any message to any
+object at a given time. You can cancel an alarm before it sends its message.
+</para>
+<para>The Alarm class is a subclass of the Object class.</para>
+<para><emphasis role="bold">Methods the Alarm class defines:</emphasis></para>
+<simplelist>
+<member>CANCEL</member>
+<member>INIT (Overrides Object class method)</member>
+</simplelist>
+<para><emphasis role="bold">Methods inherited from the Object class:</emphasis>
+</para>
+<simplelist>
+<member>NEW (Class Method)</member>
+<member>Operator methods:&nbsp;&nbsp;=, ==, \=, >&lt;, &lt;>, \==</member>
+<member>CLASS</member>
+<member>COPY</member>
+<member>DEFAULTNAME</member>
+<member>HASMETHOD</member>
+<member>OBJECTNAME</member>
+<member>OBJECTNAME=</member>
+<member>REQUEST</member>
+<member>RUN</member>
+<member>SETMETHOD</member>
+<member>START</member>
+<member>STRING</member>
+<member>UNSETMETHOD</member>
+</simplelist>
+
+<note><title>Note</title>
+<para>The Alarm class also has available class methods that its
+metaclass, the Class class, defines.</para></note>
+
+<section id="alcan"><title>CANCEL</title>
+<indexterm><primary>CANCEL method</primary>
+<secondary>of Alarm class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>CANCEL method</secondary>
+<tertiary>of Alarm class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-CANCEL------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Cancels the pending alarm request represented by the receiver. This method
+takes no action if the specified time has already been reached.</para>
+</section>
+
+<section id="alini"><title>INIT</title>
+<indexterm><primary>INIT method</primary>
+<secondary>of Alarm class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>INIT method</secondary>
+<tertiary>of Alarm class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-INIT(atime,message)-----------------------------------------><
+]]>
+</programlisting>
+
+<para>Sets up an alarm for a future time
+<emphasis role="italic">atime</emphasis>. At this time, the alarm
+object sends the message that <emphasis role="italic">message</emphasis>,
+a message object, specifies. (See <link linkend="agent">The Message Class</link>.)
+The <emphasis role="italic">atime</emphasis> is a string. You can specify
+this in the default format (<computeroutput>&apos;hh:mm:ss&apos;</computeroutput>) or as
+a number of seconds
+starting at the present time. If you use the default format, you can specify
+a date in the default format (<computeroutput>&apos;dd Mmm yyyy&apos;</computeroutput>)
+after the time with a single blank separating the time and date. Leading and
+trailing blanks are not allowed in the
+<emphasis role="italic">atime</emphasis>. If you do not
+specify a date, the language processor uses the first future occurrence of the
+specified time. You can use the CANCEL method to cancel a pending alarm. See
+<link linkend="creo">Initialization</link> for more information.</para>
+</section>
+
+<section id="alaex"><title>Examples</title>
+<indexterm><primary>examples</primary>
+<secondary>of Alarm class</secondary></indexterm>
+<para>The following code sets up an alarm at 5:10 p.m. on October 8, 1996.
+(Assume today's date is October 5, 1996.)  </para>
+<programlisting>
+/* Alarm Examples */
+
+PersonalMessage=.MyMessageClass~new("Call the Bank")
+msg=.message~new(PersonalMessage,"RemindMe")
+
+a=.alarm~new("17:10:00 8 Oct 1996", msg)
+exit
+/* <link linkend="clasdi">::CLASS</link>  describes the ::CLASS directive */
+/* <link linkend="methd">::METHOD</link>  describes the ::METHOD directive */
+::CLASS MyMessageClass public
+::Method init
+expose inmsg
+use arg inmsg
+::Method RemindMe
+expose inmsg
+say "It is now" "TIME"("C")".Please "inmsg
+/* On the specified data and time, displays the following message: */
+/* "It is now 5:10pm. Please Call the Bank" */
+</programlisting>
+<para>For the following example, the user uses the same code as in the
+preceding example to define <computeroutput>msg</computeroutput>,
+a message object to run at the specified time. The following code sets up
+an alarm to run the <computeroutput>msg</computeroutput> message
+object in 30 seconds from the current time: </para>
+<programlisting>
+a=.alarm~new(30,msg)
+</programlisting>
+</section>
+</section>
+
+<section id="moncla"><title>The Monitor Class</title>
+<indexterm><primary>Monitor class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>Monitor class</secondary></indexterm>
+<para>The Monitor class forwards messages to a destination object. It is a
+subclass of the Object class.</para>
+<para><emphasis role="bold">Methods the Monitor class defines:</emphasis></para>
+<simplelist>
+<member>CURRENT</member>
+<member>DESTINATION</member>
+<member>INIT (Overrides Object class method)</member>
+<member>UNKNOWN</member>
+</simplelist>
+
+<para><emphasis role="bold">Methods inherited from the Object class:</emphasis>
+</para>
+<simplelist>
+<member>NEW (Class method)</member>
+<member>Operator methods:&nbsp;&nbsp;=, ==, \=, >&lt;, &lt;>, \==</member>
+<member>CLASS</member>
+<member>COPY</member>
+<member>DEFAULTNAME</member>
+<member>HASMETHOD</member>
+<member>OBJECTNAME</member>
+<member>OBJECTNAME=</member>
+<member>REQUEST</member>
+<member>RUN</member>
+<member>SETMETHOD</member>
+<member>START</member>
+<member>STRING</member>
+<member>UNSETMETHOD</member>
+</simplelist>
+
+
+<note><title>Note</title>
+<para>The Monitor class also has available class methods that its
+metaclass, the Class class, defines.</para></note>
+
+<section id="moncur"><title>CURRENT</title>
+<indexterm><primary>CURRENT method</primary>
+<secondary>of Monitor class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>CURRENT method</secondary>
+<tertiary>of Monitor class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-CURRENT-----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the current destination object.</para>
+</section>
+
+<section id="mondes"><title>DESTINATION</title>
+<indexterm><primary>DESTINATION method</primary>
+<secondary>of Monitor class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>DESTINATION method</secondary>
+<tertiary>of Monitor class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-DESTINATION--+---------------+------------------------------><
+                +-(destination)-+
+]]>
+</programlisting>
+
+<para>Returns a new destination object. If you specify
+<emphasis role="italic">destination</emphasis>,
+this becomes the new destination for any forwarded messages. If you omit
+<emphasis role="italic">destination</emphasis>, the previous destination
+object becomes the new destination for any forwarded messages.</para>
+</section>
+
+<section id="monini"><title>INIT</title>
+<indexterm><primary>INIT method</primary>
+<secondary>of Monitor class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>INIT method</secondary>
+<tertiary>of Monitor class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-INIT--+---------------+-------------------------------------><
+         +-(destination)-+
+]]>
+</programlisting>
+
+<para>Initializes the newly created monitor object.</para>
+</section>
+
+<section id="monunk"><title>UNKNOWN</title>
+<indexterm><primary>UNKNOWN method</primary>
+<secondary>of Monitor class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>UNKNOWN method</secondary>
+<tertiary>of Monitor class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-UNKNOWN(messagename,messageargs)----------------------------><
+]]>
+</programlisting>
+
+<para>Reissues or forwards to the current monitor destination all unknown
+messages sent to a monitor object. For additional information, see
+<link linkend="unkno">Defining an UNKNOWN Method</link>.</para>
+</section>
+
+<section id="monex"><title>Examples</title>
+<indexterm><primary>examples</primary>
+<secondary>of Monitor class</secondary></indexterm>
+<programlisting>
+.local~setentry("output",.monitor~new(.stream~new("my.new")~~command("open nobuffer")))
+
+/* The following sets the destination */
+previous_destination=.output~destination(.stream~new("my.out")~~command("open write"))
+/* The following resets the destination */
+.output~destination
+
+.output~destination(.STDOUT)
+current_output_destination_stream_object=.output~current
+</programlisting>
+</section>
+</section>
+
+<section id="mutablebuffer"><title>The MutableBuffer Class</title>
+<indexterm><primary>MutableBuffer class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>MutableBuffer class</secondary></indexterm>
+
+<para>The MutableBuffer class is a buffer that contains a string on which
+certain string operations such as concatenation can be performed very
+efficiently. (Frequent concatenation of long strings without using this
+class might result in weak performance, large memory allocation, or both.)
+</para>
+
+<para><emphasis role="bold">Methods the MutableBuffer class defines:</emphasis></para>
+<simplelist>
+<member>Init</member>
+<member>Append</member>
+<member>Delete</member>
+<member>GetBufferSize</member>
+<member>Insert</member>
+<member>Lastpos</member>
+<member>Length</member>
+<member>Overlay</member>
+<member>Pos</member>
+<member>SetBufferSize</member>
+<member>String</member>
+<member>Subchar</member>
+<member>Substr</member>
+<member>Uninit</member>
+</simplelist>
+
+<para><emphasis role="bold">Methods inherited from the Object class:</emphasis>
+</para>
+<simplelist>
+<member>Operator methods:&nbsp;&nbsp;=, ==, \=, >&lt;, &lt;>, \==</member>
+<member>CLASS</member>
+<member>COPY</member>
+<member>DEFAULTNAME</member>
+<member>HASMETHOD</member>
+<member>OBJECTNAME</member>
+<member>OBJECTNAME=</member>
+<member>REQUEST</member>
+<member>RUN</member>
+<member>SETMETHOD</member>
+<member>START</member>
+<member>STRING</member>
+<member>UNSETMETHOD</member>
+</simplelist>
+
+<section><title>INIT</title>
+<indexterm><primary>INIT method</primary>
+<secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>INIT method</secondary>
+<tertiary>of MutableBuffer class</tertiary></indexterm>
+
+<programlisting>
+<![CDATA[
+                    +-----,-256------+
+>>-INIT(-+--------+-+----------------+-)-------------------><
+         +-string-+ +-,-buffer size--+
+]]>
+</programlisting>
+
+<para>Initialize the buffer, optionally assign a buffer content and
+a starting <emphasis>buffer size</emphasis>. The default size is 256; the buffer
+size increases to the length of the <emphasis>string</emphasis> if the string
+does not fit into the buffer.</para>
+</section>
+
+<section><title>APPEND</title>
+<indexterm><primary>APPEND method</primary>
+<secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>APPEND method</secondary>
+<tertiary>of MutableBuffer class</tertiary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-APPEND(string)------------------------------------------><
+]]>
+</programlisting>
+
+<para>Appends string string to the buffer content. The buffer size
+is increased if necessary.</para>
+</section>
+
+<section><title>DELETE</title>
+<indexterm><primary>DELETE method</primary>
+<secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>DELETE method</secondary>
+<tertiary>of MutableBuffer class</tertiary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-DELETE(n---+---------+--)-------------------------------><
+              +-,length-+
+]]>
+</programlisting>
+
+<para>Deletes <emphasis>length</emphasis> characters from the buffer beginning
+at the <emphasis>n</emphasis>'th character. If length is omitted, or if length
+is greater than the number of characters from <emphasis>n</emphasis> to the end
+of the buffer, the method deletes the remaining buffer contents (including
+the <emphasis>n</emphasis>'th character). The length must be a positive integer
+or zero. The <emphasis>n</emphasis> must be a positive integer. If
+<emphasis>n</emphasis> is greater than
+the length of the buffer or zero, the method does not modify the
+buffer content.</para>
+</section>
+
+<section><title>GETBUFFERSIZE</title>
+<indexterm><primary>GETBUFFERSIZE method</primary>
+<secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>GETBUFERSIZE method</secondary>
+<tertiary>of MutableBuffer class</tertiary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-GETBUFFERSIZE-------------------------------------------><
+]]>
+</programlisting>
+
+<para>Retrieves the current buffer size.</para>
+</section>
+
+<section><title>INSERT</title>
+<indexterm><primary>INSERT method</primary>
+<secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>INSERT method</secondary>
+<tertiary>of MutableBuffer class</tertiary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-INSERT(new-+-----------------------------------------+--)><
+              +-,--+---+--+--------------------------+--+
+                   +-n-+  +-,--+--------+--+------+--+
+                               +-length-+  +-,pad-+
+]]>
+</programlisting>
+
+<para>Inserts the string <emphasis>new</emphasis>, padded or truncated to
+length <emphasis>length</emphasis>, into the mutable buffer after the
+<emphasis>n</emphasis>'th character. The default
+value for <emphasis>n</emphasis> is 0, which means insertion at the beginning
+of the string. If specified, <emphasis>n</emphasis> and length must be
+positive integers or zeros. If <emphasis>n</emphasis> is greater than the
+length of the buffer contents,
+the string new is padded at the beginning. The default value for
+<emphasis>length</emphasis> is the length of <emphasis>new</emphasis>.
+If length is less than the length of
+string <emphasis>new</emphasis>, INSERT truncates <emphasis>new</emphasis>
+to length <emphasis>length</emphasis>. The default
+<emphasis>pad</emphasis> character is a blank.</para>
+</section>
+
+<section id="mblast"><title>LASTPOS</title>
+<indexterm><primary>LASTPOS method</primary>
+<secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>LASTPOS method</secondary>
+<tertiary>of MutableBuffer class</tertiary></indexterm>
+<indexterm><primary>position</primary>
+<secondary>last occurrence of a string</secondary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-LASTPOS(needle-+--------+-)---------------------------------><
+                  +-,start-+
+]]>
+</programlisting>
+
+<para>Returns the position of the last occurrence of a string,
+<emphasis role="italic">needle</emphasis>,
+in the receiving buffer. (See also <link linkend="mbpos">POS</link>.) It
+returns <computeroutput>0</computeroutput> if
+<emphasis role="italic">needle</emphasis> is the null string or not found.
+By default, the search starts at the last character of the receiving buffer
+and scans backward. You can override this by specifying
+<emphasis role="italic">start</emphasis>, the point at which the
+backward scan starts. The <emphasis role="italic">start</emphasis> must be a
+positive whole number and defaults to
+<computeroutput>receiving_buffer~length</computeroutput> if larger than that
+value or omitted.</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>LASTPOS method</secondary></indexterm>
+<programlisting>
+x1 - .mutablebuffer~new()
+x1 = "abc def ghi"
+x1~LASTPOS(" ")      ->    8
+x1 = "abcdefghi"
+x1~LASTPOS(" ")      ->    0
+x1 = "efgxyz"
+x1~LASTPOS("xy")     ->    4
+x1 = "abc def ghi"
+x1~LASTPOS(" ",7)    ->    4
+</programlisting>
+<para>(See <link linkend="lastpos">LASTPOS (Last Position)</link>
+for information about the LASTPOS built-in function.)</para>
+</section>
+
+<section><title>LENGTH</title>
+<indexterm><primary>LENGTH method</primary>
+<secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>LENGTH method</secondary>
+<tertiary>of MutableBuffer class</tertiary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-LENGTH--------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns length of data in buffer.</para>
+</section>
+
+<section><title>OVERLAY</title>
+<indexterm><primary>OVERLAY method</primary>
+<secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>OVERLAY method</secondary>
+<tertiary>of MutableBuffer class</tertiary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-OVERLAY(new-+-----------------------------------------+--)--><
+               +-,--+---+--+--------------------------+--+
+                    +-n-+  +-,--+--------+--+------+--+
+                                +-length-+  +-,pad-+
+]]>
+</programlisting>
+
+<para>Modifies the buffer content by overlaying it, starting at the
+<emphasis>n</emphasis>'th character, with the string <emphasis>new</emphasis>,
+padded or truncated to length <emphasis>length</emphasis>. The overlay can extend
+beyond the end of the buffer. In this case the buffer size will be increased.
+If you specify <emphasis>length</emphasis>, it must be a positive integer or
+zero. The default value for <emphasis>length</emphasis> is the length of
+<emphasis>new</emphasis>. If <emphasis>n</emphasis> is
+greater than the length of the buffer content, padding is
+added before the new string. The default <emphasis>pad</emphasis> character is
+a blank, and the default value for <emphasis>n</emphasis> is 1. If you specify
+<emphasis>n</emphasis>, it must be a positive integer.</para>
+</section>
+
+<section id="mbpos"><title>POS</title>
+<indexterm><primary>POS method</primary>
+<secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>POS method</secondary>
+<tertiary>of MutableBuffer class</tertiary></indexterm>
+<indexterm><primary>finding</primary>
+<secondary>string in a MutableBuffer</secondary></indexterm>
+<indexterm><primary>locating</primary>
+<secondary>string in a MutableBuffer</secondary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-POS(needle-+--------+-)-------------------------------------><
+              +-,start-+
+]]>
+</programlisting>
+
+<para>Returns the position in the receiving buffer of another string,
+<emphasis role="italic">needle</emphasis>. (See also
+<link linkend="mblast">LASTPOS</link>.) It returns
+<computeroutput>0</computeroutput> if
+<emphasis role="italic">needle</emphasis> is the null string or is not found
+or if <emphasis role="italic">start</emphasis> is greater than
+the length of the receiving buffer. By default, the search starts at the first
+character of the receiving buffer (that is, the value of
+<emphasis role="italic">start</emphasis> is <computeroutput>1</computeroutput>).
+You can override this by specifying <emphasis role="italic">start</emphasis>
+(which must be
+a positive whole number), the point at which the search starts.</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>POS method</secondary></indexterm>
+<programlisting>
+x1 = .mutablebuffer~new()
+x1 = "Saturday"
+x1~POS("day")       ->    6
+x1 = "abc def ghi"
+x1~POS("x")         ->    0
+x1 = "abc def ghi"
+x1~POS(" ")         ->    4
+x1 = "abc def ghi"
+x1~POS(" ",5)       ->    8
+</programlisting>
+<para>(See <link linkend="pos">POS (Position)</link>
+for information about the POS built-in function.)</para>
+</section>
+
+<section><title>SETBUFFERSIZE</title>
+<indexterm><primary>SETBUFFERSIZE method</primary>
+<secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>SETBUFERSIZE method</secondary>
+<tertiary>of MutableBuffer class</tertiary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-SETBUFFERSIZE(n)----------------------------------------><
+]]>
+</programlisting>
+
+<para>Sets the buffer size. If <emphasis>n</emphasis>
+is less than the length of buffer
+content, the content is truncated. If <emphasis>n</emphasis> is 0, the entire
+contents is erased and the new buffer size is the value given
+in the INIT method.</para>
+</section>
+
+<section><title>STRING</title>
+<indexterm><primary>STRING method</primary>
+<secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>STRING method</secondary>
+<tertiary>of MutableBuffer class</tertiary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-STRING--------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Retrieves the content of the buffer (a string).</para>
+</section>
+
+<section><title>SUBCHAR</title>
+<indexterm><primary>STRING method</primary>
+<secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>SUBCHAR method</secondary>
+<tertiary>of MutableBuffer class</tertiary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-SUBCHAR(n)----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the <emphasis>n</emphasis>'th character of the receiving
+string. <emphasis>n</emphasis> must be a positive whole number. If
+<emphasis>n</emphasis> is greater that the length of the receiving string
+then a zero-length string is returned.</para>
+</section>
+
+<section><title>SUBSTR</title>
+<indexterm><primary>SUBSTR method</primary>
+<secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>SUBSTR method</secondary>
+<tertiary>of MutableBuffer class</tertiary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-SUBSTR(n-+--------------------------+--)----------------><
+            +-,--+--------+--+------+--+
+                 +-length-+  +-,pad-+
+]]>
+</programlisting>
+
+<para>Returns a substring from the buffer content that begins at the
+<emphasis>n</emphasis>'th character and is of length
+<emphasis>length</emphasis>, padded with <emphasis>pad</emphasis> if
+necessary. The <emphasis>n</emphasis> must be a positive integer. If
+<emphasis>n</emphasis> is greater
+than receiving_string~LENGTH, only <emphasis>pad</emphasis> characters
+are returned. If you omit <emphasis>length</emphasis>, the remaining
+buffer content is returned.
+The default <emphasis>pad</emphasis> character is a blank.</para>
+</section>
+
+<section id="mutmuninit"><title>UNINIT</title>
+<indexterm><primary>UNINIT method</primary>
+<secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>UNINIT method</secondary>
+<tertiary>of MutableBuffer class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-UNINIT------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>This method cleans up the object when it is garbage collected. It should
+not be invoked directly except via an UNINIT method of a subclass of the
+MutableBuffer class.
+</para>
+<para>If the MutableBuffer class is subclassed and the subclass provides an UNINIT
+method then that method must invoke the superclass UNINIT method.
+The following example shows how to accomplish this.</para>
+<programlisting>
+<![CDATA[
+::class CustomMutableBuffer subclass MutableBuffer
+
+...
+
+::method uninit
+/* the subclass instance cleanup code should be placed here */
+super~uninit  -- this should be the last action in the method
+return
+]]>
+</programlisting>
+</section>
+</section>
+
+<section id="regecpcls"><title>The RegularExpression Class</title>
+<indexterm><primary>RegularExpression class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>RegularExpression class</secondary></indexterm>
+
+<para>This class provides support for regular expressions. A regular
+expression is a pattern you can use to match strings.</para>
+
+<para>Here is a description of the syntax:</para>
+
+<variablelist>
+<varlistentry><term>|</term>
+<listitem><para>OR operator between the left and right expression
+</para></listitem></varlistentry>
+<varlistentry><term>?</term>
+<listitem><para>Matches any single character
+</para></listitem></varlistentry>
+<varlistentry><term>*</term>
+<listitem><para>Matches the previous expression zero or more times
+</para></listitem></varlistentry>
+<varlistentry><term>+</term>
+<listitem><para>Matches the previous expression one or more times
+</para></listitem></varlistentry>
+<varlistentry><term>\</term>
+<listitem><para>"Escape" symbol: use the next character literally
+</para></listitem></varlistentry>
+<varlistentry><term>()</term>
+<listitem><para>Expression in parenthesis (use where needed)
+</para></listitem></varlistentry>
+<varlistentry><term>{n}</term>
+<listitem><para>Matches previous expression n times (n>1)
+</para></listitem></varlistentry>
+<varlistentry><term>[]</term>
+<listitem><para>Set definition: matches any single character out of the defined
+set.</para>
+<para>A &apos;^&apos; right after the opening bracket means that none of the
+following characters should be matched.</para>
+<para>A &apos;-&apos; (if not used with &apos;\&apos;) defines a range between the last
+specified character and the one following &apos;-&apos;. If it is the
+first character in the set definition, it is used literally.
+</para></listitem></varlistentry>
+</variablelist>
+
+<para>The following symbolic names (they must start and end with &apos;:&apos;) can
+be used to abbreviate common sets:</para>
+
+<variablelist>
+<varlistentry><term>:ALPHA:</term>
+<listitem><para>Characters in the range A-Z and a-z
+</para></listitem></varlistentry>
+<varlistentry><term>:LOWER:</term>
+<listitem><para>Characters in the range a-z
+</para></listitem></varlistentry>
+<varlistentry><term>:UPPER:</term>
+<listitem><para>Characters in the range A-Z
+</para></listitem></varlistentry>
+<varlistentry><term>:DIGIT:</term>
+<listitem><para>Characters in the range 0-9
+</para></listitem></varlistentry>
+<varlistentry><term>:ALNUM:</term>
+<listitem><para>Characters in :DIGIT: and :ALPHA:
+</para></listitem></varlistentry>
+<varlistentry><term>:XDIGIT:</term>
+<listitem><para>Characters in :DIGIT:, A-F and a-f
+</para></listitem></varlistentry>
+<varlistentry><term>:BLANK:</term>
+<listitem><para>Space and tab characters
+</para></listitem></varlistentry>
+<varlistentry><term>:SPACE:</term>
+<listitem><para>Characters "09"x to "0D"x and space
+</para></listitem></varlistentry>
+<varlistentry><term>:CNTRL:</term>
+<listitem><para>Characters "00"x to "1F"x and "7F"x
+</para></listitem></varlistentry>
+<varlistentry><term>:PRINT:</term>
+<listitem><para>Characters in the range "20"x to "7E"x
+</para></listitem></varlistentry>
+<varlistentry><term>:GRAPH:</term>
+<listitem><para>Characters in :PRINT: without space
+</para></listitem></varlistentry>
+<varlistentry><term>:PUNCT:</term>
+<listitem><para>All :PRINT: characters without space and not in :ALNUM:
+</para></listitem></varlistentry>
+</variablelist>
+
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>RegularExpression class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+     "(Hi|Hello) World"      Matches "Hi World" and
+                             "Hello World".
+     "file.???"              Matches any file with three
+                             characters after "."
+     "file.?{3}"             Same as above.
+     "a *b"                  Matches all strings that begin with
+                             "a" and end with "b" and have an
+                             arbitrary number of spaces in between
+                             both.
+     "a +b"                  Same as above, but at least one space
+                             must be present.
+     "file.[bd]at"           Matches "file.bat" and "file.dat".
+     "[A-Za-z]+"             Matches any string containing only
+                             letters.
+     "[:ALPHA:]+"            Same as above, using symbolic names.
+     "[^0-9]*"               Matches any string containing no
+                             numbers, including the empty string.
+     "[:DIGIT::LOWER:]"      A single character, either a digit or
+                             a lower case character.
+     "This is (very )+nice." Matches all strings with one or more
+                             occurrences of "very " between
+                             "This is " and "nice.".
+]]>
+</programlisting>
+
+<para>The RegularExpression class is not a built-in class. It is defined
+in the RXREGEXP.CLS file. This means, you must use a
+::requires statement to activate its functionality, as follows:</para>
+
+<programlisting>
+<![CDATA[
+::requires "RXREGEXP.CLS"
+]]>
+</programlisting>
+
+<para>Methods available to the RegularExpression class:</para>
+
+<itemizedlist>
+<listitem><para>Init</para></listitem>
+<listitem><para>Match</para></listitem>
+<listitem><para>Parse</para></listitem>
+<listitem><para>Pos</para></listitem>
+<listitem><para>Position</para></listitem>
+</itemizedlist>
+
+
+<section><title>INIT</title>
+<indexterm><primary>INIT method</primary>
+<secondary>of RegularExpression class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>INIT method</secondary>
+<tertiary>of RegularExpression class</tertiary></indexterm>
+
+<programlisting>
+<![CDATA[
+                     +-,-"MAXIMAL"--+
+>>-INIT(-+---------+-+--------------+-)--------------------><
+         +-Pattern-+ +-,-"MINIMAL"--+
+]]>
+</programlisting>
+
+<para>Instantiates a RegularExpression object. Use the optional parameter
+<emphasis>Pattern</emphasis> to define a pattern that is used to match
+strings. See the introductory text below for a description of the
+syntax. If the strings match, you can decide whether you want to
+apply "greedy" matching (a maximum-length match) or "non-greedy"
+matching (a minimum-length match).</para>
+
+<para><emphasis role="bold">Examples:</emphasis></para>
+
+<programlisting>
+<![CDATA[
+myRE1 = .RegularExpression~new
+myRE2 = .RegularExpression~new("Hello?*")
+]]>
+</programlisting>
+</section>
+
+<section><title>MATCH</title>
+<indexterm><primary>MATCH method</primary>
+<secondary>of RegularExpression class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>MATCH method</secondary>
+<tertiary>of RegularExpression class</tertiary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-MATCH(-String-)-><
+]]>
+</programlisting>
+
+<para>This method tries to match the given string to the regular
+expression that was defined on the "new" invocation or on the
+"parse" invocation. It returns 0 on an unsuccessful match and 1
+on a successful match. For an example see
+<link linkend="regexppars">Parse</link>.
+</para>
+</section>
+
+<section id="regexppars"><title>PARSE</title>
+<indexterm><primary>PARSE method</primary>
+<secondary>of RegularExpression class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>PARSE method</secondary>
+<tertiary>of RegularExpression class</tertiary></indexterm>
+
+<programlisting>
+<![CDATA[
+                  +-,-"CURRENT"--+
+>>-PARSE(-Pattern-+--------------+-------------------------><
+                  +-,-"MAXIMAL"--+
+                  +-,-"MINIMAL"--+
+]]>
+</programlisting>
+
+<para>This method creates the automation used to match a string from the
+regular expression specified with
+<emphasis>Pattern</emphasis>. The RegularExpression
+object uses this regular expression until a new invocation of Parse
+takes place. The second (optional) parameter specifies whether to
+use minimal or maximal matching. The default is to use the current
+matching behavior.</para>
+
+<para><emphasis role="bold">Return values:</emphasis></para>
+
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Regular expression was parsed successfully.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>An unexpected symbol was met during parsing.
+</para></listitem></varlistentry>
+<varlistentry><term>2</term>
+<listitem><para>A missing &apos;)&apos; was found.
+</para></listitem></varlistentry>
+<varlistentry><term>3</term>
+<listitem><para>An illegal set was defined.
+</para></listitem></varlistentry>
+<varlistentry><term>4</term>
+<listitem><para>The regular expression ended unexpectedly.
+</para></listitem></varlistentry>
+<varlistentry><term>5</term>
+<listitem><para>An illegal number was specified.
+</para></listitem></varlistentry>
+</variablelist>
+
+
+<para><emphasis role="bold">Example 1:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>RegularExpression class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+a.0 = "does not match regular expression"
+a.1 = "matches regular expression"
+b = .array~of("This is a nice flower.",
+              "This is a yellow flower.", ,
+              "This is a blue flower.",
+              "Hi there!")
+
+myRE = .RegularExpression~new
+e = myRE~parse("This is a ???? flower.")
+if e == 0 then do
+  do i over b
+    j = myRE~match(i)
+    say i~left(24) ">>" a.j
+  end
+end
+else
+  say "Error" e "occurred!"
+exit
+
+::requires "rxregexp.cls"
+]]>
+</programlisting>
+
+<para>Output:</para>
+
+<programlisting>
+<![CDATA[
+This is a nice flower.   >> Does match regular expression
+This is a yellow flower. >> Does not match regular expression
+This is a blue flower.   >> Does match regular expression
+Hi there!                >> Does not match regular expression
+]]>
+</programlisting>
+
+<para><emphasis role="bold">Example 2:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>RegularExpression class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+a.0 = "an invalid number!"
+a.1 = "a valid number."
+b = .array~of("1","42","0","5436412","1a","f43g")
+myRE = .RegularExpression~new("[1-9][0-9]*")
+do i over b
+  j = myRE~match(i)
+  say i "is" a.j
+end
+say
+
+/* Now allow "hex" numbers and a single 0 */
+if myRE~parse("0|([1-9a-f][0-9a-f]*)") == 0 then do
+  do i over b
+    j = myRE~match(i)
+    say i "is" a.j
+  end
+end
+else
+  say "invalid regular expression!"
+
+exit
+
+::requires "rxregexp.cls"
+]]>
+</programlisting>
+
+<para><emphasis role="bold">Example 3:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>RegularExpression class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+str = "<p>Paragraph 1</p><p>Paragraph 2</p>"
+myRE1 = .RegularExpression~new("<p>?*</p>","MINIMAL")
+myRE1~match(str)
+myRE2 = .RegularExpression~new("<p>?*</p>","MAXIMAL")
+myRE2~match(str)
+
+say "myRE1 (minimal) matched" str~substr(1,myRE1~position)
+say "myRE2 (maximal) matched" str~substr(1,myRE2~position)
+
+::requires "rxregexp.cls"
+]]>
+</programlisting>
+
+<para>Output:</para>
+
+<programlisting>
+<![CDATA[
+myRE1 (minimal) matched <p>Paragraph 1</p>
+myRE2 (maximal) matched <p>Paragraph 1</p><p>Paragraph 2</p>
+]]>
+</programlisting>
+</section>
+
+
+<section><title>POS</title>
+<indexterm><primary>POS method</primary>
+<secondary>of RegularExpression class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>POS method</secondary>
+<tertiary>of RegularExpression class</tertiary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-POS-(-Haystack-)-><
+]]>
+</programlisting>
+
+<para>This method tries to locate a string defined by the regular
+expression on the "new" invocation or on the "parse" invocation
+in the given haystack string.
+It returns 0 on an unsuccessful match or the starting position
+on a successful match. The end position of the match can be
+retrieved with the <link linkend="regexppos">POSITION</link> method.</para>
+
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+<![CDATA[
+str = "It is the year 2002!"
+myRE = .RegularExpression~new("[1-9][0-9]*")
+begin = myRE~pos(str)
+if begin > 0 then do
+  year = str~substr(begin, myRE~position - begin + 1)
+  say "Found the number" year "in this sentence."
+end
+
+::requires "rxregexp.cls"
+]]>
+</programlisting>
+
+<para>Output:</para>
+
+<programlisting>
+<![CDATA[
+Found the number 2002 in this sentence.
+]]>
+</programlisting>
+</section>
+
+<section id="regexppos"><title>POSITION</title>
+<indexterm><primary>POSITION method</primary>
+<secondary>of RegularExpression class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>POSITION method</secondary>
+<tertiary>of RegularExpression class</tertiary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-POSITION------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the character position at which either Parse, Pos or Match
+ended, depending on what was invoked last.</para>
+
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+<![CDATA[
+myRE = .RegularExpression~new
+myRE~Parse("[abc")                    -- illegal set definition
+say myRE~Position                     -- will be 4
+
+myRE = .RegularExpression~new("[abc]12")
+myRE~Match("c12")
+say myRE~Position                     -- will be 3
+
+myRE~Match("a13")
+say myRE~Position                     -- will be 2 (failure to match)
+
+::requires "rxregexp.cls"
+]]>
+</programlisting>
+</section>
+</section>
+
+</section>
+

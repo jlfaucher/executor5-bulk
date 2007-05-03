@@ -1,0 +1,1952 @@
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Reference SGML file.
+    #
+    # Copyright (c) 2005-2007, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    # Author(s):
+    #      W. David Ashley <dashley@us.ibm.com>
+    #
+    #########################################################################
+-->
+<section id="fundclasses"><title>The Fundamental Classes</title>
+<para>This section describes the fundamental classes supplied by ooRexx.</para>
+
+<section id="objc"><title>The Object Class</title>
+<indexterm><primary>Object class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>Object class</secondary></indexterm>
+<para>The Object class is the root of the class hierarchy. The instance methods
+of the Object class are, therefore, available on all objects.</para>
+<para><emphasis role="bold">Methods the Object class defines:</emphasis></para>
+<simplelist>
+<member>NEW (Class method)</member>
+<member>Operator methods:&nbsp;&nbsp;=, ==, \=, >&lt;, &lt;>, \==</member>
+<member>CLASS</member>
+<member>COPY</member>
+<member>DEFAULTNAME</member>
+<member>HASMETHOD</member>
+<member>INIT</member>
+<member>ISINSTANCEOF</member>
+<member>OBJECTNAME</member>
+<member>OBJECTNAME=</member>
+<member>REQUEST</member>
+<member>RUN</member>
+<member>SETMETHOD</member>
+<member>START</member>
+<member>STRING</member>
+<member>UNSETMETHOD</member>
+</simplelist>
+
+<note><title>Note</title>
+<para>The Object class also has available class methods that its
+metaclass, the Class class, defines.</para></note>
+
+<section id="obnew"><title>NEW  (Class Method)</title>
+<indexterm><primary>NEW method</primary>
+<secondary>of Object class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>NEW method</secondary>
+<tertiary>of Object class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-NEW---------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a new instance of the receiver class.</para>
+</section>
+
+<section id="coo"><title>Operator Methods</title>
+<programlisting>
+<![CDATA[
+>>-comparison_operator(argument)-------------------------------><
+]]>
+</programlisting>
+
+
+<note><title>Note</title>
+<para>The <emphasis role="italic">argument</emphasis> is optional for
+the == operator. </para></note>
+<para>Returns <computeroutput>1</computeroutput> (true) or
+<computeroutput>0</computeroutput> (false), the result of performing
+a specified comparison operation. If you specify the
+<computeroutput>==</computeroutput> operator
+and omit <emphasis role="italic">argument</emphasis>, a string representation
+is returned representing
+a hash value for Set, Bag, Table, Relation, and Directory.</para>
+<para>For the Object class, the arguments must match the receiver object. If
+they do not match the receiver object, you can define subclasses of the Object
+class to match the arguments.</para>
+<para>The comparison operators you can use in a message are: </para>
+<variablelist>
+<varlistentry><term>=, ==
+<indexterm><primary>= method</primary>
+<secondary>of Object class</secondary></indexterm>
+<indexterm><primary>== method</primary>
+<secondary>of Object class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>=</secondary>
+<tertiary>of Object class</tertiary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>==</secondary>
+<tertiary>of Object class</tertiary></indexterm>
+</term>
+<listitem><para>True if the terms are the same object.
+</para></listitem></varlistentry>
+<varlistentry><term>\=, >&lt;, &lt;>, \==
+<indexterm><primary>\= method</primary>
+<secondary>of Object class</secondary></indexterm>
+<indexterm><primary>>&lt; method</primary>
+<secondary>of Object class</secondary></indexterm>
+<indexterm><primary>&lt;> method</primary>
+<secondary>of Object class</secondary></indexterm>
+<indexterm><primary>\== method</primary>
+<secondary>of Object class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>\=</secondary>
+<tertiary>of Object class</tertiary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>>&lt;</secondary>
+<tertiary>of Object class</tertiary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>&lt;></secondary>
+<tertiary>of Object class</tertiary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>\==</secondary>
+<tertiary>of Object class</tertiary></indexterm>
+</term>
+<listitem><para>True if the terms are not the same object (inverse of =).
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="obclas"><title>CLASS</title>
+<indexterm><primary>CLASS method</primary>
+<secondary>of Object class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>CLASS method</secondary>
+<tertiary>of Object class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-CLASS-------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the class object that received the message that created the
+object.</para>
+</section>
+
+<section id="obcopy"><title>COPY</title>
+<indexterm><primary>COPY method</primary>
+<secondary>of Object class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>COPY method</secondary>
+<tertiary>of Object class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-COPY--------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a copy of the receiver object. The copied object has
+the same methods as the receiver object and an equivalent set of object
+variables, with the same values.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>COPY method</secondary></indexterm>
+<programlisting>
+myarray=.array~of("N","S","E","W")
+directions=myarray~copy   /* Copies array myarray to array directions */
+</programlisting>
+</section>
+
+<section id="obdena"><title>DEFAULTNAME</title>
+<indexterm><primary>DEFAULTNAME method</primary>
+<secondary>of Object class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>DEFAULTNAME method</secondary>
+<tertiary>of Object class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-DEFAULTNAME-------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a short human-readable string representation of the object. The
+exact form of this representation depends on the object and might not alone
+be sufficient to reconstruct the object. All objects must be able to produce
+a short string representation of themselves in this way, even if the object
+does not have a string value. See
+<link linkend="reqstr">Required String Values</link> for more information.
+The DEFAULTNAME method of the Object class returns a string that identifies
+the class of the object, for example, an Array or a Directory. See also
+<link linkend="obname">OBJECTNAME</link> and
+<link linkend="obstri">STRING</link>. See
+<link linkend="obqnam">OBJECTNAME=</link> for an
+example using DEFAULTNAME.</para>
+</section>
+
+<section id="obhasm"><title>HASMETHOD</title>
+<indexterm><primary>HASMETHOD method</primary>
+<secondary>of Object class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>HASMETHOD method</secondary>
+<tertiary>of Object class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-HASMETHOD(methodname)---------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>1</computeroutput> (true) if the receiver object
+has a method named <emphasis role="italic">methodname</emphasis>
+(translated to uppercase) or if the target method is a private method.
+Otherwise, it returns <computeroutput>0</computeroutput> (false). </para>
+
+<note><title>Note</title>
+<para>If you call the <emphasis role="italic">methodname</emphasis> method
+although it is private, you receive error 97
+<computeroutput>Object method not found</computeroutput> although HASMETHOD
+returns <computeroutput>1</computeroutput> (true).</para></note>
+</section>
+
+<section id="obinit"><title>INIT</title>
+<indexterm><primary>INIT method</primary>
+<secondary>of Object class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>INIT method</secondary>
+<tertiary>of Object class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-INIT--------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Performs any required object initialization. Subclasses of the Object
+class can override this method.</para>
+</section>
+
+<section id="obisinstanceof"><title>ISINSTANCEOF</title>
+<indexterm><primary>ISINSTANCEOF method</primary>
+<secondary>of Object class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>ISINSTANCEOF method</secondary>
+<tertiary>of Object class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-ISINSTANCEOF(class)-----------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns .true ("1") if the object is an instance of the specified
+<emphasis role="italic">class</emphasis>.
+Returns .false ("0") if the object is not an instance of the specified
+<emphasis role="italic">class</emphasis>.
+An object is an instance of a class if the object is directly an instance of the
+specified <emphasis role="italic">class</emphasis> or if the
+<emphasis role="italic">class</emphasis> is in the object's direct or mixin
+class inheritance chain. For example:
+<programlisting>
+<![CDATA[
+"abc"~isinstanceof(.string)             ->  1
+"abc"~isinstanceof(.object)             ->  1
+"abc"~isinstanceof(.mutablebuffer)      ->  0
+]]>
+</programlisting>
+</para>
+</section>
+
+<section id="obname"><title>OBJECTNAME</title>
+<indexterm><primary>OBJECTNAME method</primary>
+<secondary>of Object class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>OBJECTNAME method</secondary>
+<tertiary>of Object class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-OBJECTNAME--------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the receiver object's name that the OBJECTNAME= method sets. If
+the receiver object does not have a name, this method returns the result of
+the DEFAULTNAME method. See
+<link linkend="reqstr">Required String Values</link> for more information. See
+the OBJECTNAME= method for an example using OBJECTNAME.</para>
+</section>
+
+<section id="obqnam"><title>OBJECTNAME=</title>
+<indexterm><primary>OBJECTNAME= method</primary>
+<secondary>of Object class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>OBJECTNAME= method</secondary>
+<tertiary>of Object class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-OBJECTNAME=(newname)----------------------------------------><
+]]>
+</programlisting>
+
+<para>Sets the receiver object's name to the string
+<emphasis role="italic">newname</emphasis>.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>OBJECTNAME= method</secondary></indexterm>
+<programlisting>
+points=.array~of("N","S","E","W")
+say points~objectname         /* (no change yet) Says: "an Array"    */
+points~objectname=("compass") /* Changes obj name POINTS to "compass"*/
+say points~objectname         /* Shows new obj name. Says: "compass" */
+say points~defaultname        /* Default is still available.         */
+                              /* Says "an Array"                     */
+say points                    /* Says string representation of       */
+                              /* points "compass"                    */
+say points[3]                 /* Says: "E"Points is still an array   */
+                              /* of 4 items                          */
+</programlisting>
+</section>
+
+<section id="obreq"><title>REQUEST</title>
+<indexterm><primary>REQUEST method</primary>
+<secondary>of Object class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>REQUEST method</secondary>
+<tertiary>of Object class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-REQUEST(classid)--------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns an object of the <emphasis role="italic">classid</emphasis>
+class, or the NIL object if the request cannot be satisfied.</para>
+<para>This method first compares the identity of the object's class (see
+the ID method of the Class class in <link linkend="clid">ID</link>) to
+<emphasis role="italic">classid</emphasis>. If they are the same, the
+receiver object is returned as the result.
+Otherwise, REQUEST tries to obtain and return an object satisfying
+<emphasis role="italic">classid</emphasis> by sending the receiver object the
+conversion message <computeroutput>MAKE</computeroutput> with
+the string <emphasis role="italic">classid</emphasis> appended (converted to
+uppercase). For example,
+a <computeroutput>REQUEST("string")</computeroutput> message causes a
+MAKESTRING message to be sent.
+If the object does not have the required conversion method, REQUEST returns
+the NIL object.</para>
+<para>The conversion methods cause objects to produce different representations
+of themselves. The presence or absence of a conversion method defines an object's
+capability to produce the corresponding representations. For example, lists
+can represent themselves as arrays, because they have a MAKEARRAY method,
+but they cannot represent themselves as directories, because they do not have
+a MAKEDIRECTORY method. Any conversion method must return an object of the
+requested class. For example, MAKEARRAY must return an array. The language
+processor uses the MAKESTRING method to obtain string values in certain contexts;
+see <link linkend="reqstr">Required String Values</link>.</para>
+</section>
+
+<section id="obrun"><title>RUN</title>
+<indexterm><primary>RUN method</primary>
+<secondary>of Object class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>RUN method</secondary>
+<tertiary>of Object class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-RUN(method-+-------------------------------+-)--------------><
+              |             +---------------+ |
+              |             V               | |
+              +-,Individual---+-----------+-+-+
+              |               +-,argument-+   |
+              +-,Array,argument---------------+
+]]>
+</programlisting>
+
+<para>Runs the method object <emphasis role="italic">method</emphasis> (see
+<link linkend="mcls">The Method Class</link>). The
+<emphasis role="italic">method</emphasis> has access to the object variables
+of the receiver object, as
+if the receiver object had defined the method by using SETMETHOD.</para>
+<para>If you specify the Individual or Array option, any remaining
+<emphasis role="italic">argument</emphasis>s are arguments for the method.
+(You need to specify only the first letter;
+the language processor ignores all characters following it.) </para>
+<variablelist>
+<varlistentry><term>Individual</term>
+<listitem><para>Passes any remaining arguments to the method as arguments in
+the order you specify them.
+</para></listitem></varlistentry>
+<varlistentry><term>Array</term>
+<listitem><para>Requires <emphasis role="italic">argument</emphasis>,
+which is an array object. (See <link linkend="xarray">The Array Class</link>.)
+The language processor passes the member items of the array to the method
+as arguments. The first argument is at index 1, the second argument at index
+2, and so on. If you omitted any indexes when creating the array, the language
+processor omits their corresponding arguments when passing the arguments.
+</para></listitem></varlistentry>
+</variablelist>
+<para>If you specify neither Individual nor Array, the method runs without
+arguments.</para>
+<para>The <emphasis role="italic">method</emphasis> argument can be a string
+containing a method source line instead of a method object.
+Alternatively, you can pass an array of strings
+containing individual method lines. In either case, RUN creates an equivalent
+method object.</para>
+
+<para><emphasis role="bold">Notes:</emphasis></para>
+<orderedlist>
+<listitem><para>The RUN method is a private method. See the SETPRIVATE method
+in <link linkend="mesetp">SETPRIVATE</link>  for details.</para></listitem>
+<listitem><para>The RUN method is a protected method.</para></listitem>
+</orderedlist>
+</section>
+
+<section id="obsetm"><title>SETMETHOD</title>
+<indexterm><primary>SETMETHOD method</primary>
+<secondary>of Object class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>SETMETHOD method</secondary>
+<tertiary>of Object class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SETMETHOD(methodname-+----------------------+--)-----------------><
+                        |         +-,"FLOAT"-+ |
+                        +-,method-+----------+-+
+                                  +--,scope--+
+]]>
+</programlisting>
+
+<para>Adds a method to the receiver object's
+collection of object methods. The <emphasis role="italic">methodname</emphasis>
+is the name of the new
+method. (The language processor translates this name to uppercase.) If you
+previously defined a method with the same name using SETMETHOD, the new method
+replaces the earlier one. If you omit <emphasis role="italic">method</emphasis>,
+SETMETHOD makes the
+method name <emphasis role="italic">methodname</emphasis> unavailable for the
+receiver object. In this
+case, sending a message of that name to the receiver object runs the UNKNOWN
+method (if any).</para>
+<para>The <emphasis role="italic">method</emphasis> can be a string containing
+a method source line instead
+of a method object. Or it can be an array of strings containing individual
+method lines. In either case, SETMETHOD creates an equivalent method object.
+</para>
+
+<para>The third parameter describes if the method that is attached to an
+object should have object or float scope. "Float" scope means that
+it shares the same scope with methods that were defined outside of
+a class. "Object" scope means it shares the scope with other,
+potentially statically defined, methods of the object it is
+attached to.</para>
+
+<para><emphasis role="bold">Notes:</emphasis></para>
+<orderedlist>
+<listitem><para>The SETMETHOD method is a private method. See the SETPRIVATE
+method in <link linkend="mesetp">SETPRIVATE</link>  for details.</para>
+</listitem>
+<listitem><para>The SETMETHOD method is a protected method.</para></listitem>
+</orderedlist>
+</section>
+
+<section id="obstar"><title>START</title>
+<indexterm><primary>START method</primary>
+<secondary>of Object class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>START method</secondary>
+<tertiary>of Object class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+                     +---------------+
+                     V               |
+>>-START(messagename---+-----------+-+-)-----------------------><
+                       +-,argument-+
+]]>
+</programlisting>
+
+<para>Returns a message object (see
+<link linkend="agent">The Message Class</link>) and sends it a START message
+to start concurrent processing. The object receiving the message
+<emphasis role="italic">messagename</emphasis> processes this message
+concurrently with the sender's continued processing.</para>
+<para>The <emphasis role="italic">messagename</emphasis> can be a string or
+an array. If <emphasis role="italic">messagename</emphasis> is an array object,
+its first item is the name of the message and its
+second item is a class object to use as the starting point for the method
+search. For more information, see
+<link linkend="meths">Classes and Inheritance of Methods</link>.</para>
+<para>The language processor passes any
+<emphasis role="italic">argument</emphasis>s to the receiver as
+arguments for <emphasis role="italic">messagename</emphasis> in the order you
+specify them.</para>
+<para>When the receiver object has finished processing the message, the message
+object retains its result and holds it until the sender requests it by sending
+a RESULT message. For further details, see <link linkend="msstrt">START</link>.
+</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+world=.object~new
+msg=world~start("HELLO")                /* same as next line     */
+msg=.message~new(world,"HELLO")~~start  /* same as previous line */
+</programlisting>
+</section>
+
+<section id="obstri"><title>STRING</title>
+<indexterm><primary>STRING method</primary>
+<secondary>of Object class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>STRING method</secondary>
+<tertiary>of Object class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-STRING------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a human-readable string representation of the object. The exact
+form of this representation depends on the object and might not alone be
+sufficient to reconstruct the object. All objects must be able to produce a
+string representation of themselves in this way.</para>
+<para>The object's string representation is obtained from the OBJECTNAME
+method (which can in turn use the DEFAULTNAME method). See also the OBJECTNAME
+method (<link linkend="obname">OBJECTNAME</link>) and the DEFAULTNAME method
+(<link linkend="obdena">DEFAULTNAME</link>).</para>
+<para>The distinction between this method, the MAKESTRING method (which obtains
+string values--see <link linkend="stmaks">MAKESTRING</link>) and the REQUEST
+method (see <link linkend="obreq">REQUEST</link>) is important. All objects
+have a STRING method, which returns
+a string representation (human-readable form) of the
+object. This form is useful in tracing and debugging. Only those objects that
+have information with a meaningful string form have a MAKESTRING method to
+return this value. For example, directory objects have a readable string
+representation (a Directory), but no string value, and, therefore, no
+MAKESTRING method.</para>
+<para>Of the classes that Rexx provides, only the String class has a MAKESTRING
+method. Any subclasses of the String class inherit this method by default,
+so these subclasses also have string values. Any other class can also provide
+a string value by defining a MAKESTRING method.</para>
+</section>
+
+<section id="obunse"><title>UNSETMETHOD</title>
+<indexterm><primary>UNSETMETHOD method</primary>
+<secondary>of Object class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>UNSETMRTHOD method</secondary>
+<tertiary>of Object class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-UNSETMETHOD(methodname)-------------------------------------><
+]]>
+</programlisting>
+
+<para>Cancels the effect of all previous SETMETHODs for method
+<emphasis role="italic">methodname</emphasis>. It also removes any method
+<emphasis role="italic">methodname</emphasis> introduced with ENHANCED
+when the object was created. If the object has received no SETMETHOD method,
+no action is taken. </para>
+
+<para><emphasis role="bold">Notes:</emphasis></para>
+<orderedlist>
+<listitem><para>The UNSETMETHOD method is a private method. See the SETPRIVATE
+method in <link linkend="mesetp">SETPRIVATE</link>  for details.</para>
+</listitem>
+<listitem><para>The UNSETMETHOD method is a protected method.</para></listitem>
+</orderedlist>
+</section>
+</section>
+
+<section id="clss"><title>The Class Class</title>
+<indexterm><primary>Class class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>Class class</secondary></indexterm>
+<para>The Class class is like a factory producing the factories that
+produce objects. It is a subclass of the Object class. The instance methods
+of the Class class are also the class methods of all classes.</para>
+<para><emphasis role="bold">Methods the Class class defines:</emphasis>
+(They are all both class and instance methods.) </para>
+<simplelist>
+<member>BASECLASS</member>
+<member>DEFAULTNAME (Overrides Object class method)</member>
+<member>DEFINE</member>
+<member>DELETE</member>
+<member>ENHANCED</member>
+<member>ID</member>
+<member>INHERIT</member>
+<member>INIT (Overrides Object class method)</member>
+<member>METACLASS</member>
+<member>METHOD</member>
+<member>METHODS</member>
+<member>MIXINCLASS</member>
+<member>NEW (Overrides Object class method)</member>
+<member>QUERYMIXINCLASS</member>
+<member>SUBCLASS</member>
+<member>SUBCLASSES</member>
+<member>SUPERCLASSES</member>
+<member>UNINHERIT</member>
+</simplelist>
+
+<para><emphasis role="bold">Methods inherited from the Object class:</emphasis>
+</para>
+<simplelist>
+<member>Operator methods:&nbsp;&nbsp;=, ==, \=, >&lt;, &lt;>, \==</member>
+<member>CLASS</member>
+<member>COPY</member>
+<member>HASMETHOD</member>
+<member>OBJECTNAME</member>
+<member>OBJECTNAME=</member>
+<member>REQUEST</member>
+<member>RUN</member>
+<member>SETMETHOD</member>
+<member>START</member>
+<member>STRING</member>
+<member>UNSETMETHOD</member>
+</simplelist>
+
+<section id="clbase"><title>BASECLASS</title>
+<indexterm><primary>BASECLASS method</primary>
+<secondary>of Class class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>BASECLASS method</secondary>
+<tertiary>of Class class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-BASECLASS---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the base class associated with the class. If the class is a mixin
+class, the base class is the first superclass that is not also a mixin class.
+If the class is not a mixin class, the base class is the class receiving the
+BASECLASS message.</para>
+</section>
+
+<section id="cldena"><title>DEFAULTNAME</title>
+<indexterm><primary>DEFAULTNAME method</primary>
+<secondary>of Class class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>DEFAULTNAME method</secondary>
+<tertiary>of Class class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-DEFAULTNAME-------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a short human-readable string representation of the class. The
+string returned is of the form </para>
+<programlisting>
+The id class
+</programlisting>
+<para> where <emphasis role="italic">id</emphasis> is the identifier assigned
+to the class when it was created.</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>DEFAULTNAME method</secondary></indexterm>
+<programlisting>
+say .array~defaultname     /* Displays "The Array class"   */
+say .account~defaultname   /* Displays "The ACCOUNT class" */
+say .savings~defaultname   /* Displays "The Savings class" */
+
+::class account            /* Name is all upper case       */
+::class "Savings"          /* String name is mixed case    */
+</programlisting>
+</section>
+
+<section id="cldefi"><title>DEFINE</title>
+<indexterm><primary>DEFINE method</primary>
+<secondary>of Class class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>DEFINE method</secondary>
+<tertiary>of Class class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-DEFINE(methodname-+---------+-)-----------------------------><
+                     +-,method-+
+]]>
+</programlisting>
+
+<para>Incorporates the method object <emphasis role="italic">method</emphasis>
+in the receiver class's collection of instance methods. The language processor
+translates the method name <emphasis role="italic">methodname</emphasis>
+to uppercase. Using the DEFINE method replaces any existing definition for
+<emphasis role="italic">methodname</emphasis> in the receiver class.</para>
+<para>If you omit <emphasis role="italic">method</emphasis>, the method name
+<emphasis role="italic">methodname</emphasis> is made
+unavailable for the receiver class. Sending a message of that name
+to an instance of the class causes the UNKNOWN method (if any) to be run.</para>
+<para>The <emphasis role="italic">method</emphasis> argument can be a string
+containing a method source line instead of a method object. Alternatively, you
+can pass an array of strings containing individual method lines. Either way,
+DEFINE creates an equivalent method object. </para>
+
+<para><emphasis role="bold">Notes:</emphasis></para>
+<orderedlist>
+<listitem><para>The classes Rexx provides do not permit changes or additions to
+their method definitions.</para></listitem>
+<listitem><para>The DEFINE method is a protected method.</para></listitem>
+</orderedlist>
+<para><emphasis role="bold">Example:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>DEFINE method</secondary></indexterm>
+<programlisting>
+bank_account=.object~subclass("Account")
+bank_account~define("TYPE",&apos;return "a bank account"&apos;)
+</programlisting>
+</section>
+
+<section id="cldele"><title>DELETE</title>
+<indexterm><primary>DELETE method</primary>
+<secondary>of Class class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>DELETE method</secondary>
+<tertiary>of Class class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-DELETE(methodname)------------------------------------------><
+]]>
+</programlisting>
+
+<para>Removes the receiver class's definition
+for the method name <emphasis role="italic">methodname</emphasis>. If the
+receiver class defined <emphasis role="italic">methodname</emphasis> as
+unavailable with the DEFINE method, this definition is
+nullified. If the receiver class had no definition for
+<emphasis role="italic">methodname</emphasis>, no action is taken. </para>
+
+<para><emphasis role="bold">Notes:</emphasis></para>
+<orderedlist>
+<listitem><para>The classes Rexx provides do not permit changes or additions
+to their method definitions.</para></listitem>
+<listitem><para>DELETE deletes only methods the target class defines. You
+cannot delete inherited methods the target's superclasses define.</para>
+</listitem>
+<listitem><para>The DELETE method is a protected method.</para></listitem>
+</orderedlist>
+<para><emphasis role="bold">Example:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>DELETE method</secondary></indexterm>
+<programlisting>
+myclass=.object~subclass("Myclass")        /* After creating a class  */
+myclass~define("TYPE",&apos;return "my class"&apos;) /* and defining a method   */
+myclass~delete("TYPE")                     /* this deletes the method */
+</programlisting>
+</section>
+
+<section id="obccen"><title>ENHANCED</title>
+<indexterm><primary>ENHANCED method</primary>
+<secondary>of Class class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>ENHANCED method</secondary>
+<tertiary>of Class class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-ENHANCED(methods-+---------------+-)------------------------><
+                    | +-----------+ |
+                    | V           | |
+                    +---,argument-+-+
+]]>
+</programlisting>
+
+<para>Returns an enhanced new instance of the receiver class, with object
+methods that are the instance methods of the class, enhanced by the methods in
+the collection <emphasis role="italic">methods</emphasis>. The collection
+indexes are the names of the enhancing
+methods, and the items are the method objects (or strings or arrays of strings
+containing method code). (See the description of
+<link linkend="cldefi">DEFINE</link>.)
+You can use any collection that supports a SUPPLIER method.</para>
+<para>ENHANCED sends an INIT message to the created object, passing the
+<emphasis role="italic">argument</emphasis>s specified on the ENHANCED method.
+</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>ENHANCED method</secondary></indexterm>
+<programlisting>
+/* Set up rclass with class method or methods you want in your */
+/* remote class */
+rclassmeths = .directory~new
+
+rclassmeths["DISPATCH"]=d_source     /* d_source must have code for a  */
+                                     /* DISPATCH  method.              */
+/* The following sends INIT("Remote Class") to a new instance */
+rclass=.class~enhanced(rclassmeths,"Remote Class")
+</programlisting>
+</section>
+
+<section id="clid"><title>ID</title>
+<indexterm><primary>ID method</primary>
+<secondary>of Class class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>ID method</secondary>
+<tertiary>of Class class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-ID----------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the class identity (instance) string. (This is the string that
+is an argument on the SUBCLASS and MIXINCLASS methods.) The string
+representations of the class and its instances contain the class identity.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>ID method</secondary></indexterm>
+<programlisting>
+myobject=.object~subclass("my object")  /* Creates a subclass    */
+say myobject~id                         /* Produces: "my object" */
+</programlisting>
+</section>
+
+<section id="clinhe"><title>INHERIT</title>
+<indexterm><primary>INHERIT method</primary>
+<secondary>of Class class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>INHERIT method</secondary>
+<tertiary>of Class class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-INHERIT(classobj-+-----------+-)----------------------------><
+                    +-,classpos-+
+]]>
+</programlisting>
+
+<para>Causes the receiver class to inherit the instance and class methods of
+the class object <emphasis role="italic">classobj</emphasis>. The
+<emphasis role="italic">classpos</emphasis> is a class object
+that specifies the position of the new superclass in the list of superclasses.
+(You can use the SUPERCLASSES method to return the immediate superclasses.)
+</para>
+<para>The new superclass is inserted in the search order after the specified
+class. If the <emphasis role="italic">classpos</emphasis> class is not found in
+the set of superclasses, an error is raised. If you do not specify
+<emphasis role="italic">classpos</emphasis>, the new superclass
+is added to the end of the superclasses list.</para>
+<para>Inherited methods can take precedence only over methods defined at or
+above the base class of the <emphasis role="italic">classobj</emphasis> in the
+class hierarchy. Any subsequent change to the instance methods of
+<emphasis role="italic">classobj</emphasis> takes immediate effect
+for all the classes that inherit from it.</para>
+<para>The new superclass <emphasis role="italic">classobj</emphasis> must be
+created with the MIXINCLASS
+option of the ::CLASS directive or the MIXINCLASS method and the base class
+of the <emphasis role="italic">classobj</emphasis> must be a direct superclass
+of the receiver object. The receiver must not already descend from
+<emphasis role="italic">classobj</emphasis> in the class
+hierarchy and vice versa.</para>
+<para>The method search order of the receiver class after INHERIT is the same
+as before INHERIT, with the addition of
+<emphasis role="italic">classobj</emphasis> and its superclasses
+(if not already present). </para>
+
+<para><emphasis role="bold">Notes:</emphasis></para>
+<orderedlist>
+<listitem><para>You cannot change the classes that Rexx provides by sending
+INHERIT messages.</para></listitem>
+<listitem><para>The INHERIT method is a protected method.</para></listitem>
+</orderedlist>
+<para><emphasis role="bold">Example:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>INHERIT method</secondary></indexterm>
+<programlisting>
+room~inherit(.location)
+</programlisting>
+</section>
+
+<section id="clina"><title>INIT</title>
+<indexterm><primary>INIT method</primary>
+<secondary>of Class class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>INIT method</secondary>
+<tertiary>of Class class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-INIT(classid)-----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Sets the receiver class identity to the string
+<emphasis role="italic">classid</emphasis>. You can
+use the ID method (described previously) to return this string, which is the
+class identity. See <link linkend="creo">Initialization</link> for more
+information.</para>
+</section>
+
+<section id="clmeta"><title>METACLASS</title>
+<indexterm><primary>METACLASS method</primary>
+<secondary>of Class class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>METACLASS method</secondary>
+<tertiary>of Class class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-METACLASS---------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns the receiver class's default metaclass. This is the class used
+to create subclasses of this class when you send SUBCLASS or MIXINCLASS messages
+(with no metaclass arguments). If the receiver class is an object class (see
+<link linkend="objcla">Object Classes</link>), this is also the class used to
+create the receiver class.
+The instance methods of the default metaclass are the class methods of the
+receiver class. For more information about class methods, see
+<link linkend="objcla">Object Classes</link>.
+See also the description of the SUBCLASS method in
+<link linkend="clsubc">SUBCLASS</link>.</para>
+</section>
+
+<section id="clmeth"><title>METHOD</title>
+<indexterm><primary>METHOD method</primary>
+<secondary>of Class class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>METHOD method</secondary>
+<tertiary>of Class class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-METHOD(methodname)------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the method object for the receiver class's definition for the
+method name <emphasis role="italic">methodname</emphasis>. If the receiver
+class defined <emphasis role="italic">methodname</emphasis> as unavailable,
+this method returns the NIL object. If the receiver
+class did not define <emphasis role="italic">methodname</emphasis>, the
+language processor raises an error.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>METHOD method</secondary></indexterm>
+<programlisting>
+/* Create and retrieve the method definition of a class */
+myclass=.object~subclass("My class")   /* Create a class         */
+mymethod=.method~new(" ","Say arg(1)") /* Create a method object */
+myclass~define("ECHO",mymethod)        /* Define it in the class */
+method_source = myclass~method("ECHO")~source     /* Extract it  */
+say method_source                 /* Says "an Array"              */
+say method_source[1]              /* Shows the method source code */
+</programlisting>
+</section>
+
+<section id="clmets"><title>METHODS</title>
+<indexterm><primary>METHODS method</primary>
+<secondary>of Class class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>METHODS method</secondary>
+<tertiary>of Class class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-METHODS-+----------------+----------------------------------><
+           +-(class_object)-+
+]]>
+</programlisting>
+
+<para>Returns a supplier object for all the instance methods of the receiver
+class and its superclasses, if you specify no argument. If
+<emphasis role="italic">class_object</emphasis> is the NIL object, METHODS
+returns a supplier object for only the instance
+methods of the receiver class. If you specify a
+<emphasis role="italic">class_object</emphasis>,
+this method returns a supplier object containing only the instance methods
+that <emphasis role="italic">class_object</emphasis> defines. If you send
+appropriate messages to
+a supplier object, the supplier enumerates all the instance methods existing
+at the time of the supplier's creation. (See
+<link linkend="supp">The Supplier Class</link> for details.)</para>
+
+<note><title>Note</title>
+<para>Methods that have been hidden with a SETMETHOD or DEFINE method
+are included with the other methods that METHODS returns. The hidden methods
+have the NIL object for the associated method.</para></note>
+<para><emphasis role="bold">Example:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>METHODS method</secondary></indexterm>
+<programlisting>
+objsupp=.object~methods
+do while objsupp~available
+say objsupp~index           /* Says all instance methods */
+objsupp~next                /* of the Object class       */
+end
+</programlisting>
+</section>
+
+<section id="clmixi"><title>MIXINCLASS</title>
+<indexterm><primary>MIXINCLASS method</primary>
+<secondary>of Class class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>MIXINCLASS method</secondary>
+<tertiary>of Class class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-MIXINCLASS(classid-+-------------------------+-)------------><
+                      +-,metaclass-+----------+-+
+                                   +-,methods-+
+]]>
+</programlisting>
+
+<para>Returns a new mixin subclass of the receiver class. You can use this
+method to create a new mixin class that is a subclass of the superclass to
+which you send the message. The <emphasis role="italic">classid</emphasis>
+is a string that identifies the new mixin subclass. You can use the ID method
+to retrieve this string.</para>
+<para>The <emphasis role="italic">metaclass</emphasis> is a class object. If
+you specify <emphasis role="italic">metaclass</emphasis>, the new subclass is
+an instance of <emphasis role="italic">metaclass</emphasis>. (A metaclass is a
+class that you can use to create a class, that is, a class
+whose instances are classes. The Class class and its subclasses are metaclasses.)
+</para>
+<para>If you do not specify a <emphasis role="italic">metaclass</emphasis>,
+the new mixin subclass is an
+instance of the default metaclass of the receiver class. For subclasses of
+the Object class, the default metaclass is the Class class.</para>
+<para>The <emphasis role="italic">methods</emphasis> is a collection whose
+indexes are the names of methods
+and whose items are method objects (or strings or arrays of strings containing
+method code). If you specify <emphasis role="italic">methods</emphasis>, the new
+class is enhanced with class methods from this collection. (The metaclass of
+the new class is not affected.)</para>
+<para>The METACLASS method returns the metaclass of a class.</para>
+<para>The method search order of the new subclass is the same as that of the
+receiver class, with the addition of the new subclass at the start of the
+order.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>MIXINCLASS method</secondary></indexterm>
+<programlisting>
+buyable=.object~mixinclass("Buyable")  /* New subclass is buyable    */
+                                       /* Superclass is Object class */
+</programlisting>
+</section>
+
+<section id="coconw"><title>NEW</title>
+<indexterm><primary>NEW method</primary>
+<secondary>of Class class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>NEW method</secondary>
+<tertiary>of Class class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-NEW-+---------------+---------------------------------------><
+       |    +-,---+    |
+       |    V     |    |
+       +-(----arg-+--)-+
+]]>
+</programlisting>
+
+<para>Returns a new instance of the receiver class, whose object methods are
+the instance methods of the class. This method initializes a new instance
+by running its INIT methods. (See
+<link linkend="creo">Initialization</link>.) NEW also sends an
+INIT message. If you specify args, NEW passes these
+arguments on the INIT message.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>NEW method</secondary></indexterm>
+<programlisting>
+<![CDATA[
+/* NEW method example */
+a = .account~new             /* -> Object variable balance=0           */
+y = .account~new(340.78)     /* -> Object variable balance=340.78      */
+                             /*    plus free toaster oven              */
+::class account subclass object
+::method INIT                /* Report time each account created       */
+                             /* plus free toaster when more than $100  */
+Expose balance
+Arg opening_balance
+Say "Creating" self~objectname "at time" time()
+If datatype(opening_balance, "N") then balance = opening_balance
+else balance = 0
+If balance > 100 then Say "  You win a free toaster oven"
+]]>
+</programlisting>
+</section>
+
+<section id="clqmc"><title>QUERYMIXINCLASS</title>
+<indexterm><primary>QUERYMIXINCLASS method</primary>
+<secondary>of Class class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>QUERYMIXINCLASS method</secondary>
+<tertiary>of Class class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-QUERYMIXINCLASS---------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>1</computeroutput> (true) if the class is a
+mixin class, or <computeroutput>0</computeroutput> (false).</para>
+</section>
+
+<section id="clsubc"><title>SUBCLASS</title>
+<indexterm><primary>SUBCLASS method</primary>
+<secondary>of Class class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>SUBCLASS method</secondary>
+<tertiary>of Class class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SUBCLASS(classid-+-------------------------+-)--------------><
+                    +-,metaclass-+----------+-+
+                                 +-,methods-+
+]]>
+</programlisting>
+
+<para>Returns a new subclass of the receiver class. You can use this method to
+create a new class that is a subclass of the superclass to which you send
+the message. The <emphasis role="italic">classid</emphasis> is a string that
+identifies the subclass. (You can use the ID method to retrieve this string.)
+</para>
+<para>The <emphasis role="italic">metaclass</emphasis> is a class object. If
+you specify <emphasis role="italic">metaclass</emphasis>, the new subclass is
+an instance of <emphasis role="italic">metaclass</emphasis>. (A metaclass is a
+class that you can use to create a class, that is, a class
+whose instances are classes. The Class class and its subclasses are metaclasses.)
+</para>
+<para>If you do not specify a <emphasis role="italic">metaclass</emphasis>,
+the new subclass is an instance
+of the default metaclass of the receiver class. For subclasses of the Object
+class, the default metaclass is the Class class.</para>
+<para>The <emphasis role="italic">methods</emphasis> is a collection whose
+indexes are the names of methods
+and whose items are method objects (or strings or arrays of strings containing
+method code). If you specify <emphasis role="italic">methods</emphasis>,
+the new class is enhanced with class methods from this collection.
+(The metaclass of the new class is not affected.)</para>
+<para>The METACLASS method returns the metaclass of a class.</para>
+<para>The method search order of the new subclass is the same as that of the
+receiver class, with the addition of the new subclass at the start of the
+order.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>SUBCLASS method</secondary></indexterm>
+<programlisting>
+room=.object~subclass("Room")   /* Superclass is .object     */
+                                /* Subclass is room          */
+                                /* Subclass identity is Room */
+</programlisting>
+</section>
+
+<section id="clsubs"><title>SUBCLASSES</title>
+<indexterm><primary>SUBCLASSES method</primary>
+<secondary>of Class class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>SUBCLASSES method</secondary>
+<tertiary>of Class class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SUBCLASSES--------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the immediate subclasses of the receiver
+class in the form of a single-index array of the required size, in an
+unspecified order. (The program should not rely on any order.) The array
+indexes range from 1 to the number of subclasses.</para>
+</section>
+
+<section id="clsupe"><title>SUPERCLASSES</title>
+<indexterm><primary>SUPERCLASSES method</primary>
+<secondary>of Class class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>SUPERCLASSES method</secondary>
+<tertiary>of Class class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SUPERCLASSES------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the immediate superclasses of the receiver class in the form of
+a single-index array of the required size. The immediate superclasses are
+the original class used on a SUBCLASS or a MIXINCLASS method, plus any additional
+superclasses defined with the INHERIT method. The array is in the order in
+which the class has inherited the classes. The original class used on a SUBCLASS
+or MIXINCLASS method is the first item of the array. The array indexes range
+from <computeroutput>1</computeroutput> to the number of superclasses.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>SUPERCLASSES method</secondary></indexterm>
+<programlisting>
+z=.class~superclasses
+/* To obtain the information this returns, you could use:     */
+do i over z
+  say i
+end
+</programlisting>
+</section>
+
+<section id="clunin"><title>UNINHERIT</title>
+<indexterm><primary>UNINHERIT method</primary>
+<secondary>of Class class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>UNINHERIT method</secondary>
+<tertiary>of Class class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-UNINHERIT(classobj)-----------------------------------------><
+]]>
+</programlisting>
+
+<para>Nullifies the effect of any previous INHERIT message
+sent to the receiver for the class <emphasis role="italic">classobj</emphasis>.
+</para>
+
+<note><title>Note</title>
+<para>You
+cannot change the classes that Rexx provides by sending UNINHERIT messages.
+</para></note>
+<para><emphasis role="bold">Example:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>UNINHERIT method</secondary></indexterm>
+<programlisting>
+location=.object~mixinclass("Location")
+room=.object~subclass("Room")~~inherit(location) /* Creates subclass */
+/* and specifies inheritance */
+room~UNINHERIT(location)
+</programlisting>
+</section>
+</section>
+
+<section id="mcls"><title>The Method Class</title>
+<indexterm><primary>Method class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>Method class</secondary></indexterm>
+<para>The Method class creates method objects from Rexx source code.
+It is a subclass of the Object class.</para>
+<para><emphasis role="bold">Methods the Method class defines:</emphasis></para>
+<simplelist>
+<member>NEW (Class method. Overrides Object class method.)</member>
+<member>NEWFILE (Class method)</member>
+<member>SETGUARDED</member>
+<member>SETPRIVATE</member>
+<member>SETPROTECTED</member>
+<member>SETSECURITYMANAGER</member>
+<member>SETUNGUARDED</member>
+<member>SOURCE</member>
+</simplelist>
+
+<para><emphasis role="bold">Methods inherited from the Object class:</emphasis>
+</para>
+<simplelist>
+<member>Operator methods:&nbsp;&nbsp;=, ==, \=, >&lt;, &lt;>, \==</member>
+<member>CLASS</member>
+<member>COPY</member>
+<member>DEFAULTNAME</member>
+<member>HASMETHOD</member>
+<member>INIT</member>
+<member>OBJECTNAME</member>
+<member>OBJECTNAME=</member>
+<member>REQUEST</member>
+<member>RUN</member>
+<member>SETMETHOD</member>
+<member>START</member>
+<member>STRING</member>
+<member>UNSETMETHOD</member>
+</simplelist>
+
+<note><title>Note</title>
+<para>The Method class also has available class methods that its
+metaclass, the Class class, defines.</para></note>
+
+<section id="menew"><title>NEW  (Class Method)</title>
+<indexterm><primary>NEW method</primary>
+<secondary>of Method class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>NEW method</secondary>
+<tertiary>of Method class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-NEW(name,source--+------------------+---)-------------------><
+                    +--, methodobject--+
+]]>
+</programlisting>
+
+<para>Returns a new instance of method class, which is an executable
+representation of the code contained in the
+<emphasis role="italic">source</emphasis>. The
+<emphasis role="italic">name</emphasis> is a string.
+The <emphasis role="italic">source</emphasis> can be a single string or an
+array of strings containing individual method lines.</para>
+
+<para>The third parameter influences the scope of the method. If none is
+given, the program scope is used. If another method object is given,
+its scope is used.</para>
+
+</section>
+
+<section id="newfile"><title>NEWFILE (Class Method)</title>
+<indexterm><primary>NEWFILE method</primary>
+<secondary>of Method class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>NEWFILE method</secondary>
+<tertiary>of Method class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-NEWFILE(filename)-------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a new instance of method class, which is an executable
+representation of the code contained in the file filename. The filename is a
+string.</para>
+<para>For an example of the use of this method, see the code example
+<link linkend="servex">Server implements Security Manager</link>.</para>
+</section>
+
+<section id="setgua"><title>SETGUARDED</title>
+<indexterm><primary>SETGUARDED method</primary>
+<secondary>of Method class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>SETGUARDED method</secondary>
+<tertiary>of Method class</tertiary></indexterm>
+<indexterm><primary>concurrency</primary>
+<secondary>SETGUARDED method</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SETGUARDED--------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Reverses any previous SETUNGUARDED messages, restoring the receiver to
+the default guarded status. If the receiver is already guarded, a SETGUARDED
+message has no effect.</para>
+</section>
+
+<section id="mesetp"><title>SETPRIVATE</title>
+<indexterm><primary>SETPRIVATE method</primary>
+<secondary>of Method class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>SETPRIVATE method</secondary>
+<tertiary>of Method class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SETPRIVATE--------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Specifies that a method is a private method. Only
+a message that an object sends to itself can run a private method. If a method
+object does not receive a SETPRIVATE message, the method is a public method.
+(Any object can send a message to run a public method. See
+<link linkend="pubpri">Public and Private Methods</link> for
+details.)</para>
+</section>
+
+<section id="mesetpro"><title>SETPROTECTED</title>
+<indexterm><primary>SETPROTECTED method</primary>
+<secondary>of Method class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>SETPROTECTED method</secondary>
+<tertiary>of Method class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SETPROTECTED------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Specifies thata method is a protected method. If a method
+object does not receive a SETPROTECTED message, the method is not protected.
+(See <link linkend="secman">The Security Manager</link> for details.)</para>
+</section>
+
+<section id="mesetsec"><title>SETSECURITYMANAGER</title>
+<indexterm><primary>SETSECURITYMANAGER method</primary>
+<secondary>of Method class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>SETSECURITYMANAGER method</secondary>
+<tertiary>of Method class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SETSECURITYMANAGER--+---------------------------+-----------><
+                       +-(security_manager_object)-+
+]]>
+</programlisting>
+
+<para>Replaces the existing security manager with the specified
+<emphasis role="italic">security_manager_object</emphasis>. If
+<emphasis role="italic">security_manager_object</emphasis> is omitted, any
+existing security manager is removed.</para>
+</section>
+
+<section id="setnow"><title>SETUNGUARDED</title>
+<indexterm><primary>SETUNGUARDED method</primary>
+<secondary>of Method class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>SETUNGUARDED method</secondary>
+<tertiary>of Method class</tertiary></indexterm>
+<indexterm><primary>concurrency</primary>
+<secondary>SETUNGUARDED method</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SETUNGUARDED------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Lets an object run a method even when
+another method is active on the same object. If a method object does not receive
+a SETUNGUARDED message, it requires exclusive use of its object variable pool.
+A method can be active for an object only when no other method requiring exclusive
+access to the object's variable pool is active in the same object. This
+restriction does not apply if an object sends itself a message to run a method
+and it already has exclusive use of the same object variable pool. In this
+case, the method runs immediately and has exclusive use of its object variable
+pool, regardless of whether it received a SETUNGUARDED message.</para>
+</section>
+
+<section id="mesour"><title>SOURCE</title>
+<indexterm><primary>SOURCE method</primary>
+<secondary>of Method class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>SOURCE method</secondary>
+<tertiary>of Method class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SOURCE------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the method source code as a single-index array of source
+lines. If the source code is not available, SOURCE returns an array of zero
+items.</para>
+</section>
+</section>
+<section id="agent"><title>The Message Class</title>
+<indexterm><primary>Message class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>Message class</secondary></indexterm>
+<para>A message object provides for the deferred or
+asynchronous sending of a message. You can create a message object by using
+the NEW or ENHANCED method of the Message class or the START method of the
+Object class (see <link linkend="obstar">START</link>). The Message class is
+a subclass of the Object class.</para>
+<para><emphasis role="bold">Methods the Message class defines:</emphasis>
+</para>
+<simplelist>
+<member>COMPLETED</member>
+<member>ERRORCONDITION</member>
+<member>HASERROR</member>
+<member>INIT (Overrides Object class method)</member>
+<member>NOTIFY</member>
+<member>RESULT</member>
+<member>SEND</member>
+<member>START (Overrides Object class method)</member>
+</simplelist>
+
+<para><emphasis role="bold">Methods inherited from the Object class:</emphasis>
+</para>
+<simplelist>
+<member>NEW (Class method)</member>
+<member>Operator methods:&nbsp;&nbsp;=, ==, \=, >&lt;, &lt;>, \==</member>
+<member>CLASS</member>
+<member>COPY</member>
+<member>DEFAULTNAME</member>
+<member>HASMETHOD</member>
+<member>OBJECTNAME</member>
+<member>OBJECTNAME=</member>
+<member>REQUEST</member>
+<member>RUN</member>
+<member>SETMETHOD</member>
+<member>STRING</member>
+<member>UNSETMETHOD</member>
+</simplelist>
+
+<note><title>Note</title>
+<para>The Message class also has available class methods that its
+metaclass, the Class class, defines.</para></note>
+
+<section id="mescom"><title>COMPLETED</title>
+<indexterm><primary>COMPLETED method</primary>
+<secondary>of Message class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>COMPLETED method</secondary>
+<tertiary>of Message class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-COMPLETED---------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns <computeroutput>1</computeroutput> if the message object has
+completed its message, or <computeroutput>0</computeroutput>. You can use this
+method instead of sending RESULT and waiting for
+the message to complete.</para>
+</section>
+
+<section id="msgerrcond"><title>ERRORCONDITION</title>
+<indexterm><primary>ERRORCONDITION method</primary>
+<secondary>of Message class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>ERRORCONDITION method</secondary>
+<tertiary>of Message class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-ERRORCONDITION----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns an error condition object from an execution error in the message
+object's message. If the message completed normally, or is still executing,
+ERRORCONDITION returns the .nil object.</para>
+</section>
+
+<section id="msghaserr"><title>HASERROR</title>
+<indexterm><primary>HASERROR method</primary>
+<secondary>of Message class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>HASERROR method</secondary>
+<tertiary>of Message class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-HASERROR----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>1</computeroutput> if the message object's
+message was terminated with an error condition. Returns
+<computeroutput>0</computeroutput> if the message has not completed or
+completed without error.</para>
+</section>
+
+<section id="aginita"><title>INIT</title>
+<indexterm><primary>INIT method</primary>
+<secondary>of Message class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>INIT method</secondary>
+<tertiary>of Message class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-INIT(target,messagename-+-------------------------------+-)-><
+                           |             +---------------+ |
+                           |             V               | |
+                           +-,Individual---+-----------+-+-+
+                           |               +-,argument-+   |
+                           +-,Array,argument---------------+
+]]>
+</programlisting>
+
+<para>Initializes the message object for sending the message name
+<emphasis role="italic">messagename</emphasis> to object
+<emphasis role="italic">target</emphasis>.</para>
+<para>The <emphasis role="italic">messagename</emphasis> can be a string or an
+array. If <emphasis role="italic">messagename</emphasis> is an array object,
+its first item is the name of the message and its
+second item is a class object to use as the starting point for the method
+search. For more information, see
+<link linkend="meths">Classes and Inheritance of Methods</link>.</para>
+<para>If you specify the Individual or Array option, any remaining arguments
+are arguments for the message. (You need to specify only the first letter;
+the language processor ignores all characters following it.) </para>
+<variablelist>
+<varlistentry><term>Individual</term>
+<listitem><para>If you specify this option, specifying
+<emphasis role="italic">argument</emphasis> is optional.
+The language processor passes any <emphasis role="italic">argument</emphasis>s
+as message arguments
+to <emphasis role="italic">target</emphasis> in the order you specify them.
+</para></listitem></varlistentry>
+<varlistentry><term>Array</term>
+<listitem><para>If you specify this option, you must specify an
+<emphasis role="italic">argument</emphasis>, which
+is an array object. (See <link linkend="xarray">The Array Class</link>.)
+The language processor then passes the member items of the array to
+<emphasis role="italic">target</emphasis>. When the language
+processor passes the arguments taken from the array, the first argument is
+at index 1, the second argument at index 2, and so on. If you omitted any
+indexes when creating the array, the language processor omits their
+corresponding message arguments when passing the arguments.
+</para></listitem></varlistentry>
+</variablelist>
+<para>If you specify neither Individual nor Array, the message sent has no
+arguments. </para>
+
+<note><title>Note</title>
+<para>This method does not send the message
+<emphasis role="italic">messagename</emphasis> to object
+<emphasis role="italic">target</emphasis>. The SEND or START method
+(described later) sends the message.
+</para></note>
+</section>
+
+<section id="agnoti"><title>NOTIFY</title>
+<indexterm><primary>NOTIFY method</primary>
+<secondary>of Message class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>NOTIFY method</secondary>
+<tertiary>of Message class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-NOTIFY(message)---------------------------------------------><
+]]>
+</programlisting>
+
+<para>Requests notification about the completion of processing of the message
+SEND or START. The message object <emphasis role="italic">message</emphasis>
+is sent as the notification. You can use NOTIFY to request any number of
+notifications. After the notification
+message, you can use the RESULT method to obtain any result from the messages
+SEND or START.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>NOTIFY method</secondary></indexterm>
+<programlisting>
+/* Event-driven greetings */
+
+.prompter~new~prompt(.nil)
+
+:class prompter
+
+::method prompt
+  expose name
+  use arg msg
+
+  if msg \= .nil then do
+    name = msg~result
+    if name = "quit" then return
+    say "Hello," name
+  end
+
+  say &apos;Enter your name ("quit" to quit):&apos;
+
+  /* Send the public default object .INPUT a LINEIN message asynchronously */
+  msg=.message~new(.input,"LINEIN")~~start
+
+  /* Sends self~prompt(msg) when data available   */
+  msg~notify(.message~new(self,"PROMPT","I",msg))
+
+  /* Don&apos;t leave until user has entered "quit"    */
+  guard on when name="quit"
+  </programlisting>
+</section>
+
+<section id="agresu"><title>RESULT</title>
+<indexterm><primary>RESULT method</primary>
+<secondary>of Message class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>RESULT method</secondary>
+<tertiary>of Message class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-RESULT------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the result of the message SEND or START.
+If message processing is not yet complete, this method waits until it completes.
+If the message SEND or START raises an error condition, this method also raises
+an error condition.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+/* Example using RESULT method */
+string="700"                 /* Create a new string object, string   */
+bond=string~start("REVERSE") /* Create a message object, bond, and   */
+                             /* start it.  This sends a REVERSE      */
+                             /* message to string, giving bond       */
+                             /* the result.                          */
+
+/* Ask bond for the result of the message */
+say "The result of message was" bond~result     /* Result is 007     */
+</programlisting>
+</section>
+
+<section id="mssend"><title>SEND</title>
+<indexterm><primary>SEND method</primary>
+<secondary>of Message class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>SEND method</secondary>
+<tertiary>of Message class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SEND--+----------+------------------------------------------><
+         +-(target)-+
+]]>
+</programlisting>
+
+<para>Returns the result (if any) of sending the message. If you specify
+<emphasis role="italic">target</emphasis>, this method sends the message to
+<emphasis role="italic">target</emphasis>. Otherwise,
+this method sends the message to the <emphasis role="italic">target</emphasis>
+you specified when the message object was created. SEND does
+not return until message processing is complete.</para>
+<para>You can use the NOTIFY method to request notification that message
+processing is complete. You can use the RESULT method to obtain any result
+from the message.</para>
+</section>
+
+<section id="msstrt"><title>START</title>
+<indexterm><primary>START method</primary>
+<secondary>of Message class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>START method</secondary>
+<tertiary>of Message class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-START--+----------+-----------------------------------------><
+          +-(target)-+
+]]>
+</programlisting>
+
+
+<para>Sends the message to start processing at a specific target whereas
+the sender continues processing. If you specify
+<emphasis role="italic">target</emphasis>, this method
+sends the message to <emphasis role="italic">target</emphasis>. Otherwise, this
+method sends the message to the <emphasis role="italic">target</emphasis>
+that you specified when the message object was created.
+This method returns as soon as possible and does not wait until
+message processing is complete. When message processing is complete, the
+message object retains any result and holds it until the sender requests it
+by sending a RESULT message. You can use the NOTIFY method to request
+notification that message processing is complete.</para>
+</section>
+
+<section id="exam"><title>Example</title>
+<indexterm><primary>examples</primary>
+<secondary>START method</secondary></indexterm>
+<indexterm><primary>examples</primary>
+<secondary>of Message class</secondary></indexterm>
+<programlisting>
+/* Using Message class methods */
+/* Note: In the following example, ::METHOD directives define class Testclass */
+                                                 /* with method SHOWMSG       */
+
+ez=.testclass~new                  /* Creates a new instance of Testclass     */
+mymsg=ez~start("SHOWMSG","Hello, Ollie!",5)      /* Creates and starts        */
+                                                 /* message mymsg to send     */
+                                                 /* SHOWMSG to ez             */
+
+/* Continue with main processing while SHOWMSG runs concurrently              */
+do 5
+  say "Hello, Stan!"
+end
+
+/* Get final result of the SHOWMSG method from the mymsg message object       */
+say mymsg~result
+say "Goodbye, Stan..."
+exit
+
+::class testclass public             /* Directive defines Testclass           */
+
+::method showmsg                     /* Directive creates new method SHOWMSG  */
+use arg text,reps                    /* class Testclass                       */
+do reps
+  say text
+end
+reply "Bye Bye, Ollie..."
+return
+</programlisting>
+<para>The following output is possible: </para>
+<programlisting>
+Hello, Ollie!
+Hello, Stan!
+Hello, Ollie!
+Hello, Stan!
+Hello, Ollie!
+Hello, Stan!
+Hello, Ollie!
+Hello, Stan!
+Hello, Ollie!
+Hello, Stan!
+Bye Bye, Ollie...
+Goodbye, Stan...
+</programlisting>
+</section>
+</section>
+
+<section id="supp"><title>The Supplier Class</title>
+<indexterm><primary>Supplier class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>Supplier class</secondary></indexterm>
+<para>You can use a supplier object to enumerate the items a collection
+contained at the time of the supplier's creation. The following methods
+return a supplier object: </para>
+<itemizedlist>
+<listitem><para>The SUPPLIER methods of the Array, Bag, Directory, List, Queue,
+Relation, Set, Table, and Stream classes</para></listitem>
+<listitem><para>The METHODS method of the Class class</para></listitem>
+</itemizedlist>
+<para>The Supplier class is a subclass of the Object class.</para>
+<para><emphasis role="bold">Methods the Supplier class defines:</emphasis>
+</para>
+<simplelist>
+<member>NEW (Class method.&nbsp;&nbsp;Overrides Object class method.)</member>
+<member>AVAILABLE</member>
+<member>INDEX</member>
+<member>ITEM</member>
+<member>NEXT</member>
+</simplelist>
+<para><emphasis role="bold">Methods inherited from the Object class:</emphasis>
+</para>
+<simplelist>
+<member>Operator methods:&nbsp;&nbsp;=, ==, \=, >&lt;, &lt;>, \==</member>
+<member>CLASS</member>
+<member>COPY</member>
+<member>DEFAULTNAME</member>
+<member>HASMETHOD</member>
+<member>INIT</member>
+<member>OBJECTNAME</member>
+<member>OBJECTNAME=</member>
+<member>REQUEST</member>
+<member>RUN</member>
+<member>SETMETHOD</member>
+<member>START</member>
+<member>STRING</member>
+<member>UNSETMETHOD</member>
+</simplelist>
+
+<note><title>Note</title>
+<para>The Supplier class also has available class methods that its
+metaclass, the Class class, defines.</para></note>
+
+<section id="sunew"><title>NEW  (Class Method)</title>
+<indexterm><primary>NEW method</primary>
+<secondary>of Supplier class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>NEW method</secondary>
+<tertiary>of Supplier class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-NEW(values,indexes)-----------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a new supplier object. The
+<emphasis role="italic">values</emphasis> argument must be an
+array of values over which the supplier iterates. The
+<emphasis role="italic">indexes</emphasis> argument
+is an array of index values with a one-to-one correspondence to the objects
+contained in the values array. The created supplier iterates over the arrays,
+returning elements of the values array in response to  ITEM messages, and
+elements of the indexes array in response to INDEX messages. The supplier
+iterates for the number of items contained in the values array, returning
+the NIL object for any nonexistent items in either array.</para>
+</section>
+
+<section id="suavai"><title>AVAILABLE</title>
+<indexterm><primary>AVAILABLE method</primary>
+<secondary>of Supplier class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>AVAILABLE method</secondary>
+<tertiary>of Supplier class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-AVAILABLE---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>1</computeroutput> (true) if an item is available
+from the supplier (that is, if the ITEM method would return a value). It returns
+<computeroutput>0</computeroutput> (false) if the collection is empty or the
+supplier has already enumerated the entire collection.</para>
+</section>
+
+<section id="suinde"><title>INDEX</title>
+<indexterm><primary>INDEX method</primary>
+<secondary>of Supplier class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>INDEX method</secondary>
+<tertiary>of Supplier class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-INDEX-------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the index of the current
+item in the collection. If no item is available, that is, if AVAILABLE would
+return false, the language processor raises an error.</para>
+</section>
+
+<section id="supitm"><title>ITEM</title>
+<indexterm><primary>ITEM method</primary>
+<secondary>of Supplier class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>ITEM method</secondary>
+<tertiary>of Supplier class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-ITEM--------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the current item in the collection. If no item is available, that
+is, if AVAILABLE would return false, the language processor raises an error.
+</para>
+</section>
+
+<section id="sunext"><title>NEXT</title>
+<indexterm><primary>NEXT method</primary>
+<secondary>of Supplier class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>NEXT method</secondary>
+<tertiary>of Supplier class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-NEXT--------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Moves to the next item in the collection.
+By repeatedly sending NEXT to the supplier (as long as AVAILABLE returns true),
+you can enumerate all items in the collection. If no item is available, that
+is, if AVAILABLE would return false, the language processor raises an error.
+</para>
+</section>
+
+<section id="supex"><title>Examples</title>
+<indexterm><primary>examples</primary>
+<secondary>of Supplier class</secondary></indexterm>
+<programlisting>
+desserts=.array~of(apples, peaches, pumpkins, 3.14159) /* Creates array */
+say "The desserts we have are:"
+baker=desserts~supplier             /* Creates supplier object named BAKER */
+do while baker~available            /* Array suppliers are sequenced       */
+  if baker~index=4
+  then say baker~item "is pi, not pie!!!"
+  else say baker~item
+  baker~next
+end
+
+/* Produces: */
+/* The desserts we have are: */
+/* APPLES                    */
+/* PEACHES                   */
+/* PUMPKINS                  */
+/* 3.14159 is pi, not pie!!! */
+</programlisting>
+
+<para>This method is used by INIT to set the attribute USERS to HKEY_USERS. Do
+not modify this attribute.</para>
+</section>
+</section>
+
+</section>
+

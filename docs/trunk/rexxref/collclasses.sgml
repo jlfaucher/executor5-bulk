@@ -41,7 +41,7 @@
     #
     #########################################################################
 -->
-<chapter id="coll"><title>The Collection Classes</title>
+<section id="coll"><title>The Collection Classes</title>
 <indexterm><primary>collection classes</primary></indexterm>
 <para>A collection is an object that contains a number of
 <emphasis role="italic">items</emphasis>, which can be any objects. Every item
@@ -122,6 +122,8 @@ than once. See <link linkend="clbag">The Bag Class</link> for details.
 <para>The following sections describe the individual collection classes in
 alphabetical order and the methods that they define and inherit. It also
 describes the concept of set operations.</para>
+
+<section id="orderedcoll"><title>Ordered Collection Classes</title>
 
 <section id="xarray"><title>The Array Class</title>
 <indexterm><primary>Array class</primary></indexterm>
@@ -596,1194 +598,6 @@ z=.array~of(1,2,3)~~put(4,4)
 do i = 1 to z~size
   say z[i]              /* Produces:  1 2 3 4 */
 end
-</programlisting>
-</section>
-</section>
-
-<section id="clbag"><title>The Bag Class</title>
-<indexterm><primary>Bag class</primary></indexterm>
-<indexterm><primary>class</primary>
-<secondary>Bag class</secondary></indexterm>
-<para>A bag is a collection that restricts the elements
-to having an item that is the same as the index. Any object can be placed
-in a bag, and the same object can be placed in a bag several times.</para>
-<para>The Bag class is a subclass of the Relation class. In addition to its own
-methods, it inherits the methods of the Object class and the Relation class.</para>
-<para><emphasis role="bold">Methods the Bag class defines:</emphasis></para>
-<simplelist>
-<member>OF (Class method)</member>
-<member>[]</member>
-<member>[]= (Overrides Relation class method)</member>
-<member>HASINDEX</member>
-<member>MAKEARRAY</member>
-<member>PUT (Overrides Relation class method)</member>
-<member>SUPPLIER</member>
-</simplelist>
-<para><emphasis role="bold">Methods inherited from the Relation class:</emphasis>
-</para>
-<simplelist>
-<member>ALLAT</member>
-<member>ALLINDEX</member>
-<member>AT</member>
-<member>HASITEM</member>
-<member>INDEX</member>
-<member>ITEMS</member>
-<member>REMOVE</member>
-<member>REMOVEITEM</member>
-</simplelist>
-<para><emphasis role="bold">Set-operator methods inherited from the Relation class:</emphasis>
-</para>
-<simplelist>
-<member>DIFFERENCE</member>
-<member>INTERSECTION</member>
-<member>SUBSET</member>
-<member>UNION</member>
-<member>XOR</member>
-</simplelist>
-<para><emphasis role="bold">Methods inherited from the Object class:</emphasis>
-</para>
-<simplelist>
-<member>NEW (Class method)</member>
-<member>Operator methods: =, ==, \=, >&lt;, &lt;&gt;, \==</member>
-<member>CLASS</member>
-<member>COPY</member>
-<member>DEFAULTNAME</member>
-<member>HASMETHOD</member>
-<member>INIT</member>
-<member>OBJECTNAME</member>
-<member>OBJECTNAME=</member>
-<member>REQUEST</member>
-<member>RUN</member>
-<member>SETMETHOD</member>
-<member>START</member>
-<member>STRING</member>
-<member>UNSETMETHOD</member>
-</simplelist>
-
-<note><title>Note</title>
-<para>The Bag class also has available class methods that its metaclass,
-the Class class, defines.</para></note>
-
-<section id="baof"><title>OF (Class Method)</title>
-<indexterm><primary>OF method</primary>
-<secondary>of Bag class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>OF method</secondary>
-<tertiary>of Bag class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
-       +-,----+
-       V      |
->>-OF(---item-+-)----------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns a newly created bag containing the specified
-<emphasis role="italic">item</emphasis> objects.</para>
-</section>
-
-<section id="babrak"><title>[]</title>
-<indexterm><primary>[] method</primary>
-<secondary>of Bag class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>[] method</secondary>
-<tertiary>of Bag class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-[index]-----------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns the same value as the AT method in the Relation class. See
-<link linkend="reat">AT</link>.</para>
-</section>
-
-<section id="balbe"><title>[]=</title>
-<indexterm><primary>[]= method</primary>
-<secondary>of Bag class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>[]= method</secondary>
-<tertiary>of Bag class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-[index]=item------------------------------------------------><
-]]>
-</programlisting>
-
-<para>This method is the same as the PUT method. See
-<link linkend="baput">PUT</link>.</para>
-</section>
-
-<section id="bahasi"><title>HASINDEX</title>
-<indexterm><primary>HASINDEX method</primary>
-<secondary>of Bag class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>HASINDEX method</secondary>
-<tertiary>of Bag class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-HASINDEX(index)---------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns <computeroutput>1</computeroutput> (true) if the collection
-contains any item associated with index <emphasis role="italic">index</emphasis>,
-or <computeroutput>0</computeroutput> (false).</para>
-</section>
-
-<section id="bamaka"><title>MAKEARRAY</title>
-<indexterm><primary>MAKEARRAY method</primary>
-<secondary>of Bag class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>MAKEARRAY method</secondary>
-<tertiary>of Bag class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-MAKEARRAY---------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns a single-index array containing the index objects. The array indexes
-range from <computeroutput>1</computeroutput> to the number of items.
-The collection items appear in the array in an unspecified order. (The program
-should not rely on any order.)</para>
-</section>
-
-<section id="baput"><title>PUT</title>
-<indexterm><primary>PUT method</primary>
-<secondary>of Bag class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>PUT method</secondary>
-<tertiary>of Bag class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-PUT(item-+--------+-)---------------------------------------><
-            +-,index-+
-]]>
-</programlisting>
-
-<para>Makes the object <emphasis role="italic">item</emphasis> a member item of
-the collection and associates it with index
-<emphasis role="italic">index</emphasis>. If you specify
-<emphasis role="italic">index</emphasis>, it must be the
-same as <emphasis role="italic">item</emphasis>.</para>
-</section>
-
-<section id="basupp"><title>SUPPLIER</title>
-<indexterm><primary>SUPPLIER method</primary>
-<secondary>of Bag class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>SUPPLIER method</secondary>
-<tertiary>of Bag class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-SUPPLIER----------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns a supplier object for the collection. After you have obtained a
-supplier, you can send it messages (see
-<link linkend="supp">The Supplier Class</link>) to enumerate
-all the items that were in the collection at the time of the supplier's
-creation. The supplier enumerates the items in an unspecified order. (The
-program should not rely on any order.)</para>
-</section>
-
-<section id="bagex"><title>Examples</title>
-<indexterm><primary>examples</primary>
-<secondary>of Bag class</secondary></indexterm>
-<programlisting>
-/* Create a bag of fruit */
-fruit = .bag~of("Apple", "Orange", "Apple", "Pear")
-say fruit~items          /* How many pieces? (4)      */
-say fruit~items("Apple") /* How many apples? (2)      */
-fruit~remove("Apple")    /* Remove one of the apples. */
-fruit~~put("Banana")~put("Orange") /* Add a couple.   */
-say fruit~items          /* How many pieces? (5)      */
-</programlisting>
-</section>
-</section>
-
-<section id="rxcqcl"><title>The CircularQueue Class</title>
-<indexterm>
-<primary>class</primary>
-<secondary>CircularQueue class</secondary>
-</indexterm>
-<indexterm>
-<primary>CircularQueue class</primary>
-</indexterm>
-
-<para>
-The CircularQueue class allows for storing objects in a circular queue
-of a predefined size. Once the end of the queue has been reached, new item
-objects are inserted from the beginning, replacing earlier entries.
-</para>
-<para>
-The collected objects can be processed in FIFO (first in, first out) or in a
-stack-like LIFO (last in, first out) order.
-</para>
-<para>
-The CircularQueue class is a subclass of the Queue class. In addition to its own
-methods it inherits the methods of the Queue class (see <link linkend="rxqcl">The Queue class</link>)
-and the Object class (see <link linkend="objc">The Object Class</link>)
-</para>
-
-<para><emphasis role="bold">Methods the CircularQueue class defines:</emphasis></para>
-<simplelist>
-<member>OF (Class method)</member>
-<member>INIT</member>
-<member>MAKEARRAY</member>
-<member>PUSH</member>
-<member>QUEUE</member>
-<member>RESIZE</member>
-<member>SIZE</member>
-<member>STRING</member>
-<member>SUPPLIER</member>
-</simplelist>
-
-<para><emphasis role="bold">Methods inherited from the Queue class:</emphasis></para>
-<simplelist>
-<member>[]</member>
-<member>[]=</member>
-<member>AT</member>
-<member>HASINDEX</member>
-<member>ITEMS</member>
-<member>MAKEARRAY</member>
-<member>PEEK</member>
-<member>PULL</member>
-<member>PUSH</member>
-<member>PUT</member>
-<member>QUEUE</member>
-<member>REMOVE</member>
-<member>SUPPLIER</member>
-</simplelist>
-
-<para><emphasis role="bold">Methods inherited from the Object class:</emphasis></para>
-<simplelist>
-<member>NEW (Class method)</member>
-<member>Operator methods: =, ==, \=, &gt;&lt;, &lt;&gt;, \==</member>
-<member>CLASS</member>
-<member>COPY</member>
-<member>DEFAULTNAME</member>
-<member>HASMETHOD</member>
-<member>INIT</member>
-<member>OBJECTNAME</member>
-<member>OBJECTNAME=</member>
-<member>REQUEST</member>
-<member>RUN</member>
-<member>SETMETHOD</member>
-<member>START</member>
-<member>STRING</member>
-<member>UNSETMETHOD</member>
-</simplelist>
-
-<note><title>Note</title>
-<para>
-The CircularQueue class also has available class methods that its
-metaclass, the Class class, defines.
-</para>
-</note>
-
-<section id="cquof"><title>OF (Class Method)</title>
-<indexterm><primary>OF method</primary>
-<secondary>of CircularQueue class</secondary>
-</indexterm>
-<indexterm><primary>method</primary>
-<secondary>OF method</secondary>
-<tertiary>of CircularQueue class</tertiary>
-</indexterm>
-
-<programlisting>
-<![CDATA[
->>-OF-+----------------+---------------------------------------><
-      |    +-,----+    |
-      |    V      |    |
-      +-(----item-+--)-+
-]]>
-</programlisting>
-
-<para>
-Returns a newly created circular queue containing the specified
-<emphasis role="italic">item</emphasis> objects. The first
-<emphasis role="italic">item</emphasis> has index 1, the second has index 2,
-and so on. The number of <emphasis role="italic">item</emphasis> objects
-determines the <emphasis role="italic">size</emphasis> of the circular queue.
-</para>
-</section>
-
-<section id="cquini"><title>INIT</title>
-<indexterm><primary>INIT method</primary>
-<secondary>of CircularQueue class</secondary>
-</indexterm>
-<indexterm><primary>method</primary>
-<secondary>INIT method</secondary>
-<tertiary>of CircularQueue class</tertiary>
-</indexterm>
-
-<programlisting>
-<![CDATA[
->>-INIT(size)--------------------------------------------------><
-]]>
-</programlisting>
-
-<para>
-Constructor method invoked by the NEW method, which determines the
-<emphasis role="italic">size</emphasis> of the circular queue.
-</para>
-</section>
-
-
-<section id="cqumak"><title>MAKEARRAY</title>
-<indexterm><primary>MAKEARRAY method</primary>
-<secondary>of CircularQueue class</secondary>
-</indexterm>
-<indexterm><primary>method</primary>
-<secondary>MAKEARRAY method</secondary>
-<tertiary>of CircularQueue class</tertiary>
-</indexterm>
-
-<programlisting>
-<![CDATA[
-              +-Fifo----+
->>-MAKEARRAY(-+---------+-)------------------------------------><
-              +--order--+
-]]>
-</programlisting>
-
-<para>
-Returns a single-index array containing the items of the circular queue in the
-specified <emphasis role="italic">order</emphasis>.
-</para>
-
-<para>
-The following <emphasis role="italic">order</emphasis> can be used. (Only
-the capitalized letter is needed; all characters following it are ignored.)
-</para>
-
-<variablelist>
-<varlistentry><term>Fifo</term>
-<listitem>
-<para>First-in, first-out, default
-</para>
-</listitem>
-</varlistentry>
-<varlistentry><term>Lifo</term>
-<listitem>
-<para>Last-in, first-out (stacklike)
-</para>
-</listitem>
-</varlistentry>
-</variablelist>
-</section>
-
-<section id="cqupush"><title>PUSH</title>
-<indexterm><primary>PUSH method</primary>
-<secondary>of CircularQueue class</secondary>
-</indexterm>
-<indexterm><primary>method</primary>
-<secondary>PUSH method</secondary>
-<tertiary>of CircularQueue class</tertiary>
-</indexterm>
-
-<programlisting>
-<![CDATA[
->>-PUSH(item)--------------------------------------------------><
-]]>
-</programlisting>
-
-<para>
-Makes the object <emphasis role="italic">item</emphasis> a member item of
-the circular queue, inserting the item object in front of the first item in
-the queue. The pushed item object will be the new first item in the circular queue.
-</para>
-
-<para>
-If the circular queue is full, than the last item stored in the circular queue
-will be deleted, before the insertion takes place. In this case the
-<emphasis role="italic">deleted item</emphasis> will be returned, otherwise
-<emphasis role="italic">.nil</emphasis>.
-</para>
-</section>
-
-
-<section id="cquque"><title>QUEUE</title>
-<indexterm><primary>QUEUE method</primary>
-<secondary>of CircularQueue class</secondary>
-</indexterm>
-<indexterm><primary>method</primary>
-<secondary>QUEUE method</secondary>
-<tertiary>of CircularQueue class</tertiary>
-</indexterm>
-
-<programlisting>
-<![CDATA[
->>-QUEUE(item)-------------------------------------------------><
-]]>
-</programlisting>
-
-<para>
-Makes the object <emphasis role="italic">item</emphasis> a member item of the circular queue, inserting the item
-at the end of the circular queue.
-</para>
-
-<para>
-If the circular queue is full, than the first item will be deleted, before the
-insertion takes place.  In this case the <emphasis role="italic">deleted item</emphasis>
-will be returned, otherwise <emphasis role="italic">.nil</emphasis>.
-</para>
-</section>
-
-<section id="cqures"><title>RESIZE</title>
-<indexterm><primary>RESIZE method</primary>
-<secondary>of CircularQueue class</secondary>
-</indexterm>
-<indexterm><primary>method</primary>
-<secondary>RESIZE method</secondary>
-<tertiary>of CircularQueue class</tertiary>
-</indexterm>
-
-<programlisting>
-<![CDATA[
-                   +--,Fifo---+
->>-RESIZE(-newSize-+----------+-)------------------------------><
-                   +--,order--+
-]]>
-</programlisting>
-
-<para>
-Resizes the circular queue object to be able to contain
-<emphasis role="italic">newSize</emphasis> items.
-If the previous size was larger than <emphasis role="italic">newSize</emphasis>,
-then the now superfluous items are removed in the specified
-<emphasis role="italic">order</emphasis>.
-</para>
-
-<para>
-The following <emphasis role="italic">order</emphasis> can be used. (Only
-the capitalized letter is needed; all characters following it are ignored.)
-</para>
-
-<variablelist>
-<varlistentry><term>Fifo</term>
-<listitem>
-<para>First-in, first-out, default: keeps the newest entries
-</para>
-</listitem>
-</varlistentry>
-<varlistentry><term>Lifo</term>
-<listitem>
-<para>Last-in, first-out (stacklike): keeps the oldest entries
-</para>
-</listitem>
-</varlistentry>
-</variablelist>
-
-<note><title>Note:</title>
-<para>
-Resizing with a value of <computeroutput>0</computeroutput> effectively removes all
-items from the circular queue.
-</para>
-</note>
-</section>
-
-<section id="cqusize"><title>SIZE</title>
-<indexterm><primary>SIZE method</primary>
-<secondary>of CircularQueue class</secondary>
-</indexterm>
-<indexterm><primary>method</primary>
-<secondary>SIZE method</secondary>
-<tertiary>of CircularQueue class</tertiary>
-</indexterm>
-
-<programlisting>
-<![CDATA[
->>-SIZE--------------------------------------------------------><
-]]>
-</programlisting>
-
-<para>
-Returns the maximum number of objects that can be stored in the circular queue.
-</para>
-</section>
-
-<section id="cqustr"><title>STRING</title>
-<indexterm><primary>STRING method</primary>
-<secondary>of CircularQueue class</secondary>
-</indexterm>
-<indexterm><primary>method</primary>
-<secondary>STRING method</secondary>
-<tertiary>of CircularQueue class</tertiary>
-</indexterm>
-
-<programlisting>
-<![CDATA[
-           +--","------+  +-,-Fifo--+
->>-STRING(-+-----------+--+---------+-)------------------------><
-           +-delimiter-+  +-,-order-+
-]]>
-</programlisting>
-
-<para>
-Returns a string object that concatenates the string values of the collected
-item objects, using the <emphasis role="italic">delimiter</emphasis> string
-to delimit them, in the specified <emphasis role="italic">order</emphasis>.
-The default <emphasis role="italic">delimiter</emphasis> is a single comma.
-</para>
-
-<para>
-If the delimiter string argument is omitted the comma character
-(<computeroutput>","</computeroutput>) is used as the default delimiter string.
-</para>
-
-<para>
-The following <emphasis role="italic">order</emphasis> can be used. (Only
-the capitalized letter is needed; all characters following it are ignored.)
-</para>
-
-<variablelist>
-<varlistentry><term>Fifo</term>
-<listitem>
-<para>First-in, first-out, default
-</para>
-</listitem>
-</varlistentry>
-<varlistentry><term>Lifo</term>
-<listitem>
-<para>Last-in, first-out (stacklike)
-</para>
-</listitem>
-</varlistentry>
-</variablelist>
-</section>
-
-<section id="cqusupp"><title>SUPPLIER</title>
-<indexterm><primary>SUPPLIER method</primary>
-<secondary>of CircularQueue class</secondary>
-</indexterm>
-<indexterm><primary>method</primary>
-<secondary>SUPPLIER method</secondary>
-<tertiary>of CircularQueue class</tertiary>
-</indexterm>
-
-<programlisting>
-<![CDATA[
-             +--Fifo----+
->>-SUPPLIER(-+----------+-)------------------------------------><
-             +--order---+
-]]>
-</programlisting>
-
-<para>
-Returns a supplier object for the collection. After you have obtained a
-supplier, you can send it messages (see
-<link linkend="supp">The Supplier Class</link>) to enumerate
-all the items that were in the queue at the time of the supplier's creation.
-</para>
-
-<para>
-The supplier will enumerate the items in the specified
-<emphasis role="italic">order</emphasis>. (Only the capitalized
-letter is needed; all characters following it are ignored.)
-</para>
-
-<variablelist>
-<varlistentry><term>Fifo</term>
-<listitem>
-<para>First-in, first-out, default
-</para>
-</listitem>
-</varlistentry>
-<varlistentry><term>Lifo</term>
-<listitem>
-<para>Last-in, first-out (stacklike)
-</para>
-</listitem>
-</varlistentry>
-</variablelist>
-</section>
-
-<section id="cquex"><title>Example</title>
-<indexterm>
-<primary>examples</primary>
-<secondary>of CircularQueue class</secondary>
-</indexterm>
-
-<programlisting>
-  -- create a circular buffer with five items
-u=.circularQueue~of("a", "b", "c", "d", "e")
-say "content: ["u"]," "content (LIFO): ["u~string("->","L")"]"
-say
-
-u~resize(4, "FIFO")     -- resize fifo-style (keep newest)
-say "after resizing to 4 items in FIFO style (keeping the newest):"
-say "content: ["u"]," "content (LIFO): ["u~string("->","L")"]"
-say
-
-u~resize(2, "LILO")     -- resize lifo-style (keep oldest)
-say "after resizing to 2 items in LIFO style (keeping the oldest):"
-say "content: ["u"]," "content (LIFO): ["u~string("->","L")"]"
-say
-
-u~resize(0)             -- resize lifo-style (keep oldest)
-say "after resizing to 0 items, thereby deleting all items:"
-say "content: ["u"]," "content (LIFO): ["u~string("->","L")"]"
-say
-
-u~resize(2)             -- resize lifo-style (keep oldest)
-say "after resizing to 2, size="u~size "and items="u~items
-u~~queue(&apos;x&apos;)~~queue(&apos;y&apos;)~~queue(&apos;z&apos;)
-say "after queuing the three items &apos;x&apos;, &apos;y&apos;, &apos;z&apos;:"
-say "content: ["u"]," "content (LIFO): ["u~string("->","L")"]"
-say
-
-u~~push(&apos;1&apos;)~~push(&apos;2&apos;)~~push(&apos;3&apos;)
-say "after pushing the three items &apos;1&apos;, &apos;2&apos;, &apos;3&apos;:"
-say "content: ["u"]," "content (LIFO): ["u~string("->","L")"]"
-say
-</programlisting>
-
-<para>
-Output:
-</para>
-
-<programlisting>
-content: [a,b,c,d,e], content (LIFO): [e->d->c->b->a]
-
-after resizing to 4 items in FIFO style (keeping the newest):
-content: [b,c,d,e], content (LIFO): [e->d->c->b]
-
-after resizing to 2 items in LIFO style (keeping the oldest):
-content: [b,c], content (LIFO): [c->b]
-
-after resizing to 0 items, thereby deleting all items:
-content: [], content (LIFO): []
-
-after resizing to 2, size=2 and items=0
-after queuing the three items &apos;x&apos;, &apos;y&apos;, &apos;z&apos;:
-content: [y,z], content (LIFO): [z->y]
-
-after pushing the three items &apos;1&apos;, &apos;2&apos;, &apos;3&apos;:
-content: [3,2], content (LIFO): [2->3]
-</programlisting>
-</section>
-</section>
-
-<section id="diro"><title>The Directory Class</title>
-<indexterm><primary>Directory class</primary></indexterm>
-<indexterm><primary>class</primary>
-<secondary>Directory class</secondary></indexterm>
-<para>A directory is a collection with unique
-indexes that are character strings representing names.</para>
-<para>Directories let you refer to objects by name, for example:</para>
-<programlisting>
-.environment~array
-</programlisting>
-<para>For directories, items are often referred to as entries.</para>
-<para><emphasis role="bold">Methods the Directory class defines:</emphasis>
-</para>
-<simplelist>
-<member>[]</member>
-<member>[]=</member>
-<member>AT</member>
-<member>ENTRY</member>
-<member>HASENTRY</member>
-<member>HASINDEX</member>
-<member>ITEMS</member>
-<member>MAKEARRAY</member>
-<member>PUT</member>
-<member>REMOVE</member>
-<member>SETENTRY</member>
-<member>SETMETHOD (Overrides Object class method)</member>
-<member>SUPPLIER</member>
-<member>UNKNOWN</member>
-</simplelist>
-<para><emphasis role="bold">Set-operator methods the Directory class defines:</emphasis>
-</para>
-<simplelist>
-<member>DIFFERENCE</member>
-<member>INTERSECTION</member>
-<member>SUBSET</member>
-<member>UNION</member>
-<member>XOR</member>
-</simplelist>
-<para><emphasis role="bold">Methods Inherited from the Object Class:</emphasis>
-</para>
-<simplelist>
-<member>NEW (Class method)</member>
-<member>Operator methods: =, ==, \=, &gt;&lt;, &lt;&gt;, \==</member>
-<member>CLASS</member>
-<member>COPY</member>
-<member>DEFAULTNAME</member>
-<member>HASMETHOD</member>
-<member>INIT</member>
-<member>OBJECTNAME</member>
-<member>OBJECTNAME=</member>
-<member>REQUEST</member>
-<member>RUN</member>
-<member>START</member>
-<member>STRING</member>
-<member>UNSETMETHOD</member>
-</simplelist>
-
-<note><title>Note</title>
-<para>The Directory class also has available class methods that
-its metaclass, the Class class, defines.</para></note>
-
-<section id="dibrak"><title>[]</title>
-<indexterm><primary>[] method</primary>
-<secondary>of Directory class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>[] method</secondary>
-<tertiary>of Directory class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-[name]------------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns the same item as the AT method, which follows. See
-<link linkend="diat">AT</link>.</para>
-</section>
-
-<section id="dibrae"><title>[]=</title>
-<indexterm><primary>[]= method</primary>
-<secondary>of Directory class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>[]= method</secondary>
-<tertiary>of Directory class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-[name]=item-------------------------------------------------><
-]]>
-</programlisting>
-
-<para>This method is the same as the PUT method. See
-<link linkend="dirput">PUT</link>.</para>
-</section>
-
-<section id="diat"><title>AT</title>
-<indexterm><primary>AT method</primary>
-<secondary>of Directory class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>AT method</secondary>
-<tertiary>of Directory class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-AT(name)----------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns the item associated with index
-<emphasis role="italic">name</emphasis>. If a method that
-SETMETHOD supplies is associated with index
-<emphasis role="italic">name</emphasis>, the result of running
-this method is returned. If the collection has no item or method associated
-with index <emphasis role="italic">name</emphasis>, this method returns
-the NIL object.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
-<programlisting>
-say .environment~AT("OBJECT")   /* Produces: "The Object class" */
-</programlisting>
-</section>
-
-<section id="dientr"><title>ENTRY</title>
-<indexterm><primary>ENTRY method</primary>
-<secondary>of Directory class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>ENTRY method</secondary>
-<tertiary>of Directory class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-ENTRY(name)-------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns the directory entry with name
-<emphasis role="italic">name</emphasis> (translated to uppercase).
-If there is no such entry, <emphasis role="italic">name</emphasis>
-returns the item for any method that SETMETHOD supplied. If there is
-neither an entry nor a method for <emphasis role="italic">name</emphasis>
-or for UNKNOWN, the language processor raises an error.</para>
-</section>
-
-<section id="dihase"><title>HASENTRY</title>
-<indexterm><primary>HASENTRY method</primary>
-<secondary>of Directory class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>HASENTRY method</secondary>
-<tertiary>of Directory class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-HASENTRY(name)----------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns <computeroutput>1</computeroutput> (true) if the directory has
-an entry or a method for name <emphasis role="italic">name</emphasis>
-(translated to uppercase), or <computeroutput>0</computeroutput> (false).</para>
-</section>
-
-<section id="dihasi"><title>HASINDEX</title>
-<indexterm><primary>HASINDEX method</primary>
-<secondary>of Directory class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>HASINDEX method</secondary>
-<tertiary>of Directory class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-HASINDEX(name)----------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns <computeroutput>1</computeroutput> (true) if the collection
-contains any item associated with index
-<emphasis role="italic">name</emphasis>, or <computeroutput>0</computeroutput>
-(false).</para>
-</section>
-
-<section id="diitms"><title>ITEMS</title>
-<indexterm><primary>ITEMS method</primary>
-<secondary>of Directory class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>ITEMS method</secondary>
-<tertiary>of Directory class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-ITEMS-------------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns the number of items in the collection.</para>
-</section>
-
-<section id="dimaka"><title>MAKEARRAY</title>
-<indexterm><primary>MAKEARRAY method</primary>
-<secondary>of Directory class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>MAKEARRAY method</secondary>
-<tertiary>of Directory class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-MAKEARRAY---------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns a single-index array containing the index objects. The array
-indexes range from <computeroutput>1</computeroutput> to the number of items.
-The collection items appear in the array in an unspecified order.
-(The program should not rely on any order.)</para>
-</section>
-
-<section id="dirput"><title>PUT</title>
-<indexterm><primary>PUT method</primary>
-<secondary>of Directory class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>PUT method</secondary>
-<tertiary>of Directory class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-PUT(item,name)----------------------------------------------><
-]]>
-</programlisting>
-
-<para>Makes the object <emphasis role="italic">item</emphasis>
-a member item of the collection and associates
-it with index <emphasis role="italic">name</emphasis>.
-The new item replaces any existing item or method
-associated with index <emphasis role="italic">name</emphasis>.</para>
-</section>
-
-<section id="dirrem"><title>REMOVE</title>
-<indexterm><primary>REMOVE method</primary>
-<secondary>of Directory class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>REMOVE method</secondary>
-<tertiary>of Directory class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-REMOVE(name)------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns and removes the member item with index
-<emphasis role="italic">name</emphasis> from a collection.
-If a method is associated with SETMETHOD for index
-<emphasis role="italic">name</emphasis>, REMOVE removes
-the method and returns the result of running it. If there is no item or method
-with index <emphasis role="italic">name</emphasis>, the UNKNOWN method returns
-the NIL object and removes nothing.</para>
-</section>
-
-<section id="disete"><title>SETENTRY</title>
-<indexterm><primary>SETENTRY method</primary>
-<secondary>of Directory class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>SETENTRY method</secondary>
-<tertiary>of Directory class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-SETENTRY(name-+--------+-)----------------------------------><
-                 +-,entry-+
-]]>
-</programlisting>
-
-<para>Sets the directory entry with name
-<emphasis role="italic">name</emphasis> (translated to uppercase)
-to the object <emphasis role="italic">entry</emphasis>, replacing any existing
-entry or method for <emphasis role="italic">name</emphasis>. If you omit
-<emphasis role="italic">entry</emphasis>, this method removes any entry or
-method with this <emphasis role="italic">name</emphasis>.</para>
-</section>
-
-<section id="disetm"><title>SETMETHOD</title>
-<indexterm><primary>SETMETHOD method</primary>
-<secondary>of Directory class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>SETMETHOD method</secondary>
-<tertiary>of Directory class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-SETMETHOD(name-+---------+-)--------------------------------><
-                  +-,method-+
-]]>
-</programlisting>
-
-<para>Associates entry name <emphasis role="italic">name</emphasis>
-(translated to uppercase) with method <emphasis role="italic">method</emphasis>.
-Thus, the language processor returns the result of running
-<emphasis role="italic">method</emphasis> when you access this entry.
-This occurs when you specify <emphasis role="italic">name</emphasis> on the
-AT, ENTRY, or REMOVE method. This method replaces any existing
-item or method for <emphasis role="italic">name</emphasis>.</para>
-<para>You can specify the name UNKNOWN as
-<emphasis role="italic">name</emphasis>. Doing so supplies a
-method to run whenever an AT or ENTRY message specifies a name for which no item
-or method exists in the collection. This method's first argument is the
-specified directory index. This method has no effect on the action of any
-HASENTRY, HASINDEX, ITEMS, REMOVE, or SUPPLIER message sent to the collection.
-</para>
-<para>The <emphasis role="italic">method</emphasis> can be a
-string containing a method source line instead
-of a method object. Alternatively, an array of strings containing individual
-method lines can be passed. In either case, SETMETHOD creates an equivalent
-method object.</para>
-<para>If you omit <emphasis role="italic">method</emphasis>,
-SETMETHOD removes the entry with the specified
-<emphasis role="italic">name</emphasis>.</para>
-</section>
-
-<section id="disupp"><title>SUPPLIER</title>
-<indexterm><primary>SUPPLIER method</primary>
-<secondary>of Directory class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>SUPPLIER method</secondary>
-<tertiary>of Directory class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-SUPPLIER----------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns a supplier object for the collection. After you have obtained a
-supplier, you can send it messages (see
-<link linkend="supp">The Supplier Class</link>) to enumerate
-all the items that were in the collection at the time of the supplier's
-creation. The supplier enumerates the items in an unspecified order. (The
-program should not rely on any order.)</para>
-</section>
-
-<section id="diunkn"><title>UNKNOWN</title>
-<indexterm><primary>UNKNOWN method</primary>
-<secondary>of Directory class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>UNKNOWN method</secondary>
-<tertiary>of Directory class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-UNKNOWN(messagename,messageargs)----------------------------><
-]]>
-</programlisting>
-
-<para>Runs either the ENTRY or SETENTRY method, depending on whether
-<emphasis role="italic">messagename</emphasis> ends with an equal sign. If
-<emphasis role="italic">messagename</emphasis> does not end with an
-equal sign, this method runs the ENTRY method, passing
-<emphasis role="italic">messagename</emphasis> as
-its argument. The language processor ignores any arguments specified in the
-array <emphasis role="italic">messageargs</emphasis>. In this case, UNKNOWN
-returns the result of the ENTRY method.</para>
-<para>If <emphasis role="italic">messagename</emphasis> does end with an equal
-sign, this method runs the SETENTRY method, passing the first part of
-<emphasis role="italic">messagename</emphasis> (up to, but
-not including, the final equal sign) as its first argument, and the first
-item in the array <emphasis role="italic">messageargs</emphasis>
-as its second argument. In this case, UNKNOWN returns no result.</para>
-</section>
-
-<section id="didiff"><title>DIFFERENCE</title>
-<indexterm><primary>DIFFERENCE method</primary>
-<secondary>of Directory class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>DIFFERENCE method</secondary>
-<tertiary>of Directory class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-DIFFERENCE(argument)----------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns a new collection (of the same class as the receiver) containing
-only those items from the receiver whose indexes the
-<emphasis role="italic">argument</emphasis> collection
-does not contain. The <emphasis role="italic">argument</emphasis> can be any
-object described in
-<link linkend="parmcoll">The Argument Collection Classes</link>. The
-<emphasis role="italic">argument</emphasis> must also
-allow all of the index values in the receiver collection.</para>
-</section>
-
-<section id="diinte"><title>INTERSECTION</title>
-<indexterm><primary>INTERSECTION method</primary>
-<secondary>of Directory class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>INTERSECTION method</secondary>
-<tertiary>of Directory class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-INTERSECTION(argument)--------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns a new collection (of the same class as the receiver) containing
-only those items from the receiver whose indexes are in both the receiver
-collection and the <emphasis role="italic">argument</emphasis> collection.
-The <emphasis role="italic">argument</emphasis> can be any object described
-in <link linkend="parmcoll">The Argument Collection Classes</link>.
-The <emphasis role="italic">argument</emphasis> must also allow all of the
-index values in the receiver collection.</para>
-</section>
-
-<section id="disubs"><title>SUBSET</title>
-<indexterm><primary>SUBSET method</primary>
-<secondary>of Directory class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>SUBSET method</secondary>
-<tertiary>of Directory class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-SUBSET(argument)--------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns <computeroutput>1</computeroutput> (true) if all indexes in the
-receiver collection are also contained in the
-<emphasis role="italic">argument</emphasis> collection; returns
-<computeroutput>0</computeroutput> (false) otherwise. The
-<emphasis role="italic">argument</emphasis> can be any object described in
-<link linkend="parmcoll">The Argument Collection Classes</link>.
-The <emphasis role="italic">argument</emphasis> must also allow all of the
-index values in the receiver collection.</para>
-</section>
-
-<section id="diunio"><title>UNION</title>
-<indexterm><primary>UNION method</primary>
-<secondary>of Directory class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>UNION method</secondary>
-<tertiary>of Directory class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-UNION(argument)---------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns a new collection of the same class as the receiver that contains
-all the items from the receiver collection and selected items from the
-<emphasis role="italic">argument</emphasis> collection. This method includes
-an item from <emphasis role="italic">argument</emphasis> in
-the new collection only if there is no item with the same associated index
-in the receiver collection and the method has not already included an item
-with the same index. The order in which this method selects items in
-<emphasis role="italic">argument</emphasis> is unspecified. (The program
-should not rely on any order.) See also the UNION method of the Table
-(<link linkend="taunio">UNION</link>) and Relation
-(<link linkend="reunio">UNION</link>) classes. The
-<emphasis role="italic">argument</emphasis> can be any object described
-in <link linkend="parmcoll">The Argument Collection Classes</link>. The
-<emphasis role="italic">argument</emphasis> must also allow all of the
-index values in the receiver collection.</para>
-</section>
-
-<section id="dixor"><title>XOR</title>
-<indexterm><primary>XOR method</primary>
-<secondary>of Directory class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>XOR method</secondary>
-<tertiary>of Directory class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-XOR(argument)-----------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns a new collection of the same class as the receiver that contains
-all items from the receiver collection and the
-<emphasis role="italic">argument</emphasis> collection;
-all indexes that appear in both collections are removed. The
-<emphasis role="italic">argument</emphasis> can be any object described in
-<link linkend="parmcoll">The Argument Collection Classes</link>.
-The <emphasis role="italic">argument</emphasis> must also allow all of the
-index values in the receiver collection.</para>
-</section>
-
-<section id="direx"><title>Examples</title>
-<indexterm><primary>examples</primary>
-<secondary>of Directory class</secondary></indexterm>
-<programlisting>
-/******************************************************************************/
-/*  A Phone Book Directory program                                            */
-/*  This program demonstrates use of the directory class.                     */
-/******************************************************************************/
-
-/* Define an UNKNOWN method that adds an abbreviation lookup feature.         */
-/* Directories do not have to have an UNKNOWN method.                         */
-book = .directory~new~~setmethod("UNKNOWN", .methods["UNKNOWN"])
-
-book["ANN" ] = "Ann B. ....... 555-6220"
-book["ann" ] = "Little annie . 555-1234"
-book["JEFF"] = "Jeff G. ...... 555-5115"
-book["MARK"] = "Mark C. ...... 555-5017"
-book["MIKE"] = "Mike H. ...... 555-6123"
-book~Rick    = "Rick M. ...... 555-5110"  /* Same as book["RICK"] = ...       */
-
-Do i over book                 /* Iterate over the collection                 */
-  Say book[i]
-end i
-
-Say ""                         /* Index lookup is case sensitive...           */
-Say book~entry("Mike")         /* ENTRY method uppercases before lookup       */
-Say book["ANN"]                /* Exact match                                 */
-Say book~ann                   /* Message sends uppercase before lookup       */
-Say book["ann"]                /* Exact match with lowercase index            */
-
-Say ""
-Say book["M"]                  /* Uses UNKNOWN method for lookup              */
-Say book["Z"]
-Exit
-
-/* Define an unknown method to handle indexes not found.                      */
-/* Check for abbreviations or indicate listing not found                      */
-::Method UNKNOWN
-  Parse arg at_index
-  value = ""
-  Do i over self
-    If abbrev(i, at_index) then do
-      If value &lt;> "" then value = value", "
-      value = value || self~at(i)
-    end
-  end i
-  If value = "" then value = "No listing found for" at_index
-  Return value
 </programlisting>
 </section>
 </section>
@@ -2485,6 +1299,1319 @@ the queue first.</para>
 </section>
 </section>
 
+<section id="rxcqcl"><title>The CircularQueue Class</title>
+<indexterm>
+<primary>class</primary>
+<secondary>CircularQueue class</secondary>
+</indexterm>
+<indexterm>
+<primary>CircularQueue class</primary>
+</indexterm>
+
+<para>
+The CircularQueue class allows for storing objects in a circular queue
+of a predefined size. Once the end of the queue has been reached, new item
+objects are inserted from the beginning, replacing earlier entries.
+</para>
+<para>
+The collected objects can be processed in FIFO (first in, first out) or in a
+stack-like LIFO (last in, first out) order.
+</para>
+<para>
+The CircularQueue class is a subclass of the Queue class. In addition to its own
+methods it inherits the methods of the Queue class (see <link linkend="rxqcl">The Queue class</link>)
+and the Object class (see <link linkend="objc">The Object Class</link>)
+</para>
+
+<para><emphasis role="bold">Methods the CircularQueue class defines:</emphasis></para>
+<simplelist>
+<member>OF (Class method)</member>
+<member>INIT</member>
+<member>MAKEARRAY</member>
+<member>PUSH</member>
+<member>QUEUE</member>
+<member>RESIZE</member>
+<member>SIZE</member>
+<member>STRING</member>
+<member>SUPPLIER</member>
+</simplelist>
+
+<para><emphasis role="bold">Methods inherited from the Queue class:</emphasis></para>
+<simplelist>
+<member>[]</member>
+<member>[]=</member>
+<member>AT</member>
+<member>HASINDEX</member>
+<member>ITEMS</member>
+<member>MAKEARRAY</member>
+<member>PEEK</member>
+<member>PULL</member>
+<member>PUSH</member>
+<member>PUT</member>
+<member>QUEUE</member>
+<member>REMOVE</member>
+<member>SUPPLIER</member>
+</simplelist>
+
+<para><emphasis role="bold">Methods inherited from the Object class:</emphasis></para>
+<simplelist>
+<member>NEW (Class method)</member>
+<member>Operator methods: =, ==, \=, &gt;&lt;, &lt;&gt;, \==</member>
+<member>CLASS</member>
+<member>COPY</member>
+<member>DEFAULTNAME</member>
+<member>HASMETHOD</member>
+<member>INIT</member>
+<member>OBJECTNAME</member>
+<member>OBJECTNAME=</member>
+<member>REQUEST</member>
+<member>RUN</member>
+<member>SETMETHOD</member>
+<member>START</member>
+<member>STRING</member>
+<member>UNSETMETHOD</member>
+</simplelist>
+
+<note><title>Note</title>
+<para>
+The CircularQueue class also has available class methods that its
+metaclass, the Class class, defines.
+</para>
+</note>
+
+<section id="cquof"><title>OF (Class Method)</title>
+<indexterm><primary>OF method</primary>
+<secondary>of CircularQueue class</secondary>
+</indexterm>
+<indexterm><primary>method</primary>
+<secondary>OF method</secondary>
+<tertiary>of CircularQueue class</tertiary>
+</indexterm>
+
+<programlisting>
+<![CDATA[
+>>-OF-+----------------+---------------------------------------><
+      |    +-,----+    |
+      |    V      |    |
+      +-(----item-+--)-+
+]]>
+</programlisting>
+
+<para>
+Returns a newly created circular queue containing the specified
+<emphasis role="italic">item</emphasis> objects. The first
+<emphasis role="italic">item</emphasis> has index 1, the second has index 2,
+and so on. The number of <emphasis role="italic">item</emphasis> objects
+determines the <emphasis role="italic">size</emphasis> of the circular queue.
+</para>
+</section>
+
+<section id="cquini"><title>INIT</title>
+<indexterm><primary>INIT method</primary>
+<secondary>of CircularQueue class</secondary>
+</indexterm>
+<indexterm><primary>method</primary>
+<secondary>INIT method</secondary>
+<tertiary>of CircularQueue class</tertiary>
+</indexterm>
+
+<programlisting>
+<![CDATA[
+>>-INIT(size)--------------------------------------------------><
+]]>
+</programlisting>
+
+<para>
+Constructor method invoked by the NEW method, which determines the
+<emphasis role="italic">size</emphasis> of the circular queue.
+</para>
+</section>
+
+
+<section id="cqumak"><title>MAKEARRAY</title>
+<indexterm><primary>MAKEARRAY method</primary>
+<secondary>of CircularQueue class</secondary>
+</indexterm>
+<indexterm><primary>method</primary>
+<secondary>MAKEARRAY method</secondary>
+<tertiary>of CircularQueue class</tertiary>
+</indexterm>
+
+<programlisting>
+<![CDATA[
+              +-Fifo----+
+>>-MAKEARRAY(-+---------+-)------------------------------------><
+              +--order--+
+]]>
+</programlisting>
+
+<para>
+Returns a single-index array containing the items of the circular queue in the
+specified <emphasis role="italic">order</emphasis>.
+</para>
+
+<para>
+The following <emphasis role="italic">order</emphasis> can be used. (Only
+the capitalized letter is needed; all characters following it are ignored.)
+</para>
+
+<variablelist>
+<varlistentry><term>Fifo</term>
+<listitem>
+<para>First-in, first-out, default
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Lifo</term>
+<listitem>
+<para>Last-in, first-out (stacklike)
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</section>
+
+<section id="cqupush"><title>PUSH</title>
+<indexterm><primary>PUSH method</primary>
+<secondary>of CircularQueue class</secondary>
+</indexterm>
+<indexterm><primary>method</primary>
+<secondary>PUSH method</secondary>
+<tertiary>of CircularQueue class</tertiary>
+</indexterm>
+
+<programlisting>
+<![CDATA[
+>>-PUSH(item)--------------------------------------------------><
+]]>
+</programlisting>
+
+<para>
+Makes the object <emphasis role="italic">item</emphasis> a member item of
+the circular queue, inserting the item object in front of the first item in
+the queue. The pushed item object will be the new first item in the circular queue.
+</para>
+
+<para>
+If the circular queue is full, than the last item stored in the circular queue
+will be deleted, before the insertion takes place. In this case the
+<emphasis role="italic">deleted item</emphasis> will be returned, otherwise
+<emphasis role="italic">.nil</emphasis>.
+</para>
+</section>
+
+
+<section id="cquque"><title>QUEUE</title>
+<indexterm><primary>QUEUE method</primary>
+<secondary>of CircularQueue class</secondary>
+</indexterm>
+<indexterm><primary>method</primary>
+<secondary>QUEUE method</secondary>
+<tertiary>of CircularQueue class</tertiary>
+</indexterm>
+
+<programlisting>
+<![CDATA[
+>>-QUEUE(item)-------------------------------------------------><
+]]>
+</programlisting>
+
+<para>
+Makes the object <emphasis role="italic">item</emphasis> a member item of the circular queue, inserting the item
+at the end of the circular queue.
+</para>
+
+<para>
+If the circular queue is full, than the first item will be deleted, before the
+insertion takes place.  In this case the <emphasis role="italic">deleted item</emphasis>
+will be returned, otherwise <emphasis role="italic">.nil</emphasis>.
+</para>
+</section>
+
+<section id="cqures"><title>RESIZE</title>
+<indexterm><primary>RESIZE method</primary>
+<secondary>of CircularQueue class</secondary>
+</indexterm>
+<indexterm><primary>method</primary>
+<secondary>RESIZE method</secondary>
+<tertiary>of CircularQueue class</tertiary>
+</indexterm>
+
+<programlisting>
+<![CDATA[
+                   +--,Fifo---+
+>>-RESIZE(-newSize-+----------+-)------------------------------><
+                   +--,order--+
+]]>
+</programlisting>
+
+<para>
+Resizes the circular queue object to be able to contain
+<emphasis role="italic">newSize</emphasis> items.
+If the previous size was larger than <emphasis role="italic">newSize</emphasis>,
+then the now superfluous items are removed in the specified
+<emphasis role="italic">order</emphasis>.
+</para>
+
+<para>
+The following <emphasis role="italic">order</emphasis> can be used. (Only
+the capitalized letter is needed; all characters following it are ignored.)
+</para>
+
+<variablelist>
+<varlistentry><term>Fifo</term>
+<listitem>
+<para>First-in, first-out, default: keeps the newest entries
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Lifo</term>
+<listitem>
+<para>Last-in, first-out (stacklike): keeps the oldest entries
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+
+<note><title>Note:</title>
+<para>
+Resizing with a value of <computeroutput>0</computeroutput> effectively removes all
+items from the circular queue.
+</para>
+</note>
+</section>
+
+<section id="cqusize"><title>SIZE</title>
+<indexterm><primary>SIZE method</primary>
+<secondary>of CircularQueue class</secondary>
+</indexterm>
+<indexterm><primary>method</primary>
+<secondary>SIZE method</secondary>
+<tertiary>of CircularQueue class</tertiary>
+</indexterm>
+
+<programlisting>
+<![CDATA[
+>>-SIZE--------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>
+Returns the maximum number of objects that can be stored in the circular queue.
+</para>
+</section>
+
+<section id="cqustr"><title>STRING</title>
+<indexterm><primary>STRING method</primary>
+<secondary>of CircularQueue class</secondary>
+</indexterm>
+<indexterm><primary>method</primary>
+<secondary>STRING method</secondary>
+<tertiary>of CircularQueue class</tertiary>
+</indexterm>
+
+<programlisting>
+<![CDATA[
+           +--","------+  +-,-Fifo--+
+>>-STRING(-+-----------+--+---------+-)------------------------><
+           +-delimiter-+  +-,-order-+
+]]>
+</programlisting>
+
+<para>
+Returns a string object that concatenates the string values of the collected
+item objects, using the <emphasis role="italic">delimiter</emphasis> string
+to delimit them, in the specified <emphasis role="italic">order</emphasis>.
+The default <emphasis role="italic">delimiter</emphasis> is a single comma.
+</para>
+
+<para>
+If the delimiter string argument is omitted the comma character
+(<computeroutput>","</computeroutput>) is used as the default delimiter string.
+</para>
+
+<para>
+The following <emphasis role="italic">order</emphasis> can be used. (Only
+the capitalized letter is needed; all characters following it are ignored.)
+</para>
+
+<variablelist>
+<varlistentry><term>Fifo</term>
+<listitem>
+<para>First-in, first-out, default
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Lifo</term>
+<listitem>
+<para>Last-in, first-out (stacklike)
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</section>
+
+<section id="cqusupp"><title>SUPPLIER</title>
+<indexterm><primary>SUPPLIER method</primary>
+<secondary>of CircularQueue class</secondary>
+</indexterm>
+<indexterm><primary>method</primary>
+<secondary>SUPPLIER method</secondary>
+<tertiary>of CircularQueue class</tertiary>
+</indexterm>
+
+<programlisting>
+<![CDATA[
+             +--Fifo----+
+>>-SUPPLIER(-+----------+-)------------------------------------><
+             +--order---+
+]]>
+</programlisting>
+
+<para>
+Returns a supplier object for the collection. After you have obtained a
+supplier, you can send it messages (see
+<link linkend="supp">The Supplier Class</link>) to enumerate
+all the items that were in the queue at the time of the supplier's creation.
+</para>
+
+<para>
+The supplier will enumerate the items in the specified
+<emphasis role="italic">order</emphasis>. (Only the capitalized
+letter is needed; all characters following it are ignored.)
+</para>
+
+<variablelist>
+<varlistentry><term>Fifo</term>
+<listitem>
+<para>First-in, first-out, default
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Lifo</term>
+<listitem>
+<para>Last-in, first-out (stacklike)
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</section>
+
+<section id="cquex"><title>Example</title>
+<indexterm>
+<primary>examples</primary>
+<secondary>of CircularQueue class</secondary>
+</indexterm>
+
+<programlisting>
+  -- create a circular buffer with five items
+u=.circularQueue~of("a", "b", "c", "d", "e")
+say "content: ["u"]," "content (LIFO): ["u~string("->","L")"]"
+say
+
+u~resize(4, "FIFO")     -- resize fifo-style (keep newest)
+say "after resizing to 4 items in FIFO style (keeping the newest):"
+say "content: ["u"]," "content (LIFO): ["u~string("->","L")"]"
+say
+
+u~resize(2, "LILO")     -- resize lifo-style (keep oldest)
+say "after resizing to 2 items in LIFO style (keeping the oldest):"
+say "content: ["u"]," "content (LIFO): ["u~string("->","L")"]"
+say
+
+u~resize(0)             -- resize lifo-style (keep oldest)
+say "after resizing to 0 items, thereby deleting all items:"
+say "content: ["u"]," "content (LIFO): ["u~string("->","L")"]"
+say
+
+u~resize(2)             -- resize lifo-style (keep oldest)
+say "after resizing to 2, size="u~size "and items="u~items
+u~~queue(&apos;x&apos;)~~queue(&apos;y&apos;)~~queue(&apos;z&apos;)
+say "after queuing the three items &apos;x&apos;, &apos;y&apos;, &apos;z&apos;:"
+say "content: ["u"]," "content (LIFO): ["u~string("->","L")"]"
+say
+
+u~~push(&apos;1&apos;)~~push(&apos;2&apos;)~~push(&apos;3&apos;)
+say "after pushing the three items &apos;1&apos;, &apos;2&apos;, &apos;3&apos;:"
+say "content: ["u"]," "content (LIFO): ["u~string("->","L")"]"
+say
+</programlisting>
+
+<para>
+Output:
+</para>
+
+<programlisting>
+content: [a,b,c,d,e], content (LIFO): [e->d->c->b->a]
+
+after resizing to 4 items in FIFO style (keeping the newest):
+content: [b,c,d,e], content (LIFO): [e->d->c->b]
+
+after resizing to 2 items in LIFO style (keeping the oldest):
+content: [b,c], content (LIFO): [c->b]
+
+after resizing to 0 items, thereby deleting all items:
+content: [], content (LIFO): []
+
+after resizing to 2, size=2 and items=0
+after queuing the three items &apos;x&apos;, &apos;y&apos;, &apos;z&apos;:
+content: [y,z], content (LIFO): [z->y]
+
+after pushing the three items &apos;1&apos;, &apos;2&apos;, &apos;3&apos;:
+content: [3,2], content (LIFO): [2->3]
+</programlisting>
+</section>
+</section>
+
+</section>
+
+<section id="unorderedcoll"><title>The Unordered Collection Classes</title>
+
+<section id="diro"><title>The Directory Class</title>
+<indexterm><primary>Directory class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>Directory class</secondary></indexterm>
+<para>A directory is a collection with unique
+indexes that are character strings representing names.</para>
+<para>Directories let you refer to objects by name, for example:</para>
+<programlisting>
+.environment~array
+</programlisting>
+<para>For directories, items are often referred to as entries.</para>
+<para><emphasis role="bold">Methods the Directory class defines:</emphasis>
+</para>
+<simplelist>
+<member>[]</member>
+<member>[]=</member>
+<member>AT</member>
+<member>ENTRY</member>
+<member>HASENTRY</member>
+<member>HASINDEX</member>
+<member>ITEMS</member>
+<member>MAKEARRAY</member>
+<member>PUT</member>
+<member>REMOVE</member>
+<member>SETENTRY</member>
+<member>SETMETHOD (Overrides Object class method)</member>
+<member>SUPPLIER</member>
+<member>UNKNOWN</member>
+</simplelist>
+<para><emphasis role="bold">Set-operator methods the Directory class defines:</emphasis>
+</para>
+<simplelist>
+<member>DIFFERENCE</member>
+<member>INTERSECTION</member>
+<member>SUBSET</member>
+<member>UNION</member>
+<member>XOR</member>
+</simplelist>
+<para><emphasis role="bold">Methods Inherited from the Object Class:</emphasis>
+</para>
+<simplelist>
+<member>NEW (Class method)</member>
+<member>Operator methods: =, ==, \=, &gt;&lt;, &lt;&gt;, \==</member>
+<member>CLASS</member>
+<member>COPY</member>
+<member>DEFAULTNAME</member>
+<member>HASMETHOD</member>
+<member>INIT</member>
+<member>OBJECTNAME</member>
+<member>OBJECTNAME=</member>
+<member>REQUEST</member>
+<member>RUN</member>
+<member>START</member>
+<member>STRING</member>
+<member>UNSETMETHOD</member>
+</simplelist>
+
+<note><title>Note</title>
+<para>The Directory class also has available class methods that
+its metaclass, the Class class, defines.</para></note>
+
+<section id="dibrak"><title>[]</title>
+<indexterm><primary>[] method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>[] method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-[name]------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the same item as the AT method, which follows. See
+<link linkend="diat">AT</link>.</para>
+</section>
+
+<section id="dibrae"><title>[]=</title>
+<indexterm><primary>[]= method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>[]= method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-[name]=item-------------------------------------------------><
+]]>
+</programlisting>
+
+<para>This method is the same as the PUT method. See
+<link linkend="dirput">PUT</link>.</para>
+</section>
+
+<section id="diat"><title>AT</title>
+<indexterm><primary>AT method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>AT method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-AT(name)----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the item associated with index
+<emphasis role="italic">name</emphasis>. If a method that
+SETMETHOD supplies is associated with index
+<emphasis role="italic">name</emphasis>, the result of running
+this method is returned. If the collection has no item or method associated
+with index <emphasis role="italic">name</emphasis>, this method returns
+the NIL object.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+say .environment~AT("OBJECT")   /* Produces: "The Object class" */
+</programlisting>
+</section>
+
+<section id="dientr"><title>ENTRY</title>
+<indexterm><primary>ENTRY method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>ENTRY method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-ENTRY(name)-------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the directory entry with name
+<emphasis role="italic">name</emphasis> (translated to uppercase).
+If there is no such entry, <emphasis role="italic">name</emphasis>
+returns the item for any method that SETMETHOD supplied. If there is
+neither an entry nor a method for <emphasis role="italic">name</emphasis>
+or for UNKNOWN, the language processor raises an error.</para>
+</section>
+
+<section id="dihase"><title>HASENTRY</title>
+<indexterm><primary>HASENTRY method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>HASENTRY method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-HASENTRY(name)----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>1</computeroutput> (true) if the directory has
+an entry or a method for name <emphasis role="italic">name</emphasis>
+(translated to uppercase), or <computeroutput>0</computeroutput> (false).</para>
+</section>
+
+<section id="dihasi"><title>HASINDEX</title>
+<indexterm><primary>HASINDEX method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>HASINDEX method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-HASINDEX(name)----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>1</computeroutput> (true) if the collection
+contains any item associated with index
+<emphasis role="italic">name</emphasis>, or <computeroutput>0</computeroutput>
+(false).</para>
+</section>
+
+<section id="diitms"><title>ITEMS</title>
+<indexterm><primary>ITEMS method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>ITEMS method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-ITEMS-------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the number of items in the collection.</para>
+</section>
+
+<section id="dimaka"><title>MAKEARRAY</title>
+<indexterm><primary>MAKEARRAY method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>MAKEARRAY method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-MAKEARRAY---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a single-index array containing the index objects. The array
+indexes range from <computeroutput>1</computeroutput> to the number of items.
+The collection items appear in the array in an unspecified order.
+(The program should not rely on any order.)</para>
+</section>
+
+<section id="dirput"><title>PUT</title>
+<indexterm><primary>PUT method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>PUT method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-PUT(item,name)----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Makes the object <emphasis role="italic">item</emphasis>
+a member item of the collection and associates
+it with index <emphasis role="italic">name</emphasis>.
+The new item replaces any existing item or method
+associated with index <emphasis role="italic">name</emphasis>.</para>
+</section>
+
+<section id="dirrem"><title>REMOVE</title>
+<indexterm><primary>REMOVE method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>REMOVE method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-REMOVE(name)------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns and removes the member item with index
+<emphasis role="italic">name</emphasis> from a collection.
+If a method is associated with SETMETHOD for index
+<emphasis role="italic">name</emphasis>, REMOVE removes
+the method and returns the result of running it. If there is no item or method
+with index <emphasis role="italic">name</emphasis>, the UNKNOWN method returns
+the NIL object and removes nothing.</para>
+</section>
+
+<section id="disete"><title>SETENTRY</title>
+<indexterm><primary>SETENTRY method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>SETENTRY method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SETENTRY(name-+--------+-)----------------------------------><
+                 +-,entry-+
+]]>
+</programlisting>
+
+<para>Sets the directory entry with name
+<emphasis role="italic">name</emphasis> (translated to uppercase)
+to the object <emphasis role="italic">entry</emphasis>, replacing any existing
+entry or method for <emphasis role="italic">name</emphasis>. If you omit
+<emphasis role="italic">entry</emphasis>, this method removes any entry or
+method with this <emphasis role="italic">name</emphasis>.</para>
+</section>
+
+<section id="disetm"><title>SETMETHOD</title>
+<indexterm><primary>SETMETHOD method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>SETMETHOD method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SETMETHOD(name-+---------+-)--------------------------------><
+                  +-,method-+
+]]>
+</programlisting>
+
+<para>Associates entry name <emphasis role="italic">name</emphasis>
+(translated to uppercase) with method <emphasis role="italic">method</emphasis>.
+Thus, the language processor returns the result of running
+<emphasis role="italic">method</emphasis> when you access this entry.
+This occurs when you specify <emphasis role="italic">name</emphasis> on the
+AT, ENTRY, or REMOVE method. This method replaces any existing
+item or method for <emphasis role="italic">name</emphasis>.</para>
+<para>You can specify the name UNKNOWN as
+<emphasis role="italic">name</emphasis>. Doing so supplies a
+method to run whenever an AT or ENTRY message specifies a name for which no item
+or method exists in the collection. This method's first argument is the
+specified directory index. This method has no effect on the action of any
+HASENTRY, HASINDEX, ITEMS, REMOVE, or SUPPLIER message sent to the collection.
+</para>
+<para>The <emphasis role="italic">method</emphasis> can be a
+string containing a method source line instead
+of a method object. Alternatively, an array of strings containing individual
+method lines can be passed. In either case, SETMETHOD creates an equivalent
+method object.</para>
+<para>If you omit <emphasis role="italic">method</emphasis>,
+SETMETHOD removes the entry with the specified
+<emphasis role="italic">name</emphasis>.</para>
+</section>
+
+<section id="disupp"><title>SUPPLIER</title>
+<indexterm><primary>SUPPLIER method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>SUPPLIER method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SUPPLIER----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a supplier object for the collection. After you have obtained a
+supplier, you can send it messages (see
+<link linkend="supp">The Supplier Class</link>) to enumerate
+all the items that were in the collection at the time of the supplier's
+creation. The supplier enumerates the items in an unspecified order. (The
+program should not rely on any order.)</para>
+</section>
+
+<section id="diunkn"><title>UNKNOWN</title>
+<indexterm><primary>UNKNOWN method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>UNKNOWN method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-UNKNOWN(messagename,messageargs)----------------------------><
+]]>
+</programlisting>
+
+<para>Runs either the ENTRY or SETENTRY method, depending on whether
+<emphasis role="italic">messagename</emphasis> ends with an equal sign. If
+<emphasis role="italic">messagename</emphasis> does not end with an
+equal sign, this method runs the ENTRY method, passing
+<emphasis role="italic">messagename</emphasis> as
+its argument. The language processor ignores any arguments specified in the
+array <emphasis role="italic">messageargs</emphasis>. In this case, UNKNOWN
+returns the result of the ENTRY method.</para>
+<para>If <emphasis role="italic">messagename</emphasis> does end with an equal
+sign, this method runs the SETENTRY method, passing the first part of
+<emphasis role="italic">messagename</emphasis> (up to, but
+not including, the final equal sign) as its first argument, and the first
+item in the array <emphasis role="italic">messageargs</emphasis>
+as its second argument. In this case, UNKNOWN returns no result.</para>
+</section>
+
+<section id="didiff"><title>DIFFERENCE</title>
+<indexterm><primary>DIFFERENCE method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>DIFFERENCE method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-DIFFERENCE(argument)----------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a new collection (of the same class as the receiver) containing
+only those items from the receiver whose indexes the
+<emphasis role="italic">argument</emphasis> collection
+does not contain. The <emphasis role="italic">argument</emphasis> can be any
+object described in
+<link linkend="parmcoll">The Argument Collection Classes</link>. The
+<emphasis role="italic">argument</emphasis> must also
+allow all of the index values in the receiver collection.</para>
+</section>
+
+<section id="diinte"><title>INTERSECTION</title>
+<indexterm><primary>INTERSECTION method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>INTERSECTION method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-INTERSECTION(argument)--------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a new collection (of the same class as the receiver) containing
+only those items from the receiver whose indexes are in both the receiver
+collection and the <emphasis role="italic">argument</emphasis> collection.
+The <emphasis role="italic">argument</emphasis> can be any object described
+in <link linkend="parmcoll">The Argument Collection Classes</link>.
+The <emphasis role="italic">argument</emphasis> must also allow all of the
+index values in the receiver collection.</para>
+</section>
+
+<section id="disubs"><title>SUBSET</title>
+<indexterm><primary>SUBSET method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>SUBSET method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SUBSET(argument)--------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>1</computeroutput> (true) if all indexes in the
+receiver collection are also contained in the
+<emphasis role="italic">argument</emphasis> collection; returns
+<computeroutput>0</computeroutput> (false) otherwise. The
+<emphasis role="italic">argument</emphasis> can be any object described in
+<link linkend="parmcoll">The Argument Collection Classes</link>.
+The <emphasis role="italic">argument</emphasis> must also allow all of the
+index values in the receiver collection.</para>
+</section>
+
+<section id="diunio"><title>UNION</title>
+<indexterm><primary>UNION method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>UNION method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-UNION(argument)---------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a new collection of the same class as the receiver that contains
+all the items from the receiver collection and selected items from the
+<emphasis role="italic">argument</emphasis> collection. This method includes
+an item from <emphasis role="italic">argument</emphasis> in
+the new collection only if there is no item with the same associated index
+in the receiver collection and the method has not already included an item
+with the same index. The order in which this method selects items in
+<emphasis role="italic">argument</emphasis> is unspecified. (The program
+should not rely on any order.) See also the UNION method of the Table
+(<link linkend="taunio">UNION</link>) and Relation
+(<link linkend="reunio">UNION</link>) classes. The
+<emphasis role="italic">argument</emphasis> can be any object described
+in <link linkend="parmcoll">The Argument Collection Classes</link>. The
+<emphasis role="italic">argument</emphasis> must also allow all of the
+index values in the receiver collection.</para>
+</section>
+
+<section id="dixor"><title>XOR</title>
+<indexterm><primary>XOR method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>XOR method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-XOR(argument)-----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a new collection of the same class as the receiver that contains
+all items from the receiver collection and the
+<emphasis role="italic">argument</emphasis> collection;
+all indexes that appear in both collections are removed. The
+<emphasis role="italic">argument</emphasis> can be any object described in
+<link linkend="parmcoll">The Argument Collection Classes</link>.
+The <emphasis role="italic">argument</emphasis> must also allow all of the
+index values in the receiver collection.</para>
+</section>
+
+<section id="direx"><title>Examples</title>
+<indexterm><primary>examples</primary>
+<secondary>of Directory class</secondary></indexterm>
+<programlisting>
+/******************************************************************************/
+/*  A Phone Book Directory program                                            */
+/*  This program demonstrates use of the directory class.                     */
+/******************************************************************************/
+
+/* Define an UNKNOWN method that adds an abbreviation lookup feature.         */
+/* Directories do not have to have an UNKNOWN method.                         */
+book = .directory~new~~setmethod("UNKNOWN", .methods["UNKNOWN"])
+
+book["ANN" ] = "Ann B. ....... 555-6220"
+book["ann" ] = "Little annie . 555-1234"
+book["JEFF"] = "Jeff G. ...... 555-5115"
+book["MARK"] = "Mark C. ...... 555-5017"
+book["MIKE"] = "Mike H. ...... 555-6123"
+book~Rick    = "Rick M. ...... 555-5110"  /* Same as book["RICK"] = ...       */
+
+Do i over book                 /* Iterate over the collection                 */
+  Say book[i]
+end i
+
+Say ""                         /* Index lookup is case sensitive...           */
+Say book~entry("Mike")         /* ENTRY method uppercases before lookup       */
+Say book["ANN"]                /* Exact match                                 */
+Say book~ann                   /* Message sends uppercase before lookup       */
+Say book["ann"]                /* Exact match with lowercase index            */
+
+Say ""
+Say book["M"]                  /* Uses UNKNOWN method for lookup              */
+Say book["Z"]
+Exit
+
+/* Define an unknown method to handle indexes not found.                      */
+/* Check for abbreviations or indicate listing not found                      */
+::Method UNKNOWN
+  Parse arg at_index
+  value = ""
+  Do i over self
+    If abbrev(i, at_index) then do
+      If value &lt;> "" then value = value", "
+      value = value || self~at(i)
+    end
+  end i
+  If value = "" then value = "No listing found for" at_index
+  Return value
+</programlisting>
+</section>
+</section>
+
+<section id="table1"><title>The Table Class</title>
+<indexterm><primary>Table class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>Table class</secondary></indexterm>
+<para>A table is a collection with indexes
+that can be any object the user supplies. In a table, each item is associated
+with a single index, and there can be only one item for each index (unlike
+a relation, which can contain more than one item with the same index).</para>
+<para><emphasis role="bold">Methods the Table class defines:</emphasis></para>
+<simplelist>
+<member>[]</member>
+<member>[]=</member>
+<member>AT</member>
+<member>HASINDEX</member>
+<member>ITEMS</member>
+<member>MAKEARRAY</member>
+<member>PUT</member>
+<member>REMOVE</member>
+<member>SUPPLIER</member>
+</simplelist>
+<para><emphasis role="bold">Set-operator methods the Table class defines:</emphasis>
+</para>
+<simplelist>
+<member>DIFFERENCE</member>
+<member>INTERSECTION</member>
+<member>SUBSET</member>
+<member>UNION</member>
+<member>XOR</member>
+</simplelist>
+<para><emphasis role="bold">Methods inherited from the Object class:</emphasis>
+</para>
+<simplelist>
+<member>NEW (Class method)</member>
+<member>Operator methods: =, ==, \=, &gt;&lt;, &lt;&gt;, \==</member>
+<member>CLASS</member>
+<member>COPY</member>
+<member>DEFAULTNAME</member>
+<member>HASMETHOD</member>
+<member>INIT</member>
+<member>OBJECTNAME</member>
+<member>OBJECTNAME=</member>
+<member>REQUEST</member>
+<member>RUN</member>
+<member>SETMETHOD</member>
+<member>START</member>
+<member>STRING</member>
+<member>UNSETMETHOD</member>
+</simplelist>
+
+<note><title>Note</title>
+<para>The Table class also has available class methods that its
+metaclass, the Class class, defines.</para></note>
+
+<section id="tabrak"><title>[]</title>
+<indexterm><primary>[] method</primary>
+<secondary>of Table class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>[] method</secondary>
+<tertiary>of Table class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-[index]-----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the same item as the AT method. See
+<link linkend="taat">AT</link>.</para>
+</section>
+
+<section id="tabrae"><title>[]=</title>
+<indexterm><primary>[]= method</primary>
+<secondary>of Table class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>[]= method</secondary>
+<tertiary>of Table class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-[index]=item------------------------------------------------><
+]]>
+</programlisting>
+
+<para>This method is the same as the PUT method. See
+<link linkend="taput">PUT</link>.</para>
+</section>
+
+<section id="taat"><title>AT</title>
+<indexterm><primary>AT method</primary>
+<secondary>of Table class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>AT method</secondary>
+<tertiary>of Table class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-AT(index)---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the item associated with index
+<emphasis role="italic">index</emphasis>. If the collection
+has no item associated with <emphasis role="italic">index</emphasis>, this
+method returns the NIL object.</para>
+</section>
+
+<section id="tahasi"><title>HASINDEX</title>
+<indexterm><primary>HASINDEX method</primary>
+<secondary>of Table class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>HASINDEX method</secondary>
+<tertiary>of Table class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-HASINDEX(index)---------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>1</computeroutput> (true) if the collection
+contains any item associated with index <emphasis role="italic">index</emphasis>,
+or <computeroutput>0</computeroutput> (false).</para>
+</section>
+
+<section id="taitms"><title>ITEMS</title>
+<indexterm><primary>ITEMS method</primary>
+<secondary>of Table class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>ITEMS method</secondary>
+<tertiary>of Table class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-ITEMS-------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the number of items in the collection.</para>
+</section>
+
+<section id="tamaka"><title>MAKEARRAY</title>
+<indexterm><primary>MAKEARRAY method</primary>
+<secondary>of Table class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>MAKEARRAY method</secondary>
+<tertiary>of Table class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-MAKEARRAY---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a single-index array containing the index objects. The array
+indexes range from <computeroutput>1</computeroutput> to the number of items.
+The collection items appear in the array in an unspecified order. (The program
+should not rely on any order.)</para>
+</section>
+
+<section id="taput"><title>PUT</title>
+<indexterm><primary>PUT method</primary>
+<secondary>of Table class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>PUT method</secondary>
+<tertiary>of Table class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-PUT(item,index)---------------------------------------------><
+]]>
+</programlisting>
+
+<para>Makes the object <emphasis role="italic">item</emphasis>
+a member item of the collection and associates it with index
+<emphasis role="italic">index</emphasis>. The new item replaces any existing
+items associated with index <emphasis role="italic">index</emphasis>.</para>
+</section>
+
+<section id="taremo"><title>REMOVE</title>
+<indexterm><primary>REMOVE method</primary>
+<secondary>of Table class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>REMOVE method</secondary>
+<tertiary>of Table class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-REMOVE(index)-----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns and removes from a collection the member item with index
+<emphasis role="italic">index</emphasis>. If no item has index
+<emphasis role="italic">index</emphasis>, this method returns
+the NIL object and removes no item.</para>
+</section>
+
+<section id="tasupp"><title>SUPPLIER</title>
+<indexterm><primary>SUPPLIER method</primary>
+<secondary>of Table class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>SUPPLIER method</secondary>
+<tertiary>of Table class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SUPPLIER----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a supplier object for the collection. After you have obtained a
+supplier, you can send it messages (see
+<link linkend="supp">The Supplier Class</link>) to enumerate
+all the items that were in the collection at the time of the supplier's
+creation. The supplier enumerates the items in an unspecified order. (The
+program should not rely on any order.)</para>
+</section>
+
+<section id="tadiff"><title>DIFFERENCE</title>
+<indexterm><primary>DIFFERENCE method</primary>
+<secondary>of Table class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>DIFFERENCE method</secondary>
+<tertiary>of Table class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-DIFFERENCE(argument)----------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a new collection (of the same class as the receiver) containing
+only those index-item pairs of the receiver whose indexes the
+<emphasis role="italic">argument</emphasis> collection does not contain. The
+<emphasis role="italic">argument</emphasis> can be any object described in
+<link linkend="parmcoll">The Argument Collection Classes</link>. The
+<emphasis role="italic">argument</emphasis> must also allow all of the index
+values in the receiver collection.</para>
+</section>
+
+<section id="tainte"><title>INTERSECTION</title>
+<indexterm><primary>INTERSECTION method</primary>
+<secondary>of Table class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>INTERSECTION method</secondary>
+<tertiary>of Table class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-INTERSECTION(argument)--------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a new collection (of the same class as the receiver) containing
+only those index-item pairs of the receiver whose indexes are in both the
+receiver collection and the <emphasis role="italic">argument</emphasis>
+collection. The <emphasis role="italic">argument</emphasis> can be any object
+described in <link linkend="parmcoll">The Argument Collection Classes</link>.
+The <emphasis role="italic">argument</emphasis> must also allow all of the
+index values in the receiver collection.</para>
+</section>
+
+<section id="tasubs"><title>SUBSET</title>
+<indexterm><primary>SUBSET method</primary>
+<secondary>of Table class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>SUBSET method</secondary>
+<tertiary>of Table class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SUBSET(argument)--------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>1</computeroutput> (true) if all indexes in the
+receiver collection are also contained in the
+<emphasis role="italic">argument</emphasis> collection; returns
+<computeroutput>0</computeroutput> (false) otherwise. The
+<emphasis role="italic">argument</emphasis> can be any object described in
+<link linkend="parmcoll">The Argument Collection Classes</link>.
+The <emphasis role="italic">argument</emphasis> must also allow all of the
+index values in the receiver collection.</para>
+</section>
+
+<section id="taunio"><title>UNION</title>
+<indexterm><primary>UNION method</primary>
+<secondary>of Table class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>UNION method</secondary>
+<tertiary>of Table class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-UNION(argument)---------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a new collection of the same class as the receiver that contains
+all the items from the receiver collection and selected items from the
+<emphasis role="italic">argument</emphasis> collection. This method includes an
+item from <emphasis role="italic">argument</emphasis> in
+the new collection only if there is no item with the same associated index
+in the receiver collection and the method has not already included an item
+with the same index. The order in which this method selects items in
+<emphasis role="italic">argument</emphasis> is unspecified. (The program should
+not rely on any order.) See also the UNION method of the Directory (see
+<link linkend="diunio">UNION</link>) and
+Relation (see <link linkend="reunio">UNION</link>) classes. The
+<emphasis role="italic">other</emphasis> can be any object described in
+<link linkend="parmcoll">The Argument Collection Classes</link>. The
+<emphasis role="italic">argument</emphasis> must also
+allow all of the index values in the receiver collection.</para>
+</section>
+
+<section id="taxor"><title>XOR</title>
+<indexterm><primary>XOR method</primary>
+<secondary>of Table class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>XOR method</secondary>
+<tertiary>of Table class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-XOR(argument)-----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a new collection of the same class as the receiver that contains
+all items from the receiver collection and the
+<emphasis role="italic">argument</emphasis> collection;
+all indexes that appear in both collections are removed. The
+<emphasis role="italic">argument</emphasis> can be any object described in
+<link linkend="parmcoll">The Argument Collection Classes</link>. The
+<emphasis role="italic">argument</emphasis> must also allow all of the index
+values in the receiver collection.</para>
+</section>
+</section>
+
 <section id="relati"><title>The Relation Class</title>
 <indexterm><primary>Relation class</primary></indexterm>
 <indexterm><primary>class</primary>
@@ -3179,27 +3306,38 @@ program should not rely on any order.)</para>
 </section>
 </section>
 
-<section id="table1"><title>The Table Class</title>
-<indexterm><primary>Table class</primary></indexterm>
+<section id="clbag"><title>The Bag Class</title>
+<indexterm><primary>Bag class</primary></indexterm>
 <indexterm><primary>class</primary>
-<secondary>Table class</secondary></indexterm>
-<para>A table is a collection with indexes
-that can be any object the user supplies. In a table, each item is associated
-with a single index, and there can be only one item for each index (unlike
-a relation, which can contain more than one item with the same index).</para>
-<para><emphasis role="bold">Methods the Table class defines:</emphasis></para>
+<secondary>Bag class</secondary></indexterm>
+<para>A bag is a collection that restricts the elements
+to having an item that is the same as the index. Any object can be placed
+in a bag, and the same object can be placed in a bag several times.</para>
+<para>The Bag class is a subclass of the Relation class. In addition to its own
+methods, it inherits the methods of the Object class and the Relation class.</para>
+<para><emphasis role="bold">Methods the Bag class defines:</emphasis></para>
 <simplelist>
+<member>OF (Class method)</member>
 <member>[]</member>
-<member>[]=</member>
-<member>AT</member>
+<member>[]= (Overrides Relation class method)</member>
 <member>HASINDEX</member>
-<member>ITEMS</member>
 <member>MAKEARRAY</member>
-<member>PUT</member>
-<member>REMOVE</member>
+<member>PUT (Overrides Relation class method)</member>
 <member>SUPPLIER</member>
 </simplelist>
-<para><emphasis role="bold">Set-operator methods the Table class defines:</emphasis>
+<para><emphasis role="bold">Methods inherited from the Relation class:</emphasis>
+</para>
+<simplelist>
+<member>ALLAT</member>
+<member>ALLINDEX</member>
+<member>AT</member>
+<member>HASITEM</member>
+<member>INDEX</member>
+<member>ITEMS</member>
+<member>REMOVE</member>
+<member>REMOVEITEM</member>
+</simplelist>
+<para><emphasis role="bold">Set-operator methods inherited from the Relation class:</emphasis>
 </para>
 <simplelist>
 <member>DIFFERENCE</member>
@@ -3212,7 +3350,7 @@ a relation, which can contain more than one item with the same index).</para>
 </para>
 <simplelist>
 <member>NEW (Class method)</member>
-<member>Operator methods: =, ==, \=, &gt;&lt;, &lt;&gt;, \==</member>
+<member>Operator methods: =, ==, \=, >&lt;, &lt;&gt;, \==</member>
 <member>CLASS</member>
 <member>COPY</member>
 <member>DEFAULTNAME</member>
@@ -3229,31 +3367,49 @@ a relation, which can contain more than one item with the same index).</para>
 </simplelist>
 
 <note><title>Note</title>
-<para>The Table class also has available class methods that its
-metaclass, the Class class, defines.</para></note>
+<para>The Bag class also has available class methods that its metaclass,
+the Class class, defines.</para></note>
 
-<section id="tabrak"><title>[]</title>
+<section id="baof"><title>OF (Class Method)</title>
+<indexterm><primary>OF method</primary>
+<secondary>of Bag class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>OF method</secondary>
+<tertiary>of Bag class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+       +-,----+
+       V      |
+>>-OF(---item-+-)----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a newly created bag containing the specified
+<emphasis role="italic">item</emphasis> objects.</para>
+</section>
+
+<section id="babrak"><title>[]</title>
 <indexterm><primary>[] method</primary>
-<secondary>of Table class</secondary></indexterm>
+<secondary>of Bag class</secondary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>[] method</secondary>
-<tertiary>of Table class</tertiary></indexterm>
+<tertiary>of Bag class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
 >>-[index]-----------------------------------------------------><
 ]]>
 </programlisting>
 
-<para>Returns the same item as the AT method. See
-<link linkend="taat">AT</link>.</para>
+<para>Returns the same value as the AT method in the Relation class. See
+<link linkend="reat">AT</link>.</para>
 </section>
 
-<section id="tabrae"><title>[]=</title>
+<section id="balbe"><title>[]=</title>
 <indexterm><primary>[]= method</primary>
-<secondary>of Table class</secondary></indexterm>
+<secondary>of Bag class</secondary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>[]= method</secondary>
-<tertiary>of Table class</tertiary></indexterm>
+<tertiary>of Bag class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
 >>-[index]=item------------------------------------------------><
@@ -3261,33 +3417,15 @@ metaclass, the Class class, defines.</para></note>
 </programlisting>
 
 <para>This method is the same as the PUT method. See
-<link linkend="taput">PUT</link>.</para>
+<link linkend="baput">PUT</link>.</para>
 </section>
 
-<section id="taat"><title>AT</title>
-<indexterm><primary>AT method</primary>
-<secondary>of Table class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>AT method</secondary>
-<tertiary>of Table class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-AT(index)---------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns the item associated with index
-<emphasis role="italic">index</emphasis>. If the collection
-has no item associated with <emphasis role="italic">index</emphasis>, this
-method returns the NIL object.</para>
-</section>
-
-<section id="tahasi"><title>HASINDEX</title>
+<section id="bahasi"><title>HASINDEX</title>
 <indexterm><primary>HASINDEX method</primary>
-<secondary>of Table class</secondary></indexterm>
+<secondary>of Bag class</secondary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>HASINDEX method</secondary>
-<tertiary>of Table class</tertiary></indexterm>
+<tertiary>of Bag class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
 >>-HASINDEX(index)---------------------------------------------><
@@ -3299,81 +3437,50 @@ contains any item associated with index <emphasis role="italic">index</emphasis>
 or <computeroutput>0</computeroutput> (false).</para>
 </section>
 
-<section id="taitms"><title>ITEMS</title>
-<indexterm><primary>ITEMS method</primary>
-<secondary>of Table class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>ITEMS method</secondary>
-<tertiary>of Table class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-ITEMS-------------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns the number of items in the collection.</para>
-</section>
-
-<section id="tamaka"><title>MAKEARRAY</title>
+<section id="bamaka"><title>MAKEARRAY</title>
 <indexterm><primary>MAKEARRAY method</primary>
-<secondary>of Table class</secondary></indexterm>
+<secondary>of Bag class</secondary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>MAKEARRAY method</secondary>
-<tertiary>of Table class</tertiary></indexterm>
+<tertiary>of Bag class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
 >>-MAKEARRAY---------------------------------------------------><
 ]]>
 </programlisting>
 
-<para>Returns a single-index array containing the index objects. The array
-indexes range from <computeroutput>1</computeroutput> to the number of items.
+<para>Returns a single-index array containing the index objects. The array indexes
+range from <computeroutput>1</computeroutput> to the number of items.
 The collection items appear in the array in an unspecified order. (The program
 should not rely on any order.)</para>
 </section>
 
-<section id="taput"><title>PUT</title>
+<section id="baput"><title>PUT</title>
 <indexterm><primary>PUT method</primary>
-<secondary>of Table class</secondary></indexterm>
+<secondary>of Bag class</secondary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>PUT method</secondary>
-<tertiary>of Table class</tertiary></indexterm>
+<tertiary>of Bag class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-PUT(item,index)---------------------------------------------><
+>>-PUT(item-+--------+-)---------------------------------------><
+            +-,index-+
 ]]>
 </programlisting>
 
-<para>Makes the object <emphasis role="italic">item</emphasis>
-a member item of the collection and associates it with index
-<emphasis role="italic">index</emphasis>. The new item replaces any existing
-items associated with index <emphasis role="italic">index</emphasis>.</para>
+<para>Makes the object <emphasis role="italic">item</emphasis> a member item of
+the collection and associates it with index
+<emphasis role="italic">index</emphasis>. If you specify
+<emphasis role="italic">index</emphasis>, it must be the
+same as <emphasis role="italic">item</emphasis>.</para>
 </section>
 
-<section id="taremo"><title>REMOVE</title>
-<indexterm><primary>REMOVE method</primary>
-<secondary>of Table class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>REMOVE method</secondary>
-<tertiary>of Table class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-REMOVE(index)-----------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns and removes from a collection the member item with index
-<emphasis role="italic">index</emphasis>. If no item has index
-<emphasis role="italic">index</emphasis>, this method returns
-the NIL object and removes no item.</para>
-</section>
-
-<section id="tasupp"><title>SUPPLIER</title>
+<section id="basupp"><title>SUPPLIER</title>
 <indexterm><primary>SUPPLIER method</primary>
-<secondary>of Table class</secondary></indexterm>
+<secondary>of Bag class</secondary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>SUPPLIER method</secondary>
-<tertiary>of Table class</tertiary></indexterm>
+<tertiary>of Bag class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
 >>-SUPPLIER----------------------------------------------------><
@@ -3388,120 +3495,21 @@ creation. The supplier enumerates the items in an unspecified order. (The
 program should not rely on any order.)</para>
 </section>
 
-<section id="tadiff"><title>DIFFERENCE</title>
-<indexterm><primary>DIFFERENCE method</primary>
-<secondary>of Table class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>DIFFERENCE method</secondary>
-<tertiary>of Table class</tertiary></indexterm>
+<section id="bagex"><title>Examples</title>
+<indexterm><primary>examples</primary>
+<secondary>of Bag class</secondary></indexterm>
 <programlisting>
-<![CDATA[
->>-DIFFERENCE(argument)----------------------------------------><
-]]>
+/* Create a bag of fruit */
+fruit = .bag~of("Apple", "Orange", "Apple", "Pear")
+say fruit~items          /* How many pieces? (4)      */
+say fruit~items("Apple") /* How many apples? (2)      */
+fruit~remove("Apple")    /* Remove one of the apples. */
+fruit~~put("Banana")~put("Orange") /* Add a couple.   */
+say fruit~items          /* How many pieces? (5)      */
 </programlisting>
-
-<para>Returns a new collection (of the same class as the receiver) containing
-only those index-item pairs of the receiver whose indexes the
-<emphasis role="italic">argument</emphasis> collection does not contain. The
-<emphasis role="italic">argument</emphasis> can be any object described in
-<link linkend="parmcoll">The Argument Collection Classes</link>. The
-<emphasis role="italic">argument</emphasis> must also allow all of the index
-values in the receiver collection.</para>
+</section>
 </section>
 
-<section id="tainte"><title>INTERSECTION</title>
-<indexterm><primary>INTERSECTION method</primary>
-<secondary>of Table class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>INTERSECTION method</secondary>
-<tertiary>of Table class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-INTERSECTION(argument)--------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns a new collection (of the same class as the receiver) containing
-only those index-item pairs of the receiver whose indexes are in both the
-receiver collection and the <emphasis role="italic">argument</emphasis>
-collection. The <emphasis role="italic">argument</emphasis> can be any object
-described in <link linkend="parmcoll">The Argument Collection Classes</link>.
-The <emphasis role="italic">argument</emphasis> must also allow all of the
-index values in the receiver collection.</para>
-</section>
-
-<section id="tasubs"><title>SUBSET</title>
-<indexterm><primary>SUBSET method</primary>
-<secondary>of Table class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>SUBSET method</secondary>
-<tertiary>of Table class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-SUBSET(argument)--------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns <computeroutput>1</computeroutput> (true) if all indexes in the
-receiver collection are also contained in the
-<emphasis role="italic">argument</emphasis> collection; returns
-<computeroutput>0</computeroutput> (false) otherwise. The
-<emphasis role="italic">argument</emphasis> can be any object described in
-<link linkend="parmcoll">The Argument Collection Classes</link>.
-The <emphasis role="italic">argument</emphasis> must also allow all of the
-index values in the receiver collection.</para>
-</section>
-
-<section id="taunio"><title>UNION</title>
-<indexterm><primary>UNION method</primary>
-<secondary>of Table class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>UNION method</secondary>
-<tertiary>of Table class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-UNION(argument)---------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns a new collection of the same class as the receiver that contains
-all the items from the receiver collection and selected items from the
-<emphasis role="italic">argument</emphasis> collection. This method includes an
-item from <emphasis role="italic">argument</emphasis> in
-the new collection only if there is no item with the same associated index
-in the receiver collection and the method has not already included an item
-with the same index. The order in which this method selects items in
-<emphasis role="italic">argument</emphasis> is unspecified. (The program should
-not rely on any order.) See also the UNION method of the Directory (see
-<link linkend="diunio">UNION</link>) and
-Relation (see <link linkend="reunio">UNION</link>) classes. The
-<emphasis role="italic">other</emphasis> can be any object described in
-<link linkend="parmcoll">The Argument Collection Classes</link>. The
-<emphasis role="italic">argument</emphasis> must also
-allow all of the index values in the receiver collection.</para>
-</section>
-
-<section id="taxor"><title>XOR</title>
-<indexterm><primary>XOR method</primary>
-<secondary>of Table class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>XOR method</secondary>
-<tertiary>of Table class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-XOR(argument)-----------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns a new collection of the same class as the receiver that contains
-all items from the receiver collection and the
-<emphasis role="italic">argument</emphasis> collection;
-all indexes that appear in both collections are removed. The
-<emphasis role="italic">argument</emphasis> can be any object described in
-<link linkend="parmcoll">The Argument Collection Classes</link>. The
-<emphasis role="italic">argument</emphasis> must also allow all of the index
-values in the receiver collection.</para>
-</section>
 </section>
 
 <section id="setop"><title>The Concept of Set Operations</title>
@@ -3779,4 +3787,4 @@ returns TRUE if the object is an instance of the Set, Bag, Relation, or Table
 collection class.</para></listitem></itemizedlist>
 </section>
 </section>
-</chapter>
+</section>
