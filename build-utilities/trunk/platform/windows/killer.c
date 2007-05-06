@@ -50,13 +50,21 @@ int main( int argc, char *argv[] )
    char szProcessName[MAX_PATH] = "";
    char szArgName[MAX_PATH] = "";
    unsigned int i;
+   BOOL fFound = FALSE;
+   char *pszExt;
 
    if ( argc != 2 )
    {
       fprintf( stderr, "No process name supplied\n" );
       return 1;
    }
-   sprintf( szArgName, "%s.exe", argv[1] );
+
+   // Support either kill or taskkill syntax
+   pszExt = strrchr( argv[1], '.' );
+   if ( pszExt && (stricmp( pszExt, ".exe" ) == 0) )
+      sprintf( szArgName, "%s", argv[1] );
+   else
+      sprintf( szArgName, "%s.exe", argv[1] );
 
    if ( !EnumProcesses( aProcesses, sizeof(aProcesses), &cbNeeded ) )
    {
@@ -88,6 +96,7 @@ int main( int argc, char *argv[] )
             GetModuleBaseName( hProcess, hMod, szProcessName, sizeof(szProcessName) );
             if ( stricmp( szProcessName, szArgName ) == 0 )
             {
+               fFound = TRUE;
                if ( TerminateProcess( hProcess, 0 ) )
                {
                   printf( "%s (Process ID: %u) killed successfully\n", szProcessName, aProcesses[i] );
@@ -104,5 +113,8 @@ int main( int argc, char *argv[] )
          CloseHandle( hProcess );
       }
    }
+   if ( ! fFound )
+      printf( "The process \"%s\" was not found.\n", szArgName );
+
    return 0;
 }
