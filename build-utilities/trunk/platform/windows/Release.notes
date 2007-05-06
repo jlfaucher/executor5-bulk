@@ -1,0 +1,68 @@
+                          Release Notes for 1.0.0
+                          =======================
+
+This is the initial binary release of the ooRexx build-utilities package for
+Windows.  It contains executables to assist in the Windows build process of
+ooRexx.
+
+
+Two files are available, a regular .zip file and a self-extracting zip file:
+
+  ooRexx-build-utils-1.0.0-windows.zip
+  ooRexx-build-utils-1.0.0-windows.exe
+
+Installation
+============
+
+Unzip the .zip file or execute the self-extracting file in a directory in
+the path.
+
+Contents
+========
+
+Two executables are included in this release.
+
+stouch.exe
+----------
+
+stouch is a simple 'touch' program.  It updates the last access and
+modification times of each fileName arg on the command line to the current
+time.  Wildcards are accepted.  There are no options to specify the time or
+date to use when touching the files.  The current date and time is always
+used.
+
+stouch is used by the touchheaders.bat file in the ooRexx source tree.
+
+Examples:
+
+E:\interpreter>stouch kernel\messages\RexxErrorCodes.h
+
+E:\interpreter>stouch kernel\messages\*.h
+
+killer.exe
+----------
+
+killer is a simple process killer that acts like kill.exe or taskkill.exe.
+It kills the process specified on the command line.  The process is
+specified by image name, (not by process ID.)
+
+killer is used in the Windows build process to kill rxapi.exe.
+
+Examples:
+
+E:\killer rxapi.exe
+
+E:\killer rxapi
+
+Source
+======
+
+All source code for the build-utilities package is available through
+anonymous check out from the ooRexx Subversion repository.  The command to
+check out the build-utilities source is:
+
+  svn co https://oorexx.svn.sourceforge.net/svnroot/oorexx/build-utilities/trunk build-utils
+
+The last entry on the command line is the directory into which the files are
+extracted.  The 'build-utils' directory name is arbitrary and can be any
+name the user chooses.
