@@ -36,7 +36,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Kernel                                                   DropInstruction.hpp  */
+/* REXX Kernel                                           DropInstruction.hpp  */
 /*                                                                            */
 /* Primitive DROP instruction Class Definitions                               */
 /*                                                                            */
