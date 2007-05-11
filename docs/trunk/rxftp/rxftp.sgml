@@ -1485,7 +1485,7 @@ when the method is successful.
 <para>The following will display the FtpErrno.</para>
 <programlisting>
 <![CDATA[
-if myftpobj~ftperrno <> "" then say myftpobj~errno
+if myftpobj~ftperrno <> "" then say myftpobj~ftperrno
 ]]>
 </programlisting>
 </section>
@@ -1557,6 +1557,7 @@ Else Call Terminate " *** File has NOT been sent."
 Terminate:
 Parse Arg Message
 Say Message
+Say "FtpErrNo =" myftp~ftperrno
 
 retc = myftp~FtpLogoff()
 
