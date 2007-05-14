@@ -1,0 +1,131 @@
+=About Open Object Rexx=
+==What is Open Object Rexx?==
+
+Open Object Rexx ('''ooRexx''') is an Open Source project managed by
+[http://www.rexxla.org Rexx Language Association (RexxLA)]
+providing a free implementation of Object Rexx.
+
+'''ooRexx''' is distributed under
+[[html:/CPLv1.0.htm|Common Public License (CPL) v1.0]].
+Object Rexx is an enhancement of
+''classic'' Rexx; a powerful, full-featured programming language
+which has a ''human-oriented'' syntax.
+
+The Open Object Rexx interpreter allows you to write programs procedurally as well as in an
+object-oriented fashion. Its main benefits include:
+
+* Easy to use and easy to learn
+* Upwardly compatible with ''classic'' Rexx
+* The ability to issue commands to multiple environments
+* Offers powerful functions
+* Based on English-like commands
+* Enhanced with full object orientation
+* Designed for object-oriented programming, and also allows Rexx conventional programming
+* Provides a standard Rexx API to develop external function libraries written in C
+
+==What Rexx Offers==
+
+The following aspects of Rexx round out its versatility and function:
+
+* '''An English-like language''':
+To make Rexx easier to learn and use, many of its instructions are meaningful English words.
+Unlike some programming languages that use abbreviations and large numbers of punctuation characters,
+Rexx instructions are common words, such as SAY, PULL, IF...THEN...ELSE, DO...END, and EXIT.
+* '''Fewer rules''':
+Rexx has relatively few rules about format. A single instruction can span many lines, and you
+can include multiple instructions on a single line. Instructions can begin in any column and
+you can type them in uppercase, lowercase, or mixed case. You can also skip spaces in a line
+or entire lines, since there is no line numbering. Keywords are also only reserved in context;
+ie if you want a variable called ''date'', then it is valid, even though Rexx has a built-in
+function of the same name. The Rexx interpreter knows which one you are refering to based on
+its context; just as the programmer also knows.
+* '''Interpreted, not compiled''':
+Rexx is an interpreted language. When a Rexx program executes, its language processor reads
+each statement from the source file and runs it, one statement at a time. Languages that are
+not interpreted must first be compiled into object code before being run. This slows down
+development time.
+* '''Built-in functions and methods'''
+Rexx has a rich set of built-in functions and methods that perform various processing,
+searching, and comparison operations for text and numbers. These also provide formatting
+capabilities and arithmetic calculations.
+* '''Typeless variables''':
+Rexx treats all data as objects of different kinds. Variables can hold any kind of object,
+so you do not need to declare variables as strings or numbers. If you want to do arithmetic
+operations on a variable, then provided the variable has a recognised numeric value it can be done.
+* '''String handling''':
+Rexx includes powerful functionality for manipulating character strings. This allows programs to read
+and separate characters, numbers, and mixed input. Rexx performs arithmetic operations on
+any string that represents a valid number, including those in exponential formats.
+* '''Decimal Arithmetic''':
+Rexx has always based its arithmetic operations on decimal arithmetic, rather than on binary
+arithmetic that other languages use. Decimal arithmetic is the type of arithmetic humans use
+and is accurate, unlike binary arithmetic which computers use internally which is inaccurate.
+Other languages have finally realized the benefits of accurate arithmetic and are starting
+to include decimal arithmetic capabilities that are based on Rexx's arithmetic.
+For a complete coverage of decimal arithmetic, see
+[http://www2.hursley.ibm.com/decimal/ Mike Cowlishaw's Decimal Arithmetic Page].
+* '''Clear error messages and powerful debugging''':
+Rexx displays messages with full and meaningful explanations when a Rexx program encounters an error.
+In addition, the TRACE instruction provides a powerful debugging tool.
+
+==Using Rexx==
+
+The Rexx programming language covers several application areas traditionally served by fundamentally different types of programming languages:
+
+* '''Developing programs of varying complexity''':
+Rexx is a language that provides powerful character and arithmetical abilities in a simple framework.
+You can write short programs with a minimum of overhead, yet facilities exist to write robust, large programs.
+* '''Tailoring user commands''':
+Command program interpreters are an important component of operating systems. Most operating systems include some
+form of executive, shell, or batch language. In many cases the language is so embedded in the operating system that
+it is difficult to use outside its primary environment. Rexx is a language that is designed primarily for generality
+but also for suitability as a command programming language.
+* '''Creating macros''':
+Many applications are programmable by using macros. In the IT industry, there is a different macro language for
+almost every type of application, such as editors, assemblers, interactive systems, text processors, spreadsheets,
+and databases. Because Rexx is a character manipulation language, it can provide the macro language for all those
+applications. Its more conventional syntax and flexibility make it possible for the same jobs to be done quicker
+by less experienced people. Rexx has a standard API that makes writing the interface to Rexx portable between
+different Rexx interpreters.
+* '''Developing prototypes''':
+Interpreter implementations of Rexx can be highly interactive and permit rapid program development.
+This productivity advantage, together with the ease of interfacing Rexx to system utilities for display and for data
+input and output, makes the language very suitable for modeling applications and products.
+
+==Object-oriented Programming==
+
+Object-oriented programmers solve problems by identifying and classifying objects related to the
+problem. Then they determine what actions or behaviors are required of those objects. Finally,
+they write the instructions to generate the classes, create the objects, and implement the actions.
+The main program consists of instructions that send messages to objects.
+
+A billing application, for example, could have an Invoice class and a Receipt class. These
+two classes could be members of a Forms class. Individual invoices are objects that are
+instances of the Invoice class.
+
+Other advantages often associated with object-oriented technology are:
+
+* Simplified design through modeling with objects
+* Greater code reuse
+* Rapid prototyping
+* Higher quality of proven components
+* Easier and reduced maintenance
+* Cost-savings potential
+* Increased adaptability and scalability
+
+==From Classic Rexx to Open Object Rexx==
+
+Open Object Rexx includes features typical of an object-oriented language, such as subclassing,
+polymorphism, and data encapsulation. It is an extension of the ''classic'' Rexx language,
+which has been expanded to include classes (a base set of classes is supplied), objects,
+and methods. These extensions do not replace ''classic'' Rexx functions or preclude the
+development or running of ''classic'' Rexx programs.
+
+You can program as before, program with objects, or intermix objects with regular Rexx
+instructions. You decide when to use Rexx's object-oriented features. In general, your
+current Rexx programs will work without change. But because Open Object Rexx detects
+more errors at translate time than some other Rexx interpreters, you may have to fix these errors.
+
+Open Object Rexx is fully compatible with earlier versions of IBM REXX Interpreters that were
+not object-oriented and compatible with other Open Source Rexx interpreters currently available.
+

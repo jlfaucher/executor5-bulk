@@ -1,0 +1,90 @@
+=Frequently Asked Questions (FAQ)=
+
+===Q: When can I get it?===
+
+Now! The first public release of '''ooRexx''' is now available. See the
+[http://sourceforge.net/project/showfiles.php?group_id=119701 Downloads Page]
+for the location of files to download.
+
+===Q: What is the difference between <b>ooRexx</b> and IBM's Object REXX for Windows?===
+
+IBM's '''Object REXX''' was available in two formats; an ''Interpreter Edition''
+and a ''Development Edition''. '''ooRexx''' will be available in one format which is
+half way between the two IBM offerings.
+<br />
+There will be no functional difference between the '''Object REXX''' and '''ooRexx''' interpreters;
+code written for '''Object REXX''' will work with '''ooRexx''' with the following minor exceptions
+related to product versioning:
+
+* The result from '''PARSE VERSION''' using the last version of '''Object REXX''' is:
+<pre>OBJREXX 6.00 dd mon yyyy</pre>
+The result from '''PARSE VERSION''' using the first version of '''ooRexx''' is:
+<pre>REXX-ooRexx(MT) 6.00 dd mon yyyy</pre>
+This change was done for two reasons; the first is that '''ooRexx''' is a different product,
+and the format of the result in now ANSI compliant.
+
+* The output from ''rexx -v'' using the last version of '''Object REXX''' is:
+<pre>
+IBM Object REXX Interpreter Version 2.1.3
+Build date: Mar 31 2004
+Copyright (c) IBM Corporation 1996, 2004. All Rights Reserved.
+</pre>
+The output from ''rexx -v'' using the first version of '''ooRexx''' is:
+<pre>
+Open Object Rexx Interpreter Version 3.0.0
+Build date: Mar 25 2005
+Copyright (c) IBM Corporation 1995, 2004.
+Copyright (c) RexxLA 2005.
+All Rights Reserved.
+This program and the accompanying materials
+are made available under the terms of the Common Public License v1.0
+which accompanies this distribution.
+http://www.ibm.com/developerworks/oss/CPLv1.0.htm
+</pre>
+
+Due to licensing issues related to components of '''Object REXX''', not all portions of the
+''developer edition'' were made available to RexxLA. Therefore the following components
+are not available in '''ooRexx''':
+
+* '''IBM Resource Workshop''' - This component allowed the user to create Windows-based dialogs for use
+by the OODialog component. Existing OODialog programs will still work with '''ooRexx''', as
+the source to the runtime component of OODialog has been made available.
+* '''Object REXX Workbench''' - This component is the '''Object REXX''' IDE which allowed the user to write and debug
+'''Object REXX''' programs in an IDE.
+* '''rxftp function package''' - This component provided external functions to allow FTP
+sessions to be programatically controlled.
+
+===Q: What is the difference between ooRexx and IBM's Object REXX for Linux/Solaris/AIX?===
+
+Due to licensing issues mentioned above, the rxftp function package is not available.
+The differences with the versioning details as described in the Windows differences above
+is also applicable to these ports.
+
+===Q: Why is there no AIX port of ooRexx?===
+
+The AIX port has proven to be a problem. The development team does not have much experience with AIX
+and access to a suitable AIX development machine has proven difficult. If you have both the above,
+please let the [[contact|ooRexx Development Team]] know!
+
+===Q: Why is there no OS/2 (eCS) port of ooRexx?===
+
+The source code provided to RexxLA was maintained by one group of IBM developers. The source
+code for OS/2 is maintained by a different group of IBM developers, and that source code
+base was not supplied to RexxLA. One of the future tasks for this project is to port
+the Open Source code for '''ooRexx''' to OS/2.
+
+===Q: When will a port of ooRexx to "XYZ" be available?===
+
+Any POSIX-based, Un*x-like platform is likely to already be available in the source distribution
+due to the use of the autoconf toolset. If not, then support for the particular platform will
+need to be implemented in a future version of '''ooRexx'''.
+
+===Q: How can I help?===
+
+Now the initial release of '''ooRexx''' has been made and the source code made publically accessible
+via SourceForge's CVS servers,
+[[contact|ooRexx Development Team]],
+will be accepting submissions for
+changes and expanding the devlopment team with suitably enthusiastic and qualified
+developers to assist in the future development of '''ooRexx'''.
+

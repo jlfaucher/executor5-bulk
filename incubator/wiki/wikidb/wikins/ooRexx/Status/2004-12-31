@@ -1,0 +1,53 @@
+=Open Object Rexx Project Status<br />December - 2004=
+
+We finally have the finally have all the legal problems with IBM behind us.
+IBM has finally released the joint
+IBM/RexxLA announcement concerning Open Object Rexx. You can view the announcement
+at the [http://www.rexxla.org/ RexxLA] web site as well as the
+Open Object Rexx home page.
+
+===Here is the final status for items received from IBM===
+
+* Complete source code for the Object Rexx interpreter for Windows, Linux, AIX
+and Solaris. The code we were given does not contain all the materials necessary
+to build an OS/2 interpreter.
+* Source code for the external function libraries rexxutil, rxsock, oodialog,
+rxmath and some smaller libraries.
+* Documentation in PDF and HTML format.
+
+===Here is the final status for items not received from IBM===
+
+* The Windows development environment (Workbench) was not turned over to RexxLA
+due to legal issues with the development libraries used to create this
+application.
+* Rxftp external function library. There was a legal problem with this library
+because IBM used code that is under a non-disclosure agreement. An alpha
+replacement for RxFtp in the form of an ORexx class library which invokes the
+RxSock external function library to communicate with the target FTP server is
+available for review. Contact David Ashley at wdashley@sourceforge.net if you
+would like a copy for your review.
+
+We have made some progress in transitioning the build process to the
+auto tools (autoconf, libtool, etc). We hit a snag with the latest GCC
+compiler because it uses strict C++ rules as opposed to the loose rules used
+by Visual C++ and older GCC versions. A lot of the code will have to be
+updated in order for it to compile correctly without warnings. This is going
+to take longer to finish than anticipated.
+
+We are finally getting ourselves organized. We should have most organizational
+issues resolved by the end of January including a project charter and a board
+of directors in place. We are working closely with the RexxLA board of directors
+to make everything official.
+
+The code for Open Object Rexx should appear on the SourceForge CVS
+repository soon. We need to tweak a few more items before we feel comforatable
+letting the public see our work but we promise it will be worth the wait.
+There will probably be multiple CVS modules involved but we will document them.
+
+As always you can subscribe to the
+[http://lists.sourceforge.net/lists/listinfo/oorexx-announce oorexx-announce]
+mailing list to receive development updates and news like this.
+
+Submitted by
+<br />W. David Ashley and the Open Object Rexx Project Team
+

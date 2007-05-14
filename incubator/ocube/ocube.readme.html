@@ -1,0 +1,671 @@
+<?xml version="1.0"?>
+<!DOCTYPE html
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>OCube Package</title>
+</head>
+<body bgcolor="#FFFFFF">
+
+<center>
+<h1>OCube Package<br />
+<a href="http://www.opensource.org/docs/definition.php">
+<img src="http://www.opensource.org/trademarks/opensource/web/opensource-110x95.png"
+ border="0" width="110" height="95" alt="Open Source Trademark" /></a>
+</h1>
+</center>
+
+<pre>
+Package: OCube
+
+Version: 1.0.0
+
+Author:  W. David Ashley
+         <a href="mailto:dashley@us.ibm.com">dashley@us.ibm.com</a>
+</pre>
+
+<center>
+<p style="color: red">
+<u>Warning! Warning! Warning! Warning! Warning! Warning! Warning! Warning!
+Warning! Warning! Warning! Warning!</u></p>
+</center>
+<p style="color: red">This package is a rewite of the Cube program by Didier
+Lafon. However, the syntax of the procedure file only bears a passing
+resemblence to the Cube syntax. You will need to convert your Cube procedure
+files before using OCube.</p>
+
+<p>This software is subject to the terms of the Common Public License. You must
+accept the terms of this license to use this software. Refer to
+<a href="http://www.oorexx.org/license.html">CPL</a> for more information.</p>
+
+
+<br /><br /><br /><br /><br />
+<h2>Table of Contents</h2>
+<a href="#Whatis">
+What is OCube</a>
+<br /><a href="#Using">
+Using OCube</a>
+<br /><a href="#ProcStmts">
+Procedure File Statements</a>
+<br /><a href="#VersionInfo">
+Version History</a>
+<br /><a href="#ProblemInfo">
+Known Problems</a>
+
+
+<br /><br /><br /><br /><br />
+
+<h2><a name="Whatis">
+What is OCube</a></h2>
+<p>OCube is an ooRexx application for manipulating standard text files.
+It can perform transformations on existing lines of the file as well as add,
+replace and delete entire lines from the file.</p>
+<p>OCube performs these transformations by reading a procedure file of
+instructional statements. Each statement in the procedure file performs an
+action on the target text file or contains a runtime instruction. The syntax
+for each of these statements can be found in the section
+<a href="#ProcStmts">Procedure file statements</a>.</p>
+<p>Since OCube is an ooRexx program it works the same on all operating
+systems supported by ooRexx.</p>
+<p>OCube has been designed so that the source code is easily modified or
+extended. If you have suggestions for extending the functionality of OCube
+or source code to contribute then send them to
+<a href="mailto:dashley@us.ibm.com">dashley@us.ibm.com</a>.
+Each suggestion or source modification will be considered for inclusion
+into the next version of OCube.</p>
+
+
+<br /><br /><br /><br /><br />
+
+<h2><a name="Using">
+Using OCube</a></h2>
+<p>OCube is an ooRexx application designed to be invoked from the command
+line. The following shows the syntax for invoking OCube.</p>
+<pre>
+ >>---rexx---ocube.rex---procfile---targetfile---+----------------+------->
+                                                 +---backupfile---+
+
+ The following options may appear in any order:
+
+ >----+-------------+----+-------------+----+---------------+------------->
+      +--- -DEBUG---+    +--- -PAUSE---+    +--- -VERBOSE---+
+
+ >----+---------------------+-------------------------------------------->&lt;
+      +--- -TRUNCINLINES ---+
+</pre>
+<dl>
+<dt>procfile</dt>
+<dd>The path/name of the OCube procedure file. This file contains the OCube
+procedure statements.
+If the <i>procfile</i> specified is QUEUE then the Rexx default queue will
+be used to obtain the procedure statements. If <i>procfile</i> is enclosed
+with curly brackets ( {xxx} ) then it will be treated as a single procedure
+statement to be executed against the <i>targetfile</i>.</dd>
+<dt>targetfile</dt>
+<dd>The path/name of the target text file. This is the file to be modified by
+OCube <i>procfile</i> statements.</dd>
+<dt>backupfile</dt>
+<dd>The path/name of the backup file to be created. If specified, OCube will
+write a copy of <i>targetfile</i> to this file before operating on it.</dd>
+<dt>-DEBUG</dt>
+<dd>OCube will produce debug information.</dd>
+<dt>-PAUSE</dt>
+<dd>OCube will pause after every procedure statement.</dd>
+<dt>-VERBOSE</dt>
+<dd>OCube will produce verbose output of the changes made to the target
+file.</dd>
+<dt>-TRUNCINLINES</dt>
+<dd>OCube will truncate space and tab characters from the end of all
+target file input lines prior to performing any changes.</dd>
+</dl>
+<p>File names may optionally be enclosed within double-quotes.</p>
+<h4>Examples</h4>
+<p>The following are some examples for invoking OCube.</p>
+<pre>
+ rexx ocube.rex myproc.txt c:\config.sys c:\config.bak -verbose
+
+ rexx ocube.rex myproc.txt c:\config.sys -pause -truncinlines
+
+ rexx ocube.rex {AddLine "REM my new line" after 'PATH='} c:\config.sys
+
+ rexx ocube.rex queue "c:\My Documents\myfile.txt" -debug -verbose
+</pre>
+
+
+<br /><br /><br /><br /><br />
+<h2><a name="ProcStmts">
+Procedure File Statements</a></h2>
+<p>Procedure file statements perform transformations to the target file or
+modifiy the behavior of OCube. Each statement can perform single or multiple
+modifications to the target file.</p>
+<p>The syntax of OCube procedure statements is flexible. Strings may be
+surrounded by either double or single-quotes. Statement options may appear in
+any order (but they may not be repeated within a single statement).
+Keywords in statements are case-insensitive.</p>
+<p>Statements may appear on multiple lines within the procedure file. The
+line continuation character is a comma (,) and must appear as the last
+character on the line to be continued. Comment statements may not be inserted
+between continued lines.</p>
+<p>The procedure file syntax supports three kinds of comment statements. All
+lines beginning with an asterisk (*) or double dashes (--) are considered to be
+comments and are ignored by OCube. Blank lines are also considered to be
+comment lines.</p>
+<p>The syntax for each procedure file statement is listed below.</p>
+
+<h3>Statements</h3>
+<a href="#AddLine">
+AddLine</a> - add a line to the target file
+<br /><a href="#AddString">
+AddString</a> - add a string to a line in the target file
+<br /><a href="#CommentLine">
+CommentLine</a> - comment line(s) in the target file
+<br /><a href="#DelLine">
+DelLine</a> - delete line(s) from the target file
+<br /><a href="#DelString">
+DelString</a> - delete string in line(s) in the target file
+<br /><a href="#OnError">
+OnError</a> - change the runtime error processing option
+<br /><a href="#RepLine">
+RepLine</a> - replace line(s) in the target file
+<br /><a href="#RepString">
+RepString</a> - replace strings in line(s) in the target file
+
+<h3><a name="AddLine">
+ADDLINE Statement</a></h3>
+<p>The ADDLINE statement conditionally adds a line to the target file.</p>
+<h4>Syntax Diagram</h4>
+<pre>
+ >>---+---ADDLINE---+---'newline'----------------------------------------->
+      +---AL--------+
+
+ The following options may appear in any order:
+
+ >----+-----------------------------+----+-------------------+------------>
+      +---AFTER----+---'matchstr'---+    +---CASESENSITIVE---+
+      +---BEFORE---+
+
+ >----+---------------+----+------------+----+----------------------+---->&lt;
+      +---ADDTOP------+    +---ANYPOS---+    +---RSDLM---'dlmstr'---+
+      +---ADDBOTTOM---+
+      +---DONTADD-----+
+</pre>
+<dl>
+<dt>newline</dt>
+<dd>Single or double-quoted string containing the line to be added to the
+target file.</dd>
+<dt>AFTER</dt>
+<dd>Add the <i>newline</i> after the line specified by <i>matchstr</i>.</dd>
+<dt>BEFORE</dt>
+<dd>Add the <i>newline</i> before the line specified by <i>matchstr</i>.</dd>
+<dt>matchstr</dt>
+<dd>Single or double-quoted string which will be used to identify position(s)
+in the target file where <i>newline</i> will be added.</dd>
+<dt>CASESENSITIVE</dt>
+<dd>Specifies that a case sensitive search will be performed using the
+<i>matchstr</i>. The default is a case insensitive search.</dd>
+<dt>ADDTOP</dt>
+<dd>If <i>matchstr</i> is not found in the target file then add <i>newline</i>
+to the top of the target file. This is the default.
+This option is ignored if <i>matchstr</i> is found.</dd>
+<dt>ADDBOTTOM</dt>
+<dd>If <i>matchstr</i> is not found in the target file then add <i>newline</i>
+to the bottom of the target file.
+This option is ignored if <i>matchstr</i> is found.</dd>
+<dt>DONTADD</dt>
+<dd>If <i>matchstr</i> is not found in the target file then do not add
+<i>newline</i> to the target file.
+This option is ignored if <i>matchstr</i> is found.</dd>
+<dt>ANYPOS</dt>
+<dd>Specifies that <i>matchstr</i> may appear anywhere in the line being
+searched. The default specifies that the <i>matchstr</i> must appear at
+the beginning of the line being searched.</dd>
+<dt>dlmstr</dt>
+<dd>Single or double-quoted string which specifies the delimiter to be used
+for environment string substitutions on the <i>newline</i> and <i>matchstr</i>.
+Only the first character of the string is significant.
+If no <i>dlmstr</i> is specified then no environment string substitution will
+be performed.</dd>
+</dl>
+<h4>Examples</h4>
+<pre>
+AddLine 'REM my new line' after 'PATH='
+</pre>
+<p>This example will add the specified new line after the first line found in
+the target file which contains the string 'PATH=' at the beginning of the
+line. If no matching line is found then the line will be added to the top
+of the target file.</p>
+<pre>
+AddLine 'REM my new line' before 'PATH=' addbottom anypos casesensitive
+</pre>
+<p>This example will add the specified new line before the first line found in
+the target file which contains the string 'PATH=' at any position of the
+line. If no matching line is found then the line will be added to the bottom
+of the target file. The case of the search string must match the existing case
+of the string within the line for a match to be considered true.</p>
+<pre>
+AddLine 'set mypath="c:\my documents"' after 'PATH=%path%' rsdlm '%'
+</pre>
+<p>This example will add the specified new line after the first line found in
+the target file which contains the string 'PATH=%path%' at the beginning of the
+line. If no matching line is found then the line will be added to the top
+of the target file. Before the search is performed the search string will be
+modified and the contents of the environment variable 'path' will be
+replaced within the search string.</p>
+
+<h3><a name="AddString">
+ADDSTRING Statement</a></h3>
+<p>The ADDSTRING statement conditionally adds a string to an existing line or
+adds a new line to the target file.</p>
+<h4>Syntax Diagram</h4>
+<pre>
+ >>---+---ADDSTRING---+---'newstring'---IN---'matchstr'------------------->
+      +---AS----------+
+
+ The following options may appear in any order:
+
+ >----+----------------------------+----+-------------------+------------->
+      +---AFTER----+---'srchstr'---+    +---CASESENSITIVE---+
+      +---BEFORE---+
+
+ >----+---------------+----+------------+----+----------------------+---->&lt;
+      +---ADDTOP------+    +---ANYPOS---+    +---RSDLM---'dlmstr'---+
+      +---ADDBOTTOM---+
+      +---DONTADD-----+
+</pre>
+<dl>
+<dt>newstring</dt>
+<dd>Single or double-quoted string to be added to a target file line.</dd>
+<dt>matchstr</dt>
+<dd>Single or double-quoted string which will be used to identify position(s)
+in the target file where <i>newstring</i> will be added.</dd>
+<dt>AFTER</dt>
+<dd>Add the <i>newstring</i> after the string specified by <i>srchstr</i>.
+If <i>srchstr</i> is not specided then <i>newstring</i> will be added to
+the end of the line specified by <i>matchstr</i>. If <i>matchstr</i> is not
+found then a new line will be inserted per the ADDTOP, ADDBOTTOM or DONTADD
+option.</dd>
+<dt>BEFORE</dt>
+<dd>Add the <i>newstring</i> before the string specified by <i>srchstr</i>.
+If <i>srchstr</i> is not specided then <i>newstring</i> will be added to
+the beginning of the line specified by <i>matchstr</i>. If <i>matchstr</i> is
+not found then a new line will be inserted per the ADDTOP, ADDBOTTOM or DONTADD
+option.</dd>
+<dt>CASESENSITIVE</dt>
+<dd>Specifies that a case sensitive search will be performed using the
+<i>matchstr</i>. The default is a case insensitive search.</dd>
+<dt>ADDTOP</dt>
+<dd>If <i>matchstr</i> is not found in the target file then add <i>newstring</i>
+as a new line to the top of the target file. This is the default.
+This option is ignored if <i>matchstr</i> is found.</dd>
+<dt>ADDBOTTOM</dt>
+<dd>If <i>matchstr</i> is not found in the target file then add <i>newstring</i>
+as a new line to the bottom of the target file.
+This option is ignored if <i>matchstr</i> is found.</dd>
+<dt>DONTADD</dt>
+<dd>If <i>matchstr</i> is not found in the target file then do not add
+<i>newstring</i> to the target file.
+This option is ignored if <i>matchstr</i> is found.</dd>
+<dt>ANYPOS</dt>
+<dd>Specifies that <i>matchstr</i> may appear anywhere in the line being
+searched. The default specifies that the <i>matchstr</i> must appear at
+the beginning of the line being searched.</dd>
+<dt>dlmstr</dt>
+<dd>Single or double-quoted string which specifies the delimiter to be used
+for environment string substitutions on the <i>matchstr</i>,
+<i>srchstr</i> and <i>newstring</i>.
+Only the first character of the string is significant.
+If no <i>dlmstr</i> is specified then no environment string substitution will
+be performed.</dd>
+</dl>
+<h4>Examples</h4>
+<pre>
+AddString 'c:\bin;' in 'PATH=' after 'PATH=' dontadd
+</pre>
+<p>This example will add the specified string after the first line found in
+the target file which contains the string 'PATH=' after the string 'PATH='.
+If no matching line is found then no action is performed.</p>
+
+<h3><a name="CommentLine">
+COMMENTLINE Statement</a></h3>
+<p>The COMMENTLINE statement conditionally inserts text at the beginning of
+lines in the target file.</p>
+<h4>Syntax Diagram</h4>
+<pre>
+ >>---+---COMMENTLINE---+---'matchstr'---WITH---'cmtstring'--------------->
+      +---CL------------+
+
+ The following options may appear in any order:
+
+ >----+-------------------+----+------------+---+----------------------+-->
+      +---CASESENSITIVE---+    +---ANYPOS---+   +---RSDLM---'dlmstr'---+
+
+ >----+-----------+------------------------------------------------------>&lt;
+      +---FIRST---+
+      +---LAST----+
+      +---ALL-----+
+</pre>
+<dl>
+<dt>matchstr</dt>
+<dd>Single or double-quoted string which will be used to identify
+the target file line(s) to be commented.</dd>
+<dt>cmtstring</dt>
+<dd>The string which will be placed at the beginning of the line(s) identified
+by the <i>matchstr</i>.</dd>
+<dt>CASESENSITIVE</dt>
+<dd>Specifies that a case sensitive search will be performed using the
+<i>matchstr</i>. The default is a case insensitive search.</dd>
+<dt>ANYPOS</dt>
+<dd>Specifies that <i>matchstr</i> may appear anywhere in the line being
+searched. The default specifies that the <i>matchstr</i> must appear at
+the beginning of the line being searched.</dd>
+<dt>dlmstr</dt>
+<dd>Single or double-quoted string which specifies the delimiter to be used
+for environment string substitutions on the <i>matchstr</i>.
+Only the first character of the string is significant.
+If no <i>dlmstr</i> is specified then no environment string substitution will
+be performed.</dd>
+<dt>FIRST</dt>
+<dd>Comment only the first line found which matches the <i>matchstr</i>.
+This is the default.
+This option is ignored if <i>matchstr</i> is not found.</dd>
+<dt>LAST</dt>
+<dd>Comment only the first line found which matches the <i>matchstr</i>.
+This option is ignored if <i>matchstr</i> is not found.</dd>
+<dt>ALL</dt>
+<dd>Comment all lines matching <i>matchstr</i>.
+This option is ignored if <i>matchstr</i> is not found.</dd>
+</dl>
+<h4>Examples</h4>
+<pre>
+CommentLine 'COUNTRY=' with 'REM'
+</pre>
+<p>This example will comment the first line in
+the target file which contains the string 'COUNTRY=' at the beginning of the
+line by tranforming the line to 'REM COUNTRY=...'.</p>
+
+<h3><a name="DelLine">
+DELLINE Statement</a></h3>
+<p>The DELLINE statement conditionally deletes line(s) from the target file.</p>
+<h4>Syntax Diagram</h4>
+<pre>
+ >>---+---DELLINE---+---'matchstr'---------------------------------------->
+      +---DL--------+
+
+ The following options may appear in any order:
+
+ >----+-----------+----+----------------------+----+------------+--------->
+      +---FIRST---+    +---RSDLM---'dlmstr'---+    +---ANYPOS---+
+      +---LAST----+
+      +---ALL-----+
+
+ >----+-------------------+---------------------------------------------->&lt;
+      +---CASESENSITIVE---+
+</pre>
+<dl>
+<dt>matchstr</dt>
+<dd>Single or double-quoted string which will be used to identify
+the target file line(s) to be deleted.</dd>
+<dt>FIRST</dt>
+<dd>Delete only the first line found which matches the <i>matchstr</i>.
+This is the default.
+This option is ignored if <i>matchstr</i> is not found.</dd>
+<dt>LAST</dt>
+<dd>Delete only the first line found which matches the <i>matchstr</i>.
+This option is ignored if <i>matchstr</i> is not found.</dd>
+<dt>ALL</dt>
+<dd>Delete all lines matching <i>matchstr</i>.
+This option is ignored if <i>matchstr</i> is not found.</dd>
+<dt>dlmstr</dt>
+<dd>Single or double-quoted string which specifies the delimiter to be used
+for environment string substitutions on the <i>matchstr</i>.
+Only the first character of the string is significant.
+If no <i>dlmstr</i> is specified then no environment string substitution will
+be performed.</dd>
+<dt>ANYPOS</dt>
+<dd>Specifies that <i>matchstr</i> may appear anywhere in the line being
+searched. The default specifies that the <i>matchstr</i> must appear at
+the beginning of the line being searched.</dd>
+<dt>CASESENSITIVE</dt>
+<dd>Specifies that a case sensitive search will be performed using the
+<i>matchstr</i>. The default is a case insensitive search.</dd>
+</dl>
+<h4>Examples</h4>
+<pre>
+DelLine 'PATH='
+</pre>
+<p>This example will delete the first line in
+the target file which contains the string 'PATH=' at the beginning of the
+line.</p>
+<pre>
+DelLine 'PATH=' all anypos casesensitive
+</pre>
+<p>This example will delete all the lines from
+the target file which contain the string 'PATH=' at any position of the
+line. The case of the search string must match the existing case
+of the string within the line for a match to be considered true.</p>
+
+<h3><a name="DelString">
+DELSTRING Statement</a></h3>
+<p>The DELSTRING statement conditionally deletes a string in an existing line
+in the target file.</p>
+<h4>Syntax Diagram</h4>
+<pre>
+ >>---+---DELSTRING---+---'srchstr'--------------------------------------->
+      +---DS----------+
+
+ The following options may appear in any order:
+
+ >----+---------------------+----+-------------------+-------------------->
+      +---IN---'matchstr'---+    +---CASESENSITIVE---+
+
+ >----+------------+----+----------------------+------------------------->&lt;
+      +---ANYPOS---+    +---RSDLM---'dlmstr'---+
+</pre>
+<dl>
+<dt>srchstring</dt>
+<dd>Single or double-quoted string. This is the target string to be
+deleted in a target file line.</dd>
+<dt>matchstr</dt>
+<dd>Single or double-quoted string which will be used to identify position(s)
+in the target file where strings will be deleted. If <i>matchstr</i> is not
+specified then all lines in the target file will be searched for <i>srchstr</i>.
+If <i>matchstr</i> is not found then no action will be taken.</dd>
+<dt>CASESENSITIVE</dt>
+<dd>Specifies that a case sensitive search will be performed using the
+<i>matchstr</i>. The default is a case insensitive search.</dd>
+<dt>ANYPOS</dt>
+<dd>Specifies that <i>srchstr</i> may appear anywhere in the line being
+searched. The default specifies that the <i>srchstr</i> must appear at
+the beginning of the line being searched.</dd>
+<dt>dlmstr</dt>
+<dd>Single or double-quoted string which specifies the delimiter to be used
+for environment string substitutions on the <i>srchstr</i> and <i>matchstr</i>.
+Only the first character of the string is significant.
+If no <i>dlmstr</i> is specified then no environment string substitution will
+be performed.</dd>
+</dl>
+<h4>Examples</h4>
+<pre>
+DelString 'c:\bin;' in 'PATH='
+</pre>
+<p>This example will delete the specified string after the first line found in
+the target file which contains the string 'PATH='.
+If no matching line is found then no action is performed.</p>
+
+<h3><a name="OnError">
+ONERROR Statement</a></h3>
+<p>The ONERROR statement modifies the OCube runtime error processing.</p>
+<h4>Syntax Diagram</h4>
+<pre>
+ >>---ONERROR---+---STOP-------+----------------------------------------->&lt;
+                +---CONTINUE---+
+</pre>
+<dl>
+<dt>STOP</dt>
+<dd>Stop processing the OCube procedure file when an error condition is
+raised. This is the OCube startup setting.</dd>
+<dt>CONTINUE</dt>
+<dd>Continue processing the OCube procedure file when an error condition is
+raised.</dd>
+</dl>
+<h4>Examples</h4>
+<pre>
+OnError stop
+</pre>
+<p>This example will cause OCube to stop processing the procedure file when
+an error condition is raised. Under this condition the target file will not
+be modified in any way.</p>
+
+<h3><a name="RepLine">
+REPLINE Statement</a></h3>
+<p>The REPLINE statement conditionally replaces line(s) in the target file.</p>
+<h4>Syntax Diagram</h4>
+<pre>
+ >>---+---REPLINE---+---'matchstr'---WITH---'newline'--------------------->
+      +---RL--------+
+
+ The following options may appear in any order:
+
+ >----+-------------------+----+------------+---+----------------------+-->
+      +---CASESENSITIVE---+    +---ANYPOS---+   +---RSDLM---'dlmstr'---+
+
+ >----+-----------+------------------------------------------------------>&lt;
+      +---FIRST---+
+      +---LAST----+
+      +---ALL-----+
+</pre>
+<dl>
+<dt>matchstr</dt>
+<dd>Single or double-quoted string which will be used to identify position(s)
+in the target file where <i>newline</i> will replace the existing line.</dd>
+<dt>newline</dt>
+<dd>Single or double-quoted string containing the line to replace matching
+line(s) in the target file.</dd>
+<dt>CASESENSITIVE</dt>
+<dd>Specifies that a case sensitive search will be performed using the
+<i>matchstr</i>. The default is a case insensitive search.</dd>
+<dt>ANYPOS</dt>
+<dd>Specifies that <i>matchstr</i> may appear anywhere in the line being
+searched. The default specifies that the <i>matchstr</i> must appear at
+the beginning of the line being searched.</dd>
+<dt>dlmstr</dt>
+<dd>Single or double-quoted string which specifies the delimiter to be used
+for environment string substitutions on the <i>matchstr</i> and <i>newline</i>.
+Only the first character of the string is significant.
+If no <i>dlmstr</i> is specified then no environment string substitution will
+be performed.</dd>
+<dt>FIRST</dt>
+<dd>If <i>matchstr</i> is found in the target file then replace only the first
+occurence of the matching line. This is the default.
+This option is ignored if <i>matchstr</i> is not found.</dd>
+<dt>LAST</dt>
+<dd>If <i>matchstr</i> is found in the target file then replace only the last
+occurence of the matching line.
+This option is ignored if <i>matchstr</i> is not found.</dd>
+<dt>ALL</dt>
+<dd>If <i>matchstr</i> is found in the target file then replace all
+occurences of the matching lines.
+This option is ignored if <i>matchstr</i> is not found.</dd>
+</dl>
+<h4>Examples</h4>
+<pre>
+RepLine 'PATH=' with 'PATH=c:\;c:\mypath;c:\bin'
+</pre>
+<p>This example will replace the first occurence of the line containing the
+'PATH=' at the beginning of the line. The entire line will be replaced.
+If no matching line is found then no action is taken against the target
+file.</p>
+<pre>
+RepLine 'PATH=' with 'PATH=c:\;c:\mypath;c:\bin' last anypos
+</pre>
+<p>This is the same as the previous example except the the last line found in
+the target file which contains the string 'PATH=' at any position of the
+line will be replaced.
+If no matching line is found then no action is taken against the target
+file.</p>
+
+<h3><a name="RepString">
+REPSTRING Statement</a></h3>
+<p>The REPSTRING statement conditionally replaces a string in an existing line
+in the target file.</p>
+<h4>Syntax Diagram</h4>
+<pre>
+ >>---+---REPSTRING---+---'srchstr'---WITH---'newstring'------------------>
+      +---RS----------+
+
+ The following options may appear in any order:
+
+ >----+---------------------+----+-------------------+-------------------->
+      +---IN---'matchstr'---+    +---CASESENSITIVE---+
+
+ >----+------------+----+----------------------+------------------------->&lt;
+      +---ANYPOS---+    +---RSDLM---'dlmstr'---+
+</pre>
+<dl>
+<dt>srchstring</dt>
+<dd>Single or double-quoted string. This is the target string to be
+replaced in a target file line.</dd>
+<dt>newstring</dt>
+<dd>Single or double-quoted string. This is the string to replace
+<i>srchstr</i> in target file line(s).</dd>
+<dt>matchstr</dt>
+<dd>Single or double-quoted string which will be used to identify position(s)
+in the target file where strings will be replaced. If <i>matchstr</i> is not
+specified then all lines in the target file will be searched for <i>srchstr</i>.
+If <i>matchstr</i> is not found then no action will be taken.</dd>
+<dt>CASESENSITIVE</dt>
+<dd>Specifies that a case sensitive search will be performed using the
+<i>matchstr</i>. The default is a case insensitive search.</dd>
+<dt>ANYPOS</dt>
+<dd>Specifies that <i>matchstr</i> may appear anywhere in the line being
+searched. The default specifies that the <i>matchstr</i> must appear at
+the beginning of the line being searched.</dd>
+<dt>dlmstr</dt>
+<dd>Single or double-quoted string which specifies the delimiter to be used
+for environment string substitutions on the <i>matchstr</i>,
+<i>srchstr</i> and <i>newstring</i>.
+Only the first character of the string is significant.
+If no <i>dlmstr</i> is specified then no environment string substitution will
+be performed.</dd>
+</dl>
+<h4>Examples</h4>
+<pre>
+RepString 'c:\bin;' with 'd:\bin;' in 'PATH='
+</pre>
+<p>This example will replace the specified string after the first line found in
+the target file which contains the string 'PATH='.
+If no matching line is found then no action is performed.</p>
+
+
+<br /><br /><br /><br /><br />
+<h2><a name="VersionInfo">
+Version History</a></h2>
+<pre>
+ Date       Author      Description
+ ---------- ----------- -----------------------------------------------------
+ 2003-02-18 WD Ashley   v1.0.0 Initial release
+ 2006-09-15 WD Ashley   v1.0.0 Released for the ooRexx Project
+</pre>
+
+
+<br /><br /><br /><br /><br />
+<h2><a name="ProblemInfo">
+Known Problems</a></h2>
+<ol>
+<li>Target files with embedded tab characters may cause problems for OCube.
+You may want to convert the tab characters to spaces before processing the file
+with OCube.</li>
+</ol>
+
+<br />
+<p>
+  <a href="http://validator.w3.org/check/referer">
+  <img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!"
+       height="31" width="88" />
+  </a>
+</p>
+
+</body>
+</html>
+

@@ -1,0 +1,69 @@
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Description: Test the SMTP and Mime classes.                               */
+/*                                                                            */
+/* Copyright (c) 2006 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/* Author: W. David Ashley                                                    */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+
+-- build a simple mime part
+mime1 = .mimepart~new
+mime1~addContent('This is a test.' || '0D0A'x)
+
+-- build an smtp message
+msg = .smtpmsg~new
+msg~setFrom('dashley@us.ibm.com')
+msg~addRecipient('dashley@holmes4.com')
+msg~setSubject('Test SMTP Msg From ooRexx')
+msg~addContent(mime1)
+
+-- send the mail message
+smtpconx = .smtp~new
+-- smtpconx~debug = .true
+-- retc = smtpconx~connect('127.0.0.1')
+-- retc = smtpconx~connect('na.relay.ibm.com')
+-- retc = smtpconx~connect('192.168.0.2')
+retc = smtpconx~connect('holmes4.com', 'myuser@holmes4.com', 'mypasswd')
+if retc = -1 then return
+retc = smtpconx~send(msg)
+if retc = -1 then return
+retc = smtpconx~logoff
+return
+
+
+::requires 'smtp.cls'
+

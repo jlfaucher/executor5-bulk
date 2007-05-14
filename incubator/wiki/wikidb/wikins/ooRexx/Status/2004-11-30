@@ -1,0 +1,61 @@
+=Open Object Rexx Project Status<br />November - 2004=
+
+We have run into a delay in getting the project established. The IBM lawyers
+want to take the source code through another round of internal review before
+releasing it to the Open Source community. This means a delay of at least
+another month (and probably more like two months) before we can really begin
+putting a release together. This is disappointing news but we do not believe
+that this process will impact IBM's decision to open source Object Rexx. As
+always, lawyers have the last say in any legal process of this nature.
+
+But there is good news. IBM has finally approved the language for the joint
+IBM/RexxLA announcement concerning Open Object Rexx. Look for the announcement
+on the [http://www.rexxla.org/ RexxLA] web site as well as the
+Open Object Rexx home page.
+
+The proposed charter for the project is currently under review and we hope to
+adopt it by the end of December.
+
+===Here is the latest status for items received from IBM===
+
+* Complete source code for the Object Rexx interpreter for Windows, Linux, AIX
+and Solaris. The code we were given does not contain all the materials necessary
+to build an OS/2 interpreter.
+* Source code for the external function libraries rexxutil, rxsock, oodialog,
+rxmath and some smaller libraries.
+* Documentation in PDF and HTML format.
+
+===Here is the latest status for items not yet received from IBM===
+
+* The Windows development environment. We will probably never get this due to
+some legal issues with the development libraries used to create this
+application.
+* Documentation source code. We may be able to obtain the SGML source from
+IBM after all, but it will be in a proprietary SGML format. But all is not lost
+as we have found a source who will be willing to extract the source in DocBook
+format from the supplied PDFs including the style sheet and index
+information.
+* Rxftp external function library. There is a legal problem with this library
+because IBM used code that is under a non-disclosure agreement. Work has begun on
+a replacement for RxFtp in the form of an ORexx class library which invokes the
+RxSock external function library to communicate with the target FTP server.
+This will not be a direct functional replacement for the RxFtp external library
+but it will provide equivalent functionality in the form of a class library.
+
+We have also begun transitioning the build process to use the open source
+auto tools (autoconf, libtool, etc). We still have a lot of work to do to make
+this approach work but we are making progress. This work should make the build
+process portable across multiple platforms including the Windows CygWin
+environment.
+
+There are still a lot of legal issues to overcome before the code can be
+put in the SourceForge CVS repository. All theses issues will take some time to
+resolve so your patience will be appreciated. Again, please check back with
+[http://www.rexxla.org/ RexxLA]
+or subscribe to the list
+[http://lists.sourceforge.net/lists/listinfo/oorexx-announce oorexx-announce]
+to receive development updates and news like this.
+
+Submitted by
+<br />W. David Ashley and the Open Object Rexx Project Team
+
