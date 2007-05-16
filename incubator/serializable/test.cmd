@@ -1,13 +1,12 @@
 #!/opt/ooRexx/bin/rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.oorexx.org/license.html                          */
+/* http://www.oorexx.org/license.html                                         */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -36,130 +35,163 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-
+debug = 1
 say "Creating a new .test object"
 a = .test~new
 say "Filling it with data"
 a~FillData
-Say "Showing the data"
-a~ShowData
+if debug then do
+    Say "Showing the data"
+    a~ShowData
+end
 Say "Serializing the object"
 starttime = time('r')
-t = .SErializeFunctions~Serialize(a)
-Say "Here is the serialized data: Time needed for serializing:" time('r')
+if \ debug then
+    do i = 1 to 2
+--	a~filldata
+	t = .SerializeFunctions~Serialize(a)
+    end
+else
+	t = .SerializeFunctions~Serialize(a)
+if \ debug then
+    Say "Time needed for serializing:" time('r')/2
+else
+    Say "Here is the serialized data: Time needed for serializing:" time('r')
 
-do i = 1 to t~size
+if debug then do i = 1 to t~size
 --    call lineout "dmp.txt", i~right(4)||" "||t[i]
-    say i~right(4)||" "||t[i]
-end
+        say i~right(4)||" "||t[i]
+	if i > 30 then leave
+    end
 Say "Deserializing the data and storing the class in b"
 b = .SerializeFunctions~Deserialize(t)
 say "Time needed for deserializing:" time('e')
-Say "And that's the data b stores:"
-b~ShowData
+if debug then do
+    Say "And that's the data b stores:"
+    b~ShowData
+end
 
 ::REQUIRES "Serializable.cls"
 ::CLASS test MIXINCLASS Serializable
 ::METHOD PersistentData ATTRIBUTE
 ::METHOD FillData
-    stem. = "I'm a stem variable"
-    stem.1 = "first level entry"
-    stem.1.1 = "sub entry"
-    d = .directory~new
-    d~method = .method~new("my method","Say 'hello'")
-    d~mb = .mutablebuffer~new("This is some string")
-    d~stem = stem.
-    string = "Test"
-    d~array = .array~of(.bag~of(string,string),.list~of(string,string))
-    d~object = .test2~new
-    self~PersistentData = d
+	stem. = "I'm a stem variable"
+	stem.1 = "first level entry"
+	stem.1.1 = "sub entry"
+	d = .directory~new
+	d~method = .method~new("my method","Say 'hello'")
+	d~mb = .mutablebuffer~new("This is some string")
+	d~stem = stem.
+	string = "Test, occurring several times"
+	d~array = .array~of(.bag~of(string,string),.list~of(string,string))
+	d~object = .test2~new
+	d~nil = .nil
+	r = .relation~new
+	r[string] = 1
+	r[string] = 42
+	r[42] = string
+	d~relation = r
+	t = .table~new
+	t[string] = stem.
+	d~table = t
+	q = .queue~new
+	q~queue(string)
+	d~queue = q
+	a = .array~new
+	a[1] = a
+	d~array = a
+	self~PersistentData = d
 ::METHOD Showdata
-    self~ShowDataRecursor(self~PersistentData,0)
+	self~ShowDataRecursor(self~PersistentData,0)
 
 ::METHOD ShowDataRecursor
-    use arg object,level
-    objectclass = object~class
-    indent = " "~copies((level+1)*3)
-    select
-	when objectclass = .array then do
-	    say indent".Array"
-	    do i = 1 to object~size
-		if object[i] = .nil then iterate
---		call charout ,i~left(2)
-		self~ShowDataRecursor(object[i],level+1)
-	    end
+	use arg object,level
+	objectclass = object~class
+	indent = " "~copies((level+1)*3)
+	if level > 10 then do
+		say indent"..."
+		return
 	end
-	when objectclass = .bag then do
-	    say indent".Bag"
-	    c = object~makearray
-	    do i = 1 to c~size
-		self~ShowDataRecursor(c[i],level+1)
-	    end
-	end
-	when objectclass = .directory then do
-	    say indent".Directory"
-	    c = object~makearray
-	    do i = 1 to c~size
-		say indent||c[i]":"
-		self~ShowDataRecursor(object[c[i]],level+1)
-	    end
-	end
-	when objectclass = .list then do
-	    say indent".List"
-	    c = object~makearray
-	    do i = 1 to c~size
-		self~ShowDataRecursor(c[i],level+1)
-	    end
-	end
-	when objectclass = .queue then do
-	    say indent".Queue"
-	    c = object~makearray
-	    do i = 1 to c~size
-		self~ShowDataRecursor(c[i],level+1)
-	    end
-	end
-	when objectclass = .circularqueue then do
-	    say indent".CircularQueue, " object~size "entries"
-	    c = object~makearray
-	    do i = 1 to c~size
-		self~ShowDataRecursor(c[i],level+1)
-	    end
-	end
-	when objectclass = .relation then do
-	    say indent".Relation"
-	    do i over object
-		str = indent || i~string || " "
-		do j over object~allat(i)
-		    str = str||","||j~string
+	select
+		when objectclass = .array then do
+			say indent".Array"
+			do i = 1 to object~size
+				if object[i] = .nil then iterate
+--				call charout ,i~left(2)
+				self~ShowDataRecursor(object[i],level+1)
+			end
 		end
-		say str
-	    end
+		when objectclass = .bag then do
+	    		say indent".Bag"
+	    		c = object~makearray
+			do i = 1 to c~size
+				self~ShowDataRecursor(c[i],level+1)
+			end
+		end
+		when objectclass = .directory then do
+			say indent".Directory"
+			c = object~makearray
+			do i = 1 to c~size
+				say indent||c[i]":"
+				self~ShowDataRecursor(object[c[i]],level+1)
+			end
+		end
+		when objectclass = .list then do
+			say indent".List"
+			c = object~makearray
+			do i = 1 to c~size
+				self~ShowDataRecursor(c[i],level+1)
+			end
+		end
+		when objectclass = .queue then do
+			say indent".Queue"
+			c = object~makearray
+			do i = 1 to c~size
+				self~ShowDataRecursor(c[i],level+1)
+			end
+		end
+		when objectclass = .circularqueue then do
+			say indent".CircularQueue, " object~size "entries"
+			c = object~makearray
+			do i = 1 to c~size
+				self~ShowDataRecursor(c[i],level+1)
+			end
+		end
+		when objectclass = .relation then do
+			say indent".Relation"
+			do i over object
+				str = indent || i~string || ": "
+				do j over object~allat(i)
+					str = str||","||j~string
+				end
+				say str
+			end
+		end
+		when objectclass = .stem then do
+			say indent".Stem Default value:" object[]
+			do i over object
+				say indent||i
+				self~ShowDataRecursor(object[i],level+1)
+			end
+		end
+		when objectclass = .string then say indent".String:" object
+		when objectclass = .mutablebuffer then say indent".MutableBuffer:("object~GetBufferSize")" object~string
+		when object = .nil then say indent".Nil"
+		when object~IsInstanceOf(.Serializable) then do
+	 		say indent||objectclass~string
+			if object~HasMethod("PersistentData") then
+				if object~PersistentData != "PERSISTENTDATA" then
+					self~ShowDataRecursor(object~PersistentData,level+1)
+		end
+		otherwise
+			say indent||objectclass~string
 	end
-	when objectclass = .stem then do
-	    say indent".Stem Default value:" object[]
-	    do i over object
-		say indent||i
-		self~ShowDataRecursor(object[i],level+1)
-	    end
-	end
-	when objectclass = .string then say indent".String:" object
-	when objectclass = .mutablebuffer then say indent".MutableBuffer:("object~GetBufferSize")" object~string
-	when object = .nil then say indent".Nil"
-	when object~IsInstanceOf(.Serializable) then do
-	    say indent||objectclass~string
-	    if object~HasMethod("PersistentData") then
-		if object~PersistentData != "PERSISTENTDATA" then
-		    self~ShowDataRecursor(object~PersistentData,level+1)
-	    end
-	otherwise
-	    say indent||objectclass~string
-    end
 
 ::CLASS Test2 MIXINCLASS Serializable
 ::METHOD ReadObject CLASS
-    use arg data
-    return self~new(data)
+	use arg data
+	return self~new(data)
 ::METHOD WriteObject
-    return 'a'
+	return 'a'
 ::METHOD Init
-    use arg data
+	use arg data

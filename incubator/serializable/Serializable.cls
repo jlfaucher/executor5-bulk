@@ -1,7 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -79,7 +78,7 @@ implemented an error is raised.
 ::METHOD ReadObject CLASS
 	use arg Data
 	signal on syntax
-	Instance =  self~New(Data)
+	Instance = self~New(Data)
 	return Instance
 
 	syntax: raise propagate
@@ -198,8 +197,9 @@ many objects nested as desired - as long as the memory is not full.
 	return objindex[start]
 
 ::METHOD FromSerializedData
-	expose name objindex data
+	expose name objindex data CurrentPos
 	use arg pos
+	CurrentPos = pos
 	-- check if there is somethig in the cache for the index
 	if objindex~hasindex(pos) then
 		return objindex[pos]
@@ -217,6 +217,11 @@ many objects nested as desired - as long as the memory is not full.
 	data~remove(pos)
 	-- this does not return anything, data is stored in cache objindex
 	return objindex[pos]
+-- early put method to allow recursive datastructure recreation
+::METHOD FromSerializedDataPut
+	expose CurrentPos ObjIndex
+	use arg Object
+	ObjIndex[CurrentPos] = Object
 
 ::METHOD ToSerializableDataCtrl
 	expose ObjectList classtype objindex
@@ -240,8 +245,11 @@ many objects nested as desired - as long as the memory is not full.
 			-- it can be matched by class, get the handler
 			handler = classtype[Object~class]
 		end
-		-- use the nil handler for unknown objects, default exit
-		else Handler = .SerializeNil
+		-- the nil handler can not match by class
+		else if Object = .nil then
+			Handler = .SerializeNil
+		-- no handler found and object is not .nil, so raise an error
+		else raise syntax 93
 		-- handler must be set at this point, so serialize the data
 		rindex[position] = handler~name handler~Serialize(self,Object)
 		-- go to the next position
@@ -403,6 +411,7 @@ Signature of a data handler:
 ::METHOD DeSerialize CLASS
         use arg Caller,arguments
 	ret = .Relation~new
+	Caller~FromSerializedDataPut(ret)
 	start = 0
 	al = arguments~length
 	do while al > start
@@ -436,6 +445,7 @@ Signature of a data handler:
 ::METHOD DeSerialize CLASS
         use arg Caller,arguments
 	ret = .Table~new
+	Caller~FromSerializedDataPut(ret)
 	start = 0
 	al = arguments~length
 	do while al > start
@@ -466,6 +476,7 @@ Signature of a data handler:
 ::METHOD DeSerialize CLASS
         use arg Caller,arguments
 	ret = .Stem~new
+	Caller~FromSerializedDataPut(ret)
 	parse var arguments default .
 	if default \= '-' then
 		ret[] = Caller~FromSerializedData(default)
@@ -497,6 +508,7 @@ Signature of a data handler:
 ::METHOD DeSerialize CLASS
         use arg Caller,arguments
 	ret = .Directory~new
+	Caller~FromSerializedDataPut(ret)
         start = 0
         al = arguments~length
         do while al > start
@@ -526,6 +538,7 @@ Signature of a data handler:
 ::METHOD DeSerialize CLASS
         use arg Caller,arguments
         ret = .Array~new()
+	Caller~FromSerializedDataPut(ret)
         start = 0
         al = arguments~length
         do while al > start
@@ -550,6 +563,7 @@ Signature of a data handler:
 ::METHOD DeSerialize CLASS
         use arg Caller,arguments
 	ret = .Bag~new
+	Caller~FromSerializedDataPut(ret)
 	start = 0
 	al = arguments~length
 	do while al > start
@@ -574,6 +588,7 @@ Signature of a data handler:
 ::METHOD DeSerialize CLASS
         use arg Caller,arguments
 	ret = .List~new
+	Caller~FromSerializedDataPut(ret)
 	start = 0
 	al = arguments~length
 	do while al > start
@@ -598,6 +613,7 @@ Signature of a data handler:
 ::METHOD DeSerialize CLASS
         use arg Caller,arguments
 	ret = .Queue~new
+	Caller~FromSerializedDataPut(ret)
 	start = 0
 	al = arguments~length
 	do while al > start
@@ -622,6 +638,7 @@ Signature of a data handler:
 ::METHOD DeSerialize CLASS
         use arg Caller,arguments
 	ret = .CircularQueue~new(arguments~words)
+	Caller~FromSerializedDataPut(ret)
 	start = 0
 	al = arguments~length
 	do while al > start
