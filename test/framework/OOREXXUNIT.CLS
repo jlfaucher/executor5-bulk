@@ -65,6 +65,9 @@
                                            in testUnit's, then program does not abend, rather it ignores
                                            that testUnit, displying the condition on STDERR
                                          - added ooRexxUnit.formatConditionObject()
+                     2007-05-27, ---rgf, - added environment symbols ".oorexxunit.interpreterName",
+                                           ".oorexxunit.languageLevel" and ".oorexxunit.interpreterDate",
+                                           retrieved from "PARSE VERSION"
 
 
    language-level:   6.0
@@ -132,6 +135,11 @@
 
 .local~chars.NonPrintable=xrange("00"x, "1F"x) || "FF"x  -- define non-printable chars
 .local~ooRexxUnit.version=102.20070124    -- define the version number
+
+parse version interpreterName languageLevel interpreterDate
+.local~ooRexxUnit.interpreterName=interpreterName
+.local~ooRexxUnit.languageLevel=languageLevel
+.local~ooRexxUnit.interpreterDate=interpreterDate
 
 
 /* *********************************************************************************** */
