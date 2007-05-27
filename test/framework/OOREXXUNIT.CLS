@@ -134,7 +134,7 @@
 /*----------------------------------------------------------------------------*/
 
 .local~chars.NonPrintable=xrange("00"x, "1F"x) || "FF"x  -- define non-printable chars
-.local~ooRexxUnit.version=102.20070124    -- define the version number
+.local~ooRexxUnit.version=103.20070527    -- define the version number
 
 parse version interpreterName languageLevel interpreterDate
 .local~ooRexxUnit.interpreterName=interpreterName
