@@ -38,6 +38,7 @@
 debug = 1
 say "Creating a new .test object"
 a = .test~new
+a~debug = debug
 say "Filling it with data"
 a~FillData
 if debug then do
@@ -46,23 +47,19 @@ if debug then do
 end
 Say "Serializing the object"
 starttime = time('r')
-if \ debug then
+if \ debug then 
     do i = 1 to 2
 --	a~filldata
 	t = .SerializeFunctions~Serialize(a)
     end
 else
 	t = .SerializeFunctions~Serialize(a)
-if \ debug then
+if \ debug then 
     Say "Time needed for serializing:" time('r')/2
-else
+else do
     Say "Here is the serialized data: Time needed for serializing:" time('r')
-
-if debug then do i = 1 to t~size
---    call lineout "dmp.txt", i~right(4)||" "||t[i]
-        say i~right(4)||" "||t[i]
-	if i > 30 then leave
-    end
+    say t~string
+end
 Say "Deserializing the data and storing the class in b"
 b = .SerializeFunctions~Deserialize(t)
 say "Time needed for deserializing:" time('e')
@@ -73,8 +70,11 @@ end
 
 ::REQUIRES "Serializable.cls"
 ::CLASS test MIXINCLASS Serializable
+::METHOD Debug ATTRIBUTE
 ::METHOD PersistentData ATTRIBUTE
 ::METHOD FillData
+    expose debug
+    if debug then do
 	stem. = "I'm a stem variable"
 	stem.1 = "first level entry"
 	stem.1.1 = "sub entry"
@@ -97,9 +97,17 @@ end
 	q = .queue~new
 	q~queue(string)
 	d~queue = q
+	d~cq = .circularqueue~of(r,string)
 	a = .array~new
 	a[1] = a
 	d~array = a
+    end
+    else do
+	d = .array~new
+	do i = 1 to 1e5
+	    d[i] = i
+	end
+    end
 	self~PersistentData = d
 ::METHOD Showdata
 	self~ShowDataRecursor(self~PersistentData,0)

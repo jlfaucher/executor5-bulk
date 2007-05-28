@@ -1,4 +1,3 @@
-#!/opt/ooRexx/bin/rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
@@ -35,32 +34,21 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+/*
+Enhanced stream class that is capable of reading and writing objects using
+the serializatation framework.
+*/
+.environment~ObjectStream = .ObjectStream
 
-/* Example from documentation */
-object = .TotalRunningTime~new(0)
-object~start
-call SysSleep 3
-object~stop
-serialobject = .SerializeFunctions~Serialize(object)
-call SysSleep 1
-object = .SerializeFunctions~DeSerialize(serialobject)
-object~start
-call SysSleep 3
-object~stop
-exit
 ::REQUIRES "Serializable.cls"
-::CLASS TotalRunningTime MIXINCLASS Serializable
-::METHOD PersistentData ATTRIBUTE
-::METHOD Start
-	expose running
-	running = .true
-	Say "Starting at" self~PersistentData
-	reply
-	do while running
-		call SysSleep 1
-		call charout ,self~PersistentData" "
-		self~PersistentData = self~PersistentData + 1
-	end
-::METHOD Stop UNGUARDED
-	expose running
-	running = .false
+::CLASS ObjectStream SUBCLASS STREAM
+::METHOD ReadObject
+	-- Method to read an object from the stream
+	signal on syntax
+	return .SerializeFunctions~Deserialize(.mutablebuffer~new(self~linein))
+	syntax: return .nil
+
+::METHOD WriteObject
+	-- method to write an object to the stream
+	use arg object
+	return self~lineout(.SerializeFunctions~Serialize(object)~string)

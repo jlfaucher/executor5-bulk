@@ -36,31 +36,32 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-/* Example from documentation */
-object = .TotalRunningTime~new(0)
-object~start
-call SysSleep 3
-object~stop
-serialobject = .SerializeFunctions~Serialize(object)
-call SysSleep 1
-object = .SerializeFunctions~DeSerialize(serialobject)
-object~start
-call SysSleep 3
-object~stop
-exit
-::REQUIRES "Serializable.cls"
-::CLASS TotalRunningTime MIXINCLASS Serializable
+parse arg modifier file .
+modifier = modifier~translate
+if modifier = "READ" then do
+	s = .ObjectStream~new(file)
+	rc = time('r')
+	r = s~ReadObject
+	say "Time needed to read file:" time('r')
+	say r
+	say s~ReadObject
+	say s~ReadObject
+end
+else if modifier = "WRITE" then do
+	s = .ObjectStream~new(file)
+	s~open("WRITE REPLACE")
+	rc = time('r')
+	s~WriteObject(.Test~new~~FillData)
+	say "Time needed to write file:" time('r')
+end
+else say "Usage: ./teststream.rex (WRITE|READ) file"
+
+::REQUIRES "ObjectStream.cls"
+::CLASS test MIXINCLASS Serializable
 ::METHOD PersistentData ATTRIBUTE
-::METHOD Start
-	expose running
-	running = .true
-	Say "Starting at" self~PersistentData
-	reply
-	do while running
-		call SysSleep 1
-		call charout ,self~PersistentData" "
-		self~PersistentData = self~PersistentData + 1
+::METHOD FillData
+	d = .array~new
+	do i = 1 to 1e5
+	    d[i] = i
 	end
-::METHOD Stop UNGUARDED
-	expose running
-	running = .false
+	self~PersistentData = d

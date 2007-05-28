@@ -5,7 +5,7 @@
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.oorexx.org/license.html                          */
+/* http://www.oorexx.org/license.html                                         */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -83,7 +83,6 @@ implemented an error is raised.
 
 	syntax: raise propagate
 
-
 /******************************************************************************
 	The SerializeFunctions class
 This class offers the base functionality to serialize and deserialize data.
@@ -91,31 +90,32 @@ It manages data handlers for managing a specific data type and offers a public
 function to serialize data and deserialize it.
 Assume variable a holds an object whichs class inherits from Serializable.
 In this case the following command will return the serialized object:
-	lines = .SerializeFunctions~Serialize(a)
+	buffer = .SerializeFunctions~Serialize(a)
 
 Deserializing works the same way (b will be like a~copy):
-	b = .SerializableFunctions~DeSerialize(lines)
+	b = .SerializableFunctions~DeSerialize(buffer)
 
 The serializing and deserializing process is iterative. Thus there can be as
-many objects nested as desired - as long as the memory is not full.
+many objects nested as desired - as long as the memory is not full. Recursive
+data structure should cause no problem.
 ******************************************************************************/
 ::CLASS SerializeFunctions PUBLIC
 
 ::METHOD Init CLASS
 /* initailize containers for handler classes */
-	expose name type classtype
+	expose name type ClassType
 	-- These are containers for data handlers
 	name = .directory~new
-	classtype = .table~new
+	ClassType = .table~new
 	forward class (super)
 
 ::METHOD SetHandler CLASS
 /* Used by SerializeHandler: registers a new handler */
-	expose name classtype
+	expose name ClassType
 	use arg Handler
-	say "SetHandler:" Handler
+	-- !! Clean up, that's bad code
 	if Handler~new~IsInstanceOf(.SerializeHandler) then
-		classtype[Handler~checktype] = Handler
+		ClassType[Handler~checktype] = Handler
 	name[Handler~name] = Handler
 
 -- Serialize a given object
@@ -123,116 +123,118 @@ many objects nested as desired - as long as the memory is not full.
 >>-Serialize(data)------------------------------------------------------------><
 */
 ::METHOD Serialize CLASS
-	expose name classtype
-	use arg data
+	expose Name ClassType
+	use arg Data, Buffer
+	if symbol("BUFFER") = "LIT" then
+		Buffer = .MutableBuffer~new
 	signal on syntax
 	-- create a new serializer instance, just for data encapsulation
-	serializer = self~new(name,classtype)
+	Serializer = self~new(Name, ClassType, Buffer)
 	-- return the serialized data
-	return serializer~ToSerializableDataCtrl(data)
+	return Serializer~ToSerializableDataCtrl(Data)
 
 	syntax: raise propagate
 
 -- Method to deserialize stored objects
 /*
-                          +-,-1-,-linearray~size--+
->>-DeSerialize(linearray--+-----------------------+--)------------------------><
-                          +-,-start--+------------+
-			             +-,-end------+
+                          +-,-0------+             
+>>-DeSerialize(Buffer-----+----------+-)--------------------------------------><
+                          +-,-Offset-+             
+			                           
 */
 ::METHOD DeSerialize CLASS
-	expose name classtype
+	expose Name ClassType
 	-- called with an array of lines
-	use arg linearray
-	signal on syntax
-	-- Is parameter start set?
+	use arg Buffer
+	-- signal on syntax
+	-- Is parameter Offset set?
 	if arg() >= 2 then do
-		start = arg(2)
+		Offset = arg(2)
 		-- It must be an integer within the boundaries
-		if  (datatype(start) \= "NUM") then
+		if  (datatype(Offset) \= "NUM") then
 			-- Incorrect type
-			raise syntax 93.905 array ("start", arg(2))
-		else if linearray~size < start then
-			-- Incorrect array position
-			raise syntax 93.919 array (start)
+			raise syntax 93.905 array ("Offset", arg(2))
 	end
 	else
-		start = 1
-	-- Is parameter last set?
-	if arg() = 3 then do
-		last = arg(3)
-		if  (datatype(last) \= "NUM") then
-			-- Incorrect type
-			raise syntax 93.905 array ("last", arg(3))
-		else if linearray~size < last then
-			-- Incorrect array position
-			raise syntax 93.919 array (last)
-		else if last < start then
-			-- Application arror
-			raise syntax 93.964 array ("Last is smaller than start")
-	end
-	else last = linearray~size
-
+		Offset = 0
+		
 	-- Instace self
-	deserializer = self~new(name,classtype)
-	return deserializer~FromSerializedDataCtrl(linearray,start,last)
+	Deserializer = self~new(Name,ClassType,Buffer)
+	return Deserializer~FromSerializedDataCtrl(Offset)
 	syntax: raise propagate
 
 /**************************** INSTANCE METHODS ********************************/
 ::METHOD Init
-	-- save the handlers
-	expose name classtype
-	use arg name, classtype
+	-- save the handlers and the string buffer
+	expose Name ClassType Buffer
+	use arg Name, ClassType, Buffer
 
 ::METHOD FromSerializedDataCtrl
-	expose objindex data
-	use arg linearray, start, last
-	objindex = .array~new
-	data = linearray
+	expose ObjectIndex Buffer Boundaries
+	parse arg Offset
+	Boundaries = .array~new
+	-- get the upper boundary
+	limit = Buffer~pos(";", Offset + 1)
+	ObjEnd = Offset
+	count = 1
+	-- iterate as long as ObjEnd is found in front of the ;
+	do until (ObjEnd >= limit) | (ObjEnd = 0)
+		-- store the beginning of the object
+		Boundaries~put(ObjEnd,count)
+		count = count + 1
+		-- find next start
+		ObjEnd = Buffer~pos(".", ObjEnd+1)
+	end
+	-- put the end of the last object on the array
+	Boundaries~put(limit, count)
+	if count = 2 then raise syntax 93.900 array ("No data found!") 
+	ObjectIndex = .array~new
 	-- convert the data to objects, starting at the last serialized object
 	-- avoids recursion as later queries will hit the cache
-	do i = last to start by -1
+	do i = Boundaries~items - 1 to 1 by -1
 		self~FromSerializedData(i)
 	end
-	return objindex[start]
+	-- the top index stores the first object referencing all other objects
+	return ObjectIndex[1]
 
 ::METHOD FromSerializedData
-	expose name objindex data CurrentPos
+	expose Name ObjectIndex Buffer CurrentPos Boundaries
 	use arg pos
-	CurrentPos = pos
 	-- check if there is somethig in the cache for the index
-	if objindex~hasindex(pos) then
-		return objindex[pos]
+	if ObjectIndex~HasIndex(pos) then
+		return ObjectIndex[pos]
+	CurrentPos = pos
+	-- extract the current serialized object from the buffer
+	ObjStart = Boundaries[pos] + 1
+	SpacePos = Buffer~pos(" ", ObjStart)
 	-- split the current string into type and arguments
-	parse value data[pos] with type arguments
+	Type = Buffer~SubStr(ObjStart, SpacePos - ObjStart )
+	Arguments = Buffer~SubStr(SpacePos + 1, -
+		Boundaries[pos + 1] - SpacePos - 1 )
 	-- there must be a class associated with type
-	class = name[type]
-	if class = .nil then
-		raise syntax 93.914 array -
-("object","a class handled by a .SerialzeHandler class",type)
+	Handler = Name[Type]
+	if Handler = .nil then raise syntax 93.914 array -
+		("object","a class handled by a .SerialzeHandler class",type)
 	else
 		-- use the class found to deserialize the data
-		objindex[pos] = class~DeSerialize(self,arguments,data)
-	-- free some memory by resetting the array
-	data~remove(pos)
-	-- this does not return anything, data is stored in cache objindex
-	return objindex[pos]
+		ObjectIndex[pos] = Handler~DeSerialize(self, arguments)
+	-- this does not return anything, data is stored in cache ObjectIndex
+	return ObjectIndex[pos]
+
 -- early put method to allow recursive datastructure recreation
 ::METHOD FromSerializedDataPut
-	expose CurrentPos ObjIndex
+	expose CurrentPos ObjectIndex
 	use arg Object
-	ObjIndex[CurrentPos] = Object
+	ObjectIndex[CurrentPos] = Object
 
 ::METHOD ToSerializableDataCtrl
-	expose ObjectList classtype objindex
+	expose ObjectList ClassType ObjectIndex Buffer
 	use arg Object
 	-- initalize some containers
 	-- store the object -> id relation
-	objindex = .table~new
+	ObjectIndex = .table~new
 	-- store id -> object relation
 	ObjectList = .array~new
-	-- store lines of string
-	rindex = .array~new
 	-- the first item to be serialized is no. 1
 	position = 1
 	ObjectList[1] = Object
@@ -241,37 +243,44 @@ many objects nested as desired - as long as the memory is not full.
 		-- get the current object
 		Object = ObjectList[position]
 		-- check the way to serialize it
-		if classtype~hasindex(Object~class) then do
+		if ClassType~HasIndex(Object~class) then do
 			-- it can be matched by class, get the handler
-			handler = classtype[Object~class]
+			handler = ClassType[Object~class]
 		end
 		-- the nil handler can not match by class
-		else if Object = .nil then
-			Handler = .SerializeNil
+		else
+			if Object = .nil then
+				Handler = .SerializeNil
 		-- no handler found and object is not .nil, so raise an error
 		else raise syntax 93
 		-- handler must be set at this point, so serialize the data
-		rindex[position] = handler~name handler~Serialize(self,Object)
+
+		-- only 
+		if position > 1 then Buffer~append(".")
+		Buffer~append(handler~name || " ")
+		Handler~Serialize(self, Buffer, Object)
 		-- go to the next position
 		position = position + 1
 	end
+	-- append object structure end marker
+	Buffer~append(";")
 	-- return the array of lines
-	return rindex
+	return buffer
 
 -- This method is called by handlers to register objects. It returns the
--- object's id.
+-- object's id. The object is stored but not yet serialized.
 ::METHOD ToSerializableData
-	expose ObjectList ObjIndex
+	expose ObjectList ObjectIndex
 	use arg Object
 	-- this cache check will avoid serializing the same object again
-	if ObjIndex~HasIndex(Object) then do
-		return ObjIndex[Object]
+	if ObjectIndex~HasIndex(Object) then do
+		return ObjectIndex[Object]
 	end
 	-- the ID will be the next ObjectList entry
 	CurrPos = ObjectList~size + 1
 	-- Store the ID -> object and object -> ID relation
 	ObjectList[CurrPos] = Object
-	ObjIndex[Object] = CurrPos
+	ObjectIndex[Object] = CurrPos
 	return CurrPos
 
 /******************************************************************************
@@ -280,10 +289,10 @@ many objects nested as desired - as long as the memory is not full.
 Signature of a data handler:
 - It must directly inherit from SerializeHandler
 - It must define
-	- Name: return the identifier used to store the data
+	- Name: return the identifier used to store the data, must be unique
 	- CheckType: class -- The class this handler can serialize
-	- Serialize(Caller,Object): string
-	- DeSerialize(Caller,Arguments): object -- return an instance
+	- Serialize(Caller, Buffer, Object) -- appends data to the buffer
+	- DeSerialize(Caller,Arguments): Object -- returns deserialized data
 - Calls to Init MUST be forwarded, otherwise a handler will not register.
 ******************************************************************************/
 
@@ -325,13 +334,13 @@ Signature of a data handler:
 	return myclass~id
 ::METHOD Serialize
 	expose myclass
-	use arg Caller,Object
-	return Caller~ToSerializableData(Object~WriteObject)
+	use arg Caller, Buffer, Object
+	Buffer~append(Caller~ToSerializableData(Object~WriteObject))
 ::METHOD DeSerialize
 	expose myclass
-	use arg Caller,arguments
+	use arg Caller, arguments
 	parse var arguments ptr
-		return myclass~ReadObject(Caller~FromSerializedData(ptr))
+	return myclass~ReadObject(Caller~FromSerializedData(ptr))
 
 ::CLASS SerializeMethod SUBCLASS SerializeHandler
 ::METHOD Name CLASS
@@ -339,34 +348,35 @@ Signature of a data handler:
 ::METHOD CheckType CLASS
 	return .Method
 ::METHOD Serialize CLASS
-        use arg Caller,Object
-	-- How to preserve the method's name?
-	return Caller~ToSerializableData(Object~source)
+	use arg Caller, Buffer, Object
+	-- !! How to preserve the method's name?
+	Buffer~append(Caller~ToSerializableData(Object~source))
 ::METHOD DeSerialize CLASS
 	use arg Caller,arguments
-	return .Method~new('',Caller~FromSerializedData(arguments))
+	return .Method~new('', Caller~FromSerializedData(arguments))
 
 ::CLASS SerializeMutableBuffer SUBCLASS SerializeHandler
 ::METHOD Name CLASS
-        return "MUTABLEBUFFER"
+	return "MUTABLEBUFFER"
 ::METHOD CheckType CLASS
-        return .MutableBuffer
+	return .MutableBuffer
 ::METHOD Serialize CLASS
-	use arg Caller,Object
-	return Caller~ToSerializableData(Object~string)
+	use arg Caller, Buffer, Object
+	Buffer~append(Caller~ToSerializableData(Object~string))
 ::METHOD DeSerialize CLASS
 	use arg Caller, pos
-        return .MutableBuffer~new(Caller~FromSerializedData(pos))
+	return .MutableBuffer~new(Caller~FromSerializedData(pos))
 
 ::CLASS SerializeString SUBCLASS SerializeHandler
 ::METHOD Name CLASS
-        return "STRING"
+	return "STRING"
 ::METHOD CheckType CLASS
-        return .string
+	return .string
 ::METHOD Serialize CLASS
-	return arg(2)~encodeBase64
+	use arg Caller, Buffer, String
+	Buffer~append(String~encodeBase64)
 ::METHOD DeSerialize CLASS
-   return arg(2)~decodeBase64
+	return arg(2)~decodeBase64
 
 ::CLASS SerializeNil  SUBCLASS SerializeHandler
 ::METHOD Name CLASS
@@ -375,7 +385,6 @@ Signature of a data handler:
 ::METHOD CheckType CLASS
         return .nil
 ::METHOD Serialize CLASS
-	return ""
 ::METHOD DeSerialize CLASS
         return .nil
 
@@ -385,8 +394,7 @@ Signature of a data handler:
 ::METHOD CheckType CLASS
         return .Relation
 ::METHOD Serialize CLASS
-        use arg Caller,Object
-	mb = .MutableBuffer~new
+        use arg Caller, mb, Object
 	s = Object~supplier
 	relation_index = .Table~new
 	do while s~available
@@ -397,19 +405,18 @@ Signature of a data handler:
 		if relation_index[index] = .true then do
 			relation_index[index] =  -
 				Caller~ToSerializableData(index)
-			mb~append(" "||relation_index[index]||":")
-			i = 0
+			mb~append(" " || relation_index[index] || ":")
+			first = .true
 			do item over Object~allat(index)
-				if i \= 0 then
+				if first \= .true then
 					mb~append(",")
 				mb~append(Caller~ToSerializableData(item))
-				i = 1
+				first = .false
 			end
 		end
 	end
-        return mb~string
 ::METHOD DeSerialize CLASS
-        use arg Caller,arguments
+        use arg Caller, arguments
 	ret = .Relation~new
 	Caller~FromSerializedDataPut(ret)
 	start = 0
@@ -435,15 +442,13 @@ Signature of a data handler:
 ::METHOD CheckType CLASS
 	return .Table
 ::METHOD Serialize CLASS
-        use arg Caller,Object
-	mb = .MutableBuffer~new(" ",Object~items)
+        use arg Caller, mb, Object
 	do index over Object
-		mb~append(Caller~ToSerializableData(index)||":")
-		mb~append(Caller~ToSerializableData(Object[index])||" ")
+		mb~append(Caller~ToSerializableData(index) || ":")
+		mb~append(Caller~ToSerializableData(Object[index]) || " ")
 	end
-	return mb~string
 ::METHOD DeSerialize CLASS
-        use arg Caller,arguments
+        use arg Caller, arguments
 	ret = .Table~new
 	Caller~FromSerializedDataPut(ret)
 	start = 0
@@ -462,23 +467,22 @@ Signature of a data handler:
 ::METHOD CheckType CLASS
 	return .Stem
 ::METHOD Serialize CLASS
-        use arg Caller,Object
-	mb = .MutableBuffer~new
+        use arg Caller,mb,Object
+	-- indicate when there is no default value.
 	if Object[] = "" then
 		mb~append("-")
 	else
 		mb~append(Caller~ToSerializableData(Object[]))
 	do index over Object
-		mb~append(" "||Caller~ToSerializableData(index)||":"-
-			||Caller~ToSerializableData(Object[index]))
+		mb~append(" " || Caller~ToSerializableData(index) || ":" -
+			|| Caller~ToSerializableData(Object[index]))
 	end
-	return mb~string
 ::METHOD DeSerialize CLASS
-        use arg Caller,arguments
+        use arg Caller, arguments
 	ret = .Stem~new
 	Caller~FromSerializedDataPut(ret)
 	parse var arguments default .
-	if default \= '-' then
+	if default \= "-" then
 		ret[] = Caller~FromSerializedData(default)
 	start = default~length+1
 	al = arguments~length
@@ -496,17 +500,15 @@ Signature of a data handler:
 ::METHOD CheckType CLASS
         return .Directory
 ::METHOD Serialize CLASS
-        use arg Caller,Object
-        mb = .MutableBuffer~new
+        use arg Caller, mb, Object
 	index = Object~makearray
 	do i = 1 to index~size
-		mb~append(Caller~ToSerializableData(index[i])||":")
+		mb~append(Caller~ToSerializableData(index[i]) || ":")
 		mb~append(Caller~ToSerializableData( -
-			Object[index[i]])||" ")
+			Object[index[i]]) || " ")
         end
-        return mb~string
 ::METHOD DeSerialize CLASS
-        use arg Caller,arguments
+        use arg Caller, arguments
 	ret = .Directory~new
 	Caller~FromSerializedDataPut(ret)
         start = 0
@@ -525,8 +527,7 @@ Signature of a data handler:
 ::METHOD CheckType CLASS
         return .Array
 ::METHOD Serialize CLASS
-        use arg Caller,Object
-	mb = .MutableBuffer~new
+        use arg Caller, mb, Object
         do i = 1 to Object~size
 		if .nil = Object[i] then iterate
 		mb~append(i)
@@ -534,9 +535,8 @@ Signature of a data handler:
 		mb~append(Caller~ToSerializableData(Object[i]))
 		mb~append(" ")
         end
-        return mb~string
 ::METHOD DeSerialize CLASS
-        use arg Caller,arguments
+        use arg Caller, arguments
         ret = .Array~new()
 	Caller~FromSerializedDataPut(ret)
         start = 0
@@ -554,14 +554,12 @@ Signature of a data handler:
 ::METHOD CheckType CLASS
         return .Bag
 ::METHOD Serialize CLASS
-        use arg Caller,Object
-	mb = .MutableBuffer~new('',Object~items)
+        use arg Caller, mb, Object
 	do item over Object
-		mb~append(Caller~ToSerializableData(item)||" ")
+		mb~append(Caller~ToSerializableData(item) || " ")
 	end
-	return mb~string
 ::METHOD DeSerialize CLASS
-        use arg Caller,arguments
+        use arg Caller, arguments
 	ret = .Bag~new
 	Caller~FromSerializedDataPut(ret)
 	start = 0
@@ -579,14 +577,12 @@ Signature of a data handler:
 ::METHOD CheckType CLASS
         return .List
 ::METHOD Serialize CLASS
-        use arg Caller,Object
-	mb = .MutableBuffer~new('',Object~items)
+        use arg Caller, mb, Object
 	do item over Object
-		mb~append(Caller~ToSerializableData(item)||" ")
+		mb~append(Caller~ToSerializableData(item) || " ")
 	end
-	return mb~string
 ::METHOD DeSerialize CLASS
-        use arg Caller,arguments
+        use arg Caller, arguments
 	ret = .List~new
 	Caller~FromSerializedDataPut(ret)
 	start = 0
@@ -604,14 +600,12 @@ Signature of a data handler:
 ::METHOD CheckType CLASS
         return .Queue
 ::METHOD Serialize CLASS
-        use arg Caller,Object
-	mb = .MutableBuffer~new('',Object~items)
+        use arg Caller, mb, Object
 	do item over Object
-		mb~append(Caller~ToSerializableData(item)||" ")
+		mb~append(Caller~ToSerializableData(item) || " ")
 	end
-	return mb~string
 ::METHOD DeSerialize CLASS
-        use arg Caller,arguments
+        use arg Caller, arguments
 	ret = .Queue~new
 	Caller~FromSerializedDataPut(ret)
 	start = 0
@@ -629,12 +623,10 @@ Signature of a data handler:
 ::METHOD CheckType CLASS
         return .CircularQueue
 ::METHOD Serialize CLASS
-        use arg Caller,Object
-	mb = .MutableBuffer~new('',Object~items)
+        use arg Caller, mb, Object
 	do item over Object
-		mb~append(Caller~ToSerializableData(item)||" ")
+		mb~append(Caller~ToSerializableData(item) || " ")
 	end
-	return mb~string
 ::METHOD DeSerialize CLASS
         use arg Caller,arguments
 	ret = .CircularQueue~new(arguments~words)
@@ -646,3 +638,4 @@ Signature of a data handler:
 		start = start + ptr~length + 1
 		ret~queue(Caller~FromSerializedData(ptr))
 	end
+	return ret
