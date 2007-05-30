@@ -3,7 +3,7 @@
    name:             ooRexx.Base.String.testUnit
    author:           Rony G. Flatscher
    date:             2005-08-07
-   version:          1.0.1
+   version:          1.0.2
 
 -- line commented lines are ignored, when building the directory of infos from this header
    changed:          2005-08-21, ---rgf, renamed the testUnit-class to match exactly the
@@ -21,6 +21,7 @@
                      2007-03-21, ---rgf, added 6.01 datatype(value, 'O') test
                      2007-03-26, ---rgf, finally corrected the sequence of "expected" and "actual" value
                                          for assert[Not]Equals() and assert[Not]Same()
+                     2007-05-30, ---rgf, in language level 6.02 error text number 89 gets a text, adjusted
    languageLevel:    6.0.1
    purpose:          Test the String functions.
    remark:           Initial test unit for demonstration purposes, needs to be completed.
@@ -631,7 +632,13 @@ return testUnitList
     self~assertSame('subTest86', ''                                        , ERRORTEXT(86))
     self~assertSame('subTest87', ''                                        , ERRORTEXT(87))
     self~assertSame('subTest88', ''                                        , ERRORTEXT(88))
-    self~assertSame('subTest89', ''                                        , ERRORTEXT(89))
+
+
+    if .ooRexxUnit.languageLevel>=6.02 then
+       self~assertSame('subTest89', 'Variable or message term expected'    , ERRORTEXT(89))
+    else
+       self~assertSame('subTest89', ''                                     , ERRORTEXT(89))
+
     self~assertSame('subTest90', 'External name not found'                 , ERRORTEXT(90))
     self~assertSame('subTest91', 'No result object'                        , ERRORTEXT(91))
     self~assertSame('subTest92', 'OLE error'                               , ERRORTEXT(92))

@@ -3,10 +3,11 @@
    name:             ooRexx.Base.Class.Properties.testUnit
    author:           Rony G. Flatscher
    date:             2007-03-21
-   version:          1.0.0
+   version:          1.0.1
 
 -- line commented lines are ignored, when building the directory of infos from this header
-   changed:          ---
+   changed:          2007-05-30, ---rgf, adapted to language level 6.02 as some raised errors
+                                         are generated with an own error number by USE STRICT ARG
 
    languageLevel:    6.0.1
    purpose:          Test the methods of the class CircularQueue.
@@ -173,7 +174,10 @@ return testUnitList
    -- test arguments ---------------------------------------------
 
 ::method "test_LOAD_ARG_1"
-   self~expectSyntax(93.903)     -- omitted argument
+   if .ooRexxunit.languageLevel>=6.02 then
+      self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
+   else
+      self~expectSyntax(93.903)     -- omitted argument
    .Properties~load
 
 ::method "test_LOAD_ARG_2"
@@ -181,7 +185,10 @@ return testUnitList
    .Properties~load(1,2)
 
 ::method "test_SAVE_ARG_1"
-   self~expectSyntax(93.903)     -- omitted argument
+   if .ooRexxunit.languageLevel>=6.02 then
+      self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
+   else
+      self~expectSyntax(93.903)     -- omitted argument
    .Properties~new~SAVE
 
 ::method "test_SAVE_ARG_2"
@@ -198,7 +205,10 @@ return testUnitList
    .properties~new~setProperty( ,2)
 
 ::method "test_SETPROPERTY_ERR_03"
-   self~expectSyntax(93.903)
+   if .ooRexxunit.languageLevel>=6.02 then
+      self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
+   else
+      self~expectSyntax(93.903)
    .properties~new~setProperty(1 , )
 
 ::method "test_SETPROPERTY_ERR_04"
@@ -212,7 +222,10 @@ return testUnitList
    .properties~new~GETProperty(1, 2, 3)
 
 ::method "test_GETPROPERTY_ERR_02"
-   self~expectSyntax(93.903)
+   if .ooRexxunit.languageLevel>=6.02 then
+      self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
+   else
+      self~expectSyntax(93.903)
    .properties~new~GETProperty( )
 
 ::method "test_GETPROPERTY_DEFAULT_VALUE"
@@ -233,7 +246,10 @@ return testUnitList
 
    -- GETWHOLE
 ::method "test_GETWHOLE_ERR_01"
-   self~expectSyntax(26.901)
+   if .ooRexxunit.languageLevel>=6.02 then
+      self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
+   else
+      self~expectSyntax(26.901)
    key="a"
    val="b"
    p=.properties~new~~setProperty(key, val)
@@ -261,7 +277,10 @@ return testUnitList
    -- GETLOGICAL
 ::method "test_GETLOGICAL_ERR_01"
    -- self~expectSyntax(26.901)
-   self~expectSyntax(34.904)
+   if .ooRexxunit.languageLevel>=6.02 then
+      self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
+   else
+      self~expectSyntax(34.904)
    key="a"
    val="b"
    p=.properties~new~~setProperty(key, val)
@@ -287,7 +306,10 @@ return testUnitList
    .properties~new~"[]="(,2)
 
 ::method "test_[]=_ERR_03"
-   self~expectSyntax(93.903)
+   if .ooRexxunit.languageLevel>=6.02 then
+      self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
+   else
+      self~expectSyntax(93.903)
    .properties~new~"[]="(1)
 
 ::method "test_[]=_ERR_04"
@@ -305,7 +327,10 @@ return testUnitList
    .properties~new~"PUT"(,2)
 
 ::method "test_PUT_ERR_03"
-   self~expectSyntax(93.903)
+   if .ooRexxunit.languageLevel>=6.02 then
+      self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
+   else
+      self~expectSyntax(93.903)
    .properties~new~"PUT"(1)
 
 ::method "test_PUT_ERR_04"
@@ -406,13 +431,13 @@ return testUnitList
 
 ::method "test_get_and_set_properties"
   props=.properties~new
-
   key="rgf"
   val=1
   logVal="true"
-  props~setProperty(key, val)
+
   self~assertEquals("subtest_01a", val,    props~getProperty(key)  )
   self~assertEquals("subtest_02a", val,    props~getWhole(key)     )
+  props~setProperty(key, val)
 
   props~setLogical(key, val)
   self~assertEquals("subtest_03a", logVal, props~getProperty(key)  )

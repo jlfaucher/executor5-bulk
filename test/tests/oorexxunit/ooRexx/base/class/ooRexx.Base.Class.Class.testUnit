@@ -3,10 +3,15 @@
    name:             ooRexx.Base.Class.CircularQueue.testUnit
    author:           Rony G. Flatscher
    date:             2006-11-28
-   version:          1.0.3
+   version:          1.0.5
 
 -- line commented lines are ignored, when building the directory of infos from this header
    changed:          2006-11-28, ---rgf, added new test case methods
+                     2007-05-30, ---rgf, adapted to language level 6.02 as error 97.1 in
+                                         one case ("test_INHERIT_01") got changed to the
+                                         more meaningful 98.942
+   changed:          2007-05-30, ---rgf, adapted to language level 6.02, where .Relation inherits
+                                         from COLLECTION
 
    languageLevel:    6.0
    purpose:          Test the methods of the class CircularQueue.
@@ -405,7 +410,10 @@ any:
    self~assertEquals("subTest_34", tmp_swim , avo~swim     )
 
 ::METHOD "test_INHERIT_01"
-   self~expectSyntax(97.1)
+   if .ooRexxunit.languageLevel>=6.02 then
+      self~expectSyntax(98.942)     -- reflect USE STRICT ARG error message
+   else
+      self~expectSyntax(97.1)
    .object~inherit(.String)
 
 ::METHOD "test_INHERIT_02"
@@ -731,8 +739,13 @@ getBags: procedure         -- return indices in an index bag, and method items i
 
 
 ::method "test_SUPERCLASSES"
+
    self~assertTrue("subTest_01: '.object~superclasses~items=0'", .object~superclasses~items=0)
-   self~assertTrue("subTest_02: '.relation~superclasses~items=1'", .relation~superclasses~items=1)
+
+   if .ooRexxunit.languageLevel>=6.02 then
+      self~assertEquals("subTest_02", 2, .relation~superclasses~items)
+   else
+      self~assertEquals("subTest_02", 1, .relation~superclasses~items)
 
 
 

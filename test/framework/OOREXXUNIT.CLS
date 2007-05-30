@@ -884,6 +884,32 @@ exceptionHandler:
 ::routine IsCollEqual public
   use arg expected, received
 
+  /* Starting with 3.2 (language level 6.02) no more guessing necessary, check for collection
+     type and act accordingly.
+  */
+/* */
+  if .ooRexxUnit.languageLevel>=6.02 then
+  do
+/*
+     if expected~items=7 then
+     do
+        say "e1:" encode(expected) expected~items "e2:" encode(received) received~items
+
+        say "   " "e1c?" expected~isA(.Collection) "e2c?" received~isA(.Collection) -
+            "e1-s-e2?" expected~subset(received) "e2-s-e1?" received~subset(expected) "..."
+     end
+*/
+
+     if expected~isA(.Collection), received~isA(.Collection), -
+        expected~subset(received), received~subset(expected) then
+     do
+        return .true
+     end
+
+     return .false         -- not dealing with collections
+  end
+/* */
+
       -- both collections with "SUPPLIER", if so, sequence should not matter
   if expected~hasmethod("SUBSET") & received~hasmethod("SUBSET") then
   do
@@ -951,7 +977,17 @@ exceptionHandler:
 
   return .false
 
+encode: procedure
+  use arg coll
 
+  bFirst=.true
+  tmpStr="("
+  do o over coll
+     if bFirst then bFirst=.false
+               else tmpStr=tmpStr","
+     tmpStr=tmpStr'"'o~string'"'
+  end
+  return tmpStr")"
 
 
 /* *********************************************************************************** */
