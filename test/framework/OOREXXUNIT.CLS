@@ -6,7 +6,7 @@
    name:             ooRexxUnit.cls
    author:           Rony G. Flatscher, Rick McGuire
    date:             2005-08-07
-   version:          1.0.3
+   version:          1.0.4
    changed1:         2005-08-07, ---rgf, moved assertion routines to a class "Assert", which
                                  serves as a superclass for TestCase: this is the junit-approach
                      2005-08-20, ---rgf, added license, assertCount, corrected some little bugs
@@ -68,6 +68,10 @@
                      2007-05-27, ---rgf, - added environment symbols ".oorexxunit.interpreterName",
                                            ".oorexxunit.languageLevel" and ".oorexxunit.interpreterDate",
                                            retrieved from "PARSE VERSION"
+                     2007-05-30, ---rgf, - added environment symbols ".ooRexxUnit.shellName", "ooRexxUnit.OSName",
+                                           ".ooRexxUnit.line.separator", ".ooRexxUnit.directory.separator",
+                                           ".ooRexxUnit.path.separator"
+
 
 
    language-level:   6.0
@@ -140,6 +144,28 @@ parse version interpreterName languageLevel interpreterDate
 .local~ooRexxUnit.interpreterName=interpreterName
 .local~ooRexxUnit.languageLevel=languageLevel
 .local~ooRexxUnit.interpreterDate=interpreterDate
+
+.local~ooRexxUnit.shellName=ooRexxUnit.getShellName()
+.local~ooRexxUnit.OSName   =ooRexxUnit.getOSName()
+
+      -- define end-of-line chars
+if .ooRexxUnit.languageLevel>=6.02 then
+   .local~ooRexxUnit.line.separator=.endOfLine
+else
+do
+   if .ooRexxUnit.OSName="WINDOWS" then
+      .local~ooRexxUnit.line.separator="0d0a"x  -- CR-LF
+   else
+      .local~ooRexxUnit.line.separator="0a"x    -- LF only
+end
+
+      -- get and memorize the path.separator on this system
+.local~ooRexxUnit.directory.separator=filespec("Path", directory())~left(1)
+if .ooRexxUnit.directory.separtor="\" then      -- DOS-like
+   .local~ooRexxUnit.path.separator=";"
+else                                            -- Unix-like
+   .local~ooRexxUnit.path.separator=":"
+
 
 
 /* *********************************************************************************** */
@@ -866,9 +892,11 @@ exceptionHandler:
 
 
 
-   /* function returning .true, if both collections can be regarded to be the same,
-      .false else
-      logic: - if both values have the method SUBSET, assume unordered collection;
+   /* function returning .true, if both collections can be regarded to be equal (i.e.,
+      each can be regarded to be a subset of the other), .false else
+
+      pre 6.02 logic:
+             - if both values have the method SUBSET, assume unordered collection;
                proceed with test, if both values also possess the method SUPPLIER;
                each value can be of any collection type: returns .true only, if the
                same number of the same index/value pairs is present in both collections,
@@ -887,28 +915,17 @@ exceptionHandler:
   /* Starting with 3.2 (language level 6.02) no more guessing necessary, check for collection
      type and act accordingly.
   */
-/* */
   if .ooRexxUnit.languageLevel>=6.02 then
   do
-/*
-     if expected~items=7 then
-     do
-        say "e1:" encode(expected) expected~items "e2:" encode(received) received~items
-
-        say "   " "e1c?" expected~isA(.Collection) "e2c?" received~isA(.Collection) -
-            "e1-s-e2?" expected~subset(received) "e2-s-e1?" received~subset(expected) "..."
-     end
-*/
-
      if expected~isA(.Collection), received~isA(.Collection), -
         expected~subset(received), received~subset(expected) then
      do
-        return .true
+        return .true -- the one collection is a subset of the other
      end
 
-     return .false         -- not dealing with collections
+     return .false   -- not dealing with collections or collections not a subset of each other
   end
-/* */
+
 
       -- both collections with "SUPPLIER", if so, sequence should not matter
   if expected~hasmethod("SUBSET") & received~hasmethod("SUBSET") then
@@ -976,18 +993,6 @@ exceptionHandler:
   end
 
   return .false
-
-encode: procedure
-  use arg coll
-
-  bFirst=.true
-  tmpStr="("
-  do o over coll
-     if bFirst then bFirst=.false
-               else tmpStr=tmpStr","
-     tmpStr=tmpStr'"'o~string'"'
-  end
-  return tmpStr")"
 
 
 /* *********************************************************************************** */

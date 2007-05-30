@@ -2,8 +2,8 @@
 /*
    name:             ooRexx.Base.Class.Array.testUnit
    author:           Rony G. Flatscher
-   date:             2007-05-27
-   version:          1.0.0
+   date:             2007-05-29/30
+   version:          1.0.1
 
 -- line commented lines are ignored, when building the directory of infos from this header
    changed:          ---
@@ -23,7 +23,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2006 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -651,6 +651,38 @@ makeColl: procedure
 
 /* ================= additional, ARRAY specific methods =============== */
 
+::method "test_NEW"
+  a=.array~new
+  self~assertEquals("subtest01a", 0, a~dimension)
+  self~assertEquals("subtest01b", 0, a~size)
+  self~assertEquals("subtest01c", 0, a~items)
+
+  a=.array~new(3)
+  self~assertEquals("subtest02a", 1, a~dimension)
+  self~assertEquals("subtest02b", 3, a~dimension(1))
+  self~assertEquals("subtest02c", 3, a~size)
+  self~assertEquals("subtest02d", 0, a~items)
+
+  a=.array~new(3,2)
+  self~assertEquals("subtest03a", 2, a~dimension)
+  self~assertEquals("subtest03b", 3, a~dimension(1))
+  self~assertEquals("subtest03b", 2, a~dimension(2))
+  self~assertEquals("subtest03c", 6, a~size)
+  self~assertEquals("subtest03d", 0, a~items)
+
+
+::method "test_OF"
+
+  a=.array~of
+  self~assertEquals("subtest01a", 1, a~dimension)
+  self~assertEquals("subtest01b", 0, a~size)
+  self~assertEquals("subtest01c", 0, a~items)
+
+  a=.array~of(1,2,3)
+  self~assertEquals("subtest02a", 1, a~dimension)
+  self~assertEquals("subtest02b", 3, a~dimension(1))
+  self~assertEquals("subtest02c", 3, a~size)
+  self~assertEquals("subtest02d", 3, a~items)
 
 
 
@@ -860,6 +892,43 @@ makeColl: procedure
 
 
 
+::method "test_section"
+
+  a1=.array~new
+  a2=a1~section(2)
+  self~assertTrue("subtest_01", a1~items=a2~items)
+
+  a1=.array~of(1)
+  a2=a1~section(2)
+  self~assertTrue("subtest_02", a2~items=0)
+  a2=a1~section(1)
+  self~assertTrue("subtest_03a", a2~items=1)
+  a2=a1~section(1,1)
+  self~assertTrue("subtest_03b", a2~items=1)
+  a2=a1~section(1,5)
+  self~assertTrue("subtest_03c", a2~items=1)
+
+  a1=.array~of(1,2,3,4,5)
+  a2=a1~section(2)
+  self~assertTrue("subtest_04a", a2~items=4)
+  self~assertTrue("subtest_04b", testSeq(a1, a2, 2))
+  a2=a1~section(2,2)
+  self~assertTrue("subtest_05a", a2~items=2)
+  self~assertTrue("subtest_05b", testSeq(a1, a2, 2))
+
+  return
+
+
+testSeq: procedure
+  use arg a1, a2, start
+
+  do i=1 to a2~items
+     if a1[i+start-1]<>a2[i] then return .false
+  end
+  return .true
+
+
+
 ::method "test_first_last_next_previous"
 
   a=.array~new       -- no dimension
@@ -883,6 +952,232 @@ makeColl: procedure
   self~assertEquals("subtest_03e", 1,  a~previous(15))
   self~assertEquals("subtest_03f", 1,  a~previous(2))
 
+
+::method "test_makeString"
+
+  nl=.ooRexxUnit.line.separator     -- get line separtor
+  a=.array~new
+  self~assertEquals("subtest_01a", "", a~makestring)
+  self~assertEquals("subtest_01b", "", a~makestring("C"))
+  self~assertEquals("subtest_01c", "", a~makestring("L"))
+
+
+  a=.array~of("1v", "2v", "3v")
+  str1="1v2v3v"
+  str2=str1~insert(nl,4)~insert(nl,2)
+
+  self~assertEquals("subtest_02a", str2, a~makestring)
+  self~assertEquals("subtest_02b", str1, a~makestring("C"))
+  self~assertEquals("subtest_02c", str2, a~makestring("L"))
+
+
+::method "test_toString"
+
+  nl=.ooRexxUnit.line.separator     -- get line separtor
+  a=.array~new
+  self~assertEquals("subtest_01a", "", a~toString)
+  self~assertEquals("subtest_01b", "", a~toString("C"))
+  self~assertEquals("subtest_01c", "", a~toString("L"))
+
+
+  a=.array~of("1v", "2v", "3v")
+  str1="1v2v3v"
+  str2=str1~insert(nl,4)~insert(nl,2)
+
+  self~assertEquals("subtest_02a", str2, a~toString)
+  self~assertEquals("subtest_02b", str1, a~toString("C"))
+  self~assertEquals("subtest_02c", str2, a~toString("L"))
+
+
+::method "test_sort"
+
+  a=.array~of
+  a1=a~sort
+  self~assertTrue("subtest_01", a1~items=a~items)
+
+  a=.array~of(1)
+  a1=a~sort
+  self~assertTrue("subtest_02", testSeq(a, a1))
+
+  a=.array~of(1,2)
+  a1=a~sort
+  self~assertTrue("subtest_03", testSeq(a, a1))
+
+  a=.array~of(1,2,3)
+  a1=a~sort
+  self~assertTrue("subtest_04", testSeq(a, a1))
+
+  a=.array~of(2,1,3)
+  a1=a~sort
+  a2=.array~of(1,2,3)
+  self~assertTrue("subtest_04", testSeq(a1, a2))
+
+  a=.array~of(2,1,3,2)
+  a1=a~sort
+  a2=.array~of(1,2,2,3)
+  self~assertTrue("subtest_04", testSeq(a1, a2))
+
+  a=.array~of(2,1)
+  a1=a~sort
+  a2=.array~of(1,2)
+  self~assertTrue("subtest_04", testSeq(a1, a2))
+
+  return
+
+
+testSeq: procedure
+  use arg a1, a2
+
+  do i=1 to a1~items
+     if a1[i]<>a2[i] then return .false
+  end
+  return a1~items=a2~items
+
+
+::method "test_stableSort"
+
+  a=.array~of
+  a1=a~stableSort
+  self~assertTrue("subtest_01", a1~items=a~items)
+
+  a=.array~of(1)
+  a1=a~stableSort
+  self~assertTrue("subtest_02", testSeq(a, a1))
+
+  a=.array~of(1,2)
+  a1=a~stableSort
+  self~assertTrue("subtest_03", testSeq(a, a1))
+
+  a=.array~of(1,2,3)
+  a1=a~stableSort
+  self~assertTrue("subtest_04", testSeq(a, a1))
+
+  a=.array~of(2,1,3)
+  a1=a~stableSort
+  a2=.array~of(1,2,3)
+  self~assertTrue("subtest_04", testSeq(a1, a2))
+
+  a=.array~of(2,1,3,2)
+  a1=a~stableSort
+  a2=.array~of(1,2,2,3)
+  self~assertTrue("subtest_04", testSeq(a1, a2))
+
+  a=.array~of(2,1)
+  a1=a~stableSort
+  a2=.array~of(1,2)
+  self~assertTrue("subtest_04", testSeq(a1, a2))
+
+  return
+
+
+testSeq: procedure
+  use arg a1, a2
+
+  do i=1 to a1~items
+     if a1[i]<>a2[i] then return .false
+  end
+  return a1~items=a2~items
+
+
+
+::method "test_sort_with"
+
+  c=.DescendingComparator~new    -- sort descendingly
+  a=.array~of
+  a1=a~sortWith(c)
+  self~assertTrue("subtest_01", a1~items=a~items)
+
+  a=.array~of(1)
+  a1=a~sortWith(c)
+  self~assertTrue("subtest_02", testSeq(a, a1))
+
+  a=.array~of(1,2)
+  a1=a~sortWith(c)
+  a2=.array~of(2,1)
+  self~assertTrue("subtest_03", testSeq(a1, a2))
+
+  a=.array~of(1,2,3)
+  a1=a~sortWith(c)
+  a2=.array~of(3,2,1)
+  self~assertTrue("subtest_04", testSeq(a1, a2))
+
+  a=.array~of(2,1,3)
+  a1=a~sortWith(c)
+  a2=.array~of(3,2,1)
+  self~assertTrue("subtest_04", testSeq(a1, a2))
+
+
+  a=.array~of(2,1,3,2)
+  a1=a~sortWith(c)
+  a2=.array~of(3,2,2,1)
+  self~assertTrue("subtest_04", testSeq(a1, a2))
+
+  a=.array~of(2,1)
+  a1=a~sortWith(c)
+  a2=.array~of(2,1)
+  self~assertTrue("subtest_04", testSeq(a1, a2))
+
+  return
+
+
+testSeq: procedure
+  use arg a1, a2
+
+  do i=1 to a1~items
+     if a1[i]<>a2[i] then return .false
+  end
+  return a1~items=a2~items
+
+
+
+
+::method "test_stableSort_with"
+
+  c=.DescendingComparator~new    -- sort descendingly
+  a=.array~of
+  a1=a~stableSortWith(c)
+  self~assertTrue("subtest_01", a1~items=a~items)
+
+  a=.array~of(1)
+  a1=a~stableSortWith(c)
+  self~assertTrue("subtest_02", testSeq(a, a1))
+
+  a=.array~of(1,2)
+  a1=a~stableSortWith(c)
+  a2=.array~of(2,1)
+  self~assertTrue("subtest_03", testSeq(a1, a2))
+
+  a=.array~of(1,2,3)
+  a1=a~stableSortWith(c)
+  a2=.array~of(3,2,1)
+  self~assertTrue("subtest_04", testSeq(a1, a2))
+
+  a=.array~of(2,1,3)
+  a1=a~stableSortWith(c)
+  a2=.array~of(3,2,1)
+  self~assertTrue("subtest_04", testSeq(a1, a2))
+
+
+  a=.array~of(2,1,3,2)
+  a1=a~stableSortWith(c)
+  a2=.array~of(3,2,2,1)
+  self~assertTrue("subtest_04", testSeq(a1, a2))
+
+  a=.array~of(2,1)
+  a1=a~stableSortWith(c)
+  a2=.array~of(2,1)
+  self~assertTrue("subtest_04", testSeq(a1, a2))
+
+  return
+
+
+testSeq: procedure
+  use arg a1, a2
+
+  do i=1 to a1~items
+     if a1[i]<>a2[i] then return .false
+  end
+  return a1~items=a2~items
 
 
 
@@ -912,16 +1207,21 @@ makeColl: procedure
   use arg coll, title
   if arg(2, "o") then title=coll~class~id "object ("coll~items" entries)"
                  else title=coll~class~id":" title
-  .output~charout(">>>" title": [")
-  bFirst=.true
-  do o over coll
-     if bFirst then
-        bFirst=.false
-     else
-        .output~charout(",")
-
-     .output~charout(o~string)
-  end
-  say "] <<<"
+  .output~charout(">>>" title": ")
+  .output~charout(encode(coll))
+  say " <<<"
   say
+
+
+::routine encode
+  use arg coll
+
+  bFirst=.true
+  tmpStr="("
+  do o over coll
+     if bFirst then bFirst=.false
+               else tmpStr=tmpStr","
+     tmpStr=tmpStr'"'o~string'"'
+  end
+  return tmpStr")"
 
