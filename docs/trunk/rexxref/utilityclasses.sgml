@@ -298,13 +298,13 @@ class might result in weak performance, large memory allocation, or both.)
 
 <para><emphasis role="bold">Methods the MutableBuffer class defines:</emphasis></para>
 <simplelist>
-<member>Init</member>
 <member>Append</member>
 <member>Delete</member>
 <member>GetBufferSize</member>
 <member>Insert</member>
 <member>Lastpos</member>
 <member>Length</member>
+<member>New</member>
 <member>Overlay</member>
 <member>Pos</member>
 <member>SetBufferSize</member>
@@ -332,18 +332,18 @@ class might result in weak performance, large memory allocation, or both.)
 <member>UNSETMETHOD</member>
 </simplelist>
 
-<section><title>INIT</title>
-<indexterm><primary>INIT method</primary>
+<section><title>NEW</title>
+<indexterm><primary>NEW method</primary>
 <secondary>of MutableBuffer class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>INIT method</secondary>
+<secondary>NEW method</secondary>
 <tertiary>of MutableBuffer class</tertiary></indexterm>
 
 <programlisting>
 <![CDATA[
-                    +-----,-256------+
->>-INIT(-+--------+-+----------------+-)-------------------><
-         +-string-+ +-,-buffer size--+
+                   +-----,-256------+
+>>-NEW(-+--------+-+----------------+-)--------------------><
+        +-string-+ +-,-buffer size--+
 ]]>
 </programlisting>
 
