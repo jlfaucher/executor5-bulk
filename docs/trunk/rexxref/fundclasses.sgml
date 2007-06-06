@@ -74,7 +74,7 @@ of the Object class are, therefore, available on all objects.</para>
 <para>The Object class also has available class methods that its
 metaclass, the Class class, defines.</para></note>
 
-<section id="obnew"><title>NEW  (Class Method)</title>
+<section id="obnew"><title>NEW (Class Method)</title>
 <indexterm><primary>NEW method</primary>
 <secondary>of Object class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -1435,7 +1435,7 @@ a subclass of the Object class.</para>
 <member>COMPLETED</member>
 <member>ERRORCONDITION</member>
 <member>HASERROR</member>
-<member>INIT (Overrides Object class method)</member>
+<member>NEW (Overrides Object class method)</member>
 <member>NOTIFY</member>
 <member>RESULT</member>
 <member>SEND</member>
@@ -1516,20 +1516,20 @@ message was terminated with an error condition. Returns
 completed without error.</para>
 </section>
 
-<section id="aginita"><title>INIT</title>
-<indexterm><primary>INIT method</primary>
+<section id="aginita"><title>NEW</title>
+<indexterm><primary>NEW method</primary>
 <secondary>of Message class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>INIT method</secondary>
+<secondary>NEW method</secondary>
 <tertiary>of Message class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-INIT(target,messagename-+-------------------------------+-)-><
-                           |             +---------------+ |
-                           |             V               | |
-                           +-,Individual---+-----------+-+-+
-                           |               +-,argument-+   |
-                           +-,Array,argument---------------+
+>>-NEW(target,messagename-+-------------------------------+-)--><
+                          |             +---------------+ |
+                          |             V               | |
+                          +-,Individual---+-----------+-+-+
+                          |               +-,argument-+   |
+                          +-,Array,argument---------------+
 ]]>
 </programlisting>
 
@@ -1780,6 +1780,7 @@ Relation, Set, Table, and Stream classes</para></listitem>
 <member>NEW (Class method.&nbsp;&nbsp;Overrides Object class method.)</member>
 <member>AVAILABLE</member>
 <member>INDEX</member>
+<member>INIT</member>
 <member>ITEM</member>
 <member>NEXT</member>
 </simplelist>
@@ -1863,6 +1864,21 @@ supplier has already enumerated the entire collection.</para>
 <para>Returns the index of the current
 item in the collection. If no item is available, that is, if AVAILABLE would
 return false, the language processor raises an error.</para>
+</section>
+
+<section id="suinit"><title>INIT</title>
+<indexterm><primary>INIT method</primary>
+<secondary>of Supplier class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>INIT method</secondary>
+<tertiary>of Supplier class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-INIT--------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Initializes the object instance.</para>
 </section>
 
 <section id="supitm"><title>ITEM</title>

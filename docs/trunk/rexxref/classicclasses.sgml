@@ -67,6 +67,7 @@ descriptions.</para>
 <member>Logical methods:&nbsp;&nbsp;&amp;, |, &amp;&amp;, \</member>
 <member>Concatenation methods:&nbsp;&nbsp;&quot;&quot; (abuttal),
 &quot;&nbsp;&quot; (blank), ||</member>
+<member>NEW (Overrides Object class method)</member>
 <member>ABBREV</member>
 <member>ABS</member>
 <member>BITAND</member>
@@ -2975,7 +2976,6 @@ the methods =, ==, \=, \==, &lt;>, and >&lt; using the DEFINE method.</para>
 <member>COPY</member>
 <member>DEFAULTNAME</member>
 <member>HASMETHOD</member>
-<member>INIT</member>
 <member>OBJECTNAME</member>
 <member>OBJECTNAME=</member>
 <member>RUN</member>
@@ -3138,7 +3138,6 @@ discussion of Rexx input and output.)</para>
 <member>COMMAND</member>
 <member>DESCRIPTION</member>
 <member>FLUSH</member>
-<member>INIT (Overrides Object class method)</member>
 <member>LINEIN</member>
 <member>LINEOUT</member>
 <member>LINES</member>
@@ -3175,6 +3174,24 @@ discussion of Rexx input and output.)</para>
 <note><title>Note</title>
 <para>The Stream class also has available class methods that its
 metaclass, the Class class, defines.</para></note>
+
+<section id="strmnew"><title>NEW</title>
+<indexterm><primary>NEW method</primary>
+<secondary>of Stream class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>NEW method</secondary>
+<tertiary>of Stream class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-NEW(name)---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Initializes a stream object for a stream
+named <emphasis role="italic">name</emphasis>, but does not open the stream.
+See <link linkend="creo">Initialization</link> for
+more information. Returns the new stream object</para>
+</section>
 
 <section id="stmari"><title>ARRAYIN</title>
 <indexterm><primary>ARRAYIN method</primary>
@@ -3755,24 +3772,6 @@ available, additional information about ERROR or NOTREADY states. (The
 <para>Returns <computeroutput>READY:</computeroutput>. It forces any data
 currently buffered for writing
 to be written to the stream receiving the message.</para>
-</section>
-
-<section id="intsmt"><title>INIT</title>
-<indexterm><primary>INIT method</primary>
-<secondary>of Stream class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>INIT method</secondary>
-<tertiary>of Stream class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-INIT(name)--------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Initializes a stream object for a stream
-named <emphasis role="italic">name</emphasis>, but does not open the stream.
-See <link linkend="creo">Initialization</link> for
-more information.</para>
 </section>
 
 <section id="linein1"><title>LINEIN</title>
