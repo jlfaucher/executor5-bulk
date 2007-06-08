@@ -3322,10 +3322,10 @@ in error is always traced.</para>
 
 <programlisting>
 <![CDATA[
-             +-,--------+
-             V          |
->>-USE--ARG----+------+-+--------------------------------------><
-               +-name-+
+                            +-,--------+
+                            V          |
+>>-USE--+-----------+--ARG----+------+-+-----------------------><
+        +-- STRICT--+         +-name-+
 ]]>
 </programlisting>
 
@@ -3339,6 +3339,15 @@ the program, routine, function, or method call. If there is no corresponding
 argument, <emphasis role="italic">name</emphasis> is dropped.</para>
 <para>A USE ARG instruction can be processed repeatedly and it always accesses
 the same current argument data.</para>
+<para>The STRICT options imposes additional constraints on argument processing.
+The number of arguments must match the number of
+<emphasis role="italic">name</emphasis>s, other wise an error is raised.</para>
+<para>The <emphasis role="italic">name</emphasis>s may be an valid symbol which
+can appear on the left side of an assignment statement (See
+<link linkend="sssinmt">Assignments and Symbols</link>). The
+<emphasis role="italic">name</emphasis> option can also be a valid simple
+assignment statement which indicates a default value if the argument is not
+supplied by the method invocation.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <indexterm><primary>USE instruction</primary>
 <secondary>example</secondary></indexterm>
@@ -3367,6 +3376,15 @@ Change_First: Procedure
   substem.1 = "NewValue"
   subarray[1] = "NewItem"
   Return
+</programlisting>
+<programlisting>
+/* USE STRICT Example                */
+/* FRED("Ogof X",1,) calls function  */
+Fred:strict use arg string, num1, num2=4
+
+/* Now: STRING contains "Ogof X"     */
+/*      NUM1 contains "1"            */
+/*      NUM2 contains "4"            */
 </programlisting>
 <para>You can retrieve or check the arguments by using the ARG built-in function
 (see <link linkend="argg">ARG (Argument)</link>).
