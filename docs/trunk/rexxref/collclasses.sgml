@@ -838,23 +838,23 @@ musketeers=.list~of(Porthos,Athos,Aramis) /* Creates list MUSKETEERS        */
                                           /*                Athos           */
                                           /*                Aramis          */
 index=musketeers~first                    /* Gives index of first item      */
-musketeers~insert("D&apos;Artagnan",index)     /* Adds D&apos;Artagnan after Porthos  */
+musketeers~insert("D&apos;Artagnan",index) /* Adds D&apos;Artagnan after Porthos  */
                                           /* List is now: Porthos           */
-                                          /*              D&apos;Artagnan        */
+                                          /*              D&apos;Artagnan   */
                                           /*              Athos             */
                                           /*              Aramis            */
 /* Alternately, you could use */
-musketeers~insert("D&apos;Artagnan",.nil)      /* Adds D&apos;Artagnan before Porthos */
-                                          /* List is now:  D&apos;Artagnan       */
+musketeers~insert("D&apos;Artagnan",.nil) /* Adds D&apos;Artagnan before Porthos */
+                                          /* List is now:  D&apos;Artagnan  */
                                           /*               Porthos          */
                                           /*               Athos            */
                                           /*               Aramis           */
 /* Alternately, you could use */
-musketeers~insert("D&apos;Artagnan")           /* Adds D&apos;Artagnan after Aramis   */
+musketeers~insert("D&apos;Artagnan")      /* Adds D&apos;Artagnan after Aramis   */
                                           /* List is now:  Porthos          */
                                           /*               Athos            */
                                           /*               Aramis           */
-                                          /*               D&apos;Artagnan       */
+                                          /*               D&apos;Artagnan  */
 </programlisting>
 </section>
 
@@ -1059,6 +1059,7 @@ head of the queue.</para>
 <member>[]=</member>
 <member>AT</member>
 <member>HASINDEX</member>
+<member>INSERT</member>
 <member>ITEMS</member>
 <member>MAKEARRAY</member>
 <member>PEEK</member>
@@ -1172,6 +1173,64 @@ queuing order, with the head of the queue as index 1.</para>
 <para>Returns <computeroutput>1</computeroutput> (true) if the collection
 contains any item associated with index <emphasis role="italic">index</emphasis>,
 or <computeroutput>0</computeroutput> (false).</para>
+</section>
+
+<section id="liinse"><title>INSERT</title>
+<indexterm><primary>INSERT method</primary>
+<secondary>of Queue class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>INSERT method</secondary>
+<tertiary>of Queue class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-INSERT(item-+--------+-)------------------------------------><
+               +-,index-+
+]]>
+</programlisting>
+
+<para>Returns a queue-supplied index for a new item
+<emphasis role="italic">item</emphasis>, which is added to the queue. The new
+item follows the existing item with index
+<emphasis role="italic">index</emphasis> in the queue ordering.
+If <emphasis role="italic">index</emphasis> is the NIL object, the new item
+becomes the first item in the queue. If you omit
+<emphasis role="italic">index</emphasis>, the new item becomes the last item in
+the queue. </para>
+<para>Inserting an item in the queue at position
+<emphasis role="italic">index</emphasis> will cause the items in the queue after
+position <emphasis role="italic">index</emphasis> to have their indexes modified
+by the queue object.</para>
+<note><para>The term <emphasis role="italic">index</emphasis> as used above does
+not imply that the queue order is maitained via an array-like index. The indexes
+refered to above are internal handles maintained by the interpreter and are not
+available to the user.</para></note>
+<indexterm><primary>examples</primary>
+<secondary>INSERT method</secondary>
+<tertiary>of Queue class</tertiary></indexterm>
+<programlisting>
+musketeers=.queue~of(Porthos,Athos,Aramis) /* Creates queue MUSKETEERS       */
+                                           /* consisting of: Porthos         */
+                                           /*                Athos           */
+                                           /*                Aramis          */
+index=musketeers~first                     /* Gives index of first item      */
+musketeers~insert("D&apos;Artagnan",index) /* Adds D&apos;Artagnan after Porthos  */
+                                           /* List is now: Porthos           */
+                                           /*              D&apos;Artagnan   */
+                                           /*              Athos             */
+                                           /*              Aramis            */
+/* Alternately, you could use */
+musketeers~insert("D&apos;Artagnan",.nil)  /* Adds D&apos;Artagnan before Porthos */
+                                           /* List is now:  D&apos;Artagnan  */
+                                           /*               Porthos          */
+                                           /*               Athos            */
+                                           /*               Aramis           */
+/* Alternately, you could use */
+musketeers~insert("D&apos;Artagnan")       /* Adds D&apos;Artagnan after Aramis   */
+                                           /* List is now:  Porthos          */
+                                           /*               Athos            */
+                                           /*               Aramis           */
+                                           /*               D&apos;Artagnan  */
+</programlisting>
 </section>
 
 <section id="quitms"><title>ITEMS</title>
