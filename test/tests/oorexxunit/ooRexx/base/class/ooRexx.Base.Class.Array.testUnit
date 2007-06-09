@@ -126,7 +126,7 @@ return testUnitList
 ::class "ooRexx.Base.Class.Array.TestUnit" subclass TestCase public
 
 ::method init
-  expose collDir clz bUserDefinedIndex bSingleItem
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
   forward class (super) continue    -- let superclass initialize
 
   clz=.Array                        -- collection class object to use
@@ -135,28 +135,32 @@ return testUnitList
 
   collDir=.directory~new            -- define directory containing predefined collections
   collDir~emptyColl=clz~new
-  collDir~coll_1   =clz~of("1v", "2v", "2v", "2v")
-  collDir~coll_2   =clz~of(            "2v", "2v", "3v")
 
-  collDir~allIndexes1=.array~of(1, 2, 3, 4)
-  collDir~allIndexes2=.array~of(1, 2, 3)
+  o1=.object~new
+  o2=.object~new
 
-  collDir~allItems1=.array~of("1v", "2v", "2v", "2v")
-  collDir~allItems2=.array~of(            "2v", "2v", "3v")
+  collDir~coll_1   =clz~of("1v", "2v", "2v", "2v", o1, o1)
+  collDir~coll_2   =clz~of(            "2v", "2v", o1, o1, o2, o2, "3v")
+
+  collDir~allIndexes1=.array~of(1, 2, 3, 4, 5, 6)
+  collDir~allIndexes2=.array~of(1, 2, 3, 4, 5, 6, 7)
+
+  collDir~allItems1=.array~of("1v", "2v", "2v", "2v", o1, o1)
+  collDir~allItems2=.array~of(            "2v", "2v", o1, o1, o2, o2, "3v")
 
 
    /* determine resulting collection   */
   collDir~difference1 =clz~of("1v","2v")  /* coll_1~difference(coll_2) */
-  collDir~difference2 =clz~of("3v")       /* coll_2~difference(coll_1) */
+  collDir~difference2 =clz~of(o2, o2, "3v")       /* coll_2~difference(coll_1) */
 
 
-  collDir~interSectionColl=clz~of("2v", "2v")
+  collDir~interSectionColl=clz~of("2v", "2v", o1, o1)
 
-  collDir~unionColl1      =clz~of("1v", "2v", "2v", "2v", "2v", "2v", "3v")
-  collDir~unionColl2      =clz~of("2v", "2v", "3v", "1v", "2v", "2v", "2v")
+  collDir~unionColl1      =clz~of("1v", "2v", "2v", "2v", "2v", "2v", o1, o1, o1, o1, o2, o2, "3v")
+  collDir~unionColl2      =clz~of("2v", "2v", "3v", "1v", "2v", "2v", "2v", o1, o1, o2, o2, o1, o1)
 
-  collDir~xorColl1        =clz~of("1v", "2v", "3v")
-  collDir~xorColl2        =clz~of("3v", "1v", "2v")
+  collDir~xorColl1        =clz~of("1v", "2v", o2, o2, "3v")
+  collDir~xorColl2        =clz~of(o2, o2, "3v", "1v", "2v")
 
 
 
@@ -269,7 +273,7 @@ return testUnitList
   coll=collDir~coll_1      -- get the prepared Array
   self~assertEquals("subtest1", "1v", coll~at(1))
   self~assertEquals("subtest2", "2v", coll~at(2))
-  self~assertNull(  "subtest3",       coll~at(5))
+  self~assertNull(  "subtest3",       coll~at(10))
 
 
 ::method "test_[]"
@@ -278,7 +282,7 @@ return testUnitList
   coll=collDir~coll_1      -- get the prepared Array
   self~assertEquals("subtest1", "1v", coll~"[]"("1"))
   self~assertEquals("subtest2", "2v", coll~"[]"("2"))
-  self~assertNull(  "subtest3",      coll~"[]"("5"))
+  self~assertNull(  "subtest3",      coll~"[]"("10"))
 
 
 
@@ -327,7 +331,7 @@ return testUnitList
   coll=collDir~coll_1      -- get the prepared Array
   self~assertTrue( "subtest1", coll~hasIndex("1"))
   self~assertTrue( "subtest2", coll~hasIndex("2"))
-  self~assertFalse("subtest3", coll~hasIndex("5"))
+  self~assertFalse("subtest3", coll~hasIndex("10"))
 
 
 
@@ -402,8 +406,8 @@ return testUnitList
   expose collDir clz bUserDefinedIndex bSingleItem
 
   self~assertEquals("subtest1", 0, collDir~emptyColl~items)
-  self~assertEquals("subtest2", 4, collDir~coll_1~items)
-  self~assertEquals("subtest3", 3, collDir~coll_2~items)
+  self~assertEquals("subtest2", 6, collDir~coll_1~items)
+  self~assertEquals("subtest3", 7, collDir~coll_2~items)
 
 
 
@@ -497,7 +501,7 @@ return testUnitList
 
 
 ::method "test_remove"
-  expose collDir clz bUserDefinedIndex bSingleItem
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
 
   ce=collDir~emptyColl~copy
   c1=collDir~coll_1~copy
@@ -518,12 +522,18 @@ return testUnitList
   self~assertEquals("subtest09", "2v", c1~remove("4"))
   self~assertNull(  "subtest10", c1~remove("4"))
 
-  self~assertEquals("subtest11", 0, c1~items)
+  self~assertEquals("subtest11", o1, c1~remove("5"))
+  self~assertNull(  "subtest12", c1~remove("5"))
+
+  self~assertEquals("subtest13", o1, c1~remove("6"))
+  self~assertNull(  "subtest14", c1~remove("6"))
+
+  self~assertEquals("subtest15", 0, c1~items)
 
 
 
 ::method "test_removeItem"
-  expose collDir clz bUserDefinedIndex bSingleItem
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
 
   if .ooRexxUnit.languageLevel<6.02 then
   do
@@ -546,6 +556,10 @@ return testUnitList
   self~assertEquals("subtest06", "2v", c1~removeItem("2v"))
   self~assertEquals("subtest07", "2v", c1~removeItem("2v"))
   self~assertEquals("subtest08", "2v", c1~removeItem("2v"))
+
+  self~assertEquals("subtest09", o1, c1~removeItem(o1))
+  self~assertEquals("subtest10", o1, c1~removeItem(o1))
+
   self~assertNull(  "subtest09", c1~removeItem("2"))
 
   self~assertEquals("subtest10", 0, c1~items)
@@ -640,6 +654,21 @@ makeColl: procedure
 
   self~assertEquals("subtest2", c1, c1~xor(ce))
   self~assertEquals("subtest3", c2, c2~xor(ce))
+
+call rgf_util2
+s1=collDir~xorColl1~supplier
+call dump2 s1, "collDir~xorColl1"
+
+s2= c1~xor(c2)~supplier
+call dump2 s2, "c1~xor(c2)"
+
+call rgf_util2
+s1=collDir~xorColl2~supplier
+call dump2 s1, "collDir~xorColl2"
+
+s2= c2~xor(c1)~supplier
+call dump2 s2, "c2~xor(c1)"
+
 
   self~assertEquals("subtest4", collDir~xorColl1, c1~xor(c2))
   self~assertEquals("subtest5", collDir~xorColl2, c2~xor(c1))

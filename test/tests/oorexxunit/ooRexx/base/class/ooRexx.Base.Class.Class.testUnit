@@ -12,6 +12,7 @@
                                          more meaningful 98.942
    changed:          2007-05-30, ---rgf, adapted to language level 6.02, where .Relation inherits
                                          from COLLECTION
+                     2007-05-31, ---rgf, added "test_MULTIPLE_INHERITANCE_WITH_MULTIPLE_METACLASSES"
 
    languageLevel:    6.0
    purpose:          Test the methods of the class CircularQueue.
@@ -628,6 +629,10 @@ getBags: procedure         -- return indices in an index bag, and method items i
    self~assertEquals("subTest_02", 5, cl~counter)  -- test whether five instances have been created
 
 
+::method "test_MULTIPLE_INHERITANCE_WITH_MULTIPLE_METACLASSES"
+
+   self~assertEquals("subTest_01", "'123.'", .class123~info)
+
 
 ::method "test_NEW"
 
@@ -728,6 +733,7 @@ getBags: procedure         -- return indices in an index bag, and method items i
    end
    self~assertSame("subTest_01", a1, a2)  -- test whether singleton instances
    self~assertEquals("subTest_02", 5, cl~counter)  -- test whether five instances have been created
+
 
 
 ::method "test_SUBCLASSES"
@@ -995,4 +1001,40 @@ getBags: procedure         -- return indices in an index bag, and method items i
   parse arg str
   q='"'     -- define quote
   return '"' || str~changestr('"', '"'||'"') || '"'
+
+
+
+/* ************************************************************************* */
+/* do not change: used to test sequence of method resolution   */
+/* ------------------------------------------------------ */
+::class class123 metaclass mc123
+
+/* ------------------------------------------------------ */
+::class mc123 mixinclass mc1 inherit mc2 mc3
+
+
+/* ------------------------------------------------------ */
+::class mcbase subclass Class       -- base (meta) class
+
+::method info
+  parse arg string
+  return "'"||(string".")~strip||"'"          -- append dot
+
+/* ------------------------------------------------------ */
+::class mc1 mixinclass mcbase       -- an inheritable (meta) class
+::method info
+  parse arg string
+  forward class (super) array (string"1") -- append '1'
+
+/* ------------------------------------------------------ */
+::class mc2 mixinclass mcbase       -- an inheritable (meta) class
+::method info
+  parse arg string
+  forward class (super) array (string"2") -- append '2'
+
+/* ------------------------------------------------------ */
+::class mc3 mixinclass mcbase       -- an inheritable (meta) class
+::method info
+  parse arg string
+  forward class (super) array (string"3") -- append '3'
 
