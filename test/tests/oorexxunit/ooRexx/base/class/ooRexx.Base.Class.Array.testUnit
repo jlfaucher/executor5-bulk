@@ -3,10 +3,10 @@
    name:             ooRexx.Base.Class.Array.testUnit
    author:           Rony G. Flatscher
    date:             2007-05-29/30
-   version:          1.0.1
+   version:          1.0.2
 
 -- line commented lines are ignored, when building the directory of infos from this header
-   changed:          ---
+   changed:          2007-06-09, ---rgf, added some non-string objects for testing
 
    languageLevel:    6.00, 6.02
    purpose:          Test the methods of the class Array.
@@ -654,21 +654,6 @@ makeColl: procedure
 
   self~assertEquals("subtest2", c1, c1~xor(ce))
   self~assertEquals("subtest3", c2, c2~xor(ce))
-
-call rgf_util2
-s1=collDir~xorColl1~supplier
-call dump2 s1, "collDir~xorColl1"
-
-s2= c1~xor(c2)~supplier
-call dump2 s2, "c1~xor(c2)"
-
-call rgf_util2
-s1=collDir~xorColl2~supplier
-call dump2 s1, "collDir~xorColl2"
-
-s2= c2~xor(c1)~supplier
-call dump2 s2, "c2~xor(c1)"
-
 
   self~assertEquals("subtest4", collDir~xorColl1, c1~xor(c2))
   self~assertEquals("subtest5", collDir~xorColl2, c2~xor(c1))
