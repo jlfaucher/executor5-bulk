@@ -3,10 +3,10 @@
    name:             ooRexx.Base.Class.Bag.testUnit
    author:           Rony G. Flatscher
    date:             2007-05-27
-   version:          1.0.0
+   version:          1.0.1
 
 -- line commented lines are ignored, when building the directory of infos from this header
-   changed:          ---
+   changed:          2007-06-09, ---rgf, added some non-string objects to the collection for testing
 
    languageLevel:    6.00, 6.02
    purpose:          Test the methods of the class Bag.
@@ -126,7 +126,7 @@ return testUnitList
 ::class "ooRexx.Base.Class.Bag.TestUnit" subclass TestCase public
 
 ::method init
-  expose collDir clz bUserDefinedIndex bSingleItem
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
   forward class (super) continue    -- let superclass initialize
 
   clz=.Bag                        -- collection class object to use
@@ -135,25 +135,29 @@ return testUnitList
 
   collDir=.directory~new            -- define directory containing predefined collections
   collDir~emptyColl=clz~new
-  collDir~coll_1   =clz~new~~put("1","1")~~put("2","2")~~put("2","2")
-  collDir~coll_2   =clz~new              ~~put("2","2")~~put("2","2")~~put("2","2")~~put("3","3")
 
-  collDir~allIndexes1=.array~of("1", "2", "2")
-  collDir~allIndexes2=.array~of(     "2", "2", "2", "3")
+  o1=.object~new
+  o2=.object~new
 
-  collDir~allItems1=.array~of("1", "2", "2")
-  collDir~allItems2=.array~of(     "2", "2", "2", "3")
+  collDir~coll_1   =clz~new~~put("1","1")~~put("2","2")~~put("2","2")              ~~put(o1,o1)~~put(o1)
+  collDir~coll_2   =clz~new              ~~put("2","2")~~put("2","2")~~put("2","2")~~put(o1,o1)~~put(o1)~~put(o2,o2)~~put(o2) ~~put("3","3")
+
+  collDir~allIndexes1=.array~of("1", "2", "2",      o1, o1)
+  collDir~allIndexes2=.array~of(     "2", "2", "2", o1, o1, o2, o2, "3")
+
+  collDir~allItems1=.array~of("1", "2", "2",      o1, o1)
+  collDir~allItems2=.array~of(     "2", "2", "2", o1, o1, o2, o2, "3")
 
    /* determine resulting collection   */
   collDir~difference1 =clz~new~~put("1","1")  /* coll_1~difference(coll_2) */
-  collDir~difference2 =clz~new~~put("2","2")~~put("3","3")   /* coll_2~difference(coll_1) */
+  collDir~difference2 =clz~new~~put("2","2")~~put(o2,o2)~~put(o2)~~put("3","3")   /* coll_2~difference(coll_1) */
 
-  collDir~interSectionColl=clz~new~~put("2","2")~~put("2","2")
+  collDir~interSectionColl=clz~new~~put("2","2")~~put("2","2")~~put(o1)~~put(o1)
 
-  collDir~unionColl       =clz~new~~put("1","1")~~put("2","2")~~put("2","2") -
-                                  ~~put("2","2")~~put("2","2")~~put("2","2")~~put("3","3")
+  collDir~unionColl       =clz~new~~put("1","1")~~put("2","2")~~put("2","2") ~~put(o1,o1)~~put(o1)-
+                                  ~~put("2","2")~~put("2","2")~~put("2","2") ~~put(o1,o1)~~put(o1)~~put(o2,o2)~~put(o2) ~~put("3","3")
 
-  collDir~xorColl         =clz~new~~put("1","1")~~put("2","2")~~put("3","3")
+  collDir~xorColl         =clz~new~~put("1","1")~~put("2","2")~~put("3","3")~~put(o2) ~~put(o2)
 
 
 
@@ -336,8 +340,8 @@ return testUnitList
   expose collDir clz bUserDefinedIndex bSingleItem
 
   self~assertEquals("subtest1", 0, collDir~emptyColl~items)
-  self~assertEquals("subtest2", 3, collDir~coll_1~items)
-  self~assertEquals("subtest3", 4, collDir~coll_2~items)
+  self~assertEquals("subtest2", 5, collDir~coll_1~items)
+  self~assertEquals("subtest3", 8, collDir~coll_2~items)
 
 
 
@@ -370,11 +374,11 @@ return testUnitList
 
 
 ::method "test_of"
-  expose collDir clz bUserDefinedIndex bSingleItem
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
 
-  tmpColl=clz~of("1", "2", "2")
+  tmpColl=clz~of("1", "2", "2", o1, o1)
   self~assertTrue("subtest01", sameContent(collDir~coll_1, tmpColl))
-  self~assertEquals("subtest02", 3, tmpColl              ~items)
+  self~assertEquals("subtest02", 5, tmpColl              ~items)
 
   tmpColl=clz~of
   self~assertEquals("subtest03", 0, tmpColl              ~items)
@@ -508,7 +512,7 @@ return testUnitList
 
 
 ::method "test_remove"
-  expose collDir clz bUserDefinedIndex bSingleItem
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
 
   ce=collDir~emptyColl~copy
   c1=collDir~coll_1~copy
@@ -525,12 +529,16 @@ return testUnitList
   self~assertEquals("subtest07", "2", c1~remove("2"))
   self~assertNull(  "subtest08", c1~remove("2"))
 
-  self~assertEquals("subtest09", 0, c1~items)
+  self~assertEquals("subtest09", o1, c1~remove(o1))
+  self~assertEquals("subtest10", o1, c1~remove(o1))
+  self~assertNull(  "subtest11", c1~remove("2"))
+
+  self~assertEquals("subtest12", 0, c1~items)
 
 
 
 ::method "test_removeItem"
-  expose collDir clz bUserDefinedIndex bSingleItem
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
 
   ce=collDir~emptyColl~copy
   c1=collDir~coll_1~copy
@@ -547,14 +555,17 @@ return testUnitList
   self~assertEquals("subtest07", "2", c1~removeItem("2","2"))
   self~assertNull(  "subtest08", c1~removeItem("2","2"))
 
-  self~assertEquals("subtest09", 0, c1~items)
+  self~assertEquals("subtest09", o1, c1~removeItem(o1,o1))
+  self~assertEquals("subtest10", o1, c1~removeItem(o1,o1))
+  self~assertNull(  "subtest11", c1~removeItem(o1,o1))
 
+  self~assertEquals("subtest12", 0, c1~items)
 
 
 -- TODO: determine whether INDEX part may truly be left out, otherwise change
 --       testcase to expect the appropriate error message
 ::method "test_removeItem_2"
-  expose collDir clz bUserDefinedIndex bSingleItem
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
 
   ce=collDir~emptyColl~copy
   c1=collDir~coll_1~copy
@@ -571,7 +582,12 @@ return testUnitList
   self~assertEquals("subtest07", "2", c1~removeItem("2"))
   self~assertNull(  "subtest08", c1~removeItem("2"))
 
-  self~assertEquals("subtest09", 0, c1~items)
+  self~assertEquals("subtest09", o1, c1~removeItem(o1))
+  self~assertEquals("subtest10", o1, c1~removeItem(o1))
+  self~assertNull(  "subtest11", c1~removeItem(o1))
+
+  self~assertEquals("subtest12", 0, c1~items)
+
 
 
 
