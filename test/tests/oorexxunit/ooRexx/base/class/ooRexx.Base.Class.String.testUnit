@@ -20,6 +20,7 @@
                      2007-03-21, ---rgf, added test for SUBCHAR (available with 6.01)
                                          changed sequence of expected/actual values to match the meaning
                                          in the failure message(s)
+                     2007-06-10, ---rgf, added test cases for LOWER and UPPER
 
    languageLevel:    6.0.1
    purpose:          Test the methods of the class String.
@@ -545,6 +546,20 @@ return testUnitList
    self~assertEquals("subTest3" , 0 , ""~LENGTH         )
 
 
+::method "test_LOWER"
+    if .ooRexxUnit.languageLevel<6.02 then
+    do
+       .error~say(self~string" - 'test_LOWER': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
+       return
+    end
+    str='ABCdeFGH'
+    self~assertSame("subTest_01" , 'AbCdeFGH', str~lower(2,  1 ))
+    self~assertSame("subTest_02" , 'ABCdeFGH', str~lower(1,  0 ))
+    self~assertSame("subTest_03" , 'ABCdeFGH', str~lower(99, 2 ))
+    self~assertSame("subTest_04" , 'Abcdefgh', str~lower(2     ))
+    self~assertSame("subTest_05" , 'abcdefgh', str~lower        )
+
+
    -- test the BIF, using examples from the documentation
 ::method "test_MAKEARRAY"
 
@@ -693,6 +708,21 @@ return testUnitList
    self~assertSame("subTest2" , 127.097 , 127.09782~TRUNC(3)   )
    self~assertSame("subTest3" , 127.100 , 127.1~TRUNC(3)       )
    self~assertSame("subTest4" , 127.00  , 127~TRUNC(2)         )
+
+
+
+::method "test_UPPER"
+    if .ooRexxUnit.languageLevel<6.02 then
+    do
+       .error~say(self~string" - 'test_UPPER': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
+       return
+    end
+    str='abcDEfgh'
+    self~assertSame("subTest_01" , 'aBcDEfgh', str~UPPER(2,  1 ))
+    self~assertSame("subTest_02" , 'abcDEfgh', str~UPPER(1,  0 ))
+    self~assertSame("subTest_03" , 'abcDEfgh', str~UPPER(99, 2 ))
+    self~assertSame("subTest_04" , 'aBCDEFGH', str~UPPER(2     ))
+    self~assertSame("subTest_05" , 'ABCDEFGH', str~UPPER        )
 
 
    -- test the BIF, using examples from the documentation

@@ -3,10 +3,11 @@
    name:             ooRexx.Base.Class.Array.testUnit
    author:           Rony G. Flatscher
    date:             2007-05-29/30
-   version:          1.0.2
+   version:          1.0.3
 
 -- line commented lines are ignored, when building the directory of infos from this header
    changed:          2007-06-09, ---rgf, added some non-string objects for testing
+                     2007-06-10, ---rgf, added test cases to test collection object for correct types
 
    languageLevel:    6.00, 6.02
    purpose:          Test the methods of the class Array.
@@ -180,7 +181,7 @@ return testUnitList
                                           .bag~new~union(collDir~coll_2~allIndexes)))
 
   tmp=collDir~emptyColl~allIndexes
-  self~assertTrue("subtest3", tmp~isA(.array))
+  self~assertTrue("subtest3", tmp~isInstanceOf(.array))
   self~assertEquals("subtest4", 0, tmp~items)
 
   self~assertEquals("subtest5", collDir~allIndexes1, collDir~coll_1~allIndexes)
@@ -204,7 +205,7 @@ return testUnitList
                                           .bag~new~union(collDir~coll_2~allItems)))
 
   tmp=collDir~emptyColl~allItems
-  self~assertTrue("subtest3", tmp~isA(.array))
+  self~assertTrue("subtest3", tmp~isInstanceOf(.array))
   self~assertEquals("subtest4", 0, tmp~items)
 
   self~assertEquals("subtest5", collDir~allItems1, collDir~coll_1~allItems)
@@ -396,6 +397,18 @@ return testUnitList
   self~assertEquals("subtest7", c2, c2~interSection(c2))
 
 
+::method "test_isInstanceOf"     -- test whether collection object is of the correct kind (class)
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  o=collDir~coll_1
+
+  self~assertTrue("01: subclass of .Object", o~isInstanceOf(.Object))
+  self~assertTrue("02: subclass of .Object", o~isInstanceOf(clz))
+
+  if .ooRexxUnit.languageLevel>6.01 then
+     self~assertTrue("03: subclass of .OrderedCollection", o~isInstanceOf(.OrderedCollection))
+
+
 
 ::method "test_isEmpty"
   expose collDir clz bUserDefinedIndex bSingleItem
@@ -427,7 +440,7 @@ return testUnitList
   expose collDir clz bUserDefinedIndex bSingleItem
 
   tmp=collDir~coll_1~makeArray
-  self~assertTrue("subtest1", tmp~isA(.array))
+  self~assertTrue("subtest1", tmp~isInstanceOf(.array))
   if bUserDefinedIndex then
      self~assertTrue("subtest2", sameContent(.bag~new~union(tmp                ), -
                                              .bag~new~union(collDir~allIndexes1)))
@@ -437,7 +450,7 @@ return testUnitList
 
 
   tmp=collDir~coll_2~makeArray
-  self~assertTrue("subtest3", tmp~isA(.array))
+  self~assertTrue("subtest3", tmp~isInstanceOf(.array))
   if bUserDefinedIndex then
      self~assertTrue("subtest4", sameContent(.bag~new~union(tmp                ), -
                                              .bag~new~union(collDir~allIndexes2)))
@@ -447,7 +460,7 @@ return testUnitList
 
 
   tmp=collDir~emptyColl~makeArray
-  self~assertTrue("subtest5", tmp~isA(.array))
+  self~assertTrue("subtest5", tmp~isInstanceOf(.array))
   self~assertEquals("subtest6", 0, tmp~items)
 
 
@@ -771,7 +784,7 @@ makeColl: procedure
 
   tmp    =tmpColl~makeArray
 
-  self~assertTrue(  "subtest01", tmp~isA(.array))
+  self~assertTrue(  "subtest01", tmp~isInstanceOf(.array))
   self~assertEquals("subtest02", tmpColl~allItems, tmp)
   self~assertEquals("subtest03", tmpCollArr, tmp)
 
@@ -919,17 +932,17 @@ makeColl: procedure
 
   tmpColl=collDir~emptyColl
   tmp    =tmpColl~makeArray
-  self~assertTrue(  "subtest01", tmp~isA(.array))
+  self~assertTrue(  "subtest01", tmp~isInstanceOf(.array))
   self~assertEquals("subtest02", tmpColl~allItems, tmp)
 
   tmpColl=collDir~coll_1
   tmp    =tmpColl~makeArray
-  self~assertTrue(  "subtest02", tmp~isA(.array))
+  self~assertTrue(  "subtest02", tmp~isInstanceOf(.array))
   self~assertEquals("subtest03", tmpColl~allItems, tmp)
 
   tmpColl=collDir~coll_2
   tmp    =tmpColl~makeArray
-  self~assertTrue(  "subtest04", tmp~isA(.array))
+  self~assertTrue(  "subtest04", tmp~isInstanceOf(.array))
   self~assertEquals("subtest05", tmpColl~allItems, tmp)
 
 
