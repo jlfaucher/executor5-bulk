@@ -3,14 +3,15 @@
    name:             ooRexx.Base.Class.List.testUnit
    author:           Rony G. Flatscher
    date:             2007-06-09
-   version:          1.0.0
+   version:          1.0.2
 
 -- line commented lines are ignored, when building the directory of infos from this header
    changed:          ---
 
    languageLevel:    6.00, 6.02
    purpose:          Test the methods of the class List.
-   remark:           ---
+   remark:           2007-06-09, ---rgf, added testcase "test_section"
+                     2007-06-10, ---rgf, added tests for syntax errors
 
    license:          CPL 1.0 (Common Public License v1.0, see below)
    link:
@@ -677,6 +678,43 @@ return testUnitList
 
 
 
+::method "test_section"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  a1=clz~of(1)
+  a2=a1~section(0)
+  self~assertTrue("subtest_01a", a2~items=1)
+
+  a2=a1~section(0,1)
+  self~assertTrue("subtest_01b", a2~items=1)
+
+  a2=a1~section(0,5)
+  self~assertTrue("subtest_01c", a2~items=1)
+
+  a1=clz~of(1,2,3,4,5)
+  a2=a1~section(1)
+  self~assertTrue("subtest_02a", a2~items=4)
+  self~assertTrue("subtest_02b", testSeq(a1, a2, 2))
+  a2=a1~section(1,2)
+  self~assertTrue("subtest_03a", a2~items=2)
+  self~assertTrue("subtest_03b", testSeq(a1, a2, 2))
+
+  return
+
+
+testSeq: procedure
+  use arg a1, a2, start
+
+  do i=0 to a2~items-1
+     if a1[i+start-1]<>a2[i] then return .false
+  end
+  return .true
+
+
+
+
+
+
 ::method "test_subset"
   expose collDir clz bUserDefinedIndex bSingleItem
 
@@ -808,7 +846,7 @@ makeColl: procedure
 ::method "test_first_last_next_previous"
   expose collDir clz bUserDefinedIndex bSingleItem o1 o2
 
-  a=clz~new       -- no dimension
+  a=clz~new
   self~assertNull("subtest_01a", a~first)
   self~assertNull("subtest_01b", a~last)
 
@@ -871,6 +909,9 @@ makeColl: procedure
 
 
 
+
+
+
 ::method "test_firstItem"
   expose collDir clz bUserDefinedIndex bSingleItem o1 o2
 
@@ -901,6 +942,146 @@ makeColl: procedure
 
   a~insert("c", .nil)-- insert as last
   self~assertEquals("subtest_03", "b", a~lastItem)
+
+
+
+
+/* Test for syntax errors. <---  <---  <---   */
+
+::method "test_insert_error1"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  a=clz~new
+  self~expectSyntax(93.918)
+  a~insert("a",0)       -- insert using an illegal index value
+
+
+::method "test_insert_error2"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  a=clz~new
+  self~expectSyntax(93.918)
+  a~insert("a",99)      -- insert using an illegal index value
+
+
+::method "test_first_error1"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  a=clz~new
+  self~expectSyntax(93.902)
+  a~first(.nil)
+
+
+::method "test_last_error1"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  a=clz~new
+  self~expectSyntax(93.902)
+  a~last(.nil)
+
+
+::method "test_next_error1"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  a=clz~new
+  self~expectSyntax(93.903)
+  a~next
+
+
+::method "test_next_error2"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  a=clz~new
+  self~expectSyntax(93.918)
+  a~next(.nil)
+
+
+::method "test_previous_error1"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  a=clz~new
+  self~expectSyntax(93.903)
+  a~previous
+
+
+::method "test_previous_error2"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  a=clz~new
+  self~expectSyntax(93.918)
+  a~previous(.nil)
+
+
+::method "test_put_error1"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  a=clz~new
+  self~expectSyntax(93.918)
+  a~put("a",0)
+
+
+::method "test_put_error2"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  a=clz~new
+  self~expectSyntax(93.903)
+  a~put("a")
+
+::method "test_[]=_error1"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  a=clz~new
+  self~expectSyntax(93.918)
+  a~"[]="("a",0)
+
+
+::method "test_[]=_error2"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  a=clz~new
+  self~expectSyntax(93.903)
+  a~"[]="("a")
+
+
+::method "test_remove_error1"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  a=clz~new
+  self~expectSyntax(93.918)
+  a~remove("a")
+
+
+::method "test_section_error1"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  a=clz~new
+  self~expectSyntax(93.918)
+  a~section(0)
+
+
+::method "test_section_error2"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  a=clz~new
+  self~expectSyntax(93.918)
+  a~section(0,19)
+
+
+::method "test_section_error3"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  a=clz~new
+  self~expectSyntax(93.902)
+  a~section(0,19,99)
+
+
+::method "test_section_error4"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  a=clz~new
+  self~expectSyntax(93.903)
+  a~section
+
 
 
 

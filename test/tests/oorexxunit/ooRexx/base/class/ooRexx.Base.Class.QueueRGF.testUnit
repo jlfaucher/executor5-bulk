@@ -3,14 +3,14 @@
    name:             ooRexx.Base.Class.Queue.testUnit
    author:           Rony G. Flatscher
    date:             2007-06-09
-   version:          1.0.0
+   version:          1.0.1
 
 -- line commented lines are ignored, when building the directory of infos from this header
    changed:          ---
 
    languageLevel:    6.00, 6.02
    purpose:          Test the methods of the class Queue.
-   remark:           ---
+   remark:           2006-06-10, ---rgf, added tests for syntax errors; testing also isA()
 
    license:          CPL 1.0 (Common Public License v1.0, see below)
    link:
@@ -810,7 +810,7 @@ makeColl: procedure
 ::method "test_first_last_next_previous"
   expose collDir clz bUserDefinedIndex bSingleItem o1 o2
 
-  a=clz~new       -- no dimension
+  a=clz~new
   self~assertNull("subtest_01a", a~first)
   self~assertNull("subtest_01b", a~last)
 
@@ -870,7 +870,7 @@ makeColl: procedure
 ::method "test_peek"
   expose collDir clz bUserDefinedIndex bSingleItem o1 o2
 
-  a=clz~new       -- no dimension
+  a=clz~new
   self~assertNull("subtest_01", a~peek)
   a~insert("a")         -- insert at the end
   self~assertEquals("subtest_02", "a", a~peek)
@@ -884,7 +884,7 @@ makeColl: procedure
 ::method "test_pull"
   expose collDir clz bUserDefinedIndex bSingleItem o1 o2
 
-  a=clz~of("a", "b", "c")     -- no dimension
+  a=clz~of("a", "b", "c")
   self~assertEquals("subtest_01", "a", a~pull)
   self~assertEquals("subtest_02", "b", a~pull)
   self~assertEquals("subtest_03", "c", a~pull)
@@ -895,7 +895,7 @@ makeColl: procedure
 ::method "test_push_pull"
   expose collDir clz bUserDefinedIndex bSingleItem o1 o2
 
-  a=clz~new                   -- no dimension
+  a=clz~new
   a~push("a")
   a~push("b")
   a~push("c")
@@ -903,6 +903,117 @@ makeColl: procedure
   self~assertEquals("subtest_02", "b", a~pull)
   self~assertEquals("subtest_03", "a", a~pull)
   self~assertNull(  "subtest_04",      a~pull)
+
+
+
+
+
+
+
+/* Test for syntax errors. <---  <---  <---   */
+
+::method "test_insert_error1"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  a=clz~new
+  self~expectSyntax(93.966)
+  a~insert("a",0)       -- insert using an illegal index value
+
+
+::method "test_insert_error2"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  a=clz~new
+  self~expectSyntax(93.966)
+  a~insert("a",99)      -- insert using an illegal index value
+
+
+::method "test_first_error1"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  a=clz~new
+  self~expectSyntax(93.902)
+  a~first(.nil)
+
+
+::method "test_last_error1"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  a=clz~new
+  self~expectSyntax(93.902)
+  a~last(.nil)
+
+
+::method "test_next_error1"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  a=clz~new
+  self~expectSyntax(93.903)
+  a~next
+
+
+::method "test_next_error2"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  a=clz~new
+  self~expectSyntax(93.966)
+  a~next(.nil)
+
+
+::method "test_previous_error1"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  a=clz~new
+  self~expectSyntax(93.903)
+  a~previous
+
+
+::method "test_previous_error2"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  a=clz~new
+  self~expectSyntax(93.966)
+  a~previous(.nil)
+
+
+::method "test_put_error1"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  a=clz~new
+  self~expectSyntax(93.966)
+  a~put("a",0)
+
+
+::method "test_put_error2"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  a=clz~new
+  self~expectSyntax(93.903)
+  a~put("a")
+
+::method "test_[]=_error1"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  a=clz~new
+  self~expectSyntax(93.966)
+  a~"[]="("a",0)
+
+
+::method "test_[]=_error2"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  a=clz~new
+  self~expectSyntax(93.903)
+  a~"[]="("a")
+
+
+::method "test_remove_error1"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  a=clz~new
+  self~expectSyntax(93.966)
+  a~remove("a")
+
 
 
 
