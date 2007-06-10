@@ -3,10 +3,12 @@
    name:             ooRexx.Base.Class.Directory.testUnit
    author:           Rony G. Flatscher
    date:             2007-06-10
-   version:          1.0.0
+   version:          1.0.1
 
 -- line commented lines are ignored, when building the directory of infos from this header
-   changed:
+   changed:          2007-06-10, ---rgf, added tests to check for creating correct syntax errors
+
+
 
    languageLevel:    6.00, 6.02
    purpose:          Test the methods of the class Directory.
@@ -23,7 +25,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2006 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -673,6 +675,102 @@ makeColl: procedure
 
   d~unSetMethod("REVERSE")
   self~assertNull("subtest_07", d~reverse)
+
+
+
+
+/* Test for syntax errors. <---  <---  <---   */
+
+::method "test_at_error1"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  a=clz~new
+  self~expectSyntax(93.938)
+  a~at(.object~new)       -- insert using an illegal index value
+
+
+::method "test_[]_error1"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  a=clz~new
+  self~expectSyntax(93.938)
+  a~"[]"(.object~new)       -- insert using an illegal index value
+
+::method "test_put_error1"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  a=clz~new
+  self~expectSyntax(93.903)
+  a~put(.object~new)       -- insert using an illegal index value
+
+
+::method "test_put_error2"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  a=clz~new
+  self~expectSyntax(93.938)
+  a~put(nixi, .object~new) -- insert using an illegal index value
+
+
+::method "test_[]=_error1"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  a=clz~new
+  self~expectSyntax(93.903)   -- checking args differs from PUT!
+  a~"[]="(.object~new)       -- insert using an illegal index value
+
+
+::method "test_[]=_error2"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  a=clz~new
+  self~expectSyntax(93.938)
+  a~"[]="(nixi, .object~new) -- insert using an illegal index value
+
+
+::method "test_unknown_error1"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  a=clz~new
+  self~expectSyntax(93.903)
+  a~unknown
+
+
+::method "test_unknown_error2"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  a=clz~new
+  self~expectSyntax(93.938)
+  a~unknown(.object~new)
+
+::method "test_unknown_error3"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  a=clz~new
+  self~expectSyntax(93.903)
+  a~unknown(nixi)
+
+
+::method "test_unknown_error4"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  a=clz~new
+  self~expectSyntax(93.902)
+  a~unknown(nixi, noxi, nixo)
+
+
+::method "test_unknown_error5"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  a=clz~new
+  self~expectSyntax(93.938)
+  a~unknown(.nil, .nil)
+
+
+
+
+
+
 
 
 /* Test whether both collections contain the same entries.
