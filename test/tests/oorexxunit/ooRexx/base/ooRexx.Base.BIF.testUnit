@@ -3,7 +3,7 @@
    name:             ooRexx.Base.String.testUnit
    author:           Rony G. Flatscher
    date:             2005-08-07
-   version:          1.0.3
+   version:          1.0.4
 
 -- line commented lines are ignored, when building the directory of infos from this header
    changed:          2005-08-21, ---rgf, renamed the testUnit-class to match exactly the
@@ -25,6 +25,7 @@
                      2007-06-10, ---rgf, added test cases for lower() and upper() BIFs;
                                          added test cases to test whether TAB and blank chars are
                                          really treated equal in all related BIFs
+                     2007-06-11, ---rgf, added TAB=blank test case for PARSE
 
    languageLevel:    6.0.1
    purpose:          Test the String functions.
@@ -1112,6 +1113,69 @@ return testUnitList
     self~assertSame("subtest_02d", s0||PLANK2, delword(s4, 2))
     self~assertSame("subtest_02e", s0||TAB   , delword(s5, 2))
     self~assertSame("subtest_02f", s0||TAB2  , delword(s6, 2))
+
+
+   -- starting with 3.2 TAB chars are treated like blanks
+::method "test_TABs_PARSE"
+    if .ooRexxUnit.languageLevel<6.02 then
+    do
+       .error~say(self~string" - 'test_TABs_PARSE': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
+       return
+    end
+
+    TAB  ="09"x
+    TAB2 =TAB||TAB
+
+    PLANK=" "
+    PLANK2=PLANK||PLANK
+
+    str=plank2 "This" plank "is" plank "a" plank2 "test." || plank2
+    word5exp=PLANK
+
+    parse var str word1 word2 word3 word4 .
+    self~assertSame("subtest_01", "This"  , word1)
+    self~assertSame("subtest_02", "is"    , word2)
+    self~assertSame("subtest_03", "a"     , word3)
+    self~assertSame("subtest_04", "test." , word4)
+
+    parse var str word1 word2 word3 word4 word5 .
+    self~assertSame("subtest_11", "This"  , word1)
+    self~assertSame("subtest_12", "is"    , word2)
+    self~assertSame("subtest_13", "a"     , word3)
+    self~assertSame("subtest_14", "test." , word4)
+    self~assertSame("subtest_15", ""      , word5)
+
+    parse var str word1 word2 word3 word4 word5
+    self~assertSame("subtest_21", "This"  , word1)
+    self~assertSame("subtest_22", "is"    , word2)
+    self~assertSame("subtest_23", "a"     , word3)
+    self~assertSame("subtest_24", "test." , word4)
+    self~assertSame("subtest_25", word5exp, word5)
+
+
+    str=plank2 "This" plank "is" tab "a" plank2 "test."   || tab2
+    word5exp=TAB
+
+    parse var str word1 word2 word3 word4 .
+    self~assertSame("subtest_31", "This"  , word1)
+    self~assertSame("subtest_32", "is"    , word2)
+    self~assertSame("subtest_33", "a"     , word3)
+    self~assertSame("subtest_34", "test." , word4)
+
+    parse var str word1 word2 word3 word4 word5 .
+    self~assertSame("subtest_41", "This"  , word1)
+    self~assertSame("subtest_42", "is"    , word2)
+    self~assertSame("subtest_43", "a"     , word3)
+    self~assertSame("subtest_44", "test." , word4)
+    self~assertSame("subtest_45", ""      , word5)
+
+    parse var str word1 word2 word3 word4 word5
+    self~assertSame("subtest_51", "This"  , word1)
+    self~assertSame("subtest_52", "is"    , word2)
+    self~assertSame("subtest_53", "a"     , word3)
+    self~assertSame("subtest_54", "test." , word4)
+    self~assertSame("subtest_55", word5exp, word5)
+
 
 
    -- starting with 3.2 TAB chars are treated like blanks
