@@ -1978,6 +1978,81 @@ winmgr~PushButtonInWindow("Testwindow","List &amp;Employees")
 <emphasis role="italic">title</emphasis>. You can specify as many submenus as
 necessary to get to the required item.</para>
 </section>
+
+<section id="broadcastsettingchanged"><title>BROADCASTSETTINGCHANGED</title>
+<indexterm><primary>BROADCASTSETTINGCHANGED method</primary>
+<secondary>of WindowsManager class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>BROADCASTSETTINGCHANGED method</secondary>
+<tertiary>of WindowsManager class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-BROADCASTSETTINGCHANGED--+-----------+----------------------><
+                            +-(timeOut)-+
+]]>
+</programlisting>
+
+<para>Causes the Windows operating system to send a message, (the
+WM_SETTINGCHANGE message,) to every top-level window on the Desktop informing
+them that a system-wide setting has changed.  Well-written applications will
+then reload any system settings that they use.</para>
+<para>An example of one use for this might be an installer program setting an
+environment variable, such as the PATH.  Then a call to broadcastSettingChanged
+would cause all open applications to update their reference to the environment,
+without the necessity of a reboot.</para>
+<para>There are two variations of calling this method.  When called with no
+arguments, the message is broadcast and returns immediately.  When called with
+the time out parameter, the message is broadcast and does not return until
+every window on the Desktop has acknowledged the message, or timed out.</para>
+<para>The problem with using a time out and waiting for acknowledgment is that,
+if a window is not responding, or several windows are slow to respond, it
+may take a very long time to return.  The problem with not using a time out
+and returning immediately is that the caller will have no way of knowing when
+every window has received the message.  Generally this is not a problem, but
+it is up to the programmer to decide how she wants to use this method.</para>
+<para>The time out value is specified in milliseconds.  For each window, the
+operating system will wait up to the time out for a response before going
+on to the next window.  Typically a time out value of 5000 (5 seconds) is
+used, and this is the default.</para>
+<para>The single optional argument is:</para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">timeOut</emphasis></term>
+<listitem><para>The time, in milliseconds, to wait for each window to
+acknowledge it received the setting changed message. Specifying 0 or a negative
+number will cause the default time out of 5000 to be used.  (5000 is a typical
+value used by applications.)
+</para></listitem></varlistentry>
+</variablelist>
+<para>Return value:</para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The setting changed message was broadcast successfully.  If no
+time out argument was used, then this is all it means.  If a time out value was
+used, then all top-level windows have acknowledged receiving the message.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>The setting changed message was broadcast, but one or more
+windows timed out.  This return can only happen when the time out parameter
+is used.
+</para></listitem></varlistentry>
+<varlistentry><term>-x</term>
+<listitem><para>A number less than -1 indicates a system error occurred.
+This value is the negation of the system error code.  I.e., if the return is
+-1400, the system error code was 1400.  System error codes can be looked up in
+the MSDN library or the Windows Platform SDK.  Microsoft makes these references
+available on the Internet.
+</para></listitem></varlistentry>
+<varlistentry><term>+x</term>
+<listitem><para>A number greater than 0 would be a window result of broadcasting
+the setting changed message and would not be an error.  It is unlikely that this
+would occur.
+</para></listitem></varlistentry>
+</variablelist>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+ret = winmgr~broadcastSettingChanged(1000)
+</programlisting>
+</section>
 </section>
 
 <section id="windowobjectcl"><title>The WindowObject Class</title>
