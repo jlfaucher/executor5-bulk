@@ -1,23 +1,24 @@
 #!/usr/bin/rexx
 /*
-   name:             ooRexx.Base.USE.testUnit
+   name:             ooRexx.Base.Assignments.testUnit
    author:           Rony G. Flatscher
-   date:             2007-06-10
+   date:             2007-06-16
    version:          1.0.0
-
--- line commented lines are ignored, when building the directory of infos from this header
    changed:          ---
 
+-- line commented lines are ignored, when building the directory of infos from this header
+
    languageLevel:    6.0
-   purpose:          Test the USE keyword instruction
-   remark:
+   purpose:          Test assignments
+   remark:           Initially uses documentation examples only
+
 
    license:          CPL 1.0 (Common Public License v1.0, see below)
    link:
 
    category1:        ooRexx
    category2:        Base
-   category3:        USE
+   category3:        Assignments
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
@@ -68,7 +69,8 @@
       optional list of mandatory test case methods name                       */
 
 mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
-testUnitList=.list~of( .array~of(.ooRexx.Base.USE.testUnit,  mandatoryTestMethods) )
+testUnitList=.list~of( .array~of(.ooRexx.Base.Assignments.testUnit,  mandatoryTestMethods) )
+
 
 -------------------------------------------------------------------------------------------
 -- ===> the following code needs not to be individualized                              <===
@@ -121,161 +123,140 @@ return testUnitList
 
 ::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
 
-::class "ooRexx.Base.USE.testUnit" subclass TestCase public
+::class "ooRexx.Base.Assignments.testUnit" subclass TestCase public
 
 
-::method "test_USE"
-  if .ooRexxUnit.languageLevel<6.02 then
-  do
-     .error~say(self~string" - 'test_USE': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-     return
+
+::method "test_+="
+
+  i1=0
+  i2=0
+  do i=-5 to +5 by 0.1
+     i1 =i1+1.01+i
+     i2+=   1.01+i
   end
+  self~assertEquals("subtest_01", i1, i2)
 
-  o1=.object~new
-
-  self~assertEquals("subtest_01", o1  , test_01(o1))
-  self~assertEquals("subtest_02", .nil, test_02())
-  self~assertEquals("subtest_03", o1  , test_03( ,o1))
-
-  return
-
-test_01: procedure
-  use arg o
-  return o
-
-test_02: procedure
-  if .ooRexxUnit.languageLevel<6.02 then
-     o=.nil
-  else
-     use arg o=.nil
-  return o
-
-test_03: procedure
-  if .ooRexxUnit.languageLevel<6.02 then
-     use arg o, o1
-  else
-     use arg o=.nil, o1=.nil
-  return o1
+  i3=0
+  i3+=10
+  self~assertEquals("subtest_02", 10, i3)
 
 
+::method "test_-="
 
-::method "test_USE_STRICT"
-  if .ooRexxUnit.languageLevel<6.02 then
-  do
-     .error~say(self~string" - 'test_assign_parsed_values_to_attributes_or_collections': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-     return
+  i1=0
+  i2=0
+  do i=-5 to +5 by 0.1
+     i1 =i1-1.01-i
+     i2-=   1.01-i
   end
+  self~assertEquals("subtest_01", i1, i2)
 
-  o1=.object~new
-
-  self~assertEquals("subtest_01", o1  , test_01(o1))
-  self~assertEquals("subtest_02", .nil, test_02())
-  self~assertEquals("subtest_03", o1  , test_03( ,o1))
-  self~assertEquals("subtest_04", .nil, test_04( ))
-  self~assertEquals("subtest_05", .nil, test_05( ))
-  self~assertEquals("subtest_05", o1,   test_06(o1, "aha", .nil, "no..." ))
-
-  return
-
-test_01: procedure
-  use strict arg o
-  return o
-
-test_02: procedure
-  use strict arg o=.nil
-  return o
-
-test_03: procedure
-  use strict arg o=.nil, o1=.nil
-  return o1
-
-test_04: procedure
-  use strict arg
-  return .nil
-
-test_05: procedure
-  use strict arg ...
-  return .nil
-
-test_06: procedure
-  use strict arg o, ...
-  return o
+  i3=0
+  i3-=10
+  self~assertEquals("subtest_02", -10, i3)
 
 
+::method "test_/="
 
-::method "test_USE_STRICT_error01 40.4"
-  if .ooRexxUnit.languageLevel<6.02 then
-  do
-     .error~say(self~string" - 'test_USE_STRICT_error01 40.4': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-     return
+  i1=1
+  i2=1
+  do i=-5 to +5 by 0.1
+     i1 =i1/(1.01+i)
+     i2/=   (1.01+i)
   end
-  self~expectSyntax(40.4)
-  call test o
-  return
-test:
-  use strict arg
-  return
+  self~assertEquals("subtest_01", i1, i2)
+
+  i3=13
+  i3/=10
+  self~assertEquals("subtest_02", 1.3, i3)
 
 
-::method "test_USE_STRICT_error02 40.3 "
-  if .ooRexxUnit.languageLevel<6.02 then
-  do
-     .error~say(self~string" - 'test_assign_parsed_values_to_attributes_or_collections': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-     return
-  end
-  self~expectSyntax(40.3)
-  call test
-  return
-test:
-  use strict arg o
-  return
+::method "test_//="
 
+  i1=13
+  i2=13
+  i1 =i1//(1.01+2)
+  i2//=   (1.01+2)
+  self~assertEquals("subtest_01", i1, i2)
 
-::method "test_USE_STRICT_error03 40.4 "
-  if .ooRexxUnit.languageLevel<6.02 then
-  do
-     .error~say(self~string" - 'test_assign_parsed_values_to_attributes_or_collections': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-     return
-  end
-  self~expectSyntax(40.4)
-  call test a, b
-  return
-test:
-  use strict arg o
-  return
+  i3=13
+  i3//=10
+  self~assertEquals("subtest_02", 3, i3)
 
 
 
+::method "test_%="
 
-::method "test_USE_assign_values_to_attributes_or_collections"
-  if .ooRexxUnit.languageLevel<6.02 then
-  do
-     .error~say(self~string" - 'test_USE_assign_values_to_attributes_or_collections': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-     return
-  end
+  i1=13
+  i2=13
+  i1 =i1%(1.01+2)
+  i2%=   (1.01+2)
+  self~assertEquals("subtest_01", i1, i2)
 
-  d=.directory~new
-  a=.array~new
-
-  text="Tirol isch lei oans, isch a Landl a kloans, isch a ..."
-  parse var text a1 a2 a3 a4 a5 .
-
-  -- parse var text d~word1 a[2] a[3] a[4] d~word5 .
-
-  call test_01 a1, a2, a3, a4, a5
-
-  self~assertEquals("subtest_01", a1, d~word1 )
-  self~assertNull(  "subtest_02",     a[1]    )
-  self~assertEquals("subtest_03", a2, a[2]    )
-  self~assertEquals("subtest_04", a3, a[3]    )
-  self~assertEquals("subtest_05", a4, a[4]    )
-  self~assertNull(  "subtest_06",     a[5]    )
-  self~assertEquals("subtest_07", a5, d~word5 )
-  return
-
-test_01:
-  use arg d~word1, a[2], a[3], a[4], d~word5
-  return
+  i3=13
+  i3%=10
+  self~assertEquals("subtest_02", 1, i3)
 
 
+::method "test_*="
+
+  i1=13
+  i2=13
+  i1 =i1*(1.01+2)
+  i2*=   (1.01+2)
+  self~assertEquals("subtest_01", i1, i2)
+
+  i3=13
+  i3*=10
+  self~assertEquals("subtest_02", 130, i3)
+
+
+::method "test_**="
+
+  i1=13
+  i2=13
+  i1 =i1**(1+2)
+  i2**=   (1+2)
+  self~assertEquals("subtest_01", i1, i2)
+
+  i3=3
+  i3**=4
+  self~assertEquals("subtest_02", 81, i3)
+
+
+::method "test_|="
+
+  i1=.false
+  i2=.false
+  i1 =i1|.true
+  i2|=   .true
+  self~assertEquals("subtest_01", i1, i2)
+
+
+::method "test_&="
+
+  i1=.false
+  i2=.false
+  i1 =i1&.true
+  i2&=   .true
+  self~assertEquals("subtest_01", i1, i2)
+
+
+::method "test_&&="
+
+  i1=.false
+  i2=.false
+  i1 =i1&&.true
+  i2&&=   .true
+  self~assertEquals("subtest_01", i1, i2)
+
+
+::method "test_||="
+
+  i1=.false
+  i2=.false
+  i1 =i1||.true
+  i2||=   .true
+  self~assertEquals("subtest_01", i1, i2)
 
