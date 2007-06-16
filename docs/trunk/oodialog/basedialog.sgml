@@ -917,8 +917,16 @@ the methods listed in <link linkend="t000013">Table 2</link>.
 <entry><link linkend="setfocus">SetFocus</link></entry>
 </row>
 <row>
+<entry>SetFocusToWindow</entry>
+<entry><link linkend="setfocustowindow">SetFocusToWindow</link></entry>
+</row>
+<row>
 <entry>SetFont</entry>
 <entry><link linkend="setfont">SetFont</link></entry>
+</row>
+<row>
+<entry>SetForegroundWindow</entry>
+<entry><link linkend="setforegroundwindow">SetForegroundWindow</link></entry>
 </row>
 <row>
 <entry>SetHScrollPos</entry>
@@ -1023,6 +1031,14 @@ the methods listed in <link linkend="t000013">Table 2</link>.
 <row>
 <entry>StopIt</entry>
 <entry><link linkend="h000073">StopIt</link></entry>
+</row>
+<row>
+<entry>TabToNext</entry>
+<entry><link linkend="tabtonext">TabToNext</link></entry>
+</row>
+<row>
+<entry>TabToPrevious</entry>
+<entry><link linkend="tabtoprevious">TabToPrevious</link></entry>
 </row>
 <row>
 <entry>TiledBackgroundBitmap</entry>
@@ -5124,8 +5140,45 @@ control.</para>
 ]]>
 </programlisting>
 
-<para>The Get method returns the handle of the current Windows dialog. A handle is a unique reference to a particular Windows object.
-Handles are used within some of the methods to work on a particular Windows object.</para>
+<para>The Get method returns the handle of the Widows Dialog associated with the
+top ooDialog dialog. A handle is a unique reference to a particular Windows
+object. Handles are used within some of the methods to work on a particular
+Windows object.</para>
+<note><title>Note</title><para>
+If more than one non-modal ooDialog exists, the top dialog and the dialog whose
+method is executing may not be the same.
+</para></note>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>Below is a contrived example to demonstrate that the top dialog
+and the executing dialog may not be the same.  Assume display is a method of a
+subclass of BaseDialog.
+<programlisting>
+<![CDATA[
+::method display
+  expose staticDlg
+
+  hwndTop = self~get
+  hwndSelf = self~dlgHandle
+  hwndStatic = staticDlg~dlgHandle
+  say "Top:   " hwndTop
+  say "Self:  " hwndSelf
+  say "Static:" hwndStatic
+
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Output:</emphasis></term>
+<listitem><para>The above might write to the console something like the following:
+<programlisting>
+<![CDATA[
+  Top:    787096
+  Self:   4522228
+  Static: 787096
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
 </section>
 
 <section id="h000091"><title>GetItem</title>
@@ -5313,7 +5366,51 @@ particular dialog item. </para>
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>A handle to the window that previously had the input focus
+<listitem><para>This method always returns 1.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="tabtonext"><title>TabToNext</title>
+<indexterm><primary>TabToNext</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aBaseDialog~TabToNext--------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The TabToNext method sets the input focus to the next dialog control
+with a tab stop.  This performs the same action as if the user pressed the
+tab key in the dialog.  Like many of the other methods, TabToNext is a method
+of both a BaseDialog and a DialogControl.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The handle to the dialog control with the current input
+focus, or 0 if this method failed.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="tabtoprevious"><title>TabToPrevious</title>
+<indexterm><primary>TabToPrevious</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aBaseDialog~TabToPrevious----------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>This method is the reverse of TabToNext and sets the input focus to
+the previous dialog control with a tab stop.  This performs the same action
+as if the user pressed the shift-tab key in the dialog.  TabToPrevious is a
+also a method of both a BaseDialog and a DialogControl.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The handle to the dialog control with the current input
+focus, or 0 if this method failed.
 </para></listitem></varlistentry>
 </variablelist>
 </section>

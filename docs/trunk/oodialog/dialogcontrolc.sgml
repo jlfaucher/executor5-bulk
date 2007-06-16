@@ -366,8 +366,16 @@ the methods listed in
 <entry><link linkend="setfocus">SetFocus</link></entry>
 </row>
 <row>
+<entry>SetFocusToWindow</entry>
+<entry><link linkend="setfocustowindow">SetFocusToWindow</link></entry>
+</row>
+<row>
 <entry>SetFont</entry>
 <entry><link linkend="setfont">SetFont</link></entry>
+</row>
+<row>
+<entry>SetForegroundWindow</entry>
+<entry><link linkend="setforegroundwindow">SetForegroundWindow</link></entry>
 </row>
 <row>
 <entry>SetHScrollPos</entry>
@@ -392,6 +400,14 @@ the methods listed in
 <row>
 <entry>ShowFast</entry>
 <entry><link linkend="showfast">ShowFast</link></entry>
+</row>
+<row>
+<entry>TabToNext</entry>
+<entry><link linkend="tabtonext">TabToNext</link></entry>
+</row>
+<row>
+<entry>TabToPrevious</entry>
+<entry><link linkend="tabtoprevious">TabToPrevious</link></entry>
 </row>
 <row>
 <entry>Title</entry>
@@ -870,12 +886,12 @@ of the dialog or dialog control, in dialog units.</para>
 ]]>
 </programlisting>
 
-<para>The GetFocus method returns the handle to the dialog
-or dialog control that has currently the input focus.</para>
+<para>The GetFocus method returns the handle to the dialog control that currently
+has the input focus.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The handle to the dialog or dialog control that has the input focus,
-or 0 if this method failed.
+<listitem><para>The handle to the dialog control that has the input focus, or 0
+if this method failed.
 </para></listitem></varlistentry>
 </variablelist>
 </section>
@@ -890,20 +906,51 @@ or 0 if this method failed.
 ]]>
 </programlisting>
 
-<para>The SetFocus method sets the input focus to a dialog
-or dialog control.</para>
+<para>The SetFocus method sets the input focus to a dialog control.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The only argument is:
 <variablelist>
 <varlistentry><term>hwnd</term>
-<listitem><para>The handle to the dialog or dialog control that is to receive the input
+<listitem><para>The handle to the dialog control that is to receive the input
 focus.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The handle to the dialog or dialog control that had the focus before,
+<listitem><para>The handle to the dialog control that had the focus before,
+or 0 if this method failed.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="setfocustowindow"><title>SetFocusToWindow</title>
+<indexterm><primary>SetFocusToWindow</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~SetFocusToWindow(--hwnd--)-------------------><
+
+
+]]>
+</programlisting>
+
+<para>The SetFocusToWindow method moves the input focus to another top-level
+window or dialog.  This has the effect of bringing that window to the
+foreground.  This method returns a handle to the dialog
+<emphasis role="italic">control</emphasis> that currently has the
+input focus.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>hwnd</term>
+<listitem><para>The handle to the top-level window or dialog that is to
+receive the input focus.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The handle to the dialog control that currently has the focus,
 or 0 if this method failed.
 </para></listitem></varlistentry>
 </variablelist>
@@ -1244,72 +1291,6 @@ say "New width of window is" width "and new height is" height
 </variablelist>
 </section>
 
-<section id="setcolor"><title>SetColor</title>
-<indexterm><primary>SetColor</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aDialogControl~SetColor(--background--,--foreground--)------><
-
-
-]]>
-</programlisting>
-
-<para>The SetColor method sets the background and foreground
-colors of the dialog control.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>background</term>
-<listitem><para>The color number of the background color.
-</para></listitem></varlistentry>
-<varlistentry><term>foreground</term>
-<listitem><para>The color number of the foreground color.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>The color has been assigned.
-</para></listitem></varlistentry>
-<varlistentry><term>1</term>
-<listitem><para>The selected color was already assigned.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example sets the background color of list box FILES to
-blue:
-<programlisting>
-<![CDATA[
-MyDialog~GetListBox("FILES")~SetColor(4, 15)
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="foregroundwindow"><title>ForegroundWindow</title>
-<indexterm><primary>ForegroundWindow</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aDialogControl~ForegroundWindow-----------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The ForegroundWindow method returns the handle
-to the current foreground window.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The handle to the foreground window, or 0 if this method failed.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
 <section id="move"><title>Move</title>
 <indexterm><primary>Move</primary></indexterm>
 <programlisting>
@@ -1377,6 +1358,116 @@ if obj = .Nil then return
 obj~Move(1,1)
 parse value obj~GetPos with x y
 say "New horizontal position of window is" x "and new vertical position is" y
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="setforegroundwindow"><title>SetForegroundWindow</title>
+<indexterm><primary>SetForegroundWindow</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~SetForegroundWindow(--hwnd--)---------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The SetForegroundWindow method changes the foreground window to the window
+specified.  The new window must be a top-level window or a dialog window.  You
+can not make a dialog control window the foreground window.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>hwnd</term>
+<listitem><para>The handle to the window that is to become the foreground window.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The handle to the previous foreground window, or 0 if this method
+failed.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>This example makes another dialog the foreground window and
+returns the window handle of the current foreground window to the caller, or
+returns -1 if there was an error:
+<programlisting>
+<![CDATA[
+::method switchToReportDlg
+  expose reportDlg
+  currentHwnd = self~setForeGroundwindow(reportDlg~dlgHandle)
+  if currentHwnd == 0 then return -1  -- Report an error
+  return currentHwnd
+
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="foregroundwindow"><title>ForegroundWindow</title>
+<indexterm><primary>ForegroundWindow</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~ForegroundWindow-----------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The ForegroundWindow method returns the handle
+to the current foreground window.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The handle to the foreground window, or 0 if this method failed.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="setcolor"><title>SetColor</title>
+<indexterm><primary>SetColor</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~SetColor(--background--,--foreground--)------><
+
+
+]]>
+</programlisting>
+
+<para>The SetColor method sets the background and foreground
+colors of the dialog control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>background</term>
+<listitem><para>The color number of the background color.
+</para></listitem></varlistentry>
+<varlistentry><term>foreground</term>
+<listitem><para>The color number of the foreground color.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The color has been assigned.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>The selected color was already assigned.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example sets the background color of list box FILES to
+blue:
+<programlisting>
+<![CDATA[
+MyDialog~GetListBox("FILES")~SetColor(4, 15)
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
