@@ -1,0 +1,406 @@
+<?xml version="1.0" standalone="no">
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook V4.2//EN"
+[
+<!ENTITY legalstuff SYSTEM "legalstuff.sgml">
+<!ENTITY gethelp    SYSTEM "gethelp.sgml">
+<!ENTITY notices    SYSTEM "notices.sgml">
+<!ENTITY cpl        SYSTEM "CPLv1.0.sgml">
+<!ENTITY genindex   SYSTEM "genindex.sgml">
+<!ENTITY vmware     SYSTEM "vmware.sgml">
+<!ENTITY guestos    SYSTEM "guestos.sgml">
+<!ENTITY admin      SYSTEM "admin.sgml">
+<!ENTITY releases   SYSTEM "releases.sgml">
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Release Build Machine Environment
+    #
+    # Copyright (c) 2005-2006, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    # Author(s):
+    #      W. David Ashley <dashley@us.ibm.com>
+    #
+    #########################################################################
+-->
+<book>
+<bookinfo>
+<title>Open Object Rexx Build Machine</title>
+<subtitle>Release Build Machine Environment</subtitle>
+
+&legalstuff;
+
+</bookinfo>
+
+<preface id="preface"><title>About This Book</title>
+<para>This book describes the Open Object Rexx release build machine
+environment.</para>
+<para>This book is intended to document the release build environment for
+ooRexx. It is a complete description of the build machine environment as well
+as a user guide to building ooRexx releases using the build machine.</para>
+
+<section><title>A Note About Program Examples in this Document</title>
+<para>The program examples in this document are rendered in a mono-spaced
+font that is not completely compatible for cut-and-paste functionality.
+Pasteing text into an editor could result in some characters outside of
+the standard ASCII character set. Specifically, single-qoute and
+double-quote characters are sometimes converted incorrectly when
+pasted into an editor.</para>
+</section>
+</preface>
+
+<chapter><title>Release Build Environment Description</title>
+
+<section><title>Requirements</title>
+
+<para>In early 2007 the Rexx Language Association and the Open Object Rexx
+Development Team determined that it was time to provide a build environment
+for the Open Object Rexx (ooRexx) application. An environment was needed that
+met the following requirements:
+</para>
+
+<itemizedlist>
+<listitem><para>Provide Internet access so that anyone can build a release of
+ooRexx.
+</para></listitem>
+<listitem><para>Provide a variety of software build environments for multiple
+operating systems.
+</para></listitem>
+<listitem><para>Provide an automated solution for each supported build
+environment so that a minimum of human interaction is needed to perform a
+build of ooRexx.
+</para></listitem>
+<listitem><para>Make all builds available to the Internet. Archive builds
+older than one year.
+</para></listitem>
+<listitem><para>Support the Subversion (SVN) source repositories.
+</para></listitem>
+</itemizedlist>
+</section>
+
+<section><title>Solution</title>
+
+<para>From these requirements a plan was established to implement them. Several
+decisions were made early on that influenced the final design.
+</para>
+
+<itemizedlist>
+<listitem><para>Rather than purchasing individual servers for each operating
+system to be supported it was determined that a better solution would be to
+purchase one large server and use the
+<ulink url="http://www.vmware.com/">VMware</ulink>
+<ulink url="http://www.vmware.com/download/server">Server</ulink>
+product to provide support for multiple operating systems.
+</para></listitem>
+<listitem><para>Since the ooRexx Project is an open source project it was
+determined anyone should be able to request a build or get access to a build.
+</para></listitem>
+<listitem><para>It was determined that we should use Linux to host the
+<ulink url="http://www.vmware.com/download/server">VMware Server</ulink>
+environment. This would ease security concerns and provide the easiest setup.
+</para></listitem>
+</itemizedlist>
+</section>
+</chapter>
+
+<chapter><title>Build Machine Functional Description</title>
+
+<para>The following is the server hardware configuration chosen to support the
+ooRexx build environment.
+</para>
+
+<simplelist>
+<member>Dell PowerEdge SC440 server
+</member>
+<member>Dual Core Intel<trademark class="registered"></trademark>
+Pentium<trademark class="registered"></trademark>D 915, 2.8GHz CPU
+</member>
+<member>4GiB DDR2, 533 MHz, 4X1G Dual Ranked DIMMS Memory
+</member>
+<member>250GiB, SATA II, 3.5-inch, 7.2K RPM Hard Drive
+</member>
+<member>CDROM/DVD R/W
+</member>
+</simplelist>
+
+<para>The following software was installed on the server.
+</para>
+
+<itemizedlist>
+<listitem><para>Fedora Core 6
+</para></listitem>
+<listitem><para>WMware Server version 1.0.3 for Linux
+</para></listitem>
+<listitem><para>WMware Server Management Interface version 1.0.3 for Linux
+</para></listitem>
+<listitem><para>ooRexx version 3.1.2 for Linux
+</para></listitem>
+<listitem><para>RexxVix 1.0ooRexx version 3.1.2 for Linux
+</para></listitem>
+</itemizedlist>
+
+<section><title>Build Host User Accounts</title>
+
+<para>After Fedora was installed on the server one user account was extablished
+to own everything concerning the build process and administration of the server.
+The account name was <emphasis role="italic">buildorx</emphasis>.
+This account is very important because it will own the shared files for
+the guest operating systems as well as the VMware sessions.
+</para>
+
+<para>The <emphasis role="italic">buildorx</emphasis> account will also own the
+HTML pages used to control the server through the Apache web interface.
+</para>
+</section>
+
+<section><title>Disk Layout</title>
+
+<para>After considering a number of different partitioning schemes for the build
+server it was determined that the best alternative would be to keep the
+partitioning scheme as simple as possible and still provide for upgrades to
+the host system. The following scheme was applied to the server disk.
+</para>
+
+<itemizedlist>
+<listitem><para>100MiB partition for /boot
+</para></listitem>
+<listitem><para>20GiB partition for / root partition
+</para></listitem>
+<listitem><para>40GiB partition for /home partition
+</para></listitem>
+<listitem><para>4.1GiB swap partition
+</para></listitem>
+<listitem><para>Balance of the disk for the /var partition
+</para></listitem>
+</itemizedlist>
+
+<para>The following special subdirectories were created either by
+<ulink url="http://www.vmware.com/download/server">VMware Server</ulink>
+or the administrator.
+</para>
+
+<variablelist>
+    <varlistentry><term>/var/VMwareGuests</term>
+        <listitem><para>This where the VMware guest operating system images
+        will be stored.
+        </para></listitem>
+    </varlistentry>
+    <varlistentry><term>/var/VMwareGuestsBackup</term>
+        <listitem><para>Once a VMware guest OS has been installed and configured
+        a backup of that image will be stored here. That will allow easy
+        recovery in case the guest OS needs to be restored for some reason.
+        </para></listitem>
+    </varlistentry>
+</variablelist>
+
+<para>In addition, the <emphasis role="italic">buildorx</emphasis> home
+subdirectory has many support subdirectories.
+</para>
+
+<variablelist>
+    <varlistentry><term>/home/buildorx/bin</term>
+        <listitem><para>Programs needed by the
+        <emphasis role="italic">buildorx</emphasis> account are stored here.
+        </para></listitem>
+    </varlistentry>
+    <varlistentry><term>/home/buildorx/guestos</term>
+        <listitem><para>Files that are shared with the VMware guests are stored
+        here. Under this subdirectory is a subdirectory entry for each guest
+        OS. The subdirectory tree for each guest OS is described in the
+        documentation for that guest.
+        </para></listitem>
+    </varlistentry>
+    <varlistentry><term>/home/buildorx/website</term>
+        <listitem><para>This subdirectory will become the Apache document
+        root. The entire website for the server will be maintained from this
+        location.
+        </para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+
+<section><title>Operating System Installation</title>
+
+<para>The following are the step-by-step instructions used for setting up the
+build machine environment. This does not include instructions on setting up
+VMware guest operating systems. Those instructions are described in the sections
+describing each individual guest OS.
+</para>
+
+<para>Hopefully you have installed the Fedora Linux distribution before so
+an extended step-by-step guide will not be needed. Only the essential steps
+are described below as well as the configuration steps for managing the
+server.
+</para>
+
+<orderedlist>
+    <listitem><para>Start the Fedora installation.
+    </para></listitem>
+    <listitem><para>Partition the hard drive per the description above.
+    </para></listitem>
+    <listitem><para>SELinux was disabled for our installation as that level of
+    security was not deemed necessary.
+    </para></listitem>
+    <listitem><para>The firewall was enabled for our installation because the
+    server is directly available on the Internet.
+    </para></listitem>
+    <listitem><para>Make sure that you install Apache, all the development tools,
+    CVS, Subversion, VNC, Samba (used by the Windows guest OSs), xinetd,
+    and any other required tools.
+    </para></listitem>
+    <listitem><para>After the reboot, create the
+    <emphasis role="italic">buildorx</emphasis> user account.
+    </para></listitem>
+    <listitem><para>On the initial login let the software updates be applied
+    to the system when prompted by the system.
+    <note><para>This will probably load a new Linux kernel onto the system.
+    </para></note>
+    </para></listitem>
+    <listitem><para>The VNC server was enabled by editing the
+    <varname>/etc/sysconfig/vncservers</varname> file to enable remote access to the
+    <emphasis role="italic">buildorx</emphasis> user account.
+    <programlisting>
+    VNCSERVERS="1:buildorx"
+    VNCSERVERARGS[1]="-geometry 1024x768 -depth 16"
+    </programlisting>
+    </para>
+    <para>Next a VNC password was establiched for the
+    <emphasis role="italic">buildorx</emphasis> user account. This must be
+    performed while logged on as the
+    <emphasis role="italic">buildorx</emphasis> user.
+    <programlisting>
+    # vncpasswd
+    </programlisting>
+    </para>
+    <para>The <varname>/home/buildorx/.vnc/xstartup</varname> file was created and
+    used to start a gnome session instead of a twm session.
+    <programlisting>
+    #!/bin/sh
+
+    unset SESSION_MANAGER
+    exec /etc/X11/xinit/xinitrc
+
+    [ -x /etc/vnc/xstartup ] && exec /etc/vnc/xstartup
+    [ -r $HOME/.Xresources ] && xrdb $HOME/.Xresources
+    xsetroot -solid grey
+    vncconfig -iconic &
+    xterm -geometry 80x24+10+10 -ls -title "$VNCDESKTOP Desktop" &
+    gnome-session &
+    </programlisting>
+    </para>
+    <para>Be sure to make the <varname>xstartup</varname> file executable.
+    <programlisting>
+    # chmod ug+x xstartup
+    </programlisting>
+    </para>
+    <para>If the Fedora firewall was enabled be sure to allow tcp ports
+    5800, 5801. 5900, and 5901 through the firewall to support VNC.</para>
+    <para>Now start the VNC server.
+    <programlisting>
+    # service vncserver start
+    # chkconfig --level 5 vncserver on
+    </programlisting>
+    </para>
+    </listitem>
+    <listitem><para>Naturally we will install a copy of Open Object Rexx. It will
+    be used as our primary scripting engine. The latest version at the time of this
+    publication was 3.1.2.
+    </para></listitem>
+    <listitem><para>Samba is used to store shared files used by the WMware Windows
+    guest operating systems. To set it up first edit the
+    <varname>/etc/samba/smb.conf</varname> and make the following changes.
+    <programlisting>
+    # Use whatever workgroup works for you but remember that all the guest
+    # Windows OSs must use the same value.
+       workgroup = OOREXX
+
+    # This should cover any virtual network defined by VMware
+    # It will also restrict the shares to the vitual network
+       interfaces = vmnet*
+
+    # Create the public share with exclusive access given to the buildox account
+    [public]
+       comment = Shared public stuff
+       path = /home/buildorx/shared
+       public = yes
+       writable = yes
+       printable = no
+       write list = buildorx
+       force group = buildorx
+       create mask = 0664
+       directory mask = 0775
+    </programlisting>
+    </para>
+    <para>Next we need to create the SMB user account that will be used by the
+    guest Windows OS clients.
+    <programlisting>
+    # smbpasswd -a buildorx
+    </programlisting>
+    </para>
+    <para>Now start the Samba server and make it auto start at boot.
+    <programlisting>
+    # service smb start
+    # chkconfig --level 5 smb on
+    </programlisting>
+    </para>
+    </listitem>
+    <listitem><para>Next we need to generate the SSH public/private keys for the
+    server.</para>
+    <programlisting>
+    # ssh-keygen
+    </programlisting>
+    <para>Be sure to just hit return for the passphrase prompt (we do NOT want
+    a passphrase). Otherwise we cannot get true automation from our scripts.
+    </para>
+    </listitem>
+</orderedlist>
+</section>
+
+</chapter>
+
+&vmware;
+
+&guestos;
+
+&admin;
+
+&releases;
+
+
+&notices;
+&cpl;
+
+&genindex;
+
+</book>

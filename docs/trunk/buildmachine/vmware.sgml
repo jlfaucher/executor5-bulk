@@ -1,0 +1,130 @@
+
+<chapter><title>VMware Software installation Guide</title
+
+<section><title>VMware Server Installation</title>
+
+<para>It is highly recommended that you get a copy of
+<citetitle>Professional VMware Server</citetitle> by Eric Hammersley,
+Wiley Publishing, Inc., ISBN-13: 978-0-470-07988-1 and read it. It covers
+almost everything you need to know about setting up VMware Server.
+</para>
+
+<para>Using VMware Server
+with the Fedora Linux distribution presents some challenges since it is not
+supported by VMware. However, there are workarounds that allow the
+combination to work successfully. Those are documented in the following
+installation steps.
+</para>
+
+<orderedlist>
+<listitem><para>A copy of VMware Server may be downloaded from the VMware web
+site at <varname>http://www.vmware.com/downloads/server</varname>. The latest
+version at the time of this publication was 1.0.3. Since our operating
+system is Fedora we downloaded the RPM version of the Server.
+</para>
+<note><para>Please note that VMware Server version 1.0.1 requires some patching
+in order to run on Fedora Core 6. Therefore this version is not recommended.
+Version 1.0.3 also resolves a number of bugs on Linux.
+</para></note>
+<para>You will also need to register the server in order to obtain a valid
+serial number. The serial number will be used during the installation.
+The registration link is located on the main Vmware Server download page.
+</para></listitem>
+<listitem><para>It is also wise to download the VMware Server Linux and/or
+Windows client package so that your users can have a copy available via the
+server that matches the VMware Server package. This will allow your users
+direct access to the VMware Server guest operating systems via the Internet.
+</para></listitem>
+<listitem><para>You may also want to download the VMware Server web-based
+management interface. This will allow you users access to the VMware Server
+guest operating systems via a browser interface.
+</para></listitem>
+<listitem><para>Now install the VMware Server RPM.
+</para>
+<programlisting>
+# rpm -ivh VMware-server-1.0.3-44356.i386.rpm
+</programlisting>
+</listitem>
+<listitem><para>Normally at this point you would run the VMware configuration
+program. But since we are using an unsupported Linux host OS we need to
+perform a few workaround steps first. Please note that these steps could change
+if you are using a different Linux distribution or kernel.</para>
+<para>VMware will need to compile a custom driver for our
+installation. One of the problems it will encounter is a missing file in
+the kernel source. To work around this we will create an empty file so
+that the compile process will not fail.
+<programlisting>
+# touch /usr/src/kernels/2.6.19-1.2895.fc6.i686/include/linux/config.h
+</programlisting>
+</para>
+</listitem>
+<listitem><para>Now that our custom changes are in place we can perform the
+configuration of VMware Server.
+<note><para>Be sure that <varname>xinetd</varname> is installed prior to
+running the configuration program as it is needed for the VMware console.
+</para></note>
+</para>
+    <orderedlist>
+    <listitem><para>Run the VMware server configuration command.
+    <programlisting>
+    # vmware-config.pl
+    </programlisting>
+    </para>
+    </listitem>
+    <listitem><para>Accept the License Agreement.
+    </para></listitem>
+    <listitem><para>Specify the subdirectories where things are to be installed.
+    The defaults work for most installations.
+    </para></listitem>
+    <listitem><para>If you are running an unsupported Linux distribution then
+    you will now be prompted to create a custom vmmon module. Answer yes to
+    create the module.
+    </para></listitem>
+    <listitem><para>Next it will prompt for your active kernel. Ensure that
+    the kernel is correct and continue.
+    </para></listitem>
+    <listitem><para>Answer yes to the networking question.
+    </para></listitem>
+    <listitem><para>Answer yes to the NAT networking question.
+    </para></listitem>
+    <listitem><para>Answer yes to probing for an unused private subnet.
+    </para></listitem>
+    <listitem><para>We only need one NAT network so answer no to configuring
+    another network.
+    </para></listitem>
+    <listitem><para>Answer yes to the host only networking question.
+    </para></listitem>
+    <listitem><para>Answer yes to probing for an unused private subnet.
+    </para></listitem>
+    <listitem><para>We only need one network so answer no to configuring
+    another network.
+    </para></listitem>
+    <listitem><para>The configuration program will now prompt for the VMware
+    port to be used. The port it is looking for is 902. The configuration
+    program usually cannot correctly tell if this port is being used. So
+    determine whether or not it is being used on your system and if it is not
+    then override the suggested port with 902.
+    <note><para>The <varname>netstat -ntl</varname> can be used to verify the
+    availability of port 902.</para></note>
+    </para></listitem>
+    <listitem><para>Specify where you want the virtual machines kept. Our
+    location is <varname>/var/VMwareGuests</varname>.
+    </para></listitem>
+    <listitem><para>Enter your Serial Number.
+    </para></listitem>
+    <listitem><para>Configuration is now complete.
+    </para></listitem>
+    <listitem><para>If you have the Linux firewall enabled be sure to open
+    port 902 so that you can remotely access the VMware server with the
+    VMware Console of your choice.
+    </para></listitem>
+    </orderedlist>
+</listitem>
+<listitem><para>Try opening the VMware Server Console.
+If successful then you are ready to proceed.
+</para></listitem>
+</orderedlist>
+</section>
+
+</chapter>
+
