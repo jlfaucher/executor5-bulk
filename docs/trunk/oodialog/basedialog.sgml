@@ -5140,19 +5140,21 @@ control.</para>
 ]]>
 </programlisting>
 
-<para>The Get method returns the handle of the Windows Dialog associated with the
-top ooDialog dialog. A handle is a unique reference to a particular Windows
-object. Handles are used within some of the methods to work on a particular
+<para>The Get method returns the handle of the Windows Dialog associated with
+the top ooDialog dialog. A handle is a unique reference to a particular Windows
+object. Handles are used within some of the methods to work on a specific
 Windows object.</para>
 <note><title>Note</title><para>
-If more than one non-modal ooDialog exists, the top dialog and the dialog whose
-method is executing may not be the same.
+If more than one ooDialog exists, the top dialog and the dialog whose method is
+executing may not be the same.  When more than one dialog exists, the top dialog
+is the one that was created last.
 </para></note>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>Below is a contrived example to demonstrate that the top dialog
-and the executing dialog may not be the same.  Assume display is a method of a
-subclass of BaseDialog.
+<listitem><para>Below is an example demonstrating that the top dialog and the
+executing dialog may not be the same.  Assume display is a method of a subclass
+of BaseDialog and that staticDlg is a saved reference to another ooDialog
+object.
 <programlisting>
 <![CDATA[
 ::method display
@@ -5161,9 +5163,9 @@ subclass of BaseDialog.
   hwndTop = self~get
   hwndSelf = self~dlgHandle
   hwndStatic = staticDlg~dlgHandle
-  say "Top:   " hwndTop
-  say "Self:  " hwndSelf
-  say "Static:" hwndStatic
+  say "Top dialog:   " hwndTop
+  say "Self:         " hwndSelf
+  say "Static dialog:" hwndStatic
 
 ]]>
 </programlisting>
@@ -5172,9 +5174,9 @@ subclass of BaseDialog.
 <listitem><para>The above might write to the console something like the following:
 <programlisting>
 <![CDATA[
-  Top:    787096
-  Self:   4522228
-  Static: 787096
+  Top dialog:    787096
+  Self:          4522228
+  Static dialog: 787096
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
