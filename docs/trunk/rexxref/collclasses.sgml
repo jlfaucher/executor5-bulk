@@ -1852,7 +1852,7 @@ content: [3,2], content (LIFO): [2->3]
 
 </section>
 
-<section id="unorderedcoll"><title>The Unordered Collection Classes</title>
+<section id="unorderedcoll"><title>The Map Collection Classes</title>
 
 <section id="diro"><title>The Directory Class</title>
 <indexterm><primary>Directory class</primary></indexterm>
@@ -2386,6 +2386,202 @@ Exit
   If value = "" then value = "No listing found for" at_index
   Return value
 </programlisting>
+</section>
+</section>
+
+<section id="stemcl"><title>The Stem Class</title>
+<indexterm><primary>Stem class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>Stem class</secondary></indexterm>
+<para>A stem object is a collection with unique indexes
+that are character strings.</para>
+<para>Stems are automatically created whenever a Rexx stem variable or Rexx
+compound variable is used. For example: </para>
+<programlisting>
+a.1 = 2
+</programlisting>
+<para>creates a new stem collection with the name <computeroutput>A.</computeroutput>
+and assigns it to the Rexx variable <computeroutput>A.</computeroutput>; it also assigns
+the value 2 to entry 1 in the collection.</para>
+<para>The value of an uninitialied stem index is the stem object NAME
+concatenated with the derived stem index.  For
+example</para>
+<programlisting>
+say a.[1,2]  -- implcitly creates stem object with name "A."
+-- displays "A.1.2"
+
+a = .stem~new("B.")
+say a[1,2]     -- displays "B.1.2"
+</programlisting>
+<para>In addition to the items explicitly assigned to the
+collection indexes,
+a value may be assigned to all possible stem indexes.  The
+<computeroutput>[]=</computeroutput> method (with no index argument)
+will assign the target value to all possible stem indexes.
+Following assignment, a reference to any index will return the new value until
+another value is assigned or the index is dropped.</para>
+<para>The <computeroutput>[]</computeroutput> method (with no index specified) will retrieve any
+globally assigned value.  By default, this
+returns the stem NAME value.</para>
+<para>In addition to the methods defined in the following, the Stem class removes
+the methods =, ==, \=, \==, &lt;>, and >&lt; using the DEFINE method.</para>
+<para><emphasis role="bold">Methods the Stem class defines:</emphasis></para>
+<simplelist>
+<member>NEW (Class method.&nbsp;&nbsp;Overrides Object class method.)</member>
+<member>[]</member>
+<member>[]=</member>
+<member>MAKEARRAY</member>
+<member>REQUEST (Overrides Object class method)</member>
+<member>UNKNOWN</member>
+</simplelist>
+<para><emphasis role="bold">Methods inherited from the Object class:</emphasis>
+</para>
+<simplelist>
+<member>Operator methods:&nbsp;&nbsp;=, ==, \=, >&lt;, &lt;>, \==</member>
+<member>CLASS</member>
+<member>COPY</member>
+<member>DEFAULTNAME</member>
+<member>HASMETHOD</member>
+<member>OBJECTNAME</member>
+<member>OBJECTNAME=</member>
+<member>RUN</member>
+<member>SETMETHOD</member>
+<member>START</member>
+<member>STRING</member>
+<member>UNSETMETHOD</member>
+</simplelist>
+
+<note><title>Note</title>
+<para>The Stem class also has available class methods that its metaclass,
+the Class class, defines.</para></note>
+
+<section id="newste"><title>NEW  (Class Method)</title>
+<indexterm><primary>NEW method</primary>
+<secondary>of Stem class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>NEW method</secondary>
+<tertiary>of Stem class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-NEW-+--------+----------------------------------------------><
+       +-(name)-+
+]]>
+</programlisting>
+
+<para>Returns a new stem object. If you specify a string
+<emphasis role="italic">name</emphasis>, this
+value is used to create the derived name of compound variables. The default
+stem name is a null string.</para>
+</section>
+
+<section id="stlbrk"><title>[]</title>
+<indexterm><primary>[] method</primary>
+<secondary>of Stem class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>[] method</secondary>
+<tertiary>of Stem class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+     +-,---------+
+     V           |
+>>-[---+-------+-+-]-------------------------------------------><
+       +-index-+
+]]>
+</programlisting>
+
+<para>Returns the item associated with the specified
+<emphasis role="italic">index</emphasis>es. Each
+<emphasis role="italic">index</emphasis> is an expression; use commas to
+separate the expressions. The language processor concatenates the
+<emphasis role="italic">index</emphasis> expression string values, separating
+them with a period (.), to create a derived index. A null string (&quot;&quot;)
+is used for any omitted expressions. The resulting string references the stem
+item. If the stem has no item associated with the specified final
+<emphasis role="italic">index</emphasis>, the stem default value is returned.
+If a default value has not been
+set, the stem name concatenated with the final index string is returned.</para>
+<para>If you do not specify <emphasis role="italic">index</emphasis>, the stem
+default value is returned.
+If no default value has been assigned, the stem name is returned. </para>
+
+<note><title>Note</title>
+<para>You cannot use the [] method in a DROP or PROCEDURE instruction
+or in a parsing template.</para></note>
+</section>
+
+<section id="lreqsm"><title>[]=</title>
+<indexterm><primary>[]= method</primary>
+<secondary>of Stem class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>[]= method</secondary>
+<tertiary>of Stem class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+     +-,---------+
+     V           |
+>>-[---+-------+-+-]=value-------------------------------------><
+       +-index-+
+]]>
+</programlisting>
+
+<para>Makes the value a member item of the stem collection and associates it
+with the specified index. If you specify no
+<emphasis role="italic">index</emphasis> expressions, a
+new default stem value is assigned. Assigning a new default value will
+re-initialize the stem and remove all existing assigned indexes.</para>
+</section>
+
+<section id="makasm"><title>MAKEARRAY</title>
+<indexterm><primary>MAKEARRAY method</primary>
+<secondary>of Stem class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>MAKEARRAY method</secondary>
+<tertiary>of Stem class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-MAKEARRAY---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns an array of all stem indexes that currently have an associated
+value. The items appear in the array in an unspecified order.  (The program
+should not rely on any order.)</para>
+</section>
+
+<section id="reqsm"><title>REQUEST</title>
+<indexterm><primary>REQUEST method</primary>
+<secondary>of Stem class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>REQUEST method</secondary>
+<tertiary>of Stem class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-REQUEST(classid)--------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the result of the Stem class MAKEARRAY method, if the requested
+class is ARRAY. For all other classes, REQUEST forwards the message to the
+default value of the stem and returns this result. This method requests
+conversion to a specific class. All conversion requests except ARRAY are
+forwarded to the current stem default value.</para>
+</section>
+
+<section id="unkstm"><title>UNKNOWN</title>
+<indexterm><primary>UNKNOWN method</primary>
+<secondary>of Stem class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>UNKNOWN method</secondary>
+<tertiary>of Stem class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-UNKNOWN-(messagename,messageargs)---------------------------><
+]]>
+</programlisting>
+
+<para>Reissues or forwards to the current stem default value all unknown
+messages sent to a stem collection. For additional information, see
+<link linkend="unkno">Defining an UNKNOWN Method</link>.</para>
 </section>
 </section>
 
@@ -3208,8 +3404,9 @@ End
 
 </section>
 
-<section id="mapclasses"><title>The Map Classes</title>
-<para>The following section describes the builtin map classes supplied with ooRexx.</para>
+<section id="mapclasses"><title>The Set Collection Classes</title>
+<para>The following section describes the builtin set classes supplied 
+with ooRexx.</para>
 
 <section id="setcl"><title>The Set Class</title>
 <indexterm><primary>Set class</primary></indexterm>

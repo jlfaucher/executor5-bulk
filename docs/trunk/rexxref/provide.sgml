@@ -732,20 +732,21 @@ NEW*        |          |                |          |          |
 ><          INIT       DEFAULTNAME      OF*        []         | []=
 \==                    DEFINE           []         []=        | AT
 CLASS                  DELETE           []=        AT         | HASINDEX
-COPY                   ENHANCED         AT         FIRST      | ITEMS
-DEFAULTNAME            ID               DIMENSION  FIRSTITEM  | MAKEARRAY
-HASMETHOD              INHERIT          FIRST      HASINDEX   | PEEK
-INIT                   INIT             HASINDEX   INSERT     | PULL
-OBJECTNAME             METACLASS        ITEMS      ITEMS      | PUSH
-OBJECTNAME=            METHOD           LAST       LAST       | PUT
-REQUEST                METHODS          MAKEARRAY  LASTITEM   | QUEUE
-RUN                    MIXINCLASS       NEXT       MAKEARRAY  | REMOVE
-SETMETHOD              NEW              PREVIOUS   NEXT       | SUPPLIER
-START                  QUERYMIXINCLASS  PUT        PREVIOUS   |
-STRING                 SUBCLASS         REMOVE     PUT        +---------------+
-UNSETMETHOD            SUBCLASSES       SECTION    REMOVE     | CircularQueue |
-                       SUPERCLASSES     SIZE       SECTION    +---------------+
-                       UNINHERIT        SUPPLIER   SUPPLIER   OF*
+COPY                   ENHANCED         AT         FIRST      | INSERT
+DEFAULTNAME            ID               DIMENSION  FIRSTITEM  | ITEMS
+HASMETHOD              INHERIT          FIRST      HASINDEX   | MAKEARRAY
+INIT                   INIT             HASINDEX   INSERT     | PEEK
+OBJECTNAME             METACLASS        ITEMS      ITEMS      | PULL
+OBJECTNAME=            METHOD           LAST       LAST       | PUSH
+REQUEST                METHODS          MAKEARRAY  LASTITEM   | PUT
+RUN                    MIXINCLASS       NEXT       MAKEARRAY  | QUEUE
+SETMETHOD              NEW              PREVIOUS   NEXT       | REMOVE
+START                  QUERYMIXINCLASS  PUT        PREVIOUS   | SUPPLIER
+STRING                 SUBCLASS         REMOVE     PUT        |
+UNSETMETHOD            SUBCLASSES       SECTION    REMOVE     +---------------+
+                       SUPERCLASSES     SIZE       SECTION    | CircularQueue |
+                       UNINHERIT        SUPPLIER   SUPPLIER   +---------------+
+                                                              OF*
                                                               INIT
                                                               RESIZE
                                                               SIZE
@@ -753,9 +754,8 @@ UNSETMETHOD            SUBCLASSES       SECTION    REMOVE     | CircularQueue |
                                                               METHODS
 
 
-
 * All of the methods under the Class class are both class and instance
-  methods.NEW and OF are class methods.
+  methods. NEW and OF are class methods.
 ]]>
 </programlisting>
 </figure>
@@ -801,11 +801,6 @@ REMOVE                         HASINDEX
 SUPPLIER                       MAKEARRAY
                                PUT
                                SUPPLIER
-
-
-
-* All of the methods under the Class class are both class and instance
-  methods.NEW and OF are class methods.
 ]]>
 </programlisting>
 </figure>
@@ -828,10 +823,10 @@ UNKNOWN      INIT               MAKEARRAY  CHAROUT
              INSERT             REQUEST    CHARS
              LENGTH             UNKNOWN    CLOSE
              OVERLAY                       COMMAND
-             SETBUFFERSIZE                 DESCRIPTION
-             STRING                        FLUSH
-             SUBSTR                        INIT
-                                           LINEIN
+             POS                           DESCRIPTION
+             SETBUFFERSIZE                 FLUSH
+             STRING                        INIT
+             SUBSTR                        LINEIN
                                            LINEOUT
                                            LINES
                                            MAKEARRAY
@@ -843,11 +838,6 @@ UNKNOWN      INIT               MAKEARRAY  CHAROUT
                                            SEEK
                                            STATE
                                            SUPPLIER
-
-
-
-* All of the methods under the Class class are both class and instance
-  methods.NEW and OF are class methods.
 ]]>
 </programlisting>
 </figure>
@@ -855,6 +845,7 @@ UNKNOWN      INIT               MAKEARRAY  CHAROUT
 <figure float="1">
 <title>Classes and Inheritance of Methods (Part 4 of 4)</title>
 <programlisting>
+<![CDATA[
 +-----------------------------------------------------------------------------+
 | Object (continued)                                                          |
 +-----------------------------+-----------------------------------------------+
@@ -882,7 +873,7 @@ COMPARE           REVERSE
 < <= \<           STRING
 == \==            STRIP
 >> \>> >>=        SUBSTR
-<< \<< <<=        SUBWORD]]>
+<< \<< <<=        SUBWORD
 (concatenation:)  TRANSLATE
 ||                TRUNC
 COPIES            VERIFY
@@ -896,11 +887,7 @@ D2C               X2C
 D2X               X2D
 DECODEBASE64
 ENCODEBASE64
-
-
-
-* All of the methods under the Class class are both class and instance
-  methods.NEW and OF are class methods.
+]]>
 </programlisting>
 </figure>
 </section>
@@ -1412,11 +1399,13 @@ and prefix \</entry>
 </row>
 <row>
 <entry>POS</entry>
-<entry><link linkend="stpos">String</link></entry>
+<entry><link linkend="stpos">String</link>,
+<link linkend="mbpos">MutableBuffer</link></entry>
 </row>
 <row>
 <entry>POSITION</entry>
-<entry><link linkend="stposi">Stream</link></entry>
+<entry><link linkend="quinse">Queue</link>,
+<link linkend="stposi">Stream</link></entry>
 </row>
 <row>
 <entry>PREVIOUS</entry>

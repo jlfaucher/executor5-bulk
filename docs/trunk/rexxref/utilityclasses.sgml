@@ -1112,5 +1112,188 @@ say myRE~Position                     -- will be 2 (failure to match)
 </section>
 </section>
 
+<section id="supp"><title>The Supplier Class</title>
+<indexterm><primary>Supplier class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>Supplier class</secondary></indexterm>
+<para>You can use a supplier object to enumerate the items a collection
+contained at the time of the supplier's creation. The following methods
+return a supplier object: </para>
+<itemizedlist>
+<listitem><para>The SUPPLIER methods of the Array, Bag, Directory, List, Queue,
+Relation, Set, Table, and Stream classes</para></listitem>
+<listitem><para>The METHODS method of the Class class</para></listitem>
+</itemizedlist>
+<para>The Supplier class is a subclass of the Object class.</para>
+<para><emphasis role="bold">Methods the Supplier class defines:</emphasis>
+</para>
+<simplelist>
+<member>NEW (Class method.&nbsp;&nbsp;Overrides Object class method.)</member>
+<member>AVAILABLE</member>
+<member>INDEX</member>
+<member>INIT</member>
+<member>ITEM</member>
+<member>NEXT</member>
+</simplelist>
+<para><emphasis role="bold">Methods inherited from the Object class:</emphasis>
+</para>
+<simplelist>
+<member>Operator methods:&nbsp;&nbsp;=, ==, \=, >&lt;, &lt;>, \==</member>
+<member>CLASS</member>
+<member>COPY</member>
+<member>DEFAULTNAME</member>
+<member>HASMETHOD</member>
+<member>INIT</member>
+<member>OBJECTNAME</member>
+<member>OBJECTNAME=</member>
+<member>REQUEST</member>
+<member>RUN</member>
+<member>SETMETHOD</member>
+<member>START</member>
+<member>STRING</member>
+<member>UNSETMETHOD</member>
+</simplelist>
+
+<note><title>Note</title>
+<para>The Supplier class also has available class methods that its
+metaclass, the Class class, defines.</para></note>
+
+<section id="sunew"><title>NEW  (Class Method)</title>
+<indexterm><primary>NEW method</primary>
+<secondary>of Supplier class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>NEW method</secondary>
+<tertiary>of Supplier class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-NEW(values,indexes)-----------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a new supplier object. The
+<emphasis role="italic">values</emphasis> argument must be an
+array of values over which the supplier iterates. The
+<emphasis role="italic">indexes</emphasis> argument
+is an array of index values with a one-to-one correspondence to the objects
+contained in the values array. The created supplier iterates over the arrays,
+returning elements of the values array in response to  ITEM messages, and
+elements of the indexes array in response to INDEX messages. The supplier
+iterates for the number of items contained in the values array, returning
+the NIL object for any nonexistent items in either array.</para>
+</section>
+
+<section id="suavai"><title>AVAILABLE</title>
+<indexterm><primary>AVAILABLE method</primary>
+<secondary>of Supplier class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>AVAILABLE method</secondary>
+<tertiary>of Supplier class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-AVAILABLE---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>1</computeroutput> (true) if an item is available
+from the supplier (that is, if the ITEM method would return a value). It returns
+<computeroutput>0</computeroutput> (false) if the collection is empty or the
+supplier has already enumerated the entire collection.</para>
+</section>
+
+<section id="suinde"><title>INDEX</title>
+<indexterm><primary>INDEX method</primary>
+<secondary>of Supplier class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>INDEX method</secondary>
+<tertiary>of Supplier class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-INDEX-------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the index of the current
+item in the collection. If no item is available, that is, if AVAILABLE would
+return false, the language processor raises an error.</para>
+</section>
+
+<section id="suinit"><title>INIT</title>
+<indexterm><primary>INIT method</primary>
+<secondary>of Supplier class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>INIT method</secondary>
+<tertiary>of Supplier class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-INIT--------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Initializes the object instance.</para>
+</section>
+
+<section id="supitm"><title>ITEM</title>
+<indexterm><primary>ITEM method</primary>
+<secondary>of Supplier class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>ITEM method</secondary>
+<tertiary>of Supplier class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-ITEM--------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the current item in the collection. If no item is available, that
+is, if AVAILABLE would return false, the language processor raises an error.
+</para>
+</section>
+
+<section id="sunext"><title>NEXT</title>
+<indexterm><primary>NEXT method</primary>
+<secondary>of Supplier class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>NEXT method</secondary>
+<tertiary>of Supplier class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-NEXT--------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Moves to the next item in the collection.
+By repeatedly sending NEXT to the supplier (as long as AVAILABLE returns true),
+you can enumerate all items in the collection. If no item is available, that
+is, if AVAILABLE would return false, the language processor raises an error.
+</para>
+</section>
+
+<section id="supex"><title>Examples</title>
+<indexterm><primary>examples</primary>
+<secondary>of Supplier class</secondary></indexterm>
+<programlisting>
+desserts=.array~of(apples, peaches, pumpkins, 3.14159) /* Creates array */
+say "The desserts we have are:"
+baker=desserts~supplier             /* Creates supplier object named BAKER */
+do while baker~available            /* Array suppliers are sequenced       */
+  if baker~index=4
+  then say baker~item "is pi, not pie!!!"
+  else say baker~item
+  baker~next
+end
+
+/* Produces: */
+/* The desserts we have are: */
+/* APPLES                    */
+/* PEACHES                   */
+/* PUMPKINS                  */
+/* 3.14159 is pi, not pie!!! */
+</programlisting>
+
+<para>This method is used by INIT to set the attribute USERS to HKEY_USERS. Do
+not modify this attribute.</para>
+</section>
+</section>
+
 </section>
 

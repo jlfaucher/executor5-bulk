@@ -1,0 +1,1361 @@
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Reference SGML file.
+    #
+    # Copyright (c) 2005-2007, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    # Author(s):
+    #      W. David Ashley <dashley@us.ibm.com>
+    #
+    #########################################################################
+-->
+<section id="streamclasses"><title>The Stream Classes</title>
+<para>This section describes the ooRexx classes which implement the classic
+Rexx data streams.</para>
+
+<section id="strcl"><title>The Stream Class</title>
+<indexterm><primary>Stream class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>Stream class</secondary></indexterm>
+<para>A stream object allows external communication from
+Rexx. (See <link linkend="iostrms">Input and Output Streams</link> for a
+discussion of Rexx input and output.)</para>
+<para>The Stream class is a subclass of the Object class.</para>
+<para><emphasis role="bold">Methods the Stream class defines:</emphasis></para>
+<simplelist>
+<member>ARRAYIN</member>
+<member>ARRAYOUT</member>
+<member>CHARIN</member>
+<member>CHAROUT</member>
+<member>CHARS</member>
+<member>CLOSE</member>
+<member>COMMAND</member>
+<member>DESCRIPTION</member>
+<member>FLUSH</member>
+<member>LINEIN</member>
+<member>LINEOUT</member>
+<member>LINES</member>
+<member>MAKEARRAY</member>
+<member>OPEN</member>
+<member>POSITION</member>
+<member>QUALIFY</member>
+<member>QUERY</member>
+<member>SAY</member>
+<member>SEEK</member>
+<member>STATE</member>
+<member>SUPPLIER</member>
+<member>UNINIT</member>
+</simplelist>
+<para><emphasis role="bold">Methods inherited from the Object class:</emphasis>
+</para>
+<simplelist>
+<member>NEW (Class method)</member>
+<member>Operator methods:&nbsp;&nbsp;=, ==, \=, >&lt;, &lt;>, \==</member>
+<member>CLASS</member>
+<member>COPY</member>
+<member>DEFAULTNAME</member>
+<member>HASMETHOD</member>
+<member>OBJECTNAME</member>
+<member>OBJECTNAME=</member>
+<member>REQUEST</member>
+<member>RUN</member>
+<member>SETMETHOD</member>
+<member>START</member>
+<member>STRING</member>
+<member>UNSETMETHOD</member>
+</simplelist>
+
+<note><title>Note</title>
+<para>The Stream class also has available class methods that its
+metaclass, the Class class, defines.</para></note>
+
+<section id="strmnew"><title>NEW</title>
+<indexterm><primary>NEW method</primary>
+<secondary>of Stream class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>NEW method</secondary>
+<tertiary>of Stream class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-NEW(name)---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Initializes a stream object for a stream
+named <emphasis role="italic">name</emphasis>, but does not open the stream.
+See <link linkend="creo">Initialization</link> for
+more information. Returns the new stream object</para>
+</section>
+
+<section id="stmari"><title>ARRAYIN</title>
+<indexterm><primary>ARRAYIN method</primary>
+<secondary>of Stream class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>ARRAYIN method</secondary>
+<tertiary>of Stream class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+            +-(LINES)-+
+>>-ARRAYIN--+---------+----------------------------------------><
+            +-(CHARS)-+
+]]>
+</programlisting>
+
+<para>Returns a fixed array that contains the data of the stream in line or
+character format, starting from the current read position. The line format is
+the default.</para>
+<para>If you have used the CHARIN method, the first line can be a partial line.
+</para>
+</section>
+
+<section id="stmaro"><title>ARRAYOUT</title>
+<indexterm><primary>ARRAYOUT method</primary>
+<secondary>of Stream class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>ARRAYOUT method</secondary>
+<tertiary>of Stream class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+                  +-,--LINES-+
+>>-ARRAYOUT(array-+----------+-)-------------------------------><
+                  +-,--CHARS-+
+]]>
+</programlisting>
+
+<para>Returns a stream object that contains the data from
+<emphasis role="italic">array</emphasis>.</para>
+</section>
+
+<section id="charim"><title>CHARIN</title>
+<indexterm><primary>CHARIN method</primary>
+<secondary>of Stream class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>CHARIN method</secondary>
+<tertiary>of Stream class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-CHARIN-+----------------------------+-----------------------><
+          +-(-+-------+--+---------+-)-+
+              +-start-+  +-,length-+
+]]>
+</programlisting>
+
+<para>Returns a string of up to <emphasis role="italic">length</emphasis>
+characters from the character input stream receiving the message. The language
+processor advances the read pointer. If you omit
+<emphasis role="italic">length</emphasis>, it defaults to
+<computeroutput>1</computeroutput>. If you specify
+<emphasis role="italic">start</emphasis>, this positions the read pointer
+before reading. If the stream is not already open, the language processor tries
+to open the stream for reading and writing. If that fails, the language
+processor opens the stream for read only. (See
+<link linkend="charin">CHARIN (Character Input)</link>  for information
+about the CHARIN built-in function.)</para>
+</section>
+
+<section id="charom"><title>CHAROUT</title>
+<indexterm><primary>CHAROUT method</primary>
+<secondary>of Stream class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>CHAROUT method</secondary>
+<tertiary>of Stream class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-CHAROUT-+----------------------------+----------------------><
+           +-(-+--------+--+--------+-)-+
+               +-string-+  +-,start-+
+]]>
+</programlisting>
+
+<para>Returns the count of characters remaining after trying to write
+<emphasis role="italic">string</emphasis> to the character output stream
+receiving the message. The language processor
+advances the write pointer.</para>
+<para>The <emphasis role="italic">string</emphasis> can be the null string.
+In this case, CHAROUT writes
+no characters to the stream and returns <computeroutput>0</computeroutput>.
+If you omit <emphasis role="italic">string</emphasis>, CHAROUT writes no
+characters to the stream and returns <computeroutput>0</computeroutput>.
+The language processor closes the stream.</para>
+<para>If you specify <emphasis role="italic">start</emphasis>, this positions
+the write pointer before
+writing. If the stream is not already open, the language processor tries to
+open the stream for reading and writing. If that fails, the language processor
+opens the stream for write only. (See <link linkend="charout">CHAROUT
+(Character Output)</link>  for information
+about the CHAROUT built-in function.)</para>
+</section>
+
+<section id="charsm"><title>CHARS</title>
+<indexterm><primary>CHARS method</primary>
+<secondary>of Stream class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>CHARS method</secondary>
+<tertiary>of Stream class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-CHARS-------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the total number of characters remaining in the
+character input stream receiving the message. The default input stream is
+STDIN. The count includes any line separator characters, if these are defined
+for the stream. In the case of persistent streams, it is the count of characters
+from the current read position. (See
+<link linkend="iostrms">Input and Output Streams</link> for a discussion
+of Rexx input and output.) The total number of characters remaining cannot
+be determined for some streams (for example, STDIN). For these streams. the
+CHARS method returns <computeroutput>1</computeroutput>
+to indicate that data is present, or <computeroutput>0</computeroutput>
+if no data is present. For Windows devices,
+CHARS always returns <computeroutput>1</computeroutput>. (See
+<link linkend="chars">CHARS (Characters Remaining)</link> for information
+about the CHARS built-in function.)</para>
+</section>
+
+<section id="stclos"><title>CLOSE</title>
+<indexterm><primary>CLOSE method</primary>
+<secondary>of Stream class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>CLOSE method</secondary>
+<tertiary>of Stream class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-CLOSE-------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Closes the stream that receives the message. CLOSE returns
+<computeroutput>READY:</computeroutput> if closing the stream is successful,
+or an appropriate error message.
+If you have tried to close an unopened file, then the CLOSE method returns
+a null string (&quot;&quot;).</para>
+</section>
+
+<section id="cmdmet"><title>COMMAND</title>
+<indexterm><primary>COMMAND method</primary>
+<secondary>of Stream class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>COMMAND method</secondary>
+<tertiary>of Stream class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-COMMAND(stream_command)-------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a string after performing the specified
+<emphasis role="italic">stream_command</emphasis>. The returned string depends
+on the <emphasis role="italic">stream_command</emphasis> performed
+and can be the null string. The following
+<emphasis role="italic">stream_command</emphasis>s: </para>
+<itemizedlist>
+<listitem><para>Open a stream for reading, writing, or both</para></listitem>
+<listitem><para>Close a stream at the end of an operation</para></listitem>
+<listitem><para>Move the line read or write position within a persistent stream
+(for example, a file)</para></listitem>
+<listitem><para>Get information about a stream</para></listitem></itemizedlist>
+
+<para>If the method is unsuccessful, it returns an error message
+string in the same form that the DESCRIPTION method uses.</para>
+<para>For most error conditions, the additional information is in the form of
+a numeric return code. This return code is the value of
+<computeroutput>ERRNO</computeroutput> that
+is set whenever one of the file system primitives returns with a
+<computeroutput>-1</computeroutput>.</para>
+
+<section id="commstr"><title>Command Strings</title>
+<para>The argument <emphasis role="italic">stream_command</emphasis>
+can be any expression that the language processor evaluates to a command string
+that corresponds to the following diagram:</para>
+<programlisting>
+<![CDATA[
+           +-BOTH--| Write Options |-+
+>>-+-OPEN--+-------------------------+--+-------------+-+------><
+   |       +-READ--------------------+  +-| Options |-+ |
+   |       +-WRITE--+---------+------+                  |
+   |                +-APPEND--+                         |
+   |                +-REPLACE-+                         |
+   +-CLOSE----------------------------------------------+
+   +-FLUSH----------------------------------------------+
+   |               +- = -+                    +-CHAR-+  |
+   +-+-SEEK-----+--+-----+-offset--+-------+--+------+--+
+   | +-POSITION-+  +- < -+         +-READ--+  +-LINE-+  |
+   |               +- + -+         +-WRITE-+            |
+   |               +- - -+                              |
+   +-QUERY--+-DATETIME--------------------------+-------+
+            +-EXISTS----------------------------+
+            +-HANDLE----------------------------+
+            |                       +-CHAR-+    |
+            +-+-SEEK-----+--+-READ--+------+--+-+
+            | +-POSITION-+  |       +-LINE-+  | |
+            |               |        +-CHAR-+ | |
+            |               +-WRITE--+------+-+ |
+            |               |        +-LINE-+ | |
+            |               +-SYS-------------+ |
+            +-SIZE------------------------------+
+            +-STREAMTYPE------------------------+
+            +-TIMESTAMP-------------------------+
+]]>
+</programlisting>
+
+<para><emphasis role="bold">Write Options:</emphasis></para>
+
+<programlisting>
+<![CDATA[
+|--+---------+--------------------------------------------------|
+   +-APPEND--+
+   +-REPLACE-+
+]]>
+</programlisting>
+
+<para><emphasis role="bold">Options:</emphasis></para>
+
+<programlisting>
+<![CDATA[
+                   +-----------------------------------+
+                   V                                   |
+|--+------------+----+-NOBUFFER----------------------+-+--------|
+   +-SHARED-----+    +-BINARY--+-------------------+-+
+   +-SHAREREAD--+              +-RECLENGTH--length-+
+   +-SHAREWRITE-+
+]]>
+</programlisting>
+
+<variablelist>
+<varlistentry><term>OPEN</term>
+<listitem><para>Opens the stream object receiving the message and returns
+<computeroutput>READY:</computeroutput>. (If unsuccessful, the previous
+information about return codes applies.)
+The default for OPEN is to open the stream for both reading and writing data,
+for example: <computeroutput>&apos;OPEN BOTH&apos;</computeroutput>. To specify that the
+<emphasis role="italic">stream_name</emphasis> receiving the message can be
+only read or written to, add READ or WRITE, to the command string. </para>
+<para>The following is a description of the options for
+OPEN: </para>
+<variablelist>
+<varlistentry><term>READ</term>
+<listitem><para>Opens the stream only for reading.
+</para></listitem></varlistentry>
+<varlistentry><term>WRITE</term>
+<listitem><para>Opens the stream only for writing.
+</para></listitem></varlistentry>
+<varlistentry><term>BOTH</term>
+<listitem><para>Opens the stream for both reading and writing. (This is the
+default.) The language processor maintains separate read and write pointers.
+</para></listitem></varlistentry>
+<varlistentry><term>APPEND</term>
+<listitem><para>Positions the write pointer at the end of the stream. The write
+pointer cannot be moved anywhere within the extent of the file as it existed
+when the file was opened.
+</para></listitem></varlistentry>
+<varlistentry><term>REPLACE</term>
+<listitem><para>Sets the write pointer to the beginning of the stream and
+truncates the file. In other words, this option deletes all data that was in
+the stream when opened.
+</para></listitem></varlistentry>
+<varlistentry><term>SHARED</term>
+<listitem><para>Enables another process to work with the stream in a shared
+mode. This mode must be compatible with the shared mode (SHARED, SHAREREAD, or
+SHAREWRITE) used by the process that opened the stream.
+</para></listitem></varlistentry>
+<varlistentry><term>SHAREREAD</term>
+<listitem><para>Enables another process to read the stream in a shared mode.
+</para></listitem></varlistentry>
+<varlistentry><term>SHAREWRITE</term>
+<listitem><para>Enables another process to write the stream in a shared mode.
+</para></listitem></varlistentry>
+<varlistentry><term>NOBUFFER</term>
+<listitem><para>Turns off buffering of the stream.
+All data written to the stream is
+flushed immediately to the operating system for writing. This option can have
+a severe impact on output performance. Use it only when data integrity is
+a concern, or to force interleaved output to a stream to appear in the exact
+order in which it was written.
+</para></listitem></varlistentry>
+<varlistentry><term>BINARY</term>
+<listitem><para>Opens the stream in binary mode.
+This means that line end characters
+are ignored; they are treated like any other byte of data. This is intended
+to force file operations that are compatible with other
+Rexx language processors that run on record-based systems, or to process
+binary data using the line operations.</para>
+
+<note><title>Note</title>
+<para>Specifying the BINARY option for a stream that
+does not exist but is opened for writing also requires the RECLENGTH option
+to be specified. Omitting the RECLENGTH option in this case raises an error
+condition.</para></note>
+</listitem></varlistentry>
+<varlistentry><term>RECLENGTH <emphasis role="italic">length</emphasis></term>
+<listitem><para>Allows the specification of an exact length
+for each line in a stream.
+This allows line operations on binary-mode streams to operate on individual
+fixed-length records. Without this option, line operations on binary-mode
+files operate on the entire file (for example, as if you specified the
+<computeroutput>RECLENGTH</computeroutput> option with a length equal to
+that of the file). The <emphasis role="italic">length</emphasis> must be
+<computeroutput>1</computeroutput> or greater.
+</para></listitem></varlistentry>
+</variablelist>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>COMMAND method</secondary>
+<tertiary>OPEN option</tertiary></indexterm>
+<programlisting>
+stream_name~Command("open")
+stream_name~Command("open write")
+stream_name~Command("open read")
+stream_name~Command("open read shared")
+</programlisting>
+</listitem></varlistentry>
+<varlistentry><term>CLOSE</term>
+<listitem><para>closes the stream object receiving the message. The COMMAND
+method with the CLOSE option returns <computeroutput>READY:</computeroutput>
+if the receiving stream object
+is successfully closed or an appropriate error message otherwise. If an attempt
+to close an unopened file occurs, then the COMMAND method with the CLOSE option
+returns a null string (&quot;&quot;).
+</para></listitem></varlistentry>
+<varlistentry><term>FLUSH</term>
+<listitem><para>forces any data currently buffered for writing to be written to
+this stream.
+</para></listitem></varlistentry>
+<varlistentry><term>SEEK <emphasis role="italic">offset</emphasis></term>
+<listitem><para>sets the read or write position to a given number
+(<emphasis role="italic">offset</emphasis>) within a persistent stream. If the
+stream is open for both reading
+and writing and you do not specify READ or WRITE, both the read and write
+positions are set.</para>
+
+<note><title>Note</title>
+<para>See <link linkend="iostrms">Input and Output Streams</link>  for a
+discussion of read and write positions in a persistent stream.</para></note>
+<para>To
+use this command, you must first open the receiving stream object (with the
+OPEN stream command described previously or implicitly with an input or output
+operation). One of the following characters can precede the
+<emphasis role="italic">offset</emphasis> number. </para>
+<variablelist>
+<varlistentry><term>=</term>
+<listitem><para>explicitly specifies the
+<emphasis role="italic">offset</emphasis> from the beginning of the stream.
+This is the default if you supply no prefix. For example, an
+<emphasis role="italic">offset</emphasis> of <computeroutput>1</computeroutput>
+with the LINE option means the beginning of the stream.
+</para></listitem></varlistentry>
+<varlistentry><term>&lt;</term>
+<listitem><para>specifies <emphasis role="italic">offset</emphasis> from the
+end of the stream.</para></listitem></varlistentry>
+<varlistentry><term>+</term>
+<listitem><para>specifies <emphasis role="italic">offset</emphasis>
+forward from the current read or write position.
+</para></listitem></varlistentry>
+<varlistentry><term>-</term>
+<listitem><para>specifies <emphasis role="italic">offset</emphasis>
+backward from the current read or write position.
+</para></listitem></varlistentry>
+</variablelist>
+<para>The COMMAND method with the SEEK option returns the new position
+in the stream if the read or write position is successfully located, or an
+appropriate error message.</para>
+<para>The following is a description of the options
+for SEEK: </para>
+<variablelist>
+<varlistentry><term>READ</term>
+<listitem><para>specifies that this command sets the read position.
+</para></listitem></varlistentry>
+<varlistentry><term>WRITE</term>
+<listitem><para>specifies that this command sets the write position.
+</para></listitem></varlistentry>
+<varlistentry><term>CHAR</term>
+<listitem><para>specifies the positioning in terms of characters. This is the
+default.
+</para></listitem></varlistentry>
+<varlistentry><term>LINE</term>
+<listitem><para>specifies the positioning in terms of lines. For non-binary streams,
+this is potentially an operation that can take a long time to complete because,
+in most cases, the file must be scanned from the top to count the line-end
+characters. However, for binary streams with a specified record length, the
+new resulting line number is simply multiplied by the record length before
+character positioning. See
+<link linkend="positio">Line versus Character Positioning</link>
+for a detailed discussion of this issue. </para>
+
+<note><title>Note</title>
+<para>If you do line positioning in a file open only
+for writing, you receive an error message.</para></note>
+</listitem></varlistentry>
+</variablelist>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>COMMAND method</secondary>
+<tertiary>SEEK option</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+stream_name~Command("seek =2 read")
+stream_name~Command("seek +15 read")
+stream_name~Command("seek -7 write line")
+fromend  = 125
+stream_name~Command("seek <"fromend read)
+]]>
+</programlisting>
+</listitem></varlistentry>
+<varlistentry><term>POSITION</term>
+<listitem><para>is a synonym for SEEK.</para>
+<para>Used with these <emphasis role="italic">stream_command</emphasis>s, the
+COMMAND method returns
+specific information about a stream. Except for QUERY HANDLE and QUERY POSITION,
+the language processor returns the query information even if the stream is
+not open. The language processor returns the null string for nonexistent streams.
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>QUERY DATETIME</term>
+<listitem><para>Returns the date and time stamps of a stream in US format. For
+example:
+<indexterm><primary>examples</primary>
+<secondary>COMMAND method</secondary>
+<tertiary>QUERY DATETIME option</tertiary></indexterm>
+<programlisting>
+stream_name~Command("query datetime")
+</programlisting>
+</para><para>A sample output might be: </para>
+<programlisting>
+11-12-95 03:29:12
+</programlisting>
+</listitem></varlistentry>
+<varlistentry><term>QUERY EXISTS</term>
+<listitem><para>Returns the full path specification of the stream object
+receiving the message, if it exists, or a null string. For example: </para>
+<indexterm><primary>examples</primary>
+<secondary>COMMAND method</secondary>
+<tertiary>QUERY EXISTS option</tertiary></indexterm>
+<programlisting>
+stream_name~Command("query exists")
+</programlisting>
+<para>A sample output might be: </para>
+<programlisting>
+c:\data\file.txt
+</programlisting>
+</listitem></varlistentry>
+<varlistentry><term>QUERY HANDLE</term>
+<listitem><para>Returns the handle associated with the open stream that is the
+receiving stream object. For example: </para>
+<indexterm><primary>examples</primary>
+<secondary>COMMAND method</secondary>
+<tertiary>QUERY HANDLE option</tertiary></indexterm>
+<programlisting>
+stream_name~Command("query handle")
+</programlisting>
+<para>A sample output might be:
+<computeroutput>3</computeroutput></para>
+
+</listitem></varlistentry>
+<varlistentry><term>QUERY POSITION</term>
+<listitem><para>Returns the current read or write position for the receiving
+stream object, as qualified by the following options:
+<variablelist>
+<varlistentry><term>READ</term>
+<listitem><para>Returns the current read position.
+</para></listitem></varlistentry>
+<varlistentry><term>WRITE</term>
+<listitem><para>Returns the current write position. </para>
+
+<note><title>Note</title>
+<para>If the stream is
+open for both reading and writing, this returns the read position by default.
+Otherwise, this returns the appropriate position by default.</para></note>
+</listitem></varlistentry>
+<varlistentry><term>CHAR</term>
+<listitem><para>Returns the position in terms of characters. This is the
+default.
+</para></listitem></varlistentry>
+<varlistentry><term>LINE</term>
+<listitem><para>Returns the position in terms of lines. For non-binary streams,
+this operation can take a long time to complete. This is because the language
+processor starts tracking the current line number if not
+already doing so, and, thus, might require a scan of the stream from
+the top to count the line-end characters. See
+<link linkend="positio">Line versus Character Positioning</link>
+for a detailed discussion of this issue. For example: </para>
+<programlisting>
+stream_name~Command("query position write")
+</programlisting>
+<para>A sample
+output might be: </para>
+<programlisting>
+247
+</programlisting>
+</listitem></varlistentry>
+<varlistentry><term>SYS</term>
+<listitem><para>Returns the operating system stream position in terms of
+characters.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term>QUERY SEEK</term>
+<listitem><para>Is a synonym for QUERY POSITION.
+</para></listitem></varlistentry>
+<varlistentry><term>QUERY SIZE</term>
+<listitem><para>Returns the size in bytes of a persistent stream that is the
+receiving stream object. For example: </para>
+<programlisting>
+stream_name~Command("query size")
+</programlisting>
+<para>A sample output might be: </para>
+<programlisting>
+1305
+</programlisting>
+</listitem></varlistentry>
+<varlistentry><term>QUERY STREAMTYPE</term>
+<listitem><para>Returns a string indicating whether the receiving stream object
+is <computeroutput>PERSISTENT</computeroutput>,
+<computeroutput>TRANSIENT</computeroutput>, or
+<computeroutput>UNKNOWN</computeroutput>.
+</para></listitem></varlistentry>
+<varlistentry><term>QUERY TIMESTAMP</term>
+<listitem><para>Returns the date and time stamps of the receiving stream object
+in an international format. This is the preferred method of getting date and
+time because it provides the full 4-digit year. For example:</para>
+<programlisting>
+stream_name~Command("query timestamp")
+</programlisting>
+<para>A sample output might be: </para>
+<programlisting>
+1995-11-12 03:29:12
+</programlisting>
+</listitem></varlistentry>
+</variablelist>
+</section>
+</section>
+
+<section id="desmet"><title>DESCRIPTION</title>
+<indexterm><primary>DESCRIPTION method</primary>
+<secondary>of Stream class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>DESCRIPTION method</secondary>
+<tertiary>of Stream class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-DESCRIPTION-------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns any descriptive string associated with the
+current state of the stream or the NIL object if no descriptive string is
+available. The DESCRIPTION method is identical with the STATE method except
+that the string that DESCRIPTION returns is followed by a colon and, if
+available, additional information about ERROR or NOTREADY states. (The
+<link linkend="statsm">STATE</link> method describes these states.)</para>
+</section>
+
+<section id="stflus"><title>FLUSH</title>
+<indexterm><primary>FLUSH method</primary>
+<secondary>of Stream class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>FLUSH method</secondary>
+<tertiary>of Stream class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-FLUSH-------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>READY:</computeroutput>. It forces any data
+currently buffered for writing
+to be written to the stream receiving the message.</para>
+</section>
+
+<section id="linein1"><title>LINEIN</title>
+<indexterm><primary>LINEIN method</primary>
+<secondary>of Stream class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>LINEIN method</secondary>
+<tertiary>of Stream class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-LINEIN-+-------------------------+--------------------------><
+          +-(-+------+-+--------+-)-+
+              +-line-+ +-,count-+
+]]>
+</programlisting>
+
+<para>Returns the next <emphasis role="italic">count</emphasis> lines. The
+count must be <computeroutput>0</computeroutput> or
+<computeroutput>1</computeroutput>. The language processor advances the read
+pointer. If you omit <emphasis role="italic">count</emphasis>, it defaults to
+<computeroutput>1</computeroutput>. A <emphasis role="italic">line</emphasis>
+number may be given to set the read position to the start of a specified
+line. This line number must be positive and within the bounds of the stream,
+and must not be specified for a transient stream. A value of 1 for
+<emphasis role="italic">line</emphasis> refers to the first line in the stream.
+If the stream is not already
+open, the language processor tries to open the stream for reading and writing.
+If that fails, the language processor opens the stream for read-only. (See
+<link linkend="linein">LINEIN (Line Input)</link>  for information about the
+LINEIN built-in function.)</para>
+</section>
+
+<section id="lineom"><title>LINEOUT</title>
+<indexterm><primary>LINEOUT method</primary>
+<secondary>of Stream class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>LINEOUT method</secondary>
+<tertiary>of Stream class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-LINEOUT-+--------------------------+------------------------><
+           +-(-+--------+-+-------+-)-+
+               +-string-+ +-,line-+
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>0</computeroutput> if successful in writing
+<emphasis role="italic">string</emphasis> to the character output stream
+receiving the message or <computeroutput>1</computeroutput> if
+an error occurs while writing the line. The language processor advances the
+write pointer. If you omit <emphasis role="italic">string</emphasis>, the
+language processor closes the stream. If you specify
+<emphasis role="italic">line</emphasis>, this positions the write pointer
+before writing. If the stream is not already open, the language processor
+tries to open the stream for reading and writing. If that fails, the language
+processor opens the stream for write-only. (See
+<link linkend="lineout">LINEOUT (Line Output)</link>  for
+information about the LINEOUT built-in function.)</para>
+</section>
+
+<section id="linesm"><title>LINES</title>
+<indexterm><primary>LINES method</primary>
+<secondary>of Stream class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>LINES method</secondary>
+<tertiary>of Stream class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+           +-Count--+
+>>-LINES(--+--------+---)--------------------------------------><
+           +-Normal-+
+]]>
+</programlisting>
+
+<para>Returns the number of completed lines that remain in the character input
+stream receiving the message. If the stream has already been read with CHARIN,
+this can include an initial partial line. For persistent streams the count
+starts at the current read position. In effect, LINES reports whether a read
+action of CHARIN (see <link linkend="charim">CHARIN</link>) or LINEIN (see
+<link linkend="linein1">LINEIN</link>) will succeed. (For an explanation of
+input and output, see
+<link linkend="iostrms">Input and Output Streams</link>.)</para>
+<para>For QUEUE, LINES returns the actual number of lines. (See
+<link linkend="ylines">LINES (Lines Remaining)</link> for
+information about the LINES built-in function.)</para>
+<para> </para>
+
+<note><title>Note</title>
+<para>The CHARS method returns the number of characters in a
+persistent stream or the presence of data in a transient stream. The LINES
+method determines the actual number of lines by scanning the stream starting
+at the current position and counting the lines. For large streams, this can
+be a time-consuming operation.  Therefore, avoid the use of the LINES method
+in the  condition of a loop reading a stream. It is recommended that you use
+the CHARS method (see <link linkend="charsm">CHARS</link>) or the LINES
+built-in function for this purpose.</para></note>
+
+<para>The ANSI Standard has extended this function to allow an option: "Count".
+If this option is used, LINES returns the actual number of complete
+lines remaining in the stream, irrespective of how long this operation takes.
+</para>
+
+<para>The option "Normal" returns 1 if there is at least one complete line
+remaining in the file or 0 if no lines remain.</para>
+
+<para>The default is "Count".</para>
+
+<para>The defaults of the LINES method and function are different because of
+compatibility reasons.</para>
+
+</section>
+
+<section id="stasfa"><title>MAKEARRAY</title>
+<indexterm><primary>MAKEARRAY method</primary>
+<secondary>of Stream class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>MAKEARRAY method</secondary>
+<tertiary>of Stream class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+              +-(LINES)-+
+>>-MAKEARRAY--+---------+--------------------------------------><
+              +-(CHARS)-+
+]]>
+</programlisting>
+
+<para>Returns a fixed array that contains
+the data of the stream in line or character format, starting from the current
+read position. The line format is the default.</para>
+<para>If you have used the CHARIN method, the first line can be a partial line.
+</para>
+</section>
+
+<section id="stopen"><title>OPEN</title>
+<indexterm><primary>OPEN method</primary>
+<secondary>of Stream class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>OPEN method</secondary>
+<tertiary>of Stream class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+         +-(BOTH-| Write Options |--+  +-SHARED-----+
+>>-OPEN--+--------------------------+--+------------+----------->
+         +-(READ--------------------+  +-SHAREREAD--+
+         +-(WRITE-| Write Options |-+  +-SHAREWRITE-+
+
+   +-----------------------------------+
+   V                                   |
+>----+-------------------------------+-+--+---+----------------><
+     +-NOBUFFER----------------------+    +-)-+
+     +-BINARY--+-------------------+-+
+               +-RECLENGTH--length-+
+]]>
+</programlisting>
+
+<para><emphasis role="bold">Write Options:</emphasis></para>
+
+<programlisting>
+<![CDATA[
+   +-------------+
+   V +-APPEND--+ |
+|----+---------+-+----------------------------------------------|
+     +-REPLACE-+
+]]>
+</programlisting>
+
+<para>Opens the stream to which you send the message and returns
+<computeroutput>READY:</computeroutput>. If the method is unsuccessful, it
+returns an error message string
+in the same form that the DESCRIPTION method uses.</para>
+<para>For most error conditions, the additional information is in the form of
+a numeric return code. This return code is the value of
+<computeroutput>ERRNO</computeroutput>,
+which is set whenever one of the file system primitives returns with a
+<computeroutput>-1</computeroutput>.</para>
+<para>By default, OPEN opens the stream for both reading and writing data, for
+example: <computeroutput>&apos;OPEN BOTH&apos;</computeroutput>. To specify that the
+stream receiving
+the message can be only read or only written to, specify READ or WRITE.</para>
+<para>The options for the OPEN method are: </para>
+<variablelist>
+<varlistentry><term>READ</term>
+<listitem><para>Opens the stream only for reading.
+</para></listitem></varlistentry>
+<varlistentry><term>WRITE</term>
+<listitem><para>Opens the stream only for writing.
+</para></listitem></varlistentry>
+<varlistentry><term>BOTH</term>
+<listitem><para>Opens the stream for both reading and writing. (This is the
+default.) The language processor maintains separate read and write pointers.
+</para></listitem></varlistentry>
+<varlistentry><term>APPEND</term>
+<listitem><para>Positions the write pointer at the end of the stream.
+(This is the default.)
+The write pointer cannot be moved anywhere within the extent of the file as
+it existed when the file was opened.
+</para></listitem></varlistentry>
+<varlistentry><term>REPLACE</term>
+<listitem><para>Sets the write pointer to the beginning of the stream
+and truncates
+the file. In other words, this option deletes all data that was in the stream
+when opened.
+</para></listitem></varlistentry>
+<varlistentry><term>SHARED</term>
+<listitem><para>Enables another process to work with the stream in a shared mode. (This
+is the default.) This mode must be compatible with the shared mode (SHARED,
+SHAREREAD, or SHAREWRITE) used by the process that opened the stream.
+</para></listitem></varlistentry>
+<varlistentry><term>SHAREREAD</term>
+<listitem><para>Enables another process to read the stream in a shared mode.
+</para></listitem></varlistentry>
+<varlistentry><term>SHAREWRITE</term>
+<listitem><para>Enables another process to write the stream in a shared mode.
+</para></listitem></varlistentry>
+<varlistentry><term>NOBUFFER</term>
+<listitem><para>Turns off buffering of the stream. All data written to the stream is
+flushed immediately to the operating system for writing. This option can have
+a severe impact on output performance. Use it only when data integrity is
+a concern, or to force interleaved output to a stream to appear in the exact
+order in which it was written.
+</para></listitem></varlistentry>
+<varlistentry><term>BINARY</term>
+<listitem><para>Opens the stream in binary mode. This means that line-end
+characters are ignored; they are treated like any other byte of data. This is
+intended to force file operations that are compatible with
+other Rexx language processors
+that run on record-based systems, or to process binary data using the line
+operations. </para>
+
+<note><title>Note</title>
+<para>Specifying the BINARY option for a stream that
+does not exist but is opened for writing also requires the RECLENGTH option
+to be specified. Omitting the RECLENGTH option in this case raises an error
+condition.</para></note>
+</listitem></varlistentry>
+<varlistentry><term>RECLENGTH <emphasis role="italic">length</emphasis></term>
+<listitem><para>Allows the specification of an exact length for each line
+in a stream.
+This allows line operations on binary-mode streams to operate on individual
+fixed-length records. Without this option, line operations on binary-mode
+files operate on the entire file (for example, as if you specified the
+<computeroutput>RECLENGTH</computeroutput> option with a length equal to that
+of the file). The <emphasis role="italic">length</emphasis> must be
+<computeroutput>1</computeroutput> or greater.
+</para></listitem></varlistentry>
+</variablelist>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>OPEN method</secondary></indexterm>
+<programlisting>
+stream_name~OPEN
+stream_name~OPEN("write")
+stream_name~OPEN("read")
+</programlisting>
+</section>
+
+<section id="stposi"><title>POSITION</title>
+<indexterm><primary>POSITION method</primary>
+<secondary>of Stream class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>POSITION method</secondary>
+<tertiary>of Stream class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+             +- = -+                  +-CHAR-+
+>>-POSITION(-+-----+-offset-+-READ--+-+------+-)---------------><
+             +- < -+        +-WRITE-+ +-LINE-+
+             +- + -+
+             +- - -+
+]]>
+</programlisting>
+
+<para>POSITION is a synonym for SEEK. (See
+<link linkend="stseek">SEEK</link> .)</para>
+</section>
+
+<section id="qualm"><title>QUALIFY</title>
+<indexterm><primary>QUALIFY method</primary>
+<secondary>of Stream class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>QUALIFY method</secondary>
+<tertiary>of Stream class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-QUALIFY-----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the stream's fully qualified name. The stream need
+not be open.</para>
+</section>
+
+<section id="stquer"><title>QUERY</title>
+<indexterm><primary>method</primary>
+<secondary>QUERY</secondary>
+<tertiary>of Stream class</tertiary></indexterm>
+<indexterm><primary>QUERY method</primary>
+<secondary>of Stream class</secondary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-QUERY(--+-DATETIME--------------------------+--)------------><
+           +-EXISTS----------------------------+
+           +-HANDLE----------------------------+
+           |                       +-CHAR-+    |
+           +-+-SEEK-----+--+-READ--+------+--+-+
+           | +-POSITION-+  |       +-LINE-+  | |
+           |               |        +-CHAR-+ | |
+           |               +-WRITE--+------+-+ |
+           |               |        +-LINE-+ | |
+           |               +-SYS-------------+ |
+           +-SIZE------------------------------+
+           +-STREAMTYPE------------------------+
+           +-TIMESTAMP-------------------------+
+]]>
+</programlisting>
+
+<para>Used with these options, the QUERY method returns specific information
+about a stream. Except for QUERY HANDLE and QUERY POSITION, the
+language processor
+returns the query information even if the stream is not open. The language
+processor returns the null string for nonexistent streams. </para>
+<variablelist>
+<varlistentry><term>DATETIME</term>
+<listitem><para>returns the date and time stamps of the receiving stream object
+in US format. For example:</para>
+<programlisting>
+stream_name~query("datetime")
+</programlisting>
+<para>A sample output might
+be: </para>
+<programlisting>
+11-12-98 03:29:12
+</programlisting>
+</listitem></varlistentry>
+<varlistentry><term>EXISTS</term>
+<listitem><para>returns the full path specification of the receiving stream
+object, if it exists, or a null string. For example: </para>
+<indexterm><primary>examples</primary>
+<secondary>QUERY method</secondary></indexterm>
+<programlisting>
+<emphasis role="italic">stream_name</emphasis>~query("exists")
+</programlisting>
+<para>A sample output might be: </para>
+<programlisting>
+c:\data\file.txt
+</programlisting>
+</listitem></varlistentry>
+<varlistentry><term>HANDLE</term>
+<listitem><para>returns the handle associated with the open stream that is the
+receiving stream object. For example:</para>
+<programlisting>
+<emphasis role="italic">stream_name</emphasis>~query("handle")
+</programlisting>
+<para>A sample output might be: </para>
+<programlisting>
+3
+</programlisting>
+</listitem></varlistentry>
+<varlistentry><term>POSITION</term>
+<listitem><para>returns the current read or write position for the receiving
+stream object, as qualified by the following options:
+<variablelist>
+<varlistentry><term>READ</term>
+<listitem><para>returns the current read position.
+</para></listitem></varlistentry>
+<varlistentry><term>WRITE</term>
+<listitem><para>returns the current write position. </para>
+
+<note><title>Note</title>
+<para>If the stream is
+open for both reading and writing, this returns the read position by default.
+Otherwise, this returns the appropriate position by default.</para></note>
+</listitem></varlistentry>
+<varlistentry><term>CHAR</term>
+<listitem><para>returns the position in terms of characters.
+This is the default.
+</para></listitem></varlistentry>
+<varlistentry><term>LINE</term>
+<listitem><para>returns the position in terms of lines. For non-binary streams,
+this operation can take a long time to complete. This is because the language
+processor starts tracking the current line number if not already doing so, and,
+thus, might require a scan of the stream from the top to count the line-end
+characters. See
+<link linkend="positio">Line versus Character Positioning</link>
+for a detailed discussion of this issue. For example: </para>
+<programlisting>
+<emphasis role="italic">stream_name</emphasis>~query("position write")
+</programlisting>
+<para>A sample output
+might be: </para>
+<programlisting>
+247
+</programlisting>
+</listitem></varlistentry>
+<varlistentry><term>SYS</term>
+<listitem><para>returns the operating system stream position in terms of
+characters. </para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term>SIZE</term>
+<listitem><para>returns the size, in bytes, of a persistent stream that is the
+receiving stream object. For example: </para>
+<programlisting>
+<emphasis role="italic">stream_name</emphasis>~query("size")
+</programlisting>
+<para>A sample output might be: </para>
+<programlisting>
+1305
+</programlisting>
+</listitem></varlistentry>
+<varlistentry><term>STREAMTYPE</term>
+<listitem><para>returns a string indicating whether the receiving stream
+object is <computeroutput>PERSISTENT</computeroutput>,
+<computeroutput>TRANSIENT</computeroutput>, or
+<computeroutput>UNKNOWN</computeroutput>.
+</para></listitem></varlistentry>
+<varlistentry><term>TIMESTAMP</term>
+<listitem><para>returns the date and time stamps of the receiving stream object
+in an international format. This is the preferred method of getting the date and
+time because it provides the full 4-digit year. For example:</para>
+<programlisting>
+<emphasis role="italic">stream_name</emphasis>~query("timestamp")
+</programlisting>
+<para>A sample output might be: </para>
+<programlisting>
+1998-11-12 03:29:12
+</programlisting>
+</listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="strmsay"><title>SAY</title>
+<indexterm><primary>SAY method</primary>
+<secondary>of Stream class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>SAY method</secondary>
+<tertiary>of Stream class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SAY--+----------------+-------------------------------------><
+        +-(-+--------+-)-+
+            +-string-+
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>0</computeroutput> if successful in writing
+<emphasis role="italic">string</emphasis> to the character output stream
+receiving the message or <computeroutput>1</computeroutput> if
+an error occurs while writing the line.</para>
+</section>
+
+<section id="stseek"><title>SEEK</title>
+<indexterm><primary>SEEK method</primary>
+<secondary>of Stream class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>SEEK method</secondary>
+<tertiary>of Stream class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+         +- = -+                  +-CHAR-+
+>>-SEEK(-+-----+-offset-+-------+-+------+-)-------------------><
+         +- < -+        +-READ--+ +-LINE-+
+         +- + -+        +-WRITE-+
+         +- - -+
+]]>
+</programlisting>
+
+<para>Sets the read or write position to a given number
+(<emphasis role="italic">offset</emphasis>) within a persistent stream. If
+the stream is open for both reading
+and writing and you do not specify READ or WRITE, both the read and write
+positions are set. </para>
+
+<note><title>Note</title>
+<para>See <link linkend="iostrms">Input and Output Streams</link>
+for a discussion
+of read and write positions in a persistent stream.</para></note>
+<para>To use this method, you must first open the receiving stream object (with
+the OPEN method described previously or implicitly with an input or output
+operation). One of the following characters can precede the
+<emphasis role="italic">offset</emphasis> number:</para>
+<variablelist>
+<varlistentry><term>=</term>
+<listitem><para>Explicitly specifies the
+<emphasis role="italic">offset</emphasis> from the beginning of the stream.
+This is the default if you supply no prefix. For example, an
+<emphasis role="italic">offset</emphasis> of <computeroutput>1</computeroutput>
+means the beginning of the stream.
+</para></listitem></varlistentry>
+<varlistentry><term>&lt;</term>
+<listitem><para>Specifies <emphasis role="italic">offset</emphasis>
+from the end of the stream.
+</para></listitem></varlistentry>
+<varlistentry><term>+</term>
+<listitem><para>Specifies <emphasis role="italic">offset</emphasis>
+forward from the current read or write position.
+</para></listitem></varlistentry>
+<varlistentry><term>-</term>
+<listitem><para>Specifies <emphasis role="italic">offset</emphasis>
+backward from the current read or write position.
+</para></listitem></varlistentry>
+</variablelist>
+<para>The SEEK method returns the new position in the stream if the read or
+write position is successfully located, or an appropriate error message.</para>
+<para>The following is a description of the options for SEEK: </para>
+<variablelist>
+<varlistentry><term>READ</term>
+<listitem><para>specifies that the read position be set.
+</para></listitem></varlistentry>
+<varlistentry><term>WRITE</term>
+<listitem><para>specifies that the write position be set.
+</para></listitem></varlistentry>
+<varlistentry><term>CHAR</term>
+<listitem><para>specifies that positioning be done in terms of characters.
+This is the default.
+</para></listitem></varlistentry>
+<varlistentry><term>LINE</term>
+<listitem><para>specifies that the positioning be done in terms of lines. For
+non-binary streams, this is potentially an operation that can take a long time
+to complete because, in most cases, the file must be scanned from the top to
+count the line-end characters. However, for binary streams with a specified
+record length, the new resulting line number is simply multiplied by the record
+length before character positioning. See
+<link linkend="positio">Line versus Character Positioning</link>
+for a detailed discussion of this issue. </para>
+
+<note><title>Note</title>
+<para>If you do line positioning in a file open only
+for writing, you receive an error message.</para></note>
+</listitem></varlistentry>
+</variablelist>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>SEEK method</secondary></indexterm>
+<programlisting>
+<emphasis role="italic">stream_name</emphasis>~seek("=2 read")
+<emphasis role="italic">stream_name</emphasis>~seek("+15 read")
+<emphasis role="italic">stream_name</emphasis>~seek("-7 write line")
+fromend  = 125
+<emphasis role="italic">stream_name</emphasis>~seek("&lt;"fromend read)
+</programlisting>
+</section>
+
+<section id="statsm"><title>STATE</title>
+<indexterm><primary>STATE method</primary>
+<secondary>of Stream class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>STATE method</secondary>
+<tertiary>of Stream class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-STATE-------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a string that indicates the current state of the specified
+stream.</para>
+<para>The returned strings are as follows: </para>
+<variablelist>
+<varlistentry><term>ERROR</term>
+<listitem><para>The stream has been subject to an erroneous operation
+(possibly during input, output, or through the STREAM function). See
+<link linkend="stmerr">Errors during Input and Output</link>.
+You might be able to obtain additional information about the error with the
+DESCRIPTION method or by calling the STREAM function with a request for the
+description.
+</para></listitem></varlistentry>
+<varlistentry><term>NOTREADY</term>
+<listitem><para>The stream is known to be in such a state that the usual input
+or output operations attempted upon would raise the NOTREADY condition. (See
+<link linkend="stmerr">Errors during Input and Output</link>.)
+ For example, a simple input stream can have a defined length. An attempt
+to read that stream (with CHARIN or LINEIN, perhaps) beyond that limit can
+make the stream unavailable until the stream has been closed (for example,
+with LINEOUT(<emphasis role="italic">name</emphasis>)) and then reopened.
+</para></listitem></varlistentry>
+<varlistentry><term>READY</term>
+<listitem><para>The stream is known to be in such a state that the usual input
+or output operations might be attempted. This is the usual state for a stream,
+although it does not guarantee that any particular operation will succeed.
+</para></listitem></varlistentry>
+<varlistentry><term>UNKNOWN</term>
+<listitem><para>The state of the stream is unknown. This generally means that
+the stream is closed or has not yet been opened.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="strmstr"><title>STRING</title>
+<indexterm><primary>STRING method</primary>
+<secondary>of Stream class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>STRING method</secondary>
+<tertiary>of Stream class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-STRING------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a string that indicates the name of the object the stream
+represents i.e. the name of the file.
+</para>
+</section>
+
+<section id="stsup"><title>SUPPLIER</title>
+<indexterm><primary>SUPPLIER method</primary>
+<secondary>of Stream class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>SUPPLIER method</secondary>
+<tertiary>of Stream class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SUPPLIER----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a supplier object for the stream. When you send appropriate
+messages to the supplier object (see
+<link linkend="supp">The Supplier Class</link>), it enumerates all the lines
+in the stream object. The supplier enumerates the items in their line order.
+</para>
+</section>
+
+<section id="strmuninit"><title>UNINIT</title>
+<indexterm><primary>UNINIT method</primary>
+<secondary>of Stream class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>UNINIT method</secondary>
+<tertiary>of Stream class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-UNINIT------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>This method cleans up the object when it is garbage collected. It should
+not be invoked directly except via an UNINIT method of a subclass of the Stream
+class.
+</para>
+<para>If the Stream class is subclassed and the subclass provides an UNINIT
+method then that method must invoke the superclass UNINIT method.
+The following example shows how to accomplish this.</para>
+<programlisting>
+<![CDATA[
+::class CustomStream subclass Stream
+
+...
+
+::method uninit
+/* the subclass instance cleanup code should be placed here */
+super~uninit  -- this should be the last action in the method
+return
+]]>
+</programlisting>
+</section>
+</section>
+
+</section>
+

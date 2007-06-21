@@ -48,13 +48,14 @@ HTML_STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/html/docbook.dsl
 SGML_FILES = collclasses.sgml \
 	     condtra.sgml \
 	     classes.sgml \
-	     classicclasses.sgml \
+	     streamclasses.sgml \
 	     utilityclasses.sgml \
 	     winclasses.sgml \
 	     dire.sgml \
 	     errnum.sgml \
 	     errnums.sgml \
 	     funct.sgml \
+	     fundclasses.sgml \
 	     instrc.sgml \
 	     intro.sgml \
 	     iostrms.sgml \
@@ -79,7 +80,8 @@ SGML_FILES = collclasses.sgml \
 	     ../shared/gethelp.sgml \
 	     ../shared/CPLv1.0.sgml
 
-IMAGE_FILES = rxo90004.jpg \
+IMAGE_FILES = ooRexxObjectClass.png \
+              rxo90004.jpg \
 	      rxo90005.jpg \
 	      rxo90006.jpg \
 	      rxo90007.jpg \
