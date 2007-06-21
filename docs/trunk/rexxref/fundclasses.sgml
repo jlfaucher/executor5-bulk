@@ -688,75 +688,45 @@ method is a protected method.</para></listitem>
 <indexterm><primary>Class class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>Class class</secondary></indexterm>
+<figure><title>The Object class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxClassClass.png" align="left" scale="80">
+</imageobject>
+</mediaobject>
+</figure>
 <para>The Class class is like a factory producing the factories that
 produce objects. It is a subclass of the Object class. The instance methods
 of the Class class are also the class methods of all classes.</para>
-<para><emphasis role="bold">Methods the Class class defines:</emphasis>
-(They are all both class and instance methods.) </para>
-<simplelist>
-<member>BASECLASS</member>
-<member>DEFAULTNAME (Overrides Object class method)</member>
-<member>DEFINE</member>
-<member>DELETE</member>
-<member>ENHANCED</member>
-<member>ID</member>
-<member>INHERIT</member>
-<member>METACLASS</member>
-<member>METHOD</member>
-<member>METHODS</member>
-<member>MIXINCLASS</member>
-<member>NEW (Overrides Object class method)</member>
-<member>QUERYMIXINCLASS</member>
-<member>SUBCLASS</member>
-<member>SUBCLASSES</member>
-<member>SUPERCLASSES</member>
-<member>UNINHERIT</member>
-</simplelist>
 
-<para><emphasis role="bold">Methods inherited from the Object class:</emphasis>
-</para>
-<simplelist>
-<member>Operator methods:&nbsp;&nbsp;=, ==, \=, >&lt;, &lt;>, \==</member>
-<member>CLASS</member>
-<member>COPY</member>
-<member>HASMETHOD</member>
-<member>OBJECTNAME</member>
-<member>OBJECTNAME=</member>
-<member>REQUEST</member>
-<member>RUN</member>
-<member>SETMETHOD</member>
-<member>START</member>
-<member>STRING</member>
-<member>UNSETMETHOD</member>
-</simplelist>
-
-<section id="clbase"><title>BASECLASS</title>
-<indexterm><primary>BASECLASS method</primary>
+<section id="clbase"><title>baseClass</title>
+<indexterm><primary>baseClass method</primary>
 <secondary>of Class class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>BASECLASS method</secondary>
+<secondary>baseClass method</secondary>
 <tertiary>of Class class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-BASECLASS---------------------------------------------------><
+>>-baseClass---------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Returns the base class associated with the class. If the class is a mixin
 class, the base class is the first superclass that is not also a mixin class.
 If the class is not a mixin class, the base class is the class receiving the
-BASECLASS message.</para>
+<emphasis role="bold">baseClass</emphasis> message.</para>
 </section>
 
-<section id="cldena"><title>DEFAULTNAME</title>
-<indexterm><primary>DEFAULTNAME method</primary>
+<section id="cldena"><title>defaultName</title>
+<indexterm><primary>defaultName method</primary>
 <secondary>of Class class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>DEFAULTNAME method</secondary>
+<secondary>defaultName method</secondary>
 <tertiary>of Class class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-DEFAULTNAME-------------------------------------------------><
+>>-defaultName-------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -769,26 +739,26 @@ The id class
 to the class when it was created.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>DEFAULTNAME method</secondary></indexterm>
+<secondary>defaultName method</secondary></indexterm>
 <programlisting>
-say .array~defaultname     /* Displays "The Array class"   */
-say .account~defaultname   /* Displays "The ACCOUNT class" */
-say .savings~defaultname   /* Displays "The Savings class" */
+say .array~defaultName     /* Displays "The Array class"   */
+say .account~defaultName   /* Displays "The ACCOUNT class" */
+say .savings~defaultName   /* Displays "The Savings class" */
 
 ::class account            /* Name is all upper case       */
 ::class "Savings"          /* String name is mixed case    */
 </programlisting>
 </section>
 
-<section id="cldefi"><title>DEFINE</title>
-<indexterm><primary>DEFINE method</primary>
+<section id="cldefi"><title>define</title>
+<indexterm><primary>define method</primary>
 <secondary>of Class class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>DEFINE method</secondary>
+<secondary>define method</secondary>
 <tertiary>of Class class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-DEFINE(methodname-+---------+-)-----------------------------><
+>>-define(methodname-+---------+-)-----------------------------><
                      +-,method-+
 ]]>
 </programlisting>
@@ -796,48 +766,53 @@ say .savings~defaultname   /* Displays "The Savings class" */
 <para>Incorporates the method object <emphasis role="italic">method</emphasis>
 in the receiver class's collection of instance methods. The language processor
 translates the method name <emphasis role="italic">methodname</emphasis>
-to uppercase. Using the DEFINE method replaces any existing definition for
+to uppercase. Using the <emphasis role="bold">define</emphasis>
+method replaces any existing definition for
 <emphasis role="italic">methodname</emphasis> in the receiver class.</para>
 <para>If you omit <emphasis role="italic">method</emphasis>, the method name
 <emphasis role="italic">methodname</emphasis> is made
 unavailable for the receiver class. Sending a message of that name
-to an instance of the class causes the UNKNOWN method (if any) to be run.</para>
+to an instance of the class causes the 
+<emphasis role="bold">unknown</emphasis> method (if any) to be run.</para>
 <para>The <emphasis role="italic">method</emphasis> argument can be a string
 containing a method source line instead of a method object. Alternatively, you
 can pass an array of strings containing individual method lines. Either way,
-DEFINE creates an equivalent method object. </para>
+<emphasis role="bold">define</emphasis> creates an equivalent method object. 
+</para>
 
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
 <listitem><para>The classes Rexx provides do not permit changes or additions to
 their method definitions.</para></listitem>
-<listitem><para>The DEFINE method is a protected method.</para></listitem>
+<listitem><para>The <emphasis role="bold">define</emphasis> 
+method is a protected method.</para></listitem>
 </orderedlist>
 <para><emphasis role="bold">Example:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>DEFINE method</secondary></indexterm>
+<secondary>define method</secondary></indexterm>
 <programlisting>
 bank_account=.object~subclass("Account")
 bank_account~define("TYPE",&apos;return "a bank account"&apos;)
 </programlisting>
 </section>
 
-<section id="cldele"><title>DELETE</title>
-<indexterm><primary>DELETE method</primary>
+<section id="cldele"><title>delete</title>
+<indexterm><primary>delete method</primary>
 <secondary>of Class class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>DELETE method</secondary>
+<secondary>delete method</secondary>
 <tertiary>of Class class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-DELETE(methodname)------------------------------------------><
+>>-delete(methodname)------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Removes the receiver class's definition
 for the method name <emphasis role="italic">methodname</emphasis>. If the
 receiver class defined <emphasis role="italic">methodname</emphasis> as
-unavailable with the DEFINE method, this definition is
+unavailable with the <emphasis role="bold">define</emphasis>
+method, this definition is
 nullified. If the receiver class had no definition for
 <emphasis role="italic">methodname</emphasis>, no action is taken. </para>
 
@@ -845,14 +820,16 @@ nullified. If the receiver class had no definition for
 <orderedlist>
 <listitem><para>The classes Rexx provides do not permit changes or additions
 to their method definitions.</para></listitem>
-<listitem><para>DELETE deletes only methods the target class defines. You
+<listitem><para><emphasis role="bold">delete</emphasis>
+deletes only methods the target class defines. You
 cannot delete inherited methods the target's superclasses define.</para>
 </listitem>
-<listitem><para>The DELETE method is a protected method.</para></listitem>
+<listitem><para>The <emphasis role="bold">delete</emphasis>
+method is a protected method.</para></listitem>
 </orderedlist>
 <para><emphasis role="bold">Example:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>DELETE method</secondary></indexterm>
+<secondary>delete method</secondary></indexterm>
 <programlisting>
 myclass=.object~subclass("Myclass")        /* After creating a class  */
 myclass~define("TYPE",&apos;return "my class"&apos;) /* and defining a method   */
@@ -860,15 +837,15 @@ myclass~delete("TYPE")                     /* this deletes the method */
 </programlisting>
 </section>
 
-<section id="obccen"><title>ENHANCED</title>
-<indexterm><primary>ENHANCED method</primary>
+<section id="obccen"><title>enhanced</title>
+<indexterm><primary>enhanced method</primary>
 <secondary>of Class class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>ENHANCED method</secondary>
+<secondary>enhanced method</secondary>
 <tertiary>of Class class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-ENHANCED(methods-+---------------+-)------------------------><
+>>-enhanced(methods-+---------------+-)------------------------><
                     | +-----------+ |
                     | V           | |
                     +---,argument-+-+
@@ -881,14 +858,17 @@ the collection <emphasis role="italic">methods</emphasis>. The collection
 indexes are the names of the enhancing
 methods, and the items are the method objects (or strings or arrays of strings
 containing method code). (See the description of
-<link linkend="cldefi">DEFINE</link>.)
-You can use any collection that supports a SUPPLIER method.</para>
-<para>ENHANCED sends an INIT message to the created object, passing the
-<emphasis role="italic">argument</emphasis>s specified on the ENHANCED method.
+<link linkend="cldefi">define</link>.)
+You can use any collection that supports a 
+<emphasis role="bold">supplier</emphasis> method.</para>
+<para><emphasis role="bold">enhanced</emphasis> sends an 
+<emphasis role="bold">init</emphasis> message to the created object, passing the
+<emphasis role="italic">argument</emphasis>s specified on the 
+<emphasis role="bold">enhanced</emphasis> method.
 </para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>ENHANCED method</secondary></indexterm>
+<secondary>enhanced method</secondary></indexterm>
 <programlisting>
 /* Set up rclass with class method or methods you want in your */
 /* remote class */
@@ -896,44 +876,45 @@ rclassmeths = .directory~new
 
 rclassmeths["DISPATCH"]=d_source     /* d_source must have code for a  */
                                      /* DISPATCH  method.              */
-/* The following sends INIT("Remote Class") to a new instance */
+/* The following sends init("Remote Class") to a new instance */
 rclass=.class~enhanced(rclassmeths,"Remote Class")
 </programlisting>
 </section>
 
-<section id="clid"><title>ID</title>
-<indexterm><primary>ID method</primary>
+<section id="clid"><title>id</title>
+<indexterm><primary>id method</primary>
 <secondary>of Class class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>ID method</secondary>
+<secondary>id method</secondary>
 <tertiary>of Class class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-ID----------------------------------------------------------><
+>>-id----------------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Returns the class identity (instance) string. (This is the string that
-is an argument on the SUBCLASS and MIXINCLASS methods.) The string
+is an argument on the <emphasis role="bold">subClass</emphasis> and 
+<emphasis role="bold">mixinClass</emphasis> methods.) The string
 representations of the class and its instances contain the class identity.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>ID method</secondary></indexterm>
+<secondary>id method</secondary></indexterm>
 <programlisting>
-myobject=.object~subclass("my object")  /* Creates a subclass    */
+myobject=.object~subClass("my object")  /* Creates a subclass    */
 say myobject~id                         /* Produces: "my object" */
 </programlisting>
 </section>
 
-<section id="clinhe"><title>INHERIT</title>
-<indexterm><primary>INHERIT method</primary>
+<section id="clinhe"><title>inherit</title>
+<indexterm><primary>inherit method</primary>
 <secondary>of Class class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>INHERIT method</secondary>
+<secondary>inherit method</secondary>
 <tertiary>of Class class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-INHERIT(classobj-+-----------+-)----------------------------><
+>>-inherit(classobj-+-----------+-)----------------------------><
                     +-,classpos-+
 ]]>
 </programlisting>
@@ -942,7 +923,8 @@ say myobject~id                         /* Produces: "my object" */
 the class object <emphasis role="italic">classobj</emphasis>. The
 <emphasis role="italic">classpos</emphasis> is a class object
 that specifies the position of the new superclass in the list of superclasses.
-(You can use the SUPERCLASSES method to return the immediate superclasses.)
+(You can use the <emphasis role="bold">superClasses</emphasis>
+method to return the immediate superclasses.)
 </para>
 <para>The new superclass is inserted in the search order after the specified
 class. If the <emphasis role="italic">classpos</emphasis> class is not found in
@@ -955,63 +937,96 @@ class hierarchy. Any subsequent change to the instance methods of
 <emphasis role="italic">classobj</emphasis> takes immediate effect
 for all the classes that inherit from it.</para>
 <para>The new superclass <emphasis role="italic">classobj</emphasis> must be
-created with the MIXINCLASS
-option of the ::CLASS directive or the MIXINCLASS method and the base class
+created with the <emphasis role="bold">mixinClass</emphasis>
+option of the ::CLASS directive or the 
+<emphasis role="bold">mixinClass</emphasis> method and the base class
 of the <emphasis role="italic">classobj</emphasis> must be a direct superclass
 of the receiver object. The receiver must not already descend from
 <emphasis role="italic">classobj</emphasis> in the class
 hierarchy and vice versa.</para>
-<para>The method search order of the receiver class after INHERIT is the same
-as before INHERIT, with the addition of
+<para>The method search order of the receiver class after 
+<emphasis role="bold">inherit</emphasis> is the same
+as before <emphasis role="bold">inherit</emphasis>, with the addition of
 <emphasis role="italic">classobj</emphasis> and its superclasses
 (if not already present). </para>
 
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
 <listitem><para>You cannot change the classes that Rexx provides by sending
-INHERIT messages.</para></listitem>
-<listitem><para>The INHERIT method is a protected method.</para></listitem>
+<emphasis role="bold">inherit</emphasis> messages.</para></listitem>
+<listitem><para>The <emphasis role="bold">inherit</emphasis> 
+method is a protected method.</para></listitem>
 </orderedlist>
 <para><emphasis role="bold">Example:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>INHERIT method</secondary></indexterm>
+<secondary>inherit method</secondary></indexterm>
 <programlisting>
 room~inherit(.location)
 </programlisting>
 </section>
 
-<section id="clmeta"><title>METACLASS</title>
-<indexterm><primary>METACLASS method</primary>
+<section id="clissubclsof"><title>isSubClassOf</title>
+<indexterm><primary>isSubclassOf method</primary>
 <secondary>of Class class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>METACLASS method</secondary>
+<secondary>isSubclassOf method</secondary>
 <tertiary>of Class class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-METACLASS---------------------------------------------------><
+>>-isSubclassOf(classname)-------------------------------------><
+]]>
+</programlisting>
+<para>Returns .true ("1") if the object is a subclass of the specified
+<emphasis role="italic">classname</emphasis>.
+Returns .false ("0") if the object is not a a subclass of the specified
+<emphasis role="italic">classname</emphasis>.
+An object is a subclass of a class if the object is a child of the
+specified <emphasis role="italic">classname</emphasis> or if the
+<emphasis role="italic">classname</emphasis> is in the object's direct or mixin
+class inheritance chain. For example:
+<programlisting>
+<![CDATA[
+"abc"~isSubclassOf(.object)             ->  1
+"abc"~isSubclassOf(.mutablebuffer)      ->  0
+]]>
+</programlisting>
+</para>
+</section>
+
+<section id="clmeta"><title>metaClass</title>
+<indexterm><primary>metaClass method</primary>
+<secondary>of Class class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>metaClass method</secondary>
+<tertiary>of Class class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-metaClass---------------------------------------------------><
 ]]>
 </programlisting>
 <para>Returns the receiver class's default metaclass. This is the class used
-to create subclasses of this class when you send SUBCLASS or MIXINCLASS messages
+to create subclasses of this class when you send 
+<emphasis role="bold">subClass</emphasis> or 
+<emphasis role="bold">mixinClass</emphasis> messages
 (with no metaclass arguments). If the receiver class is an object class (see
 <link linkend="objcla">Object Classes</link>), this is also the class used to
 create the receiver class.
 The instance methods of the default metaclass are the class methods of the
 receiver class. For more information about class methods, see
 <link linkend="objcla">Object Classes</link>.
-See also the description of the SUBCLASS method in
-<link linkend="clsubc">SUBCLASS</link>.</para>
+See also the description of the <emphasis role="bold">subClass</emphasis> 
+method in <link linkend="clsubc">subClass</link>.</para>
 </section>
 
-<section id="clmeth"><title>METHOD</title>
-<indexterm><primary>METHOD method</primary>
+<section id="clmeth"><title>method</title>
+<indexterm><primary>method method</primary>
 <secondary>of Class class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>METHOD method</secondary>
+<secondary>method method</secondary>
 <tertiary>of Class class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-METHOD(methodname)------------------------------------------><
+>>-method(methodname)------------------------------------------><
 ]]>
 </programlisting>
 
@@ -1023,10 +1038,10 @@ class did not define <emphasis role="italic">methodname</emphasis>, the
 language processor raises an error.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>METHOD method</secondary></indexterm>
+<secondary>method method</secondary></indexterm>
 <programlisting>
 /* Create and retrieve the method definition of a class */
-myclass=.object~subclass("My class")   /* Create a class         */
+myclass=.object~subClass("My class")   /* Create a class         */
 mymethod=.method~new(" ","Say arg(1)") /* Create a method object */
 myclass~define("ECHO",mymethod)        /* Define it in the class */
 method_source = myclass~method("ECHO")~source     /* Extract it  */
@@ -1035,22 +1050,23 @@ say method_source[1]              /* Shows the method source code */
 </programlisting>
 </section>
 
-<section id="clmets"><title>METHODS</title>
-<indexterm><primary>METHODS method</primary>
+<section id="clmets"><title>methods</title>
+<indexterm><primary>methods method</primary>
 <secondary>of Class class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>METHODS method</secondary>
+<secondary>methods method</secondary>
 <tertiary>of Class class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-METHODS-+----------------+----------------------------------><
+>>-methods-+----------------+----------------------------------><
            +-(class_object)-+
 ]]>
 </programlisting>
 
 <para>Returns a supplier object for all the instance methods of the receiver
 class and its superclasses, if you specify no argument. If
-<emphasis role="italic">class_object</emphasis> is the NIL object, METHODS
+<emphasis role="italic">class_object</emphasis> is the Nil object, 
+<emphasis role="bold">methods</emphasis>
 returns a supplier object for only the instance
 methods of the receiver class. If you specify a
 <emphasis role="italic">class_object</emphasis>,
@@ -1062,12 +1078,15 @@ at the time of the supplier's creation. (See
 <link linkend="supp">The Supplier Class</link> for details.)</para>
 
 <note><title>Note</title>
-<para>Methods that have been hidden with a SETMETHOD or DEFINE method
-are included with the other methods that METHODS returns. The hidden methods
-have the NIL object for the associated method.</para></note>
+<para>Methods that have been hidden with a 
+<emphasis role="bold">setMethod</emphasis> or 
+<emphasis role="bold">define</emphasis> method
+are included with the other methods that 
+<emphasis role="bold">methods</emphasis> returns. The hidden methods
+have the Nil object for the associated method.</para></note>
 <para><emphasis role="bold">Example:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>METHODS method</secondary></indexterm>
+<secondary>methods method</secondary></indexterm>
 <programlisting>
 objsupp=.object~methods
 do while objsupp~available
@@ -1077,15 +1096,15 @@ end
 </programlisting>
 </section>
 
-<section id="clmixi"><title>MIXINCLASS</title>
-<indexterm><primary>MIXINCLASS method</primary>
+<section id="clmixi"><title>mixinClass</title>
+<indexterm><primary>mixinClass method</primary>
 <secondary>of Class class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>MIXINCLASS method</secondary>
+<secondary>mixinClass method</secondary>
 <tertiary>of Class class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-MIXINCLASS(classid-+-------------------------+-)------------><
+>>-mixinClass(classid-+-------------------------+-)------------><
                       +-,metaclass-+----------+-+
                                    +-,methods-+
 ]]>
@@ -1094,7 +1113,8 @@ end
 <para>Returns a new mixin subclass of the receiver class. You can use this
 method to create a new mixin class that is a subclass of the superclass to
 which you send the message. The <emphasis role="italic">classid</emphasis>
-is a string that identifies the new mixin subclass. You can use the ID method
+is a string that identifies the new mixin subclass. You can use the 
+<emphasis role="bold">id</emphasis> method
 to retrieve this string.</para>
 <para>The <emphasis role="italic">metaclass</emphasis> is a class object. If
 you specify <emphasis role="italic">metaclass</emphasis>, the new subclass is
@@ -1112,28 +1132,29 @@ and whose items are method objects (or strings or arrays of strings containing
 method code). If you specify <emphasis role="italic">methods</emphasis>, the new
 class is enhanced with class methods from this collection. (The metaclass of
 the new class is not affected.)</para>
-<para>The METACLASS method returns the metaclass of a class.</para>
+<para>The <emphasis role="bold">metaClass</emphasis> 
+method returns the metaclass of a class.</para>
 <para>The method search order of the new subclass is the same as that of the
 receiver class, with the addition of the new subclass at the start of the
 order.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>MIXINCLASS method</secondary></indexterm>
+<secondary>mixinClass method</secondary></indexterm>
 <programlisting>
-buyable=.object~mixinclass("Buyable")  /* New subclass is buyable    */
+buyable=.object~mixinClass("Buyable")  /* New subclass is buyable    */
                                        /* Superclass is Object class */
 </programlisting>
 </section>
 
-<section id="coconw"><title>NEW</title>
-<indexterm><primary>NEW method</primary>
+<section id="coconw"><title>new</title>
+<indexterm><primary>new method</primary>
 <secondary>of Class class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>NEW method</secondary>
+<secondary>new method</secondary>
 <tertiary>of Class class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-NEW-+---------------+---------------------------------------><
+>>-new-+---------------+---------------------------------------><
        |    +-,---+    |
        |    V     |    |
        +-(----arg-+--)-+
@@ -1142,25 +1163,27 @@ buyable=.object~mixinclass("Buyable")  /* New subclass is buyable    */
 
 <para>Returns a new instance of the receiver class, whose object methods are
 the instance methods of the class. This method initializes a new instance
-by running its INIT methods. (See
-<link linkend="creo">Initialization</link>.) NEW also sends an
-INIT message. If you specify args, NEW passes these
-arguments on the INIT message.</para>
+by running its <emphasis role="bold">init</emphasis> methods. (See
+<link linkend="creo">Initialization</link>.) 
+<emphasis role="bold">new</emphasis> also sends an
+<emphasis role="bold">init</emphasis> message. If you specify args, 
+<emphasis role="bold">new</emphasis> passes these
+arguments on the <emphasis role="bold">init</emphasis> message.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>NEW method</secondary></indexterm>
+<secondary>new method</secondary></indexterm>
 <programlisting>
 <![CDATA[
-/* NEW method example */
+/* new method example */
 a = .account~new             /* -> Object variable balance=0           */
 y = .account~new(340.78)     /* -> Object variable balance=340.78      */
                              /*    plus free toaster oven              */
 ::class account subclass object
-::method INIT                /* Report time each account created       */
+::method init                /* Report time each account created       */
                              /* plus free toaster when more than $100  */
 Expose balance
 Arg opening_balance
-Say "Creating" self~objectname "at time" time()
+Say "Creating" self~objectName "at time" time()
 If datatype(opening_balance, "N") then balance = opening_balance
 else balance = 0
 If balance > 100 then Say "  You win a free toaster oven"
@@ -1168,15 +1191,15 @@ If balance > 100 then Say "  You win a free toaster oven"
 </programlisting>
 </section>
 
-<section id="clqmc"><title>QUERYMIXINCLASS</title>
-<indexterm><primary>QUERYMIXINCLASS method</primary>
+<section id="clqmc"><title>queryMixinClass</title>
+<indexterm><primary>queryMixinClass method</primary>
 <secondary>of Class class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>QUERYMIXINCLASS method</secondary>
+<secondary>queryMixinClass method</secondary>
 <tertiary>of Class class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-QUERYMIXINCLASS---------------------------------------------><
+>>-queryMixinClass---------------------------------------------><
 ]]>
 </programlisting>
 
@@ -1184,15 +1207,15 @@ If balance > 100 then Say "  You win a free toaster oven"
 mixin class, or <computeroutput>0</computeroutput> (false).</para>
 </section>
 
-<section id="clsubc"><title>SUBCLASS</title>
-<indexterm><primary>SUBCLASS method</primary>
+<section id="clsubc"><title>subClass</title>
+<indexterm><primary>subClass method</primary>
 <secondary>of Class class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>SUBCLASS method</secondary>
+<secondary>subClass method</secondary>
 <tertiary>of Class class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-SUBCLASS(classid-+-------------------------+-)--------------><
+>>-subClass(classid-+-------------------------+-)--------------><
                     +-,metaclass-+----------+-+
                                  +-,methods-+
 ]]>
@@ -1201,7 +1224,8 @@ mixin class, or <computeroutput>0</computeroutput> (false).</para>
 <para>Returns a new subclass of the receiver class. You can use this method to
 create a new class that is a subclass of the superclass to which you send
 the message. The <emphasis role="italic">classid</emphasis> is a string that
-identifies the subclass. (You can use the ID method to retrieve this string.)
+identifies the subclass. (You can use the 
+<emphasis role="bold">id</emphasis> method to retrieve this string.)
 </para>
 <para>The <emphasis role="italic">metaclass</emphasis> is a class object. If
 you specify <emphasis role="italic">metaclass</emphasis>, the new subclass is
@@ -1219,29 +1243,30 @@ and whose items are method objects (or strings or arrays of strings containing
 method code). If you specify <emphasis role="italic">methods</emphasis>,
 the new class is enhanced with class methods from this collection.
 (The metaclass of the new class is not affected.)</para>
-<para>The METACLASS method returns the metaclass of a class.</para>
+<para>The <emphasis role="bold">metaClass</emphasis> method returns the 
+metaclass of a class.</para>
 <para>The method search order of the new subclass is the same as that of the
 receiver class, with the addition of the new subclass at the start of the
 order.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>SUBCLASS method</secondary></indexterm>
+<secondary>subClass method</secondary></indexterm>
 <programlisting>
-room=.object~subclass("Room")   /* Superclass is .object     */
+room=.object~subClass("Room")   /* Superclass is .object     */
                                 /* Subclass is room          */
                                 /* Subclass identity is Room */
 </programlisting>
 </section>
 
-<section id="clsubs"><title>SUBCLASSES</title>
-<indexterm><primary>SUBCLASSES method</primary>
+<section id="clsubs"><title>subClasses</title>
+<indexterm><primary>subClasses method</primary>
 <secondary>of Class class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>SUBCLASSES method</secondary>
+<secondary>subClasses method</secondary>
 <tertiary>of Class class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-SUBCLASSES--------------------------------------------------><
+>>-subClasses--------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -1251,30 +1276,34 @@ unspecified order. (The program should not rely on any order.) The array
 indexes range from 1 to the number of subclasses.</para>
 </section>
 
-<section id="clsupe"><title>SUPERCLASSES</title>
-<indexterm><primary>SUPERCLASSES method</primary>
+<section id="clsupe"><title>superClasses</title>
+<indexterm><primary>superClasses method</primary>
 <secondary>of Class class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>SUPERCLASSES method</secondary>
+<secondary>superClasses method</secondary>
 <tertiary>of Class class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-SUPERCLASSES------------------------------------------------><
+>>-superClasses------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Returns the immediate superclasses of the receiver class in the form of
 a single-index array of the required size. The immediate superclasses are
-the original class used on a SUBCLASS or a MIXINCLASS method, plus any additional
-superclasses defined with the INHERIT method. The array is in the order in
-which the class has inherited the classes. The original class used on a SUBCLASS
-or MIXINCLASS method is the first item of the array. The array indexes range
+the original class used on a <emphasis role="bold">subClass</emphasis> or a 
+<emphasis role="bold">mixinClass</emphasis> method, plus any additional
+superclasses defined with the <emphasis role="bold">inherit</emphasis> 
+method. The array is in the order in
+which the class has inherited the classes. The original class used on a 
+<emphasis role="bold">subClass</emphasis> or
+<emphasis role="bold">mixinClass</emphasis> method is the first item of the 
+array. The array indexes range
 from <computeroutput>1</computeroutput> to the number of superclasses.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>SUPERCLASSES method</secondary></indexterm>
+<secondary>superClasses method</secondary></indexterm>
 <programlisting>
-z=.class~superclasses
+z=.class~superClasses
 /* To obtain the information this returns, you could use:     */
 do i over z
   say i
@@ -1282,34 +1311,35 @@ end
 </programlisting>
 </section>
 
-<section id="clunin"><title>UNINHERIT</title>
-<indexterm><primary>UNINHERIT method</primary>
+<section id="clunin"><title>uninherit</title>
+<indexterm><primary>uninherit method</primary>
 <secondary>of Class class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>UNINHERIT method</secondary>
+<secondary>uninherit method</secondary>
 <tertiary>of Class class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-UNINHERIT(classobj)-----------------------------------------><
+>>-uninherit(classobj)-----------------------------------------><
 ]]>
 </programlisting>
 
-<para>Nullifies the effect of any previous INHERIT message
+<para>Nullifies the effect of any previous 
+<emphasis role="bold">inherit</emphasis> message
 sent to the receiver for the class <emphasis role="italic">classobj</emphasis>.
 </para>
 
 <note><title>Note</title>
-<para>You
-cannot change the classes that Rexx provides by sending UNINHERIT messages.
+<para>You cannot change the classes that Rexx provides by sending 
+<emphasis role="bold">uninherit</emphasis> messages.
 </para></note>
 <para><emphasis role="bold">Example:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>UNINHERIT method</secondary></indexterm>
+<secondary>uninherit method</secondary></indexterm>
 <programlisting>
-location=.object~mixinclass("Location")
+location=.object~mixinClass("Location")
 room=.object~subclass("Room")~~inherit(location) /* Creates subclass */
 /* and specifies inheritance */
-room~UNINHERIT(location)
+room~uninherit(location)
 </programlisting>
 </section>
 </section>
