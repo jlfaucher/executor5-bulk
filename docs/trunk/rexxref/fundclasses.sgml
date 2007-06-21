@@ -688,7 +688,7 @@ method is a protected method.</para></listitem>
 <indexterm><primary>Class class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>Class class</secondary></indexterm>
-<figure><title>The Object class and methods</title>
+<figure><title>The Class class and methods</title>
 <mediaobject>
 <imageobject>
 <!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
@@ -1348,52 +1348,30 @@ room~uninherit(location)
 <indexterm><primary>Method class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>Method class</secondary></indexterm>
+<figure><title>The Method class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxMethodClass.png" align="left" scale="80">
+</imageobject>
+</mediaobject>
+</figure>
 <para>The Method class creates method objects from Rexx source code.
 It is a subclass of the Object class.</para>
-<para><emphasis role="bold">Methods the Method class defines:</emphasis></para>
-<simplelist>
-<member>NEW (Class method. Overrides Object class method.)</member>
-<member>NEWFILE (Class method)</member>
-<member>SETGUARDED</member>
-<member>SETPRIVATE</member>
-<member>SETPROTECTED</member>
-<member>SETSECURITYMANAGER</member>
-<member>SETUNGUARDED</member>
-<member>SOURCE</member>
-</simplelist>
-
-<para><emphasis role="bold">Methods inherited from the Object class:</emphasis>
-</para>
-<simplelist>
-<member>Operator methods:&nbsp;&nbsp;=, ==, \=, >&lt;, &lt;>, \==</member>
-<member>CLASS</member>
-<member>COPY</member>
-<member>DEFAULTNAME</member>
-<member>HASMETHOD</member>
-<member>INIT</member>
-<member>OBJECTNAME</member>
-<member>OBJECTNAME=</member>
-<member>REQUEST</member>
-<member>RUN</member>
-<member>SETMETHOD</member>
-<member>START</member>
-<member>STRING</member>
-<member>UNSETMETHOD</member>
-</simplelist>
 
 <note><title>Note</title>
 <para>The Method class also has available class methods that its
 metaclass, the Class class, defines.</para></note>
 
-<section id="menew"><title>NEW  (Class Method)</title>
-<indexterm><primary>NEW method</primary>
+<section id="menew"><title>new (Class Method)</title>
+<indexterm><primary>new method</primary>
 <secondary>of Method class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>NEW method</secondary>
+<secondary>new method</secondary>
 <tertiary>of Method class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-NEW(name,source--+------------------+---)-------------------><
+>>-new(name,source--+------------------+---)-------------------><
                     +--, methodobject--+
 ]]>
 </programlisting>
@@ -1411,15 +1389,15 @@ its scope is used.</para>
 
 </section>
 
-<section id="newfile"><title>NEWFILE (Class Method)</title>
-<indexterm><primary>NEWFILE method</primary>
+<section id="newfile"><title>newFile (Class Method)</title>
+<indexterm><primary>newFile method</primary>
 <secondary>of Method class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>NEWFILE method</secondary>
+<secondary>newFile method</secondary>
 <tertiary>of Method class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-NEWFILE(filename)-------------------------------------------><
+>>-newFile(filename)-------------------------------------------><
 ]]>
 </programlisting>
 
@@ -1430,71 +1408,74 @@ string.</para>
 <link linkend="servex">Server implements Security Manager</link>.</para>
 </section>
 
-<section id="setgua"><title>SETGUARDED</title>
-<indexterm><primary>SETGUARDED method</primary>
+<section id="setgua"><title>setGuarded</title>
+<indexterm><primary>setGuarded method</primary>
 <secondary>of Method class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>SETGUARDED method</secondary>
+<secondary>setGuarded method</secondary>
 <tertiary>of Method class</tertiary></indexterm>
 <indexterm><primary>concurrency</primary>
-<secondary>SETGUARDED method</secondary></indexterm>
+<secondary>setGuarded method</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-SETGUARDED--------------------------------------------------><
+>>-setGuarded--------------------------------------------------><
 ]]>
 </programlisting>
 
-<para>Reverses any previous SETUNGUARDED messages, restoring the receiver to
-the default guarded status. If the receiver is already guarded, a SETGUARDED
-message has no effect.</para>
+<para>Reverses any previous 
+<emphasis role="bold">setUnguarded</emphasis> messages, restoring the receiver to
+the default guarded status. If the receiver is already guarded, a 
+<emphasis role="bold">setGuarded</emphasis> message has no effect.</para>
 </section>
 
-<section id="mesetp"><title>SETPRIVATE</title>
-<indexterm><primary>SETPRIVATE method</primary>
+<section id="mesetp"><title>setPrivate</title>
+<indexterm><primary>setPrivate method</primary>
 <secondary>of Method class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>SETPRIVATE method</secondary>
+<secondary>setPrivate method</secondary>
 <tertiary>of Method class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-SETPRIVATE--------------------------------------------------><
+>>-setPrivate--------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Specifies that a method is a private method. Only
 a message that an object sends to itself can run a private method. If a method
-object does not receive a SETPRIVATE message, the method is a public method.
+object does not receive a <emphasis role="bold">setPrivate</emphasis>
+message, the method is a public method.
 (Any object can send a message to run a public method. See
 <link linkend="pubpri">Public and Private Methods</link> for
 details.)</para>
 </section>
 
-<section id="mesetpro"><title>SETPROTECTED</title>
-<indexterm><primary>SETPROTECTED method</primary>
+<section id="mesetpro"><title>setProtected</title>
+<indexterm><primary>setProtected method</primary>
 <secondary>of Method class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>SETPROTECTED method</secondary>
+<secondary>setProtected method</secondary>
 <tertiary>of Method class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-SETPROTECTED------------------------------------------------><
+>>-setProtected------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Specifies thata method is a protected method. If a method
-object does not receive a SETPROTECTED message, the method is not protected.
+object does not receive a <emphasis role="bold">setProtected</emphasis>
+message, the method is not protected.
 (See <link linkend="secman">The Security Manager</link> for details.)</para>
 </section>
 
-<section id="mesetsec"><title>SETSECURITYMANAGER</title>
-<indexterm><primary>SETSECURITYMANAGER method</primary>
+<section id="mesetsec"><title>setSecurityManager</title>
+<indexterm><primary>setSecurityManager method</primary>
 <secondary>of Method class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>SETSECURITYMANAGER method</secondary>
+<secondary>setSecurityManager method</secondary>
 <tertiary>of Method class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-SETSECURITYMANAGER--+---------------------------+-----------><
+>>-setSecurityManager--+---------------------------+-----------><
                        +-(security_manager_object)-+
 ]]>
 </programlisting>
@@ -1505,44 +1486,47 @@ object does not receive a SETPROTECTED message, the method is not protected.
 existing security manager is removed.</para>
 </section>
 
-<section id="setnow"><title>SETUNGUARDED</title>
-<indexterm><primary>SETUNGUARDED method</primary>
+<section id="setnow"><title>setUnguarded</title>
+<indexterm><primary>setUnguarded method</primary>
 <secondary>of Method class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>SETUNGUARDED method</secondary>
+<secondary>setUnguarded method</secondary>
 <tertiary>of Method class</tertiary></indexterm>
 <indexterm><primary>concurrency</primary>
-<secondary>SETUNGUARDED method</secondary></indexterm>
+<secondary>setUnguarded method</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-SETUNGUARDED------------------------------------------------><
+>>-setUnguarded------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Lets an object run a method even when
 another method is active on the same object. If a method object does not receive
-a SETUNGUARDED message, it requires exclusive use of its object variable pool.
+a <emphasis role="bold">setUnguarded</emphasis>
+message, it requires exclusive use of its object variable pool.
 A method can be active for an object only when no other method requiring exclusive
 access to the object's variable pool is active in the same object. This
 restriction does not apply if an object sends itself a message to run a method
 and it already has exclusive use of the same object variable pool. In this
 case, the method runs immediately and has exclusive use of its object variable
-pool, regardless of whether it received a SETUNGUARDED message.</para>
+pool, regardless of whether it received a 
+<emphasis role="bold">setUnguarded</emphasis> message.</para>
 </section>
 
-<section id="mesour"><title>SOURCE</title>
-<indexterm><primary>SOURCE method</primary>
+<section id="mesour"><title>source</title>
+<indexterm><primary>source method</primary>
 <secondary>of Method class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>SOURCE method</secondary>
+<secondary>source method</secondary>
 <tertiary>of Method class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-SOURCE------------------------------------------------------><
+>>-source------------------------------------------------------><
 ]]>
 </programlisting>
 <para>Returns the method source code as a single-index array of source
-lines. If the source code is not available, SOURCE returns an array of zero
+lines. If the source code is not available, 
+<emphasis role="bold">source</emphasis> returns an array of zero
 items.</para>
 </section>
 </section>

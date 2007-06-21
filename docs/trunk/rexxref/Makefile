@@ -82,6 +82,7 @@ SGML_FILES = collclasses.sgml \
 
 IMAGE_FILES = ooRexxObjectClass.png \
               ooRexxClassClass.png \
+              ooRexxMethodClass.png \
               rxo90004.jpg \
 	      rxo90005.jpg \
 	      rxo90006.jpg \
