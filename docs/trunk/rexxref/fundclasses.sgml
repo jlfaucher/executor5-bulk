@@ -1535,107 +1535,34 @@ items.</para>
 <indexterm><primary>String class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>String class</secondary></indexterm>
-<para>String objects represent character-string data values. A character
-string value can have any length and contain any characters. If you are familiar
-with earlier versions of Rexx you might find the notation for functions more
-convenient than the notation for methods. See
-<link linkend="funct">Functions</link> for function
-descriptions.</para>
-<para>The String class is a subclass of the Object class.</para>
-<para><emphasis role="bold">Methods the String class defines:</emphasis></para>
-<simplelist>
-<member>NEW (Class method.&nbsp;&nbsp;Overrides Object class method)</member>
-<member>Arithmetic methods: +, -, *, /, %, //, **</member>
-<member>Comparison methods: =, \=, &lt;>, >&lt;, ==,
-\==&nbsp;&nbsp;(Override Object class methods)</member>
-<member>Comparison methods:&nbsp;&nbsp;>, &lt;, >=, \&lt;, &lt;=, \>, >>,
-&lt;&lt;, >>=, \&lt;&lt;, &lt;&lt;=, \>></member>
-<member>Logical methods:&nbsp;&nbsp;&amp;, |, &amp;&amp;, \</member>
-<member>Concatenation methods:&nbsp;&nbsp;&quot;&quot; (abuttal),
-&quot;&nbsp;&quot; (blank), ||</member>
-<member>NEW (Overrides Object class method)</member>
-<member>ABBREV</member>
-<member>ABS</member>
-<member>BITAND</member>
-<member>BITOR</member>
-<member>BITXOR</member>
-<member>B2X</member>
-<member>CENTER (or CENTRE)</member>
-<member>CHANGESTR</member>
-<member>COMPARE</member>
-<member>COPIES</member>
-<member>COUNTSTR</member>
-<member>C2D</member>
-<member>C2X</member>
-<member>DATATYPE</member>
-<member>DECODEBASE64</member>
-<member>DELSTR</member>
-<member>DELWORD</member>
-<member>D2C</member>
-<member>D2X</member>
-<member>ENCODEBASE64</member>
-<member>FORMAT</member>
-<member>INSERT</member>
-<member>LASTPOS</member>
-<member>LEFT</member>
-<member>LENGTH</member>
-<member>MAKEARRAY</member>
-<member>MAKESTRING</member>
-<member>MAX</member>
-<member>MIN</member>
-<member>OVERLAY</member>
-<member>POS</member>
-<member>REVERSE</member>
-<member>RIGHT</member>
-<member>SIGN</member>
-<member>SPACE</member>
-<member>STRING (Overrides Object class method)</member>
-<member>STRIP</member>
-<member>SUBCHAR</member>
-<member>SUBSTR</member>
-<member>SUBWORD</member>
-<member>TRANSLATE</member>
-<member>TRUNC</member>
-<member>VERIFY</member>
-<member>WORD</member>
-<member>WORDINDEX</member>
-<member>WORDLENGTH</member>
-<member>WORDPOS</member>
-<member>WORDS</member>
-<member>X2B</member>
-<member>X2C</member>
-<member>X2D</member>
-</simplelist>
-<para><emphasis role="bold">Methods inherited from the Object class:</emphasis>
-</para>
-<simplelist>
-<member>CLASS</member>
-<member>COPY</member>
-<member>DEFAULTNAME</member>
-<member>HASMETHOD</member>
-<member>INIT</member>
-<member>OBJECTNAME</member>
-<member>OBJECTNAME=</member>
-<member>REQUEST</member>
-<member>RUN</member>
-<member>SETMETHOD</member>
-<member>START</member>
-<member>UNSETMETHOD</member>
-</simplelist>
-
+<figure><title>The String class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxStringClass.png" align="left" scale="80">
+</imageobject>
+</mediaobject>
+</figure>
 <note><title>Note</title>
 <para>The String class also has available class methods that its
 metaclass, the Class class, defines.</para></note>
 
-<section id="stinew"><title>NEW  (Class Method)</title>
-<indexterm><primary>NEW method</primary>
+<para>String objects represent character-string data values. A character
+string value can have any length and contain any characters. If you are familiar
+with earlier versions of Rexx you might find the notation for functions more
+convenient than the notation for methods. See
+<link linkend="funct">Functions</link> for function descriptions.</para>
+<para>The String class is a subclass of the Object class.</para>
+
+<section id="stinew"><title>new (Class Method)</title>
+<indexterm><primary>new method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>NEW method</secondary>
+<secondary>new method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-NEW(stringvalue)--------------------------------------------><
+>>-new(stringvalue)--------------------------------------------><
 ]]>
 </programlisting>
 
@@ -2093,21 +2020,21 @@ object and the <emphasis role="italic">argument</emphasis>.
 </programlisting>
 </section>
 
-<section id="stabbr"><title>ABBREV</title>
-<indexterm><primary>ABBREV method</primary>
+<section id="stabbr"><title>abbrev</title>
+<indexterm><primary>abbrev method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>ABBREV method</secondary>
+<secondary>abbrev method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <indexterm><primary>default</primary>
-<secondary>selecting with ABBREV method</secondary></indexterm>
-<indexterm><primary>selecting a default with ABBREV method</primary></indexterm>
+<secondary>selecting with abbrev method</secondary></indexterm>
+<indexterm><primary>selecting a default with abbrev method</primary></indexterm>
 <indexterm><primary>testing</primary>
-<secondary>abbreviations with ABBREV method</secondary></indexterm>
+<secondary>abbreviations with abbrev method</secondary></indexterm>
 
 <programlisting>
 <![CDATA[
->>-ABBREV(info-+---------+-)-----------------------------------><
+>>-abbrev(info-+---------+-)-----------------------------------><
                +-,length-+
 ]]>
 </programlisting>
@@ -2125,15 +2052,15 @@ positive whole number or zero. The default for
 <emphasis role="italic">info</emphasis>.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>ABBREV method</secondary></indexterm>
+<secondary>abbrev method</secondary></indexterm>
 <programlisting>
 <![CDATA[
-"Print"~ABBREV("Pri")      ->    1
-"PRINT"~ABBREV("Pri")      ->    0
-"PRINT"~ABBREV("PRI",4)    ->    0
-"PRINT"~ABBREV("PRY")      ->    0
-"PRINT"~ABBREV("")         ->    1
-"PRINT"~ABBREV("",1)       ->    0
+"Print"~abbrev("Pri")      ->    1
+"PRINT"~abbrev("Pri")      ->    0
+"PRINT"~abbrev("PRI",4)    ->    0
+"PRINT"~abbrev("PRY")      ->    0
+"PRINT"~abbrev("")         ->    1
+"PRINT"~abbrev("",1)       ->    0
 ]]>
 </programlisting>
 <note><title>Note</title>
@@ -2155,17 +2082,17 @@ end;
 for information about the ABBREV built-in function.)</para>
 </section>
 
-<section id="stabs"><title>ABS</title>
-<indexterm><primary>ABS method</primary>
+<section id="stabs"><title>abs</title>
+<indexterm><primary>abs method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>ABS method</secondary>
+<secondary>abs method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <indexterm><primary>absolute value</primary>
-<secondary>finding using the ABS method</secondary></indexterm>
+<secondary>finding using the abs method</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-ABS---------------------------------------------------------><
+>>-abs---------------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -2173,7 +2100,7 @@ for information about the ABBREV built-in function.)</para>
 sign and is formatted according to the current NUMERIC settings.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>ABS method</secondary></indexterm>
+<secondary>abs method</secondary></indexterm>
 <programlisting>
 12.3~abs      ->     12.3
 "-0.307"~abs  ->     0.307
@@ -2182,22 +2109,22 @@ sign and is formatted according to the current NUMERIC settings.</para>
 for information about the ABS built-in function.)</para>
 </section>
 
-<section id="stb2x"><title>B2X</title>
-<indexterm><primary>B2X method</primary>
+<section id="stb2x"><title>b2x</title>
+<indexterm><primary>b2x method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>B2X method</secondary>
+<secondary>b2x method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <indexterm><primary>binary</primary>
 <secondary>to hexadecimal conversion</secondary></indexterm>
 <indexterm><primary>conversion</primary>
 <secondary>binary to hexadecimal</secondary></indexterm>
 <indexterm><primary>unpacking a string</primary>
-<secondary>with B2X</secondary></indexterm>
+<secondary>with b2x</secondary></indexterm>
 
 <programlisting>
 <![CDATA[
->>-B2X---------------------------------------------------------><
+>>-b2x---------------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -2211,42 +2138,45 @@ the language processor ignores them.</para>
 <para>The returned string uses uppercase alphabetic characters for the values
 <computeroutput>A</computeroutput>-<computeroutput>F</computeroutput> and does
 not include blanks.</para>
-<para>If the receiving binary string is a null string, B2X returns a null string.
+<para>If the receiving binary string is a null string, 
+<emphasis role="bold">b2x</emphasis> returns a null string.
 If the number of binary digits in the receiving string is not a multiple of
 four, the language processor adds up to three <computeroutput>0</computeroutput>
 digits on the left
 before the conversion to make a total that is a multiple of four.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>B2X method</secondary></indexterm>
+<secondary>b2x method</secondary></indexterm>
 <programlisting>
 <![CDATA[
-"11000011"~B2X     ->   "C3"
-"10111"~B2X        ->   "17"
-"101"~B2X          ->   "5"
-"1 1111 0000"~B2X  ->   "1F0"
+"11000011"~b2x     ->   "C3"
+"10111"~b2x        ->   "17"
+"101"~b2x          ->   "5"
+"1 1111 0000"~b2x  ->   "1F0"
 ]]>
 </programlisting>
-<para>You can combine B2X with the methods X2D and X2C to convert a binary
+<para>You can combine <emphasis role="bold">b2x</emphasis>
+with the methods <emphasis role="bold">x2d</emphasis> and 
+<emphasis role="bold">x2c</emphasis> to convert a binary
 number into other forms.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
-<programlisting>"10111"~B2X~X2D  ->   "23"   /* decimal 23 */</programlisting>
+<programlisting>"10111"~b2x~x2d  ->   "23"   /* decimal 23 */</programlisting>
 <para>(See <link linkend="b2x">B2X (Binary to Hexadecimal)</link>
 for information about the B2X built-in function.)</para>
 </section>
 
-<section id="stbita"><title>BITAND</title>
-<indexterm><primary>BITAND method</primary>
+<section id="stbita"><title>bitAnd</title>
+<indexterm><primary>bitAnd method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>BITAND method</secondary>
+<secondary>bitAnd method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <indexterm><primary>ANDing character strings</primary></indexterm>
 <indexterm><primary>character</primary>
 <secondary>strings, ANDing</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-BITAND-+--------------------+-------------------------------><
+>>-bitAnd-+--------------------+-------------------------------><
           +-(string-+------+-)-+
                     +-,pad-+
 ]]>
@@ -2267,25 +2197,25 @@ on the right before the logical operation. The default for
 the zero-length (null) string.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>BITAND method</secondary></indexterm>
+<secondary>bitAnd method</secondary></indexterm>
 <programlisting>
 <![CDATA[
-"12"x~BITAND                   ->    "12"x
-"73"x~BITAND("27"x)            ->    "23"x
-"13"x~BITAND("5555"x)          ->    "1155"x
-"13"x~BITAND("5555"x,"74"x)    ->    "1154"x
-"pQrS"~BITAND(,"DF"x)          ->    "PQRS"      /* ASCII   */
+"12"x~bitAnd                   ->    "12"x
+"73"x~bitAnd("27"x)            ->    "23"x
+"13"x~bitAnd("5555"x)          ->    "1155"x
+"13"x~bitAnd("5555"x,"74"x)    ->    "1154"x
+"pQrS"~bitAnd(,"DF"x)          ->    "PQRS"      /* ASCII   */
 ]]>
 </programlisting>
 <para>(See <link linkend="bitand">BITAND (Bit by Bit AND)</link>
 for information about the BITAND built-in function.)</para>
 </section>
 
-<section id="stbito"><title>BITOR</title>
-<indexterm><primary>BITOR method</primary>
+<section id="stbito"><title>bitOr</title>
+<indexterm><primary>bitOr method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>BITOR method</secondary>
+<secondary>bitOr method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <indexterm><primary>character</primary>
 <secondary>strings, ORing</secondary></indexterm>
@@ -2293,7 +2223,7 @@ for information about the BITAND built-in function.)</para>
 
 <programlisting>
 <![CDATA[
->>-BITOR-+--------------------+--------------------------------><
+>>-bitOr-+--------------------+--------------------------------><
          +-(string-+------+-)-+
                    +-,pad-+
 ]]>
@@ -2313,26 +2243,26 @@ of the two strings on the right before the logical operation. The default for
 the zero-length (null) string.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>BITOR method</secondary></indexterm>
+<secondary>bitOr method</secondary></indexterm>
 <programlisting>
 <![CDATA[
-"12"x~BITOR                   ->    "12"x
-"15"x~BITOR("24"x)            ->    "35"x
-"15"x~BITOR("2456"x)          ->    "3556"x
-"15"x~BITOR("2456"x,"F0"x)    ->    "35F6"x
-"1111"x~BITOR(,"4D"x)         ->    "5D5D"x
-"pQrS"~BITOR(,"20"x)          ->    "pqrs" /* ASCII   */
+"12"x~bitOr                   ->    "12"x
+"15"x~bitOr("24"x)            ->    "35"x
+"15"x~bitOr("2456"x)          ->    "3556"x
+"15"x~bitOr("2456"x,"F0"x)    ->    "35F6"x
+"1111"x~bitOr(,"4D"x)         ->    "5D5D"x
+"pQrS"~bitOr(,"20"x)          ->    "pqrs" /* ASCII   */
 ]]>
 </programlisting>
 <para>(See <link linkend="bitor">BITOR (Bit by Bit OR)</link>
 for information about the BITOR built-in function.)</para>
 </section>
 
-<section id="stbitx"><title>BITXOR</title>
-<indexterm><primary>BITXOR method</primary>
+<section id="stbitx"><title>bitXor</title>
+<indexterm><primary>bitXor method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>BITXOR method</secondary>
+<secondary>bitXor method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <indexterm><primary>character</primary>
 <secondary>strings, exclusive-ORing</secondary></indexterm>
@@ -2342,7 +2272,7 @@ for information about the BITOR built-in function.)</para>
 
 <programlisting>
 <![CDATA[
->>-BITXOR-+--------------------+-------------------------------><
+>>-bitXor-+--------------------+-------------------------------><
           +-(string-+------+-)-+
                     +-,pad-+
 ]]>
@@ -2363,16 +2293,16 @@ on the right before carrying out the logical operation. The default for
 </para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>BITXOR method</secondary></indexterm>
+<secondary>bitXor method</secondary></indexterm>
 <programlisting>
 <![CDATA[
-"12"x~BITXOR                      ->  "12"x
-"12"x~BITXOR("22"x)               ->  "30"x
-"1211"x~BITXOR("22"x)             ->  "3011"x
-"1111"x~BITXOR("444444"x)         ->  "555544"x
-"1111"x~BITXOR("444444"x,"40"x)   ->  "555504"x
-"1111"x~BITXOR(,"4D"x)            ->  "5C5C"x
-"C711"x~BITXOR("222222"x," ")     ->  "E53302"x  /* ASCII  */
+"12"x~bitXor                      ->  "12"x
+"12"x~bitXor("22"x)               ->  "30"x
+"1211"x~bitXor("22"x)             ->  "3011"x
+"1111"x~bitXor("444444"x)         ->  "555544"x
+"1111"x~bitXor("444444"x,"40"x)   ->  "555504"x
+"1111"x~bitXor(,"4D"x)            ->  "5C5C"x
+"C711"x~bitXor("222222"x," ")     ->  "E53302"x  /* ASCII  */
 ]]>
 </programlisting>
 <para>(See <link linkend="ybitxor">BITXOR (Bit by Bit Exclusive OR)</link>
@@ -2380,11 +2310,11 @@ for information about the BITXOR built-in
 function.)</para>
 </section>
 
-<section id="stc2d"><title>C2D</title>
-<indexterm><primary>C2D method</primary>
+<section id="stc2d"><title>c2d</title>
+<indexterm><primary>c2d method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>C2D method</secondary>
+<secondary>c2d method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <indexterm><primary>character</primary>
 <secondary>to decimal conversion</secondary></indexterm>
@@ -2393,7 +2323,7 @@ function.)</para>
 
 <programlisting>
 <![CDATA[
->>-C2D-+-----+-------------------------------------------------><
+>>-c2d-+-----+-------------------------------------------------><
        +-(n)-+
 ]]>
 </programlisting>
@@ -2408,14 +2338,14 @@ as an unsigned binary number. If the receiving string is null, C2D returns
 <computeroutput>0</computeroutput>.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>C2D method</secondary></indexterm>
+<secondary>c2d method</secondary></indexterm>
 <programlisting>
 <![CDATA[
-"09"X~C2D       ->        9
-"81"X~C2D       ->      129
-"FF81"X~C2D     ->    65409
-""~C2D          ->        0
-"a"~C2D         ->       97     /*  ASCII   */
+"09"X~c2d       ->        9
+"81"X~c2d       ->      129
+"FF81"X~c2d     ->    65409
+""~c2d          ->        0
+"a"~c2d         ->       97     /*  ASCII   */
 ]]>
 </programlisting>
 <para>If you specify <emphasis role="italic">n</emphasis>, the receiving string
@@ -2426,92 +2356,214 @@ to a whole number, which can therefore be negative. The receiving string is
 padded on the left with "00"x characters (not &quot;sign-extended&quot;),
 or truncated on the left to <emphasis role="italic">n</emphasis> characters.
 This padding or truncation is as though
-<computeroutput>receiving_string~RIGHT(n,&apos;00&apos;x)</computeroutput> had
+<computeroutput>receiving_string~right(n,&apos;00&apos;x)</computeroutput> had
 been processed. If <emphasis role="italic">n</emphasis> is
-<computeroutput>0</computeroutput>, C2D always returns
+<computeroutput>0</computeroutput>, 
+<emphasis role="bold">c2d</emphasis> always returns
 <computeroutput>0</computeroutput>.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <programlisting>
 <![CDATA[
-"81"X~C2D(1)      ->     -127
-"81"X~C2D(2)      ->      129
-"FF81"X~C2D(2)    ->     -127
-"FF81"X~C2D(1)    ->     -127
-"FF7F"X~C2D(1)    ->      127
-"F081"X~C2D(2)    ->    -3967
-"F081"X~C2D(1)    ->     -127
-"0031"X~C2D(0)    ->        0
+"81"X~c2d(1)      ->     -127
+"81"X~c2d(2)      ->      129
+"FF81"X~c2d(2)    ->     -127
+"FF81"X~c2d(1)    ->     -127
+"FF7F"X~c2d(1)    ->      127
+"F081"X~c2d(2)    ->    -3967
+"F081"X~c2d(1)    ->     -127
+"0031"X~c2d(0)    ->        0
 ]]>
 </programlisting>
 <para>(See <link linkend="c2d">C2D (Character to Decimal)</link>
 for information about the C2D built-in function.)</para>
 </section>
 
-<section id="stc2x"><title>C2X</title>
-<indexterm><primary>C2X method</primary>
+<section id="stc2x"><title>c2x</title>
+<indexterm><primary>c2x method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>C2X method</secondary>
+<secondary>c2x method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <indexterm><primary>character</primary>
 <secondary>to hexadecimal conversion</secondary></indexterm>
 <indexterm><primary>conversion</primary>
 <secondary>character to hexadecimal</secondary></indexterm>
 <indexterm><primary>unpacking a string</primary>
-<secondary>with C2X</secondary></indexterm>
+<secondary>with c2x</secondary></indexterm>
 
 <programlisting>
 <![CDATA[
->>-C2X---------------------------------------------------------><
+>>-c2x---------------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Returns a string, in character format, that represents the receiving
 string converted to hexadecimal. The returned string contains twice as many
-bytes as the receiving string. On an ASCII system, sending a C2X message to the
+bytes as the receiving string. On an ASCII system, sending a 
+<emphasis role="bold">c2x</emphasis> message to the
 receiving string <computeroutput>1</computeroutput> returns
 <computeroutput>31</computeroutput> because "31"X
 is the ASCII representation of <computeroutput>1</computeroutput>.</para>
 <para>The returned string has uppercase alphabetic characters for the values
 <computeroutput>A</computeroutput>-<computeroutput>F</computeroutput> and does
 not include blanks. The receiving string
-can be of any length. If the receiving string is null, C2X returns a null
-string.</para>
+can be of any length. If the receiving string is null, 
+<emphasis role="bold">c2x</emphasis> returns a null string.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>C2X method</secondary></indexterm>
+<secondary>c2x method</secondary></indexterm>
 <programlisting>
 <![CDATA[
-"0123"X~C2X    ->    "0123"   /* "30313233"X     in ASCII */
-"ZD8"~C2X      ->    "5A4438" /* "354134343338"X in ASCII */
+"0123"X~c2x    ->    "0123"   /* "30313233"X     in ASCII */
+"ZD8"~c2x      ->    "5A4438" /* "354134343338"X in ASCII */
 ]]>
 </programlisting>
 <para>(See <link linkend="c2x">C2X (Character to Hexadecimal)</link>
 for information about the C2X built-in function.)</para>
 </section>
 
-<section id="stcent"><title>CENTER/CENTRE</title>
-<indexterm><primary>CENTER method</primary>
+<section id="stcchgstr"><title>caselessChangeStr</title>
+<indexterm><primary>caselessChangeStr method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>CENTER method</secondary>
+<secondary>caselessChangeStr method</secondary>
 <tertiary>of String class</tertiary></indexterm>
-<indexterm><primary>CENTRE method</primary>
+<indexterm><primary>caselessChangeStr method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>CENTRE method</secondary>
+<secondary>caselessChangeStr method</secondary>
+<tertiary>of String class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="stccompto"><title>caselessCompareTo</title>
+<indexterm><primary>caselessCompareTo method</primary>
+<secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>caselessCompareTo method</secondary>
+<tertiary>of String class</tertiary></indexterm>
+<indexterm><primary>caselessCompareTo method</primary>
+<secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>caselessCompareTo method</secondary>
+<tertiary>of String class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="stccntstr"><title>caselessCountStr</title>
+<indexterm><primary>caselessCountStr method</primary>
+<secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>caselessCountStr method</secondary>
+<tertiary>of String class</tertiary></indexterm>
+<indexterm><primary>caselessCountStr method</primary>
+<secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>caselessCountStr method</secondary>
+<tertiary>of String class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="stcequals"><title>caselessEquals</title>
+<indexterm><primary>caselessEquals method</primary>
+<secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>caselessEquals method</secondary>
+<tertiary>of String class</tertiary></indexterm>
+<indexterm><primary>caselessEquals method</primary>
+<secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>caselessEquals method</secondary>
+<tertiary>of String class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="stclastpos"><title>caselessLastPos</title>
+<indexterm><primary>caselessLastPos method</primary>
+<secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>caselessLastPos method</secondary>
+<tertiary>of String class</tertiary></indexterm>
+<indexterm><primary>caselessLastPos method</primary>
+<secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>caselessLastPos method</secondary>
+<tertiary>of String class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="stcmatch"><title>caselessMatch</title>
+<indexterm><primary>caselessMatch method</primary>
+<secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>caselessMatch method</secondary>
+<tertiary>of String class</tertiary></indexterm>
+<indexterm><primary>caselessMatch method</primary>
+<secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>caselessMatch method</secondary>
+<tertiary>of String class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="stcmatchchar"><title>caselessMatchChar</title>
+<indexterm><primary>caselessMatchChar method</primary>
+<secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>caselessMatchChar method</secondary>
+<tertiary>of String class</tertiary></indexterm>
+<indexterm><primary>caselessMatchChar method</primary>
+<secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>caselessMatchChar method</secondary>
+<tertiary>of String class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="stcpos"><title>caselessPos</title>
+<indexterm><primary>caselessPos method</primary>
+<secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>caselessPos method</secondary>
+<tertiary>of String class</tertiary></indexterm>
+<indexterm><primary>caselessPos method</primary>
+<secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>caselessPos method</secondary>
+<tertiary>of String class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="stcent"><title>center/centre</title>
+<indexterm><primary>center method</primary>
+<secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>center method</secondary>
+<tertiary>of String class</tertiary></indexterm>
+<indexterm><primary>centre method</primary>
+<secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>centre method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <indexterm><primary>formatting</primary>
 <secondary>text centering</secondary></indexterm>
 <indexterm><primary>string</primary>
-<secondary>centering using CENTER function</secondary></indexterm>
+<secondary>centering using center function</secondary></indexterm>
 <indexterm><primary>string</primary>
-<secondary>centering using CENTRE function</secondary></indexterm>
+<secondary>centering using centre function</secondary></indexterm>
 
 <programlisting>
 <![CDATA[
->>-+-CENTER(-+-length-+--------+-)-----------------------------><
-   +-CENTRE(-+        +-,--pad-+
+>>-+-center(-+-length-+--------+-)-----------------------------><
+   +-centre(-+        +-,--pad-+
 ]]>
 </programlisting>
 
@@ -2529,33 +2581,34 @@ more character than the left-hand end. </para>
 <note><title>Note</title>
 <para>To avoid errors because
 of the difference between British and American spellings, this method can
-be called either CENTRE or CENTER.</para></note>
+be called either <emphasis role="bold">center</emphasis> or 
+<emphasis role="bold">centre</emphasis>.</para></note>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>CENTER method</secondary></indexterm>
+<secondary>center method</secondary></indexterm>
 <indexterm><primary>examples</primary>
-<secondary>CENTRE method</secondary></indexterm>
+<secondary>centre method</secondary></indexterm>
 <programlisting>
 <![CDATA[
-abc~CENTER(7)               ->    "  ABC  "
+abc~center(7)               ->    "  ABC  "
 abc~CENTER(8,"-")           ->    "--ABC---"
-"The blue sky"~CENTRE(8)    ->    "e blue s"
-"The blue sky"~CENTRE(7)    ->    "e blue "
+"The blue sky"~centre(8)    ->    "e blue s"
+"The blue sky"~centre(7)    ->    "e blue "
 ]]>
 </programlisting>
 <para>(See <link linkend="centre">CENTER (or CENTRE)</link>
 for information about the CENTER built-in function.)</para>
 </section>
 
-<section id="stchst"><title>CHANGESTR</title>
-<indexterm><primary>CHANGESTR method</primary>
+<section id="stchst"><title>changeStr</title>
+<indexterm><primary>changeStr method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>CHANGESTR method</secondary>
+<secondary>changeStr method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-CHANGESTR(needle,newneedle)---------------------------------><
+>>-changeStr(needle,newneedle)---------------------------------><
 ]]>
 </programlisting>
 
@@ -2564,11 +2617,11 @@ for information about the CENTER built-in function.)</para>
 all occurrences of <emphasis role="italic">needle</emphasis>.</para>
 <para>Here are some examples:</para>
 <indexterm><primary>examples</primary>
-<secondary>CHANGESTR method</secondary></indexterm>
+<secondary>changeStr method</secondary></indexterm>
 <programlisting>
 <![CDATA[
-101100~CHANGESTR("1","")     ->    "000"
-101100~CHANGESTR("1","X")    ->    "X0XX00"
+101100~changeStr("1","")     ->    "000"
+101100~changeStr("1","X")    ->    "X0XX00"
 ]]>
 </programlisting>
 <para>(See <link linkend="xchgstr">CHANGESTR</link>
@@ -2576,20 +2629,20 @@ for information about the CHANGESTR built-in
 function.)</para>
 </section>
 
-<section id="stcomp"><title>COMPARE</title>
-<indexterm><primary>COMPARE method</primary>
+<section id="stcomp"><title>compare</title>
+<indexterm><primary>compare method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>COMPARE method</secondary>
+<secondary>compare method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <indexterm><primary>comparisons</primary>
 <secondary>of strings</secondary></indexterm>
 <indexterm><primary>finding</primary>
-<secondary>mismatch using COMPARE</secondary></indexterm>
+<secondary>mismatch using compare</secondary></indexterm>
 
 <programlisting>
 <![CDATA[
->>-COMPARE(string-+------+-)-----------------------------------><
+>>-compare(string-+------+-)-----------------------------------><
                   +-,pad-+
 ]]>
 </programlisting>
@@ -2603,37 +2656,51 @@ necessary. The default <emphasis role="italic">pad</emphasis> character is a
 blank.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>COMPARE method</secondary></indexterm>
+<secondary>compare method</secondary></indexterm>
 <programlisting>
 <![CDATA[
-"abc"~COMPARE("abc")         ->    0
-"abc"~COMPARE("ak")          ->    2
-"ab "~COMPARE("ab")          ->    0
-"ab "~COMPARE("ab"," ")      ->    0
-"ab "~COMPARE("ab","x")      ->    3
-"ab-- "~COMPARE("ab","-")    ->    5
+"abc"~compare("abc")         ->    0
+"abc"~compare("ak")          ->    2
+"ab "~compare("ab")          ->    0
+"ab "~compare("ab"," ")      ->    0
+"ab "~compare("ab","x")      ->    3
+"ab-- "~compare("ab","-")    ->    5
 ]]>
 </programlisting>
 <para>(See <link linkend="compare">COMPARE</link>  for information about the
 COMPARE built-in function.)</para>
 </section>
 
-<section id="stcopi"><title>COPIES</title>
-<indexterm><primary>COPIES method</primary>
+<section id="stcompto"><title>compareTo</title>
+<indexterm><primary>compareTo method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>COPIES method</secondary>
+<secondary>compareTo method</secondary>
 <tertiary>of String class</tertiary></indexterm>
-<indexterm><primary>copying a string using COPIES</primary></indexterm>
-<indexterm><primary>repeating s string with COPIES</primary></indexterm>
+<indexterm><primary>comparisons</primary>
+<secondary>of strings</secondary></indexterm>
+<indexterm><primary>finding</primary>
+<secondary>mismatch using compareTo</secondary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="stcopi"><title>copies</title>
+<indexterm><primary>copies method</primary>
+<secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>copies method</secondary>
+<tertiary>of String class</tertiary></indexterm>
+<indexterm><primary>copying a string using copies</primary></indexterm>
+<indexterm><primary>repeating s string with copies</primary></indexterm>
 <indexterm><primary>string</primary>
-<secondary>copying using COPIES</secondary></indexterm>
+<secondary>copying using copies</secondary></indexterm>
 <indexterm><primary>string</primary>
-<secondary>repeating using COPIES</secondary></indexterm>
+<secondary>repeating using copies</secondary></indexterm>
 
 <programlisting>
 <![CDATA[
->>-COPIES(n)---------------------------------------------------><
+>>-copies(n)---------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -2642,26 +2709,26 @@ receiving string. The <emphasis role="italic">n</emphasis> must be a positive
 whole number or zero.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>COPIES method</secondary></indexterm>
+<secondary>copies method</secondary></indexterm>
 <programlisting>
 <![CDATA[
-"abc"~COPIES(3)    ->    "abcabcabc"
-"abc"~COPIES(0)    ->    ""
+"abc"~copies(3)    ->    "abcabcabc"
+"abc"~copies(0)    ->    ""
 ]]>
 </programlisting>
 <para>(See <link linkend="copies">COPIES</link>  for information about the
 COPIES built-in function.)</para>
 </section>
 
-<section id="stcous"><title>COUNTSTR</title>
-<indexterm><primary>COUNTSTR method</primary>
+<section id="stcous"><title>countStr</title>
+<indexterm><primary>countStr method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>COUNTSTR method</secondary>
+<secondary>countStr method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-COUNTSTR(needle)--------------------------------------------><
+>>-countStr(needle)--------------------------------------------><
 ]]>
 </programlisting>
 
@@ -2670,11 +2737,11 @@ COPIES built-in function.)</para>
 string that do not overlap.</para>
 <para>Here are some examples:</para>
 <indexterm><primary>examples</primary>
-<secondary>COUNTSTR method</secondary></indexterm>
+<secondary>countStr method</secondary></indexterm>
 <programlisting>
 <![CDATA[
-"101101"~COUNTSTR("1")        ->    4
-"J0KKK0"~COUNTSTR("KK")       ->    1
+"101101"~countStr("1")        ->    4
+"J0KKK0"~CountStr("KK")       ->    1
 ]]>
 </programlisting>
 <para>(See <link linkend="chgtr">COUNTSTR</link>
@@ -2682,11 +2749,11 @@ for information about the COUNTSTR built-in
 function.)</para>
 </section>
 
-<section id="std2c"><title>D2C</title>
-<indexterm><primary>D2C method</primary>
+<section id="std2c"><title>d2c</title>
+<indexterm><primary>d2c method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>D2C method</secondary>
+<secondary>d2c method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <indexterm><primary>conversion</primary>
 <secondary>decimal to character</secondary></indexterm>
@@ -2695,7 +2762,7 @@ function.)</para>
 
 <programlisting>
 <![CDATA[
->>-D2C-+-----+-------------------------------------------------><
+>>-d2c-+-----+-------------------------------------------------><
        +-(n)-+
 ]]>
 </programlisting>
@@ -2714,19 +2781,19 @@ or zero, and the result length is as needed. Therefore, the returned result
 has no leading "00"x characters.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>D2C method</secondary></indexterm>
+<secondary>d2c method</secondary></indexterm>
 <programlisting>
-"65"~D2C       ->   "A"      /* "41"x is an ASCII "A"    */
-"65"~D2C(1)    ->   "A"
-"65"~D2C(2)    ->   " A"
-"65"~D2C(5)    ->   "    A"
-"109"~D2C      ->   "m"      /* "6D"x  is an ASCII "m"   */
-"-109"~D2C(1)  ->   "&ocirc;"      /* "93"x  is an ASCII "&ocirc;"   */
-"76"~D2C(2)    ->   " L"     /* "4C"x  is an ASCII " L"  */
-"-180"~D2C(2)  ->   " L"
+"65"~d2c       ->   "A"      /* "41"x is an ASCII "A"    */
+"65"~d2c(1)    ->   "A"
+"65"~d2c(2)    ->   " A"
+"65"~d2c(5)    ->   "    A"
+"109"~d2c      ->   "m"      /* "6D"x  is an ASCII "m"   */
+"-109"~d2c(1)  ->   "&ocirc;"      /* "93"x  is an ASCII "&ocirc;"   */
+"76"~d2c(2)    ->   " L"     /* "4C"x  is an ASCII " L"  */
+"-180"~d2c(2)  ->   " L"
 </programlisting>
 <indexterm><primary>implementation maximum</primary>
-<secondary>D2C method</secondary></indexterm>
+<secondary>d2c method</secondary></indexterm>
 <para>Implementation maximum: The returned string must not have more than 250
 significant
 characters, although a longer result is possible if it has additional leading
@@ -2735,11 +2802,11 @@ sign characters ("00"x and "FF"x).</para>
 for information about the D2C built-in function.)</para>
 </section>
 
-<section id="std2x"><title>D2X</title>
-<indexterm><primary>D2X method</primary>
+<section id="std2x"><title>d2x</title>
+<indexterm><primary>d2x method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>D2X method</secondary>
+<secondary>d2x method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <indexterm><primary>conversion</primary>
 <secondary>decimal to hexadecimal</secondary></indexterm>
@@ -2748,7 +2815,7 @@ for information about the D2C built-in function.)</para>
 
 <programlisting>
 <![CDATA[
->>-D2X-+-----+-------------------------------------------------><
+>>-d2x-+-----+-------------------------------------------------><
        +-(n)-+
 ]]>
 </programlisting>
@@ -2772,20 +2839,20 @@ must be a positive whole number
 or zero, and the returned result has no leading zeros.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>D2X method</secondary></indexterm>
+<secondary>d2x method</secondary></indexterm>
 <programlisting>
-"9"~D2X        ->    "9"
-"129"~D2X      ->    "81"
-"129"~D2X(1)   ->    "1"
-"129"~D2X(2)   ->    "81"
-"129"~D2X(4)   ->    "0081"
-"257"~D2X(2)   ->    "01"
-"-127"~D2X(2)  ->    "81"
-"-127"~D2X(4)  ->    "FF81"
-"12"~D2X(0)    ->    ""
+"9"~d2x        ->    "9"
+"129"~d2x      ->    "81"
+"129"~d2x(1)   ->    "1"
+"129"~d2x(2)   ->    "81"
+"129"~d2x(4)   ->    "0081"
+"257"~d2x(2)   ->    "01"
+"-127"~d2x(2)  ->    "81"
+"-127"~d2x(4)  ->    "FF81"
+"12"~d2x(0)    ->    ""
 </programlisting>
 <indexterm><primary>implementation maximum</primary>
-<secondary>D2X method</secondary></indexterm>
+<secondary>d2x method</secondary></indexterm>
 <para>Implementation maximum: The returned string must not have more than 500
 significant hexadecimal characters, although a longer result is possible if it
 has additional leading sign characters (0 and F).</para>
@@ -2793,28 +2860,28 @@ has additional leading sign characters (0 and F).</para>
 for information about the D2X built-in function.)</para>
 </section>
 
-<section id="stdata"><title>DATATYPE</title>
-<indexterm><primary>DATATYPE method</primary>
+<section id="stdata"><title>dataType</title>
+<indexterm><primary>dataType method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>DATATYPE method</secondary>
+<secondary>dataType method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <indexterm><primary>alphabetics</primary>
-<secondary>checking with DATATYPE</secondary></indexterm>
+<secondary>checking with dataType</secondary></indexterm>
 <indexterm><primary>alphnumerics</primary>
-<secondary>checking with DATATYPE</secondary></indexterm>
-<indexterm><primary>bits checked using DATATYPE method</primary></indexterm>
+<secondary>checking with dataType</secondary></indexterm>
+<indexterm><primary>bits checked using dataType method</primary></indexterm>
 <indexterm><primary>hexadecimal</primary>
-<secondary>checking with DATATYPE</secondary></indexterm>
-<indexterm><primary>type of data, checking with DATATYPE</primary></indexterm>
+<secondary>checking with dataType</secondary></indexterm>
+<indexterm><primary>type of data, checking with DataType</primary></indexterm>
 <indexterm><primary>whole numbers</primary>
-<secondary>checking with DATATYPE</secondary></indexterm>
+<secondary>checking with dataType</secondary></indexterm>
 <indexterm><primary>numbers</primary>
-<secondary>checking with DATATYPE</secondary></indexterm>
+<secondary>checking with dataType</secondary></indexterm>
 
 <programlisting>
 <![CDATA[
->>-DATATYPE-+--------+-----------------------------------------><
+>>-dataType-+--------+-----------------------------------------><
             +-(type)-+
 ]]>
 </programlisting>
@@ -2831,7 +2898,8 @@ string matches the type. Otherwise, it returns
 string is null, the method returns <computeroutput>0</computeroutput>
 (except when the <emphasis role="italic">type</emphasis> is
 <computeroutput>X</computeroutput> or <computeroutput>B</computeroutput>,
-for which DATATYPE returns <computeroutput>1</computeroutput> for
+for which <emphasis role="bold">dataType</emphasis>
+returns <computeroutput>1</computeroutput> for
 a null string). The following are valid
 <emphasis role="italic">type</emphasis>s. You need to specify
 only the capitalized letter, or the number of the last type listed. The language
@@ -2864,7 +2932,7 @@ string contains only characters from the ranges
 </para></listitem></varlistentry>
 <varlistentry><term>Number</term>
 <listitem><para>returns <computeroutput>1</computeroutput> if
-<computeroutput>receiving_string~DATATYPE</computeroutput> returns
+<computeroutput>receiving_string~dataType</computeroutput> returns
 <computeroutput>NUM</computeroutput>.
 </para></listitem></varlistentry>
 <varlistentry><term>lOgical</term>
@@ -2906,53 +2974,54 @@ the receiving string is a null string.
 </para></listitem></varlistentry>
 <varlistentry><term>9 Digits</term>
 <listitem><para>returns <computeroutput>1</computeroutput> if
-<computeroutput>receiving_string~DATATYPE("W")</computeroutput> returns
+<computeroutput>receiving_string~dataType("W")</computeroutput> returns
 <computeroutput>1</computeroutput> when NUMERIC DIGITS is set to 9.
 </para></listitem></varlistentry>
 </variablelist>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>DATATYPE method</secondary></indexterm>
+<secondary>dataType method</secondary></indexterm>
 <programlisting>
 <![CDATA[
-" 12 "~DATATYPE          ->   "NUM"
-""~DATATYPE              ->   "CHAR"
-"123*"~DATATYPE          ->   "CHAR"
-"12.3"~DATATYPE("N")     ->    1
-"12.3"~DATATYPE("W")     ->    0
-"Fred"~DATATYPE("M")     ->    1
-""~DATATYPE("M")         ->    0
-"Fred"~DATATYPE("L")     ->    0
-"?20K"~DATATYPE("s")     ->    1
-"BCd3"~DATATYPE("X")     ->    1
-"BC d3"~DATATYPE("X")    ->    1
-"1"~DATATYPE("O")        ->    1
-"11"~DATATYPE("O")        ->   0
+" 12 "~dataType          ->   "NUM"
+""~dataType              ->   "CHAR"
+"123*"~dataType          ->   "CHAR"
+"12.3"~dataType("N")     ->    1
+"12.3"~dataType("W")     ->    0
+"Fred"~dataType("M")     ->    1
+""~dataType("M")         ->    0
+"Fred"~dataType("L")     ->    0
+"?20K"~dataType("s")     ->    1
+"BCd3"~dataType("X")     ->    1
+"BC d3"~dataType("X")    ->    1
+"1"~dataType("O")        ->    1
+"11"~dataType("O")        ->   0
 ]]>
 </programlisting><para> </para>
 
 <note><title>Note</title>
-<para>The DATATYPE method tests the meaning or type of characters in a
+<para>The <emphasis role="bold">dataType</emphasis>
+method tests the meaning or type of characters in a
 string, independent of the encoding of those characters (for example, ASCII
 or EBCDIC).</para></note>
 <para>(See <link linkend="datatyp">DATATYPE</link> for information about the
 DATATYPE built-in function.)</para>
 </section>
 
-<section id="decodebase64"><title>DECODEBASE64</title>
-<indexterm><primary>DECODEBASE64 method</primary>
+<section id="decodebase64"><title>decodeBase64</title>
+<indexterm><primary>decodeBase64 method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>DECODEBASE64 method</secondary>
+<secondary>decodeBase64 method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <indexterm><primary>base64</primary>
-<secondary>DECODEBASE64 method</secondary></indexterm>
+<secondary>decodeBase64 method</secondary></indexterm>
 <indexterm><primary>string</primary>
-<secondary>DECODEBASE64 method</secondary></indexterm>
+<secondary>decodeBase64 method</secondary></indexterm>
 
 <programlisting>
 <![CDATA[
->>-DECODEBASE64------------------------------------------------><
+>>-decodeBase64------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -2961,30 +3030,30 @@ If the recieving string is not in base64 format then the
 returned result is undefined.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>DECODEBASE64 method</secondary></indexterm>
+<secondary>decodeBase64 method</secondary></indexterm>
 <programlisting>
 <![CDATA[
-"YWJjZGVm"~DECODEBASE64       ->    "abcdef"
+"YWJjZGVm"~decodeBase64       ->    "abcdef"
 ]]>
 </programlisting>
 <para>Please note that there is no corresponding DECODEBASE64 builtin function
 for this method in ooRexx.</para>
 </section>
 
-<section id="stdels"><title>DELSTR</title>
-<indexterm><primary>DELSTR method</primary>
+<section id="stdels"><title>delStr</title>
+<indexterm><primary>delStr method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>DELSTR method</secondary>
+<secondary>delStr method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <indexterm><primary>deleting</primary>
 <secondary>part of a string</secondary></indexterm>
 <indexterm><primary>string</primary>
-<secondary>deleting part, DELSTR method</secondary></indexterm>
+<secondary>deleting part, delStr method</secondary></indexterm>
 
 <programlisting>
 <![CDATA[
->>-DELSTR(n--+---------+--)------------------------------------><
+>>-delStr(n--+---------+--)------------------------------------><
              +-,length-+
 ]]>
 </programlisting>
@@ -3005,23 +3074,23 @@ than the length of the receiving
 string, the method returns the receiving string unchanged.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>DELSTR method</secondary></indexterm>
+<secondary>delStr method</secondary></indexterm>
 <programlisting>
 <![CDATA[
-"abcd"~DELSTR(3)       ->    "ab"
-"abcde"~DELSTR(3,2)    ->    "abe"
-"abcde"~DELSTR(6)      ->    "abcde"
+"abcd"~delStr(3)       ->    "ab"
+"abcde"~delStr(3,2)    ->    "abe"
+"abcde"~delStr(6)      ->    "abcde"
 ]]>
 </programlisting>
 <para>(See <link linkend="delstr">DELSTR (Delete String)</link>
 for information about the DELSTR built-in function.)</para>
 </section>
 
-<section id="stdelw"><title>DELWORD</title>
-<indexterm><primary>DELWORD method</primary>
+<section id="stdelw"><title>delWord</title>
+<indexterm><primary>delWord method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>DELWORD method</secondary>
+<secondary>delWord method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <indexterm><primary>deleting</primary>
 <secondary>words from a string</secondary></indexterm>
@@ -3030,7 +3099,7 @@ for information about the DELSTR built-in function.)</para>
 
 <programlisting>
 <![CDATA[
->>-DELWORD(n--+---------+--)-----------------------------------><
+>>-delWord(n--+---------+--)-----------------------------------><
               +-,length-+
 ]]>
 </programlisting>
@@ -3052,56 +3121,66 @@ string unchanged. The string deleted includes any blanks following the final
 word involved but none of the blanks preceding the first word involved.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>DELWORD method</secondary></indexterm>
+<secondary>delWord method</secondary></indexterm>
 <indexterm><primary>examples</primary>
-<secondary>INSERT method</secondary></indexterm>
+<secondary>delWord method</secondary></indexterm>
 <programlisting>
 <![CDATA[
-"Now is the  time"~DELWORD(2,2)  ->  "Now time"
-"Now is the time "~DELWORD(3)    ->  "Now is "
-"Now is the  time"~DELWORD(5)    ->  "Now is the  time"
-"Now is   the time"~DELWORD(3,1) ->  "Now is   time"
+"Now is the  time"~delWord(2,2)  ->  "Now time"
+"Now is the time "~delWord(3)    ->  "Now is "
+"Now is the  time"~delWord(5)    ->  "Now is the  time"
+"Now is   the time"~delWord(3,1) ->  "Now is   time"
 ]]>
 </programlisting>
 <para>(See <link linkend="delword">DELWORD (Delete Word)</link>
 for information about the DELWORD built-in function.)</para>
 </section>
 
-<section id="encodebase64"><title>ENCODEBASE64</title>
-<indexterm><primary>ENCODEBASE64 method</primary>
+<section id="encodebase64"><title>encodeBase64</title>
+<indexterm><primary>encodeBase64 method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>ENCODEBASE64 method</secondary>
+<secondary>encodeBase64 method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <indexterm><primary>base64</primary>
-<secondary>ENCODEBASE64 method</secondary></indexterm>
+<secondary>encodeBase64 method</secondary></indexterm>
 <indexterm><primary>string</primary>
-<secondary>ENCODEBASE64 method</secondary></indexterm>
+<secondary>encodeBase64 method</secondary></indexterm>
 
 <programlisting>
 <![CDATA[
->>-ENCODEBASE64------------------------------------------------><
+>>-encodeBase64------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Returns the base64 encoded version of the recieving string.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>ENCODEBASE64 method</secondary></indexterm>
+<secondary>encodeBase64 method</secondary></indexterm>
 <programlisting>
 <![CDATA[
-"abcdef"~ENCODEBASE64       ->    "YWJjZGVm"
+"abcdef"~encodeBase64       ->    "YWJjZGVm"
 ]]>
 </programlisting>
 <para>Please note that there is no corresponding ENCODEBASE64 builtin function
 for this method in ooRexx.</para>
 </section>
 
-<section id="stform"><title>FORMAT</title>
-<indexterm><primary>FORMAT method</primary>
+<section id="strequals"><title>equals</title>
+<indexterm><primary>equals method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>FORMAT method</secondary>
+<secondary>equals method</secondary>
+<tertiary>of String class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="stform"><title>format</title>
+<indexterm><primary>format method</primary>
+<secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>format method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <indexterm><primary>conversion</primary>
 <secondary>formating numbers</secondary></indexterm>
@@ -3113,7 +3192,7 @@ for this method in ooRexx.</para>
 
 <programlisting>
 <![CDATA[
->>-FORMAT-+---------------------------------------------------------+-><
+>>-format-+---------------------------------------------------------+-><
           +-(-before-+------------------------------------------+-)-+
                      +-,--+-------+--+------------------------+-+
                           +-after-+  +-,--+------+--+-------+-+
@@ -3144,16 +3223,16 @@ Specifying <computeroutput>0</computeroutput> causes the number to be rounded
 to an integer.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>FORMAT method</secondary></indexterm>
+<secondary>format method</secondary></indexterm>
 <programlisting>
-"3"~FORMAT(4)            ->    "   3"
-"1.73"~FORMAT(4,0)       ->    "   2"
-"1.73"~FORMAT(4,3)       ->    "   1.730"
-"-.76"~FORMAT(4,1)       ->    "  -0.8"
-"3.03"~FORMAT(4)         ->    "   3.03"
-" - 12.73"~FORMAT(,4)    ->    "-12.7300"
-" - 12.73"~FORMAT        ->    "-12.73"
-"0.000"~FORMAT           ->    "0"
+"3"~format(4)            ->    "   3"
+"1.73"~format(4,0)       ->    "   2"
+"1.73"~format(4,3)       ->    "   1.730"
+"-.76"~format(4,1)       ->    "  -0.8"
+"3.03"~format(4)         ->    "   3.03"
+" - 12.73"~format(,4)    ->    "-12.7300"
+" - 12.73"~format        ->    "-12.73"
+"0.000"~format           ->    "0"
 </programlisting>
 <para><emphasis role="italic">expp</emphasis> and
 <emphasis role="italic">expt</emphasis> control the exponent part of the result,
@@ -3186,27 +3265,27 @@ is not specified, the number is not an exponential
 expression.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <programlisting>
-"12345.73"~FORMAT(, ,2,2)   ->    "1.234573E+04"
-"12345.73"~FORMAT(,3, ,0)   ->    "1.235E+4"
-"1.234573"~FORMAT(,3, ,0)   ->    "1.235"
-"12345.73"~FORMAT(, ,3,6)   ->    "12345.73"
-"1234567e5"~FORMAT(,3,0)    ->    "123456700000.000"
+"12345.73"~format(, ,2,2)   ->    "1.234573E+04"
+"12345.73"~format(,3, ,0)   ->    "1.235E+4"
+"1.234573"~format(,3, ,0)   ->    "1.235"
+"12345.73"~format(, ,3,6)   ->    "12345.73"
+"1234567e5"~format(,3,0)    ->    "123456700000.000"
 </programlisting>
 <para>(See <link linkend="xformat">FORMAT</link>  for information about the
 FORMAT built-in function.)</para>
 </section>
 
-<section id="stinse"><title>INSERT</title>
-<indexterm><primary>INSERT method</primary>
+<section id="stinse"><title>insert</title>
+<indexterm><primary>insert method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>INSERT method</secondary>
+<secondary>insert method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <indexterm><primary>inserting a string into another</primary></indexterm>
 
 <programlisting>
 <![CDATA[
->>-INSERT(new-+---------------------------------------+-)------><
+>>-insert(new-+---------------------------------------+-)------><
               +-,--+---+--+-------------------------+-+
                    +-n-+  +-,--+--------+--+------+-+
                                +-length-+  +-,pad-+
@@ -3227,36 +3306,37 @@ value for <emphasis role="italic">length</emphasis> is the length of
 <emphasis role="italic">new</emphasis>. If
 <emphasis role="italic">length</emphasis> is less
 than the length of the string <emphasis role="italic">new</emphasis>,
-then INSERT truncates <emphasis role="italic">new</emphasis> to length
+then <emphasis role="bold">insert</emphasis>
+truncates <emphasis role="italic">new</emphasis> to length
 <emphasis role="italic">length</emphasis>. The default
 <emphasis role="italic">pad</emphasis> character is a blank.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>INSERT method</secondary>
+<secondary>insert method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <programlisting>
-"abc"~INSERT("123")            ->    "123abc"
-"abcdef"~INSERT(" ",3)         ->    "abc def"
-"abc"~INSERT("123",5,6)        ->    "abc  123   "
-"abc"~INSERT("123",5,6,"+")    ->    "abc++123+++"
-"abc"~INSERT("123", ,5,"-")    ->    "123--abc"
+"abc"~insert("123")            ->    "123abc"
+"abcdef"~insert(" ",3)         ->    "abc def"
+"abc"~insert("123",5,6)        ->    "abc  123   "
+"abc"~insert("123",5,6,"+")    ->    "abc++123+++"
+"abc"~insert("123", ,5,"-")    ->    "123--abc"
 </programlisting>
 <para>(See <link linkend="insert">INSERT</link>
 for information about the INSERT built-in function.)</para>
 </section>
 
-<section id="stlast"><title>LASTPOS</title>
-<indexterm><primary>LASTPOS method</primary>
+<section id="stlast"><title>lastPos</title>
+<indexterm><primary>lastPos method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>LASTPOS method</secondary>
+<secondary>lastPos method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <indexterm><primary>position</primary>
 <secondary>last occurrence of a string</secondary></indexterm>
 
 <programlisting>
 <![CDATA[
->>-LASTPOS(needle-+--------+-)---------------------------------><
+>>-lastPos(needle-+--------+-)---------------------------------><
                   +-,start-+
 ]]>
 </programlisting>
@@ -3275,29 +3355,29 @@ positive whole number and defaults to
 value or omitted.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>LASTPOS method</secondary></indexterm>
+<secondary>lastPos method</secondary></indexterm>
 <programlisting>
-"abc def ghi"~LASTPOS(" ")      ->    8
-"abcdefghi"~LASTPOS(" ")        ->    0
-"efgxyz"~LASTPOS("xy")          ->    4
-"abc def ghi"~LASTPOS(" ",7)    ->    4
+"abc def ghi"~lastPos(" ")      ->    8
+"abcdefghi"~lastPos(" ")        ->    0
+"efgxyz"~lastPos("xy")          ->    4
+"abc def ghi"~lastPos(" ",7)    ->    4
 </programlisting>
 <para>(See <link linkend="lastpos">LASTPOS (Last Position)</link>
 for information about the LASTPOS built-in function.)</para>
 </section>
 
-<section id="stleft"><title>LEFT</title>
-<indexterm><primary>LEFT method</primary>
+<section id="stleft"><title>left</title>
+<indexterm><primary>left method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>LEFT method</secondary>
+<secondary>left method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <indexterm><primary>formatting</primary>
 <secondary>text left justification</secondary></indexterm>
 
 <programlisting>
 <![CDATA[
->>-LEFT(length-+------+-)--------------------------------------><
+>>-left(length-+------+-)--------------------------------------><
                +-,pad-+
 ]]>
 </programlisting>
@@ -3308,7 +3388,8 @@ of the receiving string. The string returned is padded
 with <emphasis role="italic">pad</emphasis> characters (or truncated) on the
 right as needed. The default <emphasis role="italic">pad</emphasis> character
 is a blank. The <emphasis role="italic">length</emphasis> must be a positive
-whole number or zero. The LEFT method is exactly equivalent to:</para>
+whole number or zero. The <emphasis role="bold">left</emphasis>
+method is exactly equivalent to:</para>
 <programlisting>
 <![CDATA[
 >>-SUBSTR(string,1,length-+------+-)---------------------------><
@@ -3318,21 +3399,21 @@ whole number or zero. The LEFT method is exactly equivalent to:</para>
 
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>LEFT method</secondary></indexterm>
+<secondary>left method</secondary></indexterm>
 <programlisting>
-"abc d"~LEFT(8)        ->    "abc d   "
-"abc d"~LEFT(8,".")    ->    "abc d..."
-"abc  def"~LEFT(7)     ->    "abc  de"
+"abc d"~left(8)        ->    "abc d   "
+"abc d"~left(8,".")    ->    "abc d..."
+"abc  def"~left(7)     ->    "abc  de"
 </programlisting>
 <para>(See <link linkend="left">LEFT</link>
 for information about the LEFT built-in function.)</para>
 </section>
 
-<section id="stleng"><title>LENGTH</title>
-<indexterm><primary>LENGTH method</primary>
+<section id="stleng"><title>length</title>
+<indexterm><primary>length method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>LENGTH method</secondary>
+<secondary>length method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <indexterm><primary>finding</primary>
 <secondary>string length</secondary></indexterm>
@@ -3341,32 +3422,42 @@ for information about the LEFT built-in function.)</para>
 
 <programlisting>
 <![CDATA[
->>-LENGTH------------------------------------------------------><
+>>-length------------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Returns the length of the receiving string.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>LENGTH method</secondary></indexterm>
+<secondary>length method</secondary></indexterm>
 <programlisting>
-"abcdefgh"~LENGTH     ->    8
-"abc defg"~LENGTH     ->    8
-""~LENGTH             ->    0
+"abcdefgh"~length     ->    8
+"abc defg"~length     ->    8
+""~length             ->    0
 </programlisting>
 <para>(See <link linkend="length">LENGTH</link>
 for information about the LENGTH built-in function.)</para>
 </section>
 
-<section id="stmaka"><title>MAKEARRAY</title>
-<indexterm><primary>MAKEARRAY method</primary>
+<section id="strlower"><title>lower</title>
+<indexterm><primary>lower method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>MAKEARRAY method</secondary>
+<secondary>lorer method</secondary>
+<tertiary>of String class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="stmaka"><title>makeArray</title>
+<indexterm><primary>makeArray method</primary>
+<secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>makeArray method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-MAKEARRAY(-+-----------+-)----><
+>>-makeArray(-+-----------+-)----><
               +-Separator-+
 ]]>
 </programlisting>
@@ -3380,27 +3471,25 @@ default separator is the newline character.</para>
 <![CDATA[
 nl = "0d0a"x
 string = "hello"nl"world"nl"this is an array."
-array = string~makearray
+array = string~makeArray
 say "the second line is:" array[2]
 
 string = "hello*world*this is an array."
-array = string~makearray("*")
+array = string~makeArray("*")
 say "the third line is:" array[3]
 ]]>
 </programlisting>
 </section>
 
-
-
-<section id="stmaks"><title>MAKESTRING</title>
-<indexterm><primary>MAKESTRING method</primary>
+<section id="stmaks"><title>makeString</title>
+<indexterm><primary>makeString method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>MAKESTRING method</secondary>
+<secondary>makeString method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-MAKESTRING--------------------------------------------------><
+>>-makeString--------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -3411,15 +3500,35 @@ an instance of a subclass of the String class), this method returns the receiver
 object. See <link linkend="reqstr">Required String Values</link>.</para>
 </section>
 
-<section id="stmax"><title>MAX</title>
-<indexterm><primary>MAX method</primary>
+<section id="stmatch"><title>match</title>
+<indexterm><primary>match method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>MAX method</secondary>
+<secondary>match method</secondary>
+<tertiary>of String class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="stmatchchar"><title>matchChar</title>
+<indexterm><primary>matchChar method</primary>
+<secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>matchChar method</secondary>
+<tertiary>of String class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="stmax"><title>max</title>
+<indexterm><primary>max method</primary>
+<secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>max method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-MAX-+------------------+------------------------------------><
+>>-max-+------------------+------------------------------------><
        |    +-,------.    |
        |    V        |    |
        +-(----number-+--)-+
@@ -3427,30 +3536,31 @@ object. See <link linkend="reqstr">Required String Values</link>.</para>
 </programlisting>
 
 <para>Returns the largest number from among the receiver and any arguments. The
-number that MAX returns is formatted according to the current NUMERIC settings.
+number that <emphasis role="bold">max</emphasis>
+returns is formatted according to the current NUMERIC settings.
 You can specify any number of <emphasis role="italic">number</emphasis>s.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>MAX method</secondary></indexterm>
+<secondary>max method</secondary></indexterm>
 <programlisting>
-12~MAX(6,7,9)                                                ->    12
-17.3~MAX(19,17.03)                                           ->    19
-"-7"~MAX("-3","-4.3")                                        ->    -3
-1~MAX(2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21)   ->    21
+12~max(6,7,9)                                                ->    12
+17.3~max(19,17.03)                                           ->    19
+"-7"~max("-3","-4.3")                                        ->    -3
+1~max(2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21)   ->    21
 </programlisting>
 <para>(See <link linkend="max">MAX (Maximum)</link>
 for information about the MAX built-in function.)</para>
 </section>
 
-<section id="stmin"><title>MIN</title>
-<indexterm><primary>MIN method</primary>
+<section id="stmin"><title>min</title>
+<indexterm><primary>min method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>MIN method</secondary>
+<secondary>min method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-MIN-+------------------+------------------------------------><
+>>-min-+------------------+------------------------------------><
        |    +-,------.    |
        |    V        |    |
        +-(----number-+--)-+
@@ -3458,33 +3568,34 @@ for information about the MAX built-in function.)</para>
 </programlisting>
 
 <para>Returns the smallest number from among the receiver and any arguments.
-The number that MIN returns is formatted according to the current NUMERIC
+The number that <emphasis role="bold">min</emphasis>
+returns is formatted according to the current NUMERIC
 settings. You can specify any number of
 <emphasis role="italic">number</emphasis>s.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>MIN method</secondary></indexterm>
+<secondary>min method</secondary></indexterm>
 <programlisting>
-12~MIN(6,7,9)                                                ->     6
-17.3~MIN(19,17.03)                                           ->    17.03
+12~min(6,7,9)                                                ->     6
+17.3~min(19,17.03)                                           ->    17.03
 "-7"~MIN("-3","-4.3")                                        ->    -7
-21~MIN(20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1)   ->     1
+21~min(20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1)   ->     1
 </programlisting>
 <para>(See <link linkend="min">MIN (Minimum)</link>
 for information about the MIN built-in function.)</para>
 </section>
 
-<section id="stover"><title>OVERLAY</title>
-<indexterm><primary>OVERLAY method</primary>
+<section id="stover"><title>overlay</title>
+<indexterm><primary>overlay method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>OVERLAY method</secondary>
+<secondary>overlay method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <indexterm><primary>overlaying a string onto another</primary></indexterm>
 
 <programlisting>
 <![CDATA[
->>-OVERLAY(new-+---------------------------------------+-)-----><
+>>-overlay(new-+---------------------------------------+-)-----><
                +-,--+---+--+-------------------------+-+
                     +-n-+  +-,--+--------+--+------+-+
                                 +-length-+  +-,pad-+
@@ -3509,23 +3620,23 @@ and the default value for <emphasis role="italic">n</emphasis> is
 </para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>OVERLAY method</secondary></indexterm>
+<secondary>overlay method</secondary></indexterm>
 <programlisting>
-"abcdef"~OVERLAY(" ",3)         ->    "ab def"
-"abcdef"~OVERLAY(".",3,2)       ->    "ab. ef"
-"abcd"~OVERLAY("qq")            ->    "qqcd"
-"abcd"~OVERLAY("qq",4)          ->    "abcqq"
-"abc"~OVERLAY("123",5,6,"+")    ->    "abc+123+++"
+"abcdef"~overlay(" ",3)         ->    "ab def"
+"abcdef"~overlay(".",3,2)       ->    "ab. ef"
+"abcd"~overlay("qq")            ->    "qqcd"
+"abcd"~overlay("qq",4)          ->    "abcqq"
+"abc"~overlay("123",5,6,"+")    ->    "abc+123+++"
 </programlisting>
 <para>(See <link linkend="overlay">OVERLAY</link>
 for information about the OVERLAY built-in function.)</para>
 </section>
 
-<section id="stpos"><title>POS</title>
-<indexterm><primary>POS method</primary>
+<section id="stpos"><title>pos</title>
+<indexterm><primary>pos method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>POS method</secondary>
+<secondary>pos method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <indexterm><primary>finding</primary>
 <secondary>string in another string</secondary></indexterm>
@@ -3534,14 +3645,14 @@ for information about the OVERLAY built-in function.)</para>
 
 <programlisting>
 <![CDATA[
->>-POS(needle-+--------+-)-------------------------------------><
+>>-pos(needle-+--------+-)-------------------------------------><
               +-,start-+
 ]]>
 </programlisting>
 
 <para>Returns the position in the receiving string of another string,
 <emphasis role="italic">needle</emphasis>. (See also
-<link linkend="stlast">LASTPOS</link>.) It returns
+<link linkend="stlast">lastPos</link>.) It returns
 <computeroutput>0</computeroutput> if
 <emphasis role="italic">needle</emphasis> is the null string or is not found
 or if <emphasis role="italic">start</emphasis> is greater than
@@ -3553,46 +3664,46 @@ You can override this by specifying <emphasis role="italic">start</emphasis>
 a positive whole number), the point at which the search starts.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>POS method</secondary></indexterm>
+<secondary>pos method</secondary></indexterm>
 <programlisting>
-"Saturday"~POS("day")       ->    6
-"abc def ghi"~POS("x")      ->    0
-"abc def ghi"~POS(" ")      ->    4
-"abc def ghi"~POS(" ",5)    ->    8
+"Saturday"~pos("day")       ->    6
+"abc def ghi"~pos("x")      ->    0
+"abc def ghi"~pos(" ")      ->    4
+"abc def ghi"~pos(" ",5)    ->    8
 </programlisting>
 <para>(See <link linkend="pos">POS (Position)</link>
 for information about the POS built-in function.)</para>
 </section>
 
-<section id="streve"><title>REVERSE</title>
-<indexterm><primary>REVERSE method</primary>
+<section id="streve"><title>reverse</title>
+<indexterm><primary>reverse method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>REVERSE method</secondary>
+<secondary>reverse method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-REVERSE-----------------------------------------------------><
+>>-reverse-----------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Returns the receiving string reversed.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>REVERSE method</secondary></indexterm>
+<secondary>reverse method</secondary></indexterm>
 <programlisting>
-"ABc."~REVERSE    ->    ".cBA"
-"XYZ "~REVERSE    ->    " ZYX"
+"ABc."~reverse    ->    ".cBA"
+"XYZ "~reverse    ->    " ZYX"
 </programlisting>
 <para>(See <link linkend="reverse">REVERSE</link>
 for information about the REVERSE built-in function.)</para>
 </section>
 
-<section id="strigh"><title>RIGHT</title>
-<indexterm><primary>RIGHT method</primary>
+<section id="strigh"><title>right</title>
+<indexterm><primary>right method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>RIGHT method</secondary>
+<secondary>right method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <indexterm><primary>formatting</primary>
 <secondary>text right justification</secondary></indexterm>
@@ -3600,13 +3711,13 @@ for information about the REVERSE built-in function.)</para>
 </indexterm>
 <indexterm><primary>leading</primary>
 <secondary>zeros</secondary>
-<tertiary>adding with RIGHT method</tertiary></indexterm>
+<tertiary>adding with right method</tertiary></indexterm>
 <indexterm><primary>zeros</primary>
-<secondary>added on left with RIGHT method</secondary></indexterm>
+<secondary>added on left with right method</secondary></indexterm>
 
 <programlisting>
 <![CDATA[
->>-RIGHT(length-+------+-)-------------------------------------><
+>>-right(length-+------+-)-------------------------------------><
                 +-,pad-+
 ]]>
 </programlisting>
@@ -3620,25 +3731,25 @@ is a blank. The <emphasis role="italic">length</emphasis> must be a positive
 whole number or zero.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>RIGHT method</secondary></indexterm>
+<secondary>right method</secondary></indexterm>
 <programlisting>
-"abc  d"~RIGHT(8)     ->    "  abc  d"
-"abc def"~RIGHT(5)    ->    "c def"
-"12"~RIGHT(5,"0")     ->    "00012"
+"abc  d"~right(8)     ->    "  abc  d"
+"abc def"~right(5)    ->    "c def"
+"12"~right(5,"0")     ->    "00012"
 </programlisting>
 <para>(See <link linkend="right">RIGHT</link>
 for information about the RIGHT built-in function.)</para>
 </section>
 
-<section id="stsign"><title>SIGN</title>
-<indexterm><primary>SIGN method</primary>
+<section id="stsign"><title>sign</title>
+<indexterm><primary>sign method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>SIGN method</secondary>
+<secondary>sign method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-SIGN--------------------------------------------------------><
+>>-sign--------------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -3653,29 +3764,29 @@ less than <computeroutput>0</computeroutput>,
 if it is greater than <computeroutput>0</computeroutput>.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>SIGN method</secondary></indexterm>
+<secondary>sign method</secondary></indexterm>
 <programlisting>
-"12.3"~SIGN       ->     1
-" -0.307"~SIGN    ->    -1
-0.0~SIGN          ->     0
+"12.3"~sign       ->     1
+" -0.307"~sign    ->    -1
+0.0~sign          ->     0
 </programlisting>
 <para>(See <link linkend="sign">SIGN</link>
 for information about the SIGN built-in function.)</para>
 </section>
 
-<section id="stspac"><title>SPACE</title>
-<indexterm><primary>SPACE method</primary>
+<section id="stspac"><title>space</title>
+<indexterm><primary>space method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>SPACE method</secondary>
+<secondary>space method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <indexterm><primary>formatting</primary>
 <secondary>text spacing</secondary></indexterm>
-<indexterm><primary>spacing, formatting, SPACE method</primary></indexterm>
+<indexterm><primary>spacing, formatting, space method</primary></indexterm>
 
 <programlisting>
 <![CDATA[
->>-SPACE-+---------------+-------------------------------------><
+>>-space-+---------------+-------------------------------------><
          +-(n-+------+-)-+
               +-,pad-+
 ]]>
@@ -3693,80 +3804,41 @@ and the default <emphasis role="italic">pad</emphasis> character is a blank.
 </para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>SPACE method</secondary></indexterm>
+<secondary>space method</secondary></indexterm>
 <programlisting>
-"abc  def  "~SPACE           ->    "abc def"
-"  abc def"~SPACE(3)         ->    "abc   def"
-"abc  def  "~SPACE(1)        ->    "abc def"
-"abc  def  "~SPACE(0)        ->    "abcdef"
-"abc  def  "~SPACE(2,"+")    ->    "abc++def"
+"abc  def  "~space           ->    "abc def"
+"  abc def"~space(3)         ->    "abc   def"
+"abc  def  "~space(1)        ->    "abc def"
+"abc  def  "~space(0)        ->    "abcdef"
+"abc  def  "~space(2,"+")    ->    "abc++def"
 </programlisting>
 <para>(See <link linkend="space">SPACE</link>
 for information about the SPACE built-in function.)</para>
 </section>
 
-<section><title>SUBCHAR</title>
-<indexterm><primary>STRING method</primary>
+<section id="stripm"><title>strip</title>
+<indexterm><primary>strip method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>SUBCHAR method</secondary>
-<tertiary>of String</tertiary></indexterm>
-
-<programlisting>
-<![CDATA[
->>-SUBCHAR(n)----------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns the <emphasis>n</emphasis>'th character of the receiving
-string. <emphasis>n</emphasis> must be a positive whole number. If
-<emphasis>n</emphasis> is greater that the length of the receiving string
-then a zero-length string is returned.</para>
-</section>
-
-<section id="ststrn"><title>STRING</title>
-<indexterm><primary>STRING method</primary>
-<secondary>of String class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>STRING method</secondary>
-<tertiary>of String class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-STRING------------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns a string with the same string value as the receiver object. If
-the receiver is an instance of a subclass of the String class, this method
-returns a string having an equivalent value. If the receiver is a string (but
-is not an instance of a subclass of the String class), this method returns
-the receiver object. See also the STRING method of the Object class in
-<link linkend="obstri">STRING</link> .</para>
-</section>
-
-<section id="stripm"><title>STRIP</title>
-<indexterm><primary>STRIP method</primary>
-<secondary>of String class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>STRIP method</secondary>
+<secondary>strip method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <indexterm><primary>blanks</primary>
-<secondary>removal with STRIP method</secondary></indexterm>
+<secondary>removal with strip method</secondary></indexterm>
 <indexterm><primary>character</primary>
-<secondary>removal with STRIP method</secondary></indexterm>
+<secondary>removal with strip method</secondary></indexterm>
 <indexterm><primary>leading</primary>
 <secondary>zeros</secondary>
-<tertiary>removing with STRIP method</tertiary></indexterm>
+<tertiary>removing with strip method</tertiary></indexterm>
 <indexterm><primary>leading</primary>
-<secondary>blank removal with STRIP method</secondary></indexterm>
+<secondary>blank removal with strip method</secondary></indexterm>
 <indexterm><primary>trailing</primary>
-<secondary>blank removed using STRIP method</secondary></indexterm>
+<secondary>blank removed using strip method</secondary></indexterm>
 <indexterm><primary>zeros</primary>
-<secondary>removal with STRIP method</secondary></indexterm>
+<secondary>removal with strip method</secondary></indexterm>
 
 <programlisting>
 <![CDATA[
->>-STRIP-+---------------------+-------------------------------><
+>>-strip-+---------------------+-------------------------------><
          +-(option-+-------+-)-+
                    +-,char-+
 ]]>
@@ -3795,32 +3867,51 @@ removed, and the default is a blank. If you specify
 long.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>STRIP method</secondary></indexterm>
+<secondary>strip method</secondary></indexterm>
 <programlisting>
-"  ab c  "~STRIP         ->    "ab c"
-"  ab c  "~STRIP("L")    ->    "ab c  "
-"  ab c  "~STRIP("t")    ->    "  ab c"
-"12.7000"~STRIP(,0)      ->    "12.7"
-"0012.700"~STRIP(,0)     ->    "12.7"
+"  ab c  "~strip         ->    "ab c"
+"  ab c  "~strip("L")    ->    "ab c  "
+"  ab c  "~strip("t")    ->    "  ab c"
+"12.7000"~strip(,0)      ->    "12.7"
+"0012.700"~strip(,0)     ->    "12.7"
 </programlisting>
 <para>(See <link linkend="strip">STRIP</link>
 for information about the STRIP built-in function.)</para>
 </section>
 
-<section id="stsubs"><title>SUBSTR</title>
-<indexterm><primary>SUBSTR method</primary>
+<section><title>subChar</title>
+<indexterm><primary>subChar method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>SUBSTR method</secondary>
+<secondary>subChar method</secondary>
+<tertiary>of String</tertiary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-subChar(n)----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the <emphasis>n</emphasis>'th character of the receiving
+string. <emphasis>n</emphasis> must be a positive whole number. If
+<emphasis>n</emphasis> is greater that the length of the receiving string
+then a zero-length string is returned.</para>
+</section>
+
+<section id="stsubs"><title>subStr</title>
+<indexterm><primary>subStr method</primary>
+<secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>subStr method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <indexterm><primary>extracting</primary>
 <secondary>substring</secondary></indexterm>
 <indexterm><primary>string</primary>
-<secondary>extracting using SUBSTR method</secondary></indexterm>
+<secondary>extracting using subStr method</secondary></indexterm>
 
 <programlisting>
 <![CDATA[
->>-SUBSTR(n-+-------------------------+-)----------------------><
+>>-subStr(n-+-------------------------+-)----------------------><
             +-,--+--------+--+------+-+
                  +-length-+  +-,pad-+
 ]]>
@@ -3832,43 +3923,43 @@ for information about the STRIP built-in function.)</para>
 <emphasis role="italic">pad</emphasis> if
 necessary. The <emphasis role="italic">n</emphasis> must be a positive whole
 number. If <emphasis role="italic">n</emphasis> is
-greater than <computeroutput>receiving_string~LENGTH</computeroutput>,
+greater than <computeroutput>receiving_string~length</computeroutput>,
 only pad characters are returned.</para>
 <para>If you omit <emphasis role="italic">length</emphasis>, the rest of the
 string is returned. The default <emphasis role="italic">pad</emphasis>
 character is a blank.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>SUBSTR method</secondary></indexterm>
+<secondary>subStr method</secondary></indexterm>
 <programlisting>
-"abc"~SUBSTR(2)          ->    "bc"
-"abc"~SUBSTR(2,4)        ->    "bc  "
-"abc"~SUBSTR(2,6,".")    ->    "bc...."
+"abc"~subStr(2)          ->    "bc"
+"abc"~subStr(2,4)        ->    "bc  "
+"abc"~subStr(2,6,".")    ->    "bc...."
 </programlisting>
 
 <note><title>Note</title>
 <para>In some situations the positional (numeric) patterns
 of parsing templates are more convenient for selecting substrings, in particular
 if you need to extract more than one substring from a string. See also
-<link linkend="stleft">LEFT</link> and <link linkend="strigh">RIGHT</link>.
+<link linkend="stleft">left</link> and <link linkend="strigh">right</link>.
 </para></note>
 <para>(See <link linkend="substr">SUBSTR (Substring)</link>
 for information about the SUBSTR built-in function.)</para>
 </section>
 
-<section id="stsubw"><title>SUBWORD</title>
-<indexterm><primary>SUBWORD method</primary>
+<section id="stsubw"><title>subWord</title>
+<indexterm><primary>subWord method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>SUBWORD method</secondary>
+<secondary>subWord method</secondary>
 <tertiary>of String class</tertiary></indexterm>
-<indexterm><primary>extracting words with SUBWORD</primary></indexterm>
+<indexterm><primary>extracting words with subWord</primary></indexterm>
 <indexterm><primary>word</primary>
 <secondary>extracting from a string</secondary></indexterm>
 
 <programlisting>
 <![CDATA[
->>-SUBWORD(n-+---------+-)-------------------------------------><
+>>-subWord(n-+---------+-)-------------------------------------><
              +-,length-+
 ]]>
 </programlisting>
@@ -3883,32 +3974,32 @@ never has leading or trailing blanks, but includes all blanks between the
 selected words.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>SUBWORD method</secondary></indexterm>
+<secondary>subWord method</secondary></indexterm>
 <programlisting>
-"Now is the  time"~SUBWORD(2,2)    ->    "is the"
-"Now is the  time"~SUBWORD(3)      ->    "the  time"
-"Now is the  time"~SUBWORD(5)      ->    ""
+"Now is the  time"~subWord(2,2)    ->    "is the"
+"Now is the  time"~subWord(3)      ->    "the  time"
+"Now is the  time"~subWord(5)      ->    ""
 </programlisting>
 <para>(See <link linkend="subword">SUBWORD</link>
 for information about the SUBWORD built-in
 function.)</para>
 </section>
 
-<section id="sttran"><title>TRANSLATE</title>
-<indexterm><primary>TRANSLATE method</primary>
+<section id="sttran"><title>translate</title>
+<indexterm><primary>translate method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>TRANSLATE method</secondary>
+<secondary>translate method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <indexterm><primary>reordering data</primary></indexterm>
 <indexterm><primary>translation</primary>
-<secondary>with TRANSLATE method</secondary></indexterm>
+<secondary>with translate method</secondary></indexterm>
 <indexterm><primary>uppercase translation</primary>
-<secondary>with TRANSLATE method</secondary></indexterm>
+<secondary>with translate method</secondary></indexterm>
 
 <programlisting>
 <![CDATA[
->>-TRANSLATE-+-----------------------------------------------+-><
+>>-translate-+-----------------------------------------------+-><
              +-(--+-------------------------------------+--)-+
                   +-tableo--+-------------------------+-+
                             +-,--+--------+--+------+-+
@@ -3944,18 +4035,19 @@ is padded with <emphasis role="italic">pad</emphasis> or truncated as necessary.
 The default <emphasis role="italic">pad</emphasis> is a blank.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>TRANSLATE method</secondary></indexterm>
+<secondary>translate method</secondary></indexterm>
 <programlisting>
-"abcdef"~TRANSLATE                     ->    "ABCDEF"
-"abcdef"~TRANSLATE("12","ec")          ->    "ab2d1f"
-"abcdef"~TRANSLATE("12","abcd",".")    ->    "12..ef"
-"APQRV"~TRANSLATE(,"PR")               ->    "A Q V"
-"APQRV"~TRANSLATE(XRANGE("00"X,"Q"))   ->    "APQ  "
-"4123"~TRANSLATE("abcd","1234")        ->    "dabc"
+"abcdef"~translate                     ->    "ABCDEF"
+"abcdef"~translate("12","ec")          ->    "ab2d1f"
+"abcdef"~translate("12","abcd",".")    ->    "12..ef"
+"APQRV"~translate(,"PR")               ->    "A Q V"
+"APQRV"~translate(XRANGE("00"X,"Q"))   ->    "APQ  "
+"4123"~translate("abcd","1234")        ->    "dabc"
 </programlisting>
 
 <note><title>Note</title>
-<para>The last example shows how to use the TRANSLATE method
+<para>The last example shows how to use the 
+<emphasis role="bold">translate</emphasis> method
 to reorder the characters in a string. In the example, the last character
 of any 4-character string specified as the first argument would be moved to
 the beginning of the string.</para></note>
@@ -3964,14 +4056,14 @@ for information about the TRANSLATE built-in
 function.)</para>
 </section>
 
-<section id="sttrun"><title>TRUNC</title>
-<indexterm><primary>TRUNC method</primary>
+<section id="sttrunc"><title>trunc</title>
+<indexterm><primary>trunc method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>TRUNC method</secondary>
+<secondary>trunc method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <indexterm><primary>formatting</primary>
-<secondary>numbers with TRUNC</secondary></indexterm>
+<secondary>numbers with trunc</secondary></indexterm>
 <indexterm><primary>trincating numbers</primary></indexterm>
 <indexterm><primary>numbers</primary>
 <secondary>truncating</secondary></indexterm>
@@ -3979,7 +4071,7 @@ function.)</para>
 
 <programlisting>
 <![CDATA[
->>-TRUNC-+-----+-----------------------------------------------><
+>>-trunc-+-----+-----------------------------------------------><
          +-(n)-+
 ]]>
 </programlisting>
@@ -3998,12 +4090,12 @@ The result is never in exponential form. If there are no nonzero digits in
 the result, any minus sign is removed.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>TRUNC method</secondary></indexterm>
+<secondary>trunc method</secondary></indexterm>
 <programlisting>
-12.3~TRUNC            ->    12
-127.09782~TRUNC(3)    ->    127.097
-127.1~TRUNC(3)        ->    127.100
-127~TRUNC(2)          ->    127.00
+12.3~trunc            ->    12
+127.09782~trunc(3)    ->    127.097
+127.1~trunc(3)        ->    127.100
+127~trunc(2)          ->    127.00
 </programlisting>
 
 <note><title>Note</title>
@@ -4014,11 +4106,21 @@ current setting of NUMERIC DIGITS if necessary, before the method processes it.
 for information about the TRUNC built-in function.)</para>
 </section>
 
-<section id="stveri"><title>VERIFY</title>
-<indexterm><primary>VERIFY method</primary>
+<section id="stupper"><title>upper</title>
+<indexterm><primary>upper method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>VERIFY method</secondary>
+<secondary>upper method</secondary>
+<tertiary>of String class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="stveri"><title>verify</title>
+<indexterm><primary>verify method</primary>
+<secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>verify method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <indexterm><primary>string</primary>
 <secondary>verifying contents of</secondary></indexterm>
@@ -4026,7 +4128,7 @@ for information about the TRUNC built-in function.)</para>
 
 <programlisting>
 <![CDATA[
->>-VERIFY(reference-+---------------------------+-)------------><
+>>-verify(reference-+---------------------------+-)------------><
                     +-,--+--------+--+--------+-+
                          +-option-+  +-,start-+
 ]]>
@@ -4059,7 +4161,7 @@ which must be a positive whole number.</para>
 <computeroutput>0</computeroutput>, regardless
 of the value of the <emphasis role="italic">option</emphasis>. Similarly, if
 <emphasis role="italic">start</emphasis> is greater
-than <computeroutput>receiving_string~LENGTH</computeroutput>, the method
+than <computeroutput>receiving_string~length</computeroutput>, the method
 returns <computeroutput>0</computeroutput>. If
 <emphasis role="italic">reference</emphasis> is null, the method returns
 <computeroutput>0</computeroutput> if
@@ -4067,27 +4169,27 @@ you specify <computeroutput>Match</computeroutput>. Otherwise, the method
 returns the <emphasis role="italic">start</emphasis> value.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>VERIFY method</secondary></indexterm>
+<secondary>verify method</secondary></indexterm>
 <programlisting>
-"123"~VERIFY("1234567890")             ->    0
-"1Z3"~VERIFY("1234567890")             ->    2
-"AB4T"~VERIFY("1234567890")            ->    1
-"AB4T"~VERIFY("1234567890","M")        ->    3
-"AB4T"~VERIFY("1234567890","N")        ->    1
-"1P3Q4"~VERIFY("1234567890", ,3)       ->    4
-"123"~VERIFY("",N,2)                   ->    2
-"ABCDE"~VERIFY("", ,3)                 ->    3
-"AB3CD5"~VERIFY("1234567890","M",4)    ->    6
+"123"~verify("1234567890")             ->    0
+"1Z3"~verify("1234567890")             ->    2
+"AB4T"~verify("1234567890")            ->    1
+"AB4T"~verify("1234567890","M")        ->    3
+"AB4T"~verify("1234567890","N")        ->    1
+"1P3Q4"~verify("1234567890", ,3)       ->    4
+"123"~verify("",N,2)                   ->    2
+"ABCDE"~verify("", ,3)                 ->    3
+"AB3CD5"~verify("1234567890","M",4)    ->    6
 </programlisting>
 <para>(See <link linkend="verify">VERIFY</link>
 for information about the VERIFY built-in function.)</para>
 </section>
 
-<section id="stword"><title>WORD</title>
-<indexterm><primary>WORD method</primary>
+<section id="stword"><title>word</title>
+<indexterm><primary>word method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>WORD method</secondary>
+<secondary>word method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <indexterm><primary>extracting</primary>
 <secondary>word from a string</secondary></indexterm>
@@ -4096,7 +4198,7 @@ for information about the VERIFY built-in function.)</para>
 
 <programlisting>
 <![CDATA[
->>-WORD(n)-----------------------------------------------------><
+>>-word(n)-----------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -4105,27 +4207,27 @@ in the receiving string or the null string if the receiving string has
 fewer than <emphasis role="italic">n</emphasis> words. The
 <emphasis role="italic">n</emphasis> must be a positive whole number. This
 method is exactly equivalent
-to <computeroutput>receiving_string~SUBWORD(n,1)</computeroutput>.</para>
+to <computeroutput>receiving_string~subWord(n,1)</computeroutput>.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>WORD method</secondary></indexterm>
+<secondary>word method</secondary></indexterm>
 <programlisting>
-"Now is the time"~WORD(3)    ->    "the"
-"Now is the time"~WORD(5)    ->    ""
+"Now is the time"~word(3)    ->    "the"
+"Now is the time"~word(5)    ->    ""
 </programlisting>
 <para>(See <link linkend="xword">WORD</link>
 for information about the WORD built-in function.)</para>
 </section>
 
-<section id="stwori"><title>WORDINDEX</title>
-<indexterm><primary>WORDINDEX method</primary>
+<section id="stwori"><title>wordIndex</title>
+<indexterm><primary>wordIndex method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>WORDINDEX method</secondary>
+<secondary>wordIndex method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-WORDINDEX(n)------------------------------------------------><
+>>-wordIndex(n)------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -4137,28 +4239,28 @@ words. The <emphasis role="italic">n</emphasis> must be a positive whole number.
 </para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>WORDINDEX method</secondary></indexterm>
+<secondary>wordIndex method</secondary></indexterm>
 <programlisting>
-"Now is the time"~WORDINDEX(3)    ->    8
-"Now is the time"~WORDINDEX(6)    ->    0
+"Now is the time"~wordIndex(3)    ->    8
+"Now is the time"~wordIndex(6)    ->    0
 </programlisting>
 <para>(See <link linkend="xwordind">WORDINDEX</link>
 for information about the WORDINDEX built-in
 function.)</para>
 </section>
 
-<section id="stworl"><title>WORDLENGTH</title>
-<indexterm><primary>WORDLENGTH method</primary>
+<section id="stworl"><title>wordLength</title>
+<indexterm><primary>wordLength method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>WORDLENGTH method</secondary>
+<secondary>wordLength method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <indexterm><primary>finding</primary>
 <secondary>word length</secondary></indexterm>
 
 <programlisting>
 <![CDATA[
->>-WORDLENGTH(n)-----------------------------------------------><
+>>-wordLength(n)-----------------------------------------------><
 ]]>
 </programlisting>
 
@@ -4169,29 +4271,29 @@ than <emphasis role="italic">n</emphasis> words.
 The <emphasis role="italic">n</emphasis> must be a positive whole number.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>WORDLENGTH method</secondary></indexterm>
+<secondary>wordLength method</secondary></indexterm>
 <programlisting>
-"Now is the time"~WORDLENGTH(2)       ->    2
-"Now comes the time"~WORDLENGTH(2)    ->    5
-"Now is the time"~WORDLENGTH(6)       ->    0
+"Now is the time"~wordLength(2)       ->    2
+"Now comes the time"~wordLength(2)    ->    5
+"Now is the time"~wordLength(6)       ->    0
 </programlisting>
 <para>(See <link linkend="xwordlen">WORDLENGTH</link>
 for information about the WORDLENGTH built-in
 function.)</para>
 </section>
 
-<section id="stworp"><title>WORDPOS</title>
-<indexterm><primary>WORDPOS method</primary>
+<section id="stworp"><title>wordPos</title>
+<indexterm><primary>wordPos method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>WORDPOS method</secondary>
+<secondary>wordPos method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <indexterm><primary>word</primary>
 <secondary>locating in a string</secondary></indexterm>
 
 <programlisting>
 <![CDATA[
->>-WORDPOS(phrase-+--------+-)---------------------------------><
+>>-wordPos(phrase-+--------+-)---------------------------------><
                   +-,start-+
 ]]>
 </programlisting>
@@ -4210,26 +4312,26 @@ You can override this by specifying <emphasis role="italic">start</emphasis>
 the word at which the search is to be started.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>WORDPOS method</secondary></indexterm>
+<secondary>wordPos method</secondary></indexterm>
 <programlisting>
-"now is the time"~WORDPOS("the")              ->  3
-"now is the time"~WORDPOS("The")              ->  0
-"now is the time"~WORDPOS("is the")           ->  2
-"now is the time"~WORDPOS("is   the")         ->  2
-"now is   the time"~WORDPOS("is   time ")     ->  0
-"To be or not to be"~WORDPOS("be")            ->  2
-"To be or not to be"~WORDPOS("be",3)          ->  6
+"now is the time"~wordPos("the")              ->  3
+"now is the time"~wordPos("The")              ->  0
+"now is the time"~wordPos("is the")           ->  2
+"now is the time"~wordPos("is   the")         ->  2
+"now is   the time"~wordPos("is   time ")     ->  0
+"To be or not to be"~wordPos("be")            ->  2
+"To be or not to be"~wordPos("be",3)          ->  6
 </programlisting>
 <para>(See <link linkend="wordpos">WORDPOS (Word Position)</link>
 for information about the WORDPOS built-in
 function.)</para>
 </section>
 
-<section id="stwors"><title>WORDS</title>
-<indexterm><primary>WORDS method</primary>
+<section id="stwors"><title>words</title>
+<indexterm><primary>words method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>WORDS method</secondary>
+<secondary>words method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <indexterm><primary>counting</primary>
 <secondary>words in a string</secondary></indexterm>
@@ -4242,7 +4344,7 @@ function.)</para>
 
 <programlisting>
 <![CDATA[
->>-WORDS-------------------------------------------------------><
+>>-words-------------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -4250,20 +4352,20 @@ function.)</para>
 </para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>WORDS method</secondary></indexterm>
+<secondary>words method</secondary></indexterm>
 <programlisting>
-"Now is the time"~WORDS      ->    4
-" "~WORDS                    ->    0
+"Now is the time"~words      ->    4
+" "~words                    ->    0
 </programlisting>
 <para>(See <link linkend="words">WORDS</link>
 for information about the WORDS built-in function.)</para>
 </section>
 
-<section id="stx2b"><title>X2B</title>
-<indexterm><primary>X2B method</primary>
+<section id="stx2b"><title>x2b</title>
+<indexterm><primary>x2b method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>X2B method</secondary>
+<secondary>x2b method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <indexterm><primary>conversion</primary>
 <secondary>hexadecimal to binary</secondary></indexterm>
@@ -4272,7 +4374,7 @@ for information about the WORDS built-in function.)</para>
 
 <programlisting>
 <![CDATA[
->>-X2B---------------------------------------------------------><
+>>-x2b---------------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -4287,29 +4389,31 @@ include any blanks.</para>
 <para>If the receiving string is null, the method returns a null string.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>X2B method</secondary></indexterm>
+<secondary>x2b method</secondary></indexterm>
 <programlisting>
-"C3"~X2B        ->  "11000011"
-"7"~X2B         ->  "0111"
-"1 C1"~X2B      ->  "000111000001"
+"C3"~x2b        ->  "11000011"
+"7"~x2b         ->  "0111"
+"1 C1"~x2b      ->  "000111000001"
 </programlisting>
-<para>You can combine X2B with the methods D2X and C2X to convert numbers or
+<para>You can combine <emphasis role="bold">x2b</emphasis>
+with the methods <emphasis role="bold">d2x</emphasis> and 
+<emphasis role="bold">c2x</emphasis> to convert numbers or
 character strings into binary form.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <programlisting>
-"C3"x~C2X~X2B  ->  "11000011"
-"129"~D2X~X2B  ->  "10000001"
-"12"~D2X~X2B   ->  "1100"
+"C3"x~c2x~x2b  ->  "11000011"
+"129"~d2x~x2b  ->  "10000001"
+"12"~d2x~x2b   ->  "1100"
 </programlisting>
 <para>(See <link linkend="x2b">X2B (Hexadecimal to Binary)</link>
 for information about the X2B built-in function.)</para>
 </section>
 
-<section id="stx2c"><title>X2C</title>
-<indexterm><primary>X2C method</primary>
+<section id="stx2c"><title>x2c</title>
+<indexterm><primary>x2c method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>X2C method</secondary>
+<secondary>x2c method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <indexterm><primary>conversion</primary>
 <secondary>hexadecimal to character</secondary></indexterm>
@@ -4319,7 +4423,7 @@ for information about the X2B built-in function.)</para>
 
 <programlisting>
 <![CDATA[
->>-X2C---------------------------------------------------------><
+>>-x2c---------------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -4333,20 +4437,20 @@ only, not leading or trailing) to improve readability; they are ignored.</para>
 <para>If the receiving string is null, the method returns a null string.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>X2C method</secondary></indexterm>
+<secondary>x2c method</secondary></indexterm>
 <programlisting>
-"4865 6c6c 6f"~X2C ->  "Hello"     /*  ASCII             */
-"3732 73"~X2C      ->  "72s"       /*  ASCII             */
+"4865 6c6c 6f"~x2c ->  "Hello"     /*  ASCII             */
+"3732 73"~x2c      ->  "72s"       /*  ASCII             */
 </programlisting>
 <para>(See <link linkend="x2c">X2C (Hexadecimal to Character)</link>
 for information about the X2C built-in function.)</para>
 </section>
 
-<section id="stx2d"><title>X2D</title>
-<indexterm><primary>X2D method</primary>
+<section id="stx2d"><title>x2d</title>
+<indexterm><primary>x2d method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>X2D method</secondary>
+<secondary>x2d method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <indexterm><primary>conversion</primary>
 <secondary>hexadecimal to deciaml</secondary></indexterm>
@@ -4355,7 +4459,7 @@ for information about the X2C built-in function.)</para>
 
 <programlisting>
 <![CDATA[
->>-X2D-+-----+-------------------------------------------------><
+>>-x2d-+-----+-------------------------------------------------><
        +-(n)-+
 ]]>
 </programlisting>
@@ -4374,14 +4478,14 @@ the receiving string is processed as
 an unsigned binary number.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>X2D method</secondary></indexterm>
+<secondary>x2d method</secondary></indexterm>
 <programlisting>
-"0E"~X2D        ->    14
-"81"~X2D        ->    129
-"F81"~X2D       ->    3969
-"FF81"~X2D      ->    65409
-"46 30"X~X2D    ->    240          /*  ASCII   */
-"66 30"X~X2D    ->    240          /*  ASCII   */
+"0E"~x2d        ->    14
+"81"~x2d        ->    129
+"F81"~x2d       ->    3969
+"FF81"~x2d      ->    65409
+"46 30"X~x2d    ->    240          /*  ASCII   */
+"66 30"X~x2d    ->    240          /*  ASCII   */
 </programlisting>
 <para>If you specify <emphasis role="italic">n</emphasis>, the receiving string
 is taken as a signed number expressed in <emphasis role="italic">n</emphasis>
@@ -4396,13 +4500,13 @@ the method returns <computeroutput>0</computeroutput>.</para>
 <emphasis role="italic">n</emphasis> characters.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <programlisting>
-"81"~X2D(2)      ->    -127
-"81"~X2D(4)      ->    129
-"F081"~X2D(4)    ->    -3967
-"F081"~X2D(3)    ->    129
-"F081"~X2D(2)    ->    -127
-"F081"~X2D(1)    ->    1
-"0031"~X2D(0)    ->    0
+"81"~x2d(2)      ->    -127
+"81"~x2d(4)      ->    129
+"F081"~x2d(4)    ->    -3967
+"F081"~x2d(3)    ->    129
+"F081"~x2d(2)    ->    -127
+"F081"~x2d(1)    ->    1
+"0031"~x2d(0)    ->    0
 </programlisting>
 <para>(See <link linkend="x2d">X2D (Hexadecimal to Decimal)</link>
 for information about the X2D built-in function.)</para>
