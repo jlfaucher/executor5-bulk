@@ -129,6 +129,18 @@ describes the concept of set operations.</para>
 <indexterm><primary>Array class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>Array class</secondary></indexterm>
+<figure><title>The Array class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxArrayClass.png" align="left" scale="80">
+</imageobject>
+</mediaobject>
+</figure>
+<note><title>Note</title>
+<para>The Array class also has available class methods that its
+metaclass, the Class class, defines.</para></note>
+
 <para> An array is a possibly sparse collection with indexes
 that are positive whole numbers. You can reference array items by using one
 or more indexes. The number of indexes is the same as the number of dimensions
@@ -139,61 +151,16 @@ can specify a hint about how many elements you expect to put into the array
 or the array's dimensionality. However, you do not need to specify a size
 or dimensionality of an array when you are creating it. You can use any
 whole-number indexes to reference items in an array.</para>
-<para><emphasis role="bold">Methods the Array class defines:</emphasis></para>
-<simplelist>
-<member>NEW (Class method)</member>
-<member>OF (Class method)</member>
-<member>[]</member>
-<member>[]=</member>
-<member>AT</member>
-<member>DIMENSION</member>
-<member>FIRST</member>
-<member>HASINDEX</member>
-<member>ITEMS</member>
-<member>LAST</member>
-<member>MAKEARRAY</member>
-<member>MAKESTRING</member>
-<member>NEXT</member>
-<member>NEW (Overrides Object class method)</member>
-<member>PREVIOUS</member>
-<member>PUT</member>
-<member>REMOVE</member>
-<member>SECTION</member>
-<member>SIZE</member>
-<member>SUPPLIER</member>
-</simplelist>
-<para><emphasis role="bold">Methods inherited from the Object class:</emphasis>
-</para>
-<simplelist>
-<member>Operator methods: =, ==, \=, &gt;&lt;, &lt;&gt;, \==</member>
-<member>CLASS</member>
-<member>COPY</member>
-<member>DEFAULTNAME</member>
-<member>HASMETHOD</member>
-<member>OBJECTNAME</member>
-<member>OBJECTNAME=</member>
-<member>REQUEST</member>
-<member>RUN</member>
-<member>SETMETHOD</member>
-<member>START</member>
-<member>STRING</member>
-<member>UNSETMETHOD</member>
-</simplelist>
 
-
-<note><title>Note</title>
-<para>The Array class also has available class methods that its
-metaclass, the Class class, defines.</para></note>
-
-<section id="anew"><title>NEW (Class Method)</title>
-<indexterm><primary>NEW method</primary>
+<section id="anew"><title>new (Class Method)</title>
+<indexterm><primary>new method</primary>
 <secondary>of Array class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>NEW method</secondary>
+<secondary>new method</secondary>
 <tertiary>of Array class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-NEW-+----------------+--------------------------------------><
+>>-new-+----------------+--------------------------------------><
        |    +-,----+    |
        |    V      |    |
        +-(----size-+--)-+
@@ -212,15 +179,15 @@ If it is <computeroutput>0</computeroutput>, the corresponding dimension is
 initially empty.</para>
 </section>
 
-<section id="arof"><title>OF (Class Method)</title>
-<indexterm><primary>OF method</primary>
+<section id="arof"><title>of (Class Method)</title>
+<indexterm><primary>of method</primary>
 <secondary>of Array class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>OF method</secondary>
+<secondary>of method</secondary>
 <tertiary>of Array class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-OF-+----------------+---------------------------------------><
+>>-of-+----------------+---------------------------------------><
       |    +-,----+    |
       |    V      |    |
       +-(----item-+--)-+
@@ -250,8 +217,9 @@ does not include the indexes corresponding to those you omitted.</para>
 ]]>
 </programlisting>
 
-<para>Returns the same value as the AT method, which follows. See
-<link linkend="arat">AT</link>.</para>
+<para>Returns the same value as the 
+<emphasis role="bold">at</emphasis> method, which follows. See
+<link linkend="arat">at</link>.</para>
 </section>
 
 <section id="arlbre"><title>[]=</title>
@@ -268,21 +236,62 @@ does not include the indexes corresponding to those you omitted.</para>
 ]]>
 </programlisting>
 
-<para>This method is the same as the PUT method, which follows. See
-<link linkend="arput">PUT</link>.</para>
+<para>This method is the same as the 
+<emphasis role="bold">put</emphasis> method, which follows. See
+<link linkend="arput">put</link>.</para>
 </section>
 
-<section id="arat"><title>AT</title>
-<indexterm><primary>AT method</primary>
+<section id="arallidx"><title>allIndexes</title>
+<indexterm><primary>allIndexes method</primary>
 <secondary>of Array class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>AT method</secondary>
+<secondary>allIndexes method</secondary>
+<tertiary>of Array class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="arallitm"><title>allItems</title>
+<indexterm><primary>allItems method</primary>
+<secondary>of Array class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>allItems method</secondary>
+<tertiary>of Array class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="arappend"><title>append</title>
+<indexterm><primary>append method</primary>
+<secondary>of Array class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>append method</secondary>
+<tertiary>of Array class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="arappendall"><title>appendAll</title>
+<indexterm><primary>appendAll method</primary>
+<secondary>of Array class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>appendAll method</secondary>
+<tertiary>of Array class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="arat"><title>at</title>
+<indexterm><primary>at method</primary>
+<secondary>of Array class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>at method</secondary>
 <tertiary>of Array class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
        +-,-----+
        V       |
->>-AT(---index-+-)---------------------------------------------><
+>>-at(---index-+-)---------------------------------------------><
 ]]>
 </programlisting>
 
@@ -291,18 +300,28 @@ does not include the indexes corresponding to those you omitted.</para>
 <emphasis role="italic">index</emphasis>es. If the array has no item associated
 with the specified <emphasis role="italic">index</emphasis> or
 <emphasis role="italic">index</emphasis>es, this method returns the
-NIL object.</para>
+Nil object.</para>
 </section>
 
-<section id="adim"><title>DIMENSION</title>
-<indexterm><primary>DIMENSION method</primary>
+<section id="ardiff"><title>difference</title>
+<indexterm><primary>difference method</primary>
 <secondary>of Array class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>DIMENSION method</secondary>
+<secondary>difference method</secondary>
+<tertiary>of Array class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="adim"><title>dimension</title>
+<indexterm><primary>dimension method</primary>
+<secondary>of Array class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>dimension method</secondary>
 <tertiary>of Array class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-DIMENSION-+-----+-------------------------------------------><
+>>-dimension-+-----+-------------------------------------------><
              +-(n)-+
 ]]>
 </programlisting>
@@ -312,36 +331,48 @@ NIL object.</para>
 whole number). If you omit <emphasis role="italic">n</emphasis>,
 this method returns the dimensionality
 (number of dimensions) of the array. If the number of dimensions has not been
-determined, DIMENSION returns <computeroutput>0</computeroutput>.</para>
+determined, <emphasis role="bold">dimension</emphasis>
+returns <computeroutput>0</computeroutput>.</para>
 </section>
 
-<section id="arfirs"><title>FIRST</title>
-<indexterm><primary>FIRST method</primary>
+<section id="arempty"><title>empty</title>
+<indexterm><primary>empty method</primary>
 <secondary>of Array class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>FIRST method</secondary>
+<secondary>empty method</secondary>
+<tertiary>of Array class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="arfirs"><title>first</title>
+<indexterm><primary>first method</primary>
+<secondary>of Array class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>first method</secondary>
 <tertiary>of Array class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-FIRST-------------------------------------------------------><
+>>-first-------------------------------------------------------><
 ]]>
 </programlisting>
 
-<para>Returns the index of the first item in the array or the NIL object if the
-array is empty. The FIRST method is valid only for single-index arrays.</para>
+<para>Returns the index of the first item in the array or the Nil object if the
+array is empty. The <emphasis role="bold">first</emphasis>
+method is valid only for single-index arrays.</para>
 </section>
 
-<section id="arhasi"><title>HASINDEX</title>
-<indexterm><primary>HASINDEX method</primary>
+<section id="arhasi"><title>hasIndex</title>
+<indexterm><primary>hasIndex method</primary>
 <secondary>of Array class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>HASINDEX method</secondary>
+<secondary>hasIndex method</secondary>
 <tertiary>of Array class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
              +-,-----+
              V       |
->>-HASINDEX(---index-+-)---------------------------------------><
+>>-hasIndex(---index-+-)---------------------------------------><
 ]]>
 </programlisting>
 
@@ -350,46 +381,87 @@ an item associated with the specified index or indexes. Returns
 <computeroutput>0</computeroutput> (false) otherwise.</para>
 </section>
 
-<section id="aritms"><title>ITEMS</title>
-<indexterm><primary>ITEMS method</primary>
+<section id="arhasit"><title>hasItem</title>
+<indexterm><primary>hasItem method</primary>
 <secondary>of Array class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>ITEMS method</secondary>
+<secondary>hasItem method</secondary>
+<tertiary>of Array class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="arindex"><title>index</title>
+<indexterm><primary>index method</primary>
+<secondary>of Array class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>index method</secondary>
+<tertiary>of Array class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="arintersect"><title>intersection</title>
+<indexterm><primary>intersection method</primary>
+<secondary>of Array class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>intersection method</secondary>
+<tertiary>of Array class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="arisempty"><title>isEmpty</title>
+<indexterm><primary>isEmpty method</primary>
+<secondary>of Array class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>isEmpty method</secondary>
+<tertiary>of Array class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="aritms"><title>items</title>
+<indexterm><primary>items method</primary>
+<secondary>of Array class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>items method</secondary>
 <tertiary>of Array class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-ITEMS-------------------------------------------------------><
+>>-items-------------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Returns the number of items in the collection.</para>
 </section>
 
-<section id="arlast"><title>LAST</title>
-<indexterm><primary>LAST method</primary>
+<section id="arlast"><title>last</title>
+<indexterm><primary>last method</primary>
 <secondary>of Array class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>LAST method</secondary>
+<secondary>last method</secondary>
 <tertiary>of Array class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-LAST--------------------------------------------------------><
+>>-last--------------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Returns the index of the last item in the array or the NIL object if the
-array is empty. The LAST method is valid only for single-index arrays.</para>
+array is empty. The <emphasis role="bold">last</emphasis>
+method is valid only for single-index arrays.</para>
 </section>
 
-<section id="armaka"><title>MAKEARRAY</title>
-<indexterm><primary>MAKEARRAY method</primary>
+<section id="armaka"><title>makeArray</title>
+<indexterm><primary>makeArray method</primary>
 <secondary>of Array class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>MAKEARRAY method</secondary>
+<secondary>makeArray method</secondary>
 <tertiary>of Array class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-MAKEARRAY---------------------------------------------------><
+>>-makeArray---------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -399,16 +471,16 @@ Items in the new array will have the same order as the source array.
 </para>
 </section>
 
-<section id="armks"><title>MAKESTRING</title>
-<indexterm><primary>MAKESTRING method</primary>
+<section id="armks"><title>makeString</title>
+<indexterm><primary>makeString method</primary>
 <secondary>of Array class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>MAKESTRING method</secondary>
+<secondary>makeString method</secondary>
 <tertiary>of Array class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
                  +-(LINE)--+
->>-MAKESTRING----+---------+------><
+>>-makeString----+---------+------><
                  +-(CHAR)--+
 ]]>
 </programlisting>
@@ -418,53 +490,55 @@ The elements of the array are treated either in line or character format,
 starting at the first element in the array. The line format is the default.</para>
 </section>
 
-<section id="arnx"><title>NEXT</title>
-<indexterm><primary>NEXT method</primary>
+<section id="arnx"><title>next</title>
+<indexterm><primary>next method</primary>
 <secondary>of Array class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>NEXT method</secondary>
+<secondary>next method</secondary>
 <tertiary>of Array class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-NEXT(index)-------------------------------------------------><
+>>-next(index)-------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>  Returns the index of the item that
 follows the array item having index <emphasis role="italic">index</emphasis>
-or returns the NIL object if the item having that index is last in the array.
-The NEXT method is valid only for single-index arrays.</para>
+or returns the Nil object if the item having that index is last in the array.
+The <emphasis role="bold">next</emphasis>
+method is valid only for single-index arrays.</para>
 </section>
 
-<section id="arprev"><title>PREVIOUS</title>
-<indexterm><primary>PREVIOUS method</primary>
+<section id="arprev"><title>previous</title>
+<indexterm><primary>previous method</primary>
 <secondary>of Array class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>PREVIOUS method</secondary>
+<secondary>previous method</secondary>
 <tertiary>of Array class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-PREVIOUS(index)---------------------------------------------><
+>>-previous(index)---------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Returns the index of the item that precedes the array item having index
-<emphasis role="italic">index</emphasis> or the NIL object if the
+<emphasis role="italic">index</emphasis> or the Nil object if the
 item having that index is first in the
-array. The PREVIOUS method is valid only for single-index arrays.</para>
+array. The <emphasis role="bold">previous</emphasis>
+method is valid only for single-index arrays.</para>
 </section>
 
-<section id="arput"><title>PUT</title>
-<indexterm><primary>PUT method</primary>
+<section id="arput"><title>put</title>
+<indexterm><primary>put method</primary>
 <secondary>of Array class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>PUT method</secondary>
+<secondary>put method</secondary>
 <tertiary>of Array class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
             +--------+
             V        |
->>-PUT(item---,index-+-)---------------------------------------><
+>>-put(item---,index-+-)---------------------------------------><
 ]]>
 </programlisting>
 
@@ -480,17 +554,17 @@ particular dimension is greater than the current size of
 that dimension, the array is expanded to the new dimension size.</para>
 </section>
 
-<section id="arremo"><title>REMOVE</title>
-<indexterm><primary>REMOVE method</primary>
+<section id="arremo"><title>remove</title>
+<indexterm><primary>remove method</primary>
 <secondary>of Array class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>REMOVE method</secondary>
+<secondary>remove method</secondary>
 <tertiary>of Array class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
            +-,-----+
            V       |
->>-REMOVE(---index-+-)-----------------------------------------><
+>>-remove(---index-+-)-----------------------------------------><
 ]]>
 </programlisting>
 
@@ -498,19 +572,29 @@ that dimension, the array is expanded to the new dimension size.</para>
 <emphasis role="italic">index</emphasis> or
 <emphasis role="italic">index</emphasis>es from the array. If there is no
 item with the specified <emphasis role="italic">index</emphasis> or
-<emphasis role="italic">index</emphasis>es, the NIL object is returned and
+<emphasis role="italic">index</emphasis>es, the Nil object is returned and
 no item is removed.</para>
 </section>
 
-<section id="arsect"><title>SECTION</title>
-<indexterm><primary>SECTION method</primary>
+<section id="arremovitm"><title>removeItem</title>
+<indexterm><primary>removeItem method</primary>
 <secondary>of Array class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>SECTION method</secondary>
+<secondary>removeItem method</secondary>
+<tertiary>of Array class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="arsect"><title>section</title>
+<indexterm><primary>section method</primary>
+<secondary>of Array class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>section method</secondary>
 <tertiary>of Array class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-SECTION(start-+--------+-)----------------------------------><
+>>-section(start-+--------+-)----------------------------------><
                  +-,items-+
 ]]>
 </programlisting>
@@ -525,19 +609,19 @@ this number of items (or the number of subsequent items in the receiver array,
 if this is less than <emphasis role="italic">items</emphasis>).
 If you do not specify <emphasis role="italic">items</emphasis>,
 the new array contains all subsequent items of the receiver array. The receiver
-array remains unchanged. The SECTION method is valid only for single-index
-arrays.</para>
+array remains unchanged. The <emphasis role="bold">section</emphasis>
+method is valid only for single-index arrays.</para>
 </section>
 
-<section id="asiz"><title>SIZE</title>
-<indexterm><primary>SIZE method</primary>
+<section id="asiz"><title>size</title>
+<indexterm><primary>size method</primary>
 <secondary>of Array class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>SIZE method</secondary>
+<secondary>size method</secondary>
 <tertiary>of Array class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-SIZE--------------------------------------------------------><
+>>-size--------------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -546,15 +630,65 @@ to be extended. This value is the same as the product of the sizes of the
 dimensions in the array.</para>
 </section>
 
-<section id="arclsu"><title>SUPPLIER</title>
-<indexterm><primary>SUPPLIER method</primary>
+<section id="arsort"><title>sort</title>
+<indexterm><primary>sort method</primary>
 <secondary>of Array class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>SUPPLIER method</secondary>
+<secondary>sort method</secondary>
+<tertiary>of Array class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="arsortwith"<title>sortWith</title>
+<indexterm><primary>sortWith method</primary>
+<secondary>of Array class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>sortWith method</secondary>
+<tertiary>of Array class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="arstblsort"><title>stableSort</title>
+<indexterm><primary>stableSort method</primary>
+<secondary>of Array class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>stableSort method</secondary>
+<tertiary>of Array class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="arstblsortwith"<title>stableSortWith</title>
+<indexterm><primary>stableSortWith method</primary>
+<secondary>of Array class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>stableSortWith method</secondary>
+<tertiary>of Array class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="arsubset"<title>subset</title>
+<indexterm><primary>subset method</primary>
+<secondary>of Array class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>subset method</secondary>
+<tertiary>of Array class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="arclsu"><title>supplier</title>
+<indexterm><primary>supplier method</primary>
+<secondary>of Array class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>supplier method</secondary>
 <tertiary>of Array class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
--SUPPLIER----------------------------------------------------><
+-supplier----------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -563,6 +697,36 @@ supplier, you can send it messages (see
 <link linkend="supp">The Supplier Class</link>) to enumerate
 all the items that were in the array at the time of the supplier's creation.
 The supplier enumerates the array items in their sequenced order.</para>
+</section>
+
+<section id="artostr"<title>toString</title>
+<indexterm><primary>toString method</primary>
+<secondary>of Array class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>toString method</secondary>
+<tertiary>of Array class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="arunion"<title>union</title>
+<indexterm><primary>union method</primary>
+<secondary>of Array class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>union method</secondary>
+<tertiary>of Array class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="arxor"<title>xor</title>
+<indexterm><primary>xor method</primary>
+<secondary>of Array class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>xor method</secondary>
+<tertiary>of Array class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
 </section>
 
 <section id="arex"><title>Examples</title>
@@ -599,6 +763,468 @@ z=.array~of(1,2,3)~~put(4,4)
 do i = 1 to z~size
   say z[i]              /* Produces:  1 2 3 4 */
 end
+</programlisting>
+</section>
+</section>
+
+<section id="rxcqcl"><title>The CircularQueue Class</title>
+<indexterm>
+<primary>class</primary>
+<secondary>CircularQueue class</secondary>
+</indexterm>
+<indexterm>
+<primary>CircularQueue class</primary>
+</indexterm>
+
+<para>
+The CircularQueue class allows for storing objects in a circular queue
+of a predefined size. Once the end of the queue has been reached, new item
+objects are inserted from the beginning, replacing earlier entries.
+</para>
+<para>
+The collected objects can be processed in FIFO (first in, first out) or in a
+stack-like LIFO (last in, first out) order.
+</para>
+<para>
+The CircularQueue class is a subclass of the Queue class. In addition to its own
+methods it inherits the methods of the Queue class (see <link linkend="rxqcl">The Queue class</link>)
+and the Object class (see <link linkend="objc">The Object Class</link>)
+</para>
+
+<para><emphasis role="bold">Methods the CircularQueue class defines:</emphasis></para>
+<simplelist>
+<member>NEW (Class method)</member>
+<member>OF (Class method)</member>
+<member>MAKEARRAY</member>
+<member>PUSH</member>
+<member>QUEUE</member>
+<member>RESIZE</member>
+<member>SIZE</member>
+<member>STRING</member>
+<member>SUPPLIER</member>
+</simplelist>
+
+<para><emphasis role="bold">Methods inherited from the Queue class:</emphasis></para>
+<simplelist>
+<member>[]</member>
+<member>[]=</member>
+<member>AT</member>
+<member>HASINDEX</member>
+<member>ITEMS</member>
+<member>MAKEARRAY</member>
+<member>PEEK</member>
+<member>PULL</member>
+<member>PUSH</member>
+<member>PUT</member>
+<member>QUEUE</member>
+<member>REMOVE</member>
+<member>SUPPLIER</member>
+</simplelist>
+
+<para><emphasis role="bold">Methods inherited from the Object class:</emphasis></para>
+<simplelist>
+<member>Operator methods: =, ==, \=, &gt;&lt;, &lt;&gt;, \==</member>
+<member>CLASS</member>
+<member>COPY</member>
+<member>DEFAULTNAME</member>
+<member>HASMETHOD</member>
+<member>INIT</member>
+<member>OBJECTNAME</member>
+<member>OBJECTNAME=</member>
+<member>REQUEST</member>
+<member>RUN</member>
+<member>SETMETHOD</member>
+<member>START</member>
+<member>STRING</member>
+<member>UNSETMETHOD</member>
+</simplelist>
+
+<note><title>Note</title>
+<para>
+The CircularQueue class also has available class methods that its
+metaclass, the Class class, defines.
+</para>
+</note>
+
+<section id="cqunew"<title>NEW (Class Method)</title>
+<indexterm><primary>NEW method</primary>
+<secondary>of CircularQueue class</secondary>
+</indexterm>
+<indexterm><primary>method</primary>
+<secondary>NEW method</secondary>
+<tertiary>of CircularQueue class</tertiary>
+</indexterm>
+
+<programlisting>
+<![CDATA[
+>>-NEW(size)---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>
+Constructor method  which determines the
+<emphasis role="italic">size</emphasis> of the circular queue.
+It returns an empty CircularQueue object.</para>
+</section>
+
+<section id="cquof"><title>OF (Class Method)</title>
+<indexterm><primary>OF method</primary>
+<secondary>of CircularQueue class</secondary>
+</indexterm>
+<indexterm><primary>method</primary>
+<secondary>OF method</secondary>
+<tertiary>of CircularQueue class</tertiary>
+</indexterm>
+
+<programlisting>
+<![CDATA[
+>>-OF-+----------------+---------------------------------------><
+      |    +-,----+    |
+      |    V      |    |
+      +-(----item-+--)-+
+]]>
+</programlisting>
+
+<para>
+Returns a newly created circular queue containing the specified
+<emphasis role="italic">item</emphasis> objects. The first
+<emphasis role="italic">item</emphasis> has index 1, the second has index 2,
+and so on. The number of <emphasis role="italic">item</emphasis> objects
+determines the <emphasis role="italic">size</emphasis> of the circular queue.
+</para>
+</section>
+
+<section id="cqumak"><title>MAKEARRAY</title>
+<indexterm><primary>MAKEARRAY method</primary>
+<secondary>of CircularQueue class</secondary>
+</indexterm>
+<indexterm><primary>method</primary>
+<secondary>MAKEARRAY method</secondary>
+<tertiary>of CircularQueue class</tertiary>
+</indexterm>
+
+<programlisting>
+<![CDATA[
+              +-Fifo----+
+>>-MAKEARRAY(-+---------+-)------------------------------------><
+              +--order--+
+]]>
+</programlisting>
+
+<para>
+Returns a single-index array containing the items of the circular queue in the
+specified <emphasis role="italic">order</emphasis>.
+</para>
+
+<para>
+The following <emphasis role="italic">order</emphasis> can be used. (Only
+the capitalized letter is needed; all characters following it are ignored.)
+</para>
+
+<variablelist>
+<varlistentry><term>Fifo</term>
+<listitem>
+<para>First-in, first-out, default
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Lifo</term>
+<listitem>
+<para>Last-in, first-out (stacklike)
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</section>
+
+<section id="cqupush"><title>PUSH</title>
+<indexterm><primary>PUSH method</primary>
+<secondary>of CircularQueue class</secondary>
+</indexterm>
+<indexterm><primary>method</primary>
+<secondary>PUSH method</secondary>
+<tertiary>of CircularQueue class</tertiary>
+</indexterm>
+
+<programlisting>
+<![CDATA[
+>>-PUSH(item)--------------------------------------------------><
+]]>
+</programlisting>
+
+<para>
+Makes the object <emphasis role="italic">item</emphasis> a member item of
+the circular queue, inserting the item object in front of the first item in
+the queue. The pushed item object will be the new first item in the circular queue.
+</para>
+
+<para>
+If the circular queue is full, than the last item stored in the circular queue
+will be deleted, before the insertion takes place. In this case the
+<emphasis role="italic">deleted item</emphasis> will be returned, otherwise
+<emphasis role="italic">.nil</emphasis>.
+</para>
+</section>
+
+
+<section id="cquque"><title>QUEUE</title>
+<indexterm><primary>QUEUE method</primary>
+<secondary>of CircularQueue class</secondary>
+</indexterm>
+<indexterm><primary>method</primary>
+<secondary>QUEUE method</secondary>
+<tertiary>of CircularQueue class</tertiary>
+</indexterm>
+
+<programlisting>
+<![CDATA[
+>>-QUEUE(item)-------------------------------------------------><
+]]>
+</programlisting>
+
+<para>
+Makes the object <emphasis role="italic">item</emphasis> a member item of the circular queue, inserting the item
+at the end of the circular queue.
+</para>
+
+<para>
+If the circular queue is full, than the first item will be deleted, before the
+insertion takes place.  In this case the <emphasis role="italic">deleted item</emphasis>
+will be returned, otherwise <emphasis role="italic">.nil</emphasis>.
+</para>
+</section>
+
+<section id="cqures"><title>RESIZE</title>
+<indexterm><primary>RESIZE method</primary>
+<secondary>of CircularQueue class</secondary>
+</indexterm>
+<indexterm><primary>method</primary>
+<secondary>RESIZE method</secondary>
+<tertiary>of CircularQueue class</tertiary>
+</indexterm>
+
+<programlisting>
+<![CDATA[
+                   +--,Fifo---+
+>>-RESIZE(-newSize-+----------+-)------------------------------><
+                   +--,order--+
+]]>
+</programlisting>
+
+<para>
+Resizes the circular queue object to be able to contain
+<emphasis role="italic">newSize</emphasis> items.
+If the previous size was larger than <emphasis role="italic">newSize</emphasis>,
+then the now superfluous items are removed in the specified
+<emphasis role="italic">order</emphasis>.
+</para>
+
+<para>
+The following <emphasis role="italic">order</emphasis> can be used. (Only
+the capitalized letter is needed; all characters following it are ignored.)
+</para>
+
+<variablelist>
+<varlistentry><term>Fifo</term>
+<listitem>
+<para>First-in, first-out, default: keeps the newest entries
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Lifo</term>
+<listitem>
+<para>Last-in, first-out (stacklike): keeps the oldest entries
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+
+<note><title>Note:</title>
+<para>
+Resizing with a value of <computeroutput>0</computeroutput> effectively removes all
+items from the circular queue.
+</para>
+</note>
+</section>
+
+<section id="cqusize"><title>SIZE</title>
+<indexterm><primary>SIZE method</primary>
+<secondary>of CircularQueue class</secondary>
+</indexterm>
+<indexterm><primary>method</primary>
+<secondary>SIZE method</secondary>
+<tertiary>of CircularQueue class</tertiary>
+</indexterm>
+
+<programlisting>
+<![CDATA[
+>>-SIZE--------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>
+Returns the maximum number of objects that can be stored in the circular queue.
+</para>
+</section>
+
+<section id="cqustr"><title>STRING</title>
+<indexterm><primary>STRING method</primary>
+<secondary>of CircularQueue class</secondary>
+</indexterm>
+<indexterm><primary>method</primary>
+<secondary>STRING method</secondary>
+<tertiary>of CircularQueue class</tertiary>
+</indexterm>
+
+<programlisting>
+<![CDATA[
+           +--","------+  +-,-Fifo--+
+>>-STRING(-+-----------+--+---------+-)------------------------><
+           +-delimiter-+  +-,-order-+
+]]>
+</programlisting>
+
+<para>
+Returns a string object that concatenates the string values of the collected
+item objects, using the <emphasis role="italic">delimiter</emphasis> string
+to delimit them, in the specified <emphasis role="italic">order</emphasis>.
+The default <emphasis role="italic">delimiter</emphasis> is a single comma.
+</para>
+
+<para>
+If the delimiter string argument is omitted the comma character
+(<computeroutput>","</computeroutput>) is used as the default delimiter string.
+</para>
+
+<para>
+The following <emphasis role="italic">order</emphasis> can be used. (Only
+the capitalized letter is needed; all characters following it are ignored.)
+</para>
+
+<variablelist>
+<varlistentry><term>Fifo</term>
+<listitem>
+<para>First-in, first-out, default
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Lifo</term>
+<listitem>
+<para>Last-in, first-out (stacklike)
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</section>
+
+<section id="cqusupp"><title>SUPPLIER</title>
+<indexterm><primary>SUPPLIER method</primary>
+<secondary>of CircularQueue class</secondary>
+</indexterm>
+<indexterm><primary>method</primary>
+<secondary>SUPPLIER method</secondary>
+<tertiary>of CircularQueue class</tertiary>
+</indexterm>
+
+<programlisting>
+<![CDATA[
+             +--Fifo----+
+>>-SUPPLIER(-+----------+-)------------------------------------><
+             +--order---+
+]]>
+</programlisting>
+
+<para>
+Returns a supplier object for the collection. After you have obtained a
+supplier, you can send it messages (see
+<link linkend="supp">The Supplier Class</link>) to enumerate
+all the items that were in the queue at the time of the supplier's creation.
+</para>
+
+<para>
+The supplier will enumerate the items in the specified
+<emphasis role="italic">order</emphasis>. (Only the capitalized
+letter is needed; all characters following it are ignored.)
+</para>
+
+<variablelist>
+<varlistentry><term>Fifo</term>
+<listitem>
+<para>First-in, first-out, default
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Lifo</term>
+<listitem>
+<para>Last-in, first-out (stacklike)
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</section>
+
+<section id="cquex"><title>Example</title>
+<indexterm>
+<primary>examples</primary>
+<secondary>of CircularQueue class</secondary>
+</indexterm>
+
+<programlisting>
+  -- create a circular buffer with five items
+u=.circularQueue~of("a", "b", "c", "d", "e")
+say "content: ["u"]," "content (LIFO): ["u~string("->","L")"]"
+say
+
+u~resize(4, "FIFO")     -- resize fifo-style (keep newest)
+say "after resizing to 4 items in FIFO style (keeping the newest):"
+say "content: ["u"]," "content (LIFO): ["u~string("->","L")"]"
+say
+
+u~resize(2, "LILO")     -- resize lifo-style (keep oldest)
+say "after resizing to 2 items in LIFO style (keeping the oldest):"
+say "content: ["u"]," "content (LIFO): ["u~string("->","L")"]"
+say
+
+u~resize(0)             -- resize lifo-style (keep oldest)
+say "after resizing to 0 items, thereby deleting all items:"
+say "content: ["u"]," "content (LIFO): ["u~string("->","L")"]"
+say
+
+u~resize(2)             -- resize lifo-style (keep oldest)
+say "after resizing to 2, size="u~size "and items="u~items
+u~~queue(&apos;x&apos;)~~queue(&apos;y&apos;)~~queue(&apos;z&apos;)
+say "after queuing the three items &apos;x&apos;, &apos;y&apos;, &apos;z&apos;:"
+say "content: ["u"]," "content (LIFO): ["u~string("->","L")"]"
+say
+
+u~~push(&apos;1&apos;)~~push(&apos;2&apos;)~~push(&apos;3&apos;)
+say "after pushing the three items &apos;1&apos;, &apos;2&apos;, &apos;3&apos;:"
+say "content: ["u"]," "content (LIFO): ["u~string("->","L")"]"
+say
+</programlisting>
+
+<para>
+Output:
+</para>
+
+<programlisting>
+content: [a,b,c,d,e], content (LIFO): [e->d->c->b->a]
+
+after resizing to 4 items in FIFO style (keeping the newest):
+content: [b,c,d,e], content (LIFO): [e->d->c->b]
+
+after resizing to 2 items in LIFO style (keeping the oldest):
+content: [b,c], content (LIFO): [c->b]
+
+after resizing to 0 items, thereby deleting all items:
+content: [], content (LIFO): []
+
+after resizing to 2, size=2 and items=0
+after queuing the three items &apos;x&apos;, &apos;y&apos;, &apos;z&apos;:
+content: [y,z], content (LIFO): [z->y]
+
+after pushing the three items &apos;1&apos;, &apos;2&apos;, &apos;3&apos;:
+content: [3,2], content (LIFO): [2->3]
 </programlisting>
 </section>
 </section>
@@ -1385,468 +2011,6 @@ supplier, you can send it messages (see
 all the items that were in the queue at the time of the supplier's creation.
 The supplier enumerates the items in their queuing order, with the head of
 the queue first.</para>
-</section>
-</section>
-
-<section id="rxcqcl"><title>The CircularQueue Class</title>
-<indexterm>
-<primary>class</primary>
-<secondary>CircularQueue class</secondary>
-</indexterm>
-<indexterm>
-<primary>CircularQueue class</primary>
-</indexterm>
-
-<para>
-The CircularQueue class allows for storing objects in a circular queue
-of a predefined size. Once the end of the queue has been reached, new item
-objects are inserted from the beginning, replacing earlier entries.
-</para>
-<para>
-The collected objects can be processed in FIFO (first in, first out) or in a
-stack-like LIFO (last in, first out) order.
-</para>
-<para>
-The CircularQueue class is a subclass of the Queue class. In addition to its own
-methods it inherits the methods of the Queue class (see <link linkend="rxqcl">The Queue class</link>)
-and the Object class (see <link linkend="objc">The Object Class</link>)
-</para>
-
-<para><emphasis role="bold">Methods the CircularQueue class defines:</emphasis></para>
-<simplelist>
-<member>NEW (Class method)</member>
-<member>OF (Class method)</member>
-<member>MAKEARRAY</member>
-<member>PUSH</member>
-<member>QUEUE</member>
-<member>RESIZE</member>
-<member>SIZE</member>
-<member>STRING</member>
-<member>SUPPLIER</member>
-</simplelist>
-
-<para><emphasis role="bold">Methods inherited from the Queue class:</emphasis></para>
-<simplelist>
-<member>[]</member>
-<member>[]=</member>
-<member>AT</member>
-<member>HASINDEX</member>
-<member>ITEMS</member>
-<member>MAKEARRAY</member>
-<member>PEEK</member>
-<member>PULL</member>
-<member>PUSH</member>
-<member>PUT</member>
-<member>QUEUE</member>
-<member>REMOVE</member>
-<member>SUPPLIER</member>
-</simplelist>
-
-<para><emphasis role="bold">Methods inherited from the Object class:</emphasis></para>
-<simplelist>
-<member>Operator methods: =, ==, \=, &gt;&lt;, &lt;&gt;, \==</member>
-<member>CLASS</member>
-<member>COPY</member>
-<member>DEFAULTNAME</member>
-<member>HASMETHOD</member>
-<member>INIT</member>
-<member>OBJECTNAME</member>
-<member>OBJECTNAME=</member>
-<member>REQUEST</member>
-<member>RUN</member>
-<member>SETMETHOD</member>
-<member>START</member>
-<member>STRING</member>
-<member>UNSETMETHOD</member>
-</simplelist>
-
-<note><title>Note</title>
-<para>
-The CircularQueue class also has available class methods that its
-metaclass, the Class class, defines.
-</para>
-</note>
-
-<section id="cqunew"<title>NEW (Class Method)</title>
-<indexterm><primary>NEW method</primary>
-<secondary>of CircularQueue class</secondary>
-</indexterm>
-<indexterm><primary>method</primary>
-<secondary>NEW method</secondary>
-<tertiary>of CircularQueue class</tertiary>
-</indexterm>
-
-<programlisting>
-<![CDATA[
->>-NEW(size)---------------------------------------------------><
-]]>
-</programlisting>
-
-<para>
-Constructor method  which determines the
-<emphasis role="italic">size</emphasis> of the circular queue.
-It returns an empty CircularQueue object.</para>
-</section>
-
-<section id="cquof"><title>OF (Class Method)</title>
-<indexterm><primary>OF method</primary>
-<secondary>of CircularQueue class</secondary>
-</indexterm>
-<indexterm><primary>method</primary>
-<secondary>OF method</secondary>
-<tertiary>of CircularQueue class</tertiary>
-</indexterm>
-
-<programlisting>
-<![CDATA[
->>-OF-+----------------+---------------------------------------><
-      |    +-,----+    |
-      |    V      |    |
-      +-(----item-+--)-+
-]]>
-</programlisting>
-
-<para>
-Returns a newly created circular queue containing the specified
-<emphasis role="italic">item</emphasis> objects. The first
-<emphasis role="italic">item</emphasis> has index 1, the second has index 2,
-and so on. The number of <emphasis role="italic">item</emphasis> objects
-determines the <emphasis role="italic">size</emphasis> of the circular queue.
-</para>
-</section>
-
-<section id="cqumak"><title>MAKEARRAY</title>
-<indexterm><primary>MAKEARRAY method</primary>
-<secondary>of CircularQueue class</secondary>
-</indexterm>
-<indexterm><primary>method</primary>
-<secondary>MAKEARRAY method</secondary>
-<tertiary>of CircularQueue class</tertiary>
-</indexterm>
-
-<programlisting>
-<![CDATA[
-              +-Fifo----+
->>-MAKEARRAY(-+---------+-)------------------------------------><
-              +--order--+
-]]>
-</programlisting>
-
-<para>
-Returns a single-index array containing the items of the circular queue in the
-specified <emphasis role="italic">order</emphasis>.
-</para>
-
-<para>
-The following <emphasis role="italic">order</emphasis> can be used. (Only
-the capitalized letter is needed; all characters following it are ignored.)
-</para>
-
-<variablelist>
-<varlistentry><term>Fifo</term>
-<listitem>
-<para>First-in, first-out, default
-</para>
-</listitem>
-</varlistentry>
-<varlistentry><term>Lifo</term>
-<listitem>
-<para>Last-in, first-out (stacklike)
-</para>
-</listitem>
-</varlistentry>
-</variablelist>
-</section>
-
-<section id="cqupush"><title>PUSH</title>
-<indexterm><primary>PUSH method</primary>
-<secondary>of CircularQueue class</secondary>
-</indexterm>
-<indexterm><primary>method</primary>
-<secondary>PUSH method</secondary>
-<tertiary>of CircularQueue class</tertiary>
-</indexterm>
-
-<programlisting>
-<![CDATA[
->>-PUSH(item)--------------------------------------------------><
-]]>
-</programlisting>
-
-<para>
-Makes the object <emphasis role="italic">item</emphasis> a member item of
-the circular queue, inserting the item object in front of the first item in
-the queue. The pushed item object will be the new first item in the circular queue.
-</para>
-
-<para>
-If the circular queue is full, than the last item stored in the circular queue
-will be deleted, before the insertion takes place. In this case the
-<emphasis role="italic">deleted item</emphasis> will be returned, otherwise
-<emphasis role="italic">.nil</emphasis>.
-</para>
-</section>
-
-
-<section id="cquque"><title>QUEUE</title>
-<indexterm><primary>QUEUE method</primary>
-<secondary>of CircularQueue class</secondary>
-</indexterm>
-<indexterm><primary>method</primary>
-<secondary>QUEUE method</secondary>
-<tertiary>of CircularQueue class</tertiary>
-</indexterm>
-
-<programlisting>
-<![CDATA[
->>-QUEUE(item)-------------------------------------------------><
-]]>
-</programlisting>
-
-<para>
-Makes the object <emphasis role="italic">item</emphasis> a member item of the circular queue, inserting the item
-at the end of the circular queue.
-</para>
-
-<para>
-If the circular queue is full, than the first item will be deleted, before the
-insertion takes place.  In this case the <emphasis role="italic">deleted item</emphasis>
-will be returned, otherwise <emphasis role="italic">.nil</emphasis>.
-</para>
-</section>
-
-<section id="cqures"><title>RESIZE</title>
-<indexterm><primary>RESIZE method</primary>
-<secondary>of CircularQueue class</secondary>
-</indexterm>
-<indexterm><primary>method</primary>
-<secondary>RESIZE method</secondary>
-<tertiary>of CircularQueue class</tertiary>
-</indexterm>
-
-<programlisting>
-<![CDATA[
-                   +--,Fifo---+
->>-RESIZE(-newSize-+----------+-)------------------------------><
-                   +--,order--+
-]]>
-</programlisting>
-
-<para>
-Resizes the circular queue object to be able to contain
-<emphasis role="italic">newSize</emphasis> items.
-If the previous size was larger than <emphasis role="italic">newSize</emphasis>,
-then the now superfluous items are removed in the specified
-<emphasis role="italic">order</emphasis>.
-</para>
-
-<para>
-The following <emphasis role="italic">order</emphasis> can be used. (Only
-the capitalized letter is needed; all characters following it are ignored.)
-</para>
-
-<variablelist>
-<varlistentry><term>Fifo</term>
-<listitem>
-<para>First-in, first-out, default: keeps the newest entries
-</para>
-</listitem>
-</varlistentry>
-<varlistentry><term>Lifo</term>
-<listitem>
-<para>Last-in, first-out (stacklike): keeps the oldest entries
-</para>
-</listitem>
-</varlistentry>
-</variablelist>
-
-<note><title>Note:</title>
-<para>
-Resizing with a value of <computeroutput>0</computeroutput> effectively removes all
-items from the circular queue.
-</para>
-</note>
-</section>
-
-<section id="cqusize"><title>SIZE</title>
-<indexterm><primary>SIZE method</primary>
-<secondary>of CircularQueue class</secondary>
-</indexterm>
-<indexterm><primary>method</primary>
-<secondary>SIZE method</secondary>
-<tertiary>of CircularQueue class</tertiary>
-</indexterm>
-
-<programlisting>
-<![CDATA[
->>-SIZE--------------------------------------------------------><
-]]>
-</programlisting>
-
-<para>
-Returns the maximum number of objects that can be stored in the circular queue.
-</para>
-</section>
-
-<section id="cqustr"><title>STRING</title>
-<indexterm><primary>STRING method</primary>
-<secondary>of CircularQueue class</secondary>
-</indexterm>
-<indexterm><primary>method</primary>
-<secondary>STRING method</secondary>
-<tertiary>of CircularQueue class</tertiary>
-</indexterm>
-
-<programlisting>
-<![CDATA[
-           +--","------+  +-,-Fifo--+
->>-STRING(-+-----------+--+---------+-)------------------------><
-           +-delimiter-+  +-,-order-+
-]]>
-</programlisting>
-
-<para>
-Returns a string object that concatenates the string values of the collected
-item objects, using the <emphasis role="italic">delimiter</emphasis> string
-to delimit them, in the specified <emphasis role="italic">order</emphasis>.
-The default <emphasis role="italic">delimiter</emphasis> is a single comma.
-</para>
-
-<para>
-If the delimiter string argument is omitted the comma character
-(<computeroutput>","</computeroutput>) is used as the default delimiter string.
-</para>
-
-<para>
-The following <emphasis role="italic">order</emphasis> can be used. (Only
-the capitalized letter is needed; all characters following it are ignored.)
-</para>
-
-<variablelist>
-<varlistentry><term>Fifo</term>
-<listitem>
-<para>First-in, first-out, default
-</para>
-</listitem>
-</varlistentry>
-<varlistentry><term>Lifo</term>
-<listitem>
-<para>Last-in, first-out (stacklike)
-</para>
-</listitem>
-</varlistentry>
-</variablelist>
-</section>
-
-<section id="cqusupp"><title>SUPPLIER</title>
-<indexterm><primary>SUPPLIER method</primary>
-<secondary>of CircularQueue class</secondary>
-</indexterm>
-<indexterm><primary>method</primary>
-<secondary>SUPPLIER method</secondary>
-<tertiary>of CircularQueue class</tertiary>
-</indexterm>
-
-<programlisting>
-<![CDATA[
-             +--Fifo----+
->>-SUPPLIER(-+----------+-)------------------------------------><
-             +--order---+
-]]>
-</programlisting>
-
-<para>
-Returns a supplier object for the collection. After you have obtained a
-supplier, you can send it messages (see
-<link linkend="supp">The Supplier Class</link>) to enumerate
-all the items that were in the queue at the time of the supplier's creation.
-</para>
-
-<para>
-The supplier will enumerate the items in the specified
-<emphasis role="italic">order</emphasis>. (Only the capitalized
-letter is needed; all characters following it are ignored.)
-</para>
-
-<variablelist>
-<varlistentry><term>Fifo</term>
-<listitem>
-<para>First-in, first-out, default
-</para>
-</listitem>
-</varlistentry>
-<varlistentry><term>Lifo</term>
-<listitem>
-<para>Last-in, first-out (stacklike)
-</para>
-</listitem>
-</varlistentry>
-</variablelist>
-</section>
-
-<section id="cquex"><title>Example</title>
-<indexterm>
-<primary>examples</primary>
-<secondary>of CircularQueue class</secondary>
-</indexterm>
-
-<programlisting>
-  -- create a circular buffer with five items
-u=.circularQueue~of("a", "b", "c", "d", "e")
-say "content: ["u"]," "content (LIFO): ["u~string("->","L")"]"
-say
-
-u~resize(4, "FIFO")     -- resize fifo-style (keep newest)
-say "after resizing to 4 items in FIFO style (keeping the newest):"
-say "content: ["u"]," "content (LIFO): ["u~string("->","L")"]"
-say
-
-u~resize(2, "LILO")     -- resize lifo-style (keep oldest)
-say "after resizing to 2 items in LIFO style (keeping the oldest):"
-say "content: ["u"]," "content (LIFO): ["u~string("->","L")"]"
-say
-
-u~resize(0)             -- resize lifo-style (keep oldest)
-say "after resizing to 0 items, thereby deleting all items:"
-say "content: ["u"]," "content (LIFO): ["u~string("->","L")"]"
-say
-
-u~resize(2)             -- resize lifo-style (keep oldest)
-say "after resizing to 2, size="u~size "and items="u~items
-u~~queue(&apos;x&apos;)~~queue(&apos;y&apos;)~~queue(&apos;z&apos;)
-say "after queuing the three items &apos;x&apos;, &apos;y&apos;, &apos;z&apos;:"
-say "content: ["u"]," "content (LIFO): ["u~string("->","L")"]"
-say
-
-u~~push(&apos;1&apos;)~~push(&apos;2&apos;)~~push(&apos;3&apos;)
-say "after pushing the three items &apos;1&apos;, &apos;2&apos;, &apos;3&apos;:"
-say "content: ["u"]," "content (LIFO): ["u~string("->","L")"]"
-say
-</programlisting>
-
-<para>
-Output:
-</para>
-
-<programlisting>
-content: [a,b,c,d,e], content (LIFO): [e->d->c->b->a]
-
-after resizing to 4 items in FIFO style (keeping the newest):
-content: [b,c,d,e], content (LIFO): [e->d->c->b]
-
-after resizing to 2 items in LIFO style (keeping the oldest):
-content: [b,c], content (LIFO): [c->b]
-
-after resizing to 0 items, thereby deleting all items:
-content: [], content (LIFO): []
-
-after resizing to 2, size=2 and items=0
-after queuing the three items &apos;x&apos;, &apos;y&apos;, &apos;z&apos;:
-content: [y,z], content (LIFO): [z->y]
-
-after pushing the three items &apos;1&apos;, &apos;2&apos;, &apos;3&apos;:
-content: [3,2], content (LIFO): [2->3]
-</programlisting>
 </section>
 </section>
 
