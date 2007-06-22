@@ -44,11 +44,16 @@
 <chapter id="termdef"><title>Definition of Terms</title>
 <variablelist>
 <varlistentry><term>id</term>
-<listitem><para>The identification number of a dialog item.
-You assign an ID when you create the resource definition for your dialog.
-IDs 1, 2, and 9 are reserved for the OK, Cancel, and Help push buttons. An
-ID can be either numerical (for example, 100) or symbolic (for example,
-"Bankaccount_Entry").
+<listitem><para>The identification number of a dialog resource. There are
+several different types of dialog resources, such as menus, dialog controls,
+bitmaps, and so on.  You assign IDs when you create the resource definition for
+your dialog.  An ID can be either numerical (for example, 1) or symbolic (for
+example, "IDOK").  IDs must be unique for each resource of the same type.
+However two resouces of different types may have the same ID.</para>
+<para>IDs 1, 2, and 9 (IDOK, IDCANCEL, and IDHELP) are reserved for the OK,
+Cancel, and Help push buttons.  IDs 1, 2, 3, and 4 (IDI_DLG_OODIALOG,
+IDI_DLG_APPICON, IDI_DLG_APPICON2, and IDI_DLG_OOREXX) are reserved for the
+dialog icons included with ooDialog.
 </para></listitem></varlistentry>
 <varlistentry><term>handle</term>
 <listitem><para>A unique reference to a Windows object assigned by the system.
@@ -56,6 +61,56 @@ It can be a reference to a dialog, a particular dialog item, or a graphic
 object (pen, brush, font). Handles are required for certain methods; they
 can be retrieved from the system when needed.
 </para></listitem></varlistentry>
+<varlistentry><term id="dialogicon">dialog icon</term>
+<listitem><para>The term <emphasis role="italic">dialog icon</emphasis> is used
+in this documentation to refer to the icon that is displayed in the left hand
+corner of the title bar of a dialog.  In Windows this is often called the
+<emphasis role="italic">application icon.</emphasis>  The dialog icon is also
+used for the Task Bar display and in the AltTab task switcher application.</para>
+<para>The dialog icon for a specific dialog can be set when the dialog is run
+using one of the execute methods.  See the <link linkend="h000048">Execute</link>
+or <link linkend="popup">Popup</link> methods for example.  ooDialg provides four
+pre-defined icons for use in dialogs.  Custom icons can be used by including the
+icon in a binary (compiled) resource, a resource script, or by using the
+<link linkend="addicon">AddIcon</link> method of the UserDialog.  The following
+table shows the symbolic IDs of the pre-defined icons.  Their numeric IDs should
+be considered reserved.  There is a fifth symbolic ID that represents the default
+dialog icon.  This ID can always be used where a dialog icon ID is needed.
+</para>
+<table frame="all">
+<title>ooDialog Supplied Icons</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Numeric ID</entry>
+<entry>Symbolic ID</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>1</entry>
+<entry>IDI_DLG_OODIALOG</entry>
+</row>
+<row>
+<entry>2</entry>
+<entry>IDI_DLG_APPICON</entry>
+</row>
+<row>
+<entry>3</entry>
+<entry>IDI_DLG_APPICON2</entry>
+</row>
+<row>
+<entry>4</entry>
+<entry>IDI_DLG_OOREXX</entry>
+</row>
+<row>
+<entry>IDI_DLG_DEFAULT</entry>
+<entry>IDI_DLG_DEFAULT</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</listitem></varlistentry>
 <varlistentry><term>device context</term>
 <listitem><para>Stores information about the graphic objects that are displayed, such
 as bitmaps, lines, and pixels, and the tools used to display them, such as

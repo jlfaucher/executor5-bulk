@@ -906,7 +906,8 @@ if this method failed.
 ]]>
 </programlisting>
 
-<para>The SetFocus method sets the input focus to a dialog control.</para>
+<para>The SetFocus method sets the input focus to a dialog control and returns
+the handle of the control that previously had the focus.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The only argument is:
@@ -918,8 +919,19 @@ focus.
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The handle to the dialog control that had the focus before,
-or 0 if this method failed.
+<listitem><para>
+<variablelist>
+<varlistentry><term>-1</term>
+<listitem><para>The method failed.
+</para></listitem></varlistentry>
+<varlistentry><term>0</term>
+<listitem><para>The focus was changed, but the control with the previous focus
+could not be determined.
+</para></listitem></varlistentry>
+<varlistentry><term>Other</term>
+<listitem><para>The handle to the control with the previous focus.
+</para></listitem></varlistentry>
+</variablelist>
 </para></listitem></varlistentry>
 </variablelist>
 </section>
@@ -937,7 +949,7 @@ or 0 if this method failed.
 <para>The SetFocusToWindow method moves the input focus to another top-level
 window or dialog.  This has the effect of bringing that window to the
 foreground.  This method returns a handle to the dialog
-<emphasis role="italic">control</emphasis> that currently has the
+<emphasis role="italic">control</emphasis> that previously had the
 input focus.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -950,8 +962,19 @@ receive the input focus.
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The handle to the dialog control that currently has the focus,
-or 0 if this method failed.
+<listitem><para>
+<variablelist>
+<varlistentry><term>-1</term>
+<listitem><para>The method failed.
+</para></listitem></varlistentry>
+<varlistentry><term>0</term>
+<listitem><para>The focus was changed, but the control with the previous focus
+could not be determined.
+</para></listitem></varlistentry>
+<varlistentry><term>Other</term>
+<listitem><para>The handle to the control with the previous focus.
+</para></listitem></varlistentry>
+</variablelist>
 </para></listitem></varlistentry>
 </variablelist>
 </section>

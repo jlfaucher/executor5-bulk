@@ -182,6 +182,10 @@ the methods listed in the following table.
 <entry><link linkend="h001681">AddGroupBox</link></entry>
 </row>
 <row>
+<entry>AddIcon</entry>
+<entry><link linkend="addicon">AddIcon</link></entry>
+</row>
+<row>
 <entry>AddInput</entry>
 <entry><link linkend="h001901">AddInput</link></entry>
 </row>
@@ -946,6 +950,63 @@ the DisableItem method, see page <link linkend="h001229">DisableItem</link>), th
 <![CDATA[
 MyDialog~AddBitmapButton(601, 20, 317, 80, 30, , "BmpPushed", ,
                          "Button1.bmp", , ,"Button1D.bmp","FRAME USEPAL")
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="addicon"><title>AddIcon</title>
+<indexterm><primary>AddIcon</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aUserDialog~AddIcon(--id--,--fileName--)--------------------><
+
+
+]]>
+</programlisting>
+
+<para>The AddIcon method adds an icon resource to the dialog.  This is
+equivalent to using the <computeroutput>ICON</computeroutput> statement in
+a resource script.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The resource ID for the icon.
+</para></listitem></varlistentry>
+<varlistentry><term>fileName</term>
+<listitem><para>The file name of the icon.  If the icon file is not in the
+current directory, then a relative or fully qualified file name should be used.
+</para></listitem></varlistentry>
+</variablelist></para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example creates a very simple dialog that has
+an OK button and a static text box.  The <computeroutput>addIcon</computeroutput>
+method is used to load an icon resource using the ID of 15.  That icon is then
+used in the <computeroutput>execute</computeroutput> method for the dialog icon.
+(The <link linkend="dialogicon">dialog icon</link> is the icon shown in the title
+bar of the dialog.)
+
+<programlisting>
+<![CDATA[
+  dlg = .SimpleDialog~new
+  if dlg~initCode = 0 then do
+    dlg~create(30, 30, 150, 100, "The Simple Dialog", "VISIBLE")
+    dlg~execute("SHOWTOP", 15)
+    dlg~deinstall
+  end
+
+::requires "OODWin32.cls"
+
+::class SimpleDialog subclass UserDialog
+
+::method defineDialog
+
+  self~addText(10, 20, 130, 30, "Simple message", "CENTER BORDER", 100)
+  self~addButton(IDOK, 105, 70, 35, 15, "OK")
+  self~addIcon(15, "MyAppIcon.ico")
 ]]>
 </programlisting>
 </para></listitem></varlistentry>

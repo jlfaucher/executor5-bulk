@@ -1253,7 +1253,9 @@ the same process, it is disabled by Execute.
 <listitem><para>See <link linkend="show">Show</link>.
 </para></listitem></varlistentry>
 <varlistentry><term>icon</term>
-<listitem><para>The resource ID of the dialog's icon.
+<listitem><para>The resource ID of the <link linkend="dialogicon">dialog's
+icon</link>.  If an icon ID is not supplied, the default ooDialog icon will be
+used.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -1274,13 +1276,15 @@ the same process, it is disabled by Execute.
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example instantiates a new dialog object (remember that
 it is not possible to instantiate an object of the BaseDialog class), creates
-a dialog template, and runs the dialog as the topmost window:
+a dialog template, and runs the dialog as the topmost window.  The
+<link linkend="dialogicon">dialog icon</link> is one of the pre-defined icons
+supplied by ooDialog:
 
 <programlisting>
 <![CDATA[
 MyDialog = .UserDialog~new(...)
 MyDialog~Create(...)
-MyDialog~Execute("SHOWTOP")
+MyDialog~Execute("SHOWTOP", IDI_DLG_OOREXX)
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -1323,7 +1327,9 @@ method returns immediately after the dialog has been started. </para>
 <listitem><para>See <link linkend="show">Show</link>.
 </para></listitem></varlistentry>
 <varlistentry><term>icon</term>
-<listitem><para>The resource ID of the dialog's icon.
+<listitem><para>The resource ID of the <link linkend="dialogicon">dialog's
+icon</link>.  If an icon ID is not supplied, the default ooDialog icon will be
+used.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -1426,7 +1432,9 @@ You can therefore use Popup to produce nonmodal dialogs.</para>
 <listitem><para>The time, in milliseconds, until the next message is processed.
 </para></listitem></varlistentry>
 <varlistentry><term>icon</term>
-<listitem><para>The resource ID of the dialog's icon.
+<listitem><para>The resource ID of the <link linkend="dialogicon">dialog's
+icon</link>.  If an icon ID is not supplied, the default ooDialog icon will be
+used.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -1499,7 +1507,9 @@ is the parent of the newly started dialog.
 <listitem><para>The time, in milliseconds, until the next message is processed.
 </para></listitem></varlistentry>
 <varlistentry><term>icon</term>
-<listitem><para>The resource ID of the dialog's icon.
+<listitem><para>The resource ID of the <link linkend="dialogicon">dialog's
+icon</link>.  If an icon ID is not supplied, the default ooDialog icon will be
+used.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -5389,8 +5399,19 @@ tab key in the dialog.  Like many of the other methods, TabToNext is a method
 of both a BaseDialog and a DialogControl.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The handle to the dialog control with the current input
-focus, or 0 if this method failed.
+<listitem><para>
+<variablelist>
+<varlistentry><term>-1</term>
+<listitem><para>The method failed.
+</para></listitem></varlistentry>
+<varlistentry><term>0</term>
+<listitem><para>The focus was changed, but the control with the previous focus
+could not be determined.
+</para></listitem></varlistentry>
+<varlistentry><term>Other</term>
+<listitem><para>The handle to the control with the previous focus.
+</para></listitem></varlistentry>
+</variablelist>
 </para></listitem></varlistentry>
 </variablelist>
 </section>
@@ -5408,11 +5429,22 @@ focus, or 0 if this method failed.
 <para>This method is the reverse of TabToNext and sets the input focus to
 the previous dialog control with a tab stop.  This performs the same action
 as if the user pressed the shift-tab key in the dialog.  TabToPrevious is a
-also a method of both a BaseDialog and a DialogControl.</para>
+method of both a BaseDialog and a DialogControl.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The handle to the dialog control with the current input
-focus, or 0 if this method failed.
+<listitem><para>
+<variablelist>
+<varlistentry><term>-1</term>
+<listitem><para>The method failed.
+</para></listitem></varlistentry>
+<varlistentry><term>0</term>
+<listitem><para>The focus was changed, but the control with the previous focus
+could not be determined.
+</para></listitem></varlistentry>
+<varlistentry><term>Other</term>
+<listitem><para>The handle to the control with the previous focus.
+</para></listitem></varlistentry>
+</variablelist>
 </para></listitem></varlistentry>
 </variablelist>
 </section>
