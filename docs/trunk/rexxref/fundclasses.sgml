@@ -2788,6 +2788,48 @@ AbaBabAB~changeStr("ab","xy")        ->    "xyxyxyxy"
 </programlisting>
 </section>
 
+<section id="stccomp"><title>caselessCompare</title>
+<indexterm><primary>caselessCompare method</primary>
+<secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>compare method</secondary>
+<tertiary>of String class</tertiary></indexterm>
+<indexterm><primary>comparisons</primary>
+<secondary>of strings</secondary></indexterm>
+<indexterm><primary>finding</primary>
+<secondary>mismatch using caselessCompare</secondary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-caselessCompare(string-+------+-)-----------------------------------><
+                          +-,pad-+
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>0</computeroutput> if the argument
+<emphasis role="italic">string</emphasis> is identical to the
+receiving string using a caseless comparison.
+Otherwise, returns the position of the first character that
+does not match. The shorter string is padded on the right with
+<emphasis role="italic">pad</emphasis> if
+necessary. The default <emphasis role="italic">pad</emphasis> character is
+a
+blank.</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>compare method</secondary></indexterm>
+<programlisting>
+<![CDATA[
+"abc"~caselessCompare("ABC")         ->    0
+"abc"~caselessCompare("Ak")          ->    2
+"ab "~caselessCompare("AB")          ->    0
+"AB "~caselessCompare("ab"," ")      ->    0
+"ab "~caselesscompare("ab","x")      ->    3
+"abXX "~caselesscompare("ab","x")    ->    5
+]]>
+</programlisting>
+</section>
+
 <section id="stccompto"><title>caselessCompareTo</title>
 <indexterm><primary>caselessCompareTo method</primary>
 <secondary>of String class</secondary></indexterm>
@@ -3015,6 +3057,52 @@ a positive whole number), the point at which the search starts.</para>
 "abc def ghi"~pos("x")      ->    0
 "abc def ghi"~pos(" ")      ->    4
 "abc def ghi"~pos(" ",5)    ->    8
+</programlisting>
+</section>
+
+<section id="stcwordpos"><title>caselessWordPos</title>
+<indexterm><primary>caselessWordPos method</primary>
+<secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>wordPos method</secondary>
+<tertiary>of String class</tertiary></indexterm>
+<indexterm><primary>word</primary>
+<secondary>locating in a string</secondary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-caselessWordPos(phrase-+--------+-)---------------------------------><
+                  +-,start-+
+]]>
+</programlisting>
+
+<para>Returns the word number of the first word of
+<emphasis role="italic">phrase</emphasis> found in the
+receiving string, or <computeroutput>0</computeroutput> if
+<emphasis role="italic">phrase</emphasis> contains no words or
+if <emphasis role="italic">phrase</emphasis> is not found.
+Word matches are made independent of case.
+Several blanks
+between words in either <emphasis role="italic">phrase</emphasis> or the
+receiving string are treated as a single blank for the
+comparison, but, otherwise, the words must match exactly.</para>
+<para>By default the search starts at the first word in the receiving
+string.
+You can override this by specifying <emphasis
+role="italic">start</emphasis>
+(which must be positive),
+the word at which the search is to be started.</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>wordPos method</secondary></indexterm>
+<programlisting>
+"now is the time"~caselessWordPos("the")              ->  3
+"now is the time"~caselessWordPos("The")              ->  3
+"now is the time"~caselessWordPos("IS THE")           ->  2
+"now is the time"~caselessWordPos("is   the")         ->  2
+"now is   the time"~caselessWordPos("is   time ")     ->  0
+"To be or not to be"~caselessWordPos("BE")            ->  2
+"To be or not to be"~caselessWordPos("BE",3)          ->  6
 </programlisting>
 </section>
 
