@@ -217,7 +217,7 @@ does not include the indexes corresponding to those you omitted.</para>
 ]]>
 </programlisting>
 
-<para>Returns the same value as the 
+<para>Returns the same value as the
 <emphasis role="bold">at</emphasis> method, which follows. See
 <link linkend="arat">at</link>.</para>
 </section>
@@ -236,7 +236,7 @@ does not include the indexes corresponding to those you omitted.</para>
 ]]>
 </programlisting>
 
-<para>This method is the same as the 
+<para>This method is the same as the
 <emphasis role="bold">put</emphasis> method, which follows. See
 <link linkend="arput">put</link>.</para>
 </section>
@@ -247,8 +247,29 @@ does not include the indexes corresponding to those you omitted.</para>
 <indexterm><primary>method</primary>
 <secondary>allIndexes method</secondary>
 <tertiary>of Array class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-allIndexes---------------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns an array of all index positions in the array containing items.</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>wordPos method</secondary></indexterm>
+<programlisting>
+   a = .array~of("Fred", "Mike", "David")
+
+   do name over a~allIndexes
+      say name  -- displays "1", "2", and "3"
+   end
+
+   a~remove(2)  -- remove second item
+
+   do name over a~allIndexes
+      say name  -- displays "1" and "3"
+   end
+</programlisting>
 </section>
 
 <section id="arallitm"><title>allItems</title>
@@ -257,8 +278,29 @@ does not include the indexes corresponding to those you omitted.</para>
 <indexterm><primary>method</primary>
 <secondary>allItems method</secondary>
 <tertiary>of Array class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-allItems---------------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns an array of all items contained in the array.</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>wordPos method</secondary></indexterm>
+<programlisting>
+   a = .array~of("Fred", "Mike", "David")
+
+   do name over a~allItems
+      say name  -- displays "Fred", "Mike", and "David"
+   end
+
+   a~remove(2)  -- remove second item
+
+   do name over a~allItems
+      say name  -- displays "Fred" and "David"
+   end
+</programlisting>
 </section>
 
 <section id="arappend"><title>append</title>
@@ -267,8 +309,23 @@ does not include the indexes corresponding to those you omitted.</para>
 <indexterm><primary>method</primary>
 <secondary>append method</secondary>
 <tertiary>of Array class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-append(item)------------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Appends an item to the array after the last item (the item with the highest index.  The
+return value is the index of newly added item.
+</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>wordPos method</secondary></indexterm>
+<programlisting>
+   a = .array~new
+   a[3] = "Fred"   -- last item in the array
+   index = a~append("Mike")   -- returns "4"
+</programlisting>
 </section>
 
 <section id="arappendall"><title>appendAll</title>
@@ -277,8 +334,15 @@ does not include the indexes corresponding to those you omitted.</para>
 <indexterm><primary>method</primary>
 <secondary>appendAll method</secondary>
 <tertiary>of Array class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-appendAll(collection)---------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Appends all items in collection to the end of the target array.
+collection may be any object that implements an allItems method.
+</para>
 </section>
 
 <section id="arat"><title>at</title>
@@ -341,8 +405,13 @@ returns <computeroutput>0</computeroutput>.</para>
 <indexterm><primary>method</primary>
 <secondary>empty method</secondary>
 <tertiary>of Array class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-empty-------------------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Removes all items from the array.</para>
 </section>
 
 <section id="arfirs"><title>first</title>
@@ -387,8 +456,15 @@ an item associated with the specified index or indexes. Returns
 <indexterm><primary>method</primary>
 <secondary>hasItem method</secondary>
 <tertiary>of Array class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-hasItem(item)----------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns <computeroutput>1</computeroutput> (true) if the array contains
+the specified item at any index location.  Returns
+<computeroutput>0</computeroutput> (false) otherwise.</para>
 </section>
 
 <section id="arindex"><title>index</title>
@@ -397,8 +473,17 @@ an item associated with the specified index or indexes. Returns
 <indexterm><primary>method</primary>
 <secondary>index method</secondary>
 <tertiary>of Array class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-index(item)------------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns the index of the specified item within the array.  If the
+target item appears at more than one index, the first located index will
+be returned.  If the array does not contain the specified item, .nil is
+returned.
+</para>
 </section>
 
 <section id="arintersect"><title>intersection</title>
@@ -417,8 +502,15 @@ an item associated with the specified index or indexes. Returns
 <indexterm><primary>method</primary>
 <secondary>isEmpty method</secondary>
 <tertiary>of Array class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-isEmpty----------------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns <computeroutput>1</computeroutput> (true) if the array is
+empty.  Returns
+<computeroutput>0</computeroutput> (false) otherwise.</para>
 </section>
 
 <section id="aritms"><title>items</title>
@@ -582,8 +674,23 @@ no item is removed.</para>
 <indexterm><primary>method</primary>
 <secondary>removeItem method</secondary>
 <tertiary>of Array class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-removeItem(item)--------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Removes an item from the array.  If the target item exists at more than
+one index, the first located item is removed.  The return value is the
+removed item.
+</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>wordPos method</secondary></indexterm>
+<programlisting>
+   a = .array~of("Fred", "Mike", "Mike", "David")
+   a~removeItem("Mike")  -- removes the item at index "2"
+</programlisting>
 </section>
 
 <section id="arsect"><title>section</title>
@@ -696,7 +803,10 @@ dimensions in the array.</para>
 supplier, you can send it messages (see
 <link linkend="supp">The Supplier Class</link>) to enumerate
 all the items that were in the array at the time of the supplier's creation.
-The supplier enumerates the array items in their sequenced order.</para>
+The supplier enumerates the array items in their sequenced order.
+For multi-dimensional arrays, the supplier index method will return the
+index values as an array of index numbers.
+</para>
 </section>
 
 <section id="artostr"<title>toString</title>
@@ -3569,7 +3679,7 @@ End
 </section>
 
 <section id="mapclasses"><title>The Set Collection Classes</title>
-<para>The following section describes the builtin set classes supplied 
+<para>The following section describes the builtin set classes supplied
 with ooRexx.</para>
 
 <section id="setcl"><title>The Set Class</title>
@@ -4254,8 +4364,8 @@ the queue and therefore is not a permanent identification of an item.</para>
 </section>
 
 <section id="parmcoll"><title>The Argument Collection Classes</title>
-<para>A argument collection can be an instance of any collection class, including
-the Array, List, and Queue classes, which do not have set-operator methods.</para>
+<para>A argument collection can be an instance of any collection class or any object that
+implements a supplier method.</para>
 <para>If the collection does not contain a UNION method, the following must apply:</para>
 <itemizedlist>
 <listitem><para>The collection must support the MAKEARRAY method so that the

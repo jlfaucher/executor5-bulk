@@ -132,19 +132,19 @@ method replaces any existing definition for
 <para>If you omit <emphasis role="italic">method</emphasis>, the method name
 <emphasis role="italic">methodname</emphasis> is made
 unavailable for the receiver class. Sending a message of that name
-to an instance of the class causes the 
+to an instance of the class causes the
 <emphasis role="bold">unknown</emphasis> method (if any) to be run.</para>
 <para>The <emphasis role="italic">method</emphasis> argument can be a string
 containing a method source line instead of a method object. Alternatively, you
 can pass an array of strings containing individual method lines. Either way,
-<emphasis role="bold">define</emphasis> creates an equivalent method object. 
+<emphasis role="bold">define</emphasis> creates an equivalent method object.
 </para>
 
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
 <listitem><para>The classes Rexx provides do not permit changes or additions to
 their method definitions.</para></listitem>
-<listitem><para>The <emphasis role="bold">define</emphasis> 
+<listitem><para>The <emphasis role="bold">define</emphasis>
 method is a protected method.</para></listitem>
 </orderedlist>
 <para><emphasis role="bold">Example:</emphasis></para>
@@ -219,11 +219,11 @@ indexes are the names of the enhancing
 methods, and the items are the method objects (or strings or arrays of strings
 containing method code). (See the description of
 <link linkend="cldefi">define</link>.)
-You can use any collection that supports a 
+You can use any collection that supports a
 <emphasis role="bold">supplier</emphasis> method.</para>
-<para><emphasis role="bold">enhanced</emphasis> sends an 
+<para><emphasis role="bold">enhanced</emphasis> sends an
 <emphasis role="bold">init</emphasis> message to the created object, passing the
-<emphasis role="italic">argument</emphasis>s specified on the 
+<emphasis role="italic">argument</emphasis>s specified on the
 <emphasis role="bold">enhanced</emphasis> method.
 </para>
 <para><emphasis role="bold">Example:</emphasis></para>
@@ -254,7 +254,7 @@ rclass=.class~enhanced(rclassmeths,"Remote Class")
 </programlisting>
 
 <para>Returns the class identity (instance) string. (This is the string that
-is an argument on the <emphasis role="bold">subClass</emphasis> and 
+is an argument on the <emphasis role="bold">subClass</emphasis> and
 <emphasis role="bold">mixinClass</emphasis> methods.) The string
 representations of the class and its instances contain the class identity.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
@@ -298,13 +298,13 @@ class hierarchy. Any subsequent change to the instance methods of
 for all the classes that inherit from it.</para>
 <para>The new superclass <emphasis role="italic">classobj</emphasis> must be
 created with the <emphasis role="bold">mixinClass</emphasis>
-option of the ::CLASS directive or the 
+option of the ::CLASS directive or the
 <emphasis role="bold">mixinClass</emphasis> method and the base class
 of the <emphasis role="italic">classobj</emphasis> must be a direct superclass
 of the receiver object. The receiver must not already descend from
 <emphasis role="italic">classobj</emphasis> in the class
 hierarchy and vice versa.</para>
-<para>The method search order of the receiver class after 
+<para>The method search order of the receiver class after
 <emphasis role="bold">inherit</emphasis> is the same
 as before <emphasis role="bold">inherit</emphasis>, with the addition of
 <emphasis role="italic">classobj</emphasis> and its superclasses
@@ -314,7 +314,7 @@ as before <emphasis role="bold">inherit</emphasis>, with the addition of
 <orderedlist>
 <listitem><para>You cannot change the classes that Rexx provides by sending
 <emphasis role="bold">inherit</emphasis> messages.</para></listitem>
-<listitem><para>The <emphasis role="bold">inherit</emphasis> 
+<listitem><para>The <emphasis role="bold">inherit</emphasis>
 method is a protected method.</para></listitem>
 </orderedlist>
 <para><emphasis role="bold">Example:</emphasis></para>
@@ -365,8 +365,8 @@ class inheritance chain. For example:
 ]]>
 </programlisting>
 <para>Returns the receiver class's default metaclass. This is the class used
-to create subclasses of this class when you send 
-<emphasis role="bold">subClass</emphasis> or 
+to create subclasses of this class when you send
+<emphasis role="bold">subClass</emphasis> or
 <emphasis role="bold">mixinClass</emphasis> messages
 (with no metaclass arguments). If the receiver class is an object class (see
 <link linkend="objcla">Object Classes</link>), this is also the class used to
@@ -374,7 +374,7 @@ create the receiver class.
 The instance methods of the default metaclass are the class methods of the
 receiver class. For more information about class methods, see
 <link linkend="objcla">Object Classes</link>.
-See also the description of the <emphasis role="bold">subClass</emphasis> 
+See also the description of the <emphasis role="bold">subClass</emphasis>
 method in <link linkend="clsubc">subClass</link>.</para>
 </section>
 
@@ -425,7 +425,7 @@ say method_source[1]              /* Shows the method source code */
 
 <para>Returns a supplier object for all the instance methods of the receiver
 class and its superclasses, if you specify no argument. If
-<emphasis role="italic">class_object</emphasis> is the Nil object, 
+<emphasis role="italic">class_object</emphasis> is the Nil object,
 <emphasis role="bold">methods</emphasis>
 returns a supplier object for only the instance
 methods of the receiver class. If you specify a
@@ -438,10 +438,10 @@ at the time of the supplier's creation. (See
 <link linkend="supp">The Supplier Class</link> for details.)</para>
 
 <note><title>Note</title>
-<para>Methods that have been hidden with a 
-<emphasis role="bold">setMethod</emphasis> or 
+<para>Methods that have been hidden with a
+<emphasis role="bold">setMethod</emphasis> or
 <emphasis role="bold">define</emphasis> method
-are included with the other methods that 
+are included with the other methods that
 <emphasis role="bold">methods</emphasis> returns. The hidden methods
 have the Nil object for the associated method.</para></note>
 <para><emphasis role="bold">Example:</emphasis></para>
@@ -473,7 +473,7 @@ end
 <para>Returns a new mixin subclass of the receiver class. You can use this
 method to create a new mixin class that is a subclass of the superclass to
 which you send the message. The <emphasis role="italic">classid</emphasis>
-is a string that identifies the new mixin subclass. You can use the 
+is a string that identifies the new mixin subclass. You can use the
 <emphasis role="bold">id</emphasis> method
 to retrieve this string.</para>
 <para>The <emphasis role="italic">metaclass</emphasis> is a class object. If
@@ -492,7 +492,7 @@ and whose items are method objects (or strings or arrays of strings containing
 method code). If you specify <emphasis role="italic">methods</emphasis>, the new
 class is enhanced with class methods from this collection. (The metaclass of
 the new class is not affected.)</para>
-<para>The <emphasis role="bold">metaClass</emphasis> 
+<para>The <emphasis role="bold">metaClass</emphasis>
 method returns the metaclass of a class.</para>
 <para>The method search order of the new subclass is the same as that of the
 receiver class, with the addition of the new subclass at the start of the
@@ -524,9 +524,9 @@ buyable=.object~mixinClass("Buyable")  /* New subclass is buyable    */
 <para>Returns a new instance of the receiver class, whose object methods are
 the instance methods of the class. This method initializes a new instance
 by running its <emphasis role="bold">init</emphasis> methods. (See
-<link linkend="creo">Initialization</link>.) 
+<link linkend="creo">Initialization</link>.)
 <emphasis role="bold">new</emphasis> also sends an
-<emphasis role="bold">init</emphasis> message. If you specify args, 
+<emphasis role="bold">init</emphasis> message. If you specify args,
 <emphasis role="bold">new</emphasis> passes these
 arguments on the <emphasis role="bold">init</emphasis> message.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
@@ -584,7 +584,7 @@ mixin class, or <computeroutput>0</computeroutput> (false).</para>
 <para>Returns a new subclass of the receiver class. You can use this method to
 create a new class that is a subclass of the superclass to which you send
 the message. The <emphasis role="italic">classid</emphasis> is a string that
-identifies the subclass. (You can use the 
+identifies the subclass. (You can use the
 <emphasis role="bold">id</emphasis> method to retrieve this string.)
 </para>
 <para>The <emphasis role="italic">metaclass</emphasis> is a class object. If
@@ -603,7 +603,7 @@ and whose items are method objects (or strings or arrays of strings containing
 method code). If you specify <emphasis role="italic">methods</emphasis>,
 the new class is enhanced with class methods from this collection.
 (The metaclass of the new class is not affected.)</para>
-<para>The <emphasis role="bold">metaClass</emphasis> method returns the 
+<para>The <emphasis role="bold">metaClass</emphasis> method returns the
 metaclass of a class.</para>
 <para>The method search order of the new subclass is the same as that of the
 receiver class, with the addition of the new subclass at the start of the
@@ -650,13 +650,13 @@ indexes range from 1 to the number of subclasses.</para>
 
 <para>Returns the immediate superclasses of the receiver class in the form of
 a single-index array of the required size. The immediate superclasses are
-the original class used on a <emphasis role="bold">subClass</emphasis> or a 
+the original class used on a <emphasis role="bold">subClass</emphasis> or a
 <emphasis role="bold">mixinClass</emphasis> method, plus any additional
-superclasses defined with the <emphasis role="bold">inherit</emphasis> 
+superclasses defined with the <emphasis role="bold">inherit</emphasis>
 method. The array is in the order in
-which the class has inherited the classes. The original class used on a 
+which the class has inherited the classes. The original class used on a
 <emphasis role="bold">subClass</emphasis> or
-<emphasis role="bold">mixinClass</emphasis> method is the first item of the 
+<emphasis role="bold">mixinClass</emphasis> method is the first item of the
 array. The array indexes range
 from <computeroutput>1</computeroutput> to the number of superclasses.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
@@ -683,13 +683,13 @@ end
 ]]>
 </programlisting>
 
-<para>Nullifies the effect of any previous 
+<para>Nullifies the effect of any previous
 <emphasis role="bold">inherit</emphasis> message
 sent to the receiver for the class <emphasis role="italic">classobj</emphasis>.
 </para>
 
 <note><title>Note</title>
-<para>You cannot change the classes that Rexx provides by sending 
+<para>You cannot change the classes that Rexx provides by sending
 <emphasis role="bold">uninherit</emphasis> messages.
 </para></note>
 <para><emphasis role="bold">Example:</emphasis></para>
@@ -722,8 +722,8 @@ metaclass, the Class class, defines.</para></note>
 
 <para>A message object provides for the deferred or
 asynchronous sending of a message. You can create a message object by using
-the <emphasis role="bold">new</emphasis> or 
-<emphasis role="bold">enhanced</emphasis> method of the Message class or the 
+the <emphasis role="bold">new</emphasis> or
+<emphasis role="bold">enhanced</emphasis> method of the Message class or the
 <emphasis role="bold">start</emphasis> method of the
 Object class (see <link linkend="obstar">start</link>). The Message class is
 a subclass of the Object class.</para>
@@ -801,7 +801,7 @@ arguments. </para>
 </programlisting>
 <para>Returns <computeroutput>1</computeroutput> if the message object has
 completed its message, or <computeroutput>0</computeroutput>. You can use this
-method instead of sending 
+method instead of sending
 <emphasis role="bold">result</emphasis> and waiting for
 the message to complete.</para>
 </section>
@@ -854,14 +854,14 @@ completed without error.</para>
 </programlisting>
 
 <para>Requests notification about the completion of processing of the message
-<emphasis role="bold">send</emphasis> or <emphasis role="bold">start</emphasis>. 
+<emphasis role="bold">send</emphasis> or <emphasis role="bold">start</emphasis>.
 The message object <emphasis role="italic">message</emphasis>
-is sent as the notification. You can use 
+is sent as the notification. You can use
 <emphasis role="bold">notify</emphasis> to request any number of
 notifications. After the notification
-message, you can use the <emphasis role="bold">result</emphasis> 
+message, you can use the <emphasis role="bold">result</emphasis>
 method to obtain any result from the messages
-<emphasis role="bold">send</emphasis> or 
+<emphasis role="bold">send</emphasis> or
 <emphasis role="bold">start</emphasis>.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <indexterm><primary>examples</primary>
@@ -908,11 +908,11 @@ method to obtain any result from the messages
 ]]>
 </programlisting>
 
-<para>Returns the result of the message <emphasis role="bold">send</emphasis> or 
+<para>Returns the result of the message <emphasis role="bold">send</emphasis> or
 <emphasis role="bold">start</emphasis>.
 If message processing is not yet complete, this method waits until it completes.
-If the message <emphasis role="bold">send</emphasis> or 
-<emphasis role="bold">start</emphasis> raises an error condition, this method 
+If the message <emphasis role="bold">send</emphasis> or
+<emphasis role="bold">start</emphasis> raises an error condition, this method
 also raises an error condition.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
@@ -945,12 +945,12 @@ say "The result of message was" bond~result     /* Result is 007     */
 <emphasis role="italic">target</emphasis>, this method sends the message to
 <emphasis role="italic">target</emphasis>. Otherwise,
 this method sends the message to the <emphasis role="italic">target</emphasis>
-you specified when the message object was created. 
+you specified when the message object was created.
 <emphasis role="bold">send</emphasis> does
 not return until message processing is complete.</para>
-<para>You can use the <emphasis role="bold">notify</emphasis> 
+<para>You can use the <emphasis role="bold">notify</emphasis>
 method to request notification that message
-processing is complete. You can use the 
+processing is complete. You can use the
 <emphasis role="bold">result</emphasis> method to obtain any result
 from the message.</para>
 </section>
@@ -1114,9 +1114,9 @@ string.</para>
 ]]>
 </programlisting>
 
-<para>Reverses any previous 
+<para>Reverses any previous
 <emphasis role="bold">setUnguarded</emphasis> messages, restoring the receiver to
-the default guarded status. If the receiver is already guarded, a 
+the default guarded status. If the receiver is already guarded, a
 <emphasis role="bold">setGuarded</emphasis> message has no effect.</para>
 </section>
 
@@ -1201,7 +1201,7 @@ access to the object's variable pool is active in the same object. This
 restriction does not apply if an object sends itself a message to run a method
 and it already has exclusive use of the same object variable pool. In this
 case, the method runs immediately and has exclusive use of its object variable
-pool, regardless of whether it received a 
+pool, regardless of whether it received a
 <emphasis role="bold">setUnguarded</emphasis> message.</para>
 </section>
 
@@ -1217,7 +1217,7 @@ pool, regardless of whether it received a
 ]]>
 </programlisting>
 <para>Returns the method source code as a single-index array of source
-lines. If the source code is not available, 
+lines. If the source code is not available,
 <emphasis role="bold">source</emphasis> returns an array of zero
 items.</para>
 </section>
@@ -1823,7 +1823,7 @@ have information with a meaningful string form have a
 return this value. For example, directory objects have a readable string
 representation (a Directory), but no string value, and, therefore, no
 <emphasis role="bold">makeString</emphasis> method.</para>
-<para>Of the classes that Rexx provides, only the String class has a 
+<para>Of the classes that Rexx provides, only the String class has a
 <emphasis role="bold">makeString</emphasis>
 method. Any subclasses of the String class inherit this method by default,
 so these subclasses also have string values. Any other class can also provide
@@ -1842,18 +1842,18 @@ a string value by defining a <emphasis role="bold">makeString</emphasis> method.
 ]]>
 </programlisting>
 
-<para>Cancels the effect of all previous 
+<para>Cancels the effect of all previous
 <emphasis role="bold">setMethod</emphasis>s for method
 <emphasis role="italic">methodname</emphasis>. It also removes any method
-<emphasis role="italic">methodname</emphasis> introduced with 
+<emphasis role="italic">methodname</emphasis> introduced with
 <emphasis role="italic">enhanced</emphasis>
-when the object was created. If the object has received no 
+when the object was created. If the object has received no
 <emphasis role="bold">setMethod</emphasis> method,
 no action is taken. </para>
 
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
-<listitem><para>The <emphasis role="bold">unsetMethod</emphasis> 
+<listitem><para>The <emphasis role="bold">unsetMethod</emphasis>
 method is a private method. See the <emphasis role="bold">setPrivate</emphasis>
 method in <link linkend="mesetp">setPrivate</link>  for details.</para>
 </listitem>
@@ -2470,7 +2470,7 @@ the language processor ignores them.</para>
 <para>The returned string uses uppercase alphabetic characters for the values
 <computeroutput>A</computeroutput>-<computeroutput>F</computeroutput> and does
 not include blanks.</para>
-<para>If the receiving binary string is a null string, 
+<para>If the receiving binary string is a null string,
 <emphasis role="bold">b2x</emphasis> returns a null string.
 If the number of binary digits in the receiving string is not a multiple of
 four, the language processor adds up to three <computeroutput>0</computeroutput>
@@ -2488,7 +2488,7 @@ before the conversion to make a total that is a multiple of four.</para>
 ]]>
 </programlisting>
 <para>You can combine <emphasis role="bold">b2x</emphasis>
-with the methods <emphasis role="bold">x2d</emphasis> and 
+with the methods <emphasis role="bold">x2d</emphasis> and
 <emphasis role="bold">x2c</emphasis> to convert a binary
 number into other forms.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
@@ -2690,7 +2690,7 @@ or truncated on the left to <emphasis role="italic">n</emphasis> characters.
 This padding or truncation is as though
 <computeroutput>receiving_string~right(n,&apos;00&apos;x)</computeroutput> had
 been processed. If <emphasis role="italic">n</emphasis> is
-<computeroutput>0</computeroutput>, 
+<computeroutput>0</computeroutput>,
 <emphasis role="bold">c2d</emphasis> always returns
 <computeroutput>0</computeroutput>.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
@@ -2731,7 +2731,7 @@ for information about the C2D built-in function.)</para>
 
 <para>Returns a string, in character format, that represents the receiving
 string converted to hexadecimal. The returned string contains twice as many
-bytes as the receiving string. On an ASCII system, sending a 
+bytes as the receiving string. On an ASCII system, sending a
 <emphasis role="bold">c2x</emphasis> message to the
 receiving string <computeroutput>1</computeroutput> returns
 <computeroutput>31</computeroutput> because "31"X
@@ -2739,7 +2739,7 @@ is the ASCII representation of <computeroutput>1</computeroutput>.</para>
 <para>The returned string has uppercase alphabetic characters for the values
 <computeroutput>A</computeroutput>-<computeroutput>F</computeroutput> and does
 not include blanks. The receiving string
-can be of any length. If the receiving string is null, 
+can be of any length. If the receiving string is null,
 <emphasis role="bold">c2x</emphasis> returns a null string.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
@@ -2765,8 +2765,27 @@ for information about the C2X built-in function.)</para>
 <indexterm><primary>method</primary>
 <secondary>caselessChangeStr method</secondary>
 <tertiary>of String class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-caselessChangeStr(needle,newneedle)---------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns a copy of the receiver object in which
+<emphasis role="italic">newneedle</emphasis> replaces
+all occurrences of <emphasis role="italic">needle</emphasis>.
+The <emphasis role="italic">needle</emphasis> searches are performed
+using caseless comparisons.
+</para>
+<para>Here are some examples:</para>
+<indexterm><primary>examples</primary>
+<secondary>caselessChangeStr method</secondary></indexterm>
+<programlisting>
+<![CDATA[
+AbaAbb~caselessChangeStr("A","")     ->    "bbb"
+AbaBabAB~changeStr("ab","xy")        ->    "xyxyxyxy"
+]]>
+</programlisting>
 </section>
 
 <section id="stccompto"><title>caselessCompareTo</title>
@@ -2781,7 +2800,43 @@ for information about the C2X built-in function.)</para>
 <secondary>caselessCompareTo method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<programlisting>
+<![CDATA[
+>>-caselessCompareTo(string-+-----------------------+-)----------------------><
+                            +-,--+-- +--+---------+-+
+                                 +-n-+  +-,length-+
+]]>
+</programlisting>
+
+
+<para>Performs a caseless sort comparison of the target string to the
+<emphasis role="italic">string</emphasis> argument.  If the
+two strings are equal, <computeroutput>0</computeroutput> is returned.  If
+the target string is larger, <computeroutput>1</computeroutput> is returned.
+<computeroutput>-1</computeroutput> if the <emphasis role="italic">string</emphasis>
+argument is the larger string.
+
+The comparison is performed starting at character <emphasis role="italic">n</emphasis>
+for <emphasis role="italic">length</emphasis> characters in both strings.
+<emphasis role="italic">n</emphasis> must be a positive whole number.  If <emphasis role="italic">n</emphasis>
+is omitted, the comparison starts at the first character.
+<emphasis role="italic">n</emphasis> must be a positive whole number.  If ommitted, the comparison will take
+place to the end of the target string.
+</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>compareTo method</secondary></indexterm>
+<programlisting>
+<![CDATA[
+
+"abc"~caselessCompareTo("abc")         ->    0
+"b"~caselessCompareTo("a")             ->    1
+"a"~caselessCompareTo("b")             ->   -1
+"abc"~caselessCompareTo("aBc")         ->    0
+"aBc"~caselessCompareTo("abc")         ->    0
+"000abc000"~caselessCompareTo(111abc111", 4, 3)  -> 0
+]]>
+</programlisting>
 </section>
 
 <section id="stccntstr"><title>caselessCountStr</title>
@@ -2795,8 +2850,24 @@ for information about the C2X built-in function.)</para>
 <indexterm><primary>method</primary>
 <secondary>caselessCountStr method</secondary>
 <tertiary>of String class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-caselessCountStr(needle)--------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns a count of the occurrences of
+<emphasis role="italic">needle</emphasis> in the receiving
+string that do not overlap.  All matches are made using caseless comparisons.</para>
+<para>Here are some examples:</para>
+<indexterm><primary>examples</primary>
+<secondary>countStr method</secondary></indexterm>
+<programlisting>
+<![CDATA[
+"a0Aa0A"~countStr("a")        ->    4
+"J0kKk0"~CountStr("KK")       ->    1
+]]>
+</programlisting>
 </section>
 
 <section id="stcequals"><title>caselessEquals</title>
@@ -2810,8 +2881,23 @@ for information about the C2X built-in function.)</para>
 <indexterm><primary>method</primary>
 <secondary>caselessEquals method</secondary>
 <tertiary>of String class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-equals(other)-------------------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns .true ("1") if the target string is strictly equal to the
+<emphasis role="italic">other</emphasis> string, using a caseless comparison.
+Returns .false ("0") if the two strings are not strictly equal.
+<emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>equals method</secondary></indexterm>
+<programlisting>
+"a"~equals("A")          ->    1
+"aa"~equals("A")         ->    0
+"4"~equals("3")          ->    0
+</programlisting>
 </section>
 
 <section id="stclastpos"><title>caselessLastPos</title>
@@ -2826,7 +2912,36 @@ for information about the C2X built-in function.)</para>
 <secondary>caselessLastPos method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<programlisting>
+<![CDATA[
+>>-caselessLastPos(needle-+--------+-)---------------------------------><
+                          +-,start-+
+]]>
+</programlisting>
+
+<para>Returns the position of the last occurrence of a string,
+<emphasis role="italic">needle</emphasis>,
+in the receiving string. (See also <link linkend="stpos">POS</link>.) It
+returns <computeroutput>0</computeroutput> if
+<emphasis role="italic">needle</emphasis> is the null string or not found.
+By default, the search starts at the last character of the receiving string
+and scans backward. You can override this by specifying
+<emphasis role="italic">start</emphasis>, the point at which the
+backward scan starts. The <emphasis role="italic">start</emphasis> must be a
+positive whole number and defaults to
+<computeroutput>receiving_string~length</computeroutput> if larger than that
+value or omitted.  The search is performed using caseless comparisons.</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>caselessLastPos method</secondary></indexterm>
+<programlisting>
+"abc def ghi"~caselessLastPos(" ")      ->    8
+"abcdefghi"~caselessLastPos(" ")        ->    0
+"efgxyz"~caselessLastPos("XY")          ->    4
+"abc def ghi"~caselessLastPos(" ",7)    ->    4
+</programlisting>
+<para>(See <link linkend="lastpos">LASTPOS (Last Position)</link>
+for information about the LASTPOS built-in function.)</para>
 </section>
 
 <section id="stcmatch"><title>caselessMatch</title>
@@ -2871,7 +2986,36 @@ for information about the C2X built-in function.)</para>
 <secondary>caselessPos method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<programlisting>
+<![CDATA[
+>>-caselessPos(needle-+--------+-)-------------------------------------><
+                      +-,start-+
+]]>
+</programlisting>
+
+<para>Returns the position in the receiving string of another string,
+<emphasis role="italic">needle</emphasis>. (See also
+<link linkend="stlast">lastPos</link>.) It returns
+<computeroutput>0</computeroutput> if
+<emphasis role="italic">needle</emphasis> is the null string or is not found
+or if <emphasis role="italic">start</emphasis> is greater than
+the length of the receiving string.  The search is performed using caseless
+comparisons.
+By default, the search starts at the first
+character of the receiving string (that is, the value of
+<emphasis role="italic">start</emphasis> is <computeroutput>1</computeroutput>).
+You can override this by specifying <emphasis role="italic">start</emphasis>
+(which must be
+a positive whole number), the point at which the search starts.</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>pos method</secondary></indexterm>
+<programlisting>
+"Saturday"~pos("DAY")       ->    6
+"abc def ghi"~pos("x")      ->    0
+"abc def ghi"~pos(" ")      ->    4
+"abc def ghi"~pos(" ",5)    ->    8
+</programlisting>
 </section>
 
 <section id="stcent"><title>center/centre</title>
@@ -2913,7 +3057,7 @@ more character than the left-hand end. </para>
 <note><title>Note</title>
 <para>To avoid errors because
 of the difference between British and American spellings, this method can
-be called either <emphasis role="bold">center</emphasis> or 
+be called either <emphasis role="bold">center</emphasis> or
 <emphasis role="bold">centre</emphasis>.</para></note>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
@@ -3014,7 +3158,43 @@ COMPARE built-in function.)</para>
 <indexterm><primary>finding</primary>
 <secondary>mismatch using compareTo</secondary></indexterm>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<programlisting>
+<![CDATA[
+>>-compareTo(string-+-----------------------+-)----------------------><
+                    +-,--+-- +--+---------+-+
+                         +-n-+  +-,length-+
+]]>
+</programlisting>
+
+
+<para>Performs a sort comparison of the target string to the
+<emphasis role="italic">string</emphasis> argument.  If the
+two strings are equal, <computeroutput>0</computeroutput> is returned.  If
+the target string is larger, <computeroutput>1</computeroutput> is returned.
+<computeroutput>-1</computeroutput> if the <emphasis role="italic">string</emphasis>
+argument is the larger string.
+
+The comparison is performed starting at character <emphasis role="italic">n</emphasis>
+for <emphasis role="italic">length</emphasis> characters in both strings.
+<emphasis role="italic">n</emphasis> must be a positive whole number.  If <emphasis role="italic">n</emphasis>
+is omitted, the comparison starts at the first character.
+<emphasis role="italic">n</emphasis> must be a positive whole number.  If ommitted, the comparison will take
+place to the end of the target string.
+</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>compareTo method</secondary></indexterm>
+<programlisting>
+<![CDATA[
+
+"abc"~compareTo("abc")         ->    0
+"b"~compareTo("a")             ->    1
+"a"~compareTo("b")             ->   -1
+"abc"~compareTo("aBc")         ->    1
+"aBc"~compareTo("abc")         ->   -1
+"000abc000"~compareTo(111abc111", 4, 3)  -> 0
+]]>
+</programlisting>
 </section>
 
 <section id="stcopi"><title>copies</title>
@@ -3504,8 +3684,24 @@ for this method in ooRexx.</para>
 <indexterm><primary>method</primary>
 <secondary>equals method</secondary>
 <tertiary>of String class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-equals(other)-------------------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns .true ("1") if the target string is strictly equal to the
+<emphasis role="italic">other</emphasis> string.
+Returns .false ("0") if the two strings are not strictly equal.  This is
+the same comparison performed by the "==" comparison method.
+<emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>equals method</secondary></indexterm>
+<programlisting>
+"3"~equals("3")          ->    1
+"33"~equals("3")         ->    0
+"4"~equals("3")          ->    0
+</programlisting>
 </section>
 
 <section id="stform"><title>format</title>
@@ -4378,7 +4574,7 @@ The default <emphasis role="italic">pad</emphasis> is a blank.</para>
 </programlisting>
 
 <note><title>Note</title>
-<para>The last example shows how to use the 
+<para>The last example shows how to use the
 <emphasis role="bold">translate</emphasis> method
 to reorder the characters in a string. In the example, the last character
 of any 4-character string specified as the first argument would be moved to
@@ -4728,7 +4924,7 @@ include any blanks.</para>
 "1 C1"~x2b      ->  "000111000001"
 </programlisting>
 <para>You can combine <emphasis role="bold">x2b</emphasis>
-with the methods <emphasis role="bold">d2x</emphasis> and 
+with the methods <emphasis role="bold">d2x</emphasis> and
 <emphasis role="bold">c2x</emphasis> to convert numbers or
 character strings into binary form.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
