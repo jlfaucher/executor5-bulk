@@ -2998,7 +2998,41 @@ for information about the LASTPOS built-in function.)</para>
 <secondary>caselessMatch method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<programlisting>
+<![CDATA[
+>>-caselessMatch(start,other-+----------------------------+-)-------------------><
+                             +-,--+---+--+---------+-+
+                                  +-n-+  +-,length-+
+]]>
+</programlisting>
+
+<para>Returns .true ("1") if the the characters of the <emphasis role="italic">other</emphasis> match the
+characters of the target string beginning at position <emphasis role="italic">start</emphasis>.  Return .false
+("0") if the characters are not a match.  The matching is performed using caseless comparisons.
+<emphasis role="italic">start</emphasis> must be a positive whole number less than or equal to the length of
+the target string.
+</para>
+<para>If <emphasis role="italic">n</emphasis> is specified, the match will be performed starting with character
+<emphasis role="italic">n</emphasis> of <emphasis role="italic">other</emphasis>.  The default value for
+<emphasis role="italic">n</emphasis> is "1".  <emphasis role="italic">n</emphasis> must be a positive whole number
+less than or equal to the length of <emphasis role="italic">other</emphasis>.
+</para>
+<para>If <emphasis role="italic">length</emphasis> is specified, it defines a substring of
+<emphasis role="italic">other</emphasis> that is used for the match.  <emphasis role="italic">length</emphasis>
+must be a positive whole number and the combination of <emphasis role="italic">n</emphasis> and
+<emphasis role="italic">length</emphasis> must be a valid substring within the bounds of
+<emphasis role="italic">other</emphasis>.</para>
+<para>The caselessMatch method is useful efficient string parsing as it does not require new string objects be extracted from
+the target string.</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>caselessMatch method</secondary></indexterm>
+<programlisting>
+"Saturday"~caselessMatch("day", 6)           ->    1
+"Saturday"~caselessMatch("DAY", 6)           ->    1
+"Saturday"~caselessMatch("SUNDAY", 6, 4, 3)  ->    1
+"Saturday"~caselessMatch("daytime", 6, 3)    ->    1
+</programlisting>
 </section>
 
 <section id="stcmatchchar"><title>caselessMatchChar</title>
@@ -3013,7 +3047,26 @@ for information about the LASTPOS built-in function.)</para>
 <secondary>caselessMatchChar method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<programlisting>
+<![CDATA[
+>>-caselessMatchChar(n,chars)-------------------------><
+]]>
+</programlisting>
+
+<para>Returns .true ("1") if the character at position <emphasis role="italic">n</emphasis> matches any
+character of the string <emphasis role="italic">chars</emphasis>.  Returns .false ("0") if the character does not
+match any of the characters in the reference set.  The match is made using caseless comparisons.
+The argmuent <emphasis role="italic">n</emphasis> must be
+a positive whole number less than or equal to the length of the target string.</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>caselessMatchChar method</secondary></indexterm>
+<programlisting>
+"a+b"~caselessMatchChar(2, "+-*/")           ->    1
+"a+b"~caselessMatchChar(1, "+-*/")           ->    0
+"Friday"~caselessMatchChar(3, "aeiou")       ->    1
+"FRIDAY"~caselessMatchChar(3, "aeiou")       ->    1
+</programlisting>
 </section>
 
 <section id="stcpos"><title>caselessPos</title>
@@ -4062,7 +4115,30 @@ for information about the LENGTH built-in function.)</para>
 <secondary>lorer method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<programlisting>
+<![CDATA[
+>>-lower(+---+--+---------+---)----------------------><
+         +-n-+  +-,length-+
+]]>
+</programlisting>
+
+<para>Returns a new string with the characters of the target string beginning with
+character <emphasis role="italic">n</emphasis> for <emphasis role="italic">length</emphasis>
+characters converted to lowercase.  If <emphasis role="italic">n</emphasis> is specified, it must
+be a positive whole number.  If <emphasis role="italic">n</emphasis> is not specified, the case
+conversion will start with the first character.  If <emphasis role="italic">length</emphasis>
+is specified, it must be a non-negative whole number.  If <emphasis role="italic">length</emphasis>
+the default is to convert the remainder of the string.</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>lower method</secondary></indexterm>
+<programlisting>
+"Albert Einstein"~lower      ->    "albert einstein"
+"ABCDEF"~lower(4)            ->    "ABCdef"
+"ABCDEF"~lower(3,2)          ->    "ABcdEF"
+</programlisting>
+<para>(See <link linkend="lower">LOWER</link>
+for information about the LOWER built-in function.)</para>
 </section>
 
 <section id="stmaka"><title>makeArray</title>
@@ -4123,7 +4199,41 @@ object. See <link linkend="reqstr">Required String Values</link>.</para>
 <secondary>match method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<programlisting>
+<![CDATA[
+>>-match(start,other-+----------------------------+-)-------------------><
+                     +-,--+---+--+---------+-+
+                          +-n-+  +-,length-+
+]]>
+</programlisting>
+
+<para>Returns .true ("1") if the characters of the <emphasis role="italic">other</emphasis> match the
+characters of the target string beginning at position <emphasis role="italic">start</emphasis>.  Return .false
+("0") if the characters are not a match.
+<emphasis role="italic">start</emphasis> must be a positive whole number less than or equal to the length of
+the target string.
+</para>
+<para>If <emphasis role="italic">n</emphasis> is specified, the match will be performed starting with character
+<emphasis role="italic">n</emphasis> of <emphasis role="italic">other</emphasis>.  The default value for
+<emphasis role="italic">n</emphasis> is "1".  <emphasis role="italic">n</emphasis> must be a positive whole number
+less than or equal to the length of <emphasis role="italic">other</emphasis>.
+</para>
+<para>If <emphasis role="italic">length</emphasis> is specified, it defines a substring of
+<emphasis role="italic">other</emphasis> that is used for the match.  <emphasis role="italic">length</emphasis>
+must be a positive whole number and the combination of <emphasis role="italic">n</emphasis> and
+<emphasis role="italic">length</emphasis> must be a valid substring within the bounds of
+<emphasis role="italic">other</emphasis>.</para>
+<para>The match method is useful efficient string parsing as it does not require new string objects be extracted from
+the target string.</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>match method</secondary></indexterm>
+<programlisting>
+"Saturday"~match("day", 6)           ->    1
+"Saturday"~match("DAY", 6)           ->    0
+"Saturday"~match("Sunday", 6, 4, 3)  ->    1
+"Saturday"~match("daytime", 6, 3)    ->    1
+</programlisting>
 </section>
 
 <section id="stmatchchar"><title>matchChar</title>
@@ -4133,7 +4243,25 @@ object. See <link linkend="reqstr">Required String Values</link>.</para>
 <secondary>matchChar method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<programlisting>
+<![CDATA[
+>>-matchChar(n,chars)-------------------------><
+]]>
+</programlisting>
+
+<para>Returns .true ("1") if the character at position <emphasis role="italic">n</emphasis> matches any
+character of the string <emphasis role="italic">chars</emphasis>.  Returns .false ("0") if the character does not
+match any of the characters in the reference set.  The argmuent <emphasis role="italic">n</emphasis> must be
+a positive whole number less than or equal to the length of the target string.</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>matchChar method</secondary></indexterm>
+<programlisting>
+"a+b"~matchChar(2, "+-*/")           ->    1
+"a+b"~matchChar(1, "+-*/")           ->    0
+"Friday"~matchChar(3, "aeiou")       ->    1
+"FRIDAY"~matchChar(3, "aeiou")       ->    0
+</programlisting>
 </section>
 
 <section id="stmax"><title>max</title>
@@ -4729,7 +4857,30 @@ for information about the TRUNC built-in function.)</para>
 <secondary>upper method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<programlisting>
+<![CDATA[
+>>-upper(+---+--+---------+---)----------------------><
+         +-n-+  +-,length-+
+]]>
+</programlisting>
+
+<para>Returns a new string with the characters of the target string beginning with
+character <emphasis role="italic">n</emphasis> for <emphasis role="italic">length</emphasis>
+characters converted to uppercase.  If <emphasis role="italic">n</emphasis> is specified, it must
+be a positive whole number.  If <emphasis role="italic">n</emphasis> is not specified, the case
+conversion will start with the first character.  If <emphasis role="italic">length</emphasis>
+is specified, it must be a non-negative whole number.  If <emphasis role="italic">length</emphasis>
+the default is to convert the remainder of the string.</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>upper method</secondary></indexterm>
+<programlisting>
+"Albert Einstein"~upper      ->    "ALBERT EINSTEIN"
+"abcdef"~upper(4)            ->    "abcDEF"
+"abcdef"~upper(3,2)          ->    "abCDef"
+</programlisting>
+<para>(See <link linkend="lower">UPPER</link>
+for information about the UPPER built-in function.)</para>
 </section>
 
 <section id="stveri"><title>verify</title>

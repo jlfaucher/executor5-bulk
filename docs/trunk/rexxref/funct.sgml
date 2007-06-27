@@ -2960,6 +2960,43 @@ or the presence of data in a transient stream.</para></note>
 </section>
 
 
+<section id="lower"><title>LOWER</title>
+<indexterm><primary>LOWER function</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>functions</primary>
+<secondary>LOWER</secondary></indexterm>
+<indexterm><primary>built-in functions</primary>
+<secondary>LOWER</secondary></indexterm>
+<indexterm><primary>character</primary>
+<secondary>lowercasing using LOWER function</secondary></indexterm>
+<indexterm><primary>string</primary>
+<secondary>lowercasing using LOWER function</secondary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-lower(string-+---+--+---------+---)----------------------><
+                +-n-+  +-,length-+
+]]>
+</programlisting>
+
+<para>Returns a new string with the characters of <emphasis role="italic">string</emphasis> beginning with
+character <emphasis role="italic">n</emphasis> for <emphasis role="italic">length</emphasis>
+characters converted to lowercase.  If <emphasis role="italic">n</emphasis> is specified, it must
+be a positive whole number.  If <emphasis role="italic">n</emphasis> is not specified, the case
+conversion will start with the first character.  If <emphasis role="italic">length</emphasis>
+is specified, it must be a non-negative whole number.  If <emphasis role="italic">length</emphasis>
+the default is to convert the remainder of the string.</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>lower function</secondary></indexterm>
+<programlisting>
+lower("Albert Einstein")      ->    "albert einstein"
+lower("ABCDEF", 4)            ->    "ABCdef"
+lower("ABCDEF", 3, 2)         ->    "ABcdEF"
+</programlisting>
+</section>
+
+
 <section id="max"><title>MAX (Maximum)</title>
 <indexterm><primary>MAX function</primary>
 <secondary>description</secondary></indexterm>
@@ -4705,6 +4742,43 @@ TRUNC(127,2)          ->    127.00
 current setting of NUMERIC DIGITS, if necessary, before the function processes
 it.
 </para></note>
+</section>
+
+
+<section id="upper"><title>UPPER</title>
+<indexterm><primary>UPPER function</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>functions</primary>
+<secondary>UPPER</secondary></indexterm>
+<indexterm><primary>built-in functions</primary>
+<secondary>UPPER</secondary></indexterm>
+<indexterm><primary>character</primary>
+<secondary>uppercasing using UPPER function</secondary></indexterm>
+<indexterm><primary>string</primary>
+<secondary>uppercasing using UPPER function</secondary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-upper(string-+---+--+---------+---)----------------------><
+                +-n-+  +-,length-+
+]]>
+</programlisting>
+
+<para>Returns a new string with the characters of <emphasis role="italic">string</emphasis> beginning with
+character <emphasis role="italic">n</emphasis> for <emphasis role="italic">length</emphasis>
+characters converted to uppercase.  If <emphasis role="italic">n</emphasis> is specified, it must
+be a positive whole number.  If <emphasis role="italic">n</emphasis> is not specified, the case
+conversion will start with the first character.  If <emphasis role="italic">length</emphasis>
+is specified, it must be a non-negative whole number.  If <emphasis role="italic">length</emphasis>
+the default is to convert the remainder of the string.</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>upper function</secondary></indexterm>
+<programlisting>
+upper("Albert Einstein")      ->    "ALBERT EINSTEIN"
+upper("abcdef", 4)            ->    "abcDEF"
+upper("abcdef", 3, 2)         ->    "abCDef"
+</programlisting>
 </section>
 
 
