@@ -4396,348 +4396,65 @@ values in the receiver collection.</para>
 </section>
 
 <section id="mapclasses"><title>The Set Collection Classes</title>
-<para>The following section describes the builtin set classes supplied
+<figure><title>The Set Collection class</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxSetCollectionClass.png" align="left" scale="80">
+</imageobject>
+</mediaobject>
+</figure>
+<para>The following section describes the builtin Set classes supplied
 with ooRexx.</para>
-
-<section id="setcl"><title>The Set Class</title>
-<indexterm><primary>Set class</primary></indexterm>
-<indexterm><primary>class</primary>
-<secondary>Set class</secondary></indexterm>
-<para>A set is a collection containing the member items
-where the index is the same as the item. Any object can be placed in a set.
- There can be only one occurrence of any object in a set. </para>
-<para>The Set class is a subclass of the Table class. In addition to its own
-methods, it inherits the methods of the Object class (see
-<link linkend="objc">The Object Class</link>)
-and the Table class.</para>
-<para><emphasis role="bold">Methods the Set class defines:</emphasis></para>
-<simplelist>
-<member>NEW (Class method)</member>
-<member>OF (Class method)</member>
-<member>[]</member>
-<member>[]=</member>
-<member>AT</member>
-<member>HASINDEX</member>
-<member>ITEMS</member>
-<member>MAKEARRAY</member>
-<member>PUT</member>
-<member>REMOVE</member>
-<member>SUPPLIER</member>
-</simplelist>
-<para><emphasis role="bold">Set-operator methods inherited from the Table class:</emphasis>
-</para>
-<simplelist>
-<member>DIFFERENCE</member>
-<member>INTERSECTION</member>
-<member>SUBSET</member>
-<member>UNION</member>
-<member>XOR</member>
-</simplelist>
-<para><emphasis role="bold">Methods inherited from the Object class:</emphasis>
-</para>
-<simplelist>
-<member>Operator methods: =, ==, \=, &gt;&lt;, &lt;&gt;, \==</member>
-<member>CLASS</member>
-<member>COPY</member>
-<member>DEFAULTNAME</member>
-<member>HASMETHOD</member>
-<member>INIT</member>
-<member>OBJECTNAME</member>
-<member>OBJECTNAME=</member>
-<member>REQUEST</member>
-<member>RUN</member>
-<member>SETMETHOD</member>
-<member>START</member>
-<member>STRING</member>
-<member>UNSETMETHOD</member>
-</simplelist>
-
-<note><title>Note</title>
-<para>The Set class also has available class methods that its metaclass,
-the Class class, defines.</para></note>
-
-<section id="setnew"><title>NEW (Class Method)</title>
-<indexterm><primary>NEW method</primary>
-<secondary>of Set class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>NEW method</secondary>
-<tertiary>of Set class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-NEW---------------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns an empty Set object.</para>
-</section>
-
-<section id="setof"><title>OF (Class Method)</title>
-<indexterm><primary>OF method</primary>
-<secondary>of Set class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>OF method</secondary>
-<tertiary>of Set class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
-       +-,----+
-       V      |
->>-OF(---item-+-)----------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns a newly created set containing the specified
-<emphasis role="italic">item</emphasis> objects.</para>
-</section>
-
-<section id="sebrak"><title>[]</title>
-<indexterm><primary>[] method</primary>
-<secondary>of Set class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>[] method</secondary>
-<tertiary>of Set class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-[index]-----------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns the same item as the AT method. See
-<link linkend="seat">AT</link>.</para>
-</section>
-
-<section id="selbe"><title>[]=</title>
-<indexterm><primary>[]= method</primary>
-<secondary>of Set class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>[]= method</secondary>
-<tertiary>of Set class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-[index]=item------------------------------------------------><
-]]>
-</programlisting>
-
-<para>This method is the same as the PUT method. See
-<link linkend="seput">PUT</link>.</para>
-</section>
-
-<section id="seat"><title>AT</title>
-<indexterm><primary>AT method</primary>
-<secondary>of Set class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>AT method</secondary>
-<tertiary>of Set class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-AT(index)---------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns the item associated with index
-<emphasis role="italic">index</emphasis>. If the collection
-has no item associated with <emphasis role="italic">index</emphasis>,
-this method returns the NIL object.</para>
-</section>
-
-<section id="sehasi"><title>HASINDEX</title>
-<indexterm><primary>HASINDEX method</primary>
-<secondary>of Set class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>HASINDEX method</secondary>
-<tertiary>of Set class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-HASINDEX(index)---------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns <computeroutput>1</computeroutput> (true) if the collection
-contains any item associated with index
-<emphasis role="italic">index</emphasis>, or <computeroutput>0</computeroutput>
-(false).</para>
-</section>
-
-<section id="seitms"><title>ITEMS</title>
-<indexterm><primary>ITEMS method</primary>
-<secondary>of Set class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>ITEMS method</secondary>
-<tertiary>of Set class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-ITEMS-------------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns the number of items in the collection.</para>
-</section>
-
-<section id="semaka"><title>MAKEARRAY</title>
-<indexterm><primary>MAKEARRAY method</primary>
-<secondary>of Set class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>MAKEARRAY method</secondary>
-<tertiary>of Set class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-MAKEARRAY---------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns a single-index array containing the index objects. The array
-indexes range from <computeroutput>1</computeroutput> to the number of items.
-The collection items appear in the array in an unspecified order.
-(The program should not rely on any order.)</para>
-</section>
-
-<section id="seput"><title>PUT</title>
-<indexterm><primary>PUT method</primary>
-<secondary>of Set class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>PUT method</secondary>
-<tertiary>of Set class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-PUT(item-+--------+-)---------------------------------------><
-            +-,index-+
-]]>
-</programlisting>
-
-<para>Makes the object <emphasis role="italic">item</emphasis> a member item of
-the collection and associates it with index
-<emphasis role="italic">index</emphasis>. If you specify
-<emphasis role="italic">index</emphasis>, it must be the
-same as <emphasis role="italic">item</emphasis>.</para>
-</section>
-
-<section id="seremo"><title>REMOVE</title>
-<indexterm><primary>REMOVE method</primary>
-<secondary>of Set class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>REMOVE method</secondary>
-<tertiary>of Set class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-REMOVE(index)-----------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns and removes from a collection the member item with index
-<emphasis role="italic">index</emphasis>. If no item has index
-<emphasis role="italic">index</emphasis>, this method returns
-the NIL object and removes no item.</para>
-</section>
-
-<section id="sesupp"><title>SUPPLIER</title>
-<indexterm><primary>SUPPLIER method</primary>
-<secondary>of Set class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>SUPPLIER method</secondary>
-<tertiary>of Set class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-SUPPLIER----------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns a supplier object for the collection. After you have obtained a
-supplier, you can send it messages (see
-<link linkend="supp">The Supplier Class</link>) to enumerate
-all the items that were in the collection at the time of the supplier's
-creation. The supplier enumerates the items in an unspecified order. (The
-program should not rely on any order.)</para>
-</section>
-</section>
 
 <section id="clbag"><title>The Bag Class</title>
 <indexterm><primary>Bag class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>Bag class</secondary></indexterm>
+<figure><title>The Bag class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxBagClass.png" align="left" scale="80">
+</imageobject>
+</mediaobject>
+</figure>
+<note><title>Note</title>
+<para>The Bag class also has available class methods that its metaclass,
+the Class class, defines.</para></note>
+
 <para>A bag is a collection that restricts the elements
 to having an item that is the same as the index. Any object can be placed
 in a bag, and the same object can be placed in a bag several times.</para>
 <para>The Bag class is a subclass of the Relation class. In addition to its own
 methods, it inherits the methods of the Object class and the Relation class.</para>
-<para><emphasis role="bold">Methods the Bag class defines:</emphasis></para>
-<simplelist>
-<member>NEW (Class method)</member>
-<member>OF (Class method)</member>
-<member>[]</member>
-<member>[]= (Overrides Relation class method)</member>
-<member>HASINDEX</member>
-<member>MAKEARRAY</member>
-<member>PUT (Overrides Relation class method)</member>
-<member>SUPPLIER</member>
-</simplelist>
-<para><emphasis role="bold">Methods inherited from the Relation class:</emphasis>
-</para>
-<simplelist>
-<member>ALLAT</member>
-<member>ALLINDEX</member>
-<member>AT</member>
-<member>HASITEM</member>
-<member>INDEX</member>
-<member>ITEMS</member>
-<member>REMOVE</member>
-<member>REMOVEITEM</member>
-</simplelist>
-<para><emphasis role="bold">Set-operator methods inherited from the Relation class:</emphasis>
-</para>
-<simplelist>
-<member>DIFFERENCE</member>
-<member>INTERSECTION</member>
-<member>SUBSET</member>
-<member>UNION</member>
-<member>XOR</member>
-</simplelist>
-<para><emphasis role="bold">Methods inherited from the Object class:</emphasis>
-</para>
-<simplelist>
-<member>Operator methods: =, ==, \=, >&lt;, &lt;&gt;, \==</member>
-<member>CLASS</member>
-<member>COPY</member>
-<member>DEFAULTNAME</member>
-<member>HASMETHOD</member>
-<member>OBJECTNAME</member>
-<member>OBJECTNAME=</member>
-<member>REQUEST</member>
-<member>RUN</member>
-<member>SETMETHOD</member>
-<member>START</member>
-<member>STRING</member>
-<member>UNSETMETHOD</member>
-</simplelist>
 
-<note><title>Note</title>
-<para>The Bag class also has available class methods that its metaclass,
-the Class class, defines.</para></note>
-
-<section id="banew"><title>NEW (Class Method)</title>
-<indexterm><primary>NEW method</primary>
+<section id="banew"><title>new (Class Method)</title>
+<indexterm><primary>new method</primary>
 <secondary>of Bag class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>NEW method</secondary>
+<secondary>new method</secondary>
 <tertiary>of Bag class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-NEW---------------------------------------------------------><
+>>-new---------------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Returns an empty Bag object.</para>
 </section>
 
-<section id="baof"><title>OF (Class Method)</title>
-<indexterm><primary>OF method</primary>
+<section id="baof"><title>of (Class Method)</title>
+<indexterm><primary>of method</primary>
 <secondary>of Bag class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>OF method</secondary>
+<secondary>of method</secondary>
 <tertiary>of Bag class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
        +-,----+
        V      |
->>-OF(---item-+-)----------------------------------------------><
+>>-of(---item-+-)----------------------------------------------><
 ]]>
 </programlisting>
 
@@ -4757,8 +4474,9 @@ the Class class, defines.</para></note>
 ]]>
 </programlisting>
 
-<para>Returns the same value as the AT method in the Relation class. See
-<link linkend="reat">AT</link>.</para>
+<para>Returns the same value as the 
+<emphasis role="bold">at</emphasis> method in the Relation class. See
+<link linkend="reat">at</link>.</para>
 </section>
 
 <section id="balbe"><title>[]=</title>
@@ -4773,19 +4491,30 @@ the Class class, defines.</para></note>
 ]]>
 </programlisting>
 
-<para>This method is the same as the PUT method. See
-<link linkend="baput">PUT</link>.</para>
+<para>This method is the same as the 
+<emphasis role="bold">put</emphasis> method. See
+<link linkend="baput">put</link>.</para>
 </section>
 
-<section id="bahasi"><title>HASINDEX</title>
-<indexterm><primary>HASINDEX method</primary>
+<section id="bagdiff"<title>difference</title>
+<indexterm><primary>difference method</primary>
 <secondary>of Bag class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>HASINDEX method</secondary>
+<secondary>difference method</secondary>
+<tertiary>of Bag class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="bahasi"><title>hasIndex</title>
+<indexterm><primary>hasIndex method</primary>
+<secondary>of Bag class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>hasIndex method</secondary>
 <tertiary>of Bag class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-HASINDEX(index)---------------------------------------------><
+>>-hasIndex(index)---------------------------------------------><
 ]]>
 </programlisting>
 
@@ -4794,15 +4523,25 @@ contains any item associated with index <emphasis role="italic">index</emphasis>
 or <computeroutput>0</computeroutput> (false).</para>
 </section>
 
-<section id="bamaka"><title>MAKEARRAY</title>
-<indexterm><primary>MAKEARRAY method</primary>
+<section id="bagintersect"<title>intersection</title>
+<indexterm><primary>intersection method</primary>
 <secondary>of Bag class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>MAKEARRAY method</secondary>
+<secondary>intersection method</secondary>
+<tertiary>of Bag class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="bamaka"><title>makeArray</title>
+<indexterm><primary>makeArray method</primary>
+<secondary>of Bag class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>makeArray method</secondary>
 <tertiary>of Bag class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-MAKEARRAY---------------------------------------------------><
+>>-makeArray---------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -4812,15 +4551,15 @@ The collection items appear in the array in an unspecified order. (The program
 should not rely on any order.)</para>
 </section>
 
-<section id="baput"><title>PUT</title>
-<indexterm><primary>PUT method</primary>
+<section id="baput"><title>put</title>
+<indexterm><primary>put method</primary>
 <secondary>of Bag class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>PUT method</secondary>
+<secondary>put method</secondary>
 <tertiary>of Bag class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-PUT(item-+--------+-)---------------------------------------><
+>>-put(item-+--------+-)---------------------------------------><
             +-,index-+
 ]]>
 </programlisting>
@@ -4832,15 +4571,35 @@ the collection and associates it with index
 same as <emphasis role="italic">item</emphasis>.</para>
 </section>
 
-<section id="basupp"><title>SUPPLIER</title>
-<indexterm><primary>SUPPLIER method</primary>
+<section id="bagputall"<title>putAll</title>
+<indexterm><primary>putAll method</primary>
 <secondary>of Bag class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>SUPPLIER method</secondary>
+<secondary>putAll method</secondary>
+<tertiary>of Bag class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="bagsubset"<title>subset</title>
+<indexterm><primary>subset method</primary>
+<secondary>of Bag class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>subset method</secondary>
+<tertiary>of Bag class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="basupp"><title>supplier</title>
+<indexterm><primary>supplier method</primary>
+<secondary>of Bag class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>supplier method</secondary>
 <tertiary>of Bag class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-SUPPLIER----------------------------------------------------><
+>>-supplier----------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -4850,6 +4609,26 @@ supplier, you can send it messages (see
 all the items that were in the collection at the time of the supplier's
 creation. The supplier enumerates the items in an unspecified order. (The
 program should not rely on any order.)</para>
+</section>
+
+<section id="bagunion"<title>union</title>
+<indexterm><primary>union method</primary>
+<secondary>of Bag class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>union method</secondary>
+<tertiary>of Bag class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="bagxor"<title>xor</title>
+<indexterm><primary>xor method</primary>
+<secondary>of Bag class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>xor method</secondary>
+<tertiary>of Bag class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
 </section>
 
 <section id="bagex"><title>Examples</title>
@@ -4864,6 +4643,275 @@ fruit~remove("Apple")    /* Remove one of the apples. */
 fruit~~put("Banana")~put("Orange") /* Add a couple.   */
 say fruit~items          /* How many pieces? (5)      */
 </programlisting>
+</section>
+</section>
+
+<section id="setcl"><title>The Set Class</title>
+<indexterm><primary>Set class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>Set class</secondary></indexterm>
+<figure><title>The Set class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxSetClass.png" align="left" scale="80">
+</imageobject>
+</mediaobject>
+</figure>
+<note><title>Note</title>
+<para>The Set class also has available class methods that its metaclass,
+the Class class, defines.</para></note>
+
+<para>A set is a collection containing the member items
+where the index is the same as the item. Any object can be placed in a set.
+ There can be only one occurrence of any object in a set. </para>
+<para>The Set class is a subclass of the Table class. In addition to its own
+methods, it inherits the methods of the Object class (see
+<link linkend="objc">The Object Class</link>)
+and the Table class.</para>
+
+<section id="setnew"><title>new (Class Method)</title>
+<indexterm><primary>new method</primary>
+<secondary>of Set class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>new method</secondary>
+<tertiary>of Set class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-new---------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns an empty Set object.</para>
+</section>
+
+<section id="setof"><title>of (Class Method)</title>
+<indexterm><primary>of method</primary>
+<secondary>of Set class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>of method</secondary>
+<tertiary>of Set class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+       +-,----+
+       V      |
+>>-of(---item-+-)----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a newly created set containing the specified
+<emphasis role="italic">item</emphasis> objects.</para>
+</section>
+
+<section id="sebrak"><title>[]</title>
+<indexterm><primary>[] method</primary>
+<secondary>of Set class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>[] method</secondary>
+<tertiary>of Set class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-[index]-----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the same item as the 
+<emphasis role="bold">at</emphasis> method. See
+<link linkend="seat">at</link>.</para>
+</section>
+
+<section id="selbe"><title>[]=</title>
+<indexterm><primary>[]= method</primary>
+<secondary>of Set class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>[]= method</secondary>
+<tertiary>of Set class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-[index]=item------------------------------------------------><
+]]>
+</programlisting>
+
+<para>This method is the same as the 
+<emphasis role="bold">put</emphasis> method. See
+<link linkend="seput">put</link>.</para>
+</section>
+
+<section id="seat"><title>at</title>
+<indexterm><primary>at method</primary>
+<secondary>of Set class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>at method</secondary>
+<tertiary>of Set class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-at(index)---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the item associated with index
+<emphasis role="italic">index</emphasis>. If the collection
+has no item associated with <emphasis role="italic">index</emphasis>,
+this method returns the Nil object.</para>
+</section>
+
+<section id="sehasi"><title>hasIndex</title>
+<indexterm><primary>hasIndex method</primary>
+<secondary>of Set class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>hasIndex method</secondary>
+<tertiary>of Set class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-hasIndex(index)---------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>1</computeroutput> (true) if the collection
+contains any item associated with index
+<emphasis role="italic">index</emphasis>, or <computeroutput>0</computeroutput>
+(false).</para>
+</section>
+
+<section id="seitms"><title>items</title>
+<indexterm><primary>items method</primary>
+<secondary>of Set class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>items method</secondary>
+<tertiary>of Set class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-items-------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the number of items in the collection.</para>
+</section>
+
+<section id="setintersect"<title>intersection</title>
+<indexterm><primary>intersection method</primary>
+<secondary>of Set class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>intersection method</secondary>
+<tertiary>of Set class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="semaka"><title>makeArray</title>
+<indexterm><primary>makeArray method</primary>
+<secondary>of Set class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>makeArray method</secondary>
+<tertiary>of Set class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-makeArray---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a single-index array containing the index objects. The array
+indexes range from <computeroutput>1</computeroutput> to the number of items.
+The collection items appear in the array in an unspecified order.
+(The program should not rely on any order.)</para>
+</section>
+
+<section id="seput"><title>put</title>
+<indexterm><primary>put method</primary>
+<secondary>of Set class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>put method</secondary>
+<tertiary>of Set class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-put(item-+--------+-)---------------------------------------><
+            +-,index-+
+]]>
+</programlisting>
+
+<para>Makes the object <emphasis role="italic">item</emphasis> a member item of
+the collection and associates it with index
+<emphasis role="italic">index</emphasis>. If you specify
+<emphasis role="italic">index</emphasis>, it must be the
+same as <emphasis role="italic">item</emphasis>.</para>
+</section>
+
+<section id="setputall"<title>putAll</title>
+<indexterm><primary>putAll method</primary>
+<secondary>of Set class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>putAll method</secondary>
+<tertiary>of Set class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="seremo"><title>remove</title>
+<indexterm><primary>remove method</primary>
+<secondary>of Set class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>remove method</secondary>
+<tertiary>of Set class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-remove(index)-----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns and removes from a collection the member item with index
+<emphasis role="italic">index</emphasis>. If no item has index
+<emphasis role="italic">index</emphasis>, this method returns
+the Nil object and removes no item.</para>
+</section>
+
+<section id="setsubset"<title>subset</title>
+<indexterm><primary>putAll method</primary>
+<secondary>of Set class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>subset method</secondary>
+<tertiary>of Set class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="sesupp"><title>supplier</title>
+<indexterm><primary>supplier method</primary>
+<secondary>of Set class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>supplier method</secondary>
+<tertiary>of Set class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-supplier----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a supplier object for the collection. After you have obtained a
+supplier, you can send it messages (see
+<link linkend="supp">The Supplier Class</link>) to enumerate
+all the items that were in the collection at the time of the supplier's
+creation. The supplier enumerates the items in an unspecified order. (The
+program should not rely on any order.)</para>
+</section>
+
+<section id="setunion"<title>union</title>
+<indexterm><primary>union method</primary>
+<secondary>of Set class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>union method</secondary>
+<tertiary>of Set class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="setxor"<title>xor</title>
+<indexterm><primary>xor method</primary>
+<secondary>of Set class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>xor method</secondary>
+<tertiary>of Set class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
 </section>
 </section>
 
