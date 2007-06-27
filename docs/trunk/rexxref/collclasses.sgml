@@ -3968,7 +3968,7 @@ forwarded to the current stem default value.</para>
 <indexterm><primary>union method</primary>
 <secondary>of Stem class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>unionier method</secondary>
+<secondary>union method</secondary>
 <tertiary>of Stem class</tertiary></indexterm>
 
 <para>!!!!!!!! Text to be added later !!!!!!!!!</para>
@@ -4007,63 +4007,32 @@ messages sent to a stem collection. For additional information, see
 <indexterm><primary>Table class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>Table class</secondary></indexterm>
-<para>A table is a collection with indexes
-that can be any object the user supplies. In a table, each item is associated
-with a single index, and there can be only one item for each index (unlike
-a relation, which can contain more than one item with the same index).</para>
-<para><emphasis role="bold">Methods the Table class defines:</emphasis></para>
-<simplelist>
-<member>NEW (Class Method)</member>
-<member>[]</member>
-<member>[]=</member>
-<member>AT</member>
-<member>HASINDEX</member>
-<member>ITEMS</member>
-<member>MAKEARRAY</member>
-<member>PUT</member>
-<member>REMOVE</member>
-<member>SUPPLIER</member>
-</simplelist>
-<para><emphasis role="bold">Set-operator methods the Table class defines:</emphasis>
-</para>
-<simplelist>
-<member>DIFFERENCE</member>
-<member>INTERSECTION</member>
-<member>SUBSET</member>
-<member>UNION</member>
-<member>XOR</member>
-</simplelist>
-<para><emphasis role="bold">Methods inherited from the Object class:</emphasis>
-</para>
-<simplelist>
-<member>Operator methods: =, ==, \=, &gt;&lt;, &lt;&gt;, \==</member>
-<member>CLASS</member>
-<member>COPY</member>
-<member>DEFAULTNAME</member>
-<member>HASMETHOD</member>
-<member>OBJECTNAME</member>
-<member>OBJECTNAME=</member>
-<member>REQUEST</member>
-<member>RUN</member>
-<member>SETMETHOD</member>
-<member>START</member>
-<member>STRING</member>
-<member>UNSETMETHOD</member>
-</simplelist>
-
+<figure><title>The Table class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxTableClass.png" align="left" scale="80">
+</imageobject>
+</mediaobject>
+</figure>
 <note><title>Note</title>
 <para>The Table class also has available class methods that its
 metaclass, the Class class, defines.</para></note>
 
-<section id="tabnew"><title>NEW (Class Method)</title>
-<indexterm><primary>NEW method</primary>
+<para>A table is a collection with indexes
+that can be any object the user supplies. In a table, each item is associated
+with a single index, and there can be only one item for each index (unlike
+a relation, which can contain more than one item with the same index).</para>
+
+<section id="tabnew"><title>new (Class Method)</title>
+<indexterm><primary>new method</primary>
 <secondary>of Table class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>NEW method</secondary>
+<secondary>new method</secondary>
 <tertiary>of Table class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-NEW---------------------------------------------------------><
+>>-new---------------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -4082,8 +4051,9 @@ metaclass, the Class class, defines.</para></note>
 ]]>
 </programlisting>
 
-<para>Returns the same item as the AT method. See
-<link linkend="taat">AT</link>.</para>
+<para>Returns the same item as the 
+<emphasis role="bold">at</emphasis> method. See
+<link linkend="taat">at</link>.</para>
 </section>
 
 <section id="tabrae"><title>[]=</title>
@@ -4098,19 +4068,40 @@ metaclass, the Class class, defines.</para></note>
 ]]>
 </programlisting>
 
-<para>This method is the same as the PUT method. See
-<link linkend="taput">PUT</link>.</para>
+<para>This method is the same as the 
+<emphasis role="bold">put</emphasis> method. See
+<link linkend="taput">put</link>.</para>
 </section>
 
-<section id="taat"><title>AT</title>
-<indexterm><primary>AT method</primary>
+<section id="taballindexes"<title>allIndexes</title>
+<indexterm><primary>allIndexes method</primary>
 <secondary>of Table class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>AT method</secondary>
+<secondary>allIndexes method</secondary>
+<tertiary>of Table class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="taballitems"<title>allItems</title>
+<indexterm><primary>allItems method</primary>
+<secondary>of Table class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>allItems method</secondary>
+<tertiary>of Table class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="taat"><title>at</title>
+<indexterm><primary>at method</primary>
+<secondary>of Table class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>at method</secondary>
 <tertiary>of Table class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-AT(index)---------------------------------------------------><
+>>-at(index)---------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -4120,121 +4111,15 @@ has no item associated with <emphasis role="italic">index</emphasis>, this
 method returns the NIL object.</para>
 </section>
 
-<section id="tahasi"><title>HASINDEX</title>
-<indexterm><primary>HASINDEX method</primary>
+<section id="tadiff"><title>difference</title>
+<indexterm><primary>difference method</primary>
 <secondary>of Table class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>HASINDEX method</secondary>
+<secondary>difference method</secondary>
 <tertiary>of Table class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-HASINDEX(index)---------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns <computeroutput>1</computeroutput> (true) if the collection
-contains any item associated with index <emphasis role="italic">index</emphasis>,
-or <computeroutput>0</computeroutput> (false).</para>
-</section>
-
-<section id="taitms"><title>ITEMS</title>
-<indexterm><primary>ITEMS method</primary>
-<secondary>of Table class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>ITEMS method</secondary>
-<tertiary>of Table class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-ITEMS-------------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns the number of items in the collection.</para>
-</section>
-
-<section id="tamaka"><title>MAKEARRAY</title>
-<indexterm><primary>MAKEARRAY method</primary>
-<secondary>of Table class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>MAKEARRAY method</secondary>
-<tertiary>of Table class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-MAKEARRAY---------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns a single-index array containing the index objects. The array
-indexes range from <computeroutput>1</computeroutput> to the number of items.
-The collection items appear in the array in an unspecified order. (The program
-should not rely on any order.)</para>
-</section>
-
-<section id="taput"><title>PUT</title>
-<indexterm><primary>PUT method</primary>
-<secondary>of Table class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>PUT method</secondary>
-<tertiary>of Table class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-PUT(item,index)---------------------------------------------><
-]]>
-</programlisting>
-
-<para>Makes the object <emphasis role="italic">item</emphasis>
-a member item of the collection and associates it with index
-<emphasis role="italic">index</emphasis>. The new item replaces any existing
-items associated with index <emphasis role="italic">index</emphasis>.</para>
-</section>
-
-<section id="taremo"><title>REMOVE</title>
-<indexterm><primary>REMOVE method</primary>
-<secondary>of Table class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>REMOVE method</secondary>
-<tertiary>of Table class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-REMOVE(index)-----------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns and removes from a collection the member item with index
-<emphasis role="italic">index</emphasis>. If no item has index
-<emphasis role="italic">index</emphasis>, this method returns
-the NIL object and removes no item.</para>
-</section>
-
-<section id="tasupp"><title>SUPPLIER</title>
-<indexterm><primary>SUPPLIER method</primary>
-<secondary>of Table class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>SUPPLIER method</secondary>
-<tertiary>of Table class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-SUPPLIER----------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns a supplier object for the collection. After you have obtained a
-supplier, you can send it messages (see
-<link linkend="supp">The Supplier Class</link>) to enumerate
-all the items that were in the collection at the time of the supplier's
-creation. The supplier enumerates the items in an unspecified order. (The
-program should not rely on any order.)</para>
-</section>
-
-<section id="tadiff"><title>DIFFERENCE</title>
-<indexterm><primary>DIFFERENCE method</primary>
-<secondary>of Table class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>DIFFERENCE method</secondary>
-<tertiary>of Table class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-DIFFERENCE(argument)----------------------------------------><
+>>-difference(argument)----------------------------------------><
 ]]>
 </programlisting>
 
@@ -4247,15 +4132,62 @@ only those index-item pairs of the receiver whose indexes the
 values in the receiver collection.</para>
 </section>
 
-<section id="tainte"><title>INTERSECTION</title>
-<indexterm><primary>INTERSECTION method</primary>
+<section id="tabempty"<title>empty</title>
+<indexterm><primary>difference method</primary>
 <secondary>of Table class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>INTERSECTION method</secondary>
+<secondary>empty method</secondary>
+<tertiary>of Table class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="tahasi"><title>hasIndex</title>
+<indexterm><primary>hasIndex method</primary>
+<secondary>of Table class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>hasIndex method</secondary>
 <tertiary>of Table class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-INTERSECTION(argument)--------------------------------------><
+>>-hasIndex(index)---------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>1</computeroutput> (true) if the collection
+contains any item associated with index <emphasis role="italic">index</emphasis>,
+or <computeroutput>0</computeroutput> (false).</para>
+</section>
+
+<section id="tabhasItem"<title>hasItem</title>
+<indexterm><primary>hasItem method</primary>
+<secondary>of Table class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>hasItem method</secondary>
+<tertiary>of Table class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="tabindex"<title>index</title>
+<indexterm><primary>index method</primary>
+<secondary>of Table class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>index method</secondary>
+<tertiary>of Table class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="tainte"><title>intersection</title>
+<indexterm><primary>intersection method</primary>
+<secondary>of Table class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>intersection method</secondary>
+<tertiary>of Table class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-intersection(argument)--------------------------------------><
 ]]>
 </programlisting>
 
@@ -4268,15 +4200,114 @@ The <emphasis role="italic">argument</emphasis> must also allow all of the
 index values in the receiver collection.</para>
 </section>
 
-<section id="tasubs"><title>SUBSET</title>
-<indexterm><primary>SUBSET method</primary>
+<section id="tabisempty"<title>isEmpty</title>
+<indexterm><primary>isEmpty method</primary>
 <secondary>of Table class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>SUBSET method</secondary>
+<secondary>isEmpty method</secondary>
+<tertiary>of Table class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="taitms"><title>items</title>
+<indexterm><primary>items method</primary>
+<secondary>of Table class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>items method</secondary>
 <tertiary>of Table class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-SUBSET(argument)--------------------------------------------><
+>>-items-------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the number of items in the collection.</para>
+</section>
+
+<section id="tamaka"><title>makeArray</title>
+<indexterm><primary>makeArray method</primary>
+<secondary>of Table class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>makeArray method</secondary>
+<tertiary>of Table class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-makeArray---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a single-index array containing the index objects. The array
+indexes range from <computeroutput>1</computeroutput> to the number of items.
+The collection items appear in the array in an unspecified order. (The program
+should not rely on any order.)</para>
+</section>
+
+<section id="taput"><title>put</title>
+<indexterm><primary>put method</primary>
+<secondary>of Table class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>put method</secondary>
+<tertiary>of Table class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-put(item,index)---------------------------------------------><
+]]>
+</programlisting>
+
+<para>Makes the object <emphasis role="italic">item</emphasis>
+a member item of the collection and associates it with index
+<emphasis role="italic">index</emphasis>. The new item replaces any existing
+items associated with index <emphasis role="italic">index</emphasis>.</para>
+</section>
+
+<section id="tabputall"<title>putAll</title>
+<indexterm><primary>putAll method</primary>
+<secondary>of Table class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>putAll method</secondary>
+<tertiary>of Table class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="taremo"><title>remove</title>
+<indexterm><primary>remove method</primary>
+<secondary>of Table class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>remove method</secondary>
+<tertiary>of Table class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-remove(index)-----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns and removes from a collection the member item with index
+<emphasis role="italic">index</emphasis>. If no item has index
+<emphasis role="italic">index</emphasis>, this method returns
+the Nil object and removes no item.</para>
+</section>
+
+<section id="tabremoveitem"<title>removeItem</title>
+<indexterm><primary>removeItem method</primary>
+<secondary>of Table class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>removeItem method</secondary>
+<tertiary>of Table class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="tasubs"><title>subset</title>
+<indexterm><primary>subset method</primary>
+<secondary>of Table class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>subset method</secondary>
+<tertiary>of Table class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-subset(argument)--------------------------------------------><
 ]]>
 </programlisting>
 
@@ -4290,15 +4321,35 @@ The <emphasis role="italic">argument</emphasis> must also allow all of the
 index values in the receiver collection.</para>
 </section>
 
-<section id="taunio"><title>UNION</title>
-<indexterm><primary>UNION method</primary>
+<section id="tasupp"><title>supplier</title>
+<indexterm><primary>supplier method</primary>
 <secondary>of Table class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>UNION method</secondary>
+<secondary>supplier method</secondary>
 <tertiary>of Table class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-UNION(argument)---------------------------------------------><
+>>-supplier----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a supplier object for the collection. After you have obtained a
+supplier, you can send it messages (see
+<link linkend="supp">The Supplier Class</link>) to enumerate
+all the items that were in the collection at the time of the supplier's
+creation. The supplier enumerates the items in an unspecified order. (The
+program should not rely on any order.)</para>
+</section>
+
+<section id="taunio"><title>union</title>
+<indexterm><primary>union method</primary>
+<secondary>of Table class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>union method</secondary>
+<tertiary>of Table class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-union(argument)---------------------------------------------><
 ]]>
 </programlisting>
 
@@ -4310,24 +4361,25 @@ the new collection only if there is no item with the same associated index
 in the receiver collection and the method has not already included an item
 with the same index. The order in which this method selects items in
 <emphasis role="italic">argument</emphasis> is unspecified. (The program should
-not rely on any order.) See also the UNION method of the Directory (see
-<link linkend="diunio">UNION</link>) and
-Relation (see <link linkend="reunio">UNION</link>) classes. The
+not rely on any order.) See also the 
+<emphasis role="bold">union</emphasis> method of the Directory (see
+<link linkend="diunio">union</link>) and
+Relation (see <link linkend="reunio">union</link>) classes. The
 <emphasis role="italic">other</emphasis> can be any object described in
 <link linkend="parmcoll">The Argument Collection Classes</link>. The
 <emphasis role="italic">argument</emphasis> must also
 allow all of the index values in the receiver collection.</para>
 </section>
 
-<section id="taxor"><title>XOR</title>
-<indexterm><primary>XOR method</primary>
+<section id="taxor"><title>xor</title>
+<indexterm><primary>xor method</primary>
 <secondary>of Table class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>XOR method</secondary>
+<secondary>xor method</secondary>
 <tertiary>of Table class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-XOR(argument)-----------------------------------------------><
+>>-xor(argument)-----------------------------------------------><
 ]]>
 </programlisting>
 

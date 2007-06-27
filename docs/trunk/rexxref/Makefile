@@ -96,6 +96,7 @@ IMAGE_FILES = ooRexxObjectClass.png \
               ooRexxStemClass.png \
               ooRexxMapCollectionClass.png \
               ooRexxRelationClass.png \
+              ooRexxTableClass.png \
               rxo90004.jpg \
 	      rxo90005.jpg \
 	      rxo90006.jpg \
