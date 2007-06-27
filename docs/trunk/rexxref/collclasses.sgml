@@ -3139,6 +3139,498 @@ its metaclass, the Class class, defines.</para></note>
 </section>
 </section>
 
+<section id="relati"><title>The Relation Class</title>
+<indexterm><primary>Relation class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>Relation class</secondary></indexterm>
+<figure><title>The Relation class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxRelationClass.png" align="left" scale="80">
+</imageobject>
+</mediaobject>
+</figure>
+<note><title>Note</title>
+<para>The Relation class also has available class methods that its
+metaclass, the Class class, defines.</para></note>
+
+<para>A relation is a collection with indexes that can
+be any objects the user supplies. In a relation, each item is associated with
+a single index, but there can be more than one item with the same index (unlike
+a table, which can contain only one item for any index).</para>
+
+<section id="relnew"><title>new (Class Method)</title>
+<indexterm><primary>new method</primary>
+<secondary>of Relation class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>new method</secondary>
+<tertiary>of Relation class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-new---------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns an empty Relation object.</para>
+</section>
+
+<section id="rebrak"><title>[]</title>
+<indexterm><primary>[] method</primary>
+<secondary>of Relation class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>[] method</secondary>
+<tertiary>of Relation class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-[index]-----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the same item as the 
+<emphasis role="bold">at</emphasis> method. See
+<link linkend="reat">at</link>.</para>
+</section>
+
+<section id="rebrae"><title>[]=</title>
+<indexterm><primary>[]= method</primary>
+<secondary>of Relation class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>[]= method</secondary>
+<tertiary>of Relation class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-[index]=item------------------------------------------------><
+]]>
+</programlisting>
+
+<para>This method is the same as the 
+<emphasis role="bold">put</emphasis> method. See
+<link linkend="reput">put</link>.</para>
+</section>
+
+<section id="realla"><title>allAt</title>
+<indexterm><primary>allAt method</primary>
+<secondary>of Relation class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>allAt method</secondary>
+<tertiary>of Relation class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-allAt(index)------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a single-index array containing all the items associated with
+index <emphasis role="italic">index</emphasis>. The indexes of the returned
+array range from <computeroutput>1</computeroutput> to the
+number of items. Items in the array appear in an unspecified order.</para>
+</section>
+
+<section id="realin"><title>allIndex</title>
+<indexterm><primary>allIndex method</primary>
+<secondary>of Relation class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>allIndex method</secondary>
+<tertiary>of Relation class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-allIndex(item)----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a single-index array containing all indexes for item
+<emphasis role="italic">item</emphasis>,
+in an unspecified order. (The program should not rely on any order.)</para>
+</section>
+
+<section id="realinxs"<title>allIndeses</title>
+<indexterm><primary>allIndexes method</primary>
+<secondary>of Relation class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>allIndexes method</secondary>
+<tertiary>of Relation class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="reallitems"<title>allItems</title>
+<indexterm><primary>allItems method</primary>
+<secondary>of Relation class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>allItems method</secondary>
+<tertiary>of Relation class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="reat"><title>at</title>
+<indexterm><primary>at method</primary>
+<secondary>of Relation class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>at method</secondary>
+<tertiary>of Relation class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-at(index)---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the item associated with index
+<emphasis role="italic">index</emphasis>. If the relation
+contains more than one item associated with index
+<emphasis role="italic">index</emphasis>, the item
+returned is unspecified. (The program should not rely on any particular item
+being returned.) If the relation has no item associated with index
+<emphasis role="italic">index</emphasis>, this method returns the Nil object.</para>
+</section>
+
+<section id="rediff"><title>difference</title>
+<indexterm><primary>differencemethod</primary>
+<secondary>of Relation class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>difference method</secondary>
+<tertiary>of Relation class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-difference(argument)----------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a new collection (of the same class as the receiver) containing
+only those items that the <emphasis role="italic">argument</emphasis>
+collection does not contain (with the same associated index). The
+<emphasis role="italic">argument</emphasis> can be any object described in
+<link linkend="parmcoll">The Argument Collection Classes</link>.</para>
+</section>
+
+<section id="reempty"<title>empty</title>
+<indexterm><primary>empty method</primary>
+<secondary>of Relation class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>empty method</secondary>
+<tertiary>of Relation class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="rehasi"><title>hasIndex</title>
+<indexterm><primary>hasIndex method</primary>
+<secondary>of Relation class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>hasIndex method</secondary>
+<tertiary>of Relation class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-hasIndex(index)---------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>1</computeroutput> (true) if the collection
+contains any item associated with index
+<emphasis role="italic">index</emphasis>, or <computeroutput>0</computeroutput>
+(false).</para>
+</section>
+
+<section id="hasite"><title>hasItem</title>
+<indexterm><primary>hasItem method</primary>
+<secondary>of Relation class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>hasItem method</secondary>
+<tertiary>of Relation class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-hasItem(item,index)-----------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>1</computeroutput> (true) if the relation contains the member item <emphasis role="italic">item</emphasis> (associated with index <emphasis role="italic">index</emphasis>, or <computeroutput>0</computeroutput> (false).</para>
+</section>
+
+<section id="reindx"><title>index</title>
+<indexterm><primary>index method</primary>
+<secondary>of Relation class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>index method</secondary>
+<tertiary>of Relation class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-index(item)-------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the index for item <emphasis role="italic">item</emphasis>.
+If there is more than one index associated with item
+<emphasis role="italic">item</emphasis>, the one this method returns is not
+defined.</para>
+</section>
+
+<section id="reinte"><title>intersection</title>
+<indexterm><primary>intersection method</primary>
+<secondary>of Relation class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>intersection method</secondary>
+<tertiary>of Relation class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-intersection(argument)--------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a new collection (of the same class as the receiver) containing
+only those items that are in both the receiver collection
+and the <emphasis role="italic">argument</emphasis> collection with the
+same associated index. The <emphasis role="italic">argument</emphasis>
+can be any object described in
+<link linkend="parmcoll">The Argument Collection Classes</link>.</para>
+</section>
+
+<section id="reisempty"<title>isEmpty</title>
+<indexterm><primary>isEmpty method</primary>
+<secondary>of Relation class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>isEmpty method</secondary>
+<tertiary>of Relation class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="reitms"><title>items</title>
+<indexterm><primary>items method</primary>
+<secondary>of Relation class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>items method</secondary>
+<tertiary>of Relation class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-items-+---------+-------------------------------------------><
+         +-(index)-+
+]]>
+</programlisting>
+
+<para>Returns the number of relation items with index
+<emphasis role="italic">index</emphasis>. If you
+specify no <emphasis role="italic">index</emphasis>, this method returns the
+total number of items associated with all indexes in the relation.</para>
+</section>
+
+<section id="remaka"><title>makeArray</title>
+<indexterm><primary>makeArray method</primary>
+<secondary>of Relation class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>makeArray method</secondary>
+<tertiary>of Relation class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-makeArray---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a single-index array containing the index objects. The array
+indexes range from <computeroutput>1</computeroutput> to the number of items.
+The collection items appear in the array in an unspecified order. (The program
+should not rely on any order.)</para>
+</section>
+
+<section id="reput"><title>put</title>
+<indexterm><primary>put method</primary>
+<secondary>of Relation class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>put method</secondary>
+<tertiary>of Relation class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-put(item,index)---------------------------------------------><
+]]>
+</programlisting>
+
+<para>Makes the object <emphasis role="italic">item</emphasis>
+a member item of the relation and associates it with index
+<emphasis role="italic">index</emphasis>. If the relation already contains
+any items with index
+<emphasis role="italic">index</emphasis>, this method adds a new member item
+<emphasis role="italic">item</emphasis> with
+the same index, without removing any existing member items.</para>
+</section>
+
+<section id="reputall"<title>putAll</title>
+<indexterm><primary>putAll method</primary>
+<secondary>of Relation class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>putAll method</secondary>
+<tertiary>of Relation class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="reremo"><title>remoce</title>
+<indexterm><primary>remove method</primary>
+<secondary>of Relation class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>remove method</secondary>
+<tertiary>of Relation class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-remove(index)-----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns and removes from a relation the member item with index
+<emphasis role="italic">index</emphasis>. If the relation contains more than
+one item associated with index <emphasis role="italic">index</emphasis>,
+the item returned and removed is unspecified. If no item has index
+<emphasis role="italic">index</emphasis>, this method returns the NIL object
+and removes nothing.</para>
+</section>
+
+<section id="reremi"><title>removeItem</title>
+<indexterm><primary>removeItem method</primary>
+<secondary>of Relation class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>removeItem method</secondary>
+<tertiary>of Relation class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-removeItem(item,index)--------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns and removes from a relation the member item
+<emphasis role="italic">item</emphasis> (associated with index
+<emphasis role="italic">index</emphasis>). If
+<emphasis role="italic">value</emphasis> is not a member item associated
+with index <emphasis role="italic">index</emphasis>, this method returns
+the Nil object and removes no item. If
+<emphasis role="italic">item</emphasis> is the only member with
+<emphasis role="italic">index</emphasis>) then the
+<emphasis role="italic">index</emphasis>) is also removed from the Relation.
+</para>
+</section>
+
+<section id="resubs"><title>subset</title>
+<indexterm><primary>subset method</primary>
+<secondary>of Relation class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>subset method</secondary>
+<tertiary>of Relation class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-subset(argument)--------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>1</computeroutput> (true) if all items in the
+receiver collection are also contained in the
+<emphasis role="italic">argument</emphasis> collection with the same associated
+index; returns <computeroutput>0</computeroutput> (false) otherwise. The
+<emphasis role="italic">argument</emphasis> can be any object described in
+<link linkend="parmcoll">The Argument Collection Classes</link>.</para>
+</section>
+
+<section id="resupp"><title>supplier</title>
+<indexterm><primary>supplier method</primary>
+<secondary>of Relation class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>supplier method</secondary>
+<tertiary>of Relation class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-supplier--+---------+---------------------------------------><
+             +-(index)-+
+]]>
+</programlisting>
+
+<para>Returns a supplier object for the collection. After you have obtained a
+supplier, you can send it messages (see
+<link linkend="supp">The Supplier Class</link>) to enumerate
+all the items that were in the collection at the time of the supplier's
+creation. The supplier enumerates the items in an unspecified order. (The
+program should not rely on any order.) If you specify
+<emphasis role="italic">index</emphasis>, the
+supplier enumerates all of the items in the relation with the specified index.
+</para>
+</section>
+
+<section id="reunio"><title>union</title>
+<indexterm><primary>union method</primary>
+<secondary>of Relation class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>union method</secondary>
+<tertiary>of Relation class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-union(argument)---------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a new collection containing all items from the receiver collection
+and the <emphasis role="italic">argument</emphasis> collection. The
+<emphasis role="italic">argument</emphasis> can be any object
+described in <link linkend="parmcoll">The Argument Collection Classes</link>.
+</para>
+</section>
+
+<section id="rexor"><title>xor</title>
+<indexterm><primary>xor method</primary>
+<secondary>of Relation class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>xor method</secondary>
+<tertiary>of Relation class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-xor(argument)-----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a new collection of the same class as the receiver that contains
+all items from the receiver collection and the
+<emphasis role="italic">argument</emphasis> collection.
+All index-item pairs that appear in both collections are removed. The
+<emphasis role="italic">argument</emphasis> can be any object described in
+<link linkend="parmcoll">The Argument Collection Classes</link>.</para>
+</section>
+
+<section id="relex"><title>Examples</title>
+<indexterm><primary>examples</primary>
+<secondary>of Relation class</secondary></indexterm>
+<programlisting>
+/* Use a relation to express parent-child relationships */
+family = .relation~new
+family["Henry"] = "Peter"    /* Peter is Henry&apos;s child   */
+family["Peter"] = "Bridget"  /* Bridget is Peter&apos;s child */
+family["Henry"] = "Jane"     /* Jane is Henry&apos;s child    */
+
+/* Show all children of Henry recorded in the family relation */
+henrys_kids = family~allAt("Henry")
+Say "Here are all the listed children of Henry:"
+Do kid Over henrys_kids
+  Say " "kid
+End
+
+/* Show all parents of Bridget recorded in the family relation */
+bridgets_parents = family~allIndex("Bridget")
+Say "Here are all the listed parents of Bridget:"
+Do parent Over bridgets_parents
+  Say " "parent
+End
+
+/* Display all the grandparent relationships we know about. */
+checked_for_grandkids = .set~new         /* Records those we have checked      */
+Do grandparent Over family               /* Iterate for each index in family   */
+  If checked_for_grandkids~hasIndex(grandparent)
+    Then Iterate                         /* Already checked this one           */
+  kids = family~allat(grandparent)       /* Current grandparent&apos;s children     */
+  Do kid Over kids                       /* Iterate for each item in kids      */
+    grandkids = family~allAt(kid)        /* Current kid&apos;s children             */
+    Do grandkid Over grandkids           /* Iterate for each item in grandkids */
+      Say grandparent "has a grandchild named" grandkid"."
+    End
+  End
+  checked_for_grandkids~put(grandparent) /* Add to already-checked set         */
+End
+</programlisting>
+</section>
+
 <section id="stemcl"><title>The Stem Class</title>
 <indexterm><primary>Stem class</primary></indexterm>
 <indexterm><primary>class</primary>
@@ -3847,483 +4339,6 @@ all indexes that appear in both collections are removed. The
 <emphasis role="italic">argument</emphasis> must also allow all of the index
 values in the receiver collection.</para>
 </section>
-</section>
-
-<section id="relati"><title>The Relation Class</title>
-<indexterm><primary>Relation class</primary></indexterm>
-<indexterm><primary>class</primary>
-<secondary>Relation class</secondary></indexterm>
-<para>A relation is a collection with indexes that can
-be any objects the user supplies. In a relation, each item is associated with
-a single index, but there can be more than one item with the same index (unlike
-a table, which can contain only one item for any index).</para>
-<para><emphasis role="bold">Methods the Relation class defines:</emphasis></para>
-<simplelist>
-<member>NEW (Class Method))</member>
-<member>[]</member>
-<member>[]=</member>
-<member>ALLAT</member>
-<member>ALLINDEX</member>
-<member>AT</member>
-<member>HASINDEX</member>
-<member>HASITEM</member>
-<member>INDEX</member>
-<member>ITEMS</member>
-<member>MAKEARRAY</member>
-<member>PUT</member>
-<member>REMOVE</member>
-<member>REMOVEITEM</member>
-<member>SUPPLIER</member>
-</simplelist>
-<para><emphasis role="bold">Set-operator methods the Relation class defines:</emphasis>
-</para>
-<simplelist>
-<member>DIFFERENCE</member>
-<member>INTERSECTION</member>
-<member>SUBSET</member>
-<member>UNION</member>
-<member>XOR</member>
-</simplelist>
-<para><emphasis role="bold">Methods inherited from the Object class:</emphasis>
-</para>
-<simplelist>
-<member>Operator methods: =, ==, \=, &gt;&lt;, &lt;&gt;, \==</member>
-<member>CLASS</member>
-<member>COPY</member>
-<member>DEFAULTNAME</member>
-<member>HASMETHOD</member>
-<member>INIT</member>
-<member>OBJECTNAME</member>
-<member>OBJECTNAME=</member>
-<member>REQUEST</member>
-<member>RUN</member>
-<member>SETMETHOD</member>
-<member>START</member>
-<member>STRING</member>
-<member>UNSETMETHOD</member>
-</simplelist>
-
-<note><title>Note</title>
-<para>The Relation class also has available class methods that its
-metaclass, the Class class, defines.</para></note>
-
-<section id="relnew"><title>NEW (Class Method)</title>
-<indexterm><primary>NEW method</primary>
-<secondary>of Relation class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>NEW method</secondary>
-<tertiary>of Relation class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-NEW---------------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns an empty Relation object.</para>
-</section>
-
-<section id="rebrak"><title>[]</title>
-<indexterm><primary>[] method</primary>
-<secondary>of Relation class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>[] method</secondary>
-<tertiary>of Relation class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-[index]-----------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns the same item as the AT method. See
-<link linkend="reat">AT</link>.</para>
-</section>
-
-<section id="rebrae"><title>[]=</title>
-<indexterm><primary>[]= method</primary>
-<secondary>of Relation class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>[]= method</secondary>
-<tertiary>of Relation class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-[index]=item------------------------------------------------><
-]]>
-</programlisting>
-
-<para>This method is the same as the PUT method. See
-<link linkend="reput">PUT</link>.</para>
-</section>
-
-<section id="realla"><title>ALLAT</title>
-<indexterm><primary>ALLAT method</primary>
-<secondary>of Relation class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>ALLAT method</secondary>
-<tertiary>of Relation class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-ALLAT(index)------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns a single-index array containing all the items associated with
-index <emphasis role="italic">index</emphasis>. The indexes of the returned
-array range from <computeroutput>1</computeroutput> to the
-number of items. Items in the array appear in an unspecified order.</para>
-</section>
-
-<section id="realin"><title>ALLINDEX</title>
-<indexterm><primary>ALLINDEX method</primary>
-<secondary>of Relation class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>ALLINDEX method</secondary>
-<tertiary>of Relation class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-ALLINDEX(item)----------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns a single-index array containing all indexes for item
-<emphasis role="italic">item</emphasis>,
-in an unspecified order. (The program should not rely on any order.)</para>
-</section>
-
-<section id="reat"><title>AT</title>
-<indexterm><primary>AT method</primary>
-<secondary>of Relation class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>AT method</secondary>
-<tertiary>of Relation class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-AT(index)---------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns the item associated with index
-<emphasis role="italic">index</emphasis>. If the relation
-contains more than one item associated with index
-<emphasis role="italic">index</emphasis>, the item
-returned is unspecified. (The program should not rely on any particular item
-being returned.) If the relation has no item associated with index
-<emphasis role="italic">index</emphasis>, this method returns the NIL object.</para>
-</section>
-
-<section id="rehasi"><title>HASINDEX</title>
-<indexterm><primary>HASINDEX method</primary>
-<secondary>of Relation class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>HASINDEX method</secondary>
-<tertiary>of Relation class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-HASINDEX(index)---------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns <computeroutput>1</computeroutput> (true) if the collection
-contains any item associated with index
-<emphasis role="italic">index</emphasis>, or <computeroutput>0</computeroutput>
-(false).</para>
-</section>
-
-<section id="hasite"><title>HASITEM</title>
-<indexterm><primary>HASITEM method</primary>
-<secondary>of Relation class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>HASITEM method</secondary>
-<tertiary>of Relation class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-HASITEM(item,index)-----------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns <computeroutput>1</computeroutput> (true) if the relation contains the member item <emphasis role="italic">item</emphasis> (associated with index <emphasis role="italic">index</emphasis>, or <computeroutput>0</computeroutput> (false).</para>
-</section>
-
-<section id="reindx"><title>INDEX</title>
-<indexterm><primary>INDEX method</primary>
-<secondary>of Relation class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>INDEX method</secondary>
-<tertiary>of Relation class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-INDEX(item)-------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns the index for item <emphasis role="italic">item</emphasis>.
-If there is more than one index associated with item
-<emphasis role="italic">item</emphasis>, the one this method returns is not
-defined.</para>
-</section>
-
-<section id="reitms"><title>ITEMS</title>
-<indexterm><primary>ITEMS method</primary>
-<secondary>of Relation class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>ITEMS method</secondary>
-<tertiary>of Relation class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-ITEMS-+---------+-------------------------------------------><
-         +-(index)-+
-]]>
-</programlisting>
-
-<para>Returns the number of relation items with index
-<emphasis role="italic">index</emphasis>. If you
-specify no <emphasis role="italic">index</emphasis>, this method returns the
-total number of items associated with all indexes in the relation.</para>
-</section>
-
-<section id="remaka"><title>MAKEARRAY</title>
-<indexterm><primary>MAKEARRAY method</primary>
-<secondary>of Relation class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>MAKEARRAY method</secondary>
-<tertiary>of Relation class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-MAKEARRAY---------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns a single-index array containing the index objects. The array
-indexes range from <computeroutput>1</computeroutput> to the number of items.
-The collection items appear in the array in an unspecified order. (The program
-should not rely on any order.)</para>
-</section>
-
-<section id="reput"><title>PUT</title>
-<indexterm><primary>PUT method</primary>
-<secondary>of Relation class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>PUT method</secondary>
-<tertiary>of Relation class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-PUT(item,index)---------------------------------------------><
-]]>
-</programlisting>
-
-<para>Makes the object <emphasis role="italic">item</emphasis>
-a member item of the relation and associates it with index
-<emphasis role="italic">index</emphasis>. If the relation already contains
-any items with index
-<emphasis role="italic">index</emphasis>, this method adds a new member item
-<emphasis role="italic">item</emphasis> with
-the same index, without removing any existing member items.</para>
-</section>
-
-<section id="reremo"><title>REMOVE</title>
-<indexterm><primary>REMOVE method</primary>
-<secondary>of Relation class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>REMOVE method</secondary>
-<tertiary>of Relation class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-REMOVE(index)-----------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns and removes from a relation the member item with index
-<emphasis role="italic">index</emphasis>. If the relation contains more than
-one item associated with index <emphasis role="italic">index</emphasis>,
-the item returned and removed is unspecified. If no item has index
-<emphasis role="italic">index</emphasis>, this method returns the NIL object
-and removes nothing.</para>
-</section>
-
-<section id="reremi"><title>REMOVEITEM</title>
-<indexterm><primary>REMOVEITEM method</primary>
-<secondary>of Relation class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>REMOVEITEM method</secondary>
-<tertiary>of Relation class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-REMOVEITEM(item,index)--------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns and removes from a relation the member item
-<emphasis role="italic">item</emphasis> (associated with index
-<emphasis role="italic">index</emphasis>). If
-<emphasis role="italic">value</emphasis> is not a member item associated
-with index <emphasis role="italic">index</emphasis>, this method returns
-the NIL object and removes no item. If
-<emphasis role="italic">item</emphasis> is the only member with
-<emphasis role="italic">index</emphasis>) then the
-<emphasis role="italic">index</emphasis>) is also removed from the Relation.
-</para>
-</section>
-
-<section id="resupp"><title>SUPPLIER</title>
-<indexterm><primary>SUPPLIER method</primary>
-<secondary>of Relation class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>SUPPLIER method</secondary>
-<tertiary>of Relation class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-SUPPLIER--+---------+---------------------------------------><
-             +-(index)-+
-]]>
-</programlisting>
-
-<para>Returns a supplier object for the collection. After you have obtained a
-supplier, you can send it messages (see
-<link linkend="supp">The Supplier Class</link>) to enumerate
-all the items that were in the collection at the time of the supplier's
-creation. The supplier enumerates the items in an unspecified order. (The
-program should not rely on any order.) If you specify
-<emphasis role="italic">index</emphasis>, the
-supplier enumerates all of the items in the relation with the specified index.
-</para>
-</section>
-
-<section id="rediff"><title>DIFFERENCE</title>
-<indexterm><primary>DIFFERNCE method</primary>
-<secondary>of Relation class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>DIFFERENCE method</secondary>
-<tertiary>of Relation class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-DIFFERENCE(argument)----------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns a new collection (of the same class as the receiver) containing
-only those items that the <emphasis role="italic">argument</emphasis>
-collection does not contain (with the same associated index). The
-<emphasis role="italic">argument</emphasis> can be any object described in
-<link linkend="parmcoll">The Argument Collection Classes</link>.</para>
-</section>
-
-<section id="reinte"><title>INTERSECTION</title>
-<indexterm><primary>INTERSECTION method</primary>
-<secondary>of Relation class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>INTERSECTION method</secondary>
-<tertiary>of Relation class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-INTERSECTION(argument)--------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns a new collection (of the same class as the receiver) containing
-only those items that are in both the receiver collection
-and the <emphasis role="italic">argument</emphasis> collection with the
-same associated index. The <emphasis role="italic">argument</emphasis>
-can be any object described in
-<link linkend="parmcoll">The Argument Collection Classes</link>.</para>
-</section>
-
-<section id="resubs"><title>SUBSET</title>
-<indexterm><primary>SUBSET method</primary>
-<secondary>of Relation class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>SUBSET method</secondary>
-<tertiary>of Relation class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-SUBSET(argument)--------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns <computeroutput>1</computeroutput> (true) if all items in the
-receiver collection are also contained in the
-<emphasis role="italic">argument</emphasis> collection with the same associated
-index; returns <computeroutput>0</computeroutput> (false) otherwise. The
-<emphasis role="italic">argument</emphasis> can be any object described in
-<link linkend="parmcoll">The Argument Collection Classes</link>.</para>
-</section>
-
-<section id="reunio"><title>UNION</title>
-<indexterm><primary>UNION method</primary>
-<secondary>of Relation class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>UNION method</secondary>
-<tertiary>of Relation class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-UNION(argument)---------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns a new collection containing all items from the receiver collection
-and the <emphasis role="italic">argument</emphasis> collection. The
-<emphasis role="italic">argument</emphasis> can be any object
-described in <link linkend="parmcoll">The Argument Collection Classes</link>.
-</para>
-</section>
-
-<section id="rexor"><title>XOR</title>
-<indexterm><primary>XOR method</primary>
-<secondary>of Relation class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>XOR method</secondary>
-<tertiary>of Relation class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-XOR(argument)-----------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns a new collection of the same class as the receiver that contains
-all items from the receiver collection and the
-<emphasis role="italic">argument</emphasis> collection.
-All index-item pairs that appear in both collections are removed. The
-<emphasis role="italic">argument</emphasis> can be any object described in
-<link linkend="parmcoll">The Argument Collection Classes</link>.</para>
-</section>
-
-<section id="relex"><title>Examples</title>
-<indexterm><primary>examples</primary>
-<secondary>of Relation class</secondary></indexterm>
-<programlisting>
-/* Use a relation to express parent-child relationships */
-family = .relation~new
-family["Henry"] = "Peter"    /* Peter is Henry&apos;s child   */
-family["Peter"] = "Bridget"  /* Bridget is Peter&apos;s child */
-family["Henry"] = "Jane"     /* Jane is Henry&apos;s child    */
-
-/* Show all children of Henry recorded in the family relation */
-henrys_kids = family~allat("Henry")
-Say "Here are all the listed children of Henry:"
-Do kid Over henrys_kids
-  Say " "kid
-End
-
-/* Show all parents of Bridget recorded in the family relation */
-bridgets_parents = family~allindex("Bridget")
-Say "Here are all the listed parents of Bridget:"
-Do parent Over bridgets_parents
-  Say " "parent
-End
-
-/* Display all the grandparent relationships we know about. */
-checked_for_grandkids = .set~new         /* Records those we have checked      */
-Do grandparent Over family               /* Iterate for each index in family   */
-  If checked_for_grandkids~hasindex(grandparent)
-    Then Iterate                         /* Already checked this one           */
-  kids = family~allat(grandparent)       /* Current grandparent&apos;s children     */
-  Do kid Over kids                       /* Iterate for each item in kids      */
-    grandkids = family~allat(kid)        /* Current kid&apos;s children             */
-    Do grandkid Over grandkids           /* Iterate for each item in grandkids */
-      Say grandparent "has a grandchild named" grandkid"."
-    End
-  End
-  checked_for_grandkids~put(grandparent) /* Add to already-checked set         */
-End
-</programlisting>
 </section>
 </section>
 
