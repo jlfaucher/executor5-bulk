@@ -1333,84 +1333,56 @@ content: [3,2], content (LIFO): [2->3]
 <indexterm><primary>List class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>List class</secondary></indexterm>
-<para>A list is a non-sparse sequenced collection similar to the
-<link linkend="xarray">The Array Class</link> to which you
-can add new items at any position in the sequence. The collection supplies
-the list indexes at the time items are added with the INSERT method. The FIRST,
-LAST, and NEXT methods can also retrieve list indexes. Only indexes the list
-object generates are valid i.e. the list is never a sparse list and the list
-object may modify idexes for items in the list.</para>
-<para><emphasis role="bold">Methods the List class defines:</emphasis></para>
-<simplelist>
-<member>NEW (Class method)</member>
-<member>OF (Class method)</member>
-<member>[]</member>
-<member>[]=</member>
-<member>AT</member>
-<member>FIRST</member>
-<member>FIRSTITEM</member>
-<member>HASINDEX</member>
-<member>INSERT</member>
-<member>ITEMS</member>
-<member>LAST</member>
-<member>LASTITEM</member>
-<member>MAKEARRAY</member>
-<member>NEXT</member>
-<member>NEW (Overrides Object class method)</member>
-<member>PREVIOUS</member>
-<member>PUT</member>
-<member>REMOVE</member>
-<member>SECTION</member>
-<member>SUPPLIER</member>
-</simplelist>
-<para><emphasis role="bold">Methods inherited from the Object class:</emphasis>
-</para>
-<simplelist>
-<member>Operator methods: =, ==, \=, &gt;&lt;, &lt;&gt;, \==</member>
-<member>CLASS</member>
-<member>COPY</member>
-<member>DEFAULTNAME</member>
-<member>HASMETHOD</member>
-<member>OBJECTNAME</member>
-<member>OBJECTNAME=</member>
-<member>REQUEST</member>
-<member>RUN</member>
-<member>SETMETHOD</member>
-<member>START</member>
-<member>STRING</member>
-<member>UNSETMETHOD</member>
-</simplelist>
-
+<figure><title>The List class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxListClass.png" align="left" scale="80">
+</imageobject>
+</mediaobject>
+</figure>
 <note><title>Note</title>
 <para>The List class also has available class methods that its metaclass,
 the Class class, defines.</para></note>
 
-<section id="listnew"><title>NEW (Class Method)</title>
-<indexterm><primary>NEW method</primary>
+<para>A list is a non-sparse sequenced collection similar to the
+<link linkend="xarray">The Array Class</link> to which you
+can add new items at any position in the sequence. The collection supplies
+the list indexes at the time items are added with the 
+<emphasis role="bold">insert</emphasis> method. The 
+<emphasis role="bold">first</emphasis>,
+<emphasis role="bold">last</emphasis>, and 
+<emphasis role="bold">next</emphasis> methods can also retrieve list indexes. 
+Only indexes the list
+object generates are valid i.e. the list is never a sparse list and the list
+object may modify idexes for items in the list.</para>
+
+<section id="listnew"><title>new (Class Method)</title>
+<indexterm><primary>new method</primary>
 <secondary>of List class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>NEW method</secondary>
+<secondary>new method</secondary>
 <tertiary>of List class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-NEW---------------------------------------------------------><
+>>-new---------------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Returns a new empty List object.</para>
 </section>
 
-<section id="liof"><title>OF (Class Method)</title>
-<indexterm><primary>OF method</primary>
-<secondary>of LIST class</secondary></indexterm>
+<section id="liof"><title>of (Class Method)</title>
+<indexterm><primary>of method</primary>
+<secondary>of List class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>OF method</secondary>
+<secondary>of method</secondary>
 <tertiary>of List class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
        +-,----+
        V      |
->>-OF(---item-+-)----------------------------------------------><
+>>-of(---item-+-)----------------------------------------------><
 ]]>
 </programlisting>
 
@@ -1430,8 +1402,9 @@ the Class class, defines.</para></note>
 ]]>
 </programlisting>
 
-<para>Returns the same item as the AT method. See
-<link linkend="liat">AT</link>.</para>
+<para>Returns the same item as the 
+<emphasis role="bold">at</emphasis> method. See
+<link linkend="liat">at</link>.</para>
 </section>
 
 <section id="librae"><title>[]=</title>
@@ -1446,77 +1419,139 @@ the Class class, defines.</para></note>
 ]]>
 </programlisting>
 
-<para>This method is the same as the PUT method. See
-<link linkend="liput">PUT</link>.</para>
+<para>This method is the same as the 
+<emphasis role="bold">put</emphasis> method. See
+<link linkend="liput">put</link>.</para>
 </section>
 
-<section id="liat"><title>AT</title>
-<indexterm><primary>AT method</primary>
+<section id="liallindexes"><title>allIndexes</title>
+<indexterm><primary>allIndexes method</primary>
 <secondary>of List class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>AT method</secondary>
+<secondary>allIndexes method</secondary>
+<tertiary>of List class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="liallitems"><title>allItems</title>
+<indexterm><primary>allItems method</primary>
+<secondary>of List class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>allItems method</secondary>
+<tertiary>of List class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="liappend"><title>append</title>
+<indexterm><primary>append method</primary>
+<secondary>of List class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>append method</secondary>
+<tertiary>of List class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="liappendall"><title>appendAll</title>
+<indexterm><primary>appendAll method</primary>
+<secondary>of List class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>appendAll method</secondary>
+<tertiary>of List class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="liat"><title>at</title>
+<indexterm><primary>at method</primary>
+<secondary>of List class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>at method</secondary>
 <tertiary>of List class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-AT(index)---------------------------------------------------><
+>>-at(index)---------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Returns the item associated with index
 <emphasis role="italic">index</emphasis>. If the collection
 has no item associated with <emphasis role="italic">index</emphasis>,
-this method returns the NIL object.</para>
+this method returns the Nil object.</para>
 </section>
 
-<section id="lifirs"><title>FIRST</title>
-<indexterm><primary>FIRST method</primary>
+<section id="lidiff"><title>difference</title>
+<indexterm><primary>difference method</primary>
 <secondary>of List class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>FIRST method</secondary>
+<secondary>difference method</secondary>
+<tertiary>of List class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="liempty"><title>empty</title>
+<indexterm><primary>empty method</primary>
+<secondary>of List class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>empty method</secondary>
+<tertiary>of List class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="lifirs"><title>first</title>
+<indexterm><primary>first method</primary>
+<secondary>of List class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>first method</secondary>
 <tertiary>of List class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-FIRST-------------------------------------------------------><
+>>-first-------------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Returns the index of the first item in the list or the NIL object if the
-list is empty. The example for INSERT (see <link linkend="liinse">INSERT</link>) includes
-FIRST.</para>
+list is empty. The example for <emphasis role="bold">insert</emphasis> 
+(see <link linkend="liinse">insert</link>) includes
+<emphasis role="bold">first</emphasis>.</para>
 </section>
 
-<section id="lifiri"><title>FIRSTITEM</title>
-<indexterm><primary>FIRSTITEM method</primary>
+<section id="lifiri"><title>firstItem</title>
+<indexterm><primary>firstItem method</primary>
 <secondary>of List class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>FIRSTITEM method</secondary>
+<secondary>firstItem method</secondary>
 <tertiary>of List class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-FIRSTITEM---------------------------------------------------><
+>>-firstItem---------------------------------------------------><
 ]]>
 </programlisting>
 
 <para> </para>
-<para>Returns the first item in the list or the NIL object if the list is
+<para>Returns the first item in the list or the Nil object if the list is
 empty.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
 musketeers=.list~of(Porthos,Athos,Aramis) /* Creates list MUSKETEERS      */
-item=musketeers~firstitem                 /* Gives first item in list     */
+item=musketeers~firstItem                 /* Gives first item in list     */
                                           /* (Assigns "Porthos" to item)  */
 </programlisting>
 </section>
 
-<section id="lihasi"><title>HASINDEX</title>
-<indexterm><primary>HASINDEX method</primary>
+<section id="lihasi"><title>hasIndex</title>
+<indexterm><primary>hasIndex method</primary>
 <secondary>of List class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>HASINDEX method</secondary>
+<secondary>hasIndex method</secondary>
 <tertiary>of List class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-HASINDEX(index)---------------------------------------------><
+>>-hasIndex(index)---------------------------------------------><
 ]]>
 </programlisting>
 
@@ -1526,15 +1561,35 @@ contains any item associated with index
 <computeroutput>0</computeroutput> (false).</para>
 </section>
 
-<section id="liinse"><title>INSERT</title>
-<indexterm><primary>INSERT method</primary>
+<section id="lihasitem"><title>hasItem</title>
+<indexterm><primary>hasItem method</primary>
 <secondary>of List class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>INSERT method</secondary>
+<secondary>hasItem method</secondary>
+<tertiary>of List class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="liindex"><title>index</title>
+<indexterm><primary>index method</primary>
+<secondary>of List class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>index method</secondary>
+<tertiary>of List class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="liinse"><title>insert</title>
+<indexterm><primary>insert method</primary>
+<secondary>of List class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>insert method</secondary>
 <tertiary>of List class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-INSERT(item-+--------+-)------------------------------------><
+>>-insert(item-+--------+-)------------------------------------><
                +-,index-+
 ]]>
 </programlisting>
@@ -1543,7 +1598,7 @@ contains any item associated with index
 <emphasis role="italic">item</emphasis>, which is added to the list. The new
 item follows the existing item with index
 <emphasis role="italic">index</emphasis> in the list ordering.
-If <emphasis role="italic">index</emphasis> is the NIL object, the new item
+If <emphasis role="italic">index</emphasis> is the Nil object, the new item
 becomes the first item in the list. If you omit
 <emphasis role="italic">index</emphasis>, the new item becomes the last item in
 the list. </para>
@@ -1556,7 +1611,7 @@ not imply that the list order is maitained via an array-like index. The indexes
 refered to above are internal handles maintained by the interpreter and are not
 available to the user.</para></note>
 <indexterm><primary>examples</primary>
-<secondary>INSERT method</secondary>
+<secondary>insert method</secondary>
 <tertiary>of List class</tertiary></indexterm>
 <programlisting>
 musketeers=.list~of(Porthos,Athos,Aramis) /* Creates list MUSKETEERS        */
@@ -1584,46 +1639,66 @@ musketeers~insert("D&apos;Artagnan")      /* Adds D&apos;Artagnan after Aramis  
 </programlisting>
 </section>
 
-<section id="liitms"><title>ITEMS</title>
-<indexterm><primary>ITEMS method</primary>
+<section id="liintersect"><title>intersection</title>
+<indexterm><primary>intersection method</primary>
 <secondary>of List class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>ITEMS method</secondary>
+<secondary>intersection method</secondary>
+<tertiary>of List class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="liisempty"><title>isEmpty</title>
+<indexterm><primary>isEmpty method</primary>
+<secondary>of List class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>isEmpty method</secondary>
+<tertiary>of List class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="liitms"><title>items</title>
+<indexterm><primary>items method</primary>
+<secondary>of List class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>items method</secondary>
 <tertiary>of List class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-ITEMS-------------------------------------------------------><
+>>-items-------------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Returns the number of items in the collection.</para>
 </section>
 
-<section id="lilast"><title>LAST</title>
-<indexterm><primary>LAST method</primary>
+<section id="lilast"><title>last</title>
+<indexterm><primary>last method</primary>
 <secondary>of List class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>LAST method</secondary>
+<secondary>last method</secondary>
 <tertiary>of List class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-LAST--------------------------------------------------------><
+>>-last--------------------------------------------------------><
 ]]>
 </programlisting>
 
-<para>Returns the index of the last item in the list or the NIL object if the
+<para>Returns the index of the last item in the list or the Nil object if the
 list is empty.</para>
 </section>
 
-<section id="lilasi"><title>LASTITEM</title>
-<indexterm><primary>LASTITEM method</primary>
+<section id="lilasi"><title>lastItem</title>
+<indexterm><primary>lastItem method</primary>
 <secondary>of List class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>LASTITEM method</secondary>
+<secondary>lastItem method</secondary>
 <tertiary>of List class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-LASTITEM----------------------------------------------------><
+>>-lastItem----------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -1631,15 +1706,15 @@ list is empty.</para>
 </para>
 </section>
 
-<section id="lima"><title>MAKEARRAY</title>
-<indexterm><primary>MAKEARRAY method</primary>
+<section id="lima"><title>makeArray</title>
+<indexterm><primary>makeArray method</primary>
 <secondary>of List class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>MAKEARRAY method</secondary>
+<secondary>makeArray method</secondary>
 <tertiary>of List class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-MAKEARRAY---------------------------------------------------><
+>>-makeArray---------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -1649,49 +1724,49 @@ of items. The order in which the collection items appear in the array is the
 same as their sequence in the list collection.</para>
 </section>
 
-<section id="linx"><title>NEXT</title>
-<indexterm><primary>NEXT method</primary>
+<section id="linx"><title>next</title>
+<indexterm><primary>next method</primary>
 <secondary>of List class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>NEXT method</secondary>
+<secondary>next method</secondary>
 <tertiary>of List class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-NEXT(index)-------------------------------------------------><
+>>-next(index)-------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Returns the index of the item that follows the list item having index
-<emphasis role="italic">index</emphasis> or returns the NIL object if the
+<emphasis role="italic">index</emphasis> or returns the Nil object if the
 item having that index is last in the list.</para>
 </section>
 
-<section id="liprev"><title>PREVIOUS</title>
-<indexterm><primary>PREVIOUS method</primary>
+<section id="liprev"><title>previous</title>
+<indexterm><primary>previous method</primary>
 <secondary>of List class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>PREVIOUS method</secondary>
+<secondary>previous method</secondary>
 <tertiary>of List class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-PREVIOUS(index)---------------------------------------------><
+>>-previous(index)---------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Returns the index of the item that precedes the list item having index
-<emphasis role="italic">index</emphasis> or the NIL object if the item having
+<emphasis role="italic">index</emphasis> or the Nil object if the item having
 that index is first in the list.</para>
 </section>
 
-<section id="liput"><title>PUT</title>
-<indexterm><primary>PUT method</primary>
+<section id="liput"><title>put</title>
+<indexterm><primary>put method</primary>
 <secondary>of List class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>PUT method</secondary>
+<secondary>put method</secondary>
 <tertiary>of List class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-PUT(item,index)---------------------------------------------><
+>>-put(item,index)---------------------------------------------><
 ]]>
 </programlisting>
 
@@ -1702,37 +1777,37 @@ the new item <emphasis role="italic">item</emphasis>. If the
 an error is raised.</para>
 </section>
 
-<section id="liremo"><title>REMOVE</title>
-<indexterm><primary>REMOVE method</primary>
+<section id="liremo"><title>remove</title>
+<indexterm><primary>remove method</primary>
 <secondary>of List class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>REMOVE method</secondary>
+<secondary>remove method</secondary>
 <tertiary>of List class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-REMOVE(index)-----------------------------------------------><
+>>-remove(index)-----------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Returns and removes from a collection the member item with index
 <emphasis role="italic">index</emphasis>. If no item has index
 <emphasis role="italic">index</emphasis>, this method returns
-the NIL object and removes no item.</para>
+the Nil object and removes no item.</para>
 <para>Removinf an item from the list at position
 <emphasis role="italic">index</emphasis> will cause the items in the list after
 position <emphasis role="italic">index</emphasis> to have their indexes modified
 by the list object.</para>
 </section>
 
-<section id="lisect"><title>SECTION</title>
-<indexterm><primary>SECTION method</primary>
+<section id="lisect"><title>section</title>
+<indexterm><primary>section method</primary>
 <secondary>of List class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>SECTION method</secondary>
+<secondary>section method</secondary>
 <tertiary>of List class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-SECTION(start-+--------+-)----------------------------------><
+>>-section(start-+--------+-)----------------------------------><
                  +-,items-+
 ]]>
 </programlisting>
@@ -1750,15 +1825,25 @@ list contains all subsequent items from the receiver list. The receiver list
 remains unchanged.</para>
 </section>
 
-<section id="lisu"><title>SUPPLIER</title>
-<indexterm><primary>SUPPLIER method</primary>
+<section id="lisubset"><title>subset</title>
+<indexterm><primary>subset method</primary>
 <secondary>of List class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>SUPPLIER method</secondary>
+<secondary>subset method</secondary>
+<tertiary>of List class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="lisu"><title>supplier</title>
+<indexterm><primary>supplier method</primary>
+<secondary>of List class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>supplier method</secondary>
 <tertiary>of List class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-SUPPLIER----------------------------------------------------><
+>>-supplier----------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -1767,70 +1852,81 @@ to the supplier (see <link linkend="supp">The Supplier Class</link>), the
 supplier enumerates all the items in the list at the time of the supplier's
 creation. The supplier enumerates the items in their sequenced order.</para>
 </section>
+
+<section id="liunion"><title>union</title>
+<indexterm><primary>union method</primary>
+<secondary>of List class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>union method</secondary>
+<tertiary>of List class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="lixor"><title>xor</title>
+<indexterm><primary>xor method</primary>
+<secondary>of List class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>xor method</secondary>
+<tertiary>of List class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
 </section>
 
 <section id="rxqcl"><title>The Queue Class</title>
 <indexterm><primary>class</primary>
 <secondary>Queue class</secondary></indexterm>
 <indexterm><primary>Queue class</primary></indexterm>
+<figure><title>The Queue class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxQueueClass.png" align="left" scale="80">
+</imageobject>
+</mediaobject>
+</figure>
+<note><title>Note</title>
+<para>The Queue class also has available class methods that its
+metaclass, the Class class, defines.</para></note>
+
 <para>A queue is a non-sparse sequenced collection with whole-number
 indexes. The indexes specify the position of an item relative to the head
 (first item) of the queue. Adding or removing an item changes the association
 of an index to its queue item. You can add items at either the tail or the
 head of the queue.</para>
-<para><emphasis role="bold">Methods the Queue class defines:</emphasis></para>
-<simplelist>
-<member>NEW (Class Method)</member>
-<member>[]</member>
-<member>[]=</member>
-<member>AT</member>
-<member>HASINDEX</member>
-<member>INSERT</member>
-<member>ITEMS</member>
-<member>MAKEARRAY</member>
-<member>PEEK</member>
-<member>PULL</member>
-<member>PUSH</member>
-<member>PUT</member>
-<member>QUEUE</member>
-<member>REMOVE</member>
-<member>SUPPLIER</member>
-</simplelist>
-<para><emphasis role="bold">Methods inherited from the Object class:</emphasis>
-</para>
-<simplelist>
-<member>Operator methods: =, ==, \=, &gt;&lt;, &lt;&gt;, \==</member>
-<member>CLASS</member>
-<member>COPY</member>
-<member>DEFAULTNAME</member>
-<member>HASMETHOD</member>
-<member>OBJECTNAME</member>
-<member>OBJECTNAME=</member>
-<member>REQUEST</member>
-<member>RUN</member>
-<member>SETMETHOD</member>
-<member>START</member>
-<member>STRING</member>
-<member>UNSETMETHOD</member>
-</simplelist>
 
-<note><title>Note</title>
-<para>The Queue class also has available class methods that its
-metaclass, the Class class, defines.</para></note>
-
-<section id="quenew"><title>NEW (Class Method)</title>
-<indexterm><primary>NEW method</primary>
+<section id="quenew"><title>new (Class Method)</title>
+<indexterm><primary>new method</primary>
 <secondary>of Queue class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>NEW method</secondary>
+<secondary>new method</secondary>
 <tertiary>of Queue class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-NEW---------------------------------------------------------><
+>>-new---------------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Returns a new empty Queue object.</para>
+</section>
+
+<section id="quof"><title>of (Class Method)</title>
+<indexterm><primary>of method</primary>
+<secondary>of Queue class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>of method</secondary>
+<tertiary>of Queue class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+       +-,----+
+       V      |
+>>-of(---item-+-)----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a newly created queue containing the specified
+<emphasis role="italic">item</emphasis> objects in the order specified.</para>
 </section>
 
 <section id="qubrak"><title>[]</title>
@@ -1845,8 +1941,8 @@ metaclass, the Class class, defines.</para></note>
 ]]>
 </programlisting>
 
-<para>Returns the same value as the AT method. See
-<link linkend="quat">AT</link>.</para>
+<para>Returns the same value as the <emphasis role="bold">at</emphasis> method. See
+<link linkend="quat">at</link>.</para>
 <para>The order in which the queue items appear in the array is the same as their
 queuing order, with the head of the queue as index 1.</para>
 </section>
@@ -1863,36 +1959,107 @@ queuing order, with the head of the queue as index 1.</para>
 ]]>
 </programlisting>
 
-<para>This method is the same as the PUT method. See <link linkend="quput">PUT</link>.
+<para>This method is the same as the <emphasis role="bold">put</emphasis>
+method. See <link linkend="quput">put</link>.
 </para>
 </section>
 
-<section id="quat"><title>AT</title>
-<indexterm><primary>AT method</primary>
+<section id="quallindexes"><title>allIndexes</title>
+<indexterm><primary>allIndexes method</primary>
 <secondary>of Queue class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>AT method</secondary>
+<secondary>allIndexes method</secondary>
+<tertiary>of Queue class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="quallitems"><title>allItems</title>
+<indexterm><primary>allItems method</primary>
+<secondary>of Queue class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>allItems method</secondary>
+<tertiary>of Queue class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="quappend"><title>append</title>
+<indexterm><primary>append method</primary>
+<secondary>of Queue class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>append method</secondary>
+<tertiary>of Queue class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="quappendall"><title>appendAll</title>
+<indexterm><primary>appendAll method</primary>
+<secondary>of Queue class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>appendAll method</secondary>
+<tertiary>of Queue class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="quat"><title>at</title>
+<indexterm><primary>at method</primary>
+<secondary>of Queue class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>at method</secondary>
 <tertiary>of Queue class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-AT(index)---------------------------------------------------><
+>>-at(index)---------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Returns the item associated with index
 <emphasis role="italic">index</emphasis>. If the collection has no item associated with
-<emphasis role="italic">index</emphasis>, this method returns the NIL object.</para>
+<emphasis role="italic">index</emphasis>, this method returns the Nil object.</para>
 </section>
 
-<section id="quhasi"><title>HASINDEX</title>
-<indexterm><primary>HASINDEX method</primary>
+<section id="qudiff"><title>difference</title>
+<indexterm><primary>difference method</primary>
 <secondary>of Queue class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>HASINDEX method</secondary>
+<secondary>difference method</secondary>
+<tertiary>of Queue class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="quempty"><title>empty</title>
+<indexterm><primary>empty method</primary>
+<secondary>of Queue class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>empty method</secondary>
+<tertiary>of Queue class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="qufirst"><title>first</title>
+<indexterm><primary>first method</primary>
+<secondary>of Queue class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>first method</secondary>
+<tertiary>of Queue class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="quhasi"><title>hasIndex</title>
+<indexterm><primary>hasIndex method</primary>
+<secondary>of Queue class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>hasIndex method</secondary>
 <tertiary>of Queue class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-HASINDEX(index)---------------------------------------------><
+>>-hasIndex(index)---------------------------------------------><
 ]]>
 </programlisting>
 
@@ -1901,15 +2068,25 @@ contains any item associated with index <emphasis role="italic">index</emphasis>
 or <computeroutput>0</computeroutput> (false).</para>
 </section>
 
-<section id="quinse"><title>INSERT</title>
-<indexterm><primary>INSERT method</primary>
+<section id="quhasitem"><title>hasItem</title>
+<indexterm><primary>hasItem method</primary>
 <secondary>of Queue class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>INSERT method</secondary>
+<secondary>hasItem method</secondary>
+<tertiary>of Queue class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="quinse"><title>insert</title>
+<indexterm><primary>insert method</primary>
+<secondary>of Queue class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>insert method</secondary>
 <tertiary>of Queue class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-INSERT(item-+--------+-)------------------------------------><
+>>-insert(item-+--------+-)------------------------------------><
                +-,index-+
 ]]>
 </programlisting>
@@ -1918,7 +2095,7 @@ or <computeroutput>0</computeroutput> (false).</para>
 <emphasis role="italic">item</emphasis>, which is added to the queue. The new
 item follows the existing item with index
 <emphasis role="italic">index</emphasis> in the queue ordering.
-If <emphasis role="italic">index</emphasis> is the NIL object, the new item
+If <emphasis role="italic">index</emphasis> is the Nil object, the new item
 becomes the first item in the queue. If you omit
 <emphasis role="italic">index</emphasis>, the new item becomes the last item in
 the queue. </para>
@@ -1931,7 +2108,7 @@ not imply that the queue order is maitained via an array-like index. The indexes
 refered to above are internal handles maintained by the interpreter and are not
 available to the user.</para></note>
 <indexterm><primary>examples</primary>
-<secondary>INSERT method</secondary>
+<secondary>insert method</secondary>
 <tertiary>of Queue class</tertiary></indexterm>
 <programlisting>
 musketeers=.queue~of(Porthos,Athos,Aramis) /* Creates queue MUSKETEERS       */
@@ -1959,30 +2136,60 @@ musketeers~insert("D&apos;Artagnan")       /* Adds D&apos;Artagnan after Aramis 
 </programlisting>
 </section>
 
-<section id="quitms"><title>ITEMS</title>
-<indexterm><primary>ITEMS method</primary>
+<section id="quintersection"<title>intersection</title>
+<indexterm><primary>intersection method</primary>
 <secondary>of Queue class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>ITEMS method</secondary>
+<secondary>intersection method</secondary>
+<tertiary>of Queue class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="quisempty"<title>isEmpty</title>
+<indexterm><primary>isEmpty method</primary>
+<secondary>of Queue class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>isEmpty method</secondary>
+<tertiary>of Queue class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="quitms"><title>items</title>
+<indexterm><primary>items method</primary>
+<secondary>of Queue class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>items method</secondary>
 <tertiary>of Queue class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-ITEMS-------------------------------------------------------><
+>>-items-------------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Returns the number of items in the collection.</para>
 </section>
 
-<section id="qumaka"><title>MAKEARRAY</title>
-<indexterm><primary>MAKEARRAY method</primary>
+<section id="qulast"<title>last</title>
+<indexterm><primary>last method</primary>
 <secondary>of Queue class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>MAKEARRAY method</secondary>
+<secondary>last method</secondary>
+<tertiary>of Queue class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="qumaka"><title>makeArray</title>
+<indexterm><primary>makeArray method</primary>
+<secondary>of Queue class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>makeArray method</secondary>
 <tertiary>of Queue class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-MAKEARRAY---------------------------------------------------><
+>>-makeArray---------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -1992,48 +2199,68 @@ The order in which the queue items appear in the array is the same as their
 queuing order, with the head of the queue as index 1.</para>
 </section>
 
-<section id="qupeek"><title>PEEK</title>
-<indexterm><primary>PEEK method</primary>
+<section id="qunext"<title>next</title>
+<indexterm><primary>next method</primary>
 <secondary>of Queue class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>PEEK method</secondary>
+<secondary>next method</secondary>
+<tertiary>of Queue class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="qupeek"><title>peek</title>
+<indexterm><primary>peek method</primary>
+<secondary>of Queue class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>peek method</secondary>
 <tertiary>of Queue class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-PEEK--------------------------------------------------------><
+>>-peek--------------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Returns the item at the head of the queue. If the queue is empty then
-the method returns the .NIL object.
+the method returns the .Nil object.
 The collection remains unchanged.</para>
 </section>
 
-<section id="qupul"><title>PULL</title>
-<indexterm><primary>PULL method</primary>
+<section id="quprevious"<title>previous</title>
+<indexterm><primary>previous method</primary>
 <secondary>of Queue class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>PULL method</secondary>
+<secondary>previous method</secondary>
+<tertiary>of Queue class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="qupul"><title>pull</title>
+<indexterm><primary>pull method</primary>
+<secondary>of Queue class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>pull method</secondary>
 <tertiary>of Queue class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-PULL--------------------------------------------------------><
+>>-pull--------------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Returns and removes the item at the head of the queue. If the queue is
-empty then the method returns the .NIL object</para>
+empty then the method returns the .Nil object</para>
 </section>
 
-<section id="qupush"><title>PUSH</title>
-<indexterm><primary>PUSH method</primary>
+<section id="qupush"><title>push</title>
+<indexterm><primary>push method</primary>
 <secondary>of Queue class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>PUSH method</secondary>
+<secondary>push method</secondary>
 <tertiary>of Queue class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-PUSH(item)--------------------------------------------------><
+>>-push(item)--------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -2041,15 +2268,15 @@ empty then the method returns the .NIL object</para>
 the queue.</para>
 </section>
 
-<section id="quput"><title>PUT</title>
-<indexterm><primary>PUT method</primary>
+<section id="quput"><title>put</title>
+<indexterm><primary>put method</primary>
 <secondary>of Queue class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>PUT method</secondary>
+<secondary>put method</secondary>
 <tertiary>of Queue class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-PUT(item,index)---------------------------------------------><
+>>-put(item,index)---------------------------------------------><
 ]]>
 </programlisting>
 
@@ -2059,15 +2286,15 @@ the new item. If the <emphasis role="italic">index</emphasis> does not exist
 in the queue, an error is raised.</para>
 </section>
 
-<section id="quque"><title>QUEUE</title>
-<indexterm><primary>QUEUE method</primary>
+<section id="quque"><title>queue</title>
+<indexterm><primary>queue method</primary>
 <secondary>of Queue class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>QUEUE method</secondary>
+<secondary>queue method</secondary>
 <tertiary>of Queue class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-QUEUE(item)-------------------------------------------------><
+>>-queue(item)-------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -2075,33 +2302,53 @@ in the queue, an error is raised.</para>
 the queue.</para>
 </section>
 
-<section id="quremo"><title>REMOVE</title>
-<indexterm><primary>REMOVE method</primary>
+<section id="quremo"><title>remove</title>
+<indexterm><primary>remove method</primary>
 <secondary>of Queue class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>REMOVE method</secondary>
+<secondary>remove method</secondary>
 <tertiary>of Queue class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-REMOVE(index)-----------------------------------------------><
+>>-remove(index)-----------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Returns and removes from a collection the member item with index
 <emphasis role="italic">index</emphasis>. If no item has index
 <emphasis role="italic">index</emphasis>, this method returns
-the NIL object and removes no item.</para>
+the Nil object and removes no item.</para>
 </section>
 
-<section id="qusupp"><title>SUPPLIER</title>
-<indexterm><primary>SUPPLIER method</primary>
+<section id="quremoveitem"<title>removeItem</title>
+<indexterm><primary>removeItem method</primary>
 <secondary>of Queue class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>SUPPLIER method</secondary>
+<secondary>removeItem method</secondary>
+<tertiary>of Queue class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="qusubset"<title>subset</title>
+<indexterm><primary>subset method</primary>
+<secondary>of Queue class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>subset method</secondary>
+<tertiary>of Queue class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="qusupp"><title>supplier</title>
+<indexterm><primary>supplier method</primary>
+<secondary>of Queue class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>supplier method</secondary>
 <tertiary>of Queue class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-SUPPLIER----------------------------------------------------><
+>>-supplier----------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -2111,6 +2358,26 @@ supplier, you can send it messages (see
 all the items that were in the queue at the time of the supplier's creation.
 The supplier enumerates the items in their queuing order, with the head of
 the queue first.</para>
+</section>
+
+<section id="quunion"<title>union</title>
+<indexterm><primary>union method</primary>
+<secondary>of Queue class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>union method</secondary>
+<tertiary>of Queue class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="quxor"<title>xor</title>
+<indexterm><primary>union method</primary>
+<secondary>of Queue class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>xor method</secondary>
+<tertiary>of Queue class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
 </section>
 </section>
 
