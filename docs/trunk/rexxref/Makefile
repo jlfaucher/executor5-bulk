@@ -86,6 +86,9 @@ IMAGE_FILES = ooRexxObjectClass.png \
               ooRexxMessageClass.png \
               ooRexxStringClass.png \
               ooRexxArrayClass.png \
+              ooRexxCollectionsClass.png \
+              ooRexxOrderedCollectionClass.png \
+              ooRexxCircularQueueClass.png \
               rxo90004.jpg \
 	      rxo90005.jpg \
 	      rxo90006.jpg \

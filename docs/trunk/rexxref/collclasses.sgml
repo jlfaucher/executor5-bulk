@@ -901,6 +901,22 @@ end
 <indexterm>
 <primary>CircularQueue class</primary>
 </indexterm>
+<figure><title>The CircularQueue class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxCircularQueueClass.png" align="left" scale="80">
+</imageobject>
+</mediaobject>
+</figure>
+<note><title>Note</title>
+<para>
+The CircularQueue class also has available class methods that its
+metaclass, the Class class, defines. It also
+inherits the methods of the Queue class (see <link linkend="rxqcl">The Queue class</link>).
+</para>
+</note>
+
 
 <para>
 The CircularQueue class allows for storing objects in a circular queue
@@ -911,79 +927,19 @@ objects are inserted from the beginning, replacing earlier entries.
 The collected objects can be processed in FIFO (first in, first out) or in a
 stack-like LIFO (last in, first out) order.
 </para>
-<para>
-The CircularQueue class is a subclass of the Queue class. In addition to its own
-methods it inherits the methods of the Queue class (see <link linkend="rxqcl">The Queue class</link>)
-and the Object class (see <link linkend="objc">The Object Class</link>)
-</para>
 
-<para><emphasis role="bold">Methods the CircularQueue class defines:</emphasis></para>
-<simplelist>
-<member>NEW (Class method)</member>
-<member>OF (Class method)</member>
-<member>MAKEARRAY</member>
-<member>PUSH</member>
-<member>QUEUE</member>
-<member>RESIZE</member>
-<member>SIZE</member>
-<member>STRING</member>
-<member>SUPPLIER</member>
-</simplelist>
-
-<para><emphasis role="bold">Methods inherited from the Queue class:</emphasis></para>
-<simplelist>
-<member>[]</member>
-<member>[]=</member>
-<member>AT</member>
-<member>HASINDEX</member>
-<member>ITEMS</member>
-<member>MAKEARRAY</member>
-<member>PEEK</member>
-<member>PULL</member>
-<member>PUSH</member>
-<member>PUT</member>
-<member>QUEUE</member>
-<member>REMOVE</member>
-<member>SUPPLIER</member>
-</simplelist>
-
-<para><emphasis role="bold">Methods inherited from the Object class:</emphasis></para>
-<simplelist>
-<member>Operator methods: =, ==, \=, &gt;&lt;, &lt;&gt;, \==</member>
-<member>CLASS</member>
-<member>COPY</member>
-<member>DEFAULTNAME</member>
-<member>HASMETHOD</member>
-<member>INIT</member>
-<member>OBJECTNAME</member>
-<member>OBJECTNAME=</member>
-<member>REQUEST</member>
-<member>RUN</member>
-<member>SETMETHOD</member>
-<member>START</member>
-<member>STRING</member>
-<member>UNSETMETHOD</member>
-</simplelist>
-
-<note><title>Note</title>
-<para>
-The CircularQueue class also has available class methods that its
-metaclass, the Class class, defines.
-</para>
-</note>
-
-<section id="cqunew"<title>NEW (Class Method)</title>
-<indexterm><primary>NEW method</primary>
+<section id="cqunew"<title>new (Class Method)</title>
+<indexterm><primary>new method</primary>
 <secondary>of CircularQueue class</secondary>
 </indexterm>
 <indexterm><primary>method</primary>
-<secondary>NEW method</secondary>
+<secondary>new method</secondary>
 <tertiary>of CircularQueue class</tertiary>
 </indexterm>
 
 <programlisting>
 <![CDATA[
->>-NEW(size)---------------------------------------------------><
+>>-new(size)---------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -993,18 +949,16 @@ Constructor method  which determines the
 It returns an empty CircularQueue object.</para>
 </section>
 
-<section id="cquof"><title>OF (Class Method)</title>
-<indexterm><primary>OF method</primary>
-<secondary>of CircularQueue class</secondary>
-</indexterm>
+<section id="cquof"><title>of (Class Method)</title>
+<indexterm><primary>of method</primary>
+<secondary>of CircularQueue class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>OF method</secondary>
-<tertiary>of CircularQueue class</tertiary>
-</indexterm>
+<secondary>of method</secondary>
+<tertiary>of CircularQueue class</tertiary></indexterm>
 
 <programlisting>
 <![CDATA[
->>-OF-+----------------+---------------------------------------><
+>>-of-+----------------+---------------------------------------><
       |    +-,----+    |
       |    V      |    |
       +-(----item-+--)-+
@@ -1020,19 +974,39 @@ determines the <emphasis role="italic">size</emphasis> of the circular queue.
 </para>
 </section>
 
-<section id="cqumak"><title>MAKEARRAY</title>
-<indexterm><primary>MAKEARRAY method</primary>
+<section id="cquinit"><title>init</title>
+<indexterm><primary>init method</primary>
 <secondary>of CircularQueue class</secondary>
 </indexterm>
 <indexterm><primary>method</primary>
-<secondary>MAKEARRAY method</secondary>
+<secondary>init method</secondary>
+<tertiary>of CircularQueue class</tertiary>
+</indexterm>
+
+<programlisting>
+<![CDATA[
+>>-init--------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>
+Performs initialization of the circular queue.
+</para>
+</section>
+
+<section id="cqumak"><title>makeArray</title>
+<indexterm><primary>makeArray method</primary>
+<secondary>of CircularQueue class</secondary>
+</indexterm>
+<indexterm><primary>method</primary>
+<secondary>makeArray method</secondary>
 <tertiary>of CircularQueue class</tertiary>
 </indexterm>
 
 <programlisting>
 <![CDATA[
               +-Fifo----+
->>-MAKEARRAY(-+---------+-)------------------------------------><
+>>-makeArray(-+---------+-)------------------------------------><
               +--order--+
 ]]>
 </programlisting>
@@ -1063,18 +1037,18 @@ the capitalized letter is needed; all characters following it are ignored.)
 </variablelist>
 </section>
 
-<section id="cqupush"><title>PUSH</title>
-<indexterm><primary>PUSH method</primary>
+<section id="cqupush"><title>push</title>
+<indexterm><primary>push method</primary>
 <secondary>of CircularQueue class</secondary>
 </indexterm>
 <indexterm><primary>method</primary>
-<secondary>PUSH method</secondary>
+<secondary>push method</secondary>
 <tertiary>of CircularQueue class</tertiary>
 </indexterm>
 
 <programlisting>
 <![CDATA[
->>-PUSH(item)--------------------------------------------------><
+>>-push(item)--------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -1093,18 +1067,18 @@ will be deleted, before the insertion takes place. In this case the
 </section>
 
 
-<section id="cquque"><title>QUEUE</title>
-<indexterm><primary>QUEUE method</primary>
+<section id="cquque"><title>queue</title>
+<indexterm><primary>queue method</primary>
 <secondary>of CircularQueue class</secondary>
 </indexterm>
 <indexterm><primary>method</primary>
-<secondary>QUEUE method</secondary>
+<secondary>queue method</secondary>
 <tertiary>of CircularQueue class</tertiary>
 </indexterm>
 
 <programlisting>
 <![CDATA[
->>-QUEUE(item)-------------------------------------------------><
+>>-queue(item)-------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -1120,19 +1094,19 @@ will be returned, otherwise <emphasis role="italic">.nil</emphasis>.
 </para>
 </section>
 
-<section id="cqures"><title>RESIZE</title>
-<indexterm><primary>RESIZE method</primary>
+<section id="cqures"><title>resize</title>
+<indexterm><primary>resize method</primary>
 <secondary>of CircularQueue class</secondary>
 </indexterm>
 <indexterm><primary>method</primary>
-<secondary>RESIZE method</secondary>
+<secondary>resize method</secondary>
 <tertiary>of CircularQueue class</tertiary>
 </indexterm>
 
 <programlisting>
 <![CDATA[
                    +--,Fifo---+
->>-RESIZE(-newSize-+----------+-)------------------------------><
+>>-resize(-newSize-+----------+-)------------------------------><
                    +--,order--+
 ]]>
 </programlisting>
@@ -1173,18 +1147,18 @@ items from the circular queue.
 </note>
 </section>
 
-<section id="cqusize"><title>SIZE</title>
-<indexterm><primary>SIZE method</primary>
+<section id="cqusize"><title>size</title>
+<indexterm><primary>size method</primary>
 <secondary>of CircularQueue class</secondary>
 </indexterm>
 <indexterm><primary>method</primary>
-<secondary>SIZE method</secondary>
+<secondary>size method</secondary>
 <tertiary>of CircularQueue class</tertiary>
 </indexterm>
 
 <programlisting>
 <![CDATA[
->>-SIZE--------------------------------------------------------><
+>>-size--------------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -1193,19 +1167,19 @@ Returns the maximum number of objects that can be stored in the circular queue.
 </para>
 </section>
 
-<section id="cqustr"><title>STRING</title>
-<indexterm><primary>STRING method</primary>
+<section id="cqustr"><title>string</title>
+<indexterm><primary>string method</primary>
 <secondary>of CircularQueue class</secondary>
 </indexterm>
 <indexterm><primary>method</primary>
-<secondary>STRING method</secondary>
+<secondary>string method</secondary>
 <tertiary>of CircularQueue class</tertiary>
 </indexterm>
 
 <programlisting>
 <![CDATA[
            +--","------+  +-,-Fifo--+
->>-STRING(-+-----------+--+---------+-)------------------------><
+>>-string(-+-----------+--+---------+-)------------------------><
            +-delimiter-+  +-,-order-+
 ]]>
 </programlisting>
@@ -1243,19 +1217,19 @@ the capitalized letter is needed; all characters following it are ignored.)
 </variablelist>
 </section>
 
-<section id="cqusupp"><title>SUPPLIER</title>
-<indexterm><primary>SUPPLIER method</primary>
+<section id="cqusupp"><title>supplier</title>
+<indexterm><primary>supplier method</primary>
 <secondary>of CircularQueue class</secondary>
 </indexterm>
 <indexterm><primary>method</primary>
-<secondary>SUPPLIER method</secondary>
+<secondary>supplier method</secondary>
 <tertiary>of CircularQueue class</tertiary>
 </indexterm>
 
 <programlisting>
 <![CDATA[
              +--Fifo----+
->>-SUPPLIER(-+----------+-)------------------------------------><
+>>-supplier(-+----------+-)------------------------------------><
              +--order---+
 ]]>
 </programlisting>
