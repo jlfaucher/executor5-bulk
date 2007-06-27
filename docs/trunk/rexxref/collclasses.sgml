@@ -2371,7 +2371,7 @@ the queue first.</para>
 </section>
 
 <section id="quxor"<title>xor</title>
-<indexterm><primary>union method</primary>
+<indexterm><primary>xor method</primary>
 <secondary>of Queue class</secondary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>xor method</secondary>
@@ -2397,6 +2397,18 @@ the queue first.</para>
 <indexterm><primary>Directory class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>Directory class</secondary></indexterm>
+<figure><title>The Directory class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxDirectoryClass.png" align="left" scale="80">
+</imageobject>
+</mediaobject>
+</figure>
+<note><title>Note</title>
+<para>The Directory class also has available class methods that
+its metaclass, the Class class, defines.</para></note>
+
 <para>A directory is a collection with unique
 indexes that are character strings representing names.</para>
 <para>Directories let you refer to objects by name, for example:</para>
@@ -2404,65 +2416,16 @@ indexes that are character strings representing names.</para>
 .environment~array
 </programlisting>
 <para>For directories, items are often referred to as entries.</para>
-<para><emphasis role="bold">Methods the Directory class defines:</emphasis>
-</para>
-<simplelist>
-<member>NEW (Class method)</member>
-<member>[]</member>
-<member>[]=</member>
-<member>AT</member>
-<member>ENTRY</member>
-<member>HASENTRY</member>
-<member>HASINDEX</member>
-<member>ITEMS</member>
-<member>MAKEARRAY</member>
-<member>NEW (Overrides Object class method)</member>
-<member>PUT</member>
-<member>REMOVE</member>
-<member>SETENTRY</member>
-<member>SETMETHOD (Overrides Object class method)</member>
-<member>SUPPLIER</member>
-<member>UNKNOWN</member>
-</simplelist>
-<para><emphasis role="bold">Set-operator methods the Directory class defines:</emphasis>
-</para>
-<simplelist>
-<member>DIFFERENCE</member>
-<member>INTERSECTION</member>
-<member>SUBSET</member>
-<member>UNION</member>
-<member>XOR</member>
-</simplelist>
-<para><emphasis role="bold">Methods Inherited from the Object Class:</emphasis>
-</para>
-<simplelist>
-<member>Operator methods: =, ==, \=, &gt;&lt;, &lt;&gt;, \==</member>
-<member>CLASS</member>
-<member>COPY</member>
-<member>DEFAULTNAME</member>
-<member>HASMETHOD</member>
-<member>OBJECTNAME</member>
-<member>OBJECTNAME=</member>
-<member>REQUEST</member>
-<member>RUN</member>
-<member>START</member>
-<member>STRING</member>
-<member>UNSETMETHOD</member>
-</simplelist>
 
-<note><title>Note</title>
-<para>The Directory class also has available class methods that
-its metaclass, the Class class, defines.</para></note>
-
-<section id="dirnew"><title>NEW (Class Method)</title>
-<indexterm><primary>NEW method</primary>
+<section id="dirnew"><title>new (Class Method)</title>
+<indexterm><primary>new method</primary>
 <secondary>of Directory class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>NEW method</secondary>
+<secondary>new method</secondary>
 <tertiary>of Directory class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-NEW---------------------------------------------------------><
+>>-new---------------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -2481,8 +2444,9 @@ its metaclass, the Class class, defines.</para></note>
 ]]>
 </programlisting>
 
-<para>Returns the same item as the AT method, which follows. See
-<link linkend="diat">AT</link>.</para>
+<para>Returns the same item as the 
+<emphasis role="bold">at</emphasis> method, which follows. See
+<link linkend="diat">at</link>.</para>
 </section>
 
 <section id="dibrae"><title>[]=</title>
@@ -2497,278 +2461,65 @@ its metaclass, the Class class, defines.</para></note>
 ]]>
 </programlisting>
 
-<para>This method is the same as the PUT method. See
-<link linkend="dirput">PUT</link>.</para>
+<para>This method is the same as the 
+<emphasis role="bold">put</emphasis> method. See
+<link linkend="dirput">put</link>.</para>
 </section>
 
-<section id="diat"><title>AT</title>
-<indexterm><primary>AT method</primary>
+<section id="diallindexes"<title>allIndexes</title>
+<indexterm><primary>allIndexes method</primary>
 <secondary>of Directory class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>AT method</secondary>
+<secondary>allIndexes method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="diallitems"<title>allItems</title>
+<indexterm><primary>allItems method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>allItems method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="diat"><title>at</title>
+<indexterm><primary>at method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>at method</secondary>
 <tertiary>of Directory class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-AT(name)----------------------------------------------------><
+>>-at(name)----------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Returns the item associated with index
 <emphasis role="italic">name</emphasis>. If a method that
-SETMETHOD supplies is associated with index
+<emphasis role="bold">setMethod</emphasis> supplies is associated with index
 <emphasis role="italic">name</emphasis>, the result of running
 this method is returned. If the collection has no item or method associated
 with index <emphasis role="italic">name</emphasis>, this method returns
-the NIL object.</para>
+the Nil object.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
-say .environment~AT("OBJECT")   /* Produces: "The Object class" */
+say .environment~at("OBJECT")   /* Produces: "The Object class" */
 </programlisting>
 </section>
 
-<section id="dientr"><title>ENTRY</title>
-<indexterm><primary>ENTRY method</primary>
+<section id="didiff"><title>difference</title>
+<indexterm><primary>difference method</primary>
 <secondary>of Directory class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>ENTRY method</secondary>
+<secondary>difference method</secondary>
 <tertiary>of Directory class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-ENTRY(name)-------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns the directory entry with name
-<emphasis role="italic">name</emphasis> (translated to uppercase).
-If there is no such entry, <emphasis role="italic">name</emphasis>
-returns the item for any method that SETMETHOD supplied. If there is
-neither an entry nor a method for <emphasis role="italic">name</emphasis>
-or for UNKNOWN, the language processor raises an error.</para>
-</section>
-
-<section id="dihase"><title>HASENTRY</title>
-<indexterm><primary>HASENTRY method</primary>
-<secondary>of Directory class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>HASENTRY method</secondary>
-<tertiary>of Directory class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-HASENTRY(name)----------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns <computeroutput>1</computeroutput> (true) if the directory has
-an entry or a method for name <emphasis role="italic">name</emphasis>
-(translated to uppercase), or <computeroutput>0</computeroutput> (false).</para>
-</section>
-
-<section id="dihasi"><title>HASINDEX</title>
-<indexterm><primary>HASINDEX method</primary>
-<secondary>of Directory class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>HASINDEX method</secondary>
-<tertiary>of Directory class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-HASINDEX(name)----------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns <computeroutput>1</computeroutput> (true) if the collection
-contains any item associated with index
-<emphasis role="italic">name</emphasis>, or <computeroutput>0</computeroutput>
-(false).</para>
-</section>
-
-<section id="diitms"><title>ITEMS</title>
-<indexterm><primary>ITEMS method</primary>
-<secondary>of Directory class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>ITEMS method</secondary>
-<tertiary>of Directory class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-ITEMS-------------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns the number of items in the collection.</para>
-</section>
-
-<section id="dimaka"><title>MAKEARRAY</title>
-<indexterm><primary>MAKEARRAY method</primary>
-<secondary>of Directory class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>MAKEARRAY method</secondary>
-<tertiary>of Directory class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-MAKEARRAY---------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns a single-index array containing the index objects. The array
-indexes range from <computeroutput>1</computeroutput> to the number of items.
-The collection items appear in the array in an unspecified order.
-(The program should not rely on any order.)</para>
-</section>
-
-<section id="dirput"><title>PUT</title>
-<indexterm><primary>PUT method</primary>
-<secondary>of Directory class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>PUT method</secondary>
-<tertiary>of Directory class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-PUT(item,name)----------------------------------------------><
-]]>
-</programlisting>
-
-<para>Makes the object <emphasis role="italic">item</emphasis>
-a member item of the collection and associates
-it with index <emphasis role="italic">name</emphasis>.
-The new item replaces any existing item or method
-associated with index <emphasis role="italic">name</emphasis>.</para>
-</section>
-
-<section id="dirrem"><title>REMOVE</title>
-<indexterm><primary>REMOVE method</primary>
-<secondary>of Directory class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>REMOVE method</secondary>
-<tertiary>of Directory class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-REMOVE(name)------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns and removes the member item with index
-<emphasis role="italic">name</emphasis> from a collection.
-If a method is associated with SETMETHOD for index
-<emphasis role="italic">name</emphasis>, REMOVE removes
-the method and returns the result of running it. If there is no item or method
-with index <emphasis role="italic">name</emphasis>, the UNKNOWN method returns
-the NIL object and removes nothing.</para>
-</section>
-
-<section id="disete"><title>SETENTRY</title>
-<indexterm><primary>SETENTRY method</primary>
-<secondary>of Directory class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>SETENTRY method</secondary>
-<tertiary>of Directory class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-SETENTRY(name-+--------+-)----------------------------------><
-                 +-,entry-+
-]]>
-</programlisting>
-
-<para>Sets the directory entry with name
-<emphasis role="italic">name</emphasis> (translated to uppercase)
-to the object <emphasis role="italic">entry</emphasis>, replacing any existing
-entry or method for <emphasis role="italic">name</emphasis>. If you omit
-<emphasis role="italic">entry</emphasis>, this method removes any entry or
-method with this <emphasis role="italic">name</emphasis>.</para>
-</section>
-
-<section id="disetm"><title>SETMETHOD</title>
-<indexterm><primary>SETMETHOD method</primary>
-<secondary>of Directory class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>SETMETHOD method</secondary>
-<tertiary>of Directory class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-SETMETHOD(name-+---------+-)--------------------------------><
-                  +-,method-+
-]]>
-</programlisting>
-
-<para>Associates entry name <emphasis role="italic">name</emphasis>
-(translated to uppercase) with method <emphasis role="italic">method</emphasis>.
-Thus, the language processor returns the result of running
-<emphasis role="italic">method</emphasis> when you access this entry.
-This occurs when you specify <emphasis role="italic">name</emphasis> on the
-AT, ENTRY, or REMOVE method. This method replaces any existing
-item or method for <emphasis role="italic">name</emphasis>.</para>
-<para>You can specify the name UNKNOWN as
-<emphasis role="italic">name</emphasis>. Doing so supplies a
-method to run whenever an AT or ENTRY message specifies a name for which no item
-or method exists in the collection. This method's first argument is the
-specified directory index. This method has no effect on the action of any
-HASENTRY, HASINDEX, ITEMS, REMOVE, or SUPPLIER message sent to the collection.
-</para>
-<para>The <emphasis role="italic">method</emphasis> can be a
-string containing a method source line instead
-of a method object. Alternatively, an array of strings containing individual
-method lines can be passed. In either case, SETMETHOD creates an equivalent
-method object.</para>
-<para>If you omit <emphasis role="italic">method</emphasis>,
-SETMETHOD removes the entry with the specified
-<emphasis role="italic">name</emphasis>.</para>
-</section>
-
-<section id="disupp"><title>SUPPLIER</title>
-<indexterm><primary>SUPPLIER method</primary>
-<secondary>of Directory class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>SUPPLIER method</secondary>
-<tertiary>of Directory class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-SUPPLIER----------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns a supplier object for the collection. After you have obtained a
-supplier, you can send it messages (see
-<link linkend="supp">The Supplier Class</link>) to enumerate
-all the items that were in the collection at the time of the supplier's
-creation. The supplier enumerates the items in an unspecified order. (The
-program should not rely on any order.)</para>
-</section>
-
-<section id="diunkn"><title>UNKNOWN</title>
-<indexterm><primary>UNKNOWN method</primary>
-<secondary>of Directory class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>UNKNOWN method</secondary>
-<tertiary>of Directory class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-UNKNOWN(messagename,messageargs)----------------------------><
-]]>
-</programlisting>
-
-<para>Runs either the ENTRY or SETENTRY method, depending on whether
-<emphasis role="italic">messagename</emphasis> ends with an equal sign. If
-<emphasis role="italic">messagename</emphasis> does not end with an
-equal sign, this method runs the ENTRY method, passing
-<emphasis role="italic">messagename</emphasis> as
-its argument. The language processor ignores any arguments specified in the
-array <emphasis role="italic">messageargs</emphasis>. In this case, UNKNOWN
-returns the result of the ENTRY method.</para>
-<para>If <emphasis role="italic">messagename</emphasis> does end with an equal
-sign, this method runs the SETENTRY method, passing the first part of
-<emphasis role="italic">messagename</emphasis> (up to, but
-not including, the final equal sign) as its first argument, and the first
-item in the array <emphasis role="italic">messageargs</emphasis>
-as its second argument. In this case, UNKNOWN returns no result.</para>
-</section>
-
-<section id="didiff"><title>DIFFERENCE</title>
-<indexterm><primary>DIFFERENCE method</primary>
-<secondary>of Directory class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>DIFFERENCE method</secondary>
-<tertiary>of Directory class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-DIFFERENCE(argument)----------------------------------------><
+>>-difference(argument)----------------------------------------><
 ]]>
 </programlisting>
 
@@ -2782,15 +2533,102 @@ object described in
 allow all of the index values in the receiver collection.</para>
 </section>
 
-<section id="diinte"><title>INTERSECTION</title>
-<indexterm><primary>INTERSECTION method</primary>
+<section id="diempty"<title>empty</title>
+<indexterm><primary>empty method</primary>
 <secondary>of Directory class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>INTERSECTION method</secondary>
+<secondary>empty method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="dientr"><title>entry</title>
+<indexterm><primary>entry method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>entry method</secondary>
 <tertiary>of Directory class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-INTERSECTION(argument)--------------------------------------><
+>>-entry(name)-------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the directory entry with name
+<emphasis role="italic">name</emphasis> (translated to uppercase).
+If there is no such entry, <emphasis role="italic">name</emphasis>
+returns the item for any method that 
+<emphasis role="bold">setMethod</emphasis> supplied. If there is
+neither an entry nor a method for <emphasis role="italic">name</emphasis>
+or for <emphasis role="bold">unknown</emphasis>, 
+the language processor raises an error.</para>
+</section>
+
+<section id="dihase"><title>hasEntry</title>
+<indexterm><primary>hasEntry method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>hasEntry method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-hasEntry(name)----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>1</computeroutput> (true) if the directory has
+an entry or a method for name <emphasis role="italic">name</emphasis>
+(translated to uppercase), or <computeroutput>0</computeroutput> (false).</para>
+</section>
+
+<section id="dihasi"><title>hasIndex</title>
+<indexterm><primary>hasIndex method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>hasIndex method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-hasIndex(name)----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>1</computeroutput> (true) if the collection
+contains any item associated with index
+<emphasis role="italic">name</emphasis>, or <computeroutput>0</computeroutput>
+(false).</para>
+</section>
+
+<section id="dihasitem"<title>hasItem</title>
+<indexterm><primary>hasItem method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>hasItem method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="diindex"<title>index</title>
+<indexterm><primary>index method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>index method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="diinte"><title>intersection</title>
+<indexterm><primary>intersection method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>intersection method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-intersection(argument)--------------------------------------><
 ]]>
 </programlisting>
 
@@ -2803,15 +2641,187 @@ The <emphasis role="italic">argument</emphasis> must also allow all of the
 index values in the receiver collection.</para>
 </section>
 
-<section id="disubs"><title>SUBSET</title>
-<indexterm><primary>SUBSET method</primary>
+<section id="diisempty"<title>isEmpty</title>
+<indexterm><primary>isEmpty method</primary>
 <secondary>of Directory class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>SUBSET method</secondary>
+<secondary>isEmpty method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="diitms"><title>items</title>
+<indexterm><primary>items method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>items method</secondary>
 <tertiary>of Directory class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-SUBSET(argument)--------------------------------------------><
+>>-items-------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the number of items in the collection.</para>
+</section>
+
+<section id="dimaka"><title>makeArray</title>
+<indexterm><primary>makeArray method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>makeArray method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-makeArray---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a single-index array containing the index objects. The array
+indexes range from <computeroutput>1</computeroutput> to the number of items.
+The collection items appear in the array in an unspecified order.
+(The program should not rely on any order.)</para>
+</section>
+
+<section id="dirput"><title>put</title>
+<indexterm><primary>put method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>put method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-put(item,name)----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Makes the object <emphasis role="italic">item</emphasis>
+a member item of the collection and associates
+it with index <emphasis role="italic">name</emphasis>.
+The new item replaces any existing item or method
+associated with index <emphasis role="italic">name</emphasis>.</para>
+</section>
+
+<section id="diputall"<title>putAll</title>
+<indexterm><primary>putAll method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>putAll method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="dirrem"><title>remove</title>
+<indexterm><primary>remove method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>remove method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-remove(name)------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns and removes the member item with index
+<emphasis role="italic">name</emphasis> from a collection.
+If a method is associated with 
+<emphasis role="bold">setMethod</emphasis> for index
+<emphasis role="italic">name</emphasis>, 
+<emphasis role="bold">remove</emphasis> removes
+the method and returns the result of running it. If there is no item or method
+with index <emphasis role="italic">name</emphasis>, the 
+<emphasis role="bold">unknown</emphasis> method returns
+the Nil object and removes nothing.</para>
+</section>
+
+<section id="diremovitem"<title>removeItem</title>
+<indexterm><primary>removeItem method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>removeItem method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="disete"><title>setEntry</title>
+<indexterm><primary>setEntry method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>setEntry method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-setEntry(name-+--------+-)----------------------------------><
+                 +-,entry-+
+]]>
+</programlisting>
+
+<para>Sets the directory entry with name
+<emphasis role="italic">name</emphasis> (translated to uppercase)
+to the object <emphasis role="italic">entry</emphasis>, replacing any existing
+entry or method for <emphasis role="italic">name</emphasis>. If you omit
+<emphasis role="italic">entry</emphasis>, this method removes any entry or
+method with this <emphasis role="italic">name</emphasis>.</para>
+</section>
+
+<section id="disetm"><title>setMethod</title>
+<indexterm><primary>setMethod method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>setMethod method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-setMethod(name-+---------+-)--------------------------------><
+                  +-,method-+
+]]>
+</programlisting>
+
+<para>Associates entry name <emphasis role="italic">name</emphasis>
+(translated to uppercase) with method <emphasis role="italic">method</emphasis>.
+Thus, the language processor returns the result of running
+<emphasis role="italic">method</emphasis> when you access this entry.
+This occurs when you specify <emphasis role="italic">name</emphasis> on the
+<emphasis role="bold">at</emphasis>, 
+<emphasis role="bold">entry</emphasis>, or 
+<emphasis role="bold">remove</emphasis> method. This method replaces any existing
+item or method for <emphasis role="italic">name</emphasis>.</para>
+<para>You can specify the name <emphasis role="bold">unknown</emphasis> as
+<emphasis role="italic">name</emphasis>. Doing so supplies a
+method to run whenever an <emphasis role="bold">at</emphasis> or 
+<emphasis role="bold">entry</emphasis> message specifies a name for which no item
+or method exists in the collection. This method's first argument is the
+specified directory index. This method has no effect on the action of any
+<emphasis role="bold">hasEntry</emphasis>, 
+<emphasis role="bold">hasIndex</emphasis>, 
+<emphasis role="bold">items</emphasis>, 
+<emphasis role="bold">remove</emphasis>, or 
+<emphasis role="bold">supplier</emphasis> message sent to the collection.
+</para>
+<para>The <emphasis role="italic">method</emphasis> can be a
+string containing a method source line instead
+of a method object. Alternatively, an array of strings containing individual
+method lines can be passed. In either case, 
+<emphasis role="bold">setMethod</emphasis> creates an equivalent
+method object.</para>
+<para>If you omit <emphasis role="italic">method</emphasis>,
+<emphasis role="bold">setMethod</emphasis> removes the entry with the specified
+<emphasis role="italic">name</emphasis>.</para>
+</section>
+
+<section id="disubs"><title>subset</title>
+<indexterm><primary>subset method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>subset method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-subset(argument)--------------------------------------------><
 ]]>
 </programlisting>
 
@@ -2825,15 +2835,35 @@ The <emphasis role="italic">argument</emphasis> must also allow all of the
 index values in the receiver collection.</para>
 </section>
 
-<section id="diunio"><title>UNION</title>
-<indexterm><primary>UNION method</primary>
+<section id="disupp"><title>supplier</title>
+<indexterm><primary>supplier method</primary>
 <secondary>of Directory class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>UNION method</secondary>
+<secondary>supplier method</secondary>
 <tertiary>of Directory class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-UNION(argument)---------------------------------------------><
+>>-supplier----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a supplier object for the collection. After you have obtained a
+supplier, you can send it messages (see
+<link linkend="supp">The Supplier Class</link>) to enumerate
+all the items that were in the collection at the time of the supplier's
+creation. The supplier enumerates the items in an unspecified order. (The
+program should not rely on any order.)</para>
+</section>
+
+<section id="diunio"><title>union</title>
+<indexterm><primary>union method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>union method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-union(argument)---------------------------------------------><
 ]]>
 </programlisting>
 
@@ -2845,24 +2875,68 @@ the new collection only if there is no item with the same associated index
 in the receiver collection and the method has not already included an item
 with the same index. The order in which this method selects items in
 <emphasis role="italic">argument</emphasis> is unspecified. (The program
-should not rely on any order.) See also the UNION method of the Table
-(<link linkend="taunio">UNION</link>) and Relation
-(<link linkend="reunio">UNION</link>) classes. The
+should not rely on any order.) See also the 
+<emphasis role="bold">union</emphasis> method of the Table
+(<link linkend="taunio">union</link>) and Relation
+(<link linkend="reunio">union</link>) classes. The
 <emphasis role="italic">argument</emphasis> can be any object described
 in <link linkend="parmcoll">The Argument Collection Classes</link>. The
 <emphasis role="italic">argument</emphasis> must also allow all of the
 index values in the receiver collection.</para>
 </section>
 
-<section id="dixor"><title>XOR</title>
-<indexterm><primary>XOR method</primary>
+<section id="diunkn"><title>unknown</title>
+<indexterm><primary>unknown method</primary>
 <secondary>of Directory class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>XOR method</secondary>
+<secondary>unknown method</secondary>
 <tertiary>of Directory class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-XOR(argument)-----------------------------------------------><
+>>-unknown(messagename,messageargs)----------------------------><
+]]>
+</programlisting>
+
+<para>Runs either the <emphasis role="bold">entry</emphasis> or 
+<emphasis role="bold">setEntry</emphasis> method, depending on whether
+<emphasis role="italic">messagename</emphasis> ends with an equal sign. If
+<emphasis role="italic">messagename</emphasis> does not end with an
+equal sign, this method runs the 
+<emphasis role="bold">entry</emphasis> method, passing
+<emphasis role="italic">messagename</emphasis> as
+its argument. The language processor ignores any arguments specified in the
+array <emphasis role="italic">messageargs</emphasis>. In this case, 
+<emphasis role="bold">unknown</emphasis>
+returns the result of the <emphasis role="bold">entry</emphasis> method.</para>
+<para>If <emphasis role="italic">messagename</emphasis> does end with an equal
+sign, this method runs the 
+<emphasis role="bold">setEntry</emphasis> method, passing the first part of
+<emphasis role="italic">messagename</emphasis> (up to, but
+not including, the final equal sign) as its first argument, and the first
+item in the array <emphasis role="italic">messageargs</emphasis>
+as its second argument. In this case, 
+<emphasis role="bold">unknown</emphasis> returns no result.</para>
+</section>
+
+<section id="disetMethod"<title>setMethod</title>
+<indexterm><primary>setMethod method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>setMethod method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="dixor"><title>xor</title>
+<indexterm><primary>xor method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>xor method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-xor(argument)-----------------------------------------------><
 ]]>
 </programlisting>
 
@@ -2887,7 +2961,7 @@ index values in the receiver collection.</para>
 
 /* Define an UNKNOWN method that adds an abbreviation lookup feature.         */
 /* Directories do not have to have an UNKNOWN method.                         */
-book = .directory~new~~setmethod("UNKNOWN", .methods["UNKNOWN"])
+book = .directory~new~~setMethod("UNKNOWN", .methods["UNKNOWN"])
 
 book["ANN" ] = "Ann B. ....... 555-6220"
 book["ann" ] = "Little annie . 555-1234"
@@ -2913,7 +2987,7 @@ Exit
 
 /* Define an unknown method to handle indexes not found.                      */
 /* Check for abbreviations or indicate listing not found                      */
-::Method UNKNOWN
+::Method unknown
   Parse arg at_index
   value = ""
   Do i over self
@@ -2925,6 +2999,143 @@ Exit
   If value = "" then value = "No listing found for" at_index
   Return value
 </programlisting>
+</section>
+</section>
+
+<section id="properties"><title>The Properties Class</title>
+<indexterm><primary>Properties class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>Properties class</secondary></indexterm>
+<figure><title>The Properties class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxPropertiesClass.png" align="left" scale="80">
+</imageobject>
+</mediaobject>
+</figure>
+<note><title>Note</title>
+<para>The properties class also has available class methods that
+its metaclass, the Class class, defines.</para></note>
+
+<section id="proploadcls"<title>load (Class method)</title>
+<indexterm><primary>load method</primary>
+<secondary>of Properties class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>load method</secondary>
+<tertiary>of Properties class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="propnew"<title>new (Class method)</title>
+<indexterm><primary>new method</primary>
+<secondary>of Properties class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>new method</secondary>
+<tertiary>of Properties class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="propputset"<title>[]</title>
+<indexterm><primary>[] method</primary>
+<secondary>of Properties class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>[] method</secondary>
+<tertiary>of Properties class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="propgetlogical"<title>getLogical</title>
+<indexterm><primary>getLogical method</primary>
+<secondary>of Properties class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>getLogical method</secondary>
+<tertiary>of Properties class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="propgetproperty"<title>getProperty</title>
+<indexterm><primary>getProperty method</primary>
+<secondary>of Properties class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>getProperty method</secondary>
+<tertiary>of Properties class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="propgetwhole"<title>getWhole</title>
+<indexterm><primary>getWhole method</primary>
+<secondary>of Properties class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>getWhole method</secondary>
+<tertiary>of Properties class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="propload"<title>load</title>
+<indexterm><primary>load method</primary>
+<secondary>of Properties class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>load method</secondary>
+<tertiary>of Properties class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="propput"<title>put</title>
+<indexterm><primary>put method</primary>
+<secondary>of Properties class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>put method</secondary>
+<tertiary>of Properties class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="propsave"<title>save</title>
+<indexterm><primary>save method</primary>
+<secondary>of Properties class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>save method</secondary>
+<tertiary>of Properties class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="propsetlogical"<title>setLogical</title>
+<indexterm><primary>setLogical method</primary>
+<secondary>of Properties class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>setLogical method</secondary>
+<tertiary>of Properties class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="propsetproperty"<title>setProperty</title>
+<indexterm><primary>setProperty method</primary>
+<secondary>of Properties class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>setProperty method</secondary>
+<tertiary>of Properties class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="propsetwhole"<title>setWhole</title>
+<indexterm><primary>setWhole method</primary>
+<secondary>of Properties class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>setWhole method</secondary>
+<tertiary>of Properties class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
 </section>
 </section>
 
