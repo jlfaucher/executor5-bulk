@@ -1393,22 +1393,32 @@ interpret &apos;say "Hello"&apos; indirect&apos;"!"&apos;
 run, you get the following trace: </para>
 <programlisting>
 C:\>RexxC kitty
-3 *-* name=&apos;Kitty&apos;
+3 *-* name="Kitty"
   >L>   "Kitty"
-4 *-* indirect=&apos;name&apos;
+  >>>   "Kitty"
+4 *-* indirect="name"
   >L>   "name"
-5 *-* interpret &apos;say "Hello"&apos; indirect&apos;"!"&apos;
+  >>>   "name"
+5 *-* interpret 'say "Hello"' indirect'"!"'
   >L>   "say "Hello""
+  =V=   "INDIRECT"
   >V>   "name"
+  =O=   " "
   >O>   "say "Hello" name"
   >L>   ""!""
+  =O=   ""
   >O>   "say "Hello" name"!""
-  *-*  say "Hello" name"!"
-  >L>    "Hello"
-  >V>    "Kitty"
-  >O>    "Hello Kitty"
-  >L>    "!"
-  >O>    "Hello Kitty!"
+  >>>   "say "Hello" name"!""
+5 *-* say "Hello" name"!"
+  >L>   "Hello"
+  =V=   "NAME"
+  >V>   "Kitty"
+  =O=   " "
+  >O>   "Hello Kitty"
+  >L>   "!"
+  =O=   ""
+  >O>   "Hello Kitty!"
+  >>>   "Hello Kitty!"
 Hello Kitty!
 C:\>
 </programlisting>
@@ -3228,18 +3238,42 @@ subroutine call, or a value evaluated by execution of a DO loop.
 </variablelist><para> The following prefixes are used only if
 <computeroutput>TRACE Intermediates</computeroutput> is in effect:</para>
 <variablelist>
-<varlistentry><term><computeroutput>>C></computeroutput>
-<indexterm><primary>>C> tracing flag</primary></indexterm>
+<varlistentry><term><computeroutput>>,></computeroutput>
 <indexterm><primary>flag, tracing</primary>
-<secondary>>C></secondary></indexterm>
+<secondary>>,></secondary></indexterm>
 <indexterm><primary>tracing flag</primary>
-<secondary>>C></secondary></indexterm>
+<secondary>>,></secondary></indexterm>
+<indexterm><primary>>,> tracing flag</primary></indexterm>
+</term>
+<listitem><para>Identifies the value used as a function, subroutine, or message argument.
+</para></listitem></varlistentry>
+<varlistentry><term><computeroutput>=C=</computeroutput>
 </term>
 <listitem><para>The data traced is the name of a compound variable,
 after the name has
 been replaced by the value of the variable but before the variable is used.
 If no value was assigned to the variable, the trace shows the variable in
 uppercase characters.
+</para></listitem></varlistentry>
+<varlistentry><term><computeroutput>>D></computeroutput>
+<indexterm><primary>flag, tracing</primary>
+<secondary>>D></secondary></indexterm>
+<indexterm><primary>tracing flag</primary>
+<secondary>>D></secondary></indexterm>
+<indexterm><primary>>D> tracing flag</primary></indexterm>
+</term>
+<listitem><para>The data traced is the contents of a "dot" variable symbol.
+</para></listitem></varlistentry>
+<varlistentry><term><computeroutput>=D=</computeroutput>
+<indexterm><primary>flag, tracing</primary>
+<secondary>=V=</secondary></indexterm>
+<indexterm><primary>tracing flag</primary>
+<secondary>=V=</secondary></indexterm>
+<indexterm><primary>=V= tracing flag</primary></indexterm>
+</term>
+<listitem><para>The data traced is the name of a "dot" variable symbol.
+This will be followed immediatly by the variable value, tagged with a
+">D>" flag.
 </para></listitem></varlistentry>
 <varlistentry><term><computeroutput>>F></computeroutput>
 <indexterm><primary>flag, tracing</primary>
@@ -3249,6 +3283,17 @@ uppercase characters.
 <indexterm><primary>>F> tracing flag</primary></indexterm>
 </term>
 <listitem><para>The data traced is the result of a function call.
+</para></listitem></varlistentry>
+<varlistentry><term><computeroutput>=F=</computeroutput>
+<indexterm><primary>flag, tracing</primary>
+<secondary>=F=</secondary></indexterm>
+<indexterm><primary>tracing flag</primary>
+<secondary>=F=</secondary></indexterm>
+<indexterm><primary>=F= tracing flag</primary></indexterm>
+</term>
+<listitem><para>The data traced is the name of a function call.
+This will be followed immediately by the function call result, tagged
+with a ">F>" flag.
 </para></listitem></varlistentry>
 <varlistentry><term><computeroutput>>L></computeroutput>
 <indexterm><primary>flag, tracing</primary>
@@ -3269,6 +3314,17 @@ or constant symbol).
 </term>
 <listitem><para>The data traced is the result of a message.
 </para></listitem></varlistentry>
+<varlistentry><term><computeroutput>=M=</computeroutput>
+<indexterm><primary>flag, tracing</primary>
+<secondary>=M=</secondary></indexterm>
+<indexterm><primary>tracing flag</primary>
+<secondary>=M=</secondary></indexterm>
+<indexterm><primary>=M= tracing flag</primary></indexterm>
+</term>
+<listitem><para>The data traced is the name of a message.
+This will be followed immediatly by the message result, tagged with a
+">M>" flag.
+</para></listitem></varlistentry>
 <varlistentry><term><computeroutput>>O></computeroutput>
 <indexterm><primary>flag, tracing</primary>
 <secondary>>O></secondary></indexterm>
@@ -3277,6 +3333,17 @@ or constant symbol).
 <indexterm><primary>>O> tracing flag</primary></indexterm>
 </term>
 <listitem><para>The data traced is the result of an operation on two terms.
+</para></listitem></varlistentry>
+<varlistentry><term><computeroutput>=O=</computeroutput>
+<indexterm><primary>flag, tracing</primary>
+<secondary>=O=</secondary></indexterm>
+<indexterm><primary>tracing flag</primary>
+<secondary>=O=</secondary></indexterm>
+<indexterm><primary>=O= tracing flag</primary></indexterm>
+</term>
+<listitem><para>The data traced is the name of an operation on two terms.
+This will be followed immediatly by the operation result, tagged with a
+">O>" flag.
 </para></listitem></varlistentry>
 <varlistentry><term><computeroutput>>P></computeroutput>
 <indexterm><primary>flag, tracing</primary>
@@ -3287,6 +3354,17 @@ or constant symbol).
 </term>
 <listitem><para>The data traced is the result of a prefix operation.
 </para></listitem></varlistentry>
+<varlistentry><term><computeroutput>=P=</computeroutput>
+<indexterm><primary>flag, tracing</primary>
+<secondary>=P=</secondary></indexterm>
+<indexterm><primary>tracing flag</primary>
+<secondary>=P=</secondary></indexterm>
+<indexterm><primary>=P= tracing flag</primary></indexterm>
+</term>
+<listitem><para>The data traced is the name of a prefix operation.
+This will be followed immediatly by the operation result, tagged with a
+">P>" flag.
+</para></listitem></varlistentry>
 <varlistentry><term><computeroutput>>V></computeroutput>
 <indexterm><primary>flag, tracing</primary>
 <secondary>>V></secondary></indexterm>
@@ -3295,6 +3373,17 @@ or constant symbol).
 <indexterm><primary>>V> tracing flag</primary></indexterm>
 </term>
 <listitem><para>The data traced is the contents of a variable.
+</para></listitem></varlistentry>
+<varlistentry><term><computeroutput>=V=</computeroutput>
+<indexterm><primary>flag, tracing</primary>
+<secondary>=V=</secondary></indexterm>
+<indexterm><primary>tracing flag</primary>
+<secondary>=V=</secondary></indexterm>
+<indexterm><primary>=V= tracing flag</primary></indexterm>
+</term>
+<listitem><para>The data traced is the name of a variable.
+This will be followed immediatly by the variable value, tagged with a
+">V>" flag.
 </para></listitem></varlistentry>
 </variablelist>
 <para>If no option is specified on a TRACE instruction, or if the result of
