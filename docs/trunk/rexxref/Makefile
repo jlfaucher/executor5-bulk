@@ -104,6 +104,7 @@ IMAGE_FILES = ooRexxObjectClass.png \
               ooRexxInputStreamClass.png \
               ooRexxInputOutputStreamClass.png \
               ooRexxOutputStreamClass.png \
+              ooRexxComparableClass.png \
               rxo90004.jpg \
 	      rxo90005.jpg \
 	      rxo90006.jpg \
