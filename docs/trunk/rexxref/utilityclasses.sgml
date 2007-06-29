@@ -48,48 +48,34 @@
 <indexterm><primary>Alarm class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>Alarm class</secondary></indexterm>
+<figure><title>The Alarm class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxAlarmClass.png" align="left">
+</imageobject>
+</mediaobject>
+</figure>
+<note><title>Note</title>
+<para>The Alarm class also has available class methods that its
+metaclass, the <link linkend="clss">Class class</link>, defines.</para></note>
+
 <para>An alarm object provides timing and
 notification capability by supplying a facility to send any message to any
 object at a given time. You can cancel an alarm before it sends its message.
 </para>
-<para>The Alarm class is a subclass of the Object class.</para>
-<para><emphasis role="bold">Methods the Alarm class defines:</emphasis></para>
-<simplelist>
-<member>CANCEL</member>
-<member>INIT (Overrides Object class method)</member>
-</simplelist>
-<para><emphasis role="bold">Methods inherited from the Object class:</emphasis>
-</para>
-<simplelist>
-<member>NEW (Class Method)</member>
-<member>Operator methods:&nbsp;&nbsp;=, ==, \=, >&lt;, &lt;>, \==</member>
-<member>CLASS</member>
-<member>COPY</member>
-<member>DEFAULTNAME</member>
-<member>HASMETHOD</member>
-<member>OBJECTNAME</member>
-<member>OBJECTNAME=</member>
-<member>REQUEST</member>
-<member>RUN</member>
-<member>SETMETHOD</member>
-<member>START</member>
-<member>STRING</member>
-<member>UNSETMETHOD</member>
-</simplelist>
+<para>The Alarm class is a subclass of the 
+Object class.</para>
 
-<note><title>Note</title>
-<para>The Alarm class also has available class methods that its
-metaclass, the Class class, defines.</para></note>
-
-<section id="alcan"><title>CANCEL</title>
-<indexterm><primary>CANCEL method</primary>
+<section id="alcan"><title>cancel</title>
+<indexterm><primary>cancel method</primary>
 <secondary>of Alarm class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>CANCEL method</secondary>
+<secondary>cancel method</secondary>
 <tertiary>of Alarm class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-CANCEL------------------------------------------------------><
+>>-cancel------------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -97,15 +83,15 @@ metaclass, the Class class, defines.</para></note>
 takes no action if the specified time has already been reached.</para>
 </section>
 
-<section id="alini"><title>INIT</title>
-<indexterm><primary>INIT method</primary>
+<section id="alini"><title>init</title>
+<indexterm><primary>init method</primary>
 <secondary>of Alarm class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>INIT method</secondary>
+<secondary>init method</secondary>
 <tertiary>of Alarm class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-INIT(atime,message)-----------------------------------------><
+>>-init(atime,message)-----------------------------------------><
 ]]>
 </programlisting>
 
@@ -122,7 +108,8 @@ after the time with a single blank separating the time and date. Leading and
 trailing blanks are not allowed in the
 <emphasis role="italic">atime</emphasis>. If you do not
 specify a date, the language processor uses the first future occurrence of the
-specified time. You can use the CANCEL method to cancel a pending alarm. See
+specified time. You can use the <emphasis role="bold">cancel</emphasis> 
+method to cancel a pending alarm. See
 <link linkend="creo">Initialization</link> for more information.</para>
 </section>
 
@@ -139,13 +126,13 @@ msg=.message~new(PersonalMessage,"RemindMe")
 
 a=.alarm~new("17:10:00 8 Oct 1996", msg)
 exit
-/* <link linkend="clasdi">::CLASS</link>  describes the ::CLASS directive */
-/* <link linkend="methd">::METHOD</link>  describes the ::METHOD directive */
-::CLASS MyMessageClass public
-::Method init
+/* <link linkend="clasdi">::Class</link>  describes the ::CLASS directive */
+/* <link linkend="methd">::Method</link>  describes the ::METHOD directive */
+::class MyMessageClass public
+::method init
 expose inmsg
 use arg inmsg
-::Method RemindMe
+::method RemindMe
 expose inmsg
 say "It is now" "TIME"("C")".Please "inmsg
 /* On the specified data and time, displays the following message: */
