@@ -45,71 +45,298 @@
 <para>This section describes the ooRexx classes which implement the classic
 Rexx data streams.</para>
 
+<section id="istream"><title>The InputStream Class</title>
+<indexterm><primary>InputStream class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>InputStream class</secondary></indexterm>
+<figure><title>The InputStream class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxInputStreamClass.png" align="left" scale="80">
+</imageobject>
+</mediaobject>
+</figure>
+<note><title>Note</title>
+<para>The InputStream class also has available class methods that its
+metaclass, the Class class, defines.</para></note>
+<para>This class is defined as an abstract mixin class. It must be implemented 
+by subclassing it or inherting from it as a mixin. All the methods in this
+must be overridden or they will throw a syntax error when invoked.</para>
+
+<section id="istmari"><title>arrayIn</title>
+<indexterm><primary>arrayIn method</primary>
+<secondary>of InputStream class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>arrayIn method</secondary>
+<tertiary>of InputStream class</tertiary></indexterm>
+<para>This method is defined as an abstract method. Invoking it will cause
+syntax error 93.963 to be raised.</para>
+</section>
+
+<section id="icharim"><title>charIn</title>
+<indexterm><primary>charIn method</primary>
+<secondary>of InputStream class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>charIn method</secondary>
+<tertiary>of InputStream class</tertiary></indexterm>
+<para>This method is defined as an abstract method. Invoking it will cause
+syntax error 93.963 to be raised.</para>
+</section>
+
+<section id="icharom"><title>charOut</title>
+<indexterm><primary>charOut method</primary>
+<secondary>of InputStream class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>charOut method</secondary>
+<tertiary>of InputStream class</tertiary></indexterm>
+<para>This method is a NOP method.</para>
+</section>
+
+<section id="icharsm"><title>chars</title>
+<indexterm><primary>chars method</primary>
+<secondary>of InputStream class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>chars method</secondary>
+<tertiary>of InputStream class</tertiary></indexterm>
+<para>This method is defined as an abstract method. Invoking it will cause
+syntax error 93.963 to be raised.</para>
+</section>
+
+<section id="istclos"><title>close</title>
+<indexterm><primary>close method</primary>
+<secondary>of InputStream class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>close method</secondary>
+<tertiary>of InputStream class</tertiary></indexterm>
+<para>This method is defined as an abstract method. Invoking it will cause
+syntax error 93.963 to be raised.</para>
+</section>
+
+<section id="ilinein1"><title>lineIn</title>
+<indexterm><primary>lineIn method</primary>
+<secondary>of InputStream class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>lineIn method</secondary>
+<tertiary>of InputStream class</tertiary></indexterm>
+<para>This method is defined as an abstract method. Invoking it will cause
+syntax error 93.963 to be raised.</para>
+</section>
+
+<section id="ilineom"><title>lineOut</title>
+<indexterm><primary>lineOut method</primary>
+<secondary>of InputStream class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>lineOut method</secondary>
+<tertiary>of InputStream class</tertiary></indexterm>
+<para>This method is a NOP method.</para>
+</section>
+
+<section id="ilinesm"><title>lines</title>
+<indexterm><primary>lines method</primary>
+<secondary>of InputStream class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>lines method</secondary>
+<tertiary>of InputStream class</tertiary></indexterm>
+<para>This method is defined as an abstract method. Invoking it will cause
+syntax error 93.963 to be raised.</para>
+</section>
+
+<section id="istopen"><title>open</title>
+<indexterm><primary>open method</primary>
+<secondary>of InputStream class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>open method</secondary>
+<tertiary>of InputStream class</tertiary></indexterm>
+<para>This method is a NOP method.</para>
+</section>
+
+<section id="istposi"><title>position</title>
+<indexterm><primary>position method</primary>
+<secondary>of InputStream class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>position method</secondary>
+<tertiary>of InputStream class</tertiary></indexterm>
+<para>This method is defined as an abstract method. Invoking it will cause
+syntax error 93.963 to be raised.</para>
+</section>
+
+</section>
+
+<section id="ostream"><title>The OutputStream Class</title>
+<indexterm><primary>OutputStream class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>OutputStream class</secondary></indexterm>
+<figure><title>The OutputStream class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxOutputStreamClass.png" align="left" scale="80">
+</imageobject>
+</mediaobject>
+</figure>
+<note><title>Note</title>
+<para>The InputStream class also has available class methods that its
+metaclass, the Class class, defines.</para></note>
+<para>This class is defined as an abstract mixin class. It must be implemented 
+by subclassing it or inherting from it as a mixin. All the methods in this
+must be overridden or they will throw a syntax error when invoked.</para>
+
+<section id="ostmaro"><title>arrayOut</title>
+<indexterm><primary>arrayOut method</primary>
+<secondary>of OutputStream class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>arrayOut method</secondary>
+<tertiary>of OutputStream class</tertiary></indexterm>
+<para>This method is defined as an abstract method. Invoking it will cause
+syntax error 93.963 to be raised.</para>
+</section>
+
+<section id="ocharim"><title>charIn</title>
+<indexterm><primary>charIn method</primary>
+<secondary>of OutputStream class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>charIn method</secondary>
+<tertiary>of OutputStream class</tertiary></indexterm>
+<para>This method is defined as an abstract method. Invoking it will cause
+syntax error 93.963 to be raised.</para>
+</section>
+
+<section id="ocharom"><title>charOut</title>
+<indexterm><primary>charOut method</primary>
+<secondary>of OutputStream class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>charOut method</secondary>
+<tertiary>of OutputStream class</tertiary></indexterm>
+<para>This method is a NOP method.</para>
+</section>
+
+<section id="ocharsm"><title>chars</title>
+<indexterm><primary>chars method</primary>
+<secondary>of OutputStream class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>chars method</secondary>
+<tertiary>of OutputStream class</tertiary></indexterm>
+<para>This method is defined as an abstract method. Invoking it will cause
+syntax error 93.963 to be raised.</para>
+</section>
+
+<section id="ostclos"><title>close</title>
+<indexterm><primary>close method</primary>
+<secondary>of OutputStream class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>close method</secondary>
+<tertiary>of OutputStream class</tertiary></indexterm>
+<para>This method is defined as an abstract method. Invoking it will cause
+syntax error 93.963 to be raised.</para>
+</section>
+
+<section id="olinein1"><title>lineIn</title>
+<indexterm><primary>lineIn method</primary>
+<secondary>of OutputStream class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>lineIn method</secondary>
+<tertiary>of OutputStream class</tertiary></indexterm>
+<para>This method is defined as an abstract method. Invoking it will cause
+syntax error 93.963 to be raised.</para>
+</section>
+
+<section id="olineom"><title>lineOut</title>
+<indexterm><primary>lineOut method</primary>
+<secondary>of OutputStream class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>lineOut method</secondary>
+<tertiary>of OutputStream class</tertiary></indexterm>
+<para>This method is a NOP method.</para>
+</section>
+
+<section id="olinesm"><title>lines</title>
+<indexterm><primary>lines method</primary>
+<secondary>of OutputStream class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>lines method</secondary>
+<tertiary>of OutputStream class</tertiary></indexterm>
+<para>This method is defined as an abstract method. Invoking it will cause
+syntax error 93.963 to be raised.</para>
+</section>
+
+<section id="ostopen"><title>open</title>
+<indexterm><primary>open method</primary>
+<secondary>of OutputStream class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>open method</secondary>
+<tertiary>of OutputStream class</tertiary></indexterm>
+<para>This method is a NOP method.</para>
+</section>
+
+<section id="ostposi"><title>position</title>
+<indexterm><primary>position method</primary>
+<secondary>of OutputStream class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>position method</secondary>
+<tertiary>of OutputStream class</tertiary></indexterm>
+<para>This method is defined as an abstract method. Invoking it will cause
+syntax error 93.963 to be raised.</para>
+</section>
+
+</section>
+
+<section id="iostream"><title>The InputOutputStream Class</title>
+<indexterm><primary>InputOutputStream class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>InputOutputStream class</secondary></indexterm>
+<figure><title>The InputOutputStream class</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxInputOutputStreamClass.png" align="left" scale="80">
+</imageobject>
+</mediaobject>
+</figure>
+<note><title>Note</title>
+<para>The InputOutputStream class also has available class methods that its
+metaclass, the Class class, defines. It also has all the methods of its
+two mixin classes, 
+<link linkend="istream">InputStream</link> and 
+<link linkend="ostream">OutputStream</link>, available.</para></note>
+<para>This class is defined as an abstract class. It must be implemented 
+by subclassing it. All the methods from its mixin classes
+must be overridden or they will throw a syntax error when invoked.</para>
+
+</section>
+
 <section id="strcl"><title>The Stream Class</title>
 <indexterm><primary>Stream class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>Stream class</secondary></indexterm>
+<figure><title>The Stream class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxStreamClass.png" align="left" scale="80">
+</imageobject>
+</mediaobject>
+</figure>
+<note><title>Note</title>
+<para>The Stream class also has available class methods that its
+metaclass, the Class class, defines. It also inherits from the 
+<link linkend="iostream">InputOutputStream class</link>.</para></note>
+
 <para>A stream object allows external communication from
 Rexx. (See <link linkend="iostrms">Input and Output Streams</link> for a
 discussion of Rexx input and output.)</para>
-<para>The Stream class is a subclass of the Object class.</para>
-<para><emphasis role="bold">Methods the Stream class defines:</emphasis></para>
-<simplelist>
-<member>ARRAYIN</member>
-<member>ARRAYOUT</member>
-<member>CHARIN</member>
-<member>CHAROUT</member>
-<member>CHARS</member>
-<member>CLOSE</member>
-<member>COMMAND</member>
-<member>DESCRIPTION</member>
-<member>FLUSH</member>
-<member>LINEIN</member>
-<member>LINEOUT</member>
-<member>LINES</member>
-<member>MAKEARRAY</member>
-<member>OPEN</member>
-<member>POSITION</member>
-<member>QUALIFY</member>
-<member>QUERY</member>
-<member>SAY</member>
-<member>SEEK</member>
-<member>STATE</member>
-<member>SUPPLIER</member>
-<member>UNINIT</member>
-</simplelist>
-<para><emphasis role="bold">Methods inherited from the Object class:</emphasis>
-</para>
-<simplelist>
-<member>NEW (Class method)</member>
-<member>Operator methods:&nbsp;&nbsp;=, ==, \=, >&lt;, &lt;>, \==</member>
-<member>CLASS</member>
-<member>COPY</member>
-<member>DEFAULTNAME</member>
-<member>HASMETHOD</member>
-<member>OBJECTNAME</member>
-<member>OBJECTNAME=</member>
-<member>REQUEST</member>
-<member>RUN</member>
-<member>SETMETHOD</member>
-<member>START</member>
-<member>STRING</member>
-<member>UNSETMETHOD</member>
-</simplelist>
+<para>The Stream class is a subclass of the 
+<link linkend="iostream">InputOutputStream class</link>.</para>
 
-<note><title>Note</title>
-<para>The Stream class also has available class methods that its
-metaclass, the Class class, defines.</para></note>
-
-<section id="strmnew"><title>NEW</title>
-<indexterm><primary>NEW method</primary>
+<section id="strmnew"><title>new</title>
+<indexterm><primary>new method</primary>
 <secondary>of Stream class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>NEW method</secondary>
+<secondary>new method</secondary>
 <tertiary>of Stream class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-NEW(name)---------------------------------------------------><
+>>-new(name)---------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -119,59 +346,71 @@ See <link linkend="creo">Initialization</link> for
 more information. Returns the new stream object</para>
 </section>
 
-<section id="stmari"><title>ARRAYIN</title>
-<indexterm><primary>ARRAYIN method</primary>
+<section id="stmari"><title>arrayIn</title>
+<indexterm><primary>arrayIn method</primary>
 <secondary>of Stream class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>ARRAYIN method</secondary>
+<secondary>arrayIn method</secondary>
 <tertiary>of Stream class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
             +-(LINES)-+
->>-ARRAYIN--+---------+----------------------------------------><
+>>-arrayIn--+---------+----------------------------------------><
             +-(CHARS)-+
 ]]>
 </programlisting>
 
+<para>This method overrides the
+<link linkend="istmari">arrayIn method</link> from the
+<link linkend="istream">InputStream class</link>.</para>
 <para>Returns a fixed array that contains the data of the stream in line or
 character format, starting from the current read position. The line format is
 the default.</para>
-<para>If you have used the CHARIN method, the first line can be a partial line.
+<para>If you have used the <emphasis role="bold">charIn</emphasis>
+method, the first line can be a partial line.
 </para>
 </section>
 
-<section id="stmaro"><title>ARRAYOUT</title>
-<indexterm><primary>ARRAYOUT method</primary>
+<section id="stmaro"><title>arrayOut</title>
+<indexterm><primary>arrayOut method</primary>
 <secondary>of Stream class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>ARRAYOUT method</secondary>
+<secondary>arrayOut method</secondary>
 <tertiary>of Stream class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
                   +-,--LINES-+
->>-ARRAYOUT(array-+----------+-)-------------------------------><
+>>-arrayOut(array-+----------+-)-------------------------------><
                   +-,--CHARS-+
 ]]>
 </programlisting>
 
+<para>This method overrides the
+<link linkend="ostmaro">arrayOut method</link> from the
+<link linkend="ostream">OutputStream class</link>.</para>
 <para>Returns a stream object that contains the data from
 <emphasis role="italic">array</emphasis>.</para>
 </section>
 
-<section id="charim"><title>CHARIN</title>
-<indexterm><primary>CHARIN method</primary>
+<section id="charim"><title>charIn</title>
+<indexterm><primary>charIn method</primary>
 <secondary>of Stream class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>CHARIN method</secondary>
+<secondary>charIn method</secondary>
 <tertiary>of Stream class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-CHARIN-+----------------------------+-----------------------><
+>>-charIn-+----------------------------+-----------------------><
           +-(-+-------+--+---------+-)-+
               +-start-+  +-,length-+
 ]]>
 </programlisting>
 
+<para>This method overrides the
+<link linkend="icharim">charIn method</link> from the
+<link linkend="istream">InputStream class</link> and the
+<link linkend="ocharim">charIn method</link> from the
+<link linkend="ostream">OutputStream class</link>.</para>
 <para>Returns a string of up to <emphasis role="italic">length</emphasis>
 characters from the character input stream receiving the message. The language
 processor advances the read pointer. If you omit
@@ -185,28 +424,34 @@ processor opens the stream for read only. (See
 about the CHARIN built-in function.)</para>
 </section>
 
-<section id="charom"><title>CHAROUT</title>
-<indexterm><primary>CHAROUT method</primary>
+<section id="charom"><title>charOut</title>
+<indexterm><primary>charOut method</primary>
 <secondary>of Stream class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>CHAROUT method</secondary>
+<secondary>charOut method</secondary>
 <tertiary>of Stream class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-CHAROUT-+----------------------------+----------------------><
+>>-charOut-+----------------------------+----------------------><
            +-(-+--------+--+--------+-)-+
                +-string-+  +-,start-+
 ]]>
 </programlisting>
 
+<para>This method overrides the
+<link linkend="icharom">charOut method</link> from the
+<link linkend="istream">InputStream class</link> and the
+<link linkend="ocharom">charOut method</link> from the
+<link linkend="ostream">OutputStream class</link>.</para>
 <para>Returns the count of characters remaining after trying to write
 <emphasis role="italic">string</emphasis> to the character output stream
 receiving the message. The language processor
 advances the write pointer.</para>
 <para>The <emphasis role="italic">string</emphasis> can be the null string.
-In this case, CHAROUT writes
+In this case, <emphasis role="bold">charOut</emphasis> writes
 no characters to the stream and returns <computeroutput>0</computeroutput>.
-If you omit <emphasis role="italic">string</emphasis>, CHAROUT writes no
+If you omit <emphasis role="italic">string</emphasis>, 
+<emphasis role="bold">charOut</emphasis> writes no
 characters to the stream and returns <computeroutput>0</computeroutput>.
 The language processor closes the stream.</para>
 <para>If you specify <emphasis role="italic">start</emphasis>, this positions
@@ -218,18 +463,23 @@ opens the stream for write only. (See <link linkend="charout">CHAROUT
 about the CHAROUT built-in function.)</para>
 </section>
 
-<section id="charsm"><title>CHARS</title>
-<indexterm><primary>CHARS method</primary>
+<section id="charsm"><title>chars</title>
+<indexterm><primary>chars method</primary>
 <secondary>of Stream class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>CHARS method</secondary>
+<secondary>chars method</secondary>
 <tertiary>of Stream class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-CHARS-------------------------------------------------------><
+>>-chars-------------------------------------------------------><
 ]]>
 </programlisting>
 
+<para>This method overrides the
+<link linkend="icharsm">chars method</link> from the
+<link linkend="istream">InputStream class</link> and the
+<link linkend="ocharsm">chars method</link> from the
+<link linkend="ostream">OutputStream class</link>.</para>
 <para>Returns the total number of characters remaining in the
 character input stream receiving the message. The default input stream is
 STDIN. The count includes any line separator characters, if these are defined
@@ -246,34 +496,41 @@ CHARS always returns <computeroutput>1</computeroutput>. (See
 about the CHARS built-in function.)</para>
 </section>
 
-<section id="stclos"><title>CLOSE</title>
-<indexterm><primary>CLOSE method</primary>
+<section id="stclos"><title>close</title>
+<indexterm><primary>close method</primary>
 <secondary>of Stream class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>CLOSE method</secondary>
+<secondary>close method</secondary>
 <tertiary>of Stream class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-CLOSE-------------------------------------------------------><
+>>-close-------------------------------------------------------><
 ]]>
 </programlisting>
 
-<para>Closes the stream that receives the message. CLOSE returns
+<para>This method overrides the
+<link linkend="istclos">close method</link> from the
+<link linkend="istream">InputStream class</link> and the
+<link linkend="ostclos">close method</link> from the
+<link linkend="ostream">OutputStream class</link>.</para>
+<para>Closes the stream that receives the message. 
+<emphasis role="bold">close</emphasis> returns
 <computeroutput>READY:</computeroutput> if closing the stream is successful,
 or an appropriate error message.
-If you have tried to close an unopened file, then the CLOSE method returns
+If you have tried to close an unopened file, then the 
+<emphasis role="bold">close</emphasis> method returns
 a null string (&quot;&quot;).</para>
 </section>
 
-<section id="cmdmet"><title>COMMAND</title>
-<indexterm><primary>COMMAND method</primary>
+<section id="cmdmet"><title>command</title>
+<indexterm><primary>command method</primary>
 <secondary>of Stream class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>COMMAND method</secondary>
+<secondary>command method</secondary>
 <tertiary>of Stream class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-COMMAND(stream_command)-------------------------------------><
+>>-command(stream_command)-------------------------------------><
 ]]>
 </programlisting>
 
@@ -290,7 +547,8 @@ and can be the null string. The following
 <listitem><para>Get information about a stream</para></listitem></itemizedlist>
 
 <para>If the method is unsuccessful, it returns an error message
-string in the same form that the DESCRIPTION method uses.</para>
+string in the same form that the 
+<emphasis role="bold">description</emphasis> method uses.</para>
 <para>For most error conditions, the additional information is in the form of
 a numeric return code. This return code is the value of
 <computeroutput>ERRNO</computeroutput> that
@@ -433,13 +691,13 @@ that of the file). The <emphasis role="italic">length</emphasis> must be
 </variablelist>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>COMMAND method</secondary>
+<secondary>command method</secondary>
 <tertiary>OPEN option</tertiary></indexterm>
 <programlisting>
-stream_name~Command("open")
-stream_name~Command("open write")
-stream_name~Command("open read")
-stream_name~Command("open read shared")
+stream_name~command("open")
+stream_name~command("open write")
+stream_name~command("open read")
+stream_name~command("open read shared")
 </programlisting>
 </listitem></varlistentry>
 <varlistentry><term>CLOSE</term>
@@ -489,7 +747,8 @@ forward from the current read or write position.
 backward from the current read or write position.
 </para></listitem></varlistentry>
 </variablelist>
-<para>The COMMAND method with the SEEK option returns the new position
+<para>The <emphasis role="bold">command</emphasis>
+method with the SEEK option returns the new position
 in the stream if the read or write position is successfully located, or an
 appropriate error message.</para>
 <para>The following is a description of the options
@@ -522,15 +781,15 @@ for writing, you receive an error message.</para></note>
 </variablelist>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>COMMAND method</secondary>
+<secondary>command method</secondary>
 <tertiary>SEEK option</tertiary></indexterm>
 <programlisting>
 <![CDATA[
-stream_name~Command("seek =2 read")
-stream_name~Command("seek +15 read")
-stream_name~Command("seek -7 write line")
+stream_name~command("seek =2 read")
+stream_name~command("seek +15 read")
+stream_name~command("seek -7 write line")
 fromend  = 125
-stream_name~Command("seek <"fromend read)
+stream_name~command("seek <"fromend read)
 ]]>
 </programlisting>
 </listitem></varlistentry>
@@ -548,10 +807,10 @@ not open. The language processor returns the null string for nonexistent streams
 <listitem><para>Returns the date and time stamps of a stream in US format. For
 example:
 <indexterm><primary>examples</primary>
-<secondary>COMMAND method</secondary>
+<secondary>command method</secondary>
 <tertiary>QUERY DATETIME option</tertiary></indexterm>
 <programlisting>
-stream_name~Command("query datetime")
+stream_name~command("query datetime")
 </programlisting>
 </para><para>A sample output might be: </para>
 <programlisting>
@@ -562,10 +821,10 @@ stream_name~Command("query datetime")
 <listitem><para>Returns the full path specification of the stream object
 receiving the message, if it exists, or a null string. For example: </para>
 <indexterm><primary>examples</primary>
-<secondary>COMMAND method</secondary>
+<secondary>command method</secondary>
 <tertiary>QUERY EXISTS option</tertiary></indexterm>
 <programlisting>
-stream_name~Command("query exists")
+stream_name~command("query exists")
 </programlisting>
 <para>A sample output might be: </para>
 <programlisting>
@@ -576,10 +835,10 @@ c:\data\file.txt
 <listitem><para>Returns the handle associated with the open stream that is the
 receiving stream object. For example: </para>
 <indexterm><primary>examples</primary>
-<secondary>COMMAND method</secondary>
+<secondary>command method</secondary>
 <tertiary>QUERY HANDLE option</tertiary></indexterm>
 <programlisting>
-stream_name~Command("query handle")
+stream_name~command("query handle")
 </programlisting>
 <para>A sample output might be:
 <computeroutput>3</computeroutput></para>
@@ -613,7 +872,7 @@ the top to count the line-end characters. See
 <link linkend="positio">Line versus Character Positioning</link>
 for a detailed discussion of this issue. For example: </para>
 <programlisting>
-stream_name~Command("query position write")
+stream_name~command("query position write")
 </programlisting>
 <para>A sample
 output might be: </para>
@@ -634,7 +893,7 @@ characters.
 <listitem><para>Returns the size in bytes of a persistent stream that is the
 receiving stream object. For example: </para>
 <programlisting>
-stream_name~Command("query size")
+stream_name~command("query size")
 </programlisting>
 <para>A sample output might be: </para>
 <programlisting>
@@ -652,7 +911,7 @@ is <computeroutput>PERSISTENT</computeroutput>,
 in an international format. This is the preferred method of getting date and
 time because it provides the full 4-digit year. For example:</para>
 <programlisting>
-stream_name~Command("query timestamp")
+stream_name~command("query timestamp")
 </programlisting>
 <para>A sample output might be: </para>
 <programlisting>
@@ -663,35 +922,37 @@ stream_name~Command("query timestamp")
 </section>
 </section>
 
-<section id="desmet"><title>DESCRIPTION</title>
-<indexterm><primary>DESCRIPTION method</primary>
+<section id="desmet"><title>description</title>
+<indexterm><primary>description method</primary>
 <secondary>of Stream class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>DESCRIPTION method</secondary>
+<secondary>description method</secondary>
 <tertiary>of Stream class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-DESCRIPTION-------------------------------------------------><
+>>-description-------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Returns any descriptive string associated with the
-current state of the stream or the NIL object if no descriptive string is
-available. The DESCRIPTION method is identical with the STATE method except
-that the string that DESCRIPTION returns is followed by a colon and, if
+current state of the stream or the Nil object if no descriptive string is
+available. The <emphasis role="bold">description</emphasis>
+method is identical with the STATE method except
+that the string that <emphasis role="bold">description</emphasis>
+returns is followed by a colon and, if
 available, additional information about ERROR or NOTREADY states. (The
-<link linkend="statsm">STATE</link> method describes these states.)</para>
+<link linkend="statsm">state</link> method describes these states.)</para>
 </section>
 
-<section id="stflus"><title>FLUSH</title>
-<indexterm><primary>FLUSH method</primary>
+<section id="stflus"><title>flush</title>
+<indexterm><primary>flush method</primary>
 <secondary>of Stream class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>FLUSH method</secondary>
+<secondary>flush method</secondary>
 <tertiary>of Stream class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-FLUSH-------------------------------------------------------><
+>>-flush-------------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -700,20 +961,25 @@ currently buffered for writing
 to be written to the stream receiving the message.</para>
 </section>
 
-<section id="linein1"><title>LINEIN</title>
-<indexterm><primary>LINEIN method</primary>
+<section id="linein1"><title>lineIn</title>
+<indexterm><primary>lineIn method</primary>
 <secondary>of Stream class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>LINEIN method</secondary>
+<secondary>lineIn method</secondary>
 <tertiary>of Stream class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-LINEIN-+-------------------------+--------------------------><
+>>-lineIn-+-------------------------+--------------------------><
           +-(-+------+-+--------+-)-+
               +-line-+ +-,count-+
 ]]>
 </programlisting>
 
+<para>This method overrides the
+<link linkend="ilinein1">lineIn method</link> from the
+<link linkend="istream">InputStream class</link> and the
+<link linkend="olinein1">lineIn method</link> from the
+<link linkend="ostream">OutputStream class</link>.</para>
 <para>Returns the next <emphasis role="italic">count</emphasis> lines. The
 count must be <computeroutput>0</computeroutput> or
 <computeroutput>1</computeroutput>. The language processor advances the read
@@ -730,20 +996,25 @@ If that fails, the language processor opens the stream for read-only. (See
 LINEIN built-in function.)</para>
 </section>
 
-<section id="lineom"><title>LINEOUT</title>
-<indexterm><primary>LINEOUT method</primary>
+<section id="lineom"><title>lineOut</title>
+<indexterm><primary>lineOut method</primary>
 <secondary>of Stream class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>LINEOUT method</secondary>
+<secondary>lineOut method</secondary>
 <tertiary>of Stream class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-LINEOUT-+--------------------------+------------------------><
+>>-lineOut-+--------------------------+------------------------><
            +-(-+--------+-+-------+-)-+
                +-string-+ +-,line-+
 ]]>
 </programlisting>
 
+<para>This method overrides the
+<link linkend="ilineom">lineOut method</link> from the
+<link linkend="istream">InputStream class</link> and the
+<link linkend="olineom">lineOut method</link> from the
+<link linkend="ostream">OutputStream class</link>.</para>
 <para>Returns <computeroutput>0</computeroutput> if successful in writing
 <emphasis role="italic">string</emphasis> to the character output stream
 receiving the message or <computeroutput>1</computeroutput> if
@@ -758,36 +1029,46 @@ processor opens the stream for write-only. (See
 information about the LINEOUT built-in function.)</para>
 </section>
 
-<section id="linesm"><title>LINES</title>
-<indexterm><primary>LINES method</primary>
+<section id="linesm"><title>lines</title>
+<indexterm><primary>lines method</primary>
 <secondary>of Stream class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>LINES method</secondary>
+<secondary>lines method</secondary>
 <tertiary>of Stream class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
            +-Count--+
->>-LINES(--+--------+---)--------------------------------------><
+>>-lines(--+--------+---)--------------------------------------><
            +-Normal-+
 ]]>
 </programlisting>
 
+<para>This method overrides the
+<link linkend="ilinesm">lines method</link> from the
+<link linkend="istream">InputStream class</link> and the
+<link linkend="olinesm">lines method</link> from the
+<link linkend="ostream">OutputStream class</link>.</para>
 <para>Returns the number of completed lines that remain in the character input
-stream receiving the message. If the stream has already been read with CHARIN,
+stream receiving the message. If the stream has already been read with 
+<emphasis role="bold">charIn</emphasis>emphasis.
 this can include an initial partial line. For persistent streams the count
-starts at the current read position. In effect, LINES reports whether a read
+starts at the current read position. In effect, 
+<emphasis role="bold">lines</emphasis> reports whether a read
 action of CHARIN (see <link linkend="charim">CHARIN</link>) or LINEIN (see
 <link linkend="linein1">LINEIN</link>) will succeed. (For an explanation of
 input and output, see
 <link linkend="iostrms">Input and Output Streams</link>.)</para>
-<para>For QUEUE, LINES returns the actual number of lines. (See
+<para>For a Queue, <emphasis role="bold">lines</emphasis>
+returns the actual number of lines. (See
 <link linkend="ylines">LINES (Lines Remaining)</link> for
 information about the LINES built-in function.)</para>
 <para> </para>
 
 <note><title>Note</title>
-<para>The CHARS method returns the number of characters in a
-persistent stream or the presence of data in a transient stream. The LINES
+<para>The <emphasis role="bold">chars</emphasis>
+method returns the number of characters in a
+persistent stream or the presence of data in a transient stream. The 
+<emphasis role="bold">lines</emphasis>emphasis
 method determines the actual number of lines by scanning the stream starting
 at the current position and counting the lines. For large streams, this can
 be a time-consuming operation.  Therefore, avoid the use of the LINES method
@@ -796,7 +1077,8 @@ the CHARS method (see <link linkend="charsm">CHARS</link>) or the LINES
 built-in function for this purpose.</para></note>
 
 <para>The ANSI Standard has extended this function to allow an option: "Count".
-If this option is used, LINES returns the actual number of complete
+If this option is used, <emphasis role="bold">lines</emphasis>
+returns the actual number of complete
 lines remaining in the stream, irrespective of how long this operation takes.
 </para>
 
@@ -805,21 +1087,22 @@ remaining in the file or 0 if no lines remain.</para>
 
 <para>The default is "Count".</para>
 
-<para>The defaults of the LINES method and function are different because of
+<para>The defaults of the <emphasis role="bold">lines</emphasis>
+method and function are different because of
 compatibility reasons.</para>
 
 </section>
 
-<section id="stasfa"><title>MAKEARRAY</title>
-<indexterm><primary>MAKEARRAY method</primary>
+<section id="stasfa"><title>makeArray</title>
+<indexterm><primary>makeArray method</primary>
 <secondary>of Stream class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>MAKEARRAY method</secondary>
+<secondary>makeArray method</secondary>
 <tertiary>of Stream class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
               +-(LINES)-+
->>-MAKEARRAY--+---------+--------------------------------------><
+>>-makeArray--+---------+--------------------------------------><
               +-(CHARS)-+
 ]]>
 </programlisting>
@@ -827,20 +1110,21 @@ compatibility reasons.</para>
 <para>Returns a fixed array that contains
 the data of the stream in line or character format, starting from the current
 read position. The line format is the default.</para>
-<para>If you have used the CHARIN method, the first line can be a partial line.
+<para>If you have used the <emphasis role="bold">charIn</emphasis>
+method, the first line can be a partial line.
 </para>
 </section>
 
-<section id="stopen"><title>OPEN</title>
-<indexterm><primary>OPEN method</primary>
+<section id="stopen"><title>open</title>
+<indexterm><primary>open method</primary>
 <secondary>of Stream class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>OPEN method</secondary>
+<secondary>open method</secondary>
 <tertiary>of Stream class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
          +-(BOTH-| Write Options |--+  +-SHARED-----+
->>-OPEN--+--------------------------+--+------------+----------->
+>>-open--+--------------------------+--+------------+----------->
          +-(READ--------------------+  +-SHAREREAD--+
          +-(WRITE-| Write Options |-+  +-SHAREWRITE-+
 
@@ -864,20 +1148,27 @@ read position. The line format is the default.</para>
 ]]>
 </programlisting>
 
+<para>This method overrides the
+<link linkend="istopen">open method</link> from the
+<link linkend="istream">InputStream class</link> and the
+<link linkend="ostopen">open method</link> from the
+<link linkend="ostream">OutputStream class</link>.</para>
 <para>Opens the stream to which you send the message and returns
 <computeroutput>READY:</computeroutput>. If the method is unsuccessful, it
-returns an error message string
-in the same form that the DESCRIPTION method uses.</para>
+returns an error message string in the same form that the 
+<emphasis role="bold">description</emphasis> method uses.</para>
 <para>For most error conditions, the additional information is in the form of
 a numeric return code. This return code is the value of
 <computeroutput>ERRNO</computeroutput>,
 which is set whenever one of the file system primitives returns with a
 <computeroutput>-1</computeroutput>.</para>
-<para>By default, OPEN opens the stream for both reading and writing data, for
-example: <computeroutput>&apos;OPEN BOTH&apos;</computeroutput>. To specify that the
+<para>By default, <emphasis role="bold">open</emphasis>
+opens the stream for both reading and writing data, for
+example: <computeroutput>&apos;open BOTH&apos;</computeroutput>. To specify that the
 stream receiving
 the message can be only read or only written to, specify READ or WRITE.</para>
-<para>The options for the OPEN method are: </para>
+<para>The options for the 
+<emphasis role="bold">open</emphasis> method are: </para>
 <variablelist>
 <varlistentry><term>READ</term>
 <listitem><para>Opens the stream only for reading.
@@ -946,43 +1237,49 @@ of the file). The <emphasis role="italic">length</emphasis> must be
 </variablelist>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>OPEN method</secondary></indexterm>
+<secondary>open method</secondary></indexterm>
 <programlisting>
-stream_name~OPEN
-stream_name~OPEN("write")
-stream_name~OPEN("read")
+stream_name~open
+stream_name~open("write")
+stream_name~open("read")
 </programlisting>
 </section>
 
-<section id="stposi"><title>POSITION</title>
-<indexterm><primary>POSITION method</primary>
+<section id="stposi"><title>position</title>
+<indexterm><primary>position method</primary>
 <secondary>of Stream class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>POSITION method</secondary>
+<secondary>position method</secondary>
 <tertiary>of Stream class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
              +- = -+                  +-CHAR-+
->>-POSITION(-+-----+-offset-+-READ--+-+------+-)---------------><
+>>-position(-+-----+-offset-+-READ--+-+------+-)---------------><
              +- < -+        +-WRITE-+ +-LINE-+
              +- + -+
              +- - -+
 ]]>
 </programlisting>
 
-<para>POSITION is a synonym for SEEK. (See
-<link linkend="stseek">SEEK</link> .)</para>
+<para>This method overrides the
+<link linkend="istposi">position method</link> from the
+<link linkend="istream">InputStream class</link> and the
+<link linkend="ostposi">position method</link> from the
+<link linkend="ostream">OutputStream class</link>.</para>
+<para><emphasis role="bold">position</emphasis> is a synonym for 
+<emphasis role="bold">seek</emphasis>. (See
+<link linkend="stseek">seek</link> .)</para>
 </section>
 
-<section id="qualm"><title>QUALIFY</title>
-<indexterm><primary>QUALIFY method</primary>
+<section id="qualm"><title>qualify</title>
+<indexterm><primary>qualify method</primary>
 <secondary>of Stream class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>QUALIFY method</secondary>
+<secondary>qualify method</secondary>
 <tertiary>of Stream class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-QUALIFY-----------------------------------------------------><
+>>-qualify-----------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -990,16 +1287,16 @@ stream_name~OPEN("read")
 not be open.</para>
 </section>
 
-<section id="stquer"><title>QUERY</title>
+<section id="stquer"><title>query</title>
 <indexterm><primary>method</primary>
-<secondary>QUERY</secondary>
+<secondary>query</secondary>
 <tertiary>of Stream class</tertiary></indexterm>
-<indexterm><primary>QUERY method</primary>
+<indexterm><primary>query method</primary>
 <secondary>of Stream class</secondary></indexterm>
 
 <programlisting>
 <![CDATA[
->>-QUERY(--+-DATETIME--------------------------+--)------------><
+>>-query(--+-DATETIME--------------------------+--)------------><
            +-EXISTS----------------------------+
            +-HANDLE----------------------------+
            |                       +-CHAR-+    |
@@ -1015,8 +1312,10 @@ not be open.</para>
 ]]>
 </programlisting>
 
-<para>Used with these options, the QUERY method returns specific information
-about a stream. Except for QUERY HANDLE and QUERY POSITION, the
+<para>Used with these options, the <emphasis role="bold">query</emphasis>
+method returns specific information about a stream. Except for 
+<emphasis role="bold">query</emphasis> HANDLE and 
+<emphasis role="bold">query</emphasis> POSITION, the
 language processor
 returns the query information even if the stream is not open. The language
 processor returns the null string for nonexistent streams. </para>
@@ -1037,7 +1336,7 @@ be: </para>
 <listitem><para>returns the full path specification of the receiving stream
 object, if it exists, or a null string. For example: </para>
 <indexterm><primary>examples</primary>
-<secondary>QUERY method</secondary></indexterm>
+<secondary>query method</secondary></indexterm>
 <programlisting>
 <emphasis role="italic">stream_name</emphasis>~query("exists")
 </programlisting>
@@ -1130,15 +1429,15 @@ time because it provides the full 4-digit year. For example:</para>
 </variablelist>
 </section>
 
-<section id="strmsay"><title>SAY</title>
-<indexterm><primary>SAY method</primary>
+<section id="strmsay"><title>say</title>
+<indexterm><primary>say method</primary>
 <secondary>of Stream class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>SAY method</secondary>
+<secondary>say method</secondary>
 <tertiary>of Stream class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-SAY--+----------------+-------------------------------------><
+>>-say--+----------------+-------------------------------------><
         +-(-+--------+-)-+
             +-string-+
 ]]>
@@ -1150,16 +1449,16 @@ receiving the message or <computeroutput>1</computeroutput> if
 an error occurs while writing the line.</para>
 </section>
 
-<section id="stseek"><title>SEEK</title>
-<indexterm><primary>SEEK method</primary>
+<section id="stseek"><title>seek</title>
+<indexterm><primary>seek method</primary>
 <secondary>of Stream class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>SEEK method</secondary>
+<secondary>seek method</secondary>
 <tertiary>of Stream class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
          +- = -+                  +-CHAR-+
->>-SEEK(-+-----+-offset-+-------+-+------+-)-------------------><
+>>-seek(-+-----+-offset-+-------+-+------+-)-------------------><
          +- < -+        +-READ--+ +-LINE-+
          +- + -+        +-WRITE-+
          +- - -+
@@ -1201,9 +1500,11 @@ forward from the current read or write position.
 backward from the current read or write position.
 </para></listitem></varlistentry>
 </variablelist>
-<para>The SEEK method returns the new position in the stream if the read or
+<para>The <emphasis role="bold">seek</emphasis>
+method returns the new position in the stream if the read or
 write position is successfully located, or an appropriate error message.</para>
-<para>The following is a description of the options for SEEK: </para>
+<para>The following is a description of the options for 
+<emphasis role="bold">seek</emphasis>: </para>
 <variablelist>
 <varlistentry><term>READ</term>
 <listitem><para>specifies that the read position be set.
@@ -1232,7 +1533,7 @@ for writing, you receive an error message.</para></note>
 </variablelist>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>SEEK method</secondary></indexterm>
+<secondary>seek method</secondary></indexterm>
 <programlisting>
 <emphasis role="italic">stream_name</emphasis>~seek("=2 read")
 <emphasis role="italic">stream_name</emphasis>~seek("+15 read")
@@ -1242,15 +1543,15 @@ fromend  = 125
 </programlisting>
 </section>
 
-<section id="statsm"><title>STATE</title>
-<indexterm><primary>STATE method</primary>
+<section id="statsm"><title>state</title>
+<indexterm><primary>state method</primary>
 <secondary>of Stream class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>STATE method</secondary>
+<secondary>state method</secondary>
 <tertiary>of Stream class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-STATE-------------------------------------------------------><
+>>-state-------------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -1263,7 +1564,8 @@ stream.</para>
 (possibly during input, output, or through the STREAM function). See
 <link linkend="stmerr">Errors during Input and Output</link>.
 You might be able to obtain additional information about the error with the
-DESCRIPTION method or by calling the STREAM function with a request for the
+<emphasis role="bold">description</emphasis>
+method or by calling the STREAM function with a request for the
 description.
 </para></listitem></varlistentry>
 <varlistentry><term>NOTREADY</term>
@@ -1287,15 +1589,15 @@ the stream is closed or has not yet been opened.
 </variablelist>
 </section>
 
-<section id="strmstr"><title>STRING</title>
-<indexterm><primary>STRING method</primary>
+<section id="strmstr"><title>string</title>
+<indexterm><primary>string method</primary>
 <secondary>of Stream class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>STRING method</secondary>
+<secondary>string method</secondary>
 <tertiary>of Stream class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-STRING------------------------------------------------------><
+>>-string------------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -1304,15 +1606,15 @@ represents i.e. the name of the file.
 </para>
 </section>
 
-<section id="stsup"><title>SUPPLIER</title>
-<indexterm><primary>SUPPLIER method</primary>
+<section id="stsup"><title>supplier</title>
+<indexterm><primary>supplier method</primary>
 <secondary>of Stream class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>SUPPLIER method</secondary>
+<secondary>supplier method</secondary>
 <tertiary>of Stream class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-SUPPLIER----------------------------------------------------><
+>>-supplier----------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -1323,24 +1625,27 @@ in the stream object. The supplier enumerates the items in their line order.
 </para>
 </section>
 
-<section id="strmuninit"><title>UNINIT</title>
-<indexterm><primary>UNINIT method</primary>
+<section id="strmuninit"><title>uninit</title>
+<indexterm><primary>uninit method</primary>
 <secondary>of Stream class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>UNINIT method</secondary>
+<secondary>uninit method</secondary>
 <tertiary>of Stream class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-UNINIT------------------------------------------------------><
+>>-uninit------------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>This method cleans up the object when it is garbage collected. It should
-not be invoked directly except via an UNINIT method of a subclass of the Stream
+not be invoked directly except via an 
+<emphasis role="bold">uninit</emphasis> method of a subclass of the Stream
 class.
 </para>
-<para>If the Stream class is subclassed and the subclass provides an UNINIT
-method then that method must invoke the superclass UNINIT method.
+<para>If the Stream class is subclassed and the subclass provides an 
+<emphasis role="bold">uninit</emphasis>
+method then that method must invoke the superclass 
+<emphasis role="bold">uninit</emphasis> method.
 The following example shows how to accomplish this.</para>
 <programlisting>
 <![CDATA[
