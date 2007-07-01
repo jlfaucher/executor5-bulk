@@ -107,6 +107,7 @@ IMAGE_FILES = ooRexxObjectClass.png \
               ooRexxComparableClass.png \
               ooRexxAlarmClass.png \
               ooRexxMonitorClass.png \
+              ooRexxMutableBufferClass.png \
               rxo90004.jpg \
 	      rxo90005.jpg \
 	      rxo90006.jpg \

@@ -286,6 +286,17 @@ current_output_destination_stream_object=.output~current
 <indexterm><primary>MutableBuffer class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>MutableBuffer class</secondary></indexterm>
+<figure><title>The MutableBuffer class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxMutableBufferClass.png" align="left">
+</imageobject>
+</mediaobject>
+</figure>
+<note><title>Note</title>
+<para>The MutableBuffer class also has available class methods that its
+metaclass, the <link linkend="clss">Class class</link>, defines.</para></note>
 
 <para>The MutableBuffer class is a buffer that contains a string on which
 certain string operations such as concatenation can be performed very
@@ -293,53 +304,17 @@ efficiently. (Frequent concatenation of long strings without using this
 class might result in weak performance, large memory allocation, or both.)
 </para>
 
-<para><emphasis role="bold">Methods the MutableBuffer class defines:</emphasis></para>
-<simplelist>
-<member>Append</member>
-<member>Delete</member>
-<member>GetBufferSize</member>
-<member>Insert</member>
-<member>Lastpos</member>
-<member>Length</member>
-<member>New (Overrides Object class method)</member>
-<member>Overlay</member>
-<member>Pos</member>
-<member>SetBufferSize</member>
-<member>String</member>
-<member>Subchar</member>
-<member>Substr</member>
-<member>Uninit</member>
-</simplelist>
-
-<para><emphasis role="bold">Methods inherited from the Object class:</emphasis>
-</para>
-<simplelist>
-<member>Operator methods:&nbsp;&nbsp;=, ==, \=, >&lt;, &lt;>, \==</member>
-<member>CLASS</member>
-<member>COPY</member>
-<member>DEFAULTNAME</member>
-<member>HASMETHOD</member>
-<member>OBJECTNAME</member>
-<member>OBJECTNAME=</member>
-<member>REQUEST</member>
-<member>RUN</member>
-<member>SETMETHOD</member>
-<member>START</member>
-<member>STRING</member>
-<member>UNSETMETHOD</member>
-</simplelist>
-
-<section id="mutbnew"><title>NEW</title>
-<indexterm><primary>NEW method</primary>
+<section id="mutbnew"><title>new</title>
+<indexterm><primary>new method</primary>
 <secondary>of MutableBuffer class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>NEW method</secondary>
+<secondary>new method</secondary>
 <tertiary>of MutableBuffer class</tertiary></indexterm>
 
 <programlisting>
 <![CDATA[
                    +-----,-256------+
->>-NEW(-+--------+-+----------------+-)--------------------><
+>>-new(-+--------+-+----------------+-)--------------------><
         +-string-+ +-,-buffer size--+
 ]]>
 </programlisting>
@@ -350,16 +325,16 @@ size increases to the length of the <emphasis>string</emphasis> if the string
 does not fit into the buffer.</para>
 </section>
 
-<section><title>APPEND</title>
-<indexterm><primary>APPEND method</primary>
+<section><title>append</title>
+<indexterm><primary>append method</primary>
 <secondary>of MutableBuffer class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>APPEND method</secondary>
+<secondary>append method</secondary>
 <tertiary>of MutableBuffer class</tertiary></indexterm>
 
 <programlisting>
 <![CDATA[
->>-APPEND(string)------------------------------------------><
+>>-append(string)------------------------------------------><
 ]]>
 </programlisting>
 
@@ -367,16 +342,16 @@ does not fit into the buffer.</para>
 is increased if necessary.</para>
 </section>
 
-<section><title>DELETE</title>
-<indexterm><primary>DELETE method</primary>
+<section><title>delete</title>
+<indexterm><primary>delete method</primary>
 <secondary>of MutableBuffer class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>DELETE method</secondary>
+<secondary>delete method</secondary>
 <tertiary>of MutableBuffer class</tertiary></indexterm>
 
 <programlisting>
 <![CDATA[
->>-DELETE(n---+---------+--)-------------------------------><
+>>-delete(n---+---------+--)-------------------------------><
               +-,length-+
 ]]>
 </programlisting>
@@ -392,32 +367,32 @@ the length of the buffer or zero, the method does not modify the
 buffer content.</para>
 </section>
 
-<section><title>GETBUFFERSIZE</title>
-<indexterm><primary>GETBUFFERSIZE method</primary>
+<section><title>getBufferSize</title>
+<indexterm><primary>getBufferSize method</primary>
 <secondary>of MutableBuffer class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>GETBUFERSIZE method</secondary>
+<secondary>getBufferSizemethod</secondary>
 <tertiary>of MutableBuffer class</tertiary></indexterm>
 
 <programlisting>
 <![CDATA[
->>-GETBUFFERSIZE-------------------------------------------><
+>>-getBufferSize-------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Retrieves the current buffer size.</para>
 </section>
 
-<section><title>INSERT</title>
-<indexterm><primary>INSERT method</primary>
+<section><title>insert</title>
+<indexterm><primary>insert method</primary>
 <secondary>of MutableBuffer class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>INSERT method</secondary>
+<secondary>insert method</secondary>
 <tertiary>of MutableBuffer class</tertiary></indexterm>
 
 <programlisting>
 <![CDATA[
->>-INSERT(new-+-----------------------------------------+--)><
+>>-insert(new-+-----------------------------------------+--)><
               +-,--+---+--+--------------------------+--+
                    +-n-+  +-,--+--------+--+------+--+
                                +-length-+  +-,pad-+
@@ -434,23 +409,24 @@ length of the buffer contents,
 the string new is padded at the beginning. The default value for
 <emphasis>length</emphasis> is the length of <emphasis>new</emphasis>.
 If length is less than the length of
-string <emphasis>new</emphasis>, INSERT truncates <emphasis>new</emphasis>
+string <emphasis>new</emphasis>, 
+<emphasis role="bold">insert</emphasis> truncates <emphasis>new</emphasis>
 to length <emphasis>length</emphasis>. The default
 <emphasis>pad</emphasis> character is a blank.</para>
 </section>
 
-<section id="mblast"><title>LASTPOS</title>
-<indexterm><primary>LASTPOS method</primary>
+<section id="mblast"><title>lastPos</title>
+<indexterm><primary>lastPos method</primary>
 <secondary>of MutableBuffer class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>LASTPOS method</secondary>
+<secondary>lastPos method</secondary>
 <tertiary>of MutableBuffer class</tertiary></indexterm>
 <indexterm><primary>position</primary>
 <secondary>last occurrence of a string</secondary></indexterm>
 
 <programlisting>
 <![CDATA[
->>-LASTPOS(needle-+--------+-)---------------------------------><
+>>-lastPos(needle-+--------+-)---------------------------------><
                   +-,start-+
 ]]>
 </programlisting>
@@ -469,48 +445,48 @@ positive whole number and defaults to
 value or omitted.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>LASTPOS method</secondary></indexterm>
+<secondary>lastPos method</secondary></indexterm>
 <programlisting>
 x1 - .mutablebuffer~new()
 x1 = "abc def ghi"
-x1~LASTPOS(" ")      ->    8
+x1~lastPos(" ")      ->    8
 x1 = "abcdefghi"
-x1~LASTPOS(" ")      ->    0
+x1~lastPos(" ")      ->    0
 x1 = "efgxyz"
-x1~LASTPOS("xy")     ->    4
+x1~lastPos("xy")     ->    4
 x1 = "abc def ghi"
-x1~LASTPOS(" ",7)    ->    4
+x1~lastPos(" ",7)    ->    4
 </programlisting>
 <para>(See <link linkend="lastpos">LASTPOS (Last Position)</link>
 for information about the LASTPOS built-in function.)</para>
 </section>
 
-<section><title>LENGTH</title>
-<indexterm><primary>LENGTH method</primary>
+<section><title>length</title>
+<indexterm><primary>length method</primary>
 <secondary>of MutableBuffer class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>LENGTH method</secondary>
+<secondary>length method</secondary>
 <tertiary>of MutableBuffer class</tertiary></indexterm>
 
 <programlisting>
 <![CDATA[
->>-LENGTH--------------------------------------------------><
+>>-length--------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Returns length of data in buffer.</para>
 </section>
 
-<section><title>OVERLAY</title>
-<indexterm><primary>OVERLAY method</primary>
+<section><title>overlay</title>
+<indexterm><primary>overlay method</primary>
 <secondary>of MutableBuffer class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>OVERLAY method</secondary>
+<secondary>overlay method</secondary>
 <tertiary>of MutableBuffer class</tertiary></indexterm>
 
 <programlisting>
 <![CDATA[
->>-OVERLAY(new-+-----------------------------------------+--)--><
+>>-overlay(new-+-----------------------------------------+--)--><
                +-,--+---+--+--------------------------+--+
                     +-n-+  +-,--+--------+--+------+--+
                                 +-length-+  +-,pad-+
@@ -530,11 +506,11 @@ a blank, and the default value for <emphasis>n</emphasis> is 1. If you specify
 <emphasis>n</emphasis>, it must be a positive integer.</para>
 </section>
 
-<section id="mbpos"><title>POS</title>
-<indexterm><primary>POS method</primary>
+<section id="mbpos"><title>pos</title>
+<indexterm><primary>pos method</primary>
 <secondary>of MutableBuffer class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>POS method</secondary>
+<secondary>pos method</secondary>
 <tertiary>of MutableBuffer class</tertiary></indexterm>
 <indexterm><primary>finding</primary>
 <secondary>string in a MutableBuffer</secondary></indexterm>
@@ -543,14 +519,14 @@ a blank, and the default value for <emphasis>n</emphasis> is 1. If you specify
 
 <programlisting>
 <![CDATA[
->>-POS(needle-+--------+-)-------------------------------------><
+>>-pos(needle-+--------+-)-------------------------------------><
               +-,start-+
 ]]>
 </programlisting>
 
 <para>Returns the position in the receiving buffer of another string,
 <emphasis role="italic">needle</emphasis>. (See also
-<link linkend="mblast">LASTPOS</link>.) It returns
+<link linkend="mblast">lastPos</link>.) It returns
 <computeroutput>0</computeroutput> if
 <emphasis role="italic">needle</emphasis> is the null string or is not found
 or if <emphasis role="italic">start</emphasis> is greater than
@@ -562,32 +538,42 @@ You can override this by specifying <emphasis role="italic">start</emphasis>
 a positive whole number), the point at which the search starts.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>POS method</secondary></indexterm>
+<secondary>pos method</secondary></indexterm>
 <programlisting>
 x1 = .mutablebuffer~new()
 x1 = "Saturday"
-x1~POS("day")       ->    6
+x1~pos("day")       ->    6
 x1 = "abc def ghi"
-x1~POS("x")         ->    0
+x1~pos("x")         ->    0
 x1 = "abc def ghi"
-x1~POS(" ")         ->    4
+x1~pos(" ")         ->    4
 x1 = "abc def ghi"
-x1~POS(" ",5)       ->    8
+x1~pos(" ",5)       ->    8
 </programlisting>
 <para>(See <link linkend="pos">POS (Position)</link>
 for information about the POS built-in function.)</para>
 </section>
 
-<section><title>SETBUFFERSIZE</title>
-<indexterm><primary>SETBUFFERSIZE method</primary>
+<section id="mbrequest"<title>request</title>
+<indexterm><primary>request method</primary>
 <secondary>of MutableBuffer class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>SETBUFERSIZE method</secondary>
+<secondary>request method</secondary>
+<tertiary>of MutableBuffer class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section><title>setBufferSize</title>
+<indexterm><primary>setBufferSize method</primary>
+<secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>setBufferSizemethod</secondary>
 <tertiary>of MutableBuffer class</tertiary></indexterm>
 
 <programlisting>
 <![CDATA[
->>-SETBUFFERSIZE(n)----------------------------------------><
+>>-setBufferSize(n)----------------------------------------><
 ]]>
 </programlisting>
 
@@ -595,35 +581,35 @@ for information about the POS built-in function.)</para>
 is less than the length of buffer
 content, the content is truncated. If <emphasis>n</emphasis> is 0, the entire
 contents is erased and the new buffer size is the value given
-in the INIT method.</para>
+in the <emphasis role="bold">init</emphasis> method.</para>
 </section>
 
-<section><title>STRING</title>
-<indexterm><primary>STRING method</primary>
+<section><title>string</title>
+<indexterm><primary>string method</primary>
 <secondary>of MutableBuffer class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>STRING method</secondary>
+<secondary>string method</secondary>
 <tertiary>of MutableBuffer class</tertiary></indexterm>
 
 <programlisting>
 <![CDATA[
->>-STRING--------------------------------------------------><
+>>-string--------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Retrieves the content of the buffer (a string).</para>
 </section>
 
-<section><title>SUBCHAR</title>
-<indexterm><primary>STRING method</primary>
+<section><title>subchar</title>
+<indexterm><primary>subcharmethod</primary>
 <secondary>of MutableBuffer class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>SUBCHAR method</secondary>
+<secondary>subchar method</secondary>
 <tertiary>of MutableBuffer class</tertiary></indexterm>
 
 <programlisting>
 <![CDATA[
->>-SUBCHAR(n)----------------------------------------------><
+>>-subchar(n)----------------------------------------------><
 ]]>
 </programlisting>
 
@@ -633,16 +619,16 @@ string. <emphasis>n</emphasis> must be a positive whole number. If
 then a zero-length string is returned.</para>
 </section>
 
-<section><title>SUBSTR</title>
-<indexterm><primary>SUBSTR method</primary>
+<section><title>substr</title>
+<indexterm><primary>substr method</primary>
 <secondary>of MutableBuffer class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>SUBSTR method</secondary>
+<secondary>substr method</secondary>
 <tertiary>of MutableBuffer class</tertiary></indexterm>
 
 <programlisting>
 <![CDATA[
->>-SUBSTR(n-+--------------------------+--)----------------><
+>>-substr(n-+--------------------------+--)----------------><
             +-,--+--------+--+------+--+
                  +-length-+  +-,pad-+
 ]]>
@@ -653,30 +639,33 @@ then a zero-length string is returned.</para>
 <emphasis>length</emphasis>, padded with <emphasis>pad</emphasis> if
 necessary. The <emphasis>n</emphasis> must be a positive integer. If
 <emphasis>n</emphasis> is greater
-than receiving_string~LENGTH, only <emphasis>pad</emphasis> characters
+than receiving_string~length, only <emphasis>pad</emphasis> characters
 are returned. If you omit <emphasis>length</emphasis>, the remaining
 buffer content is returned.
 The default <emphasis>pad</emphasis> character is a blank.</para>
 </section>
 
-<section id="mutmuninit"><title>UNINIT</title>
-<indexterm><primary>UNINIT method</primary>
+<section id="mutmuninit"><title>uninit</title>
+<indexterm><primary>uninit method</primary>
 <secondary>of MutableBuffer class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>UNINIT method</secondary>
+<secondary>uninit method</secondary>
 <tertiary>of MutableBuffer class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-UNINIT------------------------------------------------------><
+>>-uninit------------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>This method cleans up the object when it is garbage collected. It should
-not be invoked directly except via an UNINIT method of a subclass of the
+not be invoked directly except via an 
+<emphasis role="bold">uninit</emphasis> method of a subclass of the
 MutableBuffer class.
 </para>
-<para>If the MutableBuffer class is subclassed and the subclass provides an UNINIT
-method then that method must invoke the superclass UNINIT method.
+<para>If the MutableBuffer class is subclassed and the subclass provides an 
+<emphasis role="bold">uninit</emphasis>
+method then that method must invoke the superclass
+<emphasis role="bold">uninit</emphasis> method
 The following example shows how to accomplish this.</para>
 <programlisting>
 <![CDATA[
