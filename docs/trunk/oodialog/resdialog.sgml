@@ -65,8 +65,8 @@ DLL (that is, a file with the extension .DLL). </para>
 <secondary>ResDialog class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aResDialog~Init(--Library--,--Resource--+-------------+--)--><
-                                           +-,--DlgData.-+
+>>-aResDialog~Init(--Library--,--Resource--+-------------+--+----------+--)--><
+                                           +-,--DlgData.-+  +-,--hFile-+
 
 
 ]]>
@@ -75,24 +75,30 @@ DLL (that is, a file with the extension .DLL). </para>
 <para>The Init method of the parent class, BaseDialog, has been overwritten. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments you have to pass to the new method
-of the class when creating a new dialog instance are:
+<listitem><para>The arguments when creating a new dialog instance of this class
+are:
 <variablelist>
 <varlistentry><term>Library</term>
-<listitem><para>The file name of the DLL where the resource is located
+<listitem><para>The file name of the DLL where the resource is located.
 </para></listitem></varlistentry>
 <varlistentry><term>Resource</term>
-<listitem><para>The ID of the resource.  This is a unique number you assigned to the
-(dialog) resource while creating it.
+<listitem><para>The ID of the resource.  This is an unique number, or <link
+linkend="symbolicid">sybmbolic ID</link> you assigned to the (dialog) resource
+while creating it.
 </para></listitem></varlistentry>
 <varlistentry><term>DlgData.</term>
-<listitem><para>A stem variable (don't forget the trailing period) that contains initialization
-data. See <link linkend="h000025">Init</link> for more details.
+<listitem><para>A stem variable (don't forget the trailing period) that contains
+initialization data.
+</para></listitem></varlistentry>
+<varlistentry><term>hFile</term>
+<listitem><para>The file name of a <link linkend="headerfile">header file</link>
+containing symbolic ID defines for resources.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>This sample code creates a new dialog object from the ResDialog class. It uses dialog resource 100 in the <computeroutput>MYDLG.DLL</computeroutput> file.
+<listitem><para>This sample code creates a new dialog object from the ResDialog class.
+It uses dialog resource 100 in the <computeroutput>MYDLG.DLL</computeroutput> file.
 The dialog is initialized with the values of the MyDlgData. stem variable.
 
 <programlisting>
@@ -104,6 +110,11 @@ MyDlgData.103=""
 dlg = ResDialog~new("MYDLG.DLL", 100, MyDlgData.)
 ]]>
 </programlisting>
+</para>
+<para>An additional <link linkend="basedialoginitexample">example</link> can be
+found under the <computeroutput>Init</computeroutput> method, in the BaseDialog
+section, that shows the use of the dialog data stem and header file arguments in
+more detail.
 </para></listitem></varlistentry>
 </variablelist>
 </section>

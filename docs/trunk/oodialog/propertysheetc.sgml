@@ -86,8 +86,8 @@ on the requested control:</para>
                          +-DlgData.-+     +-cattable-+     +-tabx-+
 
    +-4----+
->--+------+--,--+-------+--)-----------------------------------><
-   +-taby-+     +-style-+
+>--+------+--,--+-------+--,--+-------+---)----------------------------><
+   +-taby-+     +-style-+     +-hFile-+
 
 
 ]]>
@@ -127,6 +127,10 @@ that can contain tab control options (see
 the option WIZARD, which adds a backward and a forward button with ID 11 and
 12 to the dialog to switch between the category pages.
 </para></listitem></varlistentry>
+<varlistentry><term>hFile</term>
+<listitem><para>The file name of a <link linkend="headerfile">header file</link>
+containing <link linkend="symbolicid">symbolic ID</link> defines for resources.
+</para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -145,6 +149,11 @@ dlg~execute("SHOWTOP")
      .
      .
 </programlisting>
+</para>
+<para>An additional <link linkend="basedialoginitexample">example</link> can be
+found under the <computeroutput>Init</computeroutput> method, in the BaseDialog
+section.  This example shows the use of the dialog data stem and header file
+arguments in more detail.
 </para></listitem></varlistentry>
 </variablelist>
 </section>

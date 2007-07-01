@@ -79,10 +79,51 @@ the execution of the dialog.
 <varlistentry><term><emphasis role="bold">BkgBrushBmp</emphasis></term>
 <listitem><para>The handle to a bitmap that is used to draw the dialog's background.
 </para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">ConstDir</emphasis></term>
-<listitem><para>A directory containing the numerical values assigned to symbolic IDs
-(#define-statements in the resource script).
-</para></listitem></varlistentry>
+<varlistentry><term id="constdir"><emphasis role="bold">ConstDir</emphasis></term>
+<listitem><para>A directory object whose indexes are
+<link linkend="symbolicid">symbolic ID</link>s.  The entry for each index is the
+numerical value of the symbolic ID.  Once a symbolic ID is added to the <computeroutput>
+Constdir</computeroutput> directory, the symbolic ID can be used in place of the numeric
+value in any method of the ooDialog classes that requires a resource ID.
+</para><para>A few symbolic IDs are pre-defined by ooDialog and are present in 
+the <computeroutput>ConstDir</computeroutput> directory of all ooDialogs.  See
+the table, <link linkend="oodsymbolicids">Symbolic IDs Used by ooDialog</link>, 
+for a list of these IDs.  The programmer can add symbolic IDs to this directory 
+by using <link linkend="pounddefine">#define</link> statements in a resource script
+or a <link linkend="headerfile">header file</link>.  Of course, symbolic
+IDs can also be added directly in the program as the following code snippet
+shows:</para>
+
+<programlisting>
+<![CDATA[
+
+::method Init
+  forward class (super) continue
+
+  self~ConstDir["ID_GB"] = 101
+  self~ConstDir["ID_CB_REGINA"] = 107
+  self~ConstDir["ID_CB_REGINALD"] = 111
+  self~ConstDir["ID_CB_OOREXX"] = 115
+
+...
+
+::method defineDialog
+
+  self~addGroupBox(10, 20, 150, 90, "Pick an interpreter", "BORDER", ID_GB)
+  self~addCheckBox(ID_CB_REGINA, "cb1", 30, 40, , , "Regina", "GROUP")
+  self~addCheckBox(ID_CB_REGINALD, "cb2", 30, 60, , , "Reginald")
+  self~addCheckBox(ID_CB_OOREXX, "cb3", 30, 80, , , "ooRexx")
+
+...
+
+::method ok
+
+  oorexxCB = self~getCheckControl(ID_CB_OOREXX)
+  if oorexxCB~isChecked == "CHECKED" then
+    say "You picked the right interpreter."
+
+]]>
+</programlisting></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">DataConnection</emphasis></term>
 <listitem><para>A protected attribute to store connections between dialog items and
 the attributes of the dialog instance.
@@ -1105,8 +1146,8 @@ show it, run it, and stop it.</para>
 <section id="h000025"><title>Init</title>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~Init(--+---------+--,--Resource--+-------------+--)-><
-                      +-Library-+               +-,--DlgData.-+
+>>-aBaseDialog~Init(--+---------+--,--id--+-------------+--+----------+--)--><
+                      +-Library-+         +-,--DlgData.-+  +-,--hFile-+
 
 
 ]]>
@@ -1126,29 +1167,88 @@ You can only create instances of its subclasses.
 <listitem><para>The file name of a .DLL file. Pass an empty string if you do not use
 binary resources.
 </para></listitem></varlistentry>
-<varlistentry><term>Resource</term>
-<listitem><para>The ID, or the symbolic name, of the dialog within the resource file.
+<varlistentry><term>id</term>
+<listitem><para>The resource ID, (numeric or <link linkend="symbolicid">symbolic</link>,) of
+the dialog within the resource file.
 </para></listitem></varlistentry>
 <varlistentry><term>DlgData.</term>
 <listitem><para>A stem variable (remember the period!) that contains initialization
-data for the dialog. For example, if you assign the string &quot;Hello world&quot; to <computeroutput>DlgData.103</computeroutput>, where <computeroutput>103</computeroutput> is the ID of an entry
-field, it is initialized with this string. If the dialog is terminated with
+data for the dialog. For example, if you assign the string &quot;Hello world&quot;
+to <computeroutput>DlgData.103</computeroutput>, where <computeroutput>103</computeroutput>
+is the ID of an entry field, it is initialized with this string. If the dialog is terminated with
 OK, the data of the dialog is copied into this stem variable.
+</para></listitem></varlistentry>
+<varlistentry><term>hFile</term>
+<listitem><para>A file, (often called a <link linkend="headerfile">header</link> file,)
+defining symbolic IDs for resources.  The symbolic IDs defined within the file will be 
+added to the <link linkend="constdir">ConstDir</link> directory.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example shows how the ResDialog class is implemented,
-overriding the Init method. If your subclass overrides the Init method, ensure
-that it calls the Init method of its superclass:
-
+<varlistentry id="basedialoginitexample"><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example shows how a header file, symbolic IDs, and the
+data stem can be used in instantiating a new object that is a subclass of the ResDialog.
+Assume <computeroutput>resources.h</computeroutput> is a file in the same directory
+as the program file and contains the following:
 <programlisting>
 <![CDATA[
-::class ResDialog subclass BaseDialog
-::method Init
-  expose Library Resource DlgData.
-  use arg Library, Resource, DlgData.
-  return self~init:super(Library, Resource, DlgData.)
+/* resources.h */
+  #define IDD_BUILD_DLG           100
+  #define IDC_EDITFIELD_INCLUDE   110
+  #define IDC_COMBOBOX_PROJECT    120
+  #define IDC_RADIO_DEBUG         130
+  #define IDC_RADIO_RELEASE       131
+  #define IDC_CHECKBOX_CLEAN      140
+  #define IDI_DLG_ICON            514
+
+]]>
+</programlisting></para>
+<para>The dialog (a fictitious build dialog) will have an entry line, a combo box,
+two radio buttons, and a check box.  The <computeroutput>DlgData.</computeroutput>
+stem will be used to initialize the values of the controls using the symbolic
+IDs defined in the header file.
+<programlisting>
+<![CDATA[
+/* BuildDlg.rex */
+  DlgData.IDC_EDITFIELD_INCLUDE = "C:\sdk\include"
+  DlgData.IDC_COMBOBOX_PROJECT = "Calculator"
+  DlgData.RADIO_DEBUG = 0
+  DlgData.RADIO_RELEASE = 1
+  DlgData.CHECKBOX_CLEAN = 0
+
+  dlg = .BuildDialog~new( "dlg.dll", IDD_BUILD_DLG, DlgData, "resources.h" )
+  if dlg~initCode <> 0 then do
+    say "Error starting dialog.  initCode:" dlg~initCode
+    return dlg~initCode
+  end
+
+  dlg~execute( "NORMAL", IDI_DLG_ICON )
+  ...
+
+]]>
+</programlisting></para>
+<para>At this point the dialog is shown, the entry line will contain
+"C:\sdk\include", the combo box will have the Calculator project selected, the
+release radio button will be checked, (the debug radio button will not be
+checked,) and the clean check box will not be checked.</para>
+<para>The user interacts with the dialog and selects ok to close it.  Now the state of
+the dialog when it was closed can be determined by checking the DlgData. stem
+values.
+<programlisting>
+<![CDATA[
+  ...
+  dlg~deinstall
+
+  if DlgData.CHECKBOX_CLEAN == 1 then doClean()
+
+  includePath = DlgData.IDC_EDITFIELD_INCLUDE
+  if DlgData.RADIO_RELEASE == 1 then
+    success = doReleaseBuild(includePath)
+  else
+    success = doDebugBuild(includePath)
+
+  return success
+
 ]]>
 </programlisting>
 </para></listitem></varlistentry>

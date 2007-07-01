@@ -323,8 +323,8 @@ the methods listed in the following table.
 <secondary>UserDialog class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aUserDialog~Init(--+----------+--)--------------------------><
-                      +-DlgData.-+
+>>-aUserDialog~Init(--+----------+--+---------------+--)-------><
+                      +-DlgData.-+  +-,--headerFile-+
 
 
 ]]>
@@ -333,24 +333,34 @@ the methods listed in the following table.
 <para>The Init method initializes a new dialog object. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
+<listitem><para>The arguments are:
 <variablelist>
 <varlistentry><term>DlgData.</term>
 <listitem><para>A stem variable that is used to initialize the data fields of the dialog.
 If the dialog is terminated by means of the OK button,
 the values of the dialog's data fields are copied to this variable. The ID
-of the dialog items is used to name the entry within the stem.
+of the dialog items is used to name each entry within the stem.
+</para></listitem></varlistentry>
+<varlistentry><term>headerFile</term>
+<listitem><para>A file defining symbolic IDs for dialog resources.  Symbolic IDs
+defined in the file can be used in method calls where resource IDs are required.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example creates a new dialog object:
+<listitem><para>The following example creates a new dialog object, adding any
+symbolic IDs defined in <computeroutput>resources.h</computeroutput> to the object's
+<link linkend="constdir">ConstDir</link> directory:
 
 <programlisting>
 <![CDATA[
-MyDialog=.UserDialog~new(aStem.)
+MyDialog=.UserDialog~new(aStem., "resources.h")
 ]]>
 </programlisting>
+</para>
+<para>The <link linkend="basedialoginitexample">example</link> for the
+<computeroutput>init</computeroutput> method in the BaseDialog section shows the
+use of the dialog data stem and header file arguments in more detail.
 </para></listitem></varlistentry>
 </variablelist>
 </section>
@@ -586,7 +596,7 @@ self~AddEntryLine(402, INPUT_1, 20, 170, 150)
 ]]>
 </programlisting>
 
-<para>The <link linkend="h001613">Load</link> method creates the dialog based
+<para>The <computeroutput>Load</computeroutput> method creates the dialog based
 on the data of a given resource script (a file with the extension .RC). It
 calls the LoadFrame and LoadItems methods to retrieve the dialog data from the file.</para>
 <variablelist>

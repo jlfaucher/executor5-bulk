@@ -43,17 +43,127 @@
 -->
 <chapter id="termdef"><title>Definition of Terms</title>
 <variablelist>
-<varlistentry><term>id</term>
+<varlistentry><term id="resourceid">id</term>
 <listitem><para>The identification number of a dialog resource. There are
-several different types of dialog resources, such as menus, dialog controls,
-bitmaps, and so on.  You assign IDs when you create the resource definition for
+several different types of dialog resources, menus, dialog controls, and bitmaps,
+to name a few.  You assign IDs when you create the resource definition for
 your dialog.  An ID can be either numerical (for example, 1) or symbolic (for
-example, "IDOK").  IDs must be unique for each resource of the same type.
-However two resouces of different types may have the same ID.</para>
-<para>IDs 1, 2, and 9 (IDOK, IDCANCEL, and IDHELP) are reserved for the OK,
-Cancel, and Help push buttons.  IDs 1, 2, 3, and 4 (IDI_DLG_OODIALOG,
-IDI_DLG_APPICON, IDI_DLG_APPICON2, and IDI_DLG_OOREXX) are reserved for the
-dialog icons included with ooDialog.
+example, "IDOK").
+</para>
+<para>IDs must be unique for each resource of the same type.  Although two
+resouces of different types may have the same ID, when using symbolic IDs with
+ooDialog, it is advisable to give all resources unique numerical IDs.
+</para></listitem></varlistentry>
+<varlistentry><term id="symbolicid">symbolic id</term>
+<listitem><para>Defining a symbolic name for each numeric resource ID is often
+useful in programs that work with resource IDs.  The symbolic name is then used
+where ever a numeric resource ID is needed.  Symbolic names are easier to
+remember than numeric IDs and can make the code easier to understand.
+</para>
+<para>The mechanism ooDialog provides for using symbolic IDs is the
+<link linkend="constdir">ConstDir</link> attribute of the dialog classes.  This
+is a directory object where the indexes are symbolic IDs and the item at each
+index is the numerical value of the ID.  The symbolic IDs in the following table
+are pre-defined by ooDialog and placed in the <computeroutput>ConstDir</computeroutput>
+when an instance of a dialog class is created.
+</para>
+<table id="oodsymbolicids" frame="all">
+<title>Symbolic IDs Used by ooDialog</title>
+<tgroup cols="3">
+<thead>
+<row>
+<entry>Numeric ID</entry>
+<entry>Symbolic ID</entry>
+<entry>ResourceType</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>1</entry>
+<entry>IDOK</entry>
+<entry>Button Control</entry>
+</row>
+<row>
+<entry>2</entry>
+<entry>IDCANCEL</entry>
+<entry>Button Control</entry>
+</row>
+<row>
+<entry>9</entry>
+<entry>IDHELP</entry>
+<entry>Button Control</entry>
+</row>
+<row>
+<entry>-1</entry>
+<entry>IDC_STATIC</entry>
+<entry>Static Control</entry>
+</row>
+<row>
+<entry>1</entry>
+<entry>IDI_DLG_OODIALOG</entry>
+<entry>Icon</entry>
+</row>
+<row>
+<entry>2</entry>
+<entry>IDI_DLG_APPICON</entry>
+<entry>Icon</entry>
+</row>
+<row>
+<entry>3</entry>
+<entry>IDI_DLG_APPICON2</entry>
+<entry>Icon</entry>
+</row>
+<row>
+<entry>4</entry>
+<entry>IDI_DLG_OOREXX</entry>
+<entry>Icon</entry>
+</row>
+<row>
+<entry>IDI_DLG_DEFAULT</entry>
+<entry>IDI_DLG_DEFAULT</entry>
+<entry>Icon</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</listitem></varlistentry>
+<varlistentry><term id="pounddefine">#define statement</term>
+<listitem><para>Define statements are often used in the C and C++ langauages to
+define symbolic names for numerical values.  Because of this, it is common in
+Windows programs with dialogs to define symbolic names for resource IDs.  Most
+Windows resource editors use symbolic IDs, (some to a limited degree, others
+exclusively.)  Often the define statements are put in a header file so they are
+available both to the resource compiler and to the program code.  The defines
+take the form of: <computeroutput>#define symbolicName numericValue
+</computeroutput> as in this example:</para>
+<programlisting>
+<![CDATA[
+
+#define   ID_PUSHBUTTON1  413
+#define   ID_EDIT1        511
+#define   ID_LISTBOX1     602
+
+]]>
+</programlisting>
+<para>When ooDialog parses a resource script or a header file and finds a define
+statement, it will add the symbolic ID to the <link linkend="constdir">ConstDir</link>
+directory object of the dialog.  Resource scripts are used by subclasses of the
+<computeroutput>UserDialog</computeroutput> (see the <link linkend="h001613">Load</link>
+method.)  All the ooDialog dialog classes accept a header file as an optional
+parameter when a new instance of a dialog object is created.  (See for example
+the <computeroutput>Init</computeroutput> method in the <link
+linkend="h000025">BaseDialog</link> or <link linkend="h001531">UserDialog</link>
+sections.) Symbolic IDs added to the <computeroutput>ConstDir</computeroutput>
+can be used in any method of the ooDialog classes where a resource ID is needed.
+</para></listitem></varlistentry>
+<varlistentry><term id="headerfile">header file</term>
+<listitem><para>A common practice when programming applications in Windows that
+use dialogs and dialog resources is to place symbolic defines in a separate
+file.  These files often have a .h extension and are usually called header
+files.  Windows resource editors often manage a header file for the symbolic IDs
+automatically. (For instance Microsoft's dialog editor creates, writes, and
+reads the resource ID header file completely on its own.  The user does not need
+to take any action other than including the file in her program.)
 </para></listitem></varlistentry>
 <varlistentry><term>handle</term>
 <listitem><para>A unique reference to a Windows object assigned by the system.
@@ -65,11 +175,11 @@ can be retrieved from the system when needed.
 <listitem><para>The term <emphasis role="italic">dialog icon</emphasis> is used
 in this documentation to refer to the icon that is displayed in the left hand
 corner of the title bar of a dialog.  In Windows this is often called the
-<emphasis role="italic">application icon.</emphasis>  The dialog icon is also
+<emphasis role="italic">application</emphasis> icon.  The dialog icon is also
 used for the Task Bar display and in the AltTab task switcher application.</para>
 <para>The dialog icon for a specific dialog can be set when the dialog is run
 using one of the execute methods.  See the <link linkend="h000048">Execute</link>
-or <link linkend="popup">Popup</link> methods for example.  ooDialg provides four
+or <link linkend="popup">Popup</link> methods for example.  ooDialog provides four
 pre-defined icons for use in dialogs.  Custom icons can be used by including the
 icon in a binary (compiled) resource, a resource script, or by using the
 <link linkend="addicon">AddIcon</link> method of the UserDialog.  The following
