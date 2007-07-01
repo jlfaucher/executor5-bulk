@@ -418,6 +418,7 @@ You can cancel the drag operation by clicking the other mouse button while
 holding the button that started the drag operation.</para>
 <para>The DefTreeDragHandler is implemented as follows:</para>
 <programlisting>
+ <![CDATA[
 ::method DefTreeDragHandler
    use arg id, item, pt
    tc = self~GetTreeControl(id)
@@ -475,7 +476,7 @@ holding the button that started the drag operation.</para>
           fvItem = tc~FirstVisible
           if (ybottom) & (tc~NextVisible(fvItem) \= 0) then do
               tc~MakeFirstVisible(tc~NextVisible(fvItem))
-<![CDATA[              if y-bottom < 200 then call sleepms 200-(y-bottom)]]>
+              if y-bottom < 200 then call sleepms 200-(y-bottom)
           end
       end
       lmb = self~IsMouseButtonDown("LEFT")
@@ -492,6 +493,7 @@ holding the button that started the drag operation.</para>
    pos = self~CursorPos
    parse var pos x y
    self~SetCursorPos(x+1, y+1)  /* move cursor to force redraw */
+]]>
 </programlisting>
 </section>
 
@@ -1112,8 +1114,8 @@ informs the dialog that an event has occurred in the combo box.</para>
 <listitem><para>The arguments are:
 <variablelist>
 <varlistentry><term>id</term>
-<listitem><para>The ID of the combo box of which a notification is to be connected to
-a method.
+<listitem><para>The <link linkend="resourceid">resource ID</link> of the combo
+box for which a notification is to be connected to a method.
 </para></listitem></varlistentry>
 <varlistentry><term>event</term>
 <listitem><para>The event to be connected with a method:
@@ -1164,11 +1166,25 @@ you omit this argument, the event is preceded by <computeroutput>On</computerout
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>This method does not return a value.
+<listitem><para>The return codes are:
+<variablelist>
+<varlistentry><term>-1</term>
+<listitem><para>The resource ID is not correct.
+</para></listitem></varlistentry>
+<varlistentry><term>0</term>
+<listitem><para>No errors were detected.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>The message was not connected correctly.
+</para></listitem></varlistentry>
+</variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example invokes method PlaySong whenever the list of the
-combo box PROFESSIONS is about to be made visible:
+<listitem><para>The following example invokes method PlaySong whenever the list
+of the combo box with the resource ID of PROFESSIONS is about to be made
+visible.  In this case PROFESSIONS is a <link linkend="symbolicid">symbolic
+ID</link> that has been added to the <link linkend="constdir">ConstDir</link>
+directory of the MyDlgClass in another part of the program:
 <programlisting>
 <![CDATA[
 ::class MyDlgClass subclass UserDialog inherit MessageExtensions
@@ -1183,15 +1199,21 @@ combo box PROFESSIONS is about to be made visible:
 
 <note><title>Notes</title><para>
 <orderedlist>
-<listitem><para>Connections are usually placed in the <link linkend="h000025">Init</link> or <link linkend="h000035">InitDialog</link> method. If both methods are defined, use init as the place for this connection - but not
-before init:super has been called.</para></listitem>
-<listitem><para>The event-handling methods receive two arguments: the ID of the combo
-box (extract the low-order word) and the handle to the combo box. Example:
+<listitem><para>Connections are usually placed in the <link
+linkend="h000025">Init</link>  or <link linkend="h000035">InitDialog</link>
+method. If both methods are defined, use init as the place for this connection -
+but not before init:super has been called.</para></listitem>
+<listitem><para>The event-handling methods receive two arguments: the first is a
+combination of the ID of the combo box and the ID of the notification messages.
+(Extract the low-order word to get the combo box ID.)  The second argument is
+the window handle of the combo box. Example:
 <programlisting>
 <![CDATA[
-::method Handler
-  use arg ev_id, handle
-  id = BinaryAnd(ev_id, "0x0000FFFF")
+::method PlaySong
+  use arg eventID, handle
+  id = BinaryAnd(eventID, "0x0000FFFF")
+  if id == self~ConstDir["PROFESSIONS"] then
+    -- take some action
   ...
 ]]>
 </programlisting></para></listitem>
