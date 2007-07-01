@@ -80,10 +80,6 @@ platforms on which they are available.</para>
 </thead>
 <tbody>
 <row>
-<entry>SysAddFileHandle</entry><entry>YES</entry><entry>NO</entry>
-<entry></entry>
-</row>
-<row>
 <entry>SysAddRexxMacro</entry><entry>YES</entry><entry>YES</entry>
 <entry></entry>
 </row>
@@ -108,19 +104,11 @@ platforms on which they are available.</para>
 <entry></entry>
 </row>
 <row>
-<entry>SysCopyObject</entry><entry>YES</entry><entry>NO</entry>
-<entry></entry>
-</row>
-<row>
 <entry>SysCreateEventSem</entry><entry>YES</entry><entry>YES</entry>
 <entry></entry>
 </row>
 <row>
 <entry>SysCreateMutexSem</entry><entry>YES</entry><entry>YES</entry>
-<entry></entry>
-</row>
-<row>
-<entry>SysCreateObject</entry><entry>YES</entry><entry>NO</entry>
 <entry></entry>
 </row>
 <row>
@@ -145,10 +133,6 @@ platforms on which they are available.</para>
 </row>
 <row>
 <entry>SysDropFuncs</entry><entry>YES</entry><entry>YES</entry>
-<entry></entry>
-</row>
-<row>
-<entry>SysDropLibrary</entry><entry>YES</entry><entry>NO</entry>
 <entry></entry>
 </row>
 <row>
@@ -189,10 +173,6 @@ platforms on which they are available.</para>
 </row>
 <row>
 <entry>SysGetErrortext</entry><entry>YES</entry><entry>YES</entry>
-<entry></entry>
-</row>
-<row>
-<entry>SysGetCollate</entry><entry>YES</entry><entry>NO</entry>
 <entry></entry>
 </row>
 <row>
@@ -256,23 +236,11 @@ platforms on which they are available.</para>
 <entry></entry>
 </row>
 <row>
-<entry>SysLoadLibrary</entry><entry>YES</entry><entry>NO</entry>
-<entry></entry>
-</row>
-<row>
 <entry>SysLoadRexxMacroSpace</entry><entry>YES</entry><entry>YES</entry>
 <entry></entry>
 </row>
 <row>
-<entry>SysMapCase</entry><entry>YES</entry><entry>NO</entry>
-<entry></entry>
-</row>
-<row>
 <entry>SysMkDir</entry><entry>YES</entry><entry>YES</entry>
-<entry></entry>
-</row>
-<row>
-<entry>SysNationalLanguageCompare</entry><entry>YES</entry><entry>NO</entry>
 <entry></entry>
 </row>
 <row>
@@ -296,10 +264,6 @@ platforms on which they are available.</para>
 <entry>Works differently</entry>
 </row>
 <row>
-<entry>SysQueryProcessCodePage</entry><entry>YES</entry><entry>NO</entry>
-<entry></entry>
-</row>
-<row>
 <entry>SysQueryRexxMacro</entry><entry>YES</entry><entry>YES</entry>
 <entry></entry>
 </row>
@@ -312,7 +276,7 @@ platforms on which they are available.</para>
 <entry></entry>
 </row>
 <row>
-<entry>RequestMutexSem</entry><entry>YES</entry><entry>YES</entry>
+<entry>SysRequestMutexSem</entry><entry>YES</entry><entry>YES</entry>
 <entry></entry>
 </row>
 <row>
@@ -333,10 +297,6 @@ platforms on which they are available.</para>
 </row>
 <row>
 <entry>SysSetPriority</entry><entry>YES</entry><entry>NO</entry>
-<entry></entry>
-</row>
-<row>
-<entry>SysSetProcessCodePage</entry><entry>YES</entry><entry>NO</entry>
 <entry></entry>
 </row>
 <row>
@@ -655,33 +615,6 @@ confusion between a legitimate error code and a PID.</para>
 <listitem><para>The network path is invalid.
 </para></listitem></varlistentry>
 </variablelist>
-</section>
-
-<section id="xsysaddfh"><title>SysAddFileHandle (Windows only)</title>
-<indexterm><primary>SysAddFileHandle</primary></indexterm>
-<indexterm><primary>rexxutil functions</primary>
-<secondary>SysAddFileHandle</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-SysAddFileHandle(number)------------------------------------><
-]]>
-</programlisting>
-
-<para>Increases the number of available file handles for the process
-by <emphasis>number</emphasis>.</para>
-
-<para><emphasis role="bold">Parameters:</emphasis></para>
-<variablelist>
-<varlistentry><term><emphasis role="italic">number</emphasis></term>
-<listitem><para>The number of additional file handles to add to the currently
-available number.
-</para></listitem></varlistentry>
-</variablelist>
-
-<para><emphasis role="bold">Return codes:</emphasis></para>
-<para>The number of Allocated File Handles (total number
-after adding what was requested or maximum number
-able to allocate).</para>
 </section>
 
 
@@ -1103,41 +1036,6 @@ C: D: E: F: W:
 <para>Drops all RexxUtil functions. After a Rexx program calls SysDropFuncs,
 the RexxUtil functions are not available in any operating system sessions.
 </para>
-</section>
-
-<section id="sysdroplib"><title>SysDropLibrary (Windows only)</title>
-<indexterm><primary>SysDropLibrary</primary></indexterm>
-<indexterm><primary>rexxutil functions</primary>
-<secondary>SysDropLibrary</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-SysDropLibrary(dll--+-----------+---)-----------------------><
-                       +--routine--+
-]]>
-</programlisting>
-
-<para>Unloads a routine from a DLL library.</para>
-
-<para><emphasis role="bold">Parameter:</emphasis></para>
-<variablelist>
-<varlistentry><term><emphasis role="italic">dll</emphasis></term>
-<listitem><para>The name of the dll containing the function package..
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="italic">routine</emphasis></term>
-<listitem><para>Optional routine containing the drop routine.
-if not specified, ordinal routine 1 will be
-used.</para></listitem></varlistentry>
-</variablelist>
-
-<para><emphasis role="bold">Returns:</emphasis></para>
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>the routine dropper worked correctly
-</para></listitem></varlistentry>
-<varlistentry><term>1</term>
-<listitem><para>the loader routine failed
-</para></listitem></varlistentry>
-</variablelist>
 </section>
 
 
@@ -1824,35 +1722,6 @@ during the conversion and "0" if it was not.</para></listitem></varlistentry>
 <listitem><para>Invalid mapping flags.
 </para></listitem></varlistentry>
 </variablelist>
-</section>
-
-<section id="xsysgetcoll"><title>SysGetCollate (Windows only)</title>
-<indexterm><primary>SysGetCollate</primary></indexterm>
-<indexterm><primary>rexxutil functions</primary>
-<secondary>SysGetCollate</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-SysGetCollate(--+--------------------------+---)------------><
-                   +--,country---+------------+
-                   +--,codepage--+
-]]>
-</programlisting>
-
-<para>Get the country/code page collating sequence.</para>
-
-<para><emphasis role="bold">Parameters:</emphasis></para>
-<variablelist>
-<varlistentry><term><emphasis role="italic">country</emphasis></term>
-<listitem><para>Requested country. Default is the current country.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="italic">codepage</emphasis></term>
-<listitem><para>Requested code page. Default is the current codepage.
-</para></listitem></varlistentry>
-</variablelist>
-
-<para><emphasis role="bold">Returns:</emphasis></para>
-<para>Returns a 256 byte string contaning the collating sequence for the
-specified <emphasis>country</emphasis> and <emphasis>codepage</emphasis>.</para>
 </section>
 
 <section id="xsysgeterrtxt"><title>SysGetErrortext</title>
@@ -2582,37 +2451,6 @@ SysSaveRexxMacroSpace must have created the file.
 </variablelist>
 </section>
 
-<section id="sysmapcase"><title>SysMapCase (Windows only)</title>
-<indexterm><primary>SysMapCase</primary></indexterm>
-<indexterm><primary>rexxutil functions</primary>
-<secondary>SysMapCase</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-SysMapCase(string--+--------------------------+---)---------><
-                      +--,country---+------------+
-                      +--,codepage--+
-]]>
-</programlisting>
-
-<para><emphasis role="bold">Parameter:</emphasis></para>
-<variablelist>
-<varlistentry><term><emphasis role="italic">string</emphasis></term>
-<listitem><para>String to uppercase.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="italic">country</emphasis></term>
-<listitem><para>requested country code. Default is the current country code.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="italic">codepage</emphasis></term>
-<listitem><para>requested codepage. Default is the current codepage.
-</para></listitem></varlistentry>
-</variablelist>
-
-<para><emphasis role="bold">Returns:</emphasis></para>
-<para>The string uppercased according to the specified country and
-codepage or the null string is returned for errors.</para>
-
-</section>
-
 
 <section id="sysmkd"><title>SysMkDir</title>
 <indexterm><primary>SysMkDir</primary></indexterm>
@@ -2673,44 +2511,6 @@ codepage or the null string is returned for errors.</para>
 /* Code */
 call SysMkDir "rexx"
 </programlisting>
-</section>
-
-<section id="xsysnatlcomp"><title>SysNationalLanguageCompare (Windows only)</title>
-<indexterm><primary>SysNationalLanguageCompare</primary></indexterm>
-<indexterm><primary>rexxutil functions</primary>
-<secondary>SysNationalLanguageCompare</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-SysNationalLanguageCompare(string1, string2------------------>
-
->---+------------------------+---------------------------------><
-    +--country--+------------+
-                +--codepage--+
-]]>
-</programlisting>
-
-<para>Compares two strings using the specified <emphasis>country</emphasis>
-and <emphasis>codepage</emphasis>.</para>
-<para><emphasis role="bold">Parameter:</emphasis></para>
-<variablelist>
-<varlistentry><term><emphasis role="italic">string1</emphasis></term>
-<listitem><para>First string to compare.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="italic">string2</emphasis></term>
-<listitem><para>Second string to compare.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="italic">country</emphasis></term>
-<listitem><para>requested country code. Default is the current country code.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="italic">codepage</emphasis></term>
-<listitem><para>requested codepage. Default is the current codepage.
-</para></listitem></varlistentry>
-</variablelist>
-
-<para><emphasis role="bold">Returns:</emphasis></para>
-<para> Returen 1 if first string is greater, 0 if strings are equal, -1
-if second string is greater.  Comparisons are done using
-strict comparison rules. Returns the null string for any errors</para>
 </section>
 
 <section id="xsysoes"><title>SysOpenEventSem</title>
@@ -2899,22 +2699,6 @@ that the process executed in user mode</para></listitem>
 <listitem><para>For Unix PTIME: the summary and the duration that the process
 executed in kernel mode, and the duration that the process executed in
 user mode</para></listitem></itemizedlist>
-</section>
-
-<section id="xsysqcp"><title>SysQueryProcessCodePage</title>
-<indexterm><primary>SysQueryProcessCodePage</primary></indexterm>
-<indexterm><primary>rexxutil functions</primary>
-<secondary>SysQueryProcessCodePage</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-SysQueryProcessCodePage()-----------------------------------><
-]]>
-</programlisting>
-
-<para>Returns the current code page for the process.</para>
-
-<para><emphasis role="bold">Returns:</emphasis></para>
-<para>Returns the current code page for the process.</para>
 </section>
 
 <section id="xsysqrm"><title>SysQueryRexxMacro</title>
@@ -3331,29 +3115,6 @@ It can also be a symbolic name:
 <listitem><para>Invalid priority class.
 </para></listitem></varlistentry>
 </variablelist>
-</section>
-
-<section id="xsysspcp"><title>SysSetProcessCodePage (Windows only)</title>
-<indexterm><primary>SysSetProcessCodePage</primary></indexterm>
-<indexterm><primary>rexxutil functions</primary>
-<secondary>SysSetProcessCodePage</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-SysSetProcessCodePage(codepage)-----------------------------><
-]]>
-</programlisting>
-
-<para>Sets the current code page for the process.</para>
-
-<para><emphasis role="bold">Parameters:</emphasis></para>
-<variablelist>
-<varlistentry><term><emphasis>codepage</emphasis></term>
-<listitem><para>requested codepage
-</para></listitem></varlistentry>
-</variablelist>
-
-<para><emphasis role="bold">Returns:</emphasis></para>
-<para>The return code from the operting system function.</para>
 </section>
 
 <section id="xsysshutd"><title>SysShutdownSystem (Windows only)</title>
@@ -4038,27 +3799,6 @@ Say SysVersion()   ->  "WindowsNT 5.00"
 <para>This function can be
 used to replace the operating-system-specific functions SysOS2Ver(),
 SysWinVer(), and SysLinVer().</para></note>
-</section>
-
-<section id="xsysvl"><title>SysVolumeLabel (Windows only)</title>
-<indexterm><primary>SysVolumeLabel</primary></indexterm>
-<indexterm><primary>rexxutil functions</primary>
-<secondary>SysVolumeLabel</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-SysVolumeLabel("drive")-------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns the label of the specified or the current drive.</para>
-<para><emphasis role="bold">Parameter:</emphasis></para>
-<variablelist>
-<varlistentry><term><emphasis role="italic">drive</emphasis></term>
-<listitem><para>The drive letter in the form
-<computeroutput>D:</computeroutput>. If omitted, the letter of
-the current drive is assumed.
-</para></listitem></varlistentry>
-</variablelist>
 </section>
 
 <section id="xsyswait"><title>SysWait (AIX only)</title>
