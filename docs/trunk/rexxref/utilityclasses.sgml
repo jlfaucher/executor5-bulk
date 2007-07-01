@@ -686,6 +686,17 @@ return
 <indexterm><primary>RegularExpression class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>RegularExpression class</secondary></indexterm>
+<figure><title>The RegularExpression class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxRegularExpressionClass.png" align="left">
+</imageobject>
+</mediaobject>
+</figure>
+<note><title>Note</title>
+<para>The RegularExpression class also has available class methods that its
+metaclass, the <link linkend="clss">Class class</link>, defines.</para></note>
 
 <para>This class provides support for regular expressions. A regular
 expression is a pattern you can use to match strings.</para>
@@ -772,6 +783,8 @@ be used to abbreviate common sets:</para>
 <secondary>RegularExpression class</secondary></indexterm>
 <programlisting>
 <![CDATA[
+::requires "rxregexp.cls"
+
      "(Hi|Hello) World"      Matches "Hi World" and
                              "Hello World".
      "file.???"              Matches any file with three
@@ -803,32 +816,22 @@ in the RXREGEXP.CLS file. This means, you must use a
 
 <programlisting>
 <![CDATA[
-::requires "RXREGEXP.CLS"
+::requires "rxregexp.cls"
 ]]>
 </programlisting>
 
-<para>Methods available to the RegularExpression class:</para>
 
-<itemizedlist>
-<listitem><para>Init</para></listitem>
-<listitem><para>Match</para></listitem>
-<listitem><para>Parse</para></listitem>
-<listitem><para>Pos</para></listitem>
-<listitem><para>Position</para></listitem>
-</itemizedlist>
-
-
-<section><title>INIT</title>
-<indexterm><primary>INIT method</primary>
+<section><title>init</title>
+<indexterm><primary>init method</primary>
 <secondary>of RegularExpression class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>INIT method</secondary>
+<secondary>init method</secondary>
 <tertiary>of RegularExpression class</tertiary></indexterm>
 
 <programlisting>
 <![CDATA[
                      +-,-"MAXIMAL"--+
->>-INIT(-+---------+-+--------------+-)--------------------><
+>>-init(-+---------+-+--------------+-)--------------------><
          +-Pattern-+ +-,-"MINIMAL"--+
 ]]>
 </programlisting>
@@ -850,16 +853,16 @@ myRE2 = .RegularExpression~new("Hello?*")
 </programlisting>
 </section>
 
-<section><title>MATCH</title>
-<indexterm><primary>MATCH method</primary>
+<section><title>match</title>
+<indexterm><primary>match method</primary>
 <secondary>of RegularExpression class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>MATCH method</secondary>
+<secondary>match method</secondary>
 <tertiary>of RegularExpression class</tertiary></indexterm>
 
 <programlisting>
 <![CDATA[
->>-MATCH(-String-)-><
+>>-match(-String-)-><
 ]]>
 </programlisting>
 
@@ -871,17 +874,17 @@ on a successful match. For an example see
 </para>
 </section>
 
-<section id="regexppars"><title>PARSE</title>
-<indexterm><primary>PARSE method</primary>
+<section id="regexppars"><title>parse</title>
+<indexterm><primary>parse method</primary>
 <secondary>of RegularExpression class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>PARSE method</secondary>
+<secondary>parse method</secondary>
 <tertiary>of RegularExpression class</tertiary></indexterm>
 
 <programlisting>
 <![CDATA[
                   +-,-"CURRENT"--+
->>-PARSE(-Pattern-+--------------+-------------------------><
+>>-parse(-Pattern-+--------------+-------------------------><
                   +-,-"MAXIMAL"--+
                   +-,-"MINIMAL"--+
 ]]>
@@ -1017,17 +1020,16 @@ myRE2 (maximal) matched <p>Paragraph 1</p><p>Paragraph 2</p>
 </programlisting>
 </section>
 
-
-<section><title>POS</title>
-<indexterm><primary>POS method</primary>
+<section><title>pos</title>
+<indexterm><primary>pos method</primary>
 <secondary>of RegularExpression class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>POS method</secondary>
+<secondary>pos method</secondary>
 <tertiary>of RegularExpression class</tertiary></indexterm>
 
 <programlisting>
 <![CDATA[
->>-POS-(-Haystack-)-><
+>>-pos-(-Haystack-)-><
 ]]>
 </programlisting>
 
@@ -1036,7 +1038,7 @@ expression on the "new" invocation or on the "parse" invocation
 in the given haystack string.
 It returns 0 on an unsuccessful match or the starting position
 on a successful match. The end position of the match can be
-retrieved with the <link linkend="regexppos">POSITION</link> method.</para>
+retrieved with the <link linkend="regexppos">position</link> method.</para>
 
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
@@ -1062,16 +1064,16 @@ Found the number 2002 in this sentence.
 </programlisting>
 </section>
 
-<section id="regexppos"><title>POSITION</title>
-<indexterm><primary>POSITION method</primary>
+<section id="regexppos"><title>position</title>
+<indexterm><primary>position method</primary>
 <secondary>of RegularExpression class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>POSITION method</secondary>
+<secondary>position method</secondary>
 <tertiary>of RegularExpression class</tertiary></indexterm>
 
 <programlisting>
 <![CDATA[
->>-POSITION------------------------------------------------><
+>>-position------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -1082,15 +1084,15 @@ ended, depending on what was invoked last.</para>
 <programlisting>
 <![CDATA[
 myRE = .RegularExpression~new
-myRE~Parse("[abc")                    -- illegal set definition
-say myRE~Position                     -- will be 4
+myRE~parse("[abc")                    -- illegal set definition
+say myRE~position                     -- will be 4
 
 myRE = .RegularExpression~new("[abc]12")
-myRE~Match("c12")
-say myRE~Position                     -- will be 3
+myRE~match("c12")
+say myRE~position                     -- will be 3
 
-myRE~Match("a13")
-say myRE~Position                     -- will be 2 (failure to match)
+myRE~match("a13")
+say myRE~position                     -- will be 2 (failure to match)
 
 ::requires "rxregexp.cls"
 ]]>
