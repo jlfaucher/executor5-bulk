@@ -182,64 +182,45 @@ must be overridden or they will throw a syntax error when invoked.</para>
 <indexterm><primary>Monitor class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>Monitor class</secondary></indexterm>
-<para>The Monitor class forwards messages to a destination object. It is a
-subclass of the Object class.</para>
-<para><emphasis role="bold">Methods the Monitor class defines:</emphasis></para>
-<simplelist>
-<member>CURRENT</member>
-<member>DESTINATION</member>
-<member>INIT (Overrides Object class method)</member>
-<member>UNKNOWN</member>
-</simplelist>
-
-<para><emphasis role="bold">Methods inherited from the Object class:</emphasis>
-</para>
-<simplelist>
-<member>NEW (Class method)</member>
-<member>Operator methods:&nbsp;&nbsp;=, ==, \=, >&lt;, &lt;>, \==</member>
-<member>CLASS</member>
-<member>COPY</member>
-<member>DEFAULTNAME</member>
-<member>HASMETHOD</member>
-<member>OBJECTNAME</member>
-<member>OBJECTNAME=</member>
-<member>REQUEST</member>
-<member>RUN</member>
-<member>SETMETHOD</member>
-<member>START</member>
-<member>STRING</member>
-<member>UNSETMETHOD</member>
-</simplelist>
-
-
+<figure><title>The Monitor class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxMonitorClass.png" align="left">
+</imageobject>
+</mediaobject>
+</figure>
 <note><title>Note</title>
 <para>The Monitor class also has available class methods that its
-metaclass, the Class class, defines.</para></note>
+metaclass, the <link linkend="clss">Class class</link>, defines.</para></note>
 
-<section id="moncur"><title>CURRENT</title>
-<indexterm><primary>CURRENT method</primary>
+<para>The Monitor class forwards messages to a destination object. It is a
+subclass of the Object class.</para>
+
+<section id="moncur"><title>current</title>
+<indexterm><primary>current method</primary>
 <secondary>of Monitor class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>CURRENT method</secondary>
+<secondary>current method</secondary>
 <tertiary>of Monitor class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-CURRENT-----------------------------------------------------><
+>>-current-----------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Returns the current destination object.</para>
 </section>
 
-<section id="mondes"><title>DESTINATION</title>
-<indexterm><primary>DESTINATION method</primary>
+<section id="mondes"><title>destination</title>
+<indexterm><primary>destination method</primary>
 <secondary>of Monitor class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>DESTINATION method</secondary>
+<secondary>destination method</secondary>
 <tertiary>of Monitor class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-DESTINATION--+---------------+------------------------------><
+>>-destination--+---------------+------------------------------><
                 +-(destination)-+
 ]]>
 </programlisting>
@@ -251,15 +232,15 @@ this becomes the new destination for any forwarded messages. If you omit
 object becomes the new destination for any forwarded messages.</para>
 </section>
 
-<section id="monini"><title>INIT</title>
-<indexterm><primary>INIT method</primary>
+<section id="monini"><title>init</title>
+<indexterm><primary>init method</primary>
 <secondary>of Monitor class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>INIT method</secondary>
+<secondary>init method</secondary>
 <tertiary>of Monitor class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-INIT--+---------------+-------------------------------------><
+>>-init--+---------------+-------------------------------------><
          +-(destination)-+
 ]]>
 </programlisting>
@@ -267,21 +248,21 @@ object becomes the new destination for any forwarded messages.</para>
 <para>Initializes the newly created monitor object.</para>
 </section>
 
-<section id="monunk"><title>UNKNOWN</title>
-<indexterm><primary>UNKNOWN method</primary>
+<section id="monunk"><title>unknown</title>
+<indexterm><primary>unknown method</primary>
 <secondary>of Monitor class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>UNKNOWN method</secondary>
+<secondary>unknown method</secondary>
 <tertiary>of Monitor class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-UNKNOWN(messagename,messageargs)----------------------------><
+>>-unknown(messagename,messageargs)----------------------------><
 ]]>
 </programlisting>
 
 <para>Reissues or forwards to the current monitor destination all unknown
 messages sent to a monitor object. For additional information, see
-<link linkend="unkno">Defining an UNKNOWN Method</link>.</para>
+<link linkend="unkno">Defining an unknown Method</link>.</para>
 </section>
 
 <section id="monex"><title>Examples</title>
@@ -295,7 +276,7 @@ previous_destination=.output~destination(.stream~new("my.out")~~command("open wr
 /* The following resets the destination */
 .output~destination
 
-.output~destination(.STDOUT)
+.output~destination(.Stdout)
 current_output_destination_stream_object=.output~current
 </programlisting>
 </section>
