@@ -1447,7 +1447,7 @@ say myRE~position                     -- will be 2 (failure to match)
 </mediaobject>
 </figure>
 <note><title>Note</title>
-<para>The RegularExpression class also has available class methods that its
+<para>The Supplier class also has available class methods that its
 metaclass, the <link linkend="clss">Class class</link>, defines.</para></note>
 
 <para>You can use a supplier object to enumerate the items a collection
@@ -1641,6 +1641,119 @@ end
 <tertiary>of Supplier class</tertiary></indexterm>
 
 <para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="streamsupp"><title>The StreamSupplier Class</title>
+<indexterm><primary>StreamSupplier class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>StreamSupplier class</secondary></indexterm>
+<figure><title>The StreamSupplier class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxStreamSupplierClass.png" align="left">
+</imageobject>
+</mediaobject>
+</figure>
+<note><title>Note</title>
+<para>The StreamSupplier class also has available class methods that its
+metaclass, the <link linkend="clss">Class class</link>, defines.</para></note>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+
+<para>The StreamSupplier class is a subclass of the Supplier class.</para>
+
+<section id="streamsuavai"><title>available</title>
+<indexterm><primary>available method</primary>
+<secondary>of StreamSupplier class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>available method</secondary>
+<tertiary>of StreamSupplier class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-available---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>1</computeroutput> (true) if an item is available
+from the supplier (that is, if the 
+<emphasis role="bold">item</emphasis> method would return a value). It returns
+<computeroutput>0</computeroutput> (false) if the collection is empty or the
+supplier has already enumerated the entire collection.</para>
+</section>
+
+<section id="streansuinde"><title>index</title>
+<indexterm><primary>index method</primary>
+<secondary>of StreamSupplier class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>index method</secondary>
+<tertiary>of StreamSupplier class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-index-------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the index of the current
+item in the collection. If no item is available, that is, if 
+<emphasis role="bold">available</emphasis> would
+return false, the language processor raises an error.</para>
+</section>
+
+<section id="streamsuinit"><title>init</title>
+<indexterm><primary>init method</primary>
+<secondary>of StreamSupplier class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>init method</secondary>
+<tertiary>of StreamSupplier class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-init--------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Initializes the object instance.</para>
+</section>
+
+<section id="streamsupitm"><title>item</title>
+<indexterm><primary>item method</primary>
+<secondary>of StreamSupplier class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>item method</secondary>
+<tertiary>of StreamSupplier class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-item--------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the current item in the collection. If no item is available, that
+is, if <emphasis role="bold">available</emphasis>
+would return false, the language processor raises an error.
+</para>
+</section>
+
+<section id="streamsunext"><title>next</title>
+<indexterm><primary>next method</primary>
+<secondary>of StreamSupplier class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>next method</secondary>
+<tertiary>of StreamSupplier class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-next--------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Moves to the next item in the collection.
+By repeatedly sending <emphasis role="bold">next</emphasis>
+to the supplier (as long as <emphasis role="bold">available</emphasis>
+ returns true),
+you can enumerate all items in the collection. If no item is available, that
+is, if <emphasis role="bold">available</emphasis>
+would return false, the language processor raises an error.
+</para>
+</section>
 </section>
 
 </section>
