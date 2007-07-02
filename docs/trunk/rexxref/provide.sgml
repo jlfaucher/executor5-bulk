@@ -714,181 +714,77 @@ simultaneously on a single object. See
 description of concurrency.</para>
 </section>
 
-<section id="classmeth"><title>Classes and Methods Provided by Rexx</title>
-<para>The following figure shows all the classes and their methods.</para>
+<section id="classmeth"><title>Classes Provided by Rexx</title>
+<para>The following figure shows all the classes.</para>
 
 <figure float="1">
-<title id="meths">Classes and Inheritance of Methods (part 1 of 4)</title>
-<programlisting>
-<![CDATA[
-+-----------------------------------------------------------------------------+
-| Object                                                                      |
-+-----------+----------+----------------+----------+----------+---------------+
-NEW*        |          |                |          |          |
-=           +-------+  +--------+       +-------+  +------+   +-------+
-==          | Alarm |  | Class* |       | Array |  | List |   | Queue |
-\=          +-------+  +--------+       +-------+  +------+   +-------+
-<>          CANCEL     BASECLASS        NEW        OF*        | []
-><          INIT       DEFAULTNAME      OF*        []         | []=
-\==                    DEFINE           []         []=        | AT
-CLASS                  DELETE           []=        AT         | HASINDEX
-COPY                   ENHANCED         AT         FIRST      | INSERT
-DEFAULTNAME            ID               DIMENSION  FIRSTITEM  | ITEMS
-HASMETHOD              INHERIT          FIRST      HASINDEX   | MAKEARRAY
-INIT                   INIT             HASINDEX   INSERT     | PEEK
-OBJECTNAME             METACLASS        ITEMS      ITEMS      | PULL
-OBJECTNAME=            METHOD           LAST       LAST       | PUSH
-REQUEST                METHODS          MAKEARRAY  LASTITEM   | PUT
-RUN                    MIXINCLASS       NEXT       MAKEARRAY  | QUEUE
-SETMETHOD              NEW              PREVIOUS   NEXT       | REMOVE
-START                  QUERYMIXINCLASS  PUT        PREVIOUS   | SUPPLIER
-STRING                 SUBCLASS         REMOVE     PUT        |
-UNSETMETHOD            SUBCLASSES       SECTION    REMOVE     +---------------+
-                       SUPERCLASSES     SIZE       SECTION    | CircularQueue |
-                       UNINHERIT        SUPPLIER   SUPPLIER   +---------------+
-                                                              OF*
-                                                              INIT
-                                                              RESIZE
-                                                              SIZE
-                                                              STRING
-                                                              METHODS
-
-
-* All of the methods under the Class class are both class and instance
-  methods. NEW and OF are class methods.
-]]>
-</programlisting>
+<title id="meths1">Classes and Inheritance (part 1 of 7</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxClasses1.png" align="left" scale="90">
+</imageobject>
+</mediaobject>
 </figure>
 
 <figure float="1">
-<title>Classes and Inheritance of Methods (Part 2 of 4)</title>
-<programlisting>
-<![CDATA[
-+-----------------------------------------------------------------------------+
-| Object (continued)                                                          |
-+---------------+--------------+---------------+------------+-----------------+
-|               |              |               |            |
-+-------+       +-----------+  +----------+    +---------+  +--------+
-| Table |       | Directory |  | Relation |    | Message |  | Method |
-+-------+       +-----------+  +----------+    +---------+  +--------+
-| []            []             | []            COMPLETED    NEW*
-| []=           []=            | []=           INIT         NEWFILE
-| AT            DIFFERENCE     | ALLAT         NOTIFY       SETGUARDED
-| DIFFERENCE    HASINDEX       | ALLINDEX      RESULT       SETPRIVATE
-| HASINDEX      INTERSECTION   | AT            SEND         SETPROTECTED
-| INTERSECTION  ITEMS          | DIFFERENCE    START        SETSECURITYMANAGER
-| ITEMS         MAKEARRAY      | HASINDEX                   SETUNGUARDED
-| MAKEARRAY     PUT            | HASITEM                    SOURCE
-| PUT           REMOVE         | INDEX
-| REMOVE        SETENTRY       | INTERSECTION
-| SUBSET        SETMETHOD      | ITEMS
-| SUPPLIER      SUBSET         | MAKEARRAY
-| UNION         SUPPLIER       | PUT
-| XOR           UNION          | REMOVE
-|               UNKNOWN        | REMOVEITM
-+-----+         XOR            | SUBSET
-| Set |                        | SUPPLIER
-+-----+                        | UNION
-OF*                            | XOR
-[]                             |
-[]=                            +-----+
-AT                             | Bag |
-HASINDEX                       +-----+
-ITEMS                          OF*
-MAKEARRAY                      []
-PUT                            []=
-REMOVE                         HASINDEX
-SUPPLIER                       MAKEARRAY
-                               PUT
-                               SUPPLIER
-]]>
-</programlisting>
+<title id="meths2">Classes and Inheritance (part 2 of 7</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxClasses2png" align="left" scale="90">
+</imageobject>
+</mediaobject>
 </figure>
 
 <figure float="1">
-<title>Classes and Inheritance of Methods (Part 3 of 4)</title>
-<programlisting>
-<![CDATA[
-+-----------------------------------------------------------------------------+
-| Object (continued)                                                          |
-+------------+------------------+----------+----------------------------------+
-|            |                  |          |
-+---------+  +---------------+  +------+   +--------+
-| Monitor |  | MutableBuffer |  | Stem |   | Stream |
-+---------+  +---------------+  +------+   +--------+
-CURRENT      APPEND             NEW*       ARRAYIN
-DESTINATION  DELETE             []         ARRAYOUT
-INIT         GETBUFFERSIZE      []=        CHARIN
-UNKNOWN      INIT               MAKEARRAY  CHAROUT
-             INSERT             REQUEST    CHARS
-             LENGTH             UNKNOWN    CLOSE
-             OVERLAY                       COMMAND
-             POS                           DESCRIPTION
-             SETBUFFERSIZE                 FLUSH
-             STRING                        INIT
-             SUBSTR                        LINEIN
-                                           LINEOUT
-                                           LINES
-                                           MAKEARRAY
-                                           OPEN
-                                           POSITION
-                                           QUALIFY
-                                           QUERY
-                                           SAY
-                                           SEEK
-                                           STATE
-                                           SUPPLIER
-]]>
-</programlisting>
+<title id="meths3">Classes and Inheritance (part 3 of 7</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxClasses3.png" align="left" scale="90">
+</imageobject>
+</mediaobject>
 </figure>
 
 <figure float="1">
-<title>Classes and Inheritance of Methods (Part 4 of 4)</title>
-<programlisting>
-<![CDATA[
-+-----------------------------------------------------------------------------+
-| Object (continued)                                                          |
-+-----------------------------+-----------------------------------------------+
-|                             |
-+-------------------------+   +----------+
-| String                  |   | Supplier |
-+-------------------------+   +----------+
-NEW               FORMAT      NEW*
-"" (abuttal)      INSERT      AVAILABLE
-(arithmetic:)     LASTPOS     INDEX
-+ - * / % // **   LEFT        ITEM
-&apos; &apos; (blank)       LENGTH      NEXT
-ABBREV            (logical:)
-ABS               & && |
-BITAND            \
-BITOR             MAKESTRING
-BITXOR            MAX
-B2X               MIN
-CENTER            OVERLAY
-CHANGESTR         POS
-COMPARE           REVERSE
-(comparison:)     RIGHT
-<![CDATA[= \= <> ><        SIGN
-> >= \>           SPACE
-< <= \<           STRING
-== \==            STRIP
->> \>> >>=        SUBSTR
-<< \<< <<=        SUBWORD
-(concatenation:)  TRANSLATE
-||                TRUNC
-COPIES            VERIFY
-COUNSTR           WORD
-C2D               WORDINDEX
-C2X               WORDLENGTH
-DATATYPE          WORDPOS
-DELSTR            WORDS
-DELWORD           X2B
-D2C               X2C
-D2X               X2D
-DECODEBASE64
-ENCODEBASE64
-]]>
-</programlisting>
+<title id="meths4">Classes and Inheritance (part 4 of 7</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxClasses4.png" align="left" scale="90">
+</imageobject>
+</mediaobject>
+</figure>
+
+<figure float="1">
+<title id="meths5">Classes and Inheritance (part 5 of 7</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxClasses5.png" align="left" scale="90">
+</imageobject>
+</mediaobject>
+</figure>
+
+<figure float="1">
+<title id="meths6">Classes and Inheritance (part 6 of 7</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxClasses6.png" align="left" scale="90">
+</imageobject>
+</mediaobject>
+</figure>
+
+<figure float="1">
+<title id="meths7">Classes and Inheritance (part 7 of 7</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxClasses7.png" align="left" scale="90">
+</imageobject>
+</mediaobject>
 </figure>
 </section>
 
