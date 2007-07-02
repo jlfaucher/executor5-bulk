@@ -117,6 +117,8 @@ IMAGE_FILES = ooRexxObjectClass.png \
               ooRexxDescendingCaselessComparatorClass.png \
               ooRexxDescendingComparatorClass.png \
               ooRexxInvertingComparatorClass.png \
+              ooRexxIteratorClass.png \
+              ooRexxCircularIteratorClass.png \
               rxo90004.jpg \
 	      rxo90005.jpg \
 	      rxo90006.jpg \
