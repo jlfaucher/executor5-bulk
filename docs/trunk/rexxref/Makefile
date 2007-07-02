@@ -110,6 +110,13 @@ IMAGE_FILES = ooRexxObjectClass.png \
               ooRexxMutableBufferClass.png \
               ooRexxRegularExpressionClass.png \
               ooRexxSupplierClass.png \
+              ooRexxComparatorClass.png \
+              ooRexxCaselessColumnComparatorClass.png \
+              ooRexxColumnComparatorClass.png \
+              ooRexxCaselessComparatorClass.png \
+              ooRexxDescendingCaselessComparatorClass.png \
+              ooRexxDescendingComparatorClass.png \
+              ooRexxInvertingComparatorClass.png \
               rxo90004.jpg \
 	      rxo90005.jpg \
 	      rxo90006.jpg \
