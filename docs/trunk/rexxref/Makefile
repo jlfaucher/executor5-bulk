@@ -120,6 +120,7 @@ IMAGE_FILES = ooRexxObjectClass.png \
               ooRexxIteratorClass.png \
               ooRexxCircularIteratorClass.png \
               ooRexxStreamSupplierClass.png \
+              ooRexxRexxQueueClass.png \
               rxo90004.jpg \
 	      rxo90005.jpg \
 	      rxo90006.jpg \
