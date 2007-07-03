@@ -44,7 +44,7 @@
 <section id="fundclasses"><title>The Fundamental Classes</title>
 <para>This section describes the fundamental classes supplied by ooRexx.</para>
 
-<section id="objc"><title>The Object Class</title>
+<section id="clsObject"><title>The Object Class</title>
 <indexterm><primary>Object class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>Object class</secondary></indexterm>
@@ -58,7 +58,7 @@
 </figure>
 <note><title>Note</title>
 <para>The Object class also has available class methods that its
-metaclass, the <link linkend="clss">Class class</link>, defines.</para></note>
+metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
 
 <para>The Object class is the root of the class hierarchy. The instance methods
 of the Object class are, therefore, available on all objects.</para>
@@ -469,7 +469,7 @@ see <link linkend="reqstr">Required String Values</link>.</para>
 </programlisting>
 
 <para>Runs the method object <emphasis role="italic">method</emphasis> (see
-<link linkend="mcls">The Method Class</link>). The
+<link linkend="clsMethod">The Method Class</link>). The
 <emphasis role="italic">method</emphasis> has access to the object variables
 of the receiver object, as
 if the receiver object had defined the method by using
@@ -485,7 +485,7 @@ the order you specify them.
 </para></listitem></varlistentry>
 <varlistentry><term>Array</term>
 <listitem><para>Requires <emphasis role="italic">argument</emphasis>,
-which is an array object. (See <link linkend="xarray">The Array Class</link>.)
+which is an array object. (See <link linkend="clsArray">The Array Class</link>.)
 The language processor passes the member items of the array to the method
 as arguments. The first argument is at index 1, the second argument at index
 2, and so on. If you omitted any indexes when creating the array, the language
@@ -579,7 +579,7 @@ method is a protected method.</para></listitem>
 </programlisting>
 
 <para>Returns a message object (see
-<link linkend="agent">The Message Class</link>) and sends it a
+<link linkend="clsMessage">The Message Class</link>) and sends it a
 <emphasis role="bold">start</emphasis> message
 to start concurrent processing. The object receiving the message
 <emphasis role="italic">messagename</emphasis> processes this message
@@ -684,7 +684,7 @@ method is a protected method.</para></listitem>
 </section>
 </section>
 
-<section id="clss"><title>The Class Class</title>
+<section id="clsClass"><title>The Class Class</title>
 <indexterm><primary>Class class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>Class class</secondary></indexterm>
@@ -698,7 +698,7 @@ method is a protected method.</para></listitem>
 </figure>
 <para>The Class class is like a factory producing the factories that
 produce objects. It is a subclass of the 
-<link linkend="objc">Object class</link>. The instance methods of the 
+<link linkend="clsObject">Object class</link>. The instance methods of the 
 Class class are also the class methods of all classes.</para>
 
 <section id="clbase"><title>baseClass</title>
@@ -1076,7 +1076,7 @@ that <emphasis role="italic">class_object</emphasis> defines. If you send
 appropriate messages to
 a supplier object, the supplier enumerates all the instance methods existing
 at the time of the supplier's creation. (See
-<link linkend="supp">The Supplier Class</link> for details.)</para>
+<link linkend="clsSupplier">The Supplier Class</link> for details.)</para>
 
 <note><title>Note</title>
 <para>Methods that have been hidden with a
@@ -1345,7 +1345,7 @@ room~uninherit(location)
 </section>
 </section>
 
-<section id="strc"><title>The String Class</title>
+<section id="clsString"><title>The String Class</title>
 <indexterm><primary>String class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>String class</secondary></indexterm>
@@ -1359,8 +1359,8 @@ room~uninherit(location)
 </figure>
 <note><title>Note</title>
 <para>The String class also has available class methods that its
-metaclass, the <link linkend="clss">Class class</link>, defines. 
-It also inherits methods from the <link linkend="comparable">Comparable
+metaclass, the <link linkend="clsClass">Class class</link>, defines. 
+It also inherits methods from the <link linkend="clsComparable">Comparable
 class</link>.</para></note>
 
 <para>String objects represent character-string data values. A character
@@ -4764,7 +4764,7 @@ for information about the X2D built-in function.)</para>
 </section>
 </section>
 
-<section id="mcls"><title>The Method Class</title>
+<section id="clsMethod"><title>The Method Class</title>
 <indexterm><primary>Method class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>Method class</secondary></indexterm>
@@ -4777,7 +4777,7 @@ for information about the X2D built-in function.)</para>
 </mediaobject>
 </figure>
 <para>The Method class creates method objects from Rexx source code.
-It is a subclass of the <link linkend="objc">Object class</link>.</para>
+It is a subclass of the <link linkend="clsObject">Object class</link>.</para>
 
 <note><title>Note</title>
 <para>The Method class also has available class methods that its
@@ -4951,7 +4951,7 @@ items.</para>
 </section>
 </section>
 
-<section id="agent"><title>The Message Class</title>
+<section id="clsMessage"><title>The Message Class</title>
 <indexterm><primary>Message class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>Message class</secondary></indexterm>
@@ -4965,7 +4965,7 @@ items.</para>
 </figure>
 <note><title>Note</title>
 <para>The Message class also has available class methods that its
-metaclass, the <link linkend="clss">Class class</link>, defines.</para></note>
+metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
 
 <para>A message object provides for the deferred or
 asynchronous sending of a message. You can create a message object by using
@@ -5015,7 +5015,7 @@ to <emphasis role="italic">target</emphasis> in the order you specify them.
 <varlistentry><term>Array</term>
 <listitem><para>If you specify this option, you must specify an
 <emphasis role="italic">argument</emphasis>, which
-is an array object. (See <link linkend="xarray">The Array Class</link>.)
+is an array object. (See <link linkend="clsArray">The Array Class</link>.)
 The language processor then passes the member items of the array to
 <emphasis role="italic">target</emphasis>. When the language
 processor passes the arguments taken from the array, the first argument is

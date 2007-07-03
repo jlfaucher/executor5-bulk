@@ -139,10 +139,10 @@ end
 <indexterm><primary>concurrency</primary>
 <secondary>message objects</secondary></indexterm>
 <para>A message object
-(see <link linkend="agent">The Message Class</link>) is an
+(see <link linkend="clsMessage">The Message Class</link>) is an
 intermediary between two objects that enables
-concurrent processing. All objects inherit the START method (page
-<link linkend="agent">***</link>)
+concurrent processing. All objects inherit the START method (see the
+<link linkend="clsMessage">Message Class</link>)
 from the object class. To obtain a message object, an object sends a START
 message to the object to which the message object will convey a message. The
 message is an argument to the START message as in the following example:</para>
@@ -734,7 +734,7 @@ See <link linkend="syscre">SysCreateEventSem</link>, and
 <para>A monitor object consists of a number of client methods, WAIT
 and SIGNAL methods for client methods to use, and one or more condition variables.
 Guarded methods provide the functionality of monitors. Do not confuse this
-with the Monitor class (see <link linkend="moncla">The Monitor Class</link>).
+with the Monitor class (see <link linkend="clsMonitor">The Monitor Class</link>).
 </para>
 <programlisting>
 ::method init

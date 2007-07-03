@@ -45,7 +45,7 @@
 <para>This section describes the ooRexx classes which implement the classic
 Rexx data streams.</para>
 
-<section id="istream"><title>The InputStream Class</title>
+<section id="clsInputStream"><title>The InputStream Class</title>
 <indexterm><primary>InputStream class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>InputStream class</secondary></indexterm>
@@ -59,7 +59,7 @@ Rexx data streams.</para>
 </figure>
 <note><title>Note</title>
 <para>The InputStream class also has available class methods that its
-metaclass, the <link linkend="clss">Class class</link>, defines.</para></note>
+metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
 <para>This class is defined as an abstract mixin class. It must be implemented 
 by subclassing it or inherting from it as a mixin. All the methods in this
 must be overridden or they will throw a syntax error when invoked.</para>
@@ -163,7 +163,7 @@ syntax error 93.963 to be raised.</para>
 
 </section>
 
-<section id="ostream"><title>The OutputStream Class</title>
+<section id="clsOutputStream"><title>The OutputStream Class</title>
 <indexterm><primary>OutputStream class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>OutputStream class</secondary></indexterm>
@@ -177,7 +177,7 @@ syntax error 93.963 to be raised.</para>
 </figure>
 <note><title>Note</title>
 <para>The InputStream class also has available class methods that its
-metaclass, the <link linkend="clss">Class class</link>, defines.</para></note>
+metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
 <para>This class is defined as an abstract mixin class. It must be implemented 
 by subclassing it or inherting from it as a mixin. All the methods in this
 must be overridden or they will throw a syntax error when invoked.</para>
@@ -281,7 +281,7 @@ syntax error 93.963 to be raised.</para>
 
 </section>
 
-<section id="iostream"><title>The InputOutputStream Class</title>
+<section id="clsInputOutputStream"><title>The InputOutputStream Class</title>
 <indexterm><primary>InputOutputStream class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>InputOutputStream class</secondary></indexterm>
@@ -295,17 +295,17 @@ syntax error 93.963 to be raised.</para>
 </figure>
 <note><title>Note</title>
 <para>The InputOutputStream class also has available class methods that its
-metaclass, the <link linkend="clss">Class class</link>, defines.
+metaclass, the <link linkend="clsClass">Class class</link>, defines.
 It also has all the methods of its two mixin classes, 
-<link linkend="istream">InputStream</link> and 
-<link linkend="ostream">OutputStream</link>, available.</para></note>
+<link linkend="clsInputStream">InputStream</link> and 
+<link linkend="clsOutputStream">OutputStream</link>, available.</para></note>
 <para>This class is defined as an abstract class. It must be implemented 
 by subclassing it. All the methods from its mixin classes
 must be overridden or they will throw a syntax error when invoked.</para>
 
 </section>
 
-<section id="strcl"><title>The Stream Class</title>
+<section id="clsStream"><title>The Stream Class</title>
 <indexterm><primary>Stream class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>Stream class</secondary></indexterm>
@@ -319,15 +319,15 @@ must be overridden or they will throw a syntax error when invoked.</para>
 </figure>
 <note><title>Note</title>
 <para>The Stream class also has available class methods that its
-metaclass, the <link linkend="clss">Class class</link>, defines.
+metaclass, the <link linkend="clsClass">Class class</link>, defines.
 It also inherits methods from the 
-<link linkend="iostream">InputOutputStream class</link>.</para></note>
+<link linkend="clsInputOutputStream">InputOutputStream class</link>.</para></note>
 
 <para>A stream object allows external communication from
 Rexx. (See <link linkend="iostrms">Input and Output Streams</link> for a
 discussion of Rexx input and output.)</para>
 <para>The Stream class is a subclass of the 
-<link linkend="iostream">InputOutputStream class</link>.</para>
+<link linkend="clsInputOutputStream">InputOutputStream class</link>.</para>
 
 <section id="strmnew"><title>new (Inherited Class Method)</title>
 <indexterm><primary>new method</primary>
@@ -363,7 +363,7 @@ more information. Returns the new stream object</para>
 
 <para>This method overrides the
 <link linkend="istmari">arrayIn method</link> from the
-<link linkend="istream">InputStream class</link>.</para>
+<link linkend="clsInputStream">InputStream class</link>.</para>
 <para>Returns a fixed array that contains the data of the stream in line or
 character format, starting from the current read position. The line format is
 the default.</para>
@@ -388,7 +388,7 @@ method, the first line can be a partial line.
 
 <para>This method overrides the
 <link linkend="ostmaro">arrayOut method</link> from the
-<link linkend="ostream">OutputStream class</link>.</para>
+<link linkend="clsOutputStream">OutputStream class</link>.</para>
 <para>Returns a stream object that contains the data from
 <emphasis role="italic">array</emphasis>.</para>
 </section>
@@ -409,9 +409,9 @@ method, the first line can be a partial line.
 
 <para>This method overrides the
 <link linkend="icharim">charIn method</link> from the
-<link linkend="istream">InputStream class</link> and the
+<link linkend="clsInputStream">InputStream class</link> and the
 <link linkend="ocharim">charIn method</link> from the
-<link linkend="ostream">OutputStream class</link>.</para>
+<link linkend="clsOutputStream">OutputStream class</link>.</para>
 <para>Returns a string of up to <emphasis role="italic">length</emphasis>
 characters from the character input stream receiving the message. The language
 processor advances the read pointer. If you omit
@@ -441,9 +441,9 @@ about the CHARIN built-in function.)</para>
 
 <para>This method overrides the
 <link linkend="icharom">charOut method</link> from the
-<link linkend="istream">InputStream class</link> and the
+<link linkend="clsInputStream">InputStream class</link> and the
 <link linkend="ocharom">charOut method</link> from the
-<link linkend="ostream">OutputStream class</link>.</para>
+<link linkend="clsOutputStream">OutputStream class</link>.</para>
 <para>Returns the count of characters remaining after trying to write
 <emphasis role="italic">string</emphasis> to the character output stream
 receiving the message. The language processor
@@ -478,9 +478,9 @@ about the CHAROUT built-in function.)</para>
 
 <para>This method overrides the
 <link linkend="icharsm">chars method</link> from the
-<link linkend="istream">InputStream class</link> and the
+<link linkend="clsInputStream">InputStream class</link> and the
 <link linkend="ocharsm">chars method</link> from the
-<link linkend="ostream">OutputStream class</link>.</para>
+<link linkend="clsOutputStream">OutputStream class</link>.</para>
 <para>Returns the total number of characters remaining in the
 character input stream receiving the message. The default input stream is
 STDIN. The count includes any line separator characters, if these are defined
@@ -511,9 +511,9 @@ about the CHARS built-in function.)</para>
 
 <para>This method overrides the
 <link linkend="istclos">close method</link> from the
-<link linkend="istream">InputStream class</link> and the
+<link linkend="clsInputStream">InputStream class</link> and the
 <link linkend="ostclos">close method</link> from the
-<link linkend="ostream">OutputStream class</link>.</para>
+<link linkend="clsOutputStream">OutputStream class</link>.</para>
 <para>Closes the stream that receives the message. 
 <emphasis role="bold">close</emphasis> returns
 <computeroutput>READY:</computeroutput> if closing the stream is successful,
@@ -978,9 +978,9 @@ to be written to the stream receiving the message.</para>
 
 <para>This method overrides the
 <link linkend="ilinein1">lineIn method</link> from the
-<link linkend="istream">InputStream class</link> and the
+<link linkend="clsInputStream">InputStream class</link> and the
 <link linkend="olinein1">lineIn method</link> from the
-<link linkend="ostream">OutputStream class</link>.</para>
+<link linkend="clsOutputStream">OutputStream class</link>.</para>
 <para>Returns the next <emphasis role="italic">count</emphasis> lines. The
 count must be <computeroutput>0</computeroutput> or
 <computeroutput>1</computeroutput>. The language processor advances the read
@@ -1013,9 +1013,9 @@ LINEIN built-in function.)</para>
 
 <para>This method overrides the
 <link linkend="ilineom">lineOut method</link> from the
-<link linkend="istream">InputStream class</link> and the
+<link linkend="clsInputStream">InputStream class</link> and the
 <link linkend="olineom">lineOut method</link> from the
-<link linkend="ostream">OutputStream class</link>.</para>
+<link linkend="clsOutputStream">OutputStream class</link>.</para>
 <para>Returns <computeroutput>0</computeroutput> if successful in writing
 <emphasis role="italic">string</emphasis> to the character output stream
 receiving the message or <computeroutput>1</computeroutput> if
@@ -1046,9 +1046,9 @@ information about the LINEOUT built-in function.)</para>
 
 <para>This method overrides the
 <link linkend="ilinesm">lines method</link> from the
-<link linkend="istream">InputStream class</link> and the
+<link linkend="clsInputStream">InputStream class</link> and the
 <link linkend="olinesm">lines method</link> from the
-<link linkend="ostream">OutputStream class</link>.</para>
+<link linkend="clsOutputStream">OutputStream class</link>.</para>
 <para>Returns the number of completed lines that remain in the character input
 stream receiving the message. If the stream has already been read with 
 <emphasis role="bold">charIn</emphasis>emphasis.
@@ -1151,9 +1151,9 @@ method, the first line can be a partial line.
 
 <para>This method overrides the
 <link linkend="istopen">open method</link> from the
-<link linkend="istream">InputStream class</link> and the
+<link linkend="clsInputStream">InputStream class</link> and the
 <link linkend="ostopen">open method</link> from the
-<link linkend="ostream">OutputStream class</link>.</para>
+<link linkend="clsOutputStream">OutputStream class</link>.</para>
 <para>Opens the stream to which you send the message and returns
 <computeroutput>READY:</computeroutput>. If the method is unsuccessful, it
 returns an error message string in the same form that the 
@@ -1264,9 +1264,9 @@ stream_name~open("read")
 
 <para>This method overrides the
 <link linkend="istposi">position method</link> from the
-<link linkend="istream">InputStream class</link> and the
+<link linkend="clsInputStream">InputStream class</link> and the
 <link linkend="ostposi">position method</link> from the
-<link linkend="ostream">OutputStream class</link>.</para>
+<link linkend="clsOutputStream">OutputStream class</link>.</para>
 <para><emphasis role="bold">position</emphasis> is a synonym for 
 <emphasis role="bold">seek</emphasis>. (See
 <link linkend="stseek">seek</link> .)</para>
@@ -1621,7 +1621,7 @@ represents i.e. the name of the file.
 
 <para>Returns a supplier object for the stream. When you send appropriate
 messages to the supplier object (see
-<link linkend="supp">The Supplier Class</link>), it enumerates all the lines
+<link linkend="clsSupplier">The Supplier Class</link>), it enumerates all the lines
 in the stream object. The supplier enumerates the items in their line order.
 </para>
 </section>

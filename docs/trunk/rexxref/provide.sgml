@@ -90,7 +90,7 @@ additional methods, objects created before the definition of these methods
 do not acquire these methods.</para>
 <para>Because the object methods also define the object variables, object
 classes are factories for creating Rexx objects. The Array class (see
-<link linkend="xarray">The Array Class</link>)
+<link linkend="clsArray">The Array Class</link>)
 is an example of an object class.</para>
 </section>
 
@@ -147,7 +147,7 @@ The Class class is like a factory for producing the factories that produce
 objects.</para>
 <para>To change the behavior of an object that is an instance, you generally
 use subclassing. For example, you can create Statarray, a subclass of the
-Array class (see <link linkend="xarray">The Array Class</link>).
+Array class (see <link linkend="clsArray">The Array Class</link>).
 The Statarray class can include a
 method for computing a total of all the numeric elements of an array.</para>
 <programlisting>
@@ -301,7 +301,7 @@ end of your source program:</para>
 ::class "Account"
 </programlisting>
 <para>This creates an Account class that is a subclass of the Object class.
-(See <link linkend="objc">The Object Class</link> for a description of the
+(See <link linkend="clsObject">The Object Class</link> for a description of the
 Object class.)  The string &quot;Account&quot;
 is a string identifier for the new class.</para>
 <para>Now you can use ::METHOD directives to add methods to your new class. The
@@ -811,7 +811,7 @@ methods except where noted.</para>
 <entry>[]</entry>
 <entry><link linkend="xarlbrk">Array</link>,
 <link linkend="babrak">Bag</link>,
-<link linkend="rxcqcl">CircularQueue</link>,
+<link linkend="clsCircularQueue">CircularQueue</link>,
 <link linkend="dibrak">Directory</link>,
 <link linkend="librak">List</link>,
 <link linkend="qubrak">Queue</link>,
@@ -824,7 +824,7 @@ methods except where noted.</para>
 <entry>[]=</entry>
 <entry><link linkend="arlbre">Array</link>,
 <link linkend="balbe">Bag</link>,
-<link linkend="rxcqcl">CircularQueue</link>,
+<link linkend="clsCircularQueue">CircularQueue</link>,
 <link linkend="dibrae">Directory</link>,
 <link linkend="librae">List</link>,
 <link linkend="qubrae">Queue</link>,
@@ -851,7 +851,7 @@ methods except where noted.</para>
 </row>
 <row>
 <entry>APPEND</entry>
-<entry><link linkend="mutablebuffer">MutableBuffer</link></entry>
+<entry><link linkend="clsMutableBuffer">MutableBuffer</link></entry>
 </row>
 <row>
 <entry>ARRAYIN</entry>
@@ -864,7 +864,7 @@ methods except where noted.</para>
 <row>
 <entry>AT(R)</entry>
 <entry><link linkend="arat">Array</link>,
-<link linkend="rxcqcl">CircularQueue</link>,
+<link linkend="clsCircularQueue">CircularQueue</link>,
 <link linkend="diat">Directory</link>,
 <link linkend="liat">List</link>,
 <link linkend="quat">Queue</link>,
@@ -984,7 +984,7 @@ methods except where noted.</para>
 <row>
 <entry>DELETE</entry>
 <entry><link linkend="cldele">Class (class and instance method)</link>,
-<link linkend="mutablebuffer">MutableBuffer</link></entry>
+<link linkend="clsMutableBuffer">MutableBuffer</link></entry>
 </row>
 <row>
 <entry>DELSTR</entry>
@@ -1051,7 +1051,7 @@ methods except where noted.</para>
 </row>
 <row>
 <entry>GETBUFFERSIZE</entry>
-<entry><link linkend="mutablebuffer">MutableBuffer</link></entry>
+<entry><link linkend="clsMutableBuffer">MutableBuffer</link></entry>
 </row>
 <row>
 <entry>HASENTRY</entry>
@@ -1061,7 +1061,7 @@ methods except where noted.</para>
 <entry>HASINDEX</entry>
 <entry><link linkend="arhasi">Array</link>,
 <link linkend="bahasi">Bag</link>,
-<link linkend="rxcqcl">CircularQueue</link>,
+<link linkend="clsCircularQueue">CircularQueue</link>,
 <link linkend="dihasi">Directory</link>,
 <link linkend="lihasi">List</link>,
 <link linkend="quhasi">Queue</link>,
@@ -1093,7 +1093,7 @@ methods except where noted.</para>
 <row>
 <entry>INIT</entry>
 <entry><link linkend="alini">Alarm</link>,
-<link linkend="rxcqcl">CircularQueue</link>,
+<link linkend="clsCircularQueue">CircularQueue</link>,
 <link linkend="mesnew">Message</link>,
 <link linkend="monini">Monitor</link>,
 <link linkend="obinit">Object</link>,
@@ -1103,7 +1103,7 @@ methods except where noted.</para>
 <entry>INSERT</entry>
 <entry><link linkend="liinse">List</link>,
 <link linkend="stinse">String</link>,
-<link linkend="mutablebuffer">MutableBuffer</link></entry>
+<link linkend="clsMutableBuffer">MutableBuffer</link></entry>
 </row>
 <row>
 <entry>INTERSECTION</entry>
@@ -1118,7 +1118,7 @@ methods except where noted.</para>
 <row>
 <entry>ITEMS</entry>
 <entry><link linkend="aritms">Array</link>,
-<link linkend="rxcqcl">CircularQueue</link>,
+<link linkend="clsCircularQueue">CircularQueue</link>,
 <link linkend="diitms">Directory</link>,
 <link linkend="liitms">List</link>,
 <link linkend="quitms">Queue</link>,
@@ -1146,7 +1146,7 @@ methods except where noted.</para>
 <row>
 <entry>LENGTH</entry>
 <entry><link linkend="stleng">String</link>,
-<link linkend="mutablebuffer">MutableBuffer</link></entry>
+<link linkend="clsMutableBuffer">MutableBuffer</link></entry>
 </row>
 <row>
 <entry>LINEIN</entry>
@@ -1164,7 +1164,7 @@ methods except where noted.</para>
 <entry>MAKEARRAY</entry>
 <entry><link linkend="armaka">Array</link>,
 <link linkend="bamaka">Bag</link>,
-<link linkend="rxcqcl">CircularQueue</link>,
+<link linkend="clsCircularQueue">CircularQueue</link>,
 <link linkend="dimaka">Directory</link>,
 <link linkend="lima">List</link>,
 <link linkend="qumaka">Queue</link>,
@@ -1247,7 +1247,7 @@ methods except where noted.</para>
 <entry>OF</entry>
 <entry><link linkend="arof">Array (Class Method)</link>,
 <link linkend="baof">Bag (Class Method)</link>,
-<link linkend="rxcqcl">CircularQueue</link>,
+<link linkend="clsCircularQueue">CircularQueue</link>,
 <link linkend="liof">List (Class Method)</link>,
 <link linkend="setof">Set (Class Method)</link></entry>
 </row>
@@ -1288,12 +1288,12 @@ and prefix \</entry>
 <row>
 <entry>OVERLAY</entry>
 <entry><link linkend="stover">String</link>,
-<link linkend="mutablebuffer">MutableBuffer</link></entry>
+<link linkend="clsMutableBuffer">MutableBuffer</link></entry>
 </row>
 <row>
 <entry>PEEK</entry>
 <entry><link linkend="qupeek">Queue</link>,
-<link linkend="rxcqcl">CircularQueue</link></entry>
+<link linkend="clsCircularQueue">CircularQueue</link></entry>
 </row>
 <row>
 <entry>POS</entry>
@@ -1313,18 +1313,18 @@ and prefix \</entry>
 <row>
 <entry>PULL</entry>
 <entry><link linkend="qupul">Queue</link>,
-<link linkend="rxcqcl">CircularQueue</link></entry>
+<link linkend="clsCircularQueue">CircularQueue</link></entry>
 </row>
 <row>
 <entry>PUSH</entry>
 <entry><link linkend="qupush">Queue</link>,
-<link linkend="rxcqcl">CircularQueue</link></entry>
+<link linkend="clsCircularQueue">CircularQueue</link></entry>
 </row>
 <row>
 <entry>PUT</entry>
 <entry><link linkend="arput">Array</link>,
 <link linkend="baput">Bag</link>,
-<link linkend="rxcqcl">CircularQueue</link>,
+<link linkend="clsCircularQueue">CircularQueue</link>,
 <link linkend="dirput">Directory</link>,
 <link linkend="liput">List</link>,
 <link linkend="quput">Queue</link>,
@@ -1347,12 +1347,12 @@ and prefix \</entry>
 <row>
 <entry>QUEUE</entry>
 <entry><link linkend="quque">Queue</link>,
-<link linkend="rxcqcl">CircularQueue</link></entry>
+<link linkend="clsCircularQueue">CircularQueue</link></entry>
 </row>
 <row>
 <entry>REMOVE</entry>
 <entry><link linkend="arremo">Array</link>,
-<link linkend="rxcqcl">CircularQueue</link>,
+<link linkend="clsCircularQueue">CircularQueue</link>,
 <link linkend="dirrem">Directory</link>,
 <link linkend="liremo">List</link>,
 <link linkend="quremo">Queue</link>,
@@ -1371,7 +1371,7 @@ and prefix \</entry>
 </row>
 <row>
 <entry>RESIZE</entry>
-<entry><link linkend="rxcqcl">CircularQueue</link></entry>
+<entry><link linkend="clsCircularQueue">CircularQueue</link></entry>
 </row>
 <row>
 <entry>RESULT</entry>
@@ -1408,7 +1408,7 @@ and prefix \</entry>
 </row>
 <row>
 <entry>SETBUFFERSIZE</entry>
-<entry><link linkend="mutablebuffer">MutableBuffer</link></entry>
+<entry><link linkend="clsMutableBuffer">MutableBuffer</link></entry>
 </row>
 <row>
 <entry>SETENTRY</entry>
@@ -1446,7 +1446,7 @@ and prefix \</entry>
 <row>
 <entry>SIZE</entry>
 <entry><link linkend="asiz">Array</link>,
-<link linkend="rxcqcl">CircularQueue</link></entry>
+<link linkend="clsCircularQueue">CircularQueue</link></entry>
 </row>
 <row>
 <entry>SOURCE</entry>
@@ -1468,8 +1468,8 @@ and prefix \</entry>
 <row>
 <entry>STRING</entry>
 <entry><link linkend="obstri">Object</link>,
-<link linkend="rxcqcl">CircularQueue</link>,
-<link linkend="mutablebuffer">MutableBuffer</link></entry>
+<link linkend="clsCircularQueue">CircularQueue</link>,
+<link linkend="clsMutableBuffer">MutableBuffer</link></entry>
 </row>
 <row>
 <entry>STRIP</entry>
@@ -1492,7 +1492,7 @@ and prefix \</entry>
 <row>
 <entry>SUBSTR</entry>
 <entry><link linkend="stsubs">String</link>,
-<link linkend="mutablebuffer">MutableBuffer</link></entry>
+<link linkend="clsMutableBuffer">MutableBuffer</link></entry>
 </row>
 <row>
 <entry>SUBWORD</entry>
@@ -1506,7 +1506,7 @@ and prefix \</entry>
 <entry>SUPPLIER</entry>
 <entry><link linkend="arclsu">Array</link>,
 <link linkend="basupp">Bag</link>,
-<link linkend="rxcqcl">CircularQueue</link>,
+<link linkend="clsCircularQueue">CircularQueue</link>,
 <link linkend="disupp">Directory</link>,
 <link linkend="lisu">List</link>,
 <link linkend="qusupp">Queue</link>,

@@ -1882,7 +1882,7 @@ a="Position of &apos;e&apos; is:" c~pos("e",3)
 a result object. Any result object is discarded, and the receiver object is
 included in the original expression in place of the message term.</para>
 <para>For example, the messages INHERIT and SUBCLASS are valid for classes
-(see <link linkend="clss">The Class Class</link>) and, assuming the
+(see <link linkend="clsClass">The Class Class</link>) and, assuming the
 existence of the Persistent class, you could code:</para>
 <programlisting>
 account = .object~subclass("Account")~~inherit(.persistent)
@@ -1897,7 +1897,7 @@ form of the message term. Thus, <computeroutput>a[b]</computeroutput>
 is the same as <computeroutput>a~"[]"(b)</computeroutput>.</para>
 
 <para>For example, the message [] is valid for arrays
-(see <link linkend="xarray">The Array Class</link>) and you could code:</para>
+(see <link linkend="clsArray">The Array Class</link>) and you could code:</para>
 <programlisting>
 a = .array~of(10,20)
 say "Second item is" a[2]   /* Same as: a~at(2)              */
@@ -2241,7 +2241,7 @@ a digit or a period.</para>
 FRED.
 A.
 </programlisting><para>By default, the value of a stem is a Stem object. (See
-<link linkend="stemcl">The Stem Class</link>.)
+<link linkend="clsStem">The Stem Class</link>.)
 The stem variable's Stem object is automatically created the first time
 you use the stem variable or a compound variable
 (see <link linkend="compsym">Compound Symbols</link>)
@@ -2471,7 +2471,7 @@ producing a form of associative memory (content-addressable).</para>
 
 <section id="evcoms"><title>Evaluated Compound Variables</title>
 <para>The value of a stem variable is always a Stem object (see
-<link linkend="stemcl">The Stem Class</link> for
+<link linkend="clsStem">The Stem Class</link> for
 details). A Stem object is a type of collection that supports the []
 and []= methods used by other collection classes. The []
 provides an alternate means of accessing compound variables that also allows
