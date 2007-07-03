@@ -63,7 +63,7 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 <para>The Object class is the root of the class hierarchy. The instance methods
 of the Object class are, therefore, available on all objects.</para>
 
-<section id="obnew"><title>new (Class Method)</title>
+<section id="mthObjectNew"><title>new (Class Method)</title>
 <indexterm><primary>new method</primary>
 <secondary>of Object class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -78,7 +78,7 @@ of the Object class are, therefore, available on all objects.</para>
 <para>Returns a new instance of the receiver class.</para>
 </section>
 
-<section id="coo"><title>Operator Methods</title>
+<section id="mthObjectOperators"><title>Operator Methods</title>
 <programlisting>
 <![CDATA[
 >>-comparison_operator(argument)-------------------------------><
@@ -144,7 +144,7 @@ class to match the arguments.</para>
 </variablelist>
 </section>
 
-<section id="obclas"><title>class</title>
+<section id="mthObjectClass"><title>class</title>
 <indexterm><primary>class method</primary>
 <secondary>of Object class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -160,7 +160,7 @@ class to match the arguments.</para>
 object.</para>
 </section>
 
-<section id="obcopy"><title>copy</title>
+<section id="mthObjectCopy"><title>copy</title>
 <indexterm><primary>copy method</primary>
 <secondary>of Object class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -184,7 +184,7 @@ directions=myarray~copy   /* Copies array myarray to array directions */
 </programlisting>
 </section>
 
-<section id="obdena"><title>defaultName</title>
+<section id="mthObjectDefaultName"><title>defaultName</title>
 <indexterm><primary>defaultName method</primary>
 <secondary>of Object class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -205,13 +205,13 @@ does not have a string value. See
 The <emphasis role="bold">defaultName</emphasis>
 method of the Object class returns a string that identifies
 the class of the object, for example, an Array or a Directory. See also
-<link linkend="obname">objectName</link> and
-<link linkend="obstri">string</link>. See
-<link linkend="obqnam">objectName=</link> for an
+<link linkend="mthObjectObjectName">objectName</link> and
+<link linkend="mthObjectString">string</link>. See
+<link linkend="mthObjectObjectNameEquals">objectName=</link> for an
 example using <emphasis role="bold">defaultName</emphasis>.</para>
 </section>
 
-<section id="obhasm"><title>hasMethod</title>
+<section id="mthObjectHasMethod"><title>hasMethod</title>
 <indexterm><primary>hasMethod method</primary>
 <secondary>of Object class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -236,7 +236,7 @@ although it is private, you receive error 97
 returns <computeroutput>1</computeroutput> (true).</para></note>
 </section>
 
-<section id="obidenthash"><title>identityHash</title>
+<section id="mthObjectIdentityHash"><title>identityHash</title>
 <indexterm><primary>identityHash method</primary>
 <secondary>of Object class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -252,7 +252,7 @@ returns <computeroutput>1</computeroutput> (true).</para></note>
 to be unique.</para>
 </section>
 
-<section id="obinit"><title>init</title>
+<section id="mthObjectInit"><title>init</title>
 <indexterm><primary>init method</primary>
 <secondary>of Object class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -268,7 +268,7 @@ to be unique.</para>
 class can override this method.</para>
 </section>
 
-<section id="obinstmeth"><title>instanceMethod</title>
+<section id="mthObjectInstanceMethod"><title>instanceMethod</title>
 <indexterm><primary>instanceMethod method</primary>
 <secondary>of Object class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -285,7 +285,7 @@ class can override this method.</para>
 Otherwise it returns the Nil object.</para>
 </section>
 
-<section id="obinstmeths"><title>instanceMethods</title>
+<section id="mthObjectInstanceMethods"><title>instanceMethods</title>
 <indexterm><primary>instanceMethods method</primary>
 <secondary>of Object class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -304,7 +304,7 @@ parent class. The returned Supplier object is a list of the methods
 available to the <emphasis role="italic">classname</emphasis>.</para>
 </section>
 
-<section id="obisa"><title>isA</title>
+<section id="mthObjectIsA"><title>isA</title>
 <indexterm><primary>isA method</primary>
 <secondary>of Object class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -320,11 +320,11 @@ available to the <emphasis role="italic">classname</emphasis>.</para>
 <emphasis role="italic">methodname</emphasis> is a valid method of the class.
 Otherwise it returns the Nil object.</para>
 <note><para>This method is an alias of the
-<link linkend="obisinstanceof">isinstanceOf</link> method.</para>
+<link linkend="mthObjectIsInstanceOf">isinstanceOf</link> method.</para>
 </note>
 </section>
 
-<section id="obisinstanceof"><title>isInstanceOf</title>
+<section id="mthObjectIsInstanceOf"><title>isInstanceOf</title>
 <indexterm><primary>isInstanceOf method</primary>
 <secondary>of Object class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -354,7 +354,7 @@ class inheritance chain. For example:
 </para>
 </section>
 
-<section id="obname"><title>objectName</title>
+<section id="mthObjectObjectName"><title>objectName</title>
 <indexterm><primary>objectName method</primary>
 <secondary>of Object class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -375,7 +375,7 @@ the <emphasis role="bold">objectName=</emphasis>
 method for an example using <emphasis role="bold">objectName</emphasis>.</para>
 </section>
 
-<section id="obqnam"><title>objectName=</title>
+<section id="mthObjectObjectNameEquals"><title>objectName=</title>
 <indexterm><primary>objectName= method</primary>
 <secondary>of Object class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -406,7 +406,7 @@ say points[3]                 /* Says: "E"Points is still an array   */
 </programlisting>
 </section>
 
-<section id="obreq"><title>request</title>
+<section id="mthObjectRequest"><title>request</title>
 <indexterm><primary>request method</primary>
 <secondary>of Object class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -422,7 +422,7 @@ say points[3]                 /* Says: "E"Points is still an array   */
 class, or the Nil object if the request cannot be satisfied.</para>
 <para>This method first compares the identity of the object's class (see
 the <emphasis role="italic">id</emphasis>
-method of the Class class in <link linkend="clid">id</link>) to
+method of the Class class in <link linkend="mthClassId">id</link>) to
 <emphasis role="italic">classid</emphasis>. If they are the same, the
 receiver object is returned as the result.
 Otherwise, <emphasis role="bold">request</emphasis>
@@ -451,7 +451,7 @@ method to obtain string values in certain contexts;
 see <link linkend="reqstr">Required String Values</link>.</para>
 </section>
 
-<section id="obrun"><title>run</title>
+<section id="mthObjectRun"><title>run</title>
 <indexterm><primary>run method</primary>
 <secondary>of Object class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -505,12 +505,12 @@ method object.</para>
 <orderedlist>
 <listitem><para>The <emphasis role="bold">run</emphasis> method is a
 private method. See the <emphasis role="bold">setPrivate</emphasis> method
-in <link linkend="mesetp">setPrivate</link>  for details.</para></listitem>
+in <link linkend="mthMethodSetPrivate">setPrivate</link>  for details.</para></listitem>
 <listitem><para>The RUN method is a protected method.</para></listitem>
 </orderedlist>
 </section>
 
-<section id="obsetm"><title>setMethod</title>
+<section id="mthObjectSetMethod"><title>setMethod</title>
 <indexterm><primary>setMethod method</primary>
 <secondary>of Object class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -556,14 +556,14 @@ attached to.</para>
 <orderedlist>
 <listitem><para>The <emphasis role="bold">setMethod</emphasis>
 method is a private method. See the <emphasis role="bold">setPrivate</emphasis>
-method in <link linkend="mesetp">setPrivate</link>  for details.</para>
+method in <link linkend="mthMethodSetPrivate">setPrivate</link>  for details.</para>
 </listitem>
 <listitem><para>The <emphasis role="bold">setMethod</emphasis>
 method is a protected method.</para></listitem>
 </orderedlist>
 </section>
 
-<section id="obstar"><title>start</title>
+<section id="mthObjectStart"><title>start</title>
 <indexterm><primary>start method</primary>
 <secondary>of Object class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -597,7 +597,7 @@ specify them.</para>
 <para>When the receiver object has finished processing the message, the message
 object retains its result and holds it until the sender requests it by sending
 a <emphasis role="bold">result</emphasis> message. For further details,
-see <link linkend="msstrt">START</link>.
+see <link linkend="mthMessageStart">start</link>.
 </para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
@@ -607,7 +607,7 @@ msg=.message~new(world,"HELLO")~~start  /* same as previous line */
 </programlisting>
 </section>
 
-<section id="obstri"><title>string</title>
+<section id="mthObjectString"><title>string</title>
 <indexterm><primary>string method</primary>
 <secondary>of Object class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -628,14 +628,14 @@ string representation of themselves in this way.</para>
 method (which can in turn use the
 <emphasis role="bold">defaultName</emphasis> method). See also the
 <emphasis role="bold">objectName</emphasis>
-method (<link linkend="obname">OBJECTNAME</link>) and the
+method (<link linkend="mthObjectObjectName">OBJECTNAME</link>) and the
 <emphasis role="bold">defaultName</emphasis> method
-(<link linkend="obdena">defaultName</link>).</para>
+(<link linkend="mthObjectDefaultName">defaultName</link>).</para>
 <para>The distinction between this method, the
 <emphasis role="bold">makeString</emphasis> method (which obtains
 string values--see <link linkend="stmaks">makeString</link>) and the
 <emphasis role="bold">request</emphasis>
-method (see <link linkend="obreq">request</link>) is important. All objects
+method (see <link linkend="mthObjectRequest">request</link>) is important. All objects
 have a <emphasis role="bold">string</emphasis> method, which returns
 a string representation (human-readable form) of the
 object. This form is useful in tracing and debugging. Only those objects that
@@ -651,7 +651,7 @@ so these subclasses also have string values. Any other class can also provide
 a string value by defining a <emphasis role="bold">makeString</emphasis> method.</para>
 </section>
 
-<section id="obunse"><title>unsetMethod</title>
+<section id="mthObjectUnsetMethod"><title>unsetMethod</title>
 <indexterm><primary>unsetMethod method</primary>
 <secondary>of Object class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -676,7 +676,7 @@ no action is taken. </para>
 <orderedlist>
 <listitem><para>The <emphasis role="bold">unsetMethod</emphasis>
 method is a private method. See the <emphasis role="bold">setPrivate</emphasis>
-method in <link linkend="mesetp">setPrivate</link>  for details.</para>
+method in <link linkend="mthMethodSetPrivate">setPrivate</link>  for details.</para>
 </listitem>
 <listitem><para>The <emphasis role="bold">unsetMethod</emphasis>
 method is a protected method.</para></listitem>
@@ -701,7 +701,7 @@ produce objects. It is a subclass of the
 <link linkend="clsObject">Object class</link>. The instance methods of the 
 Class class are also the class methods of all classes.</para>
 
-<section id="clbase"><title>baseClass</title>
+<section id="mthClassBaseClass"><title>baseClass</title>
 <indexterm><primary>baseClass method</primary>
 <secondary>of Class class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -719,7 +719,7 @@ If the class is not a mixin class, the base class is the class receiving the
 <emphasis role="bold">baseClass</emphasis> message.</para>
 </section>
 
-<section id="cldena"><title>defaultName</title>
+<section id="mthClassDefaultName"><title>defaultName</title>
 <indexterm><primary>defaultName method</primary>
 <secondary>of Class class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -751,7 +751,7 @@ say .savings~defaultName   /* Displays "The Savings class" */
 </programlisting>
 </section>
 
-<section id="cldefi"><title>define</title>
+<section id="mthClassDefine"><title>define</title>
 <indexterm><primary>define method</primary>
 <secondary>of Class class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -797,7 +797,7 @@ bank_account~define("TYPE",&apos;return "a bank account"&apos;)
 </programlisting>
 </section>
 
-<section id="cldele"><title>delete</title>
+<section id="mthClassDelete"><title>delete</title>
 <indexterm><primary>delete method</primary>
 <secondary>of Class class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -838,7 +838,7 @@ myclass~delete("TYPE")                     /* this deletes the method */
 </programlisting>
 </section>
 
-<section id="obccen"><title>enhanced</title>
+<section id="mthClassEnhanced"><title>enhanced</title>
 <indexterm><primary>enhanced method</primary>
 <secondary>of Class class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -859,7 +859,7 @@ the collection <emphasis role="italic">methods</emphasis>. The collection
 indexes are the names of the enhancing
 methods, and the items are the method objects (or strings or arrays of strings
 containing method code). (See the description of
-<link linkend="cldefi">define</link>.)
+<link linkend="mthClassDefine">define</link>.)
 You can use any collection that supports a
 <emphasis role="bold">supplier</emphasis> method.</para>
 <para><emphasis role="bold">enhanced</emphasis> sends an
@@ -882,7 +882,7 @@ rclass=.class~enhanced(rclassmeths,"Remote Class")
 </programlisting>
 </section>
 
-<section id="clid"><title>id</title>
+<section id="mthClassId"><title>id</title>
 <indexterm><primary>id method</primary>
 <secondary>of Class class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -907,7 +907,7 @@ say myobject~id                         /* Produces: "my object" */
 </programlisting>
 </section>
 
-<section id="clinhe"><title>inherit</title>
+<section id="mthClassInherit"><title>inherit</title>
 <indexterm><primary>inherit method</primary>
 <secondary>of Class class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -966,7 +966,7 @@ room~inherit(.location)
 </programlisting>
 </section>
 
-<section id="clissubclsof"><title>isSubClassOf</title>
+<section id="mthClassIsSubclassOf"><title>isSubClassOf</title>
 <indexterm><primary>isSubclassOf method</primary>
 <secondary>of Class class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -994,7 +994,7 @@ class inheritance chain. For example:
 </para>
 </section>
 
-<section id="clmeta"><title>metaClass</title>
+<section id="mthClassMetaclass"><title>metaClass</title>
 <indexterm><primary>metaClass method</primary>
 <secondary>of Class class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -1016,10 +1016,10 @@ The instance methods of the default metaclass are the class methods of the
 receiver class. For more information about class methods, see
 <link linkend="objcla">Object Classes</link>.
 See also the description of the <emphasis role="bold">subClass</emphasis>
-method in <link linkend="clsubc">subClass</link>.</para>
+method in <link linkend="mthClassSubclass">subClass</link>.</para>
 </section>
 
-<section id="clmeth"><title>method</title>
+<section id="mthClassMethod"><title>method</title>
 <indexterm><primary>method method</primary>
 <secondary>of Class class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -1051,7 +1051,7 @@ say method_source[1]              /* Shows the method source code */
 </programlisting>
 </section>
 
-<section id="clmets"><title>methods</title>
+<section id="mthClassMethods"><title>methods</title>
 <indexterm><primary>methods method</primary>
 <secondary>of Class class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -1097,7 +1097,7 @@ end
 </programlisting>
 </section>
 
-<section id="clmixi"><title>mixinClass</title>
+<section id="mthClassMixinClass"><title>mixinClass</title>
 <indexterm><primary>mixinClass method</primary>
 <secondary>of Class class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -1147,7 +1147,7 @@ buyable=.object~mixinClass("Buyable")  /* New subclass is buyable    */
 </programlisting>
 </section>
 
-<section id="coconw"><title>new</title>
+<section id="mthClassNew"><title>new</title>
 <indexterm><primary>new method</primary>
 <secondary>of Class class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -1192,7 +1192,7 @@ If balance > 100 then Say "  You win a free toaster oven"
 </programlisting>
 </section>
 
-<section id="clqmc"><title>queryMixinClass</title>
+<section id="mthClassQueryMixinClass"><title>queryMixinClass</title>
 <indexterm><primary>queryMixinClass method</primary>
 <secondary>of Class class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -1208,15 +1208,15 @@ If balance > 100 then Say "  You win a free toaster oven"
 mixin class, or <computeroutput>0</computeroutput> (false).</para>
 </section>
 
-<section id="clsubc"><title>subClass</title>
-<indexterm><primary>subClass method</primary>
+<section id="mthClassSubclass"><title>subclass</title>
+<indexterm><primary>subclass method</primary>
 <secondary>of Class class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>subClass method</secondary>
+<secondary>subclass method</secondary>
 <tertiary>of Class class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-subClass(classid-+-------------------------+-)--------------><
+>>-subclass(classid-+-------------------------+-)--------------><
                     +-,metaclass-+----------+-+
                                  +-,methods-+
 ]]>
@@ -1244,7 +1244,7 @@ and whose items are method objects (or strings or arrays of strings containing
 method code). If you specify <emphasis role="italic">methods</emphasis>,
 the new class is enhanced with class methods from this collection.
 (The metaclass of the new class is not affected.)</para>
-<para>The <emphasis role="bold">metaClass</emphasis> method returns the
+<para>The <emphasis role="bold">metaclass</emphasis> method returns the
 metaclass of a class.</para>
 <para>The method search order of the new subclass is the same as that of the
 receiver class, with the addition of the new subclass at the start of the
@@ -1253,21 +1253,21 @@ order.</para>
 <indexterm><primary>examples</primary>
 <secondary>subClass method</secondary></indexterm>
 <programlisting>
-room=.object~subClass("Room")   /* Superclass is .object     */
+room=.object~subclass("Room")   /* Superclass is .object     */
                                 /* Subclass is room          */
                                 /* Subclass identity is Room */
 </programlisting>
 </section>
 
-<section id="clsubs"><title>subClasses</title>
-<indexterm><primary>subClasses method</primary>
+<section id="mthClassSubclasses"><title>subclasses</title>
+<indexterm><primary>subclasses method</primary>
 <secondary>of Class class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>subClasses method</secondary>
+<secondary>subclasses method</secondary>
 <tertiary>of Class class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-subClasses--------------------------------------------------><
+>>-subclasses--------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -1277,7 +1277,7 @@ unspecified order. (The program should not rely on any order.) The array
 indexes range from 1 to the number of subclasses.</para>
 </section>
 
-<section id="clsupe"><title>superClasses</title>
+<section id="mthClassSuperClasses"><title>superClasses</title>
 <indexterm><primary>superClasses method</primary>
 <secondary>of Class class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -1312,7 +1312,7 @@ end
 </programlisting>
 </section>
 
-<section id="clunin"><title>uninherit</title>
+<section id="mthClassUninherit"><title>uninherit</title>
 <indexterm><primary>uninherit method</primary>
 <secondary>of Class class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -1370,7 +1370,7 @@ convenient than the notation for methods. See
 <link linkend="funct">Functions</link> for function descriptions.</para>
 <para>The String class is a subclass of the Object class.</para>
 
-<section id="stinew"><title>new (Class Method)</title>
+<section id="mthStringNew"><title>new (Class Method)</title>
 <indexterm><primary>new method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -1386,7 +1386,7 @@ convenient than the notation for methods. See
 <emphasis role="italic">stringvalue</emphasis>.</para>
 </section>
 
-<section id="aritcso"><title>Arithmetic Methods</title>
+<section id="mthStringArithmeticMethods"><title>Arithmetic Methods</title>
 <indexterm><primary>method</primary>
 <secondary>arithmetic methods</secondary>
 <tertiary>of String class</tertiary></indexterm>
@@ -1494,7 +1494,7 @@ result is shown in exponential notation, it might have been rounded.</para>
 </programlisting>
 </section>
 
-<section id="commeth"><title>Comparison Methods</title>
+<section id="mthStringComparisonMethods"><title>Comparison Methods</title>
 <indexterm><primary>method</primary>
 <secondary>comparison methods</secondary>
 <tertiary>of String class</tertiary></indexterm>
@@ -1708,7 +1708,7 @@ characters.</para>
 </programlisting>
 </section>
 
-<section id="logmeth"><title>Logical Methods</title>
+<section id="mthStringLogicalMethods"><title>Logical Methods</title>
 <indexterm><primary>method</primary>
 <secondary>logical methods</secondary>
 <tertiary>of String class</tertiary></indexterm>
@@ -1781,7 +1781,7 @@ becomes <computeroutput>0</computeroutput>, and
 </programlisting>
 </section>
 
-<section id="concmeth"><title>Concatenation Methods</title>
+<section id="mthStringConcatenationMethods"><title>Concatenation Methods</title>
 <indexterm><primary>method</primary>
 <secondary>concatenation methods</secondary>
 <tertiary>of String class</tertiary></indexterm>
@@ -1836,7 +1836,7 @@ object and the <emphasis role="italic">argument</emphasis>.
 </programlisting>
 </section>
 
-<section id="stabbr"><title>abbrev</title>
+<section id="mthStringAbbrev"><title>abbrev</title>
 <indexterm><primary>abbrev method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -1898,7 +1898,7 @@ end;
 for information about the ABBREV built-in function.)</para>
 </section>
 
-<section id="stabs"><title>abs</title>
+<section id="mthStringAbs"><title>abs</title>
 <indexterm><primary>abs method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -1925,7 +1925,7 @@ sign and is formatted according to the current NUMERIC settings.</para>
 for information about the ABS built-in function.)</para>
 </section>
 
-<section id="stb2x"><title>b2x</title>
+<section id="mthStringB2x"><title>b2x</title>
 <indexterm><primary>b2x method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -1981,7 +1981,7 @@ number into other forms.</para>
 for information about the B2X built-in function.)</para>
 </section>
 
-<section id="stbita"><title>bitAnd</title>
+<section id="mthStringBitAnd"><title>bitAnd</title>
 <indexterm><primary>bitAnd method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -2027,7 +2027,7 @@ the zero-length (null) string.</para>
 for information about the BITAND built-in function.)</para>
 </section>
 
-<section id="stbito"><title>bitOr</title>
+<section id="mthStringBitOr"><title>bitOr</title>
 <indexterm><primary>bitOr method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -2074,7 +2074,7 @@ the zero-length (null) string.</para>
 for information about the BITOR built-in function.)</para>
 </section>
 
-<section id="stbitx"><title>bitXor</title>
+<section id="mthStringBitXor"><title>bitXor</title>
 <indexterm><primary>bitXor method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -2126,7 +2126,7 @@ for information about the BITXOR built-in
 function.)</para>
 </section>
 
-<section id="stc2d"><title>c2d</title>
+<section id="mthStringC2d"><title>c2d</title>
 <indexterm><primary>c2d method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -2194,7 +2194,7 @@ been processed. If <emphasis role="italic">n</emphasis> is
 for information about the C2D built-in function.)</para>
 </section>
 
-<section id="stc2x"><title>c2x</title>
+<section id="mthStringC2x"><title>c2x</title>
 <indexterm><primary>c2x method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -2238,7 +2238,7 @@ can be of any length. If the receiving string is null,
 for information about the C2X built-in function.)</para>
 </section>
 
-<section id="stcchgstr"><title>caselessChangeStr</title>
+<section id="mthStringCaselessChangeStr"><title>caselessChangeStr</title>
 <indexterm><primary>caselessChangeStr method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -2272,7 +2272,7 @@ AbaBabAB~changeStr("ab","xy")        ->    "xyxyxyxy"
 </programlisting>
 </section>
 
-<section id="stccomp"><title>caselessCompare</title>
+<section id="mthStringCaselessCompare"><title>caselessCompare</title>
 <indexterm><primary>caselessCompare method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -2314,7 +2314,7 @@ blank.</para>
 </programlisting>
 </section>
 
-<section id="stccompto"><title>caselessCompareTo</title>
+<section id="mthStringCaselessCompareTo"><title>caselessCompareTo</title>
 <indexterm><primary>caselessCompareTo method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -2365,7 +2365,7 @@ place to the end of the target string.
 </programlisting>
 </section>
 
-<section id="stccntstr"><title>caselessCountStr</title>
+<section id="mthStringCaselessCountStr"><title>caselessCountStr</title>
 <indexterm><primary>caselessCountStr method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -2396,7 +2396,7 @@ string that do not overlap.  All matches are made using caseless comparisons.</p
 </programlisting>
 </section>
 
-<section id="stcequals"><title>caselessEquals</title>
+<section id="mthStringCaselessEquals"><title>caselessEquals</title>
 <indexterm><primary>caselessEquals method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -2426,7 +2426,7 @@ Returns .false ("0") if the two strings are not strictly equal.
 </programlisting>
 </section>
 
-<section id="stclastpos"><title>caselessLastPos</title>
+<section id="mthStringCaselessLastPos"><title>caselessLastPos</title>
 <indexterm><primary>caselessLastPos method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -2447,7 +2447,7 @@ Returns .false ("0") if the two strings are not strictly equal.
 
 <para>Returns the position of the last occurrence of a string,
 <emphasis role="italic">needle</emphasis>,
-in the receiving string. (See also <link linkend="stpos">POS</link>.) It
+in the receiving string. (See also <link linkend="mthStringPos">POS</link>.) It
 returns <computeroutput>0</computeroutput> if
 <emphasis role="italic">needle</emphasis> is the null string or not found.
 By default, the search starts at the last character of the receiving string
@@ -2470,7 +2470,7 @@ value or omitted.  The search is performed using caseless comparisons.</para>
 for information about the LASTPOS built-in function.)</para>
 </section>
 
-<section id="stcmatch"><title>caselessMatch</title>
+<section id="mthStringCaselessMatch"><title>caselessMatch</title>
 <indexterm><primary>caselessMatch method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -2519,7 +2519,7 @@ the target string.</para>
 </programlisting>
 </section>
 
-<section id="stcmatchchar"><title>caselessMatchChar</title>
+<section id="mthStringCaselessMatchChar"><title>caselessMatchChar</title>
 <indexterm><primary>caselessMatchChar method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -2553,7 +2553,7 @@ a positive whole number less than or equal to the length of the target string.</
 </programlisting>
 </section>
 
-<section id="stcpos"><title>caselessPos</title>
+<section id="mthStringCaselessPos"><title>caselessPos</title>
 <indexterm><primary>caselessPos method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -2574,7 +2574,7 @@ a positive whole number less than or equal to the length of the target string.</
 
 <para>Returns the position in the receiving string of another string,
 <emphasis role="italic">needle</emphasis>. (See also
-<link linkend="stlast">lastPos</link>.) It returns
+<link linkend="mthStringLastPos">lastPos</link>.) It returns
 <computeroutput>0</computeroutput> if
 <emphasis role="italic">needle</emphasis> is the null string or is not found
 or if <emphasis role="italic">start</emphasis> is greater than
@@ -2597,7 +2597,7 @@ a positive whole number), the point at which the search starts.</para>
 </programlisting>
 </section>
 
-<section id="stcwordpos"><title>caselessWordPos</title>
+<section id="mthStringCaselessWordPos"><title>caselessWordPos</title>
 <indexterm><primary>caselessWordPos method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -2643,7 +2643,7 @@ the word at which the search is to be started.</para>
 </programlisting>
 </section>
 
-<section id="stcent"><title>center/centre</title>
+<section id="mthStringCenter"><title>center/centre</title>
 <indexterm><primary>center method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -2701,7 +2701,7 @@ abc~CENTER(8,"-")           ->    "--ABC---"
 for information about the CENTER built-in function.)</para>
 </section>
 
-<section id="stchst"><title>changeStr</title>
+<section id="mthStringChangeStr"><title>changeStr</title>
 <indexterm><primary>changeStr method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -2730,7 +2730,7 @@ for information about the CHANGESTR built-in
 function.)</para>
 </section>
 
-<section id="stcomp"><title>compare</title>
+<section id="mthStringCompare"><title>compare</title>
 <indexterm><primary>compare method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -2772,7 +2772,7 @@ blank.</para>
 COMPARE built-in function.)</para>
 </section>
 
-<section id="stcompto"><title>compareTo</title>
+<section id="mthStringCompareTo"><title>compareTo</title>
 <indexterm><primary>compareTo method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -2822,7 +2822,7 @@ place to the end of the target string.
 </programlisting>
 </section>
 
-<section id="stcopi"><title>copies</title>
+<section id="mthStringCopies"><title>copies</title>
 <indexterm><primary>copies method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -2857,7 +2857,7 @@ whole number or zero.</para>
 COPIES built-in function.)</para>
 </section>
 
-<section id="stcous"><title>countStr</title>
+<section id="mthStringCountStr"><title>countStr</title>
 <indexterm><primary>countStr method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -2886,7 +2886,7 @@ for information about the COUNTSTR built-in
 function.)</para>
 </section>
 
-<section id="std2c"><title>d2c</title>
+<section id="mthStringD2c"><title>d2c</title>
 <indexterm><primary>d2c method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -2939,7 +2939,7 @@ sign characters ("00"x and "FF"x).</para>
 for information about the D2C built-in function.)</para>
 </section>
 
-<section id="std2x"><title>d2x</title>
+<section id="mthStringD2x"><title>d2x</title>
 <indexterm><primary>d2x method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -2997,7 +2997,7 @@ has additional leading sign characters (0 and F).</para>
 for information about the D2X built-in function.)</para>
 </section>
 
-<section id="stdata"><title>dataType</title>
+<section id="mthStringDataType"><title>dataType</title>
 <indexterm><primary>dataType method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -3145,7 +3145,7 @@ or EBCDIC).</para></note>
 DATATYPE built-in function.)</para>
 </section>
 
-<section id="decodebase64"><title>decodeBase64</title>
+<section id="mthStringDecodeBase64"><title>decodeBase64</title>
 <indexterm><primary>decodeBase64 method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -3177,7 +3177,7 @@ returned result is undefined.</para>
 for this method in ooRexx.</para>
 </section>
 
-<section id="stdels"><title>delStr</title>
+<section id="mthStringDelStr"><title>delStr</title>
 <indexterm><primary>delStr method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -3223,7 +3223,7 @@ string, the method returns the receiving string unchanged.</para>
 for information about the DELSTR built-in function.)</para>
 </section>
 
-<section id="stdelw"><title>delWord</title>
+<section id="mthStringDelWord"><title>delWord</title>
 <indexterm><primary>delWord method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -3273,7 +3273,7 @@ word involved but none of the blanks preceding the first word involved.</para>
 for information about the DELWORD built-in function.)</para>
 </section>
 
-<section id="encodebase64"><title>encodeBase64</title>
+<section id="mthStringEncodeBase64"><title>encodeBase64</title>
 <indexterm><primary>encodeBase64 method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -3303,7 +3303,7 @@ for information about the DELWORD built-in function.)</para>
 for this method in ooRexx.</para>
 </section>
 
-<section id="strequals"><title>equals</title>
+<section id="mthStringEquals"><title>equals</title>
 <indexterm><primary>equals method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -3329,7 +3329,7 @@ the same comparison performed by the "==" comparison method.
 </programlisting>
 </section>
 
-<section id="stform"><title>format</title>
+<section id="mthStringFormat"><title>format</title>
 <indexterm><primary>format method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -3428,7 +3428,7 @@ expression.</para>
 FORMAT built-in function.)</para>
 </section>
 
-<section id="stinse"><title>insert</title>
+<section id="mthStringInsert"><title>insert</title>
 <indexterm><primary>insert method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -3478,7 +3478,7 @@ truncates <emphasis role="italic">new</emphasis> to length
 for information about the INSERT built-in function.)</para>
 </section>
 
-<section id="stlast"><title>lastPos</title>
+<section id="mthStringLastPos"><title>lastPos</title>
 <indexterm><primary>lastPos method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -3496,7 +3496,7 @@ for information about the INSERT built-in function.)</para>
 
 <para>Returns the position of the last occurrence of a string,
 <emphasis role="italic">needle</emphasis>,
-in the receiving string. (See also <link linkend="stpos">POS</link>.) It
+in the receiving string. (See also <link linkend="mthStringPos">POS</link>.) It
 returns <computeroutput>0</computeroutput> if
 <emphasis role="italic">needle</emphasis> is the null string or not found.
 By default, the search starts at the last character of the receiving string
@@ -3519,7 +3519,7 @@ value or omitted.</para>
 for information about the LASTPOS built-in function.)</para>
 </section>
 
-<section id="stleft"><title>left</title>
+<section id="mthStringLeft"><title>left</title>
 <indexterm><primary>left method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -3562,7 +3562,7 @@ method is exactly equivalent to:</para>
 for information about the LEFT built-in function.)</para>
 </section>
 
-<section id="stleng"><title>length</title>
+<section id="mthStringLength"><title>length</title>
 <indexterm><primary>length method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -3592,7 +3592,7 @@ for information about the LEFT built-in function.)</para>
 for information about the LENGTH built-in function.)</para>
 </section>
 
-<section id="strlower"><title>lower</title>
+<section id="mthStringLower"><title>lower</title>
 <indexterm><primary>lower method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -3625,7 +3625,7 @@ the default is to convert the remainder of the string.</para>
 for information about the LOWER built-in function.)</para>
 </section>
 
-<section id="stmaka"><title>makeArray</title>
+<section id="mthStringMakeArray"><title>makeArray</title>
 <indexterm><primary>makeArray method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -3676,7 +3676,7 @@ an instance of a subclass of the String class), this method returns the receiver
 object. See <link linkend="reqstr">Required String Values</link>.</para>
 </section>
 
-<section id="stmatch"><title>match</title>
+<section id="mthStringMatch"><title>match</title>
 <indexterm><primary>match method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -3720,7 +3720,7 @@ the target string.</para>
 </programlisting>
 </section>
 
-<section id="stmatchchar"><title>matchChar</title>
+<section id="mthStringMatchChar"><title>matchChar</title>
 <indexterm><primary>matchChar method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -3748,7 +3748,7 @@ a positive whole number less than or equal to the length of the target string.</
 </programlisting>
 </section>
 
-<section id="stmax"><title>max</title>
+<section id="mthStringMax"><title>max</title>
 <indexterm><primary>max method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -3780,7 +3780,7 @@ You can specify any number of <emphasis role="italic">number</emphasis>s.</para>
 for information about the MAX built-in function.)</para>
 </section>
 
-<section id="stmin"><title>min</title>
+<section id="mthStringMin"><title>min</title>
 <indexterm><primary>min method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -3813,7 +3813,7 @@ settings. You can specify any number of
 for information about the MIN built-in function.)</para>
 </section>
 
-<section id="stover"><title>overlay</title>
+<section id="mthStringOverlay"><title>overlay</title>
 <indexterm><primary>overlay method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -3860,7 +3860,7 @@ and the default value for <emphasis role="italic">n</emphasis> is
 for information about the OVERLAY built-in function.)</para>
 </section>
 
-<section id="stpos"><title>pos</title>
+<section id="mthStringPos"><title>pos</title>
 <indexterm><primary>pos method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -3880,7 +3880,7 @@ for information about the OVERLAY built-in function.)</para>
 
 <para>Returns the position in the receiving string of another string,
 <emphasis role="italic">needle</emphasis>. (See also
-<link linkend="stlast">lastPos</link>.) It returns
+<link linkend="mthStringLastPos">lastPos</link>.) It returns
 <computeroutput>0</computeroutput> if
 <emphasis role="italic">needle</emphasis> is the null string or is not found
 or if <emphasis role="italic">start</emphasis> is greater than
@@ -3903,7 +3903,7 @@ a positive whole number), the point at which the search starts.</para>
 for information about the POS built-in function.)</para>
 </section>
 
-<section id="streve"><title>reverse</title>
+<section id="mthStringReverse"><title>reverse</title>
 <indexterm><primary>reverse method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -3927,7 +3927,7 @@ for information about the POS built-in function.)</para>
 for information about the REVERSE built-in function.)</para>
 </section>
 
-<section id="strigh"><title>right</title>
+<section id="mthStringRight"><title>right</title>
 <indexterm><primary>right method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -3969,7 +3969,7 @@ whole number or zero.</para>
 for information about the RIGHT built-in function.)</para>
 </section>
 
-<section id="stsign"><title>sign</title>
+<section id="mthStringSign"><title>sign</title>
 <indexterm><primary>sign method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -4002,7 +4002,7 @@ if it is greater than <computeroutput>0</computeroutput>.</para>
 for information about the SIGN built-in function.)</para>
 </section>
 
-<section id="stspac"><title>space</title>
+<section id="mthStringSpace"><title>space</title>
 <indexterm><primary>space method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -4044,7 +4044,7 @@ and the default <emphasis role="italic">pad</emphasis> character is a blank.
 for information about the SPACE built-in function.)</para>
 </section>
 
-<section id="stripm"><title>strip</title>
+<section id="mthStringStrip"><title>strip</title>
 <indexterm><primary>strip method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -4107,16 +4107,16 @@ long.</para>
 for information about the STRIP built-in function.)</para>
 </section>
 
-<section><title>subChar</title>
-<indexterm><primary>subChar method</primary>
+<section id="mthStringsubchar"><title>subchar</title>
+<indexterm><primary>subchar method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>subChar method</secondary>
+<secondary>subchar method</secondary>
 <tertiary>of String</tertiary></indexterm>
 
 <programlisting>
 <![CDATA[
->>-subChar(n)----------------------------------------------><
+>>-subchar(n)----------------------------------------------><
 ]]>
 </programlisting>
 
@@ -4126,20 +4126,20 @@ string. <emphasis>n</emphasis> must be a positive whole number. If
 then a zero-length string is returned.</para>
 </section>
 
-<section id="stsubs"><title>subStr</title>
-<indexterm><primary>subStr method</primary>
+<section id="mthStringSubstr"><title>substr</title>
+<indexterm><primary>substr method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>subStr method</secondary>
+<secondary>substr method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <indexterm><primary>extracting</primary>
 <secondary>substring</secondary></indexterm>
 <indexterm><primary>string</primary>
-<secondary>extracting using subStr method</secondary></indexterm>
+<secondary>extracting using substr method</secondary></indexterm>
 
 <programlisting>
 <![CDATA[
->>-subStr(n-+-------------------------+-)----------------------><
+>>-substr(n-+-------------------------+-)----------------------><
             +-,--+--------+--+------+-+
                  +-length-+  +-,pad-+
 ]]>
@@ -4160,22 +4160,22 @@ character is a blank.</para>
 <indexterm><primary>examples</primary>
 <secondary>subStr method</secondary></indexterm>
 <programlisting>
-"abc"~subStr(2)          ->    "bc"
-"abc"~subStr(2,4)        ->    "bc  "
-"abc"~subStr(2,6,".")    ->    "bc...."
+"abc"~substr(2)          ->    "bc"
+"abc"~substr(2,4)        ->    "bc  "
+"abc"~substr(2,6,".")    ->    "bc...."
 </programlisting>
 
 <note><title>Note</title>
 <para>In some situations the positional (numeric) patterns
 of parsing templates are more convenient for selecting substrings, in particular
 if you need to extract more than one substring from a string. See also
-<link linkend="stleft">left</link> and <link linkend="strigh">right</link>.
+<link linkend="mthStringLeft">left</link> and <link linkend="mthStringRight">right</link>.
 </para></note>
 <para>(See <link linkend="substr">SUBSTR (Substring)</link>
 for information about the SUBSTR built-in function.)</para>
 </section>
 
-<section id="stsubw"><title>subWord</title>
+<section id="mthStringSubWord"><title>subWord</title>
 <indexterm><primary>subWord method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -4213,7 +4213,7 @@ for information about the SUBWORD built-in
 function.)</para>
 </section>
 
-<section id="sttran"><title>translate</title>
+<section id="mthStringTranslate"><title>translate</title>
 <indexterm><primary>translate method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -4240,7 +4240,8 @@ character or unchanged. You can also use this method to reorder the characters
 in the receiving string.</para>
 <para>The output table is <emphasis role="italic">tableo</emphasis>
 and the input translation table is <emphasis role="italic">tablei</emphasis>.
-TRANSLATE searches <emphasis role="italic">tablei</emphasis> for each character
+<emphasis role="bold">translate</emphasis> searches 
+<emphasis role="italic">tablei</emphasis> for each character
 in the receiving string. If the character is found, the corresponding character
 in <emphasis role="italic">tableo</emphasis> is used in the result string. If
 there are duplicates in <emphasis role="italic">tablei</emphasis>, the first
@@ -4284,7 +4285,7 @@ for information about the TRANSLATE built-in
 function.)</para>
 </section>
 
-<section id="sttrunc"><title>trunc</title>
+<section id="mthStringTrunc"><title>trunc</title>
 <indexterm><primary>trunc method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -4334,7 +4335,7 @@ current setting of NUMERIC DIGITS if necessary, before the method processes it.
 for information about the TRUNC built-in function.)</para>
 </section>
 
-<section id="stupper"><title>upper</title>
+<section id="mthStringUpper"><title>upper</title>
 <indexterm><primary>upper method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -4367,7 +4368,7 @@ the default is to convert the remainder of the string.</para>
 for information about the UPPER built-in function.)</para>
 </section>
 
-<section id="stveri"><title>verify</title>
+<section id="mthStringVerify"><title>verify</title>
 <indexterm><primary>verify method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -4436,7 +4437,7 @@ returns the <emphasis role="italic">start</emphasis> value.</para>
 for information about the VERIFY built-in function.)</para>
 </section>
 
-<section id="stword"><title>word</title>
+<section id="mthStringWord"><title>word</title>
 <indexterm><primary>word method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -4470,7 +4471,7 @@ to <computeroutput>receiving_string~subWord(n,1)</computeroutput>.</para>
 for information about the WORD built-in function.)</para>
 </section>
 
-<section id="stwori"><title>wordIndex</title>
+<section id="mthStringWordIndex"><title>wordIndex</title>
 <indexterm><primary>wordIndex method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -4500,7 +4501,7 @@ for information about the WORDINDEX built-in
 function.)</para>
 </section>
 
-<section id="stworl"><title>wordLength</title>
+<section id="mthStringWordLength"><title>wordLength</title>
 <indexterm><primary>wordLength method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -4533,7 +4534,7 @@ for information about the WORDLENGTH built-in
 function.)</para>
 </section>
 
-<section id="stworp"><title>wordPos</title>
+<section id="mthStringWordPos"><title>wordPos</title>
 <indexterm><primary>wordPos method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -4578,7 +4579,7 @@ for information about the WORDPOS built-in
 function.)</para>
 </section>
 
-<section id="stwors"><title>words</title>
+<section id="mthStringWords"><title>words</title>
 <indexterm><primary>words method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -4612,7 +4613,7 @@ function.)</para>
 for information about the WORDS built-in function.)</para>
 </section>
 
-<section id="stx2b"><title>x2b</title>
+<section id="mthStringX2b"><title>x2b</title>
 <indexterm><primary>x2b method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -4660,7 +4661,7 @@ character strings into binary form.</para>
 for information about the X2B built-in function.)</para>
 </section>
 
-<section id="stx2c"><title>x2c</title>
+<section id="mthStringX2c"><title>x2c</title>
 <indexterm><primary>x2c method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -4697,7 +4698,7 @@ only, not leading or trailing) to improve readability; they are ignored.</para>
 for information about the X2C built-in function.)</para>
 </section>
 
-<section id="stx2d"><title>x2d</title>
+<section id="mthStringX2d"><title>x2d</title>
 <indexterm><primary>x2d method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -4783,7 +4784,7 @@ It is a subclass of the <link linkend="clsObject">Object class</link>.</para>
 <para>The Method class also has available class methods that its
 metaclass, the Class class, defines.</para></note>
 
-<section id="menew"><title>new (Class Method)</title>
+<section id="mthMethodNew"><title>new (Class Method)</title>
 <indexterm><primary>new method</primary>
 <secondary>of Method class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -4809,7 +4810,7 @@ its scope is used.</para>
 
 </section>
 
-<section id="newfile"><title>newFile (Class Method)</title>
+<section id="mthMethodNewFile"><title>newFile (Class Method)</title>
 <indexterm><primary>newFile method</primary>
 <secondary>of Method class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -4828,7 +4829,7 @@ string.</para>
 <link linkend="servex">Server implements Security Manager</link>.</para>
 </section>
 
-<section id="setgua"><title>setGuarded</title>
+<section id="mthMethodSetGuarded"><title>setGuarded</title>
 <indexterm><primary>setGuarded method</primary>
 <secondary>of Method class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -4848,7 +4849,7 @@ the default guarded status. If the receiver is already guarded, a
 <emphasis role="bold">setGuarded</emphasis> message has no effect.</para>
 </section>
 
-<section id="mesetp"><title>setPrivate</title>
+<section id="mthMethodSetPrivate"><title>setPrivate</title>
 <indexterm><primary>setPrivate method</primary>
 <secondary>of Method class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -4869,7 +4870,7 @@ message, the method is a public method.
 details.)</para>
 </section>
 
-<section id="mesetpro"><title>setProtected</title>
+<section id="mthMethodSetProtected"><title>setProtected</title>
 <indexterm><primary>setProtected method</primary>
 <secondary>of Method class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -4887,7 +4888,7 @@ message, the method is not protected.
 (See <link linkend="secman">The Security Manager</link> for details.)</para>
 </section>
 
-<section id="mesetsec"><title>setSecurityManager</title>
+<section id="mthMethodSetSecurityManager"><title>setSecurityManager</title>
 <indexterm><primary>setSecurityManager method</primary>
 <secondary>of Method class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -4906,7 +4907,7 @@ message, the method is not protected.
 existing security manager is removed.</para>
 </section>
 
-<section id="setnow"><title>setUnguarded</title>
+<section id="mthMethodSetUnguarded"><title>setUnguarded</title>
 <indexterm><primary>setUnguarded method</primary>
 <secondary>of Method class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -4933,7 +4934,7 @@ pool, regardless of whether it received a
 <emphasis role="bold">setUnguarded</emphasis> message.</para>
 </section>
 
-<section id="mesour"><title>source</title>
+<section id="mthMethodSource"><title>source</title>
 <indexterm><primary>source method</primary>
 <secondary>of Method class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -4972,10 +4973,10 @@ asynchronous sending of a message. You can create a message object by using
 the <emphasis role="bold">new</emphasis> or
 <emphasis role="bold">enhanced</emphasis> method of the Message class or the
 <emphasis role="bold">start</emphasis> method of the
-Object class (see <link linkend="obstar">start</link>). The Message class is
+Object class (see <link linkend="mthObjectStart">start</link>). The Message class is
 a subclass of the Object class.</para>
 
-<section id="mesnew"><title>new (Class Method)</title>
+<section id="mthMessageNew"><title>new (Class Method)</title>
 <indexterm><primary>new method</primary>
 <secondary>of Message class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -5035,7 +5036,7 @@ arguments. </para>
 </para></note>
 </section>
 
-<section id="mescom"><title>completed</title>
+<section id="mthMessageCompleted"><title>completed</title>
 <indexterm><primary>completed method</primary>
 <secondary>of Message class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -5053,7 +5054,7 @@ method instead of sending
 the message to complete.</para>
 </section>
 
-<section id="msgerrcond"><title>errorCondition</title>
+<section id="mthMessageErrorCondition"><title>errorCondition</title>
 <indexterm><primary>errorCondition method</primary>
 <secondary>of Message class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -5070,7 +5071,7 @@ object's message. If the message completed normally, or is still executing,
 <emphasis role="bold">errorCondition</emphasis> returns the .nil object.</para>
 </section>
 
-<section id="msghaserr"><title>hasError</title>
+<section id="mthMessageHasError"><title>hasError</title>
 <indexterm><primary>hasError method</primary>
 <secondary>of Message class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -5088,7 +5089,7 @@ message was terminated with an error condition. Returns
 completed without error.</para>
 </section>
 
-<section id="agnoti"><title>notify</title>
+<section id="mthMessageNotify"><title>notify</title>
 <indexterm><primary>notify method</primary>
 <secondary>of Message class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -5143,7 +5144,7 @@ method to obtain any result from the messages
   </programlisting>
 </section>
 
-<section id="agresu"><title>result</title>
+<section id="mthMessageResult"><title>result</title>
 <indexterm><primary>result method</primary>
 <secondary>of Message class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -5175,7 +5176,7 @@ say "The result of message was" bond~result     /* Result is 007     */
 </programlisting>
 </section>
 
-<section id="mssend"><title>send</title>
+<section id="mthMessageSend"><title>send</title>
 <indexterm><primary>send method</primary>
 <secondary>of Message class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -5202,7 +5203,7 @@ processing is complete. You can use the
 from the message.</para>
 </section>
 
-<section id="msstrt"><title>start</title>
+<section id="mthMessageStart"><title>start</title>
 <indexterm><primary>start method</primary>
 <secondary>of Message class</secondary></indexterm>
 <indexterm><primary>method</primary>

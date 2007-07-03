@@ -158,7 +158,7 @@ method for computing a total of all the numeric elements of an array.</para>
 ::method init    /*  Initialize running total and forward to superclass */
 expose total
 total = 0
-/* <link linkend="mesnew">init</link>  describes the init method.  */
+/* <link linkend="mthMessageNew">init</link>  describes the init method.  */
 forward class (super)
 
 ::method put     /*  Modify to increment running total */
@@ -328,7 +328,7 @@ it: </para>
 return "a savings account"
 </programlisting>
 <para>Now you can create an instance of the Savings class with the NEW method
-(see <link linkend="coconw">NEW</link>) and send TYPE, NAME, and NAME= messages
+(see <link linkend="mthClassNew">NEW</link>) and send TYPE, NAME, and NAME= messages
 to that instance:</para>
 <programlisting>
 asav = .savings~new
@@ -393,8 +393,8 @@ in a superclass, because the object variables are at different scopes.</para>
 <title>Defining Instance Methods with SETMETHOD or ENHANCED</title>
 <para>In Rexx, methods are usually associated with instances using classes, but
 it is also possible to add methods directly to an instance using the SETMETHOD
-(see <link linkend="obsetm">SETMETHOD</link>) or ENHANCED (see
-<link linkend="obccen">ENHANCED</link>) method.</para>
+(see <link linkend="mthObjectSetMethod">SETMETHOD</link>) or ENHANCED (see
+<link linkend="mthClassEnhanced">ENHANCED</link>) method.</para>
 <para>All subclasses of the Object class inherit SETMETHOD. You can use
 SETMETHOD to create one-off objects, objects that must be absolutely
 unique so that a class that is capable of creating other instances is not
@@ -444,7 +444,7 @@ mycost~"%"        /* Produces:  Enter a price.             */
 <para>The search order for a method name matching the message is for: </para>
 <orderedlist>
 <listitem><para>A method the object itself defines with SETMETHOD or ENHANCED.
-(See <link linkend="obsetm">SETMETHOD</link> .)</para></listitem>
+(See <link linkend="mthObjectSetMethod">SETMETHOD</link> .)</para></listitem>
 <listitem><para>A method the object's class defines. (Note that an object
 acquires the instance methods of the class to which it belongs at the time of
 its creation. If a class gains additional methods, objects created before the
@@ -452,7 +452,7 @@ definition of these methods do not acquire these methods.)</para></listitem>
 <listitem><para>A method that a superclass of the object's class defines.
 This is also limited to methods that were available when the object was
 created. The order of the INHERIT (see
-<link linkend="clinhe">INHERIT</link>) messages sent to an object's
+<link linkend="mthClassInherit">INHERIT</link>) messages sent to an object's
 class determines the search order of the superclass method definitions.
 </para></listitem></orderedlist>
 <para>This search order places methods of a class before methods of its
@@ -682,7 +682,7 @@ trap. If the NOSTRING condition is being trapped (see
 the language processor raises the NOSTRING condition. If the NOSTRING condition
 is not being trapped, the language processor sends a STRING message to the
 object to obtain its readable string representation (see the STRING method
-of the Object class <link linkend="obstri">STRING</link>) and uses this string.
+of the Object class <link linkend="mthObjectString">STRING</link>) and uses this string.
 </para>
 <para>When comparing a string object with the .nil object, if
 the NOSTRING condition is being trapped, then</para>
@@ -835,11 +835,11 @@ methods except where noted.</para>
 </row>
 <row>
 <entry>ABBREV</entry>
-<entry><link linkend="stabbr">String</link></entry>
+<entry><link linkend="mthStringAbbrev">String</link></entry>
 </row>
 <row>
 <entry>ABS</entry>
-<entry><link linkend="stabs">String</link></entry>
+<entry><link linkend="mthStringAbs">String</link></entry>
 </row>
 <row>
 <entry>ALLAT</entry>
@@ -878,23 +878,23 @@ methods except where noted.</para>
 </row>
 <row>
 <entry>BASECLASS</entry>
-<entry><link linkend="clbase">Class</link></entry>
+<entry><link linkend="mthClassBaseClass">Class</link></entry>
 </row>
 <row>
 <entry>BITAND</entry>
-<entry><link linkend="stbita">String</link></entry>
+<entry><link linkend="mthStringBitAnd">String</link></entry>
 </row>
 <row>
 <entry>BITOR</entry>
-<entry><link linkend="stbito">String</link></entry>
+<entry><link linkend="mthStringBitOr">String</link></entry>
 </row>
 <row>
 <entry>BITXOR</entry>
-<entry><link linkend="stbitx">String</link></entry>
+<entry><link linkend="mthStringBitXor">String</link></entry>
 </row>
 <row>
 <entry>B2X</entry>
-<entry><link linkend="stb2x">String</link></entry>
+<entry><link linkend="mthStringB2x">String</link></entry>
 </row>
 <row>
 <entry>CANCEL</entry>
@@ -902,11 +902,11 @@ methods except where noted.</para>
 </row>
 <row>
 <entry>CENTER</entry>
-<entry><link linkend="stcent">String</link></entry>
+<entry><link linkend="mthStringCenter">String</link></entry>
 </row>
 <row>
 <entry>CHANGESTR</entry>
-<entry><link linkend="stchst">String</link></entry>
+<entry><link linkend="mthStringChangeStr">String</link></entry>
 </row>
 <row>
 <entry>CHARIN</entry>
@@ -922,7 +922,7 @@ methods except where noted.</para>
 </row>
 <row>
 <entry>CLASS</entry>
-<entry><link linkend="obclas">Object</link></entry>
+<entry><link linkend="mthObjectClass">Object</link></entry>
 </row>
 <row>
 <entry>CLOSE</entry>
@@ -934,23 +934,23 @@ methods except where noted.</para>
 </row>
 <row>
 <entry>COMPARE</entry>
-<entry><link linkend="stcomp">String</link></entry>
+<entry><link linkend="mthStringCompare">String</link></entry>
 </row>
 <row>
 <entry>COMPLETED</entry>
-<entry><link linkend="mescom">Message</link></entry>
+<entry><link linkend="mthMessageCompleted">Message</link></entry>
 </row>
 <row>
 <entry>COPIES</entry>
-<entry><link linkend="stcopi">String</link></entry>
+<entry><link linkend="mthStringCopies">String</link></entry>
 </row>
 <row>
 <entry>COPY</entry>
-<entry><link linkend="obcopy">Object</link></entry>
+<entry><link linkend="mthObjectCopy">Object</link></entry>
 </row>
 <row>
 <entry>COUNTSTR</entry>
-<entry><link linkend="stcous">String</link></entry>
+<entry><link linkend="mthStringCountStr">String</link></entry>
 </row>
 <row>
 <entry>CURRENT</entry>
@@ -958,41 +958,41 @@ methods except where noted.</para>
 </row>
 <row>
 <entry>C2D</entry>
-<entry><link linkend="stc2d">String</link></entry>
+<entry><link linkend="mthStringC2d">String</link></entry>
 </row>
 <row>
 <entry>C2X</entry>
-<entry><link linkend="stc2x">String</link></entry>
+<entry><link linkend="mthStringC2x">String</link></entry>
 </row>
 <row>
 <entry>DATATYPE</entry>
-<entry><link linkend="stdata">String</link></entry>
+<entry><link linkend="mthStringDataType">String</link></entry>
 </row>
 <row>
 <entry>DECODEBASE64</entry>
-<entry><link linkend="stdata">String</link></entry>
+<entry><link linkend="mthStringDataType">String</link></entry>
 </row>
 <row>
 <entry>DEFAULTNAME</entry>
-<entry><link linkend="cldena">Class</link>,
-<link linkend="obdena">Object</link></entry>
+<entry><link linkend="mthClassDefaultName">Class</link>,
+<link linkend="mthObjectDefaultName">Object</link></entry>
 </row>
 <row>
 <entry>DEFINE</entry>
-<entry><link linkend="cldefi">Class (class and instance method)</link></entry>
+<entry><link linkend="mthClassDefine">Class (class and instance method)</link></entry>
 </row>
 <row>
 <entry>DELETE</entry>
-<entry><link linkend="cldele">Class (class and instance method)</link>,
+<entry><link linkend="mthClassDelete">Class (class and instance method)</link>,
 <link linkend="clsMutableBuffer">MutableBuffer</link></entry>
 </row>
 <row>
 <entry>DELSTR</entry>
-<entry><link linkend="stdels">String</link></entry>
+<entry><link linkend="mthStringDelStr">String</link></entry>
 </row>
 <row>
 <entry>DELWORD</entry>
-<entry><link linkend="stdelw">String</link></entry>
+<entry><link linkend="mthStringDelWord">String</link></entry>
 </row>
 <row>
 <entry>DESCRIPTION</entry>
@@ -1014,19 +1014,19 @@ methods except where noted.</para>
 </row>
 <row>
 <entry>D2C</entry>
-<entry><link linkend="std2c">String</link></entry>
+<entry><link linkend="mthStringD2c">String</link></entry>
 </row>
 <row>
 <entry>D2X</entry>
-<entry><link linkend="std2x">String</link></entry>
+<entry><link linkend="mthStringD2x">String</link></entry>
 </row>
 <row>
 <entry>ENCODEBASE64</entry>
-<entry><link linkend="stdata">String</link></entry>
+<entry><link linkend="mthStringDataType">String</link></entry>
 </row>
 <row>
 <entry>ENHANCED</entry>
-<entry><link linkend="obccen">Class (class and instance method)</link></entry>
+<entry><link linkend="mthClassEnhanced">Class (class and instance method)</link></entry>
 </row>
 <row>
 <entry>ENTRY</entry>
@@ -1047,7 +1047,7 @@ methods except where noted.</para>
 </row>
 <row>
 <entry>FORMAT</entry>
-<entry><link linkend="stform">String</link></entry>
+<entry><link linkend="mthStringFormat">String</link></entry>
 </row>
 <row>
 <entry>GETBUFFERSIZE</entry>
@@ -1075,11 +1075,11 @@ methods except where noted.</para>
 </row>
 <row>
 <entry>HASMETHOD</entry>
-<entry><link linkend="obhasm">Object</link></entry>
+<entry><link linkend="mthObjectHasMethod">Object</link></entry>
 </row>
 <row>
 <entry>ID</entry>
-<entry><link linkend="clid">Class (class and instance method)</link></entry>
+<entry><link linkend="mthClassId">Class (class and instance method)</link></entry>
 </row>
 <row>
 <entry>INDEX</entry>
@@ -1088,21 +1088,21 @@ methods except where noted.</para>
 </row>
 <row>
 <entry>INHERIT</entry>
-<entry><link linkend="clinhe">Class (class and instance method)</link></entry>
+<entry><link linkend="mthClassInherit">Class (class and instance method)</link></entry>
 </row>
 <row>
 <entry>INIT</entry>
 <entry><link linkend="alini">Alarm</link>,
 <link linkend="clsCircularQueue">CircularQueue</link>,
-<link linkend="mesnew">Message</link>,
+<link linkend="mthMessageNew">Message</link>,
 <link linkend="monini">Monitor</link>,
-<link linkend="obinit">Object</link>,
+<link linkend="mthObjectInit">Object</link>,
 <link linkend="suinit">Supplier (Class Method)</link></entry>
 </row>
 <row>
 <entry>INSERT</entry>
 <entry><link linkend="liinse">List</link>,
-<link linkend="stinse">String</link>,
+<link linkend="mthStringInsert">String</link>,
 <link linkend="clsMutableBuffer">MutableBuffer</link></entry>
 </row>
 <row>
@@ -1137,15 +1137,15 @@ methods except where noted.</para>
 </row>
 <row>
 <entry>LASTPOS</entry>
-<entry><link linkend="stlast">String</link></entry>
+<entry><link linkend="mthStringLastPos">String</link></entry>
 </row>
 <row>
 <entry>LEFT</entry>
-<entry><link linkend="stleft">String</link></entry>
+<entry><link linkend="mthStringLeft">String</link></entry>
 </row>
 <row>
 <entry>LENGTH</entry>
-<entry><link linkend="stleng">String</link>,
+<entry><link linkend="mthStringLength">String</link>,
 <link linkend="clsMutableBuffer">MutableBuffer</link></entry>
 </row>
 <row>
@@ -1180,50 +1180,50 @@ methods except where noted.</para>
 </row>
 <row>
 <entry>MAX</entry>
-<entry><link linkend="stmax">String</link></entry>
+<entry><link linkend="mthStringMax">String</link></entry>
 </row>
 <row>
 <entry>METACLASS</entry>
-<entry><link linkend="clmeta">Class</link></entry>
+<entry><link linkend="mthClassMetaclass">Class</link></entry>
 </row>
 <row>
 <entry>METHOD</entry>
-<entry><link linkend="clmeth">Class (class and instance method)</link></entry>
+<entry><link linkend="mthClassMethod">Class (class and instance method)</link></entry>
 </row>
 <row>
 <entry>METHODS</entry>
-<entry><link linkend="clmets">Class (class and instance method)</link></entry>
+<entry><link linkend="mthClassMethods">Class (class and instance method)</link></entry>
 </row>
 <row>
 <entry>MIN</entry>
-<entry><link linkend="stmin">String</link></entry>
+<entry><link linkend="mthStringMin">String</link></entry>
 </row>
 <row>
 <entry>MIXINCLASS</entry>
-<entry><link linkend="clmixi">Class</link></entry>
+<entry><link linkend="mthClassMixinClass">Class</link></entry>
 </row>
 <row>
 <entry>NEW</entry>
 <entry><link linkend="anew">Array (Class Method)</link>,
 <link linkend="banew">Bag (Class Method)</link>,
 <link linkend="cqunew">CircularQueue)</link>,
-<link linkend="coconw">Class (Class Method)</link>,
+<link linkend="mthClassNew">Class (Class Method)</link>,
 <link linkend="dirnew">Directory (Class Method)</link>,
 <link linkend="listnew">List (Class Method)</link>,
-<link linkend="menew">Method</link>,
-<link linkend="obnew">Object</link>,
+<link linkend="mthMethodNew">Method</link>,
+<link linkend="mthObjectNew">Object</link>,
 <link linkend="quenew">Queue (Class Method)</link>,
 <link linkend="relnew">Relation (Class Method)</link>,
 <link linkend="setnew">Set (Class Method)</link>,
 <link linkend="newste">Stem (Class Method)</link>,
-<link linkend="stinew">String (Class Method)</link>,
+<link linkend="mthStringNew">String (Class Method)</link>,
 <link linkend="strmnew">Stream (Class Method)</link>,
 <link linkend="sunew">Supplier (Class Method)</link>,
 <link linkend="tabnew">Table (Class Method)</link></entry>
 </row>
 <row>
 <entry>NEWFILE</entry>
-<entry><link linkend="newfile">Method</link></entry>
+<entry><link linkend="mthMethodNewFile">Method</link></entry>
 </row>
 <row>
 <entry>NEXT</entry>
@@ -1233,15 +1233,15 @@ methods except where noted.</para>
 </row>
 <row>
 <entry>NOTIFY</entry>
-<entry><link linkend="agnoti">Message</link></entry>
+<entry><link linkend="mthMessageNotify">Message</link></entry>
 </row>
 <row>
 <entry>OBJECTNAME</entry>
-<entry><link linkend="obname">Object</link></entry>
+<entry><link linkend="mthObjectObjectName">Object</link></entry>
 </row>
 <row>
 <entry>OBJECTNAME=</entry>
-<entry><link linkend="obqnam">Object</link></entry>
+<entry><link linkend="mthObjectObjectNameEquals">Object</link></entry>
 </row>
 <row>
 <entry>OF</entry>
@@ -1258,36 +1258,36 @@ methods except where noted.</para>
 <row>
 <entry>Operator Methods (Arithmetic): +, -,
 *, /, %, //, **, prefix&nbsp;+, prefix&nbsp;-</entry>
-<entry><link linkend="aritcso">String</link></entry>
+<entry><link linkend="mthStringArithmeticMethods">String</link></entry>
 </row>
 <row>
 <entry>Operator Methods (Comparison): =, \=, >&lt;, &lt;>,
 ==, and \==</entry>
-<entry><link linkend="coo">Object</link>,
-<link linkend="aritcso">String</link></entry>
+<entry><link linkend="mthObjectOperators">Object</link>,
+<link linkend="mthStringArithmeticMethods">String</link></entry>
 </row>
 <row>
 <entry>Operator Methods (Comparison): >, &lt;, >=,
 \&lt;, &lt;=, \>, >>, &lt;&lt;,  >>=, \&lt;&lt;, &lt;&lt;=, and \>></entry>
-<entry><link linkend="commeth">String</link></entry>
+<entry><link linkend="mthStringComparisonMethods">String</link></entry>
 </row>
 <row>
 <entry>Operator Methods (Concatenation): &quot;&quot;
 (abuttal), ||, and &quot; &quot; (blank)</entry>
-<entry><link linkend="concmeth">String</link></entry>
+<entry><link linkend="mthStringConcatenationMethods">String</link></entry>
 </row>
 <row>
 <entry>Operator Methods (Logical): &amp;, |, &amp;&amp;,
 and prefix \</entry>
-<entry><link linkend="logmeth">String</link></entry>
+<entry><link linkend="mthStringLogicalMethods">String</link></entry>
 </row>
 <row>
 <entry>Operator Methods (Other): == (unary)</entry>
-<entry><link linkend="coo">Object</link></entry>
+<entry><link linkend="mthObjectOperators">Object</link></entry>
 </row>
 <row>
 <entry>OVERLAY</entry>
-<entry><link linkend="stover">String</link>,
+<entry><link linkend="mthStringOverlay">String</link>,
 <link linkend="clsMutableBuffer">MutableBuffer</link></entry>
 </row>
 <row>
@@ -1297,7 +1297,7 @@ and prefix \</entry>
 </row>
 <row>
 <entry>POS</entry>
-<entry><link linkend="stpos">String</link>,
+<entry><link linkend="mthStringPos">String</link>,
 <link linkend="mbpos">MutableBuffer</link></entry>
 </row>
 <row>
@@ -1342,7 +1342,7 @@ and prefix \</entry>
 </row>
 <row>
 <entry>QUERYMIXINCLASS</entry>
-<entry><link linkend="clqmc">Class</link></entry>
+<entry><link linkend="mthClassQueryMixinClass">Class</link></entry>
 </row>
 <row>
 <entry>QUEUE</entry>
@@ -1366,7 +1366,7 @@ and prefix \</entry>
 </row>
 <row>
 <entry>REQUEST</entry>
-<entry><link linkend="obreq">Object</link>,
+<entry><link linkend="mthObjectRequest">Object</link>,
 <link linkend="stemrequest">Stem</link></entry>
 </row>
 <row>
@@ -1375,19 +1375,19 @@ and prefix \</entry>
 </row>
 <row>
 <entry>RESULT</entry>
-<entry><link linkend="agresu">Message</link></entry>
+<entry><link linkend="mthMessageResult">Message</link></entry>
 </row>
 <row>
 <entry>REVERSE</entry>
-<entry><link linkend="streve">String</link></entry>
+<entry><link linkend="mthStringReverse">String</link></entry>
 </row>
 <row>
 <entry>RIGHT</entry>
-<entry><link linkend="strigh">String</link></entry>
+<entry><link linkend="mthStringRight">String</link></entry>
 </row>
 <row>
 <entry>RUN</entry>
-<entry><link linkend="obrun">Object</link></entry>
+<entry><link linkend="mthObjectRun">Object</link></entry>
 </row>
 <row>
 <entry>SAY</entry>
@@ -1404,7 +1404,7 @@ and prefix \</entry>
 </row>
 <row>
 <entry>SEND</entry>
-<entry><link linkend="mssend">Message</link></entry>
+<entry><link linkend="mthMessageSend">Message</link></entry>
 </row>
 <row>
 <entry>SETBUFFERSIZE</entry>
@@ -1416,32 +1416,32 @@ and prefix \</entry>
 </row>
 <row>
 <entry>SETGUARDED</entry>
-<entry><link linkend="setgua">Method</link></entry>
+<entry><link linkend="mthMethodSetGuarded">Method</link></entry>
 </row>
 <row>
 <entry>SETMETHOD</entry>
 <entry><link linkend="disetm">Directory</link>,
-<link linkend="obsetm">Object</link></entry>
+<link linkend="mthObjectSetMethod">Object</link></entry>
 </row>
 <row>
 <entry>SETPRIVATE</entry>
-<entry><link linkend="mesetp">Method</link></entry>
+<entry><link linkend="mthMethodSetPrivate">Method</link></entry>
 </row>
 <row>
 <entry>SETPROTECTED</entry>
-<entry><link linkend="mesetpro">Method</link></entry>
+<entry><link linkend="mthMethodSetProtected">Method</link></entry>
 </row>
 <row>
 <entry>SETSECURITYMANAGER</entry>
-<entry><link linkend="mesetsec">Method</link></entry>
+<entry><link linkend="mthMethodSetSecurityManager">Method</link></entry>
 </row>
 <row>
 <entry>SETUNGUARDED</entry>
-<entry><link linkend="setnow">Method</link></entry>
+<entry><link linkend="mthMethodSetUnguarded">Method</link></entry>
 </row>
 <row>
 <entry>SIGN</entry>
-<entry><link linkend="stsign">String</link></entry>
+<entry><link linkend="mthStringSign">String</link></entry>
 </row>
 <row>
 <entry>SIZE</entry>
@@ -1450,16 +1450,16 @@ and prefix \</entry>
 </row>
 <row>
 <entry>SOURCE</entry>
-<entry><link linkend="mesour">Method</link></entry>
+<entry><link linkend="mthMethodSource">Method</link></entry>
 </row>
 <row>
 <entry>SPACE</entry>
-<entry><link linkend="stspac">String</link></entry>
+<entry><link linkend="mthStringSpace">String</link></entry>
 </row>
 <row>
 <entry>START</entry>
-<entry><link linkend="msstrt">Message</link>,
-<link linkend="obstar">Object</link></entry>
+<entry><link linkend="mthMessageStart">Message</link>,
+<link linkend="mthObjectStart">Object</link></entry>
 </row>
 <row>
 <entry>STATE</entry>
@@ -1467,21 +1467,21 @@ and prefix \</entry>
 </row>
 <row>
 <entry>STRING</entry>
-<entry><link linkend="obstri">Object</link>,
+<entry><link linkend="mthObjectString">Object</link>,
 <link linkend="clsCircularQueue">CircularQueue</link>,
 <link linkend="clsMutableBuffer">MutableBuffer</link></entry>
 </row>
 <row>
 <entry>STRIP</entry>
-<entry><link linkend="stripm">String</link></entry>
+<entry><link linkend="mthStringStrip">String</link></entry>
 </row>
 <row>
 <entry>SUBCLASS</entry>
-<entry><link linkend="clsubc">Class (class and instance method)</link></entry>
+<entry><link linkend="mthClassSubclass">Class (class and instance method)</link></entry>
 </row>
 <row>
 <entry>SUBCLASSES</entry>
-<entry><link linkend="clsubs">Class (class and instance method)</link></entry>
+<entry><link linkend="mthClassSubclasses">Class (class and instance method)</link></entry>
 </row>
 <row>
 <entry>SUBSET</entry>
@@ -1491,16 +1491,16 @@ and prefix \</entry>
 </row>
 <row>
 <entry>SUBSTR</entry>
-<entry><link linkend="stsubs">String</link>,
+<entry><link linkend="mthStringSubstr">String</link>,
 <link linkend="clsMutableBuffer">MutableBuffer</link></entry>
 </row>
 <row>
 <entry>SUBWORD</entry>
-<entry><link linkend="stsubw">String</link></entry>
+<entry><link linkend="mthStringSubWord">String</link></entry>
 </row>
 <row>
 <entry>SUPERCLASSES</entry>
-<entry><link linkend="clsupe">Class (class and instance method)</link></entry>
+<entry><link linkend="mthClassSuperClasses">Class (class and instance method)</link></entry>
 </row>
 <row>
 <entry>SUPPLIER</entry>
@@ -1517,15 +1517,15 @@ and prefix \</entry>
 </row>
 <row>
 <entry>TRANSLATE</entry>
-<entry><link linkend="sttran">String</link></entry>
+<entry><link linkend="mthStringTranslate">String</link></entry>
 </row>
 <row>
 <entry>TRUNC</entry>
-<entry><link linkend="sttrunc">String</link></entry>
+<entry><link linkend="mthStringTrunc">String</link></entry>
 </row>
 <row>
 <entry>UNINHERIT</entry>
-<entry><link linkend="clunin">Class (class and instance method)</link></entry>
+<entry><link linkend="mthClassUninherit">Class (class and instance method)</link></entry>
 </row>
 <row>
 <entry>UNION</entry>
@@ -1541,31 +1541,31 @@ and prefix \</entry>
 </row>
 <row>
 <entry>UNSETMETHOD</entry>
-<entry><link linkend="obunse">Object</link></entry>
+<entry><link linkend="mthObjectUnsetMethod">Object</link></entry>
 </row>
 <row>
 <entry>VERIFY</entry>
-<entry><link linkend="stveri">String</link></entry>
+<entry><link linkend="mthStringVerify">String</link></entry>
 </row>
 <row>
 <entry>WORD</entry>
-<entry><link linkend="stword">String</link></entry>
+<entry><link linkend="mthStringWord">String</link></entry>
 </row>
 <row>
 <entry>WORDINDEX</entry>
-<entry><link linkend="stwori">String</link></entry>
+<entry><link linkend="mthStringWordIndex">String</link></entry>
 </row>
 <row>
 <entry>WORDLENGTH</entry>
-<entry><link linkend="stworl">String</link></entry>
+<entry><link linkend="mthStringWordLength">String</link></entry>
 </row>
 <row>
 <entry>WORDPOS</entry>
-<entry><link linkend="stworp">String</link></entry>
+<entry><link linkend="mthStringWordPos">String</link></entry>
 </row>
 <row>
 <entry>WORDS</entry>
-<entry><link linkend="stwors">String</link></entry>
+<entry><link linkend="mthStringWords">String</link></entry>
 </row>
 <row>
 <entry>XOR</entry>
@@ -1575,15 +1575,15 @@ and prefix \</entry>
 </row>
 <row>
 <entry>X2B</entry>
-<entry><link linkend="stx2b">String</link></entry>
+<entry><link linkend="mthStringX2b">String</link></entry>
 </row>
 <row>
 <entry>X2C</entry>
-<entry><link linkend="stx2c">String</link></entry>
+<entry><link linkend="mthStringX2c">String</link></entry>
 </row>
 <row>
 <entry>X2D</entry>
-<entry><link linkend="stx2d">String</link></entry>
+<entry><link linkend="mthStringX2d">String</link></entry>
 </row>
 </tbody>
 </tgroup>
@@ -1620,7 +1620,7 @@ are acceptable in place of superclasses (unless overridden in a way that
 changes superclass behavior), because they inherit a suitable conversion method
 from their Rexx superclass.</para>
 <para>The REQUEST method of the Object class (see
-<link linkend="obreq">REQUEST</link>)
+<link linkend="mthObjectRequest">REQUEST</link>)
 can perform this validation.</para></listitem>
 </orderedlist>
 </section>
