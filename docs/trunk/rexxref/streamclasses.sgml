@@ -49,6 +49,9 @@ Rexx data streams.</para>
 <indexterm><primary>InputStream class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>InputStream class</secondary></indexterm>
+<para>This class is defined as an abstract mixin class. It must be implemented 
+by subclassing it or inherting from it as a mixin. All the methods in this
+must be overridden or they will throw a syntax error when invoked.</para>
 <figure><title>The InputStream class and methods</title>
 <mediaobject>
 <imageobject>
@@ -60,9 +63,6 @@ Rexx data streams.</para>
 <note><title>Note</title>
 <para>The InputStream class also has available class methods that its
 metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
-<para>This class is defined as an abstract mixin class. It must be implemented 
-by subclassing it or inherting from it as a mixin. All the methods in this
-must be overridden or they will throw a syntax error when invoked.</para>
 
 <section id="mthInputStreamArrayIn"><title>arrayIn</title>
 <indexterm><primary>arrayIn method</primary>
@@ -160,13 +160,16 @@ syntax error 93.963 to be raised.</para>
 <para>This method is defined as an abstract method. Invoking it will cause
 syntax error 93.963 to be raised.</para>
 </section>
-
 </section>
 
 <section id="clsOutputStream"><title>The OutputStream Class</title>
 <indexterm><primary>OutputStream class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>OutputStream class</secondary></indexterm>
+
+<para>This class is defined as an abstract mixin class. It must be implemented 
+by subclassing it or inherting from it as a mixin. All the methods in this
+must be overridden or they will throw a syntax error when invoked.</para>
 <figure><title>The OutputStream class and methods</title>
 <mediaobject>
 <imageobject>
@@ -178,9 +181,6 @@ syntax error 93.963 to be raised.</para>
 <note><title>Note</title>
 <para>The InputStream class also has available class methods that its
 metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
-<para>This class is defined as an abstract mixin class. It must be implemented 
-by subclassing it or inherting from it as a mixin. All the methods in this
-must be overridden or they will throw a syntax error when invoked.</para>
 
 <section id="mthOutputStreamArrayOut"><title>arrayOut</title>
 <indexterm><primary>arrayOut method</primary>
@@ -278,13 +278,16 @@ syntax error 93.963 to be raised.</para>
 <para>This method is defined as an abstract method. Invoking it will cause
 syntax error 93.963 to be raised.</para>
 </section>
-
 </section>
 
 <section id="clsInputOutputStream"><title>The InputOutputStream Class</title>
 <indexterm><primary>InputOutputStream class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>InputOutputStream class</secondary></indexterm>
+
+<para>This class is defined as an abstract class. It must be implemented 
+by subclassing it. All the methods from its mixin classes
+must be overridden or they will throw a syntax error when invoked.</para>
 <figure><title>The InputOutputStream class</title>
 <mediaobject>
 <imageobject>
@@ -299,16 +302,18 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.
 It also has all the methods of its two mixin classes, 
 <link linkend="clsInputStream">InputStream</link> and 
 <link linkend="clsOutputStream">OutputStream</link>, available.</para></note>
-<para>This class is defined as an abstract class. It must be implemented 
-by subclassing it. All the methods from its mixin classes
-must be overridden or they will throw a syntax error when invoked.</para>
-
 </section>
 
 <section id="clsStream"><title>The Stream Class</title>
 <indexterm><primary>Stream class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>Stream class</secondary></indexterm>
+
+<para>A stream object allows external communication from
+Rexx. (See <link linkend="iostrms">Input and Output Streams</link> for a
+discussion of Rexx input and output.)</para>
+<para>The Stream class is a subclass of the 
+<link linkend="clsInputOutputStream">InputOutputStream class</link>.</para>
 <figure><title>The Stream class and methods</title>
 <mediaobject>
 <imageobject>
@@ -322,12 +327,6 @@ must be overridden or they will throw a syntax error when invoked.</para>
 metaclass, the <link linkend="clsClass">Class class</link>, defines.
 It also inherits methods from the 
 <link linkend="clsInputOutputStream">InputOutputStream class</link>.</para></note>
-
-<para>A stream object allows external communication from
-Rexx. (See <link linkend="iostrms">Input and Output Streams</link> for a
-discussion of Rexx input and output.)</para>
-<para>The Stream class is a subclass of the 
-<link linkend="clsInputOutputStream">InputOutputStream class</link>.</para>
 
 <section id="mthStreamNew"><title>new (Inherited Class Method)</title>
 <indexterm><primary>new method</primary>

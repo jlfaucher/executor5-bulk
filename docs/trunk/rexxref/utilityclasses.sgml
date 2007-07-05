@@ -48,6 +48,11 @@
 <indexterm><primary>Alarm class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>Alarm class</secondary></indexterm>
+
+<para>An alarm object provides timing and
+notification capability by supplying a facility to send any message to any
+object at a given time. You can cancel an alarm before it sends its message.
+</para>
 <figure><title>The Alarm class and methods</title>
 <mediaobject>
 <imageobject>
@@ -59,11 +64,6 @@
 <note><title>Note</title>
 <para>The Alarm class also has available class methods that its
 metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
-
-<para>An alarm object provides timing and
-notification capability by supplying a facility to send any message to any
-object at a given time. You can cancel an alarm before it sends its message.
-</para>
 <para>The Alarm class is a subclass of the 
 Object class.</para>
 
@@ -153,6 +153,10 @@ a=.alarm~new(30,msg)
 <indexterm><primary>Comparable class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>Comparable class</secondary></indexterm>
+
+<para>This class is defined as an abstract mixin class. It must be implemented 
+by subclassing it or inherting from it as a mixin. All the methods in this class
+must be overridden or they will throw a syntax error when invoked.</para>
 <figure><title>The Comparable class and methods</title>
 <mediaobject>
 <imageobject>
@@ -164,9 +168,6 @@ a=.alarm~new(30,msg)
 <note><title>Note</title>
 <para>The Comparable class also has available class methods that its
 metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
-<para>This class is defined as an abstract mixin class. It must be implemented 
-by subclassing it or inherting from it as a mixin. All the methods in this class
-must be overridden or they will throw a syntax error when invoked.</para>
 
 <section id="mthComparableCompareTo"><title>compareTo</title>
 <indexterm><primary>compareTo method</primary>
@@ -174,7 +175,16 @@ must be overridden or they will throw a syntax error when invoked.</para>
 <indexterm><primary>method</primary>
 <secondary>compareTo method</secondary>
 <tertiary>of Comparable class</tertiary></indexterm>
-<para>This method is defined as an abstract method.</para>
+
+<para>This method compares the recieving object to the object supplied in the
+<emphasis role="itakic">comparable</emphasis> argument.</para>
+<programlisting>
+<![CDATA[
+>>-compareTo(comparator)---------------------------------------><
+]]>
+</programlisting>
+<para>This method returns "-1" if the argument is larger than the recieving
+object, "0" if it is equal, and "1" if it is smaller.</para>
 </section>
 </section>
 
@@ -182,6 +192,9 @@ must be overridden or they will throw a syntax error when invoked.</para>
 <indexterm><primary>Comparator class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>Comparator class</secondary></indexterm>
+
+<para>This class is defined as a mixin class. It must be used
+by inherting from it as a mixin.</para>
 <figure><title>The Comparator class and methods</title>
 <mediaobject>
 <imageobject>
@@ -193,9 +206,6 @@ must be overridden or they will throw a syntax error when invoked.</para>
 <note><title>Note</title>
 <para>The Comparator class also has available class methods that its
 metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
-<para>This class is defined as an abstract mixin class. It must be implemented 
-by subclassing it or inherting from it as a mixin. All the methods in this
-must be overridden or they will throw a syntax error when invoked.</para>
 
 <section id="mthComparatorCompare"><title>compare</title>
 <indexterm><primary>compare method</primary>
@@ -211,6 +221,9 @@ must be overridden or they will throw a syntax error when invoked.</para>
 <indexterm><primary>CaselessColumnComparator class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>CaselessColumnComparator class</secondary></indexterm>
+
+<para>This class is defined as a mixin class. It must be used
+by inherting from it as a mixin.</para>
 <figure><title>The CaselessColumnComparator class and methods</title>
 <mediaobject>
 <imageobject>
@@ -222,9 +235,6 @@ must be overridden or they will throw a syntax error when invoked.</para>
 <note><title>Note</title>
 <para>The CaselessColumnComparator class also has available class methods that its
 metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
-<para>This class is defined as an abstract mixin class. It must be implemented 
-by subclassing it or inherting from it as a mixin. All the methods in this class
-must be overridden or they will throw a syntax error when invoked.</para>
 
 <section id="mthCaselessColumnComparatorCompare"><title>compare</title>
 <indexterm><primary>compare method</primary>
@@ -249,6 +259,9 @@ must be overridden or they will throw a syntax error when invoked.</para>
 <indexterm><primary>CaselessComparator class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>CaselessComparator class</secondary></indexterm>
+
+<para>This class is defined as a mixin class. It must be used
+by inherting from it as a mixin.</para>
 <figure><title>The CaselessComparator class and methods</title>
 <mediaobject>
 <imageobject>
@@ -260,9 +273,6 @@ must be overridden or they will throw a syntax error when invoked.</para>
 <note><title>Note</title>
 <para>The CaselessComparator class also has available class methods that its
 metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
-<para>This class is defined as an abstract mixin class. It must be implemented 
-by subclassing it or inherting from it as a mixin. All the methods in this class
-must be overridden or they will throw a syntax error when invoked.</para>
 
 <section id="mthCaselessComparatorCompare"><title>compare</title>
 <indexterm><primary>compare method</primary>
@@ -278,6 +288,9 @@ must be overridden or they will throw a syntax error when invoked.</para>
 <indexterm><primary>ColumnComparator class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>ColumnComparator class</secondary></indexterm>
+
+<para>This class is defined as a mixin class. It must be used
+by inherting from it as a mixin.</para>
 <figure><title>The ColumnComparator class and methods</title>
 <mediaobject>
 <imageobject>
@@ -289,9 +302,6 @@ must be overridden or they will throw a syntax error when invoked.</para>
 <note><title>Note</title>
 <para>The ColumnComparator class also has available class methods that its
 metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
-<para>This class is defined as an abstract mixin class. It must be implemented 
-by subclassing it or inherting from it as a mixin. All the methods in this class
-must be overridden or they will throw a syntax error when invoked.</para>
 
 <section id="mthColumnComparatorCompare"><title>compare</title>
 <indexterm><primary>compare method</primary>
@@ -316,6 +326,9 @@ must be overridden or they will throw a syntax error when invoked.</para>
 <indexterm><primary>DescebdingCaselessComparator class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>DescendingCaselessComparator class</secondary></indexterm>
+
+<para>This class is defined as a mixin class. It must be used
+by inherting from it as a mixin.</para>
 <figure><title>The DescendingCaselessComparator class and methods</title>
 <mediaobject>
 <imageobject>
@@ -327,9 +340,6 @@ must be overridden or they will throw a syntax error when invoked.</para>
 <note><title>Note</title>
 <para>The DescendingCaselessComparator class also has available class methods that its
 metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
-<para>This class is defined as an abstract mixin class. It must be implemented 
-by subclassing it or inherting from it as a mixin. All the methods in this class
-must be overridden or they will throw a syntax error when invoked.</para>
 
 <section id="mthDescendingCaselessComparatorCompare"><title>compare</title>
 <indexterm><primary>compare method</primary>
@@ -345,6 +355,9 @@ must be overridden or they will throw a syntax error when invoked.</para>
 <indexterm><primary>DescebdingComparator class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>DescendingComparator class</secondary></indexterm>
+
+<para>This class is defined as a mixin class. It must be used
+by inherting from it as a mixin.</para>
 <figure><title>The DescendingComparator class and methods</title>
 <mediaobject>
 <imageobject>
@@ -374,6 +387,9 @@ must be overridden or they will throw a syntax error when invoked.</para>
 <indexterm><primary>InvertingComparator class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>InvertingComparator class</secondary></indexterm>
+
+<para>This class is defined as a mixin class. It must be used
+by inherting from it as a mixin.</para>
 <figure><title>The InvertingComparator class and methods</title>
 <mediaobject>
 <imageobject>
@@ -385,9 +401,6 @@ must be overridden or they will throw a syntax error when invoked.</para>
 <note><title>Note</title>
 <para>The InvertingComparator class also has available class methods that its
 metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
-<para>This class is defined as an abstract mixin class. It must be implemented 
-by subclassing it or inherting from it as a mixin. All the methods in this class
-must be overridden or they will throw a syntax error when invoked.</para>
 
 <section id="mthInvertingComparatorCompare"><title>compare</title>
 <indexterm><primary>compare method</primary>
@@ -412,6 +425,7 @@ must be overridden or they will throw a syntax error when invoked.</para>
 <indexterm><primary>Iterator class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>Iterator class</secondary></indexterm>
+
 <figure><title>The Iterator class and methods</title>
 <mediaobject>
 <imageobject>
@@ -479,6 +493,7 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 <indexterm><primary>CircularIterator class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>CircularIterator class</secondary></indexterm>
+
 <figure><title>The CircularIterator class and methods</title>
 <mediaobject>
 <imageobject>
@@ -516,6 +531,7 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 <indexterm><primary>Monitor class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>Monitor class</secondary></indexterm>
+
 <figure><title>The Monitor class and methods</title>
 <mediaobject>
 <imageobject>
@@ -620,6 +636,12 @@ current_output_destination_stream_object=.output~current
 <indexterm><primary>MutableBuffer class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>MutableBuffer class</secondary></indexterm>
+
+<para>The MutableBuffer class is a buffer that contains a string on which
+certain string operations such as concatenation can be performed very
+efficiently. (Frequent concatenation of long strings without using this
+class might result in weak performance, large memory allocation, or both.)
+</para>
 <figure><title>The MutableBuffer class and methods</title>
 <mediaobject>
 <imageobject>
@@ -631,12 +653,6 @@ current_output_destination_stream_object=.output~current
 <note><title>Note</title>
 <para>The MutableBuffer class also has available class methods that its
 metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
-
-<para>The MutableBuffer class is a buffer that contains a string on which
-certain string operations such as concatenation can be performed very
-efficiently. (Frequent concatenation of long strings without using this
-class might result in weak performance, large memory allocation, or both.)
-</para>
 
 <section id="mthMutableBufferNew"><title>new</title>
 <indexterm><primary>new method</primary>
@@ -1020,6 +1036,15 @@ return
 <indexterm><primary>RegularExpression class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>RegularExpression class</secondary></indexterm>
+
+<para>This class provides support for regular expressions. A regular
+expression is a pattern you can use to match strings.</para>
+
+<note><para>The RegularExpression class is not a built-in class. It is defined
+in the <computeroutput>rxregexp.cls</computeroutput>
+file. This means, you must use a
+<computeroutput>::requires </computeroutput>
+statement to activate its functionality, as follows:</para></note>
 <figure><title>The RegularExpression class and methods</title>
 <mediaobject>
 <imageobject>
@@ -1031,9 +1056,6 @@ return
 <note><title>Note</title>
 <para>The RegularExpression class also has available class methods that its
 metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
-
-<para>This class provides support for regular expressions. A regular
-expression is a pattern you can use to match strings.</para>
 
 <para>Here is a description of the syntax:</para>
 
@@ -1143,10 +1165,6 @@ be used to abbreviate common sets:</para>
                              "This is " and "nice.".
 ]]>
 </programlisting>
-
-<para>The RegularExpression class is not a built-in class. It is defined
-in the RXREGEXP.CLS file. This means, you must use a
-::requires statement to activate its functionality, as follows:</para>
 
 <programlisting>
 <![CDATA[
@@ -1438,6 +1456,7 @@ say myRE~position                     -- will be 2 (failure to match)
 <indexterm><primary>RexxQueue class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>RexxQueue class</secondary></indexterm>
+
 <figure><title>The RexxQueue class and methods</title>
 <mediaobject>
 <imageobject>
@@ -1585,6 +1604,9 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 <indexterm><primary>Supplier class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>Supplier class</secondary></indexterm>
+
+<para>You can use a supplier object to enumerate the items a collection
+contained at the time of the supplier's creation.</para>
 <figure><title>The Supplier class and methods</title>
 <mediaobject>
 <imageobject>
@@ -1596,10 +1618,7 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 <note><title>Note</title>
 <para>The Supplier class also has available class methods that its
 metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
-
-<para>You can use a supplier object to enumerate the items a collection
-contained at the time of the supplier's creation. The following methods
-return a supplier object: </para>
+<para>The following methods return a supplier object: </para>
 <itemizedlist>
 <listitem><para>The <emphasis role="bold">supplier</emphasis>
 methods of the Array, Bag, Directory, List, Queue,
@@ -1794,6 +1813,8 @@ end
 <indexterm><primary>StreamSupplier class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>StreamSupplier class</secondary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
 <figure><title>The StreamSupplier class and methods</title>
 <mediaobject>
 <imageobject>

@@ -145,6 +145,11 @@ describes the concept of set operations.</para>
 <indexterm><primary>Array class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>Array class</secondary></indexterm>
+
+<para> An array is a possibly sparse collection with indexes
+that are positive whole numbers. You can reference array items by using one
+or more indexes. The number of indexes is the same as the number of dimensions
+of the array. This number is called the dimensionality of the array.</para>
 <figure><title>The Array class and methods</title>
 <mediaobject>
 <imageobject>
@@ -159,11 +164,6 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.
 It also inherits methods from the <link linkend="orderedcoll">OrderedCollection
 class</link>, although there are not currently any methods defined in that class.
 </para></note>
-
-<para> An array is a possibly sparse collection with indexes
-that are positive whole numbers. You can reference array items by using one
-or more indexes. The number of indexes is the same as the number of dimensions
-of the array. This number is called the dimensionality of the array.</para>
 <para>Array objects are variable-sized. The dimensionality of an array is fixed,
 but the size of each dimension is variable. When you create an array, you
 can specify a hint about how many elements you expect to put into the array
@@ -897,13 +897,15 @@ end
 </section>
 
 <section id="clsCircularQueue"><title>The CircularQueue Class</title>
-<indexterm>
-<primary>class</primary>
-<secondary>CircularQueue class</secondary>
-</indexterm>
-<indexterm>
-<primary>CircularQueue class</primary>
-</indexterm>
+<indexterm><primary>class</primary>
+<secondary>CircularQueue class</secondary></indexterm>
+<indexterm><primary>CircularQueue class</primary></indexterm>
+
+<para>
+The CircularQueue class allows for storing objects in a circular queue
+of a predefined size. Once the end of the queue has been reached, new item
+objects are inserted from the beginning, replacing earlier entries.
+</para>
 <figure><title>The CircularQueue class and methods</title>
 <mediaobject>
 <imageobject>
@@ -919,12 +921,6 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines. It also
 inherits the methods of the Queue class (see <link linkend="clsQueue">The Queue class</link>).
 </para>
 </note>
-
-<para>
-The CircularQueue class allows for storing objects in a circular queue
-of a predefined size. Once the end of the queue has been reached, new item
-objects are inserted from the beginning, replacing earlier entries.
-</para>
 <para>
 The collected objects can be processed in FIFO (first in, first out) or in a
 stack-like LIFO (last in, first out) order.
@@ -1345,6 +1341,18 @@ content: [3,2], content (LIFO): [2->3]
 <indexterm><primary>List class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>List class</secondary></indexterm>
+
+<para>A list is a non-sparse sequenced collection similar to the
+<link linkend="clsArray">The Array Class</link> to which you
+can add new items at any position in the sequence. The collection supplies
+the list indexes at the time items are added with the 
+<emphasis role="bold">insert</emphasis> method. The 
+<emphasis role="bold">first</emphasis>,
+<emphasis role="bold">last</emphasis>, and 
+<emphasis role="bold">next</emphasis> methods can also retrieve list indexes. 
+Only indexes the list
+object generates are valid i.e. the list is never a sparse list and the list
+object may modify idexes for items in the list.</para>
 <figure><title>The List class and methods</title>
 <mediaobject>
 <imageobject>
@@ -1359,18 +1367,6 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.
 It also inherits methods from the <link linkend="orderedcoll">OrderedCollection
 class</link>, although there are not currently any methods defined in that class.
 </para></note>
-
-<para>A list is a non-sparse sequenced collection similar to the
-<link linkend="clsArray">The Array Class</link> to which you
-can add new items at any position in the sequence. The collection supplies
-the list indexes at the time items are added with the 
-<emphasis role="bold">insert</emphasis> method. The 
-<emphasis role="bold">first</emphasis>,
-<emphasis role="bold">last</emphasis>, and 
-<emphasis role="bold">next</emphasis> methods can also retrieve list indexes. 
-Only indexes the list
-object generates are valid i.e. the list is never a sparse list and the list
-object may modify idexes for items in the list.</para>
 
 <section id="mthListNew"><title>new (Class Method)</title>
 <indexterm><primary>new method</primary>
@@ -1893,6 +1889,12 @@ creation. The supplier enumerates the items in their sequenced order.</para>
 <indexterm><primary>class</primary>
 <secondary>Queue class</secondary></indexterm>
 <indexterm><primary>Queue class</primary></indexterm>
+
+<para>A queue is a non-sparse sequenced collection with whole-number
+indexes. The indexes specify the position of an item relative to the head
+(first item) of the queue. Adding or removing an item changes the association
+of an index to its queue item. You can add items at either the tail or the
+head of the queue.</para>
 <figure><title>The Queue class and methods</title>
 <mediaobject>
 <imageobject>
@@ -1907,12 +1909,6 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.
 It also inherits methods from the <link linkend="orderedcoll">OrderedCollection
 class</link>, although there are not currently any methods defined in that class.
 </para></note>
-
-<para>A queue is a non-sparse sequenced collection with whole-number
-indexes. The indexes specify the position of an item relative to the head
-(first item) of the queue. Adding or removing an item changes the association
-of an index to its queue item. You can add items at either the tail or the
-head of the queue.</para>
 
 <section id="mthQueueNew"><title>new (Class Method)</title>
 <indexterm><primary>new method</primary>
@@ -2415,6 +2411,9 @@ the queue first.</para>
 <indexterm><primary>Directory class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>Directory class</secondary></indexterm>
+
+<para>A directory is a collection with unique
+indexes that are character strings representing names.</para>
 <figure><title>The Directory class and methods</title>
 <mediaobject>
 <imageobject>
@@ -2429,9 +2428,6 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.
 It also inherits methods from the <link linkend="mapcoll">MapCollection
 class</link>, although there are not currently any methods defined in that class.
 </para></note>
-
-<para>A directory is a collection with unique
-indexes that are character strings representing names.</para>
 <para>Directories let you refer to objects by name, for example:</para>
 <programlisting>
 .environment~array
@@ -3017,6 +3013,7 @@ Exit
 <indexterm><primary>Properties class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>Properties class</secondary></indexterm>
+
 <figure><title>The Properties class and methods</title>
 <mediaobject>
 <imageobject>
@@ -3162,6 +3159,11 @@ its metaclass, the <link linkend="clsClass">Class class</link>, defines.</para><
 <indexterm><primary>Relation class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>Relation class</secondary></indexterm>
+
+<para>A relation is a collection with indexes that can
+be any objects the user supplies. In a relation, each item is associated with
+a single index, but there can be more than one item with the same index (unlike
+a table, which can contain only one item for any index).</para>
 <figure><title>The Relation class and methods</title>
 <mediaobject>
 <imageobject>
@@ -3176,11 +3178,6 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.
 It also inherits methods from the <link linkend="mapcoll">MapCollection
 class</link>, although there are not currently any methods defined in that class.
 </para></note>
-
-<para>A relation is a collection with indexes that can
-be any objects the user supplies. In a relation, each item is associated with
-a single index, but there can be more than one item with the same index (unlike
-a table, which can contain only one item for any index).</para>
 
 <section id="mthRelationNew"><title>new (Class Method)</title>
 <indexterm><primary>new method</primary>
@@ -3652,11 +3649,15 @@ Do grandparent Over family               /* Iterate for each index in family   *
 End
 </programlisting>
 </section>
+</section>
 
 <section id="clsStem"><title>The Stem Class</title>
 <indexterm><primary>Stem class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>Stem class</secondary></indexterm>
+
+<para>A stem object is a collection with unique indexes
+that are character strings.</para>
 <figure><title>The Stem class and methods</title>
 <mediaobject>
 <imageobject>
@@ -3671,9 +3672,6 @@ the <link linkend="clsClass">Class class</link>, defines.
 It also inherits methods from the <link linkend="mapcoll">MapCollection
 class</link>, although there are not currently any methods defined in that class.
 </para></note>
-
-<para>A stem object is a collection with unique indexes
-that are character strings.</para>
 <para>Stems are automatically created whenever a Rexx stem variable or Rexx
 compound variable is used. For example: </para>
 <programlisting>
@@ -4026,12 +4024,16 @@ messages sent to a stem collection. For additional information, see
 <para>!!!!!!!! Text to be added later !!!!!!!!!</para>
 </section>
 </section>
-</section>
 
 <section id="clsTable"><title>The Table Class</title>
 <indexterm><primary>Table class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>Table class</secondary></indexterm>
+
+<para>A table is a collection with indexes
+that can be any object the user supplies. In a table, each item is associated
+with a single index, and there can be only one item for each index (unlike
+a relation, which can contain more than one item with the same index).</para>
 <figure><title>The Table class and methods</title>
 <mediaobject>
 <imageobject>
@@ -4046,11 +4048,6 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.
 It also inherits methods from the <link linkend="mapcoll">MapCollection
 class</link>, although there are not currently any methods defined in that class.
 </para></note>
-
-<para>A table is a collection with indexes
-that can be any object the user supplies. In a table, each item is associated
-with a single index, and there can be only one item for each index (unlike
-a relation, which can contain more than one item with the same index).</para>
 
 <section id="mthTableNew"><title>new (Class Method)</title>
 <indexterm><primary>new method</primary>
@@ -4136,7 +4133,7 @@ a relation, which can contain more than one item with the same index).</para>
 <para>Returns the item associated with index
 <emphasis role="italic">index</emphasis>. If the collection
 has no item associated with <emphasis role="italic">index</emphasis>, this
-method returns the NIL object.</para>
+method returns the Nil object.</para>
 </section>
 
 <section id="mthTableDifference"><title>difference</title>
@@ -4439,6 +4436,10 @@ with ooRexx.</para>
 <indexterm><primary>Bag class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>Bag class</secondary></indexterm>
+
+<para>A bag is a collection that restricts the elements
+to having an item that is the same as the index. Any object can be placed
+in a bag, and the same object can be placed in a bag several times.</para>
 <figure><title>The Bag class and methods</title>
 <mediaobject>
 <imageobject>
@@ -4453,10 +4454,6 @@ the <link linkend="clsClass">Class class</link>, defines.
 It also inherits methods from the <link linkend="setcoll">SetCollection
 class</link>, although there are not currently any methods defined in that class.
 </para></note>
-
-<para>A bag is a collection that restricts the elements
-to having an item that is the same as the index. Any object can be placed
-in a bag, and the same object can be placed in a bag several times.</para>
 <para>The Bag class is a subclass of the Relation class. In addition to its own
 methods, it inherits the methods of the Object class and the Relation class.</para>
 
@@ -4729,6 +4726,10 @@ say fruit~items          /* How many pieces? (5)      */
 <indexterm><primary>Set class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>Set class</secondary></indexterm>
+
+<para>A set is a collection containing the member items
+where the index is the same as the item. Any object can be placed in a set.
+ There can be only one occurrence of any object in a set. </para>
 <figure><title>The Set class and methods</title>
 <mediaobject>
 <imageobject>
@@ -4743,10 +4744,6 @@ the <link linkend="clsClass">Class class</link>, defines.
 It also inherits methods from the <link linkend="setcoll">SetCollection
 class</link>, although there are not currently any methods defined in that class.
 </para></note>
-
-<para>A set is a collection containing the member items
-where the index is the same as the item. Any object can be placed in a set.
- There can be only one occurrence of any object in a set. </para>
 <para>The Set class is a subclass of the Table class. In addition to its own
 methods, it inherits the methods of the Object class (see
 <link linkend="clsObject">The Object Class</link>)
@@ -5035,11 +5032,11 @@ work with set operators, in particular if the receiver collection class differs
 from the argument collection class.</para>
 <para>Rexx provides the following set-operator methods:</para>
 <itemizedlist>
-<listitem><para>DIFFERENCE</para></listitem>
-<listitem><para>INTERSECTION</para></listitem>
-<listitem><para>SUBSET</para></listitem>
-<listitem><para>UNION</para></listitem>
-<listitem><para>XOR</para></listitem></itemizedlist>
+<listitem><para>difference</para></listitem>
+<listitem><para>intersection</para></listitem>
+<listitem><para>subset</para></listitem>
+<listitem><para>union</para></listitem>
+<listitem><para>xor</para></listitem></itemizedlist>
 <para>These methods are only available to instances of the following collection
 classes:</para>
 <itemizedlist>
@@ -5150,7 +5147,8 @@ B SUBSET A = .false
 <computeroutput>A={a,b,b}</computeroutput> and
 <computeroutput>B={b,b,c,c,d}</computeroutput>. The result of any set-like
 operation is a collection, in this case
-a bag. The only exception is SUBSET resulting in a Boolean .true or .false.
+a bag. The only exception is 
+<emphasis role="bold">subset</emphasis> resulting in a Boolean .true or .false.
 Using the collections <computeroutput>A</computeroutput> and
 <computeroutput>B</computeroutput>, the different set-like
 operators produce the following: </para>
@@ -5224,9 +5222,9 @@ be identical, the item is identified by its
 <emphasis role="italic">index</emphasis>. According to this
 concept, an item of a collection is identified as follows:</para>
 <itemizedlist>
-<listitem><para>HASINDEX(<emphasis role="italic">index</emphasis>) for Bag,
+<listitem><para>hasIndex(<emphasis role="italic">index</emphasis>) for Bag,
 Directory, Set, and Table collections</para></listitem>
-<listitem><para>HASITEM(<emphasis role="italic">item,index)</emphasis> for the
+<listitem><para>hasItem(<emphasis role="italic">item,index)</emphasis> for the
 Relation collections</para></listitem></itemizedlist>
 <para>Items of the Array, List, and Queue collections are identified by the
 <emphasis role="italic">item</emphasis>, not the
@@ -5256,17 +5254,17 @@ the following methods to qualify as a receiver collection:</para>
 <listitem><para>Methods for collections not allowing elements with duplicate
 indexes:
 <itemizedlist>
-<listitem><para>HASINDEX</para></listitem>
-<listitem><para>PUT or []=</para></listitem>
-<listitem><para>REMOVE</para></listitem>
-<listitem><para>ITEMS</para></listitem></itemizedlist></para></listitem>
+<listitem><para>hasIndex</para></listitem>
+<listitem><para>put or []=</para></listitem>
+<listitem><para>remove</para></listitem>
+<listitem><para>items</para></listitem></itemizedlist></para></listitem>
 <listitem><para>Methods for collections allowing elements with duplicate indexes:
 <itemizedlist>
-<listitem><para>HASITEM; for bags, HASINDEX is sufficient</para></listitem>
-<listitem><para>AT or []</para></listitem>
-<listitem><para>PUT or []=</para></listitem>
-<listitem><para>REMOVEITEM; for bags, REMOVE is sufficient</para></listitem>
-<listitem><para>ITEMS</para></listitem></itemizedlist></para></listitem>
+<listitem><para>hasItem; for bags, hasIndex is sufficient</para></listitem>
+<listitem><para>at or []</para></listitem>
+<listitem><para>put or []=</para></listitem>
+<listitem><para>removeItem; for bags, remove is sufficient</para></listitem>
+<listitem><para>items</para></listitem></itemizedlist></para></listitem>
 </itemizedlist>
 </section>
 
@@ -5275,28 +5273,29 @@ indexes:
 operation, check the following criteria:</para>
 <itemizedlist>
 <listitem><para>Is an object a collection?</para>
-<para>To answer this question, send the HASMETHOD
+<para>To answer this question, send the <emphasis role="bold">hasIndex</emphasis>
 method with parameter &quot;hasindex&quot; to
 <emphasis role="italic">object</emphasis>:</para>
 <programlisting>
-::ROUTINE isCollection
+::routine isCollection
 use arg object
 return object~hasmethod("hasindex")
 </programlisting>
 <para>This function
-returns TRUE if the object is an instance of the Array, List, Queue, Set,
+returns .true if the object is an instance of the Array, List, Queue, Set,
 Bag, Relation, or Table collection class.</para></listitem>
 <listitem><para>Does the collection class have set-operator methods?</para>
 <para>To answer this
-question, send the HASMETHOD method with parameter &quot;union&quot; to
+question, send the <emphasis role="bold">hasMethod</emphasis> 
+method with parameter &quot;union&quot; to
 <emphasis role="italic">object</emphasis>:</para>
 <programlisting>
-::ROUTINE hasSetOperators
+::routine hasSetOperators
 use arg object
 return object~hasmethod("union")
 </programlisting>
 <para>This function
-returns TRUE if the object is an instance of the Set, Bag, Relation, or Table
+returns .true if the object is an instance of the Set, Bag, Relation, or Table
 collection class.</para></listitem></itemizedlist>
 </section>
 </section>

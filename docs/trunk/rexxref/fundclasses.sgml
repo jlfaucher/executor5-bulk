@@ -48,6 +48,9 @@
 <indexterm><primary>Object class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>Object class</secondary></indexterm>
+
+<para>The Object class is the root of the class hierarchy. The instance methods
+of the Object class are, therefore, available on all objects.</para>
 <figure><title>The Object class and methods</title>
 <mediaobject>
 <imageobject>
@@ -59,9 +62,6 @@
 <note><title>Note</title>
 <para>The Object class also has available class methods that its
 metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
-
-<para>The Object class is the root of the class hierarchy. The instance methods
-of the Object class are, therefore, available on all objects.</para>
 
 <section id="mthObjectNew"><title>new (Class Method)</title>
 <indexterm><primary>new method</primary>
@@ -688,6 +688,11 @@ method is a protected method.</para></listitem>
 <indexterm><primary>Class class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>Class class</secondary></indexterm>
+
+<para>The Class class is like a factory producing the factories that
+produce objects. It is a subclass of the 
+<link linkend="clsObject">Object class</link>. The instance methods of the 
+Class class are also the class methods of all classes.</para>
 <figure><title>The Class class and methods</title>
 <mediaobject>
 <imageobject>
@@ -696,10 +701,6 @@ method is a protected method.</para></listitem>
 </imageobject>
 </mediaobject>
 </figure>
-<para>The Class class is like a factory producing the factories that
-produce objects. It is a subclass of the 
-<link linkend="clsObject">Object class</link>. The instance methods of the 
-Class class are also the class methods of all classes.</para>
 
 <section id="mthClassBaseClass"><title>baseClass</title>
 <indexterm><primary>baseClass method</primary>
@@ -1349,6 +1350,12 @@ room~uninherit(location)
 <indexterm><primary>String class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>String class</secondary></indexterm>
+
+<para>String objects represent character-string data values. A character
+string value can have any length and contain any characters. If you are familiar
+with earlier versions of Rexx you might find the notation for functions more
+convenient than the notation for methods. See
+<link linkend="funct">Functions</link> for function descriptions.</para>
 <figure><title>The String class and methods</title>
 <mediaobject>
 <imageobject>
@@ -1362,12 +1369,6 @@ room~uninherit(location)
 metaclass, the <link linkend="clsClass">Class class</link>, defines. 
 It also inherits methods from the <link linkend="clsComparable">Comparable
 class</link>.</para></note>
-
-<para>String objects represent character-string data values. A character
-string value can have any length and contain any characters. If you are familiar
-with earlier versions of Rexx you might find the notation for functions more
-convenient than the notation for methods. See
-<link linkend="funct">Functions</link> for function descriptions.</para>
 <para>The String class is a subclass of the Object class.</para>
 
 <section id="mthStringNew"><title>new (Class Method)</title>
@@ -2266,7 +2267,7 @@ using caseless comparisons.
 <secondary>caselessChangeStr method</secondary></indexterm>
 <programlisting>
 <![CDATA[
-AbaAbb~caselessChangeStr("A","")     ->    "bbb"
+"AbaAbb"~caselessChangeStr("A","")     ->    "bbb"
 AbaBabAB~changeStr("ab","xy")        ->    "xyxyxyxy"
 ]]>
 </programlisting>
@@ -2609,7 +2610,7 @@ a positive whole number), the point at which the search starts.</para>
 <programlisting>
 <![CDATA[
 >>-caselessWordPos(phrase-+--------+-)---------------------------------><
-                  +-,start-+
+                          +-,start-+
 ]]>
 </programlisting>
 
@@ -4769,6 +4770,9 @@ for information about the X2D built-in function.)</para>
 <indexterm><primary>Method class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>Method class</secondary></indexterm>
+
+<para>The Method class creates method objects from Rexx source code.
+It is a subclass of the <link linkend="clsObject">Object class</link>.</para>
 <figure><title>The Method class and methods</title>
 <mediaobject>
 <imageobject>
@@ -4777,9 +4781,6 @@ for information about the X2D built-in function.)</para>
 </imageobject>
 </mediaobject>
 </figure>
-<para>The Method class creates method objects from Rexx source code.
-It is a subclass of the <link linkend="clsObject">Object class</link>.</para>
-
 <note><title>Note</title>
 <para>The Method class also has available class methods that its
 metaclass, the Class class, defines.</para></note>
@@ -4956,6 +4957,14 @@ items.</para>
 <indexterm><primary>Message class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>Message class</secondary></indexterm>
+
+<para>A message object provides for the deferred or
+asynchronous sending of a message. You can create a message object by using
+the <emphasis role="bold">new</emphasis> or
+<emphasis role="bold">enhanced</emphasis> method of the Message class or the
+<emphasis role="bold">start</emphasis> method of the
+Object class (see <link linkend="mthObjectStart">start</link>). The Message class is
+a subclass of the Object class.</para>
 <figure><title>The Message class and methods</title>
 <mediaobject>
 <imageobject>
@@ -4967,14 +4976,6 @@ items.</para>
 <note><title>Note</title>
 <para>The Message class also has available class methods that its
 metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
-
-<para>A message object provides for the deferred or
-asynchronous sending of a message. You can create a message object by using
-the <emphasis role="bold">new</emphasis> or
-<emphasis role="bold">enhanced</emphasis> method of the Message class or the
-<emphasis role="bold">start</emphasis> method of the
-Object class (see <link linkend="mthObjectStart">start</link>). The Message class is
-a subclass of the Object class.</para>
 
 <section id="mthMessageNew"><title>new (Class Method)</title>
 <indexterm><primary>new method</primary>
