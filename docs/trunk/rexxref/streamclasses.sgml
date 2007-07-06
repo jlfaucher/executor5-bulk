@@ -496,7 +496,7 @@ CHARS always returns <computeroutput>1</computeroutput>. (See
 about the CHARS built-in function.)</para>
 </section>
 
-<section id="stclos"><title>close</title>
+<section id="mthStreamClose"><title>close</title>
 <indexterm><primary>close method</primary>
 <secondary>of Stream class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -522,7 +522,7 @@ If you have tried to close an unopened file, then the
 a null string (&quot;&quot;).</para>
 </section>
 
-<section id="cmdmet"><title>command</title>
+<section id="mthStreamCommand"><title>command</title>
 <indexterm><primary>command method</primary>
 <secondary>of Stream class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -555,7 +555,7 @@ a numeric return code. This return code is the value of
 is set whenever one of the file system primitives returns with a
 <computeroutput>-1</computeroutput>.</para>
 
-<section id="commstr"><title>Command Strings</title>
+<section id="StreamCommandStrings"><title>Command Strings</title>
 <para>The argument <emphasis role="italic">stream_command</emphasis>
 can be any expression that the language processor evaluates to a command string
 that corresponds to the following diagram:</para>
@@ -922,7 +922,7 @@ stream_name~command("query timestamp")
 </section>
 </section>
 
-<section id="desmet"><title>description</title>
+<section id="mthStreamDescription"><title>description</title>
 <indexterm><primary>description method</primary>
 <secondary>of Stream class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -944,7 +944,7 @@ available, additional information about ERROR or NOTREADY states. (The
 <link linkend="mthStreamState">state</link> method describes these states.)</para>
 </section>
 
-<section id="stflus"><title>flush</title>
+<section id="mthStreamFlush"><title>flush</title>
 <indexterm><primary>flush method</primary>
 <secondary>of Stream class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -961,7 +961,17 @@ currently buffered for writing
 to be written to the stream receiving the message.</para>
 </section>
 
-<section id="linein1"><title>lineIn</title>
+<section id="mthStreamInit"><title>init</title>
+<indexterm><primary>init method</primary>
+<secondary>of Stream class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>init method</secondary>
+<tertiary>of Stream class</tertiary></indexterm>
+
+<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="mthStreamLineIn"><title>lineIn</title>
 <indexterm><primary>lineIn method</primary>
 <secondary>of Stream class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -996,7 +1006,7 @@ If that fails, the language processor opens the stream for read-only. (See
 LINEIN built-in function.)</para>
 </section>
 
-<section id="lineom"><title>lineOut</title>
+<section id="mthStreamLineOut"><title>lineOut</title>
 <indexterm><primary>lineOut method</primary>
 <secondary>of Stream class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -1029,7 +1039,7 @@ processor opens the stream for write-only. (See
 information about the LINEOUT built-in function.)</para>
 </section>
 
-<section id="linesm"><title>lines</title>
+<section id="mthStreamLines"><title>lines</title>
 <indexterm><primary>lines method</primary>
 <secondary>of Stream class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -1054,8 +1064,8 @@ stream receiving the message. If the stream has already been read with
 this can include an initial partial line. For persistent streams the count
 starts at the current read position. In effect, 
 <emphasis role="bold">lines</emphasis> reports whether a read
-action of CHARIN (see <link linkend="mthStreamCharIn">CHARIN</link>) or LINEIN (see
-<link linkend="linein1">LINEIN</link>) will succeed. (For an explanation of
+action of charIn (see <link linkend="mthStreamCharIn">charIn</link>) or lineIn (see
+<link linkend="mthStreamLineIn">lineIn</link>) will succeed. (For an explanation of
 input and output, see
 <link linkend="iostrms">Input and Output Streams</link>.)</para>
 <para>For a Queue, <emphasis role="bold">lines</emphasis>
