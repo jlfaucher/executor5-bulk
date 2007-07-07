@@ -171,6 +171,12 @@ or the array's dimensionality. However, you do not need to specify a size
 or dimensionality of an array when you are creating it. You can use any
 whole-number indexes to reference items in an array.</para>
 
+<section><title>Inherited Methods</title>
+
+&objclsmthods;
+
+</section>
+
 <section id="mthArrayNew"><title>new (Class Method)</title>
 <indexterm><primary>new method</primary>
 <secondary>of Array class</secondary></indexterm>
@@ -917,34 +923,56 @@ objects are inserted from the beginning, replacing earlier entries.
 <note><title>Note</title>
 <para>
 The CircularQueue class also has available class methods that its
-metaclass, the <link linkend="clsClass">Class class</link>, defines. It also
-inherits the methods of the Queue class (see <link linkend="clsQueue">The Queue class</link>).
-</para>
+metaclass, the <link linkend="clsClass">Class class</link>, defines.</para>
 </note>
 <para>
 The collected objects can be processed in FIFO (first in, first out) or in a
 stack-like LIFO (last in, first out) order.
 </para>
 
-<section id="mthCircularQueueNew"<title>new (Inherited Class Method)</title>
-<indexterm><primary>new method</primary>
-<secondary>of CircularQueue class</secondary>
-</indexterm>
-<indexterm><primary>method</primary>
-<secondary>new method</secondary>
-<tertiary>of CircularQueue class</tertiary>
-</indexterm>
+<section><title>Inherited Methods</title>
 
-<programlisting>
-<![CDATA[
->>-new(size)---------------------------------------------------><
-]]>
-</programlisting>
+&objclsmthods;
 
-<para>
-Constructor method  which determines the
-<emphasis role="italic">size</emphasis> of the circular queue.
-It returns an empty CircularQueue object.</para>
+<para>Methods inherited from the
+<link linkend="clsQueue">Queue class</link>.</para>
+<itemizedlist>
+<listitem><para><link linkend="mthQueueNew">new (class method)</link></para></listitem>
+<listitem><para><link linkend="mthQueueOf">of (class method)</link></para></listitem>
+<listitem><para><link linkend="mthQueueAllIndexes">allIndexes</link></para></listitem>
+<listitem><para><link linkend="mthQueueAllItems">allItems</link></para></listitem>
+<listitem><para><link linkend="mthQueueAppend">append</link></para></listitem>
+<listitem><para><link linkend="mthQueueAppendAll">appendAll</link></para></listitem>
+<listitem><para><link linkend="mthQueueAt">at</link></para></listitem>
+<listitem><para><link linkend="mthQueueAtGet">[ ]</link></para></listitem>
+<listitem><para><link linkend="mthQueueDifference">difference</link></para></listitem>
+<listitem><para><link linkend="mthQueueEmpty">empty</link></para></listitem>
+<listitem><para><link linkend="mthQueueFirst">first</link></para></listitem>
+<listitem><para><link linkend="mthQueueHasIndex">hasIndex</link></para></listitem>
+<listitem><para><link linkend="mthQueueHasItem">hasItem</link></para></listitem>
+<listitem><para><link linkend="mthQueueIndex">index</link></para></listitem>
+<listitem><para><link linkend="mthQueueInsert">insert</link></para></listitem>
+<listitem><para><link linkend="mthQueueIntersection">intersection</link></para></listitem>
+<listitem><para><link linkend="mthQueueIsEmpty">isEmpty</link></para></listitem>
+<listitem><para><link linkend="mthQueueItems">items</link></para></listitem>
+<listitem><para><link linkend="mthQueueLast">last</link></para></listitem>
+<listitem><para><link linkend="mthQueueMakeArray">makeArray</link></para></listitem>
+<listitem><para><link linkend="mthQueueNext">next</link></para></listitem>
+<listitem><para><link linkend="mthQueuePeek">peek</link></para></listitem>
+<listitem><para><link linkend="mthQueuePrevious">previous</link></para></listitem>
+<listitem><para><link linkend="mthQueuePull">pull</link></para></listitem>
+<listitem><para><link linkend="mthQueuePush">push</link></para></listitem>
+<listitem><para><link linkend="mthQueuePut">put</link></para></listitem>
+<listitem><para><link linkend="mthQueuePutSet">[ ]=</link></para></listitem>
+<listitem><para><link linkend="mthQueueQueue">queue</link></para></listitem>
+<listitem><para><link linkend="mthQueueRemove">remove</link></para></listitem>
+<listitem><para><link linkend="mthQueueRemoveItem">removeItem</link></para></listitem>
+<listitem><para><link linkend="mthQueueSubset">subset</link></para></listitem>
+<listitem><para><link linkend="mthQueueSupplier">supplier</link></para></listitem>
+<listitem><para><link linkend="mthQueueUnion">union</link></para></listitem>
+<listitem><para><link linkend="mthQueueXor">xor</link></para></listitem>
+</itemizedlist>
+
 </section>
 
 <section id="mthCircularQueueOf"><title>of (Class Method)</title>
@@ -1057,6 +1085,9 @@ the capitalized letter is needed; all characters following it are ignored.)
 ]]>
 </programlisting>
 
+<para>This method overrides the
+<link linkend="mthQueuePush">push method</link> from the
+<link linkend="clsQueue">Queue class</link>.</para>
 <para>
 Makes the object <emphasis role="italic">item</emphasis> a member item of
 the circular queue, inserting the item object in front of the first item in
@@ -1087,6 +1118,9 @@ will be deleted, before the insertion takes place. In this case the
 ]]>
 </programlisting>
 
+<para>This method overrides the
+<link linkend="mthQueueQueue">queue method</link> from the
+<link linkend="clsQueue">Queue class</link>.</para>
 <para>
 Makes the object <emphasis role="italic">item</emphasis> a member item of the circular queue, inserting the item
 at the end of the circular queue.
@@ -1367,6 +1401,12 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.
 It also inherits methods from the <link linkend="orderedcoll">OrderedCollection
 class</link>, although there are not currently any methods defined in that class.
 </para></note>
+
+<section><title>Inherited Methods</title>
+
+&objclsmthods;
+
+</section>
 
 <section id="mthListNew"><title>new (Class Method)</title>
 <indexterm><primary>new method</primary>
@@ -1920,6 +1960,12 @@ It also inherits methods from the <link linkend="orderedcoll">OrderedCollection
 class</link>, although there are not currently any methods defined in that class.
 </para></note>
 
+<section><title>Inherited Methods</title>
+
+&objclsmthods;
+
+</section>
+
 <section id="mthQueueNew"><title>new (Class Method)</title>
 <indexterm><primary>new method</primary>
 <secondary>of Queue class</secondary></indexterm>
@@ -2260,16 +2306,6 @@ the method returns the .Nil object.
 The collection remains unchanged.</para>
 </section>
 
-<section id="mthQueuePosition"<title>position</title>
-<indexterm><primary>position method</primary>
-<secondary>of Queue class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>position method</secondary>
-<tertiary>of Queue class</tertiary></indexterm>
-
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
-</section>
-
 <section id="mthQueuePrevious"<title>previous</title>
 <indexterm><primary>previous method</primary>
 <secondary>of Queue class</secondary></indexterm>
@@ -2463,6 +2499,12 @@ class</link>, although there are not currently any methods defined in that class
 .environment~array
 </programlisting>
 <para>For directories, items are often referred to as entries.</para>
+
+<section><title>Inherited Methods</title>
+
+&objclsmthods;
+
+</section>
 
 <section id="mthDirectoryNew"><title>new (Class Method)</title>
 <indexterm><primary>new method</primary>
@@ -3066,6 +3108,44 @@ Exit
 <para>The Properties class also has available class methods that
 its metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
 
+<section><title>Inherited Methods</title>
+
+&objclsmthods;
+
+<para>Methods inherited from the
+<link linkend="clsDirectory">Directory class</link>.</para>
+<itemizedlist>
+<listitem><para><link linkend="mthDirectoryAllIndexes">allIndexes</link></para></listitem>
+<listitem><para><link linkend="mthDirectoryAllItems">allItems</link></para></listitem>
+<listitem><para><link linkend="mthDirectoryAt">at</link></para></listitem>
+<listitem><para><link linkend="mthDirectoryAtGet">[ ]</link></para></listitem>
+<listitem><para><link linkend="mthDirectoryDifference">difference</link></para></listitem>
+<listitem><para><link linkend="mthDirectoryEmpty">empty</link></para></listitem>
+<listitem><para><link linkend="mthDirectoryEntry">entry</link></para></listitem>
+<listitem><para><link linkend="mthDirectoryHasEntry">hasEntry</link></para></listitem>
+<listitem><para><link linkend="mthDirectoryHasIndex">hasIndex</link></para></listitem>
+<listitem><para><link linkend="mthDirectoryHasItem">hasItem</link></para></listitem>
+<listitem><para><link linkend="mthDirectoryIndex">index</link></para></listitem>
+<listitem><para><link linkend="mthDirectoryIntersection">intersection</link></para></listitem>
+<listitem><para><link linkend="mthDirectoryIsEmpty">isEmpty</link></para></listitem>
+<listitem><para><link linkend="mthDirectoryItems">items</link></para></listitem>
+<listitem><para><link linkend="mthDirectoryMakeArray">makeArray</link></para></listitem>
+<listitem><para><link linkend="mthDirectoryPut">put</link></para></listitem>
+<listitem><para><link linkend="mthDirectoryPutSet">[ ]=</link></para></listitem>
+<listitem><para><link linkend="mthDirectoryPutAll">putAll</link></para></listitem>
+<listitem><para><link linkend="mthDirectoryRemove">remove</link></para></listitem>
+<listitem><para><link linkend="mthDirectoryRemoveItem">removeItem</link></para></listitem>
+<listitem><para><link linkend="mthDirectorySetEntry">setEntry</link></para></listitem>
+<listitem><para><link linkend="mthDirectorySetMethod">setMethod</link></para></listitem>
+<listitem><para><link linkend="mthDirectorySubset">subset</link></para></listitem>
+<listitem><para><link linkend="mthDirectorySupplier">supplier</link></para></listitem>
+<listitem><para><link linkend="mthDirectoryUnion">union</link></para></listitem>
+<listitem><para><link linkend="mthDirectoryUnsetMethod">unsetMethod</link></para></listitem>
+<listitem><para><link linkend="mthDirectoryXor">xor</link></para></listitem>
+</itemizedlist>
+
+</section>
+
 <section id="mthPropertiesLoadClsMth"<title>load (Class method)</title>
 <indexterm><primary>load method</primary>
 <secondary>of Properties class</secondary></indexterm>
@@ -3219,6 +3299,12 @@ It also inherits methods from the <link linkend="mapcoll">MapCollection
 class</link>, although there are not currently any methods defined in that class.
 </para></note>
 
+<section><title>Inherited Methods</title>
+
+&objclsmthods;
+
+</section>
+
 <section id="mthRelationNew"><title>new (Class Method)</title>
 <indexterm><primary>new method</primary>
 <secondary>of Relation class</secondary></indexterm>
@@ -3231,6 +3317,9 @@ class</link>, although there are not currently any methods defined in that class
 ]]>
 </programlisting>
 
+<para>This method overrides the
+<link linkend="mthObjectNew">new class method</link> from the
+<link linkend="clsObject">Object class</link>.</para>
 <para>Returns an empty Relation object.</para>
 </section>
 
@@ -3743,6 +3832,12 @@ returns the stem NAME value.</para>
 <para>In addition to the methods defined in the following, the Stem class removes
 the methods =, ==, \=, \==, &lt;>, and >&lt; using the DEFINE method.</para>
 
+<section><title>Inherited Methods</title>
+
+&objclsmthods;
+
+</section>
+
 <section id="mthStemNew"><title>new (Class Method)</title>
 <indexterm><primary>new method</primary>
 <secondary>of Stem class</secondary></indexterm>
@@ -3756,6 +3851,9 @@ the methods =, ==, \=, \==, &lt;>, and >&lt; using the DEFINE method.</para>
 ]]>
 </programlisting>
 
+<para>This method overrides the
+<link linkend="mthObjectNew">new class method</link> from the
+<link linkend="clsObject">Object class</link>.</para>
 <para>Returns a new stem object. If you specify a string
 <emphasis role="italic">name</emphasis>, this
 value is used to create the derived name of compound variables. The default
@@ -4089,6 +4187,12 @@ It also inherits methods from the <link linkend="mapcoll">MapCollection
 class</link>, although there are not currently any methods defined in that class.
 </para></note>
 
+<section><title>Inherited Methods</title>
+
+&objclsmthods;
+
+</section>
+
 <section id="mthTableNew"><title>new (Class Method)</title>
 <indexterm><primary>new method</primary>
 <secondary>of Table class</secondary></indexterm>
@@ -4101,6 +4205,9 @@ class</link>, although there are not currently any methods defined in that class
 ]]>
 </programlisting>
 
+<para>This method overrides the
+<link linkend="mthObjectNew">new class method</link> from the
+<link linkend="clsObject">Object class</link>.</para>
 <para>Returns an empty Table object.</para>
 </section>
 
@@ -4244,21 +4351,6 @@ or <computeroutput>0</computeroutput> (false).</para>
 <para>!!!!!!!! Text to be added later !!!!!!!!!</para>
 </section>
 
-<section id="mthTableItems"><title>items</title>
-<indexterm><primary>items method</primary>
-<secondary>of Table class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>items method</secondary>
-<tertiary>of Table class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-items-------------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns the number of items in the collection.</para>
-</section>
-
 <section id="mthTableIntersection"><title>intersection</title>
 <indexterm><primary>intersection method</primary>
 <secondary>of Table class</secondary></indexterm>
@@ -4288,6 +4380,21 @@ index values in the receiver collection.</para>
 <tertiary>of Table class</tertiary></indexterm>
 
 <para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+</section>
+
+<section id="mthTableItems"><title>items</title>
+<indexterm><primary>items method</primary>
+<secondary>of Table class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>items method</secondary>
+<tertiary>of Table class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-items-------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the number of items in the collection.</para>
 </section>
 
 <section id="mthTableMakeArray"><title>makeArray</title>
@@ -4497,19 +4604,40 @@ class</link>, although there are not currently any methods defined in that class
 <para>The Bag class is a subclass of the Relation class. In addition to its own
 methods, it inherits the methods of the Object class and the Relation class.</para>
 
-<section id="mthBagNew"><title>new (Class Method)</title>
-<indexterm><primary>new method</primary>
-<secondary>of Bag class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>new method</secondary>
-<tertiary>of Bag class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-new---------------------------------------------------------><
-]]>
-</programlisting>
+<section><title>Inherited Methods</title>
 
-<para>Returns an empty Bag object.</para>
+&objclsmthods;
+
+<para>Methods inherited from the
+<link linkend="clsRelation">Relation class</link>.</para>
+<itemizedlist>
+<listitem><para><link linkend="mthRelationNew">new (class method)</link></para></listitem>
+<listitem><para><link linkend="mthRelationAllAt">allAt</link></para></listitem>
+<listitem><para><link linkend="mthRelationAllIndex">allIndex</link></para></listitem>
+<listitem><para><link linkend="mthRelationAllIndexes">allIndexes</link></para></listitem>
+<listitem><para><link linkend="mthRelationAllItems">allItems</link></para></listitem>
+<listitem><para><link linkend="mthRelationAt">at</link></para></listitem>
+<listitem><para><link linkend="mthRelationAtGet">[ ]</link></para></listitem>
+<listitem><para><link linkend="mthRelationDifference">difference</link></para></listitem>
+<listitem><para><link linkend="mthRelationEmpty">empty</link></para></listitem>
+<listitem><para><link linkend="mthRelationHasIndex">hasIndex</link></para></listitem>
+<listitem><para><link linkend="mthRelationHasItem">hasItem</link></para></listitem>
+<listitem><para><link linkend="mthRelationIndex">index</link></para></listitem>
+<listitem><para><link linkend="mthRelationIntersection">intersection</link></para></listitem>
+<listitem><para><link linkend="mthRelationIsEmpty">isEmpty</link></para></listitem>
+<listitem><para><link linkend="mthRelationItems">items</link></para></listitem>
+<listitem><para><link linkend="mthRelationMakeArray">makeArray</link></para></listitem>
+<listitem><para><link linkend="mthRelationPut">put</link></para></listitem>
+<listitem><para><link linkend="mthRelationPutSet">[ ]=</link></para></listitem>
+<listitem><para><link linkend="mthRelationPutAll">putAll</link></para></listitem>
+<listitem><para><link linkend="mthRelationRemove">remove</link></para></listitem>
+<listitem><para><link linkend="mthRelationRemoveItem">removeItem</link></para></listitem>
+<listitem><para><link linkend="mthRelationSubset">subset</link></para></listitem>
+<listitem><para><link linkend="mthRelationSupplier">supplier</link></para></listitem>
+<listitem><para><link linkend="mthRelationUnion">union</link></para></listitem>
+<listitem><para><link linkend="mthRelationXor">xor</link></para></listitem>
+</itemizedlist>
+
 </section>
 
 <section id="mthBagOf"><title>of (Class Method)</title>
@@ -4528,23 +4656,6 @@ methods, it inherits the methods of the Object class and the Relation class.</pa
 
 <para>Returns a newly created bag containing the specified
 <emphasis role="italic">item</emphasis> objects.</para>
-</section>
-
-<section id="mthBagAtGet"><title>[]</title>
-<indexterm><primary>[] method</primary>
-<secondary>of Bag class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>[] method</secondary>
-<tertiary>of Bag class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-[index]-----------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns the same value as the 
-<emphasis role="bold">at</emphasis> method in the Relation class. See
-<link linkend="mthRelationAt">at</link>.</para>
 </section>
 
 <section id="mthBagPutGet"><title>[]=</title>
@@ -4612,24 +4723,6 @@ or <computeroutput>0</computeroutput> (false).</para>
 <para>!!!!!!!! Text to be added later !!!!!!!!!</para>
 </section>
 
-<section id="mthBagMakeArray"><title>makeArray</title>
-<indexterm><primary>makeArray method</primary>
-<secondary>of Bag class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>makeArray method</secondary>
-<tertiary>of Bag class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-makeArray---------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns a single-index array containing the index objects. The array indexes
-range from <computeroutput>1</computeroutput> to the number of items.
-The collection items appear in the array in an unspecified order. (The program
-should not rely on any order.)</para>
-</section>
-
 <section id="mthBagPut"><title>put</title>
 <indexterm><primary>put method</primary>
 <secondary>of Bag class</secondary></indexterm>
@@ -4667,24 +4760,6 @@ same as <emphasis role="italic">item</emphasis>.</para>
 <para>!!!!!!!! Text to be added later !!!!!!!!!</para>
 </section>
 
-<section id="mthBagRemove"><title>remove</title>
-<indexterm><primary>remove method</primary>
-<secondary>of Bag class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>remove method</secondary>
-<tertiary>of Bag class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-remove(index)-----------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns and removes from a collection the member item with index
-<emphasis role="italic">index</emphasis>. If no item has index
-<emphasis role="italic">index</emphasis>, this method returns
-the Nil object and removes no item.</para>
-</section>
-
 <section id="mthBagSubset"<title>subset</title>
 <indexterm><primary>subset method</primary>
 <secondary>of Bag class</secondary></indexterm>
@@ -4697,26 +4772,6 @@ the Nil object and removes no item.</para>
 <link linkend="clsRelation">Relation class</link>.</para>
 
 <para>!!!!!!!! Text to be added later !!!!!!!!!</para>
-</section>
-
-<section id="mthBagSupplier"><title>supplier</title>
-<indexterm><primary>supplier method</primary>
-<secondary>of Bag class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>supplier method</secondary>
-<tertiary>of Bag class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-supplier----------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns a supplier object for the collection. After you have obtained a
-supplier, you can send it messages (see
-<link linkend="clsSupplier">The Supplier Class</link>) to enumerate
-all the items that were in the collection at the time of the supplier's
-creation. The supplier enumerates the items in an unspecified order. (The
-program should not rely on any order.)</para>
 </section>
 
 <section id="mthBagUnion"<title>union</title>
@@ -4789,19 +4844,38 @@ methods, it inherits the methods of the Object class (see
 <link linkend="clsObject">The Object Class</link>)
 and the Table class.</para>
 
-<section id="mthSetNew"><title>new (Class Method)</title>
-<indexterm><primary>new method</primary>
-<secondary>of Set class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>new method</secondary>
-<tertiary>of Set class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-new---------------------------------------------------------><
-]]>
-</programlisting>
+<section><title>Inherited Methods</title>
 
-<para>Returns an empty Set object.</para>
+&objclsmthods;
+
+<para>Methods inherited from the
+<link linkend="clsTable">Table class</link>.</para>
+<itemizedlist>
+<listitem><para><link linkend="mthTableNew">new (class method)</link></para></listitem>
+<listitem><para><link linkend="mthTableAllIndexes">allIndexes</link></para></listitem>
+<listitem><para><link linkend="mthTableAllItems">allItems</link></para></listitem>
+<listitem><para><link linkend="mthTableAt">at</link></para></listitem>
+<listitem><para><link linkend="mthTableAtGet">[ ]</link></para></listitem>
+<listitem><para><link linkend="mthTableDifference">difference</link></para></listitem>
+<listitem><para><link linkend="mthTableEmpty">empty</link></para></listitem>
+<listitem><para><link linkend="mthTableHasIndex">hasIndex</link></para></listitem>
+<listitem><para><link linkend="mthTableHasItem">hasItem</link></para></listitem>
+<listitem><para><link linkend="mthTableIndex">index</link></para></listitem>
+<listitem><para><link linkend="mthTableIntersection">intersection</link></para></listitem>
+<listitem><para><link linkend="mthTableIsEmpty">isEmpty</link></para></listitem>
+<listitem><para><link linkend="mthTableItems">items</link></para></listitem>
+<listitem><para><link linkend="mthTableMakeArray">makeArray</link></para></listitem>
+<listitem><para><link linkend="mthTablePut">put</link></para></listitem>
+<listitem><para><link linkend="mthTablePutSet">[ ]=</link></para></listitem>
+<listitem><para><link linkend="mthTablePutAll">putAll</link></para></listitem>
+<listitem><para><link linkend="mthTableRemove">remove</link></para></listitem>
+<listitem><para><link linkend="mthTableRemoveItem">removeItem</link></para></listitem>
+<listitem><para><link linkend="mthTableSubset">subset</link></para></listitem>
+<listitem><para><link linkend="mthTableSupplier">supplier</link></para></listitem>
+<listitem><para><link linkend="mthTableUnion">union</link></para></listitem>
+<listitem><para><link linkend="mthTableXor">xor</link></para></listitem>
+</itemizedlist>
+
 </section>
 
 <section id="mthSetOf"><title>of (Class Method)</title>
@@ -4820,23 +4894,6 @@ and the Table class.</para>
 
 <para>Returns a newly created set containing the specified
 <emphasis role="italic">item</emphasis> objects.</para>
-</section>
-
-<section id="mthSetAtGet"><title>[]</title>
-<indexterm><primary>[] method</primary>
-<secondary>of Set class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>[] method</secondary>
-<tertiary>of Set class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-[index]-----------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns the same item as the 
-<emphasis role="bold">at</emphasis> method. See
-<link linkend="mthSetAt">at</link>.</para>
 </section>
 
 <section id="mthPutSet"><title>[]=</title>
@@ -4859,57 +4916,6 @@ and the Table class.</para>
 <link linkend="mthSetPut">put</link>.</para>
 </section>
 
-<section id="mthSetAt"><title>at</title>
-<indexterm><primary>at method</primary>
-<secondary>of Set class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>at method</secondary>
-<tertiary>of Set class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-at(index)---------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns the item associated with index
-<emphasis role="italic">index</emphasis>. If the collection
-has no item associated with <emphasis role="italic">index</emphasis>,
-this method returns the Nil object.</para>
-</section>
-
-<section id="mthSetHasIndex"><title>hasIndex</title>
-<indexterm><primary>hasIndex method</primary>
-<secondary>of Set class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>hasIndex method</secondary>
-<tertiary>of Set class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-hasIndex(index)---------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns <computeroutput>1</computeroutput> (true) if the collection
-contains any item associated with index
-<emphasis role="italic">index</emphasis>, or <computeroutput>0</computeroutput>
-(false).</para>
-</section>
-
-<section id="mthSetItems"><title>items</title>
-<indexterm><primary>items method</primary>
-<secondary>of Set class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>items method</secondary>
-<tertiary>of Set class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-items-------------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns the number of items in the collection.</para>
-</section>
-
 <section id="mthSetIntersection"<title>intersection</title>
 <indexterm><primary>intersection method</primary>
 <secondary>of Set class</secondary></indexterm>
@@ -4922,24 +4928,6 @@ contains any item associated with index
 <link linkend="clsTable">Table class</link>.</para>
 
 <para>!!!!!!!! Text to be added later !!!!!!!!!</para>
-</section>
-
-<section id="mthSetMakeArray"><title>makeArray</title>
-<indexterm><primary>makeArray method</primary>
-<secondary>of Set class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>makeArray method</secondary>
-<tertiary>of Set class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-makeArray---------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns a single-index array containing the index objects. The array
-indexes range from <computeroutput>1</computeroutput> to the number of items.
-The collection items appear in the array in an unspecified order.
-(The program should not rely on any order.)</para>
 </section>
 
 <section id="mthSetPut"><title>put</title>
@@ -4979,24 +4967,6 @@ same as <emphasis role="italic">item</emphasis>.</para>
 <para>!!!!!!!! Text to be added later !!!!!!!!!</para>
 </section>
 
-<section id="mthSetRemove"><title>remove</title>
-<indexterm><primary>remove method</primary>
-<secondary>of Set class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>remove method</secondary>
-<tertiary>of Set class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-remove(index)-----------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns and removes from a collection the member item with index
-<emphasis role="italic">index</emphasis>. If no item has index
-<emphasis role="italic">index</emphasis>, this method returns
-the Nil object and removes no item.</para>
-</section>
-
 <section id="mthSetSubset"<title>subset</title>
 <indexterm><primary>putAll method</primary>
 <secondary>of Set class</secondary></indexterm>
@@ -5009,26 +4979,6 @@ the Nil object and removes no item.</para>
 <link linkend="clsTable">Table class</link>.</para>
 
 <para>!!!!!!!! Text to be added later !!!!!!!!!</para>
-</section>
-
-<section id="mthSetSupplier"><title>supplier</title>
-<indexterm><primary>supplier method</primary>
-<secondary>of Set class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>supplier method</secondary>
-<tertiary>of Set class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-supplier----------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns a supplier object for the collection. After you have obtained a
-supplier, you can send it messages (see
-<link linkend="clsSupplier">The Supplier Class</link>) to enumerate
-all the items that were in the collection at the time of the supplier's
-creation. The supplier enumerates the items in an unspecified order. (The
-program should not rely on any order.)</para>
 </section>
 
 <section id="mthSetUnion"<title>union</title>
