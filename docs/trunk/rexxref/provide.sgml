@@ -827,7 +827,7 @@ methods except where noted.</para>
     <link linkend="mthBagPutGet">Bag</link>,
     <link linkend="mthDirectoryPutSet">Directory</link>,
     <link linkend="mthListPutSet">List</link>,
-    <link linkend="mthPropertiesPut">Properties</link>
+    <link linkend="mthPropertiesPutSet">Properties</link>,
     <link linkend="mthQueuePutSet">Queue</link>,
     <link linkend="mthRelationPutSet">Relation</link>,
     <link linkend="mthPutSet">Set</link>,
@@ -877,7 +877,7 @@ methods except where noted.</para>
     <link linkend="mthDirectoryAllItems">Directory</link>,
     <link linkend="mthListAllItems">List</link>,
     <link linkend="mthQueueAllItems">Queue</link>,
-    <link linkend="mthRelationAllItems">Relation</link>
+    <link linkend="mthRelationAllItems">Relation</link>,
     <link linkend="mthStemAllItems">Stem</link>,
     <link linkend="mthSupplierAllItems">Supplier</link>,
     <link linkend="mthTableAllItems">Table</link>
@@ -888,8 +888,8 @@ methods except where noted.</para>
 <entry>
     <link linkend="mthArrayAppend">Array</link>,
     <link linkend="mthListAppend">List</link>,
-    <link linkend="mthMutableBufferAppend">MutableBuffer</link>
-    <link linkend="mthQueueAppend">Queue</link>,
+    <link linkend="mthMutableBufferAppend">MutableBuffer</link>,
+    <link linkend="mthQueueAppend">Queue</link>
 </entry>
 </row>
 <row>
@@ -897,7 +897,7 @@ methods except where noted.</para>
 <entry>
     <link linkend="mthArrayAppendAll">Array</link>,
     <link linkend="mthListAppendAll">List</link>,
-    <link linkend="mthQueueAppendAll">Queue</link>,
+    <link linkend="mthQueueAppendAll">Queue</link>
 </entry>
 </row>
 <row>
@@ -977,6 +977,60 @@ methods except where noted.</para>
 </entry>
 </row>
 <row>
+<entry>caselessChangeStr</entry>
+<entry>
+    <link linkend="mthStringCaselessChangeStr">String</link>
+</entry>
+</row>
+<row>
+<entry>caselessCompare</entry>
+<entry>
+    <link linkend="mthStringCaselessCompare">String</link>
+</entry>
+</row>
+<row>
+<entry>caselessCompareTo</entry>
+<entry>
+    <link linkend="mthStringCaselessCompareTo">String</link>
+</entry>
+</row>
+<row>
+<entry>caselessCountStr</entry>
+<entry>
+    <link linkend="mthStringCaselessCountStr">String</link>
+</entry>
+</row>
+<row>
+<entry>caselessEquals</entry>
+<entry>
+    <link linkend="mthStringCaselessEquals">String</link>
+</entry>
+</row>
+<row>
+<entry>caselessLastPos</entry>
+<entry>
+    <link linkend="mthStringCaselessLastPos">String</link>
+</entry>
+</row>
+<row>
+<entry>caselessMatch</entry>
+<entry>
+    <link linkend="mthStringCaselessMatch">String</link>
+</entry>
+</row>
+<row>
+<entry>caselessMatchChar</entry>
+<entry>
+    <link linkend="mthStringCaselessMatchChar">String</link>
+</entry>
+</row>
+<row>
+<entry>caselessPos</entry>
+<entry>
+    <link linkend="mthStringCaselessPos">String</link>
+</entry>
+</row>
+<row>
 <entry>center/centre</entry>
 <entry>
     <link linkend="mthStringCenter">String</link>
@@ -1048,7 +1102,8 @@ methods except where noted.</para>
 <row>
 <entry>compareTo</entry>
 <entry>
-    <link linkend="mthComparableCompareTo">Comparable</link>
+    <link linkend="mthComparableCompareTo">Comparable</link>,
+    <link linkend="mthStringCompareTo">String</link>
 </entry>
 </row>
 <row>
@@ -1108,7 +1163,7 @@ methods except where noted.</para>
 <row>
 <entry>decodeBase64</entry>
 <entry>
-    <link linkend="mthStringDataType">String</link>
+    <link linkend="mthStringDecodeBase64">String</link>
 </entry>
 </row>
 <row>
@@ -1203,7 +1258,7 @@ methods except where noted.</para>
 <row>
 <entry>encodeBase64</entry>
 <entry>
-    <link linkend="mthStringDataType">String</link>
+    <link linkend="mthStringEncodeBase64">String</link>
 </entry>
 </row>
 <row>
@@ -1219,6 +1274,12 @@ methods except where noted.</para>
 </entry>
 </row>
 <row>
+<entry>equals</entry>
+<entry>
+    <link linkend="mthStringEquals">String</link>
+</entry>
+</row>
+<row>
 <entry>errorCondition</entry>
 <entry>
     <link linkend="mthMessageErrorCondition">Message</link>
@@ -1229,8 +1290,8 @@ methods except where noted.</para>
 <entry>
     <link linkend="mthArrayFirst">Array</link>,
     <link linkend="mthIteratorFirst">Iterator</link>,
-    <link linkend="mthListFirst">List</link>
-    <link linkend="mthQueueFirst">Queue</link>,
+    <link linkend="mthListFirst">List</link>.
+    <link linkend="mthQueueFirst">Queue</link>
 </entry>
 </row>
 <row>
@@ -1266,7 +1327,7 @@ methods except where noted.</para>
 <row>
 <entry>getBufferSize</entry>
 <entry>
-    <link linkend="clsMutableBuffer">MutableBuffer</link>
+    <link linkend="mthMutableBufferGetBufferSize">MutableBuffer</link>
 </entry>
 </row>
 <row>
@@ -1309,7 +1370,7 @@ methods except where noted.</para>
     <link linkend="mthQueueHasIndex">Queue</link>,
     <link linkend="mthRelationHasIndex">Relation</link>,
     <link linkend="mthSetHasIndex">Set</link>,
-    <link linkend="mthStemHasIndex">Stem</link>
+    <link linkend="mthStemHasIndex">Stem</link>,
     <link linkend="mthTableHasIndex">Table</link>
 </entry>
 </row>
@@ -1374,8 +1435,8 @@ methods except where noted.</para>
     <link linkend="mthMonitorInit">Monitor</link>,
     <link linkend="mthObjectInit">Object</link>,
     <link linkend="mthRegularExpressionInit">RegularExpression</link>,
-    <link linkend="mthRexxQueueInit">RexxQueue</link>
-    <link linkend="mthStreamInit">Stream</link>
+    <link linkend="mthRexxQueueInit">RexxQueue</link>,
+    <link linkend="mthStreamInit">Stream</link>,
     <link linkend="mthStreamSupplierInit">StreamSupplier</link>,
     <link linkend="mthSupplierInit">Supplier</link>
 </entry>
@@ -1384,9 +1445,9 @@ methods except where noted.</para>
 <entry>insert</entry>
 <entry>
     <link linkend="mthListInsert">List</link>,
-    <link linkend="mthStringInsert">String</link>,
-    <link linkend="mthMutableBufferInsert">MutableBuffer</link>
+    <link linkend="mthMutableBufferInsert">MutableBuffer</link>,
     <link linkend="mthQueueInsert">Queue</link>,
+    <link linkend="mthStringInsert">String</link>
 </entry>
 </row>
 <row>
@@ -1470,8 +1531,8 @@ methods except where noted.</para>
 <entry>
     <link linkend="mthArrayLast">Array</link>,
     <link linkend="mthIteratorLast">Iterator</link>,
-    <link linkend="mthListLast">List</link>
-    <link linkend="mthQueueLast">Queue</link>,
+    <link linkend="mthListLast">List</link>,
+    <link linkend="mthQueueLast">Queue</link>
 </entry>
 </row>
 <row>
@@ -1496,8 +1557,8 @@ methods except where noted.</para>
 <row>
 <entry>length</entry>
 <entry>
-    <link linkend="mthStringLength">String</link>,
-    <link linkend="mthMutableBufferLength">MutableBuffer</link>
+    <link linkend="mthMutableBufferLength">MutableBuffer</link>,
+    <link linkend="mthStringLength">String</link>
 </entry>
 </row>
 <row>
@@ -1533,6 +1594,12 @@ methods except where noted.</para>
 </entry>
 </row>
 <row>
+<entry>lower</entry>
+<entry>
+    <link linkend="mthStringLower">String</link>
+</entry>
+</row>
+<row>
 <entry>makeArray</entry>
 <entry>
     <link linkend="mthArrayMakeArray">Array</link>,
@@ -1545,6 +1612,7 @@ methods except where noted.</para>
     <link linkend="mthSetMakeArray">Set</link>,
     <link linkend="mthStemMakeArray">Stem</link>,
     <link linkend="mthStreamMakeArray">Stream</link>,
+    <link linkend="mthStringMakeArray">String</link>,
     <link linkend="mthTableMakeArray">Table</link>
 </entry>
 </row>
@@ -1558,7 +1626,14 @@ methods except where noted.</para>
 <row>
 <entry>match</entry>
 <entry>
-    <link linkend="mthRegularExpressionMatch">RegularExpression</link>
+    <link linkend="mthRegularExpressionMatch">RegularExpression</link>,
+    <link linkend="mthStringMatch">String</link>
+</entry>
+</row>
+<row>
+<entry>matchChar</entry>
+<entry>
+    <link linkend="mthStringMatchChar">String</link>
 </entry>
 </row>
 <row>
@@ -1576,7 +1651,7 @@ methods except where noted.</para>
 <row>
 <entry>metaClass</entry>
 <entry>
-    <link linkend="mthClassMetaclass">Class (class and instance method)</link>
+    <link linkend="mthClassMetaClass">Class (class and instance method)</link>
 </entry>
 </row>
 <row>
@@ -1616,7 +1691,7 @@ methods except where noted.</para>
     <link linkend="mthMethodNew">Method (class method)</link>,
     <link linkend="mthMutableBufferNew">MutableBuffer (class method)</link>,
     <link linkend="mthObjectNew">Object (class method)</link>,
-    <link linkend="mthPropertiesPut">Properties (class method)</link>
+    <link linkend="mthPropertiesPut">Properties (class method)</link>,
     <link linkend="mthQueueNew">Queue (class method)</link>,
     <link linkend="mthRelationNew">Relation (class method)</link>,
     <link linkend="mthSetNew">Set (class method)</link>,
@@ -1727,8 +1802,8 @@ and prefix \</entry>
 <row>
 <entry>overlay</entry>
 <entry>
-    <link linkend="mthStringOverlay">String</link>,
-    <link linkend="mthMutableBufferOverlay">MutableBuffer</link>
+    <link linkend="mthMutableBufferOverlay">MutableBuffer</link>,
+    <link linkend="mthStringOverlay">String</link>
 </entry>
 </row>
 <row>
@@ -1746,9 +1821,9 @@ and prefix \</entry>
 <row>
 <entry>pos</entry>
 <entry>
-    <link linkend="mthStringPos">String</link>,
     <link linkend="mthMutableBufferPos">MutableBuffer</link>,
-    <link linkend="mthRegularExpressionPos">RegularExpression</link>
+    <link linkend="mthRegularExpressionPos">RegularExpression</link>,
+    <link linkend="mthStringPos">String</link>
 </entry>
 </row>
 <row>
@@ -1767,8 +1842,8 @@ and prefix \</entry>
     <link linkend="mthArrayPrevious">Array</link>,
     <link linkend="mthCircularIteratorPrevious">CircularIterator</link>,
     <link linkend="mthIteratorPrevious">Iterator</link>,
-    <link linkend="mthListPrevious">List</link>
-    <link linkend="mthQueuePrevious">Queue</link>,
+    <link linkend="mthListPrevious">List</link>,
+    <link linkend="mthQueuePrevious">Queue</link>
 </entry>
 </row>
 <row>
@@ -1793,7 +1868,7 @@ and prefix \</entry>
     <link linkend="mthBagPut">Bag</link>,
     <link linkend="mthDirectoryPut">Directory</link>,
     <link linkend="mthListPut">List</link>,
-    <link linkend="mthPropertiesPut">Properties</link>
+    <link linkend="mthPropertiesPut">Properties</link>,
     <link linkend="mthQueuePut">Queue</link>,
     <link linkend="mthRelationPut">Relation</link>,
     <link linkend="mthSetPut">Set</link>,
@@ -1835,7 +1910,7 @@ and prefix \</entry>
 <entry>
     <link linkend="mthCircularQueueQueue">CircularQueue</link>,
     <link linkend="mthQueueQueue">Queue</link>,
-    <link linkend="mthRexxQueueQueue">RexxQueue</link>,
+    <link linkend="mthRexxQueueQueue">RexxQueue</link>
 </entry>
 </row>
 <row>
@@ -2021,8 +2096,8 @@ and prefix \</entry>
 <row>
 <entry>size</entry>
 <entry>
-    <link linkend="mthCircularQueueSize">CircularQueue</link>,
     <link linkend="mthArraySize">Array</link>,
+    <link linkend="mthCircularQueueSize">CircularQueue</link>
 </entry>
 </row>
 <row>
@@ -2092,7 +2167,8 @@ and prefix \</entry>
 <row>
 <entry>subChar</entry>
 <entry>
-    <link linkend="mthMutableBufferSubChar">MutableBuffer</link>
+    <link linkend="mthMutableBufferSubChar">MutableBuffer</link>.
+    <link linkend="mthStringSubChar">String</link>
 </entry>
 </row>
 <row>
@@ -2104,7 +2180,7 @@ and prefix \</entry>
 <row>
 <entry>subClasses</entry>
 <entry>
-    <link linkend="mthClassSubclasses">Class (class and instance method)</link>
+    <link linkend="mthClassSubClasses">Class (class and instance method)</link>
 </entry>
 </row>
 <row>
@@ -2124,8 +2200,8 @@ and prefix \</entry>
 <row>
 <entry>substr</entry>
 <entry>
-    <link linkend="mthStringSubstr">String</link>,
-    <link linkend="mthMutableBufferSubstr">MutableBuffer</link>
+    <link linkend="mthMutableBufferSubstr">MutableBuffer</link>,
+    <link linkend="mthStringSubstr">String</link>
 </entry>
 </row>
 <row>
@@ -2191,7 +2267,7 @@ and prefix \</entry>
 <entry>uninit</entry>
 <entry>
     <link linkend="mthMutableBufferUninit">MutableBuffer</link>,
-    <link linkend="mthStreamString">Stream</link>
+    <link linkend="mthStreamUninit">Stream</link>
 </entry>
 </row>
 <row>
@@ -2221,6 +2297,12 @@ and prefix \</entry>
 <entry>
     <link linkend="mthDirectoryUnsetMethod">Directory</link>,
     <link linkend="mthObjectUnsetMethod">Object</link>
+</entry>
+</row>
+<row>
+<entry>upper</entry>
+<entry>
+    <link linkend="mthStringUpper">String</link>
 </entry>
 </row>
 <row>
