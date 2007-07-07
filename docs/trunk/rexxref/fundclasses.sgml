@@ -2278,17 +2278,65 @@ for information about the C2X built-in function.)</para>
 <indexterm><primary>method</primary>
 <secondary>caselessAbbrev method</secondary>
 <tertiary>of String class</tertiary></indexterm>
+<indexterm><primary>default</primary>
+<secondary>selecting with caselessAbbrev method</secondary></indexterm>
+<indexterm><primary>selecting a default with caselessAbbrev
+method</primary></indexterm>
+<indexterm><primary>testing</primary>
+<secondary>abbreviations with caselessAbbrev
+method</secondary></indexterm>
 
 <programlisting>
 <![CDATA[
->>-caselessabbrev(info-+---------+-)---------------------------><
+>>-caselessAbbrev(info-+---------+-)-----------------------------------><
                        +-,length-+
 ]]>
 </programlisting>
 
-<para>This method has the same functionality as the
-<link linkend="mthStringAbbrev">abbrev method</link> except that
-<emphasis role="italic">info</emphasis> is used without reguard to case.</para>
+<para>Returns <computeroutput>1</computeroutput> if
+<emphasis role="italic">info</emphasis> is equal to the leading
+characters
+of the receiving string and the length of
+<emphasis role="italic">info</emphasis> is not less than
+<emphasis role="italic">length</emphasis>. Returns
+<computeroutput>0</computeroutput> if either of these conditions is not
+met.
+The characters are tested using a caseless comparison.
+</para>
+<para>If you specify <emphasis role="italic">length</emphasis>, it must be
+a
+positive whole number or zero. The default for
+<emphasis role="italic">length</emphasis> is the number of characters in
+<emphasis role="italic">info</emphasis>.</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>abbrev method</secondary></indexterm>
+<programlisting>
+<![CDATA[
+"Print"~caselessAbbrev("Pri")      ->    1
+"PRINT"~caselessAbbrev("Pri")      ->    1
+"PRINT"~caselessAbbrev("PRI",4)    ->    0
+"PRINT"~caselessAbbrev("PRY")      ->    0
+"PRINT"~caselessAbbrev("")         ->    1
+"PRINT"~caselessAbbrev("",1)       ->    0
+]]>
+</programlisting>
+<note><title>Note</title>
+<para>A null string always matches if a length of
+<computeroutput>0</computeroutput>, or the
+default, is used. This allows a default keyword to be selected
+automatically
+if desired.</para></note>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+say "Enter option:";   parse pull option .
+select  /* keyword1 is to be the default */
+  when "keyword1"~caselessAbbrev(option) then ...
+  when "keyword2"~caselessAbbrev(option) then ...
+  ...
+  otherwise nop;
+end;
+</programlisting>
 </section>
 
 <section id="mthStringCaselessChangeStr"><title>caselessChangeStr</title>
