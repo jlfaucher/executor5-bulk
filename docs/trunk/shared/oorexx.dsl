@@ -56,6 +56,48 @@
   ;; single quotes. Otherwise the character used is not comapaable with Windows.
   "Computer-Modern-Typewriter")
 
+(define (first-page-inner-footer gi)
+  (let* ((bookinf
+    (select-elements (children (sgml-root-element))
+      (normalize "bookinfo")))
+  (booktitle
+    (select-elements (children bookinf) (normalize "title")))
+  (booksubtitle
+    (select-elements (children bookinf) (normalize "subtitle")))
+  (bookrel
+    (select-elements (children bookinf) (normalize "releaseinfo"))))
+  (with-mode hf-mode
+    (make sequence
+       font-posture: 'italic
+       font-family-name: "Helvetica"
+       font-size: 8pt
+       (process-node-list booktitle)
+       (literal ":\no-break-space;")
+       (process-node-list booksubtitle)
+       (literal "\no-break-space;")
+       (process-node-list bookrel)))))
+
+(define (page-inner-footer gi)
+  (let* ((bookinf
+    (select-elements (children (sgml-root-element))
+      (normalize "bookinfo")))
+  (booktitle
+    (select-elements (children bookinf) (normalize "title")))
+  (booksubtitle
+    (select-elements (children bookinf) (normalize "subtitle")))
+  (bookrel
+    (select-elements (children bookinf) (normalize "releaseinfo"))))
+  (with-mode hf-mode
+    (make sequence
+       font-posture: 'italic
+       font-family-name: "Helvetica"
+       font-size: 8pt
+       (process-node-list booktitle)
+       (literal ":\no-break-space;")
+       (process-node-list booksubtitle)
+       (literal "\no-break-space;")
+       (process-node-list bookrel)))))
+
 
 </style-specification-body>
 </style-specification>
