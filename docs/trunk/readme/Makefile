@@ -41,13 +41,14 @@
 #----------------------------------------------------------------------------
 
 
-STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/print/docbook.dsl
-HTML_STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/html/docbook.dsl
+STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/print/docbook.dsl \
+             ../shared/oorexx.print.dsl
+HTML_STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/html/docbook.dsl \
+             ../shared/oorexx.html.dsl
 
 SGML_FILES = readme.sgml \
      windows.sgml \
      unix.sgml \
-     ../shared/oorexx.dsl \
      ../shared/notices.sgml \
      ../shared/gethelp.sgml \
      ../shared/CPLv1.0.sgml
@@ -70,10 +71,10 @@ pdf: readme.pdf
 html: readme.html
 
 readme.pdf: $(STYLESHEET) $(JADETEXFMT) $(SGML_FILES)
-	docbook2pdf -d ../shared/oorexx.dsl readme.sgml
+	docbook2pdf -d ../shared/oorexx.print.dsl readme.sgml
 
 readme.html: $(HTML_STYLESHEET) $(SGML_FILES)
-	docbook2html -d $(HTML_STYLESHEET) $(HTML_OPTS) readme.sgml
+	docbook2html -d ../shared/oorexx.html.dsl $(HTML_OPTS) readme.sgml
 
 $(JADETEXFMT): $(HYPERREFCFG)
 	pdftex -ini \&pdflatex pdfjadetex.ini

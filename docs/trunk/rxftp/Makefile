@@ -41,12 +41,13 @@
 #----------------------------------------------------------------------------
 
 
-STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/print/docbook.dsl
-HTML_STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/html/docbook.dsl
+STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/print/docbook.dsl \
+             ../shared/oorexx.print.dsl
+HTML_STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/html/docbook.dsl \
+             ../shared/oorexx.html.dsl
 
 
 SGML_FILES = rxftp.sgml \
-     ../shared/oorexx.dsl \
      ../shared/notices.sgml \
      ../shared/legalstuff.sgml \
      ../shared/gethelp.sgml \
@@ -70,10 +71,10 @@ pdf: rxftp.pdf
 html: rxftp-html.zip
 
 rxftp.pdf: $(IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) genindex.sgml svnrev.tmp
-	docbook2pdf -d ../shared/oorexx.dsl rxftp.sgml
+	docbook2pdf -d ../shared/oorexx.print.dsl rxftp.sgml
 
 book1.htm: $(IMAGE_FILES) $(HTML_STYLESHEET) genindex.sgml svnrev.tmp
-	docbook2html -d $(HTML_STYLESHEET) rxftp.sgml
+	docbook2html -d ../shared/oorexx.html.dsl rxftp.sgml
 
 rxftp-html.zip: book1.htm
 	zip rxftp-html *.htm *.jpg
@@ -83,7 +84,7 @@ $(JADETEXFMT): $(HYPERREFCFG)
 
 genindex.sgml: $(HTML_STYLESHEET) $(SGML_FILES) svnrev.tmp
 	collateindex.pl -N -o genindex.sgml
-	jade -t sgml -d $(HTML_STYLESHEET) -V html-index rxftp.sgml
+	jade -t sgml -d ../shared/oorexx.html.dsl -V html-index rxftp.sgml
 	rm *.htm
 	collateindex.pl -p -g -o genindex.sgml HTML.index
 

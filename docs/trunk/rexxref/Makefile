@@ -41,8 +41,10 @@
 #----------------------------------------------------------------------------
 
 
-STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/print/docbook.dsl
-HTML_STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/html/docbook.dsl
+STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/print/docbook.dsl \
+             ../shared/oorexx.print.dsl
+HTML_STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/html/docbook.dsl \
+             ../shared/oorexx.html.dsl
 
 
 SGML_FILES = collclasses.sgml \
@@ -74,7 +76,6 @@ SGML_FILES = collclasses.sgml \
 	     wsheng.sgml \
 	     xconcur.sgml \
 	     xintdeb.sgml \
-	     ../shared/oorexx.xsl \
 	     ../shared/legalstuff.sgml \
 	     ../shared/notices.sgml \
 	     ../shared/gethelp.sgml \
@@ -172,10 +173,10 @@ pdf: rexxref.pdf
 html: rexxref-html.zip
 
 rexxref.pdf: $(IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) genindex.sgml svnrev.tmp
-	docbook2pdf -d ../shared/oorexx.dsl rexxref.sgml
+	docbook2pdf -d ../shared/oorexx.print.dsl rexxref.sgml
 
 book1.htm: $(IMAGE_FILES) $(HTML_STYLESHEET) genindex.sgml svnrev.tmp
-	docbook2html -d $(HTML_STYLESHEET) rexxref.sgml
+	docbook2html -d ../shared/oorexx.html.dsl rexxref.sgml
 
 rexxref-html.zip: book1.htm
 	zip rexxref-html *.htm *.jpg
@@ -185,7 +186,7 @@ $(JADETEXFMT): $(HYPERREFCFG)
 
 genindex.sgml: $(HTML_STYLESHEET) $(SGML_FILES) svnrev.tmp
 	collateindex.pl -N -o genindex.sgml
-	jade -t sgml -d $(HTML_STYLESHEET) -V html-index rexxref.sgml
+	jade -t sgml -d ../shared/oorexx.html.dsl -V html-index rexxref.sgml
 	rm *.htm
 	collateindex.pl -p -g -o genindex.sgml HTML.index
 
