@@ -129,6 +129,8 @@ IMAGE_FILES = ooRexxObjectClass.png \
               ooRexxClasses5.png \
               ooRexxClasses6.png \
               ooRexxClasses7.png \
+              doloopconcept.png \
+              doloopcollection.png \
               rxo90004.jpg \
 	      rxo90005.jpg \
 	      rxo90006.jpg \
@@ -151,8 +153,6 @@ IMAGE_FILES = ooRexxObjectClass.png \
 	      rxor0f09.jpg \
 	      rxor0f10.jpg \
 	      rxor0f11.jpg \
-	      rxor0f12.jpg \
-	      rxor0f13.jpg \
 	      rxor0f20.jpg \
 	      rxor0f21.jpg \
  	      oorexx.jpg \
