@@ -30,6 +30,7 @@
   (list (normalize "title")
 	(normalize "subtitle")
 	(normalize "edition")
+	(normalize "releaseinfo")
 	(normalize "pubdate")
 	(normalize "graphic")
 	(normalize "mediaobject")
@@ -41,6 +42,7 @@
   (list (normalize "title")
 	(normalize "subtitle")
 	(normalize "edition")
+	(normalize "releaseinfo")
 	(normalize "pubdate")
 	(normalize "graphic")
 	(normalize "mediaobject")
@@ -61,9 +63,7 @@
     (select-elements (children (sgml-root-element))
       (normalize "bookinfo")))
   (booktitle
-    (select-elements (children bookinf) (normalize "title")))
-  (booksubtitle
-    (select-elements (children bookinf) (normalize "subtitle")))
+    (select-elements (children bookinf) (normalize "titleabbrev")))
   (bookedition
     (select-elements (children bookinf) (normalize "edition"))))
   (with-mode hf-mode
@@ -72,8 +72,6 @@
        font-family-name: "Helvetica"
        font-size: 8pt
        (process-node-list booktitle)
-       (literal ":\no-break-space;")
-       (process-node-list booksubtitle)
        (literal "\no-break-space;")
        (process-node-list bookedition)))))
 
@@ -82,9 +80,7 @@
     (select-elements (children (sgml-root-element))
       (normalize "bookinfo")))
   (booktitle
-    (select-elements (children bookinf) (normalize "title")))
-  (booksubtitle
-    (select-elements (children bookinf) (normalize "subtitle")))
+    (select-elements (children bookinf) (normalize "titleabbrev")))
   (bookedition
     (select-elements (children bookinf) (normalize "edition"))))
   (with-mode hf-mode
@@ -93,8 +89,6 @@
        font-family-name: "Helvetica"
        font-size: 8pt
        (process-node-list booktitle)
-       (literal ":\no-break-space;")
-       (process-node-list booksubtitle)
        (literal "\no-break-space;")
        (process-node-list bookedition)))))
 
