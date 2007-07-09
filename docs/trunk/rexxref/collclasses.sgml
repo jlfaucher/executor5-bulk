@@ -398,8 +398,20 @@ Nil object.</para>
 <indexterm><primary>method</primary>
 <secondary>difference method</secondary>
 <tertiary>of Array class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-difference(argument)----------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns a new collection (of the same class as the receiver) containing
+only those items from the receiver whose indexes the
+<emphasis role="italic">argument</emphasis> collection
+does not contain. The <emphasis role="italic">argument</emphasis> can be any
+object described in
+<link linkend="parmcoll">The Argument Collection Classes</link>. The
+<emphasis role="italic">argument</emphasis> must also
+allow all of the index values in the receiver collection.</para>
 </section>
 
 <section id="mthArrayDimension"><title>dimension</title>
@@ -517,8 +529,19 @@ returned.
 <indexterm><primary>method</primary>
 <secondary>intersection method</secondary>
 <tertiary>of Array class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-intersection(argument)--------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns a new collection (of the same class as the receiver) containing
+only those items from the receiver whose indexes are in both the receiver
+collection and the <emphasis role="italic">argument</emphasis> collection.
+The <emphasis role="italic">argument</emphasis> can be any object described
+in <link linkend="parmcoll">The Argument Collection Classes</link>.
+The <emphasis role="italic">argument</emphasis> must also allow all of the
+index values in the receiver collection.</para>
 </section>
 
 <section id="mthArrayIsEmpty"><title>isEmpty</title>
@@ -808,8 +831,20 @@ dimensions in the array.</para>
 <indexterm><primary>method</primary>
 <secondary>subset method</secondary>
 <tertiary>of Array class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-subset(argument)--------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns <computeroutput>1</computeroutput> (true) if all indexes in the
+receiver collection are also contained in the
+<emphasis role="italic">argument</emphasis> collection; returns
+<computeroutput>0</computeroutput> (false) otherwise. The
+<emphasis role="italic">argument</emphasis> can be any object described in
+<link linkend="parmcoll">The Argument Collection Classes</link>.
+The <emphasis role="italic">argument</emphasis> must also allow all of the
+index values in the receiver collection.</para>
 </section>
 
 <section id="mthArraySupplier"><title>supplier</title>
@@ -850,8 +885,28 @@ index values as an array of index numbers.
 <indexterm><primary>method</primary>
 <secondary>union method</secondary>
 <tertiary>of Array class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-union(argument)---------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns a new collection of the same class as the receiver that contains
+all the items from the receiver collection and selected items from the
+<emphasis role="italic">argument</emphasis> collection. This method includes
+an item from <emphasis role="italic">argument</emphasis> in
+the new collection only if there is no item with the same associated index
+in the receiver collection and the method has not already included an item
+with the same index. The order in which this method selects items in
+<emphasis role="italic">argument</emphasis> is unspecified. (The program
+should not rely on any order.) See also the 
+<emphasis role="bold">union</emphasis> method of the Table
+(<link linkend="mthTableUnion">union</link>) and Relation
+(<link linkend="mthRelationUnion">union</link>) classes. The
+<emphasis role="italic">argument</emphasis> can be any object described
+in <link linkend="parmcoll">The Argument Collection Classes</link>. The
+<emphasis role="italic">argument</emphasis> must also allow all of the
+index values in the receiver collection.</para>
 </section>
 
 <section id="mthArrayXor"<title>xor</title>
@@ -860,8 +915,20 @@ index values as an array of index numbers.
 <indexterm><primary>method</primary>
 <secondary>xor method</secondary>
 <tertiary>of Array class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-xor(argument)-----------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns a new collection of the same class as the receiver that contains
+all items from the receiver collection and the
+<emphasis role="italic">argument</emphasis> collection;
+all indexes that appear in both collections are removed. The
+<emphasis role="italic">argument</emphasis> can be any object described in
+<link linkend="parmcoll">The Argument Collection Classes</link>.
+The <emphasis role="italic">argument</emphasis> must also allow all of the
+index values in the receiver collection.</para>
 </section>
 
 <section id="arex"><title>Examples</title>
@@ -1539,8 +1606,20 @@ this method returns the Nil object.</para>
 <indexterm><primary>method</primary>
 <secondary>difference method</secondary>
 <tertiary>of List class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-difference(argument)----------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns a new collection (of the same class as the receiver) containing
+only those items from the receiver whose indexes the
+<emphasis role="italic">argument</emphasis> collection
+does not contain. The <emphasis role="italic">argument</emphasis> can be any
+object described in
+<link linkend="parmcoll">The Argument Collection Classes</link>. The
+<emphasis role="italic">argument</emphasis> must also
+allow all of the index values in the receiver collection.</para>
 </section>
 
 <section id="mthListEmpty"><title>empty</title>
@@ -1892,8 +1971,20 @@ remains unchanged.</para>
 <indexterm><primary>method</primary>
 <secondary>subset method</secondary>
 <tertiary>of List class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-subset(argument)--------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns <computeroutput>1</computeroutput> (true) if all indexes in the
+receiver collection are also contained in the
+<emphasis role="italic">argument</emphasis> collection; returns
+<computeroutput>0</computeroutput> (false) otherwise. The
+<emphasis role="italic">argument</emphasis> can be any object described in
+<link linkend="parmcoll">The Argument Collection Classes</link>.
+The <emphasis role="italic">argument</emphasis> must also allow all of the
+index values in the receiver collection.</para>
 </section>
 
 <section id="mthListSupplier"><title>supplier</title>
@@ -1920,8 +2011,28 @@ creation. The supplier enumerates the items in their sequenced order.</para>
 <indexterm><primary>method</primary>
 <secondary>union method</secondary>
 <tertiary>of List class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-union(argument)---------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns a new collection of the same class as the receiver that contains
+all the items from the receiver collection and selected items from the
+<emphasis role="italic">argument</emphasis> collection. This method includes
+an item from <emphasis role="italic">argument</emphasis> in
+the new collection only if there is no item with the same associated index
+in the receiver collection and the method has not already included an item
+with the same index. The order in which this method selects items in
+<emphasis role="italic">argument</emphasis> is unspecified. (The program
+should not rely on any order.) See also the 
+<emphasis role="bold">union</emphasis> method of the Table
+(<link linkend="mthTableUnion">union</link>) and Relation
+(<link linkend="mthRelationUnion">union</link>) classes. The
+<emphasis role="italic">argument</emphasis> can be any object described
+in <link linkend="parmcoll">The Argument Collection Classes</link>. The
+<emphasis role="italic">argument</emphasis> must also allow all of the
+index values in the receiver collection.</para>
 </section>
 
 <section id="mthListXor"><title>xor</title>
@@ -1930,8 +2041,20 @@ creation. The supplier enumerates the items in their sequenced order.</para>
 <indexterm><primary>method</primary>
 <secondary>xor method</secondary>
 <tertiary>of List class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-xor(argument)-----------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns a new collection of the same class as the receiver that contains
+all items from the receiver collection and the
+<emphasis role="italic">argument</emphasis> collection;
+all indexes that appear in both collections are removed. The
+<emphasis role="italic">argument</emphasis> can be any object described in
+<link linkend="parmcoll">The Argument Collection Classes</link>.
+The <emphasis role="italic">argument</emphasis> must also allow all of the
+index values in the receiver collection.</para>
 </section>
 </section>
 
@@ -2097,8 +2220,20 @@ method. See <link linkend="mthQueuePut">put</link>.
 <indexterm><primary>method</primary>
 <secondary>difference method</secondary>
 <tertiary>of Queue class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-difference(argument)----------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns a new collection (of the same class as the receiver) containing
+only those items from the receiver whose indexes the
+<emphasis role="italic">argument</emphasis> collection
+does not contain. The <emphasis role="italic">argument</emphasis> can be any
+object described in
+<link linkend="parmcoll">The Argument Collection Classes</link>. The
+<emphasis role="italic">argument</emphasis> must also
+allow all of the index values in the receiver collection.</para>
 </section>
 
 <section id="mthQueueEmpty"><title>empty</title>
@@ -2222,8 +2357,19 @@ musketeers~insert("D&apos;Artagnan")       /* Adds D&apos;Artagnan after Aramis 
 <indexterm><primary>method</primary>
 <secondary>intersection method</secondary>
 <tertiary>of Queue class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-intersection(argument)--------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns a new collection (of the same class as the receiver) containing
+only those items from the receiver whose indexes are in both the receiver
+collection and the <emphasis role="italic">argument</emphasis> collection.
+The <emphasis role="italic">argument</emphasis> can be any object described
+in <link linkend="parmcoll">The Argument Collection Classes</link>.
+The <emphasis role="italic">argument</emphasis> must also allow all of the
+index values in the receiver collection.</para>
 </section>
 
 <section id="mthQueueIsEmpty"<title>isEmpty</title>
@@ -2416,8 +2562,20 @@ the Nil object and removes no item.</para>
 <indexterm><primary>method</primary>
 <secondary>subset method</secondary>
 <tertiary>of Queue class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-subset(argument)--------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns <computeroutput>1</computeroutput> (true) if all indexes in the
+receiver collection are also contained in the
+<emphasis role="italic">argument</emphasis> collection; returns
+<computeroutput>0</computeroutput> (false) otherwise. The
+<emphasis role="italic">argument</emphasis> can be any object described in
+<link linkend="parmcoll">The Argument Collection Classes</link>.
+The <emphasis role="italic">argument</emphasis> must also allow all of the
+index values in the receiver collection.</para>
 </section>
 
 <section id="mthQueueSupplier"><title>supplier</title>
@@ -2446,8 +2604,28 @@ the queue first.</para>
 <indexterm><primary>method</primary>
 <secondary>union method</secondary>
 <tertiary>of Queue class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-union(argument)---------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns a new collection of the same class as the receiver that contains
+all the items from the receiver collection and selected items from the
+<emphasis role="italic">argument</emphasis> collection. This method includes
+an item from <emphasis role="italic">argument</emphasis> in
+the new collection only if there is no item with the same associated index
+in the receiver collection and the method has not already included an item
+with the same index. The order in which this method selects items in
+<emphasis role="italic">argument</emphasis> is unspecified. (The program
+should not rely on any order.) See also the 
+<emphasis role="bold">union</emphasis> method of the Table
+(<link linkend="mthTableUnion">union</link>) and Relation
+(<link linkend="mthRelationUnion">union</link>) classes. The
+<emphasis role="italic">argument</emphasis> can be any object described
+in <link linkend="parmcoll">The Argument Collection Classes</link>. The
+<emphasis role="italic">argument</emphasis> must also allow all of the
+index values in the receiver collection.</para>
 </section>
 
 <section id="mthQueueXor"<title>xor</title>
@@ -2456,8 +2634,20 @@ the queue first.</para>
 <indexterm><primary>method</primary>
 <secondary>xor method</secondary>
 <tertiary>of Queue class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-xor(argument)-----------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns a new collection of the same class as the receiver that contains
+all items from the receiver collection and the
+<emphasis role="italic">argument</emphasis> collection;
+all indexes that appear in both collections are removed. The
+<emphasis role="italic">argument</emphasis> can be any object described in
+<link linkend="parmcoll">The Argument Collection Classes</link>.
+The <emphasis role="italic">argument</emphasis> must also allow all of the
+index values in the receiver collection.</para>
 </section>
 </section>
 
@@ -3953,8 +4143,20 @@ re-initialize the stem and remove all existing assigned indexes.</para>
 <indexterm><primary>method</primary>
 <secondary>difference method</secondary>
 <tertiary>of Stem class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-difference(argument)----------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns a new collection (of the same class as the receiver) containing
+only those items from the receiver whose indexes the
+<emphasis role="italic">argument</emphasis> collection
+does not contain. The <emphasis role="italic">argument</emphasis> can be any
+object described in
+<link linkend="parmcoll">The Argument Collection Classes</link>. The
+<emphasis role="italic">argument</emphasis> must also
+allow all of the index values in the receiver collection.</para>
 </section>
 
 <section id="mthStemEmpty"<title>empty</title>
@@ -4003,8 +4205,19 @@ re-initialize the stem and remove all existing assigned indexes.</para>
 <indexterm><primary>method</primary>
 <secondary>intersection method</secondary>
 <tertiary>of Stem class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-intersection(argument)--------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns a new collection (of the same class as the receiver) containing
+only those items from the receiver whose indexes are in both the receiver
+collection and the <emphasis role="italic">argument</emphasis> collection.
+The <emphasis role="italic">argument</emphasis> can be any object described
+in <link linkend="parmcoll">The Argument Collection Classes</link>.
+The <emphasis role="italic">argument</emphasis> must also allow all of the
+index values in the receiver collection.</para>
 </section>
 
 <section id="mthStemIsEmpty"<title>isEmpty</title>
@@ -4111,8 +4324,20 @@ forwarded to the current stem default value.</para>
 <indexterm><primary>method</primary>
 <secondary>subset method</secondary>
 <tertiary>of Stem class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-subset(argument)--------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns <computeroutput>1</computeroutput> (true) if all indexes in the
+receiver collection are also contained in the
+<emphasis role="italic">argument</emphasis> collection; returns
+<computeroutput>0</computeroutput> (false) otherwise. The
+<emphasis role="italic">argument</emphasis> can be any object described in
+<link linkend="parmcoll">The Argument Collection Classes</link>.
+The <emphasis role="italic">argument</emphasis> must also allow all of the
+index values in the receiver collection.</para>
 </section>
 
 <section id="mthStemSupplier"<title>supplier</title>
@@ -4131,8 +4356,28 @@ forwarded to the current stem default value.</para>
 <indexterm><primary>method</primary>
 <secondary>union method</secondary>
 <tertiary>of Stem class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-union(argument)---------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns a new collection of the same class as the receiver that contains
+all the items from the receiver collection and selected items from the
+<emphasis role="italic">argument</emphasis> collection. This method includes
+an item from <emphasis role="italic">argument</emphasis> in
+the new collection only if there is no item with the same associated index
+in the receiver collection and the method has not already included an item
+with the same index. The order in which this method selects items in
+<emphasis role="italic">argument</emphasis> is unspecified. (The program
+should not rely on any order.) See also the 
+<emphasis role="bold">union</emphasis> method of the Table
+(<link linkend="mthTableUnion">union</link>) and Relation
+(<link linkend="mthRelationUnion">union</link>) classes. The
+<emphasis role="italic">argument</emphasis> can be any object described
+in <link linkend="parmcoll">The Argument Collection Classes</link>. The
+<emphasis role="italic">argument</emphasis> must also allow all of the
+index values in the receiver collection.</para>
 </section>
 
 <section id="mthStemUnknown"><title>unknown</title>
@@ -4158,8 +4403,20 @@ messages sent to a stem collection. For additional information, see
 <indexterm><primary>method</primary>
 <secondary>xor method</secondary>
 <tertiary>of Stem class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-xor(argument)-----------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns a new collection of the same class as the receiver that contains
+all items from the receiver collection and the
+<emphasis role="italic">argument</emphasis> collection;
+all indexes that appear in both collections are removed. The
+<emphasis role="italic">argument</emphasis> can be any object described in
+<link linkend="parmcoll">The Argument Collection Classes</link>.
+The <emphasis role="italic">argument</emphasis> must also allow all of the
+index values in the receiver collection.</para>
 </section>
 </section>
 
@@ -4688,8 +4945,20 @@ methods, it inherits the methods of the Object class and the Relation class.</pa
 <para>This method overrides the
 <link linkend="mthRelationDifference">difference method</link> from the
 <link linkend="clsRelation">Relation class</link>.</para>
+<programlisting>
+<![CDATA[
+>>-difference(argument)----------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns a new collection (of the same class as the receiver) containing
+only those items from the receiver whose indexes the
+<emphasis role="italic">argument</emphasis> collection
+does not contain. The <emphasis role="italic">argument</emphasis> can be any
+object described in
+<link linkend="parmcoll">The Argument Collection Classes</link>. The
+<emphasis role="italic">argument</emphasis> must also
+allow all of the index values in the receiver collection.</para>
 </section>
 
 <section id="mthBagHasIndex"><title>hasIndex</title>
@@ -4719,8 +4988,19 @@ or <computeroutput>0</computeroutput> (false).</para>
 <para>This method overrides the
 <link linkend="mthRelationIntersection">intersection method</link> from the
 <link linkend="clsRelation">Relation class</link>.</para>
+<programlisting>
+<![CDATA[
+>>-intersection(argument)--------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns a new collection (of the same class as the receiver) containing
+only those items from the receiver whose indexes are in both the receiver
+collection and the <emphasis role="italic">argument</emphasis> collection.
+The <emphasis role="italic">argument</emphasis> can be any object described
+in <link linkend="parmcoll">The Argument Collection Classes</link>.
+The <emphasis role="italic">argument</emphasis> must also allow all of the
+index values in the receiver collection.</para>
 </section>
 
 <section id="mthBagPut"><title>put</title>
@@ -4770,8 +5050,20 @@ same as <emphasis role="italic">item</emphasis>.</para>
 <para>This method overrides the
 <link linkend="mthRelationSubset">subset method</link> from the
 <link linkend="clsRelation">Relation class</link>.</para>
+<programlisting>
+<![CDATA[
+>>-subset(argument)--------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns <computeroutput>1</computeroutput> (true) if all indexes in the
+receiver collection are also contained in the
+<emphasis role="italic">argument</emphasis> collection; returns
+<computeroutput>0</computeroutput> (false) otherwise. The
+<emphasis role="italic">argument</emphasis> can be any object described in
+<link linkend="parmcoll">The Argument Collection Classes</link>.
+The <emphasis role="italic">argument</emphasis> must also allow all of the
+index values in the receiver collection.</para>
 </section>
 
 <section id="mthBagUnion"<title>union</title>
@@ -4784,8 +5076,28 @@ same as <emphasis role="italic">item</emphasis>.</para>
 <para>This method overrides the
 <link linkend="mthRelationUnion">union method</link> from the
 <link linkend="clsRelation">Relation class</link>.</para>
+<programlisting>
+<![CDATA[
+>>-union(argument)---------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns a new collection of the same class as the receiver that contains
+all the items from the receiver collection and selected items from the
+<emphasis role="italic">argument</emphasis> collection. This method includes
+an item from <emphasis role="italic">argument</emphasis> in
+the new collection only if there is no item with the same associated index
+in the receiver collection and the method has not already included an item
+with the same index. The order in which this method selects items in
+<emphasis role="italic">argument</emphasis> is unspecified. (The program
+should not rely on any order.) See also the 
+<emphasis role="bold">union</emphasis> method of the Table
+(<link linkend="mthTableUnion">union</link>) and Relation
+(<link linkend="mthRelationUnion">union</link>) classes. The
+<emphasis role="italic">argument</emphasis> can be any object described
+in <link linkend="parmcoll">The Argument Collection Classes</link>. The
+<emphasis role="italic">argument</emphasis> must also allow all of the
+index values in the receiver collection.</para>
 </section>
 
 <section id="mthBagXor"<title>xor</title>
@@ -4798,8 +5110,20 @@ same as <emphasis role="italic">item</emphasis>.</para>
 <para>This method overrides the
 <link linkend="mthRelationXor">xor method</link> from the
 <link linkend="clsRelation">Relation class</link>.</para>
+<programlisting>
+<![CDATA[
+>>-xor(argument)-----------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns a new collection of the same class as the receiver that contains
+all items from the receiver collection and the
+<emphasis role="italic">argument</emphasis> collection;
+all indexes that appear in both collections are removed. The
+<emphasis role="italic">argument</emphasis> can be any object described in
+<link linkend="parmcoll">The Argument Collection Classes</link>.
+The <emphasis role="italic">argument</emphasis> must also allow all of the
+index values in the receiver collection.</para>
 </section>
 
 <section id="bagex"><title>Examples</title>
@@ -4926,8 +5250,19 @@ and the Table class.</para>
 <para>This method overrides the
 <link linkend="mthTableIntersection">intersection method</link> from the
 <link linkend="clsTable">Table class</link>.</para>
+<programlisting>
+<![CDATA[
+>>-intersection(argument)--------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns a new collection (of the same class as the receiver) containing
+only those items from the receiver whose indexes are in both the receiver
+collection and the <emphasis role="italic">argument</emphasis> collection.
+The <emphasis role="italic">argument</emphasis> can be any object described
+in <link linkend="parmcoll">The Argument Collection Classes</link>.
+The <emphasis role="italic">argument</emphasis> must also allow all of the
+index values in the receiver collection.</para>
 </section>
 
 <section id="mthSetPut"><title>put</title>
@@ -4977,8 +5312,20 @@ same as <emphasis role="italic">item</emphasis>.</para>
 <para>This method overrides the
 <link linkend="mthTableSubset">subset method</link> from the
 <link linkend="clsTable">Table class</link>.</para>
+<programlisting>
+<![CDATA[
+>>-subset(argument)--------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns <computeroutput>1</computeroutput> (true) if all indexes in the
+receiver collection are also contained in the
+<emphasis role="italic">argument</emphasis> collection; returns
+<computeroutput>0</computeroutput> (false) otherwise. The
+<emphasis role="italic">argument</emphasis> can be any object described in
+<link linkend="parmcoll">The Argument Collection Classes</link>.
+The <emphasis role="italic">argument</emphasis> must also allow all of the
+index values in the receiver collection.</para>
 </section>
 
 <section id="mthSetUnion"<title>union</title>
@@ -4991,8 +5338,28 @@ same as <emphasis role="italic">item</emphasis>.</para>
 <para>This method overrides the
 <link linkend="mthTableUnion">union method</link> from the
 <link linkend="clsTable">Table class</link>.</para>
+<programlisting>
+<![CDATA[
+>>-union(argument)---------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns a new collection of the same class as the receiver that contains
+all the items from the receiver collection and selected items from the
+<emphasis role="italic">argument</emphasis> collection. This method includes
+an item from <emphasis role="italic">argument</emphasis> in
+the new collection only if there is no item with the same associated index
+in the receiver collection and the method has not already included an item
+with the same index. The order in which this method selects items in
+<emphasis role="italic">argument</emphasis> is unspecified. (The program
+should not rely on any order.) See also the 
+<emphasis role="bold">union</emphasis> method of the Table
+(<link linkend="mthTableUnion">union</link>) and Relation
+(<link linkend="mthRelationUnion">union</link>) classes. The
+<emphasis role="italic">argument</emphasis> can be any object described
+in <link linkend="parmcoll">The Argument Collection Classes</link>. The
+<emphasis role="italic">argument</emphasis> must also allow all of the
+index values in the receiver collection.</para>
 </section>
 
 <section id="mthSetXor"<title>xor</title>
@@ -5005,8 +5372,20 @@ same as <emphasis role="italic">item</emphasis>.</para>
 <para>This method overrides the
 <link linkend="mthTableXor">xor method</link> from the
 <link linkend="clsTable">Table class</link>.</para>
+<programlisting>
+<![CDATA[
+>>-xor(argument)-----------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns a new collection of the same class as the receiver that contains
+all items from the receiver collection and the
+<emphasis role="italic">argument</emphasis> collection;
+all indexes that appear in both collections are removed. The
+<emphasis role="italic">argument</emphasis> can be any object described in
+<link linkend="parmcoll">The Argument Collection Classes</link>.
+The <emphasis role="italic">argument</emphasis> must also allow all of the
+index values in the receiver collection.</para>
 </section>
 </section>
 
