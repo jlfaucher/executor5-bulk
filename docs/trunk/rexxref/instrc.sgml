@@ -384,10 +384,10 @@ language processor then parses these.</para></listitem>
 
 <programlisting>
 <![CDATA[
-                      +-,--------------+
-                      V                |
->>-CALL--+-+-name--+----+------------+-+-------------------+--;-->
-         | +-(var)-+    +-expression-+                     |
+                       +-,--------------+
+                       V                |
+>>-CALL--+-+-name- -+----+------------+-+-------------------+--;-->
+         | +-(expr)-+    +-expression-+                     |
          +-OFF--+-ANY-----------------+--------------------+
          |      +-ERROR---------------+                    |
          |      +-FAILURE-------------+                    |
@@ -461,11 +461,11 @@ to all lowercase and searched for again. A mixed case
 <emphasis role="italic">name</emphasis> search is NOT performed.
 </para></listitem>
 </orderedlist>
-<para>You can also specify (<emphasis role="italic">var</emphasis>),
-a single variable name enclosed in
-parentheses. The variable is evaluated before any of the argument expressions,
+<para>You can also specify (<emphasis role="italic">expr</emphasis>),
+any valid expression enclosed in
+parentheses. The expression is evaluated before any of the argument expressions,
 and the value is the target of the CALL instruction. The language processor
-does not translate the variable value into uppercase, so the evaluated name
+does not translate the expression value into uppercase, so the evaluated name
 must exactly match any label name. (See
 <link linkend="labels">Labels</link> for a description of label names.)</para>
 <para>The called routine can optionally return a result. In this case, the CALL
@@ -611,9 +611,9 @@ routine. These are: </para>
 <indexterm><primary>exception conditions saved during subroutine calls
 </primary></indexterm>
 <itemizedlist>
-<listitem><para><emphasis role="bold">The status of DO loops and other
+<listitem><para><emphasis role="bold">The status of loops and other
 structures:</emphasis>  Executing
-a SIGNAL within a subroutine is safe because DO loops and other structures
+a SIGNAL within a subroutine is safe because loops and other structures
 that were active when the subroutine was called are not ended. However, those
 currently active within the subroutine are ended.</para></listitem>
 <listitem><para><emphasis role="bold">Trace action:</emphasis>  After a
@@ -698,8 +698,8 @@ EXMODE are saved and then restored on return. </para></listitem>
 
 <programlisting>
 <![CDATA[
->>-DO--+---------------+--+-----------------+--;---------------->
-       +-| repetitor |-+  +-| conditional |-+
+>>-DO---+-------------+--+---------------+--+-----------------+--;---------------->
+        +-LABEL--name-+  +-| repetitor |-+  +-| conditional |-+
 
 >--+-----------------+--END------------------------------------><
    | +-------------+ |
@@ -744,6 +744,9 @@ range of values.</para>
 
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
+<listitem><para>The LABEL phrase, if used, must precede any
+<emphasis role="italic">repetitor</emphasis> or <emphasis role="italic">conditional</emphasis>.
+</para></listitem>
 <listitem><para>The <emphasis role="italic">exprr</emphasis>,
 <emphasis role="italic">expri</emphasis>,
 <emphasis role="italic">exprb</emphasis>,
@@ -752,15 +755,23 @@ range of values.</para>
 are any expressions that evaluate to a number.
 <indexterm><primary>numbers</primary>
 <secondary>in DO instruction</secondary></indexterm>
-
 The <emphasis role="italic">exprr</emphasis> and
 <emphasis role="italic">exprf</emphasis> options are further restricted
-to resultin a positive whole number or zero. If necessary, the numbers are
+to result in a positive whole number or zero. If necessary, the numbers are
 rounded according to the setting of NUMERIC DIGITS.</para></listitem>
 <listitem><para>The <emphasis role="italic">exprw</emphasis> or
 <emphasis role="italic">expru</emphasis> options, if present, can be any
 expression that evaluates to <computeroutput>1</computeroutput> or
-<computeroutput>0</computeroutput>.</para></listitem>
+<computeroutput>0</computeroutput>.  This includes the list form of conditional
+expression supported by IF and WHEN, which is
+a list of expressions separated by ",".  Each subexpression must evaluate to
+either <computeroutput>0</computeroutput> or <computeroutput>1</computeroutput>.
+The list of expressions is evaluated left-to-right.  Evaluation will stop with
+the first <computeroutput>0</computeroutput> result and <computeroutput>0</computeroutput>
+will be returned as the condition result.  If all of the subexpressions evaluate
+to <computeroutput>1</computeroutput>, then the condition result is also
+<computeroutput>1</computeroutput>.
+</para></listitem>
 <listitem><para>The TO, BY, and FOR phrases can be in any order, if used, and
 are evaluated in the order in which they are written.
 <indexterm><primary>BY phrase of DO instruction</primary></indexterm>
@@ -794,7 +805,7 @@ get placed in the array in no particular order.
 </para></listitem>
 </orderedlist>
 <para>For more information, refer to
-<link linkend="dokey">Using the DO Keyword</link>.</para>
+<link linkend="dokey">Using DO and LOOP</link>.</para>
 </section>
 
 <section id="drop"><title>DROP</title>
@@ -1295,12 +1306,41 @@ Else
   say "Why not?"
 </programlisting>
 
+<para>The <emphasis role="italic">expression</emphasis> may also be
+a list of expressions separated by ",".  Each subexpression must evaluate to
+either <computeroutput>0</computeroutput> or <computeroutput>1</computeroutput>.
+The list of expressions is evaluated left-to-right.  Evaluation will stop with
+the first <computeroutput>0</computeroutput> result and <computeroutput>0</computeroutput>
+will be returned as the condition result.  If all of the subexpressions evaluate
+to <computeroutput>1</computeroutput>, then the condition result is also
+<computeroutput>1</computeroutput>.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+If answer~datatype('w'), answer//2 = 0 Then
+    say answer "is even"
+  Else
+    say answer "is odd"
+</programlisting>
+
+<para>The example above is not the same as using the following</para>
+
+<programlisting>
+If answer~datatype('w') & answer//2 = 0 Then
+    say answer "is even"
+  Else
+    say answer "is odd"
+</programlisting>
+<para>The logical & operator will evaluate both terms of the operation, so the
+term "answer//2" will result in a syntax error if answer is a non-numeric value.  With the
+list conditional form, evaluation will stop with the first false result, so the
+"answer//2" term will not be evaluated if the datatype test returns <computeroutput>1</computeroutput>.
+</para>
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
 <listitem><para>The <emphasis role="italic">instruction</emphasis>
 can be any assignment, message instruction, command, or keyword instruction,
 including any of the more complex constructs
-such as DO, SELECT, or the IF instruction itself. A null clause is not an
+such as DO, LOOP, SELECT, or the IF instruction itself. A null clause is not an
 instruction, so putting an extra semicolon (or label) after THEN or ELSE is
 not equivalent to putting a dummy instruction (as it would be in C). The
 NOP instruction is provided for this purpose.</para></listitem>
@@ -1341,8 +1381,8 @@ line inserted into the program and bracketed by a DO; and an END;.</para>
 <para>Any instructions (including INTERPRET instructions) are allowed, but note
 that constructions such as DO...END and SELECT...END must be complete.
 For example, a string of instructions being interpreted cannot contain a LEAVE
-or ITERATE instruction (valid only within a repetitive DO loop) unless it
-also contains the whole repetitive DO...END construct.</para>
+or ITERATE instruction (valid only within a repetitive loop) unless it
+also contains the whole repetitive DO...END or LOOP...END construct.</para>
 <para>A semicolon is implied at the end of the expression during execution, if
 one was not supplied.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
@@ -1458,19 +1498,19 @@ instruction.</para></listitem>
 </programlisting>
 
 <indexterm><primary>altering</primary>
-<secondary>flow within a repetitive DO loop</secondary></indexterm>
-<para>ITERATE alters the flow within a repetitive DO loop (that is, any DO
-construct other than that with a simple DO).</para>
+<secondary>flow within a repetitive loop</secondary></indexterm>
+<para>ITERATE alters the flow within a repetitive loop (that is, any DO
+construct other than that with a simple DO or a LOOP instruction).</para>
 <para>Execution of the group of instructions stops, and control is passed to
-the DO instruction just as though the END clause had been encountered. The
+the DO or LOOP instruction just as though the END clause had been encountered. The
 control variable, if any, is incremented and tested, as usual, and the group
-of instructions is processed again, unless the DO instruction ends the loop.
+of instructions is processed again, unless the DO or LOOP instruction ends the loop.
 </para>
 <para>The <emphasis role="italic">name</emphasis> is a symbol, taken as a
 constant. If <emphasis role="italic">name</emphasis> is
 not specified, ITERATE continues with the current repetitive loop.
 If <emphasis role="italic">name</emphasis> is specified, it must be the
-name of the control variable of a currently
+name of the control variable or the LABEL name of a currently
 active loop, which can be the innermost, and this is the loop that is stepped.
 Any active loops inside the one selected for iteration are ended (as though
 by a LEAVE instruction).</para>
@@ -1480,7 +1520,7 @@ by a LEAVE instruction).</para>
 <indexterm><primary>examples</primary>
 <secondary>ITERATE instruction</secondary></indexterm>
 <programlisting>
-do i=1 to 4
+loop i=1 to 4
   if i=2 then iterate
   say i
 end
@@ -1490,8 +1530,8 @@ end
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
 <listitem><para>If specified, <emphasis role="italic">name</emphasis>
-must match the symbol naming the control variable
-in the DO clause in all respects except the case. No substitution for compound
+must match the symbol naming the control variable or LABEL name
+in the DO or LOOP clause in all respects except the case. No substitution for compound
 variables is carried out when the comparison is made.</para></listitem>
 <listitem><para>A loop is active if it is currently being processed.
 If a subroutine is called, or an INTERPRET instruction is processed, during
@@ -1501,7 +1541,7 @@ to continue with an inactive loop.</para></listitem>
 <listitem><para>
 <indexterm><primary>loops</primary>
 <secondary>active</secondary></indexterm>
-If more than one active loop uses the same control variable, ITERATE selects
+If more than one active loop uses the same name, ITERATE selects
 the innermost loop.</para></listitem>
 </orderedlist>
 </section>
@@ -1525,8 +1565,9 @@ the innermost loop.</para></listitem>
 ]]>
 </programlisting>
 
-<para>LEAVE causes an immediate exit from one or more repetitive DO loops, that
-is, any DO construct other than a simple DO.</para>
+<para>LEAVE causes an immediate exit from one or more repetitive loops or block instruction
+(simple DO or SELECT).
+</para>
 <para>Processing of the group of instructions is ended, and control is passed
 to the instruction following the END clause, just as though the END clause
 had been encountered and the termination condition had been met. However,
@@ -1537,12 +1578,12 @@ a symbol, taken as a constant. If
 <emphasis role="italic">name</emphasis> is not specified, LEAVE ends
 the innermost active repetitive loop. If
 <emphasis role="italic">name</emphasis> is specified, it must
-be the name of the control variable of a currently active loop, which can
-be the innermost, and that loop, and any active loops
-<indexterm><primary>active loops</primary></indexterm>
+be the name of the control variable or LABEL name of of a currently active LOOP, DO, or SELECT, which can
+be the innermost, and that block, and any active block
+<indexterm><primary>active blocks</primary></indexterm>
 inside it, are then
 ended. Control then passes to the clause following the END that matches the
-DO clause of the selected loop.</para>
+instruction of the selected block.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <indexterm><primary>LEAVE instruction</primary>
 <secondary>example</secondary></indexterm>
@@ -1559,17 +1600,156 @@ end
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
 <listitem><para>If specified, <emphasis role="italic">name</emphasis>
-must match the symbol naming the control variable
-in the DO clause in all respects except the case. No substitution for compound
+must match the symbol naming the control variable or LABEL name
+in the DO, LOOP, or SELECT clause in all respects except the case. No substitution for compound
 variables is carried out when the comparison is made.</para></listitem>
 <listitem><para>A loop is active if it is currently being processed.  If a
 subroutine is called, or an INTERPRET instruction is processed, during
 execution of a loop, the loop becomes inactive until the subroutine has
 returned or the INTERPRET instruction has completed. LEAVE cannot be used to
-end an inactive loop.</para></listitem>
-<listitem><para>If more than one active loop uses the same control variable,
-LEAVE selects the innermost loop.</para></listitem>
+end an inactive block.</para></listitem>
+<listitem><para>If more than one active block uses the same control variable,
+LEAVE selects the innermost block.</para></listitem>
 </orderedlist>
+</section>
+
+<section id="loop"><title>LOOP</title>
+<indexterm><primary>LOOP instruction</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>flow of control</primary>
+<secondary>with LOOP construct</secondary></indexterm>
+<indexterm><primary>grouping instructions to run repetitively</primary></indexterm>
+<indexterm><primary>infinite loops</primary></indexterm>
+<indexterm><primary>instructions</primary>
+<secondary>LOOP</secondary></indexterm>
+<indexterm><primary>END subkeyword</primary>
+<secondary>in a LOOP instruction</secondary></indexterm>
+<indexterm><primary>TO subkeyword</primary>
+<secondary>in a LOOP instruction</secondary></indexterm>
+<indexterm><primary>BY subkeyword</primary>
+<secondary>in a LOOP instruction</secondary></indexterm>
+<indexterm><primary>FOR subkeyword</primary>
+<secondary>in a LOOP instruction</secondary></indexterm>
+<indexterm><primary>OVER subkeyword</primary>
+<secondary>in a LOOP instruction</secondary></indexterm>
+<indexterm><primary>FOREVER subkeyword</primary>
+<secondary>in a LOOP instruction</secondary></indexterm>
+<indexterm><primary>WHILE subkeyword</primary>
+<secondary>in a LOOP instruction</secondary></indexterm>
+<indexterm><primary>UNTIL subkeyword</primary>
+<secondary>in a LOOP instruction</secondary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-LOOP---+-------------+--+---------------+--+-----------------+--;---------------->
+          +-LABEL--name-+  +-| repetitor |-+  +-| conditional |-+
+
+>--+-----------------+--END------------------------------------><
+   | +-------------+ |
+   | V             | |
+   +---instruction-+-+
+]]>
+</programlisting>
+
+<para><emphasis role="bold">repetitor:</emphasis>
+<indexterm><primary>= (equal sign)</primary>
+<secondary>in LOOP instruction)</secondary></indexterm>
+</para>
+
+<indexterm><primary>conditional</primary>
+<secondary>loops</secondary></indexterm>
+<indexterm><primary>FOREVER phrase of LOOP instruction</primary></indexterm>
+<programlisting>
+<![CDATA[
+|--+-control1=expri--+-----------+--+-----------+--+------------+-+--|
+   |                 +-TO--exprt-+  +-BY--exprb-+  +-FOR--exprf-+ |
+   +-control2--OVER--collection-----------------------------------+
+   +-FOREVER------------------------------------------------------+
+   +-exprr--------------------------------------------------------+
+]]>
+</programlisting>
+
+<para><emphasis role="bold">conditional:</emphasis></para>
+<indexterm><primary>UNTIL phrase of LOOP instruction</primary></indexterm>
+<indexterm><primary>WHILE phrase of LOOP instruction</primary></indexterm>
+<programlisting>
+<![CDATA[
+|--+-WHILE--exprw-+---------------------------------------------|
+   +-UNTIL--expru-+
+]]>
+</programlisting>
+
+<para>LOOP groups instructions and processes them repetitively. During
+repetitive execution, a control variable
+(<emphasis role="italic">control1</emphasis>
+or <emphasis role="italic">control2</emphasis>) can be stepped through some
+range of values.</para>
+
+<para><emphasis role="bold">Notes:</emphasis></para>
+<orderedlist>
+<listitem><para>The LABEL phrase, if used, must precede any
+<emphasis role="italic">repetitor</emphasis> or <emphasis role="italic">conditional</emphasis>.
+</para></listitem>
+<listitem><para>The <emphasis role="italic">exprr</emphasis>,
+<emphasis role="italic">expri</emphasis>,
+<emphasis role="italic">exprb</emphasis>,
+<emphasis role="italic">exprt</emphasis>, and
+<emphasis role="italic">exprf</emphasis> options, if present,
+are any expressions that evaluate to a number.
+<indexterm><primary>numbers</primary>
+<secondary>in LOOP instruction</secondary></indexterm>
+
+The <emphasis role="italic">exprr</emphasis> and
+<emphasis role="italic">exprf</emphasis> options are further restricted
+to result in a positive whole number or zero. If necessary, the numbers are
+rounded according to the setting of NUMERIC DIGITS.</para></listitem>
+<listitem><para>The <emphasis role="italic">exprw</emphasis> or
+<emphasis role="italic">expru</emphasis> options, if present, can be any
+expression that evaluates to <computeroutput>1</computeroutput> or
+<computeroutput>0</computeroutput>.  This includes the list form of conditional
+expression supported by IF and WHEN, which is
+a list of expressions separated by ",".  Each subexpression must evaluate to
+either <computeroutput>0</computeroutput> or <computeroutput>1</computeroutput>.
+The list of expressions is evaluated left-to-right.  Evaluation will stop with
+the first <computeroutput>0</computeroutput> result and <computeroutput>0</computeroutput>
+will be returned as the condition result.  If all of the subexpressions evaluate
+to <computeroutput>1</computeroutput>, then the condition result is also
+<computeroutput>1</computeroutput>.
+</para></listitem>
+<listitem><para>The TO, BY, and FOR phrases can be in any order, if used, and
+are evaluated in the order in which they are written.
+<indexterm><primary>BY phrase of LOOP instruction</primary></indexterm>
+<indexterm><primary>TO phrase of LOOP instruction</primary></indexterm>
+<indexterm><primary>FOR phrase of LOOP instruction</primary></indexterm>
+</para></listitem>
+<listitem><para>The <emphasis role="italic">instruction</emphasis>
+can be any instruction, including assignments,
+commands, message instructions, and keyword instructions (including any of
+the more complex constructs such as IF, SELECT, and the LOOP instruction itself).
+</para></listitem>
+<listitem><para>The subkeywords WHILE and UNTIL are reserved within a LOOP
+instruction in that they cannot be used as symbols in any of the expressions.
+Similarly, TO, BY, and FOR cannot be used in
+<emphasis role="italic">expri</emphasis>,
+<emphasis role="italic">exprt</emphasis>,
+<emphasis role="italic">exprb</emphasis>, or
+<emphasis role="italic">exprf</emphasis>.
+<indexterm><primary>FOREVER repetitor on LOOP instruction</primary></indexterm>
+FOREVER is also reserved, but only if it immediately
+follows the keyword LOOP and is not followed by an equal sign.</para></listitem>
+<listitem><para>The <emphasis role="italic">exprb</emphasis>
+option defaults to <computeroutput>1</computeroutput>,
+if relevant.</para></listitem>
+<listitem><para>The <emphasis role="italic">collection</emphasis>
+can be any expression that evaluates to an object
+that supports a MAKEARRAY method.
+Array and List items return an array with the items in the appropriate order,
+as do Streams. Tables, Stems, Directories, etc. are not ordered so the items
+get placed in the array in no particular order.
+</para></listitem>
+</orderedlist>
+<para>For more information, refer to
+<link linkend="dokey">Using DO and LOOP</link>.</para>
 </section>
 
 <section id="nop"><title>NOP</title>
@@ -2716,7 +2896,8 @@ the output data remains a single logical line.</para></listitem>
 
 <programlisting>
 <![CDATA[
->>-SELECT;------------------------------------------------------>
+>>-SELECT--+-------------+-;------------------------------------>
+           +-LABEL--name-+
 
    +------------------------------------------------------+
    V                                                      |
@@ -2737,7 +2918,7 @@ after a WHEN is evaluated in turn and must result
 in <computeroutput>0</computeroutput> or <computeroutput>1</computeroutput>.
 If the result is <computeroutput>1</computeroutput>, the instruction
 following the associated THEN (which can be a complex instruction such as
-IF, DO, or SELECT) is processed and control is then passed to the END. If
+IF, DO, LOOP, or SELECT) is processed and control is then passed to the END. If
 the result is <computeroutput>0</computeroutput>, control is passed to the
 next WHEN clause.</para>
 <para>If none of the WHEN expressions evaluates to
@@ -2771,12 +2952,50 @@ end  /* Select *
 ]]>
 /</programlisting>
 
+<para>The <emphasis role="italic">expression</emphasis> may also be
+a list of expressions separated by ",".  Each subexpression must evaluate to
+either <computeroutput>0</computeroutput> or <computeroutput>1</computeroutput>.
+The list of expressions is evaluated left-to-right.  Evaluation will stop with
+the first <computeroutput>0</computeroutput> result and <computeroutput>0</computeroutput>
+will be returned as the condition result.  If all of the subexpressions evaluate
+to <computeroutput>1</computeroutput>, then the condition result is also
+<computeroutput>1</computeroutput>.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+    select
+      when answer~datatype('w'), answer//2 = 0 Then
+         say answer "is even"
+      when answer~datatype('w'), answer//2 = 1 Then
+         say answer "is odd"
+      otherwise
+         say answer "is not a number"
+    end
+</programlisting>
+
+<para>The example above is not the same as using the following</para>
+
+<programlisting>
+    select
+      when answer~datatype('w') & answer//2 = 0 Then
+         say answer "is even"
+      when answer~datatype('w') & answer//2 = 1 Then
+         say answer "is odd"
+      otherwise
+         say answer "is not a number"
+    end
+</programlisting>
+<para>The logical & operator will evaluate both terms of the operation, so the
+term "answer//2" will result in a syntax error if answer is a non-numeric value.  With the
+list conditional form, evaluation will stop with the first false result, so the
+"answer//2" term will not be evaluated if the datatype test returns <computeroutput>1</computeroutput>.
+</para>
+
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
 <listitem><para>The <emphasis role="italic">instruction</emphasis>
 can be any assignment, command, message instruction,
 or keyword instruction, including any of the more complex constructs, such
-as DO, IF, or the SELECT instruction itself.</para></listitem>
+as DO, LOOP, IF, or the SELECT instruction itself.</para></listitem>
 <listitem><para>A null clause is not an instruction, so putting an extra
 semicolon (or
 label) after a THEN clause is not equivalent to putting a dummy instruction.
@@ -3338,11 +3557,11 @@ in error is always traced.</para>
 
 <programlisting>
 <![CDATA[
-                            +-,--------+
-                            V          |
->>-USE--+-----------+--ARG----+------+-+-----------------------><
-        +-- STRICT--+         +-name-+
-]]>
+                            +-,----------------------+
+                            V                        |
+>>-USE--+-----------+--ARG----+--------------------+-+-----------------------><
+        +-- STRICT--+         +-name-+----------+--+
+]]>                                  +-=--expr--+
 </programlisting>
 
 <para>USE ARG retrieves the argument objects provided in a program, routine,
@@ -3352,18 +3571,28 @@ name. The <emphasis role="italic">name</emphasis>s are
 assigned from left to right. For each <emphasis role="italic">name</emphasis>
 you specify, the language processor assigns it a corresponding argument from
 the program, routine, function, or method call. If there is no corresponding
-argument, <emphasis role="italic">name</emphasis> is dropped.</para>
+argument, <emphasis role="italic">name</emphasis> assigned to the value
+of <emphasis role="italic">expr</emphasis>.  If <emphasis role="italic">expr</emphasis>
+is not specified for the given argument, the variable <emphasis role="italic">name</emphasis>
+is dropped.</para>
 <para>A USE ARG instruction can be processed repeatedly and it always accesses
 the same current argument data.</para>
+<para>If <emphasis role="italic">expr</emphasis> is specified for an argument, the
+expression is evaluated to provide a default value for an argument when the corresponding
+argument does not exist.  The default <emphasis role="italic">expr</emphasis>
+must be a literal string, a constant expression, or an expression enclosed in
+parentheses.</para>
 <para>The STRICT options imposes additional constraints on argument processing.
 The number of arguments must match the number of
-<emphasis role="italic">name</emphasis>s, other wise an error is raised.</para>
-<para>The <emphasis role="italic">name</emphasis>s may be an valid symbol which
+<emphasis role="italic">name</emphasis>s, otherwise an error is raised.  An argument
+may be considered optional if <emphasis role="italic">expr</emphasis>  has been
+specified for the argument.
+</para>
+<para>The <emphasis role="italic">name</emphasis>s may be any valid symbol or
+message term which
 can appear on the left side of an assignment statement (See
-<link linkend="assinmt">Assignments and Symbols</link>). The
-<emphasis role="italic">name</emphasis> option can also be a valid simple
-assignment statement which indicates a default value if the argument is not
-supplied by the method invocation.</para>
+<link linkend="assinmt">Assignments and Symbols</link>).
+</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <indexterm><primary>USE instruction</primary>
 <secondary>example</secondary></indexterm>
@@ -3395,13 +3624,16 @@ Change_First: Procedure
 </programlisting>
 <programlisting>
 /* USE STRICT Example                */
-/* FRED("Ogof X",1,) calls function  */
-Fred:strict use arg string, num1, num2=4
+/* FRED("Ogof X",1) calls function  */
+Fred: use strict arg string, num1, num2=4
 
 /* Now: STRING contains "Ogof X"     */
 /*      NUM1 contains "1"            */
 /*      NUM2 contains "4"            */
 </programlisting>
+<para>In the above example, a call to the function FRED may have either 2 or 3 arguments.  The
+STRICT keyword on the USE instruction will raise a syntax error for any other combination of
+arguments.</para>
 <para>You can retrieve or check the arguments by using the ARG built-in function
 (see <link linkend="argg">ARG (Argument)</link>).
 The ARG and PARSE ARG instructions are alternative

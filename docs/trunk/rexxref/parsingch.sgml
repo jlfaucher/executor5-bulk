@@ -239,6 +239,23 @@ example: </para>
 parse value "   Pluto   " with var1        /* var1="   Pluto   "*/
 </programlisting>
 
+<section id="parseterm"><title>Message Term Assignments</title>
+<para>In addition to assigning values to variables, the PARSE instruction also
+allows any message term value that can be used on the left side of an assignment
+instruction (See <link linkend="assinmt">Assignments and Symbols</link>).
+For example:</para>
+<programlisting>
+/* Preserving extra blanks                                       */
+solar5="Mercury Venus  Earth   Mars     Jupiter  "
+d = .directory~new
+parse var solar5 d~var1 d~var2 d~var3 d~var4
+/* d~var1  ="Mercury"                                              */
+/* d~var2  ="Venus"                                                */
+/* d~var3  ="Earth"                                                */
+/* d~var4  ="  Mars     Jupiter  "                                 */
+</programlisting>
+</section>
+
 <section id="placeh"><title>The Period as a Placeholder</title>
 <indexterm><primary>. (period)</primary>
 <secondary>as placeholder in parsing</secondary></indexterm>
@@ -556,6 +573,66 @@ parse var books 1 Eliot 1 Evans
 /* Assigns the (entire) value of books to Eliot and to Evans.    */
 </programlisting>
 
+<para>  A <emphasis role="italic">length positional pattern</emphasis>
+<indexterm><primary>parsing</primary></indexterm>
+<indexterm><primary>length positional pattern</primary>
+<secondary>positional patterns</secondary>
+<tertiary>length</tertiary></indexterm>
+<indexterm><primary>positional patterns</primary>
+<secondary>length</secondary></indexterm>
+is a number with a (<computeroutput>&gt;</computeroutput>) or
+(<computeroutput>&lt;</computeroutput>) preceding it. It can also be a
+variable within parentheses, with a (<computeroutput>&gt;</computeroutput>)
+or (<computeroutput>&lt;</computeroutput>) preceding the left
+parenthesis; for details see
+<link linkend="varpat">Parsing with Variable Patterns</link>.</para>
+<para>The number specifies the length at which the source
+string is to be split, relative to the current position.. The &gt; or &lt; indicates movement right or left,
+respectively, from the start of the string (for the first pattern) or from
+the position of the last match. The position of the last match is the first
+character of the last match. Here is the same example as for relative positional
+patterns done with length positional patterns: </para>
+<programlisting>
+/* Parsing with relative positional patterns in template         */
+record.1="Clemens   Samuel    Mark Twain          "
+record.2="Evans     Mary Ann  George Eliot        "
+record.3="Munro     H.H.      Saki                "
+do n=1 to 3
+  parse var record.n lastname &gt;10 firstname &gt;10 pseudonym
+  If lastname="Evans" &amp; firstname="Mary Ann" then say "By George!"
+end                                             /* same results  */
+</programlisting>
+<para>Blanks between the trigger and the number are insignificant. Therefore,
+<computeroutput>&gt;10</computeroutput> and
+<computeroutput>&gt;&nbsp;10</computeroutput> have the same meaning. Note that
+&gt;0 &lt;0 and are valid length positional pattern.</para>
+<para>The &gt; length pattern and the + relative positional pattern are interchangeable except in
+the special case of the value 0.  A &gt;0 pattern will split the string into a null string and leave
+the match position unchange.  This is particularly useful for parsing off length-qualified fields
+from a string.</para>
+<programlisting>
+/* Parsing with length patterns in template         */
+line = "04Mark0005Twain"
+parse var line len +2 first &gt;(len) len +2 middle &gt;(len) len +2 last &gt;(len)
+say '"'first'" "'middle'" "'last'"'  -- displays "Mark" "" "Twain"
+
+/* parsing with relative patterns only */
+parse var line len +2 first +(len) len +2 middle +(len) len +2 last +(len)
+say '"'first'" "'middle'" "'last'"'  -- displays "Mark" "05Twain" "Twain"
+</programlisting>
+<para>The &lt; length pattern will move the position the indicated position to the left, and split
+the string between the original position and the movement position.  At of the operation, the current
+position is returned to the original position.  This movement is equivalent to using a negative relative
+pattern followed by a positive relative pattern for the same length.  This operation allows for easy
+extraction of characters that preceed a string match.</para>
+<programlisting>
+/* Parsing with length patterns in template         */
+parse value '12345.6789' with '.' digit &lt;1    -- digit -> "5"
+
+/* parsing with relative patterns only */
+parse value '12345.6789' with '.' -1 digit +1    -- digit -> "5"
+</programlisting>
+
 <section id="patwd"><title>Combining Patterns and Parsing into Words</title>
 <indexterm><primary>parsing</primary>
 <secondary>combining patterns and parsing into words</secondary>
@@ -671,8 +748,8 @@ in its section of the template. (For details on treatment of blanks, see
 <indexterm><primary>variable</primary>
 <secondary>reference</secondary></indexterm>
 <para> You might want
-to specify a pattern by using the value of a variable instead of a fixed string
-or number. You do this by placing the name of the variable in parentheses.
+to specify a pattern by using the value of a variable or expression instead of a fixed string
+or number. You do this by placing an expression in parentheses.
 This is a variable reference. Blanks are not necessary
 inside or outside the parentheses, but you can add them if you wish.</para>
 <para>The template in the next parsing instruction contains the following
@@ -687,9 +764,9 @@ parse var name fn  init ". " ln
 strngptrn=". "
 parse var name fn init (strngptrn) ln
 </programlisting>
-<para>If no equal, plus, or minus sign precedes the parenthesis that is before
+<para>If no equal, plus sign, minus sign, &gt;, or &lt; precedes the parenthesis that is before
 the variable name, the character string value of the variable is then treated
-as a string pattern. The variable can be one that has been set earlier in
+as a string pattern. The expression can reference variables that have been set earlier in
 the same template.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <indexterm><primary>examples</primary>
@@ -709,10 +786,10 @@ parse var date month 3 delim +1 day +2 (delim) year
 /* Sets: month="11"; delim="/"; day="15"; year="98"  */
 </programlisting>
 
-<para>If an equal, a plus, or a minus sign precedes the left parenthesis, the
-value of the variable is treated as an absolute or relative positional pattern.
-The value of the variable must be a positive whole number or zero.</para>
-<para>The variable can be one that has been set earlier in the same template.
+<para>If an equal, a plus, a minus sign, &gt; or &lt; precedes the left parenthesis, the
+value of the expression is treated as an absolute, relative positional, or length positional pattern.
+The value of the expression must be a positive whole number or zero.</para>
+<para>The expression can reference variables that have has been set earlier in the same template.
 In the following example, the first two fields specify the starting-character
 positions of the last two fields.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
