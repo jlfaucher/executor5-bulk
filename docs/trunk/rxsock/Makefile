@@ -69,10 +69,10 @@ pdf: rxsock.pdf
 
 html: rxsock-html.zip
 
-rxsock.pdf: $(IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) genindex.sgml
+rxsock.pdf: $(IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) genindex.sgml svnrev.tmp
 	docbook2pdf -d ../shared/oorexx.dsl rxsock.sgml
 
-book1.htm: $(IMAGE_FILES) $(HTML_STYLESHEET) genindex.sgml
+book1.htm: $(IMAGE_FILES) $(HTML_STYLESHEET) genindex.sgml svnrev.tmp
 	docbook2html -d $(HTML_STYLESHEET) rxsock.sgml
 
 rxsock-html.zip: book1.htm
@@ -81,15 +81,19 @@ rxsock-html.zip: book1.htm
 $(JADETEXFMT): $(HYPERREFCFG)
 	pdftex -ini \&pdflatex pdfjadetex.ini
 
-genindex.sgml: $(HTML_STYLESHEET) $(SGML_FILES)
+genindex.sgml: $(HTML_STYLESHEET) $(SGML_FILES) svnrev.tmp
 	collateindex.pl -N -o genindex.sgml
 	jade -t sgml -d $(HTML_STYLESHEET) -V html-index rxsock.sgml
 	rm *.htm
 	collateindex.pl -p -g -o genindex.sgml HTML.index
+
+svnrev.tmp:
+	svnversion > svnrev.tmp
 
 
 
 
 clean:
 	rm *.log *.aux *.out *.fmt *.pdf genindex.sgml *.htm *.zip HTML.index
+	rm svnrev.tmp
 

@@ -64,8 +64,8 @@
     (select-elements (children bookinf) (normalize "title")))
   (booksubtitle
     (select-elements (children bookinf) (normalize "subtitle")))
-  (bookrel
-    (select-elements (children bookinf) (normalize "releaseinfo"))))
+  (bookedition
+    (select-elements (children bookinf) (normalize "edition"))))
   (with-mode hf-mode
     (make sequence
        font-posture: 'italic
@@ -75,7 +75,7 @@
        (literal ":\no-break-space;")
        (process-node-list booksubtitle)
        (literal "\no-break-space;")
-       (process-node-list bookrel)))))
+       (process-node-list bookedition)))))
 
 (define (page-inner-footer gi)
   (let* ((bookinf
@@ -85,8 +85,8 @@
     (select-elements (children bookinf) (normalize "title")))
   (booksubtitle
     (select-elements (children bookinf) (normalize "subtitle")))
-  (bookrel
-    (select-elements (children bookinf) (normalize "releaseinfo"))))
+  (bookedition
+    (select-elements (children bookinf) (normalize "edition"))))
   (with-mode hf-mode
     (make sequence
        font-posture: 'italic
@@ -96,7 +96,39 @@
        (literal ":\no-break-space;")
        (process-node-list booksubtitle)
        (literal "\no-break-space;")
-       (process-node-list bookrel)))))
+       (process-node-list bookedition)))))
+
+(define (page-center-footer gi)
+  ($page-number-header-footer$))
+
+(define (first-page-center-footer gi)
+  ($page-number-header-footer$))
+
+(define (first-page-outer-footer gi)
+  (let* ((bookinf
+    (select-elements (children (sgml-root-element))
+      (normalize "bookinfo")))
+  (svnrev
+    (select-elements (children bookinf) (normalize "releaseinfo"))))
+  (with-mode hf-mode
+    (make sequence
+       font-posture: 'italic
+       font-family-name: "Helvetica"
+       font-size: 8pt
+       (process-node-list svnrev)))))
+
+(define (page-outer-footer gi)
+  (let* ((bookinf
+    (select-elements (children (sgml-root-element))
+      (normalize "bookinfo")))
+  (svnrev
+    (select-elements (children bookinf) (normalize "releaseinfo"))))
+  (with-mode hf-mode
+    (make sequence
+       font-posture: 'italic
+       font-family-name: "Helvetica"
+       font-size: 8pt
+       (process-node-list svnrev)))))
 
 
 </style-specification-body>
