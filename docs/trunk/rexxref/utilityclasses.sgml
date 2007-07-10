@@ -158,9 +158,8 @@ a=.alarm~new(30,msg)
 <indexterm><primary>class</primary>
 <secondary>Comparable class</secondary></indexterm>
 
-<para>This class is defined as an abstract mixin class. It must be implemented 
-by subclassing it or inherting from it as a mixin. All the methods in this class
-must be overridden or they will throw a syntax error when invoked.</para>
+<para>This class is defined as a mixin class.</para>
+
 <figure><title>The Comparable class and methods</title>
 <mediaobject>
 <imageobject>
@@ -202,9 +201,6 @@ object, "0" if it is equal, and "1" if it is smaller.</para>
 <indexterm><primary>Comparator class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>Comparator class</secondary></indexterm>
-
-<para>This class is defined as a mixin class. It must be used
-by inherting from it as a mixin.</para>
 <figure><title>The Comparator class and methods</title>
 <mediaobject>
 <imageobject>
@@ -216,6 +212,8 @@ by inherting from it as a mixin.</para>
 <note><title>Note</title>
 <para>The Comparator class also has available class methods that its
 metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
+
+<para>This class is defined as a mixin class.</para>
 
 <section><title>Inherited Methods</title>
 
@@ -249,6 +247,8 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 <note><title>Note</title>
 <para>The CaselessColumnComparator class also has available class methods that its
 metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
+
+<para>This class is defined as a mixin class.</para>
 
 <section><title>Inherited Methods</title>
 
@@ -291,8 +291,6 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 <indexterm><primary>class</primary>
 <secondary>CaselessComparator class</secondary></indexterm>
 
-<para>This class is defined as a mixin class. It must be used
-by inherting from it as a mixin.</para>
 <figure><title>The CaselessComparator class and methods</title>
 <mediaobject>
 <imageobject>
@@ -304,6 +302,8 @@ by inherting from it as a mixin.</para>
 <note><title>Note</title>
 <para>The CaselessComparator class also has available class methods that its
 metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
+
+<para>This class is defined as a mixin class.</para>
 
 <section><title>Inherited Methods</title>
 
@@ -336,8 +336,6 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 <indexterm><primary>class</primary>
 <secondary>ColumnComparator class</secondary></indexterm>
 
-<para>This class is defined as a mixin class. It must be used
-by inherting from it as a mixin.</para>
 <figure><title>The ColumnComparator class and methods</title>
 <mediaobject>
 <imageobject>
@@ -349,6 +347,8 @@ by inherting from it as a mixin.</para>
 <note><title>Note</title>
 <para>The ColumnComparator class also has available class methods that its
 metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
+
+<para>This class is defined as a mixin class.</para>
 
 <section><title>Inherited Methods</title>
 
@@ -390,9 +390,6 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 <indexterm><primary>CaselessDescendingComparator class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>CaselessDescendingComparator class</secondary></indexterm>
-
-<para>This class is defined as a mixin class. It must be used
-by inherting from it as a mixin.</para>
 <figure><title>The CaselessDescendingComparator class and methods</title>
 <mediaobject>
 <imageobject>
@@ -404,6 +401,8 @@ by inherting from it as a mixin.</para>
 <note><title>Note</title>
 <para>The CaselessDescendingComparator class also has available class methods that its
 metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
+
+<para>This class is defined as a mixin class.</para>
 
 <section><title>Inherited Methods</title>
 
@@ -449,9 +448,8 @@ by inherting from it as a mixin.</para>
 <note><title>Note</title>
 <para>The DescendingComparator class also has available class methods that its
 metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
-<para>This class is defined as an abstract mixin class. It must be implemented 
-by subclassing it or inherting from it as a mixin. All the methods in this class
-must be overridden or they will throw a syntax error when invoked.</para>
+
+<para>This class is defined as a mixin class.</para>
 
 <section><title>Inherited Methods</title>
 
@@ -497,6 +495,8 @@ by inherting from it as a mixin.</para>
 <note><title>Note</title>
 <para>The InvertingComparator class also has available class methods that its
 metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
+
+<para>This class is defined as a mixin class.</para>
 
 <section><title>Inherited Methods</title>
 
@@ -1196,11 +1196,20 @@ return
 <para>This class provides support for regular expressions. A regular
 expression is a pattern you can use to match strings.</para>
 
-<note><para>The RegularExpression class is not a built-in class. It is defined
+<note><para>The RegularExpression class is not a built-in class
+and is NOT preloaded. It is defined
 in the <computeroutput>rxregexp.cls</computeroutput>
-file. This means, you must use a
-<computeroutput>::requires </computeroutput>
+file. This means, you must either explicitly call the program file or
+use a <computeroutput>::requires </computeroutput>
 statement to activate its functionality, as follows:</para></note>
+<programlisting>
+<![CDATA[
+call "rxregexp.cls"
+      or
+::requires "rxregexp.cls"
+]]>
+</programlisting>
+
 <figure><title>The RegularExpression class and methods</title>
 <mediaobject>
 <imageobject>
@@ -1319,12 +1328,6 @@ be used to abbreviate common sets:</para>
      "This is (very )+nice." Matches all strings with one or more
                              occurrences of "very " between
                              "This is " and "nice.".
-]]>
-</programlisting>
-
-<programlisting>
-<![CDATA[
-::requires "rxregexp.cls"
 ]]>
 </programlisting>
 

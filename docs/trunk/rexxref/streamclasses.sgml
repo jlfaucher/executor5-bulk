@@ -297,7 +297,7 @@ syntax error 93.963 to be raised.</para>
 <indexterm><primary>class</primary>
 <secondary>InputOutputStream class</secondary></indexterm>
 
-<para>This class is defined as an abstract class. It must be implemented 
+<para>This class is defined as an abstract mixin class. It must be implemented 
 by subclassing it. All the methods from its mixin classes
 must be overridden or they will throw a syntax error when invoked.</para>
 <figure><title>The InputOutputStream class</title>
@@ -319,6 +319,8 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.
 
 <para>Methods inherited from the
 <link linkend="clsInputStream">InputStream class</link>.</para>
+<note><para>This class is searched second for inherited methods.
+</para></note>
 <simplelist type="vert" columns="3">
 <member><link linkend="mthInputStreamArrayIn">arrayIn</link></member>
 <member><link linkend="mthInputStreamCharIn">charIn</link></member>
@@ -334,8 +336,8 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.
 
 <para>Methods inherited from the
 <link linkend="clsOutputStream">OutputStream class</link>.</para>
-<note><para>Some of these methods override the InputStream methods listed
-above.</para></note>
+<note><para>This class is searched first for inherited methods.
+</para></note>
 <simplelist type="vert" columns="3">
 <member><link linkend="mthOutputStreamArrayOut">arrayOut</link></member>
 <member><link linkend="mthOutputStreamCharIn">charIn</link></member>
@@ -383,6 +385,8 @@ although there are currently no methods defined in that class.</para></note>
 
 <para>Methods inherited from the
 <link linkend="clsInputStream">InputStream class</link>.</para>
+<note><para>This class is searched second for inherited methods.
+</para></note>
 <simplelist type="vert" columns="3">
 <member><link linkend="mthInputStreamArrayIn">arrayIn</link></member>
 <member><link linkend="mthInputStreamCharIn">charIn</link></member>
@@ -398,8 +402,8 @@ although there are currently no methods defined in that class.</para></note>
 
 <para>Methods inherited from the
 <link linkend="clsOutputStream">OutputStream class</link>.</para>
-<note><para>Some of these methods override the InputStream methods listed
-above.</para></note>
+<note><para>This class is searched first for inherited methods.
+</para></note>
 <simplelist type="vert" columns="3">
 <member><link linkend="mthOutputStreamArrayOut">arrayOut</link></member>
 <member><link linkend="mthOutputStreamCharIn">charIn</link></member>

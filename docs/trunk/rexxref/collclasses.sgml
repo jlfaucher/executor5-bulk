@@ -43,7 +43,7 @@
 -->
 <section id="coll"><title>The Collection Classes</title>
 <indexterm><primary>collection classes</primary></indexterm>
-<figure><title>The Collections class</title>
+<figure><title>The Collection class</title>
 <mediaobject>
 <imageobject>
 <!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
@@ -140,6 +140,11 @@ describes the concept of set operations.</para>
 </imageobject>
 </mediaobject>
 </figure>
+
+<para>This class is defined as a mixin class.</para>
+
+<para>The following section describes the builtin Ordered classes supplied
+with ooRexx.</para>
 
 <section id="clsArray"><title>The Array Class</title>
 <indexterm><primary>Array class</primary></indexterm>
@@ -1628,8 +1633,13 @@ allow all of the index values in the receiver collection.</para>
 <indexterm><primary>method</primary>
 <secondary>empty method</secondary>
 <tertiary>of List class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-empty-------------------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Removes all items from the list.</para>
 </section>
 
 <section id="mthListFirst"><title>first</title>
@@ -1707,8 +1717,17 @@ contains any item associated with index
 <indexterm><primary>method</primary>
 <secondary>index method</secondary>
 <tertiary>of List class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-index(item)------------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns the index of the specified item within the list.  If the
+target item appears at more than one index, the first located index will
+be returned.  If the list does not contain the specified item, .nil is
+returned.
+</para>
 </section>
 
 <section id="mthListInsert"><title>insert</title>
@@ -1785,8 +1804,15 @@ musketeers~insert("D&apos;Artagnan")      /* Adds D&apos;Artagnan after Aramis  
 <indexterm><primary>method</primary>
 <secondary>isEmpty method</secondary>
 <tertiary>of List class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-isEmpty----------------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns <computeroutput>1</computeroutput> (true) if the list
+is empty.  Returns
+<computeroutput>0</computeroutput> (false) otherwise.</para>
 </section>
 
 <section id="mthListItems"><title>items</title>
@@ -2242,8 +2268,13 @@ allow all of the index values in the receiver collection.</para>
 <indexterm><primary>method</primary>
 <secondary>empty method</secondary>
 <tertiary>of Queue class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-empty-------------------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Removes all items from the queue.</para>
 </section>
 
 <section id="mthQueueFirst"><title>first</title>
@@ -2289,8 +2320,17 @@ or <computeroutput>0</computeroutput> (false).</para>
 <indexterm><primary>method</primary>
 <secondary>index method</secondary>
 <tertiary>of Queue class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-index(item)------------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns the index of the specified item within the queue.  If the
+target item appears at more than one index, the first located index will
+be returned.  If the queue does not contain the specified item, .nil is
+returned.
+</para>
 </section>
 
 <section id="mthQueueInsert"><title>insert</title>
@@ -2378,8 +2418,15 @@ index values in the receiver collection.</para>
 <indexterm><primary>method</primary>
 <secondary>isEmpty method</secondary>
 <tertiary>of Queue class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-isEmpty----------------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns <computeroutput>1</computeroutput> (true) if the queue
+is empty.  Returns
+<computeroutput>0</computeroutput> (false) otherwise.</para>
 </section>
 
 <section id="mthQueueItems"><title>items</title>
@@ -2663,6 +2710,11 @@ index values in the receiver collection.</para>
 </mediaobject>
 </figure>
 
+<para>This class is defined as a mixin class.</para>
+
+<para>The following section describes the builtin Map classes supplied
+with ooRexx.</para>
+
 <section id="clsDirectory"><title>The Directory Class</title>
 <indexterm><primary>Directory class</primary></indexterm>
 <indexterm><primary>class</primary>
@@ -2818,8 +2870,13 @@ allow all of the index values in the receiver collection.</para>
 <indexterm><primary>method</primary>
 <secondary>empty method</secondary>
 <tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-empty-------------------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Removes all items from the directory.</para>
 </section>
 
 <section id="mthDirectoryEntry"><title>entry</title>
@@ -2895,8 +2952,17 @@ contains any item associated with index
 <indexterm><primary>method</primary>
 <secondary>index method</secondary>
 <tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-index(item)------------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns the index of the specified item within the directory.  If the
+target item appears at more than one index, the first located index will
+be returned.  If the directory does not contain the specified item, .nil is
+returned.
+</para>
 </section>
 
 <section id="mthDirectoryIntersection"><title>intersection</title>
@@ -2926,8 +2992,15 @@ index values in the receiver collection.</para>
 <indexterm><primary>method</primary>
 <secondary>isEmpty method</secondary>
 <tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-isEmpty----------------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns <computeroutput>1</computeroutput> (true) if the directory
+is empty.  Returns
+<computeroutput>0</computeroutput> (false) otherwise.</para>
 </section>
 
 <section id="mthDirectoryItems"><title>items</title>
@@ -3648,8 +3721,13 @@ collection does not contain (with the same associated index). The
 <indexterm><primary>method</primary>
 <secondary>empty method</secondary>
 <tertiary>of Relation class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-empty-------------------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Removes all items from the relation.</para>
 </section>
 
 <section id="mthRelationHasIndex"><title>hasIndex</title>
@@ -3729,8 +3807,15 @@ can be any object described in
 <indexterm><primary>method</primary>
 <secondary>isEmpty method</secondary>
 <tertiary>of Relation class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-isEmpty----------------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns <computeroutput>1</computeroutput> (true) if the relation
+is empty.  Returns
+<computeroutput>0</computeroutput> (false) otherwise.</para>
 </section>
 
 <section id="mthRelationItems"><title>items</title>
@@ -4165,8 +4250,13 @@ allow all of the index values in the receiver collection.</para>
 <indexterm><primary>method</primary>
 <secondary>empty method</secondary>
 <tertiary>of Stem class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-empty-------------------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Removes all items from the stem.</para>
 </section>
 
 <section id="mthStemHasIndex"<title>hasIndex</title>
@@ -4195,8 +4285,16 @@ allow all of the index values in the receiver collection.</para>
 <indexterm><primary>method</primary>
 <secondary>index method</secondary>
 <tertiary>of Stem class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-index(item)------------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns the index of the specified item within the stem.
+If the stem does not contain the specified item, .nil is
+returned.
+</para>
 </section>
 
 <section id="mthStemIntersection"<title>intersection</title>
@@ -4226,8 +4324,15 @@ index values in the receiver collection.</para>
 <indexterm><primary>method</primary>
 <secondary>isEmpty method</secondary>
 <tertiary>of Stem class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-isEmpty----------------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns <computeroutput>1</computeroutput> (true) if the stem
+is empty.  Returns
+<computeroutput>0</computeroutput> (false) otherwise.</para>
 </section>
 
 <section id="mthStemItems"<title>items</title>
@@ -4567,8 +4672,13 @@ values in the receiver collection.</para>
 <indexterm><primary>method</primary>
 <secondary>empty method</secondary>
 <tertiary>of Table class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-empty-------------------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Removes all items from the table.</para>
 </section>
 
 <section id="mthTableHasIndex"><title>hasIndex</title>
@@ -4604,8 +4714,17 @@ or <computeroutput>0</computeroutput> (false).</para>
 <indexterm><primary>method</primary>
 <secondary>index method</secondary>
 <tertiary>of Table class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-index(item)------------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns the index of the specified item within the table.  If the
+target item appears at more than one index, the first located index will
+be returned.  If the table does not contain the specified item, .nil is
+returned.
+</para>
 </section>
 
 <section id="mthTableIntersection"><title>intersection</title>
@@ -4635,8 +4754,15 @@ index values in the receiver collection.</para>
 <indexterm><primary>method</primary>
 <secondary>isEmpty method</secondary>
 <tertiary>of Table class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-isEmpty----------------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns <computeroutput>1</computeroutput> (true) if the table
+is empty.  Returns
+<computeroutput>0</computeroutput> (false) otherwise.</para>
 </section>
 
 <section id="mthTableItems"><title>items</title>
@@ -4833,6 +4959,9 @@ values in the receiver collection.</para>
 </imageobject>
 </mediaobject>
 </figure>
+
+<para>This class is defined as a mixin class.</para>
+
 <para>The following section describes the builtin Set classes supplied
 with ooRexx.</para>
 
