@@ -220,7 +220,7 @@ subroutine and function calls. See the CALL instruction
 <secondary>default</secondary></indexterm>
 selected environment name. You can retrieve the current address setting by
 using the ADDRESS built-in function. (See
-<link linkend="addrss">ADDRESS</link>.) The
+<link linkend="bifAddress">ADDRESS</link>.) The
 <citetitle pubwork="book">Open Object Rexx: Programming Guide</citetitle>
 describes the registration of alternative subcommand environments.</para>
 </section>
@@ -326,7 +326,7 @@ Fred:  Arg string, num1, num2
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
 <listitem><para>The ARG built-in function can also retrieve or check the
-arguments. See <link linkend="argg">ARG (Argument)</link>.</para></listitem>
+arguments. See <link linkend="bifArg">ARG (Argument)</link>.</para></listitem>
 <listitem><para>The USE ARG instruction (see
 <link linkend="xuse">USE</link>) is an alternative way
 of retrieving arguments. USE ARG performs a direct, one-to-one assignment
@@ -516,7 +516,7 @@ internal routine.
 <varlistentry><term><emphasis role="bold">Built-in routines</emphasis></term>
 <listitem><para>These are routines built into the language processor for
 providing various functions.  They always return an object that is the result
-of the routine. (See <link linkend="argg">ARG (Argument)</link>.)</para>
+of the routine. (See <link linkend="bifArg">ARG (Argument)</link>.)</para>
 
 <note><title>Note</title>
 <para>You can call any built-in function
@@ -652,7 +652,7 @@ information describes
 <secondary>saved</secondary></indexterm>
 the state and origin of the current trapped condition. The CONDITION built-in
 function returns this information. See
-<link linkend="condbif">CONDITION</link>.</para></listitem>
+<link linkend="bifCondition">CONDITION</link>.</para></listitem>
 <listitem><para><emphasis role="bold">.RS value:</emphasis> The value of
 the .RS environment symbol. (See <link linkend="rs">.RS</link>.)
 </para></listitem>
@@ -660,7 +660,7 @@ the .RS environment symbol. (See <link linkend="rs">.RS</link>.)
 <indexterm><primary>elapsed-time clock</primary>
 <secondary>saved during subroutine calls</secondary></indexterm>
 A subroutine inherits the elapsed-time
-clock from its caller (see <link linkend="time">TIME</link>), but because the
+clock from its caller (see <link linkend="bifTime">TIME</link>), but because the
 time clock is saved across routine calls, a subroutine or internal function
 can independently restart and use the clock without affecting its caller.
 For the same reason, a clock started within an internal routine is not
@@ -1467,7 +1467,7 @@ value of a variable (<computeroutput>NAME</computeroutput>) and another literal,
 and the final result (<computeroutput>Hello Kitty!</computeroutput>) is then
 displayed.</para></listitem>
 <listitem><para>For many purposes, you can use the VALUE function
-(see <link linkend="value">VALUE</link>)
+(see <link linkend="bifValue">VALUE</link>)
 instead of the INTERPRET instruction. The following line could, therefore,
 have replaced line 5 in the previous example: </para>
 <programlisting>
@@ -1843,7 +1843,7 @@ require a great amount of processing time. It is recommended that you use
 the default value whenever possible.</para>
 <para>You can retrieve the current NUMERIC
 DIGITS setting with the DIGITS built-in function. See
-<link linkend="digits">DIGITS</link>.</para>
+<link linkend="bifDigits">DIGITS</link>.</para>
 </listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">NUMERIC FORM</emphasis>
 <indexterm><primary>NUMERIC instruction</primary>
@@ -1865,7 +1865,7 @@ symbol or a literal string,
 that is, if it starts with a special character, such as an operator character
 or parenthesis.</para>
 <para>You can retrieve the current NUMERIC FORM setting with
-the FORM built-in function. See <link linkend="form">FORM</link>.</para>
+the FORM built-in function. See <link linkend="bifForm">FORM</link>.</para>
 </listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">NUMERIC FUZZ</emphasis></term>
 <listitem><para>controls how many digits, at full precision, are ignored during
@@ -1886,7 +1886,7 @@ reduces the value of NUMERIC DIGITS by the NUMERIC FUZZ value during every
 numeric comparison. The numbers are subtracted under a precision of DIGITS
 minus FUZZ digits during the comparison and are then compared with 0.</para>
 <para>You can retrieve the current NUMERIC FUZZ setting with the FUZZ built-in
-function. See <link linkend="xfuzz">FUZZ</link>.</para>
+function. See <link linkend="bifFuzz">FUZZ</link>.</para>
 </listitem></varlistentry>
 </variablelist>
 
@@ -2000,7 +2000,7 @@ input arguments. (See the ARG instruction in
 USE ARG instruction provides access to string and non-string argument objects.
 You can also retrieve or check the argument objects to a Rexx program or
 internal routine with the ARG built-in function (see
-<link linkend="argg">ARG (Argument)</link>).
+<link linkend="bifArg">ARG (Argument)</link>).
 </para></note>
 </para></listitem></varlistentry>
 <varlistentry><term id="parlini"><emphasis role="bold">PARSE LINEIN</emphasis>
@@ -2027,8 +2027,8 @@ character input stream is necessary. Use the PULL or PARSE PULL instructions
 for the usual line-by-line dialog with the user to maintain generality.</para>
 <para>To check if any lines are available in the default input stream, use the
 built-in
-function LINES. See <link linkend="ylines">LINES (Lines Remaining)</link>
-and <link linkend="linein">LINEIN (Line Input)</link>.</para>
+function LINES. See <link linkend="bifLines">LINES (Lines Remaining)</link>
+and <link linkend="bifLinein">LINEIN (Line Input)</link>.</para>
 </listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">PARSE PULL</emphasis>
 <indexterm><primary>PULL option of PARSE instruction</primary></indexterm>
@@ -2040,7 +2040,7 @@ terminal), and the program pauses, if necessary, until a line is complete.
 You can add data to the head or tail of the queue by using the PUSH and QUEUE
 instructions, respectively. You can find the number of lines currently in
 the queue with the QUEUED built-in function. (See
-<link linkend="queued">QUEUED</link>.)
+<link linkend="bifQueued">QUEUED</link>.)
 The queue remains active as long as the language processor is active. Other
 programs in the system can alter the queue and use it to communicate with
 programs written in Rexx. See also the PULL instruction in
@@ -2150,7 +2150,7 @@ words:
 <computeroutput>6.00</computeroutput>.</para></listitem>
 <listitem><para>Three tokens that describe the language processor release
 date in the same format as the default for the DATE built-in function
-(see <link linkend="date">DATE</link>),
+(see <link linkend="bifDate">DATE</link>),
 for example, &quot;27 Sep 1997&quot;.</para></listitem></itemizedlist>
 </para></listitem></varlistentry>
 </variablelist>
@@ -2406,7 +2406,7 @@ stream and the program pauses, if necessary, until a line is complete. (This
 is as though PARSE UPPER LINEIN had been processed.
 See <link linkend="parlini">PARSE LINEIN</link>.)</para>
 <para>The QUEUED built-in function (see
-<link linkend="queued">QUEUED</link>) returns the
+<link linkend="bifQueued">QUEUED</link>) returns the
 number of lines currently in the external data queue.</para>
 </section>
 
@@ -2446,7 +2446,7 @@ push       /* Puts a null line onto the queue */
 push a 2   /* Puts "Fred 2"    onto the queue */
 </programlisting>
 <para> The QUEUED built-in
-function (described in <link linkend="queued">QUEUED</link>) returns the number
+function (described in <link linkend="bifQueued">QUEUED</link>) returns the number
 of lines currently in the external data queue.</para>
 </section>
 
@@ -2486,7 +2486,7 @@ queue a 2  /* Enqueues "Toft 2" */
 queue      /* Enqueues a null line behind the last */
 </programlisting>
 <para> The QUEUED built-in
-function (described in <link linkend="queued">QUEUED</link>) returns the number
+function (described in <link linkend="bifQueued">QUEUED</link>) returns the number
 of lines currently in the external data queue.</para>
 </section>
 
@@ -2849,7 +2849,7 @@ the null string is written.</para>
 </listitem>
 <listitem><para>CALL LINEOUT can raise NOTREADY; SAY cannot.</para></listitem>
 </itemizedlist>
-<para>See <link linkend="lineout">LINEOUT (Line Output)</link>
+<para>See <link linkend="bifLineout">LINEOUT (Line Output)</link>
 for details of the LINEOUT function.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <indexterm><primary>SAY instruction</primary>
@@ -3360,7 +3360,7 @@ After that, tracing resumes as before.</para>
 every iteration of the loop.</para></listitem>
 <listitem><para>You can retrieve the trace actions currently in effect by
 using the TRACE
-built-in function (see <link linkend="trac">TRACE</link>).</para></listitem>
+built-in function (see <link linkend="bifTrace">TRACE</link>).</para></listitem>
 <listitem><para>The trace output of commands traced before execution always
 contains the final value of the command, that is, the
 string passed to the environment, and the clause generating it.</para>
@@ -3635,7 +3635,7 @@ Fred: use strict arg string, num1, num2=4
 STRICT keyword on the USE instruction will raise a syntax error for any other combination of
 arguments.</para>
 <para>You can retrieve or check the arguments by using the ARG built-in function
-(see <link linkend="argg">ARG (Argument)</link>).
+(see <link linkend="bifArg">ARG (Argument)</link>).
 The ARG and PARSE ARG instructions are alternative
 ways of retrieving arguments. ARG and PARSE ARG access the string values of
 arguments. USE ARG performs a direct, one-to-one assignment of arguments to

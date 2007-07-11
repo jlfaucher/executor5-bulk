@@ -1928,7 +1928,7 @@ select  /* keyword1 is to be the default */
   otherwise nop;
 end;
 </programlisting>
-<para>(See <link linkend="abbrev">ABBREV (Abbreviation)</link>
+<para>(See <link linkend="bifAbbrev">ABBREV (Abbreviation)</link>
 for information about the ABBREV built-in function.)</para>
 </section>
 
@@ -1955,7 +1955,7 @@ sign and is formatted according to the current NUMERIC settings.</para>
 12.3~abs      ->     12.3
 "-0.307"~abs  ->     0.307
 </programlisting>
-<para>(See <link linkend="abs">ABS (Absolute Value)</link>
+<para>(See <link linkend="bifAbs">ABS (Absolute Value)</link>
 for information about the ABS built-in function.)</para>
 </section>
 
@@ -2011,7 +2011,7 @@ with the methods <emphasis role="bold">x2d</emphasis> and
 number into other forms.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>"10111"~b2x~x2d  ->   "23"   /* decimal 23 */</programlisting>
-<para>(See <link linkend="b2x">B2X (Binary to Hexadecimal)</link>
+<para>(See <link linkend="bifB2x">B2X (Binary to Hexadecimal)</link>
 for information about the B2X built-in function.)</para>
 </section>
 
@@ -2057,7 +2057,7 @@ the zero-length (null) string.</para>
 "pQrS"~bitAnd(,"DF"x)          ->    "PQRS"      /* ASCII   */
 ]]>
 </programlisting>
-<para>(See <link linkend="bitand">BITAND (Bit by Bit AND)</link>
+<para>(See <link linkend="bifBitand">BITAND (Bit by Bit AND)</link>
 for information about the BITAND built-in function.)</para>
 </section>
 
@@ -2104,7 +2104,7 @@ the zero-length (null) string.</para>
 "pQrS"~bitOr(,"20"x)          ->    "pqrs" /* ASCII   */
 ]]>
 </programlisting>
-<para>(See <link linkend="bitor">BITOR (Bit by Bit OR)</link>
+<para>(See <link linkend="bifBitor">BITOR (Bit by Bit OR)</link>
 for information about the BITOR built-in function.)</para>
 </section>
 
@@ -2155,7 +2155,7 @@ on the right before carrying out the logical operation. The default for
 "C711"x~bitXor("222222"x," ")     ->  "E53302"x  /* ASCII  */
 ]]>
 </programlisting>
-<para>(See <link linkend="ybitxor">BITXOR (Bit by Bit Exclusive OR)</link>
+<para>(See <link linkend="bifBitxor">BITXOR (Bit by Bit Exclusive OR)</link>
 for information about the BITXOR built-in
 function.)</para>
 </section>
@@ -2224,7 +2224,7 @@ been processed. If <emphasis role="italic">n</emphasis> is
 "0031"X~c2d(0)    ->        0
 ]]>
 </programlisting>
-<para>(See <link linkend="c2d">C2D (Character to Decimal)</link>
+<para>(See <link linkend="bifC2d">C2D (Character to Decimal)</link>
 for information about the C2D built-in function.)</para>
 </section>
 
@@ -2268,7 +2268,7 @@ can be of any length. If the receiving string is null,
 "ZD8"~c2x      ->    "5A4438" /* "354134343338"X in ASCII */
 ]]>
 </programlisting>
-<para>(See <link linkend="c2x">C2X (Character to Hexadecimal)</link>
+<para>(See <link linkend="bifC2x">C2X (Character to Hexadecimal)</link>
 for information about the C2X built-in function.)</para>
 </section>
 
@@ -2562,7 +2562,7 @@ value or omitted.  The search is performed using caseless comparisons.</para>
 "efgxyz"~caselessLastPos("XY")          ->    4
 "abc def ghi"~caselessLastPos(" ",7)    ->    4
 </programlisting>
-<para>(See <link linkend="lastpos">LASTPOS (Last Position)</link>
+<para>(See <link linkend="bifLastpos">LASTPOS (Last Position)</link>
 for information about the LASTPOS built-in function.)</para>
 </section>
 
@@ -2793,7 +2793,7 @@ abc~CENTER(8,"-")           ->    "--ABC---"
 "The blue sky"~centre(7)    ->    "e blue "
 ]]>
 </programlisting>
-<para>(See <link linkend="centre">CENTER (or CENTRE)</link>
+<para>(See <link linkend="bifCenter">CENTER (or CENTRE)</link>
 for information about the CENTER built-in function.)</para>
 </section>
 
@@ -2821,7 +2821,7 @@ all occurrences of <emphasis role="italic">needle</emphasis>.</para>
 101100~changeStr("1","X")    ->    "X0XX00"
 ]]>
 </programlisting>
-<para>(See <link linkend="xchgstr">CHANGESTR</link>
+<para>(See <link linkend="bifChangestr">CHANGESTR</link>
 for information about the CHANGESTR built-in
 function.)</para>
 </section>
@@ -2864,7 +2864,7 @@ blank.</para>
 "ab-- "~compare("ab","-")    ->    5
 ]]>
 </programlisting>
-<para>(See <link linkend="compare">COMPARE</link>  for information about the
+<para>(See <link linkend="bifCompare">COMPARE</link>  for information about the
 COMPARE built-in function.)</para>
 </section>
 
@@ -2949,7 +2949,7 @@ whole number or zero.</para>
 "abc"~copies(0)    ->    ""
 ]]>
 </programlisting>
-<para>(See <link linkend="copies">COPIES</link>  for information about the
+<para>(See <link linkend="bifCopies">COPIES</link>  for information about the
 COPIES built-in function.)</para>
 </section>
 
@@ -2977,7 +2977,7 @@ string that do not overlap.</para>
 "J0KKK0"~CountStr("KK")       ->    1
 ]]>
 </programlisting>
-<para>(See <link linkend="chgtr">COUNTSTR</link>
+<para>(See <link linkend="bifCountstr">COUNTSTR</link>
 for information about the COUNTSTR built-in
 function.)</para>
 </section>
@@ -3031,7 +3031,7 @@ has no leading "00"x characters.</para>
 significant
 characters, although a longer result is possible if it has additional leading
 sign characters ("00"x and "FF"x).</para>
-<para>(See <link linkend="d2c">D2C (Decimal to Character)</link>
+<para>(See <link linkend="bifD2c">D2C (Decimal to Character)</link>
 for information about the D2C built-in function.)</para>
 </section>
 
@@ -3089,7 +3089,7 @@ or zero, and the returned result has no leading zeros.</para>
 <para>Implementation maximum: The returned string must not have more than 500
 significant hexadecimal characters, although a longer result is possible if it
 has additional leading sign characters (0 and F).</para>
-<para>(See <link linkend="d2x">D2X (Decimal to Hexadecimal)</link>
+<para>(See <link linkend="bifD2x">D2X (Decimal to Hexadecimal)</link>
 for information about the D2X built-in function.)</para>
 </section>
 
@@ -3237,7 +3237,7 @@ the receiving string is a null string.
 method tests the meaning or type of characters in a
 string, independent of the encoding of those characters (for example, ASCII
 or EBCDIC).</para></note>
-<para>(See <link linkend="datatyp">DATATYPE</link> for information about the
+<para>(See <link linkend="bifDatatype">DATATYPE</link> for information about the
 DATATYPE built-in function.)</para>
 </section>
 
@@ -3315,7 +3315,7 @@ string, the method returns the receiving string unchanged.</para>
 "abcde"~delStr(6)      ->    "abcde"
 ]]>
 </programlisting>
-<para>(See <link linkend="delstr">DELSTR (Delete String)</link>
+<para>(See <link linkend="bifDelstr">DELSTR (Delete String)</link>
 for information about the DELSTR built-in function.)</para>
 </section>
 
@@ -3365,7 +3365,7 @@ word involved but none of the blanks preceding the first word involved.</para>
 "Now is   the time"~delWord(3,1) ->  "Now is   time"
 ]]>
 </programlisting>
-<para>(See <link linkend="delword">DELWORD (Delete Word)</link>
+<para>(See <link linkend="bifDelword">DELWORD (Delete Word)</link>
 for information about the DELWORD built-in function.)</para>
 </section>
 
@@ -3520,7 +3520,7 @@ expression.</para>
 "12345.73"~format(, ,3,6)   ->    "12345.73"
 "1234567e5"~format(,3,0)    ->    "123456700000.000"
 </programlisting>
-<para>(See <link linkend="xformat">FORMAT</link>  for information about the
+<para>(See <link linkend="bifFormat">FORMAT</link>  for information about the
 FORMAT built-in function.)</para>
 </section>
 
@@ -3570,7 +3570,7 @@ truncates <emphasis role="italic">new</emphasis> to length
 "abc"~insert("123",5,6,"+")    ->    "abc++123+++"
 "abc"~insert("123", ,5,"-")    ->    "123--abc"
 </programlisting>
-<para>(See <link linkend="insert">INSERT</link>
+<para>(See <link linkend="bifInsert">INSERT</link>
 for information about the INSERT built-in function.)</para>
 </section>
 
@@ -3611,7 +3611,7 @@ value or omitted.</para>
 "efgxyz"~lastPos("xy")          ->    4
 "abc def ghi"~lastPos(" ",7)    ->    4
 </programlisting>
-<para>(See <link linkend="lastpos">LASTPOS (Last Position)</link>
+<para>(See <link linkend="bifLastpos">LASTPOS (Last Position)</link>
 for information about the LASTPOS built-in function.)</para>
 </section>
 
@@ -3654,7 +3654,7 @@ method is exactly equivalent to:</para>
 "abc d"~left(8,".")    ->    "abc d..."
 "abc  def"~left(7)     ->    "abc  de"
 </programlisting>
-<para>(See <link linkend="left">LEFT</link>
+<para>(See <link linkend="bifLeft">LEFT</link>
 for information about the LEFT built-in function.)</para>
 </section>
 
@@ -3684,7 +3684,7 @@ for information about the LEFT built-in function.)</para>
 "abc defg"~length     ->    8
 ""~length             ->    0
 </programlisting>
-<para>(See <link linkend="length">LENGTH</link>
+<para>(See <link linkend="bifLength">LENGTH</link>
 for information about the LENGTH built-in function.)</para>
 </section>
 
@@ -3717,7 +3717,7 @@ the default is to convert the remainder of the string.</para>
 "ABCDEF"~lower(4)            ->    "ABCdef"
 "ABCDEF"~lower(3,2)          ->    "ABcdEF"
 </programlisting>
-<para>(See <link linkend="lower">LOWER</link>
+<para>(See <link linkend="bifLower">LOWER</link>
 for information about the LOWER built-in function.)</para>
 </section>
 
@@ -3872,7 +3872,7 @@ You can specify any number of <emphasis role="italic">number</emphasis>s.</para>
 "-7"~max("-3","-4.3")                                        ->    -3
 1~max(2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21)   ->    21
 </programlisting>
-<para>(See <link linkend="max">MAX (Maximum)</link>
+<para>(See <link linkend="bifMax">MAX (Maximum)</link>
 for information about the MAX built-in function.)</para>
 </section>
 
@@ -3905,7 +3905,7 @@ settings. You can specify any number of
 "-7"~MIN("-3","-4.3")                                        ->    -7
 21~min(20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1)   ->     1
 </programlisting>
-<para>(See <link linkend="min">MIN (Minimum)</link>
+<para>(See <link linkend="bifMin">MIN (Minimum)</link>
 for information about the MIN built-in function.)</para>
 </section>
 
@@ -3952,7 +3952,7 @@ and the default value for <emphasis role="italic">n</emphasis> is
 "abcd"~overlay("qq",4)          ->    "abcqq"
 "abc"~overlay("123",5,6,"+")    ->    "abc+123+++"
 </programlisting>
-<para>(See <link linkend="overlay">OVERLAY</link>
+<para>(See <link linkend="bifOverlay">OVERLAY</link>
 for information about the OVERLAY built-in function.)</para>
 </section>
 
@@ -3995,7 +3995,7 @@ a positive whole number), the point at which the search starts.</para>
 "abc def ghi"~pos(" ")      ->    4
 "abc def ghi"~pos(" ",5)    ->    8
 </programlisting>
-<para>(See <link linkend="pos">POS (Position)</link>
+<para>(See <link linkend="bifPos">POS (Position)</link>
 for information about the POS built-in function.)</para>
 </section>
 
@@ -4019,7 +4019,7 @@ for information about the POS built-in function.)</para>
 "ABc."~reverse    ->    ".cBA"
 "XYZ "~reverse    ->    " ZYX"
 </programlisting>
-<para>(See <link linkend="reverse">REVERSE</link>
+<para>(See <link linkend="bifReverse">REVERSE</link>
 for information about the REVERSE built-in function.)</para>
 </section>
 
@@ -4061,7 +4061,7 @@ whole number or zero.</para>
 "abc def"~right(5)    ->    "c def"
 "12"~right(5,"0")     ->    "00012"
 </programlisting>
-<para>(See <link linkend="right">RIGHT</link>
+<para>(See <link linkend="bifRight">RIGHT</link>
 for information about the RIGHT built-in function.)</para>
 </section>
 
@@ -4094,7 +4094,7 @@ if it is greater than <computeroutput>0</computeroutput>.</para>
 " -0.307"~sign    ->    -1
 0.0~sign          ->     0
 </programlisting>
-<para>(See <link linkend="sign">SIGN</link>
+<para>(See <link linkend="bifSign">SIGN</link>
 for information about the SIGN built-in function.)</para>
 </section>
 
@@ -4136,7 +4136,7 @@ and the default <emphasis role="italic">pad</emphasis> character is a blank.
 "abc  def  "~space(0)        ->    "abcdef"
 "abc  def  "~space(2,"+")    ->    "abc++def"
 </programlisting>
-<para>(See <link linkend="space">SPACE</link>
+<para>(See <link linkend="bifSpace">SPACE</link>
 for information about the SPACE built-in function.)</para>
 </section>
 
@@ -4199,7 +4199,7 @@ long.</para>
 "12.7000"~strip(,0)      ->    "12.7"
 "0012.700"~strip(,0)     ->    "12.7"
 </programlisting>
-<para>(See <link linkend="strip">STRIP</link>
+<para>(See <link linkend="bifStrip">STRIP</link>
 for information about the STRIP built-in function.)</para>
 </section>
 
@@ -4267,7 +4267,7 @@ of parsing templates are more convenient for selecting substrings, in particular
 if you need to extract more than one substring from a string. See also
 <link linkend="mthStringLeft">left</link> and <link linkend="mthStringRight">right</link>.
 </para></note>
-<para>(See <link linkend="substr">SUBSTR (Substring)</link>
+<para>(See <link linkend="bifSubstr">SUBSTR (Substring)</link>
 for information about the SUBSTR built-in function.)</para>
 </section>
 
@@ -4304,7 +4304,7 @@ selected words.</para>
 "Now is the  time"~subWord(3)      ->    "the  time"
 "Now is the  time"~subWord(5)      ->    ""
 </programlisting>
-<para>(See <link linkend="subword">SUBWORD</link>
+<para>(See <link linkend="bifSubword">SUBWORD</link>
 for information about the SUBWORD built-in
 function.)</para>
 </section>
@@ -4376,7 +4376,7 @@ The default <emphasis role="italic">pad</emphasis> is a blank.</para>
 to reorder the characters in a string. In the example, the last character
 of any 4-character string specified as the first argument would be moved to
 the beginning of the string.</para></note>
-<para>(See <link linkend="transl">TRANSLATE</link>
+<para>(See <link linkend="bifTranslate">TRANSLATE</link>
 for information about the TRANSLATE built-in
 function.)</para>
 </section>
@@ -4427,7 +4427,7 @@ the result, any minus sign is removed.</para>
 <para>The <emphasis role="italic">number</emphasis> is rounded according to the
 current setting of NUMERIC DIGITS if necessary, before the method processes it.
 </para></note>
-<para>(See <link linkend="trunc">TRUNC (Truncate)</link>
+<para>(See <link linkend="bifTrunc">TRUNC (Truncate)</link>
 for information about the TRUNC built-in function.)</para>
 </section>
 
@@ -4460,7 +4460,7 @@ the default is to convert the remainder of the string.</para>
 "abcdef"~upper(4)            ->    "abcDEF"
 "abcdef"~upper(3,2)          ->    "abCDef"
 </programlisting>
-<para>(See <link linkend="lower">UPPER</link>
+<para>(See <link linkend="bifUpper">UPPER</link>
 for information about the UPPER built-in function.)</para>
 </section>
 
@@ -4529,7 +4529,7 @@ returns the <emphasis role="italic">start</emphasis> value.</para>
 "ABCDE"~verify("", ,3)                 ->    3
 "AB3CD5"~verify("1234567890","M",4)    ->    6
 </programlisting>
-<para>(See <link linkend="verify">VERIFY</link>
+<para>(See <link linkend="bifVerify">VERIFY</link>
 for information about the VERIFY built-in function.)</para>
 </section>
 
@@ -4563,7 +4563,7 @@ to <computeroutput>receiving_string~subWord(n,1)</computeroutput>.</para>
 "Now is the time"~word(3)    ->    "the"
 "Now is the time"~word(5)    ->    ""
 </programlisting>
-<para>(See <link linkend="xword">WORD</link>
+<para>(See <link linkend="bifWord">WORD</link>
 for information about the WORD built-in function.)</para>
 </section>
 
@@ -4592,7 +4592,7 @@ words. The <emphasis role="italic">n</emphasis> must be a positive whole number.
 "Now is the time"~wordIndex(3)    ->    8
 "Now is the time"~wordIndex(6)    ->    0
 </programlisting>
-<para>(See <link linkend="xwordind">WORDINDEX</link>
+<para>(See <link linkend="bifWordindex">WORDINDEX</link>
 for information about the WORDINDEX built-in
 function.)</para>
 </section>
@@ -4625,7 +4625,7 @@ The <emphasis role="italic">n</emphasis> must be a positive whole number.</para>
 "Now comes the time"~wordLength(2)    ->    5
 "Now is the time"~wordLength(6)       ->    0
 </programlisting>
-<para>(See <link linkend="xwordlen">WORDLENGTH</link>
+<para>(See <link linkend="bifWordlength">WORDLENGTH</link>
 for information about the WORDLENGTH built-in
 function.)</para>
 </section>
@@ -4670,7 +4670,7 @@ the word at which the search is to be started.</para>
 "To be or not to be"~wordPos("be")            ->  2
 "To be or not to be"~wordPos("be",3)          ->  6
 </programlisting>
-<para>(See <link linkend="wordpos">WORDPOS (Word Position)</link>
+<para>(See <link linkend="bifWordpos">WORDPOS (Word Position)</link>
 for information about the WORDPOS built-in
 function.)</para>
 </section>
@@ -4705,7 +4705,7 @@ function.)</para>
 "Now is the time"~words      ->    4
 " "~words                    ->    0
 </programlisting>
-<para>(See <link linkend="words">WORDS</link>
+<para>(See <link linkend="bifWords">WORDS</link>
 for information about the WORDS built-in function.)</para>
 </section>
 
@@ -4753,7 +4753,7 @@ character strings into binary form.</para>
 "129"~d2x~x2b  ->  "10000001"
 "12"~d2x~x2b   ->  "1100"
 </programlisting>
-<para>(See <link linkend="x2b">X2B (Hexadecimal to Binary)</link>
+<para>(See <link linkend="bifX2b">X2B (Hexadecimal to Binary)</link>
 for information about the X2B built-in function.)</para>
 </section>
 
@@ -4790,7 +4790,7 @@ only, not leading or trailing) to improve readability; they are ignored.</para>
 "4865 6c6c 6f"~x2c ->  "Hello"     /*  ASCII             */
 "3732 73"~x2c      ->  "72s"       /*  ASCII             */
 </programlisting>
-<para>(See <link linkend="x2c">X2C (Hexadecimal to Character)</link>
+<para>(See <link linkend="bifX2c">X2C (Hexadecimal to Character)</link>
 for information about the X2C built-in function.)</para>
 </section>
 
@@ -4856,7 +4856,7 @@ the method returns <computeroutput>0</computeroutput>.</para>
 "F081"~x2d(1)    ->    1
 "0031"~x2d(0)    ->    0
 </programlisting>
-<para>(See <link linkend="x2d">X2D (Hexadecimal to Decimal)</link>
+<para>(See <link linkend="bifX2d">X2D (Hexadecimal to Decimal)</link>
 for information about the X2D built-in function.)</para>
 </section>
 </section>
