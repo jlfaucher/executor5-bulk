@@ -371,8 +371,8 @@ return value is the index of newly added item.
 </programlisting>
 
 <para>Appends all items in collection to the end of the target array.
-collection may be any object that implements an allItems method.
-</para>
+collection may be any object that implements an 
+<emphasis role="bold">allItems</emphasis> method.</para>
 </section>
 
 <section id="mthArrayAt"><title>at</title>
@@ -647,7 +647,7 @@ starting at the first element in the array. The line format is the default.</par
 ]]>
 </programlisting>
 
-<para>  Returns the index of the item that
+<para>Returns the index of the item that
 follows the array item having index <emphasis role="italic">index</emphasis>
 or returns the Nil object if the item having that index is last in the array.
 The <emphasis role="bold">next</emphasis>
@@ -860,7 +860,7 @@ index values in the receiver collection.</para>
 <tertiary>of Array class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
--supplier----------------------------------------------------><
+-supplier------------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -880,8 +880,17 @@ index values as an array of index numbers.
 <indexterm><primary>method</primary>
 <secondary>toString method</secondary>
 <tertiary>of Array class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+             +-(LINE)--+
+>>-toString--+---------+---------------------------------------><
+             +-(CHAR)--+
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns a stream that contains the data of an array (one to n dimensional).
+The elements of the array are treated either in line or character format,
+starting at the first element in the array. The line format is the default.</para>
 </section>
 
 <section id="mthArrayUnion"<title>union</title>
@@ -1553,8 +1562,13 @@ class</link>, although there are not currently any methods defined in that class
 <indexterm><primary>method</primary>
 <secondary>allIndexes method</secondary>
 <tertiary>of List class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-allIndexes---------------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns an array of all element contained in the list in sorted order.</para>
 </section>
 
 <section id="mthListAllItems"><title>allItems</title>
@@ -1563,8 +1577,13 @@ class</link>, although there are not currently any methods defined in that class
 <indexterm><primary>method</primary>
 <secondary>allItems method</secondary>
 <tertiary>of List class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-allItems---------------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns an array of all items contained in the list.</para>
 </section>
 
 <section id="mthListAppend"><title>append</title>
@@ -1707,8 +1726,15 @@ contains any item associated with index
 <indexterm><primary>method</primary>
 <secondary>hasItem method</secondary>
 <tertiary>of List class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-hasItem(value)----------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns <computeroutput>1</computeroutput> (true) if the collection
+contains the <emphasis role="italic">value</emphasis> at any index position or
+otherwise returns <computeroutput>0</computeroutput> (false).</para>
 </section>
 
 <section id="mthListIndex"><title>index</title>
@@ -1794,8 +1820,19 @@ musketeers~insert("D&apos;Artagnan")      /* Adds D&apos;Artagnan after Aramis  
 <indexterm><primary>method</primary>
 <secondary>intersection method</secondary>
 <tertiary>of List class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-intersection(argument)--------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns a new collection (of the same class as the receiver) containing
+only those items from the receiver whose indexes are in both the receiver
+collection and the <emphasis role="italic">argument</emphasis> collection.
+The <emphasis role="italic">argument</emphasis> can be any object described
+in <link linkend="parmcoll">The Argument Collection Classes</link>.
+The <emphasis role="italic">argument</emphasis> must also allow all of the
+index values in the receiver collection.</para>
 </section>
 
 <section id="mthListIsEmpty"><title>isEmpty</title>
@@ -1961,8 +1998,16 @@ by the list object.</para>
 <indexterm><primary>method</primary>
 <secondary>removeItem method</secondary>
 <tertiary>of List class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-removeItem(item)--------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Removes an item from the list. If the target item exists at more than
+one index, the first located item is removed.  The return value is the
+removed item.
+</para>
 </section>
 
 <section id="mthListSection"><title>section</title>
@@ -2189,8 +2234,15 @@ method. See <link linkend="mthQueuePut">put</link>.
 <indexterm><primary>method</primary>
 <secondary>allIndexes method</secondary>
 <tertiary>of Queue class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-allIndexes---------------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns an array of all element containing all the index values for the
+queue. For the Queue class, the indices are integers 1 - 
+<link linkend="mthQueueItems">items</link>.</para>
 </section>
 
 <section id="mthQueueAllItems"><title>allItems</title>
@@ -2199,8 +2251,13 @@ method. See <link linkend="mthQueuePut">put</link>.
 <indexterm><primary>method</primary>
 <secondary>allItems method</secondary>
 <tertiary>of Queue class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-allItems---------------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns an array of all items contained in the queue.</para>
 </section>
 
 <section id="mthQueueAppend"><title>append</title>
@@ -2283,8 +2340,14 @@ allow all of the index values in the receiver collection.</para>
 <indexterm><primary>method</primary>
 <secondary>first method</secondary>
 <tertiary>of Queue class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-first-------------------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns the index of the first item in the queue or the Nil object if the
+queue is empty.</para>
 </section>
 
 <section id="mthQueueHasIndex"><title>hasIndex</title>
@@ -2310,8 +2373,15 @@ or <computeroutput>0</computeroutput> (false).</para>
 <indexterm><primary>method</primary>
 <secondary>hasItem method</secondary>
 <tertiary>of Queue class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-hasItem(value)----------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns <computeroutput>1</computeroutput> (true) if the collection
+contains the <emphasis role="italic">value</emphasis> at any index position or
+otherwise returns <computeroutput>0</computeroutput> (false).</para>
 </section>
 
 <section id="mthQueueIndex"><title>index</title>
@@ -2450,8 +2520,14 @@ is empty.  Returns
 <indexterm><primary>method</primary>
 <secondary>last method</secondary>
 <tertiary>of Queue class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-last--------------------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns the index of the last item in the queue or the Nil object if the
+queue is empty.</para>
 </section>
 
 <section id="mthQueueMakeArray"><title>makeArray</title>
@@ -2478,8 +2554,15 @@ queuing order, with the head of the queue as index 1.</para>
 <indexterm><primary>method</primary>
 <secondary>next method</secondary>
 <tertiary>of Queue class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-next(index)-------------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns the index of the item that follows the queue item having index
+<emphasis role="italic">index</emphasis> or returns the Nil object if the
+item having that index is last in the queue.</para>
 </section>
 
 <section id="mthQueuePeek"><title>peek</title>
@@ -2505,8 +2588,15 @@ The collection remains unchanged.</para>
 <indexterm><primary>method</primary>
 <secondary>previous method</secondary>
 <tertiary>of Queue class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-previous(index)---------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns the index of the item that precedes the queue item having index
+<emphasis role="italic">index</emphasis> or the Nil object if the item having
+that index is first in the queue.</para>
 </section>
 
 <section id="mthQueuePull"><title>pull</title>
@@ -2599,8 +2689,16 @@ the Nil object and removes no item.</para>
 <indexterm><primary>method</primary>
 <secondary>removeItem method</secondary>
 <tertiary>of Queue class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-removeItem(item)--------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Removes an item from the queue. If the target item exists at more than
+one index, the first located item is removed.  The return value is the
+removed item.
+</para>
 </section>
 
 <section id="mthQueueSubset"<title>subset</title>
@@ -2803,8 +2901,14 @@ class</link>, although there are not currently any methods defined in that class
 <indexterm><primary>method</primary>
 <secondary>allIndexes method</secondary>
 <tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-allIndexes---------------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns an array of all the directory indices, including those of all
+the <link linkend="mthDirectorySetMethod">setMethod</link> methods.</para>
 </section>
 
 <section id="mthDirectoryAllItems"<title>allItems</title>
@@ -2813,8 +2917,13 @@ class</link>, although there are not currently any methods defined in that class
 <indexterm><primary>method</primary>
 <secondary>allItems method</secondary>
 <tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-allItems---------------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns an array of all items contained in the directory.</para>
 </section>
 
 <section id="mthDirectoryAt"><title>at</title>
@@ -2942,8 +3051,15 @@ contains any item associated with index
 <indexterm><primary>method</primary>
 <secondary>hasItem method</secondary>
 <tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-hasItem(value)----------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns <computeroutput>1</computeroutput> (true) if the collection
+contains the <emphasis role="italic">value</emphasis> at any index position or
+otherwise returns <computeroutput>0</computeroutput> (false).</para>
 </section>
 
 <section id="mthDirectoryIndex"<title>index</title>
@@ -3095,8 +3211,16 @@ the Nil object and removes nothing.</para>
 <indexterm><primary>method</primary>
 <secondary>removeItem method</secondary>
 <tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-removeItem(item)--------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Removes an item from the directory. If the target item exists at more than
+one index, the first located item is removed.  The return value is the
+removed item.
+</para>
 </section>
 
 <section id="mthDirectorySetEntry"><title>setEntry</title>
@@ -3652,7 +3776,7 @@ number of items. Items in the array appear in an unspecified order.</para>
 
 <para>Returns a single-index array containing all indexes for item
 <emphasis role="italic">item</emphasis>,
-in an unspecified order. (The program should not rely on any order.)</para>
+in an unspecified order (the program should not rely on any order).</para>
 </section>
 
 <section id="mthRelationAllIndexes"<title>allIndexes</title>
@@ -3661,8 +3785,15 @@ in an unspecified order. (The program should not rely on any order.)</para>
 <indexterm><primary>method</primary>
 <secondary>allIndexes method</secondary>
 <tertiary>of Relation class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-allIndexes---------------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns an array of all indices contained in the Relation. If the Relation
+contains multiple indices of the same value the duplicates will be eliminated
+from the returned array.</para>
 </section>
 
 <section id="mthRelationAllItems"<title>allItems</title>
@@ -3671,8 +3802,13 @@ in an unspecified order. (The program should not rely on any order.)</para>
 <indexterm><primary>method</primary>
 <secondary>allItems method</secondary>
 <tertiary>of Relation class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-allItems---------------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns an array of all items contained in the relation.</para>
 </section>
 
 <section id="mthRelationAt"><title>at</title>
@@ -3760,7 +3896,10 @@ contains any item associated with index
 ]]>
 </programlisting>
 
-<para>Returns <computeroutput>1</computeroutput> (true) if the relation contains the member item <emphasis role="italic">item</emphasis> (associated with index <emphasis role="italic">index</emphasis>, or <computeroutput>0</computeroutput> (false).</para>
+<para>Returns <computeroutput>1</computeroutput> (true) if the relation 
+contains the member item <emphasis role="italic">item</emphasis> 
+(associated with index <emphasis role="italic">index</emphasis>, or 
+<computeroutput>0</computeroutput> (false).</para>
 </section>
 
 <section id="mthRelationIndex"><title>index</title>
@@ -4198,8 +4337,13 @@ re-initialize the stem and remove all existing assigned indexes.</para>
 <indexterm><primary>method</primary>
 <secondary>allIndexes method</secondary>
 <tertiary>of Stem class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-allIndexes---------------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns an array of all the stem tail names used in the stem.</para>
 </section>
 
 <section id="mthStemAllItems"<title>allItems</title>
@@ -4208,8 +4352,13 @@ re-initialize the stem and remove all existing assigned indexes.</para>
 <indexterm><primary>method</primary>
 <secondary>allItems method</secondary>
 <tertiary>of Stem class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-allItems---------------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns an array of all items contained in the stem.</para>
 </section>
 
 <section id="mthStemAt"<title>at</title>
@@ -4218,8 +4367,16 @@ re-initialize the stem and remove all existing assigned indexes.</para>
 <indexterm><primary>method</primary>
 <secondary>at method</secondary>
 <tertiary>of Stem class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-at(tail)----------------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns the item associated with the specified
+<emphasis role="italic">tail</emphasis>. If the stem has no item associated
+with the specified <emphasis role="italic">tail</emphasis>
+this method returns the Nil object.</para>
 </section>
 
 <section id="mthStemDifference"<title>difference</title>
@@ -4265,8 +4422,16 @@ allow all of the index values in the receiver collection.</para>
 <indexterm><primary>method</primary>
 <secondary>hasIndex method</secondary>
 <tertiary>of Stem class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-hasIndex(tail)----------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns <computeroutput>1</computeroutput> (true) if the collection
+contains any item associated with a stem tail 
+<emphasis role="italic">tail</emphasis>,
+or <computeroutput>0</computeroutput> (false).</para>
 </section>
 
 <section id="mthStemHasItem"<title>hasItem</title>
@@ -4275,8 +4440,15 @@ allow all of the index values in the receiver collection.</para>
 <indexterm><primary>method</primary>
 <secondary>hasItem method</secondary>
 <tertiary>of Stem class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-hasItem(value)----------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns <computeroutput>1</computeroutput> (true) if the collection
+contains the <emphasis role="italic">value</emphasis> at any tail position or
+otherwise returns <computeroutput>0</computeroutput> (false).</para>
 </section>
 
 <section id="mthStemIndex"<title>index</title>
@@ -4341,8 +4513,13 @@ is empty.  Returns
 <indexterm><primary>method</primary>
 <secondary>items method</secondary>
 <tertiary>of Stem class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-items-------------------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns the number of items in the collection.</para>
 </section>
 
 <section id="mthStemMakeArray"><title>makeArray</title>
@@ -4368,8 +4545,17 @@ should not rely on any order.)</para>
 <indexterm><primary>method</primary>
 <secondary>put method</secondary>
 <tertiary>of Stem class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-put(item,tail)----------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Replaces any existing item associated with the specified
+<emphasis role="italic">tail</emphasis> with
+the new item <emphasis role="italic">item</emphasis>. If the
+<emphasis role="italic">tail</emphasis> does not exist in the stem,
+an error is raised.</para>
 </section>
 
 <section id="mthStemPutAll"<title>putAll</title>
@@ -4388,8 +4574,16 @@ should not rely on any order.)</para>
 <indexterm><primary>method</primary>
 <secondary>remove method</secondary>
 <tertiary>of Stem class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-remove(tail)------------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns and removes from the stem the member item with index
+<emphasis role="italic">tail</emphasis>. If no item has index
+<emphasis role="italic">tail</emphasis>, this method returns
+the Nil object and removes no item.</para>
 </section>
 
 <section id="mthStemRemoveItem"<title>removeItem</title>
@@ -4398,8 +4592,16 @@ should not rely on any order.)</para>
 <indexterm><primary>method</primary>
 <secondary>removeItem method</secondary>
 <tertiary>of Stem class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-removeItem(item)--------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Removes an item from the stem. If the target item exists at more than
+one tail, the first located item is removed.  The return value is the
+removed item.
+</para>
 </section>
 
 <section id="mthStemRequest"><title>request</title>
@@ -4451,8 +4653,18 @@ index values in the receiver collection.</para>
 <indexterm><primary>method</primary>
 <secondary>supplier method</secondary>
 <tertiary>of Stem class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-supplier----------------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns a supplier object for the stem. After you have obtained a
+supplier, you can send it messages (see
+<link linkend="clsSupplier">The Supplier Class</link>) to enumerate
+all the items that were in the stem at the time of the supplier's
+creation. The supplier enumerates the items in an unspecified order. (The
+program should not rely on any order.)</para>
 </section>
 
 <section id="mthStemUnion"<title>union</title>
@@ -4613,8 +4825,13 @@ class</link>, although there are not currently any methods defined in that class
 <indexterm><primary>method</primary>
 <secondary>allIndexes method</secondary>
 <tertiary>of Table class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-allIndexes---------------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns an array of all indices contained in the table.</para>
 </section>
 
 <section id="mthTableAllItems"<title>allItems</title>
@@ -4623,8 +4840,13 @@ class</link>, although there are not currently any methods defined in that class
 <indexterm><primary>method</primary>
 <secondary>allItems method</secondary>
 <tertiary>of Table class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-allItems---------------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns an array of all items contained in the table.</para>
 </section>
 
 <section id="mthTableAt"><title>at</title>
@@ -4704,8 +4926,15 @@ or <computeroutput>0</computeroutput> (false).</para>
 <indexterm><primary>method</primary>
 <secondary>hasItem method</secondary>
 <tertiary>of Table class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-hasItem(value)----------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Returns <computeroutput>1</computeroutput> (true) if the collection
+contains the <emphasis role="italic">value</emphasis> at any index position or
+otherwise returns <computeroutput>0</computeroutput> (false).</para>
 </section>
 
 <section id="mthTableIndex"<title>index</title>
@@ -4850,8 +5079,16 @@ the Nil object and removes no item.</para>
 <indexterm><primary>method</primary>
 <secondary>removeItem method</secondary>
 <tertiary>of Table class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-removeItem(item)--------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Removes an item from the table. If the target item exists at more than
+one index, the first located item is removed.  The return value is the
+removed item.
+</para>
 </section>
 
 <section id="mthTableSubset"><title>subset</title>
