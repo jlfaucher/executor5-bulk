@@ -418,7 +418,7 @@ use of an object's scope and allowing other activities to use the scope.</para>
 <para>By default, a method must wait until a currently running method is finished
 before it begins. GUARD OFF lets another method (running on a different activity)
 that needs exclusive use of the same object variables become active on the
-same object. See <link linkend="guad">GUARD</link> for more information.</para>
+same object. See <link linkend="keyGuard">GUARD</link> for more information.</para>
 </section>
 
 <section id="guamet"><title>Guarded Methods</title>
@@ -452,7 +452,7 @@ continue running. GUARD reevaluates the
 of an exposed object variable changes. When the expression evaluates to
 <computeroutput>1</computeroutput>, the method resumes running. You can use
 GUARD to block running any method when proceeding is not safe.
-(See <link linkend="guad">GUARD</link> for details about GUARD.) </para>
+(See <link linkend="keyGuard">GUARD</link> for details about GUARD.) </para>
 <note><title>Note</title>
 <para>It is important to ensure that you use an expression
 that can be fulfilled. If the condition expression cannot be met, GUARD ON

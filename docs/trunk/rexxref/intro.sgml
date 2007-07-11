@@ -2332,13 +2332,13 @@ say total. total.null              /* says "0 5" */
 collections of variables, referred to by their stems.
 <computeroutput>DROP FRED.</computeroutput> assigns
 a new Stem object to the specified stem. (See
-<link linkend="drop">DROP</link>.) <computeroutput>EXPOSE FRED.</computeroutput>
+<link linkend="keyDrop">DROP</link>.) <computeroutput>EXPOSE FRED.</computeroutput>
 and <computeroutput>PROCEDURE EXPOSE FRED.</computeroutput> expose all possible
-variables with that stem (see <link linkend="expo">EXPOSE</link> and
-<link linkend="proced">PROCEDURE</link>).</para>
+variables with that stem (see <link linkend="keyExpose">EXPOSE</link> and
+<link linkend="keyProcedure">PROCEDURE</link>).</para>
 
 <para>The DO instruction can also iterate over all of the values
-assigned to a stem variable. See <link linkend="do">DO</link> for more details.
+assigned to a stem variable. See <link linkend="keyDo">DO</link> for more details.
 </para>
 
 <para><emphasis role="bold">Notes:</emphasis></para>
@@ -2700,7 +2700,7 @@ cause the command to be traced if <computeroutput>TRACE E</computeroutput>
 or <computeroutput>TRACE F</computeroutput> is
 set. <computeroutput>TRACE Normal</computeroutput> is the same as
 <computeroutput>TRACE F</computeroutput> and is the
-default--see <link linkend="xtrace">TRACE</link>.</para>
+default--see <link linkend="keyTrace">TRACE</link>.</para>
 <para>The .RS environment symbol can also be used to detect command failures
 and errors. When the command environment indicates that a command failure
 has occurred, the Rexx environment symbol .RS has the value
@@ -2767,9 +2767,9 @@ be used as a command to an external environment.</para>
 <para></para>
 <para>Rexx programs can call other Rexx programs as external
 functions or subroutines with the
-<link linkend="call">call</link> instruction.</para>
+<link linkend="keyCall">call</link> instruction.</para>
 <para>If a program is called with the
-<link linkend="call">call</link> instruction, the program runs in the same
+<link linkend="keyCall">call</link> instruction, the program runs in the same
 process as the calling program.
 If you call another program by a Rexx command, the program is executed in
 a new process and therefore does not share .environment, .local,

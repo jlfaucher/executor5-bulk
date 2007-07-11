@@ -110,7 +110,7 @@ in the following example, although it would improve readability: </para>
 ADDRESS VALUE"ENVIR"||number
 </programlisting>
 
-<section id="xaddress"><title>ADDRESS</title>
+<section id="keyAddress"><title>ADDRESS</title>
 <indexterm><primary>ADDRESS instruction</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>command</primary>
@@ -213,7 +213,7 @@ Using a null string for the environment name (&quot;&quot;) is the same as using
 the default environment.</para>
 <para>The two environment names are automatically saved across internal and external
 subroutine and function calls. See the CALL instruction
-(<link linkend="call">CALL</link>) for more details.</para>
+(<link linkend="keyCall">CALL</link>) for more details.</para>
 <para>The address setting is the currently
 <indexterm><primary>address setting</primary></indexterm>
 <indexterm><primary>environment</primary>
@@ -225,7 +225,7 @@ using the ADDRESS built-in function. (See
 describes the registration of alternative subcommand environments.</para>
 </section>
 
-<section id="arg"><title>ARG</title>
+<section id="keyArg"><title>ARG</title>
 <indexterm><primary>ARG instruction</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>arguments</primary>
@@ -328,7 +328,7 @@ Fred:  Arg string, num1, num2
 <listitem><para>The ARG built-in function can also retrieve or check the
 arguments. See <link linkend="bifArg">ARG (Argument)</link>.</para></listitem>
 <listitem><para>The USE ARG instruction (see
-<link linkend="xuse">USE</link>) is an alternative way
+<link linkend="keyUse">USE</link>) is an alternative way
 of retrieving arguments. USE ARG performs a direct, one-to-one assignment
 of argument objects to Rexx variables. You should use this when your program
 needs a direct reference to the argument object, without string conversion
@@ -338,7 +338,7 @@ language processor then parses these.</para></listitem>
 </orderedlist>
 </section>
 
-<section id="call"><title>CALL</title>
+<section id="keyCall"><title>CALL</title>
 <indexterm><primary>CALL instruction</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>flow of control</primary>
@@ -625,7 +625,7 @@ at the start and tracing is automatically restored to the conditions at entry
 (interactive debug) is saved across routines.</para></listitem>
 <listitem><para><emphasis role="bold">NUMERIC settings:</emphasis>  The DIGITS,
 FUZZ, and FORM of arithmetic operations (in
-<link linkend="xnumeric">NUMERIC</link>) are saved and then restored
+<link linkend="keyNumeric">NUMERIC</link>) are saved and then restored
 on return. A subroutine can, therefore, set the precision, for example, that
 it needs to use without affecting the caller.</para></listitem>
 <listitem><para><emphasis role="bold">ADDRESS settings:
@@ -633,7 +633,7 @@ it needs to use without affecting the caller.</para></listitem>
 <secondary>settings saved during subroutine calls</secondary></indexterm>
 <indexterm><primary>address setting</primary></indexterm>
 </emphasis>The current and previous destinations for commands (see
-<link linkend="xaddress">ADDRESS</link>)
+<link linkend="keyAddress">ADDRESS</link>)
 are saved and then restored on return.</para></listitem>
 <listitem><para>
 <indexterm><primary>SIGNAL instruction</primary>
@@ -670,7 +670,7 @@ EXMODE are saved and then restored on return. </para></listitem>
 </itemizedlist>
 </section>
 
-<section id="do"><title>DO</title>
+<section id="keyDo"><title>DO</title>
 <indexterm><primary>DO instruction</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>flow of control</primary>
@@ -808,7 +808,7 @@ get placed in the array in no particular order.
 <link linkend="dokey">Using DO and LOOP</link>.</para>
 </section>
 
-<section id="drop"><title>DROP</title>
+<section id="keyDrop"><title>DROP</title>
 <indexterm><primary>DROP instruction</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>instructions</primary>
@@ -844,8 +844,8 @@ strings separated by blanks, except that no parentheses are allowed. The list
 needs not contain any names--that is, it can be empty.</para>
 <para>Variables are dropped from left to right. It is not an error to specify
 a name more than once or to drop a variable that is not known. If an exposed
-variable is named (see <link linkend="expo">EXPOSE</link>
-and <link linkend="proced">PROCEDURE</link>), then
+variable is named (see <link linkend="keyExpose">EXPOSE</link>
+and <link linkend="keyProcedure">PROCEDURE</link>), then
 the original variable is dropped.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <indexterm><primary>DROP instruction</primary>
@@ -878,7 +878,7 @@ Drop  z.
 </programlisting>
 </section>
 
-<section id="exit"><title>EXIT</title>
+<section id="keyExit"><title>EXIT</title>
 <indexterm><primary>EXIT instruction</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>instructions</primary>
@@ -903,7 +903,7 @@ Drop  z.
 <para>EXIT leaves a program unconditionally. Optionally, EXIT returns a
 result object to the caller. The program is stopped immediately, even
 if an internal routine is being run.  If no internal routine is active, RETURN
-(see <link linkend="xreturn">RETURN</link>) and EXIT are identical in their
+(see <link linkend="keyReturn">RETURN</link>) and EXIT are identical in their
 effect on the program running.</para>
 <para>If you specify <emphasis role="italic">expression</emphasis>,
 it is evaluated and the object resulting from the evaluation is passed back
@@ -926,7 +926,7 @@ the caller (if EXIT was used).</para>
 <para>You can also use EXIT within a method. The method is stopped immediately,
 and the result object, if specified, is returned to the sender. If the method
 has previously issued a REPLY instruction
-(see <link linkend="repy">REPLY</link>),
+(see <link linkend="keyReply">REPLY</link>),
 the EXIT instruction must not include a result expression.</para>
 
 <para><emphasis role="bold">Notes:</emphasis></para>
@@ -951,7 +951,7 @@ returned to the operating system is zero.
 </orderedlist>
 </section>
 
-<section id="expo"><title>EXPOSE</title>
+<section id="keyExpose"><title>EXPOSE</title>
 <indexterm><primary>EXPOSE instruction</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>instructions</primary>
@@ -1033,7 +1033,7 @@ c.1="7."        /*  This sets "C.1" in the object             */
 </programlisting>
 </section>
 
-<section id="forward"><title>FORWARD</title>
+<section id="keyForward"><title>FORWARD</title>
 <indexterm><primary>FORWARD instruction</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>instructions</primary>
@@ -1159,7 +1159,7 @@ to continue with the next instruction, rather than exiting the Savings class
 INIT method.</para>
 </section>
 
-<section id="guad"><title>GUARD</title>
+<section id="keyGuard"><title>GUARD</title>
 <indexterm><primary>GUARD instruction</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>concurrency</primary>
@@ -1243,7 +1243,7 @@ several activities run concurrently. See
 </para></note>
 </section>
 
-<section id="if"><title>IF</title>
+<section id="keyIf"><title>IF</title>
 <indexterm><primary>IF instruction</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>flow of control</primary>
@@ -1352,7 +1352,7 @@ allows the expression on the IF clause to be ended by THEN, without a semicolon
 </orderedlist>
 </section>
 
-<section id="interp"><title>INTERPRET</title>
+<section id="keyInterpret"><title>INTERPRET</title>
 <indexterm><primary>INTERPRET instruction</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>execution</primary>
@@ -1482,7 +1482,7 @@ instruction.</para></listitem>
 </orderedlist>
 </section>
 
-<section id="xiterate"><title>ITERATE</title>
+<section id="keyIterate"><title>ITERATE</title>
 <indexterm><primary>ITERATE instruction</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>instructions</primary>
@@ -1546,7 +1546,7 @@ the innermost loop.</para></listitem>
 </orderedlist>
 </section>
 
-<section id="xleave"><title>LEAVE</title>
+<section id="keyLeave"><title>LEAVE</title>
 <indexterm><primary>LEAVE instruction</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>instructions</primary>
@@ -1613,7 +1613,7 @@ LEAVE selects the innermost block.</para></listitem>
 </orderedlist>
 </section>
 
-<section id="loop"><title>LOOP</title>
+<section id="keyLoop"><title>LOOP</title>
 <indexterm><primary>LOOP instruction</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>flow of control</primary>
@@ -1752,7 +1752,7 @@ get placed in the array in no particular order.
 <link linkend="dokey">Using DO and LOOP</link>.</para>
 </section>
 
-<section id="nop"><title>NOP</title>
+<section id="keyNop"><title>NOP</title>
 <indexterm><primary>NOP instruction</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>instructions</primary>
@@ -1787,7 +1787,7 @@ therefore, be treated as a syntax error. NOP is a true instruction, however,
 and is, therefore, a valid target for the THEN clause.</para></note>
 </section>
 
-<section id="xnumeric"><title>NUMERIC</title>
+<section id="keyNumeric"><title>NUMERIC</title>
 <indexterm><primary>NUMERIC instruction</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>arithmetic</primary>
@@ -1893,10 +1893,10 @@ function. See <link linkend="bifFuzz">FUZZ</link>.</para>
 <note><title>Note</title>
 <para>The three numeric settings are automatically saved across
 internal subroutine and function calls. See the CALL instruction
-(<link linkend="call">CALL</link>) for more details.</para></note>
+(<link linkend="keyCall">CALL</link>) for more details.</para></note>
 </section>
 
-<section id="parse"><title>PARSE</title>
+<section id="keyParse"><title>PARSE</title>
 <indexterm><primary>PARSE instruction</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>instructions</primary>
@@ -1993,7 +1993,7 @@ instruction.</para>
 </term>
 <listitem><para>parses the strings passed to a program or internal routine as
 input arguments. (See the ARG instruction in
-<link linkend="arg">ARG</link> for details and examples.)
+<link linkend="keyArg">ARG</link> for details and examples.)
 
 <note><title>Note</title>
 <para>Parsing uses the argument string values. The
@@ -2044,7 +2044,7 @@ the queue with the QUEUED built-in function. (See
 The queue remains active as long as the language processor is active. Other
 programs in the system can alter the queue and use it to communicate with
 programs written in Rexx. See also the PULL instruction in
-<link linkend="pull">PULL</link>.
+<link linkend="keyPull">PULL</link>.
 </para>
 
 <note><title>Note</title>
@@ -2156,7 +2156,7 @@ for example, &quot;27 Sep 1997&quot;.</para></listitem></itemizedlist>
 </variablelist>
 </section>
 
-<section id="proced"><title>PROCEDURE</title>
+<section id="keyProcedure"><title>PROCEDURE</title>
 <indexterm><primary>PROCEDURE instruction</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>functions</primary>
@@ -2316,11 +2316,11 @@ return
 of routines if they are included in all intermediate PROCEDURE instructions.
 </para></note>
 <para>See the CALL instruction and function descriptions in
-<link linkend="call">CALL</link> and <link linkend="funct">Functions</link>
+<link linkend="keyCall">CALL</link> and <link linkend="funct">Functions</link>
 for details and examples of how routines are called.</para>
 </section>
 
-<section id="pull"><title>PULL</title>
+<section id="keyPull"><title>PULL</title>
 <indexterm><primary>PULL instruction</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>console</primary>
@@ -2410,7 +2410,7 @@ See <link linkend="parlini">PARSE LINEIN</link>.)</para>
 number of lines currently in the external data queue.</para>
 </section>
 
-<section id="push"><title>PUSH</title>
+<section id="keyPush"><title>PUSH</title>
 <indexterm><primary>PUSH instruction</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>external data queue</primary>
@@ -2450,7 +2450,7 @@ function (described in <link linkend="bifQueued">QUEUED</link>) returns the numb
 of lines currently in the external data queue.</para>
 </section>
 
-<section id="xqueue"><title>QUEUE</title>
+<section id="keyQueue"><title>QUEUE</title>
 <indexterm><primary>QUEUE instruction</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>external data queue</primary>
@@ -2490,7 +2490,7 @@ function (described in <link linkend="bifQueued">QUEUED</link>) returns the numb
 of lines currently in the external data queue.</para>
 </section>
 
-<section id="xraise"><title>RAISE</title>
+<section id="keyRaise"><title>RAISE</title>
 <indexterm><primary>RAISE instruction</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>conditions</primary>
@@ -2636,7 +2636,7 @@ expression to obtain its character string value. If you do not specify
 <emphasis role="italic">exprr</emphasis> or
 <emphasis role="italic">expre</emphasis>, no result is passed back to the
 caller or sender. In either case, the effect is the same as that of the
-RETURN or EXIT instruction (see <link linkend="xreturn">RETURN</link>).
+RETURN or EXIT instruction (see <link linkend="keyReturn">RETURN</link>).
 Following the return or exit, the appropriate action is taken in the caller
 or sender (see
 <link linkend="atwcnt">Action Taken when a Condition Is Not Trapped</link>).
@@ -2675,7 +2675,7 @@ raise propagate        /* Propagates SYNTAX information to caller */
 </programlisting>
 </section>
 
-<section id="repy"><title>REPLY</title>
+<section id="keyReply"><title>REPLY</title>
 <indexterm><primary>REPLY instruction</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>early reply</primary></indexterm>
@@ -2729,7 +2729,7 @@ to wait until the original activity has released its access.</para></listitem>
 description of concurrency.</para>
 </section>
 
-<section id="xreturn"><title>RETURN</title>
+<section id="keyReturn"><title>RETURN</title>
 <indexterm><primary>RETURN instruction</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>functions</primary>
@@ -2757,7 +2757,7 @@ description of concurrency.</para>
 method, or internal routine to the point of its invocation.</para>
 <para>If no internal routine (subroutine or function) is active, RETURN and EXIT
 are identical in their effect on the program that is run.
-(See <link linkend="exit">EXIT</link>.)</para>
+(See <link linkend="keyExit">EXIT</link>.)</para>
 <para>If a subroutine is run, <emphasis role="italic">expression</emphasis>
 (if any) is evaluated, control is passed back to the caller, and the Rexx
 special variable
@@ -2767,7 +2767,7 @@ RESULT is set to the value of <emphasis role="italic">expression</emphasis>.
 If you omit <emphasis role="italic">expression</emphasis>,
 the special variable RESULT is dropped (becomes uninitialized). The
 various settings saved at the time of the CALL (for example, tracing and
-addresses) are also restored. (See <link linkend="call">CALL</link>.)</para>
+addresses) are also restored. (See <link linkend="keyCall">CALL</link>.)</para>
 <para>If a function is processed, the action taken is identical, except that
 <emphasis role="italic">expression</emphasis> must be specified on the
 RETURN instruction. The result of <emphasis role="italic">expression</emphasis>
@@ -2803,7 +2803,7 @@ returne to the operating system is zero.
 </para></note>
 </section>
 
-<section id="say"><title>SAY</title>
+<section id="keySay"><title>SAY</title>
 <indexterm><primary>SAY instruction</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>SAY instruction</primary>
@@ -2876,7 +2876,7 @@ the output data remains a single logical line.</para></listitem>
 </orderedlist>
 </section>
 
-<section id="select"><title>SELECT</title>
+<section id="keySelect"><title>SELECT</title>
 <indexterm><primary>SELECT instruction</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>flow of control</primary>
@@ -3008,7 +3008,7 @@ semicolon (;).</para></listitem>
 </orderedlist>
 </section>
 
-<section id="xsignal"><title>SIGNAL</title>
+<section id="keySignal"><title>SIGNAL</title>
 <indexterm><primary>SIGNAL instruction</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>instructions</primary>
@@ -3137,7 +3137,7 @@ SIGL. This can aid debugging because you
 can use SIGL to determine the source of a transfer of control to a label.</para>
 </section>
 
-<section id="xtrace"><title>TRACE</title>
+<section id="keyTrace"><title>TRACE</title>
 <indexterm><primary>TRACE instruction</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>debug interactive</primary></indexterm>
@@ -3367,7 +3367,7 @@ string passed to the environment, and the clause generating it.</para>
 </listitem>
 <listitem><para>Trace actions are automatically saved across subroutine,
 function, and method calls. See
-<link linkend="call">CALL</link> for more details.
+<link linkend="keyCall">CALL</link> for more details.
 </para></listitem></itemizedlist>
 </section>
 
@@ -3547,12 +3547,14 @@ in error is always traced.</para>
 </section>
 
 
-<section id="xuse"><title>USE</title>
+<section id="keyUse"><title>USE</title>
 <indexterm><primary>USE instruction</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>instructions</primary>
 <secondary>USE</secondary></indexterm>
 <indexterm><primary>ARG subkeyword</primary>
+<secondary>in a USE instruction</secondary></indexterm>
+<indexterm><primary>STRICT subkeyword</primary>
 <secondary>in a USE instruction</secondary></indexterm>
 
 <programlisting>

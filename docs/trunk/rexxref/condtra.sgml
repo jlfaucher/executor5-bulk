@@ -58,7 +58,7 @@
 condition trap can modify the flow of execution in a Rexx program. Condition
 traps are turned on or off using the ON or OFF subkeywords of the SIGNAL and
 CALL instructions (see
-<link linkend="call">CALL</link> and <link linkend="xsignal">SIGNAL</link>).</para>
+<link linkend="keyCall">CALL</link> and <link linkend="keySignal">SIGNAL</link>).</para>
 <programlisting>
 <![CDATA[
 >>-+-CALL---+--------------------------------------------------->
@@ -366,7 +366,7 @@ on whether a SIGNAL or CALL is processed: </para>
 <itemizedlist>
 <listitem><para>If the action taken is a SIGNAL, execution of the current instruction
 ceases immediately, the condition is disabled (set to OFF), and SIGNAL proceeds
-as usually (see <link linkend="xsignal">SIGNAL</link>). </para>
+as usually (see <link linkend="keySignal">SIGNAL</link>). </para>
 <para>If any new occurrence of the condition
 is to be trapped, a new CALL ON or SIGNAL ON instruction for the condition
 is required to re-enable it when the label is reached. For example, if SIGNAL
@@ -375,7 +375,7 @@ termination occurs if the SIGNAL ON SYNTAX label name is not found.</para></list
 <listitem><para>If the action taken is a CALL, the
 <computeroutput>CALL</computeroutput>
 <emphasis role="italic">trapname</emphasis> proceeds
-in the usual way (see  <link linkend="call">CALL</link>) when the instruction completes.
+in the usual way (see  <link linkend="keyCall">CALL</link>) when the instruction completes.
 The call does not affect the special variable RESULT. If the routine should
 RETURN any data, that data is ignored. </para>
 <para>When the condition is raised, and
@@ -419,7 +419,7 @@ The state (ON, OFF, or DELAY, and any
 of each condition trap is saved on entry to a subroutine and is then restored
 on RETURN.  This means that CALL ON, CALL OFF, SIGNAL ON, and SIGNAL OFF can
 be used in a subroutine without affecting the conditions set up by the caller.
- See <link linkend="call">CALL</link> for details of other information that is saved during
+ See <link linkend="keyCall">CALL</link> for details of other information that is saved during
 a subroutine call.</para></listitem>
 <listitem><para>The state of condition traps is not affected when an external routine
 is called by a CALL, even if the external routine is a Rexx program.  On entry
