@@ -131,6 +131,9 @@ IMAGE_FILES = ooRexxObjectClass.png \
               ooRexxClasses7.png \
               doloopconcept.png \
               doloopcollection.png \
+              parseconcepts1.png \
+              parseconcepts2.png \
+              parseconcepts3.png \
               rxo90004.jpg \
 	      rxo90005.jpg \
 	      rxo90006.jpg \
@@ -148,13 +151,10 @@ IMAGE_FILES = ooRexxObjectClass.png \
 	      rxor0f04.jpg \
 	      rxor0f05.jpg \
 	      rxor0f06.jpg \
-	      rxor0f07.jpg \
 	      rxor0f08.jpg \
 	      rxor0f09.jpg \
 	      rxor0f10.jpg \
 	      rxor0f11.jpg \
-	      rxor0f20.jpg \
-	      rxor0f21.jpg \
  	      oorexx.jpg \
  	      docbook-1.png \
 	      new_rexxla.jpg
