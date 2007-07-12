@@ -134,6 +134,10 @@ IMAGE_FILES = ooRexxObjectClass.png \
               parseconcepts1.png \
               parseconcepts2.png \
               parseconcepts3.png \
+              filerecord.png \
+              templates1.png \
+              templates2.png \
+              templates3.png \
               rxo90004.jpg \
 	      rxo90005.jpg \
 	      rxo90006.jpg \
@@ -147,10 +151,6 @@ IMAGE_FILES = ooRexxObjectClass.png \
 	      rxo90020.jpg \
 	      rxor0f01.jpg \
 	      rxor0f02.jpg \
-	      rxor0f03.jpg \
-	      rxor0f04.jpg \
-	      rxor0f05.jpg \
-	      rxor0f06.jpg \
 	      rxor0f08.jpg \
 	      rxor0f09.jpg \
 	      rxor0f10.jpg \
