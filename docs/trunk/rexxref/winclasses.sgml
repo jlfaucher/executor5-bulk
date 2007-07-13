@@ -54,55 +54,55 @@ with the menu or submenu of a window.</para>
 <para><emphasis role="bold">Methods the MenuObject Class Defines</emphasis>
 </para>
 <itemizedlist>
-<listitem><para>FINDITEM</para></listitem>
-<listitem><para>FINDSUBMENU</para></listitem>
-<listitem><para>IDOF</para></listitem>
-<listitem><para>ISMENU</para></listitem>
-<listitem><para>ITEMS</para></listitem>
-<listitem><para>PROCESSITEM</para></listitem>
-<listitem><para>SUBMENU</para></listitem>
-<listitem><para>TEXTOF(id)</para></listitem>
-<listitem><para>TEXTOF(position)</para></listitem></itemizedlist>
+<listitem><para>findItem</para></listitem>
+<listitem><para>findSubmenu</para></listitem>
+<listitem><para>idOf</para></listitem>
+<listitem><para>isMenu</para></listitem>
+<listitem><para>items</para></listitem>
+<listitem><para>processItem</para></listitem>
+<listitem><para>submenu</para></listitem>
+<listitem><para>textOf(id)</para></listitem>
+<listitem><para>textOf(position)</para></listitem></itemizedlist>
 
-<section id="ismenumo"><title>ISMENU</title>
-<indexterm><primary>ISMENU method</primary>
+<section id="ismenumo"><title>isMenu</title>
+<indexterm><primary>isMenu method</primary>
 <secondary>of MenuObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>ISMENU method</secondary>
+<secondary>isMenu method</secondary>
 <tertiary>of MenuObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-ISMENU------------------------------------------------------><
+>>-isMenu------------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Returns 1 if the associated window is a menu, otherwise 0.</para>
 </section>
 
-<section id="itemsmo"><title>ITEMS</title>
-<indexterm><primary>ITEMS method</primary>
+<section id="itemsmo"><title>items</title>
+<indexterm><primary>items method</primary>
 <secondary>of MenuObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>ITEMS method</secondary>
+<secondary>items method</secondary>
 <tertiary>of MenuObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-ITEMS-------------------------------------------------------><
+>>-items-------------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Returns the number of menu items contained in the associated menu.</para>
 </section>
 
-<section id="idofmo"><title>IDOF</title>
-<indexterm><primary>IDOF method</primary>
+<section id="idofmo"><title>idOf</title>
+<indexterm><primary>idOf method</primary>
 <secondary>of MenuObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>IDOF method</secondary>
+<secondary>idOf method</secondary>
 <tertiary>of MenuObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-IDOF--(--position--)----------------------------------------><
+>>-idOf--(--position--)----------------------------------------><
 ]]>
 </programlisting>
 
@@ -110,15 +110,15 @@ with the menu or submenu of a window.</para>
 <emphasis role="italic">position</emphasis>, starting with 0.</para>
 </section>
 
-<section id="textofpositionmo"><title>TEXTOF(position)</title>
-<indexterm><primary>TEXTOF(position) method</primary>
+<section id="textofpositionmo"><title>textOf(position)</title>
+<indexterm><primary>textOf(position) method</primary>
 <secondary>of MenuObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>TEXTOF(position) method</secondary>
+<secondary>textOf(position) method</secondary>
 <tertiary>of MenuObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-TEXTOF--(--position--)--------------------------------------><
+>>-textOf--(--position--)--------------------------------------><
 ]]>
 </programlisting>
 
@@ -129,15 +129,15 @@ with 0. A mnemonic (underscored letter) is represented by a leading ampersand
 </para>
 </section>
 
-<section id="textofidmo"><title>TEXTOF(id)</title>
-<indexterm><primary>TEXTOF(id) method</primary>
+<section id="textofidmo"><title>textOf(id)</title>
+<indexterm><primary>textOf(id) method</primary>
 <secondary>of MenuObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>TEXTOF(id) method</secondary>
+<secondary>textOf(id) method</secondary>
 <tertiary>of MenuObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-TEXTOF--(--id--)--------------------------------------------><
+>>-textOf--(--id--)--------------------------------------------><
 ]]>
 </programlisting>
 
@@ -146,58 +146,58 @@ A mnemonic is represented by a leading ampersand (&amp;). If the menu item
 contains an accelerator, it is separated by a tab.</para>
 </section>
 
-<section id="submenumo"><title>SUBMENU</title>
-<indexterm><primary>SUBMENU method</primary>
+<section id="submenumo"><title>submenu</title>
+<indexterm><primary>submenu method</primary>
 <secondary>of MenuObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>SUBMENU method</secondary>
+<secondary>submenu method</secondary>
 <tertiary>of MenuObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-SUBMENU--(--position--)-------------------------------------><
+>>-submenu--(--position--)-------------------------------------><
 ]]>
 </programlisting>
 
 <para>Returns an instance of the MenuObject class that is associated with the
 submenu at the specified <emphasis role="italic">position</emphasis>,
 starting with 0. If no submenu
-exists at this position, the .NIL object is returned.</para>
+exists at this position, the .Nil object is returned.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
-sub = menu~Submenu(5)
+sub = menu~submenu(5)
     if sub \= .Nil then do
          say "Items:" sub~items
     end
 </programlisting>
 </section>
 
-<section id="findsubmenumo"><title>FINDSUBMENU</title>
-<indexterm><primary>FINDSUBMENU method</primary>
+<section id="findsubmenumo"><title>findSubmenu</title>
+<indexterm><primary>findSubmenu method</primary>
 <secondary>of MenuObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>FINDSUBMENU method</secondary>
+<secondary>findSubmenu method</secondary>
 <tertiary>of MenuObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-FINDSUBMENU--(--label--)------------------------------------><
+>>-findSubmenu--(--label--)------------------------------------><
 ]]>
 </programlisting>
 
 <para>Returns an instance of the MenuObject class that is associated with the
 submenu with the specified <emphasis role="italic">label</emphasis>.
 If the associated menu does not
-contain such a submenu, the .NIL object is returned.</para>
+contain such a submenu, the .Nil object is returned.</para>
 </section>
 
-<section id="finditemmo"><title>FINDITEM</title>
-<indexterm><primary>FINDITEM method</primary>
+<section id="finditemmo"><title>findItem</title>
+<indexterm><primary>findItem method</primary>
 <secondary>of MenuObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>FINDITEM method</secondary>
+<secondary>findItem method</secondary>
 <tertiary>of MenuObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-FINDITEM--(--label--)---------------------------------------><
+>>-findItem--(--label--)---------------------------------------><
 ]]>
 </programlisting>
 
@@ -208,20 +208,20 @@ of the menu items. If no menu item is found that matches the specified label,
 0 is returned.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
-f = menu~FindItem("&amp;Tools" || "9"x || "Ctrl+T")
-    if f \= 0 then menu~ProcessItem(f)
+f = menu~findItem("&amp;Tools" || "9"x || "Ctrl+T")
+    if f \= 0 then menu~processItem(f)
 </programlisting>
 </section>
 
-<section id="processitemmo"><title>PROCESSITEM</title>
-<indexterm><primary>PROCESSITEM method</primary>
+<section id="processitemmo"><title>processItem</title>
+<indexterm><primary>processItem method</primary>
 <secondary>of MenuObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>PROCESSITEM method</secondary>
+<secondary>processItem method</secondary>
 <tertiary>of MenuObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-PROCESSITEM--(--id--)---------------------------------------><
+>>-processItem--(--id--)---------------------------------------><
 ]]>
 </programlisting>
 
@@ -286,34 +286,32 @@ work with the Windows Management Instrumentation.</para></listitem>
 <para><emphasis role="bold">Methods available to the OLEObject class:</emphasis>
 </para>
 <simplelist>
-<member>DISPATCH</member>
-<member>INIT</member>
-<member>GETCONSTANT</member>
-<member>GETKNOWNEVENTS</member>
-<member>GETKNOWNMETHODS</member>
-<member>GETOBJECT(Class method)</member>
-<member>GETOUTPARAMETERS</member>
-<member>UNKNOWN</member>
+<member>dispatch</member>
+<member>init</member>
+<member>getConstant</member>
+<member>getKnownEvents</member>
+<member>getKnownMethods</member>
+<member>getObject(Class method)</member>
+<member>getOutParameters</member>
+<member>unknown</member>
 </simplelist>
 
 <note><title>Note</title>
 <para>The Rexx OLE object acts as a proxy to the
 real OLE object. The OLE object has its own methods, depending on its individual
 implementation; its methods are accessed transparently through the method
-mechanism <link linkend="oleobunk">UNKNOWN</link>.</para></note>
+mechanism <link linkend="oleobunk">unknown</link>.</para></note>
 
-<section id="oledispatch"><title>DISPATCH</title>
-<indexterm><primary>DISPATCH method</primary>
-<secondary>of OLEObject class</secondary>
-</indexterm>
+<section id="oledispatch"><title>dispatch</title>
+<indexterm><primary>dispatch method</primary>
+<secondary>of OLEObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>DISPATCH method</secondary>
-<tertiary>of OLEObject class</tertiary>
-</indexterm>
+<secondary>dispatch method</secondary>
+<tertiary>of OLEObject class</tertiary></indexterm>
 
 <programlisting>
 <![CDATA[
->>-DISPATCH(methodname--+------------+--)----------------------><
+>>-dispatch(methodname--+------------+--)----------------------><
                         |  +------+  |
                         |  V      |  |
                         +----,arg-+--+
@@ -325,23 +323,23 @@ Dispatches a method with the optionally supplied arguments.
 </para>
 </section>
 
-<section id="oleobjinit"><title>INIT</title>
-<indexterm><primary>INIT method</primary>
+<section id="oleobjinit"><title>init</title>
+<indexterm><primary>init method</primary>
 <secondary>of OLEObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>INIT method</secondary>
+<secondary>init method</secondary>
 <tertiary>of OLEObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
                     +-, "NOEVENTS"---+
->>-INIT(-+-ProgID-+-+----------------+-)-----------------------><
+>>-init(-+-ProgID-+-+----------------+-)-----------------------><
          +-CLSID--+ +-, "WITHEVENTS"-+
 ]]>
 </programlisting>
 
 <para>Instantiates an OLE object of the given ProgID or CLSID. If the creation
-fails, an error will be raised (see list of OLE specific errors on page
-<link linkend="ERR92">***</link>).</para>
+fails, an error will be raised (see list of 
+<link linkend="ERR92">OLE specific errors</link>.</para>
 <para>The optional parameter "events" defines whether events are to be used or
 not. Allowed values for events are <computeroutput>&apos;NOEVENTS&apos;</computeroutput>
 (the default) and <computeroutput>&apos;WITHEVENTS&apos;</computeroutput>.</para>
@@ -351,28 +349,28 @@ myOLEObject = .OLEObject~new("InternetExplorer.Application")
 </programlisting>
 </section>
 
-<section id="oleobgetcon"><title>GETCONSTANT</title>
-<indexterm><primary>GETCONSTANT method</primary>
+<section id="oleobgetcon"><title>getConstant</title>
+<indexterm><primary>getConstant method</primary>
 <secondary>of OLEObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>GETCONSTANT</secondary>
+<secondary>getConstant</secondary>
 <tertiary>of OLEObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-GETCONSTANT(-+--------------+-)-----------------------------><
+>>-getConstant(-+--------------+-)-----------------------------><
                 +-ConstantName-+
 ]]>
 </programlisting>
 
 <para>Retrieves the value of a constant that is associated with this
-OLE object. If no constant of that name exists, the .NIL object will be returned.
+OLE object. If no constant of that name exists, the .Nil object will be returned.
 You can also omit the name of the constant; this returns a stem with all known
 constants and their values. In this case the constant names will be prefixed
 with a "!" symbol.</para>
 <para><emphasis role="bold">Example 1:</emphasis></para>
 <programlisting>
 myExcel = .OLEObject~new("Excel.Application")
-say "xlCenter has the value" myExcel~GetConstant("xlCenter")
+say "xlCenter has the value" myExcel~getConstant("xlCenter")
 myExcel~quit
 exit
 </programlisting>
@@ -383,7 +381,7 @@ xlCenter has the value -4108
 <para><emphasis role="bold">Example 2:</emphasis></para>
 <programlisting>
 myExcel = .OLEObject~new("Excel.Application")
-constants. = myExcel~GetConstant
+constants. = myExcel~getConstant
 myExcel~quit
 
 do i over constants.
@@ -399,15 +397,15 @@ end
 </programlisting>
 </section>
 
-<section id="oleobgetknev"><title>GETKNOWNEVENTS</title>
-<indexterm><primary>GETKNOWNEVENTS method</primary>
+<section id="oleobgetknev"><title>getKnownEvents</title>
+<indexterm><primary>getKnownEvents method</primary>
 <secondary>of OLEObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>GETKNOWNEVENTS method</secondary>
+<secondary>getKnownEvents method</secondary>
 <tertiary>of OLEObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-GETKNOWNEVENTS----------------------------------------------><
+>>-getKnownEvents----------------------------------------------><
 ]]>
 </programlisting>
 
@@ -458,7 +456,7 @@ object does not have any events.</para>
 <para><emphasis role="bold">Example script:</emphasis></para>
 <programlisting>
 myIE = .OLEObject~new("InternetExplorer.Application","NOEVENTS")
-events. = myIE~GetKnownEvents
+events. = myIE~getKnownEvents
 
 if events. == .nil then
   say "Sorry, this object does not have any events."
@@ -483,15 +481,15 @@ ONSTATUSBAR
 and OLE\APPS\SAMP13.REX in the SAMPLES directory.</para>
 </section>
 
-<section id="oleobgetknme"><title>GETKNOWNMETHODS</title>
-<indexterm><primary>GETKNOWNMETHODS method</primary>
+<section id="oleobgetknme"><title>getKnownMethods</title>
+<indexterm><primary>getKnownMethods method</primary>
 <secondary>of OLEObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>GETKNOWNMETHODS method</secondary>
+<secondary>getKnownMethods method</secondary>
 <tertiary>of OLEObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-GETKNOWNMETHODS---------------------------------------------><
+>>-getKnownMethods---------------------------------------------><
 ]]>
 </programlisting>
 
@@ -604,7 +602,7 @@ and will get displayed. Be careful with methods like:</para>
 <para><emphasis role="bold">Example script:</emphasis></para>
 <programlisting>
 myOLEObject = .OLEObject~new("InternetExplorer.Application")
-methods. = myOLEObject~GetKnownMethods
+methods. = myOLEObject~getKnownMethods
 
 if methods. == .nil then
   say "Sorry, no information on the methods available!"
@@ -627,15 +625,15 @@ GoHome
 </programlisting>
 </section>
 
-<section id="oleobgetob"><title>GETOBJECT</title>
-<indexterm><primary>GETOBJECT method</primary>
+<section id="oleobgetob"><title>getObject</title>
+<indexterm><primary>getObject method</primary>
 <secondary>of OLEObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>GETOBJECT method</secondary>
+<secondary>getObject method</secondary>
 <tertiary>of OLEObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-GETOBJECT(Moniker-+--------+-)------------------------------><
+>>-getObject(Moniker-+--------+-)------------------------------><
                      +-,class-+
 ]]>
 </programlisting>
@@ -657,15 +655,15 @@ myOLEObject = .OLEObject~GetObject("C:\DOCS\HELLOWORLD.DOC")
 </programlisting>
 </section>
 
-<section id="oleobgetoutpar"><title>GETOUTPARAMETERS</title>
-<indexterm><primary>GETOUTPARAMETERS method</primary>
+<section id="oleobgetoutpar"><title>getOutParameters</title>
+<indexterm><primary>getOutParameters method</primary>
 <secondary>of OLEObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>GETOUTPARAMETERS method</secondary>
+<secondary>getOutParameters method</secondary>
 <tertiary>of OLEObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-GETOUTPARAMETERS--------------------------------------------><
+>>-getOutParameters--------------------------------------------><
 ]]>
 </programlisting>
 
@@ -689,7 +687,7 @@ object:</para>
 <programlisting>
 resultTest = myOLEObject~aMethod(1, 2, .NIL)
 say "Invocation result  :" resultTest
-say "Result in out array:" myOLEObject~GetOutParameters~at(1)
+say "Result in out array:" myOLEObject~getOutParameters~at(1)
 </programlisting>
 <para>The output of this sample script will be:</para>
 <programlisting>
@@ -706,23 +704,23 @@ aMethod([in] A, [in] B, [out] sumAB, [out] productAB),
 of A and B at position one, and the product at position two.</para>
 </section>
 
-<section id="oleobunk"><title>UNKNOWN</title>
-<indexterm><primary>UNKNOWN method</primary>
+<section id="oleobunk"><title>unknown</title>
+<indexterm><primary>unknown method</primary>
 <secondary>of OLEObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>UNKNOWN method</secondary>
+<secondary>unknown method</secondary>
 <tertiary>of OLEObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-UNKNOWN(messagename--+----------------+--)------------------><
+>>-unknown(messagename--+----------------+--)------------------><
                         +--,messageargs--+
 ]]>
 </programlisting>
 
-<para>The <computeroutput>UNKNOWN</computeroutput> message is the central
+<para>The <computeroutput>unknown</computeroutput> message is the central
 mechanism through which methods of the OLE object are called.</para>
 <para>For further information, see
-<link linkend="unkno">Defining an UNKNOWN Method</link>.</para>
+<link linkend="unkno">Defining an unknown Method</link>.</para>
 <para>You can invoke the methods of the real OLE object by simply stating their
 names to the Rexx (proxy) OLE object like this:</para>
 <programlisting>
@@ -734,12 +732,12 @@ for any message that does not exist for the Rexx OLE object by dispatching
 the call to the real OLE object.</para>
 <para>If an OLE object offers a method with a name that is identical to one
 that is defined for <computeroutput>OLEObject</computeroutput>, you must call
-<computeroutput>UNKNOWN</computeroutput> directly, like this:</para>
+<computeroutput>unknown</computeroutput> directly, like this:</para>
 <programlisting>
 msgs = .array~of("Hello","World")
-val = myOLEObject~Unknown("Unknown",msgs)
+val = myOLEObject~unknown("Unknown",msgs)
 </programlisting>
-<para>This invokes the method <computeroutput>"UNKNOWN"</computeroutput>
+<para>This invokes the method <computeroutput>"unknown"</computeroutput>
 of the OLE object with two arguments, <computeroutput>"Hello"</computeroutput>
 and <computeroutput>"World"</computeroutput>.</para>
 <para>Parameters for the OLE object are used in the usual way, with the
@@ -747,8 +745,8 @@ exception of so-called <computeroutput>"out"</computeroutput> parameters.
 <computeroutput>Out</computeroutput> parameters will be
 filled in by the OLE object itself. As this is not possible in Rexx due to
 data encapsulation, a special method,
-<link linkend="oleobgetoutpar">GETOUTPARAMETERS</link>,
-has to be used. Specify the .NIL object for any
+<link linkend="oleobgetoutpar">getOutParameters</link>,
+has to be used. Specify the .Nil object for any
 <computeroutput>Out</computeroutput> parameters
 when invoking this method.</para>
 </section>
@@ -1017,10 +1015,10 @@ and the !varValue methods.  Therefore the slightly unorthodox method names
 should not present a problem.
 </para></note>
 
-<section id="olevarnew"><title>NEW Class method</title>
+<section id="olevarnew"><title>new Class method</title>
 <programlisting>
 <![CDATA[
->>-NEW(valueObject-+----------+--+-------------+-)-------------><
+>>-new(valueObject-+----------+--+-------------+-)-------------><
                    +-,varType-+  +-,paramFlags-+
 ]]>
 </programlisting>
@@ -1210,83 +1208,83 @@ in the WINSYSTM.CLS file. This means, you must use a
 <para><emphasis role="bold">Methods the WindowsClipboard Class Defines</emphasis>
 </para>
 <itemizedlist>
-<listitem><para>COPY</para></listitem>
-<listitem><para>MAKEARRAY</para></listitem>
-<listitem><para>PASTE</para></listitem>
-<listitem><para>EMPTY</para></listitem>
-<listitem><para>ISDATAAVAILABLE</para></listitem></itemizedlist>
+<listitem><para>copy</para></listitem>
+<listitem><para>makeArray</para></listitem>
+<listitem><para>paste</para></listitem>
+<listitem><para>empty</para></listitem>
+<listitem><para>isDataAvailable</para></listitem></itemizedlist>
 
-<section id="copywc"><title>COPY</title>
-<indexterm><primary>COPY method</primary>
+<section id="copywc"><title>copy</title>
+<indexterm><primary>copy method</primary>
 <secondary>of WindowsClipboard class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>COPY method</secondary>
+<secondary>copy method</secondary>
 <tertiary>of WindowsClipboard class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-COPY--(--text--)--------------------------------------------><
+>>-copy--(--text--)--------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Empties the clipboard and copies the specified text to it.</para>
 </section>
 
-<section id="mkarwc"><title>MAKEARRAY</title>
-<indexterm><primary>MAKEARRAY method</primary>
+<section id="mkarwc"><title>makeArray</title>
+<indexterm><primary>makeArray method</primary>
 <secondary>of WindowsClipboard class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>MAKEARRAY method</secondary>
+<secondary>makeArray method</secondary>
 <tertiary>of WindowsClipboard class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-MAKEARRAY------><
+>>-makeArray---------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>If the content of the clipboard is a string with newline characters
-in it, MAKEARRAY can be used to split up the string into individual
+in it, makeArray can be used to split up the string into individual
 lines. An array is returned containing those lines.</para>
 </section>
 
-<section id="pastewc"><title>PASTE</title>
-<indexterm><primary>PASTE method</primary>
+<section id="pastewc"><title>paste</title>
+<indexterm><primary>paste method</primary>
 <secondary>of WindowsClipboard class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>PASTE method</secondary>
+<secondary>paste method</secondary>
 <tertiary>of WindowsClipboard class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-PASTE-------------------------------------------------------><
+>>-paste-------------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Retrieves the text data stored on the clipboard.</para>
 </section>
 
-<section id="emptywc"><title>EMPTY</title>
-<indexterm><primary>EMPTY method</primary>
+<section id="emptywc"><title>empty</title>
+<indexterm><primary>empty method</primary>
 <secondary>of WindowsClipboard class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>EMPTY method</secondary>
+<secondary>empty method</secondary>
 <tertiary>of WindowsClipboard class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-EMPTY-------------------------------------------------------><
+>>-empty-------------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Empties the clipboard.</para>
 </section>
 
-<section id="isdataavailablewc"><title>ISDATAAVAILABLE</title>
-<indexterm><primary>ISDATAAVAILABLE method</primary>
+<section id="isdataavailablewc"><title>isDataAvailable</title>
+<indexterm><primary>isDataAvailable method</primary>
 <secondary>of WindowsClipboard class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>ISDATAAVAILABLE method</secondary>
+<secondary>isDataAvailable method</secondary>
 <tertiary>of WindowsClipboard class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-ISDATAAVAILABLE---------------------------------------------><
+>>-isDataAvailable---------------------------------------------><
 ]]>
 </programlisting>
 
@@ -1316,23 +1314,23 @@ is provided in the <computeroutput>ooRexx\SAMPLES</computeroutput> directory.
 <para><emphasis role="bold">Methods the WindowsEventLog Class Defines</emphasis>
 </para>
 <itemizedlist>
-<listitem><para>INIT</para></listitem>
-<listitem><para>OPEN</para></listitem>
-<listitem><para>CLOSE</para></listitem>
-<listitem><para>READ</para></listitem>
-<listitem><para>WRITE</para></listitem>
-<listitem><para>CLEAR</para></listitem>
-<listitem><para>GETNUMBER</para></listitem></itemizedlist>
+<listitem><para>init</para></listitem>
+<listitem><para>open</para></listitem>
+<listitem><para>close</para></listitem>
+<listitem><para>read</para></listitem>
+<listitem><para>write</para></listitem>
+<listitem><para>clear</para></listitem>
+<listitem><para>getNumber</para></listitem></itemizedlist>
 
-<section id="initwel"><title>INIT</title>
-<indexterm><primary>INIT method</primary>
+<section id="initwel"><title>init</title>
+<indexterm><primary>init method</primary>
 <secondary>of WindowsEventLog class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>INIT method</secondary>
+<secondary>init method</secondary>
 <tertiary>of WindowsEventLog class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-INIT--------------------------------------------------------><
+>>-init--------------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -1340,15 +1338,15 @@ is provided in the <computeroutput>ooRexx\SAMPLES</computeroutput> directory.
 function package.</para>
 </section>
 
-<section id="openwel"><title>OPEN</title>
-<indexterm><primary>OPEN method</primary>
+<section id="openwel"><title>open</title>
+<indexterm><primary>open method</primary>
 <secondary>of WindowsEventLog class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>OPEN method</secondary>
+<secondary>open method</secondary>
 <tertiary>of WindowsEventLog class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-OPEN-+---------------------------------+--------------------><
+>>-open-+---------------------------------+--------------------><
         +-(--+-----------------------+--)-+
              +-server--+-----------+-+
                        +-,--source-+
@@ -1392,42 +1390,42 @@ Log&quot; is used.
 <listitem><para>The following example opens the Application log on the local
 machine:</para>
 <programlisting>
-rc = event_log1~OPEN
-rc = event_log~OPEN(,"Application")
+rc = event_log1~open
+rc = event_log~open(,"Application")
 </programlisting>
 <para>The following example
 opens the System log on SERVER01:</para>
 <programlisting>
-rc = event_log~OPEN("\\SERVER01","System")
+rc = event_log~open("\\SERVER01","System")
 </programlisting>
 </listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="closewel"><title>CLOSE</title>
-<indexterm><primary>CLOSE method</primary>
+<section id="closewel"><title>close</title>
+<indexterm><primary>close method</primary>
 <secondary>of WindowsEventLog class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>CLOSE method</secondary>
+<secondary>close method</secondary>
 <tertiary>of WindowsEventLog class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-CLOSE-------------------------------------------------------><
+>>-close-------------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Closes an open event log.</para>
 </section>
 
-<section id="readwel"><title>READ</title>
-<indexterm><primary>READ method</primary>
+<section id="readwel"><title>read</title>
+<indexterm><primary>read method</primary>
 <secondary>of WindowsEventLog class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>READ method</secondary>
+<secondary>read method</secondary>
 <tertiary>of WindowsEventLog class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-READ--+---------------------------------------------------+-->
+>>-read--+---------------------------------------------------+-->
          |    +-FORWARDS--+                                  |
          +-(--+-----------+--,--+--------+--,--+--------+--,-+
               +-BACKWARDS-+     +-server-+     +-source-+
@@ -1494,7 +1492,7 @@ if evl~InitCode \= 0 then exit
 
 say " reading complete System log forwards without opening it before "
 
-events = evl~Read("FORWARDS", ,"System")
+events = evl~read("FORWARDS", ,"System")
 
 if events \= .nil then
   call DisplayRecords
@@ -1532,15 +1530,15 @@ return
 </variablelist>
 </section>
 
-<section id="writewel"><title>WRITE</title>
-<indexterm><primary>WRITE method</primary>
+<section id="writewel"><title>write</title>
+<indexterm><primary>write method</primary>
 <secondary>of WindowsEventLog class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>WRITE method</secondary>
+<secondary>write method</secondary>
 <tertiary>of WindowsEventLog class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-WRITE--+-------------------------------------------------------------+-->
+>>-write--+-------------------------------------------------------------+-->
           |                                  +-1--+     +-0--------+    |
           +-(--+--------+--,--+--------+--,--+----+--,--+----------+--,-+
                +-server-+     +-source-+     +-0--+     +-category-+
@@ -1657,15 +1655,15 @@ more examples.</para>
 </variablelist>
 </section>
 
-<section id="clearwel"><title>CLEAR</title>
-<indexterm><primary>CLEAR method</primary>
+<section id="clearwel"><title>clear</title>
+<indexterm><primary>clear method</primary>
 <secondary>of WindowsEventLog class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>CLEAR method</secondary>
+<secondary>clear method</secondary>
 <tertiary>of WindowsEventLog class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-CLEAR-+------------------------------------------------------------+-><
+>>-clear-+------------------------------------------------------------+-><
          +-(--+--------------------------------------------------+--)-+
               +-server--+--------------------------------------+-+
                         +-,--+--------+--+-------------------+-+
@@ -1741,15 +1739,15 @@ event_log~CLEAR
 </variablelist>
 </section>
 
-<section id="getnumberwel"><title>GETNUMBER</title>
-<indexterm><primary>GETNUMBER method</primary>
+<section id="getnumberwel"><title>getNumber</title>
+<indexterm><primary>getNumber method</primary>
 <secondary>of WindowsEventLog class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>GETNUMBER method</secondary>
+<secondary>getNumber method</secondary>
 <tertiary>of WindowsEventLog class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-GETNUMBER-+---------------------------------+---------------><
+>>-getNumber-+---------------------------------+---------------><
              +-(--+-----------------------+--)-+
                   +-server--+-----------+-+
                             +-,--source-+
@@ -1800,7 +1798,7 @@ before.</para>
 <listitem><para>The following example returns the number of event log records
 in the Application log of the local machine:
 <programlisting>
-num = event_log~GETNUMBER
+num = event_log~getNumber
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -1825,43 +1823,43 @@ its function: </para>
 <para><emphasis role="bold">Methods the WindowsManager Class Defines</emphasis>
 </para>
 <itemizedlist>
-<listitem><para>FIND</para></listitem>
-<listitem><para>FOREGROUNDWINDOW</para></listitem>
-<listitem><para>WINDOWATPOSITION</para></listitem>
-<listitem><para>CONSOLETITLE</para></listitem>
-<listitem><para>CONSOLETITLE=</para></listitem>
-<listitem><para>SENDTEXTTOWINDOW</para></listitem>
-<listitem><para>PUSHBUTTONINWINDOW</para></listitem>
-<listitem><para>PROCESSWINDOWCOMMAND</para></listitem>
-<listitem><para>BROADCASTSETTINGCHANGED</para></listitem></itemizedlist>
+<listitem><para>find</para></listitem>
+<listitem><para>foregroundWindow</para></listitem>
+<listitem><para>windowAtPosition</para></listitem>
+<listitem><para>consoleTitle</para></listitem>
+<listitem><para>consoleTitle=</para></listitem>
+<listitem><para>sendTextToWindow</para></listitem>
+<listitem><para>pushButtonInWindow</para></listitem>
+<listitem><para>processWindowCommand</para></listitem>
+<listitem><para>broadcastSettingChanged</para></listitem></itemizedlist>
 
-<section id="findwm"><title>FIND</title>
-<indexterm><primary>FIND method</primary>
+<section id="findwm"><title>find</title>
+<indexterm><primary>find method</primary>
 <secondary>of WindowsManager class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>GETNUMBER method</secondary>
+<secondary>find method</secondary>
 <tertiary>of WindowsManager class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-FIND--(--title--)-------------------------------------------><
+>>-find--(--title--)-------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Searches for a top-level window (not a child window) on your desktop with
 the specified <emphasis role="italic">title</emphasis>.</para>
 <para>If this window already exists, an instance of the WindowObject class is
-returned. Otherwise, .NIL is returned.</para>
+returned. Otherwise, .Nil is returned.</para>
 </section>
 
-<section id="foregroundwindowwm"><title>FOREGROUNDWINDOW</title>
-<indexterm><primary>FOREGROUNDWINDOW method</primary>
+<section id="foregroundwindowwm"><title>foregroundWindow</title>
+<indexterm><primary>foregroundWindow method</primary>
 <secondary>of WindowsManager class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>FOREGROUNDWINDOW method</secondary>
+<secondary>foregroundWindow method</secondary>
 <tertiary>of WindowsManager class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-FOREGROUNDWINDOW--------------------------------------------><
+>>-foregroundWindow--------------------------------------------><
 ]]>
 </programlisting>
 
@@ -1869,15 +1867,15 @@ returned. Otherwise, .NIL is returned.</para>
 current foreground window.</para>
 </section>
 
-<section id="windowatpositionwm"><title>WINDOWATPOSITION</title>
-<indexterm><primary>WINDOWATPOSITION method</primary>
+<section id="windowatpositionwm"><title>windowAtPosition</title>
+<indexterm><primary>windowAtPosition method</primary>
 <secondary>of WindowsManager class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>WINDOWATPOSITION method</secondary>
+<secondary>windowAtPosition method</secondary>
 <tertiary>of WindowsManager class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-WINDOWATPOSITION--(--x--,--y--)-----------------------------><
+>>-windowAtPosition--(--x--,--y--)-----------------------------><
 ]]>
 </programlisting>
 
@@ -1886,48 +1884,48 @@ window at the specified position (<emphasis role="italic">x,y</emphasis>). The
 coordinates are specified
 in screen pixels. This method does not retrieve hidden or disabled windows.
 If you are interested in a particular child window, use method
-<link linkend="childatpositionwo">CHILDATPOSITION</link>.</para>
+<link linkend="childatpositionwo">childAtPosition</link>.</para>
 </section>
 
-<section id="consoletitlewm"><title>CONSOLETITLE</title>
-<indexterm><primary>CONSOLETITLE method</primary>
+<section id="consoletitlewm"><title>consoleTitle</title>
+<indexterm><primary>consoleTitle method</primary>
 <secondary>of WindowsManager class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>CONSOLETITLE method</secondary>
+<secondary>consoleTitle method</secondary>
 <tertiary>of WindowsManager class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-CONSOLETITLE------------------------------------------------><
+>>-consoleTitle------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Returns the title of the current console.</para>
 </section>
 
-<section id="consoletitlenewwm"><title>CONSOLETITLE=</title>
-<indexterm><primary>CONSOLETITLE= method</primary>
+<section id="consoletitlenewwm"><title>consoleTitle=</title>
+<indexterm><primary>consoleTitle= method</primary>
 <secondary>of WindowsManager class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>CONSOLETITLE= method</secondary>
+<secondary>consoleTitle= method</secondary>
 <tertiary>of WindowsManager class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-CONSOLETITLE=--title----------------------------------------><
+>>-consoleTitle=title------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Sets the title of the current console.</para>
 </section>
 
-<section id="sendtexttowindowwm"><title>SENDTEXTTOWINDOW</title>
-<indexterm><primary>SENDTEXTTOWINDOW method</primary>
+<section id="sendtexttowindowwm"><title>sendTextToWindow</title>
+<indexterm><primary>sendTextToWindow method</primary>
 <secondary>of WindowsManager class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>SENDTEXTTOWINDOW method</secondary>
+<secondary>sendTextToWindow method</secondary>
 <tertiary>of WindowsManager class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-SENDTEXTTOWINDOW--(--title--,--text--)----------------------><
+>>-sendTextToWindow--(--title--,--text--)----------------------><
 ]]>
 </programlisting>
 
@@ -1935,15 +1933,15 @@ If you are interested in a particular child window, use method
 window with the specified <emphasis role="italic">title.</emphasis>.</para>
 </section>
 
-<section id="pushbuttoninwindowwm"><title>PUSHBUTTONINWINDOW</title>
-<indexterm><primary>PUSHBUTTONINWINDOW method</primary>
+<section id="pushbuttoninwindowwm"><title>pushButtonInWindow</title>
+<indexterm><primary>pushButtonInWindow method</primary>
 <secondary>of WindowsManager class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>PUSHBUTTONINWINDOW method</secondary>
+<secondary>pushButtonInWindow method</secondary>
 <tertiary>of WindowsManager class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-PUSHBUTTONINWINDOW--(--title--,--text--)--------------------><
+>>-pushButtonInWindow--(--title--,--text--)--------------------><
 ]]>
 </programlisting>
 
@@ -1954,19 +1952,19 @@ you must specify an ampersand (&amp;) in front of it. You can also use this
 method to select radio buttons and to check or uncheck check boxes.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
-winmgr~PushButtonInWindow("Testwindow","List &amp;Employees")
+winmgr~pushButtonInWindow("Testwindow","List &amp;Employees")
 </programlisting>
 </section>
 
-<section id="processmenucommandwm"><title>PROCESSMENUCOMMAND</title>
-<indexterm><primary>PROCESSMENUCOMMAND method</primary>
+<section id="processmenucommandwm"><title>processMenuCommand</title>
+<indexterm><primary>processMenuCommand method</primary>
 <secondary>of WindowsManager class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>PROCESSMENUCOMMAND method</secondary>
+<secondary>processMenuCommand method</secondary>
 <tertiary>of WindowsManager class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-PROCESSMENUCOMMAND--(--+-------+--,--+-------+--,------------>
+>>-processMenuCommand--(--+-------+--,--+-------+--,------------>
                           +-title-+     +-popup-+
 
    +-,-------+
@@ -1980,15 +1978,15 @@ winmgr~PushButtonInWindow("Testwindow","List &amp;Employees")
 necessary to get to the required item.</para>
 </section>
 
-<section id="broadcastsettingchanged"><title>BROADCASTSETTINGCHANGED</title>
-<indexterm><primary>BROADCASTSETTINGCHANGED method</primary>
+<section id="broadcastsettingchanged"><title>broadcastSettingChanged</title>
+<indexterm><primary>broadcastSettingChanged method</primary>
 <secondary>of WindowsManager class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>BROADCASTSETTINGCHANGED method</secondary>
+<secondary>broadcastSettingChanged method</secondary>
 <tertiary>of WindowsManager class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-BROADCASTSETTINGCHANGED--+-----------+----------------------><
+>>-broadcastSettingChanged--+-----------+----------------------><
                             +-(timeOut)-+
 ]]>
 </programlisting>
@@ -2065,60 +2063,60 @@ interact with a particular window or one of its child windows.</para>
 <para><emphasis role="bold">Methods the WindowObject Class Defines</emphasis>
 </para>
 <itemizedlist>
-<listitem><para>ASSOCWINDOW</para></listitem>
-<listitem><para>CHILDATPOSITION</para></listitem>
-<listitem><para>COORDINATES</para></listitem>
-<listitem><para>DISABLE</para></listitem>
-<listitem><para>ENABLE</para></listitem>
-<listitem><para>ENUMERATECHILDREN</para></listitem>
-<listitem><para>FINDCHILD</para></listitem>
-<listitem><para>FIRST</para></listitem>
-<listitem><para>FIRSTCHILD</para></listitem>
-<listitem><para>FOCUSITEM</para></listitem>
-<listitem><para>FOCUSNEXTITEM</para></listitem>
-<listitem><para>FOCUSPREVIOUSITEM</para></listitem>
-<listitem><para>HANDLE</para></listitem>
-<listitem><para>HIDE</para></listitem>
-<listitem><para>ID</para></listitem>
-<listitem><para>ISMENU</para></listitem>
-<listitem><para>LAST</para></listitem>
-<listitem><para>MAXIMIZE</para></listitem>
-<listitem><para>MENU</para></listitem>
-<listitem><para>MINIMIZE</para></listitem>
-<listitem><para>MOVETO</para></listitem>
-<listitem><para>NEXT</para></listitem>
-<listitem><para>OWNER</para></listitem>
-<listitem><para>PREVIOUS</para></listitem>
-<listitem><para>PROCESSMENUCOMMAND</para></listitem>
-<listitem><para>PUSHBUTTON</para></listitem>
-<listitem><para>RESIZE</para></listitem>
-<listitem><para>RESTORE</para></listitem>
-<listitem><para>SENDCHAR</para></listitem>
-<listitem><para>SENDCOMMAND</para></listitem>
-<listitem><para>SENDKEY</para></listitem>
-<listitem><para>SENDKEYDOWN</para></listitem>
-<listitem><para>SENDKEYUP</para></listitem>
-<listitem><para>SENDMENUCOMMAND</para></listitem>
-<listitem><para>SENDMESSAGE</para></listitem>
-<listitem><para>SENDMOUSECLICK</para></listitem>
-<listitem><para>SENDSYSCOMMAND</para></listitem>
-<listitem><para>SENDTEXT</para></listitem>
-<listitem><para>STATE</para></listitem>
-<listitem><para>SYSTEMMENU</para></listitem>
-<listitem><para>TITLE</para></listitem>
-<listitem><para>TITLE=</para></listitem>
-<listitem><para>TOFOREGROUND</para></listitem>
-<listitem><para>WCLASS</para></listitem></itemizedlist>
+<listitem><para>assocWindow</para></listitem>
+<listitem><para>childAtPosition</para></listitem>
+<listitem><para>coordinates</para></listitem>
+<listitem><para>disable</para></listitem>
+<listitem><para>enable</para></listitem>
+<listitem><para>enumerateChildren</para></listitem>
+<listitem><para>findChild</para></listitem>
+<listitem><para>first</para></listitem>
+<listitem><para>firstChild</para></listitem>
+<listitem><para>focusItem</para></listitem>
+<listitem><para>focusNextItem</para></listitem>
+<listitem><para>focusPreviousItem</para></listitem>
+<listitem><para>handle</para></listitem>
+<listitem><para>hide</para></listitem>
+<listitem><para>id</para></listitem>
+<listitem><para>isMenu</para></listitem>
+<listitem><para>last</para></listitem>
+<listitem><para>maximize</para></listitem>
+<listitem><para>menu</para></listitem>
+<listitem><para>minimize</para></listitem>
+<listitem><para>moveTo</para></listitem>
+<listitem><para>next</para></listitem>
+<listitem><para>owner</para></listitem>
+<listitem><para>previous</para></listitem>
+<listitem><para>processMenuCommand</para></listitem>
+<listitem><para>pushButton</para></listitem>
+<listitem><para>resize</para></listitem>
+<listitem><para>restore</para></listitem>
+<listitem><para>sendChar</para></listitem>
+<listitem><para>sendCommand</para></listitem>
+<listitem><para>sendKey</para></listitem>
+<listitem><para>sendKeyDown</para></listitem>
+<listitem><para>sendKeyUp</para></listitem>
+<listitem><para>sendMenuCommand</para></listitem>
+<listitem><para>sendMessage</para></listitem>
+<listitem><para>sendMouseClick</para></listitem>
+<listitem><para>sendSyscommand</para></listitem>
+<listitem><para>sendText</para></listitem>
+<listitem><para>state</para></listitem>
+<listitem><para>systemMenu</para></listitem>
+<listitem><para>title</para></listitem>
+<listitem><para>title=</para></listitem>
+<listitem><para>toForeground</para></listitem>
+<listitem><para>wclass</para></listitem></itemizedlist>
 
-<section id="assocwindowwo"><title>ASSOCWINDOW</title>
-<indexterm><primary>ASSOCWINDOW method</primary>
+<section id="assocwindowwo"><title>assocWindow</title>
+<indexterm><primary>assocWindow method</primary>
 <secondary>of WindowsObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>ASSOCWINDOW method</secondary>
+<secondary>assocWindow method</secondary>
 <tertiary>of WindowsObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-ASSOCWINDOW--(--handle--)-----------------------------------><
+>>-assocWindow--(--handle--)-----------------------------------><
 ]]>
 </programlisting>
 
@@ -2126,60 +2124,60 @@ interact with a particular window or one of its child windows.</para>
 WindowObject instance.</para>
 </section>
 
-<section id="handlewo"><title>HANDLE</title>
-<indexterm><primary>HANDLE method</primary>
+<section id="handlewo"><title>handle</title>
+<indexterm><primary>handle method</primary>
 <secondary>of WindowsObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>HANDLE method</secondary>
+<secondary>handle method</secondary>
 <tertiary>of WindowsObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-HANDLE------------------------------------------------------><
+>>-handle------------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Returns the handle of the associated window.</para>
 </section>
 
-<section id="titlewo"><title>TITLE</title>
-<indexterm><primary>TITLE method</primary>
+<section id="titlewo"><title>title</title>
+<indexterm><primary>title method</primary>
 <secondary>of WindowsObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>TITLE method</secondary>
+<secondary>title method</secondary>
 <tertiary>of WindowsObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-TITLE-------------------------------------------------------><
+>>-title-------------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Returns the title of the window.</para>
 </section>
 
-<section id="titlenewwo"><title>TITLE=</title>
-<indexterm><primary>TITLE= method</primary>
+<section id="titlenewwo"><title>title=</title>
+<indexterm><primary>title= method</primary>
 <secondary>of WindowsObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>TITLE= method</secondary>
+<secondary>title= method</secondary>
 <tertiary>of WindowsObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-TITLE=--newTitle--------------------------------------------><
+>>-title=newTitle----------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Sets a new title for the window.</para>
 </section>
 
-<section id="wclasswo"><title>WCLASS</title>
-<indexterm><primary>WCLASS method</primary>
+<section id="wclasswo"><title>wclass</title>
+<indexterm><primary>wclass method</primary>
 <secondary>of WindowsObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>WCLASS method</secondary>
+<secondary>wclass method</secondary>
 <tertiary>of WindowsObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-WCLASS------------------------------------------------------><
+>>-wclass------------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -2187,30 +2185,30 @@ WindowObject instance.</para>
 </para>
 </section>
 
-<section id="idwo"><title>ID</title>
-<indexterm><primary>ID method</primary>
+<section id="idwo"><title>id</title>
+<indexterm><primary>id method</primary>
 <secondary>of WindowsObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>ID method</secondary>
+<secondary>id method</secondary>
 <tertiary>of WindowsObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-ID----------------------------------------------------------><
+>>-id----------------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Returns the numeric ID of the window.</para>
 </section>
 
-<section id="coordinateswo"><title>COORDINATES</title>
-<indexterm><primary>COORDINATES method</primary>
+<section id="coordinateswo"><title>coordinates</title>
+<indexterm><primary>coordinates method</primary>
 <secondary>of WindowsObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>COORDINATES method</secondary>
+<secondary>coordinates method</secondary>
 <tertiary>of WindowsObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-COORDINATES-------------------------------------------------><
+>>-coordinates-------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -2218,15 +2216,15 @@ WindowObject instance.</para>
 in the format &quot;left,top,right,bottom&quot;.</para>
 </section>
 
-<section id="statewo"><title>STATE</title>
-<indexterm><primary>STATE method</primary>
+<section id="statewo"><title>state</title>
+<indexterm><primary>state method</primary>
 <secondary>of WindowsObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>STATE method</secondary>
+<secondary>state method</secondary>
 <tertiary>of WindowsObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-STATE-------------------------------------------------------><
+>>-state-------------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -2239,15 +2237,15 @@ one or more of the following constants:</para>
 <listitem><para>&quot;Foreground&quot;</para></listitem></itemizedlist>
 </section>
 
-<section id="restorewo"><title>RESTORE</title>
-<indexterm><primary>RESTORE method</primary>
+<section id="restorewo"><title>restore</title>
+<indexterm><primary>restore method</primary>
 <secondary>of WindowsObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>RESTORE method</secondary>
+<secondary>restore method</secondary>
 <tertiary>of WindowsObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-RESTORE-----------------------------------------------------><
+>>-restore-----------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -2255,30 +2253,30 @@ one or more of the following constants:</para>
 or maximized, it is restored to its original size and position.</para>
 </section>
 
-<section id="hidewo"><title>HIDE</title>
-<indexterm><primary>HIDE method</primary>
+<section id="hidewo"><title>hide</title>
+<indexterm><primary>hide method</primary>
 <secondary>of WindowsObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>HIDE method</secondary>
+<secondary>hide method</secondary>
 <tertiary>of WindowsObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-HIDE--------------------------------------------------------><
+>>-hide--------------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Hides the associated window and activates another window.</para>
 </section>
 
-<section id="minimizewo"><title>MINIMIZE</title>
-<indexterm><primary>MINIMIZE method</primary>
+<section id="minimizewo"><title>minimize</title>
+<indexterm><primary>minimize method</primary>
 <secondary>of WindowsObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>MINIMIZE method</secondary>
+<secondary>minimize method</secondary>
 <tertiary>of WindowsObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-MINIMIZE----------------------------------------------------><
+>>-minimize----------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -2286,30 +2284,30 @@ or maximized, it is restored to its original size and position.</para>
 window.</para>
 </section>
 
-<section id="maximizewo"><title>MAXIMIZE</title>
-<indexterm><primary>MAXIMIZE method</primary>
+<section id="maximizewo"><title>maximize</title>
+<indexterm><primary>maximize method</primary>
 <secondary>of WindowsObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>MAXIMIZE method</secondary>
+<secondary>maximize method</secondary>
 <tertiary>of WindowsObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-MAXIMIZE----------------------------------------------------><
+>>-maximize----------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Maximizes the associated window.</para>
 </section>
 
-<section id="resizewo"><title>RESIZE</title>
-<indexterm><primary>RESIZE method</primary>
+<section id="resizewo"><title>resize</title>
+<indexterm><primary>resize method</primary>
 <secondary>of WindowsObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>RESIZE method</secondary>
+<secondary>resize method</secondary>
 <tertiary>of WindowsObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-RESIZE--(--width--,--height--)------------------------------><
+>>-resize--(--width--,--height--)------------------------------><
 ]]>
 </programlisting>
 
@@ -2317,45 +2315,45 @@ window.</para>
 and height are specified in screen coordinates.</para>
 </section>
 
-<section id="enablewo"><title>ENABLE</title>
-<indexterm><primary>ENABLE method</primary>
+<section id="enablewo"><title>enable</title>
+<indexterm><primary>enable method</primary>
 <secondary>of WindowsObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>ENABLE method</secondary>
+<secondary>enable method</secondary>
 <tertiary>of WindowsObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-ENABLE------------------------------------------------------><
+>>-enable------------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Enables the associated window if it was disabled.</para>
 </section>
 
-<section id="disablewo"><title>DISABLE</title>
-<indexterm><primary>DISABLE method</primary>
+<section id="disablewo"><title>disable</title>
+<indexterm><primary>disable method</primary>
 <secondary>of WindowsObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>DISABLE method</secondary>
+<secondary>disable method</secondary>
 <tertiary>of WindowsObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-DISABLE-----------------------------------------------------><
+>>-disable-----------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Disables the associated window.</para>
 </section>
 
-<section id="movetowo"><title>MOVETO</title>
-<indexterm><primary>MOVETO method</primary>
+<section id="movetowo"><title>moveTo</title>
+<indexterm><primary>moveTo method</primary>
 <secondary>of WindowsObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>MOVETO method</secondary>
+<secondary>moveTo method</secondary>
 <tertiary>of WindowsObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-MOVETO--(--x--,--y--)---------------------------------------><
+>>-moveTo--(--x--,--y--)---------------------------------------><
 ]]>
 </programlisting>
 
@@ -2364,30 +2362,30 @@ and height are specified in screen coordinates.</para>
 the new position in screen pixels.</para>
 </section>
 
-<section id="toforegroundwo"><title>TOFOREGROUND</title>
-<indexterm><primary>TOFOREGROUND method</primary>
+<section id="toforegroundwo"><title>toForeground</title>
+<indexterm><primary>toForeground method</primary>
 <secondary>of WindowsObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>TOFOREGROUND method</secondary>
+<secondary>toForeground method</secondary>
 <tertiary>of WindowsObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-TOFOREGROUND------------------------------------------------><
+>>-toForeground------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Makes the associated window the foreground window.</para>
 </section>
 
-<section id="focusnextitemwo"><title>FOCUSNEXTITEM</title>
-<indexterm><primary>FOCUSNEXTITEM method</primary>
+<section id="focusnextitemwo"><title>focusNextItem</title>
+<indexterm><primary>focusNextItem method</primary>
 <secondary>of WindowsObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>FOCUSNEXTITEM method</secondary>
+<secondary>focusNextItem method</secondary>
 <tertiary>of WindowsObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-FOCUSNEXTITEM-----------------------------------------------><
+>>-focusNextItem-----------------------------------------------><
 ]]>
 </programlisting>
 
@@ -2395,15 +2393,15 @@ the new position in screen pixels.</para>
 </para>
 </section>
 
-<section id="focuspreviousitemwo"><title>FOCUSPREVIOUSITEM</title>
-<indexterm><primary>FOCUSPREVIOUSITEM method</primary>
+<section id="focuspreviousitemwo"><title>focusPreviousItem</title>
+<indexterm><primary>focusPreviousItem method</primary>
 <secondary>of WindowsObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>FOCUSPREVIOUSITEM method</secondary>
+<secondary>focusPreviousItem method</secondary>
 <tertiary>of WindowsObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-FOCUSPREVIOUSITEM-------------------------------------------><
+>>-focusPreviousItem-------------------------------------------><
 ]]>
 </programlisting>
 
@@ -2411,15 +2409,15 @@ the new position in screen pixels.</para>
 window.</para>
 </section>
 
-<section id="focusitemwo"><title>FOCUSITEM</title>
-<indexterm><primary>FOCUSITEM method</primary>
+<section id="focusitemwo"><title>focusItem</title>
+<indexterm><primary>focusItem method</primary>
 <secondary>of WindowsObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>FOCUSITEM method</secondary>
+<secondary>focusItem method</secondary>
 <tertiary>of WindowsObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-FOCUSITEM--(--wndObject--)----------------------------------><
+>>-focusItem--(--wndObject--)----------------------------------><
 ]]>
 </programlisting>
 
@@ -2429,42 +2427,42 @@ WindowObject instance <emphasis role="italic">wndObject</emphasis>.</para>
 <para>The following example sets the input focus to the last child window:
 </para>
 <programlisting>
- dlg = wndmgr~Find("TestDialog")
+ dlg = wndmgr~find("TestDialog")
     if dlg \= .Nil then do
-        fChild = dlg~FirstChild
-        lChild = fChild~Last
-        dlg~FocusItem(lChild)
+        fChild = dlg~firstChild
+        lChild = fChild~last
+        dlg~focusItem(lChild)
     end
 </programlisting>
 </section>
 
-<section id="findchildwo"><title>FINDCHILD</title>
-<indexterm><primary>FINDCHILD method</primary>
+<section id="findchildwo"><title>findChild</title>
+<indexterm><primary>findChild method</primary>
 <secondary>of WindowsObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>FINDCHILD method</secondary>
+<secondary>findChild method</secondary>
 <tertiary>of WindowsObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-FINDCHILD--(--label--)--------------------------------------><
+>>-findChild--(--label--)--------------------------------------><
 ]]>
 </programlisting>
 
 <para>Returns an instance of the WindowObject class associated with the child
 window with the specified <emphasis role="italic">label</emphasis>. If the
 associated window does not
-own such a window, the .NIL object is returned.</para>
+own such a window, the .Nil object is returned.</para>
 </section>
 
-<section id="childatpositionwo"><title>CHILDATPOSITION</title>
-<indexterm><primary>CHILDATPOSITION method</primary>
+<section id="childatpositionwo"><title>childAtPosition</title>
+<indexterm><primary>childAtPosition method</primary>
 <secondary>of WindowsObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>CHILDATPOSITION method</secondary>
+<secondary>childAtPosition method</secondary>
 <tertiary>of WindowsObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-CHILDATPOSITION--(--x--,--y--)------------------------------><
+>>-childAtPosition--(--x--,--y--)------------------------------><
 ]]>
 </programlisting>
 
@@ -2473,52 +2471,52 @@ window at the specified client position (<emphasis role="italic">x,y</emphasis>)
 The coordinates that are relative to the upper left corner of the associated
 window must be specified
 in screen pixels. To retrieve top-level windows,
-use method <link linkend="windowatpositionwm">WINDOWATPOSITION</link>.</para>
+use method <link linkend="windowatpositionwm">windowAtPosition</link>.</para>
 </section>
 
-<section id="nextwo"><title>NEXT</title>
-<indexterm><primary>NEXT method</primary>
+<section id="nextwo"><title>next</title>
+<indexterm><primary>next method</primary>
 <secondary>of WindowsObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>NEXT method</secondary>
+<secondary>next method</secondary>
 <tertiary>of WindowsObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-NEXT--------------------------------------------------------><
+>>-next--------------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Returns an instance of the WindowObject class associated with the next
 window of the same level as the associated window. If the associated window
-is the last window of a level, the .NIL object is returned.</para>
+is the last window of a level, the .Nil object is returned.</para>
 </section>
 
-<section id="previouswo"><title>PREVIOUS</title>
-<indexterm><primary>PREVIOUS method</primary>
+<section id="previouswo"><title>previous</title>
+<indexterm><primary>previous method</primary>
 <secondary>of WindowsObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>PREVIOUS method</secondary>
+<secondary>previous method</secondary>
 <tertiary>of WindowsObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-PREVIOUS----------------------------------------------------><
+>>-previous----------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Returns an instance of the WindowObject class associated with the previous
 window of the same level as the associated window. If the associated window
-is the first window of a level, the .NIL object is returned.</para>
+is the first window of a level, the .Nil object is returned.</para>
 </section>
 
-<section id="firstwo"><title>FIRST</title>
-<indexterm><primary>FIRST method</primary>
+<section id="firstwo"><title>first</title>
+<indexterm><primary>first method</primary>
 <secondary>of WindowsObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>FIRST method</secondary>
+<secondary>first method</secondary>
 <tertiary>of WindowsObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-FIRST-------------------------------------------------------><
+>>-first-------------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -2526,15 +2524,15 @@ is the first window of a level, the .NIL object is returned.</para>
 window of the same level as the associated window.</para>
 </section>
 
-<section id="lastwo"><title>LAST</title>
-<indexterm><primary>LAST method</primary>
+<section id="lastwo"><title>last</title>
+<indexterm><primary>last method</primary>
 <secondary>of WindowsObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>LAST method</secondary>
+<secondary>last method</secondary>
 <tertiary>of WindowsObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-LAST--------------------------------------------------------><
+>>-last--------------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -2542,32 +2540,32 @@ window of the same level as the associated window.</para>
 window of the same level as the associated window.</para>
 </section>
 
-<section id="ownerwo"><title>OWNER</title>
-<indexterm><primary>OWNER method</primary>
+<section id="ownerwo"><title>owner</title>
+<indexterm><primary>owner method</primary>
 <secondary>of WindowsObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>OWNER method</secondary>
+<secondary>owner method</secondary>
 <tertiary>of WindowsObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-OWNER-------------------------------------------------------><
+>>-owner-------------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Returns an instance of the WindowObject class associated with the window
 that owns the associated window (parent). If the associated window is a
-top-level window, the .NIL object is returned.</para>
+top-level window, the .Nil object is returned.</para>
 </section>
 
-<section id="firstchildwo"><title>FIRSTCHILD</title>
-<indexterm><primary>FIRSTCHILD method</primary>
+<section id="firstchildwo"><title>firstChild</title>
+<indexterm><primary>firstChild method</primary>
 <secondary>of WindowsObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>FIRSTCHILD method</secondary>
+<secondary>firstChild method</secondary>
 <tertiary>of WindowsObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-FIRSTCHILD--------------------------------------------------><
+>>-firstChild--------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -2576,15 +2574,15 @@ child window of the associated window. If no child window exists, the .NIL
 object is returned.</para>
 </section>
 
-<section id="enumeratechildrenwo"><title>ENUMERATECHILDREN</title>
-<indexterm><primary>ENUMERATECHILDREN method</primary>
+<section id="enumeratechildrenwo"><title>enumerateChildren</title>
+<indexterm><primary>enumerateChildren method</primary>
 <secondary>of WindowsObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>ENUMERATECHILDREN method</secondary>
+<secondary>enumerateChildren method</secondary>
 <tertiary>of WindowsObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-ENUMERATECHILDREN-------------------------------------------><
+>>-enumerateChildren-------------------------------------------><
 ]]>
 </programlisting>
 
@@ -2619,8 +2617,8 @@ following entries, where each entry starts with an exclamation mark (!):</para>
 </variablelist>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
-      wo = winmgr~Find("TestDialog")
-        enum. = wo~EnumerateChildren
+      wo = winmgr~find("TestDialog")
+        enum. = wo~enumerateChildren
         do i = 1 to enum.0   /* number of children */
            say "---"
            say "Handle:" enum.i.!Handle
@@ -2634,30 +2632,30 @@ following entries, where each entry starts with an exclamation mark (!):</para>
 </programlisting>
 </section>
 
-<section id="sendmessagewo"><title>SENDMESSAGE</title>
-<indexterm><primary>SENDMESSAGE method</primary>
+<section id="sendmessagewo"><title>sendMessage</title>
+<indexterm><primary>sendMessage method</primary>
 <secondary>of WindowsObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>SENDMESSAGE method</secondary>
+<secondary>sendMessage method</secondary>
 <tertiary>of WindowsObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-SENDMESSAGE--(--message--,--wParam--,--lParam--)------------><
+>>-sendMessage--(--message--,--wParam--,--lParam--)------------><
 ]]>
 </programlisting>
 
 <para>Sends a message to the associated window.</para>
 </section>
 
-<section id="sendcommandwo"><title>SENDCOMMAND</title>
-<indexterm><primary>SENDCOMMAND method</primary>
+<section id="sendcommandwo"><title>sendCommand</title>
+<indexterm><primary>sendCommand method</primary>
 <secondary>of WindowsObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>SENDCOMMAND method</secondary>
+<secondary>sendCommand method</secondary>
 <tertiary>of WindowsObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-SENDCOMMAND--(--command--)----------------------------------><
+>>-sendCommand--(--command--)----------------------------------><
 ]]>
 </programlisting>
 
@@ -2666,33 +2664,33 @@ sent, for example, when a button is pressed, where
 <emphasis role="italic">command</emphasis> is the button ID.</para>
 </section>
 
-<section id="sendmenucommandwo"><title>SENDMENUCOMMAND</title>
-<indexterm><primary>SENDMENUCOMMAND method</primary>
+<section id="sendmenucommandwo"><title>sendMenuCommand</title>
+<indexterm><primary>sendMenuCommand method</primary>
 <secondary>of WindowsObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>SENDMENUCOMMAND method</secondary>
+<secondary>sendMenuCommand method</secondary>
 <tertiary>of WindowsObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-SENDMENUCOMMAND--(--id--)-----------------------------------><
+>>-sendMenuCommand--(--id--)-----------------------------------><
 ]]>
 </programlisting>
 
 <para>Selects the menu item <emphasis role="italic">id</emphasis> of the
-associated window. Method <link linkend="idofmo">IDOF</link> returns the
+associated window. Method <link linkend="idofmo">idOf</link> returns the
 ID of a menu item.</para>
 </section>
 
-<section id="sendmouseclickwo"><title>SENDMOUSECLICK</title>
-<indexterm><primary>SENDMOUSECLICK method</primary>
+<section id="sendmouseclickwo"><title>sendMouseClick</title>
+<indexterm><primary>sendMouseClick method</primary>
 <secondary>of WindowsObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>SENDMOUSECLICK method</secondary>
+<secondary>sendMouseClick method</secondary>
 <tertiary>of WindowsObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
                       +-"LEFT"---+     +-"DBLCLK"-+
->>-SENDMOUSECLICK--(--+-"RIGHT"--+--,--+-"UP"-----+----,--x--,--y-->
+>>-sendMouseClick--(--+-"RIGHT"--+--,--+-"UP"-----+----,--x--,--y-->
                       +-"MIDDLE"-+     +-"DOWN"---+
 
 >--+-----------------------------+--)--------------------------><
@@ -2743,15 +2741,15 @@ coordinates, relative to the upper left corner of the window.
 </variablelist>
 </section>
 
-<section id="sendsyscommandwo"><title>SENDSYSCOMMAND</title>
-<indexterm><primary>SENDSYSCOMMAND method</primary>
+<section id="sendsyscommandwo"><title>sendSyscommand</title>
+<indexterm><primary>sendSyscommand method</primary>
 <secondary>of WindowsObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>SENDSYSCOMMAND method</secondary>
+<secondary>sendSyscommand method</secondary>
 <tertiary>of WindowsObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-SENDSYSCOMMAND--(--"--+-SIZE--------+--"--)-----------------><
+>>-sendSyscommand--(--"--+-SIZE--------+--"--)-----------------><
                          +-MOVE--------+
                          +-MINIMIZE----+
                          +-MAXIMIZE----+
@@ -2826,15 +2824,15 @@ WM_HELP message.
 </variablelist>
 </section>
 
-<section id="pushbuttonwo"><title>PUSHBUTTON</title>
-<indexterm><primary>PUSHBUTTON method</primary>
+<section id="pushbuttonwo"><title>pushButton</title>
+<indexterm><primary>pushButton method</primary>
 <secondary>of WindowsObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>PUSHBUTTON method</secondary>
+<secondary>PushButton method</secondary>
 <tertiary>of WindowsObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-PUSHBUTTON--(--label--)-------------------------------------><
+>>-pushButton--(--label--)-------------------------------------><
 ]]>
 </programlisting>
 
@@ -2846,15 +2844,15 @@ label contains a mnemonic (underscored letter), you must specify an ampersand
 and check or uncheck check boxes.</para>
 </section>
 
-<section id="sendkeywo"><title>SENDKEY</title>
-<indexterm><primary>SENDKEY method</primary>
+<section id="sendkeywo"><title>sendKey</title>
+<indexterm><primary>sendKey method</primary>
 <secondary>of WindowsObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>SENDKEY method</secondary>
+<secondary>sendKey method</secondary>
 <tertiary>of WindowsObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-SENDKEY--(--keyName--+------------------------+--)----------><
+>>-sendKey--(--keyName--+------------------------+--)----------><
                         +-,--+-----+--+--------+-+
                              +-alt-+  +-,--ext-+
 ]]>
@@ -2872,15 +2870,15 @@ is an extended key, such as a right Ctrl or a right Shift.</para>
 <link linkend="virtualkeys">Symbolic Names for Virtual Keys</link>.</para>
 </section>
 
-<section id="sendcharwo"><title>SENDCHAR</title>
-<indexterm><primary>SENDCHAR method</primary>
+<section id="sendcharwo"><title>sendChar</title>
+<indexterm><primary>sendChar method</primary>
 <secondary>of WindowsObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>SENDCHAR method</secondary>
+<secondary>sendChar method</secondary>
 <tertiary>of WindowsObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-SENDCHAR--(--character--+--------+--)-----------------------><
+>>-sendChar--(--character--+--------+--)-----------------------><
                            +-,--alt-+
 ]]>
 </programlisting>
@@ -2890,15 +2888,15 @@ is an extended key, such as a right Ctrl or a right Shift.</para>
 is 1, a pressed Alt key is simulated.</para>
 </section>
 
-<section id="sendkeydownwo"><title>SENDKEYDOWN</title>
-<indexterm><primary>SENDKEYDOWN method</primary>
+<section id="sendkeydownwo"><title>sendKeyDown</title>
+<indexterm><primary>sendKeyDown method</primary>
 <secondary>of WindowsObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>SENDKEYDOWN method</secondary>
+<secondary>sendKeyDown method</secondary>
 <tertiary>of WindowsObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-SENDKEYDOWN--(--keyName--+--------+--)----------------------><
+>>-sendKeyDown--(--keyName--+--------+--)----------------------><
                             +-,--ext-+
 ]]>
 </programlisting>
@@ -2911,15 +2909,15 @@ must be 1 if the key is an extended key, such as a right Ctrl or a right Shift.
 <link linkend="virtualkeys">Symbolic Names for Virtual Keys</link>.</para>
 </section>
 
-<section id="sendkeyupwo"><title>SENDKEYUP</title>
-<indexterm><primary>SENDKEYUP method</primary>
+<section id="sendkeyupwo"><title>sendKeyUp</title>
+<indexterm><primary>sendKeyUp method</primary>
 <secondary>of WindowsObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>SENDKEYUP method</secondary>
+<secondary>sendKeyUp method</secondary>
 <tertiary>of WindowsObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-SENDKEYUP--(--keyName--+--------+--)------------------------><
+>>-sendKeyUp--(--keyName--+--------+--)------------------------><
                           +-,--ext-+
 ]]>
 </programlisting>
@@ -2932,15 +2930,15 @@ must be 1 if the key is an extended key, such as a right Ctrl or a right Shift.
 <link linkend="virtualkeys">Symbolic Names for Virtual Keys</link>.</para>
 </section>
 
-<section id="sendtextwo"><title>SENDTEXT</title>
-<indexterm><primary>SENDTEXT method</primary>
+<section id="sendtextwo"><title>sendText</title>
+<indexterm><primary>sendText method</primary>
 <secondary>of WindowsObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>SENDTEXT method</secondary>
+<secondary>sendText method</secondary>
 <tertiary>of WindowsObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-SENDTEXT--(--text--)----------------------------------------><
+>>-sendText--(--text--)----------------------------------------><
 ]]>
 </programlisting>
 
@@ -2948,15 +2946,15 @@ must be 1 if the key is an extended key, such as a right Ctrl or a right Shift.
 sequence of WM_CHAR, WM_KEYDOWN, and WM_KEYUP messages.</para>
 </section>
 
-<section id="menuwo"><title>MENU</title>
-<indexterm><primary>MENU method</primary>
+<section id="menuwo"><title>menu</title>
+<indexterm><primary>menu method</primary>
 <secondary>of WindowsObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>MENU method</secondary>
+<secondary>menu method</secondary>
 <tertiary>of WindowsObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-MENU--------------------------------------------------------><
+>>-menu--------------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -2964,15 +2962,15 @@ sequence of WM_CHAR, WM_KEYDOWN, and WM_KEYUP messages.</para>
 the associated window.</para>
 </section>
 
-<section id="systemmenuwo"><title>SYSTEMMENU</title>
-<indexterm><primary>SYSTEMMENU method</primary>
+<section id="systemmenuwo"><title>systemMenu</title>
+<indexterm><primary>systemMenu method</primary>
 <secondary>of WindowsObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>SYSTEMMENU method</secondary>
+<secondary>systemMenu method</secondary>
 <tertiary>of WindowsObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-SYSTEMMENU--------------------------------------------------><
+>>-systemMenu--------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -2980,32 +2978,32 @@ the associated window.</para>
 menu of the associated window.</para>
 </section>
 
-<section id="ismenuwo"><title>ISMENU</title>
-<indexterm><primary>ISMENU method</primary>
+<section id="ismenuwo"><title>isMenu</title>
+<indexterm><primary>isMenu method</primary>
 <secondary>of WindowsObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>ISMENU method</secondary>
+<secondary>isMenu method</secondary>
 <tertiary>of WindowsObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-ISMENU------------------------------------------------------><
+>>-isMenu------------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Returns 1 if the associated window is a menu, otherwise 0.</para>
 </section>
 
-<section id="processmenucommandwo"><title>PROCESSMENUCOMMAND</title>
-<indexterm><primary>PROCESSMENUCOMMAND method</primary>
+<section id="processmenucommandwo"><title>processMenuCommand</title>
+<indexterm><primary>processMenuCommand method</primary>
 <secondary>of WindowsObject class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>PROCESSMENUCOMMAND method</secondary>
+<secondary>ProcessMenuCommand method</secondary>
 <tertiary>of WindowsObject class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
                                        +-,-------+
                                        V         |
->>-PROCESSMENUCOMMAND--(--+------+--,----submenu-+--,--menuItem--)-><
+>>-processMenuCommand--(--+------+--,----submenu-+--,--menuItem--)-><
                           +-menu-+
 ]]>
 </programlisting>
@@ -3039,59 +3037,59 @@ in the <computeroutput>ooRexx\SAMPLES</computeroutput> directory.</para>
 <thead>
 <row>
 <entry>Method...</entry>
-<entry>...on page</entry>
+<entry>...link</entry>
 </row>
 </thead>
 <tbody>
 <row>
-<entry>AddDeskTopIcon</entry>
-<entry><link linkend="adddesktopicon">AddDesktopIcon</link></entry>
+<entry>addDeskTopIcon</entry>
+<entry><link linkend="adddesktopicon">addDesktopIcon</link></entry>
 </row>
 <row>
-<entry>AddGroup</entry>
-<entry><link linkend="wpadgr">AddGroup</link></entry>
+<entry>addGroup</entry>
+<entry><link linkend="wpadgr">addGroup</link></entry>
 </row>
 <row>
-<entry>AddItem</entry>
-<entry><link linkend="wpadit">AddItem</link></entry>
+<entry>addItem</entry>
+<entry><link linkend="wpadit">addItem</link></entry>
 </row>
 <row>
-<entry>AddShortCut</entry>
-<entry><link linkend="addshortcut">AddShortCut</link></entry>
+<entry>addShortCut</entry>
+<entry><link linkend="addshortcut">addShortCut</link></entry>
 </row>
 <row>
-<entry>DeleteDesktopIcon</entry>
-<entry><link linkend="deldskic">DeleteDesktopIcon</link></entry>
+<entry>deleteDesktopIcon</entry>
+<entry><link linkend="deldskic">deleteDesktopIcon</link></entry>
 </row>
 <row>
-<entry>DeleteGroup</entry>
-<entry><link linkend="wpdegr">DeleteGroup</link></entry>
+<entry>deleteGroup</entry>
+<entry><link linkend="wpdegr">deleteGroup</link></entry>
 </row>
 <row>
-<entry>DeleteItem</entry>
-<entry><link linkend="wpdeit">DeleteItem</link></entry>
+<entry>deleteItem</entry>
+<entry><link linkend="wpdeit">deleteItem</link></entry>
 </row>
 <row>
-<entry>Init</entry>
-<entry><link linkend="wpinit">Init</link></entry>
+<entry>init</entry>
+<entry><link linkend="wpinit">init</link></entry>
 </row>
 <row>
-<entry>ShowGroup</entry>
-<entry><link linkend="wpshgr">ShowGroup</link></entry>
+<entry>showGroup</entry>
+<entry><link linkend="wpshgr">showGroup</link></entry>
 </row>
 </tbody>
 </tgroup>
 </table>
 
-<section id="adddesktopicon"><title>ADDDESKTOPICON</title>
-<indexterm><primary>ADDDESKTOPICON method</primary>
+<section id="adddesktopicon"><title>addDesktopIcon</title>
+<indexterm><primary>addDesktopIcon method</primary>
 <secondary>of WindowsProgramManager class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>ADDDESKTOPICON method</secondary>
+<secondary>AddDesktopIcon method</secondary>
 <tertiary>of WindowsProgramManager class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-AddDesktopIcon--(--name--,--program--+--------------------------------+-->
+>>-addDesktopIcon--(--name--,--program--+--------------------------------+-->
                                         |                     +-0------+ |
                                         +-,--+----------+--,--+--------+-+
                                              +-iconfile-+     +-iconnr-+
@@ -3157,15 +3155,15 @@ default is &quot;NORMAL&quot;.
 </variablelist>
 </section>
 
-<section id="addshortcut"><title>ADDSHORTCUT</title>
-<indexterm><primary>ADDSHORTCUT method</primary>
+<section id="addshortcut"><title>addShortCut</title>
+<indexterm><primary>addShortCut method</primary>
 <secondary>of WindowsProgramManager class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>ADDSHORTCUT method</secondary>
+<secondary>addShortCut method</secondary>
 <tertiary>of WindowsProgramManager class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-AddShortCut--(--name--,--program--------------------------------------->
+>>-addShortCut--(--name--,--program--------------------------------------->
 
 >--+---------------------------------------------------------------------->
    |                  +-0------+
@@ -3224,22 +3222,22 @@ to the Notepad editor wihin the directory c:\temp:
 <programlisting>
 pm = .WindowsProgramManager~new
 	if pm~InitCode \= 0 then exit
-	pm~AddShortCut("c:\temp\My Notepad","%SystemRoot%\system32\notepad.exe")
+	pm~addShortCut("c:\temp\My Notepad","%SystemRoot%\system32\notepad.exe")
 	::requires "winsystm.cls"
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="wpadgr"><title>ADDGROUP</title>
-<indexterm><primary>ADDGROUP method</primary>
+<section id="wpadgr"><title>addGroup</title>
+<indexterm><primary>addGroup method</primary>
 <secondary>of WindowsProgramManager class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>ADDGROUP method</secondary>
+<secondary>addGroup method</secondary>
 <tertiary>of WindowsProgramManager class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-AddGroup(-group-)-------------------------------------------><
+>>-addGroup(-group-)-------------------------------------------><
 ]]>
 </programlisting>
 
@@ -3247,7 +3245,7 @@ pm = .WindowsProgramManager~new
 already exists, it is opened. The <emphasis role="italic">group</emphasis>
 argument specifies the name of the program group to be added. Example:</para>
 <programlisting>
-AddGroup("Object Rexx Redbook")
+addGroup("Object Rexx Redbook")
 </programlisting>
 
 <note><title>Note</title>
@@ -3266,15 +3264,15 @@ must not contain any brackets or parenthesis. Otherwise, this method fails.
 </variablelist>
 </section>
 
-<section id="wpadit"><title>ADDITEM</title>
-<indexterm><primary>ADDITEM method</primary>
+<section id="wpadit"><title>addItem</title>
+<indexterm><primary>addItem method</primary>
 <secondary>of WindowsProgramManager class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>ADDITEM method</secondary>
+<secondary>addItem method</secondary>
 <tertiary>of WindowsProgramManager class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-AddItem--(--shortcut,program--------------------------------->
+>>-addItem--(--shortcut,program--------------------------------->
 
 >--+------------------------------------------------------+----->
    +-,--+----------+--+---------------------------------+-+
@@ -3309,18 +3307,18 @@ for example / to _.</para></note>
 </variablelist>
 </section>
 
-<section id="deldskic"><title>DELETEDESKTOPICON</title>
-<indexterm><primary>DELETEDESKTOPICON method</primary>
+<section id="deldskic"><title>deleteDesktopIcon</title>
+<indexterm><primary>deleteDesktopIcon method</primary>
 <secondary>of WindowsProgramManager class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>DELETEDESKTOPICON method</secondary>
+<secondary>deleteDesktopIcon method</secondary>
 <tertiary>of WindowsProgramManager class</tertiary></indexterm>
 
 <programlisting>
 <![CDATA[
-                                +-"PERSONAL"-+
-DeleteDesktopIcon--(--name--,---+------------+-)
-                                +-"COMMON"---+
+                                   +-"PERSONAL"-+
+>>-deleteDesktopIcon--(--name--,---+------------+-)------------><
+                                   +-"COMMON"---+
 ]]>
 </programlisting>
 
@@ -3391,7 +3389,7 @@ versa.</para></note>
 pm = .WindowsProgramManager~new
 if pm~InitCode \= 0 then exit
 
-rc = pm~DeleteDesktopIcon("MyNotepad1", ,
+rc = pm~deleteDesktopIcon("MyNotepad1", ,
      "%SystemRoot%\system32\notepad.exe")
 if rc \= 0 then do
   say "Error deleting shortcut: My Notepad 1"
@@ -3406,15 +3404,15 @@ exit
 
 </section>
 
-<section id="wpdegr"><title>DELETEGROUP</title>
-<indexterm><primary>DELETEGROUP method</primary>
+<section id="wpdegr"><title>deleteGroup</title>
+<indexterm><primary>deleteGroup method</primary>
 <secondary>of WindowsProgramManager class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>DELETEGROUP method</secondary>
+<secondary>deleteGroup method</secondary>
 <tertiary>of WindowsProgramManager class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-DeleteGroup(-group-)----------------------------------------><
+>>-deleteGroup(-group-)----------------------------------------><
 ]]>
 </programlisting>
 
@@ -3432,15 +3430,15 @@ the name of the program group to be deleted.</para>
 </variablelist>
 </section>
 
-<section id="wpdeit"><title>DELETEITEM</title>
-<indexterm><primary>DELETEITEM method</primary>
+<section id="wpdeit"><title>deleteItem</title>
+<indexterm><primary>deleteItem method</primary>
 <secondary>of WindowsProgramManager class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>DELETEITEM method</secondary>
+<secondary>deleteItem method</secondary>
 <tertiary>of WindowsProgramManager class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-DeleteItem(shortcut)----------------------------------------><
+>>-deleteItem(shortcut)----------------------------------------><
 ]]>
 </programlisting>
 
@@ -3456,15 +3454,15 @@ the name of the program group to be deleted.</para>
 </variablelist>
 </section>
 
-<section id="wpinit"><title>INIT</title>
-<indexterm><primary>INIT method</primary>
+<section id="wpinit"><title>init</title>
+<indexterm><primary>init method</primary>
 <secondary>of WindowsProgramManager class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>INIT method</secondary>
+<secondary>init method</secondary>
 <tertiary>of WindowsProgramManager class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-Init--------------------------------------------------------><
+>>-init--------------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -3472,15 +3470,15 @@ the name of the program group to be deleted.</para>
 required function package.</para>
 </section>
 
-<section id="wpshgr"><title>SHOWGROUP</title>
-<indexterm><primary>SHOWGROUP method</primary>
+<section id="wpshgr"><title>showGroup</title>
+<indexterm><primary>showGroup method</primary>
 <secondary>of WindowsProgramManager class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>SHOWGROUP method</secondary>
+<secondary>showGroup method</secondary>
 <tertiary>of WindowsProgramManager class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-ShowGroup(-group,-+-----+-)---------------------------------><
+>>-showGroup(-group,-+-----+-)---------------------------------><
                      +-MIN-+
                      +-MAX-+
 ]]>
@@ -3967,58 +3965,58 @@ provided in the <computeroutput>ooRexx\SAMPLES</computeroutput> directory
 <para><emphasis role="bold">Methods the WindowsRegistry Class Defines</emphasis>
 </para>
 <itemizedlist>
-<listitem><para>CLASSES_ROOT</para></listitem>
-<listitem><para>CLASSES_ROOT=</para></listitem>
-<listitem><para>CLOSE</para></listitem>
-<listitem><para>CREATE</para></listitem>
-<listitem><para>CURRENT_KEY</para></listitem>
-<listitem><para>CURRENT_KEY=</para></listitem>
-<listitem><para>CURRENT_USER</para></listitem>
-<listitem><para>CURRENT_USER=</para></listitem>
-<listitem><para>DELETE</para></listitem>
-<listitem><para>DELETEVALUE</para></listitem>
-<listitem><para>FLUSH</para></listitem>
-<listitem><para>GETVALUE</para></listitem>
-<listitem><para>INIT</para></listitem>
-<listitem><para>LIST</para></listitem>
-<listitem><para>LISTVALUES</para></listitem>
-<listitem><para>LOAD</para></listitem>
-<listitem><para>LOCAL_MACHINE</para></listitem>
-<listitem><para>LOCAL_MACHINE=</para></listitem>
-<listitem><para>OPEN</para></listitem>
-<listitem><para>QUERY</para></listitem>
-<listitem><para>REPLACE</para></listitem>
-<listitem><para>RESTORE</para></listitem>
-<listitem><para>SAVE</para></listitem>
-<listitem><para>SETVALUE</para></listitem>
-<listitem><para>UNLOAD</para></listitem>
-<listitem><para>USERS</para></listitem>
-<listitem><para>USERS=</para></listitem></itemizedlist>
+<listitem><para>classes_root</para></listitem>
+<listitem><para>classes_root=</para></listitem>
+<listitem><para>close</para></listitem>
+<listitem><para>create</para></listitem>
+<listitem><para>current_key</para></listitem>
+<listitem><para>current_key=</para></listitem>
+<listitem><para>current_user</para></listitem>
+<listitem><para>current_user=</para></listitem>
+<listitem><para>delete</para></listitem>
+<listitem><para>deleteValue</para></listitem>
+<listitem><para>flush</para></listitem>
+<listitem><para>getValue</para></listitem>
+<listitem><para>init</para></listitem>
+<listitem><para>list</para></listitem>
+<listitem><para>listValues</para></listitem>
+<listitem><para>load</para></listitem>
+<listitem><para>local_machine</para></listitem>
+<listitem><para>local_machine=</para></listitem>
+<listitem><para>open</para></listitem>
+<listitem><para>query</para></listitem>
+<listitem><para>replace</para></listitem>
+<listitem><para>restore</para></listitem>
+<listitem><para>save</para></listitem>
+<listitem><para>setValue</para></listitem>
+<listitem><para>unload</para></listitem>
+<listitem><para>users</para></listitem>
+<listitem><para>users=</para></listitem></itemizedlist>
 
-<section id="wrclro"><title>CLASSES_ROOT</title>
-<indexterm><primary>CLASSES_ROOT method</primary>
+<section id="wrclro"><title>classes_root</title>
+<indexterm><primary>classes_root method</primary>
 <secondary>of WindowsRegistry class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>CLASSES_ROOT method</secondary>
+<secondary>classes_root method</secondary>
 <tertiary>of WindowsRegistry class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-CLASSES_ROOT------------------------------------------------><
+>>-classes_root------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Returns the handle of the root key HKEY_CLASSES_ROOT.</para>
 </section>
 
-<section id="wrclroe"><title>CLASSES_ROOT=</title>
-<indexterm><primary>CLASSES_ROOT= method</primary>
+<section id="wrclroe"><title>classes_root=</title>
+<indexterm><primary>classes_root= method</primary>
 <secondary>of WindowsRegistry class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>CLASSES_ROOT= method</secondary>
+<secondary>classes_root= method</secondary>
 <tertiary>of WindowsRegistry class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-CLASSES_ROOT=-----------------------------------------------><
+>>-classes_root=-----------------------------------------------><
 ]]>
 </programlisting>
 
@@ -4026,15 +4024,15 @@ provided in the <computeroutput>ooRexx\SAMPLES</computeroutput> directory
 HKEY_CLASSES_ROOT. Do not modify this attribute.</para>
 </section>
 
-<section id="wrclse"><title>CLOSE</title>
-<indexterm><primary>CLOSE method</primary>
+<section id="wrclse"><title>close</title>
+<indexterm><primary>close method</primary>
 <secondary>of WindowsRegistry class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>CLOSE method</secondary>
+<secondary>close method</secondary>
 <tertiary>of WindowsRegistry class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-CLOSE(-+------------+-)-------------------------------------><
+>>-close(-+------------+-)-------------------------------------><
           +-key_handle-+
 ]]>
 </programlisting>
@@ -4049,15 +4047,15 @@ use FLUSH to empty the cache.</para>
 CURRENT_KEY is closed.</para>
 </section>
 
-<section id="wrconn"><title>CONNECT</title>
-<indexterm><primary>CONNECT method</primary>
+<section id="wrconn"><title>connect</title>
+<indexterm><primary>connect method</primary>
 <secondary>of WindowsRegistry class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>CONNECT method</secondary>
+<secondary>connect method</secondary>
 <tertiary>of WindowsRegistry class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-CONNECT(-key,computer-)-------------------------------------><
+>>-connect(-key,computer-)-------------------------------------><
 ]]>
 </programlisting>
 
@@ -4065,15 +4063,15 @@ CURRENT_KEY is closed.</para>
 HKEY_LOCAL_MACHINE and HKEY_USERS.</para>
 </section>
 
-<section id="wrcrt"><title>CREATE</title>
-<indexterm><primary>CREATE method</primary>
+<section id="wrcrt"><title>create</title>
+<indexterm><primary>create method</primary>
 <secondary>of WindowsRegistry class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>CREATE method</secondary>
+<secondary>create method</secondary>
 <tertiary>of WindowsRegistry class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-CREATE(-+--------+-,subkey)---------------------------------><
+>>-create(-+--------+-,subkey)---------------------------------><
            +-parent-+
 ]]>
 </programlisting>
@@ -4087,15 +4085,15 @@ newkey = rg~create(rg~local_machine,"MyOwnKey")
 </programlisting>
 </section>
 
-<section id="wrcuky"><title>CURRENT_KEY</title>
-<indexterm><primary>CURRENT_KEY method</primary>
+<section id="wrcuky"><title>current_key</title>
+<indexterm><primary>current_key method</primary>
 <secondary>of WindowsRegistry class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>CURRENT_KEY method</secondary>
+<secondary>current_key method</secondary>
 <tertiary>of WindowsRegistry class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-CURRENT_KEY-------------------------------------------------><
+>>-current_key-------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -4104,45 +4102,45 @@ CREATE, and OPEN. It is used as a default value if the key is omitted in other
 methods.</para>
 </section>
 
-<section id="wrcukye"><title>CURRENT_KEY=</title>
-<indexterm><primary>CURRENT_KEY= method</primary>
+<section id="wrcukye"><title>current_key=</title>
+<indexterm><primary>current_key= method</primary>
 <secondary>of WindowsRegistry class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>CURRENT_KEY= method</secondary>
+<secondary>current_key= method</secondary>
 <tertiary>of WindowsRegistry class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-CURRENT_KEY=------------------------------------------------><
+>>-current_key=------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Sets the handle of the current key.</para>
 </section>
 
-<section id="wrcuus"><title>CURRENT_USER</title>
-<indexterm><primary>CURRENT_USER method</primary>
+<section id="wrcuus"><title>current_user</title>
+<indexterm><primary>current_user method</primary>
 <secondary>of WindowsRegistry class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>CURRENT_USER method</secondary>
+<secondary>current_user method</secondary>
 <tertiary>of WindowsRegistry class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-CURRENT_USER------------------------------------------------><
+>>-current_user------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Returns the handle of the root key HKEY_CURRENT_USER.</para>
 </section>
 
-<section id="wrcuuse"><title>CURRENT_USER=</title>
-<indexterm><primary>CURRENT_USER= method</primary>
+<section id="wrcuuse"><title>current_user=</title>
+<indexterm><primary>current_user= method</primary>
 <secondary>of WindowsRegistry class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>CURRENT_USER= method</secondary>
+<secondary>current_user= method</secondary>
 <tertiary>of WindowsRegistry class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-CURRENT_USER=-----------------------------------------------><
+>>-current_user=-----------------------------------------------><
 ]]>
 </programlisting>
 
@@ -4150,15 +4148,15 @@ methods.</para>
 HKEY_CURRENT_USER. Do not modify this attribute.</para>
 </section>
 
-<section id="wrdele"><title>DELETE</title>
-<indexterm><primary>DELETE method</primary>
+<section id="wrdele"><title>delete</title>
+<indexterm><primary>delete method</primary>
 <secondary>of WindowsRegistry class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>DELETE method</secondary>
+<secondary>delete method</secondary>
 <tertiary>of WindowsRegistry class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-DELETE(-+------------+-,subkeyname)-------------------------><
+>>-delete(-+------------+-,subkeyname)-------------------------><
            +-key_handle-+
 ]]>
 </programlisting>
@@ -4168,15 +4166,15 @@ all its subkeys and values. If <emphasis role="italic">key_handle</emphasis>
 is omitted, CURRENT_KEY is used.</para>
 </section>
 
-<section id="wrdeva"><title>DELETEVALUE</title>
-<indexterm><primary>DELETEVALUE method</primary>
+<section id="wrdeva"><title>deleteValue</title>
+<indexterm><primary>deleteValue method</primary>
 <secondary>of WindowsRegistry class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>DELETEVALUE method</secondary>
+<secondary>deleteValue method</secondary>
 <tertiary>of WindowsRegistry class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-DELETEVALUE(-+------------+-+--------+-)--------------------><
+>>-deleteValue(-+------------+-+--------+-)--------------------><
                 +-key_handle-+ +-,value-+
 ]]>
 </programlisting>
@@ -4187,15 +4185,15 @@ CURRENT_KEY is used. If <emphasis role="italic">value</emphasis>
 is blank or omitted, the default value is deleted.</para>
 </section>
 
-<section id="wrflus"><title>FLUSH</title>
-<indexterm><primary>FLUSH method</primary>
+<section id="wrflus"><title>flush</title>
+<indexterm><primary>flush method</primary>
 <secondary>of WindowsRegistry class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>FLUSH method</secondary>
+<secondary>flush method</secondary>
 <tertiary>of WindowsRegistry class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-FLUSH(-+------------+-)-------------------------------------><
+>>-flush(-+------------+-)-------------------------------------><
           +-key_handle-+
 ]]>
 </programlisting>
@@ -4205,15 +4203,15 @@ is blank or omitted, the default value is deleted.</para>
 flushed.</para>
 </section>
 
-<section id="wrgtva"><title>GETVALUE</title>
-<indexterm><primary>GETVALUE method</primary>
+<section id="wrgtva"><title>getValue</title>
+<indexterm><primary>getValue method</primary>
 <secondary>of WindowsRegistry class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>GETVALUE method</secondary>
+<secondary>getValue method</secondary>
 <tertiary>of WindowsRegistry class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-GETVALUE(-+------------+-+--------+-)-----------------------><
+>>-getValue(-+------------+-+--------+-)-----------------------><
              +-key_handle-+ +-,value-+
 ]]>
 </programlisting>
@@ -4224,27 +4222,27 @@ is a compound variable with suffixes data and type. If
 omitted, CURRENT_KEY is used. If named <emphasis role="italic">value</emphasis>
 is blank or omitted, the default value is retrieved. Example: </para>
 <programlisting>
-myval. = rg~GETVALUE(,"filesystem")        /* current key */
+myval. = rg~getvalue(,"filesystem")        /* current key */
 say "Type is" myval.type
 if myval.type = "NORMAL" then say "Value is" myval.data
-myval. = rg~GETVALUE(mykey)
+myval. = rg~getvalue(mykey)
 say "my default value is:" myval.data
-myval. = rg~GETVALUE(mykey,"")
+myval. = rg~getvalue(mykey,"")
 say "my default value is:" myval.data
 </programlisting>
 <para>Possible types: NORMAL, EXPAND, MULTI, NUMBER, BINARY, NONE,
 OTHER.</para>
 </section>
 
-<section id="wrinit"><title>INIT</title>
-<indexterm><primary>INIT method</primary>
+<section id="wrinit"><title>init</title>
+<indexterm><primary>init method</primary>
 <secondary>of WindowsRegistry class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>INIT method</secondary>
+<secondary>init method</secondary>
 <tertiary>of WindowsRegistry class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-INIT--------------------------------------------------------><
+>>-init--------------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -4252,15 +4250,15 @@ OTHER.</para>
 external function package. The current key is set to HKEY_LOCAL_MACHINE.</para>
 </section>
 
-<section id="wrlist"><title>LIST</title>
-<indexterm><primary>LIST method</primary>
+<section id="wrlist"><title>list</title>
+<indexterm><primary>list method</primary>
 <secondary>of WindowsRegistry class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>LIST method</secondary>
+<secondary>list method</secondary>
 <tertiary>of WindowsRegistry class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-LIST(-+------------+-,stem.)--------------------------------><
+>>-list(-+------------+-,stem.)--------------------------------><
          +-key_handle-+
 ]]>
 </programlisting>
@@ -4276,15 +4274,15 @@ end
 </programlisting>
 </section>
 
-<section id="wrliva"><title>LISTVALUES</title>
-<indexterm><primary>LISTVALUES method</primary>
+<section id="wrliva"><title>listValues</title>
+<indexterm><primary>listValues method</primary>
 <secondary>of WindowsRegistry class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>LISTVALUES method</secondary>
+<secondary>listValues method</secondary>
 <tertiary>of WindowsRegistry class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-LISTVALUES(-+------------+-,variable.)----------------------><
+>>-listValues(-+------------+-,variable.)----------------------><
                +-key_handle-+
 ]]>
 </programlisting>
@@ -4310,15 +4308,15 @@ end
 </programlisting>
 </section>
 
-<section id="wrload"><title>LOAD</title>
-<indexterm><primary>LOAD method</primary>
+<section id="wrload"><title>load</title>
+<indexterm><primary>load method</primary>
 <secondary>of WindowsRegistry class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>LOAD method</secondary>
+<secondary>load method</secondary>
 <tertiary>of WindowsRegistry class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-LOAD(-+------------+-,subkeyname, filename)-----------------><
+>>-load(-+------------+-,subkeyname, filename)-----------------><
          +-key_handle-+
 ]]>
 </programlisting>
@@ -4337,30 +4335,30 @@ is created under HKEY_LOCAL_MACHINE.</para>
 unlock the registry data file filename.</para>
 </section>
 
-<section id="wrloma"><title>LOCAL_MACHINE</title>
-<indexterm><primary>LOCAL_MACHINE method</primary>
+<section id="wrloma"><title>local_machine</title>
+<indexterm><primary>local_machine method</primary>
 <secondary>of WindowsRegistry class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>LOCAL_MACHINE method</secondary>
+<secondary>local_machine method</secondary>
 <tertiary>of WindowsRegistry class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-LOCAL_MACHINE-----------------------------------------------><
+>>-local_machine-----------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Returns the handle of the root key HKEY_LOCAL_MACHINE.</para>
 </section>
 
-<section id="wrlomae"><title>LOCAL_MACHINE=</title>
-<indexterm><primary>LOCAL_MACHINE= method</primary>
+<section id="wrlomae"><title>local_machine=</title>
+<indexterm><primary>local_machine= method</primary>
 <secondary>of WindowsRegistry class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>LOCAL_MACHINE= method</secondary>
+<secondary>local_machine= method</secondary>
 <tertiary>of WindowsRegistry class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-LOCAL_MACHINE=----------------------------------------------><
+>>-local_machine=----------------------------------------------><
 ]]>
 </programlisting>
 
@@ -4368,15 +4366,15 @@ unlock the registry data file filename.</para>
 HKEY_LOCAL_MACHINE. Do not modify this attribute.</para>
 </section>
 
-<section id="wropen"><title>OPEN</title>
-<indexterm><primary>OPEN method</primary>
+<section id="wropen"><title>open</title>
+<indexterm><primary>open method</primary>
 <secondary>of WindowsRegistry class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>OPEN method</secondary>
+<secondary>open method</secondary>
 <tertiary>of WindowsRegistry class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-OPEN(-+---------------+-,subkey-+--------------+-)----------><
+>>-open(-+---------------+-,subkey-+--------------+-)----------><
          +-parent_handle-+         +-,-| access |-+
 
 access:
@@ -4424,15 +4422,15 @@ rights and do not allow to open the key with all but only with certain access
 values.</para>
 </section>
 
-<section id="wrquer"><title>QUERY</title>
-<indexterm><primary>QUERY method</primary>
+<section id="wrquer"><title>query</title>
+<indexterm><primary>query method</primary>
 <secondary>of WindowsRegistry class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>QUERY method</secondary>
+<secondary>query method</secondary>
 <tertiary>of WindowsRegistry class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-QUERY--(--+------------+--)---------------------------------><
+>>-query--(--+------------+--)---------------------------------><
              +-key_handle-+
 ]]>
 </programlisting>
@@ -4446,21 +4444,21 @@ values returned are <emphasis role="italic">class</emphasis> (class name),
 last modification. If <emphasis role="italic">key_handle</emphasis> is omitted,
 CURRENT_KEY is queried. Example:</para>
 <programlisting>
-myquery. = rg~QUERY(objectrexxkey)
+myquery. = rg~query(objectrexxkey)
 say "class="myquery.class "at" myquery.date
 say "subkeys="myquery.subkeys "values="myquery.values
 </programlisting>
 </section>
 
-<section id="wrrepl"><title>REPLACE</title>
-<indexterm><primary>REPLACE method</primary>
+<section id="wrrepl"><title>replace</title>
+<indexterm><primary>replace method</primary>
 <secondary>of WindowsRegistry class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>REPLACE method</secondary>
+<secondary>replace method</secondary>
 <tertiary>of WindowsRegistry class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-REPLACE(-+------------+-,-+------------+-,newfilename,oldfilename-)-><
+>>-replace(-+------------+-,-+------------+-,newfilename,oldfilename-)-><
             +-key_handle-+   +-subkeyname-+
 ]]>
 </programlisting>
@@ -4473,15 +4471,15 @@ system is restarted. If <emphasis role="italic">subkeyname</emphasis> is
 omitted, the key and all its subkeys will be replaced.</para>
 </section>
 
-<section id="wrrest"><title>RESTORE</title>
-<indexterm><primary>RESTORE method</primary>
+<section id="wrrest"><title>restore</title>
+<indexterm><primary>restore method</primary>
 <secondary>of WindowsRegistry class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>RESTORE method</secondary>
+<secondary>restore method</secondary>
 <tertiary>of WindowsRegistry class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-RESTORE(-+------------+-,filename-+-------------+-)---------><
+>>-restore(-+------------+-,filename-+-------------+-)---------><
             +-key_handle-+           +-,"VOLATILE"-+
 ]]>
 </programlisting>
@@ -4490,21 +4488,21 @@ omitted, the key and all its subkeys will be replaced.</para>
 <emphasis role="italic">key_handle</emphasis> is omitted, CURRENT_KEY
 is restored. Example:</para>
 <programlisting>
-rg~RESTORE(objectrexxkey,"\objrexx\orexx")
+rg~restore(objectrexxkey,"\objrexx\orexx")
 </programlisting>
 <para>The VOLATILE keyword creates a new memory-only set of registry
 information that is valid only until the system is restarted.</para>
 </section>
 
-<section id="wrsave"><title>SAVE</title>
-<indexterm><primary>SAVE method</primary>
+<section id="wrsave"><title>save</title>
+<indexterm><primary>save method</primary>
 <secondary>of WindowsRegistry class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>SAVE method</secondary>
+<secondary>save method</secondary>
 <tertiary>of WindowsRegistry class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-SAVE(-+------------+-,filename)-----------------------------><
+>>-save(-+------------+-,filename)-----------------------------><
          +-key_handle-+
 ]]>
 </programlisting>
@@ -4519,15 +4517,15 @@ rg~SAVE(objectrexxkey,"\objrexx\orexx")
 <emphasis role="italic">filename</emphasis>.</para>
 </section>
 
-<section id="wrstva"><title>SETVALUE</title>
-<indexterm><primary>SETVALUE method</primary>
+<section id="wrstva"><title>setValue</title>
+<indexterm><primary>setValue method</primary>
 <secondary>of WindowsRegistry class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>SETVALUE method</secondary>
+<secondary>setValue method</secondary>
 <tertiary>of WindowsRegistry class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-SETVALUE(-+------------+-,-+------+-,value-+---------+-)----><
+>>-setValue(-+------------+-,-+------+-,value-+---------+-)----><
              +-key_handle-+   +-name-+        +-,NORMAL-+
                                               +-,EXPAND-+
                                               +-,MULTI--+
@@ -4547,15 +4545,15 @@ rg~SETVALUE(objectrexxkey,"VERSION","1.0")
 </programlisting>
 </section>
 
-<section id="wrunld"><title>UNLOAD</title>
-<indexterm><primary>UNLOAD method</primary>
+<section id="wrunld"><title>unload</title>
+<indexterm><primary>unload method</primary>
 <secondary>of WindowsRegistry class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>UNLOAD method</secondary>
+<secondary>unload method</secondary>
 <tertiary>of WindowsRegistry class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-UNLOAD(-+------------+-,subkey)-----------------------------><
+>>-unload(-+------------+-,subkey)-----------------------------><
            +-key_handle-+
 ]]>
 </programlisting>
@@ -4567,30 +4565,30 @@ is omitted, the subkey under CURRENT_KEY is unloaded. Unload also unlocks the
 registry information file.</para>
 </section>
 
-<section id="wruse"><title>USERS</title>
-<indexterm><primary>USERS method</primary>
+<section id="wruse"><title>users</title>
+<indexterm><primary>users method</primary>
 <secondary>of WindowsRegistry class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>USERS method</secondary>
+<secondary>users method</secondary>
 <tertiary>of WindowsRegistry class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-USERS-------------------------------------------------------><
+>>-users-------------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Returns the handle of the root key HKEY_USERS.</para>
 </section>
 
-<section id="wrusee"><title>USERS=</title>
-<indexterm><primary>USERS= method</primary>
+<section id="wrusee"><title>users=</title>
+<indexterm><primary>users= method</primary>
 <secondary>of WindowsRegistry class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>USERS= method</secondary>
+<secondary>users= method</secondary>
 <tertiary>of WindowsRegistry class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-USERS=------------------------------------------------------><
+>>-users=------------------------------------------------------><
 ]]>
 </programlisting>
 
