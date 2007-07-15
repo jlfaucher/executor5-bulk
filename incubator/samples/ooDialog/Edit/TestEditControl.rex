@@ -155,9 +155,6 @@
 
   styleString = ""
   styleNumeric = editControl~getStyleRaw
-  say 'getStyleRaw:' styleNumeric~d2x
-  say 'getControlStyleRaw:' self~getControlStyleRaw( editControl~id )~d2x
-  say 'getStyle' editControl~getStyle
 
   if BinaryAnd( styleNumeric, sids["ES_UPPERCASE"] ) <> 0 then
     styleString = styleString "UPPER"
