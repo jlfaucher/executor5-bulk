@@ -962,7 +962,8 @@ A few of these are also used in parsing templates, and the equal sign
 <indexterm><primary>equal</primary>
 <secondary>sign</secondary>
 <tertiary>to indicate assignment</tertiary></indexterm>
-is also
+and the sequences <computeroutput>+=, -=, *= /=, %=, //=, ||=, &amp;=, |=, and &amp;&amp;=</computeroutput>
+are also
 used to indicate assignment. Blanks adjacent to operator characters are removed.
 Therefore, the following are identical in meaning: </para>
 <programlisting>
@@ -2048,6 +2049,10 @@ the form <emphasis role="italic">symbol=expression</emphasis> is an instruction
 known as an <emphasis>assignment</emphasis>. An assignment gives a (new) value
 to a variable. See <link linkend="assinmt">Assignments and Symbols</link>.
 </para>
+<section><title>Extended Assignments</title>
+<para>The character sequences <computeroutput>+=, -=, *= /=, %=, //=, ||=, &amp;=, |=, and &amp;&amp;=</computeroutput>
+can be used to create extended assignments.  These sequences combine an operation with the assignment.
+See <link linkend="extassign">Extended Assignments</link> for more details.</para>
 </section>
 
 <section id="msgit"><title>Message Instructions</title>
@@ -2087,6 +2092,7 @@ END
 <para>A <emphasis>subkeyword</emphasis> is
 a keyword that is reserved within the context of a particular instruction,
 for example, the symbols TO and WHILE in the DO instruction.</para>
+</section>
 </section>
 
 <section id="cmds"><title>Commands</title>
@@ -2187,6 +2193,21 @@ name corresponds to a single value. You can use compound symbols and stems
 for more complex collections of variables although the collection classes
 might be preferable in many cases. See
 <link linkend="coll">The Collection Classes</link>.</para>
+
+<section id="extassign"><title>Extended Assignments</title>
+<para>The character sequences <computeroutput>+=, -=, *= /=, %=, //=, ||=, &amp;=, |=, and &amp;&amp;=</computeroutput>
+can be used to create extended assignment instructions.  An extended assignment combines an binary operation with
+an assignment where the term on the left side of the assignment is also used as the left term of the operator.  For
+example,</para>
+<programlisting>
+    a += 1
+</programlisting>
+<para>is exactly equivalent to the instruction</para>
+<programlisting>
+    a = a + 1
+</programlisting>
+<para>Extended assignments are processed identically to the longer form of the instruction.</para>
+</section>
 
 <section id="constnt"><title>Constant Symbols</title>
 <indexterm><primary>constant symbols</primary></indexterm>
@@ -2607,6 +2628,13 @@ table[i] = 5                      /* Same as table~"[]="(5,i)  */
 passed to the method. That is, the language processor evaluates the
 <computeroutput>=expression</computeroutput> first. Then it evaluates
 the argument expressions within any [] pairs from left to right.</para>
+<para>The extended assignment form may also be used with messaging terms.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+
+<programlisting>
+   table[i] += 1        -- Same as table[i] = table[i] + 1
+</programlisting>
+<para>See <link linkend="extassign">Extended Assignments</link> for more details</para>
 </section>
 
 <section id="cmdhost"><title>Commands to External Environments</title>
