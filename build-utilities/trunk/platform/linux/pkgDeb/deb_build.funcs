@@ -41,8 +41,8 @@ doSyntax()
 {
   echo ""
   echo "  Syntax: ./deb_build.sh MODE [buildDir]"
-  echo "  Default for buildDir is: ../oorexx-3.1.2"
-  echo "  Base name for build directory *must* be oorexx-3.1.2"
+  echo "  Default for buildDir is: ../oorexx-3.2.0"
+  echo "  Base name for build directory *must* be oorexx-3.2.0 or oorexx-3.1.2"
   echo "  MODE: bootstrap || all || config || build || package"
   echo "    bootstrap:  setup, run ./bootstrap, ./configure, build, and package"
   echo "    all:        setup, run ./configure, build, and package"
@@ -60,25 +60,26 @@ checkArgs()
     echo "No MODE specified."
     doSyntax
   fi
-  
+
   if [ $# -gt 2 ]; then
     echo "To many arguments: $#"
     doSyntax
   fi
-  
+
   if [ $# -eq 2 ]; then
     src_dir=$2
   else
-    src_dir=../oorexx-3.1.2
+    src_dir=../oorexx-3.2.0
   fi
-  
+
   # Deb packages have a strict naming convention for the directory.
   base=`basename $src_dir`
-  if [ "$base" != "oorexx-3.1.2" ]; then
+  if [ "$base" != "oorexx-3.1.2" -a "$base" != "oorexx-3.2.0" ]; then
     echo "Incorrect base name for build directory: $base"
     doSyntax
   fi
-  
+  version=${base:7:5}
+
   ret=255
   case "$1" in
     bootstrap)
@@ -129,14 +130,14 @@ checkEnv()
     echo "in error."
     exit 255
   fi
-  
+
   if [ ! -f /usr/bin/fakeroot ]; then
     echo "fakeroot package not installed?  No /usr/bin/fakeroot?"
     echo "Going to abort, edit deb_build.funcs::checkEnv() if this is"
     echo "in error."
     exit 255
   fi
-  
+
   text=`cat /etc/debian_version`
   if [ "$text" = "3.1" ]; then
     platform=sarge
@@ -149,6 +150,6 @@ checkEnv()
     echo "No such directory:"  $src_dir
     exit 255
   fi
-  
+
   return 0
 }

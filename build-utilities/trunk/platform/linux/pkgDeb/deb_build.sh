@@ -1,4 +1,4 @@
-#! /bin/sh 
+#! /bin/sh
 #/*----------------------------------------------------------------------------*/
 #/*                                                                            */
 #/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
@@ -44,7 +44,7 @@
 #
 # ./deb_build MODE [buildDir]  or ./deb_build for syntax help
 
-# Will only work for a 3.1.2 build without editing.
+# Will only work for a 3.1.2 or 3.2.0 build without editing.
 
 # Source in the functions for this script
 . ./deb_build.funcs
@@ -80,7 +80,12 @@ fi
 if [ $mode -lt 2 ]; then
   destDir=${src_dir}/debian/
   mkdir $destDir
-  cp debian/changelog $destDir
+
+  # Apparently the changelog format is very rigid
+  echo "oorexx (${version}-1) stable; urgency=medium" > ${destDir}changelog
+  echo "" >> ${destDir}changelog
+  echo "            Fixes in Open Object Rexx ${version}" >> ${destDir}changelog
+  echo " -- Mark Miesfeld <miesfeld@users.sourceforge.net>  Mon, 16 Jul 2007 11:42:16 -0700" >> ${destDir}changelog
 
   # Instead of determing if this is a Debian Sarge or a K/Ubuntu system, use
   # the lowest common denominator.
