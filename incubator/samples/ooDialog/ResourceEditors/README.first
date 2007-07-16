@@ -1,0 +1,377 @@
+           Defining Dialogs for ooDialog Using a Resource Editor
+           =====================================================
+
+ooDialog provides a way for ooRexx programmers to add a graphical interface
+to their programs that run on the Windows platform.  These interfaces can
+range from simple to highly sophisticated and can add a professional look
+and feel to an ooRexx program.
+
+It is important to note this:
+----------------------------
+The IBM Resource Workshop is not a part of the ooRexx distribution, but that
+in no way hinders ooDialog's ability to use either resource scripts or
+binary resources produced by a resource editor.  (Including resource scripts
+or binary resources produced by the Resource Workshop.)
+
+There are a number of free, or inexpensive, quality resource editors that
+are undeniably superior to the IBM Resource Workshop.
+
+The ooRexx programmer can use *any* of these tools as replacements for the
+IBM Resource Workshop.
+
+IBM's Resource Workshop was designed to work with 16-bit Windows, as well as
+32-bit, and is actually out of date.  For producing ooDialog programs that
+run on a modern version of Windows, all of the tools listed in this document
+do a much better job.
+
+What the Resource Editors Example Package Contains:
+===================================================
+
+* Resource scripts (*.rc files) and binary resources (*.dll files) produced
+by a number of free and / or commercially available resource editors.  These
+resource editors allow the programmer to visually design the dialogs they
+use in their ooDialog programs.
+
+* An example ooDialog program (ResourceEditors.rex) that demonstrates how to
+use a resource script or a binary resource in an ooDialog program.  This
+example will run using any one of the included resource scripts or binary
+resources produced by the resource editors listed in this document.
+
+* Two 'simplified' ooDialog programs in the simple subdirectory.  The
+ResourceEditors.rex program is designed to demonstrate that ooDialog works
+with a number of different resource editors.  This adds to the complexity of
+the program.  The two simplified programs have this complextiy stripped out
+to allow a programmer new to ooDialog better see how things work.
+
+* Documentation, notes, and some utilities to help the ooDialog programmer
+locate and use the resource editor most suitable for their needs to visually
+design dialogs for their ooRexx programs.
+
+* Some icons produced by a non-artistic software developer for use as the
+dialog icon in the example program.
+
+* A dialog template DLL.  This template can be used as a starting point for
+use with resource editors that can change / update dialogs in a DLL, but can
+not produce a DLL from scratch.  This a allows the ooDialog programmer to
+produce binary resources using those editors, even if they do not have
+access to a resource compiler or a linker.  See the section: The ooDialog
+Template in this document for details.
+
+How to Run the Example Program:
+===============================
+
+ResourceEditors.rex uses either a resource script or binary resource to
+display a simple dialog.  Although the dialog's appearance is essentially
+the same, each individual resource script or binary resource was produced by
+its associated resource editor.
+
+The example is intended to demonstrate that ooDialog works correctly with
+the dialogs produced by any Windows compliant resource editor.
+
+ResourceEditors takes two arguments.  The first is the name of the file to
+be used for the dialog definition, for example xen.dll.  The second argument
+is optional and is the resource ID of the icon to use for the dialog icon.
+The second argument can be either the numeric or symbolic resource ID.  (See
+resource.h for the IDs.)
+
+C:\ooRexx\>ResourceEditors xen.dll 16
+
+Would run the example program using the dialog created by using the XN
+Resource Editor and the icon with resource ID of 16.
+
+C:\ooRexx\>ResourceEditors ResEdit.rc IDI_DLG_BOY
+
+Would run the example program using the dialog created with the ResEdit
+resource editor and icon with symbolic ID of IDI_DLG_BOY, (which happens to
+be the symbolic ID for 16.)
+
+How tor Run the Simplified Programs:
+====================================
+
+cd into the simple directory.  Run either program with no args.  For
+example:
+
+C:\ooRexx\>cd simple
+C:\ooRexx\simple\rexx simpleRC.rex
+
+Resource Editors Used to Visually Create the Dialog
+===================================================
+
+A list of the resource editors used in this package and where to get them.
+Each editor has it own section further down in this document with more
+detail on the individual editors.
+
+ResEdit Resource Editor (free)
+---------------------------------------------------------------
+http://www.resedit.net/
+
+
+XN Resource Editor (free)
+---------------------------------------------------------------
+http://www.wilsonc.demon.co.uk/d10resourceeditor.htm
+
+
+MicroSoft's Dialog Editor (commercial)
+---------------------------------------------------------------
+Available as part of the Visual Studio packages from Microsoft.
+
+
+Open Watcom (free, open source)
+---------------------------------------------------------------
+http://www.openwatcom.org/index.php/Download
+
+
+Resource Builder (commercial, [relatively] inexpensive)
+---------------------------------------------------------------
+http://www.sicomponents.com/rbldr.html
+
+
+IBM Resource Workshop (commercial)
+---------------------------------------------------------------
+Available to those who have a licensed copy of Object REXX.
+
+------
+The above list is in the order of most suitable to least suitable.  Note
+however, that there is no one easy answer.  Microsoft's dialog tools are
+definitely the best.  Of course they are quite expensive.
+
+For a completely free solution, ResEdit combined with the resource compiler
+and linker from Microsoft is ideal.  In addition, ResEdit has many features
+that make it very easy to work with.
+
+Microsoft makes its resource compiler and linker freely available for anyone
+to use to develop programs that run on Windows.  The cost is merely a little
+bit of time and a modest amount of disk space.  (Modest by 21st century
+standards.) See the section "Obtaining the Resource Compiler Tools From the
+Microsoft Platform SDK" below for details on how to get the resource
+compiler and linker.
+
+                  Details On The Various Resource Editors
+============================================================================
+
+ResEdit Resource Editor
+=======================
+
+The ResEdit editor is very easy to work with and very capable.  However, 1.)
+it needs to have the Windows headers files installed, and 2.) it can not
+produce a compile resource only DLL.
+
+But, you can obtain the necessary tools and header files absolutely free.
+Microsoft provides what is needed in the Platform SDK.  It takes about 30
+minutes and 160 MBs of disk space.  Detailed instructions are further down
+in this file.
+
+Once you set up the platform SDK, use ResEdit to create your dialogs.
+Compile the resource script produced by ResEdit into resource only DLLs
+
+
+XN Resource Editor
+==================
+
+This editor can read in a resource DLL and save to a resource DLL.  This
+allows you to start with the ooDialogTemplate.DLL and then create the
+dialog you want using the visual editor.  This is the best way to use this
+editor.  See the section: "The ooDialog Template" for details on how to do
+this.
+
+This editor is able to create a new dialog and then compile it to a .res
+file.  It can read in a .rc file, but can not save to a .rc file.  If
+it reads from a .rc file it will parse an include file for symbolic IDs,
+but then it only uses numbers.  It can not save to a header file, can not
+save symbolic ID values.
+
+The editor has no feature to set the tab stop order.  The tab stop order is
+the order that the controls are created in.  If the order is not as you
+want, the only solution seems to be to delete the controls out of order and
+add them back in the order desired.
+
+
+
+          Notes and Help For Working With Binary (*.DLL) Resources
+============================================================================
+
+The ooDialog Template
+=====================
+
+
+
+Creating a Resource Only DLL
+============================
+
+You can obtain the Microsoft tools to compile resource scripts into resource
+only DLLs for free.  Complete step by step instructions are in the section
+below titled:
+
+How to Obtain the Resource Compiler Tools From the Microsoft Platform SDK:
+
+Once you have installed those tools, this is an example command line to
+compile a DLL.  The file 'makeDLL.rex' will automat this for you.
+
+rc -r -foMsDlgEditor.res MsDlgEditor.rc
+
+link MsDlgEditor.res /NOENTRY /DLL /MACHINE:X86 /OUT:MsDlgEditor.dll
+
+
+How to Obtain the Resource Compiler Tools From the Microsoft Platform SDK:
+===========================================================================
+
+Microsoft makes the Platform SDK freely available.  The license allows
+anyone to use the tools to: "design, develop and test your programs that run
+on a Microsoft Windows operating system."
+
+Included in the SDK are the resource compiler a linker, and the Windows
+header files.  This is all that is needed to compile a resource only DLL
+from a resource script.
+
+Therefore, all it costs to obtain the tools needed to produce a binary
+resource is a little time and disk space.  With a broadband Internet
+connection the time involved is 20 minutes or less.  About 160 MBytes is
+needed for a minimum install.  However, after the install is finished, it
+would be possible to delete all of the files expcept the binaries needed for
+the resource compiler and the linker, and the header files.
+
+Do not be fooled by the "Windows Server 2003" in the name of the SDKs below.
+The SDKs are designed to be installed on any (recent) version of Windows and
+have the ability to target all Windows platforms.
+
+This link provides some good information on the Platform SDK in general:
+
+     http://en.wikipedia.org/wiki/Platform_SDK
+
+Platform SDK Links:
+-------------------
+Microsoft continually updates the Platform SDK.  Links are provided below
+for some of the recent versions of the SDK.  These links will eventually be
+out of date.  A Google search using: "Windows Platform SDK" will easily
+turn up the location to download a version of the SDK.
+
+Windows® Server 2003 SP1 Platform SDK Web Install
+
+http://www.microsoft.com/downloads/details.aspx?FamilyId=A55B6B43-E24F-4EA3-A93E-40C0EC4F68E5&displaylang=en
+
+or:
+
+Microsoft ® Windows Server® 2003 R2 Platform SDK Web Install
+
+http://www.microsoft.com/downloads/details.aspx?FamilyId=0BAF2B35-C656-4969-ACE8-E4C0C0716ADB&displaylang=en
+
+or:
+
+Microsoft® Windows® Software Development Kit for Windows Vista™ and .NET
+Framework 3.0 Runtime Components
+
+http://www.microsoft.com/downloads/details.aspx?FamilyId=C2B1E300-F358-4523-B479-F53D234CDCCF&displaylang=en
+
+Web Install:
+------------
+This section documents how to do a *minimal* install to simply obtain the
+resource compiler, linker, and header files.
+
+Note: I personally would download the ISO images and use them to install
+much more than the minimum listed here.  What to install is of course a
+matter of personal preference and the reader is encouraged to decide for
+herself what is the best approach to take.
+
+The approach outlined here is to use the web install and only install a
+minimal subset of all the features.  I personally did the following step by
+step in July 2007 and was finished in less than 30 minutes.  (More like 20
+minutes.)  I then compliled the ResEdit.rc file to a DLL and ran the sample
+program.
+
+Go to one of the above URLs and download the web install kicker program, in
+my case the kicker file was named: PSDK-x86.exe.  Run the file and follow
+instructions until you get to the section to: "Select An Installation Type."
+Select the 'Custom' installation.  Pick where you want the files installed.
+The next screen explains what the icons in the selection screen mean.  The
+next screen is where you select what you want installed.
+
+Again, remember this is to do a minimal install, feel free to install more
+if you want.
+
+Deselect everything except the "Microsoft Windows Core SDK" icon. Under that
+heading, deselect everything except "Tools", "Build Environment", and
+"Documentation."  If you really want to do a minimal install, deselect the
+"Documentation."
+
+Under "Tools" are 2 headings: "Tools (AMC 64-bit)" and "Tools (Intel
+64-bit)."  I delselected the AMD one and only selected the Intel one.
+
+Under "Build Environment" are 3 headings.  Deselect the 2 64-bit headings
+and only select the "Build Environment (x86 32-bit)."
+
+NOTE THIS: The linker is in the 64-bit tool section.  You have to install
+the Intel 64-bit tools to pick up the linker.  Do not worry about the fact
+it is in the 64-bit section.  It runs perfectly well on a 32-bit only
+machine.
+
+I used these 2 selections:
+
+        Tools->Tools(Intel 64-bit)
+        Build Environment->Build Environment(x86 32-bit)
+
+only. The installer said the disk space used was 160 MB.  It took maybe 2
+minutes to run and finish.
+
+After the install is finished, in the top-level directory where the SDK is
+installed is a file called: SetEnv.cmd.  This file will set up the right
+path and other variables to run the tools.
+
+Since link.exe is in the 64-bit bin directory, you need to move it to the
+regular bin directory.  This is very easy.  cd to where you installed the
+SDK and then to the bin directory.  Move the following files, or copy them:
+
+
+C:\>cd \Programs\MsPlatformSDK\Bin
+C:\Programs\MsPlatformSDK\Bin>move win64\link.exe .
+C:\Programs\MsPlatformSDK\Bin>move win64\msvc* .
+C:\Programs\MsPlatformSDK\Bin>move win64\mspdb80.dll .
+
+
+Now to use the tools to compile a resource only DLL, all you need to do is
+open a command prompt window.  Run the SetEnv command.  Use the makeDLL.rex
+program provided in this sample package.  Here is a trascript of my test
+after doing the minimal install I described above:
+
+
+C:\>cd \Programs\MsPlatformSDK\Bin
+C:\Programs\MsPlatformSDK\Bin>move win64\link.exe .
+C:\Programs\MsPlatformSDK\Bin>move win64\msvc* .
+C:\Programs\MsPlatformSDK\Bin>move win64\mspdb80.dll .
+
+
+C:\Programs\MsPlatformSDK\Bin>cd \ResEdit.test
+C:\ResEdit.test>..\Programs\MsPlatformSDK\SetEnv.Cmd /XP32 /RETAIL
+
+Attempting to detect a Microsoft Visual Studio installation
+
+
+Targeting Windows XP 32 RETAIL
+
+
+C:\ResEdit.test>makeDLL.rex ResEdit
+Microsoft (R) Incremental Linker Version 8.00.40310.39
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+
+C:\ResEdit.test>dir
+ Volume in drive C has no label.
+ Volume Serial Number is 80DA-7DBE
+
+ Directory of C:\ResEdit.test
+
+07/15/2007  04:50 PM    <DIR>          .
+07/15/2007  04:50 PM    <DIR>          ..
+07/15/2007  04:43 PM    <DIR>          ResourceBuilder_rc_Files
+07/02/2007  02:53 PM             4,393 makeDLL.rex
+07/15/2007  04:50 PM            16,384 ResEdit.dll
+07/15/2007  01:13 PM             4,432 ResEdit.rc
+07/15/2007  04:50 PM            14,840 ResEdit.res
+07/14/2007  11:39 PM             3,458 resource.h
+07/14/2007  11:40 PM            18,554 ResourceEditors.rex
+               6 File(s)         62,061 bytes
+               3 Dir(s)   6,553,612,288 bytes free
+
+C:\ResEdit.test>
+
+That is all there is to it.  You can now compile any resource script file
+into a resource only DLL to use with ooDialog.
