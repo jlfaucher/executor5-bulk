@@ -6,7 +6,7 @@
    name:             ooRexxUnit.cls
    author:           Rony G. Flatscher, Rick McGuire
    date:             2005-08-07
-   version:          1.0.4
+   version:          1.0.5
    changed1:         2005-08-07, ---rgf, moved assertion routines to a class "Assert", which
                                  serves as a superclass for TestCase: this is the junit-approach
                      2005-08-20, ---rgf, added license, assertCount, corrected some little bugs
@@ -71,7 +71,16 @@
                      2007-05-30, ---rgf, - added environment symbols ".ooRexxUnit.shellName", "ooRexxUnit.OSName",
                                            ".ooRexxUnit.line.separator", ".ooRexxUnit.directory.separator",
                                            ".ooRexxUnit.path.separator"
-
+                     2007-07-12, ---rgf, - added attribute 'definedInFile' to 'TestCase' class
+                                         - 'TestResult': new directory entry in queue for 'startTest' and 'endTest'
+                                           named 'OOREXXUNIT.CLASS_TESTCASEINFO', which refers to the class object's
+                                           'testCaseInfo' directory
+                                         - 'makeTestCaseString()': now returns fully qualified filename after
+                                           '@' marker or the string "n/a_XXXXXXXX", where "XXXXXX" is o~"=="~c2x
+                     2007-07-19, ---rgf, - added option to "TestCase" and "TestSuite"'s 'run' method to
+                                           display information about the test case to be run about to stderr;
+                                           this can be used to present the user a feedback about the proceedings
+                                           of the tests
 
 
    language-level:   6.0
@@ -216,6 +225,10 @@ else                                            -- Unix-like
   dateTime=pp(date("s") time("L"))
   TestCaseTable[aTestCase]~queue(dateTime": endTest")
   dir=.directory~new ~~setentry("OOREXXUNIT.CONDITION", dateTime":" pp("endTest") makeTestCaseString(aTestCase) )
+
+  -- save class' 'testCaseInfo' with test case for later analysis
+  dir~setentry("OOREXXUNIT.class_testCaseInfo", aTestCase~class~testCaseInfo)
+
   logQueue~queue(dir)
   fAssertions=fAssertions+aTestCase~assertCount
   fStop=.false          -- reset indicator
@@ -261,6 +274,10 @@ else                                            -- Unix-like
   dateTime=pp(date("s") time("L"))
   TestCaseTable[aTestCase]~queue(dateTime": startTest")
   dir=.directory~new ~~setentry("OOREXXUNIT.CONDITION", dateTime":" pp("startTest") makeTestCaseString(aTestCase))
+
+  -- save class' 'testCaseInfo' with test case for later analysis
+  dir~setentry("OOREXXUNIT.class_testCaseInfo", aTestCase~class~testCaseInfo)
+
   logQueue~queue(dir)
 
   fStop=.false          -- reset indicator
@@ -589,14 +606,23 @@ else                                            -- Unix-like
 
 
 ::method init        -- constructor
-  expose fName fCountTestCases   -- name of Testcase (method) to carry out
+  expose fName fCountTestCases definedInFile    -- name of Testcase (method) to carry out
   parse arg fName
 
   fCountTestCases=1  -- default: individual test
   self~TestCaseInfo=.directory~new -- directory to contain information on test
 
+  clzTCI=self~class~testCaseInfo    -- get access to clz' 'testCaseInfo' dir
+  s=clzTCI~entry("test_Case-source")
+  if .nil<>o then                   -- if source available, memorize fully qualified file name
+     parse var s . . definedInFile
+  else
+    definedInFile="n/a_"self~"=="~c2x  -- indicate that no file name available
+
+
   self~init:super    -- let superclass initialize
 
+::method definedInFile attribute    -- allows to quickly get filename from which test case is taken
 
 ::method TestCaseInfo attribute                 -- ooRexxUnit only
 
@@ -616,7 +642,10 @@ else                                            -- Unix-like
 
 ::method run            -- will get implemented in subclasses
   expose fName
-  use arg aTestResult
+  use arg aTestResult, bGiveFeedback=.false
+
+  if \datatype(bGiveFeedback,"O") then
+     raise syntax 93.903 array (bGiveFeedback) -- raise error
 
    -- make sure an instance of .TestResult is used
   if arg()=0 then aTestResult=self~createResult
@@ -624,6 +653,9 @@ else                                            -- Unix-like
 
   aTestResult~startTest(self)       -- remember test started
   self~setUp                        -- make sure setup is invoked before test
+  if bGiveFeedback then
+     .error~say( "... running TestCase object" pp(self~string) "..." )
+
   call doTheTest self, fName, aTestResult  -- carry out the testmethod
   self~tearDown                     -- make sure tearDown is invoked after test
   aTestResult~endTest(self)         -- remember test ended
@@ -780,26 +812,33 @@ exceptionHandler:
 
 ::method run
   expose fTestList
-  use arg aTestResult
+  use arg aTestResult, bGiveFeedback=.false
+
+  if \datatype(bGiveFeedback,"O") then
+     raise syntax 93.903 array (bGiveFeedback) -- raise error
 
    -- make sure an instance of .TestResult is used
   if arg()=0 then aTestResult=self~createResult
              else aTestResult=arg(1)
 
+  if bGiveFeedback then
+     .error~say( "running testSuite" pp(self~string"@"self~identityHash) "with" pp(self~countTestCases) "test cases ...")
+
   aTestResult~startTest(self)       -- remember test started
   self~setUp                        -- make sure setup is invoked before testSuite runs
   do aTestCase over fTestList while aTestResult~shouldStop=.false
-     aTestCase~run(aTestResult)
+     aTestCase~run(aTestResult, bGiveFeedback)
   end
   self~tearDown                     -- make sure tearDown is invoked after testSuite ran
   aTestResult~endTest(self)         -- remember test ended
 
   return aTestResult
 
+/*
 ::method countTestCases -- return nr. of test cases (methods) in this class
   expose fTestList
   return fTestList~items
-
+*/
 
 
 
@@ -1009,7 +1048,9 @@ exceptionHandler:
   use arg aTestCase
   className=aTestCase~class~id   -- get class name
   return "testCase:" pp(aTestCase~getName) "(a" || addN(className) className || "@" || -
-                 aTestCase~"=="~c2x")"
+                 aTestCase~definedInFile")"
+
+--                 aTestCase~"=="~c2x")"
 
 
 /* *********************************************************************************** */
