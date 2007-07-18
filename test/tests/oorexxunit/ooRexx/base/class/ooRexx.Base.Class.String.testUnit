@@ -3,7 +3,7 @@
    name:             ooRexx.Base.Class.String.testUnit
    author:           Rony G. Flatscher
    date:             2005-08-07
-   version:          1.0.1
+   version:          1.0.2
 
 -- line commented lines are ignored, when building the directory of infos from this header
    changed:          2005-08-21, ---rgf, renamed the testUnit-class to match exactly the
@@ -21,6 +21,8 @@
                                          changed sequence of expected/actual values to match the meaning
                                          in the failure message(s)
                      2007-06-10, ---rgf, added test cases for LOWER and UPPER
+                     2007-06-23, ---rgf, added test case for 'caselessWordPos'
+                     2007-07-10, ---rgf, changed names of test cases, added various caseless tests
 
    languageLevel:    6.0.1
    purpose:          Test the methods of the class String.
@@ -289,6 +291,18 @@ return testUnitList
 
 
    -- test the BIF, using examples from the documentation
+::method "test_ABBREV_caseless"
+
+   self~assertTrue(  "subTest1", 'Print'~caselessABBREV("Pri")    )
+
+   self~assertTrue(  "subTest2", "PRINT"~caselessABBREV("Pri")    )
+   self~assertFalse( "subTest3", "PRINT"~caselessABBREV("PRI", 4) )
+   self~assertFalse( "subTest4", "PRINT"~caselessABBREV("PRY")    )
+   self~assertTrue(  "subTest5", "PRINT"~caselessABBREV("")       )
+   self~assertFalse( "subTest6", "PRINT"~caselessABBREV("", 1)    )
+
+
+   -- test the BIF, using examples from the documentation
 ::method "test_ABS"
 
    self~assertEquals("subTest1" , 12.3  ,  12.3~ABS     )
@@ -393,10 +407,10 @@ return testUnitList
    self~assertSame("subTest1" , '000'    , 101100~CHANGESTR('1',"")  )
    self~assertSame("subTest2" , 'X0XX00' , 101100~CHANGESTR('1','X') )
 
-::method "test_caselessChangeStr"
+::method "test_ChangeStr_caseless"
     if .ooRexxUnit.languageLevel<6.02 then
     do
-       .error~say(self~string" - 'test_caselessChangeStr': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
+       .error~say(self~string" - 'test_ChangeStr_caseless': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
        return
     end
 
@@ -444,10 +458,10 @@ return testUnitList
   self~assertEquals("subtest_03",  1, "b"~compareTo("a"))
 
 
-::method "test_caselessCompareTo"  -- 3.2
+::method "test_CompareTo_caseless"  -- 3.2
     if .ooRexxUnit.languageLevel<6.02 then
     do
-       .error~say(self~string" - 'test_caselessCompareTo': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
+       .error~say(self~string" - 'test_CompareTo_caseless': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
        return
     end
 
@@ -572,10 +586,10 @@ return testUnitList
     self~assertSame("subTest_08" , 0, "b"~equals("A"))
 
 
-::method "test_caselessEquals"
+::method "test_Equals_caseless"
     if .ooRexxUnit.languageLevel<6.02 then
     do
-       .error~say(self~string" - 'test_caselessEquals': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
+       .error~say(self~string" - 'test_Equals_caseless': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
        return
     end
     self~assertSame("subTest_01" , 1, "a"~caselessEquals("a"))
@@ -627,11 +641,11 @@ return testUnitList
 
 
    -- test the BIF, using examples from the documentation
-::method "test_caselessLastPos"
+::method "test_LastPos_caseless"
 
     if .ooRexxUnit.languageLevel<6.02 then
     do
-       .error~say(self~string" - 'test_caselessLastPos': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
+       .error~say(self~string" - 'test_LastPos_caseless': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
        return
     end
    self~assertEquals("subTest1" , 4 , 'efgxyz'~caselessLastPos('xy')       )
@@ -709,10 +723,10 @@ return testUnitList
     self~assertSame("subTest_05",  0, str~match(2, "cD"))             ,
 
 
-::method "test_caselessMatch"
+::method "test_Match_caseless"
     if .ooRexxUnit.languageLevel<6.02 then
     do
-       .error~say(self~string" - 'test_caselessMatch': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
+       .error~say(self~string" - 'test_Match_caseless': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
        return
     end
     str="abcDEFghi"
@@ -735,10 +749,10 @@ return testUnitList
     self~assertSame("subTest_03" , 0, str~MatchChar(2, "c"))
 
 
-::method "test_CaselessMatchChar"
+::method "test_MatchChar_caseless"
     if .ooRexxUnit.languageLevel<6.02 then
     do
-       .error~say(self~string" - 'test_CaselessMatchChar': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
+       .error~say(self~string" - 'test_MatchChar_caseless': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
        return
     end
     str="abcDEFghi"
@@ -778,7 +792,7 @@ return testUnitList
 
 
    -- test the BIF, using examples from the documentation
-::method "test_caselessPos"
+::method "test_Pos_caseless"
 
    self~assertEquals("subTest1" , 6 , 'Saturday'~caselessPos('da')    )
    self~assertEquals("subTest2" , 6 , 'Saturday'~caselessPos('dA')    )
@@ -935,6 +949,27 @@ return testUnitList
    self~assertEquals("subTest5" , 0 , 'now is   the time'~WORDPOS('is    time ') )
    self~assertEquals("subTest6" , 2 , 'To be or not to be'~WORDPOS('be')         )
    self~assertEquals("subTest7" , 6 , 'To be or not to be'~WORDPOS('be',3)       )
+
+
+   -- test the BIF, using examples from the documentation
+::method "test_WORDPOS_caseless"
+    if .ooRexxUnit.languageLevel<6.02 then
+    do
+       .error~say(self~string" - 'test_WORDPOS_caseless': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
+       return
+    end
+
+   self~assertEquals("subTest01" , 3 , 'now is the time'~caselessWordPos('the')           )
+   self~assertEquals("subTest02" , 3 , 'now is the time'~caselessWordPos('The')           )
+   self~assertEquals("subTest03" , 2 , 'now is the time'~caselessWordPos('is tHE')        )
+   self~assertEquals("subTest04" , 2 , 'now is the time'~caselessWordPos('Is ThE')        )
+   self~assertEquals("subTest05" , 2 , 'now is the time'~caselessWordPos('is   the')      )
+   self~assertEquals("subTest06" , 2 , 'now is the time'~caselessWordPos('iS   ThE')      )
+   self~assertEquals("subTest07" , 0 , 'now is   the time'~caselessWordPos('is    time ') )
+   self~assertEquals("subTest08" , 2 , 'To be or not to be'~caselessWordPos('be')         )
+   self~assertEquals("subTest09" , 2 , 'To be or not to be'~caselessWordPos('Be')         )
+   self~assertEquals("subTest10" , 6 , 'To be or not to be'~caselessWordPos('be',3)       )
+   self~assertEquals("subTest11" , 6 , 'To be or not to be'~caselessWordPos('bE',3)       )
 
 
    -- test the BIF, using examples from the documentation
