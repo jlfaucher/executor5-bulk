@@ -1301,6 +1301,34 @@ unspecified order. (The program should not rely on any order.) The array
 indexes range from 1 to the number of subclasses.</para>
 </section>
 
+<section id="mthClassSuperClass"><title>superClass</title>
+<indexterm><primary>superClass method</primary>
+<secondary>of Class class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>superClass method</secondary>
+<tertiary>of Class class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-superClass------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the immediate superclass of the receiver class. The
+immediate superclass is
+the original class used on a <emphasis role="bold">subClass</emphasis> or a
+<emphasis role="bold">mixinClass</emphasis> method. For the Object Class,
+<emphasis role="bold">superClass</emphasis> returns .Nil.</para>
+
+<para><emphasis role="bold">Example:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>superClass method</secondary></indexterm>
+<programlisting>
+say .object~superclass    -- displays "The NIL object"
+say .class~superclass     -- displays "The Object class"
+say .set~superclass       -- displays "The Table class"
+</programlisting>
+</section>
+
 <section id="mthClassSuperClasses"><title>superClasses</title>
 <indexterm><primary>superClasses method</primary>
 <secondary>of Class class</secondary></indexterm>
