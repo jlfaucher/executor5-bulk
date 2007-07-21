@@ -149,33 +149,46 @@ the associated button control.</para>
 separated by blanks:
 <variablelist>
 <varlistentry><term>&quot;CHECKED&quot;</term>
-<listitem><para>The radio button is selected or the check box is checked.
+<listitem><para>The radio button or the check box is checked.  A radio button is 
+checked when it contains a black dot, a check box is checked when it contains a 
+check mark.
 </para></listitem></varlistentry>
 <varlistentry><term>&quot;UNCHECKED&quot;</term>
-<listitem><para>The radio button is not selected or the check box is unchecked.
+<listitem><para>The radio button or the check box is not checked.  A radio 
+button is not checked when it does not contain a black dot and a check box is 
+not checked when it does not contain a check mark.
 </para></listitem></varlistentry>
 <varlistentry><term>&quot;INDETERMINATE&quot;</term>
-<listitem><para>The Auto-3-State button is neither checked nor unchecked, but
-grayed.
+<listitem><para>A 3-state check box button is neither checked nor unchecked. 
+Only 3-state check box buttons can be in this state.  When in the indeterminate 
+state, the check box button is drawn in a visually distinctive manner that is 
+different from checked or unchecked.  Exactly how the indeterminate state is 
+drawn is dependent on the operating system version.
 </para></listitem></varlistentry>
 <varlistentry><term>&quot;PUSHED&quot;</term>
-<listitem><para>The cursor is positioned on the button and the left mouse button is
-pressed and held.
+<listitem><para>When a button is in the pushed state it is drawn as a sunken 
+button, otherwise it is drawn as a raised button.  The user causes a button to 
+be in the pushed state by clicking the button with the left mouse button.  As 
+long as the mouse button is held down, the button will be drawn as pushed. When
+the user releases the mouse button, the button will resume its not pushed state.  
+When this keyword is not in the text string, the button is not in the pushed 
+state.
 </para></listitem></varlistentry>
 <varlistentry><term>&quot;FOCUS&quot;</term>
-<listitem><para>The button has the keyboard focus.
+<listitem><para>The button has the keyboard focus.  When this keyword is missing 
+from the text string, the button does not have the focus.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem>
+<listitem><para>
 <programlisting>
 <![CDATA[
 button = MyDialog~GetButtonControl("IDOK")
 if button == .Nil then return
 say button~State
 ]]>
-</programlisting>
+</programlisting></para>
 <para>The result could be &quot;UNCHECKED FOCUS&quot;.</para>
 </listitem></varlistentry>
 </variablelist>
@@ -191,6 +204,7 @@ say button~State
                                +-UNCHECKED-----+
                                +-INDETERMINATE-+
                                +-PUSHED--------+
+                               +-NOTPUSHED-----+
                                +-FOCUS---------+
 
 
@@ -208,18 +222,23 @@ button control.</para>
 keywords, separated by a blank:
 <variablelist>
 <varlistentry><term>CHECKED</term>
-<listitem><para>The radio button is to be selected or the check box
-is to be checked.
+<listitem><para>The radio button or the check box is to be set to the 
+&quot;checked&quot; state.
 </para></listitem></varlistentry>
 <varlistentry><term>UNCHECKED</term>
-<listitem><para>The radio button is not to be selected or the check
-box is to be unchecked.
+<listitem><para>The radio button or the check box is to be set to the 
+&quot;unchecked&quot; state.
 </para></listitem></varlistentry>
 <varlistentry><term>INDETERMINATE</term>
-<listitem><para>The Auto-3-State button is to be set to the grayed state.
+<listitem><para>The 3-state check box button is to be set to the 
+&quot;indeterminate&quot; state.  This state can only be applied to 3-state 
+check box buttons.
 </para></listitem></varlistentry>
 <varlistentry><term>PUSHED</term>
 <listitem><para>The button is to be set to the &quot;pushed&quot; state.
+</para></listitem></varlistentry>
+<varlistentry><term>NOTPUSHED</term>
+<listitem><para>The &quot;pushed&quot; state is to be removed from the button.
 </para></listitem></varlistentry>
 <varlistentry><term>FOCUS</term>
 <listitem><para>The button is to be set to the &quot;focused&quot; state.
@@ -237,6 +256,24 @@ if button == .Nil then return
 button~State="FOCUS PUSHED"
 ]]>
 </programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Notes:</emphasis></term>
+<listitem><para>Some points to remember when using this method.
+<orderedlist>
+<listitem><para>A button can be set to only one of the checked, unchecked or 
+indeterminate states.  If more than one of these states is specified in the 
+text string the button is set to the state that is first in the string.
+</para></listitem>
+<listitem><para>Only 3-state check box buttons can be set to the indeterminate 
+state.  If this keyword is used for a button that is not a 3-state button then 
+the button's state is not changed.
+</para></listitem>
+<listitem><para>To change a button state to not focused programmatically use 
+one of the ooDialog methods that move the focus: <link linkend="tabtonext">TabToNext</link>,  
+<link linkend="tabtoprevious">TabToPrevious</link>, <link linkend="setfocus">SetFocus</link>,
+<link linkend="focusitem">FocusItem</link>, etc..
+</para></listitem>
+</orderedlist>
 </para></listitem></varlistentry>
 </variablelist>
 </section>
