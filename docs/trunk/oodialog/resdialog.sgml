@@ -108,6 +108,12 @@ MyDlgData.102="Please enter your password."
 MyDlgData.103=""
 
 dlg = ResDialog~new("MYDLG.DLL", 100, MyDlgData.)
+if dlg~initCode <> 0 then do
+  say 'The dialog could not be created'
+  return .false
+  /* Or some other error handling code. */
+end
+  ...
 ]]>
 </programlisting>
 </para>
@@ -117,6 +123,13 @@ section, that shows the use of the dialog data stem and header file arguments in
 more detail.
 </para></listitem></varlistentry>
 </variablelist>
+
+<note><title>Note</title><para>
+For a <computeroutput>ResDialog</computeroutput> the 
+<computeroutput>InitCode</computeroutput> attribute will be -1 after the dialog 
+object is instantiated if the resource ID could not be resolved.  For other 
+cases where initialization failed the value will be some other non-zero value.
+</para></note>
 </section>
 
 <section id="h001501"><title>StartIt</title>
@@ -124,25 +137,34 @@ more detail.
 <secondary>ResDialog class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aResDialog~StartIt(--+------+--)----------------------------><
-                        +-icon-+
+>>-aResDialog~StartIt(--+------+--+-----------+--)-------------><
+                        +-icon-+  +-,--modal--+
 
 
 ]]>
 </programlisting>
 
-<para>The StartIt method is for internal use only. It
-is necessary to create a real Windows object based on the dialog template. </para>
+<para>The StartIt method is intended for internal use only. It is used to create 
+the real Windows object based on the dialog template in the binary resource 
+file.  It is called by the <link linkend="h000048">Execute</link> or 
+<link linkend="h000057">ExecuteAsync</link> methods.</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
-<listitem><para>This method is protected and cannot be called from outside the instance.
-It can be overwritten, although that is not recommended.
+<varlistentry><term><emphasis role="bold">Internal Use:</emphasis></term>
+<listitem><para>This method is intended for internal use.  It can be overridden,
+although that is not recommended.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>There is only one argument:
+<listitem><para>There are two optional arguments:
 <variablelist>
 <varlistentry><term>icon</term>
-<listitem><para>This argument is currently not used.
+<listitem><para>The resource ID of the icon to be used as the dialog icon.  When 
+this argument is omitted the default dialog icon is used.
+</para></listitem></varlistentry>
+<varlistentry><term>modal</term>
+<listitem><para>If a modal or a modeless dialog is to be created.  A value of 0 
+signals a modal dialog should be created.  A value of 1, or the string 
+&quot;NOTMODAL&quot; case insignificant, signals a modeless dialog should be 
+created.  The default is 0.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>

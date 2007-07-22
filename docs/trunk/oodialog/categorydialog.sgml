@@ -853,22 +853,29 @@ without an action. The user can override this method to react to page changes. <
 ]]>
 </programlisting>
 
-<para>The StartIt method is called by <link linkend="h000048">Execute</link> to create a real Windows object based on the dialog template.
-You might override it in your subclass, but be sure to forward the message
-to the parent method. </para>
+<para>The <computeroutput>StartIt</computeroutput> method is called by the 
+<link linkend="h000048">Execute</link> or <link linkend="h000057">ExecuteAsync</link> 
+methods to create a real Windows object based on a dialog template.  In the 
+<commputeroutput>CategoryDialog</commputeroutput> class the Windows object(s) are 
+created in the <computeroutput>DefineDialog</computeroutput> method.  Therefore, 
+the <computeroutput>StartIt</computeroutput> method is overridden in this class 
+to change the default behavior of the superclass.  (If unchanged the superclass 
+would create a second duplicate Windows object from the dialog template.)</para>
+<para>You might override this method in your subclass, but be sure to forward
+the message to the parent method and to return the result to the caller.</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
-<listitem><para>This method is protected.
-</para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>This is a template for overwriting base methods:
+<listitem><para>This is a template for overridding this method:
 
 <programlisting>
 <![CDATA[
-::class MyCatDlg subclass CatergoryDialog
+::class MyCatDlg subclass CategoryDialog
 ::method StartIt
    say "this is method "StartIt" !"
    self~StartIt:super()
+   handle = result
+   ...
+   return handle
 ]]>
 </programlisting>
 </para></listitem></varlistentry>

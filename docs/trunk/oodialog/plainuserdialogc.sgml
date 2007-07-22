@@ -100,7 +100,15 @@ attributes of the dialog instance
 <listitem><para>0 if dialog is executing, 1 if terminated with OK, and 2 if canceled
 </para></listitem></varlistentry>
 <varlistentry><term>InitCode</term>
-<listitem><para>Result of the init method; in case init failed, its value is 1.
+<listitem><para>Afte the Init method has finished executing the value of the 
+attribtute is 0 if no errors were detected during initialization, otherwise its 
+value is non-zero.  After instantiating a new dialog object, the InitCode 
+attribute should be checked.  If its value is not 0 then there was some problem 
+initializing the object.  The programmer should treat this as an error condition 
+and not expect that the underlying Windows dialog can be created successfully.
+</para><para>After the dialog is finished, the attribute will be 1 if the user 
+terminated the dialog with the Ok button.  Its value will be 2 if the user 
+canceled the dialog.
 </para></listitem></varlistentry>
 <varlistentry><term>UseStem</term>
 <listitem><para>Protected attribute that is true (=1) if a stem variable was passed

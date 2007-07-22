@@ -135,8 +135,14 @@ the attributes of the dialog instance.
 <listitem><para>When this is set to 1, Ok or Cancel will terminate the dialog on exit.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">InitCode</emphasis></term>
-<listitem><para>After the Init method, 0 if the Init succeeded, 1 if Init failed.
-After the dialog is finished, 1 if terminated with Ok, 2 if terminated with Cancel.
+<listitem><para>After the Init method has executed the InitCode attribute will 
+be 0 if the object initialization detected no errors.  The attribute will be 
+non-zero if initialization failed or an error was detected.  The programmer 
+should always check the InitCode attribute after instantiating a dialog object.  
+If the attribute is not zero, then the object was not initialized correctly and 
+its behavior is undefined.</para>
+<para>After the dialog is finished, the attribute will be 1 if terminated with 
+Ok, 2 if terminated with Cancel.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">IsExtended</emphasis></term>
 <listitem><para>A protected attribute that is true (=1) if the graphics extension is
