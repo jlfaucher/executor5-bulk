@@ -41,7 +41,7 @@
     #
     #########################################################################
 -->
-<chapter id="h000002"><title>BaseDialog Class</title>
+<chapter id="clsBaseDialog"><title>BaseDialog Class</title>
 <indexterm><primary>BaseDialog class</primary></indexterm>
 <para>The BaseDialog class implements base methods for
 all dialogs regardless of whether the dialog is implemented as a binary resource,
@@ -50,8 +50,10 @@ stored in a DLL. A dialog is created dynamically by using Add... methods.
 Dialogs that are implemented using a resource script (.RC) are generated semi-dynamically.</para>
 <para>BaseDialog is an abstract class. You cannot use it to execute a Windows dialog
 but have to use one of its subclasses.</para>
-<para>See the subclasses in <link linkend="h001511">UserDialog Class</link> and <link linkend="h001478">ResDialog Class</link> for
-additional information. </para>
+<para>See the subclasses <link linkend="clsUserDialog">UserDialog Class</link>,
+<link linkend="clsResDialog">ResDialog Class</link>, and
+<link linkend="clsRcDialog">RcDialog Class</link> for additional information.
+</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Requires:</emphasis></term>
 <listitem><para><computeroutput>BaseDlg.cls</computeroutput> is the source file of this class.
@@ -85,10 +87,10 @@ the execution of the dialog.
 numerical value of the symbolic ID.  Once a symbolic ID is added to the <computeroutput>
 Constdir</computeroutput> directory, the symbolic ID can be used in place of the numeric
 value in any method of the ooDialog classes that requires a resource ID.
-</para><para>A few symbolic IDs are pre-defined by ooDialog and are present in 
+</para><para>A few symbolic IDs are pre-defined by ooDialog and are present in
 the <computeroutput>ConstDir</computeroutput> directory of all ooDialogs.  See
-the table, <link linkend="oodsymbolicids">Symbolic IDs Used by ooDialog</link>, 
-for a list of these IDs.  The programmer can add symbolic IDs to this directory 
+the table, <link linkend="oodsymbolicids">Symbolic IDs Used by ooDialog</link>,
+for a list of these IDs.  The programmer can add symbolic IDs to this directory
 by using <link linkend="pounddefine">#define</link> statements in a resource script
 or a <link linkend="headerfile">header file</link>.  Of course, symbolic
 IDs can also be added directly in the program as the following code snippet
@@ -135,13 +137,13 @@ the attributes of the dialog instance.
 <listitem><para>When this is set to 1, Ok or Cancel will terminate the dialog on exit.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">InitCode</emphasis></term>
-<listitem><para>After the Init method has executed the InitCode attribute will 
-be 0 if the object initialization detected no errors.  The attribute will be 
-non-zero if initialization failed or an error was detected.  The programmer 
-should always check the InitCode attribute after instantiating a dialog object.  
-If the attribute is not zero, then the object was not initialized correctly and 
+<listitem><para>After the Init method has executed the InitCode attribute will
+be 0 if the object initialization detected no errors.  The attribute will be
+non-zero if initialization failed or an error was detected.  The programmer
+should always check the InitCode attribute after instantiating a dialog object.
+If the attribute is not zero, then the object was not initialized correctly and
 its behavior is undefined.</para>
-<para>After the dialog is finished, the attribute will be 1 if terminated with 
+<para>After the dialog is finished, the attribute will be 1 if terminated with
 Ok, 2 if terminated with Cancel.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">IsExtended</emphasis></term>
@@ -1186,7 +1188,7 @@ OK, the data of the dialog is copied into this stem variable.
 </para></listitem></varlistentry>
 <varlistentry><term>hFile</term>
 <listitem><para>A file, (often called a <link linkend="headerfile">header</link> file,)
-defining symbolic IDs for resources.  The symbolic IDs defined within the file will be 
+defining symbolic IDs for resources.  The symbolic IDs defined within the file will be
 added to the <link linkend="constdir">ConstDir</link> directory.
 </para></listitem></varlistentry>
 </variablelist>

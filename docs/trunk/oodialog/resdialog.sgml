@@ -41,14 +41,33 @@
     #
     #########################################################################
 -->
-<chapter id="h001478"><title>ResDialog Class</title>
+<chapter id="resourcedialogs"><title>Resource File Dialogs</title>
+<indexterm><primary>Resource file dialogs</primary></indexterm>
+<para>The resource definition for a dialog can either be constructed manually,
+(see the <link linkend="clsUserDialog">UserDialog</link> Class,) or the definition can
+be read from a file.  ooDialog provides two main dialog classes that read their
+dialog definitions from a file: the <link linkend="clsResDialog">ResDialog</link>
+class and the <link linkend="clsRcDialog">RcDialog</link> class.</para>
+<para>The <computeroutput>ResDialog</computeroutput> class uses a dialog
+definition from a binary file and a <computeroutput>RcDialog</computeroutput>
+class gets the definition from a resource script file.  Resource script files
+are plain text files.  In general, both types of files are produced by resource
+editors which allow the user to visually design the dialog in a &quot;What You
+See Is What You Get&quot; manner.  Since resource definitions are standardized,
+resource editors that produce Windows compatible files can be used to define
+dialogs for use with ooDialog.</para>
+
+<section id="clsResDialog"><title>ResDialog Class</title>
+<indexterm><primary>Resource file dialogs</primary>
+<secondary>ResDialog class</secondary></indexterm>
 <indexterm><primary>ResDialog class</primary></indexterm>
 <para>The ResDialog class is designed to be used together
 with a binary (compiled) resource. A binary dialog resource is linked to a
 DLL (that is, a file with the extension .DLL). </para>
 <variablelist>
 <varlistentry><term>Requires:</term>
-<listitem><para><computeroutput>ResDlg.cls</computeroutput> is the source file of this class.
+<listitem><para><computeroutput>ResDlg.cls</computeroutput> is the source file
+of this class.
 <programlisting>
 <![CDATA[
 ::requires "oodialog.cls"
@@ -56,7 +75,9 @@ DLL (that is, a file with the extension .DLL). </para>
 </programlisting>
 </para></listitem></varlistentry>
 <varlistentry><term>Subclass:</term>
-<listitem><para>The ResDialog class is a subclass of BaseDialog.
+<listitem><para>The ResDialog class is a subclass of
+<link linkend="clsBaseDialog">BaseDialog</link> and therefore has all the
+methods defined for that class.
 </para></listitem></varlistentry>
 </variablelist>
 
@@ -72,7 +93,8 @@ DLL (that is, a file with the extension .DLL). </para>
 ]]>
 </programlisting>
 
-<para>The Init method of the parent class, BaseDialog, has been overwritten. </para>
+<para>The Init method of the parent class, <computeroutput>BaseDialog</computeroutput>,
+has been overridden.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments when creating a new dialog instance of this class
@@ -83,7 +105,7 @@ are:
 </para></listitem></varlistentry>
 <varlistentry><term>Resource</term>
 <listitem><para>The ID of the resource.  This is an unique number, or <link
-linkend="symbolicid">sybmbolic ID</link> you assigned to the (dialog) resource
+linkend="symbolicid">sybmbolic ID</link>, you assigned to the (dialog) resource
 while creating it.
 </para></listitem></varlistentry>
 <varlistentry><term>DlgData.</term>
@@ -125,9 +147,9 @@ more detail.
 </variablelist>
 
 <note><title>Note</title><para>
-For a <computeroutput>ResDialog</computeroutput> the 
-<computeroutput>InitCode</computeroutput> attribute will be -1 after the dialog 
-object is instantiated if the resource ID could not be resolved.  For other 
+For a <computeroutput>ResDialog</computeroutput> the
+<computeroutput>InitCode</computeroutput> attribute will be -1 after the dialog
+object is instantiated if the resource ID could not be resolved.  For other
 cases where initialization failed the value will be some other non-zero value.
 </para></note>
 </section>
@@ -144,9 +166,9 @@ cases where initialization failed the value will be some other non-zero value.
 ]]>
 </programlisting>
 
-<para>The StartIt method is intended for internal use only. It is used to create 
-the real Windows object based on the dialog template in the binary resource 
-file.  It is called by the <link linkend="h000048">Execute</link> or 
+<para>The StartIt method is intended for internal use only. It is used to create
+the real Windows object based on the dialog template in the binary resource
+file.  It is called by the <link linkend="h000048">Execute</link> or
 <link linkend="h000057">ExecuteAsync</link> methods.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Internal Use:</emphasis></term>
@@ -157,13 +179,13 @@ although that is not recommended.
 <listitem><para>There are two optional arguments:
 <variablelist>
 <varlistentry><term>icon</term>
-<listitem><para>The resource ID of the icon to be used as the dialog icon.  When 
+<listitem><para>The resource ID of the icon to be used as the dialog icon.  When
 this argument is omitted the default dialog icon is used.
 </para></listitem></varlistentry>
 <varlistentry><term>modal</term>
-<listitem><para>If a modal or a modeless dialog is to be created.  A value of 0 
-signals a modal dialog should be created.  A value of 1, or the string 
-&quot;NOTMODAL&quot; case insignificant, signals a modeless dialog should be 
+<listitem><para>If a modal or a modeless dialog is to be created.  A value of 0
+signals a modal dialog should be created.  A value of 1, or the string
+&quot;NOTMODAL&quot; case insignificant, signals a modeless dialog should be
 created.  The default is 0.
 </para></listitem></varlistentry>
 </variablelist>
@@ -196,5 +218,164 @@ space and therefore displaces the rest of the dialog items.</para>
 </variablelist>
 </para></listitem></varlistentry>
 </variablelist>
+</section>
+</section>
+
+<section id="clsRcDialog"><title>RcDialog Class</title>
+<indexterm><primary>Resource file dialogs</primary>
+<secondary>RcDialog class</secondary></indexterm>
+<indexterm><primary>RcDialog class</primary></indexterm>
+<para>The <computeroutput>RcDialog</computeroutput> class gets its dialog
+definition from a resource script file.  Resource script files are plain text
+files usually produced by a resource editor.  The files generally have a file
+extension of &quot;.rc&quot;, but an extension of &quot;.dlg&quot; is used by
+some resource editors.</para>
+<para>This class subclasses the <link linkend="clsUserDialog">UserDialog</link>
+class and has available all the methods of that class.  <computeroutput>RcDialog
+</computeroutput> is a convenience class that uses the <link linkend="h001613">
+Load</link> method of the <computeroutput>UserDialog</computeroutput> to load
+the dialog definition from the resource script file.  The programmer then does
+not need to worry about the details of how and when to load the resource script.
+There is a slight difference in instantiating the class, and the programmer does
+not need to use the <link linkend="h001506">DefineDialog</link> method because
+the dialog is defined in the resource script.  Other than that, the
+<computeroutput>RcDialog</computeroutput> class is used in the same manner as
+the <computeroutput>UserDialog</computeroutput> class.</para>
+<variablelist>
+<varlistentry><term>Requires:</term>
+<listitem><para><computeroutput>RcDialog.cls</computeroutput> is the source file
+for this class.
+<programlisting>
+<![CDATA[
+::requires "oodialog.cls"
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>Subclass:</term>
+<listitem><para>The <computeroutput>RcDialog</computeroutput> class is a
+subclass of <computeroutput>UserDialog</computeroutput>.
+</para></listitem></varlistentry>
+</variablelist>
+
+<section id="mthInitRcDialog"><title>Init</title>
+<indexterm><primary>Init</primary>
+<secondary>RcDialog class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aRcDialog~Init(--script--,--dlgID--+-------------+--+----------+--)-------><
+                                      +-,--dlgData.-+  +-,--hFile-+
+
+
+]]>
+</programlisting>
+
+<para>The Init method of the parent class,
+<computeroutput>UserDialog</computeroutput>, has been overridden.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments when creating a new dialog instance of this class
+are:
+<variablelist>
+<varlistentry><term>script</term>
+<listitem><para>The name of the resource script file where the dialog is
+defined.
+</para></listitem></varlistentry>
+<varlistentry><term>dlgID</term>
+<listitem><para>The resource ID of the dialog.  This is the unique number, or
+<link linkend="symbolicid">sybmbolic ID</link>, you assigned to the (dialog)
+resource when creating it.
+</para></listitem></varlistentry>
+<varlistentry><term>dlgData.</term>
+<listitem><para>A stem variable (don't forget the trailing period) that contains
+initialization data.
+</para></listitem></varlistentry>
+<varlistentry><term>hFile</term>
+<listitem><para>The file name of a <link linkend="headerfile">header file</link>
+containing the symbolic ID defines for the resources used by the program.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>This example creates a new dialog object using the
+<computeroutput>SimpleLB</computeroutput> class, which subclasses the
+<computeroutput>RcDialog</computeroutput>. It uses the dialog defintion with
+symbolic ID <computeroutput>IDD_DIALOG1</computeroutput> in the
+<computeroutput>listBox.rc</computeroutput> resource script file.  The dialog is
+initialized so that the &quot;Doctor&quot; item is selected in the list box with
+symbolic ID of <computeroutput>IDC_LB</computeroutput> by using the
+<computeroutput>dlgData.</computeroutput> stem variable.  The symbolic IDs for
+this program are contained in the &quot;resource.h&quot; file.  When the user
+closes the dialog, the <computeroutput>dlgData.IDC_LB</computeroutput> variable
+will contain the text of the selected item in the list box.</para>
+
+<programlisting>
+<![CDATA[
+/* Simple ListBox using a .rc file for the dialog definition */
+
+  dlgData.IDC_LB = "Doctor"
+
+  dlg = .SimpleLB~new("listBox.rc", IDD_DIALOG1, dlgData., "resource.h")
+  if dlg~initCode = 0 then do
+    dlg~Execute("SHOWTOP")
+    dlg~Deinstall
+  end
+  else do
+    say "Problem creating the dialog.  Init code:" dlg~initCode
+    return 99
+  end
+
+  say "The user's choosen profession is" dlgData.IDC_LB
+  return 0
+-- End of entry point.
+
+::requires "OODWIN32.CLS"
+
+::class SimpleLB subclass RcDialog inherit AdvancedControls
+
+::method initDialog
+
+  lb = self~getListBox(IDC_LB)
+
+  lb~add("Business Manager" )
+  lb~add("Software Developer")
+  lb~add("Accountant")
+  lb~add("Lawyer")
+  lb~add("Doctor")
+]]>
+</programlisting>
+<para>To try the example, cut and paste the above code into a file named
+<computeroutput>listBox.rex</computeroutput> and paste the following code into
+files <computeroutput>listBox.rc</computeroutput> and
+<computeroutput>resource.h</computeroutput>.</para>
+<programlisting>
+<![CDATA[
+/* listBox.rc */
+#include <windows.h>
+#include <commctrl.h>
+#include "resource.h"
+
+IDD_DIALOG1 DIALOGEX 30,30,179,182
+STYLE DS_MODALFRAME | DS_FIXEDSYS | WS_VISIBLE | WS_CAPTION | WS_POPUP | WS_SYSMENU
+CAPTION "List Box Example"
+FONT 8,"MS Shell Dlg 2",400,0,1
+BEGIN
+    DEFPUSHBUTTON   "Close",IDOK,122,161,50,14
+    LISTBOX         IDC_LB,8,28,163,122,WS_TABSTOP | LBS_NOINTEGRALHEIGHT | LBS_SORT
+    CTEXT           "Pick Your Choosen Profession",IDC_STATIC,26,13,122,9
+END
+
+/* resource.h */
+#ifndef IDC_STATIC
+#define IDC_STATIC (-1)
+#endif
+
+#define IDD_DIALOG1                     100
+#define IDC_LB                          1001
+
+]]>
+</programlisting>
+</listitem></varlistentry>
+</variablelist>
+</section>
 </section>
 </chapter>

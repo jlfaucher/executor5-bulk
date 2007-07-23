@@ -41,7 +41,7 @@
     #
     #########################################################################
 -->
-<chapter id="h001511"><title>UserDialog Class</title>
+<chapter id="clsUserDialog"><title>UserDialog Class</title>
 <indexterm><primary>UserDialog class</primary></indexterm>
 <para>The UserDialog class extends the BaseDialog class. It provides methods to create a dialog with these control
 elements: </para>
@@ -56,7 +56,7 @@ elements: </para>
 
 <note><title>Note</title><para>
 The class also inherits the methods of its parent class: the
-<link linkend="h000002">BaseDialog class</link>.
+<link linkend="clsBaseDialog">BaseDialog class</link>.
 </para></note>
 <para>There are two ways of creating a dialog: </para>
 <itemizedlist>
@@ -2376,12 +2376,12 @@ they are for internal use only.</para>
 ]]>
 </programlisting>
 
-<para>The StartIt method is intended for internal use only. It is used to create 
-a real Windows object based on a dialog template.  For a 
-<computeroutput>RcDialog</computeroutput> the template is supplied by a resource 
-script file.  For a <computeroutput>UserDialog</computeroutput> the template is 
+<para>The StartIt method is intended for internal use only. It is used to create
+a real Windows object based on a dialog template.  For a
+<computeroutput>RcDialog</computeroutput> the template is supplied by a resource
+script file.  For a <computeroutput>UserDialog</computeroutput> the template is
 created by using the <link linkend="addmeth">Add... methods</link>.  The method
-is called by the <link linkend="h000048">Execute</link> or 
+is called by the <link linkend="h000048">Execute</link> or
 <link linkend="h000057">ExecuteAsync</link> methods.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Internal Use:</emphasis></term>
@@ -2392,13 +2392,13 @@ although that is not recommended.
 <listitem><para>There are two optional arguments:
 <variablelist>
 <varlistentry><term>icon</term>
-<listitem><para>The resource ID of the icon to be used as the dialog icon.  When 
+<listitem><para>The resource ID of the icon to be used as the dialog icon.  When
 this argument is omitted the default dialog icon is used.
 </para></listitem></varlistentry>
 <varlistentry><term>modal</term>
-<listitem><para>If a modal or a modeless dialog is to be created.  A value of 0 
-signals a modal dialog should be created.  A value of 1, or the string 
-&quot;NOTMODAL&quot; case insignificant, signals a modeless dialog should be 
+<listitem><para>If a modal or a modeless dialog is to be created.  A value of 0
+signals a modal dialog should be created.  A value of 1, or the string
+&quot;NOTMODAL&quot; case insignificant, signals a modeless dialog should be
 created.  The default is 0.
 </para></listitem></varlistentry>
 </variablelist>

@@ -46,7 +46,7 @@
 <para>The PlainUserDialog class subclasses from PlainBaseDialog class and provides
 all the methods that normally are required to execute a dialog  that is either
 created dynamically or loaded from a resource script (.RC). In other words
-it is a limited version of  <link linkend="h001511">UserDialog Class</link>.
+it is a limited version of  <link linkend="clsUserDialog">UserDialog Class</link>.
 Use <computeroutput>::requires "OODPLAIN.CLS"</computeroutput> in your script
 to get access to the PlainUserDialog class.</para>
 <note><title>Note</title>
@@ -69,8 +69,8 @@ bitmaps, graphics (device context related methods), scrolling text, and menus
 interfaces like the standard dialogs.</para>
 <para>The following table lists all the methods that are provided by the  PlainUserDialog
 class. The individual methods are documented in
-<link linkend="h000002">BaseDialog Class</link> or
-<link linkend="h001511">UserDialog Class</link>.</para>
+<link linkend="clsBaseDialog">BaseDialog Class</link> or
+<link linkend="clsUserDialog">UserDialog Class</link>.</para>
 <variablelist>
 <varlistentry><term>Attributes:</term>
 <listitem><para>Instances of the PlainUserDialog class have
@@ -100,14 +100,14 @@ attributes of the dialog instance
 <listitem><para>0 if dialog is executing, 1 if terminated with OK, and 2 if canceled
 </para></listitem></varlistentry>
 <varlistentry><term>InitCode</term>
-<listitem><para>Afte the Init method has finished executing the value of the 
-attribtute is 0 if no errors were detected during initialization, otherwise its 
-value is non-zero.  After instantiating a new dialog object, the InitCode 
-attribute should be checked.  If its value is not 0 then there was some problem 
-initializing the object.  The programmer should treat this as an error condition 
+<listitem><para>After the Init method has finished executing the value of the
+attribtute is 0 if no errors were detected during initialization, otherwise its
+value is non-zero.  After instantiating a new dialog object, the InitCode
+attribute should be checked.  If its value is not 0 then there was some problem
+initializing the object.  The programmer should treat this as an error condition
 and not expect that the underlying Windows dialog can be created successfully.
-</para><para>After the dialog is finished, the attribute will be 1 if the user 
-terminated the dialog with the Ok button.  Its value will be 2 if the user 
+</para><para>After the dialog is finished, the attribute will be 1 if the user
+terminated the dialog with the Ok button.  Its value will be 2 if the user
 canceled the dialog.
 </para></listitem></varlistentry>
 <varlistentry><term>UseStem</term>
