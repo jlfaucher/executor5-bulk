@@ -168,7 +168,7 @@ of the array. This number is called the dimensionality of the array.</para>
 </figure>
 <note><title>Note</title>
 <para>The Array class also has available class methods that its
-metaclass, the <link linkend="clsClass">Class class</link>, defines. 
+metaclass, the <link linkend="clsClass">Class class</link>, defines.
 It also inherits methods from the <link linkend="orderedcoll">OrderedCollection
 class</link>, although there are not currently any methods defined in that class.
 </para></note>
@@ -182,8 +182,6 @@ whole-number indexes to reference items in an array.</para>
 <section><title>Inherited Methods</title>
 
 &objclsmthods;
-
-</section>
 
 <section id="mthArrayNew"><title>new (Class Method)</title>
 <indexterm><primary>new method</primary>
@@ -351,14 +349,6 @@ does not include the indexes corresponding to those you omitted.</para>
 <para>Appends an item to the array after the last item (the item with the highest index.  The
 return value is the index of newly added item.
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
-<indexterm><primary>examples</primary>
-<secondary>wordPos method</secondary></indexterm>
-<programlisting>
-   a = .array~new
-   a[3] = "Fred"   -- last item in the array
-   index = a~append("Mike")   -- returns "4"
-</programlisting>
 </section>
 
 <section id="mthArrayAppendAll"><title>appendAll</title>
@@ -374,7 +364,7 @@ return value is the index of newly added item.
 </programlisting>
 
 <para>Appends all items in collection to the end of the target array.
-collection may be any object that implements an 
+collection may be any object that implements an
 <emphasis role="bold">allItems</emphasis> method.</para>
 </section>
 
@@ -800,7 +790,15 @@ dimensions in the array.</para>
 <secondary>sort method</secondary>
 <tertiary>of Array class</tertiary></indexterm>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<programlisting>
+<![CDATA[
+>>-sort--------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Sorts an array of Comparable items into ascending order using an unstable Quicksort algorithm.
+See <link linkend="sortarray">Sorting Arrays</link> for details.
+</para>
 </section>
 
 <section id="mthArraySortWith"<title>sortWith</title>
@@ -810,7 +808,16 @@ dimensions in the array.</para>
 <secondary>sortWith method</secondary>
 <tertiary>of Array class</tertiary></indexterm>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<programlisting>
+<![CDATA[
+>>-sortWith(comparator)---------------------------------------------><
+]]>
+</programlisting>
+
+<para>Sorts an array of items into ascending order using an unstable Quicksort algorithm.
+Ordering of elements is determined using the <emphasis role="italic">comparator</emphasis> argument.
+See <link linkend="sortarray">Sorting Arrays</link> for details.
+</para>
 </section>
 
 <section id="mthArrayStableSort"><title>stableSort</title>
@@ -820,7 +827,16 @@ dimensions in the array.</para>
 <secondary>stableSort method</secondary>
 <tertiary>of Array class</tertiary></indexterm>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<programlisting>
+<![CDATA[
+>>-stableSort--------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Sorts an array of Comparable items into ascending order using a stable Mergesort algorithm.
+See <link linkend="sortarray">Sorting Arrays</link> for details.
+</para>
+</section>
 </section>
 
 <section id="mthArrayStableSortWith"<title>stableSortWith</title>
@@ -830,7 +846,16 @@ dimensions in the array.</para>
 <secondary>stableSortWith method</secondary>
 <tertiary>of Array class</tertiary></indexterm>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<programlisting>
+<![CDATA[
+>>-stableSortWith(comparator)---------------------------------------------><
+]]>
+</programlisting>
+
+<para>Sorts an array of items into ascending order using a stable Mergesort algorithm.
+Ordering of elements is determined using the <emphasis role="italic">comparator</emphasis> argument.
+See <link linkend="sortarray">Sorting Arrays</link> for details.
+</para>
 </section>
 
 <section id="mthArraySubset"<title>subset</title>
@@ -916,7 +941,7 @@ the new collection only if there is no item with the same associated index
 in the receiver collection and the method has not already included an item
 with the same index. The order in which this method selects items in
 <emphasis role="italic">argument</emphasis> is unspecified. (The program
-should not rely on any order.) See also the 
+should not rely on any order.) See also the
 <emphasis role="bold">union</emphasis> method of the Table
 (<link linkend="mthTableUnion">union</link>) and Relation
 (<link linkend="mthRelationUnion">union</link>) classes. The
@@ -1467,11 +1492,11 @@ content: [3,2], content (LIFO): [2->3]
 <para>A list is a non-sparse sequenced collection similar to the
 <link linkend="clsArray">The Array Class</link> to which you
 can add new items at any position in the sequence. The collection supplies
-the list indexes at the time items are added with the 
-<emphasis role="bold">insert</emphasis> method. The 
+the list indexes at the time items are added with the
+<emphasis role="bold">insert</emphasis> method. The
 <emphasis role="bold">first</emphasis>,
-<emphasis role="bold">last</emphasis>, and 
-<emphasis role="bold">next</emphasis> methods can also retrieve list indexes. 
+<emphasis role="bold">last</emphasis>, and
+<emphasis role="bold">next</emphasis> methods can also retrieve list indexes.
 Only indexes the list
 object generates are valid i.e. the list is never a sparse list and the list
 object may modify idexes for items in the list.</para>
@@ -1485,7 +1510,7 @@ object may modify idexes for items in the list.</para>
 </figure>
 <note><title>Note</title>
 <para>The List class also has available class methods that its metaclass,
-metaclass, the <link linkend="clsClass">Class class</link>, defines. 
+metaclass, the <link linkend="clsClass">Class class</link>, defines.
 It also inherits methods from the <link linkend="orderedcoll">OrderedCollection
 class</link>, although there are not currently any methods defined in that class.
 </para></note>
@@ -1541,7 +1566,7 @@ class</link>, although there are not currently any methods defined in that class
 ]]>
 </programlisting>
 
-<para>Returns the same item as the 
+<para>Returns the same item as the
 <emphasis role="bold">at</emphasis> method. See
 <link linkend="mthListAt">at</link>.</para>
 </section>
@@ -1558,7 +1583,7 @@ class</link>, although there are not currently any methods defined in that class
 ]]>
 </programlisting>
 
-<para>This method is the same as the 
+<para>This method is the same as the
 <emphasis role="bold">put</emphasis> method. See
 <link linkend="mthListPut">put</link>.</para>
 </section>
@@ -1599,8 +1624,13 @@ class</link>, although there are not currently any methods defined in that class
 <indexterm><primary>method</primary>
 <secondary>append method</secondary>
 <tertiary>of List class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-append(item)---------------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Appends <emphasis role="italic">item</emphasis> to the end of the list.</para>
 </section>
 
 <section id="mthListAppendAll"><title>appendAll</title>
@@ -1609,8 +1639,15 @@ class</link>, although there are not currently any methods defined in that class
 <indexterm><primary>method</primary>
 <secondary>appendAll method</secondary>
 <tertiary>of List class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-appendAll(collection)---------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Appends all items of <emphasis role="italic">collection</emphasis> to the end of the list.  The items
+are added in the order determined by the allItems method of <emphasis role="italic">collection</emphasis>.
+</para>
 </section>
 
 <section id="mthListAt"><title>at</title>
@@ -1681,7 +1718,7 @@ allow all of the index values in the receiver collection.</para>
 </programlisting>
 
 <para>Returns the index of the first item in the list or the NIL object if the
-list is empty. The example for <emphasis role="bold">insert</emphasis> 
+list is empty. The example for <emphasis role="bold">insert</emphasis>
 (see <link linkend="mthListInsert">insert</link>) includes
 <emphasis role="bold">first</emphasis>.</para>
 </section>
@@ -2103,7 +2140,7 @@ the new collection only if there is no item with the same associated index
 in the receiver collection and the method has not already included an item
 with the same index. The order in which this method selects items in
 <emphasis role="italic">argument</emphasis> is unspecified. (The program
-should not rely on any order.) See also the 
+should not rely on any order.) See also the
 <emphasis role="bold">union</emphasis> method of the Table
 (<link linkend="mthTableUnion">union</link>) and Relation
 (<link linkend="mthRelationUnion">union</link>) classes. The
@@ -2158,7 +2195,7 @@ head of the queue.</para>
 </figure>
 <note><title>Note</title>
 <para>The Queue class also has available class methods that its
-metaclass, the <link linkend="clsClass">Class class</link>, defines. 
+metaclass, the <link linkend="clsClass">Class class</link>, defines.
 It also inherits methods from the <link linkend="orderedcoll">OrderedCollection
 class</link>, although there are not currently any methods defined in that class.
 </para></note>
@@ -2250,7 +2287,7 @@ method. See <link linkend="mthQueuePut">put</link>.
 </programlisting>
 
 <para>Returns an array of all element containing all the index values for the
-queue. For the Queue class, the indices are integers 1 - 
+queue. For the Queue class, the indices are integers 1 -
 <link linkend="mthQueueItems">items</link>.</para>
 </section>
 
@@ -2275,8 +2312,13 @@ queue. For the Queue class, the indices are integers 1 -
 <indexterm><primary>method</primary>
 <secondary>append method</secondary>
 <tertiary>of Queue class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-append(item)---------------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Appends <emphasis role="italic">item</emphasis> to the end of the queue.</para>
 </section>
 
 <section id="mthQueueAppendAll"><title>appendAll</title>
@@ -2285,8 +2327,15 @@ queue. For the Queue class, the indices are integers 1 -
 <indexterm><primary>method</primary>
 <secondary>appendAll method</secondary>
 <tertiary>of Queue class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-appendAll(collection)---------------------------------------------><
+]]>
+</programlisting>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>Appends all items of <emphasis role="italic">collection</emphasis> to the end of the queue.  The items
+are added in the order determined by the allItems method of <emphasis role="italic">collection</emphasis>.
+</para>
 </section>
 
 <section id="mthQueueAt"><title>at</title>
@@ -2772,7 +2821,7 @@ the new collection only if there is no item with the same associated index
 in the receiver collection and the method has not already included an item
 with the same index. The order in which this method selects items in
 <emphasis role="italic">argument</emphasis> is unspecified. (The program
-should not rely on any order.) See also the 
+should not rely on any order.) See also the
 <emphasis role="bold">union</emphasis> method of the Table
 (<link linkend="mthTableUnion">union</link>) and Relation
 (<link linkend="mthRelationUnion">union</link>) classes. The
@@ -2842,7 +2891,7 @@ indexes that are character strings representing names.</para>
 </figure>
 <note><title>Note</title>
 <para>The Directory class also has available class methods that
-metaclass, the <link linkend="clsClass">Class class</link>, defines. 
+metaclass, the <link linkend="clsClass">Class class</link>, defines.
 It also inherits methods from the <link linkend="mapcoll">MapCollection
 class</link>, although there are not currently any methods defined in that class.
 </para></note>
@@ -2885,7 +2934,7 @@ class</link>, although there are not currently any methods defined in that class
 ]]>
 </programlisting>
 
-<para>Returns the same item as the 
+<para>Returns the same item as the
 <emphasis role="bold">at</emphasis> method, which follows. See
 <link linkend="mthDirectoryAt">at</link>.</para>
 </section>
@@ -2902,7 +2951,7 @@ class</link>, although there are not currently any methods defined in that class
 ]]>
 </programlisting>
 
-<para>This method is the same as the 
+<para>This method is the same as the
 <emphasis role="bold">put</emphasis> method. See
 <link linkend="mthDirectoryPut">put</link>.</para>
 </section>
@@ -3015,10 +3064,10 @@ allow all of the index values in the receiver collection.</para>
 <para>Returns the directory entry with name
 <emphasis role="italic">name</emphasis> (translated to uppercase).
 If there is no such entry, <emphasis role="italic">name</emphasis>
-returns the item for any method that 
+returns the item for any method that
 <emphasis role="bold">setMethod</emphasis> supplied. If there is
 neither an entry nor a method for <emphasis role="italic">name</emphasis>
-or for <emphasis role="bold">unknown</emphasis>, 
+or for <emphasis role="bold">unknown</emphasis>,
 the language processor raises an error.</para>
 </section>
 
@@ -3189,8 +3238,20 @@ associated with index <emphasis role="italic">name</emphasis>.</para>
 <indexterm><primary>method</primary>
 <secondary>putAll method</secondary>
 <tertiary>of Directory class</tertiary></indexterm>
-
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<programlisting>
+<![CDATA[
+>>-putAll(collection)---------------------------------------><
+]]>
+</programlisting>
+<para>Adds all items <emphasis role="italic">collection</emphasis> to the target directory.  The
+<emphasis role="italic">collection</emphasis> argument can be any object that supports a supplier
+method.  Items from <emphasis role="italic">collection</emphasis> are added using the index values returned by the supplier.  The item
+indexes from the source <emphasis role="italic">collection</emphasis> must be strings.  The items are
+added in the order provided by the supplier object.
+If duplicate
+indexes exist in <emphasis role="italic">collection</emphasis>, the last item provided by the
+supplier will overwrite previous items with the same index.
+</para>
 </section>
 
 <section id="mthDirectoryRemove"><title>remove</title>
@@ -3207,12 +3268,12 @@ associated with index <emphasis role="italic">name</emphasis>.</para>
 
 <para>Returns and removes the member item with index
 <emphasis role="italic">name</emphasis> from a collection.
-If a method is associated with 
+If a method is associated with
 <emphasis role="bold">setMethod</emphasis> for index
-<emphasis role="italic">name</emphasis>, 
+<emphasis role="italic">name</emphasis>,
 <emphasis role="bold">remove</emphasis> removes
 the method and returns the result of running it. If there is no item or method
-with index <emphasis role="italic">name</emphasis>, the 
+with index <emphasis role="italic">name</emphasis>, the
 <emphasis role="bold">unknown</emphasis> method returns
 the Nil object and removes nothing.</para>
 </section>
@@ -3274,26 +3335,26 @@ method with this <emphasis role="italic">name</emphasis>.</para>
 Thus, the language processor returns the result of running
 <emphasis role="italic">method</emphasis> when you access this entry.
 This occurs when you specify <emphasis role="italic">name</emphasis> on the
-<emphasis role="bold">at</emphasis>, 
-<emphasis role="bold">entry</emphasis>, or 
+<emphasis role="bold">at</emphasis>,
+<emphasis role="bold">entry</emphasis>, or
 <emphasis role="bold">remove</emphasis> method. This method replaces any existing
 item or method for <emphasis role="italic">name</emphasis>.</para>
 <para>You can specify the name <emphasis role="bold">unknown</emphasis> as
 <emphasis role="italic">name</emphasis>. Doing so supplies a
-method to run whenever an <emphasis role="bold">at</emphasis> or 
+method to run whenever an <emphasis role="bold">at</emphasis> or
 <emphasis role="bold">entry</emphasis> message specifies a name for which no item
 or method exists in the collection. This method's first argument is the
 specified directory index. This method has no effect on the action of any
-<emphasis role="bold">hasEntry</emphasis>, 
-<emphasis role="bold">hasIndex</emphasis>, 
-<emphasis role="bold">items</emphasis>, 
-<emphasis role="bold">remove</emphasis>, or 
+<emphasis role="bold">hasEntry</emphasis>,
+<emphasis role="bold">hasIndex</emphasis>,
+<emphasis role="bold">items</emphasis>,
+<emphasis role="bold">remove</emphasis>, or
 <emphasis role="bold">supplier</emphasis> message sent to the collection.
 </para>
 <para>The <emphasis role="italic">method</emphasis> can be a
 string containing a method source line instead
 of a method object. Alternatively, an array of strings containing individual
-method lines can be passed. In either case, 
+method lines can be passed. In either case,
 <emphasis role="bold">setMethod</emphasis> creates an equivalent
 method object.</para>
 <para>If you omit <emphasis role="italic">method</emphasis>,
@@ -3363,7 +3424,7 @@ the new collection only if there is no item with the same associated index
 in the receiver collection and the method has not already included an item
 with the same index. The order in which this method selects items in
 <emphasis role="italic">argument</emphasis> is unspecified. (The program
-should not rely on any order.) See also the 
+should not rely on any order.) See also the
 <emphasis role="bold">union</emphasis> method of the Table
 (<link linkend="mthTableUnion">union</link>) and Relation
 (<link linkend="mthRelationUnion">union</link>) classes. The
@@ -3385,29 +3446,29 @@ index values in the receiver collection.</para>
 ]]>
 </programlisting>
 
-<para>Runs either the <emphasis role="bold">entry</emphasis> or 
+<para>Runs either the <emphasis role="bold">entry</emphasis> or
 <emphasis role="bold">setEntry</emphasis> method, depending on whether
 <emphasis role="italic">messagename</emphasis> ends with an equal sign. If
 <emphasis role="italic">messagename</emphasis> does not end with an
-equal sign, this method runs the 
+equal sign, this method runs the
 <emphasis role="bold">entry</emphasis> method, passing
 <emphasis role="italic">messagename</emphasis> as
 its argument. The language processor ignores any arguments specified in the
-array <emphasis role="italic">messageargs</emphasis>. In this case, 
+array <emphasis role="italic">messageargs</emphasis>. In this case,
 <emphasis role="bold">unknown</emphasis>
 returns the result of the <emphasis role="bold">entry</emphasis> method.</para>
 <para>If <emphasis role="italic">messagename</emphasis> does end with an equal
-sign, this method runs the 
+sign, this method runs the
 <emphasis role="bold">setEntry</emphasis> method, passing the first part of
 <emphasis role="italic">messagename</emphasis> (up to, but
 not including, the final equal sign) as its first argument, and the first
 item in the array <emphasis role="italic">messageargs</emphasis>
-as its second argument. In this case, 
+as its second argument. In this case,
 <emphasis role="bold">unknown</emphasis> returns no result.</para>
 </section>
 
 <section id="mthDirectoryUnsetMethod"<title>unsetMethod</title>
-<indexterm><primary>usetMethod method</primary>
+<indexterm><primary>unsetMethod method</primary>
 <secondary>of Directory class</secondary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>unsetMethod method</secondary>
@@ -3697,7 +3758,7 @@ a table, which can contain only one item for any index).</para>
 </figure>
 <note><title>Note</title>
 <para>The Relation class also has available class methods that its
-metaclass, the <link linkend="clsClass">Class class</link>, defines. 
+metaclass, the <link linkend="clsClass">Class class</link>, defines.
 It also inherits methods from the <link linkend="mapcoll">MapCollection
 class</link>, although there are not currently any methods defined in that class.
 </para></note>
@@ -3738,7 +3799,7 @@ class</link>, although there are not currently any methods defined in that class
 ]]>
 </programlisting>
 
-<para>Returns the same item as the 
+<para>Returns the same item as the
 <emphasis role="bold">at</emphasis> method. See
 <link linkend="mthRelationAt">at</link>.</para>
 </section>
@@ -3755,7 +3816,7 @@ class</link>, although there are not currently any methods defined in that class
 ]]>
 </programlisting>
 
-<para>This method is the same as the 
+<para>This method is the same as the
 <emphasis role="bold">put</emphasis> method. See
 <link linkend="mthRelationPut">put</link>.</para>
 </section>
@@ -3912,9 +3973,9 @@ contains any item associated with index
 ]]>
 </programlisting>
 
-<para>Returns <computeroutput>1</computeroutput> (true) if the relation 
-contains the member item <emphasis role="italic">item</emphasis> 
-(associated with index <emphasis role="italic">index</emphasis>, or 
+<para>Returns <computeroutput>1</computeroutput> (true) if the relation
+contains the member item <emphasis role="italic">item</emphasis>
+(associated with index <emphasis role="italic">index</emphasis>, or
 <computeroutput>0</computeroutput> (false).</para>
 </section>
 
@@ -4037,8 +4098,16 @@ the same index, without removing any existing member items.</para>
 <indexterm><primary>method</primary>
 <secondary>putAll method</secondary>
 <tertiary>of Relation class</tertiary></indexterm>
-
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<programlisting>
+<![CDATA[
+>>-putAll(collection)---------------------------------------><
+]]>
+</programlisting>
+<para>Adds all items <emphasis role="italic">collection</emphasis> to the target relation.  The
+<emphasis role="italic">collection</emphasis> argument can be any object that supports a supplier
+method.  Items from <emphasis role="italic">collection</emphasis> are added using the index values
+returned by the supplier.
+</para>
 </section>
 
 <section id="mthRelationRemove"><title>remove</title>
@@ -4229,7 +4298,7 @@ that are character strings.</para>
 </figure>
 <note><title>Note</title>
 <para>The Stem class also has available class methods that its metaclass,
-the <link linkend="clsClass">Class class</link>, defines. 
+the <link linkend="clsClass">Class class</link>, defines.
 It also inherits methods from the <link linkend="mapcoll">MapCollection
 class</link>, although there are not currently any methods defined in that class.
 </para></note>
@@ -4447,7 +4516,7 @@ allow all of the index values in the receiver collection.</para>
 </programlisting>
 
 <para>Returns <computeroutput>1</computeroutput> (true) if the collection
-contains any item associated with a stem tail 
+contains any item associated with a stem tail
 <emphasis role="italic">tail</emphasis>,
 or <computeroutput>0</computeroutput> (false).</para>
 </section>
@@ -4582,8 +4651,21 @@ an error is raised.</para>
 <indexterm><primary>method</primary>
 <secondary>putAll method</secondary>
 <tertiary>of Stem class</tertiary></indexterm>
-
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<programlisting>
+<![CDATA[
+>>-putAll(collection)---------------------------------------><
+]]>
+</programlisting>
+<para>Adds all items <emphasis role="italic">collection</emphasis> to the target stem.  The
+<emphasis role="italic">collection</emphasis> argument can be any object that supports a supplier
+method.  Items from <emphasis role="italic">collection</emphasis> are added using the index values
+returned by the supplier.  The item
+indexes from the source <emphasis role="italic">collection</emphasis> must be strings.  The items are
+added in the order provided by the supplier object.
+If duplicate
+indexes exist in <emphasis role="italic">collection</emphasis>, the last item provided by the
+supplier will overwrite previous items with the same index.
+</para>
 </section>
 
 <section id="mthStemRemove"<title>remove</title>
@@ -4634,9 +4716,9 @@ removed item.
 ]]>
 </programlisting>
 
-<para>Returns the result of the Stem class 
+<para>Returns the result of the Stem class
 <emphasis role="bold">makeArray</emphasis> method, if the requested
-class is Array. For all other classes, 
+class is Array. For all other classes,
 <emphasis role="bold">request</emphasis> forwards the message to the
 default value of the stem and returns this result. This method requests
 conversion to a specific class. All conversion requests except Array are
@@ -4705,7 +4787,7 @@ the new collection only if there is no item with the same associated index
 in the receiver collection and the method has not already included an item
 with the same index. The order in which this method selects items in
 <emphasis role="italic">argument</emphasis> is unspecified. (The program
-should not rely on any order.) See also the 
+should not rely on any order.) See also the
 <emphasis role="bold">union</emphasis> method of the Table
 (<link linkend="mthTableUnion">union</link>) and Relation
 (<link linkend="mthRelationUnion">union</link>) classes. The
@@ -4776,7 +4858,7 @@ a relation, which can contain more than one item with the same index).</para>
 </figure>
 <note><title>Note</title>
 <para>The Table class also has available class methods that its
-metaclass, the <link linkend="clsClass">Class class</link>, defines. 
+metaclass, the <link linkend="clsClass">Class class</link>, defines.
 It also inherits methods from the <link linkend="mapcoll">MapCollection
 class</link>, although there are not currently any methods defined in that class.
 </para></note>
@@ -4817,7 +4899,7 @@ class</link>, although there are not currently any methods defined in that class
 ]]>
 </programlisting>
 
-<para>Returns the same item as the 
+<para>Returns the same item as the
 <emphasis role="bold">at</emphasis> method. See
 <link linkend="mthTableAt">at</link>.</para>
 </section>
@@ -4834,7 +4916,7 @@ class</link>, although there are not currently any methods defined in that class
 ]]>
 </programlisting>
 
-<para>This method is the same as the 
+<para>This method is the same as the
 <emphasis role="bold">put</emphasis> method. See
 <link linkend="mthTablePut">put</link>.</para>
 </section>
@@ -5071,8 +5153,21 @@ items associated with index <emphasis role="italic">index</emphasis>.</para>
 <indexterm><primary>method</primary>
 <secondary>putAll method</secondary>
 <tertiary>of Table class</tertiary></indexterm>
-
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<programlisting>
+<![CDATA[
+>>-putAll(collection)---------------------------------------><
+]]>
+</programlisting>
+<para>Adds all items <emphasis role="italic">collection</emphasis> to the target table.  The
+<emphasis role="italic">collection</emphasis> argument can be any object that supports a supplier
+method.  Items from <emphasis role="italic">collection</emphasis> are added using the index values
+returned by the supplier.
+The items are
+added in the order provided by the supplier object.
+If duplicate
+indexes exist in <emphasis role="italic">collection</emphasis>, the last item provided by the
+supplier will overwrite previous items with the same index.
+</para>
 </section>
 
 <section id="mthTableRemove"><title>remove</title>
@@ -5173,7 +5268,7 @@ the new collection only if there is no item with the same associated index
 in the receiver collection and the method has not already included an item
 with the same index. The order in which this method selects items in
 <emphasis role="italic">argument</emphasis> is unspecified. (The program should
-not rely on any order.) See also the 
+not rely on any order.) See also the
 <emphasis role="bold">union</emphasis> method of the Directory (see
 <link linkend="mthDirectoryUnion">union</link>) and
 Relation (see <link linkend="mthRelationUnion">union</link>) classes. The
@@ -5243,7 +5338,7 @@ in a bag, and the same object can be placed in a bag several times.</para>
 </figure>
 <note><title>Note</title>
 <para>The Bag class also has available class methods that its metaclass,
-the <link linkend="clsClass">Class class</link>, defines. 
+the <link linkend="clsClass">Class class</link>, defines.
 It also inherits methods from the <link linkend="setcoll">SetCollection
 class</link>, although there are not currently any methods defined in that class.
 </para></note>
@@ -5319,7 +5414,7 @@ methods, it inherits the methods of the Object class and the Relation class.</pa
 <para>This method overrides the
 <link linkend="mthRelationPutSet">[]= method</link> from the
 <link linkend="clsRelation">Relation class</link>.</para>
-<para>This method is the same as the 
+<para>This method is the same as the
 <emphasis role="bold">put</emphasis> method. See
 <link linkend="mthBagPut">put</link>.</para>
 </section>
@@ -5425,8 +5520,16 @@ same as <emphasis role="italic">item</emphasis>.</para>
 <para>This method overrides the
 <link linkend="mthRelationPutAll">putAll method</link> from the
 <link linkend="clsRelation">Relation class</link>.</para>
-
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<programlisting>
+<![CDATA[
+>>-putAll(collection)---------------------------------------><
+]]>
+</programlisting>
+<para>Adds all items <emphasis role="italic">collection</emphasis> to the target bag.  The
+<emphasis role="italic">collection</emphasis> argument can be any object that supports a supplier
+method.  Items from <emphasis role="italic">collection</emphasis> are added using the index values
+returned by the supplier.
+</para>
 </section>
 
 <section id="mthBagSubset"<title>subset</title>
@@ -5479,7 +5582,7 @@ the new collection only if there is no item with the same associated index
 in the receiver collection and the method has not already included an item
 with the same index. The order in which this method selects items in
 <emphasis role="italic">argument</emphasis> is unspecified. (The program
-should not rely on any order.) See also the 
+should not rely on any order.) See also the
 <emphasis role="bold">union</emphasis> method of the Table
 (<link linkend="mthTableUnion">union</link>) and Relation
 (<link linkend="mthRelationUnion">union</link>) classes. The
@@ -5550,7 +5653,7 @@ where the index is the same as the item. Any object can be placed in a set.
 </figure>
 <note><title>Note</title>
 <para>The Set class also has available class methods that its metaclass,
-the <link linkend="clsClass">Class class</link>, defines. 
+the <link linkend="clsClass">Class class</link>, defines.
 It also inherits methods from the <link linkend="setcoll">SetCollection
 class</link>, although there are not currently any methods defined in that class.
 </para></note>
@@ -5626,7 +5729,7 @@ and the Table class.</para>
 <para>This method overrides the
 <link linkend="mthTablePutSet">[]= method</link> from the
 <link linkend="clsTable">Table class</link>.</para>
-<para>This method is the same as the 
+<para>This method is the same as the
 <emphasis role="bold">put</emphasis> method. See
 <link linkend="mthSetPut">put</link>.</para>
 </section>
@@ -5689,8 +5792,21 @@ same as <emphasis role="italic">item</emphasis>.</para>
 <para>This method overrides the
 <link linkend="mthTablePutAll">putAll method</link> from the
 <link linkend="clsTable">Table class</link>.</para>
-
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<programlisting>
+<![CDATA[
+>>-putAll(collection)---------------------------------------><
+]]>
+</programlisting>
+<para>Adds all items <emphasis role="italic">collection</emphasis> to the target set.  The
+<emphasis role="italic">collection</emphasis> argument can be any object that supports a supplier
+method.  Items from <emphasis role="italic">collection</emphasis> are added using the index values
+returned by the supplier.
+The items are
+added in the order provided by the supplier object.
+If duplicate
+indexes exist in <emphasis role="italic">collection</emphasis>, the last item provided by the
+supplier will overwrite previous items with the same index.
+</para>
 </section>
 
 <section id="mthSetSubset"<title>subset</title>
@@ -5743,7 +5859,7 @@ the new collection only if there is no item with the same associated index
 in the receiver collection and the method has not already included an item
 with the same index. The order in which this method selects items in
 <emphasis role="italic">argument</emphasis> is unspecified. (The program
-should not rely on any order.) See also the 
+should not rely on any order.) See also the
 <emphasis role="bold">union</emphasis> method of the Table
 (<link linkend="mthTableUnion">union</link>) and Relation
 (<link linkend="mthRelationUnion">union</link>) classes. The
@@ -5782,6 +5898,166 @@ index values in the receiver collection.</para>
 
 </section>
 
+<section id="sortarray"><title>Sorting Arrays</title>
+<para>Any non-sparse Array instance can have its elements placed into sorted order using the
+<emphasis role="bold">sort</emphasis> method of the Array class.  The simplest sort is
+sorting an array of strings.  For example:</para>
+<programlisting>
+myArray = .array~of("Zoe", "Fred", "Xavier", "Andy")
+myArray~sort
+
+do name over myArray
+   say name
+end
+</programlisting>
+<para>will display the names in the order "Andy", "Fred", "Xavier", "Zoe".</para>
+<para>The <emphasis role="bold">sort</emphasis> method orders the strings by using the
+<emphasis role="bold">compareTo</emphasis> method of the String class.  The
+<emphasis role="bold">compareTo</emphasis> method knows how to compare one string to another, and
+returns the values -1 (less than), 0 (equal), or 1 (greater than) to indicate the relative ordering
+of the two strings.</para>
+<section id="sortcomparable"><title>Sorting non-strings</title>
+<para>Sorting is not limited to string value.  Any object that inherits the Comparable mixin class and
+implements a <emphasis role="bold">compareTo</emphasis> method can be sorted.  For example, consider the
+following simple class:</para>
+<programlisting>
+    ::class Employee inherit Comparable
+    ::method init
+      expose id, name
+      use arg id, name
+    ::method id attribute
+    ::method name attribute
+    ::method compareTo
+      expose id
+      use arg other
+      return id~compareTo(other~id)  -- comparison performed using employee id
+    ::method string
+      use arg name
+      return "Employee" name
+</programlisting>
+<para>The Employee class implements its sort order using the employee identification number.  When the
+<emphasis role="bold">sort</emphasis> method needs to compare two Employee instances, it will call the
+<emphasis role="bold">compareTo</emphasis> method on one of the instances, passing the second instance as an argument.
+The <emphasis role="bold">compareTo</emphasis> method tells the <emphasis role="bold">sort</emphasis> method
+which of the two instances should be first.</para>
+<programlisting>
+    a = .array~new
+    a[1] = .Employee~new(654321, "Fred")
+    a[2] = .Employee~new(123456, "George")
+    a[3] = .Employee~new(333333, "William")
+
+    a~sort
+
+    do employee over a
+       say employee    -- sorted order is "George", "William", "Fred"
+    end
+</programlisting>
+</section>
+<section id="sortcomparator"><title>Sorting with more than one order</title>
+<para>The String class <emphasis role="bold">compareTo</emphasis> method only implements a sort ordering for an ascending
+sort using a strict comparison.  Frequently it's desirable to override a class-defined sort order or even to sort
+items that do not implement a <emphasis role="bold">compareTo</emphasis> method.  To change the sorting criteria,
+use the Array <emphasis role="bold">sortWith</emphasis> method.  The <emphasis role="bold">sortWith</emphasis>
+method takes a single argument, which is a Comparator that implements a <emphasis role="bold">compare</emphasis>
+method.  The <emphasis role="bold">compare</emphasis> method performs comparisons between pairs of items.  Different
+comparators can be customized for different comparison purposes.  For example, the Rexx language provides a
+DescendingComparator class that will sort items into descending order:</para>
+<programlisting>
+::CLASS 'DescendingComparator' MIXINCLASS Comparator
+::METHOD compare
+use strict arg left, right
+return -left~compareTo(right)
+</programlisting>
+<para>The DescendingComparator merely inverts the result returned by the item
+<emphasis role="bold">compareTo</emphasis> method.  Our previous example</para>
+<programlisting>
+myArray = .array~of("Zoe", "Fred", "Xavier", "Andy")
+myArray~sortWith(.DescendingComparator~new)
+
+do name over myArray
+   say name
+end
+</programlisting>
+<para>now displays in the order "Zoe", "Xavier", "Fred", "Andy".</para>
+<para>Custom Comparators are simple to create for any sorting purpose.  The only requirement is a
+<emphasis role="bold">compare</emphasis> method that knows how to compare pairs of items in some particular
+manner.  For example, to sort our Employee class by name rather employee id, we can use the following
+simple comparator class:</para>
+<programlisting>
+::CLASS EmployeeNameSorter MIXINCLASS Comparator
+::METHOD compare
+  use strict arg left, right
+  return left~name~compareTo(right~name)  -- do the comparison using the names
+</programlisting>
+</section>
+<section id="ltcomparators"><title>Builtin Comparators</title>
+<para>ooRexx includes a number of builtin Comparators for common sorting operations.</para>
+<variablelist>
+    <varlistentry>
+        <term>Comparator</term>
+        <listitem><para>Base comparator.  The Comparator class just uses the <emphasis role="bold">compareTo</emphasis>
+        method of the first argument to generate the result.  Using <emphasis role="bold">sortWith</emphasis>
+        and a Comparator instance is equivalent to using the <emphasis role="bold">sort</emphasis> method and
+        no comparator.
+        </para></listitem>
+    </varlistentry>
+    <varlistentry>
+        <term>DescendingComparator</term>
+        <listitem><para>The reverse of the Comparator class.
+        The DescendingComparator can be used to sort items in descending order.
+        </para></listitem>
+    </varlistentry>
+    <varlistentry>
+        <term>InvertingComparator</term>
+        <listitem><para>The InvertingComparator will invert the result returned by another Comparator instance.
+        This comparator can be combined with another comparator instance to reverse the Comparator sort order.
+        </para></listitem>
+    </varlistentry>
+    <varlistentry>
+        <term>CaselessComparator</term>
+        <listitem><para>Like the base comparator, but uses the <emphasis role="bold">caselessCompareTo</emphasis>
+        method to determine order.  The String class implements <emphasis role="bold">caselessCompareTo</emphasis>,
+        so the CaselessComparator can be used to sort arrays of strings independent of case.
+        </para></listitem>
+    </varlistentry>
+    <varlistentry>
+        <term>ColumnComparator</term>
+        <listitem><para>The ColumnComparator will sort string items using specific substrings within each string item.
+        If sorting is performed on multiple column positions, the
+        <emphasis role="bold">stableSortWith</emphasis> method is recommended to ensure the results of
+        previous sort operations are retained.
+        </para></listitem>
+    </varlistentry>
+    <varlistentry>
+        <term>CaselessColumnComparator</term>
+        <listitem><para>Like the ColumnComparator, but the substring comparisons are done independently of case.
+        </para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section id="stablesort"><title>Stable and Unstable Sorts</title>
+<para>The default sorting algorithm is a Quicksort.  A Quicksort is a very efficient
+sorting algorithm that does not require any additional memory to implement.
+Unfortunately, a Quicksort is also an <emphasis role="italic">unstable</emphasis> sort.
+In an unstable sort, items are not guaranteed to maintain their original positions if they
+compare equal during the sort.  Consider the following simple example:</para>
+<programlisting>
+a = .array~of("Fred", "George", "FRED", "Mike", "fred")
+a~sortwith(.caselesscomparator~new)
+do name over a
+  say name
+end
+</programlisting>
+<para>This example displays the 3 occurrences of Fred in the order "Fred", "fred", "FRED", even though they compare
+equal using a caseless comparison.</para>
+<para>ooRexx implements a second sort algorithm that is available using the
+<emphasis role="bold">stableSort</emphasis> and <emphasis role="bold">stableSortWith</emphasis> methods.
+These methods implement a Mergesort algorithm, which is less efficient than the default Quicksort, and requires
+additional memory to perform the sort.  The Mergesort is a stable sort algorithm that will maintain the original
+relative ordering of equivalent items.  Our example above, sorted with <emphasis role="bold">stableSortWith</emphasis>,
+would display "Fred", "FRED", "fred".</para>
+</section>
+</section>
 <section id="setop"><title>The Concept of Set Operations</title>
 <indexterm><primary>examples</primary>
 <secondary>set operations</secondary>
@@ -5907,7 +6183,7 @@ B SUBSET A = .false
 <computeroutput>A={a,b,b}</computeroutput> and
 <computeroutput>B={b,b,c,c,d}</computeroutput>. The result of any set-like
 operation is a collection, in this case
-a bag. The only exception is 
+a bag. The only exception is
 <emphasis role="bold">subset</emphasis> resulting in a Boolean .true or .false.
 Using the collections <computeroutput>A</computeroutput> and
 <computeroutput>B</computeroutput>, the different set-like
@@ -6046,7 +6322,7 @@ returns .true if the object is an instance of the Array, List, Queue, Set,
 Bag, Relation, or Table collection class.</para></listitem>
 <listitem><para>Does the collection class have set-operator methods?</para>
 <para>To answer this
-question, send the <emphasis role="bold">hasMethod</emphasis> 
+question, send the <emphasis role="bold">hasMethod</emphasis>
 method with parameter &quot;union&quot; to
 <emphasis role="italic">object</emphasis>:</para>
 <programlisting>
