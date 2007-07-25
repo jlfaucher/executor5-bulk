@@ -76,6 +76,10 @@ SGML_FILES = collclasses.sgml \
 	     wsheng.sgml \
 	     xconcur.sgml \
 	     xintdeb.sgml \
+	     collectionclassmethods.sgml \
+	     mapcollectionclassmethods.sgml \
+	     setcollectionclassmethods.sgml \
+	     orderedcollectionclassmethods.sgml \
 	     ../shared/legalstuff.sgml \
 	     ../shared/notices.sgml \
 	     ../shared/gethelp.sgml \

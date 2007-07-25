@@ -823,13 +823,13 @@ methods except where noted.</para>
 <entry>[]=</entry>
 <entry>
     <link linkend="mthArrayPutSet">Array</link>,
-    <link linkend="mthBagPutGet">Bag</link>,
+    <link linkend="mthCollectionAtGet">Collection</link>,
     <link linkend="mthDirectoryPutSet">Directory</link>,
     <link linkend="mthListPutSet">List</link>,
     <link linkend="mthPropertiesPutSet">Properties</link>,
     <link linkend="mthQueuePutSet">Queue</link>,
     <link linkend="mthRelationPutSet">Relation</link>,
-    <link linkend="mthPutSet">Set</link>,
+    <link linkend="mthSetCollectionPutSet">Set Collection</link>,
     <link linkend="mthStemPutSet">Stem</link>,
     <link linkend="mthTablePutSet">Table</link></entry>
 </row>
@@ -861,6 +861,7 @@ methods except where noted.</para>
 <entry>allIndexes</entry>
 <entry>
     <link linkend="mthArrayAllIndexes">Array</link>,
+    <link linkend="mthCollectionAllIndexes">Collection</link>,
     <link linkend="mthDirectoryAllIndexes">Directory</link>,
     <link linkend="mthListAllIndexes">List</link>,
     <link linkend="mthQueueAllIndexes">Queue</link>,
@@ -873,6 +874,7 @@ methods except where noted.</para>
 <entry>allItems</entry>
 <entry>
     <link linkend="mthArrayAllItems">Array</link>,
+    <link linkend="mthCollectionAllItems">Collection</link>,
     <link linkend="mthDirectoryAllItems">Directory</link>,
     <link linkend="mthListAllItems">List</link>,
     <link linkend="mthQueueAllItems">Queue</link>,
@@ -888,15 +890,14 @@ methods except where noted.</para>
     <link linkend="mthArrayAppend">Array</link>,
     <link linkend="mthListAppend">List</link>,
     <link linkend="mthMutableBufferAppend">MutableBuffer</link>,
+    <link linkend="mthOrderedCollectionAppend">Ordered Collection</link>,
     <link linkend="mthQueueAppend">Queue</link>
 </entry>
 </row>
 <row>
 <entry>appendAll</entry>
 <entry>
-    <link linkend="mthArrayAppendAll">Array</link>,
-    <link linkend="mthListAppendAll">List</link>,
-    <link linkend="mthQueueAppendAll">Queue</link>
+    <link linkend="mthOrderedCollectionAppendAll">Ordered Collection</link>,
 </entry>
 </row>
 <row>
@@ -1219,14 +1220,10 @@ methods except where noted.</para>
 <row>
 <entry>difference</entry>
 <entry>
-    <link linkend="mthArrayDifference">Array</link>,
+    <link linkend="mthCollectionDifference">Collection</link>,
     <link linkend="mthBagDifference">Bag</link>,
-    <link linkend="mthDirectoryDifference">Directory</link>,
-    <link linkend="mthListDifference">List</link>,
-    <link linkend="mthQueueDifference">Queue</link>,
+    <link linkend="mthOrderedCollectionDifference">Ordered Collection</link>,
     <link linkend="mthRelationDifference">Relation</link>,
-    <link linkend="mthStemDifference">Stem</link>,
-    <link linkend="mthTableDifference">Table</link>
 </entry>
 </row>
 <row>
@@ -1368,7 +1365,7 @@ methods except where noted.</para>
 <entry>hasIndex</entry>
 <entry>
     <link linkend="mthArrayHasIndex">Array</link>,
-    <link linkend="mthBagHasIndex">Bag</link>,
+    <link linkend="mthCollectionHasIndex">Collection</link>,
     <link linkend="mthDirectoryHasIndex">Directory</link>,
     <link linkend="mthListHasIndex">List</link>,
     <link linkend="mthQueueHasIndex">Queue</link>,
@@ -1381,6 +1378,7 @@ methods except where noted.</para>
 <entry>hasItem</entry>
 <entry>
     <link linkend="mthArrayHasItem">Array</link>,
+    <link linkend="mthCollectionHasItem">Collection</link>,
     <link linkend="mthDirectoryHasItem">Directory</link>,
     <link linkend="mthListHasItem">List</link>,
     <link linkend="mthQueueHasItem">Queue</link>,
@@ -1411,6 +1409,7 @@ methods except where noted.</para>
 <entry>index</entry>
 <entry>
     <link linkend="mthArrayIndex">Array</link>,
+    <link linkend="mthCollectionIndex">Collection</link>,
     <link linkend="mthDirectoryIndex">Directory</link>,
     <link linkend="mthListIndex">List</link>,
     <link linkend="mthQueueIndex">Queue</link>,
@@ -1474,15 +1473,11 @@ methods except where noted.</para>
 <row>
 <entry>intersection</entry>
 <entry>
-    <link linkend="mthArrayIntersection">Array</link>,
     <link linkend="mthBagIntersection">Bag</link>,
-    <link linkend="mthDirectoryIntersection">Directory</link>,
-    <link linkend="mthListIntersection">List</link>,
-    <link linkend="mthQueueIntersection">Queue</link>,
+    <link linkend="mthCollectionIntersection">Collection</link>,
+    <link linkend="mthOrderedCollectionIntersection">Ordered Collection</link>,
     <link linkend="mthRelationIntersection">Relation</link>,
     <link linkend="mthSetIntersection">Set</link>,
-    <link linkend="mthStemIntersection">Stem</link>,
-    <link linkend="mthTableIntersection">Table</link>
 </entry>
 </row>
 <row>
@@ -1520,6 +1515,7 @@ methods except where noted.</para>
 <entry>items</entry>
 <entry>
     <link linkend="mthArrayItems">Array</link>,
+    <link linkend="mthCollectionItems">Collection</link>,
     <link linkend="mthDirectoryItems">Directory</link>,
     <link linkend="mthListItems">List</link>,
     <link linkend="mthQueueItems">Queue</link>,
@@ -1605,9 +1601,11 @@ methods except where noted.</para>
 <entry>makeArray</entry>
 <entry>
     <link linkend="mthArrayMakeArray">Array</link>,
+    <link linkend="mthCollectionMakeArray">Collection</link>,
     <link linkend="mthCircularQueueMakeArray">CircularQueue</link>,
     <link linkend="mthDirectoryMakeArray">Directory</link>,
     <link linkend="mthListMakeArray">List</link>,
+    <link linkend="mthOrderedCollectionMakeArray">Ordered Collection</link>,
     <link linkend="mthQueueMakeArray">Queue</link>,
     <link linkend="mthRelationMakeArray">Relation</link>,
     <link linkend="mthStemMakeArray">Stem</link>,
@@ -1861,13 +1859,13 @@ and prefix \</entry>
 <entry>put</entry>
 <entry>
     <link linkend="mthArrayPut">Array</link>,
-    <link linkend="mthBagPut">Bag</link>,
+    <link linkend="mthCollectionPut">Collection</link>,
     <link linkend="mthDirectoryPut">Directory</link>,
     <link linkend="mthListPut">List</link>,
     <link linkend="mthPropertiesPut">Properties</link>,
     <link linkend="mthQueuePut">Queue</link>,
     <link linkend="mthRelationPut">Relation</link>,
-    <link linkend="mthSetPut">Set</link>,
+    <link linkend="mthSetCollectionPut">Set Collection</link>,
     <link linkend="mthStemPut">Stem</link>,
     <link linkend="mthTablePut">Table</link>
 </entry>
@@ -1876,11 +1874,8 @@ and prefix \</entry>
 <entry>putAll</entry>
 <entry>
     <link linkend="mthBagPutAll">Bag</link>,
-    <link linkend="mthDirectoryPutAll">Directory</link>,
-    <link linkend="mthRelationPutAll">Relation</link>,
+    <link linkend="mthMapCollectionPutAll">Map Collection</link>,
     <link linkend="mthSetPutAll">Set</link>,
-    <link linkend="mthStemPutAll">Stem</link>,
-    <link linkend="mthTablePutAll">Table</link>
 </entry>
 </row>
 <row>
@@ -2181,15 +2176,11 @@ and prefix \</entry>
 <row>
 <entry>subset</entry>
 <entry>
-    <link linkend="mthArraySubset">Array</link>,
     <link linkend="mthBagSubset">Bag</link>,
-    <link linkend="mthDirectorySubset">Directory</link>,
-    <link linkend="mthListSubset">List</link>,
-    <link linkend="mthQueueSubset">Queue</link>,
+    <link linkend="mthCollectionSubset">Collection</link>
+    <link linkend="mthOrderedCollectionSubset">Ordered Collection</link>,
     <link linkend="mthRelationSubset">Relation</link>,
     <link linkend="mthSetSubset">Set</link>,
-    <link linkend="mthStemSubset">Stem</link>,
-    <link linkend="mthTableSubset">Table</link>
 </entry>
 </row>
 <row>
@@ -2216,6 +2207,7 @@ and prefix \</entry>
 <entry>
     <link linkend="mthArraySupplier">Array</link>,
     <link linkend="mthCircularQueueSupplier">CircularQueue</link>,
+    <link linkend="mthCollectionSupplier">Collection</link>,
     <link linkend="mthDirectorySupplier">Directory</link>,
     <link linkend="mthListSupplier">List</link>,
     <link linkend="mthQueueSupplier">Queue</link>,
@@ -2266,15 +2258,11 @@ and prefix \</entry>
 <row>
 <entry>union</entry>
 <entry>
-    <link linkend="mthArrayUnion">Array</link>,
     <link linkend="mthBagUnion">Bag</link>,
-    <link linkend="mthDirectoryUnion">Directory</link>,
-    <link linkend="mthListUnion">List</link>,
-    <link linkend="mthQueueUnion">Queue</link>,
+    <link linkend="mthCollectionUnion">Collection</link>,
+    <link linkend="mthOrderedCollectionUnion">Ordered CollectionArray</link>,
     <link linkend="mthRelationUnion">Relation</link>,
     <link linkend="mthSetUnion">Set</link>,
-    <link linkend="mthStemUnion">Stem</link>,
-    <link linkend="mthTableUnion">Table</link>
 </entry>
 </row>
 <row>
@@ -2337,15 +2325,11 @@ and prefix \</entry>
 <row>
 <entry>xor</entry>
 <entry>
-    <link linkend="mthArrayXor">Array</link>,
     <link linkend="mthBagXor">Bag</link>,
-    <link linkend="mthDirectoryXor">Directory</link>,
-    <link linkend="mthListXor">List</link>,
-    <link linkend="mthQueueXor">Queue</link>,
+    <link linkend="mthCollectionXor">Collection</link>,
+    <link linkend="mthOrderedCollectionXor">Ordered Collection</link>,
     <link linkend="mthRelationXor">Relation</link>,
     <link linkend="mthSetXor">Set</link>,
-    <link linkend="mthStemXor">Stem</link>,
-    <link linkend="mthTableXor">Table</link>
 </entry>
 </row>
 <row>
