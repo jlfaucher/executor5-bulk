@@ -105,10 +105,23 @@ attributes:
 <listitem><para>Vertical size of one dialog unit (in pixels)
 </para></listitem></varlistentry>
 <varlistentry><term>SizeX</term>
-<listitem><para>Width of the dialog in dialog units
+<listitem><para>The width of the dialog, in dialog units, when the underlying
+Windows dialog object is created.</para>
+<para><emphasis role="bold">Note:</emphasis>  If the program creates a resizable
+dialog and the user changes the size of the dialog, this attribute is not
+updated by ooDialog.  If the programmer requires that the
+<computeroutput>SizeX</computeroutput> attribute always reflects the actual size
+of the dialog, (for a resizable diaog,) then the programmer is responsible for
+updating its value when the size of the dialog changes.  The programmer would
+use the <link linkend="connectresize">ConnectResize</link> method to receive
+notifications when the dialog changed size and update the attribute accordingly.
 </para></listitem></varlistentry>
 <varlistentry><term>SizeY</term>
-<listitem><para>Height of the dialog in dialog units
+<listitem><para>The height of the dialog, in dialog units, when the Windows
+dialog object is created.</para>
+<para><emphasis role="bold">Note:</emphasis>  In a similar fashion to the
+<computeroutput>SizeX</computeroutput> attribute, the programmer would be
+responsible for updating this attribute for resizable dialogs.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
