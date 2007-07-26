@@ -241,6 +241,13 @@ not need to use the <link linkend="h001506">DefineDialog</link> method because
 the dialog is defined in the resource script.  Other than that, the
 <computeroutput>RcDialog</computeroutput> class is used in the same manner as
 the <computeroutput>UserDialog</computeroutput> class.</para>
+<note><title>Note</title><para>
+Although the programmer does not need to use the
+<computeroutput>Define</computeroutput> method, there is nothing preventing its
+use.  The <computeroutput>Define</computeroutput> method could be used at
+runtime to add additional dialog elements to those defined in the resource
+script.
+</para></note>
 <variablelist>
 <varlistentry><term>Requires:</term>
 <listitem><para><computeroutput>RcDialog.cls</computeroutput> is the source file
@@ -262,9 +269,17 @@ subclass of <computeroutput>UserDialog</computeroutput>.
 <secondary>RcDialog class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aRcDialog~Init(--script--,--dlgID--+-------------+--+----------+--)-------><
+>>-aRcDialog~Init(--script--,--dlgID--+-------------+--+----------+--------->
                                       +-,--dlgData.-+  +-,--hFile-+
 
+>--+------------------------------------------------------+--)-------------><
+   +-,--+------------------------------+--+-------------+-+
+        |    .--------------------.    |  +-,--expected-+
+        |    V                    |    |
+        +-"----+-CENTER---------+-+--"-+
+               +-CONNECTBUTTONS-+
+               +-CONNECTRADIOS--+
+               +-CONNECTCHECKS--+
 
 ]]>
 </programlisting>
@@ -292,6 +307,38 @@ initialization data.
 <varlistentry><term>hFile</term>
 <listitem><para>The file name of a <link linkend="headerfile">header file</link>
 containing the symbolic ID defines for the resources used by the program.
+</para></listitem></varlistentry>
+<varlistentry><term>options</term>
+<listitem><para>One or more of the keywords listed in the syntax diagram, separated
+by blanks:
+<variablelist>
+<varlistentry><term>CENTER</term>
+<listitem><para>The dialog is to be positioned in the center of the screen.
+</para></listitem></varlistentry>
+<varlistentry><term>CONNECTBUTTONS</term>
+<listitem><para>For each push button a connection to an object method in the
+<computeroutput>RcDialog</computeroutput> object is established automatically.
+See <link linkend="h000114">ConnectButton</link> for a description of connecting
+buttons to a method.  The name for the object method is created by ooDialog and
+the programmer needs to define the object method.  The method name will be the
+button text with all spaces, ampersands, and colons removed.
+</para></listitem></varlistentry>
+<varlistentry><term>CONNECTRADIOS</term>
+<listitem><para>Similar to CONNECTBUTTONS, but this option will connect the
+radio buttons to an object method.  For radio buttons, the created method name
+will be the button text with all spaces, ampersands, and colons removed,
+prefaced with &quot;ID&quot;.
+</para></listitem></varlistentry>
+<varlistentry><term>CONNECTCHECKS</term>
+<listitem><para>Exactly the same as CONNECTRADIOS, for check box controls.  The
+object method name is generated in the same way as it is for radio buttons.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term>expected</term>
+<listitem><para>This is the maximum number of dialog elements the dialog object can
+handle. See the <link linkend="h001545">Create</link> method for details.  The
+default value for this argument is 200.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>

@@ -61,7 +61,12 @@ The class also inherits the methods of its parent class: the
 <para>There are two ways of creating a dialog: </para>
 <itemizedlist>
 <listitem><para>Load the dialog from a resource script using the
-<link linkend="h001613">Load</link> method.
+<link linkend="h001613">Load</link> method.  The
+<link linkend="clsRcDialog">RcDialog</link> class provides a convenient way to
+create a dialog from a resource script.  It handles the details of loading the
+resouce script transparently and leaves the programmer free to concentrate on
+the details of the behavior of the dialog.  It is a subclass of the
+<computeroutput>UserDialog</computeroutput>.
 </para></listitem>
 <listitem><para>Invoke Add... methods to an instance of this class
 or a subclass and create the dialog step by step, one method for one dialog
