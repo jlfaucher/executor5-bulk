@@ -49,7 +49,7 @@ Rexx data streams.</para>
 <indexterm><primary>InputStream class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>InputStream class</secondary></indexterm>
-<para>This class is defined as an abstract mixin class. It must be implemented 
+<para>This class is defined as an abstract mixin class. It must be implemented
 by subclassing it or inherting from it as a mixin. All the methods in this
 must be overridden or they will throw a syntax error when invoked.</para>
 <figure><title>The InputStream class and methods</title>
@@ -173,7 +173,7 @@ syntax error 93.963 to be raised.</para>
 <indexterm><primary>class</primary>
 <secondary>OutputStream class</secondary></indexterm>
 
-<para>This class is defined as an abstract mixin class. It must be implemented 
+<para>This class is defined as an abstract mixin class. It must be implemented
 by subclassing it or inherting from it as a mixin. All the methods in this
 must be overridden or they will throw a syntax error when invoked.</para>
 <figure><title>The OutputStream class and methods</title>
@@ -297,7 +297,7 @@ syntax error 93.963 to be raised.</para>
 <indexterm><primary>class</primary>
 <secondary>InputOutputStream class</secondary></indexterm>
 
-<para>This class is defined as an abstract mixin class. It must be implemented 
+<para>This class is defined as an abstract mixin class. It must be implemented
 by subclassing it. All the methods from its mixin classes
 must be overridden or they will throw a syntax error when invoked.</para>
 <figure><title>The InputOutputStream class</title>
@@ -362,7 +362,7 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.
 <para>A stream object allows external communication from
 Rexx. (See <link linkend="iostrms">Input and Output Streams</link> for a
 discussion of Rexx input and output.)</para>
-<para>The Stream class is a subclass of the 
+<para>The Stream class is a subclass of the
 <link linkend="clsInputOutputStream">InputOutputStream class</link>.</para>
 <figure><title>The Stream class and methods</title>
 <mediaobject>
@@ -375,7 +375,7 @@ discussion of Rexx input and output.)</para>
 <note><title>Note</title>
 <para>The Stream class also has available class methods that its
 metaclass, the <link linkend="clsClass">Class class</link>, defines.
-It also inherits methods from the 
+It also inherits methods from the
 <link linkend="clsInputOutputStream">InputOutputStream class</link>
 although there are currently no methods defined in that class.</para></note>
 
@@ -541,7 +541,7 @@ advances the write pointer.</para>
 <para>The <emphasis role="italic">string</emphasis> can be the null string.
 In this case, <emphasis role="bold">charOut</emphasis> writes
 no characters to the stream and returns <computeroutput>0</computeroutput>.
-If you omit <emphasis role="italic">string</emphasis>, 
+If you omit <emphasis role="italic">string</emphasis>,
 <emphasis role="bold">charOut</emphasis> writes no
 characters to the stream and returns <computeroutput>0</computeroutput>.
 The language processor closes the stream.</para>
@@ -604,11 +604,11 @@ about the CHARS built-in function.)</para>
 <link linkend="clsInputStream">InputStream class</link> and the
 <link linkend="mthOutputStreamClose">close method</link> from the
 <link linkend="clsOutputStream">OutputStream class</link>.</para>
-<para>Closes the stream that receives the message. 
+<para>Closes the stream that receives the message.
 <emphasis role="bold">close</emphasis> returns
 <computeroutput>READY:</computeroutput> if closing the stream is successful,
 or an appropriate error message.
-If you have tried to close an unopened file, then the 
+If you have tried to close an unopened file, then the
 <emphasis role="bold">close</emphasis> method returns
 a null string (&quot;&quot;).</para>
 </section>
@@ -638,7 +638,7 @@ and can be the null string. The following
 <listitem><para>Get information about a stream</para></listitem></itemizedlist>
 
 <para>If the method is unsuccessful, it returns an error message
-string in the same form that the 
+string in the same form that the
 <emphasis role="bold">description</emphasis> method uses.</para>
 <para>For most error conditions, the additional information is in the form of
 a numeric return code. This return code is the value of
@@ -1059,7 +1059,14 @@ to be written to the stream receiving the message.</para>
 <secondary>init method</secondary>
 <tertiary>of Stream class</tertiary></indexterm>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<programlisting>
+<![CDATA[
+>>-init(name)-----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Initializes a stream object defined by <emphasis role="italic">name</emphasis>.
+</para>
 </section>
 
 <section id="mthStreamLineIn"><title>lineIn</title>
@@ -1150,10 +1157,10 @@ information about the LINEOUT built-in function.)</para>
 <link linkend="mthOutputStreamLines">lines method</link> from the
 <link linkend="clsOutputStream">OutputStream class</link>.</para>
 <para>Returns the number of completed lines that remain in the character input
-stream receiving the message. If the stream has already been read with 
+stream receiving the message. If the stream has already been read with
 <emphasis role="bold">charIn</emphasis>emphasis.
 this can include an initial partial line. For persistent streams the count
-starts at the current read position. In effect, 
+starts at the current read position. In effect,
 <emphasis role="bold">lines</emphasis> reports whether a read
 action of charIn (see <link linkend="mthStreamCharIn">charIn</link>) or lineIn (see
 <link linkend="mthStreamLineIn">lineIn</link>) will succeed. (For an explanation of
@@ -1168,13 +1175,13 @@ information about the LINES built-in function.)</para>
 <note><title>Note</title>
 <para>The <emphasis role="bold">chars</emphasis>
 method returns the number of characters in a
-persistent stream or the presence of data in a transient stream. The 
+persistent stream or the presence of data in a transient stream. The
 <emphasis role="bold">lines</emphasis>emphasis
 method determines the actual number of lines by scanning the stream starting
 at the current position and counting the lines. For large streams, this can
 be a time-consuming operation.  Therefore, avoid the use of the LINES method
 in the  condition of a loop reading a stream. It is recommended that you use
-the <emphasis role="bold">chars</emphasis> 
+the <emphasis role="bold">chars</emphasis>
 method (see <link linkend="mthStreamChars">chars</link>) or the LINES
 built-in function for this purpose.</para></note>
 
@@ -1257,7 +1264,7 @@ method, the first line can be a partial line.
 <link linkend="clsOutputStream">OutputStream class</link>.</para>
 <para>Opens the stream to which you send the message and returns
 <computeroutput>READY:</computeroutput>. If the method is unsuccessful, it
-returns an error message string in the same form that the 
+returns an error message string in the same form that the
 <emphasis role="bold">description</emphasis> method uses.</para>
 <para>For most error conditions, the additional information is in the form of
 a numeric return code. This return code is the value of
@@ -1269,7 +1276,7 @@ opens the stream for both reading and writing data, for
 example: <computeroutput>&apos;open BOTH&apos;</computeroutput>. To specify that the
 stream receiving
 the message can be only read or only written to, specify READ or WRITE.</para>
-<para>The options for the 
+<para>The options for the
 <emphasis role="bold">open</emphasis> method are: </para>
 <variablelist>
 <varlistentry><term>READ</term>
@@ -1368,7 +1375,7 @@ stream_name~open("read")
 <link linkend="clsInputStream">InputStream class</link> and the
 <link linkend="mthOutputStreamPosition">position method</link> from the
 <link linkend="clsOutputStream">OutputStream class</link>.</para>
-<para><emphasis role="bold">position</emphasis> is a synonym for 
+<para><emphasis role="bold">position</emphasis> is a synonym for
 <emphasis role="bold">seek</emphasis>. (See
 <link linkend="mthStreamSeek">seek</link> .)</para>
 </section>
@@ -1415,8 +1422,8 @@ not be open.</para>
 </programlisting>
 
 <para>Used with these options, the <emphasis role="bold">query</emphasis>
-method returns specific information about a stream. Except for 
-<emphasis role="bold">query</emphasis> HANDLE and 
+method returns specific information about a stream. Except for
+<emphasis role="bold">query</emphasis> HANDLE and
 <emphasis role="bold">query</emphasis> POSITION, the
 language processor
 returns the query information even if the stream is not open. The language
@@ -1605,7 +1612,7 @@ backward from the current read or write position.
 <para>The <emphasis role="bold">seek</emphasis>
 method returns the new position in the stream if the read or
 write position is successfully located, or an appropriate error message.</para>
-<para>The following is a description of the options for 
+<para>The following is a description of the options for
 <emphasis role="bold">seek</emphasis>: </para>
 <variablelist>
 <varlistentry><term>READ</term>
@@ -1740,13 +1747,13 @@ in the stream object. The supplier enumerates the items in their line order.
 </programlisting>
 
 <para>This method cleans up the object when it is garbage collected. It should
-not be invoked directly except via an 
+not be invoked directly except via an
 <emphasis role="bold">uninit</emphasis> method of a subclass of the Stream
 class.
 </para>
-<para>If the Stream class is subclassed and the subclass provides an 
+<para>If the Stream class is subclassed and the subclass provides an
 <emphasis role="bold">uninit</emphasis>
-method then that method must invoke the superclass 
+method then that method must invoke the superclass
 <emphasis role="bold">uninit</emphasis> method.
 The following example shows how to accomplish this.</para>
 <programlisting>

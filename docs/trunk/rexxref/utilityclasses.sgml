@@ -112,7 +112,7 @@ after the time with a single blank separating the time and date. Leading and
 trailing blanks are not allowed in the
 <emphasis role="italic">atime</emphasis>. If you do not
 specify a date, the language processor uses the first future occurrence of the
-specified time. You can use the <emphasis role="bold">cancel</emphasis> 
+specified time. You can use the <emphasis role="bold">cancel</emphasis>
 method to cancel a pending alarm. See
 <link linkend="creo">Initialization</link> for more information.</para>
 </section>
@@ -189,11 +189,12 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 <emphasis role="itakic">comparable</emphasis> argument.</para>
 <programlisting>
 <![CDATA[
->>-compareTo(comparator)---------------------------------------><
+>>-compareTo(other)---------------------------------------><
 ]]>
 </programlisting>
-<para>This method returns "-1" if the argument is larger than the recieving
-object, "0" if it is equal, and "1" if it is smaller.</para>
+<para>This method returns "-1" if the <emphasis role="italic">other</emphasis> is larger than the recieving
+object, "0" if the two objects are equal, and "1" if <emphasis role="italic">other</emphasis> is
+smaller than the receiving object.</para>
 </section>
 </section>
 
@@ -227,7 +228,18 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 <indexterm><primary>method</primary>
 <secondary>compare method</secondary>
 <tertiary>of Comparator class</tertiary></indexterm>
-<para>This method is defined as an abstract method.</para>
+<programlisting>
+<![CDATA[
+>>-compare(first,second)--------------------------------><
+]]>
+</programlisting>
+<para>This method returns "-1" if the <emphasis role="italic">second</emphasis> is larger than
+<emphasis role="italic">first</emphasis>
+object, "0" if the two objects are equal, and "1" <emphasis role="italic">second</emphasis> is
+smaller than <emphasis role="italic">first</emphasis> .</para>
+<para>This method is defined as an abstract method.  Inheriting classes are expected to define
+an implementation specific to the comparison being performed.
+</para>
 </section>
 </section>
 
@@ -272,7 +284,16 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 <link linkend="mthComparatorCompare">compare method</link> from the
 <link linkend="clsComparator">Comparator class</link>.</para>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<programlisting>
+<![CDATA[
+>>-compare(first,second)--------------------------------><
+]]>
+</programlisting>
+<para>This method returns "-1" if the <emphasis role="italic">second</emphasis> is larger than
+<emphasis role="italic">first</emphasis>
+object, "0" if the two objects are equal, and "1" <emphasis role="italic">second</emphasis> is
+smaller than <emphasis role="italic">first</emphasis>.  Only the defined columns of the strings are compared,
+using a caseless comparison.</para>
 </section>
 
 <section id="mthCaselessColumnComparatorInit"><title>init</title>
@@ -282,7 +303,14 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 <secondary>init method</secondary>
 <tertiary>of CaselessColumnComparator class</tertiary></indexterm>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<programlisting>
+<![CDATA[
+>>-init(start, length)----------------------------------><
+]]>
+</programlisting>
+<para>Initializes a comparator to sort strings starting at postion <emphasis role="italic">start</emphasis> for
+<emphasis role="italic">length</emphasis> characters.
+</para>
 </section>
 </section>
 
@@ -327,7 +355,16 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 <link linkend="mthComparatorCompare">compare method</link> from the
 <link linkend="clsComparator">Comparator class</link>.</para>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<programlisting>
+<![CDATA[
+>>-compare(first,second)--------------------------------><
+]]>
+</programlisting>
+<para>This method returns "-1" if the <emphasis role="italic">second</emphasis> is larger than
+<emphasis role="italic">first</emphasis>
+object, "0" if the two objects are equal, and "1" <emphasis role="italic">second</emphasis> is
+smaller than <emphasis role="italic">first</emphasis>.  The two strings are compared using a caseless comparison.
+</para>
 </section>
 </section>
 
@@ -372,7 +409,16 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 <link linkend="mthComparatorCompare">compare method</link> from the
 <link linkend="clsComparator">Comparator class</link>.</para>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<programlisting>
+<![CDATA[
+>>-compare(first,second)--------------------------------><
+]]>
+</programlisting>
+<para>This method returns "-1" if the <emphasis role="italic">second</emphasis> is larger than
+<emphasis role="italic">first</emphasis>
+object, "0" if the two objects are equal, and "1" <emphasis role="italic">second</emphasis> is
+smaller than <emphasis role="italic">first</emphasis>.  Only the defined columns of the strings are compared.
+</para>
 </section>
 
 <section id="mthColumnComparatorInit"><title>init</title>
@@ -382,7 +428,14 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 <secondary>init method</secondary>
 <tertiary>of ColumnComparator class</tertiary></indexterm>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<programlisting>
+<![CDATA[
+>>-init(start, length)----------------------------------><
+]]>
+</programlisting>
+<para>Initializes a comparator to sort strings starting at postion <emphasis role="italic">start</emphasis> for
+<emphasis role="italic">length</emphasis> characters.
+</para>
 </section>
 </section>
 
@@ -426,7 +479,16 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 <link linkend="mthComparatorCompare">compare method</link> from the
 <link linkend="clsComparator">Comparator class</link>.</para>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<programlisting>
+<![CDATA[
+>>-compare(first,second)--------------------------------><
+]]>
+</programlisting>
+<para>This method returns "1" if the <emphasis role="italic">second</emphasis> is larger than
+<emphasis role="italic">first</emphasis>
+object, "0" if the two objects are equal, and "-1" <emphasis role="italic">second</emphasis> is
+smaller than <emphasis role="italic">first</emphasis>.  The two strings are compared using a caseless comparison.
+</para>
 </section>
 </section>
 
@@ -473,7 +535,16 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 <link linkend="mthComparatorCompare">compare method</link> from the
 <link linkend="clsComparator">Comparator class</link>.</para>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<programlisting>
+<![CDATA[
+>>-compare(first,second)--------------------------------><
+]]>
+</programlisting>
+<para>This method returns "1" if the <emphasis role="italic">second</emphasis> is larger than
+<emphasis role="italic">first</emphasis>
+object, "0" if the two objects are equal, and "-1" <emphasis role="italic">second</emphasis> is
+smaller than <emphasis role="italic">first</emphasis>, resulting in a descending sort sequence.
+</para>
 </section>
 </section>
 
@@ -520,7 +591,17 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 <link linkend="mthComparatorCompare">compare method</link> from the
 <link linkend="clsComparator">Comparator class</link>.</para>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<programlisting>
+<![CDATA[
+>>-compare(first,second)--------------------------------><
+]]>
+</programlisting>
+<para>This method returns "1" if the <emphasis role="italic">second</emphasis> is larger than
+<emphasis role="italic">first</emphasis>
+object, "0" if the two objects are equal, and "-1" <emphasis role="italic">second</emphasis> is
+smaller than <emphasis role="italic">first</emphasis>, resulting in a descending sort sequence.
+The InvertingComparator will invert the ordering returned by the provided Comparator.
+</para>
 </section>
 
 <section id="mthInvertingComparatorInit"><title>init</title>
@@ -530,141 +611,14 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 <secondary>init method</secondary>
 <tertiary>of InvertingComparator class</tertiary></indexterm>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
-</section>
-</section>
-
-<section id="clsIterator"><title>The Iterator Class</title>
-<indexterm><primary>Iterator class</primary></indexterm>
-<indexterm><primary>class</primary>
-<secondary>Iterator class</secondary></indexterm>
-
-<figure><title>The Iterator class and methods</title>
-<mediaobject>
-<imageobject>
-<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
-<imagedata fileref="ooRexxIteratorClass.png" align="left">
-</imageobject>
-</mediaobject>
-</figure>
-<note><title>Note</title>
-<para>The Iterator class also has available class methods that its
-metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
-
-<section><title>Inherited Methods</title>
-
-&objclsmthods;
-
-</section>
-
-<section id="mthIteratorFirst"><title>first</title>
-<indexterm><primary>first method</primary>
-<secondary>of Iterator class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>first method</secondary>
-<tertiary>of Iterator class</tertiary></indexterm>
-
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
-</section>
-
-<section id="mthIteratorInit"><title>init</title>
-<indexterm><primary>init method</primary>
-<secondary>of Iterator class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>init method</secondary>
-<tertiary>of Iterator class</tertiary></indexterm>
-
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
-</section>
-
-<section id="mthIteratorLast"><title>last</title>
-<indexterm><primary>last method</primary>
-<secondary>of Iterator class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>last method</secondary>
-<tertiary>of Iterator class</tertiary></indexterm>
-
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
-</section>
-
-<section id="mthIteratorNext"><title>next</title>
-<indexterm><primary>next method</primary>
-<secondary>of Iterator class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>next method</secondary>
-<tertiary>of Iterator class</tertiary></indexterm>
-
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
-</section>
-
-<section id="mthIteratorPrevious"><title>previous</title>
-<indexterm><primary>previous method</primary>
-<secondary>of Iterator class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>previous method</secondary>
-<tertiary>of Iterator class</tertiary></indexterm>
-
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
-</section>
-</section>
-
-<section id="clsCircularIterator"><title>The CircularIterator Class</title>
-<indexterm><primary>CircularIterator class</primary></indexterm>
-<indexterm><primary>class</primary>
-<secondary>CircularIterator class</secondary></indexterm>
-
-<figure><title>The CircularIterator class and methods</title>
-<mediaobject>
-<imageobject>
-<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
-<imagedata fileref="ooRexxCircularIteratorClass.png" align="left">
-</imageobject>
-</mediaobject>
-</figure>
-<note><title>Note</title>
-<para>The CircularIterator class also has available class methods that its
-metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
-
-<section><title>Inherited Methods</title>
-
-&objclsmthods;
-
-<para>Methods inherited from the
-<link linkend="clsIterator">Iterator class</link>.</para>
-<simplelist type="vert" columns="3">
-<member><link linkend="mthIteratorFirst">first</link></member>
-<member><link linkend="mthIteratorInit">init</link></member>
-<member><link linkend="mthIteratorLast">last</link></member>
-<member><link linkend="mthIteratorNext">next</link></member>
-<member><link linkend="mthIteratorPrevious">previous</link></member>
-</simplelist>
-
-</section>
-
-<section id="mthCircularIteratorNext"><title>next</title>
-<indexterm><primary>next method</primary>
-<secondary>of CircularIterator class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>next method</secondary>
-<tertiary>of CircularIterator class</tertiary></indexterm>
-<para>This method overrides the
-<link linkend="mthIteratorNext">next method</link> from the
-<link linkend="clsIterator">Iterator class</link>.</para>
-
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
-</section>
-
-<section id="mthCircularIteratorPrevious"><title>previous</title>
-<indexterm><primary>previous method</primary>
-<secondary>of CircularIterator class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>previous method</secondary>
-<tertiary>of CircularIterator class</tertiary></indexterm>
-<para>This method overrides the
-<link linkend="mthIteratorPrevious">previous method</link> from the
-<link linkend="clsIterator">Iterator class</link>.</para>
-
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<programlisting>
+<![CDATA[
+>>-init(comparator)----------------------------------><
+]]>
+</programlisting>
+<para>Initializes an inverting comparator to sort strings using an inversion of the result from the
+<emphasis role="italic">comparator</emphasis> <emphasis role="bold">compare</emphasis> method.
+</para>
 </section>
 </section>
 
@@ -915,7 +869,7 @@ length of the buffer contents,
 the string new is padded at the beginning. The default value for
 <emphasis>length</emphasis> is the length of <emphasis>new</emphasis>.
 If length is less than the length of
-string <emphasis>new</emphasis>, 
+string <emphasis>new</emphasis>,
 <emphasis role="bold">insert</emphasis> truncates <emphasis>new</emphasis>
 to length <emphasis>length</emphasis>. The default
 <emphasis>pad</emphasis> character is a blank.</para>
@@ -963,8 +917,6 @@ x1~lastPos("xy")     ->    4
 x1 = "abc def ghi"
 x1~lastPos(" ",7)    ->    4
 </programlisting>
-<para>(See <link linkend="bifLastpos">LASTPOS (Last Position)</link>
-for information about the LASTPOS built-in function.)</para>
 </section>
 
 <section id="mthMutableBufferLength"><title>length</title>
@@ -1056,8 +1008,6 @@ x1~pos(" ")         ->    4
 x1 = "abc def ghi"
 x1~pos(" ",5)       ->    8
 </programlisting>
-<para>(See <link linkend="bifPos">POS (Position)</link>
-for information about the POS built-in function.)</para>
 </section>
 
 <section id="mthMutableBufferRequest"<title>request</title>
@@ -1067,7 +1017,17 @@ for information about the POS built-in function.)</para>
 <secondary>request method</secondary>
 <tertiary>of MutableBuffer class</tertiary></indexterm>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<programlisting>
+<![CDATA[
+>>-request(classid)--------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns an object of the <emphasis role="italic">classid</emphasis>
+class, or the Nil object if the request cannot be satisfied.  The MutableBuffer
+class supports converting to "STRING" and "ARRAY".  The "ARRAY" conversion returns
+the buffer contents as lines split at line end boundaries.
+</para>
 </section>
 
 <section id="mthMutableBufferSetBufferSize"><title>setBufferSize</title>
@@ -1164,11 +1124,11 @@ The default <emphasis>pad</emphasis> character is a blank.</para>
 </programlisting>
 
 <para>This method cleans up the object when it is garbage collected. It should
-not be invoked directly except via an 
+not be invoked directly except via an
 <emphasis role="bold">uninit</emphasis> method of a subclass of the
 MutableBuffer class.
 </para>
-<para>If the MutableBuffer class is subclassed and the subclass provides an 
+<para>If the MutableBuffer class is subclassed and the subclass provides an
 <emphasis role="bold">uninit</emphasis>
 method then that method must invoke the superclass
 <emphasis role="bold">uninit</emphasis> method
@@ -1647,7 +1607,16 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 <secondary>create method</secondary>
 <tertiary>of RexxQueue class</tertiary></indexterm>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<programlisting>
+<![CDATA[
+>>-create(name)--------------------------------------------><
+]]>
+</programlisting>
+<para>Attempts to create an external Rexx named queue using <emphasis role="italic">name</emphasis>.  If
+a <emphasis role="italic">name</emphasis> queue already exists, a new queue with a Rexx-generated name will be
+created.  This method returns the name of the created queue, which will be either
+<emphasis role="italic">name</emphasis>, or a generated name if there is a conflict.
+</para>
 </section>
 
 <section id="mthRexxQueueDeleteClsMethod"><title>delete (Class Method)</title>
@@ -1657,7 +1626,16 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 <secondary>delete class method</secondary>
 <tertiary>of RexxQueue class</tertiary></indexterm>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<programlisting>
+<![CDATA[
+>>-delete(name)--------------------------------------------><
+]]>
+</programlisting>
+
+<para>Attempts to delete an external Rexx named queue named <emphasis role="italic">name</emphasis>.  This method
+returns "0" if the queue was successfully deleted.  Non-zero results are the error codes from the RexxDeleteQueue()
+programming interface.
+</para>
 </section>
 
 <section id="mthRexxQueueDelete"><title>delete</title>
@@ -1667,7 +1645,14 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 <secondary>delete method</secondary>
 <tertiary>of RexxQueue class</tertiary></indexterm>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<programlisting>
+<![CDATA[
+>>-delete------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Deletes the Rexx external queue associated with this RexxQueue instance.
+</para>
 </section>
 
 <section id="mthRexxQueueGet"><title>get</title>
@@ -1677,7 +1662,14 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 <secondary>get method</secondary>
 <tertiary>of RexxQueue class</tertiary></indexterm>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<programlisting>
+<![CDATA[
+>>-get------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the name of the Rexx external queue associated with this instance.
+</para>
 </section>
 
 <section id="mthRexxQueueInit"><title>init</title>
@@ -1687,7 +1679,17 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 <secondary>init method</secondary>
 <tertiary>of RexxQueue class</tertiary></indexterm>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<programlisting>
+<![CDATA[
+>>-init(-+------+-)----------------------------------><
+         +-name-+
+]]>
+</programlisting>
+
+<para>Initializes a new RexxQueue instance associated with the named Rexx external queue.  If
+<emphasis role="italic">name</emphasis> is not specified, the SESSION queue is used.  If the named
+queue does not exist, one will be created.
+</para>
 </section>
 
 <section id="mthRexxQueueLineIn"><title>lineIn</title>
@@ -1697,7 +1699,15 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 <secondary>lineIn method</secondary>
 <tertiary>of RexxQueue class</tertiary></indexterm>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<programlisting>
+<![CDATA[
+>>-lineIn--------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Reads a single line from the Rexx external queue.  If the queue is empty,
+<emphasis role="bold">lineIn</emphasis> will wait until a line is added to the queue.
+</para>
 </section>
 
 <section id="mthRexxQueueLineOut"><title>lineOut</title>
@@ -1707,7 +1717,16 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 <secondary>lineOut method</secondary>
 <tertiary>of RexxQueue class</tertiary></indexterm>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<programlisting>
+<![CDATA[
+>>-lineOut(-+------+-)----------------------------------><
+            +-line-+
+]]>
+</programlisting>
+
+<para>Adds a line to the Rexx external queue in first-in-first-out (FIFO) order.  If
+<emphasis role="italic">line</emphasis> is not specified, a null string ("") is added.
+</para>
 </section>
 
 <section id="mthRexxQueuePull"><title>pull</title>
@@ -1717,7 +1736,15 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 <secondary>pull method</secondary>
 <tertiary>of RexxQueue class</tertiary></indexterm>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<programlisting>
+<![CDATA[
+>>-pull--------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Reads a line from the Rexx external queue.  If the queue is currently empty,
+this method will immediately return .nil without waiting for lines to be added to the queue.
+</para>
 </section>
 
 <section id="mthRexxQueuePush"><title>push</title>
@@ -1727,7 +1754,16 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 <secondary>push method</secondary>
 <tertiary>of RexxQueue class</tertiary></indexterm>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<programlisting>
+<![CDATA[
+>>-push(-+------+-)----------------------------------><
+         +-line-+
+]]>
+</programlisting>
+
+<para>Adds a line to the Rexx external queue in last-in-last-out (LIFO) order.  If
+<emphasis role="italic">line</emphasis> is not specified, a null string ("") is added.
+</para>
 </section>
 
 <section id="mthRexxQueueQueue"><title>queue</title>
@@ -1737,7 +1773,16 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 <secondary>queue method</secondary>
 <tertiary>of RexxQueue class</tertiary></indexterm>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<programlisting>
+<![CDATA[
+>>-queue(-+------+-)----------------------------------><
+          +-line-+
+]]>
+</programlisting>
+
+<para>Adds a line to the Rexx external queue in first-in-first-out (FIFO) order.  If
+<emphasis role="italic">line</emphasis> is not specified, a null string ("") is added.
+</para>
 </section>
 
 <section id="mthRexxQueueQueued"><title>queued</title>
@@ -1747,7 +1792,14 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 <secondary>queued method</secondary>
 <tertiary>of RexxQueue class</tertiary></indexterm>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<programlisting>
+<![CDATA[
+>>-queued---------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the count of lines currently in the Rexx external queue.
+</para>
 </section>
 
 <section id="mthRexxQueueSay"><title>say</title>
@@ -1757,7 +1809,16 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 <secondary>say method</secondary>
 <tertiary>of RexxQueue class</tertiary></indexterm>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<programlisting>
+<![CDATA[
+>>-say(-+------+-)----------------------------------><
+        +-line-+
+]]>
+</programlisting>
+
+<para>Adds a line to the Rexx external queue in first-in-first-out (FIFO) order.  If
+<emphasis role="italic">line</emphasis> is not specified, a null string ("") is added.
+</para>
 </section>
 
 <section id="mthRexxQueueSet"><title>set</title>
@@ -1767,7 +1828,16 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 <secondary>set method</secondary>
 <tertiary>of RexxQueue class</tertiary></indexterm>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+
+<programlisting>
+<![CDATA[
+>>-set(name)----------------------------------><
+]]>
+</programlisting>
+
+<para>Switches the Rexx external queue associated with RexxQueue instance.  The new queue must have
+been previously created.  The method return value is the name of current queue being used by the instance.
+</para>
 </section>
 </section>
 
@@ -1776,7 +1846,7 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 <indexterm><primary>class</primary>
 <secondary>StreamSupplier class</secondary></indexterm>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<para>A supplier object that will provided stream lines using supplier semantics.</para>
 <figure><title>The StreamSupplier class and methods</title>
 <mediaobject>
 <imageobject>
@@ -1800,7 +1870,6 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 <member><link linkend="mthSupplierAllIndexes">allIndexes</link></member>
 <member><link linkend="mthSupplierAllItems">allItems</link></member>
 <member><link linkend="mthSupplierAvailable">available</link></member>
-<member><link linkend="mthSupplierGetArrays">getArrays</link></member>
 <member><link linkend="mthSupplierIndex">index</link></member>
 <member><link linkend="mthSupplierInit">init</link></member>
 <member><link linkend="mthSupplierItem">item</link></member>
@@ -1823,7 +1892,7 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 </programlisting>
 
 <para>Returns <computeroutput>1</computeroutput> (true) if an item is available
-from the supplier (that is, if the 
+from the supplier (that is, if the
 <emphasis role="bold">item</emphasis> method would return a value). It returns
 <computeroutput>0</computeroutput> (false) if the collection is empty or the
 supplier has already enumerated the entire collection.</para>
@@ -1842,7 +1911,7 @@ supplier has already enumerated the entire collection.</para>
 </programlisting>
 
 <para>Returns the index of the current
-item in the collection. If no item is available, that is, if 
+item in the collection. If no item is available, that is, if
 <emphasis role="bold">available</emphasis> would
 return false, the language processor raises an error.</para>
 </section>
@@ -1954,9 +2023,9 @@ array of values over which the supplier iterates. The
 <emphasis role="italic">indexes</emphasis> argument
 is an array of index values with a one-to-one correspondence to the objects
 contained in the values array. The created supplier iterates over the arrays,
-returning elements of the values array in response to 
+returning elements of the values array in response to
 <emphasis role="bold">items</emphasis> messages, and
-elements of the indexes array in response to 
+elements of the indexes array in response to
 <emphasis role="bold">index</emphasis> messages. The supplier
 iterates for the number of items contained in the values array, returning
 the Nil object for any nonexistent items in either array.</para>
@@ -1969,7 +2038,16 @@ the Nil object for any nonexistent items in either array.</para>
 <secondary>allIndexes method</secondary>
 <tertiary>of Supplier class</tertiary></indexterm>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+
+<programlisting>
+<![CDATA[
+>>-allItems--------------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns an array of all index values from the current supplier position to the end of the
+supplier.  Once <emphasis role="bold">allIndexes</emphasis> is called, no
+additional items can be retrieved from the supplier.  Calls to <emphasis role="bold">available</emphasis>
+will return "0" (false).</para>
 </section>
 
 <section id="mthSupplierAllItems"<title>allItems</title>
@@ -1979,7 +2057,15 @@ the Nil object for any nonexistent items in either array.</para>
 <secondary>allItems method</secondary>
 <tertiary>of Supplier class</tertiary></indexterm>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<programlisting>
+<![CDATA[
+>>-allItems--------------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns an array of all items from the current supplier position to the end of the
+supplier.  Once <emphasis role="bold">allItems</emphasis> is called, no
+additional items can be retrieved from the supplier.  Calls to <emphasis role="bold">available</emphasis>
+will return "0" (false).</para>
 </section>
 
 <section id="mthSupplierAvailable"><title>available</title>
@@ -1995,20 +2081,10 @@ the Nil object for any nonexistent items in either array.</para>
 </programlisting>
 
 <para>Returns <computeroutput>1</computeroutput> (true) if an item is available
-from the supplier (that is, if the 
+from the supplier (that is, if the
 <emphasis role="bold">item</emphasis> method would return a value). It returns
 <computeroutput>0</computeroutput> (false) if the collection is empty or the
 supplier has already enumerated the entire collection.</para>
-</section>
-
-<section id="mthSupplierGetArrays"<title>getArrays</title>
-<indexterm><primary>getArrays method</primary>
-<secondary>of Supplier class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>getArrays method</secondary>
-<tertiary>of Supplier class</tertiary></indexterm>
-
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
 </section>
 
 <section id="mthSupplierIndex"><title>index</title>
@@ -2024,7 +2100,7 @@ supplier has already enumerated the entire collection.</para>
 </programlisting>
 
 <para>Returns the index of the current
-item in the collection. If no item is available, that is, if 
+item in the collection. If no item is available, that is, if
 <emphasis role="bold">available</emphasis> would
 return false, the language processor raises an error.</para>
 </section>
@@ -2114,7 +2190,15 @@ end
 <secondary>supplier method</secondary>
 <tertiary>of Supplier class</tertiary></indexterm>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<programlisting>
+<![CDATA[
+-supplier------------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns the target supplier as a result.  This method allows an existing
+supplier to be passed to methods that expect an object that implements a
+<emphasis role="bold">supplier</emphasis> method as an argument.
+</para>
 </section>
 </section>
 
