@@ -2721,7 +2721,36 @@ as its second argument. In this case,
 <secondary>unsetMethod method</secondary>
 <tertiary>of Directory class</tertiary></indexterm>
 
-<para>!!!!!!!! Text to be added later !!!!!!!!!</para>
+<programlisting>
+<![CDATA[
+>>-unsetMethod(name)--------------------------------><
+]]>
+</programlisting>
+
+<para>Removes the association between entry name <emphasis role="italic">name</emphasis>
+(translated to uppercase) and a method.</para>
+</section>
+
+<section id="mthDirectoryXor"><title>xor</title>
+<indexterm><primary>xor method</primary>
+<secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>xor method</secondary>
+<tertiary>of Directory class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-xor(argument)-----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a new collection of the same class as the receiver that contains
+all items from the receiver collection and the
+<emphasis role="italic">argument</emphasis> collection;
+all indexes that appear in both collections are removed. The
+<emphasis role="italic">argument</emphasis> can be any object described in
+<link linkend="parmcoll">The Argument Collection Classes</link>.
+The <emphasis role="italic">argument</emphasis> must also allow all of the
+index values in the receiver collection.</para>
 </section>
 
 <section id="direx"><title>Examples</title>
