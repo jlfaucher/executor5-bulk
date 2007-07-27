@@ -78,7 +78,6 @@ SGML_FILES = collclasses.sgml \
 	     xintdeb.sgml \
 	     collectionclassmethods.sgml \
 	     mapcollectionclassmethods.sgml \
-	     setcollectionclassmethods.sgml \
 	     orderedcollectionclassmethods.sgml \
 	     ../shared/legalstuff.sgml \
 	     ../shared/notices.sgml \

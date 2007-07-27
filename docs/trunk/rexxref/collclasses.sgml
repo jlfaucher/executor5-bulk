@@ -704,6 +704,8 @@ index values in the receiver collection.</para>
 
 <section id="clsSetCollection"><title>The SetCollection Class</title>
 <indexterm><primary>SetCollection class</primary></indexterm>
+<para>This is a tagging mixin class only and does not define any methods of
+its own.</para>
 <figure><title>The SetCollection class</title>
 <mediaobject>
 <imageobject>
@@ -720,43 +722,6 @@ index values in the receiver collection.</para>
 &objclsmthods;
 &collclsmthods;
 
-</section>
-
-<section id="mthSetCollectionPutSet"><title>[]=</title>
-<indexterm><primary>[]= method</primary>
-<secondary>of SetCollection class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>[]= method</secondary>
-<tertiary>of SetCollection class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-[index]=item------------------------------------------------><
-]]>
-</programlisting>
-
-<para>This method is the same as the
-<emphasis role="bold">put</emphasis> method. See
-<link linkend="mthSetCollectionPut">put</link>.</para>
-</section>
-
-<section id="mthSetCollectionPut"><title>put</title>
-<indexterm><primary>put method</primary>
-<secondary>of SetCollection class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>put method</secondary>
-<tertiary>of SetCollection class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-put(item-+--------+-)---------------------------------------><
-            +-,index-+
-]]>
-</programlisting>
-
-<para>Makes the object <emphasis role="italic">item</emphasis> a member item of
-the collection and associates it with index
-<emphasis role="italic">index</emphasis>. If you specify
-<emphasis role="italic">index</emphasis>, it must be the
-same as <emphasis role="italic">item</emphasis>.</para>
 </section>
 </section>
 
@@ -1555,8 +1520,23 @@ methods, it inherits the methods of the Object class and the Relation class.</pa
 <member><link linkend="mthRelationXor">xor</link></member>
 </simplelist>
 
-&scollclsmthods;
+</section>
 
+<section id="mthBagPutSet"><title>[]=</title>
+<indexterm><primary>[]= method</primary>
+<secondary>of Bag class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>[]= method</secondary>
+<tertiary>of Bag class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-[index]=item------------------------------------------------><
+]]>
+</programlisting>
+
+<para>This method is the same as the
+<emphasis role="bold">put</emphasis> method. See
+<link linkend="mthBagPut">put</link>.</para>
 </section>
 
 <section id="mthBagOf"><title>of (Class Method)</title>
@@ -1642,6 +1622,27 @@ The <emphasis role="italic">argument</emphasis> can be any
 collection class object.
 The <emphasis role="italic">argument</emphasis> must also allow all of the
 index values in the receiver collection.</para>
+</section>
+
+<section id="mthBagPut"><title>put</title>
+<indexterm><primary>put method</primary>
+<secondary>of Bag class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>put method</secondary>
+<tertiary>of Bag class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-put(item,index)---------------------------------------------><
+]]>
+</programlisting>
+
+<para>Makes the object <emphasis role="italic">item</emphasis>
+a member item of the bag and associates it with index
+<emphasis role="italic">index</emphasis>. If the relation already contains
+any items with index
+<emphasis role="italic">index</emphasis>, this method adds a new member item
+<emphasis role="italic">item</emphasis> with
+the same index, without removing any existing member items.</para>
 </section>
 
 <section id="mthBagPutAll"<title>putAll</title>
@@ -4785,8 +4786,23 @@ and the Table class.</para>
 <member><link linkend="mthTableSupplier">supplier</link></member>
 </simplelist>
 
-&scollclsmthods;
+</section>
 
+<section id="mthSetPutSet"><title>[]=</title>
+<indexterm><primary>[]= method</primary>
+<secondary>of Set class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>[]= method</secondary>
+<tertiary>of Set class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-[index]=item------------------------------------------------><
+]]>
+</programlisting>
+
+<para>This method is the same as the
+<emphasis role="bold">put</emphasis> method. See
+<link linkend="mthSetPut">put</link>.</para>
 </section>
 
 <section id="mthSetOf"><title>of (Class Method)</title>
@@ -4830,6 +4846,24 @@ The <emphasis role="italic">argument</emphasis> can be any
 collection class object.
 The <emphasis role="italic">argument</emphasis> must also allow all of the
 index values in the receiver collection.</para>
+</section>
+
+<section id="mthSetPut"><title>put</title>
+<indexterm><primary>put method</primary>
+<secondary>of Set class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>put method</secondary>
+<tertiary>of Set class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-put(item,index)---------------------------------------------><
+]]>
+</programlisting>
+
+<para>Makes the object <emphasis role="italic">item</emphasis>
+a member item of the collection and associates it with index
+<emphasis role="italic">index</emphasis>. The new item replaces any existing
+items associated with index <emphasis role="italic">index</emphasis>.</para>
 </section>
 
 <section id="mthSetPutAll"<title>putAll</title>
