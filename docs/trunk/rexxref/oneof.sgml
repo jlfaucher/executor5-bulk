@@ -46,7 +46,7 @@
 also provides objects that are accessible via environment symbols (see <link linkend="ensym">Environment Symbols</link>).
 </para>
 
-<section id="envo"><title>The Environment Object (.ENVIRONMENT)</title>
+<section id="envo"><title>The Environment Directory (.ENVIRONMENT)</title>
 <indexterm><primary>.ENVIRONMENT object</primary></indexterm>
 <indexterm><primary>built-in object</primary>
 <secondary>.ENVIRONMENT object</secondary></indexterm>
@@ -63,7 +63,7 @@ Environment use the same name as the corresponding environment symbol, but witho
 constants such as .NIL, .TRUE, and .FALSE.</para>
 </section>
 
-<section id="locenv"><title>The Local Environment Object (.LOCAL)</title>
+<section id="locenv"><title>The Local Directory (.LOCAL)</title>
 <indexterm><primary>.LOCAL object</primary></indexterm>
 <indexterm><primary>built-in object</primary>
 <secondary>.LOCAL object</secondary></indexterm>
@@ -109,7 +109,7 @@ say &quot;This goes into a file, and not onto the screen!&quot;
 </programlisting>
 </section>
 
-<section id="erobj"><title>The Error Object (.ERROR)</title>
+<section id="erobj"><title>The Error Monitor (.ERROR)</title>
 <indexterm><primary>.ERROR object</primary></indexterm>
 <indexterm><primary>built-in object</primary>
 <secondary>.ERROR object</secondary></indexterm>
@@ -121,7 +121,7 @@ object. You can redirect the trace output in the same way as with the output
 object in the Monitor class example.</para>
 </section>
 
-<section id="inputt"><title>The Input Object (.INPUT)</title>
+<section id="inputt"><title>The Input Monitor (.INPUT)</title>
 <indexterm><primary>input object</primary></indexterm>
 <indexterm><primary>.INPUT object</primary></indexterm>
 <indexterm><primary>built-in object</primary>
@@ -137,7 +137,7 @@ built-in function. It is also the source for the PULL and PARSE PULL
 instructions if the external data queue is empty.</para>
 </section>
 
-<section id="outp"><title>The Output Object (.OUTPUT)</title>
+<section id="outp"><title>The Output Monitor (.OUTPUT)</title>
 <indexterm><primary>.OUTPUT object</primary></indexterm>
 <indexterm><primary>built-in object</primary>
 <secondary>.OUTPUT object</secondary></indexterm>
@@ -154,7 +154,7 @@ LINEOUT built-in function. You can replace this object in the environment
 to direct such output elsewhere (for example, to a transcript window).</para>
 </section>
 
-<section id="errorobj"><title>The STDERR Object (.STDERR)</title>
+<section id="errorobj"><title>The STDERR Stream (.STDERR)</title>
 <indexterm><primary>.STDERR object</primary></indexterm>
 <indexterm><primary>built-in object</primary>
 <secondary>.STDERR object</secondary></indexterm>
@@ -166,7 +166,7 @@ used for trace and error message output.
 </para>
 </section>
 
-<section id="stdinobj"><title>The STDIN Object (.STDIN)</title>
+<section id="stdinobj"><title>The STDIN Stream (.STDIN)</title>
 <indexterm><primary>.STDIN object</primary></indexterm>
 <indexterm><primary>built-in object</primary>
 <secondary>.STDIN object</secondary></indexterm>
@@ -181,7 +181,7 @@ instructions if the external data queue is empty.
 </para>
 </section>
 
-<section id="stdoutobj"><title>The STDOUT Object (.STDOUT)</title>
+<section id="stdoutobj"><title>The STDOUT Stream (.STDOUT)</title>
 <indexterm><primary>.STDOUT object</primary></indexterm>
 <indexterm><primary>built-in object</primary>
 <secondary>.STDOUT object</secondary></indexterm>
@@ -195,7 +195,7 @@ LINEOUT built-in function.
 </para>
 </section>
 
-<section id="stdqueobj"><title>The STDQUE Object (.STDQUE)</title>
+<section id="stdqueobj"><title>The STDQUE Queue (.STDQUE)</title>
 <indexterm><primary>.STDQUE object</primary></indexterm>
 <indexterm><primary>built-in object</primary>
 <secondary>.STDQUE object</secondary></indexterm>
@@ -208,7 +208,7 @@ queue lines for the PULL and PARSE PULL instructions.
 </para>
 </section>
 
-<section id="TRUE"><title>The TRUE Object (.TRUE)</title>
+<section id="TRUE"><title>The TRUE Constant (.TRUE)</title>
 <indexterm><primary>.TRUE object</primary></indexterm>
 <indexterm><primary>built-in object</primary>
 <secondary>.TRUE object</secondary></indexterm>
@@ -219,7 +219,7 @@ logical and comparison operations.
 </para>
 </section>
 
-<section id="FALSE"><title>The FALSE Object (.FALSE)</title>
+<section id="FALSE"><title>The FALSE Constant (.FALSE)</title>
 <indexterm><primary>.FALSE object</primary></indexterm>
 <indexterm><primary>built-in object</primary>
 <secondary>.FALSE object</secondary></indexterm>
@@ -230,7 +230,7 @@ logical and comparison operations.
 </para>
 </section>
 
-<section id="ENDOFLINE"><title>The ENDOFLINE Object (.ENDOFLINE)</title>
+<section id="ENDOFLINE"><title>The ENDOFLINE Constant (.ENDOFLINE)</title>
 <indexterm><primary>.ENDOFLINE object</primary></indexterm>
 <indexterm><primary>built-in object</primary>
 <secondary>.ENDOFLINE object</secondary></indexterm>
@@ -242,8 +242,26 @@ and "0a"x (linefeed) on Unix platforms.
 </para>
 </section>
 
-<section id="methe"><title>.METHODS</title>
-<indexterm><primary>.METHODS object</primary></indexterm>
+<section id="nil"><title>The NIL Object (.NIL)</title>
+<indexterm><primary>.NIL object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.NIL object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.NIL object</secondary></indexterm>
+<para>The NIL object is a special
+object that does not contain data. It usually represents the absence of an
+object, as a null string represents a string with no characters. It has only
+the methods of the Object class. Note that you use the .NIL object
+(rather than the null string (&quot;&quot;)) to test for the absence of data
+in an array entry: </para>
+<programlisting>
+if .nil = board[row,col]   /* .NIL rather than "" */
+then ...
+</programlisting>
+</section>
+
+<section id="methe"><title>The METHODS Director (.METHODS)</title>
+<indexterm><primary>.METHODS Directory</primary></indexterm>
 <indexterm><primary>built-in object</primary>
 <secondary>.METHODS object</secondary></indexterm>
 <indexterm><primary>public object</primary>
@@ -268,25 +286,7 @@ say text
 </programlisting>
 </section>
 
-<section id="nil"><title>The NIL Object (.NIL)</title>
-<indexterm><primary>.NIL object</primary></indexterm>
-<indexterm><primary>built-in object</primary>
-<secondary>.NIL object</secondary></indexterm>
-<indexterm><primary>public object</primary>
-<secondary>.NIL object</secondary></indexterm>
-<para>The NIL object is a special
-object that does not contain data. It usually represents the absence of an
-object, as a null string represents a string with no characters. It has only
-the methods of the Object class. Note that you use the .NIL object
-(rather than the null string (&quot;&quot;)) to test for the absence of data
-in an array entry: </para>
-<programlisting>
-if .nil = board[row,col]   /* .NIL rather than "" */
-then ...
-</programlisting>
-</section>
-
-<section id="rs"><title>.RS</title>
+<section id="rs"><title>The Return Status (.RS)</title>
 <indexterm><primary>.RS object</primary></indexterm>
 <indexterm><primary>built-in object</primary>
 <secondary>.RS object</secondary></indexterm>
