@@ -204,8 +204,8 @@ an error.</para></note>
 
 <programlisting>
 <![CDATA[
->>-::METHOD--methodname--+-------+--+-----------+--------------->
-                         +-CLASS-+  +-ATTRIBUTE-+
+>>-::METHOD--methodname--+-------+--+-----------+--+----------+--->
+                         +-CLASS-+  +-ATTRIBUTE-+  +-ABSTRACT-+
 
 >--+---------+--+-----------+--+-----------+--;----------------><
    +-PRIVATE-+  +-GUARDED---+  +-PROTECTED-+
@@ -268,10 +268,14 @@ use arg name
 expose name
 return name
 </programlisting>
+<para>If you specify the ABSTRACT option, the method creates an ABSTRACT method placeholder.
+ABSTRACT methods define a method that an implementing subclass is expected to provide a concrete
+implementation for.  Any attempt to invoke an ABSTRACT method directly will raise a SYNTAX condition.
+</para>
 <para>If you specify the PROTECTED option, the method is a protected method.
 (See <link linkend="secman">The Security Manager</link> for more information.)
 If you omit the PROTECTED option, the method is not protected.</para>
-<para>If you specify ATTRIBUTE, another directive (or the end of the program)
+<para>If you specify ATTRIBUTE or ABSTRACT, another directive (or the end of the program)
 must follow the ::METHOD directive.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
