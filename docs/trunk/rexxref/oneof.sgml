@@ -41,233 +41,26 @@
     #
     #########################################################################
 -->
-<chapter id="oneof"><title>Other Objects</title>
-<para>In addition to the class objects described in the previous chapter, Rexx
-also provides the following objects: </para>
-<itemizedlist>
-<listitem><para>The Environment object</para></listitem>
-<listitem><para>The NIL object</para></listitem>
-<listitem><para>The Local environment object</para></listitem>
-<listitem><para>The Error object</para></listitem>
-<listitem><para>The Input object</para></listitem>
-<listitem><para>The Output object</para></listitem></itemizedlist>
+<chapter id="oneof"><title>Rexx Runtime Objects</title>
+<para>In addition to the class objects described in the previous chapter, the Rexx runtime environment
+also provides objects that are accessible via environment symbols (see <link linkend="ensym">Environment Symbols</link>).
+</para>
 
 <section id="envo"><title>The Environment Object (.ENVIRONMENT)</title>
 <indexterm><primary>.ENVIRONMENT object</primary></indexterm>
 <indexterm><primary>built-in object</primary>
 <secondary>.ENVIRONMENT object</secondary></indexterm>
 <para>The Environment object is a directory of public
-objects that are always accessible. To access the entries of the Environment
-object, you can use environment symbols. An environment
-symbol starts with a period and has at least one other character, which cannot
-be a digit. For example, the term: </para>
+objects that are always accessible.  The Environment object is automatically searched when environment symbols
+are used, or the Environment object may be directly accessed using the .ENVIRONMENT symbol.  Entries stored in the
+Environment use the same name as the corresponding environment symbol, but without a leading period.  For example:
+</para>
 <programlisting>
-.method   /* Same as .METHOD */
+  say .true              -- Displays "1"
+  say .environment~true  -- Also displays "1"
 </programlisting>
-<para>refers to the Method class.</para>
-
-<note><title>Note</title>
-<para>All environment objects that Rexx provides are single symbols.
-Users are recommended to use compound symbols when creating environment objects.
-</para></note>
-<para>(See <link linkend="ensym">Environment Symbols</link> for details about
-environment symbols.) Rexx provides the following public objects:</para>
-<indexterm><primary>public object</primary></indexterm>
-<variablelist>
-<varlistentry><term>.ALARM
-<indexterm><primary>public object</primary>
-<secondary>.ALARM object</secondary></indexterm>
-</term>
-<listitem><para>The Alarm class. See
-<link linkend="clsAlarm">The Alarm Class</link>.
-</para></listitem></varlistentry>
-<varlistentry><term>.ARRAY
-<indexterm><primary>public object</primary>
-<secondary>.ARRAY object</secondary></indexterm>
-</term>
-<listitem><para>The Array class. See
-<link linkend="clsArray">The Array Class</link>.
-</para></listitem></varlistentry>
-<varlistentry><term>.BAG
-<indexterm><primary>public object</primary>
-<secondary>.BAG object</secondary></indexterm>
-</term>
-<listitem><para>The Bag class. See <link linkend="clsBag">The Bag Class</link>.
-</para></listitem></varlistentry>
-<varlistentry><term>.CLASS
-<indexterm><primary>public object</primary>
-<secondary>.CLASS object</secondary></indexterm>
-</term>
-<listitem><para>The Class class. See
-<link linkend="clsClass">The Class Class</link>.
-</para></listitem></varlistentry>
-<varlistentry><term>.DIRECTORY
-<indexterm><primary>public object</primary>
-<secondary>.DIRECTORY object</secondary></indexterm>
-</term>
-<listitem><para>The Directory class. See
-<link linkend="clsDirectory">The Directory Class</link>.
-</para></listitem></varlistentry>
-<varlistentry><term>.ENVIRONMENT
-<indexterm><primary>public object</primary>
-<secondary>.ENVIRONMENT object</secondary></indexterm>
-</term>
-<listitem><para>The Environment directory.
-</para></listitem></varlistentry>
-<varlistentry><term>.ERROR
-<indexterm><primary>public object</primary>
-<secondary>.ERROR object</secondary></indexterm>
-</term>
-<listitem><para>The Error object
-</para></listitem></varlistentry>
-<varlistentry><term>.FALSE
-<indexterm><primary>public object</primary>
-<secondary>.FALSE object</secondary></indexterm>
-</term>
-<listitem><para>The FALSE object (the value <computeroutput>0</computeroutput>).
-</para></listitem></varlistentry>
-<varlistentry><term>.INPUT
-<indexterm><primary>public object</primary>
-<secondary>.INPUT object</secondary></indexterm>
-</term>
-<listitem><para>The INPUT object
-</para></listitem></varlistentry>
-<varlistentry><term>.LIST
-<indexterm><primary>public object</primary>
-<secondary>.LIST object</secondary></indexterm>
-</term>
-<listitem><para>The List class. See <link linkend="clsList">The List Class</link>.
-</para></listitem></varlistentry>
-<varlistentry><term>.LOCAL
-<indexterm><primary>public object</primary>
-<secondary>.LOCAL object</secondary></indexterm>
-</term>
-<listitem><para>The Local environment directory. See
-<link linkend="locenv">The Local Environment Object  (.LOCAL)</link>.
-</para></listitem></varlistentry>
-<varlistentry><term>.MESSAGE
-<indexterm><primary>public object</primary>
-<secondary>.MESSAGE object</secondary></indexterm>
-</term>
-<listitem><para>The Message class. See
-<link linkend="clsMessage">The Message Class</link>.
-</para></listitem></varlistentry>
-<varlistentry><term>.METHOD
-<indexterm><primary>public class</primary>
-<secondary>.METHOD class</secondary></indexterm>
-</term>
-<listitem><para>The Method class. See
-<link linkend="clsMethod">The Method Class</link>.
-</para></listitem></varlistentry>
-<varlistentry><term>.METHODS
-<indexterm><primary>public object</primary>
-<secondary>.METHODS object</secondary></indexterm>
-<indexterm><primary>symbols</primary>
-<secondary>.METHODS</secondary></indexterm>
-</term>
-<listitem><para>The Methods object.
-</para></listitem></varlistentry>
-<varlistentry><term>.MONITOR
-<indexterm><primary>public object</primary>
-<secondary>.MONITOR object</secondary></indexterm>
-</term>
-<listitem><para>The Monitor class. See
-<link linkend="clsMonitor">The Monitor Class</link>.
-</para></listitem></varlistentry>
-<varlistentry><term>.NIL
-<indexterm><primary>public object</primary>
-<secondary>.NIL object</secondary></indexterm>
-</term>
-<listitem><para>The NIL object. See <link linkend="nil">The NIL Object</link>.
-</para></listitem></varlistentry>
-<varlistentry><term>.OBJECT
-<indexterm><primary>public object</primary>
-<secondary>.OBJECT object</secondary></indexterm>
-</term>
-<listitem><para>The Object class. See
-<link linkend="clsObject">The Object Class</link>.
-</para></listitem></varlistentry>
-<varlistentry><term>.OLEOBJECT
-<indexterm><primary>public object</primary>
-<secondary>.OLEBJECT object</secondary></indexterm>
-</term>
-<listitem><para>The OLEObject class. See
-<link linkend="clsWinOLEObject">The OLEObject Class</link>.
-</para></listitem></varlistentry>
-<varlistentry><term>.OUTPUT
-<indexterm><primary>public object</primary>
-<secondary>.OUTPUT object</secondary></indexterm>
-</term>
-<listitem><para>The OUTPUT class.
-</para></listitem></varlistentry>
-<varlistentry><term>.QUEUE
-<indexterm><primary>public object</primary>
-<secondary>.QUEUE object</secondary></indexterm>
-</term>
-<listitem><para>The Queue class. See
-<link linkend="clsQueue">The Queue Class</link>.
-</para></listitem></varlistentry>
-<varlistentry><term>.RELATION
-<indexterm><primary>public object</primary>
-<secondary>.RELATION object</secondary></indexterm>
-</term>
-<listitem><para>The Relation class. See
-<link linkend="clsRelation">The Relation Class</link>.
-</para></listitem></varlistentry>
-<varlistentry><term>.RS
-<indexterm><primary>public object</primary>
-<secondary>.RS object</secondary></indexterm>
-</term>
-<listitem><para>The Rs class.
-</para></listitem></varlistentry>
-<varlistentry><term>.SET
-<indexterm><primary>public object</primary>
-<secondary>.SET object</secondary></indexterm>
-</term>
-<listitem><para>The Set class. See <link linkend="clsSet">The Set Class</link>.
-</para></listitem></varlistentry>
-<varlistentry><term>.STEM
-<indexterm><primary>public object</primary>
-<secondary>.STEM object</secondary></indexterm>
-</term>
-<listitem><para>The Stem class. See
-<link linkend="clsStem">The Stem Class</link>.
-</para></listitem></varlistentry>
-<varlistentry><term>.STREAM
-<indexterm><primary>public object</primary>
-<secondary>.STREAM object</secondary></indexterm>
-</term>
-<listitem><para>The Stream class. See
-<link linkend="clsStream">The Stream Class</link>.
-</para></listitem></varlistentry>
-<varlistentry><term>.STRING
-<indexterm><primary>public object</primary>
-<secondary>.STRING object</secondary></indexterm>
-</term>
-<listitem><para>The String class. See
-<link linkend="clsString">The String Class</link>.
-</para></listitem></varlistentry>
-<varlistentry><term>.SUPPLIER
-<indexterm><primary>public object</primary>
-<secondary>.SUPPLIER object</secondary></indexterm>
-</term>
-<listitem><para>The Supplier class. See
-<link linkend="clsSupplier">The Supplier Class</link>.
-</para></listitem></varlistentry>
-<varlistentry><term>.TABLE
-<indexterm><primary>public object</primary>
-<secondary>.TABLE object</secondary></indexterm>
-</term>
-<listitem><para>The Table class. See
-<link linkend="clsTable">The Table Class</link>.
-</para></listitem></varlistentry>
-<varlistentry><term>.TRUE
-<indexterm><primary>public object</primary>
-<secondary>.TRUE object</secondary></indexterm>
-</term>
-<listitem><para>The TRUE object (the value <computeroutput>1</computeroutput>).
-</para></listitem></varlistentry>
-</variablelist>
+<para>The Environment object directory contains all of the Rexx built-in classes (Array, etc.), plus special Rexx
+constants such as .NIL, .TRUE, and .FALSE.</para>
 </section>
 
 <section id="locenv"><title>The Local Environment Object (.LOCAL)</title>
@@ -278,44 +71,14 @@ environment symbols.) Rexx provides the following public objects:</para>
 <secondary>.LOCAL object</secondary></indexterm>
 <para>The Local environment object is a directory of process-specific
 objects that are always accessible.  You can access objects in the Local
-environment object in the same way as objects in the Environment object. Rexx
-provides the following objects in the Local environment object:</para>
-<variablelist>
-<varlistentry><term>.ERROR</term>
-<listitem><para>The Error object (default error stream). See
-<link linkend="erobj">The Error Object</link>. This
-is the object to which Rexx error messages and trace output are written.
-</para></listitem></varlistentry>
-<varlistentry><term>.INPUT</term>
-<listitem><para>The Input object (default input stream). See
-<link linkend="inputt">The Input Object</link>.
-</para></listitem></varlistentry>
-<varlistentry><term>.OUTPUT</term>
-<listitem><para>The Output object (default output stream). See
-<link linkend="outp">The Output Object</link>.
-</para></listitem></varlistentry>
-<varlistentry><term>.STDERR</term>
-<listitem><para>The Error object (default error stream). See
-<link linkend="erobj">The Error Object</link>. This
-is the object to which Rexx error messages and trace output are written.
-</para></listitem></varlistentry>
-<varlistentry><term>.STDIN</term>
-<listitem><para>The Input object (default input stream). See
-<link linkend="inputt">The Input Object</link>.
-</para></listitem></varlistentry>
-<varlistentry><term>.STDOUT</term>
-<listitem><para>The Output object (default output stream). See
-<link linkend="outp">The Output Object</link>.
-</para></listitem></varlistentry>
-<varlistentry><term>.STDQUE</term>
-<listitem><para>The current default Rexx Queue.
-</para></listitem></varlistentry>
-</variablelist><para> Objects in the Environment object and objects in the Local
-environment object are available only to programs running within the same
-process.</para>
-<para>Because both of these environment objects are directory objects, you can
+environment object in the same way as objects in the Environment object.
+The Local object contains the .INPUT, .OUTPUT, and .ERROR Monitor objects used for
+Rexx console I/O, the .STDIN, .STDOUT, and .STDERR output streams that are the default
+I/O targets, and the .STDQUE RexxQueue instance used for Rexx external queue operations.
+</para>
+<para>Because both .ENVIRONMENT and .LOCAL are directory objects, you can
 place objects into, or retrieve objects from, these environments by using
-any of the directory messages ([],[]=, PUT, AT, SETENTRY, ENTRY,
+any of the directory methods ([],[]=, PUT, AT, SETENTRY, ENTRY,
 or SETMETHOD). To avoid potential name clashes with built-in objects and public
 objects that Rexx provides, each object that your programs add to these
 environments should have a period in its index.</para>
@@ -344,6 +107,7 @@ say .myapp.uid                         /* Displays "200"               */
 .local["OUTPUT"] = .stream~new("C:\SAY_REDIRECT.TXT")
 say &quot;This goes into a file, and not onto the screen!&quot;
 </programlisting>
+</section>
 
 <section id="erobj"><title>The Error Object (.ERROR)</title>
 <indexterm><primary>.ERROR object</primary></indexterm>
@@ -389,6 +153,93 @@ is the destination for output from the SAY instruction, the LINEOUT method
 LINEOUT built-in function. You can replace this object in the environment
 to direct such output elsewhere (for example, to a transcript window).</para>
 </section>
+
+<section id="errorobj"><title>The STDERR Object (.STDERR)</title>
+<indexterm><primary>.STDERR object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.STDERR object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.STDERR object</secondary></indexterm>
+<para>This stream object (see
+<link linkend="clsStream">The Stream Class</link>) is the default stream
+used for trace and error message output.
+</para>
+</section>
+
+<section id="stdinobj"><title>The STDIN Object (.STDIN)</title>
+<indexterm><primary>.STDIN object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.STDIN object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.STDIN object</secondary></indexterm>
+<para>This stream object (see
+<link linkend="clsStream">The Stream Class</link>)
+is the source for the PARSE LINEIN instruction, the LINEIN
+method of the Stream class, and, if you specify no stream name, the LINEIN
+built-in function. It is also the source for the PULL and PARSE PULL
+instructions if the external data queue is empty.
+</para>
+</section>
+
+<section id="stdoutobj"><title>The STDOUT Object (.STDOUT)</title>
+<indexterm><primary>.STDOUT object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.STDOUT object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.STDOUT object</secondary></indexterm>
+<para>This stream object (see
+<link linkend="clsStream">The Stream Class</link>)
+is the destination for output from the SAY instruction, the LINEOUT method
+(.OUTPUT~LINEOUT), and, if you specify no stream name, the
+LINEOUT built-in function.
+</para>
+</section>
+
+<section id="stdqueobj"><title>The STDQUE Object (.STDQUE)</title>
+<indexterm><primary>.STDQUE object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.STDQUE object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.STDQUE object</secondary></indexterm>
+<para>This RexxQueue object (see
+<link linkend="clsRexxQueue">The RexxQueue Class</link>)
+is the destination for the PUSH and QUEUE instruction, and the source for
+queue lines for the PULL and PARSE PULL instructions.
+</para>
+</section>
+
+<section id="TRUE"><title>The TRUE Object (.TRUE)</title>
+<indexterm><primary>.TRUE object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.TRUE object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.TRUE object</secondary></indexterm>
+<para>The TRUE object is the constant "1", representing a true result for
+logical and comparison operations.
+</para>
+</section>
+
+<section id="FALSE"><title>The FALSE Object (.FALSE)</title>
+<indexterm><primary>.FALSE object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.FALSE object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.FALSE object</secondary></indexterm>
+<para>The FALSE object is the constant "0" representing a FALSE result for
+logical and comparison operations.
+</para>
+</section>
+
+<section id="ENDOFLINE"><title>The ENDOFLINE Object (.ENDOFLINE)</title>
+<indexterm><primary>.ENDOFLINE object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.ENDOFLINE object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.ENDOFLINE object</secondary></indexterm>
+<para>The ENDOFLINE object is a string constant representing the line terminator used for
+file linend markers for a given system.  This constant is "0d0a"x on Windows (carriage return/linefeed)
+and "0a"x (linefeed) on Unix platforms.
+</para>
 </section>
 
 <section id="methe"><title>.METHODS</title>
