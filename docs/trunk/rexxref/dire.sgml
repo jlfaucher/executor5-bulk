@@ -54,6 +54,121 @@ to set up the program's classes, methods, and routines. Then any program code
 in the main code unit (preceding the first directive) is processed. This code
 can use any classes, methods, and routines that the directives established.</para>
 
+
+<section id="attrd"><title>::ATTRIBUTE</title>
+<indexterm><primary>:: ATTRIBUTE directive</primary></indexterm>
+<indexterm><primary>directives</primary>
+<secondary>::ATTRIBUTE</secondary></indexterm>
+<indexterm><primary>attribute</primary>
+<secondary>creation</secondary></indexterm>
+<indexterm><primary>GET subkeyword</primary>
+<secondary>in an ATTRIBUTE directive</secondary></indexterm>
+<indexterm><primary>SET subkeyword</primary>
+<secondary>in an ATTRIBUTE directive</secondary></indexterm>
+<indexterm><primary>CLASS subkeyword</primary>
+<secondary>in an ATTRIBUTE directive</secondary></indexterm>
+<indexterm><primary>PRIVATE subkeyword</primary>
+<secondary>in a ATTRIBUTE directive</secondary></indexterm>
+<indexterm><primary>PUBLIC subkeyword</primary>
+<secondary>in a ATTRIBUTE directive</secondary></indexterm>
+<indexterm><primary>GUARDED subkeyword</primary>
+<secondary>in a ATTRIBUTE directive</secondary></indexterm>
+<indexterm><primary>UNGUARDED subkeyword</primary>
+<secondary>in a ATTRIBUTE directive</secondary></indexterm>
+<indexterm><primary>PROTECTED subkeyword</primary>
+<secondary>in a ATTRIBUTE directive</secondary></indexterm>
+<indexterm><primary>UNPROTECTED subkeyword</primary>
+<secondary>in a ATTRIBUTE directive</secondary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-::ATTRIBUTE--name--+-----+-------+-------+------------------------->
+                      +-GET-+       +-CLASS-+
+                      +-SET-+
+
+    +-PUBLIC--+  +-GUARDED---+  +-UNPROTECTED-+
+ >--+---------+--+-----------+--+-------------+--;----------------><
+    +-PRIVATE-+  +-UNGUARDED-+  +-PROTECTED---+
+]]>
+</programlisting>
+
+
+<note><title>Note</title>
+<para>You can specify all options in any order.</para></note>
+<para>The ::ATTRIBUTE directive creates attribute methods and defines the method properties.
+</para>
+<para>An ::ATTRIBUTE directive starts an attribute method, which is ended by another directive
+or the end of the program. The ::ATTRIBUTE is not included in the method source.</para>
+<para>The <emphasis role="italic">name</emphasis> is a literal string or
+a symbol that is taken as a constant.  The <emphasis role="italic">name</emphasis> must also be
+a valid Rexx variable name.
+The ::ATTRIBUTE directive creates methods
+n the class specified
+in the most recent ::CLASS directive.
+<para>A ::CLASS directive is not required before a ::ATTRIBUTE directive. If no
+::CLASS directive precedes ::ATTRIBUTE, the attribute methods are not associated with a class
+but are accessible to the main (executable) part of a program through the .METHODS
+built-in object. Only one ::ATTRIBUTE directive can appear for any method name
+not associated with a class. See
+<link linkend="methe">.METHODS</link>  for more details.</para>
+<para>If do not specify either SET or GET, ::ATTRIBUTE will create two attribute methods with the
+names <emphasis role="italic">name</emphasis> and <emphasis role="italic">methodname=</emphasis>.
+These are the methods for getting and setting an attribute.  These generated methods are
+equivalent to the following code sequences: </para>
+<programlisting>
+::method "NAME="
+expose name
+use arg name
+
+::method name
+expose name
+return name
+</programlisting>
+<para>Both methods will be created with the same method properties (for example, PRIVATE, GUARDED, etc.).
+If GET or SET are not specified, another directive (or the end of the program)
+must follow the ::ATTRIBUTE directive.</para>
+<para>If GET or SET is specified, only the single get or set attribute method is generated.  Specifying separate
+GET or SET ::ATTRIBUTE directives allows the methods to be created with different properties.  For example, the
+sequence:</para>
+<programlisting>
+::attribute name get
+::attribute name set private
+</programlisting>
+<para>will create a NAME method with PUBLIC access and a NAME= method with PRIVATE access.</para>
+<para>The GET and SET options may also be used to override the default method body generated for the attribute.  This
+is frequently used so the SET attribute method can perform new value validation.</para>
+<programlisting>
+::method size set
+::method size get
+expose size
+use arg size
+if datatype(size, "Whole") = .false | size < 0  then
+   raise syntax 93.906 array ("size", size)
+</programlisting>
+<para>If you specify the CLASS option, the create methods are class
+methods. See <link linkend="provide">Objects and Classes</link>. The attrbute methods are
+associated with the class specified on the most recent ::CLASS directive.
+The ::CLASS directive is required in this case.</para>
+<para>If you specify the PRIVATE option, the methods are private methods.
+(Only a message the same object sends can activate the
+methods.) If you omit the PRIVATE option or specify PUBLIC, the methods are public methods
+that any sender can activate.</para>
+<para>If you
+<indexterm><primary>UNGUARDED option of ::ATTRIBUTE</primary></indexterm>
+specify the UNGUARDED option, the methods can be called while other methods
+are active on the same object. If you do not specify UNGUARDED, the methods
+requires exclusive use of the object variable pool; they can run only if no
+other method that requires exclusive use of the object variable pool is active
+on the same object.</para>
+<para>If you specify the PROTECTED option, the method is a protected method.
+(See <link linkend="secman">The Security Manager</link> for more information.)
+If you omit the PROTECTED option or specify UNPROTECTED, the method is not protected.</para>
+<note><title>Note</title>
+<para>It is an error to specify ::ATTRIBUTE more than once within the same class
+and to define the <emphasis role="italic">name</emphasis> set or get method.
+</para></note>
+</section>
+
 <section id="clasdi"><title>::CLASS</title>
 <indexterm><primary>::CLASS directive</primary></indexterm>
 <indexterm><primary>directives</primary>
@@ -65,6 +180,8 @@ can use any classes, methods, and routines that the directives established.</par
 <indexterm><primary>MIXINCLASS subkeyword</primary>
 <secondary>in a CLASS directive</secondary></indexterm>
 <indexterm><primary>PUBLIC subkeyword</primary>
+<secondary>in a CLASS directive</secondary></indexterm>
+<indexterm><primary>PRIVATE subkeyword</primary>
 <secondary>in a CLASS directive</secondary></indexterm>
 <indexterm><primary>INHERIT subkeyword</primary>
 <secondary>in a CLASS directive</secondary></indexterm>
@@ -195,11 +312,15 @@ an error.</para></note>
 <secondary>in a METHOD directive</secondary></indexterm>
 <indexterm><primary>PRIVATE subkeyword</primary>
 <secondary>in a METHOD directive</secondary></indexterm>
+<indexterm><primary>PUBLIC subkeyword</primary>
+<secondary>in a METHOD directive</secondary></indexterm>
 <indexterm><primary>GUARDED subkeyword</primary>
 <secondary>in a METHOD directive</secondary></indexterm>
 <indexterm><primary>UNGUARDED subkeyword</primary>
 <secondary>in a METHOD directive</secondary></indexterm>
 <indexterm><primary>PROTECTED subkeyword</primary>
+<secondary>in a METHOD directive</secondary></indexterm>
+<indexterm><primary>UNPROTECTED subkeyword</primary>
 <secondary>in a METHOD directive</secondary></indexterm>
 
 <programlisting>
@@ -367,6 +488,8 @@ directive. Only null clauses can appear between them.</para>
 <indexterm><primary>directives</primary>
 <secondary>::ROUTINE</secondary></indexterm>
 <indexterm><primary>PUBLIC subkeyword</primary>
+<secondary>in a ROUTINE directive</secondary></indexterm>
+<indexterm><primary>PRIVATE subkeyword</primary>
 <secondary>in a ROUTINE directive</secondary></indexterm>
 
 <programlisting>
