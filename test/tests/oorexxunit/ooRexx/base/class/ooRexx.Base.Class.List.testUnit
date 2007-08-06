@@ -3,7 +3,7 @@
    name:             ooRexx.Base.Class.List.testUnit
    author:           Rony G. Flatscher
    date:             2007-06-09
-   version:          1.0.3
+   version:          1.0.4
 
 -- line commented lines are ignored, when building the directory of infos from this header
    changed:          ---
@@ -13,6 +13,9 @@
    remark:           2007-06-09, ---rgf, added testcase "test_section"
                      2007-06-10, ---rgf, added tests for syntax errors
                                          added test cases to test collection object for correct types
+                     2007-07-28, ---rgf, added tests for setlike method arguments being OrderedCollection
+                                         and MapCollection; corrected "sameContent()" to check on
+                                         items and not on index
 
    license:          CPL 1.0 (Common Public License v1.0, see below)
    link:
@@ -307,6 +310,25 @@ return testUnitList
   self~assertEquals("subtest7", ce, c2~difference(c2))
 
 
+   -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
+  o1=.object~new
+  c =clz~new~~append(o1)~~append("1")~~append("2")
+  other=.array~new
+  other[104]="2"
+  other[106]=o1
+  d1=clz~of("1")     -- expected result
+  d2=c~difference(other)
+  self~assertTrue("subtest8: 'other' is an 'OrderedCollection'", sameContent(d1, d2))
+
+   -- now test where other is a MapCollection: "makeArray" returns "allItems"
+  other=.table~new
+  other["2"]='item mapped by index "2"'
+  other[o1] ='item mapped by index "o1"'
+  d2=c~difference(other)
+  self~assertTrue("subtest9: 'other' is a 'MapCollection'", sameContent(d1, d2))
+
+
+
 
 ::method "test_empty"
   expose collDir clz bUserDefinedIndex bSingleItem
@@ -391,6 +413,23 @@ return testUnitList
   self~assertEquals("subtest6", c1, c1~interSection(c1))
   self~assertEquals("subtest7", c2, c2~interSection(c2))
 
+
+   -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
+  o1=.object~new
+  c =clz~new~~append(o1)~~append("1")~~append("2")
+  other=.array~new
+  other[104]="2"
+  other[106]=o1
+  d1=clz~of("2", o1)          -- expected result
+  d2=c~interSection(other)
+  self~assertTrue("subtest8: 'other' is an 'OrderedCollection'", sameContent(d1, d2))
+
+   -- now test where other is a 'MapCollection': "makeArray" returns "allItems"
+  other=.table~new
+  other["2"]='item mapped by index "2"'
+  other[o1] ='item mapped by index "o1"'
+  d2=c~interSection(other)
+  self~assertTrue("subtest9: 'other' is a 'MapCollection'", sameContent(d1, d2))
 
 
 ::method "test_isInstanceOf"     -- test whether collection object is of the correct kind (class)
@@ -765,6 +804,49 @@ testSeq: procedure
   self~assertFalse("subtest14", c2~subset(c1))
 
 
+   -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
+  o1=.object~new
+  c =clz~new~~append(o1)~~append("1")~~append("2")
+  other=.array~new
+  other[104]="2"
+  other[106]=o1
+  d2=c~subSet(other)
+  self~assertFalse("subtest14: 'other' is an 'OrderedCollection'", d2)
+
+   -- now test where other is a 'MapCollection': "makeArray" returns "allItems"
+  other=.table~new
+  other["2"]='item mapped by index "2"'
+  other[o1] ='item mapped by index "o1"'
+  d2=c~subSet(other)
+
+  self~assertFalse("subtest15: 'other' is a 'MapCollection'", d2)
+
+
+
+   -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
+  other=.array~new
+  other[101]="1"
+  other[102]="2"
+  other[103]="3"
+  other[104]="2"
+  other[106]=o1
+  other[107]=o1
+  d2=c~subSet(other)
+  self~assertTrue("subtest16: 'other' is an 'OrderedCollection'", d2)
+
+   -- now test where other is a 'MapCollection': "makeArray" returns "allItems"
+  other=.table~new
+  other["1"]='item mapped by index "1"'
+  other["2"]='item mapped by index "2"'
+  other[o1] ='item mapped by index "o1"'
+  other["3"] ='item mapped by index "3"'
+  d2=c~subSet(other)
+
+  self~assertTrue("subtest17: 'other' is a 'MapCollection'", d2)
+
+
+
+
 
 ::method "test_Supplier"
   expose collDir clz bUserDefinedIndex bSingleItem
@@ -815,6 +897,27 @@ makeColl: procedure
 
 
 
+   -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
+  o1=.object~new
+  c =clz~new~~append(o1)~~append("1")~~append("2")
+  other=.array~new
+  other[104]="2"
+  other[106]=o1
+  d1=clz~of("1", "2", "2", o1, o1)  -- expected result
+  d2=c~union(other)
+  self~assertTrue("subtest8: 'other' is an 'OrderedCollection'", sameContent(d1, d2))
+
+   -- now test where other is a 'MapCollection': "makeArray" returns "allItems"
+  other=.table~new
+  other["2"]='item mapped by index "2"'
+  other[o1] ='item mapped by index "o1"'
+  d2=c~union(other)
+
+  self~assertTrue("subtest9: 'other' is a 'MapCollection'", sameContent(d1, d2))
+
+
+
+
 ::method "test_xor"
   expose collDir clz bUserDefinedIndex bSingleItem
 
@@ -833,6 +936,26 @@ makeColl: procedure
 
   self~assertEquals("subtest6", ce, c1~xor(c1))
   self~assertEquals("subtest7", ce, c2~xor(c2))
+
+
+   -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
+  o1=.object~new
+  c =clz~new~~append(o1)~~append("1")~~append("2")
+  other=.array~new
+  other[104]="2"
+  other[106]=o1
+  d1=clz~of("1")          -- expected result
+  d2=c~xor(other)
+  self~assertTrue("subtest8: 'other' is an 'OrderedCollection'", sameContent(d1, d2))
+
+   -- now test where other is a 'MapCollection': "makeArray" returns "allItems"
+  other=.table~new
+  other["2"]='item mapped by index "2"'
+  other[o1] ='item mapped by index "o1"'
+  d2=c~xor(other)
+
+  self~assertTrue("subtest9: 'other' is a 'MapCollection'", sameContent(d1, d2))
+
 
 
 
@@ -1110,10 +1233,10 @@ makeColl: procedure
    -- work on a copy
   tmp=coll_1~copy
   do o over coll_2
-     if \tmp~hasindex(o) then             -- no entry anymore ?
+     if \tmp~hasItem(o) then             -- no entry anymore ?
         return .false
 
-     tmp~remove(o)                        -- remove object
+     tmp~removeItem(o)                        -- remove object
   end
 
   return (tmp~items=0)                    -- if the same, then no items left

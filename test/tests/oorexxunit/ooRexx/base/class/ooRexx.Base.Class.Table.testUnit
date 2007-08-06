@@ -3,7 +3,7 @@
    name:             ooRexx.Base.Class.Table.testUnit
    author:           Rony G. Flatscher
    date:             2007-05-27
-   version:          1.0.2
+   version:          1.0.3
 
 -- line commented lines are ignored, when building the directory of infos from this header
    changed:
@@ -12,6 +12,8 @@
    purpose:          Test the methods of the class Table.
    remark:           2007-06-10, ---rgf, added some non-string objects to the collection for testing;
                                  added test cases to test collection object for correct types
+                     2007-07-28, ---rgf, added tests for setlike method arguments being OrderedCollection
+                                         and MapCollection
 
    license:          CPL 1.0 (Common Public License v1.0, see below)
    link:
@@ -239,6 +241,30 @@ return testUnitList
   self~assertTrue("subtest7", sameContent(ce, c2~difference(c2)))
 
 
+   -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
+  o1=.object~new
+  c =clz~new~~put(1, "1")~~put(2, "2")~~put(o1, o1)~~put("a","a")
+  other=.array~new
+  other[104]="2"
+  other[106]=o1
+  other[107]="a"
+                 -- expected result
+  d1=clz~new~~put("1", "1")
+  d2=c~difference(other)
+
+  self~assertTrue("subtest8: 'other' is an 'OrderedCollection'", sameContent(d1, d2))
+
+   -- now test where other is a MapCollection: "makeArray" returns "allItems"
+  other=.table~new
+  other["2"]="2"
+  other[o1] =o1
+  other["a"] ="a"
+                 -- expected result
+  d1=clz~new~~put("1", "1")
+  d2=c~difference(other)
+  self~assertTrue("subtest9: 'other' is a 'MapCollection'", sameContent(d1, d2))
+
+
 
 ::method "test_empty"
   expose collDir clz bUserDefinedIndex bSingleItem
@@ -316,6 +342,31 @@ return testUnitList
 
   self~assertTrue("subtest6", sameContent(c1, c1~interSection(c1)))
   self~assertTrue("subtest7", sameContent(c2, c2~interSection(c2)))
+
+
+   -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
+  o1=.object~new
+  c =clz~new~~put("1", "1")~~put("2", "2")~~put(o1, o1)~~put("a","a")
+  other=.array~new
+  other[104]="2"
+  other[106]=o1
+  other[107]="a"
+                 -- expected result
+  d1=clz~new~~put("a", "a")~~put(2,2)~~put(o1,o1)
+  d2=c~interSection(other)
+
+  self~assertTrue("subtest8: 'other' is an 'OrderedCollection'", sameContent(d1, d2))
+
+   -- now test where other is a MapCollection: "makeArray" returns "allItems"
+  other=.table~new
+  other["2"]=2
+  other[o1] =o1
+  other["a"] ="a"
+                 -- expected result
+  d1=clz~new~~put("<2-value>", "2")~~put("<o1-value>", o1)~~put("a","a")
+  d2=c~interSection(other)
+  self~assertTrue("subtest9: 'other' is a 'MapCollection'", sameContent(d1, d2))
+
 
 
 ::method "test_isInstanceOf"     -- test whether collection object is of the correct kind (class)
@@ -554,6 +605,49 @@ return testUnitList
   self~assertFalse("subtest13", c2~subset(c1))
 
 
+   -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
+  o1=.object~new
+      -- use a relation which is bag-like
+  c =clz~new~~put("1", "1")~~put("2", "2")~~put(o1, o1)
+  other=.array~new
+  other[104]="2"
+  other[106]=o1
+  d2=c~subSet(other)
+  self~assertFalse("subtest14: 'other' is an 'OrderedCollection'", d2)
+
+   -- now test where other is a 'MapCollection': "makeArray" returns "allItems"
+  other=.table~new   -- use a table which is set-like
+  other["2"]="2"
+  other[o1] =o1
+  d2=c~subSet(other)
+
+  self~assertFalse("subtest15: 'other' is a 'MapCollection'", d2)
+
+
+
+   -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
+  other=.array~new
+  other[101]="1"
+  other[102]="2"
+  other[103]="3"
+  other[104]="2"
+  other[106]=o1
+  other[107]=o1
+  d2=c~subSet(other)
+  self~assertTrue("subtest16: 'other' is an 'OrderedCollection'", d2)
+
+   -- now test where other is a 'MapCollection': "makeArray" returns "allItems"
+  other=.table~new
+  other["1"]="1"
+  other["2"]="2"
+  other[o1] =o1
+  other["3"] ="3"
+  d2=c~subSet(other)
+
+  self~assertTrue("subtest17: 'other' is a 'MapCollection'", d2)
+
+
+
 
 ::method "test_Supplier"
   expose collDir clz bUserDefinedIndex bSingleItem
@@ -599,6 +693,28 @@ makeColl: procedure
   self~assertTrue("subtest7", sameContent(res, c2~union(c1)))
 
 
+   -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
+  o1=.object~new
+  c =clz~new~~put("1", 1)~~put("2", 2)~~put(o1, o1)
+  other=.array~new
+  other[104]="2"
+  other[106]=o1
+
+      -- expected result
+  d1=clz~new
+  d1~~put(1,1)~~put(2,2)~~put(2,2)~~put(o1,o1)~~put(o1,o1)
+  d2=c~union(other)
+  self~assertTrue("subtest8: 'other' is an 'OrderedCollection'", sameContent(d1, d2))
+
+   -- now test where other is a 'MapCollection': "makeArray" returns "allItems"
+  other=.table~new
+  other["2"]=2
+  other[o1] =o1
+  d2=c~union(other)
+
+  self~assertTrue("subtest9: 'other' is a 'MapCollection'", sameContent(d1, d2))
+
+
 
 ::method "test_xor"
   expose collDir clz bUserDefinedIndex bSingleItem
@@ -619,6 +735,24 @@ makeColl: procedure
   self~assertTrue("subtest6", sameContent(ce, c1~xor(c1)))
   self~assertTrue("subtest7", sameContent(ce, c2~xor(c2)))
 
+
+   -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
+  o1=.object~new
+  c =clz~new~~put("1", 1)~~put("2", 2)~~put(o1,o1)
+  other=.array~new
+  other[104]="2"
+  other[106]=o1
+  d1=clz~new~~put(1,1)     -- expected result
+  d2=c~xor(other)
+  self~assertTrue("subtest8: 'other' is an 'OrderedCollection'", sameContent(d1, d2))
+
+   -- now test where other is a 'MapCollection': "makeArray" returns "allItems"
+  other=.table~new
+  other["2"]=2
+  other[o1] =o1
+  d2=c~xor(other)
+
+  self~assertTrue("subtest9: 'other' is a 'MapCollection'", sameContent(d1, d2))
 
 
 /* Test whether both collections contain the same entries.
