@@ -74,9 +74,9 @@ can use any classes, methods, and routines that the directives established.</par
 >>-::CLASS--classname--+----------------------+------------------->
                        +-METACLASS--metaclass-+
 
-   .-SUBCLASS--Object---.
->--+--------------------+--+--------+--+-------------------+--;--><
-   +-MIXINCLASS--mclass-+  +-PUBLIC-+  +-INHERIT--iclasses-+
+   .-SUBCLASS--Object---.  +-PRIVATE-+
+>--+--------------------+--+---------+--+-------------------+--;--><
+   +-MIXINCLASS--mclass-+  +-PUBLIC--+  +-INHERIT--iclasses-+
    +-SUBCLASS--sclass---+
 ]]>
 </programlisting>
@@ -207,9 +207,9 @@ an error.</para></note>
 >>-::METHOD--methodname--+-------+--+-----------+--+----------+--->
                          +-CLASS-+  +-ATTRIBUTE-+  +-ABSTRACT-+
 
->--+---------+--+-----------+--+-----------+--;----------------><
-   +-PRIVATE-+  +-GUARDED---+  +-PROTECTED-+
-                +-UNGUARDED-+
+    +-PUBLIC--+  +-GUARDED---+  +-UNPROTECTED-+
+ >--+---------+--+-----------+--+-------------+--;----------------><
+    +-PRIVATE-+  +-UNGUARDED-+  +-PROTECTED---+
 ]]>
 </programlisting>
 
@@ -237,7 +237,7 @@ associated with the class specified on the most recent ::CLASS directive.
 The ::CLASS directive is required in this case.</para>
 <para>If you specify the PRIVATE option, the method is a private method.
 (Only a message the same object sends can activate the
-method.) If you omit the PRIVATE option, the method is a public method
+method.) If you omit the PRIVATE option or specify PUBLIC, the method is a public method
 that any sender can activate.</para>
 <para>If you
 <indexterm><primary>UNGUARDED option of ::METHOD</primary></indexterm>
@@ -274,7 +274,7 @@ implementation for.  Any attempt to invoke an ABSTRACT method directly will rais
 </para>
 <para>If you specify the PROTECTED option, the method is a protected method.
 (See <link linkend="secman">The Security Manager</link> for more information.)
-If you omit the PROTECTED option, the method is not protected.</para>
+If you omit the PROTECTED option or specify UNPROTECTED, the method is not protected.</para>
 <para>If you specify ATTRIBUTE or ABSTRACT, another directive (or the end of the program)
 must follow the ::METHOD directive.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
@@ -370,9 +370,9 @@ directive. Only null clauses can appear between them.</para>
 <secondary>in a ROUTINE directive</secondary></indexterm>
 
 <programlisting>
-<![CDATA[
->>-::ROUTINE--routinename--+--------+--;-----------------------><
-                           +-PUBLIC-+
+<![CDATA[                  +-PRIVATE-+
+>>-::ROUTINE--routinename--+---------+--;-----------------------><
+                           +-PUBLIC--+
 ]]>
 </programlisting>
 
