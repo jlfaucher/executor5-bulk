@@ -408,7 +408,7 @@ if this class.</para>
 receiver collection are also contained in the
 <emphasis role="italic">argument</emphasis> collection; returns
 <computeroutput>0</computeroutput> (false) otherwise. The
-<emphasis role="italic">argument</emphasis> can be any 
+<emphasis role="italic">argument</emphasis> can be any
 collection class object.
 The <emphasis role="italic">argument</emphasis> must also allow all of the
 index values in the receiver collection.</para>
@@ -524,6 +524,23 @@ indexes exist in <emphasis role="italic">collection</emphasis>, the last item pr
 supplier will overwrite previous items with the same index.
 </para>
 </section>
+
+<section id="mthMapCollectionMakeArray"><title>makeArray</title>
+<indexterm><primary>makeArray method</primary>
+<secondary>of MapCollection class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>makeArray method</secondary>
+<tertiary>of MapCollection class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-makeArray---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a single-index array of the index values used by the receiver object.
+The index objects will not be ordered in any predictable order.
+</para>
+</section>
 </section>
 
 <section id="clsOrderedCollection"><title>The OrderedCollection Class</title>
@@ -608,28 +625,10 @@ allow all of the index values in the receiver collection.</para>
 <para>Returns a new collection (of the same class as the receiver) containing
 only those items from the receiver whose indexes are in both the receiver
 collection and the <emphasis role="italic">argument</emphasis> collection.
-The <emphasis role="italic">argument</emphasis> can be any 
+The <emphasis role="italic">argument</emphasis> can be any
 collection class object.
 The <emphasis role="italic">argument</emphasis> must also allow all of the
 index values in the receiver collection.</para>
-</section>
-
-<section id="mthOrderedCollectionMakeArray"><title>makeArray</title>
-<indexterm><primary>makeArray method</primary>
-<secondary>of OrderedCollection class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>makeArray method</secondary>
-<tertiary>of OrderedCollection class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-makeArray---------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns a single-index array with the same number of items as the receiver
-object. Any index with no associated item is omitted from the new array.
-Items in the new array will have the same order as the source array.
-</para>
 </section>
 
 <section id="mthOrderedCollectionSubset"<title>subset</title>
