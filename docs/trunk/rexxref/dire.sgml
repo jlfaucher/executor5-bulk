@@ -68,17 +68,17 @@ can use any classes, methods, and routines that the directives established.</par
 <indexterm><primary>CLASS subkeyword</primary>
 <secondary>in an ATTRIBUTE directive</secondary></indexterm>
 <indexterm><primary>PRIVATE subkeyword</primary>
-<secondary>in a ATTRIBUTE directive</secondary></indexterm>
+<secondary>in an ATTRIBUTE directive</secondary></indexterm>
 <indexterm><primary>PUBLIC subkeyword</primary>
-<secondary>in a ATTRIBUTE directive</secondary></indexterm>
+<secondary>in an ATTRIBUTE directive</secondary></indexterm>
 <indexterm><primary>GUARDED subkeyword</primary>
-<secondary>in a ATTRIBUTE directive</secondary></indexterm>
+<secondary>in an ATTRIBUTE directive</secondary></indexterm>
 <indexterm><primary>UNGUARDED subkeyword</primary>
-<secondary>in a ATTRIBUTE directive</secondary></indexterm>
+<secondary>in an ATTRIBUTE directive</secondary></indexterm>
 <indexterm><primary>PROTECTED subkeyword</primary>
-<secondary>in a ATTRIBUTE directive</secondary></indexterm>
+<secondary>in an ATTRIBUTE directive</secondary></indexterm>
 <indexterm><primary>UNPROTECTED subkeyword</primary>
-<secondary>in a ATTRIBUTE directive</secondary></indexterm>
+<secondary>in an ATTRIBUTE directive</secondary></indexterm>
 
 <programlisting>
 <![CDATA[
@@ -95,23 +95,21 @@ can use any classes, methods, and routines that the directives established.</par
 
 <note><title>Note</title>
 <para>You can specify all options in any order.</para></note>
-<para>The ::ATTRIBUTE directive creates attribute methods and defines the method properties.
-</para>
+<para>The ::ATTRIBUTE directive creates attribute methods and defines the
+method properties.</para>
 <para>An ::ATTRIBUTE directive starts an attribute method, which is ended by another directive
 or the end of the program. The ::ATTRIBUTE is not included in the method source.</para>
 <para>The <emphasis role="italic">name</emphasis> is a literal string or
 a symbol that is taken as a constant.  The <emphasis role="italic">name</emphasis> must also be
-a valid Rexx variable name.
-The ::ATTRIBUTE directive creates methods
-n the class specified
-in the most recent ::CLASS directive.</para>
-<para>A ::CLASS directive is not required before a ::ATTRIBUTE directive. If no
+a valid Rexx variable name. The ::ATTRIBUTE directive creates methods
+in the class specified in the most recent ::CLASS directive.</para>
+<para>A ::CLASS directive is not required before an ::ATTRIBUTE directive. If no
 ::CLASS directive precedes ::ATTRIBUTE, the attribute methods are not associated with a class
 but are accessible to the main (executable) part of a program through the .METHODS
 built-in object. Only one ::ATTRIBUTE directive can appear for any method name
 not associated with a class. See
 <link linkend="methe">.METHODS</link>  for more details.</para>
-<para>If do not specify either SET or GET, ::ATTRIBUTE will create two attribute methods with the
+<para>If you do not specify either SET or GET, ::ATTRIBUTE will create two attribute methods with the
 names <emphasis role="italic">name</emphasis> and <emphasis role="italic">methodname=</emphasis>.
 These are the methods for getting and setting an attribute.  These generated methods are
 equivalent to the following code sequences: </para>
@@ -142,7 +140,7 @@ is frequently used so the SET attribute method can perform new value validation.
 ::method size get
 expose size
 use arg size
-if datatype(size, "Whole") = .false | size < 0  then
+if datatype(size, "Whole") = .false | size &lt; 0  then
    raise syntax 93.906 array ("size", size)
 </programlisting>
 <para>If you specify the CLASS option, the create methods are class
