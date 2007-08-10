@@ -16,7 +16,7 @@
    link:
 
    category1:        ooRexx
-   category2:        doc_samples
+   category2:        Documentation examples
    category3:        Rexx Reference
    category4:        Chapter 5 section 1
 
@@ -116,28 +116,24 @@ return testUnitList
     Object class, the start method of the Object class.  The following is
     the current example:
 
-    world=.object~new
-    msg=world~start("HELLO") /* same as next line */
-    msg=.message~new(world,"HELLO")~~start /* same as previous line */
+    world=.WorldObject~new
+    msg1=world~start("HELLO")                /* same as next line     */
+    msg2=.message~new(world,"HELLO")~~start  /* same as previous line */
 
-    The example as presented will not work.  There is no HELLO method in the
-    Object class.
+    say msg1~result           /* Produces Hello world 21:04:25.065000 */
+                              /* for example                          */
+    say msg2~result           /* Produces Hello world 21:04:25.081000 */
+                              /* for example                          */
 
-    The better example for the docs would be:
-
-      world=.WorldObj~new
-      msg1=world~start("HELLO") /* same as next line */
-      msg2=.message~new(world,"HELLO")~~start /* same as previous line */
-
-      ::class 'WorldObj' public
-      ::method hello
-        return "Hello world" time('L')
+    ::class 'WorldObject' public
+    ::method hello
+      return "Hello world" time('L')
 
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
   ::method  test_object_start
 
-    world=.WorldObj~new
-    self~assertTrue("world object must be a WorldObj object", world~class == .WorldObj)
+    world=.WorldObject~new
+    self~assertTrue("world object must be a WorldObj object", world~class == .WorldObject)
 
     msg1=world~start("HELLO")
     self~assertTrue("msg1 must be a Message object", msg1~class == .Message)
@@ -197,7 +193,7 @@ return testUnitList
     say points~objectName            /* (no change yet) Says: "an Array" */
     points~objectName=("compass")    /* Changes obj name POINTS to "compass"*/
     say points~objectName            /* Shows new obj name. Says: "compass" */
-    say points~defaulNname           /* Default is still available. */
+    say points~defaultName           /* Default is still available. */
                                      /* Says "an Array" */
     say points                       /* Says string representation of */
                                      /* points "compass" */
@@ -217,32 +213,36 @@ return testUnitList
     self~assertSame("objectName should now be compass", points~objectName, "compass")
     self~assertSame("default name should still be an Array", points~defaultName, "an Array")
 
-    -- Now a hard thing to translate into a test case.  points is an object,
+    -- say points
+    --
+    -- A hard thing to translate into a test case.  points is an object,
     -- compass is an object.  The following commented out assertion fails
     -- because the two objects are *not* the same.
     /*
     self~assertSame("string representation should be compass", points, "compass")
     */
 
-    -- So, a little creativity.  Temporarily change the destination of for "say"
-    -- to a file.
-    outObj = .stream~new("ttXXTemp.out")~~command("OPEN WRITE REPLACE")
+    -- So, a little creativity.  We need a way to capture a say statement, but
+    -- still keep the test automated.  So, temporarily change the destination of
+    -- a "say" to a file.  Then read back the file.
+    fName = "ttXXTemp.out"
+    outObj = .stream~new(fName)~~command("OPEN WRITE REPLACE")
     .output~destination(outObj)
+
     say points
 
     -- Reset the destination for output
-    .output~destination
     .output~destination(.Stdout)
 
     -- Close the file, reopen, read the output, delete the file, do the test
     outObj~close
-    inObj = .stream~new("ttXXTemp.out")~~command("OPEN READ")
+    inObj = .stream~new(fName)~~command("OPEN READ")
     pointsStr = inObj~linein
     inObj~close
-    j = SysFileDelete(inObj~qualify)
+    j = SysFileDelete(fName)
 
     self~assertSame("string representation should be compass", pointsStr, "compass")
-    self~assertSame("points is still and array, should be 'E'", points[3], "E")
+    self~assertSame("points is still an array, should be 'E'", points[3], "E")
 
   -- End test_object_ObjectNameEquals( )
 
@@ -250,7 +250,7 @@ return testUnitList
 
 
 -- Helper class for the test_object_start test case.
-::class 'WorldObj' public
+::class 'WorldObject' public
 ::method hello
   return "Hello world" time('L')
 
