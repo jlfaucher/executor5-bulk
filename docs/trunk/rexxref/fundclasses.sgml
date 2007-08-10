@@ -414,7 +414,7 @@ points=.array~of("N","S","E","W")
 say points~objectName         /* (no change yet) Says: "an Array"    */
 points~objectName=("compass") /* Changes obj name POINTS to "compass"*/
 say points~objectName         /* Shows new obj name. Says: "compass" */
-say points~defaulNname        /* Default is still available.         */
+say points~defaultName        /* Default is still available.         */
                               /* Says "an Array"                     */
 say points                    /* Says string representation of       */
                               /* points "compass"                    */
@@ -618,9 +618,18 @@ see <link linkend="mthMessageStart">start</link>.
 </para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
-world=.object~new
-msg=world~start("HELLO")                /* same as next line     */
-msg=.message~new(world,"HELLO")~~start  /* same as previous line */
+world=.WorldObject~new
+msg1=world~start("HELLO")                /* same as next line     */
+msg2=.message~new(world,"HELLO")~~start  /* same as previous line */
+
+say msg1~result           /* Produces Hello world 21:04:25.065000 */
+                          /* for example                          */
+say msg2~result           /* Produces Hello world 21:04:25.081000 */
+                          /* for example                          */
+
+::class 'WorldObject' public
+::method hello
+  return "Hello world" time('L')
 </programlisting>
 </section>
 
