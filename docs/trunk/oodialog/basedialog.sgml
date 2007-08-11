@@ -7603,12 +7603,16 @@ string can be a combination of valid file name characters and the asterisk
 Files (*.*)&quot;&apos;0&apos;x&quot;*.*&quot; </computeroutput> is used as the filter.
 </para></listitem></varlistentry>
 <varlistentry><term>loadorsave</term>
-<listitem><para>Specifies which dialog should be displayed.
+<listitem><para>Specifies which dialog should be displayed, the File Open Dialog
+(the default) or the File Save Dialog.  If the File Save Dialog is not explictly
+requested the default File Open Dialog is always presented.  Only the first
+letter of the argument is needed and case is not significant.  For historic
+reasons this argument can also be 1 (File Open Dialog) or 0 (File Save Dialog.)
 <variablelist>
-<varlistentry><term>LOAD</term>
+<varlistentry><term>Load or 1</term>
 <listitem><para>Display the File Open Dialog (default).
 </para></listitem></varlistentry>
-<varlistentry><term>SAVE</term>
+<varlistentry><term>Save or 0</term>
 <listitem><para>Display the File Save Dialog.
 </para></listitem></varlistentry>
 </variablelist>
