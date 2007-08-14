@@ -1,0 +1,291 @@
+#!/usr/bin/rexx
+/*
+   name:             fileNameDialog_demo_simple.testUnit
+   author:           Mark Miesfeld
+   date:             2007-08-13
+   version:          0.0.9
+   changed:
+
+   languageLevel:    6.0
+   purpose:          Test the fileNameDialog_demo ooRexx progam
+
+   remark:           This is a *very* simple example test unit for the
+                     fileNameDialog_demo example submitted by Lee Peedin.
+
+                     Its purpose is to automate executing the example to ensure
+                     it runs.  It is not inteneded to prove the example has no
+                     errors.
+
+   license:          CPL 1.0 (Common Public License v1.0, see below)
+   link:
+
+   category1:        ooRexx
+   category2:        samples
+   category3:        ooDialog
+
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+use arg cmdLine
+
+  -- A convenience since the test case class name is so long.
+  testUnitClass = .fileNameDialog_demo_simple.testUnit
+
+  testUnitList = .list~of( .array~of( testUnitClass, .list~new ) )
+
+  srcLines = .array~new
+  do i = 1 to 150 until srcLines[ i ] = "*/"
+     srcLines[ i ] = sourceline( i )
+  end
+
+  call makeDirTestInfo testUnitClass, srcLines
+
+  parse source s
+  testUnitClass~testCaseInfo~setentry( "test_Case-source", s )
+
+  -- If there is no entry in the .local directory of 'bRunTestsLocally' then add
+  -- one with a value of true.
+  if \ .local~hasentry( "bRunTestsLocally" ) then
+     .local~bRunTestsLocally = .true
+
+  -- Now honor the setting of bRunTestsLocally, which may have been set by a
+  -- caller of this test unit.
+  if .bRunTestsLocally == .true then do
+    ts = .TestSuite~new
+    ts~addTest( .TestSuite~new( testUnitClass ) )
+
+    testResult = ts~run
+    call simpleDumpTestResults testResult
+  end
+
+return testUnitList
+-- End of entry point.
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+  Directives, Classes, or Routines.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::requires "OOREXXUNIT.CLS"
+::requires "WinSystm.cls"
+
+/* class: fileNameDialog_demo_simple.testUnit- - - - - - - - - - - - - - - - -*\
+
+  The test unit class.  All ooRexxUnit test cases should probably start with a
+  test unit.
+
+  With the boiler plate code in the program entry, each method of this class
+  that starts with test_ will be executed as a test case.  Each call to
+  self~assertXXX will be counted as an assertation.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class fileNameDialog_demo_simple.testUnit public subclass TestCase
+
+  /* test_example_launch( )- - - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+    The only test case for this test unit.  When executed it will:
+
+    * Launch the fileNameDialog_demo in a separate instance of the interpreter.
+    * It will then find the initial InfoDialog window and click the okay button.
+    * It then finds the main program window and clicks the cancel button.
+    * It then waits for the program to end and gets its return code.
+
+    For each one one these steps, one or more assertations will be made to check
+    that the step proceeded as expected.  If all assertations pass, then we can
+    be resonably certain that the program did in fact run.
+
+  \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+  ::method  test_example_launch
+
+    -- Launcher is the utility class we will use to run the example program
+    launcher = .Launcher~new("fileNameDialog_demo")
+    ret = launcher~startExample
+
+    -- Step 1 assert the example program was launched.
+    --                  Message displayed if error            Expected  Actual
+    self~assertEquals('launcher~startExample should return 0',    0,     ret)
+
+    -- Window Finder is a utility class to get references to Windows
+    wf = .WindowFinder~new
+
+    -- We know the example program puts up an InfoDialog first.  Its title is
+    -- "Information"  Get a reference to that window.  Use the default timeout
+    -- values.
+    wnd = wf~getWindow("Information")
+
+    -- Step 2 assert that we found the InfoDialog
+    --                  Message displayed if error           Expected      Actual
+    self~assertEquals('Must have a WindowObject object',    .WindowObject, wnd~class)
+    self~assertEquals('Window must have Information title', "Information", wnd~title)
+
+    /* The displayWindowChildren routine is useful in developing this test case
+       because you can print out what the actual values for the children windows
+       are.  You need to know the window ID or its label to push a button.
+    j = displayWindowChildren(wnd)
+    */
+
+    -- One way to click the Ok button, use the button label (or title.)
+    wnd~pushButton("OK")
+
+    -- We know the example program has this title.  That's how we can find it.
+    -- Changing the default pause to .5 seconds, because it sometimes takes the
+    -- window longer to come up.
+    wnd = wf~getWindow("FileNameDialog Demonstration", , .5)
+
+    -- Step 3 assert that we found the main window of the program.
+    --                  Message displayed if error                   Expected                        Actual
+    self~assertEquals('Must have a WindowObject object',             wnd~class,                      .WindowObject)
+    self~assertEquals('Window must have proper title program title', "FileNameDialog Demonstration", wnd~title)
+
+    /* j = displayWindowChildren(wnd) */
+
+    -- Second way to push a button, use sendCommand and the resource ID of the
+    -- button.  The cancel button has resource ID of 2.
+    wnd~sendCommand(2)
+
+    -- Wait for the example program to end and get its return code.  The example
+    -- program returns a distinctive code when it ends without error.
+    ret = launcher~getResult
+
+    -- Step 4 assert that we get the correct return code for a successful
+    -- execution of the example program.
+    self~assertEquals("fileNameDialog_demo return code should be 37", ret, 37)
+
+  -- End test_example_launch( )
+
+-- End of class: fileNameDialog_demo_simple.testUnit
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+  Utility classes and routines that I intend to extend and put into a framework
+  for use with ooRexxUnit.  For now, just enough to get this example ooRexxUnit
+  test unit to work.
+
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+
+::class 'Launcher' public
+
+-- Attribute: prgResultCode
+-- Holds the return code when the program ends
+::method  prgResultCode attribute
+
+::method init
+  expose prgName finished
+  use arg prgName
+  self~init:super
+  finished = .false
+
+::method getResult unguarded
+  expose finished
+  guard on when finished
+  return self~prgResultCode
+
+::method startExample
+  expose prgName finished
+
+  reply 0
+
+  prgName
+  self~prgResultCode = RC
+  finished = .true
+
+::class 'WindowFinder' public
+
+::attribute repetitions
+::attribute sleepTime
+
+::method init
+  expose windowMgr
+
+  windowMgr = .WindowsManager~new
+  self~repetitions = 20
+  self~sleepTime   = .1
+
+::method getWindow
+  expose windowMgr
+  use arg title, loops, pause
+
+  if arg(2, 'O') then loops = self~repetitions
+  if arg(3, 'O') then pause = self~sleepTime
+
+  do loops
+    j = SysSleep(pause)
+    wnd = windowMgr~find(title)
+    if wnd~class == .WindowObject then leave
+  end
+
+return wnd
+
+
+/* displayWindowChildren( windowObj )- - - - - - - - - - - - - - - - - - - - -*\
+
+  An utility routine to display information about the child windows of a window.
+  This is useful for getting the needed information about windows, such as
+  buttons, so that they can be manipulated.
+
+  Input:
+    windowObj REQUIRED
+      A WindowObject instance that represents the parent window of the children
+      windows.
+
+  Returns:
+    -1 if windowObject is not the proper class, otherwise the count of children
+    windows.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::routine  displayWindowChildren public
+  use arg windowObj
+
+  if windowObj~class <> .WindowObject then do
+    say "Error not a WindowObject.  Can not display children."
+    return -1
+  end
+
+  enum. = windowObj~enumerateChildren
+  say 'The' windowObj~title "window has" enum.0 'children'
+
+  do i = 1 to enum.0
+    say 'Child number:' i
+    say '  Title:          ' enum.i.!title
+    say '  Window Class    ' enum.i.!class
+    say '  Window ID       ' enum.i.!id
+    say '  Window State:   ' enum.i.!state
+    say '  Count children: ' enum.i.!children
+    say '  Window handle:  ' enum.i.!handle
+    say '  Window position:' enum.i.!coordinates
+    say
+  end
+
+return enum.0;
+-- End displayWindowChildren( windowObj )
