@@ -170,7 +170,7 @@ end
 
       -- get and memorize the path.separator on this system
 .local~ooRexxUnit.directory.separator=filespec("Path", directory())~left(1)
-if .ooRexxUnit.directory.separtor="\" then      -- DOS-like
+if .ooRexxUnit.directory.separator="\" then     -- DOS-like
    .local~ooRexxUnit.path.separator=";"
 else                                            -- Unix-like
    .local~ooRexxUnit.path.separator=":"
