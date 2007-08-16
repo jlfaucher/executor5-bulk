@@ -231,13 +231,13 @@ test:
   return
 
 
-::method "test_USE_STRICT_error03 40.4 "
+::method "test_USE_STRICT_error03 40.3 "
   if .ooRexxUnit.languageLevel<6.02 then
   do
      .error~say(self~string" - 'test_assign_parsed_values_to_attributes_or_collections': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
      return
   end
-  self~expectSyntax(40.4)
+  self~expectSyntax(40.3)
   call test a, b
   return
 test:
