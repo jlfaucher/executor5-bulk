@@ -642,9 +642,7 @@ else                                            -- Unix-like
 
 ::method run            -- will get implemented in subclasses
   expose fName
-  use arg aTestResult, bGiveFeedback
-
-  if arg(2, 'O') then bGiveFeedback=.false
+  use arg aTestResult, bGiveFeedback=.false
 
   if \datatype(bGiveFeedback,"O") then
      raise syntax 93.903 array (bGiveFeedback) -- raise error
@@ -814,9 +812,7 @@ exceptionHandler:
 
 ::method run
   expose fTestList
-  use arg aTestResult, bGiveFeedback
-
-  if arg(2, 'O') then bGiveFeedback=.false
+  use arg aTestResult, bGiveFeedback=.false
 
   if \datatype(bGiveFeedback,"O") then
      raise syntax 93.903 array (bGiveFeedback) -- raise error
@@ -960,12 +956,10 @@ exceptionHandler:
   */
   if .ooRexxUnit.languageLevel>=6.02 then
   do
-     if expected~isA(.Collection) & received~isA(.Collection) then
+     if expected~isA(.Collection), received~isA(.Collection), -
+        expected~subset(received), received~subset(expected) then
      do
-        if expected~subset(received) & received~subset(expected) then
-        do
-           return .true -- the one collection is a subset of the other
-        end
+        return .true -- the one collection is a subset of the other
      end
 
      return .false   -- not dealing with collections or collections not a subset of each other
@@ -1260,12 +1254,6 @@ syntax:
    TAB4=TAB1~copies(4)
 
    do i=1 to stem.0
-      /* Temporary work around for bug I do not understand in 3.1.2.  If stem.i
-         equals SOURCE then what is returned from co~entry(stem.i) is not an
-         object.  It has *no* methods
-      */
-      if stem.i == "SOURCE" then iterate
-
       o=co~entry(stem.i)
       if o~hasmethod('ITEMS') then items=o~items
                               else items=""
