@@ -3,13 +3,10 @@
    name:             ooRexx.Base.Class.Properties.testUnit
    author:           Rony G. Flatscher
    date:             2007-03-21
-   version:          1.0.2
+   version:          1.0.0
 
 -- line commented lines are ignored, when building the directory of infos from this header
-   changed:          2007-05-30, ---rgf, adapted to language level 6.02 as some raised errors
-                                         are generated with an own error number by USE STRICT ARG
-                     2007-06-01, ---rgf, account for new behaviours: if getWhole() or getLogical()
-                                         returns .nil, then an according syntax condition is raised
+   changed:          ---
 
    languageLevel:    6.0.1
    purpose:          Test the methods of the class CircularQueue.
@@ -176,10 +173,7 @@ return testUnitList
    -- test arguments ---------------------------------------------
 
 ::method "test_LOAD_ARG_1"
-   if .ooRexxunit.languageLevel>=6.02 then
-      self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
-   else
-      self~expectSyntax(93.903)     -- omitted argument
+   self~expectSyntax(93.903)     -- omitted argument
    .Properties~load
 
 ::method "test_LOAD_ARG_2"
@@ -187,10 +181,7 @@ return testUnitList
    .Properties~load(1,2)
 
 ::method "test_SAVE_ARG_1"
-   if .ooRexxunit.languageLevel>=6.02 then
-      self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
-   else
-      self~expectSyntax(93.903)     -- omitted argument
+   self~expectSyntax(93.903)     -- omitted argument
    .Properties~new~SAVE
 
 ::method "test_SAVE_ARG_2"
@@ -207,10 +198,7 @@ return testUnitList
    .properties~new~setProperty( ,2)
 
 ::method "test_SETPROPERTY_ERR_03"
-   if .ooRexxunit.languageLevel>=6.02 then
-      self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
-   else
-      self~expectSyntax(93.903)
+   self~expectSyntax(93.903)
    .properties~new~setProperty(1 , )
 
 ::method "test_SETPROPERTY_ERR_04"
@@ -224,10 +212,7 @@ return testUnitList
    .properties~new~GETProperty(1, 2, 3)
 
 ::method "test_GETPROPERTY_ERR_02"
-   if .ooRexxunit.languageLevel>=6.02 then
-      self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
-   else
-      self~expectSyntax(93.903)
+   self~expectSyntax(93.903)
    .properties~new~GETProperty( )
 
 ::method "test_GETPROPERTY_DEFAULT_VALUE"
@@ -248,24 +233,11 @@ return testUnitList
 
    -- GETWHOLE
 ::method "test_GETWHOLE_ERR_01"
-   if .ooRexxunit.languageLevel>=6.02 then
-      self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
-   else
-      self~expectSyntax(26.901)
+   self~expectSyntax(26.901)
    key="a"
    val="b"
    p=.properties~new~~setProperty(key, val)
-
-   self~expectSyntax(26.901)        -- expect a syntax exception (not an integer/whole value!)
    p~getWHOLE(key)
-
-
-::method "test_GETWHOLE_ERR_02"
-
-   p=.properties~new                -- create (empty) Properties
-   self~expectSyntax(26.901)        -- expect a syntax exception (not an integer/whole value!)
-   p~getWHOLE("nixi")
-
 
 ::method "test_GETWHOLE_DEFAULT"
    p=.properties~new
@@ -289,21 +261,11 @@ return testUnitList
    -- GETLOGICAL
 ::method "test_GETLOGICAL_ERR_01"
    -- self~expectSyntax(26.901)
-   if .ooRexxunit.languageLevel>=6.02 then
-      self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
-   else
-      self~expectSyntax(34.904)
+   self~expectSyntax(34.904)
    key="a"
    val="b"
    p=.properties~new~~setProperty(key, val)
-   self~expectSyntax(34.904)        -- expect a syntax exception (not a logical value!)
    p~getLOGICAL(key)
-
-::method "tst_GETLOGICAL_ERR_02"
-   p=.properties~new                -- create empty Properties
-   self~expectSyntax(34.904)        -- expect a syntax exception (not a logical value!)
-   self~assertNull("subtest_00b", props~getLogical(key)  )
-
 
 ::method "test_GETLOGICAL_DEFAULT"
    p=.properties~new
@@ -325,10 +287,7 @@ return testUnitList
    .properties~new~"[]="(,2)
 
 ::method "test_[]=_ERR_03"
-   if .ooRexxunit.languageLevel>=6.02 then
-      self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
-   else
-      self~expectSyntax(93.903)
+   self~expectSyntax(93.903)
    .properties~new~"[]="(1)
 
 ::method "test_[]=_ERR_04"
@@ -346,10 +305,7 @@ return testUnitList
    .properties~new~"PUT"(,2)
 
 ::method "test_PUT_ERR_03"
-   if .ooRexxunit.languageLevel>=6.02 then
-      self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
-   else
-      self~expectSyntax(93.903)
+   self~expectSyntax(93.903)
    .properties~new~"PUT"(1)
 
 ::method "test_PUT_ERR_04"
@@ -450,13 +406,10 @@ return testUnitList
 
 ::method "test_get_and_set_properties"
   props=.properties~new
+
   key="rgf"
   val=1
   logVal="true"
-
-
-  self~assertNull("subtest_00a", props~getProperty(key) )
-
   props~setProperty(key, val)
   self~assertEquals("subtest_01a", val,    props~getProperty(key)  )
   self~assertEquals("subtest_02a", val,    props~getWhole(key)     )

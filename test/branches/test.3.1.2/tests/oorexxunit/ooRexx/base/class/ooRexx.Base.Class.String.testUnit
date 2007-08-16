@@ -18,9 +18,6 @@
                      2006-10-21, ---rgf, added own (old) Rexx-implementation for
                                          en/de-coding base64 to test the C-implementation against
                      2007-03-21, ---rgf, added test for SUBCHAR (available with 6.01)
-                                         changed sequence of expected/actual values to match the meaning
-                                         in the failure message(s)
-                     2007-06-10, ---rgf, added test cases for LOWER and UPPER
 
    languageLevel:    6.0.1
    purpose:          Test the methods of the class String.
@@ -158,38 +155,38 @@ return testUnitList
 
    -- test the BIF, using examples from the documentation
 ::method "test_NEW"
-   self~assertSame("subTest1"   , .string~new("")   , ""  )
-   self~assertSame("subTest2"   , .string~new(" ")  , " " )
-   self~assertSame("subTest3"   , .string~new("  ") , "  ")
-   self~assertSame("subTest4"   , .string~new("ab") , "ab")
+   self~assertSame("subTest1" , "", .string~new("")     )
+   self~assertSame("subTest2" , " ", .string~new(" ")   )
+   self~assertSame("subTest3" , "  ", .string~new("  ") )
+   self~assertSame("subTest4" , "ab", .string~new("ab") )
 
-   self~assertEquals("subTest5" , .string~new("")   , ""  )
-   self~assertEquals("subTest6" , .string~new(" ")  , " " )
-   self~assertEquals("subTest7" , .string~new("  ") , "  ")
-   self~assertEquals("subTest8" , .string~new("ab") , "ab")
+   self~assertEquals("subTest5" , "", .string~new("")     )
+   self~assertEquals("subTest6" , " ", .string~new(" ")   )
+   self~assertEquals("subTest7" , "  ", .string~new("  ") )
+   self~assertEquals("subTest8" , "ab", .string~new("ab") )
 
 
 ::method "test_arithmetic_operators"
 
-   self~assertEquals("subTest1" , 10 , 5+5  )
-   self~assertEquals("subTest2" , 3  , 8-5  )
-   self~assertEquals("subTest3" , 10 , 5*2  )
-   self~assertEquals("subTest4" , 3  , 6/2  )
-   self~assertEquals("subTest5" , 1  , 9//4 )
-   self~assertEquals("subTest6" , 2  , 9%4  )
-   self~assertEquals("subTest7" , 8  , 2**3 )
-   self~assertEquals("subTest8" , 5  , +5   ) /* Prefix + */
-   self~assertEquals("subTest9" , -5 , -5   ) /* Prefix - */
+   self~assertEquals("subTest1" , 5+5  , 10 )
+   self~assertEquals("subTest2" , 8-5  , 3  )
+   self~assertEquals("subTest3" , 5*2  , 10 )
+   self~assertEquals("subTest4" , 6/2  , 3  )
+   self~assertEquals("subTest5" , 9//4 , 1  )
+   self~assertEquals("subTest6" , 9%4  , 2  )
+   self~assertEquals("subTest7" , 2**3 , 8  )
+   self~assertEquals("subTest8" , +5   , 5  ) /* Prefix + */
+   self~assertEquals("subTest9" , -5   , -5 ) /* Prefix - */
 
-   self~assertEquals("subTest11" , 10 , 5~'+'(5)  )
-   self~assertEquals("subTest12" , 3  , 8~'-'(5)  )
-   self~assertEquals("subTest13" , 10 , 5~'*'(2)  )
-   self~assertEquals("subTest14" , 3  , 6~'/'(2)  )
-   self~assertEquals("subTest15" , 1  , 9~'//'(4) )
-   self~assertEquals("subTest16" , 2  , 9~'%'(4)  )
-   self~assertEquals("subTest17" , 8  , 2~'**'(3) )
-   self~assertEquals("subTest18" , 5  , 5~'+'     ) /* Prefix + */
-   self~assertEquals("subTest19" , -5 , 5~'-'     ) /* Prefix - */
+   self~assertEquals("subTest11" , 5~'+'(5)  , 10 )
+   self~assertEquals("subTest12" , 8~'-'(5)  , 3  )
+   self~assertEquals("subTest13" , 5~'*'(2)  , 10 )
+   self~assertEquals("subTest14" , 6~'/'(2)  , 3  )
+   self~assertEquals("subTest15" , 9~'//'(4) , 1  )
+   self~assertEquals("subTest16" , 9~'%'(4)  , 2  )
+   self~assertEquals("subTest17" , 2~'**'(3) , 8  )
+   self~assertEquals("subTest18" , 5~'+'     , 5  ) /* Prefix + */
+   self~assertEquals("subTest19" , 5~'-'     , -5 ) /* Prefix - */
 
 
 
@@ -262,13 +259,13 @@ return testUnitList
 ::method "test_concatenation_operators"
 
    num=33
-   self~assertSame("subTest1" , "33%"              , num"%"                           ) /* abuttal */
-   self~assertSame("subTest2" , "33%"              , num~""('%')                      )
-   self~assertSame("subTest3" , "ooRexx"           , "ooR"||"exx"                     ) /* || */
-   self~assertSame("subTest4" , "ooRexx"           , "ooR"~'||'("exx")                ) /* || */
-   self~assertSame("subTest5" , "Open Object Rexx" , 'Open'  'Object' 'Rexx'          ) /* blank */
-   self~assertSame("subTest6" , "Open Object Rexx" , ('Open'  'Object')  ~' '('Rexx') )
-   self~assertSame("subTest7" , "Open Object Rexx" , 'Open'~' '('Object')~' '('Rexx') )
+   self~assertSame("subTest1" , num"%"                           , "33%"              ) /* abuttal */
+   self~assertSame("subTest2" , num~""('%')                      , "33%"              )
+   self~assertSame("subTest3" , "ooR"||"exx"                     , "ooRexx"           ) /* || */
+   self~assertSame("subTest4" , "ooR"~'||'("exx")                , "ooRexx"           ) /* || */
+   self~assertSame("subTest5" , 'Open'  'Object' 'Rexx'          , "Open Object Rexx" ) /* blank */
+   self~assertSame("subTest6" , ('Open'  'Object')  ~' '('Rexx') , "Open Object Rexx" )
+   self~assertSame("subTest7" , 'Open'~' '('Object')~' '('Rexx') , "Open Object Rexx" )
 
 
 
@@ -279,172 +276,172 @@ return testUnitList
    -- test the BIF, using examples from the documentation
 ::method "test_ABBREV"
 
-   self~assertTrue(  "subTest1", 'Print'~ABBREV("Pri")    )
+   self~assertEquals("subTest1", 'Print'~ABBREV("Pri"),    .true)
 
-   self~assertFalse( "subTest2", "PRINT"~ABBREV("Pri")    )
-   self~assertFalse( "subTest3", "PRINT"~ABBREV("PRI", 4) )
-   self~assertFalse( "subTest4", "PRINT"~ABBREV("PRY")    )
-   self~assertTrue(  "subTest5", "PRINT"~ABBREV("")       )
-   self~assertFalse( "subTest6", "PRINT"~ABBREV("", 1)    )
+   self~assertEquals("subTest2", "PRINT"~ABBREV("Pri"),    .false)
+   self~assertEquals("subTest3", "PRINT"~ABBREV("PRI", 4), .false)
+   self~assertEquals("subTest4", "PRINT"~ABBREV("PRY"),    .false)
+   self~assertEquals("subTest5", "PRINT"~ABBREV(""),       .true)
+   self~assertEquals("subTest6", "PRINT"~ABBREV("", 1),    .false)
 
 
    -- test the BIF, using examples from the documentation
 ::method "test_ABS"
 
-   self~assertEquals("subTest1" , 12.3  ,  12.3~ABS     )
-   self~assertEquals("subTest1b", 12.3  ,'12.3'~ABS     )
-   self~assertEquals("subTest2" , 0.307 , ' -0.307'~ABS )
+   self~assertEquals("subTest1",  12.3~ABS,     12.3)
+   self~assertEquals("subTest1b",'12.3'~ABS,    12.3)
+   self~assertEquals("subTest2", ' -0.307'~ABS, 0.307)
 
       -- new tests
-   self~assertEquals("subTest03", 0 ,  ' -0'~ABS   )
-   self~assertEquals("subTest04", 0 ,  ' +0'~ABS   )
-   self~assertEquals("subTest05", 0 ,  ' - 0 '~ABS )
-   self~assertEquals("subTest06", 0 ,  ' + 0 '~ABS )
-   self~assertEquals("subTest07", 1 ,  ' -1'~ABS   )
-   self~assertEquals("subTest08", 1 ,  ' +1'~ABS   )
-   self~assertEquals("subTest09", 1 ,  ' - 1 '~ABS )
-   self~assertEquals("subTest10", 1 ,  ' + 1 '~ABS )
+   self~assertEquals("subTest3",  ' -0'~ABS,   0)
+   self~assertEquals("subTest4",  ' +0'~ABS,   0)
+   self~assertEquals("subTest5",  ' - 0 '~ABS, 0)
+   self~assertEquals("subTest6",  ' + 0 '~ABS, 0)
+   self~assertEquals("subTest7",  ' -1'~ABS,   1)
+   self~assertEquals("subTest8",  ' +1'~ABS,   1)
+   self~assertEquals("subTest9",  ' - 1 '~ABS, 1)
+   self~assertEquals("subTest10", ' + 1 '~ABS, 1)
 
 
    -- test the BIF, using examples from the documentation
 ::method "test_B2X"
 
-   self~assertSame("subTest1" , 'C3'  , '11000011'~B2X    )
-   self~assertSame("subTest2" , '17'  , '10111'~B2X       )
-   self~assertSame("subTest3" , '5'   , '101'~B2X         )
-   self~assertSame("subTest4" , '1F0' , '1 1111 0000'~B2X )
-   self~assertSame("subTest5" , '23'  , '10111'~B2X~X2D   ) /* decimal 23 */
+   self~assertSame("subTest1" , '11000011'~B2X    , 'C3'  )
+   self~assertSame("subTest2" , '10111'~B2X       , '17'  )
+   self~assertSame("subTest3" , '101'~B2X         , '5'   )
+   self~assertSame("subTest4" , '1 1111 0000'~B2X , '1F0' )
+   self~assertSame("subTest5" , '10111'~B2X~X2D   , '23'  ) /* decimal 23 */
 
 
    -- test the BIF, using examples from the documentation
 ::method "test_BITAND"
 
-   self~assertSame("subTest1" , '12'x   , '12'x~BITAND                 )
-   self~assertSame("subTest2" , '23'x   , '73'x~BITAND('27'x)          )
-   self~assertSame("subTest3" , '1155'x , '13'x~BITAND('5555'x)        )
-   self~assertSame("subTest4" , '1154'x , '13'x~BITAND('5555'x,'74'x)  )
-   self~assertSame("subTest5" , 'PQRS'  , 'pQrS'~BITAND(,'DF'x)        )  /* ASCII */
+   self~assertSame("subTest1" , '12'x~BITAND                , '12'x    )
+   self~assertSame("subTest2" , '73'x~BITAND('27'x)         , '23'x    )
+   self~assertSame("subTest3" , '13'x~BITAND('5555'x)       , '1155'x  )
+   self~assertSame("subTest4" , '13'x~BITAND('5555'x,'74'x) , '1154'x  )
+   self~assertSame("subTest5" , 'pQrS'~BITAND(,'DF'x)       , 'PQRS'   )  /* ASCII */
 
 
    -- test the BIF, using examples from the documentation
 ::method "test_BITOR"
 
-   self~assertSame("subTest1" , '12'x   , '12'x~BITOR                )
-   self~assertSame("subTest2" , '35'x   , '15'x~BITOR('24'x)         )
-   self~assertSame("subTest3" , '3556'x , '15'x~BITOR('2456'x)       )
-   self~assertSame("subTest4" , '35F6'x , '15'x~BITOR('2456'x,'F0'x) )
-   self~assertSame("subTest5" , '5D5D'x , '1111'x~BITOR(,'4D'x)      )
-   self~assertSame("subTest6" , 'pqrs'  , 'pQrS'~BITOR(,'20'x)       ) /* ASCII */
+   self~assertSame("subTest1" , '12'x~BITOR                , '12'x   )
+   self~assertSame("subTest2" , '15'x~BITOR('24'x)         , '35'x   )
+   self~assertSame("subTest3" , '15'x~BITOR('2456'x)       , '3556'x )
+   self~assertSame("subTest4" , '15'x~BITOR('2456'x,'F0'x) , '35F6'x )
+   self~assertSame("subTest5" , '1111'x~BITOR(,'4D'x)      , '5D5D'x )
+   self~assertSame("subTest6" , 'pQrS'~BITOR(,'20'x)       , 'pqrs'  ) /* ASCII */
 
 
    -- test the BIF, using examples from the documentation
 ::method "test_BITXOR"
 
-   self~assertSame("subTest1" , '12'x     , '12'x~BITXOR                     )
-   self~assertSame("subTest2" , '30'x     , '12'x~BITXOR('22'x)              )
-   self~assertSame("subTest3" , '3011'x   , '1211'x~BITXOR('22'x)            )
-   self~assertSame("subTest4" , '555544'x , '1111'x~BITXOR('444444'x)        )
-   self~assertSame("subTest5" , '555504'x , '1111'x~BITXOR('444444'x,'40'x)  )
-   self~assertSame("subTest6" , '5C5C'x   , '1111'x~BITXOR(,'4D'x)           )
-   self~assertSame("subTest7" , 'E53302'x , 'C711'x~BITXOR('222222'x,' ')    ) /* ASCII */
+   self~assertSame("subTest1" , '12'x~BITXOR                    , '12'x      )
+   self~assertSame("subTest2" , '12'x~BITXOR('22'x)             , '30'x      )
+   self~assertSame("subTest3" , '1211'x~BITXOR('22'x)           , '3011'x    )
+   self~assertSame("subTest4" , '1111'x~BITXOR('444444'x)       , '555544'x  )
+   self~assertSame("subTest5" , '1111'x~BITXOR('444444'x,'40'x) , '555504'x  )
+   self~assertSame("subTest6" , '1111'x~BITXOR(,'4D'x)          , '5C5C'x    )
+   self~assertSame("subTest7" , 'C711'x~BITXOR('222222'x,' ')   , 'E53302'x  ) /* ASCII */
 
 
 
    -- test the BIF, using examples from the documentation
 ::method "test_C2D"
 
-   self~assertEquals("subTest1" , 9     , '09'X~C2D      )
-   self~assertEquals("subTest2" , 129   , '81'X~C2D      )
-   self~assertEquals("subTest3" , 65409 , 'FF81'X~C2D    )
-   self~assertEquals("subTest4" , 0     , ""~C2D         )
-   self~assertEquals("subTest5" , 97    , 'a'~C2D        ) /* ASCII */
+   self~assertEquals("subTest1" , '09'X~C2D      , 9     )
+   self~assertEquals("subTest2" , '81'X~C2D      , 129   )
+   self~assertEquals("subTest3" , 'FF81'X~C2D    , 65409 )
+   self~assertEquals("subTest4" , ""~C2D         , 0     )
+   self~assertEquals("subTest5" , 'a'~C2D        , 97    ) /* ASCII */
 
-   self~assertEquals("subTest6" , -127  , '81'X~C2D(1)   )     -- -- --
-   self~assertEquals("subTest7" , 129   , '81'X~C2D(2)   )
-   self~assertEquals("subTest8" , -127  , 'FF81'X~C2D(2) )
-   self~assertEquals("subTest9" , -127  , 'FF81'X~C2D(1) )
-   self~assertEquals("subTest10", 127   , 'FF7F'X~C2D(1) )
-   self~assertEquals("subTest11", -3967 , 'F081'X~C2D(2) )
-   self~assertEquals("subTest12", -127  , 'F081'X~C2D(1) )
-   self~assertEquals("subTest13", 0     , '0031'X~C2D(0) )
+   self~assertEquals("subTest6" , '81'X~C2D(1)   , -127  )     -- -- --
+   self~assertEquals("subTest7" , '81'X~C2D(2)   , 129   )
+   self~assertEquals("subTest8" , 'FF81'X~C2D(2) , -127  )
+   self~assertEquals("subTest9" , 'FF81'X~C2D(1) , -127  )
+   self~assertEquals("subTest10", 'FF7F'X~C2D(1) , 127   )
+   self~assertEquals("subTest11", 'F081'X~C2D(2) , -3967 )
+   self~assertEquals("subTest12", 'F081'X~C2D(1) , -127  )
+   self~assertEquals("subTest13", '0031'X~C2D(0) , 0     )
 
 
 
    -- test the BIF, using examples from the documentation
 ::method "test_C2X"
 
-   self~assertEquals("subTest1" , '0123'  , '0123'X~C2X  ) /* '30313233'X in ASCII */
-   self~assertEquals("subTest2" , '5A4438', 'ZD8'~C2X    ) /* '354134343338'X in ASCII */
+   self~assertEquals("subTest1" , '0123'X~C2X , '0123' )   /* '30313233'X in ASCII */
+   self~assertEquals("subTest2" , 'ZD8'~C2X   , '5A4438' ) /* '354134343338'X in ASCII */
 
 
 
    -- test the BIF, using examples from the documentation
 ::method "test_CENTER"
 
-   self~assertSame("subTest1" , '  ABC  '  , abc~CENTER(7)             )
-   self~assertSame("subTest2" , '--ABC---' , abc~CENTER(8,'-')         )
-   self~assertSame("subTest3" , 'e blue s' , 'The blue sky'~CENTRE(8)  )
-   self~assertSame("subTest4" , 'e blue '  , 'The blue sky'~CENTRE(7)  )
+   self~assertSame("subTest1" , abc~CENTER(7)            , '  ABC  '   )
+   self~assertSame("subTest2" , abc~CENTER(8,'-')        , '--ABC---'  )
+   self~assertSame("subTest3" , 'The blue sky'~CENTRE(8) , 'e blue s'  )
+   self~assertSame("subTest4" , 'The blue sky'~CENTRE(7) , 'e blue '   )
 
 
    -- test the BIF, using examples from the documentation
 ::method "test_CHANGESTR"
 
-   self~assertSame("subTest1" , '000'    , 101100~CHANGESTR('1',"")  )
-   self~assertSame("subTest2" , 'X0XX00' , 101100~CHANGESTR('1','X') )
+   self~assertSame("subTest1" , 101100~CHANGESTR('1',"")  , '000'    )
+   self~assertSame("subTest2" , 101100~CHANGESTR('1','X') , 'X0XX00' )
 
 
    -- test the BIF, using examples from the documentation
 ::method "test_COMPARE"
 
-   self~assertEquals("subTest1" , 0 , 'abc'  ~COMPARE('abc')    )
-   self~assertEquals("subTest2" , 2 , 'abc'  ~COMPARE('ak')     )
-   self~assertEquals("subTest3" , 0 , 'ab '  ~COMPARE('ab')     )
-   self~assertEquals("subTest4" , 0 , 'ab '  ~COMPARE('ab',' ') )
-   self~assertEquals("subTest5" , 3 , 'ab '  ~COMPARE('ab','x') )
-   self~assertEquals("subTest6" , 5 , 'ab-- '~COMPARE('ab','-') )
+   self~assertEquals("subTest1" , 'abc'  ~COMPARE('abc')    , 0 )
+   self~assertEquals("subTest2" , 'abc'  ~COMPARE('ak')     , 2 )
+   self~assertEquals("subTest3" , 'ab '  ~COMPARE('ab')     , 0 )
+   self~assertEquals("subTest4" , 'ab '  ~COMPARE('ab',' ') , 0 )
+   self~assertEquals("subTest5" , 'ab '  ~COMPARE('ab','x') , 3 )
+   self~assertEquals("subTest6" , 'ab-- '~COMPARE('ab','-') , 5 )
 
 
 
    -- test the BIF, using examples from the documentation
 ::method "test_COPIES"
 
-   self~assertSame("subTest1" , 'abcabcabc' , 'abc'~COPIES(3) )
-   self~assertSame("subTest2" , ""          , 'abc'~COPIES(0) )
+   self~assertSame("subTest1" , 'abc'~COPIES(3) , 'abcabcabc' )
+   self~assertSame("subTest2" , 'abc'~COPIES(0) , ""          )
 
 
    -- test the BIF, using examples from the documentation
 ::method "test_COUNTSTR"
 
-   self~assertEquals("subTest1" , 4 , '101101'~COUNTSTR('1')  )
-   self~assertEquals("subTest2" , 1 , 'J0KKK0'~COUNTSTR('KK') )
+   self~assertEquals("subTest1" , '101101'~COUNTSTR('1')  , 4 )
+   self~assertEquals("subTest2" , 'J0KKK0'~COUNTSTR('KK') , 1 )
 
 
    -- test the BIF, using examples from the documentation
 ::method "test_D2C"
 
-   self~assertSame("subTest1" , 'A'            , '65'~D2C       ) /* '41'x is an ASCII 'A' */
-   self~assertSame("subTest2" , 'A'            , '65'~D2C(1)    )
-   self~assertSame("subTest3" , '00'x'A'       , '65'~D2C(2)    )
-   self~assertSame("subTest4" , '00000000'x'A' , '65'~D2C(5)    )
-   self~assertSame("subTest5" , 'm'            , '109'~D2C      ) /* '6D'x is an ASCII 'm' */
-   self~assertSame("subTest6" , '93'x          , '-109'~D2C(1)  ) -- 'ô'   ) /* '93'x is an ASCII 'ô' */
-   self~assertSame("subTest7" , '00'x'L'       , '76'~D2C(2)    ) /* '4C'x is an ASCII ' L' */
-   self~assertSame("subTest8" , 'ff'x'L'       , '-180'~D2C(2)  )
+   self~assertSame("subTest1" , '65'~D2C    , 'A' ) /* '41'x is an ASCII 'A' */
+   self~assertSame("subTest2" , '65'~D2C(1) , 'A' )
+   self~assertSame("subTest3" , '65'~D2C(2)   , '00'x'A'        )
+   self~assertSame("subTest4" , '65'~D2C(5)   , '00000000'x'A'  )
+   self~assertSame("subTest5" , '109'~D2C     , 'm'             ) /* '6D'x is an ASCII 'm' */
+   self~assertSame("subTest6" , '-109'~D2C(1) , '93'x           ) -- 'ô'   ) /* '93'x is an ASCII 'ô' */
+   self~assertSame("subTest7" , '76'~D2C(2)   , '00'x'L'        ) /* '4C'x is an ASCII ' L' */
+   self~assertSame("subTest8" , '-180'~D2C(2) , 'ff'x'L'        )
 
 
    -- test the BIF, using examples from the documentation
 ::method "test_D2X"
 
-   self~assertSame("subTest1" , '9'    , '9'~D2X        )
-   self~assertSame("subTest2" , '81'   , '129'~D2X      )
-   self~assertSame("subTest3" , '1'    , '129'~D2X(1)   )
-   self~assertSame("subTest4" , '81'   , '129'~D2X(2)   )
-   self~assertSame("subTest5" , '0081' , '129'~D2X(4)   )
-   self~assertSame("subTest6" , '01'   , '257'~D2X(2)   )
-   self~assertSame("subTest7" , '81'   , '-127'~D2X(2)  )
-   self~assertSame("subTest8" , 'FF81' , '-127'~D2X(4)  )
-   self~assertSame("subTest9" , ""     , '12'~D2X(0)    )
+   self~assertSame("subTest1" , '9'~D2X       , '9'     )
+   self~assertSame("subTest2" , '129'~D2X     , '81'    )
+   self~assertSame("subTest3" , '129'~D2X(1)  , '1'     )
+   self~assertSame("subTest4" , '129'~D2X(2)  , '81'    )
+   self~assertSame("subTest5" , '129'~D2X(4)  , '0081'  )
+   self~assertSame("subTest6" , '257'~D2X(2)  , '01'    )
+   self~assertSame("subTest7" , '-127'~D2X(2) , '81'    )
+   self~assertSame("subTest8" , '-127'~D2X(4) , 'FF81'  )
+   self~assertSame("subTest9" , '12'~D2X(0)   , ""      )
 
 
 
@@ -453,9 +450,9 @@ return testUnitList
 
 -- p.210
 
-   self~assertEquals("subTest1" , 'NUM' , ' 12 '~DATATYPE       )
-   self~assertEquals("subTest2" , 'CHAR', ''~DATATYPE           )    -- error!
-   self~assertEquals("subTest3" , 'CHAR', '123*'~DATATYPE       )
+   self~assertEquals("subTest1" , ' 12 '~DATATYPE      , 'NUM'  )
+   self~assertEquals("subTest2" , ''~DATATYPE          , 'CHAR' )    -- error!
+   self~assertEquals("subTest3" , '123*'~DATATYPE      , 'CHAR' )
    self~assertTrue( "subTest4"  , '12.3'~DATATYPE('N')          )
    self~assertFalse("subTest5"  , '12.3'~DATATYPE('W')          )
    self~assertTrue( "subTest6"  , 'Fred'~DATATYPE('M')          )
@@ -479,85 +476,71 @@ return testUnitList
    -- test the BIF, using examples from the documentation
 ::method "test_DELSTR"
 
-   self~assertSame("subTest1" , 'ab'    , 'abcd'~DELSTR(3)    )
-   self~assertSame("subTest2" , 'abe'   , 'abcde'~DELSTR(3,2) )
-   self~assertSame("subTest3" , 'abcde' , 'abcde'~DELSTR(6)   )
+   self~assertSame("subTest1" , 'abcd'~DELSTR(3)    , 'ab'    )
+   self~assertSame("subTest2" , 'abcde'~DELSTR(3,2) , 'abe'   )
+   self~assertSame("subTest3" , 'abcde'~DELSTR(6)   , 'abcde' )
 
 
    -- test the BIF, using examples from the documentation
 ::method "test_DELWORD"
 
-   self~assertSame("subTest1" , 'Now time'         , 'Now is the  time'~DELWORD(2,2)  )
-   self~assertSame("subTest2" , 'Now is '          , 'Now is the time '~DELWORD(3)    )
-   self~assertSame("subTest3" , 'Now is the  time' , 'Now is the  time'~DELWORD(5)    )
-   self~assertSame("subTest4" , 'Now is   time'    , 'Now is   the time'~DELWORD(3,1) )
+   self~assertSame("subTest1" , 'Now is the  time'~DELWORD(2,2)  , 'Now time'         )
+   self~assertSame("subTest2" , 'Now is the time '~DELWORD(3)    , 'Now is '          )
+   self~assertSame("subTest3" , 'Now is the  time'~DELWORD(5)    , 'Now is the  time'  )
+   self~assertSame("subTest4" , 'Now is   the time'~DELWORD(3,1) , 'Now is   time'    )
 
 
    -- test the BIF, using examples from the documentation
 ::method "test_FORMAT"
 
-   self~assertSame("subTest1" , '   3'             , '3'~FORMAT(4)               )
-   self~assertSame("subTest2" , '   2'             , '1.73'~FORMAT(4,0)          )
-   self~assertSame("subTest3" , '   1.730'         , '1.73'~FORMAT(4,3)          )
-   self~assertSame("subTest4" , '  -0.8'           , '-.76'~FORMAT(4,1)          )
-   self~assertSame("subTest5" , '   3.03'          , '3.03'~FORMAT(4)            )
-   self~assertSame("subTest6" , '-12.7300'         , ' - 12.73'~FORMAT(,4)       )
-   self~assertSame("subTest7" , '-12.73'           , ' - 12.73'~FORMAT           )
-   self~assertSame("subTest8" , '0'                , '0.000'~FORMAT              )
-   self~assertSame("subTest9" , '1.234573E+04'     , '12345.73'~FORMAT(, ,2,2)   )   --
-   self~assertSame("subTest10", '1.235E+4'         , '12345.73'~FORMAT(,3, ,0)   )
-   self~assertSame("subTest11", '1.235'            , '1.234573'~FORMAT(,3, ,0)   )
-   self~assertSame("subTest12", '12345.73'         , '12345.73'~FORMAT(, ,3,6)   )
-   self~assertSame("subTest13", '123456700000.000' , '1234567e5'~FORMAT(,3,0)    )
+   self~assertSame("subTest1" , '3'~FORMAT(4)             , '   3'               )
+   self~assertSame("subTest2" , '1.73'~FORMAT(4,0)        , '   2'               )
+   self~assertSame("subTest3" , '1.73'~FORMAT(4,3)        , '   1.730'           )
+   self~assertSame("subTest4" , '-.76'~FORMAT(4,1)        , '  -0.8'             )
+   self~assertSame("subTest5" , '3.03'~FORMAT(4)          , '   3.03'            )
+   self~assertSame("subTest6" , ' - 12.73'~FORMAT(,4)     , '-12.7300'           )
+   self~assertSame("subTest7" , ' - 12.73'~FORMAT         , '-12.73'             )
+   self~assertSame("subTest8" , '0.000'~FORMAT            , '0'                  )
+   self~assertSame("subTest9" , '12345.73'~FORMAT(, ,2,2) , '1.234573E+04'       )   --
+   self~assertSame("subTest10", '12345.73'~FORMAT(,3, ,0) , '1.235E+4'           )
+   self~assertSame("subTest11", '1.234573'~FORMAT(,3, ,0) , '1.235'              )
+   self~assertSame("subTest12", '12345.73'~FORMAT(, ,3,6) , '12345.73'           )
+   self~assertSame("subTest13", '1234567e5'~FORMAT(,3,0)  , '123456700000.000'   )
 
 
    -- test the BIF, using examples from the documentation
 ::method "test_INSERT"
 
-   self~assertSame("subTest1" , '123abc'      , 'abc'~INSERT('123')          )
-   self~assertSame("subTest2" , 'abc def'     , 'abcdef'~INSERT(' ',3)       )
-   self~assertSame("subTest3" , 'abc  123   ' , 'abc'~INSERT('123',5,6)      )
-   self~assertSame("subTest4" , 'abc++123+++' , 'abc'~INSERT('123',5,6,'+')  )
-   self~assertSame("subTest5" , '123--abc'    , 'abc'~INSERT('123', ,5,'-')  )
+   self~assertSame("subTest1" , 'abc'~INSERT('123')         , '123abc'       )
+   self~assertSame("subTest2" , 'abcdef'~INSERT(' ',3)      , 'abc def'      )
+   self~assertSame("subTest3" , 'abc'~INSERT('123',5,6)     , 'abc  123   '  )
+   self~assertSame("subTest4" , 'abc'~INSERT('123',5,6,'+') , 'abc++123+++'  )
+   self~assertSame("subTest5" , 'abc'~INSERT('123', ,5,'-') , '123--abc'     )
 
 
    -- test the BIF, using examples from the documentation
 ::method "test_LASTPOS"
 
-   self~assertEquals("subTest1" , 8 , 'abc def ghi'~LASTPOS(' ')   )
-   self~assertEquals("subTest2" , 0 , 'abcdefghi'~LASTPOS(' ')     )
-   self~assertEquals("subTest3" , 4 , 'efgxyz'~LASTPOS('xy')       )
-   self~assertEquals("subTest4" , 4 , 'abc def ghi'~LASTPOS(' ',7) )
+   self~assertEquals("subTest1" , 'abc def ghi'~LASTPOS(' ')   , 8 )
+   self~assertEquals("subTest2" , 'abcdefghi'~LASTPOS(' ')     , 0 )
+   self~assertEquals("subTest3" , 'efgxyz'~LASTPOS('xy')       , 4 )
+   self~assertEquals("subTest4" , 'abc def ghi'~LASTPOS(' ',7) , 4 )
 
 
    -- test the BIF, using examples from the documentation
 ::method "test_LEFT"
 
-   self~assertSame("subTest1" , 'abc d   ' , 'abc d'~LEFT(8)      )
-   self~assertSame("subTest2" , 'abc d...' , 'abc d'~LEFT(8,'.')  )
-   self~assertSame("subTest3" , 'abc  de'  , 'abc  def'~LEFT(7)   )
+   self~assertSame("subTest1" , 'abc d'~LEFT(8)     , 'abc d   '  )
+   self~assertSame("subTest2" , 'abc d'~LEFT(8,'.') , 'abc d...'  )
+   self~assertSame("subTest3" , 'abc  def'~LEFT(7)  , 'abc  de'   )
 
 
    -- test the BIF, using examples from the documentation
 ::method "test_LENGTH"
 
-   self~assertEquals("subTest1" , 8 , 'abcdefgh'~LENGTH )
-   self~assertEquals("subTest2" , 8 , 'abc defg'~LENGTH )
-   self~assertEquals("subTest3" , 0 , ""~LENGTH         )
-
-
-::method "test_LOWER"
-    if .ooRexxUnit.languageLevel<6.02 then
-    do
-       .error~say(self~string" - 'test_LOWER': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-       return
-    end
-    str='ABCdeFGH'
-    self~assertSame("subTest_01" , 'AbCdeFGH', str~lower(2,  1 ))
-    self~assertSame("subTest_02" , 'ABCdeFGH', str~lower(1,  0 ))
-    self~assertSame("subTest_03" , 'ABCdeFGH', str~lower(99, 2 ))
-    self~assertSame("subTest_04" , 'Abcdefgh', str~lower(2     ))
-    self~assertSame("subTest_05" , 'abcdefgh', str~lower        )
+   self~assertEquals("subTest1" , 'abcdefgh'~LENGTH , 8 )
+   self~assertEquals("subTest2" , 'abc defg'~LENGTH , 8 )
+   self~assertEquals("subTest3" , ""~LENGTH         , 0 )
 
 
    -- test the BIF, using examples from the documentation
@@ -567,66 +550,66 @@ return testUnitList
    string = "hello"nl"world"nl"this is an array."
    array = string~makearray
    -- say "the second line is:" array[2]
-   self~assertSame("subTest1", "world", array[2])
+   self~assertSame("subTest1", array[2], "world")
 
    string = "hello*world*this is an array."
    array = string~makearray('*')
    -- say "the third line is:" array[3]
-   self~assertSame("subTest2", "this is an array.", array[3])
+   self~assertSame("subTest2", array[3], "this is an array.")
 
 
    -- test the BIF, using examples from the documentation
 ::method "test_MAKESTRING"
 
-   self~assertSame("subTest1" , ''     , ''~MAKESTRING        )
-   self~assertSame("subTest2" , ' '    , ' '~MAKESTRING       )
-   self~assertSame("subTest3" , 'ab'   , 'ab'~MAKESTRING      )
-   self~assertSame("subTest3" , ' ab ' , ' ab '~MAKESTRING    )
+   self~assertSame("subTest1" , ''~MAKESTRING       , ''      )
+   self~assertSame("subTest2" , ' '~MAKESTRING      , ' '     )
+   self~assertSame("subTest3" , 'ab'~MAKESTRING     , 'ab'    )
+   self~assertSame("subTest3" , ' ab '~MAKESTRING   , ' ab '  )
 
 
    -- test the BIF, using examples from the documentation
 ::method "test_MAX"
 
-   self~assertEquals("subTest1" , 12 , 12~MAX(6,7,9)                                              )
-   self~assertEquals("subTest2" , 19 , 17.3~MAX(19,17.03)                                         )
-   self~assertEquals("subTest3" , -3 , '-7'~MAX('-3','-4.3')                                      )
-   self~assertEquals("subTest4" , 21 , 1~MAX(2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21) )
+   self~assertEquals("subTest1" , 12~MAX(6,7,9)                                              , 12 )
+   self~assertEquals("subTest2" , 17.3~MAX(19,17.03)                                         , 19 )
+   self~assertEquals("subTest3" , '-7'~MAX('-3','-4.3')                                      , -3 )
+   self~assertEquals("subTest4" , 1~MAX(2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21) , 21 )
 
 
    -- test the BIF, using examples from the documentation
 ::method "test_MIN"
 
-   self~assertEquals("subTest1" , 6     , 12~MIN(6,7,9)                                              )
-   self~assertEquals("subTest2" , 17.03 , 17.3~MIN(19,17.03)                                         )
-   self~assertEquals("subTest3" , -7    , '-7'~MIN('-3','-4.3')                                      )
-   self~assertEquals("subTest4" , 1     , 21~MIN(20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1) )
+   self~assertEquals("subTest1" , 12~MIN(6,7,9)                                              , 6     )
+   self~assertEquals("subTest2" , 17.3~MIN(19,17.03)                                         , 17.03 )
+   self~assertEquals("subTest3" , '-7'~MIN('-3','-4.3')                                      , -7    )
+   self~assertEquals("subTest4" , 21~MIN(20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1) , 1     )
 
 
 
    -- test the BIF, using examples from the documentation
 ::method "test_OVERLAY"
 
-   self~assertSame("subTest1" , 'ab def'     , 'abcdef'~OVERLAY(' ',3)       )
-   self~assertSame("subTest2" , 'ab. ef'     , 'abcdef'~OVERLAY('.',3,2)     )
-   self~assertSame("subTest3" , 'qqcd'       , 'abcd'~OVERLAY('qq')          )
-   self~assertSame("subTest4" , 'abcqq'      , 'abcd'~OVERLAY('qq',4)        )
-   self~assertSame("subTest5" , 'abc+123+++' , 'abc'~OVERLAY('123',5,6,'+')  )
+   self~assertSame("subTest1" , 'abcdef'~OVERLAY(' ',3)      , 'ab def'      )
+   self~assertSame("subTest2" , 'abcdef'~OVERLAY('.',3,2)    , 'ab. ef'      )
+   self~assertSame("subTest3" , 'abcd'~OVERLAY('qq')         , 'qqcd'        )
+   self~assertSame("subTest4" , 'abcd'~OVERLAY('qq',4)       , 'abcqq'       )
+   self~assertSame("subTest5" , 'abc'~OVERLAY('123',5,6,'+') , 'abc+123+++'  )
 
 
    -- test the BIF, using examples from the documentation
 ::method "test_POS"
 
-   self~assertEquals("subTest1" , 6 , 'Saturday'~POS('day')    )
-   self~assertEquals("subTest2" , 0 , 'abc def ghi'~POS('x')   )
-   self~assertEquals("subTest3" , 4 , 'abc def ghi'~POS(' ')   )
-   self~assertEquals("subTest4" , 8 , 'abc def ghi'~POS(' ',5) )
+   self~assertEquals("subTest1" , 'Saturday'~POS('day')    , 6 )
+   self~assertEquals("subTest2" , 'abc def ghi'~POS('x')   , 0 )
+   self~assertEquals("subTest3" , 'abc def ghi'~POS(' ')   , 4 )
+   self~assertEquals("subTest4" , 'abc def ghi'~POS(' ',5) , 8 )
 
 
    -- test the BIF, using examples from the documentation
 ::method "test_REVERSE"
 
-   self~assertSame("subTest1" , '.cBA' , 'ABc.'~REVERSE )
-   self~assertSame("subTest2" , ' ZYX' , 'XYZ '~REVERSE )
+   self~assertSame("subTest1" , 'ABc.'~REVERSE , '.cBA' )
+   self~assertSame("subTest2" , 'XYZ '~REVERSE , ' ZYX' )
 
 
 
@@ -634,43 +617,43 @@ return testUnitList
 ::method "test_RIGHT"
 
    self~assertSame("subTest1" , 'abc  d'~RIGHT(8)  , '  abc  d' )
-   self~assertSame("subTest2" , 'abc def'~RIGHT(5) , 'c def'    )
-   self~assertSame("subTest3" , '12'~RIGHT(5,'0')  , '00012'    )
+   self~assertSame("subTest2" , 'abc def'~RIGHT(5) , 'c def'  )
+   self~assertSame("subTest3" , '12'~RIGHT(5,'0')  , '00012'  )
 
 
    -- test the BIF, using examples from the documentation
 ::method "test_SIGN"
 
-   self~assertEquals("subTest1" , 1  , '12.3'~SIGN     )
-   self~assertEquals("subTest2" , -1 , ' -0.307'~SIGN  )
-   self~assertEquals("subTest3" , 0  , 0.0~SIGN        )
+   self~assertEquals("subTest1" , '12.3'~SIGN    , 1   )
+   self~assertEquals("subTest2" , ' -0.307'~SIGN , -1  )
+   self~assertEquals("subTest3" , 0.0~SIGN       , 0   )
 
 
    -- test the BIF, using examples from the documentation
 ::method "test_STRING"
 
-   self~assertSame("subTest1" , ''    , ''~STRING         )
-   self~assertSame("subTest2" , ' '   , ' '~STRING        )
-   self~assertSame("subTest3" , 'ab'  , 'ab'~STRING       )
-   self~assertSame("subTest3" , ' ab ', ' ab '~STRING     )
+   self~assertSame("subTest1" , ''~STRING       , ''      )
+   self~assertSame("subTest2" , ' '~STRING      , ' '     )
+   self~assertSame("subTest3" , 'ab'~STRING     , 'ab'    )
+   self~assertSame("subTest3" , ' ab '~STRING   , ' ab '  )
 
 
    -- test the BIF, using examples from the documentation
 ::method "test_STRIP"
 
-   self~assertSame("subTest1" , 'ab c'  , '  ab c  '~STRIP        )
-   self~assertSame("subTest2" , 'ab c  ', '  ab c  '~STRIP('L')   )
-   self~assertSame("subTest3" , '  ab c', '  ab c  '~STRIP('t')   )
-   self~assertSame("subTest4" , '12.7'  , '12.7000'~STRIP(,0)     )
-   self~assertSame("subTest5" , '12.7'  , '0012.700'~STRIP(,0)    )
+   self~assertSame("subTest1" , '  ab c  '~STRIP       , 'ab c'   )
+   self~assertSame("subTest2" , '  ab c  '~STRIP('L')  , 'ab c  ' )
+   self~assertSame("subTest3" , '  ab c  '~STRIP('t')  , '  ab c' )
+   self~assertSame("subTest4" , '12.7000'~STRIP(,0)    , '12.7'   )
+   self~assertSame("subTest5" , '0012.700'~STRIP(,0)   , '12.7'   )
 
 
    -- test the BIF, using examples from the documentation
 ::method "test_SUBSTRING"
 
-   self~assertSame("subTest1" , 'bc'     , 'abc'~SUBSTR(2)         )
-   self~assertSame("subTest2" , 'bc  '   , 'abc'~SUBSTR(2,4)       )
-   self~assertSame("subTest3" , 'bc....' , 'abc'~SUBSTR(2,6,'.')   )
+   self~assertSame("subTest1" , 'abc'~SUBSTR(2)       , 'bc'       )
+   self~assertSame("subTest2" , 'abc'~SUBSTR(2,4)     , 'bc  '     )
+   self~assertSame("subTest3" , 'abc'~SUBSTR(2,6,'.') , 'bc....'   )
 
    -- test the BIF, using examples from the documentation
 ::method "test_SUBCHAR"
@@ -685,110 +668,95 @@ return testUnitList
    -- test the BIF, using examples from the documentation
 ::method "test_SUBWORD"
 
-   self~assertSame("subTest1" , 'is the'   , 'Now is the  time'~SUBWORD(2,2)  )
-   self~assertSame("subTest2" , 'the  time', 'Now is the  time'~SUBWORD(3)    )
-   self~assertSame("subTest3" , ""         , 'Now is the  time'~SUBWORD(5)    )
+   self~assertSame("subTest1" , 'Now is the  time'~SUBWORD(2,2) , 'is the'    )
+   self~assertSame("subTest2" , 'Now is the  time'~SUBWORD(3)   , 'the  time' )
+   self~assertSame("subTest3" , 'Now is the  time'~SUBWORD(5)   , ""          )
 
 
    -- test the BIF, using examples from the documentation
 ::method "test_TRANSLATE"
 
-   self~assertSame("subTest1" , 'ABCDEF' , 'abcdef'~TRANSLATE                     )
-   self~assertSame("subTest2" , 'ab2d1f' , 'abcdef'~TRANSLATE('12','ec')          )
-   self~assertSame("subTest3" , '12..ef' , 'abcdef'~TRANSLATE('12','abcd','.')    )
-   self~assertSame("subTest4" , 'A Q V'  , 'APQRV'~TRANSLATE(,'PR')               )
-   self~assertSame("subTest5" , 'APQ  '  , 'APQRV'~TRANSLATE(XRANGE('00'X,'Q'))   )
-   self~assertSame("subTest6" , 'dabc'   , '4123'~TRANSLATE('abcd','1234')        )
+   self~assertSame("subTest1" , 'abcdef'~TRANSLATE                   , 'ABCDEF'   )
+   self~assertSame("subTest2" , 'abcdef'~TRANSLATE('12','ec')        , 'ab2d1f'   )
+   self~assertSame("subTest3" , 'abcdef'~TRANSLATE('12','abcd','.')  , '12..ef'   )
+   self~assertSame("subTest4" , 'APQRV'~TRANSLATE(,'PR')             , 'A Q V'    )
+   self~assertSame("subTest5" , 'APQRV'~TRANSLATE(XRANGE('00'X,'Q')) , 'APQ  '    )
+   self~assertSame("subTest6" , '4123'~TRANSLATE('abcd','1234')      , 'dabc'     )
 
 
    -- test the BIF, using examples from the documentation
 ::method "test_TRUNC"
 
-   self~assertSame("subTest1" , 12      , 12.3~TRUNC           )
-   self~assertSame("subTest2" , 127.097 , 127.09782~TRUNC(3)   )
-   self~assertSame("subTest3" , 127.100 , 127.1~TRUNC(3)       )
-   self~assertSame("subTest4" , 127.00  , 127~TRUNC(2)         )
-
-
-
-::method "test_UPPER"
-    if .ooRexxUnit.languageLevel<6.02 then
-    do
-       .error~say(self~string" - 'test_UPPER': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-       return
-    end
-    str='abcDEfgh'
-    self~assertSame("subTest_01" , 'aBcDEfgh', str~UPPER(2,  1 ))
-    self~assertSame("subTest_02" , 'abcDEfgh', str~UPPER(1,  0 ))
-    self~assertSame("subTest_03" , 'abcDEfgh', str~UPPER(99, 2 ))
-    self~assertSame("subTest_04" , 'aBCDEFGH', str~UPPER(2     ))
-    self~assertSame("subTest_05" , 'ABCDEFGH', str~UPPER        )
+   self~assertSame("subTest1" , 12.3~TRUNC         , 12        )
+   self~assertSame("subTest2" , 127.09782~TRUNC(3) , 127.097   )
+   self~assertSame("subTest3" , 127.1~TRUNC(3)     , 127.100   )
+   self~assertSame("subTest4" , 127~TRUNC(2)       , 127.00    )
 
 
    -- test the BIF, using examples from the documentation
 ::method "test_VERIFY"
 
-   self~assertEquals("subTest1" , 0 , '123'~VERIFY('1234567890')           )
-   self~assertEquals("subTest2" , 2 , '1Z3'~VERIFY('1234567890')           )
-   self~assertEquals("subTest3" , 1 , 'AB4T'~VERIFY('1234567890')          )
-   self~assertEquals("subTest4" , 3 , 'AB4T'~VERIFY('1234567890','M')      )
-   self~assertEquals("subTest5" , 1 , 'AB4T'~VERIFY('1234567890','N')      )
-   self~assertEquals("subTest6" , 4 , '1P3Q4'~VERIFY('1234567890', ,3)     )
-   self~assertEquals("subTest7" , 2 , '123'~VERIFY("",N,2)                 )
-   self~assertEquals("subTest8" , 3 , 'ABCDE'~VERIFY("", ,3)               )
-   self~assertEquals("subTest9" , 6 , 'AB3CD5'~VERIFY('1234567890','M',4)  )
+   self~assertEquals("subTest1" , '123'~VERIFY('1234567890')          , 0  )
+   self~assertEquals("subTest2" , '1Z3'~VERIFY('1234567890')          , 2  )
+   self~assertEquals("subTest3" , 'AB4T'~VERIFY('1234567890')         , 1  )
+   self~assertEquals("subTest4" , 'AB4T'~VERIFY('1234567890','M')     , 3  )
+   self~assertEquals("subTest5" , 'AB4T'~VERIFY('1234567890','N')     , 1  )
+   self~assertEquals("subTest6" , '1P3Q4'~VERIFY('1234567890', ,3)    , 4  )
+   self~assertEquals("subTest7" , '123'~VERIFY("",N,2)                , 2  )
+   self~assertEquals("subTest8" , 'ABCDE'~VERIFY("", ,3)              , 3  )
+   self~assertEquals("subTest9" , 'AB3CD5'~VERIFY('1234567890','M',4) , 6  )
 
 
    -- test the BIF, using examples from the documentation
 ::method "test_WORD"
 
-   self~assertSame("subTest1" , 'the', 'Now is the time'~WORD(3)  )
-   self~assertSame("subTest2" , ""   , 'Now is the time'~WORD(5)  )
+   self~assertSame("subTest1" , 'Now is the time'~WORD(3) , 'the' )
+   self~assertSame("subTest2" , 'Now is the time'~WORD(5) , ""    )
 
 
    -- test the BIF, using examples from the documentation
 ::method "test_WORDINDEX"
 
-   self~assertEquals("subTest1" , 8 , 'Now is the time'~WORDINDEX(3) )
-   self~assertEquals("subTest2" , 0 , 'Now is the time'~WORDINDEX(6) )
+   self~assertEquals("subTest1" , 'Now is the time'~WORDINDEX(3) , 8 )
+   self~assertEquals("subTest2" , 'Now is the time'~WORDINDEX(6) , 0 )
 
 
    -- test the BIF, using examples from the documentation
 ::method "test_WORDLENGTH"
 
-   self~assertEquals("subTest1" , 2 , 'Now is the time'~WORDLENGTH(2)    )
-   self~assertEquals("subTest2" , 5 , 'Now comes the time'~WORDLENGTH(2) )
-   self~assertEquals("subTest3" , 0 , 'Now is the time'~WORDLENGTH(6)    )
+   self~assertEquals("subTest1" , 'Now is the time'~WORDLENGTH(2)    , 2 )
+   self~assertEquals("subTest2" , 'Now comes the time'~WORDLENGTH(2) , 5 )
+   self~assertEquals("subTest3" , 'Now is the time'~WORDLENGTH(6)    , 0 )
 
 
    -- test the BIF, using examples from the documentation
 ::method "test_WORDPOS"
 
-   self~assertEquals("subTest1" , 3 , 'now is the time'~WORDPOS('the')           )
-   self~assertEquals("subTest2" , 0 , 'now is the time'~WORDPOS('The')           )
-   self~assertEquals("subTest3" , 2 , 'now is the time'~WORDPOS('is the')        )
-   self~assertEquals("subTest4" , 2 , 'now is the time'~WORDPOS('is   the')      )
-   self~assertEquals("subTest5" , 0 , 'now is   the time'~WORDPOS('is    time ') )
-   self~assertEquals("subTest6" , 2 , 'To be or not to be'~WORDPOS('be')         )
-   self~assertEquals("subTest7" , 6 , 'To be or not to be'~WORDPOS('be',3)       )
+   self~assertEquals("subTest1" , 'now is the time'~WORDPOS('the')           , 3 )
+   self~assertEquals("subTest2" , 'now is the time'~WORDPOS('The')           , 0 )
+   self~assertEquals("subTest3" , 'now is the time'~WORDPOS('is the')        , 2 )
+   self~assertEquals("subTest4" , 'now is the time'~WORDPOS('is   the')      , 2 )
+   self~assertEquals("subTest5" , 'now is   the time'~WORDPOS('is    time ') , 0 )
+   self~assertEquals("subTest6" , 'To be or not to be'~WORDPOS('be')         , 2 )
+   self~assertEquals("subTest7" , 'To be or not to be'~WORDPOS('be',3)       , 6 )
 
 
    -- test the BIF, using examples from the documentation
 ::method "test_WORDS"
 
-   self~assertEquals("subTest1" , 4 , 'Now is the time'~WORDS )
-   self~assertEquals("subTest2" , 0 , ' '~WORDS               )
+   self~assertEquals("subTest1" , 'Now is the time'~WORDS , 4 )
+   self~assertEquals("subTest2" , ' '~WORDS               , 0 )
 
 
    -- test the BIF, using examples from the documentation
 ::method "test_X2B"
 
-   self~assertSame("subTest1" , '11000011'    , 'C3'~X2B        )
-   self~assertSame("subTest2" , '0111'        , '7'~X2B         )
-   self~assertSame("subTest3" , '000111000001', '1 C1'~X2B      )
-   self~assertSame("subTest4" , '11000011'    , 'C3'x~C2X~X2B   )    --
-   self~assertSame("subTest5" , '10000001'    , '129'~D2X~X2B   )
-   self~assertSame("subTest6" , '1100'        , '12'~D2X~X2B    )
+   self~assertSame("subTest1" , 'C3'~X2B      , '11000011'      )
+   self~assertSame("subTest2" , '7'~X2B       , '0111'          )
+   self~assertSame("subTest3" , '1 C1'~X2B    , '000111000001'  )
+   self~assertSame("subTest4" , 'C3'x~C2X~X2B , '11000011'      )    --
+   self~assertSame("subTest5" , '129'~D2X~X2B , '10000001'      )
+   self~assertSame("subTest6" , '12'~D2X~X2B  , '1100'          )
 
 
    -- test the BIF, using examples from the documentation
@@ -801,19 +769,19 @@ return testUnitList
    -- test the BIF, using examples from the documentation
 ::method "test_X2D"
 
-   self~assertSame("subTest1" , 14    , '0E'~X2D       )
-   self~assertSame("subTest2" , 129   , '81'~X2D       )
-   self~assertSame("subTest3" , 3969  , 'F81'~X2D      )
-   self~assertSame("subTest4" , 65409 , 'FF81'~X2D     )
-   self~assertSame("subTest5" , 240   , '46 30'X~X2D   ) /* ASCII */
-   self~assertSame("subTest6" , 240   , '66 30'X~X2D   ) /* ASCII */
-   self~assertSame("subTest7" , -127  , '81'~X2D(2)    ) --
-   self~assertSame("subTest8" , 129   , '81'~X2D(4)    )
-   self~assertSame("subTest9" , -3967 , 'F081'~X2D(4)  )
-   self~assertSame("subTest10", 129   , 'F081'~X2D(3)  )
-   self~assertSame("subTest11", -127  , 'F081'~X2D(2)  )
-   self~assertSame("subTest12", 1     , 'F081'~X2D(1)  )
-   self~assertSame("subTest13", 0     , '0031'~X2D(0)  )
+   self~assertSame("subTest1" , '0E'~X2D      , 14     )
+   self~assertSame("subTest2" , '81'~X2D      , 129    )
+   self~assertSame("subTest3" , 'F81'~X2D     , 3969   )
+   self~assertSame("subTest4" , 'FF81'~X2D    , 65409  )
+   self~assertSame("subTest5" , '46 30'X~X2D  , 240    ) /* ASCII */
+   self~assertSame("subTest6" , '66 30'X~X2D  , 240    ) /* ASCII */
+   self~assertSame("subTest7" , '81'~X2D(2)   , -127   ) --
+   self~assertSame("subTest8" , '81'~X2D(4)   , 129    )
+   self~assertSame("subTest9" , 'F081'~X2D(4) , -3967  )
+   self~assertSame("subTest10", 'F081'~X2D(3) , 129    )
+   self~assertSame("subTest11", 'F081'~X2D(2) , -127   )
+   self~assertSame("subTest12", 'F081'~X2D(1) , 1      )
+   self~assertSame("subTest13", '0031'~X2D(0) , 0      )
 
 
   -- test {de|en}codeBase64

@@ -3,10 +3,9 @@
    name:             ooRexx.Base.PARSE.testUnit
    author:           Rony G. Flatscher
    date:             2005-11-08
-   version:          1.0.1
+   version:          0.1.0
    changed:          2007-01-24, --rgf, using "ooRexxUnit.getShellName()" for determining the
                                         shell to ADDRESS
-                     2007-06-10, --rgf, added test cases for the new parse features in 3.2
 
 -- line commented lines are ignored, when building the directory of infos from this header
 
@@ -438,134 +437,8 @@ do_test_linein: procedure             -- create external Rexx program for testin
   -- ---> ---> END: from "rexxref" (v.3.0.0 rev2 2005-05-31, chapter 10 Parsing: END <--- <---
 
 
-::method "test_parse_using_var_embedded_in_expressions"
+-- from here on the next "::method testXYZ" testCase methods may follow
 
-  if .ooRexxUnit.languageLevel<6.02 then
-  do
-     .error~say(self~string" - 'test_parse_using_var_embedded_in_expressions': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-     return
-  end
-
-
-  a1a="This is <em>header</em> level 1."
-  a1b="<h1>"a1a"</h1>"
-
-  a2a="This is header level2."
-  a2b="<h2>"a2a"</h2>"
-  a=a1b||a2b
-
-  parse var a "<"tag">" content ("</"tag">") rest
-
-  self~assertEquals("subtest_01", a1a, content)
-  self~assertEquals("subtest_02", a2b, rest)
-
-
-
-::method "test_parse_absolute_lengths"
-  if .ooRexxUnit.languageLevel<6.02 then
-  do
-     .error~say(self~string" - 'test_parse_absolute_lengths': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-     return
-  end
-
-  -- > allows true length match and usage of 0 length
-
-  --           123456789
-  --             v
-  --              v
-  --                 v
-  parse value "01A0002CC" with len1 +2 val1 >(len1) len2 +2 val2 >(len2)
-  self~assertSame("subtest_01", "01", len1)
-  self~assertSame("subtest_02", "A" , val1)
-  self~assertSame("subtest_03", "00", len2)
-  self~assertSame("subtest_04", ""  , val2)
-
-
-  -- < extract chars between match position and previous characters (parses "23" from the string)
-  --              v
-  parse value "1234567890" with "4" prefix <2
-  self~assertSame("subtest_05", "23", prefix)
-
-  --            v
-  parse value "1234567890" with "2" prefix <2
-  self~assertSame("subtest_06", "1", prefix)
-
-  parse value "1234567890" with "234" prefix <2
-  self~assertSame("subtest_06b", "1", prefix)
-
-  --           v
-  parse value "1234567890" with "1" prefix <2
-  self~assertSame("subtest_07", "", prefix)
-
-  --           v
-  parse value "1234567890" with "1" postfix >2
-  self~assertSame("subtest_08", "12", postfix)
-
-  parse value "1234567890" with "12345" postfix >2
-  self~assertSame("subtest_08b", "12", postfix)
-
-  --                  v
-  parse value "1234567890" with "8" postfix >2
-  self~assertSame("subtest_09", "89", postfix)
-
-  parse value "1234567890" with "890" postfix >2
-  self~assertSame("subtest_09b", "89", postfix)
-
-  parse value "1234567890" with "890" postfix >0
-  self~assertSame("subtest_09c", "", postfix)
-
-  --                    v
-  parse value "1234567890" with "0" postfix >2
-  self~assertSame("subtest_10", "0", postfix)
-
-  --                    v
-  parse value "1234567890" with "0" +1 postfix >2
-  self~assertSame("subtest_11", "", postfix)
-
-  --                    v
-  parse value "1234567890" with "0" postfix >0
-  self~assertSame("subtest_12", "", postfix)
-
-  --                    v
-  parse value "1234567890" with "0" +1 postfix >0
-  self~assertSame("subtest_13", "", postfix)
-
-
-
-::method "test_parse_absolute_error 38.2"
-  if .ooRexxUnit.languageLevel<6.02 then
-  do
-     .error~say(self~string" - 'test_parse_absolute_error1': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-     return
-  end
-
-  self~expectSyntax(38.2)
-   -- cannot be stated explicitly as error would be raised at syntax-check time
-  stmt='parse value "1234567890" with "0" +1 postfix >-1'
-  interpret stmt
-
-
-::method "test_assign_parsed_values_to_attributes_or_collections"
-  if .ooRexxUnit.languageLevel<6.02 then
-  do
-     .error~say(self~string" - 'test_assign_parsed_values_to_attributes_or_collections': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-     return
-  end
-
-  d=.directory~new
-  a=.array~new
-
-  text="Tirol isch lei oans, isch a Landl a kloans, isch a ..."
-  parse var text d~word1 a[2] a[3] a[4] d~word5 .
-  parse var text a1      a2   a3   a4   a5      .
-
-  self~assertEquals("subtest_01", a1, d~word1 )
-  self~assertNull(  "subtest_02",     a[1]    )
-  self~assertEquals("subtest_03", a2, a[2]    )
-  self~assertEquals("subtest_04", a3, a[3]    )
-  self~assertEquals("subtest_05", a4, a[4]    )
-  self~assertNull(  "subtest_06",     a[5]    )
-  self~assertEquals("subtest_07", a5, d~word5 )
 
 
 

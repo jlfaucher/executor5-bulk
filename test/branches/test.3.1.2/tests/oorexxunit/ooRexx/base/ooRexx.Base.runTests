@@ -64,29 +64,16 @@ if pos(left(sysVersion(),1)~translate, "WO")>0 then !slash!="\"   -- Windows, OS
                                                else !slash!="/"
 
    -- define a list of filenames containing testCase classes to be used
-testCaseFileList = .list~of(                                                                       -
-                             "ooRexx.Base.BIF.testUnit"                                          , -
-                             "ooRexx.Base.PARSE.testUnit"                                        , -
-                             "ooRexx.Base.RAISE.testUnit"                                        , -
-                             "ooRexx.Base.RESULT_RC_SIGL.testUnit"                               , -
-                             "ooRexx.Base.SAY.testUnit"                                          , -
-                             "ooRexx.Base.USE.testUnit"                                          , -
-                             "class"!slash!"ooRexx.Base.Class.Array.testUnit"                    , -
-                             "class"!slash!"ooRexx.Base.Class.Bag.testUnit"                      , -
-                             "class"!slash!"ooRexx.Base.Class.CircularQueue.testUnit"            , -
-                             "class"!slash!"ooRexx.Base.Class.Class.testUnit"                    , -
-                             "class"!slash!"ooRexx.Base.Class.CollectionSetlikeMethods.testUnit" , -
-                             "class"!slash!"ooRexx.Base.Class.Directory.testUnit"                , -
-                             "class"!slash!"ooRexx.Base.Class.List.testUnit"                     , -
-                             "class"!slash!"ooRexx.Base.Class.Method.testUnit"                   , -
-                             "class"!slash!"ooRexx.Base.Class.Properties.testUnit"               , -
-                             "class"!slash!"ooRexx.Base.Class.Queue.testUnit"                    , -
-                             "class"!slash!"ooRexx.Base.Class.QueueRGF.testUnit"                 , -
-                             "class"!slash!"ooRexx.Base.Class.Relation.testUnit"                 , -
-                             "class"!slash!"ooRexx.Base.Class.Set.testUnit"                      , -
-                             "class"!slash!"ooRexx.Base.Class.Stem.testUnit"                     , -
-                             "class"!slash!"ooRexx.Base.Class.String.testUnit"                   , -
-                             "class"!slash!"ooRexx.Base.Class.Table.testUnit"                    , -
+testCaseFileList = .list~of(                                                            -
+                             "ooRexx.Base.BIF.testUnit"                               , -
+                             "ooRexx.Base.PARSE.testUnit"                             , -
+                             "ooRexx.Base.RAISE.testUnit"                             , -
+                             "ooRexx.Base.RESULT_RC_SIGL.testUnit"                    , -
+                             "ooRexx.Base.SAY.testUnit"                               , -
+                             "class"!slash!"ooRexx.Base.Class.CircularQueue.testUnit" , -
+                             "class"!slash!"ooRexx.Base.Class.Class.testUnit"         , -
+                             "class"!slash!"ooRexx.Base.Class.Queue.testUnit"         , -
+                             "class"!slash!"ooRexx.Base.Class.String.testUnit"        , -
                                                                                         -
                             )
 
@@ -97,6 +84,4 @@ tr=ts~run   -- run all the tests in the testSuite, retrieve the testResult objec
 call simpleDumpTestResults tr, "ooRexx..runTests (run all of the base testUnit tests)"
 
 ::requires ooRexxUnit.cls
-
-
 

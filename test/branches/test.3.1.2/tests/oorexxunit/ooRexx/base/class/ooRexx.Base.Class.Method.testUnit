@@ -3,11 +3,10 @@
    name:             ooRexx.Base.Class.Method.testUnit
    author:           Rony G. Flatscher
    date:             2007-03-21
-   version:          0.0.3
+   version:          0.0.2
 
 -- line commented lines are ignored, when building the directory of infos from this header
    changed:          2007-04-03, ---rgf, fixed coding error in "test_New_And_Source"
-                     2007-05-30, ---rgf, fixed a bug in "test_New_And_Source, subtest_01" (comparing with array instead of first entry)
 
    languageLevel:    6.0.1
    purpose:          Test the methods of the class CircularQueue.
@@ -133,7 +132,7 @@ return testUnitList
   name="AHA"
   value="say 'hello'; say; say 'hallo';"
   m=.method~new(key, value)
-  self~assertSame("subtest_01", value, m~source~at(1))
+  self~assertSame("subtest_01", value, m~source)
 
 
   value2=.array~of("say 'hello';", "say;", "say 'hallo';")

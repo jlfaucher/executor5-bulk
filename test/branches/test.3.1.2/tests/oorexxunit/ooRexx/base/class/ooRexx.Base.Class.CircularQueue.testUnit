@@ -3,14 +3,12 @@
    name:             ooRexx.Base.Class.CircularQueue.testUnit
    author:           Rony G. Flatscher
    date:             2006-05-17
-   version:          1.0.2
+   version:          1.0.1
 
 -- line commented lines are ignored, when building the directory of infos from this header
    changed:          2006-05-27, ---rgf, added tests for added behaviour: circular queue will
                                  return the item it had to pull/remove in order to make room
                                  for a new item object; will return .nil, if there was space
-                     2007-05-30, ---rgf, adapted to language level 6.02 as some raised errors
-                                         are generated with an own error number by USE STRICT ARG
 
    languageLevel:    6.0
    purpose:          Test the methods of the class CircularQueue.
@@ -27,7 +25,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2006-2007 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2006 Rexx Language Association. All rights reserved.         */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -137,11 +135,7 @@ return testUnitList
 
    -- test INIT arguments (sent via NEW) ---------------------------------------------
 ::method "test_INIT_ARG_1"
-
-   if .ooRexxunit.languageLevel>=6.02 then
-      self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
-   else
-      self~expectSyntax(93.903)     -- omitted argument
+   self~expectSyntax(93.903)     -- omitted argument
    u=.CircularQueue~new
 
 ::method "test_INIT_ARG_2"
@@ -194,10 +188,7 @@ return testUnitList
 
    -- test RESIZE method ---------------------------------------------
 ::method "test_RESIZE_1a"
-   if .ooRexxunit.languageLevel>=6.02 then
-      self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
-   else
-      self~expectSyntax(93.903)        -- too few arguments
+   self~expectSyntax(93.903)        -- too few arguments
    u=.CircularQueue~new(3)~resize   -- omit mandatory argument
 
 ::method "test_RESIZE_1b"
@@ -236,10 +227,7 @@ return testUnitList
 
    -- test QUEUE method ---------------------------------------------
 ::method "test_QUEUE_1a"
-   if .ooRexxunit.languageLevel>=6.02 then
-      self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
-   else
-      self~expectSyntax(93.903)        -- too few arguments
+   self~expectSyntax(93.903)        -- too few arguments
    u=.CircularQueue~new(3)~queue    -- omit mandatory argument
 
 ::method "test_QUEUE_1b"
@@ -261,10 +249,7 @@ return testUnitList
 
    -- test PUSH method ---------------------------------------------
 ::method "test_PUSH_1a"
-   if .ooRexxunit.languageLevel>=6.02 then
-      self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
-   else
-      self~expectSyntax(93.903)        -- too few arguments
+   self~expectSyntax(93.903)        -- too few arguments
    u=.CircularQueue~new(3)~queue    -- omit mandatory argument
 
 ::method "test_PUSH_1b"
