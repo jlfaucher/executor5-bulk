@@ -81,11 +81,13 @@
                                            display information about the test case to be run about to stderr;
                                            this can be used to present the user a feedback about the proceedings
                                            of the tests
+                     2007-08-17, ---rgf, - corrected a small typo; now that we have a release version removing pre 3.2
+                                           code and tests, using new features
 
 
-   language-level:   6.0
-   needs:            ooRexx 3.1 or later (introduced syntax error # 93.964, which is exploited)
--- determines the minimum ooRexx language level (6.00 = ooRexx, IBM Object REXX)
+   language-level:   6.0.2
+   needs:            ooRexx 3.2 or later
+-- determines the minimum ooRexx language level (6.02 = ooRexx, IBM Object REXX)
 
    purpose:          Supply the base classes for a JUnit compliant testing framework for ooRexx
 
@@ -158,15 +160,7 @@ parse version interpreterName languageLevel interpreterDate
 .local~ooRexxUnit.OSName   =ooRexxUnit.getOSName()
 
       -- define end-of-line chars
-if .ooRexxUnit.languageLevel>=6.02 then
-   .local~ooRexxUnit.line.separator=.endOfLine
-else
-do
-   if .ooRexxUnit.OSName="WINDOWS" then
-      .local~ooRexxUnit.line.separator="0d0a"x  -- CR-LF
-   else
-      .local~ooRexxUnit.line.separator="0a"x    -- LF only
-end
+.local~ooRexxUnit.line.separator=.endOfLine
 
       -- get and memorize the path.separator on this system
 .local~ooRexxUnit.directory.separator=filespec("Path", directory())~left(1)
@@ -193,7 +187,6 @@ else                                            -- Unix-like
 
   TestCaseTable=.table~new
 
--- ::method TestCaseTable attribute private
 ::method logQueue attribute               -- ooRexxUnit only
 ::method TestCaseTable attribute          -- ooRexxUnit only
 
@@ -614,10 +607,10 @@ else                                            -- Unix-like
 
   clzTCI=self~class~testCaseInfo    -- get access to clz' 'testCaseInfo' dir
   s=clzTCI~entry("test_Case-source")
-  if .nil<>o then                   -- if source available, memorize fully qualified file name
+  if .nil<>s then                   -- if source available, memorize fully qualified file name
      parse var s . . definedInFile
   else
-    definedInFile="n/a_"self~"=="~c2x  -- indicate that no file name available
+    definedInFile="n/a_"self~identityHash -- indicate that no file name available
 
 
   self~init:super    -- let superclass initialize
@@ -668,21 +661,7 @@ doTheTest: procedure    -- make sure exceptions are trapped locally
    -- user exception not interceptable at this stage anymore, hence using SYNTAX exceptions
    -- signal on user AssertionFailedError name exceptionHandler
 
-  signal on any name exceptionHandler
-/*
-   -- signal on any
-   -- signal on novalue
-   signal on error      name exceptionHandler
-   signal on failure    name exceptionHandler
-   signal on halt       name exceptionHandler
-   signal on nomethod   name exceptionHandler
-   -- signal on nostring   name exceptionHandler
-   signal on notready   name exceptionHandler
-   signal on syntax     name exceptionHandler
-*/
-
--- say "self="pp(self) "strM="pp(strM)"..." "self~hasMethod(strM)="self~hasMethod(strM)
-
+   signal on any name exceptionHandler
    .message~new(self, strM)~send -- create the message object and send it
 
    self~check4ConditionFailure   -- check, if a condition was expected and if so, fail
@@ -713,7 +692,6 @@ exceptionHandler:
 
    if co~code=93.964 then     -- o.k. an own raised exception (using new ooRexx 3.1 application defined syntax error)
    do
-      -- tmpString=pp(date("S") time("L"))":" pp("failure")~left(11) self~string || iif(strAdditional="", "", " --->" strAdditional)
       tmpString=pp(date("S") time("L"))":" pp("failure") self~string || iif(strAdditional="", "", " --->" strAdditional)
       co~setentry("OOREXXUNIT.CONDITION", tmpString)  -- add ooRexxUnit-infos with condition object
       aTestResult~addFailure(self, co)    -- save the condition object
@@ -721,8 +699,6 @@ exceptionHandler:
    else     -- unexpected/untested failure, ie. an "error"
    do
       tmpInfo=co~condition
-
-      -- if tmpInfo="SYNTAX" then tmpInfo=tmpInfo "ERROR"
 
       if co~hasentry("CODE") then
          tmpInfo=tmpInfo co~code
@@ -732,7 +708,6 @@ exceptionHandler:
       if .nil<>co~message then
          tmpInfo=tmpInfo || co~message   -- add error message
 
-      -- tmpString=pp(date("S") time("L"))":" pp("error")~left(11) self~string "--->" tmpInfo
       tmpString=pp(date("S") time("L"))":" pp("error") self~string "--->" tmpInfo
       co~setentry("OOREXXUNIT.CONDITION", tmpString)  -- add ooRexxUnit-infos with condition object
       aTestResult~addError(self, co)      -- save the condition object
@@ -834,13 +809,6 @@ exceptionHandler:
 
   return aTestResult
 
-/*
-::method countTestCases -- return nr. of test cases (methods) in this class
-  expose fTestList
-  return fTestList~items
-*/
-
-
 
 /* *********************************************************************************** */
 /* *********************************************************************************** */
@@ -909,44 +877,20 @@ exceptionHandler:
   end
   return tmpStr~string
 
--- enQuote: procedure
 ::routine enQuote             public
-  return '"' || arg(1) || '"'
+  return '"' || arg(1)~string || '"'
 
-/*
--- return hash value as a Rexx hex literal
-::routine getEscapedhashValue  public
-  use arg o
-  return enQuote(o~"=="~c2x)"x"
-*/
 
 -- create
 ::routine formatObjectInfo public
   use arg o, hint
   if arg(2, 'omitted') then hint=""
 
-  return pp(hint || ppp(o~string)", hashValue="enQuote(o~"=="~c2x)"x")
-
--- ppp(arg(1)~string "<hashValue:" getEscapedhashValue(arg(1))">")
-
+  return pp(hint || ppp(o~string)", identityHash="enQuote(o~identityHash))
 
 
    /* function returning .true, if both collections can be regarded to be equal (i.e.,
       each can be regarded to be a subset of the other), .false else
-
-      pre 6.02 logic:
-             - if both values have the method SUBSET, assume unordered collection;
-               proceed with test, if both values also possess the method SUPPLIER;
-               each value can be of any collection type: returns .true only, if the
-               same number of the same index/value pairs is present in both collections,
-               .false else
-               [there is a short-circuit logic if either value is of .set/.bag type
-                in which case the test for equality is carried out directly with the
-                help of the SUBSET method]
-
-             - if above does not apply, but both values have the MAKEARRAY method assume
-               an ordered collection: values of MAKEARRAY must occur in the same sequence
-               (and both need to have the same number of items) to return .true, .false else
    */
 ::routine IsCollEqual public
   use arg expected, received
@@ -954,84 +898,13 @@ exceptionHandler:
   /* Starting with 3.2 (language level 6.02) no more guessing necessary, check for collection
      type and act accordingly.
   */
-  if .ooRexxUnit.languageLevel>=6.02 then
+  if expected~isA(.Collection), received~isA(.Collection), -
+     expected~subset(received), received~subset(expected) then
   do
-     if expected~isA(.Collection), received~isA(.Collection), -
-        expected~subset(received), received~subset(expected) then
-     do
-        return .true -- the one collection is a subset of the other
-     end
-
-     return .false   -- not dealing with collections or collections not a subset of each other
+     return .true -- the one collection is a subset of the other
   end
 
-
-      -- both collections with "SUPPLIER", if so, sequence should not matter
-  if expected~hasmethod("SUBSET") & received~hasmethod("SUBSET") then
-  do
-     if expected~hasmethod("SUPPLIER") & received~hasmethod("SUPPLIER") then
-     do
-         -- if both are either of type .set and/or .bag, then test directly with SUBSET for equality
-        mS=.set~of(.set, .bag)
-        if mS~hasindex(expected~class) & mS~hasindex(received~class) then
-        do
-           if expected~subset(received) then       -- equal, if each is a subset of the other
-           do
-              if received~subset(expected) then
-                 return .true
-           end
-
-           return .false
-        end
-
-            /* create a bag rendering of both collections such, that the resulting
-               bags can be used to test whether each is a subset of the other, hence
-               can be regarded to be the same collection; the encoding takes the hex-value
-               of the index object and concatenates it with a blank with the hex-value of
-               the item object, creating a uniquely identifiable bag element
-            */
-        eBag=.bag~new               -- create a bag rendering for the expected value
-        eSupp=expected~supplier
-        do while eSupp~available
-           eBag~put( eSupp~index~"==" eSupp~item~"==" )
-           eSupp~next
-        end
-
-        rBag=.bag~new               -- create a bag rendering for the received value
-        rSupp=received~supplier
-        do while rSupp~available
-           rBag~put( rSupp~index~"==" rSupp~item~"==" )
-           rSupp~next
-        end
-
-            /* test whether both collections can be regarded to be the same: if both bags are
-               subsets of each other, both values are regarded to be the same
-            */
-        if eBag~subset(rBag) then
-        do
-           if rBag~subset(eBag) then
-              return .true
-        end
-        return .false
-     end
-  end
-
-      -- maybe both collections with MAKEARRAY, if so, sequence matters
-  if expected~hasmethod("MAKEARRAY") & received~hasmethod("MAKEARRAY") then
-  do
-     eArr=expected~makearray
-     rArr=received~makearray
-     if eArr~items<>rArr~items then
-        return .false
-
-     do i=1 to eArr~items
-        if eArr[i]<>rArr[i] then
-           return .false
-     end
-     return .true
-  end
-
-  return .false
+  return .false   -- not dealing with collections or collections not a subset of each other
 
 
 /* *********************************************************************************** */
@@ -1039,7 +912,7 @@ exceptionHandler:
 ::routine addN       -- if string starts with a vowel, then "n" is returned, "" else
   parse arg name
 
-  if pos(name~left(1), "aeiouAEIOU")>0 then return "n"
+  if "aeiou"~caselessPos(name~left(1))>0 then return "n"
   return ""
 
 /* *********************************************************************************** */
@@ -1049,8 +922,6 @@ exceptionHandler:
   className=aTestCase~class~id   -- get class name
   return "testCase:" pp(aTestCase~getName) "(a" || addN(className) className || "@" || -
                  aTestCase~definedInFile")"
-
---                 aTestCase~"=="~c2x")"
 
 
 /* *********************************************************************************** */
@@ -1203,7 +1074,7 @@ syntax:
 */
 ::routine ooRexxUnit.getShellName public
 
-    parse upper source opsys +1
+   parse upper source opsys +1
 
       -- make sure we address the shell
    shell="CMD"          -- default to the OS2/Windows shell
@@ -1232,20 +1103,19 @@ syntax:
 
 
 
-/* Sorts the keys in ascending order, and then creates and returns a text (default),
-   HTML ("h") or XML ("x") encoded string.
+/* Returns a string containing the directory entries in sorted order. In case an entry
+   is a colleciton itself, its elements will be returned as strings.
 */
 ::routine ooRexxUnit.formatConditionObject public  /* dump condition object */
    use arg co
 
-   stem.=sortByIndex(co)            -- sort by index
-   len=length(stem.0)
+   arr=co~allIndexes~~stableSortWith(.CaselessComparator~new)
+   len=length(arr~items)
    indent1=12
    sumIndent=len+indent1+2
 
    blanks=copies(" ", sumIndent) "--> "
    res=.mutableBuffer~new
-
 
    NL="0a"x
    TAB1="09"x
@@ -1253,16 +1123,14 @@ syntax:
    TAB3=TAB1~copies(3)
    TAB4=TAB1~copies(4)
 
-   do i=1 to stem.0
-      o=co~entry(stem.i)
-      if o~hasmethod('ITEMS') then items=o~items
-                              else items=""
+   do index over arr
+      o=co~entry(index)
+      if o~isA(.Collection) then items=o~items
+                            else items=""
 
       tmpString=.MutableBuffer~new
 
-      -- would show sequence number of (sorted) entry
-      -- tmpString~~append(TAB3) ~~append((i~right(len))"." (stem.i~left(indent1,"."))) ~~append(pp(o))
-      tmpString~~append(TAB3) ~~append(stem.i~left(indent1,".")) ~~append(pp(o))
+      tmpString~~append(TAB3) ~~append(index~left(indent1,".")) ~~append(pp(o))
       if items<>"" then tmpString~~append(" containing ") ~~append(items) ~~append(" item(s)")
 
       if res~length=0 then    -- first value to assign
@@ -1285,7 +1153,6 @@ syntax:
          res ~~append(TAB3)
       end
    end
-
    return res~string
 
 
@@ -1293,21 +1160,4 @@ pp: procedure
    use arg a
    if .nil=a then return "[.nil]"
    return "[" || a~string || "]"
-
-
--- sortIndices: procedure
---::method sortByIndex -- running 'test5ConsoleAppender.rex'
-sortByIndex: procedure
-  use arg co
-
-  stem.="0"          -- define default value
-  i=0                -- get all indices first, sort them into ascending order
-  do idx over co
-    i=i+1
-    stem.i=idx       -- save index
-  end
-  stem.0=i
-
-  call sysStemSort "stem.", "A", "I"  -- ascending, ignore case
-  return stem.
 

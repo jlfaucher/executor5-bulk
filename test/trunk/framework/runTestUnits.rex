@@ -3,7 +3,7 @@
    name:             runTestUnits.rex
    author:           Rony G. Flatscher
    date:             2005-08-20
-   version:          1.0.3
+   version:          1.0.4
 
    changed:          2005-10-19, ---rgf, fixed a little bug: if "-r" is given without a directory,
                                          start with current directory (instead of root directory!)
@@ -11,10 +11,11 @@
                      2006-12-12, ---rgf, changed title for brief test results slightly
                      2006-12-13, ---rgf, added elapsed time information (for running all test units)
                      2006-12-14, ---rgf, added hashbang line
+                     2007-08-17, ---rgf, using ooRexxUnit environment definitions
 
    license:          CPL 1.0 (Common Public License v1.0, see below)
 
-   languageLevel:    6.0
+   languageLevel:    6.02
    purpose:          Load all ooRexx-base testUnits and run all the tests contained therein.
 
    remark:           Serves as an example of how to use and drive the ooRexxUnit framework
@@ -85,12 +86,12 @@ do
    end
 end
 
-if pos(right(directory,1), "/\")>0 then -- trailing [back]slash ? if so, remove it
+if directory~right(1)=.ooRexxUnit.directory.separator then  -- remove trailing slash
    directory=directory~left(length(directory)-1)
 
    -- determine path separator, if on OS2 or Windows use backslash, else slash
 if directory="" then directory="."  -- default to current directory
-searchFile=directory || iif( pos(left(sysVersion(),1)~translate, "WO")>0, "\", "/") || "*.testUnit"
+searchFile=directory || .ooRexxUnit.directory.separator || "*.testUnit"
 
 say "searchFile="pp(searchFile)", SysFileTree()-switches:" pp(switches) "..."
 
