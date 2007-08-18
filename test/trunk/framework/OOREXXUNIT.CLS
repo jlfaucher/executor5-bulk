@@ -1161,3 +1161,234 @@ pp: procedure
    if .nil=a then return "[.nil]"
    return "[" || a~string || "]"
 
+
+/**
+ * Public routine simpleFormatTestResults()
+ *
+ *  Variation on simpleDumpTestResults() that formats the result output in a
+ *  more "console-friendly" manner.  The information is broken up into lines,
+ *  with an attempt made to keep all lines no longer than 80 characers wide.
+ */
+::routine simpleFormatTestResults public
+   use arg aTestResult, title
+
+   if arg()>1 & title<>"" then do
+      say title
+      say
+   end
+
+   say "Count of tests ran:            " aTestResult~runCount
+   say "Count of successful assertions:" aTestResult~assertCount
+   say "Count of failures:             " aTestResult~failureCount
+   say "Count of errors:               " aTestResult~errorCount
+   say
+
+   if aTestResult~failureCount > 0 then do co over aTestResult~failures
+      z = printFailureInfo(co~ooRexxUnit.condition)
+   end
+
+   if aTestResult~errorCount > 0 then do co over aTestResult~errors
+      z = printErrorInfo(co~ooRexxUnit.condition)
+   end
+
+   -- If a number of failure or error information lines are printed, re-display
+   -- the summary statistics again so that the number of failures is obvious to
+   -- the user.
+   if (aTestResult~failureCount + aTestResult~errorCount) > 3 then do
+     say "Count of tests ran:            " aTestResult~runCount
+     say "Count of successful assertions:" aTestResult~assertCount
+     say "Count of failures:             " aTestResult~failureCount
+     say "Count of errors:               " aTestResult~errorCount
+     say
+   end
+
+return 0
+
+/**
+ * Private routine printFailureInfo()
+ *
+ *  Helper routine for simpleFormatTestResults()
+ */
+::routine printFailureInfo
+  use arg co
+
+  parse var co dateTime "[failure]" idStuff "--->" additionalStuff
+  dateTime = dateTime~strip~strip('T', ':')
+
+  idTable = decomposeTestCaseID(idStuff)
+  additional = decomposeAdditional(additionalStuff)
+
+  say "[failure]" dateTime
+  say "  Test:  "  idTable['name']
+  say "  Class: "  idTable['class']
+  say "  File:  "  idTable['file']
+  if additional~items > 0 then ret = printAssertInfo(additional)
+  say
+
+return 0
+
+/**
+ * Private routine printErrorInfo()
+ *
+ *  Helper routine for simpleFormatTestResults()
+ */
+::routine printErrorInfo
+  use arg co
+
+  parse var co dateTime "[error]" idStuff "--->" additionalStuff
+  dateTime = dateTime~strip~strip('T', ':')
+
+  idTable = decomposeTestCaseID(idStuff)
+  additional = decomposeAdditional(additionalStuff)
+
+  say "[error]" dateTime
+  say "  Test: "  idTable['name']
+  say "  Class:"  idTable['class']
+  say "  File: "  idTable['file']
+
+  if additional~items > 0 then do
+    parse value additional[1] with c info
+    say "  Event:" info
+    if additional~items > 1 then do i = 2 to additional~items
+      say "   " additional[i]
+    end
+  end
+  say
+
+return 0
+
+/**
+ * Private routine decomposeTestCaseID()
+ *
+ *  Helper routine for simpleFormatTestResults()
+ */
+::routine decomposeTestCaseID
+  use arg id
+
+  id = id~strip
+  parse var id tcWord tcName lastPart
+  tcName = tcName~substr(2, tcName~length - 2)
+  parse var lastPart cls "@" file ")"
+  clsName = cls~word(2)
+
+  if file~length > 70 then file = pathCompact(file, 70, .ooRexxUnit.directory.separator)
+  t = .table~new
+  t['name']  = tcName
+  t['class'] = clsName
+  t['file']  = file
+
+return t
+
+/**
+ * Private routine decomposeAdditional()
+ *
+ *  Helper routine for simpleFormatTestResults()
+ */
+::routine decomposeAdditional
+  use arg extraStuff
+
+  extraStuff = extraStuff~strip
+  eol = .ooRexxUnit.line.separator
+  tab = '09'x
+  a = .array~new
+
+  do while extraStuff~pos(eol) <> 0
+    parse var extraStuff lead eol extraStuff
+    do while lead~pos(tab) <> 0
+      parse var lead line (tab) lead
+      a[a~items + 1] = line
+    end
+    a[a~items + 1] = lead
+  end
+
+  do while extraStuff~pos(tab) <> 0
+    parse var extraStuff line (tab) extraStuff
+    a[a~items + 1] = line
+  end
+  a[a~items + 1] = extraStuff
+
+return a
+
+/**
+ * Private routine printAssertInfo()
+ *
+ *  Helper routine for simpleFormatTestResults()
+ */
+::routine printAssertInfo
+  use arg info
+
+  line = info[1]
+  if line~abbrev("@assert") then do
+    parse var line atWord assert "expected=" expected ", actual=" actual
+    assert = assert~strip~strip('T', ':')
+    actual = actual~strip('T', '.')
+    say "  Failed:" assert
+    say "    Expected:" expected
+    say "    Actual:  " actual
+  end
+  else do
+    say "  General failure:"
+    say "   " line
+  end
+
+  if info~items > 1 then do i = 2 to info~items
+    say "   " info[i]
+  end
+
+return 0
+
+/* pathCompact( path, len, sl )- - - - - - - - - - - - - - - - - - - - - - - -*\
+
+  Takes a long path name and compacts it to a shorter path name by removing some
+  path components in the middle of the path name and replacing them with
+  ellipses (...)
+
+  Input:
+    path REQUIRED
+      The path name to compact.
+
+    len  REQUIRED
+      The maximum length of the returned compacted path.
+
+    sl   REQUIRED
+      The path component separator character, i.e., a backward slash on Windows.
+
+  Returns:
+    A compacted path no longer than specified.  If the input path name is
+    already less than or equal to the specified length, it is returned
+    unchanged.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::routine pathCompact public
+  use arg path, len, sl
+
+  if path~length <= len then return path
+
+  -- Get position of directory separator after character 15
+  fp = path~pos(sl, 15)
+
+  -- Divide into leading and trailing pieces.  Leading piece, add "..."
+  leading = path~left(fp) || "..."
+  trailing = path~substr(fp)
+
+  -- Find a position of the directory separator in the trailing part, such that
+  -- when the trailing part starts there, the overall length of the resulting
+  -- string is the specified length, or shorter.
+  trailPos = trailing~pos(sl, trailing~length - (len - leading~length))
+  if trailPos == 0 then do
+    -- The last component of the path is too long, shorten the leading.
+    leading = "..."
+    trailPos = trailing~pos(sl, trailing~length - (len - leading~length))
+  end
+
+  if trailPos == 0 then do
+    -- Still too long, just use the last len characters.
+    leading = ""
+    trailing = trailing~right(len)
+  end
+  else do
+    trailing = trailing~substr(trailPos)
+  end
+
+return leading || trailing
+-- End pathCompact( path, len, sl )
+
