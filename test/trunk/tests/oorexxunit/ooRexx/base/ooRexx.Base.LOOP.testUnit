@@ -8,7 +8,7 @@
 -- line commented lines are ignored, when building the directory of infos from this header
    changed:          ---
 
-   languageLevel:    6.0
+   languageLevel:    6.02
    purpose:          Test the Loop (adding a label to DO, LOOP, SELECT, END)
    remark:
 
@@ -224,12 +224,6 @@ return testUnitList
 
 
 ::method "test_LOOP_LABEL"
-    if .ooRexxUnit.languageLevel<6.02 then
-    do
-       .error~say(self~string" - 'test_LOOP_LABEL': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-       return
-    end
-
       -- test 1
    i=0
    LOOP label aha1

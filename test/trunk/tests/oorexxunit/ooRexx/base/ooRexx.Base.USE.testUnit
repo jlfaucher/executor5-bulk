@@ -8,7 +8,7 @@
 -- line commented lines are ignored, when building the directory of infos from this header
    changed:          ---
 
-   languageLevel:    6.0
+   languageLevel:    6.02
    purpose:          Test the USE keyword instruction
    remark:
 
@@ -125,12 +125,6 @@ return testUnitList
 
 
 ::method "test_USE"
-  if .ooRexxUnit.languageLevel<6.02 then
-  do
-     .error~say(self~string" - 'test_USE': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-     return
-  end
-
   o1=.object~new
 
   self~assertEquals("subtest_01", o1  , test_01(o1))
@@ -144,28 +138,16 @@ test_01: procedure
   return o
 
 test_02: procedure
-  if .ooRexxUnit.languageLevel<6.02 then
-     o=.nil
-  else
-     use arg o=.nil
+  use arg o=.nil
   return o
 
 test_03: procedure
-  if .ooRexxUnit.languageLevel<6.02 then
-     use arg o, o1
-  else
-     use arg o=.nil, o1=.nil
+  use arg o=.nil, o1=.nil
   return o1
 
 
 
 ::method "test_USE_STRICT"
-  if .ooRexxUnit.languageLevel<6.02 then
-  do
-     .error~say(self~string" - 'test_assign_parsed_values_to_attributes_or_collections': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-     return
-  end
-
   o1=.object~new
 
   self~assertEquals("subtest_01", o1  , test_01(o1))
@@ -204,11 +186,6 @@ test_06: procedure
 
 
 ::method "test_USE_STRICT_error01 40.4"
-  if .ooRexxUnit.languageLevel<6.02 then
-  do
-     .error~say(self~string" - 'test_USE_STRICT_error01 40.4': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-     return
-  end
   self~expectSyntax(40.4)
   call test o
   return
@@ -218,11 +195,6 @@ test:
 
 
 ::method "test_USE_STRICT_error02 40.3 "
-  if .ooRexxUnit.languageLevel<6.02 then
-  do
-     .error~say(self~string" - 'test_assign_parsed_values_to_attributes_or_collections': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-     return
-  end
   self~expectSyntax(40.3)
   call test
   return
@@ -232,11 +204,6 @@ test:
 
 
 ::method "test_USE_STRICT_error03 40.4 "
-  if .ooRexxUnit.languageLevel<6.02 then
-  do
-     .error~say(self~string" - 'test_assign_parsed_values_to_attributes_or_collections': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-     return
-  end
   self~expectSyntax(40.4)
   call test a, b
   return
@@ -248,12 +215,6 @@ test:
 
 
 ::method "test_USE_assign_values_to_attributes_or_collections"
-  if .ooRexxUnit.languageLevel<6.02 then
-  do
-     .error~say(self~string" - 'test_USE_assign_values_to_attributes_or_collections': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-     return
-  end
-
   d=.directory~new
   a=.array~new
 

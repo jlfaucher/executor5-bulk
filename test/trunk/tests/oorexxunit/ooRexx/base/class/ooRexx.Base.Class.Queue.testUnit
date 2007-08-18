@@ -8,7 +8,7 @@
    changed:          2007-05-30, ---rgf, adapted to language level 6.02, where .Queue inherits
                                          from COLLECTION
 
-   languageLevel:    6.0
+   languageLevel:    6.02
    purpose:          Regression test for the Open Object REXX supplied .queue class.
    remark:           Work in progress at this time.  Tests for some methods are
                      simply place holders, the actual tests need to be filled in.
@@ -222,10 +222,7 @@ return 0;
     -- Test that the new object is a direct subclass of .object.
     supers = q~class~superclasses;
 
-    if .ooRexxunit.languageLevel>=6.02 then
-       self~assertEquals("subtest02:"  have "only 1 superclass", 2, supers~items );
-    else
-       self~assertEquals("subtest02:"  have "only 1 superclass", 1, supers~items );
+    self~assertEquals("subtest02:"  have "only 1 superclass", 2, supers~items );
 
     self~assertEquals("subtest03:"  have ".object as superclass", .object, supers[ 1 ]  );
 

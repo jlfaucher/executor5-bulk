@@ -10,7 +10,7 @@
 
 -- line commented lines are ignored, when building the directory of infos from this header
 
-   languageLevel:    6.0
+   languageLevel:    6.02
    purpose:          Test the PARSE keyword statement
    remark:           Initially uses documentation examples only
 
@@ -440,13 +440,6 @@ do_test_linein: procedure             -- create external Rexx program for testin
 
 ::method "test_parse_using_var_embedded_in_expressions"
 
-  if .ooRexxUnit.languageLevel<6.02 then
-  do
-     .error~say(self~string" - 'test_parse_using_var_embedded_in_expressions': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-     return
-  end
-
-
   a1a="This is <em>header</em> level 1."
   a1b="<h1>"a1a"</h1>"
 
@@ -462,12 +455,6 @@ do_test_linein: procedure             -- create external Rexx program for testin
 
 
 ::method "test_parse_absolute_lengths"
-  if .ooRexxUnit.languageLevel<6.02 then
-  do
-     .error~say(self~string" - 'test_parse_absolute_lengths': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-     return
-  end
-
   -- > allows true length match and usage of 0 length
 
   --           123456789
@@ -533,12 +520,6 @@ do_test_linein: procedure             -- create external Rexx program for testin
 
 
 ::method "test_parse_absolute_error 38.2"
-  if .ooRexxUnit.languageLevel<6.02 then
-  do
-     .error~say(self~string" - 'test_parse_absolute_error1': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-     return
-  end
-
   self~expectSyntax(38.2)
    -- cannot be stated explicitly as error would be raised at syntax-check time
   stmt='parse value "1234567890" with "0" +1 postfix >-1'
@@ -546,12 +527,6 @@ do_test_linein: procedure             -- create external Rexx program for testin
 
 
 ::method "test_assign_parsed_values_to_attributes_or_collections"
-  if .ooRexxUnit.languageLevel<6.02 then
-  do
-     .error~say(self~string" - 'test_assign_parsed_values_to_attributes_or_collections': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-     return
-  end
-
   d=.directory~new
   a=.array~new
 

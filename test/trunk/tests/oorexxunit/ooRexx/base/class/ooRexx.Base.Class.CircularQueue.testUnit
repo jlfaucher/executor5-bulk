@@ -12,7 +12,7 @@
                      2007-05-30, ---rgf, adapted to language level 6.02 as some raised errors
                                          are generated with an own error number by USE STRICT ARG
 
-   languageLevel:    6.0
+   languageLevel:    6.02
    purpose:          Test the methods of the class CircularQueue.
    remark:           ---
 
@@ -137,11 +137,7 @@ return testUnitList
 
    -- test INIT arguments (sent via NEW) ---------------------------------------------
 ::method "test_INIT_ARG_1"
-
-   if .ooRexxunit.languageLevel>=6.02 then
-      self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
-   else
-      self~expectSyntax(93.903)     -- omitted argument
+   self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
    u=.CircularQueue~new
 
 ::method "test_INIT_ARG_2"
@@ -194,10 +190,7 @@ return testUnitList
 
    -- test RESIZE method ---------------------------------------------
 ::method "test_RESIZE_1a"
-   if .ooRexxunit.languageLevel>=6.02 then
-      self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
-   else
-      self~expectSyntax(93.903)        -- too few arguments
+   self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
    u=.CircularQueue~new(3)~resize   -- omit mandatory argument
 
 ::method "test_RESIZE_1b"
@@ -236,10 +229,7 @@ return testUnitList
 
    -- test QUEUE method ---------------------------------------------
 ::method "test_QUEUE_1a"
-   if .ooRexxunit.languageLevel>=6.02 then
-      self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
-   else
-      self~expectSyntax(93.903)        -- too few arguments
+   self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
    u=.CircularQueue~new(3)~queue    -- omit mandatory argument
 
 ::method "test_QUEUE_1b"
@@ -261,10 +251,7 @@ return testUnitList
 
    -- test PUSH method ---------------------------------------------
 ::method "test_PUSH_1a"
-   if .ooRexxunit.languageLevel>=6.02 then
-      self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
-   else
-      self~expectSyntax(93.903)        -- too few arguments
+   self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
    u=.CircularQueue~new(3)~queue    -- omit mandatory argument
 
 ::method "test_PUSH_1b"

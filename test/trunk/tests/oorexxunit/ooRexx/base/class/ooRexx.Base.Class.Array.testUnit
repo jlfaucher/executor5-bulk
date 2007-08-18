@@ -171,12 +171,6 @@ return testUnitList
 ::method "test_allIndexes"
   expose collDir clz bUserDefinedIndex bSingleItem
 
-  if .ooRexxUnit.languageLevel<6.02 then
-  do
-     .error~say(self~string" - 'test_allIndexes': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-     return
-  end
-
   self~assertTrue("subtest1", sameContent(.bag~new~union(collDir~allIndexes1      ), -
                                           .bag~new~union(collDir~coll_1~allIndexes)))
 
@@ -195,12 +189,6 @@ return testUnitList
 ::method "test_allItems"
   expose collDir clz bUserDefinedIndex bSingleItem
 
-  if .ooRexxUnit.languageLevel<6.02 then
-  do
-     .error~say(self~string" - 'test_allItems': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-     return
-  end
-
   self~assertTrue("subtest1", sameContent(.bag~new~union(collDir~allItems1      ), -
                                           .bag~new~union(collDir~coll_1~allItems)))
 
@@ -217,13 +205,6 @@ return testUnitList
 
 ::method "test_append"
   expose collDir clz bUserDefinedIndex bSingleItem
-
-  if .ooRexxUnit.languageLevel<6.02 then
-  do
-     .error~say(self~string" - 'test_append': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-     return
-  end
-
 
   c1=collDir~coll_1
   c2=collDir~coll_2
@@ -245,12 +226,6 @@ return testUnitList
 
 ::method "test_appendAll"
   expose collDir clz bUserDefinedIndex bSingleItem
-
-  if .ooRexxUnit.languageLevel<6.02 then
-  do
-     .error~say(self~string" - 'test_appendAll': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-     return
-  end
 
   tmpColl=clz~new
 
@@ -293,12 +268,6 @@ return testUnitList
 ::method "test_difference"
   expose collDir clz bUserDefinedIndex bSingleItem
 
-  if .ooRexxUnit.languageLevel<6.02 then
-  do
-     .error~say(self~string" - 'test_subset': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-     return
-  end
-
   ce=collDir~emptyColl
   c1=collDir~coll_1
   c2=collDir~coll_2
@@ -338,12 +307,6 @@ return testUnitList
 ::method "test_empty"
   expose collDir clz bUserDefinedIndex bSingleItem
 
-  if .ooRexxUnit.languageLevel<6.02 then
-  do
-     .error~say(self~string" - 'test_empty': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-     return
-  end
-
   ce=collDir~emptyColl
   self~assertTrue("subtest01:", sameContent(ce, ce~copy~~empty))
 
@@ -366,11 +329,6 @@ return testUnitList
 
 ::method "test_hasItem"
   expose collDir clz bUserDefinedIndex bSingleItem
-  if .ooRexxUnit.languageLevel<6.02 then
-  do
-     .error~say(self~string" - 'test_hasItem': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-     return
-  end
 
   coll=collDir~coll_1      -- get the prepared Array
   self~assertTrue( "subtest1", coll~hasItem("1v"))
@@ -380,11 +338,6 @@ return testUnitList
 
 ::method "test_index"
   expose collDir clz bUserDefinedIndex bSingleItem
-  if .ooRexxUnit.languageLevel<6.02 then
-  do
-     .error~say(self~string" - 'test_index': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-     return
-  end
 
   coll=collDir~coll_1      -- get the prepared Array
   self~assertEquals("subtest1", "1", coll~index("1v"))
@@ -395,12 +348,6 @@ return testUnitList
 
 ::method "test_interSection"
   expose collDir clz bUserDefinedIndex bSingleItem
-
-  if .ooRexxUnit.languageLevel<6.02 then
-  do
-     .error~say(self~string" - 'test_interSection': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-     return
-  end
 
   ce=collDir~emptyColl
   c1=collDir~coll_1
@@ -452,12 +399,6 @@ return testUnitList
 
 ::method "test_isEmpty"
   expose collDir clz bUserDefinedIndex bSingleItem
-
-  if .ooRexxUnit.languageLevel<6.02 then
-  do
-     .error~say(self~string" - 'test_isEmpty': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-     return
-  end
 
   self~assertTrue( "subtest01", collDir~emptyColl~isEmpty)
   self~assertFalse("subtest02", collDir~coll_1~isEmpty)
@@ -600,13 +541,6 @@ return testUnitList
 ::method "test_removeItem"
   expose collDir clz bUserDefinedIndex bSingleItem o1 o2
 
-  if .ooRexxUnit.languageLevel<6.02 then
-  do
-     .error~say(self~string" - 'test_removeItem': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-     return
-  end
-
-
   ce=collDir~emptyColl~copy
   c1=collDir~coll_1~copy
 
@@ -633,12 +567,6 @@ return testUnitList
 
 ::method "test_subset"
   expose collDir clz bUserDefinedIndex bSingleItem
-
-  if .ooRexxUnit.languageLevel<6.02 then
-  do
-     .error~say(self~string" - 'test_subset': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-     return
-  end
 
   ce=collDir~emptyColl
   c1=collDir~coll_1
@@ -738,12 +666,6 @@ makeColl: procedure
 ::method "test_union"
   expose collDir clz bUserDefinedIndex bSingleItem
 
-  if .ooRexxUnit.languageLevel<6.02 then
-  do
-     .error~say(self~string" - 'test_union': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-     return
-  end
-
   ce=collDir~emptyColl
   c1=collDir~coll_1
   c2=collDir~coll_2
@@ -783,12 +705,6 @@ makeColl: procedure
 
 ::method "test_xor"
   expose collDir clz bUserDefinedIndex bSingleItem
-
-  if .ooRexxUnit.languageLevel<6.02 then
-  do
-     .error~say(self~string" - 'test_xor': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-     return
-  end
 
   ce=collDir~emptyColl
   c1=collDir~coll_1
@@ -894,12 +810,6 @@ makeColl: procedure
 ::method "test_MULTIDIMENSIONAL_makeArray"
   expose collDir clz bUserDefinedIndex bSingleItem
 
-  if .ooRexxUnit.languageLevel<6.02 then
-  do
-     .error~say(self~string" - 'test_MULTIDIMENSIONAL_makeArray': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-     return
-  end
-
   tmpColl=.array~new(3,4)
   tmpColl~~put("1v", 1, 1)~~put("2v", 2,3)~~put("3v", 3, 4)
   tmpCollArr=.array~of("1v","2v","3v")
@@ -914,12 +824,6 @@ makeColl: procedure
 
 
 ::method "test_MULTIDIMENSIONAL_AT_[]_HASINDEX"
-  if .ooRexxUnit.languageLevel<6.02 then
-  do
-     .error~say(self~string" - 'test_multidimensional_at_[]': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-     return
-  end
-
   a=.array~new
   a[1,1,1]="1v"
   a[1,2,1]="2v"
@@ -964,14 +868,7 @@ makeColl: procedure
 
 
 ::method "test_MULTIDIMENSIONAL_PUT_[]="
-  if .ooRexxUnit.languageLevel<6.02 then
-  do
-     .error~say(self~string" - 'test_multidimensional_PUT_[]=': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-     return
-  end
-
   a=.array~new
-
   idx=.array~of(1,1,1)
   a[idx]="1v"
   self~assertEquals("subtest01-a", "1v", a[1,1,1])
@@ -999,12 +896,6 @@ makeColl: procedure
 
 
 ::method "test_MULTIDIMENSIONAL_first_last_next_previous"
-  if .ooRexxUnit.languageLevel<6.02 then
-  do
-     .error~say(self~string" - 'test_MULTIDIMENSIONAL_first_last_next_previous': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-     return
-  end
-
   a=.array~new(3, 3, 3) -- multiple dimensions
   f=.array~of(1,1,1) -- first
   m=.array~of(2,2,2) -- middle

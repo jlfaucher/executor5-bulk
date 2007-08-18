@@ -24,7 +24,7 @@
                      2007-06-23, ---rgf, added test case for 'caselessWordPos'
                      2007-07-10, ---rgf, changed names of test cases, added various caseless tests
 
-   languageLevel:    6.0.1
+   languageLevel:    6.02
    purpose:          Test the methods of the class String.
    remark:           Initial test unit for demonstration purposes, needs to be completed.
 
@@ -408,11 +408,6 @@ return testUnitList
    self~assertSame("subTest2" , 'X0XX00' , 101100~CHANGESTR('1','X') )
 
 ::method "test_ChangeStr_caseless"
-    if .ooRexxUnit.languageLevel<6.02 then
-    do
-       .error~say(self~string" - 'test_ChangeStr_caseless': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-       return
-    end
 
    self~assertSame("subTest1" , 'aABBcC' , "aAbBcC"~caselessChangeStr('b',"B")  )
    self~assertSame("subTest1" , 'aAbbcC' , "aAbBcC"~caselessChangeStr('B',"b")  )
@@ -429,13 +424,7 @@ return testUnitList
    self~assertEquals("subTest5" , 3 , 'ab '  ~COMPARE('ab','x') )
    self~assertEquals("subTest6" , 5 , 'ab-- '~COMPARE('ab','-') )
 
-/* as of 2007-06-16: missing
 ::method "test_COMPARE_caseless"
-    if .ooRexxUnit.languageLevel<6.02 then
-    do
-       .error~say(self~string" - 'test_caselessCompare': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-       return
-    end
 
    self~assertEquals("subTest1" , 0 , 'abc'  ~caselessCompare('aBc')    )
    self~assertEquals("subTest2" , 2 , 'abc'  ~caselessCompare('Ak')     )
@@ -443,15 +432,9 @@ return testUnitList
    self~assertEquals("subTest4" , 0 , 'ab '  ~caselessCompare('aB',' ') )
    self~assertEquals("subTest5" , 3 , 'ab '  ~caselessCompare('Ab','x') )
    self~assertEquals("subTest6" , 5 , 'ab-- '~caselessCompare('AB','-') )
-*/
 
 
 ::method "test_compareTo"  -- 3.2
-    if .ooRexxUnit.languageLevel<6.02 then
-    do
-       .error~say(self~string" - 'test_compareTo': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-       return
-    end
 
   self~assertEquals("subtest_01", -1, "a"~compareTo("b"))
   self~assertEquals("subtest_02",  0, "a"~compareTo("a"))
@@ -459,11 +442,6 @@ return testUnitList
 
 
 ::method "test_CompareTo_caseless"  -- 3.2
-    if .ooRexxUnit.languageLevel<6.02 then
-    do
-       .error~say(self~string" - 'test_CompareTo_caseless': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-       return
-    end
 
   self~assertEquals("subtest_01", -1, "a"~caselessCompareTo("B"))
   self~assertEquals("subtest_02",  0, "a"~caselessCompareTo("A"))
@@ -571,11 +549,7 @@ return testUnitList
 
 
 ::method "test_Equals"
-    if .ooRexxUnit.languageLevel<6.02 then
-    do
-       .error~say(self~string" - 'test_Equals': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-       return
-    end
+
     self~assertSame("subTest_01" , 1, "a"~equals("a"))
     self~assertSame("subTest_02" , 0, "a"~equals("A"))
     self~assertSame("subTest_03" , 0, "a"~equals("b"))
@@ -587,11 +561,7 @@ return testUnitList
 
 
 ::method "test_Equals_caseless"
-    if .ooRexxUnit.languageLevel<6.02 then
-    do
-       .error~say(self~string" - 'test_Equals_caseless': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-       return
-    end
+
     self~assertSame("subTest_01" , 1, "a"~caselessEquals("a"))
     self~assertSame("subTest_02" , 1, "a"~caselessEquals("A"))
     self~assertSame("subTest_03" , 0, "a"~caselessEquals("b"))
@@ -643,11 +613,6 @@ return testUnitList
    -- test the BIF, using examples from the documentation
 ::method "test_LastPos_caseless"
 
-    if .ooRexxUnit.languageLevel<6.02 then
-    do
-       .error~say(self~string" - 'test_LastPos_caseless': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-       return
-    end
    self~assertEquals("subTest1" , 4 , 'efgxyz'~caselessLastPos('xy')       )
    self~assertEquals("subTest2" , 4 , 'efgxyz'~caselessLastPos('XY')       )
    self~assertEquals("subTest3" , 4 , 'efgxyz'~caselessLastPos('Xy')       )
@@ -671,11 +636,7 @@ return testUnitList
 
 
 ::method "test_LOWER"
-    if .ooRexxUnit.languageLevel<6.02 then
-    do
-       .error~say(self~string" - 'test_LOWER': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-       return
-    end
+
     str='ABCdeFGH'
     self~assertSame("subTest_01" , 'AbCdeFGH', str~lower(2,  1 ))
     self~assertSame("subTest_02" , 'ABCdeFGH', str~lower(1,  0 ))
@@ -710,39 +671,27 @@ return testUnitList
 
 
 ::method "test_Match"
-    if .ooRexxUnit.languageLevel<6.02 then
-    do
-       .error~say(self~string" - 'test_Match': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-       return
-    end
+
     str="abcDEFghi"
     self~assertSame("subTest_01" , 1, str~match(2, "bc"))
     self~assertSame("subTest_02",  1, str~match(2, "bcD"))
     self~assertSame("subTest_03" , 0, str~match(2, "bcd"))
     self~assertSame("subTest_04" , 0, str~match(2, "ab"))
-    self~assertSame("subTest_05",  0, str~match(2, "cD"))             ,
+    self~assertSame("subTest_05",  0, str~match(2, "cD"))             
 
 
 ::method "test_Match_caseless"
-    if .ooRexxUnit.languageLevel<6.02 then
-    do
-       .error~say(self~string" - 'test_Match_caseless': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-       return
-    end
+
     str="abcDEFghi"
     self~assertSame("subTest_01" , 1, str~caselessMatch(2, "bc"))
     self~assertSame("subTest_02",  1, str~caselessMatch(2, "bcD"))
     self~assertSame("subTest_03" , 1, str~caselessMatch(2, "bcd"))
     self~assertSame("subTest_04" , 0, str~caselessMatch(2, "ab"))
-    self~assertSame("subTest_05",  0, str~caselessMatch(2, "cD"))             ,
+    self~assertSame("subTest_05",  0, str~caselessMatch(2, "cD"))             
 
 
 ::method "test_MatchChar"
-    if .ooRexxUnit.languageLevel<6.02 then
-    do
-       .error~say(self~string" - 'test_MatchChar': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-       return
-    end
+
     str="abcDEFghi"
     self~assertSame("subTest_01" , 1, str~MatchChar(2, "b"))
     self~assertSame("subTest_02",  0, str~MatchChar(2, "B"))
@@ -750,11 +699,7 @@ return testUnitList
 
 
 ::method "test_MatchChar_caseless"
-    if .ooRexxUnit.languageLevel<6.02 then
-    do
-       .error~say(self~string" - 'test_MatchChar_caseless': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-       return
-    end
+
     str="abcDEFghi"
     self~assertSame("subTest_01" , 1, str~CaselessMatchChar(2, "b"))
     self~assertSame("subTest_02",  1, str~CaselessMatchChar(2, "B"))
@@ -890,11 +835,7 @@ return testUnitList
 
 
 ::method "test_UPPER"
-    if .ooRexxUnit.languageLevel<6.02 then
-    do
-       .error~say(self~string" - 'test_UPPER': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-       return
-    end
+
     str='abcDEfgh'
     self~assertSame("subTest_01" , 'aBcDEfgh', str~UPPER(2,  1 ))
     self~assertSame("subTest_02" , 'abcDEfgh', str~UPPER(1,  0 ))
@@ -953,11 +894,6 @@ return testUnitList
 
    -- test the BIF, using examples from the documentation
 ::method "test_WORDPOS_caseless"
-    if .ooRexxUnit.languageLevel<6.02 then
-    do
-       .error~say(self~string" - 'test_WORDPOS_caseless': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-       return
-    end
 
    self~assertEquals("subTest01" , 3 , 'now is the time'~caselessWordPos('the')           )
    self~assertEquals("subTest02" , 3 , 'now is the time'~caselessWordPos('The')           )

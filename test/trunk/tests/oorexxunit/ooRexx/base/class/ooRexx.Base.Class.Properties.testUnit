@@ -11,7 +11,7 @@
                      2007-06-01, ---rgf, account for new behaviours: if getWhole() or getLogical()
                                          returns .nil, then an according syntax condition is raised
 
-   languageLevel:    6.0.1
+   languageLevel:    6.02
    purpose:          Test the methods of the class CircularQueue.
    remark:           ---
 
@@ -176,10 +176,7 @@ return testUnitList
    -- test arguments ---------------------------------------------
 
 ::method "test_LOAD_ARG_1"
-   if .ooRexxunit.languageLevel>=6.02 then
-      self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
-   else
-      self~expectSyntax(93.903)     -- omitted argument
+   self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
    .Properties~load
 
 ::method "test_LOAD_ARG_2"
@@ -187,10 +184,7 @@ return testUnitList
    .Properties~load(1,2)
 
 ::method "test_SAVE_ARG_1"
-   if .ooRexxunit.languageLevel>=6.02 then
-      self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
-   else
-      self~expectSyntax(93.903)     -- omitted argument
+   self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
    .Properties~new~SAVE
 
 ::method "test_SAVE_ARG_2"
@@ -207,10 +201,7 @@ return testUnitList
    .properties~new~setProperty( ,2)
 
 ::method "test_SETPROPERTY_ERR_03"
-   if .ooRexxunit.languageLevel>=6.02 then
-      self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
-   else
-      self~expectSyntax(93.903)
+   self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
    .properties~new~setProperty(1 , )
 
 ::method "test_SETPROPERTY_ERR_04"
@@ -224,10 +215,7 @@ return testUnitList
    .properties~new~GETProperty(1, 2, 3)
 
 ::method "test_GETPROPERTY_ERR_02"
-   if .ooRexxunit.languageLevel>=6.02 then
-      self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
-   else
-      self~expectSyntax(93.903)
+   self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
    .properties~new~GETProperty( )
 
 ::method "test_GETPROPERTY_DEFAULT_VALUE"
@@ -248,10 +236,7 @@ return testUnitList
 
    -- GETWHOLE
 ::method "test_GETWHOLE_ERR_01"
-   if .ooRexxunit.languageLevel>=6.02 then
-      self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
-   else
-      self~expectSyntax(26.901)
+   self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
    key="a"
    val="b"
    p=.properties~new~~setProperty(key, val)
@@ -289,10 +274,7 @@ return testUnitList
    -- GETLOGICAL
 ::method "test_GETLOGICAL_ERR_01"
    -- self~expectSyntax(26.901)
-   if .ooRexxunit.languageLevel>=6.02 then
-      self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
-   else
-      self~expectSyntax(34.904)
+   self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
    key="a"
    val="b"
    p=.properties~new~~setProperty(key, val)
@@ -325,10 +307,7 @@ return testUnitList
    .properties~new~"[]="(,2)
 
 ::method "test_[]=_ERR_03"
-   if .ooRexxunit.languageLevel>=6.02 then
-      self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
-   else
-      self~expectSyntax(93.903)
+   self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
    .properties~new~"[]="(1)
 
 ::method "test_[]=_ERR_04"
@@ -346,10 +325,7 @@ return testUnitList
    .properties~new~"PUT"(,2)
 
 ::method "test_PUT_ERR_03"
-   if .ooRexxunit.languageLevel>=6.02 then
-      self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
-   else
-      self~expectSyntax(93.903)
+   self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
    .properties~new~"PUT"(1)
 
 ::method "test_PUT_ERR_04"

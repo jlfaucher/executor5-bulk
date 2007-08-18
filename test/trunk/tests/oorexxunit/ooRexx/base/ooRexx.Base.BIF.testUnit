@@ -27,7 +27,7 @@
                                          really treated equal in all related BIFs
                      2007-06-11, ---rgf, added TAB=blank test case for PARSE
 
-   languageLevel:    6.0.1
+   languageLevel:    6.02
    purpose:          Test the String functions.
    remark:           Initial test unit for demonstration purposes, needs to be completed.
 
@@ -637,13 +637,7 @@ return testUnitList
     self~assertSame('subTest86', ''                                        , ERRORTEXT(86))
     self~assertSame('subTest87', ''                                        , ERRORTEXT(87))
     self~assertSame('subTest88', ''                                        , ERRORTEXT(88))
-
-
-    if .ooRexxUnit.languageLevel>=6.02 then
-       self~assertSame('subTest89', 'Variable or message term expected'    , ERRORTEXT(89))
-    else
-       self~assertSame('subTest89', ''                                     , ERRORTEXT(89))
-
+    self~assertSame('subTest89', 'Variable or message term expected'       , ERRORTEXT(89))
     self~assertSame('subTest90', 'External name not found'                 , ERRORTEXT(90))
     self~assertSame('subTest91', 'No result object'                        , ERRORTEXT(91))
     self~assertSame('subTest92', 'OLE error'                               , ERRORTEXT(92))
@@ -778,11 +772,6 @@ return testUnitList
 
 
 ::method "test_LOWER"
-    if .ooRexxUnit.languageLevel<6.02 then
-    do
-       .error~say(self~string" - 'test_LOWER': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-       return
-    end
     self~assertSame("subTest_01" , 'AbCdeFGH', lower('ABCdeFGH', 2,  1 ))
     self~assertSame("subTest_02" , 'ABCdeFGH', lower('ABCdeFGH', 1,  0 ))
     self~assertSame("subTest_03" , 'ABCdeFGH', lower('ABCdeFGH', 99, 2 ))
@@ -1034,12 +1023,6 @@ return testUnitList
 
    -- starting with 3.2 TAB chars are treated like blanks
 ::method "test_TABs"
-    if .ooRexxUnit.languageLevel<6.02 then
-    do
-       .error~say(self~string" - 'test_TABs': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-       return
-    end
-
     TAB  ="09"x
     TAB2 =TAB||TAB
 
@@ -1072,12 +1055,6 @@ return testUnitList
 
    -- starting with 3.2 TAB chars are treated like blanks
 ::method "test_TABs_DELWORD"
-    if .ooRexxUnit.languageLevel<6.02 then
-    do
-       .error~say(self~string" - 'test_TABs_DELWORD': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-       return
-    end
-
     TAB  ="09"x
     TAB2 =TAB||TAB
 
@@ -1117,12 +1094,6 @@ return testUnitList
 
    -- starting with 3.2 TAB chars are treated like blanks
 ::method "test_TABs_PARSE"
-    if .ooRexxUnit.languageLevel<6.02 then
-    do
-       .error~say(self~string" - 'test_TABs_PARSE': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-       return
-    end
-
     TAB  ="09"x
     TAB2 =TAB||TAB
 
@@ -1180,12 +1151,6 @@ return testUnitList
 
    -- starting with 3.2 TAB chars are treated like blanks
 ::method "test_TABs_SPACE"
-    if .ooRexxUnit.languageLevel<6.02 then
-    do
-       .error~say(self~string" - 'test_TABs_SPACE': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-       return
-    end
-
     TAB  ="09"x
     TAB2 =TAB||TAB
 
@@ -1206,12 +1171,6 @@ return testUnitList
 
    -- starting with 3.2 TAB chars are treated like blanks
 ::method "test_TABs_STRIP"
-    if .ooRexxUnit.languageLevel<6.02 then
-    do
-       .error~say(self~string" - 'test_TABs_STRIP': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-       return
-    end
-
     TAB  ="09"x
     TAB2 =TAB||TAB
 
@@ -1243,12 +1202,6 @@ return testUnitList
 
    -- starting with 3.2 TAB chars are treated like blanks
 ::method "test_TABs_SUBWORD"
-    if .ooRexxUnit.languageLevel<6.02 then
-    do
-       .error~say(self~string" - 'test_TABs_SUBWORD': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-       return
-    end
-
     TAB  ="09"x
     TAB2 =TAB||TAB
 
@@ -1268,12 +1221,6 @@ return testUnitList
 
    -- starting with 3.2 TAB chars are treated like blanks
 ::method "test_TABs_WORD"
-    if .ooRexxUnit.languageLevel<6.02 then
-    do
-       .error~say(self~string" - 'test_TABs_WORD': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-       return
-    end
-
     TAB  ="09"x
     TAB2 =TAB||TAB
 
@@ -1291,12 +1238,6 @@ return testUnitList
 
    -- starting with 3.2 TAB chars are treated like blanks
 ::method "test_TABs_WORDINDEX"
-    if .ooRexxUnit.languageLevel<6.02 then
-    do
-       .error~say(self~string" - 'test_TABs_WORDINDEX': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-       return
-    end
-
     TAB  ="09"x
     TAB2 =TAB||TAB
 
@@ -1316,12 +1257,6 @@ return testUnitList
 
    -- starting with 3.2 TAB chars are treated like blanks
 ::method "test_TABs_WORDLENGTH"
-    if .ooRexxUnit.languageLevel<6.02 then
-    do
-       .error~say(self~string" - 'test_TABs_WORDLENGTH': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-       return
-    end
-
     TAB  ="09"x
     TAB2 =TAB||TAB
 
@@ -1342,12 +1277,6 @@ return testUnitList
 
    -- starting with 3.2 TAB chars are treated like blanks
 ::method "test_TABs_WORDPOS"
-    if .ooRexxUnit.languageLevel<6.02 then
-    do
-       .error~say(self~string" - 'test_TABs_WORDPOS': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-       return
-    end
-
     TAB  ="09"x
     TAB2 =TAB||TAB
 
@@ -1367,12 +1296,6 @@ return testUnitList
 
    -- starting with 3.2 TAB chars are treated like blanks
 ::method "test_TABs_WORDS"
-    if .ooRexxUnit.languageLevel<6.02 then
-    do
-       .error~say(self~string" - 'test_TABs_WORDS': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-       return
-    end
-
     TAB  ="09"x
     TAB2 =TAB||TAB
 
@@ -1456,11 +1379,6 @@ return testUnitList
 
 
 ::method "test_UPPER"
-    if .ooRexxUnit.languageLevel<6.02 then
-    do
-       .error~say(self~string" - 'test_UPPER': not carried out, needs language level 6.02, currently:" .ooRexxUnit.languageLevel)
-       return
-    end
     self~assertSame("subTest_01" , 'aBcDEfgh', UPPER('abcDEfgh', 2,  1 ))
     self~assertSame("subTest_02" , 'abcDEfgh', UPPER('abcDEfgh', 1,  0 ))
     self~assertSame("subTest_03" , 'abcDEfgh', UPPER('abcDEfgh', 99, 2 ))

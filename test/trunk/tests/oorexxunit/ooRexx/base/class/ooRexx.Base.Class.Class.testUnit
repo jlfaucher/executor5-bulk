@@ -14,7 +14,7 @@
                                          from COLLECTION
                      2007-05-31, ---rgf, added "test_MULTIPLE_INHERITANCE_WITH_MULTIPLE_METACLASSES"
 
-   languageLevel:    6.0
+   languageLevel:    6.02
    purpose:          Test the methods of the class CircularQueue.
    remark:           ---
 
@@ -411,10 +411,7 @@ any:
    self~assertEquals("subTest_34", tmp_swim , avo~swim     )
 
 ::METHOD "test_INHERIT_01"
-   if .ooRexxunit.languageLevel>=6.02 then
-      self~expectSyntax(98.942)     -- reflect USE STRICT ARG error message
-   else
-      self~expectSyntax(97.1)
+   self~expectSyntax(98.942)     -- reflect USE STRICT ARG error message
    .object~inherit(.String)
 
 ::METHOD "test_INHERIT_02"
@@ -747,11 +744,7 @@ getBags: procedure         -- return indices in an index bag, and method items i
 ::method "test_SUPERCLASSES"
 
    self~assertTrue("subTest_01: '.object~superclasses~items=0'", .object~superclasses~items=0)
-
-   if .ooRexxunit.languageLevel>=6.02 then
-      self~assertEquals("subTest_02", 2, .relation~superclasses~items)
-   else
-      self~assertEquals("subTest_02", 1, .relation~superclasses~items)
+   self~assertEquals("subTest_02", 2, .relation~superclasses~items)
 
 
 
