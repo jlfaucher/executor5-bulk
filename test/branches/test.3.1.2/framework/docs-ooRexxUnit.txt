@@ -297,7 +297,16 @@ object a simple printout to stdout is conducted, informing about the number of
 test runs, successful assertions, errors, and failures.
 
 
-A.2.5 "makeDirTestInfo"
+A.2.5 "simpleFormatTestResults"
+
+This routine is a variation of the simpleDumpTestResults routine.  It takes the
+same arguments (a "TestResult" object and an optional "Title") and prints the
+same general information to stdout.  However, it formats the information
+differently, in a more 'console-friendly' manner.   It breaks the information up
+into separate lines and attempts to keep the lines less than 80 characters wide.
+
+
+A.2.6 "makeDirTestInfo"
 
 This routine expects the class object of the TestCase class in a file and an array
 object containing the lines of the very first comment block in the program which
