@@ -1,0 +1,204 @@
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+/* publicRoutines_demo.rex */
+
+/*
+Purpose.:   Demonstrate each of the ooDialog Public Routines
+Who.....:   Lee Peedin
+When....:   August 14, 2007
+*/
+
+-- Define a path most likely to be common to anyone using this demo - change as necessary
+    ooRexxHome = value("REXX_HOME", , 'ENVIRONMENT' )
+    if ooRexxHome~length == 0 then
+        path = 'C:\Program Files\ooRexx\'
+    else
+        path = ooRexxHome || '\'
+
+-- Define a couple of variables to use in the code
+    delimiter = '0'x
+    crlf      = '0d0a'x
+
+-- Provide a menu of different examples - use the built in SingleSelection dialog
+    preselect = 1
+    do until op = ''
+        option.1  = 'Play an audio file 1 time - application will not return until play is complete'
+        option.2  = 'Play an audio file 1 time - application will return during play (asynchronously)'
+        option.3  = 'Play an audio file multiple times - application will return during play (loop)'
+        option.4  = 'Stop playing the audio file'
+        option.5  = 'Show an InfoDialog'
+        option.6  = 'Show an ErrorDialog'
+        option.7  = 'Show a multi-line InfoDialog'
+        option.8  = 'Show an AskDialog with the Yes button as the default'
+        option.9  = 'Show an AskDialog with the No button as the default'
+        option.10 = 'Show a FileNameDialog'
+        option.11 = 'Retrieve the handle to a window'
+
+        max = 11
+        ssdlg = .SingleSelection~new('Select A Demonstration','Public Routines Demonstration',option.,preselect,,max)
+        op = ssdlg~execute
+        if op \= '' then
+            do
+                preselect = op + 1
+                if preselect > max then preselect = 1
+                interpret 'call option'op
+            end
+    end
+return 0
+
+Option1:
+    fileName = path||'samples\oodialog\wav\gotcha.wav'
+    wstream = .stream~new(filename)
+    if wstream~query('exists') = '' then
+        call errorDialog('The expected audio file' filename 'does not exist')
+    else
+        call Play fileName
+return
+----------------------------------------------------------------------------------------------------------------
+Option2:
+    fileName = path||'samples\oodialog\wav\gotcha.wav'
+    wstream = .stream~new(filename)
+    if wstream~query('exists') = '' then
+        call errorDialog('The expected audio file' filename 'does not exist')
+    else
+        call Play fileName,'YES'
+return
+----------------------------------------------------------------------------------------------------------------
+Option3:
+    fileName = path||'samples\oodialog\wav\gotcha.wav'
+    wstream = .stream~new(filename)
+    if wstream~query('exists') = '' then
+        call errorDialog('The expected audio file' filename 'does not exist')
+    else
+        call Play fileName,'LOOP'
+return
+----------------------------------------------------------------------------------------------------------------
+Option4:
+    call Play fileName
+return
+----------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------
+Option5:
+    call InfoDialog 'This is an InfoDialog - note the icon used & the tone played'
+return
+----------------------------------------------------------------------------------------------------------------
+Option6:
+    call ErrorDialog 'This is an ErrorDialog - note the icon used & the tone played'
+return
+----------------------------------------------------------------------------------------------------------------
+Option7:
+    msg = 'This is line1'||crlf||-
+          'This is line2'||crlf||-
+          'This is line3 - note that the dialog is "stretched" to accomodate the longest line'
+    call InfoDialog msg
+return
+----------------------------------------------------------------------------------------------------------------
+Option8:
+    rv = AskDialog('Do you like this demonstration? (Yes button is pre-selected)')
+    if rv = 1 then
+        call InfoDialog('You selected "Yes" - glad you like it')
+    else
+        call InfoDialog('You selected "No" - mind sharing what you think would improve the demonstration?')
+
+return
+----------------------------------------------------------------------------------------------------------------
+Option9:
+    rv = AskDialog('Do you like this demonstration? (No button is pre-selected)','n')
+    if rv = 1 then
+        call InfoDialog('You selected "Yes" - glad you like it')
+    else
+        call InfoDialog('You selected "No" - you must be hard to please')
+
+return
+----------------------------------------------------------------------------------------------------------------
+Option10:
+    selfile       = path
+    parent        = ''                      -- don't need this in this example - just a place holder
+    filemask      = 'All Files (*.*)'delimiter'*.*'delimiter
+    loadorsave    = ''                      -- Load is the default
+    title         = ''                      -- See documentation for default
+    defExtension  = ''                      -- don't need this in this example - just a place holder
+    multiSelect   = ''                      -- don't need this in this example - just a place holder
+    sepChar       = ''                      -- don't need this in this example - just a place holder
+
+    a_file = FileNameDialog(selfile,parent,filemask,loadorsave,title,defExtension,multiSelect,sepChar)
+    if a_file = 0 then
+        call ErrorDialog 'You Did Not Select A File'
+    else
+        call InfoDialog 'You Selected' a_file
+
+    call InfoDialog 'For additional FileNameDialog examples, see the sample titled "fileNameDialog_demo.rex"'
+return
+----------------------------------------------------------------------------------------------------------------
+Option11:
+
+    call InfoMessage 'This program will open a dialog window in the upper left corner of your screen named "Simple Dialog"'||crlf||-
+                     'and will return its handle'
+    aWindow = .SimpleDialog~new()
+    if aWindow~initCode = 0 then
+        do
+            aWindow~Execute()--'ShowTop')
+            rv = FindWindow('Simple Dialog')
+            if rv = 0 then
+                call ErrorDialog 'Window could not be found'
+            else
+                do
+                    aWindow~Write(0,0,'My handle is.:' rv,'Ariel',20,'TRANSPARENT CLIENT',13)
+                    call InfoDialog 'The handle to the "Simple Dialog" window is:' rv
+                end
+            aWindow~DeInstall
+        end
+    else
+        do
+            call ErrorDialog('Sorry, the dialog creation failed')
+        end
+return
+----------------------------------------------------------------------------------------------------------------
+
+-- Requires directive to use the Public Routines and create the Simple Dialog
+-- window
+::requires 'oodialog.cls'
+
+::class SimpleDialog subclass UserDialog public
+::method Init
+    self~init:super('')
+::method Execute
+    self~Create(0,0,190,10,'Simple Dialog')
+    self~startit
+    self~show('SHOWTOP')
+
