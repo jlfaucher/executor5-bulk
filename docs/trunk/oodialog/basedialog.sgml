@@ -7626,13 +7626,15 @@ on what is specified for <computeroutput>loadorsave</computeroutput>.
 default is TXT.
 </para></listitem></varlistentry>
 <varlistentry><term>multiSelect</term>
-<listitem><para>Specifies if the dialog allows selection of multiple files.
+<listitem><para>Specifies if the File Open Dialog allows selection of multiple
+files. Normally, the open dialog allows the user to select one file only.  This
+can be changed by specifying "MULTI" for this option.  Only the first letter is
+needed and case is not significant.
 <variablelist>
 <varlistentry><term>MULTI</term>
-<listitem><para>Multiple file selection allowed. In this case, <computeroutput>loadorsave</computeroutput> must
-also be "LOAD" or omitted. The result is then path file1 file2 file3 ... If
-this argument is omitted, you get the selected file name or an empty string
-when the "Open File" window is canceled.
+<listitem><para>Multiple file selection is allowed. This option is ignored for
+File Save Dialogs. If the user selects multiple files, the result is then path
+file1 file2 file3 ...
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -7652,6 +7654,8 @@ C:\WINNT#file with blank.ext#fileWithNoBlank.TXT
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
 <listitem><para>Returns the selected file name or an empty string when canceled.
+Open File dialogs with multiple selection return path file1 file2 file3 ... when
+the user selects multiple files.
 </para></listitem></varlistentry>
 </variablelist>
 </section>
