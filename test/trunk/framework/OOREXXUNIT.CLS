@@ -83,6 +83,7 @@
                                            of the tests
                      2007-08-17, ---rgf, - corrected a small typo; now that we have a release version removing pre 3.2
                                            code and tests, using new features
+                     2007-08-18, ---mm,  - add public routine simpleFormatTestResults()
 
 
    language-level:   6.0.2
