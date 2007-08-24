@@ -3598,17 +3598,21 @@ expression is evaluated to provide a default value for an argument when the corr
 argument does not exist.  The default <emphasis role="italic">expr</emphasis>
 must be a literal string, a constant expression, or an expression enclosed in
 parentheses.</para>
-<para>The STRICT options imposes additional constraints on argument processing.
-The number of arguments must match the number of
-<emphasis role="italic">name</emphasis>s, otherwise an error is raised.  An argument
-may be considered optional if <emphasis role="italic">expr</emphasis>  has been
-specified for the argument.
-</para>
 <para>The <emphasis role="italic">name</emphasis>s may be any valid symbol or
 message term which
 can appear on the left side of an assignment statement (See
 <link linkend="assinmt">Assignments and Symbols</link>).
 </para>
+<para>The STRICT options imposes additional constraints on argument processing.
+The number of arguments must match the number of
+<emphasis role="italic">name</emphasis>s, otherwise an error is raised.  An argument
+may be considered optional if <emphasis role="italic">expr</emphasis>  has been
+specified for the argument.</para>
+<para>The ellipsis ("...") can be given in place of the last variable in the USE
+STRICT ARG statement and indicates that more arguments may follow. It allows
+defining a minimum amount of arguments that must be supplied or for which
+there are default values defined and that may be followed optionally by any
+additional arguments.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <indexterm><primary>USE instruction</primary>
 <secondary>example</secondary></indexterm>
@@ -3650,6 +3654,38 @@ Fred: use strict arg string, num1, num2=4
 <para>In the above example, a call to the function FRED may have either 2 or 3 arguments.  The
 STRICT keyword on the USE instruction will raise a syntax error for any other combination of
 arguments.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+call test "one"
+call test "one", "two"
+call test "one", "two", "three"
+call test "one", , "three", "four", "five"
+exit
+
+test: procedure /* a minimum of one argument must be supplied */
+use strict arg v1, v2="zwei", ...
+
+say "There are ["arg()"] argument(s); v1,v2=["v1","v2"]"
+do i=3 to arg()
+say " arg #" i"=["arg(i)"]"
+end
+say "--"
+return
+</programlisting>
+<para><emphasis role="bold">Output:</emphasis></para>
+<programlisting>
+There are [1] argument(s); v1,v2=[one,zwei]
+--
+There are [2] argument(s); v1,v2=[one,two]
+--
+There are [3] argument(s); v1,v2=[one,two]
+arg # 3=[three]
+--
+There are [5] argument(s); v1,v2=[one,zwei]
+arg # 3=[three]
+arg # 4=[four]
+arg # 5=[five]
+</programlisting>
 <para>You can retrieve or check the arguments by using the ARG built-in function
 (see <link linkend="bifArg">ARG (Argument)</link>).
 The ARG and PARSE ARG instructions are alternative
