@@ -3458,16 +3458,16 @@ subroutine call, or a value evaluated by execution of a DO loop.
 </variablelist><para> The following prefixes are used only if
 <computeroutput>TRACE Intermediates</computeroutput> is in effect:</para>
 <variablelist>
-<varlistentry><term><computeroutput>>,></computeroutput>
+<varlistentry><term><computeroutput>>A></computeroutput>
 <indexterm><primary>flag, tracing</primary>
-<secondary>>,></secondary></indexterm>
+<secondary>>A></secondary></indexterm>
 <indexterm><primary>tracing flag</primary>
-<secondary>>,></secondary></indexterm>
-<indexterm><primary>>,> tracing flag</primary></indexterm>
+<secondary>>A></secondary></indexterm>
+<indexterm><primary>>A> tracing flag</primary></indexterm>
 </term>
 <listitem><para>Identifies a value used as a function, subroutine, or message argument.
 </para></listitem></varlistentry>
-<varlistentry><term><computeroutput>=C=</computeroutput>
+<varlistentry><term><computeroutput>>C></computeroutput>
 </term>
 <listitem><para>The data traced is the orignal name of the compound variable and
 the name of a compound variable,
@@ -3476,7 +3476,7 @@ been replaced by the value of the variable but before the variable is used.
 If no value was assigned to the variable, the trace shows the variable in
 uppercase characters.
 </para></listitem></varlistentry>
-<varlistentry><term><computeroutput>>D></computeroutput>
+<varlistentry><term><computeroutput>>E></computeroutput>
 <indexterm><primary>flag, tracing</primary>
 <secondary>>E></secondary></indexterm>
 <indexterm><primary>tracing flag</primary>
@@ -3541,6 +3541,11 @@ or constant symbol).
 <listitem><para>The data traced is the name and contents of a variable.
 </para></listitem></varlistentry>
 </variablelist>
+<note><para>The characters <computeroutput>=></computeroutput> indicate the
+value of a variable or the result of an operation.</para>
+<para>The character <computeroutput>?</computeroutput> could indicate a
+non-printable character in the output.</para>
+</note>
 <para>If no option is specified on a TRACE instruction, or if the result of
 evaluating the expression is null, the default tracing actions are restored.
 The defaults are TRACE N and interactive debugging
