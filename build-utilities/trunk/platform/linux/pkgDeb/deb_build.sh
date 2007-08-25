@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 #/*----------------------------------------------------------------------------*/
 #/*                                                                            */
 #/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
