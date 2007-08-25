@@ -80,6 +80,9 @@ can use any classes, methods, and routines that the directives established.</par
 <indexterm><primary>UNPROTECTED subkeyword</primary>
 <secondary>in an ATTRIBUTE directive</secondary></indexterm>
 
+<para>The ::ATTRIBUTE directive creates attribute methods and defines the
+method properties.</para>
+
 <programlisting>
 <![CDATA[
 >>-::ATTRIBUTE--name--+-----+-------+-------+------------------------->
@@ -95,8 +98,6 @@ can use any classes, methods, and routines that the directives established.</par
 
 <note><title>Note</title>
 <para>You can specify all options in any order.</para></note>
-<para>The ::ATTRIBUTE directive creates attribute methods and defines the
-method properties.</para>
 <para>An ::ATTRIBUTE directive starts an attribute method, which is ended by another directive
 or the end of the program. The ::ATTRIBUTE is not included in the method source.</para>
 <para>The <emphasis role="italic">name</emphasis> is a literal string or
@@ -114,13 +115,13 @@ names <emphasis role="italic">name</emphasis> and <emphasis role="italic">method
 These are the methods for getting and setting an attribute.  These generated methods are
 equivalent to the following code sequences: </para>
 <programlisting>
-::method "NAME="
-expose name
-use arg name
+::method "NAME="  /* attribute set method                                   */
+  expose name     /* establish direct access to object variable (attribute) */
+  use arg name    /* retrieve argument and assign it to the object variable */
 
-::method name
-expose name
-return name
+::method name     /* attribute get method */
+  expose name     /* establish direct access to object variable (attribute) */
+  return name     /* return object&apos;s current value                          */
 </programlisting>
 <para>Both methods will be created with the same method properties (for example, PRIVATE, GUARDED, etc.).
 If GET or SET are not specified, another directive (or the end of the program)
@@ -138,10 +139,10 @@ is frequently used so the SET attribute method can perform new value validation.
 <programlisting>
 ::method size set
 ::method size get
-expose size
-use arg size
-if datatype(size, "Whole") = .false | size &lt; 0  then
-   raise syntax 93.906 array ("size", size)
+  expose size     /* establish direct access to object variable (attribute) */
+  use arg size    /* retrieve argument                                      */
+  if datatype(size, "Whole") = .false | size &lt; 0  then
+    raise syntax 93.906 array ("size", size)
 </programlisting>
 <para>If you specify the CLASS option, the create methods are class
 methods. See <link linkend="provide">Objects and Classes</link>. The attrbute methods are
@@ -154,7 +155,7 @@ that any sender can activate.</para>
 <para>If you
 <indexterm><primary>UNGUARDED option of ::ATTRIBUTE</primary></indexterm>
 specify the UNGUARDED option, the methods can be called while other methods
-are active on the same object. If you do not specify UNGUARDED, the methods
+are active on the same object. If you do not specify UNGUARDED, the method
 requires exclusive use of the object variable pool; they can run only if no
 other method that requires exclusive use of the object variable pool is active
 on the same object.</para>
@@ -183,6 +184,8 @@ and to define the <emphasis role="italic">name</emphasis> set or get method.
 <secondary>in a CLASS directive</secondary></indexterm>
 <indexterm><primary>INHERIT subkeyword</primary>
 <secondary>in a CLASS directive</secondary></indexterm>
+
+<para>The ::CLASS directive causes the interpreter to create a Rexx class.</para>
 
 <programlisting>
 <![CDATA[
@@ -265,13 +268,13 @@ constants. If you omit the INHERIT option, the class inherits only from
 <programlisting>
 ::class rectangle
 ::method area    /* defined for the RECTANGLE class */
-expose width height
-return width*height
+  expose width height
+  return width*height
 
 ::class triangle
 ::method area    /* defined for the TRIANGLE class */
-expose width height
-return width*height/2
+  expose width height
+  return width*height/2
 </programlisting>
 <para>The ::CLASS directives in a program are processed in the order in which
 they appear. If a ::CLASS directive has a dependency on ::CLASS directives
@@ -281,11 +284,11 @@ until all of the class's dependencies have been processed.</para>
 <programlisting>
 ::class savings subclass account  /* requires the ACCOUNT class */
 ::method type
-return "a Savings Account"
+  return "a Savings Account"
 
 ::class account
 ::method type
-return "an Account"
+  return "an Account"
 </programlisting>
 <para>The Savings class in the preceding example is not created until the Account
 class that appears later in the program has been created. </para>
@@ -321,6 +324,9 @@ an error.</para></note>
 <indexterm><primary>UNPROTECTED subkeyword</primary>
 <secondary>in a METHOD directive</secondary></indexterm>
 
+<para>The ::METHOD directive creates a method object and defines the method
+attributes.</para>
+
 <programlisting>
 <![CDATA[
 >>-::METHOD--methodname--+-------+--+-----------+--+----------+--->
@@ -335,8 +341,6 @@ an error.</para></note>
 
 <note><title>Note</title>
 <para>You can specify all options in any order.</para></note>
-<para>The ::METHOD directive creates a method object and defines the method
-attributes.</para>
 <para>A ::METHOD directive starts a method, which is ended by another directive
 or the end of the program. The ::METHOD is not included in the method source.</para>
 <para>The <emphasis role="italic">methodname</emphasis> is a literal string or
@@ -380,12 +384,12 @@ another method is also automatically created in that same class as
 equivalent to the following code sequences: </para>
 <programlisting>
 ::method "NAME="
-expose name
-use arg name
+  expose name
+  use arg name
 
 ::method name
-expose name
-return name
+  expose name
+  return name
 </programlisting>
 <para>If you specify the ABSTRACT option, the method creates an ABSTRACT method placeholder.
 ABSTRACT methods define a method that an implementing subclass is expected to provide a concrete
@@ -404,16 +408,16 @@ say "Area is" r~area       /* Produces "Area is 200" */
 ::class rectangle
 
 ::method area
-expose width height
-return width*height
+  expose width height
+  return width*height
 
 ::method init
-expose width height
-use arg width, height
+  expose width height
+  use arg width, height
 
 ::method perimeter
-expose width height
-return (width+height)*2
+  expose width height
+  return (width+height)*2
 </programlisting>
 
 <note><title>Note</title>
@@ -426,14 +430,16 @@ and use the same <emphasis role="italic">methodname</emphasis>.
 <indexterm><primary>:: REQUIRES directive</primary></indexterm>
 <indexterm><primary>directives</primary>
 <secondary>::REQUIRES</secondary></indexterm>
+
+<para>The ::REQUIRES directive specifies that the program requires access to
+the classes and objects of the Rexx program
+
 <programlisting>
 <![CDATA[
 >>-::REQUIRES--"programname"--;--------------------------------><
 ]]>
 </programlisting>
 
-<para>The ::REQUIRES directive specifies that the program requires access to
-the classes and objects of the Rexx program
 <emphasis role="italic">programname</emphasis>. All public
 classes and routines defined in the named program are made available to the
 executing program. The <emphasis role="italic">programname</emphasis>
@@ -490,6 +496,8 @@ directive. Only null clauses can appear between them.</para>
 <indexterm><primary>PRIVATE subkeyword</primary>
 <secondary>in a ROUTINE directive</secondary></indexterm>
 
+<para>The ::ROUTINE directive creates named routines within a program.</para>
+
 <programlisting>
 <![CDATA[                  +-PRIVATE-+
 >>-::ROUTINE--routinename--+---------+--;-----------------------><
@@ -497,8 +505,7 @@ directive. Only null clauses can appear between them.</para>
 ]]>
 </programlisting>
 
-<para>The ::ROUTINE directive creates named routines within a program. The
-<emphasis role="italic">routinename</emphasis>
+<para>The <emphasis role="italic">routinename</emphasis>
 is a literal string or a symbol that is taken as a constant.
 Only one ::ROUTINE directive can appear for any
 <emphasis role="italic">routinename</emphasis> in a program.</para>
