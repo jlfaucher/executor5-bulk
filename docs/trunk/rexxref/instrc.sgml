@@ -1016,7 +1016,7 @@ myobj~d         /* Would display "Z is: 120"                 */
   expose z
   z=z+20        /* Would add 20 to the same object variable z */
   say "Z is:" z
-return
+  return
 </programlisting>
 <para>You can expose an entire collection of compound variables
 (see <link linkend="compsym">Compound Symbols</link>)
@@ -1317,23 +1317,23 @@ to <computeroutput>1</computeroutput>, then the condition result is also
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
 If answer~datatype('w'), answer//2 = 0 Then
-    say answer "is even"
-  Else
-    say answer "is odd"
+  say answer "is even"
+Else
+  say answer "is odd"
 </programlisting>
 
 <para>The example above is not the same as using the following</para>
 
 <programlisting>
 If answer~datatype('w') & answer//2 = 0 Then
-    say answer "is even"
-  Else
-    say answer "is odd"
+  say answer "is even"
+Else
+  say answer "is odd"
 </programlisting>
-<para>The logical & operator will evaluate both terms of the operation, so the
+<para>The logical &amp; operator will evaluate both terms of the operation, so the
 term "answer//2" will result in a syntax error if answer is a non-numeric value.  With the
 list conditional form, evaluation will stop with the first false result, so the
-"answer//2" term will not be evaluated if the datatype test returns <computeroutput>1</computeroutput>.
+"answer//2" term will not be evaluated if the datatype test returns <computeroutput>0</computeroutput>.
 </para>
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
@@ -2255,7 +2255,7 @@ exit
 toft: procedure expose j k z.j
   say j k z.j   /* Displays "1 K a"          */
   k=7; m=3      /* Note: M is not exposed    */
-return
+  return
 </programlisting>
 <para>Note that if <computeroutput>Z.J</computeroutput> in the
 EXPOSE list is placed before <computeroutput>J</computeroutput>,
@@ -3000,7 +3000,7 @@ end
 term "answer//2" will result in a syntax error if answer is a non-numeric value.  With the
 list conditional form, evaluation will stop with the first false result, so the
 "answer//2" term will not be evaluated if the datatype test returns
-<computeroutput>1</computeroutput> (.false).
+<computeroutput>0</computeroutput> (.false).
 </para>
 
 <para><emphasis role="bold">Notes:</emphasis></para>
@@ -3671,7 +3671,7 @@ test: procedure /* a minimum of one argument must be supplied */
   use strict arg v1, v2="zwei", ...
   say "There are ["arg()"] argument(s); v1,v2=["v1","v2"]"
   do i=3 to arg()
-  say " arg #" i"=["arg(i)"]"
+    say " arg #" i"=["arg(i)"]"
   end
   say "--"
   return
@@ -3689,6 +3689,7 @@ There are [5] argument(s); v1,v2=[one,zwei]
  arg # 3=[three]
  arg # 4=[four]
  arg # 5=[five]
+--
 </programlisting>
 <para>You can retrieve or check the arguments by using the ARG built-in function
 (see <link linkend="bifArg">ARG (Argument)</link>).
