@@ -46,7 +46,7 @@
 <para>This chapter provides an overview of the Rexx class structure.</para>
 <para>A Rexx object consists of object methods
 <indexterm><primary>class methods</primary></indexterm>
-and object variables. Sending
+and object variables ("attributes"). Sending
 a message to an object causes the object to perform some action; a method
 whose name matches the message name defines the action that is performed.
 Only an object's methods can access the object variables belonging to
@@ -70,11 +70,12 @@ When referring to object methods and class methods of classes, this book uses
 the qualified terms to avoid possible confusion.</para></note>
 
 <section id="typcla"><title>Types of Classes</title>
-<para>There are three kinds of classes: </para>
+<para>There are four kinds of classes: </para>
 <itemizedlist>
 <listitem><para>Object classes</para></listitem>
 <listitem><para>Mixin classes</para></listitem>
-<listitem><para>Abstract classes</para></listitem></itemizedlist>
+<listitem><para>Abstract classes</para></listitem>
+<listitem><para>Metaclasses</para></listitem></itemizedlist>
 <para> The following sections explain these.</para>
 
 <section id="objcla"><title>Object Classes</title>
@@ -133,6 +134,7 @@ message interfaces that subclasses should implement.</para>
 <para>You create an abstract class like object or mixin classes. No extra
 messages or keywords on the ::CLASS directive are necessary. Rexx does not
 prevent users from creating instances of abstract classes.</para>
+</section>
 
 <section id="xmetac"><title>Metaclasses</title>
 <indexterm><primary>metaclasses</primary></indexterm>
@@ -148,42 +150,42 @@ objects.</para>
 <para>To change the behavior of an object that is an instance, you generally
 use subclassing. For example, you can create Statarray, a subclass of the
 Array class (see <link linkend="clsArray">The Array Class</link>).
-The Statarray class can include a
+The statArray class can include a
 method for computing a total of all the numeric elements of an array.</para>
 <programlisting>
 /* Creating an array subclass for statistics */
 
-::class statarray subclass array public
+::class statArray subclass array public
 
 ::method init    /*  Initialize running total and forward to superclass */
-expose total
-total = 0
-/* <link linkend="mthMessageNew">init</link>  describes the init method.  */
-forward class (super)
+  expose total
+  total = 0
+  /* <link linkend="mthMessageNew">init</link>  describes the init method.  */
+  forward class (super)
 
 ::method put     /*  Modify to increment running total */
-expose total
-use arg value
-total = total + value  /* Should verify that value is numeric!!! */
-forward class (super)
+  expose total
+  use arg value
+  total = total + value  /* Should verify that value is numeric!!! */
+  forward class (super)
 
 ::method "[]="   /*  Modify to increment running total */
-forward message "PUT"
+  forward message "PUT"
 
 ::method remove  /*  Modify to decrement running total */
-expose total
-use arg index
-forward message "AT" continue
-total = total - result
-forward class (super)
+  expose total
+  use arg index
+  forward message "AT" continue
+  total = total - result
+  forward class (super)
 
 ::method average /*  Return the average of the array elements */
-expose total
-return total / self~items
+  expose total
+  return total / self~items
 
 ::method total   /*  Return the running total of the array elements */
-expose total
-return total
+  expose total
+  return total
 </programlisting>
 <para>You can use this method on the individual array
 <emphasis>instances</emphasis>, so it is an
@@ -204,75 +206,74 @@ you use a metaclass.</para>
 <para>The following examples add a class method that keeps a running total of
 instances created. The first version uses the ::METHOD directive with the
 CLASS option. The second version uses a metaclass.</para>
-<para>Version 1</para>
+<para><emphasis role="bold">Version 1</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>metaclass</secondary></indexterm>
 <programlisting>
 /* Adding a class method using ::METHOD */
 
-a = .point~new(1,1)                   /* Create some point instances  */
+a = .point~new(1,1)               /* Create some point instances  */
 say "Created point instance" a
-b = .point~new(2,2)
+b = .point~new(2,2)               /* create another point instance */
 say "Created point instance" b
-c = .point~new(3,3)
+c = .point~new(3,3)               /* create another point instance */
 say "Created point instance" c
-                                  /* Ask the point class how many */
+                                  /* ask the point class how many */
                                   /* instances it has created     */
 say "The point class has created" .point~instances "instances."
 
 
 
-::class point public                /* Create Point class           */
+::class point public                /* create Point class           */
 
 ::method init class
-expose instanceCount
-instanceCount = 0                   /* Initialize instanceCount     */
-forward class (super)               /* Forward INIT to superclass   */
+  expose instanceCount
+  instanceCount = 0                 /* Initialize instanceCount     */
+  forward class (super)             /* Forward INIT to superclass   */
 
 ::method new class
-expose instanceCount                /* Creating a new instance      */
-instanceCount = instanceCount + 1   /* Bump the count               */
-forward class (super)               /* Forward NEW to superclass    */
+  expose instanceCount              /* Creating a new instance      */
+  instanceCount = instanceCount + 1 /* Bump the count               */
+  forward class (super)             /* Forward NEW to superclass    */
 
 ::method instances class
-expose instanceCount                /* Return the instance count    */
-return instanceCount
+  expose instanceCount              /* Return the instance count    */
+  return instanceCount
 
 
 ::method init
-expose xVal yVal                    /* Set object variables         */
-use arg xVal, yVal                  /* as passed on NEW             */
+  expose xVal yVal                  /* Set object variables         */
+  use arg xVal, yVal                /* as passed on NEW             */
 
 ::method string
-expose xVal yVal                    /* Use object variables         */
-return "("xVal","yVal")"            /* to return string value       */
+  expose xVal yVal                  /* Use object variables         */
+  return "("xVal","yVal")"          /* to return string value       */
 </programlisting>
-<para>Version 2</para>
+<para><emphasis role="bold">Version 2</emphasis></para>
 <programlisting>
 /* Adding a class method using a metaclass  */
 
-a = .point~new(1,1)     /* Create some point instances  */
+a = .point~new(1,1)                    /* Create some point instances  */
 say "Created point instance" a
 b = .point~new(2,2)
 say "Created point instance" b
 c = .point~new(3,3)
 say "Created point instance" c
-                                       /* Ask the point class how many */
+                                       /* ask the point class how many */
                                        /* instances it has created     */
 say "The point class has created" .point~instances "instances."
-
 
 ::class InstanceCounter subclass class /* Create a new metaclass that */
                                        /* will count its instances     */
 ::method init
-expose instanceCount
-instanceCount = 0                      /* Initialize instanceCount     */
-forward class (super)                  /* Forward INIT to superclass   */
+  expose instanceCount
+  instanceCount = 0                    /* Initialize instanceCount     */
+  forward class (super)                /* Forward INIT to superclass   */
 
 ::method new
-expose instanceCount                   /* Creating a new instance      */
-instanceCount = instanceCount + 1      /* Bump the count               */
-forward class (super)                  /* Forward NEW to superclass    */
+  expose instanceCount                 /* Creating a new instance      */
+  instanceCount = instanceCount + 1    /* Bump the count               */
+  forward class (super)                /* Forward NEW to superclass    */
 
 ::method instances
 expose instanceCount                   /* Return the instance count    */
@@ -282,18 +283,17 @@ return instanceCount
 ::class point public metaclass InstanceCounter  /* Create Point class */
                                        /* using InstanceCounter metaclass */
 ::method init
-expose xVal yVal                       /* Set object variables         */
-use arg xVal, yVal                     /* as passed on NEW             */
+  expose xVal yVal                     /* Set object variables         */
+  use arg xVal, yVal                   /* as passed on NEW             */
 
 ::method string
-expose xVal yVal                       /* Use object variables         */
-return "("xVal","yVal")"               /* to return string value       */
+  expose xVal yVal                     /* Use object variables         */
+  return "("xVal","yVal")"             /* to return string value       */
 </programlisting>
 </section>
 </section>
-</section>
 
-<section id="xcremet"><title>Creating Classes and Methods</title>
+<section id="xcremet"><title>Creating and Using Classes and Methods</title>
 <para>You can define a class using either directives or messages.</para>
 <para>To define a class using directives, you place a ::CLASS directive at the
 end of your source program:</para>
@@ -309,15 +309,15 @@ is a string identifier for the new class.</para>
 the class. </para>
 <programlisting>
 ::method type
-return "an account"
+  return "an account"
 
 ::method "name="
-expose name
-use arg name
+  expose name
+  use arg name
 
 ::method name
-expose name
-return name
+  expose name
+  return name
 </programlisting>
 <para>This adds the methods TYPE, NAME, and NAME= to the Account class.</para>
 <para>You can create a subclass of the Account class and define a method for
@@ -340,12 +340,12 @@ to the account object variable NAME. The following directive sequence creates
 the NAME and NAME= methods: </para>
 <programlisting>
 ::method "name="
-expose name
-use arg name
+  expose name
+  use arg name
 
 ::method name
-expose name
-return name
+  expose name
+  return name
 </programlisting>
 
 <para>You can replace this with a single ::METHOD directive with
@@ -357,7 +357,6 @@ the ATTRIBUTE option. For example, the directive </para>
 same function as the NAME and NAME= methods in the original example. The NAME
 method returns the current value of the object variable NAME; the NAME= method
 assigns a new value to the object variable NAME.</para>
-</section>
 
 <section id="usingcl"><title>Using Classes</title>
 <para>When you create a new class, it is always a subclass of an existing class.
@@ -545,33 +544,6 @@ subroutine. It provides common functions to the object methods but is hidden
 from other programs.</para>
 </section>
 
-<section id="chi"><title>The Class Hierarchy</title>
-<para>Rexx provides the following classes belonging to the object class:</para>
-<itemizedlist>
-<listitem><para>Alarm class</para></listitem>
-<listitem><para>Class class</para></listitem>
-<listitem><para>Array class</para></listitem>
-<listitem><para>List class</para></listitem>
-<listitem><para>Queue class</para></listitem>
-<listitem><para>Table class
-<itemizedlist>
-<listitem><para>Set class</para></listitem></itemizedlist></para></listitem>
-<listitem><para>Directory class</para></listitem>
-<listitem><para>Relation class
-<itemizedlist>
-<listitem><para>Bag class</para></listitem></itemizedlist></para></listitem>
-<listitem><para>Message class</para></listitem>
-<listitem><para>Method class</para></listitem>
-<listitem><para>Monitor class</para></listitem>
-<listitem><para>Stem class</para></listitem>
-<listitem><para>Stream class</para></listitem>
-<listitem><para>String class</para></listitem>
-<listitem><para>Supplier class</para></listitem></itemizedlist>
-<para>(The classes are in a class hierarchy with subclasses indented below their
-superclasses.)</para>
-<para>Note that there might also be other classes in the system.</para>
-</section>
-
 <section id="creo"><title>Initialization</title>
 <para>Any object requiring initialization at creation time must define an INIT
 method. If this method is defined, the class object runs the INIT method after
@@ -588,23 +560,23 @@ asav~name = "John Smith"
 ::class Account
 
 ::method INIT
-expose balance
-use arg balance
+  expose balance
+  use arg balance
 
 ::method TYPE
-return "an account"
+  return "an account"
 
 ::method name attribute
 
 ::class Savings subclass Account
 
 ::method INIT
-expose interest_rate
-use arg balance, interest_rate
-self~init:super(balance)
+  expose interest_rate
+  use arg balance, interest_rate
+  self~init:super(balance)
 
 ::method type
-return "a savings account"
+  return "a savings account"
 </programlisting>
 <para>The NEW method of the Savings class object creates a new Savings object
 and calls the INIT method of the new object. The INIT method arguments are
@@ -715,12 +687,44 @@ simultaneously on a single object. See
 <link linkend="xconcur">Concurrency</link>  for a full
 description of concurrency.</para>
 </section>
+</section>
 
-<section id="classmeth"><title>Classes Provided by Rexx</title>
-<para>The following figure shows all the classes.</para>
+<section id="classmeth"><title>Overview of Classes Provided by Rexx</title>
+<para>This section gives a brief overview of the classes and methods
+Rexx defines.</para>
+<para>Note that there might also be other classes in the system, depending
+on the operating system.</para>
+
+<section id="chi"><title>The Class Hierarchy</title>
+<para>Rexx provides the following classes belonging to the object class:</para>
+<itemizedlist>
+<listitem><para>Alarm class</para></listitem>
+<listitem><para>Class class</para></listitem>
+<listitem><para>Array class</para></listitem>
+<listitem><para>List class</para></listitem>
+<listitem><para>Queue class</para></listitem>
+<listitem><para>Table class
+<itemizedlist>
+<listitem><para>Set class</para></listitem></itemizedlist></para></listitem>
+<listitem><para>Directory class</para></listitem>
+<listitem><para>Relation class
+<itemizedlist>
+<listitem><para>Bag class</para></listitem></itemizedlist></para></listitem>
+<listitem><para>Message class</para></listitem>
+<listitem><para>Method class</para></listitem>
+<listitem><para>Monitor class</para></listitem>
+<listitem><para>Stem class</para></listitem>
+<listitem><para>Stream class</para></listitem>
+<listitem><para>String class</para></listitem>
+<listitem><para>Supplier class</para></listitem></itemizedlist>
+<para>(The classes are in a class hierarchy with subclasses indented below their
+superclasses.)</para>
+<para>Note that there might also be other classes in the system.</para>
+
+<para>The following figures show all the classes.</para>
 
 <figure float="1">
-<title id="meths1">Classes and Inheritance (part 1 of 7</title>
+<title id="meths1">Classes and Inheritance (part 1 of 7)</title>
 <mediaobject>
 <imageobject>
 <!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
@@ -730,7 +734,7 @@ description of concurrency.</para>
 </figure>
 
 <figure float="1">
-<title id="meths2">Classes and Inheritance (part 2 of 7</title>
+<title id="meths2">Classes and Inheritance (part 2 of 7)</title>
 <mediaobject>
 <imageobject>
 <!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
@@ -740,7 +744,7 @@ description of concurrency.</para>
 </figure>
 
 <figure float="1">
-<title id="meths3">Classes and Inheritance (part 3 of 7</title>
+<title id="meths3">Classes and Inheritance (part 3 of 7)</title>
 <mediaobject>
 <imageobject>
 <!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
@@ -750,7 +754,7 @@ description of concurrency.</para>
 </figure>
 
 <figure float="1">
-<title id="meths4">Classes and Inheritance (part 4 of 7</title>
+<title id="meths4">Classes and Inheritance (part 4 of 7)</title>
 <mediaobject>
 <imageobject>
 <!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
@@ -760,7 +764,7 @@ description of concurrency.</para>
 </figure>
 
 <figure float="1">
-<title id="meths5">Classes and Inheritance (part 5 of 7</title>
+<title id="meths5">Classes and Inheritance (part 5 of 7)</title>
 <mediaobject>
 <imageobject>
 <!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
@@ -770,7 +774,7 @@ description of concurrency.</para>
 </figure>
 
 <figure float="1">
-<title id="meths6">Classes and Inheritance (part 6 of 7</title>
+<title id="meths6">Classes and Inheritance (part 6 of 7)</title>
 <mediaobject>
 <imageobject>
 <!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
@@ -780,7 +784,7 @@ description of concurrency.</para>
 </figure>
 
 <figure float="1">
-<title id="meths7">Classes and Inheritance (part 7 of 7</title>
+<title id="meths7">Classes and Inheritance (part 7 of 7)</title>
 <mediaobject>
 <imageobject>
 <!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
@@ -790,7 +794,7 @@ description of concurrency.</para>
 </figure>
 </section>
 
-<section id="methodsbyclass"><title>Summary of Methods by Class</title>
+<section id="methodsbyclass"><title>Cross-reference of Methods</title>
 <indexterm><primary>summary</primary>
 <secondary>methods by class</secondary></indexterm>
 <para>The following table lists
@@ -2376,5 +2380,6 @@ from their Rexx superclass.</para>
 <link linkend="mthObjectRequest">request</link>)
 can perform this validation.</para></listitem>
 </orderedlist>
+</section>
 </section>
 </chapter>
