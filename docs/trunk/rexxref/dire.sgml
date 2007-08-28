@@ -137,12 +137,13 @@ sequence:</para>
 <para>The GET and SET options may also be used to override the default method body generated for the attribute.  This
 is frequently used so the SET attribute method can perform new value validation.</para>
 <programlisting>
-::method size set
-::method size get
+::attribute size set
+::attribute size get
   expose size     /* establish direct access to object variable (attribute) */
-  use arg size    /* retrieve argument                                      */
+  use arg value   /* retrieve argument                                      */
   if datatype(size, "Whole") = .false | size &lt; 0  then
-    raise syntax 93.906 array ("size", size)
+    raise syntax 93.906 array ("size", value)
+  size=value
 </programlisting>
 <para>If you specify the CLASS option, the create methods are class
 methods. See <link linkend="provide">Objects and Classes</link>. The attrbute methods are
@@ -407,7 +408,7 @@ say "Area is" r~area       /* Produces "Area is 200" */
 
 ::class rectangle
 
-::method area
+::method area              /* defined for the RECTANGLE class */
   expose width height
   return width*height
 
@@ -433,6 +434,7 @@ and use the same <emphasis role="italic">methodname</emphasis>.
 
 <para>The ::REQUIRES directive specifies that the program requires access to
 the classes and objects of the Rexx program
+<emphasis role="italic">programname</emphasis>.</para>
 
 <programlisting>
 <![CDATA[
@@ -440,7 +442,7 @@ the classes and objects of the Rexx program
 ]]>
 </programlisting>
 
-<emphasis role="italic">programname</emphasis>. All public
+<para>All public
 classes and routines defined in the named program are made available to the
 executing program. The <emphasis role="italic">programname</emphasis>
 is a literal string or a symbol that is taken as a constant. The string
@@ -468,9 +470,15 @@ necessary.</para>
 <para>Any ::REQUIRES directive must precede all ::CLASS, ::METHOD, and ::ROUTINE
 directives. The order of ::REQUIRES directives determines the search order
 for classes and routines defined in the named programs.</para>
+<para>If any Rexx code preceeds the first directive in
+<emphasis role="italic">programname</emphasis> then that code is executed at the
+time the <emphasis role="italic">::REQUIRES</emphasis> is processed by the
+interpreter. This is also prior to the beginning of the main Rexx
+program</para>
 <para>The following example illustrates that two programs, ProgramA and ProgramB,
 can both access classes and routines that another program, ProgramC, contains.
-(The code at the beginning of ProgramC runs.) </para>
+(The code at the beginning of ProgramC runs prior to the start of the main
+Rexx program.)</para>
 
 <mediaobject>
 <imageobject>
@@ -499,7 +507,8 @@ directive. Only null clauses can appear between them.</para>
 <para>The ::ROUTINE directive creates named routines within a program.</para>
 
 <programlisting>
-<![CDATA[                  +-PRIVATE-+
+<![CDATA[
+                           +-PRIVATE-+
 >>-::ROUTINE--routinename--+---------+--;-----------------------><
                            +-PUBLIC--+
 ]]>
