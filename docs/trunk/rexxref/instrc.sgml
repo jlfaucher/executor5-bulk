@@ -1520,10 +1520,10 @@ by a LEAVE instruction).</para>
 <indexterm><primary>examples</primary>
 <secondary>ITERATE instruction</secondary></indexterm>
 <programlisting>
-loop i=1 to 4
+loop label MyLabelName i=1 to 4 /( lable set to 'MYLABELNAME' */
   if i=2 then iterate
   say i
-end
+end myLabelName
 /* Displays the numbers:
   1
   2
