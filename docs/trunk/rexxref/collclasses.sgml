@@ -50,12 +50,30 @@ retrieve the item from the collection with the AT or [] methods.</para>
 <para>Each collection defines its own acceptable index types. Rexx provides the
 following collection classes:</para>
 
-<formalpara><title>Collections that do not have set operations:</title>
-<para>
 <variablelist>
 <varlistentry><term>Array</term>
 <listitem><para>A sequenced collection of objects ordered by whole-number
 indexes. See <link linkend="clsArray">The Array Class</link> for details.
+</para></listitem></varlistentry>
+<varlistentry><term>Bag</term>
+<listitem><para>A collection where the index and the item are the same object. Bag indexes
+can be any object (as with the table class) and each index can appear more
+than once. See <link linkend="clsBag">The Bag Class</link> for details.
+</para></listitem></varlistentry>
+<varlistentry><term>CircularQueue</term>
+<listitem><para>
+The CircularQueue class allows for storing objects in a circular queue
+of a predefined size. Once the end of the queue has been reached, new item
+objects are inserted from the beginning, replacing earlier entries.
+The collected objects can be processed in FIFO (first in, first out) or in a
+stack-like LIFO (last in, first out) order.
+See <link linkend="clsCircularQueue">The CircularQueue Class</link> for details
+</para></listitem>
+</varlistentry>
+<varlistentry><term>Directory</term>
+<listitem><para>A collection with character string indexes. Index comparisons are performed
+using the string == comparison method. See
+<link linkend="clsDirectory">The Directory Class</link> for details.
 </para></listitem></varlistentry>
 <varlistentry><term>List</term>
 <listitem><para>A sequenced collection that lets you add new items at any position in
@@ -71,35 +89,6 @@ items would be removed. The current head of the queue has index 1, the item
 after the head item has index 2, up to the number of items in the queue. See
 <link linkend="clsQueue">The Queue Class</link> for details.
 </para></listitem></varlistentry>
-<varlistentry><term>CircularQueue</term>
-<listitem><para>
-The CircularQueue class allows for storing objects in a circular queue
-of a predefined size. Once the end of the queue has been reached, new item
-objects are inserted from the beginning, replacing earlier entries.
-The collected objects can be processed in FIFO (first in, first out) or in a
-stack-like LIFO (last in, first out) order.
-See <link linkend="clsCircularQueue">The CircularQueue Class</link> for details
-</para></listitem>
-</varlistentry>
-</variablelist>
-</para>
-</formalpara>
-
-<formalpara><title>Collections that have set operations:</title>
-<para>
-<variablelist>
-<varlistentry><term>Table</term>
-<listitem><para>A collection with indexes that can be any object. For example, string
-objects, array objects, alarm objects, or any user-created object can be a
-table index.  The table class determines the index match by using the == comparison
-method. A table contains no duplicate indexes. See
-<link linkend="clsTable">The Table Class</link> for details.
-</para></listitem></varlistentry>
-<varlistentry><term>Directory</term>
-<listitem><para>A collection with character string indexes. Index comparisons are performed
-using the string == comparison method. See
-<link linkend="clsDirectory">The Directory Class</link> for details.
-</para></listitem></varlistentry>
 <varlistentry><term>Relation</term>
 <listitem><para>A collection with indexes that can be any object (as with the table
 class). A relation can contain duplicate indexes. See
@@ -110,21 +99,21 @@ class). A relation can contain duplicate indexes. See
 can be any object (as with the table class) and each index is unique. See
 <link linkend="clsSet">The Set Class</link> for details.
 </para></listitem></varlistentry>
-<varlistentry><term>Bag</term>
-<listitem><para>A collection where the index and the item are the same object. Bag indexes
-can be any object (as with the table class) and each index can appear more
-than once. See <link linkend="clsBag">The Bag Class</link> for details.
+<varlistentry><term>Table</term>
+<listitem><para>A collection with indexes that can be any object. For example, string
+objects, array objects, alarm objects, or any user-created object can be a
+table index.  The table class determines the index match by using the == comparison
+method. A table contains no duplicate indexes. See
+<link linkend="clsTable">The Table Class</link> for details.
 </para></listitem></varlistentry>
 </variablelist>
-</para>
-</formalpara>
 
 <section id="CollectionClassOrganization"><title>
 Organization of the Collection Classes</title>
 <indexterm><primary>Collection class</primary>
 <secondary>organization</secondary></indexterm>
 <para>The following shows the logical organization of the Collection Classes.
-This does NOT represent the inheritance hierarchy of the classes but rather
+This does NOT represent the order that methods are inherited but rather
 the organization of the classes.</para>
 
 <programlisting>
@@ -5753,7 +5742,7 @@ following simple class:</para>
 <programlisting>
     ::class Employee inherit Comparable
     ::method init
-      expose id, name
+      expose id name
       use arg id, name
     ::method id attribute
     ::method name attribute
@@ -5762,6 +5751,7 @@ following simple class:</para>
       use arg other
       return id~compareTo(other~id)  -- comparison performed using employee id
     ::method string
+      expose name
       use arg name
       return "Employee" name
 </programlisting>
