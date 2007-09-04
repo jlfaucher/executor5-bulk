@@ -61,6 +61,58 @@ Environment use the same name as the corresponding environment symbol, but witho
 </programlisting>
 <para>The Environment object directory contains all of the Rexx built-in classes (Array, etc.), plus special Rexx
 constants such as .NIL, .TRUE, and .FALSE.</para>
+
+<section id="ENDOFLINE"><title>The ENDOFLINE Constant (.ENDOFLINE)</title>
+<indexterm><primary>.ENDOFLINE object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.ENDOFLINE object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.ENDOFLINE object</secondary></indexterm>
+<para>The ENDOFLINE object is a string constant representing the line terminator used for
+file linend markers for a given system.  This constant is "0d0a"x on Windows (carriage return/linefeed)
+and "0a"x (linefeed) on Unix platforms.
+</para>
+</section>
+
+<section id="FALSE"><title>The FALSE Constant (.FALSE)</title>
+<indexterm><primary>.FALSE object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.FALSE object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.FALSE object</secondary></indexterm>
+<para>The FALSE object is the constant "0" representing a FALSE result for
+logical and comparison operations.
+</para>
+</section>
+
+<section id="nil"><title>The NIL Object (.NIL)</title>
+<indexterm><primary>.NIL object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.NIL object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.NIL object</secondary></indexterm>
+<para>The NIL object is a special
+object that does not contain data. It usually represents the absence of an
+object, as a null string represents a string with no characters. It has only
+the methods of the Object class. Note that you use the .NIL object
+(rather than the null string (&quot;&quot;)) to test for the absence of data
+in an array entry: </para>
+<programlisting>
+if .nil = board[row,col]   /* .NIL rather than "" */
+then ...
+</programlisting>
+</section>
+
+<section id="TRUE"><title>The TRUE Constant (.TRUE)</title>
+<indexterm><primary>.TRUE object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.TRUE object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.TRUE object</secondary></indexterm>
+<para>The TRUE object is the constant "1", representing a true result for
+logical and comparison operations.
+</para>
+</section>
 </section>
 
 <section id="locenv"><title>The Local Directory (.LOCAL)</title>
@@ -93,19 +145,21 @@ say .local~my.alarm
 /* Another .LOCAL example (Windows) */
 .environment["MYAPP.PASSWORD"] = "topsecret"
 .environment["MYAPP.UID"] = 200
-                                       /* Create a local directory for */
-                                       /*  my stuff.                   */
+
+/* Create a local directory for my stuff */
 .local["MYAPP.LOCAL"] = .directory~new
+
 /* Add log file for my local directory                                 */
-.myapp.local["LOG"] = .stream~new("C:\MYAPP.LOG")
+.myapp.local["LOG"] = .stream~new("myapp.log")
 say .myapp.password                    /* Displays "topsecret"         */
 say .myapp.uid                         /* Displays "200"               */
+
 /* Write a line to the log file */
 .myapp.local~log~lineout("Logon at "time()" on "date())
 
 /* Redirect SAY lines into a file:  */
-.local["OUTPUT"] = .stream~new("C:\SAY_REDIRECT.TXT")
-say &quot;This goes into a file, and not onto the screen!&quot;
+.output~destination(.stream~new("SAY_REDIRECT.TXT"))
+say "This goes into a file, and not onto the screen!"
 </programlisting>
 </section>
 
@@ -119,6 +173,8 @@ say &quot;This goes into a file, and not onto the screen!&quot;
 <link linkend="clsMonitor">The Monitor Class</link>) holds the trace stream
 object. You can redirect the trace output in the same way as with the output
 object in the Monitor class example.</para>
+<para>The default for this object's initial destination is the .STDERR
+stream.</para>
 </section>
 
 <section id="inputt"><title>The Input Monitor (.INPUT)</title>
@@ -135,6 +191,8 @@ This input stream is the source for the PARSE LINEIN instruction, the LINEIN
 method of the Stream class, and, if you specify no stream name, the LINEIN
 built-in function. It is also the source for the PULL and PARSE PULL
 instructions if the external data queue is empty.</para>
+<para>The default for this object's initial source is the .STDIN
+stream.</para>
 </section>
 
 <section id="outp"><title>The Output Monitor (.OUTPUT)</title>
@@ -152,6 +210,8 @@ is the destination for output from the SAY instruction, the LINEOUT method
 (.OUTPUT~LINEOUT), and, if you specify no stream name, the
 LINEOUT built-in function. You can replace this object in the environment
 to direct such output elsewhere (for example, to a transcript window).</para>
+<para>The default for this object's initial destination is the .STDOUT
+stream.</para>
 </section>
 
 <section id="errorobj"><title>The STDERR Stream (.STDERR)</title>
@@ -208,58 +268,6 @@ queue lines for the PULL and PARSE PULL instructions.
 </para>
 </section>
 
-<section id="TRUE"><title>The TRUE Constant (.TRUE)</title>
-<indexterm><primary>.TRUE object</primary></indexterm>
-<indexterm><primary>built-in object</primary>
-<secondary>.TRUE object</secondary></indexterm>
-<indexterm><primary>public object</primary>
-<secondary>.TRUE object</secondary></indexterm>
-<para>The TRUE object is the constant "1", representing a true result for
-logical and comparison operations.
-</para>
-</section>
-
-<section id="FALSE"><title>The FALSE Constant (.FALSE)</title>
-<indexterm><primary>.FALSE object</primary></indexterm>
-<indexterm><primary>built-in object</primary>
-<secondary>.FALSE object</secondary></indexterm>
-<indexterm><primary>public object</primary>
-<secondary>.FALSE object</secondary></indexterm>
-<para>The FALSE object is the constant "0" representing a FALSE result for
-logical and comparison operations.
-</para>
-</section>
-
-<section id="ENDOFLINE"><title>The ENDOFLINE Constant (.ENDOFLINE)</title>
-<indexterm><primary>.ENDOFLINE object</primary></indexterm>
-<indexterm><primary>built-in object</primary>
-<secondary>.ENDOFLINE object</secondary></indexterm>
-<indexterm><primary>public object</primary>
-<secondary>.ENDOFLINE object</secondary></indexterm>
-<para>The ENDOFLINE object is a string constant representing the line terminator used for
-file linend markers for a given system.  This constant is "0d0a"x on Windows (carriage return/linefeed)
-and "0a"x (linefeed) on Unix platforms.
-</para>
-</section>
-
-<section id="nil"><title>The NIL Object (.NIL)</title>
-<indexterm><primary>.NIL object</primary></indexterm>
-<indexterm><primary>built-in object</primary>
-<secondary>.NIL object</secondary></indexterm>
-<indexterm><primary>public object</primary>
-<secondary>.NIL object</secondary></indexterm>
-<para>The NIL object is a special
-object that does not contain data. It usually represents the absence of an
-object, as a null string represents a string with no characters. It has only
-the methods of the Object class. Note that you use the .NIL object
-(rather than the null string (&quot;&quot;)) to test for the absence of data
-in an array entry: </para>
-<programlisting>
-if .nil = board[row,col]   /* .NIL rather than "" */
-then ...
-</programlisting>
-</section>
-
 <section id="methe"><title>The METHODS Directory (.METHODS)</title>
 <indexterm><primary>.METHODS Directory</primary></indexterm>
 <indexterm><primary>built-in object</primary>
@@ -280,11 +288,12 @@ the .METHODS symbol has the default value of
 <computeroutput>.METHODS</computeroutput>.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
-use arg class, methname
-class~define(methname,.methods["A"])
-::method a
-  use arg text
-  say text
+/* .methods contains one entry with the index (method name) "TALK" */
+o=.object~enhanced(.methods)  /* create object, enhance it with methods */
+o~talk("echo this text")  /* test "TALK" method */
+::method talk  /* floating method by the name of "TALK" */
+  use arg text  /* retrieve the argument */
+  say text  /* display received argument */
 </programlisting>
 </section>
 
