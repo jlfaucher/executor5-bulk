@@ -1520,7 +1520,7 @@ by a LEAVE instruction).</para>
 <indexterm><primary>examples</primary>
 <secondary>ITERATE instruction</secondary></indexterm>
 <programlisting>
-loop label MyLabelName i=1 to 4 /( lable set to 'MYLABELNAME' */
+loop label MyLabelName i=1 to 4 /* label set to 'MYLABELNAME' */
   if i=2 then iterate
   say i
 end myLabelName
@@ -1595,14 +1595,19 @@ instruction of the selected block.</para>
 <indexterm><primary>examples</primary>
 <secondary>LEAVE instruction</secondary></indexterm>
 <programlisting>
-do i=1 to 5
-  say i
-  if i=3 then leave
-end
-/* Displays the numbers:
+max=5
+do label myDoBlock /* define a label 'MYDOBLOCK' */
+  loop i=1 to max /* label defaults to control variable 'I' */
+    if i = 2 then iterate i
+    if i = 4 the leave myDoBlock
+    say i
+  end i
+  say 'after looping' max 'times'
+end myDoBlock
+/* Displays the following
   1
-  2
   3
+  after looping 4 times
 */
 </programlisting>
 
