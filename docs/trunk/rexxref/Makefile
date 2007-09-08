@@ -118,7 +118,7 @@ IMAGE_FILES = ooRexxObjectClass.png \
               ooRexxCaselessColumnComparatorClass.png \
               ooRexxColumnComparatorClass.png \
               ooRexxCaselessComparatorClass.png \
-              ooRexxCaselessDescendingComparatorClass.png \
+              ooRexxDescendingCaselessComparatorClass.png \
               ooRexxDescendingComparatorClass.png \
               ooRexxInvertingComparatorClass.png \
               ooRexxIteratorClass.png \
