@@ -1085,13 +1085,18 @@ spellings, this function can be called either CENTRE or CENTER.</para></note>
 
 <programlisting>
 <![CDATA[
->>-CHANGESTR(needle,haystack,newneedle)------------------------><
+>>-CHANGESTR(needle,haystack,newneedle--+--------+--)------------------------><
+                                        +-,count-+
 ]]>
 </programlisting>
 
 <para>Returns a copy of <emphasis role="italic">haystack</emphasis> in which
 <emphasis role="italic">newneedle</emphasis> replaces
-all occurrences of <emphasis role="italic">needle</emphasis>.
+occurrences of <emphasis role="italic">needle</emphasis>.
+If <emphasis role="italic">count</emphasis> is not specified, all occurrences of
+<emphasis role="italic">needle</emphasis> are replaced.  If <emphasis role="italic">count</emphasis>
+is specified, it must be a positive, whole number that gives the maximum number of
+occurrences to be replaced.
 The following defines the effect: </para>
 <programlisting>
 result = ""
@@ -1112,6 +1117,7 @@ result = result || substr(haystack, $tempx)
 <programlisting>
 CHANGESTR("1","101100","")     ->    "000"
 CHANGESTR("1","101100","X")    ->    "X0XX00"
+CHANGESTR("1","101100","X", 1) ->    "X01100"
 </programlisting>
 </section>
 

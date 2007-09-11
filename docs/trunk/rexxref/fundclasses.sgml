@@ -2384,13 +2384,18 @@ end;
 <tertiary>of String class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-caselessChangeStr(needle,newneedle)---------------------------------><
+>>-caselessChangeStr(needle,newneedle--+--------+--)---------------------------------><
+                                       +-,count-+
 ]]>
 </programlisting>
 
 <para>Returns a copy of the receiver object in which
 <emphasis role="italic">newneedle</emphasis> replaces
-all occurrences of <emphasis role="italic">needle</emphasis>.
+occurrences of <emphasis role="italic">needle</emphasis>.
+If <emphasis role="italic">count</emphasis> is not specified, all occurrences of
+<emphasis role="italic">needle</emphasis> are replaced.  If <emphasis role="italic">count</emphasis>
+is specified, it must be a positive, whole number that gives the maximum number of
+occurrences to be replaced.
 The <emphasis role="italic">needle</emphasis> searches are performed
 using caseless comparisons.
 </para>
@@ -2400,7 +2405,8 @@ using caseless comparisons.
 <programlisting>
 <![CDATA[
 "AbaAbb"~caselessChangeStr("A","")     ->    "bbb"
-AbaBabAB~changeStr("ab","xy")        ->    "xyxyxyxy"
+AbaBabAB~changeStr("ab","xy")          ->    "xyxyxyxy"
+AbaBabAB~changeStr("ab","xy",1)        ->    "xyaBabAB"
 ]]>
 </programlisting>
 </section>
@@ -2842,13 +2848,18 @@ for information about the CENTER built-in function.)</para>
 <tertiary>of String class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-changeStr(needle,newneedle)---------------------------------><
+>>-changeStr(needle,newneedle--+--------+--)---------------------------------><
+                               +-,count-+
 ]]>
 </programlisting>
 
 <para>Returns a copy of the receiver object in which
 <emphasis role="italic">newneedle</emphasis> replaces
-all occurrences of <emphasis role="italic">needle</emphasis>.</para>
+occurrences of <emphasis role="italic">needle</emphasis>.</para>
+If <emphasis role="italic">count</emphasis> is not specified, all occurrences of
+<emphasis role="italic">needle</emphasis> are replaced.  If <emphasis role="italic">count</emphasis>
+is specified, it must be a positive, whole number that gives the maximum number of
+occurrences to be replaced.
 <para>Here are some examples:</para>
 <indexterm><primary>examples</primary>
 <secondary>changeStr method</secondary></indexterm>
@@ -2856,6 +2867,7 @@ all occurrences of <emphasis role="italic">needle</emphasis>.</para>
 <![CDATA[
 101100~changeStr("1","")     ->    "000"
 101100~changeStr("1","X")    ->    "X0XX00"
+101100~changeStr("1","X",1)  ->    "X01100"
 ]]>
 </programlisting>
 <para>(See <link linkend="bifChangestr">CHANGESTR</link>
