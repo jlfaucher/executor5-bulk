@@ -268,7 +268,6 @@ return 0
     -- In addition, Windows will honor new line sequences in the text.  This
     -- will also cause more lines to be needed.  Again, there is no perfect
     -- solution.
-    --c = msg~countstr('0d0a'x)
     countMsgLines = countMsgLines + trunc(msg~countstr('0d0a'x) * (7/8))
   end
 
