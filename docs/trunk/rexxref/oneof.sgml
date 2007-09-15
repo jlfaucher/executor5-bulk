@@ -265,6 +265,17 @@ queue lines for the PULL and PARSE PULL instructions.
 </para>
 </section>
 
+<section id="linee"><title>The Line Number (.LINE)</title>
+<indexterm><primary>.LINE object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.LINE object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.LINE object</secondary></indexterm>
+<para>.LINE is set to the line number of the instruction currently being executed.
+If the current instruction is defined within an INTERPRET
+instruction, the line number of INTERPRET instruction is returned.</para>
+</section>
+
 <section id="methe"><title>The METHODS Directory (.METHODS)</title>
 <indexterm><primary>.METHODS Directory</primary></indexterm>
 <indexterm><primary>built-in object</primary>
@@ -277,7 +288,7 @@ that ::METHOD directives in the currently running program define. The
 directory indexes are the method names. The directory
 values are the method objects. See
 <link linkend="clsMethod">The Method Class</link>.</para>
-<para>Only methods and/or attributes that are not preceded by 
+<para>Only methods and/or attributes that are not preceded by
 a ::CLASS directive are in
 the .METHODS directory. These are known as <emphasis role="italic">floating
 methods</emphasis>. If there are no such methods,
