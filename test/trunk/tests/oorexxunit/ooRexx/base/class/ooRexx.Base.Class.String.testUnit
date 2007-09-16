@@ -3,7 +3,7 @@
    name:             ooRexx.Base.Class.String.testUnit
    author:           Rony G. Flatscher
    date:             2005-08-07
-   version:          1.0.2
+   version:          1.0.3
 
 -- line commented lines are ignored, when building the directory of infos from this header
    changed:          2005-08-21, ---rgf, renamed the testUnit-class to match exactly the
@@ -23,6 +23,7 @@
                      2007-06-10, ---rgf, added test cases for LOWER and UPPER
                      2007-06-23, ---rgf, added test case for 'caselessWordPos'
                      2007-07-10, ---rgf, changed names of test cases, added various caseless tests
+                     2007-09-16, ---rgf, added tests for new 'count' argument in [caseless]changeStr()
 
    languageLevel:    6.02
    purpose:          Test the methods of the class String.
@@ -407,11 +408,50 @@ return testUnitList
    self~assertSame("subTest1" , '000'    , 101100~CHANGESTR('1',"")  )
    self~assertSame("subTest2" , 'X0XX00' , 101100~CHANGESTR('1','X') )
 
+   -- new tests
+    self~assertSame("subTest3", '101100' , '101100'~changestr('','X')  )
+    self~assertSame("subTest4", ''       , ''~changestr('1','X')  )
+
+   -- new tests: optional, trailing "count" argument
+    self~assertSame("subTest5", 'ha-lo' , 'hallo'~changeStr('l','-',1)  )
+    self~assertSame("subTest6", 'ha--o' , 'hallo'~changeStr('l','-',2)  )
+    self~assertSame("subTest7", 'ha--o' , 'hallo'~changestr('l','-',3)  )
+
+::method "test_changeStr_error_93.907"
+    self~expectSyntax(93.907)
+    'aha'~changeStr('a','A',0)
+
+
+
 ::method "test_ChangeStr_caseless"
 
    self~assertSame("subTest1" , 'aABBcC' , "aAbBcC"~caselessChangeStr('b',"B")  )
-   self~assertSame("subTest1" , 'aAbbcC' , "aAbBcC"~caselessChangeStr('B',"b")  )
-   self~assertSame("subTest1" , 'aA99cC' , "aAbBcC"~caselessChangeStr('B',"9")  )
+   self~assertSame("subTest2" , 'aAbbcC' , "aAbBcC"~caselessChangeStr('B',"b")  )
+   self~assertSame("subTest3" , 'aA99cC' , "aAbBcC"~caselessChangeStr('B',"9")  )
+
+   -- new tests: optional, trailing "count" argument
+    self~assertSame("subTest4a", 'ha-lo' , 'hallo'~caselessChangeStr('L','-',1)  )
+    self~assertSame("subTest4b", 'ha-lo' , 'haLlo'~caselessChangeStr('L','-',1)  )
+    self~assertSame("subTest4c", 'ha-Lo' , 'haLLo'~caselessChangeStr('L','-',1)  )
+    self~assertSame("subTest4d", 'ha-lo' , 'haLlo'~caselessChangeStr('l','-',1)  )
+    self~assertSame("subTest4e", 'ha-Lo' , 'haLLo'~caselessChangeStr('l','-',1)  )
+
+    self~assertSame("subTest5a", 'ha--o' , 'hallo'~caselessChangeStr('l','-',2)  )
+    self~assertSame("subTest5b", 'ha--o' , 'haLlo'~caselessChangeStr('L','-',2)  )
+    self~assertSame("subTest5c", 'ha--o' , 'haLLo'~caselessChangeStr('L','-',2)  )
+    self~assertSame("subTest5d", 'ha--o' , 'haLlo'~caselessChangeStr('l','-',2)  )
+    self~assertSame("subTest5e", 'ha--o' , 'haLLo'~caselessChangeStr('l','-',2)  )
+
+    self~assertSame("subTest6a", 'ha--o' , 'hallo'~caselessChangestr('l','-',3)  )
+    self~assertSame("subTest6b", 'ha--o' , 'haLlo'~caselessChangeStr('L','-',3)  )
+    self~assertSame("subTest6c", 'ha--o' , 'haLLo'~caselessChangeStr('L','-',3)  )
+    self~assertSame("subTest6d", 'ha--o' , 'haLlo'~caselessChangeStr('l','-',3)  )
+    self~assertSame("subTest6e", 'ha--o' , 'haLLo'~caselessChangeStr('l','-',3)  )
+
+::method "test_changeStr_caseless_error_93.907"
+    self~expectSyntax(93.907)
+    'aha'~caselessChangeStr('a','A',0)
+
 
 
    -- test the BIF, using examples from the documentation
@@ -677,7 +717,7 @@ return testUnitList
     self~assertSame("subTest_02",  1, str~match(2, "bcD"))
     self~assertSame("subTest_03" , 0, str~match(2, "bcd"))
     self~assertSame("subTest_04" , 0, str~match(2, "ab"))
-    self~assertSame("subTest_05",  0, str~match(2, "cD"))             
+    self~assertSame("subTest_05",  0, str~match(2, "cD"))
 
 
 ::method "test_Match_caseless"
@@ -687,7 +727,7 @@ return testUnitList
     self~assertSame("subTest_02",  1, str~caselessMatch(2, "bcD"))
     self~assertSame("subTest_03" , 1, str~caselessMatch(2, "bcd"))
     self~assertSame("subTest_04" , 0, str~caselessMatch(2, "ab"))
-    self~assertSame("subTest_05",  0, str~caselessMatch(2, "cD"))             
+    self~assertSame("subTest_05",  0, str~caselessMatch(2, "cD"))
 
 
 ::method "test_MatchChar"
