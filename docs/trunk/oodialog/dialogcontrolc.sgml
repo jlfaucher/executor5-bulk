@@ -274,6 +274,10 @@ the methods listed in
 <entry><link linkend="gettextsize">GetTextSize</link></entry>
 </row>
 <row>
+<entry>Group</entry>
+<entry><link linkend="mthGroup">Group</link></entry>
+</row>
+<row>
 <entry>HScrollPos</entry>
 <entry><link linkend="hscrollpos">HScrollPos</link></entry>
 </row>
@@ -412,6 +416,10 @@ the methods listed in
 <row>
 <entry>ShowFast</entry>
 <entry><link linkend="showfast">ShowFast</link></entry>
+</row>
+<row>
+<entry>TabStop</entry>
+<entry><link linkend="mthTabStop">TabStop</link></entry>
 </row>
 <row>
 <entry>TabToNext</entry>
@@ -992,7 +1000,8 @@ could not be determined.
 </section>
 </section>
 
-<section id="appmodmeth"><title>Appearance Modification Methods</title>
+<section id="appmodmeth"><title>Appearance and Behavior Modification 
+Methods</title>
 <indexterm><primary>enable methods</primary>
 <secondary>DialogControl class</secondary></indexterm>
 <indexterm><primary>disable methods</primary>
@@ -1001,9 +1010,10 @@ could not be determined.
 <secondary>DialogControl class</secondary></indexterm>
 <indexterm><primary>show methods</primary>
 <secondary>DialogControl class</secondary></indexterm>
-<para>The following methods are to change the appearance of the dialog itself
-or one of its controls. The list contains methods to change the size, position,
-visibility, and title (header).</para>
+<para>The following methods are to change the appearance or the behavior of the 
+dialog itself or one of its controls. The list contains methods to change the 
+size, position, visibility, and title (header).
+</para>
 
 <section id="enable"><title>Enable</title>
 <indexterm><primary>Enable</primary></indexterm>
@@ -1052,6 +1062,121 @@ MyDialog~GetEditControl("Name")~Disable
 
 ]]>
 </programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthGroup"><title>Group</title>
+<indexterm><primary>SetGroup</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~Group(--+-----------+--)---------------------><
+                          +-wantStyle-+
+
+]]>
+</programlisting>
+
+<para>Add or remove the <link linkend="wsgroup">group style</link> for this
+control.  The group style controls how the user can navigate through the dialog
+using the keyboard.  For most dialogs this does not change while the dialog is
+executing.  However, in some dialogs the programmer may want to change
+the navigation depending on the options the user selects.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is
+<variablelist>
+<varlistentry><term>wantStyle</term>
+<listitem><para>A boolean (.true or .false) to indicate whether the control
+should have or not have the group style.  True (the default) indicates the
+control should have the group style and false indicates the control should
+not have the style.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>Negative values indicate the function failed, non-negative
+values indicate success.
+<variablelist>
+<varlistentry><term>-4 or less</term>
+<listitem><para>The value is the negated Window System Error code.  The absolute
+value of the return can be used to look up the error reason in the Windows
+documentation.
+</para></listitem></varlistentry>
+<varlistentry><term>-3</term>
+<listitem><para>The optional argument to the method is not a boolean.
+</para></listitem></varlistentry>
+<varlistentry><term>-2</term>
+<listitem><para>There is an (internal) problem with the dialog or the dialog
+handle.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>There is an (internal) problem with the resource ID of the
+control.
+</para></listitem></varlistentry>
+<varlistentry><term>0 or greater</term>
+<listitem><para>The window style of the dialog control prior to adding or
+removing the group style.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthTabStop"><title>TabStop</title>
+<indexterm><primary>abStop</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~TabStop(--+-----------+--)--------------------><
+                            +-wantStyle-+
+
+]]>
+</programlisting>
+
+<para>Add or remove the <link linkend="wstabstop">tab stop style</link> for the
+control.  When  a control has the tabstop style, the user can set the focus to
+the control by using the tab key.  When a control does not have this style, the
+tab key will skip over the control.  Adding or removing this style during the
+execution of a dialog allows the programmer to alter how the user navigates
+through the dialog controls.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>wantStyle</term>
+<listitem><para>A boolean (.true or .false) to indicate whether the control
+should have or not have the tabstop style.  True (the default) indicates the
+control should have the tabstop style and false indicates the control should
+not have the style.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>Negative values indicate the function failed, non-negative
+values indicate success.
+<variablelist>
+<varlistentry><term>-4 or less</term>
+<listitem><para>The value is the negated Window System Error code.  The absolute
+value of the return can be used to look up the error reason in the Windows
+documentation.
+</para></listitem></varlistentry>
+<varlistentry><term>-3</term>
+<listitem><para>The second argument to the method is not a boolean.
+</para></listitem></varlistentry>
+<varlistentry><term>-2</term>
+<listitem><para>There is an (internal) problem with the dialog or the dialog
+handle.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>There is an (internal) problem with the resource ID of the
+control.
+</para></listitem></varlistentry>
+<varlistentry><term>0 or greater</term>
+<listitem><para>The window style of the dialog control prior to adding or
+removing the tabstop style.
+</para></listitem></varlistentry>
+</variablelist>
 </para></listitem></varlistentry>
 </variablelist>
 </section>

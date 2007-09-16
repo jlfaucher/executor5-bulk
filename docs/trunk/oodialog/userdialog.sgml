@@ -58,26 +58,49 @@ elements: </para>
 The class also inherits the methods of its parent class: the
 <link linkend="clsBaseDialog">BaseDialog class</link>.
 </para></note>
-<para>There are two ways of creating a dialog: </para>
+<para>Subclasses of the UserDialog can inherit the mixin
+<link linkend="advcntlc">AdvancedControls</link> class.  This class provides
+methods to dynamically create a dialog with these additional elements:
+</para>
+<itemizedlist>
+<listitem><para>List controls (List-view controls)</para></listitem>
+<listitem><para>Tree controls</para></listitem>
+<listitem><para>Tab controls</para></listitem>
+<listitem><para>Slider controls</para></listitem>
+<listitem><para>Progress Bar controls</para></listitem></itemizedlist>
+<para>There are three basic ways of creating a dialog using the UserDialog
+class:
+</para>
 <itemizedlist>
 <listitem><para>Load the dialog from a resource script using the
-<link linkend="h001613">Load</link> method.  The
-<link linkend="clsRcDialog">RcDialog</link> class provides a convenient way to
-create a dialog from a resource script.  It handles the details of loading the
-resouce script transparently and leaves the programmer free to concentrate on
-the details of the behavior of the dialog.  It is a subclass of the
-<computeroutput>UserDialog</computeroutput>.
+<link linkend="h001613">Load</link> method.  This will create the dialog and its
+controls from the definitions in the resource script.  An alternative to calling
+the <computeroutput>Load</computeroutput> method is to use the
+<link linkend="clsRcDialog">RcDialog</link> class.  This class is a subclass of
+the <computeroutput>UserDialog</computeroutput> class and provides a convenient
+way to create a dialog from a resource script.  It handles the details of
+loading the resouce script transparently and leaves the programmer free to
+concentrate on the details of the behavior of the dialog.
 </para></listitem>
-<listitem><para>Invoke Add... methods to an instance of this class
+<listitem><para>Invoke Add... methods on an instance of this class
 or a subclass and create the dialog step by step, one method for one dialog
-item. The best place to invoke these Add... methods
-is to override the DefineDialog method. The DefineDialog method is called
-automatically when the instance is created.</para>
-<para>There are also methods that enable you to define a group of the same dialog
-elements together. The names of these methods end with Group or Stem.
+item. The best place to invoke these Add... methods is to override the
+<link linkend="h001506">DefineDialog</link> method. The DefineDialog method is
+called automatically when an instance of the UserDialog is created.
+</para>
+<para>In addition to creating dialog items one at a time, there are also methods
+that enable you to define a group of the same dialog elements together. The
+names of these methods begin with Add... and end with Group or Stem.
+</para></listitem>
+<listitem><para>Combine loading a dialog from a resource script and adding
+elements dynamically.  This would define the dialog and some of the dialog
+controls using the resource script.  The programmer could then define additional
+dialog dialog controls using the Add... methods in the DefineDialog method.  For
+instance, this could be useful in an application that had several dialogs with
+similar features.  The similar aspects of each dialog could be placed in a
+resource script and then the individual dialogs could be customized using the
+Add... methods.
 </para></listitem></itemizedlist>
-<para>You can also combine loading a dialog from a resource script and adding
-elements dynamically. </para>
 <variablelist>
 <varlistentry><term>Requires:</term>
 <listitem><para><computeroutput>UserDlg.cls</computeroutput> is the source file of this class.
@@ -564,8 +587,11 @@ and an example.</para>
 ]]>
 </programlisting>
 
-<para>The DefineDialog method is called by Create. It is designed to be overwritten in a subclass of UserDialog. You should do all or additional dialog definitions, such
-as adding dialog items to the dialog, within this method.</para>
+<para>The DefineDialog method is called by Create. It is designed to be
+overwritten in a subclass of UserDialog.  You should do all the definition of
+dynamically added dialog controls within this method, using the <link
+linkend="addmeth">Add... Methods</link>.
+</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
 <listitem><para>This method is protected. There is no need to call this method from
@@ -583,7 +609,7 @@ to its client area:
      .
 ::method DefineDialog
 self~AddButton(401, 20, 235, 40, 15, "&More...")
-self~AddEntryLine(402, INPUT_1, 20, 170, 150)
+self~AddEntryLine(402, INPUT_1, 20, 170, 150, 10)
      .
      .
      .
@@ -787,18 +813,126 @@ of dialog 200 or dialog 300, depending on the argument:
 
 <section id="addmeth"><title>Add... Methods</title>
 <indexterm><primary>Add... methods</primary></indexterm>
-<para>The methods listed below (all starting with Add)
-can be used to create a dialog dynamically without any resource script (.RC
-file). They can also be used in addition to a loaded dialog.</para>
-<para>The recommended way to create a dialog is to subclass from UserDialog and put all Add... statements into DefineDialog method, which is executed when the dialog
-is about to be created.</para>
-<para>Add... methods call the matching Connect... methods to create the associated Object Rexx attribute. Add... methods cannot be used after <link linkend="h000048">Execute</link> has
-started.</para>
-
-<note><title>Note</title><para>
-The coordinates are usually set in dialog units, if not mentioned
-explicitly.
+<para>The methods listed below (all starting with Add) can be used to create a
+dialog dynamically without any resource script (.RC file). The methods are used
+to define the individual dialog controls. The methods can also be used in a
+dialog that is created by loading a resource script.  The methods will then be
+used to define controls in addition to the ones defined in the resource script.
+</para>
+<para>The recommended way to create a dialog dynamically is to subclass from
+UserDialog and put all Add... statements into the <link linkend="h001506">
+DefineDialog</link> method, which is executed when the dialog is about to be
+created.
+</para>
+<para>The Add... methods call the matching Connect... methods to create the
+associated Object Rexx attribute. Add... methods cannot be used after
+<link linkend="h000048">Execute</link> has started.
+</para>
+<note><title>Note</title>
+<para> Unless otherwise stated, the coordinates (the x, y, cx, and cy arguments)
+of the dialog control definitions are specified in dialog units.
 </para></note>
+<para>The behavior and appearance of all dialog controls created using one of
+the Add... methods are controlled by a style option.  For each of the Add...
+methods, one of the arguments consists of a set of keywords that define the
+style of the control being defined.  These keywords allow the programmer to
+change the default behavior and  / or appearance of the control.
+</para>
+<para>There are five styles that all dialog controls share.  The following list
+explains these styles and the keywords that are used for the styles.  In many
+cases, there is a common default value for the style and the programmer only
+needs to specify a keyword when she wants a non-default value for the style.
+For instance, normally all dialog controls are created enabled.  The programmer
+would only need to specify the <emphasis role="bold">DISABLED</emphasis> keyword
+when the control should be disabled as the dialog is first displayed.
+</para>
+<variablelist>
+<varlistentry><term id="wsvisible">Visible</term>
+<listitem><para>All windows (and every dialog control is a window) can be
+visible or invisible.  When a control is invisible it is not displayed on the
+screen and the user will not see it.  The control is also not active and will
+not accept any keyboard or mouse input.  But, the control still exists and does
+not lose any of its internal state.  Since the control is invisible, whatever is
+underneath it will be displayed on the screen.  Normally this would be the owner
+dialog.  However, it could also be another dialog control.  If this other dialog
+control is visible, the user will see and can interact with it rather than the
+invisible control.
+</para>
+<para>In ooDialog by default all controls created using the Add... methods will
+be created visible.  To change the default for any control when using the Add...
+methods add the <emphasis role="bold">HIDDEN</emphasis> keyword to the style
+argument.  This will make the control invisible when the dialog is first shown
+on the screen.
+</para>
+<para>For any control, the visible style can be changed during program execution
+by using the <link linkend="hide">Hide</link> or <link linkend="showdc">Show</link>
+methods.  (Or any of the related methods like <link linkend="hidefast">HideFast</link>,
+<link linkend="display">Display</link>, etc..)
+</para></listitem></varlistentry>
+<varlistentry><term id="wsdisabled">Enabled</term>
+<listitem><para>All windows can be disabled or enabled.  When a dialog control
+is disabled it will not accept keyboard or mouse input and therefore the user
+can not interact with it.  The operating system will draw disabled controls in a
+different manner than enabled controls to give the user a visual clue that the
+control is disabled.</para>
+<para>When using the Addd... methods controls will be created enabled.  To
+change this for any control add the <emphasis role="bold">DISABLED</emphasis>
+keyword to the style argument.  The control will then be disabled when the
+dialog is first shown on the screen.
+</para>
+<para>All controls can have their enabled style changed during program execution
+by using the <link linkend="disable">Disable</link> or <link linkend="enable">Enable</link>
+methods.  (Or any of the related methods like <link linkend="h001229">DisableItem</link>,
+<link linkend="h001221">EnableItem</link>, etc..)
+</para></listitem></varlistentry>
+<varlistentry><term id="wsborder">Border</term>
+<listitem><para>Most, but not all, windows are drawn with a border.  When using
+the Add... methods individual controls are drawn by default with, or without, a
+border.  The default is changed by using either the <emphasis role="bold">BORDER</emphasis>
+or <emphasis role="bold">NOBORDER</emphasis> keywords.  The reference for each
+individual Add... method notes the default for the control for this style and
+which keyword is used to change the default.  In general, this style can not be
+changed after a control is created.
+</para></listitem></varlistentry>
+<varlistentry><term id="wsgroup">Group</term>
+<listitem><para>This style is used to place a series of consecutive dialog
+controls in a group.  The first control with the group style starts a new group
+of controls.  This group continues for each control that does not have the group
+style.  As soon as a successive control is encountered with the group style, a
+new group is started.  This style is only meaningful for dialog control windows.
+</para>
+<para>The Windows dialog manager uses this style to determine the behavior of a
+dialog, mostly the navigation behavior.  Within a group of controls the user
+navigates from one control to the other using the arrow keys rather than the tab
+key.
+</para>
+<para>The <emphasis role="bold">GROUP</emphasis> keyword is used to give a
+control the group style when it is created using one of the Add... methods.
+After the control has been created its group style can be changed during the
+execution of a dialog by using the <link
+linkend="mthSetGroup">SetGroup</link> method of the PlainBaseDialog class or
+the <link linkend="mthGroup">Group</link> method of the DialogControl class.
+</para></listitem></varlistentry>
+<varlistentry><term id="wstabstop">Tabstop</term>
+<listitem><para>The tabstop style is another style that is only meaningful with
+dialog controls.  When a control has the tabstop style the user can navigate to
+it using the tab key.  If a control does not have this style, the tab key will
+skip over the control.  Dialog controls in the same class usually all have the
+same style for tabstop.  As an example, all button controls usually have the
+tabstop style, whereas all static text controls usually do not have the tabstop
+style.
+</para>
+<para>When a control as added to an UserDialog instance it is given the tabstop
+style that is normal for the control. The individual Add... methods document the
+default for the control.  The programmer uses either the
+<emphasis role="bold">TAB</emphasis> or
+<emphasis role="bold">NOTAB</emphasis> keywords to change the default. After
+controls have been created they can have their tabstop style changed using the
+<link linkend="mthSetTabSTop">SetTabStop</link> method of the PlainBaseDialog
+class or the <link linkend="mthTabStop">TabStop</link> method of the
+DialogControl class.
+</para></listitem></varlistentry>
+</variablelist>
 
 <section id="h001647"><title>AddButton</title>
 <indexterm><primary>AddButton</primary></indexterm>
@@ -1146,84 +1280,129 @@ is aligned to the left.
 >>-aUserDialog~AddEntryLine(--id--,--+------+--,--x--,--y--,--cx-->
                                      +-name-+
 
->--+---------------------------------------------+---)-----------><
-   +-,--+----+--+------------------------------+-+
-        +-cy-+  |       +-----------------+    |
-                |       V                 |    |
-                +-,--"----+-MULTILINE---+-+--"-+
-                          +-AUTOSCROLLH-+
-                          +-HSCROLL-----+
-                          +-AUTOSCROLLV-+
-                          +-VSCROLL-----+
-                          +-READONLY----+
-                          +-DISABLED----+
-                          +-CENTER------+
-                          +-RIGHT-------+
-                          +-UPPER-------+
-                          +-LOWER-------+
-                          +-NOBORDER----+
+>--+-----------------------------------------------+---)---------><
+   +-,--+----+--+--------------------------------+-+
+        +-cy-+  |       +-------------------+    |
+                |       V                   |    |
+                +-,--"----+-AUTOSCROLLH---+-+--"-+
+                          +-HSCROLL-------+
+                          +-AUTOSCROLLV---+
+                          +-VSCROLL-------+
+                          +-MULTILINE-----+
+                          +-HIDESELECTION-+
+                          +-NOWANTRETURN--+
+                          +-READONLY------+
+                          +-KEEPSELECTION-+
+                          +-PASSWORD------+
+                          +-CENTER--------+
+                          +-RIGHT---------+
+                          +-UPPER---------+
+                          +-LOWER---------+
+                          +-NUMBER--------+
+                          +-OEM-----------+
+                          +-HIDDEN--------+
+                          +-DISABLED------+
+                          +-GROUP---------+
+                          +-NOTAB---------+
+                          +-NOBORDER------+
 
 
 ]]>
 </programlisting>
 
-<para>The AddEntryLine method adds an entry line to the
-dialog. </para>
+<para>The AddEntryLine method adds an entry line (an Edit Control in Windows
+terms) to the dialog.
+</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
 <variablelist>
 <varlistentry><term>id</term>
-<listitem><para>This must be a unique number.
+<listitem><para>The <link linkend="resourceid">resource ID</link> of the edit
+control  This must be an unique number or symbolic ID.
 </para></listitem></varlistentry>
 <varlistentry><term>name</term>
-<listitem><para>This is the name of the entry line. An attribute with exactly this name
-is added to the object and provides data for the dialog item automatically.
-See <link linkend="h000184">ConnectEntryLine</link>.
+<listitem><para>This is the name of the edit control.  An attribute with
+exactly this name is added to the object and provides data for the dialog item
+automatically. See <link linkend="h000184">ConnectEntryLine</link>.
 </para></listitem></varlistentry>
 <varlistentry><term>x, y</term>
 <listitem><para>The position of the upper-left corner relative to the dialog's client
 area measured in dialog units
 </para></listitem></varlistentry>
 <varlistentry><term>cx</term>
-<listitem><para>The length of the entry line in dialog units
+<listitem><para>The length of the edit control in dialog units
 </para></listitem></varlistentry>
 <varlistentry><term>cy</term>
-<listitem><para>The height of the entry line. If this argument is omitted or equal to
-0, the height is calculated to fit the font's height.
+<listitem><para>The height of the edit control. If this argument is omitted or
+equal to 0, the height is calculated to fit the font's height.
 </para></listitem></varlistentry>
-<varlistentry><term>Options</term>
-<listitem><para>The last argument can be one or more (separated by a blank) of:
+<varlistentry><term>style</term>
+<listitem><para>The last argument can be one or more of the following style
+keywords.  (Each keyword is separated by a blank.):
 <variablelist>
-<varlistentry><term>MULTILINE</term>
-<listitem><para>Designates a multiple-line edit control. (The default is single line.)
+<varlistentry><term><emphasis role="bold">Note</emphasis></term>
+<listitem><para>The behavior described here for the style keywords may vary
+slightly depending on the version of Windows.
 </para></listitem></varlistentry>
 <varlistentry><term>AUTOSCROLLH</term>
-<listitem><para>Automatically scrolls text to the right by 10 characters when the user
-types a character at the end of the line. When the user presses the ENTER
-key, the control scrolls all text back to position 0.
+<listitem><para>Automatically scrolls text to the right when the user types a
+character at the end of the line.  In a single-line edit control text can not be
+added past the width of the control without this style.  Multi-line edit
+controls do not need this style if a horizontal scroll bar is added.
 </para></listitem></varlistentry>
 <varlistentry><term>HSCROLL</term>
-<listitem><para>Combines a horizontal scroll bar with the entry line.
+<listitem><para>Adds a horizontal scroll bar to the bottom of the edit control.
+A horizontal scroll bar is only functional in multi-line edit controls.
 </para></listitem></varlistentry>
 <varlistentry><term>AUTOSCROLLV</term>
-<listitem><para>Automatically scrolls text up one page when the user presses ENTER on
-the last line.
+<listitem><para>Automatically scrolls text up when the user presses ENTER on
+the last line.  This style only effects multi-line edit controls and is not
+needed if a vertical scroll bar is added.
 </para></listitem></varlistentry>
 <varlistentry><term>VSCROLL</term>
-<listitem><para>Combines a vertical scroll bar with the entry line.
+<listitem><para>Adds a vertical scroll bar to the right of the edit control.
+</para></listitem></varlistentry>
+<varlistentry><term>MULTILINE</term>
+<listitem><para>Designates a multiple-line edit control. (The default is single
+line.)  Multi-line edit controls have the WANTRETURN and KEEPSELECTION styles
+unless the NOWANTRETURN and / or HIDESELECTION keywords are specified.</para>
+<para>When a multi-line edit control has the WANTRETURN style, pressing the
+ENTER key inserts a line break in the text of the control.  Without the
+WANTRETURN style, pressing the ENTER key clicks the default button.  With the
+KEEPSELECTION style, any selected text in the edit control keeps its highlight
+when the control loses focus.
+</para></listitem></varlistentry>
+<varlistentry><term>HIDESELECTION</term>
+<listitem><para>Removes the KEEPSELECTION style from multi-line edit controls.
+This keyword only effects multi-line edit controls.
+</para></listitem></varlistentry>
+<varlistentry><term>NOWANTRETURN</term>
+<listitem><para>Removes the WANTRETURN style from multi-line edit controls.
+This keyword only effects multi-line edit controls.
 </para></listitem></varlistentry>
 <varlistentry><term>READONLY</term>
 <listitem><para>Prevents the user from entering or editing text in the edit control.
 </para></listitem></varlistentry>
-<varlistentry><term>DISABLED</term>
-<listitem><para>Initially disables the entry line.
+<varlistentry><term>KEEPSELECTION</term>
+<listitem><para>Selected text in an edit control keeps its highlight when the
+focus is shifted away from the control.
+</para></listitem></varlistentry>
+<varlistentry><term>PASSWORD</term>
+<listitem><para>Characters typed into the the edit control are masked.  Rather
+than displaying the character typed, the edit control displays the mask
+character.  Prior to Windows XP the default mask character was the asterisk.  In
+Windows XP the default mask character is a black circle. The default password 
+character can be changed by using the <link linkend="passwordcharset">PasswordChar=</link> 
+method.
 </para></listitem></varlistentry>
 <varlistentry><term>CENTER</term>
-<listitem><para>Centers text in a multiline edit control.
+<listitem><para>Centers text in an edit control.  (In Windows 95 and NT this
+style only effects multi-line edit controls.)
 </para></listitem></varlistentry>
 <varlistentry><term>RIGHT</term>
-<listitem><para>Aligns text flush right in a multiline edit control.
+<listitem><para>Aligns text flush right in an edit control.  (In Windows 95 and
+NT this style only effects multi-line edit controls.)
 </para></listitem></varlistentry>
 <varlistentry><term>UPPER</term>
 <listitem><para>Converts all characters to uppercase as they are typed into the edit
@@ -1233,19 +1412,43 @@ control.
 <listitem><para>Converts all characters to lowercase as they are typed into the edit
 control.
 </para></listitem></varlistentry>
+<varlistentry><term>NUMBER</term>
+<listitem><para>Only allows digits to be typed into the edit control.  If the
+user types an non-digit character an information balloon is displayed informing
+the user that only digits are allowd.  This style does not prevent the user from
+pasting non-digits into the control.
+</para></listitem></varlistentry>
+<varlistentry><term>OEM</term>
+<listitem><para>This style is provided for completeness.  The Windows API 
+documentation provided by Microsoft contains information concerning this style.
+</para></listitem></varlistentry>
+<varlistentry><term>HIDDEN</term>
+<listitem><para>Create the control without the <link linkend="wsvisible">visible</link> style.
+</para></listitem></varlistentry>
+<varlistentry><term>DISABLED</term>
+<listitem><para>Create the control without the <link linkend="wsdisabled">enabled</link> style.
+</para></listitem></varlistentry>
+<varlistentry><term>GROUP</term>
+<listitem><para>Create the control with the <link linkend="wsgroup">group</link> style.
+</para></listitem></varlistentry>
+<varlistentry><term>NOTAB</term>
+<listitem><para>Create the control without the <link linkend="wstabstop">tabstop</link> 
+style. By default the edit control is created with the tabstop style.
+</para></listitem></varlistentry>
 <varlistentry><term>NOBORDER</term>
-<listitem><para>The rectangle is not drawn around the entry field.
+<listitem><para>Create the control without the <link linkend="wsborder">border</link> 
+style.  By default edit controls are created with a border.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example puts the entry line with ID 201 and length of
-150 dialog units close to the upper-left corner of the dialog's client area.
-The FIRSTNAME attribute is created and connected to
-the dialog item. If the entered data is longer than 150 dialog units, the
-entryline is scrolled horizontally.
+<listitem><para>The following example puts the edit control with ID 201 and 
+length of 150 dialog units close to the upper-left corner of the dialog's client 
+area. The FIRSTNAME attribute is created and connected to
+the dialog item. If the entered data is longer than 150 dialog units, the edit 
+control scrolls horizontally.
 </para></listitem></varlistentry>
 </variablelist>
 
