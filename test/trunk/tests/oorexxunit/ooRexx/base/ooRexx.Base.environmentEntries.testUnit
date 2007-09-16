@@ -3,10 +3,13 @@
    name:             ooRexx.Base.LabelOption.testUnit
    author:           Rony G. Flatscher
    date:             2007-09-16
-   version:          1.0.0
+   version:          1.0.1
 
 -- line commented lines are ignored, when building the directory of infos from this header
-   changed:          ---
+   changed:          2007-09-16, ---rgf, removed tests for Windows-specific classes (OLEObject,
+                                         OLEVariant) as they are not available on all platforms,
+                                         made test for .LINE a little bit more flexible to adapt
+                                         to new line numbers, in case it gets shifted
 
    languageLevel:    6.02
    purpose:          Test the entries in .local and .environment
@@ -132,9 +135,10 @@ return testUnitList
 
    -- ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !
    -- ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !
- -->  the following line *MUST* *BE* on line # 136, otherwise the test fails !!
-   self~assertSame("subTest '.LINE', this statement *MUST* start/be on line # 136 in the source code!", -
-                    136, .LINE)
+
+   tmpLine=140    -->  the following line *MUST* *BE* on line # tmpLine, otherwise the test fails !!
+   self~assertSame("subTest '.LINE', this statement *MUST* start/be on line #" tmpLine "in the source code!", -
+                    tmpLine, .LINE)
    -- ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !
    -- ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !
 
@@ -187,8 +191,6 @@ return testUnitList
         "MUTABLEBUFFER"                -
         "NIL"                          -
         "OBJECT"                       -
-        "OLEOBJECT"                    -
-        "OLEVARIANT"                   -
         "ORDEREDCOLLECTION"            -
         "OUTPUTSTREAM"                 -
         "PROPERTIES"                   -
@@ -256,6 +258,11 @@ return testUnitList
         "STRING"                       -
         "SUPPLIER"                     -
         "TABLE"                        -
+
+  if .ooRexxUnit.OSName="WINDOWS" then    -- add Windows-specific entries
+  do
+     entries=entries "OLEOBJECT OLEVARIANT"
+  end
 
   do i=1 to words(entries)
      w=word(entries,i)        -- extract word
