@@ -168,7 +168,7 @@ the methods listed in the following table.
 <tbody>
 <row>
 <entry>AddBitmapButton</entry>
-<entry><link linkend="h001662">AddBitmapButton</link></entry>
+<entry><link linkend="mthAddBitmapButton">AddBitmapButton</link></entry>
 </row>
 <row>
 <entry>AddBlackFrame</entry>
@@ -945,6 +945,7 @@ DialogControl class.
                     |       .---------------+    |
                     |       V               |    |
                     +-,--"----+-DEFAULT---+-+--"-+
+                              +-OWNER-----+
                               +-LEFT------+
                               +-RIGHT-----+
                               +-TOP-------+
@@ -996,6 +997,13 @@ each time the button is clicked
 <variablelist>
 <varlistentry><term>DEFAULT</term>
 <listitem><para>The button becomes the default button in the dialog.
+</para></listitem></varlistentry>
+<varlistentry><term>OWNER</term>
+<listitem><para>The programmer is completely responsible for drawing the button
+when the dialog receives the WM_DRAWITEM message.  Currently this would be
+difficult (but not impossible) to implement in ooDialog.  A simpler approach for
+an owner drawn button is to use a bitmap button.  See the <link
+linkend="mthAddBitmapButton">AddBitmapButton</link> method.
 </para></listitem></varlistentry>
 <varlistentry><term>LEFT</term>
 <listitem><para>Left justifies the text in the button rectangle.  If neither
@@ -1075,7 +1083,7 @@ MyDialog~AddButton(555, 100, 80, 40, 15, "&Get new Info", ,
 </variablelist>
 </section>
 
-<section id="h001662"><title>AddBitmapButton</title>
+<section id="mthAddBitmapButton"><title>AddBitmapButton</title>
 <indexterm><primary>AddBitmapButton</primary></indexterm>
 <programlisting>
 <![CDATA[
