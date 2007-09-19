@@ -814,6 +814,14 @@ view control has the AUTOARRANGE style.</para>
 WM_NOTIFY message for a button control (push button, radio button, or check
 box) with a method. The WM_NOTIFY message informs the dialog that an event
 has occurred with regard to the button.</para>
+<note><title>Note</title><para>
+In order to recieve the GOTFOCUS, LOSTFOCUS, and DBLCLK events, the button
+control has to have the NOTIFY (BS_NOTIFY) style.  For user defined dialogs use
+the NOTIFY style keyword in the <link linkend="addmeth">Add...</link> method
+when the button is defined.  For dialogs created from a compiled resource or a
+resource script file use the BS_NOTIFY style for the button resource.  The other
+events are always sent and it is not necessary to add the NOTIFY style.
+</para></note>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
