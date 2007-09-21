@@ -86,6 +86,10 @@ the methods listed in the
 <entry><link linkend="getline">GetLine</link></entry>
 </row>
 <row>
+<entry>GetText</entry>
+<entry><link linkend="mthGetText">GetText</link></entry>
+</row>
+<row>
 <entry>IsModified</entry>
 <entry><link linkend="ismodified">IsModified</link></entry>
 </row>
@@ -152,6 +156,10 @@ the methods listed in the
 <row>
 <entry>SetReadOnly</entry>
 <entry><link linkend="setreadonly">SetReadOnly</link></entry>
+</row>
+<row>
+<entry>SetText</entry>
+<entry><link linkend="mthSetText">SetText</link></entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -385,7 +393,8 @@ whether the edit control has been modified.</para>
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>
+<listitem><para>(See also the <link
+linkend="exmplSetText">SetText</link> example.)
 <programlisting>
 <![CDATA[
 if edit~IsModified = 1 then MyDialog~Save
@@ -425,8 +434,9 @@ whether the edit control has been modified.</para>
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>In the following example, the Save method stores the dialog contents
-in a file and clears the modified flag:
+<listitem><para>In the following example, the Save method stores the dialog
+contents in a file and clears the modified flag.  See also the <link
+linkend="exmplSetText">SetText</link> example.
 <programlisting>
 <![CDATA[
 ::method Save
@@ -489,57 +499,28 @@ Line numbers are incremented by 1, starting with 1.
 index 1.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example sets a text for edit control TEXT and displays
-the number of text lines (3), the starting index of the second line (carriage
-return and line feed, which mark a line break, are also considered to be characters),
-and the length of the third line:
-<programlisting>
-<![CDATA[
-edit = MyDialog~GetEditControl("TEXT")
-if edit == .Nil then return
+<listitem><para>The following example sets the text for edit control TEXT and
+displays the number of text lines (3), the starting index of the second line
+(carriage return, 0x0d, and line feed, 0x0a, which mark a line break, are also
+considered to be characters), and the length of the third line:
+<programlisting> <![CDATA[
+editControl = MyDialog~GetEditControl("TEXT") if .nil == editControl then return
 
-"It is easy to learn and easy to use." || 13~d2c || 10~d2c ||,
-"Have fun with it!"
+text = "It is easy to learn and easy to use." || '0d0a'x || -
+       "Have fun with it!"                    || '0d0a'x || -
+       "But don't over do it."
+
+edit~setText(text)
+
 say "Number of lines:" edit~lines
      say "Line 2 begins at index" edit~LineIndex(2)
      say "Length of 3rd line:" edit~LineLength(3)
 
-Result: The number of lines: 3
-        Line 2 begins at index 37
-        Length of 3rd line: 17
+Result: Number of lines: 3
+        Line 2 begins at index 39
+        Length of 3rd line: 21
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="linelength"><title>LineLength</title>
-<indexterm><primary>LineLength</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-anEditControl~LineLength(--line--)--------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The LineLength method retrieves the number of characters
-contained in the <emphasis role="italic">line</emphasis> in the associated edit control.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>line</term>
-<listitem><para>The number of the line of which the number of characters is to be retrieved.
-Line numbers are incremented by 1, starting with 1.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The length of the given line.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>For an example, refer to <link linkend="lineindex">LineIndex</link>.
 </para></listitem></varlistentry>
 </variablelist>
 </section>
@@ -584,6 +565,220 @@ if edit == .Nil then return
 say "Character 55 is contained in line" edit~LineFromIndex(55)
 
 Result: Character 55 is contained in line 2
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="linelength"><title>LineLength</title>
+<indexterm><primary>LineLength</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anEditControl~LineLength(--line--)--------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The LineLength method retrieves the number of characters
+contained in the <emphasis role="italic">line</emphasis> in the associated edit control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>line</term>
+<listitem><para>The number of the line of which the number of characters is to be retrieved.
+Line numbers are incremented by 1, starting with 1.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The length of the given line.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>For an example, refer to <link linkend="lineindex">LineIndex</link>.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="getline"><title>GetLine</title>
+<indexterm><primary>GetLine</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anEditControl~GetLine--(--line--+--------------+--)---------><
+                                   +-,--maxLength-+
+
+
+]]>
+</programlisting>
+
+<para>The GetLine method retrieves the text string contained
+in the specified line.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>line</term>
+<listitem><para>The one-based line number to be retrieved.
+</para></listitem></varlistentry>
+<varlistentry><term>maxLength</term>
+<listitem><para>The maximum number of characters to be retrieved. Object Rexx allocates
+the appropriate amount of memory to store the text string. If the line consists
+of more characters than fit in the memory, the text string is truncated. If
+you omit this argument, the maximum number of characters retrieved is 255.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>A text string or an empty string.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example stores all lines contained in edit control EDITOR
+in a stem. If a line consists of more than 1024 characters, it is truncated.
+<programlisting>
+<![CDATA[
+edit = MyDialog~GetEditControl("EDITOR")
+if edit == .Nil then return
+do i = 1 to edit~Lines
+   lines.i = edit~GetLine(i, 1024)
+end
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+
+<note><title>Note</title><para>
+The carriage return and line-feed characters are not included in the returned
+text string. To get the contents of a single line edit control, use the <link
+linkend="mthGetText">GetText</link>) method, or use
+<computeroutput>edit~GetLine</computeroutput> if there is no need to worry about
+truncation, or use <computeroutput>edit~GetLine(1, [maxLength])</computeroutput>
+if the length of the text is greater than 255.
+</para></note>
+</section>
+
+<section id="mthGetText"><title>GetText</title>
+<indexterm><primary>GetText</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anEditControl~GetText---------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The GetText method returns the entire contents of the text buffer of the
+edit control as a string.  The method works the same for both single-line and
+multi-line edit controls.  With multi-line edit controls, the returned string
+will contain the carriage return and line-feed characters present in the text
+buffer.  The programmer does not need to worry about the length of the text in
+the edit control.  All the text is returned no matter what the length of the
+text is.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The text in the edit control.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>For an example, refer to the <link
+linkend="exmplSetText">SetText</link> example.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthSetText"><title>SetText</title>
+<indexterm><primary>SetText</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anEditControl~SetText(--text--)-----------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The SetText method places <emphasis role="italic">text</emphasis> in the
+edit control.  Any current text content in the edit control is completely
+replaced.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>text</term>
+<listitem><para>The text to be displayed in the edit control.  For multi-line
+edit controls the text must contain the carriage return and line-feed
+characters.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The return values are:
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>No error.
+</para></listitem></varlistentry>
+<varlistentry><term>less than 0</term>
+<listitem><para>Error. The value is the negated Operating System Error code.
+The absolute value of the return can be used to look up the error reason in the
+Windows documentation.
+</para></listitem></varlistentry>
+</variablelist>
+<varlistentry><term id="exmplSetText"><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following code snippets use the
+<computeroutput>GetText</computeroutput> and
+<computeroutput>SetText</computeroutput> methods in a dialog that could be used
+as a simple file editor:
+<programlisting>
+<![CDATA[
+  ...
+
+::method defineDialog
+
+  ...
+
+  self~addEntryLine(110, , 5, 5, 170, 150, "VSCROLL HSCROLL MULTILINE")
+
+  self~addButton(115,  5, 160, 35, 15, "Open", onOpen)
+  self~addButton(116, 45, 160, 35, 15, "Save", onSave)
+
+  ...
+
+::method initDialog
+  expose editControl
+  editControl = self~getEditControl(110)
+
+::method onOpen
+  expose editControl
+
+  if .nil == editControl then return
+
+  fileName = self~getFile
+  if fileName == "" then return
+
+  fObj = .stream~new(fileName)
+  fObj~open
+  if fObj~state \== 'READY' then return
+
+  text = fObj~charin(1, fObj~chars)
+  fObj~close
+
+  editControl~setText(text)
+
+::method onSave
+  expose editControl
+
+  if .nil == editControl then return
+
+  if editControl~isModified then do
+    text = editControl~getText
+    self~saveFile(text)
+    editControl~setModified(.false)
+  end
+  else do
+    j = InfoDialog("There is nothing to save")
+  end
+
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -833,57 +1028,4 @@ margins of the associated edit control.</para>
 </variablelist>
 </section>
 
-<section id="getline"><title>GetLine</title>
-<indexterm><primary>GetLine</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-anEditControl~GetLine--(--line--+--------------+--)---------><
-                                   +-,--maxLength-+
-
-
-]]>
-</programlisting>
-
-<para>The GetLine method retrieves the text string contained
-in the specified line.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>line</term>
-<listitem><para>The one-based line number to be retrieved.
-</para></listitem></varlistentry>
-<varlistentry><term>maxLength</term>
-<listitem><para>The maximum number of characters to be retrieved. Object Rexx allocates
-the appropriate amount of memory to store the text string. If the line consists
-of more characters than fit in the memory, the text string is truncated. If
-you omit this argument, the maximum number of characters retrieved is 255.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>A text string or an empty string.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example stores all lines contained in edit control EDITOR
-in a stem. If a line consists of more than 1024 characters, it is truncated.
-<programlisting>
-<![CDATA[
-edit = MyDialog~GetEditControl("EDITOR")
-if edit == .Nil then return
-do i = 1 to edit~Lines
-   lines.i = edit~GetLine(i, 1024)
-end
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-
-<note><title>Note</title><para>
-The carriage return and line-feed characters are not included
-in the returned text string. To get the contents of a single line edit control,
-use the Title method (see page <link linkend="title">Title</link>) or call
-GetLine(i, 1024).
-</para></note>
-</section>
 </chapter>
