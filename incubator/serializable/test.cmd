@@ -35,42 +35,194 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-debug = 1
+-- This sections defines the configurations
+--debug = 0 -- true: run a test on all available types, false: performance test
+p.debug_elements = 1e5+0 -- number of elements in performance test
+p.iterations =  8 -- sample number, minimum is 2
+-- End of configuration
+parse arg argvalue
+if argvalue = "" then do
+	-- simple arguments parsing
+	call help
+	exit
+end
+else do
+	start = 0
+	len = argvalue~length
+	do while start < len
+		parse upper var argvalue +(start) op value .
+		SELECT
+			when op = "-M" then do
+				if value~abbrev("TES") then debug = .true
+				else
+					if value~abbrev("PER") then
+						debug = .false
+					else do
+call help( "Incorrect mode:" value)
+						exit 1
+					end
+				start += 4 + value~length
+			end
+			when op = "-I" then do
+				if value~datatype("W") then
+				if value > 1 then do
+					p.iterations = value
+					marker = .true
+				end
+				if marker \= .true then do
+call help("Incorrect number of interations :" value-
+	"(must be a whole number > 1)")
+					exit 1
+				end
+				drop marker
+				start += 4 + value~length
+			end
+			when op = "-V" then do
+				start += 3
+				p.verbose = .true
+			end
+			when op = "-Q" then do
+				start += 3
+				p.verbose = .true
+				p.quiet = .true
+			end
+			when op = "-N" then do
+				if value~datatype("W") then
+				if value > 0 then do
+					p.debug_elements = value
+					marker = .true
+				end
+				if marker \= .true then do
+call help("Incorrect element number:" value)
+					exit 1
+				end
+				drop maker
+				start += 4 + value~length
+			end
+			otherwise do
+				call help
+				say "Unknown parameter:" op
+				exit 1
+			end
+		END
+	end
+end
+
+
+
+if debug = .true then call testcase
+else if debug = .false then call performance
+else call help("Wrong arguments or arguments missing!")
+return
+
+testcase: procedure expose p.
 say "Creating a new .test object"
 a = .test~new
-a~debug = debug
+a~debug = .true
 say "Filling it with data"
 a~FillData
-if debug then do
-    Say "Showing the data"
-    a~ShowData
-end
+Say "Showing the data"
+a~ShowData
 Say "Serializing the object"
 starttime = time('r')
-if \ debug then 
-    do i = 1 to 2
---	a~filldata
-	t = .SerializeFunctions~Serialize(a)
-    end
-else
-	t = .SerializeFunctions~Serialize(a)
-if \ debug then 
-    Say "Time needed for serializing:" time('r')/2
-else do
-    Say "Here is the serialized data: Time needed for serializing:" time('r')
-    say t~string
-end
+t = .SerializeFunctions~Serialize(a)
+Say "Serialized data: Time needed for serializing:" time('r')
+Say t~string
+say t~Substr(100,3)
 Say "Deserializing the data and storing the class in b"
 b = .SerializeFunctions~Deserialize(t)
 say "Time needed for deserializing:" time('e')
-if debug then do
-    Say "And that's the data b stores:"
-    b~ShowData
+Say "And that's the data b stores:"
+b~ShowData
+return
+
+performance: procedure expose p.
+times_s = .array~new
+times_d = .array~new
+a = .test~new
+a~debug = .false
+a~elements = p.debug_elements
+a~FillData
+do i = 1 to p.iterations
+	drop t b
+	call time('R')
+	t = .SerializeFunctions~Serialize(a)
+	times_s[i] = time('R')
+	a = .SerializeFunctions~Deserialize(t)
+	times_d[i] = time('R')
+	if p.quiet \= .true then
+		call charout , "."
 end
+if p.quiet \= .true then do
+	say
+	data = stdev(times_s)
+	Say "Normal distribution for serializing: S~N("data[2]","data[3]")"
+	data = stdev(times_d)
+	Say "Normal distribution for de-serializing: D~N("data[2]","data[3]")"
+end
+else do
+	say '"Time serializing","Time de-serializing"'
+	do i = 1 to p.iterations
+		say times_s[i]","times_d[i]
+	end
+end
+return
+
+stdev: procedure expose p.
+use arg value
+total = 0
+do i = 1 to value~size
+	total = total + value[i]
+	if p.verbose = .true then
+		call lineout ,value[i]
+end
+average = total/value~size
+sum = 0
+do i = 1 to value~size
+	sum = sum + abs(value[i]-average)**2
+end
+variance = sum / (value~size-1)
+return .array~of(total,average,variance)
+
+help: procedure expose p.
+parse source . . app
+-- add some voodoo to handle path correctly
+app = app~right(app~length-app~lastpos("/")+1)~strip
+app = "..."app~right(app~length-app~lastpos("\")+1)~strip
+lines = .array~of( -
+"Serializable class test application",-
+"Copyright (c) 2007 Rexx Language Association. All rights reserved.",-
+"Moritz Hoffmann 2007, CPL V 1.0",-
+"Usage:",-
+app " -m (test|performance) [-i iterations="p.iterations"] [-n number="p.debug_elements"] [-v]",-
+,-
+"-m	Defines the test to run. Test is a general purpose test that serializes",-
+"	all serializable objects. Performance runs a performance test.",-
+"The following options are only relevant for the performance test:",-
+"-i	Number of iterations for collectiong data. This argument is only",-
+"	useful incombination with performance test.",-
+"-n	Number of objects. Only used when running performace test.",-
+"-v	Enables verbose mode."-
+"-q	Enables quiet and verbose mode. Use when raw data is wanted."-
+)
+say lines~makestring
+if \arg(1,"o") then say arg(1)
+else do
+	lines = .array~of(-
+	"Example:",-
+	app "-m test",-
+	app "-m perf -i 64 -n 1e4",-
+	app "-m perf -v",-
+	app "-m perf -i 64 -n 1000 -q > data.csv"-
+	)
+	say lines~makestring
+end
+return
 
 ::REQUIRES "Serializable.cls"
 ::CLASS test MIXINCLASS Serializable
 ::METHOD Debug ATTRIBUTE
+::METHOD Elements ATTRIBUTE
 ::METHOD PersistentData ATTRIBUTE
 ::METHOD FillData
     expose debug
@@ -104,8 +256,8 @@ end
     end
     else do
 	d = .array~new
-	do i = 1 to 1e5
-	    d[i] = i
+	do i = 1 to self~Elements
+	    d[i] = i + self~Elements
 	end
     end
 	self~PersistentData = d

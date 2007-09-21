@@ -1,0 +1,189 @@
+#!/usr/bin/rexx
+/*
+   name:	     serializable.testUnit
+   author:	   Moritz Hoffmann
+   date:	     2007-05-29
+   version:	  0.0.1
+
+-- line commented lines are ignored
+   changed:	  2007-05-29, --- antiguru, Initial release.
+
+   languageLevel:    6.0
+   purpose:	  Test the Serializable framework.
+
+   license:	  CPL 1.0 (Common Public License v1.0, see below)
+   link:
+
+   category1:	ooRexx
+   category2:	Base
+   category3:	Serializable
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2005 Rexx Language Association. All rights reserved.	      */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES
+ LOSS OF USE, DATA,        */
+/* OR PROFITS
+ OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+--------------------------------------------------------------------------------
+mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
+testUnitList=.list~of(.array~of(.Serializable.testUnit,  mandatoryTestMethods))
+
+
+--------------------------------------------------------------------------------
+-- ===> the following code needs not to be individualized                   <===
+   -- read top comment, containing infos about this program
+arrLines=.array~new
+do i=1 to 150 until arrLines[i]="*/"
+	arrLines[i]=sourceline(i)
+end
+aTestUnitClass=testUnitList~at(testUnitList~first)[1]
+call makeDirTestInfo aTestUnitClass,arrLines
+tmpDir=aTestUnitClass~TestCaseInfo
+parse source s
+tmpDir~setentry("test_Case-source",s)
+do arr over testUnitList
+	if arr[1]=aTestUnitClass then iterate
+	arr[1]~TestCaseInfo=tmpDir
+end
+if .local~hasentry("bRunTestsLocally")=.false then
+.local~bRunTestsLocally=.true
+if .bRunTestsLocally=.true then do
+	ts=.testSuite~new
+	do arr over testUnitList
+		ts~addTest(.testSuite~new(arr[1]))
+	end
+	testResult=ts~run
+	call simpleDumpTestResults testResult
+end
+return testUnitList
+
+
+::requires ooRexxUnit.cls
+::requires "Serializable.cls"
+
+::CLASS SerializableTestSimple MIXINCLASS Serializable
+::METHOD PersistentData ATTRIBUTE
+::CLASS SerializableTestExtended MIXINCLASS Serializable
+::METHOD ReadObject CLASS
+	use arg data
+	return self~new(data)
+::METHOD Init
+	expose var1 var2 var3
+	use arg data
+	var1 = data[1]
+	var2 = data[2]
+	var3 = data[3]
+::METHOD WriteObject
+	expose var1 var2 var3
+	return .array~of(var1,var2,var3)
+
+::class "Serializable.testUnit" subclass TestCase public
+
+   -- Test the default functionality of the Serializable class
+::method "testSerializableSimple"
+	data = .array~of("word1","word2",3.141)
+	o = .SerializableTestSimple~new
+	self~AssertTrue("Method PersistentData not found!",o~hasmethod("PERSISTENTDATA"))
+	o~PersistentData = data
+	so = .SerializeFunctions~Serialize(o)
+	self~AssertEquals("Wrong type returned from serializing!",so~class,.MutableBuffer)
+	o2 = .SerializeFunctions~DeSerialize(so)
+	self~AssertEquals("Deserializing the object returned different object!",o2~class,.SerializableTestSimple)
+	do i = 1 to data~items
+		self~AssertEquals("Wrong sub-value!", -
+			data[i],o2~PersistentData[i])
+	end
+
+::method "testSerializableExtended"
+	data = .array~of("word1","word2",3.141)
+	o = .SerializableTestExtended~new(data)
+	so = .SerializeFunctions~Serialize(o)
+	self~AssertEquals("Wrong type returned from serializing!",so~class,.MutableBuffer)
+	o2 = .SerializeFunctions~DeSerialize(so)
+	self~AssertEquals("Deserializing the object returned different object!",o2~class,.SerializableTestExtended)
+	rdata = o2~WriteObject
+	do i = 1 to data~items
+		self~AssertEquals("Wrong sub-value!", -
+			data[i],rdata[i])
+	end
+
+::METHOD "testSerializableTypes"
+	o = .SerializableTestSimple~new
+
+	-- comparing these data structures is too much work for now
+/*
+	-- Construct the data structure
+	stem. = "I'm a stem variable"
+	stem.1 = "first level entry"
+	stem.1.1 = "sub entry"
+	d = .directory~new
+	d~method = .method~new("my method","Say 'hello'")
+	d~mb = .mutablebuffer~new("This is some string")
+	d~stem = stem.
+	string = "Test, occurring several times"
+	d~array = .array~of(.bag~of(string,string),.list~of(string,string))
+	d~object = .test2~new
+	d~nil = .nil
+	r = .relation~new
+	r[string] = 1
+	r[string] = 42
+	r[42] = string
+	d~relation = r
+	t = .table~new
+	t[string] = stem.
+	d~table = t
+	q = .queue~new
+	q~queue(string)
+	d~queue = q
+	d~cq = .circularqueue~of(r,string)
+	a = .array~new
+	a[1] = a
+	d~array = a
+*/
+	a = .array~new
+	limit = 1e4
+	do i = 1 to limit
+		a[i] = limit + 1 + i
+	end
+	o~PersistentData = a
+
+	os = .SerializeFunctions~Serialize(o)
+	o2 = .SerializeFunctions~DeSerialize(os)
+	success = .true
+	do i = 1 to limit while success
+		success = (a[i] = limit + 1 + i)
+	end
+	self~AssertTrue("Data retured does not match source data",success)

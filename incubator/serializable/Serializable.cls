@@ -92,7 +92,7 @@ Assume variable a holds an object whichs class inherits from Serializable.
 In this case the following command will return the serialized object:
 	buffer = .SerializeFunctions~Serialize(a)
 
-Deserializing works the same way (b will be like a~copy):
+Deserializing works the same way (b will be like a~copy with references copied):
 	b = .SerializableFunctions~DeSerialize(buffer)
 
 The serializing and deserializing process is iterative. Thus there can be as
@@ -114,7 +114,9 @@ data structure should cause no problem.
 	expose name ClassType
 	use arg Handler
 	-- !! Clean up, that's bad code
-	if Handler~new~IsInstanceOf(.SerializeHandler) then
+	if \ Handler~new~IsInstanceOf(.SerializeHandler) then
+		raise syntax 93
+	if Handler~hasMethod("CHECKTYPE") then
 		ClassType[Handler~checktype] = Handler
 	name[Handler~name] = Handler
 
@@ -162,7 +164,6 @@ data structure should cause no problem.
 	Deserializer = self~new(Name,ClassType,Buffer)
 	return Deserializer~FromSerializedDataCtrl(Offset)
 	syntax: raise propagate
-
 /**************************** INSTANCE METHODS ********************************/
 ::METHOD Init
 	-- save the handlers and the string buffer
@@ -181,45 +182,57 @@ data structure should cause no problem.
 	do until (ObjEnd >= limit) | (ObjEnd = 0)
 		-- store the beginning of the object
 		Boundaries~put(ObjEnd,count)
-		count = count + 1
+		count += 1
 		-- find next start
 		ObjEnd = Buffer~pos(".", ObjEnd+1)
 	end
 	-- put the end of the last object on the array
 	Boundaries~put(limit, count)
 	if count = 2 then raise syntax 93.900 array ("No data found!") 
-	ObjectIndex = .array~new
+	ObjectIndex = .array~new(Boundaries~items-1)
 	-- convert the data to objects, starting at the last serialized object
 	-- avoids recursion as later queries will hit the cache
 	do i = Boundaries~items - 1 to 1 by -1
 		self~FromSerializedData(i)
 	end
 	-- the top index stores the first object referencing all other objects
+	Buffer = .nil
+	Boundaries = .nil
 	return ObjectIndex[1]
 
 ::METHOD FromSerializedData
-	expose Name ObjectIndex Buffer CurrentPos Boundaries
+	expose Name ObjectIndex Buffer CurrentPos Boundaries ExpectElement ExpectPos
 	use arg pos
 	-- check if there is somethig in the cache for the index
 	if ObjectIndex~HasIndex(pos) then
 		return ObjectIndex[pos]
+	-- store the current position for FromSerializedDataPut
 	CurrentPos = pos
+	-- check if the poition cache is valid
+	if ExpectPos \= pos then
+		ExpectElement = Boundaries[pos + 1]
+	-- the position cache is valid for the next element
+	ExpectPos = pos - 1
 	-- extract the current serialized object from the buffer
 	ObjStart = Boundaries[pos] + 1
 	SpacePos = Buffer~pos(" ", ObjStart)
 	-- split the current string into type and arguments
 	Type = Buffer~SubStr(ObjStart, SpacePos - ObjStart )
-	Arguments = Buffer~SubStr(SpacePos + 1, -
-		Boundaries[pos + 1] - SpacePos - 1 )
-	-- there must be a class associated with type
-	Handler = Name[Type]
-	if Handler = .nil then raise syntax 93.914 array -
-		("object","a class handled by a .SerialzeHandler class",type)
-	else
-		-- use the class found to deserialize the data
-		ObjectIndex[pos] = Handler~DeSerialize(self, arguments)
-	-- this does not return anything, data is stored in cache ObjectIndex
-	return ObjectIndex[pos]
+	Arguments = Buffer~SubStr(SpacePos + 1, ExpectElement - SpacePos - 1)
+	if Type = "S" then
+		Object = Arguments~decodeBase64
+	else do
+		-- there must be a class associated with type
+		Handler = Name[Type]
+		if Handler = .nil then raise syntax 93.914 array -
+("object","a class handled by a .SerialzeHandler class",type)
+		else
+			-- use the class found to deserialize the data
+			Object = Handler~DeSerialize(self, arguments)
+	end
+	ObjectIndex[pos] = Object
+	ExpectElement = ObjStart - 1
+	return Object
 
 -- early put method to allow recursive datastructure recreation
 ::METHOD FromSerializedDataPut
@@ -228,60 +241,103 @@ data structure should cause no problem.
 	ObjectIndex[CurrentPos] = Object
 
 ::METHOD ToSerializableDataCtrl
-	expose ObjectList ClassType ObjectIndex Buffer
+	expose ObjectList ClassType ObjectIndex Buffer StringIndex --stat.
 	use arg Object
 	-- initalize some containers
 	-- store the object -> id relation
-	ObjectIndex = .table~new
+	ObjectIndex = .directory~new
+	-- store the string -> id relation
+	StringIndex = .table~new
 	-- store id -> object relation
 	ObjectList = .array~new
+	
+--	do i = 1 to 2
+--		do j = 1 to 2 
+--			stat.i.j = 0
+--		end
+--	end
+
 	-- the first item to be serialized is no. 1
 	position = 1
 	ObjectList[1] = Object
 	-- work until all objects have been serialized
-	do until position > Objectlist~size
+	do until position > ObjectList~size
 		-- get the current object
 		Object = ObjectList[position]
+		-- only append dot after the first element
+		if position > 1 then Buffer~append(".")
 		-- check the way to serialize it
-		if ClassType~HasIndex(Object~class) then do
+		-- match string diretly, not via handler
+		if Object~class = .String then
+			Buffer~append("S "Object~encodeBase64)
+		else if ClassType~HasIndex(Object~class) then do
 			-- it can be matched by class, get the handler
-			handler = ClassType[Object~class]
+			Handler = ClassType[Object~class]
+			Buffer~append(handler~name)
+			Buffer~append(" ")
+			Handler~Serialize(self, Buffer, Object)
 		end
 		-- the nil handler can not match by class
-		else
-			if Object = .nil then
-				Handler = .SerializeNil
+		else if Object == .nil then
+			Buffer~append("NIL ")
 		-- no handler found and object is not .nil, so raise an error
 		else raise syntax 93
-		-- handler must be set at this point, so serialize the data
-
-		-- only 
-		if position > 1 then Buffer~append(".")
-		Buffer~append(handler~name || " ")
-		Handler~Serialize(self, Buffer, Object)
 		-- go to the next position
-		position = position + 1
+		position += 1
 	end
 	-- append object structure end marker
 	Buffer~append(";")
 	-- return the array of lines
+/*
+Say "strings:" StringIndex~items
+Say "other objects:" ObjectIndex~items
+Say "cache: String:"stat.1.1"/"stat.1.2
+Say "       Object:"stat.2.1"/"stat.1.2
+*/
 	return buffer
 
 -- This method is called by handlers to register objects. It returns the
 -- object's id. The object is stored but not yet serialized.
+
+/*
+Strings are stored in the variable StringIndex, other objects in ObjectIndex.
+The reason for this is that there are situations where an object gets returnd
+where a string is needed, expecially when they both have the same string value.
+To avoid this stings have their own table, whereas other objects are stored
+via their identity hash value in a directory.
+*/
 ::METHOD ToSerializableData
-	expose ObjectList ObjectIndex
+	expose ObjectList ObjectIndex StringIndex --stat.
 	use arg Object
-	-- this cache check will avoid serializing the same object again
-	if ObjectIndex~HasIndex(Object) then do
-		return ObjectIndex[Object]
+	if Object~class = .String then do
+		-- work on strings
+--		stat.1.1 += 1
+		-- this cache check will avoid serializing the same string again
+		if StringIndex~hasIndex(Object) then
+			return StringIndex[Object]
+--		stat.1.2 += 1
+		-- the ID will be the next ObjectList entry
+		CurrPos = ObjectList~size + 1
+		-- Store the ID -> string and string -> ID relation
+		ObjectList[CurrPos] = Object
+		StringIndex[Object] = CurrPos
+		return Currpos
 	end
-	-- the ID will be the next ObjectList entry
-	CurrPos = ObjectList~size + 1
-	-- Store the ID -> object and object -> ID relation
-	ObjectList[CurrPos] = Object
-	ObjectIndex[Object] = CurrPos
-	return CurrPos
+	else do
+		-- work on other objects
+--		stat.2.1 += 1
+		idhash = Object~identityHash~d2c
+		-- this cache check will avoid serializing the same object again
+		if ObjectIndex~HasIndex(idhash) then
+			return ObjectIndex[idhash]
+----		stat.2.2 += 1
+		-- the ID will be the next ObjectList entry
+		CurrPos = ObjectList~size + 1
+		-- Store the ID -> object and object -> ID relation
+		ObjectList[CurrPos] = Object
+		ObjectIndex[idhash] = CurrPos
+		return CurrPos
+	end
 
 /******************************************************************************
 	The SerializeHandler Class
@@ -291,6 +347,7 @@ Signature of a data handler:
 - It must define
 	- Name: return the identifier used to store the data, must be unique
 	- CheckType: class -- The class this handler can serialize
+		(some built-in handlers do not need this)
 	- Serialize(Caller, Buffer, Object) -- appends data to the buffer
 	- DeSerialize(Caller,Arguments): Object -- returns deserialized data
 - Calls to Init MUST be forwarded, otherwise a handler will not register.
@@ -299,7 +356,7 @@ Signature of a data handler:
 ::CLASS SerializeHandler PUBLIC -- SUBCLASS Class
 ::METHOD Init CLASS
 	-- check if the class implements the required methods
-	methods = .array~of("NAME","CHECKTYPE","SERIALIZE","DESERIALIZE")
+	methods = .array~of("NAME","SERIALIZE","DESERIALIZE")
 	correct = .true
 	do i = 1 to methods~size while correct
 		correct = correct & self~hasmethod(methods[i])
@@ -367,23 +424,9 @@ Signature of a data handler:
 	use arg Caller, pos
 	return .MutableBuffer~new(Caller~FromSerializedData(pos))
 
-::CLASS SerializeString SUBCLASS SerializeHandler
-::METHOD Name CLASS
-	return "STRING"
-::METHOD CheckType CLASS
-	return .string
-::METHOD Serialize CLASS
-	use arg Caller, Buffer, String
-	Buffer~append(String~encodeBase64)
-::METHOD DeSerialize CLASS
-	return arg(2)~decodeBase64
-
 ::CLASS SerializeNil  SUBCLASS SerializeHandler
 ::METHOD Name CLASS
         return "NIL"
--- implement CheckType just to fit specification (objects can not inherit from .nil)
-::METHOD CheckType CLASS
-        return .nil
 ::METHOD Serialize CLASS
 ::METHOD DeSerialize CLASS
         return .nil
@@ -405,7 +448,7 @@ Signature of a data handler:
 		if relation_index[index] = .true then do
 			relation_index[index] =  -
 				Caller~ToSerializableData(index)
-			mb~append(" " || relation_index[index] || ":")
+			mb~append(relation_index[index] || ":")
 			first = .true
 			do item over Object~allat(index)
 				if first \= .true then
@@ -413,6 +456,7 @@ Signature of a data handler:
 				mb~append(Caller~ToSerializableData(item))
 				first = .false
 			end
+			mb~append(" ")
 		end
 	end
 ::METHOD DeSerialize CLASS
@@ -529,7 +573,6 @@ Signature of a data handler:
 ::METHOD Serialize CLASS
         use arg Caller, mb, Object
         do i = 1 to Object~size
-		if .nil = Object[i] then iterate
 		mb~append(i)
 		mb~append(":")
 		mb~append(Caller~ToSerializableData(Object[i]))
@@ -543,7 +586,8 @@ Signature of a data handler:
         al = arguments~length
         do while al > start
                 parse var arguments +(start) index ":" ptr .
-                start = start + index~length + ptr~length + 2
+                start = arguments~pos(" ",start+1)
+--                start = start + index~length + ptr~length + 2
                 ret[index] = Caller~FromSerializedData(ptr)
         end
         return ret
