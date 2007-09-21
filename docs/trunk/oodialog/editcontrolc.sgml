@@ -504,7 +504,8 @@ displays the number of text lines (3), the starting index of the second line
 (carriage return, 0x0d, and line feed, 0x0a, which mark a line break, are also
 considered to be characters), and the length of the third line:
 <programlisting> <![CDATA[
-editControl = MyDialog~GetEditControl("TEXT") if .nil == editControl then return
+editControl = MyDialog~GetEditControl("TEXT") 
+if .nil == editControl then return
 
 text = "It is easy to learn and easy to use." || '0d0a'x || -
        "Have fun with it!"                    || '0d0a'x || -
@@ -513,8 +514,8 @@ text = "It is easy to learn and easy to use." || '0d0a'x || -
 edit~setText(text)
 
 say "Number of lines:" edit~lines
-     say "Line 2 begins at index" edit~LineIndex(2)
-     say "Length of 3rd line:" edit~LineLength(3)
+say "Line 2 begins at index" edit~LineIndex(2)
+say "Length of 3rd line:" edit~LineLength(3)
 
 Result: Number of lines: 3
         Line 2 begins at index 39
@@ -723,7 +724,7 @@ characters.
 The absolute value of the return can be used to look up the error reason in the
 Windows documentation.
 </para></listitem></varlistentry>
-</variablelist>
+</variablelist></para></listitem></varlistentry>
 <varlistentry><term id="exmplSetText"><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following code snippets use the
 <computeroutput>GetText</computeroutput> and
@@ -764,6 +765,7 @@ as a simple file editor:
   fObj~close
 
   editControl~setText(text)
+  editControl~setModified(.false)
 
 ::method onSave
   expose editControl
