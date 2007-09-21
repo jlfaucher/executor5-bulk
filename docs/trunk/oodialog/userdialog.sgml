@@ -208,7 +208,7 @@ the methods listed in the following table.
 </row>
 <row>
 <entry>AddEntryLine</entry>
-<entry><link linkend="h001787">AddEntryLine</link></entry>
+<entry><link linkend="mthAddEntryLine">AddEntryLine</link></entry>
 </row>
 <row>
 <entry>AddGrayFrame</entry>
@@ -1231,13 +1231,13 @@ with the tabstop style except in these conditions: the bmpFocused is ommitted,
 and the bmpSelected is ommitted, and the FRAME style keyword is not used.
 </para></listitem></varlistentry>
 <varlistentry><term>TAB</term>
-<listitem><para>Create the button with the 
-<link linkend="wstabstop">tabstop</link> style. The button is normally created 
-with the tabstop style and this keyword is not necessary.  However, if the 
-bmpFocused is ommitted, and the bmpSelected is ommitted, and the FRAME style 
-keyword is not used, the button is created without the tabstop style.  In this 
-case only, it is necessary to use the TAB keyword to change the default 
-behavior.
+<listitem><para>Create the button with the
+<link linkend="wstabstop">tabstop</link> style. The button is normally created
+with the tabstop style and this keyword is not necessary.  However, if the
+bmpFocused argument is ommitted, and the bmpSelected argument is ommitted, and
+the FRAME style keyword is not used, the button is created without the tabstop
+style.  In this case only, it is necessary to use the TAB keyword to change the
+default behavior.
 </para></listitem></varlistentry>
 <varlistentry><term>BORDER</term>
 <listitem><para>Create the button with the <link
@@ -1421,7 +1421,7 @@ is aligned to the left.
 </variablelist>
 </section>
 
-<section id="h001787"><title>AddEntryLine</title>
+<section id="mthAddEntryLine"><title>AddEntryLine</title>
 <indexterm><primary>AddEntryLine</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -1568,8 +1568,13 @@ the user that only digits are allowd.  This style does not prevent the user from
 pasting non-digits into the control.
 </para></listitem></varlistentry>
 <varlistentry><term>OEM</term>
-<listitem><para>This style is provided for completeness.  The Windows API
-documentation provided by Microsoft contains information concerning this style.
+<listitem><para>Converts text entered in the edit control from the Windows
+character set to the OEM character set and then back again to the Windows
+character set. This ensures proper character conversion in certain
+circumstances. Microsoft states that this style is most useful when edit
+controls contain file names that will be used with file systems that do not
+support Unicode. For further details see the <link linkend="windowsdoc">Windows
+documentation</link> provided by Microsoft.
 </para></listitem></varlistentry>
 <varlistentry><term>HIDDEN</term>
 <listitem><para>Create the edit control without the <link
@@ -1622,18 +1627,19 @@ MyDialog~AddEntryLine(201, "FIRSTNAME", 12, 14, 150, ,"AUTOSCROLLH")
 
 >--+---------------------------+-- )--------------------------------><
    +-,--+----+--+------------+-+
-        +-cy-+  +-,--options-+
+        +-cy-+  +-,--style---+
 
 
 ]]>
 </programlisting>
 
-<para>The AddPasswordLine method adds a password entry
-line that does not echo the characters entered but displays asterisks (*)
-instead. </para>
+<para>The AddPasswordLine method adds a password edit control that does not echo
+the characters entered but displays the password character instead.  This method
+is a convenience method and is used exactly like
+</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>See <link linkend="h001787">AddEntryLine</link> for a description of the arguments.
+<listitem><para>See <link linkend="mthAddEntryLine">AddEntryLine</link> for a description of the arguments.
 </para></listitem></varlistentry>
 </variablelist>
 </section>
@@ -1666,7 +1672,7 @@ instead. </para>
 <para>Adds a list box to the dialog. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are the same as for <link linkend="h001787">AddEntryLine</link>,
+<listitem><para>The arguments are the same as for <link linkend="mthAddEntryLine">AddEntryLine</link>,
 with the changes listed below:
 <variablelist>
 <varlistentry><term>Options</term>
@@ -1744,7 +1750,7 @@ A list box does not support a horizontal scroll bar.
 dialog. A combo box is a combination of an entry line and a list box. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are the same as for <link linkend="h001787">AddEntryLine</link>,
+<listitem><para>The arguments are the same as for <link linkend="mthAddEntryLine">AddEntryLine</link>,
 with the changes listed below:
 <variablelist>
 <varlistentry><term>options</term>
@@ -1790,7 +1796,7 @@ items only.
 dialog. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are the same as for <link linkend="h001787">AddEntryLine</link>,
+<listitem><para>The arguments are the same as for <link linkend="mthAddEntryLine">AddEntryLine</link>,
 with the changes listed below:
 <variablelist>
 <varlistentry><term>name</term>
@@ -1823,7 +1829,7 @@ used.
 the dialog. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are the same as for <link linkend="h001787">AddEntryLine</link>,
+<listitem><para>The arguments are the same as for <link linkend="mthAddEntryLine">AddEntryLine</link>,
 with the changes listed below:
 <variablelist>
 <varlistentry><term>name</term>
@@ -2004,7 +2010,7 @@ MyDialog~objectrexx = 1
    +-cx1-+             +-cy-+
 
 >--+---------------------------+-- )---------------------------><
-   +-,--options--+-----------+-+
+   +-,--style----+-----------+-+
                  +-,--idstat-+
 
 
@@ -2021,9 +2027,10 @@ MyDialog~objectrexx = 1
 <listitem><para>The unique ID of the entry line
 </para></listitem></varlistentry>
 <varlistentry><term>attrName</term>
-<listitem><para>The attrName is used to create an attribute
-in the dialog object that reflects the contents of the entry line (see <link linkend="h001787">AddEntryLine</link>). If it is skipped, the text label
-is used as the attribute name.
+<listitem><para>The attrName is used to create an attribute in the dialog object
+that reflects the contents of the entry line (see <link
+linkend="mthAddEntryLine">AddEntryLine</link>). If it is skipped, the text
+label is used as the attribute name.
 </para></listitem></varlistentry>
 <varlistentry><term>x, y</term>
 <listitem><para>The position of the upper-left edge of the label. The entry line is
@@ -2048,10 +2055,11 @@ aligned automatically.
 <listitem><para>Makes the input group invisible
 </para></listitem></varlistentry>
 <varlistentry><term>PASSWORD</term>
-<listitem><para>Displays asterisks instead of the typed-in characters
+<listitem><para>Displays the password character instead of the typed-in
+characters
 </para></listitem></varlistentry>
 </variablelist>
-<para>For further options see <link linkend="h001787">AddEntryLine</link>.</para>
+<para>For further options see <link linkend="mthAddEntryLine">AddEntryLine</link>.</para>
 </listitem></varlistentry>
 <varlistentry><term>idstat</term>
 <listitem><para>An ID for the label

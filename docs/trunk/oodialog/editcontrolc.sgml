@@ -90,6 +90,9 @@ the methods listed in the
 <entry><link linkend="mthGetText">GetText</link></entry>
 </row>
 <row>
+<entry>HideBalloon</entry>
+<entry><link linkend="mthHideBalloon">HideBallon</link></entry>
+</row>
 <entry>IsModified</entry>
 <entry><link linkend="ismodified">IsModified</link></entry>
 </row>
@@ -142,6 +145,10 @@ the methods listed in the
 <entry><link linkend="selected">Selected</link></entry>
 </row>
 <row>
+<entry>SetCue</entry>
+<entry><link linkend="mthSetCue">SetCue</link></entry>
+</row>
+<row>
 <entry>SetLimit</entry>
 <entry><link linkend="setlimit">SetLimit</link></entry>
 </row>
@@ -160,6 +167,10 @@ the methods listed in the
 <row>
 <entry>SetText</entry>
 <entry><link linkend="mthSetText">SetText</link></entry>
+</row>
+<row>
+<entry>ShowBalloon</entry>
+<entry><link linkend="mthShowBalloon">ShowBalloon</link></entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -368,6 +379,28 @@ control until the caret (cursor) is visible.</para>
 </variablelist>
 </section>
 
+<section id="firstvisibleline"><title>FirstVisibleLine</title>
+<indexterm><primary>FirstVisibleLine</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anEditControl~FirstVisibleLine------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The FirstVisibleLine method retrieves the one-based
+line number of the first line visible in a multiline edit control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The number of the first visible line, starting with 1.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>For an example, refer to <link linkend="passwordcharset">PasswordChar=</link>.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
 <section id="ismodified"><title>IsModified</title>
 <indexterm><primary>IsModified</primary></indexterm>
 <programlisting>
@@ -394,7 +427,7 @@ whether the edit control has been modified.</para>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>(See also the <link
-linkend="exmplSetText">SetText</link> example.)
+linkend="exampleSetText">SetText</link> example.)
 <programlisting>
 <![CDATA[
 if edit~IsModified = 1 then MyDialog~Save
@@ -436,7 +469,7 @@ whether the edit control has been modified.</para>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>In the following example, the Save method stores the dialog
 contents in a file and clears the modified flag.  See also the <link
-linkend="exmplSetText">SetText</link> example.
+linkend="exampleSetText">SetText</link> example.
 <programlisting>
 <![CDATA[
 ::method Save
@@ -504,7 +537,7 @@ displays the number of text lines (3), the starting index of the second line
 (carriage return, 0x0d, and line feed, 0x0a, which mark a line break, are also
 considered to be characters), and the length of the third line:
 <programlisting> <![CDATA[
-editControl = MyDialog~GetEditControl("TEXT") 
+editControl = MyDialog~GetEditControl("TEXT")
 if .nil == editControl then return
 
 text = "It is easy to learn and easy to use." || '0d0a'x || -
@@ -683,7 +716,7 @@ text is.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>For an example, refer to the <link
-linkend="exmplSetText">SetText</link> example.
+linkend="exampleSetText">SetText</link> example.
 </para></listitem></varlistentry>
 </variablelist>
 </section>
@@ -725,7 +758,7 @@ The absolute value of the return can be used to look up the error reason in the
 Windows documentation.
 </para></listitem></varlistentry>
 </variablelist></para></listitem></varlistentry>
-<varlistentry><term id="exmplSetText"><emphasis role="bold">Example:</emphasis></term>
+<varlistentry><term id="exampleSetText"><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following code snippets use the
 <computeroutput>GetText</computeroutput> and
 <computeroutput>SetText</computeroutput> methods in a dialog that could be used
@@ -913,28 +946,6 @@ character was set, an empty string is returned.
 </variablelist>
 </section>
 
-<section id="firstvisibleline"><title>FirstVisibleLine</title>
-<indexterm><primary>FirstVisibleLine</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-anEditControl~FirstVisibleLine------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The FirstVisibleLine method retrieves the one-based
-line number of the first line visible in a multiline edit control.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The number of the first visible line, starting with 1.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>For an example, refer to <link linkend="passwordcharset">PasswordChar=</link>.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
 <section id="setreadonly"><title>SetReadOnly</title>
 <indexterm><primary>SetReadOnly</primary></indexterm>
 <programlisting>
@@ -1028,6 +1039,309 @@ margins of the associated edit control.</para>
 <listitem><para>For an example, refer to <link linkend="setmargins">SetMargins</link>.
 </para></listitem></varlistentry>
 </variablelist>
+</section>
+
+<section id="mthSetCue"><title>SetCue</title>
+<indexterm><primary>ShowBallon</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anEditControl~SetCue(--text--)------------------------------><
+
+]]>
+</programlisting>
+
+<para>This method sets the "cue" text for an edit control.  Cue text provides a
+visual hint to the user as to the purpose of the edit control.  When the dialog
+is first shown to the user the cue text will be displayed, (provided there is no
+text in the edit control's buffer.)
+</para>
+<para>The cue text is colored a light grey to distinguish it from regular text.
+When the edit control gains the focus, Windows dismisses the cue text
+automatically.  When the control loses focus, Windows will again display the cue
+text, if the entry control is empty.  Once the user has entered text in the edit
+control, the cue is no longer displayed.  If the user deletes the text, then the
+cue is once again displayed when the edit control does not have the focus.
+</para>
+<note><title>Note</title><para>
+Only single-line edit controls will display cue text.  You can not use cue text
+with a multi-line edit control.
+</para></note>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Operating System
+Version</emphasis></term>
+<listitem><para>This method is only available on Windows XP or later operating
+systems.  If the method is used on an unsupported operating system, -4 is
+returned.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>text</term>
+<listitem><para>The text to be displayed to the user as a cue.  The maximum
+length of the text string is 255 characters.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The return value will be one of the following:
+<variablelist>
+<varlistentry><term>less than -4</term>
+<listitem><para>The value is the negated Operating System Error code.
+The absolute value of the return can be used to look up the error reason in the
+Windows documentation.
+</para></listitem></varlistentry>
+<varlistentry><term>-4</term>
+<listitem><para>The operating system does not support this method.  Windows XP
+or later is required.
+</para></listitem></varlistentry>
+<varlistentry><term>-3</term>
+<listitem><para>The text argument is too long for this method, or there is an
+(internal) problem converting the text string to Unicode.
+</para></listitem></varlistentry>
+<varlistentry><term>-2</term>
+<listitem><para>There is an (internal) problem with the dialog or the dialog
+handle.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>There is an (internal) problem with the resource ID or window
+handle of the edit control.
+</para></listitem></varlistentry>
+<varlistentry><term>0</term>
+<listitem><para>The method succeeded.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>The method failed.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>For an example see the <link linkend="exampleShowBalloon">
+ShowBalloon</link> example.
+</para></listitem></varlistentry>
+</variablelist>
+
+</section>
+
+<section id="mthShowBallon"><title>ShowBallon</title>
+<indexterm><primary>ShowBallon</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anEditControl~ShowBalloon(--title,--text--+----------+--)---><
+                                             +-,--icon--+
+
+]]>
+</programlisting>
+
+<para>Displays a balloon information window.  Ballon windows are similar in
+appearance to the balloon captions used in comic books to display the dialog of
+the characters. For an edit control the balloon window looks like it is attached
+to the control.
+</para>
+<para>The balloon is displayed for 10 seconds and then goes away.  The
+programmer can also dismiss the balloon sooner using the <link
+linkend="mthHideBalloon">HideBalloon</link> method.  Typically balloon windows
+are used to convey information to the user without having to put up a message
+box that the user then needs to dismiss manually.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Operating System
+Version</emphasis></term>
+<listitem><para>This method is only available on Windows XP or later operating
+systems.  If the method is used on an unsupported operating system, -4 is
+returned.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>title</term>
+<listitem><para>A title for the balloon window.  Titles are limite to 99
+characters total in length.
+</para></listitem></varlistentry>
+<varlistentry><term>text</term>
+<listitem><para>The informational text of the ballon window.  This text is
+limited to 1024 characters in length.  The programmer can use line break
+characters to control the formatting of the text.
+</para></listitem></varlistentry>
+<varlistentry><term>icon</term>
+<listitem><para>Used to specify which icon is displayed on the title line.  The
+default is the informational icon.  The following keywords can be used to
+specify another icon, or no icon.  Only the first letter of the keyword is
+needed and case is insignificant:
+<variablelist>
+<varlistentry><term><emphasis role="bold">ERROR</emphasis></term>
+<listitem><para>The error icon is used.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">WARN</emphasis></term>
+<listitem><para>The warning icon is used.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">NONE</emphasis></term>
+<listitem><para>No icon is displayed.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The return value will be one of the following:
+<variablelist>
+<varlistentry><term>less than -4</term>
+<listitem><para>The value is the negated Operating System Error code.
+The absolute value of the return can be used to look up the error reason in the
+Windows documentation.
+</para></listitem></varlistentry>
+<varlistentry><term>-4</term>
+<listitem><para>The operating system does not support this method.  Windows XP
+or later is required.
+</para></listitem></varlistentry>
+<varlistentry><term>-3</term>
+<listitem><para>The title or text arguments are too long for this method, or
+there is an (internal) problem converting one of the strings to Unicode.
+</para></listitem></varlistentry>
+<varlistentry><term>-2</term>
+<listitem><para>There is an (internal) problem with the dialog or the dialog
+handle.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>There is an (internal) problem with the resource ID or window
+handle of the edit control.
+</para></listitem></varlistentry>
+<varlistentry><term>0</term>
+<listitem><para>The method succeeded.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>The method failed.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following code snippet could come from a fictitious
+inventory program.  An edit control is used to enter a product ID.  If the user
+clicks on the edit control a ballon tip is shown displaying extended product
+information.  (In a real application, the extended information might be based on
+what the user had entered in the edit control.)
+</para>
+<para>
+Text is set in the edit control to give the user a 'cue' that she can click on
+the edit control for extra information.  When the ballon tip is shown, it will
+automatically be dismissed after 10 seconds.  This application connects a
+notification for the lost focus event.  When the edit control loses focus, the
+ballon tip is hidden by the program.
+<programlisting>
+<![CDATA[
+  ...
+
+::method defineDialog
+
+  ...
+
+  self~addText(10, 125, 150, 10, "Enter product ID:", "", 200)
+  self~addEntryLine(IDC_ENTRYLINE, "cEntry", 10, 135, 150, 10, "AUTOSCROLLH")
+
+  ...
+
+::method initDialog
+  expose editControl hwndEditControl
+
+  editControl = self~getEditControl(IDC_ENTRYLINE)
+  hwndEditControl = self~getItem(IDC_ENTRYLINE)
+
+  self~connectEditNotify(IDC_ENTRYLINE, GOTFOCUS, "onFocus")
+  self~connectEditNotify(IDC_ENTRYLINE, LOSTFOCUS, "onLostFocus")
+
+  ret = editControl~setCue("Click here for extended product information")
+  if ret <> 0 then ErrorDialog( "Set cue error return:" ret )
+
+  -- Capture the mouse activate messages: WM_MOUSEACTIVATE message == 0x0021
+  self~addUserMsg(onMouseActivate, "0x0021", "0xFFFFFFFF", 0, 0, 0, 0)
+
+  ...
+
+::method onMouseActivate
+  expose editControl hwndEditControl
+
+  if self~getFocus == hwndEditControl then do
+    title = "Extended Product Information"
+    text = "Product ID:"   || "9"x    || "4538-D32"       || .endOfLine || -
+           "In stock:"     || "9"x    || "789"            || .endOfLine || -
+           "Back ordered:" || "9"x    || "No"             || .endOfLine || -
+           "EOL:"          || "0909"x || "January 2008"   || .endOfLine || -
+           "Client:"       || "0909"x || "AT&T"           || .endOfLine || .endOfLine -
+           "Notes: This product has served a limited number of customers" -
+           "and should be considered archic.  It will be replaced by a"   -
+           "superior product line."
+
+    ret = editControl~showBalloon(title, text, "e");
+    if ret <> 0 then ErrorDialog("Show balloon error return:" ret)
+  end
+
+::method onLostFocus
+  expose editControl
+
+  -- When the edit control loses the focus, dismiss the ballon.
+  ret = editControl~hideBalloon
+  if ret <> 0 then ErrorDialog("Hide balloon error return:" ret)
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+
+</section>
+
+<section id="mthHideBallon"><title>HideBallon</title>
+<indexterm><primary>ShowBallon</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anEditControl~HideBalloon-----------------------------------><
+
+]]>
+</programlisting>
+
+<para>Hides the balloon information window displayed by the <link
+linkend="mthShowBalloon">ShowBalloon</link> method.  The operating system will
+dismiss the balloon window automatically after 10 seconds with no programmer
+intervention.  This method can is used to dismiss the ballon sooner.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Operating System
+Version</emphasis></term>
+<listitem><para>This method is only available on Windows XP or later operating
+systems.  If the method is used on an unsupported operating system, -4 is
+returned.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>This method takes no arguments.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The retrun value will be one of the following:
+<variablelist>
+<varlistentry><term>less than -4</term>
+<listitem><para>The value is the negated Operating System Error code.
+The absolute value of the return can be used to look up the error reason in the
+Windows documentation.
+</para></listitem></varlistentry>
+<varlistentry><term>-4</term>
+<listitem><para>The operating system does not support this method.  Windows XP
+or later is required.
+</para></listitem></varlistentry>
+<varlistentry><term>-2</term>
+<listitem><para>There is an (internal) problem with the dialog or the dialog
+handle.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>There is an (internal) problem with the resource ID or window
+handle of the edit control.
+</para></listitem></varlistentry>
+<varlistentry><term>0</term>
+<listitem><para>The method succeeded.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>The method failed.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>For an example see the <link linkend="exampleShowBalloon">
+ShowBalloon</link> example.
+</variablelist>
+
 </section>
 
 </chapter>
