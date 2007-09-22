@@ -43,13 +43,47 @@
 -->
 <chapter id="dialogcontrolc"><title>DialogControl Class</title>
 <indexterm><primary>DialogControl class</primary></indexterm>
-<para>The DialogControl class provides methods that are
-common to all dialogs and dialog controls. It is a generic class that serves
-as a superclass to all dialog-control-specific classes.</para>
+<para>The DialogControl class provides methods that are common to all dialog
+controls. It is a generic class that serves as a superclass to all dialog
+control specific classes.  In the graphical user interface (GUI) for the Windows
+operating system both dialogs and dialog controls are windows.  Therefore, many
+of the methods of the DialogControl class are the same as the methods of the
+ooDialog dialog classes.  These are the methods that are common to all windows,
+whether they are dialog windows or dialog control windows.
+</para>
+<para id="paraDialogControlStyles">In the Windows GUI all windows are created
+with a set of <emphasis role="italic">window styles</emphasis>.  Dialog control
+windows are created using styles that are common to all windows, (for example
+the visible style,) and styles specific to the dialog control itself, (for
+example the multi-line style of the
+<link linkend="editcontrolc">EditControl</link> class.)  In general the styles
+of a control fall into three categories: Styles that can only be set when the
+control is created and then can not be changed afterwards. Styles that can be
+changed after the control is created by sending messages to the control. And,
+styles that can be changed after the control is created by accessing the
+control window directly.
+</para>
+<para>The ooDialog programmer chooses the window styles for dialog controls when
+he defines the dialog, either by using the <link linkend="addmeth">Add...
+Methods</link> for a user dialog, or by using a resource editor for dialogs
+defined with resource scripts or binary compiled resources.  After the dialog
+control has been created, the individual dialog control classes provide methods
+to change those styles that can be changed, either by sending the proper message
+to the control or by accessing the control window directly.
+</para>
 <variablelist>
+<varlistentry><term>Requires:</term>
+<listitem><para>The DialogControl class requires the class definition
+file <computeroutput>oodwin32.cls</computeroutput>:
+<programlisting>
+<![CDATA[
+::requires oodwin32.cls
+]]>
+</programlisting>
+</para></listitem></varlistentry>
 <varlistentry><term>Attributes:</term>
-<listitem><para>Instances of the DialogControl class have the
-following attributes:
+<listitem><para>Instances of the DialogControl class have the following
+attributes:
 <variablelist>
 <varlistentry><term>FactorX</term>
 <listitem><para>The horizontal size of one dialog unit, in pixels.
@@ -77,20 +111,9 @@ herself, if she requires that the value remain correct.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
-<varlistentry><term>Requires:</term>
-<listitem><para>The DialogControl class requires the class definition
-file <computeroutput>oodwin32.cls</computeroutput>:
-<programlisting>
-<![CDATA[
-::requires oodwin32.cls
-]]>
-</programlisting>
-</para></listitem></varlistentry>
 <varlistentry><term>Methods:</term>
-<listitem><para>Instances of the DialogControl class implement
-the methods listed in
-<link linkend="tdialogclass">DialogControl Instance Methods</link> table.
-
+<listitem><para>Instances of the DialogControl class implement the methods
+listed in the following DialogControl Instance Methods table.
 <table id="tdialogclass" frame="all">
 <title>DialogControl Instance Methods</title>
 <tgroup cols="2">
