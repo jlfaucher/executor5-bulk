@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-/* Sample Dialog useing some newish features of the EditControl in ooDialog. */
+/* Sample Dialog using some new features of the EditControl in ooDialog.      */
 
 -- NOTE: This is a work in progress, it will be updated to make it a better
 -- example for people new to ooDialog.  Still it may be of benefit to anyone
@@ -56,23 +56,17 @@
 --   Change the reference to TestEditControl.h in TestEditControl.rex to
 --   resource.h
 
-
-  .local~cueExplanation = "Unfortunately, you can not set a" || .endOfLine || -
-                          "cue banner on a multiline edit"   || .endOfLine || -
-                          "control."
-
-  .local~upperCue  = " type here, all letters will be upper cased"
-  .local~lowerCue  = " type here, all letters will be lower cased"
-  .local~numberCue = " type here, only numbers will be allowed"
-  .local~noneCue   = " type here, what you type is what you get"
-
-  dlg = .ExtendedEdit~new( TestEditControl.dll, IDD_DIALOG1, ,                -
+  dlg = .ExtendedEdit~new( TestEditControl.dll, IDD_DIALOG1, ,
                            "TestEditControl.h" )
-  if dlg~initCode == 0 then do
-    dlg~Execute( "SHOWTOP", IDI_DLG_OOREXX )
-    dlg~Deinstall
+  if dlg~initCode \== 0 then do
+    say "The dialog did not initialize properly.  Program Abort."
+    return -99
   end
 
+  dlg~Execute( "SHOWTOP", IDI_DLG_OOREXX )
+  dlg~Deinstall
+
+return 0
 -- End of entry point.
 
 ::requires "OODWin32.cls"
@@ -83,23 +77,26 @@
 ::method init
   forward class (super) continue
   if result <> 0 then return result
+
+  -- Tell ooDialog to leave the control settings alone.  This dialog sets the
+  -- dialog controls the way they should be in initDialog.  If auto detection is
+  -- on, then ooDialog resets the controls after initDialog has run.
   self~noAutoDetection
+
+  -- Put some constant strings in the .local directory for the dialog to use.
+  .local~cueExplanation = "Unfortunately, you can not set a" || .endOfLine || -
+                          "cue banner on a multiline edit"   || .endOfLine || -
+                          "control."
+
+  .local~upperCue  = " type here, all letters will be upper cased"
+  .local~lowerCue  = " type here, all letters will be lower cased"
+  .local~numberCue = " type here, only numbers will be allowed"
+  .local~noneCue   = " type here, what you type is what you get"
+
   return 0
 
 ::method initDialog
-  expose elQ staticTextQ dlgControls sids
-
-  numeric digits 11
-  sids = .table~new
-  sids["ES_UPPERCASE" ] = "0x0008"
-  sids["ES_LOWERCASE" ] = "0x0010"
-  sids["ES_NUMBER"    ] = "0x2000"
-  sids["ES_WANTRETURN"] = "0x1000"
-  sids["ES_OEMCONVERT"] = "0x0400"
-  sids["WS_DISABLED"  ] = "0x08000000"
-  sids["WS_VISIBLE"   ] = "0x10000000"
-  sids["WS_TABSTOP"   ] = "0x00010000"
-  sids["WS_GROUP"     ] = "0x00020000"
+  expose elQ staticTextQ dlgControls
 
   el1 = self~getEditControl( IDC_EDIT_FIRST )
   el2 = self~getEditControl( IDC_EDIT_SECOND )
@@ -142,56 +139,26 @@
   combo~add( "EditLine 2 (EL-2)" )
   combo~add( "EditLine 3 (EL-3)" )
   combo~selectIndex( 1 )
-  ret = self~connectComboBoxNotify( IDC_COMBO_APPLYTO, "SELENDOK", onComboChange )
+  ret = self~connectComboBoxNotify( IDC_COMBO_APPLYTO, "SELENDOK",             -
+                                    onComboChange )
 
   dlgControls~tabStops( 'A' )
+
+  -- The upper right corner of the dialog has a set of check boxes and radio
+  -- buttons that reflect the style of the edit control selected in the combo
+  -- box.  When the user picks an edit control in the combo box, the
+  -- onComboChange method is invoked.  The code then reads the style of the
+  -- selected edit control and sets all the check boxes and radio buttons to
+  -- reflect that style.  We reuse that code here by invoking the onComboChange
+  -- method manually.
   self~onComboChange
 
-::method getEditStyle private
-  expose sids dlgControls
-  use arg editControl
-
-  numeric digits 11
-
-  styleString = ""
-  styleNumeric = editControl~getStyleRaw
-
-  if BinaryAnd( styleNumeric, sids["ES_UPPERCASE"] ) <> 0 then
-    styleString = styleString "UPPER"
-
-  if BinaryAnd( styleNumeric, sids["ES_LOWERCASE"] ) <> 0 then
-    styleString = styleString "LOWER"
-
-  if BinaryAnd( styleNumeric, sids["ES_NUMBER"] ) <> 0 then
-    styleString = styleString "NUMBER"
-
-  if BinaryAnd( styleNumeric, sids["ES_WANTRETURN"] ) <> 0 then
-    styleString = styleString "WANTRETURN"
-
-  if BinaryAnd( styleNumeric, sids["ES_OEMCONVERT"] ) <> 0 then
-    styleString = styleString "OEM"
-
-  if BinaryAnd( styleNumeric, sids["WS_DISABLED"] ) <> 0 then
-    styleString = styleString "DISABLED"
-
-  if BinaryAnd( styleNumeric, sids["WS_VISIBLE"] ) <> 0 then
-    styleString = styleString "VISIBLE"
-
-  if BinaryAnd( styleNumeric, sids["WS_TABSTOP"] ) <> 0 then
-    styleString = styleString "TABSTOP"
-
-  if BinaryAnd( styleNumeric, sids["WS_GROUP"] ) <> 0 then
-    styleString = styleString "GROUP"
-
-return styleString~strip( "L" )
 
 ::method onComboChange
-  expose elQ sids dlgControls
-
-  numeric digits 11
+  expose elQ dlgControls
 
   el = elQ~at( dlgControls~get( IDC_COMBO_APPLYTO )~selectedIndex )
-  style = self~getEditStyle( el )
+  style = el~getStyle
 
   select
     when style~pos( "UPPER" ) <> 0 then do
@@ -241,7 +208,7 @@ return styleString~strip( "L" )
   else
     dlgControls~get( IDC_CHECK_WSVISIBLE )~unCheck
 
-  if style~pos( "TABSTOP" ) <> 0 then
+  if style~wordPos( "TAB" ) <> 0 then
     dlgControls~get( IDC_CHECK_TABSTOP )~check
   else
     dlgControls~get( IDC_CHECK_TABSTOP )~unCheck
@@ -282,10 +249,16 @@ return styleString~strip( "L" )
   end
   -- End select
 
+  -- The tabstop style could now be changed for the edit control whose style
+  -- is depicted in the upper right of the dialog box.  So, adjust it.  Force
+  -- our self to do the update by pretending the combo box index is changed.
+  self~onComboChange
+
+  -- Set the focus to the first control in the dialog.
   self~focusItem( IDC_RB_ALL )
 
 ::method setStyles
-  expose elQ staticTextQ sids dlgControls
+  expose elQ staticTextQ dlgControls
 
   index = dlgControls~get( IDC_COMBO_APPLYTO )~selectedIndex
   el = elQ~at( index )
@@ -355,7 +328,7 @@ return styleString~strip( "L" )
   expose elQ
 
   do el over elQ
-    style = self~getEditStyle( el )
+    style = el~getStyle
     select
       when style~pos( "UPPER" ) <> 0 then cue = .upperCue
       when style~pos( "LOWER" ) <> 0 then cue = .lowerCue
@@ -381,6 +354,7 @@ return styleString~strip( "L" )
                   "'Set Styles' button." )
 
   elQ~queue( el )
+
 
 -- A class to keep track of all the controls in the dialg.  The class can handle
 -- thinks like setting / unsetting the tab stops, querying the state of the
@@ -460,7 +434,6 @@ return self~controls[id]~obj
     when type == 'A' then do id over self~controls
       self~setTabStopStyle( id, useParent, self~setOrUnset( id ) )
     end
-    -- End when type == 'A'
 
     when type == 'E' then do id over self~controls
       if self~controls[id]~odd then
