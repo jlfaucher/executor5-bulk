@@ -101,8 +101,9 @@ in the following EditControl Instance Methods table.
 </row>
 <row>
 <entry>HideBalloon</entry>
-<entry><link linkend="mthHideBalloon">HideBallon</link></entry>
+<entry><link linkend="mthHideBalloon">HideBalloon</link></entry>
 </row>
+<row>
 <entry>IsModified</entry>
 <entry><link linkend="ismodified">IsModified</link></entry>
 </row>
@@ -776,7 +777,7 @@ The absolute value of the return can be used to look up the error reason in the
 Windows documentation.
 </para></listitem></varlistentry>
 </variablelist></para></listitem></varlistentry>
-<varlistentry><term id="exampleSetText"><emphasis role="bold">Example:</emphasis></term>
+<varlistentry id="exampleSetText"><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following code snippets use the
 <computeroutput>GetText</computeroutput> and
 <computeroutput>SetText</computeroutput> methods in a dialog that could be used
@@ -1060,7 +1061,7 @@ margins of the associated edit control.</para>
 </section>
 
 <section id="mthSetCue"><title>SetCue</title>
-<indexterm><primary>ShowBallon</primary></indexterm>
+<indexterm><primary>ShowBalloon</primary></indexterm>
 <programlisting>
 <![CDATA[
 >>-anEditControl~SetCue(--text--)------------------------------><
@@ -1097,6 +1098,8 @@ returned.
 <varlistentry><term>text</term>
 <listitem><para>The text to be displayed to the user as a cue.  The maximum
 length of the text string is 255 characters.
+</para></listitem></varlistentry>
+</variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
 <listitem><para>The return value will be one of the following:
@@ -1138,8 +1141,8 @@ ShowBalloon</link> example.
 
 </section>
 
-<section id="mthShowBallon"><title>ShowBallon</title>
-<indexterm><primary>ShowBallon</primary></indexterm>
+<section id="mthShowBalloon"><title>ShowBalloon</title>
+<indexterm><primary>ShowBalloon</primary></indexterm>
 <programlisting>
 <![CDATA[
 >>-anEditControl~ShowBalloon(--title,--text--+----------+--)---><
@@ -1148,7 +1151,7 @@ ShowBalloon</link> example.
 ]]>
 </programlisting>
 
-<para>Displays a balloon information window.  Ballon windows are similar in
+<para>Displays a balloon information window.  Balloon windows are similar in
 appearance to the balloon captions used in comic books to display the dialog of
 the characters. For an edit control the balloon window looks like it is attached
 to the control.
@@ -1170,13 +1173,13 @@ returned.
 <listitem><para>The arguments are:
 <variablelist>
 <varlistentry><term>title</term>
-<listitem><para>A title for the balloon window.  Titles are limite to 99
+<listitem><para>A title for the balloon window.  Titles are limited to 99
 characters total in length.
 </para></listitem></varlistentry>
 <varlistentry><term>text</term>
-<listitem><para>The informational text of the ballon window.  This text is
-limited to 1024 characters in length.  The programmer can use line break
-characters to control the formatting of the text.
+<listitem><para>The text of the balloon window.  This text is limited to 1024
+characters in length.  The programmer can use line break characters to control
+the formatting of the text.
 </para></listitem></varlistentry>
 <varlistentry><term>icon</term>
 <listitem><para>Used to specify which icon is displayed on the title line.  The
@@ -1184,13 +1187,13 @@ default is the informational icon.  The following keywords can be used to
 specify another icon, or no icon.  Only the first letter of the keyword is
 needed and case is insignificant:
 <variablelist>
-<varlistentry><term><emphasis role="bold">ERROR</emphasis></term>
+<varlistentry><term>ERROR</term>
 <listitem><para>The error icon is used.
 </para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">WARN</emphasis></term>
+<varlistentry><term>WARN</term>
 <listitem><para>The warning icon is used.
 </para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">NONE</emphasis></term>
+<varlistentry><term>NONE</term>
 <listitem><para>No icon is displayed.
 </para></listitem></varlistentry>
 </variablelist>
@@ -1229,18 +1232,17 @@ handle of the edit control.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<varlistentry id="exampleShowBalloon"><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following code snippet could come from a fictitious
 inventory program.  An edit control is used to enter a product ID.  If the user
 clicks on the edit control a ballon tip is shown displaying extended product
 information.  (In a real application, the extended information might be based on
 what the user had entered in the edit control.)
 </para>
-<para>
-Text is set in the edit control to give the user a 'cue' that she can click on
-the edit control for extra information.  When the ballon tip is shown, it will
-automatically be dismissed after 10 seconds.  This application connects a
-notification for the lost focus event.  When the edit control loses focus, the
+<para>Text is set in the edit control to give the user a 'cue' that she can 
+click on the edit control for extra information.  When the ballon tip is shown, 
+it will automatically be dismissed after 10 seconds.  This application connects 
+a notification for the lost focus event.  When the edit control loses focus, the
 ballon tip is hidden by the program.
 <programlisting>
 <![CDATA[
@@ -1293,7 +1295,7 @@ ballon tip is hidden by the program.
 ::method onLostFocus
   expose editControl
 
-  -- When the edit control loses the focus, dismiss the ballon.
+  -- When the edit control loses the focus, dismiss the alloon.
   ret = editControl~hideBalloon
   if ret <> 0 then ErrorDialog("Hide balloon error return:" ret)
 ]]>
@@ -1303,8 +1305,8 @@ ballon tip is hidden by the program.
 
 </section>
 
-<section id="mthHideBallon"><title>HideBallon</title>
-<indexterm><primary>ShowBallon</primary></indexterm>
+<section id="mthHideBalloon"><title>HideBalloon</title>
+<indexterm><primary>ShowBalloon</primary></indexterm>
 <programlisting>
 <![CDATA[
 >>-anEditControl~HideBalloon-----------------------------------><
@@ -1358,12 +1360,13 @@ handle of the edit control.
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>For an example see the <link linkend="exampleShowBalloon">
 ShowBalloon</link> example.
+</para></listitem></varlistentry>
 </variablelist>
 
 </section>
 
 <section id="mthAddStyle"><title>AddStyle</title>
-<indexterm><primary>AddStyle</primary></indexterm>
+<indexterm><primary>AddStyle</primary>
 <secondary>EditControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -1381,8 +1384,9 @@ ShowBalloon</link> example.
 </programlisting>
 
 <para>Adds one or more edit control styles to the edit control. This method
-works with the <link linkend="">styles</link> that can be changed by accessing
-the edit control window directly after the edit control has been created.
+works with the <link linkend="paraDialogControlStyles">window styles</link> that 
+can be changed by accessing the edit control window directly after the edit 
+control has been created.
 </para>
 <variablelist>
 <varlistentry><term id="argsAddStyle"><emphasis role="bold">Arguments:</emphasis></term>
@@ -1424,6 +1428,7 @@ style.
 </para></listitem></varlistentry>
 <varlistentry><term>GROUP</term>
 <listitem><para>Adds the <link linkend="wsgroup">group</link> style.
+</para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
@@ -1469,7 +1474,7 @@ editControl~addStyle("NUMBER TAB GROUP")
 </section>
 
 <section id="mthRemoveStyle"><title>RemoveStyle</title>
-<indexterm><primary>RevmoveStyle</primary></indexterm>
+<indexterm><primary>RevmoveStyle</primary>
 <secondary>EditControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -1487,8 +1492,9 @@ editControl~addStyle("NUMBER TAB GROUP")
 </programlisting>
 
 <para>Remove one or more edit control styles from the edit control. This method
-works with the <link linkend="">styles</link> that can be changed by accessing
-the edit control window directly after the edit control has been created.
+works with the <link linkend="paraDialogControlStyles">window styles</link> that 
+can be changed by accessing the edit control window directly after the edit 
+control has been created.
 </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1540,7 +1546,7 @@ editControl~removeStyle("LOWER GROUP")
 </section>
 
 <section id="mthReplaceStyle"><title>ReplaceStyle</title>
-<indexterm><primary>ReplaceStyle</primary></indexterm>
+<indexterm><primary>ReplaceStyle</primary>
 <secondary>EditControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -1558,9 +1564,9 @@ editControl~removeStyle("LOWER GROUP")
 </programlisting>
 
 <para>Removes and adds edit control styles for the edit control in one
-operation.  This method works with the <link linkend="">styles</link> that can
-be changed by accessing the edit control window directly after the edit control
-has been created.
+operation.  This method works with the <link linkend="paraDialogControlStyles"> 
+window styles</link> that can be changed by accessing the edit control window 
+directly after the edit control has been created.
 </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1620,7 +1626,7 @@ editControl~replaceStyle("NUMBER TAB", "UPPER GROUP")
 </section>
 
 <section id="mthGetStyle"><title>GetStyle</title>
-<indexterm><primary>GetStyle</primary></indexterm>
+<indexterm><primary>GetStyle</primary>
 <secondary>EditControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -1653,7 +1659,6 @@ unlikely that the ooDialog programmer would ever see them.
 The absolute value of the return can be used to look up the error reason in the
 Windows documentation.
 </para></listitem></varlistentry>
-</para></listitem></varlistentry>
 <varlistentry><term>-2</term>
 <listitem><para>There is an (internal) problem with the dialog or the dialog
 handle.
@@ -1665,18 +1670,20 @@ handle of the edit control.
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following would change an edit control from one that only
-allows numbers to one that uppercases all letters entered, while removing the
-tabstop style and adding the group style.
-<programlisting> <![CDATA[
+<listitem><para>The following example could be from a fictitious application 
+that changes the style of an edit control back and forth between accepting 
+numbers only and accepting all characters based on the options the user has 
+selected.
+<programlisting> 
+<![CDATA[ 
 editControl = dlg~getEditControl(IDC_ENTRYLINE)
-if .nil == editControl then return
-editControl~replaceStyle("NUMBER TAB", "UPPER GROUP")
+if .nil == editControl then return style = editControl~getStyle
+if style~wordPos("NUMBER") <> 0 then
+  editControl~removeStyle("NUMBER")
+...
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
-
 </section>
-
 </chapter>
