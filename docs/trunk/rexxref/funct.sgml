@@ -1961,6 +1961,26 @@ for example).
 <emphasis role="italic">yyyymmdd</emphasis> (suitable for sorting,
 for example).
 </para></listitem></varlistentry>
+<varlistentry><term>Ticks
+<indexterm><primary>Ticks option of DATE function</primary></indexterm>
+</term>
+<listitem><para>returns the number of seconds
+since 00:00:00.000000 on 1 January 1970, in the format:
+<emphasis role="italic">dddddddddddd</emphasis> (no leading zeros or blanks).
+</para>
+<note><title>Notes</title>
+<para>The base date of 1 January 1970 is determined
+by extending the current Gregorian calendar backward (365 days each year,
+with an extra day every year that is divisible by 4 except century years that
+are not divisible by 400. It does not take into account any errors in the calendar
+system that created the Gregorian calendar originally.</para>
+<para>The value returned by Date('T') can be used to calculate the interval between
+any two dates.  Note, however, that values returned generally contain more digits
+that the default NUMERIC DIGITS setting.  The NUMERIC DIGITS setting should be increased
+to a minimum value of 12 when performing timestamp arithmetic.</para>
+<para>Date('T') will return a negative number for dates prior to 1 January 1970.</para>
+</note>
+</listitem></varlistentry>
 <varlistentry><term>Usa
 <indexterm><primary>Usa option of DATE function</primary></indexterm>
 </term>
@@ -2078,10 +2098,10 @@ would be the returned date.</para>
 <para>This rule is suitable for dates
 that are close to today's date. However, when working with birth dates,
 it is recommended that you explicitly provide the century.</para></note>
-<para>When requesting dates to be converted to Full format, a time value
+<para>When requesting dates to be converted to Full format or Ticks format, a time value
 of "00:00:00.000000" is used for the conversion.
 A time stamp for a time and date combination can be created by
-combining a value from Time('F') for the time of day.</para>
+combining a value from Time() for the time of day.</para>
 <programlisting>
     numeric digits 18  -- needed to add the timestamps
     timestamp = date('f, '20072301', 'S') + time('f', '08:14:22', 'N')
@@ -4537,6 +4557,26 @@ time clock.</para>
 since midnight in the format sssss (no leading zeros or blanks, except for
 a result of <computeroutput>0</computeroutput>).
 </para></listitem></varlistentry>
+<varlistentry><term>Ticks
+<indexterm><primary>Ticks option of Time function</primary></indexterm>
+</term>
+<listitem><para>returns the number of seconds
+since 00:00:00.000000 on 1 January 1970, in the format:
+<emphasis role="italic">dddddddddddd</emphasis> (no leading zeros or blanks).
+</para>
+<note><title>Notes</title>
+<para>The base date of 1 January 1970 is determined
+by extending the current Gregorian calendar backward (365 days each year,
+with an extra day every year that is divisible by 4 except century years that
+are not divisible by 400. It does not take into account any errors in the calendar
+system that created the Gregorian calendar originally.</para>
+<para>The value returned by Time('T') can be used to calculate the interval between
+any two times.  Note, however, that values returned generally contain more digits
+that the default NUMERIC DIGITS setting.  The NUMERIC DIGITS setting should be increased
+to a minimum value of 12 when performing timestamp arithmetic.</para>
+<para>Time('T') will return a negative number for dates prior to 1 January 1970.</para>
+</note>
+</listitem></varlistentry>
 </variablelist>
 <para>Here are some examples, assuming that the time is 4:54 p.m.:</para>
 <indexterm><primary>TIME function</primary>
@@ -4612,7 +4652,7 @@ For example, if the result requires components that are not specified in the
 source format, then those components of the result are zero. If the source
 has components that the result does not need, then those components of the
 source are ignored.</para>
-<para>When requesting times be converted to Full format, a date value
+<para>When requesting times be converted to Full or Ticks format, a date value
 of 1 January 0001 is used for the conversion.
 A time stamp for a time and date combination can be created by
 combining a value from Date('F') for the time of day.</para>
