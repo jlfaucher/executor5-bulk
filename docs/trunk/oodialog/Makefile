@@ -59,7 +59,7 @@ SGML_FILES = advcntlc.sgml \
 	     listboxc.sgml \
 	     listcontrolc.sgml \
 	     mesextcl.sgml \
-	     oodfct.sgml \
+	     dlgareac.sgml \
 	     oodialog.sgml \
 	     plainuserdialogc.sgml \
 	     preface.sgml \

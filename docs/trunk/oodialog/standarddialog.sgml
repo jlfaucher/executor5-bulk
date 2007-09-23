@@ -41,8 +41,110 @@
     #
     #########################################################################
 -->
-<chapter id="man0099"><title>Standard Dialog Classes and Functions</title>
-<indexterm><primary>standard dialog classes and functions</primary></indexterm>
+<chapter id="man0099"><title>Standard Dialogs, External Functions, and
+Public Routines</title>
+<indexterm><primary>Standard Dialogs, Functions, and
+Routines</primary></indexterm>
+<para>The ooDialog framework provides a nubmer of standard dialogs, external
+functions, and public routines that allow programmers to easily use simple
+graphical elements in their ooRexx applications.  The external functions and
+public routines can be called with a single line of code and the standard
+dialogs can usually be executed with only two lines of code.  This makes them
+simple to use and does not require the programmer to do much set up for these
+elements.
+</para>
+<para>The standard dialogs, external functions, and public routines are listed
+the following table:</para>
+<table id="tStandardElements" frame="all">
+<title>Standard Dialogs, Functions, and Routines</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Element...</entry>
+<entry>...on page</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>TimedMessage dialog</entry>
+<entry><link linkend="clsTimedMessage">TimedMessage class</link></entry>
+</row>
+<row>
+<entry>InputBox dialog</entry>
+<entry><link linkend="clsInputBox">InputBox class</link></entry>
+</row>
+<row>
+<entry>PasswordBox dialog</entry>
+<entry><link linkend="clsPasswordBox">PasswordBox class</link></entry>
+</row>
+<row>
+<entry>IntegerBox dialog</entry>
+<entry><link linkend="clsIntegerBox">IntegerBox class</link></entry>
+</row>
+<row>
+<entry>MultiInputBox dialog</entry>
+<entry><link linkend="clsMultiInputBox">MultiInputBox class</link></entry>
+</row>
+<row>
+<entry>ListChoice dialog</entry>
+<entry><link linkend="clsListChoice">ListChoice class</link></entry>
+</row>
+<row>
+<entry>MultiListChoice dialog</entry>
+<entry><link linkend="clsMultiListChoice">MultiListChoice class</link></entry>
+</row>
+<row>
+<entry>CheckList dialog</entry>
+<entry><link linkend="clsCheckList">CheckList class</link></entry>
+</row>
+<row>
+<entry>SingleSelection dialog</entry>
+<entry><link linkend="clsSingleSelection">SingleSelection class</link></entry>
+</row>
+<row>
+<entry>Play callable function</entry>
+<entry><link linkend="rtnPlay">Play routine</link></entry>
+</row>
+<row>
+<entry>TimedMessage callable function</entry>
+<entry><link linkend="rtnTimedMessage">TimedMessage routine</link></entry>
+</row>
+<row>
+<entry>InputBox callable function</entry>
+<entry><link linkend="rtnInputBox">InputBox routine</link></entry>
+</row>
+<row>
+<entry>PasswordBox callable function</entry>
+<entry><link linkend="rtnPasswordBox">PasswordBox routine</link></entry>
+</row>
+<row>
+<entry>IntegerBox callable function</entry>
+<entry><link linkend="rtnIntegerBox">IntegerBox routine</link></entry>
+</row>
+<row>
+<entry>MultiInputBox callable function</entry>
+<entry><link linkend="rtnMultiInputBox">MultiInputBox routine</link></entry>
+</row>
+<row>
+<entry>ListChoice callable function</entry>
+<entry><link linkend="rtnListChoice">ListChoice routine</link></entry>
+</row>
+<row>
+<entry>MultiListChoice callable function</entry>
+<entry><link linkend="rtnMultiListChoice">MultiListChoice routine</link></entry>
+</row>
+<row>
+<entry>CheckList callable function</entry>
+<entry><link linkend="rtnCheckList">CheckList routine</link></entry>
+</row>
+<row>
+<entry>SingleSelection callable function</entry>
+<entry><link linkend="rtnSingleSelection">SingleSelection routine</link></entry>
+</row>
+</tbody></tgroup>
+</table>
+<section id="sctStandardDialogs"><title>Standard Dialog Classes</title>
+<indexterm><primary>ooDialog standard dialogs</primary></indexterm>
 <para>The standard dialog classes are: </para>
 <itemizedlist>
 <listitem><para>TimedMessage</para></listitem>
@@ -51,37 +153,41 @@
 <listitem><para>IntegerBox</para></listitem>
 <listitem><para>MultiInputBox</para></listitem>
 <listitem><para>ListChoice</para></listitem>
-<listitem><para>MultipleListChoice</para></listitem>
+<listitem><para>MultiListChoice</para></listitem>
 <listitem><para>CheckList</para></listitem>
 <listitem><para>SingleSelection</para></listitem></itemizedlist>
 <para></para>
 <variablelist>
 <varlistentry><term>Requires:</term>
-<listitem><para><computeroutput>StdDlg.cls</computeroutput> is the source file for the standard dialog classes.
+<listitem><para>Use the <computeroutput>oodPlain.cls</computeroutput> file for
+the standard dialog classes.
 <programlisting>
 <![CDATA[
-::requires "OODPLAIN.CLS"
+::requires "oodPlain.cls"
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
 <varlistentry><term>Preparation:</term>
 <listitem><para>Standard dialogs are prepared by using the new
 method of the class, which in turn invokes the Init
-method. The parameters are described for the Init
+method. The parameters for the new method are described for the Init
 method of each class.
 </para></listitem></varlistentry>
 <varlistentry><term>Execution:</term>
 <listitem><para>The dialog is then run by using the Execute
-method. Execute returns the user's input if the OK button is clicked and the null string if the Cancel button is clicked to terminate the dialog. If there is more than
-one return value, Execute returns the value 1 and
-stores the results in an attribute.
+method. Execute returns the user's input if the OK button is clicked and the
+null string if the Cancel button is clicked to terminate the dialog. If there is
+more than one return value, Execute returns the value 1 and stores the results
+in an attribute.
 </para></listitem></varlistentry>
 <varlistentry><term>Functions:</term>
 <listitem><para>Each standard dialog is also available as a callable function.
+These functions are described in the <link linkend="sctPublicRoutines">Public
+Routines</link> section of this chapter.
 </para></listitem></varlistentry>
 </variablelist>
 
-<section id="h002064"><title>TimedMessage Class</title>
+<section id="clsTimedMessage"><title>TimedMessage Class</title>
 <indexterm><primary>TimedMessage class</primary></indexterm>
 <para>The TimeMessage class shows a message window for
 a defined duration. </para>
@@ -98,7 +204,7 @@ a defined duration. </para>
 </variablelist>
 <para>The methods listed below are defined by this class.</para>
 
-<section id="h002077"><title>Init</title>
+<section id="initTimedMessage"><title>Init</title>
 <indexterm><primary>Init</primary>
 <secondary>TimedMessage class</secondary></indexterm>
 <programlisting>
@@ -142,7 +248,7 @@ drop dlg
 </programlisting>
 </section>
 
-<section id="h002087"><title>DefineDialog</title>
+<section id="clsDefineDialog"><title>DefineDialog</title>
 <indexterm><primary>DefineDialog</primary>
 <secondary>TimedMessage class</secondary></indexterm>
 <programlisting>
@@ -188,18 +294,9 @@ it, you have to forward the message to the parent class by using the keyword sup
 window. After the given time (see Init method), it
 destroys the dialog automatically.</para>
 </section>
-
-<section id="timedmsgfu"><title>TimedMessage Function</title>
-<para>OODialog provides a shortcut function to invoke a TimedMessage dialog as a function: </para>
-<programlisting>
-<![CDATA[
-ret = TimedMessage("We are starting...","Please wait",3000)
-]]>
-</programlisting><para> The parameters are described in the Init method.</para>
-</section>
 </section>
 
-<section id="h002102"><title>InputBox Class</title>
+<section id="clsInputBox"><title>InputBox Class</title>
 <indexterm><primary>InputBox class</primary></indexterm>
 <para>The InputBox class provides a simple dialog with
 a title, a message, one entry line, an OK, and a Cancel push button. </para>
@@ -310,20 +407,9 @@ After termination, the value of the entry line is returned if the user clicks
 the OK button; a null string is returned if the user
 clicks on Cancel.</para>
 </section>
-
-<section id="inputboxfu"><title>InputBox Function</title>
-<indexterm><primary>InputBox function</primary></indexterm>
-<para>OODialog provides a shortcut function to invoke an
-<link linkend="h002102">InputBox</link> dialog as a function: </para>
-<programlisting>
-<![CDATA[
-say "Your name:" InputBox("Please enter your name","Personal Data")
-]]>
-</programlisting><para> The parameters are described in the Init method.</para>
-</section>
 </section>
 
-<section id="h002153"><title>PasswordBox Class</title>
+<section id="clsPasswordBox"><title>PasswordBox Class</title>
 <indexterm><primary>PasswordBox class</primary></indexterm>
 <para>The PasswordBox class is an InputBox dialog with an entry line that echoes the keys with asterisks
 (*) instead of characters. </para>
@@ -332,13 +418,13 @@ say "Your name:" InputBox("Please enter your name","Personal Data")
 <listitem><para><computeroutput>OODPLAIN.CLS</computeroutput> is required to use this class
 </para></listitem></varlistentry>
 <varlistentry><term>Subclass:</term>
-<listitem><para>This class is a subclass of the <link linkend="h002102">InputBox Class</link>
+<listitem><para>This class is a subclass of the <link linkend="clsInputBox">InputBox Class</link>
 </para></listitem></varlistentry>
 <varlistentry><term>Execute:</term>
 <listitem><para>Returns the user's password
 </para></listitem></varlistentry>
 </variablelist>
-<para>The methods are the same as for the <link linkend="h002102">InputBox Class</link>,
+<para>The methods are the same as for the <link linkend="clsInputBox">InputBox Class</link>,
 with the exception of AddLine.</para>
 
 <section id="h002166"><title>AddLine</title>
@@ -356,35 +442,24 @@ with the exception of AddLine.</para>
 class, InputBox, by using a password entry line instead
 of a simple entry line.</para>
 </section>
-
-<section id="passwordboxfu"><title>PasswordBox Function</title>
-<indexterm><primary>PasswordBox function</primary></indexterm>
-<para>OODialog provides a shortcut function to invoke a PasswordBox dialog as a function: </para>
-<programlisting>
-<![CDATA[
-pwd = PasswordBox("Please enter your password","Security")
-]]>
-</programlisting><para> The parameters are described in the Init method
-of the InputBox class.</para>
-</section>
 </section>
 
-<section id="h002176"><title>IntegerBox Class</title>
+<section id="clsIntegerBox"><title>IntegerBox Class</title>
 <indexterm><primary>IntegerBox class</primary></indexterm>
-<para>The IntegerBox class is an <link linkend="h002102">InputBox</link>
+<para>The IntegerBox class is an <link linkend="clsInputBox">InputBox</link>
 dialog whose entry line allows only numerical data. </para>
 <variablelist>
 <varlistentry><term>Requires:</term>
 <listitem><para><computeroutput>OODPLAIN.CLS</computeroutput> is required to use this class
 </para></listitem></varlistentry>
 <varlistentry><term>Subclass:</term>
-<listitem><para>This class is a subclass of the <link linkend="h002102">InputBox Class</link> class
+<listitem><para>This class is a subclass of the <link linkend="clsInputBox">InputBox Class</link> class
 </para></listitem></varlistentry>
 <varlistentry><term>Execute:</term>
 <listitem><para>Returns the user's numeric input
 </para></listitem></varlistentry>
 </variablelist>
-<para>The methods are the same as for the <link linkend="h002102">InputBox Class</link>
+<para>The methods are the same as for the <link linkend="clsInputBox">InputBox Class</link>
 class, with the exception of Validate.</para>
 
 <section id="h002189"><title>Validate</title>
@@ -403,20 +478,9 @@ which in turn is called in response to a push button event. This method checks
 whether or not the entry line contains a valid numerical value. If the value
 is invalid, a message window is displayed.</para>
 </section>
-
-<section id="integerboxfu"><title>IntegerBox Function</title>
-<indexterm><primary>IntegerBox function</primary></indexterm>
-<para>OODialog provides a shortcut function to invoke an IntegerBox dialog as a function: </para>
-<programlisting>
-<![CDATA[
-say "Your age:" IntegerBox("Please enter your age","Personal Data")
-]]>
-</programlisting><para> The parameters are described in the Init method
-of the InputBox class.</para>
-</section>
 </section>
 
-<section id="h002194"><title>MultiInputBox Class</title>
+<section id="clsMultiInputBox"><title>MultiInputBox Class</title>
 <indexterm><primary>MultiInputBox class</primary></indexterm>
 <para>The MultiInputBox class is a dialog that provides
 a title, a message, and one or more entry lines. After execution of this dialog
@@ -433,7 +497,7 @@ you can access the values of the entry lines. </para>
 by the user are stored in attributes matching the labels of the entry lines.
 </para></listitem></varlistentry>
 </variablelist>
-<para>The methods are the same as for the <link linkend="h002102">InputBox Class</link>
+<para>The methods are the same as for the <link linkend="clsInputBox">InputBox Class</link>
 class, with the exception of Init.</para>
 
 <section id="h002207"><title>Init</title>
@@ -504,26 +568,9 @@ end
 </para></listitem></varlistentry>
 </variablelist>
 </section>
-
-<section id="multiinputboxfu"><title>MultiInputBox Function</title>
-<indexterm><primary>MultiInputBox function</primary></indexterm>
-<para>OODialog provides a shortcut function to invoke a MultiInputBox dialog as a function: </para>
-<programlisting>
-<![CDATA[
-res = MultiInputBox("Enter your address","Personal Data", ,
-                    .array~of("&First name","Last &name","&City"), ,
-                    .array~of("John","Smith","San Jose"), 100)
-if res \= .Nil then do entry over res
-                       say "Address-line[]= " entry
-                    end
-]]>
-</programlisting>
-<para>The parameters are described in the Init method,
-but, instead of stems, arrays are passed into and returned from the function.</para>
-</section>
 </section>
 
-<section id="h002234"><title>ListChoice Class</title>
+<section id="clsListChoice"><title>ListChoice Class</title>
 <indexterm><primary>ListChoice class</primary></indexterm>
 <para>The ListChoice class provides a dialog with a list
 box, an OK, and a Cancel button.
@@ -597,24 +644,9 @@ say "Your ListChoice data:" dlg~execute
 ]]>
 </programlisting>
 </section>
-
-<section id="listchoicefu"><title>ListChoice Function</title>
-<indexterm><primary>ListChoice function</primary></indexterm>
-<para>OODialog provides a shortcut function to invoke a ListChoice dialog as a function: </para>
-<programlisting>
-<![CDATA[
-day = ListChoice("Select a day","My favorite day", ,
-                 .array~of("Monday","Tuesday","Wednesday","Thursday", ,
-                          "Friday","Saturday","Sunday") , , ,"Thursday")
-say "Your favorite day is" day
-]]>
-</programlisting>
-<para>The parameters are described in the Init method,
-but, instead of an input stem an array is passed into the function.</para>
-</section>
 </section>
 
-<section id="h002286"><title>MultiListChoice Class</title>
+<section id="clsMultiListChoice"><title>MultiListChoice Class</title>
 <indexterm><primary>MultiListChoice class</primary></indexterm>
 <para>The MultiListChoice class is an extension of the ListChoice class. It makes it possible for the user to
 select more than one line at a time. The Execute method
@@ -625,7 +657,7 @@ item has index 1. </para>
 <listitem><para><computeroutput>OODPLAIN.CLS</computeroutput> is required to use this class
 </para></listitem></varlistentry>
 <varlistentry><term>Subclass:</term>
-<listitem><para>This class is a subclass of the <link linkend="h002234">ListChoice Class</link>
+<listitem><para>This class is a subclass of the <link linkend="clsListChoice">ListChoice Class</link>
 </para></listitem></varlistentry>
 <varlistentry><term>Execute:</term>
 <listitem><para>Returns the index numbers of the entries selected
@@ -635,7 +667,7 @@ item has index 1. </para>
 The first entry has index 1 and the rest are increments of one.
 </para></listitem></varlistentry>
 </variablelist>
-<para>The methods are the same as for the <link linkend="h002234">ListChoice Class</link>
+<para>The methods are the same as for the <link linkend="clsListChoice">ListChoice Class</link>
 class, except that Execute returns the index numbers
 of the selected entries. </para>
 <variablelist>
@@ -659,26 +691,9 @@ if s <> "" then do while s \= ""
                end
 ]]>
 </programlisting>
-
-<section id="multilistchoicefu"><title>MultiListChoice Function</title>
-<indexterm><primary>MultiListChoice function</primary></indexterm>
-<para>OODialog provides a shortcut function to invoke a MultiListChoice dialog as a function: </para>
-<programlisting>
-<![CDATA[
-days = MultiListChoice("Select days","My TV Days", ,
-                       .array~of("Monday","Tuesday","Wednesday", ,
-                              "Thursday","Friday","Saturday","Sunday"), , ,"2 5")
-if days <> .Nil then do day over days
-                       say "TV day =" day
-                    end
-]]>
-</programlisting>
-<para>The parameters are described in the Init method,
-but, instead of stems, arrays are passed into and returned from the function.</para>
-</section>
 </section>
 
-<section id="h002304"><title>CheckList Class</title>
+<section id="clsCheckList"><title>CheckList Class</title>
 <indexterm><primary>CheckList class</primary></indexterm>
 <para>The CheckList class is a dialog with a group of
 one or more check boxes. </para>
@@ -771,26 +786,9 @@ end
 ]]>
 </programlisting>
 </section>
-
-<section id="checklistfu"><title>CheckList Function</title>
-<indexterm><primary>CheckList function</primary></indexterm>
-<para>OODialog provides a shortcut function to invoke a CheckList dialog as a function: </para>
-<programlisting>
-<![CDATA[
-weekdays = .array~of("Monday","Tuesday","Wednesday", ,
-                     "Thursday","Friday","Saturday","Sunday")
-days = CheckList("Check the days","Working Days",weekdays)
-if days <> .Nil then do i = 1 to days~items
-                        if days[i] then say "Working day =" weekdays[i]
-                     end
-]]>
-</programlisting>
-<para>The parameters are described in the Init method,
-but, instead of stems, arrays are passed into and returned from the function.</para>
-</section>
 </section>
 
-<section id="h002345"><title>SingleSelection Class</title>
+<section id="clsSingleSelection"><title>SingleSelection Class</title>
 <indexterm><primary>SingleList class</primary></indexterm>
 <para>The SingleSelection class shows a dialog that has
 a group of radio buttons. The user can select only one item of the group. </para>
@@ -874,8 +872,655 @@ say  "You Selected the month: " mon.s
 </para></listitem></varlistentry>
 </variablelist>
 </section>
+</section>
 
-<section id="singleselfu"><title>SingleSelection Function</title>
+</section>
+
+<section id="sctExternalFunctions"><title>External Functions</title>
+<indexterm><primary>ooDialog external functions</primary></indexterm>
+<para>The ooDialog framework provides external functions that can be used as
+callable functions in your Open Object Rexx programs. These functions are
+registered automatically when the first dialog is initialized. If no dialog has
+been created, the programmer must register the functions prior to calling them.
+An individual function is registered with:
+</para>
+<programlisting>
+<![CDATA[
+call RxFuncAdd functionname, "oodialog", functionname
+]]>
+</programlisting>
+<para>To register all the ooDialog functions in this group use:</para>
+<programlisting>
+<![CDATA[
+call RxFuncAdd InstMMFuncs, "oodialog", InstMMFuncs
+call InstMMFuncs
+]]>
+</programlisting>
+<para>A more convenient way to call these functions is provided by the
+<link linkend="sctPublicRoutines">Public Routines</link>.
+</para>
+<variablelist>
+<varlistentry><term>InfoMessage
+<indexterm><primary>InfoMessage</primary></indexterm>
+</term>
+<listitem><para>Displays an information message window:
+<programlisting>
+<![CDATA[
+call InfoMessage "some message text"
+ret = InfoMessage("another text")
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>ErrorMessage
+<indexterm><primary>ErrorMessage</primary></indexterm>
+</term>
+<listitem><para>Displays an error message window:
+<programlisting>
+<![CDATA[
+call ErrorMessage "some error message text"
+ret = ErrorMessage("another error message")
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>YesNoMessage
+<indexterm><primary>YesNoMessage</primary></indexterm>
+</term>
+<listitem><para>Displays a message and ask the user for a YES or NO answer:
+<programlisting>
+<![CDATA[
+ret = YesNoMessage("Delete these files?", "No")
+if ret=1 then /* this is yes */
+]]>
+</programlisting>
+</para>
+<para>The second argument is optional and can have a value of either Yes or
+No. An argument of Yes gives the Yes button the default focus, No gives the No
+button the default focus. If the argument is omitted the Yes button is given
+the default focus. Only the first letter of the argument is significant
+and case is not significant. See also the function
+<link linkend="rntAskDialog">AskDialog</link>.
+</para></listitem></varlistentry>
+<varlistentry><term>GetScreenSize
+<indexterm><primary>GetScreenSize</primary></indexterm>
+</term>
+<listitem><para>Queries the monitor size in dialog units and pixels:
+<programlisting>
+<![CDATA[
+val = GetScreenSize()
+parse var val dunitx dunity pixelx pixely
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>PlaySoundFile
+<indexterm><primary>PlaySoundFile</primary></indexterm>
+</term>
+<listitem><para>Plays a sound file (.WAV):</para>
+<programlisting>
+<![CDATA[
+call PlaySoundFile "d:\wav\sound.wav"
+ret = PlaySoundFile("d:\wav\sound.wav","YES")
+]]>
+</programlisting>
+<para>The optional second
+parameter YES plays the file asynchronously, that is the program continues
+execution. See also the routine <link linkend="rtnPlay">Play</link>.
+</para></listitem></varlistentry>
+<varlistentry><term>PlaySoundFileInLoop
+<indexterm><primary>PlaySoundFileInLoop</primary></indexterm>
+</term>
+<listitem><para>Plays a sound file (.WAV) continuously and asynchronously:
+<programlisting>
+<![CDATA[
+call PlaySoundFileInLoop "d:\wav\sound.wav"
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>StopSoundFile
+<indexterm><primary>StopSoundFile</primary></indexterm>
+</term>
+<listitem><para>Stops playing an asynchronous sound file (.WAV):
+<programlisting>
+<![CDATA[
+call StopSoundFile
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>GetFileNameWindow
+<indexterm><primary>GetFileNameWindow</primary></indexterm>
+</term>
+<listitem><para>Displays an Open File window:</para>
+<programlisting>
+<![CDATA[
+file = GetFileNameWindow(filename,handle,filter,loadorsave,title, ,
+                         defExtension,multiSelect,sepChar)
+]]>
+</programlisting>
+<para>Parameters (optional):</para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">filename</emphasis></term>
+<listitem><para>A preselected file name and / or initial directory information.</para>
+<para>This argument places a preselected file name in the &quot;File name&quot;
+field of the file selection dialog.  In addition this argument can also be used
+to specify the initial directory (folder) the dialog opens in.</para>
+<para>When this argument contains no path information, then the File name field
+will contain the argument and the initial directory is determined by the
+operating system.  Which directory the operating system picks varies slightly
+between Windows 98, Windows NT, Windows XP, etc.  But, in general, it will be a
+directory previously used in one of the Windows common dialogs, or a directory
+in the users My Documents.  (The exact behavior is documented by Microsoft.)</para>
+<para>If the argument contains file name and path information, the initial
+directory will be determined by the path information and the File name field
+will contain the file information.  When the filename argument contains only path
+information and no file name information, i.e. the argument ends with a back
+slash (&quot;\&quot;), then the initial directory will be that path and the File
+name field will be left blank.</para>
+<para>In cases where the argument contains incorrect path information the
+initial directory is determined as if no path information had been supplied and
+the entire value of the argument is placed in the File name field.</para>
+<note><title>Note</title><para>
+Windows treats normal wild card characters as valid for file names.  Therefore,
+values such as C:\*.* or C:\Windows\*.exe are acceptable for this argument.
+</para></note>
+</listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">handle</emphasis></term>
+<listitem><para>The parent window handle.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">filter</emphasis></term>
+<listitem><para>A file mask specification.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">loadorsave</emphasis></term>
+<listitem><para>If you specify 1, which is the default, you get the file name for a
+load operation. If you specify 0, you get the file name for a save operation.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">title</emphasis></term>
+<listitem><para>The window title. The default is &quot;Open a File&quot; or &quot;Save
+File As&quot;, depending on what you specify for <emphasis role="italic">loadorsave</emphasis>.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">defExtension</emphasis></term>
+<listitem><para>The default extension that is added if no extension was specified. The
+default is TXT.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">multiSelect</emphasis></term>
+<listitem><para>If you specify 1, you can select several files. In this case,
+<emphasis role="italic">loadorsave</emphasis> must also be 1. The result is
+then <emphasis role="italic">path file1 file2 file3 ...</emphasis>.</para>
+<para>If you specify 0 or omit this parameter, you get the selected file name or
+an empty string when the Open File window is canceled.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">sepChar</emphasis></term>
+<listitem><para>Specifies which character should be used for separating the file names
+when <emphasis role="italic">multiSelect</emphasis> = 1.</para>
+<para>This is needed for file names with blank
+characters. If this argument is omitted, the separation character is a blank.
+If the argument is specified, the returned path and file name
+uses this separation character. For example, if you specify "#" as the separation
+character, the return string might look as follows: </para>
+<programlisting>
+<![CDATA[
+C:\WINNT#file with blank.ext#fileWithNoBlank.TXT
+]]>
+</programlisting>
+</listitem></varlistentry>
+</variablelist>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+"Text files (*.txt)"&apos;0&apos;x"*.TXT"&apos;0&apos;x ,
+"All files (*.*)"&apos;0&apos;x"*.*"
+</programlisting>
+</listitem></varlistentry>
+<varlistentry><term>SleepMS
+<indexterm><primary>SleepMS</primary></indexterm>
+</term>
+<listitem><para>Sleeps for a given time interval, in milliseconds:
+<programlisting>
+<![CDATA[
+call SleepMS(3000) /* 3 seconds */
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>WinTimer
+<indexterm><primary>WinTimer</primary></indexterm>
+</term>
+<listitem><para>Starts, stops, and waits for a windows timer:
+<programlisting>
+<![CDATA[
+tid = WinTimer("START",300)   /* 0,3 seconds */
+call  WinTimer("WAIT,tid)     /* wait... */
+ret = WinTimer("STOP",tid)    /* stop premature */
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="sctPublicRoutines"><title>Public Routines</title>
+<indexterm><primary>ooDialog public routines</primary></indexterm>
+<para>The routines listed below are useful additions to any ooRexx program.
+They do not require that an ooDialog dialog be initialized prior to their use,
+or that any ooDialog dialog be used in the program at all.  The programmer does
+not have to register any functions to use the routines.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Requires:</emphasis></term>
+<listitem><para>Use a requires directive for the <computeroutput>
+ooDialog.cls</computeroutput> file in an ooRexx program to use these routines.
+<programlisting> <![CDATA[
+::requires ooDialog.cls ]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+
+<section id="rtnPlay"><title>Play Routine</title>
+<indexterm><primary>Play</primary></indexterm>
+<indexterm><primary>public routines</primary>
+<secondary>Play</secondary></indexterm>
+<para>The routine listed below is used to play audio sounds.</para>
+<programlisting>
+<![CDATA[
+>>-Play(--+----------+--+---------+--)------------------------><
+          +-fileName-+  +-,--YES--+
+                        +-,--LOOP-+
+
+
+]]>
+</programlisting>
+
+<para>The Play routine can be used to play an audio file
+using the Windows multimedia capabilities. See also the PlaySoundFile function in <link linkend="sctExternalFunctions">OODialog External Functions</link>.</para>
+<para>The file name is looked up in the current directory and in the directories
+of the SOUNDPATH environment variable. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>fileName</term>
+<listitem><para>The file name of an audio (.WAV) file. The file name is looked up in
+the directories of the SOUNDPATH environment variable. If this argument is
+omitted, the currently played sound file is stopped.
+</para></listitem></varlistentry>
+<varlistentry><term>option</term>
+<listitem><para>You can set the last argument to:
+<variablelist>
+<varlistentry><term>YES</term>
+<listitem><para>This plays the audio file asynchronously.
+</para></listitem></varlistentry>
+<varlistentry><term>LOOP</term>
+<listitem><para>Plays the audio file asynchronously and repeats it in a loop. You can
+stop the loop by calling Play again omitting all arguments.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example plays a welcoming message:
+<programlisting>
+<![CDATA[
+rc = play("Welcome.wav")
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="rtnInfoDialog"><title>InfoDialog Routine</title>
+<indexterm><primary>InfoDialog</primary></indexterm>
+<para>Pops up a message box containing the specified text and an OK button.</para>
+<programlisting>
+<![CDATA[
+>>-InfoDialog(--info_text--)----------------------------------><
+
+
+]]>
+</programlisting>
+
+<para></para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Argument:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>info_text</term>
+<listitem><para>Text to be displayed in the message box.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="rtnErrorDialog"><title>ErrorDialog Routine</title>
+<indexterm><primary>ErrorDialog</primary></indexterm>
+<para>Pops up a message box containing the specified text, an OK button, and
+an error symbol.</para>
+<programlisting>
+<![CDATA[
+>>-ErrorDialog(--error_text--)--------------------------------><
+
+
+]]>
+</programlisting>
+
+<para></para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Argument:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>error_text</term>
+<listitem><para>Text to be displayed in the message box.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="rntAskDialog"><title>AskDialog Routine</title>
+<indexterm><primary>AskDialog</primary></indexterm>
+<para>Pops up a message box containing the specified text, a Yes button, and
+a No Button.</para>
+<programlisting>
+<![CDATA[
+>>-AskDialog(--question--+-------------------+--)-------------><
+                         +--, defaultbutton--+
+
+]]>
+</programlisting>
+
+<para></para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>question</term>
+<listitem><para>Text to be displayed in the message box.
+</para></listitem></varlistentry>
+<varlistentry><term>defaultbutton</term>
+<listitem><para>Specifies which button, the Yes or the No button, has the
+default focus when the message box pops up. This argumen can be Yes or No and
+is optional. If the argument is omitted, the Yes button will be given the focus.
+Only the first letter of the option is needed and case is not significant.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term>Return Values:</term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The No button has been selected.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>The Yes button has been selected.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="rtnFileNameDialog"><title>FileNameDialog Routine</title>
+<indexterm><primary>FilenameDialog</primary></indexterm>
+<para>Causes a file selection dialog box to appear.</para>
+<programlisting>
+<![CDATA[
+>>-FileNameDialog(--+---------+--+--------------------------------+-->
+                    +-selfile-+  +-,--+--------+--+-------------+-+
+                                      +-parent-+  +-,--filemask-+
+
+>--+----------------------------------------------------------------->
+   +-,--+------------+--+----------+--+-----------------+------------>
+        +-loadorsave-+  +-,--title-+  +-,--defExtension-+
+
+
+>--+-----------------------------------+--)-------------------------><
+>--+----------------+--+------------+--+
+   +-,--multiSelect-+  +-,--sepChar-+
+
+
+]]>
+</programlisting>
+
+<para></para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>selfile</term>
+<listitem><para>Preselected file name and / or initial directory information.</para>
+<para>This argument places a preselected file name in the &quot;File name&quot;
+field of the file selection dialog.  In addition this argument can also be used
+to specify the initial directory (folder) the dialog opens in.</para>
+<para>When this argument contains no path information, then the File name field
+will contain the argument and the initial directory is determined by the
+operating system.  Which directory the operating system picks varies slightly
+between Windows 98, Windows NT, Windows XP, etc.  But, in general, it will be a
+directory previously used in one of the Windows common dialogs, or a directory
+in the users My Documents.  (The exact behavior is documented by Microsoft.)</para>
+<para>If the argument contains file name and path information, the initial
+directory will be determined by the path information and the File name field
+will contain the file information.  When the selfile argument contains only path
+information and no file name information, i.e. the argument ends with a back
+slash (&quot;\&quot;), then the initial directory will be that path and the File
+name field will be left blank.</para>
+<para>In cases where the argument contains incorrect path information the
+initial directory is determined as if no path information had been supplied and
+the entire value of the argument is placed in the File name field.</para>
+<note><title>Note</title><para>
+Windows treats normal wild card characters as valid for file names.  Therefore,
+values such as C:\*.* or C:\Windows\*.exe are acceptable for this argument.
+</para></note>
+</listitem></varlistentry>
+<varlistentry><term>parent</term>
+<listitem><para>Handle to the parent window.
+</para></listitem></varlistentry>
+<varlistentry><term>filemask</term>
+<listitem><para>Pairs of null-terminated filter strings.</para>
+<para>The first string in each
+pair is a display string that describes the filter (for example, &quot;Text
+Files&quot;), and the second string specifies the filter pattern (for example, &quot;*.TXT&quot;).
+To specify multiple filter patterns for a single display string, use a semicolon
+to separate the patterns (for example, &quot;*.TXT;*.DOC;*.BAK&quot;). A pattern
+string can be a combination of valid file name characters and the asterisk
+(*) wildcard character. Do not include spaces in the pattern string.</para>
+<para>If omitted, <computeroutput>&quot;Text Files (*.TXT)&quot;&apos;0&apos;x&quot;*.TXT&quot;&apos;0&apos;x&quot;All
+Files (*.*)&quot;&apos;0&apos;x&quot;*.*&quot; </computeroutput> is used as the filter.
+</para></listitem></varlistentry>
+<varlistentry><term>loadorsave</term>
+<listitem><para>Specifies which dialog should be displayed, the File Open Dialog
+(the default) or the File Save Dialog.  If the File Save Dialog is not explictly
+requested the default File Open Dialog is always presented.  Only the first
+letter of the argument is needed and case is not significant.  For historic
+reasons this argument can also be 1 (File Open Dialog) or 0 (File Save Dialog.)
+<variablelist>
+<varlistentry><term>Load or 1</term>
+<listitem><para>Display the File Open Dialog (default).
+</para></listitem></varlistentry>
+<varlistentry><term>Save or 0</term>
+<listitem><para>Display the File Save Dialog.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term>title</term>
+<listitem><para>The window title. The default is "Open a File" or "Save File As", depending
+on what is specified for <computeroutput>loadorsave</computeroutput>.
+</para></listitem></varlistentry>
+<varlistentry><term>defExtension</term>
+<listitem><para>The default extension that is added if no extension was specified. The
+default is TXT.
+</para></listitem></varlistentry>
+<varlistentry><term>multiSelect</term>
+<listitem><para>Specifies if the File Open Dialog allows selection of multiple
+files. Normally, the open dialog allows the user to select one file only.  This
+can be changed by specifying "MULTI" for this option.  Only the first letter is
+needed and case is not significant.
+<variablelist>
+<varlistentry><term>MULTI</term>
+<listitem><para>Multiple file selection is allowed. This option is ignored for
+File Save Dialogs. If the user selects multiple files, the result is then path
+file1 file2 file3 ...
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term>sepChar</term>
+<listitem><para>Specifies the separation character for the returned path and file names.
+This is needed for file names with blank characters. If this argument is omitted,
+the separation character is a blank. If the argument is specified, the returned
+path and file name uses this separation character. For example, if you specify
+"#" as the separation character, the return string might look as follows:
+<programlisting>
+<![CDATA[
+C:\WINNT#file with blank.ext#fileWithNoBlank.TXT
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>Returns the selected file name or an empty string when canceled.
+Open File dialogs with multiple selection return path file1 file2 file3 ... when
+the user selects multiple files.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="rtnFindWindow"><title>FindWindow Routine</title>
+<indexterm><primary>FindWindow</primary></indexterm>
+<para>Searches the Windows application list for a specific window and
+returns its handle.</para>
+<programlisting>
+<![CDATA[
+>>-FindWindow(--Caption--)------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para></para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Argument:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>Caption</term>
+<listitem><para>Caption of the window that is to be searched.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>Handle of the window or 0 if the window was not found.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="rtnTimedMessage"><title>TimedMessage Routine</title>
+<para>The TimedMessage routine provides a shortcut function to invoke a
+TimedMessage dialog as a function:
+</para>
+<programlisting>
+<![CDATA[
+ret = TimedMessage("We are starting...","Please wait",3000)
+]]>
+</programlisting><para> The parameters are the same as described in the
+<link linkend="initTimedMessage">Init</link> method of the<computeroutput>
+TimedMessage</computeroutput> class.
+</para>
+</section>
+
+<section id="rtnInputBox"><title>InputBox Routine</title>
+<indexterm><primary>InputBox function</primary></indexterm>
+<para>OODialog provides a shortcut function to invoke an
+<link linkend="clsInputBox">InputBox</link> dialog as a function: </para>
+<programlisting>
+<![CDATA[
+say "Your name:" InputBox("Please enter your name","Personal Data")
+]]>
+</programlisting><para> The parameters are described in the Init method.</para>
+</section>
+
+<section id="rtnPasswordBox"><title>PasswordBox Routine</title>
+<indexterm><primary>PasswordBox function</primary></indexterm>
+<para>OODialog provides a shortcut function to invoke a PasswordBox dialog as a function: </para>
+<programlisting>
+<![CDATA[
+pwd = PasswordBox("Please enter your password","Security")
+]]>
+</programlisting><para> The parameters are described in the Init method
+of the InputBox class.</para>
+</section>
+
+<section id="rtnIntegerBox"><title>IntegerBox Routine</title>
+<indexterm><primary>IntegerBox function</primary></indexterm>
+<para>OODialog provides a shortcut function to invoke an IntegerBox dialog as a function: </para>
+<programlisting>
+<![CDATA[
+say "Your age:" IntegerBox("Please enter your age","Personal Data")
+]]>
+</programlisting><para> The parameters are described in the Init method
+of the InputBox class.</para>
+</section>
+
+<section id="rtnMultiInputBox"><title>MultiInputBox Routine</title>
+<indexterm><primary>MultiInputBox function</primary></indexterm>
+<para>OODialog provides a shortcut function to invoke a MultiInputBox dialog as a function: </para>
+<programlisting>
+<![CDATA[
+res = MultiInputBox("Enter your address","Personal Data", ,
+                    .array~of("&First name","Last &name","&City"), ,
+                    .array~of("John","Smith","San Jose"), 100)
+if res \= .Nil then do entry over res
+                       say "Address-line[]= " entry
+                    end
+]]>
+</programlisting>
+<para>The parameters are described in the Init method,
+but, instead of stems, arrays are passed into and returned from the function.</para>
+</section>
+
+<section id="rtnListChoice"><title>ListChoice Routine</title>
+<indexterm><primary>ListChoice function</primary></indexterm>
+<para>OODialog provides a shortcut function to invoke a ListChoice dialog as a function: </para>
+<programlisting>
+<![CDATA[
+day = ListChoice("Select a day","My favorite day", ,
+                 .array~of("Monday","Tuesday","Wednesday","Thursday", ,
+                          "Friday","Saturday","Sunday") , , ,"Thursday")
+say "Your favorite day is" day
+]]>
+</programlisting>
+<para>The parameters are described in the Init method,
+but, instead of an input stem an array is passed into the function.</para>
+</section>
+
+<section id="rtnMultiListChoice"><title>MultiListChoice Routine</title>
+<indexterm><primary>MultiListChoice function</primary></indexterm>
+<para>OODialog provides a shortcut function to invoke a MultiListChoice dialog as a function: </para>
+<programlisting>
+<![CDATA[
+days = MultiListChoice("Select days","My TV Days", ,
+                       .array~of("Monday","Tuesday","Wednesday", ,
+                              "Thursday","Friday","Saturday","Sunday"), , ,"2 5")
+if days <> .Nil then do day over days
+                       say "TV day =" day
+                    end
+]]>
+</programlisting>
+<para>The parameters are described in the Init method,
+but, instead of stems, arrays are passed into and returned from the function.</para>
+</section>
+
+<section id="rtnCheckList"><title>CheckList Routine</title>
+<indexterm><primary>CheckList function</primary></indexterm>
+<para>OODialog provides a shortcut function to invoke a CheckList dialog as a function: </para>
+<programlisting>
+<![CDATA[
+weekdays = .array~of("Monday","Tuesday","Wednesday", ,
+                     "Thursday","Friday","Saturday","Sunday")
+days = CheckList("Check the days","Working Days",weekdays)
+if days <> .Nil then do i = 1 to days~items
+                        if days[i] then say "Working day =" weekdays[i]
+                     end
+]]>
+</programlisting>
+<para>The parameters are described in the Init method,
+but, instead of stems, arrays are passed into and returned from the function.</para>
+</section>
+
+<section id="rtnSingleSelection"><title>SingleSelection Routine</title>
 <indexterm><primary>SingleList function</primary></indexterm>
 <para>OODialog provides a shortcut function to invoke a SingleSelection dialog as a function: </para>
 <programlisting>
@@ -888,828 +1533,6 @@ say "Born in month" m "=" months[m]
 </programlisting>
 <para>The parameters are described in the Init method,
 but instead of an input stem, an array is passed into the function.</para>
-</section>
-</section>
-
-<section id="dlgareacls"><title>DlgArea Class</title>
-<indexterm><primary>DlgArea class</primary></indexterm>
-<para>The DlgArea class defines an area of a UserDialog and provides co-ordinates of and within it.
-It is a helper for the DefineDialog Method of an OODialog UserDialog Object and has no effect on any Windows Object.
-</para>
-<para>To use objects of the DlgArea class include this line in your code:
-</para>
-<programlisting>
-::requires "OODIALOG.CLS"
-</programlisting>
-<para>The following figure shows the measuement attributes used to position a
-DlgArea on a UserDialog.</para>
-<figure id="dlgareafig"><title>DlgArea Measurements</title>
-<mediaobject>
-<imageobject>
-<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
-<imagedata fileref="dlgarea.jpg" scale="300">
-</imageobject>
-</mediaobject>
-</figure>
-
-<section id="dlgareainit"><title>Init</title>
-<indexterm><primary>Init</primary>
-<secondary>DlgArea class</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>- aDlgArea~Init(--X--,--Y--,--Width--,--Height--+-------------+--)--><
-                                                  +--,--Margin--+
-]]>
-</programlisting>
-
-<para></para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments you pass to the new method when creating a
-DlgArea Object are:
-<variablelist>
-<varlistentry><term>X</term>
-<listitem><para>The X Co-ordinate in dialog units relative to the UserDialog
-of the top left corner of the area you wish to define
-</para></listitem></varlistentry>
-<varlistentry><term>Y</term>
-<listitem><para>The Y Co-ordinate in dialog units relative to the UserDialog
-of the top left corner of the area you wish to define.
-</para></listitem></varlistentry>
-<varlistentry><term>Width</term>
-<listitem><para>The width in dialog units of the area of the UserDialog you
-wish to define
-</para></listitem></varlistentry>
-<varlistentry><term>Height</term>
-<listitem><para>The height in dialog units of the area of the UserDialog you
-wish to define</para>
-</listitem></varlistentry>
-<varlistentry><term>Margin</term>
-<listitem><para>An inner margin within the DlgArea in Dialog Units to be left
-blank. The default is 5
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>
-</para></listitem></varlistentry>
-</variablelist>
-
-<programlisting>
-<![CDATA[
-u = .dlgArea~new(0, 0, self~SizeX,Self~SizeY)          /* u is whole of UserDialog */
-b = .dlgArea~new(u~x("70%"), u~y , u~w("R"), u~h("R")) /* sub area for buttons */
-]]>
-</programlisting>
-</section>
-
-<section id="dlgareab"><title>B</title>
-<indexterm><primary>B</primary>
-<secondary>DlgArea class</secondary></indexterm>
-<para>Returns the y coordinate of the bottom margin in dialog units relative to
-UserDialog.
-</para>
-<programlisting>
-<![CDATA[
->>--ADlgArea~B--------------------------------------------------------><
-]]>
-</programlisting>
-
-<para></para>
-</section>
-
-<section id="dlgareabottom"><title>Bottom</title>
-<indexterm><primary>Bottom</primary>
-<secondary>DlgArea class</secondary></indexterm>
-<para>Returns the y coordinate of the bottom edge in dialog units relative to
-UserDialog.
-</para>
-<programlisting>
-<![CDATA[
->>--ADlgArea~Bottom---------------------------------------------------><
-]]>
-</programlisting>
-
-<para></para>
-</section>
-
-<section id="dlgareacx"><title>CX</title>
-<indexterm><primary>CX</primary>
-<secondary>DlgArea class</secondary></indexterm>
-<para>Synonym for the W method.
-</para>
-<programlisting>
-<![CDATA[
->>--ADlgArea~cx(--+-------+--)----------------------------------------><
-                  +--n%---+
-                  +--"R"--+
-]]>
-</programlisting>
-
-<para></para>
-</section>
-
-<section id="dlgareacy"><title>CY</title>
-<indexterm><primary>CY</primary>
-<secondary>DlgArea class</secondary></indexterm>
-<para>Synonym for the H method.
-</para>
-<programlisting>
-<![CDATA[
->>--ADlgArea~cy(--+-------+--)----------------------------------------><
-                  +--n%---+
-                  +--"R"--+
-]]>
-</programlisting>
-
-<para></para>
-</section>
-
-<section id="dlgareah"><title>H</title>
-<indexterm><primary>H</primary>
-<secondary>DlgArea class</secondary></indexterm>
-<para>Returns a height in dialog units relative to the dialog area.
-</para>
-<para>If no argument is passed returns the inter-margin height.
-</para>
-<programlisting>
-<![CDATA[
->>--ADlgArea~w(--+-------+--)-----------------------------------------><
-                 +--n%---+
-                 +--"R"--+
-]]>
-</programlisting>
-
-<para></para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments you pass to the Y method are:
-<variablelist>
-<varlistentry><term>n%</term>
-<listitem><para>If <computeroutput>n</computeroutput> is a percentage returns
-<computeroutput>n%</computeroutput> of the inter-margin height.
-</para></listitem></varlistentry>
-<varlistentry><term>"R"</term>
-<listitem><para>If "R" is passed returns Remaining width between last ~y and
-bottom margin.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="dlgareahr"><title>HR</title>
-<indexterm><primary>HR</primary>
-<secondary>DlgArea class</secondary></indexterm>
-<para>Returns the remaining height between last ~Y and bottom margin in dialog
-units. This is equivalent to ~H("R").
-</para>
-<programlisting>
-<![CDATA[
->>--ADlgArea~hr-------------------------------------------------------><
-]]>
-</programlisting>
-
-<para></para>
-</section>
-
-<section id="dlgareal"><title>L</title>
-<indexterm><primary>L</primary>
-<secondary>DlgArea class</secondary></indexterm>
-<para>Returns the x coordinate of the left margin in dialog units relative to
-UserDialog.
-</para>
-<programlisting>
-<![CDATA[
->>--ADlgArea~L--------------------------------------------------------><
-]]>
-</programlisting>
-
-<para></para>
-</section>
-
-<section id="dlgarealeft"><title>Left</title>
-<indexterm><primary>Left</primary>
-<secondary>DlgArea class</secondary></indexterm>
-<para>Returns the x coordinate of the left edge in dialog units relative to
-UserDialog.
-</para>
-<programlisting>
-<![CDATA[
->>--ADlgArea~Left-----------------------------------------------------><
-]]>
-</programlisting>
-
-<para></para>
-</section>
-
-<section id="dlgareamargin"><title>Margin</title>
-<indexterm><primary>Margim</primary>
-<secondary>DlgArea class</secondary></indexterm>
-<para>Size in dialog units of DlgArea margin.
-</para>
-<programlisting>
-<![CDATA[
->>--ADlgArea~Margin---------------------------------------------------><
-]]>
-</programlisting>
-
-<para></para>
-</section>
-
-<section id="dlgarear"><title>R</title>
-<indexterm><primary>R</primary>
-<secondary>DlgArea class</secondary></indexterm>
-<para>Returns the x coordinate of the right margin in dialog units relative to
-UserDialog.
-</para>
-<programlisting>
-<![CDATA[
->>--ADlgArea~R--------------------------------------------------------><
-]]>
-</programlisting>
-
-<para></para>
-</section>
-
-<section id="dlgarearight"><title>Right</title>
-<indexterm><primary>Right</primary>
-<secondary>DlgArea class</secondary></indexterm>
-<para>Returns the x coordinate of the right edge in dialog units relative to
-UserDialog.
-</para>
-<programlisting>
-<![CDATA[
->>--ADlgArea~Right----------------------------------------------------><
-]]>
-</programlisting>
-
-<para></para>
-</section>
-
-<section id="dlgareat"><title>T</title>
-<indexterm><primary>T</primary>
-<secondary>DlgArea class</secondary></indexterm>
-<para>Returns the y coordinate of the top margin in dialog units relative to
-UserDialog.
-</para>
-<programlisting>
-<![CDATA[
->>--ADlgArea~T--------------------------------------------------------><
-]]>
-</programlisting>
-
-<para></para>
-</section>
-
-<section id="dlgareatop"><title>Top</title>
-<indexterm><primary>Top</primary>
-<secondary>DlgArea class</secondary></indexterm>
-<para>Returns the y coordinate of the top edge in dialog units relative to
-UserDialog.
-</para>
-<programlisting>
-<![CDATA[
->>--ADlgArea~Top------------------------------------------------------><
-]]>
-</programlisting>
-
-<para></para>
-</section>
-
-<section id="dlgareaw"><title>W</title>
-<indexterm><primary>W</primary>
-<secondary>DlgArea class</secondary></indexterm>
-<para>Returns a width in dialog units relative to the dialog area.
-</para>
-<para>If no argument is passed returns the inter-margin width.
-</para>
-<programlisting>
-<![CDATA[
->>--ADlgArea~w(--+-------+--)-----------------------------------------><
-                 +--n%---+
-                 +--"R"--+
-]]>
-</programlisting>
-
-<para></para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments you pass to the Y method are:
-<variablelist>
-<varlistentry><term>n%</term>
-<listitem><para>If <computeroutput>n</computeroutput> is a percentage returns
-<computeroutput>n%</computeroutput> of the inter-margin width.
-</para></listitem></varlistentry>
-<varlistentry><term>"R"</term>
-<listitem><para>If "R" is passed returns Remaining width between last ~x and
-right margin.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="dlgareawr"><title>WR</title>
-<indexterm><primary>WR</primary>
-<secondary>DlgArea class</secondary></indexterm>
-<para>Returns the remaining width between last ~X and right margin in dialog
-units. This is equivalent to ~W("R").
-</para>
-<programlisting>
-<![CDATA[
->>--ADlgArea~wr-------------------------------------------------------><
-]]>
-</programlisting>
-
-<para></para>
-</section>
-
-<section id="dlgareax"><title>X</title>
-<indexterm><primary>X</primary>
-<secondary>DlgArea class</secondary></indexterm>
-<para>Returns an X Coordinate in dialog units relative to the dialog area.
-</para>
-<para>If no <computeroutput>n</computeroutput> is passed returns the x
-coordinate of the left margin.
-</para>
-<programlisting>
-<![CDATA[
->>--ADlgArea~x(--+------+--)------------------------------------------><
-                 +--n---+
-                 +--n%--+
-]]>
-</programlisting>
-
-<para></para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments you pass to the X method are:
-<variablelist>
-<varlistentry><term>n</term>
-<listitem><para>If <computeroutput>n</computeroutput> is passed and is positive,
-then returns the x coordinate <computeroutput>n</computeroutput> dialog units
-to the right of the left margin.
-If <computeroutput>n</computeroutput> is passed and is negative, then returns
-the x coordinate <computeroutput>n</computeroutput> dialog units to the left of
-the right margin..
-</para></listitem></varlistentry>
-<varlistentry><term>n%</term>
-<listitem><para>If <computeroutput>n</computeroutput> is passed and is a
-percentage, then returns the x coordinate <computeroutput>n%</computeroutput>
-of the way between the left and right margins.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="dlgareay"><title>Y</title>
-<indexterm><primary>Y</primary>
-<secondary>DlgArea class</secondary></indexterm>
-<para>Returns an Y Coordinate in dialog units relative to the dialog area.
-</para>
-<para>If no <computeroutput>n</computeroutput> is passed returns the x
-coordinate of the top margin.
-</para>
-<programlisting>
-<![CDATA[
->>--ADlgArea~y(--+------+--)------------------------------------------><
-                 +--n---+
-                 +--n%--+
-]]>
-</programlisting>
-
-<para></para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments you pass to the Y method are:
-<variablelist>
-<varlistentry><term>n</term>
-<listitem><para>If <computeroutput>n</computeroutput> is passed and is positive,
-then returns the y coordinate <computeroutput>n</computeroutput> dialog units
-below the topmargin.
-If <computeroutput>n</computeroutput> is passed and is negative, then returns
-the y coordinate <computeroutput>n</computeroutput> dialog units above
-the bottom margin..
-</para></listitem></varlistentry>
-<varlistentry><term>n%</term>
-<listitem><para>If <computeroutput>n</computeroutput> is passed and is a
-percentage, then returns the y coordinate <computeroutput>n%</computeroutput>
-of the way between the top and bottom margins.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="dlgareaxmp"><title>Example</title>
-<para>On a UserDialog we want the top left to be an entry area, with an area
-for buttons on the right and a status area below.</para>
-<para>We decide to give 70% of the width and 90% of the height to the entry area.
-We leave the margin as the default.
-We want all the areas to resize themselves if we change the UserDialog size
-except the OK button should remain 15 units high.</para>
-<figure id="dlgareaplanfig"><title>DlgArea Plan</title>
-<mediaobject>
-<imageobject>
-<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
-<imagedata fileref="dlgareaplan.jpg" scale="300">
-</imageobject>
-</mediaobject>
-</figure>
-<para>Here is what our DefineDialog method might look like:</para>
-<programlisting>
-<![CDATA[
-/* ------------------------------------------------------------------------- */
-::method DefineDialog
-/* ------------------------------------------------------------------------- */
-/* define DlgArea named u as whole of user dialog                            */
-u=.dlgArea~new(  0       ,         0,self~SizeX,Self~SizeY)   /* whole dlg   */
-
-/* define DlgArea named e within DlgArea u for entry line                    */
-e=.dlgArea~new(u~x       ,u~y       ,u~w("70%"),u~h("90%"))
-
-/* define DlgArea named s within DlgArea u for Status Area in remaining height*/
-s=.dlgArea~new(u~x       ,u~y("90%"),u~w("70%"),u~hr      )
-
-/* define DlgArea named b within DlgArea u for Button area                   */
-b=.dlgArea~new(u~x("70%"),u~y       ,u~wr      ,u~hr      )
-
-/* entry line coterminous with area e margins                                */
-self~AddEntryLine(12,"text",e~x,e~y,e~w,e~h,"multiline")
-
-/* Status Area Coterminous with area s margins                               */
-self~AddText(s~x,s~y,s~w,s~h,"Status info appears here",11)
-
-/* Seven buttons evenly spaced at 10% intervals, 9% high                     */
-do i = 0 to 6
-   self~addButton(12+i,b~x,b~y((i * 10)||"%"),b~w,b~h("9%"),"Button" i,"Button"||i)
-end /* DO */
-
-/* ok button 15 dialog units high at bottom of area b                        */
-self~AddButton(1,b~x,b~y(-15),b~w,15,"OK","OK","Default")
-]]>
-</programlisting>
-<para>Here is the resultant dialog.</para>
-<figure id="dlgareasample"><title>Sample DlgArea</title>
-<mediaobject>
-<imageobject>
-<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
-<imagedata fileref="sample1.jpg" scale="300">
-</imageobject>
-</mediaobject>
-</figure>
-</section>
-</section>
-
-<section id="dlgareaucls"><title>DlgAreaU Class</title>
-<indexterm><primary>DlgAreaU class</primary></indexterm>
-<para>The DlgAreaU class is a subclass of the DlgArea class that assists the
-creation of dynamically resizable Dialogs.
-</para>
-<para>To use objects of the DlgAreaU class include this line in your code:
-</para>
-<programlisting>
-::requires "OODIALOG.CLS"
-</programlisting>
-
-<section id="dlgareauinit"><title>Init</title>
-<indexterm><primary>Init</primary>
-<secondary>DlgAreaU class</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>- aDlgAreaU~Init(Dialog--+--------------------------+--------+-)--><
-                           +--,--Margin-+             |        |
-                           +--,---------+--,-NoResize-+        |
-                           +--,---------+--,----------+-NoMove-+
-]]>
-</programlisting>
-
-<para>
-The DlgAreaU object creates a dialog area coterminous with the calling dialog.
-It inherits all the methods and attributes of the DlgArea Class (listed above).
-</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments you pass to the new method when creating a
-DlgArea Object are:
-<variablelist>
-<varlistentry><term>Dialog</term>
-<listitem><para>An Object that is SubClassed from A UserDialog.
-</para></listitem></varlistentry>
-<varlistentry><term>Margin</term>
-<listitem><para>See DlgArea Margin.
-</para></listitem></varlistentry>
-<varlistentry><term>NoResize</term>
-<listitem><para>A set of Dialog Ids of widgets not to be resized during a resize.
-</para></listitem></varlistentry>
-<varlistentry><term>NoMove</term>
-<listitem><para>A set of Dialog Ids of widgets not to be moved during a resize.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="dlgareaucorrectionfactor"><title>CorrectionFactor</title>
-<indexterm><primary>CorrectionFactor</primary>
-<secondary>DlgAreaU class</secondary></indexterm>
-<para>Adjusts the ratio of top & left margins to bottom &amp; right (default=1.05)
-Creating resizable Dialogs:
-</para>
-<programlisting>
-<![CDATA[
->>--ADlgAreaU~CorrectionFactor----------------------------------------><
-]]>
-</programlisting>
-
-<para></para>
-</section>
-
-<section id="dlgareaulasterror"><title>LastError</title>
-<indexterm><primary>LastError</primary>
-<secondary>DlgAreaU class</secondary></indexterm>
-<para>.nil or details of error parsing calling dialog's DefineDialog method.
-</para>
-<programlisting>
-<![CDATA[
->>--ADlgAreaU~LastError-----------------------------------------------><
-]]>
-</programlisting>
-
-<para></para>
-</section>
-
-<section id="dlgareaunomove"><title>NoMove</title>
-<indexterm><primary>NoMove</primary>
-<secondary>DlgAreaU class</secondary></indexterm>
-<para>A set of Dialog Ids of widgets not to be moved during a resize.
-</para>
-<programlisting>
-<![CDATA[
->>--ADlgAreaU~NoResize------------------------------------------------><
-]]>
-</programlisting>
-
-<para></para>
-</section>
-
-<section id="dlgareaunoresize"><title>NoResize</title>
-<indexterm><primary>NoResize</primary>
-<secondary>DlgAreaU class</secondary></indexterm>
-<para>A set of Dialog Ids of widgets not to be resized during a resize.
-</para>
-<programlisting>
-<![CDATA[
->>--ADlgAreaU~NoResize------------------------------------------------><
-]]>
-</programlisting>
-
-<para></para>
-</section>
-
-<section id="dlgareaucreate"><title>Creating Resizeable Dialogs</title>
-<indexterm><primary>Resizable dialogs</primary>
-<secondary>DlgAreaU class</secondary></indexterm>
-<para>You can use the DlgAreaU Object to facilitate in creating Dynamically
-resizable Dialog objects, but to do so you must carefully satisfy all the
-requirements below.
-</para>
-<para>
-The Dialog must be created with the
-<computeroutput>ThickFrame</computeroutput> option.
-It may be created with the UserDialog Create method or CreateCenter method.
-</para>
-<para>
-Your Dialog init method must include the line:</para>
-<programlisting>
-<![CDATA[
-self~connectResize("OnResize")
-]]>
-</programlisting>
-<para>
-Your DefineDialog method must start with these lines:
-</para>
-<programlisting>
-<![CDATA[
-expose u
-u = .dlgAreaU~new(self)          /* whole dlg   */
-]]>
-</programlisting>
-<para>
-Your DefineDialog method must not reference variables within the Add Method
-parameters, although you can use references to DlgArea attributes, so
-</para>
-<programlisting>
-<![CDATA[
-Self~AddButton(23,1,5,6,"MyButton","Pressed")
-self~addButton(14,b~x,b~y("10%"),b~w,b~h("9%"),"Button" 1,"Button"||1)
-]]>
-</programlisting>
-<para>
-Both are OK, whereas
-</para>
-<programlisting>
-<![CDATA[
-/* Seven buttons evenly spaced at 10% intervals, 9% high                     */
-do i = 0 to 6
-   self~addButton(12+i,b~x,b~y((i * 10)||"%"),b~w,b~h("9%"),"Button" i,"Button"||i)
-end /* DO */
-]]>
-</programlisting>
-<para>
-would now fail as the variable <computeroutput>i</computeroutput>
-is referenced within the parameters.
-</para>
-<para>
-To debug your DlgAreaU call/insert the following after the instantiation
-</para>
-<programlisting>
-<![CDATA[
-if u~lastError \= .nil then call errormessage u~lastError
-]]>
-</programlisting>
-<para>You must also include the following in your code.</para>
-<programlisting>
-<![CDATA[
-/* ------------------------------------------------------------------------- */
-::method OnResize
-/* ------------------------------------------------------------------------- */
-expose u
-if u~lastError \= .nil then call errormessage u~lastError
-use arg dummy,sizeinfo
-                                 /* wait for last size event msg then resize */
-if self~PeekDialogMessage~left(8) \= "OnResize" then u~resize(self,sizeinfo)
-]]>
-</programlisting>
-<para>
-The DlgAreaU method will then automatically resize &amp; place the following
-widgets in your dialog when the dialog frame is dragged or the minimize,
-maximise or restore buttons are pressed:
-</para>
-<table frame="all">
-<title>DlgAreaU Automatic Resize Elements</title>
-<tgroup cols="4" align="left" colsep="1" rowsep="1">
-<tbody>
-<row>
-   <entry>BLACKFRAME</entry>
-   <entry>BLACKRECT</entry>
-   <entry>BITMAPBUTTON</entry>
-   <entry>BUTTON</entry>
-</row>
-<row>
-   <entry>CHECKBOX</entry>
-   <entry>COMBOBOX</entry>
-   <entry>ENTRYLINE</entry>
-   <entry>GRAYFRAME</entry>
-</row>
-<row>
-   <entry>GRAYRECT</entry>
-   <entry>GROUPBOX</entry>
-   <entry>LISTBOX</entry>
-   <entry>LISTCONTROL</entry>
-</row>
-<row>
-   <entry>PASSWORDLINE</entry>
-   <entry>PROGRESSBAR</entry>
-   <entry>RADIOBUTTON</entry>
-   <entry>SCROLLBAR</entry>
-</row>
-<row>
-   <entry>SLIDERCONTROL</entry>
-   <entry>TABCONTROL</entry>
-   <entry>TEXT</entry>
-   <entry>TREECONTROL</entry>
-</row>
-<row>
-   <entry>WHITEFRAME</entry>
-   <entry>WHITERECT</entry>
-   <entry></entry>
-   <entry></entry>
-</row>
-</tbody>
-</tgroup>
-</table>
-<para>
-The following widgets can be defined in a UserDialog, but cannot be handled by
-the DlgAreaU resize method, so should not be used.
-</para>
-<table frame="all">
-<title>DlgAreaU Non-Automatic Resize Elements</title>
-<tgroup cols="4" align="left" colsep="1" rowsep="1">
-<tbody>
-<row>
-   <entry>BUTTONGROUP</entry>
-   <entry>CHECKBOXSTEM</entry>
-   <entry>CHECKGROUP</entry>
-   <entry>COMBOINPUT</entry>
-</row>
-<row>
-   <entry>FULLSEQ</entry>
-   <entry>INPUT</entry>
-   <entry>INPUTGROUP</entry>
-   <entry>INPUTSTEM</entry>
-</row>
-<row>
-   <entry>OKCANCEL...</entry>
-   <entry>RADIOGROUP</entry>
-   <entry>RADIOSTEM</entry>
-   <entry></entry>
-</row>
-</tbody>
-</tgroup>
-</table>
-<para>
-All of these widgets can be achieved using combinations of the permitted
-methods.
-</para>
-
-<section id="dlgareaubug"><title>Known possible bug</title>
-<para>The DlgAreaU resize method can create slightly over-size margins on the
-left &amp; bottom of the Dialog.  To correct for this the DlgAreaU class has
-a CorrectionFactor attribute set by default to 1.05 which in tests appears
-to neutralise this effect. If your dialogs have over (or under) sized margins,
-you may be able to correct this in your code by overiding the Correction
-Factor like this (for example):
-</para>
-<programlisting>
-<![CDATA[
-U=.DlgAreaU~new(self)
-U~CorrectionFactor=1.05
-]]>
-</programlisting>
-<para>You will have to experiment to find the apropriate setting for this
-attribute.
-</para>
-</section>
-
-<section id="dlgareausample"><title>Sample Code</title>
-<programlisting>
-<![CDATA[
-/* DlgAreaDemo.Rex  --  Demonstrate DlgArea & DlgAreaU Classes  --  Feb 2006 */
-
-MyDlg=.MyDialog~new
-MyDlg~execute("ShowTop")
-MyDlg~DeInstall
-
-exit
-::requires "OODWIN32.CLS"
-/* ========================================================================= */
-::class MyDialog Subclass UserDialog
-/* ========================================================================= */
-::method Init
-/* ------------------------------------------------------------------------- */
-  self~Init:super
-  rc=self~CreateCenter(250,250,"MyDialog","ThickFrame", ,"MS Sans Serif",8)
-  self~InitCode=(rc=0)
-  self~connectResize("OnResize")
-
-/* ------------------------------------------------------------------------- */
-::method DefineDialog
-/* ------------------------------------------------------------------------- */
-expose u
-
-u=.dlgAreaU~new(self)                                         /* whole dlg   */
-if u~lastError \= .nil then call errormessage u~lastError
-e=.dlgArea~new(u~x       ,u~y       ,u~w("70%"),u~h("90%"))   /* edit   area */
-s=.dlgArea~new(u~x       ,u~y("90%"),u~w("70%"),u~hr      )   /* status area */
-b=.dlgArea~new(u~x("70%"),u~y       ,u~wr      ,u~hr      )   /* button area */
-
-self~AddEntryLine(12,"text",e~x,e~y,e~w,e~h,"multiline")
-self~AddText(s~x,s~y,s~w,s~h,"Status info appears here", ,11)
-
-self~addButton(13,b~x,b~y("00%"),b~w,b~h("9%"),"Button" 0,"Button"||0)
-self~addButton(14,b~x,b~y("10%"),b~w,b~h("9%"),"Button" 1,"Button"||1)
-self~addButton(15,b~x,b~y("20%"),b~w,b~h("9%"),"Button" 2,"Button"||2)
-self~addButton(16,b~x,b~y("30%"),b~w,b~h("9%"),"Button" 3,"Button"||3)
-self~addButton(17,b~x,b~y("40%"),b~w,b~h("9%"),"Button" 4,"Button"||4)
-self~addButton(18,b~x,b~y("50%"),b~w,b~h("9%"),"Button" 5,"Button"||5)
-self~addButton(19,b~x,b~y("60%"),b~w,b~h("9%"),"Button" 6,"Button"||6)
-self~AddButton( 1,b~x,b~y("90%"),b~w,b~h("9%"),"Ok","Ok","DEFAULT")
-
-/* ------------------------------------------------------------------------- */
-::method Unknown
-/* ------------------------------------------------------------------------- */
-use arg msgname, args
-StatusLine = Self~GetStaticControl(11)
-StatusLine~SetTitle("You Pressed" msgname)
-
-/* ------------------------------------------------------------------------- */
-::method OnResize
-/* ------------------------------------------------------------------------- */
-expose u
-use arg dummy,sizeinfo
-                                 /* wait for last size event msg then resize */
-if self~PeekDialogMessage~left(8) \= "OnResize" then u~resize(self,sizeinfo)
-
-]]>
-</programlisting>
-<para>This achieves the same Dialog as the previous sample, but now it is
-resizable by dragging the frame.
-</para>
-</section>
-
 </section>
 
 </section>

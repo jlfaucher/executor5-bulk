@@ -1239,9 +1239,9 @@ clicks on the edit control a ballon tip is shown displaying extended product
 information.  (In a real application, the extended information might be based on
 what the user had entered in the edit control.)
 </para>
-<para>Text is set in the edit control to give the user a 'cue' that she can 
-click on the edit control for extra information.  When the ballon tip is shown, 
-it will automatically be dismissed after 10 seconds.  This application connects 
+<para>Text is set in the edit control to give the user a 'cue' that she can
+click on the edit control for extra information.  When the ballon tip is shown,
+it will automatically be dismissed after 10 seconds.  This application connects
 a notification for the lost focus event.  When the edit control loses focus, the
 ballon tip is hidden by the program.
 <programlisting>
@@ -1384,8 +1384,8 @@ ShowBalloon</link> example.
 </programlisting>
 
 <para>Adds one or more edit control styles to the edit control. This method
-works with the <link linkend="paraDialogControlStyles">window styles</link> that 
-can be changed by accessing the edit control window directly after the edit 
+works with the <link linkend="paraDialogControlStyles">window styles</link> that
+can be changed by accessing the edit control window directly after the edit
 control has been created.
 </para>
 <variablelist>
@@ -1474,7 +1474,7 @@ editControl~addStyle("NUMBER TAB GROUP")
 </section>
 
 <section id="mthRemoveStyle"><title>RemoveStyle</title>
-<indexterm><primary>RevmoveStyle</primary>
+<indexterm><primary>RemoveStyle</primary>
 <secondary>EditControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -1492,8 +1492,8 @@ editControl~addStyle("NUMBER TAB GROUP")
 </programlisting>
 
 <para>Remove one or more edit control styles from the edit control. This method
-works with the <link linkend="paraDialogControlStyles">window styles</link> that 
-can be changed by accessing the edit control window directly after the edit 
+works with the <link linkend="paraDialogControlStyles">window styles</link> that
+can be changed by accessing the edit control window directly after the edit
 control has been created.
 </para>
 <variablelist>
@@ -1564,8 +1564,8 @@ editControl~removeStyle("LOWER GROUP")
 </programlisting>
 
 <para>Removes and adds edit control styles for the edit control in one
-operation.  This method works with the <link linkend="paraDialogControlStyles"> 
-window styles</link> that can be changed by accessing the edit control window 
+operation.  This method works with the <link linkend="paraDialogControlStyles">
+window styles</link> that can be changed by accessing the edit control window
 directly after the edit control has been created.
 </para>
 <variablelist>
@@ -1670,12 +1670,12 @@ handle of the edit control.
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example could be from a fictitious application 
-that changes the style of an edit control back and forth between accepting 
-numbers only and accepting all characters based on the options the user has 
+<listitem><para>The following example could be from a fictitious application
+that changes the style of an edit control back and forth between accepting
+numbers only and accepting all characters based on the options the user has
 selected.
-<programlisting> 
-<![CDATA[ 
+<programlisting>
+<![CDATA[
 editControl = dlg~getEditControl(IDC_ENTRYLINE)
 if .nil == editControl then return style = editControl~getStyle
 if style~wordPos("NUMBER") <> 0 then
