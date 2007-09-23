@@ -1903,6 +1903,25 @@ this year in the format <emphasis role="italic">ddd</emphasis>
 </term>
 <listitem><para>returns the date in the format dd/mm/yy.
 </para></listitem></varlistentry>
+<varlistentry><term>Full
+<indexterm><primary>Full option of DATE function</primary></indexterm>
+</term>
+<listitem><para>returns the number of microseconds
+since 00:00:00.000000 on 1 January 0001, in the format:
+<emphasis role="italic">dddddddddddddddddd</emphasis> (no leading zeros or blanks).
+</para>
+<note><title>Notes</title>
+<para>The base date of 1 January 0001 is determined
+by extending the current Gregorian calendar backward (365 days each year,
+with an extra day every year that is divisible by 4 except century years that
+are not divisible by 400. It does not take into account any errors in the calendar
+system that created the Gregorian calendar originally.</para>
+<para>The value returned by Date('F') can be used to calculate the interval between
+any two dates.  Note, however, that values returned generally contain more digits
+that the default NUMERIC DIGITS setting.  The NUMERIC DIGITS setting should be increased
+to a minimum value of 18 when performing timestamp arithmetic.</para>
+</note>
+</listitem></varlistentry>
 <varlistentry><term>Language
 <indexterm><primary>Language (local) option of DATE function</primary></indexterm>
 </term>
@@ -1994,6 +2013,7 @@ format. Here are some examples: </para>
 <programlisting>
 DATE("O","13 Feb 1923")     ->    "23/02/13"
 DATE("O","06/01/50","U")    ->    "50/06/01"
+DATE("N", "63326132161828000", "f")   -> "23 Sep 2007"
 </programlisting>
 <para>If you specify an output separator character
 <emphasis role="italic">osep</emphasis>, the
@@ -2058,8 +2078,15 @@ would be the returned date.</para>
 <para>This rule is suitable for dates
 that are close to today's date. However, when working with birth dates,
 it is recommended that you explicitly provide the century.</para></note>
+<para>When requesting dates to be converted to Full format, a time value
+of "00:00:00.000000" is used for the conversion.
+A time stamp for a time and date combination can be created by
+combining a value from Time('F') for the time of day.</para>
+<programlisting>
+    numeric digits 18  -- needed to add the timestamps
+    timestamp = date('f, '20072301', 'S') + time('f', '08:14:22', 'N')
+</programlisting>
 </section>
-
 
 <section id="bifDelstr"><title>DELSTR (Delete String)</title>
 <indexterm><primary>DELSTR function</primary>
@@ -4449,6 +4476,25 @@ LAN-attached programs synchronize the system time clock with the system time
 clock of the server during startup.  This causes the Rexx elapsed time function
 to be unreliable during LAN initialization.</para>
 </listitem></varlistentry>
+<varlistentry><term>Full
+<indexterm><primary>Full option of Time function</primary></indexterm>
+</term>
+<listitem><para>returns the number of microseconds
+since 00:00:00.000000 on 1 January 0001, in the format:
+<emphasis role="italic">dddddddddddddddddd</emphasis> (no leading zeros or blanks).
+</para>
+<note><title>Notes</title>
+<para>The base date of 1 January 0001 is determined
+by extending the current Gregorian calendar backward (365 days each year,
+with an extra day every year that is divisible by 4 except century years that
+are not divisible by 400. It does not take into account any errors in the calendar
+system that created the Gregorian calendar originally.</para>
+<para>The value returned by Time('F') can be used to calculate the interval between
+any two times.  Note, however, that values returned generally contain more digits
+that the default NUMERIC DIGITS setting.  The NUMERIC DIGITS setting should be increased
+to a minimum value of 18 when performing timestamp arithmetic.</para>
+</note>
+</listitem></varlistentry>
 <varlistentry><term>Hours
 <indexterm><primary>hours calculated from midnight</primary></indexterm>
 </term>
@@ -4552,6 +4598,7 @@ current time, for example, not "E" or "R". Here are some examples: </para>
 <programlisting>
 time("C","11:27:21")    ->    11:27am
 time("N","11:27am","C") ->    11:27:00
+time("N", "63326132161828000", "F")   ->   08:16:01
 </programlisting>
 <para>You can determine the difference between two times; for example:</para>
 <programlisting>
@@ -4565,6 +4612,14 @@ For example, if the result requires components that are not specified in the
 source format, then those components of the result are zero. If the source
 has components that the result does not need, then those components of the
 source are ignored.</para>
+<para>When requesting times be converted to Full format, a date value
+of 1 January 0001 is used for the conversion.
+A time stamp for a time and date combination can be created by
+combining a value from Date('F') for the time of day.</para>
+<programlisting>
+    numeric digits 18  -- needed to add the timestamps
+    timestamp = date('f, '20072301', 'S') + time('f', '08:14:22', 'N')
+</programlisting>
 <indexterm><primary>implementation maximum</primary>
 <secondary>TIME function</secondary></indexterm>
 <para><emphasis role="bold">Implementation maximum:</emphasis>
