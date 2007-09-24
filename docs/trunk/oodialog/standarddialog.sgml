@@ -188,7 +188,10 @@ Routines</link> section of this chapter.
 </variablelist>
 
 <section id="clsTimedMessage"><title>TimedMessage Class</title>
-<indexterm><primary>TimedMessage class</primary></indexterm>
+<indexterm><primary>TimedMessage</primary>
+<secondary>class</secondary></indexterm>
+<indexterm><primary>standard dialogs</primary>
+<secondary>TimedMessage</secondary></indexterm>
 <para>The TimeMessage class shows a message window for
 a defined duration. </para>
 <variablelist>
@@ -248,9 +251,9 @@ drop dlg
 </programlisting>
 </section>
 
-<section id="clsDefineDialog"><title>DefineDialog</title>
-<indexterm><primary>DefineDialog</primary>
-<secondary>TimedMessage class</secondary></indexterm>
+<section id="defDlgTimedMessage"><title>DefineDialog</title>
+<indexterm><primary>Define</primary>
+<secondary>TimedMessage</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aTimedMessage~DefineDialog----------------------------------><
@@ -297,7 +300,10 @@ destroys the dialog automatically.</para>
 </section>
 
 <section id="clsInputBox"><title>InputBox Class</title>
-<indexterm><primary>InputBox class</primary></indexterm>
+<indexterm><primary>InputBox</primary>
+<secondary>class</secondary></indexterm>
+<indexterm><primary>standard dialogs</primary>
+<secondary>InputBox</secondary></indexterm>
 <para>The InputBox class provides a simple dialog with
 a title, a message, one entry line, an OK, and a Cancel push button. </para>
 <variablelist>
@@ -313,7 +319,7 @@ a title, a message, one entry line, an OK, and a Cancel push button. </para>
 </variablelist>
 <para>The methods listed below are defined by this class.</para>
 
-<section id="h002117"><title>Init</title>
+<section id="initInputBox"><title>Init</title>
 <indexterm><primary>Init</primary>
 <secondary>InputBox class</secondary></indexterm>
 <programlisting>
@@ -410,7 +416,10 @@ clicks on Cancel.</para>
 </section>
 
 <section id="clsPasswordBox"><title>PasswordBox Class</title>
-<indexterm><primary>PasswordBox class</primary></indexterm>
+<indexterm><primary>PasswordBox</primary>
+<secondary>class</secondary></indexterm>
+<indexterm><primary>standard dialogs</primary>
+<secondary>PasswordBox</secondary></indexterm>
 <para>The PasswordBox class is an InputBox dialog with an entry line that echoes the keys with asterisks
 (*) instead of characters. </para>
 <variablelist>
@@ -445,7 +454,10 @@ of a simple entry line.</para>
 </section>
 
 <section id="clsIntegerBox"><title>IntegerBox Class</title>
-<indexterm><primary>IntegerBox class</primary></indexterm>
+<indexterm><primary>IntegerBox</primary>
+<secondary>class</secondary></indexterm>
+<indexterm><primary>standard dialogs</primary>
+<secondary>IntegerBox</secondary></indexterm>
 <para>The IntegerBox class is an <link linkend="clsInputBox">InputBox</link>
 dialog whose entry line allows only numerical data. </para>
 <variablelist>
@@ -481,7 +493,10 @@ is invalid, a message window is displayed.</para>
 </section>
 
 <section id="clsMultiInputBox"><title>MultiInputBox Class</title>
-<indexterm><primary>MultiInputBox class</primary></indexterm>
+<indexterm><primary>MultiInputBox</primary>
+<secondary>class</secondary></indexterm>
+<indexterm><primary>standard dialogs</primary>
+<secondary>MultiInputBox</secondary></indexterm>
 <para>The MultiInputBox class is a dialog that provides
 a title, a message, and one or more entry lines. After execution of this dialog
 you can access the values of the entry lines. </para>
@@ -571,7 +586,10 @@ end
 </section>
 
 <section id="clsListChoice"><title>ListChoice Class</title>
-<indexterm><primary>ListChoice class</primary></indexterm>
+<indexterm><primary>ListChoice</primary>
+<secondary>class</secondary></indexterm>
+<indexterm><primary>standard dialogs</primary>
+<secondary>ListChoice</secondary></indexterm>
 <para>The ListChoice class provides a dialog with a list
 box, an OK, and a Cancel button.
 The selected item is returned if the OK push button
@@ -647,7 +665,10 @@ say "Your ListChoice data:" dlg~execute
 </section>
 
 <section id="clsMultiListChoice"><title>MultiListChoice Class</title>
-<indexterm><primary>MultiListChoice class</primary></indexterm>
+<indexterm><primary>MultiListChoice</primary>
+<secondary>class</secondary></indexterm>
+<indexterm><primary>standard dialogs</primary>
+<secondary>MultiListChoice</secondary></indexterm>
 <para>The MultiListChoice class is an extension of the ListChoice class. It makes it possible for the user to
 select more than one line at a time. The Execute method
 returns the selected items' indexes separated by blank spaces.  The first
@@ -694,7 +715,10 @@ if s <> "" then do while s \= ""
 </section>
 
 <section id="clsCheckList"><title>CheckList Class</title>
-<indexterm><primary>CheckList class</primary></indexterm>
+<indexterm><primary>CheckList</primary>
+<secondary>class</secondary></indexterm>
+<indexterm><primary>standard dialogs</primary>
+<secondary>CheckList</secondary></indexterm>
 <para>The CheckList class is a dialog with a group of
 one or more check boxes. </para>
 <variablelist>
@@ -789,7 +813,10 @@ end
 </section>
 
 <section id="clsSingleSelection"><title>SingleSelection Class</title>
-<indexterm><primary>SingleList class</primary></indexterm>
+<indexterm><primary>SingleSelection</primary>
+<secondary>class</secondary></indexterm>
+<indexterm><primary>standard dialogs</primary>
+<secondary>SingleSelection</secondary></indexterm>
 <para>The SingleSelection class shows a dialog that has
 a group of radio buttons. The user can select only one item of the group. </para>
 <variablelist>
@@ -896,36 +923,36 @@ call RxFuncAdd InstMMFuncs, "oodialog", InstMMFuncs
 call InstMMFuncs
 ]]>
 </programlisting>
-<para>A more convenient way to call these functions is provided by the
-<link linkend="sctPublicRoutines">Public Routines</link>.
+<para>A more convenient way to call many of these functions is provided by the
+<link linkend="sctPublicRoutines">Public Routines</link> in the ooDialog
+framework.
 </para>
-<variablelist>
-<varlistentry><term>InfoMessage
+
+<section id="fnc"><title>InfoMessage</title>
 <indexterm><primary>InfoMessage</primary></indexterm>
-</term>
-<listitem><para>Displays an information message window:
+<para>Displays an information message window:
 <programlisting>
 <![CDATA[
 call InfoMessage "some message text"
 ret = InfoMessage("another text")
 ]]>
-</programlisting>
-</para></listitem></varlistentry>
-<varlistentry><term>ErrorMessage
+</programlisting></para>
+</section>
+
+<section id="fnc"><title>ErrorMessage</title>
 <indexterm><primary>ErrorMessage</primary></indexterm>
-</term>
-<listitem><para>Displays an error message window:
+<para>Displays an error message window:
 <programlisting>
 <![CDATA[
 call ErrorMessage "some error message text"
 ret = ErrorMessage("another error message")
 ]]>
-</programlisting>
-</para></listitem></varlistentry>
-<varlistentry><term>YesNoMessage
+</programlisting></para>
+</section>
+
+<section id="fnc"><title>YesNoMessage</title>
 <indexterm><primary>YesNoMessage</primary></indexterm>
-</term>
-<listitem><para>Displays a message and ask the user for a YES or NO answer:
+<para>Displays a message and ask the user for a YES or NO answer:
 <programlisting>
 <![CDATA[
 ret = YesNoMessage("Delete these files?", "No")
@@ -936,25 +963,27 @@ if ret=1 then /* this is yes */
 <para>The second argument is optional and can have a value of either Yes or
 No. An argument of Yes gives the Yes button the default focus, No gives the No
 button the default focus. If the argument is omitted the Yes button is given
-the default focus. Only the first letter of the argument is significant
-and case is not significant. See also the function
+the default focus. Only the first letter of the argument is needed and case is
+not significant. See also the function
 <link linkend="rntAskDialog">AskDialog</link>.
-</para></listitem></varlistentry>
-<varlistentry><term>GetScreenSize
+</para>
+</section>
+
+<section id="fnc"><title>GetScreenSize</title>
 <indexterm><primary>GetScreenSize</primary></indexterm>
-</term>
-<listitem><para>Queries the monitor size in dialog units and pixels:
+<para>Queries the monitor size in dialog units and pixels:
 <programlisting>
 <![CDATA[
 val = GetScreenSize()
 parse var val dunitx dunity pixelx pixely
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
-<varlistentry><term>PlaySoundFile
+</para>
+</section>
+
+<section id="fnc"><title>PlaySoundFile</title>
 <indexterm><primary>PlaySoundFile</primary></indexterm>
-</term>
-<listitem><para>Plays a sound file (.WAV):</para>
+<para>Plays a sound file (.WAV):</para>
 <programlisting>
 <![CDATA[
 call PlaySoundFile "d:\wav\sound.wav"
@@ -964,31 +993,34 @@ ret = PlaySoundFile("d:\wav\sound.wav","YES")
 <para>The optional second
 parameter YES plays the file asynchronously, that is the program continues
 execution. See also the routine <link linkend="rtnPlay">Play</link>.
-</para></listitem></varlistentry>
-<varlistentry><term>PlaySoundFileInLoop
+</para>
+</section>
+
+<section id="fnc"><title>PlaySoundFileInLoop</title>
 <indexterm><primary>PlaySoundFileInLoop</primary></indexterm>
-</term>
-<listitem><para>Plays a sound file (.WAV) continuously and asynchronously:
+<para>Plays a sound file (.WAV) continuously and asynchronously:
 <programlisting>
 <![CDATA[
 call PlaySoundFileInLoop "d:\wav\sound.wav"
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
-<varlistentry><term>StopSoundFile
+</para>
+</section>
+
+<section id="fnc"><title>StopSoundFile</title>
 <indexterm><primary>StopSoundFile</primary></indexterm>
-</term>
-<listitem><para>Stops playing an asynchronous sound file (.WAV):
+<para>Stops playing an asynchronous sound file (.WAV):
 <programlisting>
 <![CDATA[
 call StopSoundFile
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
-<varlistentry><term>GetFileNameWindow
+</para>
+</section>
+
+<section id="fnc"><title>GetFileNameWindow</title>
 <indexterm><primary>GetFileNameWindow</primary></indexterm>
-</term>
-<listitem><para>Displays an Open File window:</para>
+<para>Displays an Open File window:</para>
 <programlisting>
 <![CDATA[
 file = GetFileNameWindow(filename,handle,filter,loadorsave,title, ,
@@ -1067,21 +1099,21 @@ C:\WINNT#file with blank.ext#fileWithNoBlank.TXT
 "Text files (*.txt)"&apos;0&apos;x"*.TXT"&apos;0&apos;x ,
 "All files (*.*)"&apos;0&apos;x"*.*"
 </programlisting>
-</listitem></varlistentry>
-<varlistentry><term>SleepMS
+</section>
+
+<section id="fnc"><title>SleepMS</title>
 <indexterm><primary>SleepMS</primary></indexterm>
-</term>
-<listitem><para>Sleeps for a given time interval, in milliseconds:
+<para>Sleeps for a given time interval, in milliseconds:
 <programlisting>
 <![CDATA[
 call SleepMS(3000) /* 3 seconds */
 ]]>
-</programlisting>
-</para></listitem></varlistentry>
-<varlistentry><term>WinTimer
+</programlisting></para>
+</section>
+
+<section id="fnc"><title>WinTimer</title>
 <indexterm><primary>WinTimer</primary></indexterm>
-</term>
-<listitem><para>Starts, stops, and waits for a windows timer:
+<para>Starts, stops, and waits for a windows timer:
 <programlisting>
 <![CDATA[
 tid = WinTimer("START",300)   /* 0,3 seconds */
@@ -1089,21 +1121,22 @@ call  WinTimer("WAIT,tid)     /* wait... */
 ret = WinTimer("STOP",tid)    /* stop premature */
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
-</variablelist>
+</para>
+</section>
 </section>
 
 <section id="sctPublicRoutines"><title>Public Routines</title>
 <indexterm><primary>ooDialog public routines</primary></indexterm>
-<para>The routines listed below are useful additions to any ooRexx program.
-They do not require that an ooDialog dialog be initialized prior to their use,
-or that any ooDialog dialog be used in the program at all.  The programmer does
-not have to register any functions to use the routines.
+<para>The routines listed listed in this section can be used in any ooRexx
+program. They do not require that an ooDialog dialog be initialized prior to
+their use, or that any ooDialog dialog be used in the program at all.  The
+programmer does not have to register any functions to use these routines.
 </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Requires:</emphasis></term>
 <listitem><para>Use a requires directive for the <computeroutput>
-ooDialog.cls</computeroutput> file in an ooRexx program to use these routines.
+ooDialog.cls</computeroutput> file in an ooRexx program to use any of these
+routines.
 <programlisting> <![CDATA[
 ::requires ooDialog.cls ]]>
 </programlisting>
@@ -1125,8 +1158,10 @@ ooDialog.cls</computeroutput> file in an ooRexx program to use these routines.
 ]]>
 </programlisting>
 
-<para>The Play routine can be used to play an audio file
-using the Windows multimedia capabilities. See also the PlaySoundFile function in <link linkend="sctExternalFunctions">OODialog External Functions</link>.</para>
+<para>The Play routine can be used to play an audio file using the Windows
+multimedia capabilities. See also the <link
+linkend="fncPlaySoundFile">PlaySoundFile</link> external function.
+</para>
 <para>The file name is looked up in the current directory and in the directories
 of the SOUNDPATH environment variable. </para>
 <variablelist>
@@ -1408,6 +1443,10 @@ returns its handle.</para>
 </section>
 
 <section id="rtnTimedMessage"><title>TimedMessage Routine</title>
+<indexterm><primary>TimedMessage</primary>
+<secondary>function</secondary></indexterm>
+<indexterm><primary>public routines</primary>
+<secondary>TimedMessage</secondary></indexterm>
 <para>The TimedMessage routine provides a shortcut function to invoke a
 TimedMessage dialog as a function:
 </para>
@@ -1422,19 +1461,29 @@ TimedMessage</computeroutput> class.
 </section>
 
 <section id="rtnInputBox"><title>InputBox Routine</title>
-<indexterm><primary>InputBox function</primary></indexterm>
-<para>OODialog provides a shortcut function to invoke an
+<indexterm><primary>InputBox</primary>
+<secondary>function</secondary></indexterm>
+<indexterm><primary>public routines</primary>
+<secondary>InputBox</secondary></indexterm>
+<para>A shortcut function to invoke an
 <link linkend="clsInputBox">InputBox</link> dialog as a function: </para>
 <programlisting>
 <![CDATA[
 say "Your name:" InputBox("Please enter your name","Personal Data")
 ]]>
-</programlisting><para> The parameters are described in the Init method.</para>
+</programlisting><para> The parameters are described in the <link
+linkend="initInputBox">Init</link> method of the<computeroutput>
+InputBox</computeroutput> class.</para>
 </section>
 
 <section id="rtnPasswordBox"><title>PasswordBox Routine</title>
-<indexterm><primary>PasswordBox function</primary></indexterm>
-<para>OODialog provides a shortcut function to invoke a PasswordBox dialog as a function: </para>
+<indexterm><primary>PasswordBox</primary>
+<secondary>function</secondary></indexterm>
+<indexterm><primary>public routines</primary>
+<secondary>PasswordBox</secondary></indexterm>
+<para>A shortcut to invoke a <link linkend="clsPasswordBox">PasswordBox</link>
+dialog as a function:
+</para>
 <programlisting>
 <![CDATA[
 pwd = PasswordBox("Please enter your password","Security")
@@ -1444,8 +1493,11 @@ of the InputBox class.</para>
 </section>
 
 <section id="rtnIntegerBox"><title>IntegerBox Routine</title>
-<indexterm><primary>IntegerBox function</primary></indexterm>
-<para>OODialog provides a shortcut function to invoke an IntegerBox dialog as a function: </para>
+<indexterm><primary>IntegerBox</primary>
+<secondary>function</secondary></indexterm>
+<indexterm><primary>public routines</primary>
+<secondary>IntegerBox</secondary></indexterm>
+<para>A shortcut to invoke an IntegerBox dialog as a function: </para>
 <programlisting>
 <![CDATA[
 say "Your age:" IntegerBox("Please enter your age","Personal Data")
@@ -1455,8 +1507,11 @@ of the InputBox class.</para>
 </section>
 
 <section id="rtnMultiInputBox"><title>MultiInputBox Routine</title>
-<indexterm><primary>MultiInputBox function</primary></indexterm>
-<para>OODialog provides a shortcut function to invoke a MultiInputBox dialog as a function: </para>
+<indexterm><primary>MultiInputBox</primary>
+<secondary>function</secondary></indexterm>
+<indexterm><primary>public routines</primary>
+<secondary>MultiInputBox</secondary></indexterm>
+<para>Provides a shortcut function to invoke a MultiInputBox dialog: </para>
 <programlisting>
 <![CDATA[
 res = MultiInputBox("Enter your address","Personal Data", ,
@@ -1472,8 +1527,12 @@ but, instead of stems, arrays are passed into and returned from the function.</p
 </section>
 
 <section id="rtnListChoice"><title>ListChoice Routine</title>
-<indexterm><primary>ListChoice function</primary></indexterm>
-<para>OODialog provides a shortcut function to invoke a ListChoice dialog as a function: </para>
+<indexterm><primary>ListChoice</primary>
+<secondary>function</secondary></indexterm>
+<indexterm><primary>public routines</primary>
+<secondary>ListChoice</secondary></indexterm>
+<para>The ListChoice function provides a shortcut to invoke a ListChoice dialog:
+</para>
 <programlisting>
 <![CDATA[
 day = ListChoice("Select a day","My favorite day", ,
@@ -1487,8 +1546,12 @@ but, instead of an input stem an array is passed into the function.</para>
 </section>
 
 <section id="rtnMultiListChoice"><title>MultiListChoice Routine</title>
-<indexterm><primary>MultiListChoice function</primary></indexterm>
-<para>OODialog provides a shortcut function to invoke a MultiListChoice dialog as a function: </para>
+<indexterm><primary>MultiListChoice</primary>
+<secondary>function</secondary></indexterm>
+<indexterm><primary>public routines</primary>
+<secondary>MultiListChoice</secondary></indexterm>
+<para>Provides a shortcut to invoke a MultiListChoice dialog as a function:
+</para>
 <programlisting>
 <![CDATA[
 days = MultiListChoice("Select days","My TV Days", ,
@@ -1504,8 +1567,11 @@ but, instead of stems, arrays are passed into and returned from the function.</p
 </section>
 
 <section id="rtnCheckList"><title>CheckList Routine</title>
-<indexterm><primary>CheckList function</primary></indexterm>
-<para>OODialog provides a shortcut function to invoke a CheckList dialog as a function: </para>
+<indexterm><primary>CheckList</primary>
+<secondary>function</secondary></indexterm>
+<indexterm><primary>public routines</primary>
+<secondary>CheckList</secondary></indexterm>
+<para>A shortcut function to invoke the CheckList dialog: </para>
 <programlisting>
 <![CDATA[
 weekdays = .array~of("Monday","Tuesday","Wednesday", ,
@@ -1521,8 +1587,13 @@ but, instead of stems, arrays are passed into and returned from the function.</p
 </section>
 
 <section id="rtnSingleSelection"><title>SingleSelection Routine</title>
-<indexterm><primary>SingleList function</primary></indexterm>
-<para>OODialog provides a shortcut function to invoke a SingleSelection dialog as a function: </para>
+<indexterm><primary>SingleSelection</primary>
+<secondary>function</secondary></indexterm>
+<indexterm><primary>public routines</primary>
+<secondary>SingleSelection</secondary></indexterm>
+<para>The SingleSelection function provides a shortcut means to invoke a
+SingleSelection dialog
+</para>
 <programlisting>
 <![CDATA[
 months = .array~of("Jan","Feb","Mar","Apr","May","Jun", ,
