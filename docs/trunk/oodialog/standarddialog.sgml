@@ -51,8 +51,8 @@ graphical elements in their ooRexx applications.  A few of the functions, like
 <link linkend="rtnMSSleep">MSSleep</link> expose functionality that can be
 useful in any type of ooRexx application. The external functions and public
 routines can be called with a single line of code and the standard dialogs can
-usually be executed with only two lines of code. This makes them simple to work
-with and does not require the programmer to do much set up for these elements.
+usually be executed with only two lines of code. This does not require the
+programmer to do much set up and makes them simple to work with.
 </para>
 <para>The standard dialogs, external functions, and public routines are listed
 the following table:</para>
@@ -342,7 +342,7 @@ to display for its specified duration and then dismisses itself automatically.
 <listitem><para>The following example shows a window with the title of <emphasis
 role="italic">Infomation</emphasis> for a duration of 3 seconds:
 <programlisting> <![CDATA[
-dlg = .TimedMessage~New("Application will be started, please wait", ,
+dlg = .TimedMessage~New("Application will be started, please wait", -
                         "Information", 3000)
 dlg~Execute
 drop dlg
@@ -384,12 +384,9 @@ variable.  That is shown in the other examples to emphasis the point that the
 dialog has been destroyed.</para></note>
 <programlisting> <![CDATA[
 dlg = .TimedMessage~New("The WidgetCreator Application - loading ...", -
-                        "The Widget Factory", -1)
+                        "The Widget Factory", 2000)
 dlg~Execute
-ret = doStartup()
-dlg~stopIt
-drop dlg
-if ret <> 0 then do
+if doStartup() <> 0 then do
   ...
 end
 ]]>
@@ -459,7 +456,7 @@ procedure.
 a title, a message, one entry line, an OK, and a Cancel push button. </para>
 <variablelist>
 <varlistentry><term>Requires:</term>
-<listitem><para><computeroutput>OODPLAIN.CLS</computeroutput> is required to use this class
+<listitem><para><computeroutput>oodPlain.cls</computeroutput> is required to use this class
 </para></listitem></varlistentry>
 <varlistentry><term>Subclass:</term>
 <listitem><para>This class is a subclass of the <computeroutput>
@@ -616,7 +613,7 @@ of a simple entry line.</para>
 dialog whose entry line allows only numerical data. </para>
 <variablelist>
 <varlistentry><term>Requires:</term>
-<listitem><para><computeroutput>OODPLAIN.CLS</computeroutput> is required to use this class
+<listitem><para><computeroutput>oodPlain.cls</computeroutput> is required to use this class
 </para></listitem></varlistentry>
 <varlistentry><term>Subclass:</term>
 <listitem><para>This class is a subclass of the <link linkend="clsInputBox">InputBox Class</link> class
@@ -658,7 +655,7 @@ a title, a message, and one or more entry lines. After execution of this dialog
 you can access the values of the entry lines. </para>
 <variablelist>
 <varlistentry><term>Requires:</term>
-<listitem><para><computeroutput>OODPLAIN.CLS</computeroutput> is required to use this class
+<listitem><para><computeroutput>oodPlain.cls</computeroutput> is required to use this class
 </para></listitem></varlistentry>
 <varlistentry><term>Subclass:</term>
 <listitem><para>This class is a subclass of the &quot;PlainUserDialog&quot; class
@@ -752,7 +749,7 @@ The selected item is returned if the OK push button
 is used to terminate the dialog. </para>
 <variablelist>
 <varlistentry><term>Requires:</term>
-<listitem><para><computeroutput>OODPLAIN.CLS</computeroutput> is required to use this class
+<listitem><para><computeroutput>oodPlain.cls</computeroutput> is required to use this class
 </para></listitem></varlistentry>
 <varlistentry><term>Subclass:</term>
 <listitem><para>This class is a subclass of the &quot;PlainUserDialog&quot; class
@@ -831,7 +828,7 @@ returns the selected items' indexes separated by blank spaces.  The first
 item has index 1. </para>
 <variablelist>
 <varlistentry><term>Requires:</term>
-<listitem><para><computeroutput>OODPLAIN.CLS</computeroutput> is required to use this class
+<listitem><para><computeroutput>oodPlain.cls</computeroutput> is required to use this class
 </para></listitem></varlistentry>
 <varlistentry><term>Subclass:</term>
 <listitem><para>This class is a subclass of the <link linkend="clsListChoice">ListChoice Class</link>
@@ -879,7 +876,7 @@ if s <> "" then do while s \= ""
 one or more check boxes. </para>
 <variablelist>
 <varlistentry><term>Requires:</term>
-<listitem><para><computeroutput>OODPLAIN.CLS</computeroutput> is required to use this class.
+<listitem><para><computeroutput>oodPlain.cls</computeroutput> is required to use this class.
 </para></listitem></varlistentry>
 <varlistentry><term>Subclass:</term>
 <listitem><para>This class is a subclass of the &quot;PlainUserDialog&quot; class.
@@ -977,7 +974,7 @@ end
 a group of radio buttons. The user can select only one item of the group. </para>
 <variablelist>
 <varlistentry><term>Requires:</term>
-<listitem><para><computeroutput>OODPLAIN.CLS</computeroutput> is required to use this class
+<listitem><para><computeroutput>oodPlain.cls</computeroutput> is required to use this class
 </para></listitem></varlistentry>
 <varlistentry><term>Subclass:</term>
 <listitem><para>This class is a subclass of the &quot;PlainUserDialog&quot; class
@@ -1081,15 +1078,17 @@ call InstMMFuncs
 </programlisting>
 <para>A more convenient way to call many of these functions is provided by the
 <link linkend="sctPublicRoutines">Public Routines</link> in the ooDialog
-framework.
+framework.  The public routines do not require that the programmer register any
+of the external functions.  That task is handled transparently by the routine.
 </para>
 <note><title>Note</title><para>
 The ooDialog framework includes a number of external functions that are not
-listed here.  In general, to use most of these external functions requires a
+listed here.  In general, using the external functions not listed requires a
 good working knowledge of C and an understanding of the underlying Windows API.
-Those function are not listed here.  The functions listed in this section are
-the functions that are convenient and easy to use in an ooRexx program for the
-general Rexx programmer.  They require no understanding of C or the Windows API.
+Therefore, those functions are not listed. The functions listed in this section
+are the functions that are convenient and easy to use in an ooRexx program for
+the general Rexx programmer.  They require no understanding of C or the Windows
+API.
 </para></note>
 
 <section id="fncInfoMessage"><title>InfoMessage</title>
@@ -1103,6 +1102,8 @@ call InfoMessage "some message text"
 ret = InfoMessage("another text")
 ]]>
 </programlisting></para>
+<para>See also the public routine <link linkend="rtnInfoDialog">InfoDialog</link>.
+</para>
 </section>
 
 <section id="fncErrorMessage"><title>ErrorMessage</title>
@@ -1116,12 +1117,14 @@ call ErrorMessage "some error message text"
 ret = ErrorMessage("another error message")
 ]]>
 </programlisting></para>
+<para>See also the public routine <link linkend="rtnErrorDialog">ErrorDialog</link>.
+</para>
 </section>
 
 <section id="fncYesNoMessage"><title>YesNoMessage</title>
 <indexterm><primary>YesNoMessage</primary></indexterm>
 <indexterm><primary>external functions</primary>
-<secondary>YesNorMessage</secondary></indexterm>
+<secondary>YesNoMessage</secondary></indexterm>
 <para>Displays a message and ask the user for a YES or NO answer:
 <programlisting>
 <![CDATA[
@@ -1134,8 +1137,8 @@ if ret=1 then /* this is yes */
 No. An argument of Yes gives the Yes button the default focus, No gives the No
 button the default focus. If the argument is omitted the Yes button is given
 the default focus. Only the first letter of the argument is needed and case is
-not significant. See also the function
-<link linkend="rtnAskDialog">AskDialog</link>.
+not significant.</para>
+<para>See also the public routine <link linkend="rtnAskDialog">AskDialog</link>.
 </para>
 </section>
 
@@ -1150,6 +1153,8 @@ val = GetScreenSize()
 parse var val dunitx dunity pixelx pixely
 ]]>
 </programlisting>
+</para>
+<para>See also the public routine <link linkend="rtnScreenSize">ScreenSize</link>.
 </para>
 </section>
 
@@ -1166,7 +1171,7 @@ ret = PlaySoundFile("d:\wav\sound.wav","YES")
 </programlisting>
 <para>The optional second
 parameter YES plays the file asynchronously, that is the program continues
-execution. See also the routine <link linkend="rtnPlay">Play</link>.
+execution. See also the public routine <link linkend="rtnPlay">Play</link>.
 </para>
 </section>
 
@@ -1291,6 +1296,8 @@ C:\WINNT#file with blank.ext#fileWithNoBlank.TXT
 call SleepMS(3000) /* 3 seconds */
 ]]>
 </programlisting></para>
+<para>See also the public routine <link linkend="rtnMSSleep">MSSleep</link>.
+</para>
 </section>
 
 <section id="fncWinTimer"><title>WinTimer</title>
@@ -1311,7 +1318,7 @@ ret = WinTimer("STOP",tid)    /* stop premature */
 
 <section id="sctPublicRoutines"><title>Public Routines</title>
 <indexterm><primary>ooDialog public routines</primary></indexterm>
-<para>The routines listed listed in this section can be used in any ooRexx
+<para>The routines listed in this section can be used in any ooRexx
 program.  They are designed to be even easier to use than the standard dialogs
 or the external functions. They do not require that an ooDialog dialog be
 initialized prior to their use, or that any ooDialog dialog be used in the
@@ -1636,33 +1643,6 @@ returns its handle.</para>
 </variablelist>
 </section>
 
-<section id="rtnMSSleep"><title>MSSleep Routine</title>
-<indexterm><primary>MSSleep</primary></indexterm>
-<indexterm><primary>public routines</primary>
-<secondary>MSSleep</secondary></indexterm>
-<para>Sleeps for the specified number of milliseconds.</para>
-<programlisting>
-<![CDATA[
->>-MSSleep(--duration--)--------------------------------------><
-]]>
-</programlisting>
-
-<para></para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Argument:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>duration</term>
-<listitem><para>The time in milliseconds to sleep.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>This function always returns 0.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
 <section id="rtnScreenSize"><title>ScreenSize Routine</title>
 <indexterm><primary>ScreenSize</primary></indexterm>
 <indexterm><primary>public routines</primary>
@@ -1699,6 +1679,33 @@ say 'The monitor is' size[3] 'pixels wide and' size[4] 'pixels high.'
 </variablelist>
 </section>
 
+<section id="rtnMSSleep"><title>MSSleep Routine</title>
+<indexterm><primary>MSSleep</primary></indexterm>
+<indexterm><primary>public routines</primary>
+<secondary>MSSleep</secondary></indexterm>
+<para>Sleeps for the specified number of milliseconds.</para>
+<programlisting>
+<![CDATA[
+>>-MSSleep(--duration--)--------------------------------------><
+]]>
+</programlisting>
+
+<para></para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Argument:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>duration</term>
+<listitem><para>The time in milliseconds to sleep.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>This function always returns 0.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
 <section id="rtnTimedMessage"><title>TimedMessage Routine</title>
 <indexterm><primary>TimedMessage</primary>
 <secondary>function</secondary></indexterm>
@@ -1712,19 +1719,25 @@ linkend="clsTimedMessage">TimedMessage</link> dialog as a function:
 ret = TimedMessage("We are starting...","Please wait",3000)
 ]]>
 </programlisting><para> The parameters are the same as described in the
-<link linkend="initTimedMessage">Init</link> method of the<computeroutput>
+<link linkend="initTimedMessage">Init</link> method of the <computeroutput>
 TimedMessage</computeroutput> class.
+</para>
+<para>The function returns 0, always, when the duration is non-negative.  When
+the duration is less than 0, the function returns a reference to the
+<computeroutput>TimedMessage</computeroutput> dialog object.  This is needed in
+order for the programmer to manually dismiss the dialog.  Below are the same 3
+<link linkend="example1TimedMessage">examples</link> listed for the
+<computeroutput>TimedMessage</computeroutput> dialog, modified to work with the
+public routine:
 </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Example
-  1:</emphasis></term>
+ 1:</emphasis></term>
 <listitem><para>The following example shows a window with the title of <emphasis
 role="italic">Infomation</emphasis> for a duration of 3 seconds:
 <programlisting> <![CDATA[
-dlg = .TimedMessage~New("Application will be started, please wait", ,
-                        "Information", 3000)
-dlg~Execute
-drop dlg
+ret = timedMessage("Application will be started, please wait", -
+                   "Information", 3000)
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -1734,15 +1747,15 @@ drop dlg
 while an application is doing its time consuming start up routine.  Since this
 start up process can vary in time depending on the individual system, the window
 is set to display indefinitely.  When the start up process is finished, the
-programmer dismisses the window and destroys the dialog manually.
+programmer dismisses the window and destroys the dialog manually.  Note how a
+reference to the <computeroutput>TimedMessage</computeroutput> dialog is
+returned.  The programmer only needs to use this to dismiss / destroy the dialog
 <programlisting>
 <![CDATA[
-dlg = .TimedMessage~New("The WidgetCreator Application - loading ...", -
-                        "The Widget Factory", -1)
-dlg~Execute
+dlg = timedMessage("The WidgetCreator Application - loading ...", -
+                   "The Widget Factory", -1)
 ret = doStartup()
 dlg~stopIt
-drop dlg
 if ret <> 0 then do
   ...
 end
@@ -1758,17 +1771,11 @@ the customer and then close.  The early reply argument is used so that the start
 up routine executes immediately.  After 2 seconds the splash screen dismisses
 and the dialog is destroyed automatically.
 </para>
-<note><title>Note</title><para>It is not necessary to explicitly drop the dlg
-variable.  That is shown in the other examples to emphasis the point that the
-dialog has been destroyed.</para></note>
 <programlisting> <![CDATA[
-dlg = .TimedMessage~New("The WidgetCreator Application - loading ...", -
-                        "The Widget Factory", -1)
-dlg~Execute
-ret = doStartup()
-dlg~stopIt
-drop dlg
-if ret <> 0 then do
+ret = timedMessage("The WidgetCreator Application - loading ...", -
+                   "The Widget Factory", 2000)
+
+if doStartup() <> 0 then do
   ...
 end
 ]]>
@@ -1816,7 +1823,9 @@ InputBox</computeroutput>class.
 <secondary>function</secondary></indexterm>
 <indexterm><primary>public routines</primary>
 <secondary>IntegerBox</secondary></indexterm>
-<para>A shortcut to invoke an IntegerBox dialog as a function: </para>
+<para>A shortcut to invoke an <link linkend="clsIntegerBox">IntegerBox</link>
+dialog as a function:
+</para>
 <programlisting>
 <![CDATA[
 say "Your age:" IntegerBox("Please enter your age","Personal Data")
@@ -1833,7 +1842,8 @@ InputBox</computeroutput>class.
 <secondary>function</secondary></indexterm>
 <indexterm><primary>public routines</primary>
 <secondary>MultiInputBox</secondary></indexterm>
-<para>Provides a shortcut function to invoke a MultiInputBox dialog: </para>
+<para>Provides a shortcut function to invoke a <link
+linkend="clsMultiInputBox">MultiInputBox</link> dialog:</para>
 <programlisting>
 <![CDATA[
 res = MultiInputBox("Enter your address","Personal Data", ,
@@ -1846,7 +1856,12 @@ if res \= .Nil then do entry over res
 </programlisting>
 <para> The parameters are described in the <link
 linkend="initMultiInputbox">Init</link> method of the <computeroutput>
-MultiInputBox</computeroutput>class.
+MultiInputBox</computeroutput>class.  However, instead of using stems,
+arrays are used for input.
+</para>
+<para>The user's input to the dialog is also returned in an array.  Note this
+other difference from the MultiInputBox dialog: if the user cancels the dialog
+<computeroutput>.nil</computeroutput> is returned rather than the empty string.
 </para>
 </section>
 
@@ -1855,7 +1870,8 @@ MultiInputBox</computeroutput>class.
 <secondary>function</secondary></indexterm>
 <indexterm><primary>public routines</primary>
 <secondary>ListChoice</secondary></indexterm>
-<para>The ListChoice function provides a shortcut to invoke a ListChoice dialog:
+<para>The ListChoice function provides a shortcut to invoke a <link
+linkend="clsListChoice">ListChoice</link> dialog:
 </para>
 <programlisting>
 <![CDATA[
@@ -1870,6 +1886,9 @@ linkend="initListChoice">Init</link> method of the <computeroutput>
 ListChoice</computeroutput>class. However, instead of an input stem an array is
 passed into the function.
 </para>
+<para>If the user cancels the dialog <computeroutput>.nil</computeroutput> is
+returned rather than the empty string.
+</para>
 </section>
 
 <section id="rtnMultiListChoice"><title>MultiListChoice Routine</title>
@@ -1877,7 +1896,8 @@ passed into the function.
 <secondary>function</secondary></indexterm>
 <indexterm><primary>public routines</primary>
 <secondary>MultiListChoice</secondary></indexterm>
-<para>Provides a shortcut to invoke a MultiListChoice dialog as a function:
+<para>Provides a shortcut to invoke a <link
+linkend="clsMultiListChoice">MultiListChoice</link> dialog as a function:
 </para>
 <programlisting>
 <![CDATA[
@@ -1894,6 +1914,9 @@ linkend="initListChoice">Init</link> method of the <computeroutput>
 MultiListChoice</computeroutput>class. However, instead of stems, arrays are
 passed into the function.
 </para>
+<para>If the user cancels the dialog <computeroutput>.nil</computeroutput> is
+returned rather than the empty string.
+</para>
 </section>
 
 <section id="rtnCheckList"><title>CheckList Routine</title>
@@ -1901,7 +1924,8 @@ passed into the function.
 <secondary>function</secondary></indexterm>
 <indexterm><primary>public routines</primary>
 <secondary>CheckList</secondary></indexterm>
-<para>A shortcut function to invoke the CheckList dialog: </para>
+<para>A shortcut function to invoke the <link linkend="clsCheckList">CheckList</link>
+dialog: </para>
 <programlisting>
 <![CDATA[
 weekdays = .array~of("Monday","Tuesday","Wednesday", ,
@@ -1917,6 +1941,9 @@ linkend="initCheckList">Init</link> method of the <computeroutput>
 CheckList</computeroutput>class. However, instead of stems, arrays are
 passed into and returned from the function.
 </para>
+<para>If the user cancels the dialog <computeroutput>.nil</computeroutput> is
+returned rather than the empty string.
+</para>
 </section>
 
 <section id="rtnSingleSelection"><title>SingleSelection Routine</title>
@@ -1925,7 +1952,7 @@ passed into and returned from the function.
 <indexterm><primary>public routines</primary>
 <secondary>SingleSelection</secondary></indexterm>
 <para>The SingleSelection function provides a shortcut means to invoke a
-SingleSelection dialog
+<link linkend="clsSingleSelection">SingleSelection</link> dialog
 </para>
 <programlisting>
 <![CDATA[
@@ -1941,7 +1968,5 @@ SingleSelection</computeroutput>class. However, instead of an input stem an
 array is passed into the function.
 </para>
 </section>
-
 </section>
-
 </chapter>
