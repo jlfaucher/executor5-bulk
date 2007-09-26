@@ -222,8 +222,8 @@ example using <emphasis role="bold">defaultName</emphasis>.</para>
 </programlisting>
 
 <para>Returns a string value that is used as a hash value for MapCollection
-such as Table, Relation, Set, Bag, and Directory.  This method returns a string value
-that is used by map collections to hash an object for hash table-based searches.</para>
+such as Table, Relation, Set, Bag, and Directory.  This string value
+is used by map collections to hash an object for hash table-based searches.</para>
 <para>Object implementations are expected to abide by a general contract for hash code usage:</para>
 <itemizedlist>
 <listitem>
@@ -252,21 +252,6 @@ characters from '00'x to 'ff'x, inclusive.
 </para>
 </listitem>
 </itemizedlist>
-is returned representing
-a hash value for Set, Bag, Table, Relation, and Directory.
-Note that different objects may generate the same hash value, therefore this
-value cannot be regarded as a "unique identifier".</para>
-<para>Returns <computeroutput>1</computeroutput> (true) if the receiver object
-has a method named <emphasis role="italic">methodname</emphasis>
-(translated to uppercase) or if the target method is a private method.
-Otherwise, it returns <computeroutput>0</computeroutput> (false). </para>
-
-<note><title>Note</title>
-<para>If you call the <emphasis role="italic">methodname</emphasis> method
-although it is private, you receive error 97
-<computeroutput>Object method not found</computeroutput> although
-<emphasis role="bold">hasMethod</emphasis>
-returns <computeroutput>1</computeroutput> (true).</para></note>
 </section>
 
 <section id="mthObjectHasMethod"><title>hasMethod</title>
@@ -3630,6 +3615,24 @@ expression.</para>
 <para>(See <link linkend="bifFormat">FORMAT</link>  for information about the
 FORMAT built-in function.)</para>
 </section>
+
+<section id="mthStringHashCode"><title>hashCode</title>
+<indexterm><primary>hashCode method</primary>
+<secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>hashCode method</secondary>
+<tertiary>of Strings class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-hashCode---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a string value that is used as a hash value for MapCollection
+such as Table, Relation, Set, Bag, and Directory.  The String hash code method will return
+the same hash value for all pairs of string instances for which the == operator is true.
+See <link linkend="mthObjectHashCode">hashCode Method</link> for details.
+</para>
 
 <section id="mthStringInsert"><title>insert</title>
 <indexterm><primary>insert method</primary>
