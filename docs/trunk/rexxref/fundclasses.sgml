@@ -85,22 +85,20 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 ]]>
 </programlisting>
 
-
-<note><title>Note</title>
-<para>The <emphasis role="italic">argument</emphasis> is optional for
-the == operator. </para></note>
 <para>Returns <computeroutput>1</computeroutput> (true) or
 <computeroutput>0</computeroutput> (false), the result of performing
-a specified comparison operation. If you specify the
-<computeroutput>==</computeroutput> operator
-and omit <emphasis role="italic">argument</emphasis>, a string representation
-is returned representing
-a hash value for Set, Bag, Table, Relation, and Directory.
-Note that different objects may generate the same hash value, therefore this
-value cannot be regarded as a "unique identifier".</para>
+a specified comparison operation.
+</para>
 <para>For the Object class, the arguments must match the receiver object. If
 they do not match the receiver object, you can define subclasses of the Object
-class to match the arguments.</para>
+class which override == to match the arguments.</para>
+<note><title>Note</title>
+<para>The MapCollection classes such as Table and Relation use the == operator
+combined with the hashCode method to determine index equivalence.  It is generally necessary
+for a class to override the hashCode method whenever the == operator is overridden to maintain
+the contract for the hashCode method.
+See <link linkend="mthObjectHashCode">hashCode Method</link> for details.
+</para></note>
 <para>The comparison operators you can use in a message are: </para>
 <variablelist>
 <varlistentry><term>=, ==
@@ -209,6 +207,66 @@ the class of the object, for example, an Array or a Directory. See also
 <link linkend="mthObjectString">string</link>. See
 <link linkend="mthObjectObjectNameEquals">objectName=</link> for an
 example using <emphasis role="bold">defaultName</emphasis>.</para>
+</section>
+
+<section id="mthObjectHashCode"><title>hashCode</title>
+<indexterm><primary>hashCode method</primary>
+<secondary>of Object class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>hashCode method</secondary>
+<tertiary>of Object class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-hashCode---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a string value that is used as a hash value for MapCollection
+such as Table, Relation, Set, Bag, and Directory.  This method returns a string value
+that is used by map collections to hash an object for hash table-based searches.</para>
+<para>Object implementations are expected to abide by a general contract for hash code usage:</para>
+<itemizedlist>
+<listitem>
+<para>
+Whenever hashCode is invoked on the same object more than once, hashCode must return the
+same hashcode value, provided than none of the internal information the object uses for an "==" comparision has changed.
+</para>
+</listitem>
+<listitem>
+<para>
+If two object instances compare equal using the "==" operator, the hashCode methods for both object instances must return
+the same value.
+</para>
+</listitem>
+<listitem>
+<para>
+It is not required that two object instances that compare unequal using "==" need return different hash code
+values.
+</para>
+</listitem>
+<listitem>
+<para>
+Returning a wide range of hash values will produce better performance when an object is used as an index for a
+MapCollection.  A return value of 4 string characters is recommended.  The characters in the hash value may be any
+characters from '00'x to 'ff'x, inclusive.
+</para>
+</listitem>
+</itemizedlist>
+is returned representing
+a hash value for Set, Bag, Table, Relation, and Directory.
+Note that different objects may generate the same hash value, therefore this
+value cannot be regarded as a "unique identifier".</para>
+<para>Returns <computeroutput>1</computeroutput> (true) if the receiver object
+has a method named <emphasis role="italic">methodname</emphasis>
+(translated to uppercase) or if the target method is a private method.
+Otherwise, it returns <computeroutput>0</computeroutput> (false). </para>
+
+<note><title>Note</title>
+<para>If you call the <emphasis role="italic">methodname</emphasis> method
+although it is private, you receive error 97
+<computeroutput>Object method not found</computeroutput> although
+<emphasis role="bold">hasMethod</emphasis>
+returns <computeroutput>1</computeroutput> (true).</para></note>
 </section>
 
 <section id="mthObjectHasMethod"><title>hasMethod</title>
