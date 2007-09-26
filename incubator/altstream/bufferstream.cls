@@ -77,7 +77,7 @@
   array = .array~new
 
 ::method lineout
-  use string arg line
+  use strict arg line
 
   self~charout(line)
   self~charout(.lineend)
@@ -88,7 +88,7 @@
   use strict arg string
 
   buffer~append(charout)
-  lineend = buffer~pos(.lineend)
+  lineend = buffer~pos(.endofline)
 
   do while lineend \= 0
       array~append(buffer~substr(1, lineend - 1))
@@ -105,10 +105,124 @@
       buffer~setBufferLength(0)
   end
 
+::method close
+  self~flush
+
 ::method getArray
   expose array
   self~flush
   return array
+
+
+::class ArrayInputStream public subclass InputStream
+::method init
+  expose source current position size
+  use strict arg array
+
+  -- convert to a non-sparse form
+  source = array~makearray
+  size = source~items    -- get metrics for determining the read positions
+  current = 1
+  position = 1
+
+::method linein
+  expose source current position size
+
+  -- explicit line?
+  if arg(1, 'e') then do
+      self~linePosition(arg(1))
+  end
+
+  -- past the end of the data?  return a null string
+  if current > size then do
+      return ""
+  end
+  -- at the beginning of a line?  we can return this directly
+  if position == 1 then do
+      line = source[current]
+      current = current + 1
+      return line
+  end
+  -- return the line residual and advance
+  line = source[current]~substr(position)
+  current = current + 1
+  position = 1
+  return line
+
+::method charin
+  expose source current position size
+
+  use strict arg start = .nil, length = 1
+
+  if \self~charPosition(start) then
+      raise notready ....  return ""
+
+  currentLine = source[current]
+
+  if (position + length - 1) < currentLine~length then do
+      result = currentLine~substr(position, length)
+      position += length
+      return result
+  end
+
+  -- need to build up a result from pieces
+  buffer = mutablebuffer~new(length)
+
+  do while length > 0
+      -- this the last line?
+      if (position + length - 1) < currentLine~length then do
+          buffer~append(currentLine~substr(position, length))
+          position += length
+          return buffer~string
+      end
+
+      buffer~append(currentLine~substr(position))
+      length -= currentLine~length - position + 1
+
+      if length <= endofline~length then do
+          buffer~append(endofline~substr(1, length))
+          position += length
+          return buffer~string
+      end
+
+      if \self~linePosition(current + 1) then do
+          raise notready .....
+      end
+
+      currentLine = source[current]
+  end
+
+  -- couldn't get everything
+  raise notready
+
+
+::method linePosition private
+  expose current position
+  use arg current
+
+  if current > size then do
+      return .false
+  end
+  -- always at the first character
+  position = 1
+  return .true
+
+::method charPosition private
+  expose source current position size endofline
+  expose target
+
+  do i = 1 to size
+      line = source[i]
+      if target <= line~length + endofline~length then do
+         current = i
+         position = target
+         return .true
+      end
+      target = target - (line~length + endofline~length)
+  end
+
+  return .false    -- out of bounds for the stream
+
 
 
 
