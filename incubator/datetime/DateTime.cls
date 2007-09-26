@@ -152,12 +152,11 @@
 
   return self~daySeconds * 1000000 + self~microseconds
 
-::METHOD "=="
-  -- if this is a hash request, forward to the superclass by default.
-  if arg() == 0 then do
-      forward class(super)
-  end
+::METHOD hashCode
+  expose timestamp
+  return timestamp~hashcode
 
+::METHOD "=="
   use strict arg other
 
   if \other~isa(self~class) then do
@@ -663,13 +662,11 @@
   expose timestamp
   return timestamp
 
+::METHOD hashCode
+  expose timestamp
+  return timestamp~hashcode
 
 ::METHOD "=="
-  -- if this is a hash request, forward to the superclass by default.
-  if arg() == 0 then do
-      forward class(super)
-  end
-
   use strict arg other
 
   if \other~isa(self~class) then do
