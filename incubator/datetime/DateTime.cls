@@ -394,7 +394,7 @@
 
   numeric digits 18
   -- return a new instance of DateTime
-  return self~class~new(timestamp + days * (24 * 3600 * 1000000))
+  return self~class~new(trunc(timestamp + days * (24 * 3600 * 1000000)))
 
 
 -- Add a number of hours to a datetime, returning a new datetime instance.
@@ -404,8 +404,10 @@
 
   numeric digits 18
 
-  -- return a new instance of DateTime
-  return self~class~new(timestamp + hours * (3600 * 1000000))
+  -- return a new instance of DateTime.
+  -- NB, we trunk the value, as it's possible to add non-whole numbers of
+  -- these units.
+  return self~class~new(trunc(timestamp + (hours * (3600 * 1000000))))
 
 
 -- Add a number of minutes to a datetime, returning a new datetime instance.
@@ -416,7 +418,9 @@
   numeric digits 18
 
   -- return a new instance of DateTime
-  return self~class~new(timestamp + minutes * (60 * 1000000))
+  -- NB, we trunk the value, as it's possible to add non-whole numbers of
+  -- these units.
+  return self~class~new(trunc(timestamp + (minutes * (60 * 1000000))))
 
 
 -- Add a number of seconds to a datetime, returning a new datetime instance.
@@ -427,7 +431,9 @@
   numeric digits 18
 
   -- return a new instance of DateTime
-  return self~class~new(timestamp + seconds * 1000000)
+  -- NB, we trunk the value, as it's possible to add non-whole numbers of
+  -- these units.
+  return self~class~new(trunc(timestamp + (seconds * 1000000)))
 
 
 -- Add a number of microseconds to a datetime, returning a new datetime instance.
@@ -438,7 +444,9 @@
   numeric digits 18
 
   -- return a new instance of DateTime
-  return self~class~new(timestamp + usecs)
+  -- NB, we trunk the value, as it's possible to add non-whole numbers of
+  -- these units.
+  return self~class~new(trunc(timestamp + usecs))
 
 
 -- Format the datetime into ISO format, yyyy-mm-ddT00:00:00.000000
@@ -968,7 +976,61 @@
   use strict arg multiplier
 
   -- do the multiply and create a new interval
-  return self~class~new(timestamp * multiplier)
+  return self~class~new(trunc(timestamp * multiplier))
+
+
+-- Add a number of days to a timespan, returning a new timespan instance.
+::METHOD addDays
+  expose timestamp
+  use strict arg days
+
+  numeric digits 18
+  -- return a new instance of TimeSpan
+  return self~class~new(trunc(timestamp + (days * (24 * 3600 * 1000000))))
+
+
+-- Add a number of hours to a timespan, returning a new timespan instance.
+::METHOD addHours
+  expose timestamp
+  use strict arg hours
+
+  numeric digits 18
+
+  -- return a new instance of TimeSpan
+  return self~class~new(trunc(timestamp + (hours * (3600 * 1000000))))
+
+
+-- Add a number of minutes to a timespan, returning a new timespan instance.
+::METHOD addMinutes
+  expose timestamp
+  use strict arg minutes
+
+  numeric digits 18
+
+  -- return a new instance of TimeSpan
+  return self~class~new(trunc(timestamp + (minutes * (60 * 1000000))))
+
+
+-- Add a number of seconds to a timespan, returning a new timespan instance.
+::METHOD addSeconds
+  expose timestamp
+  use strict arg seconds
+
+  numeric digits 18
+
+  -- return a new instance of TimeSpan
+  return self~class~new(trunc(timestamp + (seconds * 1000000)))
+
+
+-- Add a number of microseconds to a timespan, returning a new timespan instance.
+::METHOD addMicroseconds
+  expose timestamp
+  use strict arg usecs
+
+  numeric digits 18
+
+  -- return a new instance of TimeSpan
+  return self~class~new(trunc(timestamp + usecs))
 
 
 -- format the TimeSpan into string form.  The format is
