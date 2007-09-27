@@ -494,6 +494,10 @@ the methods listed in <link linkend="t000013">Table 2</link>.
 <entry><link linkend="h000068">EndAsyncExecution</link></entry>
 </row>
 <row>
+<entry>EnsureVisible</entry>
+<entry><link linkend="mthEnsureVisible">EnsureVisible</link></entry>
+</row>
+<row>
 <entry>Execute</entry>
 <entry><link linkend="h000048">Execute</link></entry>
 </row>
@@ -803,7 +807,7 @@ the methods listed in <link linkend="t000013">Table 2</link>.
 </row>
 <row>
 <entry>Minimize</entry>
-<entry><link linkend="minimize">Minimize</link></entry>
+<entry><link linkend="mthMinimize">Minimize</link></entry>
 </row>
 <row>
 <entry>Move</entry>
@@ -884,6 +888,10 @@ the methods listed in <link linkend="t000013">Table 2</link>.
 <row>
 <entry>ResizeItem</entry>
 <entry><link linkend="h001301">ResizeItem</link></entry>
+</row>
+<row>
+<entry>Restore</entry>
+<entry><link linkend="mthRestore">Restore</link></entry>
 </row>
 <row>
 <entry>RestoreCursorShape</entry>
@@ -1701,106 +1709,6 @@ the user terminates the dialog. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
 <listitem><para>This method is protected and for internal use only.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="show"><title>Show</title>
-<indexterm><primary>Show</primary>
-<secondary>BaseDialog class</secondary></indexterm>
-<programlisting>
-<![CDATA[
-                         +-DEFAULT--+
->>-aBaseDialog~Show(--"--+----------+--"--)--------------------><
-                         +-NORMAL---+
-                         +-SHOWTOP--+
-                         +-HIDE-----+
-                         +-MIN------+
-                         +-MAX------+
-                         +-INACTIVE-+
-
-
-]]>
-</programlisting>
-
-<para>The Show method shows the dialog; it is usually
-called by <link linkend="h000048">Execute</link> or <link linkend="h000057">ExecuteAsync</link>. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Argument:</emphasis></term>
-<listitem><para>The argument must be one of the following:
-<variablelist>
-<varlistentry><term>DEFAULT</term>
-<listitem><para>Makes the dialog visible with the default window size.
-This is the default.
-</para></listitem></varlistentry>
-<varlistentry><term>NORMAL</term>
-<listitem><para>Same as default.
-</para></listitem></varlistentry>
-<varlistentry><term>SHOWTOP</term>
-<listitem><para>Makes the dialog the topmost dialog.
-</para></listitem></varlistentry>
-<varlistentry><term>HIDE</term>
-<listitem><para>Makes the dialog invisible.
-</para></listitem></varlistentry>
-<varlistentry><term>MIN</term>
-<listitem><para>Minimizes the dialog.
-</para></listitem></varlistentry>
-<varlistentry><term>MAX</term>
-<listitem><para>Maximizes the dialog.
-</para></listitem></varlistentry>
-<varlistentry><term>INACTIVE</term>
-<listitem><para>Deactivates the dialog.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following statement hides the dialog:
-
-<programlisting>
-<![CDATA[
-MyDialog~Show("HIDE")
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="h000109"><title>ToTheTop</title>
-<indexterm><primary>ToTheTop</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~ToTheTop----------------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The ToTheTop method makes the dialog the topmost
-dialog. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example uses the ToTheTop method to make the user aware
-of an alarm event:
-
-<programlisting>
-aDialog = .MyDialog~new
-msg = .Message~new(aDialog, "Remind")
-a = .Alarm~new("17:30:00", msg)
-
-::class MyDialog subclass UserDialog
-      .
-      .
-      .
-::method Remind
-  self~SetStaticText(102, "Don&apos;t forget to go home!")
-  self~ToTheTop
-</programlisting>
-
-<note><title>Note</title><para>
-The Message and Alarm classes
-are built-in classes of Object Rexx.
-See the <citetitle>Open Object Rexx: Reference</citetitle> for further information.
-</para></note>
 </para></listitem></varlistentry>
 </variablelist>
 </section>
@@ -5426,8 +5334,9 @@ to retrieve the window handle.
 </section>
 </section>
 
-<section id="man0027"><title>Appearance and Behavior Modification Methods</title>
-<indexterm><primary>appearance modification methods</primary></indexterm>
+<section id="man0027"><title>Appearance and Behavior Methods</title>
+<indexterm><primary>appearance methods</primary>
+<secondary>BaseDialog class</secondary></indexterm>
 <indexterm><primary>enable methods</primary>
 <secondary>BaseDialog class</secondary></indexterm>
 <indexterm><primary>disable methods</primary>
@@ -5436,14 +5345,15 @@ to retrieve the window handle.
 <secondary>BaseDialog class</secondary></indexterm>
 <indexterm><primary>show methods</primary>
 <secondary>BaseDialog class</secondary></indexterm>
-<para>The methods listed below are to change the appearance or the behavior of
-the dialog itself or one of its items. The list contains methods to change the
-size, position, visibility, and title (header).
+<para>The methods listed in this section are releated to the appearance or the
+behavior of the dialog or its controls. The section contains methods related to
+size, position, visibility, and title.
 </para>
-<para>Some of the methods come in two flavors, normal (for example, ShowWindow) and fast (for example, ShowWindowFast). The fast extension indicates that the method
-does not redraw the item or window immediately. After modifying several items,
-invoke the Update method (see page <link linkend="update">Update</link>)
-to redraw the dialog.</para>
+<para>Some of the methods come in two flavors, normal (for example, ShowWindow
+and fast (for example, ShowWindowFast). The fast extension indicates that the
+method does not redraw the control or window immediately. After modifying
+several items, invoke the Update method (see page <link
+linkend="update">Update</link>) to redraw the dialog.</para>
 
 <section id="background"><title>BackgroundColor</title>
 <indexterm><primary>BackgroundColor</primary></indexterm>
@@ -5473,6 +5383,309 @@ on the color numbers, refer to <link linkend="termdef">Definition of Terms</link
 </variablelist>
 </section>
 
+<section id="show"><title>Show</title>
+<indexterm><primary>Show</primary>
+<secondary>BaseDialog class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+                         +-NORMAL---+
+>>-aBaseDialog~Show(--"--+----------+--"--)--------------------><
+                         +-DEFAULT--+
+                         +-SHOWTOP--+
+                         +-HIDE-----+
+                         +-MIN------+
+                         +-MAX------+
+                         +-INACTIVE-+
+
+
+]]>
+</programlisting>
+
+<para>The Show method shows the dialog. It is called by <link
+linkend="h000048">Execute</link> or <link linkend="h000057">ExecuteAsync</link>
+methods to initially display the dialog.  Once the dialog has been initially
+shown, the programmer can use the <computeroutput>Show</computeroutput> to
+change the appearance of the dialog.  For instance the dialog can be hidden,
+maximized, minimized, etc..
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Argument:</emphasis></term>
+<listitem><para>The argument can be one of the following keywords, case is not
+significant:
+<variablelist>
+<varlistentry><term>NORMAL</term>
+<listitem><para>Makes the dialog visible with its default window size. This is
+the default keyword if the argument is omitted.
+</para></listitem></varlistentry>
+<varlistentry><term>DEFAULT</term>
+<listitem><para><computeroutput>DEFAULT</computeroutput> is an alias for
+<computeroutput>NORMAL</computeroutput>. The two keywords are functionally
+identical.
+</para></listitem></varlistentry>
+<varlistentry><term>SHOWTOP</term>
+<listitem><para>Shows and makes the dialog the topmost dialog.
+</para></listitem></varlistentry>
+<varlistentry><term>HIDE</term>
+<listitem><para>Makes the dialog invisible.
+</para></listitem></varlistentry>
+<varlistentry><term>MIN</term>
+<listitem><para>Minimizes the dialog.
+</para></listitem></varlistentry>
+<varlistentry><term>MAX</term>
+<listitem><para>Maximizes the dialog.
+</para></listitem></varlistentry>
+<varlistentry><term>INACTIVE</term>
+<listitem><para>Shows the dialog without changing the active window.  When the
+<computeroutput>Normal</computeroutput> keyword is used, the dialog is shown and
+becomes the active window.  Using the <computeroutput>INACTIVE</computeroutput>
+keyword allows the dialog to be shown and let another window remain active.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following statement hides the dialog:
+
+<programlisting>
+<![CDATA[
+MyDialog~Show("HIDE")
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="h000109"><title>ToTheTop</title>
+<indexterm><primary>ToTheTop</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aBaseDialog~ToTheTop----------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The ToTheTop method makes the dialog the topmost
+dialog. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example uses the ToTheTop method to make the user aware
+of an alarm event:
+
+<programlisting>
+aDialog = .MyDialog~new
+msg = .Message~new(aDialog, "Remind")
+a = .Alarm~new("17:30:00", msg)
+
+::class MyDialog subclass UserDialog
+      .
+      .
+      .
+::method Remind
+  self~SetStaticText(102, "Don&apos;t forget to go home!")
+  self~ToTheTop
+</programlisting>
+
+<note><title>Note</title><para>
+The Message and Alarm classes
+are built-in classes of Object Rexx.
+See the <citetitle>Open Object Rexx: Reference</citetitle> for further information.
+</para></note>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthEnsureVisible"><title>EnsureVisible</title>
+<indexterm><primary>EnsureVisible</primary>
+<secondary>BaseDialog class</secondary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-aBaseDialog~EnsureVisible-----------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The <computeroutput>EnsureVisible</computeroutput> method causes the
+dialog to reposition itself so that the entire dialog is on the visible screen.
+If the entire dialog is already on the visible screen then no action is taken.
+<para>This is useful in a number of situations.  It allows the programmer to
+move or resize the dialog and not have to worry that the dialog is off the
+screen.  After the move or resizing, she can invoke the EnsureVisible method and
+know that the dialog is entirely on the screen.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The method takes no arguments.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>This method always returns 0.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example reads in the previous size and position of
+the dialog and then opens the dialog in the position that the user had closed
+it.  If the INI file is corrupted, or had been accidently edited, or a number of
+other things, it is possible that sizing and positioning the dialog using the
+values from the INI file will place the dialog of the screen.  Invoking
+<computeroutput>EnsureVisible</computeroutput> will cause the dialog to
+reposition itself so that it is completely on the screen, but only if needed.
+If the dialog is already completely on the screen, then no action is taken.
+
+<programlisting>
+<![CDATA[
+
+  if \.useDefault then
+      do
+          -- Read oorexxtry.ini position & size the dialog based on its values
+          handle = self~get()
+          k1 = SysIni('oorexxtry.ini','oorexxtry','k1')
+          k2 = SysIni('oorexxtry.ini','oorexxtry','k2')
+          k3 = SysIni('oorexxtry.ini','oorexxtry','k3')
+          k4 = SysIni('oorexxtry.ini','oorexxtry','k4')
+          if k1 = 'ERROR:' | k2 = 'ERROR:' | k3 = 'ERROR:' | k4 = 'ERROR:' then
+              nop -- First exection will not find the ini file
+          else
+              do
+                  self~setWindowRect(handle,k1,k2,k3-k1,k4-k2)
+                  self~ensureVisible
+              end
+      end
+
+]]>
+</programlisting>
+
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthMinimize"><title>Minimize</title>
+<indexterm><primary>Minimize</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aBaseDialog~Minimize----------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The <computeroutput>Minimize</computeroutput> method minimizes the dialog
+to the taskbar.  This is the identical to the user clicking the minimize button
+on the dialog window.  This method will minimize the dialog even if it does not
+have the <computeroutput>MINIMIZEBOX</computeroutput> style when it is created.
+</para>
+<para>This is a convenience method.  It is functionally equivalent to using the
+<link linkend="show">Show</link> method with the <computeroutput>MIN
+</computeroutput>keyword.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The method takes no arguments.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Minimizing was successful.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>Minimizing failed.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example
+
+<programlisting>
+<![CDATA[
+]]>
+</programlisting>
+
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="maximize"><title>Maximize</title>
+<indexterm><primary>Maximize</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aBaseDialog~Maximize----------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The <computeroutput>Maximize</computeroutput> method maximizes the dialog
+on the screen.  This is the identical to the user clicking the maximize button
+on the dialog window.  This method will maximize the dialog even if it does not
+have the <computeroutput>MAXIMIZEBOX</computeroutput> style when it is created.
+</para>
+<para>This is a convenience method.  It is functionally equivalent to using the
+<link linkend="show">Show</link> method with the <computeroutput>MAX
+</computeroutput>keyword.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The method takes no arguments.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Maximizing was successful.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>Maximizing failed.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthRestore"><title>Restore</title>
+<indexterm><primary>Restore</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aBaseDialog~Restore-----------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The <computeroutput>Restore</computeroutput> method restores a minimized
+or maximized dialog to its original position.  This is the identical to the user
+taking action to restore the dialog window.  The programmer can use this method
+to restore a dialog window that he previously minimized or maximized.
+</para>
+<para>This is a convenience method.  It is functionally equivalent to using the
+<link linkend="show">Show</link> method with the <computeroutput>RESTORE
+</computeroutput>keyword.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The method takes no arguments.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Minimizing was successful.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>Minimizing failed.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example
+
+<programlisting>
+<![CDATA[
+]]>
+</programlisting>
+
+</para></listitem></varlistentry>
+</variablelist>
+</section>
 <section id="focusitem"><title>FocusItem</title>
 <indexterm><primary>FocusItem</primary></indexterm>
 <programlisting>

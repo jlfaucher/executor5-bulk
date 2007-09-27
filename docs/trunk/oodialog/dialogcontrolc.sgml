@@ -325,14 +325,6 @@ listed in the following DialogControl Instance Methods table.
 <entry><link linkend="logrect2absrect">LogRect2AbsRect</link></entry>
 </row>
 <row>
-<entry>Maximize</entry>
-<entry><link linkend="maximize">Maximize</link></entry>
-</row>
-<row>
-<entry>Minimize</entry>
-<entry><link linkend="minimize">Minimize</link></entry>
-</row>
-<row>
 <entry>Move</entry>
 <entry><link linkend="move">Move</link></entry>
 </row>
@@ -497,70 +489,19 @@ listed in the following DialogControl Instance Methods table.
 </para></listitem></varlistentry>
 </variablelist>
 
-<section id="prepdialogcontrol"><title>Preparing and Running the Dialog Control</title>
-<indexterm><primary>preparing and running dialogs</primary></indexterm>
-<para>The following methods are used to prepare (initialize) a dialog control,
-show it, run it, and stop it.</para>
-
-<section id="processmessage"><title>ProcessMessage</title>
-<indexterm><primary>ProcessMessage</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aDialogControl~ProcessMessage(--message--,--firstParam--,--secondParam--)-><
-
-
-]]>
-</programlisting>
-
-<para>The ProcessMessage method sends a Windows message
-to a dialog control.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>message</term>
-<listitem><para>The number of the message to be sent to the dialog control.
-</para></listitem></varlistentry>
-<varlistentry><term>firstParam,secondParam</term>
-<listitem><para>Additional arguments specific to the message.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The return values are message-specific.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example erases the background of the NAME edit control:
-<programlisting>
-<![CDATA[
-dlgc = MyDialog~GetEditControl("NAME")
-WM_ERASEBACKGROUND = "14"~x2d
-hdc = dlgc~GetDc
-dlgc~ProcessMessage(WM_ERASEBACKGROUND, hdc, 0)
-dlgc~FreeDC(hdc)
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-
-<note><title>Note</title><para>
-The Window message numbers are not documented.
-</para></note>
-</section>
-
-<section id="assignfocus"><title>AssignFocus</title>
-<indexterm><primary>AssignFocus</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aDialogControl~AssignFocus----------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The AssignFocus method sets the input focus to
-the associated dialog control.</para>
-</section>
+<section id="appmodmeth"><title>Appearance and Behavior Methods</title>
+<indexterm><primary>enable methods</primary>
+<secondary>DialogControl class</secondary></indexterm>
+<indexterm><primary>disable methods</primary>
+<secondary>DialogControl class</secondary></indexterm>
+<indexterm><primary>hide methods</primary>
+<secondary>DialogControl class</secondary></indexterm>
+<indexterm><primary>show methods</primary>
+<secondary>DialogControl class</secondary></indexterm>
+<para>The following methods deal with the appearance or the behavior of the
+dialog control. The list contains methods to get or change the size, position,
+visibility, behavior, etc., of dialog controls.
+</para>
 
 <section id="showdc"><title>Show</title>
 <indexterm><primary>Show</primary>
@@ -588,455 +529,157 @@ MyDialog~GetEditControl("NAME")~Show
 </variablelist>
 </section>
 
-<section id="value"><title>Value</title>
-<indexterm><primary>Value</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aDialogControl~Value----------------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The Value method retrieves the current value of
-a dialog control.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The current value set in the dialog control.
-</para></listitem></varlistentry>
-</variablelist>
-
-<note><title>Note</title><para>
-See <link linkend="h000514">GetValue</link> for more information.
-</para></note>
-</section>
-
-<section id="valuenew"><title>Value=</title>
-<indexterm><primary>Value=</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aDialogControl~Value=--new_value----------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The Value= method sets a value for a dialog control.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>new_value</term>
-<listitem><para>The value assigned to the dialog control.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example selects check box RESTART and deselects check
-box VERIFY:</para>
-<programlisting>
-<![CDATA[
-MyDialog~GetCheckControl("RESTART")~Value=1
-MyDialog~GetCheckControl("VERIFY")~Value=0
-]]>
-</programlisting>
-</listitem></varlistentry>
-</variablelist>
-
-<note><title>Note</title><para>
-See <link linkend="h000584">SetValue</link> for more information.
-</para></note>
-</section>
-</section>
-
-<section id="connmeth"><title>Connect Method</title>
-<indexterm><primary>connect methods</primary>
+<section id="hide"><title>Hide</title>
+<indexterm><primary>Hide</primary>
 <secondary>DialogControl class</secondary></indexterm>
-<para>The following method creates a connection between a dialog or dialog control
-and an object of another class.</para>
-
-<section id="assignwindow"><title>AssignWindow</title>
-<indexterm><primary>AssignWindow</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aDialogControl~AssignWindow(--hwnd--)-----------------------><
+>>-aDialogControl~Hide-----------------------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The AssignWindow method connects a dialog or dialog
-control with an existing object of the PlainBaseDialog or DialogControl class.
-Note that the connected dialog or dialog control might not support all methods
-provided by the DialogControl class.</para>
+<para>The Hide method makes a dialog or dialog control
+invisible and activates another dialog or dialog control.</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>hwnd</term>
-<listitem><para>The handle to the dialog or dialog control that you want to assign to
-the DialogControl object.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The handle to the dialog or dialog control that has been assigned, or
-0 if the connection failed.
-</para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example searches the desktop for a dialog with the title &quot;Monitoring
-Applications&quot;, connects it to the object <computeroutput>dlgc</computeroutput> of the DialogControl
-class, and then minimizes the dialog:
+<listitem><para>
+
 <programlisting>
 <![CDATA[
-dlgc = .DialogControl~new
+MyDialog~GetEditControl("NAME")~Hide
+
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="hidefast"><title>HideFast</title>
+<indexterm><primary>HideFast</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~HideFast-------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The HideFast method marks a dialog or dialog control
+as invisible but does not redraw it. Send the Update method (see page <link linkend="update">Update</link>) to the dialog or dialog control to force
+a redraw.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>
+<programlisting>
+<![CDATA[
+MyDialog~GetEditControl("NAME")~HideFast
 ...
-whnd = FindWindow("Monitoring Application")
-if whnd \= 0 then do
-   dlgc~AssignWindow(whnd)
-   dlgc~Display("MIN")
-end
+MyDialog~Update
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
 </section>
-</section>
 
-<section id="gsmeth"><title>Get and Set Methods</title>
-<indexterm><primary>get and set methods</primary>
-<secondary>DialogControl class</secondary></indexterm>
-<para>Get methods are used to retrieve the data from all or individual controls
-of a dialog. Set methods are used to set the values of all or individual controls,
-without changing the associated Object Rexx attributes.</para>
-
-<section id="getid"><title>GetID</title>
-<indexterm><primary>GetID</primary></indexterm>
+<section id="showfast"><title>ShowFast</title>
+<indexterm><primary>ShowFast</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aDialogControl~GetID----------------------------------------><
+>>-aDialogControl~ShowFast-------------------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The GetID method retrieves the identification number
-of the associated dialog or dialog control.</para>
+<para>The ShowFast method marks a dialog or dialog control
+as visible but does not redraw it.  Send the Update method (see page <link linkend="update">Update</link>) to the dialog or dialog control to force
+a redraw.</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The numeric ID.
-</para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example displays 1 in most cases:
-<programlisting>
-<![CDATA[
-say MyDialog~GetButtonControl("IDOK")~GetID
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="getrect"><title>GetRect</title>
-<indexterm><primary>GetRect</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aDialogControl~GetRect--------------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>Retrieves the dimensions of the rectangle surrounding the associated
-dialog or dialog control. The coordinates are relative to the upper left corner
-of the screen and are specified in screen pixels. The order is: left, top,
-right, bottom; where &apos;left&apos; and &apos;top&apos; are the x and y coordinates of the upper
-left-hand corner of the rectangle, and &apos;right&apos; and &apos;bottom&apos; are the coordinates
-of the bottom right-hand corner.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The coordinates of the dialog or dialog control, separated by blanks.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example calculates the width and height of an entry line:
-<programlisting>
-<![CDATA[
-parse value MyDialog~GetEditControl("Name")~GetRect with left top,
-right bottom
-width = right - left
-height = bottom - top
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="setrect"><title>SetRect</title>
-<indexterm><primary>SetRect</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aDialogControl~SetRect(--x--,--y--,--width--,--height-->
-
->--+-----------------------------+--)--------------------><
-   |       +----------------+    |
-   |       V                |    |
-   +-,--"----+-NOMOVE-----+-+--"-+
-             +-NOSIZE-----+
-             +-HIDEWINDOW-+
-             +-SHOWWINDOW-+
-             +-NOREDRAW---+
-
-]]>
-</programlisting>
-
-<para>The SetRect method sets new coordinates for the
-associated dialog or dialog control.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>x,y</term>
-<listitem><para>The new position of the upper left corner, in screen pixels.
-</para></listitem></varlistentry>
-<varlistentry><term>width</term>
-<listitem><para>The new width of the dialog or dialog control, in screen pixels.
-</para></listitem></varlistentry>
-<varlistentry><term>height</term>
-<listitem><para>The new height of the dialog or dialog control, in screen pixels.
-</para></listitem></varlistentry>
-<varlistentry><term>showOptions</term>
-<listitem><para>One or more of the following keywords, separated by blanks:
-<variablelist>
-<varlistentry><term>NOMOVE</term>
-<listitem><para>The upper left position of the dialog or dialog control is not changed.
-</para></listitem></varlistentry>
-<varlistentry><term>NOSIZE</term>
-<listitem><para>The size of the dialog or dialog control is not changed.
-</para></listitem></varlistentry>
-<varlistentry><term>HIDEWINDOW</term>
-<listitem><para>The dialog or dialog control is to be made invisible.
-</para></listitem></varlistentry>
-<varlistentry><term>SHOWWINDOW</term>
-<listitem><para>The dialog or dialog control is to be made visible.
-</para></listitem></varlistentry>
-<varlistentry><term>NOREDRAW</term>
-<listitem><para>The dialog or dialog control is to be repositioned without redrawing
-it.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
 <listitem><para>
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>Repositioning was successful.
-</para></listitem></varlistentry>
-<varlistentry><term>1</term>
-<listitem><para>Repositioning failed.
-</para></listitem></varlistentry>
-</variablelist>
+<programlisting>
+<![CDATA[
+MyDialog~GetEditControl("NAME")~ShowFast
+...
+MyDialog~Update
+]]>
+</programlisting>
 </para></listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="getclientrect"><title>GetClientRect</title>
-<indexterm><primary>GetClientRect</primary></indexterm>
+<section id="display"><title>Display</title>
+<indexterm><primary>Display</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aDialogControl~GetClientRect(--+------+--)------------------><
-                                  +-hwnd-+
+
+                               +-NORMAL---+------+--+
+                               |          +-FAST-+  |
+>>-aDialogControl~Display(--"--+-DEFAULT--+------+--+--"--)----><
+                               |          +-FAST-+  |
+                               +-HIDE-----+------+--+
+                               |          +-FAST-+  |
+                               +-INACTIVE-----------+
 
 
 ]]>
 </programlisting>
 
-<para>The GetClientRect method returns the client rectangle
-of a dialog or dialog control in screen pixels. The client coordinates specify
-the upper left and lower right corners of the client area. Because the client
-coordinates are relative to the upper left corner of the client area of a
-dialog or dialog control, the coordinates of the upper left corner are (0,0).</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>hwnd</term>
-<listitem><para>The handle to a dialog or dialog control. If this argument is omitted,
-the dimensions of the associated dialog or dialog control are returned.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The client rectangle in the format &quot;<emphasis role="italic">left top right bottom</emphasis>&quot;,
-separated by blanks.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="getpos"><title>GetPos</title>
-<indexterm><primary>GetPos</primary>
-<secondary>DialogControl class</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-aDialogControl~GetPos---------------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The GetPos method returns the coordinates of the
-upper left corner of the dialog or dialog control, in dialog units.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The horizontal and vertical position, separated by a blank.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>For an example, see <link linkend="move">Move</link>.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="getsize"><title>GetSize</title>
-<indexterm><primary>GetSize</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aDialogControl~GetSize--------------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The GetSize method returns the width and height
-of the dialog or dialog control, in dialog units.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The width and height, separated by a blank.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>For an example, see <link linkend="resize">Resize</link>.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="getfocus"><title>GetFocus</title>
-<indexterm><primary>GetFocus</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aDialogControl~GetFocus-------------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The GetFocus method returns the handle to the dialog control that currently
-has the input focus.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The handle to the dialog control that has the input focus, or 0
-if this method failed.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="setfocus"><title>SetFocus</title>
-<indexterm><primary>SetFocus</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aDialogControl~SetFocus(--hwnd--)---------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The SetFocus method sets the input focus to a dialog control and returns
-the handle of the control that previously had the focus.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>hwnd</term>
-<listitem><para>The handle to the dialog control that is to receive the input
-focus.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>-1</term>
-<listitem><para>The method failed.
-</para></listitem></varlistentry>
-<varlistentry><term>0</term>
-<listitem><para>The focus was changed, but the control with the previous focus
-could not be determined.
-</para></listitem></varlistentry>
-<varlistentry><term>Other</term>
-<listitem><para>The handle to the control with the previous focus.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="setfocustowindow"><title>SetFocusToWindow</title>
-<indexterm><primary>SetFocusToWindow</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aDialogControl~SetFocusToWindow(--hwnd--)-------------------><
-
-
-]]>
-</programlisting>
-
-<para>The SetFocusToWindow method moves the input focus to another top-level
-window or dialog.  This has the effect of bringing that window to the
-foreground.  This method returns a handle to the dialog
-<emphasis role="italic">control</emphasis> that previously had the
-input focus.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>hwnd</term>
-<listitem><para>The handle to the top-level window or dialog that is to
-receive the input focus.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>-1</term>
-<listitem><para>The method failed.
-</para></listitem></varlistentry>
-<varlistentry><term>0</term>
-<listitem><para>The focus was changed, but the control with the previous focus
-could not be determined.
-</para></listitem></varlistentry>
-<varlistentry><term>Other</term>
-<listitem><para>The handle to the control with the previous focus.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-</section>
-
-<section id="appmodmeth"><title>Appearance and Behavior Modification
-Methods</title>
-<indexterm><primary>enable methods</primary>
-<secondary>DialogControl class</secondary></indexterm>
-<indexterm><primary>disable methods</primary>
-<secondary>DialogControl class</secondary></indexterm>
-<indexterm><primary>hide methods</primary>
-<secondary>DialogControl class</secondary></indexterm>
-<indexterm><primary>show methods</primary>
-<secondary>DialogControl class</secondary></indexterm>
-<para>The following methods are to change the appearance or the behavior of the
-dialog itself or one of its controls. The list contains methods to change the
-size, position, visibility, and title (header).
+<para>The Display method displays (shows, makes visible, or invisible) a dialog
+control as specified.
 </para>
+<variablelist>
+<varlistentry><term>Argument:</term>
+<listitem><para>This argument can be one of the following keywords (case is not
+significant.)  If no argument is given, the default keyword is <computeroutput>
+NORMAL</computeroutput>:
+</para>
+<variablelist>
+<varlistentry><term>NORMAL</term>
+<listitem><para>Shows (makes visible) the dialog control. Same as calling the
+Show method (see page <link linkend="showdc">Show</link>).
+</para></listitem></varlistentry>
+<varlistentry><term>DEFAULT</term>
+<listitem><para>Default is an alias for <computeroutput>NORMAL</computeroutput>.
+The behavior is exactly the same for the two keywords.
+</para></listitem></varlistentry>
+<varlistentry><term>HIDE</term>
+<listitem><para>Hides (makes invisible) the dialog control.  Same as calling the
+Hide method (see page <link linkend="hide">Hide</link>).
+</para></listitem></varlistentry>
+<varlistentry><term>INACTIVE</term>
+<listitem><para>Displays (shows, makes visible,) the dialog control in its
+current state. The active dialog remains active.  When this method is invoked
+with the <computeroutput>NORMAL</computeroutput> keyword the dialog the control
+belongs to will be made the active window.  If instead the <computeroutput>
+INACTIVE</computeroutput> keyword is used, the active window will not be
+changed. (Obviously, if the dialog that the control belongs to is already the
+active window, the <computeroutput>INACTIVE</computeroutput> keyword behaves
+exactly the same as the <computeroutput>NORMAL</computeroutput> keyword.
+</para></listitem></varlistentry>
+</variablelist>
+<para>To each keyword, except the <computeroutput>INACTIVE</computeroutput>
+keyword, you can add <computeroutput>FAST</computeroutput>, separated by a
+blank, to suppress the redrawing of the dialog control.
+</para>
+</listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following statement makes a tree control in the dialog
+visible without redrawing it.
+<programlisting>
+<![CDATA[
+MyDialog~GetTreeControl(IDC_TREECONTROL_FILES)~Display("NORMAL FAST")
+]]>
+</programlisting>
+
+This is usually done when there are a number of controls to make visible at one
+time.  The programmer would make them all visible without redrawing. Then use
+the <link linkend="update">Update</link> method to repaint everything at once.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
 
 <section id="enable"><title>Enable</title>
 <indexterm><primary>Enable</primary></indexterm>
@@ -1198,206 +841,6 @@ control.
 <varlistentry><term>0 or greater</term>
 <listitem><para>The window style of the dialog control prior to adding or
 removing the tabstop style.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="hide"><title>Hide</title>
-<indexterm><primary>Hide</primary>
-<secondary>DialogControl class</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-aDialogControl~Hide-----------------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The Hide method makes a dialog or dialog control
-invisible and activates another dialog or dialog control.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>
-
-<programlisting>
-<![CDATA[
-MyDialog~GetEditControl("NAME")~Hide
-
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="hidefast"><title>HideFast</title>
-<indexterm><primary>HideFast</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aDialogControl~HideFast-------------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The HideFast method marks a dialog or dialog control
-as invisible but does not redraw it. Send the Update method (see page <link linkend="update">Update</link>) to the dialog or dialog control to force
-a redraw.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>
-<programlisting>
-<![CDATA[
-MyDialog~GetEditControl("NAME")~HideFast
-...
-MyDialog~Update
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="showfast"><title>ShowFast</title>
-<indexterm><primary>ShowFast</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aDialogControl~ShowFast-------------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The ShowFast method marks a dialog or dialog control
-as visible but does not redraw it.  Send the Update method (see page <link linkend="update">Update</link>) to the dialog or dialog control to force
-a redraw.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>
-<programlisting>
-<![CDATA[
-MyDialog~GetEditControl("NAME")~ShowFast
-...
-MyDialog~Update
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="display"><title>Display</title>
-<indexterm><primary>Display</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aDialogControl~Display(--"--+-DEFAULT--+------+--+--"--)----><
-                               |          +-FAST-+  |
-                               +-NORMAL--+------+---+
-                               |         +-FAST-+   |
-                               +-HIDE--+------+-----+
-                               |       +-FAST-+     |
-                               +-MIN--+------+------+
-                               |      +-FAST-+      |
-                               +-MAX--+------+------+
-                               |      +-FAST-+      |
-                               +-RESTORE--+------+--+
-                               |          +-FAST-+  |
-                               +-INACTIVE--+------+-+
-                                           +-FAST-+
-
-
-]]>
-</programlisting>
-
-<para>The Display method displays a dialog or dialog
-control as specified.</para>
-<variablelist>
-<varlistentry><term>Argument:</term>
-<listitem><para>This argument must be one of the following keywords:</para>
-<variablelist>
-<varlistentry><term>DEFAULT</term>
-<listitem><para>Displays the dialog or dialog control in its default state.
-</para></listitem></varlistentry>
-<varlistentry><term>NORMAL</term>
-<listitem><para>Same as calling the Show method (see page <link linkend="show">Show</link>).
-</para></listitem></varlistentry>
-<varlistentry><term>HIDE</term>
-<listitem><para>Same as calling the Hide method (see page <link linkend="hide">Hide</link>).
-</para></listitem></varlistentry>
-<varlistentry><term>MIN</term>
-<listitem><para>Minimizes the dialog.
-</para></listitem></varlistentry>
-<varlistentry><term>MAX</term>
-<listitem><para>Maximizes the dialog.
-</para></listitem></varlistentry>
-<varlistentry><term>RESTORE</term>
-<listitem><para>Activates and displays the dialog. If the dialog is minimized or maximized,
-it is restored to its original size and position.
-</para></listitem></varlistentry>
-<varlistentry><term>INACTIVE</term>
-<listitem><para>Displays the dialog or dialog control in its current state. The active
-dialog or dialog control remains active.
-</para></listitem></varlistentry>
-</variablelist>
-<para>To each keyword you can add FAST, separated
-by a blank, to suppress the redrawing of the dialog or dialog control.</para>
-</listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following statement minimizes the dialog without redrawing it.
-<programlisting>
-<![CDATA[
-MyDialog~GetTreeControl("FILES")~Display("MIN FAST")
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="minimize"><title>Minimize</title>
-<indexterm><primary>Minimize</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aDialogControl~Minimize-------------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The Minimize method minimizes the dialog.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>Minimizing was successful.
-</para></listitem></varlistentry>
-<varlistentry><term>1</term>
-<listitem><para>Minimizing failed.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="maximize"><title>Maximize</title>
-<indexterm><primary>Maximize</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aDialogControl~Maximize-------------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The Maximize method maximizes the dialog.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>Maximizing was successful.
-</para></listitem></varlistentry>
-<varlistentry><term>1</term>
-<listitem><para>Maximizing failed.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -1610,6 +1053,332 @@ to the current foreground window.</para>
 </variablelist>
 </section>
 
+<section id="getid"><title>GetID</title>
+<indexterm><primary>GetID</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~GetID----------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The GetID method retrieves the identification number
+of the associated dialog or dialog control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The numeric ID.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example displays 1 in most cases:
+<programlisting>
+<![CDATA[
+say MyDialog~GetButtonControl("IDOK")~GetID
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="getrect"><title>GetRect</title>
+<indexterm><primary>GetRect</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~GetRect--------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>Retrieves the dimensions of the rectangle surrounding the associated
+dialog or dialog control. The coordinates are relative to the upper left corner
+of the screen and are specified in screen pixels. The order is: left, top,
+right, bottom; where &apos;left&apos; and &apos;top&apos; are the x and y coordinates of the upper
+left-hand corner of the rectangle, and &apos;right&apos; and &apos;bottom&apos; are the coordinates
+of the bottom right-hand corner.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The coordinates of the dialog or dialog control, separated by blanks.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example calculates the width and height of an entry line:
+<programlisting>
+<![CDATA[
+parse value MyDialog~GetEditControl("Name")~GetRect with left top,
+right bottom
+width = right - left
+height = bottom - top
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="setrect"><title>SetRect</title>
+<indexterm><primary>SetRect</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~SetRect(--x--,--y--,--width--,--height-->
+
+>--+-----------------------------+--)--------------------><
+   |       +----------------+    |
+   |       V                |    |
+   +-,--"----+-NOMOVE-----+-+--"-+
+             +-NOSIZE-----+
+             +-HIDEWINDOW-+
+             +-SHOWWINDOW-+
+             +-NOREDRAW---+
+
+]]>
+</programlisting>
+
+<para>The SetRect method sets new coordinates for the
+associated dialog or dialog control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>x,y</term>
+<listitem><para>The new position of the upper left corner, in screen pixels.
+</para></listitem></varlistentry>
+<varlistentry><term>width</term>
+<listitem><para>The new width of the dialog or dialog control, in screen pixels.
+</para></listitem></varlistentry>
+<varlistentry><term>height</term>
+<listitem><para>The new height of the dialog or dialog control, in screen pixels.
+</para></listitem></varlistentry>
+<varlistentry><term>showOptions</term>
+<listitem><para>One or more of the following keywords, separated by blanks:
+<variablelist>
+<varlistentry><term>NOMOVE</term>
+<listitem><para>The upper left position of the dialog or dialog control is not changed.
+</para></listitem></varlistentry>
+<varlistentry><term>NOSIZE</term>
+<listitem><para>The size of the dialog or dialog control is not changed.
+</para></listitem></varlistentry>
+<varlistentry><term>HIDEWINDOW</term>
+<listitem><para>The dialog or dialog control is to be made invisible.
+</para></listitem></varlistentry>
+<varlistentry><term>SHOWWINDOW</term>
+<listitem><para>The dialog or dialog control is to be made visible.
+</para></listitem></varlistentry>
+<varlistentry><term>NOREDRAW</term>
+<listitem><para>The dialog or dialog control is to be repositioned without redrawing
+it.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Repositioning was successful.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>Repositioning failed.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="getclientrect"><title>GetClientRect</title>
+<indexterm><primary>GetClientRect</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~GetClientRect(--+------+--)------------------><
+                                  +-hwnd-+
+
+
+]]>
+</programlisting>
+
+<para>The GetClientRect method returns the client rectangle
+of a dialog or dialog control in screen pixels. The client coordinates specify
+the upper left and lower right corners of the client area. Because the client
+coordinates are relative to the upper left corner of the client area of a
+dialog or dialog control, the coordinates of the upper left corner are (0,0).</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>hwnd</term>
+<listitem><para>The handle to a dialog or dialog control. If this argument is omitted,
+the dimensions of the associated dialog or dialog control are returned.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The client rectangle in the format &quot;<emphasis role="italic">left top right bottom</emphasis>&quot;,
+separated by blanks.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="getpos"><title>GetPos</title>
+<indexterm><primary>GetPos</primary>
+<secondary>DialogControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~GetPos---------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The GetPos method returns the coordinates of the
+upper left corner of the dialog or dialog control, in dialog units.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The horizontal and vertical position, separated by a blank.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>For an example, see <link linkend="move">Move</link>.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="getsize"><title>GetSize</title>
+<indexterm><primary>GetSize</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~GetSize--------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The GetSize method returns the width and height
+of the dialog or dialog control, in dialog units.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The width and height, separated by a blank.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>For an example, see <link linkend="resize">Resize</link>.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="assignfocus"><title>AssignFocus</title>
+<indexterm><primary>AssignFocus</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~AssignFocus----------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The AssignFocus method sets the input focus to
+the associated dialog control.</para>
+</section>
+
+<section id="getfocus"><title>GetFocus</title>
+<indexterm><primary>GetFocus</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~GetFocus-------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The GetFocus method returns the handle to the dialog control that currently
+has the input focus.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The handle to the dialog control that has the input focus, or 0
+if this method failed.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="setfocus"><title>SetFocus</title>
+<indexterm><primary>SetFocus</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~SetFocus(--hwnd--)---------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The SetFocus method sets the input focus to a dialog control and returns
+the handle of the control that previously had the focus.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>hwnd</term>
+<listitem><para>The handle to the dialog control that is to receive the input
+focus.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>-1</term>
+<listitem><para>The method failed.
+</para></listitem></varlistentry>
+<varlistentry><term>0</term>
+<listitem><para>The focus was changed, but the control with the previous focus
+could not be determined.
+</para></listitem></varlistentry>
+<varlistentry><term>Other</term>
+<listitem><para>The handle to the control with the previous focus.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="setfocustowindow"><title>SetFocusToWindow</title>
+<indexterm><primary>SetFocusToWindow</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~SetFocusToWindow(--hwnd--)-------------------><
+
+
+]]>
+</programlisting>
+
+<para>The SetFocusToWindow method moves the input focus to another top-level
+window or dialog.  This has the effect of bringing that window to the
+foreground.  This method returns a handle to the dialog
+<emphasis role="italic">control</emphasis> that previously had the
+input focus.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>hwnd</term>
+<listitem><para>The handle to the top-level window or dialog that is to
+receive the input focus.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>-1</term>
+<listitem><para>The method failed.
+</para></listitem></varlistentry>
+<varlistentry><term>0</term>
+<listitem><para>The focus was changed, but the control with the previous focus
+could not be determined.
+</para></listitem></varlistentry>
+<varlistentry><term>Other</term>
+<listitem><para>The handle to the control with the previous focus.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
 <section id="setcolor"><title>SetColor</title>
 <indexterm><primary>SetColor</primary></indexterm>
 <programlisting>
@@ -1758,6 +1527,175 @@ MyDialog~Redraw
 <para>The SetTitle method sets the title of the dialog
 or dialog control. It is equal to <link linkend="titlenew">Title=</link>.</para>
 </section>
+</section>
+
+<section id="miscDialogControl"><title>Miscellaneous Dialog Control
+Methods</title>
+<indexterm><primary>miscellaneous dialog control methods</primary></indexterm>
+<para>The following methods are general purpose dialog control methods.
+</para>
+
+<section id="processmessage"><title>ProcessMessage</title>
+<indexterm><primary>ProcessMessage</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~ProcessMessage(--message--,--firstParam--,--secondParam--)-><
+
+
+]]>
+</programlisting>
+
+<para>The ProcessMessage method sends a Windows message
+to a dialog control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>message</term>
+<listitem><para>The number of the message to be sent to the dialog control.
+</para></listitem></varlistentry>
+<varlistentry><term>firstParam,secondParam</term>
+<listitem><para>Additional arguments specific to the message.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The return values are message-specific.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example erases the background of the NAME edit control:
+<programlisting>
+<![CDATA[
+dlgc = MyDialog~GetEditControl("NAME")
+WM_ERASEBACKGROUND = "14"~x2d
+hdc = dlgc~GetDc
+dlgc~ProcessMessage(WM_ERASEBACKGROUND, hdc, 0)
+dlgc~FreeDC(hdc)
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+
+<note><title>Note</title><para>
+The Window message numbers are not documented.
+</para></note>
+</section>
+
+<section id="value"><title>Value</title>
+<indexterm><primary>Value</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~Value----------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The Value method retrieves the current value of
+a dialog control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The current value set in the dialog control.
+</para></listitem></varlistentry>
+</variablelist>
+
+<note><title>Note</title><para>
+See <link linkend="h000514">GetValue</link> for more information.
+</para></note>
+</section>
+
+<section id="valuenew"><title>Value=</title>
+<indexterm><primary>Value=</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~Value=--new_value----------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The Value= method sets a value for a dialog control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>new_value</term>
+<listitem><para>The value assigned to the dialog control.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example selects check box RESTART and deselects check
+box VERIFY:</para>
+<programlisting>
+<![CDATA[
+MyDialog~GetCheckControl("RESTART")~Value=1
+MyDialog~GetCheckControl("VERIFY")~Value=0
+]]>
+</programlisting>
+</listitem></varlistentry>
+</variablelist>
+
+<note><title>Note</title><para>
+See <link linkend="h000584">SetValue</link> for more information.
+</para></note>
+</section>
+
+<section id="assignwindow"><title>AssignWindow</title>
+<indexterm><primary>AssignWindow</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~AssignWindow(--hwnd--)-----------------------><
+
+
+]]>
+</programlisting>
+
+<para>The AssignWindow method connects a dialog or dialog
+control with an existing object of the PlainBaseDialog or DialogControl class.
+Note that the connected dialog or dialog control might not support all methods
+provided by the DialogControl class.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Note Well:</emphasis></term>
+<listitem><para>The <computeroutput>AssignWindow</computeroutput> method is used
+internally to connect ooRexx objects (a <computeroutput>DialogControl
+</computeroutput> object) to the underlying Windows dialog control.  It is not
+recommended that the programmer use this method unless he throughly understands
+the ooDialog framework. Othewise, using this method has the potential for
+causing unpredictable behavior.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>hwnd</term>
+<listitem><para>The handle to the dialog or dialog control that you want to assign to
+the DialogControl object.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The handle to the dialog or dialog control that has been assigned, or
+0 if the connection failed.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example searches the desktop for a dialog with the title &quot;Monitoring
+Applications&quot;, connects it to the object <computeroutput>dlgc</computeroutput> of the DialogControl
+class, and then hides the dialog:
+<programlisting>
+<![CDATA[
+dlgc = .DialogControl~new
+...
+whnd = FindWindow("Monitoring Application")
+if whnd \= 0 then do
+   dlgc~AssignWindow(whnd)
+   dlgc~Display("HIDE")
+end
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
 </section>
 
 <section id="drawmeth"><title>Draw Methods</title>
