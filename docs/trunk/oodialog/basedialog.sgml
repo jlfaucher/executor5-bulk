@@ -355,7 +355,7 @@ the methods listed in <link linkend="t000013">Table 2</link>.
 </row>
 <row>
 <entry>ConnectResize</entry>
-<entry><link linkend="connectresize">ConnectResize</link></entry>
+<entry><link linkend="mthConnectResize">ConnectResize</link></entry>
 </row>
 <row>
 <entry>ConnectScrollBar</entry>
@@ -579,7 +579,7 @@ the methods listed in <link linkend="t000013">Table 2</link>.
 </row>
 <row>
 <entry>GetClientRect</entry>
-<entry><link linkend="getclientrect">GetClientRect</link></entry>
+<entry><link linkend="mthGetClientRect">GetClientRect</link></entry>
 </row>
 <row>
 <entry>GetCheckBox</entry>
@@ -631,7 +631,7 @@ the methods listed in <link linkend="t000013">Table 2</link>.
 </row>
 <row>
 <entry>GetItem</entry>
-<entry><link linkend="h000091">GetItem</link></entry>
+<entry><link linkend="mthGetItem">GetItem</link></entry>
 </row>
 <row>
 <entry>GetListEntry</entry>
@@ -739,7 +739,7 @@ the methods listed in <link linkend="t000013">Table 2</link>.
 </row>
 <row>
 <entry>HideItem</entry>
-<entry><link linkend="h001237">HideItem</link></entry>
+<entry><link linkend="mthHideItem">HideItem</link></entry>
 </row>
 <row>
 <entry>HideItemFast</entry>
@@ -759,7 +759,7 @@ the methods listed in <link linkend="t000013">Table 2</link>.
 </row>
 <row>
 <entry>InitAutoDetection</entry>
-<entry><link linkend="h001428">InitAutoDetection</link></entry>
+<entry><link linkend="mthInitAutoDetection">InitAutoDetection</link></entry>
 </row>
 <row>
 <entry>InitDialog</entry>
@@ -780,6 +780,18 @@ the methods listed in <link linkend="t000013">Table 2</link>.
 <row>
 <entry>InsertListEntry</entry>
 <entry><link linkend="h000389">InsertListEntry</link></entry>
+</row>
+<row>
+<entry>IsDialogActive</entry>
+<entry><link linkend="h000721">IsDialogActive</link></entry>
+</row>
+<row>
+<entry>IsMaximized</entry>
+<entry><link linkend="mthIsMaximized">IsMaximized</link></entry>
+</row>
+<row>
+<entry>IsMinimized</entry>
+<entry><link linkend="mthIsMinimized">IsMinimized</link></entry>
 </row>
 <row>
 <entry>IsDialogActive</entry>
@@ -807,7 +819,7 @@ the methods listed in <link linkend="t000013">Table 2</link>.
 </row>
 <row>
 <entry>Maximize</entry>
-<entry><link linkend="maximize">Maximize</link></entry>
+<entry><link linkend="mthMaximize">Maximize</link></entry>
 </row>
 <row>
 <entry>Minimize</entry>
@@ -823,7 +835,7 @@ the methods listed in <link linkend="t000013">Table 2</link>.
 </row>
 <row>
 <entry>NoAutoDetection</entry>
-<entry><link linkend="h001434">NoAutoDetection</link></entry>
+<entry><link linkend="mthNoAutoDetection">NoAutoDetection</link></entry>
 </row>
 <row>
 <entry>ObjectToDC</entry>
@@ -847,7 +859,7 @@ the methods listed in <link linkend="t000013">Table 2</link>.
 </row>
 <row>
 <entry>PopupAsChild</entry>
-<entry><link linkend="popupaschild">PopupAsChild</link></entry>
+<entry><link linkend="mthPopupAsChild">PopupAsChild</link></entry>
 </row>
 <row>
 <entry>Rectangle</entry>
@@ -1067,7 +1079,7 @@ the methods listed in <link linkend="t000013">Table 2</link>.
 </row>
 <row>
 <entry>SetWindowRect</entry>
-<entry><link linkend="setwindowrect">SetWindowRect</link></entry>
+<entry><link linkend="mthSetWindowRect">SetWindowRect</link></entry>
 </row>
 <row>
 <entry>SetWindowTitle</entry>
@@ -1083,7 +1095,7 @@ the methods listed in <link linkend="t000013">Table 2</link>.
 </row>
 <row>
 <entry>ShowItem</entry>
-<entry><link linkend="h001245">ShowItem</link></entry>
+<entry><link linkend="mthShowItem">ShowItem</link></entry>
 </row>
 <row>
 <entry>ShowItemFast</entry>
@@ -1281,6 +1293,67 @@ values.
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
+</section>
+
+<section id="mthInitAutoDetection"><title>InitAutoDetection</title>
+<indexterm><primary>InitAutoDetection</primary>
+<secondary>BaseDialog class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aBaseDialog~InitAutoDetection-------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The InitAutoDetection method is called by the Init
+method to change the default setting for the automatic data field detection.</para>
+<para>Automatic data field detection means that for every
+dialog data item a corresponding Object Rexx attribute is created automatically.
+If you disable automatic detection, you have to use the Connect... methods to assign a dialog item to an Object Rexx attribute. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
+<listitem><para>This method is protected. You can override this method within your subclass
+to change the standard behavior.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example overrides the method to switch off auto detection:
+
+<programlisting>
+<![CDATA[
+::class MyDialog subclass UserDialog
+::method InitAutoDetection
+   self~NoAutoDetection
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthNoAutoDetection"><title>NoAutoDetection</title>
+<indexterm><primary>NoAutoDetection</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aBaseDialog~NoAutoDetection---------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The NoAutoDetection method switches off auto detection.</para>
+</section>
+
+<section id="h001439"><title>AutoDetection</title>
+<indexterm><primary>AutoDetection</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aBaseDialog~AutoDetection----------------------------------->>
+
+
+]]>
+</programlisting>
+
+<para>The AutoDetection method switches on auto detection.</para>
 </section>
 
 <section id="h000035"><title>InitDialog</title>
@@ -1591,7 +1664,7 @@ of dialog A. If dialog A is closed, MyDialog remains unaffected and active.
 </variablelist>
 </section>
 
-<section id="popupaschild"><title>PopupAsChild</title>
+<section id="mthPopupAsChild"><title>PopupAsChild</title>
 <indexterm><primary>PopupAsChild</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -1840,97 +1913,44 @@ MyDialog~SendMessageToItem(9001, "0x000000F1", 1, 0)
 </section>
 </section>
 
-<section id="man0001"><title>Connect Methods</title>
-<indexterm><primary>connect methods</primary>
+<section id="man0001"><title>Connect Event Methods</title>
+<indexterm><primary>connect event methods</primary>
 <secondary>BaseDialog class</secondary></indexterm>
-<para>The following methods create a connection between a dialog control and
-an Object Rexx attribute or method. The behavior of the connections differ with
-the dialog control. </para>
+<para>The following methods create a connection between an event of the Windows
+dialog, or a dialog control, and a method of the ooRexx dialog object. In the
+Windows user interface, as the user interacts with the system, events are
+generated that specify what the action of the user was. Mouse clicks, keyboard
+presses, moving or sizing windows, all generate events. In the ooDialog
+framework, when a specific event is connected to a method, that method will be
+invoked each time the event occurs.
+</para>
 <itemizedlist>
 <listitem><para>For push buttons you connect a method to the button. The connected method
-is called each time the button is pressed.</para></listitem>
-<listitem><para>For data items, such as an entry line, list box, or combo box, an attribute
-is created and added to the dialog object. The attribute is used as an interface
-to the data of the entry line, list box, or combo box.</para></listitem>
-<listitem><para>Check boxes and radio buttons are also data items and are therefore connected
-to an attribute. The only valid values for these attributes are 1 for selected
-and 0 for not selected.</para></listitem>
+is called each time the button is pressed (clicked.)</para></listitem>
 <listitem><para>List boxes, multiple list boxes, and combo boxes can also be connected
 to a method that is called each time a line in the box is selected.</para></listitem>
 <listitem><para>For a scroll bar you can specify different methods that are called depending
 on the user action. The user can click on the arrow buttons, drag the thumb,
 or use direction keys.</para></listitem></itemizedlist>
-<para>In a UserDialog the Connect... methods are called
-automatically from the Add... methods. The proper
-place for Connect... methods is the <link linkend="h000035">InitDialog</link> method.</para>
+<para>In a <computeroutput>UserDialog</computeroutput> the Connect... event
+methods for buttons are called automatically from the Add... methods.  However,
+for most events like the resize or move events, the connection needs to be made
+explictly.  In general, events should be connected before the dialog is shown on
+the screen. So, the Connect... event methods can be used in the <link
+linkend="h000035">InitDialog</link> method.  In a UserDialog, the <link
+linkend="h001506">DefineDialog</link> method is a good place for the Connect...
+event methods.  If the programmer is overriding the <link
+linkend="h000025">Init</link> method, the Connect... event methods can be placed
+there.  But, be sure the methods are not used until after the superclass has
+been initialized.
+</para>
 
 <note><title>Note</title><para>
-The method name that is to be sent when the specified event
-occurs must be less than 256 characters.
+The method name that is to be invoked when the specified event occurs must be
+less than 256 characters.
 </para></note>
 
-<section id="h001428"><title>InitAutoDetection</title>
-<indexterm><primary>InitAutoDetection</primary>
-<secondary>BaseDialog class</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~InitAutoDetection-------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The InitAutoDetection method is called by the Init
-method to change the default setting for the automatic data field detection.</para>
-<para>Automatic data field detection means that for every
-dialog data item a corresponding Object Rexx attribute is created automatically.
-If you disable automatic detection, you have to use the Connect... methods to assign a dialog item to an Object Rexx attribute. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
-<listitem><para>This method is protected. You can override this method within your subclass
-to change the standard behavior.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example overrides the method to switch off auto detection:
-
-<programlisting>
-<![CDATA[
-::class MyDialog subclass UserDialog
-::method InitAutoDetection
-   self~NoAutoDetection
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="h001434"><title>NoAutoDetection</title>
-<indexterm><primary>NoAutoDetection</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~NoAutoDetection---------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The NoAutoDetection method switches off auto detection.</para>
-</section>
-
-<section id="h001439"><title>AutoDetection</title>
-<indexterm><primary>AutoDetection</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~AutoDetection----------------------------------->>
-
-
-]]>
-</programlisting>
-
-<para>The AutoDetection method switches on auto detection.</para>
-</section>
-
-<section id="connectresize"><title>ConnectResize</title>
+<section id="mthConnectResize"><title>ConnectResize</title>
 <indexterm><primary>ConnectResize</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -1955,7 +1975,7 @@ a method with a matching name.
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
 <listitem><para>This method does not return a value.
 </para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<varlistentry><term><emphasis role="bold">Example 1:</emphasis></term>
 <listitem><para>
 
 <programlisting>
@@ -1967,14 +1987,53 @@ a method with a matching name.
   self~ConnectResize("OnSize")
 
 ::method OnSize
-  use arg dummy, sizeinfo    /* sizeinfo contains information about the
-                                new width and height */
+  use arg sizeEvent, sizeinfo    /* sizeinfo contains information about the
+                                    new width and height */
   msg = self~PeekDialogMessage
   if msg~left(6) = "ONSIZE" then return    /* not the last size
                                                          event message */
   w = binaryand(sizeinfo, "0x0000FFFF") / self~FactorX
   h = binaryand(sizeinfo, "0xFFFF0000") % X2D("FFFF") / self~FactorY
   say "New width=" w ", new height=" h
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example 2:</emphasis></term>
+<listitem><para>This example is pulled from the <link
+linkend="exampleFileViewer">File Viewer</link> example at the end of the
+&quot;Appearance and Behavior Methods&quot; section. A complete working example
+is presented there that uses a number of the base dialog methods.
+
+<programlisting>
+<![CDATA[
+
+::method defineDialog
+  expose wasMinimized
+
+  wasMinimized = .false
+  style = "VSCROLL HSCROLL MULTILINE READONLY"
+  self~addEntryLine(IDC_MULTILINE, "cEntry", 0, 0, 170, 180, style)
+  self~connectResize("onSize")
+  ...
+
+/* The first arg, sizeEvent, is a flag that the OS sends specifing the type of
+ * size event.  We are only interested in these 3 flags:
+ *
+ * SIZE_RESTORED   = 0
+ * SIZE_MINIMIZED  = 1
+ * SIZE_MAXIMIZED  = 2
+ */
+::method onSize
+  expose wasMinimized
+  use arg sizeEvent sizeInfo
+
+  if sizeEvent = 1 then wasMinimized = .true
+
+  if sizeEvent = 0 |  sizeEvent = 2 then do
+    if \ wasMinimized then self~resizeEditControl
+    wasMinimized = .false
+  end
+
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -2453,264 +2512,6 @@ a left double-click within the list box with a method. </para>
 </variablelist>
 </section>
 
-<section id="h000184"><title>ConnectEntryLine</title>
-<indexterm><primary>ConnectEntryLine</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~ConnectEntryLine(--id--+------------------+--)--><
-                                      +-,--attributeName-+
-
-
-]]>
-</programlisting>
-
-<para>The ConnectEntryLine method creates a new attribute
-and connects it to the entry line id. The attribute
-has to be synchronized with the entry line manually. This can be done globally
-with the SetData and GetData methods (see page <link linkend="h000269">GetData</link>),
-or for only one item with the SetEntryLine and GetEntryLine methods (see page <link linkend="h000466">GetEntryLine</link>). It is done automatically by <link linkend="h000048">Execute</link> when the dialog starts and after it terminates. If AutoDetection
-is enabled, or if the dialog is created dynamically (manually or based on
-a resource script), you do not have to use this method or any other Connect... methods that deal with dialog controls). </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the entry field you want to connect.
-</para></listitem></varlistentry>
-<varlistentry><term>attributeName</term>
-<listitem><para>An unused valid Rexx symbol because an attribute with exactly
-this name is added to the dialog object with this method. Blank spaces, ampersands
-(&amp;), and colons (:) are removed from the attributeName. If this argument is omitted, is not valid, or already exists, and the
-ID is numeric, an attribute with the name DATAid is
-used, where id is the value of the first argument.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>-1</term>
-<listitem><para>The specified symbolic ID could not be resolved.
-</para></listitem></varlistentry>
-<varlistentry><term>0</term>
-<listitem><para>No error.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>In the following example, the entry line with ID 202 is associated with
-the attribute Name. &quot;Put your name here!&quot;
-is assigned to the newly created attribute. Then the dialog is executed. After
-the dialog has terminated, the data of the entry line, which the user might
-have changed, is copied back to the attribute Name.
-
-<programlisting>
-<![CDATA[
-MyDialog~ConnectEntryLine(202, "Name")
-MyDialog~Name="Put your name here!"
-MyDialog~Execute("SHOWTOP")
-say MyDialog~Name
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="h000193"><title>ConnectComboBox</title>
-<indexterm><primary>ConnectComboBox</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~ConnectComboBox(--id--+-------------------------------------+-->
-                                     +-,--+---------------+--+-----------+-+
-                                          +-attributeName-+  +-,--"LIST"-+
-
->--)-----------------------------------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The ConnectComboBox method creates an attribute
-and connects it to a combo box. The value of the combo box, that is, the text
-in the entry line or the selected list item, is associated with this attribute.
-See <link linkend="h000184">ConnectEntryLine</link> for a more detailed description.</para>
-<para>If the combo box is of type &quot;Drop down list&quot;, you must specify &quot;LIST&quot;
-to connect an attribute with the combo box.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>-1</term>
-<listitem><para>The specified symbolic ID could not be resolved.
-</para></listitem></varlistentry>
-<varlistentry><term>0</term>
-<listitem><para>No error.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="h000202"><title>ConnectCheckBox</title>
-<indexterm><primary>ConnectCheckBox</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~ConnectCheckBox(--id--+------------------+--)---><
-                                     +-,--attributeName-+
-
-
-]]>
-</programlisting>
-
-<para>The ConnectCheckBox method connects a check box
-control to a newly created attribute. A check box attribute has only two valid
-values: 1 if the box has a check mark, and 0 if it has not. See <link linkend="h000184">ConnectEntryLine</link> for
-a more detailed description.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>-1</term>
-<listitem><para>The specified symbolic ID could not be resolved.
-</para></listitem></varlistentry>
-<varlistentry><term>0</term>
-<listitem><para>No error.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="h000211"><title>ConnectRadioButton</title>
-<indexterm><primary>ConnectRadioButton</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~ConnectRadioButton(--id--+------------------+---->
-                                        +-,--attributeName-+
-
->--)-----------------------------------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The ConnectRadioButton method connects a radio
-button control to a newly created attribute. A radio button attribute has
-only two valid values: 1 if the radio button is marked and 0 if it is not.
-See <link linkend="h000184">ConnectEntryLine</link> for a more detailed description.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>-1</term>
-<listitem><para>The specified symbolic ID could not be resolved.
-</para></listitem></varlistentry>
-<varlistentry><term>0</term>
-<listitem><para>No error.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="h000220"><title>ConnectListBox</title>
-<indexterm><primary>ConnectListBox</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~ConnectListBox(--id--+------------------+--)----><
-                                    +-,--attributeName-+
-
-
-]]>
-</programlisting>
-
-<para>The ConnectListBox method connects a list box to
-a newly created attribute. The value of the attribute is the number of the
-selected line. Therefore, if the attribute value is 3, the third line is currently
-selected or will be selected, depending on whether you set data to the dialog
-or receive it. See <link linkend="h000184">ConnectEntryLine</link> for a more detailed description.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>-1</term>
-<listitem><para>The specified symbolic ID could not be resolved.
-</para></listitem></varlistentry>
-<varlistentry><term>0</term>
-<listitem><para>No error.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="h000229"><title>ConnectMultiListBox</title>
-<indexterm><primary>ConnectMultiListBox</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~ConnectMultiListBox(--id--+------------------+--->
-                                         +-,--attributeName-+
-
->--)-----------------------------------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The ConnectMultiListBox method connects a list
-box to a newly created attribute. The list box has the multiple-selection
-style enabled (by setting the <emphasis role="italic">MULTI</emphasis> option when adding this list
-box), that is, you can select more than one item at the same time. The value
-of the attribute is a string containing the numbers of the selected lines.
-The numbers are separated by blank spaces. Therefore, if the attribute value
-is 3 5 6, the third, fifth, and sixth item are currently selected, or will
-be selected if SetData is executed. See <link linkend="h000184">ConnectEntryLine</link> for a more
-detailed description. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>-1</term>
-<listitem><para>The specified symbolic ID could not be resolved.
-</para></listitem></varlistentry>
-<varlistentry><term>0</term>
-<listitem><para>No error.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example defines a list box with the name of the four seasons.
-It then preselects the items Summer and Winter. After execution of the dialog, it parses the value of the attribute.
-
-<programlisting>
-<![CDATA[
-MyDialog = .ResDialog~new(...)
-MyDialog~NoAutoDetection
-MyDialog~AddListBox(205, ..., "MULTI")
-MyDialog~ConnectMultiListBox(205, "ListBox")
-seasons.1="Spring"
-seasons.2="Summer"
-seasons.3="Autumn"
-seasons.4="Winter"
-do season over seasons
-  MyDialog~AddListEntry(205, season)
-end
-MyDialog~ListBox="2 4"
-MyDialog~Execute("SHOWTOP")
-selItems = MyDialog~ListBox
-do until anItem =""
-   parse var selItems anItem selItems
-   say "You selected: "seasons.anItem
-end
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
 <section id="h000802"><title>ConnectScrollBar</title>
 <indexterm><primary>ConnectScrollBar</primary></indexterm>
 <programlisting>
@@ -2991,6 +2792,284 @@ self~AddUserMsg("DoubleCick","0x00000203","0xFFFFFFFF",0,0,0,0)
 ]]>
 </programlisting>
 </listitem></varlistentry>
+</variablelist>
+</section>
+</section>
+
+<section id="man0002"><title>Connect Attribute Methods</title>
+<indexterm><primary>connect attribute methods</primary>
+<secondary>BaseDialog class</secondary></indexterm>
+<para>The following methods create a connection between a dialog control and an
+attribute of the dialog object. The attribute is used to reflect the value
+associated with the dialog control.  For instance the text of an edit control.
+</para>
+<itemizedlist>
+<listitem><para>For data items, such as an entry line, list box, or combo box, an attribute
+is created and added to the dialog object. The attribute is used as an interface
+to the data of the entry line, list box, or combo box.</para></listitem>
+<listitem><para>Check boxes and radio buttons are also data items and are therefore connected
+to an attribute. The only valid values for these attributes are 1 for selected
+and 0 for not selected.
+</para></listitem></itemizedlist>
+<para>In a UserDialog the Connect... attribute methods are called automatically
+from the Add... methods. The proper place for Connect... attribute methods is
+the <link linkend="h000035">InitDialog</link> method.</para>
+
+<section id="h000184"><title>ConnectEntryLine</title>
+<indexterm><primary>ConnectEntryLine</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aBaseDialog~ConnectEntryLine(--id--+------------------+--)--><
+                                      +-,--attributeName-+
+
+
+]]>
+</programlisting>
+
+<para>The ConnectEntryLine method creates a new attribute
+and connects it to the entry line id. The attribute
+has to be synchronized with the entry line manually. This can be done globally
+with the SetData and GetData methods (see page <link linkend="h000269">GetData</link>),
+or for only one item with the SetEntryLine and GetEntryLine methods (see page <link linkend="h000466">GetEntryLine</link>). It is done automatically by <link linkend="h000048">Execute</link> when the dialog starts and after it terminates. If AutoDetection
+is enabled, or if the dialog is created dynamically (manually or based on
+a resource script), you do not have to use this method or any other Connect... methods that deal with dialog controls). </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The ID of the entry field you want to connect.
+</para></listitem></varlistentry>
+<varlistentry><term>attributeName</term>
+<listitem><para>An unused valid Rexx symbol because an attribute with exactly
+this name is added to the dialog object with this method. Blank spaces, ampersands
+(&amp;), and colons (:) are removed from the attributeName. If this argument is omitted, is not valid, or already exists, and the
+ID is numeric, an attribute with the name DATAid is
+used, where id is the value of the first argument.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>-1</term>
+<listitem><para>The specified symbolic ID could not be resolved.
+</para></listitem></varlistentry>
+<varlistentry><term>0</term>
+<listitem><para>No error.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>In the following example, the entry line with ID 202 is associated with
+the attribute Name. &quot;Put your name here!&quot;
+is assigned to the newly created attribute. Then the dialog is executed. After
+the dialog has terminated, the data of the entry line, which the user might
+have changed, is copied back to the attribute Name.
+
+<programlisting>
+<![CDATA[
+MyDialog~ConnectEntryLine(202, "Name")
+MyDialog~Name="Put your name here!"
+MyDialog~Execute("SHOWTOP")
+say MyDialog~Name
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="h000193"><title>ConnectComboBox</title>
+<indexterm><primary>ConnectComboBox</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aBaseDialog~ConnectComboBox(--id--+-------------------------------------+-->
+                                     +-,--+---------------+--+-----------+-+
+                                          +-attributeName-+  +-,--"LIST"-+
+
+>--)-----------------------------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The ConnectComboBox method creates an attribute
+and connects it to a combo box. The value of the combo box, that is, the text
+in the entry line or the selected list item, is associated with this attribute.
+See <link linkend="h000184">ConnectEntryLine</link> for a more detailed description.</para>
+<para>If the combo box is of type &quot;Drop down list&quot;, you must specify &quot;LIST&quot;
+to connect an attribute with the combo box.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>-1</term>
+<listitem><para>The specified symbolic ID could not be resolved.
+</para></listitem></varlistentry>
+<varlistentry><term>0</term>
+<listitem><para>No error.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="h000202"><title>ConnectCheckBox</title>
+<indexterm><primary>ConnectCheckBox</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aBaseDialog~ConnectCheckBox(--id--+------------------+--)---><
+                                     +-,--attributeName-+
+
+
+]]>
+</programlisting>
+
+<para>The ConnectCheckBox method connects a check box
+control to a newly created attribute. A check box attribute has only two valid
+values: 1 if the box has a check mark, and 0 if it has not. See <link linkend="h000184">ConnectEntryLine</link> for
+a more detailed description.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>-1</term>
+<listitem><para>The specified symbolic ID could not be resolved.
+</para></listitem></varlistentry>
+<varlistentry><term>0</term>
+<listitem><para>No error.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="h000211"><title>ConnectRadioButton</title>
+<indexterm><primary>ConnectRadioButton</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aBaseDialog~ConnectRadioButton(--id--+------------------+---->
+                                        +-,--attributeName-+
+
+>--)-----------------------------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The ConnectRadioButton method connects a radio
+button control to a newly created attribute. A radio button attribute has
+only two valid values: 1 if the radio button is marked and 0 if it is not.
+See <link linkend="h000184">ConnectEntryLine</link> for a more detailed description.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>-1</term>
+<listitem><para>The specified symbolic ID could not be resolved.
+</para></listitem></varlistentry>
+<varlistentry><term>0</term>
+<listitem><para>No error.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="h000220"><title>ConnectListBox</title>
+<indexterm><primary>ConnectListBox</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aBaseDialog~ConnectListBox(--id--+------------------+--)----><
+                                    +-,--attributeName-+
+
+
+]]>
+</programlisting>
+
+<para>The ConnectListBox method connects a list box to
+a newly created attribute. The value of the attribute is the number of the
+selected line. Therefore, if the attribute value is 3, the third line is currently
+selected or will be selected, depending on whether you set data to the dialog
+or receive it. See <link linkend="h000184">ConnectEntryLine</link> for a more detailed description.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>-1</term>
+<listitem><para>The specified symbolic ID could not be resolved.
+</para></listitem></varlistentry>
+<varlistentry><term>0</term>
+<listitem><para>No error.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="h000229"><title>ConnectMultiListBox</title>
+<indexterm><primary>ConnectMultiListBox</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aBaseDialog~ConnectMultiListBox(--id--+------------------+--->
+                                         +-,--attributeName-+
+
+>--)-----------------------------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The ConnectMultiListBox method connects a list
+box to a newly created attribute. The list box has the multiple-selection
+style enabled (by setting the <emphasis role="italic">MULTI</emphasis> option when adding this list
+box), that is, you can select more than one item at the same time. The value
+of the attribute is a string containing the numbers of the selected lines.
+The numbers are separated by blank spaces. Therefore, if the attribute value
+is 3 5 6, the third, fifth, and sixth item are currently selected, or will
+be selected if SetData is executed. See <link linkend="h000184">ConnectEntryLine</link> for a more
+detailed description. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>-1</term>
+<listitem><para>The specified symbolic ID could not be resolved.
+</para></listitem></varlistentry>
+<varlistentry><term>0</term>
+<listitem><para>No error.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example defines a list box with the name of the four seasons.
+It then preselects the items Summer and Winter. After execution of the dialog, it parses the value of the attribute.
+
+<programlisting>
+<![CDATA[
+MyDialog = .ResDialog~new(...)
+MyDialog~NoAutoDetection
+MyDialog~AddListBox(205, ..., "MULTI")
+MyDialog~ConnectMultiListBox(205, "ListBox")
+seasons.1="Spring"
+seasons.2="Summer"
+seasons.3="Autumn"
+seasons.4="Winter"
+do season over seasons
+  MyDialog~AddListEntry(205, season)
+end
+MyDialog~ListBox="2 4"
+MyDialog~Execute("SHOWTOP")
+selItems = MyDialog~ListBox
+do until anItem =""
+   parse var selItems anItem selItems
+   say "You selected: "seasons.anItem
+end
+]]>
+</programlisting>
+</para></listitem></varlistentry>
 </variablelist>
 </section>
 
@@ -5285,7 +5364,7 @@ object.
 </variablelist>
 </section>
 
-<section id="h000091"><title>GetItem</title>
+<section id="mthGetItem"><title>GetItem</title>
 <indexterm><primary>GetItem</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -5398,7 +5477,7 @@ window handle of objects used in ooDialog. For instance, use the <link
 linkend="h000086">GetSelf</link> method to retrieve the window handle of the
 dialog instance.  Use the  <link linkend="h000086">Get</link> method to retrieve
 the window handle of the most recently created dialog.  To get the window handle
-to a dialog control, the <link linkend="h000091">GetItem</link> method can be
+to a dialog control, the <link linkend="mthGetItem">GetItem</link> method can be
 used.
 </para></listitem></varlistentry>
 </variablelist>
@@ -5667,36 +5746,14 @@ have the <computeroutput>MINIMIZEBOX</computeroutput> style when it is created.
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example
+<listitem><para>This example creates a secondary dialog to display the contents
+of a file.  The secondary dialog is show full screen (maximized.)  At the same
+time the parent dialog is minimized to the taskbar.  The complete program
+listing is available (see the <link linkend="exampleFileViewer">File
+Viewer</link> example.)
 
 <programlisting>
 <![CDATA[
-/* Simple Dialog to view files full screen */
-
-  dlg = .FileView~new( , "fileView.h")
-  if dlg~initCode = 0 then do
-    dlg~createCenter(170, 90, "The File Viewer Dialog", "VISIBLE MAXIMIZEBOX MINIMIZEBOX")
-    dlg~Execute("SHOWTOP", IDI_DLG_OOREXX)
-    dlg~Deinstall
-  end
-
--- End of entry point.
-::requires "OODWin32.cls"
-
-::class FileView subclass UserDialog inherit AdvancedControls
-
-::method defineDialog
-
-  self~addText(10, 25, 150, 10, " Enter the name of a file to view:", "", IDC_ST_TYPE)
-  self~addEntryLine(IDC_ENTRYLINE, , 10, 35, 150, 10, "AUTOSCROLLH")
-
-  -- When the view button is pushed, another dialog will show the file.
-  self~addButton(IDC_PB_VIEW, 10, 55, 35, 15, "View File", onView, "DEFAULT GROUP")
-  self~addButton(IDOK, 130, 55, 35, 15, "Quit")
-
-::method initDialog
-  expose editCntrl
-  editCntrl = self~getEditControl(IDC_ENTRYLINE)
 
 ::method onView
   expose viewDlg editCntrl
@@ -5716,61 +5773,6 @@ have the <computeroutput>MINIMIZEBOX</computeroutput> style when it is created.
     self~minimize
   end
 
-::class 'Viewer' subclass UserDialog inherit AdvancedControls
-
-::method init
-  expose parent filename
-  use arg data, header, parent, fileName
-  forward class (super) continue
-  self~autoDetect = 0
-
-::method defineDialog
-  expose wasMinimized
-
-  wasMinimized = .false
-  style = "VSCROLL HSCROLL MULTILINE READONLY"
-  self~addEntryLine(IDC_MULTILINE, "cEntry", 0, 0, 170, 180, style)
-  self~connectResize("onSize")
-
-::method initDialog
-  expose editControl fileName isHidden
-
-  editControl = self~getEditControl(IDC_MULTILINE)
-  editControl~hide
-  isHidden = .true
-
-  fObj = .stream~new(fileName)
-  text = fObj~charin(1, fObj~chars)
-  fObj~close
-  if text == "" then text = "   No file  "
-  editControl~setText(text)
-
-::method onSize
-  expose editControl wasMinimized
-  use arg sizeEvent lParam
-
-  if sizeEvent = 1 then wasMinimized = .true
-
-  if sizeEvent = 0 |  sizeEvent = 2 then do
-    if \ wasMinimized then self~resizeEditControl
-    wasMinimized = .false
-  end
-
-::method resizeEditControl
-  expose editControl isHidden
-
-  parse value self~getClientRect with wx wy wcx wcy
-  editControl~setRect(0, 0, wcx, wcy)
-  if isHidden then do
-    editControl~show
-    isHidden = .false
-  end
-
-::method cancel
-  expose parent
-  parent~enableItem(IDC_PB_VIEW)
-  if parent~isMinimized then parent~restore
-  return self~cancel:super
 ]]>
 </programlisting>
 
@@ -5778,7 +5780,7 @@ have the <computeroutput>MINIMIZEBOX</computeroutput> style when it is created.
 </variablelist>
 </section>
 
-<section id="maximize"><title>Maximize</title>
+<section id="mthMaximize"><title>Maximize</title>
 <indexterm><primary>Maximize</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -5811,6 +5813,29 @@ have the <computeroutput>MAXIMIZEBOX</computeroutput> style when it is created.
 <listitem><para>Maximizing failed.
 </para></listitem></varlistentry>
 </variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following code snippet minimizes the dialog to the taskbar.
+It is used in the FileViewer example.  The complete program listing is available
+(see the <link linkend="exampleFileViewer">File Viewer</link> example.)
+
+<programlisting>
+<![CDATA[
+
+::method onView
+  expose viewDlg editCntrl
+
+  ...
+
+  if viewDlg~initCode = 0 then do
+    ...
+
+    viewDlg~maximize
+    self~minimize
+  end
+
+]]>
+</programlisting>
 </para></listitem></varlistentry>
 </variablelist>
 </section>
@@ -5850,16 +5875,122 @@ to restore a dialog window that he previously minimized or maximized.
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example
+<listitem><para>The following example checks if the parent dialog is minimized
+and, if it is, the <computeroutput>Restore</computeroutput> method is used to
+show the dialog in the size and position it was prior to being minimized.  The
+complete program listing for this code snippet is available (see the <link
+linkend="exampleFileViewer">File Viewer</link> example.)
 
 <programlisting>
 <![CDATA[
+::method cancel
+  expose parent
+  parent~enableItem(IDC_PB_VIEW)
+  if parent~isMinimized then parent~restore
+  return self~cancel:super
+
 ]]>
 </programlisting>
 
 </para></listitem></varlistentry>
 </variablelist>
 </section>
+
+<section id="mthIsMinimized"><title>IsMinimized</title>
+<indexterm><primary>IsMinimized</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aBaseDialog~IsMinimized-------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The <computeroutput>IsMinimized</computeroutput> method is used to check
+if a dialog is currently minimized.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The method takes no arguments.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>.true</term>
+<listitem><para>The dialog is minimized.
+</para></listitem></varlistentry>
+<varlistentry><term>.false</term>
+<listitem><para>The dialog is not minimized.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example checks if the parent dialog is minimized
+and, if it is, the <computeroutput>Restore</computeroutput> method is used to
+show the dialog in the size and position it was prior to being minimized.  The
+complete program listing that this code snippet comes from is available (see the
+<link linkend="exampleFileViewer">File Viewer
+</link> example.)
+
+<programlisting>
+<![CDATA[
+::method cancel
+  expose parent
+  parent~enableItem(IDC_PB_VIEW)
+  if parent~isMinimized then parent~restore
+  return self~cancel:super
+
+]]>
+</programlisting>
+
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthIsMaximized"><title>IsMaximized</title>
+<indexterm><primary>IsMaximized</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aBaseDialog~IsMaximized-------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The <computeroutput>IsMaximized</computeroutput> method is used to check
+if a dialog is currently maximized.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The method takes no arguments.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>.true</term>
+<listitem><para>The dialog is maximized.
+</para></listitem></varlistentry>
+<varlistentry><term>.false</term>
+<listitem><para>The dialog is not maximized.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following code snippet would check if the dialog is
+maximized and, if it is, restore it to the position and size it was prior to
+being maximized.
+
+<programlisting>
+<![CDATA[
+  if self~isMaximized then self~restore
+
+]]>
+</programlisting>
+
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
 <section id="focusitem"><title>FocusItem</title>
 <indexterm><primary>FocusItem</primary></indexterm>
 <programlisting>
@@ -6123,7 +6254,7 @@ title or text; it cannot be changed by the user. </para>
 </variablelist>
 </section>
 
-<section id="h001237"><title>HideItem</title>
+<section id="mthHideItem"><title>HideItem</title>
 <indexterm><primary>HideItem</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -6159,7 +6290,7 @@ in the dialog and you can transfer its data. </para>
 </programlisting>
 
 <para>The HideItemFast method hides an item without redrawing
-its area. It is similar to the <link linkend="h001237">HideItem</link> method,
+its area. It is similar to the <link linkend="mthHideItem">HideItem</link> method,
 but it is faster because the item's area is not redrawn. The HideItemFast method is used when more than one item state is modified.
 After the operations, you can manually redraw the dialog window, using the <link linkend="update">Update</link> method. </para>
 <variablelist>
@@ -6174,7 +6305,7 @@ After the operations, you can manually redraw the dialog window, using the <link
 </variablelist>
 </section>
 
-<section id="h001245"><title>ShowItem</title>
+<section id="mthShowItem"><title>ShowItem</title>
 <indexterm><primary>ShowItem</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -6230,7 +6361,7 @@ or a dialog item. </para>
 <variablelist>
 <varlistentry><term>hwnd</term>
 <listitem><para>A handle to the window or dialog item. Use the <link
-linkend="mthGetSelf">GetSelf</link> or <link linkend="h000091">GetItem</link>
+linkend="mthGetSelf">GetSelf</link> or <link linkend="mthGetItem">GetItem</link>
 method to get a handle.
 </para></listitem></varlistentry>
 </variablelist>
@@ -6314,7 +6445,7 @@ again. </para>
 the <link linkend="h001261">HideWindowFast</link> method.</para>
 </section>
 
-<section id="setwindowrect"><title>SetWindowRect</title>
+<section id="mthSetWindowRect"><title>SetWindowRect</title>
 <indexterm><primary>SetWindowRect</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -6580,6 +6711,236 @@ a window. </para>
 </para></listitem></varlistentry>
 </variablelist>
 </section>
+
+<section id="exampleFileViewer"><title>FileViewer Example Program</title>
+<indexterm><primary>FileViewer.rex</primary>
+<secondary>example code</secondary</indexterm>
+
+<para>The FileViewer program is a complete working program that uses many of the
+methods of the base dialog.  Portions of this program are presented as examples
+in the documentation for these methods. The complete program is shown here as a
+reference to how the code snippets all fit together.
+</para>
+<para>The documentation for the individual methods used in the program has
+additional commentary that will help in understanding how the program works.
+<itemizedlist>
+<listitem><para><link linkend="h000025">Init</link>: This program uses a header
+file, <computeroutput>fileView.h</computeroutput> to define symbolic IDs for the
+dialog controls. The name of the file is one of the arguments used to create a
+new instance of a dialog object. (As in all ooRexx classes, the arguments used
+in <computeroutput>new</computeroutput> are passed on to the <computeroutput>
+init</computeroutput> method of the class.)
+</para></listitem>
+<listitem><para><link linkend="h000048">Execute</link>: Two dialogs are created
+in the example.  The first dialog allows the user to enter the name of a file to
+view.  Then the file itself is displayed in a second dialog.  Each dialog uses a
+different application icon. The <computeroutput>Execute</computeroutput> method
+documentation has more detail on the application icon.
+</para></listitem>
+<listitem><para><link linkend="h000035">InitDialog</link> This method is called
+after the underlying Windows dialog has been created, but before it is shown on
+the screen.  In the viewer dialog the <computeroutput>Init</computeroutput>
+method is overridden and the text of the read-only multi-line edit control is
+set to the contents of the file.  In both dialogs, this method is used to get
+and save a reference to the edit control of the dialog.
+</para></listitem>
+<listitem><para><link linkend="h001229">DisableItem</link>: When the user clicks
+the &quot;View File&quot; button, the button is disabled until the user is
+finished viewing the file.  When a button is disabled it can not be clicked by
+the user.
+</para></listitem>
+<listitem><para><link linkend="h001221">EnableItem</link>: When the user closes
+the secondary viewer dialog, the &quot;View File&quot; button is enabled so the
+user can choose to view another file.
+</para></listitem>
+<listitem><para><link linkend="mthPopupAsChild">PopupAsChild</link>: The viewer
+dialog is executed using this method so that both dialogs run independently,
+both dialogs stay enabled.  The <computeroutput>HIDE</computeroutput> keyword is
+used for the show argument.  This creates the dialog as invisible and prevents
+unnecessary screen flicker.
+</para></listitem>
+<listitem><para><link linkend="mthMaximize">Maximize</link>: Note that there is
+a 100 millisecond sleep right before the <computeroutput>Maximize method
+</computeroutput> is invoked.  This allows Windows to finish creating the
+dialog.  The <computeroutput>InitDialog</computeroutput> method will have
+already finished executing and the contents of the file are loaded into the
+mulit-line edit control.  Then, <computeroutput>Maximize</computeroutput>
+resizes the dialog to take up the whole screen and shows it.  The dialog appears
+on the user's screen, with the file displayed, in one screen drawing.  This
+reduces the flicker on the screen.
+</para></listitem>
+<listitem><para><link linkend="mthMinimize">Minimize</link>: When the viewer
+dialog is maximized, the main dialog is minimized to the task bar.
+</para></listitem>
+<listitem><para><link linkend="mthInitAutoDetection">InitAutoDetection</link>:
+Because the contents of the file are loaded into the mulit-line edit control
+during <computeroutput>InitDialog</computeroutput>, auto detection must be
+turned off.  Otherwise, after <computeroutput>InitDialog</computeroutput>
+finishes executing, auto detection would set the empty string as the text for
+the control.  The program overrides this method to turn auto detection off.
+</para></listitem>
+<listitem><para><link linkend="mthNoAutoDetection">NoAutoDetection</link>: Used
+in turning auto detection off.
+</para></listitem>
+<listitem><para><link linkend="mthConnectResize">ConnectResize</link>: When the
+viewer dialog is resized, the <computeroutput>onSize</computeroutput> method is
+invoked.  The size of the multi-line edit control is then changed so it
+completely takes up the client area of the dialog.  (The client area of a window
+is where all the child windows are drawn.  In this case the edit control is the
+only child window.)  Since the dialog is not resizeable by the user (it does not
+have a sizing border) the only time the size can change is when the dialog is
+maximized, minimized, or restored.
+</para></listitem>
+<listitem><para><link linkend="mthHideItem">HideItem</link>: The edit control in
+the viewer dialog is created invisible.  Again, this helps reduce flicker.
+</para></listitem>
+<listitem><para><link linkend="mthGetItem">GetItem</link>: The window handle of
+the edit control is obtained by this method ...
+</para></listitem>
+<listitem><para><link linkend="mthGetClientRect">GetClientRect</link>: ... then
+the size of the client area of the viewer dialog is obtained using this method.
+Then ..
+</para></listitem>
+<listitem><para><link linkend="mthSetWindowRect">SetWindowRect</link>: ... the
+size of the edit control window is set using to the size of the dialog's client
+area.
+</para></listitem>
+<listitem><para><link linkend="mthShowItem">ShowItem</link>: The
+<computeroutput>ShowItem</computeroutput> method is used to make the edit
+control visible when the dialog is initially shown.
+</para></listitem>
+<listitem><para><link linkend="mthIsMinimized">IsMinimized</link>: When the
+viewer dialog is closed, this method checks to see if the main dialog is still
+minimized.  Since the dialogs run independently the user may have already
+restored this dialog.
+</para></listitem>
+<listitem><para><link linkend="mthRestore">Restore</link>: If the main dialog is
+still minimized, then this method restores it to its normal position.
+</para></listitem>
+</itemizedlist>
+</para>
+
+<programlisting>
+<![CDATA[
+
+/* fileView.h  Simple symbolic ID definitions  */
+
+#define IDD_DIALOG1          100
+#define IDC_ST_TYPE          105
+#define IDC_ENTRYLINE        106
+#define IDC_MULTILINE        107
+#define IDC_PB_VIEW          111
+
+/* FileViewer.rex  Simple Dialog to view files full screen */
+
+  dlg = .FileView~new( , "fileView.h")
+  if dlg~initCode = 0 then do
+    dlg~createCenter(170, 90, "The File Viewer Dialog", "VISIBLE MAXIMIZEBOX MINIMIZEBOX")
+    dlg~Execute("SHOWTOP", IDI_DLG_OOREXX)
+    dlg~Deinstall
+  end
+
+-- End of entry point.
+::requires "OODWin32.cls"
+
+::class FileView subclass UserDialog inherit AdvancedControls
+
+::method defineDialog
+
+  self~addText(10, 25, 150, 10, " Enter the name of a file to view:", "", IDC_ST_TYPE)
+  self~addEntryLine(IDC_ENTRYLINE, , 10, 35, 150, 10, "AUTOSCROLLH")
+
+  -- When the view button is pushed, another dialog will show the file.
+  self~addButton(IDC_PB_VIEW, 10, 55, 35, 15, "View File", onView, "DEFAULT GROUP")
+  self~addButton(IDOK, 130, 55, 35, 15, "Quit")
+
+::method initDialog
+  expose editCntrl
+  editCntrl = self~getEditControl(IDC_ENTRYLINE)
+
+::method onView
+  expose viewDlg editCntrl
+
+  fileName = editCntrl~getText
+  viewDlg = .Viewer~new( , "fileView.h", self, fileName)
+  if viewDlg~initCode = 0 then do
+    self~disableItem(IDC_PB_VIEW)
+
+    viewDlg~create(30, 30, 170, 180, "Viewer", "MAXIMIZEBOX MINIMIZEBOX")
+    viewDlg~popUpAsChild(self, "HIDE", , IDI_DLG_APPICON)
+
+    -- The underlying Windows dialog has to be created before it can be maximized.
+    j = SleepMS(100)
+
+    viewDlg~maximize
+    self~minimize
+  end
+
+::class 'Viewer' subclass UserDialog inherit AdvancedControls
+
+::method init
+  expose parent filename
+  use arg data, header, parent, fileName
+  forward class (super)
+
+::method initAutoDetection
+  self~noAutoDetection
+
+::method defineDialog
+  expose wasMinimized
+
+  wasMinimized = .false
+  style = "VSCROLL HSCROLL MULTILINE READONLY"
+  self~addEntryLine(IDC_MULTILINE, "cEntry", 0, 0, 170, 180, style)
+  self~connectResize("onSize")
+
+::method initDialog
+  expose editControl fileName isHidden
+
+  self~hideItem(IDC_MULTILINE)
+  isHidden = .true
+
+  editControl = self~getEditControl(IDC_MULTILINE)
+  fObj = .stream~new(fileName)
+  text = fObj~charin(1, fObj~chars)
+  fObj~close
+  if text == "" then text = "   No file  "
+  editControl~setText(text)
+
+::method onSize
+  expose wasMinimized
+  use arg sizeEvent sizeInfo
+
+  if sizeEvent = 1 then wasMinimized = .true
+
+  if sizeEvent = 0 |  sizeEvent = 2 then do
+    if \ wasMinimized then self~resizeEditControl
+    wasMinimized = .false
+  end
+
+::method resizeEditControl
+  expose editControl isHidden
+
+  hWnd = self~getItem(IDC_MULTILINE)
+  parse value self~getClientRect with wx wy wcx wcy
+
+  self~setWindowRect(hWnd, 0, 0, wcx, wcy)
+
+  if isHidden then do
+    self~showItem(IDC_MULTIINE)
+    isHidden = .false
+  end
+
+::method cancel
+  expose parent
+  parent~enableItem(IDC_PB_VIEW)
+  if parent~isMinimized then parent~restore
+  return self~cancel:super
+
+]]>
+</programlisting>
+</section>
+
 </section>
 
 <section id="man0016"><title>Window Draw Methods</title>
@@ -6632,7 +6993,7 @@ of the dialog is to be erased before redrawing. </para>
 <variablelist>
 <varlistentry><term>hwnd</term>
 <listitem><para>The handle to the dialog in which parts of the client area are to be
-redrawn. See <link linkend="h000086">Get</link> or <link linkend="h000091">GetItem</link> for
+redrawn. See <link linkend="h000086">Get</link> or <link linkend="mthGetItem">GetItem</link> for
 information on how to get a window handle. If you omit this argument, the
 handle of the dialog instance is used.
 </para></listitem></varlistentry>
@@ -6712,7 +7073,7 @@ rectangle. </para>
 <variablelist>
 <varlistentry><term>hwnd</term>
 <listitem><para>The handle to the window. See <link linkend="h000086">Get</link>
-or <link linkend="h000091">GetItem</link> for information on how to get a window
+or <link linkend="mthGetItem">GetItem</link> for information on how to get a window
 handle. If you omit this argument, the handle of the dialog instance is used.
 </para></listitem></varlistentry>
 <varlistentry><term>erasebkg</term>
@@ -6743,7 +7104,7 @@ of a window. The values are in pixels. </para>
 <variablelist>
 <varlistentry><term>hwnd</term>
 <listitem><para>The handle of the window. See <link
-linkend="mthGetSelf">GetSelf</link> or <link linkend="h000091">GetItem</link>
+linkend="mthGetSelf">GetSelf</link> or <link linkend="mthGetItem">GetItem</link>
 for information on obtaining a window handle.
 </para></listitem></varlistentry>
 <varlistentry><term>left</term>
@@ -6816,7 +7177,7 @@ of the given window. </para>
 <varlistentry><term>hwnd</term>
 <listitem><para>The handle of the window. See <link
 linkend="mthGetSelf">GetSelf</link>, <link linkend="h000086">Get</link>, or
-<link linkend="h000091">GetItem</link> for some methods to get a window handle.
+<link linkend="mthGetItem">GetItem</link> for some methods to get a window handle.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
