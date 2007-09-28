@@ -690,6 +690,10 @@ the methods listed in <link linkend="t000013">Table 2</link>.
 <entry><link linkend="h000782">GetSBRange</link></entry>
 </row>
 <row>
+<entry>GetSelf</entry>
+<entry><link linkend="mthGetSelf">GetSelf</link></entry>
+</row>
+<row>
 <entry>GetSize</entry>
 <entry><link linkend="getsize">GetSize</link></entry>
 </row>
@@ -5164,6 +5168,69 @@ sent along with the scroll bar event.
 <para>The following methods return information about the dialog or a single dialog
 control.</para>
 
+<section id="mthGetSelf"><title>GetSelf</title>
+<indexterm><primary>Get</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aBaseDialog~GetSelf----------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The GetSelf method returns the handle of the Windows Dialog associated
+with the ooDialog dialog instance. A handle is a unique reference to a
+particular Windows object. Handles are used within some of the methods to work
+on a specific Windows object.
+</para>
+<note><title><emphasis role="bold">Note</emphasis></title><para>
+Prior to ooRexx 3.2.0, and all the way back through the original IBM
+documentation, the <computeroutput>GetSelf</computeroutput> method was not
+documented.  And, the <link linkend="h000086">Get</link> method was documentated
+as through it was the <computeroutput>GetSelf</computeroutput> method.  This
+most likely has caused confusion.  The <computeroutput>Get</computeroutput>
+method returns the handle to the most recently created dialog.  In an
+application with more than one dialog this may not be the same as the Windows
+dialog associated with the instance object the programmer is working with.
+</para></note>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>Below is an example demonstrating these Windows handles and how
+they are related.  Assume <computeroutput>showHandles</computeroutput> is a
+method of a subclass of BaseDialog and that staticDlg is a saved reference to
+another ooDialog object and that the static dialog was just created.  The
+<computeroutput>showHandles</computeroutput> method is connected to a push
+button and then displays the handles when the user clicks that button.
+<programlisting> <![CDATA[
+::method showHandles
+  expose staticDlg
+
+  hwndTop = self~get
+  hwndMyDialogHandle = self~dlgHandle
+  hwndMySelf = self~getSelf
+  hwndStatic = staticDlg~dlgHandle
+  say "Top dialog:      " hwndTop
+  say "Self (dlgHandle):" hwndMyDialogHandle
+  say "Self (getSelf):  " hwndMySelf
+  say "Static dialog:   " hwndStatic
+
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Output:</emphasis></term>
+<listitem><para>The above might write to the console something like the following:
+<programlisting>
+<![CDATA[
+  Top dialog:       787096
+  Self (dlgHandle): 4522228
+  Self (getSelf):   4522228
+  Static dialog:    787096
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
 <section id="h000086"><title>Get</title>
 <indexterm><primary>Get</primary></indexterm>
 <programlisting>
@@ -5174,10 +5241,11 @@ control.</para>
 ]]>
 </programlisting>
 
-<para>The Get method returns the handle of the Windows Dialog associated with
-the top ooDialog dialog. A handle is a unique reference to a particular Windows
-object. Handles are used within some of the methods to work on a specific
-Windows object.</para>
+<para>The <computeroutput>Get</computeroutput> method returns the handle of the
+Windows Dialog associated with the top ooDialog dialog. A handle is a unique
+reference to a particular Windows object. Handles are used within some of the
+methods to work on a specific Windows object.
+</para>
 <note><title>Note</title><para>
 If more than one ooDialog exists, the top dialog and the dialog whose method is
 executing may not be the same.  When more than one dialog exists, the top dialog
@@ -5325,8 +5393,13 @@ in one string separated by blanks. </para>
 <listitem><para>The only argument is:
 <variablelist>
 <varlistentry><term>hwnd</term>
-<listitem><para>The handle of the window. Use the <link linkend="h000086">Get</link> method
-to retrieve the window handle.
+<listitem><para>The handle of the window.  There are a number of ways to get the
+window handle of objects used in ooDialog. For instance, use the <link
+linkend="h000086">GetSelf</link> method to retrieve the window handle of the
+dialog instance.  Use the  <link linkend="h000086">Get</link> method to retrieve
+the window handle of the most recently created dialog.  To get the window handle
+to a dialog control, the <link linkend="h000091">GetItem</link> method can be
+used.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -5512,8 +5585,8 @@ If the entire dialog is already on the visible screen then no action is taken.
 </para>
 <para>This is useful in a number of situations.  It allows the programmer to
 move or resize the dialog and not have to worry that the dialog is off the
-screen.  After the move or resizing, she can invoke the EnsureVisible method and
-know that the dialog is entirely on the screen.
+screen.  After finishing the move or resizing, the programmer can invoke the
+EnsureVisible method and know that the dialog is entirely on the screen.
 </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -5538,7 +5611,7 @@ If the dialog is already completely on the screen, then no action is taken.
   if \.useDefault then
       do
           -- Read oorexxtry.ini position & size the dialog based on its values
-          handle = self~get()
+          handle = self~getSelf()
           k1 = SysIni('oorexxtry.ini','oorexxtry','k1')
           k2 = SysIni('oorexxtry.ini','oorexxtry','k2')
           k3 = SysIni('oorexxtry.ini','oorexxtry','k3')
@@ -5576,7 +5649,7 @@ have the <computeroutput>MINIMIZEBOX</computeroutput> style when it is created.
 </para>
 <para>This is a convenience method.  It is functionally equivalent to using the
 <link linkend="show">Show</link> method with the <computeroutput>MIN
-</computeroutput>keyword.
+</computeroutput> keyword.
 </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -5598,6 +5671,106 @@ have the <computeroutput>MINIMIZEBOX</computeroutput> style when it is created.
 
 <programlisting>
 <![CDATA[
+/* Simple Dialog to view files full screen */
+
+  dlg = .FileView~new( , "fileView.h")
+  if dlg~initCode = 0 then do
+    dlg~createCenter(170, 90, "The File Viewer Dialog", "VISIBLE MAXIMIZEBOX MINIMIZEBOX")
+    dlg~Execute("SHOWTOP", IDI_DLG_OOREXX)
+    dlg~Deinstall
+  end
+
+-- End of entry point.
+::requires "OODWin32.cls"
+
+::class FileView subclass UserDialog inherit AdvancedControls
+
+::method defineDialog
+
+  self~addText(10, 25, 150, 10, " Enter the name of a file to view:", "", IDC_ST_TYPE)
+  self~addEntryLine(IDC_ENTRYLINE, , 10, 35, 150, 10, "AUTOSCROLLH")
+
+  -- When the view button is pushed, another dialog will show the file.
+  self~addButton(IDC_PB_VIEW, 10, 55, 35, 15, "View File", onView, "DEFAULT GROUP")
+  self~addButton(IDOK, 130, 55, 35, 15, "Quit")
+
+::method initDialog
+  expose editCntrl
+  editCntrl = self~getEditControl(IDC_ENTRYLINE)
+
+::method onView
+  expose viewDlg editCntrl
+
+  fileName = editCntrl~getText
+  viewDlg = .Viewer~new( , "fileView.h", self, fileName)
+  if viewDlg~initCode = 0 then do
+    self~disableItem(IDC_PB_VIEW)
+
+    viewDlg~create(30, 30, 170, 180, "Viewer", "MAXIMIZEBOX MINIMIZEBOX")
+    viewDlg~popUpAsChild(self, "HIDE", , IDI_DLG_APPICON)
+
+    -- The underlying Windows dialog has to be created before it can be maximized.
+    j = SysSleep(.1)
+
+    viewDlg~maximize
+    self~minimize
+  end
+
+::class 'Viewer' subclass UserDialog inherit AdvancedControls
+
+::method init
+  expose parent filename
+  use arg data, header, parent, fileName
+  forward class (super) continue
+  self~autoDetect = 0
+
+::method defineDialog
+  expose wasMinimized
+
+  wasMinimized = .false
+  style = "VSCROLL HSCROLL MULTILINE READONLY"
+  self~addEntryLine(IDC_MULTILINE, "cEntry", 0, 0, 170, 180, style)
+  self~connectResize("onSize")
+
+::method initDialog
+  expose editControl fileName isHidden
+
+  editControl = self~getEditControl(IDC_MULTILINE)
+  editControl~hide
+  isHidden = .true
+
+  fObj = .stream~new(fileName)
+  text = fObj~charin(1, fObj~chars)
+  fObj~close
+  if text == "" then text = "   No file  "
+  editControl~setText(text)
+
+::method onSize
+  expose editControl wasMinimized
+  use arg sizeEvent lParam
+
+  if sizeEvent = 1 then wasMinimized = .true
+
+  if sizeEvent = 0 |  sizeEvent = 2 then do
+    if \ wasMinimized then self~resizeEditControl
+    wasMinimized = .false
+  end
+
+::method resizeEditControl
+  expose editControl isHidden
+
+  parse value self~getClientRect with wx wy wcx wcy
+  editControl~setRect(0, 0, wcx, wcy)
+  if isHidden then do
+    editControl~show
+    isHidden = .false
+  end
+
+::method cancel
+  expose parent
+  parent~enableItem(IDC_PB_VIEW)
+  if parent~isMinimized then parent~restore
+  return self~cancel:super
 ]]>
 </programlisting>
 
@@ -5622,7 +5795,7 @@ have the <computeroutput>MAXIMIZEBOX</computeroutput> style when it is created.
 </para>
 <para>This is a convenience method.  It is functionally equivalent to using the
 <link linkend="show">Show</link> method with the <computeroutput>MAX
-</computeroutput>keyword.
+</computeroutput> keyword.
 </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -5659,7 +5832,7 @@ to restore a dialog window that he previously minimized or maximized.
 </para>
 <para>This is a convenience method.  It is functionally equivalent to using the
 <link linkend="show">Show</link> method with the <computeroutput>RESTORE
-</computeroutput>keyword.
+</computeroutput> keyword.
 </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -5669,10 +5842,10 @@ to restore a dialog window that he previously minimized or maximized.
 <listitem><para>
 <variablelist>
 <varlistentry><term>0</term>
-<listitem><para>Minimizing was successful.
+<listitem><para>Restoring was successful.
 </para></listitem></varlistentry>
 <varlistentry><term>1</term>
-<listitem><para>Minimizing failed.
+<listitem><para>Restoring failed.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -6056,12 +6229,16 @@ or a dialog item. </para>
 <listitem><para>The only argument is:
 <variablelist>
 <varlistentry><term>hwnd</term>
-<listitem><para>A handle to the window or dialog item. Use the <link linkend="h000086">Get</link> or <link linkend="h000091">GetItem</link> method to get a handle.
+<listitem><para>A handle to the window or dialog item. Use the <link
+linkend="mthGetSelf">GetSelf</link> or <link linkend="h000091">GetItem</link>
+method to get a handle.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example hides the whole dialog:
+<listitem><para>The following example gets the window handle of the top dialog
+(which is not neccessarily the executing dialog, see the <link
+linkend="h000086">Get</link> method) and hides the whole dialog:
 
 <programlisting>
 <![CDATA[
@@ -6457,7 +6634,7 @@ of the dialog is to be erased before redrawing. </para>
 <listitem><para>The handle to the dialog in which parts of the client area are to be
 redrawn. See <link linkend="h000086">Get</link> or <link linkend="h000091">GetItem</link> for
 information on how to get a window handle. If you omit this argument, the
-handle of the dialog is used.
+handle of the dialog instance is used.
 </para></listitem></varlistentry>
 <varlistentry><term>left, top</term>
 <listitem><para>The upper left corner of the rectangle relative to the client area,
@@ -6534,8 +6711,9 @@ rectangle. </para>
 <listitem><para>The arguments are:
 <variablelist>
 <varlistentry><term>hwnd</term>
-<listitem><para>The handle to the window. See <link linkend="h000086">Get</link> or <link linkend="h000091">GetItem</link> for information on how to get a window handle. If you omit
-this argument, the handle of the dialog is used.
+<listitem><para>The handle to the window. See <link linkend="h000086">Get</link>
+or <link linkend="h000091">GetItem</link> for information on how to get a window
+handle. If you omit this argument, the handle of the dialog instance is used.
 </para></listitem></varlistentry>
 <varlistentry><term>erasebkg</term>
 <listitem><para>Determines whether (1) or not (0) the background of the
@@ -6564,7 +6742,9 @@ of a window. The values are in pixels. </para>
 <listitem><para>The arguments are:
 <variablelist>
 <varlistentry><term>hwnd</term>
-<listitem><para>The handle of the window. See <link linkend="h000086">Get</link> or <link linkend="h000091">GetItem</link> for how to get a window handle.
+<listitem><para>The handle of the window. See <link
+linkend="mthGetSelf">GetSelf</link> or <link linkend="h000091">GetItem</link>
+for information on obtaining a window handle.
 </para></listitem></varlistentry>
 <varlistentry><term>left</term>
 <listitem><para>The horizontal value of the upper-left corner of the rectangle
@@ -6585,7 +6765,7 @@ of a window. The values are in pixels. </para>
 
 <programlisting>
 <![CDATA[
-hwnd=MyDialog~Get
+hwnd=MyDialog~GetSelf
 MyDialog~ClearRect(hwnd, 2, 4, 22, 24)
 ]]>
 </programlisting>
@@ -6634,12 +6814,15 @@ of the given window. </para>
 <listitem><para>The only argument is:
 <variablelist>
 <varlistentry><term>hwnd</term>
-<listitem><para>The handle of the window. See <link linkend="h000086">Get</link> or <link linkend="h000091">GetItem</link> for how to get a window handle.
+<listitem><para>The handle of the window. See <link
+linkend="mthGetSelf">GetSelf</link>, <link linkend="h000086">Get</link>, or
+<link linkend="h000091">GetItem</link> for some methods to get a window handle.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example gets the window handle and then clears the window:
+<listitem><para>The following example gets the window handle of a dialog control
+with resource ID of 211 and then clears the dialog control window:
 
 <programlisting>
 <![CDATA[
