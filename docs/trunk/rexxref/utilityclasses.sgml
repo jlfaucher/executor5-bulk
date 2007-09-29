@@ -44,6 +44,1113 @@
 <section id="miscclasses"><title>The Utility Classes</title>
 <para>This section describes the miscellaneous classes supplied by ooRexx.</para>
 
+<section id="clsDateTime"><title>The DateTime Class</title>
+<indexterm><primary>DateTime class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>DateTime class</secondary></indexterm>
+
+<para>A DateTime object represents a point in between 1 January 0001 at 00:00.000000
+and 31 December 9999 at 23:59:59.999999.  A DateTime object has methods to allow
+formatting a date or time in various formats, as well as allowing arithmetic operations between
+dates.
+</para>
+<figure><title>The DateTime class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxAlarmClass.png" align="left">
+</imageobject>
+</mediaobject>
+</figure>
+<note><title>Note</title>
+<para>The DateTime class also has available class methods that its
+metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
+
+<section><title>Inherited Methods</title>
+
+&objclsmthods;
+
+<para>Methods inherited from the
+<link linkend="clsComparable">Comparable class</link>.</para>
+<itemizedlist>
+<listitem><para><link linkend="mthComparableCompareTo">compareTo</link></para></listitem>
+</itemizedlist>
+</section>
+
+<section id="mthDateTimeMinDate"><title>minDate (Class Method)</title>
+<indexterm><primary>minDate method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>minDate method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-minDate-----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a DateTime instance representing the minimum supported Rexx date,
+1 January 0001 at 00:00:00.000000.
+</section>
+
+<section id="mthDateTimeMaxDate"><title>maxDate (Class Method)</title>
+<indexterm><primary>maxDate method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>maxDate method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-maxDate-----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a DateTime instance representing the maximum supported Rexx date,
+31 December 9999 at 23:59:59.999999.
+</section>
+
+<section id="mthDateTimeToday"><title>today (Class Method)</title>
+<indexterm><primary>today method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>today method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-today-------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a DateTime instance for the current day, with a time value of 00:00:00.000000.
+</section>
+                                                                  l
+<section id="mthDateTimeFromNormalDate"><title>fromNormalDate (Class Method)</title>
+<indexterm><primary>fromNormalDate method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>fromNormalDate method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-fromNormalDate(-+-----------+-)-----------------------------><
+                   +-separator-+
+]]>
+</programlisting>
+
+<para>Creates a DateTime object from a string returned by the Normal option
+of the Date() built-in function.
+The time component will be set to the beginning of the input day (00:00:00.000000).</para>
+<para>
+If specified, <emphasis role="italic">separator</emphasis>
+identifies the field separator character used in the string.  The separator must be a single character
+or the null string ("").  A space (" ") is the default separator.</para>
+</section>
+                                                                  l
+<section id="mthDateTimeFromEuropeanDate"><title>fromEuropeanDate (Class Method)</title>
+<indexterm><primary>fromEuropeanDate method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>fromEuropeanDate method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-fromEuropeanDate(-+-----------+-)-----------------------------><
+                     +-separator-+
+]]>
+</programlisting>
+
+<para>Creates a DateTime object from a string returned by the European option
+of the Date() built-in function.
+The time component will be set to the beginning of the input day (00:00:00.000000).</para>
+<para>
+If specified, <emphasis role="italic">separator</emphasis>
+identifies the field separator character used in the string.  The separator must be a single character
+or the null string ("").  A slash ("/") is the default separator.
+The time component will be set to the beginning of the input day (00:00:00.000000).
+</section>
+                                                                  l
+<section id="mthDateTimeFromOrderedDate"><title>fromOrderedDate (Class Method)</title>
+<indexterm><primary>fromOrderedDate method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>fromOrderedDate method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-fromOrderedDate(-+-----------+-)-----------------------------><
+                    +-separator-+
+]]>
+</programlisting>
+
+<para>Creates a DateTime object from a string returned by the Ordered option
+of the Date() built-in function.
+The time component will be set to the beginning of the input day (00:00:00.000000).</para>
+<para>
+If specified, <emphasis role="italic">separator</emphasis>
+identifies the field separator character used in the string.  The separator must be a single character
+or the null string ("").  A slash ("/") is the default separator.
+The time component will be set to the beginning of the input day (00:00:00.000000).</para>
+</section>
+                                                                  l
+<section id="mthDateTimeFromOrderedDate"><title>fromStandardDate (Class Method)</title>
+<indexterm><primary>fromStandardDate method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>fromStandardDate method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-fromStandardDate(-+-----------+-)-----------------------------><
+                     +-separator-+
+]]>
+</programlisting>
+
+<para>Creates a DateTime object from a string returned by the Standard option
+of the Date() built-in function.
+The time component will be set to the beginning of the input day (00:00:00.000000).</para>
+<para>
+If specified, <emphasis role="italic">separator</emphasis>
+identifies the field separator character used in the string.  The separator must be a single character
+or the null string ("").  A null string ("") is the default separator.</para>
+</section>
+                                                                  l
+<section id="mthDateTimeFromUsaDate"><title>fromUsaDate (Class Method)</title>
+<indexterm><primary>fromUsaDate method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>fromUsaDate method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-fromUsaDate(-+-----------+-)-----------------------------><
+                +-separator-+
+]]>
+</programlisting>
+
+<para>Creates a DateTime object from a string returned by the Usa option
+of the Date() built-in function.
+The time component will be set to the beginning of the input day (00:00:00.000000).</para>
+<para>
+If specified, <emphasis role="italic">separator</emphasis>
+identifies the field separator character used in the string.  The separator must be a single character
+or the null string ("").  A slash ("/") is the default separator.</para>
+</section>
+                                                                  l
+<section id="mthDateTimeNormalTime"><title>fromNormalTime (Class Method)</title>
+<indexterm><primary>fromNormalTime method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>fromNormalTime method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-fromNormalTime----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Creates a DateTime object from a string returned by the Normal option
+of the Time() built-in function.
+The date component will be set to 1 January 0001.</para>
+</section>
+                                                                  l
+<section id="mthDateTimeCivilTime"><title>fromCivilTime (Class Method)</title>
+<indexterm><primary>fromCivilTime method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>fromCivilTime method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-fromCivilTime----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Creates a DateTime object from a string returned by the Civil option
+of the Time() built-in function.
+The date component will be set to 1 January 0001.</para>
+</section>
+                                                                  l
+<section id="mthDateTimeLongTime"><title>fromLongTime (Class Method)</title>
+<indexterm><primary>fromLongTime method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>fromLongTime method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-fromLongTime----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Creates a DateTime object from a string returned by the Long option
+of the Time() built-in function.
+The date component will be set to 1 January 0001.</para>
+</section>
+                                                                  l
+<section id="mthDateTimeFromBaseDate"><title>fromBaseDate (Class Method)</title>
+<indexterm><primary>fromBaseDate method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>fromBaseDate method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-fromBaseDate----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Creates a DateTime object from a string returned by the Basedate option
+of the Date() built-in function.
+The time component will be set to the beginning of the input day (00:00:00.000000).</para>
+</section>
+                                                                  l
+<section id="mthDateTimeFromTicks"><title>fromTicks (Class Method)</title>
+<indexterm><primary>fromTicks method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>fromTicks method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-fromTicks----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Creates a DateTime object from a string returned by the Ticks option
+of the Date() or Time() built-in functions.
+</para>
+</section>
+                                                                  l
+<section id="mthDateTimeFromIsoDate"><title>fromIsoDate (Class Method)</title>
+<indexterm><primary>fromIsoDate method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>fromIsoDate method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-fromIsoDate--------------------------------------------><
+]]>
+</programlisting>
+
+<para>Creates a DateTime object from a string in ISO date format
+(yyyy-mm-ddThh:mm:ss.uuuuuu).  The DateTime string method returns
+the ISO format as the string form of a DateTime object.
+</para>
+</section>
+                                                                  l
+<section id="mthDateTimeInit"><title>init</title>
+<indexterm><primary>init method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>init method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-init---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>
+text to be provided
+</para>
+</section>
+                                                                  l
+<section id="mthDateTimeCompareTo"><title>compareTo</title>
+<indexterm><primary>compareTo method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>compareTo method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-compareTo(other)------------------------------------------------><
+]]>
+</programlisting>
+
+<para>This method returns "-1" if the <emphasis role="italic">other</emphasis> is larger than the recieving
+object, "0" if the two objects are equal, and "1" if <emphasis role="italic">other</emphasis> is
+smaller than the receiving object.</para>
+</section>
+
+<section id="mthDateTimeYear"><title>year</title>
+<indexterm><primary>year method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>year method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-year------------------------------------------------><
+]]>
+</programlisting>
+
+<para>
+Returns the year represented by this DateTime instance.
+</para>
+</section>
+
+<section id="mthDateTimeMonth"><title>month</title>
+<indexterm><primary>month method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>month method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-month------------------------------------------------><
+]]>
+</programlisting>
+
+<para>
+Returns the month represented by this DateTime instance.
+</para>
+</section>
+
+<section id="mthDateTimeDay"><title>day</title>
+<indexterm><primary>day method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>day method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-day------------------------------------------------><
+]]>
+</programlisting>
+
+<para>
+Returns the day represented by this DateTime instance.
+</para>
+</section>
+
+<section id="mthDateTimeHours"><title>hours</title>
+<indexterm><primary>hours method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>hours method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-hours----------------------------------------------><
+]]>
+</programlisting>
+
+<para>
+Returns number of whole hours since midnight.
+</para>
+</section>
+
+<section id="mthDateTimeMinutes"><title>minutes</title>
+<indexterm><primary>minutes method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>minutes method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-minutes--------------------------------------------><
+]]>
+</programlisting>
+
+<para>
+Returns minutes portion of the timestamp time-of-day.
+</para>
+</section>
+
+<section id="mthDateTimeSeconds"><title>seconds</title>
+<indexterm><primary>seconds method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>seconds method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-seconds--------------------------------------------><
+]]>
+</programlisting>
+
+<para>
+Returns seconds portion of the timestamp time-of-day.
+</para>
+</section>
+
+<section id="mthDateTimeMicroseconds"><title>microseconds</title>
+<indexterm><primary>microseconds method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>microseconds method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-microseconds-----------------------------------------><
+]]>
+</programlisting>
+
+<para>
+Returns microseconds portion of the timestamp time-of-day.
+</para>
+</section>
+
+<section id="mthDateTimeDayMinutes"><title>dayMinutes</title>
+<indexterm><primary>dayMinutes method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>dayMinutes method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-dayMinutes-------------------------------------------><
+]]>
+</programlisting>
+
+<para>
+Returns the number of minutes since midnight in the time-of-day.
+</para>
+</section>
+
+<section id="mthDateTimeDaySeconds"><title>daySeconds</title>
+<indexterm><primary>daySeconds method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>daySeconds method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-daySeconds-------------------------------------------><
+]]>
+</programlisting>
+
+<para>
+Returns the number of seconds since midnight in the time-of-day.
+</para>
+</section>
+
+<section id="mthDateTimeDayMicroseconds"><title>dayMicroseconds</title>
+<indexterm><primary>dayMicroseconds method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>dayMicroseconds method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-dayMicroseconds-------------------------------------------><
+]]>
+</programlisting>
+
+<para>
+Returns the number of microseconds since midnight in the time-of-day.
+</para>
+</section>
+
+<section id="mthDateTimeHashCode"><title>hashCode</title>
+<indexterm><primary>hashCode method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>hashCode method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-hashCode---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a string value that is used as a hash value for MapCollection
+such as Table, Relation, Set, Bag, and Directory.
+</para>
+</section>
+
+<section id="mthDateTimeAddYears"><title>addYears</title>
+<indexterm><primary>addYears method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>addYears method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-addYears(years)--------------------------------------------><
+]]>
+</programlisting>
+
+<para>Add a number of years to the DateTime object, returning a new DateTime instance.
+The receiver DateTime object is unchanged.
+The <emphasis role="italic">years</emphasis> value must be a valid whole number.  Negative values
+result in years being subtracted from the DateTime value.
+</para>
+<para>The addYears method will take leap years into acount.  If the addition result would fall on February 29th of
+a non-leap year, the day will be rolled back to the 28th.
+</para>
+<programlisting>
+<![CDATA[
+date = .DateTime~new(2008, 2, 29)
+say date              -- Displays "2008-02-29T00:00:00.000000"
+say date~addYears(1)  -- Displays "2009-02-29T00:00:00.000000"
+]]>
+</programlisting>
+</section>
+
+<section id="mthDateTimeAddWeeks"<title>addWeeks</title>
+<indexterm><primary>addWeeks method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>addWeeks method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-addWeeks(weeks)------------------------------------------><
+]]>
+</programlisting>
+
+<para>Adds weeks to the DateTime object, returning a new DateTime instance.
+The receiver DateTime object is unchanged.
+The <emphasis role="italic">weeks</emphasis> value must be a valid number, including
+fractional values.
+Negative values
+result in week being subtracted from the DateTime value.
+</para>
+</section>
+
+<section id="mthDateTimeAddDays"<title>addDays</title>
+<indexterm><primary>addDays method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>addDays method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-addDays(days)--------------------------------------------><
+]]>
+</programlisting>
+
+<para>Adds days to the DateTime object, returning a new DateTime instance.
+The receiver DateTime object is unchanged.
+The <emphasis role="italic">days</emphasis> value must be a valid number, including
+fractional values.
+Negative values
+result in days being subtracted from the DateTime value.
+</para>
+<programlisting>
+<![CDATA[
+date = .DateTime~new(2008, 2, 29)
+say date              -- Displays "2008-02-29T00:00:00.000000"
+say date~addDays(1.5) -- Displays "2008-03-01T12:00:00.000000"
+]]>
+</programlisting>
+</section>
+
+<section id="mthDateTimeAddHours"<title>addHours</title>
+<indexterm><primary>addHours method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>addHours method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-addHours(hours)------------------------------------------><
+]]>
+</programlisting>
+
+<para>Adds hours to the DateTime object, returning a new DateTime instance.
+The receiver DateTime object is unchanged.
+The <emphasis role="italic">hours</emphasis> value must be a valid number, including
+fractional values.
+Negative values
+result in hours being subtracted from the DateTime value.
+</para>
+</section>
+
+<section id="mthDateTimeAddMinutes"<title>addMinutes</title>
+<indexterm><primary>addMinutes method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>addMinutes method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-addMinutes(minutes)--------------------------------------><
+]]>
+</programlisting>
+
+<para>Adds minutes to the DateTime object, returning a new DateTime instance.
+The receiver DateTime object is unchanged.
+The <emphasis role="italic">minutes</emphasis> value must be a valid number, including
+fractional values.
+Negative values
+result in minutes being subtracted from the DateTime value.
+</para>
+</section>
+
+<section id="mthDateTimeAddSeconds"<title>addSeconds</title>
+<indexterm><primary>addSeconds method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>addSeconds method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-addSeconds(seconds)--------------------------------------><
+]]>
+</programlisting>
+
+<para>Adds seconds to the DateTime object, returning a new DateTime instance.
+The receiver DateTime object is unchanged.
+The <emphasis role="italic">seconds</emphasis> value must be a valid number, including
+fractional values.
+Negative values
+result in seconds being subtracted from the DateTime value.
+</para>
+</section>
+
+<section id="mthDateTimeAddMicroseconds"<title>addMicroseconds</title>
+<indexterm><primary>addMicroseconds method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>addMicroseconds method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-addMicroseconds(microseconds)----------------------------><
+]]>
+</programlisting>
+
+<para>Adds seconds to the DateTime object, returning a new DateTime instance.
+The receiver DateTime object is unchanged.
+The <emphasis role="italic">seconds</emphasis> value must be a valid whole number.
+Negative values
+result in microseconds being subtracted from the DateTime value.
+</para>
+</section>
+
+<section id="mthDateTimeIsoDate"<title>isoDate</title>
+<indexterm><primary>isoDate method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>isoDate method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-isoDate--------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a String formatted into ISO date format, yyyy-dd-mmThh:mm:ss.uuuuuu.
+</para>
+</section>
+
+<section id="mthDateTimeBaseDate"<title>baseDate</title>
+<indexterm><primary>baseDate method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>baseDate method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-baseDate-------------------------------------------------><
+]]>
+</programlisting>
+
+<para>
+Returns the number of complete days (that is, not including the
+current day) since and including the base date, 1 January 0001, in the format:
+<emphasis role="italic">dddddd</emphasis> (no leading zeros or blanks).
+</para>
+<para>The base date of 1 January 1970 is determined
+by extending the current Gregorian calendar backward (365 days each year,
+with an extra day every year that is divisible by 4 except century years that
+are not divisible by 400. It does not take into account any errors in the calendar
+system that created the Gregorian calendar originally.</para>
+</section>
+
+<section id="mthDateTimeYearDay"<title>yearDay</title>
+<indexterm><primary>yearDay method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>yearDay method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-yearDay--------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the number of days, including the current day, that have passed
+in the DateTime year in the format <emphasis role="italic">ddd</emphasis>
+(no leading zeros or blanks).
+</para>
+</section>
+
+<section id="mthDateTimeWeekDay"<title>weekDay</title>
+<indexterm><primary>weekDay method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>weekDay method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-weekDay--------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the day of the week, as an integer.  Monday is "0", Tuesday is
+"1", etc.
+</para>
+</section>
+
+<section id="mthDateTimeEuropeanDate"<title>europeanDate</title>
+<indexterm><primary>europeanDate method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>europeanDate method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-europeanDate(-+------------+-)-------------------------------><
+                 +-sepaarator-+
+]]>
+</programlisting>
+
+<para>Returns the date in the format <emphasis role="italic">dd/mm/yy</emphasis>.
+If specified, <emphasis role="italic">separator</emphasis>
+identifies the field separator character used in the returned date.
+The separator must be a single character
+or the null string ("").  A slash ("/") is the default separator.
+</para>
+</section>
+
+<section id="mthDateTimeLanguageDate"<title>languageDate</title>
+<indexterm><primary>languageDate method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>languageDate method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-languageDate---------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the date in an implementation- and language-dependent, or local,
+date format. The format is <emphasis role="italic">dd month yyyy</emphasis>.
+The name of the month is according to the national language installed on the
+system. If no local date format is available, the default format is returned.
+
+<note><title>Note</title>
+<para>This
+format is intended to be used as a whole; Rexx programs must not make any
+assumptions about the form or content of the returned string.</para></note>
+</para>
+</section>
+
+<section id="mthDateTimeMonthName"<title>monthName</title>
+<indexterm><primary>monthName method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>monthName method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-monthName------------------------------------------------><
+]]>
+</programlisting>
+
+<para>
+Returns the name of the DateTime month, in English.
+</para>
+</section>
+
+<section id="mthDateTimeDayName"<title>dayName</title>
+<indexterm><primary>dayName method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>dayName method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-dayName------------------------------------------------><
+]]>
+</programlisting>
+
+<para>
+Returns the name of the DateTime day, in English.
+</para>
+</section>
+
+<section id="mthDateTimeNormalDate"<title>normalDate</title>
+<indexterm><primary>normalDate method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>normalDate method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-normalDate(-+------------+-)-------------------------------><
+               +-sepaarator-+
+]]>
+</programlisting>
+
+<para>Returns the date in the format <emphasis role="italic">dd mon yyyy</emphasis>.
+If specified, <emphasis role="italic">separator</emphasis>
+identifies the field separator character used in the returned date.
+The separator must be a single character
+or the null string ("").  A space (" ") is the default separator.
+</para>
+</section>
+
+<section id="mthDateTimeOrderedDate"<title>orderedDate</title>
+<indexterm><primary>orderedDate method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>orderedDate method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-orderedDate(-+------------+-)-------------------------------><
+                +-sepaarator-+
+]]>
+</programlisting>
+
+<para>Returns the date in the format <emphasis role="italic">yy/mm/dd</emphasis>.
+If specified, <emphasis role="italic">separator</emphasis>
+identifies the field separator character used in the returned date.
+The separator must be a single character
+or the null string ("").  A slash ("/") is the default separator.
+</para>
+</section>
+
+<section id="mthDateTimeStandardDate"<title>standardDate</title>
+<indexterm><primary>standardDate method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>standardDate method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-standardDate(-+------------+-)-------------------------------><
+                 +-sepaarator-+
+]]>
+</programlisting>
+
+<para>Returns the date in the format <emphasis role="italic">yyyymmdd</emphasis>.
+If specified, <emphasis role="italic">separator</emphasis>
+identifies the field separator character used in the returned date.
+The separator must be a single character
+or the null string ("").  A null string ("") is the default separator.
+</para>
+</section>
+
+<section id="mthDateTimeUsaDate"<title>usaDate</title>
+<indexterm><primary>usaDate method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>usaDate method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-usaDate(-+------------+-)-------------------------------><
+            +-sepaarator-+
+]]>
+</programlisting>
+
+<para>Returns the date in the format <emphasis role="italic">mm/dd/yy</emphasis>.
+If specified, <emphasis role="italic">separator</emphasis>
+identifies the field separator character used in the returned date.
+The separator must be a single character
+or the null string ("").  A slash ("/") is the default separator.
+</para>
+</section>
+
+<section id="mthDateTimeCivilTime"<title>civilTime</title>
+<indexterm><primary>civilTime method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>civilTime method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-civilTime-----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the time in Civil format <emphasis role="italic">hh:mmxx</emphasis>.
+The hours can take
+the values <computeroutput>1</computeroutput> through
+<computeroutput>12</computeroutput>, and the minutes the values
+<computeroutput>00</computeroutput> through <computeroutput>59</computeroutput>.
+The minutes are followed immediately by the letters
+<computeroutput>am</computeroutput> or <computeroutput>pm</computeroutput>.
+This distinguishes times in the morning (12 midnight through 11:59
+a.m.--appearing as <computeroutput>12:00am</computeroutput> through
+<computeroutput>11:59am</computeroutput>) from noon and afternoon (12 noon
+through 11:59 p.m.--appearing as <computeroutput>12:00pm</computeroutput>
+through <computeroutput>11:59pm</computeroutput>). The hour has no leading
+zero.  The minute field shows the current minute (rather than the nearest
+minute) for consistency with other TIME results.
+</para>
+</section>
+
+<section id="mthDateTimeNormalTime"<title>normalTime</title>
+<indexterm><primary>normalTime method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>normalTime method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-normalTime-----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the time in the default format <emphasis role="italic">hh:mm:ss</emphasis>.
+The hours
+can have the values <computeroutput>00</computeroutput> through
+<computeroutput>23</computeroutput>, and minutes and seconds,
+<computeroutput>00</computeroutput> through <computeroutput>59</computeroutput>.
+There are always two digits. Any fractions
+of seconds are ignored (times are never rounded). This is the default.
+</para>
+</section>
+
+<section id="mthDateTimeLongTime"<title>longTime</title>
+<indexterm><primary>longTime method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>longTime method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-longTime-----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns time in the format <emphasis role="italic">hh:mm:ss.uuuuuu</emphasis>
+(where <emphasis role="italic">uuuuuu</emphasis> are microseconds).
+</para>
+</section>
+
+<section id="mthDateTimeFullDate"<title>fullDate</title>
+<indexterm><primary>fullDate method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>fullDate method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-fullDate-----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the number of microseconds
+since 00:00:00.000000 on 1 January 0001, in the format:
+<emphasis role="italic">dddddddddddddddddd</emphasis> (no leading zeros or blanks).
+</para>
+</section>
+
+<section id="mthDateTimeTicks"<title>ticks</title>
+<indexterm><primary>ticks method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>ticks method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-ticks--------------------------------------------------><
+]]>
+</programlisting>
+
+<para>returns the number of seconds
+since 00:00:00.000000 on 1 January 1970, in the format:
+<emphasis role="italic">dddddddddddd</emphasis> (no leading zeros or blanks).
+Times prior to 1 January 1970 are returned as a negative value.
+</para>
+</section>
+
+<section id="mthDateTimeDate"<title>date</title>
+<indexterm><primary>date method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>date method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-date---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a new DateTime object instance for the current date, with
+the time component set to 00:00:00.000000.
+</para>
+</section>
+
+<section id="mthDateTimeOfDay"<title>timeOfDay</title>
+<indexterm><primary>timeOfDay method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>timeOfDay method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-timeOfDay-----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the interval since 00:00:00.000000 of the current day
+as a TimeSpan object.
+</para>
+</section>
+
+<section id="mthDateIsLeapyear"<title>isLeapyear</title>
+<indexterm><primary>isLeapyear method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>isLeapyear method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-isLeapyear---------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns true ("1") if the current year is leap year.  Returns false
+("0") if the current year is not a leap year.
+</para>
+</section>
+
+<section id="mthDateDaysInMonth"<title>daysInMonth</title>
+<indexterm><primary>daysInMonth method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>daysInMonth method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-daysInMonth--------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the number of days in the current month.  For example, for dates in
+January, 31 is returned.  The daysInMonth method takes leap years into account, returning
+28 days for February in non-leap years, and 29 days for leap years.
+</para>
+</section>
+
+<section id="mthDateString"<title>string</title>
+<indexterm><primary>string method</primary>
+<secondary>of daysInMonth class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>string method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-string-------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns DateTime formatted as a string.  The string value is returned in ISO format.
+</para>
+</section>
+
+</section>
+
 <section id="clsAlarm"><title>The Alarm Class</title>
 <indexterm><primary>Alarm class</primary></indexterm>
 <indexterm><primary>class</primary>
