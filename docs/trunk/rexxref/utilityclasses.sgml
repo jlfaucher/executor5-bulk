@@ -351,6 +351,226 @@ the ISO format as the string form of a DateTime object.
 <tertiary>of DateTime class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
+>>-init--------------------------------------------------------><
+
+>>-init(fullDate)---------------------------------------------><
+
+>>-init(year,month,day-+------------------------------------------+----><
+                       +-,hours,minutes,seconds-+---------------+-+
+                                                +-,microseconds-+
+]]>
+</programlisting>
+
+<para>Initializes a new DateTime instance.  If no arguments are specified,
+the DateTime instance is set to the current date and time.  It the single
+<emphasis role="italic">fullDate</emphasis> argument is used, the DateTime
+argument is initialized to the date and time calculated by adding
+<emphasis role="italic">fullDate</emphasis> microseconds to 0001-01-01T00:00:00.000000.
+Otherwise, the DateTime instance is initialized to the <emphasis role="italic">year</emphasis>,
+<emphasis role="italic">month</emphasis>, <emphasis role="italic">day</emphasis>,
+<emphasis role="italic">hours</emphasis>, <emphasis role="italic">minutes</emphasis>,
+<emphasis role="italic">seconds</emphasis>, and <emphasis role="italic">microseconds</emphasis>
+components.  Each of these components must be a valid whole number within the acceptable range for the given
+component.  For example, <emphasis role="italic">year</emphasis> must be in the range 1-9999, while
+<emphasis role="italic">minutes</emphasis> must be in the range 0-59.
+</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<programlisting>
+<![CDATA[
+today = .DateTime~new    -- initializes to current date and time
+                         -- initializes to 9 Sep 2007 at 00:00:00.000000
+day = .DateTime~new(date('F', "20070930", "S"))
+                         -- also initializes to 9 Sep 2007 at 00:00:00.000000
+day = .DateTime~new(2007, 9, 30)
+                         -- initializes to 9 Sep 2007 at 10:33:00.000000
+day = .DateTime~new(2007, 9, 30, 10, 33, 00)
+]]>
+</programlisting>
+</section>
+
+<section id="mthDateTimeComparisonMethods"><title>Comparison Methods</title>
+<indexterm><primary>method</primary>
+<secondary>comparison methods</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-comparison_operator(argument)-------------------------------><
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>1</computeroutput> (true) or
+<computeroutput>0</computeroutput> (false), the result of performing
+the specified comparison operation. The receiver object and the
+<emphasis role="italic">argument</emphasis> are the terms compared. Both must
+be DateTime objects.
+If <emphasis role="italic">argument</emphasis> is not a DateTime object, a SYNTAX
+error condition is raised.
+</para>
+
+<para>The comparison operators you can use in a message are: </para>
+<variablelist>
+<varlistentry><term>=
+<indexterm><primary>= method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>=</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+</term>
+<listitem><para>True if the terms are equal
+</para></listitem></varlistentry>
+<varlistentry><term>\=, &gt;&lt;, &lt;&gt;
+<indexterm><primary>>&lt; method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>&gt;&lt; method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>&lt;&gt; method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>\=</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>>&lt;</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>&lt;&gt;</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+</term>
+<listitem><para>True if the terms are not equal (inverse of =)
+</para></listitem></varlistentry>
+<varlistentry><term>&gt;
+<indexterm><primary>&gt; method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>></secondary></indexterm>
+</term>
+<listitem><para>Greater than
+</para></listitem></varlistentry>
+<varlistentry><term>&lt;
+<indexterm><primary>&lt; method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>&lt;</secondary></indexterm>
+</term>
+<listitem><para>Less than
+</para></listitem></varlistentry>
+<varlistentry><term>&gt;=
+<indexterm><primary>&gt;= method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>&gt;=</secondary></indexterm>
+</term>
+<listitem><para>Greater than or equal to
+</para></listitem></varlistentry>
+<varlistentry><term>\&lt;
+<indexterm><primary>\&lt; method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>\&lt;</secondary></indexterm>
+</term>
+<listitem><para>Not less than
+</para></listitem></varlistentry>
+<varlistentry><term>&lt;=
+<indexterm><primary>&lt;= method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>&lt;=</secondary></indexterm>
+</term>
+<listitem><para>Less than or equal to
+</para></listitem></varlistentry>
+<varlistentry><term>\&gt;
+<indexterm><primary>\&gt; method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>\&gt;</secondary></indexterm>
+</term>
+<listitem><para>Not greater than
+</para></listitem></varlistentry>
+</variablelist>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>comparison methods of DateTime class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+d = .DateTime~new       -- get the current time
+midnight = d~dste       -- get the start of the day
+startTime = midnight~addHours(10)  -- time the bank opens
+endTime = startTime~addHours(5)    -- bank closing time
+
+if startTime <= d & d <- endTime then do
+    say "The bank is open"
+end
+]]>
+</programlisting>
+<para>All strict comparison operations have one of the characters doubled that
+define the operator. The DateTime strict comparison operators produce the same
+results as the non-strict comparisons.
+</para>
+<para>The strict comparison operators you can use in a message are: </para>
+<variablelist>
+<varlistentry><term>==
+<indexterm><primary>== method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>==</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+</term>
+<listitem><para>True if terms are strictly equal
+</para></listitem></varlistentry>
+<varlistentry><term>\==
+<indexterm><primary>\== method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>\==</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+</term>
+<listitem><para>True if the terms are NOT strictly equal (inverse of ==)
+</para></listitem></varlistentry>
+<varlistentry><term>&gt;&gt;
+<indexterm><primary>&gt;&gt; method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>>></secondary></indexterm>
+</term>
+<listitem><para>Strictly greater than
+</para></listitem></varlistentry>
+<varlistentry><term>&lt;&lt;
+<indexterm><primary>&lt;&lt; method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>&lt;&lt;</secondary></indexterm>
+</term>
+<listitem><para>Strictly less than
+</para></listitem></varlistentry>
+<varlistentry><term>&gt;&gt;=
+<indexterm><primary>&gt;&gt;= method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>&gt;&gt;=</secondary></indexterm>
+</term>
+<listitem><para>Strictly greater than or equal to
+</para></listitem></varlistentry>
+<varlistentry><term>\&lt;&lt;
+<indexterm><primary>\&lt;&lt; method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>\&lt;&lt;</secondary></indexterm>
+</term>
+<listitem><para>Strictly NOT less than
+</para></listitem></varlistentry>
+<varlistentry><term>&lt;&lt;=
+<indexterm><primary>&lt;&lt;= method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>&lt;&lt;=</secondary></indexterm>
+</term>
+<listitem><para>Strictly less than or equal to
+</para></listitem></varlistentry>
+<varlistentry><term>\&gt;&gt;
+<indexterm><primary>\&gt;&gt; method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>\&gt;&gt;</secondary></indexterm>
+</term>
+<listitem><para>Strictly NOT greater than
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthDateTimeInit"><title>init</title>
+<indexterm><primary>init method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>init method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
 >>-init---------------------------------------------------><
 ]]>
 </programlisting>
