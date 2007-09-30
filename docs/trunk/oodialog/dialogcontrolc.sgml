@@ -293,6 +293,10 @@ listed in the following DialogControl Instance Methods table.
 <entry><link linkend="getsize">GetSize</link></entry>
 </row>
 <row>
+<entry>GetStyleRaw</entry>
+<entry><link linkend="mthGetStyleRaw">GetStyleRaw</link></entry>
+</row>
+<row>
 <entry>GetTextSize</entry>
 <entry><link linkend="gettextsize">GetTextSize</link></entry>
 </row>
@@ -1080,6 +1084,91 @@ say MyDialog~GetButtonControl("IDOK")~GetID
 </variablelist>
 </section>
 
+<section id="mthGetStyleRaw"><title>GetStyleRaw</title>
+<indexterm><primary>GetStyleRaw</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~GetStyleRaw----------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The <computeroutput>GetStyleRaw</computeroutput> method retrieves the
+Windows style flags of the dialog control.  The flags are returned in
+their numeric format.  This allows the programmer to determine the current style
+of any control.  However, the programmer needs to be able to look up the numeric
+value of the window style flags to make use of this functionality.  This can be
+done using the <link linkend="windowsdoc">Windows documentation</link> and the
+<link linkend="platformsdk">Platform SDK</link>.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>A negative return indicates an error.
+<variablelist>
+<varlistentry><term>0 or greater</term>
+<listitem><para>The numeric value of the window style flags for the control.
+</para></listitem></varlistentry>
+<varlistentry><term>Less than 0</term>
+<listitem><para>The value of the negated Operating System error code.
+The absolute value of the return can be used to look up the error reason in the
+Windows documentation.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example gets the style flags for a tree control
+and then checks to see if drag and drop is enabled and if label editing is
+enabled.
+</para>
+<para>The value of the style flags has the potential of being larger than can be
+accommodated by the default numeric digits.  Use <computeroutput>numeric digits
+11</computeroutput> if the returned value needs to be manipulated, for instance
+to use <computeroutput>d2x</computeroutput> on the value.
+<note><title>Note</title><para>
+It is not necessary to convert the <computeroutput>style</computeroutput> value
+in the example to its hexadecimal string representation before using it as an
+argument in the <computeroutput>BinaryAnd</computeroutput> function.  That is
+just done in the example for display purposes.
+</para></note>
+
+<programlisting>
+<![CDATA[
+
+  ...
+
+  numeric digits 11
+  TVS_DISABLEDRAGDROP = "0x0010"
+  TVS_EDITLABELS      = "0x0008"
+
+  treeControl = self~getTreeControl(IDC_TREE)
+  style = treeControl~getStyleRaw
+  style = "0x" || style~d2x~right(8, '0')
+
+  if BinaryAnd( style, TVS_DISABLEDRAGDROP ) <> 0 then str1 = 'disabled'
+  else str1 = 'enabled'
+
+  if BinaryAnd( style, TVS_EDITLABELS ) <> 0 then str2 = 'enabled'
+  else str2 = 'disabled'
+
+  say 'Tree-view Control styles'
+  say '  Raw style:    ' style
+  say '  Drag and drop:' str1
+  say '  Edit labels:  ' str2
+
+/* Output coule be: */
+
+Tree-view Control styles
+  Raw style:     0x5000002F
+  Drag and drop: enabled
+  Edit labels:   enabled
+
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
 <section id="getrect"><title>GetRect</title>
 <indexterm><primary>GetRect</primary></indexterm>
 <programlisting>
@@ -1563,10 +1652,11 @@ to a dialog control.</para>
 <listitem><para>The return values are message-specific.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example erases the background of the NAME edit control:
+<listitem><para>The following example erases the background of the edit control
+with the resource ID (symbolic ID) of IDC_EDIT1:
 <programlisting>
 <![CDATA[
-dlgc = MyDialog~GetEditControl("NAME")
+dlgc = MyDialog~GetEditControl("IDC_EDIT1")
 WM_ERASEBACKGROUND = "14"~x2d
 hdc = dlgc~GetDc
 dlgc~ProcessMessage(WM_ERASEBACKGROUND, hdc, 0)
@@ -1577,7 +1667,8 @@ dlgc~FreeDC(hdc)
 </variablelist>
 
 <note><title>Note</title><para>
-The Window message numbers are not documented.
+Use the <link linkend="windowsdoc">Windows documentation</link> and <link
+linkend="platformsdk">Platform SDK</link> to obtain the Window message numbers.
 </para></note>
 </section>
 

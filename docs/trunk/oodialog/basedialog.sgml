@@ -2711,14 +2711,20 @@ self~ConnectScrollBar(255,"Increase","Decrease","Drag",1,20,6)
 ]]>
 </programlisting>
 
-<para>The AddUserMsg method connects a Windows message
-with an Object Rexx method. This message is designed to be used by Windows programmers
-who are familiar with the Windows API.</para>
-<para>You have to pass the Windows message ID and the two message
-parameters (wParam and lParam)
-to specify the exact event you want to catch. In addition, you can specify
-filters for each parameter. Filters are useful for catching more than one
-message or one parameter with one method. </para>
+<para>The AddUserMsg method connects a Windows message with an Object Rexx
+method. This method is designed to be used by ooDialog programmers who are
+familiar with the Windows API.
+</para>
+<para>You have to pass the Windows message ID and the two message parameters
+(wParam and lParam) to specify the exact event you want to catch. In addition,
+you can specify filters for each parameter. Filters are useful for catching more
+than one message or one parameter with one method.
+</para>
+<para>Details for all Windows messages and their parameters are available in the
+<link linkend="windowsdoc">Windows documentation</link>.  The numeric value of
+the message IDs (and possibly the message parameters) can be looked up in the
+<link linkend="platformsdk">Windows platform SDK</link>.
+</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
 <listitem><para>This method is protected. You can use it only within the scope of the
