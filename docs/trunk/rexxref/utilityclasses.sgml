@@ -1214,10 +1214,17 @@ takes no action if the specified time has already been reached.</para>
 <emphasis role="italic">atime</emphasis>. At this time, the alarm
 object sends the message that <emphasis role="italic">message</emphasis>,
 a message object, specifies. (See <link linkend="clsMessage">The Message Class</link>.)
-The <emphasis role="italic">atime</emphasis> is a string. You can specify
-this in the default format (<computeroutput>&apos;hh:mm:ss&apos;</computeroutput>) or as
+The <emphasis role="italic">atime</emphasis> can a String, DateTime object, or TimeSpan object.
+</para>
+<para>If <emphasis role="italic">atime</emphasis> is a DateTime object, the DateTime specifies a
+time when the alarm will be triggered.  The DateTime must be greater than the current time.</para>
+<para>If <emphasis role="italic">atime</emphasis> is a TimeSpan, the Alarm will be set to the current
+time plus the TimeSpan.  The TimeSpan must not be a negative interval.</para>
+<para>If <emphasis role="italic">atime</emphasis> is a String,
+you can specify
+this as a date and time (<computeroutput>&apos;hh:mm:ss&apos;</computeroutput>) or as
 a number of seconds
-starting at the present time. If you use the default format, you can specify
+starting at the present time. If you use the date and time format, you can specify
 a date in the default format (<computeroutput>&apos;dd Mmm yyyy&apos;</computeroutput>)
 after the time with a single blank separating the time and date. Leading and
 trailing blanks are not allowed in the
@@ -1239,7 +1246,9 @@ method to cancel a pending alarm. See
 PersonalMessage=.MyMessageClass~new("Call the Bank")
 msg=.message~new(PersonalMessage,"RemindMe")
 
-a=.alarm~new("17:10:00 8 Oct 1996", msg)
+time = .DateTime~fromIsoDate("2007-12-15T17:10:00.000000")
+
+a=.alarm~new(time, msg)
 exit
 /* <link linkend="clasdi">::Class</link>  describes the ::CLASS directive */
 /* <link linkend="methd">::Method</link>  describes the ::METHOD directive */
