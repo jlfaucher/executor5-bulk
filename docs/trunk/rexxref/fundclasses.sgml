@@ -1622,7 +1622,14 @@ result is shown in exponential notation, it might have been rounded.</para>
 <computeroutput>0</computeroutput> (false), the result of performing
 the specified comparison operation. The receiver object and the
 <emphasis role="italic">argument</emphasis> are the terms compared. Both must
-be string objects.</para>
+be string objects.
+If <emphasis role="italic">argument</emphasis> is not a string object, it is converted
+to its string representation for the comparison.
+The one exception is when <emphasis role="italic">argument</emphasis> is the .nil object
+for the ==, \==, =, \=, &gt;&lt;, and &lt;&gt; operators.
+A string object will never compare equal to the .nil object, even when the
+string matches the string value of the .nil object ("The NIL object").
+</para>
 
 <para>The comparison operators you can use in a message are: </para>
 <variablelist>
