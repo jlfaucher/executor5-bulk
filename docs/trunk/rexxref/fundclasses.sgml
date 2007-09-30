@@ -142,6 +142,43 @@ See <link linkend="mthObjectHashCode">hashCode Method</link> for details.
 </variablelist>
 </section>
 
+<section id="mthObjectConcatenationMethods"><title>Concatenation Methods</title>
+<indexterm><primary>method</primary>
+<secondary>concatenation methods</secondary>
+<tertiary>of Object class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-concatenation_operator(argument)----------------------------><
+]]>
+</programlisting>
+
+<para>Concatenates the receiver object's string representation with
+<emphasis role="italic">argument</emphasis>. (See
+<link linkend="strgcon">String Concatenation</link>.)
+The <emphasis role="italic">concatenation_operator</emphasis> can be: </para>
+<variablelist>
+<varlistentry><term>&quot;&quot;</term>
+<listitem><para>concatenates without an intervening blank. The abuttal operator
+&quot;&quot;
+is the null string. The language processor uses the abuttal to concatenate
+two terms that another operator does not separate.
+</para></listitem></varlistentry>
+<varlistentry><term>||
+<indexterm><primary>|| method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>||</secondary></indexterm>
+</term>
+<listitem><para>concatenates without an intervening blank.
+</para></listitem></varlistentry>
+<varlistentry><term>&quot;&nbsp;&quot;
+</term>
+<listitem><para>concatenates with one blank between the receiver
+object and the <emphasis role="italic">argument</emphasis>.
+(The operator &quot;&nbsp;&quot; is a blank.)
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
 <section id="mthObjectClass"><title>class</title>
 <indexterm><primary>class method</primary>
 <secondary>of Object class</secondary></indexterm>
