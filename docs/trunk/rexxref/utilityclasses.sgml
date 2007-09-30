@@ -563,6 +563,80 @@ results as the non-strict comparisons.
 </variablelist>
 </section>
 
+<section id="mthDateTimeArithmeticMethods"><title>Arithmetic Methods</title>
+<indexterm><primary>method</primary>
+<secondary>arithmetic methods</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-arithmetic_operator(argument)-------------------------------><
+]]>
+</programlisting>
+
+<note><title>Note</title>
+<para>For the prefix + operators, omit the parentheses
+and <emphasis role="italic">argument</emphasis>.</para></note>
+<para>Returns the result of performing the specified arithmetic operation on
+the receiver DateTime object. Depending on the operation, the
+<emphasis role="italic">argument</emphasis> be either a TimeSpan object or a DateTime
+object.  See the description of the individual operations for details.
+The
+<emphasis role="italic">arithmetic_operator</emphasis> can be:
+</para>
+<variablelist>
+<varlistentry><term>+
+<indexterm><primary>+ method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>+</secondary></indexterm>
+</term>
+<listitem><para>Addition.  Adds a TimeSpan to the DateTime object, returning a new DateTime
+instance.  The receiver DateTime object is not changed.  The TimeSpan may be either positive or negative.
+</para></listitem></varlistentry>
+<varlistentry><term>-
+<indexterm><primary>- method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>-</secondary></indexterm>
+</term>
+<listitem><para>Subtraction.  If <emphasis role="italic">argument</emphasis> is a DateTime
+object, the two times are subtracted, and a TimeSpan object representing the interval between the
+two times is returned.  If the receiver DateTime is less than the <emphasis role="italic">argument</emphasis>
+argument DateTime, a negative TimeSpan interval is returned.  The receiver DateTime object is not changed.</para>
+<para>If <emphasis role="italic">argument</emphasis> is a TimeSpan object, subtracts the TimeSpan
+from the DateTime object, returning a new DateTime
+instance.  The receiver DateTime object is not changed.  The TimeSpan may be either positive or negative.
+</para></listitem></varlistentry>
+<varlistentry><term>Prefix -
+<indexterm><primary>method</primary>
+<secondary>prefix -</secondary></indexterm>
+</term>
+<listitem><para>A prefix - operation on a DateTime object will raise a SYNTAX error condition.
+</para></listitem></varlistentry>
+<varlistentry><term>Prefix +
+<indexterm><primary>method</primary>
+<secondary>prefix +</secondary></indexterm>
+</term>
+<listitem><para>Returns a new instance of the DateTime object with the same time value.
+</para></listitem></varlistentry>
+</variablelist>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>arithmetic methods of DateTime class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+t = .dateTime~new~timeOfDay  -- returns TimeSpan for current time.
+say t                        -- displays "11:27:12.437000", perhaps
+d = .dateTime~new(2010, 4, 11)  -- creates new date
+
+future = d + t               -- adds timespan to d
+say future                   -- displays "2010-04-11T11:27:12.437000"
+                             -- "real" start of next century
+nextCentury = .dateTime~new(2101, 1, 1)
+                             -- displays "34060.12:25:49.922000", perhaps
+say "The next century starts in" (nextCentury - .dateTime~new)
+]]>
+</programlisting>
+</section>
+
 <section id="mthDateTimeCompareTo"><title>compareTo</title>
 <indexterm><primary>compareTo method</primary>
 <secondary>of DateTime class</secondary></indexterm>
