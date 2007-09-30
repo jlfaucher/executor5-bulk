@@ -1677,7 +1677,8 @@ selected.
 <programlisting>
 <![CDATA[
 editControl = dlg~getEditControl(IDC_ENTRYLINE)
-if .nil == editControl then return style = editControl~getStyle
+if .nil == editControl then return
+style = editControl~getStyle
 if style~wordPos("NUMBER") <> 0 then
   editControl~removeStyle("NUMBER")
 ...

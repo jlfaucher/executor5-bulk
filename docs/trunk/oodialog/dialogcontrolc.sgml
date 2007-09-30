@@ -1106,13 +1106,17 @@ done using the <link linkend="windowsdoc">Windows documentation</link> and the
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
 <listitem><para>A negative return indicates an error.
 <variablelist>
-<varlistentry><term>0 or greater</term>
-<listitem><para>The numeric value of the window style flags for the control.
-</para></listitem></varlistentry>
-<varlistentry><term>Less than 0</term>
+<varlistentry><term>-3 or less 0</term>
 <listitem><para>The value of the negated Operating System error code.
 The absolute value of the return can be used to look up the error reason in the
 Windows documentation.
+</para></listitem></varlistentry>
+<varlistentry><term>-2</term>
+<listitem><para>There is an (internal) problem with the dialog or the dialog
+handle.
+</para></listitem></varlistentry>
+<varlistentry><term>0 or greater</term>
+<listitem><para>The numeric value of the window style flags for the control.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
