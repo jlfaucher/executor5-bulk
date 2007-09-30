@@ -2204,6 +2204,7 @@ the dialog is the active window are connected.)
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The only argument is:
 <variablelist>
+<varlistentry><term>msgToRaise</term>
 <listitem><para>The name of the method that is to be invoked.
 </para></listitem></varlistentry>
 </variablelist>
@@ -2230,8 +2231,8 @@ following four arguments in the order listed:
 had the focus when the F1 key was pressed.
 </para></listitem></varlistentry>
 <varlistentry><term>type</term>
-<listitem><para>Specifies if the ID in argument 1 was a from a window (a dialog
-or dialog control) or from a menu item.  This argument will either be
+<listitem><para>Specifies if the ID in argument 1 was from a window (a dialog or
+dialog control) or from a menu item.  This argument will either be
 <computeroutput>WINDOW</computeroutput> or <computeroutput>MENU
 </computeroutput>.
 </para></listitem></varlistentry>
@@ -2257,7 +2258,7 @@ pressed.
     ...
     self~connectResize(onResize)
     self~connectHelp(onHelp)
-    ,,,
+    ...
 
 ::method onHelp
     use arg id, type, mouseX, mouseY
