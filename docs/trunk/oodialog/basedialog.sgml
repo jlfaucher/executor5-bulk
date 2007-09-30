@@ -318,6 +318,10 @@ the methods listed in <link linkend="t000013">Table 2</link>.
 <entry><link linkend="h000184">ConnectEntryLine</link></entry>
 </row>
 <row>
+<entry>ConnectHelp</entry>
+<entry><link linkend="mthConnectHelp">ConnectHelp</link></entry>
+</row>
+<row>
 <entry>ConnectList</entry>
 <entry><link linkend="h000132">ConnectList</link></entry>
 </row>
@@ -2177,6 +2181,112 @@ the dialog. Provide a method with a matching name.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
 <listitem><para>This method does not return a value.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthConnectHelp"><title>ConnectHelp</title>
+<indexterm><primary>ConnectHelp</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aBaseDialog~ConnectHelp(--msgToRaise--)-----------------------><
+
+
+]]>
+</programlisting>
+
+<para>The <computeroutput>ConnectHelp</computeroutput> method connects the
+Windows Help event with a method in the dialog class. The Windows Help event
+occurs when the user presses the F1 key.  (Only the Help events generated when
+the dialog is the active window are connected.)
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<listitem><para>The name of the method that is to be invoked.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>No error.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>An (internal) error prevented the message from being connected
+to a method.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Event Method Arguments
+</emphasis></term>
+<listitem><para>The ooDialog method connected to the Help event will recieve the
+following four arguments in the order listed:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The resource ID of the dialog, dialog control, or menu item that
+had the focus when the F1 key was pressed.
+</para></listitem></varlistentry>
+<varlistentry><term>type</term>
+<listitem><para>Specifies if the ID in argument 1 was a from a window (a dialog
+or dialog control) or from a menu item.  This argument will either be
+<computeroutput>WINDOW</computeroutput> or <computeroutput>MENU
+</computeroutput>.
+</para></listitem></varlistentry>
+<varlistentry><term>mouseX</term>
+<listitem><para>The x coordinate of the mouse at the time the F1 key was
+pressed.  This value is an absolute screen coordinate (pixel) and note that the
+mouse will not necessarily be over the dialog.
+</para></listitem></varlistentry>
+<varlistentry><term>mouseY</term>
+<listitem><para>The y coordinate of the mouse at the time the F1 key was
+pressed.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>
+
+<programlisting>
+<![CDATA[
+
+::method Init
+    self~init:super
+    ...
+    self~connectResize(onResize)
+    self~connectHelp(onHelp)
+    ,,,
+
+::method onHelp
+    use arg id, type, mouseX, mouseY
+    if type == "MENU" then w = 'Menu id' id; else w = 'Dialog id' id
+    say "Help request:"
+    say " " w
+    say "  Mouse position x:" mouseX "y:" mouseY
+
+/* As the user presses the F1 key at various times when the dialog has the focus
+ * the output might be as follows:
+ */
+
+Help request:
+  Dialog id 12
+  Mouse position x: 420 y: 106
+Help request:
+  Menu id 60
+  Mouse position x: 204 y: 93
+Help request:
+  Menu id 65
+  Mouse position x: 203 y: 166
+Help request:
+  Dialog id 14
+  Mouse position x: 218 y: 410
+Help request:
+  Dialog id 80
+  Mouse position x: 387 y: 462
+]]>
+</programlisting>
 </para></listitem></varlistentry>
 </variablelist>
 </section>
