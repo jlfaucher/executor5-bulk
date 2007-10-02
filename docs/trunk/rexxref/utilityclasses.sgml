@@ -362,7 +362,7 @@ the ISO format as the string form of a DateTime object.
 </programlisting>
 
 <para>Initializes a new DateTime instance.  If no arguments are specified,
-the DateTime instance is set to the current date and time.  It the single
+the DateTime instance is set to the current date and time.  If the single
 <emphasis role="italic">fullDate</emphasis> argument is used, the DateTime
 argument is initialized to the date and time calculated by adding
 <emphasis role="italic">fullDate</emphasis> microseconds to 0001-01-01T00:00:00.000000.
@@ -488,9 +488,9 @@ error condition is raised.
 d = .DateTime~new       -- get the current time
 midnight = d~dste       -- get the start of the day
 startTime = midnight~addHours(10)  -- time the bank opens
-endTime = startTime~addHours(5)    -- bank closing time
+endTime = startTime~addHours(7)    -- bank closing time
 
-if startTime <= d & d <- endTime then do
+if startTime <= d & d <= endTime then do
     say "The bank is open"
 end
 ]]>
@@ -649,7 +649,7 @@ say "The next century starts in" (nextCentury - .dateTime~new)
 ]]>
 </programlisting>
 
-<para>This method returns "-1" if the <emphasis role="italic">other</emphasis> is larger than the recieving
+<para>This method returns "-1" if the <emphasis role="italic">other</emphasis> is larger than the receiving
 object, "0" if the two objects are equal, and "1" if <emphasis role="italic">other</emphasis> is
 smaller than the receiving object.</para>
 </section>
@@ -994,9 +994,9 @@ result in seconds being subtracted from the DateTime value.
 ]]>
 </programlisting>
 
-<para>Adds seconds to the DateTime object, returning a new DateTime instance.
+<para>Adds microseconds to the DateTime object, returning a new DateTime instance.
 The receiver DateTime object is unchanged.
-The <emphasis role="italic">seconds</emphasis> value must be a valid whole number.
+The <emphasis role="italic">microseconds</emphasis> value must be a valid whole number.
 Negative values
 result in microseconds being subtracted from the DateTime value.
 </para>
@@ -1414,7 +1414,7 @@ January, 31 is returned.  The daysInMonth method takes leap years into account, 
 </para>
 </section>
 
-<section id="mthDateString"<title>string</title>
+<section id="mthDateTimeString"<title>string</title>
 <indexterm><primary>string method</primary>
 <secondary>of daysInMonth class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -1550,6 +1550,906 @@ a=.alarm~new(30,msg)
 </section>
 </section>
 
+<section id="clsTimeSpan"><title>The TimeSpan Class</title>
+<indexterm><primary>TimeSpan class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>TimeSpan class</secondary></indexterm>
+
+<para>A TimeSpan object represents a point in between 1 January 0001 at 00:00.000000
+and 31 December 9999 at 23:59:59.999999.  A TimeSpan object has methods to allow
+formatting a date or time in various formats, as well as allowing arithmetic operations between
+dates.
+</para>
+<figure><title>The TimeSpan class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxAlarmClass.png" align="left">
+</imageobject>
+</mediaobject>
+</figure>
+<note><title>Note</title>
+<para>The TimeSpan class also has available class methods that its
+metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
+
+<section><title>Inherited Methods</title>
+
+&objclsmthods;
+
+<para>Methods inherited from the
+<link linkend="clsComparable">Comparable class</link>.</para>
+<itemizedlist>
+<listitem><para><link linkend="mthComparableCompareTo">compareTo</link></para></listitem>
+</itemizedlist>
+</section>
+
+<section id="mthTimeSpanFromDays"><title>fromDays (Class Method)</title>
+<indexterm><primary>fromDays method</primary>
+<secondary>of TimeSpan class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>fromDays method</secondary>
+<tertiary>of TimeSpan class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-fromDays(days)--------------------------------------------><
+]]>
+</programlisting>
+
+<para>Creates a TimeSpan object from a number of days.
+The <emphasis role="italic">days</emphasis> argument must be a valid Rexx number.
+</para>
+</section>
+
+<section id="mthTimeSpanFromHours"><title>fromHours (Class Method)</title>
+<indexterm><primary>fromHours method</primary>
+<secondary>of TimeSpan class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>fromHours method</secondary>
+<tertiary>of TimeSpan class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-fromHours(hours)------------------------------------------><
+]]>
+</programlisting>
+
+<para>Creates a TimeSpan object from a number of hours.
+The <emphasis role="italic">hours</emphasis> argument must be a valid Rexx number.
+</para>
+</section>
+
+<section id="mthTimeSpanFromMinutes"><title>fromMinutes (Class Method)</title>
+<indexterm><primary>fromMinutes method</primary>
+<secondary>of TimeSpan class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>fromMinutes method</secondary>
+<tertiary>of TimeSpan class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-fromMinutes(minutes)--------------------------------------><
+]]>
+</programlisting>
+
+<para>Creates a TimeSpan object from a number of minutes.
+The <emphasis role="italic">minutes</emphasis> argument must be a valid Rexx number.
+</para>
+</section>
+
+<section id="mthTimeSpanFromSeconds"><title>fromSeconds (Class Method)</title>
+<indexterm><primary>fromSeconds method</primary>
+<secondary>of TimeSpan class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>fromSeconds method</secondary>
+<tertiary>of TimeSpan class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-fromSeconds(seconds)--------------------------------------><
+]]>
+</programlisting>
+
+<para>Creates a TimeSpan object from a number of seconds.
+The <emphasis role="italic">seconds</emphasis> argument must be a valid Rexx number.
+</para>
+</section>
+
+<section id="mthTimeSpanFromMicroseconds"><title>fromMicroseconds (Class Method)</title>
+<indexterm><primary>fromMicroseconds method</primary>
+<secondary>of TimeSpan class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>fromMicroseconds method</secondary>
+<tertiary>of TimeSpan class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-fromMicroseconds(microseconds)---------------------------------><
+]]>
+</programlisting>
+
+<para>Creates a TimeSpan object from a number of microseconds.
+The <emphasis role="italic">microseconds</emphasis> argument must be a valid Rexx number.
+</para>
+</section>
+
+<section id="mthTimeSpanFromNormalTime"><title>fromNormalTime (Class Method)</title>
+<indexterm><primary>fromNormalTime method</primary>
+<secondary>of TimeSpan class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>fromNormalTime method</secondary>
+<tertiary>of TimeSpan class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-fromNormalTime----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Creates a TimeSpan object from a string returned by the Normal option
+of the Time() built-in function.
+The TimeSpan will contain an interval equal to the time of day represented by the string.
+</para>
+</section>
+
+<section id="mthTimeSpanFromCivilTime"><title>fromCivilTime (Class Method)</title>
+<indexterm><primary>fromCivilTime method</primary>
+<secondary>of TimeSpan class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>fromCivilTime method</secondary>
+<tertiary>of TimeSpan class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-fromCivilTime----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Creates a TimeSpan object from a string returned by the Civil option
+of the Time() built-in function.
+The TimeSpan will contain an interval equal to the time of day represented by the string.
+</para>
+</section>
+
+<section id="mthTimeSpanFromLongTime"><title>fromLongTime (Class Method)</title>
+<indexterm><primary>fromLongTime method</primary>
+<secondary>of TimeSpan class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>fromLongTime method</secondary>
+<tertiary>of TimeSpan class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-fromLongTime----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Creates a TimeSpan object from a string returned by the Long option
+of the Time() built-in function.
+The TimeSpan will contain an interval equal to the time of day represented by the string.
+</para>
+</section>
+
+<section id="mthTimeSpanInit"><title>init</title>
+<indexterm><primary>init method</primary>
+<secondary>of TimeSpan class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>init method</secondary>
+<tertiary>of TimeSpan class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-init(fullDate)---------------------------------------------><
+
+>>-init(hours, minutes, seconds)------------------------------><
+
+>>-init(day, hours, minutes, second, microseconds)------------><
+]]>
+</programlisting>
+
+<para>Initializes a new TimeSpan instance.
+If the single
+<emphasis role="italic">fullDate</emphasis> argument is used, the TimeSpan
+argument is initialized to the time span
+<emphasis role="italic">fullDate</emphasis> microseconds.
+Otherwise, the TimeSpan instance is initialized to either the <emphasis role="italic">hours</emphasis>,
+<emphasis role="italic">minutes</emphasis>, and <emphasis role="italic">seconds</emphasis> or the
+<emphasis role="italic">days</emphasis>, <emphasis role="italic">hours</emphasis>,
+<emphasis role="italic">minutes</emphasis>,
+<emphasis role="italic">seconds</emphasis>, and <emphasis role="italic">microseconds</emphasis>
+components.  Each of these components must be a valid whole number within the acceptable range for the given
+component.  For example, <emphasis role="italic">hours</emphasis> must be in the range 0-23, while
+<emphasis role="italic">minutes</emphasis> must be in the range 0-59.
+</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<programlisting>
+<![CDATA[
+                         -- initializes to 15 hours, 37 minutes and 30 seconds
+                         -- (15:37:30.000000)
+span = .TimeSpan~new(time('F', "15:37:30", "N))
+                         -- also initializes to 15:37:30.000000
+span = .TimeSpan~new(15, 37, 30)
+                         -- initializes to 6.04:33:15.000100
+span = .TimeSpan~new(6, 4, 33, 15, 100)
+]]>
+</programlisting>
+</section>
+
+<section id="mthTimeSpanComparisonMethods"><title>Comparison Methods</title>
+<indexterm><primary>method</primary>
+<secondary>comparison methods</secondary>
+<tertiary>of TimeSpan class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-comparison_operator(argument)-------------------------------><
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>1</computeroutput> (true) or
+<computeroutput>0</computeroutput> (false), the result of performing
+the specified comparison operation. The receiver object and the
+<emphasis role="italic">argument</emphasis> are the terms compared. Both must
+be TimeSpan objects.
+If <emphasis role="italic">argument</emphasis> is not a TimeSpan object, a SYNTAX
+error condition is raised.
+</para>
+
+<para>The comparison operators you can use in a message are: </para>
+<variablelist>
+<varlistentry><term>=
+<indexterm><primary>= method</primary>
+<secondary>of TimeSpan class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>=</secondary>
+<tertiary>of TimeSpan class</tertiary></indexterm>
+</term>
+<listitem><para>True if the terms are equal
+</para></listitem></varlistentry>
+<varlistentry><term>\=, &gt;&lt;, &lt;&gt;
+<indexterm><primary>>&lt; method</primary>
+<secondary>of TimeSpan class</secondary></indexterm>
+<indexterm><primary>&gt;&lt; method</primary>
+<secondary>of TimeSpan class</secondary></indexterm>
+<indexterm><primary>&lt;&gt; method</primary>
+<secondary>of TimeSpan class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>\=</secondary>
+<tertiary>of TimeSpan class</tertiary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>>&lt;</secondary>
+<tertiary>of TimeSpan class</tertiary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>&lt;&gt;</secondary>
+<tertiary>of TimeSpan class</tertiary></indexterm>
+</term>
+<listitem><para>True if the terms are not equal (inverse of =)
+</para></listitem></varlistentry>
+<varlistentry><term>&gt;
+<indexterm><primary>&gt; method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>></secondary></indexterm>
+</term>
+<listitem><para>Greater than
+</para></listitem></varlistentry>
+<varlistentry><term>&lt;
+<indexterm><primary>&lt; method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>&lt;</secondary></indexterm>
+</term>
+<listitem><para>Less than
+</para></listitem></varlistentry>
+<varlistentry><term>&gt;=
+<indexterm><primary>&gt;= method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>&gt;=</secondary></indexterm>
+</term>
+<listitem><para>Greater than or equal to
+</para></listitem></varlistentry>
+<varlistentry><term>\&lt;
+<indexterm><primary>\&lt; method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>\&lt;</secondary></indexterm>
+</term>
+<listitem><para>Not less than
+</para></listitem></varlistentry>
+<varlistentry><term>&lt;=
+<indexterm><primary>&lt;= method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>&lt;=</secondary></indexterm>
+</term>
+<listitem><para>Less than or equal to
+</para></listitem></varlistentry>
+<varlistentry><term>\&gt;
+<indexterm><primary>\&gt; method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>\&gt;</secondary></indexterm>
+</term>
+<listitem><para>Not greater than
+</para></listitem></varlistentry>
+</variablelist>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>comparison methods of TimeSpan class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+
+
+                                   -- get the current time
+currentTime = .DateTime~new~timeOfDay
+startTime = .timespan~new(10)
+endTime = startTime~addHours(7)    -- bank closing time
+
+if startTime <= currentTime & currentTime <= endTime then do
+    say "The bank is open"
+end
+]]>
+</programlisting>
+<para>All strict comparison operations have one of the characters doubled that
+define the operator. The TimeSpan strict comparison operators produce the same
+results as the non-strict comparisons.
+</para>
+<para>The strict comparison operators you can use in a message are: </para>
+<variablelist>
+<varlistentry><term>==
+<indexterm><primary>== method</primary>
+<secondary>of TimeSpan class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>==</secondary>
+<tertiary>of TimeSpan class</tertiary></indexterm>
+</term>
+<listitem><para>True if terms are strictly equal
+</para></listitem></varlistentry>
+<varlistentry><term>\==
+<indexterm><primary>\== method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>\==</secondary>
+<tertiary>of TimeSpan class</tertiary></indexterm>
+</term>
+<listitem><para>True if the terms are NOT strictly equal (inverse of ==)
+</para></listitem></varlistentry>
+<varlistentry><term>&gt;&gt;
+<indexterm><primary>&gt;&gt; method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>>></secondary></indexterm>
+</term>
+<listitem><para>Strictly greater than
+</para></listitem></varlistentry>
+<varlistentry><term>&lt;&lt;
+<indexterm><primary>&lt;&lt; method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>&lt;&lt;</secondary></indexterm>
+</term>
+<listitem><para>Strictly less than
+</para></listitem></varlistentry>
+<varlistentry><term>&gt;&gt;=
+<indexterm><primary>&gt;&gt;= method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>&gt;&gt;=</secondary></indexterm>
+</term>
+<listitem><para>Strictly greater than or equal to
+</para></listitem></varlistentry>
+<varlistentry><term>\&lt;&lt;
+<indexterm><primary>\&lt;&lt; method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>\&lt;&lt;</secondary></indexterm>
+</term>
+<listitem><para>Strictly NOT less than
+</para></listitem></varlistentry>
+<varlistentry><term>&lt;&lt;=
+<indexterm><primary>&lt;&lt;= method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>&lt;&lt;=</secondary></indexterm>
+</term>
+<listitem><para>Strictly less than or equal to
+</para></listitem></varlistentry>
+<varlistentry><term>\&gt;&gt;
+<indexterm><primary>\&gt;&gt; method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>\&gt;&gt;</secondary></indexterm>
+</term>
+<listitem><para>Strictly NOT greater than
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthTimeSpanArithmeticMethods"><title>Arithmetic Methods</title>
+<indexterm><primary>method</primary>
+<secondary>arithmetic methods</secondary>
+<tertiary>of TimeSpan class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-arithmetic_operator(argument)-------------------------------><
+]]>
+</programlisting>
+
+<note><title>Note</title>
+<para>For the prefix + operators, omit the parentheses
+and <emphasis role="italic">argument</emphasis>.</para></note>
+<para>Returns the result of performing the specified arithmetic operation on
+the receiver TimeSpan object. Depending on the operation, the
+<emphasis role="italic">argument</emphasis> be either a TimeSpan object, a DateTime
+object, or a number.  See the description of the individual operations for details.
+The
+<emphasis role="italic">arithmetic_operator</emphasis> can be:
+</para>
+<variablelist>
+<varlistentry><term>+
+<indexterm><primary>+ method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>+</secondary></indexterm>
+</term>
+<listitem><para>Addition.
+If <emphasis role="italic">argument</emphasis> is a DateTime object, the TimeSpan
+is added to the DateTime object, returning a new DateTime
+instance.
+Neither the receiver TimeSpan or the argument DateTime object is altered
+by this operation.
+The TimeSpan may be either positive or negative.</para>
+<para>If <emphasis role="italic">argument</emphasis> is a TimeSpan object, the
+two TimeSpans are added together, and a new TimeSpan instance is returned.
+Neither the TimeSpan object is altered
+by this operation.
+</para></listitem></varlistentry>
+<varlistentry><term>-
+<indexterm><primary>- method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>-</secondary></indexterm>
+</term>
+<listitem><para>Subtraction.
+The <emphasis role="italic">argument</emphasis> must be a TimeSpan object.  The
+<emphasis role="italic">argument</emphasis> TimeSpan is subtracted from the receiver
+TimeSpan and a new TimeSpan instance is returned.
+Neither the TimeSpan object is altered
+by this operation.
+</para></listitem></varlistentry>
+<varlistentry><term>*
+<indexterm><primary>* method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>*</secondary></indexterm>
+</term>
+<listitem><para>Multiplication.
+The <emphasis role="italic">argument</emphasis> must be a valid Rexx number.  The
+TimeSpan is multiplied by the
+<emphasis role="italic">argument</emphasis> value,
+and a new TimeSpan instance is returned.
+The receiver TimeSpan object is not altered
+by this operation.
+</para></listitem></varlistentry>
+<varlistentry><term>/
+<indexterm><primary>/ method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>/</secondary></indexterm>
+</term>
+<listitem><para>Division.
+The <emphasis role="italic">argument</emphasis> must be a valid Rexx number.  The
+TimeSpan is divided by the
+<emphasis role="italic">argument</emphasis> value,
+and a new TimeSpan instance is returned.
+The receiver TimeSpan object is not altered
+by this operation.  The / operator and % produce the same result.
+</para></listitem></varlistentry>
+<varlistentry><term>%
+<indexterm><primary>% method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>%</secondary></indexterm>
+</term>
+<listitem><para>Integer Division.
+The <emphasis role="italic">argument</emphasis> must be a valid Rexx number.  The
+TimeSpan is divided by the
+<emphasis role="italic">argument</emphasis> value,
+and a new TimeSpan instance is returned.
+The receiver TimeSpan object is not altered
+by this operation.  The / operator and % produce the same result.
+</para></listitem></varlistentry>
+<varlistentry><term>//
+<indexterm><primary>// method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>//</secondary></indexterm>
+</term>
+<listitem><para>Remainder Division.
+The <emphasis role="italic">argument</emphasis> must be a valid Rexx number.  The
+TimeSpan is divided by the
+<emphasis role="italic">argument</emphasis> value and the division remainder is
+returned as a new TimeSpan instance.
+The receiver TimeSpan object is not altered
+by this operation.
+</para></listitem></varlistentry>
+<varlistentry><term>Prefix -
+<indexterm><primary>method</primary>
+<secondary>prefix -</secondary></indexterm>
+</term>
+<listitem><para>The TimeSpan is negated, returning a new TimeSpan instance.  The receiver TimeSpan
+is not altered by this operation.
+</para></listitem></varlistentry>
+<varlistentry><term>Prefix +
+<indexterm><primary>method</primary>
+<secondary>prefix +</secondary></indexterm>
+</term>
+<listitem><para>Returns a new instance of the TimeSpan object with the same time value.
+</para></listitem></varlistentry>
+</variablelist>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>arithmetic methods of DateTime class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+t1 = .timespan~fromHours(1)
+t2 = t1 * 2
+-- displays "01:00:00.000000 01:30:00.000000 02:30:00.000000"
+say t1 t2 (t1 + t2)
+]]>
+</programlisting>
+</section>
+
+<section id="mthTimeSpanCompareTo"><title>compareTo</title>
+<indexterm><primary>compareTo method</primary>
+<secondary>of TimeSpan class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>compareTo method</secondary>
+<tertiary>of TimeSpan class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-compareTo(other)------------------------------------------------><
+]]>
+</programlisting>
+
+<para>This method returns "-1" if the <emphasis role="italic">other</emphasis> is larger than the receiving
+object, "0" if the two objects are equal, and "1" if <emphasis role="italic">other</emphasis> is
+smaller than the receiving object.</para>
+</section>
+
+<section id="mthTimeSpanDuration"><title>duration</title>
+<indexterm><primary>duration method</primary>
+<secondary>of TimeSpan class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>duration method</secondary>
+<tertiary>of TimeSpan class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-duration--------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a new TimeSpan object containing the absolute value of the receiver TimeSpan object.
+</para>
+</section>
+
+<section id="mthTimeSpanDays"><title>days</title>
+<indexterm><primary>days method</primary>
+<secondary>of TimeSpan class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>days method</secondary>
+<tertiary>of TimeSpan class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-days------------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the number of whole days in the TimeSpan, as a positive number.
+</para>
+</section>
+
+<section id="mthTimeSpanHours"<title>hours</title>
+<indexterm><primary>hours method</primary>
+<secondary>of TimeSpan class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>hours method</secondary>
+<tertiary>of TimeSpan class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-hours-----------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the hours component of the TimeSpan, as a positive number.
+</para>
+</section>
+
+<section id="mthTimeSpanMinutess"<title>minutes</title>
+<indexterm><primary>minutes method</primary>
+<secondary>of TimeSpan class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>minutes method</secondary>
+<tertiary>of TimeSpan class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-minutes---------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the minutes component of the TimeSpan, as a positive number.
+</para>
+</section>
+
+<section id="mthTimeSpanSeconds"<title>seconds</title>
+<indexterm><primary>seconds method</primary>
+<secondary>of TimeSpan class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>seconds method</secondary>
+<tertiary>of TimeSpan class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-seconds---------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the seconds component of the TimeSpan, as a positive number.
+</para>
+</section>
+
+<section id="mthTimeSpanMicroseconds"<title>microseconds</title>
+<indexterm><primary>microseconds method</primary>
+<secondary>of TimeSpan class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>microseconds method</secondary>
+<tertiary>of TimeSpan class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-microseconds--------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the microseconds component of the TimeSpan, as a positive number.
+</para>
+</section>
+
+<section id="mthTimeSpanTotalDays"><title>totalDays</title>
+<indexterm><primary>totalDays method</primary>
+<secondary>of TimeSpan class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>totalDays method</secondary>
+<tertiary>of TimeSpan class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-totalDays-------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the time span expressed as a number of days.  The result includes any
+fractional part and retains the sign of the receiver TimeSpan.
+</para>
+</section>
+
+<section id="mthTimeSpanTotalHours"><title>totalHours</title>
+<indexterm><primary>totalHours method</primary>
+<secondary>of TimeSpan class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>totalHours method</secondary>
+<tertiary>of TimeSpan class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-totalHours------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the time span expressed as a number of hours.  The result includes any
+fractional part and retains the sign of the receiver TimeSpan.
+</para>
+</section>
+
+<section id="mthTimeSpanTotalMinutes"><title>totalMinutes</title>
+<indexterm><primary>totalMinutes method</primary>
+<secondary>of TimeSpan class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>totalMinutes method</secondary>
+<tertiary>of TimeSpan class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-totalMinutes----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the time span expressed as a number of minutes.  The result includes any
+fractional part and retains the sign of the receiver TimeSpan.
+</para>
+</section>
+
+<section id="mthTimeSpanTotalSeconds"><title>totalSeconds</title>
+<indexterm><primary>totalSeconds method</primary>
+<secondary>of TimeSpan class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>totalSeconds method</secondary>
+<tertiary>of TimeSpan class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-totalSeconds----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the time span expressed as a number of seconds.  The result includes any
+fractional part and retains the sign of the receiver TimeSpan.
+</para>
+</section>
+
+<section id="mthTimeSpanTotalMicroseconds"><title>totalMicroseconds</title>
+<indexterm><primary>totalMicroseconds method</primary>
+<secondary>of TimeSpan class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>totalMicroseconds method</secondary>
+<tertiary>of TimeSpan class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-totalMicroseconds-----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the time span expressed as a number of microseconds.  The result
+retains the sign of the receiver TimeSpan.
+</para>
+</section>
+
+<section id="mthTimeSpanHashCode"><title>hashCode</title>
+<indexterm><primary>hashCode method</primary>
+<secondary>of TimeSpan class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>hashCode method</secondary>
+<tertiary>of TimeSpan class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-hashCode---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a string value that is used as a hash value for MapCollection
+such as Table, Relation, Set, Bag, and Directory.
+</para>
+</section>
+
+<section id="mthTimeSpanAddWeeks"<title>addWeeks</title>
+<indexterm><primary>addWeeks method</primary>
+<secondary>of TimeSpan class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>addWeeks method</secondary>
+<tertiary>of TimeSpan class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-addWeeks(weeks)------------------------------------------><
+]]>
+</programlisting>
+
+<para>Adds weeks to the TimeSpan object, returning a new TimeSpan instance.
+The receiver TimeSpan object is unchanged.
+The <emphasis role="italic">weeks</emphasis> value must be a valid number, including
+fractional values.
+Negative values
+result in week being subtracted from the TimeSpan value.
+</para>
+</section>
+
+<section id="mthTimeSpanAddDays"<title>addDays</title>
+<indexterm><primary>addDays method</primary>
+<secondary>of TimeSpan class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>addDays method</secondary>
+<tertiary>of TimeSpan class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-addDays(days)--------------------------------------------><
+]]>
+</programlisting>
+
+<para>Adds days to the TimeSpan object, returning a new TimeSpan instance.
+The receiver TimeSpan object is unchanged.
+The <emphasis role="italic">days</emphasis> value must be a valid number, including
+fractional values.
+Negative values
+result in days being subtracted from the TimeSpan value.
+</para>
+</section>
+
+<section id="mthTimeSpanAddHours"<title>addHours</title>
+<indexterm><primary>addHours method</primary>
+<secondary>of TimeSpan class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>addHours method</secondary>
+<tertiary>of TimeSpan class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-addHours(hours)------------------------------------------><
+]]>
+</programlisting>
+
+<para>Adds hours to the TimeSpan object, returning a new TimeSpan instance.
+The receiver TimeSpan object is unchanged.
+The <emphasis role="italic">hours</emphasis> value must be a valid number, including
+fractional values.
+Negative values
+result in hours being subtracted from the TimeSpan value.
+</para>
+</section>
+
+<section id="mthTimeSpanAddMinutes"<title>addMinutes</title>
+<indexterm><primary>addMinutes method</primary>
+<secondary>of TimeSpan class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>addMinutes method</secondary>
+<tertiary>of TimeSpan class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-addMinutes(minutes)--------------------------------------><
+]]>
+</programlisting>
+
+<para>Adds minutes to the TimeSpan object, returning a new TimeSpan instance.
+The receiver TimeSpan object is unchanged.
+The <emphasis role="italic">minutes</emphasis> value must be a valid number, including
+fractional values.
+Negative values
+result in minutes being subtracted from the TimeSpan value.
+</para>
+</section>
+
+<section id="mthTimeSpanAddSeconds"<title>addSeconds</title>
+<indexterm><primary>addSeconds method</primary>
+<secondary>of TimeSpan class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>addSeconds method</secondary>
+<tertiary>of TimeSpan class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-addSeconds(seconds)--------------------------------------><
+]]>
+</programlisting>
+
+<para>Adds seconds to the TimeSpan object, returning a new TimeSpan instance.
+The receiver TimeSpan object is unchanged.
+The <emphasis role="italic">seconds</emphasis> value must be a valid number, including
+fractional values.
+Negative values
+result in seconds being subtracted from the TimeSpan value.
+</para>
+</section>
+
+<section id="mthTimeSpanAddMicroseconds"<title>addMicroseconds</title>
+<indexterm><primary>addMicroseconds method</primary>
+<secondary>of TimeSpan class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>addMicroseconds method</secondary>
+<tertiary>of TimeSpan class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-addMicroseconds(microseconds)----------------------------><
+]]>
+</programlisting>
+
+<para>Adds microseconds to the TimeSpan object, returning a new TimeSpan instance.
+The receiver TimeSpan object is unchanged.
+The <emphasis role="italic">microseconds</emphasis> value must be a valid whole number.
+Negative values
+result in microseconds being subtracted from the TimeSpan value.
+</para>
+</section>
+
+<section id="mthTimeSpanSign"<title>sign</title>
+<indexterm><primary>sign method</primary>
+<secondary>of TimeSpan class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>sign method</secondary>
+<tertiary>of TimeSpan class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-sign-----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns "-1" if the TimeSpan is negative, "1" if the TimeSpan is positive, and "0" if the
+TimeSpan duration is zero.
+</para>
+</section>
+
+<section id="mthTimeSpanString"<title>string</title>
+<indexterm><primary>string method</primary>
+<secondary>of daysInMonth class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>string method</secondary>
+<tertiary>of TimeSpan class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-string-------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns TimeSpan formatted as a string.  The string value is in the format
+"-dddddddd.hh:mm:ss.uuuuuu".  If the TimeSpan is positive or zero, the sign is omitted.
+The days field will be formatted without leading zeros or blanks.  If the TimeSpan duration
+is less than a day, the days field and the period separator will be omitted.
+</para>
+</section>
+
+</section>
+
 <section id="clsComparable"><title>The Comparable Class</title>
 <indexterm><primary>Comparable class</primary></indexterm>
 <indexterm><primary>class</primary>
@@ -1582,14 +2482,14 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 <secondary>compareTo method</secondary>
 <tertiary>of Comparable class</tertiary></indexterm>
 
-<para>This method compares the recieving object to the object supplied in the
+<para>This method compares the receiving object to the object supplied in the
 <emphasis role="itakic">comparable</emphasis> argument.</para>
 <programlisting>
 <![CDATA[
 >>-compareTo(other)---------------------------------------><
 ]]>
 </programlisting>
-<para>This method returns "-1" if the <emphasis role="italic">other</emphasis> is larger than the recieving
+<para>This method returns "-1" if the <emphasis role="italic">other</emphasis> is larger than the receiving
 object, "0" if the two objects are equal, and "1" if <emphasis role="italic">other</emphasis> is
 smaller than the receiving object.</para>
 </section>
