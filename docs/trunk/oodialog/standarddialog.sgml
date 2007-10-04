@@ -1927,24 +1927,101 @@ returned rather than the empty string.
 <secondary>CheckList</secondary></indexterm>
 <para>A shortcut function to invoke the <link linkend="clsCheckList">CheckList</link>
 dialog: </para>
+
 <programlisting>
 <![CDATA[
-weekdays = .array~of("Monday","Tuesday","Wednesday", ,
-                     "Thursday","Friday","Saturday","Sunday")
-days = CheckList("Check the days","Working Days",weekdays)
-if days <> .Nil then do i = 1 to days~items
-                        if days[i] then say "Working day =" weekdays[i]
-                     end
+>>--CheckList(--message--,--title--,--labels--,-+-----------+---->
+                                                +-,--checks-+
+
+>>--+------------------------+--)-------------------------------><
+    +-,--+-----+--+--------+-+
+         +-len-+  +-,--max-+
+
+
 ]]>
 </programlisting>
-<para> The parameters are described in the <link
+
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are similar to what is described in the <link
 linkend="initCheckList">Init</link> method of the <computeroutput>
 CheckList</computeroutput>class. However, instead of stems, arrays are
 passed into and returned from the function.
-</para>
-<para>If the user cancels the dialog <computeroutput>.nil</computeroutput> is
-returned rather than the empty string.
-</para>
+<variablelist>
+<varlistentry><term>message</term>
+<listitem><para>A text string that is displayed on top of the check box group.
+It could be used, for example, to give the user a hint as to what to do.
+</para></listitem></varlistentry>
+<varlistentry><term>title</term>
+<listitem><para>A text string for the dialog's title
+</para></listitem></varlistentry>
+<varlistentry><term>labels</term>
+<listitem><para>An array containing the labels, in order, for each of the check
+boxes.  The dialog will contain a check box for each label.
+</para></listitem></varlistentry>
+<varlistentry><term>checks</term>
+<listitem><para>This argument is an array that allows you to pre-check any of
+the check boxes. For each index in this array whose item is <computeroutput>
+.true</computeroutput>, (or 1,) the check box at the corresponding index in the
+<computeroutput>labels</computeroutput> array will be checked.  For any index
+that is not <computeroutput>.true </computeroutput>, the corresponding check box
+will not be checked.  This means that the programmer only needs to put a
+<computeroutput>.true</computeroutput> at the indexes where he wants the check
+boxes checked.  All the other indexes can be left empty.
+</para></listitem></varlistentry>
+<varlistentry><term>len</term>
+<listitem><para>Determines the length (in dialog units) of the check boxes and
+labels. If omitted, the size is calculated to fit the largest label.
+</para></listitem></varlistentry>
+<varlistentry><term>max</term>
+<listitem><para>The maximum number of check boxes in one column. If there are
+more check boxes than max, that is, if labels has more items than the value of
+max, the check boxes will be put into columns.  Each column will contain no more
+than the number of check boxes specified by max.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>If the user cancels the dialog, then <computeroutput>.nil
+</computeroutput> is returned.  If the user clicks the okay button, then an
+array is returned.  The array will be the same size as the input
+<computeroutput>labels</computeroutput> array.  Each index of the returned array
+will contain <computeroutput>.true</computeroutput> if the corresponding check
+box was checked by the user or will contain <computeroutput>.false
+</computeroutput> if the check box was not checked.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example</emphasis></term>
+<listitem><para>The following example show how to use the
+<computeroutput>CheckList</computeroutput> public routine:
+
+<programlisting>
+<![CDATA[
+
+  weekdays = .array~of("Monday","Tuesday","Wednesday","Thursday", -
+                       "Friday","Saturday","Sunday")
+
+  -- Monday and Tuesday will be checked, all the rest will not be checked.
+  checks = .array~of(.true, .true, .false)
+  checks[5] = 0
+  checks[7] = 'a'
+
+  -- The labels will be 60 dialog units wide and there will be at most 4 check
+  -- boxes in a column.  (Only 7 check boxes, so 2 columns, the first with 4
+  -- check boxes, the second with 3.)
+
+  days = CheckList("Check the days", "Working Days", weekdays, checks, 60, 4)
+
+  if days <> .Nil then do i = 1 to days~items
+    if days[i] then say "Working day =" weekdays[i]
+  end
+
+::requires "oodPlain.cls"
+
+]]>
+</programlisting>
+
+</para></listitem></varlistentry>
+</variablelist>
 </section>
 
 <section id="rtnSingleSelection"><title>SingleSelection Routine</title>
