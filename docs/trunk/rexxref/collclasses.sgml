@@ -1129,15 +1129,20 @@ Items in the new array will have the same order as the source array.
 <tertiary>of Array class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
-                 +-(LINE)--+
->>-makeString----+---------+------><
-                 +-(CHAR)--+
+                       +-,separator-+
+             +-(LINE)--+------------+-+
+>>-toString(-+---------+--------------+-)------------------------><
+             +-(CHAR)--+
 ]]>
 </programlisting>
 
 <para>Returns a stream that contains the data of an array (one to n dimensional).
 The elements of the array are treated either in line or character format,
-starting at the first element in the array. The line format is the default.</para>
+starting at the first element in the array. The line format is the default.
+If the line format is use, a <emphasis role="italic">separator</emphasis> string
+can be specified.  The separator will be used between concatenated elements instead of the
+default linend separator.
+</para>
 </section>
 
 <section id="mthArrayNext"><title>next</title>
@@ -1399,15 +1404,20 @@ index values as an array of index numbers.
 <tertiary>of Array class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
-             +-(LINE)--+
->>-toString--+---------+---------------------------------------><
+                       +-,separator-+
+             +-(LINE)--+------------+-+
+>>-toString(-+---------+--------------+-)------------------------><
              +-(CHAR)--+
 ]]>
 </programlisting>
 
 <para>Returns a stream that contains the data of an array (one to n dimensional).
 The elements of the array are treated either in line or character format,
-starting at the first element in the array. The line format is the default.</para>
+starting at the first element in the array. The line format is the default.
+If the line format is use, a <emphasis role="italic">separator</emphasis> string
+can be specified.  The separator will be used between concatenated elements instead of the
+default linend separator.
+</para>
 </section>
 
 <section id="arex"><title>Examples</title>
