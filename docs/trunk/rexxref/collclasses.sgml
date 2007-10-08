@@ -1129,14 +1129,14 @@ Items in the new array will have the same order as the source array.
 <tertiary>of Array class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
-                       +-,separator-+
-             +-(LINE)--+------------+-+
->>-toString(-+---------+--------------+-)------------------------><
-             +-(CHAR)--+
+                         +-,separator-+
+               +-(LINE)--+------------+-+
+>>-makeString(-+---------+--------------+-)------------------------><
+               +-(CHAR)--+
 ]]>
 </programlisting>
 
-<para>Returns a stream that contains the data of an array (one to n dimensional).
+<para>Returns a string that contains the data of an array (one to n dimensional).
 The elements of the array are treated either in line or character format,
 starting at the first element in the array. The line format is the default.
 If the line format is use, a <emphasis role="italic">separator</emphasis> string
@@ -1411,13 +1411,28 @@ index values as an array of index numbers.
 ]]>
 </programlisting>
 
-<para>Returns a stream that contains the data of an array (one to n dimensional).
+<para>Returns a string that contains the data of an array (one to n dimensional).
 The elements of the array are treated either in line or character format,
 starting at the first element in the array. The line format is the default.
 If the line format is use, a <emphasis role="italic">separator</emphasis> string
 can be specified.  The separator will be used between concatenated elements instead of the
 default linend separator.
 </para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>toString method</secondary></indexterm>
+<programlisting>
+   a = .array~of(1,2,3,4)  /* Loads the array */
+
+   say a~toString  /* Produces: 1 */
+                   /*           2 */
+                   /*           3 */
+                   /*           4 */
+
+   say a~toString("c") /*  Produces: 1234 */
+
+   say a~toString(, ", ") /* Produces: 1, 2, 3, 4 */
+</programlisting>
 </section>
 
 <section id="arex"><title>Examples</title>
