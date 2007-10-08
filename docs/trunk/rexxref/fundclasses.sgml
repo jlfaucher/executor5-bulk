@@ -215,7 +215,8 @@ variables, with the same values.</para>
 <secondary><emphasis role="bold">copy</emphasis> method</secondary></indexterm>
 <programlisting>
 myarray=.array~of("N","S","E","W")
-directions=myarray~copy   /* Copies array myarray to array directions */
+/* Copies array myarray to array directions */
+directions=myarray~copy
 </programlisting>
 </section>
 
@@ -2738,10 +2739,10 @@ the target string.</para>
 <indexterm><primary>examples</primary>
 <secondary>caselessMatch method</secondary></indexterm>
 <programlisting>
-"Saturday"~caselessMatch("day", 6)           ->    1
-"Saturday"~caselessMatch("DAY", 6)           ->    1
-"Saturday"~caselessMatch("SUNDAY", 6, 4, 3)  ->    1
-"Saturday"~caselessMatch("daytime", 6, 3)    ->    1
+"Saturday"~caselessMatch(6, "day")           ->    1
+"Saturday"~caselessMatch(6, "DAY")           ->    1
+"Saturday"~caselessMatch(6, "SUNDAY", 4, 3)  ->    1
+"Saturday"~caselessMatch(6, "daytime", 1, 3) ->    1
 </programlisting>
 </section>
 
@@ -3964,10 +3965,10 @@ the target string.</para>
 <indexterm><primary>examples</primary>
 <secondary>match method</secondary></indexterm>
 <programlisting>
-"Saturday"~match("day", 6)           ->    1
-"Saturday"~match("DAY", 6)           ->    0
-"Saturday"~match("Sunday", 6, 4, 3)  ->    1
-"Saturday"~match("daytime", 6, 3)    ->    1
+"Saturday"~match(6, "day")           ->    1
+"Saturday"~match(6, "DAY")           ->    0
+"Saturday"~match(6, "Sunday", 4, 3)  ->    1
+"Saturday"~match(6, "daytime", 1, 3) ->    1
 </programlisting>
 </section>
 
