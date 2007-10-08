@@ -135,8 +135,8 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 <tertiary>of DateTime class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-fromNormalDate(-+-----------+-)-----------------------------><
-                   +-separator-+
+>>-fromNormalDate(-date-+------------+-)-----------------------------><
+                        +-,separator-+
 ]]>
 </programlisting>
 
@@ -157,8 +157,8 @@ or the null string ("").  A space (" ") is the default separator.</para>
 <tertiary>of DateTime class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-fromEuropeanDate(-+-----------+-)-----------------------------><
-                     +-separator-+
+>>-fromEuropeanDate(-date-+------------+-)-----------------------------><
+                          +-,separator-+
 ]]>
 </programlisting>
 
@@ -181,8 +181,8 @@ The time component will be set to the beginning of the input day (00:00:00.00000
 <tertiary>of DateTime class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-fromOrderedDate(-+-----------+-)-----------------------------><
-                    +-separator-+
+>>-fromOrderedDate(-date-+------------+-)-----------------------------><
+                         +-,separator-+
 ]]>
 </programlisting>
 
@@ -204,8 +204,8 @@ The time component will be set to the beginning of the input day (00:00:00.00000
 <tertiary>of DateTime class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-fromStandardDate(-+-----------+-)-----------------------------><
-                     +-separator-+
+>>-fromStandardDate(-date-+------------+-)-----------------------------><
+                          +-,separator-+
 ]]>
 </programlisting>
 
@@ -226,8 +226,8 @@ or the null string ("").  A null string ("") is the default separator.</para>
 <tertiary>of DateTime class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-fromUsaDate(-+-----------+-)-----------------------------><
-                +-separator-+
+>>-fromUsaDate(-date-+------------+-)-----------------------------><
+                     +-,separator-+
 ]]>
 </programlisting>
 
@@ -248,7 +248,7 @@ or the null string ("").  A slash ("/") is the default separator.</para>
 <tertiary>of DateTime class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-fromNormalTime----------------------------------------------><
+>>-fromNormalTime(time)--------------------------------------><
 ]]>
 </programlisting>
 
@@ -265,7 +265,7 @@ The date component will be set to 1 January 0001.</para>
 <tertiary>of DateTime class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-fromCivilTime----------------------------------------------><
+>>-fromCivilTime(time)--------------------------------------><
 ]]>
 </programlisting>
 
@@ -282,7 +282,7 @@ The date component will be set to 1 January 0001.</para>
 <tertiary>of DateTime class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-fromLongTime----------------------------------------------><
+>>-fromLongTime(time)--------------------------------------><
 ]]>
 </programlisting>
 
@@ -299,7 +299,7 @@ The date component will be set to 1 January 0001.</para>
 <tertiary>of DateTime class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-fromBaseDate----------------------------------------------><
+>>-fromBaseDate(date)---------------------------------------------><
 ]]>
 </programlisting>
 
@@ -316,7 +316,7 @@ The time component will be set to the beginning of the input day (00:00:00.00000
 <tertiary>of DateTime class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-fromTicks----------------------------------------------><
+>>-fromTicks(time)----------------------------------------><
 ]]>
 </programlisting>
 
@@ -333,7 +333,7 @@ of the Date() or Time() built-in functions.
 <tertiary>of DateTime class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-fromIsoDate--------------------------------------------><
+>>-fromIsoDate(date)--------------------------------------><
 ]]>
 </programlisting>
 
@@ -1677,7 +1677,7 @@ The <emphasis role="italic">microseconds</emphasis> argument must be a valid Rex
 <tertiary>of TimeSpan class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-fromNormalTime----------------------------------------------><
+>>-fromNormalTime(time)----------------------------------------------><
 ]]>
 </programlisting>
 
@@ -1695,7 +1695,7 @@ The TimeSpan will contain an interval equal to the time of day represented by th
 <tertiary>of TimeSpan class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-fromCivilTime----------------------------------------------><
+>>-fromCivilTime(time)----------------------------------------><
 ]]>
 </programlisting>
 
@@ -1713,7 +1713,7 @@ The TimeSpan will contain an interval equal to the time of day represented by th
 <tertiary>of TimeSpan class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-fromLongTime----------------------------------------------><
+>>-fromLongTime(time)----------------------------------------><
 ]]>
 </programlisting>
 
