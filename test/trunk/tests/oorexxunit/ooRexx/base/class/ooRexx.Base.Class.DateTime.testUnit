@@ -1,0 +1,261 @@
+#!/usr/bin/rexx
+/*
+   name:             ooRexx.Base.Class.DateTime.testUnit
+   author:           Lee Peedin
+   date:             2007/10/08
+   version:          1.0
+
+-- line commented lines are ignored, when building the directory of infos from this header
+   changed:
+
+   languageLevel:    6.02
+   purpose:          Test the methods of the class DateTime class.
+   remark:           ---
+
+   license:          CPL 1.0 (Common Public License v1.0, see below)
+   link:
+
+// category needs not to be numbered, importance is given by position (1=most important)
+   category:         ooRexx
+   category:         Base
+   category:         Class
+   category:         DateTime
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+testUnitClass=.ooRexx.Base.Class.DateTime.TestUnit  -- change accordingly
+-------------------------------------------------------------------------------------------
+   /* list of array objects, each containing the testUnit class object and an
+      optional list of mandatory test case methods name                       */
+mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
+testUnitList=.list~of( .array~of(.ooRexx.Base.Class.DateTime.testUnit,  mandatoryTestMethods) )
+
+
+-------------------------------------------------------------------------------------------
+-- ===> the following code needs not to be individualized                              <===
+
+   -- read top comment, containing infos about this program
+arrLines=.array~new
+do i=1 to 150 until arrLines[i]="*/"
+   arrLines[i]=sourceline(i)
+end
+      -- supply information for the testClass(es) in this file; the class attribute
+      -- "TestCaseInfo" (a directory object, index points to a queue) will store
+      -- the parsed infos
+aTestUnitClass=testUnitList~at(testUnitList~first)[1] -- get first testClass
+
+   -- will parse the array lines and store result in class object
+call makeDirTestInfo aTestUnitClass, arrLines
+tmpDir=aTestUnitClass~TestCaseInfo
+parse source s   -- op_sys invocationType fullPathToThisFile
+tmpDir~setentry("test_Case-source", s)
+
+   -- now add this directory to other testCase classes, if any left
+do arr over testUnitList
+   if arr[1]=aTestUnitClass then iterate  -- already handled
+   arr[1]~TestCaseInfo=tmpDir             -- save info in class object
+end
+
+-- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
+-- and set it to .false; this way the independent local invocation of the tests is inhibited
+if .local~hasentry("bRunTestsLocally")=.false then
+   .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
+
+if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
+do
+   ts=.testSuite~new             -- create a testSuite
+   do arr over testUnitList
+      -- create a testSuite for the given test case class, use all its testmethods
+      ts~addTest( .testSuite~new(arr[1]))
+   end
+   -- testResult=.testSuite~new(testUnitClass)~run
+   testResult=ts~run       -- now run all the tests
+
+   call simpleDumpTestResults testResult
+end
+
+   /* return list of array objects containing test case classes and
+      optionally list of mandatory test methods                      */
+return testUnitList
+
+
+
+::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+
+   -- class named exactly like file
+::class "ooRexx.Base.Class.DateTime.TestUnit" subclass TestCase public
+
+::method 'test_minDate'
+    expected = '0001-01-01T00:00:00.000000'
+    self~assertEquals('subTest1',expected,.datetime~minDate)
+
+    expected = '0001-01-0100:00:00.000000'
+    self~assertNotEquals('subTest2',expected,.datetime~minDate)
+
+::method 'test_maxDate'
+    expected = '9999-12-31T23:59:59.999999'
+    self~assertEquals('subTest3',expected,.datetime~maxDate)
+
+    expected = '9999-12-3123:59:59.999999'
+    self~assertNotEquals('subTest4',expected,.datetime~maxDate)
+
+::method 'test_today'
+    todays = date('s')
+    expected = todays~left(4)'-'todays~substr(5,2)'-'todays~right(2)'T00:00:00.000000'
+    self~assertEquals('subTest5',expected,.datetime~today)
+
+    todayb = date('b')
+    yesterday = date('s',todayb-1,'b')
+    expected = yesterday~left(4)'-'yesterday~substr(5,2)'-'yesterday~right(2)'T00:00:00.000000'
+    self~assertNotEquals('subTest6',expected,.datetime~today)
+
+::method 'test_fromNormalDate'
+    a_normalDate1 = '8 Oct 2007'
+    a_normalDate2 = '8-Oct-2007'
+    a_normalDate3 = '8Oct2007'
+
+    expected = '2007-10-08T00:00:00.000000'
+
+    self~assertEquals('subTest7',expected,.datetime~fromNormalDate(a_normalDate1))
+    self~assertEquals('subTest8',expected,.datetime~fromNormalDate(a_normalDate1,' '))
+
+    self~assertEquals('subTest9',expected,.datetime~fromNormalDate(a_normalDate2,'-'))
+
+    self~assertEquals('subTest10',expected,.datetime~fromNormalDate(a_normalDate3,''))
+
+::method 'test_fromEuropeanDate'
+    a_europeanDate1 = '08/10/07'
+    a_europeanDate2 = '08-10-07'
+    a_europeanDate3 = '081007'
+
+
+    expected = '2007-10-08T00:00:00.000000'
+    self~assertEquals('subTest11',expected,.datetime~fromEuropeanDate(a_europeanDate1))
+    self~assertEquals('subTest12',expected,.datetime~fromEuropeanDate(a_europeanDate1,'/'))
+
+    self~assertEquals('subTest13',expected,.datetime~fromEuropeanDate(a_europeanDate2,'-'))
+
+    self~assertEquals('subTest14',expected,.datetime~fromEuropeanDate(a_europeanDate3,''))
+
+::method 'test_fromOrderedDate'
+    a_orderedDate1 = '07/10/08'
+    a_orderedDate2 = '07-10-08'
+    a_orderedDate3 = '071008'
+
+    expected = '2007-10-08T00:00:00.000000'
+    self~assertEquals('subTest15',expected,.datetime~fromOrderedDate(a_orderedDate1))
+    self~assertEquals('subTest16',expected,.datetime~fromOrderedDate(a_orderedDate1,'/'))
+
+    self~assertEquals('subTest17',expected,.datetime~fromOrderedDate(a_orderedDate2,'-'))
+
+    self~assertEquals('subTest18',expected,.datetime~fromOrderedDate(a_orderedDate3,''))
+
+::method 'test_fromStandardDate'
+    a_standardDate1 = '20071008'
+    a_standardDate2 = '2007-10-08'
+    a_standardDate3 = '2007/10/08'
+
+    expected = '2007-10-08T00:00:00.000000'
+    self~assertEquals('subTest19',expected,.datetime~fromStandardDate(a_standardDate1))
+    self~assertEquals('subTest20',expected,.datetime~fromStandardDate(a_standardDate1,''))
+
+    self~assertEquals('subTest21',expected,.datetime~fromStandardDate(a_standardDate2,'-'))
+
+    self~assertEquals('subTest22',expected,.datetime~fromStandardDate(a_standardDate3,'/'))
+
+::method 'test_fromUsaDate'
+    a_usaDate1 = '10/08/07'
+    a_usaDate2 = '10-08-07'
+    a_usaDate3 = '100807'
+
+    expected = '2007-10-08T00:00:00.000000'
+    self~assertEquals('subTest23',expected,.datetime~fromUsaDate(a_usaDate1))
+    self~assertEquals('subTest24',expected,.datetime~fromUsaDate(a_usaDate1,'/'))
+
+    self~assertEquals('subTest25',expected,.datetime~fromUsaDate(a_usaDate2,'-'))
+
+    self~assertEquals('subTest26',expected,.datetime~fromUsaDate(a_usaDate3,''))
+
+::method 'test_fromNormalTime'
+    a_normalTime = '13:16:07'
+
+    expected = '0001-01-01T13:16:07.000000'
+    self~assertEquals('subTest27',expected,.datetime~fromNormalTime(a_normalTime))
+
+::method 'test_fromCivilTime'
+    a_civilTime1 = '1:16pm'
+    a_civilTime2 = '1:16am'
+    a_civilTime3 = '0:00am'
+    a_civilTime4 = '11:59pm'
+
+    expected = '0001-01-01T13:16:00.000000'
+    self~assertEquals('subTest28',expected,.datetime~fromCivilTime(a_civilTime1))
+
+    expected = '0001-01-01T01:16:00.000000'
+    self~assertEquals('subTest28',expected,.datetime~fromCivilTime(a_civilTime2))
+
+    expected = '0001-01-01T00:00:00.000000'
+    self~assertEquals('subTest29',expected,.datetime~fromCivilTime(a_civilTime3))
+
+    expected = '0001-01-01T23:59:00.000000'
+    self~assertEquals('subTest30',expected,.datetime~fromCivilTime(a_civilTime4))
+
+::method 'test_fromLongTime'
+    a_longTime = '13:40:22.093000'
+
+    expected = '0001-01-01T13:40:22.093000'
+    self~assertEquals('subTest31',expected,.datetime~fromLongTime(a_longTime))
+
+::method 'test_fromBaseDate'
+    a_baseDate = 732956
+
+    expected = '2007-10-08T00:00:00.000000'
+    self~assertEquals('subTest32',expected,.datetime~fromBaseDate(a_baseDate))
+
+::method 'test_fromTicks'
+    a_ticksTime = '1191851246'
+
+    expected = '2007-10-08T13:47:26.000000'
+    self~assertEquals('subTest33',expected,.datetime~fromTicks(a_ticksTime))
+
+::method 'test_fromIsoDate'
+    a_isoDate = '2007-10-08T13:47:26.000000'
+
+    expected = '2007-10-08T13:47:26.000000'
+    self~assertEquals('subTest34',expected,.datetime~fromIsoDate(a_isoDate))
+
