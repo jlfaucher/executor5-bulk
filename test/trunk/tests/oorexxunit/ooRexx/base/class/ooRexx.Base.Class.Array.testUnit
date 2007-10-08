@@ -1026,25 +1026,105 @@ testSeq: procedure
 
 ::method "test_makeString"
 
-  nl=.ooRexxUnit.line.separator     -- get line separtor
+  nl=.ooRexxUnit.line.separator     -- get line separator
   a=.array~new
   self~assertEquals("subtest_01a", "", a~makestring)
-  self~assertEquals("subtest_01b", "", a~makestring("C"))
-  self~assertEquals("subtest_01c", "", a~makestring("L"))
+  self~assertEquals("subtest_01b", "", a~makestring("c"))
+  self~assertEquals("subtest_01c", "", a~makestring("C"))
+  self~assertEquals("subtest_01d", "", a~makestring("l"))
+  self~assertEquals("subtest_01e", "", a~makestring("L"))
+  self~assertEquals("subtest_01f", "", a~makestring(,"~"))
+
+
+  a=.array~of("1v")
+  str1="1v"
+  self~assertEquals("subtest_02a", str1, a~makestring)
+  self~assertEquals("subtest_02b", str1, a~makestring("c"))
+  self~assertEquals("subtest_02c", str1, a~makestring("C"))
+  self~assertEquals("subtest_02d", str1, a~makestring("l"))
+  self~assertEquals("subtest_02e", str1, a~makestring("L"))
+  self~assertEquals("subtest_02f", str1, a~makestring(,"~"))
 
 
   a=.array~of("1v", "2v", "3v")
   str1="1v2v3v"
   str2=str1~insert(nl,4)~insert(nl,2)
+  str3=str1~insert("~",4)~insert("~",2)
 
-  self~assertEquals("subtest_02a", str2, a~makestring)
-  self~assertEquals("subtest_02b", str1, a~makestring("C"))
-  self~assertEquals("subtest_02c", str2, a~makestring("L"))
+  self~assertEquals("subtest_03a", str2, a~makestring)
+  self~assertEquals("subtest_03b", str1, a~makestring("c"))
+  self~assertEquals("subtest_03c", str1, a~makestring("C"))
+  self~assertEquals("subtest_03d", str2, a~makestring("l"))
+  self~assertEquals("subtest_03e", str2, a~makestring("L"))
+  self~assertEquals("subtest_03f", str3, a~makestring(,"~"))
 
+
+  a=.array~of("1v",, "2v",, "3v")
+  str1="1v2v3v"
+  str2=str1~insert(nl,4)~insert(nl,2)
+  str3=str1~insert("~",4)~insert("~",2)
+
+  self~assertEquals("subtest_04a", str2, a~makestring)
+  self~assertEquals("subtest_04b", str1, a~makestring("c"))
+  self~assertEquals("subtest_04c", str1, a~makestring("C"))
+  self~assertEquals("subtest_04d", str2, a~makestring("l"))
+  self~assertEquals("subtest_04e", str2, a~makestring("L"))
+  self~assertEquals("subtest_04f", str3, a~makestring(,"~"))
+
+
+  a=.array~of(.set~new,, "2v",, .directory~new)
+  str1="2v"
+  str2=nl||str1||nl
+  str3="~"str1"~"
+
+  self~assertEquals("subtest_05a", str2, a~makestring)
+  self~assertEquals("subtest_05b", str1, a~makestring("c"))
+  self~assertEquals("subtest_05c", str1, a~makestring("C"))
+  self~assertEquals("subtest_05d", str2, a~makestring("l"))
+  self~assertEquals("subtest_05e", str2, a~makestring("L"))
+  self~assertEquals("subtest_05f", str3, a~makestring(,"~"))
+
+
+  a=.array~new()
+  a[1,1]="11v";a[1,2]="12v";a[2,1]="21v";a[2,2]="22v"
+  str1="11v12v21v22v"
+  str2=str1~insert(nl,9)~insert(nl,6)~insert(nl,3)
+  str3=str1~insert("~",9)~insert("~",6)~insert("~",3)
+
+  self~assertEquals("subtest_06a", str2, a~makestring)
+  self~assertEquals("subtest_06b", str1, a~makestring("c"))
+  self~assertEquals("subtest_06c", str1, a~makestring("C"))
+  self~assertEquals("subtest_06d", str2, a~makestring("l"))
+  self~assertEquals("subtest_06e", str2, a~makestring("L"))
+  self~assertEquals("subtest_06f", str3, a~makestring(,"~"))
+
+::method "test_makeString_syntax1"
+
+  a=.array~new()
+  self~expectSyntax("93.915")
+  a~makestring("S")
+
+::method "test_makeString_syntax2"
+
+  a=.array~new()
+  self~expectSyntax("93.938")
+  a~makestring(.nil)
+
+::method "test_makeString_syntax3"
+
+  a=.array~new()
+  self~expectSyntax("93.938")
+  a~makestring(,.nil)
+
+::method "test_makeString_syntax4"
+
+  a=.array~new()
+  self~expectSyntax("93.902")
+  a~makestring("C", "~")
 
 ::method "test_toString"
 
-  nl=.ooRexxUnit.line.separator     -- get line separtor
+  nl=.ooRexxUnit.line.separator     -- get line separator
   a=.array~new
   self~assertEquals("subtest_01a", "", a~toString)
   self~assertEquals("subtest_01b", "", a~toString("C"))
