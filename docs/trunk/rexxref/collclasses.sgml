@@ -1141,8 +1141,9 @@ The elements of the array are treated either in line or character format,
 starting at the first element in the array. The line format is the default.
 If the line format is use, a <emphasis role="italic">separator</emphasis> string
 can be specified.  The separator will be used between concatenated elements instead of the
-default linend separator.
-</para>
+default linend separator.</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<para>See <link linkend="mthArrayToString">toString</link> for examples.</para>
 </section>
 
 <section id="mthArrayNext"><title>next</title>
@@ -1162,6 +1163,13 @@ follows the array item having index <emphasis role="italic">index</emphasis>
 or returns the Nil object if the item having that index is last in the array.
 The <emphasis role="bold">next</emphasis>
 method is valid only for single-index arrays.</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>next method</secondary></indexterm>
+<programlisting>
+   a = .array~of("Fred",, "Mike",, "David")
+   say a~next(3)  -- says: 5
+</programlisting>
 </section>
 
 <section id="mthArrayPrevious"><title>previous</title>
@@ -1181,6 +1189,13 @@ method is valid only for single-index arrays.</para>
 item having that index is first in the
 array. The <emphasis role="bold">previous</emphasis>
 method is valid only for single-index arrays.</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>previous method</secondary></indexterm>
+<programlisting>
+   a = .array~of("Fred",, "Mike",, "David")
+   say a~previous(3)  -- says: 1
+</programlisting>
 </section>
 
 <section id="mthArrayPut"><title>put</title>
@@ -1207,6 +1222,15 @@ existing item associated with the specified
 with the new item. If the <emphasis role="italic">index</emphasis> for a
 particular dimension is greater than the current size of
 that dimension, the array is expanded to the new dimension size.</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>put method</secondary></indexterm>
+<programlisting>
+   a = .array~new
+   a~put(1, "Fred")  -- a = .array~of("Fred")
+   a~put(2, "Mike")  -- a = .array~of("Fred", "Mike")
+   a~put(1, "Mike")  -- a = .array~of("Mike", "Mike")
+</programlisting>
 </section>
 
 <section id="mthArrayRemove"><title>remove</title>
@@ -1229,6 +1253,13 @@ that dimension, the array is expanded to the new dimension size.</para>
 item with the specified <emphasis role="italic">index</emphasis> or
 <emphasis role="italic">index</emphasis>es, the Nil object is returned and
 no item is removed.</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>remove method</secondary></indexterm>
+<programlisting>
+   a = .array~of("Fred", "Mike", "Mike", "David")
+   a~removeItem(2)  -- removes "Mike"
+</programlisting>
 </section>
 
 <section id="mthArrayRemoveItem"><title>removeItem</title>
@@ -1249,7 +1280,7 @@ removed item.
 </para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>wordPos method</secondary></indexterm>
+<secondary>removeItem method</secondary></indexterm>
 <programlisting>
    a = .array~of("Fred", "Mike", "Mike", "David")
    a~removeItem("Mike")  -- removes the item at index "2"
@@ -1281,6 +1312,16 @@ If you do not specify <emphasis role="italic">items</emphasis>,
 the new array contains all subsequent items of the receiver array. The receiver
 array remains unchanged. The <emphasis role="bold">section</emphasis>
 method is valid only for single-index arrays.</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>section method</secondary></indexterm>
+<programlisting>
+   a = .array~of(1,2,3,4)  -- Loads the array
+
+   b = a~section(2)   -- b = .array~of(2,3,4)
+   c = a~section(2,2) -- c = .array~of(2,3)
+   d = a~section(2,0) -- d = .array~new
+</programlisting>
 </section>
 
 <section id="mthArraySize"><title>size</title>
@@ -1422,16 +1463,16 @@ default linend separator.
 <indexterm><primary>examples</primary>
 <secondary>toString method</secondary></indexterm>
 <programlisting>
-   a = .array~of(1,2,3,4)  /* Loads the array */
+   a = .array~of(1,2,3,4)  -- Loads the array
 
-   say a~toString  /* Produces: 1 */
-                   /*           2 */
-                   /*           3 */
-                   /*           4 */
+   say a~toString  -- Produces: 1
+                   --           2
+                   --           3
+                   --           4
 
-   say a~toString("c") /*  Produces: 1234 */
+   say a~toString("c")  -- Produces: 1234
 
-   say a~toString(, ", ") /* Produces: 1, 2, 3, 4 */
+   say a~toString(, ", ")  -- Produces: 1, 2, 3, 4
 </programlisting>
 </section>
 
