@@ -1,6 +1,6 @@
 #!/usr/bin/rexx
 /*
-   name:             ooRexx.extensions.oleObject.OLEVariant.testUnit
+   name:             ooRexx.extensions.platform.windows.ole.OLEVariant.testUnit
    author:           Mark Miesfeld
    date:             2007-03-17
    version:          0.0.9
@@ -60,15 +60,10 @@ use arg cmdLine;
 
   -- This is a Windows specific test case.  If not on Windows, don't execute and
   -- return an empty list to a, possible, caller.
-  os = ooRexxUnit.getOSName( );
-  if os <> "WINDOWS" then do
-    say ".ooRexx.extensions.ole.OLEVariant.testUnit:";
-    say "  Windows specific test unit not executing on" os;
-    return .list~new;
-  end
+  if .ooRexxUnit.OSName <> "WINDOWS" then return .list~new
 
   -- A convenience since the test case class name is so long.
-  testUnitClass = .ooRexx.extensions.ole.OLEVariant.testUnit;
+  testUnitClass = .ooRexx.extensions.platform.windows.ole.OLEVariant.testUnit;
 
   -- Create the test unit list.  There is only 1 item in the list for this test
   -- unit.  The list is needed if this test unit is called as one of a group of
@@ -117,13 +112,13 @@ return testUnitList;
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::requires "OOREXXUNIT.CLS";
 
-/* class: ooRexx.extensions.oleObject.OLEVariant.testUnit- - - - - - - - - - -*\
+/* class: ooRexx.extensions.platform.windows.ole.OLEVariant.testUnit - - - - -*\
 
     The OLEVariant test unit class.  Each method starting with 'test_' is an
     individual test case for the OLEVariant class.
 
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class ooRexx.extensions.ole.OLEVariant.testUnit public subclass TestCase;
+::class ooRexx.extensions.platform.windows.ole.OLEVariant.testUnit public subclass TestCase;
 
   /* test_instantiateProper( ) - - - - - - - - - - - - - - - - - - - - - - - -*\
 
@@ -522,5 +517,5 @@ return testUnitList;
 
   -- End test_clearVariantEqualsXX( )
 
--- End of class: ooRexx.extensions.oleObject.OLEVAriant.testUnit
+-- End of class: ooRexx.extensions.platform.windows.ole.OLEVariant.testUnit
 
