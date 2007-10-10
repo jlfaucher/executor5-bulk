@@ -27,6 +27,7 @@
                                          really treated equal in all related BIFs
                      2007-06-11, ---rgf, added TAB=blank test case for PARSE
                      2007-09-16, ---rgf, added tests for new 'count' argument in [caseless]changeStr()
+                     2007-10-10, ---rgf, cater for new errortext # 88
 
    languageLevel:    6.02
    purpose:          Test the String functions.
@@ -645,7 +646,7 @@ return testUnitList
     self~assertSame('subTest85', ''                                        , ERRORTEXT(85))
     self~assertSame('subTest86', ''                                        , ERRORTEXT(86))
     self~assertSame('subTest87', ''                                        , ERRORTEXT(87))
-    self~assertSame('subTest88', ''                                        , ERRORTEXT(88))
+    self~assertSame('subTest88', 'Invalid argument'                        , ERRORTEXT(88))
     self~assertSame('subTest89', 'Variable or message term expected'       , ERRORTEXT(89))
     self~assertSame('subTest90', 'External name not found'                 , ERRORTEXT(90))
     self~assertSame('subTest91', 'No result object'                        , ERRORTEXT(91))

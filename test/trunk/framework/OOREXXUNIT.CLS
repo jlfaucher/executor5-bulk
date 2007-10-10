@@ -84,6 +84,8 @@
                      2007-08-17, ---rgf, - corrected a small typo; now that we have a release version removing pre 3.2
                                            code and tests, using new features
                      2007-08-18, ---mm,  - add public routine simpleFormatTestResults()
+                     2007-10-10, ---rgf, - enhanced framework to allow accepting testSuite objects at testSuite
+                                           creation time (and also collections of test cases)
 
 
    language-level:   6.0.2
@@ -748,14 +750,56 @@ exceptionHandler:
   fTestList=.queue~new
 
       -- a class object, use reflection and create test cases
-  if arg(1)~class=.class then
+  if arg()>0 then       -- args there ?
   do
-     testCaseClass=arg(1)
-     fTestMethods.=self~class~getTestMethods(testCaseClass)
-     do i=1 to fTestMethods.0
-        self~addTest(testCaseClass~new(fTestMethods.i))
+     use strict arg arg1    -- make sure, only one arg supplied
+
+     if isSubClassOf(arg1~class, "TestSuite") then -- a TestSuite object ?
+     do
+        self~addTest(arg1)                -- just add it
+        return
      end
+
+      -- a TestCase class object in hand?
+     else if arg1~isA(.class), isSubClassOf(arg1, "TestCase") then
+     do
+        testCaseClass=arg1
+        fTestMethods.=self~class~getTestMethods(testCaseClass)
+        do i=1 to fTestMethods.0          -- iterate over all test methods
+           self~addTest(testCaseClass~new(fTestMethods.i))
+        end
+        return
+     end
+
+      -- a collection of individual TestCase objects to add?
+     else if arg1~isA(.Collection) then
+     do
+        do tc over arg1~makeArray         -- iterate over test cases
+           if isSubClassOf(tc~class, "TestCase") then
+              self~addTest(tc)
+           else
+              raise syntax 88.914 array ("'collection item ["tc"]'", "'TestCase' or 'TestSuite'")
+        end
+        return
+     end
+     raise syntax 88.914 array ("1", "'TestCase', 'TestSuite' or 'Collection'")
   end
+  return
+
+  /* each TestCase/TestSuite class object could be created by a different requires, causing
+     different class objects to be created than are available in the context of this run */
+::routine isSubClassOf
+  use arg clz, superClassName
+
+  do while clz<>.nil
+     if clz~id~caselessEquals(superClassName)=1 then   -- o.k. found!
+        return .true
+     clz=clz~superClass    -- look further, get immediate superclass
+  end
+  return .false
+
+
+
 
 ::method getTestMethods class -- use reflection to retrieve testmethods, sort alphabetically
   use arg class
@@ -781,7 +825,11 @@ exceptionHandler:
 
 ::method addTest
   expose fTestList
-  use arg aTestCase
+  use strict arg aTestCase
+
+  if \isSubClassOf(aTestCase~class, "TestCase") then
+     raise syntax 88.914 array ("'aTestCase'", "'TestCase' or 'TestSuite'")
+
   fTestList~queue(aTestCase)
   self~countTestCases = self~countTestCases+1
 
