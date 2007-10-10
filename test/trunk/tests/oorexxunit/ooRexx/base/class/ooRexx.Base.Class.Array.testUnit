@@ -446,7 +446,7 @@ return testUnitList
 
 
 
-::method "test_PUT"
+::method "test_put"
   expose collDir clz bUserDefinedIndex bSingleItem
 
   tmpColl=clz~new
@@ -473,6 +473,34 @@ return testUnitList
   self~assertTrue(  "subtest06c", tmpColl~hasitem("3"))
 
   self~assertTrue("subtest07", sameContent(.bag~of("1","2","3"), tmpColl))
+
+
+::method "test_put_syntax1"
+
+  a=.array~new()
+  self~expectSyntax("93.903")
+  a~put()
+
+
+::method "test_put_syntax2"
+
+  a=.array~new()
+  self~expectSyntax("93.901")
+  a~put(.nil)
+
+
+::method "test_put_syntax3"
+
+  a=.array~new()
+  self~expectSyntax("93.938")
+  a~put(.nil,.nil)
+
+
+::method "test_put_syntax4"
+
+  a=.array~new()
+  self~expectSyntax("93.905")
+  a~put(.nil,.string)
 
 
 ::method "test_[]="
@@ -536,6 +564,19 @@ return testUnitList
 
   self~assertEquals("subtest15", 0, c1~items)
 
+
+::method "test_remove_syntax1"
+
+  a=.array~new()
+  self~expectSyntax("93.938")
+  a~section(.nil)
+
+
+::method "test_remove_syntax2"
+
+  a=.array~new()
+  self~expectSyntax("93.905")
+  a~section(.string)
 
 
 ::method "test_removeItem"
@@ -805,6 +846,25 @@ makeColl: procedure
   self~assertEquals("subtest_03f", 1,  a~previous(2))
 
 
+::method "test_previous_syntax1"
+
+  a=.array~new()
+  self~expectSyntax("93.901")
+  a~previous()
+
+
+::method "test_previous_syntax2"
+
+  a=.array~new()
+  self~expectSyntax("93.938")
+  a~previous(.nil)
+
+
+::method "test_previous_syntax3"
+
+  a=.array~new()
+  self~expectSyntax("93.905")
+  a~previous(.string)
 
 
 ::method "test_MULTIDIMENSIONAL_makeArray"
@@ -995,21 +1055,23 @@ makeColl: procedure
 
   a1=.array~of(1)
   a2=a1~section(2)
-  self~assertTrue("subtest_02", a2~items=0)
+  self~assertTrue("subtest_02a", a2~items=0)
   a2=a1~section(1)
-  self~assertTrue("subtest_03a", a2~items=1)
+  self~assertTrue("subtest_02b", a2~items=1)
+  a2=a1~section(1,0)
+  self~assertTrue("subtest_02c", a2~items=0)
   a2=a1~section(1,1)
-  self~assertTrue("subtest_03b", a2~items=1)
+  self~assertTrue("subtest_02d", a2~items=1)
   a2=a1~section(1,5)
-  self~assertTrue("subtest_03c", a2~items=1)
+  self~assertTrue("subtest_02e", a2~items=1)
 
   a1=.array~of(1,2,3,4,5)
   a2=a1~section(2)
-  self~assertTrue("subtest_04a", a2~items=4)
-  self~assertTrue("subtest_04b", testSeq(a1, a2, 2))
+  self~assertTrue("subtest_03a", a2~items=4)
+  self~assertTrue("subtest_03b", testSeq(a1, a2, 2))
   a2=a1~section(2,2)
-  self~assertTrue("subtest_05a", a2~items=2)
-  self~assertTrue("subtest_05b", testSeq(a1, a2, 2))
+  self~assertTrue("subtest_03c", a2~items=2)
+  self~assertTrue("subtest_03d", testSeq(a1, a2, 2))
 
   return
 
@@ -1022,6 +1084,40 @@ testSeq: procedure
   end
   return .true
 
+
+::method "test_section_syntax1"
+
+  a=.array~new()
+  self~expectSyntax("93.938")
+  a~section(.nil)
+
+
+::method "test_section_syntax2"
+
+  a=.array~new()
+  self~expectSyntax("93.905")
+  a~section(.string)
+
+
+::method "test_section_syntax3"
+
+  a=.array~new()
+  self~expectSyntax("93.907")
+  a~section(0)
+
+
+::method "test_section_syntax4"
+
+  a=.array~new()
+  self~expectSyntax("93.938")
+  a~section(1, .nil)
+
+
+::method "test_section_syntax5"
+
+  a=.array~new()
+  self~expectSyntax("93.905")
+  a~section(1, .string)
 
 
 ::method "test_makeString"
