@@ -514,6 +514,47 @@ return testUnitList
     expected = 1
     self~assertEquals('subTest83',expected,startTime <= d & d <= endTime)
 
+::method 'test_daysInYear1'
+    a_dt = .dateTime~new(2007,10,8)
+    expected = 365
+    self~assertEquals('subTest84',expected,a_dt~daysInYear)
+    a_dt = .dateTime~new(1,1,1)
+    self~assertEquals('Year 1 should have 365 days', 365, a_dt~daysInYear)
+    a_dt = .dateTime~new(9999,11,13)
+    self~assertEquals('Year 9999 should have 365 days', 365, a_dt~daysInYear)
+
+    do i = 1 to 125
+      a_dt = .dateTime~new(i,1,31)
+      select
+         when i == 100 then expected = 365
+         when i // 4 == 0 then expected = 366
+         otherwise expected = 365
+      end
+      self~assertEquals('Year' i 'should have' expected 'days', expected, a_dt~daysInYear)
+    end
+
+    do i = 9999 to 9888 by -1
+      a_dt = .dateTime~new(i,12,31)
+      select
+         when i // 100  == 0 then expected = 365
+         when i // 4 == 0 then expected = 366
+         otherwise expected = 365
+      end
+      self~assertEquals('Year' i 'should have' expected 'days', expected, a_dt~daysInYear)
+    end
+
+::method 'test_daysInYear2'
+    a_dt = .dateTime~new(2008,10,8)
+    expected = 366
+    self~assertEquals('subTest85',expected,a_dt~daysInYear)
+
+::method 'test_elasped1'
+    a_dt = .datetime~new
+    call syssleep 1
+    duration = a_dt~elapsed
+    expected = 1
+    self~assertEquals('subTest86',expected,duration~seconds)
+
 ::method 'test_FractionalAdds'
 -- need additional tests for fractional add values - adding one now for an example
     a_dateTime = .dateTime~new(2007,10,8,13,0,0)
