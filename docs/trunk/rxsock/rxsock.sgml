@@ -197,8 +197,8 @@ are shown, you must enter them as part of the syntax.</para></listitem></itemize
 <section><title>A Note About Program Examples in this Document</title>
 <para>The program examples in this document are rendered in a mono-spaced
 font that is not completely compatible for cut-and-paste functionality.
-Pasteing text into an editor could result in some characters outside of
-the standard ASCII character set. Specifically, single-qoute and
+Pasting text into an editor could result in some characters outside of
+the standard ASCII character set. Specifically, single-quote and
 double-quote characters are sometimes converted incorrectly when
 pasted into an editor.</para>
 
@@ -787,7 +787,7 @@ SockPSock_Errno(). Possible values are:</para>
    </varlistentry>
    <varlistentry>
       <term>EALREADY</term>
-      <listitem><para>The socket socket is in nonblocking mode. A previous connection attempt has
+      <listitem><para>The socket is in nonblocking mode. A previous connection attempt has
       not completed.
       </para></listitem>
    </varlistentry>
@@ -892,13 +892,13 @@ SockPSock_Errno(). Possible values are:</para>
    </varlistentry>
    <varlistentry>
       <term>EALREADY</term>
-      <listitem><para>The socket socket is in nonblocking mode. A previous connection attempt has
+      <listitem><para>The socket is in nonblocking mode. A previous connection attempt has
       not completed.
       </para></listitem>
    </varlistentry>
    <varlistentry>
       <term>ENOTSOCK</term>
-      <listitem><para>The socket socket is not a valid socket descriptor.
+      <listitem><para>The socket is not a valid socket descriptor.
       </para></listitem>
    </varlistentry>
    <varlistentry>
@@ -1121,7 +1121,7 @@ SockPSock_Errno(). Possible values are:</para>
       </para></listitem>
    </varlistentry>
 </variablelist>
-<para>SockGetSockName() returns the address for socket socket in the stem variable
+<para>SockGetSockName() returns the address for socket in the stem variable
 address. If the socket is not bound to an address, the call returns a null address.
 </para>
 <para>The returned null address is a stem variable with the family field set to AF_INET,
@@ -1207,7 +1207,7 @@ specific socket types.
       <term>SO_BROADCAST</term>
       <listitem><para>returns the information whether datagram sockets are able to broadcast
       messages. If this option is enabled, the application can send broadcast
-      messages using datagram socket socket, if the interface specified in the
+      messages using datagram socket, if the interface specified in the
       destination supports broadcasting of packets.
       </para></listitem>
    </varlistentry>
@@ -1486,7 +1486,7 @@ connections and creates a connection request queue for incoming requests.
 </variablelist>
 <para>SockListen() performs the following tasks:</para>
 <orderedlist>
-   <listitem><para>1. It completes the binding necessary for socket socket, if SockBind() has not been
+   <listitem><para>1. It completes the binding necessary for socket, if SockBind() has not been
    called for the socket.
    </para></listitem>
    <listitem><para>It creates a connection request queue with a length of backlog to queue
@@ -1567,8 +1567,8 @@ Subsequent socket calls do not clear the error code.
 <indexterm><primary>SockRecv</primary></indexterm>
 <indexterm><primary>function</primary>
 <secondary>SockRecv</secondary></indexterm>
-<indexterm><primary>recieve data on socket</primary></indexterm>
-<indexterm><primary>data on socket, recieve</primary></indexterm>
+<indexterm><primary>receive data on socket</primary></indexterm>
+<indexterm><primary>data on socket, receive</primary></indexterm>
 <para>The SockRecv() call receives data on a connected socket.
 </para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
@@ -1659,8 +1659,8 @@ error code SockSock_Errno() or SockPSock_Errno(). Possible values are:</para>
 <indexterm><primary>SockRecvFrom</primary></indexterm>
 <indexterm><primary>function</primary>
 <secondary>SockRecvFrom</secondary></indexterm>
-<indexterm><primary>recieve data on socket</primary></indexterm>
-<indexterm><primary>data on socket, recieve</primary></indexterm>
+<indexterm><primary>receive data on socket</primary></indexterm>
+<indexterm><primary>data on socket, receive</primary></indexterm>
 <para>The SockRecvFrom() call receives data on a socket.
 </para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
@@ -2126,7 +2126,7 @@ disabled if optval is 0.
    <varlistentry>
       <term>SO_BROADCAST</term>
       <listitem><para>enables datagram sockets to broadcast messages. The application can then send
-      broadcast messages using datagram socket socket, if the interface specified in
+      broadcast messages using datagram socket, if the interface specified in
       the destination supports broadcasting of packets.
       </para></listitem>
    </varlistentry>
@@ -2300,7 +2300,7 @@ call is optional.
    </varlistentry>
    <varlistentry>
       <term>howto</term>
-      <listitem><para>is the condition of the shutdown of socket socket.
+      <listitem><para>is the condition of the shutdown of socket.
       </para></listitem>
    </varlistentry>
 </variablelist>
@@ -2314,17 +2314,17 @@ socket. It can be set to one of the following:</para>
 <variablelist>
    <varlistentry>
       <term>0</term>
-      <listitem><para>No more data can be received on socket socket.
+      <listitem><para>No more data can be received on socket.
       </para></listitem>
    </varlistentry>
    <varlistentry>
       <term>1</term>
-      <listitem><para>No more output is allowed on socket socket.
+      <listitem><para>No more output is allowed on socket.
       </para></listitem>
    </varlistentry>
    <varlistentry>
       <term>2</term>
-      <listitem><para>No more data can be sent or received on socket socket.
+      <listitem><para>No more data can be sent or received on socket.
       </para></listitem>
    </varlistentry>
 </variablelist>
