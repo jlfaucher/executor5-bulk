@@ -804,6 +804,16 @@ single-index array containing the specified
 and so on.</para>
 <para>If you use the OF method and omit any argument items, the returned array
 does not include the indexes corresponding to those you omitted.</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>of method</secondary></indexterm>
+<programlisting>
+   a = .array~of("Fred", "Mike", "David")
+
+   do name over a
+      say name  -- displays "Fred", "Mike", and "David"
+   end
+</programlisting>
 </section>
 
 <section id="mthArrayAtGet"><title>[]</title>
@@ -859,7 +869,7 @@ does not include the indexes corresponding to those you omitted.</para>
 <para>Returns an array of all index positions in the array containing items.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>wordPos method</secondary></indexterm>
+<secondary>allIndexes method</secondary></indexterm>
 <programlisting>
    a = .array~of("Fred", "Mike", "David")
 
@@ -890,7 +900,7 @@ does not include the indexes corresponding to those you omitted.</para>
 <para>Returns an array of all items contained in the array.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>wordPos method</secondary></indexterm>
+<secondary>allItems method</secondary></indexterm>
 <programlisting>
    a = .array~of("Fred", "Mike", "David")
 
@@ -921,6 +931,13 @@ does not include the indexes corresponding to those you omitted.</para>
 <para>Appends an item to the array after the last item (the item with the highest index.  The
 return value is the index of newly added item.
 </para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>append method</secondary></indexterm>
+<programlisting>
+   a = .array~of("Mike", "Rick")
+   a~append("Fred")  -- a = .array~of("Mike", "Rick", "Fred")
+</programlisting>
 </section>
 
 <section id="mthArrayAt"><title>at</title>
@@ -943,6 +960,13 @@ return value is the index of newly added item.
 with the specified <emphasis role="italic">index</emphasis> or
 <emphasis role="italic">index</emphasis>es, this method returns the
 Nil object.</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>at method</secondary></indexterm>
+<programlisting>
+   a = .array~of("Mike", "Rick")
+   say a~at(2)  -- says: "Rick"
+</programlisting>
 </section>
 
 <section id="mthArrayDimension"><title>dimension</title>
@@ -965,6 +989,19 @@ this method returns the dimensionality
 (number of dimensions) of the array. If the number of dimensions has not been
 determined, <emphasis role="bold">dimension</emphasis>
 returns <computeroutput>0</computeroutput>.</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>dimension method</secondary></indexterm>
+<programlisting>
+   a = .array~of(,"Mike", "Rick")
+   say a~dimension     -- says: 1 (number of dimensions in the array)
+   say a~dimension(1)  -- says: 3 (upper bound of dimension one)
+
+   a = .array~new~~put("Mike",1,1)~~put("Rick",1,2)
+   say a~dimension     -- says: 2 (number of dimensions in the array)
+   say a~dimension(1)  -- says: 1 (upper bound of dimension one)
+   say a~dimension(2)  -- says: 2 (upper bound of dimension two)
+</programlisting>
 </section>
 
 <section id="mthArrayEmpty"><title>empty</title>
@@ -980,6 +1017,13 @@ returns <computeroutput>0</computeroutput>.</para>
 </programlisting>
 
 <para>Removes all items from the array.</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>empty method</secondary></indexterm>
+<programlisting>
+   a = .array~of("Mike", "Rick", "Fred", "Rick")
+   a~empty  -- a = .array~new
+</programlisting>
 </section>
 
 <section id="mthArrayFirst"><title>first</title>
@@ -997,6 +1041,15 @@ returns <computeroutput>0</computeroutput>.</para>
 <para>Returns the index of the first item in the array or the Nil object if the
 array is empty. The <emphasis role="bold">first</emphasis>
 method is valid only for single-index arrays.</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>first method</secondary></indexterm>
+<programlisting>
+   a = .array~of("Mike", "Rick", "Fred", "Rick")
+   say a~first  -- says: 1
+   a = .array~of(,"Mike", "Rick")
+   say a~first  -- says: 2
+</programlisting>
 </section>
 
 <section id="mthArrayHasIndex"><title>hasIndex</title>
@@ -1016,6 +1069,14 @@ method is valid only for single-index arrays.</para>
 <para>Returns <computeroutput>1</computeroutput> (true) if the array contains
 an item associated with the specified index or indexes. Returns
 <computeroutput>0</computeroutput> (false) otherwise.</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>hasIndex method</secondary></indexterm>
+<programlisting>
+   a = .array~of("Mike", "Rick", "Fred", "Rick")
+   say a~hasIndex(2)  -- says: 1
+   say a~hasIndex(5)  -- says: 0
+</programlisting>
 </section>
 
 <section id="mthArrayHasItem"><title>hasItem</title>
@@ -1033,6 +1094,14 @@ an item associated with the specified index or indexes. Returns
 <para>Returns <computeroutput>1</computeroutput> (true) if the array contains
 the specified item at any index location.  Returns
 <computeroutput>0</computeroutput> (false) otherwise.</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>hasItem method</secondary></indexterm>
+<programlisting>
+   a = .array~of("Mike", "Rick", "Fred", "Rick")
+   say a~hasItem("Rick")  -- says: 1
+   say a~hasItem("Mark")  -- says: 0
+</programlisting>
 </section>
 
 <section id="mthArrayIndex"><title>index</title>
@@ -1052,6 +1121,13 @@ target item appears at more than one index, the first located index will
 be returned.  If the array does not contain the specified item, .nil is
 returned.
 </para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>index method</secondary></indexterm>
+<programlisting>
+   a = .array~of("Mike", "Rick", "Fred", "Rick")
+   say a~index("Rick")  -- says: 2
+</programlisting>
 </section>
 
 <section id="mthArrayIsEmpty"><title>isEmpty</title>
@@ -1069,6 +1145,15 @@ returned.
 <para>Returns <computeroutput>1</computeroutput> (true) if the array is
 empty.  Returns
 <computeroutput>0</computeroutput> (false) otherwise.</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>isEmpty method</secondary></indexterm>
+<programlisting>
+   a = .array~new
+   say a~isEmpty  -- says: 1
+   a[1] = "1"
+   say a~isEmpty  -- says: 0
+</programlisting>
 </section>
 
 <section id="mthArrayItems"><title>items</title>
@@ -1084,6 +1169,13 @@ empty.  Returns
 </programlisting>
 
 <para>Returns the number of items in the collection.</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>items method</secondary></indexterm>
+<programlisting>
+   a = .array~of("Fred",, "Mike",, "David")
+   say a~items  -- says: 3
+</programlisting>
 </section>
 
 <section id="mthArrayLast"><title>last</title>
@@ -1101,6 +1193,13 @@ empty.  Returns
 <para>Returns the index of the last item in the array or the NIL object if the
 array is empty. The <emphasis role="bold">last</emphasis>
 method is valid only for single-index arrays.</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>last method</secondary></indexterm>
+<programlisting>
+   a = .array~of("Fred",, "Mike",, "David")
+   say a~last  -- says: 5
+</programlisting>
 </section>
 
 <section id="mthArrayMakeArray"><title>makeArray</title>
@@ -1119,6 +1218,13 @@ method is valid only for single-index arrays.</para>
 object. Any index with no associated item is omitted from the new array.
 Items in the new array will have the same order as the source array.
 </para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>makeArray method</secondary></indexterm>
+<programlisting>
+   a = .array~of("Fred",, "Mike",, "David")
+   b = a~makeArray  -- b = .array~of("Fred", "Mike", "David")
+</programlisting>
 </section>
 
 <section id="mthArrayMakeString"><title>makeString</title>
@@ -1258,7 +1364,7 @@ no item is removed.</para>
 <secondary>remove method</secondary></indexterm>
 <programlisting>
    a = .array~of("Fred", "Mike", "Mike", "David")
-   a~removeItem(2)  -- removes "Mike"
+   a~remove(2)  -- removes "Mike"
 </programlisting>
 </section>
 
