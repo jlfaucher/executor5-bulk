@@ -185,6 +185,12 @@ return testUnitList
   self~assertEquals("subtest6", collDir~allIndexes2, collDir~coll_2~allIndexes)
 
 
+::method "test_allIndexes_syntax1"
+
+  a=.array~new
+  self~expectSyntax("93.902")
+  a~allIndexes(.nil)
+
 
 ::method "test_allItems"
   expose collDir clz bUserDefinedIndex bSingleItem
@@ -201,6 +207,13 @@ return testUnitList
 
   self~assertEquals("subtest5", collDir~allItems1, collDir~coll_1~allItems)
   self~assertEquals("subtest6", collDir~allItems2, collDir~coll_2~allItems)
+
+
+::method "test_allItems_syntax1"
+
+  a=.array~new
+  self~expectSyntax("93.902")
+  a~allItems(.nil)
 
 
 ::method "test_append"
@@ -222,6 +235,19 @@ return testUnitList
   self~assertEquals("subtest01", c1, tmpC1)
   self~assertEquals("subtest02", c2, tmpC2)
 
+
+::method "test_append_syntax1"
+
+  a=.array~new
+  self~expectSyntax("93.903")
+  a~append
+
+
+::method "test_append_syntax2"
+
+  a=.array~new
+  self~expectSyntax("93.902")
+  a~append(.nil, .nil)
 
 
 ::method "test_appendAll"
@@ -246,13 +272,27 @@ return testUnitList
 
 
 
-::method "test_AT"
+::method "test_at"
   expose collDir clz bUserDefinedIndex bSingleItem
 
   coll=collDir~coll_1      -- get the prepared Array
   self~assertEquals("subtest1", "1v", coll~at(1))
   self~assertEquals("subtest2", "2v", coll~at(2))
   self~assertNull(  "subtest3",       coll~at(10))
+
+
+::method "test_at_syntax1"
+
+  a=.array~new
+  self~expectSyntax("93.938")
+  a~at(.nil)
+
+
+::method "test_at_syntax2"
+
+  a=.array~new
+  self~expectSyntax("93.905")
+  a~at(.string)
 
 
 ::method "test_[]"
@@ -317,6 +357,13 @@ return testUnitList
   self~assertTrue("subtest03:", sameContent(ce, c2~copy~~empty))
 
 
+::method "test_empty_syntax"
+
+  a=.array~new
+  self~expectSyntax("93.902")
+  a~empty(.nil)
+
+
 ::method "test_hasIndex"
   expose collDir clz bUserDefinedIndex bSingleItem
 
@@ -325,6 +372,33 @@ return testUnitList
   self~assertTrue( "subtest2", coll~hasIndex("2"))
   self~assertFalse("subtest3", coll~hasIndex("10"))
 
+
+::method "test_hasIndex_syntax1"
+
+  a=.array~new
+  self~expectSyntax("93.901")
+  a~hasIndex
+
+
+::method "test_hasIndex_syntax2"
+
+  a=.array~new
+  self~expectSyntax("93.938")
+  a~hasIndex(.nil)
+
+
+::method "test_hasIndex_syntax3"
+
+  a=.array~new
+  self~expectSyntax("93.905")
+  a~hasIndex(.string)
+
+
+::method "test_hasIndex_syntax4"
+
+  a=.array~of("1")
+  self~expectSyntax("93.926")
+  a~hasIndex(.nil, .nil)
 
 
 ::method "test_hasItem"
@@ -336,6 +410,20 @@ return testUnitList
   self~assertFalse("subtest3", coll~hasItem("3v"))
 
 
+::method "test_hasItem_syntax1"
+
+  a=.array~new
+  self~expectSyntax("93.903")
+  a~hasItem
+
+
+::method "test_hasItem_syntax2"
+
+  a=.array~new
+  self~expectSyntax("93.902")
+  a~hasItem(.nil, .nil)
+
+
 ::method "test_index"
   expose collDir clz bUserDefinedIndex bSingleItem
 
@@ -344,6 +432,19 @@ return testUnitList
   self~assertEquals("subtest2", "2", coll~index("2v"))
   self~assertNull(  "subtest3",      coll~index("3v"))
 
+
+::method "test_index_syntax1"
+
+  a=.array~new
+  self~expectSyntax("93.903")
+  a~index
+
+
+::method "test_index_syntax2"
+
+  a=.array~new
+  self~expectSyntax("93.902")
+  a~index(.nil, .nil)
 
 
 ::method "test_interSection"
@@ -407,6 +508,12 @@ return testUnitList
   self~assertTrue( "subtest04", collDir~coll_1~copy~~empty~isEmpty)
 
 
+::method "test_isEmpty_syntax"
+
+  a=.array~new
+  self~expectSyntax("93.902")
+  a~isEmpty(.nil)
+
 
 ::method "test_items"
   expose collDir clz bUserDefinedIndex bSingleItem
@@ -415,6 +522,12 @@ return testUnitList
   self~assertEquals("subtest2", 6, collDir~coll_1~items)
   self~assertEquals("subtest3", 7, collDir~coll_2~items)
 
+
+::method "test_items_syntax"
+
+  a=.array~new
+  self~expectSyntax("93.902")
+  a~items(.nil)
 
 
 ::method "test_makeArray"
@@ -477,28 +590,28 @@ return testUnitList
 
 ::method "test_put_syntax1"
 
-  a=.array~new()
+  a=.array~new
   self~expectSyntax("93.903")
-  a~put()
+  a~put
 
 
 ::method "test_put_syntax2"
 
-  a=.array~new()
+  a=.array~new
   self~expectSyntax("93.901")
   a~put(.nil)
 
 
 ::method "test_put_syntax3"
 
-  a=.array~new()
+  a=.array~new
   self~expectSyntax("93.938")
   a~put(.nil,.nil)
 
 
 ::method "test_put_syntax4"
 
-  a=.array~new()
+  a=.array~new
   self~expectSyntax("93.905")
   a~put(.nil,.string)
 
@@ -567,16 +680,23 @@ return testUnitList
 
 ::method "test_remove_syntax1"
 
-  a=.array~new()
+  a=.array~new
   self~expectSyntax("93.938")
-  a~section(.nil)
+  a~remove(.nil)
 
 
 ::method "test_remove_syntax2"
 
-  a=.array~new()
+  a=.array~new
   self~expectSyntax("93.905")
-  a~section(.string)
+  a~remove(.string)
+
+
+::method "test_remove_syntax3"
+
+  a=.array~of("1")
+  self~expectSyntax("93.926")
+  a~remove(.nil, .nil)
 
 
 ::method "test_removeItem"
@@ -846,25 +966,74 @@ makeColl: procedure
   self~assertEquals("subtest_03f", 1,  a~previous(2))
 
 
+::method "test_first_syntax"
+
+  a=.array~new
+  self~expectSyntax("93.902")
+  a~first(.nil)
+
+
+::method "test_last_syntax"
+
+  a=.array~new
+  self~expectSyntax("93.902")
+  a~last(.nil)
+
+
+::method "test_next_syntax1"
+
+  a=.array~new
+  self~expectSyntax("93.901")
+  a~next
+
+
+::method "test_next_syntax2"
+
+  a=.array~new
+  self~expectSyntax("93.938")
+  a~next(.nil)
+
+
+::method "test_next_syntax3"
+
+  a=.array~new
+  self~expectSyntax("93.905")
+  a~next(.string)
+
+
+::method "test_next_syntax4"
+
+  a=.array~of("1")
+  self~expectSyntax("93.926")
+  a~next(.nil, .nil)
+
+
 ::method "test_previous_syntax1"
 
-  a=.array~new()
+  a=.array~new
   self~expectSyntax("93.901")
-  a~previous()
+  a~previous
 
 
 ::method "test_previous_syntax2"
 
-  a=.array~new()
+  a=.array~new
   self~expectSyntax("93.938")
   a~previous(.nil)
 
 
 ::method "test_previous_syntax3"
 
-  a=.array~new()
+  a=.array~new
   self~expectSyntax("93.905")
   a~previous(.string)
+
+
+::method "test_previous_syntax4"
+
+  a=.array~of("1")
+  self~expectSyntax("93.926")
+  a~previous(.nil, .nil)
 
 
 ::method "test_MULTIDIMENSIONAL_makeArray"
@@ -1046,6 +1215,19 @@ makeColl: procedure
   self~assertEquals("subtest_05d", 1,     a~items)
 
 
+::method "test_dimension_syntax1"
+
+  a=.array~new
+  self~expectSyntax("93.938")
+  a~dimension(.nil)
+
+
+::method "test_dimension_syntax2"
+
+  a=.array~new
+  self~expectSyntax("93.905")
+  a~dimension(.string)
+
 
 ::method "test_section"
 
@@ -1087,37 +1269,51 @@ testSeq: procedure
 
 ::method "test_section_syntax1"
 
-  a=.array~new()
-  self~expectSyntax("93.938")
-  a~section(.nil)
+  a=.array~new
+  self~expectSyntax("93.903")
+  a~section
 
 
 ::method "test_section_syntax2"
 
-  a=.array~new()
-  self~expectSyntax("93.905")
-  a~section(.string)
+  a=.array~new
+  self~expectSyntax("93.938")
+  a~section(.nil)
 
 
 ::method "test_section_syntax3"
 
-  a=.array~new()
-  self~expectSyntax("93.907")
-  a~section(0)
+  a=.array~new
+  self~expectSyntax("93.905")
+  a~section(.string)
 
 
 ::method "test_section_syntax4"
 
-  a=.array~new()
-  self~expectSyntax("93.938")
-  a~section(1, .nil)
+  a=.array~new
+  self~expectSyntax("93.907")
+  a~section(0)
 
 
 ::method "test_section_syntax5"
 
-  a=.array~new()
+  a=.array~new
+  self~expectSyntax("93.938")
+  a~section(1, .nil)
+
+
+::method "test_section_syntax6"
+
+  a=.array~new
   self~expectSyntax("93.905")
   a~section(1, .string)
+
+
+::method "test_section_syntax7"
+
+  a=.array~new
+  self~expectSyntax("93.902")
+  a~section(.nil, .nil, .nil)
 
 
 ::method "test_makeString"
@@ -1181,7 +1377,7 @@ testSeq: procedure
   self~assertEquals("subtest_05f", str3, a~makestring(,"~"))
 
 
-  a=.array~new()
+  a=.array~new
   a[1,1]="11v";a[1,2]="12v";a[2,1]="21v";a[2,2]="22v"
   str1="11v12v21v22v"
   str2=str1~insert(nl,9)~insert(nl,6)~insert(nl,3)
@@ -1196,25 +1392,25 @@ testSeq: procedure
 
 ::method "test_makeString_syntax1"
 
-  a=.array~new()
+  a=.array~new
   self~expectSyntax("93.915")
   a~makestring("S")
 
 ::method "test_makeString_syntax2"
 
-  a=.array~new()
+  a=.array~new
   self~expectSyntax("93.938")
   a~makestring(.nil)
 
 ::method "test_makeString_syntax3"
 
-  a=.array~new()
+  a=.array~new
   self~expectSyntax("93.938")
   a~makestring(,.nil)
 
 ::method "test_makeString_syntax4"
 
-  a=.array~new()
+  a=.array~new
   self~expectSyntax("93.902")
   a~makestring("C", "~")
 
@@ -1473,4 +1669,5 @@ testSeq: procedure
      tmpStr=tmpStr'"'o~string'"'
   end
   return tmpStr")"
+
 
