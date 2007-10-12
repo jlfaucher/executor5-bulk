@@ -6,7 +6,8 @@
    version:          1.0.0
 
 -- line commented lines are ignored, when building the directory of infos from this header
-   changed:          ---
+   changed:          Lee Peedin 2007-10-11
+                     added simple loop test including "for"
 
    languageLevel:    6.02
    purpose:          Test the Loop (adding a label to DO, LOOP, SELECT, END)
@@ -308,4 +309,10 @@ return testUnitList
    self~expectSyntax( 10.2 )
    interpret str
 
+::method "test_LOOP_FOR"
+    stg = 0
+    Loop Y=0.3 to 4.3 by 0.7 for 3
+        stg += Y
+    end
+    self~assertEquals('sub_test05',3.0,stg)
 
