@@ -1,3 +1,11 @@
+/* publicRoutines_demo.rex */
+
+/*
+Purpose.:   Demonstrate each of the ooDialog Public Routines
+Who.....:   Lee Peedin
+When....:   August 14, 2007
+*/
+
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
@@ -35,12 +43,14 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-/* publicRoutines_demo.rex */
-
 /*
-Purpose.:   Demonstrate each of the ooDialog Public Routines
-Who.....:   Lee Peedin
-When....:   August 14, 2007
+This demo incorporates the following "features of ooRexx 3.2
+24 September 2007
+    .endOfLine is used instead of '0d0a'x
+    ScreenSize
+    MSSleep
+    Variations of TimedMessage
+    time('t')
 */
 
 -- Define a path most likely to be common to anyone using this demo - change as necessary
@@ -52,7 +62,6 @@ When....:   August 14, 2007
 
 -- Define a couple of variables to use in the code
     delimiter = '0'x
-    crlf      = '0d0a'x
 
 -- Provide a menu of different examples - use the built in SingleSelection dialog
     preselect = 1
@@ -68,8 +77,13 @@ When....:   August 14, 2007
         option.9  = 'Show an AskDialog with the No button as the default'
         option.10 = 'Show a FileNameDialog'
         option.11 = 'Retrieve the handle to a window'
+        option.12 = 'Use ScreenSize To Return Screen Resolution'
+        option.13 = 'A Standard Timed Message (5 Seconds)'
+        option.14 = 'An unTimed Message'
+        option.15 = 'Stop The unTimed Message'
+        option.16 = 'An Early Reply Timed Message'
 
-        max = 11
+        max = 16
         ssdlg = .SingleSelection~new('Select A Demonstration','Public Routines Demonstration',option.,preselect,,max)
         op = ssdlg~execute
         if op \= '' then
@@ -79,7 +93,7 @@ When....:   August 14, 2007
                 interpret 'call option'op
             end
     end
-return 0
+exit
 
 Option1:
     fileName = path||'samples\oodialog\wav\gotcha.wav'
@@ -122,8 +136,8 @@ Option6:
 return
 ----------------------------------------------------------------------------------------------------------------
 Option7:
-    msg = 'This is line1'||crlf||-
-          'This is line2'||crlf||-
+    msg = 'This is line1'||.endOfLine||-
+          'This is line2'||.endOfLine||-
           'This is line3 - note that the dialog is "stretched" to accomodate the longest line'
     call InfoDialog msg
 return
@@ -167,7 +181,7 @@ return
 ----------------------------------------------------------------------------------------------------------------
 Option11:
 
-    call InfoMessage 'This program will open a dialog window in the upper left corner of your screen named "Simple Dialog"'||crlf||-
+    call InfoMessage 'This program will open a dialog window in the upper left corner of your screen named "Simple Dialog"'||.endOfLine||-
                      'and will return its handle'
     aWindow = .SimpleDialog~new()
     if aWindow~initCode = 0 then
@@ -189,10 +203,53 @@ Option11:
         end
 return
 ----------------------------------------------------------------------------------------------------------------
+Option12:
+    ss = ScreenSize()
+    msg = 'Width In Dialog Units.:' ss[1]||.endOfLine||-
+          'Height In Dialog Units.:' ss[2]||.endOfLine||-
+          'Width In Pixels.:' ss[3]||.endOfLine||-
+          'Height In Pixels.:' ss[4]
+    call InfoDialog msg
+return
+----------------------------------------------------------------------------------------------------------------
+Option13:
+    msg = 'This Message Will Remain On The Screen For 5000 milliSeconds'
+    ret = timedMessage(msg,'A Standard TimedMessage', 5000)
+return
+----------------------------------------------------------------------------------------------------------------
+Option14:
+    msg = "Hey, I'm Back Here - Frozen In Time! This Message Will Remain On The Screen Until The Program Calls For It To Be Stopped"
+    tdlg = timedMessage(msg,'An unTimedMessage', -1)
+return
+----------------------------------------------------------------------------------------------------------------
+Option15:
+    if symbol('tdlg') = 'VAR' then
+        do
+            tdlg~stopit
+            drop tdlg
+        end
+    else
+        call errorDialog('There Is Not unTimed Message To Stop')
+return
+----------------------------------------------------------------------------------------------------------------
+Option16:
+-- Total time will be the duration of the MSSleep - The TimeMessage will last only half the total duration
+--    call time('r')
+    start_timeT = time('t')
+    msg = 'Processing Occurring - Please Wait - Processing Will Take Longer Than This Message'
+    ret = timedMessage(msg,'A TimedMessage Early Reply', 5000, .true)
+    ret = MSSleep(10000)
+    end_timeT = time('t')
+    call infoDialog('Start TimeT..:' start_timeT '- End TimeT..:' end_timeT '- Duration..:' end_TimeT - start_TimeT 'Seconds')
+--    call infoDialog('Total Elasped Time..:' time('e')~trunc 'Seconds')
+return
+----------------------------------------------------------------------------------------------------------------
 
--- Requires directive to use the Public Routines and create the Simple Dialog
--- window
-::requires 'oodialog.cls'
+-- Requires directive to use the Public Routines
+::requires 'oodplain.cls'
+
+-- The following directive is necessary to create the Simple Dialog window
+::requires 'oodwin32.cls'
 
 ::class SimpleDialog subclass UserDialog public
 ::method Init
