@@ -60,8 +60,10 @@ This demo incorporates the following "features of ooRexx 3.2
     else
         path = ooRexxHome || '\'
 
--- Define a couple of variables to use in the code
+-- Define a couple of variables to use in the code, including a global used for
+-- a helper dialog.
     delimiter = '0'x
+    .local~helperDlgTitle = "The publicRoutines_Demo Helper Dialog"
 
 -- Provide a menu of different examples - use the built in SingleSelection dialog
     preselect = 1
@@ -181,21 +183,42 @@ return
 ----------------------------------------------------------------------------------------------------------------
 Option11:
 
-    call InfoMessage 'This program will open a dialog window in the upper left corner of your screen named "Simple Dialog"'||.endOfLine||-
-                     'and will return its handle'
+    call InfoMessage 'This program will open a dialog window in the'||.endOfLine||-
+                     'upper left corner of your screen named:'||.endOfLine||.endOfLine||-
+                     '"'.helperDlgTitle'"'||.endOfLine||.endOfLine||-
+                     'and will return its handle.  After finding the window, the'||.endOfLine||-
+                     'handle value will be added to the dialog window title.'
+
+    -- The public routine FindWindow locates a window by its title.  Since this
+    -- example should run for anyone, and there is no way of guaranteeing what
+    -- window might be open on anyone's desktop, the example creates its own
+    -- simple dialog window.  That way it ensures that there is a known window
+    -- to find.
+
     aWindow = .SimpleDialog~new()
     if aWindow~initCode = 0 then
         do
-            aWindow~Execute()--'ShowTop')
-            rv = FindWindow('Simple Dialog')
-            if rv = 0 then
+            -- Start the dialog concurrently, so this example program can
+            -- continue to run.  Note, it takes some finite amount of time for
+            -- the OS to create and start up the underlying dialog.  The example
+            -- sleeps a short time to give the OS time to get the dialog going.
+            aWindow~start("Execute")
+            call SysSleep(.01)
+
+            hWnd = FindWindow(.helperDlgTitle)
+            if hWnd = 0 then
                 call ErrorDialog 'Window could not be found'
             else
                 do
-                    aWindow~Write(0,0,'My handle is.:' rv,'Ariel',20,'TRANSPARENT CLIENT',13)
-                    call InfoDialog 'The handle to the "Simple Dialog" window is:' rv
+                    -- The window handle can now be used to change the title of
+                    -- the helper dialog, which demonstrates that the handle is
+                    -- correct.
+                    aWindow~SetWindowTitle(hWnd,.helperDlgTitle '- My handle is.:' hWnd)
+                    call InfoDialog 'The handle to the "'.helperDlgTitle'" window is:' hWnd
                 end
-            aWindow~DeInstall
+
+            -- Now close the helper dialog.
+            aWindow~cancel
         end
     else
         do
@@ -248,14 +271,7 @@ return
 -- Requires directive to use the Public Routines
 ::requires 'oodplain.cls'
 
--- The following directive is necessary to create the Simple Dialog window
-::requires 'oodwin32.cls'
-
-::class SimpleDialog subclass UserDialog public
-::method Init
-    self~init:super('')
+::class SimpleDialog subclass PlainUserDialog public
 ::method Execute
-    self~Create(0,0,190,10,'Simple Dialog')
-    self~startit
-    self~show('SHOWTOP')
-
+    self~Create(0,0,290,40, .helperDlgTitle)
+    self~execute:super("SHOWTOP")
