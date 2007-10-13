@@ -255,19 +255,19 @@ Say NOT EQUALS
 <varlistentry>
 <term>002</term>
 <listitem>
-<para>Symbol following END ("<emphasis>symbol</emphasis>") must match block specification name ("<emphasis>control_variable</emphasis>") on line <emphasis>line_number</emphasis> or be omitted</para>
+<para>Symbol following END ("<emphasis>symbol</emphasis>") must either match control variable of DO specification ("<emphasis>control_variable</emphasis>" on line <emphasis>line_number</emphasis>) or be omitted</para>
 </listitem>
 </varlistentry>
 <varlistentry>
 <term>003</term>
 <listitem>
-<para>END corresponding to block on line <emphasis>symbol</emphasis> must not have a symbol following it because there is no LABEL or control variable; found "<emphasis>line_number</emphasis>"</para>
+<para>END corresponding to DO on line <emphasis>symbol</emphasis> must not have a symbol following it because there is no control variable; found "<emphasis>line_number</emphasis>"</para>
 </listitem>
 </varlistentry>
 <varlistentry>
 <term>004</term>
 <listitem>
-<para>Symbol following END ("<emphasis>symbol</emphasis>") must match LABEL of SELECT specification ("<emphasis>control_variable</emphasis>") on line <emphasis>line_number</emphasis> or be omitted</para>
+<para>END corresponding to SELECT on line <emphasis>symbol</emphasis> must not have a symbol following; found "<emphasis>line_number</emphasis>"</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -282,12 +282,6 @@ Say NOT EQUALS
 <para>END must not immediately follow ELSE</para>
 </listitem>
 </varlistentry>
-<varlistentry>
-<term>007</term>
-<listitem>
-<para>END corresponding to SELECT on line <emphasis>symbol</emphasis> must not have a symbol following it because there is no LABEL; found "<emphasis>line_number</emphasis>"</para>
-</listitem>
-</varlistentry>
 </variablelist>
 </section>
 <section id="ERR11">
@@ -297,10 +291,10 @@ Say NOT EQUALS
 </para>
 <para>Your program exceeds the nesting level limit for control structures (for example, DO...END and IF...THEN...ELSE). This could be because of a looping INTERPRET instruction, such as:</para>
 <programlisting>
-    
+
       line='INTERPRET line'
       INTERPRET line
-    
+
     </programlisting>
 <para>These lines loop until they exceed the nesting level limit and the language processor issues this message. Similarly, a recursive subroutine or internal function that does not end correctly can loop until it causes this message.</para>
 <para>The associated subcodes are: </para>
@@ -392,19 +386,19 @@ Say NOT EQUALS
 </para>
 <para>Hexadecimal strings must not have leading or trailing blanks and blanks can only be embedded at byte boundaries.  Only the digits 0-9 and the letters a-f and A-F are allowed.  The following are valid hexadecimal strings: </para>
 <programlisting>
-    
+
         '13'x
         'A3C2 1c34'x
         '1de8'x
-    
+
     </programlisting>
 <para>Binary strings can have blanks only at the boundaries of groups of four binary digits.  Only the digits 0 and 1 are allowed.  These are valid binary strings: </para>
 <programlisting>
-    
+
         '1011'b
         '110 1101'b
         '101101 11010011'b
-    
+
     </programlisting>
 <para>You might have mistyped one of the digits, for example, typing a letter O instead of the number 0. Or you might have used the one-character symbol X or B (the name of the variable X or B, respectively) after a literal string when the string is not intended as a hexadecimal or binary specification. In this case, use the explicit concatenation operator (||) to concatenate the string to the value of the symbol.</para>
 <para>The associated subcodes are: </para>
@@ -734,12 +728,6 @@ special character (such as a parenthesis).
 <term>917</term>
 <listitem>
 <para>Symbol expected after superclass colon (:)</para>
-</listitem>
-</varlistentry>
-<varlistentry>
-<term>918</term>
-<listitem>
-<para>Symbol expected after LABEL keyword</para>
 </listitem>
 </varlistentry>
 </variablelist>
@@ -1097,12 +1085,6 @@ special character (such as a parenthesis).
 <para>Duplicate MESSAGE keyword found</para>
 </listitem>
 </varlistentry>
-<varlistentry>
-<term>923</term>
-<listitem>
-<para>SELECT must be followed by the keyword LABEL; found "<emphasis>word</emphasis>"</para>
-</listitem>
-</varlistentry>
 </variablelist>
 </section>
 <section id="ERR26">
@@ -1199,18 +1181,6 @@ special character (such as a parenthesis).
 <para>Result of a method call did not result in a whole number; found "<emphasis>value</emphasis>"</para>
 </listitem>
 </varlistentry>
-<varlistentry>
-<term>902</term>
-<listitem>
-<para>Result of a COMPARETO method call did not result in a whole number; found "<emphasis>value</emphasis>"</para>
-</listitem>
-</varlistentry>
-<varlistentry>
-<term>903</term>
-<listitem>
-<para>Result of a COMPARE method call did not result in a whole number; found "<emphasis>value</emphasis>"</para>
-</listitem>
-</varlistentry>
 </variablelist>
 </section>
 <section id="ERR27">
@@ -1252,31 +1222,25 @@ special character (such as a parenthesis).
 <varlistentry>
 <term>001</term>
 <listitem>
-<para>LEAVE is valid only within a repetitive loop or labeled block instruction</para>
+<para>LEAVE is valid only within a repetitive DO loop</para>
 </listitem>
 </varlistentry>
 <varlistentry>
 <term>002</term>
 <listitem>
-<para>ITERATE is valid only within a repetitive loop</para>
+<para>ITERATE is valid only within a repetitive DO loop</para>
 </listitem>
 </varlistentry>
 <varlistentry>
 <term>003</term>
 <listitem>
-<para>Symbol following LEAVE ("<emphasis>symbol</emphasis>") must either match the label of a current loop or block instruction.</para>
+<para>Symbol following LEAVE ("<emphasis>symbol</emphasis>") must either match the control variable of a current DO loop or be omitted</para>
 </listitem>
 </varlistentry>
 <varlistentry>
 <term>004</term>
 <listitem>
-<para>Symbol following ITERATE ("<emphasis>symbol</emphasis>") must either match the label of a current loop or be omitted</para>
-</listitem>
-</varlistentry>
-<varlistentry>
-<term>005</term>
-<listitem>
-<para>Symbol following ITERATE ("<emphasis>symbol</emphasis>") does not match a repetitive block instruction</para>
+<para>Symbol following ITERATE ("<emphasis>symbol</emphasis>") must either match the control variable of a current DO loop or be omitted</para>
 </listitem>
 </varlistentry>
 </variablelist>
@@ -1466,12 +1430,6 @@ special character (such as a parenthesis).
 <term>005</term>
 <listitem>
 <para>Value of expression to the left of the logical operator "<emphasis>operator</emphasis>" must be exactly "0" or "1"; found "<emphasis>value</emphasis>"</para>
-</listitem>
-</varlistentry>
-<varlistentry>
-<term>006</term>
-<listitem>
-<para>Value of logical list expression element must be exactly "0" or "1"; found "<emphasis>value</emphasis>"</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -1704,18 +1662,6 @@ special character (such as a parenthesis).
 <para>Missing expression following CLASS keyword of a FORWARD instruction</para>
 </listitem>
 </varlistentry>
-<varlistentry>
-<term>929</term>
-<listitem>
-<para>Missing expression in logical_expression_list</para>
-</listitem>
-</varlistentry>
-<varlistentry>
-<term>930</term>
-<listitem>
-<para>Missing expression following "=" token of a USE STRICT ARG instruction</para>
-</listitem>
-</varlistentry>
 </variablelist>
 </section>
 <section id="ERR36">
@@ -1925,7 +1871,7 @@ special character (such as a parenthesis).
 <term>021</term>
 <listitem>
 <para>
-<emphasis>function_name</emphasis> argument <emphasis>argument_number</emphasis> must not be a null string</para>
+<emphasis>function_name</emphasis> argument <emphasis>argument_number</emphasis> must not be null</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -2081,7 +2027,7 @@ special character (such as a parenthesis).
 <term>915</term>
 <listitem>
 <para>
-<emphasis>function_name</emphasis> cannot be used with QUEUE:</para>
+<emphasis>funtion_name</emphasis> cannot be used with QUEUE:</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -2154,7 +2100,7 @@ special character (such as a parenthesis).
 <varlistentry>
 <term>901</term>
 <listitem>
-<para>Value of RAISE instruction SYNTAX expression must be numeric; found "<emphasis>value</emphasis>"</para>
+<para>Value of RAISE SYNTAX expression of DO instruction must be numeric; found "<emphasis>value</emphasis>"</para>
 </listitem>
 </varlistentry>
 </variablelist>
@@ -2403,156 +2349,6 @@ special character (such as a parenthesis).
 </varlistentry>
 </variablelist>
 </section>
-<section id="ERR88">
-<title>Error 88 - Invalid argument</title>
-<para>
-<emphasis role="bold">Explanation:</emphasis>
-</para>
-<para>An argument passed to a method, function, or routine was not valid.</para>
-<para>The associated subcodes are: </para>
-<variablelist>
-<varlistentry>
-<term>900</term>
-<listitem>
-<para>
-<emphasis>message</emphasis>
-</para>
-</listitem>
-</varlistentry>
-<varlistentry>
-<term>901</term>
-<listitem>
-<para>Missing argument; argument <emphasis>argument</emphasis> is required</para>
-</listitem>
-</varlistentry>
-<varlistentry>
-<term>902</term>
-<listitem>
-<para>Argument <emphasis>argument</emphasis> must be a number; found "<emphasis>value</emphasis>"</para>
-</listitem>
-</varlistentry>
-<varlistentry>
-<term>903</term>
-<listitem>
-<para>Argument <emphasis>argument</emphasis> must be a whole number; found "<emphasis>value</emphasis>"</para>
-</listitem>
-</varlistentry>
-<varlistentry>
-<term>904</term>
-<listitem>
-<para>Argument <emphasis>argument</emphasis> must be zero or a positive whole number; found "<emphasis>value</emphasis>"</para>
-</listitem>
-</varlistentry>
-<varlistentry>
-<term>905</term>
-<listitem>
-<para>Argument <emphasis>argument</emphasis> must be a positive whole number; found "<emphasis>value</emphasis>"</para>
-</listitem>
-</varlistentry>
-<varlistentry>
-<term>906</term>
-<listitem>
-<para>Argument <emphasis>argument</emphasis> must not exceed <emphasis>limit</emphasis>; found "<emphasis>value</emphasis>"</para>
-</listitem>
-</varlistentry>
-<varlistentry>
-<term>907</term>
-<listitem>
-<para>Argument <emphasis>argument</emphasis> must be in the range <emphasis>min</emphasis>-<emphasis>max</emphasis>; found "<emphasis>value</emphasis>"</para>
-</listitem>
-</varlistentry>
-<varlistentry>
-<term>908</term>
-<listitem>
-<para>Argument <emphasis>argument</emphasis> must not be a null string</para>
-</listitem>
-</varlistentry>
-<varlistentry>
-<term>909</term>
-<listitem>
-<para>Argument <emphasis>argument</emphasis> must have a string value</para>
-</listitem>
-</varlistentry>
-<varlistentry>
-<term>910</term>
-<listitem>
-<para>Argument <emphasis>argument</emphasis> is an incorrect pad or character argument; found "<emphasis>value</emphasis>"</para>
-</listitem>
-</varlistentry>
-<varlistentry>
-<term>911</term>
-<listitem>
-<para>Argument <emphasis>argument</emphasis> is an incorrect length argument; found "<emphasis>value</emphasis>"</para>
-</listitem>
-</varlistentry>
-<varlistentry>
-<term>912</term>
-<listitem>
-<para>Argument <emphasis>argument</emphasis> is an incorrect position argument; found "<emphasis>value</emphasis>"</para>
-</listitem>
-</varlistentry>
-<varlistentry>
-<term>913</term>
-<listitem>
-<para>Argument <emphasis>argument</emphasis> must have a single-dimensional array value</para>
-</listitem>
-</varlistentry>
-<varlistentry>
-<term>914</term>
-<listitem>
-<para>Argument <emphasis>argument</emphasis> must be of the <emphasis>class</emphasis> class</para>
-</listitem>
-</varlistentry>
-<varlistentry>
-<term>915</term>
-<listitem>
-<para>Argument <emphasis>argument</emphasis> could not be converted to type <emphasis>type</emphasis>
-</para>
-</listitem>
-</varlistentry>
-<varlistentry>
-<term>916</term>
-<listitem>
-<para>Argument <emphasis>argument</emphasis> must be one of <emphasis>values</emphasis>; found "<emphasis>value</emphasis>"</para>
-</listitem>
-</varlistentry>
-<varlistentry>
-<term>917</term>
-<listitem>
-<para>Argument <emphasis>argument</emphasis> <emphasis>reason</emphasis>
-</para>
-</listitem>
-</varlistentry>
-<varlistentry>
-<term>918</term>
-<listitem>
-<para>Argument <emphasis>argument</emphasis> is not in a valid format; found "<emphasis>value</emphasis>"</para>
-</listitem>
-</varlistentry>
-</variablelist>
-</section>
-<section id="ERR89">
-<title>Error 89 - Variable or message term expected</title>
-<para>
-<emphasis role="bold">Explanation:</emphasis>
-</para>
-<para>An instruction was expecting either a single Rexx variable symbol or a message term to be used for an assignment.</para>
-<para>The associated subcodes are: </para>
-<variablelist>
-<varlistentry>
-<term>001</term>
-<listitem>
-<para>The USE instruction requires a comma-separated list of variables or assignment message terms</para>
-</listitem>
-</varlistentry>
-<varlistentry>
-<term>002</term>
-<listitem>
-<para>The PARSE was expecting a variable or a message term.</para>
-</listitem>
-</varlistentry>
-</variablelist>
-</section>
 <section id="ERR90">
 <title>Error 90 - External name not found</title>
 <para>
@@ -2608,7 +2404,7 @@ special character (such as a parenthesis).
 <varlistentry>
 <term>999</term>
 <listitem>
-<para>Message "<emphasis>message</emphasis>" did not return a result</para>
+<para>Message "<emphasis>message</emphasis>" did not return a result object</para>
 </listitem>
 </varlistentry>
 </variablelist>
@@ -2628,7 +2424,7 @@ special character (such as a parenthesis).
 <varlistentry>
 <term>901</term>
 <listitem>
-<para>An unknown OLE error occurred (HRESULT=<emphasis>hresult</emphasis>).</para>
+<para>An unknown OLE error occured (HRESULT=<emphasis>hresult</emphasis>).</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -2705,7 +2501,7 @@ special character (such as a parenthesis).
 <para>
 <emphasis role="bold">Explanation:</emphasis>
 </para>
-<para>The specified method, built-in function, or external routine exists, but you used it incorrectly.</para>
+<para>The specified method or built-in or external routine exists, but you used it incorrectly.</para>
 <para>The associated subcodes are: </para>
 <variablelist>
 <varlistentry>
@@ -2797,7 +2593,7 @@ special character (such as a parenthesis).
 <varlistentry>
 <term>915</term>
 <listitem>
-<para>Method option must be one of "<emphasis>arguments</emphasis>"; found "<emphasis>value</emphasis>"</para>
+<para>Method option must be one of <emphasis>arguments</emphasis>; found "<emphasis>value</emphasis>"</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -3061,18 +2857,6 @@ special character (such as a parenthesis).
 <listitem>
 <para>Application error:  <emphasis>message</emphasis>
 </para>
-</listitem>
-</varlistentry>
-<varlistentry>
-<term>965</term>
-<listitem>
-<para>Method <emphasis>name</emphasis> is ABSTRACT and cannot be directly invoked</para>
-</listitem>
-</varlistentry>
-<varlistentry>
-<term>966</term>
-<listitem>
-<para>Incorrect queue index "<emphasis>index</emphasis>"</para>
 </listitem>
 </varlistentry>
 </variablelist>
@@ -3433,19 +3217,6 @@ special character (such as a parenthesis).
 <para>Invalid parameter type for key form "<emphasis>keyform</emphasis>"</para>
 </listitem>
 </varlistentry>
-<varlistentry>
-<term>975</term>
-<listitem>
-<para>Missing array element at position <emphasis>position</emphasis>
-</para>
-</listitem>
-</varlistentry>
-<varlistentry>
-<term>976</term>
-<listitem>
-<para>Stem object default value cannot be another stem object</para>
-</listitem>
-</varlistentry>
 </variablelist>
 </section>
 <section id="ERR99">
@@ -3620,18 +3391,6 @@ special character (such as a parenthesis).
 <para>Incorrect class external; invalid class server "<emphasis>servername</emphasis>"</para>
 </listitem>
 </varlistentry>
-<varlistentry>
-<term>930</term>
-<listitem>
-<para>The "..." argument marker can only appear at the end of the argument list</para>
-</listitem>
-</varlistentry>
-<varlistentry>
-<term>931</term>
-<listitem>
-<para>Duplicate ::ATTRIBUTE directive instruction</para>
-</listitem>
-</varlistentry>
 </variablelist>
 </section>
 </section>
@@ -3718,7 +3477,7 @@ special character (such as a parenthesis).
 <para>
 <emphasis role="bold">Explanation:</emphasis>
 </para>
-<para>RXSUBCOM LOAD requires that the subcommand handler name be specified.
+<para>RXSUBCOM LOAD requires thatn the subcommand handler name be specified.
             <variablelist>
                 <title>RXSUBCOM LOAD Environment_Name [Dll_Name]</title>
                 <varlistentry>
@@ -3810,9 +3569,9 @@ special character (such as a parenthesis).
 <para>The queue name contains an invalid character.
         Only the following characters can appear in queue names:  </para>
 <programlisting>
-        
+
            'A' .. 'Z', '0' .. '9', '.', '!', '?', '_'
-        
+
         </programlisting>
 </section>
 <section id="ERR123">
