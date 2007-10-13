@@ -608,7 +608,7 @@ end                                             /* same results  */
 &gt;0 &lt;0 and are valid length positional pattern.</para>
 <para>The &gt; length pattern and the + relative positional pattern are interchangeable except in
 the special case of the value 0.  A &gt;0 pattern will split the string into a null string and leave
-the match position unchange.  This is particularly useful for parsing off length-qualified fields
+the match position unchanged.  This is particularly useful for parsing off length-qualified fields
 from a string.</para>
 <programlisting>
 /* Parsing with length patterns in template         */
@@ -624,7 +624,7 @@ say '"'first'" "'middle'" "'last'"'  -- displays "Mark" "05Twain" "Twain"
 the string between the original position and the movement position.  At of the operation, the current
 position is returned to the original position.  This movement is equivalent to using a negative relative
 pattern followed by a positive relative pattern for the same length.  This operation allows for easy
-extraction of characters that preceed a string match.</para>
+extraction of characters that precede a string match.</para>
 <programlisting>
 /* Parsing with length patterns in template         */
 parse value '12345.6789' with '.' digit &lt;1    -- digit -> "5"
