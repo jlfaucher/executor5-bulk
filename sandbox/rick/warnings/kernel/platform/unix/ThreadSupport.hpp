@@ -48,8 +48,6 @@
 #include <pthread.h>
 #include <stdlib.h>
 
-#include "RexxCore.h"
-
 #ifdef AIX
 void RxLumCntl( long * result );
 #endif

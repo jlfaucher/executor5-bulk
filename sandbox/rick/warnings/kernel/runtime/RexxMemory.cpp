@@ -1168,12 +1168,13 @@ RexxObject *RexxMemory::temporaryObject(size_t requestLength)
   return newObject;                    /* and return it                     */
 }
 
-void RexxMemory::markGeneral(RexxObject **pMarkObject)
+void RexxMemory::markGeneral(void *obj)
 /******************************************************************************/
 /* Function:  Perform various general marking functions such as image save,   */
 /*            image restore, object unflatten, and debug garbage collection   */
 /******************************************************************************/
 {
+  RexxObject **pMarkObject = (RexxObject **)obj;
   RexxObject *markObject = *pMarkObject;
 
 

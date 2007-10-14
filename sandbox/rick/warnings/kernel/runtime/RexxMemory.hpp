@@ -290,7 +290,7 @@ class RexxMemory : public RexxObject {
   void        markObjectsMain(RexxObject *);
   void        killOrphans(RexxObject *);
   void        mark(RexxObject *);
-  void        markGeneral(RexxObject **);
+  void        markGeneral(void *);
   void        collect();
   inline RexxObject *saveObject(RexxInternalObject *saveObj) {this->saveTable->add((RexxObject *)saveObj, (RexxObject *)saveObj); return (RexxObject *)saveObj;}
   inline void        discardObject(RexxInternalObject *obj) {this->saveTable->remove((RexxObject *)obj);};

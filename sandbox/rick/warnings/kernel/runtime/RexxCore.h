@@ -1140,10 +1140,10 @@ RexxString *version_number (void);
 
 #define ObjectNeedsMarking(oref) ((oref) != OREF_NULL && !ObjectIsMarked(oref))
 #define memory_mark(oref)  if (ObjectNeedsMarking(oref)) memoryObject.mark((RexxObject *)(oref))
-#define memory_mark_general(oref) (memoryObject.markGeneral((RexxObject **)&(oref)))
+#define memory_mark_general(oref) (memoryObject.markGeneral((void *)&(oref)))
 
 /* Following macros are for Flattening and unflattening of objects  */
-#define flatten_reference(oref,envel)  if (oref) envel->flattenReference((RexxObject **)&newThis, newSelf, (RexxObject **)&(oref))
+#define flatten_reference(oref,envel)  if (oref) envel->flattenReference((void *)&newThis, newSelf, (void *)&(oref))
 
 /******************************************************************************/
 /* Typed method invocation macros                                             */
