@@ -142,7 +142,10 @@ return .false
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::class NodeList subclass list public
+::class 'NodeList' public
+::method init
+  expose nodes
+  use strict arg nodes
 
 
 /*----------------------------------------------------------------------------*/
@@ -167,9 +170,11 @@ return .false
 /*----------------------------------------------------------------------------*/
 
 ::method item
-if arg() < 1 then raise syntax 93.901 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-return self[arg(1)]
+  expose nodes
+  use strict arg index
+  -- nodelists start indexing at 0.  For xpath expresion compatibility, we should
+  -- maintain that.
+  return nodes[index + 1]   -- returns .nil for out of bounds
 
 
 /*----------------------------------------------------------------------------*/
@@ -177,23 +182,35 @@ return self[arg(1)]
 /* Description: get the number of items in the list.                          */
 /*----------------------------------------------------------------------------*/
 
-::method item
-if arg() > 0 then raise syntax 93.902 array (0)
-return self~items
+::method length
+  expose nodes
+  use strict arg
+  return nodes~items
+
+::method makearray
+  expose nodes
+  use strict arg
+  return nodes~copy   -- make sure this is a copy
+
+::method "[]"
+  return forward message("ITEM")
 
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
-/* Class: NamedNodeList                                                       */
+/* Class: NamedNodeMap                                                        */
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::class NamedNodeList subclass directory public
+::class 'NamedNodeMap' public
+::method init
+  expose attributes
+  use strict arg attributes
 
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
-/* Class: NamedNodeList                                                       */
+/* Class: NamedNodeMap                                                        */
 /*        Private methods                                                     */
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -201,7 +218,7 @@ return self~items
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
-/* Class: NamedNodeList                                                       */
+/* Class: NamedNodeMap                                                        */
 /*        Public methods                                                      */
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -213,10 +230,30 @@ return self~items
 /*----------------------------------------------------------------------------*/
 
 ::method getNamedItem
-if arg() < 1 then raise syntax 93.901 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-use arg name
-return self[name]
+  expose attributes
+  use strict arg name
+
+  do i = 1 to attributes~items
+      if attributes[i]~name == name then do
+          return attribuetes[i]
+      end
+  end
+
+/*----------------------------------------------------------------------------*/
+/* Method: getNamedItemNS                                                     */
+/* Description: get a named item by namespace                                 */
+/*----------------------------------------------------------------------------*/
+
+::method getNamedItemNS
+  expose attributes
+  use strict arg name, namespace
+
+  do i = 1 to attributes~items
+      attr = attributes[i]
+      if attr~name == name & attr~namespaceURI == namespace then do
+          return attr
+      end
+  end
 
 
 /*----------------------------------------------------------------------------*/
@@ -225,12 +262,7 @@ return self[name]
 /*----------------------------------------------------------------------------*/
 
 ::method setNamedItem
-if arg() < 1 then raise syntax 93.901 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-use arg node
-temp = self[node~nodeName] -- are we replacing an existing node?
-self[node~nodeName] = node
-return temp -- return either the replaced node or .nil
+  raise syntax 93.963 -- not supported
 
 
 /*----------------------------------------------------------------------------*/
@@ -239,10 +271,7 @@ return temp -- return either the replaced node or .nil
 /*----------------------------------------------------------------------------*/
 
 ::method removeNamedItem
-if arg() < 1 then raise syntax 93.901 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-use arg name
-return self~remove(name)
+  raise syntax 93.963 -- not supported
 
 
 /*----------------------------------------------------------------------------*/
@@ -251,10 +280,9 @@ return self~remove(name)
 /*----------------------------------------------------------------------------*/
 
 ::method item
-if arg() < 1 then raise syntax 93.901 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-use arg name
-return self[name]
+  expose attributes
+  use strict arg position
+  return attributes[position + 1]
 
 
 /*----------------------------------------------------------------------------*/
@@ -263,8 +291,19 @@ return self[name]
 /*----------------------------------------------------------------------------*/
 
 ::method length
-if arg() > 0 then raise syntax 93.902 array (0)
-return self~items
+  expose attributes
+  use strict arg
+  return attributes~items
+
+::method makearray
+  expose attributes
+  use strict arg
+  return attributes~copy   -- make sure this is a copy
+
+::method "[]"
+  return forward message("ITEM")
+
+
 
 
 /*----------------------------------------------------------------------------*/
@@ -273,7 +312,168 @@ return self~items
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::class Node public
+::CLASS 'Node' public
+::METHOD ELEMENT_NODE class
+  use strict arg
+  return 1
+::METHOD ATTRIBUTE_NODE class
+  use strict arg
+  return 2
+::METHOD TEXT_NODE class
+  use strict arg
+  return 3
+::METHOD CDATA_SECTION_NODE class
+  use strict arg
+  return 4
+::METHOD ENTITY_REFERENCE_NODE class
+  use strict arg
+  return 5
+::METHOD ENTITY_NODE class
+  use strict arg
+  return 6
+::METHOD PROCESSING_INSTRUCTION_NODE class
+  use strict arg
+  return 7
+::METHOD COMMENT_NODE class
+  use strict arg
+  return 8
+::METHOD DOCUMENT_NODE class
+  use strict arg
+  return 9
+::METHOD DOCUMENT_TYPE_NODE class
+  use strict arg
+  return 10
+::METHOD DOCUMENT_FRAGMENT_NODE class
+  use strict arg
+  return 11
+::METHOD NOTATION_NODE class
+  use strict arg
+  return 12
+
+
+::METHOD init
+  expose prefix localname nodename namespaceuri nodeType
+  use strict arg prefix, localname, nodename, namespaceuri, nodetype
+
+::ATTRIBUTE nodeName GET
+::ATTRIBUTE namespaceURI GET
+::ATTRIBUTE nodeType GET
+::ATTRIBUTE localName GET
+::ATTRIBUTE prefix GET
+
+-- default implementations designed to be overridden
+::ATTRIBUTE nodeValue GET
+  use strict arg
+  return .nil
+::ATTRIBUTE parentNode GET
+  use strict arg
+  return .nil
+::ATTRIBUTE childNodes GET
+  use strict arg
+  return .nil
+::ATTRIBUTE firstChild GET
+  use strict arg
+  return .nil
+::ATTRIBUTE lastChild GET
+  use strict arg
+  return .nil
+::ATTRIBUTE previousSibling GET
+  use strict arg
+  return .nil
+::ATTRIBUTE nextSibling GET
+  use strict arg
+  return .nil
+::ATTRIBUTE attributes GET
+  use strict arg
+  return .nil
+::ATTRIBUTE ownerDocument GET
+  use strict arg
+  return .nil
+
+::METHOD hasChildNodes
+  use strict arg
+  return .false
+
+::METHOD clone
+  use strict arg deep = .false
+  return .nil
+
+::METHOD isSupported
+  use strict arg feature, version
+  return .false
+
+::METHOD hasAttributes
+  use strict arg
+  return .false
+
+::ATTRIBUTE nodeValue SET
+  use strict arg value
+  raise syntax 93.963 -- not supported
+
+::ATTRIBUTE prefix SET
+  use strict arg value
+  raise syntax 93.963 -- not supported
+
+::METHOD insertBefore
+  use strict arg newChild, refChild
+  raise syntax 93.963 -- not supported
+
+::METHOD replaceChild
+  use strict arg newChild, oldChild
+  raise syntax 93.963 -- not supported
+
+::METHOD removeChild
+  use strict arg oldChild
+  raise syntax 93.963 -- not supported
+
+::METHOD appendChild
+  use strict arg newChild
+  raise syntax 93.963 -- not supported
+
+::METHOD compareDocumentPosition
+  use strict arg other
+  raise syntax 93.963 -- not supported
+
+::ATTRIBUTE textContent GET
+  use strict arg
+  raise syntax 93.963 -- not supported
+
+::ATTRIBUTE textContent SET
+  use strict arg value
+  raise syntax 93.963 -- not supported
+
+::METHOD isSameNode
+  use strict arg other
+  raise syntax 93.963 -- not supported
+
+::METHOD lookupPrefix
+  use strict arg uri
+  raise syntax 93.963 -- not supported
+
+::METHOD isDefaultNamespace
+  use strict arg uri
+  raise syntax 93.963 -- not supported
+
+::METHOD lookupNamespaceURI
+  use strict arg prefix
+  raise syntax 93.963 -- not supported
+
+::METHOD isEqualNode
+  use strict arg other
+  raise syntax 93.963 -- not supported
+
+::METHOD getFeature
+  use strict arg feature, version
+  return .nil
+
+::METHOD setUserData
+  use strict arg key, date, handler
+  raise syntax 93.963 -- not supported
+
+::METHOD getUserData
+  use strict arg key
+  raise syntax 93.963 -- not supported
+
 
 
 /*----------------------------------------------------------------------------*/
@@ -283,10 +483,10 @@ return self~items
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::method ctr      class private
-::method id       private
-::method children private
-::method attr     private
+::attribute ctr    class private
+::attribute id    private
+::attribute children private
+::attribute attr     private
 
 
 /*----------------------------------------------------------------------------*/
@@ -652,7 +852,7 @@ return
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::class Document subclass Node public
+::class 'Document' subclass Node public
 
 
 /*----------------------------------------------------------------------------*/
@@ -668,22 +868,14 @@ return
 /* Description: set the document type.                                        */
 /*----------------------------------------------------------------------------*/
 
-::method 'doctype='
-expose doctype
-use arg doctype
-return
-
+::attribute doctype GET
 
 /*----------------------------------------------------------------------------*/
 /* Method: implementation                                                     */
 /* Description: set the document implementation.                              */
 /*----------------------------------------------------------------------------*/
 
-::method 'implementation='
-expose implementation
-use arg implementation
-return
-
+::attribute implementation GET
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -699,30 +891,10 @@ return
 /*----------------------------------------------------------------------------*/
 
 ::method init
-self~nodeType = 9
-self~doctype = .nil
-self~implementation = DOMImplementation~new
-return
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: doctype                                                            */
-/* Description: return the document type.                                     */
-/*----------------------------------------------------------------------------*/
-
-::method doctype
-expose doctype
-return doctype
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: implementation                                                     */
-/* Description: return the document implementation.                           */
-/*----------------------------------------------------------------------------*/
-
-::method implementation
-expose implementation
-return implementation
+  expose doctype implementation
+  self~nodeType = 9
+  doctype = .nil
+  implementation = DOMImplementation~new
 
 
 /*----------------------------------------------------------------------------*/
@@ -731,7 +903,7 @@ return implementation
 /*----------------------------------------------------------------------------*/
 
 ::method documentElement
-return self~children[1]
+return self~children[0]
 
 
 /*----------------------------------------------------------------------------*/
@@ -740,10 +912,18 @@ return self~children[1]
 /*----------------------------------------------------------------------------*/
 
 ::method createElement
-if arg() < 1 then raise syntax 93.901 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-use arg tagname
-return .Element~new(tagname)
+  use strict arg tagname
+  return .Element~new(tagname)
+
+/*----------------------------------------------------------------------------*/
+/* Method: createElementNS                                                    */
+/* Description: create an element node.                                      */
+/*----------------------------------------------------------------------------*/
+
+::method createElementNS
+  use strict arg uri, qname
+  -- TODO finish this
+  return .Element~new(tagname)
 
 
 /*----------------------------------------------------------------------------*/
@@ -752,8 +932,8 @@ return .Element~new(tagname)
 /*----------------------------------------------------------------------------*/
 
 ::method createDocumentFragment
-if arg() > 0 then raise syntax 93.902 array (0)
-return .DocumentFragment~new
+  use strict arg
+  return .DocumentFragment~new
 
 
 /*----------------------------------------------------------------------------*/
@@ -762,10 +942,8 @@ return .DocumentFragment~new
 /*----------------------------------------------------------------------------*/
 
 ::method createTextNode
-if arg() < 1 then raise syntax 93.901 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-use arg data
-return .Text~new(data)
+  use strict arg data
+  return .Text~new(data)
 
 
 /*----------------------------------------------------------------------------*/
@@ -774,10 +952,8 @@ return .Text~new(data)
 /*----------------------------------------------------------------------------*/
 
 ::method createComment
-if arg() < 1 then raise syntax 93.901 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-use arg data
-return .Comment~new(data)
+  use strict arg data
+  return .Comment~new(data)
 
 
 /*----------------------------------------------------------------------------*/
@@ -786,10 +962,8 @@ return .Comment~new(data)
 /*----------------------------------------------------------------------------*/
 
 ::method createCDATASect
-if arg() < 1 then raise syntax 93.901 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-use arg data
-return .CDATASection~new(data)
+  use strict arg data
+  return .CDATASection~new(data)
 
 
 /*----------------------------------------------------------------------------*/
@@ -798,10 +972,8 @@ return .CDATASection~new(data)
 /*----------------------------------------------------------------------------*/
 
 ::method createProcessingInstruction
-if arg() < 2 then raise syntax 93.901 array (2)
-if arg() > 2 then raise syntax 93.902 array (2)
-use arg target, data
-return .ProcessingInstruction~new(target, data)
+  use strict arg target, data
+  return .ProcessingInstruction~new(target, data)
 
 
 /*----------------------------------------------------------------------------*/
@@ -810,10 +982,19 @@ return .ProcessingInstruction~new(target, data)
 /*----------------------------------------------------------------------------*/
 
 ::method createAttribute
-if arg() < 1 then raise syntax 93.901 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-use arg name
-return .Attr~new(name)
+  use strict arg name
+  return .Attr~new(name)
+
+
+/*----------------------------------------------------------------------------*/
+/* Method: createAttributeNS                                                  */
+/* Description: create an attribute node.                                     */
+/*----------------------------------------------------------------------------*/
+
+::method createAttributeNS
+  use strict arg uri, qname
+  -- TODO This needs finishing
+  return .Attr~new(name)
 
 
 /*----------------------------------------------------------------------------*/
@@ -822,10 +1003,8 @@ return .Attr~new(name)
 /*----------------------------------------------------------------------------*/
 
 ::method createEntityReference
-if arg() < 1 then raise syntax 93.901 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-use arg name
-return .EntityReference~new(name)
+  use strict arg name
+  return .EntityReference~new(name)
 
 
 /*----------------------------------------------------------------------------*/
@@ -834,12 +1013,10 @@ return .EntityReference~new(name)
 /*----------------------------------------------------------------------------*/
 
 ::method getElementsByName
-if arg() < 1 then raise syntax 93.901 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-use arg tagname
-temp = .NodeList~new
--- TODO: lots to do here, see the spec
-return temp
+  use arg tagname
+  temp = .NodeList~new
+  -- TODO: lots to do here, see the spec
+  return temp
 
 
 /*----------------------------------------------------------------------------*/
@@ -943,7 +1120,7 @@ return
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::class Element subclass Node public
+::class 'Element' subclass Node public
 
 
 /*----------------------------------------------------------------------------*/
