@@ -2070,6 +2070,85 @@ appear in the Rexx program.</para>
 <programlisting>
 ::requires 'winsystm.cls'
 </programlisting>
+<para>The WindowsObject class is designed to be primarily used in conjucture
+with the <link linkend="clsWinManager">WindowsManager</link> class.  The
+WindowsManager class will obtain the handle of an actual window and instantiate
+a WindowObject instance.  Because of this, the WindowObject does not regiser the
+C functions that are required for it to behave correctly. (The WindowsManager
+class has already registered the functions.)  Therefore, if the programmer uses
+the WindowObject outside of the context of the WindowsManager, she needs to
+ensure that the C functions get registered before using an instance of the
+WindowObject.
+</para>
+<para>There are a couple of approaches that could be used here.  Perhaps the
+simplest is to instantiate a WindowsManager object prior to using a WindowObject
+instance.  The WindowsManage instance does not have to be used, the act of
+creating a new object causes the C functions to be registered.  The following
+code snippet comes from an ooDialog program.  The following code does not work,
+because the C functions needed by a WindowObject will not have benn registered:
+</para>
+<programlisting>
+<![CDATA[
+
+::method Cancel
+
+   handle = self~get()
+   winObj = .WindowObject~new(handle)
+   state = winObj~state~translate
+
+   -- Do not save the size/position if the dialog is Minimized or Maximized
+   if state~wordPos('MINIMIZED') = 0 & state~wordPos('ZOOMED') = 0 then
+   ...
+return self~ok:super
+]]>
+</programlisting>
+
+<para>The following is a simple way to fix this situation:</para>
+<programlisting>
+<![CDATA[
+
+::method Cancel
+
+   unusedObj = .WindowsManager~new
+
+   handle = self~get()
+   winObj = .WindowObject~new(handle)
+   state = winObj~state~translate
+
+   -- Do not save the size/position if the dialog is Minimized or Maximized
+   if state~wordPos('MINIMIZED') = 0 & state~wordPos('ZOOMED') = 0 then
+   ...
+return self~ok:super
+]]>
+</programlisting>
+
+<para>The programmer can also load the C functions herself to get the correct
+behavior from the WindowObject:</para>
+<programlisting>
+<![CDATA[
+
+::method Cancel
+
+   if RxFuncQuery("InstWinSysFuncs") \= 0 then do
+      if RxFuncAdd("InstWinSysFuncs","RXWINSYS.DLL","InstWinSysFuncs") = 0 then
+         InstWinSysFuncs()
+      else
+         return self~ok:super   -- Unexpected error, just quit
+   end
+
+   -- Okay, we have the needed C functions, continue.
+
+   handle = self~get()
+   winObj = .WindowObject~new(handle)
+   state = winObj~state~translate
+
+   -- Do not save the size/position if the dialog is Minimized or Maximized
+   if state~wordPos('MINIMIZED') = 0 & state~wordPos('ZOOMED') = 0 then
+   ...
+return self~ok:super
+]]>
+</programlisting>
+
 <para><emphasis role="bold">Methods the WindowObject Class Defines</emphasis>
 </para>
 <itemizedlist>
