@@ -154,7 +154,7 @@ inline long RANDOMIZE(long seed) { return (seed * RANDOM_FACTOR + 1); }
 
 /* Object Reference Assignment */
 #ifndef CHECKOREFS
-#define OrefSet(o,r,v) (OldSpace(o) ? memoryObject.setOref((RexxObject **)&(r),(RexxObject *)v) : (RexxObject *)(r=v))
+#define OrefSet(o,r,v) (OldSpace(o) ? memoryObject.setOref((void *)&(r),(RexxObject *)v) : (RexxObject *)(r=v))
 #else
 #define OrefSet(o,r,v) memoryObject.checkSetOref((RexxObject *)o, (RexxObject **)&(r), (RexxObject *)v, __FILE__, __LINE__)
 #endif

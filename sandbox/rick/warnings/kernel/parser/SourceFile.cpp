@@ -910,10 +910,14 @@ void RexxSource::globalSetup()
   OrefSet(this, this->operators, new_queue());
   OrefSet(this, this->literals, new_directory());
   if (TheGlobalStrings != OREF_NULL)   /* doing an image build?             */
+  {
                                        /* use this for the string table     */
-    OrefSet(this, this->strings, TheGlobalStrings);
+      OrefSet(this, this->strings, TheGlobalStrings);
+  }
   else
-    OrefSet(this, this->strings, new_directory());
+  {
+      OrefSet(this, this->strings, new_directory());
+  }
                                        /* get the clause object             */
   OrefSet(this, this->clause, new RexxClause());
 }
@@ -1426,8 +1430,10 @@ void RexxSource::resolveDependencies()
   OrefSet(this, this->classes, classes);
   size = classes->size();              /* get the array size                */
   if (size == 0)                       /* nothing to process?               */
+  {
                                        /* clear out the classes list        */
     OrefSet(this, this->classes, OREF_NULL);
+  }
   else {                               /* have classes to process           */
                                        /* now traverse the classes array,   */
     for (i = 1; i <= size; i++) {      /* building up a dependencies list   */
@@ -2710,8 +2716,10 @@ RexxMethod *RexxSource::translateBlock(
   this->variableindex = FIRST_VARIABLE_INDEX;
   OrefSet(this, this->exposed_variables, new_directory());
   if (this->flags&_interpret)          /* this an interpret?                */
+  {
                                        /* just use the existing label set   */
     OrefSet(this, this->labels, labels);
+  }
   else {
                                        /* create a new labels directory     */
     OrefSet(this, this->labels, new_directory());

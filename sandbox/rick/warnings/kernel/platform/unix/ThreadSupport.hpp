@@ -48,8 +48,8 @@
 #include <pthread.h>
 #include <stdlib.h>
 
-void SysThreadInit(void);
-int SysQueryThreadID();
+#include "RexxCore.h"
+
 #ifdef AIX
 void RxLumCntl( long * result );
 #endif

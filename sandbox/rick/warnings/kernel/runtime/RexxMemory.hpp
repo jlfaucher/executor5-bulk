@@ -309,7 +309,7 @@ class RexxMemory : public RexxObject {
   inline void        setMarkTable(RexxTable *marktable) {this->markTable = marktable;};
   inline void        setOrphanCheck(BOOL orphancheck) {this->orphanCheck = orphancheck; };
   RexxObject *checkSetOref(RexxObject *, RexxObject **, RexxObject *, char *, long);
-  RexxObject *setOref(RexxObject **index, RexxObject *value);
+  RexxObject *setOref(void *index, RexxObject *value);
   RexxStack  *getFlattenStack();
   void        returnFlattenStack();
   RexxObject *reclaim();
