@@ -2354,6 +2354,16 @@ be used.  Each single key or range of keys is separated by a comma.  A range of
 keyes is denoted by using the dash character &quot;-&quot;.  White space within
 the <computeroutput>keys</computeroutput> argument is ignored.
 </para>
+<para>The keys are specified by the numeric value defined by Microsoft for its
+virtual key set.  These numeric values are 0 through 255, although both 0 and
+255 are not used.  The <link linkend="virtualkeycodesc">VirtualKeyCodes</link>
+class can be used to make a program more readable.
+</para>
+<note><title>Note</title>
+<para>The programmer can use the <link linkend="windowsdoc">Windows
+documentation</link> and <link linkend="platformsdk">Platform SDK</link> to
+obtain the full list of the virtual key numbers.
+</para></note>
 <para>In addtion there are a few keywords that can be used to specify some
 common key ranges. These keywords are:
 <variablelist>
@@ -2547,11 +2557,43 @@ event.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>
-
+<varlistentry id="connectKeyPressExample"><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example is from a fictitious customer order
+system.  As the user is filling out a customer order using the customer order
+dialog, he has the F2 through F5 short cut keys available.  F2 brings up a
+customer look up dialog.  F3 looks up info on the product number entered in an
+edit control.  F4 resets the form by clearing all the fields.  F5 is used to
+print out the finished invoice.
 <programlisting>
 <![CDATA[
+::method initDialog
+
+  ...
+
+  -- Capture F2 key presses, but not Ctrl-F2 or Alt-F2, etc..
+  self~connectKeyPress(onF2, self~vCode('F2'), "NONE")
+
+  -- Same idea for F3, F4, and F5.  This uses the actual numeric value for the
+  -- keys without bothering to use the VirtualKeyCodes class to translate.
+  self~connectKeyPress(onF3, 114, "NONE")
+  self~connectKeyPress(onF4, 115, "NONE")
+  self~connectKeyPress(onF5, 116, "NONE")
+
+  ...
+
+::method onF2
+  self~showCustomerLookupDialog
+
+::method onF3
+
+  prodNum = self~getEditControl(IDC_EDIT_PRODUCT)~getText
+  if prodNum \== "" then self~showProductInfo(prodNum)
+
+::method onF4
+  self~resetAllFields
+
+::method onF5
+  self~printInvoice
 
 ]]>
 </programlisting>
@@ -2620,11 +2662,41 @@ already connected to a key down event for this dialog.
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example :
+<listitem><para>The following example is a variation on the <link
+linkend="connectKeyPressExample">example</link> shown for the <link
+linkend="mthConnectKeyPressBaseDialog">ConnectKeyPress</link> method. It
+connects all the function keys to the same method and then determines what actio
+to take by examining which key was pressed.
 <programlisting>
 <![CDATA[
+::method initDialog
 
- ?
+  ...
+
+  -- Capture all function key presses.
+  self~connectFKeyPress(onFKey)
+
+  ...
+
+::method onFKey
+  use arg keyPressed
+
+  select
+    when self~keyName(keyPressed) == 'F2' then self~showCustomerLookupDialog
+
+    when keyPressed = 114 then do
+      prodNum = self~getEditControl(IDC_EDIT_PRODUCT)~getText
+      if prodNum \== "" then self~showProductInfo(prodNum)
+    end
+
+    when keyPressed = 115 then self~resetAllFields
+    when keyPressed = 116 then self~printInvoice
+
+    otherwise do
+      -- Not interested in any other function keys
+      nop
+    end
+  end
 
 ]]>
 </programlisting>
@@ -2682,11 +2754,71 @@ error would ever occur.)
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example :
+<listitem><para>The following example is a variation on the <link
+linkend="connectKeyPressExample">example</link> shown for the <link
+linkend="mthConnectKeyPressBaseDialog">ConnectKeyPress</link> method. It builds
+on the fictitious customer order system.  The F7 key saves the completed invoice
+into the system and enters a different phase of the companies business process.
+At this point (for whatever fictitious business reason) the fields can no longer
+be cleared and the user is not allowed to look up customer or product
+information.  But, the user may still need to print the invoice.  To prevent the
+accidental press of the hot keys causing the wrong action, those key presses are
+disconnected.
+</para>
+<para>To demonstrate how key press connections can be added and removed through
+out the live time of the dialog, this example adds the F9 hot key.  F9 starts a
+new order entry cycle and re-connects the hot keys used during the creation of
+a customer invoice.  When the user then saves the next completed invoice, key
+press connections are removed, when she starts a new invoice key press
+connections are restored.  This cycle could continue though out the day without
+the user ever closing the main dialog.
 <programlisting>
 <![CDATA[
 
- ?
+::method initDialog
+
+  ...
+
+  -- Capture F2 key presses, but not Ctrl-F2 or Alt-F2, etc..
+  self~connectKeyPress(onF2, self~vCode('F2'), "NONE")
+
+  -- Same idea for F3, F4, F5, and F7.  This uses the actual numeric value for
+  -- the keys without bothering to use the VirtualKeyCodes class to translate.
+  self~connectKeyPress(onF3, 114, "NONE")
+  self~connectKeyPress(onF4, 115, "NONE")
+  self~connectKeyPress(onF5, 116, "NONE")
+  self~connectKeyPress(onF7, 118, "NONE")
+  self~connectKeyPress(onF9, 120, "NONE")
+
+  ...
+
+::method onF2
+  self~showCustomerLookupDialog
+
+::method onF3
+
+  prodNum = self~getEditControl(IDC_EDIT_PRODUCT)~getText
+  if prodNum \== "" then self~showProductInfo(prodNum)
+
+::method onF4
+  self~resetAllFields
+
+::method onF5
+  self~printInvoice
+
+::method onF7
+
+  self~saveToDataBase
+  self~disconnectKeyPress(onF2)
+  self~disconnectKeyPress(onF3)
+  self~disconnectKeyPress(onF4)
+
+::method onF9
+
+  self~resetAllFields
+  self~connectKeyPress(onF2, 112, "NONE")
+  self~connectKeyPress(onF3, 114, "NONE")
+  self~connectKeyPress(onF4, 115, "NONE")
 
 ]]>
 </programlisting>
@@ -2735,11 +2867,29 @@ if there are key press events connected to the specified method.
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example :
+<listitem><para>The following example could come from a dialog where the user
+has the option to use hot keys or not.  When the reset button is pushed the
+state of the dialog fields are reset.  The hot keys enabled check box is
+set to reflect whether hot keys are currently enabled or not.
 <programlisting>
 <![CDATA[
 
- ?
+::method defineDialog
+
+  ...
+  self~addCheckBox(IDC_CHECK_FKEYSENABlED, , 30, 60, , , "Hot Keys Enabled")
+  ...
+  self~addButton(IDC_PB_RESET, 60, 135, 45, 15, "Reset", onReset)
+  ...
+
+method onReset
+
+  ...
+  if self~hasKeyPressConnection then
+    self~getCheckControl(IDC_CHECK_FKEYSENABlED)~check
+  else
+    self~getCheckControl(IDC_CHECK_FKEYSENABlED)~uncheck
+  ...
 
 ]]>
 </programlisting>

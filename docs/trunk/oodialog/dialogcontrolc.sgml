@@ -1965,11 +1965,38 @@ event.
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example :
+<listitem><para>The following example could be from an application that supplies
+extended editing abilitites for a multi-line edit control.  When the edit
+control has the focus the user can use Alt-D to delete the current word, Ctrl-D
+to delete the current line, and Shift-Alt-D delete the current paragraph:
 <programlisting>
 <![CDATA[
 
- ?
+::method initDialog
+  expose editControl
+
+  editControl = self~getEditControl(IDC_EDTIT)
+  ...
+
+  -- Capture the D key press when either the Alt or Control keys are
+  -- also pressed.
+  editControl~connectKeyPress(onDPress, self~vCode('D'), "ALT CONTROL")
+  ...
+
+::method onDPress
+  expose editControl
+  use arg key, shift, control, alt, info
+
+  -- Determine which of the key press combinations this is and take
+  -- appropriate action if it is a combination we are interested in.
+
+  isAltD = \ shift & \ control & alt
+  isCtrlD = \ shift & control & \ alt
+  isShiftAltD = shift & \ control & alt
+
+  if isAltD then self~deleteWord(editControl)
+  if isCtrlD the self~deleteLine(editControl)
+  if isShiftAltD then self~deleteParagraph(editControl)
 
 ]]>
 </programlisting>
@@ -2171,11 +2198,22 @@ Windows XP or later is required.
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example :
+<listitem><para>The following example could come from a dialog where the user
+can enable or disable the user of hot keys when she is working within an edit
+control.  When the user presses the disable hot keys button, the dialog disables
+the hot keys for the edit control by removing the key press connections.
 <programlisting>
 <![CDATA[
 
- ?
+::method defineDialog
+
+  ...
+  self~addButton(IDC_PB_DISABLE, 60, 135, 65, 15, "Disable Hot Keys", onDisable)
+  ...
+
+method onDisable
+  editControl = self~getEditControl(IDC_EDIT)
+  editControl~disconnectKeyPress
 
 ]]>
 </programlisting>
@@ -2239,11 +2277,32 @@ connection to the specified method.
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example :
+<listitem><para>The following example is from an application where the user can
+enable the use of hot keys when an edit control has the focus, or not.  The
+reset push button is used in the application to reset the state of the dialog.
+One of the things done when the state is reset to check or unceck a check box
+that shows whether hot keys are currently enabled or not.
 <programlisting>
 <![CDATA[
 
- ?
+::method defineDialog
+
+  ...
+  self~addCheckBox(IDC_CHECK_FKEYSENABlED, , 30, 60, , , "Hot Keys Enabled")
+  ...
+  self~addButton(IDC_PB_RESET, 60, 135, 45, 15, "Reset", onReset)
+  ...
+
+method onReset
+
+  ...
+  editControl = self~getEditControl(IDC_EDIT)
+
+  if editControl~hasKeyPressConnection then
+    self~getCheckControl(IDC_CHECK_FKEYSENABlED)~check
+  else
+    self~getCheckControl(IDC_CHECK_FKEYSENABlED)~uncheck
+  ...
 
 ]]>
 </programlisting>
