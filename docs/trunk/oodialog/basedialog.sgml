@@ -318,8 +318,16 @@ the methods listed in <link linkend="t000013">Table 2</link>.
 <entry><link linkend="h000184">ConnectEntryLine</link></entry>
 </row>
 <row>
+<entry>ConnectFKeyPress</entry>
+<entry><link linkend="mthConnectFKeyPressBaseDialog">ConnectFKeyPress</link></entry>
+</row>
+<row>
 <entry>ConnectHelp</entry>
 <entry><link linkend="mthConnectHelp">ConnectHelp</link></entry>
+</row>
+<row>
+<entry>ConnectKeyPress</entry>
+<entry><link linkend="mthConnectKeyPressBaseDialog">ConnectKeyPress</link></entry>
 </row>
 <row>
 <entry>ConnectList</entry>
@@ -436,6 +444,10 @@ the methods listed in <link linkend="t000013">Table 2</link>.
 <row>
 <entry>DisableMenuItem</entry>
 <entry><link linkend="dmim">DisableMenuItem</link></entry>
+</row>
+<row>
+<entry>DisconnectKeyPress</entry>
+<entry><link linkend="mthDisconnectKeyPressBaseDialog">DisconnectKeyPress</link></entry>
 </row>
 <row>
 <entry>DisplaceBitmap</entry>
@@ -724,6 +736,10 @@ the methods listed in <link linkend="t000013">Table 2</link>.
 <row>
 <entry>HandleMessages</entry>
 <entry><link linkend="h000756">HandleMessages</link></entry>
+</row>
+<row>
+<entry>HasKeyPressConnection</entry>
+<entry><link linkend="mthHasKeyPressConnectionBaseDialog">HasKeyPressConnection</link></entry>
 </row>
 <row>
 <entry>HScrollPos</entry>
@@ -2290,6 +2306,447 @@ Help request:
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
+</section>
+
+<section id="mthConnectKeyPressBaseDialog"><title>ConnectKeyPress</title>
+<indexterm><primary>ConnectKeyPress</primary>
+<secondary>BaseDialog class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aBaseDialog~ConnecKeyPress(--msgToRaise--,--keys-+------------+--)-----><
+                                                    +-,--filter--+
+
+]]>
+</programlisting>
+
+<para>The <computeroutput>ConnectKeyPress</computeroutput> method connects a key
+press event with a method in the dialog class. A single key or multiple keys can
+be connected to the same method.  Multiple methods can be connected for key
+press events, but only 1 method can be connected to any single key.
+</para>
+<para>The underlying Windows dialog must exist before this method can be used.
+That means it can be used in <link linkend="h000035">InitDialog</link> or any
+time thereafter.  There is a maximum limit of 63 methods, per dialog, that can
+be connected to key press events.  Connections can be removed (see the <link
+linkend="mthDisconnectKeyPressBaseDialog">DisconnectKeyPress</link> method) if
+there is no longer a need for a notification of a key press.
+</para>
+<para>A similar <link linkend="mthConnectKeyPressDialogcontrol">method</link>
+is a member of the <computeroutput>DialogControl</computeroutput> class.  It is
+important to note this distinction between the two methods.  The method of the
+<computeroutput>BaseDialog</computeroutput> (this method) will capture any key
+press event when the dialog is the active window.  The method of the
+<computeroutput>DialogControl</computeroutput> class will only capture a key
+press when the control has the keyboard focus.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>msgToRaise</term>
+<listitem><para>The name of the method that is to be invoked when the key press
+event happens.
+</para></listitem></varlistentry>
+<varlistentry><term>keys</term>
+<listitem><para>The key (or keys) for which the key press event is to be
+connected. A single key or multiple keys can be specified. A range of keys can
+be used.  Each single key or range of keys is separated by a comma.  A range of
+keyes is denoted by using the dash character &quot;-&quot;.  White space within
+the <computeroutput>keys</computeroutput> argument is ignored.
+</para>
+<para>In addtion there are a few keywords that can be used to specify some
+common key ranges. These keywords are:
+<variablelist>
+<varlistentry><term>ALL</term>
+<listitem><para>All keys.
+</para></listitem></varlistentry>
+<varlistentry><term>FKEYS</term>
+<listitem><para>All Function keys, other than F1.  (In Windows the F1 key is the
+help key and the <link linkend="mthConnectHelp">ConnectHelp</link> method should
+be used for F1.)
+</para></listitem></varlistentry>
+<varlistentry><term>ALPHA</term>
+<listitem><para>The keys A though Z.
+</para></listitem></varlistentry>
+<varlistentry><term>NUMERIC</term>
+<listitem><para>The keys 0 through 9.  Note that these are the normal number
+keys, not the keypad numbers on an enhanced keyboard.
+</para></listitem></varlistentry>
+<varlistentry><term>ALPHANUMERIC</term>
+<listitem><para>The keys A through Z and 0 through 9.
+</para></listitem></varlistentry>
+</variablelist></para>
+<note><title>Note</title><para>Case is insignificant for these keywords as is the
+order of the keywords. A keyword not in the list will result in a return of -1.
+However, if the argument contains other valid key tokens, those keys will be
+connected to the method.  If there are no other valid key tokens, then no
+connection is made.
+</para></note></listitem></varlistentry>
+<varlistentry><term>filter</term>
+<listitem><para>A (simplistic) filter that is applied to the key press event for
+the key(s) specified.  The filter is a string of keywords separated by blanks.
+(Case is not significant, neither is the order of the words.  Any words other
+than the specified keywords are ignored.) The possible keywords are:
+<computeroutput>SHIFT, CONTROL, ALT, AND, NONE.</computeroutput>
+</para>
+<para>Shift, control, and alt specify that the corresponding key must be down at
+the time of the key press event. These keywords are combined in a boolean
+expression.  The default is an OR expression. If the AND keyword is present then
+the boolean expression is an AND expression. If the NONE keyword is used, it
+means that none of the shift, control, or alt keys can be down at the time of
+the key press event.  (When NONE is used, all other words in the string are
+ignored.)
+</para>
+<para> Some examples may make this more clear:
+<programlisting>
+<![CDATA[
+
+::method initDialog
+
+  -- Using the below, the onAltCD method would be invoked when the user types
+  -- Alt-Shift-C or Alt-Shift-D.  But the method would not be invoked for Alt-C
+  -- or Shift-D (or any other key press event.)
+
+  keys = self~vCode('C') "," self~vCode('D')
+  self~connectKeyPress(onAltCD, keys, "ALT AND SHIFT")
+
+  -- The below would invoke the onAltCD method any time a C or a D was tryped
+  -- with either the Alt or the Control key down.  This would include Alt-C,
+  -- Alt-Shift-C, Ctrl-Alt-Shift-C, etc..
+
+  self~connectKeyPress(onAltCD, keys, "ALT CONTROL")
+
+  -- The below would invoke the onAltCD method only when Alt-C or Alt-D was
+  -- typed.
+
+  self~connectKeyPress(onAltCD, keys, "ALT AND")
+
+  -- The below would invoke the onF4 method only when the F4 key was pressed by
+  -- itself. Alt-F4, Ctrl-F4, etc., would not invoke the method.
+
+  self~connectKeyPress(onF4, self~vCode('F4'), "NONE")
+]]>
+</programlisting>
+
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para> The return values are:
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Success.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>A problem with one of the arguments, such as skipping a required
+argument, using an incorrect format for the <computeroutput>keys
+</computeroutput> or the <computeroutput>filter</computeroutput> arguments,
+etc..  Note that it is possible to get a return of -1 but still have some keys
+connected.  For instance in the following example the C and D keys would be
+connected and the filter applied.  The &quot;"dog&quot;" token would result in
+-1 being returned:
+<programlisting>
+<![CDATA[
+
+  keys = self~vCode('C') ", dog," self~vCode('D')
+  ret = self~connectKeyPress('onAltCD', keys, "ALT AND SHIFT")
+  say 'Got a return of:' ret
+  say "Have connection to onAltCD?" self~hasKeyPressConnection('onAltCD')
+
+  -- The output would be:
+  Got a return of: -1
+  Have connection to onAltCD? 1
+
+]]>
+</programlisting>
+
+</para></listitem></varlistentry>
+<varlistentry><term>-2</term>
+<listitem><para>The underlying mechanism in the Windows API that is used to
+capture key events failed.
+</para></listitem></varlistentry>
+<varlistentry><term>-4</term>
+<listitem><para>An (internal) problem with the dialog window.
+</para></listitem></varlistentry>
+<varlistentry><term>-5</term>
+<listitem><para>Memory allocation error in the underlying Windows API.
+</para></listitem></varlistentry>
+<varlistentry><term>-6</term>
+<listitem><para>The maximum number of connections has been reached.
+</para></listitem></varlistentry>
+<varlistentry><term>-7</term>
+<listitem><para>The <computeroutput>msgToRaise</computeroutput> method is
+already connected to a key down event for this dialog.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Event Method Arguments
+</emphasis></term>
+<listitem><para>The ooDialog method connected to the key press event will
+recieve the following five arguments in the order listed:
+<variablelist>
+<varlistentry><term>keyCode</term>
+<listitem><para>The numeric code of the key pressed.
+</para></listitem></varlistentry>
+<varlistentry><term>shift</term>
+<listitem><para>A boolean (true or false) that denotes whether a shift key
+was down or up at the time of the key press.  It will be true if a shift key
+was down and false if the shift key was not down.
+</para></listitem></varlistentry>
+<varlistentry><term>control</term>
+<listitem><para>True if a control key was down at the time of the key press,
+false if it was not.
+</para></listitem></varlistentry>
+<varlistentry><term>alt</term>
+<listitem><para>True if an alt key was down at the time of the key press, false
+if it was not.
+</para></listitem></varlistentry>
+<varlistentry><term>extraInfo</term>
+<listitem><para>This argument is a string containing keywords.  It supplies
+extra information about the keyboard state at the time of a key press event.
+The string will contain some combination of these keywords
+<variablelist>
+<varlistentry><term>numOn</term>
+<listitem><para>Num Lock was on at the time of the key press event.
+</para></listitem></varlistentry>
+<varlistentry><term>numOff</term>
+<listitem><para>Num Lock was off.
+</para></listitem></varlistentry>
+<varlistentry><term>capsOn</term>
+<listitem><para>Caps Lock was on at the time of the key press event.
+</para></listitem></varlistentry>
+<varlistentry><term>capsOff</term>
+<listitem><para>Caps Lock was off.
+</para></listitem></varlistentry>
+<varlistentry><term>scrollOn</term>
+<listitem><para>Scroll Lock was on at the time of the key press event.
+</para></listitem></varlistentry>
+<varlistentry><term>scrollOff</term>
+<listitem><para>Scroll Lock was off.
+</para></listitem></varlistentry>
+<varlistentry><term>lShift</term>
+<listitem><para>The left shift key was down at the time of the key press event.
+</para></listitem></varlistentry>
+<varlistentry><term>rShift</term>
+<listitem><para>The right shift key was down.
+</para></listitem></varlistentry>
+<varlistentry><term>lControl</term>
+<listitem><para>The left control key was down at the time of the key press
+event.
+</para></listitem></varlistentry>
+<varlistentry><term>rControl</term>
+<listitem><para>The right control key was down.
+</para></listitem></varlistentry>
+<varlistentry><term>lAlt</term>
+<listitem><para>The left alt key was down at the time of the key press event.
+</para></listitem></varlistentry>
+<varlistentry><term>rAlt</term>
+<listitem><para>The right alt key was down.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>
+
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+
+</section>
+
+<section id="mthConnectFKeyPressBaseDialog"><title>ConnectFKeyPress</title>
+<indexterm><primary>ConnectFKeyPress</primary>
+<secondary>BaseDialog class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~ConnectFKeyPress(--msgToRaise--)-------------><
+
+
+]]>
+</programlisting>
+
+<para>The <computeroutput>ConnectFKeyPress</computeroutput> method connects a
+function key press to a method in the dialog instance.  This works for function
+keys F2 through F24, without the shift, control, or alt keys also being pressed.
+The underlying Windows dialog must exsit before this method can be invoked.
+This is a convenience method and is exactly equivalent to:
+<programlisting>
+<![CDATA[
+::method initDialog
+  ...
+  keys = self~vCode('F2') "-" self~vCode('F24')
+  self~connectKeyPress(msgToRaise, keys, "NONE")
+]]>
+</programlisting>
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The required argument is:
+<variablelist>
+<varlistentry><term>msgToRaise</term>
+<listitem><para>The method to be invoked for the F key press event.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para> The return values are:
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Success.
+</para></listitem></varlistentry>
+<varlistentry><term>-2</term>
+<listitem><para>The underlying mechanism in the Windows API that is used to
+capture key events failed.
+</para></listitem></varlistentry>
+<varlistentry><term>-4</term>
+<listitem><para>An (internal) problem with the dialog window.
+</para></listitem></varlistentry>
+<varlistentry><term>-5</term>
+<listitem><para>Memory allocation error in the underlying Windows API.
+</para></listitem></varlistentry>
+<varlistentry><term>-6</term>
+<listitem><para>The maximum number of connections has been reached.
+</para></listitem></varlistentry>
+<varlistentry><term>-7</term>
+<listitem><para>The <computeroutput>msgToRaise</computeroutput> method is
+already connected to a key down event for this dialog.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example :
+<programlisting>
+<![CDATA[
+
+ ?
+
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthDisconnectKeyPressBaseDialog"><title>DisconnectKeyPress</title>
+<indexterm><primary>DisconnectKeyPress</primary>
+<secondary>BaseDialog class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aBaseDialog~DisconnectKeyPress(--+--------------+--)--------><
+                                    +--methodName--+
+
+]]>
+</programlisting>
+
+<para>The <computeroutput>DisconnectKeyPress</computeroutput> method disconnects
+a key press event from a method that was previously connected using <link
+linkend="mthConnectKeyPressBaseDialog">ConnectKeyPress</link>.  If no
+method name is specified than all key press event connections are removed.
+Otherwise, only the key press events connected to the specific method are
+removed.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The single optional argument is:
+<variablelist>
+<varlistentry><term>methodName</term>
+<listitem><para>If <computeroutput>methodName</computeroutput> is specified,
+only the key press events connected to that method are disconnected.  If the
+argument is omitted, then all key press events for the dialog will be
+disconnected.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The return values are:
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Success.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>The specified <computeroutput>methodName</computeroutput> is not
+connected to any key press events for this dialog.
+</para></listitem></varlistentry>
+<varlistentry><term>-2</term>
+<listitem><para>This return code can only occur when removing the connection for
+a single <computeroutput>methodName</computeroutput>.  It indicates that after
+removing the connection, the underlying mechanism in the Windows API that
+captures the key press events could not be re-initialized.  (It is doubtful this
+error would ever occur.)
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example :
+<programlisting>
+<![CDATA[
+
+ ?
+
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+
+</section>
+
+<section id="mthHasKeyPressConnectionBaseDialog"><title>HasKeyPressConnection</title>
+<indexterm><primary>HasKeyPressConnection</primary>
+<secondary>BaseDialog class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aBaseDialog~HasKeyPressConnection(--+--------------+--)--------><
+                                       +--methodName--+
+
+]]>
+</programlisting>
+
+<para>This method is used to query if a connection to a key press event already
+exists.  It returns true or false so it can always be used in a boolean
+expression.  If no argument is specified the method returns true if any key
+press events have been conneced for the dialog and false otherwise.  When the
+<computeroutput>methodName</computeroutput> argument is used, the query is only
+if there are key press events connected to the specified method.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The single optional argument is:
+<variablelist>
+<varlistentry><term>methodName</term>
+<listitem><para>Query if any key press events are connected to this method.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The returned value is always <computeroutput>true
+</computeroutput> or <computeroutput>false</computeroutput>.
+<variablelist>
+<varlistentry><term>true</term>
+<listitem><para>A connection exists.
+</para></listitem></varlistentry>
+<varlistentry><term>false</term>
+<listitem><para>No connection exists.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example :
+<programlisting>
+<![CDATA[
+
+ ?
+
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+
+
 </section>
 
 <section id="h000114"><title>ConnectButton</title>

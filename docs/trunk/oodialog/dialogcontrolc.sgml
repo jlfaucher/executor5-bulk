@@ -153,6 +153,14 @@ listed in the following DialogControl Instance Methods table.
 <entry><link linkend="clienttoscreen">ClientToScreen</link></entry>
 </row>
 <row>
+<entry>ConnectFKeyPress</entry>
+<entry><link linkend="mthConnectFKeyPressDialogControl">ConnectFKeyPress</link></entry>
+</row>
+<row>
+<entry>ConnectKeyPress</entry>
+<entry><link linkend="mthConnectKeyPressDialogControl">ConnectKeyPress</link></entry>
+</row>
+<row>
 <entry>CreateBrush</entry>
 <entry><link linkend="h001026">CreateBrush</link></entry>
 </row>
@@ -199,6 +207,10 @@ listed in the following DialogControl Instance Methods table.
 <row>
 <entry>Disable</entry>
 <entry><link linkend="disable">Disable</link></entry>
+</row>
+<row>
+<entry>DisconnectKeyPress</entry>
+<entry><link linkend="mthDisconnectKeyPressDialogControl">DisconnectKeyPress</link></entry>
 </row>
 <row>
 <entry>Display</entry>
@@ -305,8 +317,8 @@ listed in the following DialogControl Instance Methods table.
 <entry><link linkend="mthGroup">Group</link></entry>
 </row>
 <row>
-<entry>HScrollPos</entry>
-<entry><link linkend="hscrollpos">HScrollPos</link></entry>
+<entry>HasKeyPressConnection</entry>
+<entry><link linkend="mthHasKeyPressConnectionDialogControl">HasKeyPressConnection</link></entry>
 </row>
 <row>
 <entry>Hide</entry>
@@ -315,6 +327,10 @@ listed in the following DialogControl Instance Methods table.
 <row>
 <entry>HideFast</entry>
 <entry><link linkend="hidefast">HideFast</link></entry>
+</row>
+<row>
+<entry>HScrollPos</entry>
+<entry><link linkend="hscrollpos">HScrollPos</link></entry>
 </row>
 <row>
 <entry>IsMouseButtonDown</entry>
@@ -1789,6 +1805,452 @@ end
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
+</section>
+
+</section>
+
+<section id="eventDialogControl"><title>Connect Event Methods</title>
+<indexterm><primary>connect event methods</primary>
+<secondary>DialogControl class</secondary></indexterm>
+<para>The following methods connect dialog control events to methods the
+programmer defines in the parent dialog class.
+</para>
+
+<section id="mthConnectKeyPressDialogControl"><title>ConnectKeyPress</title>
+<indexterm><primary>ConnectKeyPress</primary>
+<secondary>DialogControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~ConnectKeyPress(--msgToRaise--,--keys--+-----------+--)----><
+                                                         +-,-filter--+
+
+]]>
+</programlisting>
+
+<para>The <computeroutput>ConnectKeyPress</computeroutput> method connects a key
+down event, when the control has the keyboard focus, with a programmer defined
+method in the parent dialog of the control.  The underlying Windows dialog must
+exist before this method can be invoked.
+</para>
+<note><title>Note</title><para>
+This method is only available on systems running Windows XP or later.  On
+earlier versions of Windows, the method will fail and return -4.
+</para></note>
+<para>The arguments, return values, and behavior of this method are the same as
+those for the <computeroutput>ConnectKeyPress</computeroutput> method of the
+<computeroutput>BaseDialog</computeroutput>.  However, the method of the
+<computeroutput>BaseDialog</computeroutput> connects any key down event when the
+dialog is the active window and this method of the <computeroutput>
+DialogControl</computeroutput> only connects the key down events when the
+specific control has the focus.  See the <link
+linkend="mthConnectKeyPressBaseDialog">ConnectKeyPress</link> method of the
+<computeroutput>BaseDialog</computeroutput> for a detailed description of
+the arguements, return values, and behavior.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>msgToRaise</term>
+<listitem><para>The method to be invoked for the key down event.
+</para></listitem></varlistentry>
+<varlistentry><term>keys</term>
+<listitem><para>The key, or list of keys, whose key down event will invoke the
+method specified by <computeroutput>msgToRaise</computeroutput>.
+</para></listitem></varlistentry>
+<varlistentry><term>filter</term>
+<listitem><para>An optional filter to be applied to the key down event.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The return values are:
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Success.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>The underlying mechanism in the Windows API failed.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>A problem with one of the arguments.
+</para></listitem></varlistentry>
+<varlistentry><term>-2</term>
+<listitem><para>An (internal) problem with the dialog window.
+</para></listitem></varlistentry>
+<varlistentry><term>-3</term>
+<listitem><para>An (internal) problem with the dialog administration.
+</para></listitem></varlistentry>
+<varlistentry><term>-4</term>
+<listitem><para>This method is not supported by this version of Windows.
+Windows XP or later is required.
+</para></listitem></varlistentry>
+<varlistentry><term>-5</term>
+<listitem><para>Memory allocation error in the underlying Windows API.
+</para></listitem></varlistentry>
+<varlistentry><term>-6</term>
+<listitem><para>The maximum number of connections has been reached.
+</para></listitem></varlistentry>
+<varlistentry><term>-7</term>
+<listitem><para>The <computeroutput>msgToRaise</computeroutput> method is
+already connected to a key down event for this dialog control.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry id="keyDownEventDialogControl"><term><emphasis role="bold">Event
+Method Arguments
+</emphasis></term>
+<listitem><para>The ooDialog method connected to the key press event will
+recieve the following five arguments in the order listed:
+<variablelist>
+<varlistentry><term>keyCode</term>
+<listitem><para>The numeric code of the key pressed.
+</para></listitem></varlistentry>
+<varlistentry><term>shift</term>
+<listitem><para>True if a shift key was down at the time of the event and false
+if the shift key was not down.
+</para></listitem></varlistentry>
+<varlistentry><term>control</term>
+<listitem><para>True if a control key was down at the time of the key press,
+false if it was not.
+</para></listitem></varlistentry>
+<varlistentry><term>alt</term>
+<listitem><para>True if an alt key was down at the time of the key press, false
+if it was not.
+</para></listitem></varlistentry>
+<varlistentry><term>extraInfo</term>
+<listitem><para>This argument is a string containing keywords.  It supplies
+extra information about the keyboard state at the time of a key press event.
+The string will contain some combination of these keywords
+<variablelist>
+<varlistentry><term>numOn</term>
+<listitem><para>Num Lock was on at the time of the key press event.
+</para></listitem></varlistentry>
+<varlistentry><term>numOff</term>
+<listitem><para>Num Lock was off.
+</para></listitem></varlistentry>
+<varlistentry><term>capsOn</term>
+<listitem><para>Caps Lock was on at the time of the key press event.
+</para></listitem></varlistentry>
+<varlistentry><term>capsOff</term>
+<listitem><para>Caps Lock was off.
+</para></listitem></varlistentry>
+<varlistentry><term>scrollOn</term>
+<listitem><para>Scroll Lock was on at the time of the key press event.
+</para></listitem></varlistentry>
+<varlistentry><term>scrollOff</term>
+<listitem><para>Scroll Lock was off.
+</para></listitem></varlistentry>
+<varlistentry><term>lShift</term>
+<listitem><para>The left shift key was down at the time of the key press event.
+</para></listitem></varlistentry>
+<varlistentry><term>rShift</term>
+<listitem><para>The right shift key was down.
+</para></listitem></varlistentry>
+<varlistentry><term>lControl</term>
+<listitem><para>The left control key was down at the time of the key press
+event.
+</para></listitem></varlistentry>
+<varlistentry><term>rControl</term>
+<listitem><para>The right control key was down.
+</para></listitem></varlistentry>
+<varlistentry><term>lAlt</term>
+<listitem><para>The left alt key was down at the time of the key press event.
+</para></listitem></varlistentry>
+<varlistentry><term>rAlt</term>
+<listitem><para>The right alt key was down.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example :
+<programlisting>
+<![CDATA[
+
+ ?
+
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+
+</section>
+
+<section id="mthConnectFKeyPressDialogControl"><title>ConnectFKeyPress</title>
+<indexterm><primary>ConnectFKeyPress</primary>
+<secondary>DialogControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~ConnectFKeyPress(--msgToRaise--)-------------><
+
+
+]]>
+</programlisting>
+
+<para>The <computeroutput>ConnectFKeyPress</computeroutput> method is a
+convenience method that connects all F key down events, when the control has the
+keyboard focus, with a programmer defined method in the parent dialog of the
+control. (This is for the standard function keys, F2 through F24.)  The
+underlying Windows dialog must exsit before this method can be invoked.
+</para>
+<note><title>Note</title><para>
+This method is only available on systems running Windows XP or later.  On
+earlier versions of Windows, the method will fail and return -4.
+</para></note>
+<para>The arguments, return values, and behavior of this method are the same as
+those for the <computeroutput>ConnectFKeyPress</computeroutput> method of the
+<computeroutput>BaseDialog</computeroutput>.  However, the method of the
+<computeroutput>BaseDialog</computeroutput> class connects any F key down event
+when the dialog is the active window and this method of the <computeroutput>
+DialogControl</computeroutput> class only connects the F key down events when
+the specific control has the focus.  See the <link
+linkend="mthConnectFKeyPressBaseDialog">ConnectFKeyPress</link> method of the
+<computeroutput>BaseDialog</computeroutput> for a more detailed description of
+the arguements, return values, and behavior.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The required argument is:
+<variablelist>
+<varlistentry><term>msgToRaise</term>
+<listitem><para>The method to be invoked for the key down event.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The return values are:
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Success.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>The underlying mechanism in the Windows API failed.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>A problem with one of the arguments.
+</para></listitem></varlistentry>
+<varlistentry><term>-2</term>
+<listitem><para>An (internal) problem with the dialog window.
+</para></listitem></varlistentry>
+<varlistentry><term>-3</term>
+<listitem><para>An (internal) problem with the dialog administration.
+</para></listitem></varlistentry>
+<varlistentry><term>-4</term>
+<listitem><para>This method is not supported by this version of Windows.
+Windows XP or later is required.
+</para></listitem></varlistentry>
+<varlistentry><term>-5</term>
+<listitem><para>Memory allocation error in the underlying Windows API.
+</para></listitem></varlistentry>
+<varlistentry><term>-6</term>
+<listitem><para>The maximum number of connections has been reached.
+</para></listitem></varlistentry>
+<varlistentry><term>-7</term>
+<listitem><para>The <computeroutput>msgToRaise</computeroutput> method is
+already connected to a key down event for this dialog control.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Event Method Arguments
+</emphasis></term>
+<listitem><para>The ooDialog method connected to the F key down event recieves
+five arguments.  This arguments are described in detail in the <link
+linkend="keyDownEventDialogControl">ConnectKeyPress</link> method of the
+<computeroutput>DialogControl</computeroutput>.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example connects the F key down events for an edit
+control. The application determines which F key was pressed and takes
+appropriate action.  For this application, the F3 key is the search key.
+<programlisting> <![CDATA[
+
+::method initDialog
+  expose editControl searchToken
+
+  editControl = self~getEditControl(IDC_EDIT)
+  editControl~connectFKeyPress(onFKey)
+  ...
+  lastSearchToken = ""
+  ...
+
+::method onFKey
+  expose editControl searchToken
+  use arg key
+
+  select
+    when self~keyName(key) == 'F2' then do
+      ...
+    end
+    when self~keyName(key) == 'F3' then do
+      description = "What word would you like to search for?"
+      searchToken = inputBox(description, "Search", searchToken)
+
+      if searchToken <> "" then
+        self~findAndHighlight(searchToken, editControl)
+    end
+    when self~keyName(key) == 'F4' then do
+      ...
+    end
+    ...
+  end
+  ...
+
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthDisconnectKeyPressDialogControl"><title>DisconnectKeyPress</title>
+<indexterm><primary>DisconnectKeyPress</primary>
+<secondary>DialogControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~DisconnectKeyPress(--+--------------+--)-----><
+                                       +--methodName--+
+
+]]>
+</programlisting>
+
+<para>The <computeroutput>DisconnectKeyPress</computeroutput> method disconnects
+a previously connected method with a key down event.  If no method name is
+specified than all key down event connections are removed.  Otherwise, only the
+key down events connected to the specific method are removed.
+</para>
+<note><title>Note</title><para>
+This method is only available on systems running Windows XP or later.  On
+earlier versions of Windows, the method will fail and return -4.
+</para></note>
+<para>The arguments, return values, and behavior of this method are the same as
+those for the <computeroutput>DisonnectKeyPress</computeroutput> method of the
+<computeroutput>BaseDialog</computeroutput>.  However, this method only works
+for connections made using the <computeroutput>DialogControl's</computeroutput>
+<link linkend="mthConnectKeyPressDialogControl"> ConnectKeyPress</link> method.
+It can not work with a connection made though the
+<computeroutput>BaseDialog's</computeroutput> method. See the
+<link linkend="mthDisconnectKeyPressBaseDialog"> DisconnectKeyPress</link>
+method of the <computeroutput>BaseDialog</computeroutput> for a more detailed
+description of the behavior of this method.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The single optional argument is:
+<variablelist>
+<varlistentry><term>methodName</term>
+<listitem><para>If <computeroutput>methodName</computeroutput> is specified,
+only the key down events connected to that method are disconnected.  If the
+argument is omitted, then all key down events for the dialog control will be
+disconnected.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The return values are:
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Success.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>The underlying mechanism in the Windows API that captures the
+key down events failed to disconnect.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>The specified <computeroutput>methodName</computeroutput> is not
+connected to any key down events for this control.
+</para></listitem></varlistentry>
+<varlistentry><term>-2</term>
+<listitem><para>The underlying mechanism in the Windows API that captures the
+key down events was never installed.
+</para></listitem></varlistentry>
+<varlistentry><term>-4</term>
+<listitem><para>This method is not supported by this version of Windows.
+Windows XP or later is required.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example :
+<programlisting>
+<![CDATA[
+
+ ?
+
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+
+</section>
+
+<section id="mthHasKeyPressConnectionDialogControl"><title>HasKeyPressConnection</title>
+<indexterm><primary>HasKeyPressConnection</primary>
+<secondary>DialogControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~HasKeyPressConnection(--+--------------+--)-----><
+                                          +--methodName--+
+
+]]>
+</programlisting>
+
+<para>This method is used to query if a connection to a key down event already
+exists.
+</para>
+<note><title>Note</title><para>
+This method is only available on systems running Windows XP or later.  On
+earlier versions of Windows, the method will fail and return -4.
+</para></note>
+<para>The arguments, return values, and behavior of this method are the same as
+those for the <computeroutput>HasKeyPressConnection</computeroutput> method of
+the <computeroutput>BaseDialog</computeroutput>. However, this method only works
+for connections made using the <computeroutput>DialogControl's</computeroutput>
+<link linkend="mthConnectKeyPressDialogControl"> ConnectKeyPress</link> method.
+It can not work with a connection made though the
+<computeroutput>BaseDialog's</computeroutput> method.  The <link
+linkend="mthHasKeyPressConnectionBaseDialog"> HasKeyPressConnection</link>
+method of the <computeroutput>BaseDialog</computeroutput> may provide some
+additional insight into the behavior of this method.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The single optional argument is:
+<variablelist>
+<varlistentry><term>methodName</term>
+<listitem><para>When this argument is not used,
+<computeroutput>HasKeyPressConnection</computeroutput> queries if any key down
+event for the dialog control is connected to a method.  When
+<computeroutput>methodName</computeroutput> is specified, the query checks for a
+connection to the specified method.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The returned value is always <computeroutput>true
+</computeroutput> or <computeroutput>false</computeroutput>.
+<variablelist>
+<varlistentry><term>true</term>
+<listitem><para>A connection exists.
+</para></listitem></varlistentry>
+<varlistentry><term>false</term>
+<listitem><para>No connection exists.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example :
+<programlisting>
+<![CDATA[
+
+ ?
+
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+
+
 </section>
 
 </section>
