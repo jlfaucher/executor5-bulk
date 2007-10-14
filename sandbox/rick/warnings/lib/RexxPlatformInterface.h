@@ -156,6 +156,10 @@ BOOL SysExitHandler(RexxActivity *, RexxActivation *, RexxString *, LONG, LONG, 
 void SysThreadYield(void);             /* yield thread control              */
 #endif
 
+#ifndef SysThreadInit
+void SysThreadInit(void);              /* do system thread initialization   */
+#endif
+
 #ifndef SysQueryThreadID
 INT SysQueryThreadID(void);            /* query the current thread          */
 #endif
