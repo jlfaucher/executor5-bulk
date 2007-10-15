@@ -67,6 +67,7 @@
                                        /* different locations.  This forces */
                                        /* to the front location             */
   protected:
+     virtual ~RexxVirtualBase() { ; }
      virtual void      baseVirtual() {;}
   };
                                        /* Base Object REXX class            */
