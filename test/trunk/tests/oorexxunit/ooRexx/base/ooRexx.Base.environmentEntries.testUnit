@@ -3,13 +3,14 @@
    name:             ooRexx.Base.LabelOption.testUnit
    author:           Rony G. Flatscher
    date:             2007-09-16
-   version:          1.0.1
+   version:          1.0.2
 
 -- line commented lines are ignored, when building the directory of infos from this header
    changed:          2007-09-16, ---rgf, removed tests for Windows-specific classes (OLEObject,
                                          OLEVariant) as they are not available on all platforms,
                                          made test for .LINE a little bit more flexible to adapt
                                          to new line numbers, in case it gets shifted
+                     2007-10-15  ---rgf, Fix some system dependent tests to be system independent.
 
    languageLevel:    6.02
    purpose:          Test the entries in .local and .environment
@@ -136,7 +137,7 @@ return testUnitList
    -- ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !
    -- ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !
 
-   tmpLine=140    -->  the following line *MUST* *BE* on line # tmpLine, otherwise the test fails !!
+   tmpLine=141    -->  the following line *MUST* *BE* on line # tmpLine, otherwise the test fails !!
    self~assertSame("subTest '.LINE', this statement *MUST* start/be on line #" tmpLine "in the source code!", -
                     tmpLine, .LINE)
    -- ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !
@@ -174,6 +175,7 @@ return testUnitList
         "COLUMNCOMPARATOR"             -
         "COMPARABLE"                   -
         "COMPARATOR"                   -
+        "DATETIME"                     -
         "DESCENDINGCOMPARATOR"         -
         "DIRECTORY"                    -
         "ENDOFLINE"                    -
@@ -208,6 +210,7 @@ return testUnitList
         "SUPPLIER"                     -
         "SYSTEM"                       -
         "TABLE"                        -
+        "TIMESPAN"                     -
         "TRUE"
 
   do i=1 to words(entries)
@@ -242,8 +245,6 @@ return testUnitList
         "MONITOR"                      -
         "MUTABLEBUFFER"                -
         "OBJECT"                       -
-        "OLEOBJECT"                    -
-        "OLEVARIANT"                   -
         "ORDEREDCOLLECTION"            -
         "OUTPUTSTREAM"                 -
         "PROPERTIES"                   -
@@ -309,9 +310,26 @@ return testUnitList
   self~assertEquals("subTest_01: .RS not set", ".RS", .RS)
 
    /* test command execution without error/failure */
-  address cmd "exit"
-  self~assertEquals("subTest_02: .RS=0", 0, .RS)
-
+  select
+    when .ooRexxUnit.shellName~translate == "CMD" then do
+      address cmd "exit"
+      self~assertEquals("subTest_02: .RS=0", 0, .RS)
+    end
+    when .ooRexxUnit.shellName~translate == "BASH" then do
+      address "bash" "exit"
+      self~assertEquals("subTest_02: .RS=0", 0, .RS)
+    end
+    when .ooRexxUnit.shellName~translate == "CSH" then do
+      address "csh" "exit"
+      self~assertEquals("subTest_02: .RS=0", 0, .RS)
+    end
+    otherwise do
+      -- Don't address to a specific environment.
+      "exit"
+      self~assertEquals("subTest_02: .RS=0", 0, .RS)
+    end
+  end
+  -- End select
 
    /* test ERROR condition */
   signal on error name error_label
