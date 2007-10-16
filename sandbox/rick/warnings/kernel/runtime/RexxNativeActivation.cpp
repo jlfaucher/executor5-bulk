@@ -299,7 +299,7 @@ RexxObject *RexxNativeActivation::run(
               break;
 
             case REXXD_CSTRING:        /* ASCII-Z string value              */
-              *((CSTRING *)*ivalp) = this->cstring(argument);
+              *((const char **)*ivalp) = this->cstring(argument);
               break;
 
             case REXXD_somRef:         /* a SOM reference                   */
@@ -547,7 +547,7 @@ long RexxNativeActivation::isInteger(
     return FALSE;                      /* must not be an integer            */
 }
 
-PCHAR RexxNativeActivation::cstring(
+const char *RexxNativeActivation::cstring(
     RexxObject *object)                /* object to convert                 */
 /******************************************************************************/
 /* Function:  Return an object as a CSTRING                                   */
@@ -560,7 +560,7 @@ PCHAR RexxNativeActivation::cstring(
   if (string != object)                /* different value?                  */
                                        /* make it safe                      */
     this->saveObject((RexxObject *)string);
-  return string->stringData;           /* just point to the string data     */
+  return string->getStringData();           /* just point to the string data     */
 }
 
 double RexxNativeActivation::getDoubleValue(
@@ -1069,7 +1069,7 @@ nativei1 (PCHAR, STRING, REXXOBJECT, object)
                                        /* pick up current activation        */
   self = (RexxNativeActivation *)CurrentActivity->current();
                                        /* just forward and return           */
-  result = this->cstring((RexxObject *)object);
+  result = const_cast<PCHAR>(this->cstring((RexxObject *)object));
   return_value(result);                /* return converted value            */
 }
 
@@ -1258,9 +1258,9 @@ nativei2 (REXXOBJECT, GETFUNCTIONNAMES,
       *names = (char**) SysAllocateExternalMemory(sizeof(char*)*j);
       for (i=0;i<j;i++) {
         name = ((RexxString*) funcArray->get(i+1));
-        (*names)[i] = (char*) SysAllocateExternalMemory(1+sizeof(char)*name->length);
-        memcpy((*names)[i], name->stringData, name->length);
-        (*names)[i][name->length] = 0; // zero-terminate
+        (*names)[i] = (char*) SysAllocateExternalMemory(1+sizeof(char)*name->getLength());
+        memcpy((*names)[i], name->getStringData(), name->getLength());
+        (*names)[i][name->getLength()] = 0; // zero-terminate
       }
     }
   }
@@ -1606,7 +1606,7 @@ nativei7 (ULONG, STEMSORT,
 
   if (OTYPE(CompoundVariable, retriever))
   {
-    length = variable->length;      /* get the string length             */
+    length = variable->getLength();      /* get the string length             */
     position = 0;                        /* start scanning at first character */
                                        /* scan to the first period          */
     while (variable->getChar(position) != '.')

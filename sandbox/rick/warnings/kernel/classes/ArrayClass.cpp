@@ -1093,9 +1093,9 @@ RexxString *RexxArray::toString(       /* concatenate array elements to create s
 
   if (format == OREF_NULL)
      i_form = 2;                         /* treat item as LINE by default   */
-  else if (toupper((format->stringData[0])) == 'C')
+  else if (toupper((format->getStringData()[0])) == 'C')
      i_form = 1;
-  else if (toupper((format->stringData[0])) == 'L')
+  else if (toupper((format->getStringData()[0])) == 'L')
      i_form = 2;
   else
      report_exception2(Error_Incorrect_method_option, new_cstring("CL"), format);

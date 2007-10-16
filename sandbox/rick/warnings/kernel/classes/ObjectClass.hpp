@@ -271,7 +271,7 @@ class RexxObject : public RexxInternalObject {
      inline RexxBehaviour *behaviourObject() { return this->behaviour; }
 
      short        ptype();
-     char        *idString();
+     const char  *idString();
      RexxString  *id();
      RexxMethod  *methodLookup(RexxString *name );
      RexxVariableDictionary *getObjectVariables(RexxObject *);

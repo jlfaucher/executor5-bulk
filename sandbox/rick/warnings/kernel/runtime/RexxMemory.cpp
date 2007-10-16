@@ -1291,7 +1291,7 @@ void RexxMemory::orphanCheckMark(RexxObject *markObject, RexxObject **pMarkObjec
     FILE *outfile;
     BOOL firstnode;
     RexxString *className;
-    CHAR *objectClassName;
+    const char *objectClassName;
 
     /* check for invalid objects         */
     if (!objectReferenceOK(markObject)) {

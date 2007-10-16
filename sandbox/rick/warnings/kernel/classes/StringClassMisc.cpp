@@ -56,15 +56,15 @@ extern INT  lookup[];
                                        /* current global settings           */
 extern ACTIVATION_SETTINGS *current_settings;
 
-PCHAR Memcpbrk(
-  PCHAR    String,                     /* search string                     */
-  PCHAR    Set,                        /* reference set                     */
+const char *Memcpbrk(
+  const char *String,                  /* search string                     */
+  const char *Set,                     /* reference set                     */
   size_t   Length )                    /* size of string                    */
 /*********************************************************************/
 /*  Function:  Find first occurence of set nonmember in block        */
 /*********************************************************************/
 {
-  PCHAR    Retval;                     /* returned value                    */
+  const char *Retval;                  /* returned value                    */
 
   Retval = NULL;                       /* nothing found yet                 */
   while (Length--) {                   /* search through string             */
@@ -79,9 +79,9 @@ PCHAR Memcpbrk(
 }
 
 INT ValSet(
-  PCHAR    String,                     /* string to validate                */
+  const char *String,                  /* string to validate                */
   size_t    Length,                    /* string length                     */
-  PCHAR     Set,                       /* character set                     */
+  const char *Set,                     /* character set                     */
   INT       Modulus,                   /* smallest group size               */
   size_t   *PackedSize )               /* total packed size                 */
 /*********************************************************************/
@@ -98,7 +98,7 @@ INT ValSet(
 {
   UCHAR    c;                          /* current character                 */
   size_t   Count;                      /* # set members found               */
-  PUCHAR   Current;                    /* current location                  */
+  const char *Current;                 /* current location                  */
   INT      SpaceFound;                 /* space found yet?                  */
   size_t   Residue;                    /* if space_found, # set members     */
   INT      rc;                         /* return code                       */
@@ -107,7 +107,7 @@ INT ValSet(
   if (*String != ' ' && *String != '\t') {    /* if no leading blank               */
     SpaceFound = 0;                    /* set initial space flag            */
     Count = 0;                         /* start count with zero             */
-    Current = (PUCHAR)String;          /* point to start                    */
+    Current = String;                  /* point to start                    */
 
     rc = TRUE;                         /* default to good now               */
     for (; Length; Length--) {         /* process entire string             */
@@ -155,10 +155,10 @@ int RexxString::isSymbol()
 /*                                                                   */
 /*********************************************************************/
 {
-  PUCHAR     Scan;                     /* string scan pointer               */
+  const char *Scan;                    /* string scan pointer               */
   size_t     Compound;                 /* count of periods                  */
   size_t     i;                        /* loop counter                      */
-  PUCHAR     Linend;                   /* end of line                       */
+  const char *Linend;                  /* end of line                       */
   INT        Type;                     /* return type                       */
 
                                        /* name too long                     */
@@ -167,10 +167,10 @@ int RexxString::isSymbol()
     return STRING_BAD_VARIABLE;        /* set a bad type                    */
 
                                        /* step to end                       */
-  Linend = (PUCHAR)this->stringData + this->length;
+  Linend = this->getStringData() + this->length;
 
   Compound = 0;                        /* set compound name is no           */
-  Scan = (PUCHAR)this->stringData;     /* save start position               */
+  Scan = this->getStringData();        /* save start position               */
                                        /* while still part of symbol        */
   while (Scan < Linend && lookup[*Scan]) {
 
@@ -205,7 +205,7 @@ int RexxString::isSymbol()
       Type = STRING_LITERAL;           /* yes, just a literal token         */
     else {                             /* check for a real number           */
       Type = STRING_NUMERIC;           /* assume numeric for now            */
-      Scan = (PUCHAR)this->stringData; /* point to symbol                   */
+      Scan = this->getStringData();    /* point to symbol                   */
                                        /* scan symbol, validating           */
       for (i = this->length ; i; i-- ) {
         if (!isdigit(*Scan) &&         /* if not a digit and                */
@@ -255,18 +255,18 @@ RexxObject *DataType(
   size_t      Len;                     /* validated string length           */
   RexxObject *Answer;                  /* validation result                 */
   RexxObject *Temp;                    /* temporary value                   */
-  PCHAR       Scanp;                   /* string data pointer               */
+  const char *Scanp;                   /* string data pointer               */
   size_t      Count;                   /* hex nibble count                  */
   INT         Type;                    /* validated symbol type             */
   RexxNumberString *TempNum;
 
-  Len = String->length;                /* get validated string len          */
+  Len = String->getLength();           /* get validated string len          */
   Option = toupper(Option);            /* get the first character           */
 
                                        /* assume failure on checking        */
   Answer = (RexxObject *)TheFalseObject;
                                        /* get a scan pointer                */
-  Scanp = (PCHAR)String->stringData;
+  Scanp = String->getStringData();
 
   switch (Option) {                    /* based on type to confirm          */
 

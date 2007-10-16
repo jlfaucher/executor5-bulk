@@ -91,7 +91,7 @@ long message_number(
 /* Function:  Parse out the error code string into the messagecode valuey     */
 /******************************************************************************/
 {
-  char *decimalPoint;                  /* location of decimalPoint in errorcode*/
+  const char *decimalPoint;            /* location of decimalPoint in errorcode*/
   long primary;                        /* Primary part of error code, major */
   long secondary;                      /* Secondary protion (minor code)    */
   long count;
@@ -100,9 +100,9 @@ long message_number(
   errorcode = (RexxString *)errorcode->stringValue();
                                        /* scan to decimal Point or end of   */
                                        /* error code.                       */
-  for (decimalPoint = errorcode->stringData, count = 0; *decimalPoint && *decimalPoint != '.'; decimalPoint++, count++);
+  for (decimalPoint = errorcode->getStringData(), count = 0; *decimalPoint && *decimalPoint != '.'; decimalPoint++, count++);
                                        /* get the primary portion of code   */
-  primary = (new_string(errorcode->stringData, count)->longValue(9)) * 1000;
+  primary = (new_string(errorcode->getStringData(), count)->longValue(9)) * 1000;
                                        /* did major code compute to long    */
                                        /* and within range                  */
   if (primary == NO_LONG || primary < 1 || primary >= 100000) {
@@ -112,7 +112,7 @@ long message_number(
 
   if (*decimalPoint) {                 /* Was there a decimal point specified?*/
                                        /* Yes, compute its decimal value.   */
-    secondary = new_string(decimalPoint + 1, errorcode->length - count -1)->longValue(9);
+    secondary = new_string(decimalPoint + 1, errorcode->getLength() - count -1)->longValue(9);
                                        /* is the subcode invalid or too big?*/
     if (secondary == NO_LONG || secondary < 0  || secondary >= 1000) {
                                        /* Yes, raise an error.              */

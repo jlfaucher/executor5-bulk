@@ -270,7 +270,7 @@ void RexxTarget::search(
   /* use DBCS character count as index into DBCS string */
   if (DBCS_MODE) {
     this->end = this->string->pos(string,
-            DBCS_CharacterCount((PUCHAR)this->string->stringData, this->start));
+            DBCS_CharacterCount(this->string->stringData, this->start));
   } else {
     this->end = this->string->pos(string, this->start);
   }
@@ -305,7 +305,7 @@ void RexxTarget::caselessSearch(
   /* use DBCS character count as index into DBCS string */
   if (DBCS_MODE) {
     this->end = this->string->caselessPos(string,
-              DBCS_CharacterCount((PUCHAR)this->string->stringData, this->start));
+              DBCS_CharacterCount(this->string->stringData, this->start));
   } else {
     this->end = this->string->caselessPos(string, this->start);
   }
@@ -336,8 +336,8 @@ RexxString *RexxTarget::getWord()
   RexxString *word;                    /* extracted word                    */
   size_t  string_start;                /* string starting offset            */
   size_t  length;                      /* word length                       */
-  PUCHAR  scan;                        /* scan pointer                      */
-  PUCHAR  endScan;                     /* end of string location            */
+  const char *scan;                    /* scan pointer                      */
+  const char *endScan;                 /* end of string location            */
 
   if (this->subcurrent >= this->end)   /* already used up?                  */
     word = OREF_NULLSTRING;            /* just return a null string         */
@@ -373,9 +373,9 @@ RexxString *RexxTarget::getWord()
       return word;                     /* return the word                   */
     }
                                        /* point to the current position     */
-    scan = (PUCHAR)(this->string->stringData) + this->subcurrent;
+    scan = (const char *)(this->string->stringData) + this->subcurrent;
                                        /* and the scan end point            */
-    endScan = (PUCHAR)(this->string->stringData) + this->end;
+    endScan = (const char *)(this->string->stringData) + this->end;
     /* NOTE:  All string objects have a terminating NULL, so the */
     /* scan for nonblanks is guaranteed to stop before getting into */
     /* trouble, which eliminates the need to check against the */
@@ -421,7 +421,7 @@ RexxString *RexxTarget::getWord()
         word = this->string;           /* just return it directly           */
       else
                                        /* extract the subpiece              */
-        word = new_string((PCHAR)scan, length);
+        word = new_string(scan, length);
     }
   }
   return word;                         /* give this word back               */
@@ -433,8 +433,8 @@ void RexxTarget::skipWord()
 /******************************************************************************/
 {
   size_t  length;                      /* scanned over length               */
-  PUCHAR  scan;                        /* scan pointer                      */
-  PUCHAR  endScan;                     /* end of string location            */
+  const char *scan;                    /* scan pointer                      */
+  const char *endScan;                 /* end of string location            */
 
   if (this->subcurrent < this->end) {  /* something left?                   */
     if (DBCS_MODE) {                   /* need DBCS mode?                   */

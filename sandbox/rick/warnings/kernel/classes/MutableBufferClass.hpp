@@ -70,7 +70,7 @@ class RexxMutableBufferClass : public RexxClass {
    RexxObject        *copy();
 
    RexxObject        *lengthRexx() { return this->data->lengthRexx(); }
-   RexxString        *requestString() { return new_string(this->data->stringData, this->data->length); } /* NEVER return the reference we hold, always a copy! */
+   RexxString        *requestString() { return new_string(this->data->getStringData(), this->data->getLength()); } /* NEVER return the reference we hold, always a copy! */
    RexxObject        *requestRexx(RexxString*);
 
    RexxMutableBuffer *append(RexxObject*);

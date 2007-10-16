@@ -344,7 +344,7 @@ REXXOBJECT REXXENTRY REXX_TABLE_REMOVE(REXXOBJECT, REXXOBJECT);
 BOOL       REXXENTRY RexxQuery (void);
 int        REXXENTRY RexxTerminate (void);
 BOOL       REXXENTRY RexxInitialize (void);
-LONG       VLAREXXENTRY RexxSendMessage (REXXOBJECT receiver, PCHAR msgname, REXXOBJECT start_class, PCHAR interfacedefn, PVOID result, ...);
+LONG       VLAREXXENTRY RexxSendMessage (REXXOBJECT receiver, const char *msgname, REXXOBJECT start_class, const char *interfacedefn, void *result, ...);
 REXXOBJECT REXXENTRY RexxDispatch (REXXOBJECT argList);
 LONG       VLAREXXENTRY RexxCallProgram (PCHAR filename, PCHAR interfacedefn, PVOID result, ...);
 LONG       VLAREXXENTRY RexxCallString  (PCHAR filename, PCHAR interfacedefn, PVOID result, ...);
