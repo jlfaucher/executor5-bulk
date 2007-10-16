@@ -1848,7 +1848,7 @@ event occurs.  You can set the messages that should be sent by using Connect... 
 <listitem><para>The only argument is:
 <variablelist>
 <varlistentry><term>sleeptime</term>
-<listitem><para>The time slice, in milliseconds, unitl the next message is processed.
+<listitem><para>The time slice, in milliseconds, until the next message is processed.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -1955,7 +1955,7 @@ or use direction keys.</para></listitem></itemizedlist>
 <para>In a <computeroutput>UserDialog</computeroutput> the Connect... event
 methods for buttons are called automatically from the Add... methods.  However,
 for most events like the resize or move events, the connection needs to be made
-explictly.  In general, events should be connected before the dialog is shown on
+explicitly.  In general, events should be connected before the dialog is shown on
 the screen. So, the Connect... event methods can be used in the <link
 linkend="h000035">InitDialog</link> method.  In a UserDialog, the <link
 linkend="h001506">DefineDialog</link> method is a good place for the Connect...
@@ -2036,7 +2036,7 @@ is presented there that uses a number of the base dialog methods.
   self~connectResize("onSize")
   ...
 
-/* The first arg, sizeEvent, is a flag that the OS sends specifing the type of
+/* The first arg, sizeEvent, is a flag that the OS sends specifying the type of
  * size event.  We are only interested in these 3 flags:
  *
  * SIZE_RESTORED   = 0
@@ -2239,7 +2239,7 @@ to a method.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Event Method Arguments
 </emphasis></term>
-<listitem><para>The ooDialog method connected to the Help event will recieve the
+<listitem><para>The ooDialog method connected to the Help event will receive the
 following four arguments in the order listed:
 <variablelist>
 <varlistentry><term>id</term>
@@ -2364,7 +2364,7 @@ class can be used to make a program more readable.
 documentation</link> and <link linkend="platformsdk">Platform SDK</link> to
 obtain the full list of the virtual key numbers.
 </para></note>
-<para>In addtion there are a few keywords that can be used to specify some
+<para>In addition there are a few keywords that can be used to specify some
 common key ranges. These keywords are:
 <variablelist>
 <varlistentry><term>ALL</term>
@@ -2420,7 +2420,7 @@ ignored.)
   keys = self~vCode('C') "," self~vCode('D')
   self~connectKeyPress(onAltCD, keys, "ALT AND SHIFT")
 
-  -- The below would invoke the onAltCD method any time a C or a D was tryped
+  -- The below would invoke the onAltCD method any time a C or a D was typed
   -- with either the Alt or the Control key down.  This would include Alt-C,
   -- Alt-Shift-C, Ctrl-Alt-Shift-C, etc..
 
@@ -2493,7 +2493,7 @@ already connected to a key down event for this dialog.
 <varlistentry><term><emphasis role="bold">Event Method Arguments
 </emphasis></term>
 <listitem><para>The ooDialog method connected to the key press event will
-recieve the following five arguments in the order listed:
+receive the following five arguments in the order listed:
 <variablelist>
 <varlistentry><term>keyCode</term>
 <listitem><para>The numeric code of the key pressed.
@@ -2616,7 +2616,7 @@ print out the finished invoice.
 <para>The <computeroutput>ConnectFKeyPress</computeroutput> method connects a
 function key press to a method in the dialog instance.  This works for function
 keys F2 through F24, without the shift, control, or alt keys also being pressed.
-The underlying Windows dialog must exsit before this method can be invoked.
+The underlying Windows dialog must exist before this method can be invoked.
 This is a convenience method and is exactly equivalent to:
 <programlisting>
 <![CDATA[
@@ -2841,7 +2841,7 @@ the user ever closing the main dialog.
 <para>This method is used to query if a connection to a key press event already
 exists.  It returns true or false so it can always be used in a boolean
 expression.  If no argument is specified the method returns true if any key
-press events have been conneced for the dialog and false otherwise.  When the
+press events have been connected for the dialog and false otherwise.  When the
 <computeroutput>methodName</computeroutput> argument is used, the query is only
 if there are key press events connected to the specified method.
 </para>
@@ -4894,7 +4894,7 @@ to a given text string in the combo box. </para>
 </programlisting>
 
 <para>The GetComboEntry method returns the string at
-index index of the combo box. </para>
+index of the combo box. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
@@ -5405,7 +5405,7 @@ contained in it:
 ]]>
 </programlisting>
 
-<para>The GetListEntry method returns the string at index index of the list. </para>
+<para>The GetListEntry method returns the string at index of the list. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
@@ -5989,7 +5989,7 @@ on a specific Windows object.
 <note><title><emphasis role="bold">Note</emphasis></title><para>
 Prior to ooRexx 3.2.0, and all the way back through the original IBM
 documentation, the <computeroutput>GetSelf</computeroutput> method was not
-documented.  And, the <link linkend="h000086">Get</link> method was documentated
+documented.  And, the <link linkend="h000086">Get</link> method was documented
 as through it was the <computeroutput>GetSelf</computeroutput> method.  This
 most likely has caused confusion.  The <computeroutput>Get</computeroutput>
 method returns the handle to the most recently created dialog.  In an
@@ -6221,7 +6221,7 @@ used.
 <secondary>BaseDialog class</secondary></indexterm>
 <indexterm><primary>show methods</primary>
 <secondary>BaseDialog class</secondary></indexterm>
-<para>The methods listed in this section are releated to the appearance or the
+<para>The methods listed in this section are related to the appearance or the
 behavior of the dialog or its controls. The section contains methods related to
 size, position, visibility, and title.
 </para>
@@ -6420,7 +6420,7 @@ If the dialog is already completely on the screen, then no action is taken.
           k3 = SysIni('oorexxtry.ini','oorexxtry','k3')
           k4 = SysIni('oorexxtry.ini','oorexxtry','k4')
           if k1 = 'ERROR:' | k2 = 'ERROR:' | k3 = 'ERROR:' | k4 = 'ERROR:' then
-              nop -- First exection will not find the ini file
+              nop -- First execution will not find the ini file
           else
               do
                   self~setWindowRect(handle,k1,k2,k3-k1,k4-k2)
@@ -7092,7 +7092,7 @@ method to get a handle.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example gets the window handle of the top dialog
-(which is not neccessarily the executing dialog, see the <link
+(which is not necessarily the executing dialog, see the <link
 linkend="h000086">Get</link> method) and hides the whole dialog:
 
 <programlisting>
@@ -7488,7 +7488,7 @@ a 100 millisecond sleep right before the <computeroutput>Maximize method
 </computeroutput> is invoked.  This allows Windows to finish creating the
 dialog.  The <computeroutput>InitDialog</computeroutput> method will have
 already finished executing and the contents of the file are loaded into the
-mulit-line edit control.  Then, <computeroutput>Maximize</computeroutput>
+multi-line edit control.  Then, <computeroutput>Maximize</computeroutput>
 resizes the dialog to take up the whole screen and shows it.  The dialog appears
 on the user's screen, with the file displayed, in one screen drawing.  This
 reduces the flicker on the screen.
@@ -7497,7 +7497,7 @@ reduces the flicker on the screen.
 dialog is maximized, the main dialog is minimized to the task bar.
 </para></listitem>
 <listitem><para><link linkend="mthInitAutoDetection">InitAutoDetection</link>:
-Because the contents of the file are loaded into the mulit-line edit control
+Because the contents of the file are loaded into the multi-line edit control
 during <computeroutput>InitDialog</computeroutput>, auto detection must be
 turned off.  Otherwise, after <computeroutput>InitDialog</computeroutput>
 finishes executing, auto detection would set the empty string as the text for

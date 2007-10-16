@@ -79,7 +79,7 @@ the <computeroutput>Load</computeroutput> method is to use the
 <link linkend="clsRcDialog">RcDialog</link> class.  This class is a subclass of
 the <computeroutput>UserDialog</computeroutput> class and provides a convenient
 way to create a dialog from a resource script.  It handles the details of
-loading the resouce script transparently and leaves the programmer free to
+loading the resource script transparently and leaves the programmer free to
 concentrate on the details of the behavior of the dialog.
 </para></listitem>
 <listitem><para>Invoke Add... methods on an instance of this class
@@ -95,7 +95,7 @@ names of these methods begin with Add... and end with Group or Stem.
 <listitem><para>Combine loading a dialog from a resource script and adding
 elements dynamically.  This would define the dialog and some of the dialog
 controls using the resource script.  The programmer could then define additional
-dialog dialog controls using the Add... methods in the DefineDialog method.  For
+dialog controls using the Add... methods in the DefineDialog method.  For
 instance, this could be useful in an application that had several dialogs with
 similar features.  The similar aspects of each dialog could be placed in a
 resource script and then the individual dialogs could be customized using the
@@ -139,7 +139,7 @@ Windows dialog object is created.</para>
 dialog and the user changes the size of the dialog, this attribute is not
 updated by ooDialog.  If the programmer requires that the
 <computeroutput>SizeX</computeroutput> attribute always reflects the actual size
-of the dialog, (for a resizable diaog,) then the programmer is responsible for
+of the dialog, (for a resizable dialog,) then the programmer is responsible for
 updating its value when the size of the dialog changes.  The programmer would
 use the <link linkend="mthConnectResize">ConnectResize</link> method to receive
 notifications when the dialog changed size and update the attribute accordingly.
@@ -876,7 +876,7 @@ is disabled it will not accept keyboard or mouse input and therefore the user
 can not interact with it.  The operating system will draw disabled controls in a
 different manner than enabled controls to give the user a visual clue that the
 control is disabled.</para>
-<para>When using the Addd... methods controls will be created enabled.  To
+<para>When using the Add... methods controls will be created enabled.  To
 change this for any control add the <emphasis role="bold">DISABLED</emphasis>
 keyword to the style argument.  The control will then be disabled when the
 dialog is first shown on the screen.
@@ -1539,7 +1539,7 @@ This keyword only effects multi-line edit controls.
 focus is shifted away from the control.
 </para></listitem></varlistentry>
 <varlistentry><term>PASSWORD</term>
-<listitem><para>Characters typed into the the edit control are masked.  Rather
+<listitem><para>Characters typed into the edit control are masked.  Rather
 than displaying the character typed, the edit control displays the mask
 character.  Prior to Windows XP the default mask character was the asterisk.  In
 Windows XP the default mask character is a black circle. The default password
@@ -1565,7 +1565,7 @@ control.
 <varlistentry><term>NUMBER</term>
 <listitem><para>Only allows digits to be typed into the edit control.  If the
 user types an non-digit character an information balloon is displayed informing
-the user that only digits are allowd.  This style does not prevent the user from
+the user that only digits are allowed.  This style does not prevent the user from
 pasting non-digits into the control.
 </para></listitem></varlistentry>
 <varlistentry><term>OEM</term>
