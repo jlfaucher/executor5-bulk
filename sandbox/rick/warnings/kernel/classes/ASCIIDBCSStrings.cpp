@@ -509,7 +509,7 @@ INT  DBCS_CharCompare(
   if (!Pad)                            /* if no pad, length is 0            */
     PadSize = 0;
   else
-    PadSize = strlen((PCHAR)Pad);      /* get pad size                      */
+    PadSize = strlen(Pad);             /* get pad size                      */
                                        /* while still characters            */
                                        /* left and they still compare       */
   while (((Len1) || (Len2)) && (rc == COMP_EQUAL)) {
@@ -799,7 +799,7 @@ void DBCS_SetPadChar(
   size_t    i;                         /* loop counter                      */
   size_t    PadSize;                   /* size of padding character         */
 
-  PadSize = strlen((PCHAR)PadChar);    /* get the pad size                  */
+  PadSize = strlen(PadChar);           /* get the pad size                  */
   if (PadSize == SBCS_BYTELEN)         /* if padding with singles           */
                                        /* add space characters              */
     memset(String, *PadChar, NumPad);
@@ -1552,7 +1552,7 @@ RexxString *RexxString::DBCSsubstr(RexxInteger *position,
   SubstrSize = optional_length(strLength, Length, ARG_TWO);
                                        /* validate the pad character        */
   PadChar = ValidatePad(pad, " ");
-  PadSize = strlen((PCHAR)PadChar);    /* get the pad size too              */
+  PadSize = strlen(PadChar);           /* get the pad size too              */
   if (!SubstrSize)                     /* zero bytes requested?             */
     Retval = OREF_NULLSTRING;          /* this is a null string             */
   else {
@@ -1573,7 +1573,7 @@ RexxString *RexxString::DBCSsubstr(RexxInteger *position,
       DBCS_IncChar(&EndPtr, &StringLength, &SubstrSize);
       if (!SubstrSize)                 /* get it all?                       */
                                        /* just extract the piece            */
-        Retval = new_string((PCHAR)SubPtr, EndPtr - SubPtr);
+        Retval = new_string(SubPtr, EndPtr - SubPtr);
       else {                           /* need to pad                       */
                                        /* get length of substring           */
         RealSubLen = EndPtr - SubPtr;
@@ -1627,7 +1627,7 @@ RexxString *RexxString::DBCSdelstr(RexxInteger *position,
     DBCS_IncChar(&BackStart, &StringLength, &DeleteSize);
     if (DeleteSize) {                  /* used it up?                       */
                                        /* just copy the front               */
-      Retval = new_string((PCHAR)STRPTR(this), FrontEnd - STRPTR(this));
+      Retval = new_string(STRPTR(this), FrontEnd - STRPTR(this));
     }
     else {
                                        /* point to the end                  */
@@ -1704,7 +1704,7 @@ RexxString *RexxString::DBCSsubWord(RexxInteger *position,
                                        /* get substring size                */
       WordLength = (WordPtr - SubwordPtr);
                                        /* allocate output string            */
-      Retval = new_string((PCHAR)SubwordPtr, WordLength);
+      Retval = new_string(SubwordPtr, WordLength);
     }
     else
       Retval = OREF_NULLSTRING;        /* start is past end--NULL           */
@@ -1800,14 +1800,14 @@ RexxString *RexxString::DBCSstrip(RexxString *option,
   const char *EndStr;                  /* end of string                     */
   const char *CStr2;                   /* second scan string                */
   const char *StripStart;              /* start of stripped field           */
-  UCHAR    Option;                     /* Strip option.                     */
+  char     Option;                     /* Strip option.                     */
   size_t   RemSize;                    /* size of removed character         */
-  const char *   RemChar;                    /* Removed character                 */
+  const char *RemChar;                 /* Removed character                 */
 
   ValidDBCS(this);                     /* validate the string               */
                                        /* and the pad character             */
   RemChar = ValidatePad(stripchar, " ");
-  RemSize = strlen((PCHAR)RemChar);    /* get the character size            */
+  RemSize = strlen(RemChar);           /* get the character size            */
                                        /* get the option character          */
   Option = option_character(option, STRIP_BOTH, ARG_ONE);
                                        /* must be a valid option            */
@@ -1882,7 +1882,7 @@ RexxString *RexxString::DBCSstrip(RexxString *option,
   if (!StripStart)                     /* nothing to strip                  */
     StripStart = EndStr;               /* take to the end                   */
                                        /* copy the result part              */
-  return new_string((PCHAR)CStr, (StripStart - CStr));
+  return new_string(CStr, (StripStart - CStr));
 }
 
 /*********************************************************************/
@@ -2131,7 +2131,7 @@ RexxString *RexxString::DBCSspace(RexxInteger *space_count,
   Spaces = optional_length(space_count, 1, ARG_ONE);
                                        /* get the padding character         */
   PadChar = ValidatePad(pad, " ");
-  PadSize = strlen((PCHAR)PadChar);    /* get the pad size also             */
+  PadSize = strlen(PadChar);           /* get the pad size also             */
 
   Length = STRLEN(this);               /* get the string length             */
   Count = 0;                           /* no words yet                      */
@@ -2200,7 +2200,7 @@ RexxString *RexxString::DBCSleft(RexxInteger *plength,
   ReqCharLen = get_length(plength, ARG_ONE);
                                        /* get the padding character         */
   PadChar = ValidatePad(pad, " ");
-  PadSize = strlen((PCHAR)PadChar);    /* get the pad size too              */
+  PadSize = strlen(PadChar);           /* get the pad size too              */
 
   if (!ReqCharLen)                     /* request zero characters?          */
     Retval = OREF_NULLSTRING;          /* this is a null string             */
@@ -2212,7 +2212,7 @@ RexxString *RexxString::DBCSleft(RexxInteger *plength,
     DBCS_IncChar(&Scan, &Length, &ReqCharLen);
     if (!ReqCharLen)                   /* that many available?              */
                                        /* copy the string part              */
-      Retval = new_string((PCHAR)StringPtr, (Scan - StringPtr));
+      Retval = new_string(StringPtr, (Scan - StringPtr));
     else {                             /* need to pad                       */
       Length = STRLEN(this);           /* get string length                 */
                                        /* allocate the return area          */
@@ -2249,7 +2249,7 @@ RexxString *RexxString::DBCSright(RexxInteger *plength,
   ReqCharLen = get_length(plength, ARG_ONE);
                                        /* get the padding character         */
   PadChar = ValidatePad(pad, " ");
-  PadSize = strlen((PCHAR)PadChar);    /* get the pad size too              */
+  PadSize = strlen(PadChar);           /* get the pad size too              */
 
   if (!ReqCharLen)                     /* request zero characters?          */
     Retval = OREF_NULLSTRING;          /* this is a null string             */
@@ -2263,7 +2263,7 @@ RexxString *RexxString::DBCSright(RexxInteger *plength,
                                        /* step to string start              */
       DBCS_IncChar(&Scan, &Length, &Remain);
                                        /* copy remaining portion            */
-      Retval = new_string((PCHAR)Scan, Length);
+      Retval = new_string(Scan, Length);
     }
     else {                             /* need to pad                       */
       Length = STRLEN(this);           /* get input size                    */
@@ -2303,7 +2303,7 @@ RexxString *RexxString::DBCScenter(RexxInteger *plength,
   ReqCharLen = get_length(plength, ARG_ONE);
                                        /* get the padding character         */
   PadChar = ValidatePad(pad, " ");
-  PadSize = strlen((PCHAR)PadChar);    /* get the pad size too              */
+  PadSize = strlen(PadChar);           /* get the pad size too              */
                                        /* validate first argument           */
   if (!ReqCharLen)                     /* centered in 0 chars?              */
     Retval = OREF_NULLSTRING;          /* this is a null string             */
@@ -2389,7 +2389,7 @@ RexxString *RexxString::DBCSinsert(RexxString *newStr,
   ReqCharLen = optional_length(plength, NewCharLen, ARG_THREE);
                                        /* get the padding character         */
   PadChar = ValidatePad(pad, " ");
-  PadSize = strlen((PCHAR)PadChar);    /* get the pad size too              */
+  PadSize = strlen(PadChar);           /* get the pad size too              */
   TargetSize = STRLEN(this);           /* get target byte size              */
 
   if (StartPos == 0) {                 /* inserting at the front?           */
@@ -2493,7 +2493,7 @@ RexxString *RexxString::DBCSoverlay(RexxString *newStr,
   ReqCharLen = optional_length(plength, NewCharLen, ARG_THREE);
                                        /* get the padding character         */
   PadChar = ValidatePad(pad, " ");
-  PadSize = strlen((PCHAR)PadChar);    /* get the pad size too              */
+  PadSize = strlen(PadChar);           /* get the pad size too              */
                                        /* now truncate NCharLen             */
   NewCharLen = min(NewCharLen, ReqCharLen);
                                        /* number of front chars             */
@@ -2933,7 +2933,7 @@ RexxString *RexxString::DBCSword(RexxInteger *position)
     }
     if (WordLength)                    /* have a word                       */
                                        /* extract the string                */
-      Retval = new_string((PCHAR)Word, WordLength);
+      Retval = new_string(Word, WordLength);
     else
       Retval = OREF_NULLSTRING;        /* no word, return a null            */
   }
@@ -2985,7 +2985,7 @@ RexxString *RexxString::DBCStranslate(RexxString *tableo,
     InTable = STRPTR(tablei);          /* copy the pointer                  */
                                        /* get the padding character         */
     PadChar = ValidatePad(pad, " ");
-    PadSize = strlen((PCHAR)PadChar);  /* get the pad size too              */
+    PadSize = strlen(PadChar);         /* get the pad size too              */
     InputStr = STRPTR(this);           /* copy the pointer                  */
     InputLength = STRLEN(this);        /* get the length                    */
     EndStr = InputStr + InputLength;   /* set the end pointer               */
@@ -3082,7 +3082,7 @@ RexxString *RexxString::dbLeft(RexxInteger *plength,
   ReqBytes = get_length(plength, ARG_ONE);
                                        /* get the padding character         */
   PadChar = ValidatePad(pad, " ");
-  PadSize = strlen((PCHAR)PadChar);    /* get the pad size too              */
+  PadSize = strlen(PadChar);           /* get the pad size too              */
                                        /* get the option character          */
   Option = option_character(option, DBCS_YES, ARG_THREE);
                                        /* must be a valid option            */
@@ -3163,7 +3163,7 @@ RexxString *RexxString::dbRight(RexxInteger *plength,
   ReqBytes = get_length(plength, ARG_ONE);
                                        /* get the padding character         */
   PadChar = ValidatePad(pad, " ");
-  PadSize = strlen((PCHAR)PadChar);    /* get the pad size too              */
+  PadSize = strlen(PadChar);           /* get the pad size too              */
                                        /* get the option character          */
   Option = option_character(option, DBCS_YES, ARG_THREE);
                                        /* must be a valid option            */
@@ -3257,7 +3257,7 @@ RexxString *RexxString::dbCenter(RexxInteger *plength,
   ReqBytes = get_length(plength, ARG_ONE);
                                        /* get the padding character         */
   PadChar = ValidatePad(pad, " ");
-  PadSize = strlen((PCHAR)PadChar);    /* get the pad size too              */
+  PadSize = strlen(PadChar);           /* get the pad size too              */
                                        /* get the option character          */
   Option = option_character(option, DBCS_YES, ARG_THREE);
                                        /* must be a valid option            */
@@ -3386,7 +3386,7 @@ RexxString *RexxString::dbRleft(RexxInteger *plength,
                                        /* move requested bytes              */
     DBCS_IncByte(&String, &Length, &ReqBytes);
                                        /* copy the remainder                */
-    Retval = new_string((PCHAR)String, Length);
+    Retval = new_string(String, Length);
   }
   return Retval;                       /* return remainder string           */
 }
@@ -3432,7 +3432,7 @@ RexxString *RexxString::dbRright(RexxInteger *plength,
         String += DBCS_BYTELEN;        /* step over DBCS character          */
       }
                                        /* extract string part               */
-      Retval = new_string((PCHAR)STRPTR(this), (String - STRPTR(this)));
+      Retval = new_string(STRPTR(this), (String - STRPTR(this)));
     }
   }
   return Retval;                       /* return extracted string           */
@@ -3510,7 +3510,7 @@ RexxString *RexxString::dbToSbcs()
         *CStr++ = *IStr++;             /* copy the single character         */
     }
                                        /* shorten the string                */
-    Retval = new_string((PCHAR)STRPTR(Retval), CStr - STRPTR(Retval));
+    Retval = new_string(STRPTR(Retval), CStr - STRPTR(Retval));
   }
   return Retval;                       /* return converted string           */
 }

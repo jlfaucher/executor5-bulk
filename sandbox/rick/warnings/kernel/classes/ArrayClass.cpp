@@ -78,14 +78,14 @@
 
 extern ACTIVATION_SETTINGS *current_settings;
 
-void RexxArray::init(size_t size, size_t maxSize)
+void RexxArray::init(size_t _size, size_t maxSize)
 /******************************************************************************/
 /* Function:  Initialize an array                                             */
 /******************************************************************************/
 {
   ClearObject(this);                   /* initialize the object             */
   this->hashvalue = HASHOREF(this);
-  this->arraySize = size;
+  this->arraySize = _size;
   this->maximumSize = maxSize;
                                        /* no expansion yet, use ourself     */
   OrefSet(this, this->expansionArray, this);
@@ -293,7 +293,7 @@ RexxObject  *RexxArray::getRexx(RexxObject **arguments, size_t argCount)
   return result;                       /* return the result                 */
 }
 
-RexxObject *RexxArray::remove(size_t index)
+RexxObject *RexxArray::remove(size_t _index)
 /******************************************************************************/
 /* Function:  Remove an item from the array                                   */
 /******************************************************************************/
@@ -301,11 +301,11 @@ RexxObject *RexxArray::remove(size_t index)
   RexxObject *result;                  /* removed object                    */
 
                                        /* within the bounds?                */
-  if (index > 0 && index <= this->size() && *(this->data() + index - 1) != OREF_NULL) {
+  if (_index > 0 && _index <= this->size() && *(this->data() + _index - 1) != OREF_NULL) {
                                        /* get the item                      */
-    result = *(this->data() + index - 1);
+    result = *(this->data() + _index - 1);
                                        /* clear it out                      */
-    OrefSet(this->expansionArray, *(this->data() + index - 1), OREF_NULL);
+    OrefSet(this->expansionArray, *(this->data() + _index - 1), OREF_NULL);
     return result;                     /* and return                        */
   }
   else
@@ -343,15 +343,14 @@ size_t RexxArray::numItems(void)
 /******************************************************************************/
 {
   size_t count;                        /* actual count of items in array    */
-  size_t index;
   RexxArray *realArray;                /* array item pointer                */
 
   count = 0;                           /* no items yet                      */
   realArray = this->expansionArray;    /* Get array with data               */
                                        /* loop through all array items      */
-  for (index = 0; index < realArray->arraySize; index++) {
+  for (size_t i = 0; i < realArray->arraySize; i++) {
                                        /* have a real item here?            */
-    if (realArray->objects[index] != OREF_NULL) {
+    if (realArray->objects[i] != OREF_NULL) {
       count++;                         /* bump the item counter             */
     }
   }
@@ -381,7 +380,7 @@ size_t RexxArray::getDimension(void)
 }
 
 RexxObject *RexxArray::dimension(      /* query dimensions of an array      */
-     RexxObject *dimension)            /* dimension to query                */
+     RexxObject *target)               /* dimension to query                */
 /******************************************************************************/
 /* Function:  Query array dimension information                               */
 /******************************************************************************/
@@ -390,7 +389,7 @@ RexxObject *RexxArray::dimension(      /* query dimensions of an array      */
   size_t  position;                    /* requested position                */
   size_t  tempSize;
 
-  if (dimension == OREF_NULL) {        /* non-specific query?               */
+  if (target == OREF_NULL) {           /* non-specific query?               */
     if (this->dimensions == OREF_NULL) {
       if (this->size() == 0)
                                        /* unknown dimension                 */
@@ -406,7 +405,7 @@ RexxObject *RexxArray::dimension(      /* query dimensions of an array      */
   }
   else {
                                        /* convert to a number               */
-    position = dimension->requiredPositive(ARG_ONE);
+    position = target->requiredPositive(ARG_ONE);
                                        /* asking for dimension of single?   */
     if (this->dimensions == OREF_NULL) {
       if (position == 1) {             /* first dimension?                  */
@@ -433,25 +432,25 @@ RexxObject *RexxArray::supplier()
 /* Function:  create a supplier for this array                                */
 /******************************************************************************/
 {
-  size_t      items;                   /* items in the array                */
+  size_t      itemCount;               /* items in the array                */
   RexxArray  *values;                  /* returned values                   */
   RexxArray  *indexes;                 /* returned index values             */
-  size_t      size;                    /* array size                        */
+  size_t      slotCount;               /* array size                        */
   RexxObject *item;                    /* inserted value item               */
   size_t      i;                       /* loop counter                      */
   size_t      count;                   /* count added to the array          */
 
-  size = this->size();                 /* get the array size                */
-  items = this->numItems();            /* and the actual count in the array */
+  slotCount = this->size();            /* get the array size                */
+  itemCount = this->numItems();        /* and the actual count in the array */
 
-  values = new_array(items);           /* get the values array              */
-  indexes = new_array(items);          /* and an index array                */
+  values = new_array(itemCount);       /* get the values array              */
+  indexes = new_array(itemCount);      /* and an index array                */
 
   save(values);                        /* save the values array             */
   save(indexes);                       /* save the indexes also             */
 
   count = 1;                           /* next place to add                 */
-  for (i = 1; i <= size; i++) {        /* loop through the array            */
+  for (i = 1; i <= slotCount; i++) {   /* loop through the array            */
     item = this->get(i);               /* get the next item                 */
     if (item != OREF_NULL) {           /* got an item here                  */
       values->put(item, count);        /* copy over to the values array     */
@@ -485,9 +484,9 @@ RexxInteger *RexxArray::available(size_t position)
 }
 
 size_t  RexxArray::validateIndex(      /* validate an array index           */
-    RexxObject **index,                /* array index (possibly multi-dim)  */
+    RexxObject **_index,               /* array index (possibly multi-dim)  */
     size_t       indexCount,           /* size of the index array           */
-    size_t       start,                /* starting point on the array       */
+    size_t       _start,               /* starting point on the array       */
     size_t       bounds_error)         /* raise errors on out-of-bounds     */
 /******************************************************************************/
 /* Function:  Process and validate a potentially multi-dimensional array      */
@@ -502,18 +501,18 @@ size_t  RexxArray::validateIndex(      /* validate an array index           */
   size_t  i;                           /* loop counter                      */
   size_t  multiplier;                  /* accumlation factor                */
   size_t  offset;                      /* accumulated offset                */
-  size_t  dimension;                   /* current working dimension         */
+  size_t  _dimension;                  /* current working dimension         */
   size_t  numSize;                     /* temporary long variable           */
 
 
   // do we really have a single index item given as an array?
-  if (indexCount == 1 && index[0] != OREF_NULL && OTYPE(Array, index[0]))
+  if (indexCount == 1 && _index[0] != OREF_NULL && OTYPE(Array, _index[0]))
   {
       // we process this exactly the same way, but swap the count and
       // pointers around to be the array data.
-      RexxArray *indirect = (RexxArray *)index[0];
+      RexxArray *indirect = (RexxArray *)_index[0];
       indexCount = indirect->numItems();
-      index = indirect->data();
+      _index = indirect->data();
   }
 
                                        /* Is this array one-dimensional?    */
@@ -533,10 +532,10 @@ size_t  RexxArray::validateIndex(      /* validate an array index           */
         else {
                                        /* its empty, entendarray for new siz*/
                                        /* extend the array.                 */
-          this->extendMulti(index, indexCount, start);
+          this->extendMulti(_index, indexCount, _start);
                                        /* Call us again to get position, now*/
                                        /* That the array is extended.       */
-          return this->validateIndex(index, indexCount, start, bounds_error);
+          return this->validateIndex(_index, indexCount, _start, bounds_error);
         }
       }
 
@@ -556,9 +555,9 @@ size_t  RexxArray::validateIndex(      /* validate an array index           */
                                        /* Too few? subscripts?  Say so.     */
     else if (indexCount == 0)
                                        /* report apropriate bounds          */
-      report_exception1(Error_Incorrect_method_minarg, new_integer(start));
+      report_exception1(Error_Incorrect_method_minarg, new_integer(_start));
                                        /* validate integer index            */
-    position = index[0]->requiredPositive(start);
+    position = _index[0]->requiredPositive(_start);
                                        /* out of bounds?                    */
     if (position > this->size() ) {
       if (position >= MAX_FIXEDARRAY_SIZE)
@@ -587,23 +586,23 @@ size_t  RexxArray::validateIndex(      /* validate an array index           */
 
       for (i = numsubs; i > 0; i--) {  /* loop through the dimensions       */
 
-        value = index[i - 1];
+        value = _index[i - 1];
 
         if (value == OREF_NULL)        /* not given?                        */
                                        /* this is an error too              */
-          report_exception1(Error_Incorrect_method_noarg, new_integer(i + start));
+          report_exception1(Error_Incorrect_method_noarg, new_integer(i + _start));
                                        /* validate integer index            */
         position = value->requiredPositive(i);
                                        /* get the current dimension         */
-        dimension = ((RexxInteger *)this->dimensions->get(i))->value;
-        if (position > dimension) {    /* too large?                        */
+        _dimension = ((RexxInteger *)this->dimensions->get(i))->value;
+        if (position > _dimension) {   /* too large?                        */
                                        /* should the array be extended?     */
           if (bounds_error & ExtendUpper) {
                                        /* go extend it.                     */
-            this->extendMulti(index, indexCount, start);
+            this->extendMulti(_index, indexCount, _start);
                                        /* Call us again to get position, now*/
                                        /* That the array is extended.       */
-            return this->validateIndex(index, indexCount, start, bounds_error);
+            return this->validateIndex(_index, indexCount, _start, bounds_error);
           }
                                        /* need to raise an error?           */
           else if (bounds_error & RaiseBoundsUpper)
@@ -613,7 +612,7 @@ size_t  RexxArray::validateIndex(      /* validate an array index           */
         }
                                        /* calculate next offset             */
         offset += multiplier * (position - 1);
-        multiplier *= dimension;       /* step the multiplier               */
+        multiplier *= _dimension;      /* step the multiplier               */
       }
       position = offset + 1;           /* get accumulated position          */
     }
@@ -632,10 +631,10 @@ size_t  RexxArray::validateIndex(      /* validate an array index           */
        }
        else {
                                        /* array empty, extend the array     */
-         this->extendMuti(index, indexCount, start);
+         this->extendMuti(_index, indexCount, _start);
                                        /* Call us again to get position, now*/
                                        /* That the array is extended.       */
-         return this->validateIndex(index, indexCount, start, bounds_error);
+         return this->validateIndex(_index, indexCount, _start, bounds_error);
        }
      }
      else {

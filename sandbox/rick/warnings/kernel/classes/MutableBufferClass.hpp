@@ -78,8 +78,8 @@ class RexxMutableBufferClass : public RexxClass {
    RexxMutableBuffer *overlay(RexxObject*, RexxObject*, RexxObject*, RexxObject*);
    RexxMutableBuffer *mydelete(RexxObject*, RexxObject*);
    RexxString        *substr(RexxInteger *startPosition, RexxInteger *len, RexxString *pad) { return this->data->substr(startPosition,len,pad); }
-   RexxInteger       *lastPos(RexxString *needle, RexxInteger *start) { return this->data->lastPosRexx(needle, start); }
-   RexxInteger       *posRexx(RexxString *needle, RexxInteger *start) { return this->data->posRexx(needle, start); }
+   RexxInteger       *lastPos(RexxString *needle, RexxInteger *_start) { return this->data->lastPosRexx(needle, _start); }
+   RexxInteger       *posRexx(RexxString *needle, RexxInteger *_start) { return this->data->posRexx(needle, _start); }
    RexxString        *subchar(RexxInteger *startPosition) { return this->data->subchar(startPosition); }
 
    RexxInteger       *getBufferSize() { return new_integer(bufferLength); }
