@@ -197,7 +197,7 @@ RexxString *SysMessageHeader (INT);    /* get the header for an error msg   */
 #endif
 
 #ifndef SysReadProgram
-RexxBuffer *SysReadProgram (PCHAR);    /* read a program into storage       */
+RexxBuffer *SysReadProgram (const char *); /* read a program into storage       */
 #endif
 
 #ifndef SysInitializeWindowEnv

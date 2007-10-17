@@ -169,16 +169,16 @@ void missing_argument(
   report_exception1(Error_Incorrect_method_noarg, new_integer(argumentPosition));
 }
 
-INT  CaselessCompare(                  /* do a caseless memory comparison   */
-     PUCHAR    string1,                /* first compare string              */
-     PUCHAR    string2,                /* second compare string             */
-     LONG      length)                 /* comparison length                 */
+int  CaselessCompare(                  /* do a caseless memory comparison   */
+     const char *string1,              /* first compare string              */
+     const char *string2,              /* second compare string             */
+     size_t      length)               /* comparison length                 */
 /******************************************************************************/
 /* Function:  Compare two strings, ignoring differences in case               */
 /******************************************************************************/
 {
                                        /* totally equal?                    */
-  if (!memcmp((PCHAR)string1, (PCHAR)string2, length))
+  if (!memcmp(string1, string2, length))
     return 0;                          /* return equality indicator         */
 
   while (length--) {                   /* need to do it the hardway         */
@@ -196,15 +196,15 @@ INT  CaselessCompare(                  /* do a caseless memory comparison   */
   return 0;                            /* fall through, these are equal     */
 }
 
-PCHAR mempbrk(
-  PCHAR     String,                    /* search string                     */
-  PCHAR     Set,                       /* reference set                     */
-  LONG      Length )                   /* size of string                    */
+const char *mempbrk(
+  const char *String,                  /* search string                     */
+  const char *Set,                     /* reference set                     */
+  size_t      Length )                 /* size of string                    */
 /*********************************************************************/
 /*  Function:  Find first occurence of set member in memory          */
 /*********************************************************************/
 {
-  PCHAR    Retval;                     /* returned value                    */
+  const char *    Retval;              /* returned value                    */
 
   Retval = NULL;                       /* nothing found yet                 */
   while (Length-- > 0) {               /* search through string             */

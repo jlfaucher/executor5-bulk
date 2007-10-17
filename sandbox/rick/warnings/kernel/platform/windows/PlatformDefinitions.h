@@ -385,7 +385,7 @@ inline BOOL SysTimeSliceElapsed( void )
 void SysStartTimeSlice(void);
 
 /* Windows needs a special line write function to check stdout output */
-LONG line_write_check(char * , LONG , FILE * );
+LONG line_write_check(const char * , LONG , FILE * );
 
 /******************************************************************************/
 /* REQUIRED:  Routines to alloc memory passed to external environments        */

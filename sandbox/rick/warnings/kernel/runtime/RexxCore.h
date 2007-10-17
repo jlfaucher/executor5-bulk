@@ -360,7 +360,7 @@ typedef enum {RESTOREIMAGE, MOBILEUNFLATTEN, METHODUNFLATTEN} RESTORETYPE;
 EXTERN RexxActivityClass  * TheActivityClass INITGLOBALPTR;
 EXTERN RexxActivity * CurrentActivity INITGLOBALPTR; /* current active activity           */
 #ifdef SCRIPTING
-EXTERN RexxObject* (__stdcall *NovalueCallback)(void*) INITGLOBALPTR;
+EXTERN RexxObject* (__stdcall *NovalueCallback)(const char *) INITGLOBALPTR;
 #endif
 
 EXTERN RexxClass  * TheArrayClass INITGLOBALPTR;     /* array class                       */
@@ -773,8 +773,8 @@ EXTERN void *VFTArray[highest_T];      /* table of virtual functions        */
 
 void logic_error (char *desc);
                                        /* do a case insensitive compare     */
-INT  CaselessCompare(PUCHAR, PUCHAR, LONG);
-PCHAR mempbrk(PCHAR, PCHAR, LONG);     /* search for characters             */
+int  CaselessCompare(const char *, const char *, size_t);
+const char *mempbrk(const char *, const char *, size_t);     /* search for characters             */
 
                                        /* find an environment symbol        */
 #define env_find(s) (TheEnvironment->entry(s))

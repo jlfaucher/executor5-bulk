@@ -402,7 +402,7 @@ bool RexxString::primitiveCaselessIsEqual(RexxObject *otherObj)
         return false;
     }
     // do the actual string compare
-    return CaselessCompare((PUCHAR)this->getStringData(), (PUCHAR)other->getStringData(), otherLen) == 0;
+    return CaselessCompare(this->getStringData(), other->getStringData(), otherLen) == 0;
 }
 
 
@@ -1833,7 +1833,7 @@ native0 (size_t, STRING_LENGTH)
   return this->getLength();
 }
 
-native0 (PCHAR, STRING_DATA)
+native0 (CSTRING, STRING_DATA)
 /******************************************************************************/
 /* Function:  External interface to the object method                         */
 /******************************************************************************/
@@ -1842,7 +1842,7 @@ native0 (PCHAR, STRING_DATA)
 /* NOTE:  This method does not reaquire kernel access                         */
 /******************************************************************************/
                                        /* forward the method                */
-  return const_cast<PCHAR>(this->getStringData());
+  return this->getStringData();
 }
 
 nativei1 (REXXOBJECT, STRING_NEWD, PDBL, number)
@@ -1855,7 +1855,7 @@ nativei1 (REXXOBJECT, STRING_NEWD, PDBL, number)
   return_oref(new_stringd(number));
 }
 
-nativei1 (REXXOBJECT, STRING_NEW_UPPER, PCHAR, string)
+nativei1 (REXXOBJECT, STRING_NEW_UPPER, CSTRING, string)
 /******************************************************************************/
 /* Function:  External interface to the nativeact object method               */
 /******************************************************************************/
@@ -1865,7 +1865,7 @@ nativei1 (REXXOBJECT, STRING_NEW_UPPER, PCHAR, string)
   return_oref(((RexxString *)new_cstring(string))->upper());
 }
 
-nativei2 (REXXOBJECT, STRING_NEW, PCHAR, string, size_t, length)
+nativei2 (REXXOBJECT, STRING_NEW, CSTRING, string, size_t, length)
 /******************************************************************************/
 /* Function:  External interface to the nativeact object method               */
 /******************************************************************************/

@@ -484,7 +484,7 @@ void SysLoadImage(char **imageBuffer, long *imageSize)
 
 
 RexxBuffer *SysReadProgram(
-  PCHAR file_name)                     /* program file name                 */
+  const char *file_name)               /* program file name                 */
 /*******************************************************************/
 /* Function:  Read a program into a buffer                         */
 /*******************************************************************/
@@ -580,7 +580,7 @@ RexxString *SysQualifyFileSystemName(
 }
 
 BOOL SearchFirstFile(
-  PCHAR Name)                     /* name of file with wildcards       */
+  const char *Name)                     /* name of file with wildcards       */
 {
 
 

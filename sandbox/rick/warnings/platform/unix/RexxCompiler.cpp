@@ -140,7 +140,7 @@ int main (int argc, char **argv)
   char fn[2][BUFFERLEN];               /* begin additions                   */
   BOOL silent = FALSE;
   INT silentp;
-  PCHAR ptr;
+  const char *ptr;
                                        /* check for /s option               */
   for (silentp = 1; silentp < argc; silentp++) {
     if (argv[silentp][0] == '-' &&

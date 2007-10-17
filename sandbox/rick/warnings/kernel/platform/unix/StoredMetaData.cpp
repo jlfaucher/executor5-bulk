@@ -282,7 +282,7 @@ void SysSaveProgramBuffer(
 /*********************************************************************/
 
 void SysSaveTranslatedProgram(
-  PCHAR        File,                   /* name of file to process           */
+  const char  *File,                   /* name of file to process           */
   RexxMethod * Method )                /* method to save                    */
 {
   FILE         *Handle;                /* output file handle                */

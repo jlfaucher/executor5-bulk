@@ -605,7 +605,7 @@ extern ULONG ProcessMustCompleteNest;  /* The must complete nest            */
 #ifdef __cplusplus
 extern "C" {
 #endif
-PSZ APIENTRY RexxGetVersionInformation(void);
+char * APIENTRY RexxGetVersionInformation(void);
 //void SysResetEventSem (SEV *psem);     /* reset an event semaphore          */
 //void SysCreateMutexSem (SMTX *psem);   /* create/open a mutex semaphore     */
 #ifdef SEMAPHORE_DEBUG

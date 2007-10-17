@@ -105,7 +105,7 @@ extern char achRexxCurDir[ CCHMAXPATH+2 ];  /* Save current working direct    */
 
 char * args[MAX_COMMAND_ARGS+1];            /* Array for argument parsing */
 
-LONG sys_command(char *cmd, CMD_TYPE local_env_type);
+LONG sys_command(const char *cmd, CMD_TYPE local_env_type);
 void scan_cmd(char *parm_cmd, char **args);
 
 /******************************************************************************/
@@ -563,12 +563,12 @@ BOOL sys_process_export(char * cmd, LONG * rc, int flag)
 
 
 /* Handle "cd XXX" command in same process */
-BOOL sys_process_cd(char * cmd, LONG * rc)
+BOOL sys_process_cd(const char * cmd, LONG * rc)
 {
     char * st;
-    PCHAR  home_dir = NULL;            /* home directory path        */
-    PCHAR  dir_buf = NULL;             /* full directory path        */
-    PCHAR  slash;                      /* ptr to '/'                 */
+    const char *home_dir = NULL;            /* home directory path        */
+          char *dir_buf = NULL;             /* full directory path        */
+    const char *slash;                      /* ptr to '/'                 */
     struct passwd *ppwd;
     INT alloc_flag = 0;
 
@@ -579,7 +579,7 @@ BOOL sys_process_cd(char * cmd, LONG * rc)
       home_dir = getenv("HOME");
       if(!home_dir)
           return FALSE;
-      dir_buf = (PCHAR)malloc(strlen(home_dir)+1);
+      dir_buf = (char *)malloc(strlen(home_dir)+1);
       strcpy(dir_buf, home_dir);
       st = dir_buf;
       alloc_flag = 1;
@@ -592,7 +592,7 @@ BOOL sys_process_cd(char * cmd, LONG * rc)
         if(!home_dir)                  /* if no home dir info        */
           return FALSE;
                                        /* get space for the buf      */
-        dir_buf = (PCHAR)malloc(strlen(home_dir)+strlen(st)+1);
+        dir_buf = (char *)malloc(strlen(home_dir)+strlen(st)+1);
         if(!dir_buf)
           return FALSE;
                                        /* merge the strings          */
@@ -604,7 +604,7 @@ BOOL sys_process_cd(char * cmd, LONG * rc)
                                        /* get home directory path    */
         home_dir = getenv("HOME");     /* from the environment       */
                                        /* get space for the buf      */
-        dir_buf = (PCHAR)malloc(strlen(home_dir)+1);
+        dir_buf = (char *)malloc(strlen(home_dir)+1);
         if(!dir_buf)
           return FALSE;
         sprintf(dir_buf, "%s/", home_dir);
@@ -619,7 +619,7 @@ BOOL sys_process_cd(char * cmd, LONG * rc)
                                        /* rest of string is username */
         ppwd = getpwnam(st);           /* get info about the user    */
                                        /* get space for the buf      */
-        dir_buf = (PCHAR)malloc(strlen(ppwd->pw_dir)+1);
+        dir_buf = (char *)malloc(strlen(ppwd->pw_dir)+1);
         if(!dir_buf)
           return FALSE;
                                        /* merge the strings          */
@@ -631,7 +631,7 @@ BOOL sys_process_cd(char * cmd, LONG * rc)
         ppwd = getpwnam(st);           /* get info about the user    */
         slash++;                       /* step over the slash        */
                                        /* get space for the buf      */
-        dir_buf = (PCHAR)malloc(strlen(ppwd->pw_dir)+strlen(slash)+1);
+        dir_buf = (char *)malloc(strlen(ppwd->pw_dir)+strlen(slash)+1);
         if(!dir_buf)
           return FALSE;
                                        /* merge the strings          */
@@ -668,7 +668,7 @@ BOOL sys_process_cd(char * cmd, LONG * rc)
 /*             and invoke the shell indicated by the local_env_type argument. */
 /*             This is modeled after command handling done in Classic REXX.   */
 /******************************************************************************/
-LONG sys_command(char *cmd, CMD_TYPE local_env_type)
+LONG sys_command(const char *cmd, CMD_TYPE local_env_type)
 {
   LONG        rc;                      /* Return code                       */
   int         pid;                     /* process id of child from fork     */

@@ -68,7 +68,7 @@ extern Index *thread2EngineList;
 
 LONG APIENTRY RexxCatchExit(LONG, LONG, PEXIT);
 LONG APIENTRY RexxCatchExternalFunc(LONG, LONG, PEXIT);
-RexxObject* __stdcall engineDispatch(void*);
+RexxObject* __stdcall engineDispatch(const char *);
 RexxObject* __stdcall propertyChange(RexxString*,RexxObject*,int,int*);
 int __stdcall scriptSecurity(CLSID,IUnknown*);
 RexxObject* Create_securityObject(OrxScript *, FILE *);
@@ -89,7 +89,7 @@ void WinLeaveKernel(bool);
 extern "C" {
 APIRET REXXENTRY RexxRunMethod(PCHAR, RexxObject *, void *, RexxArray* (__stdcall *)(void*), PRXSYSEXIT, RexxObject * *, RexxObject *, ConditionData *);
 
-void REXXENTRY SetNovalueCallback( RexxObject* (__stdcall *f)(void*) );
+void REXXENTRY SetNovalueCallback( RexxObject* (__stdcall *f)(const char *) );
 void REXXENTRY SetWSHPropertyChange( RexxObject* (__stdcall *f)(RexxString*,RexxObject*,int,int*) );
 }
 // these three come from orexxole.c

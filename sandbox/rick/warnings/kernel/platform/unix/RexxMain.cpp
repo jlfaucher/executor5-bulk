@@ -115,8 +115,8 @@ extern RexxActivity *CurrentActivity;  /* current active activity           */
 PCHAR SysFileExtension(PCHAR);
 RexxMethod *SysRestoreProgramBuffer(PRXSTRING, RexxString *);
 void SysSaveProgramBuffer(PRXSTRING, RexxMethod *);
-void SysSaveTranslatedProgram(PCHAR, RexxMethod *);
-PCHAR SearchFileName(PCHAR, char);
+void SysSaveTranslatedProgram(const char *, RexxMethod *);
+const char *SearchFileName(const char *, char);
 extern ActivityTable * ProcessLocalActs;
 extern BOOL RexxStartedByApplication;
 
@@ -476,10 +476,10 @@ void translateSource(
 {
   RexxString * fullName;               /* fully resolved input name         */
   RexxMethod * method;                 /* created method                    */
-  PCHAR        pszName;
+  const char *pszName;
 
                                        /* go resolve the name               */
-  pszName = SearchFileName(inputName->stringData, 'P'); /* PATH search      */
+  pszName = SearchFileName(inputName->getStringData(), 'P'); /* PATH search      */
   if (pszName != OREF_NULL) fullName = new_cstring(pszName);
   else
 //  if (fullName == OREF_NULL)           /* not found?                        */
@@ -492,7 +492,7 @@ void translateSource(
   if (outputName != NULL) {            /* want to save this to a file?      */
     newNativeAct->saveObject(method);  /* protect from garbage collect      */
                                        /* go save this method               */
-    SysSaveTranslatedProgram((PCHAR)outputName, method);
+    SysSaveTranslatedProgram(outputName, method);
   }
 }
 
@@ -819,7 +819,8 @@ APIRET APIENTRY RexxDidRexxTerminate(void)
 /*                                                                   */
 /*********************************************************************/
 
-PSZ RexxGetVersionInformation(void)
+extern "C" {
+char *APIENTRY RexxGetVersionInformation(void)
 {
   void *    pVersionString = NULL;
 
@@ -829,4 +830,5 @@ PSZ RexxGetVersionInformation(void)
     strcat((char *)pVersionString , COPYRIGHT);
   }
   return (char *)pVersionString;
+}
 }

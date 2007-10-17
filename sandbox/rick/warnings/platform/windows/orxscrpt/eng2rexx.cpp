@@ -749,9 +749,9 @@ RexxObject* __stdcall propertyChange(RexxString* name,RexxObject* newvalue,int S
 /* unknown callback                                                     */
 /* this will deal with objects that REXX is unaware of, but the engine  */
 /* is...                                                                */
-RexxObject* __stdcall engineDispatch(void *arguments)
+RexxObject* __stdcall engineDispatch(const char *arguments)
 {
-  char       *objname = (char*) arguments;
+  const char *objname = arguments;
   RexxObject *result = NULL; // NULL indicates error
   OrxScript  *engine = findEngineForThread(GetCurrentThreadId());
   HRESULT    hResult;

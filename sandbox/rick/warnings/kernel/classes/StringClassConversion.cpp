@@ -595,7 +595,7 @@ RexxString *RexxString::x2c()
 
   else                                 /* real data to convert       */
                                        /* try to pack the data       */
-    Retval = PackHex((PCHAR)this->stringData, InputLength);
+    Retval = PackHex(this->stringData, InputLength);
   return Retval;                       /* return the packed string   */
 }
 
