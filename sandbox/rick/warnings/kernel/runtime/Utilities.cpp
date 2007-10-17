@@ -51,7 +51,7 @@
 #include "ArrayClass.hpp"
 #include "RexxNativeActivation.hpp"
 
-void logic_error (char *desc)
+void logic_error (const char *desc)
 /******************************************************************************/
 /* Function:  Raise a fatal logic error                                       */
 /******************************************************************************/

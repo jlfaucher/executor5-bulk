@@ -765,13 +765,13 @@ EXTERN void *VFTArray[highest_T];      /* table of virtual functions        */
                                        /* access an object's hash value     */
 #define HASHVALUE(r) ((ULONG)((r)->hashvalue))
                                        /* generate hash value from OREF     */
-#define HASHOREF(r) ((long)((ULONG)r>>2))
+#define HASHOREF(r) ((long)((ULONG)r>>3))
 
 /******************************************************************************/
 /* Utility Functions                                                          */
 /******************************************************************************/
 
-void logic_error (char *desc);
+void logic_error (const char *desc);
                                        /* do a case insensitive compare     */
 int  CaselessCompare(const char *, const char *, size_t);
 const char *mempbrk(const char *, const char *, size_t);     /* search for characters             */
