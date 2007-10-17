@@ -614,6 +614,10 @@ the methods listed in <link linkend="t000013">Table 2</link>.
 <entry><link linkend="h000482">GetComboLine</link></entry>
 </row>
 <row>
+<entry>GetControlID</entry>
+<entry><link linkend="mthGetControlID">GetControlID</link></entry>
+</row>
+<row>
 <entry>GetCurrentComboIndex</entry>
 <entry><link linkend="h000344">GetCurrentComboIndex</link></entry>
 </row>
@@ -712,6 +716,10 @@ the methods listed in <link linkend="t000013">Table 2</link>.
 <row>
 <entry>GetSize</entry>
 <entry><link linkend="getsize">GetSize</link></entry>
+</row>
+<row>
+<entry>GetSystemMetrics</entry>
+<entry><link linkend="mthGetSystemMetrics">GetSystemMetrics</link></entry>
 </row>
 <row>
 <entry>GetTextSize</entry>
@@ -5966,10 +5974,15 @@ sent along with the scroll bar event.
 </section>
 </section>
 
-<section id="man0024"><title>Methods for Window Handles, Sizes, and Positions</title>
-<indexterm><primary>methods for handles, sizes, and positions</primary></indexterm>
-<para>The following methods return information about the dialog or a single dialog
-control.</para>
+<section id="man0024"><title>Methods to Query Operating System Values</title>
+<indexterm><primary>methods for handles, sizes, and positions</primary>
+<indexterm><primary>methods to query OS values</primary></indexterm>
+<para>The methods in this section return information known to, or used by, the
+operating system when it works with dialogs or dialog controls.  This includes
+things like window handles, window sizes, and window positions.  It also
+includes things like the width of a scroll bar or the number of monitors
+attached to the system.
+</para>
 
 <section id="mthGetSelf"><title>GetSelf</title>
 <indexterm><primary>Get</primary></indexterm>
@@ -6126,6 +6139,120 @@ hndPushButton = MyDialog~GetItem(101)
 </variablelist>
 </section>
 
+<section id="mthGetControlID"><title>GetControlID</title>
+<indexterm><primary>GetControlID</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aBaseDialog~GetControlID(--hWnd--)-------------------------><
+
+
+]]>
+</programlisting>
+
+<para>Given a valid handle to a dialog control, the
+<computeroutput>GetControlID</computeroutput> method returns the resource ID of
+the control.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>hWnd</term>
+<listitem><para>The window handle of the dialog control.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>Negative values indicate an error.
+<variablelist>
+<varlistentry><term>-1</term>
+<listitem><para>The <computeroutput>hWnd</computeroutput> argument is not a
+valid window handle.
+</para></listitem></varlistentry>
+<varlistentry><term>less than -1</term>
+<listitem><para>The value is the negated Operating System Error code.  The
+absolute value of the return can be used to look up the error reason in the
+Windows documentation.
+</para></listitem></varlistentry>
+<varlistentry><term>other</term>
+<listitem><para>The resource ID of the dialog control.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following is a complete working example.  It allows the user
+to check a check box with the F2 key and uncheck it with the F3 key.  The F2 and
+F3 key press events are connected to the <computeroutput>check</computeroutput>
+and <computeroutput>uncheck</computeroutput> methods.  When the user presses the
+F2 key, the program determines which control has the focus, uses the returned
+window handle to get the control ID, and then uses the ID to check the check
+box.  And the same approach if the F3 key is pressed.
+</para>
+<para>Note that in this dialog, there are only four controls that can have the
+focus.  If the OK button has the focus, then nothing is done.  In a more complex
+application, the programmer would probably check that the resource ID matches
+one of the check boxes instead.
+<programlisting> <![CDATA[
+
+/* Simple Grocery List */
+
+  dlg = .SimpleDialog~new
+  dlg~constDir[IDC_GB_LIST] = 101
+  dlg~constDir[IDC_CB_MILK] = 102
+  dlg~constDir[IDC_CB_BREAD] = 103
+  dlg~constDir[IDC_CB_FRUIT] = 104
+  dlg~constDir[IDC_CB_CEREAL] = 105
+
+  if dlg~initCode = 0 then do
+    dlg~create(30, 30, 150, 150, "The Simple Grocery List", "VISIBLE")
+    dlg~Execute("SHOWTOP")
+    dlg~Deinstall
+  end
+
+-- End of entry point.
+::requires "oodWin32.cls"
+
+::class SimpleDialog subclass UserDialog inherit AdvancedControls MessageExtensions
+
+::method check
+
+  hWnd = self~getFocus
+  id = self~getControlID(hWnd)
+  if id == self~constDir[IDOK] then return
+
+  self~getCheckControl(id)~check
+
+::method unCheck
+
+  id = self~getControlID(self~getFocus)
+  if id == self~constDir[IDOK] then return
+
+  self~getCheckControl(id)~uncheck
+
+::method defineDialog
+
+  self~addGroupBox(10, 20, 130, 90, "Check Needed Groceries", "", IDC_GB_LIST);
+  self~addCheckBox(IDC_CB_MILK, , 30, 35, , , "Milk", "GROUP");
+  self~addCheckBox(IDC_CB_BREAD, , 30, 55, , , "Bread", "NOTAB");
+  self~addCheckBox(IDC_CB_FRUIT, , 30, 75, , , "Fruit", "NOTAB");
+  self~addCheckBox(IDC_CB_CEREAL, , 30, 95, , , "Cereal", "NOTAB");
+
+  self~addButton(IDOK, 105, 120, 35, 15, "OK", , "GROUP")
+
+::method initDialog
+
+  -- We know that the key code for F2 is 113 so we don't need to use the
+  -- VirtualKeyCodes class.  We use the 'none' filter so that only a F2 or F3
+  -- key press is captured.  (Not Alt-F2, or Shift-F2, etc..)
+  self~connectKeyPress(check, 113, "NONE")
+  self~connectKeyPress(unCheck, 114, "NONE")
+
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
 <section id="h001357"><title>GetPos</title>
 <indexterm><primary>GetPos</primary>
 <secondary>BaseDialog class</secondary></indexterm>
@@ -6208,6 +6335,94 @@ used.
 </para></listitem></varlistentry>
 </variablelist>
 </section>
+
+<section id="mthGetSystemMetrics"><title>GetSystemMetrics</title>
+<indexterm><primary>GetSystemMetrics</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aBaseDialog~GetSystemMetrics(--index--)--------------------><
+
+
+]]>
+</programlisting>
+
+<para>Obtains the system metric value for the given index.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>index</term>
+<listitem><para>The numeric index of the system metric.
+</para>
+<para>Good documentation on the system metrics is found in the MSDN Library
+under the GetSystemMetrics function.  This documentation contains both the
+numeric value of the different indexes and information on what is returned for
+each index.  The documentation is easy to found using a Google search of
+&quot;GetSystemMetrics MSDN Library&quot;
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The return value is dependent on the index queried.  Consult the
+MSDN library for information on the returned values.
+<note><title>Note</title><para>
+The OS will return 0 if an invalid index is used.  Hoever, the return value for
+some indexes is 0.  The programmer will need to determine from the context if 0
+is an error return or not.  In addition, ooDialog will return -1 for some
+invalid argument values.  For instance, if the string &quot;dog&quot; was passed
+in for the <computeroutput>index</computeroutput> argument, -1 would be
+returned.
+</para></note>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para> The following code snippet is from an application where the
+user can have 5, 6, or more, independent dialogs open at one time.  One of the
+menu options is &quot;Tile Dialogs.&quot;  When the user selects this option all
+the open dialogs are &quot;tiled.&quot;
+</para>
+<para>All the open dialog objects are stored in a queue.  In the
+<computeroutput>onTile</computeroutput> method, which is invoked when the user
+selects the menu item, each dialog is fetched in turn from the queue.  Then the
+dialog is repositioned at an offset from the preceding dialog. It is shifted to
+the right the width of 2 scroll bars and shifted down the the width of the title
+bar.  (This width is the title bar width plus the thin border around the title
+bar.)  The height of the thin border, the height of the title bar, and the width
+of a scroll bar are all determined by querying the system metrics.
+<programlisting> <![CDATA[
+
+::method onTile
+  expose offSetX offSetY dialogQueue
+
+  -- SM_CXVSCROLL = 20
+  -- SM_CYCAPTION = 4
+  -- SM_CYBORDER  = 6
+
+  if \ offSetX~datatype('W') then do
+    scrollBarX = self~getSystemMetrics(20)
+    titleBarY = self~getSystemMetrics(4)
+    windowBorderY = self~getSystemMetrics(6)
+
+    offSetX = 2 * scrollBarX
+    offSetY = (2 * windowBorderY) + titleBarY
+  end
+
+  parse value self~getWindowRect(self~dlgHandle) with x y .
+
+  do dlg over dialogQueue
+    x = x + offSetX
+    y = y + offSetY
+
+    self~setWindowRect(dlg~dlgHandle, x, y, 0, 0, "NOSIZE")
+  end
+
+
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
 </section>
 
 <section id="man0027"><title>Appearance and Behavior Methods</title>
