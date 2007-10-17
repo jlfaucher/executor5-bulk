@@ -138,7 +138,7 @@ int __cdecl main(int argc, char *argv[])
 
         case 'v': case 'V':            /* version display */
             {
-                const char *ptr = RexxGetVersionInformation();
+                char *ptr = RexxGetVersionInformation();
                 if (ptr) {
                     printf(ptr, "Interpreter");
                     GlobalFree(ptr);

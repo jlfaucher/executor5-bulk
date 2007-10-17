@@ -115,6 +115,7 @@ extern BOOL RexxStartedByApplication;
 
 extern "C" {
 APIRET REXXENTRY RexxTranslateProgram( PSZ, PSZ, PRXSYSEXIT);
+char *REXXENTRY RexxGetVersionInformation();
 }
 
 // SIGHANDLER * oldSigIntHandler, * oldSigBreakHandler;
@@ -1726,10 +1727,7 @@ void  SysRunProgram(
   CurrentActivity->pop(FALSE);         /* finally, discard our activation   */
 }
 
-
-extern "C" char * APIENTRY RexxGetVersionInformation(void);
-
-char *APIENTRY RexxGetVersionInformation(void)
+char *REXXENTRY RexxGetVersionInformation()
 {
     char ver[20];
     sprintf( ver, " %d.%d.%d", ORX_VER, ORX_REL, ORX_MOD );
