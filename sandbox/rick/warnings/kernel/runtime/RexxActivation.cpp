@@ -1989,7 +1989,7 @@ RexxObject * RexxActivation::loadRequired(
   }
 
   /* check to see whether a macro exists */
-  fMacroExists = (RexxQueryMacro(target->getStringData(), &usMacroPosition) == 0);
+  fMacroExists = (RexxQueryMacro(const_cast<char *>(target->getStringData()), &usMacroPosition) == 0);
   if (fMacroExists && (usMacroPosition == RXMACRO_SEARCH_BEFORE))
     fullname = target; /* use target name for references because macro will be used */
 

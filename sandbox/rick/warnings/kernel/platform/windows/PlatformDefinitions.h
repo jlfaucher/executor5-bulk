@@ -444,7 +444,7 @@ typedef PVOID SYSWINDOWINFO;
 /******************************************************************************/
 /* REQUIRED:  Name of the file used to store the external message repository  */
 /******************************************************************************/
-#define REXXMESSAGEFILE    ((PSZ)"winatab.rc")
+#define REXXMESSAGEFILE    "winatab.rc"
 
 
 #define SYSTEM_INTERNAL_METHODS() \

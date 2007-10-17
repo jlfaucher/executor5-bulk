@@ -480,7 +480,7 @@ typedef PVOID SYSWINDOWINFO;
 /******************************************************************************/
 /* REQUIRED:  Name of the file used to store the external message repository  */
 /******************************************************************************/
-#define REXXMESSAGEFILE    ((PSZ)"rexx.cat")
+#define REXXMESSAGEFILE    "rexx.cat"
 
 /******************************************************************************/
 /* REQUIRED:  Define any additional native methods that are to be accessed as */

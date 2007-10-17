@@ -75,7 +75,7 @@
 extern char achRexxCurDir[ CCHMAXPATH+2 ];    /* Save current working direct */
 
 const char *SysFileExtension(const char *);
-RexxString * LocateProgram(RexxString *, const char *[], LONG);
+RexxString * LocateProgram(RexxString *, const char *[], int);
 const char * SearchFileName(const char *, char);
 FILE * SysBinaryFilemode(FILE *);
 
