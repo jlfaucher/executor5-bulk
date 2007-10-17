@@ -1722,12 +1722,11 @@ say 'The monitor is' size[3] 'pixels wide and' size[4] 'pixels high.'
 <indexterm><primary>SystemMetrics</primary></indexterm>
 <indexterm><primary>public routines</primary>
 <secondary>SystemMetrics</secondary></indexterm>
-<para>Queries and returns one of the system metric values for the system. The
-system metric values contain information that help the programmer to write
-programs that work correctly independent of the current system.  They have
-information on system configuration, such as the number of monitors connected,
-and metrics such as the size in pixels of a dialog border or the width in pixels
-of a scrollbar.
+<para>Queries and returns one of the system metric values The system metric
+values contain information that help the programmer write programs that work
+correctly independent of the current system.  They have information on system
+configuration, such as the number of monitors connected, and metrics such as the
+size in pixels of a dialog border or the width in pixels of a scrollbar.
 </para>
 <para>Good documentation on the system metrics is found in the MSDN Library
 under the GetSystemMetrics function.  This documentation contains both the
@@ -1756,8 +1755,8 @@ each index.  The documentation is easy to found using a Google search of
 MSDN library for information on the returned values.
 <note><title>Note</title><para>
 The OS will return 0 if an invalid index is used.  Hoever, the return value for
-some indexes is 0.  The programmer will need to determine from the context if 0
-is an error return or not.  In addition, ooDialog will return -1 for some
+some indexes is also 0.  The programmer will need to determine from the context
+if 0 is an error return or not.  In addition, ooDialog will return -1 for some
 invalid argument values.  For instance, if the string &quot;dog&quot; was passed
 in for the <computeroutput>index</computeroutput> argument, -1 would be
 returned.
@@ -1768,6 +1767,8 @@ returned.
 a scroll wheel.
 <programlisting>
 <![CDATA[
+  /* detectMouse.rex  Simple program to detect the user's mouse. */
+
   SM_CMOUSEBUTTONS     = 43
   SM_MOUSEWHEELPRESENT = 19
 
@@ -1782,6 +1783,9 @@ a scroll wheel.
     if haveMouseWheel == 0 then say 'There is no mouse scroll wheel.'
     else say 'The mouse has a scroll wheel.'
   end
+
+  return 0
+  ::requires 'oodPlain.cls'
 
 ]]>
 </programlisting>

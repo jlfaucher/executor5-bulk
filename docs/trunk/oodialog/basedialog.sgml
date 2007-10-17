@@ -6149,7 +6149,7 @@ hndPushButton = MyDialog~GetItem(101)
 ]]>
 </programlisting>
 
-<para>Given a valid handle to a dialog control, the
+<para>Given a valid window handle to a dialog control, the
 <computeroutput>GetControlID</computeroutput> method returns the resource ID of
 the control.
 </para>
@@ -6368,8 +6368,8 @@ each index.  The documentation is easy to found using a Google search of
 MSDN library for information on the returned values.
 <note><title>Note</title><para>
 The OS will return 0 if an invalid index is used.  Hoever, the return value for
-some indexes is 0.  The programmer will need to determine from the context if 0
-is an error return or not.  In addition, ooDialog will return -1 for some
+some indexes is also 0.  The programmer will need to determine from the context
+if 0 is an error return or not.  In addition, ooDialog will return -1 for some
 invalid argument values.  For instance, if the string &quot;dog&quot; was passed
 in for the <computeroutput>index</computeroutput> argument, -1 would be
 returned.
