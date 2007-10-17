@@ -106,7 +106,7 @@ extern char achRexxCurDir[ CCHMAXPATH+2 ];  /* Save current working direct    */
 char * args[MAX_COMMAND_ARGS+1];            /* Array for argument parsing */
 
 LONG sys_command(const char *cmd, CMD_TYPE local_env_type);
-void scan_cmd(char *parm_cmd, char **args);
+void scan_cmd(const char *parm_cmd, char **args);
 
 /******************************************************************************/
 /* Arguments:  System Exit name                                               */
@@ -131,9 +131,9 @@ BOOL SysExitHandler(
   BOOL             enable )            /* enable variable pool              */
 {
   int   rc;                            /* exit return code                  */
-  PCHAR handler_name;                  /* ASCII-Z handler name              */
+  const char *handler_name;            /* ASCII-Z handler name              */
 
-  handler_name = exitname->stringData; /* point to the handler name         */
+  handler_name = exitname->getStringData(); /* point to the handler name         */
   activity->setCurrentExit(exitname);  /* save the exitname                 */
 /* CRITICAL window here -->>  ABSOLUTELY NO KERNEL CALLS ALLOWED            */
 
@@ -141,7 +141,7 @@ BOOL SysExitHandler(
   activity->exitKernel(activation, OREF_SYSEXITHANDLER, enable);
 
                                        /* go call the handler               */
-rc = RexxCallExit((PSZ)handler_name, NULL, function, subfunction, (PEXIT)exitbuffer);
+rc = RexxCallExit(const_cast<char *>(handler_name), NULL, function, subfunction, (PEXIT)exitbuffer);
 
 
   activity->enterKernel();             /* now re-enter the kernel           */
@@ -189,13 +189,13 @@ RexxObject * SysCommand(
   RexxString       ** error_failure )  /* error or failure flags            */
 {
   INT          rc    = 0;              /* Return code from call             */
-  PCHAR        current_address;        /* Subcom handler that gets cmd      */
+  const char  *current_address;        /* Subcom handler that gets cmd      */
   RXSTRING     rxstrcmd;               /* Command to be executed            */
   USHORT       flags = 0;              /* Subcom error flags                */
   SHORT        sbrc  = 0;              /* Subcom return code                */
   RXSTRING     retstr;                 /* Subcom result string              */
   CMD_TYPE     local_env_type;
-  char *       shell_cmd;
+  const char * shell_cmd;
   int          i;
   long         length;
   RexxObject * result;
@@ -208,17 +208,17 @@ RexxObject * SysCommand(
   MAKERXSTRING(retstr, default_return_buffer, DEFRXSTRING);
 
                                        /* set up the command RXSTRING       */
-  MAKERXSTRING(rxstrcmd, command->stringData, command->length);
+  MAKERXSTRING(rxstrcmd, const_cast<char *>(command->getStringData()), command->getLength());
 
                                        /* get the current environment       */
-  current_address = environment->stringData;
+  current_address = environment->getStringData();
 
                                    /* convert current_address to a CMD_TYPE */
   local_env_type = cmd_pgm;               /* default to user defined subcom */
   for (i = 0; i < REG_ENVTABLE_SIZE; i++)     /* scan the table for a match */
     {
     length = strlen(reg_envtable[i].envname);
-       if (environment->length == length &&
+       if (environment->getLength() == length &&
            !memcmp(current_address,               /* and if names are equal */
            reg_envtable[i].envname,           /* this is the new environment*/
            length))  {                             /* otherwise use default */
@@ -230,7 +230,7 @@ RexxObject * SysCommand(
   sbrc = 0;                               /* set initial subcom return code */
                                        /* get ready to call the function    */
   activity->exitKernel(activation, OREF_COMMAND, TRUE);
-  rc=RexxCallSubcom( current_address, NULL, &rxstrcmd, &flags, (PUSHORT)&sbrc, (PRXSTRING)&retstr);
+  rc=RexxCallSubcom(const_cast<char *>(current_address), NULL, &rxstrcmd, &flags, (PUSHORT)&sbrc, (PRXSTRING)&retstr);
   activity->enterKernel();             /* now re-enter the kernel           */
 
 /* END CRITICAL window here -->>  kernel calls now allowed again            */
@@ -242,7 +242,7 @@ RexxObject * SysCommand(
   if (rc == RXSUBCOM_NOTREG) {
     if (!(local_env_type == cmd_pgm)) {
 
-      shell_cmd = command->stringData;
+      shell_cmd = command->getStringData();
 
       ReleaseKernelAccess(activity);                   /* unlock the kernel */
 
@@ -267,7 +267,7 @@ RexxObject * SysCommand(
   }
   else if (rc == RXSUBCOM_OK) {                    /* Call to subcom worked */
                                                    /* system call?          */
-    if (strcmp((PCHAR)current_address,SYSENV)==0) {
+    if (strcmp(current_address,SYSENV)==0) {
 
       if (sbrc == UNKNOWN_COMMAND)              /* is this unknown command? */
                                              /* send failure condition back */
@@ -312,21 +312,21 @@ RexxObject * SysCommand(
 
 
 /* Handle "export" command in same process */
-BOOL sys_process_export(char * cmd, LONG * rc, int flag)
+BOOL sys_process_export(const char * cmd, LONG * rc, int flag)
 {
-  PCHAR  Env_Var_String = NULL;        /* Environment variable string for   */
+  char *Env_Var_String = NULL;         /* Environment variable string for   */
   ULONG size, allocsize;               /* size of the string                */
   PCHAR      * Environment;            /* environment pointer               */
   PCHAR  np;
   INT    i,j,k,l,iLength, copyval;
-  CHAR   namebufcurr[1281];             /* buf for extracted name            */
-  CHAR   cmd_name[1281];                /* name of the envvariable setting   */
+  char   namebufcurr[1281];             /* buf for extracted name            */
+  char   cmd_name[1281];                /* name of the envvariable setting   */
   CHAR   *array, *runarray, *runptr, *endptr, *maxptr;
   CHAR   temparray[1281];
-  CHAR   *st;
+  const char *st;
   CHAR   *tmpptr;
-  CHAR   name[1281];                    /* is the name + value + =           */
-  CHAR   value[1281];                   /* is the part behind =              */
+  char   name[1281];                    /* is the name + value + =           */
+  char   value[1281];                   /* is the part behind =              */
   PCHAR  del = NULL;                   /* ptr to old unused memory          */
   PCHAR  hit = NULL;
   BOOL   HitFlag = FALSE;
@@ -426,7 +426,7 @@ BOOL sys_process_export(char * cmd, LONG * rc, int flag)
   endptr = runptr + strlen(value);   /*this is the end of the input*/
   maxptr = array + MAX_VALUE -1;     /* this is the end of our new string */
 
-  while(tmpptr = (strchr(runptr, '$')))
+  while((tmpptr = (strchr(runptr, '$'))) != 0)
   {
     Environment = environ;   /* get the beginning of the environment*/
     HitFlag = TRUE;          /* if not true inputvalue= outputvalue*/
@@ -442,7 +442,7 @@ BOOL sys_process_export(char * cmd, LONG * rc, int flag)
        }
        memcpy(runarray,runptr, copyval);
        runarray= runarray + copyval; /* a new place to copy */
-       *runarray = NULL;
+       *runarray = '\0';  
        runptr = tmpptr;              /* now runptr is at the place of $ */
     }
     runptr++;
@@ -486,7 +486,7 @@ BOOL sys_process_export(char * cmd, LONG * rc, int flag)
        }
        strcpy(runarray, np);
        runarray = runarray + strlen(np);
-       *runarray = NULL;
+       *runarray = '\0';
        hit = NULL;
     }
   }   /* end while loop */
@@ -504,7 +504,7 @@ BOOL sys_process_export(char * cmd, LONG * rc, int flag)
        }
        strcpy(runarray, runptr);      /* if there is a part after a var */
        runarray = runarray + strlen(runptr);
-       *runarray = NULL;
+       *runarray = '\0';
     }
   }
   else   /* no hit so lets copy the value as it is                     */
@@ -518,7 +518,7 @@ BOOL sys_process_export(char * cmd, LONG * rc, int flag)
      }
      strcpy(runarray,value);
      runarray = runarray + strlen(runptr);
-     *runarray = NULL;
+     *runarray = '\0';
   }
 
   Environment = environ;            /* get the beginning of the environment*/
@@ -544,7 +544,7 @@ BOOL sys_process_export(char * cmd, LONG * rc, int flag)
   if(flag != UNSET_FLAG)
   {
     size = strlen(array)+1;
-    Env_Var_String = (PCHAR)malloc(size);/* get the memory                    */
+    Env_Var_String = (char *)malloc(size);/* get the memory                    */
     memcpy(Env_Var_String, array, size);
     *rc = putenv(Env_Var_String);
   }
@@ -565,12 +565,11 @@ BOOL sys_process_export(char * cmd, LONG * rc, int flag)
 /* Handle "cd XXX" command in same process */
 BOOL sys_process_cd(const char * cmd, LONG * rc)
 {
-    char * st;
+    const char * st;
     const char *home_dir = NULL;            /* home directory path        */
           char *dir_buf = NULL;             /* full directory path        */
     const char *slash;                      /* ptr to '/'                 */
     struct passwd *ppwd;
-    INT alloc_flag = 0;
 
     st = &cmd[3];
     while ((*st) && (*st == ' ')) st++;
@@ -581,8 +580,6 @@ BOOL sys_process_cd(const char * cmd, LONG * rc)
           return FALSE;
       dir_buf = (char *)malloc(strlen(home_dir)+1);
       strcpy(dir_buf, home_dir);
-      st = dir_buf;
-      alloc_flag = 1;
     }                                  /* if no user name            */
     else if(*(st) == '~' && (*(st+1) == '\0' || *(st+1) == '/'|| *(st+1) == ' ' )){
       if(*(st+1) == '/'){              /* if there is a path         */
@@ -597,8 +594,6 @@ BOOL sys_process_cd(const char * cmd, LONG * rc)
           return FALSE;
                                        /* merge the strings          */
         sprintf(dir_buf, "%s/%s", home_dir, st);
-        st = dir_buf;                  /* directory change to        */
-        alloc_flag = 1;
       }
       else{
                                        /* get home directory path    */
@@ -608,8 +603,6 @@ BOOL sys_process_cd(const char * cmd, LONG * rc)
         if(!dir_buf)
           return FALSE;
         sprintf(dir_buf, "%s/", home_dir);
-        st = dir_buf;                  /* directory change to        */
-        alloc_flag = 1;
       }
     }
     else if(*(st) == '~'){             /* cmd is '~username...'      */
@@ -624,11 +617,13 @@ BOOL sys_process_cd(const char * cmd, LONG * rc)
           return FALSE;
                                        /* merge the strings          */
         sprintf(dir_buf, "%s/", ppwd->pw_dir);
-        alloc_flag = 1;
       }
       else{                            /* there is a slash           */
-        *slash = '\0';                 /* teminate to get username   */
-        ppwd = getpwnam(st);           /* get info about the user    */
+        char username[256];            // need to copy the user name 
+        memcpy(username, st, slash - st); 
+        username[slash - st] = '\0'; 
+
+        ppwd = getpwnam(username);     /* get info about the user    */
         slash++;                       /* step over the slash        */
                                        /* get space for the buf      */
         dir_buf = (char *)malloc(strlen(ppwd->pw_dir)+strlen(slash)+1);
@@ -636,12 +631,12 @@ BOOL sys_process_cd(const char * cmd, LONG * rc)
           return FALSE;
                                        /* merge the strings          */
         sprintf(dir_buf, "%s/%s", ppwd->pw_dir, slash);
-        alloc_flag = 1;
       }
-      st = dir_buf;                    /* directory change to        */
     }
 
-    *rc = chdir(st);
+    *rc = chdir(dir_buf);
+
+    free(dir_buf); 
 
     if (!getcwd(achRexxCurDir, CCHMAXPATH))    /* Save current working direct */
     {
@@ -650,8 +645,6 @@ BOOL sys_process_cd(const char * cmd, LONG * rc)
       if (achRexxCurDir[0] != '/' )
         report_exception(Error_System_service);  /* Complain if it fails        */
     }
-    if (alloc_flag)
-      free(st);
     return TRUE;
 }
 
@@ -800,7 +793,7 @@ LONG sys_command(const char *cmd, CMD_TYPE local_env_type)
 /* a shell to invoke its commands.                                   */
 /*********************************************************************/
 
-void scan_cmd(char *parm_cmd, char **args)
+void scan_cmd(const char *parm_cmd, char **args)
 {
   char * pos;                          /* Current position in command*/
   char * end;                          /* End of command             */

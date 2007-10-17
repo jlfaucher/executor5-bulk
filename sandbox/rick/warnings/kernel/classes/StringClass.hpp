@@ -310,16 +310,16 @@ class RexxStringClass : public RexxClass {
    inline void set(size_t s,int c,int l) { memset((this->stringData+s),c,(size_t)l); };
    inline char getChar(size_t p) { return *(this->stringData+p); };
    inline char putChar(size_t p,char c) { return *(this->stringData+p) = c; };
-   inline boolean upperOnly() {return (this->Attributes&STRING_NOLOWER) != 0;};
-   inline boolean hasLower() {return (this->Attributes&STRING_HASLOWER) != 0;};
+   inline bool upperOnly() {return (this->Attributes&STRING_NOLOWER) != 0;};
+   inline bool hasLower() {return (this->Attributes&STRING_HASLOWER) != 0;};
    inline void  setUpperOnly() { this->Attributes |= STRING_NOLOWER;};
    inline void  setHasLower() { this->Attributes |= STRING_HASLOWER;};
-   inline boolean  nonNumeric() {return (this->Attributes&STRING_NONNUMERIC) != 0;};
+   inline bool  nonNumeric() {return (this->Attributes&STRING_NONNUMERIC) != 0;};
    inline void  setNonNumeric() { this->Attributes |= STRING_NONNUMERIC;};
-   inline boolean  strCompare(const char * s) {return this->memCompare((s), strlen(s));};
-   inline boolean  strICompare(const char * s) { return (size_t)this->length == strlen(s) && stricmp(s, this->stringData) == 0;}
-   inline boolean  memCompare(const char * s, size_t l) { return l == this->length && memcmp(s, this->stringData, l) == 0; }
-   inline boolean  memCompare(RexxString *other) { return other->length == this->length && memcmp(other->stringData, this->stringData, length) == 0; }
+   inline bool  strCompare(const char * s) {return this->memCompare((s), strlen(s));};
+   inline bool  strICompare(const char * s) { return (size_t)this->length == strlen(s) && stricmp(s, this->stringData) == 0;}
+   inline bool  memCompare(const char * s, size_t l) { return l == this->length && memcmp(s, this->stringData, l) == 0; }
+   inline bool  memCompare(RexxString *other) { return other->length == this->length && memcmp(other->stringData, this->stringData, length) == 0; }
    inline void  memCopy(char * s) { memcpy(s, stringData, length); }
    inline void  generateHash() {
                                        /* the following logic is duplicated */

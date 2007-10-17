@@ -1251,7 +1251,7 @@ RexxInteger *RexxString::verify(
   const char *Reference;               /* reference pointer                 */
   const char *Current;                 /* current scan position             */
   char      ch;                        /* scan character                    */
-  boolean   Match;                     /* found a match                     */
+  bool      Match;                     /* found a match                     */
 
   if (DBCS_MODE)                       /* need to use DBCS?                 */
                                        /* do the DBCS version               */

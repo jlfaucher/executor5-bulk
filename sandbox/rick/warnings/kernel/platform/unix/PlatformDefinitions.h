@@ -616,7 +616,7 @@ LONG SysRequestImmediateMutexSem (SMTX psem);
 #endif
                                        /* moved from olcrtmis.h             */
 #define stricmp(s1, s2) strcasecmp(s1, s2)
-#define memicmp(s1, s2, l) strncasecmp((char *)s1, (char *)s2, l)
+#define memicmp(s1, s2, l) strncasecmp(s1, s2, l)
                                        /* both functions can only be used   */
                                        /* without a return value & radix=10 */
 #define _ltoa(val, str, radix)  sprintf(str, "%d", val)
