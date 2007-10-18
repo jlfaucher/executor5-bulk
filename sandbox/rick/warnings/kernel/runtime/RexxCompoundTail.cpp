@@ -241,7 +241,6 @@ void RexxCompoundTail::buildTail(
     tail->copyIntoTail(this);        /* add this to our tail              */
   }
   length = length + tail->getLength();
-  _ltoa((long)index, (char *)current, 10);
   sprintf(current, "%d", index);
   length = length + strlen((char *)current);
   current += length;
