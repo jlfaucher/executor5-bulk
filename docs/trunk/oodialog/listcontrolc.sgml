@@ -65,7 +65,7 @@ styles are similar to the styles that can be used to create a ListControl, (see
 the <link linkend="addlistcontrol">AddListControl</link> method,) like the
 <computeroutput>NOHEADER</computeroutput> or
 <computeroutput>SINGLESEL</computeroutput> styles.  However, the way that they
-are added or removed from the ListControl are different.  For instance, the
+are added or removed from the ListControl is different.  For instance, the
 extended styles can not be added to a ListControl at the time of creation.  They
 can only be added after the underlying Windows control has been created.  For
 all practical purposes this means in the <link
@@ -216,6 +216,18 @@ the methods listed in the
 <entry><link linkend="focused">Focused</link></entry>
 </row>
 <row>
+<entry>GetExtendedStyle</entry>
+<entry><link linkend="mthGetExtendedStyle">GetExtendedStyle</link></entry>
+</row>
+<row>
+<entry>GetExtendedStyleRaw</entry>
+<entry><link linkend="mthGetExtendedStyleRaw">GetExtendedStyleRaw</link></entry>
+</row>
+<row>
+<entry>GetHoverTime</entry>
+<entry><link linkend="mthGetHoverTime">GetHoverTime</link></entry>
+</row>
+<row>
 <entry>Insert</entry>
 <entry><link linkend="insertlc">Insert</link></entry>
 </row>
@@ -342,6 +354,10 @@ the methods listed in the
 <row>
 <entry>SetColumnWidth</entry>
 <entry><link linkend="setcolumnwidth">SetColumnWidth</link></entry>
+</row>
+<row>
+<entry>SetHoverTime</entry>
+<entry><link linkend="mthSetHoverTime">SetHoverTime</link></entry>
 </row>
 <row>
 <entry>SetImages</entry>
@@ -620,8 +636,7 @@ different styles, refer to <link linkend="addlistcontrol">AddListControl</link>.
 </section>
 
 <section id="mthAddExtendedStyle"><title>AddExtendedStyle</title>
-<indexterm><primary>AddExtendedStyle</primary>
-<secondary>ListControl class</secondary></indexterm>
+<indexterm><primary>AddExtendedStyle</primary></indexterm>
 <programlisting>
 <![CDATA[
                                      +--------------------+
@@ -629,29 +644,27 @@ different styles, refer to <link linkend="addlistcontrol">AddListControl</link>.
 >>-aListControl~AddExtendedStyle(--"---+-BORDERSELECT-----+--"--)------------><
                                        +-CHECKBOXES-------+
                                        +-DOUBLEBUFFER-----+
-                                       +-FLATSB-----------+        +-FLATSB-----------+
-                                       +-FULLROWSELECT----+        +-FULLROWSELECT----+
-                                       +-GRIDLINES--------+        +-GRIDLINES--------+
-                                       +-HEADERDRAGDROP---+        +-HEADERDRAGDROP---+
-                                       +-INFOTIP----------+        +-INFOTIP----------+
-                                       +-MULTIWORKAREAS---+        +-MULTIWORKAREAS---+
-                                       +-ONECLICKACTIVATE-+        +-ONECLICKACTIVATE-+
-                                       +-REGIONAL---------+        +-REGIONAL---------+
-                                       +-SUBITEMIMAGES----+        +-SUBITEMIMAGES----+
-                                       +-TRACKSELECT------+        +-TRACKSELECT------+
-                                       +-TWOCLICKACTIVATE-+        +-TWOCLICKACTIVATE-+
-                                       +-UNDERLINECOLD----+        +-UNDERLINECOLD----+
-                                       +-UNDERLINEHOT-----+        +-UNDERLINEHOT-----+
-                                       +-LABELTIP---------+        +-LABELTIP---------+
-                                       +-SIMPLESELECT-----+        +-DOUBLEBUFFER-----+
-                                       +-SIMPLESELECT-----+        +-SIMPLESELECT-----+
-
+                                       +-FLATSB-----------+
+                                       +-FULLROWSELECT----+
+                                       +-GRIDLINES--------+
+                                       +-HEADERDRAGDROP---+
+                                       +-INFOTIP----------+
+                                       +-LABELTIP---------+
+                                       +-MULTIWORKAREAS---+
+                                       +-ONECLICKACTIVATE-+
+                                       +-REGIONAL---------+
+                                       +-SIMPLESELECT-----+
+                                       +-SUBITEMIMAGES----+
+                                       +-TRACKSELECT------+
+                                       +-TWOCLICKACTIVATE-+
+                                       +-UNDERLINECOLD----+
+                                       +-UNDERLINEHOT-----+
 
 ]]>
 </programlisting>
 
-<para>The <computeroutput>AddExtendedStyle</computeroutput> method adds one
-ormore of the <link linkend="listControlExtendedStyles">extended
+<para>The <computeroutput>AddExtendedStyle</computeroutput> method adds one or
+more of the <link linkend="listControlExtendedStyles">extended
 </link> List-View styles to a ListControl.  These styles can not be added until
 the underlying Windows List-View control has been created.  They can be added in
 the <computeroutput>InitDialog</computeroutput> method or any time thereafter.
@@ -675,23 +688,23 @@ rather than the item being highlighted.
 except tile mode.
 </para></listitem></varlistentry>
 <varlistentry><term>DOUBLEBUFFER</term>
-<listitem><para>Paints using double buffering.  This reduces flicker.  (Only
-available in XP or later.)
+<listitem><para>Windows XP or later only.  The list-view control is painted
+using double buffering.  This reduces flicker.
 </para></listitem></varlistentry>
 <varlistentry><term>FLATSB</term>
 <listitem><para>Enables flat scroll bars.
 </para></listitem></varlistentry>
 <varlistentry><term>FULLROWSELECT</term>
-<listitem><para>When a row is selected, the whole row is highlighted rather than
-just the first column.  This style only applies to report mode.
+<listitem><para>Report view only.  When a row is selected, the whole row is
+highlighted rather than just the first column.
 </para></listitem></varlistentry>
 <varlistentry><term>GRIDLINES</term>
-<listitem><para>In report mode only, gridlines are drawn around all items and
+<listitem><para>Report view only.  Gridlines are drawn around all items and
 sub-items.  This gives a spreadsheet-like appearance to the list view control.
 </para></listitem></varlistentry>
 <varlistentry><term>HEADERDRAGDROP</term>
-<listitem><para>The user can drag and drop the headers to rearrange the columns.
-This is valid in report mode only.
+<listitem><para>Report view only. The user can drag and drop the headers to
+rearrange the columns.
 </para></listitem></varlistentry>
 <varlistentry><term>INFOTIP</term>
 <listitem><para>With this style a notification is sent to the parent window
@@ -708,37 +721,58 @@ fashion similar to a tool tip.
 style.  It is planned for a future enhancement.
 </para></listitem></varlistentry>
 <varlistentry><term>ONECLICKACTIVATE</term>
-<listitem><para>This style enables hot tracking in the list-view control. Both
-the underline hot and the track select styles need either one click activate or
-two click activate styles to also be enabled.
-highlighted but not selected.
+<listitem><para>Enables the list-view control to send an item activate
+notification when the user clicks one time on an item.  It also enables hot
+tracking in the list-view control. Both the underline cold and the underline hot
+styles need either one click activate or two click activate styles to be
+enabled.
 </para></listitem></varlistentry>
 <varlistentry><term>REGIONAL</term>
-<listitem><para>For icon mode only.  Sets the window region to only include an
+<listitem><para>Icon view only.  Sets the window region to only include an
 item's icon and text.
 </para></listitem></varlistentry>
 <varlistentry><term>SIMPLESELECT</term>
-<listitem><para>Windows XP and later only.  In icon mode only, moves the state
+<listitem><para>Windows XP and later only.  Icon view only.  Moves the state
 image to the top right of the icon image. If the user changes the state using
 the space bar, all the selected items cycle, not just the item with the focus.
 </para></listitem></varlistentry>
 <varlistentry><term>SUBITEMIMAGES</term>
-<listitem><para>In report mode only, allows images to be displayed for subitems.
+<listitem><para>Report view only.  Allows images to be displayed for subitems.
 </para></listitem></varlistentry>
 <varlistentry><term>TRACKSELECT</term>
 <listitem><para>Enables hot track selection.  The user can select an item by
 leaving the mouse over an item for a certain period of time, the
 &quot;hover&quot; time.  This period of time can be changed from the default by
-using the ADD LINK HERE SetHoverTime method.
+using the <link linkend="mthSetHoverTime">SetHoverTime</link>  method.
 </para></listitem></varlistentry>
 <varlistentry><term>TWOCLICKACTIVATE</term>
-<listitem><para>
+<listitem><para>Enables the list-view control to send an item activate
+notification when the user clicks on an item after it has been selected. When
+the user clicks on an item it will be selected. At that point, if the user
+clicks on the item a second time, the item will be activated. Note that this is
+different from double-clicking to activate.  Any amount of time can pass between
+the click that selects the item and the click that activates the item.
+(Provided the item remains selected of course.)
+</para>
+<para> It also works with track select. If track select is enabled, the user can
+select an item by pausing the mouse over the item.  At that point, if the user
+then clicks on the item it will be activated.
 </para></listitem></varlistentry>
 <varlistentry><term>UNDERLINECOLD</term>
-<listitem><para>
+<listitem><para>Underlining gives the user a visual clue that a single click on
+an item will activate it.  Underlining requires either
+<computeroutput>ONECLICKACTIVATE</computeroutput> or
+<computeroutput>TWOCLICKACTIVE</computeroutput> to also be enabled.  An item
+becomes hot when the mouse is over it.  Underline cold underlines all the cold
+items when a single click will activate them.  When one click activate is
+enabled, this would then be all items.  When two click activate is enabled this
+would then be only those items that were selected.
 </para></listitem></varlistentry>
 <varlistentry><term>UNDERLINEHOT</term>
-<listitem><para>
+<listitem><para>The underline hot style is similar to the underline cold style.
+See that style above for the explanation of some of the terms.  With underline
+hot, the item is underlined when the mouse is over it, if one click will
+activate the item.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -788,30 +822,29 @@ first column.
 </section>
 
 <section id="mthRemoveExtendedStyle"><title>RemoveExtendedStyle</title>
-<indexterm><primary>RemoveExtendedStyle</primary>
-<secondary>ListControl class</secondary></indexterm>
+<indexterm><primary>RemoveExtendedStyle</primary></indexterm>
 <programlisting>
 <![CDATA[
                                          +--------------------+
                                          V                    |
 >>-aListControl~RemoveExtendedStyle(--"----+-BORDERSELECT-----+--"--)-------><
                                            +-CHECKBOXES-------+
+                                           +-DOUBLEBUFFER-----+
                                            +-FLATSB-----------+
                                            +-FULLROWSELECT----+
                                            +-GRIDLINES--------+
                                            +-HEADERDRAGDROP---+
                                            +-INFOTIP----------+
+                                           +-LABELTIP---------+
                                            +-MULTIWORKAREAS---+
                                            +-ONECLICKACTIVATE-+
                                            +-REGIONAL---------+
+                                           +-SIMPLESELECT-----+
                                            +-SUBITEMIMAGES----+
                                            +-TRACKSELECT------+
                                            +-TWOCLICKACTIVATE-+
                                            +-UNDERLINECOLD----+
                                            +-UNDERLINEHOT-----+
-                                           +-LABELTIP---------+
-                                           +-DOUBLEBUFFER-----+
-                                           +-SIMPLESELECT-----+
 
 ]]>
 </programlisting>
@@ -865,30 +898,29 @@ view.
 </section>
 
 <section id="mthReplaceExtendedStyle"><title>ReplaceExtendedStyle</title>
-<indexterm><primary>ReplaceExtendedStyle</primary>
-<secondary>ListControl class</secondary></indexterm>
+<indexterm><primary>ReplaceExtendedStyle</primary></indexterm>
 <programlisting>
 <![CDATA[
                                                      +--------------------+
                                                      V                    |
 >>-aListControl~ReplaceExtendedStyle(-oldStyle--,--"---+-BORDERSELECT-----+--"-)-><
                                                        +-CHECKBOXES-------+
+                                                       +-DOUBLEBUFFER-----+
                                                        +-FLATSB-----------+
                                                        +-FULLROWSELECT----+
                                                        +-GRIDLINES--------+
                                                        +-HEADERDRAGDROP---+
                                                        +-INFOTIP----------+
+                                                       +-LABELTIP---------+
                                                        +-MULTIWORKAREAS---+
                                                        +-ONECLICKACTIVATE-+
                                                        +-REGIONAL---------+
+                                                       +-SIMPLESELECT-----+
                                                        +-SUBITEMIMAGES----+
                                                        +-TRACKSELECT------+
                                                        +-TWOCLICKACTIVATE-+
                                                        +-UNDERLINECOLD----+
                                                        +-UNDERLINEHOT-----+
-                                                       +-LABELTIP---------+
-                                                       +-DOUBLEBUFFER-----+
-                                                       +-SIMPLESELECT-----+
 
 
 ]]>
@@ -946,6 +978,292 @@ adds check boxes to the list view.
   addStyle = "CHECKBOXES"
 
   listView~replaceExtendedStyle(removeStyle, addStyle)
+
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthGetExtendedStyle"><title>GetExtendedStyle</title>
+<indexterm><primary>GetExtendedStyle</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~GetExtendedStyle---------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>The <computeroutput>GetExtendedStyle</computeroutput> method returns
+the <link linkend="listControlExtendedStyles">extended</link> styles of a
+<computeroutput>ListControl</computeroutput>.  The styles are returned as a
+string of blank delimited style keywords.  These are the same keywords as those
+used to set the styles.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>This method takes no arguments.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The returned string can contain one or more of the following
+style keywords. See the <link linkend="mthAddExtendedStyle">AddExtendedStyle</link>
+method for the style descriptions:
+<itemizedlist>
+<listitem><para>BORDERSELECT</para></listitem>
+<listitem><para>CHECKBOXES</para></listitem>
+<listitem><para>DOUBLEBUFFER</para></listitem>
+<listitem><para>FLATSB</para></listitem>
+<listitem><para>FULLROWSELECT</para></listitem>
+<listitem><para>GRIDLINES</para></listitem>
+<listitem><para>HEADERDRAGDROP</para></listitem>
+<listitem><para>INFOTIP</para></listitem>
+<listitem><para>LABELTIP</para></listitem>
+<listitem><para>MULTIWORKAREAS</para></listitem>
+<listitem><para>ONECLICKACTIVATE</para></listitem>
+<listitem><para>REGIONAL</para></listitem>
+<listitem><para>SIMPLESELECT</para></listitem>
+<listitem><para>SUBITEMIMAGES</para></listitem>
+<listitem><para>TRACKSELECT</para></listitem>
+<listitem><para>TWOCLICKACTIVATE</para></listitem>
+<listitem><para>UNDERLINECOLD</para></listitem>
+<listitem><para>UNDERLINEHOT</para></listitem>
+</itemizedlist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example comes from a fictious application where
+the user can elect to use the track select style, or not.  With this style, an
+item can be selected by pausing the mouse over it for a period of time specified
+by the hover time.  The application also allows the user to increase or decrease
+the hover time.  In this example when the methods to increment or decrement the
+hover time are invoked, the application first checks to see if the list view
+control has the track select style.  Then the change is only made if the list
+view control does have the style.
+<programlisting> <![CDATA[
+
+::method initDialog
+  expose listView
+
+  ...
+  listView = self~getListControl(IDC_LIST)
+  if listView == .nil then return
+
+  listView~addExtendedStyle("CHECKBOXES FULLROWSELECT TRACKSELECT")
+  ...
+
+::method onCheckboxClick
+  expose listView
+
+  chkBox = self~getCheckControl(IDC_CHECK_USETRACKSELECT)
+  if chkBox~isChecked == "CHECKED" then
+    listView~addExtendedStyle("TRACKSELECT")
+  else
+    listView~removeExtendedStyle("TRACKSELECT")
+
+::method onDecrement
+  expose listView
+
+  styles = listView~getExtendedStyle
+  if styles~wordpos("TRACKSELECT") == 0 then return
+
+  time = listView~getHoverTime - 100
+  if time > 0 then listView~setHoverTime(time)
+
+::method onIncrement
+  expose listView
+
+  styles = listView~getExtendedStyle
+  if styles~wordpos("TRACKSELECT") == 0 then return
+
+  -- Let the user increase the hover time to any length they want.
+  listView~setHoverTime(list~getHoverTime + 100)
+
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthGetExtendedStyleRaw"><title>GetExtendedStyleRaw</title>
+<indexterm><primary>GetExtendedStyleRaw</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~GetExtendedStyleRaw------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>The <computeroutput>GetExtendedStyleRaw</computeroutput> method returns
+the <link linkend="listControlExtendedStyles">extended</link> styles of a
+<computeroutput>ListControl</computeroutput> as the numeric value of the
+extended style flags.  This method is provided for programmers familiar with the
+Windows API who may wish to know, or to work with, the actual value of the
+flags.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>This method takes no arguments.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The returned value is the numeric value of the extended style
+flags currently in effect for the list-view control.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example is the same example as the <link
+linkend="mthGetExtendedStyle">GetExtendedStyle</link> example.  It simply
+replaces the <computeroutput>GetExtendedStyle</computeroutput> invocation with a
+<computeroutput>GetExtendedStyleRaw</computeroutput> invocation.
+<programlisting> <![CDATA[
+
+::method initDialog
+  expose listView
+
+  ...
+  listView = self~getListControl(IDC_LIST)
+  if listView == .nil then return
+
+  listView~addExtendedStyle("CHECKBOXES FULLROWSELECT TRACKSELECT")
+  ...
+
+::method onCheckboxClick
+  expose listView
+
+  chkBox = self~getCheckControl(IDC_CHECK_USETRACKSELECT)
+  if chkBox~isChecked == "CHECKED" then
+    listView~addExtendedStyle("TRACKSELECT")
+  else
+    listView~removeExtendedStyle("TRACKSELECT")
+
+::method onDecrement
+  expose listView
+
+  if binaryAnd(listView~getExtendedStyleRaw, "0x00000008") <> 0 then return
+
+  time = listView~getHoverTime - 100
+  if time > 0 then listView~setHoverTime(time)
+
+::method onIncrement
+  expose listView
+
+  if binaryAnd(listView~getExtendedStyleRaw, "0x00000008") <> 0 then return
+
+  -- Let the user increase the hover time to any length they want.
+  listView~setHoverTime(list~getHoverTime + 100)
+
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthGetHoverTime"><title>GetHoverTime</title>
+<indexterm><primary>GetHoverTime</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~GetHoverTime-----------------------------------><
+
+]]>
+</programlisting>
+
+<para>This method retrieves the current hover time.  The hover time is expressed
+as milliseconds.  The hover time only affects list view controls that have the
+track select, one click activate, or two click activate extended list view
+styles. See the
+<link linkend="mthAddExtendedStyle">AddExtendedStyle
+</link> for a description of these
+styles.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>This method takes no arguments
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The hover time.  A value of -1 indicates the hover time is the
+system default hover time.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example comes from a program where the one click
+activate and track select styles are enabled.  Orignally the hover time is set
+to .4 seconds.  However the application allows the users to increase or decrease
+this time to match their preference.  A menu item (or a button could be used) is
+connected to the <computeroutput>onIncrement</computeroutput> and
+<computeroutput>onDecrement</computeroutput> methods.  When either of the
+methods is invoked, the current hover time is examined and then either
+incremented or decremented by .1 of a second.
+<programlisting> <![CDATA[
+
+::method initDilaog
+  expose list
+
+  ...
+  list = self~getListControl(IDC_LIST)
+  list~addExtendedStyle("ONECLICKACTIVATE TRACKSELECT FULLROWSELECT")
+  list~setHoverTime(400)
+  ...
+
+::method onDecrement
+  expose list
+
+  time = list~getHoverTime - 100
+  if time > 0 then list~setHoverTime(time)
+
+::method onIncrement
+  expose list
+
+  -- Let the user increase the hover time to any length they want.
+  list~setHoverTime(list~getHoverTime + 100)
+
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthSetHoverTime"><title>SetHoverTime</title>
+<indexterm><primary>SetHoverTime</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~SetHoverTime(--+------+--)---------------------><
+                               +-time-+
+
+]]>
+</programlisting>
+
+<para>This method is used to change the <emphasis role="italic">hover</emphasis>
+time.  The hover time only affects list view controls that have the track
+select, one click activate, or two click activate extended list view styles. See
+the <link linkend="mthAddExtendedStyle">AddExtendedStyle</link> for a
+description of these styles.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only optional argument is:
+<variablelist>
+<varlistentry><term>time</term>
+<listitem><para>Specify the hover time in milliseconds.  If this argument is
+omitted, the hover time is set to the system default.  A negative number will
+also set the hover time back to the system defualt.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The previous hover time.  A value of -1 indicates the previous
+hover time was the system default.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example adds the one click activate, the track
+select, and the full row select extended list view styles to a
+<computeroutput>ListControl</computeroutput>.  The hover time is set to .4
+seconds. If the user pauses his mouse over a row in the list view for .4 of a
+second the row is automatically selectd.
+<programlisting> <![CDATA[
+::method initDilaog
+
+  ...
+  list = self~getListControl(IDC_LIST)
+  list~addExtendedStyle("ONECLICKACTIVATE FULLROWSELECT TRACKSELECT")
+
+  oldTime = list~setHoverTime(400)
+  ...
 
 ]]>
 </programlisting>
@@ -3396,13 +3714,16 @@ for the text in a list view control.</para>
 </para></listitem></varlistentry>
 </variablelist>
 </section>
+
 </section>
 
 <section id="notifmsg"><title>Notification Messages</title>
 <indexterm><primary>modification messages</primary>
 <secondary>ListControl class</secondary></indexterm>
-<para>The list view control sends notification messages to notify about events.
-For more information on notification messages, refer to <link linkend="connectlistnotify">ConnectListNotify</link>.</para>
+<para>The list view control sends notification messages to its parent (the
+dialog) when certain events happen. For more information on notification
+messages, refer to <link linkend="connectlistnotify">ConnectListNotify</link>.
+</para>
 <para>The following example shows how to connect the list view notification messages
 with the corresponding message:</para>
 <programlisting>
