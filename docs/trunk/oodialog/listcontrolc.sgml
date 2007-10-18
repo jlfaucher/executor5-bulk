@@ -50,6 +50,47 @@ for an example.</para>
 <para>Use the GetListControl method (see page <link linkend="getlistcontrol">GetListControl</link>)
 to retrieve an object of the ListControl class.</para>
 <variablelist>
+<varlistentry><term>Notes</term>
+<listitem><para>The ListControl class is the ooDialog interface to the Windows
+<emphasis role="italic">List-View</emphasis> control.  This should not be
+confused with the Windows <emphasis role="italic">List Box</emphasis> control.
+The ooDialog <link linkend="listboxc">ListBox</link> class provides the
+interface to the Windows List Box control.  In general, the List-View control is
+more powerful than the List Box control.
+</para>
+<para id="listControlExtendedStyles">List-View <emphasis role="bold">Extended
+Styles</emphasis>: The List-View control has been updated by Microsoft to
+include a number of <emphasis role="italic">extended</emphasis> styles.  These
+styles are similar to the styles that can be used to create a ListControl, (see
+the <link linkend="addlistcontrol">AddListControl</link> method,) like the
+<computeroutput>NOHEADER</computeroutput> or
+<computeroutput>SINGLESEL</computeroutput> styles.  However, the way that they
+are added or removed from the ListControl are different.  For instance, the
+extended styles can not be added to a ListControl at the time of creation.  They
+can only be added after the underlying Windows control has been created.  For
+all practical purposes this means in the <link
+linkend="mthInitDialog">InitDialog</link> method, or at some point in the life
+cycle of the dialog after that.
+</para>
+<para>Some of the extended styles are only available on later versions of the
+Windows OS.  As an example, the <computeroutput>LABELTIP</computeroutput> and
+<computeroutput>SIMPLESELECT</computeroutput> styles are only available on
+Windows XP.  The documentation on the extended styles will note any requirements
+for each style.  To work with the extended List-View styles, use the <link
+linkend="mthAddExtendedStyle">AddExtendedStyle</link>, the <link
+linkend="mthRemoveExtendedStyle">RemoveExtendedStyle</link>, or the <link
+linkend="mthReplaceExtendedStyle">ReplaceExtendedStyle</link> methods.
+</para>
+<note><title>Note</title><para>
+There are a number of nuances to the behavior of the different extended styles
+on the different versions of Windows, far too many to try and detail in this
+documentation.  The behavior documented here is the general behavior on Windows
+XP with service pack 2.
+</para>
+<para>If there is a need for detailed information concerning the subtle
+differences in behavior on earlier versions of Windows, the programmer should
+consult the <link linkend="windowsdoc">Windows documentation.</link>
+</note></para></listitem></varlistentry>
 <varlistentry><term>Requires:</term>
 <listitem><para>The ListControl class requires the class definition
 file <computeroutput>oodwin32.cls</computeroutput>:
@@ -81,6 +122,10 @@ the methods listed in the
 <row>
 <entry>AddRow</entry>
 <entry><link linkend="addrow">AddRow</link></entry>
+</row>
+<row>
+<entry>AddExtendedStyle</entry>
+<entry><link linkend="mthAddExtendedStyle">AddExtendedStyle</link></entry>
 </row>
 <row>
 <entry>AddStyle</entry>
@@ -255,12 +300,20 @@ the methods listed in the
 <entry><link linkend="removeimages">RemoveImages</link></entry>
 </row>
 <row>
+<entry>RemoveExtendedStyle</entry>
+<entry><link linkend="mtRemoveExtendedStyle">RemoveExtendedStyle</link></entry>
+</row>
+<row>
+<row>
 <entry>RemoveStyle</entry>
 <entry><link linkend="removestyle">RemoveStyle</link></entry>
 </row>
-<row>
 <entry>RemoveSmallImages</entry>
 <entry><link linkend="removesmallimages">RemoveSmallImages</link></entry>
+</row>
+<row>
+<entry>ReplaceExtendedStyle</entry>
+<entry><link linkend="mthReplaceExtendedStyle">ReplaceExtendedStyle</link></entry>
 </row>
 <row>
 <entry>ReplaceStyle</entry>
@@ -562,6 +615,340 @@ different styles, refer to <link linkend="addlistcontrol">AddListControl</link>.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
 <listitem><para>0 if this method fails.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthAddExtendedStyle"><title>AddExtendedStyle</title>
+<indexterm><primary>AddExtendedStyle</primary>
+<secondary>ListControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+                                     +--------------------+
+                                     V                    |
+>>-aListControl~AddExtendedStyle(--"---+-BORDERSELECT-----+--"--)------------><
+                                       +-CHECKBOXES-------+
+                                       +-DOUBLEBUFFER-----+
+                                       +-FLATSB-----------+        +-FLATSB-----------+
+                                       +-FULLROWSELECT----+        +-FULLROWSELECT----+
+                                       +-GRIDLINES--------+        +-GRIDLINES--------+
+                                       +-HEADERDRAGDROP---+        +-HEADERDRAGDROP---+
+                                       +-INFOTIP----------+        +-INFOTIP----------+
+                                       +-MULTIWORKAREAS---+        +-MULTIWORKAREAS---+
+                                       +-ONECLICKACTIVATE-+        +-ONECLICKACTIVATE-+
+                                       +-REGIONAL---------+        +-REGIONAL---------+
+                                       +-SUBITEMIMAGES----+        +-SUBITEMIMAGES----+
+                                       +-TRACKSELECT------+        +-TRACKSELECT------+
+                                       +-TWOCLICKACTIVATE-+        +-TWOCLICKACTIVATE-+
+                                       +-UNDERLINECOLD----+        +-UNDERLINECOLD----+
+                                       +-UNDERLINEHOT-----+        +-UNDERLINEHOT-----+
+                                       +-LABELTIP---------+        +-LABELTIP---------+
+                                       +-SIMPLESELECT-----+        +-DOUBLEBUFFER-----+
+                                       +-SIMPLESELECT-----+        +-SIMPLESELECT-----+
+
+
+]]>
+</programlisting>
+
+<para>The <computeroutput>AddExtendedStyle</computeroutput> method adds one
+ormore of the <link linkend="listControlExtendedStyles">extended
+</link> List-View styles to a ListControl.  These styles can not be added until
+the underlying Windows List-View control has been created.  They can be added in
+the <computeroutput>InitDialog</computeroutput> method or any time thereafter.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>style</term>
+<listitem><para>The extended styles to be added.  This argument is a list
+containing one or more of the following style keywords, separated by blanks.
+Invalid words in the list are ignored.  If there are no valid keywords at all in
+the list, then an error is returned.
+<variablelist>
+<varlistentry><term>BORDERSELECT</term>
+<listitem><para>When an item is selected the border color of the item changes
+rather than the item being highlighted.
+</para></listitem></varlistentry>
+<varlistentry><term>CHECKBOXES</term>
+<listitem><para>Check boxes are visible and functional in all list view modes
+except tile mode.
+</para></listitem></varlistentry>
+<varlistentry><term>DOUBLEBUFFER</term>
+<listitem><para>Paints using double buffering.  This reduces flicker.  (Only
+available in XP or later.)
+</para></listitem></varlistentry>
+<varlistentry><term>FLATSB</term>
+<listitem><para>Enables flat scroll bars.
+</para></listitem></varlistentry>
+<varlistentry><term>FULLROWSELECT</term>
+<listitem><para>When a row is selected, the whole row is highlighted rather than
+just the first column.  This style only applies to report mode.
+</para></listitem></varlistentry>
+<varlistentry><term>GRIDLINES</term>
+<listitem><para>In report mode only, gridlines are drawn around all items and
+sub-items.  This gives a spreadsheet-like appearance to the list view control.
+</para></listitem></varlistentry>
+<varlistentry><term>HEADERDRAGDROP</term>
+<listitem><para>The user can drag and drop the headers to rearrange the columns.
+This is valid in report mode only.
+</para></listitem></varlistentry>
+<varlistentry><term>INFOTIP</term>
+<listitem><para>With this style a notification is sent to the parent window
+before displaying an item's tooltip.  (The current version of ooDialog can not
+take advantage of this style.  It is planned for a future enhancement.)
+</para></listitem></varlistentry>
+<varlistentry><term>LABELTIP</term>
+<listitem><para>Windows XP or later only.  In any list view mode, if an item's
+label is only partially visible, the complete label will be displayed in a
+fashion similar to a tool tip.
+</para></listitem></varlistentry>
+<varlistentry><term>MULTIWORKAREAS</term>
+<listitem><para>The current version of ooDialog can not take advantage of this
+style.  It is planned for a future enhancement.
+</para></listitem></varlistentry>
+<varlistentry><term>ONECLICKACTIVATE</term>
+<listitem><para>This style enables hot tracking in the list-view control. Both
+the underline hot and the track select styles need either one click activate or
+two click activate styles to also be enabled.
+highlighted but not selected.
+</para></listitem></varlistentry>
+<varlistentry><term>REGIONAL</term>
+<listitem><para>For icon mode only.  Sets the window region to only include an
+item's icon and text.
+</para></listitem></varlistentry>
+<varlistentry><term>SIMPLESELECT</term>
+<listitem><para>Windows XP and later only.  In icon mode only, moves the state
+image to the top right of the icon image. If the user changes the state using
+the space bar, all the selected items cycle, not just the item with the focus.
+</para></listitem></varlistentry>
+<varlistentry><term>SUBITEMIMAGES</term>
+<listitem><para>In report mode only, allows images to be displayed for subitems.
+</para></listitem></varlistentry>
+<varlistentry><term>TRACKSELECT</term>
+<listitem><para>Enables hot track selection.  The user can select an item by
+leaving the mouse over an item for a certain period of time, the
+&quot;hover&quot; time.  This period of time can be changed from the default by
+using the ADD LINK HERE SetHoverTime method.
+</para></listitem></varlistentry>
+<varlistentry><term>TWOCLICKACTIVATE</term>
+<listitem><para>
+</para></listitem></varlistentry>
+<varlistentry><term>UNDERLINECOLD</term>
+<listitem><para>
+</para></listitem></varlistentry>
+<varlistentry><term>UNDERLINEHOT</term>
+<listitem><para>
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The return values are:
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Success.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>An (internal) problem with the control's window handle.
+</para></listitem></varlistentry>
+<varlistentry><term>-3</term>
+<listitem><para>The style argument did not contain any of the extended style
+keywords.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example shows how to initially add the extended
+styles to a list view control.  This is done in the
+<computeroutput>InitDialog</computeroutput> method, which executes after the
+underlying Windows dialog has been created, but before it is displayed on the
+screen.  This is the earliest point in time that the extended style methods can
+be used.  The list view is in the report view and will have check boxes and grid
+lines.  The user will be able to use drag and drop to rearrange the columns.
+When a row is selected, the full row will be highlighted rather than just the
+first column.
+<programlisting> <![CDATA[
+
+::method initDialog
+  expose listView
+
+  ...
+  listView = self~getListControl(IDC_LIST)
+  if listView == .nil then return
+
+  listView~addExtendedStyle("CHECKBOXES GRIDLINES FULLROWSELECT HEADERDRAGDROP")
+  ...
+
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthRemoveExtendedStyle"><title>RemoveExtendedStyle</title>
+<indexterm><primary>RemoveExtendedStyle</primary>
+<secondary>ListControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+                                         +--------------------+
+                                         V                    |
+>>-aListControl~RemoveExtendedStyle(--"----+-BORDERSELECT-----+--"--)-------><
+                                           +-CHECKBOXES-------+
+                                           +-FLATSB-----------+
+                                           +-FULLROWSELECT----+
+                                           +-GRIDLINES--------+
+                                           +-HEADERDRAGDROP---+
+                                           +-INFOTIP----------+
+                                           +-MULTIWORKAREAS---+
+                                           +-ONECLICKACTIVATE-+
+                                           +-REGIONAL---------+
+                                           +-SUBITEMIMAGES----+
+                                           +-TRACKSELECT------+
+                                           +-TWOCLICKACTIVATE-+
+                                           +-UNDERLINECOLD----+
+                                           +-UNDERLINEHOT-----+
+                                           +-LABELTIP---------+
+                                           +-DOUBLEBUFFER-----+
+                                           +-SIMPLESELECT-----+
+
+]]>
+</programlisting>
+
+<para>The <computeroutput>RemoveExtendedStyle</computeroutput> method removes
+one or more <link linkend="listControlExtendedStyles">extended</link> styles of
+a List-View control.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>style</term>
+<listitem><para>The extended style(s) to be removed.  This is one or more of the
+styles listed in the syntax diagram, separated by blanks. For an explanation
+of the different styles, refer to the <link
+linkend="mthAddExtendedStyle">AddExtendedStyle</link> method.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The return values are:
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Success.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>An (internal) problem with the control's window handle.
+</para></listitem></varlistentry>
+<varlistentry><term>-3</term>
+<listitem><para>The style argument did not contain any of the extended style
+keywords.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example removes the check box style from the list
+view.
+<programlisting>
+<![CDATA[
+
+  listView = self~getListControl(IDC_LIST)
+  if listView == .nil then return
+
+  listView~removeExtendedStyle("CHECKBOXES")
+
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthReplaceExtendedStyle"><title>ReplaceExtendedStyle</title>
+<indexterm><primary>ReplaceExtendedStyle</primary>
+<secondary>ListControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+                                                     +--------------------+
+                                                     V                    |
+>>-aListControl~ReplaceExtendedStyle(-oldStyle--,--"---+-BORDERSELECT-----+--"-)-><
+                                                       +-CHECKBOXES-------+
+                                                       +-FLATSB-----------+
+                                                       +-FULLROWSELECT----+
+                                                       +-GRIDLINES--------+
+                                                       +-HEADERDRAGDROP---+
+                                                       +-INFOTIP----------+
+                                                       +-MULTIWORKAREAS---+
+                                                       +-ONECLICKACTIVATE-+
+                                                       +-REGIONAL---------+
+                                                       +-SUBITEMIMAGES----+
+                                                       +-TRACKSELECT------+
+                                                       +-TWOCLICKACTIVATE-+
+                                                       +-UNDERLINECOLD----+
+                                                       +-UNDERLINEHOT-----+
+                                                       +-LABELTIP---------+
+                                                       +-DOUBLEBUFFER-----+
+                                                       +-SIMPLESELECT-----+
+
+
+]]>
+</programlisting>
+
+<para>The <computeroutput>ReplaceExtendedStyle</computeroutput> method removes
+some of the List-View control's <link linkend="listControlExtendedStyles">extended
+</link> styles and adds new extended styles. This is the equivalent of first
+using the <computeroutput>RemoveExtendeStyle</computeroutput> method and then
+using the <computeroutput>AddExtendedStyle</computeroutput> method.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>oldStyle</term>
+<listitem><para>The extended style(s) to be removed.  This is one or more of the
+styles listed in the syntax diagram, separated by blanks. For an explanation
+of the different styles, refer to the <link
+linkend="mthAddExtendedStyle">AddExtendedStyle</link> method.
+</para></listitem></varlistentry>
+<varlistentry><term>newStyle</term>
+<listitem><para>The extended style(s) to be added.  Again, this is one or more
+of the styles listed in the syntax diagram, separated by blanks. See the <link
+linkend="mthAddExtendedStyle">AddExtendedStyle</link> method for the style
+descriptions.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The return values are:
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Success.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>An (internal) problem with the control's window handle.
+</para></listitem></varlistentry>
+<varlistentry><term>-3</term>
+<listitem><para>One, or both, of the style arguments had none of the extended
+style keywords.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example removes the cold and hot underlining and
+adds check boxes to the list view.
+<programlisting>
+<![CDATA[
+
+  listView = self~getListControl(IDC_LIST)
+  if listView == .nil then return
+
+  removeStyle = "UNDERLINECOLD UNDERLINEHOT"
+  addStyle = "CHECKBOXES"
+
+  listView~replaceExtendedStyle(removeStyle, addStyle)
+
+]]>
+</programlisting>
 </para></listitem></varlistentry>
 </variablelist>
 </section>

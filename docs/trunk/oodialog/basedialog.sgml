@@ -791,7 +791,7 @@ the methods listed in <link linkend="t000013">Table 2</link>.
 </row>
 <row>
 <entry>InitDialog</entry>
-<entry><link linkend="h000035">InitDialog</link></entry>
+<entry><link linkend="mthInitDialog">InitDialog</link></entry>
 </row>
 <row>
 <entry>IsMouseButtonDown</entry>
@@ -1384,7 +1384,7 @@ to change the standard behavior.
 <para>The AutoDetection method switches on auto detection.</para>
 </section>
 
-<section id="h000035"><title>InitDialog</title>
+<section id="mthInitDialog"><title>InitDialog</title>
 <indexterm><primary>InitDialog</primary>
 <secondary>BaseDialog class</secondary></indexterm>
 <programlisting>
@@ -1965,7 +1965,7 @@ methods for buttons are called automatically from the Add... methods.  However,
 for most events like the resize or move events, the connection needs to be made
 explicitly.  In general, events should be connected before the dialog is shown on
 the screen. So, the Connect... event methods can be used in the <link
-linkend="h000035">InitDialog</link> method.  In a UserDialog, the <link
+linkend="mthInitDialog">InitDialog</link> method.  In a UserDialog, the <link
 linkend="h001506">DefineDialog</link> method is a good place for the Connect...
 event methods.  If the programmer is overriding the <link
 linkend="h000025">Init</link> method, the Connect... event methods can be placed
@@ -2068,7 +2068,7 @@ is presented there that uses a number of the base dialog methods.
 </variablelist>
 
 <note><title>Note</title><para>
-Connections are usually placed in the <link linkend="h000025">Init</link> or <link linkend="h000035">InitDialog</link> method. If both methods
+Connections are usually placed in the <link linkend="h000025">Init</link> or <link linkend="mthInitDialog">InitDialog</link> method. If both methods
 are defined, use Init as the place for this connection - but not before init:super has been called.
 </para></note>
 </section>
@@ -2124,7 +2124,7 @@ a method with a matching name.
 </variablelist>
 
 <note><title>Note</title><para>
-Connections are usually placed in the <link linkend="h000025">Init</link> or <link linkend="h000035">InitDialog</link> method. If both methods
+Connections are usually placed in the <link linkend="h000025">Init</link> or <link linkend="mthInitDialog">InitDialog</link> method. If both methods
 are defined, use Init as the place for this connection - but not before init:super has been called.
 </para></note>
 </section>
@@ -2174,7 +2174,7 @@ are changed. Provide a method with a matching name.
 </variablelist>
 
 <note><title>Note</title><para>
-Connections are usually placed in the <link linkend="h000025">Init</link> or <link linkend="h000035">InitDialog</link> method. If both methods
+Connections are usually placed in the <link linkend="h000025">Init</link> or <link linkend="mthInitDialog">InitDialog</link> method. If both methods
 are defined, use Init as the place for this connection - but not before init:super has been called.
 </para></note>
 </section>
@@ -2333,7 +2333,7 @@ be connected to the same method.  Multiple methods can be connected for key
 press events, but only 1 method can be connected to any single key.
 </para>
 <para>The underlying Windows dialog must exist before this method can be used.
-That means it can be used in <link linkend="h000035">InitDialog</link> or any
+That means it can be used in <link linkend="mthInitDialog">InitDialog</link> or any
 time thereafter.  There is a maximum limit of 63 methods, per dialog, that can
 be connected to key press events.  Connections can be removed (see the <link
 linkend="mthDisconnectKeyPressBaseDialog">DisconnectKeyPress</link> method) if
@@ -2963,7 +2963,7 @@ provide a method with the matching name.
 </variablelist>
 
 <note><title>Note</title><para>
-Connections are usually placed in the <link linkend="h000025">Init</link> or <link linkend="h000035">InitDialog</link> method. If both methods
+Connections are usually placed in the <link linkend="h000025">Init</link> or <link linkend="mthInitDialog">InitDialog</link> method. If both methods
 are defined, use Init as the place for this connection - but not before init:super has been called.
 </para></note>
 </section>
@@ -3269,7 +3269,7 @@ a left double-click within the list box with a method. </para>
 </programlisting>
 
 <para>The ConnectScrollBar method initializes and connects
-a scroll bar to an Object Rexx object. Use this method in the <link linkend="h000035">InitDialog</link> method. </para>
+a scroll bar to an Object Rexx object. Use this method in the <link linkend="mthInitDialog">InitDialog</link> method. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
 <listitem><para>This method is protected.
@@ -3545,7 +3545,7 @@ and 0 for not selected.
 </para></listitem></itemizedlist>
 <para>In a UserDialog the Connect... attribute methods are called automatically
 from the Add... methods. The proper place for Connect... attribute methods is
-the <link linkend="h000035">InitDialog</link> method.</para>
+the <link linkend="mthInitDialog">InitDialog</link> method.</para>
 
 <section id="h000184"><title>ConnectEntryLine</title>
 <indexterm><primary>ConnectEntryLine</primary></indexterm>
@@ -7676,7 +7676,7 @@ view.  Then the file itself is displayed in a second dialog.  Each dialog uses a
 different application icon. The <computeroutput>Execute</computeroutput> method
 documentation has more detail on the application icon.
 </para></listitem>
-<listitem><para><link linkend="h000035">InitDialog</link> This method is called
+<listitem><para><link linkend="mthInitDialog">InitDialog</link> This method is called
 after the underlying Windows dialog has been created, but before it is shown on
 the screen.  In the viewer dialog the <computeroutput>Init</computeroutput>
 method is overridden and the text of the read-only multi-line edit control is
@@ -8783,7 +8783,7 @@ a button. It is used to move bitmaps within buttons. </para>
 
 <para>The SetItemFont method changes the font for a particular
 dialog item.</para>
-<para>The best place to call this method is within <link linkend="h000035">InitDialog</link>.
+<para>The best place to call this method is within <link linkend="mthInitDialog">InitDialog</link>.
 If the font is no longer needed, for instance, when the dialog is closed or
 another font has been assigned to the dialog item, you should free the font
 resource by calling <link linkend="deletefont">DeleteFont</link>. A good place to
