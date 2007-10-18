@@ -62,7 +62,7 @@ void RexxCompoundTail::buildTail(
       RexxObject *tail = tails[0]->getValue(dictionary);
       /* if it is an integer type, we might be able to address the string representation directly. */
       if (OTYPE(Integer, tail)) {
-          RexxString *rep = ((RexxInteger *)tail)->stringrep;
+          RexxString *rep = ((RexxInteger *)tail)->getStringrep();
           if (rep != OREF_NULL) {
               /* point directly to the value       */
               /* and the length */
@@ -116,7 +116,7 @@ void RexxCompoundTail::buildTail(
       RexxObject *tail = tails[0]->getValue(context);
       /* if it is an integer type, we might be able to address the string representation directly. */
       if (OTYPE(Integer, tail)) {
-          RexxString *rep = ((RexxInteger *)tail)->stringrep;
+          RexxString *rep = ((RexxInteger *)tail)->getStringrep();
           if (rep != OREF_NULL) {
               /* point directly to the value       */
               /* and the length */

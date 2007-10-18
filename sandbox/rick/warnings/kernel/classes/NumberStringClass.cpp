@@ -2556,7 +2556,7 @@ RexxString *RexxNumberString::d2xD2c(
 }
 
 int RexxNumberString::ULong(
-     ULONG *  value)                   /* result length                     */
+     size_t*  value)                   /* result length                     */
 /******************************************************************************/
 /* Function:  Convert a valid numberstring to a ULONG value.                  */
 /*   returns TRUE for a sucessfule conversion, FALSE otherwise.               */

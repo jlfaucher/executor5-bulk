@@ -137,7 +137,7 @@ long number_create_integer(UCHAR *, long, int, int);
     RexxInteger *strictLessOrEqual(RexxObject *);
     RexxObject  *hashCode();
 
-    int         ULong(ULONG *);
+    int         ULong(size_t *);
     RexxNumberString *clone();
     void        setString(RexxString *);
     void        roundUp(ULONG);
