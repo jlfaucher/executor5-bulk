@@ -228,7 +228,7 @@ RexxArray *RexxDirectory::allIndexes(void)
     wholenumber_t count = this->items();
     RexxArray *result = (RexxArray *)new_array(count);
     save(result);
-    arraysize_t i = 1;
+    arraysize_t out = 1;
     // we're working directly off of the contents.
     RexxHashTable *hashTab = this->contents;
 
@@ -236,7 +236,7 @@ RexxArray *RexxDirectory::allIndexes(void)
     for (HashLink i = hashTab->first(); hashTab->index(i) != OREF_NULL; i = hashTab->next(i))
     {
         RexxString *name = (RexxString *)hashTab->index(i);
-        result->put(name, i++);
+        result->put(name, out++);
     }
     // if e hae amethod table, we need to copy those indices also
     if (this->method_table != OREF_NULL)
@@ -245,7 +245,7 @@ RexxArray *RexxDirectory::allIndexes(void)
         for (HashLink i = methodTable->first(); methodTable->available(i); i = methodTable->next(i))
         {
            RexxString *name = (RexxString *)methodTable->index(i);
-           result->put(name, i++);
+           result->put(name, out++);
         }
     }
     discard_hold(result);
@@ -264,8 +264,6 @@ RexxArray *RexxDirectory::allItems()
   RexxHashTable *hashTab;              /* contents hash table               */
   RexxTable *methodTable;              /* contents method table             */
   RexxString *name;                    /* table index                       */
-  RexxMethod *method;                  /* method to run                     */
-  RexxObject *value;                   /* value added                       */
 
                                        /* return the count as an object     */
   count = this->items();               /* get the array size                */
@@ -289,10 +287,10 @@ RexxArray *RexxDirectory::allItems()
                                        /* get the directory index           */
       name = (RexxString *)methodTable->index(j);
                                        /* need to extract method values     */
-      method = (RexxMethod *)methodTable->value(j);
+      RexxMethod *method = (RexxMethod *)methodTable->value(j);
                                        /* run the method                    */
-      value = method->run(CurrentActivity, this, name, 0, NULL);
-      result->put(name, i++);          /* add to the array                  */
+      RexxObject *v = method->run(CurrentActivity, this, name, 0, NULL);
+      result->put(v, i++);             /* add to the array                  */
     }
   }
   discard_hold(result);                /* unlock the result                 */
@@ -548,8 +546,11 @@ RexxObject *RexxDirectory::at(
     }
                                        /* got an unknown method?            */
     if (this->unknown_method != OREF_NULL)
+    {
+        RexxObject *arg = _index;
                                        /* run it                            */
-      return this->unknown_method->run(CurrentActivity, this, OREF_UNKNOWN, 1, (RexxObject **)&_index);
+        return this->unknown_method->run(CurrentActivity, this, OREF_UNKNOWN, 1, (RexxObject **)&arg);
+    }
   }
   return result;                       /* return a result                   */
 }

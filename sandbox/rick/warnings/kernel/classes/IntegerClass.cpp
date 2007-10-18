@@ -147,7 +147,8 @@ RexxString *RexxInteger::primitiveMakeString()
   if (this->stringrep != OREF_NULL)    /* have a string already?            */
     return this->stringrep;            /* return it directly                */
                                        /* convert value into string         */
-  _ltoa((long)this->value, stringBuffer, 10);
+  sprintf(stringBuffer, "%d", this->value);
+
                                        /* return as a string                */
   string = new_string(stringBuffer, strlen(stringBuffer));
                                        /* cache this away for later         */
@@ -167,7 +168,7 @@ RexxString *RexxInteger::stringValue()
   if (this->stringrep != OREF_NULL)    /* have a string already?            */
     return this->stringrep;            /* return it directly                */
                                        /* convert value into string         */
-  _ltoa((long)this->value, stringBuffer, 10);
+  sprintf(stringBuffer, "%d", this->value);
                                        /* return as a string                */
   string = new_string(stringBuffer, strlen(stringBuffer));
                                        /* cache this away for later         */
@@ -189,7 +190,7 @@ void RexxInteger::copyIntoTail(RexxCompoundTail *tail)
       tail->append(stringrep->getStringData(), stringrep->getLength());
       return;
   }
-  _ltoa((long)this->value, stringBuffer, 10);
+  sprintf(stringBuffer, "%d", this->value);
                                        /* append this to the buffer         */
   tail->append(stringBuffer, strlen(stringBuffer));
 }

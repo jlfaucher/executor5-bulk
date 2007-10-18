@@ -242,6 +242,7 @@ void RexxCompoundTail::buildTail(
   }
   length = length + tail->getLength();
   _ltoa((long)index, (char *)current, 10);
+  sprintf(current, "%d", index);
   length = length + strlen((char *)current);
   current += length;
   remainder -= length;
@@ -253,7 +254,7 @@ void RexxCompoundTail::buildTail(
 /* Function:  Construct a tail from a single numeric index                    */
 /******************************************************************************/
 {
-  _ltoa((long)index, (char *)current, 10);
+  sprintf(current, "%d", index);
   length = strlen((char *)current);
   current += length;
   remainder -= length;
