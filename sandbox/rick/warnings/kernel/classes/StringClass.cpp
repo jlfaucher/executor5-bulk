@@ -51,7 +51,6 @@
 #include "DirectoryClass.hpp"
 #include "RexxActivation.hpp"
 #include "RexxActivity.hpp"
-extern INT  lookup[];
                                        /* current global settings           */
 extern ACTIVATION_SETTINGS *current_settings;
 

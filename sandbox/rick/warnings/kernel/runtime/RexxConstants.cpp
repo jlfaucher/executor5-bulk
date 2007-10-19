@@ -55,16 +55,16 @@
 /*                                                                   */
 /*********************************************************************/
 
-KWDTABLE Directives[] = {              /* language directive table          */
-   KWD(CHAR_ATTRIBUTE,   DIRECTIVE_ATTRIBUTE)
-   KWD(CHAR_CLASS,       DIRECTIVE_CLASS)
-   KWD(CHAR_METHOD,      DIRECTIVE_METHOD)
-   KWD(CHAR_REQUIRES,    DIRECTIVE_REQUIRES)
-   KWD(CHAR_ROUTINE,     DIRECTIVE_ROUTINE)
+KeywordEntry Directives[] = {              /* language directive table          */
+   KeywordEntry(CHAR_ATTRIBUTE,   DIRECTIVE_ATTRIBUTE),
+   KeywordEntry(CHAR_CLASS,       DIRECTIVE_CLASS),
+   KeywordEntry(CHAR_METHOD,      DIRECTIVE_METHOD),
+   KeywordEntry(CHAR_REQUIRES,    DIRECTIVE_REQUIRES),
+   KeywordEntry(CHAR_ROUTINE,     DIRECTIVE_ROUTINE),
 };
 
-INT Directivescount =            /* size of directive table     */
-    sizeof(Directives)/sizeof(KWDTABLE);
+int Directivescount =            /* size of directive table     */
+    sizeof(Directives)/sizeof(Directives[0]);
 
 
 /*********************************************************************/
@@ -73,46 +73,46 @@ INT Directivescount =            /* size of directive table     */
 /*                                                                   */
 /*********************************************************************/
 
-KWDTABLE KeywordInstructions[] = {     /* language keyword table     */
-   KWD(CHAR_ADDRESS,    KEYWORD_ADDRESS)
-   KWD(CHAR_ARG,        KEYWORD_ARG)
-   KWD(CHAR_CALL,       KEYWORD_CALL)
-   KWD(CHAR_DO,         KEYWORD_DO)
-   KWD(CHAR_DROP,       KEYWORD_DROP)
-   KWD(CHAR_ELSE,       KEYWORD_ELSE)
-   KWD(CHAR_END,        KEYWORD_END)
-   KWD(CHAR_EXIT,       KEYWORD_EXIT)
-   KWD(CHAR_EXPOSE,     KEYWORD_EXPOSE)
-   KWD(CHAR_FORWARD,    KEYWORD_FORWARD)
-   KWD(CHAR_GUARD,      KEYWORD_GUARD)
-   KWD(CHAR_IF,         KEYWORD_IF)
-   KWD(CHAR_INTERPRET,  KEYWORD_INTERPRET)
-   KWD(CHAR_ITERATE,    KEYWORD_ITERATE)
-   KWD(CHAR_LEAVE,      KEYWORD_LEAVE)
-   KWD(CHAR_LOOP,       KEYWORD_LOOP)
-   KWD(CHAR_NOP,        KEYWORD_NOP)
-   KWD(CHAR_NUMERIC,    KEYWORD_NUMERIC)
-   KWD(CHAR_OPTIONS,    KEYWORD_OPTIONS)
-   KWD(CHAR_OTHERWISE,  KEYWORD_OTHERWISE)
-   KWD(CHAR_PARSE,      KEYWORD_PARSE)
-   KWD(CHAR_PROCEDURE,  KEYWORD_PROCEDURE)
-   KWD(CHAR_PULL,       KEYWORD_PULL)
-   KWD(CHAR_PUSH,       KEYWORD_PUSH)
-   KWD(CHAR_QUEUE,      KEYWORD_QUEUE)
-   KWD(CHAR_RAISE,      KEYWORD_RAISE)
-   KWD(CHAR_REPLY,      KEYWORD_REPLY)
-   KWD(CHAR_RETURN,     KEYWORD_RETURN)
-   KWD(CHAR_SAY,        KEYWORD_SAY)
-   KWD(CHAR_SELECT,     KEYWORD_SELECT)
-   KWD(CHAR_SIGNAL,     KEYWORD_SIGNAL)
-   KWD(CHAR_THEN,       KEYWORD_THEN)
-   KWD(CHAR_TRACE,      KEYWORD_TRACE)
-   KWD(CHAR_USE,        KEYWORD_USE)
-   KWD(CHAR_WHEN,       KEYWORD_WHEN)
+KeywordEntry KeywordInstructions[] = {     /* language keyword table     */
+   KeywordEntry(CHAR_ADDRESS,    KEYWORD_ADDRESS),
+   KeywordEntry(CHAR_ARG,        KEYWORD_ARG),
+   KeywordEntry(CHAR_CALL,       KEYWORD_CALL),
+   KeywordEntry(CHAR_DO,         KEYWORD_DO),
+   KeywordEntry(CHAR_DROP,       KEYWORD_DROP),
+   KeywordEntry(CHAR_ELSE,       KEYWORD_ELSE),
+   KeywordEntry(CHAR_END,        KEYWORD_END),
+   KeywordEntry(CHAR_EXIT,       KEYWORD_EXIT),
+   KeywordEntry(CHAR_EXPOSE,     KEYWORD_EXPOSE),
+   KeywordEntry(CHAR_FORWARD,    KEYWORD_FORWARD),
+   KeywordEntry(CHAR_GUARD,      KEYWORD_GUARD),
+   KeywordEntry(CHAR_IF,         KEYWORD_IF),
+   KeywordEntry(CHAR_INTERPRET,  KEYWORD_INTERPRET),
+   KeywordEntry(CHAR_ITERATE,    KEYWORD_ITERATE),
+   KeywordEntry(CHAR_LEAVE,      KEYWORD_LEAVE),
+   KeywordEntry(CHAR_LOOP,       KEYWORD_LOOP),
+   KeywordEntry(CHAR_NOP,        KEYWORD_NOP),
+   KeywordEntry(CHAR_NUMERIC,    KEYWORD_NUMERIC),
+   KeywordEntry(CHAR_OPTIONS,    KEYWORD_OPTIONS),
+   KeywordEntry(CHAR_OTHERWISE,  KEYWORD_OTHERWISE),
+   KeywordEntry(CHAR_PARSE,      KEYWORD_PARSE),
+   KeywordEntry(CHAR_PROCEDURE,  KEYWORD_PROCEDURE),
+   KeywordEntry(CHAR_PULL,       KEYWORD_PULL),
+   KeywordEntry(CHAR_PUSH,       KEYWORD_PUSH),
+   KeywordEntry(CHAR_QUEUE,      KEYWORD_QUEUE),
+   KeywordEntry(CHAR_RAISE,      KEYWORD_RAISE),
+   KeywordEntry(CHAR_REPLY,      KEYWORD_REPLY),
+   KeywordEntry(CHAR_RETURN,     KEYWORD_RETURN),
+   KeywordEntry(CHAR_SAY,        KEYWORD_SAY),
+   KeywordEntry(CHAR_SELECT,     KEYWORD_SELECT),
+   KeywordEntry(CHAR_SIGNAL,     KEYWORD_SIGNAL),
+   KeywordEntry(CHAR_THEN,       KEYWORD_THEN),
+   KeywordEntry(CHAR_TRACE,      KEYWORD_TRACE),
+   KeywordEntry(CHAR_USE,        KEYWORD_USE),
+   KeywordEntry(CHAR_WHEN,       KEYWORD_WHEN),
 };
 
-INT KeywordInstructionscount =            /* size of instruction table     */
-    sizeof(KeywordInstructions)/sizeof(KWDTABLE);
+int KeywordInstructionscount =            /* size of instruction table     */
+    sizeof(KeywordInstructions)/sizeof(KeywordInstructions[0]);
 
 /*********************************************************************/
 /*                                                                   */
@@ -120,45 +120,45 @@ INT KeywordInstructionscount =            /* size of instruction table     */
 /*                                                                   */
 /*********************************************************************/
 
-KWDTABLE SubKeywords[] = {             /* language keyword table     */
-   KWD(CHAR_ADDITIONAL,  SUBKEY_ADDITIONAL)
-   KWD(CHAR_ARG,         SUBKEY_ARG)
-   KWD(CHAR_ARGUMENTS,   SUBKEY_ARGUMENTS)
-   KWD(CHAR_ARRAY,       SUBKEY_ARRAY)
-   KWD(CHAR_BY,          SUBKEY_BY)
-   KWD(CHAR_CLASS,       SUBKEY_CLASS)
-   KWD(CHAR_CONTINUE,    SUBKEY_CONTINUE)
-   KWD(CHAR_DESCRIPTION, SUBKEY_DESCRIPTION)
-   KWD(CHAR_DIGITS,      SUBKEY_DIGITS)
-   KWD(CHAR_ENGINEERING, SUBKEY_ENGINEERING)
-   KWD(CHAR_EXIT,        SUBKEY_EXIT)
-   KWD(CHAR_EXPOSE,      SUBKEY_EXPOSE)
-   KWD(CHAR_FALSE,       SUBKEY_FALSE)
-   KWD(CHAR_FOR,         SUBKEY_FOR)
-   KWD(CHAR_FOREVER,     SUBKEY_FOREVER)
-   KWD(CHAR_FORM,        SUBKEY_FORM)
-   KWD(CHAR_FUZZ,        SUBKEY_FUZZ)
-   KWD(CHAR_LABEL,       SUBKEY_LABEL)
-   KWD(CHAR_MESSAGE,     SUBKEY_MESSAGE)
-   KWD(CHAR_NAME,        SUBKEY_NAME)
-   KWD(CHAR_OFF,         SUBKEY_OFF)
-   KWD(CHAR_ON,          SUBKEY_ON)
-   KWD(CHAR_OVER,        SUBKEY_OVER)
-   KWD(CHAR_RETURN,      SUBKEY_RETURN)
-   KWD(CHAR_SCIENTIFIC,  SUBKEY_SCIENTIFIC)
-   KWD(CHAR_STRICT,      SUBKEY_STRICT)
-   KWD(CHAR_THEN,        SUBKEY_THEN)
-   KWD(CHAR_TO,          SUBKEY_TO)
-   KWD(CHAR_TRUE,        SUBKEY_TRUE)
-   KWD(CHAR_UNTIL,       SUBKEY_UNTIL)
-   KWD(CHAR_VALUE,       SUBKEY_VALUE)
-   KWD(CHAR_WHEN,        SUBKEY_WHEN)
-   KWD(CHAR_WHILE,       SUBKEY_WHILE)
-   KWD(CHAR_WITH,        SUBKEY_WITH)
+KeywordEntry SubKeywords[] = {             /* language keyword table     */
+   KeywordEntry(CHAR_ADDITIONAL,  SUBKEY_ADDITIONAL),
+   KeywordEntry(CHAR_ARG,         SUBKEY_ARG),
+   KeywordEntry(CHAR_ARGUMENTS,   SUBKEY_ARGUMENTS),
+   KeywordEntry(CHAR_ARRAY,       SUBKEY_ARRAY),
+   KeywordEntry(CHAR_BY,          SUBKEY_BY),
+   KeywordEntry(CHAR_CLASS,       SUBKEY_CLASS),
+   KeywordEntry(CHAR_CONTINUE,    SUBKEY_CONTINUE),
+   KeywordEntry(CHAR_DESCRIPTION, SUBKEY_DESCRIPTION),
+   KeywordEntry(CHAR_DIGITS,      SUBKEY_DIGITS),
+   KeywordEntry(CHAR_ENGINEERING, SUBKEY_ENGINEERING),
+   KeywordEntry(CHAR_EXIT,        SUBKEY_EXIT),
+   KeywordEntry(CHAR_EXPOSE,      SUBKEY_EXPOSE),
+   KeywordEntry(CHAR_FALSE,       SUBKEY_FALSE),
+   KeywordEntry(CHAR_FOR,         SUBKEY_FOR),
+   KeywordEntry(CHAR_FOREVER,     SUBKEY_FOREVER),
+   KeywordEntry(CHAR_FORM,        SUBKEY_FORM),
+   KeywordEntry(CHAR_FUZZ,        SUBKEY_FUZZ),
+   KeywordEntry(CHAR_LABEL,       SUBKEY_LABEL),
+   KeywordEntry(CHAR_MESSAGE,     SUBKEY_MESSAGE),
+   KeywordEntry(CHAR_NAME,        SUBKEY_NAME),
+   KeywordEntry(CHAR_OFF,         SUBKEY_OFF),
+   KeywordEntry(CHAR_ON,          SUBKEY_ON),
+   KeywordEntry(CHAR_OVER,        SUBKEY_OVER),
+   KeywordEntry(CHAR_RETURN,      SUBKEY_RETURN),
+   KeywordEntry(CHAR_SCIENTIFIC,  SUBKEY_SCIENTIFIC),
+   KeywordEntry(CHAR_STRICT,      SUBKEY_STRICT),
+   KeywordEntry(CHAR_THEN,        SUBKEY_THEN),
+   KeywordEntry(CHAR_TO,          SUBKEY_TO),
+   KeywordEntry(CHAR_TRUE,        SUBKEY_TRUE),
+   KeywordEntry(CHAR_UNTIL,       SUBKEY_UNTIL),
+   KeywordEntry(CHAR_VALUE,       SUBKEY_VALUE),
+   KeywordEntry(CHAR_WHEN,        SUBKEY_WHEN),
+   KeywordEntry(CHAR_WHILE,       SUBKEY_WHILE),
+   KeywordEntry(CHAR_WITH,        SUBKEY_WITH),
 };
 
-INT SubKeywordscount =            /* size of subkeyword table     */
-    sizeof(SubKeywords)/sizeof(KWDTABLE);
+int SubKeywordscount =            /* size of subkeyword table     */
+    sizeof(SubKeywords)/sizeof(SubKeywords[0]);
 
 /*************************************************************************/
 /*                                                                   */
@@ -166,96 +166,96 @@ INT SubKeywordscount =            /* size of subkeyword table     */
 /*                                                                   */
 /*********************************************************************/
 
-KWDTABLE BuiltinFunctions[] = {        /* built-in function table    */
-    KWD(CHAR_ABBREV,      BUILTIN_ABBREV)
-    KWD(CHAR_ABS,         BUILTIN_ABS)
-    KWD(CHAR_ADDRESS,     BUILTIN_ADDRESS)
-    KWD(CHAR_ARG,         BUILTIN_ARG)
-    KWD(CHAR_B2X,         BUILTIN_B2X)
-    KWD(CHAR_BITAND,      BUILTIN_BITAND)
-    KWD(CHAR_BITOR,       BUILTIN_BITOR)
-    KWD(CHAR_BITXOR,      BUILTIN_BITXOR)
-    KWD(CHAR_C2D,         BUILTIN_C2D)
-    KWD(CHAR_C2X,         BUILTIN_C2X)
-    KWD(CHAR_CENTER,      BUILTIN_CENTER)
-    KWD(CHAR_CENTRE,      BUILTIN_CENTRE)
-    KWD(CHAR_CHANGESTR,   BUILTIN_CHANGESTR)
-    KWD(CHAR_CHARIN,      BUILTIN_CHARIN)
-    KWD(CHAR_CHAROUT,     BUILTIN_CHAROUT)
-    KWD(CHAR_CHARS,       BUILTIN_CHARS)
-    KWD(CHAR_COMPARE,     BUILTIN_COMPARE)
-    KWD(CHAR_CONDITION,   BUILTIN_CONDITION)
-    KWD(CHAR_COPIES,      BUILTIN_COPIES)
-    KWD(CHAR_COUNTSTR,    BUILTIN_COUNTSTR)
-    KWD(CHAR_D2C,         BUILTIN_D2C)
-    KWD(CHAR_D2X,         BUILTIN_D2X)
-    KWD(CHAR_DATATYPE,    BUILTIN_DATATYPE)
-    KWD(CHAR_DATE,        BUILTIN_DATE)
-    KWD(CHAR_DBADJUST,    BUILTIN_DBADJUST)
-    KWD(CHAR_DBBRACKET,   BUILTIN_DBBRACKET)
-    KWD(CHAR_DBCENTER,    BUILTIN_DBCENTER)
-    KWD(CHAR_DBLEFT,      BUILTIN_DBLEFT)
-    KWD(CHAR_DBRIGHT,     BUILTIN_DBRIGHT)
-    KWD(CHAR_DBRLEFT,     BUILTIN_DBRLEFT)
-    KWD(CHAR_DBRRIGHT,    BUILTIN_DBRRIGHT)
-    KWD(CHAR_DBTODBCS,    BUILTIN_DBTODBCS)
-    KWD(CHAR_DBTOSBCS,    BUILTIN_DBTOSBCS)
-    KWD(CHAR_DBUNBRACKET, BUILTIN_DBUNBRACKET)
-    KWD(CHAR_DBVALIDATE,  BUILTIN_DBVALIDATE)
-    KWD(CHAR_DBWIDTH,     BUILTIN_DBWIDTH)
-    KWD(CHAR_DELSTR,      BUILTIN_DELSTR)
-    KWD(CHAR_DELWORD,     BUILTIN_DELWORD)
-    KWD(CHAR_DIGITS,      BUILTIN_DIGITS)
-    KWD(CHAR_ERRORTEXT,   BUILTIN_ERRORTEXT)
-    KWD(CHAR_FORM,        BUILTIN_FORM)
-    KWD(CHAR_FORMAT,      BUILTIN_FORMAT)
-    KWD(CHAR_FUZZ,        BUILTIN_FUZZ)
-    KWD(CHAR_INSERT,      BUILTIN_INSERT)
-    KWD(CHAR_LASTPOS,     BUILTIN_LASTPOS)
-    KWD(CHAR_LEFT,        BUILTIN_LEFT)
-    KWD(CHAR_LENGTH,      BUILTIN_LENGTH)
-    KWD(CHAR_LINEIN,      BUILTIN_LINEIN)
-    KWD(CHAR_LINEOUT,     BUILTIN_LINEOUT)
-    KWD(CHAR_LINES,       BUILTIN_LINES)
-    KWD(CHAR_LOWER,       BUILTIN_LOWER)
-    KWD(CHAR_MAX,         BUILTIN_MAX)
-    KWD(CHAR_MIN,         BUILTIN_MIN)
-    KWD(CHAR_OVERLAY,     BUILTIN_OVERLAY)
-    KWD(CHAR_POS,         BUILTIN_POS)
-    KWD(CHAR_QUEUED,      BUILTIN_QUEUED)
-    KWD(CHAR_RANDOM,      BUILTIN_RANDOM)
-    KWD(CHAR_REVERSE,     BUILTIN_REVERSE)
-    KWD(CHAR_RIGHT,       BUILTIN_RIGHT)
-    KWD(CHAR_SIGN,        BUILTIN_SIGN)
-    KWD(CHAR_SOURCELINE,  BUILTIN_SOURCELINE)
-    KWD(CHAR_SPACE,       BUILTIN_SPACE)
-    KWD(CHAR_STREAM,      BUILTIN_STREAM)
-    KWD(CHAR_STRIP,       BUILTIN_STRIP)
-    KWD(CHAR_SUBSTR,      BUILTIN_SUBSTR)
-    KWD(CHAR_SUBWORD,     BUILTIN_SUBWORD)
-    KWD(CHAR_SYMBOL,      BUILTIN_SYMBOL)
-    KWD(CHAR_TIME,        BUILTIN_TIME)
-    KWD(CHAR_TRACE,       BUILTIN_TRACE)
-    KWD(CHAR_TRANSLATE,   BUILTIN_TRANSLATE)
-    KWD(CHAR_TRUNC,       BUILTIN_TRUNC)
-    KWD(CHAR_UPPER,       BUILTIN_UPPER)
-    KWD(CHAR_USERID,      BUILTIN_USERID)
-    KWD(CHAR_VALUE,       BUILTIN_VALUE)
-    KWD(CHAR_VAR,         BUILTIN_VAR)
-    KWD(CHAR_VERIFY,      BUILTIN_VERIFY)
-    KWD(CHAR_WORD,        BUILTIN_WORD)
-    KWD(CHAR_WORDINDEX,   BUILTIN_WORDINDEX)
-    KWD(CHAR_WORDLENGTH,  BUILTIN_WORDLENGTH)
-    KWD(CHAR_WORDPOS,     BUILTIN_WORDPOS)
-    KWD(CHAR_WORDS,       BUILTIN_WORDS)
-    KWD(CHAR_X2B,         BUILTIN_X2B)
-    KWD(CHAR_X2C,         BUILTIN_X2C)
-    KWD(CHAR_X2D,         BUILTIN_X2D)
-    KWD(CHAR_XRANGE,      BUILTIN_XRANGE)
+KeywordEntry BuiltinFunctions[] = {        /* built-in function table    */
+    KeywordEntry(CHAR_ABBREV,      BUILTIN_ABBREV),
+    KeywordEntry(CHAR_ABS,         BUILTIN_ABS),
+    KeywordEntry(CHAR_ADDRESS,     BUILTIN_ADDRESS),
+    KeywordEntry(CHAR_ARG,         BUILTIN_ARG),
+    KeywordEntry(CHAR_B2X,         BUILTIN_B2X),
+    KeywordEntry(CHAR_BITAND,      BUILTIN_BITAND),
+    KeywordEntry(CHAR_BITOR,       BUILTIN_BITOR),
+    KeywordEntry(CHAR_BITXOR,      BUILTIN_BITXOR),
+    KeywordEntry(CHAR_C2D,         BUILTIN_C2D),
+    KeywordEntry(CHAR_C2X,         BUILTIN_C2X),
+    KeywordEntry(CHAR_CENTER,      BUILTIN_CENTER),
+    KeywordEntry(CHAR_CENTRE,      BUILTIN_CENTRE),
+    KeywordEntry(CHAR_CHANGESTR,   BUILTIN_CHANGESTR),
+    KeywordEntry(CHAR_CHARIN,      BUILTIN_CHARIN),
+    KeywordEntry(CHAR_CHAROUT,     BUILTIN_CHAROUT),
+    KeywordEntry(CHAR_CHARS,       BUILTIN_CHARS),
+    KeywordEntry(CHAR_COMPARE,     BUILTIN_COMPARE),
+    KeywordEntry(CHAR_CONDITION,   BUILTIN_CONDITION),
+    KeywordEntry(CHAR_COPIES,      BUILTIN_COPIES),
+    KeywordEntry(CHAR_COUNTSTR,    BUILTIN_COUNTSTR),
+    KeywordEntry(CHAR_D2C,         BUILTIN_D2C),
+    KeywordEntry(CHAR_D2X,         BUILTIN_D2X),
+    KeywordEntry(CHAR_DATATYPE,    BUILTIN_DATATYPE),
+    KeywordEntry(CHAR_DATE,        BUILTIN_DATE),
+    KeywordEntry(CHAR_DBADJUST,    BUILTIN_DBADJUST),
+    KeywordEntry(CHAR_DBBRACKET,   BUILTIN_DBBRACKET),
+    KeywordEntry(CHAR_DBCENTER,    BUILTIN_DBCENTER),
+    KeywordEntry(CHAR_DBLEFT,      BUILTIN_DBLEFT),
+    KeywordEntry(CHAR_DBRIGHT,     BUILTIN_DBRIGHT),
+    KeywordEntry(CHAR_DBRLEFT,     BUILTIN_DBRLEFT),
+    KeywordEntry(CHAR_DBRRIGHT,    BUILTIN_DBRRIGHT),
+    KeywordEntry(CHAR_DBTODBCS,    BUILTIN_DBTODBCS),
+    KeywordEntry(CHAR_DBTOSBCS,    BUILTIN_DBTOSBCS),
+    KeywordEntry(CHAR_DBUNBRACKET, BUILTIN_DBUNBRACKET),
+    KeywordEntry(CHAR_DBVALIDATE,  BUILTIN_DBVALIDATE),
+    KeywordEntry(CHAR_DBWIDTH,     BUILTIN_DBWIDTH),
+    KeywordEntry(CHAR_DELSTR,      BUILTIN_DELSTR),
+    KeywordEntry(CHAR_DELWORD,     BUILTIN_DELWORD),
+    KeywordEntry(CHAR_DIGITS,      BUILTIN_DIGITS),
+    KeywordEntry(CHAR_ERRORTEXT,   BUILTIN_ERRORTEXT),
+    KeywordEntry(CHAR_FORM,        BUILTIN_FORM),
+    KeywordEntry(CHAR_FORMAT,      BUILTIN_FORMAT),
+    KeywordEntry(CHAR_FUZZ,        BUILTIN_FUZZ),
+    KeywordEntry(CHAR_INSERT,      BUILTIN_INSERT),
+    KeywordEntry(CHAR_LASTPOS,     BUILTIN_LASTPOS),
+    KeywordEntry(CHAR_LEFT,        BUILTIN_LEFT),
+    KeywordEntry(CHAR_LENGTH,      BUILTIN_LENGTH),
+    KeywordEntry(CHAR_LINEIN,      BUILTIN_LINEIN),
+    KeywordEntry(CHAR_LINEOUT,     BUILTIN_LINEOUT),
+    KeywordEntry(CHAR_LINES,       BUILTIN_LINES),
+    KeywordEntry(CHAR_LOWER,       BUILTIN_LOWER),
+    KeywordEntry(CHAR_MAX,         BUILTIN_MAX),
+    KeywordEntry(CHAR_MIN,         BUILTIN_MIN),
+    KeywordEntry(CHAR_OVERLAY,     BUILTIN_OVERLAY),
+    KeywordEntry(CHAR_POS,         BUILTIN_POS),
+    KeywordEntry(CHAR_QUEUED,      BUILTIN_QUEUED),
+    KeywordEntry(CHAR_RANDOM,      BUILTIN_RANDOM),
+    KeywordEntry(CHAR_REVERSE,     BUILTIN_REVERSE),
+    KeywordEntry(CHAR_RIGHT,       BUILTIN_RIGHT),
+    KeywordEntry(CHAR_SIGN,        BUILTIN_SIGN),
+    KeywordEntry(CHAR_SOURCELINE,  BUILTIN_SOURCELINE),
+    KeywordEntry(CHAR_SPACE,       BUILTIN_SPACE),
+    KeywordEntry(CHAR_STREAM,      BUILTIN_STREAM),
+    KeywordEntry(CHAR_STRIP,       BUILTIN_STRIP),
+    KeywordEntry(CHAR_SUBSTR,      BUILTIN_SUBSTR),
+    KeywordEntry(CHAR_SUBWORD,     BUILTIN_SUBWORD),
+    KeywordEntry(CHAR_SYMBOL,      BUILTIN_SYMBOL),
+    KeywordEntry(CHAR_TIME,        BUILTIN_TIME),
+    KeywordEntry(CHAR_TRACE,       BUILTIN_TRACE),
+    KeywordEntry(CHAR_TRANSLATE,   BUILTIN_TRANSLATE),
+    KeywordEntry(CHAR_TRUNC,       BUILTIN_TRUNC),
+    KeywordEntry(CHAR_UPPER,       BUILTIN_UPPER),
+    KeywordEntry(CHAR_USERID,      BUILTIN_USERID),
+    KeywordEntry(CHAR_VALUE,       BUILTIN_VALUE),
+    KeywordEntry(CHAR_VAR,         BUILTIN_VAR),
+    KeywordEntry(CHAR_VERIFY,      BUILTIN_VERIFY),
+    KeywordEntry(CHAR_WORD,        BUILTIN_WORD),
+    KeywordEntry(CHAR_WORDINDEX,   BUILTIN_WORDINDEX),
+    KeywordEntry(CHAR_WORDLENGTH,  BUILTIN_WORDLENGTH),
+    KeywordEntry(CHAR_WORDPOS,     BUILTIN_WORDPOS),
+    KeywordEntry(CHAR_WORDS,       BUILTIN_WORDS),
+    KeywordEntry(CHAR_X2B,         BUILTIN_X2B),
+    KeywordEntry(CHAR_X2C,         BUILTIN_X2C),
+    KeywordEntry(CHAR_X2D,         BUILTIN_X2D),
+    KeywordEntry(CHAR_XRANGE,      BUILTIN_XRANGE),
 };
 
-INT BuiltinFunctionscount =            /* size of builtin function table     */
-    sizeof(BuiltinFunctions)/sizeof(KWDTABLE);
+int BuiltinFunctionscount =            /* size of builtin function table     */
+    sizeof(BuiltinFunctions)/sizeof(BuiltinFunctions[0]);
 
 /*********************************************************************/
 /*                                                                   */
@@ -263,23 +263,23 @@ INT BuiltinFunctionscount =            /* size of builtin function table     */
 /*                                                                   */
 /*********************************************************************/
 
-KWDTABLE ConditionKeywords[] = {       /* condition option table     */
-  KWD(CHAR_ANY,            CONDITION_ANY)
-  KWD(CHAR_ERROR,          CONDITION_ERROR)
-  KWD(CHAR_FAILURE,        CONDITION_FAILURE)
-  KWD(CHAR_HALT,           CONDITION_HALT)
-  KWD(CHAR_LOSTDIGITS,     CONDITION_LOSTDIGITS)
-  KWD(CHAR_NOMETHOD,       CONDITION_NOMETHOD)
-  KWD(CHAR_NOSTRING,       CONDITION_NOSTRING)
-  KWD(CHAR_NOTREADY,       CONDITION_NOTREADY)
-  KWD(CHAR_NOVALUE,        CONDITION_NOVALUE)
-  KWD(CHAR_PROPAGATE,      CONDITION_PROPAGATE)
-  KWD(CHAR_SYNTAX,         CONDITION_SYNTAX)
-  KWD(CHAR_USER,           CONDITION_USER)
+KeywordEntry ConditionKeywords[] = {       /* condition option table     */
+  KeywordEntry(CHAR_ANY,            CONDITION_ANY),
+  KeywordEntry(CHAR_ERROR,          CONDITION_ERROR),
+  KeywordEntry(CHAR_FAILURE,        CONDITION_FAILURE),
+  KeywordEntry(CHAR_HALT,           CONDITION_HALT),
+  KeywordEntry(CHAR_LOSTDIGITS,     CONDITION_LOSTDIGITS),
+  KeywordEntry(CHAR_NOMETHOD,       CONDITION_NOMETHOD),
+  KeywordEntry(CHAR_NOSTRING,       CONDITION_NOSTRING),
+  KeywordEntry(CHAR_NOTREADY,       CONDITION_NOTREADY),
+  KeywordEntry(CHAR_NOVALUE,        CONDITION_NOVALUE),
+  KeywordEntry(CHAR_PROPAGATE,      CONDITION_PROPAGATE),
+  KeywordEntry(CHAR_SYNTAX,         CONDITION_SYNTAX),
+  KeywordEntry(CHAR_USER,           CONDITION_USER),
 };
 
-INT ConditionKeywordscount =            /* size of condition keyword table     */
-    sizeof(ConditionKeywords)/sizeof(KWDTABLE);
+int ConditionKeywordscount =            /* size of condition keyword table     */
+    sizeof(ConditionKeywords)/sizeof(ConditionKeywordscount[0]);
 
 /*********************************************************************/
 /*                                                                   */
@@ -287,21 +287,21 @@ INT ConditionKeywordscount =            /* size of condition keyword table     *
 /*                                                                   */
 /*********************************************************************/
 
-KWDTABLE ParseOptions[] = {            /* parse option table         */
-  KWD(CHAR_ARG,           SUBKEY_ARG)
-  KWD(CHAR_CASELESS,      SUBKEY_CASELESS)
-  KWD(CHAR_LINEIN,        SUBKEY_LINEIN)
-  KWD(CHAR_LOWER,         SUBKEY_LOWER)
-  KWD(CHAR_PULL,          SUBKEY_PULL)
-  KWD(CHAR_SOURCE,        SUBKEY_SOURCE)
-  KWD(CHAR_UPPER,         SUBKEY_UPPER)
-  KWD(CHAR_VALUE,         SUBKEY_VALUE)
-  KWD(CHAR_VAR,           SUBKEY_VAR)
-  KWD(CHAR_VERSION,       SUBKEY_VERSION)
+KeywordEntry ParseOptions[] = {            /* parse option table         */
+  KeywordEntry(CHAR_ARG,           SUBKEY_ARG),
+  KeywordEntry(CHAR_CASELESS,      SUBKEY_CASELESS),
+  KeywordEntry(CHAR_LINEIN,        SUBKEY_LINEIN),
+  KeywordEntry(CHAR_LOWER,         SUBKEY_LOWER),
+  KeywordEntry(CHAR_PULL,          SUBKEY_PULL),
+  KeywordEntry(CHAR_SOURCE,        SUBKEY_SOURCE),
+  KeywordEntry(CHAR_UPPER,         SUBKEY_UPPER),
+  KeywordEntry(CHAR_VALUE,         SUBKEY_VALUE),
+  KeywordEntry(CHAR_VAR,           SUBKEY_VAR),
+  KeywordEntry(CHAR_VERSION,       SUBKEY_VERSION),
 };
 
-INT ParseOptionscount =            /* size of Parse options table     */
-    sizeof(ParseOptions)/sizeof(KWDTABLE);
+int ParseOptionscount =            /* size of Parse options table     */
+    sizeof(ParseOptions)/sizeof(ParseOptions[0]);
 
 /*********************************************************************/
 /*                                                                   */
@@ -309,24 +309,24 @@ INT ParseOptionscount =            /* size of Parse options table     */
 /*                                                                   */
 /*********************************************************************/
 
-KWDTABLE SubDirectives[] = {           /* language directive subkeywords    */
-   KWD(CHAR_ABSTRACT,    SUBDIRECTIVE_ABSTRACT)
-   KWD(CHAR_ATTRIBUTE,   SUBDIRECTIVE_ATTRIBUTE)
-   KWD(CHAR_CLASS,       SUBDIRECTIVE_CLASS)
-   KWD(CHAR_EXTERNAL,    SUBDIRECTIVE_EXTERNAL)
-   KWD(CHAR_GET,         SUBDIRECTIVE_GET)
-   KWD(CHAR_GUARDED,     SUBDIRECTIVE_GUARDED)
-   KWD(CHAR_INHERIT,     SUBDIRECTIVE_INHERIT)
-   KWD(CHAR_METACLASS,   SUBDIRECTIVE_METACLASS)
-   KWD(CHAR_MIXINCLASS,  SUBDIRECTIVE_MIXINCLASS)
-   KWD(CHAR_PRIVATE,     SUBDIRECTIVE_PRIVATE)
-   KWD(CHAR_PROTECTED,   SUBDIRECTIVE_PROTECTED)
-   KWD(CHAR_PUBLIC,      SUBDIRECTIVE_PUBLIC)
-   KWD(CHAR_SET,         SUBDIRECTIVE_SET)
-   KWD(CHAR_SUBCLASS,    SUBDIRECTIVE_SUBCLASS)
-   KWD(CHAR_UNGUARDED,   SUBDIRECTIVE_UNGUARDED)
-   KWD(CHAR_UNPROTECTED, SUBDIRECTIVE_UNPROTECTED)
+KeywordEntry SubDirectives[] = {           /* language directive subkeywords    */
+   KeywordEntry(CHAR_ABSTRACT,    SUBDIRECTIVE_ABSTRACT),
+   KeywordEntry(CHAR_ATTRIBUTE,   SUBDIRECTIVE_ATTRIBUTE),
+   KeywordEntry(CHAR_CLASS,       SUBDIRECTIVE_CLASS),
+   KeywordEntry(CHAR_EXTERNAL,    SUBDIRECTIVE_EXTERNAL),
+   KeywordEntry(CHAR_GET,         SUBDIRECTIVE_GET),
+   KeywordEntry(CHAR_GUARDED,     SUBDIRECTIVE_GUARDED),
+   KeywordEntry(CHAR_INHERIT,     SUBDIRECTIVE_INHERIT),
+   KeywordEntry(CHAR_METACLASS,   SUBDIRECTIVE_METACLASS),
+   KeywordEntry(CHAR_MIXINCLASS,  SUBDIRECTIVE_MIXINCLASS),
+   KeywordEntry(CHAR_PRIVATE,     SUBDIRECTIVE_PRIVATE),
+   KeywordEntry(CHAR_PROTECTED,   SUBDIRECTIVE_PROTECTED),
+   KeywordEntry(CHAR_PUBLIC,      SUBDIRECTIVE_PUBLIC),
+   KeywordEntry(CHAR_SET,         SUBDIRECTIVE_SET),
+   KeywordEntry(CHAR_SUBCLASS,    SUBDIRECTIVE_SUBCLASS),
+   KeywordEntry(CHAR_UNGUARDED,   SUBDIRECTIVE_UNGUARDED),
+   KeywordEntry(CHAR_UNPROTECTED, SUBDIRECTIVE_UNPROTECTED),
 };
 
-INT SubDirectivescount =            /* size of function table     */
-    sizeof(SubDirectives)/sizeof(KWDTABLE);
+int SubDirectivescount =            /* size of function table     */
+    sizeof(SubDirectives)/sizeof(SubDirectives[0]);

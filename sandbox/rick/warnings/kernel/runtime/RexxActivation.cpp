@@ -98,8 +98,6 @@ void RestoreEnvironment(void *);
                                        /* changes                           */
 static ACTSETTINGS activationSettingsTemplate;
 
-extern INT  lookup[];
-
 
 void * RexxActivation::operator new(size_t size)
 /******************************************************************************/
@@ -3371,7 +3369,7 @@ RexxVariableBase  *RexxActivation::getDirectVariableRetriever(
           compound++;                  /* count the character               */
       }
                                        /* may have a special character      */
-      else if (lookup[character] == 0) {
+      else if (!RexxSource::isSymbolCharacter(character)) {
                                        /* maybe exponential form?           */
         if (character == '+' || character == '-') {
                                        /* front part not valid?             */
@@ -3395,7 +3393,7 @@ RexxVariableBase  *RexxActivation::getDirectVariableRetriever(
       else if (character < '0' || character > '9')
         nonnumeric++;                  /* count the non-numeric             */
                                        /* lower case character?             */
-      else if (lookup[character] != character)
+      else if (RexxSource::translateChar(character) != character)
         return OREF_NULL;              /* this is bad, return               */
       last = character;                /* remember last one                 */
       scan++;                          /* step the pointer                  */
