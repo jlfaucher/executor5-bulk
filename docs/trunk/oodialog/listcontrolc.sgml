@@ -152,6 +152,14 @@ the methods listed in the
 <entry><link linkend="bkcolornew">BkColor=</link></entry>
 </row>
 <row>
+<entry>Check</entry>
+<entry><link linkend="mthCheck">Check</link></entry>
+</row>
+<row>
+<entry>CheckAll</entry>
+<entry><link linkend="mthCheckAll">CheckAll</link></entry>
+</row>
+<row>
 <entry>ColumnInfo</entry>
 <entry><link linkend="columninfo">ColumnInfo</link></entry>
 </row>
@@ -216,6 +224,10 @@ the methods listed in the
 <entry><link linkend="focused">Focused</link></entry>
 </row>
 <row>
+<entry>GetCheck</entry>
+<entry><link linkend="mthGetCheck">GetCheck</link></entry>
+</row>
+<row>
 <entry>GetExtendedStyle</entry>
 <entry><link linkend="mthGetExtendedStyle">GetExtendedStyle</link></entry>
 </row>
@@ -234,6 +246,10 @@ the methods listed in the
 <row>
 <entry>InsertColumn</entry>
 <entry><link linkend="insertcolumn">InsertColumn</link></entry>
+</row>
+<row>
+<entry>IsChecked</entry>
+<entry><link linkend="mthIsChecked">IsChecked</link></entry>
 </row>
 <row>
 <entry>ItemInfo</entry>
@@ -414,6 +430,14 @@ the methods listed in the
 <row>
 <entry>TextColor=</entry>
 <entry><link linkend="textcolornew">TextColor=</link></entry>
+</row>
+<row>
+<entry>Uncheck</entry>
+<entry><link linkend="mthUncheck">Uncheck</link></entry>
+</row>
+<row>
+<entry>UncheckAll</entry>
+<entry><link linkend="mthUncheckAll">UncheckAll</link></entry>
 </row>
 <row>
 <entry>Update</entry>
@@ -1264,6 +1288,371 @@ second the row is automatically selectd.
 
   oldTime = list~setHoverTime(400)
   ...
+
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthCheck"><title>Check</title>
+<indexterm><primary>Check</primary>
+<secondary>ListControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~Check(--index--)--------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>The <computeroutput>Check</computeroutput> method sets the check mark for
+a list view item.  This method is only valid for list view controls that have
+the check boxes extended style.  (See the <link
+linkend="mthAddExtendedStyle">AddExtendedStyle</link> method for a description
+of the check boxes extended style.)
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>index</term>
+<listitem><para>The index of the item for which to set the check mark.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The return values are:
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Success.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>An (internal) problem with the control's window handle.
+</para></listitem></varlistentry>
+<varlistentry><term>-2</term>
+<listitem><para>The list view control does not have the check boxes extended
+style.
+<varlistentry><term>-3</term>
+<listitem><para>The index is invalid.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example is from a mailing list application.  The
+user selects which entries to include in any mailing.  All items in a list view
+that have their check boxes checked are included in the mailing.  The
+application has a feature that allows the user to automatically select all items
+with a specified zip code.
+<programlisting>
+<![CDATA[
+
+::method onUseZip
+
+  text = self~getEditControl(IDC_EDIT_ZIPCODE)~getText
+  if self~validateZip(text) then do
+     list = self~getListControl(IDC_LIST)
+     do i = 0 to addresses~items - 1
+       infoTable = address[i + 1]
+       if infoTable['zip'] == text then list~check(i)
+     end
+  end
+
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthUncheck"><title>Uncheck</title>
+<indexterm><primary>Uncheck</primary>
+<secondary>ListControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~Uncheck(--index--)------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>The <computeroutput>Uncheck</computeroutput> method remoes the check mark
+for a list view item.  This method is only valid for list view controls that
+have the check boxes extended style.  (See the <link
+linkend="mthAddExtendedStyle">AddExtendedStyle</link> method for a description
+of the check boxes extended style.)
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>index</term>
+<listitem><para>The index of the item where the check box check is to be
+removed.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The return values are:
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Success.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>An (internal) problem with the control's window handle.
+</para></listitem></varlistentry>
+<varlistentry><term>-2</term>
+<listitem><para>The list view control does not have the check boxes extended
+style.
+<varlistentry><term>-3</term>
+<listitem><para>The index is invalid.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example is from a doctor's office custom
+accounting application.  A list box is filled with information for every
+patient.  One button in the application checks every patient with an outstanding
+balance, they will be mailed a statement for that balance.  The doctor does not
+believe in sending billing statements to patients that have a very low balance.
+However what a &quot;low&quot; balance is depends on how he is feeling at
+statement time. Therefore the application allows the office manager to
+dynamically remove some patients from the statement list.
+<programlisting>
+<![CDATA[
+
+::method onDeferBilling
+  expose billingList
+
+  text = self~getEditControl(IDC_EDIT_MINAMOUNT)~getText
+  minimun = self~decimalNumber(text)
+
+  if amount > 0 then do i = 0 to billingList~items
+    if billingList~isChecked(i) then do
+
+      -- Column 6 in the list is the patient's current balance.
+      owes = billingList~itemText(i, 6)
+      if self~decimalNumber(owes) <= minimum then billingList~uncheck(i)
+
+    end
+  end
+
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthCheckAll"><title>CheckAll</title>
+<indexterm><primary>CheckAll</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~CheckAll----------------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>The <computeroutput>CheckAll</computeroutput> method sets the check mark
+for every list view item.  This method is only valid for list view controls that
+have the check boxes extended style.  (See the <link
+linkend="mthAddExtendedStyle">AddExtendedStyle</link> method for a description
+of the check boxes extended style.)
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>This method takes no arguments.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The return values are:
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Success.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>An (internal) problem with the control's window handle.
+</para></listitem></varlistentry>
+<varlistentry><term>-2</term>
+<listitem><para>The list view control does not have the check boxes extended
+style.
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example is from a program that has a push button
+that allows the user to check all the check boxes:
+<programlisting>
+<![CDATA[
+
+::method onCheckAll
+
+  list = self~getListControl(IDC_LIST_REPUBLICANS)
+  list~checkAll
+
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthUncheckAll"><title>UncheckAll</title>
+<indexterm><primary>UncheckAll</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~UncheckAll--------------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>The <computeroutput>UncheckAll</computeroutput> method clears the check
+mark for every list view item.  This method is only valid for list view controls
+that have the check boxes extended style.  (See the <link
+linkend="mthAddExtendedStyle">AddExtendedStyle</link> method for a description
+of the check boxes extended style.)
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>This method takes no arguments.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The return values are:
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Success.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>An (internal) problem with the control's window handle.
+</para></listitem></varlistentry>
+<varlistentry><term>-2</term>
+<listitem><para>The list view control does not have the check boxes extended
+style.
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example is from a program that has a push button
+that allows the user to remove the check mark from all the check boxes:
+<programlisting>
+<![CDATA[
+
+::method onUncheckAll
+
+  list = self~getListControl(IDC_LIST_REPUBLICANS)
+  list~uncheckAll
+
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthGetCheck"><title>GetCheck</title>
+<indexterm><primary>Getcheck</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~GetCheck(--index--)-----------------------------------------><
+
+]]>
+</programlisting>
+
+<para>The <computeroutput>GetCheck</computeroutput> method determines if the
+item at the specified list index has a checked check box. This method will
+return a code indicating that the list view control does not have the check
+boxes extended style, if appropriate.  (See the <link
+linkend="mthAddExtendedStyle">AddExtendedStyle</link> method for a description
+of the check boxes extended style.)
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>index</term>
+<listitem><para>The index of the item to query.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The return values are:
+<variablelist>
+<varlistentry><term>1</term>
+<listitem><para>The item has a check box that is checked.
+</para></listitem></varlistentry>
+<varlistentry><term>0</term>
+<listitem><para>The item has a check box, and it is not checked.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>An (internal) problem with the control's window handle.
+</para></listitem></varlistentry>
+<varlistentry><term>-2</term>
+<listitem><para>The list view control does not have the check boxes extended
+style.
+<varlistentry><term>-3</term>
+<listitem><para>The index is invalid.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthIsChecked"><title>IsChecked</title>
+<indexterm><primary>IsChecked</primary>
+<secondary>ListControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListControl~IsChecked(--index--)----------------------------------------><
+
+]]>
+</programlisting>
+
+<para>The <computeroutput>IsChecked</computeroutput> method determines if a
+check box for a list view item is checked or not.  This method will always
+return true or false.  It can be used if the list view control has or does not
+have the check boxes extended style. (See the<link
+linkend="mthAddExtendedStyle">AddExtendedStyle</link> method for a description
+of the check boxes extended style.)
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>index</term>
+<listitem><para>The index of the item to query.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The return values are:
+<variablelist>
+<varlistentry><term>true</term>
+<listitem><para>The list view item has a check box and it is checked.
+</para></listitem></varlistentry>
+<varlistentry><term>false</term>
+<listitem><para>There is no check mark for the list view item.  Either the list
+view has check boxes and the check box is not checked, the index is out of range
+or not valid, or the list view does not have the check box extended style.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example is from a doctor's office custom
+accounting application.  A list box is filled with information for every
+patient.  After the office mananger has finished working with the accounts a
+mail merge is done to produce statements for all patients that are to receive
+statements for the month.  For every patient item in the list view, if the item
+has a check mark, then that patient is mailed a statement.
+<programlisting> <![CDATA[
+
+::method onCreateMailMerge
+  expose patientList
+
+  do i = 0 to patientList~items
+    if billingList~isChecked(i) then do
+      self~addToMailMerge(billingList, i)
+    end
+  end
 
 ]]>
 </programlisting>
