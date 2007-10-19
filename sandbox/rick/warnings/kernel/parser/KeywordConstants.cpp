@@ -47,7 +47,7 @@
 
 #define DEFINING
 #include "RexxCore.h"
-#include "Sourcefile.hpp"
+#include "SourceFile.hpp"
 #include "Token.hpp"
 
 /*********************************************************************/
