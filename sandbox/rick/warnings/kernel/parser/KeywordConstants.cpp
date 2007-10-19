@@ -36,9 +36,9 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Kernel                                                  RexxConstants.c     */
+/* REXX Kernel                                                                */
 /*                                                                            */
-/* Global Object REXX constants                                               */
+/* Parser keyword constants                                                   */
 /*                                                                            */
 /*   NOTE!!! It is critical for all the following tables to be                */
 /*           in ASCII alphabetic order.                                       */
@@ -47,6 +47,7 @@
 
 #define DEFINING
 #include "RexxCore.h"
+#include "Sourcefile.hpp"
 #include "Token.hpp"
 
 /*********************************************************************/
@@ -55,7 +56,7 @@
 /*                                                                   */
 /*********************************************************************/
 
-KeywordEntry Directives[] = {              /* language directive table          */
+KeywordEntry RexxSource::directives[] = {              /* language directive table          */
    KeywordEntry(CHAR_ATTRIBUTE,   DIRECTIVE_ATTRIBUTE),
    KeywordEntry(CHAR_CLASS,       DIRECTIVE_CLASS),
    KeywordEntry(CHAR_METHOD,      DIRECTIVE_METHOD),
@@ -63,17 +64,13 @@ KeywordEntry Directives[] = {              /* language directive table          
    KeywordEntry(CHAR_ROUTINE,     DIRECTIVE_ROUTINE),
 };
 
-int Directivescount =            /* size of directive table     */
-    sizeof(Directives)/sizeof(Directives[0]);
-
-
 /*********************************************************************/
 /*                                                                   */
 /* Table of keyword instructions used for translation                */
 /*                                                                   */
 /*********************************************************************/
 
-KeywordEntry KeywordInstructions[] = {     /* language keyword table     */
+KeywordEntry RexxSource::keywordInstructions[] = {     /* language keyword table     */
    KeywordEntry(CHAR_ADDRESS,    KEYWORD_ADDRESS),
    KeywordEntry(CHAR_ARG,        KEYWORD_ARG),
    KeywordEntry(CHAR_CALL,       KEYWORD_CALL),
@@ -111,16 +108,13 @@ KeywordEntry KeywordInstructions[] = {     /* language keyword table     */
    KeywordEntry(CHAR_WHEN,       KEYWORD_WHEN),
 };
 
-int KeywordInstructionscount =            /* size of instruction table     */
-    sizeof(KeywordInstructions)/sizeof(KeywordInstructions[0]);
-
 /*********************************************************************/
 /*                                                                   */
 /* Table of instruction subkeywords used for translation             */
 /*                                                                   */
 /*********************************************************************/
 
-KeywordEntry SubKeywords[] = {             /* language keyword table     */
+KeywordEntry RexxSource::subKeywords[] = {             /* language keyword table     */
    KeywordEntry(CHAR_ADDITIONAL,  SUBKEY_ADDITIONAL),
    KeywordEntry(CHAR_ARG,         SUBKEY_ARG),
    KeywordEntry(CHAR_ARGUMENTS,   SUBKEY_ARGUMENTS),
@@ -157,16 +151,13 @@ KeywordEntry SubKeywords[] = {             /* language keyword table     */
    KeywordEntry(CHAR_WITH,        SUBKEY_WITH),
 };
 
-int SubKeywordscount =            /* size of subkeyword table     */
-    sizeof(SubKeywords)/sizeof(SubKeywords[0]);
-
 /*************************************************************************/
 /*                                                                   */
 /* Table of built-in functions used for translation                  */
 /*                                                                   */
 /*********************************************************************/
 
-KeywordEntry BuiltinFunctions[] = {        /* built-in function table    */
+KeywordEntry RexxSource::builtinFunctions[] = {        /* built-in function table    */
     KeywordEntry(CHAR_ABBREV,      BUILTIN_ABBREV),
     KeywordEntry(CHAR_ABS,         BUILTIN_ABS),
     KeywordEntry(CHAR_ADDRESS,     BUILTIN_ADDRESS),
@@ -254,16 +245,13 @@ KeywordEntry BuiltinFunctions[] = {        /* built-in function table    */
     KeywordEntry(CHAR_XRANGE,      BUILTIN_XRANGE),
 };
 
-int BuiltinFunctionscount =            /* size of builtin function table     */
-    sizeof(BuiltinFunctions)/sizeof(BuiltinFunctions[0]);
-
 /*********************************************************************/
 /*                                                                   */
 /* Table of condition keywords used for translation                  */
 /*                                                                   */
 /*********************************************************************/
 
-KeywordEntry ConditionKeywords[] = {       /* condition option table     */
+KeywordEntry RexxSource::conditionKeywords[] = {       /* condition option table     */
   KeywordEntry(CHAR_ANY,            CONDITION_ANY),
   KeywordEntry(CHAR_ERROR,          CONDITION_ERROR),
   KeywordEntry(CHAR_FAILURE,        CONDITION_FAILURE),
@@ -278,16 +266,13 @@ KeywordEntry ConditionKeywords[] = {       /* condition option table     */
   KeywordEntry(CHAR_USER,           CONDITION_USER),
 };
 
-int ConditionKeywordscount =            /* size of condition keyword table     */
-    sizeof(ConditionKeywords)/sizeof(ConditionKeywordscount[0]);
-
 /*********************************************************************/
 /*                                                                   */
 /* Table of parse options used for translation                       */
 /*                                                                   */
 /*********************************************************************/
 
-KeywordEntry ParseOptions[] = {            /* parse option table         */
+KeywordEntry RexxSource::parseOptions[] = {            /* parse option table         */
   KeywordEntry(CHAR_ARG,           SUBKEY_ARG),
   KeywordEntry(CHAR_CASELESS,      SUBKEY_CASELESS),
   KeywordEntry(CHAR_LINEIN,        SUBKEY_LINEIN),
@@ -300,16 +285,13 @@ KeywordEntry ParseOptions[] = {            /* parse option table         */
   KeywordEntry(CHAR_VERSION,       SUBKEY_VERSION),
 };
 
-int ParseOptionscount =            /* size of Parse options table     */
-    sizeof(ParseOptions)/sizeof(ParseOptions[0]);
-
 /*********************************************************************/
 /*                                                                   */
 /* Table of directive subkeywords used for translation               */
 /*                                                                   */
 /*********************************************************************/
 
-KeywordEntry SubDirectives[] = {           /* language directive subkeywords    */
+KeywordEntry RexxSource::subDirectives[] = {           /* language directive subkeywords    */
    KeywordEntry(CHAR_ABSTRACT,    SUBDIRECTIVE_ABSTRACT),
    KeywordEntry(CHAR_ATTRIBUTE,   SUBDIRECTIVE_ATTRIBUTE),
    KeywordEntry(CHAR_CLASS,       SUBDIRECTIVE_CLASS),
@@ -328,5 +310,170 @@ KeywordEntry SubDirectives[] = {           /* language directive subkeywords    
    KeywordEntry(CHAR_UNPROTECTED, SUBDIRECTIVE_UNPROTECTED),
 };
 
-int SubDirectivescount =            /* size of function table     */
-    sizeof(SubDirectives)/sizeof(SubDirectives[0]);
+/**
+ * Resolve a token to a potential subkeyword.
+ *
+ * @param token      The token to resolve.
+ * @param Table      The table to search.
+ * @param Table_Size The size of the table.
+ *
+ * @return The numeric identifier for the constant.  Returns 0 if not
+ *         found in the target table.
+ */
+int RexxSource::resolveKeyword(RexxString *token, KeywordEntry *Table, int Table_Size)
+{
+  int       Upper;                     /* search upper bound         */
+  int       Lower;                     /* search lower bound         */
+  int       Middle;                    /* search middle bound        */
+  char      FirstChar;                 /* first search character     */
+  int       rc;                        /* comparison result          */
+
+  const char *Name = token->getStringData();
+  stringsize_t Length = token->getLength();
+
+  Lower = 0;                           /* set initial lower bound    */
+  Upper = Table_Size - 1;              /* set the upper bound        */
+  FirstChar = *Name;                   /* get the first character    */
+
+  while (Lower <= Upper) {             /* while still a range        */
+                                       /* set new middle location    */
+    Middle = Lower + ((Upper - Lower) / 2);
+                                       /* if first character matches */
+    if (*Table[Middle].name == FirstChar) {
+      rc = memcmp(Name, Table[Middle].name, min(Length, Table[Middle].length));
+      if (!rc) {                       /* compared equal             */
+                                       /* lengths equal?             */
+        if (Length == Table[Middle].length)
+                                       /* return this keyword code   */
+          return Table[Middle].keyword_code;
+                                       /* have to go up?             */
+        else if (Length > Table[Middle].length)
+          Lower = Middle + 1;          /* set new lower bound        */
+        else                           /* going down                 */
+          Upper = Middle - 1;          /* set new upper bound        */
+      }
+      else if (rc > 0)                 /* name is larger             */
+        Lower = Middle + 1;            /* set new lower bound        */
+      else                             /* going down                 */
+        Upper = Middle - 1;            /* set new upper bound        */
+    }
+                                       /* name is larger             */
+    else if (*Table[Middle].name < FirstChar)
+      Lower = Middle + 1;              /* set new lower bound        */
+    else                               /* going down                 */
+      Upper = Middle - 1;              /* set new upper bound        */
+  }
+  return 0;                            /* return failure flag        */
+}
+
+#define tabSize(t) (sizeof(t)/sizeof(t[0]))
+
+
+int RexxSource::subKeyword(
+    RexxToken  *token)                 /* token to check                    */
+/******************************************************************************/
+/* Function:  Return a numeric subkeyword identifier for a token              */
+/******************************************************************************/
+{
+    // not a symbol?  not a keyword
+    if (token->classId != TOKEN_SYMBOL)
+    {
+        return 0;
+    }
+    return resolveKeyword(token->value, subKeywords, tabSize(subKeywords));
+}
+
+int RexxSource::keyword(
+    RexxToken  *token)                 /* token to check                    */
+/****************************************************************************/
+/* Function:  Return a numeric keyword identifier for a token               */
+/****************************************************************************/
+{
+    // not a symbol?  not a keyword
+    if (token->classId != TOKEN_SYMBOL)
+    {
+        return 0;
+    }
+    return resolveKeyword(token->value, keywordInstructions, tabSize(keywordInstructions));
+}
+
+int RexxSource::builtin(
+    RexxToken  *token)                 /* token to check                    */
+/****************************************************************************/
+/* Function:  Return a numeric builtin function identifier for a token      */
+/****************************************************************************/
+{
+    // not a symbol?  not a keyword
+    if (token->classId != TOKEN_SYMBOL)
+    {
+        return 0;
+    }
+    return resolveKeyword(token->value, builtinFunctions, tabSize(builtinFunctions));
+}
+
+
+int RexxSource::resolveBuiltin(
+    RexxString *value)                 /* name to check                     */
+/******************************************************************************/
+/* Function:  Return a numeric keyword identifier for a string                */
+/******************************************************************************/
+{
+    return resolveKeyword(value, builtinFunctions, tabSize(builtinFunctions));
+}
+
+
+int RexxSource::condition(
+    RexxToken  *token)                 /* token to check                    */
+/****************************************************************************/
+/* Function:  Return a numeric condition identifier for a token             */
+/****************************************************************************/
+{
+    // not a symbol?  not a keyword
+    if (token->classId != TOKEN_SYMBOL)
+    {
+        return 0;
+    }
+    return resolveKeyword(token->value, conditionKeywords, tabSize(conditionKeywords));
+}
+
+int RexxSource::parseOption(
+    RexxToken  *token)                 /* token to check                    */
+/****************************************************************************/
+/* Function:  Return a numeric condition identifier for a token             */
+/****************************************************************************/
+{
+    // not a symbol?  not a keyword
+    if (token->classId != TOKEN_SYMBOL)
+    {
+        return 0;
+    }
+    return resolveKeyword(token->value, parseOptions, tabSize(parseOptions));
+}
+
+int RexxSource::keyDirective(
+    RexxToken  *token)                 /* token to check                    */
+/****************************************************************************/
+/* Function:  Return a numeric directive identifier for a token             */
+/****************************************************************************/
+{
+    // not a symbol?  not a keyword
+    if (token->classId != TOKEN_SYMBOL)
+    {
+        return 0;
+    }
+    return resolveKeyword(token->value, directives, tabSize(directives));
+}
+
+int RexxSource::subDirective(
+    RexxToken  *token)                 /* token to check                    */
+/****************************************************************************/
+/* Function:  Return a numeric directive option identifier for a token      */
+/****************************************************************************/
+{
+    // not a symbol?  not a keyword
+    if (token->classId != TOKEN_SYMBOL)
+    {
+        return 0;
+    }
+    return resolveKeyword(token->value, subDirectives, tabSize(subDirectives));
+}
