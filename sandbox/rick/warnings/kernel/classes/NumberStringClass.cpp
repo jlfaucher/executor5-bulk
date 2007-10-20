@@ -2682,7 +2682,7 @@ void  *RexxNumberString::operator new(size_t size, size_t length)
   return newNumber;                    /* return the new numberstring       */
 }
 
-RexxNumberString *RexxNumberStringClass::newInstance(char *number, stringsize_t len)
+RexxNumberString *RexxNumberStringClass::newInstance(const char *number, stringsize_t len)
 /******************************************************************************/
 /* Function:  Create a new number string object                               */
 /******************************************************************************/

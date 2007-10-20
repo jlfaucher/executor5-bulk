@@ -77,11 +77,11 @@ const char *Memcpbrk(
   return Retval;                       /* return matched position           */
 }
 
-INT ValSet(
+int ValSet(
   const char *String,                  /* string to validate                */
   size_t    Length,                    /* string length                     */
   const char *Set,                     /* character set                     */
-  INT       Modulus,                   /* smallest group size               */
+  int       Modulus,                   /* smallest group size               */
   size_t   *PackedSize )               /* total packed size                 */
 /*********************************************************************/
 /*  Function:               Validate blocks in string                */
@@ -95,12 +95,12 @@ INT ValSet(
 /*                          one or more blanks.                      */
 /*********************************************************************/
 {
-  UCHAR    c;                          /* current character                 */
+  char     c;                          /* current character                 */
   size_t   Count;                      /* # set members found               */
   const char *Current;                 /* current location                  */
-  INT      SpaceFound;                 /* space found yet?                  */
+  int      SpaceFound;                 /* space found yet?                  */
   size_t   Residue;                    /* if space_found, # set members     */
-  INT      rc;                         /* return code                       */
+  int      rc;                         /* return code                       */
 
   rc = FALSE;                          /* default to failure                */
   if (*String != ' ' && *String != '\t') {    /* if no leading blank               */
@@ -158,15 +158,15 @@ int RexxString::isSymbol()
   size_t     Compound;                 /* count of periods                  */
   size_t     i;                        /* loop counter                      */
   const char *Linend;                  /* end of line                       */
-  INT        Type;                     /* return type                       */
+  int        Type;                     /* return type                       */
 
                                        /* name too long                     */
                                        /* or too short                      */
-  if (this->length > MAX_SYMBOL_LENGTH || this->length == 0)
+  if (this->getLength() > MAX_SYMBOL_LENGTH || this->getLength() == 0)
     return STRING_BAD_VARIABLE;        /* set a bad type                    */
 
                                        /* step to end                       */
-  Linend = this->getStringData() + this->length;
+  Linend = this->getStringData() + this->getLength();
 
   Compound = 0;                        /* set compound name is no           */
   Scan = this->getStringData();        /* save start position               */
@@ -181,7 +181,7 @@ int RexxString::isSymbol()
                                        /* now check for exponent            */
   if (((Scan + 1) < Linend) &&
       (*Scan == '-' || *Scan == '+') &&
-      (isdigit(this->stringData[0]) || *Scan == '.') &&
+      (isdigit(this->getChar(0)) || *Scan == '.') &&
       (toupper(*(Scan - 1)) == 'E')) {
     Scan++;                            /* step to next                      */
 
@@ -195,10 +195,10 @@ int RexxString::isSymbol()
     return STRING_BAD_VARIABLE;        /* no, can't be good                 */
                                        /* now determine symbol type         */
                                        /* possible number?                  */
-  if (this->stringData[0] == '.' || isdigit(this->stringData[0])) {
+  if (this->getChar(0) == '.' || isdigit(this->getChar(0))) {
 
                                        /* only a period?                    */
-    if (Compound == 1 && this->length == 1)
+    if (Compound == 1 && this->getLength() == 1)
       Type = STRING_LITERAL_DOT;       /* yes, set the token type           */
     else if (Compound > 1)             /* too many periods?                 */
       Type = STRING_LITERAL;           /* yes, just a literal token         */
@@ -206,7 +206,7 @@ int RexxString::isSymbol()
       Type = STRING_NUMERIC;           /* assume numeric for now            */
       Scan = this->getStringData();    /* point to symbol                   */
                                        /* scan symbol, validating           */
-      for (i = this->length ; i; i-- ) {
+      for (i = this->getLength() ; i; i-- ) {
         if (!isdigit(*Scan) &&         /* if not a digit and                */
             *Scan != '.')              /* and not a period...               */
           break;                       /* finished                          */
@@ -256,7 +256,7 @@ RexxObject *DataType(
   RexxObject *Temp;                    /* temporary value                   */
   const char *Scanp;                   /* string data pointer               */
   size_t      Count;                   /* hex nibble count                  */
-  INT         Type;                    /* validated symbol type             */
+  int         Type;                    /* validated symbol type             */
   RexxNumberString *TempNum;
 
   Len = String->getLength();           /* get validated string len          */
@@ -391,18 +391,18 @@ RexxInteger *RexxString::abbrev(
   size_t   Len1;                       /* length of string1                 */
   size_t   Len2;                       /* length of string1                 */
   size_t   ChkLen;                     /* required check length             */
-  INT      rc;                         /* compare result                    */
+  int      rc;                         /* compare result                    */
 
   if (DBCS_MODE)                       /* need to use DBCS?                 */
                                        /* do the DBCS version               */
     return this->DBCSabbrev(info, length);
 
   info = get_string(info, ARG_ONE);    /* process the information string    */
-  Len2 = info->length;                 /* get the length also               */
+  Len2 = info->getLength();                 /* get the length also               */
                                        /* get the optional check length     */
                                        /* get the optional check length     */
   ChkLen = optional_length(length, Len2, ARG_TWO);
-  Len1 = this->length;                 /* get this length                   */
+  Len1 = this->getLength();                 /* get this length                   */
 
   if (ChkLen == 0 && Len2 == 0)        /* if null string match              */
     rc = 1;                            /* then we have an abbrev            */
@@ -469,10 +469,10 @@ RexxInteger *RexxString::compare(
                                        /* do the DBCS version               */
     return this->DBCScompare(string2, pad);
 
-  Length1 = this->length;              /* get this strings length           */
+  Length1 = this->getLength();              /* get this strings length           */
                                        /* validate the compare string       */
   string2 = get_string(string2, ARG_ONE);
-  Length2 = string2->length;           /* get the length also               */
+  Length2 = string2->getLength();           /* get the length also               */
   PadChar = get_pad(pad, ' ', ARG_TWO);/* get the pad character             */
   if (Length1 > Length2) {             /* first longer?                     */
     String1 = this->getStringData();   /* make arg 1 first string           */
@@ -591,7 +591,7 @@ RexxString *RexxString::copies(RexxInteger *copies)
   required_arg(copies, ONE);           /* the count is required             */
                                        /* get the copies count              */
   Count = copies->requiredNonNegative(ARG_ONE);
-  Len = this->length;                  /* get argument length               */
+  Len = this->getLength();                  /* get argument length               */
 
   if (Count == 0 ||                    /* no copies requested?              */
       Len == 0 )                       /* or copying a null string          */
@@ -626,7 +626,7 @@ RexxObject *RexxString::dataType(RexxString *ptype)
 /* Function:  String class DATATYPE method/function                           */
 /******************************************************************************/
 {
- UINT type;
+ int  type;
 
  if (ptype != OREF_NULL) {             /* see if type was specified?        */
                                        /* yes, specified, get 1st char      */
@@ -837,7 +837,7 @@ size_t RexxString::countStr(RexxString *needle)
 
   count = 0;                           /* no matches yet                    */
                                        /* get the length of the needle      */
-  needlelength = needle->length;
+  needlelength = needle->getLength();
                                        /* get the first match position      */
   match = this->pos(needle, 0);
   while (match != 0) {                 /* while we're getting matches       */
@@ -872,7 +872,7 @@ size_t RexxString::caselessCountStr(RexxString *needle)
 
   count = 0;                           /* no matches yet                    */
                                        /* get the length of the needle      */
-  needlelength = needle->length;
+  needlelength = needle->getLength();
                                        /* get the first match position      */
   match = this->caselessPos(needle, 0);
   while (match != 0) {                 /* while we're getting matches       */
@@ -925,10 +925,10 @@ RexxString *RexxString::changeStr(RexxString *needle, RexxString *newNeedle, Rex
   {
       matches = count;
   }
-  needleLength = needle->length;       /* get the length of the needle      */
-  newLength = newNeedle->length;       /* and the replacement length        */
+  needleLength = needle->getLength();       /* get the length of the needle      */
+  newLength = newNeedle->getLength();       /* and the replacement length        */
                                        /* get a proper sized string         */
-  result = (RexxString *)raw_string(this->length - (matches * needleLength) + (matches * newLength));
+  result = (RexxString *)raw_string(this->getLength() - (matches * needleLength) + (matches * newLength));
   copy = result->getWritableData();    /* point to the copy location        */
   source = this->getStringData();      /* and out own data                  */
                                        /* and the string to replace         */
@@ -950,9 +950,9 @@ RexxString *RexxString::changeStr(RexxString *needle, RexxString *newNeedle, Rex
     }
     start = match + needleLength - 1;  /* step to the next position         */
   }
-  if (start < this->length)            /* some remainder left?              */
+  if (start < this->getLength())            /* some remainder left?              */
                                        /* add it on                         */
-    memcpy(copy, source + start, this->length - start);
+    memcpy(copy, source + start, this->getLength() - start);
   result->generateHash();              /* now finishe off this string       */
   return result;                       /* finished                          */
 }
@@ -986,10 +986,10 @@ RexxString *RexxString::caselessChangeStr(RexxString *needle, RexxString *newNee
   {
       matches = count;
   }
-  needleLength = needle->length;       /* get the length of the needle      */
-  newLength = newNeedle->length;       /* and the replacement length        */
+  needleLength = needle->getLength();       /* get the length of the needle      */
+  newLength = newNeedle->getLength();       /* and the replacement length        */
                                        /* get a proper sized string         */
-  result = (RexxString *)raw_string(this->length - (matches * needleLength) + (matches * newLength));
+  result = (RexxString *)raw_string(this->getLength() - (matches * needleLength) + (matches * newLength));
   copy = result->getWritableData();    /* point to the copy location        */
   source = this->getStringData();      /* and out own data                  */
                                        /* and the string to replace         */
@@ -1011,9 +1011,9 @@ RexxString *RexxString::caselessChangeStr(RexxString *needle, RexxString *newNee
     }
     start = match + needleLength - 1;  /* step to the next position         */
   }
-  if (start < this->length)            /* some remainder left?              */
+  if (start < this->getLength())            /* some remainder left?              */
                                        /* add it on                         */
-    memcpy(copy, source + start, this->length - start);
+    memcpy(copy, source + start, this->getLength() - start);
   result->generateHash();              /* now finishe off this string       */
   return result;                       /* finished                          */
 }
@@ -1197,10 +1197,10 @@ RexxString *RexxString::translate(
                                        /* validate the tables               */
                                        /* validate the tables               */
  tableo = optional_string(tableo, OREF_NULLSTRING, ARG_ONE);
- OutTableLength = tableo->length;      /* get the table length              */
+ OutTableLength = tableo->getLength();      /* get the table length              */
                                        /* input table too                   */
  tablei = optional_string(tablei, OREF_NULLSTRING, ARG_TWO);
- InTableLength = tablei->length;       /* get the table length              */
+ InTableLength = tablei->getLength();       /* get the table length              */
  InTable = tablei->getStringData();    /* point at the input table          */
  OutTable = tableo->getStringData();   /* and the output table              */
                                        /* get the pad character             */
@@ -1209,7 +1209,7 @@ RexxString *RexxString::translate(
                                        /* and copy the string               */
  Retval = new_string(this->getStringData(), this->getLength());
  ScanPtr = Retval->getWritableData();  /* point to data                     */
- ScanLength = this->length;            /* get the length too                */
+ ScanLength = this->getLength();            /* get the length too                */
 
  while (ScanLength--) {                /* spin thru input                   */
    ch = *ScanPtr;                      /* get a character                   */
@@ -1286,7 +1286,7 @@ RexxInteger *RexxString::verify(
       while (StringLen--) {            /* while input left                  */
         ch = *Current++;               /* get next char                     */
                                        /* get reference string              */
-        Reference = ref->stringData;
+        Reference = ref->getStringData();
         Temp = ReferenceLen;           /* copy the reference length         */
         Match = FALSE;                 /* no match yet                      */
 

@@ -232,13 +232,13 @@ class RexxNumberStringClass : public RexxClass {
     static RexxNumberString *newInstance(wholenumber_t);
     static RexxNumberString *newInstance(int64_t);
     static RexxNumberString *newInstance(stringsize_t);
-    static RexxNumberString *newInstance(char *, stringsize_t);
+    static RexxNumberString *newInstance(const char *, stringsize_t);
 
 };
 
 void AdjustPrecision(RexxNumberString *, char *, int);
 
-inline RexxNumberString *new_numberstring(char *s, stringsize_t l)
+inline RexxNumberString *new_numberstring(const char *s, stringsize_t l)
 {
     return RexxNumberStringClass::newInstance(s, l);
 }
