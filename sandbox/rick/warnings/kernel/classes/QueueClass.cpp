@@ -103,32 +103,32 @@ RexxObject *RexxQueue::queueRexx(RexxObject *item)
 }
 
 
-LISTENTRY *RexxQueue::locateEntry(RexxObject *index, RexxObject *position)
+LISTENTRY *RexxQueue::locateEntry(RexxObject *_index, RexxObject *position)
 /******************************************************************************/
 /* Function:  Resolve a queue index argument to a list index                  */
 /******************************************************************************/
 {
     // we must have an index
-    if (index == OREF_NULL)
+    if (_index == OREF_NULL)
     {
         report_exception1(Error_Incorrect_method_noarg, position);
     }
 
     // and it must be a valid whole number
-    RexxInteger *integerIndex = (RexxInteger *)REQUEST_INTEGER(index);
+    RexxInteger *integerIndex = (RexxInteger *)REQUEST_INTEGER(_index);
     if (integerIndex == TheNilObject)
     {
-        report_exception1(Error_Incorrect_method_queue_index, index);
+        report_exception1(Error_Incorrect_method_queue_index, _index);
     }
     // and positive
     wholenumber_t item_index = integerIndex->wholeNumber();
     if (item_index < 1)
     {
-        report_exception1(Error_Incorrect_method_queue_index, index);
+        report_exception1(Error_Incorrect_method_queue_index, _index);
     }
 
     // we need to iterate through the entries to locate this
-    long listIndex = this->first;
+    size_t listIndex = this->first;
     while (listIndex != LIST_END)
     {
         // have we reached the entry?  return the item
@@ -145,30 +145,30 @@ LISTENTRY *RexxQueue::locateEntry(RexxObject *index, RexxObject *position)
 
 
 RexxObject *RexxQueue::put(
-    RexxObject *value,                 /* value to add                      */
-    RexxObject *index)                 /* target index                      */
+    RexxObject *_value,                 /* value to add                      */
+    RexxObject *_index)                 /* target index                      */
 /******************************************************************************/
 /* Function:  Replace the value of an item already in the queue.              */
 /******************************************************************************/
 {
-  required_arg(value, ONE);            /* must have a value also            */
+  required_arg(_value, ONE);           /* must have a value also            */
                                        /* locate this entry                 */
-  LISTENTRY *list_index = this->locateEntry(index, IntegerTwo);
+  LISTENTRY *list_index = this->locateEntry(_index, IntegerTwo);
   if (list_index == NULL)              /* not a valid index?                */
                                        /* raise an error                    */
-    report_exception1(Error_Incorrect_method_queue_index, index);
-  OrefSet(this->table, list_index->value, value);
+    report_exception1(Error_Incorrect_method_queue_index, _index);
+  OrefSet(this->table, list_index->value, _value);
   return OREF_NULL;                    /* return nothing at all             */
 }
 
-RexxObject *RexxQueue::at(RexxObject *index)
+RexxObject *RexxQueue::at(RexxObject *_index)
                                                                                                                     /* queue index item                  */
 /******************************************************************************/
 /* Function:  Retrieve the value for a given queue index                      */
 /******************************************************************************/
 {
                                        /* locate this entry                 */
-  LISTENTRY *list_index = this->locateEntry(index, IntegerOne);
+  LISTENTRY *list_index = this->locateEntry(_index, IntegerOne);
   if (list_index == NULL)              /* not a valid index?                */
     return TheNilObject;               /* doesn't exist, return .NIL        */
   RexxObject *result = list_index->value;  /* get the list entry                */
@@ -187,21 +187,21 @@ RexxObject *RexxQueue::at(RexxObject *index)
  *
  * @return The inserted object's index.
  */
-RexxObject *RexxQueue::insert(RexxObject *value, RexxObject *index)
+RexxObject *RexxQueue::insert(RexxObject *_value, RexxObject *_index)
 {
   LISTENTRY *element;                  /* list element                      */
   LISTENTRY *new_element;              /* new insertion element             */
-  long       new_index;                /* index of new inserted item        */
+  size_t     new_index;                /* index of new inserted item        */
 
-  required_arg(value, ONE);            /* must have a value to insert       */
+  required_arg(_value, ONE);           /* must have a value to insert       */
 
                                        /* make sure we have room to insert  */
   new_index = this->getFree();
                                        /* point to the actual element       */
   new_element = ENTRY_POINTER(new_index);
-  if (index == TheNilObject)           /* inserting at the front?           */
+  if (_index == TheNilObject)          /* inserting at the front?           */
     element = NULL;                    /* flag this as new                  */
-  else if (index == OREF_NULL) {       /* inserting at the end?             */
+  else if (_index == OREF_NULL) {      /* inserting at the end?             */
     if (this->last == LIST_END)        /* currently empty?                  */
       element = NULL;                  /* just use the front insert code    */
     else                               /* insert after the last element     */
@@ -209,14 +209,14 @@ RexxObject *RexxQueue::insert(RexxObject *value, RexxObject *index)
   }
   else {
                                        /* locate this entry                 */
-    element = this->locateEntry(index, IntegerTwo);
+    element = this->locateEntry(_index, IntegerTwo);
     if (element == NULL)               /* index doesn't exist?              */
                                        /* raise an error                    */
-      report_exception1(Error_Incorrect_method_queue_index, index);
+      report_exception1(Error_Incorrect_method_queue_index, _index);
   }
   this->count++;                       /* increase our count                */
                                        /* set the value                     */
-  OrefSet(this->table, new_element->value, value);
+  OrefSet(this->table, new_element->value, _value);
   if (element == NULL) {               /* adding at the front               */
     if (this->last == LIST_END) {      /* first element added?              */
       this->first = new_index;         /* set this as the first             */
@@ -252,25 +252,25 @@ RexxObject *RexxQueue::insert(RexxObject *value, RexxObject *index)
 }
 
 
-RexxObject *RexxQueue::remove(RexxObject *index)
+RexxObject *RexxQueue::remove(RexxObject *_index)
 /******************************************************************************/
 /* Function:  Remove a given queue item                                       */
 /******************************************************************************/
 {
                                        /* locate this entry                 */
-  LISTENTRY *list_index = this->locateEntry(index, IntegerOne);
+  LISTENTRY *list_index = this->locateEntry(_index, IntegerOne);
                                        /* remove from the list              */
   return this->primitiveRemove(list_index);
 }
 
-RexxObject *RexxQueue::hasindex(RexxObject *index)
+RexxObject *RexxQueue::hasindex(RexxObject *_index)
                                                                                                                     /* queue index item                  */
 /******************************************************************************/
 /* Function:  Return an index existence flag                                  */
 /******************************************************************************/
 {
                                        /* locate this entry                 */
-  LISTENTRY *list_index = this->locateEntry(index, IntegerOne);
+  LISTENTRY *list_index = this->locateEntry(_index, IntegerOne);
                                        /* return an existence flag          */
   return (RexxObject *) (( list_index != NULL) ? TheTrueObject : TheFalseObject);
 }
@@ -337,17 +337,17 @@ RexxObject *RexxQueue::index(RexxObject *target)
     required_arg(target, ONE);
 
     // ok, now run the list looking for the target item
-    long next = this->first;
-    for (long i = 1; i <= this->count; i++)
+    size_t nextEntry = this->first;
+    for (size_t i = 1; i <= this->count; i++)
     {
-        LISTENTRY *element = ENTRY_POINTER(next);
+        LISTENTRY *element = ENTRY_POINTER(nextEntry);
         // if we got a match, return the item
         if (target->equalValue(element->value))
         {
             // queue indices are positional.
             return new_integer(i);
         }
-        next = element->next;
+        nextEntry = element->next;
     }
     // no match
     return TheNilObject;
@@ -389,17 +389,17 @@ RexxObject *RexxQueue::lastRexx(void)
 }
 
 RexxObject *RexxQueue::next(
-     RexxObject *index)                /* index of the target item          */
+     RexxObject *_index)               /* index of the target item          */
 /******************************************************************************/
 /* Function:  Return the next item after the given indexed item               */
 /******************************************************************************/
 {
     LISTENTRY *element;                /* current working entry             */
                                        /* locate this entry                 */
-    element = this->locateEntry(index, (RexxObject *)IntegerOne);
+    element = this->locateEntry(_index, (RexxObject *)IntegerOne);
     if (element == NULL)                 /* not a valid index?                */
     {
-        report_exception1(Error_Incorrect_method_queue_index, index);
+        report_exception1(Error_Incorrect_method_queue_index, _index);
     }
 
     if (element->next == LIST_END)     /* no next item?                     */
@@ -415,7 +415,7 @@ RexxObject *RexxQueue::next(
 
 
 RexxObject *RexxQueue::previous(
-     RexxObject *index)                /* index of the target item          */
+     RexxObject *_index)               /* index of the target item          */
 /******************************************************************************/
 /* Function:  Return the item previous to the indexed item                    */
 /******************************************************************************/
@@ -423,10 +423,10 @@ RexxObject *RexxQueue::previous(
   LISTENTRY *element;                  /* current working entry             */
 
                                        /* locate this entry                 */
-  element = this->locateEntry(index, (RexxObject *)IntegerOne);
+  element = this->locateEntry(_index, (RexxObject *)IntegerOne);
   if (element == NULL)                 /* not a valid index?                */
                                        /* raise an error                    */
-    report_exception1(Error_Incorrect_method_queue_index, index);
+    report_exception1(Error_Incorrect_method_queue_index, _index);
 
   if (element->previous == LIST_END)   /* no previous item?                 */
     return TheNilObject;               /* just return .nil                  */
@@ -444,10 +444,10 @@ RexxObject *RexxQueue::previous(
  *
  * @return The queue index value.
  */
-long RexxQueue::entryToIndex(long target)
+size_t RexxQueue::entryToIndex(size_t target)
 {
-    long current = this->first;
-    long counter = 0;
+    size_t current = this->first;
+    size_t counter = 0;
     while (current != LIST_END)
     {
         counter++;
@@ -488,8 +488,8 @@ RexxQueue *RexxQueue::ofRexx(
 /* Function:  Create a new queue containing the given items                   */
 /******************************************************************************/
 {
-  LONG     size;                       /* size of the array                 */
-  LONG     i;                          /* loop counter                      */
+  size_t   size;                       /* size of the array                 */
+  size_t   i;                          /* loop counter                      */
   RexxQueue *newQueue;                 /* newly created list                */
   RexxObject *item;                    /* item to add                       */
 
