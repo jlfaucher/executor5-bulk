@@ -100,6 +100,10 @@ the methods listed in
 <entry><link linkend="connectlistnotify">ConnectListNotify</link></entry>
 </row>
 <row>
+<entry>ConnectListViewNotify</entry>
+<entry><link linkend="mthConnectListViewNotify">ConnectListViewNotify</link></entry>
+</row>
+<row>
 <entry>ConnectScrollBarNotify</entry>
 <entry><link linkend="connectscrollbarnotify">ConnectScrollBarNotify</link></entry>
 </row>
@@ -788,6 +792,194 @@ view control has the AUTOARRANGE style.</para>
    self~SetCursorPos(x+1, y+1)  /* move cursor to force redraw */
 ]]>
 </programlisting>
+</section>
+
+<section id="mthConnectListViewNotify"><title>ConnectListViewNotify</title>
+<indexterm><primary>ConnectListViewNotify</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aMessageExtensions~ConnectListViewNotify(--id--,--------------------->
+
+>--"--+-CLICK--------------+--"--+---------------+--)-----------------><
+      +-CHECKBOXCHANGED----+     +-,--methodName-+
+      +-SELECTCHANGED------+
+      +-FOCUSCHANGED-------+
+      +-SELECTFOCUSCHANGED-+
+
+]]>
+</programlisting>
+
+<para>Microsoft continually enhances the Windows User Interface and therefore
+the dialog controls evolve over time.  The
+<computeroutput>ConnectListViewNotify</computeroutput> method is similar to the
+<link linkend="connectlistnotify">ConnectListNotify</link> method, but it is
+designed to take advantage of new features in the list-view control.  It
+connects notification message sent by a list view control to its parent dialog
+with a method, provided by the programmer, in an ooDialog class. These
+notifications inform the dialog that an event has occurred in the list view.
+</para>
+<para>The <computeroutput>ConnectListViewNotify</computeroutput> method is
+designed to provide more information, concerning the event, to the invoked
+method than the <computeroutput>ConnectListView</computeroutput> method or the
+<computeroutput>ConnectCommonNotify</computeroutput> method.  Connecting an
+event through the <computeroutput>ConnectListViewNotify</computeroutput> method
+is used as a replacement for connecting the same event through the
+<computeroutput>ConnectListView</computeroutput> method or the
+<computeroutput>ConnectCommonNotify</computeroutput> method.
+</para>
+<note><title>Note</title><para>
+If the same event, for the same control, is connected using two different
+ConnectXXX methods, only one connection will be in effect.  This will be the
+connection whose ConnectXXX method is invoked first.  For example, take a dialog
+that has a list view control with resource ID of 109.  If the mouse click event
+is connected for that control using the
+<computeroutput>ConnectCommonNotify</computeroutput> method and then the mouse
+click event is also connected using the
+<computeroutput>ConnectListViewNotify</computeroutput> method, only one
+connection will be active.  Which one is active is dependent on the order of
+invocation of the ConnectXXX methods.
+</para></note>
+<para>Each of the events that can be connected through the
+<computeroutput>ConnectListViewNotify</computeroutput> method is a replacement
+for connecting that event through one of the other ConnectXXX methods.  The
+argument documentation provides more detail on this.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The ID of the list view control for which the event is to be
+connected to a method.
+</para></listitem></varlistentry>
+<varlistentry><term>event</term>
+<listitem><para>The event to be connected with a method:
+<variablelist>
+<varlistentry><term>CLICK</term>
+<listitem><para>An item was clicked with the left mouse button.
+<variablelist>
+<varlistentry><term><emphasis role="bold">Notes:</emphasis></term>
+<listitem><para>Connecting the CLICK event is a replacement for the
+<computeroutput>ConnectCommonNotify</computeroutput> method's CLICK event.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Event Method
+Arguments</emphasis></term>
+<listitem><para>The event method will recieve four arguments.  The method
+signature will look as follows:
+<programlisting>
+<![CDATA[
+::method onClick
+  use arg id, itemIndex, columnIndex, keyState
+
+]]>
+</programlisting>
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The resource ID of the list view control whose item was clicked.
+</para></listitem></varlistentry>
+<varlistentry><term>itemIndex</term>
+<listitem><para>The index of the item that was clicked.
+</para></listitem></varlistentry>
+<varlistentry><term>columnIndex</term>
+<listitem><para>The index of the subitem that was clicked.  This will be the
+column clicked on if the list view is in report view.  In other views it will be
+0.
+</para></listitem></varlistentry>
+<varlistentry><term>keyState</term>
+<listitem><para>This argument reports the state of the shift, control, and alt
+keys at the time of the mouse click.  The argument is a blank separated
+keywords, consisting of: SHIFT, CONTROL, ALT, or NONE.  The presence of a
+keyword indicates the key was held down when the user click on the list view
+control.  NONE of course indicates that none of the keys were down.  If the user
+managed to hold all three of the keys down at the time of the mouse click, the
+argument would consist of "SHIFT CONTROL ALT"
+</para></listitem></varlistentry>
+</variablelist>
+</listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term>CHECKBOXCHANGED</term>
+<listitem><para>The check box state of an item changed.  (The check box was
+checked or unchecked.) This event can only occur if the list view has the check
+box <link linkend="mthAddExtendedStyle">extended</link> list view style.
+</para></listitem></varlistentry>
+<varlistentry><term>SELECTCHANGED</term>
+<listitem><para>The selection state of an item changed.  (The item was selected
+or unselected.)
+</para></listitem></varlistentry>
+<varlistentry><term>FOCUSCHANGED</term>
+<listitem><para>The focus state of an item changed.  (The item gained or lost
+the focus.)
+</para></listitem></varlistentry>
+<varlistentry><term>SELECTFOCUSCHANGED</term>
+<listitem><para>The selection state or the focus state of an item changed.  This
+event argument combines the selection changed and the focus changed event into
+one connection.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term>methodName</term>
+<listitem><para>The method that is to be invoked whenever the specified event
+occurs.  Provide a method with a matching name in the dialog class. If you omit
+this argument, a default method name will be constructed.  This name will be the
+name of the event preceded by <computeroutput>On</computeroutput>.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The return codes are:
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>No error detected.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>The resource ID could not be resolved or the event argument is
+incorrect.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>The event was not connected correctly to a method.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example is from an address book application.  A
+list view control is filled with the information from the address book, one item
+for each entry.  The check box changed event is connected to the
+onCheckboxChanged method. The onCheckboxChanged method will receive 3
+arguments: the resource ID of the control, the index of the item whose check box
+changed, and the changed state. If the user checks the check box, that entry is
+added to a mail merge being constructed.  If the user unchecks the box, the
+entry is removed from the mail merge.
+</para>
+<programlisting>
+<![CDATA[
+::class MailingListDlg subclass UserDialog inherit AdvancedControls MessageExtensions
+
+::method initDialog
+  expose mailList
+
+  ...
+  mailList = self~getListControl(IDC_LV_ADDRESSES)
+  ...
+
+  -- Since the methodName argument is omitted, ooDialog will construct a default
+  -- name of 'onCheckboxChanged'
+  self~connectListViewNotify(IDC_LV_ADDRESSES, "CHECKBOXCHANGED")
+  ...
+
+::method onCheckboxChanged
+  expose mailList
+  use arg id, itemIndex, state
+
+  if state == "CHECKED" then
+    self~addToMailMerge(mailList, itemIndex)
+  else
+    self~removeFromMailMerge(mailList, itemIndex)
+
+]]>
+</programlisting>
+</listitem></varlistentry>
+</variablelist>
 </section>
 
 <section id="connectbuttonnotify"><title>ConnectButtonNotify</title>
