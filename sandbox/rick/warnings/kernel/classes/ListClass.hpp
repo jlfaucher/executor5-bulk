@@ -57,8 +57,8 @@
                                        /* address of a given buffer entry   */
 #define ENTRY_POINTER(n)      (this->table->address() + n)
 #define ENTRY_INDEX(p)        (p - this->table->address())
-#define LIST_END              -1       /* end of list marker                */
-#define NOT_ACTIVE            -2       /* free element marker               */
+#define LIST_END              ((size_t)-1) /* end of list marker                */
+#define NOT_ACTIVE            ((size_t)-2) /* free element marker               */
 
  class RexxList : public RexxObject {
   public:
