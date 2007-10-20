@@ -307,13 +307,13 @@ RexxObject *RexxQueue::supplier()
 RexxArray *RexxQueue::allIndexes()
 {
     // create an array and protect it.
-    arraysize_t size = this->items();
+    arraysize_t arraysize = this->items();
 
-    RexxArray *result = new_array(size);
+    RexxArray *result = new_array(arraysize);
     save(result);
 
     // now just make an array containing each index value.
-    for (arraysize_t i = 1; i <= size; i++)
+    for (arraysize_t i = 1; i <= arraysize; i++)
     {
         result->put(new_integer(i), i);
     }
@@ -468,17 +468,17 @@ RexxObject *RexxQueue::newRexx(RexxObject **init_args, size_t argCount)
 /* Function:  Create an instance of a queue                                   */
 /******************************************************************************/
 {
-  RexxObject *newObject;               /* newly created queue object        */
+  RexxObject *newObj;                  /* newly created queue object        */
 
-  newObject =  new RexxQueue;          /* get a new queue                   */
+  newObj =  new RexxQueue;             /* get a new queue                   */
                                        /* Initialize the new list instance  */
-  BehaviourSet(newObject, ((RexxClass *)this)->instanceBehaviour);
+  BehaviourSet(newObj, ((RexxClass *)this)->instanceBehaviour);
   if (((RexxClass *)this)->uninitDefined()) {
-    newObject->hasUninit();
+    newObj->hasUninit();
   }
 
-  newObject->sendMessage(OREF_INIT, init_args, argCount);
-  return (RexxObject *)newObject;      /* return the new object             */
+  newObj->sendMessage(OREF_INIT, init_args, argCount);
+  return (RexxObject *)newObj;         /* return the new object             */
 }
 
 RexxQueue *RexxQueue::ofRexx(
@@ -488,16 +488,16 @@ RexxQueue *RexxQueue::ofRexx(
 /* Function:  Create a new queue containing the given items                   */
 /******************************************************************************/
 {
-  size_t   size;                       /* size of the array                 */
+  size_t   arraysize;                  /* size of the array                 */
   size_t   i;                          /* loop counter                      */
   RexxQueue *newQueue;                 /* newly created list                */
   RexxObject *item;                    /* item to add                       */
 
   if (TheQueueClass == ((RexxClass *)this)) {        /* creating an internel list item?   */
-    size = argCount;                   /* get the array size                */
+    arraysize = argCount;              /* get the array size                */
     newQueue = new RexxQueue;          /* get a new list                    */
     save(newQueue);                    /* protect from garbage collection   */
-    for (i = 0; i < size; i++) {       /* step through the array            */
+    for (i = 0; i < arraysize; i++) {  /* step through the array            */
       item = args[i];                  /* get the next item                 */
       if (item == OREF_NULL) {         /* omitted item?                     */
         discard(newQueue);             /* release the new list              */
@@ -509,11 +509,11 @@ RexxQueue *RexxQueue::ofRexx(
     }
   }
   else {
-    size = argCount;                   /* get the array size                */
+    arraysize = argCount;              /* get the array size                */
                                        /* get a new list                    */
     newQueue = (RexxQueue *)send_message0(this, OREF_NEW);
     save(newQueue);                    /* protect from garbage collection   */
-    for (i = 0; i < size; i++) {       /* step through the array            */
+    for (i = 0; i < arraysize; i++) {  /* step through the array            */
       item = args[i];                  /* get the next item                 */
       if (item == OREF_NULL) {         /* omitted item?                     */
         discard(newQueue);             /* release the new list              */
