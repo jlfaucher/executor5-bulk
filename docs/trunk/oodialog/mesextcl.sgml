@@ -819,12 +819,12 @@ with a method, provided by the programmer, in an ooDialog class. These
 notifications inform the dialog that an event has occurred in the list view.
 </para>
 <para>The <computeroutput>ConnectListViewNotify</computeroutput> method is
-designed to provide more information, concerning the event, to the invoked
-method than the <computeroutput>ConnectListView</computeroutput> method or the
-<computeroutput>ConnectCommonNotify</computeroutput> method.  Connecting an
+designed to provide more information to the invoked method
+than the <computeroutput>ConnectListNotify</computeroutput> or
+<computeroutput>ConnectCommonNotify</computeroutput> methods.  Connecting an
 event through the <computeroutput>ConnectListViewNotify</computeroutput> method
 is used as a replacement for connecting the same event through the
-<computeroutput>ConnectListView</computeroutput> method or the
+<computeroutput>ConnectListNotify</computeroutput> method or the
 <computeroutput>ConnectCommonNotify</computeroutput> method.
 </para>
 <note><title>Note</title><para>
@@ -854,127 +854,27 @@ connected to a method.
 </para></listitem></varlistentry>
 <varlistentry><term>event</term>
 <listitem><para>The event to be connected with a method:
+<note><title>Note</title><para>
+When using <computeroutput>ConnectListViewNotify</computeroutput> a separate
+method can be connected to each of the checkbox changed, selection changed, and
+focus changed events.  These event connectionss are all replacements for the
+<link linkend="connectlistnotify">ConnectListNotify</link> method's CHANGED
+event.
+</para></note>
 <variablelist>
 <varlistentry><term>CLICK</term>
-<listitem><para>An item was clicked with the left mouse button.
-<variablelist>
-<varlistentry><term><emphasis role="bold">Notes:</emphasis></term>
-<listitem><para>Connecting the CLICK event is a replacement for the
+<listitem><para>An item was clicked with the left mouse button.  Connecting the
+CLICK event is a replacement for the
 <computeroutput>ConnectCommonNotify</computeroutput> method's CLICK event.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Event Method
-Arguments</emphasis></term>
-<listitem><para>The event method will recieve four arguments.  The method
-signature will look as follows:
-<programlisting>
-<![CDATA[
-::method onClick
-  use arg id, itemIndex, columnIndex, keyState
-
-]]>
-</programlisting>
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The resource ID of the list view control whose item was clicked.
-</para></listitem></varlistentry>
-<varlistentry><term>itemIndex</term>
-<listitem><para>The index of the item that was clicked.
-</para></listitem></varlistentry>
-<varlistentry><term>columnIndex</term>
-<listitem><para>The index of the subitem that was clicked.  This will be the
-column clicked on if the list view is in report view.  In other views it will be
-0.
-</para></listitem></varlistentry>
-<varlistentry><term>keyState</term>
-<listitem><para>This argument reports the state of the shift, control, and alt
-keys at the time of the mouse click.  The argument is a blank separated
-keywords, consisting of: SHIFT, CONTROL, ALT, or NONE.  The presence of a
-keyword indicates the key was held down when the user click on the list view
-control.  NONE of course indicates that none of the keys were down.  If the user
-managed to hold all three of the keys down at the time of the mouse click, the
-argument would consist of &quot;SHIFT CONTROL ALT&quot;
-</para></listitem></varlistentry>
-</variablelist>
-</listitem></varlistentry>
-</variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term>CHECKBOXCHANGED</term>
 <listitem><para>The check box state of an item changed.  (The check box was
 checked or unchecked.) This event can only occur if the list view has the check
 box <link linkend="mthAddExtendedStyle">extended</link> list view style.
-<variablelist>
-<varlistentry><term><emphasis role="bold">Notes:</emphasis></term>
-<listitem><para>Connecting the CHECKBOXCHANGED event is a replacement for the
-<computeroutput>ConnectListNotify</computeroutput> method's CHANGED event.  When
-using <computeroutput>ConnectListViewNotify</computeroutput> a separate method
-can be connected to each of the checkbox changed, focus changed, and selection
-changed events.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Event Method
-Arguments</emphasis></term>
-<listitem><para>The event method will recieve three arguments.  The method
-signature will look as follows:
-<programlisting>
-<![CDATA[
-::method onCheckboxChanged
-  use arg id, itemIndex, state
-
-]]>
-</programlisting>
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The resource ID of the list view control whose item had the
-checkbox state changed.
-</para></listitem></varlistentry>
-<varlistentry><term>itemIndex</term>
-<listitem><para>The index of the item whose checkbox was changed.
-</para></listitem></varlistentry>
-<varlistentry><term>state</term>
-<listitem><para>This argument reports whether the check box was checked or
-unchecked.  Its value will be either &quot;CHECKED&quot; or &quot;UNCHECKED&quot;
-</para></listitem></varlistentry>
-</variablelist>
-</listitem></varlistentry>
-</variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term>SELECTCHANGED</term>
 <listitem><para>The selection state of an item changed.  (The item was selected
 or unselected.)
-<variablelist>
-<varlistentry><term><emphasis role="bold">Notes:</emphasis></term>
-<listitem><para>Connecting the SELECTIONCHANGED event is a replacement for the
-<computeroutput>ConnectListNotify</computeroutput> method's CHANGED event.  When
-using <computeroutput>ConnectListViewNotify</computeroutput> a separate method
-can be connected to each of the checkbox changed, focus changed, and selection
-changed events.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Event Method
-Arguments</emphasis></term>
-<listitem><para>The event method will recieve three arguments.  The method
-signature will look as follows:
-<programlisting>
-<![CDATA[
-::method onSelectionChanged
-  use arg id, itemIndex, state
-
-]]>
-</programlisting>
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The resource ID of the list view control whose item had the
-selection changed.
-</para></listitem></varlistentry>
-<varlistentry><term>itemIndex</term>
-<listitem><para>The index of the item whose selection was changed.
-</para></listitem></varlistentry>
-<varlistentry><term>state</term>
-<listitem><para>This argument reports whether the item was selected or
-unselected.  Its value will be either &quot;SELECTED&quot; or
-&quot;UNSELECTED&quot;
-</para></listitem></varlistentry>
-</variablelist>
-</listitem></varlistentry>
-</variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term>FOCUSCHANGED</term>
 <listitem><para>The focus state of an item changed.  (The item gained or lost
@@ -983,7 +883,9 @@ the focus.)
 <varlistentry><term>SELECTFOCUSCHANGED</term>
 <listitem><para>The selection state or the focus state of an item changed.  This
 event argument combines the selection changed and the focus changed event into
-one connection.
+one connection.  When this event is connected, separate selection changed and
+focus changed events can not be connected.  This keyword can be abbreviated to
+&quot;SELECTFOCUS&quot;.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -1007,6 +909,147 @@ incorrect.
 </para></listitem></varlistentry>
 <varlistentry><term>1</term>
 <listitem><para>The event was not connected correctly to a method.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Event Methods</emphasis></term>
+<listitem><para>The following details the method signature for each of the
+<computeroutput>ConnectListViewNotify</computeroutput> events:
+<variablelist>
+<varlistentry><term>CLICK</term>
+<listitem><para>The method invoked for the left mouse click event recieves four
+arguments.
+<programlisting>
+<![CDATA[
+::method onClick
+use arg id, itemIndex, columnIndex, keyState
+
+]]>
+</programlisting>
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The resource ID of the list view control whose item was clicked.
+</para></listitem></varlistentry>
+<varlistentry><term>itemIndex</term>
+<listitem><para>The index of the item that was clicked.
+</para></listitem></varlistentry>
+<varlistentry><term>columnIndex</term>
+<listitem><para>The index of the subitem that was clicked.  This will be the
+column clicked on if the list view is in report view.  In other views it will be
+0.
+</para></listitem></varlistentry>
+<varlistentry><term>keyState</term>
+<listitem><para>This argument reports the state of the shift, control, and alt
+keys at the time of the mouse click.  The argument is a string of keywords
+separated by blanks.  The keywords consist of: SHIFT, CONTROL, ALT, or NONE.
+The presence of a keyword indicates the key was held down when the user clicked
+on the list view control.  NONE of course indicates that none of the keys were
+down.  If the user managed to hold all three of the keys down at the time of the
+mouse click, the argument would be the string: &quot;SHIFT CONTROL ALT&quot;
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term>CHECKBOXCHANGED</term>
+<listitem><para>The method invoked for the checkbox changed event recieves
+three arguments. The method signature will look as follows:
+<programlisting>
+<![CDATA[
+::method onCheckboxChanged
+  use arg id, itemIndex, state
+
+]]>
+</programlisting>
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The resource ID of the list view control whose item had the
+checkbox state changed.
+</para></listitem></varlistentry>
+<varlistentry><term>itemIndex</term>
+<listitem><para>The index of the item whose checkbox was changed.
+</para></listitem></varlistentry>
+<varlistentry><term>state</term>
+<listitem><para>This argument reports whether the check box was checked or
+unchecked.  Its value will be either &quot;CHECKED&quot; or &quot;UNCHECKED&quot;
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term>SELECTCHANGE</term>
+<listitem><para>The method invoked when the selection changes will recieve three
+arguments.  The method signature will look as follows:
+<programlisting>
+<![CDATA[
+::method onSelectChanged
+  use arg id, itemIndex, state
+
+]]>
+</programlisting>
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The resource ID of the list view control whose item had the
+selection changed.
+</para></listitem></varlistentry>
+<varlistentry><term>itemIndex</term>
+<listitem><para>The index of the item whose selection was changed.
+</para></listitem></varlistentry>
+<varlistentry><term>state</term>
+<listitem><para>This argument reports whether the item was selected or
+unselected.  Its value will be either &quot;SELECTED&quot; or
+&quot;UNSELECTED&quot;
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term>FOCUSCHANGED</term>
+<listitem><para>The method invoked for the focus changed event recieves three
+arguments. The method signature will look as follows:
+<programlisting>
+<![CDATA[
+::method onFocusChanged
+  use arg id, itemIndex, state
+
+]]>
+</programlisting>
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The resource ID of the list view control whose item had the
+focus changed.
+</para></listitem></varlistentry>
+<varlistentry><term>itemIndex</term>
+<listitem><para>The index of the item which gained or lost the focus.
+</para></listitem></varlistentry>
+<varlistentry><term>state</term>
+<listitem><para>This argument reports whether the focus was gained or lost.  Its
+value will be either &quot;FOCUSED&quot; or &quot;UNFOCUSED&quot;
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term>SELECTFOCUSCHANGED</term>
+<listitem><para>The method invoked for the selection or focus changed event
+recieves three arguments. The method signature will look as follows:
+<programlisting>
+<![CDATA[
+::method onSelectFocusChanged
+  use arg id, itemIndex, state
+
+]]>
+</programlisting>
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The resource ID of the list view control whose item had the
+either the focus or the selection changed.
+</para></listitem></varlistentry>
+<varlistentry><term>itemIndex</term>
+<listitem><para>The index of the item where the state was changed.
+</para></listitem></varlistentry>
+<varlistentry><term>state</term>
+<listitem><para>This argument reports whether the focus was gained or lost and
+whether the selection was gained or lost.  Its value will contain at least one
+of the keywords: &quot;SELECTED&quot;, &quot;UNSELECTED&quot;,
+&quot;FOCUSED&quot; or &quot;UNFOCUSED&quot;.  It is possible for both the
+selection and focus changed to be reported at once, however sometimes each
+change is reported separately. (This has nothing to do with ooDialog, it is how
+the operating system sends the messages.)
+</para></listitem></varlistentry>
+</variablelist>
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>

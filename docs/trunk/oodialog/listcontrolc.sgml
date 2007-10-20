@@ -1374,7 +1374,7 @@ with a specified zip code.
 ]]>
 </programlisting>
 
-<para>The <computeroutput>Uncheck</computeroutput> method remoes the check mark
+<para>The <computeroutput>Uncheck</computeroutput> method removes the check mark
 for a list view item.  This method is only valid for list view controls that
 have the check boxes extended style.  (See the <link
 linkend="mthAddExtendedStyle">AddExtendedStyle</link> method for a description
@@ -1402,6 +1402,7 @@ removed.
 <varlistentry><term>-2</term>
 <listitem><para>The list view control does not have the check boxes extended
 style.
+</para></listitem></varlistentry>
 <varlistentry><term>-3</term>
 <listitem><para>The index is invalid.
 </para></listitem></varlistentry>
@@ -1425,7 +1426,7 @@ dynamically remove some patients from the statement list.
   text = self~getEditControl(IDC_EDIT_MINAMOUNT)~getText
   minimun = self~decimalNumber(text)
 
-  if amount > 0 then do i = 0 to billingList~items
+  if minimum > 0 then do i = 0 to billingList~items
     if billingList~isChecked(i) then do
 
       -- Column 6 in the list is the patient's current balance.
@@ -1472,6 +1473,7 @@ of the check boxes extended style.)
 <varlistentry><term>-2</term>
 <listitem><para>The list view control does not have the check boxes extended
 style.
+</para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -1522,6 +1524,7 @@ of the check boxes extended style.)
 <varlistentry><term>-2</term>
 <listitem><para>The list view control does not have the check boxes extended
 style.
+</para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -1581,15 +1584,26 @@ of the check boxes extended style.)
 <varlistentry><term>-2</term>
 <listitem><para>The list view control does not have the check boxes extended
 style.
+</para></listitem></varlistentry>
 <varlistentry><term>-3</term>
 <listitem><para>The index is invalid.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example
+<listitem><para>The following example could be used as a shortcut method to
+determine if a list view control currently has the check box extended style.
 <programlisting>
 <![CDATA[
+
+  ...
+  list = self~getListControl(IDC_LV_DOCTORS)
+  if list~getCheck(0) == -2 then
+    return   -- The list view does not currently have the check box style in effect
+
+  do i = 0 to list~items - 1
+    ...
+  end
 
 
 ]]>
