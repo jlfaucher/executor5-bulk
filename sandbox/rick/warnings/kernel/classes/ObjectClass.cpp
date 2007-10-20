@@ -162,7 +162,7 @@ wholenumber_t RexxObject::compareTo(RexxObject *other )
         reportException(Error_No_result_object_message, OREF_COMPARETO);
     }
     wholenumber_t comparison = result->longValue(DEFAULT_DIGITS);
-    if (comparison == NO_LONG)
+    if (comparison == (wholenumber_t)NO_LONG)
     {
         reportException(Error_Invalid_whole_number_compareto, result);
     }
@@ -323,9 +323,9 @@ RexxSupplier *RexxObject::instanceMethodsRexx(RexxClass *class_object)
 RexxObject *RexxObject::hashCode()
 {
     // get the hash value directly, then turn it into a binary string value
-    unsigned long hash = HASHVALUE(this);
+    unsigned long h = HASHVALUE(this);
                                          /* create a string value             */
-    return (RexxObject *)new_string((char *)&hash, sizeof(long));
+    return (RexxObject *)new_string((char *)&h, sizeof(long));
 }
 
 
@@ -537,21 +537,21 @@ RexxObject * RexxObject::copy()
   /* Instead of calling new_object and memcpy, ask the memory object to make  */
   /* a copy of ourself.  This way, any header information can be correctly    */
   /* initialized by memory.                                                   */
-  RexxObject       *newObject;         /* copied object                     */
+  RexxObject       *newObj;            /* copied object                     */
 
                                        /* first copy the object             */
-  newObject = (RexxObject *)memoryObject.clone(this);
+  newObj = (RexxObject *)memoryObject.clone(this);
                                        /* have object variables?            */
   if (this->objectVariables != OREF_NULL) {
-    save(newObject);                   /* protect the copy through this process */
-    copyObjectVariables(newObject);    /* copy the object variables into the new object */
-    discard_hold(newObject);           /* release lock on the copy          */
+    save(newObj);                      /* protect the copy through this process */
+    copyObjectVariables(newObj);       /* copy the object variables into the new object */
+    discard_hold(newObj);              /* release lock on the copy          */
   }
                                        /* have instance methods?            */
   if (this->behaviour->instanceMethodDictionary != OREF_NULL)
                                        /* need to copy the behaviour        */
-    BehaviourSet(newObject, newObject->behaviour->copy());
-  return newObject;                    /* return the copied version         */
+    BehaviourSet(newObj, newObj->behaviour->copy());
+  return newObj;                       /* return the copied version         */
 }
 
 void RexxObject::copyObjectVariables(RexxObject *newObject)
@@ -1203,7 +1203,7 @@ LONG  RexxObject::requiredLong(
 /*            and then the string long value will be returned.                */
 /******************************************************************************/
 {
-  LONG         result;                 /* returned result                   */
+  wholenumber_t  result;               /* returned result                   */
 
                                        /* primitive object?                 */
   if (isPrimitive(this) && !OTYPE(Object, this))
@@ -1211,7 +1211,7 @@ LONG  RexxObject::requiredLong(
     result = this->longValue(precision);
   else                                 /* return integer value of string    */
     result = this->requiredString(position)->longValue(precision);
-  if (result == NO_LONG)               /* didn't convert well?              */
+  if (result == (wholenumber_t)NO_LONG)/* didn't convert well?              */
                                        /* raise an error                    */
     report_exception2(Error_Incorrect_method_whole, new_integer(position), this);
   return result;                       /* return the result                 */
@@ -1605,7 +1605,7 @@ RexxString  *RexxObject::oref()
 {
   char buffer[9];                      /* buffered address                  */
 
-  sprintf(buffer, "%08lX", this);      /* format this                       */
+  sprintf(buffer, "%p", this);         /* format this                       */
                                        /* and return a string               */
   return (RexxString *)new_string(buffer,8);
 }
