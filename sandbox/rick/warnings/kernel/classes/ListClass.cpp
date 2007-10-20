@@ -555,8 +555,8 @@ RexxObject *RexxList::primitiveRemove(
 /******************************************************************************/
 {
   RexxObject *_value;                  /* value of the removed item         */
-  LISTENTRY *previous;                 /* previous entry                    */
-  LISTENTRY *next;                     /* next entry                        */
+  LISTENTRY *_previous;                /* previous entry                    */
+  LISTENTRY *_next;                    /* next entry                        */
 
   if (element == NULL)                 /* not a valid index?                */
     return TheNilObject;               /* just return .nil                  */
@@ -564,15 +564,15 @@ RexxObject *RexxList::primitiveRemove(
   _value = element->value;             /* copy the value                    */
   if (element->next != LIST_END) {     /* not end of the list?              */
                                        /* point to the next entry           */
-    next = ENTRY_POINTER(element->next);
-    next->previous = element->previous;/* update the previous pointer       */
+    _next = ENTRY_POINTER(element->next);
+    _next->previous = element->previous;/* update the previous pointer       */
   }
   else
     this->last = element->previous;    /* need to update the last pointer   */
   if (element->previous != LIST_END) { /* not end of the list?              */
                                        /* point to the next entry           */
-    previous = ENTRY_POINTER(element->previous);
-    previous->next = element->next;    /* remove this from the chain        */
+    _previous = ENTRY_POINTER(element->previous);
+    _previous->next = element->next;   /* remove this from the chain        */
   }
   else
     this->first = element->next;       /* need to update the last pointer   */
@@ -720,12 +720,12 @@ RexxArray *RexxList::allItems(void)
 {
     // just iterate through the list, copying the elements.
     RexxArray *array = (RexxArray *)new_array(this->count);
-    size_t   next = this->first;
+    size_t   nextEntry = this->first;
     for (size_t  i = 1; i <= this->count; i++)
     {
-        LISTENTRY *element = ENTRY_POINTER(next);
+        LISTENTRY *element = ENTRY_POINTER(nextEntry);
         array->put(element->value, i);
-        next = element->next;
+        nextEntry = element->next;
     }
     return array;
 }
@@ -738,8 +738,6 @@ RexxArray *RexxList::allItems(void)
  */
 RexxObject *RexxList::empty()
 {
-    // just iterate through the list, copying the elements.
-    RexxArray *array = (RexxArray *)new_array(this->count);
     while (this->first != LIST_END)
     {
         // get the list entry and remove the value
@@ -775,12 +773,12 @@ RexxArray *RexxList::allIndexes(void)
     // this requires protecting, since we're going to be creating new
     // integer objects.
     save(array);
-    size_t   next = this->first;
+    size_t   nextEntry = this->first;
     for (size_t i = 1; i <= this->count; i++)
     {
-        LISTENTRY *element = ENTRY_POINTER(next);
-        array->put((RexxObject *)new_integer(next), i);
-        next = element->next;
+        LISTENTRY *element = ENTRY_POINTER(nextEntry);
+        array->put((RexxObject *)new_integer(nextEntry), i);
+        nextEntry = element->next;
     }
     discard_hold(array);
     return array;
