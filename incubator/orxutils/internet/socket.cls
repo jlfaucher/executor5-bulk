@@ -268,7 +268,7 @@ if domains~hasItem(domain) = .false then ,
 types = .array~of('SOCK_STREAM', 'SOCK_DGRAM', 'SOCK_RAW')
 if types~hasItem(type) = .false then ,
  raise syntax 93.914 array (2, types~toString, type)
-protocols = .array~of(0, 'IPROTO_UDP', 'IPPROTO_TCP')
+protocols = .array~of(0, 'IPPROTO_UDP', 'IPPROTO_TCP')
 if protocols~hasItem(protocol) = .false then ,
  raise syntax 93.914 array (3, protocols~toString, protocol)
 -- create the socket
