@@ -345,7 +345,7 @@ ULONG RexxObject::hash()
     }
     else
     {
-        ULONG hash;
+        ULONG h;
 
         // we have some other type of object, so we need to request a hash code
         // by sending the HASHCODE() message.
@@ -355,23 +355,23 @@ ULONG RexxObject::hash()
         // a null string is simple.
         if (hashString->getLength() == 0)
         {
-            hash = 1;
+            h = 1;
         }
 
         // if we have at least 4 characters, use them as binary, since that's
         // what is normally returned here.
         else if (hashString->getLength() >= sizeof(LONG))
         {
-            hash = *((PULONG)hashString->getStringData());
+            h = *((PULONG)hashString->getStringData());
         }
 
         else
         {
             // either 1 or 2 characters.  Just pick up a short value, which will
             // also pick up terminating null if only a single character
-            hash = *((PSHORT)hashString->getStringData());
+            h = *((PSHORT)hashString->getStringData());
         }
-        return hash;
+        return h;
   }
 }
 
@@ -554,20 +554,20 @@ RexxObject * RexxObject::copy()
   return newObj;                       /* return the copied version         */
 }
 
-void RexxObject::copyObjectVariables(RexxObject *newObject)
+void RexxObject::copyObjectVariables(RexxObject *newObj)
 /******************************************************************************/
 /* Function:  Copy an object's object variable dictionaries into another obj. */
 /******************************************************************************/
 {
     RexxVariableDictionary *dictionary = objectVariables;
     /* clear out the existing object variable pointer */
-    newObject->objectVariables = OREF_NULL;
+    newObj->objectVariables = OREF_NULL;
 
     while (dictionary != OREF_NULL) {
         /* copy the dictionary */
         RexxVariableDictionary *newDictionary = (RexxVariableDictionary *)dictionary->copy();
         /* add this to the variable set */
-        newObject->addObjectVariables(newDictionary);
+        newObj->addObjectVariables(newDictionary);
         /* now that the dictionary is anchored in the new object, */
         /* copy the variable objects inside. */
         newDictionary->copyValues();
