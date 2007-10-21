@@ -966,7 +966,7 @@ RexxInstruction *RexxSource::guardNew()
   RexxObject *newObject;               /* newly created object              */
   RexxArray  *variable_list;           /* list of variables                 */
   RexxToken  *token;                   /* current working token             */
-  BOOL        on_off;                  /* ON or OFF version                 */
+  bool        on_off;                  /* ON or OFF version                 */
   RexxObject *expression;              /* WHEN expression                   */
   INT         variable_count;          /* count of variables                */
 
@@ -982,11 +982,11 @@ RexxInstruction *RexxSource::guardNew()
                                        /* process the subkeyword            */
   switch (this->subKeyword(token)) {
     case SUBKEY_OFF:                   /* GUARD OFF instruction             */
-      on_off = FALSE;                  /* this is the guard off form        */
+      on_off = false;                  /* this is the guard off form        */
       break;
 
     case SUBKEY_ON:                    /* GUARD ON instruction              */
-      on_off = TRUE;                   /* remember it is the on form        */
+      on_off = true;                   /* remember it is the on form        */
       break;
 
     default:
