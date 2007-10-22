@@ -165,7 +165,7 @@ int number_create_integer(const char *, size_t, int, int);
     void              adjustPrecision(char *, size_t);
     void              adjustPrecision();
     inline void       checkPrecision() { if (length > NumDigits) adjustPrecision(); }
-    inline void       setNumericSettings(size_t digits, int form)
+    inline void       setNumericSettings(size_t digits, BOOL form)
     {
         this->NumDigits = digits;
         if (form == FORM_SCIENTIFIC)

@@ -61,7 +61,7 @@ extern ACTIVATION_SETTINGS *current_settings;
 /*                                                                            */
 /*  Returned:  string                                                         */
 /******************************************************************************/
-RexxString *RexxString::center(RexxInteger *length,
+RexxString *RexxString::center(RexxInteger *_length,
                                RexxString  *pad)
 {
   char     PadChar;                    /* pad character                     */
@@ -74,9 +74,9 @@ RexxString *RexxString::center(RexxInteger *length,
 
   if (DBCS_MODE)                       /* need to use DBCS?                 */
                                        /* do the DBCS version               */
-    return (RexxString *)this->DBCScenter(length, pad);
+    return (RexxString *)this->DBCScenter(_length, pad);
                                        /* see how long result should be     */
-  Width = get_length(length, ARG_ONE);
+  Width = get_length(_length, ARG_ONE);
 
                                        /* Get pad character (optional) blank*/
                                        /*  is used if omitted.              */
@@ -127,7 +127,7 @@ RexxString *RexxString::center(RexxInteger *length,
 /*  Returned:  string                                                         */
 /******************************************************************************/
 RexxString *RexxString::delstr(RexxInteger *position,
-                               RexxInteger *length)
+                               RexxInteger *_length)
 {
   RexxString *Retval;                  /* return value:                     */
   size_t   BackLen;                    /* end string section                */
@@ -138,13 +138,13 @@ RexxString *RexxString::delstr(RexxInteger *position,
 
   if (DBCS_SELF)                       /* need to use DBCS?                 */
                                        /* do the DBCS version               */
-    return this->DBCSdelstr(position, length);
+    return this->DBCSdelstr(position, _length);
 
   StringLen = this->getLength();            /* get string length                 */
                                        /* get start string position         */
   DeletePos = get_position(position, ARG_ONE);
                                        /* get the length to delete          */
-  DeleteLen = optional_length(length, StringLen - DeletePos + 1, ARG_TWO);
+  DeleteLen = optional_length(_length, StringLen - DeletePos + 1, ARG_TWO);
 
   if (DeletePos > StringLen)           /* beyond string bounds?             */
     Retval = this;                     /* return string unchanged           */
@@ -186,7 +186,7 @@ RexxString *RexxString::delstr(RexxInteger *position,
 /******************************************************************************/
 RexxString *RexxString::insert(RexxString  *newStrObj,
                                RexxInteger *position,
-                               RexxInteger *length,
+                               RexxInteger *_length,
                                RexxString  *pad)
 {
   RexxString *Retval;                  /* return string                     */
@@ -206,7 +206,7 @@ RexxString *RexxString::insert(RexxString  *newStrObj,
 
   if (DBCS_MODE)                       /* need to use DBCS?                 */
                                        /* do the DBCS version               */
-    return this->DBCSinsert(newStrObj, position, length, pad);
+    return this->DBCSinsert(newStrObj, position, _length, pad);
 
   TCharLen = this->getLength();             /* get the target string length      */
                                        /* get the needle string (and length)*/
@@ -218,7 +218,7 @@ RexxString *RexxString::insert(RexxString  *newStrObj,
   NChar = optional_length(position, 0, ARG_TWO);
                                        /* get the optional length, using the*/
                                        /* needle length as the defaul       */
-  ReqLenChar = optional_length(length, NCharLen, ARG_THREE);
+  ReqLenChar = optional_length(_length, NCharLen, ARG_THREE);
 
                                        /*  is used if omitted.              */
   PadChar = get_pad(pad, ' ', ARG_FOUR);
@@ -284,7 +284,7 @@ RexxString *RexxString::insert(RexxString  *newStrObj,
 /*                                                                            */
 /*  Returned:  string                                                         */
 /******************************************************************************/
-RexxString *RexxString::left(RexxInteger *length,
+RexxString *RexxString::left(RexxInteger *_length,
                              RexxString  *pad)
 {
   char      PadChar;                   /* pad character                     */
@@ -296,10 +296,10 @@ RexxString *RexxString::left(RexxInteger *length,
 
   if (DBCS_MODE)                       /* need to use DBCS?                 */
                                        /* do the DBCS version               */
-    return this->DBCSleft(length, pad);
+    return this->DBCSleft(_length, pad);
 
                                        /* get the target length             */
-  Size = get_length(length, ARG_ONE);
+  Size = get_length(_length, ARG_ONE);
 
                                        /*  is used if omitted.              */
   PadChar = get_pad(pad, ' ', ARG_TWO);
@@ -332,7 +332,7 @@ RexxString *RexxString::left(RexxInteger *length,
 RexxString *RexxString::overlay(
     RexxString  *newStrObj,            /* overlayed string                  */
     RexxInteger *position,             /* overlay position                  */
-    RexxInteger *length,               /* overlay length                    */
+    RexxInteger *_length,               /* overlay length                    */
     RexxString  *pad)                  /* pad character to use.             */
 {
   RexxString *Retval;                  /* return string                     */
@@ -350,7 +350,7 @@ RexxString *RexxString::overlay(
 
   if (DBCS_MODE)                       /* need to use DBCS?                 */
                                        /* do the DBCS version               */
-    return this->DBCSoverlay(newStrObj, position, length, pad);
+    return this->DBCSoverlay(newStrObj, position, _length, pad);
 
   TargetLen = this->getLength();            /* get the haystack length           */
                                        /* get the overlay string value      */
@@ -359,7 +359,7 @@ RexxString *RexxString::overlay(
                                        /* get the overlay position          */
   OverlayPos = optional_position(position, 1, ARG_TWO);
                                        /* get final overlay length          */
-  OverlayLen = optional_length(length, NewLen, ARG_THREE);
+  OverlayLen = optional_length(_length, NewLen, ARG_THREE);
                                        /*  is used if omitted.              */
   PadChar = get_pad(pad, ' ', ARG_FOUR);
 
@@ -463,7 +463,7 @@ RexxString *RexxString::reverse()
 /*                                                                            */
 /*  Returned:  string right justified.                                        */
 /******************************************************************************/
-RexxString *RexxString::right(RexxInteger *length,
+RexxString *RexxString::right(RexxInteger *_length,
                               RexxString  *pad)
 {
   char      PadChar;                   /* pad character                     */
@@ -475,10 +475,10 @@ RexxString *RexxString::right(RexxInteger *length,
 
   if (DBCS_MODE)                       /* need to use DBCS?                 */
                                        /* do the DBCS version               */
-    return this->DBCSright(length, pad);
+    return this->DBCSright(_length, pad);
 
                                        /* get the target length             */
-  Size = get_length(length, ARG_ONE);
+  Size = get_length(_length, ARG_ONE);
 
                                        /*  is used if omitted.              */
   PadChar = get_pad(pad, ' ', ARG_TWO);
@@ -619,7 +619,7 @@ RexxString *RexxString::strip(RexxString *option,
 /*  Returned:  string, sub string of original.                                */
 /******************************************************************************/
 RexxString *RexxString::substr(RexxInteger *position,
-                               RexxInteger *length,
+                               RexxInteger *_length,
                                RexxString  *pad)
 {
   char     PadChar;                    /* pad character                     */
@@ -632,7 +632,7 @@ RexxString *RexxString::substr(RexxInteger *position,
 
   if (DBCS_MODE)                       /* need to use DBCS?                 */
                                        /* do the DBCS version               */
-    return this->DBCSsubstr(position, length, pad);
+    return this->DBCSsubstr(position, _length, pad);
 
                                        /* get starting position             */
   Position = get_position(position, ARG_ONE) - 1;
@@ -645,7 +645,7 @@ RexxString *RexxString::substr(RexxInteger *position,
     Length = 0L;                       /* string is used up                 */
                                        /* go get length or use default if   */
                                        /* not supplied.                     */
-  Length = optional_length(length, Length, ARG_TWO);
+  Length = optional_length(_length, Length, ARG_TWO);
                                        /* go get optional pad character,    */
                                        /*  is used if omitted.              */
   PadChar = get_pad(pad, ' ', ARG_THREE);

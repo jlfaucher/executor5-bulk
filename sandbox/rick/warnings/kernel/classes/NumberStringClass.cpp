@@ -2592,7 +2592,6 @@ int RexxNumberString::ULong(
   size_t intnum;
   size_t  NumDigits;
   char  compareChar;
-  int   rc;
 
 
    if (this->sign == -1) {             /*  Anegative numebr?                */

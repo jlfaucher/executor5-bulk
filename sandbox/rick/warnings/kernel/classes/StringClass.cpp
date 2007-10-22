@@ -209,7 +209,6 @@ RexxNumberString *RexxString::numberString()
 /******************************************************************************/
 {
   RexxString       *newSelf;           /* converted string value            */
-  RexxNumberString *numberString;      /* numberstring value of string      */
 
   if (this->nonNumeric())              /* Did we already try and convert to */
                                        /* to a numberstring and fail?       */
@@ -222,16 +221,13 @@ RexxNumberString *RexxString::numberString()
     newSelf = this->requestString();   /* do the conversion                 */
                                        /* get a new numberstring Obj        */
     OrefSet(newSelf, newSelf->NumberString, (RexxNumberString *)new_numberstring(newSelf->getStringData(), newSelf->getLength()));
-                                       /* save the number string            */
-    numberString = newSelf->NumberString;
-    if (numberString != OREF_NULL)     /* Did number convert OK?            */
+    if (this->NumberString != OREF_NULL)     /* Did number convert OK?            */
       SetObjectHasReferences(newSelf); /* Make sure we are sent Live...     */
   }
   else {                               /* real primitive string             */
                                        /* get a new numberstring Obj        */
     OrefSet(this, this->NumberString, (RexxNumberString *)new_numberstring(this->getStringData(), this->getLength()));
-    numberString = this->NumberString; /* save the number string            */
-    if (numberString == OREF_NULL)     /* Did number convert OK?            */
+    if (this->NumberString == OREF_NULL)     /* Did number convert OK?            */
       this->setNonNumeric();           /* mark as a nonnumeric              */
     else {
       SetObjectHasReferences(this);    /* Make sure we are sent Live...     */
@@ -239,7 +235,7 @@ RexxNumberString *RexxString::numberString()
       this->NumberString->setString(this);
     }
   }
-  return numberString;                 /* return the numberString Object.   */
+  return this->NumberString;           /* return the numberString Object.   */
 }
 
 RexxNumberString *RexxString::createNumberString()
@@ -275,25 +271,25 @@ RexxNumberString *RexxString::createNumberString()
 }
 
 
-size_t RexxString::get(size_t start, char *buffer, size_t bufl)
+size_t RexxString::get(size_t startPos, char *buffer, size_t bufl)
 /******************************************************************************/
 /* Function:  Get a section of a string and copy it into a buffer             */
 /******************************************************************************/
 {
     size_t copylen = 0;
 
-    if (start < this->getLength())
+    if (startPos < this->getLength())
     {
-        if (bufl <= this->getLength()-start)
+        if (bufl <= this->getLength() - startPos)
         {
             copylen = bufl - 1;
         }
         else
         {
-            copylen = this->getLength()-start;
-            *(buffer+copylen) = '\0';
+            copylen = this->getLength() - startPos;
+            *(buffer + copylen) = '\0';
         }
-        memcpy(buffer,this->getStringData()+start,(size_t)copylen);
+        memcpy(buffer, this->getStringData() + startPos, (size_t)copylen);
     }
     else
     {
@@ -572,7 +568,7 @@ long RexxString::strictComp(RexxObject *otherObj)
   return result;                       /* finished, return our result       */
 }
 
-RexxObject *RexxString::plus(RexxObject *right)
+RexxObject *RexxString::plus(RexxObject *right_term)
 /******************************************************************************/
 /* Function:  String addition...performed by RexxNumberString                 */
 /******************************************************************************/
@@ -583,10 +579,10 @@ RexxObject *RexxString::plus(RexxObject *right)
   if ((numstr = this->fastNumberString()) == OREF_NULL)
                                        /* this is a conversion error        */
     report_exception1(Error_Conversion_operator, this);
-  return numstr->plus(right);          /* have numberstring do this         */
+  return numstr->plus(right_term);     /* have numberstring do this         */
 }
 
-RexxObject *RexxString::minus(RexxObject *right)
+RexxObject *RexxString::minus(RexxObject *right_term)
 /******************************************************************************/
 /* Function:  String subtraction...performed by RexxNumberString              */
 /******************************************************************************/
@@ -597,10 +593,10 @@ RexxObject *RexxString::minus(RexxObject *right)
   if ((numstr = this->fastNumberString()) == OREF_NULL)
                                        /* this is a conversion error        */
     report_exception1(Error_Conversion_operator, this);
-  return numstr->minus(right);         /* have numberstring do this         */
+  return numstr->minus(right_term);    /* have numberstring do this         */
 }
 
-RexxObject *RexxString::multiply(RexxObject *right)
+RexxObject *RexxString::multiply(RexxObject *right_term)
 /******************************************************************************/
 /* Function:  String multiplication...performed by RexxNumberString           */
 /******************************************************************************/
@@ -611,10 +607,10 @@ RexxObject *RexxString::multiply(RexxObject *right)
   if ((numstr = this->fastNumberString()) == OREF_NULL)
                                        /* this is a conversion error        */
     report_exception1(Error_Conversion_operator, this);
-  return numstr->multiply(right);      /* have numberstring do this         */
+  return numstr->multiply(right_term); /* have numberstring do this         */
 }
 
-RexxObject *RexxString::divide(RexxObject *right)
+RexxObject *RexxString::divide(RexxObject *right_term)
 /******************************************************************************/
 /* Function:  String division...performed by RexxNumberString                 */
 /******************************************************************************/
@@ -625,10 +621,10 @@ RexxObject *RexxString::divide(RexxObject *right)
   if ((numstr = this->fastNumberString()) == OREF_NULL)
                                        /* this is a conversion error        */
     report_exception1(Error_Conversion_operator, this);
-  return numstr->divide(right);        /* have numberstring do this         */
+  return numstr->divide(right_term);   /* have numberstring do this         */
 }
 
-RexxObject *RexxString::integerDivide(RexxObject *right)
+RexxObject *RexxString::integerDivide(RexxObject *right_term)
 /******************************************************************************/
 /* Function:  String division...performed by RexxNumberString                 */
 /******************************************************************************/
@@ -639,10 +635,10 @@ RexxObject *RexxString::integerDivide(RexxObject *right)
   if ((numstr = this->fastNumberString()) == OREF_NULL)
                                        /* this is a conversion error        */
     report_exception1(Error_Conversion_operator, this);
-  return numstr->integerDivide(right); /* have numberstring do this         */
+  return numstr->integerDivide(right_term); /* have numberstring do this         */
 }
 
-RexxObject *RexxString::remainder(RexxObject *right)
+RexxObject *RexxString::remainder(RexxObject *right_term)
 /******************************************************************************/
 /* Function:  String division...performed by RexxNumberString                 */
 /******************************************************************************/
@@ -653,10 +649,10 @@ RexxObject *RexxString::remainder(RexxObject *right)
   if ((numstr = this->fastNumberString()) == OREF_NULL)
                                        /* this is a conversion error        */
     report_exception1(Error_Conversion_operator, this);
-  return numstr->remainder(right);     /* have numberstring do this         */
+  return numstr->remainder(right_term);     /* have numberstring do this         */
 }
 
-RexxObject *RexxString::power(RexxObject *right)
+RexxObject *RexxString::power(RexxObject *right_term)
 /******************************************************************************/
 /* Function:  String division...performed by RexxNumberString                 */
 /******************************************************************************/
@@ -667,7 +663,7 @@ RexxObject *RexxString::power(RexxObject *right)
   if ((numstr = this->fastNumberString()) == OREF_NULL)
                                        /* this is a conversion error        */
     report_exception1(Error_Conversion_operator, this);
-  return numstr->power(right);         /* have numberstring do this         */
+  return numstr->power(right_term);    /* have numberstring do this         */
 }
 
 RexxObject *RexxString::abs(void)
@@ -1233,7 +1229,7 @@ RexxString *RexxString::lower()
   const char *   data;                 /* current data pointer              */
   char *         outdata;              /* output data                       */
   size_t i;                            /* loop counter                      */
-  bool   translate;                    /* translation required              */
+  bool   needTranslation;              /* translation required              */
 
   if (DBCS_SELF) {                     /* need to use DBCS?                 */
     ValidDBCS(this);                   /* validate the string               */
@@ -1250,16 +1246,16 @@ RexxString *RexxString::lower()
   }
 
   data = this->getStringData();        /* point to the string               */
-  translate = false;                   /* no translation required           */
+  needTranslation = false;             /* no translation required           */
 
   for (i = 0; i < this->getLength(); i++) { /* loop through entire string        */
     if (*data != tolower(*data)) {     /* have something to lowercase?      */
-      translate = true;                /* flag it                           */
+      needTranslation = true;          /* flag it                           */
       break;                           /* stop at the first one             */
     }
     data++;                            /* step the position                 */
   }
-  if (translate) {                     /* something to uppercase?           */
+  if (needTranslation) {               /* something to uppercase?           */
                                        /* create a new string               */
     newstring = (RexxString *)raw_string(this->getLength());
     data = this->getStringData();      /* point to the data start           */
@@ -1289,10 +1285,10 @@ RexxString *RexxString::lower()
  *
  * @return A new string object with the case conversion applied.
  */
-RexxString *RexxString::lowerRexx(RexxInteger *start, RexxInteger *length)
+RexxString *RexxString::lowerRexx(RexxInteger *_start, RexxInteger *_length)
 {
-    size_t startPos = optional_position(start, 1, ARG_ONE) - 1;
-    size_t rangeLength = optional_length(length, getLength(), ARG_TWO);
+    size_t startPos = optional_position(_start, 1, ARG_ONE) - 1;
+    size_t rangeLength = optional_length(_length, getLength(), ARG_TWO);
 
     // if we're starting beyond the end bounds, return unchanged
     if (startPos >= getLength())
@@ -1322,10 +1318,10 @@ RexxString *RexxString::lowerRexx(RexxInteger *start, RexxInteger *length)
  *
  * @return A new string object with the case conversion applied.
  */
-RexxString *RexxString::upperRexx(RexxInteger *start, RexxInteger *length)
+RexxString *RexxString::upperRexx(RexxInteger *_start, RexxInteger *_length)
 {
-    size_t startPos = optional_position(start, 1, ARG_ONE) - 1;
-    size_t rangeLength = optional_length(length, getLength(), ARG_TWO);
+    size_t startPos = optional_position(_start, 1, ARG_ONE) - 1;
+    size_t rangeLength = optional_length(_length, getLength(), ARG_TWO);
 
     // if we're starting beyond the end bounds, return unchanged
     if (startPos >= getLength())
@@ -1357,14 +1353,14 @@ RexxString *RexxString::upperRexx(RexxInteger *start, RexxInteger *length)
  *
  * @return A new string object with the case conversion applied.
  */
-RexxString *RexxString::lower(size_t offset, size_t length)
+RexxString *RexxString::lower(size_t offset, size_t _length)
 {
     // get a copy of the string
     RexxString *newstring = extract(0, getLength());
 
     char *data = newstring->getWritableData() + offset;
     // now uppercase in place
-    for (size_t i = 0; i < length; i++) {
+    for (size_t i = 0; i < _length; i++) {
         *data = tolower(*data);
         data++;
     }
@@ -1386,14 +1382,14 @@ RexxString *RexxString::lower(size_t offset, size_t length)
  *
  * @return A new string object with the case conversion applied.
  */
-RexxString *RexxString::upper(size_t offset, size_t length)
+RexxString *RexxString::upper(size_t offset, size_t _length)
 {
     // get a copy of the string
     RexxString *newstring = extract(0, getLength());
 
     char *data = newstring->getWritableData() + offset;
     // now uppercase in place
-    for (size_t i = 0; i < length; i++) {
+    for (size_t i = 0; i < _length; i++) {
         *data = toupper(*data);
         data++;
     }
@@ -1408,15 +1404,15 @@ RexxInteger *RexxString::integerValue(
 /*            failures.                                                       */
 /******************************************************************************/
 {
-  RexxNumberString *numberString;      /* string's numberstring version     */
+  RexxNumberString *numberStr;         /* string's numberstring version     */
   RexxInteger *newInteger;             /* returned integer string           */
 
                                        /* Force String conversion through   */
                                        /* NumberString                      */
                                        /* get the number string version     */
-  if ((numberString = this->fastNumberString()) != OREF_NULL ) {
+  if ((numberStr = this->fastNumberString()) != OREF_NULL ) {
                                        /* try for an integer                */
-    newInteger = numberString->integerValue(digits);
+    newInteger = numberStr->integerValue(digits);
                                        /* did it convert?                   */
     if (newInteger != TheNilObject && newInteger->getStringrep() == OREF_NULL)
       newInteger->setString(this);     /* connect the string value          */
@@ -1525,7 +1521,7 @@ RexxArray *RexxString::makeArray(RexxString *div)
   size_t linecount = 0;                /* number of lines                   */
   size_t len;                          /* target string length              */
   const char **lines = OREF_NULL;      /* array holding the single lines    */
-  const char *start = this->getStringData();
+  const char *startPtr = this->getStringData();
   const char *end   = this->getStringData() + this->getLength();
   RexxArray  *result;
   RexxString *entry;
@@ -1560,13 +1556,13 @@ RexxArray *RexxString::makeArray(RexxString *div)
   lines = (const char **) calloc(size,sizeof(char*));
 
                                        /* dissect string                    */
-  while (start < end) {
-    tmp = start;
+  while (startPtr < end) {
+    tmp = startPtr;
                                        /* search for separator character    */
     while (tmp < end && *tmp != separator) tmp++;
                                        /* insert address of line start      */
-    lines[linecount++] = start;
-    start = tmp+1;
+    lines[linecount++] = startPtr;
+    startPtr = tmp+1;
                                        /* if array is full, double it       */
     if (linecount == size) {
       lines = (const char**) realloc(lines,size*2*sizeof(char*));
@@ -1690,7 +1686,7 @@ RexxString *RexxStringClass::newString(const char *string, size_t length)
 /* Function:  Allocate (and initialize) a string object                       */
 /******************************************************************************/
 {
-  RexxString *newString;               /* new string object                 */
+  RexxString *newObj;                  /* new string object                 */
   size_t      size2;                   /* allocated size                    */
 
                                        /* calculate the size                */
@@ -1699,26 +1695,26 @@ RexxString *RexxStringClass::newString(const char *string, size_t length)
                                        /* for terminating NULL              */
   size2 = sizeof(RexxString) - (sizeof(char) * 3) + length;
                                        /* allocate the new object           */
-  newString = (RexxString *)new_object(size2);
+  newObj = (RexxString *)new_object(size2);
                                        /* set the behaviour from the class*/
-  BehaviourSet(newString, TheStringBehaviour);
+  BehaviourSet(newObj, TheStringBehaviour);
                                        /* set the virtual function table    */
-  setVirtualFunctions(newString, T_string);
+  setVirtualFunctions(newObj, T_string);
                                        /* clear the front part              */
-  ClearObjectLength(newString, sizeof(RexxString));
-  newString->setLength(length);        /* save the length                   */
+  ClearObjectLength(newObj, sizeof(RexxString));
+  newObj->setLength(length);           /* save the length                   */
                                        /* Null terminate, allows faster     */
                                        /* conversion to ASCII-Z string      */
-  newString->putChar(length, '\0');
+  newObj->putChar(length, '\0');
                                        /* copy it over                      */
-  newString->put(0, string, length);
-  newString->generateHash();           /* generate the hash value           */
+  newObj->put(0, string, length);
+  newObj->generateHash();              /* generate the hash value           */
                                        /* by  default, we don't need Live   */
-  SetObjectHasNoReferences(newString); /*sent                               */
+  SetObjectHasNoReferences(newObj);    /*sent                               */
                                        /* NOTE: That if we can set          */
                                        /*  this->NumebrString elsewhere     */
                                        /*we need to mark ourselves as       */
-  return newString;                    /*having OREFs                       */
+  return newObj;                       /*having OREFs                       */
 }
 
 RexxString *RexxStringClass::rawString(size_t length)
@@ -1726,7 +1722,7 @@ RexxString *RexxStringClass::rawString(size_t length)
 /* Function:  Allocate (and initialize) an empty string object                */
 /******************************************************************************/
 {
-  RexxString *newString;               /* new string object                 */
+  RexxString *newObj;                  /* new string object                 */
   size_t      size2;                   /* allocated size                    */
 
                                        /* calculate the size                */
@@ -1735,23 +1731,23 @@ RexxString *RexxStringClass::rawString(size_t length)
                                        /* for terminating NULL              */
   size2 = sizeof(RexxString) - (sizeof(char) * 3) + length;
                                        /* allocate the new object           */
-  newString = (RexxString *)new_object(size2);
+  newObj = (RexxString *)new_object(size2);
                                        /* set the behaviour from the class*/
-  BehaviourSet(newString, TheStringBehaviour);
+  BehaviourSet(newObj, TheStringBehaviour);
                                        /* set the virtual function table    */
-  setVirtualFunctions(newString, T_string);
+  setVirtualFunctions(newObj, T_string);
                                        /* clear the front part              */
-  ClearObjectLength(newString, sizeof(RexxString));
-  newString->setLength(length);        /* save the length                   */
+  ClearObjectLength(newObj, sizeof(RexxString));
+  newObj->setLength(length);           /* save the length                   */
                                        /* Null terminate, allows faster     */
                                        /* conversion to ASCII-Z string      */
-  newString->putChar(length, '\0');
+  newObj->putChar(length, '\0');
                                        /* by  default, we don't need Live   */
-  SetObjectHasNoReferences(newString); /*sent                               */
+  SetObjectHasNoReferences(newObj);    /*sent                               */
                                        /* NOTE: That if we can set          */
                                        /*  this->NumebrString elsewhere     */
                                        /*we need to mark ourselves as       */
-  return newString;                    /*having OREFs                       */
+  return newObj;                       /*having OREFs                       */
 }
 
 RexxString *RexxStringClass::newCstring(const char *string)
@@ -1799,12 +1795,12 @@ RexxString *RexxStringClass::newRexx(RexxObject **init_args, size_t argCount)
 /* Function:  Create a new string value (used primarily for subclasses)       */
 /******************************************************************************/
 {
-  RexxString *string;                  /* string value                      */
+  RexxObject *stringObj;               /* string value                      */
 
                                        /* break up the arguments            */
-  process_new_args(init_args, argCount, &init_args, &argCount, 1, (RexxObject **)&string, NULL);
+  process_new_args(init_args, argCount, &init_args, &argCount, 1, (RexxObject **)&stringObj, NULL);
                                        /* force argument to string value    */
-  string = (RexxString *)REQUIRED_STRING(string, ARG_ONE);
+  RexxString *string = (RexxString *)REQUIRED_STRING(stringObj, ARG_ONE);
                                        /* create a new string object        */
   string = new_string(string->getStringData(), string->getLength());
   BehaviourSet(string, this->instanceBehaviour);

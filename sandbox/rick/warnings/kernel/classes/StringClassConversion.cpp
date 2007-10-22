@@ -53,8 +53,6 @@
 #include "NumberStringMath.hpp"
 
 extern ACTIVATION_SETTINGS *current_settings;
-                                       /* create a hex table                */
-static char hextab[] = "0123456789ABCDEF";
 
 /*********************************************************************/
 /*                                                                   */
@@ -178,9 +176,9 @@ int ValidateSet(
   char     c;                          /* current character                 */
   size_t   Count;                      /* # set members found               */
   const char *Current;                 /* current location                  */
-  const char *SpaceLocation;           /* location of last space            */
+  const char *SpaceLocation = NULL;    /* location of last space            */
   int      SpaceFound;                 /* space found yet?                  */
-  size_t   Residue;                    /* if space_found, # set             */
+  size_t   Residue = 0;                /* if space_found, # set             */
                                        /* members                           */
 
   if (*String == ch_SPACE)             /* if no leading blank               */
@@ -438,7 +436,7 @@ RexxString *RexxString::decodeBase64()
         /* the input string is an invalid length */
         report_exception(Error_Incorrect_method_invbase64);
     }
-    char *source = (char *)this->getStringData();
+    const char *source = (char *)this->getStringData();
     /* figure out the output string length */
     size_t outputLength = (inputLength / 4) * 3;
     if (*(source + inputLength - 1) == '=')
@@ -547,7 +545,7 @@ RexxString *RexxString::c2x()
   return Retval;                       /* return converted string           */
 }
 
-RexxString *RexxString::d2c(RexxInteger *length)
+RexxString *RexxString::d2c(RexxInteger *_length)
 /******************************************************************************/
 /* Function:  Process the string D2C method/function                          */
 /******************************************************************************/
@@ -560,10 +558,10 @@ RexxString *RexxString::d2c(RexxInteger *length)
                                        /* report this                       */
     report_exception1(Error_Incorrect_method_d2c, this);
                                        /* format as a string value          */
-  return numberstring->d2xD2c(length, TRUE);
+  return numberstring->d2xD2c(_length, TRUE);
 }
 
-RexxString *RexxString::d2x(RexxInteger *length)
+RexxString *RexxString::d2x(RexxInteger *_length)
 /******************************************************************************/
 /* Function:  Process the string D2X method/function                          */
 /******************************************************************************/
@@ -576,7 +574,7 @@ RexxString *RexxString::d2x(RexxInteger *length)
                                        /* report this                       */
     report_exception1(Error_Incorrect_method_d2x, this);
                                        /* format as a string value          */
-  return numberstring->d2xD2c(length, FALSE);
+  return numberstring->d2xD2c(_length, FALSE);
 }
 
 RexxString *RexxString::x2c()
@@ -597,17 +595,17 @@ RexxString *RexxString::x2c()
   return Retval;                       /* return the packed string   */
 }
 
-RexxString *RexxString::x2d(RexxInteger *length)
+RexxString *RexxString::x2d(RexxInteger *_length)
 /******************************************************************************/
 /* Function:  Process the string X2D method/function                          */
 /******************************************************************************/
 {
                                        /* forward to the common routine     */
-  return this->x2dC2d(length, FALSE);
+  return this->x2dC2d(_length, FALSE);
 }
 
 
-RexxString *RexxString::x2dC2d(RexxInteger *length,
+RexxString *RexxString::x2dC2d(RexxInteger *_length,
                                BOOL type )
 /******************************************************************************/
 /* Function:  Common X2D/X2C processing routine                               */
@@ -634,7 +632,7 @@ RexxString *RexxString::x2dC2d(RexxInteger *length,
   CurrentDigits = number_digits();     /* get the current digits setting    */
   StringLength = this->getLength();         /* get Argument string length        */
                                        /* get the target length             */
-  ResultSize = optional_length(length, -1, ARG_ONE);
+  ResultSize = optional_length(_length, -1, ARG_ONE);
   if (!ResultSize)                     /* zero requested                    */
     return (RexxString *)IntegerZero;  /* always returns zero               */
 
@@ -643,7 +641,7 @@ RexxString *RexxString::x2dC2d(RexxInteger *length,
   NibblePosition = 0;                  /* assume an even nibble number      */
 
   if (type == TRUE) {                  /* dealing with character?           */
-    if (ResultSize == -1) {            /* no size specified?                */
+    if (_length == OREF_NULL) {        /* no size specified?                */
       Negative = FALSE;                /* can't be negative                 */
       ResultSize = StringLength;       /* use entire string                 */
     }
@@ -674,7 +672,7 @@ RexxString *RexxString::x2dC2d(RexxInteger *length,
     StringLength = String->getLength();
                                        /* point to the packed data          */
     StringPtr = String->getWritableData();
-    if (ResultSize == -1) {            /* no size specified?                */
+    if (_length == OREF_NULL) {        /* no size specified?                */
       Negative = FALSE;                /* can't be negative                 */
       ResultSize = StringLength;       /* use entire string                 */
     }
@@ -840,13 +838,13 @@ RexxString *RexxString::b2x()
   return Retval;                       /* return packed string              */
 }
 
-RexxString *RexxString::c2d(RexxInteger *length)
+RexxString *RexxString::c2d(RexxInteger *_length)
 /******************************************************************************/
 /* Function:  Common C2D processing routine                                   */
 /******************************************************************************/
 {
                                        /* forward to the common routine     */
-  return this->x2dC2d(length, TRUE);
+  return this->x2dC2d(_length, TRUE);
 }
 
 RexxString *RexxString::x2b()
