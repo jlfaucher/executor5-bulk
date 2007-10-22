@@ -2985,7 +2985,7 @@ the list indexes at the time items are added with the
 <emphasis role="bold">next</emphasis> methods can also retrieve list indexes.
 Only indexes the list
 object generates are valid i.e. the list is never a sparse list and the list
-object may modify indexes for items in the list.</para>
+object will not modify indexes for items in the list.</para>
 <figure><title>The List class and methods</title>
 <mediaobject>
 <imageobject>
@@ -3272,12 +3272,8 @@ becomes the first item in the list. If you omit
 the list. </para>
 <para>Inserting an item in the list at position
 <emphasis role="italic">index</emphasis> will cause the items in the list after
-position <emphasis role="italic">index</emphasis> to have their indexes modified
-by the list object.</para>
-<note><para>The term <emphasis role="italic">index</emphasis> as used above does
-not imply that the list order is maintained via an array-like index. The indexes
-referred to above are internal handles maintained by the interpreter and are not
-available to the user.</para></note>
+position <emphasis role="italic">index</emphasis> to have their relative positions
+shifted by the list object.  The index values for any items in the list are not modified by the insertion.</para>
 <indexterm><primary>examples</primary>
 <secondary>insert method</secondary>
 <tertiary>of List class</tertiary></indexterm>
