@@ -114,7 +114,7 @@ UCHAR PackByte(
 UCHAR PackNibble(
   PCHAR String )                       /* string to pack                    */
 {
-  CHAR  Buf[8];                        /* temporary buffer                  */
+  char  Buf[8];                        /* temporary buffer                  */
   INT   i;                             /* table index                       */
 
   memset(Buf, '0', 4);                 /* set first 4 bytes to zero         */
@@ -516,7 +516,7 @@ RexxString *RexxString::c2x()
   RexxString *Retval;                  /* return value                      */
   PCHAR       Source;                  /* input string pointer              */
   PCHAR       Destination;             /* output string pointer             */
-  CHAR        ch;                      /* current character                 */
+  char        ch;                      /* current character                 */
 
   InputLength = this->length;          /* get length of string              */
   if (!InputLength)                    /* null string?                      */
@@ -806,7 +806,7 @@ RexxString *RexxString::b2x()
   PCHAR    Source;                     /* current source pointer            */
   PCHAR    Destination;                /* destination pointer               */
   size_t   Excess;                     /* section boundary                  */
-  CHAR     Nibble[4];                  /* current nibble string             */
+  char     Nibble[4];                  /* current nibble string             */
   size_t   Jump;                       /* string movement offset            */
   size_t   Length;                     /* total string length               */
 

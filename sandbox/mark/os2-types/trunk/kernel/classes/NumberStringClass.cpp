@@ -260,7 +260,7 @@ RexxString *RexxNumberString::stringValue()
 /* Function:  Convert a number string to a string object                      */
 /******************************************************************************/
 {
-  CHAR  expstring[17], num;
+  char   expstring[17], num;
   int    carry;
   size_t NumDigits;
   size_t MaxNumSize, LenValue;

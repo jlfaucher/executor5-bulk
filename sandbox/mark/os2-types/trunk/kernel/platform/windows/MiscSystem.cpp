@@ -118,7 +118,7 @@ RexxString *SysName( void )
 /******************************************************************************/
 {
 
-  CHAR chVerBuf[26];                   // buffer for version
+  char chVerBuf[26];                   // buffer for version
   int isys;
 
   isys = which_system_is_running();
@@ -153,7 +153,7 @@ RexxString *SysVersion(void)
 /*             in the image.                                                  */
 /******************************************************************************/
 {
-  CHAR chVerBuf[8];                   // buffer for version
+  char chVerBuf[8];                   // buffer for version
   OSVERSIONINFO vi;
   // dont forget to change sysmeths.cmd
 

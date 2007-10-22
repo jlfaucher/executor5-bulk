@@ -1283,7 +1283,7 @@ void translateSource(
 {
   RexxString * fullName;               /* fully resolved input name         */
   RexxMethod * method;                 /* created method                    */
-  CHAR         name[CCHMAXPATH + 2];   /* temporary name buffer             */
+  char         name[CCHMAXPATH + 2];   /* temporary name buffer             */
   BOOL            fileFound;
   RexxActivity*activity;               /* the current activity              */
 

@@ -55,9 +55,9 @@ static BOOL fWriteDebug = TRUE;
 
 VOID SysCall DbgPrintf(PSZ pszDbgArgs, ...)
 {
-   CHAR debugHeader[50];
-   CHAR debugFileName[255];
-   CHAR outBuffer[255];
+   char debugHeader[50];
+   char debugFileName[255];
+   char outBuffer[255];
    SYSTEMTIME st;
    HANDLE dbgFile;
    DWORD dwWritten;

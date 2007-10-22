@@ -220,8 +220,8 @@ RexxInstruction *RexxSource::callNew()
   RexxObject *name;                    /* call name                         */
   INT         keyword;                 /* call subkeyword                   */
   RexxString *condition;               /* created USER condition            */
-  CHAR        flags;                   /* final CALL flags                  */
-  CHAR        builtin_index;           /* builtin function call index       */
+  uint8_t     flags;                   /* final CALL flags                  */
+  uint8_t     builtin_index;           /* builtin function call index       */
 
   flags = 0;                           /* clear the flags                   */
   builtin_index = 0;                   /* clear the builtin index           */
@@ -2144,10 +2144,10 @@ RexxInstruction *RexxSource::traceNew()
   RexxString *value;                   /* string value of symbol            */
   RexxObject *expression;              /* trace expression                  */
   RexxObject *newObject;               /* newly created object              */
-  INT         setting;                 /* new trace setting                 */
-  INT         debug;                   /* new debug setting                 */
-  LONG        debug_skip;              /* amount to skip                    */
-  CHAR        debug_flags;             /* current debug flags               */
+  INT           setting;               /* new trace setting                 */
+  INT           debug;                 /* new debug setting                 */
+  LONG          debug_skip;            /* amount to skip                    */
+  unsigned char debug_flags;           /* current debug flags               */
 
   setting = TRACE_NORMAL;              /* set default trace mode            */
   debug_skip = 0;                      /* no skipping                       */

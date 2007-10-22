@@ -98,9 +98,9 @@ extern HANDLE apiProtect;
 
 typedef struct _ENVENTRY {                  /* setlocal/endlocal structure    */
   ULONG    DriveNumber;                     /* saved drive                    */
-  CHAR     Directory[DIRLEN];               /* saved current directory        */
+  char     Directory[DIRLEN];               /* saved current directory        */
   PCHAR    Environment;                     /* saved environment segment      */
-  CHAR     Variables[1];                    /* start of variable values       */
+  char     Variables[1];                    /* start of variable values       */
 } ENVENTRY;
 
 RexxMethod *SysRestoreProgramBuffer(PRXSTRING, RexxString *);
@@ -478,7 +478,7 @@ BOOL RegExternalFunction(
   RexxString * argument;               /* current argument                  */
   USHORT    functionrc;                /* Return code from function         */
                                        /* default return code buffer        */
-  CHAR      default_return_buffer[DEFRXSTRING];
+  char      default_return_buffer[DEFRXSTRING];
 
 // retrofit by IH
 
@@ -618,7 +618,7 @@ RexxObject * SysExternalFunction(
   RexxObject * result;                 /* Init function result to null      */
   //RXSTRING  funcresult;                /* Function result                 */
   //USHORT    functionrc;                /* Return code from function       */
-  //CHAR      default_return_buffer[10]; /* default return code buffer      */
+  //char      default_return_buffer[10]; /* default return code buffer      */
 
   *foundFnc = TRUE;
 

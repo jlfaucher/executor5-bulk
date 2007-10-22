@@ -428,7 +428,7 @@ const char *SearchFileName(
 /*                                                                   */
 /*********************************************************************/
 //{
-//  CHAR      FullName[CCHMAXPATH + 2];  /* temporary name buffer             */
+//  char      FullName[CCHMAXPATH + 2];  /* temporary name buffer             */
 //  RexxString * imgpath;
 //  PCHAR      fullname;
 //

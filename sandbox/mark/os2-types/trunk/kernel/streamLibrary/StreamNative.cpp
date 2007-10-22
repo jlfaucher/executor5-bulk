@@ -557,7 +557,7 @@ char fdopen_type[4];
 TTS *ttsp;
 
    char   char_buffer;                 /* single character buffer           */
-   CHAR   work[30];                    /* error message buffer              */
+   char   work[30];                    /* error message buffer              */
 
    i_nobuffer = 0;                     /* set default handle parameters     */
    i_binary = 0;
@@ -680,7 +680,7 @@ void implicit_open(
 /* Function:   Handle implicit opens on first stream access                   */
 /******************************************************************************/
 {
-   CHAR   work[30];                    /* error message buffer              */
+   char   work[30];                    /* error message buffer              */
    char   char_buffer;                 /* single character buffer           */
    struct stat stat_info;              /* stream information block          */
 
@@ -937,7 +937,7 @@ LONG write_stream_line(                /* write a line to an I/O stream     */
 REXXOBJECT read_stream_line(           /* read a line from an I/O stream    */
     REXXOBJECT   self,                 /* target stream object              */
     STREAM_INFO *stream_info,          /* current stream information        */
-    CHAR        *buffer,               /* buffer to for output              */
+    char        *buffer,               /* buffer to for output              */
     LONG         length,               /* length to read                    */
     BOOL         update_position )     /* update the read position          */
 /******************************************************************************/
@@ -982,7 +982,7 @@ REXXOBJECT read_stream_line(           /* read a line from an I/O stream    */
 LONG read_stream_buffer(               /* read a buffer of data             */
     STREAM_INFO *stream_info,          /* current stream information        */
     BOOL         non_binary,           /* binary/non-binary read            */
-    CHAR        *buffer,               /* buffer to for output              */
+    char        *buffer,               /* buffer to for output              */
     LONG         length )              /* length to read                    */
 /******************************************************************************/
 /* Function:   read a buffer of data from a stream                            */
@@ -1272,8 +1272,8 @@ LONG scan_forward_lines(               /* move forward a number of lines    */
   const char *scan_pointer;                /* scanning pointer                  */
   const char *last_scan;                   /* last scan position                */
   const char *endptr;                      /* end of the buffer                 */
-//CHAR    delimiters[4];               /* search delimiters                 */
-//CHAR    delimiters[] = { ctrl_z, nl, '\0' };  /* delimiters               */
+//char    delimiters[4];               /* search delimiters                 */
+//char    delimiters[] = { ctrl_z, nl, '\0' };  /* delimiters               */
   char    delimiters[] = { nl, '\0' }; /* delimiters                        */
   LONG    buffer_index;                /* current buffer position           */
 
@@ -1354,8 +1354,8 @@ LONG count_stream_lines(               /* count lines in a buffer           */
   const char *last_scan;               /* last scan position                */
   const char *endptr;                  /* end of the buffer                 */
   LONG    linecount;                   /* current linecount                 */
-//CHAR    delimiters[4];               /* search delimiters                 */
-//CHAR    delimiters[] = { ctrl_z, nl, '\0' };  /* delimiters               */
+//char    delimiters[4];               /* search delimiters                 */
+//char    delimiters[] = { ctrl_z, nl, '\0' };  /* delimiters               */
   char    delimiters[] = { nl, '\0' }; /* delimiters                        */
 
 //delimiters[0] = ctrl_z;              /* fill in the EOF character         */
@@ -1834,7 +1834,7 @@ RexxMethod3(long, stream_lines,
      /* if the LINES method is called for the BIF then a quick   */
      /* check is ok, else do the full line count as previously              */
      if ( quickflag == 1 ) {
-       CHAR    cReadChar;
+       char    cReadChar;
 
        /* if we are not yet at the end of the file return 1 */
        if (stream_info->char_read_position < stream_size(stream_info))
@@ -2114,7 +2114,7 @@ RexxMethod2(CSTRING, stream_flush,
     BUFFER, StreamBuffer )             /* stream information block          */
 {
    STREAM_INFO *stream_info;           /* stream information                */
-   CHAR         work[30];              /* error information buffer          */
+   char         work[30];              /* error information buffer          */
 
    stream_info = get_stream_info();    /* get the stream block              */
    if (buffer_flush != 0) {            /* try to flush                      */
@@ -2280,7 +2280,7 @@ TTS *ttsp;
 
    STREAM_INFO *stream_info;           /* stream information                */
    struct stat stat_info;              /* file statistics                   */
-   CHAR   work[30];                    /* work buffer                       */
+   char   work[30];                    /* work buffer                       */
    char   char_buffer;                 /* single character buffer           */
 
    i_nobuffer = 0;                     /* default to buffered               */
@@ -2554,7 +2554,7 @@ unsigned long Parse_Fields[7] = {      /* fields filled in by parse         */
  };
 
 long position_offset;                  /* filled in by offset routine       */
-CHAR   work[30];                       /* work buffer                       */
+char   work[30];                       /* work buffer                       */
 
 /* parameter structure for unknown offset routine called from parser */
 POSITION_PARMS Parse_Parms = {
@@ -3522,7 +3522,7 @@ RexxMethod1(REXXOBJECT, stream_description,
      BUFFER, StreamBuffer )            /* stream information block          */
 {
   STREAM_INFO *stream_info;            /* stream information                */
-  CHAR         work[200];              /* temp buffer                       */
+  char         work[200];              /* temp buffer                       */
   PCHAR        result;                 /* result string                     */
 
   stream_info = get_stream_info();     /* get the stream block              */

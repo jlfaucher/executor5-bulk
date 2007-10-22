@@ -620,7 +620,7 @@ void RexxActivity::raiseException(
   RexxString      *errortext;          /* primary error message             */
   RexxString      *message;            /* secondary error message           */
   LONG             primary;            /* primary message code              */
-  CHAR             work[10];           /* temp buffer for formatting        */
+  char             work[10];           /* temp buffer for formatting        */
   LONG             newVal;
 
   if (this->requestingString)          /* recursive entry to error handler? */
@@ -845,7 +845,7 @@ void RexxActivity::reraiseException(
   RexxString     *message;             /* secondary error message           */
   LONG            errornumber;         /* binary error number               */
   LONG            primary;             /* primary message code              */
-  CHAR            work[10];            /* temp buffer for formatting        */
+  char            work[10];            /* temp buffer for formatting        */
   LONG            newVal;
 
   activation = this->currentActivation;/* get the current activation        */
@@ -3464,7 +3464,7 @@ void process_message_arguments(
   OREF     tempOREF;                   /* temp argument object reference    */
   LONG     tempLong;                   /* temp converted long               */
   ULONG    tempULong;                  /* temp converted long               */
-  CHAR     tempChar;                   /* temp character value              */
+  char     tempChar;                   /* temp character value              */
   double   tempDouble;                 /* temp double value                 */
   va_list *subArguments;               /* indirect argument descriptor      */
   const char *subInterface;            /* indirect interface definition     */
@@ -3484,7 +3484,7 @@ void process_message_arguments(
       case 'b':                        /* BYTE                              */
       case 'c':                        /* CHARACTER                         */
                                        /* get the character                 */
-        tempChar = (CHAR) va_arg(*arguments, INT);
+        tempChar = (char) va_arg(*arguments, INT);
                                        /* create a string object            */
         argument_list->addLast(new_string(&tempChar, 1));
         break;
@@ -3600,7 +3600,7 @@ void process_message_arguments(
 void process_message_result(
   RexxObject *value,                   /* returned value                    */
   PVOID    return_pointer,             /* pointer to return value location  */
-  CHAR     interfacedefn )             /* interface definition              */
+  char     interfacedefn )             /* interface definition              */
 /******************************************************************************/
 /* Function:  Convert an OREF return value into the requested message return  */
 /*            type.                                                           */
@@ -3616,7 +3616,7 @@ void process_message_result(
         break;
       case 'c':                        /* CHARACTER                         */
                                        /* get the first character           */
-        (*((CHAR *)return_pointer)) = ((RexxString *)value)->getChar(0);
+        (*((char *)return_pointer)) = ((RexxString *)value)->getChar(0);
         break;
 
       case 'i':                        /* INT                               */
@@ -3780,7 +3780,7 @@ LONG VLAREXXENTRY RexxSendMessage (
   RexxObject *result;                  /* returned result object            */
   RexxArray  *argument_array;          /* array of arguments                */
   RexxList   *argument_list;           /* temp list of arguments            */
-  CHAR returnType;                     /* type of return value              */
+  char returnType;                     /* type of return value              */
   LONG rc;                             /* message return code               */
   va_list arguments;                   /* message argument list             */
   SYSEXCEPTIONBLOCK exreg;             /* system specific exception info    */

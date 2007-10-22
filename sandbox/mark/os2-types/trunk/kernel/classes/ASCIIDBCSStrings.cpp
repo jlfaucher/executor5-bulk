@@ -101,15 +101,15 @@ INT DBCS_MemiCmp(
   return rc;                           /* return compare result             */
 }
 
-UCHAR DBCS_Type(
+char DBCS_Type(
   RexxString *String )                 /* Input String                      */
 /*********************************************************************/
 /* Function: Do DBCS string type validation                          */
 /*********************************************************************/
 {
-  const char *CStr;                    /* current scan location             */
-  const char *EndStr;                  /* end location                      */
-  CHAR     rc;                         /* Function return code.             */
+  const char  *CStr;                   /* current scan location             */
+  const char  *EndStr;                 /* end location                      */
+  char        rc;                      /* Function return code.             */
   BOOL     ChkFlag;                    /* Invalid string flag.              */
   size_t   StrLen;                     /* Input String length.              */
   size_t   DBCSNum;                    /* Number of DBCS bytes.             */
@@ -156,8 +156,8 @@ size_t RexxString::validDBCS()
   const char *String;                  /* string scan pointer               */
   size_t   Length;                     /* byte length of the string         */
   size_t   CharLength;                 /* Input HugeString length.          */
-  CHAR     BadChar[4];                 /* working buffer for errors         */
-  CHAR     HexBadChar[4];              /* working buffer for errors         */
+  char     BadChar[4];                 /* working buffer for errors         */
+  char     HexBadChar[4];              /* working buffer for errors         */
   BOOL     HasDBCS;                    /* found a DBCS character            */
 
   if (NoDBCS(this))                    /* already validated?                */

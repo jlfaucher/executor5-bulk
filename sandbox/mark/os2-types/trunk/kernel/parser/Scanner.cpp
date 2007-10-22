@@ -465,7 +465,7 @@ RexxString *RexxSource::packLiteral(
   INT    outpointer;                   /* current output pointer            */
   RexxString *value;                   /* reduced value                     */
   INT    real_length;                  /* real number of digits in string   */
-  CHAR   error_output[2];              /* used for formatting error         */
+  char   error_output[2];              /* used for formatting error         */
 
  first = TRUE;                         /* initialize group flags and        */
  count = 0;                            /* counters                          */
@@ -638,9 +638,9 @@ RexxToken *RexxSource::sourceNextToken(
  INT    subclass;                      /* sub type of the token             */
  INT    numeric;                       /* numeric type flag                 */
  LOCATIONINFO  location;               /* token location information        */
- CHAR   tran;                          /* translated character              */
- CHAR   badchar[4];                    /* working buffer for errors         */
- CHAR   hexbadchar[4];                 /* working buffer for errors         */
+ char   tran;                          /* translated character              */
+ char   badchar[4];                    /* working buffer for errors         */
+ char   hexbadchar[4];                 /* working buffer for errors         */
 
  /* definitions of states of exponential numeric scan */
 #define EXP_START    0

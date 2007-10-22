@@ -178,7 +178,7 @@ RexxObject * SysCommand(
   RXSTRING retstr;                     /* Subcom result string                */
   RexxObject * result;                 /* Result array                        */
                                        /* default return code buffer          */
-  CHAR     default_return_buffer[DEFRXSTRING];
+  char     default_return_buffer[DEFRXSTRING];
 
   *error_failure = OREF_NULL;          /* default to clean call               */
                                        /* set up the RC buffer                */
@@ -535,7 +535,7 @@ LONG sysCommandNT(const char *cmdstring_ptr, RexxString  **error_failure, BOOL d
   DWORD rc;
   STARTUPINFO siStartInfo;                  // process startup info
   PROCESS_INFORMATION piProcInfo;           // returned process info
-  CHAR ctitle[256];
+  char ctitle[256];
   DWORD creationFlags;
   BOOL titleChanged;
 

@@ -100,7 +100,7 @@ RexxString * SysMessageText(           /* simplified whole code             */
  int            set_num = 1;           /* message set 1 from catalog        */
  ERROR_MESSAGE *p;                     /* message table scan pointer        */
  ULONG          msgid;                 /* message number                    */
- CHAR           DataArea[256];         /* buf to return message             */
+ char           DataArea[256];         /* buf to return message             */
  PCHAR          message;
                                        /* loop through looking for the      */
                                        /* error code                        */
@@ -166,7 +166,7 @@ RexxString * SysMessageHeader(
 {
  ERROR_MESSAGE *p;                     /* table scan pointer                */
  ULONG          msgid;                 /* message number                    */
- CHAR           DataArea[20];          /* buf addr to return message        */
+ char           DataArea[20];          /* buf addr to return message        */
                                        /* loop through looking for the      */
                                        /* error code                        */
  for (p = Message_table; p->code != 0; p++) {

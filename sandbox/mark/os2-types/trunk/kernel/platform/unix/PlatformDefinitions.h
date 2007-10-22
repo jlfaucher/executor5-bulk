@@ -103,7 +103,7 @@
 
 #define UCHAR           unsigned char
 #define PUCHAR          UCHAR *
-#define CHAR            char
+// #define CHAR            char
 #define PCHAR           CHAR *
 #define INT             int
 #define UINT            unsigned int

@@ -242,7 +242,7 @@ char *resolve_tilde(const char *path)
                 return(0);
             /* merge the strings          */
             sprintf(dir_buf, "%s/%s", home_dir, st);
-            return dir_buf; 
+            return dir_buf;
         }
         else
         {
@@ -253,7 +253,7 @@ char *resolve_tilde(const char *path)
             if (!dir_buf)
                 return(0);
             sprintf(dir_buf, "%s/", home_dir);
-            return dir_buf; 
+            return dir_buf;
         }
     }
     else if (*(st) == '~')
@@ -288,13 +288,13 @@ char *resolve_tilde(const char *path)
                                            /* get space for the buf      */
             dir_buf = (char *)malloc(strlen(ppwd->pw_dir)+strlen(slash)+2);
             if (!dir_buf)
-                return NULL; 
+                return NULL;
             /* merge the strings          */
             sprintf(dir_buf, "%s/%s", ppwd->pw_dir, slash);
         }
         return dir_buf;                  /* directory change to        */
     }
-    return NULL;   
+    return NULL;
 }
 
 /****************************************************************************/
@@ -484,7 +484,7 @@ BOOL MacroSpaceSearch(
   RexxObject    ** result )            /* Result of function call           */
 {
   USHORT       Position;               /* located macro search position     */
-  CONST CHAR  *MacroName;              /* ASCII-Z name version              */
+  const char  *MacroName;              /* ASCII-Z name version              */
   RXSTRING     MacroImage;             /* target macro image                */
   RexxMethod * Routine;                /* method to execute                 */
 
@@ -556,7 +556,7 @@ BOOL RegExternalFunction(
   USHORT        functionrc;            /* Return code from function         */
 
                                        /* default return code buffer        */
-  CHAR      default_return_buffer[DEFRXSTRING];
+  char      default_return_buffer[DEFRXSTRING];
 
   funcname = target->getStringData();  /* point to the function name        */
                                        /* Do we have the function?          */

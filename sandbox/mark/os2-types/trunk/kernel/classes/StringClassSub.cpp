@@ -64,7 +64,7 @@ extern ACTIVATION_SETTINGS *current_settings;
 RexxString *RexxString::center(RexxInteger *length,
                                RexxString  *pad)
 {
-  CHAR     PadChar;                    /* pad character                     */
+  char     PadChar;                    /* pad character                     */
   size_t   LeftPad;                    /* required left pads                */
   size_t   RightPad;                   /* required right pads               */
   size_t   Space;                      /* result string size                */
@@ -193,7 +193,7 @@ RexxString *RexxString::insert(RexxString  *newStrObj,
 {
   RexxString *Retval;                  /* return string                     */
   RexxString *newStr;                  /* return string                     */
-  CHAR     PadChar;                    /* HugeString for Padding char       */
+  char     PadChar;                    /* HugeString for Padding char       */
   size_t   ReqLenChar;                 /* Actual req char len of new.       */
   size_t   ReqPadChar;                 /* Actual req char len of new.       */
   size_t   ReqLeadPad;                 /* Actual req char len of new.       */
@@ -289,7 +289,7 @@ RexxString *RexxString::insert(RexxString  *newStrObj,
 RexxString *RexxString::left(RexxInteger *length,
                              RexxString  *pad)
 {
-  CHAR      PadChar;                   /* pad character                     */
+  char      PadChar;                   /* pad character                     */
   size_t    Size;                      /* requested size                    */
   size_t    Length;                    /* string length                     */
   RexxString *Retval;                  /* returned result                   */
@@ -347,7 +347,7 @@ RexxString *RexxString::overlay(
   size_t   BackLen;                    /* back length                       */
   size_t   FrontPad;                   /* front pad length                  */
   size_t   BackPad;                    /* back pad length                   */
-  CHAR     PadChar;                    /* pad character                     */
+  char     PadChar;                    /* pad character                     */
   PCHAR    Current;                    /* current copy location             */
 
   if (DBCS_MODE)                       /* need to use DBCS?                 */
@@ -468,7 +468,7 @@ RexxString *RexxString::reverse()
 RexxString *RexxString::right(RexxInteger *length,
                               RexxString  *pad)
 {
-  CHAR      PadChar;                   /* pad character                     */
+  char      PadChar;                   /* pad character                     */
   size_t    Size;                      /* requested size                    */
   size_t    Length;                    /* string length                     */
   RexxString *Retval;                  /* returned result                   */
@@ -523,8 +523,8 @@ RexxString *RexxString::strip(RexxString *option,
     PCHAR       Back;                    /* pointer to back part              */
     PCHAR       Front;                   /* pointer to front part             */
     size_t      Length;                  /* length of the string              */
-    CHAR        RemoveChar;              /* character to remove               */
-    CHAR        Option;                  /* strip option                      */
+    char        RemoveChar;              /* character to remove               */
+    char        Option;                  /* strip option                      */
     RexxString *Retval;                  /* return value                      */
 
     if (DBCS_MODE)                       /* need to use DBCS?                 */

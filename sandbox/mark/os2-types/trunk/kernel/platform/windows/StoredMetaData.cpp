@@ -508,7 +508,7 @@ RexxMethod *SysRestoreTranslatedProgram(
   RexxSource  * Source;                /* REXX source object                */
   RexxActivity *activity;              /* the current activity              */
                                        /* temporary read buffer             */
-  CHAR          fileTag[sizeof(compiledHeader)];
+  char          fileTag[sizeof(compiledHeader)];
 
   activity = CurrentActivity;          /* save the activity                 */
   ReleaseKernelAccess(activity);       /* release the access                */

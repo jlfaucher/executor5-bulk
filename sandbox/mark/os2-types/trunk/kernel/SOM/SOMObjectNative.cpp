@@ -141,7 +141,7 @@ char *type_char (
     case tk_boolean:                   /* BOOLEAN                           */
       *cp++ = 'b';
       break;
-    case tk_char:                      /* CHAR                              */
+    case tk_char:                      /* char                              */
       *cp++ = 'c';
       break;
     case tk_octet:                     /* BYTE                              */
@@ -486,7 +486,7 @@ LONG REXXENTRY RexxCallProgram (
 {
   va_list    arguments;                /* variable argument list            */
   LONG       rc;                       /* REXX return code                  */
-  CHAR       temp_interface[10];       /* temporary interface list          */
+  char       temp_interface[10];       /* temporary interface list          */
 
 
   va_start(arguments, result);         /* get the start of the valist       */
@@ -512,7 +512,7 @@ LONG REXXENTRY RexxCallString (
 {
   va_list    arguments;                /* variable argument list            */
   LONG       rc;                       /* REXX return code                  */
-  CHAR       temp_interface[10];       /* temporary interface list          */
+  char       temp_interface[10];       /* temporary interface list          */
 
 
   va_start(arguments, result);         /* get the start of the valist       */

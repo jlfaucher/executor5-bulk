@@ -2265,7 +2265,7 @@ BUILTIN(STREAM) {
   RexxString   *command;               /* stream command                    */
   RexxString   *command_upper;         /* stream command upper case         */
   RexxObject   *result;                /* function result                   */
-  CHAR          action_char;           /* reduced action character          */
+  char          action_char;           /* reduced action character          */
   RexxString   *fullName;              /* fully qual'd stream name          */
   BOOL          added;
   BOOL          fOpen = FALSE;         /* open flag                         */

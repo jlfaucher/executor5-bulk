@@ -744,7 +744,7 @@ BOOL  convertInputBoolean(
 
 BOOL  convertInputChar(
   RexxObject         *argument,        /* argument to convert               */
-  CHAR               *outputArgument ) /* converted argument                */
+  char               *outputArgument ) /* converted argument                */
 /******************************************************************************/
 /* Function:  Convert a character input argument type                         */
 /******************************************************************************/
@@ -758,7 +758,7 @@ BOOL  convertInputChar(
                                        /* if resulting string length is one */
   if (tempString->length  == 1) {
                                        /*  yes, return the converted arg    */
-    *outputArgument = (CHAR)*tempString->stringData;
+    *outputArgument = (char)*tempString->stringData;
     return TRUE;                       /* got a good conversion             */
   }
   return FALSE;                        /* bad conversion                    */

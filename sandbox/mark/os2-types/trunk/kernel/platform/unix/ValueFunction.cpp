@@ -80,7 +80,7 @@ INT SetEnvironmentVariable(
   PCHAR  del = NULL;                   /* ptr to old unused memory          */
   PCHAR  np;
   INT    i;
-  CHAR   namebufcurr[256];             /* buf for extracted name            */
+  char   namebufcurr[256];             /* buf for extracted name            */
 
   Environment = environ;               /* get the environment               */
   if(!putflag){                        /* first change in the environment ? */
