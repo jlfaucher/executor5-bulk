@@ -699,24 +699,62 @@ on the operating system.</para>
 <para>Rexx provides the following classes belonging to the object class:</para>
 <itemizedlist>
 <listitem><para>Alarm class</para></listitem>
-<listitem><para>Class class</para></listitem>
 <listitem><para>Array class</para></listitem>
+<listitem><para>Class class</para></listitem>
+<listitem><para>Collection class</para>
+<itemizedlist>
+<listitem><para>MapCollection class</para></listitem>
+<listitem><para>OrderedCollection class</para></listitem>
+<listitem><para>SetCollection class</para></listitem>
+</itemizedlist></listitem>
+<listitem><para>Comparable class</para></listitem>
+<listitem><para>Comparator class</para>
+<itemizedlist>
+<listitem><para>CaselessColumnComparator class</para></listitem>
+<listitem><para>CaselessComparator class</para></listitem>
+<listitem><para>CaselessDescendingComparator class</para></listitem>
+<listitem><para>ColumnComparator class</para></listitem>
+<listitem><para>DescendingComparator class</para></listitem>
+<listitem><para>InvertingComparator class</para></listitem>
+</itemizedlist></listitem>
+<listitem><para>DateTime class</para></listitem>
+<listitem><para>Directory class</para>
+<itemizedlist>
+<listitem><para>Properties class</para></listitem>
+</itemizedlist></listitem>
+<listitem><para>InputOutputStream class</para>
+<itemizedlist>
+<listitem><para>Stream class</para></listitem>
+</itemizedlist></listitem>
+<listitem><para>InputStream class</para></listitem>
 <listitem><para>List class</para></listitem>
-<listitem><para>Queue class</para></listitem>
-<listitem><para>Table class
-<itemizedlist>
-<listitem><para>Set class</para></listitem></itemizedlist></para></listitem>
-<listitem><para>Directory class</para></listitem>
-<listitem><para>Relation class
-<itemizedlist>
-<listitem><para>Bag class</para></listitem></itemizedlist></para></listitem>
 <listitem><para>Message class</para></listitem>
 <listitem><para>Method class</para></listitem>
 <listitem><para>Monitor class</para></listitem>
+<listitem><para>MutableBuffer class</para></listitem>
+<listitem><para>OutputStream class</para></listitem>
+<listitem><para>Queue class</para>
+<itemizedlist>
+<listitem><para>CircularQueue class</para></listitem>
+</itemizedlist></listitem>
+<listitem><para>RegularExpression class</para></listitem>
+<listitem><para>Relation class</para>
+<itemizedlist>
+<listitem><para>Bag class</para></listitem>
+</itemizedlist></listitem>
+<listitem><para>RexxQueue class</para></listitem>
 <listitem><para>Stem class</para></listitem>
-<listitem><para>Stream class</para></listitem>
 <listitem><para>String class</para></listitem>
-<listitem><para>Supplier class</para></listitem></itemizedlist>
+<listitem><para>Supplier class</para>
+<itemizedlist>
+<listitem><para>StreamSupplier class</para></listitem>
+</itemizedlist></listitem>
+<listitem><para>Table class</para>
+<itemizedlist>
+<listitem><para>Set class</para></listitem>
+</itemizedlist></listitem>
+<listitem><para>TimeSpan class</para></listitem>
+</itemizedlist>
 <para>(The classes are in a class hierarchy with subclasses indented below their
 superclasses.)</para>
 <para>Note that there might also be other classes in the system.</para>
@@ -738,7 +776,7 @@ superclasses.)</para>
 <mediaobject>
 <imageobject>
 <!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
-<imagedata fileref="ooRexxClasses2png" align="left" scale="90">
+<imagedata fileref="ooRexxClasses2.png" align="left" scale="90">
 </imageobject>
 </mediaobject>
 </figure>
@@ -851,6 +889,54 @@ methods except where noted.</para>
 </entry>
 </row>
 <row>
+<entry>addDays</entry>
+<entry>
+    <link linkend="mthDateTimeAddDays">DateTime</link>,
+    <link linkend="mthTimeSpanAddDays">TimeSpan</link>
+</entry>
+</row>
+<row>
+<entry>addHours</entry>
+<entry>
+    <link linkend="mthDateTimeAddHours">DateTime</link>,
+    <link linkend="mthTimeSpanAddHours">TimeSpan</link>
+</entry>
+</row>
+<row>
+<entry>addMicroseconds</entry>
+<entry>
+    <link linkend="mthDateTimeAddMicroseconds">DateTime</link>,
+    <link linkend="mthTimeSpanAddMicroseconds">TimeSpan</link>
+</entry>
+</row>
+<row>
+<entry>addMinutes</entry>
+<entry>
+    <link linkend="mthDateTimeAddMinutes">DateTime</link>,
+    <link linkend="mthTimeSpanAddMinutes">TimeSpan</link>
+</entry>
+</row>
+<row>
+<entry>addSeconds</entry>
+<entry>
+    <link linkend="mthDateTimeAddSeconds">DateTime</link>,
+    <link linkend="mthTimeSpanAddSeconds">TimeSpan</link>
+</entry>
+</row>
+<row>
+<entry>addWeeks</entry>
+<entry>
+    <link linkend="mthDateTimeAddWeeks">DateTime</link>,
+    <link linkend="mthTimeSpanAddWeeks">TimeSpan</link>
+</entry>
+</row>
+<row>
+<entry>addYears</entry>
+<entry>
+    <link linkend="mthDateTimeAddYears">DateTime</link>
+</entry>
+</row>
+<row>
 <entry>allAt</entry>
 <entry>
     <link linkend="mthRelationAllAt">Relation</link>
@@ -948,6 +1034,12 @@ methods except where noted.</para>
 <entry>baseClass</entry>
 <entry>
     <link linkend="mthClassBaseClass">Class (class and instance method)</link>
+</entry>
+</row>
+<row>
+<entry>baseDate</entry>
+<entry>
+    <link linkend="mthDateTimeBaseDate">DateTime</link>
 </entry>
 </row>
 <row>
@@ -1077,6 +1169,12 @@ methods except where noted.</para>
 </entry>
 </row>
 <row>
+<entry>civilTime</entry>
+<entry>
+    <link linkend="mthDateTimeCivilTime">DateTime</link>
+</entry>
+</row>
+<row>
 <entry>class</entry>
 <entry>
     <link linkend="mthObjectClass">Object</link>
@@ -1113,7 +1211,9 @@ methods except where noted.</para>
 <entry>compareTo</entry>
 <entry>
     <link linkend="mthComparableCompareTo">Comparable</link>,
-    <link linkend="mthStringCompareTo">String</link>
+    <link linkend="mthDateTimeCompareTo">DateTime</link>,
+    <link linkend="mthStringCompareTo">String</link>,
+    <link linkend="mthTimeSpanCompareTo">TimeSpan</link>
 </entry>
 </row>
 <row>
@@ -1168,6 +1268,60 @@ methods except where noted.</para>
 <entry>dataType</entry>
 <entry>
     <link linkend="mthStringDataType">String</link>
+</entry>
+</row>
+<row>
+<entry>date</entry>
+<entry>
+    <link linkend="mthDateTimeDate">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>day</entry>
+<entry>
+    <link linkend="mthDateTimeDay">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>dayMinutes</entry>
+<entry>
+    <link linkend="mthDateTimeDayMinutes">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>dayName</entry>
+<entry>
+    <link linkend="mthDateTimeDayName">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>daySeconds</entry>
+<entry>
+    <link linkend="mthDateTimeDaySeconds">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>dayMicroseconds</entry>
+<entry>
+    <link linkend="mthDateTimeDayMicroseconds">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>days</entry>
+<entry>
+    <link linkend="mthTimeSpanDays">TimeSpan</link>
+</entry>
+</row>
+<row>
+<entry>daysInMonth</entry>
+<entry>
+    <link linkend="mthDateTimeDaysInMonth">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>daysInYear</entry>
+<entry>
+    <link linkend="mthDateTimeDaysInYear">DateTime</link>
 </entry>
 </row>
 <row>
@@ -1238,6 +1392,12 @@ methods except where noted.</para>
 </entry>
 </row>
 <row>
+<entry>duration</entry>
+<entry>
+    <link linkend="mthTimeSpanDuration">TimeSpan</link>
+</entry>
+</row>
+<row>
 <entry>d2c</entry>
 <entry>
     <link linkend="mthStringD2c">String</link>
@@ -1247,6 +1407,12 @@ methods except where noted.</para>
 <entry>d2x</entry>
 <entry>
     <link linkend="mthStringD2x">String</link>
+</entry>
+</row>
+<row>
+<entry>elapsed</entry>
+<entry>
+    <link linkend="mthDateTimeElapsed">DateTime</link>
 </entry>
 </row>
 <row>
@@ -1292,6 +1458,12 @@ methods except where noted.</para>
 </entry>
 </row>
 <row>
+<entry>europeanDate</entry>
+<entry>
+    <link linkend="mthDateTimeEuropeanDate">DateTime</link>
+</entry>
+</row>
+<row>
 <entry>first</entry>
 <entry>
     <link linkend="mthArrayFirst">Array</link>,
@@ -1315,6 +1487,117 @@ methods except where noted.</para>
 <entry>format</entry>
 <entry>
     <link linkend="mthStringFormat">String</link>
+</entry>
+</row>
+<row>
+<entry>fromBaseDate</entry>
+<entry>
+    <link linkend="mthDateTimeFromBaseDate">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>fromCivilTime</entry>
+<entry>
+    <link linkend="mthDateTimeFromCivilTime">DateTime</link>,
+    <link linkend="mthTimeSpanFromCivilTime">TimeSpan</link>
+</entry>
+</row>
+<row>
+<entry>fromDays</entry>
+<entry>
+    <link linkend="mthTimeSpanFromDays">TimeSpan</link>
+</entry>
+</row>
+<row>
+<entry>fromEuropeanDate</entry>
+<entry>
+    <link linkend="mthDateTimeFromEuropeanDate">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>fromHours</entry>
+<entry>
+    <link linkend="mthTimeSpanFromHours">TimeSpan</link>
+</entry>
+</row>
+<row>
+<entry>fromIsoDate</entry>
+<entry>
+    <link linkend="mthDateTimeFromIsoDate">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>fromLongTime</entry>
+<entry>
+    <link linkend="mthDateTimeFromLongTime">DateTime</link>
+    <link linkend="mthTimeSpanFromLongTime">TimeSpan</link>
+</entry>
+</row>
+<row>
+<entry>fromMicroseconds</entry>
+<entry>
+    <link linkend="mthTimeSpanFromMicroseconds">TimeSpan</link>
+</entry>
+</row>
+<row>
+<entry>fromMinutes</entry>
+<entry>
+    <link linkend="mthTimeSpanFromMinutes">TimeSpan</link>
+</entry>
+</row>
+<row>
+<entry>fromNormalDate</entry>
+<entry>
+    <link linkend="mthDateTimeFromNormalDate">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>fromNormalTime</entry>
+<entry>
+    <link linkend="mthDateTimeFromNormalTime">DateTime</link>,
+    <link linkend="mthTimeSpanFromNormalTime">TimeSpan</link>
+</entry>
+</row>
+<row>
+<entry>fromOrderedDate</entry>
+<entry>
+    <link linkend="mthDateTimeFromOrderedDate">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>fromSeconds</entry>
+<entry>
+    <link linkend="mthTimeSpanFromSeconds">TimeSpan</link>
+</entry>
+</row>
+<row>
+<entry>fromStandardDate</entry>
+<entry>
+    <link linkend="mthDateTimeFromStandardDate">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>fromStringFormat</entry>
+<entry>
+    <link linkend="mthTimeSpanFromStringFormat">TimeSpan</link>
+</entry>
+</row>
+<row>
+<entry>fromTicks</entry>
+<entry>
+    <link linkend="mthDateTimeFromTicks">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>fromUsaDate</entry>
+<entry>
+    <link linkend="mthDateTimeFromUsaDate">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>fullDate</entry>
+<entry>
+    <link linkend="mthDateTimeFullDate">DateTime</link>
 </entry>
 </row>
 <row>
@@ -1360,6 +1643,13 @@ methods except where noted.</para>
 </entry>
 </row>
 <row>
+<entry>hashcode</entry>
+<entry>
+    <link linkend="mthDateTimeHashcode">DateTime</link>,
+    <link linkend="mthTimeSpanHashcode">TimeSpan</link>
+</entry>
+</row>
+<row>
 <entry>hasIndex</entry>
 <entry>
     <link linkend="mthArrayHasIndex">Array</link>,
@@ -1389,6 +1679,13 @@ methods except where noted.</para>
 <entry>hasMethod</entry>
 <entry>
     <link linkend="mthObjectHasMethod">Object</link>
+</entry>
+</row>
+<row>
+<entry>hours</entry>
+<entry>
+    <link linkend="mthDateTimeHours">DateTime</link>,
+    <link linkend="mthTimeSpanHours">TimeSpan</link>
 </entry>
 </row>
 <row>
@@ -1496,6 +1793,18 @@ methods except where noted.</para>
 </entry>
 </row>
 <row>
+<entry>isoDate</entry>
+<entry>
+    <link linkend="mthDateTimeIsoDate">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>isLeapYear</entry>
+<entry>
+    <link linkend="mthDateTimeIsLeapYear">DateTime</link>
+</entry>
+</row>
+<row>
 <entry>isSubclassOf</entry>
 <entry>
     <link linkend="mthClassIsSubclassOf">Class (class and instance method)</link>
@@ -1519,6 +1828,12 @@ methods except where noted.</para>
     <link linkend="mthRelationItems">Relation</link>,
     <link linkend="mthStemItems">Stem</link>,
     <link linkend="mthTableItems">Table</link>
+</entry>
+</row>
+<row>
+<entry>languageDate</entry>
+<entry>
+    <link linkend="mthDateTimeLanguageDate">DateTime</link>
 </entry>
 </row>
 <row>
@@ -1588,6 +1903,12 @@ methods except where noted.</para>
 </entry>
 </row>
 <row>
+<entry>longTime</entry>
+<entry>
+    <link linkend="mthDateTimeLongTime">DateTime</link>
+</entry>
+</row>
+<row>
 <entry>lower</entry>
 <entry>
     <link linkend="mthStringLower">String</link>
@@ -1636,6 +1957,12 @@ methods except where noted.</para>
 </entry>
 </row>
 <row>
+<entry>maxDate</entry>
+<entry>
+    <link linkend="mthDateTimeMaxDate">DateTime</link>
+</entry>
+</row>
+<row>
 <entry>messageName</entry>
 <entry>
     <link linkend="mthMessageMessageName">Message</link>
@@ -1660,15 +1987,47 @@ methods except where noted.</para>
 </entry>
 </row>
 <row>
+<entry>microseconds</entry>
+<entry>
+    <link linkend="mthDateTimeMicroseconds">DateTime</link>,
+    <link linkend="mthTimeSpanMicroseconds">TimeSpan</link>
+</entry>
+</row>
+<row>
 <entry>min</entry>
 <entry>
     <link linkend="mthStringMin">String</link>
 </entry>
 </row>
 <row>
+<entry>minDate</entry>
+<entry>
+    <link linkend="mthDateTimeMinDate">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>minutes</entry>
+<entry>
+    <link linkend="mthDateTimeMinutes">DateTime</link>,
+    <link linkend="mthTimeSpanMinutes">TimeSpan</link>
+</entry>
+</row>
+<row>
 <entry>mixinClass</entry>
 <entry>
     <link linkend="mthClassMixinClass">Class (class and instance method)</link>
+</entry>
+</row>
+<row>
+<entry>month</entry>
+<entry>
+    <link linkend="mthDateTimeMonth">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>monthName</entry>
+<entry>
+    <link linkend="mthDateTimeMonthName">DateTime</link>
 </entry>
 </row>
 <row>
@@ -1706,6 +2065,18 @@ methods except where noted.</para>
     <link linkend="mthQueueNext">Queue</link>,
     <link linkend="mthStreamSupplierNext">StreamSupplier</link>,
     <link linkend="mthSupplierNext">Supplier</link>
+</entry>
+</row>
+<row>
+<entry>normalDate</entry>
+<entry>
+    <link linkend="mthDateTimeNormalDate">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>normalTime</entry>
+<entry>
+    <link linkend="mthDateTimeNormalTime">DateTime</link>
 </entry>
 </row>
 <row>
@@ -1785,6 +2156,12 @@ and prefix \</entry>
 <entry>Operator Methods (Other): == (unary)</entry>
 <entry>
     <link linkend="mthObjectOperators">Object</link>
+</entry>
+</row>
+<row>
+<entry>orderedDate</entry>
+<entry>
+    <link linkend="mthDateTimeOrderedDate">DateTime</link>
 </entry>
 </row>
 <row>
@@ -1978,6 +2355,13 @@ and prefix \</entry>
 </entry>
 </row>
 <row>
+<entry>seconds</entry>
+<entry>
+    <link linkend="mthDateTimeSeconds">DateTime</link>,
+    <link linkend="mthTimeSpanSeconds">TimeSpan</link>
+</entry>
+</row>
+<row>
 <entry>section</entry>
 <entry>
     <link linkend="mthArraySection">Array</link>,
@@ -2072,7 +2456,8 @@ and prefix \</entry>
 <row>
 <entry>sign</entry>
 <entry>
-    <link linkend="mthStringSign">String</link>
+    <link linkend="mthStringSign">String</link>,
+    <link linkend="mthTimeSpanSign">TimeSpan</link>
 </entry>
 </row>
 <row>
@@ -2119,6 +2504,12 @@ and prefix \</entry>
 </entry>
 </row>
 <row>
+<entry>standardDate</entry>
+<entry>
+    <link linkend="mthDateTimeStandardDate">DateTime</link>
+</entry>
+</row>
+<row>
 <entry>start</entry>
 <entry>
     <link linkend="mthMessageStart">Message</link>,
@@ -2135,9 +2526,11 @@ and prefix \</entry>
 <entry>string</entry>
 <entry>
     <link linkend="mthCircularQueueString">CircularQueue</link>,
+    <link linkend="mthDateTimeString">DateTime</link>,
     <link linkend="mthMutableBufferString">MutableBuffer</link>,
     <link linkend="mthObjectString">Object</link>,
-    <link linkend="mthStreamString">Stream</link>
+    <link linkend="mthStreamString">Stream</link>,
+    <link linkend="mthTimeSpanString">TimeSpan</link>
 </entry>
 </row>
 <row>
@@ -2217,9 +2610,57 @@ and prefix \</entry>
 </entry>
 </row>
 <row>
+<entry>ticks</entry>
+<entry>
+    <link linkend="mthDateTimeTicks">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>timeOfDay</entry>
+<entry>
+    <link linkend="mthDateTimeTimeOfDay">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>today</entry>
+<entry>
+    <link linkend="mthDateTimeToday">DateTime</link>
+</entry>
+</row>
+<row>
 <entry>toString</entry>
 <entry>
     <link linkend="mthArrayToString">Array</link>,
+</entry>
+</row>
+<row>
+<entry>totalDays</entry>
+<entry>
+    <link linkend="mthTimeSpanTotalDays">TimeSpan</link>
+</entry>
+</row>
+<row>
+<entry>totalHours</entry>
+<entry>
+    <link linkend="mthTimeSpanTotalHours">TimeSpan</link>
+</entry>
+</row>
+<row>
+<entry>totalMicroseconds</entry>
+<entry>
+    <link linkend="mthTimeSpanTotalMicroseconds">TimeSpan</link>
+</entry>
+</row>
+<row>
+<entry>totalMinutes</entry>
+<entry>
+    <link linkend="mthTimeSpanTotalMinutes">TimeSpan</link>
+</entry>
+</row>
+<row>
+<entry>totalSeconds</entry>
+<entry>
+    <link linkend="mthTimeSpanTotalSeconds">TimeSpan</link>
 </entry>
 </row>
 <row>
@@ -2279,9 +2720,21 @@ and prefix \</entry>
 </entry>
 </row>
 <row>
+<entry>usaDate</entry>
+<entry>
+    <link linkend="mthDateTimeUsaDate">DateTime</link>
+</entry>
+</row>
+<row>
 <entry>verify</entry>
 <entry>
     <link linkend="mthStringVerify">String</link>
+</entry>
+</row>
+<row>
+<entry>weekDay</entry>
+<entry>
+    <link linkend="mthDateTimeWeekDay">DateTime</link>
 </entry>
 </row>
 <row>
@@ -2340,6 +2793,18 @@ and prefix \</entry>
 <entry>x2d</entry>
 <entry>
     <link linkend="mthStringX2d">String</link>
+</entry>
+</row>
+<row>
+<entry>year</entry>
+<entry>
+    <link linkend="mthDateTimeYear">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>yearDay</entry>
+<entry>
+    <link linkend="mthDateTimeYearDay">DateTime</link>
 </entry>
 </row>
 </tbody>

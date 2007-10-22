@@ -137,8 +137,8 @@ sequence:</para>
 <para>The GET and SET options may also be used to override the default method body generated for the attribute.  This
 is frequently used so the SET attribute method can perform new value validation.</para>
 <programlisting>
-::attribute size set
 ::attribute size get
+::attribute size set
   expose size     /* establish direct access to object variable (attribute) */
   use arg value   /* retrieve argument                                      */
   if datatype(size, "Whole") = .false | size &lt; 0  then
