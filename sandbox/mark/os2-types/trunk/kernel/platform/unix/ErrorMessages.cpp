@@ -69,12 +69,12 @@
 
                                        /* define macros to bulid entries in */
                                        /* the msgEntry table for msg lookup */
-#define MAJOR(code)   code, code##_msg,/* Major error codes                 */
-#define MINOR(code)   code, code##_msg,/* Minor error codes (sub-codes)     */
+#define MAJOR(code)   {code, code##_msg},/* Major error codes                 */
+#define MINOR(code)   {code, code##_msg},/* Minor error codes (sub-codes)     */
 
 typedef struct msgEntry {              /* define for error table entries    */
- int   code;                           /* error message code                */
- ULONG msgid;                          /* error message number              */
+ int    code;                          /* error message code                */
+ int    msgid;                         /* error message number              */
 } ERROR_MESSAGE;
 
 #include "RexxMessageNumbers.h"        /* include  definition of errorcodes */
@@ -101,7 +101,7 @@ RexxString * SysMessageText(           /* simplified whole code             */
  ERROR_MESSAGE *p;                     /* message table scan pointer        */
  ULONG          msgid;                 /* message number                    */
  char           DataArea[256];         /* buf to return message             */
- PCHAR          message;
+ char          *message;
                                        /* loop through looking for the      */
                                        /* error code                        */
 #if defined( HAVE_CATOPEN )
@@ -117,7 +117,7 @@ RexxString * SysMessageText(           /* simplified whole code             */
        {
          sprintf(DataArea, "\nCannot open REXX message catalog %s.\nNot in NLSPATH or %s.\n",
                            REXXMESSAGEFILE, ORX_CATDIR);
-         return new_string((PCHAR)&DataArea, strlen(DataArea));
+         return new_string((char *)&DataArea, strlen(DataArea));
        }
      }                                   /* retrieve message from repository  */
      message = catgets(catd, set_num, msgid, NULL);
@@ -129,7 +129,7 @@ RexxString * SysMessageText(           /* simplified whole code             */
        {
          sprintf(DataArea, "\nCannot open REXX message catalog %s.\nNot in NLSPATH or %s.\n",
                            REXXMESSAGEFILE, ORX_CATDIR);
-         return new_string((PCHAR)&DataArea, strlen(DataArea));
+         return new_string((char *)&DataArea, strlen(DataArea));
        }
        else
        {
@@ -147,13 +147,13 @@ RexxString * SysMessageText(           /* simplified whole code             */
        strcpy(DataArea, message);
      catclose(catd);                 /* close the catalog                 */
                                      /* convert and return the message    */
-     return new_string((PCHAR)&DataArea, strlen(DataArea));
+     return new_string((char *)&DataArea, strlen(DataArea));
    }
  }
  return OREF_NULL;                     /* no message retrieved              */
 #else
  sprintf(DataArea,"Cannot get description for error %d",msgid);
- return new_string((PCHAR)&DataArea, strlen(DataArea));
+ return new_string((char *)&DataArea, strlen(DataArea));
 #endif
 }
 

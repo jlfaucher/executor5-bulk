@@ -476,8 +476,8 @@ void  RexxSomSendV (SOMObject *somSelf, SOMClass *classObj, somId methodId, ...)
 
 
 LONG REXXENTRY RexxCallProgram (
-  PCHAR name,                          /* program name                      */
-  PCHAR interface,                     /* interface definition string       */
+  char *name,                          /* program name                      */
+  char *interface,                     /* interface definition string       */
   PVOID result,                        /* returned argument                 */
   ... )                                /* variable number of arguments      */
 /******************************************************************************/
@@ -502,8 +502,8 @@ LONG REXXENTRY RexxCallProgram (
 }
 
 LONG REXXENTRY RexxCallString (
-  PCHAR program,                       /* program string                    */
-  PCHAR interface,                     /* interface definition string       */
+  char  *program,                      /* program string                    */
+  char  *interface,                    /* interface definition string       */
   PVOID result,                        /* returned argument                 */
   ... )                                /* variable number of arguments      */
 /******************************************************************************/

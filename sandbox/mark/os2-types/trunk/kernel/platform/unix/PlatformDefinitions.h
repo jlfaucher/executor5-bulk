@@ -104,12 +104,12 @@
 #define UCHAR           unsigned char
 #define PUCHAR          UCHAR *
 // #define CHAR            char
-#define PCHAR           CHAR *
+// #define PCHAR           CHAR *
 #define INT             int
 #define UINT            unsigned int
 #define PINT            int *
-#define PCH             PCHAR
-#define PSZ             PCHAR
+// #define PCH             PCHAR
+// #define PSZ             PCHAR
 #define APIENTRY
 #define APIRET          ULONG
 #define CONST           const

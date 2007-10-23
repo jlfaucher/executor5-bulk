@@ -515,7 +515,7 @@ RexxString * RexxActivation::traceSetting()
 /* Function:  Generate a string form of the current trace setting             */
 /******************************************************************************/
 {
-  UCHAR        setting[3];             /* returned trace setting            */
+  char         setting[3];             /* returned trace setting            */
   RexxString  *result;                 /* returned result                   */
 
   setting[0] = '\0';                   /* start with a null string          */
@@ -525,13 +525,13 @@ RexxString * RexxActivation::traceSetting()
                                        /* add current trace option          */
     setting[1] = this->settings.traceoption;
                                        /* create a string form              */
-    result = new_string((PCHAR)setting, 2);
+    result = new_string((char *)setting, 2);
   }
   else {                               /* no debug prefix                   */
                                        /* add current trace option          */
     setting[0] = this->settings.traceoption;
                                        /* create a string form              */
-    result = new_string((PCHAR)setting, 1);
+    result = new_string((char *)setting, 1);
   }
   return result;                       /* return the setting                */
 }

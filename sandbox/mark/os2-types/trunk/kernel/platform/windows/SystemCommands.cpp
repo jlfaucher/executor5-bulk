@@ -205,7 +205,7 @@ RexxObject * SysCommand(
   /* handler, try passing it on to the system to handle.                      */
   /****************************************************************************/
   if (rc == RXSUBCOM_NOTREG) {
-    if ((stricmp((PCHAR)current_address,SYSENV))==0) {
+    if ((stricmp((char *)current_address,SYSENV))==0) {
       ReleaseKernelAccess(activity);   /* unlock the kernel                   */
                                        /* issue the command                   */
       rc = sys_command(command->getStringData(), error_failure);
@@ -250,7 +250,7 @@ RexxObject * SysCommand(
     else
       result = IntegerZero;            /* got a zero return code              */
                                        /* OS/2 system call?                 */
-    if (stricmp((PCHAR)current_address,SYSENV)==0) {
+    if (stricmp((char *)current_address,SYSENV)==0) {
 
       if (sbrc == UNKNOWN_COMMAND)     /* is this unknown command?          */
                                        /*   send failure condition back     */
@@ -419,7 +419,7 @@ LONG sys_command(const char *cmd, RexxString **error_failure)
                                        // CMD.EXE on NT Command.com on 32s
     sys_cmd_handler = (RUNNING_NT) ? CMDDEFNAMENT : CMDDEFNAME32S;
                                        /* Get len of handler                  */
-  length_cmd_handler = strlen((PCHAR)sys_cmd_handler);
+  length_cmd_handler = strlen((char *)sys_cmd_handler);
 
   cmdstring_ptr = cmdstring;           /* Set pointer to cmd buffer           */
   /****************************************************************************/
@@ -486,7 +486,7 @@ LONG sys_command(const char *cmd, RexxString **error_failure)
   }
   /* no we couldn't, so pass command to cmd.exe or command.com */
 
-  strcpy(cmdstring_ptr,(PCHAR)sys_cmd_handler);    /* Put in system cmd handler      */
+  strcpy(cmdstring_ptr,(char *)sys_cmd_handler);    /* Put in system cmd handler      */
 
   /* the following lines checks whether or not a /k option is specified */
   /* if so the /c option must not be concatenated */

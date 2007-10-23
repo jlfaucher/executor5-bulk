@@ -275,7 +275,7 @@ void GetLongName(
   DWORD           length;
   WIN32_FIND_DATA findData;
   HANDLE          hFind;
-  PCHAR           p;
+  char           *p;
 
   if ( nSize >= CCHMAXPATH ) {
     length = GetLongPathName(FullName, FullName, nSize);

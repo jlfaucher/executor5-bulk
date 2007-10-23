@@ -125,7 +125,7 @@ typedef struct nestedinfo {
    long error(size_t);
    BOOL        raiseCondition(RexxString *, RexxObject *, RexxString *, RexxObject *, RexxObject *, RexxDirectory *);
    void        raiseException(LONG, LOCATIONINFO *, RexxSource *, RexxString *, RexxArray *, RexxObject *);
-   void        reportException(LONG, PCHAR);
+   void        reportException(LONG, char *);
    void        reportException(LONG, LONG);
    void        reportAnException(LONG);
    void        reportAnException(LONG, RexxObject *);

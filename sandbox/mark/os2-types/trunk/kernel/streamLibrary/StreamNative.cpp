@@ -85,7 +85,7 @@ inline STREAM_INFO * get_verified_stream_info(STREAM_INFO * StreamBuffer) {
     return StreamBuffer; }
 
 
-#define temp_buffer(length) (PCHAR)buffer_address(RexxBuffer(length))
+#define temp_buffer(length) (char *)buffer_address(RexxBuffer(length))
 #define get_buffer(length)  allocate_stream_buffer(stream_info, length)
 
 #define errcode Error_Incorrect_call
@@ -201,7 +201,7 @@ const long query_char_position = 0x04;
 const long query_line_position = 0x08;
 const long query_system_position = 0x10;
 
-PCHAR  allocate_stream_buffer(
+char *allocate_stream_buffer(
     STREAM_INFO *stream_info,          /* target stream information block   */
     LONG  length)                      /* length of buffer required         */
 /******************************************************************************/
@@ -1033,7 +1033,7 @@ void complete_line(
 /* Function:   write out the rest of a line                                   */
 /******************************************************************************/
 {
-  PCHAR   buffer;                      /* write buffer                      */
+  char   *buffer;                      /* write buffer                      */
   LONG    write_length;                /* length to write out               */
 
                                        /* not on a line boundary?           */
@@ -1059,7 +1059,7 @@ long write_fixed_line(
 /******************************************************************************/
 {
   LONG   write_length;                 /* total length to write             */
-  PCHAR  buffer;                       /* temporary write buffer            */
+  char  *buffer;                       /* temporary write buffer            */
 
                                        /* calculate the length needed       */
   write_length = stream_info->stream_reclength - ((stream_info->char_write_position % stream_info->stream_reclength) - 1);
@@ -1260,10 +1260,10 @@ void set_line_write_position(
 }
 
 LONG scan_forward_lines(               /* move forward a number of lines    */
-  PCHAR  buffer,                       /* start of buffer                   */
+  char  *buffer,                       /* start of buffer                   */
   LONG   length,                       /* buffer length                     */
   LONG  *count,                        /* count to move                     */
-  PCHAR  end_char,                     /* end-of-line marker                */
+  char  *end_char,                     /* end-of-line marker                */
   LONG   end_size )                    /* size of end-of-line marker        */
 /******************************************************************************/
 /* Function: move forward a number of lines in a buffer                       */
@@ -1342,9 +1342,9 @@ LONG scan_forward_lines(               /* move forward a number of lines    */
 }
 
 LONG count_stream_lines(               /* count lines in a buffer           */
-  PCHAR  buffer,                       /* start of buffer                   */
+  char  *buffer,                       /* start of buffer                   */
   LONG   length,                       /* buffer length                     */
-  PCHAR  end_char,                     /* end-of-line marker                */
+  char  *end_char,                     /* end-of-line marker                */
   LONG   end_size )                    /* size of end-of-line marker        */
 /******************************************************************************/
 /* Function: Return count of lines found in a buffer                          */
@@ -1416,14 +1416,14 @@ LONG count_stream_lines(               /* count lines in a buffer           */
 REXXOBJECT read_variable_line(
     REXXOBJECT   self,                 /* target stream object              */
     STREAM_INFO *stream_info,          /* current stream information        */
-    PCHAR        end_char,             /* end-of-line marker                */
+    char        *end_char,             /* end-of-line marker                */
     LONG         end_size )            /* size of end-of-line marker        */
 /******************************************************************************/
 /* Function:   read in a variable length record                               */
 /******************************************************************************/
 {
-   PCHAR   read_buffer;                /* buffer used for reading           */
-   PCHAR   new_buffer;                 /* extended buffer allocation        */
+   char   *read_buffer;                /* buffer used for reading           */
+   char   *new_buffer;                 /* extended buffer allocation        */
    const char *scan_pointer;           /* location of a delimiter character */
    LONG    read_count;                 /* count of characters read          */
    LONG    read_index;                 /* location of the next read         */
@@ -3383,7 +3383,7 @@ RexxMethod1(CSTRING, qualify,
    if (!stream_info->flags.open)       /* not open yet?                     */
      full_name_parameter(stream_info); /* expand the full name              */
                                        /* return the name parameter         */
-   return (PCHAR)&stream_info->full_name_parameter;
+   return (char *)&stream_info->full_name_parameter;
 }
 
 /********************************************************************************************/
@@ -3490,7 +3490,7 @@ RexxMethod1(CSTRING, stream_state,
      BUFFER, StreamBuffer )            /* stream information block          */
 {
   STREAM_INFO *stream_info;            /* stream information                */
-  PCHAR        result;                 /* returned result                   */
+  char        *result;                 /* returned result                   */
 
   stream_info = get_stream_info();     /* get the stream block              */
   switch (stream_info->state) {        /* process the different states      */
@@ -3523,7 +3523,7 @@ RexxMethod1(REXXOBJECT, stream_description,
 {
   STREAM_INFO *stream_info;            /* stream information                */
   char         work[200];              /* temp buffer                       */
-  PCHAR        result;                 /* result string                     */
+  char        *result;                 /* result string                     */
 
   stream_info = get_stream_info();     /* get the stream block              */
   switch (stream_info->state) {        /* process the different states      */
@@ -3538,7 +3538,7 @@ RexxMethod1(REXXOBJECT, stream_description,
 
     case stream_notready_state:        /* had some sort of notready         */
     {
-        result = (PCHAR)work;            /* use the work buffer               */
+        result = (char *)work;         /* use the work buffer               */
         char *error = NULL;
 
         if (stream_info->error != 0)
@@ -3643,7 +3643,7 @@ RexxMethod1(REXXOBJECT, stream_init,
 
 long reclength_token(TTS *ttsp, const char *TokenString, TOKENSTRUCT *tsp, void *userparms)
 {
-   PCHAR  end_character;               /* conversion end character          */
+   char  *end_character;               /* conversion end character          */
    LONG   result = 0;                  /* conversion result                 */
    LONG   number;                      /* converted number result           */
 

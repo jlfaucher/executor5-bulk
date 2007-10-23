@@ -101,7 +101,7 @@ extern REXXAPIDATA  *apidata;                   /* Global state data          */
 #define PT_32BIT       1                       /* only for Windows            */
 
 PVOID  pLibSave = NULL;                        /* External lib handle         */
-CHAR   szLibName[MAXNAME +1];                  /* External lib name           */
+char   szLibName[MAXNAME +1];                  /* External lib name           */
 
 /*********************************************************************/
 /*                                                                   */
@@ -117,7 +117,7 @@ LONG  RegDrop(PSZ, PSZ, LONG );       // Drop an api block from the chain
 LONG  RegRegisterExe(PSZ, PFN, PUCHAR, LONG, LONG);
 LONG  RegRegisterDll(PSZ, PSZ, PSZ, PUCHAR, ULONG, LONG);
 //PAPIBLOCK search(PSZ, PSZ, LONG );
-APIBLOCK *RegSearch(PSZ, LONG, CHAR);
+APIBLOCK *RegSearch(PSZ, LONG, char);
 //APIBLOCK *dllsearch(PSZ, PSZ, LONG );
 
 
@@ -1597,7 +1597,7 @@ LONG  RegLoad(
 PAPIBLOCK RegSearch(                   /* Function Declaration.      */
   PSZ name,                            /* Name of function to find   */
   LONG  type,                          /* Type of name.              */
-  CHAR  chMstBlk )                     /* Search All or Muster only  */
+  char  chMstBlk )                     /* Search All or Muster only  */
 {
   ULONG     cblock;                /* Working ptr, current block     */
   ULONG     previous;              /* prior block for movement       */

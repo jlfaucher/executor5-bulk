@@ -75,8 +75,8 @@ const int MIN_WHOLE_NUMBER = -999999999;   // minimum negative whole number
 /* Numeric setting constants                                                  */
 /******************************************************************************/
                                        /* constants used for setting form   */
-const int FORM_SCIENTIFIC    = FALSE;
-const int FORM_ENGINEERING   = TRUE;
+const BOOL FORM_SCIENTIFIC    = FALSE;
+const BOOL FORM_ENGINEERING   = TRUE;
 
 const size_t DEFAULT_DIGITS  = ((size_t)9); /* default numeric digits setting    */
 const size_t DEFAULT_FUZZ    = ((size_t)0); /* default numeric fuzz setting      */
@@ -261,7 +261,7 @@ typedef struct locationinfo {          /* token/clause location information */
 typedef LOCATIONINFO *PLOCATIONINFO;   /* pointer to location information   */
 
 typedef struct internalmethodentry {   /* internal method table entry       */
-  PCHAR  entryName;                    /* internal entry point name         */
+  const char *entryName;               /* internal entry point name         */
   PFN    entryPoint;                   /* method entry point                */
 } internalMethodEntry;
 
@@ -812,13 +812,13 @@ RexxActivity *activity_find (void);
 /* MHES
 const int  NO_INT  = 0x80000000;
 const long NO_LONG = 0x80000000;
-const PCHAR NO_CSTRING = NULL;
+const char *NO_CSTRING = NULL;
 #define NO_RSTRING       NULL
 */
 /*
 extern const int  NO_INT;
 extern const long NO_LONG;
-extern const PCHAR NO_CSTRING;
+extern const char *NO_CSTRING;
 */
 /* Also in RexxNativeAPI.h */
 #ifndef NO_INT
@@ -1021,7 +1021,7 @@ extern double NO_DOUBLE;
 /* Method arguments special codes                                             */
 /******************************************************************************/
 
-const int A_COUNT   = 127;            /* pass arguments as pointer/count pair */
+const size_t A_COUNT   = 127;            /* pass arguments as pointer/count pair */
 
 /******************************************************************************/
 /* Return codes                                                               */

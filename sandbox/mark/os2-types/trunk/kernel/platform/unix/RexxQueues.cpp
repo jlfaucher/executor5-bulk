@@ -97,7 +97,7 @@ RexxMethod0(REXXOBJECT, rexx_pull_queue)
    rc = RexxPullQueue((PSZ)string_data(queue_name), &buf, &dt, RXQUEUE_NOWAIT);
    if (!rc) {                          /* get a pulled line?                */
      oref_buf = RexxStringL(buf.strptr, buf.strlength);
-     if (buf.strptr > (PCHAR)1)        /* have a queue item?             do */
+     if (buf.strptr > (char *)1)       /* have a queue item?             do */
                                        /* not free addr 00000001            */
 
                                        /* free the buffer item              */

@@ -104,7 +104,7 @@ extern int  SecureFlag = 0;
 extern int  thread_counter = 0;
 
 
-APIRET APIENTRY RexxExecuteMacroFunction ( PSZ, PRXSTRING );
+APIRET APIENTRY RexxExecuteMacroFunction ( char *, PRXSTRING );
 
 #ifdef TIMESLICE                       /* System Yielding function prototype*/
 APIRET REXXENTRY RexxSetYield(PID procid, TID threadid);
@@ -823,7 +823,7 @@ char *APIENTRY RexxGetVersionInformation(void)
 {
   void *    pVersionString = NULL;
 
-  pVersionString = (PCHAR) malloc(BUFFERLEN_OS);
+  pVersionString = (char *) malloc(BUFFERLEN_OS);
   if (pVersionString != NULL) {
     sprintf((char *)pVersionString ,"Open Object Rexx Interpreter Version %s for %s\nBuild date: %s\n", PACKAGE_VERSION, ORX_SYS_STR, __DATE__);
     strcat((char *)pVersionString , COPYRIGHT);

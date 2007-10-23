@@ -266,7 +266,7 @@ double NO_DOUBLE;                      /* non-exsistent double value        */
 /* MHES
 int  NO_INT  = 0x80000000;
 long NO_LONG = 0x80000000;
-PCHAR NO_CSTRING = NULL;
+char *NO_CSTRING = NULL;
 */
 
 /* Array for valid whole number at various digits settings */
@@ -301,7 +301,7 @@ extern "C" {
 #include "NativeMethods.h"             /* bring in the internal list        */
 
 #undef  INTERNAL_METHOD
-#define INTERNAL_METHOD(name) #name , (PFN)name,
+#define INTERNAL_METHOD(name) {#name , (PFN)name},
 
 internalMethodEntry internalMethodTable[] = {
 #include "NativeMethods.h"             /* bring in the internal method table*/

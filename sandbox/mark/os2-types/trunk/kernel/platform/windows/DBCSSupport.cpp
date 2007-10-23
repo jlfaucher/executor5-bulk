@@ -67,7 +67,7 @@ BOOL SysDBCSSetup(
   *CodePage = GetOEMCP();              /* get current codepage              */
   GetCPInfo(*CodePage, &CPInfo);       /* use current codepage              */
                                        /* clear out DBCS table              */
-  memset((PCHAR)DBCS_Table, FALSE, DBCS_TableSize);
+  memset((char *)DBCS_Table, FALSE, DBCS_TableSize);
                                        /* fill in first byte table          */
   for (i = 0; CPInfo.LeadByte[i]; i += 2) {
     HaveDBCS = TRUE;                   /* got possible DBCS characters      */
