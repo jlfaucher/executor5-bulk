@@ -303,185 +303,76 @@ powers similar to the Class methods.</para>
 <section id="bigpict"><title>Rexx Classes: The Big Picture</title>
 <indexterm><primary>classes</primary>
 <secondary>provided by Rexx</secondary></indexterm>
-<para>The following
-figure diagrams the supplied Rexx classes, along with their methods.</para>
+<para>The following are the supplied Rexx classes.</para>
 
 <figure float="1">
-<title id="inheritmeths">Classes and Inheritance of Methods (part 1 of 4)</title>
-<programlisting>
-<![CDATA[
-+---------------------------------------------------------------------------+
-| Object                                                                    |
-+-----------+----------+----------------+----------+----------+-------------+
-NEW*        |          |                |          |          |
-=           +-------+  +--------+       +-------+  +------+   +-------+
-==          | Alarm |  | Class* |       | Array |  | List |   | Queue |
-\=          +-------+  +--------+       +-------+  +------+   +-------+
-<>          CANCEL     BASECLASS        NEW        OF*        []
-><          INIT       DEFAULTNAME      OF*        []         []=
-\==                    DEFINE           []         []=        AT
-CLASS                  DELETE           []=        AT         HASINDEX
-COPY                   ENHANCED         AT         FIRST      ITEMS
-DEFAULTNAME            ID               DIMENSION  FIRSTITEM  MAKEARRAY
-HASMETHOD              INHERIT          FIRST      HASINDEX   PEEK
-INIT                   INIT             HASINDEX   INSERT     PULL
-OBJECTNAME             METACLASS        ITEMS      ITEMS      PUSH
-OBJECTNAME=            METHOD           LAST       LAST       PUT
-REQUEST                METHODS          MAKEARRAY  LASTITEM   QUEUE
-RUN                    MIXINCLASS       NEXT       MAKEARRAY  REMOVE
-SETMETHOD              NEW              PREVIOUS   NEXT       SUPPLIER
-START                  QUERYMIXINCLASS  PUT        PREVIOUS
-STRING                 SUBCLASS         REMOVE     PUT
-UNSETMETHOD            SUBCLASSES       SECTION    REMOVE
-                       SUPERCLASSES     SIZE       SECTION
-                       UNINHERIT        SUPPLIER   SUPPLIER
-
-
-
-* All of the methods under the Class class are both class and instance
-  methods.NEW and OF are class methods.
-]]>
-</programlisting>
+<title id="meths1">Classes and Inheritance (part 1 of 7)</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="../rexxref/ooRexxClasses1.png" align="left" scale="90">
+</imageobject>
+</mediaobject>
 </figure>
 
-<figure float="1"><title>Classes and Inheritance of Methods (Part 2 of 4)</title>
-<programlisting>
-<![CDATA[
-+---------------------------------------------------------------------------+
-| Object (continued)                                                        |
-+---------------+--------------+---------------+------------+---------------+
-|               |              |               |            |
-+-------+       +-----------+  +----------+    +---------+  +--------+
-| Table |       | Directory |  | Relation |    | Message |  | Method |
-+-------+       +-----------+  +----------+    +---------+  +--------+
-| []            []             | []            COMPLETED    NEW*
-| []=           []=            | []=           INIT         NEWFILE
-| AT            DIFFERENCE     | ALLAT         NOTIFY       SETGUARDED
-| DIFFERENCE    HASINDEX       | ALLINDEX      RESULT       SETPRIVATE
-| HASINDEX      INTERSECTION   | AT            SEND         SETPROTECTED
-| INTERSECTION  ITEMS          | DIFFERENCE    START        SETSECURITYMANAGER
-| ITEMS         MAKEARRAY      | HASINDEX                   SETUNGUARDED
-| MAKEARRAY     PUT            | HASITEM                    SOURCE
-| PUT           REMOVE         | INDEX
-| REMOVE        SETENTRY       | INTERSECTION
-| SUBSET        SETMETHOD      | ITEMS
-| SUPPLIER      SUBSET         | MAKEARRAY
-| UNION         SUPPLIER       | PUT
-| XOR           UNION          | REMOVE
-|               UNKNOWN        | REMOVEITM
-+-----+         XOR            | SUBSET
-| Set |                        | SUPPLIER
-+-----+                        | UNION
-OF*                            | XOR
-[]                             |
-[]=                            +-----+
-AT                             | Bag |
-HASINDEX                       +-----+
-ITEMS                          OF*
-MAKEARRAY                      []
-PUT                            []=
-REMOVE                         HASINDEX
-SUPPLIER                       MAKEARRAY
-                               PUT
-                               SUPPLIER
-
-
-
-* All of the methods under the Class class are both class and instance
-  methods.NEW and OF are class methods.
-]]>
-</programlisting>
+<figure float="1">
+<title id="meths2">Classes and Inheritance (part 2 of 7)</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="../rexxref/ooRexxClasses2.png" align="left" scale="90">
+</imageobject>
+</mediaobject>
 </figure>
 
-<figure float="1"><title>Classes and Inheritance of Methods (Part 3 of 4)</title>
-<programlisting>
-<![CDATA[
-+---------------------------------------------------------------------------+
-| Object (continued)                                                        |
-+------------+------------------+----------+--------------------------------+
-|            |                  |          |
-+---------+  +---------------+  +------+   +--------+
-| Monitor |  | MutableBuffer |  | Stem |   | Stream |
-+---------+  +---------------+  +------+   +--------+
-CURRENT      APPEND             NEW*       ARRAYIN
-DESTINATION  DELETE             []         ARRAYOUT
-INIT         GETBUFFERSIZE      []=        CHARIN
-UNKNOWN      INIT               MAKEARRAY  CHAROUT
-             INSERT             REQUEST    CHARS
-             LENGTH             UNKNOWN    CLOSE
-             OVERLAY                       COMMAND
-             SETBUFFERSIZE                 DESCRIPTION
-             STRING                        FLUSH
-             SUBSTR                        INIT
-                                           LINEIN
-                                           LINEOUT
-                                           LINES
-                                           MAKEARRAY
-                                           OPEN
-                                           POSITION
-                                           QUALIFY
-                                           QUERY
-                                           SEEK
-                                           STATE
-                                           SUPPLIER
-
-
-
-* All of the methods under the Class class are both class and instance
-  methods.NEW and OF are class methods.
-]]>
-</programlisting>
+<figure float="1">
+<title id="meths3">Classes and Inheritance (part 3 of 7)</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="../rexxref/ooRexxClasses3.png" align="left" scale="90">
+</imageobject>
+</mediaobject>
 </figure>
 
-<figure float="1"><title>Classes and Inheritance of Methods (Part 4 of 4)</title>
-<programlisting>
-+---------------------------------------------------------------------------+
-| Object (continued)                                                        |
-+-----------------------------+---------------------------------------------+
-|                             |
-+--------+                    +----------+
-| String |                    | Supplier |
-+--------+                    +----------+
-NEW               FORMAT      NEW*
-"" (abuttal)      INSERT      AVAILABLE
-(arithmetic:)     LASTPOS     INDEX
-+ - * / % // **   LEFT        ITEM
-&apos; &apos; (blank)       LENGTH      NEXT
-ABBREV            (logical:)
-ABS               & && |
-BITAND            \
-BITOR             MAKESTRING
-BITXOR            MAX
-B2X               MIN
-CENTER            OVERLAY
-CHANGESTR         POS
-COMPARE           REVERSE
-(comparison:)     RIGHT
-<![CDATA[= \= <> ><        SIGN
-> >= \>           SPACE
-< <= \<           STRING
-== \==            STRIP
->> \>> >>=        SUBSTR
-<< \<< <<=        SUBWORD]]>
-(concatenation:)  TRANSLATE
-||                TRUNC
-COPIES            VERIFY
-COUNTSTR          WORD
-C2D               WORDINDEX
-C2X               WORDLENGTH
-DATATYPE          WORDPOS
-DELSTR            WORDS
-DELWORD           X2B
-D2C               X2C
-D2X               X2D
-DECODEBASE64
-ENCODEBASE64
+<figure float="1">
+<title id="meths4">Classes and Inheritance (part 4 of 7)</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="../rexxref/ooRexxClasses4.png" align="left" scale="90">
+</imageobject>
+</mediaobject>
+</figure>
 
+<figure float="1">
+<title id="meths5">Classes and Inheritance (part 5 of 7)</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="../rexxref/ooRexxClasses5.png" align="left" scale="90">
+</imageobject>
+</mediaobject>
+</figure>
 
+<figure float="1">
+<title id="meths6">Classes and Inheritance (part 6 of 7)</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="../rexxref/ooRexxClasses6.png" align="left" scale="90">
+</imageobject>
+</mediaobject>
+</figure>
 
-* All of the methods under the Class class are both class and instance
-  methods.NEW and OF are class methods.
-</programlisting>
+<figure float="1">
+<title id="meths7">Classes and Inheritance (part 7 of 7)</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="../rexxref/ooRexxClasses7.png" align="left" scale="90">
+</imageobject>
+</mediaobject>
 </figure>
 </section>
 
