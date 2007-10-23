@@ -88,8 +88,8 @@
    inline size_t  arguments() {return this->methodInfo.arguments; };
    inline size_t  flags() {return this->methodInfo.flags; };
    inline void   setMethnum(USHORT num) { this->methodInfo.methnum = num; };
-   inline void   setFlags(UCHAR newFlags) { this->methodInfo.flags = newFlags; };
-   inline void   setArguments(UCHAR args) { this->methodInfo.arguments = args; };
+   inline void   setFlags(uint8_t newFlags) { this->methodInfo.flags = newFlags; };
+   inline void   setArguments(uint8_t args) { this->methodInfo.arguments = args; };
 
    inline bool   isGuarded()      {return (this->methodInfo.flags & UNGUARDED_FLAG) == 0; };
    inline bool   isInternal()     {return (this->methodInfo.flags & INTERNAL_FLAG) != 0; };

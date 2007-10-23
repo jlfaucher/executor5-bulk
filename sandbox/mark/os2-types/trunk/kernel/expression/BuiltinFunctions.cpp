@@ -1567,8 +1567,8 @@ BUILTIN(XRANGE) {
   RexxString *start;                   /* starting position                 */
   RexxString *end;                     /* ending position                   */
   RexxString *result;                  /* XRANGE result                     */
-  UCHAR  startchar;                    /* starting character                */
-  UCHAR  endchar;                      /* ending character                  */
+  unsigned char startchar;             /* starting character                */
+  unsigned char endchar;               /* ending character                  */
   LONG   length;                       /* length of result                  */
   LONG   i;                            /* loop counter                      */
 

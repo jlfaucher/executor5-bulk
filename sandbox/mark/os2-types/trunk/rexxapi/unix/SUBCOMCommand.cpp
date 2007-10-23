@@ -113,7 +113,7 @@ char    **envp )                       /* Ptr to array of env strings*/
                  argv[2],              /* Should be Dll Name         */
                  argv[3],              /* Should be Function Name    */
                  &i,                   /* Ptr to storage for existnce*/
-                 (PUCHAR)userdata      /* Ptr to storage for userdata*/
+                 (unsigned char *)userdata /* Ptr to storage for userdata*/
                 ));                    /*                            */
      }                                 /*                            */
    CASE("DROP"){                       /* Drop Check                 */

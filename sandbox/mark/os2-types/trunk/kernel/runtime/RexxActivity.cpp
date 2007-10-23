@@ -174,7 +174,7 @@ extern RexxArray *ProcessLocalActs;
 extern SMTX rexx_kernel_semaphore;     /* global kernel semaphore           */
 extern SMTX rexx_resource_semaphore;   /* global kernel semaphore           */
 extern SMTX rexx_start_semaphore;      /* startup semaphore                 */
-extern BOOL SysDBCSSetup(PULONG, PUCHAR);
+extern BOOL SysDBCSSetup(PULONG, unsigned char *);
 
                                        /* current active activity           */
 //RexxActivity *CurrentActivity = OREF_NULL;
@@ -1841,12 +1841,12 @@ BOOL RexxActivity::sysExitFunc(
       exit_parm.rxfnc_flags.rxffsub = 1;
                                        /* fill in the name parameter        */
     exit_parm.rxfnc_namel = rname->getLength();
-    exit_parm.rxfnc_name = (PUCHAR)rname->getStringData();
+    exit_parm.rxfnc_name = (unsigned char *)rname->getStringData();
 
                                        /* Get current active queue name     */
     stdqueue = (RexxString *)SysGetCurrentQueue();
                                        /* fill in the name                  */
-    exit_parm.rxfnc_que = (PUCHAR)stdqueue->getStringData();
+    exit_parm.rxfnc_que = (unsigned char *)stdqueue->getStringData();
                                        /* and the length                    */
     exit_parm.rxfnc_quel = stdqueue->getLength();
                                        /* Build arg array of RXSTRINGs      */
@@ -1995,7 +1995,7 @@ BOOL RexxActivity::sysExitCmd(
     exit_parm.rxcmd_flags.rxfcerr = 0;
                                        /* fill in the environment parm      */
     exit_parm.rxcmd_addressl = environment->getLength();
-    exit_parm.rxcmd_address = (PUCHAR)environment->getStringData();
+    exit_parm.rxcmd_address = (unsigned char *)environment->getStringData();
                                        /* make cmdaname into RXSTRING form  */
     MAKERXSTRING(exit_parm.rxcmd_command, cmdname->getStringData(), cmdname->getLength());
 

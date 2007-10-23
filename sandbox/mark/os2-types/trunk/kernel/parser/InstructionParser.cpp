@@ -1251,7 +1251,7 @@ RexxInstruction *RexxSource::numericNew()
   RexxObject  *expression;             /* expression to evaluate            */
   RexxToken   *token;                  /* current working token             */
   USHORT       type;                   /* type of instruction               */
-  UCHAR        flags;                  /* numeric flags                     */
+  uint8_t      flags;                  /* numeric flags                     */
 
   expression = OREF_NULL;              /* clear the expression              */
   flags = 0;                           /* and the flags                     */
@@ -1406,7 +1406,7 @@ RexxInstruction *RexxSource::parseNew(
   RexxTrigger      *trigger;           /* current working trigger           */
   INT               trigger_type;      /* type of the current trigger       */
   USHORT            string_source;     /* source of string data             */
-  UCHAR             flags;             /* parsing flags                     */
+  uint8_t           flags;             /* parsing flags                     */
   LONG              templateCount;     /* number of template items          */
   LONG              variableCount;     /* number of variable items          */
 
@@ -1969,7 +1969,7 @@ RexxInstruction *RexxSource::signalNew()
   RexxString *condition;               /* constructed USER condition name   */
   INT         keyword;                 /* signal subkeyword                 */
   RexxObject *expression;              /* signal expression                 */
-  UCHAR       flags;                   /* option flags                      */
+  uint8_t     flags;                   /* option flags                      */
   RexxString *name;                    /* signal name                       */
   BOOL        signalOff;               /* signal off form                   */
 

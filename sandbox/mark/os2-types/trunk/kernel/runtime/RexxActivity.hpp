@@ -281,7 +281,7 @@ typedef struct nestedinfo {
 
    BOOL     DBCS_codepage;             /* DBCS characters possible          */
    ULONG    codepage;                  /* current codepage id               */
-   UCHAR    DBCS_table[256];           /* DBCS first byte table             */
+   unsigned char DBCS_table[256];      /* DBCS first byte table             */
  };
 
  class RexxActivityClass : public RexxClass {

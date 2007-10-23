@@ -76,8 +76,8 @@ typedef struct shvnode {                    /* 16-bit variable pool block     */
     RXSTRING           shvvalue;            /* Pointer to the value buffer    */
     ULONG              shvnamelen;          /* Length of the name value       */
     ULONG              shvvaluelen;         /* Length of the fetch value      */
-    UCHAR              shvcode;             /* Function code for this block   */
-    UCHAR              shvret;              /* Individual Return Code Flags   */
+    uint8_t            shvcode;             /* Function code for this block   */
+    uint8_t            shvret;              /* Individual Return Code Flags   */
     } SHVBLOCK16;
 
 typedef SHVBLOCK16 FAR *PSHVBLOCK16;
@@ -210,7 +210,7 @@ ULONG SysVariablePool(
 
  if (setjmp(syntaxHandler) != 0) {     /* get a storage error?              */
                                        /* set failure in current            */
-   pshvblock->shvret |= (UCHAR)RXSHV_MEMFL;
+   pshvblock->shvret |= RXSHV_MEMFL;
    retcode |= pshvblock->shvret;       /* OR with the composite             */
    return retcode;                     /* stop processing requests now      */
  }

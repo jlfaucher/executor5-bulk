@@ -291,7 +291,7 @@ class ACTIVATION_SETTINGS {            /* activation "global" settings      */
       BOOL exmode;                         /* DBCS string processing flag       */
       BOOL DBCS_codepage;                  /* DBCS code page possible           */
       ULONG codepage;                      /* current activity codepage         */
-      PUCHAR DBCS_table;                   /* current DBCS vector table         */
+      unsigned char *DBCS_table;           /* current DBCS vector table         */
 };                                     /* global activation settings        */
                                        /* builtin function prototype        */
 typedef RexxObject *builtin_func(RexxActivation *, INT, RexxExpressionStack *);
@@ -305,13 +305,13 @@ typedef struct {
 
 typedef struct {
   USHORT methnum;                      /* kernel method number            */
-  UCHAR  arguments;
-  UCHAR  flags;                        /* flag information                */
+  uint8_t arguments;
+  uint8_t flags;                       /* flag information                */
 } METHODINFO;
 
 typedef struct {
-  UCHAR  type;                         /* name of the instruction           */
-  UCHAR  flags;                        /* general flag area                 */
+  uint8_t type;                        /* name of the instruction           */
+  uint8_t flags;                       /* general flag area                 */
   USHORT general;                      /* general reusable short value      */
 } INSTRUCTIONINFO;
 

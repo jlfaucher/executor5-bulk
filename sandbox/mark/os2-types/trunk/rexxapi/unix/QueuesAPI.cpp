@@ -1236,8 +1236,8 @@ ULONG  APIENTRY RexxPullQueue(
                  QIDATA(item)->size);
                                        /* set the proper length      */
         data_buf->strlength = QIDATA(item)->size;
-        memcpy((PUCHAR)dt,             /* set the datetime info      */
-               (PUCHAR)&(QIDATA(item)->addtime),
+        memcpy((unsigned char *)dt,    /* set the datetime info      */
+               (unsigned char *)&(QIDATA(item)->addtime),
                sizeof(DATETIME));
         release_queue_item(item, sessionflag, current);      /* get rid if the queue item  */
       }
@@ -1259,8 +1259,8 @@ ULONG  APIENTRY RexxPullQueue(
                                        /* set the length             */
         data_buf->strlength =QIDATA(item)->size;
 
-        memcpy((PUCHAR)dt,             /* set the datetime info      */
-               (PUCHAR)&(QIDATA(item)->addtime),
+        memcpy((unsigned char *)dt,    /* set the datetime info      */
+               (unsigned char *)&(QIDATA(item)->addtime),
                sizeof(DATETIME));
         release_queue_item(item, sessionflag, current);      /* free up the queue item     */
       }

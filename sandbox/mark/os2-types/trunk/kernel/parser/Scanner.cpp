@@ -184,7 +184,7 @@ int RexxSource::characterTable[]={
                                        /* scanning operations...mostly to   */
                                        /* save some keystrokes and make     */
                                        /* things a little more readable     */
-#define GETCHAR()  ((UCHAR)(this->current[this->line_offset]))
+#define GETCHAR()  ((unsigned char)(this->current[this->line_offset]))
 #define MORELINE() (this->line_offset < this->current_length)
 #define OPERATOR(op) (this->clause->newToken(TOKEN_OPERATOR, OPERATOR_##op, (RexxString *)OREF_##op, &location))
 #define CHECK_ASSIGNMENT(op, token) (token->checkAssignment(this, (RexxString *)OREF_ASSIGNMENT_##op))
@@ -1222,7 +1222,7 @@ RexxToken *RexxSource::sourceNextToken(
              token = OPERATOR(BACKSLASH);
            break;
 
-         case (UCHAR)'ª':              /* logical not                       */
+         case (unsigned char)'ª':      /* logical not                       */
                                        /* next one an equal sign?           */
            if (this->nextSpecial('=', &location)) {
                                        /* have an equal sign after that?    */

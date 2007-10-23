@@ -101,8 +101,8 @@
 #define PSHORT          SHORT *
 #define PUSHORT         USHORT *
 
-#define UCHAR           unsigned char
-#define PUCHAR          UCHAR *
+// #define UCHAR           unsigned char
+// #define PUCHAR          UCHAR *
 // #define CHAR            char
 // #define PCHAR           CHAR *
 #define INT             int

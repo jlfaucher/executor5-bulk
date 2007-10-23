@@ -3338,15 +3338,15 @@ RexxVariableBase  *RexxActivation::getDirectVariableRetriever(
   BOOL        literal;                 /* literal indicator                 */
   LONG        length;                  /* length of variable name           */
   RexxVariableBase *retriever;         /* created variable retriever        */
-  UCHAR       character;               /* current character                 */
+  unsigned char     character;         /* current character                 */
   LONG        nonnumeric;              /* count of non-numeric characters   */
-  UCHAR       last;                    /* previous character                */
+  unsigned char     last;              /* previous character                */
   INT         compound;                /* count of period characters        */
 
   retriever = OREF_NULL;               /* return NULL for all errors        */
   length = variable->getLength();           /* get the name length               */
                                        /* get the first character           */
-  character = (UCHAR)variable->getChar(0);
+  character = (unsigned char)variable->getChar(0);
                                        /* constant symbol?                  */
   if (character == '.' || (character >= '0' && character <= '9'))
     literal = TRUE;                    /* this is a literal value           */
@@ -3360,7 +3360,7 @@ RexxVariableBase  *RexxActivation::getDirectVariableRetriever(
     last = 0;                          /* no last character                 */
     while (scan < length) {            /* while more to scan                */
                                        /* get the next character            */
-      character = (UCHAR)variable->getChar(scan);
+      character = (unsigned char)variable->getChar(scan);
       if (character == '.') {          /* have a period?                    */
         if (!literal)                  /* not a literal value?              */
                                        /* don't process past here           */
@@ -3380,7 +3380,7 @@ RexxVariableBase  *RexxActivation::getDirectVariableRetriever(
             return OREF_NULL;          /* this is bad also                  */
           while (scan < length) {      /* scan remainder                    */
                                        /* get the next character            */
-            character = (UCHAR)variable->getChar(scan);
+            character = (unsigned char)variable->getChar(scan);
                                        /* outside numeric range?            */
             if (character < '0' || character > '9')
               return OREF_NULL;        /* not valid either                  */
