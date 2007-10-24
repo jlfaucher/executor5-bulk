@@ -3392,7 +3392,7 @@ RexxCompoundVariable *RexxSource::addCompound(
     _position++;                       /* step to the next character        */
   }
                                        /* get the stem string               */
-  stem = new_string(start, _position - start + 1);
+  stemName = new_string(start, _position - start + 1);
   stemRetriever = this->addStem(stemName); /* get a retriever item for this     */
 
   tailCount = 0;                       /* no tails yet                      */
