@@ -1982,15 +1982,10 @@ object and the <emphasis role="italic">argument</emphasis>.
 <indexterm><primary>prefix + method</primary></indexterm>
 <programlisting>
 <![CDATA[
-5+5     ->    10
-8-5     ->     3
-5*2     ->    10
-6/2     ->     3
-9//4    ->     1
-9%4     ->     2
-2**3    ->     8
-+5      ->     5             /* Prefix +  */
--5      ->    -5             /* Prefix -  */
+f = "abc"
+f"def"      ->   "abcdef"
+f || "def"  ->   "abcdef"
+f "def"     ->   "abc def"
 ]]>
 </programlisting>
 </section>
@@ -2636,7 +2631,7 @@ string that do not overlap.  All matches are made using caseless comparisons.</p
 <tertiary>of String class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-equals(other)-------------------------------------------------------><
+>>-caselessEquals(other)-----------------------------------------------><
 ]]>
 </programlisting>
 
