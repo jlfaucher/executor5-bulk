@@ -83,13 +83,13 @@ IMAGE_FILES = rxo90004.jpg \
 	      rxoq0s06.jpg \
 	      rxoq0s07.jpg \
 	      rxoq0s09.jpg \
-	      ../rexxref/ooRexxClasses1.png \
-	      ../rexxref/ooRexxClasses2.png \
-	      ../rexxref/ooRexxClasses3.png \
-	      ../rexxref/ooRexxClasses4.png \
-	      ../rexxref/ooRexxClasses5.png \
-	      ../rexxref/ooRexxClasses6.png \
-	      ../rexxref/ooRexxClasses7.png \
+	      ooRexxClasses1.png \
+	      ooRexxClasses2.png \
+	      ooRexxClasses3.png \
+	      ooRexxClasses4.png \
+	      ooRexxClasses5.png \
+	      ooRexxClasses6.png \
+	      ooRexxClasses7.png \
  	      oorexx.jpg \
  	      docbook-1.png \
 	      new_rexxla.jpg
