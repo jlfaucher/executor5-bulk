@@ -484,7 +484,7 @@ void translateSource(
                                        /* got an error here                 */
     report_exception1(Error_Program_unreadable_notfound, inputName);
   }
-  fuullName = new_cstring(pszName);
+  fullName = new_cstring(pszName);
   newNativeAct->saveObject(fullName);  /* protect from garbage collect      */
                                        /* go translate the image            */
   method = TheMethodClass->newFile(fullName);

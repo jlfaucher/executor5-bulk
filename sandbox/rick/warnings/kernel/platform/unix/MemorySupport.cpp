@@ -79,14 +79,6 @@ void SysReleaseResultMemory(
 {
   free(MemoryBlock);                   /* release this block                */
 }
-//BOOL SysAccessPool(MemorySegmentPool **pool)
-/*********************************************************************/
-/* Function:  Access/Create the 1st block as Named Storage           */
-/*            return TRUE as an access, FALSE is created.            */
-/*********************************************************************/
-//{
-//  return FALSE;
-//}
 
 BOOL SysAccessPool(MemorySegmentPool **pool)
 /*********************************************************************/
@@ -100,8 +92,8 @@ BOOL SysAccessPool(MemorySegmentPool **pool)
                                        /* create the shared memory segemnt  */
                                        /* if already exists then this       */
                                        /* isn't a coldstart.                */
-  tmpPtr = calloc(MEMSIZE,1);
-  if (tmpPtr == NULL);              /* Error on commit?                  */
+  tmpPtr = (void *)calloc(MEMSIZE,1);
+  if (tmpPtr == NULL)              /* Error on commit?                  */
   {
      report_exception(Error_System_resources);
   }
