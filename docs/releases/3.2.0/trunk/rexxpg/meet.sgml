@@ -1,0 +1,313 @@
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Programming Guide SGML file.
+    #
+    # Copyright (c) 2005-2007, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    # Author(s):
+    #      W. David Ashley <dashley@us.ibm.com>
+    #
+    #########################################################################
+-->
+<chapter id="meet"><title>Meet Object Rexx</title>
+<para>Rexx is a versatile, free-format language. Its simplicity makes it a good first
+language for beginners. For more experienced users and computer professionals,
+Rexx offers powerful functions and the ability to issue commands to several
+environments.</para>
+
+<section id="dossier"><title>The Main Attractions</title>
+<indexterm><primary>Rexx</primary>
+<secondary>features</secondary></indexterm>
+<para>The following aspects of Rexx round out its versatility and functions.</para>
+
+<section id="oop"><title>Object-Oriented Programming</title>
+<para>Object-oriented extensions have been added to traditional Rexx, but its
+existing functions and instructions have not changed. The Object Rexx interpreter
+is actually an enhanced version of its predecessor, but with new support for: </para>
+<itemizedlist>
+<listitem><para>Classes, objects, and methods</para></listitem>
+<listitem><para>Messaging and polymorphism</para></listitem>
+<listitem><para>Inheritance and multiple inheritance</para></listitem></itemizedlist>
+<para>Object Rexx supplies the user with a base set of classes: ALARM, CLASS,
+ARRAY, LIST, QUEUE, TABLE, SET, DIRECTORY, RELATION, BAG, MESSAGE,
+METHOD, MONITOR, STEM, STREAM, STRING, and SUPPLIER. Object Rexx is fully
+compatible with earlier versions of Rexx that were not object-oriented.</para>
+</section>
+
+<section id="english"><title>An English-Like Language</title>
+<para>To make Rexx easier to learn and use, many of its instructions are meaningful
+English words. Rexx instructions are common words such as SAY, PULL, IF...THEN...ELSE,
+DO...END, and EXIT.</para>
+</section>
+
+<section id="crossplat"><title>Cross-Platform Versatility</title>
+<para>Versions of Object Rexx are now available for a wide variety
+of platforms, and the programs you create with Object Rexx will run on any
+of these, including
+<trademark>Linux</trademark> for <trademark>Intel</trademark>,
+<trademark class="registered">Linux for S/390</trademark>, and
+<trademark class="registered">AIX</trademark>, as well as
+<trademark>Windows 95</trademark>,
+<trademark>Windows 98</trademark>,
+<trademark class="registered">Windows NT</trademark>, and
+<trademark class="registered">Windows 2000</trademark>.</para>
+</section>
+
+<section id="fewrule"><title>Fewer Rules</title>
+<para>Rexx has relatively few rules about format. A single instruction can span
+many lines, and you can include several instructions on a single line. Instructions
+need not begin in a particular column and can be typed in uppercase, lowercase,
+or mixed case. You can skip spaces in a line or entire lines. There is no
+line numbering.</para>
+</section>
+
+<section id="interp"><title>Interpreted, Not Compiled</title>
+<para>Rexx is an interpreted language. When a Rexx program runs, its language
+processor reads each statement from the source file and runs it, one statement
+at a time. Languages that are not interpreted must be compiled into object
+code before they can be run.</para>
+</section>
+
+<section id="builtin"><title>Built-In Functions and Methods</title>
+<para>Rexx has built-in functions and methods that perform various processing,
+searching, and comparison operations for text and numbers and provide formatting
+capabilities and arithmetic calculations.</para>
+</section>
+
+<section id="typeles"><title>Typeless Variables</title>
+<indexterm><primary>typeless</primary></indexterm>
+<para>Rexx regards all data
+as objects of various kinds. Variables can hold any kind of object, so you
+need not declare variables as strings or numbers.</para>
+</section>
+
+<section id="string"><title>String Handling</title>
+<indexterm><primary>strings</primary></indexterm>
+<para>Rexx includes capabilities for manipulating
+character strings. This allows programs to read and separate characters, numbers,
+and mixed input. Rexx performs arithmetic operations on any string that represents
+a valid number, including those in exponential formats.</para>
+</section>
+
+<section id="clear"><title>Clear Error Messages and Powerful Debugging</title>
+<para>Rexx displays messages with meaningful explanations when a Rexx program
+encounters an error. In addition, the TRACE instruction provides a powerful
+debugging tool.</para>
+</section>
+
+<section id="devtool"><title>Impressive Development Tools</title>
+<para>The Open Object Rexx Windows places many powerful tools at
+your disposal. These include
+a Rexx API to other languages like C/C++ or Cobol,
+OLE/ActiveX support, a mathematical functions package, file encryption
+functions for the Windows 2000 file system, and Windows Scripting
+Host support.</para>
+</section>
+</section>
+
+<section id="rexxos2"><title>Rexx and the Operating System</title>
+<indexterm><primary>Rexx</primary>
+<secondary>and Windows</secondary></indexterm>
+<indexterm><primary>Rexx</primary>
+<secondary>and Unix</secondary></indexterm>
+<para>The most important role Rexx plays is as a programming
+language for Windows and Unix. A Rexx program can serve as a
+script for the operating system to follow. Using
+Rexx, you can reduce long, complex, or repetitious tasks to a single command
+or program.</para>
+</section>
+
+<section id="teaser"><title>A Classic Language Gets Classier</title>
+<indexterm><primary>classes</primary></indexterm>
+<indexterm><primary>Rexx</primary>
+<secondary>and object-oriented extensions</secondary></indexterm>
+<para>Object-oriented extensions have been added to traditional Rexx without
+changing its existing functions and instructions. So you can continue to use
+Rexx's procedural instructions, and incorporate objects as you become
+more comfortable with the technology. In general, your current Rexx programs
+will work without change. In contrast to the traditional Rexx interpreter,
+the Object Rexx interpreter checks <emphasis role="italic">all</emphasis>
+the syntax at start-up time, and this means that any syntax errors that
+exist will be found.</para>
+<para>In object-oriented technology,
+<indexterm><primary>objects</primary></indexterm>
+<emphasis role="italic">objects</emphasis> are used in programs to model the
+real world.  Similar objects
+are grouped into <emphasis role="italic">classes</emphasis>,
+and the classes themselves
+are arranged in hierarchies.</para>
+<para>As an object-oriented programmer, you solve problems by identifying and
+classifying objects related to the problem. Then you determine what actions
+or behaviors are required of those objects. Finally, you write the instructions
+to generate the classes, create the objects, and implement the actions. Your
+main program consists of instructions that send messages to objects.</para>
+<para>A billing application, for example,
+might have an Invoice class and a Receipt class. These two classes might be
+members of a Forms class. Individual invoices are
+<indexterm><primary>instances</primary></indexterm>
+<emphasis role="italic">instances</emphasis> of the Invoice class.</para>
+
+<figure><title>Objects in a Billing Application</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="rxoq0s01.jpg" scale="70">
+</imageobject>
+</mediaobject>
+</figure>
+
+<para>Each instance contains all the data associated with it (such as customer
+name or descriptions and prices of items purchased). To get at the data, you
+write instructions that send messages to the objects.
+<indexterm><primary>messages</primary></indexterm>
+These messages activate coded actions called methods.
+<indexterm><primary>methods</primary></indexterm>
+For an invoice object, you might need CREATE, DISPLAY, PRINT, UPDATE, and
+ERASE methods.</para>
+
+<section id="torexx"><title>From Traditional Rexx to Object Rexx</title>
+<indexterm><primary>Rexx</primary>
+<secondary>traditional</secondary></indexterm>
+<para>In traditional (classic) Rexx, all data was stored as strings.
+The strings represented character data as well as numeric data.
+From an object-oriented perspective, traditional Rexx had one kind of objects:
+strings. In object-oriented terminology, each string variable is an
+<indexterm><primary>strings</primary></indexterm>
+<indexterm><primary>objects</primary></indexterm>
+<emphasis role="italic">object</emphasis> that is an
+<indexterm><primary>instances</primary></indexterm>
+instance of the String class.</para>
+<para>In
+Object Rexx, variables can now reference objects other than strings. In addition
+to a string class, Rexx now includes classes for creating arrays, queues,
+streams, and many other useful objects. Objects in these new Rexx classes
+are manipulated by methods instead of traditional
+functions. To activate a method, you just send a message to the object.</para>
+<para>For example, instead of using the SUBSTR function on a string
+variable Name, you send a SUBSTR
+<indexterm><primary>messages</primary></indexterm>
+message to the string object. In classic
+Rexx, you would do the following: </para>
+<programlisting>
+<![CDATA[
+s=substr(name,2,3)
+]]>
+</programlisting>
+<para>In Object Rexx, the equivalent would be: </para>
+<programlisting>
+<![CDATA[
+s=name~substr(2,3)
+]]>
+</programlisting>
+<para>The tilde
+<indexterm><primary>~ (tilde, or twiddle)</primary></indexterm>
+<indexterm><primary>tilde (~)</primary></indexterm>
+<indexterm><primary>twiddle (~)</primary></indexterm>
+<indexterm><primary>message-send operator (~)</primary></indexterm>
+(~) character is the Rexx message send operator,
+called twiddle.  The object receiving the message
+is to the left of the twiddle. The message sent is to the right. In this example,
+the Name object is sent the SUBSTR message. The numbers in parentheses (2,3)
+are arguments sent as part of the message. The SUBSTR method is run for the
+Name object, and the result is assigned to the
+<emphasis role="italic">s</emphasis> string object.</para>
+
+<para>For the new
+classes (such as array or queue), methods are provided, but not equivalent
+functions. For example, suppose you want to use a Rexx array object instead
+of the traditional string-based
+<indexterm><primary>string</primary></indexterm>
+<indexterm><primary>stem</primary></indexterm>
+stem variables (such as text.1 or text.2).
+To create an array object of five elements, you would send a NEW message to
+the array class as follows: </para>
+<programlisting>
+<![CDATA[
+myarray=.array~new(5)
+
+]]>
+</programlisting>
+<para>A new instance, named Myarray, of the Array class is created. A period
+and the class name identify the class. The period is necessary because it
+precedes the class name in an expression. The Myarray array object has five
+elements. Some of the other methods, besides NEW, for array objects are PUT,
+AT, REMOVE, SIZE, [], and []=.</para>
+<para>By adding object technology
+to its repertoire of traditional programming techniques, Rexx has evolved
+into an object-oriented language, like Smalltalk. Object Rexx accommodates
+the programming techniques of traditional Rexx while adding new ones. With
+Object Rexx, you can use the new technology as much or as little as you like,
+at whatever pace you like. You can mix classic and object techniques. You
+can ease into the object world gradually, building on the Rexx skills and
+knowledge you already have.</para>
+</section>
+</section>
+
+<section id="which"><title>The Object Advantage</title>
+<para>If you are unsure about whether to employ Rexx's object-oriented features,
+here are some tips to help you decide.</para>
+<para>Object-oriented technology reinforces good programming practices,
+such as hiding your data from code that does not use it (encapsulation and
+polymorphism), partitioning your program in small, manageable units (classification
+and data abstraction), reusing code wherever possible and changing it in one
+place (inheritance and functional decomposition).</para>
+<para>Other advantages often associated with object technology are: </para>
+<itemizedlist>
+<listitem><para>Simplified design through modeling with objects</para></listitem>
+<listitem><para>Greater code reuse</para></listitem>
+<listitem><para>Rapid prototyping</para></listitem>
+<listitem><para>The higher quality of proven components</para></listitem>
+<listitem><para>Easier and reduced maintenance</para></listitem>
+<listitem><para>Cost-savings potential</para></listitem>
+<listitem><para>Increased adaptability and scalability</para></listitem>
+</itemizedlist>
+<para>With Object Rexx, you get the user-friendliness of Rexx in an
+object-oriented environment.</para>
+<para>Object Rexx provides a Sockets API for Rexx.
+So you can script Object Rexx clients and servers, and run them in the Internet.</para>
+<para>Object Rexx also provides access to FTP commands by means of
+its RxFtp package, and to the use of mathematical functions by means of its
+RxMath utility package. The Sockets, FTP, and mathematical functions packages
+are each supplied with separate, full documentation.</para>
+</section>
+
+<section id="next"><title>The Next Step</title>
+<para>If you already know traditional Rexx and want to
+go straight to the basic concepts of object-oriented programming, continue
+with <link linkend="concept">Into the Object World</link>.</para>
+<para>If you are unfamiliar with traditional Rexx, continue
+to read <link linkend="tour">A Quick Tour of Traditional Rexx</link>.</para>
+</section>
+</chapter>

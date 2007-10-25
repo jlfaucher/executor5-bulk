@@ -1,0 +1,567 @@
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Reference SGML file.
+    #
+    # Copyright (c) 2005-2007, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    # Author(s):
+    #      W. David Ashley <dashley@us.ibm.com>
+    #
+    #########################################################################
+-->
+<chapter id="dire"><title>Directives</title>
+<para>A Rexx program contains one or more executable code units.
+<emphasis>Directive instructions</emphasis> separate these executable units. A
+directive begins
+with a double colon (::) and is a nonexecutable instruction. For example,
+it cannot appear in a string for the INTERPRET instruction to be interpreted.
+The first directive instruction in a program marks the end of the main executable
+section of the program.</para>
+<para>For a program containing directives, all directives are processed first
+to set up the program's classes, methods, and routines. Then any program code
+in the main code unit (preceding the first directive) is processed. This code
+can use any classes, methods, and routines that the directives established.</para>
+
+
+<section id="attrd"><title>::ATTRIBUTE</title>
+<indexterm><primary>:: ATTRIBUTE directive</primary></indexterm>
+<indexterm><primary>directives</primary>
+<secondary>::ATTRIBUTE</secondary></indexterm>
+<indexterm><primary>attribute</primary>
+<secondary>creation</secondary></indexterm>
+<indexterm><primary>GET subkeyword</primary>
+<secondary>in an ATTRIBUTE directive</secondary></indexterm>
+<indexterm><primary>SET subkeyword</primary>
+<secondary>in an ATTRIBUTE directive</secondary></indexterm>
+<indexterm><primary>CLASS subkeyword</primary>
+<secondary>in an ATTRIBUTE directive</secondary></indexterm>
+<indexterm><primary>PRIVATE subkeyword</primary>
+<secondary>in an ATTRIBUTE directive</secondary></indexterm>
+<indexterm><primary>PUBLIC subkeyword</primary>
+<secondary>in an ATTRIBUTE directive</secondary></indexterm>
+<indexterm><primary>GUARDED subkeyword</primary>
+<secondary>in an ATTRIBUTE directive</secondary></indexterm>
+<indexterm><primary>UNGUARDED subkeyword</primary>
+<secondary>in an ATTRIBUTE directive</secondary></indexterm>
+<indexterm><primary>PROTECTED subkeyword</primary>
+<secondary>in an ATTRIBUTE directive</secondary></indexterm>
+<indexterm><primary>UNPROTECTED subkeyword</primary>
+<secondary>in an ATTRIBUTE directive</secondary></indexterm>
+
+<para>The ::ATTRIBUTE directive creates attribute methods and defines the
+method properties.</para>
+
+<programlisting>
+<![CDATA[
+>>-::ATTRIBUTE--name--+-----+-------+-------+------------------------->
+                      +-GET-+       +-CLASS-+
+                      +-SET-+
+
+    +-PUBLIC--+  +-GUARDED---+  +-UNPROTECTED-+
+ >--+---------+--+-----------+--+-------------+--;----------------><
+    +-PRIVATE-+  +-UNGUARDED-+  +-PROTECTED---+
+]]>
+</programlisting>
+
+
+<note><title>Note</title>
+<para>You can specify all options in any order.</para></note>
+<para>An ::ATTRIBUTE directive starts an attribute method, which is ended by another directive
+or the end of the program. The ::ATTRIBUTE is not included in the method source.</para>
+<para>The <emphasis role="italic">name</emphasis> is a literal string or
+a symbol that is taken as a constant.  The <emphasis role="italic">name</emphasis> must also be
+a valid Rexx variable name. The ::ATTRIBUTE directive creates methods
+in the class specified in the most recent ::CLASS directive.</para>
+<para>A ::CLASS directive is not required before an ::ATTRIBUTE directive. If no
+::CLASS directive precedes ::ATTRIBUTE, the attribute methods are not associated with a class
+but are accessible to the main (executable) part of a program through the .METHODS
+built-in object. Only one ::ATTRIBUTE directive can appear for any method name
+not associated with a class. See
+<link linkend="methe">.METHODS</link>  for more details.</para>
+<para>If you do not specify either SET or GET, ::ATTRIBUTE will create two attribute methods with the
+names <emphasis role="italic">name</emphasis> and <emphasis role="italic">name=</emphasis>.
+These are the methods for getting and setting an attribute.  These generated methods are
+equivalent to the following code sequences: </para>
+<programlisting>
+::method "NAME="  /* attribute set method                                   */
+  expose name     /* establish direct access to object variable (attribute) */
+  use arg name    /* retrieve argument and assign it to the object variable */
+
+::method name     /* attribute get method */
+  expose name     /* establish direct access to object variable (attribute) */
+  return name     /* return object&apos;s current value                          */
+</programlisting>
+<para>Both methods will be created with the same method properties (for example, PRIVATE, GUARDED, etc.).
+If GET or SET are not specified, another directive (or the end of the program)
+must follow the ::ATTRIBUTE directive.</para>
+<para>If GET or SET is specified, only the single get or set attribute method is generated.  Specifying separate
+GET or SET ::ATTRIBUTE directives allows the methods to be created with different properties.  For example, the
+sequence:</para>
+<programlisting>
+::attribute name get
+::attribute name set private
+</programlisting>
+<para>will create a NAME method with PUBLIC access and a NAME= method with PRIVATE access.</para>
+<para>The GET and SET options may also be used to override the default method body generated for the attribute.  This
+is frequently used so the SET attribute method can perform new value validation.</para>
+<programlisting>
+::attribute size get
+::attribute size set
+  expose size     /* establish direct access to object variable (attribute) */
+  use arg value   /* retrieve argument                                      */
+  if datatype(size, "Whole") = .false | size &lt; 0  then
+    raise syntax 93.906 array ("size", value)
+  size=value
+</programlisting>
+<para>If you specify the CLASS option, the create methods are class
+methods. See <link linkend="provide">Objects and Classes</link>. The attribute methods are
+associated with the class specified on the most recent ::CLASS directive.
+The ::CLASS directive is required in this case.</para>
+<para>If you specify the PRIVATE option, the methods are private methods.
+(Only a message the same object sends can activate the
+methods.) If you omit the PRIVATE option or specify PUBLIC, the methods are public methods
+that any sender can activate.</para>
+<para>If you
+<indexterm><primary>UNGUARDED option of ::ATTRIBUTE</primary></indexterm>
+specify the UNGUARDED option, the methods can be called while other methods
+are active on the same object. If you do not specify UNGUARDED, the method
+requires exclusive use of the object variable pool; they can run only if no
+other method that requires exclusive use of the object variable pool is active
+on the same object.</para>
+<para>If you specify the PROTECTED option, the method is a protected method.
+(See <link linkend="secman">The Security Manager</link> for more information.)
+If you omit the PROTECTED option or specify UNPROTECTED, the method is not protected.</para>
+<note><title>Note</title>
+<para>It is an error to specify ::ATTRIBUTE more than once within the same class
+and to define the <emphasis role="italic">name</emphasis> set or get method.
+</para></note>
+</section>
+
+<section id="clasdi"><title>::CLASS</title>
+<indexterm><primary>::CLASS directive</primary></indexterm>
+<indexterm><primary>directives</primary>
+<secondary>::CLASS</secondary></indexterm>
+<indexterm><primary>METACLASS subkeyword</primary>
+<secondary>in a CLASS directive</secondary></indexterm>
+<indexterm><primary>SUBCLASS subkeyword</primary>
+<secondary>in a CLASS directive</secondary></indexterm>
+<indexterm><primary>MIXINCLASS subkeyword</primary>
+<secondary>in a CLASS directive</secondary></indexterm>
+<indexterm><primary>PUBLIC subkeyword</primary>
+<secondary>in a CLASS directive</secondary></indexterm>
+<indexterm><primary>PRIVATE subkeyword</primary>
+<secondary>in a CLASS directive</secondary></indexterm>
+<indexterm><primary>INHERIT subkeyword</primary>
+<secondary>in a CLASS directive</secondary></indexterm>
+
+<para>The ::CLASS directive causes the interpreter to create a Rexx class.</para>
+
+<programlisting>
+<![CDATA[
+>>-::CLASS--classname--+----------------------+------------------->
+                       +-METACLASS--metaclass-+
+
+   .-SUBCLASS--Object---.  +-PRIVATE-+
+>--+--------------------+--+---------+--+-------------------+--;--><
+   +-MIXINCLASS--mclass-+  +-PUBLIC--+  +-INHERIT--iclasses-+
+   +-SUBCLASS--sclass---+
+]]>
+</programlisting>
+
+
+<para><emphasis role="bold">Notes:</emphasis></para>
+<orderedlist>
+<listitem><para>You can specify the options EXTERNAL, METACLASS, MIXINCLASS, SUBCLASS,
+and PUBLIC in any order.</para></listitem>
+<listitem><para>If you specify INHERIT, it must be the last option.</para></listitem>
+</orderedlist>
+<para>The ::CLASS directive creates a Rexx class named
+<emphasis role="italic">classname</emphasis>. The
+<emphasis role="italic">classname</emphasis>
+is a literal string or symbol that is taken as a constant.
+The created class is available to programs through the Rexx environment symbol
+.<emphasis role="italic">classname</emphasis>. The
+<emphasis role="italic">classname</emphasis> acquires all methods defined by
+subsequent ::METHOD directives until the end of the program or another ::CLASS
+directive is found. Only null clauses (comments or blank lines) can appear
+between a ::CLASS directive and any following directive instruction or the
+end of the program. Only one ::CLASS directive can appear for
+<emphasis role="italic">classname</emphasis> in a program.</para>
+<para>If you specify the EXTERNAL option, the class is created using information
+derived from an external source named
+<emphasis role="italic">extname</emphasis>. The
+<emphasis role="italic">extname</emphasis> is a literal string.</para>
+<para>If you specify the METACLASS option, the instance methods of the
+<emphasis role="italic">metaclass</emphasis> class become class methods of the
+<emphasis role="italic">classname</emphasis> class.
+(See <link linkend="provide">Objects and Classes</link> .) The
+<emphasis role="italic">metaclass</emphasis> and
+<emphasis role="italic">classname</emphasis> are literal
+strings or symbols that are taken as constants. In the search order for methods,
+the metaclass methods precede inherited class methods and follow any class
+methods defined by ::METHOD directives with the CLASS option.</para>
+<para>If you specify the PUBLIC option, the class is visible beyond its containing
+Rexx program to any other program that references this program with a ::REQUIRES
+directive. (See <link linkend="requ">::REQUIRES</link>.) If you do not
+specify the PUBLIC option,
+the class is visible only within its containing Rexx program. All public classes
+defined within a program are used before PUBLIC classes created with the same
+name.</para>
+<para>If you specify the SUBCLASS option, the class becomes a subclass of the
+class <emphasis role="italic">sclass</emphasis> for inheritance of instance and
+class methods. The <emphasis role="italic">sclass</emphasis>
+is a literal string or symbol that is taken as a constant.</para>
+<para>If you specify the MIXINCLASS option, the class becomes a subclass of the
+class <emphasis role="italic">mclass</emphasis>
+for inheritance of instance and class methods. You can
+add the new class instance and class methods to existing classes by using
+the INHERIT option on a ::CLASS directive or by sending an INHERIT message
+to an existing class. If you specify neither the SUBCLASS nor the MIXINCLASS
+option, the class becomes a non-mixin subclass of the Object class.</para>
+<para>If you specify the INHERIT option, the class inherits instance methods
+and class methods from the classes <emphasis role="italic">iclasses</emphasis>
+in their order of appearance
+(leftmost first). This is equivalent to sending a series of INHERIT messages
+to the class object, with each INHERIT message (except the first) specifying
+the preceding class in <emphasis role="italic">iclasses</emphasis>
+as the <emphasis role="italic">classpos</emphasis> argument.
+(See  <link linkend="mthClassInherit">INHERIT</link> .) As with the INHERIT message,
+each of the classes in <emphasis role="italic">iclasses</emphasis>
+must be a mixin class. The <emphasis role="italic">iclasses</emphasis>
+is a blank-separated list of literal strings or symbols that are taken as
+constants. If you omit the INHERIT option, the class inherits only from
+<emphasis role="italic">sclass</emphasis>.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>::CLASS directive</secondary></indexterm>
+<programlisting>
+::class rectangle
+::method area    /* defined for the RECTANGLE class */
+  expose width height
+  return width*height
+
+::class triangle
+::method area    /* defined for the TRIANGLE class */
+  expose width height
+  return width*height/2
+</programlisting>
+<para>The ::CLASS directives in a program are processed in the order in which
+they appear. If a ::CLASS directive has a dependency on ::CLASS directives
+that appear later in the program, processing of the directive is deferred
+until all of the class's dependencies have been processed.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+::class savings subclass account  /* requires the ACCOUNT class */
+::method type
+  return "a Savings Account"
+
+::class account
+::method type
+  return "an Account"
+</programlisting>
+<para>The Savings class in the preceding example is not created until the Account
+class that appears later in the program has been created. </para>
+
+<note><title>Note</title>
+<para>If you specify the same ::CLASS
+<emphasis role="italic">classname</emphasis> more than once in different
+programs, the last one is used. Using more than one ::CLASS
+<emphasis role="italic">classname</emphasis> in the same program produces
+an error.</para></note>
+</section>
+
+<section id="methd"><title>::METHOD</title>
+<indexterm><primary>:: METHOD directive</primary></indexterm>
+<indexterm><primary>directives</primary>
+<secondary>::METHOD</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>creation</secondary></indexterm>
+<indexterm><primary>CLASS subkeyword</primary>
+<secondary>in a METHOD directive</secondary></indexterm>
+<indexterm><primary>ATTRIBUTE subkeyword</primary>
+<secondary>in a METHOD directive</secondary></indexterm>
+<indexterm><primary>PRIVATE subkeyword</primary>
+<secondary>in a METHOD directive</secondary></indexterm>
+<indexterm><primary>PUBLIC subkeyword</primary>
+<secondary>in a METHOD directive</secondary></indexterm>
+<indexterm><primary>GUARDED subkeyword</primary>
+<secondary>in a METHOD directive</secondary></indexterm>
+<indexterm><primary>UNGUARDED subkeyword</primary>
+<secondary>in a METHOD directive</secondary></indexterm>
+<indexterm><primary>PROTECTED subkeyword</primary>
+<secondary>in a METHOD directive</secondary></indexterm>
+<indexterm><primary>UNPROTECTED subkeyword</primary>
+<secondary>in a METHOD directive</secondary></indexterm>
+
+<para>The ::METHOD directive creates a method object and defines the method
+attributes.</para>
+
+<programlisting>
+<![CDATA[
+>>-::METHOD--methodname--+-------+--+-----------+--+----------+--->
+                         +-CLASS-+  +-ATTRIBUTE-+  +-ABSTRACT-+
+
+    +-PUBLIC--+  +-GUARDED---+  +-UNPROTECTED-+
+ >--+---------+--+-----------+--+-------------+--;----------------><
+    +-PRIVATE-+  +-UNGUARDED-+  +-PROTECTED---+
+]]>
+</programlisting>
+
+
+<note><title>Note</title>
+<para>You can specify all options in any order.</para></note>
+<para>A ::METHOD directive starts a method, which is ended by another directive
+or the end of the program. The ::METHOD is not included in the method source.</para>
+<para>The <emphasis role="italic">methodname</emphasis> is a literal string or
+a symbol that is taken as a constant. The method is defined as
+<emphasis role="italic">methodname</emphasis> in the class specified
+in the most recent ::CLASS directive. Only one ::METHOD directive can appear
+for any <emphasis role="italic">methodname</emphasis> in a class.</para>
+<para>A ::CLASS directive is not required before a ::METHOD directive. If no
+::CLASS directive precedes ::METHOD, the method is not associated with a class
+but is accessible to the main (executable) part of a program through the .METHODS
+built-in object. Only one ::METHOD directive can appear for any method name
+not associated with a class. See
+<link linkend="methe">.METHODS</link>  for more details.</para>
+<para>If you specify the CLASS option, the method is a class
+method. See <link linkend="provide">Objects and Classes</link>. The method is
+associated with the class specified on the most recent ::CLASS directive.
+The ::CLASS directive is required in this case.</para>
+<para>If you specify the PRIVATE option, the method is a private method.
+(Only a message the same object sends can activate the
+method.) If you omit the PRIVATE option or specify PUBLIC, the method is a public method
+that any sender can activate.</para>
+<para>If you
+<indexterm><primary>UNGUARDED option of ::METHOD</primary></indexterm>
+specify the UNGUARDED option, the method can be called while other methods
+are active on the same object. If you do not specify UNGUARDED, the method
+requires exclusive use of the object variable pool; it can run only if no
+other method that requires exclusive use of the object variable pool is active
+on the same object.</para>
+<para>If you specify the ATTRIBUTE option, in addition to having a method
+created as <emphasis role="italic">methodname</emphasis> in the class specified
+in the most recent ::CLASS directive,
+another method is also automatically created in that same class as
+<emphasis role="italic">methodname=</emphasis>.</para>
+<para>For example, the directive </para>
+<indexterm><primary>examples</primary>
+<secondary>::METHOD directive</secondary></indexterm>
+<programlisting>
+::method name attribute
+</programlisting>
+<para>creates two methods, NAME and NAME=. The NAME and NAME= methods are
+equivalent to the following code sequences: </para>
+<programlisting>
+::method "NAME="
+  expose name
+  use arg name
+
+::method name
+  expose name
+  return name
+</programlisting>
+<para>If you specify the ABSTRACT option, the method creates an ABSTRACT method placeholder.
+ABSTRACT methods define a method that an implementing subclass is expected to provide a concrete
+implementation for.  Any attempt to invoke an ABSTRACT method directly will raise a SYNTAX condition.
+</para>
+<para>If you specify the PROTECTED option, the method is a protected method.
+(See <link linkend="secman">The Security Manager</link> for more information.)
+If you omit the PROTECTED option or specify UNPROTECTED, the method is not protected.</para>
+<para>If you specify ATTRIBUTE or ABSTRACT, another directive (or the end of the program)
+must follow the ::METHOD directive.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+r = .rectangle~new(20,10)
+say "Area is" r~area       /* Produces "Area is 200" */
+
+::class rectangle
+
+::method area              /* defined for the RECTANGLE class */
+  expose width height
+  return width*height
+
+::method init
+  expose width height
+  use arg width, height
+
+::method perimeter
+  expose width height
+  return (width+height)*2
+</programlisting>
+
+<note><title>Note</title>
+<para>It is an error to specify ::METHOD more than once within the same class
+and use the same <emphasis role="italic">methodname</emphasis>.
+</para></note>
+</section>
+
+<section id="requ"><title>::REQUIRES</title>
+<indexterm><primary>:: REQUIRES directive</primary></indexterm>
+<indexterm><primary>directives</primary>
+<secondary>::REQUIRES</secondary></indexterm>
+
+<para>The ::REQUIRES directive specifies that the program requires access to
+the classes and objects of the Rexx program
+<emphasis role="italic">programname</emphasis>.</para>
+
+<programlisting>
+<![CDATA[
+>>-::REQUIRES--"programname"--;--------------------------------><
+]]>
+</programlisting>
+
+<para>All public
+classes and routines defined in the named program are made available to the
+executing program. The <emphasis role="italic">programname</emphasis>
+is a literal string or a symbol that is taken as a constant. The string
+or symbol <emphasis role="italic">programname</emphasis> can
+be any string or symbol that is valid as the target of a CALL instruction.
+The program <emphasis role="italic">programname</emphasis> is called as an
+external routine with no arguments. The main program code, which precedes the
+first directive instruction, is run.</para>
+<para>On Linux/Unix when the interpreter searches for the
+<emphasis role="italic">programname</emphasis> it follows the following rules:
+</para>
+<orderedlist>
+<listitem><para>If the <emphasis role="italic">programname</emphasis> is a quoted
+string then no conversion of the <emphasis role="italic">programname</emphasis>
+is performed prior to the search for the file.</para></listitem>
+<listitem><para>If the <emphasis role="italic">programname</emphasis> is unquoted then
+it is first converted to all uppercase and then the search is performed. If the
+<emphasis role="italic">programname</emphasis> is not found then it is converted
+to all lowercase and searched for again. A mixed case
+<emphasis role="italic">programname</emphasis> search is NOT performed.
+</para></listitem>
+</orderedlist>
+<para>On Windows the filesystems are essentially caseless so no conversions are
+necessary.</para>
+<para>Any ::REQUIRES directive must precede all ::CLASS, ::METHOD, and ::ROUTINE
+directives. The order of ::REQUIRES directives determines the search order
+for classes and routines defined in the named programs.</para>
+<para>If any Rexx code preceeds the first directive in
+<emphasis role="italic">programname</emphasis> then that code is executed at the
+time the <emphasis role="italic">::REQUIRES</emphasis> is processed by the
+interpreter. This is also prior to the beginning of the main Rexx
+program</para>
+<para>The following example illustrates that two programs, ProgramA and ProgramB,
+can both access classes and routines that another program, ProgramC, contains.
+(The code at the beginning of ProgramC runs prior to the start of the main
+Rexx program.)</para>
+
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="rxor0f01.jpg" scale="70">
+</imageobject>
+</mediaobject>
+
+<para>The language processor uses local routine definitions within a program
+in preference to routines of the same name accessed through ::REQUIRES directives.
+Local class definitions within a program override classes of the same name
+in other programs accessed through ::REQUIRES directives.</para>
+<para>Another directive, or the end of the program, must follow a ::REQUIRES
+directive. Only null clauses can appear between them.</para>
+</section>
+
+<section id="routd"><title>::ROUTINE</title>
+<indexterm><primary>:: ROUTINE directive</primary></indexterm>
+<indexterm><primary>directives</primary>
+<secondary>::ROUTINE</secondary></indexterm>
+<indexterm><primary>PUBLIC subkeyword</primary>
+<secondary>in a ROUTINE directive</secondary></indexterm>
+<indexterm><primary>PRIVATE subkeyword</primary>
+<secondary>in a ROUTINE directive</secondary></indexterm>
+
+<para>The ::ROUTINE directive creates named routines within a program.</para>
+
+<programlisting>
+<![CDATA[
+                           +-PRIVATE-+
+>>-::ROUTINE--routinename--+---------+--;-----------------------><
+                           +-PUBLIC--+
+]]>
+</programlisting>
+
+<para>The <emphasis role="italic">routinename</emphasis>
+is a literal string or a symbol that is taken as a constant.
+Only one ::ROUTINE directive can appear for any
+<emphasis role="italic">routinename</emphasis> in a program.</para>
+<para>A ::ROUTINE directive starts a routine, which is ended by another directive
+or the end of the program.</para>
+<para>If you specify the PUBLIC option, the routine is visible beyond its containing
+Rexx program to any other program that references this program with a ::REQUIRES
+directive. If you do not specify the PUBLIC option, the routine is visible
+only within its containing Rexx program.</para>
+<para>Routines you define with the ::ROUTINE directive behave like external routines.
+In the search order for routines, they follow internal routines and built-in
+functions but precede all other external routines.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>::ROUTINE directive</secondary></indexterm>
+<programlisting>
+
+::class c
+::method a
+call r "A"  /* displays "In method A" */
+
+::method b
+call r "B"  /* displays "In method B" */
+
+::routine r
+use arg name
+say "In method" name
+</programlisting>
+
+<para><emphasis role="bold">Notes:</emphasis></para>
+<orderedlist>
+<listitem><para>It is an error to specify ::ROUTINE with the same routine name more than
+once in the same program. It is not an error to have a local ::ROUTINE with
+the same name as another ::ROUTINE in another program that the ::REQUIRES
+directive accesses. The language processor uses the local ::ROUTINE definition
+in this case.</para></listitem>
+<listitem><para>Calling an external Rexx program as a function is similar to calling an
+internal routine. For an external routine, however, the caller's variables
+are hidden and the internal values (NUMERIC settings, for example) start with
+their defaults.</para></listitem>
+</orderedlist>
+
+<note><title>Note</title>
+<para>If you specify the same ::ROUTINE
+<emphasis role="italic">routinename</emphasis> more than once in different
+programs, the last one is used. Using more than one ::ROUTINE
+<emphasis role="italic">routinename</emphasis> in the same program produces
+an error.</para></note>
+</section>
+</chapter>

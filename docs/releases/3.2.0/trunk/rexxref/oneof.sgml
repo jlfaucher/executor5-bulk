@@ -1,0 +1,330 @@
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Reference SGML file.
+    #
+    # Copyright (c) 2005-2007, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    # Author(s):
+    #      W. David Ashley <dashley@us.ibm.com>
+    #
+    #########################################################################
+-->
+<chapter id="oneof"><title>Rexx Runtime Objects</title>
+<para>In addition to the class objects described in the previous chapter, the Rexx runtime environment
+also provides objects that are accessible via environment symbols (see <link linkend="ensym">Environment Symbols</link>).
+</para>
+
+<section id="envo"><title>The Environment Directory (.ENVIRONMENT)</title>
+<indexterm><primary>.ENVIRONMENT object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.ENVIRONMENT object</secondary></indexterm>
+<para>The Environment object is a directory of public
+objects that are always accessible.  The Environment object is automatically searched when environment symbols
+are used, or the Environment object may be directly accessed using the .ENVIRONMENT symbol.  Entries stored in the
+Environment use the same name as the corresponding environment symbol, but without a leading period.  For example:
+</para>
+<programlisting>
+  say .true              -- Displays "1"
+  say .environment~true  -- Also displays "1"
+</programlisting>
+<para>The Environment object directory contains all of the Rexx built-in classes (Array, etc.), plus special Rexx
+constants such as .NIL, .TRUE, and .FALSE.</para>
+
+<section id="ENDOFLINE"><title>The ENDOFLINE Constant (.ENDOFLINE)</title>
+<indexterm><primary>.ENDOFLINE object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.ENDOFLINE object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.ENDOFLINE object</secondary></indexterm>
+<para>The ENDOFLINE object is a string constant representing the line terminator used for
+file line end markers for a given system.  This constant is "0d0a"x on Windows (carriage return/linefeed)
+and "0a"x (linefeed) on Unix platforms.
+</para>
+</section>
+
+<section id="FALSE"><title>The FALSE Constant (.FALSE)</title>
+<indexterm><primary>.FALSE object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.FALSE object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.FALSE object</secondary></indexterm>
+<para>The FALSE object is the constant "0" representing a FALSE result for
+logical and comparison operations.
+</para>
+</section>
+
+<section id="nil"><title>The NIL Object (.NIL)</title>
+<indexterm><primary>.NIL object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.NIL object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.NIL object</secondary></indexterm>
+<para>The NIL object is a special
+object that does not contain data. It usually represents the absence of an
+object, as a null string represents a string with no characters. It has only
+the methods of the Object class. Note that you use the .NIL object
+(rather than the null string (&quot;&quot;)) to test for the absence of data
+in an array or other Collection class entry: </para>
+<programlisting>
+if .nil = board[row,col]   /* .NIL rather than "" */
+then ...
+</programlisting>
+</section>
+
+<section id="TRUE"><title>The TRUE Constant (.TRUE)</title>
+<indexterm><primary>.TRUE object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.TRUE object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.TRUE object</secondary></indexterm>
+<para>The TRUE object is the constant "1", representing a true result for
+logical and comparison operations.
+</para>
+</section>
+</section>
+
+<section id="locenv"><title>The Local Directory (.LOCAL)</title>
+<indexterm><primary>.LOCAL object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.LOCAL object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.LOCAL object</secondary></indexterm>
+<para>The Local environment object is a directory of process-specific
+objects that are always accessible.  You can access objects in the Local
+environment object in the same way as objects in the Environment object.
+The Local object contains the .INPUT, .OUTPUT, and .ERROR Monitor objects used for
+Rexx console I/O, the .STDIN, .STDOUT, and .STDERR output streams that are the default
+I/O targets, and the .STDQUE RexxQueue instance used for Rexx external queue operations.
+</para>
+<para>Because both .ENVIRONMENT and .LOCAL are directory objects, you can
+place objects into, or retrieve objects from, these environments by using
+any of the directory methods ([],[]=, PUT, AT, SETENTRY, ENTRY,
+or SETMETHOD). To avoid potential name clashes with built-in objects and public
+objects that Rexx provides, each object that your programs add to these
+environments should have a period in its index.</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<programlisting>
+/* .LOCAL example--places something in the Local environment directory */
+.local~my.alarm = theAlarm
+/* To retrieve it                                                      */
+say .local~my.alarm
+</programlisting>
+<programlisting>
+/* Another .LOCAL example (Windows) */
+.environment["MYAPP.PASSWORD"] = "topsecret"
+.environment["MYAPP.UID"] = 200
+
+/* Create a local directory for my stuff */
+.local["MYAPP.LOCAL"] = .directory~new
+
+/* Add log file for my local directory                                 */
+.myapp.local["LOG"] = .stream~new("myapp.log")
+say .myapp.password                    /* Displays "topsecret"         */
+say .myapp.uid                         /* Displays "200"               */
+
+/* Write a line to the log file */
+.myapp.local~log~lineout("Logon at "time()" on "date())
+
+/* Redirect SAY lines into a file:  */
+.output~destination(.stream~new("SAY_REDIRECT.TXT"))
+say "This goes into a file, and not onto the screen!"
+</programlisting>
+</section>
+
+<section id="erobj"><title>The Error Monitor (.ERROR)</title>
+<indexterm><primary>.ERROR object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.ERROR object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.ERROR object</secondary></indexterm>
+<para>This monitor object (see
+<link linkend="clsMonitor">The Monitor Class</link>) holds the trace stream
+object. You can redirect the trace output in the same way as with the output
+object in the Monitor class example.</para>
+<para>The default for this object's initial destination is the .STDERR
+stream.</para>
+</section>
+
+<section id="inputt"><title>The Input Monitor (.INPUT)</title>
+<indexterm><primary>input object</primary></indexterm>
+<indexterm><primary>.INPUT object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.INTPUT object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.INPUT object</secondary></indexterm>
+<para>This monitor object (see
+<link linkend="clsMonitor">The Monitor Class</link>) holds the default input stream
+object (see <link linkend="iostrms">Input and Output Streams</link>).
+This input stream is the source for the PARSE LINEIN instruction, the LINEIN
+method of the Stream class, and, if you specify no stream name, the LINEIN
+built-in function. It is also the source for the PULL and PARSE PULL
+instructions if the external data queue is empty.</para>
+<para>The default for this object's initial source is the .STDIN
+stream.</para>
+</section>
+
+<section id="outp"><title>The Output Monitor (.OUTPUT)</title>
+<indexterm><primary>.OUTPUT object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.OUTPUT object</secondary></indexterm>
+<indexterm><primary>output</primary>
+<secondary>object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.OUTPUT object</secondary></indexterm>
+<para>This monitor object (see <link linkend="clsMonitor">The Monitor Class</link>)
+holds the default output stream object (see
+<link linkend="iostrms">Input and Output Streams</link>). This
+is the destination for output from the SAY instruction, the LINEOUT method
+(.OUTPUT~LINEOUT), and, if you specify no stream name, the
+LINEOUT built-in function. You can replace this object in the environment
+to direct such output elsewhere (for example, to a transcript window).</para>
+<para>The default for this object's initial destination is the .STDOUT
+stream.</para>
+</section>
+
+<section id="errorobj"><title>The STDERR Stream (.STDERR)</title>
+<indexterm><primary>.STDERR object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.STDERR object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.STDERR object</secondary></indexterm>
+<para>This stream object (see
+<link linkend="clsStream">The Stream Class</link>) is the default stream
+used for trace and error message output.
+</para>
+</section>
+
+<section id="stdinobj"><title>The STDIN Stream (.STDIN)</title>
+<indexterm><primary>.STDIN object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.STDIN object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.STDIN object</secondary></indexterm>
+<para>This is the stream object (see
+<link linkend="clsStream">The Stream Class</link>) representing the
+representing the standard input file of a process. It is the startup default
+stream for the .INPUT object.
+</para>
+</section>
+
+<section id="stdoutobj"><title>The STDOUT Stream (.STDOUT)</title>
+<indexterm><primary>.STDOUT object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.STDOUT object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.STDOUT object</secondary></indexterm>
+<para>This is the stream object (see
+<link linkend="clsStream">The Stream Class</link>) representing the
+representing the standard output file of a process. It is the startup default
+stream for the .OUTPUT object.
+</para>
+</section>
+
+<section id="stdqueobj"><title>The STDQUE Queue (.STDQUE)</title>
+<indexterm><primary>.STDQUE object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.STDQUE object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.STDQUE object</secondary></indexterm>
+<para>This RexxQueue object (see
+<link linkend="clsRexxQueue">The RexxQueue Class</link>)
+is the destination for the PUSH and QUEUE instruction, and the source for
+queue lines for the PULL and PARSE PULL instructions.
+</para>
+</section>
+
+<section id="linee"><title>The Line Number (.LINE)</title>
+<indexterm><primary>.LINE object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.LINE object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.LINE object</secondary></indexterm>
+<para>.LINE is set to the line number of the instruction currently being executed.
+If the current instruction is defined within an INTERPRET
+instruction, the line number of INTERPRET instruction is returned.</para>
+</section>
+
+<section id="methe"><title>The METHODS Directory (.METHODS)</title>
+<indexterm><primary>.METHODS Directory</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.METHODS object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.METHOD object</secondary></indexterm>
+<para>The .METHODS environment symbol identifies a directory (see
+<link linkend="clsDirectory">The Directory Class</link>) of methods
+that ::METHOD directives in the currently running program define.  The
+directory indexes are the method names. The directory
+values are the method objects. See
+<link linkend="clsMethod">The Method Class</link>.</para>
+<para>Only methods and/or attributes that are not preceded by
+a ::CLASS directive are in
+the .METHODS directory. These are known as <emphasis role="italic">floating
+methods</emphasis>. If there are no such methods,
+the .METHODS symbol has the default value of
+<computeroutput>.METHODS</computeroutput>.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+/* .methods contains one entry with the index (method name) "TALK" */
+o=.object~enhanced(.methods)  /* create object, enhance it with methods */
+o~talk("echo this text")  /* test "TALK" method */
+::method talk  /* floating method by the name of "TALK" */
+  use arg text  /* retrieve the argument */
+  say text  /* display received argument */
+</programlisting>
+</section>
+
+<section id="rs"><title>The Return Status (.RS)</title>
+<indexterm><primary>.RS object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.RS object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.RS object</secondary></indexterm>
+<para>.RS is set to the return status from any executed command (including
+those submitted with the ADDRESS instruction). The .RS environment
+symbol has a value of <computeroutput>-1</computeroutput>
+when a command returns a FAILURE condition,
+a value of <computeroutput>1</computeroutput> when a command returns
+an ERROR condition, and a value of <computeroutput>0</computeroutput> when a
+command indicates successful completion. The value
+of .RS is also available after trapping the ERROR or FAILURE condition.</para>
+
+<note><title>Note</title>
+<para>Commands executed manually during interactive tracing do not change
+the value of .RS. The initial value of .RS is
+<computeroutput>.RS</computeroutput>.
+</para></note>
+</section>
+
+</chapter>

@@ -1,0 +1,2163 @@
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: OODialog Reference SGML file.
+    #
+    # Copyright (c) 2005-2007, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    # Author(s):
+    #      W. David Ashley <dashley@us.ibm.com>
+    #
+    #########################################################################
+-->
+<chapter id="man0099"><title>Standard Dialogs, External Functions, and
+Public Routines</title>
+<indexterm><primary>Standard Dialogs, External Functions,
+Public Routines</primary></indexterm>
+<para>The ooDialog framework provides a number of easy to use standard dialogs,
+external functions, and public routines that allow programmers to include simple
+graphical elements in their ooRexx applications.  A few of the functions, like
+<link linkend="rtnMSSleep">MSSleep</link> expose functionality that can be
+useful in any type of ooRexx application. The external functions and public
+routines can be called with a single line of code and the standard dialogs can
+usually be executed with only two lines of code. This does not require the
+programmer to do much set up and makes them simple to work with.
+</para>
+<para>The standard dialogs, external functions, and public routines are listed
+the following table:</para>
+<table id="tStandardElements" frame="all">
+<title>Standard Dialogs, Functions, and Routines</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Standard dialog...</entry>
+<entry>...on page</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>CheckList</entry>
+<entry><link linkend="clsCheckList">CheckList class</link></entry>
+</row>
+<row>
+<entry>InputBox</entry>
+<entry><link linkend="clsInputBox">InputBox class</link></entry>
+</row>
+<row>
+<entry>IntegerBox</entry>
+<entry><link linkend="clsIntegerBox">IntegerBox class</link></entry>
+</row>
+<row>
+<entry>ListChoice</entry>
+<entry><link linkend="clsListChoice">ListChoice class</link></entry>
+</row>
+<row>
+<entry>MultiInputBox</entry>
+<entry><link linkend="clsMultiInputBox">MultiInputBox class</link></entry>
+</row>
+<row>
+<entry>MultiListChoice</entry>
+<entry><link linkend="clsMultiListChoice">MultiListChoice class</link></entry>
+</row>
+<row>
+<entry>PasswordBox</entry>
+<entry><link linkend="clsPasswordBox">PasswordBox class</link></entry>
+</row>
+<row>
+<entry>SingleSelection</entry>
+<entry><link linkend="clsSingleSelection">SingleSelection class</link></entry>
+</row>
+<row>
+<entry>TimedMessage</entry>
+<entry><link linkend="clsTimedMessage">TimedMessage class</link></entry>
+</row>
+</tbody></tgroup>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>External function...</entry>
+<entry>...on page</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>ErrorMessage</entry>
+<entry><link linkend="fncErrorMessage">ErrorMessage function</link></entry>
+</row>
+<row>
+<entry>GetFileNameWindow</entry>
+<entry><link linkend="fncGetFileNameWindow">GetFileNameWindow function</link></entry>
+</row>
+<row>
+<entry>GetScreenSize</entry>
+<entry><link linkend="fncGetScreenSize">GetScreenSize function</link></entry>
+</row>
+<row>
+<entry>GetSysMetrics</entry>
+<entry><link linkend="fncGetSysMetrics">GetSysMetrics function</link></entry>
+</row>
+<row>
+<entry>InfoMessage</entry>
+<entry><link linkend="fncInfoMessage">InfoMessage function</link></entry>
+</row>
+<row>
+<entry>PlaySoundFile</entry>
+<entry><link linkend="fncPlaySoundFile">PlaySoundFile function</link></entry>
+</row>
+<row>
+<entry>PlaySoundFileInLoop</entry>
+<entry><link linkend="fncPlaySoundFileInLoop">PlaySoundFileInLoop function</link></entry>
+</row>
+<row>
+<entry>SleepMS</entry>
+<entry><link linkend="fncSleepMS">SleepMS function</link></entry>
+</row>
+<row>
+<entry>StopSoundFile</entry>
+<entry><link linkend="fncStopSoundFile">StopSoundFile function</link></entry>
+</row>
+<row>
+<entry>WinTimer</entry>
+<entry><link linkend="fncWinTimer">WinTimer function</link></entry>
+</row>
+<row>
+<entry>YesNoMessage</entry>
+<entry><link linkend="fncYesNoMessage">YesNoMessage function</link></entry>
+</row>
+</tbody></tgroup>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Public routine...</entry>
+<entry>...on page</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>AskDialog</entry>
+<entry><link linkend="rtnAskDialog">AskDialog routine</link></entry>
+</row>
+<row>
+<entry>CheckList</entry>
+<entry><link linkend="rtnCheckList">CheckList routine</link></entry>
+</row>
+<row>
+<entry>ErrorDialog</entry>
+<entry><link linkend="rtnErrorDialog">ErrorDialog routine</link></entry>
+</row>
+<row>
+<entry>FileNameDialog</entry>
+<entry><link linkend="rtnFileNameDialog">FileNameDialog routine</link></entry>
+</row>
+<row>
+<entry>FindWindow</entry>
+<entry><link linkend="rtnFindWindow">FindWindow routine</link></entry>
+</row>
+<row>
+<entry>InfoDialog</entry>
+<entry><link linkend="rtnInfoDialog">InfoDialog routine</link></entry>
+</row>
+<row>
+<entry>InputBox</entry>
+<entry><link linkend="rtnInputBox">InputBox routine</link></entry>
+</row>
+<row>
+<entry>IntegerBox</entry>
+<entry><link linkend="rtnIntegerBox">IntegerBox routine</link></entry>
+</row>
+<row>
+<entry>ListChoice</entry>
+<entry><link linkend="rtnListChoice">ListChoice routine</link></entry>
+</row>
+<row>
+<entry>MSSleep</entry>
+<entry><link linkend="rtnMSSleep">MSSleep routine</link></entry>
+</row>
+<row>
+<entry>MultiInputBox</entry>
+<entry><link linkend="rtnMultiInputBox">MultiInputBox routine</link></entry>
+</row>
+<row>
+<entry>MultiListChoice</entry>
+<entry><link linkend="rtnMultiListChoice">MultiListChoice routine</link></entry>
+</row>
+<row>
+<entry>PasswordBox</entry>
+<entry><link linkend="rtnPasswordBox">PasswordBox routine</link></entry>
+</row>
+<row>
+<entry>Play</entry>
+<entry><link linkend="rtnPlay">Play routine</link></entry>
+</row>
+<row>
+<entry>ScreenSize</entry>
+<entry><link linkend="rtnScreenSize">ScreenSize routine</link></entry>
+</row>
+<row>
+<entry>SingleSelection</entry>
+<entry><link linkend="rtnSingleSelection">SingleSelection routine</link></entry>
+</row>
+<row>
+<entry>SystemMetrics</entry>
+<entry><link linkend="rtnSystemMetrics">SystemMetrics routine</link></entry>
+</row>
+<row>
+<entry>TimedMessage</entry>
+<entry><link linkend="rtnTimedMessage">TimedMessage routine</link></entry>
+</row>
+</tbody></tgroup>
+</table>
+
+<section id="sctStandardDialogs"><title>Standard Dialog Classes</title>
+<indexterm><primary>standard dialogs</primary></indexterm>
+<para>The standard dialog classes are: </para>
+<itemizedlist>
+<listitem><para>TimedMessage</para></listitem>
+<listitem><para>InputBox</para></listitem>
+<listitem><para>PasswordBox</para></listitem>
+<listitem><para>IntegerBox</para></listitem>
+<listitem><para>MultiInputBox</para></listitem>
+<listitem><para>ListChoice</para></listitem>
+<listitem><para>MultiListChoice</para></listitem>
+<listitem><para>CheckList</para></listitem>
+<listitem><para>SingleSelection</para></listitem></itemizedlist>
+<para></para>
+<variablelist>
+<varlistentry><term>Requires:</term>
+<listitem><para>Use the <computeroutput>oodPlain.cls</computeroutput> file for
+the standard dialog classes.
+<programlisting>
+<![CDATA[
+::requires "oodPlain.cls"
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>Preparation:</term>
+<listitem><para>Standard dialogs are prepared by using the
+<computeroutput>new</computeroutput> method of the class, which in turn
+invokes the <computeroutput>Init</computeroutput> method. The parameters for
+the <computeroutput>new</computeroutput> method are described for the
+<computeroutput>Init</computeroutput> method of each class.
+</para></listitem></varlistentry>
+<varlistentry><term>Execution:</term>
+<listitem><para>The dialog is then run by using the
+<computeroutput>Execute</computeroutput> method. For most of the standard
+dialogs <computeroutput>Execute</computeroutput> returns the user's input if
+the OK button is clicked and the null string if the Cancel button is clicked to
+terminate the dialog. If there is more than one return value, Execute returns
+the value 1 and stores the results in an attribute.  Exceptions to the general
+rule are noted in the documentation for the individual dialog.
+</para></listitem></varlistentry>
+<varlistentry><term>Functions:</term>
+<listitem><para>Each standard dialog is also available as a callable function.
+These functions are described in the <link linkend="sctPublicRoutines">Public
+Routines</link> section of this chapter.
+</para></listitem></varlistentry>
+</variablelist>
+
+<section id="clsTimedMessage"><title>TimedMessage Class</title>
+<indexterm><primary>TimedMessage</primary>
+<secondary>class</secondary></indexterm>
+<indexterm><primary>standard dialogs</primary>
+<secondary>TimedMessage</secondary></indexterm>
+<para>The TimeMessage class shows a message window for
+a defined duration. </para>
+<variablelist>
+<varlistentry><term>Requires:</term>
+<listitem><para><computeroutput>oodPlain.cls</computeroutput> is required to use
+this class
+</para></listitem></varlistentry>
+<varlistentry><term>Subclass:</term>
+<listitem><para>This class is a subclass of the
+<computeroutput>PlainUserDialog</computeroutput> class
+</para></listitem></varlistentry>
+<varlistentry><term>Execute:</term>
+<listitem><para>There is no return from execute for this dialog.
+</para></listitem></varlistentry>
+</variablelist>
+<para>The methods listed below are defined by this class.</para>
+
+<section id="initTimedMessage"><title>Init</title>
+<indexterm><primary>Init</primary>
+<secondary>TimedMessage class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aTimedMessage~Init(--msg--,--title--,--sleeping--+--------------+--)----><
+                                                    +-,-earlyReply-+
+
+]]>
+</programlisting>
+
+<para>The Init method prepares the dialog. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>message</term>
+<listitem><para>A string that is displayed inside the window as a message. The length
+of the message determines the horizontal size of all standard dialogs.
+</para></listitem></varlistentry>
+<varlistentry><term>title</term>
+<listitem><para>A string that is displayed as the window title in the title bar of the
+dialog
+</para></listitem></varlistentry>
+<varlistentry><term>sleeping</term>
+<listitem><para>A number that determines how long (in milliseconds) the window
+is shown. If this number is 0 or greater, the message window is shown for that
+time and automatically dismisses itself.  The programmer need take no further
+action.
+</para>
+<para>If the number is less than 0 then the message window is shown
+indefinitely.  The <computeroutput>Execute</computeroutput> method returns
+immediately.  In this case, the programmer needs to dismiss the window manually.
+This is done by invoking the <computeroutput>stopIt</computeroutput> method. See
+<emphasis role="bold">Example 2</emphasis> below.
+</para></listitem></varlistentry>
+<varlistentry><term>earlyReply</term>
+<listitem><para>The optional early reply argument defaults to false.  If used
+and if true, the <computeroutput>execute</computeroutput> method of the dialog
+returns immediately.  This allows the code at the point where <computeroutput>
+execute</computeroutput> was invoked to continue.  The message windows continues
+to display for its specified duration and then dismisses itself automatically.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry id="example1TimedMessage"><term><emphasis role="bold">Example
+  1:</emphasis></term>
+<listitem><para>The following example shows a window with the title of <emphasis
+role="italic">Infomation</emphasis> for a duration of 3 seconds:
+<programlisting>
+<![CDATA[
+dlg = .TimedMessage~New("Application will be started, please wait", -
+                        "Information", 3000)
+dlg~Execute
+drop dlg
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry id="example2TimedMessage"><term><emphasis role="bold">Example
+2:</emphasis></term>
+<listitem><para>The following example shows an introductory window that displays
+while an application is doing its time consuming start up routine.  Since this
+start up process can vary in time depending on the individual system, the window
+is set to display indefinitely.  When the start up process is finished, the
+programmer dismisses the window and destroys the dialog manually.
+<programlisting>
+<![CDATA[
+dlg = .TimedMessage~New("The WidgetCreator Application - loading ...", -
+                        "The Widget Factory", -1)
+dlg~Execute
+ret = doStartup()
+dlg~stopIt
+drop dlg
+if ret <> 0 then do
+  ...
+end
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry id="example3TimedMessage"><term><emphasis role="bold">Example
+3:</emphasis></term>
+<listitem><para>The following example is a variation on <emphasis role="bold">
+Example 2</emphasis>.  In this case the Widget Factory executives decided that
+they want their WidgeCreator splash screen to always display for 2 seconds to
+the customer and then close.  The early reply argument is used so that the start
+up routine executes immediately.  After 2 seconds the splash screen dismisses
+and the dialog is destroyed automatically.
+</para>
+<note><title>Note</title><para>It is not necessary to explicitly drop the dlg
+variable.  That is shown in the other examples to emphasis the point that the
+dialog has been destroyed.</para></note>
+<programlisting> <![CDATA[
+dlg = .TimedMessage~New("The WidgetCreator Application - loading ...", -
+                        "The Widget Factory", 2000)
+dlg~Execute
+if doStartup() <> 0 then do
+  ...
+end
+]]>
+</programlisting></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="defDlgTimedMessage"><title>DefineDialog</title>
+<indexterm><primary>Define</primary>
+<secondary>TimedMessage</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aTimedMessage~DefineDialog----------------------------------><
+
+]]>
+</programlisting>
+
+<para>The DefineDialog method is called by the Create method of the parent
+class, PlainUserDialog, which in turn is called at the very beginning of
+Execute. You do not have to call it. However, you may want to override it in
+your subclass to add more dialog controls to the window.  If you override it,
+you have to forward the message to the parent class by using the keyword super.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example shows how to subclass the TimedMessage
+class and how to add a background bitmap to the dialog window:
+<programlisting>
+<![CDATA[
+::class MyTimedMessage subclass TimedMessage inherit DialogExtensions
+
+::method DefineDialog
+   self~BackgroundBitmap("mybackg.bmp", "USEPAL")
+   self~DefineDialog:super()
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="h002097"><title>Execute</title>
+<indexterm><primary>Execute</primary>
+<secondary>TimedMessage class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aTimedMessage~Execute---------------------------------------><
+]]>
+</programlisting>
+
+<para>The Execute method creates and shows the message window. If the specified
+duration (see <link linkend="initTimedMessage">Init</link> method) is not
+negative, this method destroys the dialog automatically when the duration is up.
+If the duration is less than 0, then the programmer must destroy the dialog
+manually by invoking the <computeroutput>stopIt</computeroutput> method.  See
+this <link linkend="example2TimedMessage">example</link> for a code snippet showing the
+procedure.
+</para>
+</section>
+</section>
+
+<section id="clsInputBox"><title>InputBox Class</title>
+<indexterm><primary>InputBox</primary>
+<secondary>class</secondary></indexterm>
+<indexterm><primary>standard dialogs</primary>
+<secondary>InputBox</secondary></indexterm>
+<para>The InputBox class provides a simple dialog with
+a title, a message, one entry line, an OK, and a Cancel push button. </para>
+<variablelist>
+<varlistentry><term>Requires:</term>
+<listitem><para><computeroutput>oodPlain.cls</computeroutput> is required to use this class
+</para></listitem></varlistentry>
+<varlistentry><term>Subclass:</term>
+<listitem><para>This class is a subclass of the <computeroutput>
+PlainUserDialog</computeroutput> class
+</para></listitem></varlistentry>
+<varlistentry><term>Execute:</term>
+<listitem><para>Returns the user's input
+</para></listitem></varlistentry>
+</variablelist>
+<para>The methods listed below are defined by this class.</para>
+
+<section id="initInputBox"><title>Init</title>
+<indexterm><primary>Init</primary>
+<secondary>InputBox class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aInputBox~Init(--message--,--title--,--prevalue--,--len--)----><
+
+
+]]>
+</programlisting>
+
+<para>The Init method prepares the input dialog. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>message</term>
+<listitem><para>A text string that is displayed in the dialog
+</para></listitem></varlistentry>
+<varlistentry><term>title</term>
+<listitem><para>A string that is displayed as the dialog's title in the title bar
+</para></listitem></varlistentry>
+<varlistentry><term>prevalue</term>
+<listitem><para>A string to initialize the entry line. If you do not want to put any
+text in the entry line, just pass an empty string.
+</para></listitem></varlistentry>
+<varlistentry><term>len</term>
+<listitem><para>The width of the entry line in dialog units
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example shows an InputBox dialog with the title of
+<emphasis role="italic">Input</emphasis> and an entry line:
+<programlisting>
+<![CDATA[
+dlg = .InputBox~New("Please enter your email address", -
+                    "Input", "user@host.domain", 150)
+value = dlg~Execute
+say "You entered:" value
+drop dlg
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="h002128"><title>DefineDialog</title>
+<indexterm><primary>DefineDialog</primary>
+<secondary>InputBox class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aInputBox~DefineDialog--------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The DefineDialog method is called by the Create method of the parent
+class, PlainUserDialog, which in turn is called at the very beginning of
+Execute. You do not have to call it. However, you may want to override it in
+your subclass to add more dialog controls to the window. If you override it, you
+have to forward the message to the parent class by using the keyword super.
+</para>
+</section>
+
+<section id="h002138"><title>AddLine</title>
+<indexterm><primary>AddLine</primary>
+<secondary>InputBox class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aInputBox~AddLine(--x--,--y--,--l--)------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The AddLine method is used internally to add one
+entry line to the dialog.</para>
+</section>
+
+<section id="h002148"><title>Execute</title>
+<indexterm><primary>Execute</primary>
+<secondary>InputBox class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aInputBox~Execute-------------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The Execute method creates and shows the dialog. After termination, the
+value of the entry line is returned if the user clicks the OK button; a null
+string is returned if the user clicks on Cancel.</para>
+</section>
+</section>
+
+<section id="clsPasswordBox"><title>PasswordBox Class</title>
+<indexterm><primary>PasswordBox</primary>
+<secondary>class</secondary></indexterm>
+<indexterm><primary>standard dialogs</primary>
+<secondary>PasswordBox</secondary></indexterm>
+<para>The PasswordBox class is an InputBox dialog with an entry line that echoes the keys with asterisks
+(*) instead of characters. </para>
+<variablelist>
+<varlistentry><term>Requires:</term>
+<listitem><para><computeroutput>oodPlain.cls</computeroutput> is required to use
+this class
+</para></listitem></varlistentry>
+<varlistentry><term>Subclass:</term>
+<listitem><para>This class is a subclass of the <link linkend="clsInputBox">InputBox Class</link>
+</para></listitem></varlistentry>
+<varlistentry><term>Execute:</term>
+<listitem><para>Returns the user's password
+</para></listitem></varlistentry>
+</variablelist>
+<para>The methods are the same as for the <link linkend="clsInputBox">InputBox Class</link>,
+with the exception of AddLine.</para>
+
+<section id="h002166"><title>AddLine</title>
+<indexterm><primary>AddLine</primary>
+<secondary>PasswordBox class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aPasswordBox~AddLine(--x--,--y--,--l--)---------------------><
+
+]]>
+</programlisting>
+
+<para>The AddLine overrides the same method of the parent
+class, InputBox, by using a password entry line instead
+of a simple entry line.</para>
+</section>
+</section>
+
+<section id="clsIntegerBox"><title>IntegerBox Class</title>
+<indexterm><primary>IntegerBox</primary>
+<secondary>class</secondary></indexterm>
+<indexterm><primary>standard dialogs</primary>
+<secondary>IntegerBox</secondary></indexterm>
+<para>The IntegerBox class is an <link linkend="clsInputBox">InputBox</link>
+dialog whose entry line allows only numerical data. </para>
+<variablelist>
+<varlistentry><term>Requires:</term>
+<listitem><para><computeroutput>oodPlain.cls</computeroutput> is required to use this class
+</para></listitem></varlistentry>
+<varlistentry><term>Subclass:</term>
+<listitem><para>This class is a subclass of the <link linkend="clsInputBox">InputBox Class</link> class
+</para></listitem></varlistentry>
+<varlistentry><term>Execute:</term>
+<listitem><para>Returns the user's numeric input
+</para></listitem></varlistentry>
+</variablelist>
+<para>The methods are the same as for the <link linkend="clsInputBox">InputBox Class</link>
+class, with the exception of Validate.</para>
+
+<section id="h002189"><title>Validate</title>
+<indexterm><primary>Validate</primary>
+<secondary>IntegerBox function</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aIntegerBox~validate----------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The only method this subclass overrides is Validate, which is one of the
+automatically called methods of PlainUserDialog. It is invoked by the OK method,
+which in turn is called in response to a push button event. This method checks
+whether or not the entry line contains a valid numerical value. If the value is
+invalid, a message window is displayed.
+</para>
+</section>
+</section>
+
+<section id="clsMultiInputBox"><title>MultiInputBox Class</title>
+<indexterm><primary>MultiInputBox</primary>
+<secondary>class</secondary></indexterm>
+<indexterm><primary>standard dialogs</primary>
+<secondary>MultiInputBox</secondary></indexterm>
+<para>The MultiInputBox class is a dialog that provides
+a title, a message, and one or more entry lines. After execution of this dialog
+you can access the values of the entry lines. </para>
+<variablelist>
+<varlistentry><term>Requires:</term>
+<listitem><para><computeroutput>oodPlain.cls</computeroutput> is required to use this class
+</para></listitem></varlistentry>
+<varlistentry><term>Subclass:</term>
+<listitem><para>This class is a subclass of the &quot;PlainUserDialog&quot; class
+</para></listitem></varlistentry>
+<varlistentry><term>Execute:</term>
+<listitem><para>Returns 1 (if OK was clicked). The values entered
+by the user are stored in attributes matching the labels of the entry lines.
+</para></listitem></varlistentry>
+</variablelist>
+<para>The methods are the same as for the <link linkend="clsInputBox">InputBox Class</link>
+class, with the exception of Init.</para>
+
+<section id="initMultiInputBox"><title>Init</title>
+<indexterm><primary>Init</primary>
+<secondary>MultiInputBox class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aMultiInputBox~Init(--message--,--title--,--labels.--,--datas.-->
+
+>--+--------+--)--------------------------------------------------><
+   +-,--len-+
+
+
+]]>
+</programlisting>
+
+<para>The Init method is called automatically whenever
+a new instance of this class is created.  It prepares the dialog. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>message</term>
+<listitem><para>A text string that is displayed on top of the entry lines. Use it to
+give the user advice on what to do.
+</para></listitem></varlistentry>
+<varlistentry><term>title</term>
+<listitem><para>A text string that is displayed in the title bar.
+</para></listitem></varlistentry>
+<varlistentry><term>labels.</term>
+<listitem><para>A stem variable containing strings that are used as labels on the left
+side of the entry lines. Labels.1 becomes the label
+for the first entry line, labels.2 for the second,
+and so forth.
+</para></listitem></varlistentry>
+<varlistentry><term>datas.</term>
+<listitem><para>A stem variable (do not forget the trailing period) containing strings
+that are used to initialize the entry lines. The entries must start with 101
+and continue in increments of 1.
+</para></listitem></varlistentry>
+<varlistentry><term>len</term>
+<listitem><para>The length of the entry lines. All entry lines get the same length.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example creates a four-line input box. The data entered
+is stored in the object attributes that are displayed after dialog execution.
+
+<programlisting>
+<![CDATA[
+lab.1 = "First name"  ;     lab.2 = "Last name "
+lab.3 = "Street and City" ; lab.4 = "Profession:"
+
+addr.101 = "John" ; addr.102 = "Smith" ; addr.103 = ""
+addr.104 = "Software Engineer"
+
+dlg = .MultiInputBox~new("Please enter your address", ,
+"Your Address", lab., addr.)
+if dlg~execute = 1 then do
+  say "The address is:"
+  say dlg~firstname dlg~lastname
+  say dlg~StreetandCity
+  say dlg~Profession
+end
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+</section>
+
+<section id="clsListChoice"><title>ListChoice Class</title>
+<indexterm><primary>ListChoice</primary>
+<secondary>class</secondary></indexterm>
+<indexterm><primary>standard dialogs</primary>
+<secondary>ListChoice</secondary></indexterm>
+<para>The ListChoice class provides a dialog with a list
+box, an OK, and a Cancel button.
+The selected item is returned if the OK push button
+is used to terminate the dialog. </para>
+<variablelist>
+<varlistentry><term>Requires:</term>
+<listitem><para><computeroutput>oodPlain.cls</computeroutput> is required to use this class
+</para></listitem></varlistentry>
+<varlistentry><term>Subclass:</term>
+<listitem><para>This class is a subclass of the &quot;PlainUserDialog&quot; class
+</para></listitem></varlistentry>
+<varlistentry><term>Execute:</term>
+<listitem><para>Returns the user's choice or a null string
+</para></listitem></varlistentry>
+</variablelist>
+<para>The method listed below is defined by this class.</para>
+
+<section id="initListChoice"><title>Init</title>
+<indexterm><primary>Init</primary>
+<secondary>ListChoice class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListChoice~Init(--message--,--title--,--input.-------------->
+
+>--+---------------------------------------------------+-------><
+   +-,--+------+--+-------------------------------+--)-+
+        +-lenx-+  +-,--+------+--+--------------+-+
+                       +-leny-+  +-,--preselect-+
+
+
+]]>
+</programlisting>
+
+<para>The Init method is used to initialize a newly created
+instance of this class. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>message</term>
+<listitem><para>A text string that is displayed on top of the list box. Use it to give
+the user advice on what to do.
+</para></listitem></varlistentry>
+<varlistentry><term>title</term>
+<listitem><para>A text string for the dialog's title
+</para></listitem></varlistentry>
+<varlistentry><term>input.</term>
+<listitem><para>A stem variable (do not forget the trailing period) containing string
+values that are inserted into the list box
+</para></listitem></varlistentry>
+<varlistentry><term>lenx, leny</term>
+<listitem><para>The size of the list box in dialog units
+</para></listitem></varlistentry>
+<varlistentry><term>preselect</term>
+<listitem><para>Entry that is selected when list pops up
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example creates a list choice dialog box where the user
+can select exactly one dessert:
+</para></listitem></varlistentry>
+</variablelist>
+<programlisting>
+<![CDATA[
+lst.1 = "Cookies"; lst.2 = "Pie"; lst.3 = "Ice cream"; lst.4 = "Fruit"
+
+dlg = .ListChoice~new("Select the dessert please","YourChoice",lst., , ,"Pie")
+say "Your ListChoice data:" dlg~execute
+]]>
+</programlisting>
+</section>
+</section>
+
+<section id="clsMultiListChoice"><title>MultiListChoice Class</title>
+<indexterm><primary>MultiListChoice</primary>
+<secondary>class</secondary></indexterm>
+<indexterm><primary>standard dialogs</primary>
+<secondary>MultiListChoice</secondary></indexterm>
+<para>The MultiListChoice class is an extension of the ListChoice class. It makes it possible for the user to
+select more than one line at a time. The Execute method
+returns the selected items' indexes separated by blank spaces.  The first
+item has index 1. </para>
+<variablelist>
+<varlistentry><term>Requires:</term>
+<listitem><para><computeroutput>oodPlain.cls</computeroutput> is required to use this class
+</para></listitem></varlistentry>
+<varlistentry><term>Subclass:</term>
+<listitem><para>This class is a subclass of the <link linkend="clsListChoice">ListChoice Class</link>
+</para></listitem></varlistentry>
+<varlistentry><term>Execute:</term>
+<listitem><para>Returns the index numbers of the entries selected
+</para></listitem></varlistentry>
+<varlistentry><term>Preselect:</term>
+<listitem><para>Indexes of entries, separated by a blank, that are to be preselected.
+The first entry has index 1 and the rest are increments of one.
+</para></listitem></varlistentry>
+</variablelist>
+<para>The methods are the same as for the <link linkend="clsListChoice">ListChoice Class</link>
+class, except that Execute returns the index numbers
+of the selected entries. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example creates a multiple list choice box where the user
+can select multiple entries:
+</para></listitem></varlistentry>
+</variablelist>
+<programlisting>
+<![CDATA[
+lst.1 = "Monday" ;   lst.2 = "Tuesday" ; lst.3 = "Wednesday"
+lst.4 = "Thursday" ; lst.5 = "Friday" ;  lst.6 = "Saturday"
+lst.7 = "Sunday"
+
+dlg = .MultiListChoice~new("Select the days you are working this week", ,
+                           "YourMultipleChoice",lst., , ,"2 5")
+s = dlg~execute
+if s <> "" then do while s \= ""
+                  parse var s res s
+                  say lst.res
+               end
+]]>
+</programlisting>
+</section>
+
+<section id="clsCheckList"><title>CheckList Class</title>
+<indexterm><primary>CheckList</primary>
+<secondary>class</secondary></indexterm>
+<indexterm><primary>standard dialogs</primary>
+<secondary>CheckList</secondary></indexterm>
+<para>The CheckList class is a dialog with a group of
+one or more check boxes. </para>
+<variablelist>
+<varlistentry><term>Requires:</term>
+<listitem><para><computeroutput>oodPlain.cls</computeroutput> is required to use this class.
+</para></listitem></varlistentry>
+<varlistentry><term>Subclass:</term>
+<listitem><para>This class is a subclass of the &quot;PlainUserDialog&quot; class.
+</para></listitem></varlistentry>
+<varlistentry><term>Execute:</term>
+<listitem><para>Returns 1 (if OK was clicked). The check boxes
+selected by the user are marked in a stem variable with the value 1.
+</para></listitem></varlistentry>
+</variablelist>
+<para>The method listed below is defined by this class.</para>
+
+<section id="initCheckList"><title>Init</title>
+<indexterm><primary>Init</primary>
+<secondary>CheckList class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aCheckList~Init(--message--,--title--,--labels.--,--datas.-->
+
+>>--+------------------------+--)-----------------------------><
+    +-,--+-----+--+--------+-+
+         +-len-+  +-,--max-+
+
+
+]]>
+</programlisting>
+
+<para></para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>message</term>
+<listitem><para>A text string that is displayed on top of the check box group.  Use
+it to give the user advice on what to do.
+</para></listitem></varlistentry>
+<varlistentry><term>title</term>
+<listitem><para>A text string for the dialog's title
+</para></listitem></varlistentry>
+<varlistentry><term>labels.</term>
+<listitem><para>A stem variable (do not forget the trailing period) containing all the
+labels for the check boxes
+</para></listitem></varlistentry>
+<varlistentry><term>datas.</term>
+<listitem><para>This argument is a stem variable (do not forget the trailing period)
+that you can use to preselect the check boxes. The first check box relates
+to stem item 101, the second to 102, and so forth. A value of 1 indicates selected, and a value of 0 indicates deselected.</para>
+<para>For example, Datas.103=1 indicates
+that there is a check mark on the third box.</para>
+</listitem></varlistentry>
+<varlistentry><term>len</term>
+<listitem><para>Determines the length of the check boxes and labels. If omitted, the
+size is calculated to fit the largest label.
+</para></listitem></varlistentry>
+<varlistentry><term>max</term>
+<listitem><para>The maximum number of check boxes in one column. If there are more check
+boxes than max - that is, labels. has more items than the value of max
+- this method continues with a new column.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example creates and shows a dialog with seven check boxes:
+</para></listitem></varlistentry>
+</variablelist>
+
+<programlisting>
+<![CDATA[
+lst.1 = "Monday";   lst.2 = "Tuesday"; lst.3 = "Wednesday"
+lst.4 = "Thursday"; lst.5 = "Friday";  lst.6 = "Saturday"
+lst.7 = "Sunday"
+
+do i = 101 to 107
+   chk.i = 0
+end
+
+dlg = .CheckList~new("Please select a day!","Day of week",lst., chk.)
+if dlg~execute = 1 then do
+   say "You selected the following day(s): "
+   do i = 101 to 107
+      a = i-100
+      if chk.i = 1 then say lst.a
+   end
+end
+]]>
+</programlisting>
+</section>
+</section>
+
+<section id="clsSingleSelection"><title>SingleSelection Class</title>
+<indexterm><primary>SingleSelection</primary>
+<secondary>class</secondary></indexterm>
+<indexterm><primary>standard dialogs</primary>
+<secondary>SingleSelection</secondary></indexterm>
+<para>The SingleSelection class shows a dialog that has
+a group of radio buttons. The user can select only one item of the group. </para>
+<variablelist>
+<varlistentry><term>Requires:</term>
+<listitem><para><computeroutput>oodPlain.cls</computeroutput> is required to use this class
+</para></listitem></varlistentry>
+<varlistentry><term>Subclass:</term>
+<listitem><para>This class is a subclass of the &quot;PlainUserDialog&quot; class
+</para></listitem></varlistentry>
+<varlistentry><term>Execute:</term>
+<listitem><para>Returns the number of the radio button selected
+</para></listitem></varlistentry>
+</variablelist>
+<para>The method listed below is defined by this class.</para>
+
+<section id="initSingleSelection"><title>Init</title>
+<indexterm><primary>Init</primary>
+<secondary>SingleList class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aSingleSelection~Init(--message--,--title--,--labels.--,--data-->
+
+>--+------------------------+--)-------------------------------><
+   +-,--+-----+--+--------+-+
+        +-len-+  +-,--max-+
+
+
+]]>
+</programlisting>
+
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>message</term>
+<listitem><para>A text string that is displayed on top of the radio button group.  Use
+it to give the user advice on what to do.
+</para></listitem></varlistentry>
+<varlistentry><term>title</term>
+<listitem><para>A text string for the title bar
+</para></listitem></varlistentry>
+<varlistentry><term>labels.</term>
+<listitem><para>This argument is a stem variable containing all labels for the radio
+buttons
+</para></listitem></varlistentry>
+<varlistentry><term>data</term>
+<listitem><para>You can use this argument to preselect one radio button. A value of
+1 selects the first radio button, a value of 2 selects the second, and so
+on.
+</para></listitem></varlistentry>
+<varlistentry><term>len</term>
+<listitem><para>Determines the length of the check boxes and labels. If omitted, the
+size is calculated to fit the largest label.
+</para></listitem></varlistentry>
+<varlistentry><term>max</term>
+<listitem><para>The maximum number of radio buttons in one column. If there are more
+radio buttons than max - that is, labels. has more items than the value of max
+- this method continues with a new column.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example creates and executes a dialog that contains a
+two-column radio button group. The fifth radio button (the button with the
+label May) is preselected.
+
+<programlisting>
+<![CDATA[
+mon.1 = "January" ; mon.2 = "February" ; mon.3 = "March"
+mon.4 = "April"   ; mon.5 = "May"      ; mon.6 = "June"
+mon.7 = "July"    ; mon.8 = "August"   ; mon.9 = "September"
+mon.10= "October" ; mon.11= "November" ; mon.12= "December"
+
+dlg = .SingleSelection~new("Please select a month!", ,
+                           "Single Selection", mon., 5, , 6)
+s = dlg~execute
+say  "You Selected the month: " mon.s
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+</section>
+
+</section>
+
+<section id="sctExternalFunctions"><title>External Functions</title>
+<indexterm><primary>external functions</primary></indexterm>
+<para>The ooDialog framework provides external functions that can be used as
+callable functions in your Open Object Rexx programs. These functions are
+registered automatically when the first dialog is initialized. If no dialog has
+been created, the programmer must register the functions prior to calling them.
+An individual function is registered with:
+</para>
+<programlisting>
+<![CDATA[
+call RxFuncAdd functionname, "oodialog", functionname
+]]>
+</programlisting>
+<para>To register all the ooDialog functions in this group use:</para>
+<programlisting>
+<![CDATA[
+call RxFuncAdd InstMMFuncs, "oodialog", InstMMFuncs
+call InstMMFuncs
+]]>
+</programlisting>
+<para>A more convenient way to call many of these functions is provided by the
+<link linkend="sctPublicRoutines">Public Routines</link> in the ooDialog
+framework.  The public routines do not require that the programmer register any
+of the external functions.  That task is handled transparently by the routine.
+</para>
+<note><title>Note</title><para>
+The ooDialog framework includes a number of external functions that are not
+listed here.  In general, using the external functions not listed requires a
+good working knowledge of C and an understanding of the underlying Windows API.
+Therefore, those functions are not listed. The functions listed in this section
+are the functions that are convenient and easy to use in an ooRexx program for
+the general Rexx programmer.  They require no understanding of C or the Windows
+API.
+</para></note>
+
+<section id="fncInfoMessage"><title>InfoMessage</title>
+<indexterm><primary>InfoMessage</primary></indexterm>
+<indexterm><primary>external functions</primary>
+<secondary>InfoMessage</secondary></indexterm>
+<para>Displays an information message window:
+<programlisting>
+<![CDATA[
+call InfoMessage "some message text"
+ret = InfoMessage("another text")
+]]>
+</programlisting></para>
+<para>See also the public routine <link linkend="rtnInfoDialog">InfoDialog</link>.
+</para>
+</section>
+
+<section id="fncErrorMessage"><title>ErrorMessage</title>
+<indexterm><primary>ErrorMessage</primary></indexterm>
+<indexterm><primary>external functions</primary>
+<secondary>ErrorMessage</secondary></indexterm>
+<para>Displays an error message window:
+<programlisting>
+<![CDATA[
+call ErrorMessage "some error message text"
+ret = ErrorMessage("another error message")
+]]>
+</programlisting></para>
+<para>See also the public routine <link linkend="rtnErrorDialog">ErrorDialog</link>.
+</para>
+</section>
+
+<section id="fncYesNoMessage"><title>YesNoMessage</title>
+<indexterm><primary>YesNoMessage</primary></indexterm>
+<indexterm><primary>external functions</primary>
+<secondary>YesNoMessage</secondary></indexterm>
+<para>Displays a message and ask the user for a YES or NO answer:
+<programlisting>
+<![CDATA[
+ret = YesNoMessage("Delete these files?", "No")
+if ret=1 then /* this is yes */
+]]>
+</programlisting>
+</para>
+<para>The second argument is optional and can have a value of either Yes or
+No. An argument of Yes gives the Yes button the default focus, No gives the No
+button the default focus. If the argument is omitted the Yes button is given
+the default focus. Only the first letter of the argument is needed and case is
+not significant.</para>
+<para>See also the public routine <link linkend="rtnAskDialog">AskDialog</link>.
+</para>
+</section>
+
+<section id="fncGetScreenSize"><title>GetScreenSize</title>
+<indexterm><primary>GetScreenSize</primary></indexterm>
+<indexterm><primary>external functions</primary>
+<secondary>GetScreenSize</secondary></indexterm>
+<para>Queries the monitor size in dialog units and pixels:
+<programlisting>
+<![CDATA[
+val = GetScreenSize()
+parse var val dunitx dunity pixelx pixely
+]]>
+</programlisting>
+</para>
+<para>See also the public routine <link linkend="rtnScreenSize">ScreenSize</link>.
+</para>
+</section>
+
+<section id="fncGetSysMetrics"><title>GetSysMetrics</title>
+<indexterm><primary>GetSysMetrics</primary></indexterm>
+<indexterm><primary>external functions</primary>
+<secondary>GetSysMetrics</secondary></indexterm>
+<para>Queries a system metric value:
+<programlisting>
+<![CDATA[
+SM_CMONITORS = 80
+metric = GetSysMetric(SM_CMONITORS)
+say 'There are' metric 'monitors connected to this system.'
+]]>
+</programlisting>
+</para>
+<para>The public routine, <link linkend="rtnSystemMetrics">SystemMetrics</link>,
+provides an easy way to use this external routine without first creating an
+ooDialog dialog or manually loading the C functions.  Check the documentation
+for the public routine for more detailed information on the system metrics in
+Windows.
+</para>
+</section>
+
+<section id="fncPlaySoundFile"><title>PlaySoundFile</title>
+<indexterm><primary>PlaySoundFile</primary></indexterm>
+<indexterm><primary>external functions</primary>
+<secondary>PlaySoundFile</secondary></indexterm>
+<para>Plays a sound file (.WAV):</para>
+<programlisting>
+<![CDATA[
+call PlaySoundFile "d:\wav\sound.wav"
+ret = PlaySoundFile("d:\wav\sound.wav","YES")
+]]>
+</programlisting>
+<para>The optional second
+parameter YES plays the file asynchronously, that is the program continues
+execution. See also the public routine <link linkend="rtnPlay">Play</link>.
+</para>
+</section>
+
+<section id="fncPlaySoundFileInLoop"><title>PlaySoundFileInLoop</title>
+<indexterm><primary>PlaySoundFileInLoop</primary></indexterm>
+<indexterm><primary>external functions</primary>
+<secondary>PlaySoundFileInLoop</secondary></indexterm>
+<para>Plays a sound file (.WAV) continuously and asynchronously:
+<programlisting>
+<![CDATA[
+call PlaySoundFileInLoop "d:\wav\sound.wav"
+]]>
+</programlisting>
+</para>
+</section>
+
+<section id="fncStopSoundFile"><title>StopSoundFile</title>
+<indexterm><primary>StopSoundFile</primary></indexterm>
+<indexterm><primary>external functions</primary>
+<secondary>StopSoundFile</secondary></indexterm>
+<para>Stops playing an asynchronous sound file (.WAV):
+<programlisting>
+<![CDATA[
+call StopSoundFile
+]]>
+</programlisting>
+</para>
+</section>
+
+<section id="fncGetFileNameWindow"><title>GetFileNameWindow</title>
+<indexterm><primary>GetFileNameWindow</primary></indexterm>
+<indexterm><primary>external functions</primary>
+<secondary>GetFileNameWindow</secondary></indexterm>
+<para>Displays an Open File window:</para>
+<programlisting>
+<![CDATA[
+file = GetFileNameWindow(filename,handle,filter,loadorsave,title, ,
+                         defExtension,multiSelect,sepChar)
+]]>
+</programlisting>
+<para>Parameters (optional):</para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">filename</emphasis></term>
+<listitem><para>A preselected file name and / or initial directory information.</para>
+<para>This argument places a preselected file name in the &quot;File name&quot;
+field of the file selection dialog.  In addition this argument can also be used
+to specify the initial directory (folder) the dialog opens in.</para>
+<para>When this argument contains no path information, then the File name field
+will contain the argument and the initial directory is determined by the
+operating system.  Which directory the operating system picks varies slightly
+between Windows 98, Windows NT, Windows XP, etc.  But, in general, it will be a
+directory previously used in one of the Windows common dialogs, or a directory
+in the users My Documents.  (The exact behavior is documented by Microsoft.)</para>
+<para>If the argument contains file name and path information, the initial
+directory will be determined by the path information and the File name field
+will contain the file information.  When the filename argument contains only path
+information and no file name information, i.e. the argument ends with a back
+slash (&quot;\&quot;), then the initial directory will be that path and the File
+name field will be left blank.</para>
+<para>In cases where the argument contains incorrect path information the
+initial directory is determined as if no path information had been supplied and
+the entire value of the argument is placed in the File name field.</para>
+<note><title>Note</title><para>
+Windows treats normal wild card characters as valid for file names.  Therefore,
+values such as C:\*.* or C:\Windows\*.exe are acceptable for this argument.
+</para></note>
+</listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">handle</emphasis></term>
+<listitem><para>The parent window handle.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">filter</emphasis></term>
+<listitem><para>A file mask specification.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">loadorsave</emphasis></term>
+<listitem><para>If you specify 1, which is the default, you get the file name for a
+load operation. If you specify 0, you get the file name for a save operation.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">title</emphasis></term>
+<listitem><para>The window title. The default is &quot;Open a File&quot; or &quot;Save
+File As&quot;, depending on what you specify for <emphasis role="italic">loadorsave</emphasis>.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">defExtension</emphasis></term>
+<listitem><para>The default extension that is added if no extension was specified. The
+default is TXT.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">multiSelect</emphasis></term>
+<listitem><para>If you specify 1, you can select several files. In this case,
+<emphasis role="italic">loadorsave</emphasis> must also be 1. The result is
+then <emphasis role="italic">path file1 file2 file3 ...</emphasis>.</para>
+<para>If you specify 0 or omit this parameter, you get the selected file name or
+an empty string when the Open File window is canceled.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">sepChar</emphasis></term>
+<listitem><para>Specifies which character should be used for separating the file names
+when <emphasis role="italic">multiSelect</emphasis> = 1.</para>
+<para>This is needed for file names with blank
+characters. If this argument is omitted, the separation character is a blank.
+If the argument is specified, the returned path and file name
+uses this separation character. For example, if you specify "#" as the separation
+character, the return string might look as follows: </para>
+<programlisting>
+<![CDATA[
+C:\WINNT#file with blank.ext#fileWithNoBlank.TXT
+]]>
+</programlisting>
+</listitem></varlistentry>
+</variablelist>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+"Text files (*.txt)"&apos;0&apos;x"*.TXT"&apos;0&apos;x ,
+"All files (*.*)"&apos;0&apos;x"*.*"
+</programlisting>
+</section>
+
+<section id="fncSleepMS"><title>SleepMS</title>
+<indexterm><primary>SleepMS</primary></indexterm>
+<indexterm><primary>external functions</primary>
+<secondary>SleepMS</secondary></indexterm>
+<para>Sleeps for a given time interval, in milliseconds:
+<programlisting>
+<![CDATA[
+call SleepMS(3000) /* 3 seconds */
+]]>
+</programlisting></para>
+<para>See also the public routine <link linkend="rtnMSSleep">MSSleep</link>.
+</para>
+</section>
+
+<section id="fncWinTimer"><title>WinTimer</title>
+<indexterm><primary>WinTimer</primary></indexterm>
+<indexterm><primary>external functions</primary>
+<secondary>WinTime</secondary></indexterm>
+<para>Starts, stops, and waits for a windows timer:
+<programlisting>
+<![CDATA[
+tid = WinTimer("START",300)   /* 0,3 seconds */
+call  WinTimer("WAIT,tid)     /* wait... */
+ret = WinTimer("STOP",tid)    /* stop premature */
+]]>
+</programlisting>
+</para>
+</section>
+</section>
+
+<section id="sctPublicRoutines"><title>Public Routines</title>
+<indexterm><primary>ooDialog public routines</primary></indexterm>
+<para>The routines listed in this section can be used in any ooRexx
+program.  They are designed to be even easier to use than the standard dialogs
+or the external functions. They do not require that an ooDialog dialog be
+initialized prior to their use, or that any ooDialog dialog be used in the
+program at all. The programmer does not have to register any functions to use
+these routines.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Requires:</emphasis></term>
+<listitem><para>Use a requires directive for the <computeroutput>
+ooDialog.cls</computeroutput> file in an ooRexx program to use any of these
+routines.
+<programlisting> <![CDATA[
+::requires ooDialog.cls ]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+
+<section id="rtnPlay"><title>Play Routine</title>
+<indexterm><primary>Play</primary></indexterm>
+<indexterm><primary>public routines</primary>
+<secondary>Play</secondary></indexterm>
+<para>This routine is used to play audio sounds.</para>
+<programlisting>
+<![CDATA[
+>>-Play(--+----------+--+---------+--)------------------------><
+          +-fileName-+  +-,--YES--+
+                        +-,--LOOP-+
+
+
+]]>
+</programlisting>
+
+<para>The Play routine can be used to play an audio file using the Windows
+multimedia capabilities. See also the <link
+linkend="fncPlaySoundFile">PlaySoundFile</link> external function.
+</para>
+<para>The named file is searched for in the current directory and in the
+directories of the SOUNDPATH environment variable.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>fileName</term>
+<listitem><para>The file name of an audio (.WAV) file. The file is searched for
+in the current directory and in the directories listed in the SOUNDPATH
+environment variable. If this argument is omitted, the currently playing sound
+file is stopped.
+</para></listitem></varlistentry>
+<varlistentry><term>option</term>
+<listitem><para>You can set the last argument to:
+<variablelist>
+<varlistentry><term>YES</term>
+<listitem><para>This plays the audio file asynchronously.
+</para></listitem></varlistentry>
+<varlistentry><term>LOOP</term>
+<listitem><para>Plays the audio file asynchronously and repeats it in a loop. You can
+stop the loop by calling Play again omitting all arguments.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example plays a welcoming message:
+<programlisting>
+<![CDATA[
+rc = play("Welcome.wav")
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="rtnInfoDialog"><title>InfoDialog Routine</title>
+<indexterm><primary>InfoDialog</primary></indexterm>
+<indexterm><primary>public routines</primary>
+<secondary>InfoDialog</secondary></indexterm>
+<para>Pops up a message box containing the specified text and an OK button.</para>
+<programlisting>
+<![CDATA[
+>>-InfoDialog(--info_text--)----------------------------------><
+
+
+]]>
+</programlisting>
+
+<para></para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Argument:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>info_text</term>
+<listitem><para>Text to be displayed in the message box.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="rtnErrorDialog"><title>ErrorDialog Routine</title>
+<indexterm><primary>ErrorDialog</primary></indexterm>
+<indexterm><primary>public routines</primary>
+<secondary>ErrorDialog</secondary></indexterm>
+<para>Pops up a message box containing the specified text, an OK button, and
+an error symbol.</para>
+<programlisting>
+<![CDATA[
+>>-ErrorDialog(--error_text--)--------------------------------><
+]]>
+</programlisting>
+
+<para></para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Argument:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>error_text</term>
+<listitem><para>Text to be displayed in the message box.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="rtnAskDialog"><title>AskDialog Routine</title>
+<indexterm><primary>AskDialog</primary></indexterm>
+<indexterm><primary>public routines</primary>
+<secondary>AskDialog</secondary></indexterm>
+<para>Pops up a message box containing the specified text, a Yes button, and
+a No Button.</para>
+<programlisting>
+<![CDATA[
+>>-AskDialog(--question--+-------------------+--)-------------><
+                         +--, defaultbutton--+
+
+]]>
+</programlisting>
+
+<para></para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>question</term>
+<listitem><para>Text to be displayed in the message box.
+</para></listitem></varlistentry>
+<varlistentry><term>defaultbutton</term>
+<listitem><para>Specifies which button, the Yes or the No button, has the
+default focus when the message box pops up. This argument can be Yes or No and
+is optional. If the argument is omitted, the Yes button will be given the focus.
+Only the first letter of the option is needed and case is not significant.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term>Return Values:</term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The No button has been selected.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>The Yes button has been selected.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="rtnFileNameDialog"><title>FileNameDialog Routine</title>
+<indexterm><primary>FilenameDialog</primary></indexterm>
+<indexterm><primary>public routines</primary>
+<secondary>FileNameDialog</secondary></indexterm>
+<para>Causes a file selection dialog box to appear.</para>
+<programlisting>
+<![CDATA[
+>>-FileNameDialog(--+---------+--+--------------------------------+-->
+                    +-selfile-+  +-,--+--------+--+-------------+-+
+                                      +-parent-+  +-,--filemask-+
+
+>--+----------------------------------------------------------------->
+   +-,--+------------+--+----------+--+-----------------+------------>
+        +-loadorsave-+  +-,--title-+  +-,--defExtension-+
+
+
+>--+-----------------------------------+--)-------------------------><
+>--+----------------+--+------------+--+
+   +-,--multiSelect-+  +-,--sepChar-+
+
+
+]]>
+</programlisting>
+
+<para></para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>selfile</term>
+<listitem><para>Preselected file name and / or initial directory information.</para>
+<para>This argument places a preselected file name in the &quot;File name&quot;
+field of the file selection dialog.  In addition this argument can also be used
+to specify the initial directory (folder) the dialog opens in.</para>
+<para>When this argument contains no path information, then the File name field
+will contain the argument and the initial directory is determined by the
+operating system.  Which directory the operating system picks varies slightly
+between Windows 98, Windows NT, Windows XP, etc.  But, in general, it will be a
+directory previously used in one of the Windows common dialogs, or a directory
+in the users My Documents.  (The exact behavior is documented by Microsoft.)</para>
+<para>If the argument contains file name and path information, the initial
+directory will be determined by the path information and the File name field
+will contain the file information.  When the selfile argument contains only path
+information and no file name information, i.e. the argument ends with a back
+slash (&quot;\&quot;), then the initial directory will be that path and the File
+name field will be left blank.</para>
+<para>In cases where the argument contains incorrect path information the
+initial directory is determined as if no path information had been supplied and
+the entire value of the argument is placed in the File name field.</para>
+<note><title>Note</title><para>
+Windows treats normal wild card characters as valid for file names.  Therefore,
+values such as C:\*.* or C:\Windows\*.exe are acceptable for this argument.
+</para></note>
+</listitem></varlistentry>
+<varlistentry><term>parent</term>
+<listitem><para>Handle to the parent window.
+</para></listitem></varlistentry>
+<varlistentry><term>filemask</term>
+<listitem><para>Pairs of null-terminated filter strings.</para>
+<para>The first string in each
+pair is a display string that describes the filter (for example, &quot;Text
+Files&quot;), and the second string specifies the filter pattern (for example, &quot;*.TXT&quot;).
+To specify multiple filter patterns for a single display string, use a semicolon
+to separate the patterns (for example, &quot;*.TXT;*.DOC;*.BAK&quot;). A pattern
+string can be a combination of valid file name characters and the asterisk
+(*) wildcard character. Do not include spaces in the pattern string.</para>
+<para>If omitted, <computeroutput>&quot;Text Files (*.TXT)&quot;&apos;0&apos;x&quot;*.TXT&quot;&apos;0&apos;x&quot;All
+Files (*.*)&quot;&apos;0&apos;x&quot;*.*&quot; </computeroutput> is used as the filter.
+</para></listitem></varlistentry>
+<varlistentry><term>loadorsave</term>
+<listitem><para>Specifies which dialog should be displayed, the File Open Dialog
+(the default) or the File Save Dialog.  If the File Save Dialog is not
+explicitly requested the default File Open Dialog is always presented.  Only the
+first letter of the argument is needed and case is not significant.  For
+historic reasons this argument can also be 1 (File Open Dialog) or 0 (File Save
+Dialog.)
+<variablelist>
+<varlistentry><term>Load or 1</term>
+<listitem><para>Display the File Open Dialog (default).
+</para></listitem></varlistentry>
+<varlistentry><term>Save or 0</term>
+<listitem><para>Display the File Save Dialog.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term>title</term>
+<listitem><para>The window title. The default is "Open a File" or "Save File As", depending
+on what is specified for <computeroutput>loadorsave</computeroutput>.
+</para></listitem></varlistentry>
+<varlistentry><term>defExtension</term>
+<listitem><para>The default extension that is added if no extension was specified. The
+default is TXT.
+</para></listitem></varlistentry>
+<varlistentry><term>multiSelect</term>
+<listitem><para>Specifies if the File Open Dialog allows selection of multiple
+files. Normally, the open dialog allows the user to select one file only.  This
+can be changed by specifying "MULTI" for this option.  Only the first letter is
+needed and case is not significant.
+<variablelist>
+<varlistentry><term>MULTI</term>
+<listitem><para>Multiple file selection is allowed. This option is ignored for
+File Save Dialogs. If the user selects multiple files, the result is then path
+file1 file2 file3 ...
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term>sepChar</term>
+<listitem><para>Specifies the separation character for the returned path and file names.
+This is needed for file names with blank characters. If this argument is omitted,
+the separation character is a blank. If the argument is specified, the returned
+path and file name uses this separation character. For example, if you specify
+"#" as the separation character, the return string might look as follows:
+<programlisting>
+<![CDATA[
+C:\WINNT#file with blank.ext#fileWithNoBlank.TXT
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>Returns the selected file name or an empty string when canceled.
+Open File dialogs with multiple selection return path file1 file2 file3 ... when
+the user selects multiple files.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="rtnFindWindow"><title>FindWindow Routine</title>
+<indexterm><primary>FindWindow</primary></indexterm>
+<indexterm><primary>public routines</primary>
+<secondary>FindWindow</secondary></indexterm>
+<para>Searches the Windows application list for a specific window and
+returns its handle.</para>
+<programlisting>
+<![CDATA[
+>>-FindWindow(--Caption--)------------------------------------><
+]]>
+</programlisting>
+
+<para></para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Argument:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>Caption</term>
+<listitem><para>Caption of the window that is to be searched.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>Handle of the window or 0 if the window was not found.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="rtnScreenSize"><title>ScreenSize Routine</title>
+<indexterm><primary>ScreenSize</primary></indexterm>
+<indexterm><primary>public routines</primary>
+<secondary>ScreenSize</secondary></indexterm>
+<para>Obtains the screen size in dialog units and in pixels</para>
+<programlisting>
+<![CDATA[
+>>-ScreenSize()-----------------------------------------------><
+]]>
+</programlisting>
+
+<para></para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Argument:</emphasis></term>
+<listitem><para>This function takes no arguments.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>An array containing the screen size.  The size in dialog units
+of the width is at index 1 and the height in dialog units is at index 2. The
+size in pixels of the width is at index 3 and the height in pixels is at index
+4.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example</emphasis></term>
+<listitem><para>Get the screen size and display it to the user.
+<programlisting>
+<![CDATA[
+size = screenSize()
+say
+say 'The monitor is' size[1] 'dialog units wide and' size[2] 'dialog units high.'
+say 'The monitor is' size[3] 'pixels wide and' size[4] 'pixels high.'
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="rtnSystemMetrics"><title>SystemMetrics Routine</title>
+<indexterm><primary>SystemMetrics</primary></indexterm>
+<indexterm><primary>public routines</primary>
+<secondary>SystemMetrics</secondary></indexterm>
+<para>Queries and returns one of the system metric values The system metric
+values contain information that help the programmer write programs that work
+correctly independent of the current system.  They have information on system
+configuration, such as the number of monitors connected, and metrics such as the
+size in pixels of a dialog border or the width in pixels of a scrollbar.
+</para>
+<para>Good documentation on the system metrics is found in the MSDN Library
+under the GetSystemMetrics function.  This documentation contains both the
+numeric value of the different indexes and information on what is returned for
+each index.  The documentation is easy to found using a Google search of
+&quot;GetSystemMetrics MSDN Library&quot;
+ </para>
+<programlisting>
+<![CDATA[
+>>-SystemMetrics(--index--)-----------------------------------><
+]]>
+</programlisting>
+
+<para></para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Argument:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>index</term>
+<listitem><para>The numeric index of the metric to query.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The return value is dependent on the index queried.  Consult the
+MSDN library for information on the returned values.
+<note><title>Note</title><para>
+The OS will return 0 if an invalid index is used.  Hoever, the return value for
+some indexes is also 0.  The programmer will need to determine from the context
+if 0 is an error return or not.  In addition, ooDialog will return -1 for some
+invalid argument values.  For instance, if the string &quot;dog&quot; was passed
+in for the <computeroutput>index</computeroutput> argument, -1 would be
+returned.
+</para></note>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example</emphasis></term>
+<listitem><para>Determine the number of mouse buttons and whether the mouse has
+a scroll wheel.
+<programlisting>
+<![CDATA[
+  /* detectMouse.rex  Simple program to detect the user's mouse. */
+
+  SM_CMOUSEBUTTONS     = 43
+  SM_MOUSEWHEELPRESENT = 19
+
+  countMouseButtons = SystemMetrics(SM_CMOUSEBUTTONS)
+  haveMouseWheel = SystemMetrics(SM_MOUSEWHEELPRESENT)
+
+  if countMouseButtons == 0 then do
+    say 'The system does not have a mouse attached'
+  end
+  else do
+    say 'The mouse has' countMouseButtons 'buttons'
+    if haveMouseWheel == 0 then say 'There is no mouse scroll wheel.'
+    else say 'The mouse has a scroll wheel.'
+  end
+
+  return 0
+  ::requires 'oodPlain.cls'
+
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="rtnMSSleep"><title>MSSleep Routine</title>
+<indexterm><primary>MSSleep</primary></indexterm>
+<indexterm><primary>public routines</primary>
+<secondary>MSSleep</secondary></indexterm>
+<para>Sleeps for the specified number of milliseconds.</para>
+<programlisting>
+<![CDATA[
+>>-MSSleep(--duration--)--------------------------------------><
+]]>
+</programlisting>
+
+<para></para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Argument:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>duration</term>
+<listitem><para>The time in milliseconds to sleep.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>This function always returns 0.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="rtnTimedMessage"><title>TimedMessage Routine</title>
+<indexterm><primary>TimedMessage</primary>
+<secondary>function</secondary></indexterm>
+<indexterm><primary>public routines</primary>
+<secondary>TimedMessage</secondary></indexterm>
+<para>The TimedMessage routine provides a shortcut to invoke a <link
+linkend="clsTimedMessage">TimedMessage</link> dialog as a function:
+</para>
+<programlisting>
+<![CDATA[
+ret = TimedMessage("We are starting...","Please wait",3000)
+]]>
+</programlisting><para> The parameters are the same as described in the
+<link linkend="initTimedMessage">Init</link> method of the <computeroutput>
+TimedMessage</computeroutput> class.
+</para>
+<para>The function returns 0, always, when the duration is non-negative.  When
+the duration is less than 0, the function returns a reference to the
+<computeroutput>TimedMessage</computeroutput> dialog object.  This is needed in
+order for the programmer to manually dismiss the dialog.  Below are the same 3
+<link linkend="example1TimedMessage">examples</link> listed for the
+<computeroutput>TimedMessage</computeroutput> dialog, modified to work with the
+public routine:
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Example
+ 1:</emphasis></term>
+<listitem><para>The following example shows a window with the title of <emphasis
+role="italic">Infomation</emphasis> for a duration of 3 seconds:
+<programlisting> <![CDATA[
+ret = timedMessage("Application will be started, please wait", -
+                   "Information", 3000)
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example
+2:</emphasis></term>
+<listitem><para>The following example shows an introductory window that displays
+while an application is doing its time consuming start up routine.  Since this
+start up process can vary in time depending on the individual system, the window
+is set to display indefinitely.  When the start up process is finished, the
+programmer dismisses the window and destroys the dialog manually.  Note how a
+reference to the <computeroutput>TimedMessage</computeroutput> dialog is
+returned.  The programmer only needs to use this to dismiss / destroy the dialog
+<programlisting>
+<![CDATA[
+dlg = timedMessage("The WidgetCreator Application - loading ...", -
+                   "The Widget Factory", -1)
+ret = doStartup()
+dlg~stopIt
+if ret <> 0 then do
+  ...
+end
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example
+3:</emphasis></term>
+<listitem><para>The following example is a variation on <emphasis role="bold">
+Example 2</emphasis>.  In this case the Widget Factory executives decided that
+they want their WidgeCreator splash screen to always display for 2 seconds to
+the customer and then close.  The early reply argument is used so that the start
+up routine executes immediately.  After 2 seconds the splash screen dismisses
+and the dialog is destroyed automatically.
+</para>
+<programlisting> <![CDATA[
+ret = timedMessage("The WidgetCreator Application - loading ...", -
+                   "The Widget Factory", 2000)
+
+if doStartup() <> 0 then do
+  ...
+end
+]]>
+</programlisting></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="rtnInputBox"><title>InputBox Routine</title>
+<indexterm><primary>InputBox</primary>
+<secondary>function</secondary></indexterm>
+<indexterm><primary>public routines</primary>
+<secondary>InputBox</secondary></indexterm>
+<para>A shortcut function to invoke an
+<link linkend="clsInputBox">InputBox</link> dialog as a function: </para>
+<programlisting>
+<![CDATA[
+say "Your name:" InputBox("Please enter your name","Personal Data")
+]]>
+</programlisting><para> The parameters are described in the <link
+linkend="initInputBox">Init</link> method of the<computeroutput>
+InputBox</computeroutput> class.</para>
+</section>
+
+<section id="rtnPasswordBox"><title>PasswordBox Routine</title>
+<indexterm><primary>PasswordBox</primary>
+<secondary>function</secondary></indexterm>
+<indexterm><primary>public routines</primary>
+<secondary>PasswordBox</secondary></indexterm>
+<para>A shortcut to invoke a <link linkend="clsPasswordBox">PasswordBox</link>
+dialog as a function:
+</para>
+<programlisting>
+<![CDATA[
+pwd = PasswordBox("Please enter your password","Security")
+]]>
+</programlisting>
+<para> The parameters are described in the <link
+linkend="initInputBox">Init</link> method of the <computeroutput>
+InputBox</computeroutput>class.
+</para>
+</section>
+
+<section id="rtnIntegerBox"><title>IntegerBox Routine</title>
+<indexterm><primary>IntegerBox</primary>
+<secondary>function</secondary></indexterm>
+<indexterm><primary>public routines</primary>
+<secondary>IntegerBox</secondary></indexterm>
+<para>A shortcut to invoke an <link linkend="clsIntegerBox">IntegerBox</link>
+dialog as a function:
+</para>
+<programlisting>
+<![CDATA[
+say "Your age:" IntegerBox("Please enter your age","Personal Data")
+]]>
+</programlisting>
+<para> The parameters are described in the <link
+linkend="initInputBox">Init</link> method of the <computeroutput>
+InputBox</computeroutput>class.
+</para>
+</section>
+
+<section id="rtnMultiInputBox"><title>MultiInputBox Routine</title>
+<indexterm><primary>MultiInputBox</primary>
+<secondary>function</secondary></indexterm>
+<indexterm><primary>public routines</primary>
+<secondary>MultiInputBox</secondary></indexterm>
+<para>Provides a shortcut function to invoke a <link
+linkend="clsMultiInputBox">MultiInputBox</link> dialog:</para>
+<programlisting>
+<![CDATA[
+res = MultiInputBox("Enter your address","Personal Data", ,
+                    .array~of("&First name","Last &name","&City"), ,
+                    .array~of("John","Smith","San Jose"), 100)
+if res \= .Nil then do entry over res
+                       say "Address-line[]= " entry
+                    end
+]]>
+</programlisting>
+<para> The parameters are described in the <link
+linkend="initMultiInputbox">Init</link> method of the <computeroutput>
+MultiInputBox</computeroutput>class.  However, instead of using stems,
+arrays are used for input.
+</para>
+<para>The user's input to the dialog is also returned in an array.  Note this
+other difference from the MultiInputBox dialog: if the user cancels the dialog
+<computeroutput>.nil</computeroutput> is returned rather than the empty string.
+</para>
+</section>
+
+<section id="rtnListChoice"><title>ListChoice Routine</title>
+<indexterm><primary>ListChoice</primary>
+<secondary>function</secondary></indexterm>
+<indexterm><primary>public routines</primary>
+<secondary>ListChoice</secondary></indexterm>
+<para>The ListChoice function provides a shortcut to invoke a <link
+linkend="clsListChoice">ListChoice</link> dialog:
+</para>
+<programlisting>
+<![CDATA[
+day = ListChoice("Select a day","My favorite day", ,
+                 .array~of("Monday","Tuesday","Wednesday","Thursday", ,
+                          "Friday","Saturday","Sunday") , , ,"Thursday")
+say "Your favorite day is" day
+]]>
+</programlisting>
+<para> The parameters are described in the <link
+linkend="initListChoice">Init</link> method of the <computeroutput>
+ListChoice</computeroutput>class. However, instead of an input stem an array is
+passed into the function.
+</para>
+<para>If the user cancels the dialog <computeroutput>.nil</computeroutput> is
+returned rather than the empty string.
+</para>
+</section>
+
+<section id="rtnMultiListChoice"><title>MultiListChoice Routine</title>
+<indexterm><primary>MultiListChoice</primary>
+<secondary>function</secondary></indexterm>
+<indexterm><primary>public routines</primary>
+<secondary>MultiListChoice</secondary></indexterm>
+<para>Provides a shortcut to invoke a <link
+linkend="clsMultiListChoice">MultiListChoice</link> dialog as a function:
+</para>
+<programlisting>
+<![CDATA[
+days = MultiListChoice("Select days","My TV Days", ,
+                       .array~of("Monday","Tuesday","Wednesday", ,
+                              "Thursday","Friday","Saturday","Sunday"), , ,"2 5")
+if days <> .Nil then do day over days
+                       say "TV day =" day
+                    end
+]]>
+</programlisting>
+<para> The parameters are described in the <link
+linkend="initListChoice">Init</link> method of the <computeroutput>
+MultiListChoice</computeroutput>class. However, instead of stems, arrays are
+passed into the function.
+</para>
+<para>If the user cancels the dialog <computeroutput>.nil</computeroutput> is
+returned rather than the empty string.
+</para>
+</section>
+
+<section id="rtnCheckList"><title>CheckList Routine</title>
+<indexterm><primary>CheckList</primary>
+<secondary>function</secondary></indexterm>
+<indexterm><primary>public routines</primary>
+<secondary>CheckList</secondary></indexterm>
+<para>A shortcut function to invoke the <link linkend="clsCheckList">CheckList</link>
+dialog: </para>
+
+<programlisting>
+<![CDATA[
+>>--CheckList(--message--,--title--,--labels--,-+-----------+---->
+                                                +-,--checks-+
+
+>>--+------------------------+--)-------------------------------><
+    +-,--+-----+--+--------+-+
+         +-len-+  +-,--max-+
+
+
+]]>
+</programlisting>
+
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are similar to what is described in the <link
+linkend="initCheckList">Init</link> method of the <computeroutput>
+CheckList</computeroutput>class. However, instead of stems, arrays are
+passed into and returned from the function.
+<variablelist>
+<varlistentry><term>message</term>
+<listitem><para>A text string that is displayed on top of the check box group.
+It could be used, for example, to give the user a hint as to what to do.
+</para></listitem></varlistentry>
+<varlistentry><term>title</term>
+<listitem><para>A text string for the dialog's title
+</para></listitem></varlistentry>
+<varlistentry><term>labels</term>
+<listitem><para>An array containing the labels, in order, for each of the check
+boxes.  The dialog will contain a check box for each label.
+</para></listitem></varlistentry>
+<varlistentry><term>checks</term>
+<listitem><para>This argument is an array that allows you to pre-check any of
+the check boxes. For each index in this array whose item is <computeroutput>
+.true</computeroutput>, (or 1,) the check box at the corresponding index in the
+<computeroutput>labels</computeroutput> array will be checked.  For any index
+that is not <computeroutput>.true </computeroutput>, the corresponding check box
+will not be checked.  This means that the programmer only needs to put a
+<computeroutput>.true</computeroutput> at the indexes where he wants the check
+boxes checked.  All the other indexes can be left empty.
+</para></listitem></varlistentry>
+<varlistentry><term>len</term>
+<listitem><para>Determines the length (in dialog units) of the check boxes and
+labels. If omitted, the size is calculated to fit the largest label.
+</para></listitem></varlistentry>
+<varlistentry><term>max</term>
+<listitem><para>The maximum number of check boxes in one column. If there are
+more check boxes than max, that is, if labels has more items than the value of
+max, the check boxes will be put into columns.  Each column will contain no more
+than the number of check boxes specified by max.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>If the user cancels the dialog, then <computeroutput>.nil
+</computeroutput> is returned.  If the user clicks the okay button, then an
+array is returned.  The array will be the same size as the input
+<computeroutput>labels</computeroutput> array.  Each index of the returned array
+will contain <computeroutput>.true</computeroutput> if the corresponding check
+box was checked by the user or will contain <computeroutput>.false
+</computeroutput> if the check box was not checked.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example</emphasis></term>
+<listitem><para>The following example show how to use the
+<computeroutput>CheckList</computeroutput> public routine:
+
+<programlisting>
+<![CDATA[
+
+  weekdays = .array~of("Monday","Tuesday","Wednesday","Thursday", -
+                       "Friday","Saturday","Sunday")
+
+  -- Monday and Tuesday will be checked, all the rest will not be checked.
+  checks = .array~of(.true, .true, .false)
+  checks[5] = 0
+  checks[7] = 'a'
+
+  -- The labels will be 60 dialog units wide and there will be at most 4 check
+  -- boxes in a column.  (Only 7 check boxes, so 2 columns, the first with 4
+  -- check boxes, the second with 3.)
+
+  days = CheckList("Check the days", "Working Days", weekdays, checks, 60, 4)
+
+  if days <> .Nil then do i = 1 to days~items
+    if days[i] then say "Working day =" weekdays[i]
+  end
+
+::requires "oodPlain.cls"
+
+]]>
+</programlisting>
+
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="rtnSingleSelection"><title>SingleSelection Routine</title>
+<indexterm><primary>SingleSelection</primary>
+<secondary>function</secondary></indexterm>
+<indexterm><primary>public routines</primary>
+<secondary>SingleSelection</secondary></indexterm>
+<para>The SingleSelection function provides a shortcut means to invoke a
+<link linkend="clsSingleSelection">SingleSelection</link> dialog
+</para>
+<programlisting>
+<![CDATA[
+months = .array~of("Jan","Feb","Mar","Apr","May","Jun", ,
+                   "Jul","Aug","Sep","Oct","Nov","Dec")
+m = SingleSelection("Check it","Born in",months,12, ,6)
+say "Born in month" m "=" months[m]
+]]>
+</programlisting>
+<para> The parameters are described in the <link
+linkend="initSingleSelection">Init</link> method of the <computeroutput>
+SingleSelection</computeroutput>class. However, instead of an input stem an
+array is passed into the function.
+</para>
+</section>
+</section>
+</chapter>
