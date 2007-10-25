@@ -156,7 +156,7 @@ INT SysCreateThread(PTHREADFN threadFnc, INT stackSize, PVOID args)
 
 
 void SysInitializeThread()
-
+{
 }
 
 void SysTerminateThread(TID threadid)
