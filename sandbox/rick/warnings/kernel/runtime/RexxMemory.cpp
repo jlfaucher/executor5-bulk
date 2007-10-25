@@ -85,7 +85,7 @@ void ic_setVirtualFunctions(char *a, int b)
 }
 #endif
 
-static void SysCall logMemoryCheck(FILE *outfile, char *message, ...)
+static void SysCall logMemoryCheck(FILE *outfile, const char *message, ...)
 {
     va_list args;
     va_start(args, message);
@@ -189,7 +189,7 @@ void RexxMemory::init(BOOL savingImage, BOOL restoringImage)
   newSpaceNormalSegments.getInitialSet();
 }
 
-void RexxMemory::logVerboseOutput(char *message, void *sub1, void *sub2)
+void RexxMemory::logVerboseOutput(const char *message, void *sub1, void *sub2)
 /******************************************************************************/
 /* Function:  Log verbose output events                                       */
 /******************************************************************************/
@@ -1287,7 +1287,7 @@ void RexxMemory::orphanCheckMark(RexxObject *markObject, RexxObject **pMarkObjec
 /* Function:  Perform orphan check marking on an object                       */
 /******************************************************************************/
 {
-    char *outFileName;
+    const char *outFileName;
     FILE *outfile;
     BOOL firstnode;
     RexxString *className;
@@ -1782,7 +1782,7 @@ RexxObject *RexxMemory::checkSetOref(
                 RexxObject  *setter,
                 RexxObject **index,
                 RexxObject  *value,
-                char        *fileName,
+                const char        *fileName,
                 long         lineNumber)
 /******************************************************************************/
 /* Arguments:  index-- OREF to set;  value--OREF to which objr is set         */
@@ -1792,7 +1792,7 @@ RexxObject *RexxMemory::checkSetOref(
 /******************************************************************************/
 {
   BOOL allOK = TRUE;
-  char *outFileName;
+  const char *outFileName;
   FILE *outfile;
                                        /* Skip all checks during saveimage  */
  if (checkSetOK) {                     /* and initial part of restore Image */

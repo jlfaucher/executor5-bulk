@@ -196,7 +196,7 @@ class MemorySegment : public MemorySegmentHeader {
    inline char *end() { return segmentStart + segmentSize; }
    inline BOOL isReal() { return segmentSize != 0; }
    inline BOOL isEmpty() { return liveObjects == 0; }
-   void   dump(char *owner, INT counter, FILE *keyfile, FILE *dumpfile);
+   void   dump(const char *owner, INT counter, FILE *keyfile, FILE *dumpfile);
    DeadObject *lastDeadObject();
    DeadObject *firstDeadObject();
    void gatherObjectStats(MemoryStats *memStats, SegmentStats *stats);
