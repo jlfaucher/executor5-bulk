@@ -126,7 +126,7 @@ RexxObject * SysValue(
     RexxObject * NewValue,             /* new assigned value                */
     RexxString * Selector )            /* variable selector                 */
 {
-  PCHAR        OldValue;               /* old environment value             */
+  const char * OldValue;               /* old environment value             */
 
   RexxString * Retval;                 /* returned old name                 */
 
@@ -139,7 +139,8 @@ RexxObject * SysValue(
     report_exception1(Error_Incorrect_call_selector, Selector);
                                        /* scan for the variable             */
 
-  if (OldValue = getenv(Name->getStringData()))  /* have a value already?   */
+  OldValue = getenv(Name->getStringData());
+  if (OldValue != NULL)                /* have a value already?   */
     Retval = new_cstring(OldValue);    /* Yes -  convert to Rexx string     */
   else
     Retval = OREF_NULLSTRING;          /* otherwise, return null            */
