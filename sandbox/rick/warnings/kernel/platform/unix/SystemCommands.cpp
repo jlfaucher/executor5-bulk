@@ -196,8 +196,8 @@ RexxObject * SysCommand(
   RXSTRING     retstr;                 /* Subcom result string              */
   CMD_TYPE     local_env_type;
   const char * shell_cmd;
-  int          i;
-  long         length;
+  size_t       i;
+  size_t       length;
   RexxObject * result;
 
   CHAR     default_return_buffer[DEFRXSTRING];
@@ -317,7 +317,7 @@ BOOL sys_process_export(const char * cmd, LONG * rc, int flag)
   char *Env_Var_String = NULL;         /* Environment variable string for   */
   ULONG size, allocsize;               /* size of the string                */
   PCHAR      * Environment;            /* environment pointer               */
-  PCHAR  np;
+  PCHAR  np = NULL;
   INT    i,j,k,l,iLength, copyval;
   char   namebufcurr[1281];             /* buf for extracted name            */
   char   cmd_name[1281];                /* name of the envvariable setting   */
@@ -442,7 +442,7 @@ BOOL sys_process_export(const char * cmd, LONG * rc, int flag)
        }
        memcpy(runarray,runptr, copyval);
        runarray= runarray + copyval; /* a new place to copy */
-       *runarray = '\0';  
+       *runarray = '\0';
        runptr = tmpptr;              /* now runptr is at the place of $ */
     }
     runptr++;
@@ -619,9 +619,9 @@ BOOL sys_process_cd(const char * cmd, LONG * rc)
         sprintf(dir_buf, "%s/", ppwd->pw_dir);
       }
       else{                            /* there is a slash           */
-        char username[256];            // need to copy the user name 
-        memcpy(username, st, slash - st); 
-        username[slash - st] = '\0'; 
+        char username[256];            // need to copy the user name
+        memcpy(username, st, slash - st);
+        username[slash - st] = '\0';
 
         ppwd = getpwnam(username);     /* get info about the user    */
         slash++;                       /* step over the slash        */
@@ -636,7 +636,7 @@ BOOL sys_process_cd(const char * cmd, LONG * rc)
 
     *rc = chdir(dir_buf);
 
-    free(dir_buf); 
+    free(dir_buf);
 
     if (!getcwd(achRexxCurDir, CCHMAXPATH))    /* Save current working direct */
     {
@@ -666,7 +666,6 @@ LONG sys_command(const char *cmd, CMD_TYPE local_env_type)
   LONG        rc;                      /* Return code                       */
   int         pid;                     /* process id of child from fork     */
   int         status;
-  int         cmdlength;
 #ifdef LINUX
   int         iErrCode = 0;
 #endif
@@ -734,7 +733,9 @@ LONG sys_command(const char *cmd, CMD_TYPE local_env_type)
   else
   {
 #endif
-    if  ( pid = fork())                    /* spawn a child process to run the  */
+    pid = fork();
+
+    if  (pid != 0)                         /* spawn a child process to run the  */
     {
       waitpid ( pid, &status, 0);          /* command and wait for it to finish */
       if (WIFEXITED(status))               /* If cmd process ended normal       */
@@ -752,19 +753,19 @@ LONG sys_command(const char *cmd, CMD_TYPE local_env_type)
     {                                /* run the command in the child      */
       switch (local_env_type) {
       case cmd_sh:
-        execl("/bin/sh", "sh", "-c", cmd, 0);
+        execl("/bin/sh", "sh", "-c", cmd, NULL);
         break;
       case cmd_ksh:
-        execl("/bin/ksh", "ksh", "-c", cmd, 0);
+        execl("/bin/ksh", "ksh", "-c", cmd, NULL);
         break;
       case cmd_bsh:
-        execl("/bin/bsh", "bsh", "-c", cmd, 0);
+        execl("/bin/bsh", "bsh", "-c", cmd, NULL);
         break;
       case cmd_csh:
-        execl("/bin/csh", "csh", "-c", cmd, 0);
+        execl("/bin/csh", "csh", "-c", cmd, NULL);
         break;
       case cmd_bash:
-        execl("/bin/bash", "bash", "-c", cmd, 0);
+        execl("/bin/bash", "bash", "-c", cmd, NULL);
         break;
       case cmd_cmd:
         scan_cmd(cmd,args);              /* Parse cmd into arguments  */
@@ -775,7 +776,7 @@ LONG sys_command(const char *cmd, CMD_TYPE local_env_type)
                                          /* get out.                  */
         break;
       default:
-        execl("/bin/sh", "sh", "-c", cmd, 0);
+        execl("/bin/sh", "sh", "-c", cmd, NULL);
         break;
       } /* endswitch */
     }
@@ -793,7 +794,7 @@ LONG sys_command(const char *cmd, CMD_TYPE local_env_type)
 /* a shell to invoke its commands.                                   */
 /*********************************************************************/
 
-void scan_cmd(const char *parm_cmd, char **args)
+void scan_cmd(const char *parm_cmd, char **argPtr)
 {
   char * pos;                          /* Current position in command*/
   char * end;                          /* End of command             */
@@ -829,7 +830,7 @@ void scan_cmd(const char *parm_cmd, char **args)
     if (i==MAX_COMMAND_ARGS)
       report_exception(MSG_TOO_MANY_CMD_ARGS);
 
-    args[i++] = pos;                   /* Point to current argument  */
+    argPtr[i++] = pos;                 /* Point to current argument  */
                                        /* and advance i to next      */
                                        /* element of args[]          */
 
@@ -842,7 +843,7 @@ void scan_cmd(const char *parm_cmd, char **args)
   } /* endfor */
 
   /* Finally, put a null pointer in args[] to indicate the end.      */
-  args[i] = NULL;
+  argPtr[i] = NULL;
 }
 
 

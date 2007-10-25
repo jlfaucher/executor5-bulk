@@ -94,7 +94,6 @@ BOOL SysAccessPool(MemorySegmentPool **pool)
 /*              return TRUE is an access, FALSE is created.          */
 /*********************************************************************/
 {
-  APIRET rc;                           /* return code                  */
   MemorySegmentPool *  newPool;
   void  *tmpPtr;
   size_t segmentSize;
@@ -140,9 +139,7 @@ void *MemorySegmentPool::operator new(size_t size, size_t minSize)
 /*                                                                   */
 /*********************************************************************/
 {
-  APIRET rc;
   MemorySegmentPool *newPool;
-  MemorySegment     *newSeg;
   void  *tmpPtr;
   size_t initialSegSize;
   size_t poolSize;
@@ -201,11 +198,9 @@ MemorySegment *MemorySegmentPool::newSegment(size_t minSize)
 /*                                                                   */
 /*********************************************************************/
 {
-   APIRET rc;
    size_t  segmentSize;
    MemorySegment *newSeg;
    MemorySegmentPool *newPool;
-   void  *tmpPtr;
                                        /* Any spare segments left over      */
                                        /* from initial pool alloc?          */
                                        /* And big enough for this request?  */
@@ -266,7 +261,6 @@ MemorySegment *MemorySegmentPool::newLargeSegment(size_t minSize)
    size_t segmentSize;
    MemorySegment *newSeg;
    MemorySegmentPool *newPool;
-   void  *tmpPtr;
 
                                        /* Any spare segments left over      */
                                        /* from initial pool alloc?          */
@@ -341,10 +335,10 @@ MemorySegmentPool  * MemorySegmentPool::freePool()       // add return value
 }
 
 /******************** added by weigold *******************************/
-void MemorySegmentPool::setNext( MemorySegmentPool *nextPool )
+void MemorySegmentPool::setNext( MemorySegmentPool *nextPoolPtr )
 /*********************************************************************/
 /* Function:: set the next pointer                                   */
 /*********************************************************************/
 {
-   this->next = nextPool;
+   this->next = nextPoolPtr;
 }
