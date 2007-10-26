@@ -53,7 +53,7 @@
 
 static BOOL fWriteDebug = TRUE;
 
-VOID SysCall DbgPrintf(PSZ pszDbgArgs, ...)
+VOID SysCall DbgPrintf(char * pszDbgArgs, ...)
 {
    char debugHeader[50];
    char debugFileName[255];

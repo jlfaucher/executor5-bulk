@@ -59,8 +59,8 @@ RexxInstructionCall::RexxInstructionCall(
     RexxString *condition,             /* CALL ON/OFF condition             */
     size_t      argCount,              /* count of arguments                */
     RexxQueue  *argList,               /* call arguments                    */
-    uint8_t flags,                     /* CALL flags                        */
-    uint8_t builtin_index)             /* builtin routine index             */
+    size_t      flags,                 /* CALL flags                        */
+    size_t      builtin_index)         /* builtin routine index             */
 /******************************************************************************/
 /* Function:  Complete CALL instruction object                                */
 /******************************************************************************/

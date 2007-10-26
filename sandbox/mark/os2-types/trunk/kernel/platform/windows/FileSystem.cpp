@@ -111,8 +111,8 @@ RexxString * SysResolveProgramName(
 /* FUNCTION    : SysFileExtension                                    */
 /*                                                                   */
 /* DESCRIPTION : Looks for a file extension in given string. Returns */
-/*               the ext in PSZ form. If no file ext returns an      */
-/*               empty pointer.                                      */
+/*               the ext in null-terminated string form. If no file  */
+/*               ext returns an empty pointer.                       */
 /*                                                                   */
 /*********************************************************************/
 

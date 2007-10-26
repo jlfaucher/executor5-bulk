@@ -77,7 +77,7 @@ class RexxInstructionCall : public RexxInstructionCallBase {
  public:
 
   inline void *operator new(size_t size, void *ptr) {return ptr;};
-  RexxInstructionCall(RexxObject *, RexxString *, size_t, RexxQueue *, uint8_t, uint8_t);
+  RexxInstructionCall(RexxObject *, RexxString *, size_t, RexxQueue *, size_t, size_t);
   inline RexxInstructionCall(RESTORETYPE restoreType) { ; };
   void live();
   void liveGeneral();

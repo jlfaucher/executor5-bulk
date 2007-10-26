@@ -145,8 +145,7 @@ static ULONG copy_value(
    string_length = stringValue->getLength();/* get the string length             */
    if (rxstring->strptr == NULL) {          /* no target buffer?            */
                                             /* allocate a new one           */
-//   if (NULL == (rxstring->strptr = (PCH)malloc((ULONG) string_length + 1)) )
-     if (NULL == (rxstring->strptr = (PCH)GlobalAlloc(GMEM_FIXED, (ULONG) string_length + 1)) )
+     if (NULL == (rxstring->strptr = (char *)GlobalAlloc(GMEM_FIXED, (ULONG) string_length + 1)) )
        return RXSHV_MEMFL;                  /* couldn't allocate, return flag */
      else                                   /* rxstring is same as string     */
        rxstring->strlength = string_length + 1;

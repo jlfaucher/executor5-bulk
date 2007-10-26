@@ -3248,7 +3248,7 @@ RexxString *RexxString::dbCenter(RexxInteger *plength,
   char *   CStr;                       /* string pointer                    */
   const char *   SBCSPad;              /* SBCSPad character                 */
   const char *   DBCSPad = NULL;       /* DBCSPad character                 */
-  unsignec char  Option;               /* SO/SI counting option             */
+  unsigned char  Option;               /* SO/SI counting option             */
   size_t   ReqBytes;                   /* requested bytes                   */
 
   ValidDBCS(this);                     /* validate the string               */

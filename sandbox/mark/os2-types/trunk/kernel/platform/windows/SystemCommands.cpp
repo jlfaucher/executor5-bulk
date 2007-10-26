@@ -121,7 +121,7 @@ BOOL SysExitHandler(
   activity->exitKernel(activation, OREF_SYSEXITHANDLER, enable);
 
                                        /* go call the handler                 */
-  rc = RexxCallExit(const_cast<PSZ>(handler_name), NULL, function, subfunction, (PEXIT)exitbuffer);
+  rc = RexxCallExit(const_cast<char *>(handler_name), NULL, function, subfunction, (PEXIT)exitbuffer);
                                        /* now re-enter the kernel             */
   activity->enterKernel();
 
@@ -195,7 +195,7 @@ RexxObject * SysCommand(
 
                                        /* get ready to call the function      */
   activity->exitKernel(activation, OREF_COMMAND, TRUE);
-  rc=RexxCallSubcom(const_cast<PSZ>(current_address), NULL, &rxstrcmd, &flags, (PUSHORT)&sbrc, (PRXSTRING)&retstr);
+  rc=RexxCallSubcom(const_cast<char *>(current_address), NULL, &rxstrcmd, &flags, (PUSHORT)&sbrc, (PRXSTRING)&retstr);
   activity->enterKernel();             /* now re-enter the kernel           */
 
 /* END CRITICAL window here -->>  kernel calls now allowed again              */

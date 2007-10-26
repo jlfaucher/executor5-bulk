@@ -220,8 +220,8 @@ RexxInstruction *RexxSource::callNew()
   RexxObject *name;                    /* call name                         */
   INT         keyword;                 /* call subkeyword                   */
   RexxString *condition;               /* created USER condition            */
-  uint8_t     flags;                   /* final CALL flags                  */
-  uint8_t     builtin_index;           /* builtin function call index       */
+  size_t      flags;                   /* final CALL flags                  */
+  size_t      builtin_index;           /* builtin function call index       */
 
   flags = 0;                           /* clear the flags                   */
   builtin_index = 0;                   /* clear the builtin index           */
@@ -1251,7 +1251,7 @@ RexxInstruction *RexxSource::numericNew()
   RexxObject  *expression;             /* expression to evaluate            */
   RexxToken   *token;                  /* current working token             */
   USHORT       type;                   /* type of instruction               */
-  uint8_t      flags;                  /* numeric flags                     */
+  size_t       flags;                  /* numeric flags                     */
 
   expression = OREF_NULL;              /* clear the expression              */
   flags = 0;                           /* and the flags                     */
@@ -1406,7 +1406,7 @@ RexxInstruction *RexxSource::parseNew(
   RexxTrigger      *trigger;           /* current working trigger           */
   INT               trigger_type;      /* type of the current trigger       */
   USHORT            string_source;     /* source of string data             */
-  uint8_t           flags;             /* parsing flags                     */
+  size_t            flags;             /* parsing flags                     */
   LONG              templateCount;     /* number of template items          */
   LONG              variableCount;     /* number of variable items          */
 
@@ -1969,7 +1969,7 @@ RexxInstruction *RexxSource::signalNew()
   RexxString *condition;               /* constructed USER condition name   */
   INT         keyword;                 /* signal subkeyword                 */
   RexxObject *expression;              /* signal expression                 */
-  uint8_t     flags;                   /* option flags                      */
+  size_t      flags;                   /* option flags                      */
   RexxString *name;                    /* signal name                       */
   BOOL        signalOff;               /* signal off form                   */
 
