@@ -242,7 +242,7 @@ char *resolve_tilde(const char *path)
                 return(0);
             /* merge the strings          */
             sprintf(dir_buf, "%s/%s", home_dir, st);
-            return dir_buf; 
+            return dir_buf;
         }
         else
         {
@@ -253,7 +253,7 @@ char *resolve_tilde(const char *path)
             if (!dir_buf)
                 return(0);
             sprintf(dir_buf, "%s/", home_dir);
-            return dir_buf; 
+            return dir_buf;
         }
     }
     else if (*(st) == '~')
@@ -288,13 +288,13 @@ char *resolve_tilde(const char *path)
                                            /* get space for the buf      */
             dir_buf = (char *)malloc(strlen(ppwd->pw_dir)+strlen(slash)+2);
             if (!dir_buf)
-                return NULL; 
+                return NULL;
             /* merge the strings          */
             sprintf(dir_buf, "%s/%s", ppwd->pw_dir, slash);
         }
         return dir_buf;                  /* directory change to        */
     }
-    return NULL;   
+    return NULL;
 }
 
 /****************************************************************************/
@@ -839,7 +839,7 @@ void RestoreEnvironment(
   }
                                        /* Loop through the saved env */
                                        /* entries and restore them   */
-  for(;(current-begin)<size;current+=(strlen(current)+1)){
+  for(;(size_t)(current-begin)<size;current+=(strlen(current)+1)){
     Environment = environ;             /* get the environment        */
     del = NULL;
     np = current;
