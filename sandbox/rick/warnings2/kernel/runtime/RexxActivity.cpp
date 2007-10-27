@@ -1208,7 +1208,7 @@ void RexxActivity::pop(
 {
   RexxActivationBase *top_activation;  /* removed activation                */
   RexxActivationBase *old_activation;  /* removed activation                */
-  RexxActivationBase *currentAct = OREF_NULL; /* current loop activation           */
+  RexxActivationBase *tempAct = OREF_NULL; /* current loop activation           */
   RexxInternalStack *activationStack;  /* activation stack                  */
   size_t i;                            /* loop counter                      */
 
@@ -1237,12 +1237,12 @@ void RexxActivity::pop(
                                        /* clear this out                    */
       old_activation = (RexxActivationBase *)TheNilObject;
                                        /* spin down the stack               */
-      for (i = 0; currentAct != (RexxActivationBase *)TheNilObject && i < this->depth; i++) {
+      for (i = 0; tempAct != (RexxActivationBase *)TheNilObject && i < this->depth; i++) {
                                        /* get the next item                 */
-        currentAct = (RexxActivationBase *)activationStack->peek(i);
+        tempAct = (RexxActivationBase *)activationStack->peek(i);
                                        /* find a REXX one?                  */
-        if (OTYPE(Activation, currentAct)) {
-          old_activation = currentAct; /* save this one                     */
+        if (OTYPE(Activation, tempAct)) {
+          old_activation = tempAct; /* save this one                     */
           break;                       /* and exit the loop                 */
         }
       }
@@ -1276,7 +1276,7 @@ void RexxActivity::popNil()
 /******************************************************************************/
 {
   RexxActivationBase *old_activation;  /* removed activation                */
-  RexxActivationBase *currentAct = OREF_NULL; /* current loop activation,      */
+  RexxActivationBase *tempAct = OREF_NULL; /* current loop activation,      */
   RexxInternalStack *activationStack;  /* activation stack                  */
   size_t i;                            /* loop counter                      */
 
@@ -1300,12 +1300,12 @@ void RexxActivity::popNil()
                                        /* clear this out                    */
     old_activation = (RexxActivationBase *)TheNilObject;
                                        /* spin down the stack               */
-    for (i = 0; currentAct != (RexxActivationBase *)TheNilObject && i < this->depth; i++) {
+    for (i = 0; tempAct != (RexxActivationBase *)TheNilObject && i < this->depth; i++) {
                                        /* get the next item                 */
-      currentAct = (RexxActivationBase *)activationStack->peek(i);
+      tempAct = (RexxActivationBase *)activationStack->peek(i);
                                        /* find a REXX one?                  */
-      if (OTYPE(Activation, currentAct)) {
-        old_activation = currentAct;   /* save this one                     */
+      if (OTYPE(Activation, tempAct)) {
+        old_activation = tempAct;   /* save this one                     */
         break;                         /* and exit the loop                 */
       }
     }
@@ -2759,7 +2759,7 @@ void  RexxActivityClass::runUninits()
 
 
 void RexxActivityClass::addWaitingActivity(
-    RexxActivity *waitingActivity,     /* new activity to add to the queue  */
+    RexxActivity *waitingAct,          /* new activity to add to the queue  */
     BOOL          release )            /* need to release the run semaphore */
 /******************************************************************************/
 /* Function:  Add an activity to the round robin wait queue                   */
@@ -2776,22 +2776,22 @@ void RexxActivityClass::addWaitingActivity(
                                        /* nobody waiting yet?               */
   if (this->firstWaitingActivity == OREF_NULL) {
                                        /* this is the head of the chain     */
-    this->firstWaitingActivity = waitingActivity;
+    this->firstWaitingActivity = waitingAct;
                                        /* and the tail                      */
-    this->lastWaitingActivity = waitingActivity;
+    this->lastWaitingActivity = waitingAct;
     SysExitResourceSection();          /* end of the critical section       */
   }
   else {                               /* move to the end of the line       */
                                        /* chain off of the existing one     */
-    this->lastWaitingActivity->setNextWaitingActivity(waitingActivity);
+    this->lastWaitingActivity->setNextWaitingActivity(waitingAct);
                                        /* this is the new last one          */
-    this->lastWaitingActivity = waitingActivity;
-    waitingActivity->clearWait();      /* clear the run semaphore           */
+    this->lastWaitingActivity = waitingAct;
+    waitingAct->clearWait();           /* clear the run semaphore           */
     SysExitResourceSection();          /* end of the critical section       */
     if (release)                       /* current semaphore owner?          */
       MTXRL(kernel_semaphore);         /* release the lock                  */
     SysThreadYield();                  /* yield the thread                  */
-    waitingActivity->waitKernel();     /* and wait for permission           */
+    waitingAct->waitKernel();          /* and wait for permission           */
   }
   MTXRQ(kernel_semaphore);             /* request the lock now              */
   SysEnterResourceSection();           /* now remove the waiting one        */
@@ -2816,7 +2816,7 @@ void RexxActivityClass::addWaitingActivity(
      before and therefore we can set next pointer to NULL without disturbing
      the linked list */
 
-  waitingActivity->setNextWaitingActivity(OREF_NULL);
+  waitingAct->setNextWaitingActivity(OREF_NULL);
                                        /* was this the only one?            */
   if (!this->firstWaitingActivity)
   {
@@ -2827,9 +2827,9 @@ void RexxActivityClass::addWaitingActivity(
   {
       this->firstWaitingActivity->postRelease();
   }
-  CurrentActivity = waitingActivity;   /* set new current activity          */
+  CurrentActivity = waitingAct;        /* set new current activity          */
                                        /* and new active settings           */
-  current_settings = waitingActivity->settings;
+  current_settings = waitingAct->settings;
   SysExitResourceSection();            /* end of the critical section       */
                                        /* have more pools been added since  */
                                        /* we left the kernel ?              */

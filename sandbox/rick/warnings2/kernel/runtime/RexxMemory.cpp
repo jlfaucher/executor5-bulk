@@ -2116,7 +2116,6 @@ void memoryRestore()
   RESTORE_CLASS(String, string, RexxStringClass);
   RESTORE_CLASS(Array, array, RexxClass);
   RESTORE_CLASS(Directory, directory, RexxClass);
-  RESTORE_CLASS(Envelope, envelope, RexxClass);
   RESTORE_CLASS(Integer, integer, RexxIntegerClass);
   RESTORE_CLASS(List, list, RexxListClass);
   RESTORE_CLASS(Message, message, RexxClass);

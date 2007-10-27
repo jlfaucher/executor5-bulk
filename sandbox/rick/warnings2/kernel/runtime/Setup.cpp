@@ -201,8 +201,6 @@ CPPMA(RexxDirectory::removeItem),
 
 CPPMD(RexxDirectory::newRexx),
 
-CPPME(RexxEnvelope::unpack),            /* Envelope method(s)                */
-
 CPPMI(RexxInteger::plus),               /* Integer methods                   */
 CPPMI(RexxInteger::minus),
 CPPMI(RexxInteger::multiply),
@@ -621,7 +619,6 @@ void kernelInit (void)
   CLASS_CREATE(Stem, RexxClass);       /* RexxStem                          */
   activity_create();                   /* RexxActivity                      */
   CLASS_CREATE(Supplier, RexxClass);   /* RexxSupplier                      */
-  CLASS_CREATE(Envelope, RexxClass);   /* RexxEnvelope                      */
   CLASS_CREATE(Message, RexxClass);    /* RexxMessage                       */
   CLASS_CREATE(MutableBuffer, RexxClass);
 
@@ -926,23 +923,6 @@ bool kernel_setup (void)
                                        /* method                            */
   TheDirectoryClass->subClassable("Directory", false);
 
-  /***************************************************************************/
-  /*       ENVELOPE                                                          */
-  /***************************************************************************/
-                                       /* the envelope class is not         */
-                                       /* externalized at this time         */
-                                       /* and has no class methods          */
-
-                                       /* add the instance method           */
-  defineKernelMethod(CHAR_UNPACK, TheEnvelopeBehaviour, CPPME(RexxEnvelope::unpack), 0);
-
-                                       /* set the scope of the method to    */
-                                       /* this classes oref                 */
-  TheEnvelopeBehaviour->setMethodDictionaryScope(TheEnvelopeClass);
-
-                                       /* Now call the class subclassable   */
-                                       /* method                            */
-  TheEnvelopeClass->subClassable("Envelope", true);
 
   /***************************************************************************/
   /*           LIST                                                          */
@@ -1590,7 +1570,6 @@ bool kernel_setup (void)
 
   /* set up the kernel directory (MEMORY done elsewhere) */
   kernel_public(CHAR_INTEGER          ,TheIntegerClass     , TheKernel);
-  kernel_public(CHAR_ENVELOPE         ,TheEnvelopeClass    , TheKernel);
   kernel_public(CHAR_NUMBERSTRING     ,TheNumberStringClass, TheKernel);
   kernel_public(CHAR_ACTIVITY         ,TheActivityClass    , TheKernel);
   kernel_public(CHAR_NMETHOD          ,TheNativeCodeClass  , TheKernel);
