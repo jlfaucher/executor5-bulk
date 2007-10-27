@@ -514,7 +514,6 @@ RexxString * RexxActivation::traceSetting()
 /******************************************************************************/
 {
   char         setting[3];             /* returned trace setting            */
-  RexxString  *result;                 /* returned result                   */
 
   setting[0] = '\0';                   /* start with a null string          */
                                        /* debug mode?                       */
@@ -1020,7 +1019,7 @@ RexxObject *RexxActivation::forward(
       resultObj = target->messageSend(message, _argcount, _arguments);
     else
                                        /* use the full override             */
-      result = target->messageSend(message, _argcount, _arguments, superClass);
+      resultObj = target->messageSend(message, _argcount, _arguments, superClass);
     this->result = resultObj;          /* save the result value             */
                                        /* already had a reply issued?       */
     if (this->settings.flags&reply_issued && resultObj != OREF_NULL)
@@ -3199,7 +3198,7 @@ void RexxActivation::sysDbgSubroutineCall(BOOL enter)
         MAKERXSTRING(exit_parm.rxdbg_routine, routine->getWritableData(), routine->getLength());
     }
     else
-        MAKERXSTRING(exit_parm.rxdbg_routine, "no info available", 17);
+        MAKERXSTRING(exit_parm.rxdbg_routine, const_cast<char *>("no info available"), 17);
 
                                        /* call the handler                  */
     SysExitHandler(activity, this, exitname, RXDBG, (enter ? RXDBGENTERSUB : RXDBGLEAVESUB), (PVOID)&exit_parm, FALSE);

@@ -786,7 +786,7 @@ const char *mempbrk(const char *, const char *, size_t);     /* search for chara
 void report_halt(RexxString *description);
 void report_nomethod(RexxString *message, RexxObject *receiver);
 void missing_argument(LONG position);
-long message_number(RexxString *);
+int  message_number(RexxString *);
 RexxActivity *activity_find (void);
 
 #define report_exception(error) (CurrentActivity->reportAnException(error))

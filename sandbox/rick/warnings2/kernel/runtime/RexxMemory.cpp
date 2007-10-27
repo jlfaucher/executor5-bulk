@@ -646,7 +646,7 @@ void RexxMemory::restoreImage(void)
                                      /* restore all of the saved primitive*/
   for (i = 0; i <= highest_exposed_T; i++)
                                      /* behaviours into this array        */
-    ((RexxBehaviour *)&pbehav[i])->restore(i, (RexxBehaviour *)primitiveBehaviours->get((long)i+1));
+    ((RexxBehaviour *)&pbehav[i])->restore((RexxBehaviour *)primitiveBehaviours->get(i+1));
 
 }
 

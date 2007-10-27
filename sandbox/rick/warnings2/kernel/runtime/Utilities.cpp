@@ -85,16 +85,16 @@ void report_nomethod(                  /* report a NOMETHOD condition       */
     report_exception2(Error_No_method_name, receiver, message);
 }
 
-long message_number(
+int message_number(
     RexxString *errorcode)             /* REXX error code as string         */
 /******************************************************************************/
 /* Function:  Parse out the error code string into the messagecode valuey     */
 /******************************************************************************/
 {
   const char *decimalPoint;            /* location of decimalPoint in errorcode*/
-  long primary;                        /* Primary part of error code, major */
-  long secondary;                      /* Secondary protion (minor code)    */
-  long count;
+  int  primary;                        /* Primary part of error code, major */
+  int  secondary;                      /* Secondary protion (minor code)    */
+  int  count;
 
                                        /* make sure we get errorcode as str */
   errorcode = (RexxString *)errorcode->stringValue();
@@ -122,7 +122,7 @@ long message_number(
   else {
     secondary = 0;
   }
-  return primary + secondary;          /* add two protions together, return */
+  return primary + secondary;          /* add two portions together, return */
 }
 
 void process_new_args(
