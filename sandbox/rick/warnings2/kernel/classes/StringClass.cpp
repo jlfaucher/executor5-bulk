@@ -1153,12 +1153,16 @@ RexxString *RexxString::stringTrace()
 /******************************************************************************/
 {
   RexxString *newCopy;                 /* new copy of string                */
-  const char *Current;                 /* current string location           */
+  // NOTE:  since we're doing value comparisons on single character values here,
+  // we need to process this as unsigned characters to handle values
+  // greater than 0x7f.
+  const unsigned char *Current;        /* current string location           */
   size_t    i;                         /* string length                     */
   BOOL      NonDisplay;                /* have non-displayables             */
 
   i = this->getLength();               /* get the length                    */
-  Current = this->getStringData();     /* point to the start                */
+                                       /* point to the start                */
+  Current = (const unsigned char *)this->getStringData();
   NonDisplay = FALSE;                  /* no non-displayable characters     */
 
   for (; i > 0; i--) {                 /* loop for the entire string        */
@@ -1861,7 +1865,7 @@ nativei2 (REXXOBJECT, STRING_NEW, CSTRING, string, size_t, length)
   return_oref(new_string(string, length));
 }
 
-native3 (size_t, STRING_GET, size_t, start, PCHAR, buffer, size_t, bufl)
+native3 (size_t, STRING_GET, size_t, start, char *, buffer, size_t, bufl)
 /******************************************************************************/
 /* Function:  External interface to the object method                         */
 /******************************************************************************/

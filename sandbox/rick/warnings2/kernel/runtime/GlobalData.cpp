@@ -265,7 +265,6 @@ RexxBehaviour pbehav[highest_T + 1] = {/* table of primitive behaviours     */
 double NO_DOUBLE;                      /* non-exsistent double value        */
 
 
-
 MemorySegmentPool *GlobalCurrentPool = NULL;   //wge NULL
 
 SysSharedSemaphoreDefn                 /* semaphore definitions             */

@@ -174,7 +174,7 @@ extern RexxArray *ProcessLocalActs;
 extern SMTX rexx_kernel_semaphore;     /* global kernel semaphore           */
 extern SMTX rexx_resource_semaphore;   /* global kernel semaphore           */
 extern SMTX rexx_start_semaphore;      /* startup semaphore                 */
-extern BOOL SysDBCSSetup(PULONG, PUCHAR);
+extern BOOL SysDBCSSetup(PULONG, unsigned char *);
 
                                        /* current active activity           */
 //RexxActivity *CurrentActivity = OREF_NULL;
@@ -563,7 +563,7 @@ void RexxActivity::reportAnException(
 
 void RexxActivity::reportException(
     LONG           errcode,            /* REXX error code                   */
-    PCHAR          string )            /* single string sustitution parm    */
+    char          *string )            /* single string sustitution parm    */
 /******************************************************************************/
 /* Function:  Raise an error using a single REXX character string only        */
 /*            as a substitution parameter                                     */
@@ -616,7 +616,7 @@ void RexxActivity::raiseException(
   RexxString      *errortext;          /* primary error message             */
   RexxString      *message;            /* secondary error message           */
   int              primary;            /* primary message code              */
-  CHAR             work[10];           /* temp buffer for formatting        */
+  char             work[10];           /* temp buffer for formatting        */
   int              newVal;
 
   if (this->requestingString)          /* recursive entry to error handler? */
@@ -841,7 +841,7 @@ void RexxActivity::reraiseException(
   RexxString     *message;             /* secondary error message           */
   int             errornumber;         /* binary error number               */
   int             primary;             /* primary message code              */
-  CHAR            work[10];            /* temp buffer for formatting        */
+  char            work[10];            /* temp buffer for formatting        */
   int             newVal;
 
   activation = this->currentActivation;/* get the current activation        */
@@ -1878,7 +1878,7 @@ BOOL RexxActivity::sysExitFunc(
         else {
                                          /* empty argument                    */
           argrxarray[argindex].strlength = 0;
-          argrxarray[argindex].strptr = NULL;
+          argrxarray[argindex].strptr = (char *)NULL;
         }
       }
     }
@@ -1932,7 +1932,7 @@ BOOL RexxActivity::sysExitFunc(
           report_exception1(Error_Function_no_data_function,rname);
       } else
                                        /* Get input string and return it    */
-        *funcresult = new_string((PCHAR)exit_parm.rxfnc_retc.strptr, exit_parm.rxfnc_retc.strlength);
+        *funcresult = new_string((char *)exit_parm.rxfnc_retc.strptr, exit_parm.rxfnc_retc.strlength);
                                        /* user give us a new buffer?        */
       if (exit_parm.rxfnc_retc.strptr != retbuffer)
                                        /* free it                           */
@@ -3459,7 +3459,7 @@ void process_message_arguments(
   OREF     tempOREF;                   /* temp argument object reference    */
   LONG     tempLong;                   /* temp converted long               */
   ULONG    tempULong;                  /* temp converted long               */
-  CHAR     tempChar;                   /* temp character value              */
+  char     tempChar;                   /* temp character value              */
   double   tempDouble;                 /* temp double value                 */
   va_list *subArguments;               /* indirect argument descriptor      */
   const char *subInterface;            /* indirect interface definition     */
@@ -3479,7 +3479,7 @@ void process_message_arguments(
       case 'b':                        /* BYTE                              */
       case 'c':                        /* CHARACTER                         */
                                        /* get the character                 */
-        tempChar = (CHAR) va_arg(*arguments, INT);
+        tempChar = (char) va_arg(*arguments, INT);
                                        /* create a string object            */
         argument_list->addLast(new_string(&tempChar, 1));
         break;
@@ -3586,7 +3586,7 @@ void process_message_arguments(
                                        /* get the pointer                   */
         tempPointer = va_arg(*arguments, void *);
                                        /* create a string object            */
-        argument_list->addLast(new_cstring((PCHAR)tempPointer));
+        argument_list->addLast(new_cstring((char *)tempPointer));
         break;
     }
   }
@@ -3595,7 +3595,7 @@ void process_message_arguments(
 void process_message_result(
   RexxObject *value,                   /* returned value                    */
   PVOID    return_pointer,             /* pointer to return value location  */
-  CHAR     interfacedefn )             /* interface definition              */
+  char     interfacedefn )             /* interface definition              */
 /******************************************************************************/
 /* Function:  Convert an OREF return value into the requested message return  */
 /*            type.                                                           */
@@ -3611,7 +3611,7 @@ void process_message_result(
         break;
       case 'c':                        /* CHARACTER                         */
                                        /* get the first character           */
-        (*((CHAR *)return_pointer)) = ((RexxString *)value)->getChar(0);
+        (*((char *)return_pointer)) = ((RexxString *)value)->getChar(0);
         break;
 
       case 'i':                        /* INT                               */
@@ -3775,7 +3775,7 @@ LONG VLAREXXENTRY RexxSendMessage (
   RexxObject *result;                  /* returned result object            */
   RexxArray  *argument_array;          /* array of arguments                */
   RexxList   *argument_list;           /* temp list of arguments            */
-  CHAR returnType;                     /* type of return value              */
+  char returnType;                     /* type of return value              */
   LONG rc;                             /* message return code               */
   va_list arguments;                   /* message argument list             */
   SYSEXCEPTIONBLOCK exreg;             /* system specific exception info    */

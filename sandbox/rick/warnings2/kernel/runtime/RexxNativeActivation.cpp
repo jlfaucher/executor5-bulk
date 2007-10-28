@@ -1097,7 +1097,7 @@ nativei3 (REXXOBJECT, SEND,
 }
 
 nativei2 (REXXOBJECT, SUPER,
-     PCHAR,       msgname,             /* message name                      */
+     char *,       msgname,            /* message name                      */
      REXXOBJECT,  arguments)           /* argument array                    */
 /******************************************************************************/
 /* Function:  Forward a message to a super class from native code             */
@@ -1143,7 +1143,7 @@ nativei2 (REXXOBJECT, SETVAR,
 }
 
 nativei2 (REXXOBJECT, SETVAR2,
-     PCHAR, name,                      /* variable name                     */
+     char *, name,                     /* variable name                     */
      REXXOBJECT,  value )              /* new variable value                */
 /******************************************************************************/
 /* Function:  Set the value of a variable in current variable pool            */
@@ -1166,7 +1166,7 @@ nativei2 (REXXOBJECT, SETVAR2,
 }
 
 nativei2 (REXXOBJECT, SETFUNC,
-     PCHAR, name,                      /* function name                     */
+     char *, name,                     /* function name                     */
      REXXOBJECT,  value )              /* method                            */
 {
   RexxNativeActivation   * self;       /* current native activation         */
@@ -1491,8 +1491,8 @@ REXXOBJECT REXXENTRY REXX_ENVIRONMENT(void)
 
 /* HOL001A begin */
 nativei3(ULONG, EXECUTIONINFO,
-     PULONG, line,
-    PCHAR, fname,
+    PULONG, line,
+    char *, fname,
     BOOL, next)/* chain of variable request blocks  */
 /******************************************************************************/
 /* Function:  If variable pool is enabled, return result from SysVariablePool */

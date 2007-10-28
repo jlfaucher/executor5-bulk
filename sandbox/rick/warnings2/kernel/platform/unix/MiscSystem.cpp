@@ -260,7 +260,7 @@ void SysSetupProgram(
 /******************************************************************************/
 {
 #ifdef RXTRACE_SUPPORT
-  PCHAR RxTraceBuf = NULL;
+  char     *RxTraceBuf = NULL;
 
                                        /* scan current environment,         */
 /*if (GetEnvironmentVariable("RXTRACE", RxTraceBuf, 8)) {                   */

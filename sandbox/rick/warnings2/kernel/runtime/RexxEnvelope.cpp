@@ -152,7 +152,7 @@ void RexxEnvelope::flattenReference(
     RexxObject **newThis = (RexxObject **)newThisVoid;
     RexxObject **objRef  = (RexxObject **)objRefVoid;
 
-    RexxObject *obj = *objRef;            /* get working pointer to object     */
+    RexxObject *obj = *objRef;
 
                                           /* See if object has already been    */
     size_t objOffset = this->queryObj(obj); /* flattened.                        */

@@ -130,7 +130,7 @@ RexxTable *RexxMemory::newHashCollection(
   newObj = (RexxTable *)new_object(bytes + companionSize);
   ClearObject(newObj);                 /* clear the entire lot              */
                                        /* address the hash table            */
-  newHash = (RexxHashTable *)(((PCHAR)newObj) + companionSize);
+  newHash = (RexxHashTable *)(((char *)newObj) + companionSize);
                                        /* compute total size of the hash    */
                                        /* table (allowing for possible      */
                                        /* over allocation by the memory     */

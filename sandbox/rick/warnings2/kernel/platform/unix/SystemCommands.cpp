@@ -200,7 +200,7 @@ RexxObject * SysCommand(
   size_t       length;
   RexxObject * result;
 
-  CHAR     default_return_buffer[DEFRXSTRING];
+  char     default_return_buffer[DEFRXSTRING];
 
   *error_failure = OREF_NULL;          /* default to clean call             */
 
@@ -316,19 +316,19 @@ BOOL sys_process_export(const char * cmd, LONG * rc, int flag)
 {
   char *Env_Var_String = NULL;         /* Environment variable string for   */
   ULONG size, allocsize;               /* size of the string                */
-  PCHAR      * Environment;            /* environment pointer               */
-  PCHAR  np = NULL;
+  char      **Environment;             /* environment pointer               */
+  char  *np;
   INT    i,j,k,l,iLength, copyval;
   char   namebufcurr[1281];             /* buf for extracted name            */
   char   cmd_name[1281];                /* name of the envvariable setting   */
-  CHAR   *array, *runarray, *runptr, *endptr, *maxptr;
-  CHAR   temparray[1281];
+  char   *array, *runarray, *runptr, *endptr, *maxptr;
+  char   temparray[1281];
   const char *st;
-  CHAR   *tmpptr;
+  char  *tmpptr;
   char   name[1281];                    /* is the name + value + =           */
   char   value[1281];                   /* is the part behind =              */
-  PCHAR  del = NULL;                   /* ptr to old unused memory          */
-  PCHAR  hit = NULL;
+  char  *del = NULL;                    /* ptr to old unused memory          */
+  char  *hit = NULL;
   BOOL   HitFlag = FALSE;
   l = 0;
   j = 0;
@@ -366,7 +366,7 @@ BOOL sys_process_export(const char * cmd, LONG * rc, int flag)
     for(;*Environment != NULL;Environment++)
     {                                  /*for all entries in the env         */
       size = strlen(*Environment)+1;   /* get the size of the string        */
-      Env_Var_String = (PCHAR)malloc(size);/* and alloc space for it        */
+      Env_Var_String = (char *)malloc(size); /* and alloc space for it      */
       memcpy(Env_Var_String,*Environment,size);/* copy the string           */
       putenv(Env_Var_String);          /* and chain it in                   */
     }
@@ -671,7 +671,7 @@ LONG sys_command(const char *cmd, CMD_TYPE local_env_type)
 #endif
 
   /* execute 'cd' in the same process */
-  CHAR        tmp[8];
+  char        tmp[8];
 
 
   if(strlen(cmd) == 2)
