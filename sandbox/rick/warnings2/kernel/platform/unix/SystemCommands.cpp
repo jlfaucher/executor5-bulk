@@ -401,13 +401,11 @@ BOOL sys_process_export(const char * cmd, LONG * rc, int flag)
 
   for(i=0;(name[i]!='=')&&(i<iLength);name[i++])
   {
-//   memcpy(&(cmd_name[i]), &(name[i]), 1);
      cmd_name[i] = name[i];
   }
 
 /* lets try handling variables in the assignment string */
 
-//memcpy(&(cmd_name[i]),"\0",1);      /* copy the terminator           */
   cmd_name[i]  = '\0';                /* copy the terminator           */
 
   i++;                                /* the place after'=' */
@@ -418,8 +416,6 @@ BOOL sys_process_export(const char * cmd, LONG * rc, int flag)
   array = (char *) malloc(1281);
   strcpy(array, cmd_name);
   array[strlen(cmd_name)] = '=';
-//memcpy(&(array[i+1]),"\0",1);      /* copy the terminator           */
-//memcpy(&(array[i]),"\0",1);        /* copy the terminator           */
   array[i] = '\0';                   /* copy the terminator           */
   runarray = array + strlen(array);
   runptr = value;
@@ -453,8 +449,8 @@ BOOL sys_process_export(const char * cmd, LONG * rc, int flag)
       runptr++;
     }
 
-//  memcpy(&(temparray[j]), '\0',1);    /* lets see what we can do    */
     temparray[j] = '\0';                /* lets see what we can do    */
+    np = NULL;
 
     for(;(*Environment != NULL) && (hit == NULL) ;Environment++)
     {

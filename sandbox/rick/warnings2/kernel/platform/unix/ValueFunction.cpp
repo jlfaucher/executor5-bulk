@@ -136,6 +136,7 @@ RexxObject *SysValue(
                                        /* flag this error                   */
     report_exception1(Error_Incorrect_call_selector, Selector);
                                        /* scan for the variable             */
+  RexxString *Retval;
 
   OldValue = getenv(Name->getStringData());
   if (OldValue != NULL)                /* have a value already?   */
