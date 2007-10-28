@@ -75,7 +75,7 @@ extern MemorySegmentPool *ProcessCurrentPool;
 extern MemorySegmentPool *GlobalCurrentPool;
 extern void *VFTArray[highest_T];
 
-RexxString * kernel_name (char* value);
+RexxString * kernel_name (const char * value);
 
 
 #ifdef AIX

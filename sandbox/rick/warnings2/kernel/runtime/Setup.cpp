@@ -571,7 +571,7 @@ size_t resolveExportedMethod(
 /*****************************************************************************/
 /* Initialisation and build of the Object REXX image                         */
 /*****************************************************************************/
-RexxString * kernel_name (char* value);
+RexxString * kernel_name (const char* value);
 void         kernelBuildVirtualFunctionTableArray(void);
 void         createStrings(void);      /* create "name" strings             */
 extern RexxDirectory *ProcessLocalEnv; /* process local environment (.local)*/

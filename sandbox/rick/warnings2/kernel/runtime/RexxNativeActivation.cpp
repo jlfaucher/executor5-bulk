@@ -227,12 +227,12 @@ RexxObject *RexxNativeActivation::run(
   methp = (PNMF)this->method->nativeCode->getEntry();
   itypes = (*methp)(0);                /* get type information from method  */
   *ivalues = ibufp;
-  ibufp += tsize[*itypes];             /* step over first type              */
+  ibufp += tsize[(int)(*itypes)];      /* step over first type              */
   i = 0;                               /* no arguments used yet             */
                                        /* loop through the type information */
   for (tp = itypes+1, ivalp = ivalues+1; *tp; tp++, ivalp++) {
     *ivalp = ibufp;
-    ibufp += tsize[*tp];               /* step over the type                */
+    ibufp += tsize[(int)(*tp)];        /* step over the type                */
     switch (*tp) {                     /* switch based on this type         */
 
       case REXXD_OSELF:                /* reference to SELF                 */
@@ -275,7 +275,7 @@ RexxObject *RexxNativeActivation::run(
                                        /* try to convert the value          */
               tempValues = argument->longValue(this->digits());
                                        /* not convertable?                  */
-              if (tempValues == NO_LONG)
+              if (tempValues == (long)NO_LONG)
                                        /* this is an error                  */
                 report_exception2(Error_Incorrect_method_whole, new_integer(i+1), argument);
                                        /* copy over the info                */
@@ -286,7 +286,7 @@ RexxObject *RexxNativeActivation::run(
                                        /* try to convert the value          */
               tempValues = argument->longValue(this->digits());
                                        /* not convertable?                  */
-              if (tempValues == NO_LONG)
+              if (tempValues == (long)NO_LONG)
                                        /* this is an error                  */
                 report_exception2(Error_Incorrect_method_whole, new_integer(i+1), argument);
                                        /* copy over the info                */
@@ -416,7 +416,7 @@ RexxObject *RexxNativeActivation::run(
       break;
 
     case REXXD_int:                    /* integer value                     */
-      if (*((int *)*ivalues) != NO_INT)/* no value?                         */
+      if (*((int *)*ivalues) != (int)NO_INT)/* no value?                         */
       {
                                          /* return result as an integer object*/
           tempValues = *((int *)*ivalues);
@@ -426,7 +426,7 @@ RexxObject *RexxNativeActivation::run(
 
     case REXXD_long:                   /* long integer value                */
                                        /* no return value given?            */
-      if (*((long *)*ivalues) != NO_LONG)
+      if (*((long *)*ivalues) != (long)NO_LONG)
       {
                                          /* return as an integer value        */
           tempValues = *((long *)*ivalues);
