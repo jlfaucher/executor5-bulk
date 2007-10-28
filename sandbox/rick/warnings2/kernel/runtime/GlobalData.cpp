@@ -288,7 +288,7 @@ extern "C" {
 
 internalMethodEntry internalMethodTable[] = {
 #include "NativeMethods.h"             /* bring in the internal method table*/
-   NULL, NULL                          /* final empty entry                 */
+   {NULL, NULL}                        /* final empty entry                 */
 };
 
 }

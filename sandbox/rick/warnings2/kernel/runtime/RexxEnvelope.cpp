@@ -215,7 +215,7 @@ void RexxEnvelope::flattenReference(
 
 
 RexxEnvelope *RexxEnvelope::pack(
-    RexxObject *receiver)              /* the receiver object               */
+    RexxObject *_receiver)              /* the receiver object               */
 /******************************************************************************/
 /* Function:  Pack an envelope item                                           */
 /******************************************************************************/
@@ -224,7 +224,7 @@ RexxEnvelope *RexxEnvelope::pack(
     RexxObject *newSelf;                 /* the flattened envelope            */
     RexxObject *firstObject;             /* first object to flatten           */
 
-    OrefSet(this, this->receiver, receiver);
+    OrefSet(this, this->receiver, _receiver);
     // create a save table to protect any objects (such as proxy
     // objects) we create during flattening.
     OrefSet(this, this->savetable, new_object_table());
@@ -275,7 +275,7 @@ RexxEnvelope *RexxEnvelope::pack(
 }
 
 void RexxEnvelope::puff(
-    RexxBuffer *buffer,                /* buffer object to unflatten        */
+    RexxBuffer *sourceBuffer,                /* buffer object to unflatten        */
     char *startPointer)                /* start of buffered data            */
 /******************************************************************************/
 /* Function:  Puff into an envelope and remove its contents (unflatten the    */
@@ -286,7 +286,7 @@ void RexxEnvelope::puff(
 
     char *bufferPointer = startPointer;  /* copy the starting point           */
                                          /* point to end of buffer            */
-    char *endPointer = (char *)buffer + ObjectSize(buffer);
+    char *endPointer = (char *)sourceBuffer + ObjectSize(sourceBuffer);
 
     /* Set objoffset to the real address of the new objects.  This tells              */
     /* mark_general to fix the object's refs and set their live flags.                */
@@ -303,7 +303,7 @@ void RexxEnvelope::puff(
         {
 
             /* Yes, lets get the behaviour Object*/
-            RexxBehaviour *objBehav = (RexxBehaviour *)(((long)(puffObject->behaviour) & ~BEHAVIOUR_NON_PRIMITIVE) + ((RexxBuffer *)buffer)->address());
+            RexxBehaviour *objBehav = (RexxBehaviour *)(((long)(puffObject->behaviour) & ~BEHAVIOUR_NON_PRIMITIVE) + sourceBuffer->address());
             /* Resolve the static behaviour info */
             resolveNonPrimitiveBehaviour(objBehav);
             /* Set this objects behaviour.       */
@@ -360,7 +360,7 @@ void RexxEnvelope::puff(
     /* chop off end of buffer to reveal  */
     /* its contents to memory obj        */
 
-    SetObjectSize(buffer, (char *)startPointer - (char *)buffer + ObjectSize(startPointer));
+    SetObjectSize(sourceBuffer, (char *)startPointer - (char *)sourceBuffer + ObjectSize(startPointer));
     /* HOL: otherwise an object with 20 bytes will be left */
 
 
@@ -423,7 +423,9 @@ size_t RexxEnvelope::copyBuffer(
     // offset is tagged as being a non-primitive behaviour that needs later inflating.
     if (newObj->behaviour->isNonPrimitiveBehaviour())
     {
-        this->flattenReference(&newObj, objOffset, (RexxObject **)&newObj->behaviour);
+        void *behavPtr = &newObj->behaviour;
+
+        this->flattenReference(&newObj, objOffset, (RexxObject **)behavPtr);
         newObj->behaviour = (RexxBehaviour *)((size_t)(newObj->behaviour) | BEHAVIOUR_NON_PRIMITIVE);
     }
     else
