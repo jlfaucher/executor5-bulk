@@ -281,7 +281,7 @@ bool Numerics::objectToInt64(RexxObject *source, int64_t &result)
  *
  * @return The length of the converted number.
  */
-stringsize_t Numerics::formatWholeNumber(wholenumber_t integer, stringchar_t *dest)
+stringsize_t Numerics::formatWholeNumber(wholenumber_t integer, char *dest)
 {
     // zero? this is pretty easy
     if (integer == 0)
@@ -330,7 +330,7 @@ stringsize_t Numerics::formatWholeNumber(wholenumber_t integer, stringchar_t *de
  *
  * @return The length of the converted number.
  */
-stringsize_t Numerics::formatStringSize(stringsize_t integer, stringchar_t *dest)
+stringsize_t Numerics::formatStringSize(stringsize_t integer, char *dest)
 {
     // zero? this is pretty easy
     if (integer == 0)
@@ -371,7 +371,7 @@ stringsize_t Numerics::formatStringSize(stringsize_t integer, stringchar_t *dest
  *
  * @return The length of the converted number.
  */
-stringsize_t Numerics::formatInt64(int64_t integer, stringchar_t *dest)
+stringsize_t Numerics::formatInt64(int64_t integer, char *dest)
 {
     // zero? this is pretty easy
     if (integer == 0)

@@ -106,7 +106,7 @@ typedef struct _FILESTATUS{
 typedef struct _control {              /* meta date control info            */
     USHORT   Magic;                    /* identifies as 'meta' prog         */
     USHORT   MetaVersion;              /* version of the meta prog          */
-    unsigned char RexxVersion[40];     /* version of rexx intrpreter        */
+    char     RexxVersion[40];          /* version of rexx intrpreter        */
     FILESTATUS FileStatus;             /* file information                  */
     LONG     ImageSize;                /* size of the method info           */
 } FILE_CONTROL;                        /* saved control info                */

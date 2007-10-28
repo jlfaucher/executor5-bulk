@@ -976,7 +976,7 @@ BOOL  convertInputPointer(
   pointerType = *(TypeCode *)parm._value;
                                        /* Get TCKind value                  */
   kind = TypeCode_kind(pointerType, ev);
-                                       /* looking for char * or unsigned char */
+                                       /* looking for char *                */
   if (tk_char == kind || tk_octet == kind ) {
                                        /* Yes, treat as a string.           */
     return convertInputString(argument, (char **)outputArgument, saveTable, ev);

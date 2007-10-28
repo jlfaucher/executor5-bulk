@@ -269,7 +269,6 @@ typedef struct internalmethodentry {   /* internal method table entry       */
 // moved to the 4.0 codebase.
 typedef size_t stringsize_t;
 typedef int    wholenumber_t;
-typedef unsigned char stringchar_t;
 typedef size_t arraysize_t;
 
 
@@ -291,7 +290,7 @@ class ACTIVATION_SETTINGS {            /* activation "global" settings      */
       BOOL exmode;                         /* DBCS string processing flag       */
       BOOL DBCS_codepage;                  /* DBCS code page possible           */
       ULONG codepage;                      /* current activity codepage         */
-      unsigned char *DBCS_table;           /* current DBCS vector table         */
+      char *DBCS_table;                    /* current DBCS vector table         */
 };                                     /* global activation settings        */
                                        /* builtin function prototype        */
 typedef RexxObject *builtin_func(RexxActivation *, INT, RexxExpressionStack *);

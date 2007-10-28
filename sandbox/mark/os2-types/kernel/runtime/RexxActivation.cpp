@@ -2415,7 +2415,7 @@ void RexxActivation::traceValue(       /* trace an intermediate value       */
  * @param tag       The tag name.
  * @param value     The associated trace value.
  */
-void RexxActivation::traceTaggedValue(int prefix, stringchar_t *tagPrefix, bool quoteTag,
+void RexxActivation::traceTaggedValue(int prefix, char *tagPrefix, bool quoteTag,
      RexxString *tag, RexxObject * value)
 {
     // the trace settings would normally require us to trace this, but there are conditions
@@ -3338,15 +3338,15 @@ RexxVariableBase  *RexxActivation::getDirectVariableRetriever(
   BOOL        literal;                 /* literal indicator                 */
   LONG        length;                  /* length of variable name           */
   RexxVariableBase *retriever;         /* created variable retriever        */
-  unsigned char     character;         /* current character                 */
+  char        character;               /* current character                 */
   LONG        nonnumeric;              /* count of non-numeric characters   */
-  unsigned char     last;              /* previous character                */
+  char        last;                    /* previous character                */
   INT         compound;                /* count of period characters        */
 
   retriever = OREF_NULL;               /* return NULL for all errors        */
   length = variable->getLength();           /* get the name length               */
                                        /* get the first character           */
-  character = (unsigned char)variable->getChar(0);
+  character = variable->getChar(0);
                                        /* constant symbol?                  */
   if (character == '.' || (character >= '0' && character <= '9'))
     literal = TRUE;                    /* this is a literal value           */
@@ -3360,7 +3360,7 @@ RexxVariableBase  *RexxActivation::getDirectVariableRetriever(
     last = 0;                          /* no last character                 */
     while (scan < length) {            /* while more to scan                */
                                        /* get the next character            */
-      character = (unsigned char)variable->getChar(scan);
+      character = variable->getChar(scan);
       if (character == '.') {          /* have a period?                    */
         if (!literal)                  /* not a literal value?              */
                                        /* don't process past here           */
@@ -3380,7 +3380,7 @@ RexxVariableBase  *RexxActivation::getDirectVariableRetriever(
             return OREF_NULL;          /* this is bad also                  */
           while (scan < length) {      /* scan remainder                    */
                                        /* get the next character            */
-            character = (unsigned char)variable->getChar(scan);
+            character = variable->getChar(scan);
                                        /* outside numeric range?            */
             if (character < '0' || character > '9')
               return OREF_NULL;        /* not valid either                  */
