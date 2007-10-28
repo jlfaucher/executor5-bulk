@@ -1037,7 +1037,6 @@ RexxObject *RexxHashTable::stringGet(
   const char *data;                    /* string data                       */
   size_t length;                       /* string length                     */
   RexxString *entry;                   /* current table entry               */
-  int depth = 0;
 
   data = _index->getStringData();            /* get the string data               */
   length = _index->getLength();              /* and the length also               */

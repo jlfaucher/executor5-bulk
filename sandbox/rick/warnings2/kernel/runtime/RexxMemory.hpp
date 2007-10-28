@@ -275,7 +275,7 @@ class RexxMemory : public RexxObject {
   void flatten(RexxEnvelope *);
   RexxObject  *makeProxy(RexxEnvelope *);
 
-  void        init(BOOL savingImage, BOOL restoringImage);
+  void        init(bool restoringImage);
   MemorySegment *newSegment(size_t requestLength, size_t minLength);
   MemorySegment *newLargeSegment(size_t requestLength, size_t minLength);
   RexxObject *oldObject(size_t size);
@@ -308,7 +308,7 @@ class RexxMemory : public RexxObject {
   void        setEnvelope(RexxEnvelope *);
   inline void        setMarkTable(RexxTable *marktable) {this->markTable = marktable;};
   inline void        setOrphanCheck(BOOL orphancheck) {this->orphanCheck = orphancheck; };
-  RexxObject *checkSetOref(RexxObject *, RexxObject **, RexxObject *, const char *, long);
+  RexxObject *checkSetOref(RexxObject *, RexxObject **, RexxObject *, const char *, int);
   RexxObject *setOref(void *index, RexxObject *value);
   RexxStack  *getFlattenStack();
   void        returnFlattenStack();
