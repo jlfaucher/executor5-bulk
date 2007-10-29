@@ -244,7 +244,7 @@ RexxObject * activation_find  (void);
    void              arguments(RexxObject *);
    void              traceValue(RexxObject *, int);
    void              traceCompoundValue(int prefix, RexxString *stem, RexxObject **tails, size_t tailCount, RexxObject * value);
-   void              traceTaggedValue(int prefix, char *tagPrefix, bool quoteTag, RexxString *tag, RexxObject * value);
+   void              traceTaggedValue(int prefix, const char *tagPrefix, bool quoteTag, RexxString *tag, RexxObject * value);
    void              traceOperatorValue(int prefix, const char *tag, RexxObject *value);
    void              traceSourceString();
    void              traceClause(RexxInstruction *, int);

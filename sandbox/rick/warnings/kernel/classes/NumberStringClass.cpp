@@ -2414,7 +2414,7 @@ RexxObject *RexxNumberString::evaluate(
 }
 
 RexxString *RexxNumberString::d2xD2c(
-     RexxObject *length,               /* result length                     */
+     RexxObject *_length,              /* result length                     */
      BOOL  type )                      /* D2C or D2X flag                   */
 /******************************************************************************/
 /* Function:  Convert a valid numberstring to a hex or character string.      */
@@ -2437,7 +2437,7 @@ RexxString *RexxNumberString::d2xD2c(
 
 
                                        /* get the target length             */
-  ResultSize = optional_length(length, -1, ARG_ONE);
+  ResultSize = optional_length(_length, -1, ARG_ONE);
   CurrentDigits = number_digits();     /* get the current digits setting    */
   TargetLength = this->length;         /* copy the length                   */
                                        /* too big to process?               */
