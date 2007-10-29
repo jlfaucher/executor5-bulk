@@ -3496,9 +3496,9 @@ void process_message_arguments(
         argument_list->addLast(new_integer(tempLong));
         break;
 
-      case 's':                        /* SHORT                             */
+      case 's':                        /* short                             */
                                        /* get the number                    */
-        tempLong = (LONG) (SHORT) va_arg(*arguments, INT);
+        tempLong = (LONG) (short) va_arg(*arguments, INT);
                                        /* create an integer object          */
         argument_list->addLast(new_integer(tempLong));
         break;
@@ -3518,9 +3518,9 @@ void process_message_arguments(
         argument_list->addLast(new_numberstring((stringsize_t)tempULong));
         break;
 
-      case 'h':                        /* USHORT                            */
+      case 'h':                        /* unsigned short                    */
                                        /* get the number                    */
-        tempLong = (LONG) (USHORT) va_arg(*arguments, INT);
+        tempLong = (LONG) (unsigned short) va_arg(*arguments, INT);
                                        /* create an integer object          */
         argument_list->addLast(new_integer(tempLong));
         break;
@@ -3624,9 +3624,9 @@ void process_message_result(
         (*((INT *)return_pointer)) = (INT)value->longValue(NO_LONG);
         break;
 
-      case 's':                        /* SHORT                             */
+      case 's':                        /* short                             */
                                        /* get the number                    */
-        (*((SHORT *)return_pointer)) = (SHORT)value->longValue(NO_LONG);
+        (*((short *)return_pointer)) = (short)value->longValue(NO_LONG);
         break;
 
       case 'd':                        /* double                            */
@@ -3640,9 +3640,9 @@ void process_message_result(
         (*((ULONG *)return_pointer)) = (ULONG)value->longValue(NO_LONG);
         break;
 
-      case 'h':                        /* USHORT                            */
+      case 'h':                        /* unsigned short                   */
                                        /* get the number                    */
-        (*((USHORT *)return_pointer)) = (USHORT)value->longValue(NO_LONG);
+        (*((unsigned short *)return_pointer)) = (unsigned short)value->longValue(NO_LONG);
         break;
 
       case 'l':                        /* LONG                              */

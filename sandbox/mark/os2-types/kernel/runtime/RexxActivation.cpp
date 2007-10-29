@@ -1957,7 +1957,7 @@ RexxObject * RexxActivation::loadRequired(
   RexxMethod    * method = OREF_NULL;  /* method to invoke                  */
   RexxDirectory * securityArgs;        /* security check arguments          */
   RexxObject    * result;
-  USHORT          usMacroPosition;     /* macro search order                */
+  unsigned short  usMacroPosition;     /* macro search order                */
   BOOL            fFileExists = TRUE;  /* does required file exist          */
   BOOL            fMacroExists = FALSE;/* does required macro exist         */
 

@@ -115,7 +115,7 @@ class RexxNativeActivation : public RexxActivationBase {
   RexxVariableDictionary *nextcurrent; /* current processed vdict           */
   RexxCompoundElement *compoundelement;/* current compound variable value   */
   RexxStem *      nextstem;            /* our working stem variable         */
-  SHORT           argcount;            /* size of the argument list         */
+  size_t          argcount;            /* size of the argument list         */
   char            vpavailable;         /* Variable pool access flag         */
   char            object_scope;        /* reserve/release state of variables*/
   jmp_buf         conditionjump;       /* condition trap recovery location  */

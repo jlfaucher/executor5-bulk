@@ -822,7 +822,7 @@ void DBCS_SetPadChar(
 /*                                                                   */
 /*********************************************************************/
 
-static USHORT dbcscodeJ[256]={
+static unsigned short dbcscodeJ[256]={
 C_INV ,C_INV , C_INV , C_INV , C_INV , C_INV , C_INV , C_INV ,/*00-07*/
 C_INV ,C_INV , C_INV , C_INV , C_INV , C_INV , C_INV , C_INV ,/*08-0f*/
 C_INV ,C_INV , C_INV , C_INV , C_INV , C_INV , C_INV , C_INV ,/*10-17*/
@@ -866,7 +866,7 @@ C_DBCS,C_DBCS, C_DBCS, C_DBCS, C_DBCS, C_UNDF, C_UNDF, C_UNDF /*f8-ff*/
 /*                                                                   */
 /*********************************************************************/
 
-static USHORT dbcscodeK[256]={
+static unsigned short dbcscodeK[256]={
 C_INV ,C_INV , C_INV , C_INV , C_INV , C_INV , C_INV , C_INV ,/*00-07*/
 C_INV ,C_INV , C_INV , C_INV , C_INV , C_INV , C_INV , C_INV ,/*08-0f*/
 C_INV ,C_INV , C_INV , C_INV , C_INV , C_INV , C_INV , C_INV ,/*10-17*/
@@ -910,7 +910,7 @@ C_UNDF,C_UNDF, 0x9A82, 0x9B82, 0x9C82, C_UNDF, C_UNDF, C_UNDF /*f8-ff*/
 /*                                                                   */
 /*********************************************************************/
 
-static USHORT dbcscodeP[256]={
+static unsigned short dbcscodeP[256]={
 C_INV ,C_INV , C_INV , C_INV , C_INV , C_INV , C_INV , C_INV ,/*00-07*/
 C_INV ,C_INV , C_INV , C_INV , C_INV , C_INV , C_INV , C_INV ,/*08-0f*/
 C_INV ,C_INV , C_INV , C_INV , C_INV , C_INV , C_INV , C_INV ,/*10-17*/
@@ -954,7 +954,7 @@ C_DBCS,C_DBCS, C_DBCS, C_DBCS, C_DBCS, C_UNDF, C_UNDF, C_UNDF /*f8-ff*/
 /*                                                                   */
 /*********************************************************************/
 
-static USHORT dbcscodeR[256]={
+static unsigned short dbcscodeR[256]={
 C_INV ,C_INV , C_INV , C_INV , C_INV , C_INV , C_INV , C_INV ,/*00-07*/
 C_INV ,C_INV , C_INV , C_INV , C_INV , C_INV , C_INV , C_INV ,/*08-0f*/
 C_INV ,C_INV , C_INV , C_INV , C_INV , C_INV , C_INV , C_INV ,/*10-17*/
@@ -998,7 +998,7 @@ C_DBCS,C_DBCS, C_DBCS, C_DBCS, C_DBCS, C_UNDF, C_UNDF, C_UNDF /*f8-ff*/
 /*                                                                   */
 /*********************************************************************/
 
-static USHORT dbcscodeJ942[256]={
+static unsigned short dbcscodeJ942[256]={
 C_INV ,C_INV , C_INV , C_INV , C_INV , C_INV , C_INV , C_INV ,/*00-07*/
 C_INV ,C_INV , C_INV , C_INV , C_INV , C_INV , C_INV , C_INV ,/*08-0f*/
 C_INV ,C_INV , C_INV , C_INV , C_INV , C_INV , C_INV , C_INV ,/*10-17*/
@@ -1042,7 +1042,7 @@ C_DBCS,C_DBCS, C_DBCS, C_DBCS, C_DBCS, 0x54FA, 0x5F81, 0x6081 /*f8-ff*/
 /*                                                                   */
 /*********************************************************************/
 
-static USHORT dbcscodeK944[256]={
+static unsigned short dbcscodeK944[256]={
 C_INV ,C_INV , C_INV , C_INV , C_INV , C_INV , C_INV , C_INV ,/*00-07*/
 C_INV ,C_INV , C_INV , C_INV , C_INV , C_INV , C_INV , C_INV ,/*08-0f*/
 C_INV ,C_INV , C_INV , C_INV , C_INV , C_INV , C_INV , C_INV ,/*10-17*/
@@ -1086,7 +1086,7 @@ C_UNDF,C_UNDF, 0x9A82, 0x9B82, 0x9C82, 0x8C81, 0x4B81, 0x4C81 /*f8-ff*/
 /*                                                                   */
 /*********************************************************************/
 
-static USHORT dbcscodeP946[256]={
+static unsigned short dbcscodeP946[256]={
 C_INV ,C_INV , C_INV , C_INV , C_INV , C_INV , C_INV , C_INV ,/*00-07*/
 C_INV ,C_INV , C_INV , C_INV , C_INV , C_INV , C_INV , C_INV ,/*08-0f*/
 C_INV ,C_INV , C_INV , C_INV , C_INV , C_INV , C_INV , C_INV ,/*10-17*/
@@ -1130,7 +1130,7 @@ C_DBCS,C_DBCS, C_DBCS, C_DBCS, C_DBCS, 0x50FA, 0x7B82, 0x4A81 /*f8-ff*/
 /*                                                                   */
 /*********************************************************************/
 
-static USHORT dbcscodeR948[256]={
+static unsigned short dbcscodeR948[256]={
 C_INV ,C_INV , C_INV , C_INV , C_INV , C_INV , C_INV , C_INV ,/*00-07*/
 C_INV ,C_INV , C_INV , C_INV , C_INV , C_INV , C_INV , C_INV ,/*08-0f*/
 C_INV ,C_INV , C_INV , C_INV , C_INV , C_INV , C_INV , C_INV ,/*10-17*/
@@ -1165,7 +1165,7 @@ C_DBCS,C_DBCS, C_DBCS, C_DBCS, C_DBCS, C_DBCS, C_DBCS, C_DBCS,/*f0-f7*/
 C_DBCS,C_DBCS, C_DBCS, C_DBCS, C_DBCS, 0x5B8B, 0x5C8B, C_UNDF /*f8-ff*/
 };
 
-static USHORT *dbcstable[]=
+static unsigned short *dbcstable[]=
 {
         dbcscodeJ,                      /* Japan   TableNum = 0             */
         dbcscodeK,                      /* KOREA   TableNum = 1             */
@@ -1190,12 +1190,12 @@ void DBCS_ConvToDBCS(
 {
   char *outspot;                       /* output spot                       */
   union convert {                      /* Use to get DBCS bytes             */
-    USHORT convchar;                   /* From USHORT DBCS code.            */
+    unsigned short convchar;           /* From unsigned short DBCS code.    */
     char   conv[2];                    /* DBCS 1ST and 2ND byte.            */
   }
   convert;
   size_t TableNum;                     /* current country table             */
-  USHORT TableChr;                     /* Table number for character.       */
+  unsigned short TableChr;             /* Table number for character.       */
 
   outspot = *output;                   /* copy the pointer                  */
                                        /* find the county code              */
@@ -1260,7 +1260,7 @@ void DBCS_ConvToSBCS(
   char *outspot;                       /* output spot                       */
   size_t i;                            /* Use for index of table.           */
   union convert {                      /* Use to get DBCS bytes             */
-    USHORT convchar;                   /* From unsigned int DBCS            */
+    unsigned short convchar;           /* From unsigned short DBCS          */
     char   conv[2];                    /* DBCS 1ST and 2ND byte.            */
   }
   convert;

@@ -126,7 +126,7 @@ void RexxNativeActivation::live()
   /* We're hold a pointer back to our arguments directly where they */
   /* are created.  Since in some places, this argument list comes */
   /* from the C stack, we need to handle the marker ourselves. */
-  SHORT  i;
+  size_t  i;
   for (i = 0; i < argcount; i++) {
       memory_mark(arglist[i]);
   }
@@ -157,7 +157,7 @@ void RexxNativeActivation::liveGeneral()
   /* We're hold a pointer back to our arguments directly where they */
   /* are created.  Since in some places, this argument list comes */
   /* from the C stack, we need to handle the marker ourselves. */
-  SHORT  i;
+  size_t  i;
   for (i = 0; i < argcount; i++) {
       memory_mark_general(arglist[i]);
   }
@@ -222,7 +222,7 @@ RexxObject *RexxNativeActivation::run(
   BOOL         used_arglist;           /* method requested an arglist       */
 
   this->arglist = arglist;             /* save the argument information     */
-  this->argcount = (SHORT)argcount;    /* set the argument count            */
+  this->argcount = argcount;           /* set the argument count            */
   used_arglist = FALSE;                /* no arglist requested              */
                                        /* get the entry point address       */
   methp = (PNMF)this->method->nativeCode->getEntry();
