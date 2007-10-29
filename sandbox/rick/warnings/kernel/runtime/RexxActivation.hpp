@@ -347,7 +347,7 @@ RexxObject * activation_find  (void);
    inline void              traceVariable(RexxString *n, RexxObject *v)
        { if (this->settings.intermediate_trace) { this->traceTaggedValue(TRACE_PREFIX_VARIABLE, NULL, false, n, v); } };
    inline void              traceDotVariable(RexxString *n, RexxObject *v)
-       { if (this->settings.intermediate_trace) { this->traceTaggedValue(TRACE_PREFIX_DOTVARIABLE, (char *)".", false, n, v); } };
+       { if (this->settings.intermediate_trace) { this->traceTaggedValue(TRACE_PREFIX_DOTVARIABLE, ".", false, n, v); } };
    inline void              traceFunction(RexxString *n, RexxObject *v)
        { if (this->settings.intermediate_trace) { this->traceTaggedValue(TRACE_PREFIX_FUNCTION, NULL, false, n, v); } };
    inline void              traceMessage(RexxString *n, RexxObject *v)
