@@ -70,7 +70,6 @@ kernel_platform_unix_dir = $(kernel_dir)/platform/unix
 kernel_platform_windows_dir = $(kernel_dir)/platform/windows
 kernel_main_dir = $(kernel_dir)/main
 kernel_platform_common_dir = $(kernel_dir)/platform/common
-som_dir = $(kernel_dir)/SOM
 classes_dir = $(kernel_dir)/classes
 expression_dir = $(kernel_dir)/expression
 instructions_dir = $(kernel_dir)/instructions
@@ -107,8 +106,6 @@ messageXML = $(messages_dir)/rexxmsg.xml
 errorHeaders = $(messages_dir)/RexxMessageNumbers.h \
                $(messages_dir)/RexxErrorCodes.h \
                $(messages_dir)/RexxMessageTable.h
-somHeaders = $(som_dir)/SOMUtilities.h \
-             $(som_dir)/orxcls.h
 classesHeaders = $(classes_dir)/ASCIIDBCSStrings.hpp \
                  $(classes_dir)/ArrayClass.hpp \
                  $(classes_dir)/ClassClass.hpp \
@@ -220,8 +217,6 @@ runtimeHeaders = $(runtime_dir)/DeadObject.hpp \
                  $(runtime_dir)/RexxNativeAPI.h \
                  $(runtime_dir)/RexxNativeActivation.hpp \
                  $(runtime_dir)/RexxNativeMethod.hpp \
-                 $(runtime_dir)/RexxSOMCode.hpp \
-                 $(runtime_dir)/RexxSOMProxy.hpp \
                  $(runtime_dir)/RexxSmartBuffer.hpp \
                  $(runtime_dir)/RexxVariable.hpp \
                  $(runtime_dir)/RexxVariableDictionary.hpp
@@ -346,9 +341,6 @@ librexxapi_la_LDFLAGS = $(VERSION_INFO)
 #################### librexx.so ##########################
 # Sources for librexx.so
 #
-SOM_sources = $(som_dir)/SOMObjectNative.cpp \
-              $(som_dir)/SOMProxyNative.cpp \
-              $(som_dir)/SOMUtilities.cpp
 classes_sources = $(classes_dir)/ASCIIDBCSStrings.cpp \
                   $(classes_dir)/ArrayClass.cpp \
                   $(classes_dir)/ClassClass.cpp \
@@ -479,8 +471,6 @@ runtime_sources  = $(runtime_dir)/DeadObject.cpp \
                    $(runtime_dir)/RexxMisc.cpp \
                    $(runtime_dir)/RexxNativeActivation.cpp \
                    $(runtime_dir)/RexxNativeMethod.cpp \
-                   $(runtime_dir)/RexxSOMCode.cpp \
-                   $(runtime_dir)/RexxSOMProxy.cpp \
                    $(runtime_dir)/RexxSmartBuffer.cpp \
                    $(runtime_dir)/RexxStartup.cpp \
                    $(runtime_dir)/RexxVariable.cpp \
@@ -491,8 +481,7 @@ runtime_sources  = $(runtime_dir)/DeadObject.cpp \
 streamlibrary_sources = $(streamlibrary_dir)/StreamCommandParser.cpp \
                         $(streamlibrary_dir)/StreamNative.cpp
 lib_sources = $(lib_dir)/LocalProcessData.cpp
-librexx_la_SOURCES = $(SOM_sources) \
-                     $(classes_sources) \
+librexx_la_SOURCES = $(classes_sources) \
                      $(expression_sources) \
                      $(instructions_sources) \
                      $(parser_sources) \
@@ -519,7 +508,6 @@ librexx_la_CXXFLAGS  = $(COMMON_CPPFLAGS) \
                        -I$(parser_dir) \
                        -I$(messages_dir) \
                        -I$(streamlibrary_dir) \
-                       -I$(som_dir) \
                        -I$(kernel_platform_common_dir) \
                        -I$(kernel_platform_unix_dir) \
                        -I$(rexxapi_unix_dir)
@@ -741,7 +729,6 @@ EXTRA_DIST = $(messages_dir)/RexxMessageNumbers.xsl \
              $(kernel_platform_unix_dir)/UnixMethods.orx \
              $(kernel_platform_unix_dir)/PlatformObjects.orx \
              $(rexxclasses_dir) \
-             $(somHeaders) \
              $(classesHeaders) \
              $(expressionHeaders) \
              $(instructionsHeaders) \
