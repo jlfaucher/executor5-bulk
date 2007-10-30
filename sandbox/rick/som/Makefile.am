@@ -289,7 +289,7 @@ BUILT_SOURCES = $(errorHeaders) \
 #
 # Binary targets
 #
-bin_PROGRAMS = rexx rexxc rxmigrate rxqueue rxsubcom rxdelipc
+bin_PROGRAMS = rexx rexxc rxqueue rxsubcom rxdelipc
 
 #
 # Shared library targets
@@ -311,7 +311,6 @@ include_HEADERS = $(rexxapi_unix_dir)/rexx.h
 #
 man_MANS = $(platform_unix_dir)/rexx.1 \
            $(platform_unix_dir)/rexxc.1 \
-           $(platform_unix_dir)/rxmigrate.1 \
            $(platform_unix_dir)/rxsubcom.1 \
            $(platform_unix_dir)/rxqueue.1
 
@@ -564,34 +563,6 @@ rexxc_CXXFLAGS  = $(COMMON_CPPFLAGS) \
 rexxc_LDADD   = librexx.la librexxapi.la @ORX_LDADD_EXECUTABLE@
 rexxc_LDFLAGS = @ORX_LDFLAGS_EXECUTABLE@
 
-#################### rxmigrate #########################
-# Sources for rxmigrate
-#
-rxmigrate_SOURCES = $(kernel_platform_common_dir)/RexxMigration.cpp
-#
-# Preprocessor flags for rxmigrate
-#
-rxmigrate_CXXFLAGS  = $(COMMON_CPPFLAGS) \
-                   -I$(lib_dir) \
-                   -I$(kernel_dir) \
-                   -I$(expression_dir) \
-                   -I$(instructions_dir) \
-                   -I$(classes_dir) \
-                   -I$(runtime_dir) \
-                   -I$(parser_dir) \
-                   -I$(messages_dir) \
-                   -I$(streamlibrary_dir) \
-                   -I$(som_dir) \
-                   -I$(kernel_platform_common_dir) \
-                   -I$(kernel_platform_unix_dir) \
-                   -I$(rexxapi_unix_dir)
-
-#                  -I$(top_srcdir)/kernel/messages
-#
-# Extra libraries for rxmigrate
-#
-rxmigrate_LDADD   = librexx.la librexxapi.la @ORX_LDADD_EXECUTABLE@
-rxmigrate_LDFLAGS = @ORX_LDFLAGS_EXECUTABLE@
 
 #################### rxqueue #########################
 # Sources for rxqueue

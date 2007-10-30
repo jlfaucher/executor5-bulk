@@ -172,13 +172,6 @@
 //#define SHARED
 
 #define RXTRACE_SUPPORT
-/******************************************************************************/
-/* OPTIONAL:  If the implementation is going to support SOM, include a define */
-/* for SOM.                                                                   */
-/******************************************************************************/
-
-//#define SOM
-//#define SOMV2                          /* both these are required yet       */
 
 /******************************************************************************/
 /* OPTIONAL:  If the implementation is going to support multiple threads,     */
