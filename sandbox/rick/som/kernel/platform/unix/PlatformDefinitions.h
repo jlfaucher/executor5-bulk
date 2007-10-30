@@ -489,7 +489,6 @@ typedef PVOID SYSWINDOWINFO;
    INTERNAL_METHOD(sysDirectory) \
    INTERNAL_METHOD(sysSetLocal) \
    INTERNAL_METHOD(sysEndLocal) \
-   INTERNAL_METHOD(server_init_local) \
    INTERNAL_METHOD(function_queueExit)
 
 /******************************************************************************/
