@@ -1,0 +1,399 @@
+#!/usr/bin/rexx
+/*
+   name:             ooRexx.Base.SourceFile.testUnit
+   author:           Mark Miesfeld
+   date:             10/29/2007
+   version:          0.1.0
+   changed:
+
+   languageLevel:    6.0
+   purpose:          Test cases related to the interpreter reading a source file
+
+   remark:           This test unit is intended for test cases related to the
+                     interpreter reading a source file program.  For example,
+                     a source program can contain the logical not character,
+                     which is 0xAA.  This test units has some tests to assert
+                     that the interpreter is handling that correctly.
+
+                     NOTE:  Since I am only confident of how file redirection
+                     works under Windows and Linux with the bash shell, this
+                     test unit currently only runs in those conditions.  Any
+                     one that can add an OS or a shell to these, please do so.
+
+   license:          CPL 1.0 (Common Public License v1.0, see below)
+   link:
+
+   category1:        ooRexx
+   category2:        Base
+   category3:        SourceFile
+
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+use arg cmdLine
+
+  -- Only execute on Windows and Linux (if shell is bash.)
+  if .ooRexxUnit.OSName \= "WINDOWS" & .ooRexxUnit.OSName \== "LINUX" then return .list~new
+  if .ooRexxUnit.OSName == "LINUX" & .ooRexxUnit.shellName \== "bash" then return .list~new
+
+  testUnitClass = .ooRexx.Base.SourceFile.testUnit
+
+  testUnitList = .list~of(.array~of(testUnitClass, .list~new))
+
+  srcLines = .array~new
+  do i = 1 to 150 until srcLines[i] = "*/"
+     srcLines[i] = sourceline(i)
+  end
+
+  call makeDirTestInfo testUnitClass, srcLines
+
+  parse source s
+  testUnitClass~testCaseInfo~setentry("test_Case-source", s)
+
+  if \ .local~hasentry("bRunTestsLocally") then
+     .local~bRunTestsLocally = .true
+
+  if .bRunTestsLocally == .true then do
+    ts = .TestSuite~new
+    ts~addTest(.TestSuite~new(testUnitClass))
+
+    testResult = ts~run
+    call simpleFormatTestResults testResult
+  end
+
+return testUnitList
+-- End of entry point.
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+  Directives, Classes, or Routines.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::requires "OOREXXUNIT.CLS"
+
+/* class: ooRexx.Base.SourceFile.testUnit- - - - - - - - - - - - - - - - - - -*\
+
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class ooRexx.Base.SourceFile.testUnit public subclass TestCase
+
+  -- Notes for logical not.  The logical not character is 0xAA.  How it appears
+  -- on a screen or in an editor is dependent on a number of things, like the
+  -- OS, code page, etc.  A hex editor was used to put the logical not character
+  -- into this source.  To add test cases or alter exsiting test cases for the
+  -- logical not, be sure and use a hex editor or viewer to determine that the
+  -- correct character is in use.
+
+  -- Test \= using 0xAA (ª=) when true
+  ::method test_logicalNot01
+
+    fileSrc = .array~new
+    fileSrc[1]  = "ret = 9"
+    fileSrc[2]  = "day = 'friday'"
+    fileSrc[3]  = "if 'friday' ª= day then do"
+    fileSrc[4]  = "  say 'it is not friday'"
+    fileSrc[5]  = "  ret = 1"
+    fileSrc[6]  = "end"
+    fileSrc[7]  = "else do"
+    fileSrc[8]  = "  say 'it IS friday'"
+    fileSrc[9]  = "  ret = 0"
+    fileSrc[10] = "end"
+    fileSrc[11] = "return ret"
+
+    fileName = createRexxPrgFile(fileSrc, "test_logicalNot01_temp")
+    self~assertTrue("Source file must be created", fileName <> "")
+    self~assertTrue("Source file must exist", SysIsFile(fileName))
+
+    output = .array~new
+    prgRC = execRexxPrg(fileName, output)
+    j = deleteFile(fileName)
+
+    self~assertTrue("Program rc must be 0", prgRC == 0)
+    self~assertTrue("Program output must be correct", output[1] == "it IS friday")
+
+  -- Test \== using 0xAA (ª==) when true
+  ::method test_logicalNot02
+
+    fileSrc = .array~new
+    fileSrc[1]  = "ret = 9"
+    fileSrc[2]  = "day = 'friday'"
+    fileSrc[3]  = "if 'friday' ª== day then do"
+    fileSrc[4]  = "  say 'it is not friday'"
+    fileSrc[5]  = "  ret = 1"
+    fileSrc[6]  = "end"
+    fileSrc[7]  = "else do"
+    fileSrc[8]  = "  say 'it IS friday'"
+    fileSrc[9]  = "  ret = 0"
+    fileSrc[10] = "end"
+    fileSrc[11] = "return ret"
+
+    fileName = createRexxPrgFile(fileSrc, "test_logicalNot02_temp")
+    self~assertTrue("Source file must be created", fileName <> "")
+    self~assertTrue("Source file must exist", SysIsFile(fileName))
+
+    output = .array~new
+    prgRC = execRexxPrg(fileName, output)
+    j = deleteFile(fileName)
+
+    self~assertTrue("Program rc must be 0", prgRC == 0)
+    self~assertTrue("Program output must be correct", output[1] == "it IS friday")
+
+  -- Test \= using 0xAA (ª=) when false
+  ::method test_logicalNot03
+
+    fileSrc = .array~new
+    fileSrc[1]  = "ret = 9"
+    fileSrc[2]  = "day = 'Monday'"
+    fileSrc[3]  = "if 'friday' ª= day then do"
+    fileSrc[4]  = "  say 'it is not friday'"
+    fileSrc[5]  = "  ret = 1"
+    fileSrc[6]  = "end"
+    fileSrc[7]  = "else do"
+    fileSrc[8]  = "  say 'it IS friday'"
+    fileSrc[9]  = "  ret = 0"
+    fileSrc[10] = "end"
+    fileSrc[11] = "return ret"
+
+    fileName = createRexxPrgFile(fileSrc, "test_logicalNot03_temp")
+    self~assertTrue("Source file must be created", fileName <> "")
+    self~assertTrue("Source file must exist", SysIsFile(fileName))
+
+    output = .array~new
+    prgRC = execRexxPrg(fileName, output)
+    j = deleteFile(fileName)
+
+    self~assertTrue("Program rc must be 0", prgRC == 1)
+    self~assertTrue("Program output must be correct", output[1] == "it is not friday")
+
+  -- Test \== using 0xAA (ª==) when false
+  ::method test_logicalNot04
+
+    fileSrc = .array~new
+    fileSrc[1]  = "ret = 9"
+    fileSrc[2]  = "day = 'friday'"
+    fileSrc[3]  = "if 'friday ' ª== day then do"    -- Note extra space in friday
+    fileSrc[4]  = "  say 'it is not friday'"
+    fileSrc[5]  = "  ret = 1"
+    fileSrc[6]  = "end"
+    fileSrc[7]  = "else do"
+    fileSrc[8]  = "  say 'it IS friday'"
+    fileSrc[9]  = "  ret = 0"
+    fileSrc[10] = "end"
+    fileSrc[11] = "return ret"
+
+    fileName = createRexxPrgFile(fileSrc, "test_logicalNot04_temp")
+    self~assertTrue("Source file must be created", fileName <> "")
+    self~assertTrue("Source file must exist", SysIsFile(fileName))
+
+    output = .array~new
+    prgRC = execRexxPrg(fileName, output)
+    j = deleteFile(fileName)
+
+    self~assertTrue("Program rc must be 0", prgRC == 1)
+    self~assertTrue("Program output must be correct", output[1] == "it is not friday")
+
+  -- Test using ª in an expression when true
+  ::method test_logicalNot05
+
+    fileSrc = .array~new
+    fileSrc[1]  = "ret = 9"
+    fileSrc[2]  = "dog = .true"
+    fileSrc[3]  = "if ª dog then do"
+    fileSrc[4]  = "  say 'it is not a dog'"
+    fileSrc[5]  = "  ret = 1"
+    fileSrc[6]  = "end"
+    fileSrc[7]  = "else do"
+    fileSrc[8]  = "  say 'it IS a dog'"
+    fileSrc[9]  = "  ret = 0"
+    fileSrc[10] = "end"
+    fileSrc[11] = "return ret"
+
+    fileName = createRexxPrgFile(fileSrc, "test_logicalNot05_temp")
+    self~assertTrue("Source file must be created", fileName <> "")
+    self~assertTrue("Source file must exist", SysIsFile(fileName))
+
+    output = .array~new
+    prgRC = execRexxPrg(fileName, output)
+    j = deleteFile(fileName)
+
+    self~assertTrue("Program rc must be 0", prgRC == 0)
+    self~assertTrue("Program output must be correct", output[1] == "it IS a dog")
+
+  -- Test using ª in an expression when false
+  ::method test_logicalNot06
+
+    fileSrc = .array~new
+    fileSrc[1]  = "ret = 9"
+    fileSrc[2]  = "dog = .false"
+    fileSrc[3]  = "if ª dog then do"
+    fileSrc[4]  = "  say 'it is not a dog'"
+    fileSrc[5]  = "  ret = 1"
+    fileSrc[6]  = "end"
+    fileSrc[7]  = "else do"
+    fileSrc[8]  = "  say 'it IS a dog'"
+    fileSrc[9]  = "  ret = 0"
+    fileSrc[10] = "end"
+    fileSrc[11] = "return ret"
+
+    fileName = createRexxPrgFile(fileSrc, "test_logicalNot06_temp")
+    self~assertTrue("Source file must be created", fileName <> "")
+    self~assertTrue("Source file must exist", SysIsFile(fileName))
+
+    output = .array~new
+    prgRC = execRexxPrg(fileName, output)
+    j = deleteFile(fileName)
+
+    self~assertTrue("Program rc must be 0", prgRC == 1)
+    self~assertTrue("Program output must be correct", output[1] == "it is not a dog")
+
+  -- Test \ == using 0xAA (ª ==) when false
+  ::method test_logicalNot07
+
+    fileSrc = .array~new
+    fileSrc[1]  = "ret = 9"
+    fileSrc[2]  = "day = 'friday'"
+    fileSrc[3]  = "if 'friday ' ª == day then do"    -- Note extra space in friday
+    fileSrc[4]  = "  say 'it is not friday'"
+    fileSrc[5]  = "  ret = 1"
+    fileSrc[6]  = "end"
+    fileSrc[7]  = "else do"
+    fileSrc[8]  = "  say 'it IS friday'"
+    fileSrc[9]  = "  ret = 0"
+    fileSrc[10] = "end"
+    fileSrc[11] = "return ret"
+
+    fileName = createRexxPrgFile(fileSrc, "test_logicalNot07_temp")
+    self~assertTrue("Source file must be created", fileName <> "")
+    self~assertTrue("Source file must exist", SysIsFile(fileName))
+
+    output = .array~new
+    prgRC = execRexxPrg(fileName, output)
+    j = deleteFile(fileName)
+
+    self~assertTrue("Program rc must be 0", prgRC == 1)
+    self~assertTrue("Program output must be correct", output[1] == "it is not friday")
+
+  -- Test \\= using 0xAA (ªª=) when false
+  ::method test_logicalNot08
+
+    fileSrc = .array~new
+    fileSrc[1]  = "ret = 9"
+    fileSrc[2]  = "day = 'friday'"
+    fileSrc[3]  = "if 'friday' ªª= day then do"
+    fileSrc[4]  = "  say 'it is not friday'"
+    fileSrc[5]  = "  ret = 1"
+    fileSrc[6]  = "end"
+    fileSrc[7]  = "else do"
+    fileSrc[8]  = "  say 'it IS friday'"
+    fileSrc[9]  = "  ret = 0"
+    fileSrc[10] = "end"
+    fileSrc[11] = "return ret"
+
+    fileName = createRexxPrgFile(fileSrc, "test_logicalNot08_temp")
+    self~assertTrue("Source file must be created", fileName <> "")
+    self~assertTrue("Source file must exist", SysIsFile(fileName))
+
+    output = .array~new
+    prgRC = execRexxPrg(fileName, output)
+    j = deleteFile(fileName)
+
+    -- Double ªª should produce an error 35.1.  The interpreter will return -35
+    -- (the negation of the major code number) and print out the error
+    -- diagnositc lines.  The start of the third line should be as follows:
+    -- Note that if the error messages change, this test will then fail.
+    length = "Error 35.1:  Incorrect expression detected"~length
+
+    self~assertSame("Program rc must be 0", -35, prgRC)
+    self~assertTrue("Program output must be correct", output[3]~left(length) == "Error 35.1:  Incorrect expression detected")
+
+
+-- End of class: ooRexx.Base.SourceFile.testUnit
+
+::routine createRexxPrgFile public
+  use arg src, baseName
+
+  fileName = ""
+  fn = baseName || '.rex'
+  fsObj = .stream~new(fn)
+  state = fsObj~open("WRITE REPLACE")
+  if state~abbrev("READY") then do
+    fsObj~arrayout(src)
+    fsObj~close
+    fileName = fsObj~qualify
+  end
+
+return fileName
+
+::routine execRexxPrg public
+  use arg fileName, output
+
+  errRet = 9999
+
+  -- Only supported on Linux (bash) and Windows.  Other OSes or shells could
+  -- be added here.  (Turns out Linux and Windows redirection is the same.)
+  select
+    when .ooRexxUnit.OSName == "WINDOWS" then stdErrToStdOut = '2>&1'
+    when .ooRexxUnit.OSName == "LINUX" then stdErrToStdOut = '2>&1'
+    otherwise return errRet
+  end
+
+  tmpOutFile = 'tmpXXX_delete.me'
+
+  cmd = 'rexx' fileName '>' tmpOutFile stdErrToStdOut
+  cmd
+  prgRet = RC
+
+  fsObj = .stream~new(tmpOutFile)
+  tmpArray = fsObj~arrayin
+  do line over tmpArray
+    output~append(line)
+  end
+  fsObj~close
+
+  j = deleteFile(tmpOutFile)
+
+return prgRet
+
+::routine deleteFile public
+  use arg fileName
+
+  -- On Linux (bash) and Windows the delete can be forced.  Not sure on other
+  -- OSes
+  select
+    when .ooRexxUnit.OSName == "WINDOWS" then 'del /q /f' fileName '1>nul 2>&1'
+    when .ooRexxUnit.OSName == "LINUX" then 'rm -f' fileName '>/dev/null 2>&1'
+    otherwise j = SysFileDelete(fileName)
+  end
+
+return 0
