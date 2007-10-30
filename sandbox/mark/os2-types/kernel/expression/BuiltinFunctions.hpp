@@ -60,7 +60,7 @@
 #define arg_exists(x,n) ((argcount >= x##_##n) ? false : stack->peek(argcount - x##_##n) != OREF_NULL )
 #define arg_omitted(x,n) ((argcount < x##_##n) ? true : stack->peek(argcount - x##_##n) == OREF_NULL )
 
-#define BUILTIN(x) RexxObject *builtin_function_##x ( RexxActivation * context, INT argcount, RexxExpressionStack *stack )
+#define BUILTIN(x) RexxObject *builtin_function_##x ( RexxActivation * context, int argcount, RexxExpressionStack *stack )
 
 #define positive_integer(n,f,p) if (n <= 0) report_exception3(Error_Incorrect_call_positive, new_cstring(CHAR_##f), p, new_integer(n))
 #define nonnegative_integer(n,f,p) if (n < 0) report_exception3(Error_Incorrect_call_nonnegative, new_cstring(CHAR_##f), p, new_integer(n))

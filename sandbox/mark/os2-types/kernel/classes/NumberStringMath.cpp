@@ -933,7 +933,7 @@ void Subtract_Numbers(
 }
 
 char *AddToBaseSixteen(
-  INT      Digit,                      /* digit to add                      */
+  int      Digit,                      /* digit to add                      */
   char    *Value,                      /* number to add                     */
   char    *HighDigit )                 /* highest digit location            */
 /*********************************************************************/
@@ -967,7 +967,7 @@ char *MultiplyBaseSixteen(
 /*                      the result in the same buffer.               */
 /*********************************************************************/
 {
-  INT        Carry;                    /* multiplication carry              */
+  int        Carry;                    /* multiplication carry              */
   UINT       Digit;                    /* current digit                     */
   char *     OutPtr;                   /* output pointer                    */
 
@@ -977,7 +977,7 @@ char *MultiplyBaseSixteen(
                                        /* multiply digit by 10              */
     Digit = (UINT )((*OutPtr * 10) + Carry);
     if (Digit > 15) {                  /* carry?                            */
-      Carry = (INT)(Digit / 16);       /* get carry value                   */
+      Carry = (int)(Digit / 16);       /* get carry value                   */
       Digit &= (UINT )0x0000000f;      /* keep just lower nibble            */
     }
     else                               /* no carry here                     */
@@ -990,7 +990,7 @@ char *MultiplyBaseSixteen(
 }
 
 char *AddToBaseTen(
-  INT      Digit,                      /* digit to add                      */
+  int      Digit,                      /* digit to add                      */
   char    *Accum,                      /* number to add                     */
   char    *HighDigit )                 /* highest digit location            */
 /*********************************************************************/
@@ -998,7 +998,7 @@ char *AddToBaseTen(
 /*                      base 10 (used by the d2x and d2c functions)  */
 /*********************************************************************/
 {
-  INT      Carry;                      /* carry number                      */
+  int      Carry;                      /* carry number                      */
 
   Carry = 0;                           /* no carry yet                      */
   while (Digit || Carry) {             /* while something to add            */
@@ -1030,7 +1030,7 @@ char * MultiplyBaseTen(
 /*********************************************************************/
 {
   char *      OutPtr;                   /* addition pointer                  */
-  INT        Carry;                    /* multiplication carry              */
+  int        Carry;                    /* multiplication carry              */
   UINT       Digit;                    /* current digit                     */
 
   OutPtr = Accum;                      /* point to output buffer            */
@@ -1040,7 +1040,7 @@ char * MultiplyBaseTen(
                                        /* multiply digit by 16              */
     Digit = (UINT )((*OutPtr * 16) + Carry);
     if (Digit > 9) {                   /* carry?                            */
-      Carry = (INT)(Digit / 10);       /* get carry value                   */
+      Carry = (int)(Digit / 10);       /* get carry value                   */
       Digit %= 10;                     /* get the digit value               */
     }
     else                               /* no carry here                     */

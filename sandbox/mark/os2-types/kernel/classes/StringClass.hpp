@@ -263,7 +263,7 @@ class RexxStringClass : public RexxClass {
    RexxString  *DBCSstrip(RexxString *, RexxString *);
    RexxInteger *DBCSlength();
    RexxInteger *DBCSwordPos(RexxString *, RexxInteger *);
-   RexxInteger *DBCSdatatype(INT);
+   RexxInteger *DBCSdatatype(int);
    RexxInteger *DBCScompare(RexxString *, RexxString *);
    RexxString  *DBCScopies(RexxInteger *);
    RexxInteger *DBCSabbrev(RexxString *, RexxInteger *);
@@ -295,7 +295,7 @@ class RexxStringClass : public RexxClass {
    RexxString  *dbBracket();
    RexxString  *dbUnBracket();
    int          DBCSstringCompare(RexxString *);
-   size_t       DBCSmovePointer(size_t, INT, size_t);
+   size_t       DBCSmovePointer(size_t, int, size_t);
 
 
 
@@ -353,12 +353,12 @@ class RexxStringClass : public RexxClass {
        return createNumberString();         /* go build the number string version */
    }
 
-   inline INT sortCompare(RexxString *other) {
+   inline int sortCompare(RexxString *other) {
        size_t compareLength = length;
        if (compareLength > other->length) {
            compareLength = other->length;
        }
-       INT result = memcmp(stringData, other->stringData, compareLength);
+       int result = memcmp(stringData, other->stringData, compareLength);
        if (result == 0) {
            if (length > other->length) {
                result = 1;
@@ -370,12 +370,12 @@ class RexxStringClass : public RexxClass {
        return result;
    }
 
-   inline INT sortCaselessCompare(RexxString *other) {
+   inline int sortCaselessCompare(RexxString *other) {
        size_t compareLength = length;
        if (compareLength > other->length) {
            compareLength = other->length;
        }
-       INT result = memicmp(stringData, other->stringData, compareLength);
+       int result = memicmp(stringData, other->stringData, compareLength);
        if (result == 0) {
            if (length > other->length) {
                result = 1;
@@ -387,7 +387,7 @@ class RexxStringClass : public RexxClass {
        return result;
    }
 
-   inline INT sortCompare(RexxString *other, size_t startCol, size_t colLength) {
+   inline int sortCompare(RexxString *other, size_t startCol, size_t colLength) {
        int result = 0;
        if ((startCol < length ) && (startCol < other->length)) {
            size_t stringLength = length;
@@ -421,8 +421,8 @@ class RexxStringClass : public RexxClass {
        return result;
    }
 
-   inline INT sortCaselessCompare(RexxString *other, size_t startCol, size_t colLength) {
-       INT result = 0;
+   inline int sortCaselessCompare(RexxString *other, size_t startCol, size_t colLength) {
+       int result = 0;
        if ((startCol < length ) && (startCol < other->length)) {
            size_t stringLength = length;
            if (stringLength > other->length) {

@@ -54,7 +54,7 @@
                                        /* current global settings           */
 extern ACTIVATION_SETTINGS *current_settings;
 
-INT DBCS_MemiCmp(
+int DBCS_MemiCmp(
   const char *    DBCS_Table,                /* DBCS validation table             */
   const char *    String1,                   /* first memory location             */
   const char *    String2,                   /* second memory location            */
@@ -63,7 +63,7 @@ INT DBCS_MemiCmp(
 /*  Function:  Case insensitive DBCS memory compare                  */
 /*********************************************************************/
 {
-  INT       rc;                        /* compare value                     */
+  int       rc;                        /* compare value                     */
 
   rc = 0;                              /* default compare equal             */
   while ( Length ) {                   /* while length to compare           */
@@ -440,7 +440,7 @@ void DBCS_StripBlanks(
   *StringLength = (Scan - *String);
 }
 
-INT  DBCS_CaselessCompare(
+int  DBCS_CaselessCompare(
   const char *Str1,                    /* String to be compared.            */
   const char *Str2,                    /* String to be compared.            */
   size_t    Length )                   /* String2 length                    */
@@ -448,7 +448,7 @@ INT  DBCS_CaselessCompare(
 /* Function:    Compare the two strings, ignoring the case.          */
 /*********************************************************************/
 {
-  INT       rc;                        /* Return code for compare           */
+  int       rc;                        /* Return code for compare           */
   size_t    Cnt1;                      /* Str1 compare length               */
   size_t    Cnt2;                      /* Str2 compare length               */
 
@@ -483,7 +483,7 @@ INT  DBCS_CaselessCompare(
   return  rc;                          /* Return the result.                */
 }
 
-INT  DBCS_CharCompare(
+int  DBCS_CharCompare(
   const char *Str1,                    /* String to be compared.            */
   size_t    Len1,                      /* String1 length                    */
   const char *Str2,                    /* String to be compared.            */
@@ -495,7 +495,7 @@ INT  DBCS_CharCompare(
 /*              unmatched position.                                  */
 /*********************************************************************/
 {
-  INT       rc;                        /* Return code for compare           */
+  int       rc;                        /* Return code for compare           */
   size_t    PadSize;                   /* pad character length              */
   size_t    Cnt1;                      /* Str1 compare length               */
   size_t    Cnt2;                      /* Str2 compare length               */
@@ -1325,7 +1325,7 @@ void DBCS_ConvToSBCS(
 /*********************************************************************/
 
 size_t RexxString::DBCSmovePointer(size_t   Start,
-                                   INT    Direction,
+                                   int    Direction,
                                    size_t   CharLen)
 {
   size_t    BaseLen;                   /* length of base string             */
@@ -1459,7 +1459,7 @@ const char * DBCS_strspn(
 /* Description: Compare operator.                                    */
 /*********************************************************************/
 
-INT RexxString::DBCSstringCompare(RexxString *Right )
+int RexxString::DBCSstringCompare(RexxString *Right )
 {
   size_t    CharNum;                   /* Number of character.              */
   size_t    LeftLength;                /* left string length                */
@@ -2017,7 +2017,7 @@ RexxInteger *RexxString::DBCSwordPos(RexxString *phrase,
 /* Description: Data type Built-in function.                         */
 /*********************************************************************/
 
-RexxInteger *RexxString::DBCSdatatype(INT  DataType )
+RexxInteger *RexxString::DBCSdatatype(int  DataType )
 {
   RexxInteger *Retval;                 /* Return DataValue.                 */
   char         MixedType;              /* HugeString attributes.            */
@@ -2577,7 +2577,7 @@ RexxInteger *RexxString::DBCSverify(RexxString *ref,
   size_t   StartPos;                   /* Start position.                   */
   size_t   Length;                     /* string length                     */
   RexxInteger *Retval;                 /* returned value                    */
-  INT      Option;                     /* verify option                     */
+  int      Option;                     /* verify option                     */
 
   ValidDBCS(this);                     /* validate string and               */
                                        /* reference string                  */
