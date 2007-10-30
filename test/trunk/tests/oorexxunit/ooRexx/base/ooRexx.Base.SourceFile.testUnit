@@ -330,12 +330,28 @@ return testUnitList
 
     -- Double ªª should produce an error 35.1.  The interpreter will return -35
     -- (the negation of the major code number) and print out the error
-    -- diagnositc lines.  The start of the third line should be as follows:
+    -- diagnositc lines.  The exact error string varies slightly dependent on
+    -- platform, the third line should be contain the following string:
     -- Note that if the error messages change, this test will then fail.
-    length = "Error 35.1:  Incorrect expression detected"~length
+    errMsg = "Error 35.1:  Incorrect expression detected"
+    errMsgLength = errMsg~length
 
-    self~assertSame("Program rc must be 0", -35, prgRC)
-    self~assertTrue("Program output must be correct", output[3]~left(length) == "Error 35.1:  Incorrect expression detected")
+    -- Note that we assert things are as expected so that if they are not, we
+    -- get a test failure, and not an unexpected error.
+    self~assertTrue("Expected error output should be at least 3 lines", output~items >= 3)
+    self~assertTrue("Expected error line must contain 'Error'", output[3]~pos("Error") <> 0)
+
+    -- Note that if the crucial part of the error message changes, this test
+    -- will then fail and should be rewritten.
+    self~assertSame("Error output must be correct", errMsg, output[3]~substr(output[3]~pos("Error"), errMsgLength))
+
+    -- Unix/Linux bourne shells will restrict the exit code to the numbers 0 to
+    -- 255.   The actual exit code is treated as modulo 256, so -35 will become
+    -- 221 on Linux (bash shell.)
+    if .ooRexxUnit.OSName == "LINUX" then expectedRC = 221
+    else expectedRC = -35
+
+    self~assertSame("Error exit, program rc must be" expectedRC, expectedRC, prgRC)
 
 
 -- End of class: ooRexx.Base.SourceFile.testUnit
