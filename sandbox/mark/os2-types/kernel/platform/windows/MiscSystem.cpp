@@ -398,7 +398,7 @@ int WinExceptionFilter( int xCode )
 }
 
 
-char *SysGetThreadStackBase (INT StackSize)
+char *SysGetThreadStackBase (size_t StackSize)
 /******************************************************************************/
 /* Function:  Return a pointer to the current stack base                      */
 /******************************************************************************/
@@ -437,7 +437,7 @@ DWORD WINAPI call_thread_function(void * Arguments)
 
 INT SysCreateThread (
   PTHREADFN ThreadProcedure,           /* address of thread procedure       */
-  INT       StackSize,                 /* required stack size               */
+  size_t    StackSize,                 /* required stack size               */
   PVOID     Arguments )                /* thread procedure argument block   */
 /******************************************************************************/
 /* Function:  Create a new thread                                             */

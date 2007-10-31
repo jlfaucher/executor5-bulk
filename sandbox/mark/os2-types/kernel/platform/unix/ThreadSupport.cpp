@@ -108,9 +108,9 @@ void SysThreadInit(void)
 /*  are no performance improvements.                               */
 /*****************************************************************************/
 
-INT SysCreateThread(PTHREADFN threadFnc, INT stackSize, PVOID args)
+int SysCreateThread(PTHREADFN threadFnc, size_t stackSize, PVOID args)
 {
-   INT             rc;
+   int             rc;
    pthread_t       newThread;
    pthread_attr_t  newThreadAttr;
    int schedpolicy;
@@ -185,7 +185,7 @@ void SysSetThreadPriority(long tid, int  prio)
 
 }
 
-char *SysGetThreadStackBase(INT stacksize)
+char *SysGetThreadStackBase(size_t stacksize)
 {
   LONG temp;
   return (char *) ((ULONG)&temp - (ULONG)stacksize);

@@ -519,8 +519,8 @@ typedef char *(far REXXENTRY *PNMF)(void **);
 
 INT SysCreateThread (
   PTHREADFN ThreadProcedure,           /* address of thread procedure       */
-  INT       StackSize,                 /* required stack size               */
-  PVOID     Arguments );                /* thread procedure argument block   */
+  size_t    StackSize,                 /* required stack size               */
+  PVOID     Arguments );               /* thread procedure argument block   */
 
 
 #define SysValidateAddressName(OREF)   // OS2MISC: Validates address
