@@ -2632,7 +2632,7 @@ void RexxSource::flushControl(
 /*            for new added instructions                                      */
 /******************************************************************************/
 {
-  INT              type;               /* instruction type                  */
+  int              type;               /* instruction type                  */
   RexxInstruction *second;             /* additional created instructions   */
 
   for (;;) {                           /* loop through the control stack    */
@@ -2685,8 +2685,8 @@ RexxMethod *RexxSource::translateBlock(
   RexxInstruction *second;             /* secondary clause for IF/WHEN      */
   RexxToken       *token;              /* current working token             */
   RexxCode        *newCode;            /* newly created method              */
-  INT              type;               /* instruction type information      */
-  INT              controltype;        /* type on the control stack         */
+  int              type;               /* instruction type information      */
+  int              controltype;        /* type on the control stack         */
 
                                        /* no instructions yet               */
   OrefSet(this, this->first, OREF_NULL);
@@ -2961,7 +2961,7 @@ RexxInstruction *RexxSource::instruction()
     RexxInstruction *_instruction;        /* current working instruction       */
     RexxObject      *term;               /* term for a message send           */
     RexxObject      *subexpression;      /* subexpression of a clause         */
-    INT              _keyword;            /* resolved instruction keyword      */
+    int              _keyword;            /* resolved instruction keyword      */
 
     _instruction = OREF_NULL;             /* default to no instruction found   */
     _first = nextReal();                  /* get the first token               */
@@ -4171,7 +4171,7 @@ RexxObject *RexxSource::messageTerm()
   RexxToken   *token;                  /* current working token             */
   RexxObject  *term;                   /* working term                      */
   RexxObject  *start;                  /* starting term                     */
-  INT          classId;                /* token class                       */
+  int          classId;                /* token class                       */
 
   size_t mark = markPosition();       // save the current position so we can reset cleanly
 
@@ -4209,7 +4209,7 @@ RexxObject *RexxSource::messageSubterm(
 {
   RexxToken   *token;                  /* current working token             */
   RexxObject  *term = OREF_NULL;       /* working term                      */
-  INT          classId;                /* token class                       */
+  int          classId;                /* token class                       */
 
   token = nextToken();                 /* get the next token                */
                                        /* this the expression end?          */
@@ -4709,7 +4709,7 @@ RexxSource *RexxSource::classNewFile(
 RexxObject *RexxSource::sourceNewObject(
     size_t        size,                /* Object size                       */
     RexxBehaviour *_behaviour,         /* Object's behaviour                */
-    INT            type )              /* Type of instruction               */
+    int            type )              /* Type of instruction               */
 /******************************************************************************/
 /* Function:  Create a "raw" translator instruction object                    */
 /******************************************************************************/
@@ -4820,13 +4820,13 @@ void RexxSource::parseTraceSetting(
 }
 
 size_t RexxSource::processVariableList(
-  INT        type )                    /* type of instruction               */
+  int        type )                    /* type of instruction               */
 /****************************************************************************/
 /* Function:  Process a variable list for PROCEDURE, DROP, and USE          */
 /****************************************************************************/
 {
   RexxToken   *token;                  /* current working token             */
-  INT          list_count;             /* count of variables in list        */
+  int          list_count;             /* count of variables in list        */
   RexxObject  *retriever;              /* variable retriever object         */
 
   list_count = 0;                      /* no variables yet                  */
@@ -4901,7 +4901,7 @@ size_t RexxSource::processVariableList(
 
 RexxObject *RexxSource::parseConditional(
      PINT  condition_type,             /* type of condition                 */
-     INT   error_message )             /* extra "stuff" error message       */
+     int   error_message )             /* extra "stuff" error message       */
 /******************************************************************************/
 /* Function:  Allow for WHILE or UNTIL keywords following some other looping  */
 /*            construct.  This returns SUBKEY_WHILE or SUBKEY_UNTIL to flag   */
@@ -4909,7 +4909,7 @@ RexxObject *RexxSource::parseConditional(
 /******************************************************************************/
 {
   RexxToken  *token;                   /* current working token             */
-  INT         _keyword;                /* keyword of parsed conditional     */
+  int         _keyword;                /* keyword of parsed conditional     */
   RexxObject *_condition;              /* parsed out condition              */
 
   _condition = OREF_NULL;               /* default to no condition           */
