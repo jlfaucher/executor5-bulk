@@ -64,12 +64,7 @@ class DeadObject {
 
     inline void addEyeCatcher(const char *string) { memcpy(VFT, string, 4); }
     inline DeadObject(size_t objectSize) {
-        if (objectSize <  LargeObjectMinSize) {
-            ObjectHeader(this) = SmallObjectSize(objectSize);
-        }
-        else {                                                                                                  \
-            ObjectHeader(this) = LargeObjectSize(objectSize);
-        }
+        header.setSize(objectSize);
 #ifdef CHECKOREFS
         addEyeCatcher("DEAD");
 #endif
@@ -79,14 +74,14 @@ class DeadObject {
   // Called during RexxMemory initialization
   inline DeadObject() {
       addEyeCatcher("HEAD");
-      header = 0;
+      header.setSize(0);
       /* Chain this deadobject to itself. */
       next = this;
       previous = this;
   }
 
-  inline void setSize(size_t newSize) { SetObjectSize(this, newSize); }
-  inline size_t size() {  return ObjectSize(this); };
+  inline void setSize(size_t newSize) { header.setSize(newSize); }
+  inline size_t size() {  return header.size(); };
 
   inline void insertAfter(DeadObject *newDead) {
       newDead->next     = this->next;
@@ -107,8 +102,8 @@ class DeadObject {
       this->previous->next = this->next;
   }
 
-  inline BOOL isReal() { return header != 0; }
-  inline BOOL isHeader() { return header == 0; }
+  inline bool isReal() { return header.size() != 0; }
+  inline bool isHeader() { return header.size() == 0; }
 
   inline void reset() {
       /* Chain this deadobject to itself, removing all of the */
@@ -116,15 +111,16 @@ class DeadObject {
       next = this;
       previous = this;
   }
+
   inline DeadObject *end() { return (DeadObject *)(((char *)this) + this->size()); }
-  inline BOOL overlaps(DeadObject *o) { return (o >= this && o < end()) || (o->end() >= this && o->end() < this->end()); }
+  inline bool overlaps(DeadObject *o) { return (o >= this && o < end()) || (o->end() >= this && o->end() < this->end()); }
 
 
 protected:
   char        VFT[sizeof(void *)];     /* Place Holder for virtualFuncTable */
                                        /* in debug mode, holds string DEAD  */
+  ObjectHeader  header;                /* header info just like any obj     */
   DeadObject *next;                    /* next dead object on this chain    */
-  HEADINFO    header;                  /* header info just like any obj     */
   DeadObject *previous;                /* prev dead object on this chain    */
 
 };

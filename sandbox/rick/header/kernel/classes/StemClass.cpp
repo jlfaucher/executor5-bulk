@@ -469,7 +469,7 @@ RexxObject *RexxStem::newRexx(
                                        /* break up the arguments            */
   process_new_args(init_args, argCount, &init_args, &argCount, 1, (RexxObject **)&name, NULL);
   newObj = new RexxStem ((RexxString *)name);   /* get a new stem                    */
-  BehaviourSet(newObj, ((RexxClass *)this)->instanceBehaviour);
+  BehaviourSet(newObj, ((RexxClass *)this)->getInstanceBehaviour());
                                        /* does object have an UNINT method  */
   if (((RexxClass *)this)->uninitDefined())
      newObj->hasUninit();              /* Make sure everyone is notified.   */

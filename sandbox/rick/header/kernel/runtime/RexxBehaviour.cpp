@@ -52,16 +52,15 @@
 extern PCPPM objectOperatorMethods[];
 
 RexxBehaviour::RexxBehaviour(
-    HEADINFO        newHeader,
-    short           newTypenum,        /* class type number                 */
+    size_t          newTypenum,        /* class type number                 */
     PCPPM *         operator_methods ) /* operator lookaside table          */
 /******************************************************************************/
 /* Function:  Construct C++ methods in OKGDATA.C                              */
 /******************************************************************************/
 {
   this->behaviour = &pbehav[T_behaviour];
-  this->header  = newHeader;
-  this->hashvalue = HASHOREF(this);
+  this->header.setSize(sizeof(RexxBehaviour));
+  this->hashvalue = this->HASHOREF();
   this->setTypenum(newTypenum);
   this->setFlags(0);
   this->scopes = OREF_NULL;
@@ -90,21 +89,20 @@ void RexxBehaviour::liveGeneral()
 /******************************************************************************/
 {
                                        /* Save image processing?        */
-  if (memoryObject.savingImage() && this->isNonPrimitiveBehaviour()) {
-                                       /* Yes, mark the behaviour object*/
-    this->setBehaviourNotResolved();
+  if (memoryObject.savingImage() && this->isNonPrimitiveBehaviour())
+  {
+      // mark this as needing resolution when restored.
+      this->setBehaviourNotResolved();
   }
-  else
-                                       /* Working with a primitive behav*/
-                                       /* or a copy?                    */
-    if (memoryObject.restoringImage() && this->isNonPrimitiveBehaviour()) {
-                                       /* Working with a copy, don't use*/
-                                       /* PBEHAV verison.               */
-                                       /* Make sure static behaviour inf*/
-                                       /* is resolved before using the  */
-                                       /* Behaviour.                    */
-     resolveNonPrimitiveBehaviour(this);
-    }
+  // the other side of the process?
+  else if (memoryObject.restoringImage()
+  {
+      // if we have a non-primitive here on a restore image, we need to fix this up.
+      if (isNonPrimitiveBehaviour())
+      {
+          resolveNonPrimitiveBehaviour();
+      }
+  }
 
   setUpMemoryMarkGeneral
   memory_mark_general(this->methodDictionary);
@@ -127,13 +125,29 @@ void RexxBehaviour::flatten(RexxEnvelope *envelope)
    flatten_reference(newThis->createClass, envelope);
 
                                        /* Is this a non-primitive behav */
-   if (this->isNonPrimitiveBehaviour()) {
+   if (this->isNonPrimitiveBehaviour())
+   {
                                        /* yes, mark that we need to be  */
                                        /*  resolved on the puff.        */
-     newThis->setBehaviourNotResolved();
+       newThis->setBehaviourNotResolved();
    }
   cleanUpFlatten
 }
+
+/**
+ * Do fix ups for non-primitive behaviours, ensuring they
+ * get all of the appropriate information from their parent
+ * primitive behaviour types.
+ */
+void RexxBehaviour::resolveNonPrimitiveBehaviour()
+{
+    if (isBehaviourNotResolved()
+    {
+        setBehaviourResolved();
+        operatorMethods = primitiveBehaviour(getClassType()).operatorMethods;
+    }
+}
+
 
 RexxObject *RexxBehaviour::copy()
 /******************************************************************************/

@@ -341,7 +341,7 @@ RexxObject *RexxNativeActivation::run(
     this->guardOff();                  /* release any variable locks        */
     this->argcount = 0;                /* make sure we don't try to mark any arguments */
     this->activity->pop(FALSE);        /* pop this from the activity        */
-    SetObjectHasNoReferences(this);    /* mark this as not having references in case we get marked */
+    this->setHasNoReferences();        /* mark this as not having references in case we get marked */
     return this->result;               /* and finished                      */
   }
 
@@ -423,7 +423,7 @@ RexxObject *RexxNativeActivation::run(
   this->guardOff();                    /* release any variable locks        */
   this->argcount = 0;                  /* make sure we don't try to mark any arguments */
   this->activity->pop(FALSE);          /* pop this from the activity        */
-  SetObjectHasNoReferences(this);      /* mark this as not having references in case we get marked */
+  this->setHasNoReferences();          /* mark this as not having references in case we get marked */
   return (RexxObject *)result;         /* and finished                      */
 }
 

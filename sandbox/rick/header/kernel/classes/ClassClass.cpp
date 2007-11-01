@@ -161,7 +161,7 @@ BOOL RexxClass::isEqual(
                                        /* If a non-copied (Primitive)       */
                                        /*behaviour Then we can directly     */
                                        /*call primitive method              */
-  if (this->behaviour->isPrimitiveBehaviour())
+  if (this->behaviour->isPrimitive())
                                        /* can compare at primitive level    */
     return this->equal(other) == TheTrueObject;
   else
@@ -245,7 +245,7 @@ RexxClass *RexxClass::getMetaClass()
 /* Function:   return the classes metaclass                                  */
 /*****************************************************************************/
 {
-  if (this->isPrimitive())             /* primitive class?                  */
+  if (this->isPrimitiveClass())        /* primitive class?                  */
     return TheClassClass;              /* this is always .class             */
   else                                 /* return first member of the list   */
     return (RexxClass *)this->metaClass->get(1);
@@ -1101,8 +1101,11 @@ RexxClass  *RexxClass::subclass(
   if (meta_class == OREF_NULL)         /* if there is no metaclass specified*/
     meta_class = this->getMetaClass(); /* use the default metaclass         */
 
-  if (!meta_class->queryMeta())        /* check that it is a meta class     */
-    reportException(Error_Translation_bad_metaclass, meta_class);
+                                       /* check that it is a meta class     */
+  if (!meta_class->isInstanceOf(TheClassClass) || !meta_class->queryMeta())
+  {
+      reportException(Error_Translation_bad_metaclass, meta_class);
+  }
                                        /* get a copy of the metaclass class */
   new_class = (RexxClass *)save(meta_class->sendMessage(OREF_NEW, class_id));
   new_class->hashvalue = HASHOREF(new_class);
@@ -1324,7 +1327,7 @@ RexxClass  *RexxClass::newRexx(RexxObject **args, size_t argCount)
   new_class->behaviour->setClass(this);/* and set the behaviour class       */
                                        /* if this is a primitive class then  */
                                        /* there isn't any metaclass info     */
-  if (this->isPrimitive()) {           /* set up yet                        */
+  if (this->isPrimitiveClass()) {      /* set up yet                        */
                                        /* set up the new metaclass list      */
     OrefSet(new_class, new_class->metaClass, new_array(TheClassClass));
                                        /* the metaclass mdict list           */

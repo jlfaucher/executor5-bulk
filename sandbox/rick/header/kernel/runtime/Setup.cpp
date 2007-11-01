@@ -582,9 +582,9 @@ void kernelInit (void)
                                        /*  moved to another system, rather  */
                                        /*  will re-establish themselves on  */
                                        /*  the remote system.               */
-  TheEnvironment->header |= MakeProxyObject;
-  TheKernel->header |= MakeProxyObject;
-  TheSystem->header |= MakeProxyObject;
+  TheEnvironment->makeProxiedObject();
+  TheKernel->makeProxiedObject();
+  TheSystem->makeProxiedObject();
 
   ThePublicRoutines = new_directory();
   TheStaticRequires = new_directory();

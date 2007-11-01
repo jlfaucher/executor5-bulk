@@ -154,7 +154,7 @@ inline long RANDOMIZE(long seed) { return (seed * RANDOM_FACTOR + 1); }
 
 /* Object Reference Assignment */
 #ifndef CHECKOREFS
-#define OrefSet(o,r,v) (OldSpace(o) ? memoryObject.setOref((void *)&(r),(RexxObject *)v) : (RexxObject *)(r=v))
+#define OrefSet(o,r,v) ((o)->isOldSpace() ? memoryObject.setOref((void *)&(r),(RexxObject *)v) : (RexxObject *)(r=v))
 #else
 #define OrefSet(o,r,v) memoryObject.checkSetOref((RexxObject *)o, (RexxObject **)&(r), (RexxObject *)v, __FILE__, __LINE__)
 #endif
@@ -216,37 +216,9 @@ inline long RANDOMIZE(long seed) { return (seed * RANDOM_FACTOR + 1); }
 #define new_token(c,s,v,l)                (new RexxToken (c, s, v, l))
 #define new_arrayOfTokens(n)              (memoryObject.newObjects(sizeof(RexxToken), n, TheTokenBehaviour))
 
-/******************************************************************************/
-/* Function prototypes for different message dispatch types                   */
-/******************************************************************************/
-
-typedef RexxObject *  (far *PMF0)(RexxObject *);
-typedef RexxObject *  (far *PMF1)(RexxObject *, RexxObject *);
-typedef RexxObject *  (far *PMF2)(RexxObject *, RexxObject *, RexxObject *);
-typedef RexxObject *  (far *PMF3)(RexxObject *, RexxObject *, RexxObject *, RexxObject *);
-typedef RexxObject *  (far *PMF4)(RexxObject *, RexxObject *, RexxObject *, RexxObject *, RexxObject *);
-typedef RexxObject *  (far *PMF5)(RexxObject *, RexxObject *, RexxObject *, RexxObject *, RexxObject *, RexxObject *);
-typedef RexxObject *  (far *PMF6)(RexxObject *, RexxObject *, RexxObject *, RexxObject *, RexxObject *, RexxObject *, RexxObject *);
-typedef RexxObject *  (far *PMF7)(RexxObject *, RexxObject *, RexxObject *, RexxObject *, RexxObject *, RexxObject *, RexxObject *, RexxObject *);
-
-                                       /* pointer to method function        */
-typedef RexxObject *  (far VLAENTRY *PMF) ( RexxObject *,...);
-
-typedef PMF   near *NPPMF;             /* near pointer to above             */
-
-typedef ULONG HEADINFO;                /* Object Header information         */
-
 #define MCPP   0                       /* C++ method start index            */
 #define MSSCPP 0                       /* C++ class method start index      */
 
-typedef struct locationinfo {          /* token/clause location information */
-  size_t line;                         /* file line location                */
-  size_t offset;                       /* token location within the line    */
-  size_t endline;                      /* ending line location              */
-  size_t endoffset;                    /* ending offset location (+1)       */
-} LOCATIONINFO;
-
-typedef LOCATIONINFO *PLOCATIONINFO;   /* pointer to location information   */
 
 typedef struct internalmethodentry {   /* internal method table entry       */
   const char *entryName;               /* internal entry point name         */
@@ -278,25 +250,7 @@ typedef RexxObject *builtin_func(RexxActivation *, INT, RexxExpressionStack *);
 typedef builtin_func *pbuiltin;        /* pointer to a builtin function     */
 
                                        /*  as "overLoading" of hashValue  */
-typedef struct {
-  short typeNum;
-  short behaviourFlags;
-} BEHAVIOURINFO;
 
-typedef struct {
-  unsigned short methnum;              /* kernel method number            */
-  uint8_t arguments;
-  uint8_t flags;                       /* flag information                */
-} METHODINFO;
-
-typedef struct {
-  uint8_t type;                        /* name of the instruction           */
-  uint8_t flags;                       /* general flag area                 */
-  unsigned short general;              /* general reusable short value      */
-} INSTRUCTIONINFO;
-
-                                       /* used ofor special constructor   */
-typedef enum {RESTOREIMAGE, MOBILEUNFLATTEN, METHODUNFLATTEN} RESTORETYPE;
 
 /******************************************************************************/
 /* Change EXTERN definition if not already created by GDATA                   */
@@ -726,8 +680,6 @@ EXTERN void *VFTArray[highest_T];      /* table of virtual functions        */
 #define HASBEHAV(b,r) (((r)->behaviour) == b)
                                        /* access an object's hash value     */
 #define HASHVALUE(r) ((ULONG)((r)->hashvalue))
-                                       /* generate hash value from OREF     */
-#define HASHOREF(r) ((long)((ULONG)r>>3))
 
 /******************************************************************************/
 /* Utility Functions                                                          */
@@ -1009,11 +961,6 @@ inline long REQUEST_LONG(RexxObject *obj, int precision) { return ((obj)->reques
 inline long REQUIRED_LONG(RexxObject *obj, int precision, int position) { return ((obj)->requiredLong(position, precision)); }
 
 /******************************************************************************/
-/* Function:  Test for primitive method status of an object                   */
-/******************************************************************************/
-inline BOOL isPrimitive(RexxObject *object) { return object->behaviour->isPrimitiveBehaviour(); }
-
-/******************************************************************************/
 /* Floating-point conversions                                                 */
 /******************************************************************************/
 
@@ -1040,7 +987,7 @@ RexxString *version_number (void);
 
 #define setUpMemoryMark                \
  {                                     \
-   long headerMarkedValue = memoryObject.markWord | OldSpaceBit;
+   uint16_t headerMarkedValue = memoryObject.markWord | OldSpaceBit;
 
 #define cleanUpMemoryMark               \
  }
@@ -1056,7 +1003,7 @@ RexxString *version_number (void);
 #define cleanUpFlatten                    \
  }
 
-#define ObjectNeedsMarking(oref) ((oref) != OREF_NULL && !ObjectIsMarked(oref))
+#define ObjectNeedsMarking(oref) ((oref) != OREF_NULL && ((oref)->isObjectMarked(headerMarkedValue)) )
 #define memory_mark(oref)  if (ObjectNeedsMarking(oref)) memoryObject.mark((RexxObject *)(oref))
 #define memory_mark_general(oref) (memoryObject.markGeneral((void *)&(oref)))
 
@@ -1068,10 +1015,8 @@ RexxString *version_number (void);
 /******************************************************************************/
 
 inline RexxObject * callOperatorMethod(RexxObject *object, LONG methodOffset, RexxObject *argument) {
-  PCPPM cppEntry;                      /* kernel method entry point         */
-
                                        /* get the entry point               */
-  cppEntry = object->behaviour->operatorMethods[methodOffset];
+  PCPPM cppEntry = object->behaviour->getOperatorMethod(methodOffset);
                                        /* go issue the method               */
   return (object->*((PCPPM1)cppEntry))(argument);
 }

@@ -49,30 +49,6 @@ void memoryCreate();
 void memoryRestore(void);
 void memoryNewProcess (void);
 
-/* turn this on to get verbose GC output */
-//#define VERBOSE_GC
-
-
-#define LiveMask            0xFFFFFFFC
-#define MarkMask            0x00000003
-
-/* behaviour (used on restoreimage).  Not that this is overloaded */
-/* with the mark bits.  We don't need to use these at the same */
-/* time.  The IsNonPrimitive bit on has meaning in the saved image. */
-/* The mark bits only have meaning once the image has been */
-/* restored. */
-#define IsNonPrimitive  0x00000001
-#define MarkBit1        0x00000001     /* Second of the mark bits           */
-#define MarkBit2        0x00000002     /* Second of the mark bits           */
-#define MakeProxyObject 0x00000004     /* This object is a PROXY(String) Obj*/
-#define ProxyObject     0x00000008     /* This object is a PROXY(String) Obj*/
-#define OldSpaceBit     0x00000010     /* location of the OldSpace bit      */
-#define LargeObjectBit  0x00000020     /* This is a Large Object            */
-#define NoRefBit        0x00000040     /* location of No References Bit.    */
-#define Special         0x00000080     /* One bit available class specific usage */
-#define SizeMask        0xFFFFFF00     /* mask for object size              */
-#define TenureMask      0xFFFFFF00     /* mask for tenure....               */
-
 /* The minimum allocation unit for an object.   */
 #define ObjectGrain 8
 /* The unit of granularity for large allocation */
@@ -103,9 +79,11 @@ void memoryNewProcess (void);
 
 #define ObjectIsLive(o)     (memoryObject.objectIsLive((RexxObject *)(o)))
 #define ObjectIsNotLive(o)  (!ObjectIsLive(o))
-#define SetObjectLive(o)    (ObjectHeader(o) &= LiveMask); \
-                            (ObjectHeader(o) |= memoryObject.markWord)
-#define ObjectIsMarked(o)   (ObjectHeader(o) & headerMarkedValue)
+
+inline void SetObjectLive(void *o, uint16_t mark) {
+    ((RexxObject *)o)->setObjectLive(mark);
+}
+#define SetObjectLive(o)    ((RexxObject *)o)->setObjectLive(memoryObject.markWord)
 #define ClearObjectMark(o)  (ObjectHeader(o) &= LiveMask)
 
 #ifdef FORCE_GRAINING
@@ -124,55 +102,11 @@ void memoryNewProcess (void);
 /* defaults in object headers, be sure to check the above modules, */
 /* for possible changes.... */
 
-/* return the size of the object */
-#define ObjectSize(o)  ObjectSizeFunc(((RexxObject *)(o))->header)
-inline size_t ObjectSizeFunc(HEADINFO header) { return (header & LargeObjectBit) ? header & LargeObjectSizeMask : header>>ObjectSizeShift; }
 
 /* largest size we'll keep in the save stack on a mark */
 #define SaveStackThreshold   4096
 
 #define IsLargeObject(o)  (ObjectSize(o) > SaveStackThreshold)
-#define ObjectHeader(o)   (((RexxObject *)(o))->header)
-#define ClearObjectHeader(o) (ObjectHeader(o) = (HEADINFO)0)
-#define SetOldSpace(o)       (ObjectHeader(o) |= OldSpaceBit)
-
-#define SetSpecial(o)       (ObjectHeader(o) |= Special)
-#define ClearSpecial(o)     (ObjectHeader(o) &= (~Special))
-#define IsSpecial(o)        (ObjectHeader(o) & Special)
-
-#define ClearObjectSize(o) (ObjectHeader(o) &= (~(SizeMask | LargeObjectBit)))
-
-#define SmallObjectSize(s) (((size_t)(s)) << ObjectSizeShift)
-#define LargeObjectSize(s) (((size_t)(s) & LargeObjectSizeMask) | LargeObjectBit)
-
-#define SetSmallObjectSize(o,s)     (ObjectHeader(o) |= SmallObjectSize(s))
-#define SetLargeObjectSize(o,s)     (ObjectHeader(o) |= LargeObjectSize(s))
-/* set the size of the object in header */
-#define SetObjectSize(o, s) SetObjectSizeFunc((RexxObject *)(o), s)
-
-inline void SetObjectSizeFunc(RexxObject *o, size_t s)
-{
-#ifdef CHECKOREFS
-    if (!IsValidSize(s)) {
-        logic_error("Invalid object size");
-    }
-#endif
-
-    ClearObjectSize(o);
-    if (s >= LargeObjectMinSize)
-        SetLargeObjectSize(o, s);
-    else
-        SetSmallObjectSize(o, s);
-}
-
-#define SetNewSpace(o)               (ObjectHeader(o) &= (~OldSpaceBit))
-#define SetOldSpace(o)               (ObjectHeader(o) |= OldSpaceBit)
-
-#define SetObjectHasNoReferences(o)  (ObjectHeader(o) |= NoRefBit)
-#define SetObjectHasReferences(o)    (ObjectHeader(o) &= (~NoRefBit))
-#define ObjectHasNoReferences(o)     (ObjectHeader(o) & NoRefBit)
-#define ObjectHasReferences(o)       (!ObjectHasNoReferences(o))
-#define OldSpace(o)                  (ObjectHeader(o) & OldSpaceBit)
 
 #define NullOrOld(o)        (((RexxObject *)(o) == OREF_NULL) || OldSpace(o))
 
@@ -345,18 +279,14 @@ class RexxMemory : public RexxObject {
   inline void logObjectStats(RexxObject *obj) { imageStats->logObject(obj); }
   inline void pushSaveStack(RexxObject *obj) { saveStack->push(obj); }
   inline void removeSavedObject(RexxObject *obj) { saveStack->remove(obj); }
-  inline void setObjectSize(RexxObject *o, size_t s)
-  {
-      if (s <  LargeObjectMinSize) {
-          ObjectHeader(o) = SmallObjectSize(s) | markWord;
-      }
-      else {                                                                                                  \
-          ObjectHeader(o) = LargeObjectSize(s) | markWord;
-      }
-  }
+//  inline void setObjectSize(RexxObject *o, size_t s)
+//  {
+//      o->setObjectSize(s);
+//      o->setMarkWord(markWord);
+//  }
 
-  inline BOOL objectIsLive(RexxObject *obj) {return ((ObjectHeader(obj) & MarkMask) == markWord); }
-  inline BOOL objectIsNotLive(RexxObject *obj) {return ((ObjectHeader(obj) & MarkMask) != markWord); }
+//  inline BOOL objectIsLive(RexxObject *obj) {return ((ObjectHeader(obj) & MarkMask) == markWord); }
+//  inline BOOL objectIsNotLive(RexxObject *obj) {return ((ObjectHeader(obj) & MarkMask) != markWord); }
   inline void disableOrefChecks() { checkSetOK = FALSE; }
   inline void enableOrefChecks() { checkSetOK = TRUE; }
   inline void clearSaveStack() {
@@ -387,7 +317,7 @@ class RexxMemory : public RexxObject {
   void        scavengeSegmentSets(MemorySegmentSet *requester, size_t allocationLength);
   void setUpMemoryTables(RexxObjectTable *old2newTable);
 
-  ULONG markWord;                      /* current marking counter           */
+  uint16_t markWord;                   /* current marking counter           */
   SMTX flattenMutex;                   /* locks for various memory processes */
   SMTX unflattenMutex;
   SMTX envelopeMutex;
@@ -410,8 +340,8 @@ private:
 
   inline void restoreObjectMark(RexxObject *markObject, RexxObject **pMarkObject) {
                                          /* update the object reference       */
-      markObject = (RexxObject *)((ULONG)markObject + objOffset);
-      SetObjectLive(markObject);         /* Then Mark this object as live.    */
+      markObject = (RexxObject *)((char *)markObject + objOffset);
+      markObject->setObjectLive(markWord); /* Then Mark this object as live.    */
       *pMarkObject = markObject;         /* now set this back again           */
   }
 

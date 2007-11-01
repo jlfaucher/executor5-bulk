@@ -311,7 +311,7 @@ RexxObject * activation_find  (void);
    inline void              setCallType(RexxString *type) {this->settings.calltype = type; }
    inline RexxObject      * getReceiver() { return this->receiver; };
    inline void              pushBlock(RexxDoBlock *block) { block->setPrevious(this->dostack); this->dostack = block; }
-   inline void              popBlock() { RexxDoBlock *temp; temp = this->dostack; this->dostack = temp->previous; SetObjectHasNoReferences(temp); }
+   inline void              popBlock() { RexxDoBlock *temp; temp = this->dostack; this->dostack = temp->previous; temp->setHasNoReferences(); }
    inline RexxDoBlock     * topBlock() { return this->dostack; }
    inline void              terminateBlock(size_t _indent) { this->popBlock(); this->blockNest--; this->settings.traceindent = _indent; }
    inline void              newDo(RexxDoBlock *block) { this->pushBlock(block); this->blockNest++; this->settings.traceindent++;}

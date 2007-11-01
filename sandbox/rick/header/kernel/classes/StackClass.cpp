@@ -267,7 +267,7 @@ void RexxSaveStack::live()
         continue;                      /* an empty entry? just go on */
     }
                                        /* if the object has already been marked, */
-    else if (ObjectIsMarked(thisObject)) {
+    else if (thisObject->isObjectMarked(memoryObject.markWord)) {
         *rp = OREF_NULL;               /* we can clear this out now, rather than keeping it in the stack */
     }
     else {

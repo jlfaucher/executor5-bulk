@@ -234,7 +234,7 @@ RexxObject  *RexxSupplierClass::newRexx(
 /****************************************************************************/
 {
     RexxObject *newObj = new RexxSupplier();
-    BehaviourSet(newObj, this->instanceBehaviour);
+    BehaviourSet(newObj, this->getInstanceBehaviour());
     if (this->uninitDefined())
     {
         newObj->hasUninit();

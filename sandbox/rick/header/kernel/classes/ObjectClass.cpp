@@ -138,11 +138,41 @@ BOOL RexxObject::isEqual(
 /*            classes for determining equality.                               */
 /******************************************************************************/
 {
-  if (isPrimitive(this))               /* primitive object?                 */
-                                       /* simple identity equality          */
-    return ((RexxObject *)this) == other;
-  else                                 /* return truth value of a compare   */
-    return this->sendMessage(OREF_STRICT_EQUAL, other)->truthValue(Error_Logical_value_method);
+    if (this->isBaseClass())               /* not a primitive?                  */
+    {
+                                           /* simple identity equality          */
+        return ((RexxObject *)this) == other;
+    }
+    else                                 /* return truth value of a compare   */
+    {
+        return this->sendMessage(OREF_STRICT_EQUAL, other)->truthValue(Error_Logical_value_method);
+    }
+}
+
+
+/**
+ * Test if an object instance is an enhanced version of a
+ * primitive class or a subclass of the primitive class.
+ *
+ * @return true if the object is a subclass instance or an enhanced one-off.
+ */
+bool RexxInternalObject::isSubClassOrEnhanced()
+{
+    return behaviour->isNonPrimitive();
+}
+
+
+
+
+/**
+ * Test if an object instance is a true instance of a primitive
+ * class.
+ *
+ * @return true if the object is not a subclass instance or an enhanced one-off.
+ */
+bool RexxInternalObject::isBaseClass()
+{
+    return behaviour->isPrimitive();
 }
 
 
@@ -339,7 +369,7 @@ RexxObject *RexxObject::hashCode()
 ULONG RexxObject::hash()
 {
     // if this is a primitive object, we can just return the stored hash code.
-    if (isPrimitive(this))
+    if (this->isBaseClass())
     {
         return HASHVALUE(this);
     }
@@ -456,7 +486,7 @@ ULONG RexxObject::hash()
   RexxString *hashString;              /* string value of the hash          */
   ULONG       hash;                    /* returned hash value               */
 
-  if (isPrimitive(this))               /* is this a primitve class?         */
+  if (this->isBaseClass())             /* is this a primitve class?         */
     return HASHVALUE(this);            /* use the macro to return the hash  */
   else {
                                        /* get a hash value (as a string)    */
@@ -504,7 +534,7 @@ void *RexxInternalObject::operator new(size_t size,
                                        /* get storage for a new object      */
   newObject = (RexxObject *)new_object(size);
                                        /* use the class instance behaviour  */
-  BehaviourSet(newObject, classObject->instanceBehaviour);
+  BehaviourSet(newObject, classObject->getInstanceBehaviour());
                                        /* use the default hash value        */
   newObject->hashvalue = HASHOREF(newObject);
   return (void *)newObject;            /* and return the new object         */
@@ -523,7 +553,7 @@ void *RexxInternalObject::operator new(size_t size,
                                        /* Get storage for a new object      */
   newObject = (RexxObject *)new_object(size);
                                        /* use the classes instance behaviour*/
-  BehaviourSet(newObject, classObject->instanceBehaviour);
+  BehaviourSet(newObject, classObject->getInstanceBehaviour());
                                        /* use the default hash value        */
   newObject->hashvalue = HASHOREF(newObject);
   return newObject;                    /* and return the object             */
@@ -997,7 +1027,7 @@ RexxString *RexxObject::makeString()
 /* Function:  Handle a string conversion REQUEST for a REXX object            */
 /******************************************************************************/
 {
-  if (isPrimitive(this))               /* primitive object?                 */
+  if (this->isBaseClass())             /* primitive object?                 */
     return (RexxString *)TheNilObject; /* this never converts               */
   else                                 /* process as a string request       */
     return (RexxString *)this->sendMessage(OREF_REQUEST, OREF_STRINGSYM);
@@ -1036,7 +1066,7 @@ RexxArray *RexxObject::makeArray()
 /* Function:  Handle a string conversion REQUEST for a REXX object            */
 /******************************************************************************/
 {
-  if (isPrimitive(this))               /* primitive object?                 */
+  if (this->isBaseClass())             /* primitive object?                 */
     return (RexxArray *)TheNilObject;  /* this never converts               */
   else                                 /* process as a string request       */
     return (RexxArray *)this->sendMessage(OREF_REQUEST, OREF_ARRAYSYM);
@@ -1051,7 +1081,7 @@ RexxString *RexxObject::requestString()
   RexxString *string_value;            /* converted object                  */
 
                                        /* primitive object?                 */
-  if (isPrimitive((RexxObject *)this)) {
+  if (this->isBaseClass())) {
                                        /* get the string representation     */
     string_value = this->primitiveMakeString();
     if (string_value == TheNilObject) {/* didn't convert?                   */
@@ -1082,7 +1112,7 @@ RexxString *RexxObject::requestStringNoNOSTRING()
   RexxString *string_value;            /* converted object                  */
 
                                        /* primitive object?                 */
-  if (isPrimitive((RexxObject *)this)) {
+  if (this->isBaseClass()) {
                                        /* get the string representation     */
     string_value = this->primitiveMakeString();
     if (string_value == TheNilObject) {/* didn't convert?                   */
@@ -1109,7 +1139,7 @@ RexxString *RexxObject::requiredString(
 {
   RexxString *string_value;            /* converted object                  */
 
-  if (isPrimitive(this))               /* primitive object?                 */
+  if (this->isBaseClass())             /* primitive object?                 */
     string_value = this->makeString(); /* get the string representation     */
   else                                 /* do a full request for this        */
     string_value = (RexxString *)this->sendMessage(OREF_REQUEST, OREF_STRINGSYM);
@@ -1130,7 +1160,7 @@ RexxString *RexxObject::requiredString(
 RexxString *RexxObject::requiredString()
 {
     // primitive object?  We have a bypass for this
-    if (isPrimitive(this))
+    if (this->isBaseClass())
     {
         return this->makeString();
     }
@@ -1150,7 +1180,7 @@ RexxInteger *RexxObject::requestInteger(
 /*            and then the string integer value will be returned.             */
 /******************************************************************************/
 {
-  if (isPrimitive(this))               /* primitive object?                 */
+  if (this->isBaseClass())             /* primitive object?                 */
                                        /* return the integer value          */
     return this->integerValue(precision);
   else                                 /* return integer value of string    */
@@ -1168,7 +1198,7 @@ RexxInteger *RexxObject::requiredInteger(
 {
   RexxInteger *result;                 /* returned result                   */
 
-  if (isPrimitive(this))               /* primitive object?                 */
+  if (this->isBaseClass())             /* primitive object?                 */
                                        /* return the integer value          */
     result = this->integerValue(precision);
   else                                 /* return integer value of string    */
@@ -1188,7 +1218,7 @@ LONG  RexxObject::requestLong(
 /*            and then the string long value will be returned.                */
 /******************************************************************************/
 {
-  if (isPrimitive(this))               /* primitive object?                 */
+  if (this->isBaseClass())             /* primitive object?                 */
     return this->longValue(precision); /* return the long value             */
   else                                 /* return integer value of string    */
     return this->requestString()->longValue(precision);
@@ -1206,7 +1236,7 @@ LONG  RexxObject::requiredLong(
   wholenumber_t  result;               /* returned result                   */
 
                                        /* primitive object?                 */
-  if (isPrimitive(this) && !OTYPE(Object, this))
+  if (this->isBaseClass() && !OTYPE(Object, this))
                                        /* return the integer value          */
     result = this->longValue(precision);
   else                                 /* return integer value of string    */
@@ -1258,7 +1288,8 @@ RexxArray *RexxObject::requestArray()
 /* Function:  Request an array value from an object.                          */
 /******************************************************************************/
 {
-  if (isPrimitive(this)) {             /* primitive object?                 */
+  if (this->isBaseClass())             /* primitive object?                 */
+  {
     if (OTYPE(Array, this))            /* already an array?                 */
       return (RexxArray *)this;        /* return directly, don't makearray  */
     else
@@ -1280,7 +1311,7 @@ RexxString *RexxObject::objectName()
                                        /* get the object name variable      */
   string_value = (RexxString *)this->getObjectVariable(OREF_NAME, scope);
   if (string_value == OREF_NULL) {     /* no name?                          */
-    if (isPrimitive(this))             /* primitive object?                 */
+    if (this->isBaseClass())           /* primitive object?                 */
                                        /* use fast path to default name     */
       string_value = this->defaultName();
     else                               /* go through the full search        */
@@ -1855,7 +1886,7 @@ RexxVariableDictionary * RexxObject::getObjectVariables(
   dictionary->setNextDictionary(objectVariables);
   /* make this the new head of the chain */
   OrefSet(this, objectVariables, dictionary);
-  SetObjectHasReferences(this);        /* we now have references            */
+  this->setHasReferences();            /* we now have references            */
   return dictionary;                   /* return the correct ovd            */
 }
 
@@ -2005,7 +2036,7 @@ void *RexxObject::operator new(size_t size, RexxClass *classObject)
                                        /* get storage for new object        */
   newObject = (RexxObject *)new_object(size);
                                        /* use the class instance behaviour  */
-  BehaviourSet(newObject, classObject->instanceBehaviour);
+  BehaviourSet(newObject, classObject->getInstanceBehaviour());
                                        /* use the default hash value        */
   newObject->hashvalue = HASHOREF(newObject);
                                        /* clear the object variable oref    */

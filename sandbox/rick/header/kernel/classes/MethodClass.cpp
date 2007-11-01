@@ -603,7 +603,7 @@ RexxMethod *RexxMethodClass::newRexx(
   newMethod = this->newRexxCode(nameString, source, IntegerTwo, option);
   save(newMethod);
                                        /* Give new object its behaviour     */
-  BehaviourSet(newMethod, this->instanceBehaviour);
+  BehaviourSet(newMethod, this->getInstanceBehaviour());
    if (this->uninitDefined()) {        /* does object have an UNINT method  */
      newMethod->hasUninit();           /* Make sure everyone is notified.   */
    }
@@ -632,7 +632,7 @@ RexxMethod *RexxMethodClass::newFileRexx(
   save(newMethod);
   discard_hold(source);
                                        /* Give new object its behaviour     */
-  BehaviourSet(newMethod, this->instanceBehaviour);
+  BehaviourSet(newMethod, this->getInstanceBehaviour());
    if (this->uninitDefined()) {        /* does object have an UNINT method  */
      newMethod->hasUninit();           /* Make sure everyone is notified.   */
    }

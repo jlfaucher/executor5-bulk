@@ -169,7 +169,7 @@ void RexxEnvelope::flattenReference(
 
         // if this is a proxied object, we need to convert it to a proxy and
         // copy that object into the buffer and the reference table
-        if (obj->header & MakeProxyObject)
+        if (obj->isProxyObject())
         {
             // get a proxy and make sure it's in our protection table
             RexxObject *proxyObj = obj->makeProxy(this);
@@ -232,7 +232,7 @@ RexxEnvelope *RexxEnvelope::pack(
     // this is a bit of a hack, but necessary.  This allows us to store
     // object offsets into a hashtable without having the hashtable
     // attempt to mark the references.
-    SetObjectHasNoReferences(this->duptable->contents);
+    duptable->contents->setHasNoReferences();
     OrefSet(this, this->buffer, new_smartbuffer());
     // get a flatten stack from the memory object
     this->flattenStack = memoryObject.getFlattenStack();
@@ -305,11 +305,11 @@ void RexxEnvelope::puff(
             /* Yes, lets get the behaviour Object*/
             RexxBehaviour *objBehav = (RexxBehaviour *)(((long)(puffObject->behaviour) & ~BEHAVIOUR_NON_PRIMITIVE) + sourceBuffer->address());
             /* Resolve the static behaviour info */
-            resolveNonPrimitiveBehaviour(objBehav);
+            objBehav->resolveNonPrimitiveBehaviour();
             /* Set this objects behaviour.       */
             puffObject->behaviour = objBehav;
             /* get the behaviour's type number   */
-            primitiveTypeNum = objBehav->typenum();
+            primitiveTypeNum = objBehav->getClassType();
 
         }
         else
@@ -360,12 +360,12 @@ void RexxEnvelope::puff(
     /* chop off end of buffer to reveal  */
     /* its contents to memory obj        */
 
-    SetObjectSize(sourceBuffer, (char *)startPointer - (char *)sourceBuffer + ObjectSize(startPointer));
+    sourceBuffer->setObjectSize((char *)startPointer - (char *)sourceBuffer + ((RexxObject *)startPointer)->objectSize());
     /* HOL: otherwise an object with 20 bytes will be left */
 
 
     /* move past header to envelope    */
-    bufferPointer = startPointer + ObjectSize(startPointer);
+    bufferPointer = startPointer + ((RexxObject *)startPointer)->objectSize();
     /* Set envelope to the real address of the new objects.  This tells               */
     /* mark_general to send unflatten to run any proxies.                             */
     memoryObject.setEnvelope(this);      /* tell memory to send unflatten     */
@@ -380,7 +380,7 @@ void RexxEnvelope::puff(
         /*  reference it may have already    */
         /*  run and gotten the info from it  */
         /*  and no longer reference it.      */
-        if (ObjectIsLive(bufferPointer))
+        if (((RexxObject *)bufferPointer)->isObjectLive(memoryObject.markWord))
             /* Mark other referenced objs        */
             ((RexxObject *)bufferPointer)->liveGeneral();
         /* Note that this flavor of          */
@@ -388,7 +388,7 @@ void RexxEnvelope::puff(
         /* created by unflatten and fixup    */
         /* the refs to them.                 */
         /* Point to next object in image.    */
-        bufferPointer += ObjectSize(bufferPointer);
+        bufferPointer += ((RexxObject *)bufferPointer)->objectSize();
     }
 
     /* Tell memory we're done            */
@@ -421,7 +421,7 @@ size_t RexxEnvelope::copyBuffer(
     RexxObject *newObj = (RexxObject *) (this->buffer->getBuffer()->address() + objOffset);
     // if this is a non-primative behaviour, we need to flatten it as well.  The
     // offset is tagged as being a non-primitive behaviour that needs later inflating.
-    if (newObj->behaviour->isNonPrimitiveBehaviour())
+    if (newObj->behaviour->isNonPrimitive())
     {
         void *behavPtr = &newObj->behaviour;
 
@@ -432,11 +432,11 @@ size_t RexxEnvelope::copyBuffer(
     {
         // just replace the behaviour with its type number.  This will be used
         // to restore it later.
-        newObj->behaviour = (RexxBehaviour *)newObj->behaviour->typenum();
+        newObj->behaviour = (RexxBehaviour *)newObj->behaviour->getClassType();
     }
     // if we flattened an object from oldspace, we just copied everything.  Make sure
     // this is no longer marked as oldspace
-    SetNewSpace(newObj);
+    newObj->setNewSpace();
     // the offset is what we need
     return objOffset;
 }

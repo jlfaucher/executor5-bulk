@@ -70,7 +70,7 @@ RexxObject *RexxTable::addOffset(
                                        /* even though the indices are objs  */
                                        /* we don't need to mark this Hash.  */
                                        /* Trust me !!!                      */
-    SetObjectHasNoReferences(newHash);
+    newHash->setHasNoReferences();
                                        /* hook on the new hash table        */
     OrefSet(this, this->contents, newHash);
   }
@@ -179,7 +179,7 @@ RexxObject *RexxTable::newRexx(
   RexxTable * newObj;                  /* newly created table object        */
 
   newObj = new_table();                /* get a new table                   */
-  BehaviourSet(newObj, ((RexxClass *)this)->instanceBehaviour);
+  BehaviourSet(newObj, ((RexxClass *)this)->getInstanceBehaviour());
                                        /* does object have an UNINT method  */
   if (((RexxClass *)this)->uninitDefined()) {
      newObj->hasUninit();              /* Make sure everyone is notified.   */

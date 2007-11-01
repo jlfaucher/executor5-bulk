@@ -984,7 +984,7 @@ RexxList *RexxListClass::newRexx(
                                        /* subclass                          */
   newList = new RexxList;
                                        /* Give new object its behaviour     */
-  BehaviourSet(newList, this->instanceBehaviour);
+  BehaviourSet(newList, this->getInstanceBehaviour());
   if (this->uninitDefined()) {
     newList->hasUninit();
   }

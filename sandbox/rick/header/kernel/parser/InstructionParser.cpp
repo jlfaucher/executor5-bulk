@@ -932,7 +932,7 @@ void RexxSource::RexxInstructionForwardCreate(
           report_error(Error_Invalid_subkeyword_continue);
         returnContinue = TRUE;         /* not valid again                   */
                                        /* remember this                     */
-        newObject->instructionInfo.flags |= forward_continue;
+        newObject->instructionFlags |= forward_continue;
         break;
 
       default:                         /* invalid subkeyword                */
@@ -1102,7 +1102,7 @@ RexxInstruction *RexxSource::labelNew()
   RexxObject *newObject;               /* newly create object               */
   RexxToken  *token;                   /* current working token             */
   RexxString *name;                    /* label name                        */
-  LOCATIONINFO  location;              /* location information              */
+  SourceLocation location;             /* location information              */
 
   token = nextToken();                 /* get the next token                */
   name = token->value;                 /* get the label name                */
@@ -1111,9 +1111,10 @@ RexxInstruction *RexxSource::labelNew()
                                        /* add to the label list             */
   this->addLabel((RexxInstruction *)newObject, name);
   token = nextReal();                  /* get the colon token               */
-  token->getLocation(&location);       /* get the token location            */
+
+  location = token->getLocation();     /* get the token location            */
                                        /* the clause ends with the colon    */
-  ((RexxInstruction *)newObject)->setEnd(location.endline, location.endoffset);
+  ((RexxInstruction *)newObject)->setEnd(location.getEndLine(), location.getEndOffset());
   new ((void *)newObject) RexxInstructionLabel();
   return (RexxInstruction *)newObject; /* done, return this                 */
 }

@@ -174,7 +174,7 @@ RexxString *RexxInteger::stringValue()
   string = new_string(stringBuffer, strlen(stringBuffer));
                                        /* cache this away for later         */
   OrefSet(this, this->stringrep, string);
-  SetObjectHasReferences(this);        /* we now have references            */
+  this->setHasReferences();            /* we now have references            */
   return string;                       /* return the new string             */
 }
 
@@ -252,7 +252,7 @@ void RexxInteger::setString(
 {
                                        /* set the strign                    */
    OrefSet(this, this->stringrep, string);
-   SetObjectHasReferences(this);       /* we now have references            */
+   this->setHasReferences();           /* we now have references            */
 }
 
 BOOL RexxInteger::truthValue(
@@ -524,9 +524,11 @@ BOOL RexxInteger::isEqual(
 /*            only strict equality, not greater or less than values.          */
 /******************************************************************************/
 {
-  if (!isPrimitive(this))              /* not a primitive?                  */
+  if (this->isSubClassOrEnhanced())      /* not a primitive?                  */
+  {
                                        /* do the full lookup compare        */
-    return this->sendMessage(OREF_STRICT_EQUAL, other)->truthValue(Error_Logical_value_method);
+      return this->sendMessage(OREF_STRICT_EQUAL, other)->truthValue(Error_Logical_value_method);
+  }
 
   if (OTYPE(Integer, other))           /* two integers?                     */
                                        /* just directly compare the values  */
@@ -1039,7 +1041,7 @@ void *RexxInteger::operator new(size_t size)
                                        /* make sure old2new knows about it  */
   BehaviourSet(newObject, TheIntegerBehaviour);
   ClearObject(newObject);              /* clear the object                  */
-  SetObjectHasNoReferences(newObject); /* Tell GC, not to bother with Live  */
+  newObject->setHasNoReferences();     /* Tell GC, not to bother with Live  */
   return newObject;                    /* return the new object.            */
 }
 

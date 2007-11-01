@@ -207,7 +207,7 @@ RexxObject *RexxRelation::newRexx(
 
   newObj = new_relation();             /* get a new relation                */
                                        /* object parse_assignment behaviour */
-  BehaviourSet(newObj, ((RexxClass *)this)->instanceBehaviour);
+  BehaviourSet(newObj, ((RexxClass *)this)->getInstanceBehaviour());
                                        /* Initialize the new list instance  */
   newObj->sendMessage(OREF_INIT, init_args, argCount);
   return newObj;                       /* return the new object             */

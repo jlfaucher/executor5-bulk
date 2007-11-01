@@ -148,13 +148,13 @@ RexxActivation::RexxActivation(
   this->settings.calltype = OREF_METHODNAME;
   /* create a new evaluation stack.  This must be done before a */
   /* local variable frame is created. */
-  SetObjectHasNoReferences(this);      /* during allocateStack..            */
+  this>setHasNoReferences();           /* during allocateStack..            */
                                        /* a live marking can happen without */
                                        /* a properly set up stack (::live() */
                                        /* is called). Setting the NoRefBit  */
                                        /* when creating the stack avoids it.*/
   _activity->allocateStackFrame(&this->stack, this->code->maxStack);
-  SetObjectHasReferences(this);
+  this->setHasReferences();
   if (context&INTERNAL_LEVEL_CALL) {   /* internal call or interpret?       */
                                        /* inherit parents settings          */
     activation->putSettings(&this->settings);

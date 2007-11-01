@@ -207,7 +207,7 @@ RexxObject *RexxArray::empty()
 
     // if not working with an oldspace object (VERY likely), we can just use memset to clear
     // everything.
-    if (!OldSpace(this))
+    if (this->isNewSpace())
     {
         memset(this->data(), '\0', sizeof(RexxObject *) * this->arraySize);
     }
@@ -701,16 +701,10 @@ RexxArray *  RexxArray::section(size_t _start, size_t _end)
     newSize = _end + 1 - _start;         /* yes, compute new size             */
                                        /* Get new array, of needed size     */
     newArray = (RexxArray *)new_array(newSize);
-    if (!OldSpace(newArray)) {         /* working with a new space obj      */
+    // a new array cannot be oldspace, by definition.  It's safe to use
+    // memcpy to copy the data.
                                        /* yes, we can do a memcpy           */
-     memcpy(newArray->data(), &(this->expansionArray->objects[_start-1]), sizeof(RexxObject *) * newSize);
-    }
-    else {
-      oldArray = this->expansionArray;
-                                       /* its Old Space, need to do real put*/
-      for (i = 1; i <= newSize; i++)
-          newArray->put(oldArray[_start+i-2],i);
-    }
+    memcpy(newArray->data(), &(this->expansionArray->objects[_start-1]), sizeof(RexxObject *) * newSize);
   } else {
                                        /* return 0 element array            */
     newArray = (RexxArray *)new_array((size_t)0);
@@ -1173,27 +1167,12 @@ RexxObject *RexxArray::join(           /* join two arrays into one          */
                                        /* get new array, total size is size */
                                        /* of both arrays.                   */
   newArray = (RexxArray*)new_array(this->size() + other->size());
-                                       /* If none of objects are in oldSpace*/
-                                       /*  we can skip the OrefSets and do  */
-                                       /*  path copy                        */
-  if (!OldSpace(this) && !OldSpace(other) && !OldSpace(newArray)) {
-
+  // it's safe to just copy the references because the newArray will be new space
                                        /* copy first array into new one     */
-    memcpy(newArray->data(), this->data(), ((char *)&(this->data()[this->size()])) - ((char *)this->data()));
+  memcpy(newArray->data(), this->data(), ((char *)&(this->data()[this->size()])) - ((char *)this->data()));
                                        /* copy 2nd array into the new one   */
                                        /* after the first one.              */
-    memcpy((void *)&(newArray->data()[this->size()]), other->data(), ((char *)&(other->data()[other->size()])) - ((char *)other->data()));
-  }
-  else {
-                                       /* first place self into new array   */
-    for (i = 0; i < this->size(); i++)
-      newArray->put(this->data()[i], i+1);
-                                       /* now add the other array into new  */
-                                       /*one                                */
-    for (i = 1; i <= other->size(); i++)
-      newArray->put(other->get(i), i + this->size());
-
-  }
+  memcpy((void *)&(newArray->data()[this->size()]), other->data(), ((char *)&(other->data()[other->size()])) - ((char *)other->data()));
   return newArray;                     /* All done, return joined array     */
 
 }
@@ -1210,7 +1189,7 @@ void RexxArray::resize(void)           /* resize this array to be a NULLARRA*/
   if (this->expansionArray == this) {
                                        /* no, then we resize the array      */
                                        /* is this array in OldSpace ?       */
-    if (OldSpace(this)) {
+    if (this->isOldSpace()) {
                                        /* Old Space, remove any reference   */
                                        /* to new space from memory tables   */
       for (i = 0; i < this->arraySize; i++)
@@ -1334,14 +1313,8 @@ RexxArray *RexxArray::extend(          /* join two arrays into one          */
                                        /* If none of the objects are in     */
                                        /* OldSpace,  we can skip the        */
                                        /* OrefSets and just copy            */
-  if (!OldSpace(newArray)) {
                                        /* copy ourselves into the new array */
-    memcpy(newArray->data(), this->data(), ((char *)&(this->data()[this->size()])) - ((char *)this->data()));
-  } else {
-                                       /* copy each element into new array  */
-    for (i = 0; i < this->size(); i++)
-      newArray->put(this->data()[i], i+1);
-  }
+  memcpy(newArray->data(), this->data(), ((char *)&(this->data()[this->size()])) - ((char *)this->data()));
   this->resize();                      /* adjust ourself to be null arrayobj*/
 
   newArray->setExpansion(OREF_NULL);   /* clear the new expansion array     */
@@ -1533,7 +1506,7 @@ void copyElements(
                                        /* ending condition for recusion     */
    if (newDimension == parm->firstChangedDimension) {
                                        /* is new array in OldSpace?         */
-     if (OldSpace(parm->newArray)) {
+     if (parm->newArray->isOldSpace()) {
                                        /* Yes,need to do OrefSets           */
                                        /* For each element to copy          */
        for (i = 1; i <= parm->copyElements; i++, parm->startNew++, parm->startOld++ ) {
@@ -1712,15 +1685,8 @@ RexxArray *RexxArray::extendMulti(     /* Extend multi array                */
                                        /* If none of the objects are in     */
                                        /* OldSpace,  we can 'cheat' and do  */
                                        /* a fast copy (memcpy)              */
-      if (!OldSpace(newArray)) {
                                        /* copy ourselves into the new array */
         memcpy(newArray->data(), this->data(), sizeof(RexxObject *) * this->size());
-      } else {
-                                       /* copy each element into new array  */
-        for (i = 0; i < this->size(); i++)
-          newArray->put(this->data()[i], i+1);
-      }
-
     }
                                        /* Working with 2 multi-dimensional  */
                                        /* Array's.                          */
@@ -2438,7 +2404,7 @@ void *   RexxArray::operator new(size_t newSize,
                                        /* Create the new array              */
   newArray = (RexxArray *)new_object(bytes);
                                        /* Give it array behaviour.          */
-  BehaviourSet(newArray, arrayClass->instanceBehaviour);
+  BehaviourSet(newArray, arrayClass->getInstanceBehaviour());
 
                                        /* set the hashvalue                 */
   newArray->hashvalue =  HASHOREF(newArray);

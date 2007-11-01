@@ -2950,7 +2950,7 @@ RexxActivation *RexxActivityClass::newActivation(
                                        /* get the top cached entry          */
     resultActivation = (RexxActivation *)this->activations->stackTop();
                                        /* reactivate this                   */
-    SetObjectHasReferences(resultActivation);
+    resultActivation->setHasReferences();
     resultActivation = new (resultActivation) RexxActivation (receiver, runMethod, activity, msgname, activation, context);
     this->activations->pop();          /* Remove reused activation from stac*/
   }
@@ -2970,7 +2970,7 @@ void RexxActivityClass::cacheActivation(
                                        /* still room in the cache?          */
   if (this->activationCacheSize < ACTIVATION_CACHE_SIZE) {
                                        /* free everything for reclamation   */
-    SetObjectHasNoReferences(activation);
+    activation->setHasNoReferences();
     this->activationCacheSize++;       /* add the this to the count         */
                                        /* and add the activation            */
     this->activations->push((RexxObject *)activation);

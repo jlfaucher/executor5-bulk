@@ -41,15 +41,11 @@
 /* Primitive Translator Token Class Definitions                               */
 /*                                                                            */
 /******************************************************************************/
-/*                                                                            */
-/* Change history:                                                            */
-/*                                                                            */
-/* ENG001 - feature 1112                                             02/08/28 */
-/*          support USERID BIF                                                */
-/*                                                                            */
-/******************************************************************************/
 #ifndef Included_RexxToken
 #define Included_RexxToken
+
+#include "SourceLocation.hpp"
+
 
 #define   TERM_EOC     0x00000001u     /* terminate on end of clause        */
 #define   TERM_RIGHT   0x00000002u     /* terminate on left paren           */
@@ -375,7 +371,7 @@
 
 class RexxToken : public RexxInternalObject {
  public:
-  RexxToken(int, int, RexxString *, PLOCATIONINFO);
+  RexxToken(int, int, RexxString *, const SourceLocation &);;
   inline RexxToken(RESTORETYPE restoreType) { ; };
   void       live();
   void       liveGeneral();
@@ -392,11 +388,11 @@ class RexxToken : public RexxInternalObject {
   inline bool       isSymbol() { return (this->classId == TOKEN_SYMBOL); };
   inline bool       isEndOfClause() { return this->classId == TOKEN_EOC; }
   inline void       setNumeric(int v)   { this->numeric = v; };
-  inline void       getLocation(PLOCATIONINFO l) { *l = this->location; }
-  inline void       setLocation(PLOCATIONINFO l) { this->location = *l; }
+  inline const SourceLocation &getLocation() { return tokenLocation; }
+  inline void  setLocation(const SourceLocation &l) { tokenLocation = l; }
          void       checkAssignment(RexxSource *source, RexxString *newValue);
 
-  LOCATIONINFO location;               /* token source location             */
+  SourceLocation tokenLocation;        /* token source location             */
   RexxString *value;                   /* token string value                */
   int         classId;                 /* class of token                    */
   int         subclass;                /* specialized type of token         */

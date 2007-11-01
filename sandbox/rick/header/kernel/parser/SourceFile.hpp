@@ -44,6 +44,7 @@
 #ifndef Included_RexxSource
 #define Included_RexxSource
 
+#include "SourceLocation.hpp"
 #include "ListClass.hpp"
 #include "QueueClass.hpp"
 #include "StackClass.hpp"
@@ -114,12 +115,12 @@ class RexxSource : public RexxInternalObject {
   RexxString *get(size_t);
   void        nextClause();
   RexxToken  *sourceNextToken(RexxToken *);
-  RexxString *traceBack(PLOCATIONINFO, size_t, BOOL);
-  RexxString *extract(PLOCATIONINFO);
-  RexxArray  *extractSource(PLOCATIONINFO);
-  void        startLocation(PLOCATIONINFO);
-  void        endLocation(PLOCATIONINFO);
-  BOOL        nextSpecial(UINT, PLOCATIONINFO);
+  RexxString *traceBack(const SourceLocation &, size_t, BOOL);
+  RexxString *extract(const SourceLocation &);
+  RexxArray  *extractSource(const SourceLocation &);
+  void        startLocation(const SourceLocation &);
+  void        endLocation(SourceLocation &);
+  BOOL        nextSpecial(UINT, SourceLocation &);
   UINT        locateToken(RexxToken *);
   void        globalSetup();
   RexxString *packLiteral(INT, INT, INT);

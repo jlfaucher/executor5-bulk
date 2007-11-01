@@ -472,7 +472,7 @@ RexxObject *RexxQueue::newRexx(RexxObject **init_args, size_t argCount)
 
   newObj =  new RexxQueue;             /* get a new queue                   */
                                        /* Initialize the new list instance  */
-  BehaviourSet(newObj, ((RexxClass *)this)->instanceBehaviour);
+  BehaviourSet(newObj, ((RexxClass *)this)->getInstanceBehaviour());
   if (((RexxClass *)this)->uninitDefined()) {
     newObj->hasUninit();
   }

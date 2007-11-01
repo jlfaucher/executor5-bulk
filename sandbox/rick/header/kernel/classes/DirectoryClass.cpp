@@ -739,7 +739,7 @@ RexxObject *RexxDirectory::newRexx(
                                        /* object might actually be for a    */
                                        /* subclass                          */
   newDirectory = new_directory();
-  BehaviourSet(newDirectory, ((RexxClass *)this)->instanceBehaviour);
+  BehaviourSet(newDirectory, ((RexxClass *)this)->getInstanceBehaviour());
                                        /* does object have an UNINT method  */
   if (((RexxClass *)this)->uninitDefined()) {
     newDirectory->hasUninit();         /* Make sure everyone is notified.   */
