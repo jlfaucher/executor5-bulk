@@ -145,7 +145,7 @@ int SysCreateThread(PTHREADFN threadFnc, size_t stackSize, PVOID args)
                               // Bumop thread count by one. Threadid
    if (rc != 0)
    {
-       report_exception1(Error_System_service_service, new_cstring("ERROR CREATING THREAD"));
+       reportException(Error_System_service_service, "ERROR CREATING THREAD");
        return 0;
    }
    rc = pthread_attr_destroy(&newThreadAttr);
