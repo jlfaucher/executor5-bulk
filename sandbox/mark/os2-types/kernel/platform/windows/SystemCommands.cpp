@@ -170,7 +170,7 @@ RexxObject * SysCommand(
   RexxString        * command,         /* command to issue                    */
   RexxString       ** error_failure )  /* error or failure flags              */
 {
-  INT      rc    = 0;                  /* Return code from call               */
+  int      rc    = 0;                  /* Return code from call               */
   const char *current_address;         /* Subcom handler that gets cmd        */
   RXSTRING rxstrcmd;                   /* Command to be executed              */
   unsigned short flags = 0;            /* Subcom error flags                  */

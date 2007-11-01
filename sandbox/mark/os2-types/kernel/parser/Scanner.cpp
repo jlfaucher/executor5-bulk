@@ -225,7 +225,7 @@ void RexxSource::comment()
 /* Function:  Scan source to skip over a nest of comments                   */
 /****************************************************************************/
 {
-  INT    level;                        /* comment nesting level             */
+  int    level;                        /* comment nesting level             */
   UINT   inch;                         /* next character                    */
   LONG   startline;                    /* starting line for error reports   */
 
@@ -385,28 +385,28 @@ UINT RexxSource::locateToken(
 }
 
 RexxString *RexxSource::packLiteral(
-  INT        start,                    /* start of the literal in line      */
-  INT        length,                   /* length of the literal to reduce   */
-  INT        type )                    /* type of literal to process        */
+  int        start,                    /* start of the literal in line      */
+  int        length,                   /* length of the literal to reduce   */
+  int        type )                    /* type of literal to process        */
 /****************************************************************************/
 /* Function:  Convert and check a hex or binary constant, packing it down   */
 /*            into a string object.                                         */
 /****************************************************************************/
 {
-  INT    _first;                       /* switch to mark first group        */
-  INT    blanks;                       /* switch to say if scanning blanks  */
-  INT    count;                        /* count for group                   */
-  INT    i;                            /* loop counter                      */
-  INT    j;                            /* loop counter                      */
-  INT    k;                            /* loop counter                      */
+  int    _first;                       /* switch to mark first group        */
+  int    blanks;                       /* switch to say if scanning blanks  */
+  int    count;                        /* count for group                   */
+  int    i;                            /* loop counter                      */
+  int    j;                            /* loop counter                      */
+  int    k;                            /* loop counter                      */
   LONG   m;                            /* temporary integer                 */
-  INT    byte;                         /* individual byte of literal        */
-  INT    nibble;                       /* individual nibble of literal      */
-  INT    oddhex;                       /* odd number of characters in first */
-  INT    inpointer;                    /* current input position            */
-  INT    outpointer;                   /* current output pointer            */
+  int    byte;                         /* individual byte of literal        */
+  int    nibble;                       /* individual nibble of literal      */
+  int    oddhex;                       /* odd number of characters in first */
+  int    inpointer;                    /* current input position            */
+  int    outpointer;                   /* current output pointer            */
   RexxString *value;                   /* reduced value                     */
-  INT    real_length;                  /* real number of digits in string   */
+  int    real_length;                  /* real number of digits in string   */
   char   error_output[2];              /* used for formatting error         */
 
  _first = TRUE;                        /* initialize group flags and        */
@@ -568,17 +568,17 @@ RexxToken *RexxSource::sourceNextToken(
  RexxString *value;                    /* associate string value            */
  unsigned int inch;                    /* working input character           */
  LONG   eoffset;                       /* location of exponential           */
- INT    state;                         /* state of symbol scanning          */
+ int    state;                         /* state of symbol scanning          */
  LONG   start;                         /* scan start location               */
  LONG   litend;                        /* end of literal data               */
  LONG   length;                        /* length of extracted token         */
- INT    dot_count;                     /* count of periods in symbol        */
+ int    dot_count;                     /* count of periods in symbol        */
  UINT   literal_delimiter;             /* literal string delimiter          */
- INT    type;                          /* type of literal token             */
+ int    type;                          /* type of literal token             */
  LONG   i;                             /* loop counter                      */
  LONG   j;                             /* loop counter                      */
- INT    subclass;                      /* sub type of the token             */
- INT    numeric;                       /* numeric type flag                 */
+ int    subclass;                      /* sub type of the token             */
+ int    numeric;                       /* numeric type flag                 */
  LOCATIONINFO  location;               /* token location information        */
  char   tran;                          /* translated character              */
  char   badchar[4];                    /* working buffer for errors         */

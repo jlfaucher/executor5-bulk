@@ -44,7 +44,7 @@
 #include "RexxCore.h"
 
 
-void MemorySegment::dump(const char *owner, INT counter, FILE *keyfile, FILE *dumpfile)
+void MemorySegment::dump(const char *owner, size_t counter, FILE *keyfile, FILE *dumpfile)
 /******************************************************************************/
 /* Function:  Dump information about an individual segment                    */
 /******************************************************************************/
@@ -118,7 +118,7 @@ void MemorySegmentSet::dumpSegments(FILE *keyfile, FILE *dumpfile)
 /******************************************************************************/
 {
     MemorySegment *segment;
-    INT counter = 0;
+    size_t counter = 0;
 
     for (segment = first(); segment != NULL; segment = next(segment)) {
         segment->dump(name, ++counter, keyfile, dumpfile);

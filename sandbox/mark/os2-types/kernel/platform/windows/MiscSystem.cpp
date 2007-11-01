@@ -77,7 +77,7 @@ extern "C" _declspec(dllimport) HANDLE ExceptionQueueSem;
 extern ULONG ExceptionHostProcessId;
 extern HANDLE ExceptionHostProcess;
 extern BOOL ExceptionConsole;
-static INT SignalCount = 0;
+static int SignalCount = 0;
 
 
 #ifdef TIMESLICE
@@ -88,7 +88,7 @@ static INT SignalCount = 0;
  *  Not used in windows because timer pops only get reflected
  *  during a yield.
  */
-extern INT REXXENTRY RexxSetYield(PID procid, TID threadid);
+extern int REXXENTRY RexxSetYield(PID procid, TID threadid);
 #endif //TIMESLICE
 
 RexxObject *SysProcessName( void )
@@ -332,7 +332,7 @@ BOOL __stdcall WinConsoleCtrlHandler(DWORD dwCtrlType)
 /******************************************************************************/
 {
     /* set halt condition for all threads of this process */
-  INT i;
+  int i;
   RexxActivity   * activity;           /* associated activity               */
   char envp[65];
                                        /* current running activation        */
@@ -435,7 +435,7 @@ DWORD WINAPI call_thread_function(void * Arguments)
 }
 
 
-INT SysCreateThread (
+int SysCreateThread (
   PTHREADFN ThreadProcedure,           /* address of thread procedure       */
   size_t    StackSize,                 /* required stack size               */
   PVOID     Arguments )                /* thread procedure argument block   */
@@ -445,8 +445,6 @@ INT SysCreateThread (
 {
   DWORD res;
   HANDLE ht;
-  INT i=1;
-  INT tabsize = 0;
 
   ht = CreateThread(NULL, StackSize, call_thread_function, Arguments, 0, &res);
   if (!ht)

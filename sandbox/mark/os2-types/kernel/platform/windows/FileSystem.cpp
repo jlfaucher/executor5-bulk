@@ -67,10 +67,10 @@ BOOL  SearchFileName(const char *, char *);
 void GetLongName(char *, DWORD);
 BOOL FindFirstFile(const char *Name);
 FILE * SysBinaryFilemode(FILE *, BOOL);
-INT SysFFlush(FILE *);
+int SysFFlush(FILE *);
 BOOL SysFileIsDevice(int fhandle);
 int  SysPeekKeyboard(void);
-INT SysStat(char * path, struct stat *buffer);
+int SysStat(char * path, struct stat *buffer);
 BOOL SysFileIsPipe(STREAM_INFO * stream_info);
 
 
@@ -338,7 +338,7 @@ RexxBuffer *SysReadProgram(
 /*******************************************************************/
 {
   HANDLE        fileHandle;             /* open file access handle           */
-  INT      buffersize;                 /* size of read buffer               */
+  int      buffersize;                 /* size of read buffer               */
   RexxBuffer * buffer;                 /* buffer object to read file into   */
   RexxActivity*activity;               /* the current activity              */
   BY_HANDLE_FILE_INFORMATION   status; /* file status information           */
@@ -484,10 +484,10 @@ int SysPeekKeyboard(void)
 }
 
 
-INT SysStat(char * path, struct stat *buffer)
+int SysStat(char * path, struct stat *buffer)
 {
    UINT   errorMode;
-   INT    retstat;
+   int    retstat;
 
    errorMode = SetErrorMode(SEM_FAILCRITICALERRORS);
    retstat = stat(path, buffer);
