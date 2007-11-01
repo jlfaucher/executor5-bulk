@@ -36,6 +36,7 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /* Author: W. David Ashley                                                    */
+/* Contributors: Ruurd Idenburg                                               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
@@ -58,18 +59,19 @@
 /*                                                                            */
 /* To use the xmlparser you need to be aware of the following.                */
 /*                                                                            */
-/* 1. The parser uses a SAX-like interface, but methods of the class are used */
+/* 1. The parser requires ooRexx version 3.2.0 or later.                      */
+/* 2. The parser uses a SAX-like interface, but methods of the class are used */
 /*    instead of a call-back mechanism. The default methods perform no        */
 /*    actions. The user will need to subclass the xmlparser class and         */
 /*    override the call-back methods in order to insert their own actions     */
 /*    for each XML chunk type.                                                */
-/* 2. The call-back methods use the xmlchunk class to pass data to the        */
+/* 3. The call-back methods use the xmlchunk class to pass data to the        */
 /*    methods. This is a very simple class and is used as a container for     */
 /*    specific types of XML chunks.                                           */
-/* 3. Text chunks (CDATA) are passed through the text method intact. If the   */
+/* 4. Text chunks (CDATA) are passed through the text method intact. If the   */
 /*    parser encounters multiple lines of text it invokes the text method     */
 /*    for each line individually. It also does not collapse white space chars.*/
-/* 4. XML tags are collapsed. This means that if a tag crosses a line         */
+/* 5. XML tags are collapsed. This means that if a tag crosses a line         */
 /*    boundary then the lines are collapsed together. This is important       */
 /*    for processing instruction tags, comment tags and other special tags.   */
 /*                                                                            */
@@ -176,11 +178,15 @@ if self~currentchar() <> '<' then do
    do while eof = .false & self~currentchar() <> '<'
       -- Do NOT collapse the white space and newlines out of the chunk!
       -- We leave that task up to the client of this class.
-      -- Instead, we return each line of text individually.
+      -- Instead, we return a chunk with .endofline stuck in between
+      -- at the linebreaks.
       chunk~text = chunk~text || self~getchar()
-      if curline <> lineidx then leave
+      if curline <> lineidx then do
+         chunk~text = chunk~text || .endofline
+         curline = lineidx
+         end
       end
-   if eof = .true & chunk~text~strip <> '' then do
+    if eof = .true & chunk~text~strip <> '' then do
       errortxt = 'Error line' errlineidx 'column 'errcharidx': EOF within CDATA.'
       self~error(self~create_error(errortxt, errlineidx, errcharidx)) -- call the public override method
       return .nil
@@ -241,7 +247,7 @@ select
       parse var element tag element
       -- the following is needed in case the '/' immediately follows the tag
       if tag~pos('/') > 0 then do
-         tag = tag~substr(1. tag~length - 1)
+         tag = tag~substr(1, tag~length - 1)
          element = '/' element
          end
       chunk~tag = tag
