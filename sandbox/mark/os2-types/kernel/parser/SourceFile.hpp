@@ -119,8 +119,8 @@ class RexxSource : public RexxInternalObject {
   RexxArray  *extractSource(PLOCATIONINFO);
   void        startLocation(PLOCATIONINFO);
   void        endLocation(PLOCATIONINFO);
-  BOOL        nextSpecial(UINT, PLOCATIONINFO);
-  UINT        locateToken(RexxToken *);
+  BOOL        nextSpecial(unsigned int, PLOCATIONINFO);
+  unsigned int locateToken(RexxToken *);
   void        globalSetup();
   RexxString *packLiteral(int, int, int);
   RexxMethod *method();
@@ -195,7 +195,7 @@ class RexxSource : public RexxInternalObject {
   RexxSource *classNewBuffered(RexxString *, RexxBuffer *);
   RexxSource *classNewFile(RexxString *);
   RexxObject *sourceNewObject(size_t, RexxBehaviour *, int);
-  void        parseTraceSetting(RexxString *, PINT, PINT);
+  void        parseTraceSetting(RexxString *, int *, int*);
   size_t      processVariableList(int);
   RexxObject *parseConditional(int *, int);
   RexxObject *parseLogical(RexxToken *first, int terminators);

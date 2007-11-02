@@ -65,8 +65,8 @@ extern ACTIVATION_SETTINGS *current_settings;
 extern "C" void activity_thread (RexxActivity *objp);
 
 
-UINT iClauseCounter=0;                      // count of clauses
-UINT iTransClauseCounter=0;                 // count of clauses in translator
+unsigned int iClauseCounter=0;         // count of clauses
+unsigned int iTransClauseCounter=0;    // count of clauses in translator
 
 #ifdef HIGHTID
 extern ActivityTable *ProcessLocalActs;

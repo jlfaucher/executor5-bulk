@@ -198,14 +198,14 @@ void RexxSource::endLocation(
 }
 
 BOOL RexxSource::nextSpecial(
-  UINT          target,                /* desired target character          */
+  unsigned int  target,                /* desired target character          */
   LOCATIONINFO *location )             /* token location information        */
 /****************************************************************************/
 /* Function:  Find the next special character and verify against a target   */
 /****************************************************************************/
 {
-  UINT    inch;                        /* next character                    */
-  BOOL   found;                        /* found the target flag             */
+  unsigned int inch;                   /* next character                    */
+  BOOL         found;                  /* found the target flag             */
 
   found = FALSE;                       /* default to not found              */
   inch = this->locateToken(OREF_NULL); /* find the next token               */
@@ -225,9 +225,9 @@ void RexxSource::comment()
 /* Function:  Scan source to skip over a nest of comments                   */
 /****************************************************************************/
 {
-  int    level;                        /* comment nesting level             */
-  UINT   inch;                         /* next character                    */
-  LONG   startline;                    /* starting line for error reports   */
+  int          level;                  /* comment nesting level             */
+  unsigned int inch;                   /* next character                    */
+  LONG         startline;              /* starting line for error reports   */
 
   level = 1;                           /* start the comment nesting         */
   this->line_offset += 2;              /* step over the comment start       */
@@ -260,19 +260,19 @@ void RexxSource::comment()
   }
 }
 
-UINT RexxSource::locateToken(
+unsigned int RexxSource::locateToken(
   RexxToken *previous )                /* previous token                    */
 /****************************************************************************/
 /* Function:  Locate next significant token in source, skipping extra       */
 /*            blanks and comments.                                          */
 /****************************************************************************/
 {
- UINT    inch;                         /* current input character           */
- UINT    inch2;                        /* secondary input character         */
- LONG    startline;                    /* backward reset line number        */
- LONG    startoffset;                  /* backward reset offset             */
- UINT    character;                    /* returned character type           */
- BOOL    blanks;                       /* are blanks significant?           */
+ unsigned int    inch;                 /* current input character           */
+ unsigned int    inch2;                /* secondary input character         */
+ LONG            startline;            /* backward reset line number        */
+ LONG            startoffset;          /* backward reset offset             */
+ unsigned int    character;            /* returned character type           */
+ BOOL            blanks;               /* are blanks significant?           */
 
  character = 0;                        /* no specific character type yet    */
                                        /* check if blanks should be returned*/
@@ -573,7 +573,7 @@ RexxToken *RexxSource::sourceNextToken(
  LONG   litend;                        /* end of literal data               */
  LONG   length;                        /* length of extracted token         */
  int    dot_count;                     /* count of periods in symbol        */
- UINT   literal_delimiter;             /* literal string delimiter          */
+ unsigned int literal_delimiter;       /* literal string delimiter          */
  int    type;                          /* type of literal token             */
  LONG   i;                             /* loop counter                      */
  LONG   j;                             /* loop counter                      */

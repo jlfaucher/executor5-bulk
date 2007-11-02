@@ -147,7 +147,7 @@ class RexxStringClass : public RexxClass {
    RexxObject *trunc(RexxInteger *decimals);
    RexxObject *format(RexxObject *Integers, RexxObject *Decimals, RexxObject *MathExp, RexxObject *ExpTrigger);
    RexxObject *isInteger();
-   RexxObject *logicalOperation(RexxObject *, RexxObject *, UINT);
+   RexxObject *logicalOperation(RexxObject *, RexxObject *, unsigned int);
    RexxString *extract(size_t offset, size_t sublength) { return newString(this->getStringData() + offset, sublength); }
    RexxObject *evaluate(RexxActivation *, RexxExpressionStack *);
    RexxObject *getValue(RexxActivation *context) {return this;}

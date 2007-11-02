@@ -82,9 +82,9 @@
 
 /* globals for block count based yielding support  */
 #ifdef  NOTIMER
-extern UINT iTransClauseCounter;       /* defined in WinYield.c            */
-                                       /* cnt of blocks translated         */
-#define CLAUSESPERYIELD 100            /* yield every n blocks             */
+extern unsigned int iTransClauseCounter; /* defined in WinYield.c           */
+                                         /* cnt of blocks translated        */
+#define CLAUSESPERYIELD 100              /* yield every n blocks            */
 #endif
 
 extern RexxActivity *CurrentActivity;  /* expose current activity object    */
@@ -4727,8 +4727,8 @@ RexxObject *RexxSource::sourceNewObject(
 
 void RexxSource::parseTraceSetting(
     RexxString *value,                 /* string with trace setting         */
-    PINT        setting,               /* new trace setting                 */
-    PINT        debug )                /* new debug mode setting            */
+    int        *setting,               /* new trace setting                 */
+    int        *debug )                /* new debug mode setting            */
 /******************************************************************************/
 /* Function:  Process a trace setting                                         */
 /******************************************************************************/
@@ -4900,8 +4900,8 @@ size_t RexxSource::processVariableList(
 }
 
 RexxObject *RexxSource::parseConditional(
-     PINT  condition_type,             /* type of condition                 */
-     int   error_message )             /* extra "stuff" error message       */
+     int   *condition_type,            /* type of condition                 */
+     int    error_message )            /* extra "stuff" error message       */
 /******************************************************************************/
 /* Function:  Allow for WHILE or UNTIL keywords following some other looping  */
 /*            construct.  This returns SUBKEY_WHILE or SUBKEY_UNTIL to flag   */

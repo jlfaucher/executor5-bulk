@@ -217,7 +217,7 @@ BOOL SearchFileName(
 
   DWORD dwFileAttrib;             // file attributes
   LPTSTR ppszFilePart=NULL;            // file name only in buffer
-  UINT   errorMode;
+  unsigned int errorMode;
 
   NameLength = strlen(Name);           /* get length of incoming name       */
 
@@ -381,7 +381,7 @@ void SysQualifyStreamName(
 /*******************************************************************/
 {
   LPTSTR  lpszLastNamePart;
-  UINT errorMode;
+  unsigned int errorMode;
                        /* already expanded?                 */
   if (stream_info->full_name_parameter[0] != '\0')
     return;                            /* nothing more to do                */
@@ -444,7 +444,7 @@ BOOL SearchFirstFile(
 {
    HANDLE FindHandle;
    WIN32_FIND_DATA FindData;
-   UINT errorMode;
+   unsigned int errorMode;
 
    errorMode = SetErrorMode(SEM_FAILCRITICALERRORS);
    FindHandle = FindFirstFile(Name, &FindData);
@@ -486,7 +486,7 @@ int SysPeekKeyboard(void)
 
 int SysStat(char * path, struct stat *buffer)
 {
-   UINT   errorMode;
+   unsigned int errorMode;
    int    retstat;
 
    errorMode = SetErrorMode(SEM_FAILCRITICALERRORS);

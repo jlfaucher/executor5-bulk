@@ -631,7 +631,7 @@ LONG sysCommandNT(const char *cmdstring_ptr, RexxString  **error_failure, BOOL d
   ----------------------------------------------------------------------------*/
 LONG sysCommand32s(char *cmdstring_ptr, RexxString **error_failure)
 {
-  typedef int (FAR WINAPI * PSYSCMD)(PTSTR, UINT);
+  typedef int (FAR WINAPI * PSYSCMD)(PTSTR, unsigned int);
   #define UT32DLL "RXCMD32.DLL"        // name of 32-bit UT dll
   DWORD rc;                            // SystemCommand RC
   PSYSCMD fpSystemCommand = NULL;      // ptr to SystemCommand in UT

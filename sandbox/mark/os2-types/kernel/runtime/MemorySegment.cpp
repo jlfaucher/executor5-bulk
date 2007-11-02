@@ -384,7 +384,7 @@ void NormalSegmentSet::addDeadObject(DeadObject *object)
     else {
         /* calculate the dead chain          */
         /* and add that to the appropriate chain */
-        UINT deadChain = LengthToDeadPool(length);
+        unsigned int deadChain = LengthToDeadPool(length);
         subpools[deadChain].addSingle(object);
         /* we can mark this subpool as having items again */
         lastUsedSubpool[deadChain] = deadChain;
@@ -447,7 +447,7 @@ void NormalSegmentSet::addDeadObject(char *object, size_t length)
     else {
         /* calculate the dead chain          */
         /* and add that to the appropriate chain */
-        UINT deadChain = LengthToDeadPool(length);
+        unsigned int deadChain = LengthToDeadPool(length);
         subpools[deadChain].addSingle(new (object) DeadObject(length));
         /* we can mark this subpool as having items again */
         lastUsedSubpool[deadChain] = deadChain;
