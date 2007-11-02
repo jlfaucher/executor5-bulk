@@ -348,7 +348,7 @@ REXXOBJECT REXXENTRY RexxDispatch (REXXOBJECT argList);
 LONG       VLAREXXENTRY RexxCallProgram (CSTRING filename, CSTRING interfacedefn, PVOID result, ...);
 LONG       VLAREXXENTRY RexxCallString  (CSTRING filename, CSTRING interfacedefn, PVOID result, ...);
 
-ULONG      REXXENTRY REXX_EXECUTIONINFO(size_t *, char *, BOOL);
+ULONG      REXXENTRY REXX_EXECUTIONINFO(PULONG, char *, BOOL);
 
 #ifdef __cplusplus
 }

@@ -391,7 +391,7 @@ ULONG SysVariablePool(
 /* Arguments: size_t *to retrieve currently processed line                    */
 /*            char   * to retrieve currently processed modul                  */
 /******************************************************************************/
-ULONG REXXENTRY RexxExecutionLineInfo(size_t * line, char * fname, BOOL next)
+ULONG REXXENTRY RexxExecutionLineInfo(PULONG line, char * fname, BOOL next)
 {
   if (!RexxQuery())                         /* Are we up?                     */
     return 1;                               /*   No, send nastygram.          */
