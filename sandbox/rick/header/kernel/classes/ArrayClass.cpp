@@ -686,9 +686,7 @@ RexxArray *  RexxArray::section(size_t _start, size_t _end)
 /******************************************************************************/
 {
   size_t newSize;                      /* Size for new array.               */
-  size_t i;                            /* counter for loop.                 */
   RexxArray *newArray;                 /* The new array.                    */
-  RexxArray *oldArray;                 /* The old array.                    */
 
   if (_start == 0)                      /* starting position specified?      */
     _start = 1;                         /* nope, start at begining           */
@@ -1163,7 +1161,6 @@ RexxObject *RexxArray::join(           /* join two arrays into one          */
 /******************************************************************************/
 {
   RexxArray *newArray;                 /* result array of the join          */
-  size_t  i;                           /* counter for spinning down array   */
                                        /* get new array, total size is size */
                                        /* of both arrays.                   */
   newArray = (RexxArray*)new_array(this->size() + other->size());
@@ -1284,7 +1281,6 @@ RexxArray *RexxArray::extend(          /* join two arrays into one          */
 /******************************************************************************/
 {
   RexxArray *newArray;                 /* result array of the extend        */
-  size_t  i;                           /* counter for spinning down array   */
 
                                        /* do we really need to extend array */
                                        /* or just adjust size.              */
@@ -2415,7 +2411,7 @@ void *   RexxArray::operator new(size_t newSize,
   newArray->expansionArray = newArray;
   /* moved _after_ setting hashvalue, otherwise the uninit table will not be*/
   /* able to find the new array object again later!                         */
-  if (arrayClass->uninitDefined()) {   /* does object have an UNINT method  */
+  if (arrayClass->hasUninitDefined()) {/* does object have an UNINT method  */
      save(newArray);                   /* protect from GC - uninit table may*/
                                        /* require new REXX objects          */
      newArray->hasUninit();            /* Make sure everyone is notified.   */

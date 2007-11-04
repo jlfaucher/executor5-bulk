@@ -212,7 +212,7 @@ RexxInteger *RexxClass::queryMixinClass()
 /*****************************************************************************/
 {
                                        /* return TRUE/FALSE indicator       */
-  return this->class_info & MIXIN ? TheTrueObject : TheFalseObject;
+  return this->isMixinClass() ? TheTrueObject : TheFalseObject;
 }
 
 RexxString *RexxClass::getId()
@@ -228,7 +228,7 @@ RexxObject *RexxClass::setRexxDefined(void)
 /* Function:  Set a class as a Rexx defined class                            */
 /*****************************************************************************/
 {
-  this->class_info |= REXX_DEFINED;    /* flag the class                    */
+  this->classFlags |= REXX_DEFINED;    /* flag the class                    */
   return OREF_NULL;
 }
 
@@ -447,7 +447,7 @@ void RexxClass::subClassable(const char *class_id, bool restricted)
                                        /* the metaclass mdict list           */
     OrefSet(this, this->metaClassMethodDictionary, new_array(TheClassClass->instanceMethodDictionary->copy()));
                                        /* and the metaclass scopes list      */
-    OrefSet(this, this->metaClassScopes, (RexxObjectTable *)TheClassClass->behaviour->scopes->copy());
+    OrefSet(this, this->metaClassScopes, (RexxObjectTable *)TheClassClass->behaviour->getScopes()->copy());
   }
 
                                        /* The Baseclass for non-mixin classes*/
@@ -479,12 +479,10 @@ void RexxClass::subClassable(const char *class_id, bool restricted)
                                        /* and the class behaviour to CLASS   */
   this->behaviour->setClass(TheClassClass);
                                        /* these are primitive classes       */
-  this->class_info |= PRIMITIVE_CLASS;
+  this->classFlags |= PRIMITIVE_CLASS;
 
   if (this == TheClassClass)           /* mark CLASS as a meta class        */
-    this->setMeta();
-//                                     /* still causing problems            */
-//this->hashvalue = HASHOREF(this);    /* with internal classes!            */
+    this->setMetaClass();
 }
 
 RexxObject *RexxClass::defineMethod(
@@ -495,7 +493,7 @@ RexxObject *RexxClass::defineMethod(
 /*****************************************************************************/
 {
                                        /* check if this is a rexx class     */
-  if ( this->class_info & REXX_DEFINED )
+  if ( this->isRexxDefined())
                                        /* report as a nomethod condition    */
     reportNomethod(last_msgname(), this);
                                        /* make sure there is at least one   */
@@ -520,7 +518,7 @@ RexxObject *RexxClass::defineMethod(
     method_object = method_object->newScope(this);
                                        /* Installing UNINIT?                */
     if (method_name->strCompare(CHAR_UNINIT)) {
-      this->class_info |= HAS_UNINIT;  /* and turn on uninit if so          */
+      this->setHasUninitDefined();     /* and turn on uninit if so          */
     }
   }
 
@@ -559,7 +557,7 @@ RexxObject *RexxClass::defineMethods(
     this->instanceMethodDictionary->stringPut(newMethod, index);
                                        /* Installing UNINIT?                */
     if (index->strCompare(CHAR_UNINIT)) {
-      this->class_info |= HAS_UNINIT;  /* and turn on uninit if so          */
+      this->setHasUninitDefined();     /* and turn on uninit if so          */
     }
   }
                                        /* create the instance behaviour from */
@@ -577,7 +575,7 @@ RexxObject *RexxClass::deleteMethod(
 /* Function:  Delete an instance method on this class object                 */
 /*****************************************************************************/
 {
-  if (this->class_info & REXX_DEFINED) /* check if this is a rexx class     */
+  if (this->isRexxDefined())           /* check if this is a rexx class     */
                                        /* report as a nomethod condition    */
     reportNomethod(last_msgname(), this);
                                        /* and that it can be a string        */
@@ -743,7 +741,7 @@ void RexxClass::createClassBehaviour(
           // now we need to merge in the scopes.  For each metaclass, starting
           // from the bottom of the hierarchy down, merge in each of the scope
           // values.
-          RexxArray *addedScopes = metaclass->behaviour->scopes->allAt(TheNilObject);
+          RexxArray *addedScopes = metaclass->behaviour->getScopes()->allAt(TheNilObject);
           save(addedScopes);
           LONG i;
 
@@ -761,7 +759,7 @@ void RexxClass::createClassBehaviour(
                                        /* only merge the mdict for CLASS     */
                                        /* if this is a capable of being a    */
                                        /* metaclass                          */
-    if ((this != TheClassClass) || (this == TheClassClass && this->queryMeta())) {
+    if ((this != TheClassClass) || (this == TheClassClass && this->isMetaClass())) {
                                        /* Merge this class mdict with the    */
                                        /* target behaviour class mdict       */
       target_class_behaviour->methodDictionaryMerge(this->classMethodDictionary);
@@ -837,7 +835,7 @@ void RexxClass::methodDictionaryMerge(
                                        /* check if the method that was added */
                                        /* is the uninit method               */
     if ( method_name->strCompare(CHAR_UNINIT))
-      this->class_info |= HAS_UNINIT;  /* and turn on uninit if so          */
+      this->setHasUninitDefined();     /* and turn on uninit if so          */
   }
 }
 
@@ -902,14 +900,14 @@ RexxObject *RexxClass::inherit(
   HashLink      class_index;           /* index for class superclasses list */
   HashLink      instance_index;        /* index for instance superclasses   */
                                        /* make sure this isn't a rexx       */
-  if (this->rexxDefined())             /* defined class being changed       */
+  if (this->isRexxDefined())           /* defined class being changed       */
                                        /* report as a nomethod condition    */
     reportNomethod(last_msgname(), this);
   required_arg(mixin_class, ONE);      /* make sure it was passed in        */
 
                                        /* check the mixin class is really a */
                                        /* good class for this               */
-  if (!OTYPENUM(class, mixin_class) || !mixin_class->queryMixin())
+  if (!mixin_class~isInstanceOf(TheClassClass) || !mixin_class->isMixinClass())
                                        /* if it isn't raise an error        */
     reportException(Error_Execution_mixinclass, mixin_class);
 
@@ -972,8 +970,8 @@ RexxObject *RexxClass::inherit(
                                        /* behaviour tables.                 */
   this->updateSubClasses();
   /* If the mixin class has an uninit defined, the new class must have one, too */
-  if (mixin_class->uninitDefined() || mixin_class->parentUninitDefined()) {
-     this->parentHasUninit();
+  if (mixin_class->hasUninitDefined() || mixin_class->parentHasUninitDefined()) {
+     this->setParentHasUninit();
   }
   return OREF_NULL;                    /* returns nothing                   */
 }
@@ -988,7 +986,7 @@ RexxObject *RexxClass::uninherit(
   LONG         class_index;            /* index for class superclasses list */
   LONG         instance_index;         /* index for instance superclasses   */
                                        /* make sure this isn't rexx defined */
-  if (this->rexxDefined())             /* class that is being changed       */
+  if (this->isRexxDefined())           /* class that is being changed       */
                                        /* report as a nomethod condition    */
     reportNomethod(last_msgname(), this);
   required_arg(mixin_class, ONE);      /* make sure it was passed in        */
@@ -1079,8 +1077,8 @@ RexxClass  *RexxClass::mixinclass(
                                        /* class of the reciever             */
   OrefSet(mixin_subclass, mixin_subclass->baseClass, this->baseClass);
   /* If the mixin's parent class has an uninit defined, the new mixin class must have one, too */
-  if (this->uninitDefined() || this->parentUninitDefined()) {
-     mixin_subclass->parentHasUninit();
+  if (this->hasUninitDefined() || this->parentHasUninitDefined()) {
+     mixin_subclass->setParentHasUninit();
   }
   return mixin_subclass;               /* return the new mixin class        */
 }
@@ -1102,15 +1100,15 @@ RexxClass  *RexxClass::subclass(
     meta_class = this->getMetaClass(); /* use the default metaclass         */
 
                                        /* check that it is a meta class     */
-  if (!meta_class->isInstanceOf(TheClassClass) || !meta_class->queryMeta())
+  if (!meta_class->isInstanceOf(TheClassClass) || !meta_class->isMetaClass())
   {
       reportException(Error_Translation_bad_metaclass, meta_class);
   }
                                        /* get a copy of the metaclass class */
   new_class = (RexxClass *)save(meta_class->sendMessage(OREF_NEW, class_id));
   new_class->hashvalue = HASHOREF(new_class);
-  if (this->queryMeta()) {             /* if the superclass is a metaclass  */
-    new_class->setMeta();              /* mark the new class as a meta class*/
+  if (this->isMetaClass()) {           /* if the superclass is a metaclass  */
+    new_class->setMetaClass();         /* mark the new class as a meta class*/
                                        /* and if the metaclass lists haven't */
                                        /* been updated yet                   */
     if (new_class->metaClassScopes->get(this) == OREF_NULL) {
@@ -1173,14 +1171,14 @@ RexxClass  *RexxClass::subclass(
   new_class->sendMessage(OREF_INIT);   /* now drive any user INIT methods   */
                                        /* now the new class object should   */
   /* If the parent class has an uninit defined, the new child class must have one, too */
-  if (this->uninitDefined() || this->parentUninitDefined()) {
-     new_class->parentHasUninit();
+  if (this->hasUninitDefined() || this->parentHasUninitDefined()) {
+     new_class->setParentHasUninit();
   }
   discard_hold(new_class);             /* be safe                           */
   /* notify activity this object has an UNINIT that needs to be called
               when collecting the object */
-  if (new_class->class_info & HAS_UNINIT)
-    new_class->hasUninit();
+  if (new_class->hasUninitDefined())
+    new_class->setHasUninitDefined();
 
   return new_class;                    /* return the new class              */
 }
@@ -1197,7 +1195,7 @@ void RexxClass::setMetaClass(
     OrefSet(this, this->metaClassMethodDictionary, new_array(TheClassClass->instanceMethodDictionary->copy()));
     this->metaClassMethodDictionary->addFirst(new_metaClass->instanceMethodDictionary);
                                        /* and the metaclass scopes list      */
-    OrefSet(this, this->metaClassScopes, (RexxObjectTable *)TheClassClass->behaviour->scopes->copy());
+    OrefSet(this, this->metaClassScopes, (RexxObjectTable *)TheClassClass->behaviour->getScopes()->copy());
                                        /* add the scope list for this scope  */
     this->metaClassScopes->add(new_metaClass, TheNilObject);
     this->metaClassScopes->add(this->metaClassScopes->allAt(TheNilObject), new_metaClass);
@@ -1291,7 +1289,7 @@ void  *RexxClass::operator new(size_t size,
                                        /* and the class of this behaviour   */
   new_class->instanceBehaviour->setClass(new_class);
                                        /* tell the mobile support to just   */
-  new_class->header |= MakeProxyObject;/* make a proxy for this class       */
+  new_class->makeProxyObject();        /* make a proxy for this class       */
   return (void *)new_class;            /* should be ready                   */
 }
 
@@ -1333,7 +1331,7 @@ RexxClass  *RexxClass::newRexx(RexxObject **args, size_t argCount)
                                        /* the metaclass mdict list           */
     OrefSet(new_class, new_class->metaClassMethodDictionary, new_array(TheClassClass->instanceMethodDictionary->copy()));
                                        /* and the metaclass scopes list      */
-    OrefSet(new_class, new_class->metaClassScopes, (RexxObjectTable *)TheClassClass->behaviour->scopes->copy());
+    OrefSet(new_class, new_class->metaClassScopes, (RexxObjectTable *)TheClassClass->behaviour->getScopes()->copy());
   }
   else {
                                        /* add this class to the new class    */
@@ -1350,7 +1348,7 @@ RexxClass  *RexxClass::newRexx(RexxObject **args, size_t argCount)
                                        /* and update the scopes to include   */
                                        /* the metaclass scopes               */
     new_class->metaClassScopes->add(this, TheNilObject);
-    new_class->metaClassScopes->add(this->behaviour->scopes->allAt(TheNilObject), this);
+    new_class->metaClassScopes->add(this->behaviour->getScopes()->allAt(TheNilObject), this);
   }
                                        /* set up the instance behaviour with */
                                        /*  object's instance methods         */
@@ -1377,11 +1375,11 @@ RexxClass  *RexxClass::newRexx(RexxObject **args, size_t argCount)
   OrefSet(new_class, new_class->id, class_id);
                                        /* clear the info area except for     */
                                        /* uninit                             */
-  new_class->class_info &= (HAS_UNINIT);
+  new_class->clearHasUninitDefined();
   /* if the class object has an UNINIT method defined, make sure we */
   /* add this to the table of classes to be processed. */
-  if (new_class->hasUninitMethod()) {
-      new_class->hasUninit();
+  if (new_class->hasUninitDefined()) {
+      new_class->setHasUninitDefined();
   }
   discard_hold(new_class);             /* remove the protection             */
                                        /* go do any inits                   */

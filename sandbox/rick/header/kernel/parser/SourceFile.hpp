@@ -121,9 +121,9 @@ class RexxSource : public RexxInternalObject {
   void        startLocation(const SourceLocation &);
   void        endLocation(SourceLocation &);
   BOOL        nextSpecial(UINT, SourceLocation &);
-  UINT        locateToken(RexxToken *);
+  unsigned int locateToken(RexxToken *);
   void        globalSetup();
-  RexxString *packLiteral(INT, INT, INT);
+  RexxString *packLiteral(int, int, int);
   RexxMethod *method();
   RexxMethod *interpretMethod(RexxDirectory *);
   RexxMethod *interpret(RexxString *, RexxDirectory *, size_t);
@@ -195,13 +195,13 @@ class RexxSource : public RexxInternalObject {
   void        blockError(RexxInstruction *);
   RexxSource *classNewBuffered(RexxString *, RexxBuffer *);
   RexxSource *classNewFile(RexxString *);
-  RexxObject *sourceNewObject(size_t, RexxBehaviour *, INT);
-  void        parseTraceSetting(RexxString *, PINT, PINT);
-  size_t      processVariableList(INT);
-  RexxObject *parseConditional(PINT, INT);
+  RexxObject *sourceNewObject(size_t, RexxBehaviour *, int);
+  void        parseTraceSetting(RexxString *, int *, int*);
+  size_t      processVariableList(int);
+  RexxObject *parseConditional(int *, int);
   RexxObject *parseLogical(RexxToken *first, int terminators);
 
-  BOOL        terminator(INT, RexxToken *);
+  BOOL        terminator(int, RexxToken *);
   BOOL        traceable(void);
 
   inline void        install(RexxActivation *activation) { if (this->flags&_install) this->processInstall(activation); };
@@ -252,11 +252,11 @@ class RexxSource : public RexxInternalObject {
   RexxInstruction *forwardNew();
   void        RexxInstructionForwardCreate(RexxInstructionForward *);
   RexxInstruction *guardNew();
-  RexxInstruction *ifNew(INT);
+  RexxInstruction *ifNew(int);
   RexxInstruction *instructionNew(int);
   RexxInstruction *interpretNew();
   RexxInstruction *labelNew();
-  RexxInstruction *leaveNew(INT);
+  RexxInstruction *leaveNew(int);
   RexxInstruction *messageNew(RexxExpressionMessage *);
   RexxInstruction *messageAssignmentNew(RexxExpressionMessage *, RexxObject *);
   RexxInstruction *messageAssignmentOpNew(RexxExpressionMessage *, RexxToken *, RexxObject *);
@@ -264,9 +264,9 @@ class RexxSource : public RexxInternalObject {
   RexxInstruction *numericNew();
   RexxInstruction *optionsNew();
   RexxInstruction *otherwiseNew(RexxToken *);
-  RexxInstruction *parseNew(INT);
+  RexxInstruction *parseNew(int);
   RexxInstruction *procedureNew();
-  RexxInstruction *queueNew(INT);
+  RexxInstruction *queueNew(int);
   RexxInstruction *raiseNew();
   RexxInstruction *replyNew();
   RexxInstruction *returnNew();

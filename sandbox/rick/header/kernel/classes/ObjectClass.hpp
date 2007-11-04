@@ -192,7 +192,7 @@ inline uintptr_t HASHOREF(RexxVirtualBase *r) { return ((uintptr_t)r) >> OREFSHI
      inline void   setObjectMark(uint16_t markword) { header.setObjectMark(markword); }
      inline bool   isObjectLive(uint32_t mark) { return header.isObjectLive(mark); }
      inline bool   isOldSpace() { return header.isOldSpace(); }
-     inline bool   isOldSpace() { return header.isNewSpace(); }
+     inline bool   isNewSpace() { return header.isNewSpace(); }
      inline void   setNewSpace() { header.setNewSpace(); }
      inline void   makeProxiedObject() { header.makeProxiedObject(); }
      inline bool   isProxyObject() { return header.isProxyObject(); }
