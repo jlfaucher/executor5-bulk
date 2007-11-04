@@ -1183,7 +1183,7 @@ parse var val dunitx dunity pixelx pixely
 <programlisting>
 <![CDATA[
 SM_CMONITORS = 80
-metric = GetSysMetric(SM_CMONITORS)
+metric = GetSysMetrics(SM_CMONITORS)
 say 'There are' metric 'monitors connected to this system.'
 ]]>
 </programlisting>
@@ -2147,10 +2147,21 @@ box was checked by the user or will contain <computeroutput>.false
 </para>
 <programlisting>
 <![CDATA[
-months = .array~of("Jan","Feb","Mar","Apr","May","Jun", ,
+
+months = .array~of("Jan","Feb","Mar","Apr","May","Jun",  -
                    "Jul","Aug","Sep","Oct","Nov","Dec")
-m = SingleSelection("Check it","Born in",months,12, ,6)
-say "Born in month" m "=" months[m]
+title = "Month You Were Born"
+groupBoxLabel = "Check your birth month"
+selectedRadioButton = 3
+
+m = SingleSelection(groupBoxLabel, title, months, selectedRadioButton, , 6)
+if m == "" then
+    say "The user canceled the dialog."
+else
+    say "Born in month" m "=" months[m]
+
+::requires "oodPlain.cls"
+
 ]]>
 </programlisting>
 <para> The parameters are described in the <link
