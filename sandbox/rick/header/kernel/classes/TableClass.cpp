@@ -201,7 +201,7 @@ RexxTable *RexxMemory::newTable()
                                        /* set the new behaviour             */
   BehaviourSet(newObj, TheTableBehaviour);
                                        /* set the virtual function table    */
-  setVirtualFunctions(newObj, T_table);
+  newObj->setVirtualFunctions(VFTArray[T_table]);
                                        /* fill in the hash value            */
   newObj->hashvalue = HASHOREF(newObj);
                                        /* create the initial hash table     */
@@ -220,7 +220,7 @@ RexxObjectTable *RexxMemory::newObjectTable(size_t size)
                                        /* set the new behaviour             */
   BehaviourSet(newObj, TheTableBehaviour);
                                        /* set the virtual function table    */
-  setVirtualFunctions(newObj, T_table);
+  newObj->setVirtualFunctions(VFTArray[T_table]);
                                        /* fill in the hash value            */
   newObj->hashvalue = HASHOREF(newObj);
                                        /* create the initial hash table     */

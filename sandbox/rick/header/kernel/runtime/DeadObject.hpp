@@ -64,7 +64,7 @@ class DeadObject {
 
     inline void addEyeCatcher(const char *string) { memcpy(VFT, string, 4); }
     inline DeadObject(size_t objectSize) {
-        header.setSize(objectSize);
+        header.setObjectSize(objectSize);
 #ifdef CHECKOREFS
         addEyeCatcher("DEAD");
 #endif
@@ -74,14 +74,14 @@ class DeadObject {
   // Called during RexxMemory initialization
   inline DeadObject() {
       addEyeCatcher("HEAD");
-      header.setSize(0);
+      header.setObjectSize(0);
       /* Chain this deadobject to itself. */
       next = this;
       previous = this;
   }
 
-  inline void setSize(size_t newSize) { header.setSize(newSize); }
-  inline size_t size() {  return header.size(); };
+  inline void setObjectSize(size_t newSize) { header.setObjectSize(newSize); }
+  inline size_t getObjectSize() {  return header.getObjectSize(); };
 
   inline void insertAfter(DeadObject *newDead) {
       newDead->next     = this->next;
@@ -102,8 +102,8 @@ class DeadObject {
       this->previous->next = this->next;
   }
 
-  inline bool isReal() { return header.size() != 0; }
-  inline bool isHeader() { return header.size() == 0; }
+  inline bool isReal() { return header.getObjectSize() != 0; }
+  inline bool isHeader() { return header.getObjectSize() == 0; }
 
   inline void reset() {
       /* Chain this deadobject to itself, removing all of the */
@@ -112,7 +112,7 @@ class DeadObject {
       previous = this;
   }
 
-  inline DeadObject *end() { return (DeadObject *)(((char *)this) + this->size()); }
+  inline DeadObject *end() { return (DeadObject *)(((char *)this) + this->getObjectSize()); }
   inline bool overlaps(DeadObject *o) { return (o >= this && o < end()) || (o->end() >= this && o->end() < this->end()); }
 
 
@@ -199,7 +199,7 @@ class DeadObjectPool
     {
         DeadObject *newObject = anchor.next;
         size_t newLength;
-        for (newLength = newObject->size(); newLength != 0; newLength = newObject->size()) {
+        for (newLength = newObject->getObjectSize(); newLength != 0; newLength = newObject->getObjectSize()) {
             if (newLength >= length) {
                 newObject->remove();
                 logHit();
@@ -221,7 +221,7 @@ class DeadObjectPool
         DeadObject *newObject = anchor.next;
         size_t newLength;
         int probes = 1;
-        for (newLength = newObject->size(); newLength != 0; newLength = newObject->size()) {
+        for (newLength = newObject->getObjectSize(); newLength != 0; newLength = newObject->getObjectSize()) {
             if (newLength >= length) {
                 // we had to examine a lot of objects to get a match.
                 // it's worthwhile percolating the larger objects on the rest of the
@@ -234,7 +234,7 @@ class DeadObjectPool
                 *realLength = newLength;
                 if (probes > ReorderThreshold)
                 {
-                    for (size_t tailLength = tailObject->size(); tailLength != 0; tailLength = tailObject->size())
+                    for (size_t tailLength = tailObject->getObjectSize(); tailLength != 0; tailLength = tailObject->getObjectSize())
                     {
                         // the size we just had problems with is a good marker for
                         // selecting candidates to move toward the front.  The will guarantee

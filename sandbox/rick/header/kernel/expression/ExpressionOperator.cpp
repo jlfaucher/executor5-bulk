@@ -92,7 +92,7 @@ RexxExpressionOperator::RexxExpressionOperator(
 /* Function:  Initialize a translator operator object                         */
 /******************************************************************************/
 {
-  ClearObject(this);                   /* start completely clean            */
+  this->clearObject();                 /* start completely clean            */
                                        /* just fill in the three terms      */
   this->oper = op;
   OrefSet(this, this->left_term, left);

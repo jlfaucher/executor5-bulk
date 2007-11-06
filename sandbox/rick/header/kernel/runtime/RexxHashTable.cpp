@@ -91,8 +91,8 @@ RexxHashTable *RexxMemory::newHashTable(
                                        /* Give new object its behaviour     */
   BehaviourSet(newHash, TheHashTableBehaviour);
                                        /* set the virtual function table    */
-  setVirtualFunctions(newHash, T_hashtab);
-  ClearObject(newHash);                /* clear things out                  */
+  newHash->setVirtualFunctions(VFTArray[T_hashtab]);
+  newHash->clearObject();              /* clear things out                  */
   newHash->u_size = bucketSize;        /* record the size                   */
   newHash->free = entries - 1;         /* and the first free slot           */
   return newHash;                      /* and return it                     */
@@ -128,7 +128,7 @@ RexxTable *RexxMemory::newHashCollection(
   companionSize = roundObjectBoundary(companionSize);
                                        /* Get space for two objects         */
   newObj = (RexxTable *)new_object(bytes + companionSize);
-  ClearObject(newObj);                 /* clear the entire lot              */
+  newObj->clearObject();               /* clear the entire lot              */
                                        /* address the hash table            */
   newHash = (RexxHashTable *)(((char *)newObj) + companionSize);
                                        /* compute total size of the hash    */
@@ -146,7 +146,7 @@ RexxTable *RexxMemory::newHashCollection(
                                        /* Give new object its behaviour     */
   BehaviourSet(newHash, TheHashTableBehaviour);
                                        /* set the virtual function table    */
-  setVirtualFunctions(newHash, T_hashtab);
+  newHash->setVirtualFunctions(VFTArray[T_hashtab]);
   newHash->u_size = bucketSize;        /* record the size                   */
   newHash->free = entries - 1;         /* and the first free slot           */
                                        /* hook the hash into the companion  */

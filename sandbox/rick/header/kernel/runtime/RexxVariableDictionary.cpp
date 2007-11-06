@@ -63,7 +63,7 @@ RexxObject  *RexxVariableDictionary::copy()
 
   /* create a new object               */
   copyObj = new_variableDictionary(contents->mainSlotsSize());
-  ClearObject(copyObj);                /* clear this out                    */
+  copyObj->clearObject();              /* clear this out                    */
                                        /* copy the behaviour pointer        */
   OrefSet(copyObj, copyObj->behaviour, this->behaviour);
   save(copyObj);                       /* protect from garbage collect      */
@@ -432,7 +432,7 @@ RexxVariableDictionary *RexxMemory::newVariableDictionary(
                                        /* Give new object its behaviour     */
   BehaviourSet(newObj, TheVariableDictionaryBehaviour);
                                        /* set the virtual function table    */
-  setVirtualFunctions(newObj, T_vdict);
+  newObj->setVirtualFunctions(VFTArray[T_vdict]);
   return newObj;                       /* return the new vdict              */
 }
 
@@ -462,6 +462,6 @@ RexxVariableDictionary *RexxMemory::newVariableDictionary(
                                        /* Give new object its behaviour     */
   BehaviourSet(newObj, TheVariableDictionaryBehaviour);
                                        /* set the virtual function table    */
-  setVirtualFunctions(newObj, T_vdict);
+  newObj->setVirtualFunctions(VFTArray[T_vdict]);
   return newObj;                       /* return the new vdict              */
 }

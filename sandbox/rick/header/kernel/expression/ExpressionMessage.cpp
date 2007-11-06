@@ -61,7 +61,7 @@ RexxExpressionMessage::RexxExpressionMessage(
 /*  Function:  Create a new message expression object                         */
 /******************************************************************************/
 {
-  ClearObject(this);                   /* start completely clean            */
+  this->clearObject();                 /* start completely clean            */
                                        /* also make sure name is cleared    */
                                        /* name doubles as hash so ClearObjec*/
   this->u_name = OREF_NULL;            /* doesn't clear hash field.         */

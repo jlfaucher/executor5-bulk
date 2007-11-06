@@ -1610,9 +1610,9 @@ RexxString *RexxString::newString(const char *string, size_t length)
                                        /* set the behaviour from the class*/
   BehaviourSet(newObj, TheStringBehaviour);
                                        /* set the virtual function table    */
-  setVirtualFunctions(newObj, T_string);
+  newObj->setVirtualFunctions(VFTArray[T_string]);
                                        /* clear the front part              */
-  ClearObjectLength(newObj, sizeof(RexxString));
+  newObj->clearObject(sizeof(RexxString));
   newObj->setLength(length);           /* save the length                   */
                                        /* Null terminate, allows faster     */
                                        /* conversion to ASCII-Z string      */
@@ -1646,9 +1646,9 @@ RexxString *RexxString::rawString(size_t length)
                                        /* set the behaviour from the class*/
   BehaviourSet(newObj, TheStringBehaviour);
                                        /* set the virtual function table    */
-  setVirtualFunctions(newObj, T_string);
+  newObj->setVirtualFunctions(VFTArray[T_string]);
                                        /* clear the front part              */
-  ClearObjectLength(newObj, sizeof(RexxString));
+  newObj->clearObject(sizeof(RexxString));
   newObj->setLength(length);           /* save the length                   */
                                        /* Null terminate, allows faster     */
                                        /* conversion to ASCII-Z string      */
@@ -1688,9 +1688,9 @@ RexxString *RexxString::newUpperString(const char * string, stringsize_t length)
     /* set the behaviour from the class*/
     BehaviourSet(newObj, TheStringBehaviour);
     /* set the virtual function table    */
-    setVirtualFunctions(newObj, T_string);
+    newObj->setVirtualFunctions(VFTArray[T_string]);
     /* clear the front part              */
-    ClearObjectLength(newObj, sizeof(RexxString));
+    newObj->clearObject(sizeof(RexxString));
     newObj->length = length;             /* save the length                   */
     newObj->hashvalue = 0;               // make sure the hash value is zeroed
                                          /* create a new string               */

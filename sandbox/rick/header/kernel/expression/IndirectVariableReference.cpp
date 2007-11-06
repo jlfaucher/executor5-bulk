@@ -58,7 +58,7 @@ RexxVariableReference::RexxVariableReference(
 /* Function:  Complete initialization of a variable reference object          */
 /******************************************************************************/
 {
-  ClearObject(this);                   /* initialize the object             */
+  this->clearObject();                 /* initialize the object             */
                                        /* set the name value                */
   OrefSet(this, this->variableObject, variable);
 }

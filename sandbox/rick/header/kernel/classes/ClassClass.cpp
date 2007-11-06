@@ -907,7 +907,7 @@ RexxObject *RexxClass::inherit(
 
                                        /* check the mixin class is really a */
                                        /* good class for this               */
-  if (!mixin_class~isInstanceOf(TheClassClass) || !mixin_class->isMixinClass())
+  if (!mixin_class->isInstanceOf(TheClassClass) || !mixin_class->isMixinClass())
                                        /* if it isn't raise an error        */
     reportException(Error_Execution_mixinclass, mixin_class);
 
@@ -971,7 +971,7 @@ RexxObject *RexxClass::inherit(
   this->updateSubClasses();
   /* If the mixin class has an uninit defined, the new class must have one, too */
   if (mixin_class->hasUninitDefined() || mixin_class->parentHasUninitDefined()) {
-     this->setParentHasUninit();
+     this->setParentHasUninitDefined();
   }
   return OREF_NULL;                    /* returns nothing                   */
 }
@@ -1078,7 +1078,7 @@ RexxClass  *RexxClass::mixinclass(
   OrefSet(mixin_subclass, mixin_subclass->baseClass, this->baseClass);
   /* If the mixin's parent class has an uninit defined, the new mixin class must have one, too */
   if (this->hasUninitDefined() || this->parentHasUninitDefined()) {
-     mixin_subclass->setParentHasUninit();
+     mixin_subclass->setParentHasUninitDefined();
   }
   return mixin_subclass;               /* return the new mixin class        */
 }
@@ -1172,7 +1172,7 @@ RexxClass  *RexxClass::subclass(
                                        /* now the new class object should   */
   /* If the parent class has an uninit defined, the new child class must have one, too */
   if (this->hasUninitDefined() || this->parentHasUninitDefined()) {
-     new_class->setParentHasUninit();
+     new_class->setParentHasUninitDefined();
   }
   discard_hold(new_class);             /* be safe                           */
   /* notify activity this object has an UNINIT that needs to be called
@@ -1279,7 +1279,7 @@ void  *RexxClass::operator new(size_t size,
   else
                                        /* use the specified size            */
     new_class = (RexxClass *)new_object(size1);
-  ClearObject(new_class);              /* clear out the state data          */
+  new_class->clearObject();            /* clear out the state data          */
                                        /* set the class specific behaviour  */
   BehaviourSet(new_class, class_behaviour);
                                        /* set the class into the behaviour  */
@@ -1289,7 +1289,7 @@ void  *RexxClass::operator new(size_t size,
                                        /* and the class of this behaviour   */
   new_class->instanceBehaviour->setClass(new_class);
                                        /* tell the mobile support to just   */
-  new_class->makeProxyObject();        /* make a proxy for this class       */
+  new_class->makeProxiedObject();      /* make a proxy for this class       */
   return (void *)new_class;            /* should be ready                   */
 }
 
@@ -1397,9 +1397,9 @@ void class_create (void)
                                        /* set the instance behaviour         */
   BehaviourSet(TheClassClass, TheClassClassBehaviour);
                                        /* set the instance behaviour         */
-  OrefSet(TheClassClass, TheClassClass->instanceBehaviour, TheClassBehaviour);
+  TheClassClass->setInstanceBehaviour(TheClassBehaviour);
                                        /* tell the mobile support to just    */
                                        /* make a proxy for this class        */
-  TheClassClass->header |= MakeProxyObject;
+  TheClassClass->makeProxiedObject();
   new (TheClassClass) RexxClass;
 }

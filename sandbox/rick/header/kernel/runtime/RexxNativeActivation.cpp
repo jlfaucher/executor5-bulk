@@ -856,7 +856,7 @@ void * RexxNativeActivation::operator new(size_t size,
   newObject = (RexxNativeActivation *)new_object(size);
                                        /* Give new object its behaviour     */
   BehaviourSet(newObject, TheNativeActivationBehaviour);
-  ClearObject(newObject);              /* clear out at start                */
+  newObject->clearObject();            /* clear out at start                */
   newObject->u_receiver = receiver;    /* the receiving object              */
   newObject->method = method;          /* the method to run                 */
   newObject->activity = activity;      /* the activity running on           */

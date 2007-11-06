@@ -45,6 +45,8 @@
 #ifndef Included_RexxObject
 #define Included_RexxObject
 
+#include <stddef.h>
+
 /* default size of the scope table...these are normally very small */
 #define DEFAULT_SCOPE_SIZE  6
 
@@ -82,8 +84,8 @@ public:
         return *this;
     }
 
-    inline size_t size() { return (size_t)objectSize; }
-    inline void setSize(size_t l) { objectSize = l; }
+    inline size_t getObjectSize() { return (size_t)objectSize; }
+    inline void setObjectSize(size_t l) { objectSize = l; }
 
     inline void makeProxiedObject() { flags |= ProxiedObject; }
     inline bool requiresProxyObject() { return (flags & ProxiedObject) != 0; }
@@ -177,8 +179,16 @@ inline uintptr_t HASHOREF(RexxVirtualBase *r) { return ((uintptr_t)r) >> OREFSHI
 
      inline operator RexxObject*() { return (RexxObject *)this; };
 
-     inline size_t objectSize() { return header.size(); }
-     inline void   setObjectSize(size_t s) { header.setSize(s); }
+     inline size_t getObjectSize() { return header.getObjectSize(); }
+     inline void   setObjectSize(size_t s) { header.setObjectSize(s); }
+     inline size_t getObjectHeaderSize() { return offsetof(RexxInternalObject, hashvalue); }
+     inline size_t getObjectDataSize() { return getObjectSize() - getObjectHeaderSize(); }
+     inline void  *getObjectDataSpace() { return ((char *)this) + getObjectHeaderSize(); }
+     inline void   clearObject() { memset(getObjectDataSpace(), '\0', getObjectDataSize()); }
+     inline void   clearObject(size_t l) { memset(getObjectDataSpace(), '\0', l - getObjectHeaderSize()); }
+     inline void   setVirtualFunctions(void *t) { *((void **)this) = t; }
+     inline void   setDefaultHash() { hashvalue = identityHash(); }
+
      inline void   setObjectLive(uint16_t markword)  { header.setObjectMark(markword); }
      inline void   setHasReferences() { header.setHasReferences(); }
      inline void   setHasNoReferences() { header.setHasNoReferences(); }
@@ -191,9 +201,11 @@ inline uintptr_t HASHOREF(RexxVirtualBase *r) { return ((uintptr_t)r) >> OREFSHI
      inline bool   isObjectMarked(uint16_t markword) { return header.isObjectMarked(markword); }
      inline void   setObjectMark(uint16_t markword) { header.setObjectMark(markword); }
      inline bool   isObjectLive(uint32_t mark) { return header.isObjectLive(mark); }
+     inline bool   isObjectDead(uint32_t mark) { return header.isObjectDead(mark); }
      inline bool   isOldSpace() { return header.isOldSpace(); }
      inline bool   isNewSpace() { return header.isNewSpace(); }
      inline void   setNewSpace() { header.setNewSpace(); }
+     inline void   setOldSpace() { header.setOldSpace(); }
      inline void   makeProxiedObject() { header.makeProxiedObject(); }
      inline bool   isProxyObject() { return header.isProxyObject(); }
             bool   isSubClassOrEnhanced();
@@ -238,6 +250,7 @@ inline uintptr_t HASHOREF(RexxVirtualBase *r) { return ((uintptr_t)r) >> OREFSHI
              RexxObject  *hasUninit();
              void         removedUninit();
              void         printObject();
+             RexxObject  *clone();
 
 
      ObjectHeader header;              /* memory management header          */
@@ -249,18 +262,6 @@ inline uintptr_t HASHOREF(RexxVirtualBase *r) { return ((uintptr_t)r) >> OREFSHI
      union {
        long hashvalue;                 /* Default usage.                    */
        size_t u_size;                  /* used by many variable sized Objs  */
-       RexxMethod *u_method;           /* executed method - Activation      */
-       RexxString *library;            /* external Library of Method -NMETH */
-       RexxSource *u_source;           /* Source code object - RexxMethod   */
-       RexxObject *u_receiver;         /* Receiver object - RexxNativeCode  */
-       RexxObject *variableValue;      /* value of variable - OKVAR         */
-                                       /* name of function/message          */
-       RexxString *u_name;             /* Name for Stem Variable - RexxStem */
-       RexxString *variableName;       /* retriever of indirect variable    */
-       RexxString *stem;               /* name of stem - OTVSTEM            */
-       RexxObject *u_left_term;        /* left term of the operator         */
-                                       /* variable retriever                */
-       RexxVariableBase *variableObject;
      };
   };
 
@@ -473,9 +474,6 @@ class RexxNilObject : public RexxObject {
 
 };
 
-
-/* return the size of the object */
-inline size_t ObjectSize(void *o) { return ((RexxObject *)(o))->objectSize(); }
 
 class RexxActivationBase : public RexxInternalObject{
   public:

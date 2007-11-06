@@ -105,7 +105,7 @@ RexxInternalStack *RexxMemory::newInternalStack(
                                        /* Give new object its behaviour     */
   BehaviourSet(newObj, TheInternalStackBehaviour);
                                        /* set the virtual function table    */
-  setVirtualFunctions(newObj, T_intstack);
+  newObj->setVirtualFunctions(VFTArray[T_intstack]);
   newObj->size = stackSize;            /* set the size                      */
   newObj->top  = newObj->stack;        /* set the top element               */
                                        /* set marker for "end of object" to */

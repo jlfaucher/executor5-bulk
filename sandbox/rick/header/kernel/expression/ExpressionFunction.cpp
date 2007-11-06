@@ -65,7 +65,7 @@ RexxExpressionFunction::RexxExpressionFunction(
 /* Function:  Create a function expression object                             */
 /******************************************************************************/
 {
-  ClearObject(this);                   /* initialize the object             */
+  this->clearObject();                 /* initialize the object             */
                                        /* NOTE: the name oref needs to      */
                                        /* be filled in prior to doing any   */
                                        /* thing that might cause a gc       */

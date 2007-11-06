@@ -62,7 +62,7 @@
  */
 RexxExpressionLogical::RexxExpressionLogical(RexxSource *source, size_t count, RexxQueue  *list)
 {
-    ClearObject(this);                   /* initialize the object             */
+    this->clearObject();                 /* initialize the object             */
     expressionCount = count;
 
     // the parsed expressions are stored in a queue, so we process them in

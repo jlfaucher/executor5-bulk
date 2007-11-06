@@ -320,7 +320,7 @@ RexxActivity::RexxActivity(
 /******************************************************************************/
 {
   if (!recycle) {                      /* if this is the first time         */
-    ClearObject(this);                 /* globally clear the object         */
+    this->clearObject();               /* globally clear the object         */
     this->hashvalue = HASHOREF(this);  /* set the hash value                */
     this->local = _local;              /* set the local environment         */
                                        /* Set ProcessName now, before       */
@@ -2369,7 +2369,7 @@ BOOL  RexxActivity::sysExitDbgTst(
                                        /* get the exit handler              */
   exitname = this->querySysExits(RXDBG);
   if (exitname != OREF_NULL) {         /* exit enabled?                     */
-    if (!activation->code->u_source->traceable() || (activation->code->u_source->sourceBuffer == OREF_NULL))
+    if (!activation->code->isTraceable() || (activation->code->u_source->sourceBuffer == OREF_NULL))
        return TRUE;
     if (EndStepOut_Over)
         exit_parm.rxdbg_flags.rxftrace = RXDBGENDSTEP;
@@ -2720,7 +2720,7 @@ void RexxActivityClass::init()
   RexxObjectTable *subClassTable;      /* existing subclass table           */
 
   subClassTable = this->subClasses;    /* save this before clearing         */
-  ClearObject(this);                   /* clear the activity class          */
+  this->clearObject();                 /* clear the activity class          */
   OrefSet(this,this->classUsedActivities,new_object_table());
   OrefSet(this,this->classFreeActivities,new_object_table());
   OrefSet(this,this->classAllActivities,new_object_table());

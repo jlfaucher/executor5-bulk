@@ -120,7 +120,7 @@ size_t RexxList::getFree(void)
                                        /* If either of the objects are in   */
                                        /* OldSpace,  we need to OrefSet     */
                                        /* each copied element               */
-    if (OldSpace(this) || OldSpace(newLTable)) {
+    if (this->isOldSpace() || newLTable->isOldSpace()) {
       element = ENTRY_POINTER(0);      /* point at the first element        */
                                        /* copy each element into new buffer */
       for (i = 0; i < this->size; i++) {
@@ -985,7 +985,7 @@ RexxList *RexxListClass::newRexx(
   newList = new RexxList;
                                        /* Give new object its behaviour     */
   BehaviourSet(newList, this->getInstanceBehaviour());
-  if (this->uninitDefined()) {
+  if (this->hasUninitDefined()) {
     newList->hasUninit();
   }
                                        /* Initialize the new list instance  */

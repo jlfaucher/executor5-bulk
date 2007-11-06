@@ -128,7 +128,7 @@ RexxActivation::RexxActivation(
 /*            from garbage collection during the INIT method.                 */
 /******************************************************************************/
 {
-  ClearObject(this);                   /* start with a fresh object         */
+  this->clearObject();                 /* start with a fresh object         */
   if (context == DEBUGPAUSE) {         /* actually a debug pause?           */
     this->debug_pause = TRUE;          /* set up for debugging intercepts   */
     context = INTERPRET;               /* this is really an interpret       */
@@ -137,8 +137,8 @@ RexxActivation::RexxActivation(
   this->activation_context = context;  /* save the context                  */
   this->receiver = _receiver;          /* save the message receiver         */
   this->method = _method;              /* save the method pointer           */
-  this->code = _method->rexxCode;      /* get the REXX method object        */
-  this->source = this->code->u_source; /* save the source                   */
+  this->code = _method->getCode();     /* get the REXX method object        */
+  this->source = code->getSource();    /* save the source                   */
   this->activity = _activity;          /* save the activity pointer         */
                                        /* save the sender activation        */
   this->sender = _activity->currentAct();
@@ -1928,7 +1928,7 @@ BOOL RexxActivation::callExternalRexx(
                                        /* run as a call                     */
       *resultObj = routine->call(this->activity, (RexxObject *)this, target, _arguments, _argcount, calltype, this->settings.current_env, EXTERNALCALL);
                                        /* now merge all of the public info  */
-      this->settings.parent_source->mergeRequired(routine->code->u_source);
+      this->settings.parent_source->mergeRequired(routine->getSource());
       discard(routine);
       return TRUE;                     /* Return routine found flag         */
     }
@@ -2034,7 +2034,7 @@ RexxObject * RexxActivation::loadRequired(
                                        /* No longer installing routine.     */
   this->activity->removeRunningRequires(fullname);
                                        /* now merge all of the info         */
-  this->settings.parent_source->mergeRequired(_method->code->u_source);
+  this->settings.parent_source->mergeRequired(_method->getSource());
   discard(_method);
   return _method;                      /* return the method  (but not needed!)  */
 }
@@ -2157,7 +2157,7 @@ void RexxActivation::traceBack(
   RexxSource   * _source;              /* current method source             */
   RexxString   * line;                 /* traceback line                    */
 
-  _source = this->code->u_source;       /* get the source object             */
+  _source = this->code->getSource();    /* get the source object             */
   if (_source->traceable()) {           /* if we still have real source      */
     line = this->formatTrace(this->current, _source);
     if (line != OREF_NULL)             /* have a real line?                 */
@@ -2944,7 +2944,7 @@ void RexxActivation::traceClause(      /* trace a REXX instruction          */
   if (!this->source->traceable())      /* if we don't have real source      */
     return;                            /* just ignore for this              */
                                        /* format the line                   */
-  line = this->formatTrace(clause, this->code->u_source);
+  line = this->formatTrace(clause, this->code->getSourc();
   if (line != OREF_NULL) {             /* have a source line?               */
                                        /* newly into debug mode?            */
     if ((this->settings.flags&trace_debug && !(this->settings.flags&debug_prompt_issued))
@@ -3207,7 +3207,7 @@ void RexxActivation::sysDbgLineLocate(RexxInstruction * instr)
                                        /* get the exit handler              */
   exitname = activity->querySysExits(RXDBG);
   if (exitname != OREF_NULL) {         /* exit enabled?                     */
-    if (!this->code->u_source->traceable() || (this->code->u_source->flags&_interpret)
+    if (!this->code->getSourc()->traceable() || (this->code->getSource()->isInterpret())
         || (this->code->u_source->sourceBuffer == OREF_NULL)) return;
     exit_parm.rxdbg_flags.rxftrace = 0;
     filename = this->code->getProgramName();

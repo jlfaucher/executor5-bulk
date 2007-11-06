@@ -71,7 +71,7 @@ RexxStem::RexxStem(
 /* Function:  Initialize a STEM class item                                    */
 /******************************************************************************/
 {
-  ClearObject(this);                   /* start fresh                       */
+  this->clearObject();                 /* start fresh                       */
   if (name == OREF_NULL)               /* no explicit default value?        */
     name = OREF_NULLSTRING;            /* set a null string                 */
   else
@@ -489,7 +489,7 @@ void *RexxStem::operator new(size_t size)
   newObject = new_object(size);
                                        /* default to stem behaviour         */
   BehaviourSet(newObject, TheStemBehaviour);
-  ClearObject(newObject);              /* ensure the state data is clean    */
+  this->clearObject();                 /* ensure the state data is clean    */
   return newObject;                    /* and return                        */
 }
 

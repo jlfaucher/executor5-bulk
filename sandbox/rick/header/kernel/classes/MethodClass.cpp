@@ -70,11 +70,11 @@ RexxMethod::RexxMethod(
 /******************************************************************************/
 {
 
-  ClearObject(this);                   /* start out fresh                   */
-  this->setFlags(0);                   /* clear all of the flags            */
-  this->setMethnum(method);            /* save the method code number       */
+  this->clearObject();                 /* start out fresh                   */
+  this->methodFlags = 0;               /* clear all of the flags            */
+  this->setMethodIndex(method);        /* save the method code number       */
   this->cppEntry = entry;              /* set the entry point               */
-  this->setArguments(argCount);        /* and the arguments                 */
+  this->setArgumentCount(argCount);    /* and the arguments                 */
                                        /* get the argument information      */
   OrefSet(this, this->code, codeObj);  /* store the code                    */
   if (code != OREF_NULL) {             /* have some sort of code?           */
@@ -113,7 +113,7 @@ void RexxMethod::liveGeneral()
   if (memoryObject.restoringImage()) { /* restoring the image?              */
     this->setInternal();               /* mark as an image method           */
                                        /* reset the method entry point      */
-    this->cppEntry = ExportedMethods[this->methnum()];
+    this->cppEntry = ExportedMethods[this->getMethodIndex()];
   }
 }
 
@@ -141,7 +141,7 @@ RexxObject * RexxMethod::unflatten(RexxEnvelope *envelope)
                                        /* if not then we haven't unflattened*/
   if (this->code == OREF_NULL)         /* is this a kernel method?          */
                                        /* reset the method entry point      */
-    this->cppEntry = ExportedMethods[this->methnum()];
+    this->cppEntry = ExportedMethods[this->getMethodIndex()];
   return (RexxObject *)this;           /* return ourself.                   */
 }
 
@@ -167,24 +167,24 @@ RexxObject *RexxMethod::run(
     methodEntry = this->cppEntry;      /* get the entry point               */
                                        /* expecting an array?               */
                                        /* expecting a pointer/count pair?   */
-    if (this->arguments() == A_COUNT) {
+    if (this->getArgumentCount() == A_COUNT) {
                                        /* we can pass this right on         */
       result = (receiver->*((PCPPMC1)methodEntry))(argPtr, count);
     }
     else {                             /* receiver expects fixed arguments  */
-      if (count > this->arguments())   /* too many arguments?               */
-        reportException(Error_Incorrect_method_maxarg, this->arguments());
-      if (count < this->arguments()) { /* need to pad these out?            */
+      if (count > this->getArgumentCount()) /* too many arguments?               */
+        reportException(Error_Incorrect_method_maxarg, this->getArgumentCount());
+      if (count < this->getArgumentCount()) { /* need to pad these out?            */
         for (i = 0; i < count; i++)    /* copy over the arguments so we     */
                                        /* don't clobber things in the caller*/
           argument_list[i] = argPtr[i];
                                        /* null out any missing arguments    */
-        for (i = count; i < this->arguments(); i++)
+        for (i = count; i < this->getArgumentCount(); i++)
           argument_list[i] = OREF_NULL;
         argPtr = &argument_list[0];    /* point at the new argument list    */
       }
 
-      switch (this->arguments()) {     /* switch based on number of args    */
+      switch (this->getArgumentCount()) { /* switch based on number of args    */
 
         case 0:                        /* zero                              */
           result = (receiver->*((PCPPM0)methodEntry))();
@@ -355,7 +355,7 @@ RexxObject *RexxMethod::setSecurityManager(
 {
   if (this->isRexxMethod()) {          /* this written in REXX?             */
                                        /* return associated source          */
-    this->rexxCode->u_source->setSecurityManager(manager);
+    this->getSource()->setSecurityManager(manager);
     return TheTrueObject;              /* this worked ok                    */
   }
   else                                 /* kernel/native code                */
@@ -553,8 +553,8 @@ RexxMethod *RexxMethodClass::newRexxCode(
   if (option != OREF_NULL) {
     if (OTYPE(Method, option)) {
       result = this->newRexxMethod(newSource, OREF_NULL);
-      result->code->u_source->routines = ((RexxMethod*) option)->code->u_source->routines;
-      result->code->u_source->public_routines = ((RexxMethod*) option)->code->u_source->public_routines;
+      result->setLocalRoutines(((RexxMethod*) option)->getLocalRoutines());
+      result->setPublicRoutines(((RexxMethod*) option)->getPublicRoutines());
     } else {
       if (!OTYPE(String, option))
         reportException(Error_Incorrect_method_argType, IntegerThree, "Method/String object");
@@ -571,8 +571,8 @@ RexxMethod *RexxMethodClass::newRexxCode(
   else if (option == NULL) {
     result = this->newRexxMethod(newSource, OREF_NULL);
     // new default: insert program scope into method object
-    result->code->u_source->routines = CurrentActivity->currentActivation->source->routines;
-    result->code->u_source->public_routines = CurrentActivity->currentActivation->source->public_routines;
+    result->setLocalRoutines(CurrentActivity->currentActivation->getSource()->getLocalRoutines());
+    result->setPublicRoutines(CurrentActivity->currentActivation->getSource()->getPublicRoutines());
   }
 
   return result;
@@ -607,8 +607,8 @@ RexxMethod *RexxMethodClass::newRexx(
   save(newMethod);
                                        /* Give new object its behaviour     */
   BehaviourSet(newMethod, this->getInstanceBehaviour());
-   if (this->uninitDefined()) {        /* does object have an UNINT method  */
-     newMethod->hasUninit();           /* Make sure everyone is notified.   */
+   if (this->hasUninitDefined()) {        /* does object have an UNINT method  */
+     newMethod->hasUninit();              /* Make sure everyone is notified.   */
    }
                                        /* now send an INIT message          */
   newMethod->sendMessage(OREF_INIT, init_args, initCount);
@@ -636,7 +636,7 @@ RexxMethod *RexxMethodClass::newFileRexx(
   discard_hold(source);
                                        /* Give new object its behaviour     */
   BehaviourSet(newMethod, this->getInstanceBehaviour());
-   if (this->uninitDefined()) {        /* does object have an UNINT method  */
+   if (this->hasUninitDefined()) {     /* does object have an UNINT method  */
      newMethod->hasUninit();           /* Make sure everyone is notified.   */
    }
                                        /* now send an INIT message          */

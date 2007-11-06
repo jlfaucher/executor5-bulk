@@ -128,8 +128,8 @@ RexxSource::RexxSource(
 /* Function:  Initialize a source object                                      */
 /******************************************************************************/
 {
-  ClearObject(this);                   /* start completely clean            */
-  this->hashvalue = HASHOREF(this);    /* fill in the hash value            */
+  this->clearObject();                 /* start completely clean            */
+  this->setDefaultHash();              /* fill in the hash value            */
                                        /* fill in the name                  */
   OrefSet(this, this->programName, programname);
                                        /* fill in the source array          */

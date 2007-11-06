@@ -281,6 +281,11 @@ class RexxSource : public RexxInternalObject {
   void        removeObj(RexxObject *object) { if (object != OREF_NULL) this->savelist->remove(object); };
   void        setSecurityManager(RexxObject *manager) { OrefSet(this, this->securityManager, manager); }
 
+  inline RexxDirectory *getLocalRoutines() { return routines; }
+  inline RexxDirectory *getPublicRoutines() { return public_routines; }
+  inline void setLocalRoutines(RexxDirectory *r) { routines = r; }
+  inline void setPublicRoutines(RexxDirectory *r) { public_routines = r; }
+
   static inline bool isSymbolCharacter(char ch)
   {
       // The anding is necessary to keep characters > 0x7F from being
@@ -294,6 +299,10 @@ class RexxSource : public RexxInternalObject {
       // treated as negative numbers and returning bogus values.
       return characterTable[((unsigned int)ch) & 0xff];
   }
+
+
+
+protected:
 
   LONG  flags;                         /* parsing flags                     */
   RexxArray  *sourceArray;             /* source lines for this code        */
@@ -352,7 +361,6 @@ class RexxSource : public RexxInternalObject {
 
 
 
-protected:
 
     // Tables of different keywords using in various contexts.
     static KeywordEntry directives[];

@@ -78,13 +78,6 @@ extern void *VFTArray[highest_T];
 RexxString * kernel_name (const char * value);
 
 
-#ifdef AIX
-void ic_setVirtualFunctions(char *a, int b)
-{
-  setVirtualFunctions(a, b);
-}
-#endif
-
 static void SysCall logMemoryCheck(FILE *outfile, const char *message, ...)
 {
     va_list args;
@@ -107,7 +100,7 @@ RexxMemory::RexxMemory()
   /* to the minimum allocation boundary, even though that might be */
   /* a lie.  Since this never participates in a sweep operation, */
   /* this works ok in the end. */
-  SetObjectSize(this, roundObjectBoundary(sizeof(RexxMemory)));
+  this->setObjectSize(roundObjectBoundary(sizeof(RexxMemory)));
   GlobalCurrentPool = this->firstPool; /* indicate current pool addrs       */
   ProcessCurrentPool = this->firstPool;
 
@@ -220,7 +213,7 @@ void RexxMemory::dumpObject(RexxObject *objectRef, FILE *outfile)
  ULONG *dmpPtr;
  ULONG *ObjEnd;
 
- ObjEnd = (ULONG *)((ULONG)objectRef + ObjectSize(objectRef));
+ ObjEnd = (ULONG *)((char *)objectRef + objectRef->getObjectSize());
  for (dmpPtr = (ULONG *)objectRef; dmpPtr <= ObjEnd ; dmpPtr += 4 ) {
     logMemoryCheck(outfile, "  >Parent Dump -->%p   %p   %p   %p \n", *dmpPtr, *(dmpPtr+1), *(dmpPtr+2), *(dmpPtr+3));
  }
@@ -359,7 +352,7 @@ void  RexxMemory::killOrphans(RexxObject *rootObject)
                                        /* mark behaviour live               */
     memory_mark_general(mref->behaviour);
                                        /* object have any references?       */
-    if (ObjectHasReferences(mref)){
+    if (mref->hasReferences()){
        /* Though this guy is already marked, and as far as gc, we're done with him,    */
        /* we'll now push him back onto the livestack followed by an OREF_NIL marker.   */
        /* If we find an invalid object later, we'll be able to find all the ancestors  */
@@ -410,7 +403,7 @@ void RexxMemory::checkUninit(RexxTable *uninitTables)
          iterUninitTable = uninitTable->next(iterUninitTable)) {
 
                                        /* is this object now dead?        */
-      if (!objectIsLive(uninitObject)) {
+      if (uninitObject->isObjectDead(markWord)) {
                                          /* yes, indicate object is to be   */
                                          /*  sent uninit.                   */
         uninitTable->replace(TheTrueObject, iterUninitTable);
@@ -436,7 +429,7 @@ void RexxMemory::checkSubClasses
                                        /* out of memory                     */
   for (position = subClasses->first(); (classObj = subClasses->value(position)) != OREF_NULL; position = subClasses->next(position)) {
                                        /* is this object now dead?          */
-    while (objectIsNotLive(classObj) && !OldSpace(classObj)) {
+    while (classObj->isObjectDead(markWord) && classObj->isNewSpace()) {
                                        /* remove from the table             */
       subClasses->removeItem(classObj, subClasses->index(position));
                                        /* see of something moved into this  */
@@ -600,7 +593,7 @@ void RexxMemory::restoreImage(void)
 
                                      /* Retrieve the behaviour obj        */
                                      /* or a copy?                        */
-    if (ObjectIsNonPrimitive(objectPointer)) {
+    if (((RexxObject *)objectPointer)->isNonPrimitive()) {
                                      /* Working with a copy, don't use    */
                                      /* PBEHAV version.                   */
                                      /* Make sure static behaviour inf    */
@@ -609,7 +602,7 @@ void RexxMemory::restoreImage(void)
       imageBehav = (RexxBehaviour *)(relocation + (long)((RexxObject *)objectPointer)->behaviour);
                                      /* give this object it behaviour.    */
       ((RexxObject *)objectPointer)->behaviour = (RexxBehaviour *)imageBehav;
-      primitiveTypeNum = (long)imageBehav->typenum();
+      primitiveTypeNum = (long)imageBehav->getClassType();
     }
     else {
                                      /* originally a primitive;  the      */
@@ -622,18 +615,18 @@ void RexxMemory::restoreImage(void)
     /* NonPrimitive bit.  Since the we are done with the */
     /* non-primitive bit now, we can use this for the oldspace */
     /* flag too. */
-    SetOldSpace(objectPointer);
+    ((RexxObject *)objectPointer)->setOldSpace();
                                      /* Force fix-up of                   */
                                      /*VirtualFunctionTable,              */
-    setVirtualFunctions(objectPointer, primitiveTypeNum);
+    ((RexxObject *)objectPointer)->setVirtualFunctions(VFTArray[primitiveTypeNum]);
 
                                      /* Do this object have any           */
                                      /*references?                        */
-    if (ObjectHasReferences(objectPointer))
+    if (((RexxObject *)objectPointer)->hasReferences())
                                      /*  Yes, mark other referenced objs  */
       ((RexxObject *)objectPointer)->liveGeneral();
                                      /* Point to next object in image..   */
-    objectPointer += ObjectSize(objectPointer);
+    objectPointer += ((RexxObject *)objectPointer)->getObjectSize();
 
   }
 
@@ -867,30 +860,6 @@ RexxObject *RexxMemory::newObject(size_t requestLength)
 }
 
 
-RexxObject *RexxMemory::clone(RexxObject *obj)
-/******************************************************************************/
-/* Arguments:  Clone an object, and set up its header.  This method should    */
-/*             be called by other _copy methods instead of using new_object   */
-/*             and memcpy, so that memory can properly initialize the new     */
-/*             object's header to avoid early gc.                             */
-/*                                                                            */
-/*  Returned:  A new object copied from objr, but set to be live to avoid     */
-/*             being garbage collected on a pending sweep.                    */
-/******************************************************************************/
-{
-  RexxObject *cloneObj;
-  HEADINFO    newHeader;
-  size_t size = ObjectSize(obj);
-                                       /* get new object same size as this  */
-  cloneObj = newObject(size);
-  /* copy the header information, and adjust the state bits. */
-  newHeader = ObjectHeader(cloneObj);
-                                       /* copy all data from obj to clone   */
-  memcpy((char *)cloneObj, (char *)obj, size);
-  ObjectHeader(cloneObj) = newHeader;     /* restore the header information    */
-  return cloneObj;
-}
-
 RexxArray  *RexxMemory::newObjects(
                 size_t         size,
                 size_t         count,
@@ -973,10 +942,10 @@ RexxArray  *RexxMemory::newObjects(
 
   /* get the remainder object size...this is used to manage the */
   /* dangling piece on the end of the allocation. */
-  totalSize = ObjectSize(largeObject) - totalSize;
+  totalSize = largeObject->getObjectSize() - totalSize;
 
   /* Clear out the entire object... */
-  ClearObject(largeObject);
+  largeObject->clearObject();
 
   prototype = largeObject;
 
@@ -986,7 +955,7 @@ RexxArray  *RexxMemory::newObjects(
   /* set the length of the first object. */
   SetUpNewObject(largeObject, objSize);
   largeObject->behaviour = newBehaviour;
-  setVirtualFunctions(largeObject, newBehaviour->typenum());
+  largeObject->setVirtualFunctions(VFTArray[newBehaviour->getClassType()]);
 
   for (i=1 ;i < count ; i++ ) {
     /* IH: Loop one time less than before because first object is initialized
@@ -1002,7 +971,7 @@ RexxArray  *RexxMemory::newObjects(
   arrayOfObjects->put(largeObject, i);  /* put the last Object */
 
   /* adjust the size of the last one to account for any remainder */
-  SetObjectSize(largeObject, (totalSize + objSize));
+  largeObject->setObjectSize(totalSize + objSize);
 
   return arrayOfObjects;               /* Return our array of objects.      */
 }
@@ -1026,27 +995,27 @@ void RexxMemory::reSize(RexxObject *shrinkObj, size_t requestSize)
 
   /* is the rounded size smaller and is remainder at least the size */
   /* of the smallest OBJ MINOBJSIZE */
-  if (newSize < requestSize && (ObjectSize(shrinkObj) - newSize) >= MinimumObjectSize) {
-      size_t deadObjectSize = ObjectSize(shrinkObj) - newSize;
+  if (newSize < requestSize && (shrinkObj->getObjectSize() - newSize) >= MinimumObjectSize) {
+      size_t deadObjectSize = shrinkObj->getObjectSize() - newSize;
       /* Yes, then we can shrink the object.  Get starting point of */
       /* the extra, this will be the new Dead obj */
-      newDeadObj = new ((void *)((ULONG)shrinkObj + newSize)) DeadObject (deadObjectSize);
+      newDeadObj = new ((void *)((char *)shrinkObj + newSize)) DeadObject (deadObjectSize);
       /* if an object is larger than 16 MB, the last 8 bits (256) are */
       /* truncated and therefore the object must have a size */
       /* dividable by 256 and the rest must be put to the dead chain. */
       /* If the resulting dead object is smaller than the size we */
       /* gave, then we've got a truncated remainder we need to turn */
       /* into a dead object. */
-      deadObjectSize -= ObjectSize(newDeadObj);
+      deadObjectSize -= newDeadObj->getObjectSize();
       if (deadObjectSize != 0)
       {
           /* create difference object.  Note:  We don't bother */
           /* putting this back on the dead chain.  It will be */
           /* picked up during the next GC cycle. */
-          new ((char *)newDeadObj + ObjectSize(newDeadObj)) DeadObject (deadObjectSize);
+          new ((char *)newDeadObj + newDeadObj->getObjectSize()) DeadObject (deadObjectSize);
       }
       /* Adjust size of original object */
-      SetObjectSize(shrinkObj, newSize);
+      shrinkObj->setObjectSize(newSize);
   }
 }
 
@@ -1117,21 +1086,21 @@ void RexxMemory::mark(RexxObject *markObject)
 {
   setUpMemoryMark
 
-  SetObjectLive(markObject);           /* Then Mark this object as live.    */
+  markObject->setObjectLive(markWord); /* Then Mark this object as live.    */
                                        /* object have any references?       */
                                        /* if there are no references, we don't */
                                        /* need to push this on the stack, but */
                                        /* we might need to push the behavior */
                                        /* on the stack.  Since behaviors are */
                                        /* we can frequently skip that step as well */
-  if (!ObjectHasReferences(markObject)) {
-      if (ObjectNeedsMarking((RexxObject *)markObject->behaviour)) {
+  if (markObject->hasNoReferences()) {
+      if (ObjectNeedsMarking(markObject->behaviour)) {
           /* mark the behaviour now to keep us from processing this */
           /* more than once. */
-          SetObjectLive((RexxObject *)markObject->behaviour);
+          markObject->behaviour->setObjectLive(markWord);
                                        /* push him to livestack, to mark    */
                                        /* later.                            */
-          pushLiveStack((RexxObject *)markObject->behaviour);
+          pushLiveStack(markObject->behaviour);
       }
   }
   else {
@@ -1164,7 +1133,7 @@ RexxObject *RexxMemory::temporaryObject(size_t requestLength)
                                        /* setup the new object header for   */
                                        /*use                                */
   SetUpNewObject(newObj, allocationLength);
-  setObjectVirtualFunctions(newObj);   /* give it the default VFT           */
+  newObj->setVirtualFunctions(VFTArray[T_object]);   /* give it the default VFT           */
   return newObj;                       /* and return it                     */
 }
 
@@ -1231,14 +1200,14 @@ void RexxMemory::saveImageMark(RexxObject *markObject, RexxObject **pMarkObject)
     size_t size;
     /* Regular GC or Saveimage processing. if a REAL object and not */
     /* already marked and not in Old Space. */
-    if (markObject != OREF_NULL && objectIsNotLive(markObject) && !OldSpace(markObject)) {
+    if (markObject != OREF_NULL && !markObject->isObjectLive(markWord) && markObject->isNewSpace()) {
         /* Then Mark this object as live.    */
-        SetObjectLive(markObject);
+        markObject->setObjectLive(markWord);
         /* push him to livestack, so we can mark (at a later time) his */
         /* references. */
         pushLiveStack(markObject);
         /* Get size of this object.          */
-        size = ObjectSize(markObject);
+        size = markObject->getObjectSize();
         /* add this to our image statistics  */
         logObjectStats(markObject);
 
@@ -1253,19 +1222,19 @@ void RexxMemory::saveImageMark(RexxObject *markObject, RexxObject **pMarkObject)
         /* Copy object to image buffer. */
         memcpy(bufferReference, markObject, size);
         /* clear the mark in the copy        */
-        ClearObjectMark(bufferReference);
+        bufferReference->clearObjectMark();
         /* Retrieve the behaviour obj */
         behaviour = bufferReference->behaviour;
         /* Working with a primitive behaviour or a copy? */
         if (behaviour->isNonPrimitiveBehaviour())
             /* tag this as a non-primitive behav */
-            SetNonPrimitive(bufferReference);
+            bufferReference->setNonPrimitive();
         else {
             /* clear this out, as this is overloaded with the oldspace */
             /* flag. */
-            ClearNonPrimitive(bufferReference);
+            bufferReference->setPrimitive();
             /* replace behaviour with typenumber */
-            bufferReference->behaviour = (RexxBehaviour  *)behaviour->typenum();
+            bufferReference->behaviour = (RexxBehaviour  *)behaviour->getClassType();
         }
 
         /* we are saving image at this point, no need to keep track of */

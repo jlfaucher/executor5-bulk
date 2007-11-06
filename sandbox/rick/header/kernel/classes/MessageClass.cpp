@@ -65,8 +65,8 @@ RexxMessage::RexxMessage(
 /* Function:  Initialize a message object                                     */
 /******************************************************************************/
 {
-  ClearObject(this);                   /* Start out with everythign 0.      */
-  this->hashvalue = HASHOREF(this);
+  this->clearObject();                 /* Start out with everythign 0.      */
+  this->setDefaultHash();
                                        /* defult target is target specified */
   OrefSet(this, this->receiver, _target);
   OrefSet(this, this->target, _target); /* Target specified on new           */

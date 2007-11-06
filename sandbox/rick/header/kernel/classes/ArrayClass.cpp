@@ -84,8 +84,8 @@ void RexxArray::init(size_t _size, size_t maxSize)
 /* Function:  Initialize an array                                             */
 /******************************************************************************/
 {
-  ClearObject(this);                   /* initialize the object             */
-  this->hashvalue = HASHOREF(this);
+  this->clearObject();                 /* initialize the object             */
+  this->setDefaultHash();
   this->arraySize = _size;
   this->maximumSize = maxSize;
                                        /* no expansion yet, use ourself     */
@@ -2404,7 +2404,7 @@ void *   RexxArray::operator new(size_t newSize,
 
                                        /* set the hashvalue                 */
   newArray->hashvalue =  HASHOREF(newArray);
-  ClearObject(newArray);               /* Clear the state data              */
+  newArray->clearObject();             /* Clear the state data              */
   newArray->arraySize = size;
   newArray->maximumSize = maxSize;
                                        /* no expansion yet, use ourself     */

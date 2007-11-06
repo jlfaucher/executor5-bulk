@@ -1967,6 +1967,31 @@ RexxObject *RexxObject::newRexx(RexxObject **arguments, size_t argCount)
   return new ((RexxClass *)this, arguments, argCount) RexxObject;
 }
 
+
+RexxObject *RexxObject::clone()
+/******************************************************************************/
+/* Arguments:  Clone an object, and set up its header.  This method should    */
+/*             be called by other _copy methods instead of using new_object   */
+/*             and memcpy, so that memory can properly initialize the new     */
+/*             object's header to avoid early gc.                             */
+/*                                                                            */
+/*  Returned:  A new object copied from objr, but set to be live to avoid     */
+/*             being garbage collected on a pending sweep.                    */
+/******************************************************************************/
+{
+    // we need an identically sized object
+    size_t size = getObjectSize();
+    RexxObject *cloneObj = newObject(size);
+    // copy the object header.  That's the only piece of this we're not going to keep from
+    // the old object.
+    ObjectHeader newHeader = cloneObj->header;
+    // copy everything but the object header over from the source object.
+    memcpy((char *)cloneObj, (char *)obj size);
+    // restore the new header to the cloned object
+    cloneObj->header = newHeader;
+    return cloneObj;
+}
+
 #undef operatorMethod
 #define operatorMethod(name, message) RexxObject * RexxObject::name(RexxObject *operand) \
 {\

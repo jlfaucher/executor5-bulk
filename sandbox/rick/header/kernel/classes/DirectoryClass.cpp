@@ -741,7 +741,7 @@ RexxObject *RexxDirectory::newRexx(
   newDirectory = new_directory();
   BehaviourSet(newDirectory, ((RexxClass *)this)->getInstanceBehaviour());
                                        /* does object have an UNINT method  */
-  if (((RexxClass *)this)->uninitDefined()) {
+  if (((RexxClass *)this)->hasUninitDefined()) {
     newDirectory->hasUninit();         /* Make sure everyone is notified.   */
   }
                                        /* call any rexx level init's        */
@@ -761,9 +761,9 @@ RexxDirectory *RexxMemory::newDirectory()
                                        /* Give new object its behaviour     */
   BehaviourSet(newObj, TheDirectoryBehaviour);
                                        /* set the virtual function table    */
-  setVirtualFunctions(newObj, T_directory);
+  newObj->setVirtualFunctions(VFTArray[T_directory]);
                                        /* set the hash value                */
-  newObj->hashvalue = HASHOREF(newObj);
+  newObj->setDefaultHash();
   return newObj;                       /* return the new directory          */
 }
 

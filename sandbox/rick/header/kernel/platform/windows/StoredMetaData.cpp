@@ -216,8 +216,7 @@ RexxMethod *SysRestoreProgram(
   save(Method);                        /* protect the method code           */
   discard(Buffer);                     /* release the buffer protection     */
                         /* buffer need not to be holded because it is now an envelope and referenced by Method */
-  Code = (RexxCode *)Method->code;     /* get the REXX code object          */
-  Source = Code->u_source;             /* and now the source object         */
+  Source = method->getSource();        /* and now the source object         */
                                        /* switch the file name (this might  */
                                        /* be different than the name        */
   Source->setProgramName(FileName);    /* originally saved under            */
@@ -345,8 +344,7 @@ RexxMethod *SysRestoreProgramBuffer(
   save(Buffer);                        /* protect the buffer                */
                                        /* "puff" this out usable form       */
   Method = TheMethodClass->restore(Buffer, StartPointer);
-  Code = (RexxCode *)Method->code;     /* get the REXX code object          */
-  Source = Code->u_source;             /* and now the source object         */
+  Source = Method->getSource();        /* and now the source object         */
                                        /* switch the file name (this might  */
                                        /* be different than the name        */
   Source->setProgramName(Name);        /* originally saved under            */
@@ -546,8 +544,7 @@ RexxMethod *SysRestoreTranslatedProgram(
   save(Method);                        /* protect the method code           */
   discard(Buffer);                     /* release the buffer protection     */
                         /* buffer need not to be holded because it is now an envelope and referenced by Method */
-  Code = (RexxCode *)Method->code;     /* get the REXX code object          */
-  Source = Code->u_source;             /* and now the source object         */
+  Source = Method->getSource();        /* and now the source object         */
                                        /* switch the file name (this might  */
                                        /* be different than the name        */
   Source->setProgramName(FileName);    /* originally saved under            */

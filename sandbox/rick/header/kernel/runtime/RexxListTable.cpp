@@ -100,7 +100,7 @@ void *RexxListTable::operator new(size_t size, size_t initialSize)
   newTable = (RexxListTable *)new_object(size + sizeof(LISTENTRY) * (initialSize - 1));
                                        /* Give new object its behaviour     */
   BehaviourSet(newTable, TheListTableBehaviour);
-  ClearObject(newTable);
+  newTable->clearObject();
   newTable->size = initialSize;
   newTable->hashvalue = HASHOREF(newTable);
   return newTable;                     /* return the new list item          */
@@ -123,7 +123,7 @@ void *RexxListTable::operator new(size_t size, size_t initialSize, size_t compan
                                        /* Get space for two objects         */
                                        /* Get new object                    */
   newList  = (RexxList *)new_object(bytes + companionSize);
-  ClearObject(newList);                /* clear the entire lot              */
+  newList->clearObject();              /* clear the entire lot              */
                                        /* address the list table            */
   newTable = (RexxListTable *)(((char *)newList) + companionSize);
                                        /* compute total size of the list    */

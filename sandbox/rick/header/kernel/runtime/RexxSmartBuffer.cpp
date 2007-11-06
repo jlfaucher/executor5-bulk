@@ -52,8 +52,8 @@ RexxSmartBuffer::RexxSmartBuffer(size_t startSize)
 /* Function:  Initialize a smart buffer object                                */
 /******************************************************************************/
 {
-  ClearObject(this);                   /* start out fresh                   */
-  this->hashvalue = HASHOREF(this);    /* set a hash value                  */
+  this->clearObject();                 /* start out fresh                   */
+  this->setDefaultHash();              /* set a hash value                  */
                                        /* default initial buffersize, 1 page*/
                                        /* for buffer + data.                */
   OrefSet(this, this->buffer, (RexxBuffer *)new_buffer(startSize));

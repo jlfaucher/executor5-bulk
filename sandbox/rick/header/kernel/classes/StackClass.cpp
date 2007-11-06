@@ -51,7 +51,7 @@ RexxStack::RexxStack(
 /* Function:  Initialize a primitive stack.                                   */
 /******************************************************************************/
 {
-  ClearObject(this);                   /* clear entire stack                */
+  this->clearObject();                 /* clear entire stack                */
   this->u_size = size;                 /* set the size                      */
   this->top = 0;                       /* and we're set at the top          */
 }
@@ -63,7 +63,7 @@ void RexxStack::init(
 /* Function:  Initialize a primitive stack early in memory set up             */
 /******************************************************************************/
 {
-  ClearObject(this);                   /* clear entire stack                */
+  this->clearObject();                 /* clear entire stack                */
   this->u_size = size;                 /* set the size                      */
   this->top = 0;                       /* and we're set at the top          */
 }
@@ -191,7 +191,7 @@ void RexxSaveStack::init(
 /* Function:  Initialize a primitive stack early in memory set up             */
 /******************************************************************************/
 {
-  ClearObject(this);                   /* clear entire stack                */
+  this->clearObject();                 /* clear entire stack                */
   this->u_size = size;                 /* set the size                      */
   this->top = 0;                       /* set the element to the top        */
   this->allocSize = aSize;

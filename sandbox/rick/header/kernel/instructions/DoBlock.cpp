@@ -53,7 +53,7 @@ RexxDoBlock::RexxDoBlock(
 /* Function:  complete BLOCK instruction initialization                       */
 /******************************************************************************/
 {
-  ClearObject(this);                   /*Clear the object.                  */
+  this->clearObject();                 /*Clear the object.                  */
   OrefSet(this, this->parent, _parent); /* remember the parent block         */
   this->indent = _indent;               /* save the indentation level        */
 }

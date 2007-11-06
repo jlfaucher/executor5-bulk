@@ -53,7 +53,7 @@
 #include <ctype.h>
 
 RexxCode::RexxCode(
-     RexxSource      * source,         /* source object                     */
+     RexxSource      * _source,        /* source object                     */
      RexxInstruction * _start,         /* start of the code tree            */
      RexxDirectory   * _labels,        /* method labels                     */
      size_t            maxstack,       /* max operator stack size           */
@@ -62,11 +62,11 @@ RexxCode::RexxCode(
 /* Function:  Initialize a rexxmethod code object                             */
 /******************************************************************************/
 {
-  OrefSet(this, this->u_source, source); /* save the program source         */
+  OrefSet(this, this->source, _source); /* save the program source         */
   OrefSet(this, this->start, _start);   /* the parse tree                    */
   OrefSet(this, this->labels, _labels); /* the method's labels               */
   /* save the stack info               */
-  this->maxStack = (unsigned short)maxstack;
+  this->maxStack = maxstack;
   this->vdictSize = variable_index;    /* save the initial vdict size       */
 }
 
@@ -76,7 +76,7 @@ void RexxCode::live()
 /******************************************************************************/
 {
   setUpMemoryMark
-  memory_mark(this->u_source);
+  memory_mark(this->source);
   memory_mark(this->start);
   memory_mark(this->labels);
   cleanUpMemoryMark
@@ -88,7 +88,7 @@ void RexxCode::liveGeneral()
 /******************************************************************************/
 {
   setUpMemoryMarkGeneral
-  memory_mark_general(this->u_source);
+  memory_mark_general(this->source);
   memory_mark_general(this->start);
   memory_mark_general(this->labels);
   cleanUpMemoryMarkGeneral
@@ -101,7 +101,7 @@ void RexxCode::flatten(RexxEnvelope * envelope)
 {
   setUpFlatten(RexxCode)
 
-   flatten_reference(newThis->u_source, envelope);
+   flatten_reference(newThis->source, envelope);
    flatten_reference(newThis->start, envelope);
    flatten_reference(newThis->labels, envelope);
 
@@ -132,7 +132,7 @@ RexxArray * RexxCode::sourceRexx()
   location.endline = end_location.endline;
   location.endoffset = end_location.endoffset;
                                        /* go extract the source array       */
-  return this->u_source->extractSource(&location);
+  return this->source->extractSource(&location);
 }
 
 RexxString * RexxCode::getProgramName()
@@ -141,7 +141,7 @@ RexxString * RexxCode::getProgramName()
 /**REXX****************************************************************************/
 {
                                        /* retrieve this from the source     */
-  return this->u_source->getProgramName();
+  return this->source->getProgramName();
 }
 
 void * RexxCode::operator new(size_t size)

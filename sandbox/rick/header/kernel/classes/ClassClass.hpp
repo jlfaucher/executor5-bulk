@@ -106,7 +106,7 @@ void class_create (void);
    inline bool         isMetaClass() { return (classFlags & META_CLASS) != 0; };
    inline bool         hasUninitDefined()   { return (classFlags & HAS_UNINIT) != 0; };
    inline void         setHasUninitDefined()   { classFlags |= HAS_UNINIT; };
-   inline void         classHasUninitDefined()   { classFlags &= ~HAS_UNINIT; };
+   inline void         clearHasUninitDefined()   { classFlags &= ~HAS_UNINIT; };
    inline bool         parentHasUninitDefined()   { return (classFlags & PARENT_HAS_UNINIT) != 0; };
    inline void         setParentHasUninitDefined()   { classFlags |= PARENT_HAS_UNINIT; };
    inline bool         isPrimitiveClass() { return (classFlags & PRIMITIVE_CLASS) != 0; }

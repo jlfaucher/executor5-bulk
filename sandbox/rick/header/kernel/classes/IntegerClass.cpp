@@ -1040,7 +1040,7 @@ void *RexxInteger::operator new(size_t size)
                                        /* add in the integer behaviour, and */
                                        /* make sure old2new knows about it  */
   BehaviourSet(newObject, TheIntegerBehaviour);
-  ClearObject(newObject);              /* clear the object                  */
+  newObject->clearObject();            /* clear the object                  */
   newObject->setHasNoReferences();     /* Tell GC, not to bother with Live  */
   return newObject;                    /* return the new object.            */
 }

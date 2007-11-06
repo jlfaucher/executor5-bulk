@@ -138,7 +138,7 @@ RexxNumberString::RexxNumberString(size_t len)
 /* Function:  low level copy of a number string object                        */
 /******************************************************************************/
 {
-   ClearObject(this);
+   this->clearObject();
    this->NumDigits = number_digits();
    this->sign = 1;
    this->length = len;

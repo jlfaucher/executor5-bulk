@@ -185,8 +185,8 @@ void *RexxSupplier::operator new(size_t size)
                                        /* Give new object its behaviour     */
   BehaviourSet(newObject, TheSupplierBehaviour);
                                        /* fill in the hash value            */
-  newObject->hashvalue = HASHOREF(newObject);
-  ClearObject(newObject);              /* clear out the state data area     */
+  newObject->clearObject();            /* clear out the state data area     */
+  newObject->setDefaultHash();
                                        /* Initialize this new method        */
   return newObject;                    /* return the new object             */
 }

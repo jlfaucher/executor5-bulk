@@ -658,7 +658,7 @@ EXTERN void *VFTArray[highest_T];      /* table of virtual functions        */
 #define PASTE3(a1,a2,a3) a1##a2##a3
 
 #define ObjectType(r) (((RexxObject *)(r))->behaviour)
-#define ObjectTypeNumber(r) (ObjectType(r)->typenum())
+#define ObjectTypeNumber(r) (ObjectType(r)->getClassType())
                                        /* check the object type             */
 #define OTYPE(t,r) (ObjectType(r) == The##t##Behaviour)
 #define OTYPENUM(t,r) (ObjectTypeNumber(r) == T_##t)
@@ -974,41 +974,6 @@ BOOL double2Float(double value, float *newValue);
 /******************************************************************************/
 
 RexxString *version_number (void);
-
-/******************************************************************************/
-/* Memory management macros                                                   */
-/******************************************************************************/
-
-
-#define save(oref)    memoryObject.saveObject((RexxObject*)(oref))
-#define discard(oref) memoryObject.discardObject((RexxObject *)(oref))
-#define hold(oref)    memoryObject.holdObject((RexxObject *)(oref))
-#define discard_hold(oref) memoryObject.discardHoldObject((RexxObject *)(oref))
-
-#define setUpMemoryMark                \
- {                                     \
-   uint16_t headerMarkedValue = memoryObject.markWord | OldSpaceBit;
-
-#define cleanUpMemoryMark               \
- }
-
-#define setUpMemoryMarkGeneral       {
-#define cleanUpMemoryMarkGeneral     }
-
-#define setUpFlatten(type)        \
-  {                               \
-  long  newSelf = envelope->currentOffset; \
-  type *newThis = (type *)this;
-
-#define cleanUpFlatten                    \
- }
-
-#define ObjectNeedsMarking(oref) ((oref) != OREF_NULL && ((oref)->isObjectMarked(headerMarkedValue)) )
-#define memory_mark(oref)  if (ObjectNeedsMarking(oref)) memoryObject.mark((RexxObject *)(oref))
-#define memory_mark_general(oref) (memoryObject.markGeneral((void *)&(oref)))
-
-/* Following macros are for Flattening and unflattening of objects  */
-#define flatten_reference(oref,envel)  if (oref) envel->flattenReference((void *)&newThis, newSelf, (void *)&(oref))
 
 /******************************************************************************/
 /* Typed method invocation macros                                             */

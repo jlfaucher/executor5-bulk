@@ -261,7 +261,7 @@ void  *RexxTrigger::operator new(size_t size,
   newObject = new_object(size + (variableCount - 1) * sizeof(RexxObject *));
                                        /* Give new object its behaviour     */
   BehaviourSet(newObject, TheParseTriggerBehaviour);
-  ClearObject(newObject);              /* initialize the object             */
+  newObject->clearObject();            /* initialize the object             */
   return newObject;                    /* return the new trigger            */
 }
 
