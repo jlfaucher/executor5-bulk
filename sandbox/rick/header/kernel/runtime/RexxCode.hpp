@@ -73,6 +73,15 @@ class RexxCode : public RexxInternalObject {
    inline RexxDirectory *getPublicRoutines() { return source->getPublicRoutines(); }
    inline void setLocalRoutines(RexxDirectory *r) { source->setLocalRoutines(r); }
    inline void setPublicRoutines(RexxDirectory *r) { source->setPublicRoutines(r); }
+   inline bool isTraceable() { return source->isTraceable(); }
+   inline bool isInterpret() { return source->isInterpret(); }
+   inline RexxString *extract(const SourceLocation &l) { return source->extract(l); }
+   inline RexxObject *getSecurityManager() { return source->getSecurityManager(); }
+   inline void        install(RexxActivation *activation) { source->install(activation); }
+   inline RexxMethod *interpret(RexxString *s, size_t n) { return source->interpret(s, labels, n); }
+   inline RexxDirectory *getMethods() { return source->getMethods(); };
+   inline RexxMethod *resolveRoutine(RexxString *n) { return source->resolveRoutine(n); }
+   inline void        mergeRequired(RexxSource *s) { return source->mergeRequired(s); }
 
 protected:
 

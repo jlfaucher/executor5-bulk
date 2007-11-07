@@ -306,7 +306,7 @@ void *RexxActivity::operator new(size_t size)
                                        /* get the new activity storage      */
    newActivity  = (RexxActivity *)new_object(size);
                                        /* Give new object its behaviour     */
-   BehaviourSet(newActivity, TheActivityBehaviour);
+   newActivity->setBehaviour(TheActivityBehaviour);
    return newActivity;                 /* and return it                     */
 }
 
@@ -477,7 +477,7 @@ BOOL RexxActivity::raiseCondition(
                                        /*  also give 1st activation a shot. */
   for (activation = this->current() ; activation != (RexxActivation *)TheNilObject; activation = this->sender(activation)) {
     handled = activation->trap(condition, conditionObj);
-    if (OTYPE(Activation, activation)) /* reached our 1st activation yet.   */
+    if (isOfClass(Activation, activation)) /* reached our 1st activation yet.   */
       break;                           /* yes, break out of loop            */
   }
 
@@ -689,7 +689,7 @@ void RexxActivity::reportAnException(
 
 void RexxActivity::raiseException(
     wholenumber_t  errcode,            /* REXX error code                   */
-    LOCATIONINFO  *location,           /* location information              */
+    SourceLocation *location,          /* location information              */
     RexxSource    *source,             /* source file to process            */
     RexxString    *description,        /* descriptive information           */
     RexxArray     *additional,         /* substitution information          */
@@ -725,7 +725,7 @@ void RexxActivity::raiseException(
     longjmp(this->stringError, 1);     /* just jump back                    */
 
   activation = this->currentAct();     /* get the current activation        */
-  while (OTYPE(Activation, activation) && activation->isForwarded()) {
+  while (isOfClass(Activation, activation) && activation->isForwarded()) {
     activation->termination();         /* do activation termiantion process */
     this->pop(FALSE);                  /* pop the top activation off        */
     activation = this->currentAct();   /* and get the new current one       */
@@ -793,8 +793,7 @@ void RexxActivity::raiseException(
 
   if (location != NULL) {              /* have clause information available?*/
                                        /* add the line number information   */
-    newVal = location->line;
-    position = new_integer(newVal);
+    position = new_integer(location->getLineNumber());
   }
                                        /* have an activation?               */
   else if (activation != (RexxActivation *)TheNilObject) {
@@ -811,12 +810,12 @@ void RexxActivity::raiseException(
   exobj->put(traceback, OREF_TRACEBACK);
   if (source != OREF_NULL)             /* have source for this?             */
                                        /* extract and add clause in error   */
-    traceback->addLast(source->traceBack(location, 0, FALSE));
+    traceback->addLast(source->traceBack(*location, 0, FALSE));
                                        /* have predecessors?                */
   if (activation != (RexxActivation *)TheNilObject)
     activation->traceBack(traceback);  /* have them add lines to the list   */
   if (source != OREF_NULL)             /* have source for this?             */
-    programname = source->programName; /* extract program name              */
+    programname = source->getProgramName(); /* extract program name              */
                                        /* have predecessors?                */
   else if (activation != (RexxActivation *)TheNilObject)
                                        /* extract program name from activa. */
@@ -1252,7 +1251,7 @@ void RexxActivity::push(
   this->activations->push((RexxObject *)new_activation);
   this->topActivation = new_activation;/* set this as the top one           */
                                        /* new REXX activation?              */
-  if (OTYPE(Activation, new_activation)) {
+  if (isOfClass(Activation, new_activation)) {
                                        /* this is the top REXX one too      */
     this->currentActivation = (RexxActivation *)new_activation;
                                        /* get the activation settings       */
@@ -1327,7 +1326,7 @@ void RexxActivity::pop(
                                        /* this is the top one               */
     this->topActivation = old_activation;
                                        /* popping a REXX activation?        */
-    if (OTYPE(Activation, top_activation)) {
+    if (isOfClass(Activation, top_activation)) {
                                        /* clear this out                    */
       old_activation = (RexxActivationBase *)TheNilObject;
                                        /* spin down the stack               */
@@ -1335,7 +1334,7 @@ void RexxActivity::pop(
                                        /* get the next item                 */
         tempAct = (RexxActivationBase *)activationStack->peek(i);
                                        /* find a REXX one?                  */
-        if (OTYPE(Activation, tempAct)) {
+        if (isOfClass(Activation, tempAct)) {
           old_activation = tempAct; /* save this one                     */
           break;                       /* and exit the loop                 */
         }
@@ -1398,7 +1397,7 @@ void RexxActivity::popNil()
                                        /* get the next item                 */
       tempAct = (RexxActivationBase *)activationStack->peek(i);
                                        /* find a REXX one?                  */
-      if (OTYPE(Activation, tempAct)) {
+      if (isOfClass(Activation, tempAct)) {
         old_activation = tempAct;   /* save this one                     */
         break;                         /* and exit the loop                 */
       }
@@ -1459,7 +1458,7 @@ void RexxActivity::checkDeadLock(
                                        /* currently waiting on something?   */
   if (this->waitingObject != OREF_NULL) {
                                        /* waiting on a message object?      */
-    if (OTYPE(Message, this->waitingObject))
+    if (isOfClass(Message, this->waitingObject))
                                        /* get the activity message is on    */
       owningActivity = ((RexxMessage *)this->waitingObject)->startActivity;
     else
@@ -2369,7 +2368,7 @@ BOOL  RexxActivity::sysExitDbgTst(
                                        /* get the exit handler              */
   exitname = this->querySysExits(RXDBG);
   if (exitname != OREF_NULL) {         /* exit enabled?                     */
-    if (!activation->code->isTraceable() || (activation->code->u_source->sourceBuffer == OREF_NULL))
+    if (!activation->code->isTraceable())
        return TRUE;
     if (EndStepOut_Over)
         exit_parm.rxdbg_flags.rxftrace = RXDBGENDSTEP;
@@ -2379,7 +2378,7 @@ BOOL  RexxActivity::sysExitDbgTst(
     filename = activation->code->getProgramName();
     MAKERXSTRING(exit_parm.rxdbg_filename, filename->getWritableData(), filename->getLength());
     if (activation->getCurrent() != OREF_NULL)
-        exit_parm.rxdbg_line = activation->getCurrent()->lineNumber;
+        exit_parm.rxdbg_line = activation->getCurrent()->getLineNumber();
     else
         exit_parm.rxdbg_line = 0;
     exit_parm.rxdbg_routine.strlength = 0;

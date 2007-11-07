@@ -108,9 +108,8 @@ RexxCompoundElement *RexxMemory::newCompoundElement(
                                        /* Get new object                    */
   newObj = (RexxCompoundElement *)new_object(sizeof(RexxCompoundElement));
                                        /* Give new object its behaviour     */
-  BehaviourSet(newObj, TheCompoundElementBehaviour);
+  newObj->setBehaviour(TheCompoundElementBehaviour);
                                        /* set the virtual function table    */
-  setVirtualFunctions(newObj, T_compound_element);
   newObj->setVirtualFunctions(VFTArray[T_compound_element]);
   /* Explicitly clear out the variable value, which is not cleared */
   /* by ClearObject call.  Note that we don't use OREF_SET here, as */

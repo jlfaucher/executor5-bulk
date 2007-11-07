@@ -78,7 +78,7 @@ RexxMethod::RexxMethod(
                                        /* get the argument information      */
   OrefSet(this, this->code, codeObj);  /* store the code                    */
   if (code != OREF_NULL) {             /* have some sort of code?           */
-    if (OTYPE(RexxCode, code))         /* written in REXX?                  */
+    if (isOfClass(RexxCode, code))         /* written in REXX?                  */
       this->setRexxMethod();           /* turn on the REXX flag             */
     else
       this->setNativeMethod();    ;    /* this is a native method           */
@@ -468,7 +468,7 @@ void *RexxMethod::operator new (size_t size)
                                        /* get a new method object           */
   newMethod = new_object(size);
                                        /* Give new object method behaviour  */
-  BehaviourSet(newMethod, TheMethodClass->getInstanceBehaviour());
+  newMethod->setBehaviour(TheMethodClass->getInstanceBehaviour());
   return newMethod;                    /* Initialize this new method        */
 }
 
@@ -551,12 +551,12 @@ RexxMethod *RexxMethodClass::newRexxCode(
   save(newSource);                     /* needed because newRexxMethod calls method() which discards this */
 //  return this->newRexxMethod(newSource, OREF_NULL);
   if (option != OREF_NULL) {
-    if (OTYPE(Method, option)) {
+    if (isOfClass(Method, option)) {
       result = this->newRexxMethod(newSource, OREF_NULL);
       result->setLocalRoutines(((RexxMethod*) option)->getLocalRoutines());
       result->setPublicRoutines(((RexxMethod*) option)->getPublicRoutines());
     } else {
-      if (!OTYPE(String, option))
+      if (!isOfClass(String, option))
         reportException(Error_Incorrect_method_argType, IntegerThree, "Method/String object");
       else {
         // default given? set option to NULL (see code below)
@@ -606,7 +606,7 @@ RexxMethod *RexxMethodClass::newRexx(
   newMethod = this->newRexxCode(nameString, source, IntegerTwo, option);
   save(newMethod);
                                        /* Give new object its behaviour     */
-  BehaviourSet(newMethod, this->getInstanceBehaviour());
+  newMethod->setBehaviour(this->getInstanceBehaviour());
    if (this->hasUninitDefined()) {        /* does object have an UNINT method  */
      newMethod->hasUninit();              /* Make sure everyone is notified.   */
    }
@@ -635,7 +635,7 @@ RexxMethod *RexxMethodClass::newFileRexx(
   save(newMethod);
   discard_hold(source);
                                        /* Give new object its behaviour     */
-  BehaviourSet(newMethod, this->getInstanceBehaviour());
+  newMethod->setBehaviour(this->getInstanceBehaviour());
    if (this->hasUninitDefined()) {     /* does object have an UNINT method  */
      newMethod->hasUninit();           /* Make sure everyone is notified.   */
    }

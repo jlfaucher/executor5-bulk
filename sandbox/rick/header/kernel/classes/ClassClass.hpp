@@ -71,6 +71,7 @@ void class_create (void);
    RexxClass   *getMetaClass();
    RexxClass   *getSuperClass();
    RexxArray   *getSuperClasses();
+   RexxArray   *getClassSuperClasses() { return classSuperClasses; }
    RexxArray   *getSubClasses();
    void         defmeths(RexxTable *);
    void         setInstanceBehaviour(RexxBehaviour *);

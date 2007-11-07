@@ -108,7 +108,7 @@ void * RexxDoBlock::operator new(size_t size)
                                        /* Get new object                    */
   newObject = new_object(sizeof(RexxDoBlock));
                                        /* Give new object its behaviour     */
-  BehaviourSet(newObject, TheDoBlockBehaviour);
+  newObject->setBehaviour(TheDoBlockBehaviour);
   return newObject;                    /* return the new method             */
 }
 

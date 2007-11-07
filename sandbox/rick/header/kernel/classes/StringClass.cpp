@@ -61,7 +61,7 @@ ULONG RexxString::hash()
 /* Function:  retrieve the hash value of a string object                      */
 /******************************************************************************/
 {
-  if (!OTYPE(String, this))            /*  a nonprimitive object?           */
+  if (!isOfClass(String, this))            /*  a nonprimitive object?           */
                                        /* see if == overridden.             */
     return this->sendMessage(OREF_STRICT_EQUAL)->requestString()->getHashValue();
   else
@@ -124,7 +124,7 @@ RexxString *RexxString::stringValue()
 /* Function:  Return the primitive string value of this object                */
 /******************************************************************************/
 {
-  if (OTYPE(String, this))             /* already a primitive string?       */
+  if (isOfClass(String, this))             /* already a primitive string?       */
     return this;                       /* just return our selves            */
   else                                 /* need to build a new string        */
     return new_string(this->getStringData(), this->getLength());
@@ -169,7 +169,7 @@ long RexxString::longValue(
 {
   RexxNumberString *numberstring;      /* converted numberstring version    */
 
-  if (!(OTYPE(String, this)))          /* subclassed string object?         */
+  if (!(isOfClass(String, this)))          /* subclassed string object?         */
                                        /* get the string value's long value */
     return this->requestString()->longValue(digits);
   numberstring = this->fastNumberString(); /* get the number string version     */
@@ -209,7 +209,7 @@ RexxNumberString *RexxString::numberString()
   if (this->NumberString != OREF_NULL) /* see if we have already converted  */
     return this->NumberString;         /* return the numberString Object.   */
 
-  if (!OTYPE(String, this)) {          /* not truly a string type?          */
+  if (!isOfClass(String, this)) {          /* not truly a string type?          */
     newSelf = this->requestString();   /* do the conversion                 */
                                        /* get a new numberstring Obj        */
     OrefSet(newSelf, newSelf->NumberString, (RexxNumberString *)new_numberstring(newSelf->getStringData(), newSelf->getLength()));
@@ -237,7 +237,7 @@ RexxNumberString *RexxString::createNumberString()
 {
   RexxString       *newSelf;           /* converted string value            */
 
-  if (!OTYPE(String, this)) {          /* not truly a string type?          */
+  if (!isOfClass(String, this)) {          /* not truly a string type?          */
     newSelf = this->requestString();   /* do the conversion                 */
                                        /* get a new numberstring Obj        */
     OrefSet(newSelf, newSelf->NumberString, (RexxNumberString *)new_numberstring(newSelf->getStringData(), newSelf->getLength()));
@@ -1030,7 +1030,7 @@ BOOL RexxString::truthValue(long errorCode)
 {
   RexxString *testString;              /* string to test                    */
 
-  if (!OTYPE(String, this))            /*  a nonprimitive object?           */
+  if (!isOfClass(String, this))            /*  a nonprimitive object?           */
     testString = this->requestString();/* get the real string value         */
   else
     testString = this;                 /* just use the string directly      */
@@ -1442,7 +1442,7 @@ RexxArray *RexxString::makeArray(RexxString *div)
                                        /* special separator given?          */
   if (div != OREF_NULL) {
                                        /* it must be a string object        */
-    if (!OTYPE(String, div)) {
+    if (!isOfClass(String, div)) {
       reportException(Error_Incorrect_method_nostring, IntegerOne);
     }
                                        /* it must only contain one character*/
@@ -1608,7 +1608,7 @@ RexxString *RexxString::newString(const char *string, size_t length)
                                        /* allocate the new object           */
   newObj = (RexxString *)new_object(size2);
                                        /* set the behaviour from the class*/
-  BehaviourSet(newObj, TheStringBehaviour);
+  newObj->setBehaviour(TheStringBehaviour);
                                        /* set the virtual function table    */
   newObj->setVirtualFunctions(VFTArray[T_string]);
                                        /* clear the front part              */
@@ -1644,7 +1644,7 @@ RexxString *RexxString::rawString(size_t length)
                                        /* allocate the new object           */
   newObj = (RexxString *)new_object(size2);
                                        /* set the behaviour from the class*/
-  BehaviourSet(newObj, TheStringBehaviour);
+  newObj->setBehaviour(TheStringBehaviour);
                                        /* set the virtual function table    */
   newObj->setVirtualFunctions(VFTArray[T_string]);
                                        /* clear the front part              */
@@ -1686,7 +1686,7 @@ RexxString *RexxString::newUpperString(const char * string, stringsize_t length)
     /* allocate the new object           */
     newObj = (RexxString *)new_object(size2);
     /* set the behaviour from the class*/
-    BehaviourSet(newObj, TheStringBehaviour);
+    newObj->setBehaviour(TheStringBehaviour);
     /* set the virtual function table    */
     newObj->setVirtualFunctions(VFTArray[T_string]);
     /* clear the front part              */
@@ -1759,7 +1759,7 @@ RexxString *RexxString::newRexx(RexxObject **init_args, size_t argCount)
   RexxString *string = (RexxString *)REQUIRED_STRING(stringObj, ARG_ONE);
                                        /* create a new string object        */
   string = new_string(string->getStringData(), string->getLength());
-  BehaviourSet(string, ((RexxClass *)this)->getInstanceBehaviour());
+  string->setBehaviour(((RexxClass *)this)->getInstanceBehaviour());
   if (((RexxClass *)this)->uninitDefined()) {
     string->hasUninit();
   }

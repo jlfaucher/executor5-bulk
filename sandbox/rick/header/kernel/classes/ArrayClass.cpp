@@ -507,7 +507,7 @@ size_t  RexxArray::validateIndex(      /* validate an array index           */
 
 
   // do we really have a single index item given as an array?
-  if (indexCount == 1 && _index[0] != OREF_NULL && OTYPE(Array, _index[0]))
+  if (indexCount == 1 && _index[0] != OREF_NULL && isOfClass(Array, _index[0]))
   {
       // we process this exactly the same way, but swap the count and
       // pointers around to be the array data.
@@ -733,7 +733,7 @@ RexxObject *RexxArray::sectionRexx(
   if (this->dimensions != OREF_NULL && this->dimensions->size() != 1)
                                        /* this is an error                  */
     reportException(Error_Incorrect_method_section);
-  if (!OTYPE(Array, this))             /* actually an array subclass?       */
+  if (!isOfClass(Array, this))             /* actually an array subclass?       */
                                        /* need to do this the slow way      */
     return this->sectionSubclass(nstart, nend);
   if (nstart > this->size())           /* too big?                          */
@@ -928,7 +928,7 @@ RexxInteger *RexxArray::hasIndex(RexxObject * _index)
 {
   size_t i;
 
-  if (OTYPE(Integer,_index) && (i = ((RexxInteger *)_index)->getValue()) > 0 && i <= this->size() &&
+  if (isOfClass(Integer,_index) && (i = ((RexxInteger *)_index)->getValue()) > 0 && i <= this->size() &&
       *(this->data()+i-1) != OREF_NULL)
     return (RexxInteger *)TheTrueObject;
   else
@@ -2400,10 +2400,10 @@ void *   RexxArray::operator new(size_t newSize,
                                        /* Create the new array              */
   newArray = (RexxArray *)new_object(bytes);
                                        /* Give it array behaviour.          */
-  BehaviourSet(newArray, arrayClass->getInstanceBehaviour());
+  newArray->setBehaviour(arrayClass->getInstanceBehaviour());
 
                                        /* set the hashvalue                 */
-  newArray->hashvalue =  HASHOREF(newArray);
+  newArray->setDefaultHash();
   newArray->clearObject();             /* Clear the state data              */
   newArray->arraySize = size;
   newArray->maximumSize = maxSize;

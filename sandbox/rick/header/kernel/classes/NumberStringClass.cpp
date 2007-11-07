@@ -169,7 +169,7 @@ ULONG   RexxNumberString::hash()
 {
   RexxString * string;                 /* integer string value              */
 
-  if (!OTYPE(NumberString, this))      /*  a nonprimitive object?           */
+  if (!isOfClass(NumberString, this))      /*  a nonprimitive object?           */
                                        /* see if == overridden.             */
     return this->sendMessage(OREF_STRICT_EQUAL)->requestString()->hash();
   else {
@@ -2697,7 +2697,7 @@ void  *RexxNumberString::operator new(size_t size, size_t length)
   newNumber = (RexxNumberString *)new_object(size + length);
   newNumber->hashvalue = 0;            /* Undefine the hash value           */
                                        /* Give new object its behaviour     */
-  BehaviourSet(newNumber, TheNumberStringBehaviour);
+  newNumber->setBehaviour(TheNumberStringBehaviour);
                                        /* initialize the new object         */
   newNumber->setHasNoReferences();     /* Let GC know no to bother with LIVE*/
   return newNumber;                    /* return the new numberstring       */

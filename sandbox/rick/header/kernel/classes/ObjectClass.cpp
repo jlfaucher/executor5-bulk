@@ -534,7 +534,7 @@ void *RexxInternalObject::operator new(size_t size,
                                        /* get storage for a new object      */
   newObject = (RexxObject *)new_object(size);
                                        /* use the class instance behaviour  */
-  BehaviourSet(newObject, classObject->getInstanceBehaviour());
+  newObject->setBehaviour(classObject->getInstanceBehaviour());
                                        /* use the default hash value        */
   newObject->hashvalue = HASHOREF(newObject);
   return (void *)newObject;            /* and return the new object         */
@@ -553,7 +553,7 @@ void *RexxInternalObject::operator new(size_t size,
                                        /* Get storage for a new object      */
   newObject = (RexxObject *)new_object(size);
                                        /* use the classes instance behaviour*/
-  BehaviourSet(newObject, classObject->getInstanceBehaviour());
+  newObject->setBehaviour(classObject->getInstanceBehaviour());
                                        /* use the default hash value        */
   newObject->hashvalue = HASHOREF(newObject);
   return newObject;                    /* and return the object             */
@@ -578,9 +578,9 @@ RexxObject * RexxObject::copy()
     discard_hold(newObj);              /* release lock on the copy          */
   }
                                        /* have instance methods?            */
-  if (this->behaviour->instanceMethodDictionary != OREF_NULL)
+  if (this->behaviour->getInstanceMethodDictionary() != OREF_NULL)
                                        /* need to copy the behaviour        */
-    BehaviourSet(newObj, newObj->behaviour->copy());
+    newObj->setBehaviour(newObj->behaviour->copy());
   return newObj;                       /* return the copied version         */
 }
 
@@ -820,7 +820,7 @@ RexxObject * RexxObject::processProtectedMethod(
 
 RexxObject * RexxObject::processUnknown(
     RexxString   * messageName,        /* message to issue                  */
-    LONG           count,              /* count of arguments                */
+    size_t         count,              /* count of arguments                */
     RexxObject  ** arguments )         /* actual message arguments          */
 /******************************************************************************/
 /* Function:  Process an unknown message, uncluding looking for an UNKNOWN    */
@@ -1081,7 +1081,7 @@ RexxString *RexxObject::requestString()
   RexxString *string_value;            /* converted object                  */
 
                                        /* primitive object?                 */
-  if (this->isBaseClass())) {
+  if (this->isBaseClass()) {
                                        /* get the string representation     */
     string_value = this->primitiveMakeString();
     if (string_value == TheNilObject) {/* didn't convert?                   */
@@ -1236,7 +1236,7 @@ LONG  RexxObject::requiredLong(
   wholenumber_t  result;               /* returned result                   */
 
                                        /* primitive object?                 */
-  if (this->isBaseClass() && !OTYPE(Object, this))
+  if (this->isBaseClass() && !isOfClass(Object, this))
                                        /* return the integer value          */
     result = this->longValue(precision);
   else                                 /* return integer value of string    */
@@ -1290,7 +1290,7 @@ RexxArray *RexxObject::requestArray()
 {
   if (this->isBaseClass())             /* primitive object?                 */
   {
-    if (OTYPE(Array, this))            /* already an array?                 */
+    if (isOfClass(Array, this))            /* already an array?                 */
       return (RexxArray *)this;        /* return directly, don't makearray  */
     else
       return this->makeArray();        /* return the array value            */
@@ -1307,7 +1307,7 @@ RexxString *RexxObject::objectName()
   RexxObject *scope;                   /* method's variable scope           */
   RexxString *string_value;            /* returned string value             */
 
-  scope = last_method()->scope;        /* get the method's scope            */
+  scope = last_method()->getScope();   /* get the method's scope            */
                                        /* get the object name variable      */
   string_value = (RexxString *)this->getObjectVariable(OREF_NAME, scope);
   if (string_value == OREF_NULL) {     /* no name?                          */
@@ -1328,7 +1328,7 @@ RexxObject  *RexxObject::objectNameEquals(RexxObject *name)
   RexxObject *scope;                   /* scope of the object               */
 
   required_arg(name, ONE);             /* must have a name                  */
-  scope = last_method()->scope;        /* get the method's scope            */
+  scope = last_method()->getScope();   /* get the method's scope            */
                                        /* get this as a string              */
   name = (RexxObject *)REQUIRED_STRING(name, ARG_ONE);
                                        /* set the name                      */
@@ -1343,7 +1343,7 @@ RexxObject  *RexxObject::setAttribute(RexxObject *value)
 {
   required_arg(value, ONE);            /* must have a value                 */
                                        /* just directly set the value       */
-  method_save->getAttribute()->set(this->getObjectVariables(method_save->scope), value);
+  method_save->getAttribute()->set(this->getObjectVariables(method_save->getScope()), value);
   return OREF_NULL;                    /* no return value                   */
 }
 
@@ -1353,7 +1353,7 @@ RexxObject  *RexxObject::getAttribute()
 /******************************************************************************/
 {
                                        /* just directly retrieve the value  */
-  return method_save->getAttribute()->getValue(this->getObjectVariables(method_save->scope));
+  return method_save->getAttribute()->getValue(this->getObjectVariables(method_save->getScope()));
 }
 
 RexxObject  *RexxObject::abstractMethod(RexxObject **args, size_t count)
@@ -1371,7 +1371,7 @@ RexxString  *RexxObject::defaultName()
 
                                        /* use the class id as the default   */
                                        /* name                              */
-  defaultname = this->behaviour->getCreateClass()->id;
+  defaultname = this->behaviour->getCreateClass()->getId();
                                        /* check if it is from an enhanced   */
   if (this->behaviour->isEnhanced()) { /* class                             */
                                        /* return the 'enhanced' id          */
@@ -1442,7 +1442,7 @@ RexxObject  *RexxObject::setMethod(
   if (methobj == OREF_NULL)            /* we weren't passed a method,       */
                                        /* add a dummy method                */
     methobj = (RexxMethod *)TheNilObject;
-  else if (!OTYPE(Method, methobj))    /* not a method type already?        */
+  else if (!isOfClass(Method, methobj))    /* not a method type already?        */
                                        /* make one from a string or array   */
     methobj = TheMethodClass->newRexxCode(msgname, (RexxObject *)methobj, IntegerTwo, OREF_NULL);
   this->defMethod(msgname, methobj, option);   /* defMethod handles all the details */
@@ -1521,13 +1521,13 @@ RexxMessage *RexxObject::start(
 
                                        /* if 1st arg is a string, we can do */
                                        /* this quickly                      */
-  if (!OTYPE(String, message)) {
+  if (!isOfClass(String, message)) {
                                        /* is this an array?                 */
-    if (OTYPE(Array, message)) {
+    if (isOfClass(Array, message)) {
       messageArray = (RexxArray*) message;
     } else {
       RexxClass *theClass = message->classObject();
-      RexxArray *classes = theClass->classSuperClasses;
+      RexxArray *classes = theClass->getClassSuperClasses();
       size_t i = classes->numItems();
       for (; i != 0; i--) {
         if (classes->get(i) == TheStringClass)
@@ -1555,7 +1555,7 @@ RexxMessage *RexxObject::start(
                                        /* have an activation?               */
     if (activation != (RexxActivation *)TheNilObject) {
                                        /* get the receiving object          */
-      sender = (RexxObject *)activation->u_receiver;
+      sender = activation->getReceiver();
       if (sender != this)              /* not the same receiver?            */
                                        /* this is an error                  */
          reportException(Error_Execution_super);
@@ -1635,7 +1635,7 @@ RexxObject  *RexxObject::run(
                                        /* get the method object             */
   methobj = (RexxMethod *)arguments[0];
   required_arg(methobj, ONE);          /* make sure we have a method        */
-  if (!OTYPE(Method, methobj)) {       /* this a method object?             */
+  if (!isOfClass(Method, methobj)) {       /* this a method object?             */
                                        /* create a method object            */
     methobj = TheMethodClass->newRexxCode(OREF_RUN, (RexxObject *)methobj, IntegerOne, OREF_NULL);
                                        /* set the correct scope             */
@@ -1763,7 +1763,7 @@ RexxObject  *RexxObject::defMethod(
                                        /* no real method added              */
     methcopy = (RexxMethod *)TheNilObject;
                                        /* is this the first added method?   */
-  if (this->behaviour->instanceMethodDictionary == OREF_NULL) {
+  if (this->behaviour->getInstanceMethodDictionary() == OREF_NULL) {
 
 /* copy primitive behaviour object and define the method, a copy is made to */
 /* ensure that we don't update the behaviour of any other object, since they*/
@@ -1779,12 +1779,12 @@ RexxObject  *RexxObject::defMethod(
   return OREF_NULL;
 }
 
-short RexxObject::ptype()
+size_t RexxInternalObject::getObjectTypeNumber()
 /******************************************************************************/
 /* Function:  Return the object's primitive type number                       */
 /******************************************************************************/
 {
-  return this->behaviour->typenum();
+  return this->behaviour->getClassType();
 }
 
 void RexxInternalObject::removedUninit()
@@ -1916,7 +1916,7 @@ RexxString *RexxObject::id(void)
   if (createClass == OREF_NULL)        /* no class object?                  */
     return OREF_NULL;                  /* return nothing                    */
   else
-    return createClass->id;            /* return the class id string        */
+    return createClass->getId();       /* return the class id string        */
 }
 
 RexxObject *RexxObject::init(void)
@@ -1968,7 +1968,7 @@ RexxObject *RexxObject::newRexx(RexxObject **arguments, size_t argCount)
 }
 
 
-RexxObject *RexxObject::clone()
+RexxObject *RexxInternalObject::clone()
 /******************************************************************************/
 /* Arguments:  Clone an object, and set up its header.  This method should    */
 /*             be called by other _copy methods instead of using new_object   */
@@ -1981,12 +1981,12 @@ RexxObject *RexxObject::clone()
 {
     // we need an identically sized object
     size_t size = getObjectSize();
-    RexxObject *cloneObj = newObject(size);
+    RexxObject *cloneObj = new_object(size);
     // copy the object header.  That's the only piece of this we're not going to keep from
     // the old object.
     ObjectHeader newHeader = cloneObj->header;
     // copy everything but the object header over from the source object.
-    memcpy((char *)cloneObj, (char *)obj size);
+    memcpy((char *)cloneObj, (char *)this, size);
     // restore the new header to the cloned object
     cloneObj->header = newHeader;
     return cloneObj;
@@ -2061,14 +2061,14 @@ void *RexxObject::operator new(size_t size, RexxClass *classObject)
                                        /* get storage for new object        */
   newObject = (RexxObject *)new_object(size);
                                        /* use the class instance behaviour  */
-  BehaviourSet(newObject, classObject->getInstanceBehaviour());
+  newObject->setBehaviour(classObject->getInstanceBehaviour());
                                        /* use the default hash value        */
-  newObject->hashvalue = HASHOREF(newObject);
+  newObject->setDefaultHash();
                                        /* clear the object variable oref    */
   OrefSet(newObject, newObject->objectVariables, OREF_NULL);
 
 
-  if (classObject->uninitDefined() || classObject->parentUninitDefined()) {  /* or parent has one */
+  if (classObject->hasUninitDefined() || classObject->parentHasUninitDefined()) {  /* or parent has one */
      newObject->hasUninit();
    }
 

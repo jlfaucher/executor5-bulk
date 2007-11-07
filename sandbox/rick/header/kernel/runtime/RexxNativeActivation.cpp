@@ -457,7 +457,7 @@ RexxVariableDictionary *RexxNativeActivation::methodVariables()
                                        /* first retrieval?                  */
   if (this->objectVariables == OREF_NULL) {
                                        /* is the receiver an activation?    */
-    if (OTYPE(Activation,this->u_receiver))
+    if (isOfClass(Activation,this->u_receiver))
                                        /* retrieve the method variables     */
       this->objectVariables = ((RexxActivation *)this->u_receiver)->getLocalVariables();
     else {
@@ -690,7 +690,7 @@ void RexxNativeActivation::guardOn()
 /******************************************************************************/
 {
     /* is the receiver an activation?  Just return without locking */
-    if (OTYPE(Activation,this->u_receiver)) {
+    if (isOfClass(Activation,this->u_receiver)) {
         return;
     }
     /* first retrieval? */
@@ -786,7 +786,7 @@ BOOL RexxNativeActivation::fetchNext(
                                        /* get the value                     */
       RexxObject *variable_value = variable->getVariableValue();
                                        /* found a stem item?                */
-      if (OTYPE(Stem, variable_value)) {
+      if (isOfClass(Stem, variable_value)) {
                                        /* we are not on a stem              */
         setNextStem((RexxStem *)variable_value);
         setCompoundElement(((RexxStem *)variable_value)->first());
@@ -855,7 +855,7 @@ void * RexxNativeActivation::operator new(size_t size,
                                        /* Get new object                    */
   newObject = (RexxNativeActivation *)new_object(size);
                                        /* Give new object its behaviour     */
-  BehaviourSet(newObject, TheNativeActivationBehaviour);
+  newObject->setBehaviour(TheNativeActivationBehaviour);
   newObject->clearObject();            /* clear out at start                */
   newObject->u_receiver = receiver;    /* the receiving object              */
   newObject->method = method;          /* the method to run                 */
@@ -1365,7 +1365,7 @@ BOOL REXXENTRY REXX_ISDIRECTORY(REXXOBJECT object)
 /******************************************************************************/
 {
                                        /* do the validation                 */
-  return object != NULL && OTYPE(Directory, object);
+  return object != NULL && isOfClass(Directory, object);
 }
 
 REXXOBJECT REXXENTRY REXX_NIL(void)
@@ -1492,7 +1492,7 @@ nativei7 (ULONG, STEMSORT,
 
   /* this must be a stem variable in order for the sorting to work. */
 
-  if ( (!OTYPE(StemVariable, retriever)) && (!OTYPE(CompoundVariable, retriever)) )
+  if ( (!isOfClass(StemVariable, retriever)) && (!isOfClass(CompoundVariable, retriever)) )
   {
       return FALSE;
   }
@@ -1501,7 +1501,7 @@ nativei7 (ULONG, STEMSORT,
   RexxString *tail = OREF_NULLSTRING ;
   this->saveObject(tail);
 
-  if (OTYPE(CompoundVariable, retriever))
+  if (isOfClass(CompoundVariable, retriever))
   {
     length = variable->getLength();      /* get the string length             */
     position = 0;                        /* start scanning at first character */

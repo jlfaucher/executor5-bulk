@@ -510,7 +510,7 @@ RexxObject *RexxClass::defineMethod(
     method_object = (RexxMethod *)TheNilObject;
                                        /* not a method type already?        */
                                        /* and not TheNilObject              */
-  else if (TheNilObject != method_object && !OTYPE(Method, method_object))
+  else if (TheNilObject != method_object && !isOfClass(Method, method_object))
                                        /* make one from a string            */
     method_object = TheMethodClass->newRexxCode(method_name, method_object, IntegerTwo);
   if (TheNilObject != method_object) { /* if the method is not TheNilObject */
@@ -551,7 +551,7 @@ RexxObject *RexxClass::defineMethods(
   for (i = newMethods->first(); (index = (RexxString *)newMethods->index(i)) != OREF_NULL; i = newMethods->next(i)) {
                                        /* get the method                    */
     newMethod = (RexxMethod *)newMethods->value(i);
-    if (OTYPE(Method, newMethod))      /* if this is a method object        */
+    if (isOfClass(Method, newMethod))      /* if this is a method object        */
       newMethod->setScope(this);        /* change the scope                  */
                                        /* add method to the instance mdict   */
     this->instanceMethodDictionary->stringPut(newMethod, index);
@@ -868,7 +868,7 @@ RexxTable *RexxClass::methodDictionaryCreate(
                                        /* if the method is not TheNilObject */
     if (newMethod != (RexxMethod *)TheNilObject) {
                                        /* and it isn't a primitive method   */
-      if (!OTYPE(Method, newMethod)) { /* object                            */
+      if (!isOfClass(Method, newMethod)) { /* object                            */
                                        /* make it into a method object      */
          newMethod = TheMethodClass->newRexxCode(method_name, newMethod, IntegerOne);
          newMethod->setScope(scope);   /* and set the scope to the given    */
@@ -1281,7 +1281,7 @@ void  *RexxClass::operator new(size_t size,
     new_class = (RexxClass *)new_object(size1);
   new_class->clearObject();            /* clear out the state data          */
                                        /* set the class specific behaviour  */
-  BehaviourSet(new_class, class_behaviour);
+  new_class->setBehaviour(class_behaviour);
                                        /* set the class into the behaviour  */
   new_class->behaviour->setClass(new_class);
                                        /* set the instance behaviour        */
@@ -1395,7 +1395,7 @@ void class_create (void)
                                        /* create a class object             */
   TheClassClass = (RexxClass *)new_object(sizeof(RexxClass));
                                        /* set the instance behaviour         */
-  BehaviourSet(TheClassClass, TheClassClassBehaviour);
+  TheClassClass->setBehaviour(TheClassClassBehaviour);
                                        /* set the instance behaviour         */
   TheClassClass->setInstanceBehaviour(TheClassBehaviour);
                                        /* tell the mobile support to just    */

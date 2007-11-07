@@ -117,7 +117,7 @@ RexxMutableBuffer *RexxMutableBufferClass::newRexx(RexxObject **args, size_t arg
                                         /* allocate the new object           */
   newBuffer = (RexxMutableBuffer *)new_object(sizeof(RexxMutableBuffer));
                                         /* set the behaviour from the class  */
-  BehaviourSet(newBuffer, this->getInstanceBehaviour());
+  newBuffer->setBehaviour(this->getInstanceBehaviour());
                                         /* set the virtual function table    */
   newBuffer->setVirtualFunctions(VFTArray[T_mutablebuffer]);
                                         /* clear the front part              */

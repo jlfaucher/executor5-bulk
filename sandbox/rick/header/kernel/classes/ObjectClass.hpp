@@ -200,6 +200,7 @@ inline uintptr_t HASHOREF(RexxVirtualBase *r) { return ((uintptr_t)r) >> OREFSHI
      inline bool   isNonPrimitive() { return header.isNonPrimitive(); }
      inline bool   isObjectMarked(uint16_t markword) { return header.isObjectMarked(markword); }
      inline void   setObjectMark(uint16_t markword) { header.setObjectMark(markword); }
+     inline void   clearObjectMark() { header.clearObjectMark(); }
      inline bool   isObjectLive(uint32_t mark) { return header.isObjectLive(mark); }
      inline bool   isObjectDead(uint32_t mark) { return header.isObjectDead(mark); }
      inline bool   isOldSpace() { return header.isOldSpace(); }
@@ -210,6 +211,12 @@ inline uintptr_t HASHOREF(RexxVirtualBase *r) { return ((uintptr_t)r) >> OREFSHI
      inline bool   isProxyObject() { return header.isProxyObject(); }
             bool   isSubClassOrEnhanced();
             bool   isBaseClass();
+            size_t getObjectTypeNumber();
+     inline RexxBevhaviour *getObjectType() { return behaviour; }
+     inline bool   isObjectType(RexxBehaviour *b) { return b == behaviour; }
+     inline bool   isObjectType(size_t t) { return getObjectTypeNumber() == t; }
+     inline bool   isSameType(RexxInternalObject *o) { return behaviour == o->getObjectType(); }
+     inline void   setBehaviour(RexxBehaviour *b) { behaviour = b; }
 
                                        /* the following are virtual         */
                                        /* functions required for every      */
@@ -348,7 +355,7 @@ class RexxObject : public RexxInternalObject {
      RexxObject  *messageSend(RexxString *, LONG, RexxObject **);
      RexxObject  *messageSend(RexxString *, LONG, RexxObject **, RexxObject *);
      RexxMethod  *checkPrivate(RexxMethod *);
-     RexxObject  *processUnknown(RexxString *, LONG, RexxObject **);
+     RexxObject  *processUnknown(RexxString *, size_t, RexxObject **);
      RexxObject  *processProtectedMethod(RexxString *, LONG, RexxObject **);
      RexxObject  *sendMessage(RexxString *, RexxArray *);
      inline RexxObject  *sendMessage(RexxString *message) { return this->messageSend(message, 0, OREF_NULL); };
@@ -375,7 +382,6 @@ class RexxObject : public RexxInternalObject {
      RexxObject  *setMdict(RexxObject *);
      inline RexxBehaviour *behaviourObject() { return this->behaviour; }
 
-     short        ptype();
      const char  *idString();
      RexxString  *id();
      RexxMethod  *methodLookup(RexxString *name );

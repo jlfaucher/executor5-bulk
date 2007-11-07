@@ -315,7 +315,7 @@ void RexxEnvelope::puff(
             /* type number is the behaviour      */
             primitiveTypeNum = (int)(puffObject->behaviour);
             /* was a primitive, stays a primitive*/
-            puffObject->behaviour = &pbehav[primitiveTypeNum];
+            puffObject->behaviour = RexxBehaviour::getPrimitiveBehaviour(primitiveTypeNum);
         }
         /* Force fix-up of                   */
         /*VirtualFunctionTable,              */
@@ -496,7 +496,7 @@ void *RexxEnvelope::operator new(size_t size)
                                        /* Get new object                    */
   newObject = new_object(sizeof(RexxEnvelope));
                                        /* Give new object its behaviour     */
-  BehaviourSet(newObject, TheEnvelopeBehaviour);
+  newObject->setBehaviour(TheEnvelopeBehaviour);
   return newObject;                    /* return the new object             */
 }
 

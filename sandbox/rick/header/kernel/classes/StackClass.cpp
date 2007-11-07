@@ -168,7 +168,7 @@ void *RexxStack::operator new(
                                        /* Get new object                    */
     newObject = memoryObject.temporaryObject(size + ((stksize-1) * sizeof(RexxObject *)));
                                        /* set the behaviour                 */
-  BehaviourSet(newObject, TheStackBehaviour);
+  newObject->setBehaviour(TheStackBehaviour);
   return newObject;                    /* return the new object             */
 }
 
@@ -210,7 +210,7 @@ void *RexxSaveStack::operator new(
   newObject = new_object(size + ((allocSize-1) * sizeof(RexxObject *)));
 
                                        /* set the behaviour                 */
-  BehaviourSet(newObject, TheStackBehaviour);
+  newObject->setBehaviour(TheStackBehaviour);
   return newObject;                    /* return the new object             */
 }
 
@@ -280,7 +280,7 @@ void RexxSaveStack::live()
         if (IsLargeObject(thisObject)) {
 //          printf("Large object on save stack encountered of size %d\n", ObjectSize(thisObject));
                                        /* is this a large string? */
-            if (OTYPE(String, thisObject)) {
+            if (isOfClass(String, thisObject)) {
                                        /* if the pointer is less than the top, we don't */
                                        /* need to worry about wrapping now */
                 if (rp < this->stack + this->top) {

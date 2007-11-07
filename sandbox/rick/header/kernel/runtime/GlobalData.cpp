@@ -219,7 +219,7 @@ PCPPM objectOperatorMethods[] = {      /* object operator methods           */
 #define CLASS_EXTERNAL(n, t) RexxBehaviour(T_##n, (PCPPM *)objectOperatorMethods),
 #define CLASS_EXTERNAL_STRING(n, t) RexxBehaviour(T_##n, (PCPPM *)n##OperatorMethods),
 
-RexxBehaviour pbehav[highest_T + 1] = {/* table of primitive behaviours     */
+RexxBehaviour RexxBehaviour::primitiveBehaviours[highest_T + 1] = {/* table of primitive behaviours     */
 #include "PrimitiveClasses.h"          /* generate table from header        */
 };
                                        /* an initial value to force it to   */

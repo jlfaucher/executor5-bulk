@@ -200,7 +200,7 @@ RexxArray *RexxDirectory::requestArray()
 /* Function:  Primitive level request('ARRAY') fast path                      */
 /******************************************************************************/
 {
-  if (OTYPE(Directory, this))          /* primitive level object?           */
+  if (isOfClass(Directory, this))          /* primitive level object?           */
     return this->makeArray();          /* just do the makearray             */
   else                                 /* need to so full request mechanism */
     return (RexxArray *)this->sendMessage(OREF_REQUEST, OREF_ARRAYSYM);
@@ -471,7 +471,7 @@ RexxObject *RexxDirectory::setMethod(
                                        /* get as a string parameter         */
   entryname = REQUIRED_STRING(entryname, ARG_ONE)->upper();
   if (methodobj != OREF_NULL) {        /* have a method object?             */
-    if (!OTYPE(Method, methodobj)) {   /* given as a string?                */
+    if (!isOfClass(Method, methodobj)) {   /* given as a string?                */
                                        /* convert to a method               */
       methodobj = TheMethodClass->newRexxCode(entryname, methodobj, IntegerTwo, OREF_NULL);
                                        /* set a new scope on this           */
@@ -739,7 +739,7 @@ RexxObject *RexxDirectory::newRexx(
                                        /* object might actually be for a    */
                                        /* subclass                          */
   newDirectory = new_directory();
-  BehaviourSet(newDirectory, ((RexxClass *)this)->getInstanceBehaviour());
+  newDirectory->setBehaviour(((RexxClass *)this)->getInstanceBehaviour());
                                        /* does object have an UNINT method  */
   if (((RexxClass *)this)->hasUninitDefined()) {
     newDirectory->hasUninit();         /* Make sure everyone is notified.   */

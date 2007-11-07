@@ -99,10 +99,10 @@ void *RexxListTable::operator new(size_t size, size_t initialSize)
                                        /* Get new object                    */
   newTable = (RexxListTable *)new_object(size + sizeof(LISTENTRY) * (initialSize - 1));
                                        /* Give new object its behaviour     */
-  BehaviourSet(newTable, TheListTableBehaviour);
+  newTable->setBehaviour(TheListTableBehaviour);
   newTable->clearObject();
   newTable->size = initialSize;
-  newTable->hashvalue = HASHOREF(newTable);
+  newTable->setDefaultHash();
   return newTable;                     /* return the new list item          */
 }
 
@@ -140,11 +140,11 @@ void *RexxListTable::operator new(size_t size, size_t initialSize, size_t compan
                                        /* function table set up             */
   newTable = new ((void *)newTable) RexxListTable;
                                        /* Give new object its behaviour     */
-  BehaviourSet(newTable, TheListTableBehaviour);
+  newTable->setBehaviour(TheListTableBehaviour);
 
   newTable->size = initialSize;        /* fill in the initial size          */
                                        /* set the default hash value        */
-  newTable->hashvalue = HASHOREF(newTable);
+  newTable->setDefaultHash();
                                        /* hook the list into the companion  */
                                        /* OrefSet is not used, because the  */
                                        /* companion object is not fully set */

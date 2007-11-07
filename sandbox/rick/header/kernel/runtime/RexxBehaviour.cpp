@@ -58,11 +58,11 @@ RexxBehaviour::RexxBehaviour(
 /* Function:  Construct C++ methods in OKGDATA.C                              */
 /******************************************************************************/
 {
-  this->behaviour = &pbehav[T_behaviour];
-  this->header.setSize(sizeof(RexxBehaviour));
-  this->hashvalue = this->HASHOREF();
-  this->setTypenum(newTypenum);
-  this->setFlags(0);
+  this->behaviour = getPrimitiveBehaviour(T_behaviour);
+  this->header.setObjectSize(sizeof(RexxBehaviour));
+  this->hashvalue = this->identityHash();
+  this->setClassType(newTypenum);
+  this->behaviourFlags = 0;
   this->scopes = OREF_NULL;
   this->methodDictionary = OREF_NULL;
   this->operatorMethods = operator_methods;
@@ -89,16 +89,16 @@ void RexxBehaviour::liveGeneral()
 /******************************************************************************/
 {
                                        /* Save image processing?        */
-  if (memoryObject.savingImage() && this->isNonPrimitiveBehaviour())
+  if (memoryObject.savingImage() && this->isNonPrimitive())
   {
       // mark this as needing resolution when restored.
-      this->setBehaviourNotResolved();
+      this->setNotResolved();
   }
   // the other side of the process?
-  else if (memoryObject.restoringImage()
+  else if (memoryObject.restoringImage())
   {
       // if we have a non-primitive here on a restore image, we need to fix this up.
-      if (isNonPrimitiveBehaviour())
+      if (isNonPrimitive())
       {
           resolveNonPrimitiveBehaviour();
       }
@@ -125,11 +125,11 @@ void RexxBehaviour::flatten(RexxEnvelope *envelope)
    flatten_reference(newThis->createClass, envelope);
 
                                        /* Is this a non-primitive behav */
-   if (this->isNonPrimitiveBehaviour())
+   if (this->isNonPrimitive())
    {
                                        /* yes, mark that we need to be  */
                                        /*  resolved on the puff.        */
-       newThis->setBehaviourNotResolved();
+       newThis->setNotResolved();
    }
   cleanUpFlatten
 }
@@ -141,10 +141,10 @@ void RexxBehaviour::flatten(RexxEnvelope *envelope)
  */
 void RexxBehaviour::resolveNonPrimitiveBehaviour()
 {
-    if (isBehaviourNotResolved()
+    if (isNotResolved())
     {
-        setBehaviourResolved();
-        operatorMethods = primitiveBehaviour(getClassType()).operatorMethods;
+        setResolved();
+        operatorMethods = getOperatorMethods(getClassType());
     }
 }
 
@@ -178,7 +178,7 @@ RexxObject *RexxBehaviour::copy()
   newBehaviour->operatorMethods = (PCPPM *)objectOperatorMethods;
                                        /* all copied behaviours are         */
                                        /* non-primitive ones                */
-  newBehaviour->setNonPrimitiveBehaviour();
+  newBehaviour->setNonPrimitive();
   return (RexxObject *)newBehaviour;   /* return the copied behaviour       */
 }
 
@@ -336,7 +336,7 @@ void RexxBehaviour::subclass(
 /******************************************************************************/
 {
                                        /* replace the typenum               */
-  this->setTypenum(subclass_behaviour->typenum());
+  this->setClassType(subclass_behaviour->getClassType());
 }
 
 void RexxBehaviour::restore(
@@ -346,10 +346,10 @@ void RexxBehaviour::restore(
 /******************************************************************************/
 {
                                        /* set the behaviour behaviour       */
-  BehaviourSet(this, (RexxBehaviour *)(&pbehav[T_behaviour]));
+  this->setBehaviour(getPrimitiveBehaviour(T_behaviour));
                                        /* set proper size                   */
-  SetObjectSize(this, roundObjectBoundary(sizeof(RexxBehaviour)));
-  SetOldSpace(this);                   /* pbehav behaviours are old space   */
+  this->setObjectSize(roundObjectBoundary(sizeof(RexxBehaviour)));
+  this->setOldSpace();
                                        /* Make sure we pick up additional   */
                                        /*  methods defined during saveimage */
                                        /* Don't use OrefSet here            */
@@ -370,17 +370,18 @@ RexxClass *RexxBehaviour::restoreClass()
   /* primitive objects, not subject to sweeping.  We do a direct */
   /* assignment to avoid creating a reference entry in the old2new */
   /* table. */
-  this->createClass->instanceBehaviour = this;
+  this->createClass->setInstanceBehaviour(this);
   return this->createClass;            /* return the associated class       */
 }
 
 void *RexxBehaviour::operator new(size_t size,
-    short typenum)                     /* target behaviour type number      */
+    size_t typenum)                     /* target behaviour type number      */
 /******************************************************************************/
 /* Function:  Create and initialize a target primitive behaviour              */
 /******************************************************************************/
 {
-  return (void *)(&pbehav[typenum]);   /* just return the primitive one     */
+    // return a pointer to the static primitive one
+    return (void *)getPrimitiveBehaviour(typenum);
 }
 
 RexxObject * RexxBehaviour::superScope(

@@ -206,7 +206,7 @@ void *RexxClause::operator new(size_t size)
                                        /* Get new object                        */
   newObject = new_object(sizeof(RexxClause));
                                        /* Give new object its behaviour     */
-  BehaviourSet(newObject, TheClauseBehaviour);
+  newObject->setBehaviour(TheClauseBehaviour);
   return newObject;
 }
 

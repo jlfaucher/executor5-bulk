@@ -184,7 +184,7 @@ void *RexxExpressionLogical::operator new(size_t size, size_t  count)
                                          /* Get new object                    */
     RexxObject *newObject = new_object(size + (count - 1) * sizeof(RexxObject *));
                                          /* Give new object its behaviour     */
-    BehaviourSet(newObject, TheLogicalBehaviour);
+    newObject->setBehaviour(TheLogicalBehaviour);
     return newObject;                    /* and return the function           */
 }
 

@@ -202,7 +202,8 @@ class RexxSource : public RexxInternalObject {
   RexxObject *parseLogical(RexxToken *first, int terminators);
 
   BOOL        terminator(int, RexxToken *);
-  BOOL        traceable(void);
+  bool        isTraceable();
+  inline bool isInterpret() { return (flags & _interpret) != 0; }
 
   inline void        install(RexxActivation *activation) { if (this->flags&_install) this->processInstall(activation); };
   inline void        addReference(RexxObject *reference) { this->calls->addLast(reference); }
@@ -280,6 +281,7 @@ class RexxSource : public RexxInternalObject {
   void        saveObject(RexxObject *object) { this->savelist->put(object, object); };
   void        removeObj(RexxObject *object) { if (object != OREF_NULL) this->savelist->remove(object); };
   void        setSecurityManager(RexxObject *manager) { OrefSet(this, this->securityManager, manager); }
+  RexxObject *getSecurityManager() { return securityManager; }
 
   inline RexxDirectory *getLocalRoutines() { return routines; }
   inline RexxDirectory *getPublicRoutines() { return public_routines; }

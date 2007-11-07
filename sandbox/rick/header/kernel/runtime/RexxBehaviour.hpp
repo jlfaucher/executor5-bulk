@@ -105,6 +105,10 @@ void behaviour_setup (void);
    inline void  setNonPrimitive() {  behaviourFlags |= NON_PRIMITIVE_BEHAVIOUR; };
 
    inline PCPPM getOperatorMethod(size_t index) { return operatorMethods[index]; }
+   static inline RexxBehaviour *getPrimitiveBehaviour(size_t index) { return &primitiveBehaviours[index]; }
+   static inline PCPPM *getOperatorMethods(size_t index) { return getPrimitiveBehaviour(index)->operatorMethods; }
+   // table of primitive behaviour objects
+   static RexxBehaviour primitiveBehaviours[];
 
  protected:
 
@@ -124,6 +128,7 @@ void behaviour_setup (void);
    RexxClass  *createClass;            /* class that created this object    */
                                        /* methods added via SETMETHOD       */
    RexxTable  *instanceMethodDictionary;
+
  };
 
 #endif

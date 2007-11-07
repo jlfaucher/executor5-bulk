@@ -183,7 +183,7 @@ void *RexxSupplier::operator new(size_t size)
                                        /* Get new object                    */
   newObject = new_object(size);
                                        /* Give new object its behaviour     */
-  BehaviourSet(newObject, TheSupplierBehaviour);
+  newObject->setBehaviour(TheSupplierBehaviour);
                                        /* fill in the hash value            */
   newObject->clearObject();            /* clear out the state data area     */
   newObject->setDefaultHash();
@@ -234,8 +234,8 @@ RexxObject  *RexxSupplierClass::newRexx(
 /****************************************************************************/
 {
     RexxObject *newObj = new RexxSupplier();
-    BehaviourSet(newObj, this->getInstanceBehaviour());
-    if (this->uninitDefined())
+    newObj->setBehaviour(this->getInstanceBehaviour());
+    if (this->hasUninitDefined())
     {
         newObj->hasUninit();
     }

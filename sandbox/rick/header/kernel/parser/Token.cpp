@@ -155,7 +155,7 @@ void *RexxToken::operator new(size_t size)
                                        /* Get new object                    */
   newToken = new_object(sizeof(RexxToken));
                                        /* Give new object its behaviour     */
-  BehaviourSet(newToken, TheTokenBehaviour);
+  newToken->setBehaviour(TheTokenBehaviour);
   return newToken;                     /* and return                        */
 }
 

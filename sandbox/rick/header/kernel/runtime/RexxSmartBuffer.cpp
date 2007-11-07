@@ -122,7 +122,7 @@ void   *RexxSmartBuffer::operator new(size_t size)
 
   newObject = new_object(size);        /* get storage for a new object      */
                                        /* Give new object its behaviour     */
-  BehaviourSet(newObject, TheSmartBufferBehaviour);
+  newObject->setBehaviour(TheSmartBufferBehaviour);
   return (void *)newObject;            /* return the new object             */
 }
 

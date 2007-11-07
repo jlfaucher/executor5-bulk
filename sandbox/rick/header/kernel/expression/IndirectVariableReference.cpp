@@ -234,7 +234,7 @@ void *RexxVariableReference::operator new(size_t size)
                                        /* Get new object                        */
   newObject = (RexxObject *)new_object(size);
                                        /* object parse_assignment behaviour     */
-  BehaviourSet(newObject, TheVariableReferenceBehaviour);
+  newObject->setBehaviour(TheVariableReferenceBehaviour);
                                        /* Initialize this new method            */
   return newObject;
 }

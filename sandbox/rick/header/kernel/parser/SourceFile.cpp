@@ -412,7 +412,7 @@ void RexxSource::position(
        if (new_line == OREF_NULL)      /* missing line?                     */
                                        /* this is an error                  */
          reportException(Error_Translation_invalid_line);
-       if (!OTYPE(String, new_line)) { /* not working with a string?        */
+       if (!isOfClass(String, new_line)) { /* not working with a string?        */
                                        /* get this as a string              */
          new_line = (RexxString *)new_line->stringValue();
          if (new_line == TheNilObject) /* got back .nil?                    */
@@ -428,7 +428,7 @@ void RexxSource::position(
                                        /* get the descriptors pointer       */
        descriptors = (LINE_DESCRIPTOR *)(this->sourceIndices->data);
                                        /* source buffered in a string?      */
-       if (OTYPE(String, this->sourceBuffer))
+       if (isOfClass(String, this->sourceBuffer))
                                        /* point to the data part            */
          buffer_start = ((RexxString *)(this->sourceBuffer))->getStringData();
        else
@@ -613,7 +613,7 @@ size_t RexxSource::sourceSize()
 }
 
 
-BOOL RexxSource::traceable()
+BOOL RexxSource::isTraceable()
 /******************************************************************************/
 /* Function:  Determine if a program is traceable (i.e., the program source   */
 /*            is available)                                                   */
@@ -647,7 +647,7 @@ RexxString *RexxSource::get(
                                        /* get the descriptors pointer       */
     descriptors = (LINE_DESCRIPTOR *)(this->sourceIndices->data);
                                        /* source buffered in a string?      */
-    if (OTYPE(String, this->sourceBuffer))
+    if (isOfClass(String, this->sourceBuffer))
                                        /* point to the data part            */
       buffer_start = ((RexxString *)(this->sourceBuffer))->getStringData();
     else
@@ -2927,7 +2927,7 @@ RexxMethod *RexxSource::translateBlock(
                                        /* while still more references       */
   while (_instruction != (RexxInstruction *)TheNilObject) {
                                        /* actually a function call?         */
-    if (OTYPE(Function, _instruction))
+    if (isOfClass(Function, _instruction))
                                        /* resolve the function call         */
       ((RexxExpressionFunction *)_instruction)->resolve(this->labels);
     else
@@ -4667,7 +4667,7 @@ void *RexxSource::operator new (size_t size)
   newObject = new_object(sizeof(RexxSource));
   newObject->clearObject(sizeof(RexxSource)); /* clear object          */
                                        /* Give new object its behaviour     */
-  BehaviourSet(newObject, TheSourceBehaviour);
+  newObject->setBehaviourTheSourceBehaviour);
   return newObject;                    /* return the new object             */
 }
 
@@ -4717,7 +4717,7 @@ RexxObject *RexxSource::sourceNewObject(
   RexxObject *newObject;               /* newly created object              */
 
   newObject = new_object(size);        /* Get new object                    */
-  BehaviourSet(newObject, _behaviour); /* Give new object its behaviour     */
+  newObject->setBehaviour(_behaviour); /* Give new object its behaviour     */
                                        /* do common initialization          */
   new ((void *)newObject) RexxInstruction (this->clause, type);
                                        /* now protect this                  */

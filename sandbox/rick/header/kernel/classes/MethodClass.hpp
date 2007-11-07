@@ -102,6 +102,7 @@
 
    RexxInteger *Private() { return  (this->isPrivate() ? TheTrueObject : TheFalseObject); };
    inline RexxObject *getCode() {return (RexxObject *)this->code;}
+   inline RexxCode   *getRexxCode() {return this->rexxCode;}
    inline RexxSource *getSource() {return this->rexxCode->getSource();}
    inline RexxClass  *getScope() {return this->scope;}
    inline void setLocalRoutines(RexxDirectory *r) { getSource()->setLocalRoutines(r); }

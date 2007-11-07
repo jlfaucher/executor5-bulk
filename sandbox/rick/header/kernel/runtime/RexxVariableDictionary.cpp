@@ -430,7 +430,7 @@ RexxVariableDictionary *RexxMemory::newVariableDictionary(
                                        /* get a new object and hash         */
   newObj = (RexxVariableDictionary *)new_hashCollection(hashTabSize, sizeof(RexxVariableDictionary));
                                        /* Give new object its behaviour     */
-  BehaviourSet(newObj, TheVariableDictionaryBehaviour);
+  newObj->setBehaviour(TheVariableDictionaryBehaviour);
                                        /* set the virtual function table    */
   newObj->setVirtualFunctions(VFTArray[T_vdict]);
   return newObj;                       /* return the new vdict              */
@@ -460,7 +460,7 @@ RexxVariableDictionary *RexxMemory::newVariableDictionary(
   newObj = (RexxVariableDictionary *)new_hashCollection(hashTabSize, sizeof(RexxVariableDictionary));
   newObj->scope = scope;               /* fill in the scope */
                                        /* Give new object its behaviour     */
-  BehaviourSet(newObj, TheVariableDictionaryBehaviour);
+  newObj->setBehaviour(TheVariableDictionaryBehaviour);
                                        /* set the virtual function table    */
   newObj->setVirtualFunctions(VFTArray[T_vdict]);
   return newObj;                       /* return the new vdict              */

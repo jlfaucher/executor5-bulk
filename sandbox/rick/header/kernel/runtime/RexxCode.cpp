@@ -153,7 +153,7 @@ void * RexxCode::operator new(size_t size)
 
   newMethod = new_object(size);        /* Get new object                    */
                                        /* Give new object its behaviour     */
-  BehaviourSet(newMethod, TheRexxCodeBehaviour);
+  newMethod->setBehaviour(TheRexxCodeBehaviour);
   return newMethod;                    /* return the new method             */
 }
 

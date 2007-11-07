@@ -76,7 +76,7 @@ RexxMessage::RexxMessage(
                                        /* once we have a result.            */
   OrefSet(this, this->interestedParties, new RexxList);
 
-  if (OTYPE(Array, _message)) {        /* is message specified as an array? */
+  if (isOfClass(Array, _message)) {        /* is message specified as an array? */
     OrefSet(this, this->message, ((RexxString *)((RexxArray *)_message)->get(1))->upper());
                                        /* starting lookup scope is ourself. */
     OrefSet(this, this->startscope, (RexxClass *)((RexxArray *)_message)->get(2));
@@ -157,7 +157,7 @@ RexxObject *RexxMessage::notify(RexxMessage *_message)
 /******************************************************************************/
 {
                                        /* is argument a real message object?*/
- if (message != OREF_NULL && OTYPE(Message, _message)) {
+ if (message != OREF_NULL && isOfClass(Message, _message)) {
                                        /* Yes, then add it to the           */
                                        /* toBeNotified list.                */
 
@@ -494,7 +494,7 @@ void *RexxMessage::operator new(size_t size)
 
   newMessage = new_object(size);       /* Get new object                    */
                                        /* Give new object its behaviour     */
-  BehaviourSet(newMessage, TheMessageBehaviour);
+  newMessage->setBehaviour(TheMessageBehaviour);
   return newMessage;                   /* return the new message object     */
 }
 
@@ -631,7 +631,7 @@ RexxObject *RexxMessage::newRexx(
                                        /* actually a subclassed item?       */
   if (((RexxClass *)this)->isPrimitive()){
                                        /* Give new object its behaviour     */
-    BehaviourSet(newMessage, ((RexxClass *)this)->getInstanceBehaviour());
+    newMessage->setBehaviour(((RexxClass *)this)->getInstanceBehaviour());
     newMessage->sendMessage(OREF_INIT);/* call any rexx inits               */
   }
   return newMessage;                   /* return the new message            */

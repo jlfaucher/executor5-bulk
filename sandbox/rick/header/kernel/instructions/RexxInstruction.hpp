@@ -36,7 +36,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Kernel                                                   RexxInstruction.hpp */
+/* REXX Kernel                                            RexxInstruction.hpp */
 /*                                                                            */
 /* Primitive Abstract Instruction Class Definitions                           */
 /*                                                                            */
@@ -70,7 +70,8 @@ class RexxInstruction : public RexxInternalObject {
   void        setEnd(size_t line, size_t off) { instructionLocation.setEnd(line, off); }
   inline      void        setType(size_t type) { instructionType = type; };
   inline      size_t      getType()            { return instructionType;  };
-  inline      size_t      getLine()            { return instructionLocation.getLineNumber(); }
+  inline      bool        isType(size_t type)  { return instructionType == type; }
+  inline      size_t      getLineNumber()      { return instructionLocation.getLineNumber(); }
 
   int16_t     instructionType;            // name of the instruction           */
   uint16_t    instructionFlags;           // general flag area

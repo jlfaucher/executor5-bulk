@@ -209,7 +209,7 @@ void *RexxExpressionMessage::operator new(size_t size,
                                        /* Get new object                    */
   newObject = new_object(size + (argCount - 1) * sizeof(RexxObject *));
                                        /* Give new object its behaviour     */
-  BehaviourSet(newObject, TheMessageSendBehaviour);
+  newObject->setBehaviour(TheMessageSendBehaviour);
   return newObject;
 }
 

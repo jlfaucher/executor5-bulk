@@ -107,13 +107,13 @@ inline void SetObjectLive(void *o, uint16_t mark) {
     (o)->setObjectSize(s);                            \
     (o)->setVirtualFunctions(VFTArray[T_object]);     \
     (o)->objectVariables = NULL;                      \
-    BehaviourSet(o, TheObjectBehaviour);              \
+    (o)->setBehaviour(TheObjectBehaviour);            \
 }
 
 #define SetUpNewAllocation(o) {                       \
     ((RexxObject *)(o))->setVirtualFunctions(VFTArray[T_object]);      \
     (o)->objectVariables = NULL;                      \
-    BehaviourSet(o, TheObjectBehaviour);              \
+    (o)->setBehaviour(TheObjectBehaviour);            \
     (o)->setObjectLive(markWord);                     \
 }
 

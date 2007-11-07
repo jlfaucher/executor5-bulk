@@ -245,14 +245,14 @@ void RexxInstructionDo::execute(
         doblock->setTo(result);        /* Anchor result in doBlock to keep  */
                                        /*  from GC.                         */
         context->traceResult(result);  /* trace if necessary                */
-        if (OTYPE(Array, result))      /* already an array item?            */
+        if (isOfClass(Array, result))      /* already an array item?            */
                                        /* get the non-sparse version        */
           array = ((RexxArray *)result)->makeArray();
         else {                         /* some other type of collection     */
                                        /* get the array version of this     */
           array = REQUEST_ARRAY(result);
                                        /* didn't convert ok?                */
-          if (array == TheNilObject || !OTYPE(Array, array) )
+          if (array == TheNilObject || !isOfClass(Array, array) )
                                        /* raise an error                    */
             reportException(Error_Execution_noarray, result);
         }
@@ -270,14 +270,14 @@ void RexxInstructionDo::execute(
                                        /* Anchor result in doBlock to keep  */
         doblock->setTo(result);        /*  from GC.                         */
         context->traceResult(result);  /* trace if necessary                */
-        if (OTYPE(Array, result))      /* already an array item?            */
+        if (isOfClass(Array, result))      /* already an array item?            */
                                        /* get the non-sparse version        */
           array = ((RexxArray *)result)->makeArray();
         else {                         /* some other type of collection     */
                                        /* get the array version of this     */
           array = REQUEST_ARRAY(result);
                                        /* didn't convert ok?                */
-          if (array == TheNilObject || !OTYPE(Array, array) )
+          if (array == TheNilObject || !isOfClass(Array, array) )
                                        /* raise an error                    */
             reportException(Error_Execution_noarray, result);
         }
@@ -297,7 +297,7 @@ void RexxInstructionDo::execute(
                                        /* an integer value already, and     */
                                        /* we're dealing with a "normal      */
                                        /* NUMERIC DIGITS setting            */
-        if (OTYPE(Integer, result) && context->digits() >= (long)DEFAULT_DIGITS) {
+        if (isOfClass(Integer, result) && context->digits() >= (long)DEFAULT_DIGITS) {
                                        /* get the value directly            */
           count = ((RexxInteger *)result)->getValue();
           context->traceResult(result);/* trace if necessary                */
@@ -330,7 +330,7 @@ void RexxInstructionDo::execute(
                                        /* an integer value already, and     */
                                        /* we're dealing with a "normal      */
                                        /* NUMERIC DIGITS setting            */
-        if (OTYPE(Integer, result) && context->digits() >= (long)DEFAULT_DIGITS) {
+        if (isOfClass(Integer, result) && context->digits() >= (long)DEFAULT_DIGITS) {
                                        /* get the value directly            */
           count = ((RexxInteger *)result)->getValue();
           context->traceResult(result);/* trace if necessary                */
@@ -477,7 +477,7 @@ void RexxInstructionDo::controlSetup(
                                        /* an integer value already, and     */
                                        /* we're dealing with a "normal      */
                                        /* NUMERIC DIGITS setting            */
-        if (OTYPE(Integer, result) && context->digits() >= (long)DEFAULT_DIGITS)
+        if (isOfClass(Integer, result) && context->digits() >= (long)DEFAULT_DIGITS)
           {
                                        /* get the value directly            */
           count = ((RexxInteger *)result)->getValue();

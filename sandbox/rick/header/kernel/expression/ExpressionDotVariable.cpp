@@ -145,7 +145,7 @@ void * RexxDotVariable::operator new(size_t size)
                                        /* Get new object                    */
   newObject = new_object(sizeof(RexxDotVariable));
                                        /* Give new object its behaviour     */
-  BehaviourSet(newObject, TheDotVariableBehaviour);
+  newObject->setBehaviour(TheDotVariableBehaviour);
   return newObject;                    /* return the object                 */
 }
 

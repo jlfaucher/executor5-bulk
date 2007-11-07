@@ -154,7 +154,7 @@ RexxVariable *RexxMemory::newVariable(
                                        /* Get new object                    */
   newObj = (RexxVariable *)new_object(sizeof(RexxVariable));
                                        /* Give new object its behaviour     */
-  BehaviourSet(newObj, TheVariableBehaviour);
+  newObj->setBehaviour(TheVariableBehaviour);
                                        /* set the virtual function table    */
   newObj->setVirtualFunctions(VFTArray[T_variable]);
   newObj->variableValue = OREF_NULL;   /* clear out the hash value          */

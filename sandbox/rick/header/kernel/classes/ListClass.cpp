@@ -267,7 +267,7 @@ RexxObject *RexxList::section(
   if (element == NULL)                 /* index doesn't exist?              */
                                        /* raise an error                    */
     reportException(Error_Incorrect_method_index, _index);
-  if (!OTYPE(List, this))              /* actually a list subclass?         */
+  if (!isOfClass(List, this))              /* actually a list subclass?         */
                                        /* need to do this the slow way      */
     return this->sectionSubclass(element, counter);
   result = new RexxList;               /* create a new list                 */
@@ -694,7 +694,7 @@ RexxArray *RexxList::requestArray()
 /* Function:  Primitive level request('ARRAY') fast path                      */
 /******************************************************************************/
 {
-  if (OTYPE(List, this))               /* primitive level object?           */
+  if (isOfClass(List, this))               /* primitive level object?           */
     return this->makeArray();          /* just do the makearray             */
   else                                 /* need to so full request mechanism */
     return (RexxArray *)send_message1(this, OREF_REQUEST, OREF_ARRAYSYM);
@@ -961,9 +961,9 @@ void *RexxList::operator new(size_t size)
                                        /* Get new object                    */
   newList = (RexxList *)new (INITIAL_LIST_SIZE, size) RexxListTable;
                                        /* Give new object its behaviour     */
-  BehaviourSet(newList, TheListBehaviour);
+  newList->setBehaviour(TheListBehaviour);
                                        /* set the default hash value        */
-  newList->hashvalue = HASHOREF(newList);
+  newList->setDefaultHash();
   newList->init();                     /* finish initializing               */
   return newList;                      /* return the new list item          */
 }
@@ -984,7 +984,7 @@ RexxList *RexxListClass::newRexx(
                                        /* subclass                          */
   newList = new RexxList;
                                        /* Give new object its behaviour     */
-  BehaviourSet(newList, this->getInstanceBehaviour());
+  newList->setBehaviour(this->getInstanceBehaviour());
   if (this->hasUninitDefined()) {
     newList->hasUninit();
   }

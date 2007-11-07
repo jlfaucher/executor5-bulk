@@ -114,7 +114,7 @@ class ACTSETTINGS {
       RexxObject   ** parent_arglist;      /* arguments to top level program    */
       size_t          parent_argcount;     /* number of arguments to the top level program */
       RexxMethod    * parent_method;       /* method object for top level       */
-      RexxSource    * parent_source;       /* source of the parent method       */
+      RexxCode      * parent_code;         /* source of the parent method       */
       RexxString    * current_env;         /* current address environment       */
       RexxString    * alternate_env;       /* alternate address environment     */
       RexxString    * msgname;             /* message sent to the receiver      */
@@ -318,7 +318,7 @@ RexxObject * activation_find  (void);
    inline void              removeBlock() { this->blockNest--; };
    inline void              addBlock()    { this->blockNest++; };
    inline BOOL              inMethod()  {return this->activation_context == METHODCALL; }
-   inline RexxSource *      getSource() {return this->settings.parent_source; };
+   inline RexxSource *      getSource() {return this->settings.parent_code->getSource(); };
    inline void              indent() {this->settings.traceindent++; };
    inline void              unindent() {this->settings.traceindent--; };
    inline void              setIndent(long v) {this->settings.traceindent=(v); };
@@ -669,7 +669,6 @@ RexxObject * activation_find  (void);
    RexxExpressionStack  stack;         /* current evaluation stack          */
    RexxMethod          *method;        /* executed method                   */
    RexxCode            *code;          /* rexx method object                */
-   RexxSource          *source;        /* rexx method object                */
    RexxObject          *receiver;      /* target of a message invocation    */
    RexxActivity        *activity;      /* current running activation        */
    RexxActivation      *sender;        /* previous running activation       */

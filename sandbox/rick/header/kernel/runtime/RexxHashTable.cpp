@@ -89,7 +89,7 @@ RexxHashTable *RexxMemory::newHashTable(
                                        /* Get new object                    */
   newHash = (RexxHashTable *)new_object(bytes);
                                        /* Give new object its behaviour     */
-  BehaviourSet(newHash, TheHashTableBehaviour);
+  newHash->setBehaviour(TheHashTableBehaviour);
                                        /* set the virtual function table    */
   newHash->setVirtualFunctions(VFTArray[T_hashtab]);
   newHash->clearObject();              /* clear things out                  */
@@ -144,7 +144,7 @@ RexxTable *RexxMemory::newHashCollection(
                                        /* function table set up             */
   newHash = new ((void *)newHash) RexxHashTable;
                                        /* Give new object its behaviour     */
-  BehaviourSet(newHash, TheHashTableBehaviour);
+  newHash->setBehaviour(TheHashTableBehaviour);
                                        /* set the virtual function table    */
   newHash->setVirtualFunctions(VFTArray[T_hashtab]);
   newHash->u_size = bucketSize;        /* record the size                   */
