@@ -1,0 +1,31 @@
+
+Some notes on oorexx-build-dep
+
+* To change the deb package edit the file:
+
+    oorexx-buid-dep/DEBIAN/control
+
+* To rebuild oorexx-build-dep.deb after making changes to the control file:
+
+  (This is what works for me, I'm sure there are other ways.)  This can be
+  done as a regular user, you do not need to be root.  From the *parent*
+  directory of oorexx-build-dep issue the following command:
+
+  dpkg-deb -b oorexx-build-dep/ oorexx-build-dep/oorexx-build-dep.deb
+
+* To install the dependency package.  This does need to be done as root.
+  Issue the following commands:
+
+  dpkg -i oorexx-build-dep.deb
+  apt-get -f install
+
+  Note: The dpkg -i command will produce a lot of error messages like the
+  following:
+
+dpkg: dependency problems prevent configuration of oorexx-build-dep:
+oorexx-build-dep depends on subversion; however:
+  Package subversion is not installed.
+oorexx-build-dep depends on xalan; however:
+  Package xalan is not installed.
+
+  The apt-get -f install command will then install the missing packages.
