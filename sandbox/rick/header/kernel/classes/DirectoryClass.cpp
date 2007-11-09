@@ -759,7 +759,7 @@ RexxDirectory *RexxMemory::newDirectory()
                                        /* get a new object and hash         */
   newObj = (RexxDirectory *)new_hashCollection(DEFAULT_HASH_SIZE, sizeof(RexxDirectory));
                                        /* Give new object its behaviour     */
-  BehaviourSet(newObj, TheDirectoryBehaviour);
+  newObj->setBehaviour(TheDirectoryBehaviour);
                                        /* set the virtual function table    */
   newObj->setVirtualFunctions(VFTArray[T_directory]);
                                        /* set the hash value                */

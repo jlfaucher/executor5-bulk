@@ -108,7 +108,7 @@ RexxObject *RexxString::unflatten(RexxEnvelope *envelope)
 /* Function:  unflatten an object                                             */
 /******************************************************************************/
 {
-  if (this->header & ProxyObject) {         /* is this a proxy object?              */
+  if (this->isProxyObject()) {        /* is this a proxy object?              */
       // just perform an environment lookup
       return TheEnvironment->entry(this);
   }
@@ -1740,7 +1740,7 @@ RexxString *RexxString::newProxy(const char *string)
   sref = (RexxString *)new_string(string);
                                        /* here we need to identify this     */
                                        /*string                             */
-  sref->header |= ProxyObject;         /*  as being a proxy object          */
+  sref->makeProxiedObject();           /*  as being a proxy object          */
 
   return sref;
 }
@@ -1760,7 +1760,7 @@ RexxString *RexxString::newRexx(RexxObject **init_args, size_t argCount)
                                        /* create a new string object        */
   string = new_string(string->getStringData(), string->getLength());
   string->setBehaviour(((RexxClass *)this)->getInstanceBehaviour());
-  if (((RexxClass *)this)->uninitDefined()) {
+  if (((RexxClass *)this)->hasUninitDefined()) {
     string->hasUninit();
   }
                                        /* Initialize the new instance       */

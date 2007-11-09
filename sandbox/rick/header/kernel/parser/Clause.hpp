@@ -62,11 +62,11 @@ class RexxClause : public RexxInternalObject {
   void        setEnd(size_t, size_t);
   void        trim();
   void        newClause();
-  RexxToken  *newToken(int, int, RexxString *, const SourceLocation &);
+  RexxToken  *newToken(int, int, RexxString *, SourceLocation &);
   RexxToken  *nextRealToken();
   inline void        firstToken() {this->current = this->first;};
   inline const SourceLocation &getLocation() { return clauseLocation; }
-  inline void  setLocation(const SourceLocation &l) { clauseLocation = l; }
+  inline void  setLocation(SourceLocation &l) { clauseLocation = l; }
   inline void        previous() { this->current--; }
   inline RexxToken  *next() { return (RexxToken *)this->tokens->get(this->current++); }
   inline size_t      mark() { return current; }

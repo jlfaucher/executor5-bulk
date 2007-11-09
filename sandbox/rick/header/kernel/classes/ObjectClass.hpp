@@ -212,7 +212,7 @@ inline uintptr_t HASHOREF(RexxVirtualBase *r) { return ((uintptr_t)r) >> OREFSHI
             bool   isSubClassOrEnhanced();
             bool   isBaseClass();
             size_t getObjectTypeNumber();
-     inline RexxBevhaviour *getObjectType() { return behaviour; }
+     inline RexxBehaviour *getObjectType() { return behaviour; }
      inline bool   isObjectType(RexxBehaviour *b) { return b == behaviour; }
      inline bool   isObjectType(size_t t) { return getObjectTypeNumber() == t; }
      inline bool   isSameType(RexxInternalObject *o) { return behaviour == o->getObjectType(); }

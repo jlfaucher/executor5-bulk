@@ -50,7 +50,7 @@ void behaviour_setup (void);
 
  class RexxBehaviour : public RexxInternalObject {
   public:
-  void *operator new(size_t, short);
+  void *operator new(size_t, size_t);
   inline void *operator new(size_t size, void *ptr) {return ptr;};
   RexxBehaviour(size_t, PCPPM *);
   inline RexxBehaviour() {;};

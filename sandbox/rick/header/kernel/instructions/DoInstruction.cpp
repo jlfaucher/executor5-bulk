@@ -36,7 +36,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Translator                                              DoInstruction.c       */
+/* REXX Translator                                      DoInstruction.c       */
 /*                                                                            */
 /* Primitive Do Parse Class                                                   */
 /*                                                                            */
@@ -59,21 +59,21 @@ extern ACTIVATION_SETTINGS *current_settings;
 
 
 void RexxInstructionDo::matchLabel(
-     RexxInstructionEnd *_end,          /* end to match up                   */
+     RexxInstructionEnd *_end,         /* end to match up                   */
      RexxSource         *source )      /* parsed source file (for errors)   */
 /******************************************************************************/
 /* Function:  Verify that the name on an END and the END statement match      */
 /******************************************************************************/
 {
   RexxString   *name;                  /* name on the end statement         */
-  LOCATIONINFO  location;              /* location of the end               */
+  SourceLocation location;             /* location of the end               */
   size_t        lineNum;               /* instruction line number           */
 
-  name = _end->name;                    /* get then END name                 */
-  _end->getLocation(&location);         /* get location of END instruction   */
+  name = _end->name;                   /* get then END name                 */
+  location = _end->getLocation();      /* get location of END instruction   */
 
   if (name != OREF_NULL) {             /* was a name given?                 */
-    lineNum = this->lineNumber;        /* Instruction line number           */
+    lineNum = this->getLineNumber();   /* Instruction line number           */
     RexxString *myLabel = getLabel();
     if (myLabel == OREF_NULL)          /* name given on non-control form?   */
                                        /* have a mismatched end             */

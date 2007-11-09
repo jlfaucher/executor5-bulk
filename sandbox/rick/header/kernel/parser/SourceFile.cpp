@@ -232,15 +232,15 @@ void RexxSource::initFile()
   this->initBuffered((RexxObject *)this->sourceBuffer);
 }
 
-BOOL RexxSource::reconnect()
+bool RexxSource::reconnect()
 /******************************************************************************/
 /* Function:  Attempt to reconnect to the original source code file           */
 /******************************************************************************/
 {
   if (!(this->flags&reclaim_possible)) /* no chance of getting this?        */
-    return FALSE;                      /* just get out of here              */
+    return false;                      /* just get out of here              */
   this->initFile();                    /* go reinit this                    */
-  return TRUE;                         /* give back the success return      */
+  return true;                         /* give back the success return      */
 }
 
 void RexxSource::setReconnect()
@@ -613,7 +613,7 @@ size_t RexxSource::sourceSize()
 }
 
 
-BOOL RexxSource::isTraceable()
+bool RexxSource::isTraceable()
 /******************************************************************************/
 /* Function:  Determine if a program is traceable (i.e., the program source   */
 /*            is available)                                                   */
@@ -623,7 +623,7 @@ BOOL RexxSource::isTraceable()
   if ((this->sourceArray == OREF_NULL && this->sourceBuffer == OREF_NULL)) {
     return this->reconnect();          /* unable to recover the source?     */
   }
-  return TRUE;                         /* return the line count             */
+  return true;                         /* return the line count             */
 }
 
 RexxString *RexxSource::get(
@@ -669,8 +669,8 @@ void RexxSource::nextClause()
 /*********************************************************************/
 {
   RexxToken   *token;                  /* current token being processed     */
-  LOCATIONINFO location;               /* location of the clause            */
-  LOCATIONINFO token_location;         /* location of each token            */
+  SourceLocation location;             /* location of the clause            */
+  SourceLocation token_location;       /* location of each token            */
 
   if (!(this->flags&reclaimed)) {      /* need to scan off a clause?        */
     this->clause->newClause();         /* reset the clause object           */
@@ -690,24 +690,22 @@ void RexxSource::nextClause()
       this->clause->newClause();       /* reset the clause object           */
     }
                                        /* get the start position            */
-    token->getLocation(&token_location);
+    token_location = token->getLocation();
     location = token_location;         /* copy the location info            */
                                        /* record in clause for errors       */
-    this->clause->setLocation(&location);
+    this->clause->setLocation(location);
     for (;;) {                         /* loop until physical end of clause */
                                        /* get the next token of real clause */
                                        /* (blanks can be significant)       */
       token = this->sourceNextToken(token);
                                        /* get this tokens location          */
-      token->getLocation(&token_location);
+      token_location = token->getLocation();
       if (token->isEndOfClause()) /* end of the clause now?            */
         break;                         /* hit the physical end of clause    */
     }
-                                       /* copy over the ending information  */
-    location.endline = token_location.endline;
-    location.endoffset = token_location.endoffset;
+    location.setEnd(token_location);
                                        /* record the clause position        */
-    this->clause->setLocation(&location);
+    this->clause->setLocation(location);
   }
   this->flags &= ~reclaimed;           /* no reclaimed clause               */
 }
@@ -729,9 +727,9 @@ void RexxSource::nextClause()
 #define INDENT_SPACING 2               /* spaces per indentation amount     */
 
 RexxString *RexxSource::traceBack(
-     PLOCATIONINFO  location,          /* value to trace                    */
+     SourceLocation &location,         /* value to trace                    */
      size_t         indent,            /* blank indentation                 */
-     BOOL           trace )            /* traced instruction (vs. error)    */
+     bool           trace )            /* traced instruction (vs. error)    */
 /******************************************************************************/
 /* Function:  Format a source line for traceback or tracing                   */
 /******************************************************************************/
@@ -748,7 +746,7 @@ RexxString *RexxSource::traceBack(
   if (line == OREF_NULLSTRING && !trace)
     return OREF_NULL;                  /* don't trace this either           */
                                        /* format the value                  */
-  sprintf(linenumber,"%u", location->line);
+  sprintf(linenumber,"%u", location.getLineNumber());
   if (indent < 0)                      /* possible negative indentation?    */
     indent = 0;                        /* just reset it                     */
                                        /* get an output string              */
@@ -773,7 +771,7 @@ RexxString *RexxSource::traceBack(
 }
 
 RexxString *RexxSource::extract(
-     PLOCATIONINFO  location )        /* target retrieval structure        */
+    SourceLocation &location )         /* target retrieval structure        */
 /******************************************************************************/
 /* Extrace a line from the source using the given location information        */
 /******************************************************************************/
@@ -788,32 +786,32 @@ RexxString *RexxSource::extract(
       return OREF_NULLSTRING;          /* return a null array               */
   }
                                        /* is the location out of bounds?    */
-  if (location->line == 0 || location->line > this->line_count)
+  if (location.getLineNumber() == 0 || location.getLineNumber() > this->line_count)
     line = OREF_NULLSTRING;            /* just give back a null string      */
                                        /* all on one line?                  */
-  else if (location->line >= location->endline)
+  else if (location.getLineNumber() >= location.getEndLine())
                                        /* just extract the string           */
-    line = this->get(location->line - this->interpret_adjust)->extract(location->offset,
-        location->endoffset - location->offset);
+    line = this->get(location.getLineNumber() - this->interpret_adjust)->extract(location.getOffset(),
+        location.getEndOffset() - location.getOffset());
                                        /* multiple line clause              */
   else {
                                        /* get the source line               */
-    source_line = this->get(location->line);
+    source_line = this->get(location.getLineNumber());
                                        /* extract the first part            */
-    line = source_line->extract(location->offset, source_line->getLength() - location->offset);
+    line = source_line->extract(location.getOffset(), source_line->getLength() - location.getOffset());
                                        /* loop down to end line             */
-    for (counter = location->line + 1 - this->interpret_adjust; counter < location->endline; counter++) {
+    for (counter = location.getLineNumber() + 1 - this->interpret_adjust; counter < location.getEndLine(); counter++) {
                                        /* concatenate the next line on      */
       line = line->concat(this->get(counter));
     }
                                        /* now add on the last part          */
-    line = line->concat(this->get(counter)->extract(0, location->endoffset));
+    line = line->concat(this->get(counter)->extract(0, location.getEndOffset()));
   }
   return line;                         /* return the extracted line         */
 }
 
 RexxArray *RexxSource::extractSource(
-     PLOCATIONINFO  location )         /* target retrieval structure        */
+    SourceLocation &location )         /* target retrieval structure        */
 /******************************************************************************/
 /* Function:  Extract a section of source from a method source object, using  */
 /*            the created bounds for the method.                              */
@@ -831,57 +829,56 @@ RexxArray *RexxSource::extractSource(
       return (RexxArray *)TheNullArray->copy();
   }
                                        /* is the location out of bounds?    */
-  if (location->line == 0 || location->line - this->interpret_adjust > this->line_count)
+  if (location.getLineNumber() == 0 || location.getLineNumber() - this->interpret_adjust > this->line_count)
                                        /* just give back a null array       */
     source = (RexxArray *)TheNullArray->copy();
   else {
-    if (location->endline == 0) {      /* no ending line?                   */
+    if (location.getEndLine() == 0) {  /* no ending line?                   */
                                        /* use the last line                 */
-      location->endline = this->line_count;
-                                       /* end at the line end               */
-      location->endoffset = this->get(location->endline)->getLength();
+      location.setEnd(this->line_count, this->get(line_count)->getLength());
     }
                                        /* end at the line start?            */
-    else if (location->endoffset == 0) {
-      location->endline--;             /* step back a line                  */
+    else if (location.getEndOffset() == 0) {
+      // step back a line
+      location.setEndLine(location.getEndLine() - 1); /* step back a line                  */
                                        /* end at the line end               */
-      location->endoffset = this->get(location->endline)->getLength();
+      location.setEndOffset(this->get(location.getEndLine())->getLength());
     }
                                        /* get the result array              */
-    source = new_array(location->endline - location->line + 1);
+    source = new_array(location.getEndLine() - location.getLineNumber() + 1);
                                        /* all on one line?                  */
-    if (location->line == location->endline) {
+    if (location.getLineNumber() == location.getEndLine()) {
                                        /* get the line                      */
-      source_line = this->get(location->line);
+      source_line = this->get(location.getLineNumber());
                                        /* extract the line segment          */
-      source_line = source_line->extract(location->offset, location->endoffset - location->offset);
+      source_line = source_line->extract(location.getOffset(), location.getEndOffset() - location.getOffset());
       source->put(source_line, 1);     /* insert the trailing piece         */
       return source;                   /* all done                          */
     }
-    if (location->offset == 0)         /* start on the first location?      */
+    if (location.getOffset() == 0)     /* start on the first location?      */
                                        /* copy over the entire line         */
-      source->put(this->get(location->line), 1);
+      source->put(this->get(location.getLineNumber()), 1);
     else {
                                        /* get the line                      */
-      source_line = this->get(location->line);
+      source_line = this->get(location.getLineNumber());
                                        /* extract the end portion           */
-      source_line = source_line->extract(location->offset, source_line->getLength() - location->offset);
+      source_line = source_line->extract(location.getOffset(), source_line->getLength() - location.getOffset());
       source->put(source_line, 1);     /* insert the trailing piece         */
     }
                                        /* loop until the last line          */
-    for (counter = location->line + 1, i = 2; counter < location->endline; counter++, i++)
+    for (counter = location.getLineNumber() + 1, i = 2; counter < location.getEndLine(); counter++, i++)
                                        /* copy over the entire line         */
       source->put(this->get(counter), i);
                                        /* get the last line                 */
-    source_line = this->get(location->endline);
+    source_line = this->get(location.getEndLine());
                                        /* more than one line?               */
-    if (location->endline > location->line) {
+    if (location.getEndLine() > location.getLineNumber()) {
                                        /* need the entire line?             */
-      if (location->endoffset >= source_line->getLength())
+      if (location.getEndOffset() >= source_line->getLength())
         source->put(source_line, i);   /* just use it                       */
       else
                                        /* extract the tail part             */
-        source->put(source_line->extract(0, location->endoffset - 1), i);
+        source->put(source_line->extract(0, location.getEndOffset() - 1), i);
     }
   }
   return source;                       /* return the extracted lines        */
@@ -3792,7 +3789,7 @@ RexxObject *RexxSource::subExpression(
   RexxToken     *token;                /* current working token             */
   RexxToken     *second;               /* look ahead token                  */
   RexxObject    *subexpression;        /* final subexpression               */
-  LOCATIONINFO  location;              /* token location info               */
+  SourceLocation location;             /* token location info               */
 
                                        /* get the left term                 */
   left = this->messageSubterm(terminators);
@@ -3831,13 +3828,11 @@ RexxObject *RexxSource::subExpression(
       case  TOKEN_LITERAL:             /* Literal in the expression         */
       case  TOKEN_LEFT:                /* start of subexpression            */
 
-        token->getLocation(&location); /* get the token start position      */
-                                       /* abuttal ends on the same line     */
-        location.endline = location.line;
-                                       /* and is zero characters long       */
-        location.endoffset = location.offset;
+        location = token->getLocation(); /* get the token start position      */
+                                         /* abuttal ends on the same line     */
+        location.setEnd(location.getLineNumber(), location.getOffset());
                                        /* This is actually an abuttal       */
-        token = new RexxToken (TOKEN_OPERATOR, OPERATOR_ABUTTAL, OREF_NULLSTRING, &location);
+        token = new RexxToken (TOKEN_OPERATOR, OPERATOR_ABUTTAL, OREF_NULLSTRING, location);
         previousToken();               /* step back on the token list       */
 
       case  TOKEN_BLANK:               /* possible blank concatenate        */
@@ -4452,10 +4447,8 @@ void RexxSource::error(
 /* Function:  Raise an error caused by source translation problems.           */
 /******************************************************************************/
 {
-  LOCATIONINFO    location;            /* error location                    */
-
                                        /* get the clause location           */
-  this->clause->getLocation(&location);
+  SourceLocation location = this->clause->getLocation();
   this->errorCleanup();                /* release any saved objects         */
                                        /* pass on the exception info        */
   CurrentActivity->raiseException(errorcode, &location, this, OREF_NULL, OREF_NULL, OREF_NULL);
@@ -4469,16 +4462,13 @@ void RexxSource::errorLine(
 /*            the line number of another instruction object                   */
 /******************************************************************************/
 {
-  LOCATIONINFO instruction_location;   /* location of the token             */
-  LOCATIONINFO    location;            /* error location                    */
+  SourceLocation  location;            /* error location                    */
 
                                        /* get the clause location           */
-  this->clause->getLocation(&location);
-                                       /* get the instruction location      */
-  _instruction->getLocation(&instruction_location);
+  location = this->clause->getLocation();
   this->errorCleanup();                /* release any saved objects         */
                                        /* pass on the exception info        */
-  CurrentActivity->raiseException(errorcode, &location, this, OREF_NULL, new_array(new_integer(instruction_location.line)), OREF_NULL);
+  CurrentActivity->raiseException(errorcode, &location, this, OREF_NULL, new_array(new_integer(_instruction->getLineNumber())), OREF_NULL);
 }
 
 void RexxSource::errorPosition(
@@ -4489,14 +4479,11 @@ void RexxSource::errorPosition(
 /*            with the error.                                                 */
 /******************************************************************************/
 {
-  LOCATIONINFO    token_location;      /* location of the token             */
-  LOCATIONINFO    location;            /* error location                    */
-
-  this->clause->getLocation(&location);/* get the clause location           */
-  token->getLocation(&token_location); /* get the token location            */
+  SourceLocation location = this->clause->getLocation();/* get the clause location           */
+  SourceLocation token_location = token->getLocation(); /* get the token location            */
   this->errorCleanup();                /* release any saved objects         */
                                        /* pass on the exception info        */
-  CurrentActivity->raiseException(errorcode, &location, this, OREF_NULL, new_array(new_integer(token_location.offset), new_integer(token_location.line)), OREF_NULL);
+  CurrentActivity->raiseException(errorcode, &location, this, OREF_NULL, new_array(new_integer(token_location.getOffset()), new_integer(token_location.getLineNumber())), OREF_NULL);
 }
 
 void RexxSource::errorToken(
@@ -4508,9 +4495,8 @@ void RexxSource::errorToken(
 /******************************************************************************/
 {
   RexxString     *value;               /* token value                       */
-  LOCATIONINFO    location;            /* error location                    */
 
-  this->clause->getLocation(&location);/* get the clause location           */
+  SourceLocation location = this->clause->getLocation();/* get the clause location           */
 
   value = token->value;                /* get the token value               */
   if (value == OREF_NULL) {            /* no value?                         */
@@ -4578,9 +4564,7 @@ void RexxSource::error(
 /* Function:  Issue an error message with a single substitution parameter.    */
 /******************************************************************************/
 {
-  LOCATIONINFO    location;            /* error location                    */
-
-  this->clause->getLocation(&location);/* get the clause location           */
+  SourceLocation location = this->clause->getLocation();/* get the clause location           */
   this->errorCleanup();                /* release any saved objects         */
                                        /* pass on the exception info        */
   CurrentActivity->raiseException(errorcode, &location, this, OREF_NULL, new_array(value), OREF_NULL);
@@ -4594,9 +4578,7 @@ void RexxSource::error(
 /* Function:  Issue an error message with two substitution parameters.        */
 /******************************************************************************/
 {
-  LOCATIONINFO    location;            /* error location                    */
-
-  this->clause->getLocation(&location);/* get the clause location           */
+  SourceLocation location = this->clause->getLocation();/* get the clause location           */
   this->errorCleanup();                /* release any saved objects         */
                                        /* pass on the exception info        */
   CurrentActivity->raiseException(errorcode, &location, this, OREF_NULL, new_array(value1, value2), OREF_NULL);
@@ -4611,9 +4593,7 @@ void RexxSource::error(
 /* Function:  Issue an error message with three substitution parameters.    */
 /****************************************************************************/
 {
-  LOCATIONINFO    location;            /* error location                    */
-
-  this->clause->getLocation(&location);/* get the clause location           */
+  SourceLocation location = this->clause->getLocation();/* get the clause location           */
   this->errorCleanup();                /* release any saved objects         */
                                        /* pass on the exception info        */
   CurrentActivity->raiseException(errorcode, &location, this, OREF_NULL, new_array(value1, value2, value3), OREF_NULL);
@@ -4625,10 +4605,8 @@ void RexxSource::blockError(
 /* Function:  Raise an error for an unclosed block instruction.               */
 /******************************************************************************/
 {
-  LOCATIONINFO  location;              /* location of last instruction      */
-
-  this->last->getLocation(&location);  /* get the instruction location      */
-  this->clause->setLocation(&location);/* report as the last instruction    */
+  SourceLocation location = this->last->getLocation();  /* get the instruction location      */
+  this->clause->setLocation(location);/* report as the last instruction    */
 
   switch (_instruction->getType()) {   /* issue proper message type         */
     case KEYWORD_DO:                   /* incomplete DO                     */
@@ -4667,7 +4645,7 @@ void *RexxSource::operator new (size_t size)
   newObject = new_object(sizeof(RexxSource));
   newObject->clearObject(sizeof(RexxSource)); /* clear object          */
                                        /* Give new object its behaviour     */
-  newObject->setBehaviourTheSourceBehaviour);
+  newObject->setBehaviour(TheSourceBehaviour);
   return newObject;                    /* return the new object             */
 }
 

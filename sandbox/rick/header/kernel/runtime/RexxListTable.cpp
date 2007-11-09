@@ -130,11 +130,11 @@ void *RexxListTable::operator new(size_t size, size_t initialSize, size_t compan
                                        /* table (allowing for possible      */
                                        /* over allocation by the memory     */
                                        /* manager                           */
-  bytes = ObjectSize(newList) - companionSize;
+  bytes = newList->getObjectSize() - companionSize;
 
   SetUpNewObject((RexxObject *)newTable, bytes); /* make this an object               */
                                        /* reduce the companion size         */
-  SetObjectSize(newList, companionSize);
+  newList->setObjectSize(companionSize);
                                        /* do a dummy new against the list   */
                                        /* table to get the correct virtual  */
                                        /* function table set up             */

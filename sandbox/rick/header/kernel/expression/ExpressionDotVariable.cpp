@@ -36,7 +36,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Translator                                              ExpressionDotVariable.c     */
+/* REXX Translator                                ExpressionDotVariable.c     */
 /*                                                                            */
 /* Primitive Translator Expression Parsing Dot Variable Reference Class       */
 /*                                                                            */

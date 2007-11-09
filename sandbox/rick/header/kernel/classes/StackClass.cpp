@@ -271,39 +271,6 @@ void RexxSaveStack::live()
         *rp = OREF_NULL;               /* we can clear this out now, rather than keeping it in the stack */
     }
     else {
-                                       /* if this is a large, unmarked object, we */
-                                       /* do some additional tests.  If this is a String */
-                                       /* then we check the position within the stack.  If */
-                                       /* it is not near the top of the stack, then this is */
-                                       /* an already dead object.  We will clear this out */
-                                       /* now to prevent GC thrashing */
-        if (IsLargeObject(thisObject)) {
-//          printf("Large object on save stack encountered of size %d\n", ObjectSize(thisObject));
-                                       /* is this a large string? */
-            if (isOfClass(String, thisObject)) {
-                                       /* if the pointer is less than the top, we don't */
-                                       /* need to worry about wrapping now */
-                if (rp < this->stack + this->top) {
-                                       /* if in the save range, continue */
-                    if (rp < this->stack + this->top - SAVE_THRESHOLD) {
-                        *rp = OREF_NULL;  /* we can clear this out now, rather than keeping it in the stack */
-//                      printf("Zeroing out SaveStack reference to marked object %p\n", thisObject);
-                        continue;
-                    }
-                }
-                else {
-                                       /* see if we've wrapped recently */
-                    long wrap = this->top - SAVE_THRESHOLD;
-                    if (wrap < 0) {    /* check to see if this is in the top range */
-                        if (rp < this->stack + (this->top - wrap)) {
-                            *rp = OREF_NULL;  /* we can clear this out now, rather than keeping it in the stack */
-//                          printf("Zeroing out SaveStack reference to unmarked object %p\n", thisObject);
-                            continue;
-                        }
-                    }
-                }
-            }
-        }
         /* this is an object we need to keep alive, but we'll only */
         /* do this for one GC cycle.  We'll clear this out now, to */
         /* make sure we don't keep this pinned longer than */

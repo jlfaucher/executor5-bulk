@@ -1861,7 +1861,7 @@ BUILTIN(TRACE) {
   setting = optional_string(TRACE, setting);
   result = context->traceSetting();    /* get the existing trace setting    */
   if (setting != OREF_NULL) {          /* have a new setting?               */
-    context->source->parseTraceSetting(setting, &newsetting, &debug);
+    context->code->getSource()->parseTraceSetting(setting, &newsetting, &debug);
                                        /* now change the setting            */
     context->setTrace(newsetting, debug);
   }

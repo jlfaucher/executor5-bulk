@@ -69,7 +69,7 @@ void RexxVariableReference::live()
 /******************************************************************************/
 {
   setUpMemoryMark
-  memory_mark(this->variableName);
+  memory_mark(this->variableObject);
   cleanUpMemoryMark
 }
 
@@ -79,7 +79,7 @@ void RexxVariableReference::liveGeneral()
 /******************************************************************************/
 {
   setUpMemoryMarkGeneral
-  memory_mark_general(this->variableName);
+  memory_mark_general(this->variableObject);
   cleanUpMemoryMarkGeneral
 }
 
@@ -90,7 +90,7 @@ void RexxVariableReference::flatten(RexxEnvelope *envelope)
 {
   setUpFlatten(RexxVariableReference)
 
-  flatten_reference(newThis->variableName, envelope);
+  flatten_reference(newThis->variableObject, envelope);
 
   cleanUpFlatten
 }

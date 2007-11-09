@@ -580,7 +580,7 @@ RexxObject * RexxObject::copy()
                                        /* have instance methods?            */
   if (this->behaviour->getInstanceMethodDictionary() != OREF_NULL)
                                        /* need to copy the behaviour        */
-    newObj->setBehaviour(newObj->behaviour->copy());
+    newObj->setBehaviour((RexxBehaviour *)newObj->behaviour->copy());
   return newObj;                       /* return the copied version         */
 }
 
@@ -2197,8 +2197,7 @@ void RexxInternalObject::printObject()
 /* Function:  give a formatted print of object information.                   */
 /******************************************************************************/
 {
-    printf("Object at %p, of type %d\n",
-        this, ObjectTypeNumber(this));
+    printf("Object at %p, of type %d\n", this, this->getObjectTypeNumber());
 }
 
 #include "RexxNativeAPI.h"

@@ -371,13 +371,13 @@
 
 class RexxToken : public RexxInternalObject {
  public:
-  RexxToken(int, int, RexxString *, const SourceLocation &);;
+  RexxToken(int, int, RexxString *, SourceLocation &);;
   inline RexxToken(RESTORETYPE restoreType) { ; };
   void       live();
   void       liveGeneral();
   void       flatten(RexxEnvelope *);
-  void       setStart(size_t, size_t);
-  void       setEnd(size_t, size_t);
+  inline void setStart(size_t l, size_t o) { tokenLocation.setStart(l, o); }
+  inline void setEnd(size_t l, size_t o) { tokenLocation.setEnd(l, o); }
   void      *operator new(size_t);
   inline void      *operator new(size_t size, void *ptr) {return ptr;};
 
@@ -389,7 +389,7 @@ class RexxToken : public RexxInternalObject {
   inline bool       isEndOfClause() { return this->classId == TOKEN_EOC; }
   inline void       setNumeric(int v)   { this->numeric = v; };
   inline const SourceLocation &getLocation() { return tokenLocation; }
-  inline void  setLocation(const SourceLocation &l) { tokenLocation = l; }
+  inline void  setLocation(SourceLocation &l) { tokenLocation = l; }
          void       checkAssignment(RexxSource *source, RexxString *newValue);
 
   SourceLocation tokenLocation;        /* token source location             */

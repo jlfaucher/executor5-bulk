@@ -114,25 +114,25 @@ RexxArray * RexxCode::sourceRexx()
 /*            array of strings.                                               */
 /******************************************************************************/
 {
-  LOCATIONINFO     location;           /* location information              */
-  LOCATIONINFO     end_location;       /* ending location                   */
+  SourceLocation   location;           /* location information              */
+  SourceLocation   end_location;       /* ending location                   */
   RexxInstruction *current;            /* current instruction               */
 
   if (this->start == OREF_NULL)        /* empty method?                     */
     return new_array((size_t)0);       /* just return an empty array        */
-  this->start->getLocation(&location); /* get its location info             */
+  location = start->getLocation();     /* get its location info             */
   current = this->start;               /* point to the beginning            */
                                        /* while not at the last one         */
   while (current->nextInstruction != OREF_NULL) {
     current = current->nextInstruction;/* step to the next one              */
   }
 
-  current->getLocation(&end_location); /* get the end location              */
+  end_location = current->getLocation(); /* get the end location              */
                                        /* copy over the ending position     */
-  location.endline = end_location.endline;
-  location.endoffset = end_location.endoffset;
+  location.setEndLine(end_location.getEndLine());
+  location.setEndOffset(end_location.getEndOffset());
                                        /* go extract the source array       */
-  return this->source->extractSource(&location);
+  return this->source->extractSource(location);
 }
 
 RexxString * RexxCode::getProgramName()

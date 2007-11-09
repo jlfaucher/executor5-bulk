@@ -270,16 +270,15 @@ BOOL RexxMemory::objectReferenceOK(RexxObject *o)
     if (!inObjectStorage(o)) {
         return FALSE;
     }
-    RexxBehaviour *type = ObjectType(o);
-    if (inObjectStorage((RexxObject *)type) && ObjectType(type) == TheBehaviourBehaviour) {
+    RexxBehaviour *type = o->getObjectType();
+    if (inObjectStorage((RexxObject *)type) && type->getObjectType() == TheBehaviourBehaviour) {
         return TRUE;
     }
     /* these last two checks are for very early checking...we can */
     /* possibly be testing this before TheBehaviourBehaviour is */
     /* set up, so we have two additional means of verifying the */
     /* behaviour object. */
-    return (ObjectTypeNumber(type) == T_behaviour) ||
-        type == RexxBehaviour::getPrimitiveBehaviour(T_behaviour);
+    return type->isObjectType(T_behaviour) || type == RexxBehaviour::getPrimitiveBehaviour(T_behaviour);
 }
 
 
@@ -639,7 +638,7 @@ void RexxMemory::restoreImage(void)
                                      /* restore all of the saved primitive*/
   for (i = 0; i <= highest_exposed_T; i++)
                                      /* behaviours into this array        */
-    RexxBehaviour::primitiveBehaviours[i])->restore((RexxBehaviour *)primitiveBehaviours->get(i + 1));
+    RexxBehaviour::primitiveBehaviours[i].restore((RexxBehaviour *)primitiveBehaviours->get(i + 1));
 
 }
 

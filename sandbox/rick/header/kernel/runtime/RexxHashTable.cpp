@@ -135,10 +135,10 @@ RexxTable *RexxMemory::newHashCollection(
                                        /* table (allowing for possible      */
                                        /* over allocation by the memory     */
                                        /* manager                           */
-  bytes = ObjectSize(newObj) - companionSize;
+  bytes = newObj->getObjectSize() - companionSize;
   SetUpNewObject((RexxObject *)newHash, bytes); /* make this an object               */
                                        /* reduce the companion size         */
-  SetObjectSize(newObj, companionSize);
+  newObj->setObjectSize(companionSize);
                                        /* do a dummy new against the hash   */
                                        /* table to get the correct virtual  */
                                        /* function table set up             */

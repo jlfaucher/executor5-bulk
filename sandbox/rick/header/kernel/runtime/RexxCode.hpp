@@ -75,7 +75,7 @@ class RexxCode : public RexxInternalObject {
    inline void setPublicRoutines(RexxDirectory *r) { source->setPublicRoutines(r); }
    inline bool isTraceable() { return source->isTraceable(); }
    inline bool isInterpret() { return source->isInterpret(); }
-   inline RexxString *extract(const SourceLocation &l) { return source->extract(l); }
+   inline RexxString *extract(SourceLocation &l) { return source->extract(l); }
    inline RexxObject *getSecurityManager() { return source->getSecurityManager(); }
    inline void        install(RexxActivation *activation) { source->install(activation); }
    inline RexxMethod *interpret(RexxString *s, size_t n) { return source->interpret(s, labels, n); }

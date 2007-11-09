@@ -104,8 +104,7 @@ void RexxClause::setStart(
 /* Function:  Set a clause's starting position as a line/offset pair          */
 /******************************************************************************/
 {
-  this->location.line = line;          /* set the starting line             */
-  this->location.offset = offset;      /* and the starting character        */
+  this->clauseLocation.setStart(line, offset);
 }
 
 void RexxClause::setEnd(
@@ -115,13 +114,7 @@ void RexxClause::setEnd(
 /* Function:  Set a clause's ending position as a line/offset pair            */
 /******************************************************************************/
 {
-  /* set ending position only if it is larger than beginning! */
-  if ( (line > this->location.line) ||
-       ((line == this->location.line) && (offset > this->location.offset)) )
-  {
-    this->location.endline = line;       /* set the starting line             */
-    this->location.endoffset = offset;   /* and the ending character          */
-  } /* endif */
+    clauseLocation.setEnd(line, offset);
 }
 
 void RexxClause::trim()
@@ -131,14 +124,14 @@ void RexxClause::trim()
 /*            clauses (such as a "label: procedure", which is two clauses.    */
 /******************************************************************************/
 {
-  LOCATIONINFO l;                      /* location of first new token       */
+  SourceLocation l;                    /* location of first new token       */
 
 
   this->first = this->current;         /* set first item to current         */
                                        /* get first token location          */
-  ((RexxToken *)((this->tokens)->get(this->current)))->getLocation(&l);
+  l = ((RexxToken *)((this->tokens)->get(this->current)))->getLocation();
                                        /* update the clause location info   */
-  this->setStart(l.line, l.offset);
+  clauseLocation.setStart(l);
 }
 
 void RexxClause::newClause()
@@ -157,7 +150,7 @@ RexxToken *RexxClause::newToken(
     int            classId,            /* class of the token                */
     int            subclass,           /* subclass of the token             */
     RexxString    *value,              /* associated string value           */
-    PLOCATIONINFO  l)                  /* location of the token             */
+    SourceLocation &l)                 /* location of the token             */
 /******************************************************************************/
 /* Function :  Return a new token object, with information appropriately      */
 /*             filled in                                                      */
