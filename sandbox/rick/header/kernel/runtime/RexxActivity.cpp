@@ -208,6 +208,8 @@ void activity_thread (
   int  jmprc;                          /* setjmp return code                */
   LONG number_activities;              /* count of activities               */
 
+  SYSEXCEPTIONBLOCK exreg;             /* system specific exception info    */
+
   SysInitializeThread();               /* system specific thread init       */
                                        /* establish the stack base pointer  */
   objp->nestedInfo.stackptr = SysGetThreadStackBase(TOTAL_STACK_SIZE);
@@ -3763,6 +3765,7 @@ LONG RexxActivity::messageSend(
 {
   int     jmprc;                       /* setjmp return code                */
   LONG    rc;                          /* message return code               */
+  SYSEXCEPTIONBLOCK exreg;             /* system specific exception info    */
   long    startDepth;                  /* starting depth of activation stack*/
   nestedActivityInfo saveInfo;         /* saved activity info               */
 
@@ -3826,6 +3829,7 @@ LONG VLAREXXENTRY RexxSendMessage (
   char returnType;                     /* type of return value              */
   LONG rc;                             /* message return code               */
   va_list arguments;                   /* message argument list             */
+  SYSEXCEPTIONBLOCK exreg;             /* system specific exception info    */
   nestedActivityInfo saveInfo;         /* saved activity info               */
   long startDepth;
 

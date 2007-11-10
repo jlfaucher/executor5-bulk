@@ -177,6 +177,7 @@ instructionsHeaders = $(instructions_dir)/AddressInstruction.hpp \
                       $(instructions_dir)/UseStrictInstruction.hpp
 parserHeaders = $(parser_dir)/Clause.hpp \
                 $(parser_dir)/SourceFile.hpp \
+                $(parser_dir)/SourceLocation.hpp \
                 $(parser_dir)/Token.hpp
 platformHeaders = $(kernel_platform_unix_dir)/APIDefinitions.h \
                   $(kernel_platform_unix_dir)/PlatformDefinitions.h \

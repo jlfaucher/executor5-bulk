@@ -192,7 +192,6 @@ RexxMethod *SysRestoreProgramBuffer(
   RexxBuffer  * Buffer;                /* Buffer to unflatten               */
   LONG          BufferSize;            /* size of the buffer                */
   RexxMethod  * Method;                /* unflattened method                */
-  RexxCode    * Code;                  /* parent rexx method                */
   RexxSource  * Source;                /* REXX source object                */
 
                                        /* address the control information   */
@@ -208,7 +207,7 @@ RexxMethod *SysRestoreProgramBuffer(
   BufferSize = InBuffer->strlength - CONTROLSZ;
   Buffer = new_buffer(BufferSize);     /* get a new buffer                  */
                                        /* position relative to the end      */
-  StartPointer = ((char *)Buffer + ObjectSize(Buffer)) - BufferSize;
+  StartPointer = ((char *)Buffer + Buffer->getObjectSize()) - BufferSize;
                                        /* fill in the buffer                */
   memcpy(StartPointer, MethodInfo, BufferSize);
   save(Buffer);                        /* protect the buffer                */
@@ -347,7 +346,6 @@ RexxMethod *SysRestoreTranslatedProgram(
   RexxBuffer   *Buffer;                /* Buffer to unflatten               */
   LONG          BufferSize;            /* size of the buffer                */
   RexxMethod   *Method;                /* unflattened method                */
-  RexxCode     *Code;                  /* parent rexx method                */
   RexxSource   *Source;                /* REXX source object                */
   RexxActivity *activity;              /* the current activity              */
                                        /* temporary read buffer             */
@@ -376,7 +374,7 @@ RexxMethod *SysRestoreTranslatedProgram(
   Buffer = new_buffer(BufferSize);     /* get a new buffer                  */
   save(Buffer);                        /* protect the buffer                */
                                        /* position relative to the end      */
-  StartPointer = ((char *)Buffer + ObjectSize(Buffer)) - BufferSize;
+  StartPointer = ((char *)Buffer + Buffer->getObjectSize()) - BufferSize;
   ReleaseKernelAccess(activity);       /* release the access                */
                                        /* read the flattened method         */
   fread(StartPointer, 1, BufferSize, Handle);
