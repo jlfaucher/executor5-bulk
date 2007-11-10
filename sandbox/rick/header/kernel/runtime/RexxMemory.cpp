@@ -116,7 +116,7 @@ RexxMemory::RexxMemory()
   this->orphanCheck = FALSE;           /* default value for OREF checking   */
 #endif
 
-  this->hashvalue = HASHOREF(this);
+  this->setDefaultHash();
                                        /* OR'ed into object headers to      */
                                        /*mark                               */
   this->markWord = 1;
@@ -783,8 +783,8 @@ RexxObject *RexxMemory::oldObject(size_t requestLength)
   /* to the save stack.  Also, we don't set the oldspace flag, as */
   /* those are a separate category of object. */
   if (newObj != OREF_NULL) {
-      /* setup the new object header for use */
-      SetUpNewObject(newObj, requestLength);
+      // initialize the hash table object
+      newObj->initializeNewObject(requestLength, markWord, VFTArray[T_object], TheObjectBehaviour);
   }
 
   /* return the newly allocated object to our caller */
@@ -803,7 +803,7 @@ char *RexxMemory::allocateImageBuffer(size_t imageSize)
 }
 
 
-RexxObject *RexxMemory::newObject(size_t requestLength)
+RexxObject *RexxMemory::newObject(size_t requestLength, size_t type)
 /******************************************************************************/
 /* Arguments:  Requested length                                               */
 /*                                                                            */
@@ -841,8 +841,7 @@ RexxObject *RexxMemory::newObject(size_t requestLength)
       }
   }
 
-  /* complete the construction of this */
-  SetUpNewAllocation(newObj);
+  newObj->initializeNewObject(markWord, VFTArray[type], RexxBehaviour::getPrimitiveBehaviour(type));
 
   if (this->saveStack != OREF_NULL) {
                                        /* saveobj doesn't get turned on     */
@@ -913,8 +912,7 @@ RexxArray  *RexxMemory::newObjects(
     }
   }
 
-  /* complete the construction of this */
-  SetUpNewAllocation(largeObject);
+  largeObject->initializeNewObject(markWord, VFTArray[T_object], TheObjectBehaviour);
 
   if (this->saveStack != OREF_NULL) {
                                        /* saveobj doesn't get turned on     */
@@ -951,10 +949,8 @@ RexxArray  *RexxMemory::newObjects(
   /* IH: Object gets a valid state for the mark and sweep process. */
   /* Otherwise OrefOK (CHECKOREFS) will fail */
 
-  /* set the length of the first object. */
-  SetUpNewObject(largeObject, objSize);
-  largeObject->behaviour = newBehaviour;
-  largeObject->setVirtualFunctions(VFTArray[newBehaviour->getClassType()]);
+  // initialize the hash table object
+  largeObject->initializeNewObject(objSize, markWord, VFTArray[newBehaviour->getClassType()], newBehaviour);
 
   for (i=1 ;i < count ; i++ ) {
     /* IH: Loop one time less than before because first object is initialized
@@ -1131,8 +1127,8 @@ RexxObject *RexxMemory::temporaryObject(size_t requestLength)
     reportException(Error_System_resources);
                                        /* setup the new object header for   */
                                        /*use                                */
-  SetUpNewObject(newObj, allocationLength);
-  newObj->setVirtualFunctions(VFTArray[T_object]);   /* give it the default VFT           */
+  // initialize the hash table object
+  newObj->initializeNewObject(allocationLength, markWord, VFTArray[T_object], TheObjectBehaviour);
   return newObj;                       /* and return it                     */
 }
 
@@ -1384,7 +1380,8 @@ void RexxMemory::saveImage(void)
                                        /* remove any programs left over in  */
                                        /* Get an array to hold all special  */
                                        /*objs                               */
-  saveArray = (RexxArray *)save(new_array(saveArray_highest));
+  saveArray = new_array(saveArray_highest);
+  save(saveArray);
                                        /* Add all elements needed in        */
                                        /*saveArray                          */
   saveArray->put((RexxObject *)TheEnvironment,   saveArray_ENV);

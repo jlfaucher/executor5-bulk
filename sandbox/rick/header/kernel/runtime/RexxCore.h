@@ -193,7 +193,6 @@ inline long RANDOMIZE(long seed) { return (seed * RANDOM_FACTOR + 1); }
 #define new_method(i,e,a,c)               (new RexxMethod (i, e, a, c))
 #define new_CPPmethod(p,s,c)              (new RexxMethod (p, s, c))
 #define new_nmethod(p,l)                  (TheNativeCodeClass->newClass(p, l))
-#define new_object(s)                     (memoryObject.newObject((long)(s)))
 #define new_arrayofObject(s,c,b)          (memoryObject.newObjects(s, c, b))
 #define new_pointer(p)                    (TheIntegerClass->newCache((LONG)p))
 #define new_smartbuffer()                 (new RexxSmartBuffer(1024))

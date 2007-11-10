@@ -85,7 +85,6 @@ void RexxArray::init(size_t _size, size_t maxSize)
 /******************************************************************************/
 {
   this->clearObject();                 /* initialize the object             */
-  this->setDefaultHash();
   this->arraySize = _size;
   this->maximumSize = maxSize;
                                        /* no expansion yet, use ourself     */
@@ -461,8 +460,8 @@ RexxObject *RexxArray::supplier()
       count++;                         /* step the location                 */
     }
   }
-  discard(hold(values));               /* release the lock                  */
-  discard(hold(indexes));              /* on both items                     */
+  discard_hold(values);                /* release the lock                  */
+  discard_hold(indexes);               /* on both items                     */
                                        /* create a supplier object          */
   return (RexxObject *)new_supplier(values, indexes);
 }
@@ -1598,7 +1597,8 @@ RexxArray *RexxArray::extendMulti(     /* Extend multi array                */
 
                                        /* Compute new Size for DimArray     */
   newDimArraySize = _indexCount;
-  newDimArray = (RexxArray *)save(new_array(newDimArraySize));
+  newDimArray = new_array(newDimArraySize);
+  save(newDimArray);
                                        /* extending from single Dimensio    */
                                        /*  to a multi Dimensionsal array    */
   if (this->dimensions == OREF_NULL) {
@@ -1667,7 +1667,8 @@ RexxArray *RexxArray::extendMulti(     /* Extend multi array                */
   }
                                        /* Now create the new array for this */
                                        /*  dimension.                       */
-  newArray = (RexxArray *)save(new (newDimArray->data(), newDimArraySize, TheArrayClass) RexxArray);
+  newArray = new (newDimArray->data(), newDimArraySize, TheArrayClass) RexxArray;
+  save(newArray);
                                        /* Anything in original?             */
   if (this->size()) {
                                        /* Yes, move values into new arra    */
@@ -2402,8 +2403,6 @@ void *   RexxArray::operator new(size_t newSize,
                                        /* Give it array behaviour.          */
   newArray->setBehaviour(arrayClass->getInstanceBehaviour());
 
-                                       /* set the hashvalue                 */
-  newArray->setDefaultHash();
   newArray->clearObject();             /* Clear the state data              */
   newArray->arraySize = size;
   newArray->maximumSize = maxSize;

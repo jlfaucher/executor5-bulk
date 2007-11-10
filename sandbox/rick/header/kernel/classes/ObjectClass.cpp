@@ -535,8 +535,6 @@ void *RexxInternalObject::operator new(size_t size,
   newObject = (RexxObject *)new_object(size);
                                        /* use the class instance behaviour  */
   newObject->setBehaviour(classObject->getInstanceBehaviour());
-                                       /* use the default hash value        */
-  newObject->hashvalue = HASHOREF(newObject);
   return (void *)newObject;            /* and return the new object         */
 }
 
@@ -554,8 +552,6 @@ void *RexxInternalObject::operator new(size_t size,
   newObject = (RexxObject *)new_object(size);
                                        /* use the classes instance behaviour*/
   newObject->setBehaviour(classObject->getInstanceBehaviour());
-                                       /* use the default hash value        */
-  newObject->hashvalue = HASHOREF(newObject);
   return newObject;                    /* and return the object             */
 }
 
@@ -1569,7 +1565,8 @@ RexxMessage *RexxObject::start(
     message = REQUIRED_STRING(message, ARG_ONE);
   }
                                        /* Create the new message object.    */
-  newMessage = (RexxMessage *)save(new_message(this, message, new (argCount - 1, arguments + 1) RexxArray));
+  newMessage = new_message(this, message, new (argCount - 1, arguments + 1) RexxArray);
+  save(newMessage);
   newMessage->start(OREF_NULL);        /* Tell the message object to start  */
   discard_hold(newMessage);            /* make sure message object stays    */
 #endif                                 // end of NOTHREADSUPPORT
@@ -2060,13 +2057,10 @@ void *RexxObject::operator new(size_t size, RexxClass *classObject)
 
                                        /* get storage for new object        */
   newObject = (RexxObject *)new_object(size);
-                                       /* use the class instance behaviour  */
+  // the virtual function table is still object, but the behaviour is whatever
+  // the class object defines.
   newObject->setBehaviour(classObject->getInstanceBehaviour());
-                                       /* use the default hash value        */
-  newObject->setDefaultHash();
-                                       /* clear the object variable oref    */
-  OrefSet(newObject, newObject->objectVariables, OREF_NULL);
-
+  // the hash value and nulled object table was handled by new_object();
 
   if (classObject->hasUninitDefined() || classObject->parentHasUninitDefined()) {  /* or parent has one */
      newObject->hasUninit();

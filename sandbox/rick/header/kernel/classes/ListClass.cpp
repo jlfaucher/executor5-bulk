@@ -282,7 +282,7 @@ RexxObject *RexxList::section(
                                        /* step to the next item             */
     element = ENTRY_POINTER(element->next);
   }
-  discard(hold(result));               /* release the save lock             */
+  discard_hold(result);                /* release the save lock             */
   return result;                       /* return the sectioned list         */
 }
 
@@ -923,7 +923,7 @@ RexxArray  *RexxList::makeArrayIndices()
     array->put((RexxObject *)new_integer(nextEntry), i);
     nextEntry = element->next;         /* get the next pointer              */
   }
-  discard(hold(array));                /* release the GC lock               */
+  discard_hold(array);                 /* release the GC lock               */
   return array;                        /* return the array element          */
 }
 
@@ -962,8 +962,6 @@ void *RexxList::operator new(size_t size)
   newList = (RexxList *)new (INITIAL_LIST_SIZE, size) RexxListTable;
                                        /* Give new object its behaviour     */
   newList->setBehaviour(TheListBehaviour);
-                                       /* set the default hash value        */
-  newList->setDefaultHash();
   newList->init();                     /* finish initializing               */
   return newList;                      /* return the new list item          */
 }
@@ -1036,7 +1034,7 @@ RexxList *RexxListClass::classOf(
       send_message1(newList, OREF_INSERT, item);
     }
   }
-  discard(hold(newList));              /* release the collection lock       */
+  discard_hold(newList);               /* release the collection lock       */
   return newList;                      /* give back the list                */
 }
 

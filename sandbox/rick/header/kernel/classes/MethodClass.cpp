@@ -447,14 +447,14 @@ RexxSmartBuffer *RexxMethod::saveMethod()
   RexxSmartBuffer   *envelopeBuffer;   /* enclosing buffer                  */
 
                                        /* Get new envelope object           */
-  envelope  = (RexxEnvelope *)save(new RexxEnvelope);
-
+  envelope = new RexxEnvelope;
+  save(envelope);
                                        /* now pack up the envelope for      */
                                        /* saving.                           */
   envelope->pack(this);
                                        /* pull out the buffer               */
   envelopeBuffer = envelope->getBuffer();
-  discard(hold(envelope));             /* release memory lock on envelope   */
+  discard_hold(envelope);              /* release memory lock on envelope   */
   return envelopeBuffer;               /* return the buffer                 */
 }
 
@@ -543,7 +543,7 @@ RexxMethod *RexxMethodClass::newRexxCode(
         newSourceArray ->put(sourceString, counter);
       }
     }
-    discard(hold(newSourceArray));     /* release newSOurce obj.            */
+    discard_hold(newSourceArray);      /* release newSOurce obj.            */
   }
                                        /* create a source object            */
   newSource = new RexxSource (pgmname, newSourceArray);
@@ -721,10 +721,11 @@ RexxMethod *RexxMethodClass::restore(
   RexxEnvelope *envelope;              /* containing envelope               */
 
                                        /* Get new envelope object           */
-  envelope  = (RexxEnvelope *)save(new_envelope());
+  envelope  = new_envelope();
+  save(envelope);
                                        /* now puff up the method object     */
   envelope->puff(buffer, startPointer);
-  discard(hold(envelope));             /* release the envelope now          */
+  discard_hold(envelope);              /* release the envelope now          */
                                        /* The receiver object is an envelope*/
                                        /* whose receiver is the actual      */
                                        /* method object we're restoring     */

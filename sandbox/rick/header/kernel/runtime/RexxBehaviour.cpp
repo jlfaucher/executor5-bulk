@@ -583,7 +583,8 @@ void RexxBehaviour::merge(
   else {
                                        /* get a copy of the source mdict    */
                                        /* for the merge                     */
-    newMethods = (RexxTable *)save(source_behav->methodDictionary->copy());
+    newMethods = (RexxTable *)source_behav->methodDictionary->copy();
+    save(newMethods);
                                        /* merge this mdict with the copy    */
     this->methodDictionary->merge(newMethods);
                                        /* and put it into this behaviour    */
@@ -614,7 +615,8 @@ void RexxBehaviour::methodDictionaryMerge(
 
                                        /* get a copy of the target mdict    */
                                        /* for the merge                     */
-    newDictionary = (RexxTable *)save(this->methodDictionary->copy());
+    newDictionary = (RexxTable *)this->methodDictionary->copy();
+    save(newDictionary);
                                        /* merge the source mdict and copy   */
     sourceDictionary->merge(newDictionary);
                                        /* and put it into this behaviour    */

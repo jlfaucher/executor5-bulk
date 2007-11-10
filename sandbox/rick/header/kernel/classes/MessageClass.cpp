@@ -66,7 +66,6 @@ RexxMessage::RexxMessage(
 /******************************************************************************/
 {
   this->clearObject();                 /* Start out with everythign 0.      */
-  this->setDefaultHash();
                                        /* defult target is target specified */
   OrefSet(this, this->receiver, _target);
   OrefSet(this, this->target, _target); /* Target specified on new           */

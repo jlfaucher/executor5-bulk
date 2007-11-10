@@ -1034,7 +1034,8 @@ RexxObject *RexxClass::enhanced(
                                        /* make sure it was a real value     */
   required_arg(enhanced_instance_mdict, ONE);
                                        /* subclass the reciever class       */
-  dummy_subclass = (RexxClass *)save(this->subclass(new_string("Enhanced Subclass"), OREF_NULL, OREF_NULL));
+  dummy_subclass = this->subclass(new_string("Enhanced Subclass"), OREF_NULL, OREF_NULL);
+  save(dummy_subclass);
                                        /* turn into a real method dictionary*/
   enhanced_instance_mdict = dummy_subclass->methodDictionaryCreate(enhanced_instance_mdict, (RexxClass *)TheNilObject);
                                        /* enhance the instance behaviour    */
@@ -1105,8 +1106,9 @@ RexxClass  *RexxClass::subclass(
       reportException(Error_Translation_bad_metaclass, meta_class);
   }
                                        /* get a copy of the metaclass class */
-  new_class = (RexxClass *)save(meta_class->sendMessage(OREF_NEW, class_id));
-  new_class->hashvalue = HASHOREF(new_class);
+  new_class = (RexxClass *)meta_class->sendMessage(OREF_NEW, class_id);
+  save(new_class);
+  new_class->setDefaultHash();
   if (this->isMetaClass()) {           /* if the superclass is a metaclass  */
     new_class->setMetaClass();         /* mark the new class as a meta class*/
                                        /* and if the metaclass lists haven't */
@@ -1312,7 +1314,7 @@ RexxClass  *RexxClass::newRexx(RexxObject **args, size_t argCount)
                                        /* get a copy of this class object   */
   new_class = (RexxClass *)this->clone();
                                        /* update cloned hashvalue           */
-  new_class->hashvalue = HASHOREF(new_class);
+  new_class->setDefaultHash();
   save(new_class);                     /* better protect this               */
                                        /* make this into an instance of the */
                                        /* meta class                        */

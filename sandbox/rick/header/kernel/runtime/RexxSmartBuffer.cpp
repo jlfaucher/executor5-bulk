@@ -36,7 +36,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Kernel                                                  RexxSmartBuffer.c    */
+/* REXX Kernel                                           RexxSmartBuffer.c    */
 /*                                                                            */
 /* Primitive Smart Buffer Class                                               */
 /*                                                                            */
@@ -53,7 +53,6 @@ RexxSmartBuffer::RexxSmartBuffer(size_t startSize)
 /******************************************************************************/
 {
   this->clearObject();                 /* start out fresh                   */
-  this->setDefaultHash();              /* set a hash value                  */
                                        /* default initial buffersize, 1 page*/
                                        /* for buffer + data.                */
   OrefSet(this, this->buffer, (RexxBuffer *)new_buffer(startSize));

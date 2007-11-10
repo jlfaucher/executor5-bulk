@@ -957,7 +957,8 @@ RexxMethod *RexxSource::interpret(
   RexxMethod *_method;                  /* new method for interpret          */
 
                                        /* create a source object            */
-  source = (RexxSource *)save(new RexxSource (this->programName, new_array(string)));
+  source = new RexxSource (this->programName, new_array(string));
+  save(source);
   source->interpretLine(_line_number);  /* fudge the line numbering          */
                                        /* convert to executable form        */
   _method = source->interpretMethod(_labels);

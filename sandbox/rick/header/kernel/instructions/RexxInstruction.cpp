@@ -54,7 +54,6 @@ RexxInstruction::RexxInstruction(
 /******************************************************************************/
 {
   this->clearObject();                 /* start out clean                   */
-  this->setDefaultHash();              /* clear out the instruction info    */
                                        /* record the instruction type       */
   this->instructionType = type;
   if (clause != OREF_NULL) {           /* have a clause object?             */

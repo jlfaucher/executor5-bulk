@@ -60,17 +60,10 @@ void memoryNewProcess (void);
 /* this is the granularity for objects greater than 16Mb. */
 #define VeryLargeObjectGrain    256
 
-/* This is the smallest object we'll allocate from storage.  Our */
-/* smallest possible object is smaller than this, but we get better */
-/* usage by allocating with a larger grain size. */
-#define MinimumObjectSize 24l
-/* The older minimum object size.  Tokenized images will contain */
-/* objects of this size, so we need to accomadate them. */
-#define OldMinimumObjectSize 20l
+/* This is the smallest object we'll allocate from storage.  */
+#define MinimumObjectSize ((size_t)24)
 #define MaximumObjectSize ((size_t)0xfffffff0)
 
-/* bits to shift out for object size */
-#define ObjectSizeShift 8
 /* Or lower 8 bits for large obj size*/
 #define LargeObjectSizeMask 0xFFFFFF00
 /* Minimum size of a large object    */
@@ -79,43 +72,8 @@ void memoryNewProcess (void);
 inline void SetObjectLive(void *o, uint16_t mark) {
     ((RexxObject *)o)->setObjectLive(mark);
 }
-#ifdef FORCE_GRAINING
 #define IsObjectGrained(o)  ((((size_t)o)%ObjectGrain) == 0)
 #define IsValidSize(s) ((s) >= MinimumObjectSize && ((s) % ObjectGrain) == 0)
-#else
-#define IsObjectGrained(o)  ((((size_t)o)%sizeof(void *)) == 0)
-#define IsValidSize(s) ((s) >= OldMinimumObjectSize && ((s) % sizeof(void *)) == 0)
-#endif
-
-/* Following Defines HEADINFO constants */
-
-/* NOTE: The following are used in places other than OKMEMORY, such */
-/* as OKTRACE/OKBEHAV/OKOBJECT use the ObjectSize/SetObjectSize */
-/* macros, but OKGDATA uses ObjectSizeShift directly.  If we change */
-/* defaults in object headers, be sure to check the above modules, */
-/* for possible changes.... */
-
-
-/* largest size we'll keep in the save stack on a mark */
-#define SaveStackThreshold   4096
-
-#define IsLargeObject(o)  (ObjectSize(o) > SaveStackThreshold)
-
-#define NullOrOld(o)        (((RexxObject *)(o) == OREF_NULL) || OldSpace(o))
-
-#define SetUpNewObject(o,s) {                         \
-    (o)->setObjectSize(s);                            \
-    (o)->setVirtualFunctions(VFTArray[T_object]);     \
-    (o)->objectVariables = NULL;                      \
-    (o)->setBehaviour(TheObjectBehaviour);            \
-}
-
-#define SetUpNewAllocation(o) {                       \
-    ((RexxObject *)(o))->setVirtualFunctions(VFTArray[T_object]);      \
-    (o)->objectVariables = NULL;                      \
-    (o)->setBehaviour(TheObjectBehaviour);            \
-    (o)->setObjectLive(markWord);                     \
-}
 
 inline size_t roundObjectBoundary(size_t n) { return RXROUNDUP(n,ObjectGrain); }
 // inline size_t roundObjectBoundary(size_t n) { return (n + 7) & 0xFFFFFFF8; }
@@ -191,7 +149,8 @@ class RexxMemory : public RexxObject {
   MemorySegment *newSegment(size_t requestLength, size_t minLength);
   MemorySegment *newLargeSegment(size_t requestLength, size_t minLength);
   RexxObject *oldObject(size_t size);
-  RexxObject *newObject(size_t size);
+  inline RexxObject *newObject(size_t size) { return newObject(size, T_object); }
+  RexxObject *newObject(size_t size, size_t type);
   RexxObject *temporaryObject(size_t size);
   RexxArray  *newObjects(size_t size, size_t count, RexxBehaviour *behaviour);
   void        reSize(RexxObject *, size_t);
@@ -364,10 +323,14 @@ private:
 /******************************************************************************/
 
 
-#define save(oref)    memoryObject.saveObject((RexxObject*)(oref))
-#define discard(oref) memoryObject.discardObject((RexxObject *)(oref))
-#define hold(oref)    memoryObject.holdObject((RexxObject *)(oref))
-#define discard_hold(oref) memoryObject.discardHoldObject((RexxObject *)(oref))
+inline void save(RexxInternalObject *o) { memoryObject.saveObject((RexxObject *)o); }
+inline void discard(RexxInternalObject *o) { memoryObject.discardObject((RexxObject *)o); }
+inline void hold(RexxInternalObject *o) { memoryObject.holdObject((RexxObject *)o); }
+inline void discard_hold(RexxInternalObject *o) { memoryObject.discardHoldObject((RexxObject *)(o)); }
+
+
+inline RexxObject *new_object(size_t s) { return memoryObject.newObject(s); }
+inline RexxObject *new_object(size_t s, size_t t) { return memoryObject.newObject(s, t); }
 
 #define setUpMemoryMark                \
  {                                     \

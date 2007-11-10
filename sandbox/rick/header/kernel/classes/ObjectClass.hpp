@@ -110,10 +110,20 @@ public:
     inline void setPrimitive() { flags &= ~IsNonPrimitive; }
     inline bool isNonPrimitive() { return (flags & IsNonPrimitive) != 0; }
     inline bool isPrimitive() { return (flags & IsNonPrimitive) == 0; }
+    inline void initHeader(size_t l, uint32_t mark)
+    {
+        objectSize = l;
+        flags = (uint16_t)mark;    // the flags are cleared except for the mark.
+    }
+    inline void initHeader(uint32_t mark)
+    {
+        flags = (uint16_t)mark;    // the flags are cleared except for the mark.
+    }
 
 protected:
     enum
-    {
+
+      {
         IsNonPrimitive   =  0x0001,    // use for flattened objects to indicated behaviour status
         MarkBit1         =  0x0001,    // location of the first mark bit.  Note:  shared with IsNonPrimitive
         MarkBit2         =  0x0002,    // Second of the mark bits
@@ -172,13 +182,19 @@ inline uintptr_t HASHOREF(RexxVirtualBase *r) { return ((uintptr_t)r) >> OREFSHI
 
      inline size_t getObjectSize() { return header.getObjectSize(); }
      inline void   setObjectSize(size_t s) { header.setObjectSize(s); }
-     inline size_t getObjectHeaderSize() { return offsetof(RexxInternalObject, hashvalue); }
+     // this is entire internal object, but we don't want to pick up padding, so
+     // sizeof is used.
+     inline size_t getObjectHeaderSize() { return offsetof(RexxInternalObject, hashvalue) + sizeof(hashvalue); }
      inline size_t getObjectDataSize() { return getObjectSize() - getObjectHeaderSize(); }
      inline void  *getObjectDataSpace() { return ((char *)this) + getObjectHeaderSize(); }
+     // these clear everything after the hash value.
      inline void   clearObject() { memset(getObjectDataSpace(), '\0', getObjectDataSize()); }
      inline void   clearObject(size_t l) { memset(getObjectDataSpace(), '\0', l - getObjectHeaderSize()); }
      inline void   setVirtualFunctions(void *t) { *((void **)this) = t; }
      inline void   setDefaultHash() { hashvalue = identityHash(); }
+
+     inline void   setInitHeader(size_t s, uint16_t markword)  { header.initHeader(s, markword); }
+     inline void   setInitHeader(uint16_t markword)  { header.initHeader(markword); }
 
      inline void   setObjectLive(uint16_t markword)  { header.setObjectMark(markword); }
      inline void   setHasReferences() { header.setHasReferences(); }
@@ -281,6 +297,44 @@ class RexxObject : public RexxInternalObject {
                                        /*  Functiosn table.               */
                                        /* So it doesn't need to do anythin*/
      inline RexxObject(RESTORETYPE restoreType) { ; };
+
+
+     // The following two methods probably should be on RexxInternalObject, but they
+     // need to reference the objectVariables field.  That field could be moved to
+     // RexxInternalObject, but it would increase the size of all internal objects
+     // by 4 bytes.  Since the minimum object size is large enough to always have
+     // that field, it's safe to clear this here.
+     inline void initializeNewObject(size_t size, uint32_t mark, void *vft, RexxBehaviour *b)
+     {
+         // we need to make this a function object of some type in case
+         // a GC cycle gets triggered before this is complete.  By default,
+         // we make this a generic object
+         setVirtualFunctions(vft);
+         setBehaviour(b);
+         // this has a clean set of flags, except for the live mark
+         header.initHeader(size, mark);
+         // make sure the object variables are cleared in case this has to get marked
+         objectVariables = OREF_NULL;
+         // set the default hash in case there's nothing special being used
+         setDefaultHash();
+     }
+
+     inline void initializeNewObject(uint32_t mark, void *vft, RexxBehaviour *b)
+     {
+         // we need to make this a function object of some type in case
+         // a GC cycle gets triggered before this is complete.  By default,
+         // we make this a generic object
+         setVirtualFunctions(vft);
+         setBehaviour(b);
+         // this has a clean set of flags, except for the live mark
+         header.initHeader(mark);
+         // make sure the object variables are cleared in case this has to get marked
+         objectVariables = OREF_NULL;
+         // set the default hash in case there's nothing special being used
+         setDefaultHash();
+     }
+
+
      virtual ~RexxObject(){;};
 
      virtual RexxMethod  *methodObject(RexxString *);

@@ -36,7 +36,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Kernel                                                  RexxActivity.hpp  */
+/* REXX Kernel                                              RexxActivity.hpp  */
 /*                                                                            */
 /* Primitive Activity Class Definitions                                       */
 /*                                                                            */
@@ -255,7 +255,7 @@ typedef struct nestedinfo {
 
    RexxInternalStack  *activations;    /* stack of activations              */
    RexxActivationStack   frameStack;   /* our stack used for activation frames */
-   RexxObject         *save;           /* saved result across activity_yield*/
+   RexxObject         *saveValue;      /* saved result across activity_yield*/
    RexxDirectory      *local;          /* the local environment directory   */
    RexxDirectory      *conditionobj;   /* condition object for killed activi*/
    RexxObject         *processObj;     /* Process identifier Object.        */

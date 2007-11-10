@@ -136,17 +136,11 @@ RexxTable *RexxMemory::newHashCollection(
                                        /* over allocation by the memory     */
                                        /* manager                           */
   bytes = newObj->getObjectSize() - companionSize;
-  SetUpNewObject((RexxObject *)newHash, bytes); /* make this an object               */
+
+  // initialize the hash table object
+  ((RexxObject *)newHash)->initializeNewObject(bytes, memoryObject.markWord, VFTArray[T_hashtab], TheHashTableBehaviour);
                                        /* reduce the companion size         */
   newObj->setObjectSize(companionSize);
-                                       /* do a dummy new against the hash   */
-                                       /* table to get the correct virtual  */
-                                       /* function table set up             */
-  newHash = new ((void *)newHash) RexxHashTable;
-                                       /* Give new object its behaviour     */
-  newHash->setBehaviour(TheHashTableBehaviour);
-                                       /* set the virtual function table    */
-  newHash->setVirtualFunctions(VFTArray[T_hashtab]);
   newHash->size = bucketSize;          /* record the size                   */
   newHash->free = entries - 1;         /* and the first free slot           */
                                        /* hook the hash into the companion  */

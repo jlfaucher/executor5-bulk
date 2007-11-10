@@ -227,8 +227,6 @@ RexxRelation *RexxMemory::newRelation()
   newObj->setBehaviour(TheRelationBehaviour);
                                        /* set the virtual function table    */
   newObj->setVirtualFunctions(VFTArray[T_relation]);
-                                       /* use the default hash setting      */
-  newObj->setDefaultHash();
   return newObj;                       /* return the new object             */
 }
 

@@ -122,7 +122,6 @@ RexxMutableBuffer *RexxMutableBufferClass::newRexx(RexxObject **args, size_t arg
   newBuffer->setVirtualFunctions(VFTArray[T_mutablebuffer]);
                                         /* clear the front part              */
   newBuffer->clearObject(sizeof(RexxMutableBuffer));
-  newBuffer->setDefaultHash();
   newBuffer->bufferLength = bufferLength;/* save the length of the buffer    */
   newBuffer->defaultSize  = defaultSize; /* store the default buffer size    */
                                         /* create a string of that length    */

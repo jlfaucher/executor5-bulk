@@ -208,8 +208,6 @@ void activity_thread (
   int  jmprc;                          /* setjmp return code                */
   LONG number_activities;              /* count of activities               */
 
-  SYSEXCEPTIONBLOCK exreg;             /* system specific exception info    */
-
   SysInitializeThread();               /* system specific thread init       */
                                        /* establish the stack base pointer  */
   objp->nestedInfo.stackptr = SysGetThreadStackBase(TOTAL_STACK_SIZE);
@@ -321,7 +319,6 @@ RexxActivity::RexxActivity(
 {
   if (!recycle) {                      /* if this is the first time         */
     this->clearObject();               /* globally clear the object         */
-    this->hashvalue = HASHOREF(this);  /* set the hash value                */
     this->local = _local;              /* set the local environment         */
                                        /* Set ProcessName now, before       */
     this->processObj = ProcessName;    /* any more allocations.             */
@@ -1049,7 +1046,7 @@ RexxObject *RexxActivity::display(RexxDirectory *exobj)
                                        /* write out the line                */
         this->traceOutput(this->currentActivation, text);
     }
-    discard(hold(trace_back));         /* ok, let gc have it                */
+    discard_hold(trace_back);          /* ok, let gc have it                */
   }
   rc = exobj->at(OREF_RC);             /* get the error code                */
                                        /* get the message number            */
@@ -1162,7 +1159,7 @@ void RexxActivity::live()
   memory_mark(this->activations);
   memory_mark(this->topActivation);
   memory_mark(this->currentActivation);
-  memory_mark(this->save);
+  memory_mark(this->saveValue);
   memory_mark(this->local);
   memory_mark(this->conditionobj);
   memory_mark(this->requiresTable);
@@ -1188,7 +1185,7 @@ void RexxActivity::liveGeneral()
   memory_mark_general(this->activations);
   memory_mark_general(this->topActivation);
   memory_mark_general(this->currentActivation);
-  memory_mark_general(this->save);
+  memory_mark_general(this->saveValue);
   memory_mark_general(this->local);
   memory_mark_general(this->conditionobj);
   memory_mark_general(this->requiresTable);
@@ -1580,11 +1577,11 @@ void RexxActivity::yield(RexxObject *result)
 {
                                        /* other's waiting to go?            */
   if (TheActivityClass->waitingActivity() != OREF_NULL) {
-    this->save = result;               /* save the result value             */
+    this->saveValue = result;          /* save the result value             */
                                        /* now join the line                 */
     TheActivityClass->addWaitingActivity(this, TRUE);
     hold(result);                      /* hold the result                   */
-    this->save = OREF_NULL;            /* release the saved value           */
+    this->saveValue = OREF_NULL;       /* release the saved value           */
   }
 }
 
@@ -3766,7 +3763,6 @@ LONG RexxActivity::messageSend(
 {
   int     jmprc;                       /* setjmp return code                */
   LONG    rc;                          /* message return code               */
-  SYSEXCEPTIONBLOCK exreg;             /* system specific exception info    */
   long    startDepth;                  /* starting depth of activation stack*/
   nestedActivityInfo saveInfo;         /* saved activity info               */
 
@@ -3830,7 +3826,6 @@ LONG VLAREXXENTRY RexxSendMessage (
   char returnType;                     /* type of return value              */
   LONG rc;                             /* message return code               */
   va_list arguments;                   /* message argument list             */
-  SYSEXCEPTIONBLOCK exreg;             /* system specific exception info    */
   nestedActivityInfo saveInfo;         /* saved activity info               */
   long startDepth;
 
@@ -3860,11 +3855,13 @@ LONG VLAREXXENTRY RexxSendMessage (
                                        /* get the argument list start       */
     va_start(arguments, result_pointer);
                                        /* create an argument list           */
-    argument_list  = (RexxList *)save(new_list());
+    argument_list  = new_list();
+    save(argument_list);
                                        /* go convert the arguments          */
     process_message_arguments(&arguments, interfacedefn, argument_list);
                                        /* now convert to an array           */
-    argument_array = (RexxArray *)save(argument_list->makeArray());
+    argument_array = argument_list->makeArray();
+    save(argument_array);
     discard(argument_list);            /* No longer need the list.          */
     va_end(arguments);                 /* end of argument processing        */
     if (start_class == OREF_NULL)      /* no start scope given?             */
@@ -3877,7 +3874,7 @@ LONG VLAREXXENTRY RexxSendMessage (
           argument_array->size(), argument_array->data(), start_class);
     discard(argument_array);           /* no longer need the argument array */
     if (result != OREF_NULL) {         /* if we got a result, protect it.   */
-      result = save(result);           /* because might not have references */
+      save(result);                    /* because might not have references */
                                        /* convert the return result         */
       process_message_result(result, result_pointer, returnType);
     }
@@ -3896,7 +3893,7 @@ LONG VLAREXXENTRY RexxSendMessage (
                                        /* Need to keep result obj around.   */
        send_message0(ProcessLocalServer, (RexxString *)new_string("SAVE_RESULT"));
 
-     discard(hold(result));            /* release it and hole a bit longer  */
+     discard_hold(result);             /* release it and hole a bit longer  */
   }
   activity->popNil();                  /* remove the nil marker             */
                                        /* release our activity usage        */

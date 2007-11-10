@@ -72,7 +72,7 @@ RexxObject  *RexxVariableDictionary::copy()
   /* make sure we copy the scope too */
   OrefSet(copyObj, copyObj->scope, this->scope);
   copyObj->copyValues();               /* copy all of the variables         */
-  discard(hold(copyObj));              /* unlock the copy                   */
+  discard_hold(copyObj);               /* unlock the copy                   */
   return (RexxObject *)copyObj;        /* return the new vdict              */
 }
 

@@ -524,7 +524,7 @@ RexxQueue *RexxQueue::ofRexx(
       send_message1(newQueue, OREF_QUEUENAME, item);
     }
   }
-  discard(hold(newQueue));             /* release the collection lock       */
+  discard_hold(newQueue);              /* release the collection lock       */
   return newQueue;                     /* give back the list                */
 }
 
@@ -541,8 +541,6 @@ void *RexxQueue::operator new(size_t size)
   newQueue = (RexxQueue *)new (INITIAL_LIST_SIZE, size) RexxListTable;
                                        /* Give new object its behaviour     */
   newQueue->setBehaviour(TheQueueBehaviour);
-                                       /* set the default hash value        */
-  newQueue->setDefaultHash();
   newQueue->init();                    /* finish initializing               */
   return newQueue;                     /* return the new list item          */
 }

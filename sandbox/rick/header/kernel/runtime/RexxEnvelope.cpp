@@ -60,7 +60,6 @@ RexxEnvelope::RexxEnvelope()
 /******************************************************************************/
 {
   this->clearObject();                 /* just clear and                    */
-  this->setDefaultHash();              /* set the hash                      */
 }
 
 void RexxEnvelope::live()
