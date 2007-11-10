@@ -62,7 +62,7 @@ RexxInstructionMessage::RexxInstructionMessage(
   OrefSet(this, this->target, message->target);
   OrefSet(this, this->super, message->super);
                                        /* get the name                      */
-  OrefSet(this, this->name, message->name);
+  OrefSet(this, this->name, message->messageName);
                                        /* get the argument count            */
   argumentCount = message->argumentCount;
                                        /* and pointer to arguments          */
@@ -88,7 +88,7 @@ RexxInstructionMessage::RexxInstructionMessage(
                                        /* copy the message info             */
   OrefSet(this, this->target, message->target);
   OrefSet(this, this->super, message->super);
-  OrefSet(this, this->name, message->name);  /* get the name                      */
+  OrefSet(this, this->name, message->messageName);  /* get the name                      */
                                        /* get the argument count            */
   argumentCount = message->argumentCount + 1;
                                        /* and the argument pointer          */

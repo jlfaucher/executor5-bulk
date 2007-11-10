@@ -279,7 +279,7 @@ RexxObject *RexxNativeActivation::run(
                                          /* make it safe                      */
                   this->saveObject(temp);
                                          /* set the result in                 */
-                *((OREF *)*ivalp) = temp;
+                *((RexxObject **)*ivalp) = temp;
                 break;
 
             }

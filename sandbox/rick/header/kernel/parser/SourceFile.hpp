@@ -174,7 +174,7 @@ class RexxSource : public RexxInternalObject {
   RexxObject *function(RexxToken *, RexxToken *, int);
   RexxObject *collectionMessage(RexxToken *, RexxObject *, int);
   RexxToken  *getToken(int, int);
-  RexxObject *message(RexxObject *, int, int);
+  RexxObject *message(RexxObject *, bool, int);
   RexxObject *messageTerm();
   RexxObject *variableOrMessageTerm();
   RexxObject *messageSubterm(int);

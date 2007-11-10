@@ -209,17 +209,17 @@ void RexxSource::initFile()
   }
 
 #ifdef SCRIPTING
-  else if (program_source->hashvalue > 9) {
+  else if (program_source->getLength() > 9) {
     char begin[10];
     char end[4];
     // check, if XML comments have to be removed from the script... (engine situation)
-    memcpy(begin,program_source->data,9);
+    memcpy(begin,program_source->address(), 9);
     // hashvalue is the length of the buffer
-    memcpy(end,program_source->data+(program_source->hashvalue-3),3);
+    memcpy(end, program_source->address()+ (program_source->getLength()-3), 3);
     begin[9]=end[3]=0x00;
     if (!stricmp("<![CDATA[",begin) && !stricmp("]]>",end)) {
-      memcpy(program_source->data,"         ",9);
-      memcpy(program_source->data+(program_source->hashvalue-3),"   ",3);
+      memcpy(program_source->address(), "         ", 9);
+      memcpy(program_source->address() + (program_source->getLength() - 3), "   ", 3);
     }
   }
 #endif
@@ -3810,7 +3810,7 @@ RexxObject *RexxSource::subExpression(
                                        /* this is an invalid expression     */
           report_error_token(Error_Invalid_expression_general, token);
                                        /* process a message term            */
-        subexpression = this->message(left, token->classId, terminators);
+        subexpression = this->message(left, token->classId == TOKEN_DTILDE, terminators);
         this->pushTerm(subexpression); /* push this back on the term stack  */
         break;
 
@@ -4029,7 +4029,7 @@ RexxObject *RexxSource::collectionMessage(
                                        /* process the argument list         */
   argCount = this->argList(token, ((terminators | TERM_SQRIGHT) & ~TERM_RIGHT));
                                        /* create a new function item        */
-  _message = (RexxObject *)new (argCount) RexxExpressionMessage(target, (RexxString *)OREF_BRACKETS, (RexxObject *)OREF_NULL, argCount, this->subTerms, TOKEN_TILDE);
+  _message = (RexxObject *)new (argCount) RexxExpressionMessage(target, (RexxString *)OREF_BRACKETS, (RexxObject *)OREF_NULL, argCount, this->subTerms, false);
   this->holdObject(_message);          /* hold this here for a while        */
   this->removeObj((RexxObject *)target);   /* target is now connected to message, remove from savelist without hold */
   return _message;                     /* return the message item           */
@@ -4056,7 +4056,7 @@ RexxToken  *RexxSource::getToken(
 
 RexxObject *RexxSource::message(
   RexxObject  *target,                 /* message send target               */
-  int          classId,                /* class of message send             */
+  bool         doubleTilde,            /* class of message send             */
   int          terminators )           /* expression termination context    */
 /******************************************************************************/
 /* Function:  Parse a full message send expression term                       */
@@ -4109,7 +4109,7 @@ RexxObject *RexxSource::message(
 
   this->popTerm();                     /* it is now safe to pop the message target */
                                        /* create a message send node        */
-  _message =  new (argCount) RexxExpressionMessage(target, messagename, super, argCount, this->subTerms, classId);
+  _message =  new (argCount) RexxExpressionMessage(target, messagename, super, argCount, this->subTerms, doubleTilde);
                                        /* protect for a bit                 */
   this->holdObject((RexxObject *)_message);
   this->removeObj(target);   /* target is now connected to message, remove from savelist without hold */
@@ -4181,7 +4181,7 @@ RexxObject *RexxSource::messageTerm()
       term = this->collectionMessage(token, start, TERM_EOC);
     else
                                        /* process a message term            */
-      term = this->message(start, classId, TERM_EOC);
+      term = this->message(start, classId == TOKEN_DTILDE, TERM_EOC);
     start = term;                      /* set for the next pass             */
     token = nextToken();               /* get the next token                */
     classId = token->classId;          /* get the token class               */
@@ -4245,7 +4245,7 @@ RexxObject *RexxSource::messageSubterm(
         term = this->collectionMessage(token, term, TERM_EOC);
       else
                                        /* process a message term            */
-        term = this->message(term, classId, TERM_EOC);
+        term = this->message(term, classId == TOKEN_DTILDE, TERM_EOC);
 //      this->holdObject(term);          /* lock the term                   */
       /* The above hold is obsolete (even bad) because both collectionMessage and message "hold" the new term */
       token = nextToken();             /* get the next token                */

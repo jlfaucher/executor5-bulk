@@ -154,7 +154,7 @@ RexxNumberString *RexxNumberString::clone()
   RexxNumberString *newObj;            /* new copy of the object            */
 
                                        /* first clone ourselves             */
-  newObj = (RexxNumberString *)memoryObject.clone(this);
+  newObj = (RexxNumberString *)this->RexxInternalObject::clone();
                                        /* don't keep the original string    */
   OrefSet(newObj, newObj->stringObject, OREF_NULL);
                                        /* or the OVD fields                 */

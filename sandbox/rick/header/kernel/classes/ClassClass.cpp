@@ -1310,7 +1310,7 @@ RexxClass  *RexxClass::newRexx(RexxObject **args, size_t argCount)
   class_id = (RexxString *)args[0];    /* get the id parameter              */
   class_id = REQUIRED_STRING(class_id, ARG_ONE);   /* and that it can be a string       */
                                        /* get a copy of this class object   */
-  new_class = (RexxClass *)memoryObject.clone(this);
+  new_class = (RexxClass *)this->clone();
                                        /* update cloned hashvalue           */
   new_class->hashvalue = HASHOREF(new_class);
   save(new_class);                     /* better protect this               */

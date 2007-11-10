@@ -165,5 +165,5 @@ void MemoryStats::logObject(RexxObject *obj)
 /* Function:  Log the memory statistics for an individual object              */
 /******************************************************************************/
 {
-    objectStats[ObjectTypeNumber(obj)].logObject(obj);
+    objectStats[obj->getObjectTypeNumber()].logObject(obj);
 }

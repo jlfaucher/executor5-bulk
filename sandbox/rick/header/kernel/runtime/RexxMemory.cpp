@@ -1069,7 +1069,7 @@ void RexxMemory::liveStackFull()
   RexxStack *newLiveStack;             /* new temporary live stack          */
 
                                        /* create a temporary stack          */
-  newLiveStack = new (this->liveStack->u_size * 2, TRUE) RexxStack (this->liveStack->u_size * 2);
+  newLiveStack = new (this->liveStack->size * 2, TRUE) RexxStack (this->liveStack->size * 2);
                                        /* copy the live stack entries       */
   newLiveStack->copyEntries(this->liveStack);
                                        /* has this already been expanded?   */
@@ -1916,7 +1916,7 @@ BOOL RexxMemory::extendSaveStack(size_t inc)
     /* no new savestack needed */
     BOOL ret = FALSE;
 
-    if (this->saveStack->u_size - SaveStackSize < inc)
+    if (this->saveStack->size - SaveStackSize < inc)
     {
                                                /* increase stack size by inc */
         this->saveStack->extend(SaveStackSize + inc);

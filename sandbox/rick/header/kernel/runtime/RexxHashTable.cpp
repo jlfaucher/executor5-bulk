@@ -93,7 +93,7 @@ RexxHashTable *RexxMemory::newHashTable(
                                        /* set the virtual function table    */
   newHash->setVirtualFunctions(VFTArray[T_hashtab]);
   newHash->clearObject();              /* clear things out                  */
-  newHash->u_size = bucketSize;        /* record the size                   */
+  newHash->size = bucketSize;          /* record the size                   */
   newHash->free = entries - 1;         /* and the first free slot           */
   return newHash;                      /* and return it                     */
 }
@@ -147,7 +147,7 @@ RexxTable *RexxMemory::newHashCollection(
   newHash->setBehaviour(TheHashTableBehaviour);
                                        /* set the virtual function table    */
   newHash->setVirtualFunctions(VFTArray[T_hashtab]);
-  newHash->u_size = bucketSize;        /* record the size                   */
+  newHash->size = bucketSize;          /* record the size                   */
   newHash->free = entries - 1;         /* and the first free slot           */
                                        /* hook the hash into the companion  */
                                        /* OrefSet is not used, because the  */

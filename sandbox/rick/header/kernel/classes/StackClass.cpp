@@ -46,25 +46,25 @@
 #include "StackClass.hpp"
 
 RexxStack::RexxStack(
-    size_t size)                       /* elements in the stack             */
+    size_t _size)                  /* elements in the stack             */
 /******************************************************************************/
 /* Function:  Initialize a primitive stack.                                   */
 /******************************************************************************/
 {
   this->clearObject();                 /* clear entire stack                */
-  this->u_size = size;                 /* set the size                      */
+  this->size = _size;                  /* set the size                      */
   this->top = 0;                       /* and we're set at the top          */
 }
 
 
 void RexxStack::init(
-    size_t size)                       /* elements in the stack             */
+    size_t _size)                      /* elements in the stack             */
 /******************************************************************************/
 /* Function:  Initialize a primitive stack early in memory set up             */
 /******************************************************************************/
 {
   this->clearObject();                 /* clear entire stack                */
-  this->u_size = size;                 /* set the size                      */
+  this->size = _size;                  /* set the size                      */
   this->top = 0;                       /* and we're set at the top          */
 }
 
@@ -185,14 +185,14 @@ RexxSaveStack::RexxSaveStack(
 }
 
 void RexxSaveStack::init(
-    size_t size,                       /* elements in the stack             */
+    size_t _size,                      /* elements in the stack             */
     size_t aSize)                      /* size to allocate                  */
 /******************************************************************************/
 /* Function:  Initialize a primitive stack early in memory set up             */
 /******************************************************************************/
 {
   this->clearObject();                 /* clear entire stack                */
-  this->u_size = size;                 /* set the size                      */
+  this->size = _size;                  /* set the size                      */
   this->top = 0;                       /* set the element to the top        */
   this->allocSize = aSize;
 }
@@ -221,7 +221,7 @@ void RexxSaveStack::extend(
 /******************************************************************************/
 {
    if (newSize < this->allocSize)
-     this->u_size = newSize;
+     this->size = newSize;
 }
 
 void RexxSaveStack::remove(
@@ -243,7 +243,7 @@ void RexxSaveStack::remove(
    } else
      /* not top element, search it if requested */
      if (search)
-       for (i=0; i<this->u_size; i++)
+       for (i=0; i<this->size; i++)
          if (this->stack[i] == element) {
            this->stack[i] = OREF_NULL;
            break;

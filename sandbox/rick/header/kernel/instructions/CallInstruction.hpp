@@ -56,10 +56,22 @@ class RexxInstructionCallBase : public RexxInstruction {
   RexxObject      * name;              /* name to call                      */
   RexxInstruction * target;            /* routine to call                   */
   RexxString      * condition;         /* condition trap name               */
+  uint16_t     argumentCount;          // number of arguments
+  uint16_t     builtinIndex;           // builtin function index
 };
 
 class RexxInstructionCall : public RexxInstructionCallBase {
  public:
+     enum
+     {
+         call_nointernal  = 0x01,         // bypass internal routine calls
+         call_type_mask   = 0x0e,         // type of call
+         call_internal    = 0x02,         // internal call
+         call_builtin     = 0x06,         // builtin call
+         call_external    = 0x0e,         // external call
+         call_dynamic     = 0x10,         // dynamic call
+         call_on_off      = 0x20,         // call ON/OFF instruction
+     };
 
   inline void *operator new(size_t size, void *ptr) {return ptr;};
   RexxInstructionCall(RexxObject *, RexxString *, size_t, RexxQueue *, size_t, size_t);
@@ -72,19 +84,7 @@ class RexxInstructionCall : public RexxInstructionCallBase {
   void trap(RexxActivation *, RexxDirectory *);
 
 protected:
-  enum
-  {
-      call_nointernal  = 0x01,         // bypass internal routine calls
-      call_type_mask   = 0x0e,         // type of call
-      call_internal    = 0x02,         // internal call
-      call_builtin     = 0x06,         // builtin call
-      call_external    = 0x0e,         // external call
-      call_dynamic     = 0x10,         // dynamic call
-      call_on_off      = 0x20,         // call ON/OFF instruction
-  };
 
-  RexxObject * arguments[1];           // argument list
-  uint16_t     argumentCount;          // number of arguments
-  uint16_t     builtinIndex;           // builtin function index
+    RexxObject * arguments[1];           // argument list
 };
 #endif

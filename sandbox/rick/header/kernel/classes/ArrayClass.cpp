@@ -1749,7 +1749,7 @@ RexxObject *RexxArray::insert(         /* insert an element into an array   */
                                        /* and the last element              */
   _end = &(this->data()[this->size() - 1]);
                                        /* shift the array over              */
-  memmove(_start + sizeof(OREF), _start, _end - _start);
+  memmove(_start + sizeof(RexxObject *), _start, _end - _start);
                                        /* NOTE:  The following assignment   */
                                        /* is done directly to avoid problems*/
                                        /* with oldspace to newspace object  */
@@ -2537,7 +2537,7 @@ nativei1 (REXXOBJECT, ARRAY_NEW1,
 {
   native_entry;                        /* synchronize access                */
                                        /* just forward and return           */
-  return_oref(new_array((OREF)object1));
+  return_oref(new_array((RexxObject *)object1));
 }
 
 nativei2 (REXXOBJECT, ARRAY_NEW2,
@@ -2549,5 +2549,5 @@ nativei2 (REXXOBJECT, ARRAY_NEW2,
 {
   native_entry;                        /* synchronize access                */
                                        /* just forward and return           */
-  return_oref(new_array((OREF)object1, (OREF)object2));
+  return_oref(new_array((RexxObject *)object1, (RexxObject *)object2));
 }

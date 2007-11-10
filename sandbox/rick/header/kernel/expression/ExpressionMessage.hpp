@@ -61,7 +61,7 @@ class RexxExpressionMessage : public RexxVariableBase {
   RexxString * messageName;            // the message name
   RexxObject * super;                  /* super class target                */
   size_t argumentCount;                /* number of message arguments       */
-  RexxObject * arguments[1];           /* list of argument subexpressions   */
   bool   doubleTilde;                  // this is the double tilde form
+  RexxObject * arguments[1];           /* list of argument subexpressions   */
 };
 #endif

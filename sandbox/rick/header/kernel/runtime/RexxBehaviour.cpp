@@ -162,7 +162,7 @@ RexxObject *RexxBehaviour::copy()
   /* initialized by memory.                                                 */
 
                                        /* first, clone the existing object  */
-  newBehaviour = (RexxBehaviour *)memoryObject.clone((RexxObject *)this);
+  newBehaviour = (RexxBehaviour *)this->clone();
                                        /* have an method dictionary         */
   if (this->methodDictionary != OREF_NULL)
                                        /* make a copy of this too           */

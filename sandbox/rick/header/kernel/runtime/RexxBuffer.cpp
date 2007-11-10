@@ -86,7 +86,7 @@ void *RexxBuffer::operator new(size_t size,
                                        /* Give new object its behaviour     */
   newBuffer->setBehaviour(TheBufferBehaviour);
                                        /* Initialize this new buffer        */
-  newBuffer->u_size = length;          /* set the length of the buffer      */
+  newBuffer->size = length;            /* set the length of the buffer      */
   newBuffer->setHasNoReferences();     /* this has no references            */
   return (void *)newBuffer;            /* return the new buffer             */
 }

@@ -68,7 +68,7 @@ RexxInstructionRaise::RexxInstructionRaise(
   OrefSet(this, this->expression, _expression);
   OrefSet(this, this->description, _description);
   OrefSet(this, this->result, _result);
-  if (arrayCount != (size_t)-1) {      /* array form?                       */
+  if (_arrayCount != (size_t)-1) {     /* array form?                       */
     instructionFlags |= raise_array;   /* set the array form                */
     /* get the array size                */
     arrayCount = _arrayCount;

@@ -194,7 +194,6 @@ class RexxMemory : public RexxObject {
   RexxObject *newObject(size_t size);
   RexxObject *temporaryObject(size_t size);
   RexxArray  *newObjects(size_t size, size_t count, RexxBehaviour *behaviour);
-  RexxObject *clone(RexxObject *objr);
   void        reSize(RexxObject *, size_t);
   void        checkUninit(RexxTable *);
   void        checkSubClasses(RexxObjectTable *);
@@ -264,7 +263,7 @@ class RexxMemory : public RexxObject {
                                        /* stack. to be really oo, this      */
                                        /* should be done in RexxSaveStack,  */
                                        /* but we do it here for speed...    */
-    memset(saveStack->stack, 0, sizeof(RexxObject*) * saveStack->u_size);
+    memset(saveStack->stack, 0, sizeof(RexxObject*) * saveStack->size);
   }
 /* Start of methods to build some specific REXX objects */
   RexxTable       *newHashCollection(size_t, size_t);

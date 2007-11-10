@@ -136,15 +136,6 @@ protected:
 };
 
 
-  class InstructionInfo {
-  public:
-
-  protected:
-    uint8_t type;                         /* name of the instruction           */
-    uint8_t flags;                        /* general flag area                 */
-    int16_t general;                      /* general reusable short value      */
-  };
-
   class RexxVirtualBase {              /* create first base level class     */
                                        /* dummy virtual function to force   */
                                        /* the virtual function table to a   */
@@ -266,10 +257,7 @@ inline uintptr_t HASHOREF(RexxVirtualBase *r) { return ((uintptr_t)r) >> OREFSHI
                                        /*  Allow for overloading of         */
                                        /*  hashValue usage/value by         */
                                        /*  other classes.                   */
-     union {
-       long hashvalue;                 /* Default usage.                    */
-       size_t u_size;                  /* used by many variable sized Objs  */
-     };
+     long hashvalue;                   /* Default usage.                    */
   };
 
 

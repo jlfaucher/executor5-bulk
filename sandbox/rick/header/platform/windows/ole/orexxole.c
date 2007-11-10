@@ -1955,7 +1955,7 @@ BOOL fExploreTypeInfo( ITypeInfo *pTypeInfo, POLECLASSINFO pClsInfo )
     else {
       // now iterate through whole type library and find all constants
       for (j = 0; j < (INT) iTypeInfoCount; j++) {
-        hResult = pTypeLib->GetTypeInfisOfClass(j, &iTypeInfoType);
+        hResult = pTypeLib->GetTypeInfoType(j, &iTypeInfoType);
         if (iTypeInfoType == TKIND_ENUM || iTypeInfoType == TKIND_MODULE) {
           hResult = pTypeLib->GetTypeInfo(j, &pTypeInfo2);
           if (hResult == S_OK) {
@@ -2097,7 +2097,7 @@ BOOL GetEventTypeInfo(ITypeInfo *pTypeInfo, CLSID *clsID, ITypeInfo **ppTypeInfo
     icnt=0;
     /* look at each entry... */
     while (icnt<index && !fFound) {
-      hResult = pTypeLib->GetTypeInfisOfClass(icnt,&kind);
+      hResult = pTypeLib->GetTypeInfoType(icnt,&kind);
       /* ...and check if it is a coclass */
       if (hResult == S_OK && kind == TKIND_COCLASS) {
         hResult = pTypeLib->GetTypeInfo(icnt,&pCoClass);

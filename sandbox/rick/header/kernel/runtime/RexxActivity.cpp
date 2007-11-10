@@ -3549,7 +3549,7 @@ void process_message_arguments(
   LONG     i;                          /* loop counter/array index          */
   PVOID    tempPointer;                /* temp converted pointer            */
   RXSTRING tempRXSTRING;               /* temp argument rxstring            */
-  OREF     tempOREF;                   /* temp argument object reference    */
+  RexxObject *tempOREF;                /* temp argument object reference    */
   LONG     tempLong;                   /* temp converted long               */
   ULONG    tempULong;                  /* temp converted long               */
   char     tempChar;                   /* temp character value              */
@@ -3622,7 +3622,7 @@ void process_message_arguments(
 
       case 'o':                        /* REXX object reference             */
                                        /* get the OREF                      */
-        tempOREF = va_arg(*arguments, OREF);
+        tempOREF = va_arg(*arguments, RexxObject *);
                                        /* insert directly into the array    */
         argument_list->addLast(tempOREF);
         break;
@@ -3728,7 +3728,7 @@ void process_message_result(
 
       case 'o':                        /* REXX object reference             */
                                        /* copy the value directly           */
-        (*((OREF *)return_pointer)) = value;
+        (*((RexxObject **)return_pointer)) = value;
         break;
 
       case 'n':                        /* pointer to somId                  */

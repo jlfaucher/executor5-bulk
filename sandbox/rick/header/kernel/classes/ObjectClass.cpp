@@ -520,7 +520,7 @@ RexxObject * RexxInternalObject::copy()
   /* Instead of calling new_object and memcpy, ask the memory object to make  */
   /* a copy of ourself.  This way, any header information can be correctly    */
   /* initialized by memory.                                                   */
-  return (RexxObject *)memoryObject.clone((RexxObject *)this);
+  return (RexxObject *)this->clone();
 }
 
 void *RexxInternalObject::operator new(size_t size,
@@ -570,7 +570,7 @@ RexxObject * RexxObject::copy()
   RexxObject       *newObj;            /* copied object                     */
 
                                        /* first copy the object             */
-  newObj = (RexxObject *)memoryObject.clone(this);
+  newObj = (RexxObject *)this->clone();
                                        /* have object variables?            */
   if (this->objectVariables != OREF_NULL) {
     save(newObj);                      /* protect the copy through this process */
