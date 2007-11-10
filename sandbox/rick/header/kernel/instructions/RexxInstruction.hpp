@@ -73,7 +73,7 @@ class RexxInstruction : public RexxInternalObject {
   inline      bool        isType(size_t type)  { return instructionType == type; }
   inline      size_t      getLineNumber()      { return instructionLocation.getLineNumber(); }
 
-  int16_t     instructionType;            // name of the instruction           */
+  uint16_t    instructionType;            // name of the instruction           */
   uint16_t    instructionFlags;           // general flag area
 
   SourceLocation    instructionLocation;  // location of the instruction in its source

@@ -2434,7 +2434,7 @@ void RexxActivation::traceTaggedValue(int prefix, const char *tagPrefix, bool qu
     // now other conditionals
     outLength += quoteTag ? QUOTES_OVERHEAD : 0;
     // this is usually null, but dot variables add a "." to the tag.
-    outLength += tagPrefix == NULL ? 0 : strlen((char *)tagPrefix);
+    outLength += tagPrefix == NULL ? 0 : strlen(tagPrefix);
 
     // now get a buffer to write this out into
     RexxString *buffer = raw_string(outLength);
@@ -2456,7 +2456,7 @@ void RexxActivation::traceTaggedValue(int prefix, const char *tagPrefix, bool qu
     // is the tag prefixed?  Add this before the name
     if (tagPrefix != NULL)
     {
-        stringsize_t prefixLength = strlen((char *)tagPrefix);
+        stringsize_t prefixLength = strlen(tagPrefix);
         buffer->put(dataOffset, tagPrefix, prefixLength);
         dataOffset += prefixLength;
     }
