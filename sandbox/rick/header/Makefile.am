@@ -668,6 +668,7 @@ librxregexp_la_CXXFLAGS = $(COMMON_CPPFLAGS) \
                           -I$(expression_dir) \
                           -I$(classes_dir) \
                           -I$(messages_dir) \
+                          -I$(parser_dir) \
                           -I$(kernel_platform_common_dir) \
                           -I$(runtime_dir) \
                           -I$(kernel_platform_unix_dir) \
