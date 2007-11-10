@@ -49,6 +49,7 @@
                                        /* various activation settings       */
 #include "RexxLocalVariables.hpp"        /* local variable cache definitions  */
 #include "RexxDateTime.hpp"
+#include "RexxCode.hpp"
 
 #define trace_debug         0x00000001 /* interactive trace mode flag       */
 #define trace_all           0x00000002 /* trace all instructions            */
