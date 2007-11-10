@@ -2640,11 +2640,11 @@ string that do not overlap.  All matches are made using caseless comparisons.</p
 Returns .false ("0") if the two strings are not strictly equal.
 <emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>equals method</secondary></indexterm>
+<secondary>caselessEquals method</secondary></indexterm>
 <programlisting>
-"a"~equals("A")          ->    1
-"aa"~equals("A")         ->    0
-"4"~equals("3")          ->    0
+"a"~caselessEquals("A")          ->    1
+"aa"~caselessEquals("A")         ->    0
+"4"~caselessEquals("3")          ->    0
 </programlisting>
 </section>
 
@@ -2810,12 +2810,12 @@ You can override this by specifying <emphasis role="italic">start</emphasis>
 a positive whole number), the point at which the search starts.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
-<secondary>pos method</secondary></indexterm>
+<secondary>caselessPos method</secondary></indexterm>
 <programlisting>
-"Saturday"~pos("DAY")       ->    6
-"abc def ghi"~pos("x")      ->    0
-"abc def ghi"~pos(" ")      ->    4
-"abc def ghi"~pos(" ",5)    ->    8
+"Saturday"~caselessPos("DAY")       ->    6
+"abc def ghi"~caselessPos("x")      ->    0
+"abc def ghi"~caselessPos(" ")      ->    4
+"abc def ghi"~caselessPos(" ",5)    ->    8
 </programlisting>
 </section>
 
@@ -5639,4 +5639,5 @@ Goodbye, Stan...
 </section>
 
 </section>
+
 
