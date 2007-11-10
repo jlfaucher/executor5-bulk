@@ -36,7 +36,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Translator                                              ParseInstruction.c    */
+/* REXX Translator                                      ParseInstruction.c    */
 /*                                                                            */
 /* Primitive Parse Parse Class                                                */
 /*                                                                            */
@@ -68,7 +68,7 @@ RexxInstructionParse::RexxInstructionParse(
                                        /* save the expression               */
   OrefSet(this, this->expression, _expression);
   instructionFlags = flags;            /* save the expression               */
-  instructionType = string_source;     // our instruction type is determined by the source
+  stringSource = string_source;        // our instruction type is determined by the source
   this->trigger_count = templateCount; /* save the size                     */
   while (templateCount > 0)            /* loop through the template list    */
                                        /* copying each trigger              */
@@ -97,7 +97,7 @@ void RexxInstructionParse::execute(
   argList = OREF_NULL;                 /* neither is there an argument list */
   argCount = 0;
 
-  switch (instructionType) {           /* get data from variaous sources    */
+  switch (stringSource) {              /* get data from variaous sources    */
 
     case SUBKEY_PULL:                  /* PARSE PULL instruction            */
                                        /* read a line from the queue        */

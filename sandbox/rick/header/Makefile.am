@@ -240,8 +240,7 @@ aixExportFiles = $(rexutils_unix_dir)/*.exp \
                  $(rexutils_dir)/*.exp \
                  $(rexxapi_dir)/*.exp \
                  $(rxregexp_dir)/*.exp
-windowsDefFiles = $(kernel_dir)/*.def \
-                  $(kernel_platform_windows_dir)/*.def \
+windowsDefFiles = $(kernel_platform_windows_dir)/*.def \
                   $(lib_dir)/*.def \
                   $(rexutils_dir)/*.def \
                   $(rxregexp_dir)/*.def
@@ -249,6 +248,7 @@ miscFiles = $(top_srcdir)/CPLv1.0.txt \
             $(top_srcdir)/CHANGES \
             $(top_srcdir)/CONTRIBUTORS \
             $(top_srcdir)/oorexx.ver \
+            $(top_srcdir)/unix-like-build.txt \
             $(aixExportFiles) \
             $(platform_unix_dir)/oorexx.spec \
             $(platform_unix_dir)/makepkg.rex \
