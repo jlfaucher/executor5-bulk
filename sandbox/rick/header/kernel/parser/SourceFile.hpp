@@ -120,7 +120,7 @@ class RexxSource : public RexxInternalObject {
   RexxArray  *extractSource(SourceLocation &);
   void        startLocation(SourceLocation &);
   void        endLocation(SourceLocation &);
-  BOOL        nextSpecial(UINT, SourceLocation &);
+  bool        nextSpecial(unsigned int, SourceLocation &);
   unsigned int locateToken(RexxToken *);
   void        globalSetup();
   RexxString *packLiteral(int, int, int);

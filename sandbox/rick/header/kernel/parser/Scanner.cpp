@@ -194,7 +194,7 @@ void RexxSource::endLocation(
     location.setEnd(line_number, line_offset);
 }
 
-BOOL RexxSource::nextSpecial(
+bool RexxSource::nextSpecial(
   unsigned int  target,                /* desired target character          */
   SourceLocation &location )           /* token location information        */
 /****************************************************************************/
@@ -202,19 +202,17 @@ BOOL RexxSource::nextSpecial(
 /****************************************************************************/
 {
   unsigned int inch;                   /* next character                    */
-  BOOL         found;                  /* found the target flag             */
 
-  found = FALSE;                       /* default to not found              */
   inch = this->locateToken(OREF_NULL); /* find the next token               */
                                        /* have something else on this line? */
   if (inch != CLAUSEEND_EOF && inch != CLAUSEEND_EOL) {
     if (GETCHAR() == target) {         /* is the next character a match?    */
       this->line_offset++;             /* step over the next                */
       this->endLocation(location);     /* update the end location part      */
-      found = TRUE;                    /* got what we need!                 */
+      return true;                     /* got what we need!                 */
     }
   }
-  return found;                        /* give back the flag                */
+  return false;                        // didn't find the one we're looking for
 }
 
 void RexxSource::comment()

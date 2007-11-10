@@ -182,9 +182,8 @@ inline uintptr_t HASHOREF(RexxVirtualBase *r) { return ((uintptr_t)r) >> OREFSHI
 
      inline size_t getObjectSize() { return header.getObjectSize(); }
      inline void   setObjectSize(size_t s) { header.setObjectSize(s); }
-     // this is entire internal object, but we don't want to pick up padding, so
-     // sizeof is used.
-     inline size_t getObjectHeaderSize() { return offsetof(RexxInternalObject, hashvalue) + sizeof(hashvalue); }
+     // NB:  I hope this doesn't add any padding
+     static inline size_t getObjectHeaderSize() { return sizeof(RexxInternalObject); }
      inline size_t getObjectDataSize() { return getObjectSize() - getObjectHeaderSize(); }
      inline void  *getObjectDataSpace() { return ((char *)this) + getObjectHeaderSize(); }
      // these clear everything after the hash value.
@@ -273,7 +272,7 @@ inline uintptr_t HASHOREF(RexxVirtualBase *r) { return ((uintptr_t)r) >> OREFSHI
                                        /*  Allow for overloading of         */
                                        /*  hashValue usage/value by         */
                                        /*  other classes.                   */
-     long hashvalue;                   /* Default usage.                    */
+     size_t hashvalue;                 /* Default usage.                    */
   };
 
 
