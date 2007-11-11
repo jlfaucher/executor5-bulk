@@ -36,7 +36,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Kernel                                                  ClassClass.hpp   */
+/* REXX Kernel                                               ClassClass.hpp   */
 /*                                                                            */
 /* Primitive Class Class Definitions                                          */
 /*                                                                            */
@@ -45,13 +45,11 @@
 #define Included_RexxClass
 
 
-void class_create (void);
-
  class RexxClass : public RexxObject {
   public:
    inline RexxClass(){;};
    inline RexxClass(RESTORETYPE restoreType) { ; };
-   void *operator new(size_t, long, RexxBehaviour *, RexxBehaviour *);
+   void *operator new(size_t, size_t, const char *, RexxBehaviour *, RexxBehaviour *);
    inline void *operator new(size_t size, void *ptr) {return ptr;};
    void live();
    void liveGeneral();
@@ -60,7 +58,8 @@ void class_create (void);
    RexxObject *makeProxy(RexxEnvelope*);
    BOOL        isEqual(RexxObject *);
 
-   ULONG        hash();
+   HashCode     hash();
+   HashCode     getHashValue();
    RexxObject * equal(RexxObject *);
    RexxObject * strictEqual(RexxObject *);
    RexxObject * notEqual(RexxObject *);
@@ -78,7 +77,7 @@ void class_create (void);
    RexxTable  *getInstanceBehaviourDictionary();
    RexxTable  *getBehaviourDictionary();
    RexxString *defaultName();
-   void        subClassable(const char *, bool);
+   void        subClassable(bool);
    RexxObject *defineMethod(RexxString *, RexxMethod *);
    RexxObject *defineMethods(RexxTable *);
    RexxObject *deleteMethod(RexxString *);
@@ -116,6 +115,9 @@ void class_create (void);
    inline RexxBehaviour *getInstanceBehaviour() {return this->instanceBehaviour;};
    inline void         setMetaClass() { classFlags |= META_CLASS; }
           void         addSubClass(RexxClass *);
+
+
+   static void RexxClass::createClass();
 
  protected:
      enum
