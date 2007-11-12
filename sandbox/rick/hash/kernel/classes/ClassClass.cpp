@@ -1394,7 +1394,7 @@ RexxClass  *RexxClass::newRexx(RexxObject **args, size_t argCount)
   OrefSet(new_class, new_class->baseClass, new_class);
                                        /* clear the info area except for     */
                                        /* uninit                             */
-  new_class->clearHasUninitDefined();
+  new_class->setInitialFlagState();
   /* if the class object has an UNINIT method defined, make sure we */
   /* add this to the table of classes to be processed. */
   if (new_class->hasUninitDefined()) {

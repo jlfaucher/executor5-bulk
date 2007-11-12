@@ -107,6 +107,8 @@
    inline bool         hasUninitDefined()   { return (classFlags & HAS_UNINIT) != 0; };
    inline void         setHasUninitDefined()   { classFlags |= HAS_UNINIT; };
    inline void         clearHasUninitDefined()   { classFlags &= ~HAS_UNINIT; };
+   // NB:  This clears every flag BUT the UNINIT flag
+   inline void         setInitialFlagState()   { classFlags &= HAS_UNINIT; };
    inline bool         parentHasUninitDefined()   { return (classFlags & PARENT_HAS_UNINIT) != 0; };
    inline void         setParentHasUninitDefined()   { classFlags |= PARENT_HAS_UNINIT; };
    inline bool         isPrimitiveClass() { return (classFlags & PRIMITIVE_CLASS) != 0; }
@@ -117,7 +119,7 @@
           void         addSubClass(RexxClass *);
 
 
-   static void RexxClass::createClass();
+   static void createClass();
 
  protected:
      enum
