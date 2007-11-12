@@ -298,6 +298,10 @@ RexxString * SysSourceString(
   return source_string;                /* return the source string          */
 }
 
+// these routines are NOPs
+void SysRegisterExceptions(SYSEXCEPTIONBLOCK *exception_info) { ; }
+void SysDeregisterExceptions(SYSEXCEPTIONBLOCK *exception_info) { ; }
+
 
 void SysRegisterSignals(
   SYSEXCEPTIONBLOCK *exception_info)   /* system specific exception info    */

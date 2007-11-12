@@ -576,9 +576,6 @@ typedef char *(far *REXXENTRY PNMF)(void **);
 //#define SysCreateThread(PTHREADFN, int, PVOID) LinThreadCreate(PTHREADFN, int, PVOID)
 #define SysInitialAddressName() OREF_INITIALADDRESS
 
-inline void SysRegisterExceptions(SYSEXCEPTIONBLOCK *exception_info) { ; }
-inline void SysDeregisterExceptions(SYSEXCEPTIONBLOCK *exception_info) { ; }
-
 #define SysGetTempFileName()  tmpnam(NULL)
 /******************************************************************************/
 /* REQUIRED:  Define the macro for pointer subtraction                        */
