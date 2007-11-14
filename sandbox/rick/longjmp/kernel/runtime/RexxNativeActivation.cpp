@@ -36,13 +36,12 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Kernel                                                  RexxNativeActivation.c    */
+/* REXX Kernel                                      RexxNativeActivation.c    */
 /*                                                                            */
 /* Primitive Native Activation Class                                          */
 /*                                                                            */
 /******************************************************************************/
 #define INCL_REXXSAA
-#include <setjmp.h>
 
 #include "RexxCore.h"
 #include "StringClass.hpp"
@@ -334,20 +333,21 @@ RexxObject *RexxNativeActivation::run(
                                        /* got too many                      */
     reportException(Error_Incorrect_method_maxarg, i);
 
-                                       /* get a RAISE type return?          */
-  if (setjmp(this->conditionjump) != 0) {
-    if (this->result != OREF_NULL)     /* have a value?                     */
-      hold(this->result);              /* get result held longer            */
-    this->guardOff();                  /* release any variable locks        */
-    this->argcount = 0;                /* make sure we don't try to mark any arguments */
-    this->activity->pop(FALSE);        /* pop this from the activity        */
-    this->setHasNoReferences();        /* mark this as not having references in case we get marked */
-    return this->result;               /* and finished                      */
+  try
+  {
+      ReleaseKernelAccess(this->activity); /* force this to "safe" mode         */
+      (*methp)(ivalues);                   /* process the method call           */
+      RequestKernelAccess(this->activity); /* now in unsafe mode again          */
+  } catch (RexxNativeActivation *)
+  {
+      if (this->result != OREF_NULL)     /* have a value?                     */
+        hold(this->result);              /* get result held longer            */
+      this->guardOff();                  /* release any variable locks        */
+      this->argcount = 0;                /* make sure we don't try to mark any arguments */
+      this->activity->pop(FALSE);        /* pop this from the activity        */
+      this->setHasNoReferences();        /* mark this as not having references in case we get marked */
+      return this->result;               /* and finished                      */
   }
-
-  ReleaseKernelAccess(this->activity); /* force this to "safe" mode         */
-  (*methp)(ivalues);                   /* process the method call           */
-  RequestKernelAccess(this->activity); /* now in unsafe mode again          */
 
   /* give up reference to receiver so that it can be garbage collected */
   this->receiver = OREF_NULL;
@@ -824,8 +824,7 @@ BOOL RexxNativeActivation::trap(
                                        /* yes, send error message and       */
                                        /* condition to the object           */
       this->objnotify->error(exception_object);
-    if (this->syntaxHandler != NULL)   /* have a syntax handler?            */
-      longjmp(*this->syntaxHandler, 1);/* jump back to the handler          */
+    throw this;
   }
   return FALSE;                        /* this wasn't handled               */
 }
@@ -1223,7 +1222,7 @@ nativei4 (void, RAISE,
   this->result = (RexxObject *)result; /* save the result                   */
                                        /* go raise the condition            */
   CurrentActivity->raiseCondition(new_string(condition), OREF_NULL, (RexxString *)description, (RexxObject *)additional, (RexxObject *)result, OREF_NULL);
-  longjmp(this->conditionjump, 1);     /* now go process the return         */
+  throw this;                          /* now go process the return         */
 }
 
 nativei3 (REXXOBJECT, CONDITION,
@@ -1472,11 +1471,6 @@ nativei7 (ULONG, STEMSORT,
       return FALSE;
   }
 
-  jmp_buf syntaxHandler;               /* syntax return point               */
-
-  if (setjmp(syntaxHandler) != 0) {    /* get a storage error?              */
-      return FALSE;                    /* return a failure                  */
-  }
   /* get the REXX activation */
   RexxActivation *activation = self->activity->currentAct();
 

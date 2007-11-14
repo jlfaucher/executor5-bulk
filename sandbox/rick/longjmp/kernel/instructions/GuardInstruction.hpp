@@ -36,7 +36,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Kernel                                                   GuardInstruction.hpp */
+/* REXX Kernel                                           GuardInstruction.hpp */
 /*                                                                            */
 /* Primitive GUARD instruction Class Definitions                              */
 /*                                                                            */
@@ -51,7 +51,9 @@
 class RexxInstructionGuard : public RexxInstruction {
  public:
 
-  inline void *operator new(size_t size, void *ptr) {return ptr;};
+  inline void *operator new(size_t size, void *ptr) {return ptr;}
+  inline void operator delete(void *, void *) { }
+
   RexxInstructionGuard(RexxObject*, RexxArray *, bool);
   inline RexxInstructionGuard(RESTORETYPE restoreType) { ; };
   void live();

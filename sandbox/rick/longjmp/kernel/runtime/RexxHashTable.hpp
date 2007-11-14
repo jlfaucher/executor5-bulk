@@ -65,6 +65,8 @@ typedef size_t HashLink;
    };
 
    inline void * operator new(size_t size, void *objectPtr) { return objectPtr; };
+   inline void  operator delete(void *, void *) { ; }
+
    inline RexxHashTable(RESTORETYPE restoreType) { ; };
    inline RexxHashTable() { ; }
 

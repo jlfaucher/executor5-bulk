@@ -51,11 +51,13 @@ class RexxSource;
 
 class RexxInstruction : public RexxInternalObject {
  public:
+  inline void * operator new(size_t size, void *objectPtr) { return objectPtr; }
+  inline void operator delete(void *, void *) { }
+
   RexxInstruction(RexxClause *clause, int type);
   inline RexxInstruction(RESTORETYPE restoreType) { ; };
   inline RexxInstruction() { ; }
   void * operator new(size_t);
-  inline void * operator new(size_t size, void *objectPtr) { return objectPtr; } ;
 
   void live();
   void liveGeneral();

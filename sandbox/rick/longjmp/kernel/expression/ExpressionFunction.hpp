@@ -53,14 +53,17 @@
 
 class RexxExpressionFunction : public RexxInternalObject {
  public:
+  void *operator new(size_t, int);
+  inline void *operator new(size_t size, void *ptr) {return ptr;};
+  inline void  operator delete(void *, int) { ; }
+  inline void  operator delete(void *, void *) { ; }
+
   RexxExpressionFunction(RexxString *, size_t, RexxQueue *, size_t, BOOL);
   inline RexxExpressionFunction(RESTORETYPE restoreType) { ; };
   void        resolve(RexxDirectory *);
   void        live();
   void        liveGeneral();
   void        flatten(RexxEnvelope *);
-  void       *operator new(size_t, LONG);
-  inline void       *operator new(size_t size, void *ptr) {return ptr;};
   RexxObject *evaluate(RexxActivation*, RexxExpressionStack *);
 
   RexxString *functionName;            // the name of the function

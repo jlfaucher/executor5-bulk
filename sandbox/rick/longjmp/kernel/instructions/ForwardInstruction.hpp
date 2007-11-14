@@ -36,7 +36,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Kernel                                                     ForwardInstruction.hpp */
+/* REXX Kernel                                         ForwardInstruction.hpp */
 /*                                                                            */
 /* Primitive FORWARD instruction Class Definitions                            */
 /*                                                                            */
@@ -50,7 +50,9 @@
 
 class RexxInstructionForward : public RexxInstruction {
  public:
-  inline void *operator new(size_t size, void *ptr) {return ptr;};
+  inline void *operator new(size_t size, void *ptr) {return ptr;}
+  inline void operator delete(void *, void *) { }
+
   inline RexxInstructionForward(void) { ; }
   inline RexxInstructionForward(RESTORETYPE restoreType) { ; }
   void live();
