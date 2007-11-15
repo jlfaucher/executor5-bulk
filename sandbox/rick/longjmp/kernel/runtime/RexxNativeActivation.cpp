@@ -332,22 +332,20 @@ RexxObject *RexxNativeActivation::run(
   if (i < argcount && !used_arglist)   /* extra, unwanted arguments?        */
                                        /* got too many                      */
     reportException(Error_Incorrect_method_maxarg, i);
-
-  try
-  {
-      ReleaseKernelAccess(this->activity); /* force this to "safe" mode         */
-      (*methp)(ivalues);                   /* process the method call           */
-      RequestKernelAccess(this->activity); /* now in unsafe mode again          */
-  } catch (RexxNativeActivation *)
-  {
-      if (this->result != OREF_NULL)     /* have a value?                     */
-        hold(this->result);              /* get result held longer            */
-      this->guardOff();                  /* release any variable locks        */
-      this->argcount = 0;                /* make sure we don't try to mark any arguments */
-      this->activity->pop(FALSE);        /* pop this from the activity        */
-      this->setHasNoReferences();        /* mark this as not having references in case we get marked */
-      return this->result;               /* and finished                      */
+                                       /* get a RAISE type return?          */
+  if (setjmp(this->conditionjump) != 0) {
+    if (this->result != OREF_NULL)     /* have a value?                     */
+      hold(this->result);              /* get result held longer            */
+    this->guardOff();                  /* release any variable locks        */
+    this->argcount = 0;                /* make sure we don't try to mark any arguments */
+    this->activity->pop(FALSE);        /* pop this from the activity        */
+    this->setHasNoReferences();        /* mark this as not having references in case we get marked */
+    return this->result;               /* and finished                      */
   }
+
+  ReleaseKernelAccess(this->activity); /* force this to "safe" mode         */
+  (*methp)(ivalues);                   /* process the method call           */
+  RequestKernelAccess(this->activity); /* now in unsafe mode again          */
 
   /* give up reference to receiver so that it can be garbage collected */
   this->receiver = OREF_NULL;
@@ -824,7 +822,6 @@ BOOL RexxNativeActivation::trap(
                                        /* yes, send error message and       */
                                        /* condition to the object           */
       this->objnotify->error(exception_object);
-    throw this;
   }
   return FALSE;                        /* this wasn't handled               */
 }
@@ -1222,7 +1219,13 @@ nativei4 (void, RAISE,
   this->result = (RexxObject *)result; /* save the result                   */
                                        /* go raise the condition            */
   CurrentActivity->raiseCondition(new_string(condition), OREF_NULL, (RexxString *)description, (RexxObject *)additional, (RexxObject *)result, OREF_NULL);
-  throw this;                          /* now go process the return         */
+
+  // Using throw would be preferred here, but the compiler won't allow us to
+  // do a throw across the C function call boundary.  We need to use longjmp
+  // instead. This won't effect our object unwinding yet, as we're in control
+  // of things.  It would be better if the functions used RAISE and then
+  // returned to the caller, but that's a bit more involved at this point.
+  longjmp(this->conditionjump, 1);     /* now go process the return         */
 }
 
 nativei3 (REXXOBJECT, CONDITION,

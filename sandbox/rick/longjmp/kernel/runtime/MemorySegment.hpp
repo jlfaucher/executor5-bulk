@@ -241,7 +241,7 @@ class MemorySegmentSet {
 
       virtual ~MemorySegmentSet() { ; }
       inline void *operator new(size_t size, void *segment) { return segment; }
-      inline void  operator new(void * size, void *segment) { }
+      inline void  operator delete(void * size, void *segment) { }
 
       /* Following is a static constructor, called during */
       /* RexxMemeory initialization */

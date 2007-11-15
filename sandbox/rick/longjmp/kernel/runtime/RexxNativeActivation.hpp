@@ -44,6 +44,7 @@
 #ifndef Included_RexxNativeActivation
 #define Included_RexxNativeActivation
 
+#include <setjmp.h>
 #include "RexxActivity.hpp"
 
 class RexxNativeActivation : public RexxActivationBase {
@@ -121,5 +122,6 @@ class RexxNativeActivation : public RexxActivationBase {
   size_t          argcount;            /* size of the argument list         */
   bool            vpavailable;         /* Variable pool access flag         */
   int             object_scope;        /* reserve/release state of variables*/
+  jmp_buf         conditionjump;       /* condition trap recovery location  */
 };
 #endif

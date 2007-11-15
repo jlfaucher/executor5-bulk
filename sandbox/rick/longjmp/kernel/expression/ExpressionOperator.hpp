@@ -84,6 +84,10 @@ class RexxBinaryOperator : public RexxExpressionOperator {
 
 class RexxUnaryOperator : public RexxExpressionOperator {
  public:
+  void  *operator new(size_t);
+  inline void  *operator new(size_t size, void *ptr) {return ptr;};
+  inline void  operator delete(void *) { ; }
+  inline void  operator delete(void *, void *) { ; }
 
   inline RexxUnaryOperator(int op, RexxObject *left)
       : RexxExpressionOperator(op, left, OREF_NULL) { ; }

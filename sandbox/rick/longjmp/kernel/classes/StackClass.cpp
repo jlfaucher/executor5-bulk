@@ -154,7 +154,7 @@ RexxObject  *RexxStack::fpop()
 void *RexxStack::operator new(
      size_t size,                      /* Object size                       */
      size_t stksize,                   /* stack size                        */
-     BOOL   temporary )                /* this is a temporary one           */
+     bool   temporary )                /* this is a temporary one           */
 /******************************************************************************/
 /* Function:  Create a new translator object                                  */
 /******************************************************************************/

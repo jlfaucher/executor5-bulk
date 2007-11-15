@@ -49,7 +49,7 @@
    inline void *operator new(size_t size, void *ptr) { return ptr; }
    void        *operator new(size_t, size_t, bool temporary = false);
    inline void  operator delete(void *, void *) { }
-   inline void  operator delete(void *, size_t, bool temporary = false) { };
+   inline void  operator delete(void *, size_t, bool temporary) { };
 
    inline RexxStack(RESTORETYPE restoreType) { ; };
    RexxStack(size_t size);
@@ -84,7 +84,7 @@
  class RexxSaveStack : public RexxStack {
   public:
    void       *operator new(size_t, size_t);
-   inline void operator delete(void *, size_t);
+   inline void operator delete(void *, size_t) { }
 
    RexxSaveStack(size_t, size_t);
    void        live();
