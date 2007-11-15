@@ -36,7 +36,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Kernel                                                  StackClass.c     */
+/* REXX Kernel                                               StackClass.c     */
 /*                                                                            */
 /* Primitive Stack Class                                                      */
 /*                                                                            */
@@ -174,9 +174,9 @@ void *RexxStack::operator new(
 
 
 RexxSaveStack::RexxSaveStack(
-    size_t size,                       /* elements in the stack             */
+    size_t _size,                      /* elements in the stack             */
     size_t aSize)                      /* size to allocate!                 */
-      : RexxStack(size)
+      : RexxStack(_size)
 /******************************************************************************/
 /* Function:  Initialize a primitive stack.                                   */
 /******************************************************************************/
