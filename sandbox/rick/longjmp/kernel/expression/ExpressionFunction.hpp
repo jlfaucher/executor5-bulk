@@ -36,7 +36,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Kernel                                                  ExpressionFunction.hpp   */
+/* REXX Kernel                                       ExpressionFunction.hpp   */
 /*                                                                            */
 /* Primitive Expression Function Class Definitions                            */
 /*                                                                            */
@@ -55,6 +55,7 @@ class RexxExpressionFunction : public RexxInternalObject {
  public:
   void *operator new(size_t, int);
   inline void *operator new(size_t size, void *ptr) {return ptr;};
+  inline void  operator delete(void *) { ; }
   inline void  operator delete(void *, int) { ; }
   inline void  operator delete(void *, void *) { ; }
 
