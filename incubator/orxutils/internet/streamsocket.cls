@@ -70,6 +70,7 @@
 ::method s        attribute private -- the socket instance
 ::method opened   attribute private -- open flag            
 ::method rcvbuf   attribute private -- the recieve buffer
+::method bufsize  attribute private -- the recieve buffer size
 
 /*----------------------------------------------------------------------------*/
 /* Method: Read                                                               */
@@ -101,8 +102,6 @@ return retc -- return the number of bytes written
 /*        Public methods                                                      */
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
-
-::method bufsize  attribute private -- the recieve buffer size
 
 /*----------------------------------------------------------------------------*/
 /* Method: arrayIn                                                            */
@@ -225,7 +224,7 @@ return (state || ':' description)~strip()
 expose state description s hostname port opened bufsize rcvbuf
 use strict arg hostname, port, bufsize = 4096
 opened = .false
-rcvbuf = .mutablebuffer~new(bufsize)
+rcvbuf = .mutablebuffer~new(, bufsize)
 s = .Socket~new('AF_INET', 'SOCK_STREAM', 0)
 if s~errno <> '' then do
    state = 'ERROR'
@@ -359,4 +358,13 @@ return
 ::method state   
 expose state
 return state
+
+/*----------------------------------------------------------------------------*/
+/* Method: string                                                             */
+/* Description: returns a string representing the stream.                     */
+/*----------------------------------------------------------------------------*/
+
+::method string
+expose hostname port
+return hostname':'port
 

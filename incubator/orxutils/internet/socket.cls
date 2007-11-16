@@ -2,7 +2,7 @@
 /*                                                                            */
 /* Description: Simple classes to encalsulate stream sockets.                 */
 /*                                                                            */
-/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2007-2008 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -101,7 +101,146 @@ return SockGetHostID()
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::method s        attribute private -- the socket
+/*----------------------------------------------------------------------------*/
+/* Method: convert_err_number                                                 */
+/* Description: convert an error number to a short string.                    */
+/*----------------------------------------------------------------------------*/
+
+::method convert_err_number private
+use strict arg err
+if err~datatype('W') <> 1 then retrun err
+select
+   when err = 1 then return 'EPERM'            /* Operation not permitted */
+   when err = 2 then return 'ENOENT'           /* No such file or directory */
+   when err = 3 then return 'ESRCH'            /* No such process */
+   when err = 4 then return 'EINTR'            /* Interrupted system call */
+   when err = 5 then return 'EIO'              /* I/O error */
+   when err = 6 then return 'ENXIO'            /* No such device or address */
+   when err = 7 then return 'E2BIG'            /* Argument list too long */
+   when err = 8 then return 'ENOEXEC'          /* Exec format error */
+   when err = 9 then return 'EBADF'            /* Bad file number */
+   when err = 10 then return 'ECHILD'          /* No child processes */
+   when err = 11 then return 'EAGAIN'          /* Try again */
+   when err = 12 then return 'ENOMEM'          /* Out of memory */
+   when err = 13 then return 'EACCES'          /* Permission denied */
+   when err = 14 then return 'EFAULT'          /* Bad address */
+   when err = 15 then return 'ENOTBLK'         /* Block device required */
+   when err = 16 then return 'EBUSY'           /* Device or resource busy */
+   when err = 17 then return 'EEXIST'          /* File exists */
+   when err = 18 then return 'EXDEV'           /* Cross-device link */
+   when err = 19 then return 'ENODEV'          /* No such device */
+   when err = 20 then return 'ENOTDIR'         /* Not a directory */
+   when err = 21 then return 'EISDIR'          /* Is a directory */
+   when err = 22 then return 'EINVAL'          /* Invalid argument */
+   when err = 23 then return 'ENFILE'          /* File table overflow */
+   when err = 34 then return 'EMFILE'          /* Too many open files */
+   when err = 25 then return 'ENOTTY'          /* Not a typewriter */
+   when err = 26 then return 'ETXTBSY'         /* Text file busy */
+   when err = 27 then return 'EFBIG'           /* File too large */
+   when err = 28 then return 'ENOSPC'          /* No space left on device */
+   when err = 29 then return 'ESPIPE'          /* Illegal seek */
+   when err = 30 then return 'EROFS'           /* Read-only file system */
+   when err = 31 then return 'EMLINK'          /* Too many links */
+   when err = 32 then return 'EPIPE'           /* Broken pipe */
+   when err = 33 then return 'EDOM'            /* Math argument out of domain of func */
+   when err = 34 then return 'ERANGE'          /* Math result not representable */
+   when err = 35 then return 'EDEADLK'         /* Resource deadlock would occur */
+   when err = 36 then return 'ENAMETOOLONG'    /* File name too long */
+   when err = 37 then return 'ENOLCK'          /* No record locks available */
+   when err = 38 then return 'ENOSYS'          /* Function not implemented */
+   when err = 39 then return 'ENOTEMPTY'       /* Directory not empty */
+   when err = 40 then return 'ELOOP'           /* Too many symbolic links encountered */
+   when err = 42 then return 'ENOMSG'          /* No message of desired type */
+   when err = 43 then return 'EIDRM'           /* Identifier removed */
+   when err = 44 then return 'ECHRNG'          /* Channel number out of range */
+   when err = 45 then return 'EL2NSYNC'        /* Level 2 not synchronized */
+   when err = 46 then return 'EL3HLT'          /* Level 3 halted */
+   when err = 47 then return 'EL3RST'          /* Level 3 reset */
+   when err = 48 then return 'ELNRNG'          /* Link number out of range */
+   when err = 49 then return 'EUNATCH'         /* Protocol driver not attached */
+   when err = 50 then return 'ENOCSI'          /* No CSI structure available */
+   when err = 51 then return 'EL2HLT'          /* Level 2 halted */
+   when err = 52 then return 'EBADE'           /* Invalid exchange */
+   when err = 53 then return 'EBADR'           /* Invalid request descriptor */
+   when err = 54 then return 'EXFULL'          /* Exchange full */
+   when err = 55 then return 'ENOANO'          /* No anode */
+   when err = 56 then return 'EBADRQC'         /* Invalid request code */
+   when err = 57 then return 'EBADSLT'         /* Invalid slot */
+   when err = 59 then return 'EBFONT'          /* Bad font file format */
+   when err = 60 then return 'ENOSTR'          /* Device not a stream */
+   when err = 61 then return 'ENODATA'         /* No data available */
+   when err = 62 then return 'ETIME'           /* Timer expired */
+   when err = 63 then return 'ENOSR'           /* Out of streams resources */
+   when err = 64 then return 'ENONET'          /* Machine is not on the network */
+   when err = 65 then return 'ENOPKG'          /* Package not installed */
+   when err = 66 then return 'EREMOTE'         /* Object is remote */
+   when err = 67 then return 'ENOLINK'         /* Link has been severed */
+   when err = 68 then return 'EADV'            /* Advertise error */
+   when err = 69 then return 'ESRMNT'          /* Srmount error */
+   when err = 70 then return 'ECOMM'           /* Communication error on send */
+   when err = 71 then return 'EPROTO'          /* Protocol error */
+   when err = 72 then return 'EMULTIHOP'       /* Multihop attempted */
+   when err = 73 then return 'EDOTDOT'         /* RFS specific error */
+   when err = 74 then return 'EBADMSG'         /* Not a data message */
+   when err = 75 then return 'EOVERFLOW'       /* Value too large for defined data type */
+   when err = 76 then return 'ENOTUNIQ'        /* Name not unique on network */
+   when err = 77 then return 'EBADFD'          /* File descriptor in bad state */
+   when err = 78 then return 'EREMCHG'         /* Remote address changed */
+   when err = 79 then return 'ELIBACC'         /* Can not access a needed shared library */
+   when err = 80 then return 'ELIBBAD'         /* Accessing a corrupted shared library */
+   when err = 81 then return 'ELIBSCN'         /*.lib section in a.out corrupted */
+   when err = 82 then return 'ELIBMAX'         /* Attempting to link in too many shared libraries */
+   when err = 83 then return 'ELIBEXEC'        /* Cannot exec a shared library directly */
+   when err = 84 then return 'EILSEQ'          /* Illegal byte sequence */
+   when err = 85 then return 'ERESTART'        /* Interrupted system call should be restarted */
+   when err = 86 then return 'ESTRPIPE'        /* Streams pipe error */
+   when err = 87 then return 'EUSERS'          /* Too many users */
+   when err = 88 then return 'ENOTSOCK'        /* Socket operation on non-socket */
+   when err = 89 then return 'EDESTADDRREQ'    /* Destination address required */
+   when err = 90 then return 'EMSGSIZE'        /* Message too long */
+   when err = 91 then return 'EPROTOTYPE'      /* Protocol wrong type for socket */
+   when err = 92 then return 'ENOPROTOOPT'     /* Protocol not available */
+   when err = 93 then return 'EPROTONOSUPPORT' /* Protocol not supported */
+   when err = 94 then return 'ESOCKTNOSUPPORT' /* Socket type not supported */
+   when err = 95 then return 'EOPNOTSUPP'      /* Operation not supported on transport endpoint */
+   when err = 96 then return 'EPFNOSUPPORT'    /* Protocol family not supported */
+   when err = 97 then return 'EAFNOSUPPORT'    /* Address family not supported by protocol */
+   when err = 98 then return 'EADDRINUSE'      /* Address already in use */
+   when err = 99 then return 'EADDRNOTAVAIL'   /* Cannot assign requested address */
+   when err = 100 then return 'ENETDOWN'       /* Network is down */
+   when err = 101 then return 'ENETUNREACH'    /* Network is unreachable */
+   when err = 102 then return 'ENETRESET'      /* Network dropped connection because of reset */
+   when err = 103 then return 'ECONNABORTED'   /* Software caused connection abort */
+   when err = 104 then return 'ECONNRESET'     /* Connection reset by peer */
+   when err = 105 then return 'ENOBUFS'        /* No buffer space available */
+   when err = 106 then return 'EISCONN'        /* Transport endpoint is already connected */
+   when err = 107 then return 'ENOTCONN'       /* Transport endpoint is not connected */
+   when err = 108 then return 'ESHUTDOWN'      /* Cannot send after transport endpoint shutdown */
+   when err = 109 then return 'ETOOMANYREFS'   /* Too many references: cannot splice */
+   when err = 110 then return 'ETIMEDOUT'      /* Connection timed out */
+   when err = 111 then return 'ECONNREFUSED'   /* Connection refused */
+   when err = 112 then return 'EHOSTDOWN'      /* Host is down */
+   when err = 113 then return 'EHOSTUNREACH'   /* No route to host */
+   when err = 114 then return 'EALREADY'       /* Operation already in progress */
+   when err = 115 then return 'EINPROGRESS'    /* Operation now in progress */
+   when err = 116 then return 'ESTALE'         /* Stale NFS file handle */
+   when err = 117 then return 'EUCLEAN'        /* Structure needs cleaning */
+   when err = 118 then return 'ENOTNAM'        /* Not a XENIX named type file */
+   when err = 119 then return 'ENAVAIL'        /* No XENIX semaphores available */
+   when err = 120 then return 'EISNAM'         /* Is a named type file */
+   when err = 121 then return 'EREMOTEIO'      /* Remote I/O error */
+   when err = 122 then return 'EDQUOT'         /* Quota exceeded */
+   when err = 123 then return 'ENOMEDIUM'      /* No medium found */
+   when err = 124 then return 'EMEDIUMTYPE'    /* Wrong medium type */
+   when err = 125 then return 'ECANCELED'      /* Operation Canceled */
+   when err = 126 then return 'ENOKEY'         /* Required key not available */
+   when err = 127 then return 'EKEYEXPIRED'    /* Key has expired */
+   when err = 128 then return 'EKEYREVOKED'    /* Key has been revoked */
+   when err = 129 then return 'EKEYREJECTED'   /* Key was rejected by service */
+   when err = 130 then return 'EOWNERDEAD'     /* Owner died */
+   otherwise nop
+   end
+return err
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -110,7 +249,7 @@ return SockGetHostID()
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::method errno attribute
+::attribute errno get
 
 /*----------------------------------------------------------------------------*/
 /* Method: accept                                                             */
@@ -121,10 +260,9 @@ return SockGetHostID()
 ::method accept
 expose s errno
 use strict arg
--- are we being passes an existing socket?
 newsocket = SockAccept(s)
 if newsocket = -1 then do
-   errno = SockSock_errno()
+   errno = self~convert_err_number(SockSock_errno())
    return .nil
    end
 else errno = ''
@@ -141,10 +279,12 @@ return .socket~new(newsocket)
 expose s errno
 use strict arg address
 if \address~isA(.InetAddress) then ,
- raise syntax 93.914 array (1, 'an InetAddress', address)
+ raise syntax 93.914 array (1, 'an InetAddress class instance', address)
 stem. = address~makeStem()
-retc = SockBind(s, 'stem.')
-if retc = -1 then errno = SockSock_errno()
+retc = SockBind(s, 'stem.!')
+-- It should be noted here that the SockBind() function can give a false
+-- indication of success when in fact it did not bind to anything.
+if retc = -1 then errno = self~convert_err_number(SockSock_errno())
 else errno = ''
 return retc
 
@@ -158,7 +298,7 @@ return retc
 expose s errno
 use strict arg
 retc = SockClose(s)
-if retc = -1 then errno = SockSock_errno()
+if retc = -1 then errno = self~convert_err_number(SockSock_errno())
 else errno = ''
 s = -1
 return retc
@@ -174,10 +314,10 @@ return retc
 expose s errno
 use strict arg address
 if \address~isA(.InetAddress) then ,
- raise syntax 93.914 array (1, 'an InetAddress', address)
+ raise syntax 93.914 array (1, 'an InetAddress class instance', address)
 stem. = address~makeStem()
 retc = SockConnect(s, 'stem.!')
-if retc = -1 then errno = SockSock_errno()
+if retc = -1 then errno = self~convert_err_number(SockSock_errno())
 else errno = ''
 return retc
 
@@ -191,6 +331,7 @@ return retc
 ::method getOption
 expose s errno
 use strict arg name
+name = name~upper()
 -- check args
 optvals = .array~of('SO_BROADCAST', 'SO_DEBUG', 'SO_DONTROUTE', 'SO_ERROR',,
                     'SO_KEEPALIVE', 'SO_LINGER', 'SO_OOBINLINE', 'SO_RCVBUF',,
@@ -200,8 +341,9 @@ if optvals~hasItem(name) = .false then ,
  raise syntax 93.914 array (1, optvals~toString, name)
 -- get the value
 retc = SockGetSendOpt(s, 'SOL_SOCKET', name, 'xxx')
+-- some values may not be gettable
 if retc = -1 then do
-   errno = SockSock_errno()
+   errno = self~convert_err_number(SockSock_errno())
    return .nil
    end
 else errno = ''
@@ -218,7 +360,7 @@ expose s errno
 use strict arg
 retc = SockGetPeerName(s, cmd, 'stem.')
 if retc = -1 then do
-   errno = SockSock_errno()
+   errno = self~convert_err_number(SockSock_errno())
    return .nil
    end
 else errno = ''
@@ -235,7 +377,7 @@ expose s errno
 use strict arg
 retc = SockGetSockName(s, cmd, 'stem.')
 if retc = -1 then do
-   errno = SockSock_errno()
+   errno = self~convert_err_number(SockSock_errno())
    return .nil
    end
 else errno = ''
@@ -244,9 +386,11 @@ return .InetAddress~new(stem.!address, stem.!port, stem.!family)
 /*----------------------------------------------------------------------------*/
 /* Method: init                                                               */
 /* Description: instance initialization                                       */
+/*              If only one argument is supplied it is assumed to be an       */
+/*              existing socket. Otherwise a new socket is created.           */
 /* Arguments:                                                                 */
-/*         domain   - must be AF_INET                                         */
-/*         type     - must be SOCK_STREAM, SOCK_DGRAM or SOCK_RAW             */
+/*         domain   - (optional) must be AF_INET                              */
+/*         type     - (optional) must be SOCK_STREAM, SOCK_DGRAM or SOCK_RAW  */
 /*         protocol - (optional, if not supplied will be set to 0)            */
 /*----------------------------------------------------------------------------*/
 
@@ -260,7 +404,10 @@ if arg() = 1 then do
    return
    end
 -- assume we want a new socket created
-use strict arg domain, type, protocol = 0
+use strict arg domain = 'AF_INET', type = 'SOCK_STREAM', protocol = 0
+domain = domain~upper()
+type= type~upper()
+protocol = protocol~upper()
 -- check arguments
 domains = .array~of('AF_INET')
 if domains~hasItem(domain) = .false then ,
@@ -273,7 +420,7 @@ if protocols~hasItem(protocol) = .false then ,
  raise syntax 93.914 array (3, protocols~toString, protocol)
 -- create the socket
 s = SockSocket(domain, type, protocol)
-if s = -1 then errno = SockSock_errno()
+if s = -1 then errno = self~convert_err_number(SockSock_errno())
 else errno = ''
 return
 
@@ -290,7 +437,7 @@ expose s errno
 use strict arg cmd, data
 retc = SockIoctl(s, cmd, data)
 if retc = -1 then do
-   errno = SockSock_errno()
+   errno = self~convert_err_number(SockSock_errno())
    return .nil
    end
 else errno = ''
@@ -309,7 +456,7 @@ use strict arg backlog
 if backlog~datatype('W') = 0 then raise syntax 93.905 array (1, backlog)
 if backlog < 1 then raise syntax 93.907 array (1, backlog)
 retc = SockListen(s, backlog)
-if retc = -1 then errno = SockSock_errno()
+if retc = -1 then errno = self~convert_err_number(SockSock_errno())
 else errno = ''
 return retc
 
@@ -352,11 +499,11 @@ if \address~isA(.InetAddress) then ,
 stem. = address~makeStem()
 retc = SockRecvFrom(s, 'xxx', len, 'stem.')
 if retc = -1 then do
-   errno = SockSock_errno()
+   errno = self~convert_err_number(SockSock_errno())
    return .nil
    end
 if retc = 0 & xxx~length > 0 then do
-   errno = SockSock_errno()
+   errno = self~convert_err_number(SockSock_errno())
    if xxx~length > 0 then return xxx
    else return ''
    end
@@ -396,7 +543,7 @@ do i = 1 to excepts~items
    end
 retc = SockSelect('reads.', 'writes.', 'excepts.', timeout)
 if retc = -1 then do
-   errno = SockSock_errno()
+   errno = self~convert_err_number(SockSock_errno())
    return .nil
    end
 else errno = ''
@@ -413,7 +560,7 @@ return xxx
 expose s errno
 use strict arg data
 retc = SockSend(s, data)
-if retc = -1 then errno = SockSock_errno()
+if retc = -1 then errno = self~convert_err_number(SockSock_errno())
 else errno = ''
 return retc
 
@@ -428,6 +575,7 @@ return retc
 ::method setOption
 expose s errno
 use strict arg name, val
+name = name~upper()
 optvals = .array~of('SO_BROADCAST', 'SO_DEBUG', 'SO_DONTROUTE', 'SO_ERROR',,
                     'SO_KEEPALIVE', 'SO_LINGER', 'SO_OOBINLINE', 'SO_RCVBUF',,
                     'SO_RCVLOWAT', 'SO_RCVTIMEO', 'SO_REUSEADDR', 'SO_SNDBUF',,
@@ -435,13 +583,22 @@ optvals = .array~of('SO_BROADCAST', 'SO_DEBUG', 'SO_DONTROUTE', 'SO_ERROR',,
 if optvals~hasItem(name) = .false then ,
  raise syntax 93.914 array (1, optvals~toString, name)
 if val~datatype('W') <> 1 & name <> 'SO_LINGER' then raise syntax 93.907 array(2, val)
-retc = SockSetSendOpt(s, 'SOL_SOCKET', name, val)
+retc = SockSetSockOpt(s, 'SOL_SOCKET', name, val)
 if retc = -1 then do
-   errno = SockSock_errno()
+   errno = self~convert_err_number(SockSock_errno())
    return .nil
    end
 else errno = ''
 return xxx
+
+/*----------------------------------------------------------------------------*/
+/* Method: string                                                             */
+/* Description: returns a string representing the socket.                     */
+/*----------------------------------------------------------------------------*/
+
+::method string
+expose s
+return s
 
 /*----------------------------------------------------------------------------*/
 /* Method: uninit                                                             */
@@ -452,7 +609,6 @@ return xxx
 expose s
 if s <> -1 then retc = self~close()
 return
-
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -483,15 +639,9 @@ return
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-/*----------------------------------------------------------------------------*/
-/* Method: address                                                            */
-/* Description: the InetAddress address                                       */
-/* Arguments: none                                                            */
-/*----------------------------------------------------------------------------*/
-
-::method address
-expose address
-return address
+::attribute address get
+::attribute family  get
+::attribute port    get
 
 /*----------------------------------------------------------------------------*/
 /* Method: address=                                                           */
@@ -503,23 +653,13 @@ return address
 ::method 'address='
 expose address
 use strict arg address
-if address <> 'INADDR_ANY' then do
+if address~upper() <> 'INADDR_ANY' then do
    retc = SockGetHostByName(address, 'hostinfo.!')
    if retc = 1 then address = hostinfo.!addr
+   if address~verify('0123456789.') <> 0 then ,
+    raise syntax 93.953 array(1, 'dotted decimal internet address')
    end
-if address~verify('0123456789.') <> 0 then ,
- raise syntax 93.953 array(1, 'dotted decimal address')
 return
-
-/*----------------------------------------------------------------------------*/
-/* Method: family                                                             */
-/* Description: the InetAddress family                                        */
-/* Arguments: none                                                            */
-/*----------------------------------------------------------------------------*/
-
-::method family
-expose family
-return family
 
 /*----------------------------------------------------------------------------*/
 /* Method: family=                                                            */
@@ -531,6 +671,7 @@ return family
 ::method 'family='
 expose family
 use strict arg family
+family = family~upper()
 families = .array~of('AF_INET')
 if families~hasItem(family) = .false then ,
  raise syntax 93.914 array (1, families~toString, family)
@@ -546,8 +687,11 @@ return
 /*----------------------------------------------------------------------------*/
 
 ::method init
--- use the self methods to get error checking for address, port and family
-use strict arg self~address, self~port, self~family = 'AF_INET'
+use strict arg a, p, f = 'AF_INET'
+-- we use the self methods to get error checking for address, port and family
+self~address = a
+self~port = p
+self~family = f
 return
 
 /*----------------------------------------------------------------------------*/
@@ -563,16 +707,6 @@ stem.!addr = address
 stem.!family = family
 stem.!port = port
 return stem.
-
-/*----------------------------------------------------------------------------*/
-/* Method: port                                                               */
-/* Description: the InetAddress port                                          */
-/* Arguments: none                                                            */
-/*----------------------------------------------------------------------------*/
-
-::method port
-expose port
-return port
 
 /*----------------------------------------------------------------------------*/
 /* Method: port=                                                              */
@@ -612,29 +746,17 @@ return
 /*----------------------------------------------------------------------------*/
 
 /*----------------------------------------------------------------------------*/
-/*----------------------------------------------------------------------------*/
-/* Class: HostInfo                                                            */
-/*        Public methods                                                      */
-/*----------------------------------------------------------------------------*/
-/*----------------------------------------------------------------------------*/
-
-::method addr      -- an array of internet addresses of the host
-::method address   -- the main address of the host
-::method alias     -- an array of alias names of the host
-::method name      -- the standard host name
-
-/*----------------------------------------------------------------------------*/
 /* Method: getInfo                                                            */
 /* Description: get the hostinfo                                              */
 /* Arguments:                                                                 */
 /*         hostname - (optional, required if self~name has no value)          */
 /*----------------------------------------------------------------------------*/
 
-::method getInfo
+::method getInfo private
 expose address alias addr name
 -- initialize our attributes
 alias~empty()
-address = .''
+address = ''
 addr~empty()
 -- make sure we have a hostname to use
 if self~name = '' or arg() > 0 then use strict arg self~name
@@ -653,23 +775,32 @@ do i = 1 to hostinfo.!addr.0
 return
 
 /*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: HostInfo                                                            */
+/*        Public methods                                                      */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+::attribute address get   -- the main address of the host
+::attribute name    get  -- the standard host name
+::attribute addr    get  -- an array of internet addresses of the host
+::attribute alias   get  -- an array of alias names of the host
+
+/*----------------------------------------------------------------------------*/
 /* Method: init                                                               */
 /* Description: initialization of the InetAddress                             */
 /* Arguments:                                                                 */
-/*         address - (optional) the ip address or hostname                    */
+/*         address - the ip address or hostname                               */
 /*----------------------------------------------------------------------------*/
 
 ::method init
 expose address alias addr name
 name = ''
 alias = .array~new()
-address = .''
+address = ''
 addr = .array~new()
-if arg() = 0 then nop
-else do
-   use arg strict name
-   self~getInfo()
-   end
+use arg strict name
+self~getInfo()
 return
 
 /*----------------------------------------------------------------------------*/
