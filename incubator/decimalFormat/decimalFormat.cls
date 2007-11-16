@@ -503,9 +503,21 @@ return 0
 -- do the actual formatting of the input number
 ::method format
     expose pPrefix pPattern pSuffix nPrefix nPattern nSuffix zero_prefix zPattern zero_suffix input have_zMask decimalSeparator groupingSeparator
-    use strict arg input
 -- an arbitrary value for now
-    numeric digits 30
+    use strict arg input
+
+-- set numeric digits to the length of input + the number of zeros in the decimal part of the patterns
+    adder = 0
+    parse var pPattern .'.'dec_p
+    ph0 = dec_p~countStr('0')
+    if ph0 > adder then
+        adder = ph0
+    parse var nPattern .'.'dec_p
+    ph0 = dec_p~countStr('0')
+    if ph0 > adder then
+        adder = ph0
+    numeric digits input~length + adder
+
     if \input~datatype('n') then
         raise syntax 93.904 array(1,arg(1))
 
@@ -553,7 +565,19 @@ return output
 ::method format2
     expose output input output zPattern have_zMask groupingSize
     use strict arg mask2use
-    numeric digits 30
+
+-- set numeric digits to the length of input + the number of zeros in the decimal part of the patterns
+    adder = 0
+    parse var pPattern .'.'dec_p
+    ph0 = dec_p~countStr('0')
+    if ph0 > adder then
+        adder = ph0
+    parse var nPattern .'.'dec_p
+    ph0 = dec_p~countStr('0')
+    if ph0 > adder then
+        adder = ph0
+    numeric digits input~length + adder
+
     parse var mask2use m_part1'.'m_part2
 -- format input based on the length of the decimal portion of the mask
     if m_part2 \== '' then
