@@ -39,65 +39,7 @@ Euro symbol (€).
         end
 
 /* Decimal Number Formatting */
-
-    f = .decimalFormat~new('"$"#,##0.00;"-$"####.##;"[0]"')
-
-    say 'Full'
-    say f~Pattern
-    say
-
-    say 'pPattern'
-    say f~pPattern
-    f~pPattern = '0,000.00'
-    say f~pPattern
-    say
-
-    say 'pPrefix'
-    say f~pPrefix
-    f~pPrefix = 'CD '
-    say f~pPrefix
-    say f~Pattern
-    say
-
-    say 'pSuffix'
-    say '->'f~pSuffix'<-'
-    f~pSuffix = ' CR'
-    say '->'f~pSuffix'<-'
-    say f~Pattern
-    say
-
-    say 'nPattern'
-    say f~nPattern
-    f~nPattern = '#,##0.00'
-    say f~nPattern
-    say
-
-    say 'nPrefix'
-    say f~nPrefix
-    f~nPrefix = '-CD('
-    say f~nPrefix
-    say f~Pattern
-    say
-
-    say 'nSuffix'
-    say '->'f~nSuffix'<-'
-    f~nSuffix = ')'
-    say '->'f~nSuffix'<-'
-    say f~Pattern
-    say
-
-    say 'zPattern'
-    say f~zPattern
-    f~zPattern = .nil
-    say '->'f~zPattern'<-'
-    say f~Pattern
-    say
-
-    say 'All will now be set back to defaults'
-    say
-
     f = .decimalFormat~new()
-
     dline = 'decimalFormat Version..:' f~getVersion
     say dline
     say
@@ -106,6 +48,66 @@ Euro symbol (€).
             ostream~lineout(dline)
             ostream~lineout(' ')
         end
+
+
+    f = .decimalFormat~new('"$"#,##0.00;"-$"####.##;"[0]"')
+
+    dline =  'Full'             ; call Logit
+    dline =  f~Pattern          ; call Logit
+    dline = ''                  ; call Logit
+
+    dline =  'pPattern'         ; call Logit
+    dline =  f~pPattern         ; call Logit
+    f~pPattern = '0,000.00'     ; call Logit
+    dline =  f~pPattern         ; call Logit
+    dline = ''                  ; call Logit
+
+    dline = 'pPrefix'           ; call Logit
+    dline = f~pPrefix           ; call Logit
+    f~pPrefix = 'CD '           ; call Logit
+    dline = f~pPrefix           ; call Logit
+    dline = f~Pattern           ; call Logit
+    dline = ''                  ; call Logit
+
+    dline = 'pSuffix'           ; call Logit
+    dline = '->'f~pSuffix'<-'   ; call Logit
+    f~pSuffix = ' CR'           ; call Logit
+    dline = '->'f~pSuffix'<-'   ; call Logit
+    dline = f~Pattern           ; call Logit
+    dline = ''                  ; call Logit
+
+    dline = 'nPattern'          ; call Logit
+    dline = f~nPattern          ; call Logit
+    f~nPattern = '#,##0.00'     ; call Logit
+    dline = f~nPattern          ; call Logit
+    dline = ''                  ; call Logit
+
+    dline = 'nPrefix'           ; call Logit
+    dline = f~nPrefix           ; call Logit
+    f~nPrefix = '-CD('          ; call Logit
+    dline = f~nPrefix           ; call Logit
+    dline = f~Pattern           ; call Logit
+    dline = ''                  ; call Logit
+
+    dline = 'nSuffix'           ; call Logit
+    dline = '->'f~nSuffix'<-'   ; call Logit
+    f~nSuffix = ')'             ; call Logit
+    dline = '->'f~nSuffix'<-'   ; call Logit
+    dline = f~Pattern           ; call Logit
+    dline = ''                  ; call Logit
+
+    dline = 'zPattern'          ; call Logit
+    dline = f~zPattern          ; call Logit
+    f~zPattern = .nil           ; call Logit
+    dline = '->'f~zPattern'<-'  ; call Logit
+    dline = f~Pattern           ; call Logit
+    dline = ''                  ; call Logit
+
+    dline = 'All will now be set back to defaults'
+    dline = ''
+
+'pause'
+    f = .decimalFormat~new()
 
     call DoIt 1
 
@@ -197,6 +199,12 @@ doHdrs:
             ostream~lineout(hdr1)
             ostream~lineout(hdr2)
         end
+return
+
+LogIt:
+    say dline
+    if logging then
+        ostream~lineout(dline)
 return
 
 errorTrap:

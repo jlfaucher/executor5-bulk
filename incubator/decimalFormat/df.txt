@@ -1,6 +1,49 @@
-20071116 - 16:48:12
+20071116 - 17:05:23
 decimalFormat Version..: Beta .2
  
+Full
+"$"#,##0.00;"-$"####.##;"[0]"
+
+pPattern
+#,##0.00
+#,##0.00
+0,000.00
+
+pPrefix
+$
+$
+CD 
+"CD "0,000.00;"-$"####.##;[0]
+
+pSuffix
+-><-
+-><-
+-> CR<-
+"CD "0,000.00" CR";"-$"####.##;[0]
+
+nPattern
+####.##
+####.##
+#,##0.00
+
+nPrefix
+-$
+-$
+-CD(
+"CD "0,000.00" CR";"-CD("#,##0.00" CR";[0]
+
+nSuffix
+-> CR<-
+-> CR<-
+->)<-
+"CD "0,000.00" CR";"-CD("#,##0.00")";[0]
+
+zPattern
+[0]
+[0]
+->The NIL object<-
+"CD "0,000.00" CR";"-CD("#,##0.00")";The NIL object
+
 1 Pattern Is ->('#,###.##')<->Grouping Size Is -> 3 <-
          UnFormatted            Formatted Test #
 -------------------- -------------------- ------
