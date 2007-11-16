@@ -32,17 +32,27 @@ Beta .1     11/15/07 PM
 Beta .2     11/16/07
             Combined verification of positive pattern & negative pattern into one method and preserved
             applicable error messages
+
+            Added ability to get/set the following attributes
+                Positive prefix  - pPrefix
+                Positive pattern - pPattern
+                Positive suffix  - pSuffix
+
+                Negative prefix  - nPrefix
+                Negative pattern - nPattern
+                Negative suffix  - nSuffix
+
+                Zero pattern     - zPattern
+
+        The next 2 items may can be improved, but are sufficient for now.
             Added ability to retrieve grouping setting for either positive, negative, or both patterns
             Added ability to set grouping for either positive, negative, or both patterns
-            Added ability to get just any one of the 3 patterns
 
-To Do
-    Ability to set any one of the 3 patterns without having to redefine the entire pattern
 */
 
 -- get the grouping for the specified pattern
 ::method getGrouping
-    expose neg_mask pos_mask groupingSeparator
+    expose nPattern pPattern groupingSeparator
     use arg which_one
     which_one = which_one~translate
     if arg(1,'o') then
@@ -53,14 +63,14 @@ To Do
     select
         when which_one = 'P' then
             do
-                if pos_mask~pos(groupingSeparator) > 0 then
+                if pPattern~pos(groupingSeparator) > 0 then
                     output = .true
                 else
                     output = .false
             end
         when which_one = 'N' then
             do
-                if neg_mask~pos(groupingSeparator) > 0 then
+                if nPattern~pos(groupingSeparator) > 0 then
                     output = .true
                 else
                     output = .false
@@ -68,11 +78,11 @@ To Do
         otherwise
             do
                 output = ''
-                if pos_mask~pos(groupingSeparator) > 0 then
+                if pPattern~pos(groupingSeparator) > 0 then
                     output = output||.true
                 else
                     output = output||.false
-                if neg_mask~pos(groupingSeparator) > 0 then
+                if nPattern~pos(groupingSeparator) > 0 then
                     output = output','.true
                 else
                     output = output','.false
@@ -82,7 +92,7 @@ return output
 
 -- set the grouping for the specified pattern
 ::method setGrouping
-    expose neg_mask pos_mask groupingSeparator
+    expose nPattern pPattern groupingSeparator
     use arg which_one,oo
     if arg(1,'o') then
         raise syntax 93.900 array('You Must Specify A Which Pattern To Report')
@@ -94,69 +104,183 @@ return output
     if \oo~datatype('O') then
         raise syntax 93.900 array('You Must Specify .true Or .false As The Second Argument')
     select
-        when which_one = 'P' & oo & pos_mask~pos(groupingSeparator) = 0 then
-            pos_mask = groupingSeparator||pos_mask
-        when which_one = 'P' & \oo & pos_mask~pos(groupingSeparator) > 0 then
-            pos_mask = pos_mask~changeStr(groupingSeparator,'')
-        when which_one = 'N' & oo & neg_mask~pos(groupingSeparator) = 0 then
-            neg_mask = groupingSeparator||neg_mask
-        when which_one = 'N' & \oo & neg_mask~pos(groupingSeparator) > 0 then
-            neg_mask = neg_mask~changeStr(groupingSeparator,'')
+        when which_one = 'P' & oo & pPattern~pos(groupingSeparator) = 0 then
+            pPattern = groupingSeparator||pPattern
+        when which_one = 'P' & \oo & pPattern~pos(groupingSeparator) > 0 then
+            pPattern = pPattern~changeStr(groupingSeparator,'')
+        when which_one = 'N' & oo & nPattern~pos(groupingSeparator) = 0 then
+            nPattern = groupingSeparator||nPattern
+        when which_one = 'N' & \oo & nPattern~pos(groupingSeparator) > 0 then
+            nPattern = nPattern~changeStr(groupingSeparator,'')
         otherwise
             nop
     end
 return 0
 
--- get the pattern for the specified pattern
-::method getPattern
-    expose pos_prefix pos_mask pos_suffix neg_prefix neg_mask neg_suffix zero_prefix zero_mask zero_suffix have_zMask
-    use arg which_one
-    which_one = which_one~translate
-    if arg(1,'o') then
-        raise syntax 93.900 array('You Must Specify A Which Pattern To Report')
-    which_one = which_one~left(1)
-    if which_one~verify('PNZ') <> 0 then
-        raise syntax 93.900 array('You Must Which Pattern - "P"ositive, "N"egative, or "Z"ero')
-    select
-        when which_one = 'P' then
-            do
-                pp = ''
-                if pos_prefix \= '' then
-                    pp = '"'pos_prefix'"'
-                pm = ''
-                if pos_mask \= '' then
-                    pm = pos_mask
-                ps = ''
-                if pos_suffix \= '' then
-                    ps = '"'pos_suffix'"'
-                aPattern = pp||pm||ps
-            end
-        when which_one = 'N' then
-            do
-                np = ''
-                if neg_prefix \= '' then
-                    np = '"'neg_prefix'"'
-                nm = ''
-                if neg_mask \= '' then
-                    nm = neg_mask
-                ns = ''
-                if neg_suffix \= '' then
-                    ns = '"'neg_suffix'"'
-                aPattern = np||nm||ns
-            end
-        otherwise
-            do
-                if have_zMask then
-                    aPattern = '"'zero_mask'"'
-                else
-                    aPattern = 0
-            end
-    end
-return aPattern
+-- get/set postive prefix
+::attribute pPrefix get
+::attribute pPrefix set
+    expose pPrefix pPattern pSuffix nPrefix nPattern nSuffix zPattern have_zMask
+    use strict arg new_pattern
+    pPrefix = new_pattern
+    mask = ''
+    if pPrefix \= '' then
+        mask = '"'pPrefix'"'
+    mask = mask||pPattern
+    if pSuffix \= '' then
+        mask = mask||'"'pSuffix'"'
+    mask = mask';'
+    if nPrefix \= '' then
+        mask = mask'"'nPrefix'"'
+    mask = mask||nPattern
+    if nSuffix \= '' then
+        mask = mask'"'nSuffix'"'
+    if have_zMask then
+        mask = mask';'zPattern
+    self~pattern = mask
+return 0
 
--- set the pattern for the specified pattern
-::method setPattern
--- not completed
+-- get/set positive pattern
+::attribute pPattern get
+::attribute pPattern set
+    expose pPrefix pPattern pSuffix nPrefix nPattern nSuffix zPattern have_zMask
+    use strict arg new_pattern
+    pPattern = new_pattern
+    mask = ''
+    if pPrefix \= '' then
+        mask = '"'pPrefix'"'
+    mask = mask||pPattern
+    if pSuffix \= '' then
+        mask = mask||'"'pSuffix'"'
+    mask = mask';'
+    if nPrefix \= '' then
+        mask = mask'"'nPrefix'"'
+    mask = mask||nPattern
+    if nSuffix \= '' then
+        mask = mask'"'nSuffix'"'
+    if have_zMask then
+        mask = mask';'zPattern
+    self~pattern = mask
+return 0
+
+-- get/set positive suffix
+::attribute pSuffix get
+::attribute pSuffix set
+    expose pPrefix pPattern pSuffix nPrefix nPattern nSuffix zPattern have_zMask
+    use strict arg new_pattern
+    pSuffix = new_pattern
+    mask = ''
+    if pPrefix \= '' then
+        mask = '"'pPrefix'"'
+    mask = mask||pPattern
+    if pSuffix \= '' then
+        mask = mask||'"'pSuffix'"'
+    mask = mask';'
+    if nPrefix \= '' then
+        mask = mask'"'nPrefix'"'
+    mask = mask||nPattern
+    if nSuffix \= '' then
+        mask = mask'"'nSuffix'"'
+    if have_zMask then
+        mask = mask';'zPattern
+    self~pattern = mask
+return 0
+
+-- get/set negative prefix
+::attribute nPrefix get
+::attribute nPrefix set
+    expose pPrefix pPattern pSuffix nPrefix nPattern nSuffix zPattern have_zMask
+    use strict arg new_pattern
+    nPrefix = new_pattern
+    mask = ''
+    if pPrefix \= '' then
+        mask = '"'pPrefix'"'
+    mask = mask||pPattern
+    if pSuffix \= '' then
+        mask = mask||'"'pSuffix'"'
+    mask = mask';'
+    if nPrefix \= '' then
+        mask = mask'"'nPrefix'"'
+    mask = mask||nPattern
+    if nSuffix \= '' then
+        mask = mask'"'nSuffix'"'
+    if have_zMask then
+        mask = mask';'zPattern
+    self~pattern = mask
+return 0
+
+-- get/set negative pattern
+::attribute nPattern get
+::attribute nPattern set
+    expose pPrefix pPattern pSuffix nPrefix nPattern nSuffix zPattern have_zMask
+    use strict arg new_pattern
+    nPattern = new_pattern
+    mask = ''
+    if pPrefix \= '' then
+        mask = '"'pPrefix'"'
+    mask = mask||pPattern
+    if pSuffix \= '' then
+        mask = mask||'"'pSuffix'"'
+    mask = mask';'
+    if nPrefix \= '' then
+        mask = mask'"'nPrefix'"'
+    mask = mask||nPattern
+    if nSuffix \= '' then
+        mask = mask'"'nSuffix'"'
+    if have_zMask then
+        mask = mask';'zPattern
+    self~pattern = mask
+return 0
+
+-- get/set negative suffix
+::attribute nSuffix get
+::attribute nSuffix set
+    expose pPrefix pPattern pSuffix nPrefix nPattern nSuffix zPattern have_zMask
+    use strict arg new_pattern
+    nSuffix = new_pattern
+    mask = ''
+    if pPrefix \= '' then
+        mask = '"'pPrefix'"'
+    mask = mask||pPattern
+    if pSuffix \= '' then
+        mask = mask||'"'pSuffix'"'
+    mask = mask';'
+    if nPrefix \= '' then
+        mask = mask'"'nPrefix'"'
+    mask = mask||nPattern
+    if nSuffix \= '' then
+        mask = mask'"'nSuffix'"'
+    if have_zMask then
+        mask = mask';'zPattern
+    self~pattern = mask
+return 0
+
+::attribute zPattern get
+::attribute zPattern set
+    expose pPrefix pPattern pSuffix nPrefix nPattern nSuffix zPattern have_zMask
+    use strict arg new_pattern
+    zPattern = new_pattern
+    if zPattern = '' then
+        have_zMask = .false
+
+    mask = ''
+    if pPrefix \= '' then
+        mask = '"'pPrefix'"'
+    mask = mask||pPattern
+    if pSuffix \= '' then
+        mask = mask||'"'pSuffix'"'
+    mask = mask';'
+    if nPrefix \= '' then
+        mask = mask'"'nPrefix'"'
+    mask = mask||nPattern
+    if nSuffix \= '' then
+        mask = mask'"'nSuffix'"'
+    if have_zMask then
+        do
+            mask = mask';'zPattern
+        end
+    self~pattern = mask
+return 0
 
 -- get/set grouping size
 ::attribute groupingSize get
@@ -205,79 +329,79 @@ return 0
 
 -- This method is for internal use only
 ::method validateMask
-    expose mask pos_prefix pos_mask pos_suffix neg_prefix neg_mask neg_suffix zero_prefix zero_mask zero_suffix have_zMask the_mask the_prefix the_suffix
+    expose mask pPrefix pPattern pSuffix nPrefix nPattern nSuffix zero_prefix zPattern zero_suffix have_zMask the_mask the_prefix the_suffix
 
 -- see if there's a ; divider, if so can't be > 2
     if mask~countStr(';') > 2 then
         raise syntax 93.900 array('Pattern Can NOT Have More The 2 Semi-Colons')
 
 -- break down the complete pattern into its parts
-    parse var mask Wpos_mask';'Wneg_mask';'Wzero_mask
+    parse var mask WpPattern';'WnPattern';'WzPattern
 
 -- examine the positive pattern
-    self~examineMask(Wpos_mask,'P')
+    self~examineMask(WpPattern,'P')
 -- load the postive pattern parts
-    pos_mask = the_mask
-    pos_prefix = the_prefix
-    pos_suffix = the_suffix
+    pPattern = the_mask
+    pPrefix = the_prefix
+    pSuffix = the_suffix
 
 -- if no negative pattern specified, use the same positive pattern
-    if Wneg_mask = '' then
+    if WnPattern = '' then
         do
-            neg_prefix = '-'pos_prefix
-            neg_mask   = pos_mask
-            neg_suffix = pos_suffix
+            nPrefix = '-'pPrefix
+            nPattern   = pPattern
+            nSuffix = pSuffix
         end
     else
 -- examine the negative pattern
         do
-            self~examineMask(Wneg_mask,'N')
+            self~examineMask(WnPattern,'N')
 -- load the negative pattern parts
             if the_mask = '' then
-                neg_mask = pos_mask
+                nPattern = pPattern
             else
-                neg_mask = the_mask
+                nPattern = the_mask
 
             if the_prefix = '' then
-                neg_prefix = pos_prefix
+                nPrefix = pPrefix
             else
-                neg_prefix = the_prefix
+                nPrefix = the_prefix
 
             if the_suffix = '' then
-                neg_suffix = pos_suffix
+                nSuffix = pSuffix
             else
-                neg_suffix = the_suffix
+                nSuffix = the_suffix
         end
 
 -----------------------------------------------------------------------------------
--- examine all the pieces of the zero_mask
-    if Wzero_mask = '' then
+-- examine all the pieces of the zPattern
+    if WzPattern = '' then
         do
 -- use the pos variables if no zero mask is specified
-            zero_prefix = pos_prefix
-            zero_mask   = pos_mask
-            zero_suffix = pos_suffix
+            zero_prefix = pPrefix
+            zPattern   = pPattern
+            zero_suffix = pSuffix
             have_zMask = .false
         end
     else
         do
 -- ascertain that single and/or double quotes are paired
             have_zMask = .true
-            if Wzero_mask~pos("'") > 0 then
+            if WzPattern~pos("'") > 0 then
                 do
-                    if Wzero_mask~countStr("'") // 2 \= 0 then
+                    if WzPattern~countStr("'") // 2 \= 0 then
                         raise syntax 93.900 array('Single Quotes Must Be Matched In The Zero Pattern')
                 end
 
-            if Wzero_mask~pos('"') > 0 then
+            if WzPattern~pos('"') > 0 then
                 do
-                    if Wzero_mask~countStr('"') // 2 \= 0 then
+                    if WzPattern~countStr('"') // 2 \= 0 then
                         raise syntax 93.900 array('Double Quotes Must Be Matched In The Zero Pattern')
                 end
 -- set up used variables and strip the quotes
             zero_prefix = ''
-            zero_mask   = Wzero_mask~strip('b',"'")
-            zero_mask   = zero_mask~strip('b','"')
+            zPattern   = WzPattern~strip('b',"'")
+            zPattern   = zPattern~strip('b','"')
             zero_suffix = ''
         end
 
@@ -378,7 +502,7 @@ return 0
 
 -- do the actual formatting of the input number
 ::method format
-    expose pos_prefix pos_mask pos_suffix neg_prefix neg_mask neg_suffix zero_prefix zero_mask zero_suffix input have_zMask decimalSeparator groupingSeparator
+    expose pPrefix pPattern pSuffix nPrefix nPattern nSuffix zero_prefix zPattern zero_suffix input have_zMask decimalSeparator groupingSeparator
     use strict arg input
 -- an arbitrary value for now
     numeric digits 30
@@ -393,22 +517,22 @@ return 0
     select
         when save_input~abs = 0 & have_zMask then
             do
-                output = zero_mask
+                output = zPattern
             end
         when save_input = 0 then
             do
-                output = self~format2(zero_mask)
+                output = self~format2(zPattern)
                 output = zero_prefix||output||zero_suffix
             end
         when save_input > 0 then
             do
-                output = self~format2(pos_mask)
-                output = pos_prefix||output||pos_suffix
+                output = self~format2(pPattern)
+                output = pPrefix||output||pSuffix
             end
         when save_input < 0 then
             do
-                output = self~format2(neg_mask)
-                output = neg_prefix||output||neg_suffix
+                output = self~format2(nPattern)
+                output = nPrefix||output||nSuffix
 -- the format in ~format2 may have produced a 0 value
                 if output == '-0' then
                     output = 0
@@ -427,7 +551,7 @@ return output
 
 -- internal use only
 ::method format2
-    expose output input output zero_mask have_zMask groupingSize
+    expose output input output zPattern have_zMask groupingSize
     use strict arg mask2use
     numeric digits 30
     parse var mask2use m_part1'.'m_part2
@@ -443,7 +567,7 @@ return output
         when input = 0 & \have_zMask then
             output = 0
         when input = 0 then
-            output = zero_mask
+            output = zPattern
         otherwise
             do
 -- strip any trailing 0 or . from the formated result is no decimal places specified

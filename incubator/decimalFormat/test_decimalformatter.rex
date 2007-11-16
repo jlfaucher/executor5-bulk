@@ -35,47 +35,66 @@ Euro symbol (€).
         do
             ostream = .stream~new('.\df.txt')
             ostream~open('Write Replace')
+            ostream~lineout(date('s') '-' time('n'))
         end
 
 /* Decimal Number Formatting */
 
-    f = .decimalFormat~new('"$"#,##0.00;"-$"####.##')
-    say 'Patterns'
-    say 'All     ' f~Pattern
-    say 'Positive' f~getPattern('p')
-    say 'Negative' f~getPattern('n')
-    say 'Zero    ' f~getPattern('z')
+    f = .decimalFormat~new('"$"#,##0.00;"-$"####.##;"[0]"')
+
+    say 'Full'
+    say f~Pattern
     say
 
-    say 'Groupings'
-    say 'Positive' f~getGrouping('p')
-    say 'Negative' f~getGrouping('n')
-    say 'Both    ' f~getGrouping('b')
+    say 'pPattern'
+    say f~pPattern
+    f~pPattern = '0,000.00'
+    say f~pPattern
     say
 
-    say 'Positive' f~getGrouping('p')
-    f~setGrouping('p',.true)
-    say 'Positive' f~getGrouping('p')
-    f~setGrouping('p',.false)
-    say 'Positive' f~getGrouping('p')
+    say 'pPrefix'
+    say f~pPrefix
+    f~pPrefix = 'CD '
+    say f~pPrefix
+    say f~Pattern
     say
 
-    say 'Negative' f~getGrouping('n')
-    f~setGrouping('n',.true)
-    say 'Negative' f~getGrouping('n')
-    f~setGrouping('n',.false)
-    say 'Negative' f~getGrouping('n')
+    say 'pSuffix'
+    say '->'f~pSuffix'<-'
+    f~pSuffix = ' CR'
+    say '->'f~pSuffix'<-'
+    say f~Pattern
     say
 
-    say 'Grouping Size'
-    say 'Grouping Size' f~groupingSize
-    f~groupingSize = 4
-    say 'Grouping Size' f~groupingSize
+    say 'nPattern'
+    say f~nPattern
+    f~nPattern = '#,##0.00'
+    say f~nPattern
+    say
+
+    say 'nPrefix'
+    say f~nPrefix
+    f~nPrefix = '-CD('
+    say f~nPrefix
+    say f~Pattern
+    say
+
+    say 'nSuffix'
+    say '->'f~nSuffix'<-'
+    f~nSuffix = ')'
+    say '->'f~nSuffix'<-'
+    say f~Pattern
+    say
+
+    say 'zPattern'
+    say f~zPattern
+    f~zPattern = .nil
+    say '->'f~zPattern'<-'
+    say f~Pattern
     say
 
     say 'All will now be set back to defaults'
     say
-'pause'
 
     f = .decimalFormat~new()
 
@@ -143,6 +162,7 @@ Euro symbol (€).
 
     if logging then
         ostream~close
+
 exit
 
 DoIt:
