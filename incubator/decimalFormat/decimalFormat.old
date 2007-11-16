@@ -1,0 +1,539 @@
+/* decimalFormat.cls */
+::class decimalFormat public
+
+::method init
+    expose mask
+    use arg mask
+
+    if arg(1,'o') then
+        mask = .nil
+    else
+        self~validateMask
+
+::method validateMask
+    expose mask
+    -- step 1 - see if there's a ; divider, if so can't be but 1
+    if mask~countStr(';') > 1 then
+        do
+            say 1
+            say 1 / 0
+        end
+
+    -- step 2 - parse mask at ;
+    parse var mask pos_mask';'neg_mask
+
+    -- step 3 - test that pos_mask has no more than 1 period
+    if pos_mask~countStr('.') > 1 then
+        do
+            say 3
+            say 3 / 0
+        end
+
+    -- step 4 - ascertain that single and/or double quotes are paired
+    if pos_mask~pos("'") > 0 then
+        do
+            found_sq = .true
+            if pos_mask~countStr("'") // 2 \= 0 then
+                do
+                    say '4a'
+                    say 4a / 0
+                end
+        end
+    else
+        found_sq = .false
+
+    if pos_mask~pos('"') > 0 then
+        do
+            found_dq = .true
+            if pos_mask~countStr('"') // 2 \= 0 then
+                do
+                    say '4b'
+                    say 4b / 0
+                end
+        end
+    else
+        found_dq = .false
+
+    -- step 5 - pull out just the numeric mask
+    if found_sq then
+        do until pos_mask~pos("'") = 0
+            parse var pos_mask pos_mask"'"."'"pt2
+            pos_mask = pos_mask||pt2
+        end
+
+    if found_dq then
+        do until pos_mask~pos('"') = 0
+            parse var pos_mask pos_mask'"'.'"'pt2
+            pos_mask = pos_mask||pt2
+        end
+
+    -- Remove any + or - from pos_mask
+    pos_mask = pos_mask~strip('b','+')~strip('b','-')
+------------
+    -- step 6 - test that neg_mask has no more than 1 period
+    if neg_mask~countStr('.') > 1 then
+        do
+            say 6
+            say 3 / 0
+        end
+
+    -- step 7 - ascertain that single and/or double quotes are paired
+    if neg_mask~pos("'") > 0 then
+        do
+            found_sq = .true
+            if neg_mask~countStr("'") // 2 \= 0 then
+                do
+                    say '7a'
+                    say 7a / 0
+                end
+        end
+    else
+        found_sq = .false
+
+    if neg_mask~pos('"') > 0 then
+        do
+            found_dq = .true
+            if neg_mask~countStr('"') // 2 \= 0 then
+                do
+                    say '7b'
+                    say 7b / 0
+                end
+        end
+    else
+        found_dq = .false
+
+    -- step 8 - pull out just the numeric mask
+    if found_sq then
+        do until neg_mask~pos("'") = 0
+            parse var neg_mask neg_mask"'"."'"pt2
+            neg_mask = neg_mask||pt2
+        end
+
+    if found_dq then
+        do until neg_mask~pos('"') = 0
+            parse var neg_mask neg_mask'"'.'"'pt2
+            neg_mask = neg_mask||pt2
+        end
+
+    -- Remove any + or - from neg_mask
+    neg_mask = neg_mask~strip('b','+')~strip('b','-')
+
+    -- step 9 break down pos_mask into int & dec portions
+    parse var pos_mask m_int'.'m_dec
+
+    -- step 10 - # can not follow 0 in m_int
+    fp_z = m_int~pos('0')
+    if fp_z > 0 then
+        do
+            if m_int~pos('#',fp_z) > 0 then
+                do
+                    say 10
+                    say 10 / 0
+                end
+        end
+
+    -- step 11 - 0 can not follow # in m_dec
+    fp_p = m_dec~pos('#')
+    if fp_p > 0 then
+        do
+            if m_dec~pos('0',fp_p) > 0 then
+                do
+                    say 11
+                    say 11 / 0
+                end
+        end
+
+    -- step 12 break down pos_mask into int & dec portions
+    parse var neg_mask m_int'.'m_dec
+
+    -- step 13 - # can not follow 0 in m_int
+    fp_z = m_int~pos('0')
+    if fp_z > 0 then
+        do
+            if m_int~pos('#',fp_z) > 0 then
+                do
+                    say 13
+                    say 13 / 0
+                end
+        end
+
+    -- step 14 - 0 can not follow # in m_dec
+    fp_p = m_dec~pos('#')
+    if fp_p > 0 then
+        do
+            if m_dec~pos('0',fp_p) > 0 then
+                do
+                    say 14
+                    say 14 / 0
+                end
+        end
+
+-- should have a valid mask at this point
+
+::method getPattern
+    expose mask
+return mask
+
+::method setPattern
+    expose mask
+    use arg mask
+    self~validateMask
+
+::method formatNum
+    expose mask input output
+    use arg input
+    if arg(1,'o') then
+        do
+            say 101
+            say 101 / 0
+        end
+    if \input~datatype('n') then
+        do
+            say 102
+            say 102 / 0
+        end
+    if mask \== .nil & mask \= '' then
+        do
+            hm_char = .array~of('#', '0', '.', ',')
+            just_mask = .true
+            do i = 1 to mask~length
+                if \hm_char~hasItem(mask~substr(i,1)) then
+                    do
+                        just_mask = .false
+                        leave i
+                    end
+            end
+        end
+
+    select
+        when mask == '' | mask == .nil then
+            self~simpleMask1
+        when just_mask then
+            self~simpleMask2
+        otherwise
+            do
+                if mask~pos(';') > 0 then
+                    self~complexMask1
+            end
+    end
+return output
+
+::method simpleMask1
+    expose mask input output
+    numeric digits 30
+    output = ''
+    parse var input i_int'.'i_dec
+    i_dec = i_dec~strip('t','0')
+    i_int = i_int~reverse
+    do while i_int <> ''
+        parse var i_int thousand_part 4 i_int
+        if output == '' then
+            output = thousand_part
+        else
+            output = output','thousand_part
+    end
+    output = output~reverse
+
+    if mask == .nil & output == '' then
+        output = '0'||output
+
+    if mask == '' & output == '-0' then
+        output = output~changeStr('-0','-')
+
+    if i_dec \= '' then
+        output = output'.'i_dec
+
+    if output == '' then
+        output = 0
+return output
+
+::method simpleMask2
+    expose mask input output
+    numeric digits 30
+    if input < 0 then
+        do
+            is_negative = .true
+            input = input~abs()
+        end
+    else
+        is_negative = .false
+
+    parse var mask m_part1'.'m_part2
+    if m_part2 \== '' then
+        do
+            input = input~format(,m_part2~length)
+        end
+    else
+        input = input~format(,0)
+
+    if m_part2 \== '' & m_part_2~pos('0') < 1 then
+        do
+            input = input~strip('t','0')
+            input = input~strip('t','.')
+        end
+
+    parse var input pt1'.'pt2
+
+-- deal with pt1
+    if m_part1~pos(',') > 0 then
+        do
+            i_int = pt1~reverse
+            output = ''
+            do while i_int <> ''
+                parse var i_int thousand_part 4 i_int
+                if output == '' then
+                    output = thousand_part
+                else
+                    output = output','thousand_part
+            end
+            output = output~reverse
+        end
+    else
+        output = pt1
+
+    width = m_part1~length
+    num0 = m_part1~countStr('0')
+    if num0 > 1 then
+        do
+            if output~length < num0 then
+                do until output~length = num0
+                    output = '0'||output
+                end
+        end
+
+
+    op_pt1 = output
+
+-- deal with pt2
+    if pt2 = '' then
+        do
+            num0 = m_part2~countStr('0')
+            if num0 < 1 then
+                output = op_pt1
+            else
+                do
+                    output = op_pt1'.'||'0'~copies(num0)
+                end
+        end
+    else
+        do
+            op_pt2 = pt2
+            width = m_part2~length
+            num0 = m_part2~countStr('0')
+            if num0 > 1 then
+                do
+                    if op_pt2~length < width then
+                        do until op_pt2~length = width
+                            op_pt2 = op_pt2||'0'
+                        end
+                end
+            output = op_pt1'.'op_pt2
+        end
+
+    if is_negative then
+        output = '-'output
+return
+
+::method complexMask1
+    expose mask input output
+    numeric digits 30
+    if input >= 0 then
+        is_positive = .true
+    else
+        is_positive = .false
+
+    parse var mask pmask';'nmask
+    hm_char = .array~of('#', '0', '.', ',')
+    just_pmask = .true
+    do i = 1 to pmask~length
+        if \hm_char~hasItem(pmask~substr(i,1)) then
+            do
+                just_pmask = .false
+                leave i
+            end
+    end
+
+    just_nmask = .true
+    do i = 1 to nmask~length
+        if \hm_char~hasItem(pmask~substr(i,1)) then
+            do
+                just_nmask = .false
+                leave i
+            end
+    end
+
+    select
+        when is_positive & just_pmask then
+            do
+                if input < 0 then
+                    do
+                        is_negative = .true
+                        input = input * -1
+                    end
+                else
+                    is_negative = .false
+
+                parse var pmask m_part1'.'m_part2
+                if m_part2 \== '' then
+                    do
+                        input = input~format(,m_part2~length)
+                    end
+                else
+                    input = input~format(,0)
+
+                if m_part2 \== '' & m_part_2~pos('0') < 1 then
+                    do
+                        input = input~strip('t','0')
+                        input = input~strip('t','.')
+                    end
+
+                parse var input pt1'.'pt2
+
+                if m_part1~pos(',') > 0 then
+                    do
+                        i_int = pt1~reverse
+                        output = ''
+                        do while i_int <> ''
+                            parse var i_int thousand_part 4 i_int
+                            if output == '' then
+                                output = thousand_part
+                            else
+                                output = output','thousand_part
+                        end
+                        output = output~reverse
+                    end
+                else
+                    output = pt1
+
+                width = m_part1~length
+                num0 = m_part1~countStr('0')
+                if num0 > 1 then
+                    do
+                        if output~length < num0 then
+                            do until output~length = num0
+                                output = '0'||output
+                            end
+                    end
+
+
+                op_pt1 = output
+
+                if pt2 = '' then
+                    do
+                        num0 = m_part2~countStr('0')
+                        if num0 < 1 then
+                            output = op_pt1
+                        else
+                            do
+                                output = op_pt1'.'||'0'~copies(num0)
+                            end
+                    end
+                else
+                    do
+                        op_pt2 = pt2
+                        width = m_part2~length
+                        num0 = m_part2~countStr('0')
+                        if num0 > 1 then
+                            do
+                                if op_pt2~length < width then
+                                    do until op_pt2~length = width
+                                        op_pt2 = op_pt2||'0'
+                                    end
+                            end
+                        output = op_pt1'.'op_pt2
+                    end
+            end
+--
+        when \is_positive & just_nmask then
+            do
+                if input < 0 then
+                    do
+                        is_negative = .true
+                        input = input * -1
+                    end
+                else
+                    is_negative = .false
+
+                parse var nmask m_part1'.'m_part2
+                if m_part2 \== '' then
+                    do
+                        input = input~format(,m_part2~length)
+                    end
+                else
+                    input = input~format(,0)
+
+                if m_part2 \== '' & m_part_2~pos('0') < 1 then
+                    do
+                        input = input~strip('t','0')
+                        input = input~strip('t','.')
+                    end
+
+                parse var input pt1'.'pt2
+
+                if m_part1~pos(',') > 0 then
+                    do
+                        i_int = pt1~reverse
+                        output = ''
+                        do while i_int <> ''
+                            parse var i_int thousand_part 4 i_int
+                            if output == '' then
+                                output = thousand_part
+                            else
+                                output = output','thousand_part
+                        end
+                        output = output~reverse
+                    end
+                else
+                    output = pt1
+
+                width = m_part1~length
+                num0 = m_part1~countStr('0')
+                if num0 > 1 then
+                    do
+                        if output~length < num0 then
+                            do until output~length = num0
+                                output = '0'||output
+                            end
+                    end
+
+
+                op_pt1 = output
+
+                if pt2 = '' then
+                    do
+                        num0 = m_part2~countStr('0')
+                        if num0 < 1 then
+                            output = op_pt1
+                        else
+                            do
+                                output = op_pt1'.'||'0'~copies(num0)
+                            end
+                    end
+                else
+                    do
+                        op_pt2 = pt2
+                        width = m_part2~length
+                        num0 = m_part2~countStr('0')
+                        if num0 > 1 then
+                            do
+                                if op_pt2~length < width then
+                                    do until op_pt2~length = width
+                                        op_pt2 = op_pt2||'0'
+                                    end
+                            end
+                        output = op_pt1'.'op_pt2
+                    end
+                if is_negative then
+                    output = '-'output
+            end
+
+        otherwise
+            output = ''
+    end
+
+
+return output
+
+
+
+

@@ -1,0 +1,31 @@
+/* test_decimalFormat.rex */
+    call SysCls
+
+    formatter = .decimalFormat~new()
+    say 'Mask..............:' formatter~getMask
+    say 'Currency Symbol...:' formatter~getCurrencySymbol
+    say 'Separators........:' formatter~getSeparators
+    say 'Pos/Neg Indicators:' formatter~getPositiveNegativeIndicators
+    say
+
+    formatter = .decimalFormat~new('###.##','€','.,','(/)')
+    say 'Mask..............:' formatter~getMask
+    say 'Currency Symbol...:' formatter~getCurrencySymbol
+    say 'Separators........:' formatter~getSeparators
+    say 'Pos/Neg Indicators:' formatter~getPositiveNegativeIndicators
+    say
+
+    formatter~setMask('')
+    say 'Mask..............:' formatter~getMask
+    formatter~setCurrencySymbol('$')
+    say 'Currency Symbol...:' formatter~getCurrencySymbol
+    formatter~setSeparators('.,')
+    say 'Separators........:' formatter~getSeparators
+    formatter~setPositiveNegativeIndicators('DB/CR')
+    say 'Pos/Neg Indicators:' formatter~getPositiveNegativeIndicators
+    say formatter~applyMask(1234.56)
+    say formatter~applyMask(-1234.56)
+
+
+
+::requires 'decimalFormat.cls'
