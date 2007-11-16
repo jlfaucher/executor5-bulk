@@ -1332,10 +1332,20 @@ that dimension, the array is expanded to the new dimension size.</para>
 <indexterm><primary>examples</primary>
 <secondary>put method</secondary></indexterm>
 <programlisting>
-   a = .array~new
-   a~put(1, "Fred")  -- a = .array~of("Fred")
-   a~put(2, "Mike")  -- a = .array~of("Fred", "Mike")
-   a~put(1, "Mike")  -- a = .array~of("Mike", "Mike")
+a = .array~new
+a~put("Fred", 1) -- a = .array~of("Fred")
+a~put("Mike", 2) -- a = .array~of("Fred", "Mike")
+a~put("Mike", 1) -- a = .array~of("Mike", "Mike")
+
+do name over a
+  say name
+end
+
+/* Output would be: */
+
+Mike
+Mike
+
 </programlisting>
 </section>
 
