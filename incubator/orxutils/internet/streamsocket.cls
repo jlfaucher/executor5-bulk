@@ -214,6 +214,8 @@ return (state || ':' description)~strip()
 /*----------------------------------------------------------------------------*/
 /* Method: init                                                               */
 /* Description: instance initialization                                       */
+/*              If only one argument is supplied it is assumed to be a        */
+/*              Socket class instance.                                        */
 /* Arguments:                                                                 */
 /*         host    - the hostname or ip address                               */
 /*         port    - the port number                                          */
@@ -222,16 +224,27 @@ return (state || ':' description)~strip()
 
 ::method init
 expose state description s hostname port opened bufsize rcvbuf
-use strict arg hostname, port, bufsize = 4096
-opened = .false
-rcvbuf = .mutablebuffer~new(, bufsize)
-s = .Socket~new('AF_INET', 'SOCK_STREAM', 0)
-if s~errno <> '' then do
-   state = 'ERROR'
-   description = s~errno
-   raise error 5 array('Socket') return
-   return
+if arg() = 1 then do
+   use strict arg s
+   if \s~isA(.Socket) then ,
+    raise syntax 93.914 array (1, 'a Socket class instance', address)
+   hostname = 'unknown'
+   port = 'unknown'
+   bufsize = 4096
+   opened = .true
    end
+else do
+   use strict arg hostname, port, bufsize = 4096
+   opened = .false
+   s = .Socket~new('AF_INET', 'SOCK_STREAM', 0)
+   if s~errno <> '' then do
+      state = 'ERROR'
+      description = s~errno
+      raise error 5 array('Socket') return
+      return
+      end
+   end
+rcvbuf = .mutablebuffer~new(, bufsize)
 state = 'READY'
 description = ''
 return
@@ -318,6 +331,11 @@ return 0
 
 ::method open
 expose state description s opened hostname port
+if opened then do
+   state = 'READY'
+   description = ''
+   return self~description
+   end
 use strict arg
 if opened = .true then do
    state = 'READY'

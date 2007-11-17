@@ -76,14 +76,14 @@ do while \stop
       say 'Error accepting new socket'
       iterate
       end
+   -- turn it into an open streamsocket
+   css = .StreamSocket~new(cs)
    -- receive the command from the client
-   cmd = cs~recv(4096)
+   cmd = css~linein()
    -- echo the command back to the client
-   cs~send(cmd)
+   css~lineout(cmd)
    -- close the client connection socket
-   cs~close()
-   -- we received this from an ooRexx stream so strip the CRLF
-   cmd = cmd~substr(1, cmd~pos('0D0A'x) - 1)
+   css~close()
    -- if the command was stop then stop the server
    if cmd~upper() = 'STOP' then do
       stop = .true
