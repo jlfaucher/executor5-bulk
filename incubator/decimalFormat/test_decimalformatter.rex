@@ -1,4 +1,4 @@
-/* decimalformatter.rex */
+/* test_decimalformatter.rex */
 
 /*
 This demo program will create a text file named df.txt

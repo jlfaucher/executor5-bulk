@@ -51,6 +51,19 @@ Beta .2     11/16/07
         Changed the way numeric digits is set from an arbitrary value of 30
         to a computed value based on the length of the input + the number of decimal places
         specified in the pattern.
+
+Beta .3     11/17/07
+        Created single method (buildMask) for duplicated code in the following
+            pPrefix
+            pPattern
+            pSuffix
+
+            nPrefix
+            nPattern
+            nSuffix
+
+            zPattern
+
 */
 
 -- get the grouping for the specified pattern
@@ -126,21 +139,7 @@ return 0
     expose pPrefix pPattern pSuffix nPrefix nPattern nSuffix zPattern have_zMask
     use strict arg new_pattern
     pPrefix = new_pattern
-    mask = ''
-    if pPrefix \= '' then
-        mask = '"'pPrefix'"'
-    mask = mask||pPattern
-    if pSuffix \= '' then
-        mask = mask||'"'pSuffix'"'
-    mask = mask';'
-    if nPrefix \= '' then
-        mask = mask'"'nPrefix'"'
-    mask = mask||nPattern
-    if nSuffix \= '' then
-        mask = mask'"'nSuffix'"'
-    if have_zMask then
-        mask = mask';'zPattern
-    self~pattern = mask
+    self~buildMask
 return 0
 
 -- get/set positive pattern
@@ -149,21 +148,7 @@ return 0
     expose pPrefix pPattern pSuffix nPrefix nPattern nSuffix zPattern have_zMask
     use strict arg new_pattern
     pPattern = new_pattern
-    mask = ''
-    if pPrefix \= '' then
-        mask = '"'pPrefix'"'
-    mask = mask||pPattern
-    if pSuffix \= '' then
-        mask = mask||'"'pSuffix'"'
-    mask = mask';'
-    if nPrefix \= '' then
-        mask = mask'"'nPrefix'"'
-    mask = mask||nPattern
-    if nSuffix \= '' then
-        mask = mask'"'nSuffix'"'
-    if have_zMask then
-        mask = mask';'zPattern
-    self~pattern = mask
+    self~buildMask
 return 0
 
 -- get/set positive suffix
@@ -172,21 +157,7 @@ return 0
     expose pPrefix pPattern pSuffix nPrefix nPattern nSuffix zPattern have_zMask
     use strict arg new_pattern
     pSuffix = new_pattern
-    mask = ''
-    if pPrefix \= '' then
-        mask = '"'pPrefix'"'
-    mask = mask||pPattern
-    if pSuffix \= '' then
-        mask = mask||'"'pSuffix'"'
-    mask = mask';'
-    if nPrefix \= '' then
-        mask = mask'"'nPrefix'"'
-    mask = mask||nPattern
-    if nSuffix \= '' then
-        mask = mask'"'nSuffix'"'
-    if have_zMask then
-        mask = mask';'zPattern
-    self~pattern = mask
+    self~buildMask
 return 0
 
 -- get/set negative prefix
@@ -195,21 +166,7 @@ return 0
     expose pPrefix pPattern pSuffix nPrefix nPattern nSuffix zPattern have_zMask
     use strict arg new_pattern
     nPrefix = new_pattern
-    mask = ''
-    if pPrefix \= '' then
-        mask = '"'pPrefix'"'
-    mask = mask||pPattern
-    if pSuffix \= '' then
-        mask = mask||'"'pSuffix'"'
-    mask = mask';'
-    if nPrefix \= '' then
-        mask = mask'"'nPrefix'"'
-    mask = mask||nPattern
-    if nSuffix \= '' then
-        mask = mask'"'nSuffix'"'
-    if have_zMask then
-        mask = mask';'zPattern
-    self~pattern = mask
+    self~buildMask
 return 0
 
 -- get/set negative pattern
@@ -218,21 +175,7 @@ return 0
     expose pPrefix pPattern pSuffix nPrefix nPattern nSuffix zPattern have_zMask
     use strict arg new_pattern
     nPattern = new_pattern
-    mask = ''
-    if pPrefix \= '' then
-        mask = '"'pPrefix'"'
-    mask = mask||pPattern
-    if pSuffix \= '' then
-        mask = mask||'"'pSuffix'"'
-    mask = mask';'
-    if nPrefix \= '' then
-        mask = mask'"'nPrefix'"'
-    mask = mask||nPattern
-    if nSuffix \= '' then
-        mask = mask'"'nSuffix'"'
-    if have_zMask then
-        mask = mask';'zPattern
-    self~pattern = mask
+    self~buildMask
 return 0
 
 -- get/set negative suffix
@@ -241,21 +184,7 @@ return 0
     expose pPrefix pPattern pSuffix nPrefix nPattern nSuffix zPattern have_zMask
     use strict arg new_pattern
     nSuffix = new_pattern
-    mask = ''
-    if pPrefix \= '' then
-        mask = '"'pPrefix'"'
-    mask = mask||pPattern
-    if pSuffix \= '' then
-        mask = mask||'"'pSuffix'"'
-    mask = mask';'
-    if nPrefix \= '' then
-        mask = mask'"'nPrefix'"'
-    mask = mask||nPattern
-    if nSuffix \= '' then
-        mask = mask'"'nSuffix'"'
-    if have_zMask then
-        mask = mask';'zPattern
-    self~pattern = mask
+    self~buildMask
 return 0
 
 ::attribute zPattern get
@@ -265,7 +194,11 @@ return 0
     zPattern = new_pattern
     if zPattern = '' then
         have_zMask = .false
+    self~buildMask
+return 0
 
+::method buildMask
+    expose mask pPrefix pPattern pSuffix nPrefix nPattern nSuffix zPattern have_zMask
     mask = ''
     if pPrefix \= '' then
         mask = '"'pPrefix'"'
