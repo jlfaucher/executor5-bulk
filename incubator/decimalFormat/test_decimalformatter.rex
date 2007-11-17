@@ -49,9 +49,6 @@ Euro symbol (€).
             ostream~lineout(' ')
         end
 
-
-    f = .decimalFormat~new('"$"#,##0.00;"-$"####.##;"[0]"')
-
     dline =  'Full'             ; call Logit
     dline =  f~Pattern          ; call Logit
     dline = ''                  ; call Logit

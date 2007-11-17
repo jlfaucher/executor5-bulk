@@ -48,6 +48,9 @@ Beta .2     11/16/07
             Added ability to retrieve grouping setting for either positive, negative, or both patterns
             Added ability to set grouping for either positive, negative, or both patterns
 
+        Changed the way numeric digits is set from an arbitrary value of 30
+        to a computed value based on the length of the input + the number of decimal places
+        specified in the pattern.
 */
 
 -- get the grouping for the specified pattern
@@ -516,7 +519,8 @@ return 0
     ph0 = dec_p~countStr('0')
     if ph0 > adder then
         adder = ph0
-    numeric digits input~length + adder
+    if input~length + adder > 9 then
+        numeric digits input~length + adder
 
     if \input~datatype('n') then
         raise syntax 93.904 array(1,arg(1))
@@ -576,7 +580,8 @@ return output
     ph0 = dec_p~countStr('0')
     if ph0 > adder then
         adder = ph0
-    numeric digits input~length + adder
+    if input~length + adder > 9 then
+        numeric digits input~length + adder
 
     parse var mask2use m_part1'.'m_part2
 -- format input based on the length of the decimal portion of the mask
