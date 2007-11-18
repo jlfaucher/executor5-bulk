@@ -64,6 +64,11 @@ Beta .3     11/17/07
 
             zPattern
 
+
+Beta .3.1   11/18/07
+        Move check for decimalSeparator/groupingSeparator to just before they are applied.
+        Ascertain that a comma does not follow a decimal in mask portion of patterns
+
 */
 
 -- get the grouping for the specified pattern
@@ -234,8 +239,10 @@ return 0
     use strict arg new_separator
     if new_separator~length <> 1 then
         raise syntax 93.900 array('Decimal Separator Must Have A Length of 1')
+/*
     if new_separator = groupingSeparator then
         raise syntax 93.900 array('Decimal Separator Can Not Be The Same As The Grouping Separator')
+*/
     decimalSeparator = new_separator
 return 0
 
@@ -246,8 +253,10 @@ return 0
     use strict arg new_separator
     if new_separator~length <> 1 then
         raise syntax 93.900 array('Grouping Separator Must Have A Length of 1')
+/*
     if new_separator = decimalSeparator then
         raise syntax 93.900 array('Grouping Separator Can Not Be The Same As The Decimal Separator')
+*/
    groupingSeparator = new_separator
 return 0
 
@@ -434,6 +443,18 @@ return 0
             raise syntax 93.900 array('The Mask Portion Of The Negative Pattern Can Not Contain Characters Other Than "#,0."')
         else
             raise syntax 93.900 array('The Mask Portion Of The Positive Pattern Can Not Contain Characters Other Than "#,0."')
+
+-- verify that there is no more than 1 decimal in the pattern mask
+    first_d = the_mask~pos('.')
+    if first_d  > 0 then
+        next_c = the_mask~pos(',',first_d+1)
+    if next_c > 0 then
+        if np = 'N' then
+            raise syntax 93.900 array('A Comma Can Not Follow A Decimal In The Mask Portion Of The Negative Pattern')
+        else
+            raise syntax 93.900 array('A Comma Can Not Follow A Decimal In The Mask Portion Of The Positive Pattern')
+
+
 return 0
 
 -- do the actual formatting of the input number
@@ -491,6 +512,11 @@ return 0
     end
 
 -- ELP Fix (possibly use a mutable buffer)
+
+-- ihere
+    if groupingSeparator = decimalSeparator then
+        raise syntax 93.900 array('Grouping & Decimal Separators Can Not Be The Same')
+
     if groupingSeparator \= ',' then
         output = output~changeStr(',',.endOfLine)
     if decimalSeparator \= '.' then
