@@ -269,6 +269,7 @@ return mask
 ::attribute pattern set
     expose mask
     use strict arg mask
+say 1 mask
     self~validateMask
 return 0
 
@@ -447,13 +448,14 @@ return 0
 -- verify that there is no more than 1 decimal in the pattern mask
     first_d = the_mask~pos('.')
     if first_d  > 0 then
-        next_c = the_mask~pos(',',first_d+1)
-    if next_c > 0 then
-        if np = 'N' then
-            raise syntax 93.900 array('A Comma Can Not Follow A Decimal In The Mask Portion Of The Negative Pattern')
-        else
-            raise syntax 93.900 array('A Comma Can Not Follow A Decimal In The Mask Portion Of The Positive Pattern')
-
+        do
+            next_c = the_mask~pos(',',first_d+1)
+            if next_c > 0 then
+            if np = 'N' then
+                raise syntax 93.900 array('A Comma Can Not Follow A Decimal In The Mask Portion Of The Negative Pattern')
+            else
+                raise syntax 93.900 array('A Comma Can Not Follow A Decimal In The Mask Portion Of The Positive Pattern')
+        end
 
 return 0
 
