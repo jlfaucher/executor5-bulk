@@ -113,7 +113,7 @@ return output
 
 -- set the grouping for the specified pattern
 ::method setGrouping
-    expose nPattern pPattern groupingSeparator
+    expose nPattern pPattern --groupingSeparator
     use arg which_one,oo
     if arg(1,'o') then
         raise syntax 93.900 array('You Must Specify A Which Pattern To Report')
@@ -125,6 +125,8 @@ return output
     if \oo~datatype('O') then
         raise syntax 93.900 array('You Must Specify .true Or .false As The Second Argument')
     select
+/*
+        end
         when which_one = 'P' & oo & pPattern~pos(groupingSeparator) = 0 then
             pPattern = groupingSeparator||pPattern
         when which_one = 'P' & \oo & pPattern~pos(groupingSeparator) > 0 then
@@ -133,6 +135,34 @@ return output
             nPattern = groupingSeparator||nPattern
         when which_one = 'N' & \oo & nPattern~pos(groupingSeparator) > 0 then
             nPattern = nPattern~changeStr(groupingSeparator,'')
+*/
+        when which_one = 'P' & oo & pPattern~pos(',') = 0 then
+            pPattern = ','||pPattern
+        when which_one = 'P' & \oo & pPattern~pos(',') > 0 then
+            pPattern = pPattern~changeStr(',','')
+        when which_one = 'N' & oo & nPattern~pos(',') = 0 then
+            nPattern = ','||nPattern
+        when which_one = 'N' & \oo & nPattern~pos(',') > 0 then
+            nPattern = nPattern~changeStr(',','')
+
+        when which_one = 'B' then
+            do
+                if oo then
+                    do
+                        if pPattern~pos(',') = 0 then
+                            pPattern = ','pPattern
+                        if nPattern~pos(',') = 0 then
+                            nPattern = ','nPattern
+                    end
+                else
+                    do
+                        if pPattern~pos(',') > 0 then
+                            pPattern = pPattern~changeStr(',','')
+                        if nPattern~pos(',') > 0 then
+                            nPattern = nPattern~changeStr(',','')
+                    end
+            end
+
         otherwise
             nop
     end
@@ -235,15 +265,12 @@ return 0
 -- get/set decimalSeparator
 ::attribute decimalSeparator get
 ::attribute decimalSeparator set
-    expose decimalSeparator groupingSeparator
+    expose decimalSeparator
     use strict arg new_separator
     if new_separator~length <> 1 then
         raise syntax 93.900 array('Decimal Separator Must Have A Length of 1')
-/*
-    if new_separator = groupingSeparator then
-        raise syntax 93.900 array('Decimal Separator Can Not Be The Same As The Grouping Separator')
-*/
     decimalSeparator = new_separator
+
 return 0
 
 -- get/set groupingSeparator
@@ -253,10 +280,6 @@ return 0
     use strict arg new_separator
     if new_separator~length <> 1 then
         raise syntax 93.900 array('Grouping Separator Must Have A Length of 1')
-/*
-    if new_separator = decimalSeparator then
-        raise syntax 93.900 array('Grouping Separator Can Not Be The Same As The Decimal Separator')
-*/
    groupingSeparator = new_separator
 return 0
 
@@ -269,7 +292,6 @@ return mask
 ::attribute pattern set
     expose mask
     use strict arg mask
-say 1 mask
     self~validateMask
 return 0
 
@@ -462,7 +484,6 @@ return 0
 -- do the actual formatting of the input number
 ::method format
     expose pPrefix pPattern pSuffix nPrefix nPattern nSuffix zero_prefix zPattern zero_suffix input have_zMask decimalSeparator groupingSeparator
--- an arbitrary value for now
     use strict arg input
 
 -- set numeric digits to the length of input + the number of zeros in the decimal part of the patterns

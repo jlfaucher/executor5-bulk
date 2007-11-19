@@ -1,0 +1,619 @@
+#!/usr/bin/rexx
+/*
+   name:             decimalFormat.testUnit
+   author:           Lee Peedin
+   date:             2007/11/19
+   version:          1.0
+
+-- line commented lines are ignored, when building the directory of infos from this header
+   changed:
+
+   languageLevel:    6.02
+   purpose:          Test the methods of the class decimalFormat class.
+   remark:           ---
+
+   license:          CPL 1.0 (Common Public License v1.0, see below)
+   link:
+
+// category needs not to be numbered, importance is given by position (1=most important)
+   category:         ooRexx
+
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+-- This is a Windows specific test case.  If not on Windows, don't execute and
+-- return an empty list to a, possible, caller.
+    if .ooRexxUnit.OSName <> "WINDOWS" then return .list~new
+
+testUnitClass=.decimalFormat.testUnit  -- change accordingly
+-------------------------------------------------------------------------------------------
+   /* list of array objects, each containing the testUnit class object and an
+      optional list of mandatory test case methods name                       */
+mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
+testUnitList=.list~of(.array~of(testUnitClass, mandatoryTestMethods))
+
+-------------------------------------------------------------------------------------------
+-- ===> the following code needs not to be individualized                              <===
+
+   -- read top comment, containing infos about this program
+arrLines=.array~new
+do i=1 to 150 until arrLines[i]="*/"
+   arrLines[i]=sourceline(i)
+end
+      -- supply information for the testClass(es) in this file; the class attribute
+      -- "TestCaseInfo" (a directory object, index points to a queue) will store
+      -- the parsed infos
+aTestUnitClass=testUnitList~at(testUnitList~first)[1] -- get first testClass
+
+   -- will parse the array lines and store result in class object
+call makeDirTestInfo aTestUnitClass, arrLines
+tmpDir=aTestUnitClass~TestCaseInfo
+parse source s   -- op_sys invocationType fullPathToThisFile
+tmpDir~setentry("test_Case-source", s)
+   -- now add this directory to other testCase classes, if any left
+do arr over testUnitList
+   if arr[1]=aTestUnitClass then iterate  -- already handled
+   arr[1]~TestCaseInfo=tmpDir             -- save info in class object
+end
+
+-- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
+-- and set it to .false; this way the independent local invocation of the tests is inhibited
+if .local~hasentry("bRunTestsLocally")=.false then
+   .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
+
+if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
+do
+   ts=.testSuite~new             -- create a testSuite
+   do arr over testUnitList
+      -- create a testSuite for the given test case class, use all its testmethods
+      ts~addTest( .testSuite~new(arr[1]))
+   end
+   -- testResult=.testSuite~new(testUnitClass)~run
+   testResult=ts~run       -- now run all the tests
+
+    call simpleFormatTestResults testResult
+end
+
+   /* return list of array objects containing test case classes and
+      optionally list of mandatory test methods                      */
+return testUnitList
+
+::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'decimalFormat.cls'
+
+-- class named exactly like file
+::class "decimalFormat.testUnit" subclass TestCase public
+
+::method 'test_01Create'
+    f = .decimalFormat~new()
+    expected = 'a decimalFormat'
+    self~assertSame('subTest1',expected,f)
+
+::method 'test_02Defaults'
+    f = .decimalFormat~new()
+    self~assertSame('subTest1','#,###.##',f~pattern)
+    self~assertSame('subTest2',.true,f~getGrouping('p'))
+    self~assertSame('subTest3',.true,f~getGrouping('n'))
+    self~assertSame('subTest4',.true','.true,f~getGrouping('b'))
+    self~assertSame('subTest5',3,f~groupingSize)
+    self~assertSame('subTest6','.',f~decimalSeparator)
+    self~assertSame('subTest7',',',f~groupingSeparator)
+    self~assertSame('subTest8','',f~pPrefix)
+    self~assertSame('subTest9','#,###.##',f~pPattern)
+    self~assertSame('subTest10','',f~pSuffix)
+    self~assertSame('subTest11','-',f~nPrefix)
+    self~assertSame('subTest12','#,###.##',f~nPattern)
+    self~assertSame('subTest13','',f~nSuffix)
+    self~assertSame('subTest14','#,###.##',f~zPattern)
+
+::method 'test_03'
+    f = .decimalFormat~new('"$"#,##0.00"DB ";"-$"###0.00" CR";"[0]"')
+    self~assertSame('subTest1','"$"#,##0.00"DB ";"-$"###0.00" CR";"[0]"',f~pattern)
+    self~assertSame('subTest2',.true,f~getGrouping('p'))
+    self~assertSame('subTest3',.false,f~getGrouping('n'))
+    self~assertSame('subTest4',.true','.false,f~getGrouping('b'))
+    self~assertSame('subTest5',3,f~groupingSize)
+    self~assertSame('subTest6','.',f~decimalSeparator)
+    self~assertSame('subTest7',',',f~groupingSeparator)
+    self~assertSame('subTest8','$',f~pPrefix)
+    self~assertSame('subTest9','#,##0.00',f~pPattern)
+    self~assertSame('subTest10','DB ',f~pSuffix)
+    self~assertSame('subTest11','-$',f~nPrefix)
+    self~assertSame('subTest12','###0.00',f~nPattern)
+    self~assertSame('subTest13',' CR',f~nSuffix)
+    self~assertSame('subTest14','[0]',f~zPattern)
+
+::method 'test_04'
+    f = .decimalFormat~new()
+    self~assertSame('subTest1',0,f~setGrouping('p',.false))
+    self~assertSame('subTest2',.false,f~getGrouping('p'))
+
+    self~assertSame('subTest3',0,f~setGrouping('n',.true))
+    self~assertSame('subTest4',.true,f~getGrouping('n'))
+
+    self~assertSame('subTest5',0,f~setGrouping('b',.true))
+    self~assertSame('subTest6',.true','.true,f~getGrouping('b'))
+
+    self~assertSame('subTest7',0,f~setGrouping('b',.false))
+    self~assertSame('subTest8',.false','.false,f~getGrouping('b'))
+
+::method 'test05'
+    f = .decimalFormat~new()
+    self~assertSame('subTest1','7,496.53',f~format(7496.53))
+    self~assertSame('subTest2','7,496.53',f~format(7496.534))
+    self~assertSame('subTest3','7,496.54',f~format(7496.537))
+    self~assertSame('subTest4','.53',f~format(.534))
+    self~assertSame('subTest5','.54',f~format(.537))
+
+    self~assertSame('subTest6','-7,496.53',f~format(-7496.53))
+    self~assertSame('subTest7','-7,496.53',f~format(-7496.534))
+    self~assertSame('subTest8','-7,496.54',f~format(-7496.537))
+    self~assertSame('subTest9','-.53',f~format(-.534))
+    self~assertSame('subTest10','-.54',f~format(-.537))
+
+    self~assertSame('subTest11','0',f~format(0))
+    self~assertSame('subTest12','0',f~format(0.00))
+    self~assertSame('subTest13','0',f~format(1-1))
+
+::method 'test06'
+    f = .decimalFormat~new('#')
+    self~assertSame('subTest1','7497',f~format(7496.53))
+    self~assertSame('subTest2','7497',f~format(7496.534))
+    self~assertSame('subTest3','7496',f~format(7496.337))
+    self~assertSame('subTest4','1',f~format(.534))
+    self~assertSame('subTest5','0',f~format(.337))
+
+    self~assertSame('subTest6','-7497',f~format(-7496.53))
+    self~assertSame('subTest7','-7497',f~format(-7496.534))
+    self~assertSame('subTest8','-7496',f~format(-7496.337))
+    self~assertSame('subTest9','-1',f~format(-.534))
+    self~assertSame('subTest10','0',f~format(-.337))
+
+    self~assertSame('subTest11','0',f~format(-0))
+    self~assertSame('subTest12','0',f~format(-0.00))
+    self~assertSame('subTest13','0',f~format(0-.31))
+
+::method 'test07'
+    f = .decimalFormat~new('#.##')
+    self~assertSame('subTest1','7496.53',f~format(7496.53))
+    self~assertSame('subTest2','7496.53',f~format(7496.534))
+    self~assertSame('subTest3','7496.54',f~format(7496.537))
+    self~assertSame('subTest4','.53',f~format(.534))
+    self~assertSame('subTest5','.54',f~format(.537))
+
+    self~assertSame('subTest6','-7496.53',f~format(-7496.53))
+    self~assertSame('subTest7','-7496.53',f~format(-7496.534))
+    self~assertSame('subTest8','-7496.54',f~format(-7496.537))
+    self~assertSame('subTest9','-.53',f~format(-.534))
+    self~assertSame('subTest10','-.54',f~format(-.537))
+
+    self~assertSame('subTest11','0',f~format(-0))
+    self~assertSame('subTest12','0',f~format(-0.00))
+    self~assertSame('subTest13','0',f~format(0-0))
+
+::method 'test08'
+    f = .decimalFormat~new('#.00')
+    self~assertSame('subTest1','7496.53',f~format(7496.53))
+    self~assertSame('subTest2','7496.53',f~format(7496.534))
+    self~assertSame('subTest3','7496.54',f~format(7496.537))
+    self~assertSame('subTest4','.53',f~format(.534))
+    self~assertSame('subTest5','.50',f~format(.5))
+
+    self~assertSame('subTest6','-7496.53',f~format(-7496.53))
+    self~assertSame('subTest7','-7496.53',f~format(-7496.534))
+    self~assertSame('subTest8','-7496.54',f~format(-7496.537))
+    self~assertSame('subTest9','-.53',f~format(-.534))
+    self~assertSame('subTest10','-.50',f~format(-.5))
+
+    self~assertSame('subTest11','0',f~format(-0))
+    self~assertSame('subTest12','0',f~format(-0.00))
+    self~assertSame('subTest13','0',f~format(0-0))
+
+::method 'test09'
+    f = .decimalFormat~new('0.00')
+    self~assertSame('subTest1','7496.53',f~format(7496.53))
+    self~assertSame('subTest2','7496.53',f~format(7496.534))
+    self~assertSame('subTest3','7496.54',f~format(7496.537))
+    self~assertSame('subTest4','0.53',f~format(.534))
+    self~assertSame('subTest5','0.50',f~format(.5))
+
+    self~assertSame('subTest6','-7496.53',f~format(-7496.53))
+    self~assertSame('subTest7','-7496.53',f~format(-7496.534))
+    self~assertSame('subTest8','-7496.54',f~format(-7496.537))
+    self~assertSame('subTest9','-0.53',f~format(-.534))
+    self~assertSame('subTest10','-0.50',f~format(-.5))
+
+    self~assertSame('subTest11','0',f~format(-0))
+    self~assertSame('subTest12','0',f~format(-0.00))
+    self~assertSame('subTest13','0',f~format(0-0))
+
+::method 'test10'
+    f = .decimalFormat~new('#,###.00')
+    self~assertSame('subTest1','7,496.53',f~format(7496.53))
+    self~assertSame('subTest2','7,496.53',f~format(7496.534))
+    self~assertSame('subTest3','7,496.54',f~format(7496.537))
+    self~assertSame('subTest4','.53',f~format(.534))
+    self~assertSame('subTest5','.50',f~format(.5))
+
+    self~assertSame('subTest6','-7,496.53',f~format(-7496.53))
+    self~assertSame('subTest7','-7,496.53',f~format(-7496.534))
+    self~assertSame('subTest8','-7,496.54',f~format(-7496.537))
+    self~assertSame('subTest9','-.53',f~format(-.534))
+    self~assertSame('subTest10','-.50',f~format(-.5))
+
+    self~assertSame('subTest11','0',f~format(-0))
+    self~assertSame('subTest12','0',f~format(-0.00))
+    self~assertSame('subTest13','0',f~format(0-0))
+
+::method 'test11'
+    f = .decimalFormat~new('"$"#,##0.00')
+    self~assertSame('subTest1','$7,496.53',f~format(7496.53))
+    self~assertSame('subTest2','$7,496.53',f~format(7496.534))
+    self~assertSame('subTest3','$7,496.54',f~format(7496.537))
+    self~assertSame('subTest4','$0.53',f~format(.534))
+    self~assertSame('subTest5','$0.50',f~format(.5))
+
+    self~assertSame('subTest6','-$7,496.53',f~format(-7496.53))
+    self~assertSame('subTest7','-$7,496.53',f~format(-7496.534))
+    self~assertSame('subTest8','-$7,496.54',f~format(-7496.537))
+    self~assertSame('subTest9','-$0.53',f~format(-.534))
+    self~assertSame('subTest10','-$0.50',f~format(-.5))
+
+    self~assertSame('subTest11','$0',f~format(-0))
+    self~assertSame('subTest12','$0',f~format(-0.00))
+    self~assertSame('subTest13','$0',f~format(0-0))
+
+::method 'test12'
+    f = .decimalFormat~new('"$"#,##0.00;"-$"#,##0.00')
+    self~assertSame('subTest1','$7,496.53',f~format(7496.53))
+    self~assertSame('subTest2','$7,496.53',f~format(7496.534))
+    self~assertSame('subTest3','$7,496.54',f~format(7496.537))
+    self~assertSame('subTest4','$0.53',f~format(.534))
+    self~assertSame('subTest5','$0.50',f~format(.5))
+
+    self~assertSame('subTest6','-$7,496.53',f~format(-7496.53))
+    self~assertSame('subTest7','-$7,496.53',f~format(-7496.534))
+    self~assertSame('subTest8','-$7,496.54',f~format(-7496.537))
+    self~assertSame('subTest9','-$0.53',f~format(-.534))
+    self~assertSame('subTest10','-$0.50',f~format(-.5))
+
+    self~assertSame('subTest11','$0',f~format(-0))
+    self~assertSame('subTest12','$0',f~format(-0.00))
+    self~assertSame('subTest13','$0',f~format(0-0))
+
+::method 'test13'
+    f = .decimalFormat~new('"$"#,##0.00;"-$"#,###.##')
+    self~assertSame('subTest1','$7,496.53',f~format(7496.53))
+    self~assertSame('subTest2','$7,496.53',f~format(7496.534))
+    self~assertSame('subTest3','$7,496.54',f~format(7496.537))
+    self~assertSame('subTest4','$0.53',f~format(.534))
+    self~assertSame('subTest5','$0.50',f~format(.5))
+
+    self~assertSame('subTest6','-$7,496.53',f~format(-7496.53))
+    self~assertSame('subTest7','-$7,496.53',f~format(-7496.534))
+    self~assertSame('subTest8','-$7,496.54',f~format(-7496.537))
+    self~assertSame('subTest9','-$.53',f~format(-.534))
+    self~assertSame('subTest10','-$.5',f~format(-.5))
+
+    self~assertSame('subTest11','$0',f~format(-0))
+    self~assertSame('subTest12','$0',f~format(-0.00))
+    self~assertSame('subTest13','$0',f~format(0-0))
+
+::method 'test14'
+    f = .decimalFormat~new('"$"#,##0.00" DB";"$"" CR"')
+    self~assertSame('subTest1','$7,496.53 DB',f~format(7496.53))
+    self~assertSame('subTest2','$7,496.53 DB',f~format(7496.534))
+    self~assertSame('subTest3','$7,496.54 DB',f~format(7496.537))
+    self~assertSame('subTest4','$0.53 DB',f~format(.534))
+    self~assertSame('subTest5','$0.50 DB',f~format(.5))
+
+    self~assertSame('subTest6','$7,496.53 CR',f~format(-7496.53))
+    self~assertSame('subTest7','$7,496.53 CR',f~format(-7496.534))
+    self~assertSame('subTest8','$7,496.54 CR',f~format(-7496.537))
+    self~assertSame('subTest9','$0.53 CR',f~format(-.534))
+    self~assertSame('subTest10','$0.50 CR',f~format(-.5))
+
+    self~assertSame('subTest11','$0 DB',f~format(-0))
+    self~assertSame('subTest12','$0 DB',f~format(-0.00))
+    self~assertSame('subTest13','$0 DB',f~format(0-0))
+
+::method 'test15'
+    f = .decimalFormat~new('#,##0.00;"("")"')
+    self~assertSame('subTest1','7,496.53',f~format(7496.53))
+    self~assertSame('subTest2','7,496.53',f~format(7496.534))
+    self~assertSame('subTest3','7,496.54',f~format(7496.537))
+    self~assertSame('subTest4','0.53',f~format(.534))
+    self~assertSame('subTest5','0.50',f~format(.5))
+
+    self~assertSame('subTest6','(7,496.53)',f~format(-7496.53))
+    self~assertSame('subTest7','(7,496.53)',f~format(-7496.534))
+    self~assertSame('subTest8','(7,496.54)',f~format(-7496.537))
+    self~assertSame('subTest9','(0.53)',f~format(-.534))
+    self~assertSame('subTest10','(0.50)',f~format(-.5))
+
+    self~assertSame('subTest11','0',f~format(-0))
+    self~assertSame('subTest12','0',f~format(-0.00))
+    self~assertSame('subTest13','0',f~format(0-0))
+
+::method 'test16'
+    f = .decimalFormat~new('#,##0.00;"("")";"[0]"')
+    self~assertSame('subTest1','7,496.53',f~format(7496.53))
+    self~assertSame('subTest2','7,496.53',f~format(7496.534))
+    self~assertSame('subTest3','7,496.54',f~format(7496.537))
+    self~assertSame('subTest4','0.53',f~format(.534))
+    self~assertSame('subTest5','0.50',f~format(.5))
+
+    self~assertSame('subTest6','(7,496.53)',f~format(-7496.53))
+    self~assertSame('subTest7','(7,496.53)',f~format(-7496.534))
+    self~assertSame('subTest8','(7,496.54)',f~format(-7496.537))
+    self~assertSame('subTest9','(0.53)',f~format(-.534))
+    self~assertSame('subTest10','(0.50)',f~format(-.5))
+
+    self~assertSame('subTest11','[0]',f~format(-0))
+    self~assertSame('subTest12','[0]',f~format(-0.00))
+    self~assertSame('subTest13','[0]',f~format(0-0))
+
+::method 'test17'
+    f = .decimalFormat~new('0.000')
+    self~assertSame('subTest1','7496.530',f~format(7496.53))
+    self~assertSame('subTest2','7496.534',f~format(7496.534))
+    self~assertSame('subTest3','7496.537',f~format(7496.537))
+    self~assertSame('subTest4','0.534',f~format(.534))
+    self~assertSame('subTest5','0.500',f~format(.5))
+
+    self~assertSame('subTest6','-7496.530',f~format(-7496.53))
+    self~assertSame('subTest7','-7496.534',f~format(-7496.534))
+    self~assertSame('subTest8','-7496.537',f~format(-7496.537))
+    self~assertSame('subTest9','-0.534',f~format(-.534))
+    self~assertSame('subTest10','-0.500',f~format(-.5))
+
+    self~assertSame('subTest11','0',f~format(-0))
+    self~assertSame('subTest12','0',f~format(-0.00))
+    self~assertSame('subTest13','0',f~format(0-0))
+
+::method 'test18'
+    f = .decimalFormat~new()
+    f~groupingSize = 4
+    self~assertSame('subTest1','1,7496.53',f~format(17496.53))
+    self~assertSame('subTest2','1,7496.53',f~format(17496.534))
+    self~assertSame('subTest3','1,7496.54',f~format(17496.537))
+    self~assertSame('subTest4','.53',f~format(.534))
+    self~assertSame('subTest5','.5',f~format(.5))
+
+    self~assertSame('subTest6','-1,7496.53',f~format(-17496.53))
+    self~assertSame('subTest7','-1,7496.53',f~format(-17496.534))
+    self~assertSame('subTest8','-1,7496.54',f~format(-17496.537))
+    self~assertSame('subTest9','-.53',f~format(-.534))
+    self~assertSame('subTest10','-.5',f~format(-.5))
+
+    self~assertSame('subTest11','0',f~format(-0))
+    self~assertSame('subTest12','0',f~format(-0.00))
+    self~assertSame('subTest13','0',f~format(0-0))
+
+::method 'test19'
+    f = .decimalFormat~new()
+    f~groupingSize = 4
+    f~decimalSeparator = ','
+    f~groupingSeparator = '.'
+    self~assertSame('subTest1','1.7496,53',f~format(17496.53))
+    self~assertSame('subTest2','1.7496,53',f~format(17496.534))
+    self~assertSame('subTest3','1.7496,54',f~format(17496.537))
+    self~assertSame('subTest4',',53',f~format(.534))
+    self~assertSame('subTest5',',5',f~format(.5))
+
+    self~assertSame('subTest6','-1.7496,53',f~format(-17496.53))
+    self~assertSame('subTest7','-1.7496,53',f~format(-17496.534))
+    self~assertSame('subTest8','-1.7496,54',f~format(-17496.537))
+    self~assertSame('subTest9','-,53',f~format(-.534))
+    self~assertSame('subTest10','-,5',f~format(-.5))
+
+    self~assertSame('subTest11','0',f~format(-0))
+    self~assertSame('subTest12','0',f~format(-0.00))
+    self~assertSame('subTest13','0',f~format(0-0))
+
+
+::method 'test20'
+    f = .decimalFormat~new()
+    f~groupingSeparator = '.'
+    f~decimalSeparator = ','
+    f~GroupingSize = 3
+    f~Pattern = '"€"#,##0.00;"-€"#,##0.00'
+    self~assertSame('subTest1','€17.496,53',f~format(17496.53))
+    self~assertSame('subTest2','€17.496,53',f~format(17496.534))
+    self~assertSame('subTest3','€17.496,54',f~format(17496.537))
+    self~assertSame('subTest4','€0,53',f~format(.534))
+    self~assertSame('subTest5','€0,50',f~format(.5))
+
+    self~assertSame('subTest6','-€17.496,53',f~format(-17496.53))
+    self~assertSame('subTest7','-€17.496,53',f~format(-17496.534))
+    self~assertSame('subTest8','-€17.496,54',f~format(-17496.537))
+    self~assertSame('subTest9','-€0,53',f~format(-.534))
+    self~assertSame('subTest10','-€0,50',f~format(-.5))
+
+    self~assertSame('subTest11','€0',f~format(-0))
+    self~assertSame('subTest12','€0',f~format(-0.00))
+    self~assertSame('subTest13','€0',f~format(0-0))
+/*
+::method 'test21'
+    f = .decimalFormat~new('0.00;;'.nil)
+    self~assertSame('subtest1','0.00',f~pPattern)
+    self~assertSame('subtest2','0.00',f~nPattern)
+    self~assertNull('subtest3',f~zPattern)
+*/
+
+--Syntax errors
+-- getGrouping
+::method test51
+    f = .decimalFormat~new()
+    self~expectSyntax('93.900')
+    f~getGrouping
+
+::method test52
+    f = .decimalFormat~new()
+    self~expectSyntax('93.900')
+    f~getGrouping('z')
+
+-- setGrouping
+::method test53
+    f = .decimalFormat~new()
+    self~expectSyntax('93.900')
+    f~setGrouping()
+
+::method test54
+    f = .decimalFormat~new()
+    self~expectSyntax('93.900')
+    f~setGrouping('o')
+
+::method test55
+    f = .decimalFormat~new()
+    self~expectSyntax('93.900')
+    f~setGrouping('p')
+
+::method test56
+    f = .decimalFormat~new()
+    self~expectSyntax('93.900')
+    f~setGrouping('z',.true)
+
+::method test57
+    f = .decimalFormat~new()
+    self~expectSyntax('93.900')
+    f~setGrouping('p',4)
+
+-- decimalSeparator
+::method test58
+    f = .decimalFormat~new()
+    self~expectSyntax('93.900')
+    f~decimalSeparator = ''
+
+::method test59
+    f = .decimalFormat~new()
+    self~expectSyntax('93.900')
+    f~decimalSeparator = '..'
+
+-- groupingSeparator
+::method test60
+    f = .decimalFormat~new()
+    self~expectSyntax('93.900')
+    f~groupingSeparator = ''
+
+::method test61
+    f = .decimalFormat~new()
+    self~expectSyntax('93.900')
+    f~groupingSeparator = '..'
+
+-- validateMask
+::method test62
+    self~expectSyntax('93.900')
+    f = .decimalFormat~new('0.00;0.00;"[0]";')
+
+::method test63
+    self~expectSyntax('93.900')
+    f = .decimalFormat~new('0.00;0.00;"')
+
+::method test64
+    self~expectSyntax('93.900')
+    f = .decimalFormat~new("0.00;0.00;'")
+
+::method test65
+    self~expectSyntax('93.900')
+    f = .decimalFormat~new("'0.00;0.00;'")
+
+::method test66
+    self~expectSyntax('93.900')
+    f = .decimalFormat~new("0.00;'0.00")
+
+::method test67
+    self~expectSyntax('93.900')
+    f = .decimalFormat~new('"0.00;0.00')
+
+::method test68
+    self~expectSyntax('93.900')
+    f = .decimalFormat~new('0.00;"0.00')
+
+::method test69
+    self~expectSyntax('93.900')
+    f = .decimalFormat~new('0.00;.0.00')
+
+::method test70
+    self~expectSyntax('93.900')
+    f = .decimalFormat~new('.0.00;0.00')
+
+::method test71
+    self~expectSyntax('93.900')
+    f = .decimalFormat~new('0.00;0#.00')
+
+::method test72
+    self~expectSyntax('93.900')
+    f = .decimalFormat~new('0#.00;0.00')
+
+::method test73
+    self~expectSyntax('93.900')
+    f = .decimalFormat~new('0.00;0.#00')
+
+::method test74
+    self~expectSyntax('93.900')
+    f = .decimalFormat~new('0.#00;0.00')
+
+::method test75
+    self~expectSyntax('93.900')
+    f = .decimalFormat~new('0.00;0.^00')
+
+::method test76
+    self~expectSyntax('93.900')
+    f = .decimalFormat~new('$0.00;0.00')
+
+::method test77
+    self~expectSyntax('93.900')
+    f = .decimalFormat~new('0.00;0.,00')
+
+::method test78
+    self~expectSyntax('93.900')
+    f = .decimalFormat~new('0.,00;0.00')
+
+-- format
+::method test79
+    f = .decimalFormat~new()
+    self~expectSyntax('93.904')
+    f~format(notAnumber)
+
+::method test80
+    f = .decimalFormat~new()
+    f~groupingSeparator = '.'
+    self~expectSyntax('93.900')
+    f~format(1)
+
