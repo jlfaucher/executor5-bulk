@@ -58,56 +58,59 @@
 
 -- This is a Windows specific test case.  If not on Windows, don't execute and
 -- return an empty list to a, possible, caller.
-    if .ooRexxUnit.OSName <> "WINDOWS" then return .list~new
+    if .ooRexxUnit.OSName <> "WINDOWS" then
+        return .list~new
 
-testUnitClass=.decimalFormat.testUnit  -- change accordingly
+    testUnitClass=.decimalFormat.testUnit  -- change accordingly
+
 -------------------------------------------------------------------------------------------
    /* list of array objects, each containing the testUnit class object and an
       optional list of mandatory test case methods name                       */
-mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
-testUnitList=.list~of(.array~of(testUnitClass, mandatoryTestMethods))
+    mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
+    testUnitList=.list~of(.array~of(testUnitClass, mandatoryTestMethods))
 
 -------------------------------------------------------------------------------------------
 -- ===> the following code needs not to be individualized                              <===
 
    -- read top comment, containing infos about this program
-arrLines=.array~new
-do i=1 to 150 until arrLines[i]="*/"
-   arrLines[i]=sourceline(i)
-end
+    arrLines=.array~new
+    do i=1 to 150 until arrLines[i]="*/"
+        arrLines[i]=sourceline(i)
+    end
       -- supply information for the testClass(es) in this file; the class attribute
       -- "TestCaseInfo" (a directory object, index points to a queue) will store
       -- the parsed infos
-aTestUnitClass=testUnitList~at(testUnitList~first)[1] -- get first testClass
+    aTestUnitClass=testUnitList~at(testUnitList~first)[1] -- get first testClass
 
    -- will parse the array lines and store result in class object
-call makeDirTestInfo aTestUnitClass, arrLines
-tmpDir=aTestUnitClass~TestCaseInfo
-parse source s   -- op_sys invocationType fullPathToThisFile
-tmpDir~setentry("test_Case-source", s)
+    call makeDirTestInfo aTestUnitClass, arrLines
+    tmpDir=aTestUnitClass~TestCaseInfo
+    parse source s   -- op_sys invocationType fullPathToThisFile
+    tmpDir~setentry("test_Case-source", s)
    -- now add this directory to other testCase classes, if any left
-do arr over testUnitList
-   if arr[1]=aTestUnitClass then iterate  -- already handled
-   arr[1]~TestCaseInfo=tmpDir             -- save info in class object
-end
+    do arr over testUnitList
+        if arr[1]=aTestUnitClass then
+            iterate  -- already handled
+        arr[1]~TestCaseInfo=tmpDir             -- save info in class object
+    end
 
 -- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
 -- and set it to .false; this way the independent local invocation of the tests is inhibited
-if .local~hasentry("bRunTestsLocally")=.false then
-   .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
+    if .local~hasentry("bRunTestsLocally")=.false then
+        .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
 
-if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
-do
-   ts=.testSuite~new             -- create a testSuite
-   do arr over testUnitList
-      -- create a testSuite for the given test case class, use all its testmethods
-      ts~addTest( .testSuite~new(arr[1]))
-   end
-   -- testResult=.testSuite~new(testUnitClass)~run
-   testResult=ts~run       -- now run all the tests
+    if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
+        do
+            ts=.testSuite~new             -- create a testSuite
+            do arr over testUnitList
+                -- create a testSuite for the given test case class, use all its testmethods
+                ts~addTest( .testSuite~new(arr[1]))
+            end
+            -- testResult=.testSuite~new(testUnitClass)~run
+            testResult=ts~run       -- now run all the tests
 
-    call simpleFormatTestResults testResult
-end
+            call simpleFormatTestResults testResult
+        end
 
    /* return list of array objects containing test case classes and
       optionally list of mandatory test methods                      */
@@ -119,10 +122,21 @@ return testUnitList
 -- class named exactly like file
 ::class "decimalFormat.testUnit" subclass TestCase public
 
+::method 'test_00'
+    call SysCls
+    say 'ooRexxUnit.cls Version........:' .ooRexxUnit.version
+    say 'Interpreter Name..............:' .local~ooRexxUnit.interpreterName
+    say 'Language Level................:' .local~ooRexxUnit.languageLevel
+    say 'Interpreter Date..............:' .local~ooRexxUnit.interpreterDate
+    say 'Shell Name....................:' .local~ooRexxUnit.shellName
+    say 'OS Name.......................:' .local~ooRexxUnit.OSName
+    say '-'~copies(60)
+
 ::method 'test_01Create'
     f = .decimalFormat~new()
     expected = 'a decimalFormat'
     self~assertSame('subTest1',expected,f)
+    self~assertNotNull('subtest2',f~getVersion)
 
 ::method 'test_02Defaults'
     f = .decimalFormat~new()
@@ -446,7 +460,6 @@ return testUnitList
     self~assertSame('subTest12','0',f~format(-0.00))
     self~assertSame('subTest13','0',f~format(0-0))
 
-
 ::method 'test20'
     f = .decimalFormat~new()
     f~groupingSeparator = '.'
@@ -468,13 +481,16 @@ return testUnitList
     self~assertSame('subTest11','€0',f~format(-0))
     self~assertSame('subTest12','€0',f~format(-0.00))
     self~assertSame('subTest13','€0',f~format(0-0))
-/*
+
 ::method 'test21'
-    f = .decimalFormat~new('0.00;;'.nil)
+    f = .decimalFormat~new('0.00;;""')
     self~assertSame('subtest1','0.00',f~pPattern)
     self~assertSame('subtest2','0.00',f~nPattern)
-    self~assertNull('subtest3',f~zPattern)
-*/
+    self~assertSame('subtest3','',f~zPattern)
+
+::method 'test22'
+    f = .decimalFormat~new('0.00;;" "')
+    self~assertSame('subtest1',' ',f~zPattern)
 
 --Syntax errors
 -- getGrouping
@@ -540,6 +556,10 @@ return testUnitList
 ::method test62
     self~expectSyntax('93.900')
     f = .decimalFormat~new('0.00;0.00;"[0]";')
+
+::method test62a
+    self~expectSyntax('93.900')
+    f = .decimalFormat~new('0.00;0.00;'.nil)
 
 ::method test63
     self~expectSyntax('93.900')
@@ -616,4 +636,5 @@ return testUnitList
     f~groupingSeparator = '.'
     self~expectSyntax('93.900')
     f~format(1)
+
 

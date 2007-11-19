@@ -19,7 +19,7 @@
     groupingSeparator = ','
 
 ::method getVersion
-return 'Beta .2'
+return 'Beta .3.2'
 /*
 Beta        11/15/07 AM
             Lee's original version sent only to Rick
@@ -69,6 +69,15 @@ Beta .3.1   11/18/07
         Move check for decimalSeparator/groupingSeparator to just before they are applied.
         Ascertain that a comma does not follow a decimal in mask portion of patterns
 
+Beta .3.2   11/19/07
+        Fixed problem is setGrouping
+        Disallowed .nil as a zero pattern
+
+
+ToDo
+    Recreate the WORD file for the documentation - some a-hole deleted it (me)
+    Make note in documentation that .nil can not be used for zero pattern
+    Study the return value of 0 some more!!!
 */
 
 -- get the grouping for the specified pattern
@@ -227,7 +236,8 @@ return 0
     expose pPrefix pPattern pSuffix nPrefix nPattern nSuffix zPattern have_zMask
     use strict arg new_pattern
     zPattern = new_pattern
-    if zPattern = '' then
+    have_zMask = .true
+    if zPattern == '' then
         have_zMask = .false
     self~buildMask
 return 0
@@ -343,7 +353,11 @@ return 0
 
 -----------------------------------------------------------------------------------
 -- examine all the pieces of the zPattern
-    if WzPattern = '' then
+
+    if WzPattern == 'The NIL object' then
+        raise syntax 93.900 array('The Zero Pattern Can Not Be Set To .nil')
+
+    if WzPattern == '' then
         do
 -- use the pos variables if no zero mask is specified
             zero_prefix = pPrefix
