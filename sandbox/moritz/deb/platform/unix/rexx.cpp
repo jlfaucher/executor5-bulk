@@ -60,6 +60,10 @@
 #include <stdio.h>
 #include <string.h>
 
+#if HAVE_CONFIG_H
+    #include <config.h>
+#endif
+
 #if !defined(AIX) && !defined(LINUX)
 #define  INCL_DOSSEMAPHORES
 #include "os2.h"

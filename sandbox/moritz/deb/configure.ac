@@ -51,7 +51,7 @@ AC_CANONICAL_SYSTEM
 
 AM_INIT_AUTOMAKE($PACKAGE, $VERSION)
 
-AM_CONFIG_HEADER(config.h)
+AC_CONFIG_HEADER(config.h)
 
 AC_PROG_CC
 AC_PROG_CPP
@@ -62,38 +62,39 @@ AC_PROG_RANLIB
 AC_LIBTOOL_DLOPEN
 AC_PROG_LIBTOOL
 
-GENERIC_OS="-DLINUX"
-GENERIC_OPSYS="-DOPSYS_LINUX"
-GENERIC_DEFINES="-DNOOPT -DPTHREAD_KERNEL \
-                 -DSHARED -D_POSIX_THREAD -D_REENTRANT -DHIGHTID  \
-                 -D_GNU_SOURCE"
+AC_DEFINE(NOOPT,,[noopt])
+AC_DEFINE(PTHREAD_KERNEL,,[pthread kernel])
+AC_DEFINE(SHARED,,[shared])
+AC_DEFINE(_POSIX_THREAD,,[posix thread])
+AC_DEFINE(_REENTRANT,,[reentrant])
 
 dnl Now we throw in a bunch of warnings.  C and C++ need
 dnl different sets here
 GCC_WARNINGS="\
-        -Wall \
-        -funsigned-char \
-        -Wmissing-prototypes \
-        -Wmissing-declarations \
-        -Wstrict-prototypes \
-        -Wpointer-arith \
-        -Wformat=2 \
-        -Wformat-security \
-        -Wformat-nonliteral \
-        -Wno-format-y2k \
-        -Wcast-qual \
-        -Wcast-align"
+-Wall \
+-funsigned-char \
+-Wmissing-prototypes \
+-Wmissing-declarations \
+-Wstrict-prototypes \
+-Wpointer-arith \
+-Wformat=2 \
+-Wformat-security \
+-Wformat-nonliteral \
+-Wno-format-y2k \
+-Wcast-qual \
+-Wcast-align \
+-pedantic"
 
 GCXX_WARNINGS="\
-        -Wall \
-        -funsigned-char \
-        -Wpointer-arith \
-        -Wcast-qual \
-        -Wcast-align \
-        -Wshadow \
-        -Wwrite-strings \
-        -D__cplusplus \
-        -Wredundant-decls"
+-Wall \
+-funsigned-char \
+-fno-omit-frame-pointer \
+-Wpointer-arith \
+-Wcast-qual \
+-Wcast-align \
+-Wshadow \
+-Wwrite-strings \
+-Wredundant-decls"
 
 XLC_WARNINGS="\
         -qchars=unsigned \
@@ -107,8 +108,8 @@ XLCXX_WARNINGS="\
 
 dnl Set platform and compiler specific switches
 PACKAGETYPE="none"
-ORX_SYS_STR="unknown"
-ORX_SHARED_LIBRARY_EXT=".so"
+AC_DEFINE([ORX_SYS_STR],["unknown"],[ORX sys string])
+AC_DEFINE([ORX_SHARED_LIBRARY_EXT],[".so"],[Shared library extension])
 ORX_LDADD_EXECUTABLE="-ldl -lpthread"
 ORX_LIBADD_LIBRARY=""
 ORX_LDFLAGS_EXECUTABLE=""
@@ -116,10 +117,9 @@ ORX_LDFLAGS_LIBRARY=""
 ORX_LDFLAGS_PACKAGE="-Xcompiler -nostartfiles"
 case "$target" in
    *ibm-aix*)
-      GENERIC_OS="-DAIX"
-      GENERIC_OPSYS="-DOPSYS_AIX"
-      GENERIC_DEFINES="$GENERIC_DEFINES -DOPSYS_AIX43"
-#     ORX_SHARED_LIBRARY_EXT=".a"
+      AC_DEFINE(AIX,,[running aix])
+      AC_DEFINE(OPSYS_AIX43,,[running aix])
+      AC_DEFINE(OPSYS_AIX,,[opsys is aix])
       case "$CXX" in
          g++)
             CC_WARNINGS="-maix32 -mthreads $GCC_WARNINGS"
@@ -135,10 +135,11 @@ dnl         AC_MSG_ERROR("Compiler $CXX is not supported on this platform")
             ;;
       esac
       PACKAGETYPE="aix"
-      ORX_SYS_STR="AIX"
+AC_DEFINE([ORX_SYS_STR],["AIX"],[ORX sys string])
       ;;
    *solaris*)
-      GENERIC_OPSYS="$GENERIC_OPSYS -DOPSYS_SUN"
+      AC_DEFINE(OPSYS_SUN,,[opsys is sun])
+      AC_DEFINE(OPSYS_LINUX,,[generic opysy])
       case "$CXX" in
          g++)
             CC_WARNINGS="-m32 $GCC_WARNINGS"
@@ -149,44 +150,52 @@ dnl         AC_MSG_ERROR("Compiler $CXX is not supported on this platform")
             ;;
       esac
       PACKAGETYPE="sun"
-      ORX_SYS_STR="SUNOS"
+AC_DEFINE([ORX_SYS_STR],["SUNOS"],[ORX sys string])
       case "$target" in
          *solaris2.8)
-            SPECIFIC_DEFINES="-DLIMITED_SOLARIS_SEMS"
+	    AC_DEFINE(LIMITED_SOLARIS_SEMS,,[limited solaris sems])
             ;;
          *solaris2.9)
-            SPECIFIC_DEFINES="-DLIMITED_SOLARIS_SEMS"
+	    AC_DEFINE(LIMITED_SOLARIS_SEMS,,[limited solaris sems])
             ;;
          *)
       esac
       ;;
    sparc*sunos*)
-      ORX_SYS_STR="SUNOS"
+      AC_DEFINE([ORX_SYS_STR],["SUNOS"],[ORX sys string])
       ;;
    i*86-*linux*)
+      AC_DEFINE(LINUX,,[running linux])
+      AC_DEFINE(OPSYS_LINUX,,[opsys is linux])
       CC_WARNINGS="$GCC_WARNINGS"
       CXX_WARNINGS="$GCXX_WARNINGS"
-      ORX_SYS_STR="LINUX"
+      AC_DEFINE([ORX_SYS_STR],["LINUX"],[ORX sys string])
       ;;
    *86_64-*linux*)
+      AC_DEFINE(LINUX,,[running linux])
+      AC_DEFINE(OPSYS_LINUX,,[opsys is linux])
       CC_WARNINGS="-m32 $GCC_WARNINGS"
       CXX_WARNINGS="-m32 $GCXX_WARNINGS"
-      ORX_SYS_STR="LINUX"
+      AC_DEFINE([ORX_SYS_STR],["LINUX"],[ORX sys string])
       ;;
    alpha*-*linux*)
-      ORX_SYS_STR="LINUX"
+      AC_DEFINE(LINUX,,[running linux])
+      AC_DEFINE(OPSYS_LINUX,,[opsys is linux])
+      AC_DEFINE([ORX_SYS_STR],["LINUX"],[ORX sys string])
       ;;
    *linux*)
-      ORX_SYS_STR="LINUX"
+      AC_DEFINE(LINUX,,[running linux])
+      AC_DEFINE(OPSYS_LINUX,,[opsys is linux])
+      AC_DEFINE([ORX_SYS_STR],["LINUX"],[ORX sys string])
       ;;
    *cygnus*)
       CC_WARNINGS="$GCC_WARNINGS"
       CXX_WARNINGS="$GCXX_WARNINGS"
-      ORX_SYS_STR="CYGNUS"
-      ORX_SHARED_LIBRARY_EXT=".dll"
+      AC_DEFINE([ORX_SYS_STR],["CYGNUS"],[ORX sys string])
+      AC_DEFINE([ORX_SHARED_LIBRARY_EXT],[".dll"],[Shared library extension])
       ;;
    *freebsd*)
-      ORX_SYS_STR="FREEBSD"
+      AC_DEFINE([ORX_SYS_STR],["FREEBSD"],[ORX sys string])
       ORX_LDADD_EXECUTABLE="-pthread"
       ORX_LIBADD_LIBRARY=""
       ORX_LDFLAGS_EXECUTABLE="-pthread"
@@ -194,7 +203,7 @@ dnl         AC_MSG_ERROR("Compiler $CXX is not supported on this platform")
       ORX_LDFLAGS_PACKAGE="-nostartfiles -shared"
       ;;
    *netbsd*)
-      ORX_SYS_STR="NETBSD"
+      AC_DEFINE([ORX_SYS_STR],["NETBSD"],[ORX sys string])
       ORX_LDADD_EXECUTABLE="-pthread"
       ORX_LIBADD_LIBRARY=""
       ORX_LDFLAGS_EXECUTABLE="-pthread"
@@ -202,7 +211,7 @@ dnl         AC_MSG_ERROR("Compiler $CXX is not supported on this platform")
       ORX_LDFLAGS_PACKAGE="-nostartfiles -shared"
       ;;
    *openbsd*)
-      ORX_SYS_STR="NETBSD"
+      AC_DEFINE([ORX_SYS_STR],["NETBSD"],[ORX sys string])
       ORX_LDADD_EXECUTABLE="-pthread"
       ORX_LIBADD_LIBRARY=""
       ORX_LDFLAGS_EXECUTABLE="-pthread"
@@ -210,11 +219,11 @@ dnl         AC_MSG_ERROR("Compiler $CXX is not supported on this platform")
       ORX_LDFLAGS_PACKAGE="-nostartfiles -shared"
       ;;
    *apple-darwin*)
-      ORX_SYS_STR="MACOSX"
-      ORX_SHARED_LIBRARY_EXT=".dylib"
+      AC_DEFINE([ORX_SYS_STR],["MACOSX"],[ORX sys string])
+      AC_DEFINE([ORX_SHARED_LIBRARY_EXT],[".dylib"],[Shared library extension])
       ;;
    *hp-hpux*)
-      ORX_SHARED_LIBRARY_EXT=".sl"
+      AC_DEFINE([ORX_SHARED_LIBRARY_EXT],[".sl"],[Shared library extension])
       ;;
    *dec-osf*)
       ;;
@@ -228,12 +237,10 @@ dnl         AC_MSG_ERROR("Compiler $CXX is not supported on this platform")
       ;;
 esac
 
-#DEVEL_DEFINES="$GENERIC_OS $GENERIC_DEFINES $SPECIFIC_DEFINES"
-#AC_SUBST(DEVEL_DEFINES)
-
 AC_SUBST(PACKAGETYPE)
 AC_SUBST(ORX_SYS_STR)
-AC_SUBST(ORX_SHARED_LIBRARY_EXT)
+dnl AC_SUBST(ORX_SHARED_LIBRARY_EXT)
+
 AC_SUBST(ORX_LDADD_EXECUTABLE)
 AC_SUBST(ORX_LIBADD_LIBRARY)
 AC_SUBST(ORX_LDFLAGS_EXECUTABLE)
@@ -368,20 +375,10 @@ AC_SUBST(ORX_SUBST_CURRENT)
 AC_SUBST(ORX_SUBST_REVISION)
 AC_SUBST(ORX_SUBST_AGE)
 
-dnl remerge the warnings into the FLAGS
-GENERAL_CXXFLAGS="\
-              $SPECIFIC_DEFINES \
-              $GENERIC_DEFINES \
-              $GENERIC_OS \
-              $GENERIC_OPSYS"
 
-GENERAL_CFLAGS="\
-              $SPECIFIC_DEFINES \
-              $GENERIC_DEFINES \
-              $GENERIC_OS \
-              $GENERIC_OPSYS"
-CXXFLAGS="$CXXFLAGS $CFLAGS $CXX_WARNINGS $GENERAL_CXXFLAGS"
-CFLAGS="$CFLAGS $CC_WARNINGS $GENERAL_CFLAGS"
+dnl remerge the warnings into the FLAGS
+CXXFLAGS="$CXXFLAGS $CXX_WARNINGS"
+CFLAGS="$CFLAGS $CC_WARNINGS"
 
 AC_SUBST(TOP_SRCDIR,$top_srcdir)
 
@@ -400,5 +397,8 @@ AC_CONFIG_FILES([
         xsl.sh
         platform/unix/oorexx-config
  ])
+ 
+AC_CONFIG_COMMANDS([
+])
 
 AC_OUTPUT

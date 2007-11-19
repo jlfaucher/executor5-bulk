@@ -43,6 +43,10 @@
 /*------------------------------------------------------------------
  * program defines
  *------------------------------------------------------------------*/
+#if HAVE_CONFIG_H
+    #include <config.h>
+#endif
+
 #if defined(OPSYS_AIX) || defined(OPSYS_LINUX)
 #define PROG_NAME "rxsock"
 #else

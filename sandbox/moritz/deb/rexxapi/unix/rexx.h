@@ -63,196 +63,205 @@
 /*****************************************************************************/
 
 #ifdef INCL_REXXSAA      /* INCL_REXXSAA */
-#define INCL_RXSUBCOM
-#define INCL_RXSHV
-#define INCL_RXFUNC
-#define INCL_RXSYSEXIT
-#define INCL_RXARI
+  #define INCL_RXSUBCOM
+  #define INCL_RXSHV
+  #define INCL_RXFUNC
+  #define INCL_RXSYSEXIT
+  #define INCL_RXARI
 #endif                   /* INCL_REXXSAA */
 
+
+#if HAVE_CONFIG_H
+    #include <config.h>
+#endif
 /*
  * Some platforms do not typedef pthread_t without explicitly #including pthread.h
  */
 #include <pthread.h>
 // The limit values for the portable int types are only included in C++ if the
 // following is defined before including stdint.h.
-#define __STDC_LIMIT_MACROS
+#if !defined(__STDC_LIMIT_MACROS)
+  #define __STDC_LIMIT_MACROS
+#endif
 
 #include <stdint.h>
 
 /* Definitions maybe provided ---------------------------------------------- */
 
 #if !defined(AIX) && !defined(LINUX)
-#define AIX                           /* Default definition for AIX          */
+  #define AIX                           /* Default definition for AIX          */
 #endif
 
 #ifndef TRUE
-#define TRUE            1
+  #define TRUE            1
 #endif
 
 #ifndef FALSE
-#define FALSE           0
+  #define FALSE           0
 #endif
 
 #ifndef HQUEUE
-#define HQUEUE          unsigned long
+  #define HQUEUE          unsigned long
 #endif
 
 #ifndef ULONG
-#define ULONG           unsigned long
+  #define ULONG           unsigned long
 #endif
 
 #ifndef PULONG
-#define PULONG          ULONG *
+  #define PULONG          ULONG *
 #endif
 
 #ifndef PVOID
-#define PVOID           void *
+  #define PVOID           void *
 #endif
 
 #ifndef PPVOID
-#define PPVOID          void **
+  #define PPVOID          void **
 #endif
 
 #ifndef SHORT
-#define SHORT           short
+  #define SHORT           short
 #endif
 
 #ifndef LONG
-#define LONG            long
+  #define LONG            long
 #endif
 
 #ifndef PLONG
-#define PLONG           LONG *
+  #define PLONG           LONG *
 #endif
 
 #ifndef USHORT
-#define USHORT          unsigned short
+  #define USHORT          unsigned short
 #endif
 
 #ifndef PSHORT
-#define PSHORT          SHORT *
+  #define PSHORT          SHORT *
 #endif
 
 #ifndef PUSHORT
-#define PUSHORT         USHORT *
+  #define PUSHORT         USHORT *
 #endif
 
 #ifndef UCHAR
-#define UCHAR           unsigned char
+  #define UCHAR           unsigned char
 #endif
 
 #ifndef PUCHAR
-#define PUCHAR          UCHAR *
+  #define PUCHAR          UCHAR *
 #endif
 
 #ifndef CHAR
-#define CHAR            char
+  #define CHAR            char
 #endif
 
 #ifndef PCHAR
-#define PCHAR           CHAR *
+  #define PCHAR           CHAR *
 #endif
 
 #ifndef INT
-#define INT             int
+  #define INT             int
 #endif
 
 #ifndef UINT
-#define UINT            unsigned int
+  #define UINT            unsigned int
 #endif
 
 #ifndef PUINT
-#define PUINT           unsigned int *
+  #define PUINT           unsigned int *
 #endif
 
 #ifndef PINT
-#define PINT            int *
+  #define PINT            int *
 #endif
 
 #ifndef PCH
-#define PCH             PCHAR
+  #define PCH             PCHAR
 #endif
 
 #ifndef PSZ
-#define PSZ             PCHAR
+  #define PSZ             PCHAR
 #endif
 
 #ifndef APIENTRY
-#define APIENTRY
+  #define APIENTRY
 #endif
 
 #ifndef APIRET
-#define APIRET          ULONG
+  #define APIRET          ULONG
 #endif
 
 #ifndef CONST
-#define CONST           const
+  #define CONST           const
 #endif
 
 #ifndef LPCTSTR
-#define LPCTSTR         LPCSTR
+  #define LPCTSTR         LPCSTR
 #endif
 
 #ifndef BYTE
-#define BYTE            unsigned char
+  #define BYTE            unsigned char
 #endif
 
 #ifndef BOOL
-#define BOOL            unsigned long
+  #define BOOL            unsigned long
 #endif
 
 #ifndef UBYTE
-#define UBYTE           unsigned char
+  #define UBYTE           unsigned char
 #endif
 
 #ifndef TID
-#ifndef LINUX
-#define TID             tid_t
-#else
-#define TID             pthread_t
-#endif
+  #ifndef LINUX
+    #define TID             tid_t
+  #else
+    #define TID             pthread_t
+  #endif
 #endif
 
 #ifndef PID
-#define PID             pid_t
+  #define PID             pid_t
 #endif
 
 #ifndef VOID
-#define VOID            void
+  #define VOID            void
 #endif
 
 #ifndef near
-#define near
+  #define near
 #endif
 
 #ifndef far
-#define far
+  #define far
 #endif
 
 #ifndef _loadds
-#define _loadds
+  #define _loadds
 #endif
 
 #ifndef PFN
-#define PFN             void *
+  #define PFN             void *
 #endif
 
 /*
 #ifndef FNONBLOCK
-#define FNONBLOCK       O_NONBLOCK
+  #define FNONBLOCK       O_NONBLOCK
 #endif
 */
 
+#ifndef _RXSTRING
+  #define _RXSTRING
 /* Structure for external interface string (RXSTRING)  -------------- */
 typedef struct _RXSTRING {             /* rxstring                    */
         ULONG  strlength;              /*   length of string          */
         PCH    strptr;                 /*   pointer to string         */
 }  RXSTRING;
+#endif
 
 /* DATETIME structure ----------------------------------------------- */
 #ifndef _REXXDATETIME                 /* prevent muliple decls        */
-#define _REXXDATETIME
+  #define _REXXDATETIME
 typedef struct _REXXDATETIME {        /* REXX time stamp format       */
   unsigned short hours;               /* hour of the day (24-hour)    */
   unsigned short minutes;             /* minute of the hour           */
@@ -269,13 +278,18 @@ typedef struct _REXXDATETIME {        /* REXX time stamp format       */
                                       /* ---------------------------- */
 #endif                                /* _REXXDATETIME                */
 
-#define DATETIME REXXDATETIME
+#ifndef DATETIME
+  #define DATETIME REXXDATETIME
 typedef REXXDATETIME *PDATETIME;
 typedef RXSTRING     *PRXSTRING;      /* pointer to a RXSTRING        */
+#endif
 
-#define RXAUTOBUFLEN         256L
+#ifndef RXAUTOBUFLEN
+  #define RXAUTOBUFLEN         256L
+#endif
 
-
+#ifndef _RXSYSEXIT
+  #define _RXSYSEXIT
 /* Structure for system exit block (RXSYSEXIT)  --------------------- */
 typedef struct _RXSYSEXIT {            /* syseexit                    */
    PSZ   sysexit_name;                 /*   exit handler name         */
@@ -283,6 +297,8 @@ typedef struct _RXSYSEXIT {            /* syseexit                    */
 }  RXSYSEXIT;
 
 typedef RXSYSEXIT *PRXSYSEXIT;         /* pointer to a RXSYSEXIT      */
+
+#endif
 
 /* Macros for RXSTRING manipulation --------------------------------- */
 #define RXNULLSTRING(r)      (!(r).strptr)

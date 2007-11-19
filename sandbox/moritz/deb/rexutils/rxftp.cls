@@ -1,3 +1,4 @@
+#!/usr/bin/rexx
 /*-- REXX --------------------------------------------------------------------*/
 /*                                                                            */
 /* Description: FTP client class (to replace rxftp.dll)                       */

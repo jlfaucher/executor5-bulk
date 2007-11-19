@@ -72,6 +72,10 @@ extern int errno;
 /*------------------------------------------------------------------
  * program defines
  *------------------------------------------------------------------*/
+#if HAVE_CONFIG_H
+    #include <config.h>
+#endif
+
 #if defined(OPSYS_AIX) || defined(LINUX)
 #define PROG_NAME "rxmath"
 #else

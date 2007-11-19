@@ -1,0 +1,63 @@
+Source: oorexx
+Section: interpreters
+Priority: optional
+Maintainer: Moritz Hoffmann <spambasket@antiguru.de>
+Build-Depends: debhelper (>= 5.0.0), autotools-dev, libc6, libgcc1, xalan, libtool (>=1.5), g++
+Standards-Version: 3.7.2
+
+Package: oorexx
+Conflicts: regina-rexx
+Architecture: i386
+Depends: ${shlibs:Depends}
+Description:  Open Object Rexx (ooRexx)
+ ooRexx is an Open Source project managed by Rexx Language Association (RexxLA)
+ providing a free implementation of Object Rexx.
+ ooRexx is distributed under Common Public License (CPL) v1.0.
+ Object Rexx is an enhancement of classic Rexx; a powerful, full-featured
+ programming language which has a human-oriented syntax. The Open Object Rexx
+ interpreter allows you to write programs procedurally as well as in an
+ object-oriented fashion. Its main benefits include:
+    * Easy to use and easy to learn
+    * Upwardly compatible with classic Rexx
+    * The ability to issue commands to multiple environments
+    * Offers powerful functions
+    * Based on English-like commands
+    * Enhanced with full object orientation
+    * Designed for object-oriented programming, and also allows Rexx
+      conventional programming
+    * Provides a standard Rexx API to develop external function libraries
+      written in C (provided by librexx3-dev)
+
+Package: librexx3-dev
+Section: libdevel
+Provides: librexx-dev
+Conflicts: librexx-dev
+Architecture: i386
+Depends: libc6-dev
+Description: Open Object Rexx, development files
+ ooRexx is an Open Source project managed by Rexx Language Association (RexxLA)
+ providing a free implementation of Object Rexx.
+ ooRexx is distributed under Common Public License (CPL) v1.0.
+ This package contains shared libraries required by ooRexx.
+
+Package: librexx3
+Section: libs
+Architecture: i386
+Depends: ${shlibs:Depends}
+Description: Open Object Rexx, run-time library librexx
+ ooRexx is an Open Source project managed by Rexx Language Association (RexxLA)
+ providing a free implementation of Object Rexx.
+ ooRexx is distributed under Common Public License (CPL) v1.0.
+ This package contains the development headers for building applications
+ interfacing with ooRexx.
+
+Package: oorexx-dbg
+Section: devel
+Architecture: i386
+Depends: oorexx (= ${Source-Version})
+Description: Open Object Rexx, run-time library debug symbols
+ ooRexx is an Open Source project managed by Rexx Language Association (RexxLA)
+ providing a free implementation of Object Rexx.
+ ooRexx is distributed under Common Public License (CPL) v1.0.
+ This package contains the debug symbols for librexx3.
+

@@ -38,10 +38,10 @@
 
 AUTOMAKE_OPTIONS	= foreign dist-zip
 
-MAINTAINERCLEANFILES 	= Makefile.in aclocal.m4 configure config.guess config.sub \
-			depcomp install-sh ltmain.sh missing mkinstalldirs config.h.in \
-			compile @REXXCAT@ rexx.img \
-			stamp-h.in cscope.files cscope.out $(distdir).tar.gz
+MAINTAINERCLEANFILES 	= Makefile.in aclocal.m4 configure config.guess \
+        config.sub depcomp install-sh ltmain.sh missing mkinstalldirs \
+        config.h.in compile @REXXCAT@ rexx.img stamp-h.in cscope.files \
+        cscope.out $(distdir).tar.gz
 
 SUBDIRS			= samples
 DIST_SUBDIRS 		= samples
@@ -92,10 +92,9 @@ samples_unix_dir = $(top_srcdir)/samples/unix
 
 catdir = $(prefix)/bin
 
-COMMON_CPPFLAGS = -DORX_VER=$(ORX_MAJOR) -DORX_REL=$(ORX_MINOR) -DORX_MOD=$(ORX_MOD_LVL) -DORX_FIX=0 \
-                  -DORX_SYS_STR=\"@ORX_SYS_STR@\" \
-                  -DORX_CATDIR=\"$(catdir)\" \
-                  -DORX_SHARED_LIBRARY_EXT=\"@ORX_SHARED_LIBRARY_EXT@\" \
+COMMON_CPPFLAGS = -DORX_VER=$(ORX_MAJOR) -DORX_REL=$(ORX_MINOR) \
+                  -DORX_MOD=$(ORX_MOD_LVL) -DORX_FIX=0 \
+                   -DORX_CATDIR=\"$(catdir)\" \
                   -DHIGHTID
 
 messageXML = $(messages_dir)/rexxmsg.xml
@@ -306,6 +305,8 @@ include_HEADERS = $(rexxapi_unix_dir)/rexx.h
 man_MANS = $(platform_unix_dir)/rexx.1 \
            $(platform_unix_dir)/rexxc.1 \
            $(platform_unix_dir)/rxsubcom.1 \
+	   $(platform_unix_dir)/rxdelipc.1 \
+	   $(platform_unix_dir)/oorexx-config.1 \
            $(platform_unix_dir)/rxqueue.1
 
 #################### librexx.so ##########################
@@ -777,20 +778,20 @@ install-exec-local:
 	echo $(DESTDIR) is destdir
 	echo $(prefix) is prefix
 	echo $(install_sh_PROGRAM)
-	$(install_sh_SCRIPT) rexx.img $(DESTDIR)$(prefix)/bin/rexx.img
+	$(install_sh_SCRIPT) -m 644 rexx.img $(DESTDIR)$(prefix)/bin/rexx.img
 	if test -z "$(GENCAT)"; then \
 		echo "No rexx.cat to install"; \
 	else \
-		$(install_sh_SCRIPT) rexx.cat $(DESTDIR)$(catdir)/rexx.cat; \
+		$(install_sh_SCRIPT) -m 644 rexx.cat $(DESTDIR)$(catdir)/rexx.cat; \
 	fi
 	$(install_sh_SCRIPT) $(build_platform_unix_dir)/oorexx-config $(DESTDIR)$(prefix)/bin/oorexx-config
-	$(install_sh_SCRIPT) $(rxregexp_dir)/rxregexp.cls $(DESTDIR)$(prefix)/bin/rxregexp.cls
-	$(install_sh_SCRIPT) $(rexutils_dir)/rxftp.cls $(DESTDIR)$(prefix)/bin/rxftp.cls
+	$(install_sh_SCRIPT) -m 644 $(rxregexp_dir)/rxregexp.cls $(DESTDIR)$(prefix)/bin/rxregexp.cls
+	$(install_sh_SCRIPT) -m 644 $(rexutils_dir)/rxftp.cls $(DESTDIR)$(prefix)/bin/rxftp.cls
 	for a in $(samples_dir)/*.rex; do \
 		bn=`basename $$a`; \
 		$(install_sh_SCRIPT) $$a $(DESTDIR)$(prefix)/share/ooRexx/$$bn; \
 	done;
-	$(install_sh_SCRIPT) $(samples_dir)/readme $(DESTDIR)$(prefix)/share/ooRexx/readme
+	$(install_sh_SCRIPT) -m 644 $(samples_dir)/readme $(DESTDIR)$(prefix)/share/ooRexx/readme
 
 package:
 	./rexx $(top_srcdir)/platform/unix/makepkg.rex @PACKAGETYPE@ $(ORX_MAJOR).$(ORX_MINOR).$(ORX_MOD_LVL) $(target) $(prefix) $(DESTDIR)
@@ -806,40 +807,39 @@ rpm: dist
 	rpmbuild -ba platform/unix/oorexx.spec < /dev/null;
 
 deb:
-	rm -fr $(top_srcdir)/debian
-	mkdir $(top_srcdir)/debian
+#	rm -fr $(top_srcdir)/debian
+#	mkdir $(top_srcdir)/debian
 # Generate a current change log in the required Debian format
-	sed -n -e '1,2p' $(top_srcdir)/platform/unix/debian/changelog > ${top_srcdir}/debian/changelog
-	sed -e 's/.*/  &/' CHANGES >> ${top_srcdir}/debian/changelog
-	sed -e "1,3d; 4,6s/date/`date -R`/" $(top_srcdir)/platform/unix/debian/changelog >>  ${top_srcdir}/debian/changelog
+#	sed -n -e '1,2p' $(top_srcdir)/platform/unix/debian/changelog > ${top_srcdir}/debian/changelog
+#	sed -e 's/.*/  &/' CHANGES >> ${top_srcdir}/debian/changelog
+#	sed -e "1,3d; 4,6s/date/`date -R`/" $(top_srcdir)/platform/unix/debian/changelog >>  ${top_srcdir}/debian/changelog
 # Just copy the rest of the files
-	cp $(top_srcdir)/platform/unix/debian/compat    ${top_srcdir}/debian
-	cp $(top_srcdir)/platform/unix/debian/control   ${top_srcdir}/debian
-	cp $(top_srcdir)/platform/unix/debian/copyright ${top_srcdir}/debian
-	cp $(top_srcdir)/platform/unix/debian/dirs      ${top_srcdir}/debian
-	cp $(top_srcdir)/platform/unix/debian/docs      ${top_srcdir}/debian
-	cp $(top_srcdir)/platform/unix/debian/postinst  ${top_srcdir}/debian
-	cp $(top_srcdir)/platform/unix/debian/postrm    ${top_srcdir}/debian
-	cp $(top_srcdir)/platform/unix/debian/prerm     ${top_srcdir}/debian
-	cp $(top_srcdir)/platform/unix/debian/rules     ${top_srcdir}/debian
+#	cp $(top_srcdir)/platform/unix/debian/compat    ${top_srcdir}/debian
+#	cp $(top_srcdir)/platform/unix/debian/control   ${top_srcdir}/debian
+#	cp $(top_srcdir)/platform/unix/debian/copyright ${top_srcdir}/debian
+#	cp $(top_srcdir)/platform/unix/debian/dirs      ${top_srcdir}/debian
+#	cp $(top_srcdir)/platform/unix/debian/docs      ${top_srcdir}/debian
+#	cp $(top_srcdir)/platform/unix/debian/postinst  ${top_srcdir}/debian
+#	cp $(top_srcdir)/platform/unix/debian/postrm    ${top_srcdir}/debian
+#	cp $(top_srcdir)/platform/unix/debian/prerm     ${top_srcdir}/debian
+#	cp $(top_srcdir)/platform/unix/debian/rules     ${top_srcdir}/debian
 # Make the binaries
-	make all
+#	make all
 # Install into the debian package directory
-	fakeroot dh_clean -k
-	fakeroot dh_installdirs
-	fakeroot make install DESTDIR=`pwd`/debian/oorexx
+#	fakeroot dh_clean -k
+#	fakeroot dh_installdirs
+#	fakeroot make install DESTDIR=`pwd`/debian/oorexx
 # Do the packaging steps
-	fakeroot dh_installchangelogs CHANGES
-	fakeroot dh_installdocs
-	fakeroot dh_installexamples
-	fakeroot dh_installman
-	fakeroot dh_link
-	fakeroot dh_strip
-	fakeroot dh_compress
-	fakeroot dh_fixperms
-	fakeroot dh_installdeb
-	fakeroot dh_shlibdeps
-	fakeroot dh_gencontrol
-	fakeroot dh_md5sums
-	fakeroot dh_builddeb
-
+#	fakeroot dh_installchangelogs CHANGES
+#	fakeroot dh_installdocs
+#	fakeroot dh_installexamples
+#	fakeroot dh_installman
+#	fakeroot dh_link
+#	fakeroot dh_strip
+#	fakeroot dh_compress
+#	fakeroot dh_fixperms
+#	fakeroot dh_installdeb
+#	fakeroot dh_shlibdeps
+#	fakeroot dh_gencontrol
+#	fakeroot dh_md5sums
+#	fakeroot dh_builddeb
