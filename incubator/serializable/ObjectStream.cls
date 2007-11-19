@@ -38,17 +38,20 @@
 Enhanced stream class that is capable of reading and writing objects using
 the serializatation framework.
 */
+if .environment~hasIndex("OBJECTINPUTSTREAM") then return
 .environment~ObjectStream = .ObjectStream
-
+.environment~ObjectInputStream = .ObjectInputStream
+.environment~ObjectOutputStream = .ObjectOutputStream
+.environment~ObjectInputOutputStream = .ObjectInputOutputStream
 ::REQUIRES "Serializable.cls"
-::CLASS ObjectStream SUBCLASS STREAM
-::METHOD ReadObject
-	-- Method to read an object from the stream
-	signal on syntax
-	return .SerializeFunctions~Deserialize(.mutablebuffer~new(self~linein))
-	syntax: return .nil
+::CLASS ObjectStream SUBCLASS STREAM INHERIT ObjectInputOutputStream
 
+::CLASS ObjectInputStream MIXINCLASS Object INHERIT InputStream
+::METHOD ReadObject
+  return .SerializeFunctions~deSerialize(self~linein)
+
+::CLASS ObjectOutputStream MIXINCLASS Object INHERIT OutputStream
 ::METHOD WriteObject
-	-- method to write an object to the stream
-	use arg object
-	return self~lineout(.SerializeFunctions~Serialize(object)~string)
+  return self~lineout(.Serializefunctions~Serialize(arg(1))~string)
+
+::CLASS ObjectInputOutputStream MIXINCLASS Object INHERIT ObjectInputStream ObjectOutputStream

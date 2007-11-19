@@ -52,15 +52,15 @@ exit
 ::CLASS TotalRunningTime MIXINCLASS Serializable
 ::METHOD PersistentData ATTRIBUTE
 ::METHOD Start
-	expose running
-	running = .true
-	Say "Starting at" self~PersistentData
-	reply
-	do while running
-		call SysSleep 1
-		call charout ,self~PersistentData" "
-		self~PersistentData = self~PersistentData + 1
-	end
+  expose running
+  running = .true
+  Say "Starting at" self~PersistentData
+  reply
+  do while running
+    call SysSleep 1
+    call charout ,self~PersistentData" "
+    self~PersistentData = self~PersistentData + 1
+  end
 ::METHOD Stop UNGUARDED
-	expose running
-	running = .false
+  expose running
+  running = .false
