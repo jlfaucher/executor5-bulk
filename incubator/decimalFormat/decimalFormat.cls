@@ -19,7 +19,7 @@
     groupingSeparator = ','
 
 ::method getVersion
-return 'Beta .4'
+return 'Beta .4.1'
 /*
 Beta        11/15/07 AM
             Lee's original version sent only to Rick
@@ -82,12 +82,10 @@ Beta .4     11/20/07
         Removed getGrouping & setGrouping
             Added pGrouping & nGrouping
 
-ToDo
-    Recreate the WORD file for the documentation - some a-hole deleted it (me)
+        Documentation brought up to date
 
-    Make note in documentation that .nil can not be used for zero pattern
-
-    Study the return value of 0 some more!!!
+Beta .4.1   11/20/07
+        0 values should now have proper formatting
 */
 
 -- get/set positive grouping
@@ -273,6 +271,11 @@ return 0
 -- break down the complete pattern into its parts
     parse var mask WpMask';'WnMask';'WzMask
 
+    if WzMask \= '' then
+        have_zMask = .true
+    else
+        have_zMask = .false
+
 -- examine the positive pattern
     self~examineMask(WpMask,'P')
 -- load the postive pattern parts
@@ -347,7 +350,7 @@ return 0
 
 -- This method is for internal use only
 ::method examineMask
-    expose the_mask the_prefix the_suffix pGrouping nGrouping
+    expose the_mask the_prefix the_suffix pGrouping nGrouping have_zMask
     use strict arg the_mask,np
     np = np~translate
 
@@ -463,9 +466,6 @@ return 0
         otherwise
             nop
     end
-
-
-
 return 0
 
 -- do the actual formatting of the input number
@@ -493,6 +493,13 @@ return 0
     save_input = input
     input = input~abs()
 
+    parse var pMask pt1'.'pt2
+    p2 = pt2~countStr('0')
+    if p2 = 0 then
+        hold = input~format(,0)
+    if hold = 0 then
+        save_input = 0
+
 -- determine which mask to use
     select
         when save_input~abs = 0 & have_zMask then
@@ -501,8 +508,7 @@ return 0
             end
         when save_input = 0 then
             do
-                output = self~format2(zMask)
-                output = zero_prefix||output||zero_suffix
+                output = self~doZero
             end
         when save_input > 0 then
             do
@@ -514,16 +520,13 @@ return 0
                 output = self~format2(nMask)
                 output = nPrefix||output||nSuffix
 -- the format in ~format2 may have produced a 0 value
-                if output == '-0' then
-                    output = 0
+--                if output == '-0' & \have_zMask then
+--                    output = self~doZero
             end
         otherwise
             nop
     end
 
--- ELP Fix (possibly use a mutable buffer)
-
--- ihere
     if groupingSeparator = decimalSeparator then
         raise syntax 93.900 array('Grouping & Decimal Separators Can Not Be The Same')
 
@@ -654,4 +657,16 @@ return output
     end
 return output
 
+::method doZero
+    expose pPrefix pMask pSuffix nPrefix nMask nSuffix zero_prefix zMask zero_suffix input have_zMask decimalSeparator groupingSeparator
+    parse var pMask pt1'.'pt2
+    p0 = pt1~countStr('0')
+    p1 = pt2~countStr('0')
+    output = pPrefix||'0'~copies(p0)
+    if p1 > 0 then
+        output = output||'.'||'0'~copies(p1)
+    output = output||pSuffix
+    if output = '' then
+        output = 0
+return output
 

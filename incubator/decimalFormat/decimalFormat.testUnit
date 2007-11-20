@@ -243,9 +243,9 @@ return testUnitList
     self~assertSame('subTest8'  ,'-7496.54' ,f~format(-7496.537) )
     self~assertSame('subTest9'  ,'-.53'     ,f~format(-.534) )
     self~assertSame('subTest10' ,'-.50'     ,f~format(-.5) )
-    self~assertSame('subTest11' ,'0'        ,f~format(-0) )
-    self~assertSame('subTest12' ,'0'        ,f~format(-0.00) )
-    self~assertSame('subTest13' ,'0'        ,f~format(0-0) )
+    self~assertSame('subTest11' ,'.00'      ,f~format(-0) )
+    self~assertSame('subTest12' ,'.00'      ,f~format(-0.00) )
+    self~assertSame('subTest13' ,'.00'      ,f~format(0-0) )
 
 ::method 'test09'
     f = .decimalFormat~new('0.00')
@@ -259,9 +259,9 @@ return testUnitList
     self~assertSame('subTest8'  ,'-7496.54' ,f~format(-7496.537) )
     self~assertSame('subTest9'  ,'-0.53'    ,f~format(-.534) )
     self~assertSame('subTest10' ,'-0.50'    ,f~format(-.5) )
-    self~assertSame('subTest11' ,'0'        ,f~format(-0) )
-    self~assertSame('subTest12' ,'0'        ,f~format(-0.00) )
-    self~assertSame('subTest13' ,'0'        ,f~format(0-0) )
+    self~assertSame('subTest11' ,'0.00'     ,f~format(-0) )
+    self~assertSame('subTest12' ,'0.00'     ,f~format(-0.00) )
+    self~assertSame('subTest13' ,'0.00'     ,f~format(0-0) )
 
 ::method 'test10'
     f = .decimalFormat~new('#,###.00')
@@ -275,9 +275,9 @@ return testUnitList
     self~assertSame('subTest8'  ,'-7,496.54'    ,f~format(-7496.537) )
     self~assertSame('subTest9'  ,'-.53'         ,f~format(-.534) )
     self~assertSame('subTest10' ,'-.50'         ,f~format(-.5) )
-    self~assertSame('subTest11' ,'0'            ,f~format(-0) )
-    self~assertSame('subTest12' ,'0'            ,f~format(-0.00) )
-    self~assertSame('subTest13' ,'0'            ,f~format(0-0) )
+    self~assertSame('subTest11' ,'.00'          ,f~format(-0) )
+    self~assertSame('subTest12' ,'.00'          ,f~format(-0.00) )
+    self~assertSame('subTest13' ,'.00'          ,f~format(0-0) )
 
 ::method 'test11'
     f = .decimalFormat~new('"$"#,##0.00')
@@ -291,9 +291,9 @@ return testUnitList
     self~assertSame('subTest8'  ,'-$7,496.54'   ,f~format(-7496.537) )
     self~assertSame('subTest9'  ,'-$0.53'       ,f~format(-.534) )
     self~assertSame('subTest10' ,'-$0.50'       ,f~format(-.5) )
-    self~assertSame('subTest11' ,'$0'           ,f~format(-0) )
-    self~assertSame('subTest12' ,'$0'           ,f~format(-0.00) )
-    self~assertSame('subTest13' ,'$0'           ,f~format(0-0) )
+    self~assertSame('subTest11' ,'$0.00'        ,f~format(-0) )
+    self~assertSame('subTest12' ,'$0.00'        ,f~format(-0.00) )
+    self~assertSame('subTest13' ,'$0.00'        ,f~format(0-0) )
 
 ::method 'test12'
     f = .decimalFormat~new('"$"#,##0.00;"-$"#,##0.00')
@@ -307,9 +307,9 @@ return testUnitList
     self~assertSame('subTest8'  ,'-$7,496.54'   ,f~format(-7496.537) )
     self~assertSame('subTest9'  ,'-$0.53'       ,f~format(-.534) )
     self~assertSame('subTest10' ,'-$0.50'       ,f~format(-.5) )
-    self~assertSame('subTest11' ,'$0'           ,f~format(-0) )
-    self~assertSame('subTest12' ,'$0'           ,f~format(-0.00) )
-    self~assertSame('subTest13' ,'$0'           ,f~format(0-0) )
+    self~assertSame('subTest11' ,'$0.00'        ,f~format(-0) )
+    self~assertSame('subTest12' ,'$0.00'        ,f~format(-0.00) )
+    self~assertSame('subTest13' ,'$0.00'        ,f~format(0-0) )
 
 ::method 'test13'
     f = .decimalFormat~new('"$"#,##0.00;"-$"#,###.##')
@@ -323,9 +323,9 @@ return testUnitList
     self~assertSame('subTest8'  ,'-$7,496.54'   ,f~format(-7496.537) )
     self~assertSame('subTest9'  ,'-$.53'        ,f~format(-.534) )
     self~assertSame('subTest10' ,'-$.5'         ,f~format(-.5) )
-    self~assertSame('subTest11' ,'$0'           ,f~format(-0) )
-    self~assertSame('subTest12' ,'$0'           ,f~format(-0.00) )
-    self~assertSame('subTest13' ,'$0'           ,f~format(0-0) )
+    self~assertSame('subTest11' ,'$0.00'        ,f~format(-0) )
+    self~assertSame('subTest12' ,'$0.00'        ,f~format(-0.00) )
+    self~assertSame('subTest13' ,'$0.00'        ,f~format(0-0) )
 
 ::method 'test14'
     f = .decimalFormat~new('"$"#,##0.00" DB";"$"" CR"')
@@ -339,9 +339,9 @@ return testUnitList
     self~assertSame('subTest8'  ,'$7,496.54 CR' ,f~format(-7496.537) )
     self~assertSame('subTest9'  ,'$0.53 CR'     ,f~format(-.534) )
     self~assertSame('subTest10' ,'$0.50 CR'     ,f~format(-.5) )
-    self~assertSame('subTest11' ,'$0 DB'        ,f~format(-0) )
-    self~assertSame('subTest12' ,'$0 DB'        ,f~format(-0.00) )
-    self~assertSame('subTest13' ,'$0 DB'        ,f~format(0-0) )
+    self~assertSame('subTest11' ,'$0.00 DB'     ,f~format(-0) )
+    self~assertSame('subTest12' ,'$0.00 DB'     ,f~format(-0.00) )
+    self~assertSame('subTest13' ,'$0.00 DB'     ,f~format(0-0) )
 
 ::method 'test15'
     f = .decimalFormat~new('#,##0.00;"("")"')
@@ -355,9 +355,9 @@ return testUnitList
     self~assertSame('subTest8'  ,'(7,496.54)'   ,f~format(-7496.537) )
     self~assertSame('subTest9'  ,'(0.53)'       ,f~format(-.534) )
     self~assertSame('subTest10' ,'(0.50)'       ,f~format(-.5) )
-    self~assertSame('subTest11' ,'0'            ,f~format(-0) )
-    self~assertSame('subTest12' ,'0'            ,f~format(-0.00) )
-    self~assertSame('subTest13' ,'0'            ,f~format(0-0) )
+    self~assertSame('subTest11' ,'0.00'         ,f~format(-0) )
+    self~assertSame('subTest12' ,'0.00'         ,f~format(-0.00) )
+    self~assertSame('subTest13' ,'0.00'         ,f~format(0-0) )
 
 ::method 'test16'
     f = .decimalFormat~new('#,##0.00;"("")";"[0]"')
@@ -387,9 +387,9 @@ return testUnitList
     self~assertSame('subTest8'  ,'-7496.537'    ,f~format(-7496.537) )
     self~assertSame('subTest9'  ,'-0.534'       ,f~format(-.534) )
     self~assertSame('subTest10' ,'-0.500'       ,f~format(-.5) )
-    self~assertSame('subTest11' ,'0'            ,f~format(-0) )
-    self~assertSame('subTest12' ,'0'            ,f~format(-0.00) )
-    self~assertSame('subTest13' ,'0'            ,f~format(0-0) )
+    self~assertSame('subTest11' ,'0.000'        ,f~format(-0) )
+    self~assertSame('subTest12' ,'0.000'        ,f~format(-0.00) )
+    self~assertSame('subTest13' ,'0.000'        ,f~format(0-0) )
 
 ::method 'test18'
     f = .decimalFormat~new()
@@ -443,9 +443,9 @@ return testUnitList
     self~assertSame('subTest8'  ,'-€17.496,54'  ,f~format(-17496.537) )
     self~assertSame('subTest9'  ,'-€0,53'       ,f~format(-.534) )
     self~assertSame('subTest10' ,'-€0,50'       ,f~format(-.5) )
-    self~assertSame('subTest11' ,'€0'           ,f~format(-0) )
-    self~assertSame('subTest12' ,'€0'           ,f~format(-0.00) )
-    self~assertSame('subTest13' ,'€0'           ,f~format(0-0) )
+    self~assertSame('subTest11' ,'€0,00'           ,f~format(-0) )
+    self~assertSame('subTest12' ,'€0,00'           ,f~format(-0.00) )
+    self~assertSame('subTest13' ,'€0,00'           ,f~format(0-0) )
 
 ::method 'test21'
     f = .decimalFormat~new('0.00;;""')
