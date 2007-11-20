@@ -141,47 +141,47 @@ return testUnitList
 ::method 'test02Defaults'
     f = .decimalFormat~new()
     self~assertSame('subTest1'  ,'#,###.##'     ,f~pattern)
-    self~assertSame('subTest2'  ,.true          ,f~getGrouping('p') )
-    self~assertSame('subTest3'  ,.true          ,f~getGrouping('n') )
-    self~assertSame('subTest4'  ,.true','.true  ,f~getGrouping('b') )
+    self~assertSame('subTest2'  ,.true          ,f~pGrouping)
+    self~assertSame('subTest3'  ,.true          ,f~nGrouping)
+    self~assertSame('subTest4'  ,.true','.true  ,f~pGrouping','f~nGrouping)
     self~assertSame('subTest5'  ,3              ,f~groupingSize)
     self~assertSame('subTest6'  ,'.'            ,f~decimalSeparator)
     self~assertSame('subTest7'  ,','            ,f~groupingSeparator)
     self~assertSame('subTest8'  ,''             ,f~pPrefix)
-    self~assertSame('subTest9'  ,'#,###.##'     ,f~pPattern)
+    self~assertSame('subTest9'  ,'#,###.##'     ,f~pMask)
     self~assertSame('subTest10' ,''             ,f~pSuffix)
     self~assertSame('subTest11' ,'-'            ,f~nPrefix)
-    self~assertSame('subTest12' ,'#,###.##'     ,f~nPattern)
+    self~assertSame('subTest12' ,'#,###.##'     ,f~nMask)
     self~assertSame('subTest13' ,''             ,f~nSuffix)
-    self~assertSame('subTest14' ,'#,###.##'     ,f~zPattern)
+    self~assertSame('subTest14' ,'#,###.##'     ,f~zMask)
 
 ::method 'test03'
     f = .decimalFormat~new('"$"#,##0.00"DB ";"-$"###0.00" CR";"[0]"')
     self~assertSame('subTest1' ,'"$"#,##0.00"DB ";"-$"###0.00" CR";"[0]"'   ,f~pattern)
-    self~assertSame('subTest2' ,.true                                       ,f~getGrouping('p') )
-    self~assertSame('subTest3' ,.false                                      ,f~getGrouping('n') )
-    self~assertSame('subTest4' ,.true','.false                              ,f~getGrouping('b') )
+    self~assertSame('subTest2' ,.true                                       ,f~pGrouping)
+    self~assertSame('subTest3' ,.false                                      ,f~nGrouping)
+    self~assertSame('subTest4' ,.true','.false                              ,f~pGrouping','f~nGrouping)
     self~assertSame('subTest5' ,3                                           ,f~groupingSize)
     self~assertSame('subTest6' ,'.'                                         ,f~decimalSeparator)
     self~assertSame('subTest7' ,','                                         ,f~groupingSeparator)
     self~assertSame('subTest8' ,'$'                                         ,f~pPrefix)
-    self~assertSame('subTest9' ,'#,##0.00'                                  ,f~pPattern)
+    self~assertSame('subTest9' ,'#,##0.00'                                  ,f~pMask)
     self~assertSame('subTest10','DB '                                       ,f~pSuffix)
     self~assertSame('subTest11','-$'                                        ,f~nPrefix)
-    self~assertSame('subTest12','###0.00'                                   ,f~nPattern)
+    self~assertSame('subTest12','###0.00'                                   ,f~nMask)
     self~assertSame('subTest13',' CR'                                       ,f~nSuffix)
-    self~assertSame('subTest14','[0]'                                       ,f~zPattern)
+    self~assertSame('subTest14','[0]'                                       ,f~zMask)
 
 ::method 'test04'
     f = .decimalFormat~new()
-    self~assertSame('subTest1'  ,0                  ,f~setGrouping('p',.false) )
-    self~assertSame('subTest2'  ,.false             ,f~getGrouping('p') )
-    self~assertSame('subTest3'  ,0                  ,f~setGrouping('n',.true) )
-    self~assertSame('subTest4'  ,.true              ,f~getGrouping('n') )
-    self~assertSame('subTest5'  ,0                  ,f~setGrouping('b',.true) )
-    self~assertSame('subTest6'  ,.true','.true      ,f~getGrouping('b') )
-    self~assertSame('subTest7'  ,0                  ,f~setGrouping('b',.false) )
-    self~assertSame('subTest8'  ,.false','.false    ,f~getGrouping('b') )
+    f~pGrouping = .false
+    self~assertSame('subTest1'  ,.false             ,f~pGrouping)
+    f~pGrouping = .true
+    self~assertSame('subTest2'  ,.true              ,f~pGrouping)
+    f~nGrouping = .false
+    self~assertSame('subTest3'  ,.false             ,f~nGrouping)
+    f~nGrouping = .true
+    self~assertSame('subTest4'  ,.true              ,f~nGrouping)
 
 ::method 'test05'
     f = .decimalFormat~new()
@@ -449,154 +449,129 @@ return testUnitList
 
 ::method 'test21'
     f = .decimalFormat~new('0.00;;""')
-    self~assertSame('subtest1'  ,'0.00' ,f~pPattern)
-    self~assertSame('subtest2'  ,'0.00' ,f~nPattern)
-    self~assertSame('subtest3'  ,''     ,f~zPattern)
+    self~assertSame('subtest1'  ,'0.00' ,f~pMask)
+    self~assertSame('subtest2'  ,'0.00' ,f~nMask)
+    self~assertSame('subtest3'  ,''     ,f~zMask)
 
 ::method 'test22'
     f = .decimalFormat~new('0.00;;" "')
-    self~assertSame('subtest1'  ,' '    ,f~zPattern)
+    self~assertSame('subtest1'  ,' '    ,f~zMask)
 
 --Syntax errors
--- getGrouping
+-- pGrouping
 ::method test51
     f = .decimalFormat~new()
     self~expectSyntax('93.900')
-    f~getGrouping
+    f~pGrouping = 4
 
+-- nGrouping
 ::method test52
     f = .decimalFormat~new()
     self~expectSyntax('93.900')
-    f~getGrouping('z')
-
--- setGrouping
-::method test53
-    f = .decimalFormat~new()
-    self~expectSyntax('93.900')
-    f~setGrouping()
-
-::method test54
-    f = .decimalFormat~new()
-    self~expectSyntax('93.900')
-    f~setGrouping('o')
-
-::method test55
-    f = .decimalFormat~new()
-    self~expectSyntax('93.900')
-    f~setGrouping('p')
-
-::method test56
-    f = .decimalFormat~new()
-    self~expectSyntax('93.900')
-    f~setGrouping('z',.true)
-
-::method test57
-    f = .decimalFormat~new()
-    self~expectSyntax('93.900')
-    f~setGrouping('p',4)
+    f~nGrouping = 4
 
 -- decimalSeparator
-::method test58
+::method test53
     f = .decimalFormat~new()
     self~expectSyntax('93.900')
     f~decimalSeparator = ''
 
-::method test59
+::method test54
     f = .decimalFormat~new()
     self~expectSyntax('93.900')
     f~decimalSeparator = '..'
 
 -- groupingSeparator
-::method test60
+::method test55
     f = .decimalFormat~new()
     self~expectSyntax('93.900')
     f~groupingSeparator = ''
 
-::method test61
+::method test56
     f = .decimalFormat~new()
     self~expectSyntax('93.900')
     f~groupingSeparator = '..'
 
 -- validateMask
-::method test62
+::method test57
     self~expectSyntax('93.900')
     f = .decimalFormat~new('0.00;0.00;"[0]";')
 
-::method test62a
+::method test58
     self~expectSyntax('93.900')
     f = .decimalFormat~new('0.00;0.00;'.nil)
 
-::method test63
+::method test59
     self~expectSyntax('93.900')
     f = .decimalFormat~new('0.00;0.00;"')
 
-::method test64
+::method test60
     self~expectSyntax('93.900')
     f = .decimalFormat~new("0.00;0.00;'")
 
-::method test65
+::method test61
     self~expectSyntax('93.900')
     f = .decimalFormat~new("'0.00;0.00;'")
 
-::method test66
+::method test62
     self~expectSyntax('93.900')
     f = .decimalFormat~new("0.00;'0.00")
 
-::method test67
+::method test63
     self~expectSyntax('93.900')
     f = .decimalFormat~new('"0.00;0.00')
 
-::method test68
+::method test64
     self~expectSyntax('93.900')
     f = .decimalFormat~new('0.00;"0.00')
 
-::method test69
+::method test65
     self~expectSyntax('93.900')
     f = .decimalFormat~new('0.00;.0.00')
 
-::method test70
+::method test66
     self~expectSyntax('93.900')
     f = .decimalFormat~new('.0.00;0.00')
 
-::method test71
+::method test67
     self~expectSyntax('93.900')
     f = .decimalFormat~new('0.00;0#.00')
 
-::method test72
+::method test68
     self~expectSyntax('93.900')
     f = .decimalFormat~new('0#.00;0.00')
 
-::method test73
+::method test69
     self~expectSyntax('93.900')
     f = .decimalFormat~new('0.00;0.#00')
 
-::method test74
+::method test70
     self~expectSyntax('93.900')
     f = .decimalFormat~new('0.#00;0.00')
 
-::method test75
+::method test71
     self~expectSyntax('93.900')
     f = .decimalFormat~new('0.00;0.^00')
 
-::method test76
+::method test72
     self~expectSyntax('93.900')
     f = .decimalFormat~new('$0.00;0.00')
 
-::method test77
+::method test73
     self~expectSyntax('93.900')
     f = .decimalFormat~new('0.00;0.,00')
 
-::method test78
+::method test74
     self~expectSyntax('93.900')
     f = .decimalFormat~new('0.,00;0.00')
 
 -- format
-::method test79
+::method test75
     f = .decimalFormat~new()
     self~expectSyntax('93.904')
     f~format(notAnumber)
 
-::method test80
+::method test76
     f = .decimalFormat~new()
     f~groupingSeparator = '.'
     self~expectSyntax('93.900')
