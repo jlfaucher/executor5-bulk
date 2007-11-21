@@ -42,7 +42,7 @@ objects to avoid recreating them at each invocation.
 ::METHOD run
   use strict arg method ...
   method~setSecurityManager(self~SecurityManager)
-  self~run:super(method,"Array",arg(2,"A"))
+  self~run:super(method,"A",arg(2,"A"))
 
 /*
 A security manager that intercepts the call to requires.
@@ -57,27 +57,24 @@ To simplify this there is an example:
 */
 ::CLASS PackageResolver
 ::METHOD UNKNOWN
+--  say arg(1) arg(2)[1]~name
   return 0
 ::METHOD REQUIRES
---  signal on syntax
   use arg info
   name = info~name
+  -- catch syntax errors here
+  signal on syntax
+  call (name)
+  return 1
+  
+  syntax:
   -- check if this is a special require not actually requiring a file
-  if name~pos("~") > 1 then do
-    info~name = "nop"
-    info~SecurityManager = .Go~getInstance~SecurityManager
-    self~resolve(name)
-    return 1
-  end
-  else
-    return 0
-
-::METHOD resolve
-  use strict arg res
-  parse arg name "(" cls ")"
+  info~name = "nop"
+  info~SecurityManager = .Go~getInstance~SecurityManager
+  -- parse the string
+  parse var name name "(" cls ")"
   path = name~makeArray("~")
   classes = .directory~new
-  trace i
   do class over cls~makeArray(",")
     parse upper var class name " AS " abrev
     name = name~strip
@@ -85,9 +82,14 @@ To simplify this there is an example:
     if abrev~length = 0 then abrev = name
     classes[name] = abrev
   end
---  trace r
+
+  -- load package
   pkgdata = self~getPackage(path)
+  if pkgdata = .nil then
+    raise propagate
+  -- make classes available
   if classes~items > 0 then do
+    -- selected classes only
     do class over pkgdata~classes
       id = class~id~upper
       if classes~hasIndex(id) then do
@@ -95,27 +97,40 @@ To simplify this there is an example:
       end
     end
   end
+  -- all classes
   else do class over pkgdata~classes
     self~setClass(class~id,class)
   end
+  return 1
 
-::METHOD getPackage
+
+::METHOD resolve PRIVATE
+  signal on user PackageNotFound
+  return
+
+  PackageNotFound:
+  say "Unable to find package" name
+
+::METHOD getPackage PRIVATE
   signal on user PackageNotFound
   use strict arg path
   s = .Package
   do i over path
-    o = s~getName
     s = s~getElement(i)
   end
   if s~isSubclassOf(.PackageData) then
     return s~new
-  else raise syntax 93.900 array ("Unable to load package '"i"', no package data found")
+  else do
+    .stderr~lineout("Unable to load package '"i"', no package data found")
+    return .nil
+  end
+--  else raise syntax 93.900 array ("Unable to load package '"i"', no package data found")
 
   PackageNotFound:
-  raise syntax 3.900 array ("Unable to locate package '"i"' in" o)
+  .stderr~lineout("Unable to locate package '"i"' in" s~getName)
+  raise propagate
 
-
-::METHOD setClass
+::METHOD setClass PRIVATE
   use strict arg name, class
   .local[name] = class
 

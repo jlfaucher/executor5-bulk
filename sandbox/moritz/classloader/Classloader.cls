@@ -16,15 +16,12 @@ any kind of resource, like file systems or archive files.
 At some point there will be a Fileentry that represents a rexx class resource.
 This resource should implement the logic necessary to make its classes
 available to the calling application.
-
-
-
 */
 -- Don't load this package several times
-if .Environment~Package \= .nil then return
+if .Local~Package \= .nil then return
 
 
-.local~CLtrace = 0
+.local~CLtrace = 1
 -- the path seperator
 .local~PathSeperator = '/'
 -- the file extension for package files
@@ -34,20 +31,19 @@ if .Environment~Package \= .nil then return
 .local~tarPrefix = "root"||.pathSeperator
 
 .local~temp = "/tmp/"
-
-.local~initExtension = ".init"
--- a lis of back ends
-backEnds = .set~new
---backEnds~put(.TarBackEnd~new("/home/moritz/rexx/classloader/archive.tar.gz"))
-backEnds~put(.FileBackEnd~new("./root/"))
---backEnds~put(.FileBackEnd~new("/home/moritz/rexx/classloader/root/"))
---backEnds~put(.FileBackEnd~new("/home/moritz/tmp/classloader/root/"))
-
 -- publish the root element under .package
-.Environment~Package=.PackageElement~new("Base",,,.MergeBackEnd~new(backEnds))
+.Local~Package=.PackageElement~new("Base",,,.MergeBackEnd~new)
+
+-- a list of back ends
+--backEnds = .set~new
+--backEnds~put(.TarBackEnd~new("/home/moritz/rexx/classloader/archive.tar.gz"))
+.Package~getBackEnd~getBackEnds~put(.FileBackEnd~new("./root"))
+--backEnds~put(.FileBackEnd~new("/home/moritz/rexx/classloader/root"))
+--backEnds~put(.FileBackEnd~new("/home/moritz/tmp/classloader/root"))
 
 
-.Environment~PackageData = .PackageData
+
+.Local~PackageData = .PackageData
 
 /*
 This class is a super class to all back ends. A back end has the ability to
@@ -77,6 +73,7 @@ This class defines all methods all sub classes have to implement.
 /*
 A FileElement refers to a package that contains rexx code.
 */
+/*
 ::CLASS FileElement subclass Element
 ::METHOD Init
   expose name handle parent backEnd package  
@@ -96,14 +93,12 @@ A FileElement refers to a package that contains rexx code.
   expose backEnd
   if backEnd = .nil then return self~getParent~getBackEnd
   return backEnd
-
-
 -- all messages not implemented by this class are forwarded to the package object
 ::METHOD Unknown
   expose package
   use arg method, args
   forward to (package)  message (method) arguments (args)
-
+*/
 /*
 A DirectoryElement represents a directory containing only sub elements.
 If it has been created with an package data value this object will receive
@@ -126,7 +121,7 @@ possible to have packages that have the same file name as a directory...
   return parent
 ::METHOD getElement
 	expose elements
-  signal on user PackageNotFound name PackageNotFound
+  signal on user PackageNotFound
   use arg name
 	if elements~hasindex(name) then
 		return elements[name]
@@ -149,12 +144,15 @@ possible to have packages that have the same file name as a directory...
   use arg name, arguments
 	name = name~strip~translate
   return self~getElement(name)
-
   -- the back end could not satisfy the request, try the package
   PackageNotFound:
-  if .local~CLtrace then
-    say "Forwarding" name "to" package
-  forward to (package) message (name) arguments (arguments)
+  if var("package") then do
+    if .local~CLtrace then
+      say "Forwarding" name "to" package
+    forward to (package) message (name) arguments (arguments)
+  end
+  else
+    raise propagate
 
 /*
 The .MergeBackEnd. This .BackEnd forwards requests to get an element to a
@@ -166,11 +164,11 @@ In case there are duplicates it is not known which one is used.
 ::METHOD Init
   expose backEnds
   use arg backEnds
+  if arg() = 0 then backEnds = .set~new
 ::METHOD getElement
   expose backEnds
-  signal on user PackageNotFound name PackageNotFound
-  use arg name element
-  --raise packagenotfound
+  call on user PackageNotFound
+  use strict arg name, element
   -- iterate over all back ends
   do backEnd over backEnds
     -- call the active back end
@@ -179,15 +177,38 @@ In case there are duplicates it is not known which one is used.
     if element \= .nil then
       return element
   end
-  raise user PackageNotFound additional (name)
+--  call off user PackageNotFound
+--  raise user PackageNotFound additional (name) return (.nil)
 
-  PackageNotFound:
-  raise propagate
+  PackageNotFound:-- procedure
+  raise user PackageNotFound additional (name) return (.nil)
+::METHOD getBackEnds
+  expose backEnds
+  return backEnds
+::CLASS FileSystemBackEnd SUBCLASS BackEnd
+-- This method converts a given element to a relative path.
+::METHOD getRelativePath
+  use strict arg element, seperator
+  path = ""
+  e = element
+  -- iterate over the packages a until the back end's root package has
+  -- been found. Construct path from back to front.
+  do while e \= .nil
+    if e~getBackEnd \= self then leave
+    path = e~getHandle||seperator||path
+    e = e~getParent
+  end
+  return path
 
-::CLASS FileBackEnd SUBCLASS BackEnd
+::CLASS FileBackEnd SUBCLASS FileSystemBackEnd
 ::METHOD Init
   expose path
   use arg path
+  call SysFileTree path, "file", "DO"
+  if file.0 > 1 then raise syntax 93
+  else path = file.1
+  -- add a trailing path seperator if missing
+  if path~right(1) \= .PathSeperator then path||=.PathSeperator
 
 /*
 This getElement implementation searches for packages on the file system.
@@ -197,33 +218,31 @@ be prefered over the file.
 */
 ::METHOD getElement
   expose path
-  use arg name, element
+  use strict arg name, element
   -- don't allow names with path seperator and dots
   if name~verify("."||.PathSeperator,"M") \= 0 then
     raise syntax 93
-  uname = name~translate
   if .local~CLtrace then
     say "Looking for" name "in" element~getName
-  -- the relative path to the name that's being searched for
-  currentPath = ""
-  e = element
-  -- iterate over the packages a until the back end's root package has
-  -- been found. Construct currentPath
-  do while e \= .nil
-    if e~getBackEnd \= self then leave
-    currentPath = e~getHandle||.PathSeperator||currentPath
-    e = e~getParent
-  end
-  -- convert to absolute path
-  currentPath = path||currentPath
+  currentPath = path||self~getRelativePath(element,.PathSeperator)
   -- search for files
-  call SysFileTree currentPath||"*"||.FileExtension,"files","FO"
+  pkg = self~searchFile(name, element, currentPath)
+  if pkg \= .nil then
+    return pkg
+  -- search for directories
+  pkg = self~searchDirectory(name, element, currentPath)
+  if pkg \= .nil then
+    return pkg
+  raise user PackageNotFound additional (name) description ("Unable to locate element" name "in element" element~getName "'"element~getHandle"'") return (.nil)
+
+::METHOD searchFile PRIVATE
+  use strict arg name, element, path
+  call SysFileTree path||"*"||.FileExtension,"files","FO"
   do i = 1 to files.0
     file = files.i
     fileShort = file~substr(1,file~length-.FileExtension~length)
     handle = fileShort~right(fileShort~length-fileShort~lastpos(.PathSeperator))
-    if handle~translate = uname then do
-      -- parse the path
+    if handle~caselessEquals(name) then do
       if element~getBackEnd \= self then e = self
       else e = .nil
       packageData = self~loadFile(file)
@@ -231,33 +250,38 @@ be prefered over the file.
       return newElement
     end
   end
-  -- search for directories
-  call SysFileTree currentPath,"files","DO"
+  return .nil
+
+::METHOD searchDirectory PRIVATE
+  use strict arg name, element, path
+  call SysFileTree path,"files","DO"
   do i = 1 to files.0
     file = files.i
     handle = file~right(file~length - file~lastpos(.PathSeperator))
-    if handle~translate = uname then do
+    if handle~caselessEquals(name) then do
       if element~getBackEnd \= self then e = self
       else e = .nil
       newElement =  .PackageElement~new(name, handle, element, e)
       return newElement
     end
   end
-  raise user PackageNotFound additional (name) description ("Unable to locate element" name "in element" element~getName "'"element~getHandle"'") return (.nil)
+  return .nil
 
 
 ::METHOD loadFile PRIVATE
   use arg fileName
   call (filename)
   package = result
-  if package = "RESULT" then raise syntax 93
+  if package = "RESULT" then
+    raise syntax 93.900 array -
+      ("File" filename "could not be loaded (no result).")
 --  say filename package
 --  say package~new~author
   return result
   
 
 
-::CLASS TarBackEnd SUBCLASS MergeBackEnd
+::CLASS TarBackEnd SUBCLASS FileSystemBackEnd
 ::METHOD Init
   expose path
   use arg path
@@ -270,14 +294,7 @@ be prefered over the file.
   uname = name~translate
   if .local~CLtrace then
     say name element
-  currentPath = ""
-  e = element
-  do while e \= .nil
-    if e~getBackEnd \= self then leave
-    currentPath = e~getHandle||.PathSeperator||currentPath
-    e = e~getParent
-  end
-	currentPath = .local~tarPrefix||currentPath
+	currentPath = .local~tarPrefix||self~getRelativePath(element,.PathSeperator)
   -- search for directories
 	.local~tar path '"'currentPath'*"|rxqueue'
 	do while .stdque~queued > 0
