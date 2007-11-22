@@ -45,8 +45,6 @@
 #include "RexxMemory.hpp"
 
 #define APIRET ULONG
-extern MemorySegmentPool *ProcessCurrentPool;
-extern MemorySegmentPool *GlobalCurrentPool;
 
 // retrofit by IH
 #define MEMSIZE   4194304   /* get pools in 4M chunks. */
@@ -267,10 +265,7 @@ MemorySegment *MemorySegmentPool::newSegment(size_t minSize)
           memoryObject.accessPools(this);
        } else
          this->next = newPool;         /* Anchor it to end of chain         */
-       ProcessCurrentPool = newPool;   /* update last pool accessed for proc*/
-       GlobalCurrentPool = newPool;    /* update global pool addr           */
-       if (this->uncommitted) {          /* Anything left to commit?          */
-       }
+       memoryObject.addPool(newPool);  // tell the memory object we have a new pool
        return newPool->newSegment(minSize);
      } else {
        return NULL;
@@ -328,8 +323,7 @@ MemorySegment *MemorySegmentPool::newLargeSegment(size_t minSize)
           memoryObject.accessPools(this);
        } else
          this->next = newPool;         /* Anchor it to end of chain         */
-       ProcessCurrentPool = newPool;   /* update last pool accessed for proc*/
-       GlobalCurrentPool = newPool;    /* update global pool addr           */
+       memoryObject.addPool(newPool);
        return newPool->newLargeSegment(minSize);
      } else
        return NULL;

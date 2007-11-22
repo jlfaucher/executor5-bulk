@@ -36,7 +36,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Kernel                                                  RexxActivation.hpp  */
+/* REXX Kernel                                            RexxActivation.hpp  */
 /*                                                                            */
 /* Primitive Activation Class Definitions                                     */
 /*                                                                            */

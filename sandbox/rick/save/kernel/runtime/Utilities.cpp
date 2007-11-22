@@ -205,12 +205,12 @@ RexxObject *native_release(
 
   if (result != OREF_NULL) {           /* only save real references!        */
                                        /* get the current activation        */
-    activation = (RexxNativeActivation *)CurrentActivity->current();
+    activation = (RexxNativeActivation *)ActivityManager::currentActivity->current();
                                        /* protect the result                */
     save(result);                      /* protect from GC while saving!     */
     result = activation->saveObject(result);
     discard(result);
   }
-  ReleaseKernelAccess(CurrentActivity);/* release the kernel lock           */
+  ReleaseKernelAccess(ActivityManager::currentActivity);/* release the kernel lock           */
   return result;                       /* return the result object          */
 }

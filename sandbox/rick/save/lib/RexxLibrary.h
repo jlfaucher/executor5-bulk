@@ -51,7 +51,6 @@
   class ActivityTable;
   class RexxActivation;
   class RexxActivity;
-  class RexxActivityClass;
   class RexxArray;
   class RexxBehaviour;
   class RexxBuffer;

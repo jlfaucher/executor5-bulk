@@ -872,7 +872,7 @@ nativei0 (REXXOBJECT, MSGNAME)
 
   native_entry;                        /* synchronize access                */
                                        /* pick up current activation        */
-  self = (RexxNativeActivation *)CurrentActivity->current();
+  self = (RexxNativeActivation *)ActivityManager::currentActivity->current();
   return_oref(this->msgname);          /* just forward and return           */
 }
 
@@ -885,7 +885,7 @@ nativei0 (REXXOBJECT, RECEIVER)
 
   native_entry;                        /* synchronize access                */
                                        /* pick up current activation        */
-  self = (RexxNativeActivation *)CurrentActivity->current();
+  self = (RexxNativeActivation *)ActivityManager::currentActivity->current();
   return_oref(this->receiver);         /* just forward and return           */
 }
 
@@ -898,7 +898,7 @@ nativei1 (int, INTEGER, REXXOBJECT, object)
 
   native_entry;                        /* synchronize access                */
                                        /* just forward and return           */
-  result = ((RexxObject *)object)->longValue(((RexxNativeActivation *)CurrentActivity->current())->digits());
+  result = ((RexxObject *)object)->longValue(((RexxNativeActivation *)ActivityManager::currentActivity->current())->digits());
   return_value(result);                /* return converted value            */
 }
 
@@ -931,7 +931,7 @@ nativei1 (BOOL, ISINTEGER, REXXOBJECT, object)
 
   native_entry;                        /* synchronize access                */
                                        /* pick up current activation        */
-  self = (RexxNativeActivation *)CurrentActivity->current();
+  self = (RexxNativeActivation *)ActivityManager::currentActivity->current();
                                        /* just forward and return           */
   result = this->isInteger((RexxObject *)object);
   return_value(result);                /* return converted value            */
@@ -962,7 +962,7 @@ nativei1 (CSTRING, STRING, REXXOBJECT, object)
 
   native_entry;                        /* synchronize access                */
                                        /* pick up current activation        */
-  self = (RexxNativeActivation *)CurrentActivity->current();
+  self = (RexxNativeActivation *)ActivityManager::currentActivity->current();
                                        /* just forward and return           */
   result = this->cstring((RexxObject *)object);
   return_value(result);                /* return converted value            */
@@ -978,7 +978,7 @@ nativei1 (double, DOUBLE, REXXOBJECT, object)
 
   native_entry;                        /* synchronize access                */
                                        /* pick up current activation        */
-  self = (RexxNativeActivation *)CurrentActivity->current();
+  self = (RexxNativeActivation *)ActivityManager::currentActivity->current();
                                        /* just forward and return           */
   result = this->getDoubleValue((RexxObject *)object);
   return_value(result);                /* return converted value            */
@@ -994,7 +994,7 @@ nativei1 (BOOL, ISDOUBLE, REXXOBJECT, object)
 
   native_entry;                        /* synchronize access                */
                                        /* pick up current activation        */
-  self = (RexxNativeActivation *)CurrentActivity->current();
+  self = (RexxNativeActivation *)ActivityManager::currentActivity->current();
                                        /* just forward and return           */
   result = this->isDouble((RexxObject *)object);
   return_value(result);                /* return converted value            */
@@ -1027,7 +1027,7 @@ nativei2 (REXXOBJECT, SUPER,
 
   native_entry;                        /* synchronize access                */
                                        /* pick up current activation        */
-  self = (RexxNativeActivation *)CurrentActivity->current();
+  self = (RexxNativeActivation *)ActivityManager::currentActivity->current();
   count = args->size();                /* get the argument count            */
   for (i = 1; i <= count; i++)         /* loop through the array            */
                                        /* copying each OREF                 */
@@ -1050,7 +1050,7 @@ nativei2 (REXXOBJECT, SETVAR,
 
   native_entry;                        /* synchronize access                */
                                        /* pick up current activation        */
-  self = (RexxNativeActivation *)CurrentActivity->current();
+  self = (RexxNativeActivation *)ActivityManager::currentActivity->current();
   dictionary = self->methodVariables();/* get the method variables          */
   variableName = new_string(name);    /* get a string version of this      */
                                        /* do the assignment                 */
@@ -1072,7 +1072,7 @@ nativei2 (REXXOBJECT, SETVAR2,
 
   native_entry;                        /* synchronize access                */
                                        /* pick up current activation        */
-  self = (RexxNativeActivation *)CurrentActivity->current();
+  self = (RexxNativeActivation *)ActivityManager::currentActivity->current();
   RexxActivation *context = (RexxActivation *)this->activity->sender(this);
   variableName = new_string(name);    /* get a string version of this      */
                                        /* do the assignment throug retriever*/
@@ -1094,7 +1094,7 @@ nativei2 (REXXOBJECT, SETFUNC,
   native_entry;                        /* synchronize access                */
                                        /* pick up current activation        */
 
-  self = (RexxNativeActivation *)CurrentActivity->current();
+  self = (RexxNativeActivation *)ActivityManager::currentActivity->current();
   activity = self->activity;           /* find the current activity         */
                                        /* get the current activation        */
   activation = self->activity->currentAct();
@@ -1136,7 +1136,7 @@ nativei2 (REXXOBJECT, GETFUNCTIONNAMES,
   native_entry;                        /* synchronize access                */
                                        /* pick up current activation        */
 
-  self = (RexxNativeActivation *)CurrentActivity->current();
+  self = (RexxNativeActivation *)ActivityManager::currentActivity->current();
   activity = self->activity;           /* find the current activity         */
                                        /* get the current activation        */
   activation = self->activity->currentAct();
@@ -1174,7 +1174,7 @@ nativei1 (REXXOBJECT, GETVAR,
 
   native_entry;                        /* synchronize access                */
                                        /* pick up current activation        */
-  self = (RexxNativeActivation *)CurrentActivity->current();
+  self = (RexxNativeActivation *)ActivityManager::currentActivity->current();
   dictionary = self->methodVariables();/* get the method variables          */
   variableName = new_string(name);    /* get a string version of this      */
                                        /* go get the variable               */
@@ -1215,10 +1215,10 @@ nativei4 (void, RAISE,
 
   native_entry;                        /* synchronize access                */
                                        /* pick up current activation        */
-  self = (RexxNativeActivation *)CurrentActivity->current();
+  self = (RexxNativeActivation *)ActivityManager::currentActivity->current();
   this->result = (RexxObject *)result; /* save the result                   */
                                        /* go raise the condition            */
-  CurrentActivity->raiseCondition(new_string(condition), OREF_NULL, (RexxString *)description, (RexxObject *)additional, (RexxObject *)result, OREF_NULL);
+  ActivityManager::currentActivity->raiseCondition(new_string(condition), OREF_NULL, (RexxString *)description, (RexxObject *)additional, (RexxObject *)result, OREF_NULL);
 
   // Using throw would be preferred here, but the compiler won't allow us to
   // do a throw across the C function call boundary.  We need to use longjmp
@@ -1238,7 +1238,7 @@ nativei3 (REXXOBJECT, CONDITION,
 {
   native_entry;                        /* synchronize access                */
                                        /* pass on and raise the condition   */
-  return_oref((CurrentActivity->raiseCondition((RexxString *)condition, OREF_NULL, (RexxString *)description, (RexxObject *)additional, OREF_NULL, OREF_NULL)) ? TheTrueObject : TheFalseObject);
+  return_oref((ActivityManager::currentActivity->raiseCondition((RexxString *)condition, OREF_NULL, (RexxString *)description, (RexxObject *)additional, OREF_NULL, OREF_NULL)) ? TheTrueObject : TheFalseObject);
 }
 
 nativei1 (ULONG, VARIABLEPOOL,
@@ -1253,7 +1253,7 @@ nativei1 (ULONG, VARIABLEPOOL,
 
   native_entry;                        /* synchronize access                */
                                        /* pick up current activation        */
-  self = (RexxNativeActivation *)CurrentActivity->current();
+  self = (RexxNativeActivation *)ActivityManager::currentActivity->current();
                                        /* if access is enabled              */
   if (this->getVpavailable())
                                        /* go process the requests           */
@@ -1290,7 +1290,7 @@ nativei1 (ULONG, VARIABLEPOOL2,
      shv->shvnext = 0;                 /* remember, only 1 shvblock         */
      }
                                        /* pick up current activation        */
-     else self = (RexxNativeActivation *)CurrentActivity->current();
+     else self = (RexxNativeActivation *)ActivityManager::currentActivity->current();
 
                                        /* if access is enabled              */
   if (this->getVpavailable())
@@ -1311,7 +1311,7 @@ nativei0 (void, ENABLE_VARIABLEPOOL)
 
   native_entry;                        /* synchronize access                */
                                        /* pick up current activation        */
-  self = (RexxNativeActivation *)CurrentActivity->current();
+  self = (RexxNativeActivation *)ActivityManager::currentActivity->current();
   this->enableVariablepool();          /* go enable the pool                */
   return_void;                         /* no return value                   */
 }
@@ -1325,7 +1325,7 @@ nativei0 (void, DISABLE_VARIABLEPOOL)
 
   native_entry;                        /* synchronize access                */
                                        /* pick up current activation        */
-  self = (RexxNativeActivation *)CurrentActivity->current();
+  self = (RexxNativeActivation *)ActivityManager::currentActivity->current();
   this->vpavailable = false;           /* dis-allow the calls               */
   return_void;                         /* no return value                   */
 }
@@ -1339,7 +1339,7 @@ nativei0 (void, DISABLE_VARIABLEPOOL)
 
   native_entry;                        /* synchronize access                */
                                        /* pick up current activation        */
-  activation = (RexxActivation *)CurrentActivity->currentAct();
+  activation = (RexxActivation *)ActivityManager::currentActivity->currentAct();
   activation->pushEnvironment((RexxObject *)environment);
   return_void;                         /* no return value                   */
 }
@@ -1353,7 +1353,7 @@ nativei0 (REXXOBJECT, POP_ENVIRONMENT)
 
   native_entry;                        /* synchronize access                */
                                        /* pick up current activation        */
-  activation = (RexxActivation *)CurrentActivity->currentAct();
+  activation = (RexxActivation *)ActivityManager::currentActivity->currentAct();
   return_oref(activation->popEnvironment());
 }
 
@@ -1423,7 +1423,7 @@ nativei3(ULONG, EXECUTIONINFO,
 
   native_entry;                        /* synchronize access                */
                                        /* pick up current activation        */
-  self = CurrentActivity->currentAct();
+  self = ActivityManager::currentActivity->currentAct();
                                        /* if access is enabled              */
   result = 1;
   if (next)
@@ -1468,7 +1468,7 @@ nativei7 (ULONG, STEMSORT,
 
   native_entry;                        /* synchronize access                */
                                        /* pick up current activation        */
-  self = (RexxNativeActivation *)CurrentActivity->current();
+  self = (RexxNativeActivation *)ActivityManager::currentActivity->current();
                                        /* if access is enabled              */
   if (!this->getVpavailable()) {       /* access must be enabled for this to work */
       return FALSE;
@@ -1523,7 +1523,7 @@ nativei0 (void, GUARD_ON)
 
     native_entry;                        /* synchronize access                */
                                          /* pick up current activation        */
-    self = (RexxNativeActivation *)CurrentActivity->current();
+    self = (RexxNativeActivation *)ActivityManager::currentActivity->current();
     self->guardOn();                     /* turn on the guard                 */
     native_release(OREF_NULL);           /* release the kernel access         */
 }
@@ -1537,7 +1537,7 @@ nativei0 (void, GUARD_OFF)
 
     native_entry;                        /* synchronize access                */
                                          /* pick up current activation        */
-    self = (RexxNativeActivation *)CurrentActivity->current();
+    self = (RexxNativeActivation *)ActivityManager::currentActivity->current();
     self->guardOff();                    /* turn off the guard                 */
     native_release(OREF_NULL);           /* release the kernel access         */
 }

@@ -36,7 +36,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* Kernel                                                       RexxMemory.c    */
+/* Kernel                                                     RexxMemory.c    */
 /*                                                                            */
 /* Memory Object                                                              */
 /*                                                                            */
@@ -69,10 +69,6 @@ RexxMemory *pMemoryObject = &memoryObject;
 
 #define MaxImageSize 800000          /* maximum startup image size */
 
-                                       /* Local and global memory Pools     */
-                                       /*  last one accessed.               */
-extern MemorySegmentPool *ProcessCurrentPool;
-extern MemorySegmentPool *GlobalCurrentPool;
 extern void *VFTArray[highest_T];
 
 RexxString * kernel_name (const char * value);
@@ -101,8 +97,6 @@ RexxMemory::RexxMemory()
   /* a lie.  Since this never participates in a sweep operation, */
   /* this works ok in the end. */
   this->setObjectSize(roundObjectBoundary(sizeof(RexxMemory)));
-  GlobalCurrentPool = this->firstPool; /* indicate current pool addrs       */
-  ProcessCurrentPool = this->firstPool;
 
                                        /* make sure we hand craft memory's  */
                                        /*  header information.              */
@@ -365,50 +359,151 @@ void  RexxMemory::killOrphans(RexxObject *rootObject)
   cleanUpMemoryMark
 }
 
-void RexxMemory::checkUninit(RexxTable *uninitTables)
+void RexxMemory::checkUninit()
 /******************************************************************************/
 /*                                                                            */
 /******************************************************************************/
 {
-  long iterTable;                      /* Iterator for uninittables         */
-  long iterUninitTable;                /* Iterator for uninitTable          */
-  RexxTable *uninitTable;              /* current uninit table working w/   */
-  RexxObject *uninitObject;            /* object that has an UNINIT meth    */
-
-
-  /* we might not actually have a table yet, so make sure we check */
-  /* before using it. */
-  if (uninitTables == NULL) {
-      return;
-  }
-                                       /* iterate across all UNINIT tables*/
-  for (iterTable = uninitTables->first();
-       uninitTables->index(iterTable) != OREF_NULL;
-       iterTable = uninitTables->next(iterTable)) {
-                                       /* retrieve the next process uninit*/
-                                       /*  table.                         */
-    uninitTable = (RexxTable *)uninitTables->value(iterTable);
-                                       /* now iterate through the uninit  */
-
-                                       /* table and any object is isn't   */
-                                       /* alive, we indicate it should be */
-                                       /* sent unInit.  We indiacte this  */
-                                       /* by setting the value to 1,      */
-                                       /* instead of NIL (the default)    */
-    for (iterUninitTable = uninitTable->first();
-         (uninitObject = (RexxObject *)uninitTable->index(iterUninitTable)) != OREF_NULL;
-         iterUninitTable = uninitTable->next(iterUninitTable)) {
-
-                                       /* is this object now dead?        */
-      if (uninitObject->isObjectDead(markWord)) {
-                                         /* yes, indicate object is to be   */
-                                         /*  sent uninit.                   */
-        uninitTable->replace(TheTrueObject, iterUninitTable);
-        TheActivityClass->addPendingUninit();
-      }
+    /* we might not actually have a table yet, so make sure we check */
+    /* before using it. */
+    if (uninitTable == NULL)
+    {
+        return;
     }
-  }                                    /* now go check next object in tabl*/
+
+    RexxObject *uninitObject;
+    /* table and any object is isn't   */
+    /* alive, we indicate it should be */
+    /* sent unInit.  We indiacte this  */
+    /* by setting the value to 1,      */
+    /* instead of NIL (the default)    */
+    for (HashLink i = uninitTable->first(); (uninitObject = uninitTable->index(i)) != OREF_NULL; i = uninitTable->next(i))
+    {
+        /* is this object now dead?        */
+        if (uninitObject->isObjectDead(markWord))
+        {
+            /* yes, indicate object is to be   */
+            /*  sent uninit.                   */
+            uninitTable->replace(TheTrueObject, iterUninitTable);
+            pendingUninits++;
+        }
+    }
 }
+
+
+void  RexxMemory::forceUninits()
+/******************************************************************************/
+/* FUNCTION: we will run the UNINIT method of all objetcs in the UNINIT       */
+/*  table for our process.  Even if the object is "dead", this is because the */
+/*  process is going away an its our last chance.  Instead of removing the    */
+/*  objects as we go, we run the entire table and then reset table.           */
+/*                                                                            */
+/******************************************************************************/
+{
+    HashLink iterTable;                /* iterator for table.             */
+    RexxObject *zombieObj;
+
+                                       /* for all objects in the table    */
+    for (HashLink iterTable = uninitTable->first();
+         (zombieObj = uninitTable->index(iterTable)) != OREF_NULL;
+         iterTable = uninitTable->next(iterTable))
+    {
+        try
+        {
+            zombieObj->uninit();           /* run the UNINIT method           */
+        }
+        catch (RexxActivation *) { }
+        catch (ActivityException) { }
+    }                                  /* now go check next object in tabl*/
+}
+
+
+void  RexxMemory::runUninits()
+/******************************************************************************/
+/* Function:  Run any UNINIT methods for this activity                        */
+/******************************************************************************/
+/* NOTE: The routine to iterate across uninit Table isn't quite right, since  */
+/*  the removal of zombieObj may move another zombieObj and then doing        */
+/*  the next will skip this zombie, we should however catch it next time      */
+/*  through.                                                                  */
+/*                                                                            */
+/******************************************************************************/
+{
+    RexxObject * zombieObj;              /* obj that needs uninit run.        */
+    HashLink iterTable;                  /* iterator for table.               */
+
+    /* if we're already processing this, don't try to do this */
+    /* recursively. */
+    if (processingUninits)
+    {
+        return;
+    }
+
+    /* turn on the recursion flag, and also zero out the count of */
+    /* pending uninits to run */
+    processingUninits = true;
+    pendingUninits = 0;
+
+    /* uninitTabe exists, run UNINIT     */
+    for (iterTable = uninitTable->first();
+        (zombieObj = uninitTable->index(iterTable)) != OREF_NULL;
+        iterTable = uninitTable->next(iterTable))
+    {
+        // TODO:  Ther's a bug here.  Removing the object can cause the
+        // iterator to skip over an entry....something should be done to
+        // prevent this.
+
+        /* is this object readyfor UNINIT?   */
+        if (uninitTable->value(iterTable) == TheTrueObject)
+        {
+            /* make sure we don't recurse        */
+            uniniTtable->put(TheFalseObject, zombieObj);
+            zombieObj->uninit();           /* yes, indicate run the UNINIT      */
+                                           /* remove zombie from uninit table   */
+            uninitTable->remove(obj);
+        }
+    }                                  /* now go check next object in table */
+    /* make sure we remove the recursion protection */
+    processingUninits = false;
+}
+
+
+void  RexxMemory::removeUninitObject(
+    RexxObject *obj)                   /* object to remove                  */
+/******************************************************************************/
+/* Function:  Remove an object from the uninit tables                         */
+/******************************************************************************/
+{
+    // just remove this object from the table
+    uninitTable->remove(obj);
+}
+
+
+void RexxMemory::addUninitObject(
+    RexxObject *obj)                   /* object to add                     */
+/******************************************************************************/
+/* Function:  Add an object with an uninit method to the uninit table for     */
+/*            a process                                                       */
+/******************************************************************************/
+{
+                                       /* is object already in table?       */
+   if (uninitTable->get(obj) == OREF_NULL)
+   {
+                                       /* nope, add obj to uninitTable,     */
+                                       /*  initial value is NIL             */
+       uninitTable->put(TheNilObject, obj);
+   }
+
+}
+
+bool RexxMemory::isPendingUninit(RexxObject *obj)
+/******************************************************************************/
+/* Function:  Test if an object is going to require its uninit method run.    */
+/******************************************************************************/
+{
+    return uninitTable->get(obj) != OREF_NULL;
+}
+
 
 void RexxMemory::checkSubClasses
    (RexxObjectTable *subClasses)       /* table of subclasses               */
@@ -449,11 +544,6 @@ void RexxMemory::markObjects(void)
 
   verboseMessage("Beginning mark operation\n");
 
-                                       /* retrive the uninit tables from    */
-                                       /*  activity class.                  */
-  uninitTables = TheActivityClass->getUninitTables();
-                                       /* and the subclass table too        */
-  subClasses = TheActivityClass->getSubClassTable();
   if (this->orphanCheck) {             /* debugging bad OREF's?             */
                                        /* yup, call debugging mark          */
     this->killOrphans(this);
@@ -465,10 +555,10 @@ void RexxMemory::markObjects(void)
                                        /* call normal,speedy,efficient mark */
     this->markObjectsMain(this);
     this->checkSubClasses(subClasses); /* check the subclass table          */
-    this->checkUninit(uninitTables);   /* flag all objects about to be dead */
+    this->checkUninit(uninitTable);    /* flag all objects about to be dead */
                                        /* now mark the unInit table and the */
     this->markObjectsMain(subClasses); /* subclass table                    */
-    this->markObjectsMain(uninitTables);
+    this->markObjectsMain(uninitTable);
   }
                                        /* have to expand the live stack?    */
   if (this->liveStack != this->originalLiveStack) {
@@ -503,7 +593,7 @@ MemorySegment *RexxMemory::newSegment(size_t requestedBytes, size_t minBytes)
   printf("Allocating boundary a new segment of %d bytes\n", requestedBytes);
 #endif
                                        /*Get a new segment                  */
-  segment = ProcessCurrentPool->newSegment(requestedBytes);
+  segment = currentPool->newSegment(requestedBytes);
                                        /* Did we get a segment              */
   if (segment == NULL) {
       /* Segmentsize is the minimum size request we handle.  If */
@@ -513,7 +603,7 @@ MemorySegment *RexxMemory::newSegment(size_t requestedBytes, size_t minBytes)
       minBytes = roundSegmentBoundary(minBytes + MemorySegmentOverhead);
       /* try to allocate once more...if this fails, the caller will */
       /* have to handle it. */
-      segment = ProcessCurrentPool->newSegment(minBytes);
+      segment = currentPool->newSegment(minBytes);
   }
   return segment;                      /* return the allocated segment      */
 }
@@ -542,7 +632,7 @@ MemorySegment *RexxMemory::newLargeSegment(size_t requestedBytes, size_t minByte
   printf("Allocating large boundary new segment of %d bytes\n", requestedBytes);
 #endif
                                        /*Get a new segment                  */
-  segment = ProcessCurrentPool->newLargeSegment(requestedBytes);
+  segment = currentPool->newLargeSegment(requestedBytes);
                                        /* Did we get a segment              */
   if (segment == NULL) {
       /* Segmentsize is the minimum size request we handle.  If */
@@ -552,7 +642,7 @@ MemorySegment *RexxMemory::newLargeSegment(size_t requestedBytes, size_t minByte
       minBytes = roundSegmentBoundary(minBytes + MemorySegmentOverhead);
       /* try to allocate once more...if this fails, the caller will */
       /* have to handle it. */
-      segment = ProcessCurrentPool->newLargeSegment(minBytes);
+      segment = currentPool->newLargeSegment(minBytes);
   }
   return segment;                      /* return the allocated segment      */
 }
@@ -1390,7 +1480,6 @@ void RexxMemory::saveImage(void)
   saveArray->put((RexxObject *)TheNullArray,     saveArray_NULLA);
   saveArray->put((RexxObject *)TheNullPointer,   saveArray_NULLPOINTER);
   saveArray->put((RexxObject *)TheClassClass,    saveArray_CLASS);
-  saveArray->put((RexxObject *)TheActivityClass, saveArray_ACTIVITY);
   saveArray->put((RexxObject *)TheNativeCodeClass, saveArray_NMETHOD);
   saveArray->put((RexxObject *)TheSystem,       saveArray_SYSTEM);
   saveArray->put((RexxObject *)TheFunctionsDirectory,  saveArray_FUNCTIONS);
@@ -1619,7 +1708,7 @@ void RexxMemory::setObjectOffset(size_t offset)
 /*  Returned:  Nothing                                                        */
 /******************************************************************************/
 {
-  RexxActivity *currentActivity;
+  RexxActivity *ActivityManager::currentActivity;
 
   /* Starting or ending? */
   if (offset != 0) {
@@ -1628,13 +1717,13 @@ void RexxMemory::setObjectOffset(size_t offset)
    /* immed */
    if (MTXRI(this->unflattenMutex)) {
     /* Nope, have to wait for it. Get current activity. */
-    currentActivity = CurrentActivity;
+    ActivityManager::currentActivity = ActivityManager::currentActivity;
     /* release kernel access. */
-    ReleaseKernelAccess(currentActivity);
+    ReleaseKernelAccess(ActivityManager::currentActivity);
     /* wait for current unflatten to end */
     MTXRQ(this->unflattenMutex);
     /* get kernel access back. */
-    RequestKernelAccess(currentActivity);
+    RequestKernelAccess(ActivityManager::currentActivity);
    }
   }
   else {
@@ -1656,7 +1745,7 @@ void      RexxMemory::setEnvelope(RexxEnvelope *_envelope)
 /*  Returned:  Nothing                                                        */
 /******************************************************************************/
 {
-  RexxActivity *currentActivity;
+  RexxActivity *ActivityManager::currentActivity;
 
                                        /* Starting or ending?               */
   if (_envelope != OREF_NULL) {
@@ -1665,12 +1754,12 @@ void      RexxMemory::setEnvelope(RexxEnvelope *_envelope)
    if (MTXRI(this->envelopeMutex)) {
                                        /* Nope, have to wait for it.        */
                                        /* Get current activity.             */
-    currentActivity = CurrentActivity;
+    ActivityManager::currentActivity = ActivityManager::currentActivity;
                                        /* release kernel access.            */
-    ReleaseKernelAccess(currentActivity);
+    ReleaseKernelAccess(ActivityManager::currentActivity);
     MTXRQ(this->envelopeMutex);        /* wait for current unflat to end    */
                                        /* get kernel access back.           */
-    RequestKernelAccess(currentActivity);
+    RequestKernelAccess(ActivityManager::currentActivity);
    }
   }
   else {
@@ -1803,18 +1892,18 @@ RexxStack *RexxMemory::getFlattenStack(void)
 /* Function:  Allocate and lock the flatten stack capability.                 */
 /******************************************************************************/
 {
-  RexxActivity *currentActivity;
+  RexxActivity *ActivityManager::currentActivity;
 
                                        /* See if we can get MUTEX immed     */
    if (MTXRI(this->flattenMutex)) {
                                        /* Nope, have to wait for it.        */
                                        /* Get current activity.             */
-    currentActivity = CurrentActivity;
+    ActivityManager::currentActivity = ActivityManager::currentActivity;
                                        /* release kernel access.            */
-    ReleaseKernelAccess(currentActivity);
+    ReleaseKernelAccess(ActivityManager::currentActivity);
     MTXRQ(this->flattenMutex);         /* wait for current flattento end    */
                                        /* get kernel access back.           */
-    RequestKernelAccess(currentActivity);
+    RequestKernelAccess(ActivityManager::currentActivity);
   }
                                        /* create a temporary stack          */
   this->flattenStack = new (LiveStackSize, true) RexxStack (LiveStackSize);
@@ -1859,9 +1948,6 @@ void RexxMemory::accessPools()
   if (SysAccessPool(&this->firstPool)) {
                                        /* Yes, then see if others to access */
     this->accessPools(this->firstPool);/* Now gain access to all the rest   */
-                                       /* now have access to all pools on   */
-                                       /* this process.                     */
-    ProcessCurrentPool = GlobalCurrentPool;
   }
 
 }
@@ -1878,13 +1964,6 @@ void RexxMemory::accessPools(MemorySegmentPool *pool)
    pool->accessNextPool();             /* access next pool.                 */
    pool = pool->nextPool();            /* get next Pool                     */
   }
-
-  /* CHM - defect 29: if GlobalCurrentPool is not set, then set it to the   */
-  /* last valid pool                                                        */
-  if ( !GlobalCurrentPool )
-  {
-     GlobalCurrentPool = lastPool;
-  } /* endif */
 }
 
 
@@ -1896,12 +1975,12 @@ void RexxMemory::freePools()
 /******************************************************************************/
 {
                                        /* Released pool yet?                */
-   if (ProcessCurrentPool) {
+   if (firstPool != NULL) {
                                        /* nope release them now.            */
      this->freePools(this->firstPool);
 
    }
-   ProcessCurrentPool = NULL;          /* no pools available to this process*/
+   firstPool = NULL;                   /* no pools available to this process*/
 }
 
 
@@ -1927,14 +2006,9 @@ MemorySegmentPool *RexxMemory::freePools(MemorySegmentPool *pool)
 /*    This is called recursivly, until we reach the end of the list           */
 /******************************************************************************/
 {
-  if (pool != ProcessCurrentPool) {    /* At the end of the list?           */
+  if (pool != currentPool) {           /* At the end of the list?           */
                                        /* nope, free next one first.        */
     pool->setNext(this->freePools(pool->nextPool()));    /* CHM - defect 96 */
-
-    if ( !pool->nextPool() )           /* CHM - def96: if no next pool then */
-    {                                  /* move GlobalCurrentPool one pool   */
-       GlobalCurrentPool = pool;       /* backwards                         */
-    } /* endif */
   }
   return pool->freePool();             /* CHM - def.96: now free this pool. */
 }
@@ -2064,7 +2138,6 @@ void memoryRestore()
   TheNullArray   = (RexxArray *)TheSaveArray->get(saveArray_NULLA);
   TheNullPointer   = (RexxInteger *)TheSaveArray->get(saveArray_NULLPOINTER);
   TheClassClass  = (RexxClass *)TheSaveArray->get(saveArray_CLASS);
-  TheActivityClass    = (RexxActivityClass *)TheSaveArray->get(saveArray_ACTIVITY);
   TheNativeCodeClass  = (RexxNativeCodeClass *)TheSaveArray->get(saveArray_NMETHOD);
   TheCommonRetrievers = (RexxDirectory *)TheSaveArray->get(saveArray_COMMON_RETRIEVERS);
   TheStaticRequires   = (RexxDirectory *)TheSaveArray->get(saveArray_STATIC_REQ);
@@ -2090,7 +2163,6 @@ void memoryRestore()
   RESTORE_CLASS(MutableBuffer, mutablebuffer, RexxMutableBufferClass);
                                        /* fix up special save class         */
                                        /* behaviours                        */
-  TheActivityClass->setBehaviour(TheActivityClassBehaviour);
   TheNativeCodeClass->setBehaviour(TheNativeCodeClassBehaviour);
 
   pMemoryObject->setOldSpace();    /* Mark Memory Object as OldSpace    */

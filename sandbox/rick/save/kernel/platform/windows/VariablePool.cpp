@@ -310,7 +310,7 @@ ULONG SysVariablePool(
                                        /* want the current exit?            */
       else if (IS_EQUAL(variable, "EXITNAME")) {
                                        /* get the exit name                 */
-        value = CurrentActivity->getCurrentExit();
+        value = ActivityManager::currentActivity->getCurrentExit();
         if (value == OREF_NULL)        /* is this a null?                   */
           value = OREF_NULLSTRING;     /* this is a null string value       */
                                        /* copy the value                    */

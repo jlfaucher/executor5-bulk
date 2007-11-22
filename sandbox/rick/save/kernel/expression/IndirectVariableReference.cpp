@@ -50,8 +50,6 @@
 #include "RexxVariableDictionary.hpp"
 #include "IndirectVariableReference.hpp"
 
-extern RexxActivity *CurrentActivity;  /* expose current activity object    */
-
 RexxVariableReference::RexxVariableReference(
      RexxVariableBase *variable)       /* variable retriever for reference  */
 /******************************************************************************/

@@ -136,7 +136,7 @@ void RexxVariable::notify()
     }
                                        /* yield control and allow the       */
                                        /* waiting guard to run too          */
-    activity = CurrentActivity;        /* get the current activity          */
+    activity = ActivityManager::currentActivity;        /* get the current activity          */
     ReleaseKernelAccess(activity);     /* release the lock                  */
     RequestKernelAccess(activity);     /* get it back again                 */
   }

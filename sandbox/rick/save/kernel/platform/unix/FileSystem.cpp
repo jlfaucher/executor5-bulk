@@ -500,7 +500,7 @@ RexxBuffer *SysReadProgram(
   RexxBuffer * buffer;                 /* buffer object to read file into   */
   RexxActivity*activity;               /* the current activity              */
 
-  activity = CurrentActivity;          /* save the activity                 */
+  activity = ActivityManager::currentActivity;          /* save the activity                 */
   ReleaseKernelAccess(activity);       /* release the kernel access         */
 
   handle = fopen(file_name, "rb");     /* open as a binary file             */

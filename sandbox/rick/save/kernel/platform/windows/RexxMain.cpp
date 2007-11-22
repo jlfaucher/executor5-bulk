@@ -84,9 +84,6 @@
 
 #ifdef TIMESLICE                       /* System Yielding function prototype*/
 int REXXENTRY RexxSetYield(PID procid, TID threadid);
-#ifdef HIGHTID
-extern ActivityTable * ProcessLocalActs; /* needed for halt and trace */
-#endif
 #endif /*timeslice*/
 
 
@@ -97,7 +94,6 @@ extern BOOL UseMessageLoop;  /* speciality for VAC++ */
 
 extern RexxDirectory *ProcessLocalEnv; /* process local environment (.local)*/
 extern RexxObject *ProcessLocalServer; /* current local server              */
-extern RexxActivity *CurrentActivity;  /* current active activity           */
 const char * SysFileExtension(const char *);
 RexxMethod *SysRestoreProgramBuffer(PRXSTRING, RexxString *);
 RexxMethod *SysRestoreInstoreProgram(PRXSTRING, RexxString *);
@@ -171,7 +167,7 @@ void REXXENTRY RexxCreateDirectory(const char * dirname)
   RexxActivity *activity;              /* target activity                   */
 
                                        /* (will create one if necessary)    */
-  activity = TheActivityClass->getActivity();
+  activity = ActivityManager::getActivity();
 
                                        /* Create string object              */
   index = new_string(dirname);
@@ -179,7 +175,7 @@ void REXXENTRY RexxCreateDirectory(const char * dirname)
                                        /* Create directory and hang of off  */
                                        /* local env. directory.             */
   ProcessLocalEnv->put(new_directory(), index);
-  TheActivityClass->returnActivity(CurrentActivity);       /* release the kernel semaphore      */
+  ActivityManager::returnActivity(activity);       /* release the kernel semaphore      */
 
   return;
 }
@@ -191,31 +187,18 @@ extern "C" {
 void SearchPrecision(
   PULONG    precision)                 /* required precision         */
 {
-  RexxActivity        *activity;
-  RexxActivation      *activation;
-  int i, thread_id,threadid;
-
-  *precision = DEFAULT_PRECISION;      /* set default digit count    */
+    *precision = DEFAULT_PRECISION;      /* set default digit count    */
 
 /* give me the numeric digits settings of the current actitity       */
 
-  threadid = GetCurrentThreadId();
-  if (ProcessLocalActs != OREF_NULL)
-  { /* activities created?               */
-                                       /* get all activities                */
-    for (i=ProcessLocalActs->first();ProcessLocalActs->available(i);i=ProcessLocalActs->next(i))
+    threadid = GetCurrentThreadId();
+
+    RexxActivity *activity = ActivityManager::findActivityForCurrentThread();
+    if (activity != OREF_NULL)
     {
-      thread_id = ProcessLocalActs->index(i);   /* get thread id   */
-      if (thread_id == threadid)
-      {
-        activity = (RexxActivity *)ProcessLocalActs->fastAt(thread_id);
-        activation = activity->currentAct();
+        RexxActivation *activation = activity->currentAct();
         *precision = activation->digits();
-        break;
-      }
     }
-  }
-}
 }
 
 RexxActivity *RunActivity = NULL;
@@ -247,21 +230,21 @@ void WinEnterKernel(bool execute)
 {
   if (execute) {
     RexxInitialize();
-    TheActivityClass->getActivity(); // create a "current" activity
+    ActivityManager::getActivity(); // create a "current" activity
   }
 
-  RexxNativeActivation *newNativeAct = new ((RexxObject *)CurrentActivity, OREF_NULL, CurrentActivity, OREF_PROGRAM, OREF_NULL) RexxNativeActivation;
-  CurrentActivity->push(newNativeAct); /* Push new nativeAct onto stack     */
-  WinStore = CurrentActivity;
+  RexxNativeActivation *newNativeAct = new ((RexxObject *)ActivityManager::currentActivity, OREF_NULL, ActivityManager::currentActivity, OREF_PROGRAM, OREF_NULL) RexxNativeActivation;
+  ActivityManager::currentActivity->push(newNativeAct); /* Push new nativeAct onto stack     */
+  WinStore = ActivityManager::currentActivity;
 }
 
 void WinLeaveKernel(bool execute)
 {
-  if (CurrentActivity == NULL)
-    CurrentActivity = WinStore;
-  CurrentActivity->pop(FALSE);
+  if (ActivityManager::currentActivity == NULL)
+    ActivityManager::currentActivity = WinStore;
+  ActivityManager::currentActivity->pop(FALSE);
   if (execute) {
-    TheActivityClass->returnActivity(CurrentActivity);
+    ActivityManager::returnActivity(ActivityManager::currentActivity);
     RexxTerminate();
   }
 
@@ -281,14 +264,14 @@ void REXXENTRY RexxRemoveDirectory(const char *dirname)
   RexxActivity *activity;              /* target activity                   */
 
                                        /* (will create one if necessary)    */
-  activity = TheActivityClass->getActivity();
+  activity = ActivityManager::getActivity();
 
                                        /* Create string object              */
   index = new_string(dirname);
                                        /* Remove directory from Local env.  */
   ProcessLocalEnv->remove(index);
                                        /* release the kernel semaphore      */
-  TheActivityClass->returnActivity(CurrentActivity);
+  ActivityManager::returnActivity(ActivityManager::currentActivity);
   return;
 }
 
@@ -312,7 +295,7 @@ BOOL REXXENTRY RexxDispose(const char *dirname, RexxObject *RexxObj)
 
                                        /* Find an activity for this thread  */
                                        /* (will create one if necessary)    */
-  activity = TheActivityClass->getActivity();
+  activity = ActivityManager::getActivity();
 
                                        /* Create string object              */
   index = new_string(dirname);
@@ -321,7 +304,7 @@ BOOL REXXENTRY RexxDispose(const char *dirname, RexxObject *RexxObj)
                                        /* Remove object                     */
   RexxObj = locked_objects->remove(new_string((const char *)&RexxObj, sizeof(RexxObject *)));
                                        /* release the kernel semaphore      */
-  TheActivityClass->returnActivity(CurrentActivity);
+  ActivityManager::returnActivity(ActivityManager::currentActivity);
   if (RexxObj == TheNilObject)
     return FALSE;
   else
@@ -347,7 +330,7 @@ APIRET REXXENTRY RexxResultString(RexxObject * result, PRXSTRING pResultBuffer)
   ULONG rc = 0;
   RexxString *string_result;
 
-  activity = TheActivityClass->getActivity();
+  activity = ActivityManager->getActivity();
 
                                        /* force to a string value           */
   string_result = result->stringValue();
@@ -368,7 +351,7 @@ APIRET REXXENTRY RexxResultString(RexxObject * result, PRXSTRING pResultBuffer)
       rc = 1;
   } else
     rc = -1;
-  TheActivityClass->returnActivity(CurrentActivity);       /* release the kernel semaphore      */
+    ActivityManager::returnActivity(ActivityManager::currentActivity);       /* release the kernel semaphore      */
   return rc;
 }
 
@@ -396,7 +379,7 @@ APIRET REXXENTRY RexxCopyMethod(const char *dirname, RexxObject * method, RexxOb
                                        /* Find an activity for this thread  */
                                        /* (will create one if necessary)    */
 
-  activity = TheActivityClass->getActivity();
+  activity = ActivityManager::getActivity();
   if (isOfClass(Method, method)) {      /* Make sure this is a method object */
 
     if ((*pmethod = (RexxMethod *)method->copy()) != OREF_NULL) {
@@ -410,7 +393,7 @@ APIRET REXXENTRY RexxCopyMethod(const char *dirname, RexxObject * method, RexxOb
   } else
     rc = -1;
 
-  TheActivityClass->returnActivity(CurrentActivity);       /* release the kernel semaphore      */
+  ActivityManager::returnActivity(ActivityManager::currentActivity);       /* release the kernel semaphore      */
   return rc;
 }
 
@@ -436,14 +419,14 @@ BOOL REXXENTRY RexxValidObject(const char *dirname, RexxObject * object)
 
                                        /* Find an activity for this thread  */
                                        /* (will create one if necessary)    */
-  activity = TheActivityClass->getActivity();
+  activity = ActivityManager::getActivity();
 
                                        /* Get directory of locked objects   */
   locked_objects = (RexxDirectory *)ProcessLocalEnv->at(new_string(dirname));
                                        /* See if object exists              */
   object = locked_objects->at(new_string((const char *)&object, sizeof(RexxObject *)));
                                        /* release the kernel semaphore      */
-  TheActivityClass->returnActivity(CurrentActivity);
+  ActivityManager::returnActivity(ActivityManager::currentActivity);
   if (object == OREF_NULL)             /* Was the object in the directory ? */
     return FALSE;                      /* Invalid object                    */
   else
@@ -536,12 +519,12 @@ APIRET APIENTRY RexxStart(
 
   RexxInitialize();                    /* Perform any needed inits          */
 
-  TheActivityClass->getActivity();     /* get a base activity under us      */
+  ActivityManager::getActivity();     /* get a base activity under us      */
                                        /* wrap up the argument              */
   tempArgument = (RexxObject *)new_integer((LONG)&RexxStartArguments);
                                        /* pass along to the real method     */
-  rc = CurrentActivity->messageSend(ProcessLocalServer, OREF_RUN_PROGRAM, 1, &tempArgument, &resultObject);
-  TheActivityClass->returnActivity(CurrentActivity);
+  rc = ActivityManager::currentActivity->messageSend(ProcessLocalServer, OREF_RUN_PROGRAM, 1, &tempArgument, &resultObject);
+  ActivityManager::returnActivity(ActivityManager::currentActivity);
   RexxTerminate();                     /* perform needed termination        */
 
 //  if (orexx_active_sem)
@@ -713,17 +696,17 @@ APIRET REXXENTRY RexxCreateMethod(
 
   RexxInitialize();                    /* Perform any needed inits          */
 
-  TheActivityClass->getActivity();     /* get a base activity under us      */
+  ActivityManager::getActivity();     /* get a base activity under us      */
                                        /* wrap up the argument              */
   tempArgument = (RexxObject *)new_integer((LONG)&RexxScriptArgs);
                                        /* pass along to the real method     */
-  rc = CurrentActivity->messageSend(ProcessLocalServer, OREF_RUN_PROGRAM, 1, &tempArgument, &resultObject);
+  rc = ActivityManager::currentActivity->messageSend(ProcessLocalServer, OREF_RUN_PROGRAM, 1, &tempArgument, &resultObject);
 
                                        /* if error, get condition data from */
                                        /* condition object.                 */
-  if (rc && CurrentActivity->conditionobj != OREF_NULL)
-    CreateRexxCondData(CurrentActivity->conditionobj, pRexxCondData);
-  TheActivityClass->returnActivity(CurrentActivity);
+  if (rc && ActivityManager::currentActivity->conditionobj != OREF_NULL)
+    CreateRexxCondData(ActivityManager::currentActivity->conditionobj, pRexxCondData);
+  ActivityManager::returnActivity(ActivityManager::currentActivity);
   RexxTerminate();                     /* perform needed termination        */
   return rc;                           /* return the error code             */
 }
@@ -792,7 +775,7 @@ APIRET REXXENTRY RexxRunMethod(
   RexxInitialize();                    /* Perform any needed inits          */
 
   if (securityManager) ((RexxMethod*) method)->setSecurityManager(securityManager);
-  tempActivity = TheActivityClass->getActivity();     /* get a base activity under us      */
+  tempActivity = ActivityManager::getActivity();     /* get a base activity under us      */
   store = RunActivity; // store old one
   RunActivity = tempActivity; // set to current
   tempActivity->exitObjects = TRUE;   // enable object passing thru classic rexx interface!
@@ -805,7 +788,7 @@ APIRET REXXENTRY RexxRunMethod(
                                        /* condition object.                 */
   if (rc && tempActivity->conditionobj != OREF_NULL)
     CreateRexxCondData(tempActivity->conditionobj, pRexxCondData);
-  TheActivityClass->returnActivity(tempActivity);
+  ActivityManager::returnActivity(tempActivity);
   RexxTerminate();                     /* perform needed termination        */
   RunActivity = store; // restore old RunActivity (NULL or from a nested call)
   return rc;                           /* return the error code             */
@@ -840,12 +823,12 @@ APIRET REXXENTRY RexxStoreMethod(RexxObject * method, PRXSTRING scriptData)
 
   RexxInitialize();                    /* Perform any needed inits          */
 
-  TheActivityClass->getActivity();     /* get a base activity under us      */
+  ActivityManager::getActivity();     /* get a base activity under us      */
                                        /* wrap up the argument              */
   tempArgument = (RexxObject *)new_integer((LONG)&RexxScriptArgs);
                                        /* pass along to the real method     */
-  rc = CurrentActivity->messageSend(ProcessLocalServer, OREF_RUN_PROGRAM, 1, &tempArgument, &resultObject);
-  TheActivityClass->returnActivity(CurrentActivity);
+  rc = ActivityManager::currentActivity->messageSend(ProcessLocalServer, OREF_RUN_PROGRAM, 1, &tempArgument, &resultObject);
+  ActivityManager::returnActivity(ActivityManager::currentActivity);
   RexxTerminate();                     /* perform needed termination        */
   return rc;                           /* return the error code             */
 }
@@ -882,12 +865,12 @@ APIRET REXXENTRY RexxLoadMethod(const char *dirname, PRXSTRING scriptData, RexxO
 
   RexxInitialize();                    /* Perform any needed inits          */
 
-  TheActivityClass->getActivity();     /* get a base activity under us      */
+  ActivityManager::getActivity();     /* get a base activity under us      */
                                        /* wrap up the argument              */
   tempArgument = (RexxObject *)new_integer((LONG)&RexxScriptArgs);
                                        /* pass along to the real method     */
-  rc = CurrentActivity->messageSend(ProcessLocalServer, OREF_RUN_PROGRAM, 1, &tempArgument, &resultObject);
-  TheActivityClass->returnActivity(CurrentActivity);
+  rc = ActivityManager::currentActivity->messageSend(ProcessLocalServer, OREF_RUN_PROGRAM, 1, &tempArgument, &resultObject);
+  ActivityManager::returnActivity(ActivityManager::currentActivity);
 
   RexxTerminate();                     /* perform needed termination        */
 
@@ -929,12 +912,12 @@ APIRET REXXENTRY RexxTranslateProgram(
 
   RexxInitialize();                    /* Perform any needed inits          */
 
-  TheActivityClass->getActivity();     /* get a base activity under us      */
+  ActivityManager::getActivity();     /* get a base activity under us      */
                                        /* wrap up the argument              */
   tempArgument = (RexxObject *)new_integer((LONG)&RexxStartArguments);
                                        /* pass along to the real method     */
-  rc = CurrentActivity->messageSend(ProcessLocalServer, OREF_RUN_PROGRAM, 1, &tempArgument, &resultObject);
-  TheActivityClass->returnActivity(CurrentActivity);
+  rc = ActivityManager::currentActivity->messageSend(ProcessLocalServer, OREF_RUN_PROGRAM, 1, &tempArgument, &resultObject);
+  ActivityManager::returnActivity(ActivityManager::currentActivity);
   RexxTerminate();                     /* perform needed termination        */
   return rc;                           /* return the error code             */
 }
@@ -984,36 +967,22 @@ int REXXENTRY RexxSetYield(PID procid, TID threadid)
 /******************************************************************************/
 APIRET REXXENTRY RexxSetHalt(PID procid, TID threadid)
 {
-  APIRET res = RXARI_NOT_FOUND;
-  int i;
-
-  if (RexxQuery()) {                        /* Are we up?                     */
-     if (!threadid)
+  if (RexxQuery())
+  {                        /* Are we up?                     */
+     if (threadid == 0)
      {
-#ifdef HIGHTID
-        res = RXARI_OK;
-        for (i=ProcessLocalActs->first();ProcessLocalActs->available(i);i=ProcessLocalActs->next(i))
-        {
-           /* get the threadid from the directory by casting index to a RexxString */
-           /* and casting the RexxString to an integer (vers visa to ID2String */
-           if(!activity_halt(ProcessLocalActs->index(i), OREF_NULL))  /* Set halt condition? */
-              res = RXARI_NOT_FOUND;             /* Couldn't find threadid         */
-        }
-#else
-        res = RXARI_NOT_FOUND;
-#endif
+         ActivityManager::haltAllActivities();
      }
      else
      {
-        if(!activity_halt(threadid, OREF_NULL))  /* Set halt condition?            */
-           return (RXARI_NOT_FOUND);             /* Couldn't find threadid         */
-        else
-           return (RXARI_OK);
+         if (!ActivityManager::haltActivity(threadid, OREF_NULL))
+         {
+             return (RXARI_NOT_FOUND);             /* Couldn't find threadid         */
+         }
      }
+     return (RXARI_OK);
   }
-  else
-     return (RXARI_NOT_FOUND);             /* Couldn't find threadid         */
-  return (res);               /* REXX not running, error...     */
+  return RXARI_NOT_FOUND;     /* REXX not running, error...     */
 }
 
 
@@ -1033,38 +1002,24 @@ APIRET REXXENTRY RexxSetHalt(PID procid, TID threadid)
 /*                                                                            */
 /******************************************************************************/
 
-APIRET InternSetResetTrace(PID procid, TID threadid, BOOL flag)
+APIRET InternSetResetTrace(PID procid, TID threadid, bool flag)
 {
-  APIRET res = RXARI_NOT_FOUND;
-  int i;
-
-  if (RexxQuery()) {                        /* Are we up?                     */
-     if (!threadid)
-     {
-#ifdef HIGHTID
-        res = RXARI_OK;
-        for (i=ProcessLocalActs->first();ProcessLocalActs->available(i);i=ProcessLocalActs->next(i))
-        {
-           /* get the threadid from the directory by casting index to a RexxString */
-           /* and casting the RexxString to an integer (vers visa to ID2String */
-           if(!activity_set_trace(ProcessLocalActs->index(i), flag))  /* Set trace ? */
-              res = RXARI_NOT_FOUND;             /* Couldn't find threadid         */
-        }
-#else
-        res = RXARI_NOT_FOUND;
-#endif
-     }
-     else
-     {
-        if(!activity_set_trace(threadid, flag))  /* Set trace on/off  ?            */
-           return (RXARI_NOT_FOUND);             /* Couldn't find threadid         */
-        else
-           return (RXARI_OK);
-     }
-  }
-  else
-     return (RXARI_NOT_FOUND);             /* Couldn't find threadid         */
-  return (res);               /* REXX not running, error...     */
+    if (RexxQuery())
+    {                        /* Are we up?                     */
+       if (threadid == 0)
+       {
+           ActivityManager::traceAllActivities(flag);
+       }
+       else
+       {
+           if (!ActivityManager::traceActivity(threadid, flag))
+           {
+               return (RXARI_NOT_FOUND);             /* Couldn't find threadid         */
+           }
+       }
+       return (RXARI_OK);
+    }
+    return RXARI_NOT_FOUND;     /* REXX not running, error...     */
 }
 
 /******************************************************************************/
@@ -1081,7 +1036,7 @@ APIRET InternSetResetTrace(PID procid, TID threadid, BOOL flag)
 /******************************************************************************/
 APIRET REXXENTRY RexxSetTrace(PID procid, TID threadid)
 {
-  return (InternSetResetTrace(procid, threadid, 1));     /* 1 to set trace on */
+  return (InternSetResetTrace(procid, threadid, true));     /* 1 to set trace on */
 }
 
 
@@ -1099,7 +1054,7 @@ APIRET REXXENTRY RexxSetTrace(PID procid, TID threadid)
 /******************************************************************************/
 APIRET REXXENTRY RexxResetTrace(PID procid, TID threadid)
 {
-  return (InternSetResetTrace(procid, threadid, 0));  /* 0 to set trace off */
+  return (InternSetResetTrace(procid, threadid, false));  /* 0 to set trace off */
 }
 
 
@@ -1119,7 +1074,7 @@ void translateSource(
   BOOL            fileFound;
   RexxActivity*activity;               /* the current activity              */
 
-  activity = CurrentActivity;          /* save the current activity         */
+  activity = ActivityManager::currentActivity;          /* save the current activity         */
   ReleaseKernelAccess(activity);       /* release the kernel access         */
                                        /* go resolve the name               */
   fileFound = SearchFileName(inputName->getStringData(), name);
@@ -1229,7 +1184,7 @@ void CreateMethod(
    locked_objects->put(*pRexxScriptArgs->pmethod, new_string((const char *)pRexxScriptArgs->pmethod, sizeof(RexxObject *)));
  }
                                        /* finally, discard our activation   */
- CurrentActivity->pop(FALSE);
+ ActivityManager::currentActivity->pop(FALSE);
  return;
 }
 
@@ -1251,12 +1206,12 @@ void RunMethod(
 
   // callback activated?
   if (pRexxScriptArgs->func) {
-    savedAct = CurrentActivity; // save the activity...
-    // note: imho this is "dirty". a process global variable (CurrentActivity)
+    savedAct = ActivityManager::currentActivity; // save the activity...
+    // note: imho this is "dirty". a process global variable (ActivityManager::currentActivity)
     // might (will) be overwritten, but to save the program flow (it will be
     // referenced again later on), i save it in a temporary variable...
     new_arglist = (RexxArray*) pRexxScriptArgs->func(pRexxScriptArgs->args);
-    CurrentActivity = savedAct; // restore activity
+    ActivityManager::currentActivity = savedAct; // restore activity
   }
   else if (pRexxScriptArgs->args) {
     // func == NULL && args != NULL => treat as RexxArray;
@@ -1287,16 +1242,16 @@ void RunMethod(
                                        /* protect from garbage collect      */
       newNativeAct->saveObject(fullname);
                                        /* enable this exit                  */
-      CurrentActivity->setSysExit(pRexxScriptArgs->exits[i].sysexit_code, fullname);
+      ActivityManager::currentActivity->setSysExit(pRexxScriptArgs->exits[i].sysexit_code, fullname);
       i++;                             /* step to the next exit             */
     }
   }
 
                                        /* Check to see if halt or trace sys */
                                        /* were set                          */
-  CurrentActivity->queryTrcHlt();
+  ActivityManager::currentActivity->queryTrcHlt();
                                        /* run and get the result            */
-  *pRexxScriptArgs->presult = (RexxString *)((RexxObject *)CurrentActivity)->shriekRun(*pRexxScriptArgs->pmethod, OREF_COMMAND, initial_address, new_arglist->data(), new_arglist->size());
+  *pRexxScriptArgs->presult = (RexxString *)((RexxObject *)ActivityManager::currentActivity)->shriekRun(*pRexxScriptArgs->pmethod, OREF_COMMAND, initial_address, new_arglist->data(), new_arglist->size());
   if (pRexxScriptArgs->index != OREF_NULL && *pRexxScriptArgs->presult != OREF_NULL) {
                                        /* Need to keep around for process   */
                                        /* duration.                         */
@@ -1305,7 +1260,7 @@ void RunMethod(
  }
 
                                        /* finally, discard our activation   */
-  CurrentActivity->pop(FALSE);
+  ActivityManager::currentActivity->pop(FALSE);
   return;
 }
 
@@ -1332,7 +1287,7 @@ void LoadMethod(
  }
 
                                        /* finally, discard our activation   */
- CurrentActivity->pop(FALSE);
+ ActivityManager::currentActivity->pop(FALSE);
  return;
 }
 /*********************************************************************/
@@ -1361,8 +1316,8 @@ void  SysRunProgram(
   tokenize_only = FALSE;               /* default is to run the program     */
                                        /* create the native method to be run*/
                                        /* on the activity                   */
-  newNativeAct = new ((RexxObject *)CurrentActivity, OREF_NULL, CurrentActivity, OREF_PROGRAM, OREF_NULL) RexxNativeActivation;
-  CurrentActivity->push(newNativeAct); /* Push new nativeAct onto stack     */
+  newNativeAct = new ((RexxObject *)ActivityManager::currentActivity, OREF_NULL, ActivityManager::currentActivity, OREF_PROGRAM, OREF_NULL) RexxNativeActivation;
+  ActivityManager::currentActivity->push(newNativeAct); /* Push new nativeAct onto stack     */
   switch (*((short *)ControlInfo)) {
     case CREATEMETHOD:
       CreateMethod((RexxScriptInfo *)ControlInfo, newNativeAct);
@@ -1376,7 +1331,7 @@ void  SysRunProgram(
 
 
                                        /* finally, discard our activation   */
-      CurrentActivity->pop(FALSE);
+      ActivityManager::currentActivity->pop(FALSE);
       return;
     case LOADMETHOD:
       LoadMethod((RexxScriptInfo *)ControlInfo, newNativeAct);
@@ -1391,7 +1346,7 @@ void  SysRunProgram(
   else
     name = OREF_NULLSTRING;            /* use an "unlocatable" name         */
   newNativeAct->saveObject(name);      /* protect from garbage collect      */
-  CurrentActivity->clearExits();       /* make sure the exits are cleared   */
+  ActivityManager::currentActivity->clearExits();       /* make sure the exits are cleared   */
 
   if (self->exits != NULL) {           /* have exits to process             */
       i = 0;                           /* start with first exit             */
@@ -1402,7 +1357,7 @@ void  SysRunProgram(
                                        /* protect from garbage collect      */
         newNativeAct->saveObject(fullname);
                                        /* enable this exit                  */
-        CurrentActivity->setSysExit(self->exits[i].sysexit_code, fullname);
+        ActivityManager::currentActivity->setSysExit(self->exits[i].sysexit_code, fullname);
         i++;                           /* step to the next exit             */
       }
     }
@@ -1502,9 +1457,9 @@ void  SysRunProgram(
                                        /* actually need to run this?        */
   if (method != OREF_NULL && !tokenize_only) {
                                        /* Check to see if halt or trace sys */
-    CurrentActivity->queryTrcHlt();    /* were set                          */
+    ActivityManager::currentActivity->queryTrcHlt();    /* were set                          */
                                        /* run and get the result            */
-    program_result = (RexxString *)((RexxObject *)CurrentActivity)->shriekRun(method, source_calltype, initial_address, new_arglist->data(), new_arglist->size());
+    program_result = (RexxString *)((RexxObject *)ActivityManager::currentActivity)->shriekRun(method, source_calltype, initial_address, new_arglist->data(), new_arglist->size());
     if (self->result != NULL) {        /* if return provided for            */
                                        /* actually have a result to return? */
       if (program_result != OREF_NULL) {
@@ -1541,7 +1496,7 @@ void  SysRunProgram(
       }
     }
   }
-  CurrentActivity->pop(FALSE);         /* finally, discard our activation   */
+  ActivityManager::currentActivity->pop(FALSE);         /* finally, discard our activation   */
 }
 
 char *REXXENTRY RexxGetVersionInformation()

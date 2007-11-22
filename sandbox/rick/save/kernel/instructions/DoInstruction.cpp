@@ -77,9 +77,9 @@ void RexxInstructionDo::matchLabel(
     RexxString *myLabel = getLabel();
     if (myLabel == OREF_NULL)          /* name given on non-control form?   */
                                        /* have a mismatched end             */
-      CurrentActivity->raiseException(Error_Unexpected_end_nocontrol, &location, source, OREF_NULL, new_array(name, new_integer(lineNum)), OREF_NULL);
+      ActivityManager::currentActivity->raiseException(Error_Unexpected_end_nocontrol, &location, source, OREF_NULL, new_array(name, new_integer(lineNum)), OREF_NULL);
     else if (name != getLabel())       /* not the same name?                */
-      CurrentActivity->raiseException(Error_Unexpected_end_control, &location, source, OREF_NULL, new_array(name, myLabel, new_integer(lineNum)), OREF_NULL);
+      ActivityManager::currentActivity->raiseException(Error_Unexpected_end_control, &location, source, OREF_NULL, new_array(name, myLabel, new_integer(lineNum)), OREF_NULL);
   }
 }
 

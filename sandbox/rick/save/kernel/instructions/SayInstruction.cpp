@@ -50,7 +50,6 @@
 
                                        /* current global settings           */
 extern ACTIVATION_SETTINGS *current_settings;
-extern RexxActivity *CurrentActivity;  /* current running activity          */
 
 RexxInstructionSay::RexxInstructionSay(
     RexxObject *_expression)            /* assciated expression              */
@@ -82,7 +81,7 @@ void  RexxInstructionSay::execute(
     value = (RexxString *)OREF_NULLSTRING;
   context->traceResult(value);         /* trace the output value            */
                                        /* write out the line                */
-  CurrentActivity->sayOutput(context, value);
+  ActivityManager::currentActivity->sayOutput(context, value);
   context->pauseInstruction();         /* do debug pause if necessary       */
 }
 

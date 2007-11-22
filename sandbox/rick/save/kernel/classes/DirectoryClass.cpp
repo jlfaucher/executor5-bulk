@@ -187,7 +187,7 @@ RexxSupplier *RexxDirectory::supplier(void)
                                        /* get the method                    */
       RexxMethod *method = (RexxMethod *)methodTable->value(i);
                                        /* run the method                    */
-      RexxObject *v = method->run(CurrentActivity, this, name, 0, NULL);
+      RexxObject *v = method->run(ActivityManager::currentActivity, this, name, 0, NULL);
       result->put(v, name);            /* add to the table                  */
     }
   }
@@ -289,7 +289,7 @@ RexxArray *RexxDirectory::allItems()
                                        /* need to extract method values     */
       RexxMethod *method = (RexxMethod *)methodTable->value(j);
                                        /* run the method                    */
-      RexxObject *v = method->run(CurrentActivity, this, name, 0, NULL);
+      RexxObject *v = method->run(ActivityManager::currentActivity, this, name, 0, NULL);
       result->put(v, i++);             /* add to the array                  */
     }
   }
@@ -542,14 +542,14 @@ RexxObject *RexxDirectory::at(
       method = (RexxMethod *)this->method_table->stringGet(_index);
       if (method != OREF_NULL)         /* have a method?                    */
                                        /* run the method                    */
-        return method->run(CurrentActivity, this, _index, 0, NULL);
+        return method->run(ActivityManager::currentActivity, this, _index, 0, NULL);
     }
                                        /* got an unknown method?            */
     if (this->unknown_method != OREF_NULL)
     {
         RexxObject *arg = _index;
                                        /* run it                            */
-        return this->unknown_method->run(CurrentActivity, this, OREF_UNKNOWN, 1, (RexxObject **)&arg);
+        return this->unknown_method->run(ActivityManager::currentActivity, this, OREF_UNKNOWN, 1, (RexxObject **)&arg);
     }
   }
   return result;                       /* return a result                   */
@@ -569,13 +569,13 @@ RexxObject *RexxDirectory::atRexx(
                                        /* get as a string parameter         */
   _index = REQUIRED_STRING(_index, ARG_ONE);
   // is this the .local object?
-  if ((RexxDirectory *)(CurrentActivity->local) == this &&
-      CurrentActivity->currentActivation->hasSecurityManager()) {
+  if ((RexxDirectory *)(ActivityManager::currentActivity->local) == this &&
+      ActivityManager::currentActivity->currentActivation->hasSecurityManager()) {
     RexxDirectory *securityArgs;       /* security check arguments          */
     securityArgs = new_directory();
     securityArgs->put(_index, OREF_NAME);
     securityArgs->put(TheNilObject, OREF_RESULT);
-    if (CurrentActivity->currentActivation->callSecurityManager(OREF_LOCAL, securityArgs))
+    if (ActivityManager::currentActivity->currentActivation->callSecurityManager(OREF_LOCAL, securityArgs))
                                        /* get the result and return         */
       return securityArgs->fastAt(OREF_RESULT);
   }
@@ -675,7 +675,7 @@ RexxObject *RexxDirectory::indexRexx(RexxObject *target)
                 // we need to run each method, looking for a value that matches
                 RexxString *name = (RexxString *)methodTable->index(i);
                 RexxMethod *method = (RexxMethod *)methodTable->value(i);
-                RexxObject *v = method->run(CurrentActivity, this, name, 0, NULL);
+                RexxObject *v = method->run(ActivityManager::currentActivity, this, name, 0, NULL);
                 // got a match?
                 if (target->equalValue(v))
                 {

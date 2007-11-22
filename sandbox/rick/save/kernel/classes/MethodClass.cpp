@@ -229,7 +229,7 @@ RexxObject *RexxMethod::run(
   }
   else if (this->isRexxMethod()) {     /* written in REXX?                  */
 
-    newacta = TheActivityClass->newActivation(receiver, this, activity, msgname, (RexxActivation *)TheNilObject, METHODCALL);
+    newacta = ActivityManager::newActivation(receiver, this, activity, msgname, (RexxActivation *)TheNilObject, METHODCALL);
                                        /* add to the activity stack         */
 
     activity->push(newacta);
@@ -245,7 +245,7 @@ RexxObject *RexxMethod::run(
     result = newacta->run(argPtr, count, OREF_NULL);
     if (Parent) Parent->dbgLeaveSubroutine();
     newacta->dbgPassTrace2Parent(Parent);
-    CurrentActivity->yield(NULL);    /* yield control now */ /* NULL instead of result */
+    ActivityManager::currentActivity->yield(NULL);    /* yield control now */ /* NULL instead of result */
       /* yield stores the argument but result is already saved in run so we don't need to save again */
     if (result != OREF_NULL) discard(result);
     return result;                     /* and return it                     */
@@ -277,11 +277,11 @@ RexxObject *RexxMethod::call(
   RexxActivation * Parent;
   static int rnd = 0;
 
-  CurrentActivity->stackSpace();       /* have enough stack space?          */
+  ActivityManager::currentActivity->stackSpace();       /* have enough stack space?          */
   if (this->isRexxMethod()) {          /* this written in REXX?             */
     hold(this);                        /* keep it around                    */
                                        /* add to the activity stack         */
-    newacta = TheActivityClass->newActivation(receiver, this, activity, msgname, (RexxActivation *)TheNilObject, context);
+    newacta = ActivityManager::newActivation(receiver, this, activity, msgname, (RexxActivation *)TheNilObject, context);
 
     activity->push(newacta);
 
@@ -570,8 +570,8 @@ RexxMethod *RexxMethodClass::newRexxCode(
   else if (option == NULL) {
     result = this->newRexxMethod(newSource, OREF_NULL);
     // new default: insert program scope into method object
-    result->setLocalRoutines(CurrentActivity->currentActivation->getSource()->getLocalRoutines());
-    result->setPublicRoutines(CurrentActivity->currentActivation->getSource()->getPublicRoutines());
+    result->setLocalRoutines(ActivityManager::currentActivity->currentActivation->getSource()->getLocalRoutines());
+    result->setPublicRoutines(ActivityManager::currentActivity->currentActivation->getSource()->getPublicRoutines());
   }
 
   return result;

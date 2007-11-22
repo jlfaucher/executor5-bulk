@@ -305,7 +305,7 @@ RexxArray *RexxClass::getSubClasses()
 /*****************************************************************************/
 {
                                        /* return a copy of the list         */
-  return TheActivityClass->getSubClassTable()->allAt(this);
+    return memoryObject->getSubClasses(this);
 }
 
 void RexxClass::addSubClass(RexxClass *subClass)
@@ -314,7 +314,7 @@ void RexxClass::addSubClass(RexxClass *subClass)
 /*****************************************************************************/
 {
                                        /* just add to the global list       */
-  TheActivityClass->newSubClass(subClass, this);
+    memoryObject->newSubClass(subClass, this);
 }
 
 void RexxClass::defmeths(
@@ -1018,7 +1018,7 @@ RexxObject *RexxClass::uninherit(
     reportException(Error_Execution_uninherit, this, mixin_class);
                                        /* update the mixin class subclass    */
                                        /* list to not have this class        */
-  TheActivityClass->getSubClassTable()->removeItem(mixin_class, this);
+  memoryObject->removeSubclass(mixin_class, this);
                                        /* any subclasses that we have need   */
                                        /* to redo their behaviour's          */
                                        /* this also updates our own behaviour*/

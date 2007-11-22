@@ -106,13 +106,11 @@ APIRET REXXENTRY RexxSetYield(PID procid, TID threadid);
 #endif /*timeslice*/
 
 extern RexxObject *ProcessLocalServer; /* current local server              */
-extern RexxActivity *CurrentActivity;  /* current active activity           */
 const char *SysFileExtension(const char *);
 RexxMethod *SysRestoreProgramBuffer(PRXSTRING, RexxString *);
 void SysSaveProgramBuffer(PRXSTRING, RexxMethod *);
 void SysSaveTranslatedProgram(const char *, RexxMethod *);
 const char *SearchFileName(const char *, char);
-extern ActivityTable * ProcessLocalActs;
 extern BOOL RexxStartedByApplication;
 
 extern "C" {
@@ -145,31 +143,16 @@ extern "C" {
 void SearchPrecision(
   PULONG    precision)                 /* required precision         */
 {
-  RexxActivity        *activity;
-  RexxActivation      *activation;
-  int i, thread_id,threadid;
-
-  *precision = DEFAULT_PRECISION;      /* set default digit count    */
+    *precision = DEFAULT_PRECISION;      /* set default digit count    */
 
 /* give me the numeric digits settings of the current actitity       */
 
-  threadid = (int) pthread_self();
-  if (ProcessLocalActs != OREF_NULL)
-  { /* activities created?               */
-                                       /* get all activities                */
-    for (i=ProcessLocalActs->first();ProcessLocalActs->available(i);i=ProcessLocalActs->next(i))
+    RexxActivity *activity = ActivityManager::findActivityForCurrentThread();
+    if (activity != OREF_NULL)
     {
-      thread_id = ProcessLocalActs->index(i);   /* get thread id   */
-      if (thread_id == threadid)
-      {
-        activity = (RexxActivity *)ProcessLocalActs->fastAt(thread_id);
-        activation = activity->currentAct();
+        RexxActivation *activation = activity->currentAct();
         *precision = activation->digits();
-        break;
-      }
     }
-  }
-}
 }
 
 /******************************************************************************/
@@ -556,8 +539,8 @@ void  SysRunProgram(
   tokenize_only = FALSE;               /* default is to run the program     */
                                        /* create the native method to be run*/
                                        /* on the activity                   */
-  newNativeAct = new ((RexxObject *)CurrentActivity, OREF_NULL, CurrentActivity, OREF_PROGRAM, OREF_NULL) RexxNativeActivation;
-  CurrentActivity->push(newNativeAct); /* Push new nativeAct onto stack     */
+  newNativeAct = new ((RexxObject *)ActivityManager::currentActivity, OREF_NULL, ActivityManager::currentActivity, OREF_PROGRAM, OREF_NULL) RexxNativeActivation;
+  ActivityManager::currentActivity->push(newNativeAct); /* Push new nativeAct onto stack     */
   self = (RexxStartInfo *)ControlInfo; /* address all of the arguments      */
   if (self->programname != NULL)       /* have an actual name?              */
                                        /* get string version of the name    */
@@ -576,7 +559,7 @@ void  SysRunProgram(
                                        /* while not the list ender          */
       while (self->exits[i].sysexit_code != RXENDLST) {
                                        /* enable this exit                  */
-        CurrentActivity->setSysExit(self->exits[i].sysexit_code, new_string(self->exits[i].sysexit_name));
+        ActivityManager::currentActivity->setSysExit(self->exits[i].sysexit_code, new_string(self->exits[i].sysexit_name));
         i++;                           /* step to the next exit             */
       }
     }
@@ -665,10 +648,10 @@ void  SysRunProgram(
                                        /* actually need to run this?        */
   if (method != OREF_NULL && !tokenize_only) {
                                        /* Check to see if halt or trace sys */
-    CurrentActivity->queryTrcHlt();    /* were set                          */
+    ActivityManager::currentActivity->queryTrcHlt();    /* were set                          */
                                        /* run and get the result            */
-//  program_result = (RexxString *)((RexxObject *)CurrentActivity)->shriekRun(method, source_calltype, initial_address, new_arglist);
-    program_result = (RexxString *)((RexxObject *)CurrentActivity)->shriekRun(method, source_calltype, initial_address, new_arglist->data(), new_arglist->size());
+//  program_result = (RexxString *)((RexxObject *)ActivityManager::currentActivity)->shriekRun(method, source_calltype, initial_address, new_arglist);
+    program_result = (RexxString *)((RexxObject *)ActivityManager::currentActivity)->shriekRun(method, source_calltype, initial_address, new_arglist->data(), new_arglist->size());
     if (self->result != NULL) {        /* if return provided for            */
                                        /* actually have a result to return? */
       if (program_result != OREF_NULL) {
@@ -711,7 +694,7 @@ void  SysRunProgram(
       }
     }
   }
-  CurrentActivity->pop(FALSE);         /* finally, discard our activation   */
+  ActivityManager::currentActivity->pop(FALSE);         /* finally, discard our activation   */
 }
 
 /* functions for concurrency synchronization/termination               */

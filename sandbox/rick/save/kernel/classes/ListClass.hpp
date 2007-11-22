@@ -80,6 +80,12 @@
    RexxObject   *value(RexxObject *);
    RexxObject   *remove(RexxObject *);
    RexxObject   *primitiveRemove(LISTENTRY *);
+   size_t        firstIndex() { return first; }
+   size_t        lastIndex() { return last; }
+   size_t        next(size_t i);
+   size_t        previous(size_t i);
+   RexxObject   *value(size_t i);
+
    RexxObject   *firstRexx();
    RexxObject   *lastRexx();
    RexxObject   *next(RexxObject *);

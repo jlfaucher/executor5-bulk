@@ -222,9 +222,9 @@ RexxMethod1(REXXOBJECT, function_queueExit,
 
   native_entry;                        /* synchronize access                */
                                        /* pick up current activation        */
-  activation = (RexxActivation *)CurrentActivity->currentAct();
+  activation = (RexxActivation *)ActivityManager::currentActivity->currentAct();
                                        /* call the exit                     */
-  CurrentActivity->sysExitMsqNam(activation, &qname);
+  ActivityManager::currentActivity->sysExitMsqNam(activation, &qname);
   return_oref(qname);                  /* and just return the exit result   */
 }
 

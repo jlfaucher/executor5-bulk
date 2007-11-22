@@ -163,7 +163,7 @@ inline long RANDOMIZE(long seed) { return (seed * RANDOM_FACTOR + 1); }
 /******************************************************************************/
 
 #define kernel_public(name, object, dir)  ((RexxDirectory *)dir)->setEntry(kernel_name(name), (RexxObject *)object)
-#define new_activity(l)                   (TheActivityClass->newActivity(MEDIUM_PRIORITY, l))
+#define new_activity(l)                   (ActivityManager::newActivity(MEDIUM_PRIORITY, l))
 #define new_behaviour(t)                  (new (t) RexxBehaviour)
 #define new_buffer(s)                     (new (s) RexxBuffer)
 #define new_clause()                      (new RexxClause)
@@ -260,8 +260,6 @@ typedef builtin_func *pbuiltin;        /* pointer to a builtin function     */
 /******************************************************************************/
 /* Global Objects - General                                                   */
 /******************************************************************************/
-EXTERN RexxActivityClass  * TheActivityClass INITGLOBALPTR;
-EXTERN RexxActivity * CurrentActivity INITGLOBALPTR; /* current active activity           */
 #ifdef SCRIPTING
 EXTERN RexxObject* (__stdcall *NovalueCallback)(const char *) INITGLOBALPTR;
 #endif
@@ -509,7 +507,6 @@ EXTERN void *VFTArray[highest_T];      /* table of virtual functions        */
 
 #define TheActivationBehaviour      ((RexxBehaviour *)(&RexxBehaviour::primitiveBehaviours[T_activation]))
 #define TheActivityBehaviour        ((RexxBehaviour *)(&RexxBehaviour::primitiveBehaviours[T_activity]))
-#define TheActivityClassBehaviour   ((RexxBehaviour *)(&RexxBehaviour::primitiveBehaviours[T_activity_class]))
 #define TheArrayBehaviour           ((RexxBehaviour *)(&RexxBehaviour::primitiveBehaviours[T_array]))
 #define TheArrayClassBehaviour      ((RexxBehaviour *)(&RexxBehaviour::primitiveBehaviours[T_array_class]))
 #define TheBehaviourBehaviour       ((RexxBehaviour *)(&RexxBehaviour::primitiveBehaviours[T_behaviour]))

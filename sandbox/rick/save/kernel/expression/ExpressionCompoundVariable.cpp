@@ -347,7 +347,7 @@ void RexxCompoundVariable::setGuard(
 
                                        /* get the variable item             */
   variable = context->getLocalCompoundVariable(stemName, index, &tails[0], tailCount);
-  variable->inform(CurrentActivity);   /* mark the variable entry           */
+  variable->inform(ActivityManager::currentActivity);   /* mark the variable entry           */
 }
 
 void RexxCompoundVariable::clearGuard(
@@ -360,7 +360,7 @@ void RexxCompoundVariable::clearGuard(
 
                                        /* get the variable item             */
   variable = context->getLocalCompoundVariable(stemName, index, &tails[0], tailCount);
-  variable->uninform(CurrentActivity); /* mark the variable entry           */
+  variable->uninform(ActivityManager::currentActivity); /* mark the variable entry           */
 }
 
 void * RexxCompoundVariable::operator new(size_t size,

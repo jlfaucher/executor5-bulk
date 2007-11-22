@@ -206,6 +206,30 @@ LISTENTRY * RexxList::getEntry(
   return element;                      /* return this                       */
 }
 
+
+/**
+ * Resolve a low-level index into a list entry value.
+ *
+ * @param item_index The target index.
+ *
+ * @return A LISTENTRY value, or NULL if not found.
+ */
+LISTENTRY * RexxList::getEntry(size_t item_index)
+{
+    if (item_index >= this->size)        /* out of possible range?            */
+    {
+        return NULL;                       /* not found                         */
+    }
+    element = ENTRY_POINTER(item_index); /* point to the item                 */
+    if (element->previous != NOT_ACTIVE) /* got a real item?                  */
+    {
+        return element;                  // go for it
+    }
+    return NULL;                         // not found
+}
+
+
+
 RexxObject *RexxList::value(
      RexxObject *_index)               /* list index item                   */
 /******************************************************************************/
@@ -224,6 +248,24 @@ RexxObject *RexxList::value(
     result = TheNilObject;             /* just return NIL                   */
   return result;                       /* return this item                  */
 }
+
+
+
+RexxObject *RexxList::value(size_t _index)
+{
+  LISTENTRY *element;                  /* list element                      */
+  RexxObject *result;                  /* returned result                   */
+
+                                       /* locate this entry                 */
+  LISTENTRY *element = this->getEntry(_index);
+  // return a real NULL if this isn't there
+  if (element == NULL)
+  {
+      return OREF_NULL;
+  }
+  return element->value;               // return whatever is in this position
+}
+
 
 RexxObject *RexxList::put(
      RexxObject *_value,                /* new value for the item            */
@@ -674,6 +716,58 @@ RexxObject *RexxList::previous(
     return (RexxObject *)new_integer(element->previous);
   }
 }
+
+
+/**
+ * A low-level next() method for internal usage.  This works
+ * directly off the index values without needing to create
+ * object instances.  This is critical for some of the internal
+ * data structures implemented as lists.
+ *
+ * @param _index The target item index.
+ *
+ * @return The index of the next item, or LIST_END if there is no next item.
+ */
+RexxObject *RexxList::next(size_t _index)
+{
+    LISTENTRY *element = this->getEntry(_index);
+    // we're a little less strict when dealing with internal lists.  Just return
+    // the end of list marker here
+    if (element == NULL)
+    {
+        return LIST_END;
+    }
+    // we can just return this value directly...if there is no previous element,
+    // the next field contains LIST_END;
+    return element->next;
+}
+
+
+/**
+ * A low-level previous() method for internal usage.  This works
+ * directly off the index values without needing to create
+ * object instances.  This is critical for some of the internal
+ * data structures implemented as lists.
+ *
+ * @param _index The target item index.
+ *
+ * @return The index of the previous item, or LIST_END if there
+ *         is no previous item.
+ */
+RexxObject *RexxList::previous(size_t _index)
+{
+    LISTENTRY *element = this->getEntry(_index);
+    // we're a little less strict when dealing with internal lists.  Just return
+    // the end of list marker here
+    if (element == NULL)
+    {
+        return LIST_END;
+    }
+    // we can just return this value directly...if there is no previous element,
+    // the previous field contains LIST_END;
+    return element->previous;
+}
+
 
 RexxObject *RexxList::hasIndex(
      RexxObject *_index)               /* index of the target item          */

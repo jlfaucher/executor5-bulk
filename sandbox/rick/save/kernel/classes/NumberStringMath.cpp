@@ -72,7 +72,7 @@ RexxNumberString *RexxNumberString::maxMin(RexxObject **args, size_t argCount, u
  if (argCount == 0) return this;       /* any arguments to ccompare?        */
 
                                        /* Get a reference to our current act*/
- CurrentActivation = CurrentActivity->current();
+ CurrentActivation = ActivityManager::currentActivity->current();
 
  saveFuzz = CurrentActivation->fuzz(); /* get the current fuzz and digits   */
  saveDigits = CurrentActivation->digits();

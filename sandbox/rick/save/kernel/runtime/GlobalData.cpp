@@ -227,9 +227,6 @@ RexxBehaviour RexxBehaviour::primitiveBehaviours[highest_T + 1] = {/* table of p
                                        /* float number                      */
 double NO_DOUBLE;                      /* non-exsistent double value        */
 
-
-MemorySegmentPool *GlobalCurrentPool = NULL;   //wge NULL
-
 SysSharedSemaphoreDefn                 /* semaphore definitions             */
                                        /* defined in xxxdef.h               */
 

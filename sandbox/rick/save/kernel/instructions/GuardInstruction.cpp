@@ -49,8 +49,6 @@
 #include "GuardInstruction.hpp"
 #include "ExpressionBaseVariable.hpp"
 
-extern RexxActivity *CurrentActivity;  /* current running activity          */
-
 RexxInstructionGuard::RexxInstructionGuard(
     RexxObject *_expression,            /* guard expression                  */
     RexxArray  *variable_list,         /* list of variables to trigger on   */
@@ -78,8 +76,6 @@ RexxInstructionGuard::RexxInstructionGuard(
       variableCount = 0;                 /* no extra variables                */
   }
 }
-
-//extern RexxActivityCurrentActivity;  /* expose current activity object    */
 
 void RexxInstructionGuard::execute(
     RexxActivation      *context,      /* current activation context        */
@@ -122,7 +118,7 @@ void RexxInstructionGuard::execute(
     else
       context->guardOn();              /* set guarded status in activation  */
 
-    CurrentActivity->guardSet();       /* initialize the guard sem          */
+    ActivityManager::currentActivity->guardSet();       /* initialize the guard sem          */
                                        /* get the expression value          */
     result = this->expression->evaluate(context, stack);
     context->traceResult(result);      /* trace if necessary                */
@@ -141,10 +137,10 @@ void RexxInstructionGuard::execute(
 		/* I checked the result, so get the kernel and the scope now */
 		RequestKernelAccess(context->activity);
 		context->guardWaitScope(i);
-        CurrentActivity->guardSet();   /* initialize the guard sem          */
+        ActivityManager::currentActivity->guardSet();   /* initialize the guard sem          */
 #else
         context->guardWait();       /* establish guards and wait         */
-        CurrentActivity->guardSet();   /* initialize the guard sem          */
+        ActivityManager::currentActivity->guardSet();   /* initialize the guard sem          */
         result = this->expression->evaluate(context, stack);
 #endif
         context->traceResult(result);  /* trace if necessary                */

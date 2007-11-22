@@ -58,7 +58,6 @@
 enum { STOP, START };
 
 extern RexxInteger *ProcessName;
-extern SEV  RexxServerWait;
 extern BOOL ProcessTerminating;
 
 void SysRunProgram(PVOID arguments);   /* system dependent program startup  */
@@ -71,7 +70,7 @@ RexxDirectory *RexxLocal::local()
 {
                                        /* just return the current local     */
                                        /* environment                       */
-  return CurrentActivity->local;
+  return ActivityManager::currentActivity->local;
 }
 
 RexxObject *RexxLocal::runProgram(
@@ -113,7 +112,7 @@ RexxObject *RexxLocal::callProgram(
     }
     if (routine != OREF_NULL)          /* Do we have a method???            */
                                        /* run as a call                     */
-      result = ((RexxObject *)CurrentActivity)->shriekRun(routine, OREF_COMMAND, OREF_INITIALADDRESS, arguments + 1, argCount - 1);
+      result = ((RexxObject *)ActivityManager::currentActivity)->shriekRun(routine, OREF_COMMAND, OREF_INITIALADDRESS, arguments + 1, argCount - 1);
   }
   else
     reportException(Error_Routine_not_found_name, arguments[0]);
@@ -134,6 +133,6 @@ RexxObject *RexxLocal::callString(
                                        /* go translate the image            */
   method = TheMethodClass->newRexxCode(OREF_COMMAND, arguments[0], IntegerOne);
                                        /* run and get the result            */
-  result = ((RexxObject *)CurrentActivity)->shriekRun(method, OREF_COMMAND, OREF_INITIALADDRESS, arguments + 1, argCount - 1);
+  result = ((RexxObject *)ActivityManager::currentActivity)->shriekRun(method, OREF_COMMAND, OREF_INITIALADDRESS, arguments + 1, argCount - 1);
   return result;
 }

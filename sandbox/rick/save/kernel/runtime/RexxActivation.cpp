@@ -77,10 +77,6 @@
 #include SYSREXXSAA
 
 
-#ifdef FIXEDTIMERS
-extern RexxActivity * LastRunningActivity;
-#endif
-
 extern RexxDirectory *ProcessLocalEnv;
 
 /* max instructions without a yield */
@@ -407,7 +403,7 @@ RexxObject * RexxActivation::run(
                 if (resultObj != OREF_NULL) save(resultObj);
                 this->activity->pop(FALSE);        /* now pop the current activity      */
                 /* now go run the uninit stuff       */
-                TheActivityClass->checkUninitQueue();
+                memoryObject.checkUninitQueue();
             }
             else
             {                               /* execution_state is REPLIED        */
@@ -1127,9 +1123,9 @@ void RexxActivation::exitFrom(
         do
         {
             activation->termination();       /* make sure this level cleans up    */
-            CurrentActivity->pop(FALSE);     /* pop this level off                */
+            ActivityManager::currentActivity->pop(FALSE);     /* pop this level off                */
                                              /* get the next level                */
-            activation = CurrentActivity->currentAct();
+            activation = ActivityManager::currentActivity->currentAct();
         } while (!activation->isTopLevel());
 
         activation->exitFrom(resultObj);   /* tell this level to terminate      */
@@ -1355,12 +1351,12 @@ void RexxActivation::raise(
             this->termination();             /* do the termination cleanup on ourselves */
             this->activity->pop(FALSE);      /* pop ourselves off active list     */
                                              /* go propagate the condition        */
-            CurrentActivity->reraiseException(conditionobj);
+            ActivityManager::currentActivity->reraiseException(conditionobj);
         }
         else
         {
             /* go raise the error                */
-            CurrentActivity->raiseException(((RexxInteger *)rc)->getValue(), NULL, OREF_NULL, description, (RexxArray *)additional, resultObj);
+            ActivityManager::currentActivity->raiseException(((RexxInteger *)rc)->getValue(), NULL, OREF_NULL, description, (RexxArray *)additional, resultObj);
         }
     }
     else
@@ -1860,7 +1856,7 @@ void RexxActivation::interpret(
                                        /* translate the code                */
   newMethod = this->code->interpret(codestring, this->current->getLineNumber());
                                        /* create a new activation           */
-  newActivation = TheActivityClass->newActivation(this->receiver, newMethod, this->activity, this->settings.msgname, this, INTERPRET);
+  newActivation = ActivityManager::newActivation(this->receiver, newMethod, this->activity, this->settings.msgname, this, INTERPRET);
   this->activity->push(newActivation); /* push on the activity stack        */
                                        /* run the internal routine on the   */
                                        /* new activation                    */
@@ -1889,7 +1885,7 @@ void RexxActivation::debugInterpret(   /* interpret interactive debug input */
         if (!(this->activity->nestedInfo.exitset && this->settings.dbg_flags&dbg_trace))
             this->debug_pause = FALSE;           /* no longer in debug                */
         /* create a new activation           */
-        newActivation = TheActivityClass->newActivation(this->receiver, newMethod, this->activity, this->settings.msgname, this, DEBUGPAUSE);
+        newActivation = ActivityManager::newActivation(this->receiver, newMethod, this->activity, this->settings.msgname, this, DEBUGPAUSE);
         this->activity->push(newActivation); /* push on the activity stack        */
                                              /* run the internal routine on the   */
                                              /* new activation                    */
@@ -2175,7 +2171,7 @@ RexxObject * RexxActivation::internalCall(
                                        /* initialize the SIGL variable      */
   this->setLocalVariable(OREF_SIGL, VARIABLE_SIGL, new_integer(lineNum));
                                        /* create a new activation           */
-  newActivation = TheActivityClass->newActivation(this->receiver, this->settings.parent_method,
+  newActivation = ActivityManager::newActivation(this->receiver, this->settings.parent_method,
                  this->activity, this->settings.msgname, this, INTERNALCALL);
 
   this->activity->push(newActivation); /* push on the activity stack        */
@@ -2204,7 +2200,7 @@ RexxObject * RexxActivation::internalCallTrap(
                                        /* initialize the SIGL variable      */
   this->setLocalVariable(OREF_SIGL, VARIABLE_SIGL, new_integer(lineNum));
                                        /* create a new activation           */
-  newActivation = TheActivityClass->newActivation(this->receiver, this->settings.parent_method,
+  newActivation = ActivityManager::newActivation(this->receiver, this->settings.parent_method,
                  this->activity, this->settings.msgname, this, INTERNALCALL);
                                        /* set the new condition object      */
   newActivation->setConditionObj(conditionObj);
@@ -3118,15 +3114,15 @@ RexxObject * RexxActivation::command(
                                        /* return status is negative         */
       this->settings.return_status = -1;
                                        /* try to raise the condition        */
-      if (!CurrentActivity->raiseCondition(condition, rc, commandString, OREF_NULL, OREF_NULL, OREF_NULL))
+      if (!ActivityManager::currentActivity->raiseCondition(condition, rc, commandString, OREF_NULL, OREF_NULL, OREF_NULL))
                                        /* try to raise an error condition   */
-        CurrentActivity->raiseCondition(OREF_ERRORNAME, rc, commandString, OREF_NULL, OREF_NULL, OREF_NULL);
+        ActivityManager::currentActivity->raiseCondition(OREF_ERRORNAME, rc, commandString, OREF_NULL, OREF_NULL, OREF_NULL);
     }
                                        /* have an error condition?          */
     else if (condition == OREF_ERRORNAME) {
       this->settings.return_status = 1;/* return status is positive         */
                                        /* try to raise the condition        */
-      CurrentActivity->raiseCondition(condition, rc, commandString, OREF_NULL, OREF_NULL, OREF_NULL);
+      ActivityManager::currentActivity->raiseCondition(condition, rc, commandString, OREF_NULL, OREF_NULL, OREF_NULL);
     }
   }
                                        /* do debug pause if necessary       */
@@ -3358,7 +3354,7 @@ RexxObject  *RexxActivation::novalueHandler(
   RexxObject *novalue_handler;         /* external novalue handler          */
 
                                        /* get the handler from .local       */
-  novalue_handler = CurrentActivity->local->fastAt(OREF_NOVALUE);
+  novalue_handler = ActivityManager::currentActivity->local->fastAt(OREF_NOVALUE);
   if (novalue_handler != OREF_NULL)    /* have a novalue handler?           */
                                        /* ask it to process this            */
     return novalue_handler->sendMessage(OREF_NOVALUE, name);

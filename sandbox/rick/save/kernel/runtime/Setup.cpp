@@ -1548,7 +1548,6 @@ bool kernel_setup (void)
   /* set up the kernel directory (MEMORY done elsewhere) */
   kernel_public(CHAR_INTEGER          ,TheIntegerClass     , TheKernel);
   kernel_public(CHAR_NUMBERSTRING     ,TheNumberStringClass, TheKernel);
-  kernel_public(CHAR_ACTIVITY         ,TheActivityClass    , TheKernel);
   kernel_public(CHAR_NMETHOD          ,TheNativeCodeClass  , TheKernel);
 
   kernel_public(CHAR_FUNCTIONS        ,TheFunctionsDirectory  ,TheKernel);
@@ -1590,7 +1589,7 @@ bool kernel_setup (void)
                                        /* go resolve the program name       */
   programName = SysResolveProgramName(symb, OREF_NULL);
                                        /* Push marker onto stack so we know */
-  CurrentActivity->pushNil();          /* what level we entered.            */
+  ActivityManager::currentActivity->pushNil();          /* what level we entered.            */
   try
   {
                                            /* create a method object out of this*/
@@ -1599,12 +1598,12 @@ bool kernel_setup (void)
 
       RexxObject *args = kernel_methods;   // temporary to avoid type-punning warnings
                                            /* now call BaseClasses to finish the image*/
-      ((RexxObject *)CurrentActivity)->shriekRun(meth, OREF_NULL, OREF_NULL, (RexxObject **)&args, 1);
+      ((RexxObject *)ActivityManager::currentActivity)->shriekRun(meth, OREF_NULL, OREF_NULL, (RexxObject **)&args, 1);
       discard(kernel_methods);             /* release the directory lock        */
   }
   catch (ActivityException )
   {
-      CurrentActivity->error(0);         /* do error cleanup                  */
+      ActivityManager::currentActivity->error(0);         /* do error cleanup                  */
       return false;                      /* this is a setup failure           */
   }
 
@@ -1665,7 +1664,7 @@ void createImage(void)
   ProcessLocalEnv = new_directory();
   save(ProcessLocalEnv);
                                        /* Find an activity for this thread  */
-  TheActivityClass->getActivity();     /* (will create one if necessary)    */
+  ActivityManager::getActivity();     /* (will create one if necessary)    */
   // go build the rest of the image, but don't save if there is a failure.
   if (!kernel_setup()) {
       logic_error("Error building kernel image.  Image not saved.");
@@ -1673,7 +1672,7 @@ void createImage(void)
   discard(ProcessLocalEnv);            /* remove the local env              */
   ProcessLocalEnv = OREF_NULL;         /* clear this out                    */
                                        /* release the kernel semaphore      */
-  TheActivityClass->returnActivity(CurrentActivity);
+  ActivityManager::returnActivity(ActivityManager::currentActivity);
   memoryObject.saveImage();            /* will not return                   */
   exit(RC_OK);                         // successful build
 }

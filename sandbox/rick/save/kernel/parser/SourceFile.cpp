@@ -87,8 +87,6 @@ extern unsigned int iTransClauseCounter; /* defined in WinYield.c           */
 #define CLAUSESPERYIELD 100              /* yield every n blocks            */
 #endif
 
-extern RexxActivity *CurrentActivity;  /* expose current activity object    */
-                                       /* table of internal REXX methods    */
 extern "C" internalMethodEntry internalMethodTable[];
                                        /* current global settings           */
 extern ACTIVATION_SETTINGS *current_settings;
@@ -1171,7 +1169,7 @@ RexxClass *RexxSource::resolveClass(
                                        /* normal execution?                 */
   if (this->securityManager == OREF_NULL) {
                                        /* send message to .local            */
-    classObject = (RexxClass *)(((RexxDirectory *)(CurrentActivity->local))->at(internalName));
+    classObject = (RexxClass *)(((RexxDirectory *)(ActivityManager::currentActivity->local))->at(internalName));
     if (classObject == OREF_NULL)      /* still not found?                  */
                                        /* last chance, try the environment  */
       classObject = (RexxClass *)(TheEnvironment->at(internalName));
@@ -1187,7 +1185,7 @@ RexxClass *RexxSource::resolveClass(
     classObject = (RexxClass *)securityArgs->fastAt(OREF_RESULT);
   else
                                        /* send message to .local            */
-    classObject = (RexxClass *)(((RexxDirectory *)(CurrentActivity->local))->at(internalName));
+    classObject = (RexxClass *)(((RexxDirectory *)(ActivityManager::currentActivity->local))->at(internalName));
   if (classObject == OREF_NULL) {      /* still not found?                  */
                                        /* put the name in the directory     */
     securityArgs->put(internalName, OREF_NAME);
@@ -2916,7 +2914,7 @@ RexxMethod *RexxSource::translateBlock(
     this->nextClause();                /* get the next physical clause      */
 #ifdef NOTIMER
     if (!(iTransClauseCounter++ % CLAUSESPERYIELD))
-      CurrentActivity->relinquish();   /* yield to other system processes   */
+      ActivityManager::currentActivity->relinquish();   /* yield to other system processes   */
 #endif
   }
                                        /* now go resolve any label targets  */
@@ -4451,7 +4449,7 @@ void RexxSource::error(
   SourceLocation location = this->clause->getLocation();
   this->errorCleanup();                /* release any saved objects         */
                                        /* pass on the exception info        */
-  CurrentActivity->raiseException(errorcode, &location, this, OREF_NULL, OREF_NULL, OREF_NULL);
+  ActivityManager::currentActivity->raiseException(errorcode, &location, this, OREF_NULL, OREF_NULL, OREF_NULL);
 }
 
 void RexxSource::errorLine(
@@ -4468,7 +4466,7 @@ void RexxSource::errorLine(
   location = this->clause->getLocation();
   this->errorCleanup();                /* release any saved objects         */
                                        /* pass on the exception info        */
-  CurrentActivity->raiseException(errorcode, &location, this, OREF_NULL, new_array(new_integer(_instruction->getLineNumber())), OREF_NULL);
+  ActivityManager::currentActivity->raiseException(errorcode, &location, this, OREF_NULL, new_array(new_integer(_instruction->getLineNumber())), OREF_NULL);
 }
 
 void RexxSource::errorPosition(
@@ -4483,7 +4481,7 @@ void RexxSource::errorPosition(
   SourceLocation token_location = token->getLocation(); /* get the token location            */
   this->errorCleanup();                /* release any saved objects         */
                                        /* pass on the exception info        */
-  CurrentActivity->raiseException(errorcode, &location, this, OREF_NULL, new_array(new_integer(token_location.getOffset()), new_integer(token_location.getLineNumber())), OREF_NULL);
+  ActivityManager::currentActivity->raiseException(errorcode, &location, this, OREF_NULL, new_array(new_integer(token_location.getOffset()), new_integer(token_location.getLineNumber())), OREF_NULL);
 }
 
 void RexxSource::errorToken(
@@ -4554,7 +4552,7 @@ void RexxSource::errorToken(
   }
   this->errorCleanup();                /* release any saved objects         */
                                        /* pass on the exception info        */
-  CurrentActivity->raiseException(errorcode, &location, this, OREF_NULL, new_array(value), OREF_NULL);
+  ActivityManager::currentActivity->raiseException(errorcode, &location, this, OREF_NULL, new_array(value), OREF_NULL);
 }
 
 void RexxSource::error(
@@ -4567,7 +4565,7 @@ void RexxSource::error(
   SourceLocation location = this->clause->getLocation();/* get the clause location           */
   this->errorCleanup();                /* release any saved objects         */
                                        /* pass on the exception info        */
-  CurrentActivity->raiseException(errorcode, &location, this, OREF_NULL, new_array(value), OREF_NULL);
+  ActivityManager::currentActivity->raiseException(errorcode, &location, this, OREF_NULL, new_array(value), OREF_NULL);
 }
 
 void RexxSource::error(
@@ -4581,7 +4579,7 @@ void RexxSource::error(
   SourceLocation location = this->clause->getLocation();/* get the clause location           */
   this->errorCleanup();                /* release any saved objects         */
                                        /* pass on the exception info        */
-  CurrentActivity->raiseException(errorcode, &location, this, OREF_NULL, new_array(value1, value2), OREF_NULL);
+  ActivityManager::currentActivity->raiseException(errorcode, &location, this, OREF_NULL, new_array(value1, value2), OREF_NULL);
 }
 
 void RexxSource::error(
@@ -4596,7 +4594,7 @@ void RexxSource::error(
   SourceLocation location = this->clause->getLocation();/* get the clause location           */
   this->errorCleanup();                /* release any saved objects         */
                                        /* pass on the exception info        */
-  CurrentActivity->raiseException(errorcode, &location, this, OREF_NULL, new_array(value1, value2, value3), OREF_NULL);
+  ActivityManager::currentActivity->raiseException(errorcode, &location, this, OREF_NULL, new_array(value1, value2, value3), OREF_NULL);
 }
 
 void RexxSource::blockError(

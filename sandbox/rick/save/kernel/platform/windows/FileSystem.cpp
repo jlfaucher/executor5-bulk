@@ -168,7 +168,7 @@ RexxString * LocateProgram(
   BOOL         Found;                  /* found the file                    */
   RexxActivity*activity;               /* the current activity              */
 
-  activity = CurrentActivity;          /* save the activity                 */
+  activity = ActivityManager::currentActivity;          /* save the activity                 */
   ReleaseKernelAccess(activity);       /* release the kernel access         */
 
   Name = InName->getStringData();      /* point to the string data          */
@@ -344,7 +344,7 @@ RexxBuffer *SysReadProgram(
   BY_HANDLE_FILE_INFORMATION   status; /* file status information           */
   ULONG        bytesRead;              /* number of bytes read              */
 
-  activity = CurrentActivity;          /* save the activity                 */
+  activity = ActivityManager::currentActivity;          /* save the activity                 */
   ReleaseKernelAccess(activity);       /* release the kernel access         */
                        /* try to open the file              */
   fileHandle = CreateFile(file_name, GENERIC_READ, FILE_SHARE_READ,

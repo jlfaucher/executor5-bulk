@@ -280,6 +280,11 @@ private:
                                        /*  if building/restoring image,     */
                                        /*OREF_ENV, else old2new             */
   RexxObjectTable  *old2new;           /* remd set                          */
+  RexxObjectTable  *uninitTable;       // the table of objects with uninit methods
+  size_t            pendingUninits;    // objects waiting to have uninits run
+  bool              processingUninits; // TRUE when we are processing the uninit table
+
+
   MemorySegmentPool *firstPool;        /* First segmentPool block.          */
   MemorySegmentPool *currentPool;      /* Curent segmentPool being carved   */
   OldSpaceSegmentSet oldSpaceSegments;

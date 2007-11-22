@@ -314,7 +314,7 @@ void SysSaveTranslatedProgram(
   Control.Magic = MAGIC;               /* magic signature number            */
   Control.ImageSize = BufferLength;    /* add the buffer length             */
 
-  activity = CurrentActivity;          /* save the activity                 */
+  activity = ActivityManager::currentActivity;          /* save the activity                 */
   ReleaseKernelAccess(activity);       /* release the access                */
                                        /* write out the REXX signature      */
   fwrite(compiledHeader, 1, sizeof(compiledHeader), Handle);
@@ -352,7 +352,7 @@ RexxMethod *SysRestoreTranslatedProgram(
   char          fileTag[sizeof(compiledHeader)];
 
 
-  activity = CurrentActivity;          /* save the activity                 */
+  activity = ActivityManager::currentActivity;          /* save the activity                 */
   ReleaseKernelAccess(activity);       /* release the access                */
                                        /* read the first file part          */
   fread(fileTag, 1, sizeof(compiledHeader), Handle);

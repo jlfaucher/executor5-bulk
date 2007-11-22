@@ -67,25 +67,13 @@ extern BOOL  ProcessColdStart;         /* we're coldstarting this           */
 extern BOOL  ProcessDoneTerm;          /* termination is done               */
 extern BOOL  ProcessFirstThread;       /* first (and primary thread)        */
 
-#ifdef HIGHTID
-extern ActivityTable *ProcessLocalActs;    /* list of process activities    */
-#else
-extern RexxArray *ProcessLocalActs;    /* list of process activities        */
-#endif
-
 extern BOOL  ProcessRestoreImage;      /* we're restoring the image         */
 extern RexxDirectory *ProcessLocalEnv; /* process local environment (.local)*/
 extern RexxObject * ProcessLocalServer;
 extern int   ProcessInitializations;   /* number of nested initializations  */
 extern BOOL  ProcessTerminating;       /* termination has started           */
-extern int   ProcessNumActs;           /* number of activities              */
 extern SEV   RexxTerminated;           /* Termination complete semaphore.   */
-extern SEV   RexxServerWait;           /* Termination complete semaphore.   */
 extern RexxInteger *ProcessName;
-                                       /* Local and global memory Pools     */
-                                       /*  last one accessed.               */
-extern MemorySegmentPool *ProcessCurrentPool;
-extern MemorySegmentPool *GlobalCurrentPool;
 
 #if defined(AIX) || defined(LINUX)
 char achRexxCurDir[ CCHMAXPATH+2 ];          /* Save current working direct */
@@ -118,12 +106,10 @@ void kernelShutdown (void)
     ProcessInitializations = 0;        /* no initializations done           */
     ProcessColdStart = TRUE;           /* next one is a cold start          */
     ProcessFirstThread = TRUE;         /* first thread needs to be created  */
-    ProcessLocalActs = OREF_NULL;      /* no local activities               */
     ProcessRestoreImage = TRUE;        /* and we have to restore the image  */
     if (ProcessLocalEnv != OREF_NULL)  /* have a local environment directory*/
       discard_hold(ProcessLocalEnv);   /* we can now release this           */
     ProcessLocalEnv = OREF_NULL;       /* no local environment              */
-#ifndef OS2REXX                        /* This is a severe problem on OS2.  REXX is started from cmd.exe as a */
                                        /* subprocess, which means that memory is not released at program end */
                                        /* only on shutdown. So if there is (for huge files) a linked list of */
                                        /* memory pools allocated, the newly created pools would be freed here*/
@@ -133,13 +119,7 @@ void kernelShutdown (void)
                                        /* Be aware of possible resource problems especially when the interpre*/
                                        /* is started in a loop with REXXSTART                                */
     memoryObject.freePools();          /* release access to memoryPools     */
-#endif
     ProcessName = OREF_NULL;           /* no process name now               */
-#if defined(AIX) || defined(LINUX)
-    EVCLOSE(RexxServerWait);           /* and clear the semaphore           */
-#else
-    EVCL(RexxServerWait);              /* and clear the semaphore           */
-#endif
   }
 #ifdef SHARED
 #if defined(AIX) || defined(LINUX)
@@ -155,24 +135,15 @@ void kernelTerminate (int terminateType)
 /* Terminate thread and possibly shutdown system for process                  */
 /******************************************************************************/
 {
-                                       /* Let any pending threads from      */
-                                       /* a start or reply, know to         */
-                                       /* Terminate when finished           */
-  ProcessTerminating = TRUE;
-  if (ProcessNumActs == 0)             /* any active activities?            */
+                                         /* Let any pending threads from      */
+                                         /* a start or reply, know to         */
+                                         /* Terminate when finished           */
+    ProcessTerminating = TRUE;
+    // have the activity manager do shutdown processing.
+    // TODO:  remove calls to kernelShutdown() from the activity manager
+    ActivityManager::shutdown();
+    // now shut down the rest of the stuff
     kernelShutdown();                  /* shut everything down              */
-                                       /* any active activities?            */
-  else {
-    MTXRQ(kernel_semaphore);           /* get the kernel semophore          */
-                                       /* Make sure we wake up server       */
-                                       /* Make sure all free Activities     */
-                                       /*  get the terminate message        */
-                                       /* done after uninit calls. incas    */
-                                       /*  uninits needed some.             */
-    TheActivityClass->terminateFreeActs();
-    EVPOST(RexxServerWait);            /*message wait thread.               */
-    MTXRL(kernel_semaphore);           /* Done with Kernel stuff            */
-  }
 }
 
 void kernelRestore (void);
@@ -211,11 +182,11 @@ void start_rexx_environment(void)
   server_class = env_find(new_string("!SERVER"));
   activity_unlock_kernel();            /* now unlock the kernel             */
 
-  TheActivityClass->getActivity();     /* get an activity set up            */
+  ActivityManager::getActivity();     /* get an activity set up            */
                                        /* create a new server object        */
-  CurrentActivity->messageSend(server_class, OREF_NEW, 0, OREF_NULL, &ProcessLocalServer);
+  ActivityManager::currentActivity->messageSend(server_class, OREF_NEW, 0, OREF_NULL, &ProcessLocalServer);
                                        /* now release this activity         */
-  TheActivityClass->returnActivity(CurrentActivity);
+  ActivityManager::returnActivity(ActivityManager::currentActivity);
   ProcessRestoreImage = FALSE;         /* Turn off restore image flag.      */
 }
 
@@ -323,8 +294,6 @@ BOOL REXXENTRY RexxInitialize (void)
 #if defined(AIX) || defined(LINUX)
     SecureFlag = 1;
 #endif
-    EVCR(RexxServerWait);              /* Create the ServerWait semaphore   */
-    EVSET(RexxServerWait);             /* make sure ServerWait is UnPosted  */
     ProcessDoneInit = FALSE;           /* allow for restart :               */
     ProcessDoneTerm = FALSE;           /* allow for restart :               */
     memoryObject.accessPools();        /* Gain access to memory Pools       */
