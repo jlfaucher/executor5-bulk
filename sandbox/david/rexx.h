@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2007 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2008 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -35,34 +35,32 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-/*********************************************************************\
-*
-* Module Name: rexx.h
-*
-* ooRexx Common Definitions File
-*
-* Note: This is a revision of the original IBM rexx.h header file. All of the
-* conditional sections have been removed and it has been split into multiple
-* header files, some of which are platform specific. Many of the types have
-* been changed to more portable types.
-*
-\*********************************************************************/
+
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Module Name: rexx.h                                                        */
+/*                                                                            */
+/* ooRexx Common Definitions File                                             */
+/*                                                                            */
+/* Note: This is a revision of the original IBM rexx.h header file. All of the*/
+/* conditional sections have been removed and it has been split into multiple */
+/* header files, some of which are platform specific. Many of the types have  */
+/* been changed to more portable types.                                       */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
 
 #ifndef REXXSAA_INCLUDED
 #define REXXSAA_INCLUDED
 
-/*********************************************************************/
-/*                                                                   */
-/*                            Common                                 */
-/*                                                                   */
-/*********************************************************************/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/*                               Common                                       */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
 
 /* This section defines return codes and constants for Rexx calls    */
 
-typedef unsigned int APIRET;             // API return types
-
-#include "rexxapitypes.h"
-#include "rexxapidefs.h"
+typedef unsigned int APIRET;           // API return type
 
 /***    Structure for external interface string (RXSTRING) */
 
@@ -75,6 +73,11 @@ typedef struct _CONSTRXSTRING {        /* const rxstr                */
     const size_t  strlength;           /*   length of string         */
     const char   *strptr;              /*   pointer to string        */
 } CONSTRXSTRING;
+
+/* These must be placed after RXSTRING and CONSTRXSTRING are defined */
+#include "rexxapidefs.h"
+#include "rexxapitypes.h"              // Platform specific stuff
+#include "rexxplatformapis.h"          // Platform specific stuff
 
 /***    Macros for RexxString manipulation                   */
 
@@ -116,13 +119,15 @@ typedef SHVBLOCK *PSHVBLOCK;
 typedef char *PEXIT;                  /* ptr to exit parameter block */
 
 
-/*********************************************************************/
-/*                                                                   */
-/*                            32-bit                                 */
-/*                                                                   */
-/*********************************************************************/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/*                               32-bit                                       */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
 
-/***    Main Entry Point to the REXX Interpreter */
+/*----------------------------------------------------------------------------*/
+/***    Main Entry Point to the Rexx Interpreter                              */
+/*----------------------------------------------------------------------------*/
 
 #ifdef __cplusplus
 extern "C" {
@@ -144,7 +149,9 @@ typedef APIRET (APIENTRY *PFNREXXSTART)(int, PCONSTRXSTRING, const char *, PRXST
 #define REXXSTART RexxStart
 
 
-/***    Subcommand Interface */
+/*----------------------------------------------------------------------------*/
+/***    Subcommand Interface                                                  */
+/*----------------------------------------------------------------------------*/
 
 /* This typedef simplifies coding of a Subcommand handler.           */
 typedef APIRET APIENTRY RexxSubcomHandler(PCONSTRXSTRING,
@@ -198,8 +205,9 @@ typedef APIRET (APIENTRY *PFNREXXDEREGISTERSUBCOM)(const char *, const char *);
 #define REXXDEREGISTERSUBCOM  RexxDeregisterSubcom
 
 
-
-/***    Shared Variable Pool Interface */
+/*----------------------------------------------------------------------------*/
+/***    Shared Variable Pool Interface                                        */
+/*----------------------------------------------------------------------------*/
 
 /***    RexxVariablePool - Request Variable Pool Service */
 
@@ -209,7 +217,10 @@ typedef APIRET (APIENTRY *PFNREXXVARIABLEPOOL)(PSHVBLOCK);
 #define REXXVARIABLEPOOL  RexxVariablePool
 
 
-/***    External Function Interface */
+/*----------------------------------------------------------------------------*/
+/***    External Function Interface                                           */
+/*----------------------------------------------------------------------------*/
+
 /* This typedef simplifies coding of an External Function.           */
 
 typedef unsigned int APIENTRY RexxFunctionHandler(char *,
@@ -253,7 +264,9 @@ typedef APIRET (APIENTRY *PFNREXXQUERYFUNCTION)(const char *);
 #define REXXQUERYFUNCTION  RexxQueryFunction
 
 
-/***   System Exits */
+/*----------------------------------------------------------------------------*/
+/***   System Exits                                                           */
+/*----------------------------------------------------------------------------*/
 
 /***    Subfunction RXFNCCAL - External Function Calls */
 
@@ -436,7 +449,11 @@ APIRET APIENTRY RexxQueryExit (
 typedef APIRET (APIENTRY *PFNREXXQUERYEXIT)(const char *, const char *, unsigned short *, char *);
 #define REXXQUERYEXIT  RexxQueryExit
 
-/***    Asynchronous Request Interface */
+
+/*----------------------------------------------------------------------------*/
+/***    Asynchronous Request Interface                                        */
+/*----------------------------------------------------------------------------*/
+
 /***    RexxSetHalt - Request Program Halt */
 
 APIRET APIENTRY RexxSetHalt(
@@ -463,7 +480,10 @@ APIRET APIENTRY RexxResetTrace(
 typedef APIRET (APIENTRY *PFNREXXRESETTRACE)(process_id_t, thread_id_t);
 #define REXXRESETTRACE  RexxResetTrace
 
-/***    Macro Space Interface */
+
+/*----------------------------------------------------------------------------*/
+/***    Macro Space Interface                                                 */
+/*----------------------------------------------------------------------------*/
 
 /***    RexxAddMacro - Register a function in the Macro Space        */
 
@@ -529,7 +549,10 @@ APIRET APIENTRY RexxClearMacroSpace(
 typedef APIRET (APIENTRY *PFNREXXCLEARMACROSPACE)(void);
 #define REXXCLEARMACROSPACE  RexxClearMacroSpace
 
-/***    Queing Services */
+
+/*----------------------------------------------------------------------------*/
+/***    Queing Services                                                       */
+/*----------------------------------------------------------------------------*/
 
 /***    RexxCreateQueue - Create an External Data Queue */
 
@@ -574,6 +597,10 @@ APIRET APIENTRY RexxShutDownAPI(void);
 typedef APIRET (APIENTRY *PFNREXXSHUTDOWNAPI)(void);
 #define REXXSHUTDOWNAPI  RexxShutDownAPI
 
+
+/*----------------------------------------------------------------------------*/
+/***    Memory Allocation Services                                            */
+/*----------------------------------------------------------------------------*/
 
 /***   RexxAllocateMemory            */
 

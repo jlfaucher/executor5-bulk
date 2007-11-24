@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2007 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2008 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -35,22 +35,23 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-/*********************************************************************\
-*
-* Module Name: rexxapidefs.h
-*
-* ooRexx Common Definitions File
-*
-\*********************************************************************/
+
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Module Name: rexxapidefs.h                                                 */
+/*                                                                            */
+/* ooRexx Common Definitions File                                             */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
 
 #ifndef REXXAPIDEFS_INCLUDED
 #define REXXAPIDEFS_INCLUDED
 
-/*********************************************************************/
-/*                                                                   */
-/*                            Common                                 */
-/*                                                                   */
-/*********************************************************************/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/*                                  Common                                    */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
 
 /* This section defines return codes and constants for REXX calls    */
 
@@ -195,7 +196,9 @@
 
 #define RXDBG    11                   /* Test ext trace indicator before instruction.   */
 #define    RXDBGTST  1                /* subcode value.              */
-   /* return codes for the debug exit */
+
+/* Return codes for the debug exit */
+
 #define    RXDBGOFF  0                /* set trace off */
 #define    RXDBGSTEPIN  1             /* set trace on (normal)       */
 #define    RXDBGSTEPOVER  2           /* set trace on but step over  */
@@ -272,5 +275,5 @@
 #define RXQUEUE_MAXREG       11        /* No memory to create a queue */
 #define RXQUEUE_MEMFAIL    RXAPI_MEMFAIL  /* Failure in memory management*/
 
-#endif
+#endif /* REXXAPIDEFS_INCLUDED */
 
