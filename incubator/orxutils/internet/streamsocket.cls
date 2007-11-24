@@ -227,9 +227,10 @@ expose state description s hostname port opened bufsize rcvbuf
 if arg() = 1 then do
    use strict arg s
    if \s~isA(.Socket) then ,
-    raise syntax 93.914 array (1, 'a Socket class instance', address)
-   hostname = 'unknown'
-   port = 'unknown'
+    raise syntax 93.914 array (1, 'a Socket class instance', s)
+   inet = s~getPeerName()
+   hostname = inet~address()
+   port = inet~port()
    bufsize = 4096
    opened = .true
    end

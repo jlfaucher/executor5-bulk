@@ -358,13 +358,13 @@ return xxx
 ::method getPeerName
 expose s errno
 use strict arg
-retc = SockGetPeerName(s, cmd, 'stem.')
+retc = SockGetPeerName(s, 'stem.!')
 if retc = -1 then do
    errno = self~convert_err_number(SockSock_errno())
    return .nil
    end
 else errno = ''
-return .InetAddress~new(stem.!address, stem.!port, stem.!family)
+return .InetAddress~new(stem.!addr, stem.!port, 'AF_INET')
 
 /*----------------------------------------------------------------------------*/
 /* Method: getSockName                                                        */
@@ -375,13 +375,13 @@ return .InetAddress~new(stem.!address, stem.!port, stem.!family)
 ::method getSockName
 expose s errno
 use strict arg
-retc = SockGetSockName(s, cmd, 'stem.')
+retc = SockGetSockName(s, cmd, 'stem.!')
 if retc = -1 then do
    errno = self~convert_err_number(SockSock_errno())
    return .nil
    end
 else errno = ''
-return .InetAddress~new(stem.!address, stem.!port, stem.!family)
+return .InetAddress~new(stem.!addr, stem.!port, 'AF_INET')
 
 /*----------------------------------------------------------------------------*/
 /* Method: init                                                               */
