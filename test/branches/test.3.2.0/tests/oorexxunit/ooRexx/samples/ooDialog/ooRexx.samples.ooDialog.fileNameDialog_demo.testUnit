@@ -1,0 +1,332 @@
+#!/usr/bin/rexx
+/*
+   name:             ooRexx.samples.ooDialog.fileNameDialog_demo.testUnit
+   author:           Mark Miesfeld
+   date:             2007-08-13
+   version:          0.0.9
+   changed:
+
+   languageLevel:    6.0
+   purpose:          Test the fileNameDialog_demo ooRexx program
+
+   remark:           A primary reason for this test unit is to ensure the sample
+                     program shipped with the release package of ooRexx runs
+                     as expected.
+
+                     If all samples have a test unit, then an automated test can
+                     be run after a build to ensure all sample programs will
+                     execute.
+
+                     This is a Windows only test.  This test needs to be run
+                     with a standard ooRexx installation.
+
+                     This test unit is a work in progress.  Please feel free to
+                     add to it.  The idea is to work through all the options of
+                     the sample program.  A generic killExample() method is
+                     started, but may not be finished.  The method would be used
+                     to shut down the sample program if the test unit gets
+                     'stuck.'
+
+                     The test unit should also serve as an example of how to
+                     automate the execution of an ooDialog program.
+
+   license:          CPL 1.0 (Common Public License v1.0, see below)
+   link:
+
+   category1:        ooRexx
+   category2:        samples
+   category3:        ooDialog
+
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+use arg cmdLine
+
+  -- Windows only test.
+  if ooRexxUnit.getOSName() <> "WINDOWS" then return .list~new
+
+  -- Executing on Windows, load the Windows specific classes.
+  prgFile = indirectRequire("WinUtils.cls")
+  if prgFile == "" then return .list~new
+  call (prgFile)
+  j = deleteFile(prgFile)
+
+  -- A convenience since the test case class name is so long.
+  testUnitClass = .ooRexx.samples.ooDialog.fileNameDialog_demo.testUnit
+
+  testUnitList = .list~of( .array~of( testUnitClass, .list~new ) )
+
+  srcLines = .array~new
+  do i = 1 to 150 until srcLines[ i ] = "*/"
+     srcLines[ i ] = sourceline( i )
+  end
+
+  call makeDirTestInfo testUnitClass, srcLines
+
+  parse source s
+  testUnitClass~testCaseInfo~setentry( "test_Case-source", s )
+
+  -- If there is no entry in the .local directory of 'bRunTestsLocally' then add
+  -- one with a value of true.
+  if \ .local~hasentry( "bRunTestsLocally" ) then
+     .local~bRunTestsLocally = .true
+
+  -- Now honor the setting of bRunTestsLocally, which may have been set by a
+  -- caller of this test unit.
+  if .bRunTestsLocally == .true then do
+    ts = .TestSuite~new
+    ts~addTest( .TestSuite~new( testUnitClass ) )
+
+    testResult = ts~run
+    z = simpleFormatTestResults( testResult )
+  end
+
+return testUnitList
+-- End of entry point.
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+  Directives, Classes, or Routines.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::requires "FileUtils.cls"
+
+/* class: ooRexx.samples.ooDialog.fileNameDialog_demo.testUnit - - - - - - - -*\
+
+  The test unit class will start the example program and then use the
+  WindowObject class to locate the various Windows created by the program and
+  push buttons to drive the program.
+
+  The test cases need to execute in a specific order.  The test case methods are
+  invoked in order, sorted by method name, by the framework.  This fact is
+  used to ensure the correct order of execution.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class ooRexx.samples.ooDialog.fileNameDialog_demo.testUnit public -
+        subclass TestCase
+
+  ::method test_001_ooRexxInstalled
+    self~class~stop = .true
+
+    home = value("REXX_HOME", , 'ENVIRONMENT')
+    self~assertTrue("ooRexx must be installed and REXX_HOME set", home~length > 0)
+
+    home = home || '\samples\fileNameDialog_demo.rex'
+    j = SysFileTree(home, f., 'FOS')
+    self~assertTrue("SysFileTree must not fail", j == 0)
+    self~assertTrue("Example program must be located", f.0 == 1)
+
+    prgPathName = f.1
+    self~assertTrue("Example program must exist", .stream~new(prgPathName)~query("EXISTS")~length <> 0)
+    self~class~prgPath = prgPathName
+    self~class~stop = .false
+
+  ::method  test_002_exampleStart
+    if self~class~stop then self~fail("Failure of one test causes all tests to fail.")
+    self~class~stop = .true
+
+    launcher = .ProgramLauncher~new(self~class~prgPath)
+    ret = launcher~startProgram
+
+    self~assertEquals('launcher~startProgram should return 0',    0,     ret)
+
+    wf = .WindowFinder~new
+
+    -- We know the example program puts up an InfoDialog first.
+    wnd = wf~getWindow("Information")
+
+    self~assertEquals('Must have a WindowObject object', .WindowObject, wnd~class)
+    self~assertEquals('Window must have Information title', "Information", wnd~title)
+
+    -- Click the okay button to close the InfoDialog and bring up the main screen.
+    wnd~pushButton("OK")
+
+    self~class~launcher = launcher
+    self~class~windowFinder = wf
+    self~class~stop = .false
+
+  ::method test_003_mainScreen
+    if self~class~stop then self~fail("Failure of one test causes all tests to fail.")
+    self~class~stop = .true
+
+    wf = self~class~windowFinder
+
+    -- We know the example program has this title.  That's how we can find it.
+    -- Changing the default pause to .5 seconds, because it sometimes takes the
+    -- window longer to come up.
+    wnd = wf~getWindow("FileNameDialog Demonstration", , .5)
+
+    -- Assert that we found the main window of the program.
+    self~assertEquals('Must have a WindowObject object', wnd~class, .WindowObject)
+    self~assertEquals('Window must have proper program title', "FileNameDialog Demonstration", wnd~title)
+
+    self~class~stop = .false
+
+  ::method test_004_firstOption
+    if self~class~stop then self~fail("Failure of one test causes all tests to fail.")
+    self~class~stop = .true
+
+    wf = self~class~windowFinder
+    wnd = wf~getWindow("FileNameDialog Demonstration", , .5)
+    self~assertEquals('Window must have proper program title', "FileNameDialog Demonstration", wnd~title)
+
+    -- First option is radio button, ID 101.  But it should be already selected,
+    -- so we just need to click the Ok button.  OK button has ID 1, so sending
+    -- a command of 1 has the effect of clicking that button.
+    wnd~sendCommand(1)
+
+    wnd = wf~getWindow("Open a File", , .5)
+
+    self~assertEquals('Must have a WindowObject object', .WindowObject, wnd~class)
+    self~assertNotNull('Open File dialog must be active (option 1 clicked.)',  wnd)
+
+    -- The cancel button has ID of 2, sending a command of 2 has the effect of
+    -- clicking the cancel button.  In the sample program, if the user did not
+    -- select a file, an error dialog is put up. (Since we click cancel, we do
+    -- not select a file and therefore we should get an Error dialog window
+    -- next.)
+    wnd~sendCommand(2)
+    wnd = wf~getWindow("Error", , .5)
+    self~assertNotNull('Open File dialog canceled (option 1) must have ErrorDialog',  wnd)
+
+    -- Push OK button, should be back to main screen.
+    wnd~pushButton("OK")
+    self~class~stop = .false
+
+  -- End test_004_firstOption( )
+
+  /* Note: we could continue to test more of the options on the sample dialog,
+   * but we just end here.  We drop through to the last test which should end
+   * the sample program.
+   *
+   * A little bit sticky here for an automated test framework.  If we can not
+   * end the sample program, the automated testing will hang.  Yikes!
+   */
+
+  -- test_999_exampleQuit()
+  ::method test_999_exampleQuit
+
+    -- It is possible that we failed right off the bat and the WindowFinder
+    -- object was never even created.  If so, just abort.
+    if self~class~windowFinder == "" then return
+
+    wf = self~class~windowFinder
+
+    if self~class~stop then do
+      -- Some previous test failed.  So, we are not sure what state the example
+      -- program is in, which window is open.  Use a generic function to end
+      -- the example
+      self~killExample(wf)
+    end
+    else do
+      wnd = wf~getWindow("FileNameDialog Demonstration", , .5)
+      if wnd <> .nil then wnd~sendCommand(2)
+    end
+
+    -- Wait for the example program to end and get its return code.  The example
+    -- program returns a distinctive code when it ends without error.
+    ret = self~class~launcher~getResult
+
+    -- Step 4 assert that we get the correct return code for a successful
+    -- execution of the example program.
+    self~assertEquals("fileNameDialog_demo return code should be 37", ret, 37)
+
+  -- End test_999_exampleQuit()
+
+
+  ::method killExample private
+    use arg wf
+
+    -- Try each possible window created by the example.  When we find an open
+    -- one, proceed from that known spot.
+    wnd = wf~getWindow("FileNameDialog Demonstration")
+    if wnd <> .nil then do
+      wnd~sendCommand(2)
+      return 0
+    end
+
+    wnd = wf~getWindow("Error")
+    if wnd <> .nil then return self~closeFromMsgBox(wf, wnd)
+
+    wnd = wf~getWindow("Information")
+    if wnd <> .nil then return self~closeFromMsgBox(wf, wnd)
+
+  return self~findAndCloseFNDlg(wf)
+
+  ::method findAndCloseFNFlg
+    use arg wf
+
+    wnd = wf~getWindow("Open a File")
+    if wnd <> .nil then return~closeFromFNDlg(wf, wnd)
+
+    title = "FileNameDialog-Option"
+    do i = 2 to 7
+      wndTitle = title || i
+      wnd = wf~getWindow(wndTitle)
+      if wnd <> .nil then return~closeFromFNDlg(wf, wnd)
+    end
+
+    -- Yikes, we are stuck.
+  return -1
+
+  -- Have a message box window (errorDialog or infoDialog) assume we can close
+  -- with things working from here.  Because if we can not, we are stuck.
+  ::method closeFromMsgBox private
+    use arg wf, wnd
+    wnd~pushButton("OK")
+    wnd = wf~getWindow("FileNameDialog Demonstration")
+    wnd~sendCommand(2)
+  return 0
+
+  -- Have one of the FileNameDialogs, assume we can close with things working
+  -- from here.  Because if we can not, we are stuck.
+  ::method closeFromFNDlg private
+    use arg wf, wnd
+    wnd~sendCommand(2)
+    wnd = wf~getWindow("Error")
+  return self~closeFromMsgBox(wf, wnd)
+
+  ::method init class
+    self~init:super
+    self~prgPath = ""
+    self~launcher = ""
+    self~stop = .false
+    self~windowFinder = ""
+
+  ::method prgPath      attribute class
+  ::method stop         attribute class
+  ::method windowFinder attribute class
+  ::method launcher     attribute class
+
+-- End of class: ooRexx.samples.ooDialog.fileNameDialog_demo.testUnit
