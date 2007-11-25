@@ -52,14 +52,10 @@
 #include <signal.h>
 #include "ActivityTable.hpp"
 
-extern int  ProcessTerminating;
-
 /* special flag for the LPEX message loop problem */
 extern BOOL UseMessageLoop = TRUE;
 
 extern ULONG mustCompleteNest;         /* Global variable for MustComplete  */
-                                       /* default active settings           */
-extern ACTIVATION_SETTINGS *current_settings;
 extern "C" void activity_thread (RexxActivity *objp);
 
 

@@ -53,9 +53,6 @@
 #include "RexxActivity.hpp"
 #include "NumberStringMath.hpp"
 
-                                       /* current global settings           */
-extern ACTIVATION_SETTINGS *current_settings;
-
 char * AddMultiplier(
     char *top,                        /* data pointer of "top" number      */
     size_t topLen,                     /* length of the top number          */

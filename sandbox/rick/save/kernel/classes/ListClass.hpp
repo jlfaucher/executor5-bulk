@@ -82,9 +82,9 @@
    RexxObject   *primitiveRemove(LISTENTRY *);
    size_t        firstIndex() { return first; }
    size_t        lastIndex() { return last; }
-   size_t        next(size_t i);
-   size_t        previous(size_t i);
-   RexxObject   *value(size_t i);
+   size_t        nextIndex(size_t i);
+   size_t        previousIndex(size_t i);
+   RexxObject   *getValue(size_t i);
 
    RexxObject   *firstRexx();
    RexxObject   *lastRexx();

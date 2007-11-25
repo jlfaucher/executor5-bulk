@@ -206,17 +206,12 @@ RexxObject * SysCommand(
   /****************************************************************************/
   if (rc == RXSUBCOM_NOTREG) {
     if ((stricmp((char *)current_address,SYSENV))==0) {
-      ReleaseKernelAccess(activity);   /* unlock the kernel                   */
+      activity->releaseKernel();   ;   /* unlock the kernel                   */
                                        /* issue the command                   */
       rc = sys_command(command->getStringData(), error_failure);
-      RequestKernelAccess(activity);   /* reacquire the kernel lock           */
+      activity->requestAccess();       /* reacquire the kernel lock           */
       result = new_integer(rc);        /* get the command return code         */
 
-      /* CMD.EXE does not have a special 'not found' error as on OS/2 */
-//      if (rc == UNKNOWN_COMMAND)       /* is this unknown command?            */
-//                                       /*   send failure condition back       */
-//        *error_failure = OREF_FAILURENAME;
-//     else
      if (rc != 0)                      /* command error?                      */
                                        /*   send error condition back         */
         *error_failure = OREF_ERRORNAME;

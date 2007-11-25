@@ -86,6 +86,17 @@ int Numerics::validMaxWhole[] = {10,
                                  100000000,
                                  1000000000};
 
+NumericSettings Numerics::defaultSettings;
+NumerticSettings *Numerics::settings = &defaultSettings;
+
+
+NumericSettings::NumericSettings()
+{
+    digits = DEFAULT_DIGITS;
+    fuzz = DEFAULT_FUZZ;
+    form = DEFAULT_FORM;
+}
+
 /**
  * Convert a signed int64 object into the appropriate Rexx
  * object type.

@@ -135,7 +135,7 @@ void RexxInstructionGuard::execute(
         i = context->guardWait();       /* establish guards and wait         */
         result = this->expression->evaluate(context, stack);
 		/* I checked the result, so get the kernel and the scope now */
-		RequestKernelAccess(context->activity);
+		context->activity->requestKernel();
 		context->guardWaitScope(i);
         ActivityManager::currentActivity->guardSet();   /* initialize the guard sem          */
 #else

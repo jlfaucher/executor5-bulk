@@ -244,11 +244,11 @@ RexxObject * SysCommand(
 
       shell_cmd = command->getStringData();
 
-      ReleaseKernelAccess(activity);                   /* unlock the kernel */
+      activity->releaseKernel();                       /* unlock the kernel */
 
       rc = sys_command(shell_cmd, local_env_type);     /* issue the command */
 
-      RequestKernelAccess(activity);           /* reacquire the kernel lock */
+      activity->requestKernel();               /* reacquire the kernel lock */
 
       result = new_integer(rc);              /* get the command return code */
 

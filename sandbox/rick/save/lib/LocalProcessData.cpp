@@ -43,18 +43,12 @@
 /******************************************************************************/
 #include <stdio.h>
 #include "RexxLibrary.h"
-                                       /* local server                      */
-RexxObject * ProcessLocalServer = OREF_NULL;
 int   ProcessBusyActs = 0;             /* number of busy activities         */
-int   ProcessInitializations = 0;      /* number of active initializations  */
 BOOL  ProcessColdStart = TRUE;         /* performing a coldstart            */
 BOOL  ProcessDoneInit = FALSE;         /* initialization is done            */
 BOOL  ProcessDoneTerm = FALSE;         /* termination is done               */
 BOOL  ProcessFirstThread = TRUE;       /* this is the first thread          */
 
-BOOL  ProcessTerminating = FALSE;      /* termination in process            */
-                                       /* local environment directory       */
-RexxDirectory * ProcessLocalEnv = OREF_NULL;
 BOOL  ProcessRestoreImage = TRUE;      /* restoring the saved image         */
 BOOL  ProcessSaveImage = FALSE;        /* saving the image                  */
 ULONG ProcessMustCompleteNest = 0;     /* Global variable for MustComplete  */

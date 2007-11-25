@@ -97,10 +97,6 @@ extern SEV    rexxTimeSliceSemaphore;
 extern ULONG  RexxTimeSliceTimer;
 extern ULONG  rexxTimeSliceTimerOwner;
 
-
-void kernelTerminate(int terminateType);
-#define NORMAL_TERMINATION  0UL
-#define FORCED_TERMINATION  1UL
                                        /* information must be saved and     */
                                        /* restored on nested entries to the */
                                        /* interpreter that use the same     */
@@ -186,8 +182,10 @@ typedef struct nestedinfo {
    void        requestKernel();
    void        stackSpace();
    long        priorityMethod();
+   void        terminateActivity();
    RexxObject *localMethod();
    long threadIdMethod();
+   bool isThread(long id) { return threadid == id; }
    void setShvVal(RexxString *);
    inline BOOL querySet() { return this->nestedInfo.exitset; }
    void queryTrcHlt();
@@ -226,13 +224,14 @@ typedef struct nestedinfo {
 
    inline RexxActivationBase *current(){ return this->topActivation;}
    inline RexxActivation *currentAct() {return this->currentActivation;}
-   inline ACTIVATION_SETTINGS *getSettings () {return this->settings;}
+   inline NumericSettings *getNumericSettings () {return this->numericSettings;}
    inline void                 setProcessobj(RexxObject *p) {this->processObj = p;}
    inline RexxObject *runningRequires(RexxString *program) {return this->requiresTable->stringGet(program);}
    inline void        addRunningRequires(RexxString *program) { this->requiresTable->stringAdd((RexxObject *)program, program);}
    inline void        removeRunningRequires(RexxObject *program) {this->requiresTable->remove(program);}
    inline void        resetRunningRequires() {this->requiresTable->reset();}
    inline void        setNextWaitingActivity(RexxActivity *next) { this->nextWaitingActivity = next; }
+   inline RexxActivity *getNextWaitingActivity() { return nextWaitingActivity; }
    inline void        waitKernel() { EVWAIT(this->runsem); }
    inline void        clearWait()  { EVSET(this->runsem); }
    inline void        setCurrentExit(RexxString *newExit) { this->nestedInfo.currentExit = newExit; }
@@ -291,9 +290,8 @@ typedef struct nestedinfo {
 #ifdef THREADHANDLE
    HANDLE   hThread;                   /* handle to thread                  */
 #endif
-   ACTIVATION_SETTINGS *settings;      /* current activation setting values */
-                                       /* current activation defaults       */
-   ACTIVATION_SETTINGS default_settings;
+   NumericSettings *numericSettings;   /* current activation setting values */
+
    int      priority;                  /* activity priority value           */
    bool     stackcheck;                /* stack space is to be checked      */
    bool     exit;                      /* activity loop is to exit          */
@@ -305,124 +303,4 @@ typedef struct nestedinfo {
    ProtectedObject *protectedObjects;  // list of stack-based object protectors
  };
 
-                                       /* various exception/condition       */
-                                       /* reporting routines                */
-inline void reportCondition(RexxString *condition, RexxString *description) { ActivityManager::currentActivity->raiseCondition(condition, OREF_NULL, description, OREF_NULL, OREF_NULL, OREF_NULL); }
-inline void reportNovalue(RexxString *description) { reportCondition(OREF_NOVALUE, description); }
-inline void reportNostring(RexxString *description) { reportCondition(OREF_NOSTRING, description); }
-
-inline void reportException(wholenumber_t error)
-{
-    ActivityManager::currentActivity->reportAnException(error);
-}
-
-inline void reportException(wholenumber_t error, RexxArray *args)
-{
-    ActivityManager::currentActivity->raiseException(error, NULL, OREF_NULL, OREF_NULL, args, OREF_NULL);
-}
-
-inline void reportException(wholenumber_t error, RexxObject *a1)
-{
-    ActivityManager::currentActivity->reportAnException(error, a1);
-}
-
-inline void reportException(wholenumber_t error, wholenumber_t a1)
-{
-    ActivityManager::currentActivity->reportAnException(error, a1);
-}
-
-inline void reportException(wholenumber_t error, wholenumber_t a1, wholenumber_t a2)
-{
-    ActivityManager::currentActivity->reportAnException(error, a1, a2);
-}
-
-inline void reportException(wholenumber_t error, wholenumber_t a1, RexxObject *a2)
-{
-    ActivityManager::currentActivity->reportAnException(error, a1, a2);
-}
-
-inline void reportException(wholenumber_t error, RexxObject *a1, wholenumber_t a2)
-{
-    ActivityManager::currentActivity->reportAnException(error, a1, a2);
-}
-
-inline void reportException(wholenumber_t error, const char *a1, RexxObject *a2)
-{
-    ActivityManager::currentActivity->reportAnException(error, a1, a2);
-}
-
-inline void reportException(wholenumber_t error, RexxObject *a1, const char *a2)
-{
-    ActivityManager::currentActivity->reportAnException(error, a1, a2);
-}
-
-inline void reportException(wholenumber_t error, const char *a1)
-{
-    ActivityManager::currentActivity->reportAnException(error, a1);
-}
-
-inline void reportException(wholenumber_t error, const char *a1, wholenumber_t a2)
-{
-    ActivityManager::currentActivity->reportAnException(error, a1, a2);
-}
-
-inline void reportException(wholenumber_t error, const char *a1, wholenumber_t a2, RexxObject *a3)
-{
-    ActivityManager::currentActivity->reportAnException(error, a1, a2, a3);
-}
-
-inline void reportException(wholenumber_t error, const char *a1, RexxObject *a2, wholenumber_t a3)
-{
-    ActivityManager::currentActivity->reportAnException(error, a1, a2, a3);
-}
-
-inline void reportException(wholenumber_t error, RexxObject *a1, RexxObject *a2)
-{
-    ActivityManager::currentActivity->reportAnException(error, a1, a2);
-}
-
-inline void reportException(wholenumber_t error, RexxObject *a1, RexxObject *a2, RexxObject *a3)
-{
-    ActivityManager::currentActivity->reportAnException(error, a1, a2, a3);
-}
-
-inline void reportException(wholenumber_t error, RexxObject *a1, RexxObject *a2, RexxObject *a3, RexxObject *a4)
-{
-    ActivityManager::currentActivity->reportAnException(error, a1, a2, a3, a4);
-}
-
-inline void reportException(wholenumber_t error, const char *a1, RexxObject *a2, const char *a3, RexxObject *a4)
-{
-    ActivityManager::currentActivity->reportAnException(error, a1, a2, a3, a4);
-}
-
-inline void reportException(wholenumber_t error, const char *a1, RexxObject *a2, RexxObject *a3, RexxObject *a4)
-{
-    ActivityManager::currentActivity->reportAnException(error, new_string(a1), a2, a3, a4);
-}
-
-inline void reportException(wholenumber_t error, const char *a1, RexxObject *a2, RexxObject *a3)
-{
-    ActivityManager::currentActivity->reportAnException(error, new_string(a1), a2, a3);
-}
-
-inline void reportNomethod(RexxString *message, RexxObject *receiver)
-{
-    if (!ActivityManager::currentActivity->raiseCondition(OREF_NOMETHOD, OREF_NULL, message, receiver, OREF_NULL, OREF_NULL))
-    {
-                                           /* raise as a syntax error           */
-        reportException(Error_No_method_name, receiver, message);
-    }
-}
-
-
-inline void reportHalt(RexxString *description)
-{
-                                       /* process as common condition       */
-  if (!ActivityManager::currentActivity->raiseCondition(OREF_HALT, OREF_NULL, description, OREF_NULL, OREF_NULL, OREF_NULL))
-  {
-                                         /* raise as a syntax error           */
-      reportException(Error_Program_interrupted_condition, OREF_HALT);
-  }
-}
 #endif

@@ -92,8 +92,6 @@ extern CRITICAL_SECTION Crit_Sec = {0};      /* also used by OKACTIVI and OKMEMO
 extern SEV   RexxTerminated;           /* Termination complete semaphore.   */
 extern BOOL UseMessageLoop;  /* speciality for VAC++ */
 
-extern RexxDirectory *ProcessLocalEnv; /* process local environment (.local)*/
-extern RexxObject *ProcessLocalServer; /* current local server              */
 const char * SysFileExtension(const char *);
 RexxMethod *SysRestoreProgramBuffer(PRXSTRING, RexxString *);
 RexxMethod *SysRestoreInstoreProgram(PRXSTRING, RexxString *);
@@ -174,7 +172,7 @@ void REXXENTRY RexxCreateDirectory(const char * dirname)
 
                                        /* Create directory and hang of off  */
                                        /* local env. directory.             */
-  ProcessLocalEnv->put(new_directory(), index);
+  ActivityManager::localEnvironment->put(new_directory(), index);
   ActivityManager::returnActivity(activity);       /* release the kernel semaphore      */
 
   return;
@@ -269,7 +267,7 @@ void REXXENTRY RexxRemoveDirectory(const char *dirname)
                                        /* Create string object              */
   index = new_string(dirname);
                                        /* Remove directory from Local env.  */
-  ProcessLocalEnv->remove(index);
+  ActivityManager::localEnvironment->remove(index);
                                        /* release the kernel semaphore      */
   ActivityManager::returnActivity(ActivityManager::currentActivity);
   return;
@@ -300,7 +298,7 @@ BOOL REXXENTRY RexxDispose(const char *dirname, RexxObject *RexxObj)
                                        /* Create string object              */
   index = new_string(dirname);
                                        /* Get directory of locked objects   */
-  locked_objects = (RexxDirectory *)ProcessLocalEnv->at(index);
+  locked_objects = (RexxDirectory *)ActivityManager::localEnvironment->at(index);
                                        /* Remove object                     */
   RexxObj = locked_objects->remove(new_string((const char *)&RexxObj, sizeof(RexxObject *)));
                                        /* release the kernel semaphore      */
@@ -386,7 +384,7 @@ APIRET REXXENTRY RexxCopyMethod(const char *dirname, RexxObject * method, RexxOb
 
                                        /* Need to keep around for process   */
                                        /* duration.                         */
-      locked_objects = (RexxDirectory *)ProcessLocalEnv->at(new_string(dirname));
+      locked_objects = (RexxDirectory *)ActivityManager::localEnvironment->at(new_string(dirname));
       locked_objects->put(*pmethod, new_string((const char *)pmethod, sizeof(RexxObject *)));
     } else
       rc = 1;
@@ -422,7 +420,7 @@ BOOL REXXENTRY RexxValidObject(const char *dirname, RexxObject * object)
   activity = ActivityManager::getActivity();
 
                                        /* Get directory of locked objects   */
-  locked_objects = (RexxDirectory *)ProcessLocalEnv->at(new_string(dirname));
+  locked_objects = (RexxDirectory *)ActivityManager::localEnvironment->at(new_string(dirname));
                                        /* See if object exists              */
   object = locked_objects->at(new_string((const char *)&object, sizeof(RexxObject *)));
                                        /* release the kernel semaphore      */
@@ -523,7 +521,7 @@ APIRET APIENTRY RexxStart(
                                        /* wrap up the argument              */
   tempArgument = (RexxObject *)new_integer((LONG)&RexxStartArguments);
                                        /* pass along to the real method     */
-  rc = ActivityManager::currentActivity->messageSend(ProcessLocalServer, OREF_RUN_PROGRAM, 1, &tempArgument, &resultObject);
+  rc = ActivityManager::currentActivity->messageSend(ActivityManager::localServer, OREF_RUN_PROGRAM, 1, &tempArgument, &resultObject);
   ActivityManager::returnActivity(ActivityManager::currentActivity);
   RexxTerminate();                     /* perform needed termination        */
 
@@ -700,7 +698,7 @@ APIRET REXXENTRY RexxCreateMethod(
                                        /* wrap up the argument              */
   tempArgument = (RexxObject *)new_integer((LONG)&RexxScriptArgs);
                                        /* pass along to the real method     */
-  rc = ActivityManager::currentActivity->messageSend(ProcessLocalServer, OREF_RUN_PROGRAM, 1, &tempArgument, &resultObject);
+  rc = ActivityManager::currentActivity->messageSend(ActivityManager::localServer, OREF_RUN_PROGRAM, 1, &tempArgument, &resultObject);
 
                                        /* if error, get condition data from */
                                        /* condition object.                 */
@@ -782,7 +780,7 @@ APIRET REXXENTRY RexxRunMethod(
                                        /* wrap up the argument              */
   tempArgument = (RexxObject *)new_integer((LONG)&RexxScriptArgs);
                                        /* pass along to the real method     */
-  rc = tempActivity->messageSend(ProcessLocalServer, OREF_RUN_PROGRAM, 1, &tempArgument, &resultObject);
+  rc = tempActivity->messageSend(ActivityManager::localServer, OREF_RUN_PROGRAM, 1, &tempArgument, &resultObject);
 
                                        /* if error, get condition data from */
                                        /* condition object.                 */
@@ -827,7 +825,7 @@ APIRET REXXENTRY RexxStoreMethod(RexxObject * method, PRXSTRING scriptData)
                                        /* wrap up the argument              */
   tempArgument = (RexxObject *)new_integer((LONG)&RexxScriptArgs);
                                        /* pass along to the real method     */
-  rc = ActivityManager::currentActivity->messageSend(ProcessLocalServer, OREF_RUN_PROGRAM, 1, &tempArgument, &resultObject);
+  rc = ActivityManager::currentActivity->messageSend(ActivityManager::localServer, OREF_RUN_PROGRAM, 1, &tempArgument, &resultObject);
   ActivityManager::returnActivity(ActivityManager::currentActivity);
   RexxTerminate();                     /* perform needed termination        */
   return rc;                           /* return the error code             */
@@ -869,7 +867,7 @@ APIRET REXXENTRY RexxLoadMethod(const char *dirname, PRXSTRING scriptData, RexxO
                                        /* wrap up the argument              */
   tempArgument = (RexxObject *)new_integer((LONG)&RexxScriptArgs);
                                        /* pass along to the real method     */
-  rc = ActivityManager::currentActivity->messageSend(ProcessLocalServer, OREF_RUN_PROGRAM, 1, &tempArgument, &resultObject);
+  rc = ActivityManager::currentActivity->messageSend(ActivityManager::localServer, OREF_RUN_PROGRAM, 1, &tempArgument, &resultObject);
   ActivityManager::returnActivity(ActivityManager::currentActivity);
 
   RexxTerminate();                     /* perform needed termination        */
@@ -916,7 +914,7 @@ APIRET REXXENTRY RexxTranslateProgram(
                                        /* wrap up the argument              */
   tempArgument = (RexxObject *)new_integer((LONG)&RexxStartArguments);
                                        /* pass along to the real method     */
-  rc = ActivityManager::currentActivity->messageSend(ProcessLocalServer, OREF_RUN_PROGRAM, 1, &tempArgument, &resultObject);
+  rc = ActivityManager::currentActivity->messageSend(ActivityManager::localServer, OREF_RUN_PROGRAM, 1, &tempArgument, &resultObject);
   ActivityManager::returnActivity(ActivityManager::currentActivity);
   RexxTerminate();                     /* perform needed termination        */
   return rc;                           /* return the error code             */
@@ -1075,10 +1073,10 @@ void translateSource(
   RexxActivity*activity;               /* the current activity              */
 
   activity = ActivityManager::currentActivity;          /* save the current activity         */
-  ReleaseKernelAccess(activity);       /* release the kernel access         */
+  activity->releaseKernel();           /* release the kernel access         */
                                        /* go resolve the name               */
   fileFound = SearchFileName(inputName->getStringData(), name);
-  RequestKernelAccess(activity);       /* get the semaphore back            */
+  activity->requestKernel();           /* get the semaphore back            */
 
   if (!fileFound)
                                        /* got an error here                 */
@@ -1180,7 +1178,7 @@ void CreateMethod(
  else {
                                        /* Need to keep around for process   */
                                        /* duration.                         */
-   locked_objects = (RexxDirectory *)ProcessLocalEnv->at(new_string(pRexxScriptArgs->index));
+   locked_objects = (RexxDirectory *)ActivityManager::localEnvironment->at(new_string(pRexxScriptArgs->index));
    locked_objects->put(*pRexxScriptArgs->pmethod, new_string((const char *)pRexxScriptArgs->pmethod, sizeof(RexxObject *)));
  }
                                        /* finally, discard our activation   */
@@ -1255,7 +1253,7 @@ void RunMethod(
   if (pRexxScriptArgs->index != OREF_NULL && *pRexxScriptArgs->presult != OREF_NULL) {
                                        /* Need to keep around for process   */
                                        /* duration.                         */
-   locked_objects = (RexxDirectory *)ProcessLocalEnv->at(new_string(pRexxScriptArgs->index));
+   locked_objects = (RexxDirectory *)ActivityManager::localEnvironment->at(new_string(pRexxScriptArgs->index));
    locked_objects->put(*pRexxScriptArgs->presult, new_string((const char *)pRexxScriptArgs->presult, sizeof(RexxObject *)));
  }
 
@@ -1282,7 +1280,7 @@ void LoadMethod(
  if (pRexxScriptArgs->index != NULLOBJ && *pRexxScriptArgs->pmethod != OREF_NULL) {
                                        /* Need to keep around for process   */
                                        /* duration.                         */
-   locked_objects = (RexxDirectory *)ProcessLocalEnv->at(new_string(pRexxScriptArgs->index));
+   locked_objects = (RexxDirectory *)ActivityManager::localEnvironment->at(new_string(pRexxScriptArgs->index));
    locked_objects->put(*pRexxScriptArgs->pmethod, new_string((const char *)pRexxScriptArgs->pmethod, sizeof(RexxObject *)));
  }
 

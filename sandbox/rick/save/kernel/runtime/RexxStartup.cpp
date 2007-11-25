@@ -50,6 +50,7 @@
 #include "StringClass.hpp"
 #include "DirectoryClass.hpp"
 #include "RexxActivity.hpp"
+#include "ActivityManager.hpp"
 #include "MethodClass.hpp"
 #include "RexxNativeAPI.h"
 #include "ActivityTable.hpp"
@@ -68,10 +69,6 @@ extern BOOL  ProcessDoneTerm;          /* termination is done               */
 extern BOOL  ProcessFirstThread;       /* first (and primary thread)        */
 
 extern BOOL  ProcessRestoreImage;      /* we're restoring the image         */
-extern RexxDirectory *ProcessLocalEnv; /* process local environment (.local)*/
-extern RexxObject * ProcessLocalServer;
-extern int   ProcessInitializations;   /* number of nested initializations  */
-extern BOOL  ProcessTerminating;       /* termination has started           */
 extern SEV   RexxTerminated;           /* Termination complete semaphore.   */
 extern RexxInteger *ProcessName;
 
@@ -89,27 +86,16 @@ void kernelShutdown (void)
 /* Shutdown OREXX System for this process                                     */
 /******************************************************************************/
 {
-#ifdef SHARED
-#if defined(AIX) || defined(LINUX)
-    MTXRQ(initialize_sem);
-#else
   MTXRQ(start_semaphore);              /* serialize startup/shutdown        */
-#endif
-#endif
   SysTermination();                    /* cleanup                           */
   EVPOST(RexxTerminated);              /* let anyone who cares know we're done*/
 //  memoryObject.dumpMemoryProfile();    /* optionally dump memory stats      */
   if (!ProcessDoneTerm) {              /* if first time through             */
     ProcessDoneTerm = TRUE;            /* don't allow a "reterm"            */
     ProcessDoneInit = FALSE;           /* no longer initialized.            */
-    ProcessTerminating = FALSE;        /* no longer terminating             */
-    ProcessInitializations = 0;        /* no initializations done           */
     ProcessColdStart = TRUE;           /* next one is a cold start          */
     ProcessFirstThread = TRUE;         /* first thread needs to be created  */
     ProcessRestoreImage = TRUE;        /* and we have to restore the image  */
-    if (ProcessLocalEnv != OREF_NULL)  /* have a local environment directory*/
-      discard_hold(ProcessLocalEnv);   /* we can now release this           */
-    ProcessLocalEnv = OREF_NULL;       /* no local environment              */
                                        /* subprocess, which means that memory is not released at program end */
                                        /* only on shutdown. So if there is (for huge files) a linked list of */
                                        /* memory pools allocated, the newly created pools would be freed here*/
@@ -119,7 +105,6 @@ void kernelShutdown (void)
                                        /* Be aware of possible resource problems especially when the interpre*/
                                        /* is started in a loop with REXXSTART                                */
     memoryObject.freePools();          /* release access to memoryPools     */
-    ProcessName = OREF_NULL;           /* no process name now               */
   }
 #ifdef SHARED
 #if defined(AIX) || defined(LINUX)
@@ -130,21 +115,6 @@ void kernelShutdown (void)
 #endif
 }
 
-void kernelTerminate (int terminateType)
-/******************************************************************************/
-/* Terminate thread and possibly shutdown system for process                  */
-/******************************************************************************/
-{
-                                         /* Let any pending threads from      */
-                                         /* a start or reply, know to         */
-                                         /* Terminate when finished           */
-    ProcessTerminating = TRUE;
-    // have the activity manager do shutdown processing.
-    // TODO:  remove calls to kernelShutdown() from the activity manager
-    ActivityManager::shutdown();
-    // now shut down the rest of the stuff
-    kernelShutdown();                  /* shut everything down              */
-}
 
 void kernelRestore (void);
 void kernelNewProcess (void);
@@ -157,9 +127,9 @@ void restoreImage(void)
 /* Main startup routine for OREXX                                             */
 /******************************************************************************/
 {
-  activity_lock_kernel();              /* lock the kernel                   */
+  ActivityManager::lockKernel();       /* lock the kernel                   */
   kernelRestore();                     /* initialize the kernel             */
-  activity_unlock_kernel();            /* lock the kernel                   */
+  ActivityManager::unlockKernel();     /* lock the kernel                   */
 }
 
 void start_rexx_environment(void)
@@ -167,26 +137,10 @@ void start_rexx_environment(void)
 /* Main startup routine for OREXX                                             */
 /******************************************************************************/
 {
-  RexxObject *server_class;            /* server class object               */
-
-  activity_lock_kernel();              /* lock the kernel                   */
+  ActivityManager::lockKernel();       /* lock the kernel                   */
   kernelNewProcess();                  /* do new process initialization     */
-  if (ProcessLocalEnv == OREF_NULL)    /* need a new local environment?     */
-  {
-      ProcessLocalEnv = new_directory();
-      save(ProcessLocalEnv);
 
-  }
-                                       /* get the local environment         */
-                                       /* get the server class              */
-  server_class = env_find(new_string("!SERVER"));
-  activity_unlock_kernel();            /* now unlock the kernel             */
-
-  ActivityManager::getActivity();     /* get an activity set up            */
-                                       /* create a new server object        */
-  ActivityManager::currentActivity->messageSend(server_class, OREF_NEW, 0, OREF_NULL, &ProcessLocalServer);
-                                       /* now release this activity         */
-  ActivityManager::returnActivity(ActivityManager::currentActivity);
+  ActivityManager::startup();          // go create the local enviroment.
   ProcessRestoreImage = FALSE;         /* Turn off restore image flag.      */
 }
 
@@ -196,19 +150,9 @@ int REXXENTRY RexxTerminate (void)
 /*            call nesting level has reached zero.                            */
 /******************************************************************************/
 {
-  SysEnterCriticalSection();
-  ProcessInitializations--;            /* reduce the active count           */
-  if (ProcessInitializations == 0)     /* down to nothing?                  */
-  {
-                                       /* force termination                 */
-    kernelTerminate(NORMAL_TERMINATION);
-    /* semaphores are closed when process detaches and not when  */
-    /* RexxStart finishes. This allows asynchronous threads to continue in  */
-    /* the background. Handles will not increase because DllMain will be    */
-    /* called when the process finishes.                                    */
-  }
-  SysExitCriticalSection();
-  return 0;
+    // terminate one instance and shutdown, if necessary
+    ActivityManager::terminateInterpreter();
+    return 0;
 }
 
 BOOL REXXENTRY RexxInitialize (void)
@@ -262,23 +206,16 @@ BOOL REXXENTRY RexxInitialize (void)
 #endif
 #endif
 
-#ifndef SHARED
-/* Be sure if REXX threads run in parallel, that initialization semaphore is active ==> SysThreadInit must be done */
-   while (!initialize_sem)
-   {
-     SysThreadYield();
-   }
-#endif
-
   SysEnterCriticalSection();
 
   result = ProcessFirstThread;         /* check on the first thread         */
-  /* active count needs to be protected */
-  ProcessInitializations++;            /* bump the active count             */
+
+  // perform activity manager startup for another instance
+  ActivityManager::createInterpreter();
                                        /* make sure we can't loose control  */
                                        /* durecing creation/opening of THIS */
                                        /* MUTEX.                            */
-  MTXCROPEN(start_semaphore, "OBJREXXSTARTSEM");              /* get the start semaphore           */
+  MTXCROPEN(start_semaphore, "OBJREXXSTARTSEM");  /* get the start semaphore           */
   SysExitCriticalSection();
   MTXRQ(start_semaphore);              /* lock the startup                  */
 
@@ -313,17 +250,6 @@ BOOL REXXENTRY RexxInitialize (void)
     }
     ProcessDoneInit = TRUE;            /* we're now initialized             */
   }                                    /* end of serialized block of code   */
-  /* we need to extend the savestack because of concurrency */
-  else
-  {
-      /* no memory section needed here */
-      memoryObject.extendSaveStack(ProcessInitializations-1);
-  }
-#ifdef SHARED
-  MTXRL(start_semaphore);              /* release the startup semaphore     */
-#endif
-
-
   return result;                       /* all done                          */
 }
 

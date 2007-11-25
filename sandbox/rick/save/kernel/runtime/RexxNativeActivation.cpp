@@ -65,11 +65,6 @@
 
 #include SYSREXXSAA
 
-extern RexxObject *ProcessLocalServer;
-extern RexxDirectory *ProcessLocalEnv; /* process local environment (.local)*/
-extern ACTIVATION_SETTINGS *current_settings;
-
-                                       /* types                             */
 static size_t tsize[] = { 0, 0,
                           sizeof(RexxObject *),
                           sizeof(int),
@@ -343,9 +338,9 @@ RexxObject *RexxNativeActivation::run(
     return this->result;               /* and finished                      */
   }
 
-  ReleaseKernelAccess(this->activity); /* force this to "safe" mode         */
+  activity->releaseKernel();           /* force this to "safe" mode         */
   (*methp)(ivalues);                   /* process the method call           */
-  RequestKernelAccess(this->activity); /* now in unsafe mode again          */
+  activity->requestKernel();           /* now in unsafe mode again          */
 
   /* give up reference to receiver so that it can be garbage collected */
   this->receiver = OREF_NULL;
@@ -1395,7 +1390,7 @@ REXXOBJECT REXXENTRY REXX_LOCAL(void)
 /* Function:  Return REXX .local object to native code                        */
 /******************************************************************************/
 {
-  return ProcessLocalEnv;              /* just return the local environment */
+  return ActivityManager::localEnvironment;  /* just return the local environment */
 }
 
 REXXOBJECT REXXENTRY REXX_ENVIRONMENT(void)

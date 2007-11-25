@@ -74,33 +74,12 @@
 #include SYSREXXSAA
 
 const size_t ACT_STACK_SIZE = 10;
-const size_t ACTIVATION_CACHE_SIZE = 5;
-
-extern RexxObject * ProcessLocalServer;
-extern BOOL ProcessTerminating;
-extern RexxDirectory *ProcessLocalEnv;
 
 extern SMTX rexx_kernel_semaphore;     /* global kernel semaphore           */
 extern SMTX rexx_resource_semaphore;   /* global kernel semaphore           */
 extern SMTX rexx_start_semaphore;      /* startup semaphore                 */
 
-                                       /* current active activity           */
-//RexxActivity *ActivityManager::currentActivity = OREF_NULL;
-                                       /* generic default settings structure*/
-ACTIVATION_SETTINGS defaultSettings;
-                                       /* default active settings           */
-ACTIVATION_SETTINGS *current_settings = &defaultSettings;
-
-#ifdef HIGHTID_0
-//#define ID2String(id, s) new_string(itoa(id,(char *)&s,10))
-#define ID2String(id) new_string((char *)&id, sizeof(LONG))
-/* make fastAt in activity_find() faster if there's only one thread */
-static LONG HighTidLastID = 0;
-static RexxActivity * HighTidLastActivity = NULL;
-#endif
-                                       /* allow to be called from C */
 extern "C" void activity_thread (RexxActivity *objp);
-void kernelShutdown (void);            /* system shutdown routine           */
 
 void activity_thread (
   RexxActivity *objp)                  /* activity assciated with a thread  */
@@ -136,7 +115,7 @@ void activity_thread (
             SysSetThreadPriority(objp->threadid, objp->priority);
 #endif
 
-            RequestKernelAccess(objp);       /* now get the kernel lock           */
+            objp->requestAccess();           /* now get the kernel lock           */
                                              /* get the top activation            */
             objp->topActivation->dispatch(); /* go dispatch it                    */
 
@@ -155,14 +134,14 @@ void activity_thread (
         // try to pool this.  If the ActivityManager doesn't take, we go into termination mode
         if (!ActivityManager::poolActivity(objp))
         {
-            ReleaseKernelAccess(objp);
+            objp->releaseKernel();
             break;
         }
         // release the kernel lock and go wait for more work
-        ReleaseKernelAccess(objp);
+        objp->releaseKernel();
     }
 
-    RequestKernelAccess(objp);           /* get the kernel access             */
+    objp->releaseAccess();               /* get the kernel access             */
 
     SysDeregisterExceptions(&exreg);     /* remove exception trapping         */
     // tell the activity manager we're going away
@@ -172,6 +151,10 @@ void activity_thread (
 }
 
 
+/**
+ * Do cleanup of activity resources when an activity is completely
+ * shutdown and discarded.
+ */
 void RexxActivity::terminateActivity()
 {
     EVCLOSE(this->runsem);
@@ -179,8 +162,6 @@ void RexxActivity::terminateActivity()
 #ifdef THREADHANDLE
     EVCLOSE(this->hThread);
 #endif
-    // TODO:  Need to determine if this is needed here.
-    ActivityManager::deleteActivity(this);
 }
 
 
@@ -1051,7 +1032,7 @@ void RexxActivity::live()
 /* Function:  Normal garbage collection live marking                          */
 /******************************************************************************/
 {
-  LONG    i;                           /* loop counter                      */
+  size_t  i;                           /* loop counter                      */
 
   setUpMemoryMark
   memory_mark(this->activations);
@@ -1070,6 +1051,15 @@ void RexxActivity::live()
 
   /* have the frame stack do its own marking. */
   frameStack.live();
+  // mark any protected objects we've been watching over
+
+  ProtectedObject *p = protectedObjects;
+  while (p != NULL)
+  {
+      memory_mark(p->protectedObject);
+      p = p->next;
+  }
+
   cleanUpMemoryMark
 }
 void RexxActivity::liveGeneral()
@@ -1077,7 +1067,7 @@ void RexxActivity::liveGeneral()
 /* Function:  Generalized object marking                                      */
 /******************************************************************************/
 {
-  LONG    i;                           /* loop counter                      */
+  size_t  i;                           /* loop counter                      */
 
   setUpMemoryMarkGeneral
   memory_mark_general(this->activations);
@@ -1097,6 +1087,14 @@ void RexxActivity::liveGeneral()
 
   /* have the frame stack do its own marking. */
   frameStack.liveGeneral();
+
+  ProtectedObject *p = protectedObjects;
+  while (p != NULL)
+  {
+      memory_mark_general(p->protectedObject);
+      p = p->next;
+  }
+
   cleanUpMemoryMarkGeneral
 }
 
@@ -1152,8 +1150,10 @@ void RexxActivity::push(
                                        /* get the activation settings       */
     this->settings = ((RexxActivation *)new_activation)->getGlobalSettings();
     if (ActivityManager::currentActivity == this)       /* this the active activity?         */
+    {
                                        /* update the active values          */
-      current_settings = this->settings;
+        Numerics::setCurrentSettings(this->settings);
+    }
   }
   this->depth++;                       /* bump the depth to count this      */
 }
@@ -1182,8 +1182,7 @@ void RexxActivity::pushNil()
                                        /* both of them                      */
   this->currentActivation = (RexxActivation *)TheNilObject;
                                        /* use the default settings          */
-  this->settings = &this->default_settings;
-  current_settings = this->settings;   /* update the active values          */
+  this->settings = Numerics::setDefaultSettings();
   this->depth++;                       /* bump the depth to count this      */
 }
 
@@ -1244,8 +1243,9 @@ void RexxActivity::pop(
                                        /* get the activation settings       */
         this->settings = ((RexxActivation *)old_activation)->getGlobalSettings();
       if (ActivityManager::currentActivity == this)     /* this the active activity?         */
-                                       /* update the active values          */
-        current_settings = this->settings;
+      {
+          Numerics::setCurrentSettings(this->settings);
+      }
       if (!reply)                      /* not a reply removal?              */
                                        /* add this to the cache             */
         ActivityManager::cacheActivation((RexxActivation *)top_activation);
@@ -1330,7 +1330,7 @@ void RexxActivity::exitKernel(
   if (enable)                          /* need variable pool access?        */
                                        /* turn it on now                    */
     new_activation->enableVariablepool();
-  ReleaseKernelAccess(this);           /* now give up control               */
+  releaseKernel();                     /* now give up control               */
 }
 void RexxActivity::enterKernel()
 /******************************************************************************/
@@ -1338,7 +1338,7 @@ void RexxActivity::enterKernel()
 /*             created by activity_exit_kernel from the activity stack.       */
 /******************************************************************************/
 {
-  RequestKernelAccess(this);           /* get the kernel lock back          */
+  requestAccess();                     /* get the kernel lock back          */
   ((RexxNativeActivation *)this->topActivation)->disableVariablepool();
   this->pop(FALSE);                    /* pop the top activation            */
 }
@@ -1377,9 +1377,9 @@ void RexxActivity::waitReserve(
 {
   EVSET(this->runsem);                 /* clear the run semaphore           */
   this->waitingObject = resource;      /* save the waiting resource         */
-  ReleaseKernelAccess(this);           /* release the kernel access         */
+  releaseKernel();                     /* release the kernel access         */
   EVWAIT(this->runsem);                /* wait for the run to be posted     */
-  RequestKernelAccess(this);           /* reaquire the kernel access        */
+  requesAccess();                      /* reaquire the kernel access        */
 }
 
 void RexxActivity::guardWait()
@@ -1387,10 +1387,10 @@ void RexxActivity::guardWait()
 /* Function:  Wait for a guard post event                                     */
 /******************************************************************************/
 {
-  ReleaseKernelAccess(this);           /* release kernel access             */
+  releaseKernel();                     /* release kernel access             */
   EVWAIT(this->guardsem);              /* wait on the guard semaphore       */
 #ifndef NEWGUARD
-  RequestKernelAccess(this);           /* reaquire the kernel lock          */
+  reqiestAccess();                     /* reaquire the kernel lock          */
 #endif
 }
 
@@ -1558,7 +1558,8 @@ void RexxActivity::releaseKernel()
 /******************************************************************************/
 {
   ActivityManager::currentActivity = OREF_NULL;         /* no current activity               */
-  current_settings = &defaultSettings; /* use default settings              */
+  // reset the numeric settings
+  Numerics::setDefaultSettings();
   MTXRL(kernel_semaphore);             /* release the kernel semaphore      */
 }
 
@@ -1572,7 +1573,7 @@ void RexxActivity::requestKernel()
     if (MTXRI(kernel_semaphore) == 0) {/* try directly requesting first     */
       ActivityManager::currentActivity = this;          /* set new current activity          */
                                        /* and new active settings           */
-      current_settings = this->getSettings();
+      Numerics::setCurrentSettings(getSettings());
       return;                          /* get out if we have it             */
     }
   }
@@ -2886,15 +2887,6 @@ LONG VLAREXXENTRY RexxSendMessage (
                                        /* restore the nested information    */
   activity->restoreNestedInfo(&saveInfo);
   SysDeregisterSignals(&exreg);        /* deregister the signal handlers    */
-                                       /* if had a real result object       */
-                                       /*  and not returning an OREF....    */
-  if (result != OREF_NULL) {
-    if (returnType == 'o' || returnType == 'z')
-                                       /* Need to keep result obj around.   */
-       ProcessLocalServer->sendMessage(new_string("SAVE_RESULT"));
-
-     discard_hold(result);             /* release it and hole a bit longer  */
-  }
   activity->popNil();                  /* remove the nil marker             */
                                        /* release our activity usage        */
   ActivityManager::returnActivity(activity);

@@ -53,9 +53,6 @@
 #include "RexxBuffer.hpp"
 #include "NumberStringMath.hpp"
 
-                                       /* current global settings           */
-extern ACTIVATION_SETTINGS *current_settings;
-
 
 RexxNumberString *RexxNumberString::maxMin(RexxObject **args, size_t argCount, unsigned int operation)
 /*********************************************************************/

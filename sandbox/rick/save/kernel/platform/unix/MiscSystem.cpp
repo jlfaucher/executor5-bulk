@@ -89,12 +89,9 @@ void RxExitClear(int);
 void RxExitClearNormal();
 
 
-extern int  ProcessTerminating;
 extern BOOL bProcessExitInitFlag;
 
 extern ULONG mustCompleteNest;         /* Global variable for MustComplete  */
-                                       /* default active settings           */
-extern ACTIVATION_SETTINGS *current_settings;
 
 unsigned int iClauseCounter=0;         // count of clauses
 unsigned int iTransClauseCounter=0;    // count of clauses in translator

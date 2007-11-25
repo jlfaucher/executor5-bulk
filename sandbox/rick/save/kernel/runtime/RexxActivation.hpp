@@ -50,6 +50,7 @@
 #include "RexxLocalVariables.hpp"        /* local variable cache definitions  */
 #include "RexxDateTime.hpp"
 #include "RexxCode.hpp"
+#include "ActivityManager.hpp"
 
 #define trace_debug         0x00000001 /* interactive trace mode flag       */
 #define trace_all           0x00000002 /* trace all instructions            */
@@ -80,12 +81,6 @@
 #define traps_copied        0x04000000 /* copy of trap info has been made   */
 #define return_status_set   0x08000000 /* had our first host command        */
 #define transfer_failed     0x10000000 /* transfer of variable lock failure */
-
-#define dbg_trace           0x00000001
-#define dbg_stepover        0x00000002
-#define dbg_stepout         0x00000004
-#define dbg_endstep         0x00000010
-#define dbg_stepagain       0x00000020
 
 /* execution_state values */
 #define ACTIVE    0
@@ -127,17 +122,15 @@ class ACTSETTINGS {
       RexxObject    * securityManager;     /* security manager object           */
       int  traceoption;                    /* current active trace option       */
       ULONG flags;                         /* trace/numeric and other settings  */
-      ULONG dbg_flags;                     /* debug exit settings               */
       LONG trace_skip;                     /* count of trace events to skip     */
       LONG return_status;                  /* command return status             */
       LONG traceindent;                    /* trace indentation                 */
-      ACTIVATION_SETTINGS global_settings; /* globally effective settings       */
+      NumericSettings numericSettings;     /* globally effective settings       */
       int64_t elapsed_time;                /* elapsed time clock                */
       RexxDateTime timestamp;              /* current timestamp                 */
-      BOOL intermediate_trace;             /* very quick test for intermediate trace */
+      bool intermediate_trace;             /* very quick test for intermediate trace */
       RexxLocalVariables local_variables;  /* the local variables for this activation */
 };
-typedef ACTSETTINGS *PSETT;
 
                                        /* activation_context values         */
                                        /* these are done as bit settings to */
@@ -279,14 +272,6 @@ RexxObject * activation_find  (void);
    void              halt(RexxString *);
    void              externalTraceOn();
    void              externalTraceOff();
-   void              externalDbgStepIn();
-   void              externalDbgStepOver();
-   void              externalDbgStepOut();
-   void              externalDbgEndStepO();
-   void              externalDbgStepAgain();
-   void              sysDbgSubroutineCall(BOOL);
-   void              sysDbgLineLocate(RexxInstruction * instr = OREF_NULL);
-   void              sysDbgSignal();
    void              yield();
    void              propagateExit(RexxObject *);
    void              setDefaultAddress(RexxString *);
@@ -326,9 +311,9 @@ RexxObject * activation_find  (void);
    inline void              indent() {this->settings.traceindent++; };
    inline void              unindent() {this->settings.traceindent--; };
    inline void              setIndent(long v) {this->settings.traceindent=(v); };
-   inline BOOL              tracingIntermediates() {return this->settings.intermediate_trace;};
+   inline bool              tracingIntermediates() {return this->settings.intermediate_trace;};
    inline void              clearTraceSettings() { settings.flags &= ~trace_flags; settings.intermediate_trace = FALSE; }
-   inline BOOL              tracingResults() {return this->settings.flags&trace_results || this->settings.dbg_flags&dbg_trace;};
+   inline bool              tracingResults() {return (this->settings.flags&trace_results) != 0; }
    inline RexxActivity    * getActivity() {return this->activity;};
    inline RexxMethod      * getMethod() {return this->method;};
    inline RexxString      * getMsgname() {return this->settings.msgname;};
@@ -342,9 +327,9 @@ RexxObject * activation_find  (void);
    inline RexxInstruction * getNext() {return this->next;};
    inline void              setNext(RexxInstruction * v) {this->next=v;};
    inline void              setCurrent(RexxInstruction * v) {this->current=v;};
-   inline BOOL              inDebug() {return ((this->settings.flags&trace_debug || this->settings.dbg_flags&dbg_trace) && ! this->debug_pause);};
+   inline bool              inDebug() { return ((this->settings.flags&trace_debug) != 0) && !this->debug_pause;}
    inline RexxExpressionStack * getStack() {return &this->stack; };
-   inline ACTIVATION_SETTINGS * getGlobalSettings() {return &(this->settings.global_settings);};
+   inline NumericSettings   * getNumericSettings() {return &(this->settings.numericSettings);};
    inline LONG              getIndent() {return this->settings.traceindent;};
    inline void              traceIntermediate(RexxObject * v, int p) { if (this->settings.intermediate_trace) this->traceValue(v, p); };
    inline void              traceVariable(RexxString *n, RexxObject *v)
@@ -362,46 +347,15 @@ RexxObject * activation_find  (void);
    inline void              traceCompoundName(RexxString *stemVar, RexxObject **tails, size_t tailCount, RexxCompoundTail *tail) { if (this->settings.intermediate_trace) this->traceCompoundValue(TRACE_PREFIX_COMPOUND, stemVar, tails, tailCount, tail->createCompoundName(stemVar)); };
    inline void              traceCompoundName(RexxString *stemVar, RexxObject **tails, size_t tailCount, RexxString *tail) { if (this->settings.intermediate_trace) this->traceCompoundValue(TRACE_PREFIX_COMPOUND, stemVar, tails, tailCount, stemVar->concat(tail)); };
    inline void              traceCompound(RexxString *stemVar, RexxObject **tails, size_t tailCount, RexxObject *value) { if (this->settings.intermediate_trace) this->traceCompoundValue(TRACE_PREFIX_VARIABLE, stemVar, tails, tailCount, value); };
-   inline void              traceResult(RexxObject * v) { if ((this->settings.flags&trace_results) || (this->settings.dbg_flags&dbg_trace)) this->traceValue(v, TRACE_PREFIX_RESULT); };
-   inline BOOL              tracingInstructions(void) { return this->settings.flags&trace_all || this->settings.dbg_flags&dbg_trace;};
-   inline void              traceInstruction(RexxInstruction * v) { if (this->settings.flags&trace_all)
-                                this->traceClause(v, TRACE_PREFIX_CLAUSE); else if (this->settings.dbg_flags&dbg_trace) this->dbgClause(v, TRACE_PREFIX_CLAUSE);};
-   inline void              traceLabel(RexxInstruction * v) { if ((this->settings.flags&trace_labels) || (this->settings.dbg_flags&dbg_trace)) this->traceClause(v, TRACE_PREFIX_CLAUSE); };
-   inline void              traceCommand(RexxInstruction * v) { if ((this->settings.flags&trace_commands) ) this->traceClause(v, TRACE_PREFIX_CLAUSE);
-                                                                else if (this->settings.dbg_flags&dbg_trace) this->dbgClause(v, TRACE_PREFIX_CLAUSE); };
+   inline void              traceResult(RexxObject * v) { if ((this->settings.flags&trace_results)) this->traceValue(v, TRACE_PREFIX_RESULT); };
+   inline bool              tracingInstructions(void) { return (this->settings.flags&trace_all) != 0; }
+   inline void              traceInstruction(RexxInstruction * v) { if (this->settings.flags&trace_all) this->traceClause(v, TRACE_PREFIX_CLAUSE); }
+   inline void              traceLabel(RexxInstruction * v) { if ((this->settings.flags&trace_labels) != 0) this->traceClause(v, TRACE_PREFIX_CLAUSE); };
+   inline void              traceCommand(RexxInstruction * v) { if ((this->settings.flags&trace_commands) != 0) this->traceClause(v, TRACE_PREFIX_CLAUSE); }
    inline void              pauseInstruction() {  if ((this->settings.flags&(trace_all | trace_debug)) == (trace_all | trace_debug)) this->debugPause(); };
    inline int               conditionalPauseInstruction() { return (((this->settings.flags&(trace_all | trace_debug)) == (trace_all | trace_debug)) ? this->debugPause(): FALSE); };
    inline void              pauseLabel() { if ((this->settings.flags&(trace_labels | trace_debug)) == (trace_labels | trace_debug)) this->debugPause(); };
    inline void              pauseCommand() { if ((this->settings.flags&(trace_commands | trace_debug)) == (trace_commands | trace_debug)) this->debugPause(); };
-   inline void              dbgClause(RexxInstruction * v, int t) {this->traceClause(v, t); if (!this->debug_pause && !(this->settings.flags&halt_condition))
-                                                                   this->debugPause(v);
-                                                                   if (this->settings.flags&clause_boundary) this->processClauseBoundary();};
-   inline void              dbgEnterSubroutine() {  if ((this != (RexxActivation *) TheNilObject) && this->activity->nestedInfo.exitset)
-                                                        this->sysDbgSubroutineCall(TRUE);};
-   inline void              dbgLeaveSubroutine() {  if ((this != (RexxActivation *) TheNilObject) && this->activity->nestedInfo.exitset)
-                                                        this->sysDbgSubroutineCall(FALSE);};
-   inline void              externalDbgTraceOff() { this->settings.dbg_flags&=~(dbg_trace | dbg_stepagain);};
-                                                  /* switch debug flags off (upward recursively if necessary) */
-   inline void              externalDbgAllOffRecursive() { this->settings.dbg_flags&=~(dbg_trace | dbg_stepover | dbg_stepout | dbg_endstep | dbg_stepagain);
-                                                  if (this->sender && (this->sender != (RexxActivation *) TheNilObject) && this->sender->settings.dbg_flags) this->sender->externalDbgAllOffRecursive(); };
-   inline BOOL              externalDbgEnabled() {return (this->settings.flags&clause_boundary && this->activity->nestedInfo.exitset && !this->debug_pause && !(this->settings.flags&halt_condition));};
-   inline void              callDbgExit() { if (this->externalDbgEnabled())
-                                                this->activity->sysExitDbgTst(this, this->settings.dbg_flags&dbg_trace, this->settings.dbg_flags&dbg_endstep);};
-   inline void              callDbgLineLocate(RexxInstruction * v) { if (this->externalDbgEnabled()) this->sysDbgLineLocate(v);};
-   inline void              dbgDisableStepOver() {this->settings.dbg_flags&=~dbg_stepover;};
-   inline void              dbgPrepareMethod(RexxActivation * p) {if ( p && (p != (RexxActivation *) TheNilObject) && (p->activity->nestedInfo.exitset))
-                                                                      {this->settings.dbg_flags = p->settings.dbg_flags&~dbg_stepover;this->debug_pause = p->debug_pause;}};
-   inline void              dbgPassTrace2Parent(RexxActivation * p) {if ( p && (p != (RexxActivation *) TheNilObject) && (p->activity->nestedInfo.exitset)
-                                                        && (this->settings.dbg_flags&dbg_trace || this->settings.dbg_flags&dbg_stepover))
-                                                            p->externalDbgStepIn();};
-   inline void              dbgCheckEndStepOver() {if (this->externalDbgEnabled() && this->settings.dbg_flags&dbg_stepover)
-                                                           this->externalDbgEndStepO();};
-
-   inline void              dbgCheckEndStepOut() {if (this->externalDbgEnabled() && this->settings.dbg_flags&dbg_stepout && this->sender
-                                                       && (this->sender != (RexxActivation *) TheNilObject) && !(this->sender->settings.dbg_flags&dbg_stepout))
-                                                           this->sender->externalDbgEndStepO();};
-   inline void              dbgSignal() {  if ((this != (RexxActivation *) TheNilObject) && this->activity->nestedInfo.exitset)
-                                                        this->sysDbgSignal();};
 
    inline BOOL              hasSecurityManager() { return this->settings.securityManager != OREF_NULL; }
    inline BOOL              isTopLevel() { return this->activation_context&TOP_LEVEL_CALL; }

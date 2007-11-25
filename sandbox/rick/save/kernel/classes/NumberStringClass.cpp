@@ -54,9 +54,6 @@
 #include "RexxBuiltinFunctions.h"                     /* Gneral purpose BIF Header file    */
 #include "Numerics.hpp"
 
-                                       /* current global settings           */
-extern ACTIVATION_SETTINGS *current_settings;
-
 /* MHES 20050108 deprecated */
 #define string_forwarder(method)\
 RexxObject *RexxNumberString::##method(RexxObject *operand)\

@@ -51,9 +51,6 @@
 #include "RexxBuiltinFunctions.h"                     /* General purpose BIF Header file   */
 #include "SourceFile.hpp"
 
-
-extern ACTIVATION_SETTINGS *current_settings;
-
 const char *Memcpbrk(
   const char *String,                  /* search string                     */
   const char *Set,                     /* reference set                     */

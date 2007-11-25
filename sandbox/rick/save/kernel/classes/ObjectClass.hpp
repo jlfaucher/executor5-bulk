@@ -45,6 +45,9 @@
 #ifndef Included_RexxObject
 #define Included_RexxObject
 
+#include "Numerics.hpp"
+
+
 #include <stddef.h>
 
 #define getAttributeIndex 0            /* location of getAttribute method   */
@@ -360,9 +363,9 @@ class RexxObject : public RexxInternalObject {
      RexxString  *requiredString(LONG);
      RexxString  *requiredString();
      RexxInteger *requiredInteger(LONG, size_t);
-     LONG         requiredLong(LONG, size_t precision = DEFAULT_DIGITS);
-     LONG         requiredPositive(LONG, size_t precision = DEFAULT_DIGITS);
-     LONG         requiredNonNegative(LONG, size_t precision=DEFAULT_DIGITS);
+     LONG         requiredLong(LONG, size_t precision = Numerics::DEFAULT_DIGITS);
+     LONG         requiredPositive(LONG, size_t precision = Numerics::DEFAULT_DIGITS);
+     LONG         requiredNonNegative(LONG, size_t precision = Numerics::DEFAULT_DIGITS);
 
      BOOL         isEqual(RexxObject *);
      bool         isInstanceOf(RexxClass *);

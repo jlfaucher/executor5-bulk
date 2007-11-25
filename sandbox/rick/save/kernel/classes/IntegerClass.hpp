@@ -78,12 +78,9 @@ class RexxInteger : public RexxObject {
   long        strictComp(RexxObject *);
   inline int  comp(RexxObject *other)
     {
-                                       /* current global settings           */
-      extern ACTIVATION_SETTINGS *current_settings;
-
       required_arg(other, ONE);            /* make sure this is really there    */
                                            /* able to compare here?             */
-      if (this->isSameType(other) && number_digits() == DEFAULT_DIGITS)
+      if (this->isSameType(other) && number_digits() == Numerics::DEFAULT_DIGITS)
                                            /* just return the difference        */
         return this->value - ((RexxInteger *)other)->value;
       else                                 /* do a numberstring compare         */

@@ -48,8 +48,10 @@
 #include "RexxCore.h"
 #include "StringClass.hpp"
 #include "RexxActivity.hpp"
+#include "ActivityManager.hpp"
 #include "ArrayClass.hpp"
 #include "RexxNativeActivation.hpp"
+#include "ProtectedObject.hpp"
 
 void logic_error (const char *desc)
 /******************************************************************************/
@@ -206,11 +208,9 @@ RexxObject *native_release(
   if (result != OREF_NULL) {           /* only save real references!        */
                                        /* get the current activation        */
     activation = (RexxNativeActivation *)ActivityManager::currentActivity->current();
-                                       /* protect the result                */
-    save(result);                      /* protect from GC while saving!     */
+    ProtectedObject p1(result);
     result = activation->saveObject(result);
-    discard(result);
   }
-  ReleaseKernelAccess(ActivityManager::currentActivity);/* release the kernel lock           */
+  ActivityManager::currentActivity->releaseKernel(); /* release the kernel lock           */
   return result;                       /* return the result object          */
 }

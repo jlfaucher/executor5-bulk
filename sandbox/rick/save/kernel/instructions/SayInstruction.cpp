@@ -48,9 +48,6 @@
 #include "RexxActivation.hpp"
 #include "SayInstruction.hpp"
 
-                                       /* current global settings           */
-extern ACTIVATION_SETTINGS *current_settings;
-
 RexxInstructionSay::RexxInstructionSay(
     RexxObject *_expression)            /* assciated expression              */
 /******************************************************************************/

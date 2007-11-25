@@ -48,8 +48,6 @@
 #include "RexxCore.h"
 #include "StringClass.hpp"
 #include "RexxBuiltinFunctions.h"                     /* include BIF util prototype/macros */
-                                       /* current global settings           */
-extern ACTIVATION_SETTINGS *current_settings;
 
 /******************************************************************************/
 /* Function:   Take in an agument passed to a method, convert it to a length  */

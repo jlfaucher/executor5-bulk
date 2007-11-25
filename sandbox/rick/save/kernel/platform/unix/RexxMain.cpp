@@ -105,7 +105,6 @@ APIRET APIENTRY RexxExecuteMacroFunction ( char *, PRXSTRING );
 APIRET REXXENTRY RexxSetYield(PID procid, TID threadid);
 #endif /*timeslice*/
 
-extern RexxObject *ProcessLocalServer; /* current local server              */
 const char *SysFileExtension(const char *);
 RexxMethod *SysRestoreProgramBuffer(PRXSTRING, RexxString *);
 void SysSaveProgramBuffer(PRXSTRING, RexxMethod *);
@@ -215,7 +214,7 @@ LONG APIENTRY RexxStart(
     rexxutil_call_sem.release();
   }
                                        /* pass along to the real method     */
-  rc = RexxSendMessage(ProcessLocalServer, CHAR_RUN_PROGRAM, NULL, "vp", NULL, &RexxStartArguments);
+  rc = RexxSendMessage(ActivityManager::localServer, CHAR_RUN_PROGRAM, NULL, "vp", NULL, &RexxStartArguments);
   RexxTerminate();                     /* perform needed termination        */
   return -rc;                          /* return the error code (negated)   */
 }
@@ -279,7 +278,7 @@ LONG APIENTRY ApiRexxStart(
   rexxutil_call = FALSE;
   rexxutil_call_sem.release();
                                        /* pass along to the real method     */
-  rc = RexxSendMessage(ProcessLocalServer, CHAR_RUN_PROGRAM, NULL, "vp", NULL, &RexxStartArguments);
+  rc = RexxSendMessage(ActivityManager::localServer, CHAR_RUN_PROGRAM, NULL, "vp", NULL, &RexxStartArguments);
   return -rc;                          /* return the error code (negated)   */
 }
 //#endif /* AIX */
@@ -310,7 +309,7 @@ APIRET REXXENTRY RexxTranslateProgram(
   RexxInitialize();                    /* Perform any needed inits          */
 
                                        /* pass along to the real method     */
-  rc = RexxSendMessage(ProcessLocalServer, CHAR_RUN_PROGRAM, NULL, "vp", NULL, &RexxStartArguments);
+  rc = RexxSendMessage(ActivityManager::localServer, CHAR_RUN_PROGRAM, NULL, "vp", NULL, &RexxStartArguments);
   RexxTerminate();                     /* perform needed termination        */
   return rc;                           /* return the error code             */
 }

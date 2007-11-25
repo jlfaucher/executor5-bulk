@@ -751,6 +751,8 @@ void RexxMemory::live(void)
   memory_mark(this->variableCache);
   memory_mark(this->markTable);
   cleanUpMemoryMark
+  // now call the various subsystem managers to mark their references
+  ActivityManager::live();
 }
 
 void       RexxMemory::liveGeneral(void)
@@ -769,7 +771,8 @@ void       RexxMemory::liveGeneral(void)
   memory_mark_general(this->variableCache);
   memory_mark_general(this->markTable);
   cleanUpMemoryMarkGeneral
-
+  // now call the various subsystem managers to mark their references
+  ActivityManager::liveGeneral();
 }
 
 void        RexxMemory::flatten(RexxEnvelope *env)
@@ -1708,8 +1711,6 @@ void RexxMemory::setObjectOffset(size_t offset)
 /*  Returned:  Nothing                                                        */
 /******************************************************************************/
 {
-  RexxActivity *ActivityManager::currentActivity;
-
   /* Starting or ending? */
   if (offset != 0) {
 
@@ -1717,13 +1718,13 @@ void RexxMemory::setObjectOffset(size_t offset)
    /* immed */
    if (MTXRI(this->unflattenMutex)) {
     /* Nope, have to wait for it. Get current activity. */
-    ActivityManager::currentActivity = ActivityManager::currentActivity;
+    RexxActivity * currentActivity = ActivityManager::currentActivity;
     /* release kernel access. */
-    ReleaseKernelAccess(ActivityManager::currentActivity);
+    currentActivity->releaseKernel();
     /* wait for current unflatten to end */
     MTXRQ(this->unflattenMutex);
     /* get kernel access back. */
-    RequestKernelAccess(ActivityManager::currentActivity);
+    currentActivity->requestAccess();
    }
   }
   else {
@@ -1754,12 +1755,12 @@ void      RexxMemory::setEnvelope(RexxEnvelope *_envelope)
    if (MTXRI(this->envelopeMutex)) {
                                        /* Nope, have to wait for it.        */
                                        /* Get current activity.             */
-    ActivityManager::currentActivity = ActivityManager::currentActivity;
+    RexxActivity *currentActivity = ActivityManager::currentActivity;
                                        /* release kernel access.            */
-    ReleaseKernelAccess(ActivityManager::currentActivity);
+    currentActivity->releaseKernel();
     MTXRQ(this->envelopeMutex);        /* wait for current unflat to end    */
                                        /* get kernel access back.           */
-    RequestKernelAccess(ActivityManager::currentActivity);
+    currentActivity->requestKernel();
    }
   }
   else {
@@ -1892,18 +1893,15 @@ RexxStack *RexxMemory::getFlattenStack(void)
 /* Function:  Allocate and lock the flatten stack capability.                 */
 /******************************************************************************/
 {
-  RexxActivity *ActivityManager::currentActivity;
-
-                                       /* See if we can get MUTEX immed     */
    if (MTXRI(this->flattenMutex)) {
                                        /* Nope, have to wait for it.        */
                                        /* Get current activity.             */
-    ActivityManager::currentActivity = ActivityManager::currentActivity;
+    RexxActivity *currentActivity = ActivityManager::currentActivity;
                                        /* release kernel access.            */
-    ReleaseKernelAccess(ActivityManager::currentActivity);
+    currentActivity->releaseKernel();
     MTXRQ(this->flattenMutex);         /* wait for current flattento end    */
                                        /* get kernel access back.           */
-    RequestKernelAccess(ActivityManager::currentActivity);
+    currentActivity->requestKernel;
   }
                                        /* create a temporary stack          */
   this->flattenStack = new (LiveStackSize, true) RexxStack (LiveStackSize);
@@ -1981,22 +1979,6 @@ void RexxMemory::freePools()
 
    }
    firstPool = NULL;                   /* no pools available to this process*/
-}
-
-
-/* This method should be called within a critical section */
-BOOL RexxMemory::extendSaveStack(size_t inc)
-{
-    /* no new savestack needed */
-    BOOL ret = FALSE;
-
-    if (this->saveStack->size - SaveStackSize < inc)
-    {
-                                               /* increase stack size by inc */
-        this->saveStack->extend(SaveStackSize + inc);
-        ret = TRUE;
-    }
-    return ret;
 }
 
 

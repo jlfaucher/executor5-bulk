@@ -67,20 +67,6 @@
 
 const int MAX_ERROR_NUMBER = 99999;        /* maximum error code number         */
 const int MAX_SYMBOL_LENGTH = 250;         /* length of a symbol name           */
-const int MAX_WHOLE_NUMBER = 999999999;    // maximum positive whole number
-const int MIN_WHOLE_NUMBER = -999999999;   // minimum negative whole number
-
-/******************************************************************************/
-/* Numeric setting constants                                                  */
-/******************************************************************************/
-                                       /* constants used for setting form   */
-const BOOL FORM_SCIENTIFIC    = FALSE;
-const BOOL FORM_ENGINEERING   = TRUE;
-
-const size_t DEFAULT_DIGITS  = ((size_t)9); /* default numeric digits setting    */
-const size_t DEFAULT_FUZZ    = ((size_t)0); /* default numeric fuzz setting      */
-                                       /* default numeric form setting      */
-const int DEFAULT_FORM       = FORM_SCIENTIFIC;
 
 /******************************************************************************/
 /* Defines for argument error reporting                                       */
@@ -199,20 +185,6 @@ typedef size_t stringsize_t;
 typedef int    wholenumber_t;
 typedef size_t arraysize_t;
 
-
-class ACTIVATION_SETTINGS {            /* activation "global" settings      */
-    public:
-      inline ACTIVATION_SETTINGS()
-      {
-          digits = DEFAULT_DIGITS;
-          fuzz = DEFAULT_FUZZ;
-          form = DEFAULT_FORM;
-      }
-
-      size_t digits;                       /* numeric digits setting            */
-      size_t fuzz;                         /* numeric fuzz setting              */
-      BOOL form;                           /* numeric form setting              */
-};                                     /* global activation settings        */
                                        /* builtin function prototype        */
 typedef RexxObject *builtin_func(RexxActivation *, int, RexxExpressionStack *);
 typedef builtin_func *pbuiltin;        /* pointer to a builtin function     */
@@ -400,8 +372,7 @@ EXTERN RexxInteger * IntegerMinusOne INITGLOBALPTR;  /* Static integer -1       
 #define T_intstack                   T_nil_object                 + 1
 #define T_activation                 T_intstack                   + 1
 #define T_activity                   T_activation                 + 1
-#define T_activity_class             T_activity                   + 1
-#define T_behaviour                  T_activity_class             + 1
+#define T_behaviour                  T_activity                   + 1
 #define T_buffer                     T_behaviour                  + 1
 #define T_corral                     T_buffer                     + 1
 #define T_hashtab                    T_corral                     + 1
@@ -645,8 +616,6 @@ const char *mempbrk(const char *, const char *, size_t);     /* search for chara
                                        /* reporting routines                */
 void missing_argument(LONG position);
 int  message_number(RexxString *);
-RexxActivity *activity_find (void);
-
                                        /* verify argument presence          */
 #define required_arg(arg, position) if (arg == OREF_NULL) missing_argument(ARG_##position)
 
@@ -901,7 +870,7 @@ inline RexxString * REQUIRED_STRING(RexxObject *object, LONG position)
 inline RexxArray * REQUEST_ARRAY(RexxObject *obj) { return ((obj)->requestArray()); }
 
 /* The next macro is specifically for REQUESTing an INTEGER,                  */
-inline RexxInteger * REQUEST_INTEGER(RexxObject *obj) { return ((obj)->requestInteger(DEFAULT_DIGITS));}
+inline RexxInteger * REQUEST_INTEGER(RexxObject *obj) { return ((obj)->requestInteger(Numerics::DEFAULT_DIGITS));}
 
 /* The next macro is specifically for REQUESTing a LONG value                 */
 inline long REQUEST_LONG(RexxObject *obj, int precision) { return ((obj)->requestLong(precision)); }
@@ -936,16 +905,6 @@ inline RexxObject * callOperatorMethod(RexxObject *object, LONG methodOffset, Re
 }
 
 /******************************************************************************/
-/* Kernel synchronization and control macros                                  */
-/******************************************************************************/
-
-                                       /* macro for entering kernel         */
-#define RequestKernelAccess(acti) ((RexxActivity *)acti)->requestKernel()
-
-                                       /* macro for releasing kernel sem    */
-#define ReleaseKernelAccess(acti) ((RexxActivity *)acti)->releaseKernel()
-
-/******************************************************************************/
 /* Native method and external interface macros                                */
 /******************************************************************************/
                                        /* macros for creating methods that  */
@@ -975,7 +934,7 @@ inline RexxObject * callOperatorMethod(RexxObject *object, LONG methodOffset, Re
                                        /* native method cleanup             */
 RexxObject *  native_release(RexxObject *);
                                        /* macro for common native entry     */
-#define native_entry  RequestKernelAccess(activity_find())
+#define native_entry  ActivityManager::findActivity()->requestKernel();
                                        /* value termination routine         */
 #define return_oref(value)  return (REXXOBJECT)native_release(value);
                                        /* return for no value returns       */

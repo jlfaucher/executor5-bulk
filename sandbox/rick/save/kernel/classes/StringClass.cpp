@@ -51,9 +51,6 @@
 #include "DirectoryClass.hpp"
 #include "RexxActivation.hpp"
 #include "RexxActivity.hpp"
-                                       /* current global settings           */
-extern ACTIVATION_SETTINGS *current_settings;
-
 #include "RexxBuiltinFunctions.h"                          /* Gneral purpose BIF Header file       */
 
 HashCode RexxString::hash()

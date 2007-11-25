@@ -53,12 +53,10 @@
 #include "MethodClass.hpp"
 #include "StringClass.hpp"
 #include "RexxMisc.hpp"
+#include "ActivityManager.cpp"
                                        /* Since self will ALWAYS be OBJECT  */
 
 enum { STOP, START };
-
-extern RexxInteger *ProcessName;
-extern BOOL ProcessTerminating;
 
 void SysRunProgram(PVOID arguments);   /* system dependent program startup  */
 

@@ -52,8 +52,6 @@
 
 #include "NumberStringMath.hpp"
 
-extern ACTIVATION_SETTINGS *current_settings;
-
 /*********************************************************************/
 /*                                                                   */
 /*      Returns:                The numerical value of the hex       */

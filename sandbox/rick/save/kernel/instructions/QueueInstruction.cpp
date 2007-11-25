@@ -48,9 +48,6 @@
 #include "RexxActivity.hpp"
 #include "QueueInstruction.hpp"
 
-                                       /* current global settings           */
-extern ACTIVATION_SETTINGS *current_settings;
-
 RexxInstructionQueue::RexxInstructionQueue(
   RexxObject *_expression,              /* expresion to evaluate             */
   int type)                            /* top of queueing operation         */

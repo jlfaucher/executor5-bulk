@@ -55,9 +55,6 @@
 #include "MethodClass.hpp"
 #include "RexxActivity.hpp"
 
-extern RexxObject *ProcessLocalServer; /* local data server object          */
-extern RexxDirectory *ProcessLocalEnv; /* local Environment                 */
-
 void RexxClass::live()
 /******************************************************************************/
 /* Function:  Normal garbage collection live marking                          */

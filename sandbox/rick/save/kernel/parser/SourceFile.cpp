@@ -88,8 +88,6 @@ extern unsigned int iTransClauseCounter; /* defined in WinYield.c           */
 #endif
 
 extern "C" internalMethodEntry internalMethodTable[];
-                                       /* current global settings           */
-extern ACTIVATION_SETTINGS *current_settings;
 
 typedef struct _LINE_DESCRIPTOR {
   size_t position;                     /* position within the buffer        */

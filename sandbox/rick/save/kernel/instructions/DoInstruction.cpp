@@ -53,10 +53,6 @@
 #include "Token.hpp"
 #include "SourceFile.hpp"
 #include "ExpressionBaseVariable.hpp"
-                                       /* current global settings           */
-extern ACTIVATION_SETTINGS *current_settings;
-
-
 
 void RexxInstructionDo::matchLabel(
      RexxInstructionEnd *_end,         /* end to match up                   */

@@ -64,10 +64,12 @@
  #include "RexxMisc.hpp"
  #include "RexxNativeMethod.hpp"
  #include "RexxActivity.hpp"
+ #include "ActivityManager.hpp"
  #include "RexxNativeActivation.hpp"
  #include "RexxVariableDictionary.hpp"
  #include "ExpressionVariable.hpp"
  #include "RexxLocalVariables.hpp"
+ #include "ProtectedObject.hpp"
 
 PCPPM ExportedMethods[] = {            /* start of exported methods table   */
                                        /* NOTE:  getAttribute and           */
@@ -556,7 +558,6 @@ size_t resolveExportedMethod(
 RexxString * kernel_name (const char* value);
 void         kernelBuildVirtualFunctionTableArray(void);
 void         createStrings(void);      /* create "name" strings             */
-extern RexxDirectory *ProcessLocalEnv; /* process local environment (.local)*/
 
 void kernelInit (void)
 /******************************************************************************/
@@ -1576,35 +1577,37 @@ bool kernel_setup (void)
 
   /* set up the kernel methods that will be defined on OBJECT classes in  */
   /*  BaseClasses.ORX and ORYXJ.ORX.                                            */
-                                       /* create a kernel methods directory */
-  kernel_methods = new_directory();
-  save(kernel_methods);
-  kernel_methods->put(createKernelMethod(CPPMLOC(RexxLocal::local), 0), kernel_name(CHAR_LOCAL));
-  kernel_methods->put(createKernelMethod(CPPMLOC(RexxLocal::runProgram), 1), kernel_name(CHAR_RUN_PROGRAM));
-  kernel_methods->put(createKernelMethod(CPPMLOC(RexxLocal::callString), A_COUNT), kernel_name(CHAR_CALL_STRING));
-  kernel_methods->put(createKernelMethod(CPPMLOC(RexxLocal::callProgram), A_COUNT), kernel_name(CHAR_CALL_PROGRAM));
-
-                                       /* create the BaseClasses method and run it*/
-  symb = kernel_name(BASEIMAGELOAD);   /* get a name version of the string  */
-                                       /* go resolve the program name       */
-  programName = SysResolveProgramName(symb, OREF_NULL);
-                                       /* Push marker onto stack so we know */
-  ActivityManager::currentActivity->pushNil();          /* what level we entered.            */
-  try
   {
-                                           /* create a method object out of this*/
-      meth = TheMethodClass->newFile(programName);
+                                           /* create a kernel methods directory */
+      kernel_methods = new_directory();
+      ProtectedObject p1(kernel_methods);   // protect from GC
+      kernel_methods->put(createKernelMethod(CPPMLOC(RexxLocal::local), 0), kernel_name(CHAR_LOCAL));
+      kernel_methods->put(createKernelMethod(CPPMLOC(RexxLocal::runProgram), 1), kernel_name(CHAR_RUN_PROGRAM));
+      kernel_methods->put(createKernelMethod(CPPMLOC(RexxLocal::callString), A_COUNT), kernel_name(CHAR_CALL_STRING));
+      kernel_methods->put(createKernelMethod(CPPMLOC(RexxLocal::callProgram), A_COUNT), kernel_name(CHAR_CALL_PROGRAM));
+
+                                           /* create the BaseClasses method and run it*/
+      symb = kernel_name(BASEIMAGELOAD);   /* get a name version of the string  */
+                                           /* go resolve the program name       */
+      programName = SysResolveProgramName(symb, OREF_NULL);
+                                           /* Push marker onto stack so we know */
+      ActivityManager::currentActivity->pushNil();          /* what level we entered.            */
+      try
+      {
+                                               /* create a method object out of this*/
+          meth = TheMethodClass->newFile(programName);
 
 
-      RexxObject *args = kernel_methods;   // temporary to avoid type-punning warnings
-                                           /* now call BaseClasses to finish the image*/
-      ((RexxObject *)ActivityManager::currentActivity)->shriekRun(meth, OREF_NULL, OREF_NULL, (RexxObject **)&args, 1);
-      discard(kernel_methods);             /* release the directory lock        */
-  }
-  catch (ActivityException )
-  {
-      ActivityManager::currentActivity->error(0);         /* do error cleanup                  */
-      return false;                      /* this is a setup failure           */
+          RexxObject *args = kernel_methods;   // temporary to avoid type-punning warnings
+                                               /* now call BaseClasses to finish the image*/
+          ((RexxObject *)ActivityManager::currentActivity)->shriekRun(meth, OREF_NULL, OREF_NULL, (RexxObject **)&args, 1);
+      }
+      catch (ActivityException )
+      {
+          ActivityManager::currentActivity->error(0);         /* do error cleanup                  */
+          return false;                      /* this is a setup failure           */
+      }
+
   }
 
   /* define and suppress methods in the nil object */
@@ -1660,19 +1663,19 @@ void createImage(void)
 /******************************************************************************/
 {
   kernelInit();                        /* initialize the kernel             */
-                                       /* get the local environment         */
-  ProcessLocalEnv = new_directory();
-  save(ProcessLocalEnv);
-                                       /* Find an activity for this thread  */
-  ActivityManager::getActivity();     /* (will create one if necessary)    */
-  // go build the rest of the image, but don't save if there is a failure.
-  if (!kernel_setup()) {
-      logic_error("Error building kernel image.  Image not saved.");
+  {
+                                           /* Find an activity for this thread  */
+      ActivityManager::getActivity();      /* (will create one if necessary)    */
+                                           /* get the local environment         */
+      ActivityManager::localEnvironment = new_directory();
+      // go build the rest of the image, but don't save if there is a failure.
+      if (!kernel_setup()) {
+          logic_error("Error building kernel image.  Image not saved.");
+      }
+      ActivityManager::localEnvironment = OREF_NULL;
+                                           /* release the kernel semaphore      */
+      ActivityManager::returnActivity(ActivityManager::currentActivity);
   }
-  discard(ProcessLocalEnv);            /* remove the local env              */
-  ProcessLocalEnv = OREF_NULL;         /* clear this out                    */
-                                       /* release the kernel semaphore      */
-  ActivityManager::returnActivity(ActivityManager::currentActivity);
   memoryObject.saveImage();            /* will not return                   */
   exit(RC_OK);                         // successful build
 }

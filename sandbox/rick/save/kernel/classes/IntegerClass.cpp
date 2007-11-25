@@ -36,7 +36,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Kernel                                                  IntegerClass.c       */
+/* REXX Kernel                                           IntegerClass.c       */
 /*                                                                            */
 /* Primitive Integer Class                                                    */
 /*                                                                            */
@@ -54,8 +54,6 @@
 #include "Numerics.hpp"
 
 
-                                       /* current global settings           */
-extern ACTIVATION_SETTINGS *current_settings;
                                        /* define an operator forwarding     */
                                        /* method                            */
 

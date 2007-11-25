@@ -155,13 +155,4 @@ int stricmp (const char *s1, const char *s2);
 int memicmp (void *m1, void *m2, unsigned int count);
 #endif
 
-#ifdef SHARED
-/* Support for shared semaphores */
-void OryxPostEventSem (SEV *psem);
-void OryxResetEventSem (SEV *psem);
-void OryxRequestWaitMutexSem (SMTX *psem);
-void OryxReleaseMutexSem (SMTX *psem);
-void OryxWaitEventSem (SEV *psem);
-#endif /*SHARED*/
-
-#endif /*ORYXLIB_H*/
+#endif

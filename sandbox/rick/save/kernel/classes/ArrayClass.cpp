@@ -75,9 +75,8 @@
 #include "SupplierClass.hpp"
 #include "ArrayClass.hpp"
 #include "MutableBufferClass.hpp"
-
-
-extern ACTIVATION_SETTINGS *current_settings;
+#include "ActivityManager.hpp"
+#include "ProtectedObject.hpp"
 
 void RexxArray::init(size_t _size, size_t maxSize)
 /******************************************************************************/
@@ -446,8 +445,8 @@ RexxObject *RexxArray::supplier()
   values = new_array(itemCount);       /* get the values array              */
   indexes = new_array(itemCount);      /* and an index array                */
 
-  save(values);                        /* save the values array             */
-  save(indexes);                       /* save the indexes also             */
+  ProtectedObject v(values);
+  ProtectedObject s(indexes);
 
   count = 1;                           /* next place to add                 */
   for (i = 1; i <= slotCount; i++) {   /* loop through the array            */
@@ -460,9 +459,7 @@ RexxObject *RexxArray::supplier()
       count++;                         /* step the location                 */
     }
   }
-  discard_hold(values);                /* release the lock                  */
-  discard_hold(indexes);               /* on both items                     */
-                                       /* create a supplier object          */
+
   return (RexxObject *)new_supplier(values, indexes);
 }
 
@@ -781,12 +778,11 @@ RexxObject *RexxArray::sectionSubclass(
     else {                             /* real sectioning to do             */
                                        /* create a new array                */
       newArray = (RexxArray *)this->behaviour->getOwningClass()->sendMessage(OREF_NEW, new_integer(_end));
-      save(newArray);                  /* protect the new one               */
+      ProtectedObject p(newArray);
       for (i = 1; i <= _end; i++) {     /* loop through the elements         */
                                        /* copy an element                   */
         newArray->sendMessage(OREF_PUT, this->get(_start + i - 1), new_integer(i));
       }
-      discard_hold(newArray);          /* and release the lock on this      */
     }
   }
   return newArray;                     /* return the new array              */
@@ -1018,7 +1014,7 @@ RexxArray *RexxArray::allIndexes(void)
 {
     // get a result array of the appropriate size
     RexxArray *newArray = (RexxArray *)new_array(this->numItems());
-    save(newArray);
+    ProtectedObject p(newArray);
 
     // we need to fill in based on actual items, not the index.
     arraysize_t count = 0;
@@ -1033,7 +1029,6 @@ RexxArray *RexxArray::allIndexes(void)
             newArray->put(convertIndex(iterator+1), ++count);
         }
     }
-    discard_hold(newArray);
     return newArray;
 }
 
@@ -1070,10 +1065,10 @@ RexxString *RexxArray::toString(       /* concatenate array elements to create s
   int i_form = 0;                       /* 1 == line, 2 == char              */
 
   mutbuffer = ((RexxMutableBufferClass*) TheMutableBufferClass)->newRexx(NULL, 0);
-  save(mutbuffer);
+  ProtectedObject p1(mutbuffer);
 
   newArray = this->makeArray();          /* maybe multidimensional, make onedimensional  */
-  save(newArray);
+  ProtectedObject p2(newArray);
 
   _items = newArray->numItems();         /* and the actual count in the array */
 
@@ -1122,7 +1117,7 @@ RexxString *RexxArray::toString(       /* concatenate array elements to create s
       else
          line_end_string = new_string(line_end);
 
-      save(line_end_string);
+      ProtectedObject p3(line_end_string);
       bool first = true;
 
       for (i = 1; i <= _items; i++)      /* loop through the array            */
@@ -1143,13 +1138,9 @@ RexxString *RexxArray::toString(       /* concatenate array elements to create s
               first = false;
           }
       }
-
-      discard(line_end_string);
   }
 
   newString = mutbuffer->requestString();
-  discard(newArray);
-  discard(mutbuffer);
   return newString;
 }
 
@@ -1392,6 +1383,8 @@ RexxObject* RexxArray::indexToArray(size_t idx)
   // get an array we fill in as we go
   RexxArray * _index = new_array(dims);
 
+  ProtectedObject p(_index);
+
   for (size_t i = dims; i > 0; i--)
   {
       // get the next dimension size
@@ -1405,8 +1398,6 @@ RexxObject* RexxArray::indexToArray(size_t idx)
       // now strip out that portion of the index.
       idx = (idx - digit) / _dimension;
   }
-  // return the array object
-  discard_hold(_index);
   return _index;
 }
 
@@ -1598,7 +1589,7 @@ RexxArray *RexxArray::extendMulti(     /* Extend multi array                */
                                        /* Compute new Size for DimArray     */
   newDimArraySize = _indexCount;
   newDimArray = new_array(newDimArraySize);
-  save(newDimArray);
+  ProtectedObject p(newDimArray);
                                        /* extending from single Dimensio    */
                                        /*  to a multi Dimensionsal array    */
   if (this->dimensions == OREF_NULL) {
@@ -1668,7 +1659,7 @@ RexxArray *RexxArray::extendMulti(     /* Extend multi array                */
                                        /* Now create the new array for this */
                                        /*  dimension.                       */
   newArray = new (newDimArray->data(), newDimArraySize, TheArrayClass) RexxArray;
-  save(newArray);
+  ProtectedObject p1(newArray);
                                        /* Anything in original?             */
   if (this->size()) {
                                        /* Yes, move values into new arra    */
@@ -1728,10 +1719,6 @@ RexxArray *RexxArray::extendMulti(     /* Extend multi array                */
                                        /* keep max Size value in synch      */
                                        /* with expansion.                   */
   this->maximumSize = newArray->maximumSize;
-                                       /* no longer need to save created    */
-                                       /* arrays, they are anchored         */
-  discard(newDimArray);
-  discard(newArray);
   return this;                         /* All done, return array            */
 }
 
@@ -1802,9 +1789,8 @@ void *   RexxArray::operator new(size_t size, RexxObject **args, size_t argCount
                                        /* If no argument is passed          */
                                        /*  create an empty array.           */
     temp = new ((size_t)0, arrayClass) RexxArray;
-    save(temp);                        /* protect new object from GC        */
+    ProtectedObject p(temp);
     temp->sendMessage(OREF_INIT);      /* call any rexx init's              */
-    discard(temp);                     /* protect new object from GC        */
     return temp;
   }
 
@@ -1824,7 +1810,7 @@ void *   RexxArray::operator new(size_t size, RexxObject **args, size_t argCount
                                        /* Create new array of approp. size. */
 
     temp = (RexxArray *)new_externalArray(total_size, arrayClass);
-    save(temp);                        /* protect new object from GC        */
+    ProtectedObject p(temp);
     if (total_size == 0) {             /* Creating 0 sized array?           */
                                        /* Yup, setup a Dimension array      */
                                        /* single Dimension, Mark so         */
@@ -1832,7 +1818,6 @@ void *   RexxArray::operator new(size_t size, RexxObject **args, size_t argCount
       OrefSet(temp, temp->dimensions, new_array(IntegerZero));
     }
     temp->sendMessage(OREF_INIT);      /* call any rexx init's              */
-    discard(temp);                     /* protect new object from GC        */
     return temp;                       /* Return the new array.             */
   }
                                        /* Working with a multi-dimension    */
@@ -1863,9 +1848,8 @@ void *   RexxArray::operator new(size_t size, RexxObject **args, size_t argCount
   temp = (RexxArray *)new_externalArray(total_size, arrayClass);
                                        /* put dimension array in new arr    */
   OrefSet(temp, temp->dimensions, dim_array);
-  save(temp);                          /* protect new object from GC        */
+  ProtectedObject p(temp);
   temp->sendMessage(OREF_INIT);        /* call any rexx init's              */
-  discard(temp);
   return temp;
 }
 
@@ -2180,7 +2164,7 @@ wholenumber_t RexxArray::sortCompare(RexxObject *comparator, RexxObject *left, R
         reportException(Error_No_result_object_message, OREF_COMPARE);
     }
 
-    wholenumber_t comparison = result->longValue(DEFAULT_DIGITS);
+    wholenumber_t comparison = result->longValue(Numerics::DEFAULT_DIGITS);
     if (comparison == (wholenumber_t)NO_LONG)
     {
         reportException(Error_Invalid_whole_number_compare, result);
@@ -2274,11 +2258,10 @@ RexxArray *RexxArray::stableSortRexx()
 
     // the merge sort requires a temporary scratch area for the sort.
     RexxArray *working = new_array(count);
-    save(working);
+    ProtectedObject p(working);
 
     // go do the quick sort
     mergeSort(working, 1, count);
-    discard_hold(working);
     return this;
 }
 
@@ -2310,11 +2293,10 @@ RexxArray *RexxArray::stableSortWithRexx(RexxObject *comparator)
 
     // the merge sort requires a temporary scratch area for the sort.
     RexxArray *working = new_array(count);
-    save(working);
+    ProtectedObject p(working);
 
     // go do the quick sort
     mergeSort(comparator, working, 1, count);
-    discard_hold(working);
     return this;
 }
 
@@ -2411,10 +2393,9 @@ void *   RexxArray::operator new(size_t newSize,
   /* moved _after_ setting hashvalue, otherwise the uninit table will not be*/
   /* able to find the new array object again later!                         */
   if (arrayClass->hasUninitDefined()) {/* does object have an UNINT method  */
-     save(newArray);                   /* protect from GC - uninit table may*/
+     ProtectedObject p(newArray);
                                        /* require new REXX objects          */
      newArray->hasUninit();            /* Make sure everyone is notified.   */
-     discard(newArray);
   }
   return newArray;                     /* return the new array to caller    */
 }
@@ -2441,7 +2422,7 @@ RexxObject  *RexxArray::of(RexxObject **args, size_t argCount)
                                        /* nope, better create properly      */
                                        /* send new to actual class.         */
     newArray = (RexxArray *)this->sendMessage(OREF_NEW, new_integer(argCount));
-    save(newArray);
+    ProtectedObject p(newArray);
                                        /* For each argument to of, send a   */
                                        /* put message                       */
     for (i = 0; i < argCount; i++) {
@@ -2450,7 +2431,6 @@ RexxObject  *RexxArray::of(RexxObject **args, size_t argCount)
                                        /* place it in the target array      */
          newArray->sendMessage(OREF_PUT, item, new_integer(i+1));
     }
-    discard_hold(newArray);
     return newArray;
   }
   else {

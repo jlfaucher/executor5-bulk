@@ -193,7 +193,6 @@ class RexxMemory : public RexxObject {
   void        freePools();
   MemorySegmentPool *freePools(MemorySegmentPool *);
   void        liveStackFull();
-  BOOL        extendSaveStack(size_t inc);
   void        dumpMemoryProfile();
   char *      allocateImageBuffer(size_t size);
   void        logVerboseOutput(const char *message, void *sub1, void *sub2);
@@ -317,10 +316,10 @@ private:
 /******************************************************************************/
 
 
-inline void save(RexxInternalObject *o) { memoryObject.saveObject((RexxObject *)o); }
-inline void discard(RexxInternalObject *o) { memoryObject.discardObject((RexxObject *)o); }
-inline void hold(RexxInternalObject *o) { memoryObject.holdObject((RexxObject *)o); }
-inline void discard_hold(RexxInternalObject *o) { memoryObject.discardHoldObject((RexxObject *)(o)); }
+inline void saveObject(RexxInternalObject *o) { memoryObject.saveObject((RexxObject *)o); }
+inline void discardObject(RexxInternalObject *o) { memoryObject.discardObject((RexxObject *)o); }
+inline void holdObject(RexxInternalObject *o) { memoryObject.holdObject((RexxObject *)o); }
+inline void discardHoldObject(RexxInternalObject *o) { memoryObject.discardHoldObject((RexxObject *)(o)); }
 
 
 inline RexxObject *new_object(size_t s) { return memoryObject.newObject(s); }
