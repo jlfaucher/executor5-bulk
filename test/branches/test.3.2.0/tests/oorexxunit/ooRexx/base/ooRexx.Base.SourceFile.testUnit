@@ -4,7 +4,9 @@
    author:           Mark Miesfeld
    date:             10/29/2007
    version:          0.1.0
-   changed:
+
+   changed:          11/14/2007  Moved the file utility routines into the
+                     framework so they are available for all test units. MM
 
    languageLevel:    6.0
    purpose:          Test cases related to the interpreter reading a source file
@@ -101,7 +103,7 @@ return testUnitList
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
   Directives, Classes, or Routines.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::requires "OOREXXUNIT.CLS"
+::requires "FileUtils.cls"   -- FileUtils.cls has a requires for OOREXXUNIT.CLS
 
 /* class: ooRexx.Base.SourceFile.testUnit- - - - - - - - - - - - - - - - - - -*\
 
@@ -356,60 +358,3 @@ return testUnitList
 
 -- End of class: ooRexx.Base.SourceFile.testUnit
 
-::routine createRexxPrgFile public
-  use arg src, baseName
-
-  fileName = ""
-  fn = baseName || '.rex'
-  fsObj = .stream~new(fn)
-  state = fsObj~open("WRITE REPLACE")
-  if state~abbrev("READY") then do
-    fsObj~arrayout(src)
-    fsObj~close
-    fileName = fsObj~qualify
-  end
-
-return fileName
-
-::routine execRexxPrg public
-  use arg fileName, output
-
-  errRet = 9999
-
-  -- Only supported on Linux (bash) and Windows.  Other OSes or shells could
-  -- be added here.  (Turns out Linux and Windows redirection is the same.)
-  select
-    when .ooRexxUnit.OSName == "WINDOWS" then stdErrToStdOut = '2>&1'
-    when .ooRexxUnit.OSName == "LINUX" then stdErrToStdOut = '2>&1'
-    otherwise return errRet
-  end
-
-  tmpOutFile = 'tmpXXX_delete.me'
-
-  cmd = 'rexx' fileName '>' tmpOutFile stdErrToStdOut
-  cmd
-  prgRet = RC
-
-  fsObj = .stream~new(tmpOutFile)
-  tmpArray = fsObj~arrayin
-  do line over tmpArray
-    output~append(line)
-  end
-  fsObj~close
-
-  j = deleteFile(tmpOutFile)
-
-return prgRet
-
-::routine deleteFile public
-  use arg fileName
-
-  -- On Linux (bash) and Windows the delete can be forced.  Not sure on other
-  -- OSes
-  select
-    when .ooRexxUnit.OSName == "WINDOWS" then 'del /q /f' fileName '1>nul 2>&1'
-    when .ooRexxUnit.OSName == "LINUX" then 'rm -f' fileName '>/dev/null 2>&1'
-    otherwise j = SysFileDelete(fileName)
-  end
-
-return 0
