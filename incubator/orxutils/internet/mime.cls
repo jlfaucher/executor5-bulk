@@ -81,9 +81,8 @@
 
 ::method init
 expose mimever type encoding id description disposition content
-if arg() > 1 then raise syntax 93.902 array (1)
 mimever = '1.0'
-if arg() = 1 then type = arg(1)
+if arg() > 0 then use strict arg type
 else type = 'text/plain'
 encoding = ''
 id = ''
@@ -100,9 +99,8 @@ return
 
 ::method addContent
 expose content
-if arg() < 1 then raise syntax 93.901 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-content = content || arg(1)
+use strict arg c
+content = content || c
 return
 
 
@@ -113,7 +111,7 @@ return
 
 ::method string
 expose mimever type encoding id description disposition content
-if arg() > 0 then raise syntax 93.902 array (0)
+use strict arg
 crlf = '0D0A'x
 headers = 'MIME-Version:' mimever || crlf
 if type <> '' then do
@@ -176,7 +174,7 @@ return mime
 
 ::method init
 expose mimever type encoding id description disposition content multiparts
-if arg() > 0 then raise syntax 93.902 array (0)
+use strict arg
 mimever = '1.0'
 type = 'multipart/mixed'
 encoding = ''
@@ -194,9 +192,7 @@ return
 
 ::method addPart
 expose multiparts
-if arg() < 1 then raise syntax 93.901 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-use arg part
+use strict arg part
 if part~isA(.mimepart) then do
    if multiparts~items = 0 then multiparts[1] = part
    else multiparts[multiparts~last + 1] = part
@@ -212,8 +208,7 @@ return
 
 ::method string
 expose mimever type encoding id description disposition content multiparts
-if arg() > 0 then raise syntax 93.902 array (0)
-if arg() > 0 then raise syntax 93.902 array (0)
+use strict arg
 crlf = '0D0A'x
 headers = 'MIME-Version:' mimever || crlf
 boundary = '===ooRexx=Mime=Part===' || c2x(date('b') || time('L')) || '=='
