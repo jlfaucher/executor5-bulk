@@ -243,6 +243,45 @@ select
 return err
 
 /*----------------------------------------------------------------------------*/
+/* Method: convert_address_family                                             */
+/* Description: convert a number to an address family.                        */
+/*----------------------------------------------------------------------------*/
+
+::method convert_address_family private
+use strict arg fam
+if fam~datatype('W') <> 1 then retrun fam
+select
+   when fam = 0 then return 'AF_UNSPEC'
+   when fam = 1 then return 'AF_LOCAL'
+   when fam = 2 then return 'AF_INET'
+   when fam = 3 then return 'AF_AX25'
+   when fam = 4 then return 'AF_IPX'
+   when fam = 5 then return 'AF_APPLETALK'
+   when fam = 6 then return 'AF_NETROM'
+   when fam = 7 then return 'AF_BRIDGE'
+   when fam = 8 then return 'AF_ATMPVC'
+   when fam = 9 then return 'AF_X25'
+   when fam = 10 then return 'AF_INET6'
+   when fam = 11 then return 'AF_ROSE'
+   when fam = 12 then return 'AF_DECnet'
+   when fam = 13 then return 'AF_NETBEUI'
+   when fam = 14 then return 'AF_SECURITY'
+   when fam = 15 then return 'AF_KEY'
+   when fam = 16 then return 'AF_NETLINK'
+   when fam = 17 then return 'AF_PACKET'
+   when fam = 18 then return 'AF_ASH'
+   when fam = 19 then return 'AF_ECONET'
+   when fam = 20 then return 'AF_ATMSVC'
+   when fam = 22 then return 'AF_SNA'
+   when fam = 23 then return 'AF_IRDA'
+   when fam = 24 then return 'AF_PPPOX'
+   when fam = 25 then return 'AF_WANPIPE'
+   when fam = 31 then return 'AF_BLUETOOTH'
+   otherwise nop
+   end
+return fam
+
+/*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 /* Class: Socket                                                              */
 /*        Public methods                                                      */
@@ -364,7 +403,7 @@ if retc = -1 then do
    return .nil
    end
 else errno = ''
-return .InetAddress~new(stem.!addr, stem.!port, 'AF_INET')
+return .InetAddress~new(stem.!addr, stem.!port, convert_address_family(stem.!family))
 
 /*----------------------------------------------------------------------------*/
 /* Method: getSockName                                                        */
@@ -381,7 +420,7 @@ if retc = -1 then do
    return .nil
    end
 else errno = ''
-return .InetAddress~new(stem.!addr, stem.!port, 'AF_INET')
+return .InetAddress~new(stem.!addr, stem.!port, convert_address_family(stem.!family))
 
 /*----------------------------------------------------------------------------*/
 /* Method: init                                                               */
