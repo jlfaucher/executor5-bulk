@@ -139,7 +139,7 @@ RexxNumberString::RexxNumberString(size_t len)
    this->NumDigits = number_digits();
    this->sign = 1;
    this->length = len;
-   if (number_form() == FORM_SCIENTIFIC)
+   if (number_form() == Numerics::FORM_SCIENTIFIC)
       this->NumFlags |= NumFormScientific;
 }
 
@@ -1160,7 +1160,7 @@ RexxString  *RexxNumberString::formatRexx(
   size_t mathexp;                      /* exponent space requested          */
   size_t exptrigger;                   /* exponential notation trigger      */
   size_t digits;                       /* current numeric digits            */
-  BOOL   form;                         /* current numeric form              */
+  bool   form;                         /* current numeric form              */
 
   digits = number_digits();            /* get the current digits value      */
   form = number_form();                /* and the exponential form          */
@@ -1183,7 +1183,7 @@ RexxString *RexxNumberString::formatInternal(
   size_t      exptrigger,              /* the exponent trigger            */
   RexxNumberString *original,          /* oringial NumStr                 */
   size_t      digits,                  /* digits to format to             */
-  BOOL        form)                    /* form to format to               */
+  bool        form)                    /* form to format to               */
 /******************************************************************************/
 /* Function : Format the numberstring data according to the format            */
 /*            function controls.                                              */
@@ -1212,7 +1212,7 @@ RexxString *RexxNumberString::formatInternal(
                                        /* is left of dec>digits             */
                                        /* or twice digits on right          */
     if (temp >= (long)exptrigger || labs(this->exp) > (long)(exptrigger * 2)) {
-      if (form == FORM_ENGINEERING) {  /* request for Engineering notation? */
+      if (form == Numerics::FORM_ENGINEERING) {  /* request for Engineering notation? */
         if (temp < 0)                  /* yes, is it a whole number?        */
           temp = temp - 2;             /* no, force two char left adjustment  -2 instead of -1 */
         temp = (temp / 3) * 3;         /* get count right of decimal point  */
@@ -1279,7 +1279,7 @@ RexxString *RexxNumberString::formatInternal(
                                        /* exponential form?                 */
           if (mathexp != 0 && (temp >= (long)exptrigger || (size_t)labs(this->exp) > exptrigger * 2)) {
                                        /* yes, request for                  */
-            if (form == FORM_ENGINEERING) {
+            if (form == Numerics::FORM_ENGINEERING) {
                                        /* Engineering notation fmt?         */
               if (temp < 0)            /* yes, is it a whole number?        */
                 temp = temp - 2;       /* no, force two char adjust to left */
@@ -2133,8 +2133,8 @@ RexxNumberString *RexxNumberString::plus(RexxObject *right)
                                        /* need to format under different    */
                                        /* precision?                        */
     if (this->stringObject != OREF_NULL || this->NumDigits != number_digits() ||
-       (number_form() == FORM_SCIENTIFIC && !(this->NumFlags&NumFormScientific)) ||
-       (number_form() == FORM_ENGINEERING && this->NumFlags&NumFormScientific))
+       (number_form() == Numerics::FORM_SCIENTIFIC && !(this->NumFlags&NumFormScientific)) ||
+       (number_form() == Numerics::FORM_ENGINEERING && this->NumFlags&NumFormScientific))
                                        /* need to copy and reformat         */
       result = this->prepareNumber(number_digits(), ROUND);
     else

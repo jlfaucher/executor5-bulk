@@ -311,14 +311,11 @@ RexxObject *RexxMessage::start(RexxObject *_receiver)
                                        /* get the current activity          */
   oldActivity = (RexxActivity *)ActivityManager::currentActivity;
                                        /* Create the new activity           */
-  newActivity = (RexxActivity *)new_activity(oldActivity->local);
+  newActivity = (RexxActivity *)new_activity(ActivityManager::localEnvironment);
                                        /* propagate system exit trapping    */
   for (i = 1; i <= LAST_EXIT; i++)     /* copy any exit handlers            */
                                        /* from old activity to the new one  */
     newActivity->setSysExit(i, oldActivity->querySysExits(i));
-                                         /* is DEBUG sys exit set             */
-    if (newActivity->nestedInfo.sysexits[RXDBG - 1] != OREF_NULL)
-        newActivity->nestedInfo.exitset = TRUE;
 
                                        /* indicate the activity the send    */
                                        /*message should come in on.         */

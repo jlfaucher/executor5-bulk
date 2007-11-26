@@ -50,7 +50,6 @@
 #include "malloc.h"
 #include "SystemVersion.h"
 #include <signal.h>
-#include "ActivityTable.hpp"
 
 /* special flag for the LPEX message loop problem */
 extern BOOL UseMessageLoop = TRUE;

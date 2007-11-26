@@ -373,7 +373,7 @@ void ActivityManager::haltAllActivities()
                                          /* Get the next message object to    */
                                          /*process                            */
         RexxActivity *activity = (RexxActivity *)allActivities->getValue(listIndex);
-        RexxActivation *currentActivation = activity->currentAct();
+        RexxActivation *currentActivation = activity->getCurrentActivation);
 
         if (currentActivation != (RexxActivationBase *)TheNilObject)
         {
@@ -620,7 +620,7 @@ void ActivityManager::returnActivity(RexxActivity *activityObject)
         {
             // before we update of the data structures, make sure we process any
             // pending uninit activity.
-            memoryObject.checkUninits();
+            memoryObject.forceUninits();
         }
 
         // START OF CRITICAL SECTION
@@ -670,13 +670,13 @@ RexxActivity *ActivityManager::getActivity()
         unlockKernel();                /* release kernel semaphore          */
 
         // now we need to have this activity become the kernel owner.
-        activityObject->requestAccess();
+        activityObject->requestKernel();
     }
     else
     {
                                        /* Activity already existed for this */
                                        /* get kernel semophore in activity  */
-        activityObject->requestAccess();
+        activityObject->requestKernel();
         SysEnterResourceSection();     /* now in a critical section         */
 
         // this might be a recursive reentry on the same thread...if not, we
@@ -699,9 +699,9 @@ RexxActivity *ActivityManager::getActivity()
  *
  * @param activity The current active activity.
  */
-void ActivityManager::relinquish(RexxActivity activity)
+void ActivityManager::relinquish(RexxActivity *activity)
 {
-    if (>waitingActivity() != OREF_NULL)
+    if (waitingActivity != OREF_NULL)
     {
                                          /* now join the line                 */
         addWaitingActivity(activity, true);

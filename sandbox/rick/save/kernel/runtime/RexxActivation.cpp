@@ -133,7 +133,7 @@ RexxActivation::RexxActivation(
   this->code = _method->getRexxCode(); /* get the REXX method object        */
   this->activity = _activity;          /* save the activity pointer         */
                                        /* save the sender activation        */
-  this->sender = _activity->currentAct();
+  this->sender = _activity->getCurrentActivation();
   this->execution_state = ACTIVE;      /* we are now in active execution    */
   this->object_scope = SCOPE_RELEASED; /* scope not reserved yet            */
                                        /* default to method for now         */
@@ -1123,7 +1123,7 @@ void RexxActivation::exitFrom(
             activation->termination();       /* make sure this level cleans up    */
             ActivityManager::currentActivity->pop(FALSE);     /* pop this level off                */
                                              /* get the next level                */
-            activation = ActivityManager::currentActivity->currentAct();
+            activation = ActivityManager::currentActivity->getCurrentActivation);
         } while (!activation->isTopLevel());
 
         activation->exitFrom(resultObj);   /* tell this level to terminate      */
@@ -3240,7 +3240,7 @@ void RexxActivation::closeStreams()
 }
 
 
-BOOL RexxActivation::callSecurityManager(
+bool RexxActivation::callSecurityManager(
     RexxString    *methodName,         /* name of the security method       */
     RexxDirectory *_arguments )         /* security argument directory       */
 /******************************************************************************/

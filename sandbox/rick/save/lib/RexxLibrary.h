@@ -48,7 +48,6 @@
 /* Dummy class definitions required for "look-a-head" declarations            */
 /******************************************************************************/
 
-  class ActivityTable;
   class RexxActivation;
   class RexxActivity;
   class RexxArray;

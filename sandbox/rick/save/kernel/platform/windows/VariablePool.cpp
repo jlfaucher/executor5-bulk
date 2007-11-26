@@ -204,7 +204,7 @@ ULONG SysVariablePool(
 
  pshvblock = (PSHVBLOCK)requests;      /* copy the request block pointer    */
                                        /* get the REXX activation           */
- activation = self->activity->currentAct();
+ activation = self->activity->getCurrentActivation);
 
  while (pshvblock) {                   /* while more request blocks         */
   pshvblock->shvret = 0;               /* set the block return code         */

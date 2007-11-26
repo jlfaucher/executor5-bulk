@@ -157,8 +157,16 @@ class RexxMemory : public RexxObject {
   RexxObject *temporaryObject(size_t size);
   RexxArray  *newObjects(size_t size, size_t count, size_t objectType);
   void        reSize(RexxObject *, size_t);
-  void        checkUninit(RexxTable *);
-  void        checkSubClasses(RexxObjectTable *);
+  void        checkUninit();
+  void        checkSubClasses();
+  void        runUninits();
+  void        removeUninitObject(RexxObject *obj);
+  void        addUninitObject(RexxObject *obj);
+  bool        isPendingUninit(RexxObject *obj);
+
+  RexxArray  *getSubClasses(RexxClass *);
+  void        newSubClass(RexxClass *newClass, RexxClass *superClass);
+  void        removeSubClass(RexxClass *subClass, RexxClass *superClass);
   void        markObjects(void);
   void        markObjectsMain(RexxObject *);
   void        killOrphans(RexxObject *);
@@ -231,7 +239,8 @@ class RexxMemory : public RexxObject {
   RexxObject *dumpImageStats();
   void        createLocks();
   void        scavengeSegmentSets(MemorySegmentSet *requester, size_t allocationLength);
-  void setUpMemoryTables(RexxObjectTable *old2newTable);
+  void        setUpMemoryTables(RexxObjectTable *old2newTable);
+  void        forceUninits();
 
   uint16_t markWord;                   /* current marking counter           */
   SMTX flattenMutex;                   /* locks for various memory processes */
@@ -282,6 +291,8 @@ private:
   RexxObjectTable  *uninitTable;       // the table of objects with uninit methods
   size_t            pendingUninits;    // objects waiting to have uninits run
   bool              processingUninits; // TRUE when we are processing the uninit table
+
+  RexxObjectTable  *subClasses;        // the table of subclasses
 
 
   MemorySegmentPool *firstPool;        /* First segmentPool block.          */

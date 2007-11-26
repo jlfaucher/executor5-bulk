@@ -108,6 +108,7 @@
    RexxObject   *removeFirst() { return (this->first != LIST_END) ? this->primitiveRemove(ENTRY_POINTER(this->first)) : TheNilObject; }
    RexxObject   *removeLast() { return (this->last != LIST_END) ? this->primitiveRemove(ENTRY_POINTER(this->last)) : TheNilObject; }
    LISTENTRY    *getEntry(RexxObject *, RexxObject *);
+   LISTENTRY    *getEntry(size_t);
    RexxObject   *indexOfValue(RexxObject *);
    RexxObject   *empty();
    RexxObject   *isEmpty();

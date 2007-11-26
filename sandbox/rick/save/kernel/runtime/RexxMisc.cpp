@@ -68,7 +68,7 @@ RexxDirectory *RexxLocal::local()
 {
                                        /* just return the current local     */
                                        /* environment                       */
-  return ActivityManager::currentActivity->local;
+  return ActivityManager::localEnvironment;
 }
 
 RexxObject *RexxLocal::runProgram(

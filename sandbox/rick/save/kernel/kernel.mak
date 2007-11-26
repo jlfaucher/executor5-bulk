@@ -115,7 +115,7 @@ OKCOBJS=$(OKCOBJ1) $(OKCOBJ2) $(OKLOBJS)
 # Following all part of rexx
 OKPOBJ1=$(OR_OUTDIR)\RexxEnvelope.$(OBJ) $(OR_OUTDIR)\ArrayClass.$(OBJ) $(OR_OUTDIR)\RexxMisc.$(OBJ)   \
         $(OR_OUTDIR)\ClassClass.$(OBJ) $(OR_OUTDIR)\DeadObject.$(OBJ)
-OKPOBJ2=$(OR_OUTDIR)\DirectoryClass.$(OBJ) $(OR_OUTDIR)\ActivityTable.$(OBJ) $(OR_OUTDIR)\MethodClass.$(OBJ)
+OKPOBJ2=$(OR_OUTDIR)\DirectoryClass.$(OBJ) $(OR_OUTDIR)\MethodClass.$(OBJ)
 OKPOBJ3=$(OR_OUTDIR)\ListClass.$(OBJ)   $(OR_OUTDIR)\RexxMemory.$(OBJ) $(OR_OUTDIR)\MemorySegment.$(OBJ) \
          $(OR_OUTDIR)\MemoryStats.$(OBJ) $(OR_OUTDIR)\MessageClass.$(OBJ)    \
         $(OR_OUTDIR)\StemClass.$(OBJ)   $(OR_OUTDIR)\ObjectClass.$(OBJ) $(OR_OUTDIR)\RexxCompoundTail.$(OBJ) \

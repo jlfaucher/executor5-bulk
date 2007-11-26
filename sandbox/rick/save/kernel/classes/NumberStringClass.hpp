@@ -144,7 +144,7 @@ int number_create_integer(const char *, size_t, int, int);
     void        setString(RexxString *);
     void        roundUp(int);
     RexxString *formatRexx(RexxObject *, RexxObject *, RexxObject *, RexxObject *);
-    RexxString *formatInternal(size_t, size_t, size_t, size_t, RexxNumberString *, size_t, BOOL);
+    RexxString *formatInternal(size_t, size_t, size_t, size_t, RexxNumberString *, size_t, bool);
     RexxObject *operatorNot(RexxObject *);
     RexxObject *evaluate(RexxActivation *, RexxExpressionStack *);
     RexxObject *getValue(RexxActivation *context){return this;}

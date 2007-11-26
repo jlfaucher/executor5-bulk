@@ -84,7 +84,6 @@
 #include "APIUtilities.h"
 #include "SystemSemaphores.h"
 
-#include "ActivityTable.hpp"
 #include "RexxActivation.hpp"
 
 #include "SharedMemorySupport.h"                  /* system shared memory       */

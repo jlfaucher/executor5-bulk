@@ -260,7 +260,7 @@ inline uintptr_t HASHOREF(RexxVirtualBase *r) { return ((uintptr_t)r) >> OREFSHI
      virtual RexxMethod   *instanceMethod(RexxString *);
      virtual RexxSupplier *instanceMethods(RexxClass *);
 
-             RexxObject  *hasUninit();
+             void         hasUninit();
              void         removedUninit();
              void         printObject();
              RexxObject  *clone();
@@ -541,7 +541,7 @@ class RexxActivationBase : public RexxInternalObject{
      virtual BOOL trap(RexxString *, RexxDirectory *) {return FALSE;};
      virtual void setObjNotify(RexxMessage *) {;};
      virtual void termination(){;};
-     virtual BOOL hasSecurityManager() { return FALSE; }
+     virtual bool hasSecurityManager() { return false; }
      virtual BOOL isForwarded() { return FALSE; }
 };
 #endif

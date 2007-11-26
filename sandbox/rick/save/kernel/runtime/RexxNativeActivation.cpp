@@ -744,7 +744,7 @@ BOOL RexxNativeActivation::fetchNext(
                                        /* starting off fresh?               */
   if (nextCurrent() == OREF_NULL) {
     /* grab the activation context */
-    RexxActivation *act = activity->currentAct();
+    RexxActivation *act = activity->getCurrentActivation);
     setNextVariable(-1);               /* request the first item            */
     /* Get the local variable dictionary from the context. */
     setNextCurrent(act->getLocalVariables());
@@ -1092,7 +1092,7 @@ nativei2 (REXXOBJECT, SETFUNC,
   self = (RexxNativeActivation *)ActivityManager::currentActivity->current();
   activity = self->activity;           /* find the current activity         */
                                        /* get the current activation        */
-  activation = self->activity->currentAct();
+  activation = self->activity->getCurrentActivation);
 
   // get the directory of external functions
   RexxDirectory *routines = activation->settings.parent_code->getLocalRoutines();
@@ -1134,7 +1134,7 @@ nativei2 (REXXOBJECT, GETFUNCTIONNAMES,
   self = (RexxNativeActivation *)ActivityManager::currentActivity->current();
   activity = self->activity;           /* find the current activity         */
                                        /* get the current activation        */
-  activation = self->activity->currentAct();
+  activation = self->activity->getCurrentActivation);
 
   *num = 0;
   if (activation->code->getPublicRoutines() != OREF_NULL) {
@@ -1334,7 +1334,7 @@ nativei0 (void, DISABLE_VARIABLEPOOL)
 
   native_entry;                        /* synchronize access                */
                                        /* pick up current activation        */
-  activation = (RexxActivation *)ActivityManager::currentActivity->currentAct();
+  activation = (RexxActivation *)ActivityManager::currentActivity->getCurrentActivation);
   activation->pushEnvironment((RexxObject *)environment);
   return_void;                         /* no return value                   */
 }
@@ -1348,7 +1348,7 @@ nativei0 (REXXOBJECT, POP_ENVIRONMENT)
 
   native_entry;                        /* synchronize access                */
                                        /* pick up current activation        */
-  activation = (RexxActivation *)ActivityManager::currentActivity->currentAct();
+  activation = (RexxActivation *)ActivityManager::currentActivity->getCurrentActivation);
   return_oref(activation->popEnvironment());
 }
 
@@ -1418,7 +1418,7 @@ nativei3(ULONG, EXECUTIONINFO,
 
   native_entry;                        /* synchronize access                */
                                        /* pick up current activation        */
-  self = ActivityManager::currentActivity->currentAct();
+  self = ActivityManager::currentActivity->getCurrentActivation);
                                        /* if access is enabled              */
   result = 1;
   if (next)
@@ -1470,7 +1470,7 @@ nativei7 (ULONG, STEMSORT,
   }
 
   /* get the REXX activation */
-  RexxActivation *activation = self->activity->currentAct();
+  RexxActivation *activation = self->activity->getCurrentActivation);
 
   /* get the stem name as a string */
   RexxString *variable = new_string(stemname);

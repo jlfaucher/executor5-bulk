@@ -291,7 +291,7 @@ RexxObject * activation_find  (void);
    void              closeStreams();
    void              checkTrapTable();
    RexxDirectory   * getStreams();
-   BOOL              callSecurityManager(RexxString *, RexxDirectory *);
+   bool              callSecurityManager(RexxString *, RexxDirectory *);
    RexxObject  *novalueHandler(RexxString *);
    RexxVariableBase *retriever(RexxString *);
    RexxVariableBase *directRetriever(RexxString *);
@@ -357,7 +357,7 @@ RexxObject * activation_find  (void);
    inline void              pauseLabel() { if ((this->settings.flags&(trace_labels | trace_debug)) == (trace_labels | trace_debug)) this->debugPause(); };
    inline void              pauseCommand() { if ((this->settings.flags&(trace_commands | trace_debug)) == (trace_commands | trace_debug)) this->debugPause(); };
 
-   inline BOOL              hasSecurityManager() { return this->settings.securityManager != OREF_NULL; }
+   inline bool              hasSecurityManager() { return this->settings.securityManager != OREF_NULL; }
    inline BOOL              isTopLevel() { return this->activation_context&TOP_LEVEL_CALL; }
    inline BOOL              isForwarded() { return this->settings.flags&forwarded; }
    inline BOOL              isExternalTraceOn() { return this->settings.flags&trace_on; }

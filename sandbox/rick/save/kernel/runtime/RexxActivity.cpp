@@ -66,7 +66,6 @@
 #include "RexxVariableDictionary.hpp"
 #include "RexxCode.hpp"
 #include "RexxInstruction.hpp"
-#include "ActivityTable.hpp"
 #include "RexxMemory.hpp"
 #include "RexxVariableDictionary.hpp"
 #define INCL_RXSYSEXIT
@@ -243,7 +242,7 @@ RexxActivity::RexxActivity(
                                        /* clear out the top activation      */
     this->topActivation = (RexxActivationBase *)TheNilObject;
                                        /* and the current REXX activation   */
-    this->currentActivation = (RexxActivation *)TheNilObject;
+    this->getCurrentActivation() = (RexxActivation *)TheNilObject;
 
   }                                    /* recycling                         */
   else {
@@ -596,11 +595,11 @@ void RexxActivity::raiseException(
       throw RecursiveStringError;
   }
 
-  activation = this->currentAct();     /* get the current activation        */
+  activation = this->getCurrentActivation);     /* get the current activation        */
   while (isOfClass(Activation, activation) && activation->isForwarded()) {
     activation->termination();         /* do activation termiantion process */
     this->pop(FALSE);                  /* pop the top activation off        */
-    activation = this->currentAct();   /* and get the new current one       */
+    activation = this->getCurrentActivation);   /* and get the new current one       */
   }
   primary = (errcode / 1000) * 1000;   /* get the primary message number    */
                                        /* format the number (string) into   */
@@ -817,7 +816,7 @@ void RexxActivity::reraiseException(
   char            work[10];            /* temp buffer for formatting        */
   int             newVal;
 
-  activation = this->currentActivation;/* get the current activation        */
+  activation = this->getCurrentActivation();/* get the current activation        */
                                        /* have a target activation?         */
   if (activation != (RexxActivation *)TheNilObject)  {
     newVal = activation->currentLine();/* get the activation position       */
@@ -923,7 +922,7 @@ RexxObject *RexxActivity::display(RexxDirectory *exobj)
                                        /* have a real line?                 */
       if (text != OREF_NULL && text != TheNilObject)
                                        /* write out the line                */
-        this->traceOutput(this->currentActivation, text);
+        this->traceOutput(this->getCurrentActivation(), text);
     }
     discard_hold(trace_back);          /* ok, let gc have it                */
   }
@@ -962,7 +961,7 @@ RexxObject *RexxActivity::display(RexxDirectory *exobj)
                                        /* and finally the error message     */
   text = text->concat((RexxString *)exobj->at(OREF_ERRORTEXT));
                                        /* write out the line                */
-  this->traceOutput(this->currentActivation, text);
+  this->traceOutput(this->getCurrentActivation(), text);
                                        /* get the secondary message         */
   secondary = (RexxString *)exobj->at(OREF_NAME_MESSAGE);
                                        /* have a real message?              */
@@ -984,7 +983,7 @@ RexxObject *RexxActivity::display(RexxDirectory *exobj)
                                        /* and finally the error message     */
     text = text->concat(secondary);
                                        /* write out the line                */
-    this->traceOutput(this->currentActivation, text);
+    this->traceOutput(this->getCurrentActivation(), text);
   }
   return TheNilObject;                 /* just return .nil                  */
 }
@@ -1008,7 +1007,7 @@ RexxObject *RexxActivity::displayDebug(RexxDirectory *exobj)
                                        /* and finally the error message     */
   text = text->concatWith((RexxString *)exobj->at(OREF_ERRORTEXT), ' ');
                                        /* write out the line                */
-  this->traceOutput(this->currentActivation, text);
+  this->traceOutput(this->getCurrentActivation(), text);
                                        /* get the secondary message         */
   secondary = (RexxString *)exobj->at(OREF_NAME_MESSAGE);
                                        /* have a real message?              */
@@ -1022,7 +1021,7 @@ RexxObject *RexxActivity::displayDebug(RexxDirectory *exobj)
                                        /* and finally the error message     */
     text = text->concat(secondary);
                                        /* write out the line                */
-    this->traceOutput(this->currentActivation, text);
+    this->traceOutput(this->getCurrentActivation(), text);
   }
   return TheNilObject;                 /* just return .nil                  */
 }
@@ -1037,7 +1036,7 @@ void RexxActivity::live()
   setUpMemoryMark
   memory_mark(this->activations);
   memory_mark(this->topActivation);
-  memory_mark(this->currentActivation);
+  memory_mark(this->getCurrentActivation());
   memory_mark(this->saveValue);
   memory_mark(this->local);
   memory_mark(this->conditionobj);
@@ -1072,7 +1071,7 @@ void RexxActivity::liveGeneral()
   setUpMemoryMarkGeneral
   memory_mark_general(this->activations);
   memory_mark_general(this->topActivation);
-  memory_mark_general(this->currentActivation);
+  memory_mark_general(this->getCurrentActivation());
   memory_mark_general(this->saveValue);
   memory_mark_general(this->local);
   memory_mark_general(this->conditionobj);
@@ -1146,7 +1145,7 @@ void RexxActivity::push(
                                        /* new REXX activation?              */
   if (isOfClass(Activation, new_activation)) {
                                        /* this is the top REXX one too      */
-    this->currentActivation = (RexxActivation *)new_activation;
+    this->getCurrentActivation() = (RexxActivation *)new_activation;
                                        /* get the activation settings       */
     this->settings = ((RexxActivation *)new_activation)->getGlobalSettings();
     if (ActivityManager::currentActivity == this)       /* this the active activity?         */
@@ -1180,7 +1179,7 @@ void RexxActivity::pushNil()
                                        /* clear out the cached values       */
   this->topActivation = (RexxActivationBase *)TheNilObject;
                                        /* both of them                      */
-  this->currentActivation = (RexxActivation *)TheNilObject;
+  this->getCurrentActivation() = (RexxActivation *)TheNilObject;
                                        /* use the default settings          */
   this->settings = Numerics::setDefaultSettings();
   this->depth++;                       /* bump the depth to count this      */
@@ -1210,7 +1209,7 @@ void RexxActivity::pop(
                                        /* clear out the cached values       */
     this->topActivation = (RexxActivationBase *)TheNilObject;
                                        /* both of them                      */
-    this->currentActivation = (RexxActivation *)TheNilObject;
+    this->getCurrentActivation() = (RexxActivation *)TheNilObject;
                                        /* use the default settings          */
     this->settings = &this->default_settings;
   }
@@ -1234,7 +1233,7 @@ void RexxActivity::pop(
         }
       }
                                        /* set this as current               */
-      this->currentActivation = (RexxActivation *)old_activation;
+      this->getCurrentActivation() = (RexxActivation *)old_activation;
                                        /* last activation?                  */
       if (old_activation == (RexxActivationBase*)TheNilObject)
                                        /* use the default settings          */
@@ -2367,6 +2366,32 @@ BOOL  RexxActivity::sysExitDbgTst(
      }
   }
   return TRUE;                         /* not handled                       */
+}
+
+
+/**
+ * Test if the activity is currently running in a context that
+ * requires a security manager call.
+ *
+ * @return true if there is an active security manager, false otherwise.
+ */
+bool RexxActivity::hasSecurityManager()
+{
+    return currentActivation->hasSecurityManager();
+}
+
+
+/**
+ * Make a call to the current context security manager.
+ *
+ * @param name   The name of the check operation.
+ * @param args   The arguments directory to the call.
+ *
+ * @return The return result from the call.
+ */
+bool RexxActivity::callSecurityManager(RexxString *name, RexxDirectory *args)
+{
+    currentActivation->callSecurityManager(name, args);
 }
 
 

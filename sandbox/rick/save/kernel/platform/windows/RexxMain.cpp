@@ -75,7 +75,6 @@
 #include "APIServiceTables.h"
 #include "SubcommandAPI.h"
 #include "RexxAPIManager.h"
-#include "ActivityTable.hpp"
 
 #define DEFAULT_PRECISION  9
 
@@ -194,7 +193,7 @@ void SearchPrecision(
     RexxActivity *activity = ActivityManager::findActivityForCurrentThread();
     if (activity != OREF_NULL)
     {
-        RexxActivation *activation = activity->currentAct();
+        RexxActivation *activation = activity->getCurrentActivation);
         *precision = activation->digits();
     }
 }
@@ -211,7 +210,7 @@ void WinGetVariables(void (__stdcall *f)(void*))
   RexxArray *result;
 
   if (RunActivity) {
-    result = RunActivity->currentActivation->getAllLocalVariables();
+    result = RunActivity->getCurrentActivation()->getAllLocalVariables();
     for (size_t i=result->size(); i>0; i--) {
         RexxVariable *variable = (RexxVariable *)result->get(i);
         args[0] = (void *) variable->getName()->getStringData();

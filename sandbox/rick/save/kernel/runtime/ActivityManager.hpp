@@ -75,6 +75,8 @@ public:
     static void yieldCurrentActivity();
     static bool yieldActivity(LONG thread_id);
     static void exit(int retcode);
+    static void startup();
+    static void relinquish(RexxActivity *activity);
 
     static RexxActivity *currentActivity;   // the currently active thread
     static RexxDirectory *localEnvironment; // the .local environment
@@ -101,10 +103,7 @@ protected:
                                         /* size of the activation cache      */
     static size_t            activationCacheSize;
     static size_t            waitingActivities; /* number of waiting activities      */
-    static ActivityTable processActivities;  // the thread-to-activity mapping table
-
     static bool              processTerminating;  // shutdown processing started
-
     static size_t            interpreterInstances;  // number of times an interpreter has been created.
 };
 

@@ -54,6 +54,7 @@
 #include "IntegerClass.hpp"
 #include "ArrayClass.hpp"
 #include "TableClass.hpp"
+#include "ActivityManager.hpp"
 
 BOOL SysAccessPool(MemorySegmentPool **pool);
 /* NOTE:  There is just a single memory object in global storage.  We'll define      */
@@ -384,7 +385,7 @@ void RexxMemory::checkUninit()
         {
             /* yes, indicate object is to be   */
             /*  sent uninit.                   */
-            uninitTable->replace(TheTrueObject, iterUninitTable);
+            uninitTable->replace(TheTrueObject, i);
             pendingUninits++;
         }
     }
@@ -400,7 +401,6 @@ void  RexxMemory::forceUninits()
 /*                                                                            */
 /******************************************************************************/
 {
-    HashLink iterTable;                /* iterator for table.             */
     RexxObject *zombieObj;
 
                                        /* for all objects in the table    */
@@ -457,10 +457,10 @@ void  RexxMemory::runUninits()
         if (uninitTable->value(iterTable) == TheTrueObject)
         {
             /* make sure we don't recurse        */
-            uniniTtable->put(TheFalseObject, zombieObj);
+            uninitTable->put(TheFalseObject, zombieObj);
             zombieObj->uninit();           /* yes, indicate run the UNINIT      */
                                            /* remove zombie from uninit table   */
-            uninitTable->remove(obj);
+            uninitTable->remove(zombieObj);
         }
     }                                  /* now go check next object in table */
     /* make sure we remove the recursion protection */
@@ -505,8 +505,7 @@ bool RexxMemory::isPendingUninit(RexxObject *obj)
 }
 
 
-void RexxMemory::checkSubClasses
-   (RexxObjectTable *subClasses)       /* table of subclasses               */
+void RexxMemory::checkSubClasses()
 /******************************************************************************/
 /* Function:  Scan the table of subclasses for now dead class objects         */
 /******************************************************************************/
@@ -533,29 +532,65 @@ void RexxMemory::checkSubClasses
   }
 }
 
+
+/**
+ * Get the subclasses derived from a particular class.
+ *
+ * @param c      The source class.
+ *
+ * @return An array of subclasses of the class.
+ */
+RexxArray *RexxMemory::getSubClasses(RexxClass *c)
+{
+    return subClasses->allAt(c);
+}
+
+
+/**
+ * Add a new subclass->baseclass pairing to the subclasses list.
+ *
+ * @param sub    The subclass.
+ * @param base   The base class.
+ */
+void RexxMemory::newSubClass(RexxClass *sub, RexxClass *base)
+{
+    subClasses->add(sub, base);
+}
+
+
+/**
+ * Remove a new subclass->baseclass pairing from the subclasses
+ * list.
+ *
+ * @param sub    The subclass.
+ * @param base   The base class.
+ */
+void RexxMemory::removeSubClass(RexxClass *sub, RexxClass *base)
+{
+    subClasses->removeItem(sub, base);
+}
+
+
 void RexxMemory::markObjects(void)
 /******************************************************************************/
 /* Function:   Main mark routine for garbage collection.  This reoutine       */
 /*  Determines which mark routine to call and does all additional processing  */
 /******************************************************************************/
 {
-  RexxTable *uninitTables;             /* the uninit tables from Activity   */
-  RexxObjectTable *subClasses;         /* table of subclasses               */
-
   verboseMessage("Beginning mark operation\n");
 
   if (this->orphanCheck) {             /* debugging bad OREF's?             */
                                        /* yup, call debugging mark          */
     this->killOrphans(this);
-    this->checkSubClasses(subClasses); /* check the subclass table          */
-    this->checkUninit(uninitTables);   /* flag all objects about to be dead */
+    this->checkSubClasses();           /* check the subclass table          */
+    this->checkUninit();               /* flag all objects about to be dead */
     this->killOrphans(subClasses);     /* debug mark the subclasses and     */
-    this->killOrphans(uninitTables);   /* the uninit table                  */
+    this->killOrphans(uninitTable);    /* the uninit table                  */
   } else {
                                        /* call normal,speedy,efficient mark */
     this->markObjectsMain(this);
-    this->checkSubClasses(subClasses); /* check the subclass table          */
-    this->checkUninit(uninitTable);    /* flag all objects about to be dead */
+    this->checkSubClasses();           /* check the subclass table          */
+    this->checkUninit();               /* flag all objects about to be dead */
                                        /* now mark the unInit table and the */
     this->markObjectsMain(subClasses); /* subclass table                    */
     this->markObjectsMain(uninitTable);
@@ -1472,7 +1507,9 @@ void RexxMemory::saveImage(void)
                                        /* Get an array to hold all special  */
                                        /*objs                               */
   saveArray = new_array(saveArray_highest);
-  save(saveArray);
+  // Note:  A this point, we don't have an activity we can use ProtectedObject to save
+  // this with, so we need to use saveObject();
+  saveObject(saveArray);
                                        /* Add all elements needed in        */
                                        /*saveArray                          */
   saveArray->put((RexxObject *)TheEnvironment,   saveArray_ENV);
@@ -1616,7 +1653,7 @@ RexxObject *RexxMemory::setDump(RexxObject *selection)
 {
 
   if (selection != OREF_NULL) {
-    if (REQUIRED_LONG(selection, DEFAULT_DIGITS, ARG_ONE))
+    if (REQUIRED_LONG(selection, Numerics::DEFAULT_DIGITS, ARG_ONE))
       this->dumpEnable = FALSE;
     else
       this->dumpEnable = TRUE;
@@ -1724,7 +1761,7 @@ void RexxMemory::setObjectOffset(size_t offset)
     /* wait for current unflatten to end */
     MTXRQ(this->unflattenMutex);
     /* get kernel access back. */
-    currentActivity->requestAccess();
+    currentActivity->requestKernel();
    }
   }
   else {
@@ -1746,8 +1783,6 @@ void      RexxMemory::setEnvelope(RexxEnvelope *_envelope)
 /*  Returned:  Nothing                                                        */
 /******************************************************************************/
 {
-  RexxActivity *ActivityManager::currentActivity;
-
                                        /* Starting or ending?               */
   if (_envelope != OREF_NULL) {
                                        /* have a value, starting unflatt    */
@@ -1901,7 +1936,7 @@ RexxStack *RexxMemory::getFlattenStack(void)
     currentActivity->releaseKernel();
     MTXRQ(this->flattenMutex);         /* wait for current flattento end    */
                                        /* get kernel access back.           */
-    currentActivity->requestKernel;
+    currentActivity->requestKernel();
   }
                                        /* create a temporary stack          */
   this->flattenStack = new (LiveStackSize, true) RexxStack (LiveStackSize);

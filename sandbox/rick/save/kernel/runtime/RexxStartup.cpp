@@ -53,7 +53,6 @@
 #include "ActivityManager.hpp"
 #include "MethodClass.hpp"
 #include "RexxNativeAPI.h"
-#include "ActivityTable.hpp"
 #include "StackClass.hpp"
 #if defined(AIX) || defined(LINUX)
 #include <limits.h>

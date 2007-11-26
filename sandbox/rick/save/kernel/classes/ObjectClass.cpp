@@ -57,6 +57,7 @@
 #include "MethodClass.hpp"
 #include "ExpressionBaseVariable.hpp"
 #include "SourceFile.hpp"
+#include "ProtectedObject.hpp"
 
 static RexxString *msgname_save;       /* last issued message               */
 static RexxMethod *method_save;        /* last issued method object         */
@@ -191,7 +192,7 @@ wholenumber_t RexxObject::compareTo(RexxObject *other )
     {
         reportException(Error_No_result_object_message, OREF_COMPARETO);
     }
-    wholenumber_t comparison = result->longValue(DEFAULT_DIGITS);
+    wholenumber_t comparison = result->longValue(Numerics::DEFAULT_DIGITS);
     if (comparison == (wholenumber_t)NO_LONG)
     {
         reportException(Error_Invalid_whole_number_compareto, result);
@@ -545,9 +546,8 @@ RexxObject * RexxObject::copy()
   newObj = (RexxObject *)this->clone();
                                        /* have object variables?            */
   if (this->objectVariables != OREF_NULL) {
-    save(newObj);                      /* protect the copy through this process */
-    copyObjectVariables(newObj);       /* copy the object variables into the new object */
-    discard_hold(newObj);              /* release lock on the copy          */
+      ProtectedObject p(newObj);
+      copyObjectVariables(newObj);       /* copy the object variables into the new object */
   }
                                        /* have instance methods?            */
   if (this->behaviour->getInstanceMethodDictionary() != OREF_NULL)
@@ -1542,9 +1542,8 @@ RexxMessage *RexxObject::start(
   }
                                        /* Create the new message object.    */
   newMessage = new_message(this, message, new (argCount - 1, arguments + 1) RexxArray);
-  save(newMessage);
+  ProtectedObject p(newMessage);
   newMessage->start(OREF_NULL);        /* Tell the message object to start  */
-  discard_hold(newMessage);            /* make sure message object stays    */
 #endif                                 // end of NOTHREADSUPPORT
   return newMessage;                   /* return the new message object     */
 }
@@ -1585,7 +1584,8 @@ RexxObject  *RexxObject::shriekRun(
   method = method->newScope((RexxClass *)this);
   /* go run the method                 */
   result = method->call(ActivityManager::currentActivity, this, OREF_NONE, arguments, argCount, calltype, environment, PROGRAMCALL);
-  if ((result != OREF_NULL) && method->isRexxMethod()) discard(result);
+  // TODO:  Fix this up to use protected objects
+  if ((result != OREF_NULL) && method->isRexxMethod()) discardObject(result);
   return result;
 }
 
@@ -1618,37 +1618,39 @@ RexxObject  *RexxObject::run(
     methobj = methobj->newScope((RexxClass *)TheNilObject);
   // we need to save this, since we might be working off of a newly created
   // one or a copy
-  save(methobj);
+  ProtectedObject p(methobj);
 
-  if (argCount > 1L) {                 /* if any arguments passed           */
+  if (argCount > 1) {                  /* if any arguments passed           */
                                        /* get the 1st one, its the option   */
     option = (RexxString *)arguments[1];
                                        /* this is now required              */
     option = REQUIRED_STRING(option, ARG_TWO);
                                        /* process the different options     */
     switch (toupper(option->getChar(0))) {
-      case 'A':                        /* args are an array                 */
-                                       /* so they say, make sure we have an */
-                                       /* array and we were only passed 3   */
-                                       /*args                               */
-        if (argCount < 3)              /* not enough arguments?             */
-          missing_argument(ARG_THREE); /* this is an error                  */
-        if (argCount > 3)              /* too many arguments?               */
-         reportException(Error_Incorrect_method_maxarg, IntegerThree);
-                                       /* now get the array                 */
-        arglist = (RexxArray *)arguments[2];
-                                       /* force to array form               */
-        arglist = REQUEST_ARRAY(arglist);
-                                       /* not an array?                     */
-        if (arglist == TheNilObject || arglist->getDimension() != 1)
-                                       /* raise an error                    */
-          reportException(Error_Incorrect_method_noarray, arguments[2]);
-        // request array may create a new one...keep it safe
-        save(arglist);
-        /* grab the argument information */
-        argumentPtr = arglist->data();
-        argcount = arglist->size();
-        break;
+        case 'A':                        /* args are an array                 */
+        {
+                                           /* so they say, make sure we have an */
+                                           /* array and we were only passed 3   */
+                                           /*args                               */
+            if (argCount < 3)              /* not enough arguments?             */
+              missing_argument(ARG_THREE); /* this is an error                  */
+            if (argCount > 3)              /* too many arguments?               */
+             reportException(Error_Incorrect_method_maxarg, IntegerThree);
+                                           /* now get the array                 */
+            arglist = (RexxArray *)arguments[2];
+                                           /* force to array form               */
+            arglist = REQUEST_ARRAY(arglist);
+                                           /* not an array?                     */
+            if (arglist == TheNilObject || arglist->getDimension() != 1)
+                                           /* raise an error                    */
+              reportException(Error_Incorrect_method_noarray, arguments[2]);
+            // request array may create a new one...keep it safe
+            ProtectedObject p1(arglist);
+            /* grab the argument information */
+            argumentPtr = arglist->data();
+            argcount = arglist->size();
+            break;
+        }
 
       case 'I':                        /* args are "strung out"             */
         /* point to the array data for the second value */
@@ -1664,14 +1666,6 @@ RexxObject  *RexxObject::run(
   }
                                        /* now just run the method....       */
   result = methobj->call(ActivityManager::currentActivity, this, OREF_NONE, argumentPtr, argcount, OREF_METHODNAME, OREF_NULL, METHODCALL);
-
-  discard(methobj);
-  // and if we have a saved argument, release it also
-  if (arglist != OREF_NULL)
-  {
-      discard(arglist);
-  }
-  //if ((result != OREF_NULL) && u_method->isRexxMethod()) discard(result);
   return result;
 }
 
@@ -2053,10 +2047,9 @@ void *RexxObject::operator new(size_t size, RexxClass *classObject, RexxObject *
 
                                        /* create a new object               */
   newObject = new (classObject) RexxObject;
-  save(newObject);                     /* protect from GC                   */
+  ProtectedObject p(newObject);
                                        /* now drive the user INIT           */
   newObject->sendMessage(OREF_INIT, args, argCount);
-  discard_hold(newObject);
   return newObject;                    /* and returnthe new object          */
 }
 

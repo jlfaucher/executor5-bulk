@@ -220,10 +220,11 @@ typedef struct nestedinfo {
    void deactivate() { nestedCount--; }
    bool isActive() { return nestedCount > 0; }
    bool isInactive() { return nestedCount == 0; }
-
+   bool hasSecurityManager();
+   bool callSecurityManager(RexxString *name, RexxDirectory *args);
 
    inline RexxActivationBase *current(){ return this->topActivation;}
-   inline RexxActivation *currentAct() {return this->currentActivation;}
+   inline RexxActivation *getCurrentActivation() {return this->currentActivation;}
    inline NumericSettings *getNumericSettings () {return this->numericSettings;}
    inline void                 setProcessobj(RexxObject *p) {this->processObj = p;}
    inline RexxObject *runningRequires(RexxString *program) {return this->requiresTable->stringGet(program);}

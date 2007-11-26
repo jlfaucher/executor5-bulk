@@ -54,6 +54,9 @@
 #include "ClassClass.hpp"
 #include "MethodClass.hpp"
 #include "RexxActivity.hpp"
+#include "ActivityManager.hpp"
+#include "ProtectedObject.hpp"
+
 
 void RexxClass::live()
 /******************************************************************************/
@@ -302,7 +305,7 @@ RexxArray *RexxClass::getSubClasses()
 /*****************************************************************************/
 {
                                        /* return a copy of the list         */
-    return memoryObject->getSubClasses(this);
+    return memoryObject.getSubClasses(this);
 }
 
 void RexxClass::addSubClass(RexxClass *subClass)
@@ -311,7 +314,7 @@ void RexxClass::addSubClass(RexxClass *subClass)
 /*****************************************************************************/
 {
                                        /* just add to the global list       */
-    memoryObject->newSubClass(subClass, this);
+    memoryObject.newSubClass(subClass, this);
 }
 
 void RexxClass::defmeths(
@@ -674,7 +677,7 @@ void  RexxClass::updateSubClasses()
   this->createClassBehaviour(this->behaviour);
 
   subClasses = this->getSubClasses();  /* get the subclasses list           */
-  save(subClasses);                    /* protect this                      */
+  ProtectedObject p(subClasses);
                                        /* loop thru the subclass doing the  */
                                        /* same for each of them             */
   for (index = 1; index <= subClasses->size(); index++) {
@@ -682,7 +685,6 @@ void  RexxClass::updateSubClasses()
                                        /* and recursively update them       */
     ((RexxClass *)subClasses->get(index))->updateSubClasses();
   }
-  discard_hold(subClasses);            /* release the lock                  */
 }
 
 void RexxClass::updateInstanceSubClasses()
@@ -698,7 +700,7 @@ void RexxClass::updateInstanceSubClasses()
   this->instanceBehaviour->setScopes(OREF_NULL);
   this->createInstanceBehaviour(this->instanceBehaviour);
   subClasses = this->getSubClasses();  /* get the subclasses list           */
-  save(subClasses);                    /* protect this                      */
+  ProtectedObject p(subClasses);
                                        /* loop thru the subclass doing the  */
                                        /* same for each of them             */
   for (index = 1; index <= subClasses->size(); index++) {
@@ -706,7 +708,6 @@ void RexxClass::updateInstanceSubClasses()
                                        /* recursively update these          */
     ((RexxClass *)subClasses->get(index))->updateInstanceSubClasses();
   }
-  discard_hold(subClasses);            /* release the lock                  */
 }
 
 void RexxClass::createClassBehaviour(
@@ -752,8 +753,8 @@ void RexxClass::createClassBehaviour(
           // from the bottom of the hierarchy down, merge in each of the scope
           // values.
           RexxArray *addedScopes = metaclass->behaviour->getScopes()->allAt(TheNilObject);
-          save(addedScopes);
-          LONG i;
+          ProtectedObject p(addedScopes);
+          size_t i;
 
           // these need to be processed in reverse order
           for (i = addedScopes->size(); i > 0; i--)
@@ -761,8 +762,6 @@ void RexxClass::createClassBehaviour(
               RexxClass *scope = (RexxClass *)addedScopes->get(i);
               target_class_behaviour->mergeScope(scope);
           }
-
-          discard(addedScopes);
         }
       }
     }
@@ -865,11 +864,11 @@ RexxTable *RexxClass::methodDictionaryCreate(
   RexxSupplier *supplier;              /* working supplier object           */
 
   newDictionary = new_table();         /* get a new table for this          */
-  save(newDictionary);                 /* and save this                     */
+  ProtectedObject p(newDictionary);
                                        /* loop thru the supplier object     */
                                        /* obtained from the source mdict    */
   supplier = (RexxSupplier *)sourceCollection->sendMessage(OREF_SUPPLIERSYM);
-  save(supplier);                      /* save the supplier too             */
+  ProtectedObject p2(supplier);
   for (; supplier->available() == TheTrueObject; supplier->next()) {
                                        /* get the method name (uppercased)  */
     method_name = REQUEST_STRING(supplier->index())->upper();
@@ -892,8 +891,6 @@ RexxTable *RexxClass::methodDictionaryCreate(
                                        /* add the method to the target mdict */
     newDictionary->stringAdd(newMethod, method_name);
   }
-  discard(supplier);                   /* done with the supplier            */
-  discard_hold(newDictionary);         /* and also the dictionary           */
   return newDictionary;                /* and return the new version        */
 }
 
@@ -1015,7 +1012,7 @@ RexxObject *RexxClass::uninherit(
     reportException(Error_Execution_uninherit, this, mixin_class);
                                        /* update the mixin class subclass    */
                                        /* list to not have this class        */
-  memoryObject->removeSubclass(mixin_class, this);
+  memoryObject.removeSubClass(mixin_class, this);
                                        /* any subclasses that we have need   */
                                        /* to redo their behaviour's          */
                                        /* this also updates our own behaviour*/
@@ -1045,7 +1042,7 @@ RexxObject *RexxClass::enhanced(
   required_arg(enhanced_instance_mdict, ONE);
                                        /* subclass the reciever class       */
   dummy_subclass = this->subclass(new_string("Enhanced Subclass"), OREF_NULL, OREF_NULL);
-  save(dummy_subclass);
+  ProtectedObject p(dummy_subclass);
                                        /* turn into a real method dictionary*/
   enhanced_instance_mdict = dummy_subclass->methodDictionaryCreate(enhanced_instance_mdict, (RexxClass *)TheNilObject);
                                        /* enhance the instance behaviour    */
@@ -1065,7 +1062,6 @@ RexxObject *RexxClass::enhanced(
   enhanced_object->behaviour->setOwningClass(this);
                                        /* remember it was enhanced          */
   enhanced_object->behaviour->setEnhanced();
-  discard(dummy_subclass);             /* now the dummy is not needed       */
 
   return enhanced_object;              /* send back the new improved version*/
 }
@@ -1117,7 +1113,7 @@ RexxClass  *RexxClass::subclass(
   }
                                        /* get a copy of the metaclass class */
   new_class = (RexxClass *)meta_class->sendMessage(OREF_NEW, class_id);
-  save(new_class);
+  ProtectedObject p(new_class);
   if (this->isMetaClass()) {           /* if the superclass is a metaclass  */
     new_class->setMetaClass();         /* mark the new class as a meta class*/
                                        /* and if the metaclass lists haven't */
@@ -1185,7 +1181,6 @@ RexxClass  *RexxClass::subclass(
   if (this->hasUninitDefined() || this->parentHasUninitDefined()) {
      new_class->setParentHasUninitDefined();
   }
-  discard_hold(new_class);             /* be safe                           */
   /* notify activity this object has an UNINIT that needs to be called
               when collecting the object */
   if (new_class->hasUninitDefined())
@@ -1330,7 +1325,7 @@ RexxClass  *RexxClass::newRexx(RexxObject **args, size_t argCount)
   // attempt putting this into a hash collection.
   OrefSet(new_class, new_class->id, class_id);
                                        /* update cloned hashvalue           */
-  save(new_class);                     /* better protect this               */
+  ProtectedObject p(new_class);        /* better protect this               */
                                        /* make this into an instance of the */
                                        /* meta class                        */
   OrefSet(new_class, new_class->behaviour, (RexxBehaviour *)new_class->instanceBehaviour->copy());
@@ -1396,7 +1391,6 @@ RexxClass  *RexxClass::newRexx(RexxObject **args, size_t argCount)
   if (new_class->hasUninitDefined()) {
       new_class->setHasUninitDefined();
   }
-  discard_hold(new_class);             /* remove the protection             */
                                        /* go do any inits                   */
   new_class->sendMessage(OREF_INIT, args + 1, argCount - 1);
   return new_class;                    /* return the new class              */

@@ -70,7 +70,6 @@
 #include "RexxNativeAPI.h"                      /* REXX interface/native method code */
 #include SYSREXXSAA
 
-#include "ActivityTable.hpp"
 #include "RexxAPIManager.h"
 #include "APIDefinitions.h"
 #include "SubcommandAPI.h"
@@ -149,7 +148,7 @@ void SearchPrecision(
     RexxActivity *activity = ActivityManager::findActivityForCurrentThread();
     if (activity != OREF_NULL)
     {
-        RexxActivation *activation = activity->currentAct();
+        RexxActivation *activation = activity->getCurrentActivation);
         *precision = activation->digits();
     }
 }
