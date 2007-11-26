@@ -1,0 +1,315 @@
+#!/usr/bin/rexx
+/*
+   name:             ooRexx.Base.BIF.LINES.testUnit
+   authors:          Mark Miesfeld
+   date:             11/25/2007
+   version:          1.0.0
+   changed:
+
+   languageLevel:    6.0
+   purpose:          A collection of tests for the lines() builtin function.
+
+   remark:           Test units are always works in progress.  Any one should
+                     feel free to add, update, improve, or correct tests in this
+                     collection of tests.
+
+   license:          CPL 1.0 (Common Public License v1.0, see below)
+   link:
+
+   category1:        ooRexx
+   category2:        Base
+   category3:        Builtin functions
+
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2008 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+  testUnitClass = .ooRexx.Base.BIF.LINES.testUnit
+  testUnitList = .list~of(.array~of(testUnitClass, .list~new))
+
+  srcLines = .array~new
+  do i = 1 to 150 until srcLines[i] = "*/"
+     srcLines[i] = sourceline(i)
+  end
+
+  call makeDirTestInfo testUnitClass, srcLines
+
+  parse source s
+  testUnitClass~testCaseInfo~setentry("test_Case-source", s)
+
+  if \ .local~hasentry("bRunTestsLocally") then
+     .local~bRunTestsLocally = .true
+
+  if .bRunTestsLocally == .true then do
+    ts = .TestSuite~new
+    ts~addTest(.TestSuite~new(testUnitClass))
+
+    testResult = ts~run
+    call simpleFormatTestResults testResult
+  end
+
+return testUnitList
+-- End of entry point.
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+  Directives, Classes, or Routines.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::requires "FileUtils.cls"
+
+/* class: ooRexx.Base.BIF.LINES.testUnit - - - - - - - - - - - - - - - - - - -*\
+
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class ooRexx.Base.BIF.LINES.testUnit public subclass TestCase
+
+  ::method test_stdin_normal
+
+    -- Default stream is stdin, default for omitted second arg should be Normal
+    self~assertSame("Should be no lines available in stdin", 0, lines())
+
+    self~assertSame('stdin empty "Normal" is valid', 0, lines( , "Normal"))
+    self~assertSame('stdin empty "normal" is valid', 0, lines( , "normal"))
+    self~assertSame('stdin empty "nORmAl" is valid', 0, lines( , "nORmAl"))
+    self~assertSame('stdin empty "NORMAL" is valid', 0, lines( , "NORMAL"))
+    self~assertSame('stdin empty "NORMALLYLONGERTHANNEEDEDSHOULDBEVALID" is valid', 0, -
+                        lines( , "NORMALLYLONGERTHANNEEDEDSHOULDBEVALID"))
+    self~assertSame('stdin empty "n" is valid', 0, lines( , "n"))
+    self~assertSame('stdin empty "N" is valid', 0, lines( , "N"))
+    self~assertSame('stdin empty "Nor" is valid', 0, lines( , "Nor"))
+    self~assertSame('stdin empty "NIGHTSHADE" is valid', 0, lines( , "NIGHTSHADE"))
+
+    opt = 'n'
+    self~assertSame('stdin empty use a variable for the option is valid', 0, lines( , opt))
+
+    opt = 'N' || 'uncool'~copies(5000)
+    self~assertSame('stdin empty extremely long string is valid', 0, lines( , opt))
+
+  ::method  test_stdin_count
+    self~assertSame('stdin empty "Count" is valid', 0, lines(, "Count"))
+    self~assertSame('stdin empty "count" is valid', 0, lines(, "count"))
+    self~assertSame('stdin empty "COUNT" is valid', 0, lines(, "COUNT"))
+    self~assertSame('stdin empty "cOuNt" is valid', 0, lines(, "cOuNt"))
+
+    self~assertSame('stdin empty "c" is valid', 0, lines(, "c"))
+    self~assertSame('stdin empty "C" is valid', 0, lines(, "C"))
+    self~assertSame('stdin empty "comic" is valid', 0, lines(, "comic"))
+
+    opt = 'c'
+    self~assertSame('stdin empty use of a variable for "Count" is valid', 0, lines(, opt))
+
+    opt = 'C' || "comedian"~copies(1000)
+    self~assertSame('stdin empty use of a long string for "Count" is valid', 0, lines(, opt))
+
+    ::method test_fileStream_normal
+
+      -- Create a temp file with exactly 4 lines in it.
+      fileName = createFile(.array~of(1, 2, 3, 4), "delMe_BIF_Lines4")
+
+      -- Assert the file was created ok
+      self~assertFalse('temp file must be created', fileName == "")
+
+      self~assertSame('file has lines, omitted 2nd arg should return 1', 1, lines(fileName))
+      self~assertSame('file has lines, "N" for 2nd arg should return 1', 1, lines(fileName, 'N'))
+      self~assertSame('file has lines, "Normal" for 2nd arg should return 1', 1, lines(fileName, 'Normal'))
+
+      -- Read 2 lines, should get same results, because file still has lines.
+      do 2
+        discard = linein(fileName)
+      end
+      self~assertSame('file has 2 lines, omitted 2nd arg should return 1', 1, lines(fileName))
+      self~assertSame('file has 2 lines, "N" for 2nd arg should return 1', 1, lines(fileName, 'N'))
+      self~assertSame('file has 2 lines, "Normal" for 2nd arg should return 1', 1, lines(fileName, 'Normal'))
+
+      -- Read 2 lines, should get 0 for same tests.
+      do 2
+        discard = linein(fileName)
+      end
+      self~assertSame('file has 0 lines, omitted 2nd arg should return 0', 0, lines(fileName))
+      self~assertSame('file has 0 lines, "N" for 2nd arg should return 0', 0, lines(fileName, 'N'))
+      self~assertSame('file has 0 lines, "Normal" for 2nd arg should return 0', 0, lines(fileName, 'Normal'))
+
+      -- Be sure file is closed and delete it.
+      j = lineout(fileName)
+      j = deleteFile(fileName)
+
+
+    ::method test_fileStream_count
+
+      -- Create a temp file with exactly 64 lines in it.
+      txt = .array~new
+      do i = 1 to 64
+        txt~append(i)
+      end
+      fileName = createFile(txt, "delMe_BIF_Lines64")
+      self~assertFalse('temp file must be created', fileName == "")
+
+      self~assertSame('file has 64 lines, 2nd arg "C" should return 64', 64, lines(fileName, 'C'))
+      self~assertSame('file has 64 lines, 2nd arg "c" should return 64', 64, lines(fileName, 'c'))
+      self~assertSame('file has 64 lines, 2nd arg "count" should return 64', 64, lines(fileName, "count"))
+
+      -- Read 4 lines, option of count should return 60
+      do 4
+        discard = linein(fileName)
+      end
+      self~assertSame('60 lines left, 2nd arg "C" should return 60', 60, lines(fileName, 'C'))
+      self~assertSame('60 lines left, 2nd arg "c" should return 60', 60, lines(fileName, 'c'))
+      self~assertSame('60 lines left, 2nd arg "count" should return 60', 60, lines(fileName, "count"))
+
+      -- Read down to 0 lines, assert count is correct each time
+      j = 60
+      do i = 1 to 60
+        self~assertSame(j 'lines left, count option should return' j, j, lines(fileName, 'C'))
+        discard = linein(fileName)
+        j -= 1
+      end
+
+      self~assertSame('0 lines left COUNT option should return 0', 0, lines(fileName, 'COUNT' ))
+
+      -- Be sure file is closed and delete it.
+      junk = lineout(fileName)
+      junk = deleteFile(fileName)
+
+    ::method test_normal_negativeTest1
+
+      self~assertSame("Non-existent stream, default 2nd arg should return 0", 0, lines('bogusZ2ls'))
+      self~assertSame("Non-existent stream, 'N' 2nd arg should return 0", 0, lines('b0sokdogusZ2ls', 'N'))
+      self~assertSame("Non-existent stream, 'NORMAL' 2nd arg should return 0", 0, lines('bklwerj4ogusZ2ls', "NORMAL"))
+
+      self~assertSame("Non-existent stream, 'NORMAL' 2nd arg should return 0", 0, lines('', "NORMAL"))
+
+    ::method test_count_negativeTest1
+
+      self~assertSame("Non-existent stream, 'count' 2nd arg should return 0", 0, lines('bogusZ2ls', 'count'))
+      self~assertSame("Non-existent stream, 'C' 2nd arg should return 0", 0, lines('b0sokdogusZ2ls', 'C'))
+      self~assertSame("Non-existent stream, 'cOUn' 2nd arg should return 0", 0, lines('bklwerj4ogusZ2ls', "cOUn"))
+
+      self~assertSame("Non-existent stream, 'CCC' 2nd arg should return 0", 0, lines('', "CCC"))
+
+    ::method test_normal_bytes
+
+      -- Create a temp file with some lines.
+      fileName = createFile(.array~of('dog', 'cat', 'lion', 'tiger'), "delMe_BIF_LinesBytes")
+      self~assertFalse('temp file must be created', fileName == "")
+
+      -- See how many bytes in size it is
+      bytes = stream(fileName, "C", "QUERY SIZE")
+
+      -- If we read in all the bytes, normal should return 0
+      discard = charin(fileName, bytes)
+      self~assertSame('Read all bytes, 0 lines should remain', 0, lines(fileName))
+
+      -- Delete the file and create another one for the next test.
+      junk = lineout(fileName)
+      junk = deleteFile(fileName)
+
+      -- If we read all the bytes but the last new line chars, lines should
+      -- return 1.
+      fileName = createFile(.array~of('tom', 'frank', 'john', 'harry'), "delMe_BIF_LinesBytes2")
+      self~assertFalse('temp file must be created', fileName == "")
+      bytes = stream(fileName, "C", "QUERY SIZE")
+
+      -- On Windows the last two chars are the new line chars, on unix-like,
+      -- just 1 char.  On MAC it has always been only 1 char, although a
+      -- different char on pre MAC OS X.
+      if .ooRexxUnit.OSName~abbrev("WIN") then readBytes = bytes - 2
+      else readBytes = bytes - 1
+
+      discard = charin(fileName, readBytes)
+      self~assertSame('Read all bytes but last newline, 1 line should remain', 1, lines(fileName))
+
+      -- Delete the file
+      junk = lineout(fileName)
+      junk = deleteFile(fileName)
+
+    ::method test_count_bytes
+
+      -- This is a repeat of test_normal_bytes, using count, and no comments.
+      fileName = createFile(.array~of('dog', 'cat', 'lion', 'tiger'), "delMe_BIF_LinesCountB")
+      self~assertFalse('temp file must be created', fileName == "")
+
+      bytes = stream(fileName, "C", "QUERY SIZE")
+      discard = charin(fileName, bytes)
+      self~assertSame('Read all bytes, use "C" options, 0 lines should remain', 0, lines(fileName, 'C'))
+
+      junk = lineout(fileName)
+      junk = deleteFile(fileName)
+      fileName = createFile(.array~of('tom', 'frank', 'john', 'harry'), "delMe_BIF_LinesCount2")
+      self~assertFalse('temp file must be created', fileName == "")
+      bytes = stream(fileName, "C", "QUERY SIZE")
+
+      if .ooRexxUnit.OSName~abbrev("WIN") then readBytes = bytes - 2
+      else readBytes = bytes - 1
+
+      discard = charin(fileName, readBytes)
+      self~assertSame('Read all bytes but last newline, "C" option, 1 line should remain', 1, lines(fileName))
+
+      -- Delete the file
+      junk = lineout(fileName)
+      junk = deleteFile(fileName)
+
+    /* The following all test bad syntax options */
+    ::method test_bad_opt_stdin
+      self~expectSyntax("40.904")
+      j = lines(, "Tom")
+
+    ::method test_bad_opt_noFile
+      self~expectSyntax("40.904")
+      j = lines('bogusFile', "Left")
+
+    ::method test_bad_opt_goodFile
+      self~expectSyntax("40.904")
+      j = lines('ooRexx.Base.BIF.LINES.testUnit', 0)
+
+    ::method test_too_many_opt_goodFile
+      self~expectSyntax("40.4")
+      j = lines('ooRexx.Base.BIF.LINES.testUnit', 'NORMAL', 'COUNT')
+
+    ::method test_too_many_opt_stdin
+      self~expectSyntax("40.4")
+      j = lines(, 'NORMAL', 'COUNT')
+
+    ::method test_way_too_many_opt_stdin
+      self~expectSyntax("40.4")
+      j = lines(, 'N', 'C', 1,2,2,3,4,5,6,7,8,9,0,'t','a','b','d')
+
+    /* This test will fail on 3.2.0, but should pass on later versions of the
+     * interpreter.
+     */
+    ::method test_bad_opt_stdin_nullString
+      self~expectSyntax("40.904")
+      j = lines(, "")
+
+-- End of class: ooRexx.Base.BIF.LINES.testUnit

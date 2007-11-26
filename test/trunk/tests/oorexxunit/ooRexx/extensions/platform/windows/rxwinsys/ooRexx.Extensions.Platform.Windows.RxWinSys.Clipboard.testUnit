@@ -64,6 +64,20 @@
 -- return an empty list to a, possible, caller.
     if .ooRexxUnit.OSName <> "WINDOWS" then return .list~new
 
+    -- Now that we know we are on a Windows box, add the required winsystm.cls
+    --
+    -- Use indirectRequire() to create a rexx program file with the requires
+    -- directive for winsystm.cls.  If an empty string is returned, that
+    -- indicates an error happned, so return the empty list.  Otherwise, call
+    -- the program file, which will add the winsystm.cls definitions to this
+    -- process, and the test cases can execute.  Delete the temporary program
+    -- file.
+    prgFile = indirectRequire('winsystm.cls')
+    if prgFile == "" then return .list~new
+    call (prgFile)
+    j = deleteFile(prgFile)
+
+
 testUnitClass=.ooRexx.Extensions.Platform.Windows.RxWinSys.Clipboard.testUnit  -- change accordingly
 -------------------------------------------------------------------------------------------
    /* list of array objects, each containing the testUnit class object and an
@@ -116,9 +130,13 @@ end
    /* return list of array objects containing test case classes and
       optionally list of mandatory test methods                      */
 return testUnitList
+-- End of entry point.
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
-::requires "WINSYSTM.CLS"
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+  load the ooRexxUnit classes, FileUtils.cls has the requires directive for
+  OOREXXUNIT.CLS
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::requires "FileUtils.cls"
 
 -- class named exactly like file
 ::class "ooRexx.Extensions.Platform.Windows.RxWinSys.Clipboard.testUnit" subclass TestCase public
