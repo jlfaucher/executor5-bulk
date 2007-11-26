@@ -805,10 +805,11 @@ if name~verify('0123456789.') = 0 then ,
 else retc = SockGetHostByName(name, 'hostinfo.!')
 if retc = -1 then return
 address = hostinfo.!addr
-do i = 1 to hostinfo.!alias.0
+-- sometimes no alias or addr info is returned, test for that
+if hostinfo.!alias.0~datatype('W') = 1 then do i = 1 to hostinfo.!alias.0
    alias[i] = hostinfo.!alias.i
    end
-do i = 1 to hostinfo.!addr.0
+if hostinfo.!addr.0~datatype('W') = 1 then do i = 1 to hostinfo.!addr.0
    addr[i] = hostinfo.!addr.i
    end
 return

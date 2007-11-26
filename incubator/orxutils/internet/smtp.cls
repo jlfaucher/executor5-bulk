@@ -2,7 +2,7 @@
 /*                                                                            */
 /* Description: Classes to support SMTP.                                      */
 /*                                                                            */
-/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2007-2008 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -41,7 +41,7 @@
 
 
 ::requires 'mime.cls'
-::requires 'strmsock.cls'
+::requires 'streamsocket.cls'
 
 
 /*----------------------------------------------------------------------------*/
@@ -60,11 +60,6 @@
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::method content     attribute private -- content of the message
-::method from        attribute private -- from header
-::method recipients  attribute private -- recipients header
-::method subject     attribute private -- subject header
-
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -73,6 +68,9 @@
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
+::attribute from           -- from header
+::attribute subject        -- subject header
+
 
 /*----------------------------------------------------------------------------*/
 /* Method: init                                                               */
@@ -80,139 +78,60 @@
 /*----------------------------------------------------------------------------*/
 
 ::method init
-if arg() > 0 then raise syntax 93.902 array (0)
-self~content = ''
-self~from = ''
-self~recipients = .array~new
-self~subject = ''
+expose content from recipients subject
+use strict arg
+content = ''
+from = ''
+recipients = .array~new()
+subject = ''
 return
 
 
 /*----------------------------------------------------------------------------*/
-/* Method: getContent                                                         */
+/* Method: content                                                            */
 /* Description: get the content of the message                                */
 /*----------------------------------------------------------------------------*/
 
-::method getContent
-if arg() > 0 then raise syntax 93.902 array (0)
-return self~content
+::attribute Content get
+expose content
+use strict arg
+return content~string
 
 
 /*----------------------------------------------------------------------------*/
-/* Method: addContent                                                         */
-/* Description: add content to the message                                    */
+/* Method: content=                                                           */
+/* Description: add mime part or mimemultipart to the message                 */
 /*----------------------------------------------------------------------------*/
 
-::method addContent
-if arg() < 1 then raise syntax 93.902 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-use arg part
-self~content = part~getcontent
+::attribute Content set
+expose content
+use strict arg part
+if part~isA(.mimepart) | part~isA(.mimemultipart) | part~isA(.string) then content = part
+else raise syntax 93.948 array('MIMEPART', 'MIMEMULTIPART')
 return
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: getFrom                                                            */
-/* Description: get the from header                                           */
-/*----------------------------------------------------------------------------*/
-
-::method getFrom
-if arg() > 0 then raise syntax 93.902 array (0)
-return self~from
-
-/*----------------------------------------------------------------------------*/
-/* Method: setFrom                                                            */
-/* Description: set the from header                                           */
-/*----------------------------------------------------------------------------*/
-
-::method setFrom
-if arg() < 1 then raise syntax 93.902 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-self~from = arg(1)
-return
-
-/*----------------------------------------------------------------------------*/
-/* Method: CntRecipients                                                      */
-/* Description: get the number of recipients                                  */
-/*----------------------------------------------------------------------------*/
-
-::method CntRecipients
-cnt_rcpt = self~recipients~items
-return cnt_rcpt
-
-/*----------------------------------------------------------------------------*/
-/* Method: getRcptRecipients                                                  */
-/* Description: get the list of recipients                                    */
-/*----------------------------------------------------------------------------*/
-
-::method getRcptRecipients
-use arg rcpt_seq
-max_cnt = self~recipients~items
-if rcpt_seq > maxcnt then return
-rcpt_data = self~recipients[rcpt_seq]
-return rcpt_data
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: getRecipients                                                      */
-/* Description: get the list of recipients                                    */
-/*----------------------------------------------------------------------------*/
-
-::method getRecipients
-if arg() > 0 then raise syntax 93.902 array (0)
-recplist = ''
-linelen = 3 -- add space for the 'To:' prefix
-pad = '   '
-do recp over self~recipients
-   if recplist = '' then do
-      recplist = recp
-      linelen = linelen + recp~length
-      end
-   else do
-      recplist = recplist',' recp
-      linelen = linelen + recp~length + 2
-      end
-   -- the smtp protocol limits header lines to 1000 chars, we will use less
-   if linelen > 80 then do
-      recplist = recplist || '0D0A'x || pad
-      linelen = pad~length
-      end
-   end
-return recplist
 
 
 /*----------------------------------------------------------------------------*/
 /* Method: addRecipient                                                       */
-/* Description: add a new reciepient                                          */
+/* Description: add a recipient                                               */
 /*----------------------------------------------------------------------------*/
 
 ::method addRecipient
-if arg() < 1 then raise syntax 93.902 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-self~recipients[self~recipients~items + 1] = arg(1)
+expose recipients
+use strict arg rec
+recipients[recipients~items + 1] = rec
 return
 
 
 /*----------------------------------------------------------------------------*/
-/* Method: getSubject                                                         */
-/* Description: get the subject header                                        */
+/* Method: Recipients                                                         */
+/* Description: get the recipients                                            */
 /*----------------------------------------------------------------------------*/
 
-::method getSubject
-if arg() > 0 then raise syntax 93.902 array (0)
-return self~subject
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: setSubject                                                         */
-/* Description: set the subject header                                        */
-/*----------------------------------------------------------------------------*/
-
-::method setSubject
-if arg() < 1 then raise syntax 93.902 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-self~subject = arg(1)
-return
+::method Recipients
+expose recipients
+use strict arg
+return recipients
 
 
 /*----------------------------------------------------------------------------*/
@@ -231,43 +150,44 @@ return
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::method authtypes  attribute private -- authorization types, if any
-::method strmsock   attribute private -- stream socket class instance
-::method data       attribute private -- unparsed received data
-::method lhost      attribute private -- local host ip address
-::method rcport     attribute private -- remote SMTP port
-::method resp       attribute private -- raw unparsed command response buffer
-::method rhost      attribute private -- remote SMTP host name/ip address
+::attribute authtypes  private -- authorization types, if any
+::attribute strmsock   private -- stream socket class instance
+::attribute data       private -- unparsed received data
+::attribute lhost      private -- local host ip address
+::attribute rcport     private -- remote SMTP port
+::attribute resp       private -- raw unparsed command response buffer
+::attribute rhost      private -- remote SMTP host name/ip address
 
 
 /*----------------------------------------------------------------------------*/
-/* Method: transactsock                                                       */
+/* Method: strmtransact                                                       */
 /* Description: perform a single socket transaction & check return code       */
 /*----------------------------------------------------------------------------*/
 
 ::method strmtransact private
+expose strmsock cmdresponse response smtperrno
 use arg cmd, respcode
-self~cmdresponse[self~cmdresponse~items + 1] = cmd
-retc = self~strmsock~lineout(cmd)
+cmdresponse[cmdresponse~items + 1] = cmd
+retc = strmsock~lineout(cmd)
 if retc = 1 then return .true
 /* get the response, possibly multiple lines */
-self~cmdresponse[self~cmdresponse~items + 1] = self~strmsock~linein()
-startresp = self~cmdresponse~items
-do while self~cmdresponse[self~cmdresponse~items]~substr(4, 1) = '-'
-   self~cmdresponse[self~cmdresponse~items + 1] = self~strmsock~linein()
+cmdresponse[cmdresponse~items + 1] = strmsock~linein()
+startresp = cmdresponse~items
+do while cmdresponse[cmdresponse~items]~substr(4, 1) = '-'
+   cmdresponse[cmdresponse~items + 1] = strmsock~linein()
    end
 /* check the response & return .false if we find an expected return code */
-self~smtperrno = self~cmdresponse[self~cmdresponse~items]~substr(1, 3)
+smtperrno = cmdresponse[self~cmdresponse~items]~substr(1, 3)
 if respcode = '*' then return .false
 parse var respcode r1 respcode
 do while r1 <> ''
    /* per the RFC 959 only check the first digit of the return code */
-   if r1~substr(1, 1) = self~smtperrno~substr(1, 1) then return .false
+   if r1~substr(1, 1) = smtperrno~substr(1, 1) then return .false
    parse var respcode r1 respcode
    end
 /* we found an unexpected return code */
-do i = startresp to self~cmdresponse~items
-   self~debugsay('StrmSock: unexpected response:' self~cmdresponse[i])
+do i = startresp to cmdresponse~items
+   self~debugsay('StreamSock: unexpected response:' cmdresponse[i])
    end
 return .true
 
@@ -278,19 +198,20 @@ return .true
 /*----------------------------------------------------------------------------*/
 
 ::method auth_login private
+expose authid rhost password
 retc = self~strmtransact('AUTH LOGIN', '3')
 if retc = .true then do
-   self~debugsay('Error: AUTH LOGIN command to' self~rhost 'failed.')
+   self~debugsay('Error: AUTH LOGIN command to' rhost 'failed.')
    return -1
    end
-retc = self~strmtransact(self~authid~encodebase64, '3')
+retc = self~strmtransact(authid~encodebase64, '3')
 if retc = .true then do
-   self~debugsay('Error: AUTH LOGIN command to' self~rhost 'failed.')
+   self~debugsay('Error: AUTH LOGIN command to' rhost 'failed.')
    return -1
    end
-retc = self~strmtransact(self~password~encodebase64, '2')
+retc = self~strmtransact(password~encodebase64, '2')
 if retc = .true then do
-   self~debugsay('Error: AUTH LOGIN command to' self~rhost 'failed.')
+   self~debugsay('Error: AUTH LOGIN command to' rhost 'failed.')
    return -1
    end
 return 0
@@ -313,18 +234,20 @@ return
 /*----------------------------------------------------------------------------*/
 
 ::method setdefaults private
-self~authid = ''                 -- authentication id
-self~authtypes = ''              -- authorization types
-self~cmdresponse = .array~new()  -- all command/status responses from the server
-self~debug = .false              -- .false suppresses debugging information
-self~password = ''               -- account password on the smtp server
-self~rcport = 25                 -- default remote command port
-self~resp = ''                   -- raw unparsed command socket response buffer
-self~response = .nil             -- parsed last command response from the server
-self~rhost = ''                  -- host name or ip address of the smtp server
-self~smtperrno = ''              -- last smtp response code
-self~strmsock = .socket~new()    -- get a stream socket instance
-self~localhost = self~strmsock~gethostbyaddr('127.0.0.1') -- get our hostname
+expose authid authtypes cmdresponse debug password rcport resp response rhost ,
+ smpterrno strmsock localhost
+authid = ''                 -- authentication id
+authtypes = ''              -- authorization types
+cmdresponse = .array~new()  -- all command/status responses from the server
+debug = .false              -- .false suppresses debugging information
+password = ''               -- account password on the smtp server
+rcport = 25                 -- default remote command port
+resp = ''                   -- raw unparsed command socket response buffer
+response = ''               -- parsed last command response from the server
+rhost = ''                  -- host name or ip address of the smtp server
+smtperrno = ''              -- last smtp response code
+strmsock = .nil             -- get a stream socket instance
+localhost = .socket~gethostbyaddr('127.0.0.l') -- get our host info
 return
 
 
@@ -335,13 +258,13 @@ return
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::method authid      attribute -- authentication id (username@xxx.com)
-::method cmdresponse attribute -- all parsed commands and responses
-::method debug       attribute -- .false suppresses debug messages
-::method localhost   attribute -- our local host name
-::method password    attribute -- remote SMTP password
-::method response    attribute -- parsed command response from last command
-::method smtperrno   attribute -- last smtp response code
+::attribute authid          -- authentication id (username@xxx.com)
+::attribute cmdresponse     -- all parsed commands and responses
+::attribute debug           -- .false suppresses debug messages
+::attribute localhost   get -- our local host name
+::attribute password        -- remote SMTP password
+::attribute response        -- parsed command response from last command
+::attribute smtperrno       -- last smtp response code
 
 /*----------------------------------------------------------------------------*/
 /* Method: init                                                               */
@@ -349,21 +272,20 @@ return
 /*----------------------------------------------------------------------------*/
 
 ::method init
-if arg() > 0 then raise syntax 93.902 array (0)
+use strict arg
 self~setdefaults
-self~strmsock = .socket~new
 return
 
 
 /*----------------------------------------------------------------------------*/
-/* Method: setLocalhost                                                       */
+/* Method: Localhost=                                                         */
 /* Description: set the local host name                                       */
 /*----------------------------------------------------------------------------*/
 
-::method setLocalHost
-if arg() < 1 then raise syntax 93.902 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-self~localhost = arg(1)
+::attribute LocalHost set
+expose localhost
+use strict arg localhost
+if localhost~isA(.hostinfo) then localhost= localhost~name
 return
 
 
@@ -377,63 +299,44 @@ return
 /*----------------------------------------------------------------------------*/
 
 ::method Connect
-self~response = .array~new()
-self~smtperrno = ''
-/* check the arguments */
-if arg() > 3 then raise syntax 93.902 array (3)
-/* a authid without a password is useless */
-if arg() = 2 then raise syntax 93.903 array (4)
-if arg() < 1 then raise syntax 93.901 array (1)
-select
-   when arg() = 1 then do
-      use arg thost
-      tport = 25
-      tauth = ''
-      tpassword = ''
-      end
-   when arg() = 3 then do
-      use arg thost, tauth, tpassword
-      end
-   otherwise nop
-   end
-self~rhost = thost
-self~authid = tauth
-self~password = tpassword
+expose rhost authid password rcport strmsock cmdresponse localhost authtypes
+use strict arg rhost, authid = '', password = ''
 /* check to see if an alternate port was specified */
-hostname = self~rhost
+hostname = rhost
 parse var hostname hostname ':' tport
 if tport <> '' then do
-   self~rhost = hostname
+   rhost = hostname
    if tport~datatype('W') = 0 then do
       return -1
       end
-   self~rcport = tport
+   rcport = tport
    end
-retc = self~strmsock~open(self~rhost, self~rcport)
+strmsock = .streamsocket~new(rhost, rcport)
+retc = strmsock~open()
 if retc = .true then return -1
 /* get the header message from the server */
-self~debugsay('waiting on the header from' self~rhost)
+self~debugsay('waiting on the header from' rhost)
 /* get the response, possibly multiple lines */
-self~cmdresponse[self~cmdresponse~items + 1] = self~strmsock~linein()
-startresp = self~cmdresponse~items
-do while self~cmdresponse[self~cmdresponse~items]~substr(4, 1) = '-'
-   self~cmdresponse[self~cmdresponse~items + 1] = self~strmsock~linein()
+cmdresponse[cmdresponse~items + 1] = strmsock~linein()
+startresp = cmdresponse~items
+do while cmdresponse[cmdresponse~items]~substr(4, 1) = '-'
+   cmdresponse[cmdresponse~items + 1] = strmsock~linein()
    end
 /* get the capabilities of the server */
-retc = self~strmtransact('EHLO' self~localhost, '2')
+retc = self~strmtransact('EHLO' localhost~name, '2')
 if retc = .true then return -1
 /* get the authorization capability */
-do i = 1 to self~cmdresponse~items
-   self~debugsay(self~cmdresponse[i])
-   if self~cmdresponse[i]~substr(5, 4) = 'AUTH' then do
-      self~authtypes = self~cmdresponse[i]~substr(5)
+do i = 1 to cmdresponse~items
+   self~debugsay(cmdresponse[i])
+   if cmdresponse[i]~substr(5, 4) = 'AUTH' then do
+      authtypes = cmdresponse[i]~substr(5)
       leave
       end
    end
 /* if necessary, login */
 select
    /* select the authorization method to use to login */
-   when self~authtypes~pos('LOGIN') > 0 then retc = self~auth_login()
+   when authtypes~pos('LOGIN') > 0 then retc = self~auth_login()
    otherwise retc = 0
    end
 return retc
@@ -445,13 +348,12 @@ return retc
 /*----------------------------------------------------------------------------*/
 
 ::method Logoff
-self~response = .array~new()
-/* check/get args */
-if arg() > 0 then raise syntax 93.902 array (0)
+expose responce strmsock
+use strict arg
 /* log the user off */
-retc = self~strmsock~lineout('QUIT')
+retc = strmsock~lineout('QUIT')
 /* shutdown the socket */
-self~strmsock~close
+strmsock~close
 /* reset all the defaults */
 self~setdefaults
 return 0
@@ -463,26 +365,22 @@ return 0
 /*----------------------------------------------------------------------------*/
 
 ::method Send
-if arg() < 1 then raise syntax 93.902 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
+expose response rhost strmsock cmdresponse
+use strict arg msg
 use arg msg
-if msg~defaultname~translate~pos('SMTPMSG') = 0 then ,
- raise syntax 93.948 array (1, 'SMTPMsg')
-self~response = .array~new()
+if \msg~isA(.smtpmsg) then raise syntax 93.948 array (1, 'SMTPMsg')
+response = .array~new()
 /* send the 'To:' header */
-retc = self~strmtransact('MAIL FROM:'msg~getFrom, '2')
+retc = self~strmtransact('MAIL FROM:'msg~From, '2')
 if retc = .true then do
-   self~debugsay('Error: MAIL FROM command to' self~rhost 'failed.')
+   self~debugsay('Error: MAIL FROM command to' rhost 'failed.')
    return -1
    end
 /* send the 'From:' header */
-rcpt_count = msg~CntRecipients
-do cnt2 = 1 to rcpt_count
-   torcpt = msg~getRcptRecipients(cnt2)
-   tofield = 'RCPT TO: ' || torcpt || '  '
-   retc = self~strmtransact(tofield, '2')
+do rec over msg~recipients
+   retc = self~strmtransact('RCPT TO:' rec, '2')
    if retc = .true then do
-      self~debugsay('Error: RCPT TO command to' self~rhost 'failed.')
+      self~debugsay('Error: RCPT TO command to' rhost 'failed.')
       return -1
       end
    end
@@ -492,19 +390,19 @@ if retc = .true then do
    self~debugsay('Error: DATA command to' self~rhost 'failed.')
    return -1
    end
-retc = self~strmsock~lineout('From:'msg~getFrom)
-retc = self~strmsock~lineout('To:'msg~getRecipients)
-retc = self~strmsock~lineout('Subject:'msg~getSubject)
-retc = self~strmsock~lineout(msg~getContent)
+retc = self~strmsock~lineout('From:' msg~From)
+retc = self~strmsock~lineout('To:' msg~Recipients)
+retc = self~strmsock~lineout('Subject:' msg~Subject)
+retc = self~strmsock~lineout(msg~content)
 retc = self~strmsock~lineout('.')
 /* get and check the response */
-self~cmdresponse[self~cmdresponse~items + 1] = self~strmsock~linein()
-startresp = self~cmdresponse~items
-do while self~cmdresponse[self~cmdresponse~items]~substr(4, 1) = '-'
-   self~cmdresponse[self~cmdresponse~items + 1] = self~strmsock~linein()
+cmdresponse[cmdresponse~items + 1] = strmsock~linein()
+startresp = cmdresponse~items
+do while cmdresponse[cmdresponse~items]~substr(4, 1) = '-'
+   cmdresponse[cmdresponse~items + 1] = strmsock~linein()
    end
-if self~cmdresponse[self~cmdresponse~items]~substr(1, 1) \= '2' then do
-   self~debugsay('Error: DATA command to' self~rhost 'failed.')
+if cmdresponse[cmdresponse~items]~substr(1, 1) \= '2' then do
+   self~debugsay('Error: DATA command to' rhost 'failed.')
    return -1
    end
 return 0

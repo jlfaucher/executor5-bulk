@@ -1,3 +1,4 @@
+#!/usr/bin/rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Description: Test the SMTP and Mime classes.                               */
@@ -47,26 +48,25 @@ mime2~addContent('Another test.' || '0D0A'x)
 
 -- build a multipart mime part
 mimemp = .mimemultipart~new
-mimemp~addContent(mime1)
-mimemp~addContent(mime2)
+mimemp~addPart(mime1)
+mimemp~addPart(mime2)
 
 -- build an smtp message
 msg = .smtpmsg~new
-msg~setFrom('dashley@us.ibm.com')
-msg~addRecipient('dashley@holmes4.com')
-msg~setSubject('Test SMTP Msg From ooRexx')
-msg~addContent(mimemp)
+msg~From = 'dashley@holmes4.com'
+msg~addRecipient('dashley@us.ibm.com')
+msg~Subject = 'Test SMTP Msg From ooRexx'
+msg~Content = mimemp
 
 -- send the mail message
 smtpconx = .smtp~new
-smtpconx~debug = .true
--- retc = smtpconx~connect('127.0.0.1')
--- retc = smtpconx~connect('na.relay.ibm.com')
--- retc = smtpconx~connect('192.168.0.2')
-retc = smtpconx~connect('holmes4.com', 'myuser@holmes4.com', 'mypasswd')
+retc = smtpconx~connect('holmes4.com', 'dashley@holmes4.com', 'xxx')
 if retc = -1 then return
 retc = smtpconx~send(msg)
 if retc = -1 then return
+do rsp over smtpconx~cmdresponse
+   say rsp
+   end
 retc = smtpconx~logoff
 return
 
