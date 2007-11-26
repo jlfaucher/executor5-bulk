@@ -1226,6 +1226,9 @@ pp: procedure
       say
    end
 
+   versionStr = .ooRexxUnit.interpreterName .ooRexxUnit.languageLevel .ooRexxUnit.interpreterDate
+   say "Interpreter:" versionStr
+   say
    say "Count of tests ran:            " aTestResult~runCount
    say "Count of successful assertions:" aTestResult~assertCount
    say "Count of failures:             " aTestResult~failureCount
@@ -1244,6 +1247,8 @@ pp: procedure
    -- the summary statistics again so that the number of failures is obvious to
    -- the user.
    if (aTestResult~failureCount + aTestResult~errorCount) > 3 then do
+     say "Interpreter:" versionStr
+     say
      say "Count of tests ran:            " aTestResult~runCount
      say "Count of successful assertions:" aTestResult~assertCount
      say "Count of failures:             " aTestResult~failureCount
