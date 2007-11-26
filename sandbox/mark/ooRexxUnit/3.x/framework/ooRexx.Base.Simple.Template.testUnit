@@ -1,0 +1,116 @@
+#!/usr/bin/rexx
+/*
+   name:             ooRexx.Base.Simple.Template.testUnit
+   author:           <name>
+   date:             <date>
+   version:          0.0.0
+   changed:
+
+   languageLevel:    6.0
+   purpose:          A simple template file for starting test units.
+                     <put your purpose above>
+
+   remark:           <put any extra remarks here.  not necessarily needed.>
+                     The example test units have a lot of comment and other
+                     cruft in them that make them good for learning, but not
+                     so good for a boiler-plate file.  This file is a stripped
+                     down template that can be used to start a test unit by
+                     someone past the initial learning stage.
+
+                     <search and replace ooRexx.Base.Simple.Template.testUnit
+                      with the real test unit name>
+
+                     <strip out this remark section>
+
+
+   license:          CPL 1.0 (Common Public License v1.0, see below)
+   link:
+
+   category1:        ooRexx
+   category2:        Base
+   category3:        Template
+
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+  testUnitClass = .ooRexx.Base.Simple.Template.testUnit
+
+  testUnitList = .list~of(.array~of(testUnitClass, .list~new))
+
+  srcLines = .array~new
+  do i = 1 to 150 until srcLines[i] = "*/"
+     srcLines[i] = sourceline(i)
+  end
+
+  call makeDirTestInfo testUnitClass, srcLines
+
+  parse source s
+  testUnitClass~testCaseInfo~setentry("test_Case-source", s)
+
+  if \ .local~hasentry("bRunTestsLocally") then
+     .local~bRunTestsLocally = .true
+
+  if .bRunTestsLocally == .true then do
+    ts = .TestSuite~new
+    ts~addTest(.TestSuite~new(testUnitClass))
+
+    testResult = ts~run
+    call simpleFormatTestResults testResult
+  end
+
+return testUnitList
+-- End of entry point.
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+  Directives, Classes, or Routines.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::requires "OOREXXUNIT.CLS"
+
+/* class: ooRexx.Base.Simple.Template.testUnit - - - - - - - - - - - - - - - -*\
+
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class ooRexx.Base.Simple.Template.testUnit public subclass TestCase
+
+  ::method test_YYY
+    self~assertTrue(".true must be true", .true)
+
+  ::method  test_XXX
+    self~assertSame("'dog' is the same as 'dog'", 'dog', 'dog')
+
+
+-- End of class: ooRexx.Base.Simple.Template.testUnit
