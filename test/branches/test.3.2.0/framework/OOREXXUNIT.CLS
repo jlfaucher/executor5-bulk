@@ -1368,9 +1368,16 @@ return a
 
   line = info[1]
   if line~abbrev("@assert") then do
-    parse var line atWord assert "expected=" expected ", actual=" actual
-    assert = assert~strip~strip('T', ':')
-    actual = actual~strip('T', '.')
+    if line~word(2)~abbrev('check4Condition') then do
+      parse var line . '['expected']' .
+      assert = "Error should be raised"
+      actual = "Not raised"
+    end
+    else do
+      parse var line atWord assert "expected=" expected ", actual=" actual
+      assert = assert~strip~strip('T', ':')
+      actual = actual~strip('T', '.')
+    end
     say "  Failed:" assert
     say "    Expected:" expected
     say "    Actual:  " actual
