@@ -114,7 +114,7 @@ do
    -- testResult=.testSuite~new(testUnitClass)~run
    testResult=ts~run       -- now run all the tests
 
-   call simpleDumpTestResults testResult
+   call simpleFormatTestResults testResult
 end
 
    /* return list of array objects containing test case classes and
@@ -320,12 +320,19 @@ return testUnitList
   d2=c~interSection(other)
   self~assertTrue("subtest8: 'other' is an 'OrderedCollection'", sameContent(d1, d2))
 
-   -- now test where other is a 'MapCollection': "makeArray" returns "allItems"
-  other=.table~new
-  other["2"]='item mapped by index "2"'
-  other[o1] ='item mapped by index "o1"'
-  d2=c~interSection(other)
-  self~assertTrue("subtest9: 'other' is a 'MapCollection'", sameContent(d1, d2))
+   -- A simplistic intersection test using a table
+  receiverSet = .set~of("Tom", "Frank", "Mary")
+
+  argumentTable = .table~new
+  argumentTable["Tom"]   = "Tom"
+  argumentTable["Frank"] = "Frank"
+  argumentTable["Sue"]   = "Sue"
+
+  expectedSet = .set~of("Tom", "Frank")
+
+  resultObj = receiverSet~interSection(argumentTable)
+  self~assertTrue("Result object after intersection must be same class as receiver", resultObj~isA(.set))
+  self~assertTrue("Result after intersection should match expected", sameContent(resultObj, expectedSet))
 
 
 ::method "test_isInstanceOf"     -- test whether collection object is of the correct kind (class)
@@ -609,15 +616,18 @@ return testUnitList
   d2=c~subSet(other)
   self~assertFalse("subtest14: 'other' is an 'OrderedCollection'", d2)
 
-   -- now test where other is a 'MapCollection': "makeArray" returns "allItems"
-  other=.table~new
-  other["2"]='item mapped by index "2"'
-  other[o1] ='item mapped by index "o1"'
-  d2=c~subSet(other)
+  -- Some simplistic subset tests where the arguement object is a table.
+  receiverSet = .set~of("Tom", "Frank", "Mary")
 
-  self~assertFalse("subtest15: 'other' is a 'MapCollection'", d2)
+  argumentTable = .table~new
+  argumentTable["Tom"]   = "Tom"
+  argumentTable["Frank"] = "Frank"
+  argumentTable["Sue"]   = "Sue"
+  argumentTable["Mary"]  = "Mary"
+  self~assertTrue("Set of Tom Frank Mary is subset of Tom Frank Sue Mary", receiverSet~subset(argumentTable))
 
-
+  receiverSet~put("Nancy")
+  self~assertFalse("Set of Tom Frank Mary Nancy is NOT subset of Tom Frank Sue Mary", receiverSet~subset(argumentTable))
 
    -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
   other=.array~new
@@ -629,16 +639,6 @@ return testUnitList
   other[107]=o1
   d2=c~subSet(other)
   self~assertTrue("subtest16: 'other' is an 'OrderedCollection'", d2)
-
-   -- now test where other is a 'MapCollection': "makeArray" returns "allItems"
-  other=.table~new
-  other["1"]='item mapped by index "1"'
-  other["2"]='item mapped by index "2"'
-  other[o1] ='item mapped by index "o1"'
-  other["3"] ='item mapped by index "3"'
-  d2=c~subSet(other)
-
-  self~assertTrue("subtest17: 'other' is a 'MapCollection'", d2)
 
 
 
@@ -697,15 +697,21 @@ makeColl: procedure
   d2=c~union(other)
   self~assertTrue("subtest8: 'other' is an 'OrderedCollection'", sameContent(d1, d2))
 
-   -- now test where other is a 'MapCollection': "makeArray" returns "allItems"
-  other=.table~new
-  other["2"]='item mapped by index "2"'
-  other[o1] ='item mapped by index "o1"'
-  d2=c~union(other)
+  -- Simplistic test of union where the argument collection is a table.
+  receiverSet = .set~of("Tom", "Frank", "Mary")
 
-  self~assertTrue("subtest9: 'other' is a 'MapCollection'", sameContent(d1, d2))
+  argumentTable = .table~new
+  argumentTable["Tom"]   = "Tom"
+  argumentTable["Frank"] = "Frank"
+  argumentTable["Sue"]   = "Sue"
 
+  expectedSet = .set~of("Tom", "Frank", "Mary", "Sue")
 
+  nl = '0d0a'x
+  resultObj = receiverSet~union(argumentTable)
+  self~assertTrue("Result object after union must be same class as receiver", resultObj~isA(.set))
+  self~assertTrue("Expected union of Tom Frank Mary with Tom Frank Sue is:" || nl || -
+                  "Tom Frank Mary Sue", sameContent(resultObj, expectedSet))
 
 
 ::method "test_xor"
@@ -738,13 +744,21 @@ makeColl: procedure
   d2=c~xor(other)
   self~assertTrue("subtest8: 'other' is an 'OrderedCollection'", sameContent(d1, d2))
 
-   -- now test where other is a 'MapCollection': "makeArray" returns "allItems"
-  other=.table~new
-  other["2"]='item mapped by index "2"'
-  other[o1] ='item mapped by index "o1"'
-  d2=c~xor(other)
+  -- Simplistic XOR test where the argument collection is a table.
+  receiverSet = .set~of("Tom", "Frank", "Mary")
 
-  self~assertTrue("subtest9: 'other' is a 'MapCollection'", sameContent(d1, d2))
+  argumentTable = .table~new
+  argumentTable["Tom"]   = "Tom"
+  argumentTable["Frank"] = "Frank"
+  argumentTable["Sue"]   = "Sue"
+
+  expectedSet = .set~of("Mary", "Sue")
+
+  nl = '0d0a'x
+  resultObj = receiverSet~xor(argumentTable)
+  self~assertTrue("Result object after xor must be same class as receiver", resultObj~isA(.set))
+  self~assertTrue("Expected XOR of Tom Frank Mary with Tom Frank Sue is:" || nl || -
+                  "Mary Sue", sameContent(resultObj, expectedSet))
 
 
 
