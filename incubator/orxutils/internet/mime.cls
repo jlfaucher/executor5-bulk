@@ -56,13 +56,7 @@
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::method mimever     attribute private -- mime-version header
-::method contenttype attribute private -- content-type header
-::method encoding    attribute private -- content-transfer-encoding header
-::method contentid   attribute private -- content-id header
-::method contentdesc attribute private -- content-description header
-::method contentdisp attribute private -- content-disposition header
-::method content     attribute private -- the actual content
+::attribute mimever     private -- mime-version header
 
 
 /*----------------------------------------------------------------------------*/
@@ -72,6 +66,13 @@
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
+::attribute type                -- content-type header
+::attribute encoding            -- content-transfer-encoding header
+::attribute id                  -- content-id header
+::attribute description         -- content-description header
+::attribute disposition         -- content-disposition header
+::attribute content     get     -- the actual content
+
 
 /*----------------------------------------------------------------------------*/
 /* Method: init                                                               */
@@ -79,136 +80,17 @@
 /*----------------------------------------------------------------------------*/
 
 ::method init
+expose mimever type encoding id description disposition content
 if arg() > 1 then raise syntax 93.902 array (1)
-self~mimever = '1.0'
-if arg() = 1 then self~contenttype = arg(1)
-else self~contenttype = 'text/plain'
-self~encoding = ''
-self~contentid = ''
-self~contentdesc = ''
-self~contentdisp = ''
-self~content = ''
+mimever = '1.0'
+if arg() = 1 then type = arg(1)
+else type = 'text/plain'
+encoding = ''
+id = ''
+description = ''
+disposition = ''
+content = ''
 return
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: getContentType                                                     */
-/* Description: get the Content-Type header                                   */
-/*----------------------------------------------------------------------------*/
-
-::method getContentType
-if arg() > 0 then raise syntax 93.902 array (0)
-return self~contenttype
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: setContentType                                                     */
-/* Description: set the Content-Type header                                   */
-/*----------------------------------------------------------------------------*/
-
-::method setContentType
-if arg() < 1 then raise syntax 93.901 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-self~contenttype = arg(1)
-return
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: getContentEncoding                                                 */
-/* Description: get the Content-Transfer-Encoding header                      */
-/*----------------------------------------------------------------------------*/
-
-::method getContentEncoding
-if arg() > 0 then raise syntax 93.902 array (0)
-return self~encoding
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: setContentEncoding                                                 */
-/* Description: set the Content-Transfer-Encoding header                      */
-/*----------------------------------------------------------------------------*/
-
-::method setContentEncoding
-if arg() < 1 then raise syntax 93.901 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-self~encoding = arg(1)
-return
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: getContentID                                                       */
-/* Description: get the Content-ID header                                     */
-/*----------------------------------------------------------------------------*/
-
-::method getContentID
-if arg() > 0 then raise syntax 93.902 array (0)
-return self~contentid
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: setContentID                                                       */
-/* Description: set the Content-ID header                                     */
-/*----------------------------------------------------------------------------*/
-
-::method setContentID
-if arg() < 1 then raise syntax 93.901 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-self~contentid = arg(1)
-return
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: getContentDesc                                                     */
-/* Description: get the Content-Description header                            */
-/*----------------------------------------------------------------------------*/
-
-::method getContentDesc
-if arg() > 0 then raise syntax 93.902 array (0)
-return self~contentdesc
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: setContentDesc                                                     */
-/* Description: set the Content-Description header                            */
-/*----------------------------------------------------------------------------*/
-
-::method setContentDesc
-if arg() < 1 then raise syntax 93.901 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-self~contentdesc = arg(1)
-return
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: getContentDisp                                                     */
-/* Description: get the Content-Disposition header                            */
-/*----------------------------------------------------------------------------*/
-
-::method getContentDisp
-if arg() > 0 then raise syntax 93.902 array (0)
-return self~contentdisp
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: setContentDisp                                                     */
-/* Description: set the Content-Disposition header                            */
-/*----------------------------------------------------------------------------*/
-
-::method setContentDisp
-if arg() < 1 then raise syntax 93.901 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-self~contentdisp = arg(1)
-return
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: getContent                                                         */
-/* Description: get the content                                               */
-/*----------------------------------------------------------------------------*/
-
-::method getContent
-if arg() > 0 then raise syntax 93.902 array (0)
-return self~content
 
 
 /*----------------------------------------------------------------------------*/
@@ -217,35 +99,37 @@ return self~content
 /*----------------------------------------------------------------------------*/
 
 ::method addContent
+expose content
 if arg() < 1 then raise syntax 93.901 array (1)
 if arg() > 1 then raise syntax 93.902 array (1)
-self~content = self~content || arg(1)
+content = content || arg(1)
 return
 
 
 /*----------------------------------------------------------------------------*/
-/* Method: getMimePart                                                        */
+/* Method: string                                                             */
 /* Description: returns the entire formatted mime message                     */
 /*----------------------------------------------------------------------------*/
 
-::method getMimePart
+::method string
+expose mimever type encoding id description disposition content
 if arg() > 0 then raise syntax 93.902 array (0)
 crlf = '0D0A'x
-headers = 'MIME-Version:' || self~mimever || crlf
-if self~contenttype <> '' then do
-   headers = headers || 'Content-Type:' || self~contenttype || crlf
+headers = 'MIME-Version:' mimever || crlf
+if type <> '' then do
+   headers = headers || 'Content-Type:' type || crlf
    end
-if self~encoding <> '' then do
-   headers = headers || 'Content-Transfer-Encoding:' || self~encoding || crlf
+if encoding <> '' then do
+   headers = headers || 'Content-Transfer-Encoding:' encoding || crlf
    end
-if self~contentid <> '' then do
-   headers = headers || 'Content-ID:' || self~contentid || crlf
+if id <> '' then do
+   headers = headers || 'Content-ID:' id || crlf
    end
-if self~contentdesc <> '' then do
-   headers = headers || 'Content-Description:' || self~contentdesc || crlf
+if description <> '' then do
+   headers = headers || 'Content-Description:' description || crlf
    end
-if self~contentdisp <> '' then do
-   headers = headers || 'Content-Disposition:' || self~contentdisp || crlf
+if disposition <> '' then do
+   headers = headers || 'Content-Disposition:' disposition || crlf
    end
 mime = headers || crlf || self~content || crlf
 return mime
@@ -267,13 +151,8 @@ return mime
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::method mimever     attribute private -- mime-version header
-::method contenttype attribute private -- content-type header
-::method encoding    attribute private -- content-transfer-encoding header
-::method contentid   attribute private -- content-id header
-::method contentdesc attribute private -- content-description header
-::method contentdisp attribute private -- content-disposition header
-::method multiparts  attribute private -- each mime part
+::attribute mimever     private -- mime-version header
+::attribute multiparts  private -- each mime part
 
 
 /*----------------------------------------------------------------------------*/
@@ -283,6 +162,12 @@ return mime
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
+::attribute type                -- content-type header
+::attribute encoding            -- content-transfer-encoding header
+::attribute id                  -- content-id header
+::attribute description         -- content-description header
+::attribute disposition         -- content-disposition header
+
 
 /*----------------------------------------------------------------------------*/
 /* Method: init                                                               */
@@ -290,162 +175,67 @@ return mime
 /*----------------------------------------------------------------------------*/
 
 ::method init
+expose mimever type encoding id description disposition content multiparts
 if arg() > 0 then raise syntax 93.902 array (0)
-self~mimever = '1.0'
-self~contenttype = 'multipart/mixed'
-self~encoding = ''
-self~contentid = ''
-self~contentdesc = ''
-self~contentdisp = ''
-self~multiparts = .array~new
+mimever = '1.0'
+type = 'multipart/mixed'
+encoding = ''
+id = ''
+description = ''
+disposition = ''
+multiparts = .array~new
 return
 
 
 /*----------------------------------------------------------------------------*/
-/* Method: getContentType                                                     */
-/* Description: get the Content-Type header                                   */
-/*----------------------------------------------------------------------------*/
-
-::method getContentType
-if arg() > 0 then raise syntax 93.902 array (0)
-return self~contenttype
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: getContentEncoding                                                 */
-/* Description: get the Content-Transfer-Encoding header                      */
-/*----------------------------------------------------------------------------*/
-
-::method getContentEncoding
-if arg() > 0 then raise syntax 93.902 array (0)
-return self~encoding
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: setContentEncoding                                                 */
-/* Description: set the Content-Transfer-Encoding header                      */
-/*----------------------------------------------------------------------------*/
-
-::method setContentEncoding
-if arg() < 1 then raise syntax 93.901 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-self~encoding = arg(1)
-return
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: getContentID                                                       */
-/* Description: get the Content-ID header                                     */
-/*----------------------------------------------------------------------------*/
-
-::method getContentID
-if arg() > 0 then raise syntax 93.902 array (0)
-return self~contentid
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: setContentID                                                       */
-/* Description: set the Content-ID header                                     */
-/*----------------------------------------------------------------------------*/
-
-::method setContentID
-if arg() < 1 then raise syntax 93.901 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-self~contentid = arg(1)
-return
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: getContentDesc                                                     */
-/* Description: get the Content-Description header                            */
-/*----------------------------------------------------------------------------*/
-
-::method getContentDesc
-if arg() > 0 then raise syntax 93.902 array (0)
-return self~contentdesc
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: setContentDesc                                                     */
-/* Description: set the Content-Description header                            */
-/*----------------------------------------------------------------------------*/
-
-::method setContentDesc
-if arg() < 1 then raise syntax 93.901 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-self~contentdesc = arg(1)
-return
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: getContentDisp                                                     */
-/* Description: get the Content-Disposition header                            */
-/*----------------------------------------------------------------------------*/
-
-::method getContentDisp
-if arg() > 0 then raise syntax 93.902 array (0)
-return self~contentdisp
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: setContentDisp                                                     */
-/* Description: set the Content-Disposition header                            */
-/*----------------------------------------------------------------------------*/
-
-::method setContentDisp
-if arg() < 1 then raise syntax 93.901 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-self~contentdisp = arg(1)
-return
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: addContent                                                         */
+/* Method: addPart                                                            */
 /* Description: add a mime part                                               */
 /*----------------------------------------------------------------------------*/
 
-::method addContent
+::method addPart
+expose multiparts
 if arg() < 1 then raise syntax 93.901 array (1)
 if arg() > 1 then raise syntax 93.902 array (1)
 use arg part
-if part~defaultname~translate~pos('MIMEPART') > 0 then do
-   if self~multiparts~last = .nil then self~multiparts[1] = part~getmimepart()
-   else self~multiparts[self~multiparts~last + 1] = part~getmimepart()
+if part~isA(.mimepart) then do
+   if multiparts~items = 0 then multiparts[1] = part
+   else multiparts[multiparts~last + 1] = part
    end
 else raise syntax 93.948 array('MIMEPART')
 return
 
 
 /*----------------------------------------------------------------------------*/
-/* Method: getContent                                                         */
+/* Method: string                                                             */
 /* Description: get the content                                               */
 /*----------------------------------------------------------------------------*/
 
-::method getContent
+::method string
+expose mimever type encoding id description disposition content multiparts
 if arg() > 0 then raise syntax 93.902 array (0)
 if arg() > 0 then raise syntax 93.902 array (0)
 crlf = '0D0A'x
-headers = 'MIME-Version:' || self~mimever || crlf
+headers = 'MIME-Version:' mimever || crlf
 boundary = '===ooRexx=Mime=Part===' || c2x(date('b') || time('L')) || '=='
-self~contenttype = 'multipart/mixed; boundary="' || boundary || '"'
-headers = headers || 'Content-Type:' || self~contenttype || crlf
-if self~encoding <> '' then do
-   headers = headers || 'Content-Transfer-Encoding:' || self~encoding || crlf
+type = 'multipart/mixed; boundary="' || boundary || '"'
+headers = headers || 'Content-Type:' type || crlf
+if encoding <> '' then do
+   headers = headers || 'Content-Transfer-Encoding:' encoding || crlf
    end
-if self~contentid <> '' then do
-   headers = headers || 'Content-ID:' || self~contentid || crlf
+if id <> '' then do
+   headers = headers || 'Content-ID:' id || crlf
    end
-if self~contentdesc <> '' then do
-   headers = headers || 'Content-Description:' || self~contentdesc || crlf
+if description <> '' then do
+   headers = headers || 'Content-Description:' description || crlf
    end
-if self~contentdisp <> '' then do
-   headers = headers || 'Content-Disposition:' || self~contentdisp || crlf
+if disposition <> '' then do
+   headers = headers || 'Content-Disposition:' disposition || crlf
    end
 mime = headers || crlf
-if self~multiparts~last \= .nil then do
-   do x over self~multiparts
+if multiparts~last \= .nil then do
+   do part over multiparts
       mime = mime || '--' || boundary || crlf
-      mime = mime || x || crlf
+      mime = mime || part~string || crlf
       end
    mime = mime || '--' || boundary || '--' || crlf
    end
