@@ -91,7 +91,7 @@ Beta .4.1   11/20/07
 -- get/set positive grouping
 ::attribute pGrouping get
 ::attribute pGrouping set
-    expose pGrouping pPrefix pMask pSuffix nPrefix nMask nSuffix zMask have_zMask
+    expose pGrouping pMask
     use strict arg new_grouping
     if \new_grouping~datatype('O') then
         raise syntax 93.900 array('Positive Grouping Indicator Must Be A Logical Value')
@@ -113,7 +113,7 @@ return 0
 -- get/set negative grouping
 ::attribute nGrouping get
 ::attribute nGrouping set
-    expose nGrouping pPrefix pMask pSuffix nPrefix nMask nSuffix zMask have_zMask
+    expose nGrouping nMask
     use strict arg new_grouping
     if \new_grouping~datatype('O') then
         raise syntax 93.900 array('Negative Grouping Indicator Must Be A Logical Value')
@@ -135,7 +135,7 @@ return 0
 -- get/set postive prefix
 ::attribute pPrefix get
 ::attribute pPrefix set
-    expose pPrefix pMask pSuffix nPrefix nMask nSuffix zMask have_zMask
+    expose pPrefix
     use strict arg new_pattern
     pPrefix = new_pattern
     self~buildMask
@@ -144,7 +144,7 @@ return 0
 -- get/set positive pattern
 ::attribute pMask get
 ::attribute pMask set
-    expose pPrefix pMask pSuffix nPrefix nMask nSuffix zMask have_zMask
+    expose pMask
     use strict arg new_pattern
     pMask = new_pattern
     self~buildMask
@@ -153,7 +153,7 @@ return 0
 -- get/set positive suffix
 ::attribute pSuffix get
 ::attribute pSuffix set
-    expose pPrefix pMask pSuffix nPrefix nMask nSuffix zMask have_zMask
+    expose pSuffix
     use strict arg new_pattern
     pSuffix = new_pattern
     self~buildMask
@@ -162,7 +162,7 @@ return 0
 -- get/set negative prefix
 ::attribute nPrefix get
 ::attribute nPrefix set
-    expose pPrefix pMask pSuffix nPrefix nMask nSuffix zMask have_zMask
+    expose nPrefix
     use strict arg new_pattern
     nPrefix = new_pattern
     self~buildMask
@@ -171,7 +171,7 @@ return 0
 -- get/set negative pattern
 ::attribute nMask get
 ::attribute nMask set
-    expose pPrefix pMask pSuffix nPrefix nMask nSuffix zMask have_zMask
+    expose nMask
     use strict arg new_pattern
     nMask = new_pattern
     self~buildMask
@@ -180,7 +180,7 @@ return 0
 -- get/set negative suffix
 ::attribute nSuffix get
 ::attribute nSuffix set
-    expose pPrefix pMask pSuffix nPrefix nMask nSuffix zMask have_zMask
+    expose nSuffix
     use strict arg new_pattern
     nSuffix = new_pattern
     self~buildMask
@@ -188,7 +188,7 @@ return 0
 
 ::attribute zMask get
 ::attribute zMask set
-    expose pPrefix pMask pSuffix nPrefix nMask nSuffix zMask have_zMask
+    expose zMask have_zMask
     use strict arg new_pattern
     zMask = new_pattern
     have_zMask = .true
@@ -235,13 +235,12 @@ return 0
     if new_separator~length <> 1 then
         raise syntax 93.900 array('Decimal Separator Must Have A Length of 1')
     decimalSeparator = new_separator
-
 return 0
 
 -- get/set groupingSeparator
 ::attribute groupingSeparator get
 ::attribute groupingSeparator set
-    expose groupingSeparator decimalSeparator
+    expose groupingSeparator
     use strict arg new_separator
     if new_separator~length <> 1 then
         raise syntax 93.900 array('Grouping Separator Must Have A Length of 1')
@@ -470,7 +469,7 @@ return 0
 
 -- do the actual formatting of the input number
 ::method format
-    expose pPrefix pMask pSuffix nPrefix nMask nSuffix zero_prefix zMask zero_suffix input have_zMask decimalSeparator groupingSeparator
+    expose pPrefix pMask pSuffix nPrefix nMask nSuffix zMask zero_suffix input have_zMask decimalSeparator groupingSeparator
     use strict arg input
 
 -- set numeric digits to the length of input + the number of zeros in the decimal part of the patterns
@@ -539,7 +538,7 @@ return output
 
 -- internal use only
 ::method format2
-    expose output input output zMask have_zMask groupingSize
+    expose output input zMask have_zMask groupingSize
     use strict arg mask2use
 
 -- set numeric digits to the length of input + the number of zeros in the decimal part of the patterns
@@ -658,7 +657,7 @@ return output
 return output
 
 ::method doZero
-    expose pPrefix pMask pSuffix nPrefix nMask nSuffix zero_prefix zMask zero_suffix input have_zMask decimalSeparator groupingSeparator
+    expose pPrefix pMask pSuffix
     parse var pMask pt1'.'pt2
     p0 = pt1~countStr('0')
     p1 = pt2~countStr('0')
