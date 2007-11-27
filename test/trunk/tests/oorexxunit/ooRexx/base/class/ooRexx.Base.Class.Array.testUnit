@@ -11,6 +11,7 @@
                      2007-07-27, ---rgf, added tests for setlike method arguments being OrderedCollection
                                          and MapCollection; corrected "sameContent()" to check on
                                          items and not on index
+                     2007-11-26, ---MM, Further changes I make to this file are recorded in the svn log
 
    languageLevel:    6.00, 6.02
    purpose:          Test the methods of the class Array.
@@ -115,7 +116,7 @@ do
    -- testResult=.testSuite~new(testUnitClass)~run
    testResult=ts~run       -- now run all the tests
 
-   call simpleDumpTestResults testResult
+   call simpleFormatTestResults testResult
 end
 
    /* return list of array objects containing test case classes and
@@ -334,12 +335,26 @@ return testUnitList
   d2=c~difference(other)
   self~assertTrue("subtest8: 'other' is an 'OrderedCollection'", sameContent(d1, d2))
 
-   -- now test where other is a MapCollection: "makeArray" returns "allItems"
-  other=.table~new
-  other["2"]='item mapped by index "2"'
-  other[o1] ='item mapped by index "o1"'
-  d2=c~difference(other)
-  self~assertTrue("subtest9: 'other' is a 'MapCollection'", sameContent(d1, d2))
+  -- Simplistic .Array difference .Table test
+  receiverArray = .array~new
+  receiverArray[1] = 'Lemon'
+  receiverArray[2] = 'Orange'
+  receiverArray[3] = 'Dogwood'
+
+  argumentTable = .table~new
+  argumentTable[1] = 'Dogwood'
+  argumentTable[2] = 'Elm'
+  argumentTable[3] = 'Rose'
+  argumentTable[4] = 'Tulip'
+
+  resultObj = receiverArray~difference(argumentTable)
+
+  nl = '0d0a'
+  self~assertTrue("After set-like operation (intersection) result object must be array", resultObj~isA(.array))
+  self~assertSame('Intersection of Lemon Orange Dogwood with Dogwood Elm Rose Tulip' || nl || -
+                  'should have 2 items', 2, resultObj~items)
+  self~assertTrue('Intersection result should have a Lemon item', resultObj~hasItem('Lemon'))
+  self~assertTrue('Intersection result should have an Orange item', resultObj~hasItem('Orange'))
 
 
 
@@ -476,13 +491,29 @@ return testUnitList
   d2=c~interSection(other)
   self~assertTrue("subtest8: 'other' is an 'OrderedCollection'", sameContent(d1, d2))
 
-   -- now test where other is a 'MapCollection': "makeArray" returns "allItems"
-  other=.table~new
-  other["2"]='item mapped by index "2"'
-  other[o1] ='item mapped by index "o1"'
-  d2=c~interSection(other)
-  self~assertTrue("subtest9: 'other' is a 'MapCollection'", sameContent(d1, d2))
+  -- Simplistic test of array intersect table
+  receiverArray = .array~of("Tree", "Rock", "Planet", "Star")
+  argumentTable = .table~new
+  argumentTable[1] = "Elm"
+  argumentTable[2] = "Rock"
+  argumentTable[3] = "Mars"
+  argumentTable[4] = "Monroe"
 
+  resultObj = receiverArray~intersection(argumentTable)
+
+  nl = '0d0a'x
+  self~assertSame("(1.) result of intersection must be same class as receiver", .array, resultObj~class)
+  self~assertSame("Tree Rock Planet Star intersect Elm Rock Mars Monroe should produce 1 item", 1, resultObj~items)
+
+  self~assertTrue("Result of Tree Rock Planet Star intersect Elm Rock Mars Monroe" || nl || -
+                  "should have Rock item", resultObj~hasItem("Rock"))
+
+  argumentArray = .array~of("Elm", "Rock", "Mars", "Monro")
+  result1 = receiverArray~intersection(argumentArray)
+  result2 = argumentArray~intersection(receiverArray)
+  self~assertSame("(2.) result of intersection must be same class as receiver", .array, result1~class)
+  self~assertSame("(3.) result of intersection must be same class as receiver", .array, result2~class)
+  self~assertTrue("Array A intersect array b should be the same as array B intersect arrry A", sameContent(result1, result2))
 
 
 ::method "test_isInstanceOf"     -- test whether collection object is of the correct kind (class)
@@ -766,15 +797,21 @@ return testUnitList
   d2=c~subSet(other)
   self~assertFalse("subtest14: 'other' is an 'OrderedCollection'", d2)
 
-   -- now test where other is a 'MapCollection': "makeArray" returns "allItems"
-  other=.table~new
-  other["2"]='item mapped by index "2"'
-  other[o1] ='item mapped by index "o1"'
-  d2=c~subSet(other)
+  -- Simplistic test of array~subset(arg) where arg is a table
+  receiverArray = .array~of()
+  argumentTable = .table~new
+  argumentTable[10] = "Barn"
+  argumentTable[20] = "Cabin"
+  argumentTable[30] = "Ranch"
+  argumentTable[40] = "Plow"
 
-  self~assertFalse("subtest15: 'other' is a 'MapCollection'", d2)
+  self~assertTrue("The empty set is a subset of every set", receiverArray~subset(argumentTable))
 
+  receiverArray[10] = "Barn"
+  self~assertTrue("Barn is a subset of Barn Cabin Ranch Plow", receiverArray~subset(argumentTable))
 
+  receiverArray[20] = "Cabin cruiser"
+  self~assertFalse("'Barn' 'Cabin cruiser' is not a subset of 'Barn' 'Cabin' 'Ranch' 'Plow'", receiverArray~subset(argumentTable))
 
    -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
   other=.array~new
@@ -787,15 +824,6 @@ return testUnitList
   d2=c~subSet(other)
   self~assertTrue("subtest16: 'other' is an 'OrderedCollection'", d2)
 
-   -- now test where other is a 'MapCollection': "makeArray" returns "allItems"
-  other=.table~new
-  other["1"]='item mapped by index "1"'
-  other["2"]='item mapped by index "2"'
-  other[o1] ='item mapped by index "o1"'
-  other["3"] ='item mapped by index "3"'
-  d2=c~subSet(other)
-
-  self~assertTrue("subtest17: 'other' is a 'MapCollection'", d2)
 
 
 
@@ -853,14 +881,38 @@ makeColl: procedure
   d2=c~union(other)
   self~assertTrue("subtest8: 'other' is an 'OrderedCollection'", sameContent(d1, d2))
 
-   -- now test where other is a 'MapCollection': "makeArray" returns "allItems"
-  other=.table~new
-  other["2"]='item mapped by index "2"'
-  other[o1] ='item mapped by index "o1"'
-  d2=c~union(other)
+  -- Simplistic test of array union table
+  receiverArray = .array~new
+  receiverArray[10] = "Elm"
+  receiverArray[13] = "Cadillac"
+  receiverArray[15] = "Morning Glory"
 
-  self~assertTrue("subtest9: 'other' is a 'MapCollection'", sameContent(d1, d2))
+  argumentTable = .table~new
+  argumentTable[a] = "School"
+  argumentTable[b] = "Office"
+  argumentTable[c] = "Church"
+  argumentTable[d] = "Apartment"
 
+  nl = '0d0a'x
+  resultObj = receiverArray~union(argumentTable)
+  self~assertSame("(1.) result of union must be same class as receiver", .array, resultObj~class)
+  self~assertSame("array with 3 distinct items union table with 4 different distinct items" || nl || -
+                  "should result in array with 7 items", 7, resultObj~items)
+
+  self~assertTrue("Result of Elm Cadillac 'Morning Glory union School Office Church Apartment" || nl || -
+                  "must have item Elm", resultObj~hasItem("Elm"))
+  self~assertTrue("Result of Elm Cadillac 'Morning Glory union School Office Church Apartment" || nl || -
+                  "must have item Cadillac", resultObj~hasItem("Cadillac"))
+  self~assertTrue("Result of Elm Cadillac 'Morning Glory union School Office Church Apartment" || nl || -
+                  "must have item Morning Glory", resultObj~hasItem("Morning Glory"))
+  self~assertTrue("Result of Elm Cadillac 'Morning Glory union School Office Church Apartment" || nl || -
+                  "must have item School", resultObj~hasItem("School"))
+  self~assertTrue("Result of Elm Cadillac 'Morning Glory union School Office Church Apartment" || nl || -
+                  "must have item Office", resultObj~hasItem("Office"))
+  self~assertTrue("Result of Elm Cadillac 'Morning Glory union School Office Church Apartment" || nl || -
+                  "must have item Church", resultObj~hasItem("Church"))
+  self~assertTrue("Result of Elm Cadillac 'Morning Glory union School Office Church Apartment" || nl || -
+                  "must have item Apartment", resultObj~hasItem("Apartment"))
 
 
 
@@ -894,15 +946,54 @@ makeColl: procedure
   d2=c~xor(other)
   self~assertTrue("subtest8: 'other' is an 'OrderedCollection'", sameContent(d1, d2))
 
-   -- now test where other is a 'MapCollection': "makeArray" returns "allItems"
-  other=.table~new
-  other["2"]='item mapped by index "2"'
-  other[o1] ='item mapped by index "o1"'
-  d2=c~xor(other)
+  -- Simplistic test of array XOR table
+  receiverArray = .array~new
+  receiverArray[10] = "Elm"
+  receiverArray[13] = "Cadillac"
+  receiverArray[15] = "Morning Glory"
 
-  self~assertTrue("subtest9: 'other' is a 'MapCollection'", sameContent(d1, d2))
+  argumentTable = .table~new
+  argumentTable[a] = "School"
+  argumentTable[b] = "Office"
+  argumentTable[c] = "Church"
+  argumentTable[d] = "Apartment"
+
+  nl = '0d0a'x
+  resultObj = receiverArray~XOR(argumentTable)
+  self~assertSame("(1.) result of XOR must be same class as receiver", .array, resultObj~class)
+  self~assertSame("array with 3 distinct items XOR table with 4 different distinct items" || nl || -
+                  "should result in array with 7 items", 7, resultObj~items)
+
+  self~assertTrue("Result of Elm Cadillac 'Morning Glory' XOR School Office Church Apartment" || nl || -
+                  "must have item Elm", resultObj~hasItem("Elm"))
+  self~assertTrue("Result of Elm Cadillac 'Morning Glory' XOR School Office Church Apartment" || nl || -
+                  "must have item Cadillac", resultObj~hasItem("Cadillac"))
+  self~assertTrue("Result of Elm Cadillac 'Morning Glory' XOR School Office Church Apartment" || nl || -
+                  "must have item Morning Glory", resultObj~hasItem("Morning Glory"))
+  self~assertTrue("Result of Elm Cadillac 'Morning Glory' XOR School Office Church Apartment" || nl || -
+                  "must have item School", resultObj~hasItem("School"))
+  self~assertTrue("Result of Elm Cadillac 'Morning Glory' XOR School Office Church Apartment" || nl || -
+                  "must have item Office", resultObj~hasItem("Office"))
+  self~assertTrue("Result of Elm Cadillac 'Morning Glory' XOR School Office Church Apartment" || nl || -
+                  "must have item Church", resultObj~hasItem("Church"))
+  self~assertTrue("Result of Elm Cadillac 'Morning Glory' XOR School Office Church Apartment" || nl || -
+                  "must have item Apartment", resultObj~hasItem("Apartment"))
 
 
+  receiverArray = .array~new
+  receiverArray[10] = "Elm"
+  receiverArray[13] = "Cadillac"
+  receiverArray[15] = "Desert"
+
+  argumentTable = .table~new
+  argumentTable[a] = "Elm"
+  argumentTable[b] = "Cadillac"
+  argumentTable[c] = "Desert"
+
+  resultObj = receiverArray~XOR(argumentTable)
+  self~assertSame("(2.) result of XOR must be same class as receiver", .array, resultObj~class)
+  self~assertSame("Result of Elm Cadillac Desert XOR Elm Cadillac Desert Desert" || nl || -
+                  "should be empty", 0, resultObj~items)
 
 
 /* ================= additional, ARRAY specific methods =============== */
