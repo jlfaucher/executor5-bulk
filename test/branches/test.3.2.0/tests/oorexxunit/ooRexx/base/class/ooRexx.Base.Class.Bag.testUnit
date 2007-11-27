@@ -10,6 +10,7 @@
                      2007-06-10, ---rgf, added test cases to test collection object for correct types
                      2007-07-27, ---rgf, added tests for setlike method arguments being OrderedCollection
                                          and MapCollection
+                     2007-11-26, ---MM, further changes I make will be recorded in the svn log for this file
 
    languageLevel:    6.00, 6.02
    purpose:          Test the methods of the class Bag.
@@ -114,7 +115,7 @@ do
    -- testResult=.testSuite~new(testUnitClass)~run
    testResult=ts~run       -- now run all the tests
 
-   call simpleDumpTestResults testResult
+   call simpleFormatTestResults testResult
 end
 
    /* return list of array objects containing test case classes and
@@ -240,13 +241,19 @@ return testUnitList
   d2=c~difference(other)
   self~assertTrue("subtest8: 'other' is an 'OrderedCollection'", sameContent(d1, d2))
 
-   -- now test where other is a MapCollection: "makeArray" returns "allItems"
-  other=.table~new
-  other["2"]="2-item"
-  other[o1] ="o1-item"
-  d2=c~difference(other)
+  -- Simplistic difference test where the argument collection is a table
+  obj = .ooRexx.Base.Class.Bag.TestUnit~new
+  receiverBag = .bag~of("Lion", "Tiger", "Dog", obj)
 
-  self~assertTrue("subtest9: 'other' is a 'MapCollection'", sameContent(d1, d2))
+  argumentTable = .table~new
+  argumentTable["Lion"] = "Lion"
+  argumentTable["Tiger"] = "Tiger"
+
+  expectedBag = .bag~of("Dog", obj)
+  resultBag = receiverBag~difference(argumentTable)
+
+  self~assertTrue("Result object after difference must be a bag", resultBag~isA(.bag))
+  self~assertTrue("Difference in bag and table should be Dog and obj", sameContent(expectedBag, resultBag))
 
 
 ::method "test_empty"
@@ -321,13 +328,21 @@ return testUnitList
   d2=c~interSection(other)
   self~assertTrue("subtest8: 'other' is an 'OrderedCollection'", sameContent(d1, d2))
 
-   -- now test where other is a 'MapCollection': "makeArray" returns "allItems"
-  other=.table~new
-  other["2"]='item mapped by index "2"'
-  other[o1] ='item mapped by index "o1"'
-  d2=c~interSection(other)
+  -- Simplistic intersection test where the argument collection is a table.
+  obj = .ooRexx.Base.Class.Bag.TestUnit~new
+  receiverBag = .bag~of("Lion", "Tiger", "Dog", obj)
 
-  self~assertTrue("subtest9: 'other' is a 'MapCollection'", sameContent(d1, d2))
+  argumentTable = .table~new
+  argumentTable["Elm"] = "Elm"
+  argumentTable["Maple"] = "Maple"
+  argumentTable["Dog"] = "Dog"
+  argumentTable[obj] = obj
+
+  expectedBag = .bag~of("Dog", obj)
+  resultBag = receiverBag~intersection(argumentTable)
+
+  self~assertTrue("Result object after intersection must be a bag", resultBag~isA(.bag))
+  self~assertTrue("Intersection of bag and table should be Dog and obj", sameContent(expectedBag, resultBag))
 
 
 
@@ -642,15 +657,31 @@ return testUnitList
   d2=c~subSet(other)
   self~assertFalse("subtest14: 'other' is an 'OrderedCollection'", d2)
 
-   -- now test where other is a 'MapCollection': "makeArray" returns "allItems"
-  other=.table~new
-  other["2"]='item mapped by index "2"'
-  other[o1] ='item mapped by index "o1"'
-  d2=c~subSet(other)
+  -- Simplistic test of subset where the argument is a table
+  obj = .ooRexx.Base.Class.Bag.TestUnit~new
+  receiverBag = .bag~of("Lion", "Tiger", "Dog", obj)
 
-  self~assertFalse("subtest15: 'other' is a 'MapCollection'", d2)
+  argumentTable = .table~new
+  argumentTable["Dog"] = "Dog"
+  argumentTable[obj] = obj
+  self~assertFalse("Lion Tiger Dog 'obj' is not a subset of Dog 'obj'", receiverBag~subset(argumentTable))
 
+  argumentTable = .table~new
+  argumentTable["Elm"] = "Elm"
+  argumentTable["Maple"] = "Maple"
+  argumentTable["Dog"] = "Dog"
+  argumentTable[obj] = obj
 
+  receiverBag~remove("Lion")
+  receiverBag~remove("Tiger")
+  self~assertTrue("Dog 'obj' is a subset of Elm Maple Dog 'obj'", receiverBag~subset(argumentTable))
+
+  receiverBag~remove("Dog")
+  receiverBag~remove(obj)
+  self~assertTrue("Empty bag is a subset of Elm Maple Dog 'obj'", receiverBag~subset(argumentTable))
+
+  emptyTable = .table~new
+  self~assertTrue("Empty bag is a subset table", receiverBag~subset(emptyTable))
 
    -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
   o1=.object~new
@@ -664,18 +695,6 @@ return testUnitList
   other[107]=o1
   d2=c~subSet(other)
   self~assertTrue("subtest16: 'other' is an 'OrderedCollection'", d2)
-
-   -- now test where other is a 'MapCollection': "makeArray" returns "allItems"
-  c =clz~new~~put("1")~~put("2")~~put(o1)
-  other=.table~new
-  other["1"]='item mapped by index "1"'
-  other["2"]='item mapped by index "2"'
-  other[o1] ='item mapped by index "o1"'
-  other["3"] ='item mapped by index "3"'
-  d2=c~subSet(other)
-
-  self~assertTrue("subtest17: 'other' is a 'MapCollection'", d2)
-
 
 
 
@@ -733,13 +752,40 @@ makeColl: procedure
   d2=c~union(other)
   self~assertTrue("subtest8: 'other' is an 'OrderedCollection'", sameContent(d1, d2))
 
-   -- now test where other is a 'MapCollection': "makeArray" returns "allItems"
-  other=.table~new
-  other["2"]='item mapped by index "2"'
-  other[o1] ='item mapped by index "o1"'
-  d2=c~union(other)
+  -- Simplistic test of union where the argument collection is a table.
+  obj = .ooRexx.Base.Class.Bag.TestUnit~new
+  lionStr = "Lion"
+  tigerStr = "Tiger"
+  dogStr = "Dog"
+  receiverBag = .bag~of(lionStr, tigerStr, dogStr, obj)
 
-  self~assertTrue("subtest9: 'other' is a 'MapCollection'", sameContent(d1, d2))
+  argumentTable = .table~new
+  elmStr = "Elm"
+  mapleStr = "Maple"
+  argumentTable[ElmStr] = ElmStr
+  argumentTable[MapleStr] = MapleStr
+  argumentTable[DogStr] = DogStr
+  argumentTable[obj] = obj
+
+  expectedBag = .bag~of(LionStr, TigerStr, DogStr, obj, ElmStr, MapleStr, DogStr, obj)
+  resultBag = receiverBag~union(argumentTable)
+
+  nl = '0d0a'x
+  self~assertTrue("Result object after union must be a bag", resultBag~isA(.bag))
+
+  -- Documentation from Object Rexx:
+  -- Set-Like Operations on Collections with Duplicates
+  -- UNION operation
+  --  All elements of A and B are united:
+  --
+  -- Using that definition, the new bag should have 8 items and contain every
+  -- item in receiverBag and argumentTable.
+  self~assertSame("Union of Lion Tiger Dog 'obj' with Elm Maple Dog 'obj' should" || nl || -
+                  "contain all 8 items", 8, resultBag~items)
+
+  self~assertTrue("Using Bag, union of Lion Tiger Dog 'obj' with Elm Maple Dog 'obj'" || nl || -
+                  "should be Lion Tiger Dog 'obj' Elm Maple Dog 'obj", sameContent(expectedBag, resultBag))
+
 
 
 
@@ -774,13 +820,33 @@ makeColl: procedure
   d2=c~xor(other)
   self~assertTrue("subtest8: 'other' is an 'OrderedCollection'", sameContent(d1, d2))
 
-   -- now test where other is a 'MapCollection': "makeArray" returns "allItems"
-  other=.table~new
-  other["2"]='item mapped by index "2"'
-  other[o1] ='item mapped by index "o1"'
-  d2=c~xor(other)
+  -- Simplistic test of XOR where the argument is a table
+  obj = .ooRexx.Base.Class.Bag.TestUnit~new
+  lionStr = "Lion"
+  tigerStr = "Tiger"
+  dogStr = "Dog"
+  receiverBag = .bag~of(lionStr, tigerStr, dogStr, obj, tigerStr, tigerStr)
 
-  self~assertTrue("subtest9: 'other' is a 'MapCollection'", sameContent(d1, d2))
+  argumentTable = .table~new
+  elmStr = "Elm"
+  mapleStr = "Maple"
+  argumentTable[ElmStr] = ElmStr
+  argumentTable[MapleStr] = MapleStr
+  argumentTable[DogStr] = DogStr
+  argumentTable[obj] = obj
+
+  expectedBag = .bag~of(LionStr, TigerStr, TigerStr, TigerStr, ElmStr, MapleStr)
+  resultBag = receiverBag~xor(argumentTable)
+
+  nl = '0d0a'x
+  self~assertTrue("Result object after union must be a bag", resultBag~isA(.bag))
+
+  self~assertSame("XOR of Lion Tiger Dog 'obj' Tiger Tiger with Elm Maple Dog 'obj' should" || nl || -
+                  "contain 6 items", 6, resultBag~items)
+
+  self~assertTrue("Using Bag, XOR of Lion Tiger Dog 'obj' Tiger Tiger with Elm Maple Dog 'obj'" || nl || -
+                  "should be Lion Tiger Tiger Tiger Elm Maple", sameContent(expectedBag, resultBag))
+
 
 
 
