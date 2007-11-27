@@ -15,6 +15,7 @@
                      2007-07-28, ---rgf, added tests for setlike method arguments being OrderedCollection
                                          and MapCollection; corrected "sameContent()" to check on
                                          items and not on index
+                     2007-11-26, ---MM,  Further changes to this file are recorded in the svn log
 
    license:          CPL 1.0 (Common Public License v1.0, see below)
    link:
@@ -115,7 +116,7 @@ do
    -- testResult=.testSuite~new(testUnitClass)~run
    testResult=ts~run       -- now run all the tests
 
-   call simpleDumpTestResults testResult
+   call simpleFormatTestResults testResult
 end
 
    /* return list of array objects containing test case classes and
@@ -294,13 +295,23 @@ return testUnitList
   d2=c~difference(other)
   self~assertTrue("subtest8: 'other' is an 'OrderedCollection'", sameContent(d1, d2))
 
-   -- now test where other is a MapCollection: "makeArray" returns "allItems"
-  other=.table~new
-  other["2"]='item mapped by index "2"'
-  other[o1] ='item mapped by index "o1"'
-  d2=c~difference(other)
-  self~assertTrue("subtest9: 'other' is a 'MapCollection'", sameContent(d1, d2))
+  -- Simplistic test of queue difference table
+  receiverQ = .queue~new
+  do i = 1 to 4
+    receiverQ~push(i)
+  end
 
+  argumentTable = .table~new
+  do i = 1 to 5 by 2
+    argumentTable[i] = i
+  end
+
+  resultObj = receiverQ~difference(argumentTable)
+
+  self~assertSame("(1.) result object after difference operation must be the same class as the receiver", .queue, resultObj~class)
+  self~assertSame("1 2 3 4 difference 1 3 5 should result in a collection of 2 items", 2, resultObj~items)
+  self~assertTrue("1 2 3 4 difference 1 3 5 result should have an item of 2", resultObj~hasItem(2))
+  self~assertTrue("1 2 3 4 difference 1 3 5 result should have an item of 4", resultObj~hasItem(4))
 
 
 
@@ -376,12 +387,24 @@ return testUnitList
   d2=c~interSection(other)
   self~assertTrue("subtest8: 'other' is an 'OrderedCollection'", sameContent(d1, d2))
 
-   -- now test where other is a 'MapCollection': "makeArray" returns "allItems"
-  other=.table~new
-  other["2"]='item mapped by index "2"'
-  other[o1] ='item mapped by index "o1"'
-  d2=c~interSection(other)
-  self~assertTrue("subtest9: 'other' is a 'MapCollection'", sameContent(d1, d2))
+  -- Simplistic test of queue intersection table
+  receiverQ = .queue~new
+  do i = 1 to 4
+    receiverQ~push(i)
+  end
+
+  argumentTable = .table~new
+  do i = 1 to 5 by 2
+    argumentTable[i] = i
+  end
+
+  resultObj = receiverQ~intersection(argumentTable)
+
+  self~assertSame("(1.) result object after intersection operation must be the same class as the receiver", .queue, resultObj~class)
+  self~assertSame("1 2 3 4 intersection 1 3 5 should result in a collection of 2 items", 2, resultObj~items)
+  self~assertTrue("1 2 3 4 intersection 1 3 5 result should have an item of 1", resultObj~hasItem(1))
+  self~assertTrue("1 2 3 4 intersection 1 3 5 result should have an item of 3", resultObj~hasItem(3))
+
 
 
 
@@ -714,15 +737,22 @@ return testUnitList
   d2=c~subSet(other)
   self~assertFalse("subtest14: 'other' is an 'OrderedCollection'", d2)
 
-   -- now test where other is a 'MapCollection': "makeArray" returns "allItems"
-  other=.table~new
-  other["2"]='item mapped by index "2"'
-  other[o1] ='item mapped by index "o1"'
-  d2=c~subSet(other)
+  -- Simplistic test of queue subset table
+  receiverQ = .queue~new
+  do i = 1 to 5 by 2
+    receiverQ~push(i)
+  end
 
-  self~assertFalse("subtest15: 'other' is a 'MapCollection'", d2)
+  argumentTable = .table~new
+  do i = 1 to 5
+    argumentTable[i] = i
+  end
+  self~assertTrue("1 3 5 is a subset of 1 2 3 4 5", receiverQ~subset(argumentTable))
 
-
+  do i = 2 to 6 by 2
+    receiverQ~push(i)
+  end
+  self~assertFalse("1 2 3 4 5 6 is not a subset of 1 3 5", receiverQ~subset(argumentTable))
 
    -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
   other=.array~new
@@ -734,17 +764,6 @@ return testUnitList
   other[107]=o1
   d2=c~subSet(other)
   self~assertTrue("subtest16: 'other' is an 'OrderedCollection'", d2)
-
-   -- now test where other is a 'MapCollection': "makeArray" returns "allItems"
-  other=.table~new
-  other["1"]='item mapped by index "1"'
-  other["2"]='item mapped by index "2"'
-  other[o1] ='item mapped by index "o1"'
-  other["3"] ='item mapped by index "3"'
-  d2=c~subSet(other)
-
-  self~assertTrue("subtest17: 'other' is a 'MapCollection'", d2)
-
 
 
 
@@ -806,13 +825,27 @@ makeColl: procedure
   d2=c~union(other)
   self~assertTrue("subtest8: 'other' is an 'OrderedCollection'", sameContent(d1, d2))
 
-   -- now test where other is a 'MapCollection': "makeArray" returns "allItems"
-  other=.table~new
-  other["2"]='item mapped by index "2"'
-  other[o1] ='item mapped by index "o1"'
-  d2=c~union(other)
+  -- Simplistic test of queue union table
+  receiverQ = .queue~new
+  do i = 2 to 4 by 2
+    receiverQ~push(i)
+  end
 
-  self~assertTrue("subtest9: 'other' is a 'MapCollection'", sameContent(d1, d2))
+  argumentTable = .table~new
+  do i = 1 to 5 by 2
+    argumentTable[i] = i
+  end
+
+  resultObj = receiverQ~union(argumentTable)
+
+  self~assertSame("(1.) result object after union operation must be the same class as the receiver", .queue, resultObj~class)
+  self~assertSame("2 4 union 1 3 5 should result in a collection of 5 items", 5, resultObj~items)
+  self~assertTrue("2 4 union 1 3 5 result should have an item of 1", resultObj~hasItem(1))
+  self~assertTrue("2 4 union 1 3 5 result should have an item of 2", resultObj~hasItem(2))
+  self~assertTrue("2 4 union 1 3 5 result should have an item of 3", resultObj~hasItem(3))
+  self~assertTrue("2 4 union 1 3 5 result should have an item of 4", resultObj~hasItem(4))
+  self~assertTrue("2 4 union 1 3 5 result should have an item of 5", resultObj~hasItem(5))
+
 
 
 
@@ -846,13 +879,24 @@ makeColl: procedure
   d2=c~xor(other)
   self~assertTrue("subtest8: 'other' is an 'OrderedCollection'", sameContent(d1, d2))
 
-   -- now test where other is a 'MapCollection': "makeArray" returns "allItems"
-  other=.table~new
-  other["2"]='item mapped by index "2"'
-  other[o1] ='item mapped by index "o1"'
-  d2=c~xor(other)
+  -- Simplistic test of queue xor table
+  receiverQ = .queue~new
+  do i = 1 to 4
+    receiverQ~push(i)
+  end
 
-  self~assertTrue("subtest9: 'other' is a 'MapCollection'", sameContent(d1, d2))
+  argumentTable = .table~new
+  do i = 1 to 5 by 2
+    argumentTable[i] = i
+  end
+
+  resultObj = receiverQ~xor(argumentTable)
+
+  self~assertSame("(1.) result object after xor operation must be the same class as the receiver", .queue, resultObj~class)
+  self~assertSame("1 2 3 4 xor 1 3 5 should result in a collection of 3 items", 3, resultObj~items)
+  self~assertTrue("1 2 3 4 xor 1 3 5 result should have an item of 2", resultObj~hasItem(2))
+  self~assertTrue("1 2 3 4 xor 1 3 5 result should have an item of 4", resultObj~hasItem(4))
+  self~assertTrue("1 2 3 4 xor 1 3 5 result should have an item of 5", resultObj~hasItem(5))
 
 
 
