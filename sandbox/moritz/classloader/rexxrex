@@ -59,6 +59,18 @@ To simplify this there is an example:
 ::METHOD UNKNOWN
 --  say arg(1) arg(2)[1]~name
   return 0
+
+::METHOD LOCAL
+  use arg info
+  if \ .local~hasindex(info~name) then do
+    cls = self~resolveClass(info~name)
+    if cls = .nil then return 0
+    info~result = cls
+    return 1
+  end
+  else
+    return 0
+
 ::METHOD REQUIRES
   use arg info
   name = info~name
@@ -68,11 +80,38 @@ To simplify this there is an example:
   return 1
   
   syntax:
-  -- check if this is a special require not actually requiring a file
+  -- a dummy file to load
   info~name = "nop"
+  -- start with our security manager
   info~SecurityManager = .Go~getInstance~SecurityManager
-  -- parse the string
-  parse var name name "(" cls ")"
+  -- try to resolve the supplied name
+  -- returns 0 if it failed, forwarding the request to the language processor
+  -- 1 forces the processor to use the values set above.
+  return self~resolvePackage(name)
+
+::METHOD resolveClass PRIVATE
+  parse arg path
+  signal on user PackageNotFound
+  pos = path~lastPos("~")
+  if pos = 0 then
+    return .nil
+  className = path~right(path~length - pos)~upper
+  path = path~left(pos - 1 )
+  pkgdata = self~getPackage(path~makeArray("~"))
+  do class over pkgdata~classes
+    if class~id~upper = className then
+      return class
+  end
+  PackageNotFound:
+  return .nil
+
+
+::METHOD resolvePackage PRIVATE
+--  trace r
+  signal on user PackageNotFound
+  -- split the argument string
+--  say "class name:" arg(1)
+  parse value arg(1) with name "(" cls ")"
   path = name~makeArray("~")
   classes = .directory~new
   do class over cls~makeArray(",")
@@ -101,15 +140,11 @@ To simplify this there is an example:
   else do class over pkgdata~classes
     self~setClass(class~id,class)
   end
-  return 1
-
-
-::METHOD resolve PRIVATE
-  signal on user PackageNotFound
-  return
+  return .true
 
   PackageNotFound:
   say "Unable to find package" name
+  return .false
 
 ::METHOD getPackage PRIVATE
   signal on user PackageNotFound
