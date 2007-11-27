@@ -194,8 +194,7 @@ return
 expose multiparts
 use strict arg part
 if part~isA(.mimepart) then do
-   if multiparts~items = 0 then multiparts[1] = part
-   else multiparts[multiparts~last + 1] = part
+   multiparts[multiparts~items + 1] = part
    end
 else raise syntax 93.948 array('MIMEPART')
 return
@@ -227,10 +226,9 @@ if disposition <> '' then do
    headers = headers || 'Content-Disposition:' disposition || crlf
    end
 mime = headers || crlf
-if multiparts~last \= .nil then do
+if multiparts~items > 0 then do
    do part over multiparts
-      mime = mime || '--' || boundary || crlf
-      mime = mime || part~string || crlf
+      mime = mime || '--' || boundary || crlf || part~string || crlf
       end
    mime = mime || '--' || boundary || '--' || crlf
    end
