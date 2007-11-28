@@ -23,20 +23,23 @@ if .Local~Package \= .nil then return
 -- enable or disable tracing
 .local~CLtrace = 0
 
--- the path seperator
-.local~PathSeperator = '/'
+-- the path seperator - select the correct one for your OS
+.local~PathSeperator = '\'
+--.local~PathSeperator = '/'
 
 -- the file extension for package files
 .local~FileExtension = ".rex"
+-- not used atm
 .local~errRedirect = "2>/dev/null"
+-- This is only required to extract temprary files - will be removed
 .local~temp = "/tmp/"
 
 rootBackEnd = .MergeBackEnd~new
 backEnds = rootBackEnd~getBackEnds
 -- a list of back ends
---backEnds~append(.TarBackEnd~new("./archive.tar.gz","root"||.pathSeperator))
-backEnds~append(.ZipBackEnd~new("./archive.zip","root"||.pathSeperator))
---backEnds~append(.FileBackEnd~new("./root"))
+--backEnds~append(.TarBackEnd~new("archive.tar.gz","root"||.pathSeperator))
+backEnds~append(.ZipBackEnd~new("archive.zip","root"||.pathSeperator))
+--backEnds~append(.FileBackEnd~new("root"))
 
 -- publish the root element under .package
 .Local~Package=.PackageElement~new("Base",,,rootBackEnd)
@@ -149,7 +152,7 @@ possible to have packages that have the same file name as a directory...
 ::METHOD Init
   expose name handle parent backEnd elements package
   use arg name, handle, parent, backEnd, package
-	elements = .directory~new
+  elements = .directory~new
 
 ::METHOD getName
   expose name
@@ -164,21 +167,21 @@ possible to have packages that have the same file name as a directory...
   return parent
 
 ::METHOD getElement
-	expose elements
+  expose elements
   use arg name
   -- Check if this name was supplied previously.
   uname = name~upper~strip
-	if elements[uname] \= .nil then
+  if elements[uname] \= .nil then
     if elements~uname = 1 then
       raise user PackageNotFound additional (name) return (.nil)
     else
-		  return elements[uname]
-	else do
+      return elements[uname]
+  else do
     signal on user PackageNotFound
-		e = self~getBackEnd~getElement(name,self)
-		elements[uname] = e
-		return e
-	end
+    e = self~getBackEnd~getElement(name,self)
+    elements[uname] = e
+    return e
+  end
   PackageNotFound:
   elements~uname = 1
   raise propagate
@@ -190,7 +193,7 @@ possible to have packages that have the same file name as a directory...
 
 -- calls the back end to resolve the name
 ::METHOD Unknown
-	expose package
+  expose package
   signal on user PackageNotFound
   use arg name, arguments
   return self~getElement(name)
@@ -419,8 +422,9 @@ be prefered over the file.
 ::METHOD searchFile PRIVATE
   use strict arg name, element, currentPath
   self~callArchiver(currentPath||"*"||.FileExtension)
-	do while .stdque~queued > 0
-		file = .stdque~linein
+  currentPath = currentPath~translate("/",.PathSeperator)
+  do while .stdque~queued > 0
+    file = .stdque~linein
     if file~caselessPos(currentPath) = 1 then do
       len = currentPath~length
       handle = file~substr(len + 1, file~length - len - .FileExtension~length)
@@ -437,9 +441,10 @@ be prefered over the file.
 ::METHOD searchDirectory PRIVATE
   use strict arg name, element, currentPath
   self~callArchiver(currentPath||"*")
-	do while .stdque~queued > 0
-		file = .stdque~linein
-		if file~caselessPos(currentPath) = 1 then do
+  currentPath = currentPath~translate("/",.PathSeperator)
+  do while .stdque~queued > 0
+    file = .stdque~linein
+    if file~caselessPos(currentPath) = 1 then do
       handle = file~right(file~length - currentPath~length)
       pos = handle~caselessPos(.PathSeperator)
       if pos > 1 then do
@@ -448,7 +453,7 @@ be prefered over the file.
           return .PackageElement~new(name, handle, element, self~getElementBackEnd(element))
       end
     end
-	end
+  end
   return .nil
 
 
@@ -457,30 +462,17 @@ be prefered over the file.
 ::METHOD callArchiver PRIVATE
   use strict arg path
   c = "tar --wildcards -tf" self~getArchive '"'path'"|rxqueue'
-  c  
+  c
+
 ::METHOD loadFile PRIVATE
-  use arg fileName
-/*
-  command = "tar -O --ignore-case --anchored -xf" self~getArchive filename "|rxqueue"
-  say command
-  command
+  use strict arg fileName
+  command = "tar -C ".temp" --ignore-case --anchored -xf" self~getArchive filename "|rxqueue"
+  command "|rxqueue"
   lines = .array~new
   do while .stdque~queued > 0
---    say .stdque~linein
-    a = .stdque~linein
-    lines[lines~items + 1] = a
+    lines[lines~items + 1] = .stdque~linein
   end
-  say lines~makeString
   package = self~run(.method~new(filename,lines))
-*/
-  command = "tar -C ".temp" --ignore-case --anchored -xf" self~getArchive filename "|rxqueue"
-  command
-  file = .temp||filename
-  call (file)
-	rc = SysFileDelete(file)
-
-  package = result
-  if package = "RESULT" then raise syntax 93
   return package
 
 
@@ -489,16 +481,15 @@ be prefered over the file.
 
 ::METHOD callArchiver PRIVATE
   use strict arg path
-  "zipinfo -1" self~getArchive '"'path'"|rxqueue'
-  return result
+  "unzip -Z -1" self~getArchive '"'path'"|rxqueue'
 
 ::METHOD loadFile PRIVATE
-  use arg fileName
-  command = "unzip -d" .temp self~getArchive filename
-  command
-  file = .temp||filename
-  call (file)
-	rc = SysFileDelete(file)
-  package = result
-  if package = "RESULT" then raise syntax 93
+  use strict arg fileName
+  command = "unzip -qq -c" self~getArchive filename
+  command "|rxqueue"
+  lines = .array~new
+  do while .stdque~queued > 0
+    lines[lines~items + 1] = .stdque~linein
+  end
+  package = self~run(.method~new(filename,lines))
   return package
