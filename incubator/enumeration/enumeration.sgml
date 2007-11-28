@@ -1,0 +1,239 @@
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Reference SGML file.
+    #
+    # Copyright (c) 2005-2007, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    # Author(s):
+    #      Moritz Hoffmann <spambasket@antiguru.de>, adapted a file by
+    #      W. David Ashley <dashley@us.ibm.com>
+    #
+    #########################################################################
+-->
+<section id="clsEnumeration"><title>The Enumeration Class</title>
+<indexterm><primary>Enumeration class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>Enumeration class</secondary></indexterm>
+
+<para>The Enumeration class is the root class for all enumerations. It
+offers methods for managing enumerations and their items.</para>
+<figure><title>The Enumeration class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<!-- TODO: add image <imagedata fileref="ooRexxObjectClass.png" align="left"> -->
+
+</imageobject>
+</mediaobject>
+</figure>
+
+<section id="mthObjectNew"><title>new (Class Method)</title>
+<indexterm><primary>new method</primary>
+<secondary>of Enumeration class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>new method</secondary>
+<tertiary>of Enumeration class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-new---------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a new instance of the receiver class. Creating instances
+of the Enumeration class and direct sub classes is prohibited.</para>
+</section>
+
+<section id="mthObjectOperators"><title>Operator Methods</title>
+<programlisting>
+<![CDATA[
+>>-comparison_operator(argument)-------------------------------><
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>1</computeroutput> (true) or
+<computeroutput>0</computeroutput> (false), the result of performing
+a specified comparison operation.
+</para>
+<para>For the Enumeration class, the arguments must match the receiver
+enumeration item. Comparison is done by class and not by object, allowing
+enumerations to work. To allow object based comparison there is a
+strictlyEquals method that uses the original = operator.</para>
+<para>The comparison operators you can use in a message are: </para>
+<variablelist>
+<varlistentry><term>=, ==
+<indexterm><primary>= method</primary>
+<secondary>of Enumeration class</secondary></indexterm>
+<indexterm><primary>== method</primary>
+<secondary>of Enumeration class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>=</secondary>
+<tertiary>of Enumeration class</tertiary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>==</secondary>
+<tertiary>of Enumeration class</tertiary></indexterm>
+</term>
+<listitem><para>True if the terms are the same enumeration item.
+</para></listitem></varlistentry>
+<varlistentry><term>\=, >&lt;, &lt;>, \==
+<indexterm><primary>\= method</primary>
+<secondary>of Enumeration class</secondary></indexterm>
+<indexterm><primary>>&lt; method</primary>
+<secondary>of Enumeration class</secondary></indexterm>
+<indexterm><primary>&lt;> method</primary>
+<secondary>of Enumeration class</secondary></indexterm>
+<indexterm><primary>\== method</primary>
+<secondary>of Enumeration class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>\=</secondary>
+<tertiary>of Enumeration class</tertiary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>>&lt;</secondary>
+<tertiary>of Enumeration class</tertiary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>&lt;></secondary>
+<tertiary>of Enumeration class</tertiary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>\==</secondary>
+<tertiary>of Enumeration class</tertiary></indexterm>
+</term>
+<listitem><para>True if the terms are not the same enumeration item (inverse of =).
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthEnumerationValueOf"><title>valueOf</title>
+<indexterm><primary>class method</primary>
+<secondary>of Enumeration class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>class method</secondary>
+<tertiary>of Enumeration class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-valueOf(name)-----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the enumeration item with the given
+<emphasis role="italic">name</emphasis>. If it is not found the
+Nil object is returned.
+</para>
+</section>
+
+<section id="mthEnumerationGetAdjacent"><title>getAdjacent</title>
+<indexterm><primary>getAdjacent method</primary>
+<secondary>of Enumeration class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>getAdjacent method</secondary>
+<tertiary>of Enumeration class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-getAdjacent(offset)-----------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the enumeration item that follows or precedes the active item
+by <emphasis role="italic">offset</emphasis>. If borders are reached it returns .nil.
+
+</para>
+</section>
+
+<section id="mthEnumerationNext"><title>next</title>
+<indexterm><primary>next method</primary>
+<secondary>of Enumeration class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>next method</secondary>
+<tertiary>of Enumeration class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-next-------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the enumeration item following the current item. This
+is a shortcut for getAdjacent(1).</para>
+</section>
+<section id="mthEnumerationPrevious"><title>previous</title>
+<indexterm><primary>previous method</primary>
+<secondary>of Enumeration class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>previous method</secondary>
+<tertiary>of Enumeration class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-previous---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the enumeration item preceding the current item. This
+is a shortcut for getAdjacent(-1).</para>
+</section>
+
+<section id="mthEnumerationExample"><title>Example</title>
+<programlisting>
+<![CDATA[
+do colour over .Colours~Values
+  item = .Colours~valueOf(colour)
+  say "Colour:"  item item~orderID
+end                             /* a LIGHTBLUE 4       */
+				/* a YELLOW 3          */
+				/* a BLUE 2            */
+				/* a RED 1             */
+	    
+red = .Colours~red              /* Assigns item to red */
+say red                         /* a RED               */
+say red \= .Colours~red         /* 0                   */
+say red = .Colours~red          /* 1                   */
+say .Colours~red = red          /* 1                   */
+say .Colours~valueOf("blue")    /* a BLUE              */
+
+say "compare:" .Colours~red~compareTo(.Colours~blue)
+                                /* -1                  */
+::REQUIRES "Enumeration.cls"	    
+::CLASS Colours SUBCLASS Enumeration PUBLIC
+::CLASS Red SUBCLASS Colours
+::CLASS Blue SUBCLASS Colours
+::CLASS Yellow SUBCLASS Colours
+::CLASS LightBlue SUBCLASS Blue
+
+]]>
+</programlisting>
+
+<para>In this example all main functions of the enumeration class are shown. An enumeration
+type is created and gets its items. The sample application iterates over all items and shows their order ID.
+Some comparisons are shown.
+</para>
+</section>
+</section>
+

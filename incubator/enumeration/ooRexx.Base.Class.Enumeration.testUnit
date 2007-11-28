@@ -1,0 +1,292 @@
+#!/usr/bin/rexx
+/*
+   name:             ooRexx.Base.Class.String.testUnit
+   author:           Moritz Hoffmann
+   date:             2007-10-20
+   version:          0.0.1
+
+   changed:          2007-10-20, MH, initial file.
+   changed:          2007-10-22, MH, more tests.
+
+   languageLevel:    6.02
+   purpose:          Test the methods of the class Enumeration
+
+   license:          CPL 1.0 (Common Public License v1.0, see below)
+   link:
+
+   category:         ooRexx
+   category:         Base
+   category:         Class
+   category:         Enumeration
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2008 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+
+testUnitClass=.ooRexxBaseClassEnumeration.TestUnit  -- change accordingly
+   /* list of array objects, each containing the testUnit class object and an
+      optional list of mandatory test case methods name                       */
+mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
+testUnitList=.list~of( .array~of(.ooRexx.Base.Class.Enumeration.testUnit,  mandatoryTestMethods) )
+
+
+   -- read top comment, containing infos about this program
+arrLines=.array~new
+do i=1 to 150 until arrLines[i]="*/"
+   arrLines[i]=sourceline(i)
+end
+   -- supply information for the testClass(es) in this file; the class attribute
+   -- "TestCaseInfo" (a directory object, index points to a queue) will store
+   -- the parsed infos
+aTestUnitClass=testUnitList~at(testUnitList~first)[1] -- get first testClass
+
+   -- will parse the array lines and store result in class object
+call makeDirTestInfo aTestUnitClass, arrLines
+tmpDir=aTestUnitClass~TestCaseInfo
+parse source s   -- op_sys invocationType fullPathToThisFile
+tmpDir~setentry("test_Case-source", s)
+
+   -- now add this directory to other testCase classes, if any left
+do arr over testUnitList
+   if arr[1]=aTestUnitClass then iterate  -- already handled
+   arr[1]~TestCaseInfo=tmpDir             -- save info in class object
+end
+
+if .local~hasentry("bRunTestsLocally")=.false then
+   .local~bRunTestsLocally=.true 
+
+if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
+do
+   ts=.testSuite~new             -- create a testSuite
+   do arr over testUnitList
+      ts~addTest( .testSuite~new(arr[1]))
+   end
+   -- testResult=.testSuite~new(testUnitClass)~run
+   testResult=ts~run       -- now run all the tests
+
+   call simpleDumpTestResults testResult
+end
+
+   /* return list of array objects containing test case classes and
+      optionally list of mandatory test methods                      */
+return testUnitList
+
+
+
+::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::REQUIRES "Enumeration.cls"
+::class "ooRexx.Base.Class.Enumeration.TestUnit" subclass TestCase public
+::method "testSimpleColourEquality"
+  red = .Colour~red
+  blue = .Colour~blue
+  green = .Colour~green
+  
+  self~assertEquals("equal 1.1",        .Colour~red,red)
+  self~assertNotEquals("not equal 1.2",  .Colour~red,blue)
+  self~assertNotEquals("not equal 1.3",  .Colour~red,green)
+  
+  self~assertNotEquals("not equal 2.1",  .Colour~blue,red)
+  self~assertEquals("equal 2.2",        .Colour~blue,blue)
+  self~assertNotEquals("not equal 2.3",  .Colour~blue,green)
+  
+  self~assertNotEquals("not equal 3.1",  .Colour~green,red)
+  self~assertNotEquals("not equal 3.2",  .Colour~green,blue)
+  self~assertEquals("equal 3.3",        .Colour~green,green)
+
+::method "testSimpleColourGT"
+  red = .Colour~red
+  blue = .Colour~blue
+  green = .Colour~green
+  
+  self~assertFalse("false 1.1",  .Colour~red > .Colour~red)
+  self~assertFalse("false 1.2",  .Colour~red > .Colour~blue)
+  self~assertFalse("false 1.3",  .Colour~red > .Colour~green)
+  
+  self~assertTrue("true 2.1",    .Colour~blue > .Colour~red)
+  self~assertFalse("false 2.2",  .Colour~blue > .Colour~blue)
+  self~assertFalse("false 2.3",  .Colour~blue > .Colour~green)
+  
+  self~assertTrue("true 3.1",    .Colour~green > .Colour~red)
+  self~assertTrue("true 3.2",    .Colour~green > .Colour~blue)
+  self~assertFalse("false 3.3",  .Colour~green > .Colour~green)
+
+::method "testSimpleColourGTEQ"
+  red = .Colour~red
+  blue = .Colour~blue
+  green = .Colour~green
+  
+  self~assertTrue("true 1.1",    .Colour~red >= .Colour~red)
+  self~assertFalse("false 1.2",  .Colour~red >= .Colour~blue)
+  self~assertFalse("false 1.3",  .Colour~red >= .Colour~green)
+  
+  self~assertTrue("true 2.1",    .Colour~blue >= .Colour~red)
+  self~assertTrue("true 2.2",    .Colour~blue >= .Colour~blue)
+  self~assertFalse("false 2.3",  .Colour~blue >= .Colour~green)
+  
+  self~assertTrue("true 3.1",    .Colour~green >= .Colour~red)
+  self~assertTrue("true 3.2",    .Colour~green >= .Colour~blue)
+  self~assertTrue("true 3.3",    .Colour~green >= .Colour~green)
+
+
+::method "testSimpleColourLT"
+  red = .Colour~red
+  blue = .Colour~blue
+  green = .Colour~green
+  
+  self~assertFalse("false 1.1",  .Colour~red < .Colour~red)
+  self~assertTrue("true 1.2",    .Colour~red < .Colour~blue)
+  self~assertTrue("true 1.3",    .Colour~red < .Colour~green)
+  
+  self~assertFalse("false 2.1",  .Colour~blue < .Colour~red)
+  self~assertFalse("false 2.2",  .Colour~blue < .Colour~blue)
+  self~assertTrue("true 2.3",  .Colour~blue < .Colour~green)
+  
+  self~assertFalse("false 3.1",  .Colour~green < .Colour~red)
+  self~assertFalse("false 3.2",  .Colour~green < .Colour~blue)
+  self~assertFalse("false 3.3",  .Colour~green < .Colour~green)
+
+::method "testSimpleColourLTEQ"
+  red = .Colour~red
+  blue = .Colour~blue
+  green = .Colour~green
+  
+  self~assertTrue("true 1.1",  .Colour~red <= .Colour~red)
+  self~assertTrue("true 1.2",    .Colour~red <= .Colour~blue)
+  self~assertTrue("true 1.3",    .Colour~red <= .Colour~green)
+  
+  self~assertFalse("false 2.1",  .Colour~blue <= .Colour~red)
+  self~assertTrue("true 2.2",  .Colour~blue <= .Colour~blue)
+  self~assertTrue("true 2.3",  .Colour~blue <= .Colour~green)
+  
+  self~assertFalse("false 3.1",  .Colour~green <= .Colour~red)
+  self~assertFalse("false 3.2",  .Colour~green <= .Colour~blue)
+  self~assertTrue("true 3.3",  .Colour~green <= .Colour~green)
+
+::method "testEnumerationNew1"
+  self~expectSyntax(97.1)
+  .Enumeration~new
+
+::method "testColourNew1"
+  self~expectSyntax(97.1)
+  .Colour~new
+
+::METHOD "testSyntaxValueOf"
+  self~expectSyntax(93.911)
+  .Colour~valueOf()
+
+::method "testCompareSyntax1"
+  self~expectSyntax(93.911)
+  rc = (.Colour~blue < .nil)
+
+::method "testCompareSyntax2"
+  self~expectSyntax(93.948)
+  rc = (.Colour~blue < "Word")
+
+::method "testSimpleColourStrictlyEquals"
+  red = .Colour~red
+  blue = .Colour~blue
+  green = .Colour~green
+  self~assertEquals("not equal 1",      .Colour~red,red)
+  self~assertEquals("not equal 2",      .Colour~blue,blue)
+  self~assertEquals("not equal 3",      .Colour~green,green)
+
+::method "testSimpleColourNext"
+  red = .Colour~red
+  blue = .Colour~blue
+  green = .Colour~green
+  self~assertEquals("next 1",  red~next,    blue)
+  self~assertEquals("next 2",  blue~next,  green)
+  self~assertNull("next 3",    green~next)
+
+::method "testSimpleColourPrevious"
+  red = .Colour~red
+  blue = .Colour~blue
+  green = .Colour~green
+  self~assertNull("prev 1",    red~previous)
+  self~assertEquals("prev 2",  blue~previous,  red)
+  self~assertEquals("prev 3",  green~previous,  blue)
+
+::method "testSimpleColourCompareTo"
+  red = .Colour~red
+  blue = .Colour~blue
+  green = .Colour~green
+
+  self~assertEquals("compareTo red 1",    0,  red~compareTo(red))  
+  self~assertEquals("compareTo red 2",   -1,  red~compareTo(blue))  
+  self~assertEquals("compareTo red 3",   -2,  red~compareTo(green))  
+
+  self~assertEquals("compareTo blue 1",    1,  blue~compareTo(red))  
+  self~assertEquals("compareTo blue 2",    0,  blue~compareTo(blue))  
+  self~assertEquals("compareTo blue 3",   -1,  blue~compareTo(green))  
+
+  self~assertEquals("compareTo green 1",  2,  green~compareTo(red))  
+  self~assertEquals("compareTo green 2",  1,  green~compareTo(blue))  
+  self~assertEquals("compareTo green 3",  0,  green~compareTo(green))  
+
+::method "testSimpleColourValueOf"
+  red = .Colour~red
+  blue = .Colour~blue
+  green = .Colour~green
+
+  self~assertEquals("valueOf 1",  red,    .Colour~valueOf("red"))
+  self~assertEquals("valueOf 2",  blue,    .Colour~valueOf("blue"))
+  self~assertEquals("valueOf 3",  green,  .Colour~valueOf("green"))
+
+  self~assertNull("valueOf NIL 1",.Colour~valueOf("yellow"))
+
+::method "testSimpleColourGetAdjacent"
+  red = .Colour~red
+  blue = .Colour~blue
+  green = .Colour~green
+
+  self~assertEquals("Adj red 1",red,red~getAdjacent(red~compareTo(red)))  
+  self~assertEquals("Adj red 2",red,blue~getAdjacent(red~compareTo(blue)))  
+  self~assertEquals("Adj red 3",red,green~getAdjacent(red~compareTo(green)))
+
+  self~assertEquals("Adj blue 1",blue,red~getAdjacent(blue~compareTo(red)))
+  self~assertEquals("Adj blue 2",blue,blue~getAdjacent(blue~compareTo(blue)))
+  self~assertEquals("Adj blue 3",blue,green~getAdjacent(blue~compareTo(green)))
+
+  self~assertEquals("Adj green 1",green,red~getAdjacent(green~compareTo(red)))
+  self~assertEquals("Adj green 2",green,blue~getAdjacent(green~compareTo(blue)))
+  self~assertEquals("Adj grn 3",green,green~getAdjacent(green~compareTo(green)))
+
+
+::CLASS Colour subclass Enumeration
+::CLASS Red subclass Colour
+::CLASS Blue subclass Colour
+::CLASS Green subclass Colour
