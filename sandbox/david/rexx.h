@@ -58,9 +58,12 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-/* This section defines return codes and constants for Rexx calls    */
-
 typedef unsigned int APIRET;           // API return type
+
+
+/*----------------------------------------------------------------------------*/
+/***    RXSTRING defines                                                      */
+/*----------------------------------------------------------------------------*/
 
 /***    Structure for external interface string (RXSTRING) */
 
@@ -73,11 +76,6 @@ typedef struct _CONSTRXSTRING {        /* const rxstr                */
     const size_t  strlength;           /*   length of string         */
     const char   *strptr;              /*   pointer to string        */
 } CONSTRXSTRING;
-
-/* These must be placed after RXSTRING and CONSTRXSTRING are defined */
-#include "rexxapidefs.h"
-#include "rexxapitypes.h"              // Platform specific stuff
-#include "rexxplatformapis.h"          // Platform specific stuff
 
 /***    Macros for RexxString manipulation                   */
 
@@ -101,7 +99,9 @@ typedef struct _RXSYSEXIT {            /* syse */
 typedef RXSYSEXIT *PRXSYSEXIT;         /* pointer to a RXSYSEXIT     */
 
 
-/***    Shared Variable Pool Interface defines */
+/*----------------------------------------------------------------------------*/
+/***    Shared Variable Pool Interface defines                                */
+/*----------------------------------------------------------------------------*/
 
 /***    Structure of Shared Variable Request Block (SHVBLOCK) */
 
@@ -117,6 +117,17 @@ typedef struct _SHVBLOCK {            /* shvb */
 typedef SHVBLOCK *PSHVBLOCK;
 
 typedef char *PEXIT;                  /* ptr to exit parameter block */
+
+
+/*----------------------------------------------------------------------------*/
+/***    Include the other common and platform specific stuff                  */
+/*----------------------------------------------------------------------------*/
+
+/* These must be placed after RXSTRING and CONSTRXSTRING are defined */
+#include "rexxapidefs.h"
+#include "rexxapitypes.h"              // Platform specific stuff
+#include "rexxplatformapis.h"          // Platform specific stuff
+#include "rexxplatformdefs.h"          // Platform specific stuff
 
 
 /*----------------------------------------------------------------------------*/
