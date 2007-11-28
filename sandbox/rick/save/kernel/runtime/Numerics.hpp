@@ -45,8 +45,6 @@
 #ifndef Included_Numerics
 #define Included_Numerics
 
-class RexxObject;
-
 
 class NumericSettings                  // "global" numeric settings         */
 {
@@ -96,7 +94,7 @@ public:
     static bool   form()   { return settings->form; }
     static void   setCurrentSettings(NumericSettings *s) { settings = s; }
     static NumericSettings *setDefaultSettings() { settings = &defaultSettings; return settings; }
-
+    static NumericSettings *getDefaultSettings() { return &defaultSettings; }
 
 protected:
 

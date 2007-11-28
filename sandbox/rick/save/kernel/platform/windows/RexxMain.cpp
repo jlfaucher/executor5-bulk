@@ -193,7 +193,7 @@ void SearchPrecision(
     RexxActivity *activity = ActivityManager::findActivityForCurrentThread();
     if (activity != OREF_NULL)
     {
-        RexxActivation *activation = activity->getCurrentActivation);
+        RexxActivation *activation = activity->getCurrentActivation();
         *precision = activation->digits();
     }
 }

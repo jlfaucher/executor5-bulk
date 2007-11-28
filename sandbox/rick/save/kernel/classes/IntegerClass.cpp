@@ -245,17 +245,17 @@ void RexxInteger::setString(
    this->setHasReferences();           /* we now have references            */
 }
 
-BOOL RexxInteger::truthValue(
-    LONG  errorcode )                  /* error to raise if not good        */
+bool RexxInteger::truthValue(
+    int   errorcode )                  /* error to raise if not good        */
 /******************************************************************************/
 /* Function:  Determine the truth value of an integer object                  */
 /******************************************************************************/
 {
   if (this->value == 0L)               /* have a zero?                      */
-    return FALSE;                      /* this is false                     */
+    return false;                      /* this is false                     */
   else if (this->value != 1L)          /* how about a one?                  */
     reportException(errorcode, this);/* report the error                  */
-  return TRUE;                         /* this is true                      */
+  return true;                         /* this is true                      */
 }
 
 /******************************************************************************/
@@ -507,7 +507,7 @@ RexxObject *RexxInteger::power(
   return integer_forward(this, power, other);
 }
 
-BOOL RexxInteger::isEqual(
+bool RexxInteger::isEqual(
     RexxObject *other)                 /* other comparison object           */
 /******************************************************************************/
 /* Function:  Primitive strict equal\not equal method.  This determines       */

@@ -128,21 +128,9 @@ void RexxInstructionGuard::execute(
     if (!result->truthValue(Error_Logical_value_guard)) {
       do {                             /* need to loop until true           */
         stack->clear();                /* clear the expression stack        */
-
-#ifdef NEWGUARD
-		/* this code doesn't wait for the kernel or the scope so I can check */
-		/* the result at once (no other threads can change it before) 		 */
-        i = context->guardWait();       /* establish guards and wait         */
-        result = this->expression->evaluate(context, stack);
-		/* I checked the result, so get the kernel and the scope now */
-		context->activity->requestKernel();
-		context->guardWaitScope(i);
-        ActivityManager::currentActivity->guardSet();   /* initialize the guard sem          */
-#else
         context->guardWait();       /* establish guards and wait         */
         ActivityManager::currentActivity->guardSet();   /* initialize the guard sem          */
         result = this->expression->evaluate(context, stack);
-#endif
         context->traceResult(result);  /* trace if necessary                */
                                        /* while this is still false         */
       } while (!result->truthValue(Error_Logical_value_guard));

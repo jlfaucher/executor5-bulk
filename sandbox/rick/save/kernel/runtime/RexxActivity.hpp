@@ -101,14 +101,16 @@ extern ULONG  rexxTimeSliceTimerOwner;
                                        /* restored on nested entries to the */
                                        /* interpreter that use the same     */
                                        /* activity                          */
-typedef struct nestedinfo {
+class NestedActivityState
+{
+public:
    char       *stackptr;               /* pointer to base of C stack        */
    RexxString *currentExit;            /* current executing system exit     */
+   bool        clauseExitUsed;         /* halt/trace sys exit not set ==> 1 */
    RexxString *shvexitvalue;           /* ret'd val from varpool RXHSV_EXIT */
-   ULONG       randomSeed;             /* random number seed                */
-   BOOL        exitset;                /* halt/trace sys exit not set ==> 1 */
+   size_t      randomSeed;             /* random number seed                */
    RexxString *sysexits[LAST_EXIT];    /* Array to hold system exits        */
-}  nestedActivityInfo;
+};
 
                                        /* NOTE:  The following object       */
                                        /* definitions are only included in  */
@@ -128,9 +130,12 @@ typedef struct nestedinfo {
    inline void  operator delete(void *, void *) { ; }
 
    inline RexxActivity(RESTORETYPE restoreType) { ; };
-   RexxActivity(BOOL, long, RexxDirectory *);
+   RexxActivity(bool, long, RexxDirectory *);
+
+
+   void runThread();
    long error(size_t);
-   BOOL        raiseCondition(RexxString *, RexxObject *, RexxString *, RexxObject *, RexxObject *, RexxDirectory *);
+   bool        raiseCondition(RexxString *, RexxObject *, RexxString *, RexxObject *, RexxObject *, RexxDirectory *);
    void        raiseException(wholenumber_t, SourceLocation *, RexxSource *, RexxString *, RexxArray *, RexxObject *);
    void        reportAnException(wholenumber_t, const char *);
    void        reportAnException(wholenumber_t, RexxObject *, const char *);
@@ -158,10 +163,10 @@ typedef struct nestedinfo {
    void        flatten(RexxEnvelope *);
    void        run();
    void        push(RexxActivationBase *);
-   void        pop(BOOL);
+   void        pop(bool);
    void        pushNil();
    void        popNil();
-   void        exitKernel(RexxActivation *, RexxString *, BOOL);
+   void        exitKernel(RexxActivation *, RexxString *, bool);
    void        enterKernel();
    RexxObject *previous();
    void        waitReserve(RexxObject *);
@@ -187,24 +192,23 @@ typedef struct nestedinfo {
    long threadIdMethod();
    bool isThread(long id) { return threadid == id; }
    void setShvVal(RexxString *);
-   inline BOOL querySet() { return this->nestedInfo.exitset; }
+   inline bool isClauseExitUsed() { return this->nestedInfo.clauseExitUsed; }
    void queryTrcHlt();
    void sysExitInit(RexxActivation *);
    void sysExitTerm(RexxActivation *);
-   BOOL sysExitSioSay(RexxActivation *, RexxString *);
-   BOOL sysExitSioTrc(RexxActivation *, RexxString *);
-   BOOL sysExitSioTrd(RexxActivation *, RexxString **);
-   BOOL sysExitSioDtr(RexxActivation *, RexxString **);
-   BOOL sysExitFunc(RexxActivation *, RexxString *, RexxObject *, RexxObject **, RexxObject **, size_t);
-   BOOL sysExitCmd(RexxActivation *, RexxString *, RexxString *, RexxString **, RexxObject **);
-   BOOL sysExitMsqPll(RexxActivation *, RexxString **);
-   BOOL sysExitMsqPsh(RexxActivation *, RexxString *, int);
-   BOOL sysExitMsqSiz(RexxActivation *, RexxInteger **);
-   BOOL sysExitMsqNam(RexxActivation *, RexxString **);
-   BOOL sysExitHltTst(RexxActivation *);
-   BOOL sysExitHltClr(RexxActivation *);
-   BOOL sysExitTrcTst(RexxActivation *, BOOL);
-   BOOL sysExitDbgTst(RexxActivation *, BOOL, BOOL);
+   bool sysExitSioSay(RexxActivation *, RexxString *);
+   bool sysExitSioTrc(RexxActivation *, RexxString *);
+   bool sysExitSioTrd(RexxActivation *, RexxString **);
+   bool sysExitSioDtr(RexxActivation *, RexxString **);
+   bool sysExitFunc(RexxActivation *, RexxString *, RexxObject *, RexxObject **, RexxObject **, size_t);
+   bool sysExitCmd(RexxActivation *, RexxString *, RexxString *, RexxString **, RexxObject **);
+   bool sysExitMsqPll(RexxActivation *, RexxString **);
+   bool sysExitMsqPsh(RexxActivation *, RexxString *, int);
+   bool sysExitMsqSiz(RexxActivation *, RexxInteger **);
+   bool sysExitMsqNam(RexxActivation *, RexxString **);
+   bool sysExitHltTst(RexxActivation *);
+   bool sysExitHltClr(RexxActivation *);
+   bool sysExitTrcTst(RexxActivation *, bool);
    void traceOutput(RexxActivation *, RexxString *);
    void sayOutput(RexxActivation *, RexxString *);
    void queue(RexxActivation *, RexxString *, int);
@@ -213,7 +217,7 @@ typedef struct nestedinfo {
    RexxObject *lineOut(RexxString *);
    RexxString *lineIn(RexxActivation *);
    void terminateMethod();
-   LONG messageSend(RexxObject *, RexxString *, LONG, RexxObject **, RexxObject **);
+   int  messageSend(RexxObject *, RexxString *, size_t, RexxObject **, RexxObject **);
    void generateRandomNumberSeed();
 
    void activate() { nestedCount++; }
@@ -225,8 +229,8 @@ typedef struct nestedinfo {
 
    inline RexxActivationBase *current(){ return this->topActivation;}
    inline RexxActivation *getCurrentActivation() {return this->currentActivation;}
+   inline size_t getActivationDepth() { return depth; }
    inline NumericSettings *getNumericSettings () {return this->numericSettings;}
-   inline void                 setProcessobj(RexxObject *p) {this->processObj = p;}
    inline RexxObject *runningRequires(RexxString *program) {return this->requiresTable->stringGet(program);}
    inline void        addRunningRequires(RexxString *program) { this->requiresTable->stringAdd((RexxObject *)program, program);}
    inline void        removeRunningRequires(RexxObject *program) {this->requiresTable->remove(program);}
@@ -237,14 +241,14 @@ typedef struct nestedinfo {
    inline void        clearWait()  { EVSET(this->runsem); }
    inline void        setCurrentExit(RexxString *newExit) { this->nestedInfo.currentExit = newExit; }
    inline RexxString *getCurrentExit() { return this->nestedInfo.currentExit; }
-   inline void setRandomSeed(long seed) { this->nestedInfo.randomSeed = seed; };
-   inline RexxObject *getProcessObj(){ return this->processObj;};
+   inline size_t      getRandomSeed() { return nestedInfo.randomSeed; }
+   inline void setRandomSeed(size_t seed) { this->nestedInfo.randomSeed = seed; };
    inline void setSysExit(long exitNum, RexxString *exitName) { this->nestedInfo.sysexits[exitNum -1] = exitName;}
    inline RexxString *querySysExits(long exitNum) {return this->nestedInfo.sysexits[exitNum -1];}
    inline RexxString **getSysExits() {return this->nestedInfo.sysexits;}
    inline void clearExits() { memset((PVOID)&this->nestedInfo.sysexits, 0, sizeof(this->nestedInfo.sysexits)); }
-   inline void saveNestedInfo(nestedActivityInfo *saveInfo) { memcpy((PVOID)saveInfo, (PVOID)&this->nestedInfo, sizeof(nestedActivityInfo)); }
-   inline void restoreNestedInfo(nestedActivityInfo *saveInfo) { memcpy((PVOID)&this->nestedInfo, (PVOID)saveInfo, sizeof(nestedActivityInfo)); }
+   inline void saveNestedInfo(NestedActivityState &saveInfo) { saveInfo = nestedInfo; }
+   inline void restoreNestedInfo(NestedActivityState &saveInfo) { nestedInfo = saveInfo; }
    inline void allocateStackFrame(RexxExpressionStack *stack, size_t entries)
    {
        stack->setFrame(frameStack.allocateFrame(entries), entries);
@@ -275,7 +279,6 @@ typedef struct nestedinfo {
    RexxObject         *saveValue;      /* saved result across activity_yield*/
    RexxDirectory      *local;          /* the local environment directory   */
    RexxDirectory      *conditionobj;   /* condition object for killed activi*/
-   RexxObject         *processObj;     /* Process identifier Object.        */
    RexxTable          *requiresTable;  /* Current ::REQUIRES being installed*/
                                        /* current REXX activation           */
    RexxActivation     *currentActivation;
@@ -300,7 +303,7 @@ typedef struct nestedinfo {
    bool     requestingString;          /* in error handling currently       */
    SEV      guardsem;                  /* guard expression semaphore        */
    size_t   nestedCount;               /* extent of the nesting             */
-   nestedActivityInfo nestedInfo;      /* info saved and restored on calls  */
+   NestedActivityState nestedInfo;     /* info saved and restored on calls  */
    ProtectedObject *protectedObjects;  // list of stack-based object protectors
  };
 

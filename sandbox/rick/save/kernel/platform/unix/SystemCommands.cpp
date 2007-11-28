@@ -121,14 +121,14 @@ void scan_cmd(const char *parm_cmd, char **args);
 /*                                                                            */
 /* Notes:      Inovkes a system exit routine.                                 */
 /******************************************************************************/
-BOOL SysExitHandler(
+bool SysExitHandler(
   RexxActivity     * activity,         /* activity working under            */
   RexxActivation   * activation,       /* activation working under          */
   RexxString       * exitname,         /* name of the exit handler          */
-  long             function,           /* major function                    */
-  long             subfunction,        /* minor exit function               */
-  PVOID            exitbuffer,         /* exit specific arguments           */
-  BOOL             enable )            /* enable variable pool              */
+  int              function,           /* major function                    */
+  int              subfunction,        /* minor exit function               */
+  void *           exitbuffer,         /* exit specific arguments           */
+  bool             enable )            /* enable variable pool              */
 {
   int   rc;                            /* exit return code                  */
   const char *handler_name;            /* ASCII-Z handler name              */

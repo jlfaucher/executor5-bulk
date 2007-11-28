@@ -204,7 +204,7 @@ ULONG SysVariablePool(
 
  pshvblock = (PSHVBLOCK)requests;      /* copy the request block pointer    */
                                        /* get the variable dictionary       */
- activation = self->activity->getCurrentActivation);
+ activation = self->activity->getCurrentActivation();
 
  while (pshvblock) {                   /* while more request blocks         */
   pshvblock->shvret = 0;               /* set the block return code         */

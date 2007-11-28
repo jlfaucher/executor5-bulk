@@ -50,6 +50,7 @@ public:
     static void liveGeneral();
 
     static void addWaitingActivity(RexxActivity *a, bool release);
+    static bool hasWaiters() { return waitingActivities > 0; }
     static inline RexxActivity *waitingActivity()
     {
         return firstWaitingActivity;
@@ -58,6 +59,7 @@ public:
     static RexxActivity *findActivity(LONG);
     static RexxActivity *getActivity();
     static void returnActivity(RexxActivity *);
+    static void activityEnded(RexxActivity *);
     static void shutdown();
     static void createInterpreter();
     static void terminateInterpreter();

@@ -49,6 +49,7 @@
 #include "RexxCore.h"
 #include "StringClass.hpp"
 #include "RexxBuiltinFunctions.h"                          /* Gneral purpose BIF Header file       */
+#include "ActivityManager.hpp"
 
 
 /* the CENTER function (and the CENTRE function) */

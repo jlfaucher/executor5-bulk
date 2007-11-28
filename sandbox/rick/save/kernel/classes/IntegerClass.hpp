@@ -44,6 +44,8 @@
 #ifndef Included_RexxInteger
 #define Included_RexxInteger
 
+#include "NumberStringClass.hpp"
+
 void integer_create (void);
 #define INTEGERCACHELOW  -10
 #define INTEGERCACHESIZE 100
@@ -69,12 +71,12 @@ class RexxInteger : public RexxObject {
   RexxInteger *hasMethod(RexxString *);
   RexxString  *primitiveMakeString();
   RexxString  *stringValue();
-  BOOL         truthValue(LONG);
+  bool         truthValue(int);
   bool         isInstanceOf(RexxClass *);
   RexxMethod   *instanceMethod(RexxString *);
   RexxSupplier *instanceMethods(RexxClass *);
 
-  BOOL        isEqual(RexxObject *);
+  bool        isEqual(RexxObject *);
   long        strictComp(RexxObject *);
   inline int  comp(RexxObject *other)
     {

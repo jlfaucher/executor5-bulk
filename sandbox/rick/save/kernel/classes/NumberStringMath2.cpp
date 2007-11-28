@@ -52,6 +52,7 @@
 #include "RexxBuffer.hpp"
 #include "RexxActivity.hpp"
 #include "NumberStringMath.hpp"
+#include "ActivityManager.hpp"
 
 char * AddMultiplier(
     char *top,                        /* data pointer of "top" number      */

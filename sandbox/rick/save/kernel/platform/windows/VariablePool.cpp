@@ -204,7 +204,7 @@ ULONG SysVariablePool(
 
  pshvblock = (PSHVBLOCK)requests;      /* copy the request block pointer    */
                                        /* get the REXX activation           */
- activation = self->activity->getCurrentActivation);
+ activation = self->activity->getCurrentActivation();
 
  while (pshvblock) {                   /* while more request blocks         */
   pshvblock->shvret = 0;               /* set the block return code         */
@@ -375,22 +375,6 @@ ULONG SysVariablePool(
  }
  return retcode;                       /* return composite return code      */
 }
-
-
-/******************************************************************************/
-/* RexxExecutionLineInfo													  */
-/*                                                                            */
-/* Arguments: size_t *to retrieve currently processed line                    */
-/*            char   * to retrieve currently processed modul                  */
-/******************************************************************************/
-ULONG REXXENTRY RexxExecutionLineInfo(PULONG line, char * fname, BOOL next)
-{
-  if (!RexxQuery())                         /* Are we up?                     */
-    return 1;                               /*   No, send nastygram.          */
-  else                                      /*   Yes, ship request to kernel  */
-    return REXX_EXECUTIONINFO(line, fname, next);
-}
-
 
 
 #ifdef BIT16SUPPORT

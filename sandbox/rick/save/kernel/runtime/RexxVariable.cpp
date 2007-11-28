@@ -36,7 +36,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /****************************************************************************/
-/* REXX Kernel                                                  RexxVariable.c     */
+/* REXX Kernel                                           RexxVariable.c     */
 /*                                                                          */
 /* Primitive Variable Class                                                 */
 /*                                                                          */
@@ -44,6 +44,7 @@
 #include "RexxCore.h"
 #include "RexxVariable.hpp"
 #include "RexxActivity.hpp"
+#include "ActivityManager.hpp"
 
 void RexxVariable::live()
 /******************************************************************************/

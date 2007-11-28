@@ -97,9 +97,10 @@
                                        /* whenever the settings structure   */
                                        /* changes                           */
 
-class ACTSETTINGS {
+class ActivationSettings
+{
     public:
-      inline ACTSETTINGS()
+      inline ActivationSettings()
       {
           flags = trace_failures;
           traceoption = TRACE_NORMAL;
@@ -121,10 +122,10 @@ class ACTSETTINGS {
       RexxString    * halt_description;    /* description from a HALT condition */
       RexxObject    * securityManager;     /* security manager object           */
       int  traceoption;                    /* current active trace option       */
-      ULONG flags;                         /* trace/numeric and other settings  */
-      LONG trace_skip;                     /* count of trace events to skip     */
-      LONG return_status;                  /* command return status             */
-      LONG traceindent;                    /* trace indentation                 */
+      size_t flags;                        /* trace/numeric and other settings  */
+      wholenumber_t trace_skip;            /* count of trace events to skip     */
+      int  return_status;                  /* command return status             */
+      int  traceindent;                    /* trace indentation                 */
       NumericSettings numericSettings;     /* globally effective settings       */
       int64_t elapsed_time;                /* elapsed time clock                */
       RexxDateTime timestamp;              /* current timestamp                 */
@@ -175,13 +176,13 @@ RexxObject * activation_find  (void);
    void flatten(RexxEnvelope *);
    RexxObject      * dispatch();
    void              traceBack(RexxList *);
-   long              digits();
-   long              fuzz();
-   BOOL              form();
-   void              setDigits(LONG);
-   void              setFuzz(LONG);
-   void              setForm(BOOL);
-   BOOL              trap(RexxString *, RexxDirectory *);
+   size_t            digits();
+   size_t            fuzz();
+   bool              form();
+   void              setDigits(size_t);
+   void              setFuzz(size_t);
+   void              setForm(bool);
+   bool              trap(RexxString *, RexxDirectory *);
    void              setObjNotify(RexxMessage *);
    void              termination();
    inline void       guardOff()
@@ -196,7 +197,7 @@ RexxObject * activation_find  (void);
     }
    RexxObject      * run(RexxObject **, size_t, RexxInstruction *);
    void              reply(RexxObject *);
-   RexxObject      * forward(RexxObject *, RexxString *, RexxObject *, RexxObject **, size_t, BOOL);
+   RexxObject      * forward(RexxObject *, RexxString *, RexxObject *, RexxObject **, size_t, bool);
    void              returnFrom(RexxObject *result);
    void              exitFrom(RexxObject *);
    void              procedureExpose(RexxVariableBase **variables, size_t count);
@@ -212,13 +213,8 @@ RexxObject * activation_find  (void);
    RexxActivation  * external();
    void              interpret(RexxString *);
    void              signalTo(RexxInstruction *);
-#ifdef NEWGUARD
-   BOOL              guardWait();
-   void              guardWaitScope(BOOL initial_state);
-#else
    void              guardWait();
-#endif
-   void              debugSkip(LONG, BOOL);
+   void              debugSkip(wholenumber_t, bool);
    RexxString      * traceSetting();
    void              iterate(RexxString *);
    void              leaveLoop(RexxString *);
@@ -229,7 +225,7 @@ RexxObject * activation_find  (void);
    RexxString      * trapState(RexxString *);
    void              trapDelay(RexxString *);
    void              trapUndelay(RexxString *);
-   BOOL              callExternalRexx(RexxString *, RexxString *, RexxObject **, size_t, RexxString *, RexxObject **);
+   bool              callExternalRexx(RexxString *, RexxString *, RexxObject **, size_t, RexxString *, RexxObject **);
    RexxObject      * externalCall(RexxString *, size_t, RexxExpressionStack *, RexxString *);
    RexxObject      * internalCall(RexxInstruction *, size_t, RexxExpressionStack *);
    RexxObject      * internalCallTrap(RexxInstruction *, RexxDirectory *);
@@ -237,7 +233,7 @@ RexxObject * activation_find  (void);
    int64_t           getElapsed();
    RexxDateTime      getTime();
    RexxInteger     * random(RexxInteger *, RexxInteger *, RexxInteger *);
-   LONG              currentLine();
+   size_t            currentLine();
    void              arguments(RexxObject *);
    void              traceValue(RexxObject *, int);
    void              traceCompoundValue(int prefix, RexxString *stem, RexxObject **tails, size_t tailCount, RexxObject * value);
@@ -266,8 +262,10 @@ RexxObject * activation_find  (void);
 
    void              unwindTrap(RexxActivation *);
    RexxString      * sourceString();
+   void              addLocalRoutine(RexxString *name, RexxMethod *method);
+   RexxDirectory    *getPublicRoutines();
    void              debugInterpret(RexxString *);
-   BOOL              debugPause(RexxInstruction * instr=OREF_NULL);
+   bool              debugPause(RexxInstruction * instr=OREF_NULL);
    void              processClauseBoundary();
    void              halt(RexxString *);
    void              externalTraceOn();
@@ -275,17 +273,17 @@ RexxObject * activation_find  (void);
    void              yield();
    void              propagateExit(RexxObject *);
    void              setDefaultAddress(RexxString *);
-   BOOL              internalMethod();
+   bool              internalMethod();
    RexxObject      * loadRequired(RexxString *, RexxInstruction *);
    RexxObject      * rexxVariable(RexxString *);
    void              pushEnvironment(RexxObject *);
    RexxObject      * popEnvironment();
    void              processTraps();
    void              mergeTraps(RexxQueue *, RexxQueue *);
-   ULONG             getRandomSeed(RexxInteger *);
+   size_t            getRandomSeed(RexxInteger *);
    RexxVariableDictionary * getObjectVariables();
    RexxDirectory   * getLabels();
-   RexxString      * programName();
+   RexxString      * getProgramName();
    RexxObject      * popControl();
    void              pushControl(RexxObject *);
    void              closeStreams();
@@ -306,11 +304,12 @@ RexxObject * activation_find  (void);
    inline void              newDo(RexxDoBlock *block) { this->pushBlock(block); this->blockNest++; this->settings.traceindent++;}
    inline void              removeBlock() { this->blockNest--; };
    inline void              addBlock()    { this->blockNest++; };
-   inline BOOL              inMethod()  {return this->activation_context == METHODCALL; }
+   inline bool              inMethod()  {return this->activation_context == METHODCALL; }
    inline RexxSource *      getSource() {return this->settings.parent_code->getSource(); };
    inline void              indent() {this->settings.traceindent++; };
    inline void              unindent() {this->settings.traceindent--; };
-   inline void              setIndent(long v) {this->settings.traceindent=(v); };
+   inline void              setIndent(size_t v) {this->settings.traceindent=(v); };
+   inline size_t            getIndent() {return this->settings.traceindent;};
    inline bool              tracingIntermediates() {return this->settings.intermediate_trace;};
    inline void              clearTraceSettings() { settings.flags &= ~trace_flags; settings.intermediate_trace = FALSE; }
    inline bool              tracingResults() {return (this->settings.flags&trace_results) != 0; }
@@ -319,8 +318,8 @@ RexxObject * activation_find  (void);
    inline RexxString      * getMsgname() {return this->settings.msgname;};
    inline RexxString      * getCallname() {return this->settings.msgname;};
    inline RexxInstruction * getCurrent() {return this->current;};
-   inline void              getSettings(ACTSETTINGS * s) {this->settings = *s;};
-   inline void              putSettings(ACTSETTINGS * s) {*s = this->settings;};
+   inline void              getSettings(ActivationSettings &s) {this->settings = s;};
+   inline void              putSettings(ActivationSettings &s) {s = this->settings;};
    inline RexxString      * getAddress() {return this->settings.current_env;};
    inline RexxDirectory   * getConditionObj() {return this->settings.conditionObj;};
    inline void              setConditionObj(RexxDirectory *condition) {this->settings.conditionObj = condition;};
@@ -330,7 +329,6 @@ RexxObject * activation_find  (void);
    inline bool              inDebug() { return ((this->settings.flags&trace_debug) != 0) && !this->debug_pause;}
    inline RexxExpressionStack * getStack() {return &this->stack; };
    inline NumericSettings   * getNumericSettings() {return &(this->settings.numericSettings);};
-   inline LONG              getIndent() {return this->settings.traceindent;};
    inline void              traceIntermediate(RexxObject * v, int p) { if (this->settings.intermediate_trace) this->traceValue(v, p); };
    inline void              traceVariable(RexxString *n, RexxObject *v)
        { if (this->settings.intermediate_trace) { this->traceTaggedValue(TRACE_PREFIX_VARIABLE, NULL, false, n, v); } };
@@ -358,9 +356,10 @@ RexxObject * activation_find  (void);
    inline void              pauseCommand() { if ((this->settings.flags&(trace_commands | trace_debug)) == (trace_commands | trace_debug)) this->debugPause(); };
 
    inline bool              hasSecurityManager() { return this->settings.securityManager != OREF_NULL; }
-   inline BOOL              isTopLevel() { return this->activation_context&TOP_LEVEL_CALL; }
-   inline BOOL              isForwarded() { return this->settings.flags&forwarded; }
-   inline BOOL              isExternalTraceOn() { return this->settings.flags&trace_on; }
+   inline bool              isTopLevel() { return (this->activation_context&TOP_LEVEL_CALL) != 0; }
+   inline bool              isForwarded() { return (this->settings.flags&forwarded) != 0; }
+
+   inline bool              isExternalTraceOn() { return (this->settings.flags&trace_on) != 0; }
    inline void              setExternalTraceOn() { this->settings.flags |= trace_on; }
    inline void              setExternalTraceOff() { this->settings.flags &= ~trace_on; }
 
@@ -558,7 +557,7 @@ RexxObject * activation_find  (void);
      stem_table->dropCompoundVariable(&resolved_tail);
    }
 
-   inline BOOL novalueEnabled() { return settings.local_variables.getNovalue(); }
+   inline bool novalueEnabled() { return settings.local_variables.getNovalue(); }
 
    inline RexxObject *handleNoValueEvent(RexxString *name)
    {
@@ -623,7 +622,9 @@ RexxObject * activation_find  (void);
 
    inline void setLocalVariableDictionary(RexxVariableDictionary *dict) {settings.local_variables.setDictionary(dict); }
 
-   ACTSETTINGS          settings;      /* inherited REXX settings           */
+ protected:
+
+   ActivationSettings   settings;      /* inherited REXX settings           */
    RexxExpressionStack  stack;         /* current evaluation stack          */
    RexxMethod          *method;        /* executed method                   */
    RexxCode            *code;          /* rexx method object                */
@@ -635,7 +636,7 @@ RexxObject * activation_find  (void);
    RexxDoBlock         *dostack;       /* stack of DO loops                 */
    RexxInstruction     *current;       /* current execution pointer         */
    RexxInstruction     *next;          /* next instruction to execute       */
-   BOOL                 debug_pause;   /* executing a debug pause           */
+   bool                 debug_pause;   /* executing a debug pause           */
    int                  object_scope;  /* reserve/release state of variables*/
    RexxObject          *result;        /* result of execution               */
    RexxArray           *trapinfo;      /* current trap handler              */
@@ -650,9 +651,9 @@ RexxObject * activation_find  (void);
    RexxQueue           *handler_queue; /* queue of trapped condition handler*/
                                        /* queue of trapped conditions       */
    RexxQueue           *condition_queue;
-   ULONG                random_seed;   /* random number seed                */
-   BOOL                 random_set;    /* random seed has been set          */
-   ULONG                blockNest;     /* block instruction nesting level   */
+   size_t               random_seed;   /* random number seed                */
+   bool                 random_set;    /* random seed has been set          */
+   size_t               blockNest;     /* block instruction nesting level   */
    size_t               lookaside_size;/* size of the lookaside table       */
  };
  #endif

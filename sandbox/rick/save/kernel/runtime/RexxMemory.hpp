@@ -36,7 +36,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Kernel                                                  RexxMemory.hpp  */
+/* REXX Kernel                                                RexxMemory.hpp  */
 /*                                                                            */
 /* Primitive Memory Class Definitions                                         */
 /*                                                                            */
@@ -163,6 +163,7 @@ class RexxMemory : public RexxObject {
   void        removeUninitObject(RexxObject *obj);
   void        addUninitObject(RexxObject *obj);
   bool        isPendingUninit(RexxObject *obj);
+  inline void checkUninitQueue() { if (pendingUninits > 0) runUninits(); }
 
   RexxArray  *getSubClasses(RexxClass *);
   void        newSubClass(RexxClass *newClass, RexxClass *superClass);

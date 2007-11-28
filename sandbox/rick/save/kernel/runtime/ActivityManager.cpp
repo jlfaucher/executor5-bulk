@@ -36,6 +36,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
+#include "RexxCore.h"
 #include "RexxActivity.hpp"
 #include "RexxActivation.hpp"
 #include "ActivityManager.hpp"
@@ -373,7 +374,7 @@ void ActivityManager::haltAllActivities()
                                          /* Get the next message object to    */
                                          /*process                            */
         RexxActivity *activity = (RexxActivity *)allActivities->getValue(listIndex);
-        RexxActivation *currentActivation = activity->getCurrentActivation);
+        RexxActivation *currentActivation = activity->getCurrentActivation();
 
         if (currentActivation != (RexxActivationBase *)TheNilObject)
         {
@@ -639,6 +640,45 @@ void ActivityManager::returnActivity(RexxActivity *activityObject)
         {
             kernelShutdown();                /* time to shut things down          */
         }
+    }
+
+    // this activity owned the kernel semaphore before entering here...release it
+    // now.
+    activityObject->releaseKernel();
+}
+
+
+/**
+ * Return an activity to the activity pool.
+ *
+ * @param activityObject
+ *               The released activity.
+ */
+void ActivityManager::activityEnded(RexxActivity *activityObject)
+{
+    // was that our last working activity for this interpreter invocation?
+    if (activeActivities->items() == 1)
+    {
+        // before we update of the data structures, make sure we process any
+        // pending uninit activity.
+        memoryObject.forceUninits();
+    }
+
+    // START OF CRITICAL SECTION
+    SysEnterResourceSection();
+    // remove this from the active list
+    activeActivities->removeItem((RexxObject *)activityObject);
+    // and also remove from the global list
+    allActivities->removeItem((RexxObject *)activityObject);
+    // cleanup any system resources this activity might own
+    activityObject->terminateActivity();
+
+    // END OF CRITICAL SECTION
+    SysExitResourceSection();
+                                     /* Are we terminating?               */
+    if (processTerminating && allActivities->isEmpty())
+    {
+        kernelShutdown();                /* time to shut things down          */
     }
 
     // this activity owned the kernel semaphore before entering here...release it

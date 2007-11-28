@@ -122,7 +122,7 @@ RexxObject * RexxInternalObject::makeProxy(RexxEnvelope *envelope)
       return (RexxObject *)this;
 }
 
-BOOL RexxInternalObject::isEqual(
+bool RexxInternalObject::isEqual(
     RexxObject *other )                /* other object for comparison       */
 /******************************************************************************/
 /* Function:  primitive level equality method used by the hash collection     */
@@ -132,7 +132,7 @@ BOOL RexxInternalObject::isEqual(
   return ((RexxObject *)this) == other;/* simple identity equality          */
 }
 
-BOOL RexxObject::isEqual(
+bool RexxObject::isEqual(
     RexxObject *other )                /* other object for comparison       */
 /******************************************************************************/
 /* Function:  primitive level equality method used by the hash collection     */
@@ -422,19 +422,19 @@ RexxInteger *RexxObject::notEqual(RexxObject *other)
    return this != other ? TheTrueObject : TheFalseObject;
 }
 
-BOOL RexxInternalObject::truthValue(
-    LONG   errorCode )                 /* error to issue for bad conversion */
+bool RexxInternalObject::truthValue(
+    int    errorCode )                 /* error to issue for bad conversion */
 /******************************************************************************/
 /* Function:  test the truth value of a primitive object                      */
 /******************************************************************************/
 {
                                        /* report the error                  */
   reportException(errorCode, OREF_NULLSTRING);
-  return FALSE;                        /* need a return value               */
+  return false;                        /* need a return value               */
 }
 
-BOOL RexxObject::truthValue(
-    LONG   errorCode )                 /* error to issue for bad conversion */
+bool RexxObject::truthValue(
+    int    errorCode )                 /* error to issue for bad conversion */
 /******************************************************************************/
 /* Function:  test the truth value of a primitive object                      */
 /******************************************************************************/

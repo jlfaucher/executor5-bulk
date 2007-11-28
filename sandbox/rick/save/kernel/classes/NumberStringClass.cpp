@@ -876,18 +876,18 @@ bool RexxNumberString::int64Value(int64_t *result, stringsize_t numDigits)
 }
 
 
-BOOL  RexxNumberString::truthValue(
-    LONG  errorcode )                  /* error to raise if not good        */
+bool  RexxNumberString::truthValue(
+    int   errorcode )                  /* error to raise if not good        */
 /******************************************************************************/
 /* Function:  Return a truth value boolean for a number string                */
 /******************************************************************************/
 {
   if (this->sign == 0 )                /* exactly zero?                     */
-    return FALSE;                      /* done quickly                      */
+    return false;                      /* done quickly                      */
                                        /* not exactly 1?                    */
   else if (!(this->sign == 1 && this->exp == 0 && this->length == 1L && *(this->number) == 1))
     reportException(errorcode, this);/* report the error                  */
-  return TRUE;                         /* this is TRUE                      */
+  return true;                         /* this is TRUE                      */
 }
 
 BOOL numberStringScan(const char *number, size_t length)
@@ -1865,7 +1865,7 @@ RexxObject *RexxNumberString::xorOp(RexxObject *operand)
   return (RexxObject *)this->stringValue()->xorOp(operand);
 }
 
-BOOL RexxNumberString::isEqual(
+bool RexxNumberString::isEqual(
     RexxObject *other)                 /* other comparison object           */
 /******************************************************************************/
 /* Function:  Primitive strict equal\not equal method.  This determines       */

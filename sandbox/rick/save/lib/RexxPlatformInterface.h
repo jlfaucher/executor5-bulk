@@ -149,7 +149,7 @@ RexxObject * SysCommand(RexxActivation *, RexxActivity *, RexxString *, RexxStri
 
 #ifndef SysExitHandler
                                        /* invoke an exit                    */
-BOOL SysExitHandler(RexxActivity *, RexxActivation *, RexxString *, LONG, LONG, PVOID, BOOL);
+bool SysExitHandler(RexxActivity *, RexxActivation *, RexxString *, int, int, void *, bool);
 #endif
 
 #ifndef SysThreadYield

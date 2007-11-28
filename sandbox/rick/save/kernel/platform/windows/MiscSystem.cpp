@@ -420,12 +420,6 @@ void SysSetThreadPriority(long tid, HANDLE han, int prio)
     pri= THREAD_PRIORITY_ABOVE_NORMAL +1; /* the class is regular, but move    */
                                          /* to the head of the class          */
   }                                    /* medium priority                   */
-#ifdef NEWGUARD
-  else if (prio >= (MEDIUM_PRIORITY+10)) {
-    pri = THREAD_PRIORITY_NORMAL+1;    /* main activity,                     */
-                                       /* dead in the middle of it all      */
-  }
-#endif
   else if (prio >= MEDIUM_PRIORITY) {
     pri = THREAD_PRIORITY_NORMAL;      /* normal class,                     */
                                        /* dead in the middle of it all      */

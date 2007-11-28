@@ -329,8 +329,9 @@ RexxObject *RexxNativeActivation::run(
     reportException(Error_Incorrect_method_maxarg, i);
                                        /* get a RAISE type return?          */
   if (setjmp(this->conditionjump) != 0) {
+    // TODO  Use protected object on the result
     if (this->result != OREF_NULL)     /* have a value?                     */
-      hold(this->result);              /* get result held longer            */
+      holdObject(this->result);        /* get result held longer            */
     this->guardOff();                  /* release any variable locks        */
     this->argcount = 0;                /* make sure we don't try to mark any arguments */
     this->activity->pop(FALSE);        /* pop this from the activity        */
@@ -412,7 +413,8 @@ RexxObject *RexxNativeActivation::run(
       break;
   }
 
-  hold(result);                        /* get result held longer            */
+  // Use protected object to pass back the result
+  holdObject(result);                  /* get result held longer            */
   this->guardOff();                    /* release any variable locks        */
   this->argcount = 0;                  /* make sure we don't try to mark any arguments */
   this->activity->pop(FALSE);          /* pop this from the activity        */
@@ -582,7 +584,7 @@ void RexxNativeActivation::traceBack(
   return;                              /* just return                       */
 }
 
-long  RexxNativeActivation::digits()
+size_t RexxNativeActivation::digits()
 /******************************************************************************/
 /* Function:  Return the current digits setting                               */
 /******************************************************************************/
@@ -591,12 +593,12 @@ long  RexxNativeActivation::digits()
   RexxActivation *senderAct = this->sender();
                                        /* have a real one?                  */
   if (senderAct == (RexxActivation *)TheNilObject)
-    return DEFAULT_DIGITS;             /*  no, just return default value    */
+    return Numerics::DEFAULT_DIGITS;   /*  no, just return default value    */
   else
     return senderAct->digits();        /* pass on the the sender            */
 }
 
-long RexxNativeActivation::fuzz()
+size_t RexxNativeActivation::fuzz()
 /******************************************************************************/
 /* Function:  Return the current fuzz setting                                 */
 /******************************************************************************/
@@ -605,12 +607,12 @@ long RexxNativeActivation::fuzz()
   RexxActivation *senderAct = this->sender();
                                        /* have a real one?                  */
   if (senderAct == (RexxActivation *)TheNilObject)
-    return DEFAULT_FUZZ;               /*  no, just return default value    */
+    return Numerics::DEFAULT_FUZZ;     /*  no, just return default value    */
   else
     return senderAct->fuzz();          /* pass on the the sender            */
 }
 
-BOOL RexxNativeActivation::form()
+bool RexxNativeActivation::form()
 /******************************************************************************/
 /* Function:  Return the curren form setting                                  */
 /******************************************************************************/
@@ -619,13 +621,13 @@ BOOL RexxNativeActivation::form()
   RexxActivation *senderAct = this->sender();
                                        /* have a real one?                  */
   if (senderAct == (RexxActivation *)TheNilObject)
-    return DEFAULT_FORM;               /*  no, just return default value    */
+    return Numerics::DEFAULT_FORM;     /*  no, just return default value    */
   else
     return senderAct->form();          /* pass on the the sender            */
 }
 
 void RexxNativeActivation::setDigits(
-    long _digits)                       /* new NUMERIC DIGITS value          */
+    size_t _digits)                     /* new NUMERIC DIGITS value          */
 /******************************************************************************/
 /* Function:  Set a new numeric digits setting                                */
 /******************************************************************************/
@@ -638,7 +640,7 @@ void RexxNativeActivation::setDigits(
 }
 
 void RexxNativeActivation::setFuzz(
-    long _fuzz )                        /* new NUMERIC FUZZ value            */
+    size_t _fuzz )                     /* new NUMERIC FUZZ value            */
 /******************************************************************************/
 /* Function:  Set a new numeric fuzz setting                                  */
 /******************************************************************************/
@@ -651,7 +653,7 @@ void RexxNativeActivation::setFuzz(
 }
 
 void RexxNativeActivation::setForm(
-    BOOL _form )                        /* new NUMERIC FORM value            */
+    bool _form )                        /* new NUMERIC FORM value            */
 /******************************************************************************/
 /* Function:  Set a new numeric form setting                                  */
 /******************************************************************************/
@@ -744,7 +746,7 @@ BOOL RexxNativeActivation::fetchNext(
                                        /* starting off fresh?               */
   if (nextCurrent() == OREF_NULL) {
     /* grab the activation context */
-    RexxActivation *act = activity->getCurrentActivation);
+    RexxActivation *act = activity->getCurrentActivation();
     setNextVariable(-1);               /* request the first item            */
     /* Get the local variable dictionary from the context. */
     setNextCurrent(act->getLocalVariables());
@@ -795,7 +797,7 @@ BOOL RexxNativeActivation::fetchNext(
 }
 
 
-BOOL RexxNativeActivation::trap(
+bool RexxNativeActivation::trap(
     RexxString    * condition,         /* name of the condition             */
     RexxDirectory * exception_object)  /* exception information             */
 /******************************************************************************/
@@ -1076,6 +1078,7 @@ nativei2 (REXXOBJECT, SETVAR2,
   return_oref(OREF_NULL);              /* return nothing                    */
 }
 
+
 nativei2 (REXXOBJECT, SETFUNC,
      char *, name,                     /* function name                     */
      REXXOBJECT,  value )              /* method                            */
@@ -1084,7 +1087,6 @@ nativei2 (REXXOBJECT, SETFUNC,
 
   RexxActivity           * activity;
   RexxActivation         * activation;
-  RexxString             * methodName;
 
   native_entry;                        /* synchronize access                */
                                        /* pick up current activation        */
@@ -1092,22 +1094,9 @@ nativei2 (REXXOBJECT, SETFUNC,
   self = (RexxNativeActivation *)ActivityManager::currentActivity->current();
   activity = self->activity;           /* find the current activity         */
                                        /* get the current activation        */
-  activation = self->activity->getCurrentActivation);
+  activation = self->activity->getCurrentActivation();
 
-  // get the directory of external functions
-  RexxDirectory *routines = activation->settings.parent_code->getLocalRoutines();
-
-  // if it does not exist, it will be created
-  if (routines == OREF_NULL) {
-
-    activation->settings.parent_code->getSource()->setLocalRoutines(new_directory());
-    routines = activation->settings.parent_code->getLocalRoutines();
-  }
-
-  methodName = new_string(name);
-  // if a method by that name exists, it will be OVERWRITTEN!
-  routines->setEntry(methodName, (RexxMethod *) value);
-
+  activation->addLocalRoutine(new_string(name), (RexxMethod *) value);
   return_oref(OREF_NULL);              /* return nothing                    */
 }
 
@@ -1134,11 +1123,13 @@ nativei2 (REXXOBJECT, GETFUNCTIONNAMES,
   self = (RexxNativeActivation *)ActivityManager::currentActivity->current();
   activity = self->activity;           /* find the current activity         */
                                        /* get the current activation        */
-  activation = self->activity->getCurrentActivation);
+  activation = self->activity->getCurrentActivation();
 
   *num = 0;
-  if (activation->code->getPublicRoutines() != OREF_NULL) {
-    funcArray = activation->code->getPublicRoutines()->makeArray();
+  RexxDirectory *routines = activation->getPublicRoutines();
+
+  if (routines != OREF_NULL) {
+    funcArray = routines->makeArray();
     if (funcArray != OREF_NULL) {
       *num = j = funcArray->numItems();
       *names = (char**) SysAllocateExternalMemory(sizeof(char*)*j);
@@ -1334,7 +1325,7 @@ nativei0 (void, DISABLE_VARIABLEPOOL)
 
   native_entry;                        /* synchronize access                */
                                        /* pick up current activation        */
-  activation = (RexxActivation *)ActivityManager::currentActivity->getCurrentActivation);
+  activation = (RexxActivation *)ActivityManager::currentActivity->getCurrentActivation();
   activation->pushEnvironment((RexxObject *)environment);
   return_void;                         /* no return value                   */
 }
@@ -1348,7 +1339,7 @@ nativei0 (REXXOBJECT, POP_ENVIRONMENT)
 
   native_entry;                        /* synchronize access                */
                                        /* pick up current activation        */
-  activation = (RexxActivation *)ActivityManager::currentActivity->getCurrentActivation);
+  activation = (RexxActivation *)ActivityManager::currentActivity->getCurrentActivation();
   return_oref(activation->popEnvironment());
 }
 
@@ -1401,53 +1392,6 @@ REXXOBJECT REXXENTRY REXX_ENVIRONMENT(void)
   return TheEnvironment;               /* just return the object            */
 }
 
-
-/* HOL001A begin */
-nativei3(ULONG, EXECUTIONINFO,
-    PULONG, line,
-    char *, fname,
-    BOOL, next)/* chain of variable request blocks  */
-/******************************************************************************/
-/* Function:  If variable pool is enabled, return result from SysVariablePool */
-/*             method, otherwise return RXSHV_NOAVL.                          */
-/******************************************************************************/
-{
-  ULONG    result;                     /* variable pool result              */
-  RexxActivation * self;         /* current native activation         */
-  RexxString * r;
-
-  native_entry;                        /* synchronize access                */
-                                       /* pick up current activation        */
-  self = ActivityManager::currentActivity->getCurrentActivation);
-                                       /* if access is enabled              */
-  result = 1;
-  if (next)
-  {
-        if (!self->next)
-     {
-         *line = self->code->getFirstInstruction()->getLineNumber();
-      }
-     else *line = self->next->getLineNumber();
-
-      r = self->code->getProgramName();
-     strncpy(fname, r->getStringData(), r->getLength());
-      fname[r->getLength()] = '\0';
-      result = 0;
-  }
-  else
-  {
-     r = self->code->getProgramName();
-     strncpy(fname, r->getStringData(), r->getLength());
-      fname[r->getLength()] = '\0';
-      *line = self->getCurrent()->getLineNumber();
-      result = 0;
-  }
-
-
-
-  return_value(result);                /* return this                       */
-}
-
 nativei7 (ULONG, STEMSORT,
      CSTRING, stemname, int, order, int, type, size_t, start, size_t, end,
      size_t, firstcol, size_t, lastcol)
@@ -1470,7 +1414,7 @@ nativei7 (ULONG, STEMSORT,
   }
 
   /* get the REXX activation */
-  RexxActivation *activation = self->activity->getCurrentActivation);
+  RexxActivation *activation = self->activity->getCurrentActivation();
 
   /* get the stem name as a string */
   RexxString *variable = new_string(stemname);

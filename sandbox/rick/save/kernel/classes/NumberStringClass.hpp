@@ -120,9 +120,9 @@ int number_create_integer(const char *, size_t, int, int);
     RexxInteger *hasMethod(RexxString *);
     RexxString  *primitiveMakeString();
     RexxString  *stringValue();
-    BOOL         truthValue(LONG);
+    bool         truthValue(int);
 
-    BOOL        isEqual(RexxObject *);
+    bool        isEqual(RexxObject *);
     long        strictComp(RexxObject *);
     long        comp(RexxObject *);
     RexxInteger *equal(RexxObject *);

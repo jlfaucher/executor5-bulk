@@ -87,14 +87,14 @@ int Numerics::validMaxWhole[] = {10,
                                  1000000000};
 
 NumericSettings Numerics::defaultSettings;
-NumerticSettings *Numerics::settings = &defaultSettings;
+NumericSettings *Numerics::settings = &Numerics::defaultSettings;
 
 
 NumericSettings::NumericSettings()
 {
-    digits = DEFAULT_DIGITS;
-    fuzz = DEFAULT_FUZZ;
-    form = DEFAULT_FORM;
+    digits = Numerics::DEFAULT_DIGITS;
+    fuzz = Numerics::DEFAULT_FUZZ;
+    form = Numerics::DEFAULT_FORM;
 }
 
 /**
