@@ -3,12 +3,12 @@
 
 -- Testcase for ClassLoader
 
-say .package~test
-say .package~asdlfkj
+say ".package~test" .package~test
+say ".package~asdlfkj" .package~asdlfkj
 a = .Test~new
-say a
+say ".Test~new" a
 b = .otherclass
-say b
+say ".otherclass" b
 if a~class = .test then say "hooray, it worked!"
 
 ::REQUIRES "test~testpackage(someclass as somecl, otherclass)"

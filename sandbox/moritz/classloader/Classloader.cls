@@ -28,15 +28,14 @@ if .Local~Package \= .nil then return
 
 -- the file extension for package files
 .local~FileExtension = ".rex"
-
-.local~tar = "tar --no-wildcards-match-slash --wildcards --no-recursion -tf"
---.local~tar = "tar -tf"
-
+.local~errRedirect = "2>/dev/null"
 .local~temp = "/tmp/"
+
 rootBackEnd = .MergeBackEnd~new
 backEnds = rootBackEnd~getBackEnds
 -- a list of back ends
-backEnds~append(.TarBackEnd~new("./archive.tar.gz","root"||.pathSeperator))
+--backEnds~append(.TarBackEnd~new("./archive.tar.gz","root"||.pathSeperator))
+backEnds~append(.ZipBackEnd~new("./archive.zip","root"||.pathSeperator))
 --backEnds~append(.FileBackEnd~new("./root"))
 
 -- publish the root element under .package
@@ -87,6 +86,7 @@ Back ends can either load resources at the time they are loaded or they delay
 it until the requested element is required.
 */
 ::CLASS BackEnd
+
 /* Get an element with the supplied name. Search is done case insensitive.
  * @param name The element name to resolve.
  * @returns .Element An element for the name. In case it is not found .nil is
@@ -145,33 +145,44 @@ messages that could not be satisfied by the back end. This way it is
 possible to have packages that have the same file name as a directory...
 */
 ::CLASS PackageElement subclass Element
+
 ::METHOD Init
   expose name handle parent backEnd elements package
   use arg name, handle, parent, backEnd, package
 	elements = .directory~new
+
 ::METHOD getName
   expose name
   return name
+
 ::METHOD getHandle
   expose handle
   return handle
+
 ::METHOD getParent
   expose parent
   return parent
+
 ::METHOD getElement
 	expose elements
-  signal on user PackageNotFound
   use arg name
+  -- Check if this name was supplied previously.
   uname = name~upper~strip
 	if elements[uname] \= .nil then
-		return elements[uname]
+    if elements~uname = 1 then
+      raise user PackageNotFound additional (name) return (.nil)
+    else
+		  return elements[uname]
 	else do
+    signal on user PackageNotFound
 		e = self~getBackEnd~getElement(name,self)
 		elements[uname] = e
 		return e
 	end
   PackageNotFound:
+  elements~uname = 1
   raise propagate
+
 ::METHOD getBackEnd
   expose backEnd
   if backEnd = .nil then return self~getParent~getBackEnd
@@ -182,7 +193,6 @@ possible to have packages that have the same file name as a directory...
 	expose package
   signal on user PackageNotFound
   use arg name, arguments
-	name = name~strip
   return self~getElement(name)
   -- the back end could not satisfy the request, try the package
   PackageNotFound:
@@ -203,13 +213,14 @@ In case there are duplicates it is not known which one is used.
 ::CLASS MergeBackEnd SUBCLASS BackEnd
 ::METHOD Init
   expose backEnds
-  use arg backEnds
-  if arg() = 0 then backEnds = .list~new
+  use strict arg backEnds=(.list~new)
+
 ::METHOD getElement
   expose backEnds
+  use strict arg name, element
+  -- only activate trapping of PackageNotFound if debug messages are wanted
   if .local~CLtrace then
     call on user PackageNotFound
-  use strict arg name, element
   -- iterate over all back ends
   do backEnd over backEnds
     -- call the active back end
@@ -218,18 +229,55 @@ In case there are duplicates it is not known which one is used.
     if element \= .nil then
       return element
   end
+  -- disable trapping of PackageNotFound
   call off user PackageNotFound
+  -- raise a condition
   raise user PackageNotFound additional (name) return (.nil)
 
   PackageNotFound:
     .stderr~lineout("BackEnd" backEnd "could not resolve" name)
     return
 
+-- return the list of back ends
 ::METHOD getBackEnds
   expose backEnds
   return backEnds
 
+/* This back end is a super class to all back ends that operate on files.
+ * It offers some common methods to keep implementations small.
+ */
 ::CLASS FileSystemBackEnd SUBCLASS BackEnd
+
+/* This is the main entry point for back ends to query an element. It
+ * builds up a path for the current resource and calls the methods
+ * searchFile and searchDirectory to resolve the supplied name. The prefix
+ * is put in front of the generated path.
+ * This method should only be called by sub classes.
+ * @param name The name of the element that is searched.
+ * @param element The parent element.
+ * @param prefix The prefix to prepend to the generated path.
+ * @returns .Elememt The created element or .nil.
+ * @raises user PackageNotFound when the package could not be found. Returns
+ * .nil as well.
+ */
+::METHOD getElement PRIVATE
+  use strict arg name, element, prefix
+  -- Print some debugging information if wanted
+  if .local~CLtrace then
+    say self~class~id "Looking for" name "in" element~getName
+  -- generate the path for the current situation
+  currentPath = prefix||self~getRelativePath(element,.PathSeperator)
+  -- search for files
+  pkg = self~searchFile(name, element, currentPath)
+  if pkg \= .nil then
+    return pkg
+  -- search for directories
+  pkg = self~searchDirectory(name, element, currentPath)
+  if pkg \= .nil then
+    return pkg
+  -- only get here if nothing was found
+  raise user PackageNotFound additional (name) description ("Unable to locate element" name "in element" element~getName "'"element~getHandle"'") return (.nil)
+
 -- This method converts a given element to a relative path.
 ::METHOD getRelativePath
   use strict arg element, seperator
@@ -244,6 +292,12 @@ In case there are duplicates it is not known which one is used.
   end
   return path
 
+/* This method returns the backend that new elements have to use. This is
+ * either self if the parent element has a different back end or .nil if
+ * the current element inherits the back end from its super class.
+ * @param element Parent element.
+ * @returns self or .nil.
+ */
 ::METHOD getElementBackEnd
   use strict arg element
   if element~getBackEnd \= self then do
@@ -253,15 +307,33 @@ In case there are duplicates it is not known which one is used.
 		return .nil
   end
 
+::METHOD searchFile ABSTRACT PRIVATE
+
+::METHOD searchDirectory ABSTRACT PRIVATE
+
+
+
 ::CLASS FileBackEnd SUBCLASS FileSystemBackEnd
+
 ::METHOD Init
   expose path
   use arg path
-  call SysFileTree path, "file", "DO"
-  if file.0 > 1 then raise syntax 93
-  else path = file.1
+  -- Check if directory exists
+  if \ SysIsFileDirectory(path) then
+    raise syntax 93.900 array ("Unable to open directory" path)
+  else do
+    -- check if directory is readable
+    old_dir = directory()
+    completePath =  directory(path)
+    if completePath = "" then 
+      raise syntax 93.900 array ("Unable to read from" path)
+    -- reset current path to previous value
+    call directory old_dir
+    path = completePath
+  end
   -- add a trailing path seperator if missing
-  if path~right(1) \= .PathSeperator then path||=.PathSeperator
+  if path~right(1) \= .PathSeperator then
+    path ||= .PathSeperator
 
 /*
 This getElement implementation searches for packages on the file system.
@@ -272,21 +344,9 @@ be prefered over the file.
 ::METHOD getElement
   expose path
   use strict arg name, element
-  -- don't allow names with path seperator and dots
-  if name~verify("."||.PathSeperator,"M") \= 0 then
-    raise syntax 93
-  if .local~CLtrace then
-    say "FILE Looking for" name "in" element~getName
-  currentPath = path||self~getRelativePath(element,.PathSeperator)
-  -- search for files
-  pkg = self~searchFile(name, element, currentPath)
-  if pkg \= .nil then
-    return pkg
-  -- search for directories
-  pkg = self~searchDirectory(name, element, currentPath)
-  if pkg \= .nil then
-    return pkg
-  raise user PackageNotFound additional (name) description ("Unable to locate element" name "in element" element~getName "'"element~getHandle"'") return (.nil)
+  signal on user PackageNotFound
+  return self~getElement:super(name, element, path)
+  PackageNotFound: raise propagate
 
 ::METHOD searchFile PRIVATE
   use strict arg name, element, path
@@ -297,8 +357,7 @@ be prefered over the file.
     handle = fileShort~right(fileShort~length-fileShort~lastpos(.PathSeperator))
     if handle~caselessEquals(name) then do
       packageData = self~loadFile(file)
-      newElement =  .PackageElement~new(name, handle, element, self~getElementBackEnd(element), packageData)
-      return newElement
+      return .PackageElement~new(name, handle, element, self~getElementBackEnd(element), packageData)
     end
   end
   return .nil
@@ -310,12 +369,10 @@ be prefered over the file.
     file = files.i
     handle = file~right(file~length - file~lastpos(.PathSeperator))
     if handle~caselessEquals(name) then do
-      newElement =  .PackageElement~new(name, handle, element, self~getElementBackEnd(element))
-      return newElement
+      return .PackageElement~new(name, handle, element, self~getElementBackEnd(element))
     end
   end
   return .nil
-
 
 ::METHOD loadFile PRIVATE
   use arg fileName
@@ -324,74 +381,87 @@ be prefered over the file.
   if package = "RESULT" then
     raise syntax 93.900 array -
       ("File" filename "could not be loaded (no result).")
---  say filename package
---  say package~new~author
   return result
-  
+ 
+/* This class provides common mechanisms for back ends based on archive
+ * files. As most archivers return their output in a similar format only
+ * a single parsing method is needed. At the moment the zip and tar back
+ * end share most of their code. Only the interface to their application
+ * is different.
+ */
+::CLASS ArchiveBackEnd SUBCLASS FileSystemBackEnd
 
-
-::CLASS TarBackEnd SUBCLASS FileSystemBackEnd
 ::METHOD Init
-  expose path prefix
-  use strict arg path, prefix=""
-  elements = .table~new
+  expose archive prefix
+  use strict arg archive, prefix=""
+  -- test if file exists
+  if \ SysIsFile(archive) then
+    raise syntax 93.900 array ("Unable to load file" archive)
+
 ::METHOD getElement
-  expose path prefix
+  expose prefix
   use arg name, element
-  if name~verify("."||.PathSeperator,"M") \= 0 then
-    raise syntax 93
-  uname = name~translate
-  if .local~CLtrace then
-    say "TAR Looking for" name "in" element~getName
-	currentPath = prefix||self~getRelativePath(element,.PathSeperator)
-  -- search for files
-  pkg = self~searchFile(name, element, currentPath)
-  if pkg \= .nil then return pkg
-  -- search for directories
-  pkg = self~searchDirectory(name, element, currentPath)
-  if pkg \= .nil then return pkg
-  raise user PackageNotFound additional (name) description ("Unable to locate element" name "in element" element~getName "'"element~getHandle"'")return (.nil)
+  signal on user PackageNotFound
+  return self~getElement:super(name, element, prefix)
+  PackageNotFound: raise propagate
+
+::METHOD getArchive
+  expose archive
+  return archive
+
+::METHOD getPrefix
+  expose prefix
+  return prefix
+
+::METHOD callArchiver ABSTRACT PRIVATE
+::METHOD loadFile ABSTRACT PRIVATE
 
 ::METHOD searchFile PRIVATE
-  expose path
   use strict arg name, element, currentPath
-	.local~tar path '"'currentPath'*'||.FileExtension'" 2>/dev/null|rxqueue '
+  self~callArchiver(currentPath||"*"||.FileExtension)
 	do while .stdque~queued > 0
 		file = .stdque~linein
-    pos = file~lastPos(.PathSeperator)
-    handle = file~substr(pos + 1, file~length - .FileExtension~length - pos)
-    if handle~caselessEquals(name) then do
-      packageData = self~loadFile(file)
-      newElement =  .PackageElement~new(name, handle, element, self~getElementBackEnd(element), packageData)
-      return newElement
+    if file~caselessPos(currentPath) = 1 then do
+      len = currentPath~length
+      handle = file~substr(len + 1, file~length - len - .FileExtension~length)
+      if handle~caselessEquals(name) then do
+        packageData = self~loadFile(file)
+        backEnd = self~getElementBackEnd(element)
+        return .PackageElement~new(name, handle, element, backEnd, packageData)
+      end
     end
+    else Say "!!! unexpected return value from zip:" file
   end
   return .nil
 
 ::METHOD searchDirectory PRIVATE
-  expose path
   use strict arg name, element, currentPath
-	.local~tar path '"'currentPath'*" 2>/dev/null|rxqueue'
+  self~callArchiver(currentPath||"*")
 	do while .stdque~queued > 0
 		file = .stdque~linein
-		-- tar lists directories with trailing slash
-    -- if this fails it listed a file which needs to be skipped.
-		if file~right(1) \= .PathSeperator then
-      iterate
-		pos = file~lastpos(.PathSeperator, file~length - 1)
-		-- the area between the last / and the one before it
-    handle = file~substr(pos + 1, file~length - pos - 1)
-    if handle~caselessEquals(name) then do
-      newElement =  .PackageElement~new(name, handle, element, self~getElementBackEnd(element))
-      return newElement
+		if file~caselessPos(currentPath) = 1 then do
+      handle = file~right(file~length - currentPath~length)
+      pos = handle~caselessPos(.PathSeperator)
+      if pos > 1 then do
+        handle = handle~left(pos-1)
+        if handle~caselessEquals(name) then 
+          return .PackageElement~new(name, handle, element, self~getElementBackEnd(element))
+      end
     end
 	end
   return .nil
+
+
+::CLASS TarBackEnd SUBCLASS ArchiveBackEnd
+
+::METHOD callArchiver PRIVATE
+  use strict arg path
+  c = "tar --wildcards -tf" self~getArchive '"'path'"|rxqueue'
+  c  
 ::METHOD loadFile PRIVATE
-	expose path
   use arg fileName
 /*
-  command = "tar -O --ignore-case --anchored -xf" path filename "|rxqueue"
+  command = "tar -O --ignore-case --anchored -xf" self~getArchive filename "|rxqueue"
   say command
   command
   lines = .array~new
@@ -403,7 +473,7 @@ be prefered over the file.
   say lines~makeString
   package = self~run(.method~new(filename,lines))
 */
-  command = "tar -C ".temp" --ignore-case --anchored -xf" path filename "|rxqueue"
+  command = "tar -C ".temp" --ignore-case --anchored -xf" self~getArchive filename "|rxqueue"
   command
   file = .temp||filename
   call (file)
@@ -414,3 +484,21 @@ be prefered over the file.
   return package
 
 
+
+::CLASS ZipBackEnd SUBCLASS ArchiveBackEnd
+
+::METHOD callArchiver PRIVATE
+  use strict arg path
+  "zipinfo -1" self~getArchive '"'path'"|rxqueue'
+  return result
+
+::METHOD loadFile PRIVATE
+  use arg fileName
+  command = "unzip -d" .temp self~getArchive filename
+  command
+  file = .temp||filename
+  call (file)
+	rc = SysFileDelete(file)
+  package = result
+  if package = "RESULT" then raise syntax 93
+  return package

@@ -4,31 +4,46 @@
 if arg() = 0 then call help
 else do
   tokens = arg(1)~makeArray(" ")
+  has = .directory~new
+  expect = ""
   strip = .false
-  state = 1
-  name = "archive.tar.gz"
+  output = "archive.tar.gz"
+  include = .array~new
   -- little state machine to parse command line arguments
   do i = 1 to tokens~items
-    token = tokens[i]~upper
-    if state = 1 | state = 3 then do
-      if token = "-S" & \ strip then strip = .true
-      else if token = "-O" & state = 1 then state = 2
-      else do
-        path = tokens[i]
-        state = 4
+    token = tokens[i]
+    if expect \= "" then do
+      select
+        when expect = "OUTPUT" then do
+          output = token
+        end
+        when expect = "INCLUDE" then do
+          include[include~items + 1] = token
+        end
+        otherwise Say "Unknown expect, internal error:" expect
       end
+      expect = ""
+      iterate
     end
-    else if state = 2 then do
-      name = tokens[i]
-      state = 3
+    token = token~upper
+    if has~strip = .nil & (token = "-S" | token = "--STRIP") then do
+      strip = 1
+      has~strip = 1
     end
-    else if state = 4 then
-      Say "Unknown token" tokens[i]
+    else if has~output = .nil & (token = "-O" | token = "--OUTPUT") then do
+      has~output = 1
+      expect = "OUTPUT"
+    end
+    else if token = "-I" | token = "--INCLUDE" then do
+      has~include = 1
+      expect = "INCLUDE"
+    end
+    else Say "Unknown token" tokens[i]
   end
   select
-    when state = 1 | state = 3 then say "Missing path"
-    when state = 2 then say "Missing file name for -o"
-    otherwise call package name, path, strip
+    when has~include \= 1 then say "Missing include directive"
+    when expect \= "" then say "Missing expected element" expect
+    otherwise call package output, include, strip
   end
 end
 
@@ -44,6 +59,10 @@ return
 
 package: procedure
 use strict arg name, path, strip
+Say "producing file" name "with stripped content:" strip
+do p over path
+  say "include path:" p
+end
 "tar --exclude=.svn --group 0 --owner 0 -czf" name path
 Say ".TarBackEnd~new("""name""","""path""")"
 return
