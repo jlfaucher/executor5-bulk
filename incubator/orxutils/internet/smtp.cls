@@ -391,8 +391,14 @@ if retc = .true then do
    return -1
    end
 retc = self~strmsock~lineout('From:' msg~From)
-retc = self~strmsock~lineout('To:' msg~Recipients)
+do i = 1 to msg~Recipients~items
+   if i < msg~Recipients~items then suffix = ','
+   else suffix = ''
+   if i = 1 then retc = self~strmsock~lineout('To:' msg~Recipients[i] || suffix)
+   else retc = self~strmsock('   ' msg~Recipients[i] || suffix)
+   end
 retc = self~strmsock~lineout('Subject:' msg~Subject)
+retc = self~strmsock~lineout('')
 retc = self~strmsock~lineout(msg~content)
 retc = self~strmsock~lineout('.')
 /* get and check the response */
