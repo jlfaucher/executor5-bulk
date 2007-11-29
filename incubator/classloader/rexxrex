@@ -1,0 +1,171 @@
+#!/usr/bin/rexx
+/*
+Written by Moritz Hoffmann. Contributed to the ooRexx project.
+This is a wrapper application to boot rexx application that require the
+class loader to be present. It intercepts require statements and parses
+them. In case the require statement is intended to be used by the package
+loader it will be handled correctly. Otherwise it will not touch the statement.
+*/
+
+if arg() = 0 then do
+  Say "ooRexx executor with dynamic class loading support"
+  Say "usage: rexxrex program [arguments]"
+  Say "program will be started with the trailing parameters"
+  exit 255
+end
+
+parse value arg(1) with program args
+--say "Running:" program
+if stream(program,"C","QUERY EXISTS") = "" then do
+  raise syntax 3.901 array (program)
+end
+
+.Go~getInstance~SecurityManager = .PackageResolver~new
+method = .method~newFile(program)
+.Go~getInstance~run(method,"Array",arg(1,'A')~~put(args,1))
+exit 0
+
+::REQUIRES "Classloader.cls"
+/*
+A wrapper that exposes the run method to the public. It also stores some
+objects to avoid recreating them at each invocation.
+*/
+::CLASS Go
+::ATTRIBUTE SecurityManager
+::METHOD getInstance CLASS
+  expose instance
+  if var("instance") then return instance
+  else do
+    instance = self~new
+    return instance
+  end
+::METHOD run
+  use strict arg method ...
+  method~setSecurityManager(self~SecurityManager)
+  self~run:super(method,"A",arg(2,"A"))
+
+/*
+A security manager that intercepts the call to requires.
+It will parse the statement if it has the following layout:
+[:alnum:]+([~][:alnum:]+)*
+    ([(]
+	([:alnum:]+([ ]+as[ ]+[:alnum:]+)([,][:alnum:]+([ ]+as[ ]+[:alnum:]+)*)
+    )[)])
+
+To simplify this there is an example:
+::REQUIRES "sys~serializable(serializable as ser,serializefunctions)"
+*/
+::CLASS PackageResolver
+::METHOD UNKNOWN
+--  say arg(1) arg(2)[1]~name
+  return 0
+
+::METHOD LOCAL
+  use arg info
+  if \ .local~hasindex(info~name) then do
+    cls = self~resolveClass(info~name)
+    if cls = .nil then return 0
+    info~result = cls
+    return 1
+  end
+  else
+    return 0
+
+::METHOD REQUIRES
+  use arg info
+  name = info~name
+  -- catch syntax errors here
+  signal on syntax
+  call (name)
+  return 1
+  
+  syntax:
+  -- a dummy file to load
+  info~name = "nop"
+  -- start with our security manager
+  info~SecurityManager = .Go~getInstance~SecurityManager
+  -- try to resolve the supplied name
+  -- returns 0 if it failed, forwarding the request to the language processor
+  -- 1 forces the processor to use the values set above.
+  return self~resolvePackage(name)
+
+::METHOD resolveClass PRIVATE
+  parse arg path
+  signal on user PackageNotFound
+  pos = path~lastPos("~")
+  if pos = 0 then
+    return .nil
+  className = path~right(path~length - pos)~upper
+  path = path~left(pos - 1 )
+  pkgdata = self~getPackage(path~makeArray("~"))
+  do class over pkgdata~classes
+    if class~id~upper = className then
+      return class
+  end
+  PackageNotFound:
+  return .nil
+
+
+::METHOD resolvePackage PRIVATE
+--  trace r
+  signal on user PackageNotFound
+  -- split the argument string
+--  say "class name:" arg(1)
+  parse value arg(1) with name "(" cls ")"
+  path = name~makeArray("~")
+  classes = .directory~new
+  do class over cls~makeArray(",")
+    parse upper var class name " AS " abrev
+    name = name~strip
+    abrev = abrev~strip
+    if abrev~length = 0 then abrev = name
+    classes[name] = abrev
+  end
+
+  -- load package
+  pkgdata = self~getPackage(path)
+  if pkgdata = .nil then
+    raise propagate
+  -- make classes available
+  if classes~items > 0 then do
+    -- selected classes only
+    do class over pkgdata~classes
+      id = class~id~upper
+      if classes~hasIndex(id) then do
+        self~setClass(classes[id],class)
+      end
+    end
+  end
+  -- all classes
+  else do class over pkgdata~classes
+    self~setClass(class~id,class)
+  end
+  return .true
+
+  PackageNotFound:
+  say "Unable to find package" name
+  return .false
+
+::METHOD getPackage PRIVATE
+  signal on user PackageNotFound
+  use strict arg path
+  s = .Package
+  do i over path
+    s = s~getElement(i)
+  end
+  if s~isSubclassOf(.PackageData) then
+    return s~new
+  else do
+    .stderr~lineout("Unable to load package '"i"', no package data found")
+    return .nil
+  end
+--  else raise syntax 93.900 array ("Unable to load package '"i"', no package data found")
+
+  PackageNotFound:
+  .stderr~lineout("Unable to locate package '"i"' in" s~getName)
+  raise propagate
+
+::METHOD setClass PRIVATE
+  use strict arg name, class
+  .local[name] = class
+
