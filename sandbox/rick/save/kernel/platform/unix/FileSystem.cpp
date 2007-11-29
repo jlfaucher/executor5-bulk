@@ -501,30 +501,30 @@ RexxBuffer *SysReadProgram(
   RexxActivity*activity;               /* the current activity              */
 
   activity = ActivityManager::currentActivity;          /* save the activity                 */
-  activity->releaseKernel();           /* release the kernel access         */
+  activity->releaseAccess();           /* release the kernel access         */
 
   handle = fopen(file_name, "rb");     /* open as a binary file             */
   if (handle == NULL){                 /* open error?                       */
-    activity->requestKernel();         /* get the access back               */
+    activity->requestAccess();         /* get the access back               */
     return OREF_NULL;                  /* return nothing                    */
   }
 
   if (fileno(handle) == (FOPEN_MAX - 2)){      /* open error?                       */
-    activity->requestKernel();         /* get the access back               */
+    activity->requestAccess();         /* get the access back               */
     return OREF_NULL;                  /* return nothing                    */
   }
 
   fseek(handle, 0, SEEK_END);          /* seek to the file end              */
-  activity->requestKernel();           /* get the access back               */
+  activity->requestAccess();           /* get the access back               */
   buffersize = ftell(handle);          /* get the file size                 */
   fseek(handle, 0, SEEK_SET);          /* seek back to the file beginning   */
   buffer = new_buffer(buffersize);     /* get a buffer object               */
   save(buffer);                        /* and protect this                  */
-  activity->releaseKernel();           /* release the kernel access         */
+  activity->releaseAccess();           /* release the kernel access         */
                                        /* read the entire file in one shot  */
   fread(buffer->data, 1, buffersize, handle);
   fclose(handle);                      /* close the file                    */
-  activity->requestKernel();           /* get the access back               */
+  activity->requestAccess();           /* get the access back               */
   discard_hold(buffer);                /* and release the protection        */
   return buffer;                       /* return the program buffer         */
 }

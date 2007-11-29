@@ -138,8 +138,8 @@ void RexxVariable::notify()
                                        /* yield control and allow the       */
                                        /* waiting guard to run too          */
     activity = ActivityManager::currentActivity;        /* get the current activity          */
-    activity->releaseKernel();         /* release the lock                  */
-    activity->requestKernel();         /* get it back again                 */
+    activity->releaseAccess();         /* release the lock                  */
+    activity->requestAccess();         /* get it back again                 */
   }
 }
 

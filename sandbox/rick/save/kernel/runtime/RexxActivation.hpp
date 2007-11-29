@@ -205,6 +205,7 @@ RexxObject * activation_find  (void);
    RexxVariableBase *getVariableRetriever(RexxString  *variable);
    RexxVariableBase *getDirectVariableRetriever(RexxString  *variable);
    void              setTrace(int, int);
+   void              setTrace(RexxString *);
    void              raise(RexxString *, RexxObject *, RexxString *, RexxObject *, RexxObject *, RexxDirectory *);
    void              toggleAddress();
    void              guardOn();
@@ -281,6 +282,7 @@ RexxObject * activation_find  (void);
    void              processTraps();
    void              mergeTraps(RexxQueue *, RexxQueue *);
    size_t            getRandomSeed(RexxInteger *);
+   void              adjustRandomSeed() { random_seed += randomizer++; }
    RexxVariableDictionary * getObjectVariables();
    RexxDirectory   * getLabels();
    RexxString      * getProgramName();
@@ -304,6 +306,7 @@ RexxObject * activation_find  (void);
    inline void              newDo(RexxDoBlock *block) { this->pushBlock(block); this->blockNest++; this->settings.traceindent++;}
    inline void              removeBlock() { this->blockNest--; };
    inline void              addBlock()    { this->blockNest++; };
+   inline bool              hasActiveBlocks() { return blockNest != 0; }
    inline bool              inMethod()  {return this->activation_context == METHODCALL; }
    inline RexxSource *      getSource() {return this->settings.parent_code->getSource(); };
    inline void              indent() {this->settings.traceindent++; };
@@ -350,6 +353,7 @@ RexxObject * activation_find  (void);
    inline void              traceInstruction(RexxInstruction * v) { if (this->settings.flags&trace_all) this->traceClause(v, TRACE_PREFIX_CLAUSE); }
    inline void              traceLabel(RexxInstruction * v) { if ((this->settings.flags&trace_labels) != 0) this->traceClause(v, TRACE_PREFIX_CLAUSE); };
    inline void              traceCommand(RexxInstruction * v) { if ((this->settings.flags&trace_commands) != 0) this->traceClause(v, TRACE_PREFIX_CLAUSE); }
+   inline bool              tracingCommands(void) { return (this->settings.flags&trace_commands) != 0; }
    inline void              pauseInstruction() {  if ((this->settings.flags&(trace_all | trace_debug)) == (trace_all | trace_debug)) this->debugPause(); };
    inline int               conditionalPauseInstruction() { return (((this->settings.flags&(trace_all | trace_debug)) == (trace_all | trace_debug)) ? this->debugPause(): FALSE); };
    inline void              pauseLabel() { if ((this->settings.flags&(trace_labels | trace_debug)) == (trace_labels | trace_debug)) this->debugPause(); };
@@ -655,5 +659,7 @@ RexxObject * activation_find  (void);
    bool                 random_set;    /* random seed has been set          */
    size_t               blockNest;     /* block instruction nesting level   */
    size_t               lookaside_size;/* size of the lookaside table       */
+
+   static size_t        randomizer;    // randomization value added to timestamp random seeds
  };
  #endif

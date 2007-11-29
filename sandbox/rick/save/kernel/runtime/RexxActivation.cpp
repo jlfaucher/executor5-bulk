@@ -92,6 +92,9 @@ void RestoreEnvironment(void *);
                                        /* changes                           */
 static ActivationSettings activationSettingsTemplate;
 
+// randomization value added to random seeds
+size_t RexxActivation::randomizer = 1;
+
 
 void * RexxActivation::operator new(size_t size)
 /******************************************************************************/
@@ -564,6 +567,22 @@ RexxString * RexxActivation::traceSetting()
                                        /* create a string form              */
     return new_string(setting, 1);
   }
+}
+
+
+/**
+ * Set the trace using a dynamically evaluated string.
+ *
+ * @param setting The new trace setting.
+ */
+void RexxActivation::setTrace(RexxString *setting)
+{
+    int    newsetting;                   /* new trace setting                 */
+    int    debug;                        /* new debug setting                 */
+
+    getSource()->parseTraceSetting(setting, &newsetting, &debug);
+                                       /* now change the setting            */
+    setTrace(newsetting, debug);
 }
 
 
@@ -1832,7 +1851,7 @@ void RexxActivation::interpret(
   RexxActivation * newActivation;      /* new activation for call           */
   RexxObject     * resultObj;
 
-  this->activity->stackSpace();        /* perform a stack space check       */
+  ActivityManager::currentActivity->checkStackSpace();       /* have enough stack space?          */
                                        /* translate the code                */
   newMethod = this->code->interpret(codestring, this->current->getLineNumber());
                                        /* create a new activation           */

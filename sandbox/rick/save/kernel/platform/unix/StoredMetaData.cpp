@@ -315,7 +315,7 @@ void SysSaveTranslatedProgram(
   Control.ImageSize = BufferLength;    /* add the buffer length             */
 
   activity = ActivityManager::currentActivity;          /* save the activity                 */
-  activity->requestKernel();           /* release the access                */
+  activity->requestAccess();           /* release the access                */
                                        /* write out the REXX signature      */
   fwrite(compiledHeader, 1, sizeof(compiledHeader), Handle);
                                        /* now the control info              */
@@ -323,7 +323,7 @@ void SysSaveTranslatedProgram(
                                        /* and finally the flattened method  */
   fwrite(BufferAddress, 1, BufferLength, Handle);
   fclose(Handle);                      /* done saving                       */
-  activity->requestKernel();           /* and reaquire the kernel lock      */
+  activity->requestAccess();           /* and reaquire the kernel lock      */
   discard_hold(Method);                /* release the method now            */
   discard_hold(FlatBuffer);            /* and the flattened method          */
 }
@@ -353,17 +353,17 @@ RexxMethod *SysRestoreTranslatedProgram(
 
 
   activity = ActivityManager::currentActivity;          /* save the activity                 */
-  activity->releaseKernel();           /* release the access                */
+  activity->releaseAccess();           /* release the access                */
                                        /* read the first file part          */
   fread(fileTag, 1, sizeof(compiledHeader), Handle);
                                        /* not a compiled file?              */
   if (strcmp(fileTag, compiledHeader) != 0) {
-    activity->requestKernel();         /* get the lock back                 */
+    activity->requestAccess();         /* get the lock back                 */
     return OREF_NULL;                  /* not a saved program               */
   }
                                        /* now read the control info         */
   fread((char *)&Control, 1, sizeof(Control), Handle);
-  activity->requestKernel();           /* get the lock back                 */
+  activity->requestAccess();           /* get the lock back                 */
                                        /* check the control info            */
   if ((Control.MetaVersion != METAVERSION) || (Control.Magic != MAGIC)) {
                                        /* got an error here                 */
@@ -375,11 +375,11 @@ RexxMethod *SysRestoreTranslatedProgram(
   save(Buffer);                        /* protect the buffer                */
                                        /* position relative to the end      */
   StartPointer = ((char *)Buffer + Buffer->getObjectSize()) - BufferSize;
-  activity->releaseKernel();           /* release the access                */
+  activity->releaseAccess();           /* release the access                */
                                        /* read the flattened method         */
   fread(StartPointer, 1, BufferSize, Handle);
   fclose(Handle);                      /* close the file                    */
-  activity->requestKernel();           /* get the lock back                 */
+  activity->requestAccess();           /* get the lock back                 */
                                        /* "puff" this out usable form       */
   Method = TheMethodClass->restore(Buffer, StartPointer);
   save(Method);                        /* protect the method code           */

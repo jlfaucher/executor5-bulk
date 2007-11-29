@@ -268,10 +268,9 @@ RexxObject *RexxMethod::call(
 {
   RexxActivation *newacta;             /* newly created activation          */
   RexxObject * returnObject;
-  static int rnd = 0;
   ProtectedObject p(this);
 
-  ActivityManager::currentActivity->stackSpace();       /* have enough stack space?          */
+  ActivityManager::currentActivity->checkStackSpace();       /* have enough stack space?          */
   if (this->isRexxMethod()) {          /* this written in REXX?             */
                                        /* add to the activity stack         */
     newacta = ActivityManager::newActivation(receiver, this, activity, msgname, (RexxActivation *)TheNilObject, context);
@@ -289,7 +288,7 @@ RexxObject *RexxMethod::call(
     // the random seed is copied from the calling activity, this led
     // to reproducable random sequences even though no specific seed was given!
     // see feat. 900 for example program.
-    newacta->random_seed += (++rnd);
+    newacta->adjustRandomSeed();
                 /* run the method and return result  */
     returnObject = newacta->run(argPtr, argcount, OREF_NULL);
     return returnObject;

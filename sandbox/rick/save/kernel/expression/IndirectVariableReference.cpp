@@ -153,7 +153,7 @@ void RexxVariableReference::drop(
   RexxVariableBase    *variable;       /* current variable                  */
   RexxExpressionStack *stack;          /* evaluation stack                  */
 
-  stack = &context->stack;             /* get the stack from the context    */
+  stack = context->getStack();         /* get the stack from the context    */
                                        /* evaluate into a variable list     */
   name_list = this->list(context, stack);
                                        /* get the first list item           */

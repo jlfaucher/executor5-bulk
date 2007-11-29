@@ -70,6 +70,7 @@ public:
     static void cacheActivation(RexxActivation *activation);
     static RexxActivity *newActivity(int priority, RexxObject *local);
     static void haltAllActivities();
+    static void traceAllActivities(bool on);
     static bool setActivityTrace(LONG thread_id, bool on_or_off);
     static void clearActivityPool();
     static bool poolActivity(RexxActivity *activity);

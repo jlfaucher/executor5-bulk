@@ -53,6 +53,7 @@
 #include "StringClass.hpp"
 #include "RexxNativeAPI.h"                      /* Lot's of useful REXX macros       */
 #include "StreamNative.h"
+#include "ActivityManager.hpp"
 
 #include SYSREXXSAA                    /* Include REXX header               */
 #include "SubcommandAPI.h"             /* Get private REXXAPI API's         */

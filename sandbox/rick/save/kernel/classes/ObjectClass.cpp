@@ -696,7 +696,7 @@ RexxObject * RexxObject::messageSend(
   RexxObject     *result;              /* returned result                   */
 
   msgname_save = msgname;              /* save the message name             */
-  ActivityManager::currentActivity->stackSpace();       /* have enough stack space?          */
+  ActivityManager::currentActivity->checkStackSpace();       /* have enough stack space?          */
                                        /* grab the method from this level   */
   method_save = this->behaviour->methodLookup(msgname);
                                        /* method exists...special processing*/
@@ -730,7 +730,7 @@ RexxObject * RexxObject::messageSend(
 /******************************************************************************/
 {
   msgname_save = msgname;              /* save the message name             */
-  ActivityManager::currentActivity->stackSpace();       /* have enough stack space?          */
+  ActivityManager::currentActivity->checkStackSpace();       /* have enough stack space?          */
                                        /* go to the higher level            */
   method_save = this->superMethod(msgname, startscope);
   if (method_save != (RexxMethod *)TheNilObject && method_save->isProtected()) {

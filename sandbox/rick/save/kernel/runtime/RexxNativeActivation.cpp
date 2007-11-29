@@ -339,9 +339,9 @@ RexxObject *RexxNativeActivation::run(
     return this->result;               /* and finished                      */
   }
 
-  activity->releaseKernel();           /* force this to "safe" mode         */
+  activity->releaseAccess();           /* force this to "safe" mode         */
   (*methp)(ivalues);                   /* process the method call           */
-  activity->requestKernel();           /* now in unsafe mode again          */
+  activity->requestAccess();           /* now in unsafe mode again          */
 
   /* give up reference to receiver so that it can be garbage collected */
   this->receiver = OREF_NULL;

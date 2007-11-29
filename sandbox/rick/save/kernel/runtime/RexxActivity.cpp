@@ -122,7 +122,7 @@ void RexxActivity::runThread()
             SysSetThreadPriority(this->threadid, this->priority);
 #endif
 
-            this->requestKernel();           /* now get the kernel lock           */
+            this->requestAccess();           /* now get the kernel lock           */
                                              /* get the top activation            */
             this->topActivation->dispatch(); /* go dispatch it                    */
 
@@ -141,14 +141,14 @@ void RexxActivity::runThread()
         // try to pool this.  If the ActivityManager doesn't take, we go into termination mode
         if (!ActivityManager::poolActivity(this))
         {
-            this->releaseKernel();
+            this->releaseAccess();
             break;
         }
         // release the kernel lock and go wait for more work
-        this->releaseKernel();
+        this->releaseAccess();
     }
 
-    this->requestKernel();               /* get the kernel access             */
+    this->requestAccess();               /* get the kernel access             */
 
     SysDeregisterExceptions(&exreg);     /* remove exception trapping         */
     // tell the activity manager we're going away
@@ -1323,7 +1323,7 @@ void RexxActivity::exitKernel(
   if (enable)                          /* need variable pool access?        */
                                        /* turn it on now                    */
     new_activation->enableVariablepool();
-  releaseKernel();                     /* now give up control               */
+  releaseAccess();                     /* now give up control               */
 }
 void RexxActivity::enterKernel()
 /******************************************************************************/
@@ -1331,7 +1331,7 @@ void RexxActivity::enterKernel()
 /*             created by activity_exit_kernel from the activity stack.       */
 /******************************************************************************/
 {
-  requestKernel();                     /* get the kernel lock back          */
+  requestAccess();                     /* get the kernel lock back          */
   ((RexxNativeActivation *)this->topActivation)->disableVariablepool();
   this->pop(false);                    /* pop the top activation            */
 }
@@ -1370,9 +1370,9 @@ void RexxActivity::waitReserve(
 {
   EVSET(this->runsem);                 /* clear the run semaphore           */
   this->waitingObject = resource;      /* save the waiting resource         */
-  releaseKernel();                     /* release the kernel access         */
+  releaseAccess();                     /* release the kernel access         */
   EVWAIT(this->runsem);                /* wait for the run to be posted     */
-  requestKernel();                     /* reaquire the kernel access        */
+  requestAccess();                     /* reaquire the kernel access        */
 }
 
 void RexxActivity::guardWait()
@@ -1380,9 +1380,9 @@ void RexxActivity::guardWait()
 /* Function:  Wait for a guard post event                                     */
 /******************************************************************************/
 {
-  releaseKernel();                     /* release kernel access             */
+  releaseAccess();                     /* release kernel access             */
   EVWAIT(this->guardsem);              /* wait on the guard semaphore       */
-  requestKernel();                     /* reaquire the kernel lock          */
+  requestAccess();                     /* reaquire the kernel lock          */
 }
 
 void RexxActivity::guardPost()
@@ -1543,7 +1543,7 @@ bool RexxActivity::setTrace(bool on)
     return false;
 }
 
-void RexxActivity::releaseKernel()
+void RexxActivity::releaseAccess()
 /******************************************************************************/
 /* Function:  Release exclusive access to the kernel                          */
 /******************************************************************************/
@@ -1554,7 +1554,7 @@ void RexxActivity::releaseKernel()
   MTXRL(kernel_semaphore);             /* release the kernel semaphore      */
 }
 
-void RexxActivity::requestKernel()
+void RexxActivity::requestAccess()
 /******************************************************************************/
 /* Function:  Acquire exclusive access to the kernel                          */
 /******************************************************************************/
@@ -1575,7 +1575,7 @@ void RexxActivity::requestKernel()
     ActivityManager::addWaitingActivity(this, false);
 }
 
-void RexxActivity::stackSpace()
+void RexxActivity::checkStackSpace()
 /******************************************************************************/
 /* Function:  Make sure there is enough stack space to run a method           */
 /******************************************************************************/
@@ -1586,14 +1586,6 @@ void RexxActivity::stackSpace()
                                        /* go raise an exception             */
     reportException(Error_Control_stack_full);
 #endif
-}
-
-long RexxActivity::priorityMethod()
-/******************************************************************************/
-/* Function:  Retrieve the activations priority                               */
-/******************************************************************************/
-{
-  return this->priority;               /* just return the priority          */
 }
 
 RexxObject *RexxActivity::localMethod()

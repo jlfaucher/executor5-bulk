@@ -67,18 +67,6 @@ extern HANDLE ExceptionHostProcess;
 extern BOOL ExceptionConsole;
 static int SignalCount = 0;
 
-
-#ifdef TIMESLICE
-/*
- *  These functions can be used for timer based yielding
- *  Set a timer which will call RexxSetYield, which in turn
- *  eventually tells the kernel to yield at the next clause boudary
- *  Not used in windows because timer pops only get reflected
- *  during a yield.
- */
-extern int REXXENTRY RexxSetYield(PID procid, TID threadid);
-#endif //TIMESLICE
-
 RexxString *SysName( void )
 /******************************************************************************/
 /* Function: Get System Name                                                  */
@@ -194,7 +182,7 @@ RexxString * SysGetCurrentQueue(void)
   RexxString * queue_name;             /* name of the queue object          */
 
                                        /* get the default queue             */
-  queue = (RexxString *)ActivityManager::currentActivity->local->at(OREF_REXXQUEUE);
+  queue = (RexxString *)ActivityManager::localEnvironment->at(OREF_REXXQUEUE);
 
   if (queue == OREF_NULL)              /* no queue?                         */
     queue_name = OREF_SESSION;         /* use the default name              */
@@ -296,11 +284,7 @@ BOOL __stdcall WinConsoleCtrlHandler(DWORD dwCtrlType)
 /******************************************************************************/
 {
     /* set halt condition for all threads of this process */
-  int i;
-  RexxActivity   * activity;           /* associated activity               */
   char envp[65];
-                                       /* current running activation        */
-  RexxActivationBase * currentActivation;
 
   if ((dwCtrlType == CTRL_CLOSE_EVENT) || (dwCtrlType == CTRL_SHUTDOWN_EVENT)) return FALSE;  /* send to system */
 

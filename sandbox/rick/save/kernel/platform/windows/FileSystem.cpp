@@ -48,6 +48,8 @@
 #include "StringClass.hpp"
 #include "RexxBuffer.hpp"
 #include "RexxNativeAPI.h"
+#include "ActivityManager.hpp"
+#include "ProtectedObject.hpp"
 #include <string.h>
 #include <io.h>
 #include <fcntl.h>
@@ -169,7 +171,7 @@ RexxString * LocateProgram(
   RexxActivity*activity;               /* the current activity              */
 
   activity = ActivityManager::currentActivity;          /* save the activity                 */
-  activity->releaseKernel();           /* release the kernel access         */
+  activity->releaseAccess();           /* release the kernel access         */
 
   Name = InName->getStringData();      /* point to the string data          */
   Found = FALSE;                       /* no name found yet                 */
@@ -191,7 +193,7 @@ RexxString * LocateProgram(
   if (!Found)                          /* not found?  try without extensions*/
                        /* check on the "raw" name last      */
     Found = SearchFileName(Name, FullName);
-  activity->requestKernel();           /* get the semaphore back            */
+  activity->requestAccess();           /* get the semaphore back            */
   if (Found)                           /* got one?                          */
                        /* get as a string object            */
     Result = new_string(FullName);
@@ -345,32 +347,29 @@ RexxBuffer *SysReadProgram(
   ULONG        bytesRead;              /* number of bytes read              */
 
   activity = ActivityManager::currentActivity;          /* save the activity                 */
-  activity->releaseKernel();           /* release the kernel access         */
+  activity->releaseAccess();           /* release the kernel access         */
                        /* try to open the file              */
   fileHandle = CreateFile(file_name, GENERIC_READ, FILE_SHARE_READ,
                           NULL, OPEN_EXISTING, FILE_FLAG_WRITE_THROUGH, NULL);
   if (fileHandle == INVALID_HANDLE_VALUE)
   {
-    activity->requestKernel();         /* get the access back               */
+    activity->requestAccess();         /* get the access back               */
     return OREF_NULL;                  /* return nothing                    */
   }
                        /* retrieve the file size            */
   GetFileInformationByHandle(fileHandle, &status);
-  activity->requestKernel();           /* get the access back               */
+  activity->requestAccess();           /* get the access back               */
   buffersize = status.nFileSizeLow;    /* get the file size                 */
   buffer = new_buffer(buffersize);     /* get a buffer object               */
-  save(buffer);                        /* and protect this                  */
-  activity->releaseKernel();           /* release the kernel access         */
+  ProtectedObject p(buffer);
+  activity->releaseAccess();           /* release the kernel access         */
                        /* read in a buffer of data   */
   if (ReadFile(fileHandle, buffer->data, buffersize, &bytesRead, NULL) == 0) {
-    activity->requestKernel();         /* get the access back               */
-    discard_hold(buffer);              /* and release the protection        */
+    activity->requestAccess();         /* get the access back               */
     return OREF_NULL;                  /* return nothing                    */
   }
   CloseHandle(fileHandle);                /* close the file now         */
-  activity->requestKernel();           /* get the access back               */
-  discard_hold(buffer);                /* and release the protection        */
-
+  activity->requestAccess();           /* get the access back               */
   return buffer;                       /* return the program buffer         */
 }
 

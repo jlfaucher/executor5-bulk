@@ -201,7 +201,7 @@ void kernelRestore(void)
   IntegerMinusOne = new_integer(-1);
   restoreStrings();                    /* restore the global strings        */
   RexxNativeCode::restoreClass();      /* fix up native methods             */
-  RexxActivity::restoreClass();        /* do activity restores              */
+  ActivityManager::init();             /* do activity restores              */
   memoryObject.enableOrefChecks();     /* enable setCheckOrefs...           */
 }
 

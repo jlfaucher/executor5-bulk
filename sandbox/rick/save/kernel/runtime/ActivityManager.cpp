@@ -95,6 +95,7 @@ void ActivityManager::init()
     allActivities = new_list();
     activations = new_stack(ACTIVATION_CACHE_SIZE);
     currentActivity = OREF_NULL;
+    localEnvironment = new_directory();
 }
 
 void ActivityManager::live()
@@ -365,6 +366,9 @@ RexxActivity *ActivityManager::newActivity(int priority, RexxObject *local)
 }
 
 
+/**
+ * Raise a halt condition on all running activities.
+ */
 void ActivityManager::haltAllActivities()
 {
     for (size_t listIndex = activeActivities->firstIndex() ;
@@ -380,6 +384,37 @@ void ActivityManager::haltAllActivities()
         {
                                          /* Yes, issue the halt to it.        */
             ((RexxActivation *)currentActivation)->halt(OREF_NULL);
+        }
+    }
+}
+
+
+/**
+ * Raise a trace condition on all running activities.
+ */
+void ActivityManager::traceAllActivities(bool on)
+{
+    for (size_t listIndex = activeActivities->firstIndex() ;
+         listIndex != LIST_END;
+         listIndex = activeActivities->nextIndex(listIndex) )
+    {
+                                         /* Get the next message object to    */
+                                         /*process                            */
+        RexxActivity *activity = (RexxActivity *)allActivities->getValue(listIndex);
+        RexxActivation *currentActivation = activity->getCurrentActivation();
+
+        if (currentActivation != (RexxActivationBase *)TheNilObject)
+        {
+            if (on)               /* turning this on?                  */
+            {
+                                         /* turn tracing on                   */
+                currentActivation->externalTraceOn();
+            }
+            else
+            {
+                                         /* turn tracing off                  */
+                currentActivation->externalTraceOff();
+            }
         }
     }
 }
@@ -644,7 +679,7 @@ void ActivityManager::returnActivity(RexxActivity *activityObject)
 
     // this activity owned the kernel semaphore before entering here...release it
     // now.
-    activityObject->releaseKernel();
+    activityObject->releaseAccess();
 }
 
 
@@ -683,7 +718,7 @@ void ActivityManager::activityEnded(RexxActivity *activityObject)
 
     // this activity owned the kernel semaphore before entering here...release it
     // now.
-    activityObject->releaseKernel();
+    activityObject->releaseAccess();
 }
 
 
@@ -710,13 +745,13 @@ RexxActivity *ActivityManager::getActivity()
         unlockKernel();                /* release kernel semaphore          */
 
         // now we need to have this activity become the kernel owner.
-        activityObject->requestKernel();
+        activityObject->requestAccess();
     }
     else
     {
                                        /* Activity already existed for this */
                                        /* get kernel semophore in activity  */
-        activityObject->requestKernel();
+        activityObject->requestAccess();
         SysEnterResourceSection();     /* now in a critical section         */
 
         // this might be a recursive reentry on the same thread...if not, we

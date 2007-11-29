@@ -293,7 +293,8 @@ void RexxInstructionDo::execute(
                                        /* an integer value already, and     */
                                        /* we're dealing with a "normal      */
                                        /* NUMERIC DIGITS setting            */
-        if (isOfClass(Integer, result) && context->digits() >= (long)DEFAULT_DIGITS) {
+        if (isOfClass(Integer, result) && context->digits() >= Numerics::DEFAULT_DIGITS)
+        {
                                        /* get the value directly            */
           count = ((RexxInteger *)result)->getValue();
           context->traceResult(result);/* trace if necessary                */
@@ -326,7 +327,7 @@ void RexxInstructionDo::execute(
                                        /* an integer value already, and     */
                                        /* we're dealing with a "normal      */
                                        /* NUMERIC DIGITS setting            */
-        if (isOfClass(Integer, result) && context->digits() >= (long)DEFAULT_DIGITS) {
+        if (isOfClass(Integer, result) && context->digits() >= Numerics::DEFAULT_DIGITS) {
                                        /* get the value directly            */
           count = ((RexxInteger *)result)->getValue();
           context->traceResult(result);/* trace if necessary                */
@@ -473,7 +474,7 @@ void RexxInstructionDo::controlSetup(
                                        /* an integer value already, and     */
                                        /* we're dealing with a "normal      */
                                        /* NUMERIC DIGITS setting            */
-        if (isOfClass(Integer, result) && context->digits() >= (long)DEFAULT_DIGITS)
+        if (isOfClass(Integer, result) && context->digits() >= Numerics::DEFAULT_DIGITS)
           {
                                        /* get the value directly            */
           count = ((RexxInteger *)result)->getValue();

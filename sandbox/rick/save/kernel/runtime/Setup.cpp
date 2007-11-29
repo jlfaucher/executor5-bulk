@@ -559,61 +559,6 @@ RexxString * kernel_name (const char* value);
 void         kernelBuildVirtualFunctionTableArray(void);
 void         createStrings(void);      /* create "name" strings             */
 
-void kernelInit (void)
-/******************************************************************************/
-/* Function:  Initialize the kernel on image build                            */
-/******************************************************************************/
-{
-                                       /* go build the VFT Array            */
-  kernelBuildVirtualFunctionTableArray();
-  memoryCreate();                      /* create initial memory stuff       */
-                                       /* RexxNumberString                  */
-  // NOTE:  The number string class lies about its identity
-  CLASS_CREATE(NumberString, "String", RexxNumberStringClass);
-  CLASS_CREATE(Array, "Array", RexxClass);  /* RexxArray                         */
-  TheNullArray = new_array((size_t)0); /* set up a null array               */
-
-  CLASS_CREATE(Directory, "Directory", RexxClass);  /* RexxDirectory                     */
-  TheEnvironment = new_directory();    /* create the environment directory  */
-                                       /* setup OREF_ENV as the mark start  */
-                                       /* point                             */
-  memoryObject.setMarkTable((RexxTable *)TheEnvironment);
-  TheKernel = new_directory();         /* now add the kernel and system     */
-  TheSystem = new_directory();         /* directories                       */
-                                       /* Indicate these objects will not be*/
-                                       /*  moved to another system, rather  */
-                                       /*  will re-establish themselves on  */
-                                       /*  the remote system.               */
-  TheEnvironment->makeProxiedObject();
-  TheKernel->makeProxiedObject();
-  TheSystem->makeProxiedObject();
-
-  ThePublicRoutines = new_directory();
-  TheStaticRequires = new_directory();
-
-  createStrings();                     /* create all of the OREF_ strings   */
-                                       /* RexxMethod                        */
-  CLASS_CREATE(Method, "Method", RexxMethodClass);
-  RexxNativeCode::createClass();       /* RexxNativeCode                    */
-  CLASS_CREATE(Queue, "Queue", RexxClass);      /* RexxQueue                         */
-  TheNullPointer = new_pointer(NULL);  /* a NULL pointer object             */
-  CLASS_CREATE(List, "List", RexxListClass);   /* RexxList                          */
-  CLASS_CREATE(Stem, "Stem", RexxClass);       /* RexxStem                          */
-  RexxActivity::createClass();         /* RexxActivity                      */
-  CLASS_CREATE(Supplier, "Supplier", RexxClass);   /* RexxSupplier                      */
-  CLASS_CREATE(Message, "Message", RexxClass);    /* RexxMessage                       */
-  CLASS_CREATE(MutableBuffer, "MutableBuffer", RexxClass);
-
-                                       /* build the common retriever tables */
-  TheCommonRetrievers = (RexxDirectory *)new_directory();
-                                       /* add all of the special variables  */
-  TheCommonRetrievers->put((RexxObject *)new RexxParseVariable(OREF_SELF, VARIABLE_SELF), OREF_SELF);
-  TheCommonRetrievers->put((RexxObject *)new RexxParseVariable(OREF_SUPER, VARIABLE_SUPER), OREF_SUPER);
-  TheCommonRetrievers->put((RexxObject *)new RexxParseVariable(OREF_SIGL, VARIABLE_SIGL), OREF_SIGL);
-  TheCommonRetrievers->put((RexxObject *)new RexxParseVariable(OREF_RC, VARIABLE_RC), OREF_RC);
-  TheCommonRetrievers->put((RexxObject *)new RexxParseVariable(OREF_RESULT, VARIABLE_RESULT), OREF_RESULT);
-  memoryObject.enableOrefChecks();     /* enable setCheckOrefs...           */
-}
 
 RexxMethod * createKernelMethod(
     PCPPM           entryPoint,        /* method entry point                */
@@ -691,12 +636,64 @@ void definePrivateKernelMethod(
   behaviour->define(kernel_name(name), createPrivateKernelMethod(entryPoint, arguments));
 }
 
-bool kernel_setup (void)
+
+void kernelInit (void)
 /******************************************************************************/
-/* Function:  Build the Object REXX image, including hand building the        */
-/*            base set of REXX classes.                                       */
+/* Function:  Initialize the kernel on image build                            */
 /******************************************************************************/
 {
+                                       /* go build the VFT Array            */
+  kernelBuildVirtualFunctionTableArray();
+  memoryCreate();                      /* create initial memory stuff       */
+
+  ActivityManager::init();             /* Initialize the activity managers  */
+  ActivityManager::getActivity();      /* (will create one if necessary)    */
+                                       /* RexxNumberString                  */
+  // NOTE:  The number string class lies about its identity
+  CLASS_CREATE(NumberString, "String", RexxNumberStringClass);
+  CLASS_CREATE(Array, "Array", RexxClass);  /* RexxArray                         */
+  TheNullArray = new_array((size_t)0); /* set up a null array               */
+
+  CLASS_CREATE(Directory, "Directory", RexxClass);  /* RexxDirectory                     */
+  TheEnvironment = new_directory();    /* create the environment directory  */
+                                       /* setup OREF_ENV as the mark start  */
+                                       /* point                             */
+  memoryObject.setMarkTable((RexxTable *)TheEnvironment);
+  TheKernel = new_directory();         /* now add the kernel and system     */
+  TheSystem = new_directory();         /* directories                       */
+                                       /* Indicate these objects will not be*/
+                                       /*  moved to another system, rather  */
+                                       /*  will re-establish themselves on  */
+                                       /*  the remote system.               */
+  TheEnvironment->makeProxiedObject();
+  TheKernel->makeProxiedObject();
+  TheSystem->makeProxiedObject();
+
+  ThePublicRoutines = new_directory();
+  TheStaticRequires = new_directory();
+
+  createStrings();                     /* create all of the OREF_ strings   */
+                                       /* RexxMethod                        */
+  CLASS_CREATE(Method, "Method", RexxMethodClass);
+  RexxNativeCode::createClass();       /* RexxNativeCode                    */
+  CLASS_CREATE(Queue, "Queue", RexxClass);      /* RexxQueue                         */
+  TheNullPointer = new_pointer(NULL);  /* a NULL pointer object             */
+  CLASS_CREATE(List, "List", RexxListClass);   /* RexxList                          */
+  CLASS_CREATE(Stem, "Stem", RexxClass);       /* RexxStem                          */
+  CLASS_CREATE(Supplier, "Supplier", RexxClass);   /* RexxSupplier                      */
+  CLASS_CREATE(Message, "Message", RexxClass);    /* RexxMessage                       */
+  CLASS_CREATE(MutableBuffer, "MutableBuffer", RexxClass);
+
+                                       /* build the common retriever tables */
+  TheCommonRetrievers = (RexxDirectory *)new_directory();
+                                       /* add all of the special variables  */
+  TheCommonRetrievers->put((RexxObject *)new RexxParseVariable(OREF_SELF, VARIABLE_SELF), OREF_SELF);
+  TheCommonRetrievers->put((RexxObject *)new RexxParseVariable(OREF_SUPER, VARIABLE_SUPER), OREF_SUPER);
+  TheCommonRetrievers->put((RexxObject *)new RexxParseVariable(OREF_SIGL, VARIABLE_SIGL), OREF_SIGL);
+  TheCommonRetrievers->put((RexxObject *)new RexxParseVariable(OREF_RC, VARIABLE_RC), OREF_RC);
+  TheCommonRetrievers->put((RexxObject *)new RexxParseVariable(OREF_RESULT, VARIABLE_RESULT), OREF_RESULT);
+  memoryObject.enableOrefChecks();     /* enable setCheckOrefs...           */
+
   RexxString *symb;                    /* symbolic name for added methods   */
   RexxString *programName;             /* name of the image file            */
   RexxMethod *meth;                    /* added method object               */
@@ -1605,7 +1602,7 @@ bool kernel_setup (void)
       catch (ActivityException )
       {
           ActivityManager::currentActivity->error(0);         /* do error cleanup                  */
-          return false;                      /* this is a setup failure           */
+          logic_error("Error building kernel image.  Image not saved.");
       }
 
   }
@@ -1654,7 +1651,6 @@ bool kernel_setup (void)
   // from GC events thus far, but now we remove it because
   // it contains things we don't want to save in the image.
   TheEnvironment->remove(kernel_name(CHAR_KERNEL));
-  return true;
 }
 
 void createImage(void)
@@ -1663,19 +1659,7 @@ void createImage(void)
 /******************************************************************************/
 {
   kernelInit();                        /* initialize the kernel             */
-  {
-                                           /* Find an activity for this thread  */
-      ActivityManager::getActivity();      /* (will create one if necessary)    */
-                                           /* get the local environment         */
-      ActivityManager::localEnvironment = new_directory();
-      // go build the rest of the image, but don't save if there is a failure.
-      if (!kernel_setup()) {
-          logic_error("Error building kernel image.  Image not saved.");
-      }
-      ActivityManager::localEnvironment = OREF_NULL;
-                                           /* release the kernel semaphore      */
-      ActivityManager::returnActivity(ActivityManager::currentActivity);
-  }
   memoryObject.saveImage();            /* will not return                   */
+  ActivityManager::returnActivity(ActivityManager::currentActivity);
   exit(RC_OK);                         // successful build
 }

@@ -76,7 +76,7 @@ void SysReleaseResultMemory(
   free(MemoryBlock);                   /* release this block                */
 }
 
-BOOL SysAccessPool(MemorySegmentPool **pool)
+bool SysAccessPool(MemorySegmentPool **pool)
 /*********************************************************************/
 /*   Function:  Access/Create the 1st block as Named Storage         */
 /*              return TRUE is an access, FALSE is created.          */

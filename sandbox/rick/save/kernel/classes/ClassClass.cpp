@@ -167,7 +167,7 @@ RexxObject *RexxClass::strictEqual(
     return this->equal(other);         /* this is direct object equality    */
 }
 
-BOOL RexxClass::isEqual(
+bool RexxClass::isEqual(
     RexxObject *other)                 /* other comparison object           */
 /******************************************************************************/
 /* Function:  Compare two class objects as a strict compare (==)              */

@@ -108,7 +108,7 @@ class MemorySegmentPool : public MemorySegmentPoolHeader {
 #ifdef _DEBUG
  friend class RexxMemory;
 #endif
- friend BOOL SysAccessPool(MemorySegmentPool **);
+ friend bool SysAccessPool(MemorySegmentPool **);
  public:
    void          *operator new(size_t size, size_t minSize);
    void          *operator new(size_t size, void *pool) { return pool;}
@@ -118,7 +118,7 @@ class MemorySegmentPool : public MemorySegmentPoolHeader {
    MemorySegmentPool();
    MemorySegment *newSegment(size_t minSize);
    MemorySegment *newLargeSegment(size_t minSize);
-   BOOL           accessNextPool(void);
+   bool           accessNextPool(void);
    MemorySegmentPool *freePool(void); /* CHM - defect 96: add return value */
    MemorySegmentPool *nextPool() {return this->next;}
    void               setNext( MemorySegmentPool *nextPool ); /* CHM - def.96: new function */
@@ -180,16 +180,16 @@ class RexxMemory : public RexxObject {
   void        discardHoldObject(RexxInternalObject *obj);
   RexxObject *holdObject(RexxInternalObject *obj);
   void        saveImage();
-  BOOL        savingImage() { return saveimage; }
-  BOOL        restoringImage() { return restoreimage; }
+  bool        savingImage() { return saveimage; }
+  bool        restoringImage() { return restoreimage; }
   RexxObject *setDump(RexxObject *);
-  inline BOOL queryDump() {return this->dumpEnable;};
+  inline bool queryDump() {return this->dumpEnable;};
   RexxObject *dump();
   void        dumpObject(RexxObject *objectRef, FILE *outfile);
   void        setObjectOffset(size_t offset);
   void        setEnvelope(RexxEnvelope *);
   inline void        setMarkTable(RexxTable *marktable) {this->markTable = marktable;};
-  inline void        setOrphanCheck(BOOL orphancheck) {this->orphanCheck = orphancheck; };
+  inline void        setOrphanCheck(bool orphancheck) {this->orphanCheck = orphancheck; };
   RexxObject *checkSetOref(RexxObject *, RexxObject **, RexxObject *, const char *, int);
   RexxObject *setOref(void *index, RexxObject *value);
   RexxStack  *getFlattenStack();
@@ -199,6 +199,7 @@ class RexxMemory : public RexxObject {
   RexxObject *gutCheck();
   void        accessPools();
   void        accessPools(MemorySegmentPool *);
+  void        addPool(MemorySegmentPool *pool);
   void        freePools();
   MemorySegmentPool *freePools(MemorySegmentPool *);
   void        liveStackFull();
@@ -226,8 +227,8 @@ class RexxMemory : public RexxObject {
   inline void logObjectStats(RexxObject *obj) { imageStats->logObject(obj); }
   inline void pushSaveStack(RexxObject *obj) { saveStack->push(obj); }
   inline void removeSavedObject(RexxObject *obj) { saveStack->remove(obj); }
-  inline void disableOrefChecks() { checkSetOK = FALSE; }
-  inline void enableOrefChecks() { checkSetOK = TRUE; }
+  inline void disableOrefChecks() { checkSetOK = false; }
+  inline void enableOrefChecks() { checkSetOK = true; }
   inline void clearSaveStack() {
                                        /* remove all objects from the save- */
                                        /* stack. to be really oo, this      */
@@ -276,9 +277,9 @@ private:
   void saveImageMark(RexxObject *markObject, RexxObject **pMarkObject);
   void orphanCheckMark(RexxObject *markObject, RexxObject **pMarkObject);
 
-  BOOL inObjectStorage(RexxObject *obj);
-  BOOL inSharedObjectStorage(RexxObject *obj);
-  BOOL objectReferenceOK(RexxObject *o);
+  bool inObjectStorage(RexxObject *obj);
+  bool inSharedObjectStorage(RexxObject *obj);
+  bool objectReferenceOK(RexxObject *o);
   void restoreImage(void);
 
   RexxStack  *liveStack;
@@ -304,13 +305,13 @@ private:
   char *image_buffer;                  /* the buffer used for image save/restore operations */
   size_t image_offset;                 /* the offset information for the image */
   size_t relocation;                   /* image save/restore relocation factor */
-  BOOL dumpEnable;                     /* enabled for dumps?                */
-  BOOL saveimage;                      /* we're saving the image */
-  BOOL restoreimage;                   /* we're restoring the image */
-  BOOL checkSetOK;                     /* OREF checking is enabled          */
+  bool dumpEnable;                     /* enabled for dumps?                */
+  bool saveimage;                      /* we're saving the image */
+  bool restoreimage;                   /* we're restoring the image */
+  bool checkSetOK;                     /* OREF checking is enabled          */
                                        /* enabled for checking for bad      */
                                        /*OREF's?                            */
-  BOOL orphanCheck;
+  bool orphanCheck;
   size_t objOffset;                    /* offset of arriving mobile objects */
                                        /* envelope for arriving mobile      */
                                        /*objects                            */

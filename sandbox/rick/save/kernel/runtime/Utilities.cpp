@@ -211,6 +211,6 @@ RexxObject *native_release(
     ProtectedObject p1(result);
     result = activation->saveObject(result);
   }
-  ActivityManager::currentActivity->releaseKernel(); /* release the kernel lock           */
+  ActivityManager::currentActivity->releaseAccess(); /* release the kernel lock           */
   return result;                       /* return the result object          */
 }

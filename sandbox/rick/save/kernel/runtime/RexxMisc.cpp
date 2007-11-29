@@ -53,7 +53,7 @@
 #include "MethodClass.hpp"
 #include "StringClass.hpp"
 #include "RexxMisc.hpp"
-#include "ActivityManager.cpp"
+#include "ActivityManager.hpp"
                                        /* Since self will ALWAYS be OBJECT  */
 
 enum { STOP, START };

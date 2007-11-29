@@ -341,7 +341,7 @@ ULONG SysVariablePool(
                                        /* extract the numeric piece         */
         value = variable->extract(strlen("PARM."), variable->getLength() - strlen("PARM."));
                                        /* get the binary value              */
-        arg_position = value->longValue(DEFAULT_DIGITS);
+        arg_position = value->longValue(Numerics::DEFAULT_DIGITS);
                                        /* not a good number?                */
         if (arg_position == NO_LONG || arg_position <= 0)
                                        /* this is a bad name                */

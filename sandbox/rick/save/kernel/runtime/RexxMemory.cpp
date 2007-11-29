@@ -56,7 +56,7 @@
 #include "TableClass.hpp"
 #include "ActivityManager.hpp"
 
-BOOL SysAccessPool(MemorySegmentPool **pool);
+bool SysAccessPool(MemorySegmentPool **pool);
 /* NOTE:  There is just a single memory object in global storage.  We'll define      */
 /* memobj to be the direct address of this memory object.                            */
 RexxMemory memoryObject;
@@ -98,6 +98,8 @@ RexxMemory::RexxMemory()
   /* a lie.  Since this never participates in a sweep operation, */
   /* this works ok in the end. */
   this->setObjectSize(roundObjectBoundary(sizeof(RexxMemory)));
+  // our first pool is the current one
+  currentPool = firstPool;
 
                                        /* make sure we hand craft memory's  */
                                        /*  header information.              */
@@ -106,9 +108,9 @@ RexxMemory::RexxMemory()
                                        /*or not by default, its always      */
                                        /*setable from OREXX code.           */
 #ifdef CHECKOREFS
-  this->orphanCheck = TRUE;            /* default value for OREF checking   */
+  this->orphanCheck = true;            /* default value for OREF checking   */
 #else
-  this->orphanCheck = FALSE;           /* default value for OREF checking   */
+  this->orphanCheck = false;           /* default value for OREF checking   */
 #endif
                                        /* OR'ed into object headers to      */
                                        /*mark                               */
@@ -117,7 +119,7 @@ RexxMemory::RexxMemory()
                                        /*phase                              */
   this->saveStack = NULL;
   this->saveTable = NULL;
-  this->dumpEnable = FALSE;
+  this->dumpEnable = false;
   this->objOffset = 0;
   this->envelope = NULL;
   if (this->envelopeMutex) MTXCL(this->envelopeMutex);
@@ -212,41 +214,41 @@ void RexxMemory::dumpObject(RexxObject *objectRef, FILE *outfile)
  }
 }
 
-BOOL RexxMemory::inSharedObjectStorage(RexxObject *object)
+bool RexxMemory::inSharedObjectStorage(RexxObject *object)
 /******************************************************************************/
 /* Arguments:  Any OREF                                                       */
 /*                                                                            */
-/*  Returned:  TRUE if object is in object storage, else FALSE                */
+/*  Returned:  true if object is in object storage, else false                */
 /******************************************************************************/
 {
   /* 1st Check Old Space. */
   if (oldSpaceSegments.isInSegmentSet(object))
-      return TRUE;
+      return true;
 
   /* Now Check New Space.              */
   if (newSpaceNormalSegments.isInSegmentSet(object))
-      return TRUE;
+      return true;
 
   /* Now Check New Space large segments*/
   if (newSpaceLargeSegments.isInSegmentSet(object))
-      return TRUE;
+      return true;
 
   /* this is bad, definitely very bad... */
-  return FALSE;
+  return false;
 }
 
 
-BOOL RexxMemory::inObjectStorage(RexxObject *object)
+bool RexxMemory::inObjectStorage(RexxObject *object)
 /******************************************************************************/
 /* Arguments:  Any OREF                                                       */
 /*                                                                            */
-/*  Returned:  TRUE if object is in object storage, else FALSE                */
+/*  Returned:  true if object is in object storage, else false                */
 /******************************************************************************/
 {
   /* check for a few valid locations in 'C' storage                     */
   if ((object >= (RexxObject *)RexxBehaviour::getPrimitiveBehaviour(0) && object <= (RexxObject *)RexxBehaviour::getPrimitiveBehaviour(highest_T)) ||
       (object == (RexxObject *)this)) {
-    return TRUE;
+    return true;
   }
 
   return inSharedObjectStorage(object);
@@ -254,18 +256,18 @@ BOOL RexxMemory::inObjectStorage(RexxObject *object)
 
 
 /* object validation method --used to find and diagnose broken object references       */
-BOOL RexxMemory::objectReferenceOK(RexxObject *o)
+bool RexxMemory::objectReferenceOK(RexxObject *o)
 /******************************************************************************/
 /* Function:  Object validation...used to find and diagnose broken object     */
 /* references.                                                                */
 /******************************************************************************/
 {
     if (!inObjectStorage(o)) {
-        return FALSE;
+        return false;
     }
     RexxBehaviour *type = o->getObjectType();
     if (inObjectStorage((RexxObject *)type) && type->getObjectType() == TheBehaviourBehaviour) {
-        return TRUE;
+        return true;
     }
     /* these last two checks are for very early checking...we can */
     /* possibly be testing this before TheBehaviourBehaviour is */
@@ -704,7 +706,7 @@ void RexxMemory::restoreImage(void)
   endPointer = image_buffer + imagesize;
                                      /* the save Array is the 1st object  */
   TheSaveArray = (RexxArray *)image_buffer;
-  restoreimage = TRUE;               /* we are now restoring              */
+  restoreimage = true;               /* we are now restoring              */
                                      /* loop through the image buffer     */
   while (objectPointer < endPointer) {
 
@@ -752,7 +754,7 @@ void RexxMemory::restoreImage(void)
 
   }
 
-  restoreimage = FALSE;
+  restoreimage = false;
                                      /* OREF_ENV is the first element of  */
                                      /*array                              */
   TheEnvironment = (RexxDirectory *)TheSaveArray->get(saveArray_ENV);
@@ -1191,7 +1193,7 @@ void RexxMemory::liveStackFull()
   RexxStack *newLiveStack;             /* new temporary live stack          */
 
                                        /* create a temporary stack          */
-  newLiveStack = new (this->liveStack->size * 2, TRUE) RexxStack (this->liveStack->size * 2);
+  newLiveStack = new (this->liveStack->size * 2, true) RexxStack (this->liveStack->size * 2);
                                        /* copy the live stack entries       */
   newLiveStack->copyEntries(this->liveStack);
                                        /* has this already been expanded?   */
@@ -1379,7 +1381,7 @@ void RexxMemory::orphanCheckMark(RexxObject *markObject, RexxObject **pMarkObjec
 {
     const char *outFileName;
     FILE *outfile;
-    BOOL firstnode;
+    bool firstnode;
     RexxString *className;
     const char *objectClassName;
 
@@ -1392,7 +1394,7 @@ void RexxMemory::orphanCheckMark(RexxObject *markObject, RexxObject **pMarkObjec
         logMemoryCheck(outfile, "Found non Object at %p, being marked from %p\n",markObject, pMarkObject);
         /* Let the traversal know we want    */
         /*  more info about first guy...     */
-        firstnode = TRUE;
+        firstnode = true;
         /* If the object is in object storage*/
         if (inObjectStorage(markObject)) {
             /* DIsplay a few words of the object's storage. */
@@ -1420,7 +1422,7 @@ void RexxMemory::orphanCheckMark(RexxObject *markObject, RexxObject **pMarkObjec
                 if (firstnode) {             /* is this the first node??          */
                     printf("-->Parent node was marking offset '%u'x \n", (char *)pMarkObject - (char *)markObject);
                     dumpObject(markObject, outfile);
-                    firstnode = FALSE;
+                    firstnode = false;
                     logMemoryCheck(outfile, "Parent node is at %p, of type %s(%d) \n",
                         markObject, objectClassName, markObject->behaviour->getClassType());
                 }
@@ -1539,7 +1541,7 @@ void RexxMemory::saveImage(void)
 
   image_buffer = (char *)malloc(MaxImageSize);
   image_offset = sizeof(size_t);
-  saveimage = TRUE;
+  saveimage = true;
   disableOrefChecks();                 /* Don't try to check OrefSets now.  */
   bumpMarkWord();
                                        /* push a unique terminator          */
@@ -1654,9 +1656,9 @@ RexxObject *RexxMemory::setDump(RexxObject *selection)
 
   if (selection != OREF_NULL) {
     if (REQUIRED_LONG(selection, Numerics::DEFAULT_DIGITS, ARG_ONE))
-      this->dumpEnable = FALSE;
+      this->dumpEnable = false;
     else
-      this->dumpEnable = TRUE;
+      this->dumpEnable = true;
   }
   return selection;
 }
@@ -1670,7 +1672,7 @@ RexxObject *RexxMemory::gutCheck(void)
 {
   int  count, testcount;
   HashLink j;
-  BOOL restoreimagesave;
+  bool restoreimagesave;
   RexxInteger *value;
   RexxInteger *testValue;
   RexxObject *index;
@@ -1683,7 +1685,7 @@ RexxObject *RexxMemory::gutCheck(void)
                                        /* build a test remembered set       */
   tempold2new = new_object_table();
   restoreimagesave = restoreimage;
-  restoreimage = TRUE;                 /* setting both of these to TRUE will*/
+  restoreimage = true;                 /* setting both of these to true will*/
                                        /* traverse System OldSpace and live */
                                        /*mark all objects                   */
   oldSpaceSegments.markOldSpaceObjects();
@@ -1732,7 +1734,7 @@ RexxObject *RexxMemory::gutCheck(void)
                                        /*  diagnose any problems we just    */
                                        /*uncovered                          */
   printf("Dumping object memory.\n");  /* tell the user what's happening    */
-  this->dumpEnable = TRUE;             /* turn dumps on                     */
+  this->dumpEnable = true;             /* turn dumps on                     */
   this->dump();                        /* take the dump                     */
 
   return OREF_NULL;
@@ -1757,11 +1759,11 @@ void RexxMemory::setObjectOffset(size_t offset)
     /* Nope, have to wait for it. Get current activity. */
     RexxActivity * currentActivity = ActivityManager::currentActivity;
     /* release kernel access. */
-    currentActivity->releaseKernel();
+    currentActivity->releaseAccess();
     /* wait for current unflatten to end */
     MTXRQ(this->unflattenMutex);
     /* get kernel access back. */
-    currentActivity->requestKernel();
+    currentActivity->requestAccess();
    }
   }
   else {
@@ -1792,10 +1794,10 @@ void      RexxMemory::setEnvelope(RexxEnvelope *_envelope)
                                        /* Get current activity.             */
     RexxActivity *currentActivity = ActivityManager::currentActivity;
                                        /* release kernel access.            */
-    currentActivity->releaseKernel();
+    currentActivity->releaseAccess();
     MTXRQ(this->envelopeMutex);        /* wait for current unflat to end    */
                                        /* get kernel access back.           */
-    currentActivity->requestKernel();
+    currentActivity->requestAccess();
    }
   }
   else {
@@ -1878,13 +1880,13 @@ RexxObject *RexxMemory::checkSetOref(
 /*                                                                            */
 /******************************************************************************/
 {
-  BOOL allOK = TRUE;
+  bool allOK = true;
   const char *outFileName;
   FILE *outfile;
                                        /* Skip all checks during saveimage  */
  if (checkSetOK) {                     /* and initial part of restore Image */
   if (!inObjectStorage(setter)) {      /* Is the setter object invalid      */
-    allOK = FALSE;                     /* No, just put out setters addr.    */
+    allOK = false;                     /* No, just put out setters addr.    */
     outFileName = SysGetTempFileName();/* Get a temporary file name for out */
     outfile = fopen(outFileName,"wb");
     logMemoryCheck(outfile, "The Setter object at %p is invalid...\n");
@@ -1892,7 +1894,7 @@ RexxObject *RexxMemory::checkSetOref(
                                        /* Is the new value a real object?   */
   }
   else if (value && value != (RexxObject *)TheBehaviourBehaviour && value != (RexxObject *)RexxBehaviour::getPrimitiveBehaviour(T_behaviour) && !objectReferenceOK(value)) {
-    allOK = FALSE;                     /* No, put out the info              */
+    allOK = false;                     /* No, put out the info              */
     outFileName = SysGetTempFileName();/* Get a temporary file name for out */
     outfile = fopen(outFileName,"wb");
     logMemoryCheck(outfile, "The Setter object at %p attempted to put a non object %p, at offset %p\n",setter, value, (ULONG)index - (ULONG)setter);
@@ -1901,7 +1903,7 @@ RexxObject *RexxMemory::checkSetOref(
 
   }
   else if (index >= (RexxObject **)((char *)setter + setter->getObjectSize())) {
-    allOK = FALSE;                     /* Yes, let them know                */
+    allOK = false;                     /* Yes, let them know                */
     outFileName = SysGetTempFileName();/* Get a temporary file name for out */
     outfile = fopen(outFileName,"wb");
     logMemoryCheck(outfile, "The Setter object at %p has tried to store at offset, which is  outside his object range\n",setter, (ULONG)index - (ULONG)setter);
@@ -1933,10 +1935,10 @@ RexxStack *RexxMemory::getFlattenStack(void)
                                        /* Get current activity.             */
     RexxActivity *currentActivity = ActivityManager::currentActivity;
                                        /* release kernel access.            */
-    currentActivity->releaseKernel();
+    currentActivity->releaseAccess();
     MTXRQ(this->flattenMutex);         /* wait for current flattento end    */
                                        /* get kernel access back.           */
-    currentActivity->requestKernel();
+    currentActivity->requestAccess();
   }
                                        /* create a temporary stack          */
   this->flattenStack = new (LiveStackSize, true) RexxStack (LiveStackSize);
@@ -1997,6 +1999,17 @@ void RexxMemory::accessPools(MemorySegmentPool *pool)
    pool->accessNextPool();             /* access next pool.                 */
    pool = pool->nextPool();            /* get next Pool                     */
   }
+}
+
+
+/**
+ * Add a new pool to the memory set.
+ *
+ * @param pool   The new pool.
+ */
+void RexxMemory::addPool(MemorySegmentPool *pool)
+{
+    currentPool = pool;
 }
 
 
@@ -2098,22 +2111,22 @@ void memoryCreate()
   TheGlobalStrings = new_directory();
 
                                        /* If first one through, generate all   */
-  IntegerZero    = new_integer(0L);    /*  static integers we want to use...   */
-  IntegerOne     = new_integer(1L);    /* This will allow us to use the static */
-  IntegerTwo     = new_integer(2L);    /* integers instead of having to do a   */
-  IntegerThree   = new_integer(3L);    /* new_integer every time....           */
-  IntegerFour    = new_integer(4L);
-  IntegerFive    = new_integer(5L);
-  IntegerSix     = new_integer(6L);
-  IntegerSeven   = new_integer(7L);
-  IntegerEight   = new_integer(8L);
-  IntegerNine    = new_integer(9L);
+  IntegerZero    = new_integer(0);    /*  static integers we want to use...   */
+  IntegerOne     = new_integer(1);    /* This will allow us to use the static */
+  IntegerTwo     = new_integer(2);    /* integers instead of having to do a   */
+  IntegerThree   = new_integer(3);    /* new_integer every time....           */
+  IntegerFour    = new_integer(4);
+  IntegerFive    = new_integer(5);
+  IntegerSix     = new_integer(6);
+  IntegerSeven   = new_integer(7);
+  IntegerEight   = new_integer(8);
+  IntegerNine    = new_integer(9);
   IntegerMinusOne = new_integer(-1);
 
                                        /* avoid that through caching        */
                                        /* TheTrueObject == IntegerOne etc.  */
-  TheTrueObject  = new RexxInteger((LONG)TRUE);
-  TheFalseObject = new RexxInteger((LONG)FALSE);
+  TheTrueObject  = new RexxInteger(1);
+  TheFalseObject = new RexxInteger(0);
 
   pMemoryObject->setBehaviour(TheMemoryBehaviour);
 

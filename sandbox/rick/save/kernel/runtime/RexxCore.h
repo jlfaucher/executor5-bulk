@@ -457,8 +457,7 @@ EXTERN RexxInteger * IntegerMinusOne INITGLOBALPTR;  /* Static integer -1       
 #define saveArray_GLOBAL_STRINGS     saveArray_NIL               + 1
 #define saveArray_CLASS              saveArray_GLOBAL_STRINGS    + 1
 #define saveArray_PBEHAV             saveArray_CLASS             + 1
-#define saveArray_ACTIVITY           saveArray_PBEHAV            + 1
-#define saveArray_NMETHOD            saveArray_ACTIVITY          + 1
+#define saveArray_NMETHOD            saveArray_PBEHAV            + 1
 #define saveArray_NULLA              saveArray_NMETHOD           + 1
 #define saveArray_NULLPOINTER        saveArray_NULLA             + 1
 #define saveArray_SYSTEM             saveArray_NULLPOINTER       + 1
@@ -934,7 +933,7 @@ inline RexxObject * callOperatorMethod(RexxObject *object, LONG methodOffset, Re
                                        /* native method cleanup             */
 RexxObject *  native_release(RexxObject *);
                                        /* macro for common native entry     */
-#define native_entry  ActivityManager::findActivity()->requestKernel();
+#define native_entry  ActivityManager::findActivity()->requestAccess();
                                        /* value termination routine         */
 #define return_oref(value)  return (REXXOBJECT)native_release(value);
                                        /* return for no value returns       */

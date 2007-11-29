@@ -82,7 +82,7 @@
 #include <io.h>
 
 #ifdef TIMESLICE                       /* System Yielding function prototype*/
-int REXXENTRY RexxSetYield(PID procid, TID threadid);
+APIRET REXXENTRY RexxSetYield(PID procid, TID threadid);
 #endif /*timeslice*/
 
 
@@ -188,14 +188,13 @@ void SearchPrecision(
 
 /* give me the numeric digits settings of the current actitity       */
 
-    threadid = GetCurrentThreadId();
-
-    RexxActivity *activity = ActivityManager::findActivityForCurrentThread();
+    RexxActivity *activity = ActivityManager::findActivity();
     if (activity != OREF_NULL)
     {
         RexxActivation *activation = activity->getCurrentActivation();
         *precision = activation->digits();
     }
+}
 }
 
 RexxActivity *RunActivity = NULL;
@@ -327,7 +326,7 @@ APIRET REXXENTRY RexxResultString(RexxObject * result, PRXSTRING pResultBuffer)
   ULONG rc = 0;
   RexxString *string_result;
 
-  activity = ActivityManager->getActivity();
+  activity = ActivityManager::getActivity();
 
                                        /* force to a string value           */
   string_result = result->stringValue();
@@ -701,8 +700,8 @@ APIRET REXXENTRY RexxCreateMethod(
 
                                        /* if error, get condition data from */
                                        /* condition object.                 */
-  if (rc && ActivityManager::currentActivity->conditionobj != OREF_NULL)
-    CreateRexxCondData(ActivityManager::currentActivity->conditionobj, pRexxCondData);
+  if (rc && ActivityManager::currentActivity->getCurrentCondition() != OREF_NULL)
+    CreateRexxCondData(ActivityManager::currentActivity->getCurrentCondition(), pRexxCondData);
   ActivityManager::returnActivity(ActivityManager::currentActivity);
   RexxTerminate();                     /* perform needed termination        */
   return rc;                           /* return the error code             */
@@ -775,7 +774,7 @@ APIRET REXXENTRY RexxRunMethod(
   tempActivity = ActivityManager::getActivity();     /* get a base activity under us      */
   store = RunActivity; // store old one
   RunActivity = tempActivity; // set to current
-  tempActivity->exitObjects = TRUE;   // enable object passing thru classic rexx interface!
+  tempActivity->setExitObjects(true); // enable object passing thru classic rexx interface!
                                        /* wrap up the argument              */
   tempArgument = (RexxObject *)new_integer((LONG)&RexxScriptArgs);
                                        /* pass along to the real method     */
@@ -783,8 +782,8 @@ APIRET REXXENTRY RexxRunMethod(
 
                                        /* if error, get condition data from */
                                        /* condition object.                 */
-  if (rc && tempActivity->conditionobj != OREF_NULL)
-    CreateRexxCondData(tempActivity->conditionobj, pRexxCondData);
+  if (rc && tempActivity->getCurrentCondition() != OREF_NULL)
+    CreateRexxCondData(tempActivity->getCurrentCondition(), pRexxCondData);
   ActivityManager::returnActivity(tempActivity);
   RexxTerminate();                     /* perform needed termination        */
   RunActivity = store; // restore old RunActivity (NULL or from a nested call)
@@ -935,11 +934,10 @@ APIRET REXXENTRY RexxTranslateProgram(
 /*         a system yield via activity_relinquish.                            */
 /*                                                                            */
 /******************************************************************************/
-int REXXENTRY RexxSetYield(PID procid, TID threadid)
+APIRET REXXENTRY RexxSetYield(PID procid, TID threadid)
 {
-//  threadid=1L;                              // until we can figure out tid
   if (RexxQuery()) {                        /* Are we up?                     */
-    if(activity_sysyield(threadid,NULL))    /* Set yield condition?           */
+    if (ActivityManager::yieldActivity(threadid))    /* Set yield condition?           */
       return (RXARI_OK);                    /* Yes, return okay               */
     else
       return (RXARI_NOT_FOUND);             /* Couldn't find threadid         */
@@ -1009,7 +1007,7 @@ APIRET InternSetResetTrace(PID procid, TID threadid, bool flag)
        }
        else
        {
-           if (!ActivityManager::traceActivity(threadid, flag))
+           if (!ActivityManager::setActivityTrace(threadid, flag))
            {
                return (RXARI_NOT_FOUND);             /* Couldn't find threadid         */
            }
@@ -1072,10 +1070,10 @@ void translateSource(
   RexxActivity*activity;               /* the current activity              */
 
   activity = ActivityManager::currentActivity;          /* save the current activity         */
-  activity->releaseKernel();           /* release the kernel access         */
+  activity->releaseAccess();           /* release the kernel access         */
                                        /* go resolve the name               */
   fileFound = SearchFileName(inputName->getStringData(), name);
-  activity->requestKernel();           /* get the semaphore back            */
+  activity->requestAccess();           /* get the semaphore back            */
 
   if (!fileFound)
                                        /* got an error here                 */
@@ -1485,7 +1483,7 @@ void  SysRunProgram(
                                        /* If there is a return val...       */
       if (program_result != OREF_NULL) {
                                        /* convert to a long value           */
-        return_code = program_result->longValue(DEFAULT_DIGITS);
+        return_code = program_result->longValue(Numerics::DEFAULT_DIGITS);
                                        /* if a whole number...              */
         if (return_code != NO_LONG && return_code <= SHRT_MAX && return_code >= SHRT_MIN)
                                        /* ...copy to return code.           */

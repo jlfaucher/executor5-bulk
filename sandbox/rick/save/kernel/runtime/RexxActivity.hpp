@@ -183,10 +183,9 @@ public:
    bool        setTrace(bool);
    void        yield(RexxObject *);
    void        yield();
-   void        releaseKernel();
-   void        requestKernel();
-   void        stackSpace();
-   long        priorityMethod();
+   void        releaseAccess();
+   void        requestAccess();
+   void        checkStackSpace();
    void        terminateActivity();
    RexxObject *localMethod();
    long threadIdMethod();
@@ -249,6 +248,9 @@ public:
    inline void clearExits() { memset((PVOID)&this->nestedInfo.sysexits, 0, sizeof(this->nestedInfo.sysexits)); }
    inline void saveNestedInfo(NestedActivityState &saveInfo) { saveInfo = nestedInfo; }
    inline void restoreNestedInfo(NestedActivityState &saveInfo) { nestedInfo = saveInfo; }
+   inline bool useExitObjects() { return exitObjects; }
+   inline void setExitObjects(bool v) { exitObjects = v; }
+
    inline void allocateStackFrame(RexxExpressionStack *stack, size_t entries)
    {
        stack->setFrame(frameStack.allocateFrame(entries), entries);
@@ -269,8 +271,12 @@ public:
        locals->setFrame(frameStack.allocateFrame(locals->size));
    }
 
-   static void createClass();
-   static void restoreClass();
+   inline RexxDirectory *getCurrentCondition() { return conditionobj; }
+
+   // TODO:  This needs to be replaced by a system object.
+#ifdef THREADHANDLE
+   HANDLE   hThread;                   /* handle to thread                  */
+#endif
 
  protected:
 
@@ -291,9 +297,6 @@ public:
    size_t   size;                      /* size of activation stack          */
    size_t   depth;                     /* depth of activation stack         */
    LONG     threadid;                  /* thread id                         */
-#ifdef THREADHANDLE
-   HANDLE   hThread;                   /* handle to thread                  */
-#endif
    NumericSettings *numericSettings;   /* current activation setting values */
 
    int      priority;                  /* activity priority value           */

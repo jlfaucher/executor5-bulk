@@ -43,6 +43,7 @@
 
 #include "RexxCore.h"
 #include "RexxMemory.hpp"
+#include "ActivityManager.hpp"
 
 #define APIRET ULONG
 
@@ -79,7 +80,7 @@ void SysReleaseResultMemory(
         free(MemoryBlock);           /* release this block */
 }
 
-BOOL SysAccessPool(MemorySegmentPool **pool)
+bool SysAccessPool(MemorySegmentPool **pool)
 /*********************************************************************/
 /*   Function:  Access/Create the 1st block as Named Storage         */
 /*              return TRUE is an access, FALSE is created.          */
@@ -330,7 +331,7 @@ MemorySegment *MemorySegmentPool::newLargeSegment(size_t minSize)
    }
 }
 
-BOOL    MemorySegmentPool::accessNextPool()
+bool    MemorySegmentPool::accessNextPool()
 /*********************************************************************/
 /* Function:: Gain access to all existing memoryPools.               */
 /*                                                                   */
@@ -338,10 +339,10 @@ BOOL    MemorySegmentPool::accessNextPool()
 {
                                        /* Is there a next MemoryPool        */
    if (this->next)    {
-     return TRUE;                      /* Return one accessed               */
+     return true;                      /* Return one accessed               */
    }
    else {
-     return FALSE;                     /* At the end, return FALSE (NO_MORE)*/
+     return false;                     /* At the end, return FALSE (NO_MORE)*/
    }
 }
 
