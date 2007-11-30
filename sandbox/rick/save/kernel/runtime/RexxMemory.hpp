@@ -251,7 +251,7 @@ class RexxMemory : public RexxObject {
   static RexxArray *saveStrings();
   static void restoreStrings(RexxArray *stringArray);
 
-  static void *VFTArray[highest_T];    /* table of virtual functions        */
+  static void *VFTArray[];             /* table of virtual functions        */
   static PCPPM exportedMethods[];      /* start of exported methods table   */
 
   uint16_t markWord;                   /* current marking counter           */

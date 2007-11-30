@@ -232,9 +232,6 @@ SysSharedSemaphoreDefn                 /* semaphore definitions             */
 
 int   rexx_waiting_activity_count = 0; /* number of waiting activities      */
 
-void *VFTArray[highest_T + 1] = {NULL};   //wge NULL
-                                       /* Most currently allocated memoryPoo*/
-
 
 extern "C" {
 

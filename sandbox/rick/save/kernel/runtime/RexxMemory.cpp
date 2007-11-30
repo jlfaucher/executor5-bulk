@@ -68,8 +68,6 @@ RexxMemory memoryObject;
 
 #define MaxImageSize 1200000         /* maximum startup image size */
 
-void *RexxMemory::VFTArray[highest_T];      /* table of virtual functions        */
-
 RexxDirectory *RexxMemory::globalStrings = OREF_NULL;
 
 static void SysCall logMemoryCheck(FILE *outfile, const char *message, ...)
@@ -148,6 +146,9 @@ void RexxMemory::init(bool _restoringImage)
   allocations = 0;
   variableCache = OREF_NULL;
   globalStrings = OREF_NULL;
+
+  // get our table of virtual functions setup first thing.
+  buildVFTArray();
 
                                        /* NOTE: we don't set livestack      */
                                        /*via the  OrefSet macro, since we   */
@@ -812,7 +813,7 @@ void RexxMemory::restoreImage()
   ThePublicRoutines   = (RexxDirectory *)saveArray->get(saveArray_PUBLIC_RTN);
 
   /* restore the global strings        */
-  memoryObject.restoreStrings((RexxArray *)saveArray->get(saveArray_SYSTEM));
+  memoryObject.restoreStrings((RexxArray *)saveArray->get(saveArray_NAME_STRINGS));
 }
 
 
@@ -2126,7 +2127,6 @@ void RexxMemory::setUpMemoryTables(RexxObjectTable *old2newTable)
   saveStack = new_savestack(SaveStackSize, SaveStackAllocSize);
   /* from this point on, we push things on to the save stack */
   saveTable = new_object_table();
-
 }
 
 void RexxMemory::createLocks()
@@ -2178,8 +2178,6 @@ void RexxMemory::create()
 /* Function:  Initial memory setup during image build                         */
 /******************************************************************************/
 {
-  // get our table of virtual functions setup first thing.
-  buildVFTArray();
 
   TheMemoryObject = &memoryObject;
 
@@ -2187,40 +2185,7 @@ void RexxMemory::create()
   memoryObject.init(false);
   RexxClass::createClass();            /* get the CLASS class created       */
   RexxInteger::createClass();          /* moved here from OKINIT, because we*/
-                                       /* create string first               */
-  CLASS_CREATE(String, "String", RexxStringClass);
-  CLASS_CREATE(Object, "Object", RexxClass);
-  CLASS_CREATE(Table, "Table", RexxClass);
-  CLASS_CREATE(Relation, "Relation", RexxClass);
-
-  TheFunctionsDirectory = new_directory();
-  globalStrings = new_directory();
-
-                                       /* If first one through, generate all   */
-  IntegerZero    = new_integer(0);    /*  static integers we want to use...   */
-  IntegerOne     = new_integer(1);    /* This will allow us to use the static */
-  IntegerTwo     = new_integer(2);    /* integers instead of having to do a   */
-  IntegerThree   = new_integer(3);    /* new_integer every time....           */
-  IntegerFour    = new_integer(4);
-  IntegerFive    = new_integer(5);
-  IntegerSix     = new_integer(6);
-  IntegerSeven   = new_integer(7);
-  IntegerEight   = new_integer(8);
-  IntegerNine    = new_integer(9);
-  IntegerMinusOne = new_integer(-1);
-
-                                       /* avoid that through caching        */
-                                       /* TheTrueObject == IntegerOne etc.  */
-  TheTrueObject  = new RexxInteger(1);
-  TheFalseObject = new RexxInteger(0);
-
   memoryObject.setBehaviour(TheMemoryBehaviour);
-
-  TheNilObject = new RexxNilObject;
-                                       /* We don't move the NIL object, we  */
-                                       /*will use the remote systems NIL    */
-                                       /*object.                            */
-  TheNilObject->makeProxiedObject();
   /* Now get our savestack and         */
   /*savetable                          */
   memoryObject.setUpMemoryTables(OREF_NULL);
@@ -2284,12 +2249,17 @@ void RexxMemory::restore()
   IntegerEight  = new_integer(8);
   IntegerNine   = new_integer(9);
   IntegerMinusOne = new_integer(-1);
-  RexxNativeCode::restoreClass();      /* fix up native methods             */
+
   ActivityManager::init();             /* do activity restores              */
+//  ActivityManager::getActivity();      // get an activity for any error reporting
+
+  RexxNativeCode::restoreClass();      /* fix up native methods             */
   memoryObject.enableOrefChecks();     /* enable setCheckOrefs...           */
                                        /* Create/Open Shared MUTEX          */
                                        /* Semophores used to serialize      */
                                        /* the flatten/unflatten process     */
   memoryObject.createLocks();
+  // shutdown the activity
+//  ActivityManager::returnActivity(ActivityManager::currentActivity);
 }
 

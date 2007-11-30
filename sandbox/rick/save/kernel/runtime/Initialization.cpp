@@ -154,6 +154,8 @@
 #undef CLASS_INTERNAL
 #undef CLASS_EXTERNAL_STRING
 
+
+void *RexxMemory::VFTArray[highest_T + 1] = {NULL};   //wge NULL
                                        /* Following macros will generate    */
                                        /* code to call each class construct */
                                        /* so that the VFT info gets filled  */

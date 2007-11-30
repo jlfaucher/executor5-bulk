@@ -49,12 +49,15 @@ void RexxMemory::createStrings()
 /* Function:  Create all globally available string objects                    */
 /******************************************************************************/
 {
+    // if we're calling this, then we're building the image.  Make sure the
+    // global string directory is created first.
+    globalStrings = new_directory();
                                        /* redefine the GLOBAL_NAME macro    */
                                        /* to create each of the strings     */
-  #undef GLOBAL_NAME
-  #define GLOBAL_NAME(name, value) OREF_##name = getGlobalName(value);
+#undef GLOBAL_NAME
+#define GLOBAL_NAME(name, value) OREF_##name = getGlobalName(value);
 
-  #include "GlobalNames.h"             /* now create the strings            */
+#include "GlobalNames.h"             /* now create the strings            */
 }
 
 
@@ -67,7 +70,7 @@ RexxArray *RexxMemory::saveStrings()
                                        /* to count the number of string     */
                                        /* objects we need to save           */
   #undef GLOBAL_NAME
-  #define GLOBAL_NAME(name, value) OREF_##name = getGlobalName(value); stringCount++;
+  #define GLOBAL_NAME(name, value) stringCount++;
 
   size_t stringCount = 0;              /* no strings yet                    */
   #include "GlobalNames.h"             /* now create the strings            */

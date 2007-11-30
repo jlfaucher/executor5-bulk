@@ -107,6 +107,8 @@
    RexxObject   *add(RexxObject *, RexxObject *);
    RexxObject   *removeFirst() { return (this->first != LIST_END) ? this->primitiveRemove(ENTRY_POINTER(this->first)) : TheNilObject; }
    RexxObject   *removeLast() { return (this->last != LIST_END) ? this->primitiveRemove(ENTRY_POINTER(this->last)) : TheNilObject; }
+   RexxObject   *removeFirstItem() { return (this->first != LIST_END) ? this->primitiveRemove(ENTRY_POINTER(this->first)) : OREF_NULL; }
+   RexxObject   *removeLastItem() { return (this->last != LIST_END) ? this->primitiveRemove(ENTRY_POINTER(this->last)) : OREF_NULL; }
    LISTENTRY    *getEntry(RexxObject *, RexxObject *);
    LISTENTRY    *getEntry(size_t);
    RexxObject   *indexOfValue(RexxObject *);

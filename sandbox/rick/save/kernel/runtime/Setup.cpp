@@ -647,6 +647,42 @@ void RexxMemory::createImage()
 
   ActivityManager::init();             /* Initialize the activity managers  */
   ActivityManager::getActivity();      /* (will create one if necessary)    */
+
+                                       /* avoid that through caching        */
+                                       /* TheTrueObject == IntegerOne etc.  */
+  TheTrueObject  = new RexxInteger(1);
+  TheFalseObject = new RexxInteger(0);
+
+
+  TheNilObject = new RexxNilObject;
+                                       /* We don't move the NIL object, we  */
+                                       /*will use the remote systems NIL    */
+                                       /*object.                            */
+  TheNilObject->makeProxiedObject();
+
+  memoryObject.createStrings();        /* create all of the OREF_ strings   */
+                                       /* create string first               */
+  CLASS_CREATE(String, "String", RexxStringClass);
+  CLASS_CREATE(Object, "Object", RexxClass);
+  CLASS_CREATE(Table, "Table", RexxClass);
+  CLASS_CREATE(Relation, "Relation", RexxClass);
+
+  TheFunctionsDirectory = new_directory();
+
+                                       /* If first one through, generate all   */
+  IntegerZero    = new_integer(0);    /*  static integers we want to use...   */
+  IntegerOne     = new_integer(1);    /* This will allow us to use the static */
+  IntegerTwo     = new_integer(2);    /* integers instead of having to do a   */
+  IntegerThree   = new_integer(3);    /* new_integer every time....           */
+  IntegerFour    = new_integer(4);
+  IntegerFive    = new_integer(5);
+  IntegerSix     = new_integer(6);
+  IntegerSeven   = new_integer(7);
+  IntegerEight   = new_integer(8);
+  IntegerNine    = new_integer(9);
+  IntegerMinusOne = new_integer(-1);
+
+
                                        /* RexxNumberString                  */
   // NOTE:  The number string class lies about its identity
   CLASS_CREATE(NumberString, "String", RexxNumberStringClass);
@@ -671,7 +707,6 @@ void RexxMemory::createImage()
   ThePublicRoutines = new_directory();
   TheStaticRequires = new_directory();
 
-  memoryObject.createStrings();        /* create all of the OREF_ strings   */
                                        /* RexxMethod                        */
   CLASS_CREATE(Method, "Method", RexxMethodClass);
   RexxNativeCode::createClass();       /* RexxNativeCode                    */

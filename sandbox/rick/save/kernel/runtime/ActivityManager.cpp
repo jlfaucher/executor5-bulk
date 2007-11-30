@@ -338,7 +338,7 @@ RexxActivity *ActivityManager::newActivity(int priority, RexxObject *local)
   if (priority != NO_THREAD)           /* can we reuse one?                 */
   {
                                        /* try to get one from the free table*/
-      activity =  (RexxActivity *)availableActivities->removeFirst();
+      activity =  (RexxActivity *)availableActivities->removeFirstItem();
   }
 
   if (activity == OREF_NULL)
@@ -426,12 +426,12 @@ void ActivityManager::clearActivityPool()
 /*             the process goes away.                                         */
 /******************************************************************************/
 {
-    RexxActivity *activity = (RexxActivity *)availableActivities->removeFirst();
+    RexxActivity *activity = (RexxActivity *)availableActivities->removeFirstItem();
     while (activity != OREF_NULL)
     {
         // terminate this thread
         activity->terminateMethod();
-        activity = (RexxActivity *)availableActivities->removeFirst();
+        activity = (RexxActivity *)availableActivities->removeFirstItem();
     }
 }
 
