@@ -399,7 +399,7 @@ RexxObject * RexxActivation::run(
                 this->next = this->current->nextInstruction;
                 oldActivity = this->activity;      /* save the current activity         */
                                                    /* clone the current activity        */
-                this->activity = new_activity(ActivityManager::localEnvironment);
+                this->activity = new_activity();
                 for (i = 1; i <= LAST_EXIT; i++)   /* copy any exit handlers            */
                 {
                                                    /* from old activity to the new one  */

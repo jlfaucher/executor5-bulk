@@ -309,9 +309,9 @@ RexxObject *RexxMessage::start(RexxObject *_receiver)
                                        /*  this method is found in OKNMSG.C */
   newNMethod = TheMethodClass->newEntry((PFN)message_nstart);
                                        /* get the current activity          */
-  oldActivity = (RexxActivity *)ActivityManager::currentActivity;
+  oldActivity = ActivityManager::currentActivity;
                                        /* Create the new activity           */
-  newActivity = (RexxActivity *)new_activity(ActivityManager::localEnvironment);
+  newActivity = new_activity();
                                        /* propagate system exit trapping    */
   for (i = 1; i <= LAST_EXIT; i++)     /* copy any exit handlers            */
                                        /* from old activity to the new one  */

@@ -196,21 +196,3 @@ const char *mempbrk(
   return Retval;                       /* return matched position           */
 }
 
-RexxObject *native_release(
-    RexxObject *result )               /* potential return value            */
-/***************************************************************/
-/* Function:  Release kernel access, providing locking on      */
-/*            the return value, if any                         */
-/***************************************************************/
-{
-  RexxNativeActivation *activation;    /* current activation                */
-
-  if (result != OREF_NULL) {           /* only save real references!        */
-                                       /* get the current activation        */
-    activation = (RexxNativeActivation *)ActivityManager::currentActivity->current();
-    ProtectedObject p1(result);
-    result = activation->saveObject(result);
-  }
-  ActivityManager::currentActivity->releaseAccess(); /* release the kernel lock           */
-  return result;                       /* return the result object          */
-}

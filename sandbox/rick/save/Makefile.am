@@ -196,6 +196,8 @@ runtimeHeaders = $(runtime_dir)/DeadObject.hpp \
                  $(runtime_dir)/RexxActivation.hpp \
                  $(runtime_dir)/RexxActivationStack.hpp \
                  $(runtime_dir)/RexxActivity.hpp \
+                 $(runtime_dir)/ActivityManager.hpp \
+                 $(runtime_dir)/ProtectedObject.hpp \
                  $(runtime_dir)/RexxBehaviour.hpp \
                  $(runtime_dir)/RexxBuffer.hpp \
                  $(runtime_dir)/RexxBuiltinFunctions.h \
@@ -451,6 +453,7 @@ runtime_sources  = $(runtime_dir)/DeadObject.cpp \
                    $(runtime_dir)/RexxActivation.cpp \
                    $(runtime_dir)/RexxActivationStack.cpp \
                    $(runtime_dir)/RexxActivity.cpp \
+                   $(runtime_dir)/ActivityManager.cpp \
                    $(runtime_dir)/RexxBehaviour.cpp \
                    $(runtime_dir)/RexxBuffer.cpp \
                    $(runtime_dir)/RexxCode.cpp \

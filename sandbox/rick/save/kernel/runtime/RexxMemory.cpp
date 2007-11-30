@@ -160,10 +160,14 @@ void RexxMemory::init(bool _restoringImage)
   originalLiveStack = liveStack;
 
 
+
   if (_restoringImage)                 /* restoring the image?              */
   {
       restoreImage();                  /* do it now...                      */
   }
+
+  /* set memories behaviour */
+  memoryObject.setBehaviour(TheMemoryBehaviour);
                                        /* initial marktable value is        */
                                        /* TheKernel                         */
   this->markTable = OREF_NULL;         /* fix by CHM/Rick: set initial table*/
@@ -2184,8 +2188,7 @@ void RexxMemory::create()
   /* Make sure memory is cleared!      */
   memoryObject.init(false);
   RexxClass::createClass();            /* get the CLASS class created       */
-  RexxInteger::createClass();          /* moved here from OKINIT, because we*/
-  memoryObject.setBehaviour(TheMemoryBehaviour);
+  RexxInteger::createClass();
   /* Now get our savestack and         */
   /*savetable                          */
   memoryObject.setUpMemoryTables(OREF_NULL);
@@ -2205,13 +2208,9 @@ void RexxMemory::restore()
   TheMemoryObject = &memoryObject;
   /* Make sure memory is cleared! */
   memoryObject.init(true);
-  /* set memories behaviour */
-  memoryObject.setBehaviour(TheMemoryBehaviour);
   /* Retrieve special saved objects    */
   /* OREF_ENV and primitive behaviours */
   /* are already restored              */
-
-
                                        /* start restoring class OREF_s      */
   RESTORE_CLASS(Object, object, RexxClass);
   RESTORE_CLASS(Class, class, RexxClass);

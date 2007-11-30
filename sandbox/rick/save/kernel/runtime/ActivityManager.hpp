@@ -68,7 +68,7 @@ public:
     static void init();
     static RexxActivation *newActivation(RexxObject *receiver, RexxMethod *runMethod, RexxActivity *activity, RexxString *msgname, RexxActivation *activation, int context);
     static void cacheActivation(RexxActivation *activation);
-    static RexxActivity *newActivity(int priority, RexxObject *local);
+    static RexxActivity *newActivity(int priority);
     static void haltAllActivities();
     static void traceAllActivities(bool on);
     static bool setActivityTrace(LONG thread_id, bool on_or_off);
@@ -231,6 +231,9 @@ inline void reportHalt(RexxString *description)
       reportException(Error_Program_interrupted_condition, OREF_HALT);
   }
 }
+
+
+inline RexxActivity *new_activity()  { return ActivityManager::newActivity(MEDIUM_PRIORITY); }
 
 #endif
 

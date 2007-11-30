@@ -189,8 +189,7 @@ void *RexxActivity::operator new(size_t size)
 
 RexxActivity::RexxActivity(
     bool recycle,                      /* activity is being reused          */
-    long _priority,                    /* activity priority                 */
-    RexxDirectory *_local)             /* process local directory           */
+    int  _priority)                    /* activity priority                 */
 /******************************************************************************/
 /* Function:  Initialize an activity object                                   */
 /*  Returned:  Nothing                                                        */
@@ -198,7 +197,6 @@ RexxActivity::RexxActivity(
 {
   if (!recycle) {                      /* if this is the first time         */
     this->clearObject();               /* globally clear the object         */
-    this->local = _local;              /* set the local environment         */
                                        /* create an activation stack        */
     this->activations = new_internalstack(ACT_STACK_SIZE);
     this->frameStack.init();           /* initialize the frame stack        */
@@ -1032,7 +1030,6 @@ void RexxActivity::live()
   memory_mark(this->topActivation);
   memory_mark(this->getCurrentActivation());
   memory_mark(this->saveValue);
-  memory_mark(this->local);
   memory_mark(this->conditionobj);
   memory_mark(this->requiresTable);
   memory_mark(this->nextWaitingActivity);
@@ -1067,7 +1064,6 @@ void RexxActivity::liveGeneral()
   memory_mark_general(this->topActivation);
   memory_mark_general(this->currentActivation);
   memory_mark_general(this->saveValue);
-  memory_mark_general(this->local);
   memory_mark_general(this->conditionobj);
   memory_mark_general(this->requiresTable);
   memory_mark_general(this->nextWaitingActivity);
@@ -1593,7 +1589,7 @@ RexxObject *RexxActivity::localMethod()
 /* Function:  Retrive the activities local environment                        */
 /******************************************************************************/
 {
-  return this->local;                  /* just return the .local directory  */
+  return ActivityManager::localEnvironment; // just return the .local directory
 }
 
 long  RexxActivity::threadIdMethod()
@@ -2330,7 +2326,7 @@ void  RexxActivity::traceOutput(       /* write a line of trace information */
                                        /* if exit declines the call         */
   if (this->sysExitSioTrc(activation, line)) {
                                        /* get the default output stream     */
-    stream = this->local->at(OREF_ERRORNAME);
+    stream = ActivityManager::localEnvironment->at(OREF_ERRORNAME);
                                        /* have .local set up yet?           */
     if (stream != OREF_NULL && stream != TheNilObject)
                                        /* do the lineout                    */
@@ -2352,7 +2348,7 @@ void RexxActivity::sayOutput(          /* write a line of say information   */
                                        /* if exit declines the call         */
   if (this->sysExitSioSay(activation, line)) {
                                        /* get the default output stream     */
-    stream = this->local->at(OREF_OUTPUT);
+    stream = ActivityManager::localEnvironment->at(OREF_OUTPUT);
                                        /* have .local set up yet?           */
     if (stream != OREF_NULL && stream != TheNilObject)
                                        /* do the lineout                    */
@@ -2374,7 +2370,7 @@ RexxString *RexxActivity::traceInput(  /* read a line of trace input        */
                                        /* if exit declines the call         */
   if (this->sysExitSioDtr(activation, &value)) {
                                        /* get the input stream              */
-    stream = this->local->at(OREF_INPUT);
+    stream = ActivityManager::localEnvironment->at(OREF_INPUT);
     if (stream != OREF_NULL) {         /* have a stream?                    */
                                        /* read from it                      */
       value = (RexxString *)stream->sendMessage(OREF_LINEIN);
@@ -2400,7 +2396,7 @@ RexxString *RexxActivity::pullInput(   /* read a line of pull input         */
                                        /* if exit declines call             */
   if (this->sysExitMsqPll(activation, &value)) {
                                        /* get the external data queue       */
-    stream = this->local->at(OREF_REXXQUEUE);
+    stream = ActivityManager::localEnvironment->at(OREF_REXXQUEUE);
     if (stream != OREF_NULL) {         /* have a data queue?                */
                                        /* pull from the queue               */
       value = (RexxString *)stream->sendMessage(OREF_PULL);
@@ -2440,7 +2436,7 @@ RexxString *RexxActivity::lineIn(
                                        /* if exit declines call             */
   if (this->sysExitSioTrd(activation, &value)) {
                                        /* get the input stream              */
-    stream = this->local->at(OREF_INPUT);
+    stream = ActivityManager::localEnvironment->at(OREF_INPUT);
     if (stream != OREF_NULL) {         /* have a stream?                    */
                                        /* read from it                      */
       value = (RexxString *)stream->sendMessage(OREF_LINEIN);
@@ -2467,7 +2463,7 @@ void RexxActivity::queue(              /* write a line to the queue         */
                                        /* if exit declines call             */
   if (this->sysExitMsqPsh(activation, line, order)) {
                                        /* get the default queue             */
-    targetQueue = this->local->at(OREF_REXXQUEUE);
+    targetQueue = ActivityManager::localEnvironment->at(OREF_REXXQUEUE);
     if (targetQueue != OREF_NULL) {    /* have a data queue?                */
                                        /* pull from the queue               */
       if (order == QUEUE_LIFO)         /* push instruction?                 */
@@ -2838,6 +2834,26 @@ int VLAREXXENTRY RexxSendMessage (
   ActivityManager::returnActivity(activity);
   return rc;                           /* return the error code             */
 }
+
+
+RexxObject *RexxActivity::nativeRelease(
+    RexxObject *result )               /* potential return value            */
+/***************************************************************/
+/* Function:  Release kernel access, providing locking on      */
+/*            the return value, if any                         */
+/***************************************************************/
+{
+  RexxNativeActivation *activation;    /* current activation                */
+
+  if (result != OREF_NULL)             /* only save real references!        */
+  {
+      activation = (RexxNativeActivation *)ActivityManager::currentActivity->current();
+      result = activation->saveObject(result);
+  }
+  ActivityManager::currentActivity->releaseAccess(); /* release the kernel lock           */
+  return result;                       /* return the result object          */
+}
+
 
 REXXOBJECT REXXENTRY RexxDispatch (
   REXXOBJECT argList)                  /* ArgLIst array.                    */

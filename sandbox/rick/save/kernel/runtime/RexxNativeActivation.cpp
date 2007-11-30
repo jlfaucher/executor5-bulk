@@ -58,6 +58,7 @@
 #include "RexxCode.hpp"
 #include "RexxInstruction.hpp"
 #include "ExpressionBaseVariable.hpp"
+#include "ProtectedObject.hpp"
 
 
 #include "RexxNativeAPI.h"                      /* bring in the native code defines  */
@@ -1402,6 +1403,7 @@ nativei7 (ULONG, STEMSORT,
 {
   size_t  position;                    /* scan position within compound name */
   size_t  length;                      /* length of tail section            */
+  int result;
 
   RexxNativeActivation * self;         /* current native activation         */
 
@@ -1409,48 +1411,53 @@ nativei7 (ULONG, STEMSORT,
                                        /* pick up current activation        */
   self = (RexxNativeActivation *)ActivityManager::currentActivity->current();
                                        /* if access is enabled              */
-  if (!this->getVpavailable()) {       /* access must be enabled for this to work */
-      return FALSE;
+  if (!self->getVpavailable()) {       /* access must be enabled for this to work */
+      return_value(FALSE);
   }
 
-  /* get the REXX activation */
-  RexxActivation *activation = self->activity->getCurrentActivation();
-
-  /* get the stem name as a string */
-  RexxString *variable = new_string(stemname);
-  this->saveObject(variable);
-  /* and get a retriever for this variable */
-  RexxStemVariable *retriever = (RexxStemVariable *)activation->getVariableRetriever(variable);
-
-  /* this must be a stem variable in order for the sorting to work. */
-
-  if ( (!isOfClass(StemVariable, retriever)) && (!isOfClass(CompoundVariable, retriever)) )
+  // NB:  The braces here are to ensure the ProtectedObjects get released before the
+  // currentActivity gets zeroed out.
   {
-      return FALSE;
+      /* get the REXX activation */
+      RexxActivation *activation = self->activity->getCurrentActivation();
+
+      /* get the stem name as a string */
+      RexxString *variable = new_string(stemname);
+      ProtectedObject p1(variable);
+      /* and get a retriever for this variable */
+      RexxStemVariable *retriever = (RexxStemVariable *)activation->getVariableRetriever(variable);
+
+      /* this must be a stem variable in order for the sorting to work. */
+
+      if ( (!isOfClass(StemVariable, retriever)) && (!isOfClass(CompoundVariable, retriever)) )
+      {
+          return FALSE;
+      }
+
+    //RexxString *tail = (RexxString *) new_string(OREF_NULL);
+      RexxString *tail = OREF_NULLSTRING ;
+      ProtectedObject p2(tail);
+
+      if (isOfClass(CompoundVariable, retriever))
+      {
+        length = variable->getLength();      /* get the string length             */
+        position = 0;                        /* start scanning at first character */
+                                           /* scan to the first period          */
+        while (variable->getChar(position) != '.')
+        {
+          position++;                        /* step to the next character        */
+          length--;                          /* reduce the length also            */
+        }
+        position++;                          /* step past previous period         */
+        length--;                            /* adjust the length                 */
+        tail = variable->extract(position, length);
+        tail = tail->upper();
+      }
+
+      result = retriever->sort(activation, tail, order, type, start, end, firstcol, lastcol);
   }
 
-//RexxString *tail = (RexxString *) new_string(OREF_NULL);
-  RexxString *tail = OREF_NULLSTRING ;
-  this->saveObject(tail);
-
-  if (isOfClass(CompoundVariable, retriever))
-  {
-    length = variable->getLength();      /* get the string length             */
-    position = 0;                        /* start scanning at first character */
-                                       /* scan to the first period          */
-    while (variable->getChar(position) != '.')
-    {
-      position++;                        /* step to the next character        */
-      length--;                          /* reduce the length also            */
-    }
-    position++;                          /* step past previous period         */
-    length--;                            /* adjust the length                 */
-    tail = variable->extract(position, length);
-    tail = tail->upper();
-  }
-
-//  return_value( retriever->sort(activation, order, type, start, end, firstcol, lastcol));
-  return_value( retriever->sort(activation, tail, order, type, start, end, firstcol, lastcol));
+  return_value(result);
 }
 
 nativei0 (void, GUARD_ON)
@@ -1480,5 +1487,3 @@ nativei0 (void, GUARD_OFF)
     self->guardOff();                    /* turn off the guard                 */
     native_release(OREF_NULL);           /* release the kernel access         */
 }
-
-/* HOL001A end */

@@ -148,7 +148,6 @@ inline long RANDOMIZE(long seed) { return (seed * RANDOM_FACTOR + 1); }
 /* Object creation macros                                                     */
 /******************************************************************************/
 
-#define new_activity(l)                   (ActivityManager::newActivity(MEDIUM_PRIORITY, l))
 #define new_behaviour(t)                  (new (t) RexxBehaviour)
 #define new_buffer(s)                     (new (s) RexxBuffer)
 #define new_clause()                      (new RexxClause)
@@ -921,9 +920,9 @@ inline RexxObject * callOperatorMethod(RexxObject *object, LONG methodOffset, Re
 #define nativei7(result, name, t1, a1, t2, a2, t3, a3, t4, a4, t5, a5, t6, a6, t7, a7) result REXXENTRY REXX_##name(t1 a1, t2 a2, t3 a3, t4 a4, t5 a5, t6 a6, t7 a7)
 
                                        /* native method cleanup             */
-RexxObject *  native_release(RexxObject *);
+#define native_release(value)          ActivityManager::currentActivity->nativeRelease(value)
                                        /* macro for common native entry     */
-#define native_entry  ActivityManager::findActivity()->requestAccess();
+#define native_entry  ActivityManager::getActivity();
                                        /* value termination routine         */
 #define return_oref(value)  return (REXXOBJECT)native_release(value);
                                        /* return for no value returns       */

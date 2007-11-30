@@ -327,7 +327,7 @@ void ActivityManager::cacheActivation(
 }
 
 
-RexxActivity *ActivityManager::newActivity(int priority, RexxObject *local)
+RexxActivity *ActivityManager::newActivity(int priority)
 /******************************************************************************/
 /* Function:  Create or reuse an activity object                              */
 /******************************************************************************/
@@ -345,7 +345,7 @@ RexxActivity *ActivityManager::newActivity(int priority, RexxObject *local)
   {
     SysExitResourceSection();          /* end of the critical section       */
                                        /* Create a new activity object      */
-    activity = new RexxActivity(FALSE, priority, (RexxDirectory *)local);
+    activity = new RexxActivity(false, priority);
     SysEnterResourceSection();         /* now in a critical section         */
                                        /* Add this activity to the table of */
                                        /* in use activities and the global  */
@@ -357,7 +357,7 @@ RexxActivity *ActivityManager::newActivity(int priority, RexxObject *local)
   {
                                        /* We are able to reuse an activity, */
                                        /*  so just re-initialize it.        */
-    new (activity) RexxActivity(TRUE, priority, (RexxDirectory *)local);
+    new (activity) RexxActivity(true, priority);
     // this one is in use now
     activeActivities->append((RexxObject *)activity);
   }
@@ -741,7 +741,7 @@ RexxActivity *ActivityManager::getActivity()
         // create this activity.
         lockKernel();
                                        /* Get a new activity object.        */
-        activityObject = newActivity(NO_THREAD, localEnvironment);
+        activityObject = newActivity(NO_THREAD);
         unlockKernel();                /* release kernel semaphore          */
 
         // now we need to have this activity become the kernel owner.
@@ -797,7 +797,6 @@ void ActivityManager::startup()
     }
 
     getActivity();                       /* get an activity set up            */
-    localEnvironment = new_directory();
                                          /* get the local environment         */
                                          /* get the server class              */
     RexxObject *server_class = env_find(new_string("!SERVER"));

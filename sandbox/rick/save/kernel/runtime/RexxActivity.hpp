@@ -130,7 +130,7 @@ public:
    inline void  operator delete(void *, void *) { ; }
 
    inline RexxActivity(RESTORETYPE restoreType) { ; };
-   RexxActivity(bool, long, RexxDirectory *);
+   RexxActivity(bool, int);
 
 
    void runThread();
@@ -225,6 +225,7 @@ public:
    bool isInactive() { return nestedCount == 0; }
    bool hasSecurityManager();
    bool callSecurityManager(RexxString *name, RexxDirectory *args);
+   RexxObject *nativeRelease(RexxObject *result);
 
    inline RexxActivationBase *current(){ return this->topActivation;}
    inline RexxActivation *getCurrentActivation() {return this->currentActivation;}
@@ -283,7 +284,6 @@ public:
    RexxInternalStack  *activations;    /* stack of activations              */
    RexxActivationStack   frameStack;   /* our stack used for activation frames */
    RexxObject         *saveValue;      /* saved result across activity_yield*/
-   RexxDirectory      *local;          /* the local environment directory   */
    RexxDirectory      *conditionobj;   /* condition object for killed activi*/
    RexxTable          *requiresTable;  /* Current ::REQUIRES being installed*/
                                        /* current REXX activation           */
