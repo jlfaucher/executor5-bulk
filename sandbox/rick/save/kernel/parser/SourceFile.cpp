@@ -895,13 +895,12 @@ void RexxSource::globalSetup()
   OrefSet(this, this->subTerms, new_queue());
   OrefSet(this, this->operators, new_queue());
   OrefSet(this, this->literals, new_directory());
-  if (TheGlobalStrings != OREF_NULL)   /* doing an image build?             */
+  // during an image build, we have a global string table.  If this is
+  // available now, use it.
+  OrefSet(this, this->strings, memoryObject.getGlobalStrings());
+  if (this->strings == OREF_NULL)
   {
-                                       /* use this for the string table     */
-      OrefSet(this, this->strings, TheGlobalStrings);
-  }
-  else
-  {
+      // no global string table, use a local copy
       OrefSet(this, this->strings, new_directory());
   }
                                        /* get the clause object             */

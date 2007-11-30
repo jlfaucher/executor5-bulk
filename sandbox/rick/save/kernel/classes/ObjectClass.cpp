@@ -2183,7 +2183,7 @@ void *RexxNilObject::operator new(size_t size)
     // function table pointer.
     RexxObject *newObj = new_object(size, T_object);
     // we need to switch the virtual method table pointer new.
-    newObj->setVirtualFunctions(VFTArray[T_nil_object]);
+    newObj->setVirtualFunctions(RexxMemory::VFTArray[T_nil_object]);
     return newObj;
 }
 

@@ -1638,7 +1638,7 @@ RexxString *RexxString::newString(const char *string, size_t length)
                                        /* set the behaviour from the class*/
   newObj->setBehaviour(TheStringBehaviour);
                                        /* set the virtual function table    */
-  newObj->setVirtualFunctions(VFTArray[T_string]);
+  newObj->setVirtualFunctions(RexxMemory::VFTArray[T_string]);
                                        /* clear the front part              */
   newObj->clearObject(sizeof(RexxString));
   newObj->setLength(length);           /* save the length                   */
@@ -1674,7 +1674,7 @@ RexxString *RexxString::rawString(size_t length)
                                        /* set the behaviour from the class*/
   newObj->setBehaviour(TheStringBehaviour);
                                        /* set the virtual function table    */
-  newObj->setVirtualFunctions(VFTArray[T_string]);
+  newObj->setVirtualFunctions(RexxMemory::VFTArray[T_string]);
                                        /* clear the front part              */
   newObj->clearObject(sizeof(RexxString));
   newObj->setLength(length);           /* save the length                   */
@@ -1717,7 +1717,7 @@ RexxString *RexxString::newUpperString(const char * string, stringsize_t length)
     /* set the behaviour from the class*/
     newObj->setBehaviour(TheStringBehaviour);
     /* set the virtual function table    */
-    newObj->setVirtualFunctions(VFTArray[T_string]);
+    newObj->setVirtualFunctions(RexxMemory::VFTArray[T_string]);
     /* clear the front part              */
     newObj->clearObject(sizeof(RexxString));
     newObj->length = length;             /* save the length                   */

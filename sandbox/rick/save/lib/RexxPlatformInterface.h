@@ -244,7 +244,7 @@ char *SysGetTempFileName(void);
 #endif
 
 #ifndef SysLoadImage
-void SysLoadImage(char **, long *);    /* load the image file               */
+void SysLoadImage(char **, size_t *);    /* load the image file               */
 #endif
 
 #ifndef SysTerminateThread

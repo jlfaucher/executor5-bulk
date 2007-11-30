@@ -60,20 +60,17 @@ bool SysAccessPool(MemorySegmentPool **pool);
 /* NOTE:  There is just a single memory object in global storage.  We'll define      */
 /* memobj to be the direct address of this memory object.                            */
 RexxMemory memoryObject;
-RexxMemory *pMemoryObject = &memoryObject;
-
 
 #define LiveStackSize  16370         /* live stack size                   */
 
 #define SaveStackSize 20             /* newly created objects to save */
 #define SaveStackAllocSize 500       /* pre-allocation for save stack  */
 
-#define MaxImageSize 800000          /* maximum startup image size */
+#define MaxImageSize 1200000         /* maximum startup image size */
 
-extern void *VFTArray[highest_T];
+void *RexxMemory::VFTArray[highest_T];      /* table of virtual functions        */
 
-RexxString * kernel_name (const char * value);
-
+RexxDirectory *RexxMemory::globalStrings = OREF_NULL;
 
 static void SysCall logMemoryCheck(FILE *outfile, const char *message, ...)
 {
@@ -150,6 +147,7 @@ void RexxMemory::init(bool _restoringImage)
   collections = 0;
   allocations = 0;
   variableCache = OREF_NULL;
+  globalStrings = OREF_NULL;
 
                                        /* NOTE: we don't set livestack      */
                                        /*via the  OrefSet macro, since we   */
@@ -160,13 +158,13 @@ void RexxMemory::init(bool _restoringImage)
                                        /* remember the original one         */
   originalLiveStack = liveStack;
 
-  if (_restoringImage) {               /* restoring the image?              */
+
+  if (_restoringImage)                 /* restoring the image?              */
+  {
       restoreImage();                  /* do it now...                      */
   }
-
                                        /* initial marktable value is        */
                                        /* TheKernel                         */
-//  this->markTable = (RexxTable *)TheKernel;
   this->markTable = OREF_NULL;         /* fix by CHM/Rick: set initial table*/
                                        /* to NULL since TheKernel could     */
                                        /* point to an invalid memory address*/
@@ -175,6 +173,11 @@ void RexxMemory::init(bool _restoringImage)
 
   /* make sure we have an inital segment set to allocate from. */
   newSpaceNormalSegments.getInitialSet();
+
+  // TODO:  this is just scaffolding until the WeakReference support is in.
+  subClasses = new_object_table();
+  // get the initial uninit table
+  uninitTable = new_object_table();
 }
 
 void RexxMemory::logVerboseOutput(const char *message, void *sub1, void *sub2)
@@ -282,6 +285,13 @@ void RexxMemory::markObjectsMain(RexxObject *rootObject)
 /* Function:  Main memory_mark driving loop                                   */
 /******************************************************************************/
 {
+  // for some of the root objects, we get called to mark them before they get allocated.
+  // make sure we don't process any null references.
+  if (rootObject == OREF_NULL)
+  {
+      return;
+  }
+
   RexxObject *markObject;
   setUpMemoryMark
 
@@ -309,6 +319,13 @@ void  RexxMemory::killOrphans(RexxObject *rootObject)
 /* Function:  Garbage collection validity check routine                       */
 /******************************************************************************/
 {
+  // for some of the root objects, we get called to mark them before they get allocated.
+  // make sure we don't process any null references.
+  if (rootObject == OREF_NULL)
+  {
+      return;
+  }
+
   RexxObject *mref;
 
   setUpMemoryMarkGeneral
@@ -515,6 +532,13 @@ void RexxMemory::checkSubClasses()
   HashLink    position;                /* position within the table         */
   RexxObject *classObj;                /* object to check                   */
 
+  // it's possible that this will occur before the subclasses table is allocated,
+  // so don't process if nothing there yet.
+  if (subClasses == OREF_NULL)
+  {
+      return;
+  }
+
                                        /* check each VALUE position, not the*/
                                        /* index positions for dead objects  */
                                        /* the values are the subclasses, and*/
@@ -685,16 +709,22 @@ MemorySegment *RexxMemory::newLargeSegment(size_t requestedBytes, size_t minByte
 }
 
 
-void RexxMemory::restoreImage(void)
+void RexxMemory::restoreImage()
 /******************************************************************************/
 /* Function:  Restore a saved image to usefulness.                            */
 /******************************************************************************/
 {
-  long imagesize;                      /* size of the image                 */
+  // Nothing to restore if we have a buffer already
+  if (image_buffer != NULL)
+  {
+      return;
+  }
+
+  size_t imagesize;                    /* size of the image                 */
   char *objectPointer, *endPointer;
   RexxBehaviour *imageBehav;           /*behaviour of OP object in image    */
   RexxArray  *primitiveBehaviours;     /* saved array of behaviours         */
-  long  primitiveTypeNum;
+  size_t primitiveTypeNum;
   int i;
 
   /* go load the image */
@@ -705,7 +735,7 @@ void RexxMemory::restoreImage(void)
                                      /* and the ending location           */
   endPointer = image_buffer + imagesize;
                                      /* the save Array is the 1st object  */
-  TheSaveArray = (RexxArray *)image_buffer;
+  RexxArray *saveArray = (RexxArray *)image_buffer;
   restoreimage = true;               /* we are now restoring              */
                                      /* loop through the image buffer     */
   while (objectPointer < endPointer) {
@@ -757,14 +787,32 @@ void RexxMemory::restoreImage(void)
   restoreimage = false;
                                      /* OREF_ENV is the first element of  */
                                      /*array                              */
-  TheEnvironment = (RexxDirectory *)TheSaveArray->get(saveArray_ENV);
+  TheEnvironment = (RexxDirectory *)saveArray->get(saveArray_ENV);
                                      /* get the primitive behaviours      */
-  primitiveBehaviours = (RexxArray *)TheSaveArray->get(saveArray_PBEHAV);
+  primitiveBehaviours = (RexxArray *)saveArray->get(saveArray_PBEHAV);
                                      /* restore all of the saved primitive*/
   for (i = 0; i <= highest_exposed_T; i++)
+  {
                                      /* behaviours into this array        */
-    RexxBehaviour::primitiveBehaviours[i].restore((RexxBehaviour *)primitiveBehaviours->get(i + 1));
+      RexxBehaviour::primitiveBehaviours[i].restore((RexxBehaviour *)primitiveBehaviours->get(i + 1));
+  }
 
+  TheKernel      = (RexxDirectory *)saveArray->get(saveArray_KERNEL);
+  TheSystem      = (RexxDirectory *)saveArray->get(saveArray_SYSTEM);
+  TheFunctionsDirectory = (RexxDirectory *)saveArray->get(saveArray_FUNCTIONS);
+  TheTrueObject  = (RexxInteger *)saveArray->get(saveArray_TRUE);
+  TheFalseObject = (RexxInteger *)saveArray->get(saveArray_FALSE);
+  TheNilObject   = saveArray->get(saveArray_NIL);
+  TheNullArray   = (RexxArray *)saveArray->get(saveArray_NULLA);
+  TheNullPointer   = (RexxInteger *)saveArray->get(saveArray_NULLPOINTER);
+  TheClassClass  = (RexxClass *)saveArray->get(saveArray_CLASS);
+  TheNativeCodeClass  = (RexxNativeCodeClass *)saveArray->get(saveArray_NMETHOD);
+  TheCommonRetrievers = (RexxDirectory *)saveArray->get(saveArray_COMMON_RETRIEVERS);
+  TheStaticRequires   = (RexxDirectory *)saveArray->get(saveArray_STATIC_REQ);
+  ThePublicRoutines   = (RexxDirectory *)saveArray->get(saveArray_PUBLIC_RTN);
+
+  /* restore the global strings        */
+  memoryObject.restoreStrings((RexxArray *)saveArray->get(saveArray_SYSTEM));
 }
 
 
@@ -787,6 +835,7 @@ void RexxMemory::live(void)
   memory_mark(this->envelope);
   memory_mark(this->variableCache);
   memory_mark(this->markTable);
+  memory_mark(globalStrings);
   cleanUpMemoryMark
   // now call the various subsystem managers to mark their references
   ActivityManager::live();
@@ -807,6 +856,7 @@ void       RexxMemory::liveGeneral(void)
   memory_mark_general(this->envelope);
   memory_mark_general(this->variableCache);
   memory_mark_general(this->markTable);
+  memory_mark_general(globalStrings);
   cleanUpMemoryMarkGeneral
   // now call the various subsystem managers to mark their references
   ActivityManager::liveGeneral();
@@ -1500,10 +1550,14 @@ void RexxMemory::saveImage(void)
                                        /* of image for faster restore.      */
   _imageStats.clear();                 /* clear out image counters          */
 
-                                       /* release the global strings table  */
-  TheKernel->remove(kernel_name(CHAR_GLOBAL_STRINGS));
+  globalStrings = OREF_NULL;
                                        /* memory Object not saved           */
-  TheKernel->remove(kernel_name(CHAR_MEMORY));
+  TheKernel->remove(getGlobalName(CHAR_MEMORY));
+
+  // this has been protecting every thing critical
+  // from GC events thus far, but now we remove it because
+  // it contains things we don't want to save in the image.
+  TheEnvironment->remove(getGlobalName(CHAR_KERNEL));
 
                                        /* remove any programs left over in  */
                                        /* Get an array to hold all special  */
@@ -1526,7 +1580,7 @@ void RexxMemory::saveImage(void)
   saveArray->put((RexxObject *)TheSystem,       saveArray_SYSTEM);
   saveArray->put((RexxObject *)TheFunctionsDirectory,  saveArray_FUNCTIONS);
   saveArray->put((RexxObject *)TheCommonRetrievers,    saveArray_COMMON_RETRIEVERS);
-  saveArray->put((RexxObject *)TheKernel->entry(kernel_name(CHAR_NAME_STRINGS)), saveArray_NAME_STRINGS);
+  saveArray->put((RexxObject *)saveStrings(), saveArray_NAME_STRINGS);
   saveArray->put((RexxObject *)TheStaticRequires,       saveArray_STATIC_REQ);
   saveArray->put((RexxObject *)ThePublicRoutines,       saveArray_PUBLIC_RTN);
 
@@ -2089,13 +2143,45 @@ void RexxMemory::createLocks()
 }
 
 
-void memoryCreate()
+/**
+ * Add a string to the global name table.
+ *
+ * @param value  The new value to add.
+ *
+ * @return The single instance of this string.
+ */
+RexxString *RexxMemory::getGlobalName(const char *value)
+{
+    // see if we have a global table.  If not collecting currently,
+    // just return the non-unique value
+
+    RexxString *stringValue = new_string(value);
+    if (globalStrings == OREF_NULL)
+    {
+        return stringValue;                /* just return the string            */
+    }
+
+    // now see if we have this string in the table already
+    RexxString *result = (RexxString *)globalStrings->at(stringValue);
+    if (result != OREF_NULL)
+    {
+        return result;                       // return the previously created one
+    }
+    /* add this to the table             */
+    globalStrings->put((RexxObject *)stringValue, stringValue);
+    return stringValue;              // return the newly created one
+}
+
+
+void RexxMemory::create()
 /******************************************************************************/
 /* Function:  Initial memory setup during image build                         */
 /******************************************************************************/
 {
+  // get our table of virtual functions setup first thing.
+  buildVFTArray();
 
-  TheMemoryObject = pMemoryObject;
+  TheMemoryObject = &memoryObject;
 
   /* Make sure memory is cleared!      */
   memoryObject.init(false);
@@ -2108,7 +2194,7 @@ void memoryCreate()
   CLASS_CREATE(Relation, "Relation", RexxClass);
 
   TheFunctionsDirectory = new_directory();
-  TheGlobalStrings = new_directory();
+  globalStrings = new_directory();
 
                                        /* If first one through, generate all   */
   IntegerZero    = new_integer(0);    /*  static integers we want to use...   */
@@ -2128,7 +2214,7 @@ void memoryCreate()
   TheTrueObject  = new RexxInteger(1);
   TheFalseObject = new RexxInteger(0);
 
-  pMemoryObject->setBehaviour(TheMemoryBehaviour);
+  memoryObject.setBehaviour(TheMemoryBehaviour);
 
   TheNilObject = new RexxNilObject;
                                        /* We don't move the NIL object, we  */
@@ -2145,33 +2231,21 @@ void memoryCreate()
 }
 
 
-void memoryRestore()
+void RexxMemory::restore()
 /******************************************************************************/
 /* Function:  Memory management image restore functions                       */
 /******************************************************************************/
 {
-  TheMemoryObject = pMemoryObject;
+
+  TheMemoryObject = &memoryObject;
   /* Make sure memory is cleared! */
   memoryObject.init(true);
   /* set memories behaviour */
-  pMemoryObject->setBehaviour(TheMemoryBehaviour);
+  memoryObject.setBehaviour(TheMemoryBehaviour);
   /* Retrieve special saved objects    */
   /* OREF_ENV and primitive behaviours */
   /* are already restored              */
 
-  TheKernel      = (RexxDirectory *)TheSaveArray->get(saveArray_KERNEL);
-  TheSystem      = (RexxDirectory *)TheSaveArray->get(saveArray_SYSTEM);
-  TheFunctionsDirectory = (RexxDirectory *)TheSaveArray->get(saveArray_FUNCTIONS);
-  TheTrueObject  = (RexxInteger *)TheSaveArray->get(saveArray_TRUE);
-  TheFalseObject = (RexxInteger *)TheSaveArray->get(saveArray_FALSE);
-  TheNilObject   = TheSaveArray->get(saveArray_NIL);
-  TheNullArray   = (RexxArray *)TheSaveArray->get(saveArray_NULLA);
-  TheNullPointer   = (RexxInteger *)TheSaveArray->get(saveArray_NULLPOINTER);
-  TheClassClass  = (RexxClass *)TheSaveArray->get(saveArray_CLASS);
-  TheNativeCodeClass  = (RexxNativeCodeClass *)TheSaveArray->get(saveArray_NMETHOD);
-  TheCommonRetrievers = (RexxDirectory *)TheSaveArray->get(saveArray_COMMON_RETRIEVERS);
-  TheStaticRequires   = (RexxDirectory *)TheSaveArray->get(saveArray_STATIC_REQ);
-  ThePublicRoutines   = (RexxDirectory *)TheSaveArray->get(saveArray_PUBLIC_RTN);
 
                                        /* start restoring class OREF_s      */
   RESTORE_CLASS(Object, object, RexxClass);
@@ -2195,19 +2269,27 @@ void memoryRestore()
                                        /* behaviours                        */
   TheNativeCodeClass->setBehaviour(TheNativeCodeClassBehaviour);
 
-  pMemoryObject->setOldSpace();    /* Mark Memory Object as OldSpace    */
+  memoryObject.setOldSpace();          /* Mark Memory Object as OldSpace    */
   /* initialize the tables used for garbage collection. */
   memoryObject.setUpMemoryTables(new_object_table());
+                                       /* If first one through, generate all*/
+  IntegerZero   = new_integer(0);      /*  static integers we want to use...*/
+  IntegerOne    = new_integer(1);      /* This will allow us to use static  */
+  IntegerTwo    = new_integer(2);      /* integers instead of having to do a*/
+  IntegerThree  = new_integer(3);      /* new_integer evrytime....          */
+  IntegerFour   = new_integer(4);
+  IntegerFive   = new_integer(5);
+  IntegerSix    = new_integer(6);
+  IntegerSeven  = new_integer(7);
+  IntegerEight  = new_integer(8);
+  IntegerNine   = new_integer(9);
+  IntegerMinusOne = new_integer(-1);
+  RexxNativeCode::restoreClass();      /* fix up native methods             */
+  ActivityManager::init();             /* do activity restores              */
+  memoryObject.enableOrefChecks();     /* enable setCheckOrefs...           */
+                                       /* Create/Open Shared MUTEX          */
+                                       /* Semophores used to serialize      */
+                                       /* the flatten/unflatten process     */
+  memoryObject.createLocks();
 }
 
-
-void memoryNewProcess(void)
-/******************************************************************************/
-/* Function:  Do the processing required for a new process Initialization     */
-/******************************************************************************/
-{
-                                       /* Create/Open Shared MUTEX      */
-                                       /* Semophores used to serialize  */
-                                       /* the flatten/unflatten process */
-    memoryObject.createLocks();
-}

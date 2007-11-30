@@ -49,7 +49,6 @@ BOOL  ProcessDoneInit = FALSE;         /* initialization is done            */
 BOOL  ProcessDoneTerm = FALSE;         /* termination is done               */
 BOOL  ProcessFirstThread = TRUE;       /* this is the first thread          */
 
-BOOL  ProcessRestoreImage = TRUE;      /* restoring the saved image         */
 BOOL  ProcessSaveImage = FALSE;        /* saving the image                  */
 ULONG ProcessMustCompleteNest = 0;     /* Global variable for MustComplete  */
                                        /* Next line added be THU            */

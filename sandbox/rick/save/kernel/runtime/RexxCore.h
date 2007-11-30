@@ -148,7 +148,6 @@ inline long RANDOMIZE(long seed) { return (seed * RANDOM_FACTOR + 1); }
 /* Object creation macros                                                     */
 /******************************************************************************/
 
-#define kernel_public(name, object, dir)  ((RexxDirectory *)dir)->setEntry(kernel_name(name), (RexxObject *)object)
 #define new_activity(l)                   (ActivityManager::newActivity(MEDIUM_PRIORITY, l))
 #define new_behaviour(t)                  (new (t) RexxBehaviour)
 #define new_buffer(s)                     (new (s) RexxBuffer)
@@ -249,8 +248,6 @@ EXTERN MemorySegmentPool *GlobalPoolBase INITGLOBALPTR;
 EXTERN RexxDirectory * TheEnvironmentBase INITGLOBALPTR; // environment object base ptr
                                        /* function table                    */
 EXTERN RexxDirectory * TheFunctionsDirectory INITGLOBALPTR;
-                                       /* global string set                 */
-EXTERN RexxDirectory * TheGlobalStrings INITGLOBALPTR;
                                        /* integer class                     */
 EXTERN RexxIntegerClass  * TheIntegerClass INITGLOBALPTR;
 EXTERN RexxDirectory  * TheKernel INITGLOBALPTR;     /* kernel directory                  */
@@ -278,9 +275,6 @@ EXTERN RexxClass  * TheStemClass INITGLOBALPTR;      /* stem class              
 EXTERN RexxStringClass  * TheStringClass INITGLOBALPTR;
                                        /* mutablebuffer class                */
 EXTERN RexxClass  * TheMutableBufferClass INITGLOBALPTR;
-                                       /* Save array used for quick lookup  */
-                                       /*of objects during restore image    */
-EXTERN RexxArray  * TheSaveArray INITGLOBALPTR;
                                        /* saved array of primitive          */
                                        /*behaviours                         */
 EXTERN RexxObject * TheSavedBehaviours INITGLOBALPTR;
@@ -470,10 +464,6 @@ EXTERN RexxInteger * IntegerMinusOne INITGLOBALPTR;  /* Static integer -1       
 /******************************************************************************/
 /* Global Objects - Primitive Behaviour                                       */
 /******************************************************************************/
-#ifndef GDATA
-EXTERN void *VFTArray[highest_T];      /* table of virtual functions        */
-
-#endif
 
 #define TheActivationBehaviour      ((RexxBehaviour *)(&RexxBehaviour::primitiveBehaviours[T_activation]))
 #define TheActivityBehaviour        ((RexxBehaviour *)(&RexxBehaviour::primitiveBehaviours[T_activity]))

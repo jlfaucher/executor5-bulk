@@ -442,7 +442,7 @@ const char *SearchFileName(
 //}
 
 
-void SysLoadImage(char **imageBuffer, long *imageSize)
+void SysLoadImage(char **imageBuffer, size_t *imageSize)
 /*******************************************************************/
 /* Function : Load the image into storage                          */
 /*******************************************************************/

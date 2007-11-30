@@ -299,7 +299,7 @@ void GetLongName(
 // retrofit by IH
 void SysLoadImage(
   char **imageBuffer,                  /* returned start of the image       */
-  long  *imageSize )                   /* size of the image                 */
+  size_t *imageSize )                  /* size of the image                 */
 /*******************************************************************/
 /* Function:  Load the image into storage                          */
 /*******************************************************************/

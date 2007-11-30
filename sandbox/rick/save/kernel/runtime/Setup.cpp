@@ -36,42 +36,46 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Kernel                                                  oksetup.c     */
+/* REXX Kernel                                                                */
 /*                                                                            */
 /* Setup initial class definitions during an image build                      */
+/*                                                                            */
+/* NOTE:  The methods contained here are part of the RexxMemory class, but    */
+/* are in a separate file because of the extensive #include requirements      */
+/* for these particular methods and tables.                                   */
 /*                                                                            */
 /******************************************************************************/
 #include <string.h>
 #include "RexxCore.h"
- #include "TableClass.hpp"
- #include "RexxMemory.hpp"
- #include "RexxBehaviour.hpp"
- #include "ClassClass.hpp"
- #include "NumberStringClass.hpp"
- #include "IntegerClass.hpp"
- #include "StringClass.hpp"
- #include "MutableBufferClass.hpp"
- #include "ArrayClass.hpp"
- #include "DirectoryClass.hpp"
- #include "RelationClass.hpp"
- #include "ListClass.hpp"
- #include "QueueClass.hpp"
- #include "SupplierClass.hpp"
- #include "MethodClass.hpp"
- #include "RexxEnvelope.hpp"
- #include "MessageClass.hpp"
- #include "StemClass.hpp"
- #include "RexxMisc.hpp"
- #include "RexxNativeMethod.hpp"
- #include "RexxActivity.hpp"
- #include "ActivityManager.hpp"
- #include "RexxNativeActivation.hpp"
- #include "RexxVariableDictionary.hpp"
- #include "ExpressionVariable.hpp"
- #include "RexxLocalVariables.hpp"
- #include "ProtectedObject.hpp"
+#include "TableClass.hpp"
+#include "RexxMemory.hpp"
+#include "RexxBehaviour.hpp"
+#include "ClassClass.hpp"
+#include "NumberStringClass.hpp"
+#include "IntegerClass.hpp"
+#include "StringClass.hpp"
+#include "MutableBufferClass.hpp"
+#include "ArrayClass.hpp"
+#include "DirectoryClass.hpp"
+#include "RelationClass.hpp"
+#include "ListClass.hpp"
+#include "QueueClass.hpp"
+#include "SupplierClass.hpp"
+#include "MethodClass.hpp"
+#include "RexxEnvelope.hpp"
+#include "MessageClass.hpp"
+#include "StemClass.hpp"
+#include "RexxMisc.hpp"
+#include "RexxNativeMethod.hpp"
+#include "RexxActivity.hpp"
+#include "ActivityManager.hpp"
+#include "RexxNativeActivation.hpp"
+#include "RexxVariableDictionary.hpp"
+#include "ExpressionVariable.hpp"
+#include "RexxLocalVariables.hpp"
+#include "ProtectedObject.hpp"
 
-PCPPM ExportedMethods[] = {            /* start of exported methods table   */
+PCPPM RexxMemory::exportedMethods[] = {/* start of exported methods table   */
                                        /* NOTE:  getAttribute and           */
                                        /* setAttribute need to be the first */
                                        /* entries in the table, since these */
@@ -530,7 +534,8 @@ CPPMLOC(RexxLocal::callString),
 NULL                                   /* final terminating method          */
 };
 
-size_t resolveExportedMethod(
+
+size_t RexxMemory::resolveExportedMethod(
     PCPPM   targetMethod )             /* method needed to resolve          */
 /******************************************************************************/
 /* Function:  Resolve a method address to numeric index                       */
@@ -542,9 +547,9 @@ size_t resolveExportedMethod(
                                        /* this is a bad error               */
     logic_error("Unresolved exported method");
                                        /* scan the method address table     */
-  for (i = 0; ExportedMethods[i] != NULL; i++) {
+  for (i = 0; exportedMethods[i] != NULL; i++) {
                                        /* found the one we want?            */
-    if (ExportedMethods[i] == targetMethod)
+    if (exportedMethods[i] == targetMethod)
       return i;                        /* return the index                  */
   }
                                        /* this is a bad error               */
@@ -555,12 +560,8 @@ size_t resolveExportedMethod(
 /*****************************************************************************/
 /* Initialisation and build of the Object REXX image                         */
 /*****************************************************************************/
-RexxString * kernel_name (const char* value);
-void         kernelBuildVirtualFunctionTableArray(void);
-void         createStrings(void);      /* create "name" strings             */
 
-
-RexxMethod * createKernelMethod(
+RexxMethod *RexxMemory::createKernelMethod(
     PCPPM           entryPoint,        /* method entry point                */
     size_t          arguments)         /* count of arguments                */
 /******************************************************************************/
@@ -571,7 +572,7 @@ RexxMethod * createKernelMethod(
   return new RexxMethod(resolveExportedMethod(entryPoint), entryPoint, arguments, OREF_NULL);
 }
 
-RexxMethod * createProtectedKernelMethod(
+RexxMethod *RexxMemory::createProtectedKernelMethod(
     PCPPM           entryPoint,        /* method entry point                */
     size_t          arguments)         /* count of arguments                */
 /******************************************************************************/
@@ -585,7 +586,7 @@ RexxMethod * createProtectedKernelMethod(
   return method;                       /* return the method                 */
 }
 
-RexxMethod * createPrivateKernelMethod(
+RexxMethod *RexxMemory::createPrivateKernelMethod(
     PCPPM           entryPoint,        /* method entry point                */
     size_t          arguments)         /* count of arguments                */
 /******************************************************************************/
@@ -600,8 +601,8 @@ RexxMethod * createPrivateKernelMethod(
   return method;                       /* return the method                 */
 }
 
-void defineKernelMethod(
-    char          * name,              /* ASCII-Z name for the method       */
+void RexxMemory::defineKernelMethod(
+    const char    * name,              /* ASCII-Z name for the method       */
     RexxBehaviour * behaviour,         /* behaviour to use                  */
     PCPPM           entryPoint,        /* method's entry point              */
     size_t          arguments )        /* count of arguments                */
@@ -609,42 +610,40 @@ void defineKernelMethod(
 /* Function:  Add a C++ method to an object's behaviour                       */
 /******************************************************************************/
 {
-  behaviour->define(kernel_name(name), createKernelMethod(entryPoint, arguments));
+  behaviour->define(getGlobalName(name), createKernelMethod(entryPoint, arguments));
 }
 
-void defineProtectedKernelMethod(
-    char          * name,              /* ASCII-Z name for the method       */
+void RexxMemory::defineProtectedKernelMethod(
+    const char    * name,              /* ASCII-Z name for the method       */
     RexxBehaviour * behaviour,         /* behaviour to use                  */
     PCPPM           entryPoint,        /* method's entry point              */
-    LONG            arguments )        /* count of arguments                */
+    size_t          arguments )        /* count of arguments                */
 /******************************************************************************/
 /* Function:  Add a C++ method to an object's behaviour                       */
 /******************************************************************************/
 {
-  behaviour->define(kernel_name(name), createProtectedKernelMethod(entryPoint, arguments));
+  behaviour->define(getGlobalName(name), createProtectedKernelMethod(entryPoint, arguments));
 }
 
-void definePrivateKernelMethod(
-    char          * name,              /* ASCII-Z name for the method       */
+void RexxMemory::definePrivateKernelMethod(
+    const char    * name,              /* ASCII-Z name for the method       */
     RexxBehaviour * behaviour,         /* behaviour to use                  */
     PCPPM           entryPoint,        /* method's entry point              */
-    LONG            arguments )        /* count of arguments                */
+    size_t          arguments )        /* count of arguments                */
 /******************************************************************************/
 /* Function:  Add a C++ method to an object's behaviour                       */
 /******************************************************************************/
 {
-  behaviour->define(kernel_name(name), createPrivateKernelMethod(entryPoint, arguments));
+  behaviour->define(getGlobalName(name), createPrivateKernelMethod(entryPoint, arguments));
 }
 
 
-void kernelInit (void)
+void RexxMemory::createImage()
 /******************************************************************************/
 /* Function:  Initialize the kernel on image build                            */
 /******************************************************************************/
 {
-                                       /* go build the VFT Array            */
-  kernelBuildVirtualFunctionTableArray();
-  memoryCreate();                      /* create initial memory stuff       */
+  RexxMemory::create();                /* create initial memory stuff       */
 
   ActivityManager::init();             /* Initialize the activity managers  */
   ActivityManager::getActivity();      /* (will create one if necessary)    */
@@ -672,7 +671,7 @@ void kernelInit (void)
   ThePublicRoutines = new_directory();
   TheStaticRequires = new_directory();
 
-  createStrings();                     /* create all of the OREF_ strings   */
+  memoryObject.createStrings();        /* create all of the OREF_ strings   */
                                        /* RexxMethod                        */
   CLASS_CREATE(Method, "Method", RexxMethodClass);
   RexxNativeCode::createClass();       /* RexxNativeCode                    */
@@ -1143,12 +1142,12 @@ void kernelInit (void)
 
                                        /* delete these methods from stems by*/
                                        /* using .nil as the methobj         */
-  TheStemBehaviour->define(kernel_name(CHAR_STRICT_EQUAL)          , (RexxMethod *)TheNilObject);
-  TheStemBehaviour->define(kernel_name(CHAR_EQUAL)                 , (RexxMethod *)TheNilObject);
-  TheStemBehaviour->define(kernel_name(CHAR_STRICT_BACKSLASH_EQUAL), (RexxMethod *)TheNilObject);
-  TheStemBehaviour->define(kernel_name(CHAR_BACKSLASH_EQUAL)       , (RexxMethod *)TheNilObject);
-  TheStemBehaviour->define(kernel_name(CHAR_LESSTHAN_GREATERTHAN)  , (RexxMethod *)TheNilObject);
-  TheStemBehaviour->define(kernel_name(CHAR_GREATERTHAN_LESSTHAN)  , (RexxMethod *)TheNilObject);
+  TheStemBehaviour->define(getGlobalName(CHAR_STRICT_EQUAL)          , (RexxMethod *)TheNilObject);
+  TheStemBehaviour->define(getGlobalName(CHAR_EQUAL)                 , (RexxMethod *)TheNilObject);
+  TheStemBehaviour->define(getGlobalName(CHAR_STRICT_BACKSLASH_EQUAL), (RexxMethod *)TheNilObject);
+  TheStemBehaviour->define(getGlobalName(CHAR_BACKSLASH_EQUAL)       , (RexxMethod *)TheNilObject);
+  TheStemBehaviour->define(getGlobalName(CHAR_LESSTHAN_GREATERTHAN)  , (RexxMethod *)TheNilObject);
+  TheStemBehaviour->define(getGlobalName(CHAR_GREATERTHAN_LESSTHAN)  , (RexxMethod *)TheNilObject);
 
                                        /* Now call the class subclassable   */
                                        /* method                            */
@@ -1518,6 +1517,8 @@ void kernelInit (void)
     /* These classes don't have any class methods                            */
     /*  and are not subclassed from object                                   */
 
+#define kernel_public(name, object, dir)  ((RexxDirectory *)dir)->setEntry(getGlobalName(name), (RexxObject *)object)
+
   /* put the kernel-provided public objects in the environment directory */
   kernel_public(CHAR_ARRAY            ,TheArrayClass   ,TheEnvironment);
   kernel_public(CHAR_CLASS            ,TheClassClass   ,TheEnvironment);
@@ -1549,7 +1550,6 @@ void kernelInit (void)
   kernel_public(CHAR_NMETHOD          ,TheNativeCodeClass  , TheKernel);
 
   kernel_public(CHAR_FUNCTIONS        ,TheFunctionsDirectory  ,TheKernel);
-  kernel_public(CHAR_GLOBAL_STRINGS   ,TheGlobalStrings       ,TheKernel);
   kernel_public(CHAR_NULLA            ,TheNullArray           ,TheKernel);
   kernel_public(CHAR_NULLPOINTER      ,TheNullPointer         ,TheKernel);
   kernel_public(CHAR_COMMON_RETRIEVERS,TheCommonRetrievers    ,TheKernel);
@@ -1578,13 +1578,13 @@ void kernelInit (void)
                                            /* create a kernel methods directory */
       kernel_methods = new_directory();
       ProtectedObject p1(kernel_methods);   // protect from GC
-      kernel_methods->put(createKernelMethod(CPPMLOC(RexxLocal::local), 0), kernel_name(CHAR_LOCAL));
-      kernel_methods->put(createKernelMethod(CPPMLOC(RexxLocal::runProgram), 1), kernel_name(CHAR_RUN_PROGRAM));
-      kernel_methods->put(createKernelMethod(CPPMLOC(RexxLocal::callString), A_COUNT), kernel_name(CHAR_CALL_STRING));
-      kernel_methods->put(createKernelMethod(CPPMLOC(RexxLocal::callProgram), A_COUNT), kernel_name(CHAR_CALL_PROGRAM));
+      kernel_methods->put(createKernelMethod(CPPMLOC(RexxLocal::local), 0), getGlobalName(CHAR_LOCAL));
+      kernel_methods->put(createKernelMethod(CPPMLOC(RexxLocal::runProgram), 1), getGlobalName(CHAR_RUN_PROGRAM));
+      kernel_methods->put(createKernelMethod(CPPMLOC(RexxLocal::callString), A_COUNT), getGlobalName(CHAR_CALL_STRING));
+      kernel_methods->put(createKernelMethod(CPPMLOC(RexxLocal::callProgram), A_COUNT), getGlobalName(CHAR_CALL_PROGRAM));
 
                                            /* create the BaseClasses method and run it*/
-      symb = kernel_name(BASEIMAGELOAD);   /* get a name version of the string  */
+      symb = getGlobalName(BASEIMAGELOAD);   /* get a name version of the string  */
                                            /* go resolve the program name       */
       programName = SysResolveProgramName(symb, OREF_NULL);
                                            /* Push marker onto stack so we know */
@@ -1608,16 +1608,16 @@ void kernelInit (void)
   }
 
   /* define and suppress methods in the nil object */
-  TheNilObject->defMethod(kernel_name(CHAR_COPY), (RexxMethod *)TheNilObject);
-  TheNilObject->defMethod(kernel_name(CHAR_START), (RexxMethod *)TheNilObject);
-  TheNilObject->defMethod(kernel_name(CHAR_OBJECTNAMEEQUALS), (RexxMethod *)TheNilObject);
+  TheNilObject->defMethod(getGlobalName(CHAR_COPY), (RexxMethod *)TheNilObject);
+  TheNilObject->defMethod(getGlobalName(CHAR_START), (RexxMethod *)TheNilObject);
+  TheNilObject->defMethod(getGlobalName(CHAR_OBJECTNAMEEQUALS), (RexxMethod *)TheNilObject);
 
   // ok, .NIL has been constructed.  As a last step before saving the image, we need to change
   // the type identifier in the so that this will get the correct virtual function table
   // restored when the image reloads.
   TheNilObject->behaviour->setClassType(T_nil_object);
 
-  RexxClass *ordered = (RexxClass *)TheEnvironment->get(kernel_name(CHAR_ORDEREDCOLLECTION));
+  RexxClass *ordered = (RexxClass *)TheEnvironment->get(getGlobalName(CHAR_ORDEREDCOLLECTION));
 
   TheArrayClass->inherit(ordered, OREF_NULL);
   TheArrayClass->setRexxDefined();
@@ -1628,7 +1628,7 @@ void kernelInit (void)
   TheListClass->inherit(ordered, OREF_NULL);
   TheListClass->setRexxDefined();
 
-  RexxClass *map = (RexxClass *)TheEnvironment->get(kernel_name(CHAR_MAPCOLLECTION));
+  RexxClass *map = (RexxClass *)TheEnvironment->get(getGlobalName(CHAR_MAPCOLLECTION));
 
   TheTableClass->inherit(map, OREF_NULL);
   TheTableClass->setRexxDefined();
@@ -1642,24 +1642,14 @@ void kernelInit (void)
   TheStemClass->inherit(map, OREF_NULL);
   TheStemClass->setRexxDefined();
 
-  RexxClass *comparable = (RexxClass *)TheEnvironment->get(kernel_name(CHAR_COMPARABLE));
+  RexxClass *comparable = (RexxClass *)TheEnvironment->get(getGlobalName(CHAR_COMPARABLE));
 
   TheStringClass->inherit(comparable, OREF_NULL);
   TheStringClass->setRexxDefined();
 
-  // this has been protecting every thing critical
-  // from GC events thus far, but now we remove it because
-  // it contains things we don't want to save in the image.
-  TheEnvironment->remove(kernel_name(CHAR_KERNEL));
-}
 
-void createImage(void)
-/******************************************************************************/
-/* Function:  Build and save the REXX image                                   */
-/******************************************************************************/
-{
-  kernelInit();                        /* initialize the kernel             */
-  memoryObject.saveImage();            /* will not return                   */
+  // now save the image
+  memoryObject.saveImage();
   ActivityManager::returnActivity(ActivityManager::currentActivity);
   exit(RC_OK);                         // successful build
 }

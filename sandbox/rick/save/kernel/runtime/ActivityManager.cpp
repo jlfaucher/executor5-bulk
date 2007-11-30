@@ -790,13 +790,17 @@ void ActivityManager::relinquish(RexxActivity *activity)
  */
 void ActivityManager::startup()
 {
+    // if we have a local server created already, don't recurse.
+    if (localServer != OREF_NULL)
+    {
+        return;
+    }
+
+    getActivity();                       /* get an activity set up            */
     localEnvironment = new_directory();
                                          /* get the local environment         */
                                          /* get the server class              */
     RexxObject *server_class = env_find(new_string("!SERVER"));
-    unlockKernel();                      /* now unlock the kernel             */
-
-    getActivity();                       /* get an activity set up            */
                                          /* create a new server object        */
     currentActivity->messageSend(server_class, OREF_NEW, 0, OREF_NULL, &localServer);
                                          /* now release this activity         */

@@ -45,10 +45,6 @@
 #ifndef Included_RexxMemory
 #define Included_RexxMemory
 
-void memoryCreate();
-void memoryRestore(void);
-void memoryNewProcess (void);
-
 /* The minimum allocation unit for an object.   */
 #define ObjectGrain 8
 /* The unit of granularity for large allocation */
@@ -82,6 +78,7 @@ inline size_t roundObjectResize(size_t n) { return n > LargeObjectMinSize ? RXRO
 
 class RexxActivationFrameBuffer;
 class MemorySegment;
+class RexxMethod;
 #ifdef _DEBUG
 class RexxMemory;
 #endif
@@ -243,6 +240,19 @@ class RexxMemory : public RexxObject {
   void        scavengeSegmentSets(MemorySegmentSet *requester, size_t allocationLength);
   void        setUpMemoryTables(RexxObjectTable *old2newTable);
   void        forceUninits();
+  inline RexxDirectory *getGlobalStrings() { return globalStrings; }
+
+  static void restore();
+  static void buildVFTArray();
+  static void create();
+  static void createImage();
+  static RexxString *getGlobalName(const char *value);
+  static void createStrings();
+  static RexxArray *saveStrings();
+  static void restoreStrings(RexxArray *stringArray);
+
+  static void *VFTArray[highest_T];    /* table of virtual functions        */
+  static PCPPM exportedMethods[];      /* start of exported methods table   */
 
   uint16_t markWord;                   /* current marking counter           */
   SMTX flattenMutex;                   /* locks for various memory processes */
@@ -280,7 +290,15 @@ private:
   bool inObjectStorage(RexxObject *obj);
   bool inSharedObjectStorage(RexxObject *obj);
   bool objectReferenceOK(RexxObject *o);
-  void restoreImage(void);
+  void restoreImage();
+
+  static size_t resolveExportedMethod(PCPPM   targetMethod);
+  static RexxMethod *createKernelMethod(PCPPM entryPoint, size_t arguments);
+  static RexxMethod *createProtectedKernelMethod(PCPPM entryPoint, size_t arguments);
+  static RexxMethod *createPrivateKernelMethod(PCPPM entryPoint, size_t arguments);
+  static void        defineKernelMethod(const char *name, RexxBehaviour * behaviour, PCPPM entryPoint, size_t arguments);
+  static void        defineProtectedKernelMethod(const char *name, RexxBehaviour * behaviour, PCPPM entryPoint, size_t arguments);
+  static void        definePrivateKernelMethod(const char *name, RexxBehaviour * behaviour, PCPPM entryPoint, size_t arguments);
 
   RexxStack  *liveStack;
   RexxStack  *flattenStack;
@@ -295,7 +313,6 @@ private:
   bool              processingUninits; // TRUE when we are processing the uninit table
 
   RexxObjectTable  *subClasses;        // the table of subclasses
-
 
   MemorySegmentPool *firstPool;        /* First segmentPool block.          */
   MemorySegmentPool *currentPool;      /* Curent segmentPool being carved   */
@@ -321,6 +338,8 @@ private:
 
   size_t allocations;                  /* number of allocations since last GC */
   size_t collections;                  /* number of garbage collections     */
+
+  static RexxDirectory *globalStrings; // table of global strings
 };
 
 

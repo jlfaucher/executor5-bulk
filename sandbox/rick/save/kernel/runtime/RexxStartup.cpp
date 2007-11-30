@@ -67,7 +67,6 @@ extern BOOL  ProcessColdStart;         /* we're coldstarting this           */
 extern BOOL  ProcessDoneTerm;          /* termination is done               */
 extern BOOL  ProcessFirstThread;       /* first (and primary thread)        */
 
-extern BOOL  ProcessRestoreImage;      /* we're restoring the image         */
 extern SEV   RexxTerminated;           /* Termination complete semaphore.   */
 extern RexxInteger *ProcessName;
 
@@ -76,9 +75,6 @@ char achRexxCurDir[ CCHMAXPATH+2 ];          /* Save current working direct */
 extern int thread_counter;
 extern int  SecureFlag;
 #endif
-
-void   activity_startup(void);
-void   createImage(void);
 
 void kernelShutdown (void)
 /******************************************************************************/
@@ -94,15 +90,6 @@ void kernelShutdown (void)
     ProcessDoneInit = FALSE;           /* no longer initialized.            */
     ProcessColdStart = TRUE;           /* next one is a cold start          */
     ProcessFirstThread = TRUE;         /* first thread needs to be created  */
-    ProcessRestoreImage = TRUE;        /* and we have to restore the image  */
-                                       /* subprocess, which means that memory is not released at program end */
-                                       /* only on shutdown. So if there is (for huge files) a linked list of */
-                                       /* memory pools allocated, the newly created pools would be freed here*/
-                                       /* exept the base pool, BUT the linked lists of f.e Dead Objects swept*/
-                                       /* segments etc, are still alive. I have tried to relinke those Object*/
-                                       /* s but without success. So i decided not to free the pools on OS/2. */
-                                       /* Be aware of possible resource problems especially when the interpre*/
-                                       /* is started in a loop with REXXSTART                                */
     memoryObject.freePools();          /* release access to memoryPools     */
   }
 #ifdef SHARED
@@ -115,33 +102,8 @@ void kernelShutdown (void)
 }
 
 
-void kernelRestore (void);
-void kernelNewProcess (void);
-RexxString * kernel_name (const char* value);
-
 extern BOOL ProcessSaveImage;
 
-void restoreImage(void)
-/******************************************************************************/
-/* Main startup routine for OREXX                                             */
-/******************************************************************************/
-{
-  ActivityManager::lockKernel();       /* lock the kernel                   */
-  kernelRestore();                     /* initialize the kernel             */
-  ActivityManager::unlockKernel();     /* lock the kernel                   */
-}
-
-void start_rexx_environment(void)
-/******************************************************************************/
-/* Main startup routine for OREXX                                             */
-/******************************************************************************/
-{
-  ActivityManager::lockKernel();       /* lock the kernel                   */
-  kernelNewProcess();                  /* do new process initialization     */
-
-  ActivityManager::startup();          // go create the local enviroment.
-  ProcessRestoreImage = FALSE;         /* Turn off restore image flag.      */
-}
 
 int REXXENTRY RexxTerminate (void)
 /******************************************************************************/
@@ -240,12 +202,12 @@ BOOL REXXENTRY RexxInitialize (void)
     SysInitialize();                   /* perform other system init work    */
 
     if (ProcessSaveImage)              /* need to create the image?         */
-      createImage();                   /* go create the image               */
+    {
+        RexxMemory::createImage();     /* go create the image               */
+    }
     else {
-      if (ProcessRestoreImage) {       /* Does image need to be restored    */
-        restoreImage();                /*Yes, restore the image             */
-      }
-      start_rexx_environment();        /* call main initialization routine. */
+      RexxMemory::restore();           // go restore the state of the memory object
+      ActivityManager::startup();      // go create the local enviroment.
     }
     ProcessDoneInit = TRUE;            /* we're now initialized             */
   }                                    /* end of serialized block of code   */

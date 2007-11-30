@@ -58,8 +58,6 @@
 #include "ProtectedObject.hpp"
 #include <ctype.h>
 
-extern PCPPM ExportedMethods[];        /* table of exported methods         */
-
 RexxMethod::RexxMethod(
     size_t method,                     /* method table index                */
     PCPPM entry,                       /* method entry point                */
@@ -113,7 +111,7 @@ void RexxMethod::liveGeneral()
   if (memoryObject.restoringImage()) { /* restoring the image?              */
     this->setInternal();               /* mark as an image method           */
                                        /* reset the method entry point      */
-    this->cppEntry = ExportedMethods[this->getMethodIndex()];
+    this->cppEntry = RexxMemory::exportedMethods[this->getMethodIndex()];
   }
 }
 
@@ -141,7 +139,7 @@ RexxObject * RexxMethod::unflatten(RexxEnvelope *envelope)
                                        /* if not then we haven't unflattened*/
   if (this->code == OREF_NULL)         /* is this a kernel method?          */
                                        /* reset the method entry point      */
-    this->cppEntry = ExportedMethods[this->getMethodIndex()];
+    this->cppEntry = RexxMemory::exportedMethods[this->getMethodIndex()];
   return (RexxObject *)this;           /* return ourself.                   */
 }
 
