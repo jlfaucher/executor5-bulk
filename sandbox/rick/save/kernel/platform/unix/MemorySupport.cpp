@@ -46,6 +46,7 @@
 #include <stdlib.h>
 #include "RexxCore.h"
 #include "RexxMemory.hpp"
+#include "ActivityManager.hpp"
 
 #define MEMSIZE     4194304            /* memory pool                       */
 #ifdef LINUX
@@ -284,14 +285,14 @@ MemorySegment *MemorySegmentPool::newLargeSegment(size_t minSize)
           memoryObject.accessPools(this);
        } else
          this->next = newPool;         /* Anchor it to end of chain         */
-       memoryObject(newPool);          // tell the memory object we've added a new pool
+       memoryObject.addPool(newPool);  // tell the memory object we've added a new pool
        return newPool->newLargeSegment(minSize);
      } else
        return NULL;
    }
 }
 
-BOOL    MemorySegmentPool::accessNextPool()
+bool MemorySegmentPool::accessNextPool()
 /*********************************************************************/
 /* Function:: Gain access to all existing memoryPools.               */
 /*                                                                   */
@@ -300,13 +301,9 @@ BOOL    MemorySegmentPool::accessNextPool()
                                        /* Is there a next MemoryPool        */
     if (this->next)
     {
-      return TRUE;                      /* Return one accessed               */
+      return true;                      /* Return one accessed               */
     }
-    else
-    {
-      return FALSE;                     /* At the end, return FALSE (NO_MORE)*/
-    }
-    return FALSE;                     /* At the end, return FALSE (NO_MORE)*/
+    return false;                       /* At the end, return FALSE (NO_MORE)*/
 }
 
 MemorySegmentPool  * MemorySegmentPool::freePool()       // add return value
