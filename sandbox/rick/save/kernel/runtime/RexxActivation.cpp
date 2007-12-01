@@ -3095,7 +3095,7 @@ RexxString * RexxActivation::sourceString()
  * @param name   The name to add this under.
  * @param method The method associated with the name.
  */
-void RexxActivation::addLocalRoutine(RexxString *name, RexxMethod *method)
+void RexxActivation::addLocalRoutine(RexxString *name, RexxMethod *_method)
 {
     // get the directory of external functions
     RexxDirectory *routines = settings.parent_code->getLocalRoutines();
@@ -3108,7 +3108,7 @@ void RexxActivation::addLocalRoutine(RexxString *name, RexxMethod *method)
         routines = settings.parent_code->getLocalRoutines();
     }
     // if a method by that name exists, it will be OVERWRITTEN!
-    routines->setEntry(name, method);
+    routines->setEntry(name, _method);
 }
 
 
