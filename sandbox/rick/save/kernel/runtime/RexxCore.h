@@ -661,8 +661,6 @@ extern double NO_DOUBLE;
  typedef RexxObject *  (VLAENTRY RexxObject::*PCPPM) (...);
  #define CPPM(n) ((PCPPM)&n)
 
-#ifdef LINUX
-
  #include "TableClass.hpp"
  #include "StackClass.hpp"
  #include "RexxMemory.hpp"               /* memory next, to get OrefSet       */
@@ -671,128 +669,9 @@ extern double NO_DOUBLE;
  #include "RexxEnvelope.hpp"                /* envelope is needed for flattens   */
  #include "RexxActivity.hpp"               /* activity is needed for errors     */
  #include "NumberStringClass.hpp"               /* added to make 'number_digits()'   */
+
+#endif
                                        /* in 'ArrayClass.c' visible            */
- #define PCPPINT    PCPPM
- #define PCPPSTR    PCPPM
- #define PCPPNUMSTR PCPPM
- #define PCPPMUTB   PCPPM
-
- #define CPPMIO(n) CPPM(n)
- #define CPPMC(n)  CPPM(n)
- #define CPPMLC(n) CPPM(n)
- #define CPPMA(n)  CPPM(n)
- #define CPPMC1(n)  CPPM(n)
- #define CPPMD(n)  CPPM(n)
- #define CPPMHC(n)  CPPM(n)
- #define CPPME(n)  CPPM(n)
- #define CPPMI(n)  CPPM(n)
- #define CPPML(n)  CPPM(n)
- #define CPPMSG(n)  CPPM(n)
- #define CPPMTD(n)  CPPM(n)
- #define CPPMTDC(n)  CPPM(n)
- #define CPPMNM(n)  CPPM(n)
- #define CPPMQ(n)  CPPM(n)
- #define CPPMSTEM(n)  CPPM(n)
- #define CPPMSTR(n)  CPPM(n)
- #define CPPMSTRCL(n)  CPPM(n)
- #define CPPMSUP(n)  CPPM(n)
- #define CPPMSUPCL(n)  CPPM(n)
- #define CPPMTBL(n)  CPPM(n)
- #define CPPMREL(n)  CPPM(n)
- #define CPPMMEM(n)  CPPM(n)
- #define CPPMLOC(n)  CPPM(n)
- #define CPPMSND(n)  CPPM(n)
- #define CPPMSRV(n)  CPPM(n)
- #define CPPMMUTB(n)  CPPM(n)
- #define CPPMMUTBCL(n) CPPM(n)
-
-#else
-
- typedef RexxObject *  (VLAENTRY RexxInternalObject::*PCPPMINTOBJ) (...);
- #define CPPMIO(n) ((PCPPMINTOBJ)&n)
-
- #include "TableClass.hpp"
- #include "StackClass.hpp"
- #include "RexxMemory.hpp"               /* memory next, to get OrefSet       */
- #include "RexxBehaviour.hpp"                /* now behaviours and                */
- #include "ClassClass.hpp"                /* classes, which everything needs   */
- #include "RexxEnvelope.hpp"                /* envelope is needed for flattens   */
- #include "RexxActivity.hpp"               /* activity is needed for errors     */
-
- // added these for VC++
- typedef RexxObject *  (VLAENTRY RexxClass::*PCPPCLASS) (...);
- #define CPPMC(n) (PCPPM) ((PCPPCLASS)&n)
- #include "ArrayClass.hpp"
- typedef RexxObject *  (VLAENTRY RexxArray::*PCPPARRAY) (...);
- #define CPPMA(n) (PCPPM) ((PCPPARRAY)&n)
- typedef RexxObject *  (VLAENTRY RexxArray::*PCPPCOUNT) (...);
- #define CPPMC1(n) (PCPPM) ((PCPPCOUNT)&n)
- #include "DirectoryClass.hpp"
- typedef RexxObject *  (VLAENTRY RexxDirectory::*PCPPDIR) (...);
- #define CPPMD(n) (PCPPM) ((PCPPDIR)&n)
- #include "RexxCollection.hpp"
- typedef RexxObject *  (VLAENTRY RexxHashTableCollection::*PCPPHASHCOL) (...);
- #define CPPMHC(n) (PCPPM) ((PCPPHASHCOL)&n)
- #include "RexxEnvelope.hpp"                /* envelope is needed for flattens   */
- typedef RexxObject *  (VLAENTRY RexxEnvelope::*PCPPENV) (...);
- #define CPPME(n) (PCPPM) ((PCPPENV)&n)
- #include "IntegerClass.hpp"
- typedef RexxObject *  (VLAENTRY RexxInteger::*PCPPINT) (...);
- #define CPPMI(n) (PCPPM) ((PCPPINT)&n)
- #include "ListClass.hpp"
- typedef RexxObject *  (VLAENTRY RexxList::*PCPPLIST) (...);
- #define CPPML(n) (PCPPM) ((PCPPLIST)&n)
- typedef RexxObject *  (VLAENTRY RexxListClass::*PCPPLISTCLASS) (...);
- #define CPPMLC(n) (PCPPM) ((PCPPLISTCLASS)&n)
- #include "MessageClass.hpp"
- typedef RexxObject *  (VLAENTRY RexxMessage::*PCPPMSG) (...);
- #define CPPMSG(n) (PCPPM) ((PCPPMSG)&n)
- #include "MethodClass.hpp"
- typedef RexxObject *  (VLAENTRY RexxMethod::*PCPPMETHOD) (...);
- #define CPPMTD(n) (PCPPM) ((PCPPMETHOD)&n)
- typedef RexxObject *  (VLAENTRY RexxMethodClass::*PCPPMETHODCLASS) (...);
- #define CPPMTDC(n) (PCPPM) ((PCPPMETHODCLASS)&n)
- #include "NumberStringClass.hpp"
- typedef RexxObject *  (VLAENTRY RexxNumberString::*PCPPNUMSTR) (...);
- #define CPPMNM(n) (PCPPM) ((PCPPNUMSTR)&n)
- #include "QueueClass.hpp"
- typedef RexxObject *  (VLAENTRY RexxQueue::*PCPPQ) (...);
- #define CPPMQ(n) (PCPPM) ((PCPPQ)&n)
- #include "StemClass.hpp"
- typedef RexxObject *  (VLAENTRY RexxStem::*PCPPSTEM) (...);
- #define CPPMSTEM(n) (PCPPM) ((PCPPSTEM)&n)
- #include "StringClass.hpp"
- typedef RexxObject *  (VLAENTRY RexxString::*PCPPSTR) (...);
- #define CPPMSTR(n) (PCPPM) ((PCPPSTR)&n)
- typedef RexxObject *  (VLAENTRY RexxStringClass::*PCPPSTRCLASS) (...);
- #define CPPMSTRCL(n) (PCPPM) ((PCPPSTRCLASS)&n)
- #include "SupplierClass.hpp"
- typedef RexxObject *  (VLAENTRY RexxSupplier::*PCPPSUP) (...);
- #define CPPMSUP(n) (PCPPM) ((PCPPSUP)&n)
- typedef RexxObject *  (VLAENTRY RexxSupplierClass::*PCPPSUPCLASS) (...);
- #define CPPMSUPCL(n) (PCPPM) ((PCPPSUPCLASS)&n)
- #include "TableClass.hpp"
- typedef RexxObject *  (VLAENTRY RexxTable::*PCPPTBL) (...);
- #define CPPMTBL(n) (PCPPM) ((PCPPTBL)&n)
- #include "RelationClass.hpp"
- typedef RexxObject *  (VLAENTRY RexxRelation::*PCPPREL) (...);
- #define CPPMREL(n) (PCPPM) ((PCPPREL)&n)
- #include "RexxMemory.hpp"
- typedef RexxObject *  (VLAENTRY RexxMemory::*PCPPMEM) (...);
- #define CPPMMEM(n) (PCPPM) ((PCPPMEM)&n)
- #include "RexxMisc.hpp"
- typedef RexxObject *  (VLAENTRY RexxLocal::*PCPPLOCAL) (...);
- #define CPPMLOC(n) (PCPPM) ((PCPPLOCAL)&n)
- #include "MutableBufferClass.hpp"
- typedef RexxObject *  (VLAENTRY RexxMutableBuffer::*PCPPMUTB) (...);
- #define CPPMMUTB(n) (PCPPM) ((PCPPMUTB)&n)
- typedef RexxObject *  (VLAENTRY RexxMutableBufferClass::*PCPPMUTBCL) (...);
- #define CPPMMUTBCL(n) (PCPPM) ((PCPPMUTBCL)&n)
-
-#endif
-
-#endif
-
 /******************************************************************************/
 /* Method arguments special codes                                             */
 /******************************************************************************/
