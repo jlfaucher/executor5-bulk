@@ -152,6 +152,7 @@ void SearchPrecision(
         *precision = activation->digits();
     }
 }
+}
 
 /******************************************************************************/
 /* Name:       RexxStart                    (internal start via ApiRexxStart) */
