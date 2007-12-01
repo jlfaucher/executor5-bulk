@@ -54,6 +54,7 @@
 #include "IntegerClass.hpp"
 #include "ArrayClass.hpp"
 #include "TableClass.hpp"
+#include "RexxActivation.hpp"
 #include "ActivityManager.hpp"
 
 bool SysAccessPool(MemorySegmentPool **pool);

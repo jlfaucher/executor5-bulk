@@ -378,7 +378,7 @@ RexxMethod *SysRestoreTranslatedProgram(
   activity->requestAccess();           /* get the lock back                 */
                                        /* "puff" this out usable form       */
   Method = TheMethodClass->restore(Buffer, StartPointer);
-  ProtectedObject p1(Method);
+  ProtectedObject p2(Method);
   Source = Method->getSource();        /* and now the source object         */
                                        /* switch the file name (this might  */
                                        /* be different than the name        */

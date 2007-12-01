@@ -39,6 +39,7 @@
 #include "RexxCore.h"
 #include "RexxActivity.hpp"
 #include "RexxActivation.hpp"
+#include "DirectoryClass.hpp"
 #include "ActivityManager.hpp"
 
 // The currently active activity.

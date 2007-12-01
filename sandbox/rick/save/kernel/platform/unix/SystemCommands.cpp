@@ -67,6 +67,7 @@
 #include "StringClass.hpp"
 #include "RexxActivity.hpp"
 #include "RexxNativeAPI.h"                           /* Lot's of useful REXX macros    */
+#include "ActivityManager.hpp"
 
 #include SYSREXXSAA                         /* Include REXX header            */
 #include "SystemCommands.h"
