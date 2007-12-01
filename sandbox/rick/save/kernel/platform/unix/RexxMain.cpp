@@ -145,7 +145,7 @@ void SearchPrecision(
 
 /* give me the numeric digits settings of the current actitity       */
 
-    RexxActivity *activity = ActivityManager::findActivityForCurrentThread();
+    RexxActivity *activity = ActivityManager::findActivity();
     if (activity != OREF_NULL)
     {
         RexxActivation *activation = activity->getCurrentActivation();
@@ -357,10 +357,18 @@ APIRET REXXENTRY RexxSetYield(PID procid, TID threadid)
 APIRET REXXENTRY RexxSetHalt(PID procid, TID threadid)
 {
   if (RexxQuery()) {                        /* Are we up?                     */
-    if(activity_halt((long)threadid, OREF_NULL)) /* Set halt condition?            */
-      return (RXARI_OK);                    /* Yes, return okay               */
-    else
-      return (RXARI_NOT_FOUND);             /* Couldn't find threadid         */
+      if (threadid == 0)
+      {
+          ActivityManager::haltAllActivities();
+      }
+      else
+      {
+          if (!ActivityManager::haltActivity(threadid, OREF_NULL))
+          {
+              return (RXARI_NOT_FOUND);             /* Couldn't find threadid         */
+          }
+      }
+      return (RXARI_OK);
   }
   else
     return (RXARI_NOT_FOUND);               /* REXX not running, error...     */
@@ -380,14 +388,22 @@ APIRET REXXENTRY RexxSetHalt(PID procid, TID threadid)
 /******************************************************************************/
 APIRET REXXENTRY RexxSetTrace(PID procid, TID threadid)
 {
-  if (RexxQuery()) {                        /* Are we up?                     */
-    if(activity_set_trace((long)threadid, 1))    /* Set trace on?                  */
-      return (RXARI_OK);                    /* Yes, return okay               */
-    else
-      return (RXARI_NOT_FOUND);             /* Couldn't find threadid         */
+    if (RexxQuery())
+    {                        /* Are we up?                     */
+       if (threadid == 0)
+       {
+           ActivityManager::traceAllActivities(true);
+       }
+       else
+       {
+           if (!ActivityManager::setActivityTrace(threadid, true))
+           {
+               return (RXARI_NOT_FOUND);             /* Couldn't find threadid         */
+           }
+       }
+       return (RXARI_OK);
     }
-  else
-    return (RXARI_NOT_FOUND);               /* REXX not running, error...     */
+    return RXARI_NOT_FOUND;     /* REXX not running, error...     */
 }
 
 
@@ -405,14 +421,22 @@ APIRET REXXENTRY RexxSetTrace(PID procid, TID threadid)
 /******************************************************************************/
 APIRET REXXENTRY RexxResetTrace(PID procid, TID threadid)
 {
-  if (RexxQuery()) {                        /* Are we up?                     */
-    if(activity_set_trace((long)threadid,0))     /* Set trace off??                */
-      return (RXARI_OK);                    /* Yes, return okay               */
-    else
-      return (RXARI_NOT_FOUND);             /* Couldn't find threadid         */
+    if (RexxQuery())
+    {                        /* Are we up?                     */
+       if (threadid == 0)
+       {
+           ActivityManager::traceAllActivities(false);
+       }
+       else
+       {
+           if (!ActivityManager::setActivityTrace(threadid, false))
+           {
+               return (RXARI_NOT_FOUND);             /* Couldn't find threadid         */
+           }
+       }
+       return (RXARI_OK);
     }
-  else
-    return (RXARI_NOT_FOUND);               /* REXX not running, error...     */
+    return RXARI_NOT_FOUND;     /* REXX not running, error...     */
 }
 
 
@@ -684,7 +708,7 @@ void  SysRunProgram(
                                        /* If there is a return val...       */
       if (program_result != OREF_NULL) {
                                        /* convert to a long value           */
-        return_code = program_result->longValue(DEFAULT_DIGITS);
+        return_code = program_result->longValue(Numerics::DEFAULT_DIGITS);
                                        /* if a whole number...              */
         if (return_code != (int)NO_LONG && return_code <= SHRT_MAX && return_code >= SHRT_MIN)
                                        /* ...copy to return code.           */
