@@ -644,8 +644,8 @@ else                                            -- Unix-like
      raise syntax 93.903 array (bGiveFeedback) -- raise error
 
    -- make sure an instance of .TestResult is used
-  if arg()=0 then aTestResult=self~createResult
-             else aTestResult=arg(1)
+  if arg(1, 'O') then aTestResult=self~createResult
+  else aTestResult=arg(1)
 
   aTestResult~startTest(self)       -- remember test started
   self~setUp                        -- make sure setup is invoked before test
@@ -842,8 +842,8 @@ exceptionHandler:
      raise syntax 93.903 array (bGiveFeedback) -- raise error
 
    -- make sure an instance of .TestResult is used
-  if arg()=0 then aTestResult=self~createResult
-             else aTestResult=arg(1)
+  if arg(1, 'O') then aTestResult=self~createResult
+  else aTestResult=arg(1)
 
   if bGiveFeedback then
      .error~say( "running testSuite" pp(self~string"@"self~identityHash) "with" pp(self~countTestCases) "test cases ...")
