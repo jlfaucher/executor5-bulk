@@ -49,6 +49,7 @@
 #include "StringClass.hpp"
 #include "RexxBuffer.hpp"
 #include "RexxNativeAPI.h"
+#include "ProtectedObject.hpp"
 #include <string.h>
 #include <stdio.h>
 #include <stddef.h>
@@ -519,13 +520,12 @@ RexxBuffer *SysReadProgram(
   buffersize = ftell(handle);          /* get the file size                 */
   fseek(handle, 0, SEEK_SET);          /* seek back to the file beginning   */
   buffer = new_buffer(buffersize);     /* get a buffer object               */
-  save(buffer);                        /* and protect this                  */
+  ProtectedObject p(buffer);
   activity->releaseAccess();           /* release the kernel access         */
                                        /* read the entire file in one shot  */
   fread(buffer->data, 1, buffersize, handle);
   fclose(handle);                      /* close the file                    */
   activity->requestAccess();           /* get the access back               */
-  discard_hold(buffer);                /* and release the protection        */
   return buffer;                       /* return the program buffer         */
 }
 

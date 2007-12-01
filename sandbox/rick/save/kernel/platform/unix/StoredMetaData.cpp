@@ -54,6 +54,7 @@
 #include "RexxCode.hpp"
 #include "RexxActivity.hpp"
 #include "SourceFile.hpp"
+#include "ProtectedObject.hpp"
 #include SYSREXXSAA
 
 /*********************************************************************/
@@ -147,10 +148,9 @@ RexxMethod *SysRestoreProgram(
                                        /* read the entire file in one shot  */
     fread(buffer->data+line_end_size, 1, buffersize, Handle);
     fclose(Handle);                    /* close the file                    */
-    save(buffer);                      /* protect the buffer                */
+    ProtectedObject p(buffer);
                                        /* Create a method object            */
     Method = TheMethodClass->newRexxBuffer(FileName,buffer,(RexxClass *)TheNilObject);
-    discard(buffer);
     return Method;
   }
     fclose(Handle);                    /* close the file                    */
@@ -210,7 +210,7 @@ RexxMethod *SysRestoreProgramBuffer(
   StartPointer = ((char *)Buffer + Buffer->getObjectSize()) - BufferSize;
                                        /* fill in the buffer                */
   memcpy(StartPointer, MethodInfo, BufferSize);
-  save(Buffer);                        /* protect the buffer                */
+  ProtectedObject p(Buffer);
                                        /* "puff" this out usable form       */
   Method = TheMethodClass->restore(Buffer, StartPointer);
   Source = Method->getSource();        /* and now the source object         */
@@ -219,7 +219,6 @@ RexxMethod *SysRestoreProgramBuffer(
   Source->setProgramName(Name);        /* originally saved under            */
                                        /* NOTE:  no source file reconnect   */
                                        /* is possible here                  */
-  discard_hold(Buffer);                /* protect the buffer                */
   return Method;                       /* return the unflattened method     */
 }
 
@@ -244,7 +243,7 @@ void SysSaveProgramBuffer(
   LONG          BufferLength;          /* length of the flattened method    */
   RexxString  * Version;               /* REXX version string               */
 
-  save(Method);                        /* lock the method down              */
+  ProtectedObject p(Method);
   FlatBuffer = Method->saveMethod();   /* flatten the method                */
                                        /* retrieve the length of the buffer */
   BufferLength = (LONG)FlatBuffer->current;
@@ -252,7 +251,6 @@ void SysSaveProgramBuffer(
   BufferAddress = MethodBuffer->data;  /* retrieve buffer starting address  */
                                        /* get the final buffer              */
   Buffer = (char *)SysAllocateResultMemory(BufferLength + CONTROLSZ);
-  discard_hold(Method);                /* release the collection lock       */
   OutBuffer->strptr = Buffer;          /* fill in the result pointer        */
                                        /* and the result length             */
   OutBuffer->strlength = BufferLength + CONTROLSZ;
@@ -296,9 +294,9 @@ void SysSaveTranslatedProgram(
   if (Handle == NULL)                  /* get an open error?                */
                                        /* got an error here                 */
     reportException(Error_Program_unreadable_output_error, File);
-  save(Method);                        /* and the method too                */
+  ProtectedObject p1(Method);
   FlatBuffer = Method->saveMethod();   /* flatten the method                */
-  save(FlatBuffer);                    /* protect the flattened one too     */
+  ProtectedObject p2(FlatBuffer);
                                        /* retrieve the length of the buffer */
   BufferLength = (LONG)FlatBuffer->current;
   MethodBuffer = FlatBuffer->buffer;   /* get to the actual data buffer     */
@@ -324,8 +322,6 @@ void SysSaveTranslatedProgram(
   fwrite(BufferAddress, 1, BufferLength, Handle);
   fclose(Handle);                      /* done saving                       */
   activity->requestAccess();           /* and reaquire the kernel lock      */
-  discard_hold(Method);                /* release the method now            */
-  discard_hold(FlatBuffer);            /* and the flattened method          */
 }
 
 /*********************************************************************/
@@ -372,7 +368,7 @@ RexxMethod *SysRestoreTranslatedProgram(
                                        /* read the file size                */
   BufferSize = Control.ImageSize;      /* get the method info size          */
   Buffer = new_buffer(BufferSize);     /* get a new buffer                  */
-  save(Buffer);                        /* protect the buffer                */
+  ProtectedObject p1(Buffer);
                                        /* position relative to the end      */
   StartPointer = ((char *)Buffer + Buffer->getObjectSize()) - BufferSize;
   activity->releaseAccess();           /* release the access                */
@@ -382,12 +378,10 @@ RexxMethod *SysRestoreTranslatedProgram(
   activity->requestAccess();           /* get the lock back                 */
                                        /* "puff" this out usable form       */
   Method = TheMethodClass->restore(Buffer, StartPointer);
-  save(Method);                        /* protect the method code           */
-  discard_hold(Buffer);                /* release the buffer protection     */
+  ProtectedObject p1(Method);
   Source = Method->getSource();        /* and now the source object         */
                                        /* switch the file name (this might  */
                                        /* be different than the name        */
   Source->setProgramName(FileName);    /* originally saved under            */
-  discard_hold(Method);                /* now release the lock on this      */
   return Method;                       /* return the unflattened method     */
 }

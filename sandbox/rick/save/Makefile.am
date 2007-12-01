@@ -185,7 +185,7 @@ platformHeaders = $(kernel_platform_unix_dir)/APIDefinitions.h \
                   $(kernel_platform_unix_dir)/SystemCommands.h \
                   $(kernel_platform_unix_dir)/SystemSemaphores.h \
                   $(kernel_platform_unix_dir)/ThreadSupport.hpp
-platformcommonHeaders = $(kernel_platform_common_dir)/ActivityTable.hpp
+platformcommonHeaders =
 runtimeHeaders = $(runtime_dir)/DeadObject.hpp \
                  $(runtime_dir)/GlobalNames.h \
                  $(runtime_dir)/MemorySegment.hpp \
@@ -423,7 +423,7 @@ parser_sources = $(parser_dir)/Clause.cpp \
                  $(parser_dir)/Scanner.cpp \
                  $(parser_dir)/SourceFile.cpp \
                  $(parser_dir)/Token.cpp
-kernel_platform_common_sources = $(kernel_platform_common_dir)/ActivityTable.cpp
+kernel_platform_common_sources =
 #                        SharedMemorySupport.cpp
 #                        SystemSemaphores.cpp
 platform_sources = $(kernel_platform_unix_dir)/ErrorMessages.cpp \
