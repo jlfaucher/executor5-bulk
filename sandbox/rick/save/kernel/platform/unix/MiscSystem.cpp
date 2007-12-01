@@ -58,10 +58,10 @@
 #include "RexxActivity.hpp"
 #include "RexxActivation.hpp"
 #include "ThreadSupport.hpp"
+#include "ActivityManager.hpp"
 #include <stdlib.h>
 #include <unistd.h>
 #include <errno.h>
-#include "ActivityTable.hpp"
 
 #if defined( HAVE_SIGNAL_H )
 # include <signal.h>
@@ -220,7 +220,7 @@ RexxString * SysGetCurrentQueue(void)
   RexxString * queue_name;             /* name of the queue object          */
 
                                        /* get the default queue             */
-  queue = (RexxString *)ActivityManager::currentActivity->local->at(OREF_REXXQUEUE);
+  queue = (RexxString *)ActivityManager::localEnvironment->at(OREF_REXXQUEUE);
 
   if (queue == OREF_NULL)              /* no queue?                         */
     queue_name = OREF_SESSION;         /* use the default name              */
