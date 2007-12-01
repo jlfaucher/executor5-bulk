@@ -1,6 +1,6 @@
 #!/usr/bin/rexx
 /*
-   name:             ooRexx.Base.SourceFile.testUnit
+   name:             SourceFile.testGroup
    author:           Mark Miesfeld
    date:             10/29/2007
    version:          0.1.0
@@ -72,32 +72,30 @@ use arg cmdLine
   if .ooRexxUnit.OSName \= "WINDOWS" & .ooRexxUnit.OSName \== "LINUX" then return .list~new
   if .ooRexxUnit.OSName == "LINUX" & .ooRexxUnit.shellName \== "bash" then return .list~new
 
-  testUnitClass = .ooRexx.Base.SourceFile.testUnit
-
-  testUnitList = .list~of(.array~of(testUnitClass, .list~new))
+  testGroupList = .list~of(.array~of(.SourceFile.testGroup, .list~new))
 
   srcLines = .array~new
   do i = 1 to 150 until srcLines[i] = "*/"
      srcLines[i] = sourceline(i)
   end
 
-  call makeDirTestInfo testUnitClass, srcLines
+  call makeDirTestInfo .SourceFile.testGroup, srcLines
 
   parse source s
-  testUnitClass~testCaseInfo~setentry("test_Case-source", s)
+  .SourceFile.testGroup~testCaseInfo~setentry("test_Case-source", s)
 
   if \ .local~hasentry("bRunTestsLocally") then
      .local~bRunTestsLocally = .true
 
   if .bRunTestsLocally == .true then do
     ts = .TestSuite~new
-    ts~addTest(.TestSuite~new(testUnitClass))
+    ts~addTest(.TestSuite~new(.SourceFile.testGroup))
 
     testResult = ts~run
     call simpleFormatTestResults testResult
   end
 
-return testUnitList
+return testGroupList
 -- End of entry point.
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
@@ -105,10 +103,10 @@ return testUnitList
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::requires "FileUtils.cls"   -- FileUtils.cls has a requires for OOREXXUNIT.CLS
 
-/* class: ooRexx.Base.SourceFile.testUnit- - - - - - - - - - - - - - - - - - -*\
+/* class: SourceFile.testGroup - - - - - - - - - - - - - - - - - - - - - - - -*\
 
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class ooRexx.Base.SourceFile.testUnit public subclass TestCase
+::class SourceFile.testGroup public subclass TestCase
 
   -- Notes for logical not.  The logical not character is 0xAA.  How it appears
   -- on a screen or in an editor is dependent on a number of things, like the
@@ -356,5 +354,5 @@ return testUnitList
     self~assertSame("Error exit, program rc must be" expectedRC, expectedRC, prgRC)
 
 
--- End of class: ooRexx.Base.SourceFile.testUnit
+-- End of class: SourceFile.testGroup
 

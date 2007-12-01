@@ -1,6 +1,6 @@
 #!/usr/bin/rexx
 /*
-   name:             ooRexx.Base.String.testUnit
+   name:             RESULT_RC_SIGL.testGroup
    author:           Rony G. Flatscher
    date:             2005-10-22
    version:          1.0.1
@@ -63,16 +63,16 @@
 
 
 -------------------------------------------------------------------------------------------
--- ===> adapt the "testUnitList" to your testCase classes; each element in the list is <===
+-- ===> adapt the "testGroupList" to your testCase classes; each element in the list is <===
 -- ===> an array object, the first element containing the testCase class object, the   <===
 -- ===> second element is a list of test method names which are regarded to be         <===
 -- ===> mandatory (if the list remains empty all test methods are mandatory)           <===
 
-   /* list of array objects, each containing the testUnit class object and an
+   /* list of array objects, each containing the testGroup class object and an
       optional list of mandatory test case methods name                       */
 
 mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
-testUnitList=.list~of( .array~of(.ooRexx.Base.RESULT_RC_SIGL.testUnit,  mandatoryTestMethods) )
+testGroupList=.list~of( .array~of(.RESULT_RC_SIGL.testGroup,  mandatoryTestMethods) )
 
 
 -------------------------------------------------------------------------------------------
@@ -86,17 +86,17 @@ end
       -- supply information for the testClass(es) in this file; the class attribute
       -- "TestCaseInfo" (a directory object, index points to a queue) will store
       -- the parsed infos
-aTestUnitClass=testUnitList~at(testUnitList~first)[1] -- get first testClass
+aTestGroupClass=testGroupList~at(testGroupList~first)[1] -- get first testClass
 
    -- will parse the array lines and store result in class object
-call makeDirTestInfo aTestUnitClass, arrLines
-tmpDir=aTestUnitClass~TestCaseInfo
+call makeDirTestInfo aTestGroupClass, arrLines
+tmpDir=aTestGroupClass~TestCaseInfo
 parse source s   -- op_sys invocationType fullPathToThisFile
 tmpDir~setentry("test_Case-source", s)
 
    -- now add this directory to other testCase classes, if any left
-do arr over testUnitList
-   if arr[1]=aTestUnitClass then iterate  -- already handled
+do arr over testGroupList
+   if arr[1]=aTestGroupClass then iterate  -- already handled
    arr[1]~TestCaseInfo=tmpDir             -- save info in class object
 end
 
@@ -108,11 +108,11 @@ if .local~hasentry("bRunTestsLocally")=.false then
 if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
 do
    ts=.testSuite~new             -- create a testSuite
-   do arr over testUnitList
+   do arr over testGroupList
       -- create a testSuite for the given test case class, use all its testmethods
       ts~addTest( .testSuite~new(arr[1]))
    end
-   -- testResult=.testSuite~new(testUnitClass)~run
+   -- testResult=.testSuite~new(testGroupClass)~run
    testResult=ts~run       -- now run all the tests
 
    call simpleDumpTestResults testResult
@@ -120,13 +120,13 @@ end
 
    /* return list of array objects containing test case classes and
       optionally list of mandatory test methods                      */
-return testUnitList
+return testGroupList
 
 
 
 ::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
 
-::class "ooRexx.Base.RESULT_RC_SIGL.testUnit" subclass TestCase public
+::class "RESULT_RC_SIGL.testGroup" subclass TestCase public
 
 ::method init
   expose fileName

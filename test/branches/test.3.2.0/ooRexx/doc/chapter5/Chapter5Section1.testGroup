@@ -1,6 +1,6 @@
 #!/usr/bin/rexx
 /*
-   name:             ooRexx.doc.chapter5.section1.testUnit
+   name:             Chapter5Section1.testGroup
    author:           Mark Miesfeld
    date:             2007-08-09
    version:          0.0.9
@@ -59,20 +59,17 @@
 /*----------------------------------------------------------------------------*/
 use arg cmdLine
 
-  -- A convenience since the test case class name is so long.
-  testUnitClass = .ooRexx.doc.chapter5.section1.testUnit
-
-  testUnitList = .list~of( .array~of( testUnitClass, .list~new ) )
+  testGroupList = .list~of( .array~of( .Chapter5Section1.testGroup, .list~new ) )
 
   srcLines = .array~new
   do i = 1 to 150 until srcLines[ i ] = "*/"
      srcLines[ i ] = sourceline( i )
   end
 
-  call makeDirTestInfo testUnitClass, srcLines
+  call makeDirTestInfo .Chapter5Section1.testGroup, srcLines
 
   parse source s
-  testUnitClass~testCaseInfo~setentry( "test_Case-source", s )
+  .Chapter5Section1.testGroup~testCaseInfo~setentry( "test_Case-source", s )
 
   -- If there is no entry in the .local directory of 'bRunTestsLocally' then add
   -- one with a value of true.
@@ -83,13 +80,13 @@ use arg cmdLine
   -- caller of this test unit.
   if .bRunTestsLocally == .true then do
     ts = .TestSuite~new
-    ts~addTest( .TestSuite~new( testUnitClass ) )
+    ts~addTest( .TestSuite~new( .Chapter5Section1.testGroup ) )
 
     testResult = ts~run
     call simpleDumpTestResults testResult
   end
 
-return testUnitList
+return testGroupList
 -- End of entry point.
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
@@ -97,7 +94,7 @@ return testUnitList
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::requires "OOREXXUNIT.CLS"
 
-/* class: ooRexx.doc.chapter5.section1.testUnit- - - - - - - - - - - - - - - -*\
+/* class: Chapter5Section1.testGroup - - - - - - - - - - - - - - - - - - - - -*\
 
     The Chapter 5, section 1 test unit class.  Each method starting with 'test_'
     is an individual test case for an example in this section of the
@@ -108,7 +105,7 @@ return testUnitList
     that the section numbers will change in the documentation.
 
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class ooRexx.doc.chapter5.section1.testUnit public subclass TestCase
+::class Chapter5Section1.testGroup public subclass TestCase
 
   /* test_object_start( )- - - - - - - - - - - - - - - - - - - - - - - - - - -*\
 
@@ -246,7 +243,7 @@ return testUnitList
 
   -- End test_object_ObjectNameEquals( )
 
--- End of class: ooRexx.doc.chapter5.section1.testUnit
+-- End of class: Chapter5Section1.testGroup
 
 
 -- Helper class for the test_object_start test case.

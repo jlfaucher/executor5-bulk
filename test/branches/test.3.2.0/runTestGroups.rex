@@ -1,7 +1,7 @@
 #!/usr/bin/rexx
 /*
    name:             runTestUnits.rex
-   author:           Rony G. Flatscher
+   authors:          Rony G. Flatscher, Mark Miesfeld
    date:             2005-08-20
    version:          1.0.5
 
@@ -13,11 +13,13 @@
                      2006-12-14, ---rgf, added hashbang line
                      2007-08-17, ---rgf, using ooRexxUnit environment definitions
                      2007-08-18, ---mm, add formatter option, refactor code
+                     2007-11-29, ---mm, The nonmenclature is changed from testUnits
+                                        to testGroups
 
    license:          CPL 1.0 (Common Public License v1.0, see below)
 
    languageLevel:    6.02
-   purpose:          Load all ooRexx-base testUnits and run all the tests contained therein.
+   purpose:          Load all ooRexx testGroups and run all the tests contained therein.
 
    remark:           Serves as an example of how to use and drive the ooRexxUnit framework
 
@@ -111,9 +113,10 @@ cmdLine = arg(1)
    end
    -- End select
 
+
 return 0
 
-::requires ooRexxUnit.cls
+::requires "OOREXXUNIT.CLS"
 
 ::routine getSearchFile
    use arg cmdOpts
@@ -125,7 +128,7 @@ return 0
    if directory~right(1) \== .ooRexxUnit.directory.separator then
       directory = directory || .ooRexxUnit.directory.separator
 
-return directory || "*.testUnit"
+return directory || "*.testGroup"
 
 ::routine getFormatterOpt
    use arg cmdOpts
@@ -185,6 +188,6 @@ return h~intersection(cmdOpts)~items <> 0
    say '            -2 == simpleFormatTestResults()'
    say '            default is -1'
    say
-   say '  path2directory  path to directory to search for "*.testUnit" files'
+   say '  path2directory  path to directory to search for "*.testGroup" files'
 
 return 0

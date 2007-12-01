@@ -1,6 +1,6 @@
 #!/usr/bin/rexx
 /*
-   name:             ooRexx.Base.BIF.LINES.testUnit
+   name:             LINES.testGroup
    authors:          Mark Miesfeld
    date:             11/25/2007
    version:          1.0.0
@@ -9,7 +9,7 @@
    languageLevel:    6.0
    purpose:          A collection of tests for the lines() builtin function.
 
-   remark:           Test units are always works in progress.  Any one should
+   remark:           Test groups are always works in progress.  Any one should
                      feel free to add, update, improve, or correct tests in this
                      collection of tests.
 
@@ -58,31 +58,30 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-  testUnitClass = .ooRexx.Base.BIF.LINES.testUnit
-  testUnitList = .list~of(.array~of(testUnitClass, .list~new))
+  testGroupList = .list~of(.array~of(.LINES.testGroup, .list~new))
 
   srcLines = .array~new
   do i = 1 to 150 until srcLines[i] = "*/"
      srcLines[i] = sourceline(i)
   end
 
-  call makeDirTestInfo testUnitClass, srcLines
+  call makeDirTestInfo .LINES.testGroup, srcLines
 
   parse source s
-  testUnitClass~testCaseInfo~setentry("test_Case-source", s)
+  .LINES.testGroup~testCaseInfo~setentry("test_Case-source", s)
 
   if \ .local~hasentry("bRunTestsLocally") then
      .local~bRunTestsLocally = .true
 
   if .bRunTestsLocally == .true then do
     ts = .TestSuite~new
-    ts~addTest(.TestSuite~new(testUnitClass))
+    ts~addTest(.TestSuite~new(.LINES.testGroup))
 
     testResult = ts~run
     call simpleFormatTestResults testResult
   end
 
-return testUnitList
+return testGroupList
 -- End of entry point.
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
@@ -90,10 +89,10 @@ return testUnitList
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::requires "FileUtils.cls"
 
-/* class: ooRexx.Base.BIF.LINES.testUnit - - - - - - - - - - - - - - - - - - -*\
+/* class: LINES.testGroup- - - - - - - - - - - - - - - - - - - - - - - - - - -*\
 
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class ooRexx.Base.BIF.LINES.testUnit public subclass TestCase
+::class "LINES.testGroup" public subclass TestCase
 
   ::method test_stdin_normal
 
@@ -291,11 +290,11 @@ return testUnitList
 
     ::method test_bad_opt_goodFile
       self~expectSyntax("40.904")
-      j = lines('ooRexx.Base.BIF.LINES.testUnit', 0)
+      j = lines('LINES.testGroup', 0)
 
     ::method test_too_many_opt_goodFile
       self~expectSyntax("40.4")
-      j = lines('ooRexx.Base.BIF.LINES.testUnit', 'NORMAL', 'COUNT')
+      j = lines('LINES.testGroup', 'NORMAL', 'COUNT')
 
     ::method test_too_many_opt_stdin
       self~expectSyntax("40.4")
@@ -312,4 +311,4 @@ return testUnitList
       self~expectSyntax("40.904")
       j = lines(, "")
 
--- End of class: ooRexx.Base.BIF.LINES.testUnit
+-- End of class: LINES.testGroup
