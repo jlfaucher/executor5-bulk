@@ -1,6 +1,6 @@
 #!/usr/bin/rexx
 /*
-   name:             ooRexx.Base.Class.Queue.testUnit
+   name:             Queue.testGroup
    author:           Mark Miesfeld
    date:             2005-12-29
    version:          1.0.1
@@ -59,12 +59,12 @@
 /*----------------------------------------------------------------------------*/
 
 -- Create the test case list, (use all methods whose names start with test.)
-testUnitList=.list~of( .array~of( .ooRexx.Base.Class.Queue.testUnit, .list~new ) );
+testGroupList=.list~of( .array~of( .Queue.testGroup, .list~new ) );
 
 -- Turn on extra messaging, if requested.  This feature is used for debugging
 -- this specific test unit.  If this test unit is called by itself the caller
 -- can specify that the test unit be more *verbose*.
-.ooRexx.Base.Class.Queue.testUnit~setVerbose( arg( 1 ) );
+.Queue.testGroup~setVerbose( arg( 1 ) );
 
 -- Read this program file's metadata and save it in the TestCaseInfo attribute
 -- of each test case class.
@@ -73,19 +73,19 @@ do i = 1 to 150 until arrLines[ i ] = "*/"
    arrLines[ i ] = sourceline( i )
 end
 
-aTestUnitClass = testUnitList~at( testUnitList~first )[ 1 ];
+aTestGroupClass = testGroupList~at( testGroupList~first )[ 1 ];
 
-call makeDirTestInfo aTestUnitClass, arrLines;
+call makeDirTestInfo aTestGroupClass, arrLines;
 
-directoryObj = aTestUnitClass~TestCaseInfo;
+directoryObj = aTestGroupClass~TestCaseInfo;
 parse source s;
 directoryObj~setentry( "test_Case-source", s );
 
 -- Now add this directory object to any other TestCase classes in the list.
 -- (In this specific case, there are no other TestCase classes.  This is left
 -- as a template for other TestCase files.)
-do arr over testUnitList
-   if arr[ 1 ] = aTestUnitClass then
+do arr over testGroupList
+   if arr[ 1 ] = aTestGroupClass then
      iterate;  -- Already handled.
    arr[ 1 ]~TestCaseInfo = directoryObj;
 end
@@ -99,20 +99,20 @@ if \ .local~hasentry( "bRunTestsLocally" ) then
 if .bRunTestsLocally = .true then do
   suite = .TestSuite~new;
 
-  rrc =  addTestCases( suite, testUnitList );
+  rrc =  addTestCases( suite, testGroupList );
   if rrc <> 0 then do
-    say "ooRexx.Base.Class.Queue.testUnit:";
+    say "Queue.testGroup:";
     say "  Some type of internal error, addTestCases( ) returns an error code.";
     say "    Return code:" rrc;
     say;
-    return testUnitList;
+    return testGroupList;
   end
 
   -- Run the tests.
   z = time( 'E' );
   testResult = suite~run;
 
-  if .ooRexx.Base.Class.Queue.TestUnit~verbose > 0 then
+  if .Queue.testGroup~verbose > 0 then
     say 'Executing all tests took' time( 'R' ) 'seconds.'
 
   -- Print the results.
@@ -120,7 +120,7 @@ if .bRunTestsLocally = .true then do
 end
 
 -- Return the test case list.
-return testUnitList
+return testGroupList
 -- End of entry point.
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
@@ -183,7 +183,7 @@ return testUnitList
 return 0;
 -- End addTestCases( suite, list )
 
-/* class: ooRexx.Base.Class.Queue.TestUnit - - - - - - - - - - - - - - - - - -*\
+/* class: Queue.testGroup - - - - - - - - - - - - - - - - - -*\
 
     A test case class to regression test the .queue class.  The .queue class is
     one of the 'collection' classes supplied by Open Object REXX.
@@ -199,7 +199,7 @@ return 0;
       November 11, 2005
 
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class "ooRexx.Base.Class.Queue.TestUnit" public subclass TestCase;
+::class "Queue.testGroup" public subclass TestCase;
 
   /* test_new( ) - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
       Test the .queue class method: new.
@@ -274,7 +274,7 @@ return 0;
      */
     /*
     if self~class~verbose < 4 then do
-      say 'ooRexx.Base.Class.Queue.testUnit:';
+      say 'Queue.testGroup:';
       say '  Skipping lengthy test_newReptitively test.';
       say;
       return;
@@ -1067,5 +1067,5 @@ return 0;
   return 0;
   -- End printObjectArray( )
 
--- End of class: ooRexx.Base.Class.Queue.TestUnit
+-- End of class: Queue.testGroup
 

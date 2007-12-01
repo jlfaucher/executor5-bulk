@@ -1,24 +1,24 @@
 #!/usr/bin/rexx
 /*
-   name:             ooRexx.Base.Simple.Template.testUnit
+   name:             template.testGroup
    author:           <name>
    date:             <date>
    version:          0.0.0
    changed:
 
    languageLevel:    6.0
-   purpose:          A simple template file for starting test units.
+   purpose:          A simple template file for starting test groups.
                      <put your purpose above>
 
    remark:           <put any extra remarks here.  not necessarily needed.>
-                     The example test units have a lot of comment and other
+                     The example test groups have a lot of comment and other
                      cruft in them that make them good for learning, but not
                      so good for a boiler-plate file.  This file is a stripped
-                     down template that can be used to start a test unit by
+                     down template that can be used to start a test group by
                      someone past the initial learning stage.
 
-                     <search and replace ooRexx.Base.Simple.Template.testUnit
-                      with the real test unit name>
+                     <search and replace template.testGroup
+                      with the real test group name>
 
                      <strip out this remark section>
 
@@ -68,26 +68,24 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-  testUnitClass = .ooRexx.Base.Simple.Template.testUnit
-
-  testUnitList = .list~of(.array~of(testUnitClass, .list~new))
+  testUnitList = .list~of(.array~of(.template.testGroup, .list~new))
 
   srcLines = .array~new
   do i = 1 to 150 until srcLines[i] = "*/"
      srcLines[i] = sourceline(i)
   end
 
-  call makeDirTestInfo testUnitClass, srcLines
+  call makeDirTestInfo .template.testGroup, srcLines
 
   parse source s
-  testUnitClass~testCaseInfo~setentry("test_Case-source", s)
+  .template.testGroup~testCaseInfo~setentry("test_Case-source", s)
 
   if \ .local~hasentry("bRunTestsLocally") then
      .local~bRunTestsLocally = .true
 
   if .bRunTestsLocally == .true then do
     ts = .TestSuite~new
-    ts~addTest(.TestSuite~new(testUnitClass))
+    ts~addTest(.TestSuite~new(.template.testGroup))
 
     testResult = ts~run
     call simpleFormatTestResults testResult
@@ -101,10 +99,10 @@ return testUnitList
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::requires "OOREXXUNIT.CLS"
 
-/* class: ooRexx.Base.Simple.Template.testUnit - - - - - - - - - - - - - - - -*\
+/* class: template.testGroup - - - - - - - - - - - - - - - - - - - - - - - - -*\
 
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class ooRexx.Base.Simple.Template.testUnit public subclass TestCase
+::class "template.testGroup" public subclass TestCase
 
   ::method test_YYY
     self~assertTrue(".true must be true", .true)
@@ -113,4 +111,4 @@ return testUnitList
     self~assertSame("'dog' is the same as 'dog'", 'dog', 'dog')
 
 
--- End of class: ooRexx.Base.Simple.Template.testUnit
+-- End of class: template.testGroup

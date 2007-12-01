@@ -1,6 +1,6 @@
 #!/usr/bin/rexx
 /*
-   name:             ooRexx.samples.ooDialog.fileNameDialog_demo.testUnit
+   name:             fileNameDialog_demo.testGroup
    author:           Mark Miesfeld
    date:             2007-08-13
    version:          0.0.9
@@ -9,25 +9,25 @@
    languageLevel:    6.0
    purpose:          Test the fileNameDialog_demo ooRexx program
 
-   remark:           A primary reason for this test unit is to ensure the sample
-                     program shipped with the release package of ooRexx runs
-                     as expected.
+   remark:           A primary reason for this test group is to ensure the
+                     sample program shipped with the release package of ooRexx
+                     runs as expected.
 
-                     If all samples have a test unit, then an automated test can
-                     be run after a build to ensure all sample programs will
+                     If all samples have a test group, then an automated test
+                     can be run after a build to ensure all sample programs will
                      execute.
 
                      This is a Windows only test.  This test needs to be run
                      with a standard ooRexx installation.
 
-                     This test unit is a work in progress.  Please feel free to
+                     This test group is a work in progress.  Please feel free to
                      add to it.  The idea is to work through all the options of
                      the sample program.  A generic killExample() method is
                      started, but may not be finished.  The method would be used
-                     to shut down the sample program if the test unit gets
+                     to shut down the sample program if the test group gets
                      'stuck.'
 
-                     The test unit should also serve as an example of how to
+                     The test group should also serve as an example of how to
                      automate the execution of an ooDialog program.
 
    license:          CPL 1.0 (Common Public License v1.0, see below)
@@ -85,20 +85,17 @@ use arg cmdLine
   call (prgFile)
   j = deleteFile(prgFile)
 
-  -- A convenience since the test case class name is so long.
-  testUnitClass = .ooRexx.samples.ooDialog.fileNameDialog_demo.testUnit
-
-  testUnitList = .list~of( .array~of( testUnitClass, .list~new ) )
+  testGroupList = .list~of( .array~of( .fileNameDialog_demo.testGroup, .list~new ) )
 
   srcLines = .array~new
   do i = 1 to 150 until srcLines[ i ] = "*/"
      srcLines[ i ] = sourceline( i )
   end
 
-  call makeDirTestInfo testUnitClass, srcLines
+  call makeDirTestInfo .fileNameDialog_demo.testGroup, srcLines
 
   parse source s
-  testUnitClass~testCaseInfo~setentry( "test_Case-source", s )
+  .fileNameDialog_demo.testGroup~testCaseInfo~setentry( "test_Case-source", s )
 
   -- If there is no entry in the .local directory of 'bRunTestsLocally' then add
   -- one with a value of true.
@@ -106,16 +103,16 @@ use arg cmdLine
      .local~bRunTestsLocally = .true
 
   -- Now honor the setting of bRunTestsLocally, which may have been set by a
-  -- caller of this test unit.
+  -- caller of this test group.
   if .bRunTestsLocally == .true then do
     ts = .TestSuite~new
-    ts~addTest( .TestSuite~new( testUnitClass ) )
+    ts~addTest( .TestSuite~new( .fileNameDialog_demo.testGroup ) )
 
     testResult = ts~run
     z = simpleFormatTestResults( testResult )
   end
 
-return testUnitList
+return testGroupList
 -- End of entry point.
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
@@ -123,9 +120,9 @@ return testUnitList
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::requires "FileUtils.cls"
 
-/* class: ooRexx.samples.ooDialog.fileNameDialog_demo.testUnit - - - - - - - -*\
+/* class: fileNameDialog_demo.testGroup- - - - - - - - - - - - - - - - - - - -*\
 
-  The test unit class will start the example program and then use the
+  The test group class will start the example program and then use the
   WindowObject class to locate the various Windows created by the program and
   push buttons to drive the program.
 
@@ -133,7 +130,7 @@ return testUnitList
   invoked in order, sorted by method name, by the framework.  This fact is
   used to ensure the correct order of execution.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class ooRexx.samples.ooDialog.fileNameDialog_demo.testUnit public -
+::class fileNameDialog_demo.testGroup public -
         subclass TestCase
 
   ::method test_001_ooRexxInstalled
@@ -329,4 +326,4 @@ return testUnitList
   ::method windowFinder attribute class
   ::method launcher     attribute class
 
--- End of class: ooRexx.samples.ooDialog.fileNameDialog_demo.testUnit
+-- End of class: fileNameDialog_demo.testGroup

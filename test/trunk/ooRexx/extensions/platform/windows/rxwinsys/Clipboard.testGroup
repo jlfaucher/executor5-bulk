@@ -1,6 +1,6 @@
 #!/usr/bin/rexx
 /*
-   name:             ooRexx.Extensions.Platform.Windows.RxWinSys.Clipboard.testUnit
+   name:             Clipboard.testGroup
    author:           Lee Peedin
    date:             2007/10/09
    version:          1.0
@@ -77,13 +77,11 @@
     call (prgFile)
     j = deleteFile(prgFile)
 
-
-testUnitClass=.ooRexx.Extensions.Platform.Windows.RxWinSys.Clipboard.testUnit  -- change accordingly
 -------------------------------------------------------------------------------------------
-   /* list of array objects, each containing the testUnit class object and an
+   /* list of array objects, each containing the testGroup class object and an
       optional list of mandatory test case methods name                       */
 mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
-testUnitList=.list~of(.array~of(testUnitClass, mandatoryTestMethods))
+testGroupList=.list~of(.array~of(.Clipboard.testGroup, mandatoryTestMethods))
 
 -------------------------------------------------------------------------------------------
 -- ===> the following code needs not to be individualized                              <===
@@ -96,16 +94,16 @@ end
       -- supply information for the testClass(es) in this file; the class attribute
       -- "TestCaseInfo" (a directory object, index points to a queue) will store
       -- the parsed infos
-aTestUnitClass=testUnitList~at(testUnitList~first)[1] -- get first testClass
+aTestGroupClass=testGroupList~at(testGroupList~first)[1] -- get first testClass
 
    -- will parse the array lines and store result in class object
-call makeDirTestInfo aTestUnitClass, arrLines
-tmpDir=aTestUnitClass~TestCaseInfo
+call makeDirTestInfo aTestGroupClass, arrLines
+tmpDir=aTestGroupClass~TestCaseInfo
 parse source s   -- op_sys invocationType fullPathToThisFile
 tmpDir~setentry("test_Case-source", s)
    -- now add this directory to other testCase classes, if any left
-do arr over testUnitList
-   if arr[1]=aTestUnitClass then iterate  -- already handled
+do arr over testGroupList
+   if arr[1]=aTestGroupClass then iterate  -- already handled
    arr[1]~TestCaseInfo=tmpDir             -- save info in class object
 end
 
@@ -117,11 +115,11 @@ if .local~hasentry("bRunTestsLocally")=.false then
 if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
 do
    ts=.testSuite~new             -- create a testSuite
-   do arr over testUnitList
+   do arr over testGroupList
       -- create a testSuite for the given test case class, use all its testmethods
       ts~addTest( .testSuite~new(arr[1]))
    end
-   -- testResult=.testSuite~new(testUnitClass)~run
+   -- testResult=.testSuite~new(testGroupClass)~run
    testResult=ts~run       -- now run all the tests
 
     call simpleFormatTestResults testResult
@@ -129,7 +127,7 @@ end
 
    /* return list of array objects containing test case classes and
       optionally list of mandatory test methods                      */
-return testUnitList
+return testGroupList
 -- End of entry point.
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
@@ -139,7 +137,7 @@ return testUnitList
 ::requires "FileUtils.cls"
 
 -- class named exactly like file
-::class "ooRexx.Extensions.Platform.Windows.RxWinSys.Clipboard.testUnit" subclass TestCase public
+::class "Clipboard.testGroup" subclass TestCase public
 
 ::method 'test_01Create'
     .local~cp = .WindowsClipBoard~new

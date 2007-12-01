@@ -1,6 +1,6 @@
 #!/usr/bin/rexx
 /*
-   name:             ooRexx.Samples.drives.testUnit
+   name:             drives.testGroup
    authors:          Mark Miesfeld
    date:             11/24/2007
    version:          1.0.0
@@ -11,8 +11,9 @@
                      with the release package works as expected.  This is a QA
                      test more than a collection of unit tests.
 
-   remark:           This is a Windows only test unit.  This test unit has more
-                     comment in it than needed so it can serve as an example.
+   remark:           This is a Windows only test group.  This test group has
+                     more comment in it than needed so it can serve as an
+                     example.
 
    license:          CPL 1.0 (Common Public License v1.0, see below)
    link:
@@ -58,35 +59,33 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-  testUnitClass = .ooRexx.Samples.drives.testUnit
-
   -- Windows only test.
   if ooRexxUnit.getOSName() <> "WINDOWS" then return .list~new
 
-  testUnitList = .list~of(.array~of(testUnitClass, .list~new))
+  testGroupList = .list~of(.array~of(.drives.testGroup, .list~new))
 
   srcLines = .array~new
   do i = 1 to 150 until srcLines[i] = "*/"
      srcLines[i] = sourceline(i)
   end
 
-  call makeDirTestInfo testUnitClass, srcLines
+  call makeDirTestInfo .drives.testGroup, srcLines
 
   parse source s
-  testUnitClass~testCaseInfo~setentry("test_Case-source", s)
+  .drives.testGroup~testCaseInfo~setentry("test_Case-source", s)
 
   if \ .local~hasentry("bRunTestsLocally") then
      .local~bRunTestsLocally = .true
 
   if .bRunTestsLocally == .true then do
     ts = .TestSuite~new
-    ts~addTest(.TestSuite~new(testUnitClass))
+    ts~addTest(.TestSuite~new(.drives.testGroup))
 
     testResult = ts~run
     j = simpleFormatTestResults(testResult)
   end
 
-return testUnitList
+return testGroupList
 -- End of entry point.
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
@@ -94,28 +93,29 @@ return testUnitList
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::requires "FileUtils.cls"  -- FileUtils.cls includes OOREXXUNIT.CLS
 
-/* class: ooRexx.Samples.drives.testUnit - - - - - - - - - - - - - - - - - - -*\
-  The main purpose of this test unit is to execute the sample program to assert
+/* class: drives.testGroup - - - - - - - - - - - - - - - - - - -*\
+  The main purpose of this test group is to execute the sample program to assert
   that the sample: 1.) runs 2.) completes normally.  It is not the purpose to
   prove that SysDriveMap(), etc. are operating correctly.
 
-  The test unit is broken down into 3 tests.  1. ooRexx is installed correctly
+  The test group is broken down into 3 tests.  1. ooRexx is installed correctly
   and the sample program exists.  2. The sample program executes.  3. It
   completes as expected.
 
   Note that each of these tests is dependent on the preceding test passing.
   This is *not* the usual case for unit tests, where normally each unit test
   is independent of the others.  Because of the dependence of each phase of the
-  test unit on the preceding phase, a control is used to check that the
+  test group on the preceding phase, a control is used to check that the
   preceding phase passed.  And, the test methods are named such that they will
   be invoked in order.  (This is dependent on a featue of the framework that
   sorts the test method names alphabetically.)
 
-  Also, state information is stored in class attributes of the test unit.
+  Also, state information is stored in class attributes of the test group.
   Again, this is not the usual case for unit tests.  It arises from the fact
-  that this test unit is not really a unit test; it is a quality assurance test.
+  that this test group is not really a collection of unit tests; it is a quality
+  assurance test.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class ooRexx.Samples.drives.testUnit public subclass TestCase
+::class drives.testGroup public subclass TestCase
 
   ::method test_000_Exists
     self~class~stop = .true
@@ -213,4 +213,4 @@ return testUnitList
   ::method stop         attribute class
   ::method prgOutput    attribute class
 
--- End of class: ooRexx.Samples.drives.testUnit
+-- End of class: drives.testGroup
