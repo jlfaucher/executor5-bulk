@@ -2742,7 +2742,6 @@ int RexxActivity::messageSend(
   {
       rc = this->error(startDepth);      /* do error cleanup                  */
   }
-
   // give uninit objects a chance to run
   TheMemoryObject->runUninits();
   this->restoreNestedInfo(saveInfo);   /* now restore to previous nesting   */

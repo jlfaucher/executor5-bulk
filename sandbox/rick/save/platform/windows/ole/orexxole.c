@@ -100,6 +100,7 @@ VOID Rexx2Variant(RexxObject *RxObject, VARIANT *pVariant, VARTYPE DestVt, INT i
 BOOL fIsRexxArray(RexxObject *TestObject);
 BOOL fIsOLEObject(RexxObject *TestObject);
 BOOL fIsOleVariant(RexxObject *TestObject);
+BOOL createEmptySafeArray(VARIANT FAR *);
 BOOL fRexxArray2SafeArray(RexxObject *RxArray, VARIANT FAR *VarArray, INT iArgPos);
 BOOL fExploreTypeAttr( ITypeInfo *pTypeInfo, TYPEATTR *pTypeAttr, POLECLASSINFO pClsInfo );
 VARTYPE getUserDefinedVT( ITypeInfo *pTypeInfo, HREFTYPE hrt );
@@ -108,6 +109,7 @@ BOOL checkForOverride( VARIANT *, RexxObject *, VARTYPE, RexxObject **, VARTYPE 
 BOOL isOutParam( RexxObject *, POLEFUNCINFO, INT );
 VOID handleVariantClear( VARIANT *, RexxObject * );
 __inline BOOL okayToClear( RexxObject * );
+static void formatDispatchException(EXCEPINFO *, char *);
 
 int (__stdcall *creationCallback)(CLSID, IUnknown*) = NULL;
 void setCreationCallback(int (__stdcall *f)(CLSID, IUnknown*))
@@ -1614,6 +1616,34 @@ BOOL fIsOleVariant(RexxObject *TestObject)
     return FALSE;
 }
 
+/**
+ * Creates an empty safe array and configures the variant, VarArray, to contain
+ * it.
+ *
+ * @param VarArray  The variant to contain the empty safe array.
+ *
+ * @return True always.
+ */
+BOOL createEmptySafeArray(VARIANT FAR *VarArray)
+{
+    SAFEARRAY      *pSafeArray;
+    SAFEARRAYBOUND *pArrayBound;
+
+    pArrayBound = (SAFEARRAYBOUND*)ORexxOleAlloc(sizeof(SAFEARRAYBOUND));
+    pArrayBound->cElements = 0;
+    pArrayBound->lLbound = 0;
+
+    pSafeArray = SafeArrayCreate(VT_VARIANT, 1, pArrayBound);
+    if ( ! pSafeArray )
+        send_exception(Error_System_resources);
+
+    V_VT(VarArray) = VT_ARRAY | VT_VARIANT;
+    V_ARRAY(VarArray) = pSafeArray;
+
+    return true;
+}
+
+
 BOOL fRexxArray2SafeArray(RexxObject *RxArray, VARIANT FAR *VarArray, INT iArgPos)
 {
   BOOL            fDone = FALSE;
@@ -1640,6 +1670,15 @@ BOOL fRexxArray2SafeArray(RexxObject *RxArray, VARIANT FAR *VarArray, INT iArgPo
   if (sscanf(pString,"%ld",&lDimensions) != 1)
   {
     send_exception(Error_Interpretation_initialization);
+  }
+
+  /* OLE Automation objects can require an argument to IDispatch::Invoke be sent
+   * as an array (VT_ARRAY | VT_XXX)  There are definitely cases where an empty
+   * array is valid.
+   */
+  if ( lDimensions == 0 )
+  {
+      return createEmptySafeArray(VarArray);
   }
 
   /* alloc an array of lDimensions LONGs to hold the indices */
@@ -3001,6 +3040,11 @@ RexxMethod3(REXXOBJECT,                // Return type
   dp.rgvarg = pVarArgs;
   VariantInit(&sResult);
 
+  /* Zero out the exception structure, some OLE Automation objects are not well
+   * behaved.
+   */
+  ZeroMemory(&sExc, sizeof(EXCEPINFO));
+
   pResult = &sResult;
   if (pTypeInfo && pFuncInfo)
   {
@@ -3093,8 +3137,7 @@ RexxMethod3(REXXOBJECT,                // Return type
   }
   else
   {
-    BSTR bstrUnavail;
-    /* error occured */
+    /* An error occured */
     switch (hResult)
     {
       case DISP_E_BADPARAMCOUNT:
@@ -3104,23 +3147,8 @@ RexxMethod3(REXXOBJECT,                // Return type
         send_exception(Error_Invalid_Variant);
         break;
       case DISP_E_EXCEPTION:
-        bstrUnavail= lpAnsiToUnicode("unavailable", sizeof("unavailable"));
-        /* if there is a routine for deferred fill-in, call it */
-        if (sExc.pfnDeferredFillIn) {
-          (*sExc.pfnDeferredFillIn)(&sExc);
-          sprintf(szBuffer, "Code: %04x Source: %S Description: %S",
-                  sExc.wCode, sExc.bstrSource , sExc.bstrDescription);
-          SysFreeString(sExc.bstrSource);
-          SysFreeString(sExc.bstrDescription);
-          SysFreeString(sExc.bstrHelpFile);
-        } else {
-          sprintf(szBuffer, "Code: %08x Source: %S Description: %S",
-            sExc.wCode==0?sExc.scode:sExc.wCode,
-            sExc.bstrSource==NULL?bstrUnavail:sExc.bstrSource,
-            sExc.bstrDescription==NULL?bstrUnavail:sExc.bstrDescription);
-        }
-        ORexxOleFree(bstrUnavail);
-        send_exception1(Error_OLE_Exception,RexxArray1(RexxString(szBuffer)));
+        formatDispatchException(&sExc, szBuffer);
+        send_exception1(Error_OLE_Exception, RexxArray1(RexxString(szBuffer)));
         break;
       case DISP_E_MEMBERNOTFOUND:
         send_exception(Error_Unknown_OLE_Method);
@@ -3386,6 +3414,36 @@ __inline BOOL okayToClear( RexxObject *RxObject )
     return (RexxSend0(RxObject, "!CLEARVARIANT_") == RexxTrue);
   }
   return TRUE;
+}
+
+/**
+ * Convenience function to format the information returned from
+ * IDispatch::Invoke for DISP_E_EXCEPTION.
+ *
+ * @param pInfo   The exception information structure.
+ * @param buffer  Buffer in which to return the formatted information.
+ */
+static void formatDispatchException(EXCEPINFO *pInfo, char *buffer)
+{
+    const char *fmt = "Code: %08x Source: %S Description: %S";
+    BSTR bstrUnavail = lpAnsiToUnicode("unavailable", sizeof("unavailable"));
+
+    /* If there is a deferred fill-in routine, call it */
+    if ( pInfo->pfnDeferredFillIn )
+        pInfo->pfnDeferredFillIn(pInfo);
+
+    if ( pInfo->wCode )
+        fmt = "Code: %04x Source: %S Description: %S";
+
+    sprintf(buffer, fmt,
+            pInfo->wCode ? pInfo->wCode : pInfo->scode,
+            pInfo->bstrSource == NULL ? bstrUnavail : pInfo->bstrSource,
+            pInfo->bstrDescription == NULL ? bstrUnavail : pInfo->bstrDescription);
+
+    SysFreeString(pInfo->bstrSource);
+    SysFreeString(pInfo->bstrDescription);
+    SysFreeString(pInfo->bstrHelpFile);
+    ORexxOleFree(bstrUnavail);
 }
 
 //******************************************************************************

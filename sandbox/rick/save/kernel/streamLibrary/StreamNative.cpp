@@ -786,7 +786,6 @@ void implicit_open(
    fstat(stream_info->fh, &stat_info); /* get the file information          */
    if (stat_info.st_mode&S_IFCHR) {    /* is this a device?                 */
      set_nobuffer;                     /* turn off buffering                */
-
 #if defined(WIN32)
      /* reset _bufsiz to 1 character for COM ports */
      if (!strnicmp(stream_info->name_parameter, "COM", 3) &&
@@ -794,6 +793,11 @@ void implicit_open(
        stream_info->stream_file->_bufsiz = 1;
 #endif
    }
+   else
+   {
+       setvbuf(stream_info->stream_file, NULL,_IOFBF, 1024);
+   }
+
                                        /* persistent writeable stream?      */
    if (!_transient && !stream_info->flags.read_only) {
      if (stream_size(stream_info)) {   /* existing stream?                  */
@@ -1762,12 +1766,14 @@ RexxMethod3(long, stream_lines,
    STREAM_INFO *stream_info;           /* stream information                */
    long        quickflag=0;
 
-   if (strQuickFlag != 0)
-      if (stricmp(strQuickFlag,"n") == 0)
-        quickflag = 1;
-      else
-        if (stricmp(strQuickFlag,"c") != 0 && *strQuickFlag != '\0' )
-          send_exception(Error_Incorrect_method);
+   if (strQuickFlag != NULL)
+   {
+     char ch = toupper(*strQuickFlag);
+     if (ch == 'N')
+       quickflag = 1;
+     else if (ch != 'C')
+       send_exception(Error_Incorrect_method);
+   }
    stream_info = get_stream_info();    /* get the stream block              */
    if (!stream_info->flags.open)       /* not open yet?                     */
                                        /* do the open                       */
@@ -2463,6 +2469,10 @@ TTS *ttsp;
                                        /* no buffering requested?           */
    if (stat_info.st_mode&S_IFCHR || i_nobuffer)
      set_nobuffer;                     /* turn it off                       */
+   else
+   {
+       setvbuf(stream_info->stream_file, NULL,_IOFBF, 1024);
+   }
 
 /********************************************************************************************/
 /*          if it is a persistant stream put the write character pointer at the end         */

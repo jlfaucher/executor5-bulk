@@ -89,7 +89,6 @@ RexxMutableBuffer *RexxMutableBufferClass::newRexx(RexxObject **args, size_t arg
     bufferLength = string->getLength();
   }
 
-
                                         /* allocate the new object           */
   newBuffer = (RexxMutableBuffer *)new_object(sizeof(RexxMutableBuffer));
                                         /* set the behaviour from the class  */
