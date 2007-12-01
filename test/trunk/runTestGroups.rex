@@ -70,6 +70,7 @@ cmdLine = arg(1)
 
    switches = getSysFileTreeOpts(cmdOpts)
    formatter = getFormatterOpt(cmdOpts)
+   feedback = getFeedbackOpt(cmdOpts)
 
    -- If options are added, getSearchFile() has to remain last because it takes
    -- whatever is left.
@@ -88,8 +89,8 @@ cmdLine = arg(1)
    end
 
    ts=makeTestSuiteFromFileList(list)  -- create the testSuite object
-   call time "Reset"    -- start timer
-   tr=ts~run   -- run all the tests in the testSuite, retrieve the testResult object
+   call time "Reset"      -- start timer
+   tr=ts~run( , feedback) -- run all the tests in the testSuite, retrieve the testResult object
    e=time("Elapsed")
 
                -- show brief results
@@ -160,6 +161,13 @@ return opt
    if .nil <> opt then switches = switches||"S" -- add "S" switch for SysFileTree()
 return switches
 
+::routine getFeedbackOpt
+   use arg cmdOpts
+   feedback = .false
+   opt = cmdOpts~remove("-v")
+   if .nil <> opt then feedback = .true
+return feedback
+
 ::routine hasHelpOpt
    use arg cmdLine, cmdOpts
 
@@ -182,6 +190,7 @@ return h~intersection(cmdOpts)~items <> 0
    say '  of the following, separated by spaces:'
    say
    say "  -r      look in subdirectories recursively"
+   say "  -v      verbose (pass the 'feedback == true' option to TestSuite::run)"
    say '  -[1-9]  select formatter for printing results'
    say '            currently valid values are:'
    say '            -1 == simpleDumpTestResults()'
