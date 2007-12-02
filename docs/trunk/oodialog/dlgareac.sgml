@@ -572,58 +572,60 @@ DlgArea Object are:
 <section id="mthCorrectionFactor"><title>CorrectionFactor</title>
 <indexterm><primary>CorrectionFactor</primary>
 <secondary>DlgAreaU class</secondary></indexterm>
-<para>Adjusts the ratio of top & left margins to bottom &amp; right (default=1.05)
-Creating resizable Dialogs:
-</para>
 <programlisting>
 <![CDATA[
 >>--ADlgAreaU~CorrectionFactor----------------------------------------><
 ]]>
 </programlisting>
 
-<para></para>
+<para>An attribute containing the value used to adjust the ratio of the top &
+left margins to the bottom &amp; right margins. (The default correction factor
+is set to 1.05.) See the <link linkend="dlgareaubug">Possible Problems</link>
+section for some additional detail.
+</para>
 </section>
 
 <section id="dlgareaulasterror"><title>LastError</title>
 <indexterm><primary>LastError</primary>
 <secondary>DlgAreaU class</secondary></indexterm>
-<para>.nil or details of error parsing calling dialog's DefineDialog method.
-</para>
 <programlisting>
 <![CDATA[
 >>--ADlgAreaU~LastError-----------------------------------------------><
 ]]>
 </programlisting>
 
-<para></para>
+<para>An attribute holding the details if an error was encountered when parsing
+the calling dialog's DefineDialog method.  The value of the attribute is .nil if
+no error occurred.
+</para>
 </section>
 
 <section id="dlgareaunomove"><title>NoMove</title>
 <indexterm><primary>NoMove</primary>
 <secondary>DlgAreaU class</secondary></indexterm>
-<para>A set of Dialog Ids of widgets not to be moved during a resize.
-</para>
 <programlisting>
 <![CDATA[
->>--ADlgAreaU~NoResize------------------------------------------------><
+>>--ADlgAreaU~NoMove--------------------------------------------------><
 ]]>
 </programlisting>
 
-<para></para>
+<para>An attribute holding the set of Dialog Ids of widgets not to be moved
+during a resize event.
+</para>
 </section>
 
 <section id="dlgareaunoresize"><title>NoResize</title>
 <indexterm><primary>NoResize</primary>
 <secondary>DlgAreaU class</secondary></indexterm>
-<para>A set of Dialog Ids of widgets not to be resized during a resize.
-</para>
 <programlisting>
 <![CDATA[
 >>--ADlgAreaU~NoResize------------------------------------------------><
 ]]>
 </programlisting>
 
-<para></para>
+<para>An attribute holding the set of Dialog Ids of widgets not to be resized
+during a resize event.
+</para>
 </section>
 </section>
 
@@ -787,15 +789,15 @@ methods.
 <section id="dlgareaubug"><title>Possible Problems</title>
 <para>The DlgAreaU resize method can create slightly over-size margins on the
 left &amp; bottom of the Dialog.  To correct for this the DlgAreaU class has
-a <link linkend="mthCorrectionFactor">CorrectionFactor </link> attribute set by 
-default to 1.05 which in tests appears to neutralise this effect. If your 
-dialogs have over (or under) sized margins, you may be able to correct this in 
-your code by overiding the Correction Factor like this (for example):
+a <link linkend="mthCorrectionFactor">CorrectionFactor </link> attribute set by
+default to 1.05. In tests, this correction factor appears to neutralise the
+effect. If your dialogs have over (or under) sized margins, you may be able to
+correct this in your code by adjusting the Correction Factor. For example:
 </para>
 <programlisting>
 <![CDATA[
 U=.DlgAreaU~new(self)
-U~CorrectionFactor=1.05
+U~CorrectionFactor=1.07
 ]]>
 </programlisting>
 <para>You will have to experiment to find the apropriate setting for this
