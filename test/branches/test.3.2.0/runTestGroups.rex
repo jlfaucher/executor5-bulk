@@ -63,7 +63,8 @@
 /*----------------------------------------------------------------------------*/
 cmdLine = arg(1)
 
-   if cmdLine~words > 3 then return doHelp()
+   -- Quick check for incorrect command line.
+   if cmdLine~words > 4 then return doHelp()
 
    cmdOpts = .set~new
    if hasHelpOpt(cmdLine, cmdOpts) then return doHelp()
@@ -79,7 +80,7 @@ cmdLine = arg(1)
 
    say "searchFile="pp(searchFile)", SysFileTree()-switches:" pp(switches) "formatter:" formatter "..."
 
-      -- get all test unit files in current directory
+   -- Search for all the test group files in the specified directory.
    call sysFileTree searchFile, "tests.", switches
 
       -- create list of file names
