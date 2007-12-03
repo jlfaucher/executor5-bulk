@@ -495,6 +495,192 @@ RexxString *RexxNumberString::stringValue()
     return StringObj;                    /* all done, return new string       */
 }
 
+
+bool RexxNumberString::numberValue(wholenumber_t &result)
+/******************************************************************************/
+/* Function:  Convert a number string to a long value                         */
+/******************************************************************************/
+{
+    // convert using the default digits version
+    return this->numberValue(result, Numerics::DEFAULT_DIGITS);
+}
+
+bool RexxNumberString::unsignedNumberValue(stringsize_t &result)
+/******************************************************************************/
+/* Function:  Convert a number string to a long value                         */
+/******************************************************************************/
+{
+    // convert using the default digits version
+    return this->unsignedNumberValue(result, Numerics::DEFAULT_DIGITS);
+}
+
+bool RexxNumberString::numberValue(wholenumber_t &result, size_t numDigits)
+/******************************************************************************/
+/* Function:  Convert a number string to a long value                         */
+/******************************************************************************/
+{
+    // set up the default values
+
+    bool carry = false;
+    wholenumber_t numberExp = this->exp;
+    stringsize_t numberLength = this->length;
+    size_t intnum;
+
+    // if the number is exactly zero, then this is easy
+    if (this->sign == 0)
+    {
+        result = 0;
+        return true;
+    }
+    // is this easily within limits (very common)?
+    if (length <= numDigits && numberExp >= 0)
+    {
+        if (!createUnsignedValue(number, length, false, numberExp, SSIZE_MAX, intnum))
+        {
+            return false;                   // too big to handle
+        }
+        // adjust for the sign
+        result = ((wholenumber_t)intnum) * sign;
+    }
+
+    // this number either has decimals, or needs to be truncated/rounded because of
+    // the conversion digits value.  We need to make adjustments.
+
+    checkIntegerDigits(numDigits, numberLength, numberExp, carry);
+
+    // if because of this adjustment, the decimal point lies to the left
+    // of our first digit, then this value truncates to 0 (or 1, if a carry condition
+    // resulted).
+    if (-numberExp>= (wholenumber_t)numberLength)
+    {
+        // since we know a) this number is all decimals, and b) the
+        // remaining decimals are either all 0 or all 9s with a carry,
+        // this result is either 0 or 1.
+        result = carry ? 1 : 0;
+        return true;
+    }
+
+    // we process different bits depending on whether this is a negative or positive
+    // exponent
+    if (numberExp < 0)
+    {
+        // now convert this into an unsigned value
+        if (!createUnsignedValue(number, numberLength + numberExp, carry, 0, SSIZE_MAX, intnum))
+        {
+            return false;                   // to big to handle
+        }
+    }
+    else
+    {                             /* straight out number. just compute.*/
+        if (!createUnsignedValue(number, numberLength, carry, numberExp, SSIZE_MAX, intnum))
+        {
+            return false;                   // to big to handle
+        }
+    }
+
+    // adjust for the sign
+    result = ((wholenumber_t)intnum) * sign;
+    return true;
+}
+
+bool RexxNumberString::unsignedNumberValue(stringsize_t &result, size_t numDigits)
+/******************************************************************************/
+/* Function:  Convert a number string to an unsigned number value             */
+/******************************************************************************/
+{
+    // set up the default values
+
+    bool carry = false;
+    wholenumber_t numberExp = this->exp;
+    stringsize_t numberLength = this->length;
+    size_t intnum;
+
+    // if the number is exactly zero, then this is easy
+    if (this->sign == 0)
+    {
+        result = 0;
+        return true;
+    }
+    // we can't convert negative values into an unsigned one
+    if (sign < 0)
+    {
+        return false;
+    }
+
+    // is this easily within limits (very common)?
+    if (length <= numDigits && numberExp >= 0)
+    {
+        if (!createUnsignedValue(number, length, false, numberExp, SIZE_MAX, intnum))
+        {
+            return false;                   // too big to handle
+        }
+        // adjust for the sign
+        result = intnum;
+    }
+
+    // this number either has decimals, or needs to be truncated/rounded because of
+    // the conversion digits value.  We need to make adjustments.
+
+    checkIntegerDigits(numDigits, numberLength, numberExp, carry);
+
+    // if because of this adjustment, the decimal point lies to the left
+    // of our first digit, then this value truncates to 0 (or 1, if a carry condition
+    // resulted).
+    if (-numberExp>= (wholenumber_t)numberLength)
+    {
+        // since we know a) this number is all decimals, and b) the
+        // remaining decimals are either all 0 or all 9s with a carry,
+        // this result is either 0 or 1.
+        result = carry ? 1 : 0;
+        return true;
+    }
+
+    // we process different bits depending on whether this is a negative or positive
+    // exponent
+    if (numberExp < 0)
+    {
+        // now convert this into an unsigned value
+        if (!createUnsignedValue(number, numberLength + numberExp, carry, 0, SIZE_MAX, intnum))
+        {
+            return false;                   // to big to handle
+        }
+    }
+    else
+    {                             /* straight out number. just compute.*/
+        if (!createUnsignedValue(number, numberLength, carry, numberExp, SIZE_MAX, intnum))
+        {
+            return false;                   // to big to handle
+        }
+    }
+
+    // adjust for the sign
+    result = intnum;
+    return true;
+}
+
+bool RexxNumberString::doubleValue(double &result)
+/******************************************************************************/
+/* Function:  Convert a number string to a double                             */
+/******************************************************************************/
+{
+    RexxString *string;                   /* string version of the number      */
+    double doubleNumber;                  /* converted value                   */
+
+    string = this->stringValue();         /* get the string value              */
+                                          /* convert the number                */
+    doubleNumber = strtod(string->getStringData(), NULL);
+    /* out of range?                     */
+    if (doubleNumber == +HUGE_VAL || doubleNumber == -HUGE_VAL)
+    {
+        return false;                      /* got a bad value                   */
+    }
+    else
+    {
+        result = doubleNumber;             /* return the converted value        */
+        return true;
+    }
+}
+
 long RexxNumberString::longValue(size_t digits)
 /******************************************************************************/
 /* Function:  Convert a number string to a long value                         */
@@ -647,6 +833,79 @@ double   RexxNumberString::doubleValue()
    return NO_DOUBLE;                   /* got a bad value                   */
  else
    return doubleNumber;                /* return the converted value        */
+}
+
+/*********************************************************************/
+/*   Function:  Convert the numberstring to unsigned value           */
+/*********************************************************************/
+bool  RexxNumberString::createUnsignedValue(const char *thisnum, stringsize_t intlength, int carry, wholenumber_t exponent, size_t maxValue, size_t &result)
+{
+    // if the exponent multiplier would cause an overflow, there's no point in doing
+    // anything here
+    if (exponent > (wholenumber_t)Numerics::ARGUMENT_DIGITS)
+    {
+        return false;
+    }
+
+    // our converted value
+    size_t intNumber = 0;
+
+    for (stringsize_t numpos = 1; numpos <= intlength; numpos++ )
+    {
+        // add in the next digit value
+        size_t newNumber = (intNumber * 10) + (size_t)*thisnum++;
+        // if an overflow occurs, then the new number will wrap around and be
+        // smaller that the starting value.
+        if (newNumber < intNumber)
+        {
+            return false;
+        }
+        // make this the current value and continue
+        intNumber = newNumber;
+    }
+
+    // do we need to add in a carry value because of a rounding situation?
+    if (carry)
+    {
+        // add in the carry bit and check for an overflow, again
+        size_t newNumber = intNumber + 1;
+        if (newNumber < intNumber)
+        {
+            return false;
+        }
+        intNumber = newNumber;
+    }
+
+    // have an exponent to process?
+    if (exponent > 0)
+    {
+        // get this as a multipler value
+        size_t exponentMultiplier = 1;
+        while (exponent > 0)
+        {
+            exponentMultiplier *= 10;
+            exponent--;
+        }
+        // get this as a multipler value
+        size_t newNumber = intNumber * exponentMultiplier;
+
+        // did this wrap?  This is a safe test, since we capped
+        // the maximum exponent size we can multiply by.
+        if (newNumber < intNumber)
+        {
+            return false;
+        }
+        intNumber = newNumber;
+    }
+
+    // was ths out of range for this conversion?
+    if (intNumber > maxValue)
+    {
+        return false;
+    }
+
+    result = intNumber;                  /* Assign return value.              */
+    return true;                         /* Indicate sucessfule converison.   */
 }
 
 

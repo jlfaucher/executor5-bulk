@@ -225,6 +225,121 @@ long RexxInteger::longValue(
   return this->value;                  /* return the value directly         */
 }
 
+
+/**
+ * Convert an integer object into a double value.
+ *
+ * @param value  The returned value.
+ *
+ * @return true if this converted ok, false for any errors.  This always
+ *         returns true for the Integer class.
+ */
+bool RexxInteger::doubleValue(double &value)
+{
+    // just let the compiler convert
+    value = (double)this->wholeNumber();
+    return true;
+}
+
+
+/**
+ * Convert an integer object into a whole number value using the
+ * default digits setting.
+ *
+ * @param result The returned result.
+ *
+ * @return true if the number converts ok under the current digits setting.  false
+ *         for any conversion errors.
+ */
+bool RexxInteger::numberValue(wholenumber_t &result)
+{
+    // get the value for this
+    wholenumber_t value = this->wholeNumber();
+                                       /* is the long value expressable as a*/
+                                       /*  whole number in REXX term.       */
+    if (Numerics::abs(value) >= Numerics::MAX_WHOLENUMBER)
+    {
+        return false;                    /* nope, not a valid long.           */
+    }
+    result = value;                      // return the value
+    return true;                         // this was convertable
+}
+
+
+/**
+ * Convert an integer object into a whole number value using the
+ * current digits setting.
+ *
+ * @param result The returned result.
+ * @param digits The digits setting to apply to the conversion.
+ *
+ * @return true if the number converts ok under the current digits setting.  false
+ *         for any conversion errors.
+ */
+bool RexxInteger::numberValue(wholenumber_t &result, size_t digits)
+{
+    // get the value for this
+    wholenumber_t value = this->wholeNumber();
+                                       /* is the long value expressable as a*/
+                                       /*  whole number in REXX term.       */
+    if (digits < Numerics::DEFAULT_DIGITS && Numerics::abs(value) >= Numerics::validMaxWhole[digits - 1])
+    {
+        return false;                      /* nope, not a valid long.           */
+    }
+    result = value;                     // return the value
+    return true;                         // this was convertable
+}
+
+
+/**
+ * Convert an integer object into an unsigned whole number value
+ * using the default digits setting.
+ *
+ * @param result The returned result.
+ *
+ * @return true if the number converts ok under the current digits setting.  false
+ *         for any conversion errors.
+ */
+bool RexxInteger::unsignedNumberValue(stringsize_t &result)
+{
+    // get the value for this
+    stringsize_t value = this->stringSize();
+                                       /* is the long value expressable as a*/
+                                       /*  whole number in REXX terms.      */
+    if (value >= (stringsize_t)Numerics::MAX_WHOLENUMBER)
+    {
+        return false;                    /* nope, not a valid long.           */
+    }
+
+    result = value;                      // return the value
+    return true;                         // this was convertable
+}
+
+
+/**
+ * Convert an integer object into an unsigned whole number value
+ * using the current digits setting.
+ *
+ * @param result The returned result.
+ * @param digits The digits setting to apply to the conversion.
+ *
+ * @return true if the number converts ok under the current digits setting.  false
+ *         for any conversion errors.
+ */
+bool RexxInteger::unsignedNumberValue(stringsize_t &result, size_t digits)
+{
+    // get the value for this
+    stringsize_t value = this->stringSize();
+                                       /* is the long value expressable as a*/
+                                       /*  whole number in REXX term.       */
+    if (digits < Numerics::DEFAULT_DIGITS && value >= (stringsize_t)Numerics::validMaxWhole[digits - 1])
+    {
+        return false;                      /* nope, not a valid long.           */
+    }
+    result = value;                      // return the value
+    return true;                         // this was convertable
+}
+
 RexxInteger *RexxInteger::integerValue(
     size_t digits)                     /* required precision (ignored)      */
 /******************************************************************************/

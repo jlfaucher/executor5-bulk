@@ -36,7 +36,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Kernel                                                  StringClass.c    */
+/* REXX Kernel                                               StringClass.c    */
 /*                                                                            */
 /* Primitive String Class                                                     */
 /*                                                                            */
@@ -206,6 +206,105 @@ RexxString  *RexxString::primitiveMakeString()
 /******************************************************************************/
 {
   return this;                         /* this is easy                      */
+}
+
+bool RexxString::numberValue(wholenumber_t &result, stringsize_t digits)
+/******************************************************************************/
+/* Function:  Convert a string object to a long value.  Returns false         */
+/*            it will not convert.                                            */
+/******************************************************************************/
+{
+    if (!(isString(this)))               /* subclassed string object?         */
+    {
+        return this->requestString()->numberValue(result, digits);
+    }
+                                         /* get the string value's long value */
+    RexxNumberString *numberstring = this->fastNumberString();
+    if (numberstring != OREF_NULL )      /* convert ok?                       */
+    {
+                                         /* convert to integer with proper    */
+                                         /* precision                         */
+        return numberstring->numberValue(result, digits);
+    }
+    return false;                        /* return the "not value long" value */
+}
+
+bool RexxString::numberValue(wholenumber_t &result)
+/******************************************************************************/
+/* Function:  Convert a string object to a long value.  Returns false         */
+/*            it will not convert.                                            */
+/******************************************************************************/
+{
+    if (!(isString(this)))               /* subclassed string object?         */
+    {
+        return this->requestString()->numberValue(result);
+    }
+                                         /* get the string value's long value */
+    RexxNumberString *numberstring = this->fastNumberString();
+    if (numberstring != OREF_NULL )      /* convert ok?                       */
+    {
+                                         /* convert to integer with proper    */
+                                         /* precision                         */
+        return numberstring->numberValue(result);
+    }
+    return false;                        /* return the "not value long" value */
+}
+
+
+bool RexxString::unsignedNumberValue(stringsize_t &result, stringsize_t digits)
+/******************************************************************************/
+/* Function:  Convert a string object to a long value.  Returns false         */
+/*            it will not convert.                                            */
+/******************************************************************************/
+{
+    if (!(isString(this)))               /* subclassed string object?         */
+    {
+        return this->requestString()->unsignedNumberValue(result, digits);
+    }
+                                         /* get the string value's long value */
+    RexxNumberString *numberstring = this->fastNumberString();
+    if (numberstring != OREF_NULL )      /* convert ok?                       */
+    {
+                                         /* convert to integer with proper    */
+                                         /* precision                         */
+        return numberstring->unsignedNumberValue(result, digits);
+    }
+    return false;                        /* return the "not value long" value */
+}
+
+
+bool RexxString::unsignedNumberValue(stringsize_t &result)
+/******************************************************************************/
+/* Function:  Convert a string object to a long value.  Returns false         */
+/*            it will not convert.                                            */
+/******************************************************************************/
+{
+    if (!(isString(this)))               /* subclassed string object?         */
+    {
+        return this->requestString()->unsignedNumberValue(result);
+    }
+                                         /* get the string value's long value */
+    RexxNumberString *numberstring = this->fastNumberString();
+    if (numberstring != OREF_NULL )      /* convert ok?                       */
+    {
+                                         /* convert to integer with proper    */
+                                         /* precision                         */
+        return numberstring->unsignedNumberValue(result);
+    }
+    return false;                        /* return the "not value long" value */
+}
+
+bool RexxString::doubleValue(double &result)
+/******************************************************************************/
+/* Function:  Convert a string object to a double value                       */
+/******************************************************************************/
+{
+    RexxNumberString *numberDouble = this->fastNumberString(); /* convert String to Numberstring    */
+    if (numberDouble != OREF_NULL)       /* Did we get a numberstring?        */
+    {
+        return numberDouble->doubleValue(result);/* Yup, convert it to double         */
+    }
+    return false;                      /* not number string, so NODOUBLE    */
 }
 
 long RexxString::longValue(

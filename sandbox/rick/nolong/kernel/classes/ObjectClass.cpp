@@ -36,7 +36,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* Object REXX Kernel                                           ObjectClass.c    */
+/* Object REXX Kernel                                        ObjectClass.c    */
 /*                                                                            */
 /* The main REXX object definitions                                           */
 /*                                                                            */
@@ -860,6 +860,46 @@ RexxMethod * RexxObject::methodObject(
   }
 }
 
+bool RexxInternalObject::unsignedNumberValue(stringsize_t &result, stringsize_t digits)
+/******************************************************************************/
+/* Function:  Convert a primitive internal object to a long value             */
+/******************************************************************************/
+{
+  return false;                        /* give a "safe" default here        */
+}
+
+bool RexxInternalObject::unsignedNumberValue(stringsize_t &result)
+/******************************************************************************/
+/* Function:  Convert a primitive internal object to a long value             */
+/******************************************************************************/
+{
+  return false;                        /* give a "safe" default here        */
+}
+
+bool RexxInternalObject::numberValue(wholenumber_t &result, stringsize_t digits)
+/******************************************************************************/
+/* Function:  Convert a primitive internal object to a long value             */
+/******************************************************************************/
+{
+  return false;                        /* give a "safe" default here        */
+}
+
+bool RexxInternalObject::numberValue(wholenumber_t &result)
+/******************************************************************************/
+/* Function:  Convert a primitive internal object to a long value             */
+/******************************************************************************/
+{
+  return false;                        /* give a "safe" default here        */
+}
+
+bool RexxInternalObject::doubleValue(double &result)
+/******************************************************************************/
+/* Function:  Convert a primitive internal object to a double value           */
+/******************************************************************************/
+{
+  return false;                        /* give a "safe" default here        */
+}
+
 long RexxInternalObject::longValue(
     size_t precision)                  /* precision to use                  */
 /******************************************************************************/
@@ -892,6 +932,51 @@ RexxNumberString * RexxInternalObject::numberString()
 /******************************************************************************/
 {
   return OREF_NULL;                    /* this never converts               */
+}
+
+bool RexxObject::numberValue(wholenumber_t &result, stringsize_t digits)
+/******************************************************************************/
+/* Function:  Convert a REXX object to a long value                           */
+/******************************************************************************/
+{
+                                       /* get a string and convert          */
+  return REQUEST_STRING(this)->numberValue(result, digits);
+}
+
+bool RexxObject::numberValue(wholenumber_t &result)
+/******************************************************************************/
+/* Function:  Convert a REXX object to a long value                           */
+/******************************************************************************/
+{
+                                       /* get a string and convert          */
+  return REQUEST_STRING(this)->numberValue(result);
+}
+
+bool RexxObject::unsignedNumberValue(stringsize_t &result, stringsize_t digits)
+/******************************************************************************/
+/* Function:  Convert a REXX object to a long value                           */
+/******************************************************************************/
+{
+                                       /* get a string and convert          */
+  return REQUEST_STRING(this)->unsignedNumberValue(result, digits);
+}
+
+bool RexxObject::unsignedNumberValue(stringsize_t &result)
+/******************************************************************************/
+/* Function:  Convert a REXX object to a long value                           */
+/******************************************************************************/
+{
+                                       /* get a string and convert          */
+  return REQUEST_STRING(this)->unsignedNumberValue(result);
+}
+
+bool RexxObject::doubleValue(double &result)
+/******************************************************************************/
+/* Function:  Convert a primitive internal object to a double value           */
+/******************************************************************************/
+{
+                                       /* get a string and convert          */
+  return this->requestString()->doubleValue(result);
 }
 
 long RexxObject::longValue(

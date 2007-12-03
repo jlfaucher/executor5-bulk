@@ -36,7 +36,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Kernel                                                  StringClass.hpp  */
+/* REXX Kernel                                               StringClass.hpp  */
 /*                                                                            */
 /* Primitive String Class Definition                                          */
 /*                                                                            */
@@ -104,6 +104,11 @@ class RexxStringClass : public RexxClass {
    }
    HashCode getObjectHashCode();
 
+   bool         numberValue(wholenumber_t &result, size_t precision);
+   bool         numberValue(wholenumber_t &result);
+   bool         unsignedNumberValue(stringsize_t &result, size_t precision);
+   bool         unsignedNumberValue(stringsize_t &result);
+   bool         doubleValue(double &result);
    long        longValue(size_t);
    RexxNumberString *numberString();
    double      doubleValue();

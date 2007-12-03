@@ -112,6 +112,11 @@ int number_create_integer(const char *, size_t, int, int);
     void        liveGeneral();
     void        flatten(RexxEnvelope *);
 
+    bool         numberValue(wholenumber_t &result, size_t precision);
+    bool         numberValue(wholenumber_t &result);
+    bool         unsignedNumberValue(stringsize_t &result, size_t precision);
+    bool         unsignedNumberValue(stringsize_t &result);
+    bool         doubleValue(double &result);
     long        longValue(size_t);
     inline RexxNumberString *numberString() { return this; }
     double      doubleValue();
@@ -183,6 +188,7 @@ int number_create_integer(const char *, size_t, int, int);
         /* check for any required rounding */
         checkPrecision();
     }
+    bool  createUnsignedValue(const char *thisnum, stringsize_t intlength, int carry, wholenumber_t exponent, size_t maxValue, size_t &result);
     bool  createUnsignedInt64Value(const char *thisnum, stringsize_t intlength, int carry, wholenumber_t exponent, uint64_t maxValue, uint64_t &result);
     bool  checkIntegerDigits(stringsize_t numDigits, stringsize_t &numberLength, wholenumber_t &numberExponent, bool &carry);
     bool  int64Value(int64_t *result, stringsize_t numDigits);

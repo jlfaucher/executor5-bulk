@@ -95,6 +95,7 @@ public:
     static void   setCurrentSettings(NumericSettings *s) { settings = s; }
     static NumericSettings *setDefaultSettings() { settings = &defaultSettings; return settings; }
     static NumericSettings *getDefaultSettings() { return &defaultSettings; }
+    static inline wholenumber_t abs(wholenumber_t n) { return n < 0 ? -n : n; }
 
 protected:
 

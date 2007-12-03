@@ -86,16 +86,38 @@ typedef unsigned short uint16_t;
 typedef          int    int32_t;
 typedef unsigned int   uint32_t;
 
-// NOTE:  the following are not correct, except for on a 32-system.  They are
-// defined here only temporarily.
-typedef          int    intptr_t;
-typedef unsigned int   uintptr_t;
+typedef INT_PTR   intptr_t;
+typedef UINT_PTR  uintptr_t;
+typedef SSIZE_T   ssize_t;
 typedef signed __int64 int64_t;
 typedef unsigned __int64 uint64_t;
 
 #define UINT64_MAX (~((uint64_t)0))
 #define INT64_MAX  ((int64_t)(UINT64_MAX >> 1))
 #define INT64_MIN  ((int64_t)UINT64_MAX)
+
+#ifndef SIZE_MAX
+#define SIZE_MAX		(~((size_t)0))
+#endif
+#define SSIZE_MAX		((ssize_t)(SIZE_MAX >> 1))
+#define SSIZE_MIN		((ssize_t)SIZE_MAX)
+
+#define UINTPTR_MAX     (~((uintptr_t)0))
+#define INTPTR_MAX      ((intptr_t)(UINTPTR_MAX >> 1))
+#define INTPTR_MIN      ((intptr_t)UINTPTR_MAX)
+
+#define UINT32_MAX        (~((uint32_t)0))
+#define INT32_MAX         ((int32_t)(UINT32_MAX >> 1))
+#define INT32_MIN         ((int32_t)UINT32_MAX)
+
+#define UINT16_MAX        (~((uint16_t)0))
+#define INT16_MAX         ((int16_t)(UINT16_MAX >> 1))
+#define INT16_MIN         ((int16_t)UINT16_MAX)
+
+#define UINT8_MAX        (~((uint8_t)0))
+#define INT8_MAX         ((int8_t)(UINT8_MAX >> 1))
+#define INT8_MIN         ((int8_t)UINT8_MAX)
+
 
 
 /******************************************************************************/
@@ -170,7 +192,6 @@ typedef unsigned __int64 uint64_t;
 /* REQUIRED:  Define the REXX type for semaphores.  These can be system       */
 /* specific semaphore types or the REXX define OSEM.                          */
 /******************************************************************************/
-/*#include "oryxthrd.h"      not needed, defines moved in here           */
 #define SMTX HANDLE                 /* semaphore data types              */
 #define SEV  HANDLE
 #define SysSharedSemaphoreDefn HANDLE rexx_kernel_semaphore = NULL;     \
@@ -239,13 +260,27 @@ else printf("MTXCR handle %x not null in %s line %d\n", s, __FILE__, __LINE__)
 #define MTXCR(s)      if (!s) s = CreateMutex(NULL, FALSE, NULL)  // create a mutex semaphore
 #endif
 
+void SysRelinquish(void);              /* allow the system to run           */
 
-                                       // request wait on a semaphore
-#define MTXRQ(s)      /* WaitForSingleObject(s, INFINITE) */ \
-                      do \
-                      {    \
-                         SysRelinquish(); \
-                      } while (WaitForSingleObject(s, 1) == WAIT_TIMEOUT);
+inline void waitHandle(HANDLE s)
+{
+   extern BOOL UseMessageLoop;
+   if (UseMessageLoop)
+   {
+       do
+       {
+          SysRelinquish();
+       } while (WaitForSingleObject(s, 1) == WAIT_TIMEOUT);
+   }
+   else
+   {
+       WaitForSingleObject(s, INFINITE);
+   }
+}
+
+
+#define MTXRQ(s)      waitHandle(s);
+
 #define MTXRL(s)      ReleaseMutex(s) // clear a semaphore
 #ifdef TRACE_SEMAPHORES
 #define MTXCL(s)      if (!CloseHandle(s)) \

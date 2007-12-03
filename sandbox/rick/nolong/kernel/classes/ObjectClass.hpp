@@ -251,6 +251,11 @@ inline uintptr_t HASHOREF(RexxVirtualBase *r) { return ((uintptr_t)r) >> OREFSHI
      virtual LONG         longValue(size_t);
      virtual RexxInteger *integerValue(size_t);
      virtual double       doubleValue();
+     virtual bool         numberValue(wholenumber_t &result, size_t precision);
+     virtual bool         numberValue(wholenumber_t &result);
+     virtual bool         unsignedNumberValue(stringsize_t &result, size_t precision);
+     virtual bool         unsignedNumberValue(stringsize_t &result);
+     virtual bool         doubleValue(double &result);
      virtual RexxNumberString *numberString();
      virtual LONG         longValueNoNOSTRING(size_t n) { return this->longValue(n);};
      virtual double       doubleValueNoNOSTRING() { return this->doubleValue();};
@@ -344,6 +349,11 @@ class RexxObject : public RexxInternalObject {
      RexxObject  *copy();
      HashCode     hash();
      bool         truthValue(int);
+     virtual bool numberValue(wholenumber_t &result, size_t precision);
+     virtual bool numberValue(wholenumber_t &result);
+     virtual bool unsignedNumberValue(stringsize_t &result, size_t precision);
+     virtual bool unsignedNumberValue(stringsize_t &result);
+     virtual bool doubleValue(double &result);
      long         longValue(size_t);
      long         longValueNoNOSTRING(size_t);
      RexxNumberString *numberString();
