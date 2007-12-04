@@ -1,11 +1,43 @@
-Directory structure:
+  This is the read me file explaining how the ooRexxUnit frame is used by
+the ooRexx team to test ooRexx.
 
-        oorexxunit/
-        ... all tests employing module "oorexxunit", i.e. Rexx programs implementing testUnits
+NOTE: This is mostly a place-holder file, it is just barely started.  But,
+the quick start notes below should allow one to quickly run the current
+test suite.
 
-        misc/
-        ... all other tests
+NOTE: You need to match the ooRexxUnit version level with the version of
+the ooRexx interpreter you are running.
 
+Quick Start:
+============
 
----rony, 2005-12-30
+The ooRexxUnit directory needs to be in the path, or one needs to run the
+test suite from that directory.
+
+Here is the simplest way to run the test suite against the interpreter
+package.
+
+* Start in the directory this file is located in, in a console or command
+prompt session.
+
+* Run one of the setTestEnv files.  setTestEnv.sh on Linux under the bash
+shell.  setTestEnv.bat on Windows.  This will add the framework directory
+to the path in your console or command prompt session.
+
+* Use the runtTestGroups.rex program to run the test suite.
+
+1.) runTestGroups.rex -h will show the syntax.
+
+2.) Of course the exact invocation is different on Linux and Windows.
+
+* Linux example:
+
+Raven:/ooRexxUnit # . ./setTestEnv.sh
+Raven:/ooRexxUnit # ./runTestGroups.rex -r -2 ooRexx/
+
+* Windows example (this assumes a standard Windows install where .rex has
+been associated with the interpreter.)
+
+C:\ooRexxUnit> setTestEnv.bat
+C:\ooRexxUnit> runTestGroups -r -2 ooRexx
 
