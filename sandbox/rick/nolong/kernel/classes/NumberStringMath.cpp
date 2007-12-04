@@ -221,13 +221,15 @@ void RexxNumberString::adjustPrecision()
  return;                               /* just return to caller.            */
 }
 
-ULONG HighBits(ULONG number)
+size_t HighBits(size_t number)
 /*********************************************************************/
 /* Function:  Determine high order bit position of an unsigned       */
 /*            number setting.                                        */
 /*********************************************************************/
 {
- ULONG HighBit;
+// TODO:  64-bit issues here
+
+ size_t HighBit;
 
  if (!number)                          /* is number 0?                      */
   return 0;                            /*  Yes, just return 0, no high bit  */
@@ -236,7 +238,7 @@ ULONG HighBits(ULONG number)
 
  while (!(number & 0x80000000u)) {     /* loops though all bit positions    */
                                        /*  until first 1 bit is found.      */
-  number <<= 1l;                       /* shift number one bit pos left.    */
+  number <<= 1;                        /* shift number one bit pos left.    */
   HighBit--;                           /* decrement i, high bit not found   */
  }
 

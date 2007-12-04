@@ -308,7 +308,7 @@ class RexxSource : public RexxInternalObject {
 
 protected:
 
-  LONG  flags;                         /* parsing flags                     */
+  size_t flags;                        /* parsing flags                     */
   RexxArray  *sourceArray;             /* source lines for this code        */
   RexxString *programName;             /* name of the source program        */
   RexxObject *securityManager;         /* source execution time security    */

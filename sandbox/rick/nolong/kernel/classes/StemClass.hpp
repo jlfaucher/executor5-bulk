@@ -68,11 +68,7 @@ class RexxSupplier;
   void flatten(RexxEnvelope*);
   RexxObject * copy();
 
-  long         longValue(size_t);
-  long         longValueNoNOSTRING(size_t);
   RexxNumberString *numberString();
-  double       doubleValue();
-  double       doubleValueNoNOSTRING();
   RexxInteger *integerValue(size_t);
   RexxString  *stringValue();
   RexxArray   *makeArray();

@@ -323,7 +323,7 @@ void RexxClass::defmeths(
 /* Function:  Add a table of methods to a primitive class behaviour          */
 /*****************************************************************************/
 {
-  LONG i;                              /* table index                       */
+  HashLink i;                          /* table index                       */
   RexxString * method_name;            /* name of an added method           */
 
                                        /* loop through the list of methods  */
@@ -718,7 +718,7 @@ void RexxClass::createClassBehaviour(
 /*****************************************************************************/
 {
   RexxClass   * superclass;            /* superclass being called           */
-  LONG          index;                 /* index into list                   */
+  HashLink      index;                 /* index into list                   */
   RexxClass   * metaclass;             /* metaclass to use                  */
 
 
@@ -790,7 +790,7 @@ void RexxClass::createInstanceBehaviour(
 /*****************************************************************************/
 {
   RexxClass   * superclass;            /* superclass being called           */
-  LONG          index;                 /* index into list                   */
+  HashLink      index;                 /* index into list                   */
                                        /* Call each of the superclasses in  */
                                        /* this superclass list starting from*/
                                        /* the last going to the first       */
@@ -990,8 +990,8 @@ RexxObject *RexxClass::uninherit(
 /*            hierarchy of the receiver class (this).                        */
 /*****************************************************************************/
 {
-  LONG         class_index;            /* index for class superclasses list */
-  LONG         instance_index;         /* index for instance superclasses   */
+  HashLink     class_index;            /* index for class superclasses list */
+  HashLink     instance_index;         /* index for instance superclasses   */
                                        /* make sure this isn't rexx defined */
   if (this->isRexxDefined())           /* class that is being changed       */
                                        /* report as a nomethod condition    */

@@ -67,9 +67,7 @@ class RexxInteger : public RexxObject {
   bool         unsignedNumberValue(stringsize_t &result, size_t precision);
   bool         unsignedNumberValue(stringsize_t &result);
   bool         doubleValue(double &result);
-  long         longValue(size_t);
   RexxNumberString *numberString();
-  double       doubleValue();
   RexxInteger *integerValue(size_t);
   RexxString  *makeString();
   void         copyIntoTail(RexxCompoundTail *);
@@ -151,7 +149,7 @@ class RexxInteger : public RexxObject {
 protected:
 
     RexxString *stringrep;              /* integer string representation     */
-    int  value;                         /* actual integer value              */
+    wholenumber_t value;                /* actual integer value              */
 
     static int validMaxWhole[];         // table of maximum values per digits setting
 };

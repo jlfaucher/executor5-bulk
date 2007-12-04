@@ -222,16 +222,9 @@ PCPPM objectOperatorMethods[] = {      /* object operator methods           */
 RexxBehaviour RexxBehaviour::primitiveBehaviours[highest_T + 1] = {/* table of primitive behaviours     */
 #include "PrimitiveClasses.h"          /* generate table from header        */
 };
-                                       /* an initial value to force it to   */
-                                       /* all zeros, which is a non-valid   */
-                                       /* float number                      */
-double NO_DOUBLE;                      /* non-exsistent double value        */
 
 SysSharedSemaphoreDefn                 /* semaphore definitions             */
                                        /* defined in xxxdef.h               */
-
-int   rexx_waiting_activity_count = 0; /* number of waiting activities      */
-
 
 extern "C" {
 

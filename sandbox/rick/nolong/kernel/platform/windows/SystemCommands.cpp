@@ -237,8 +237,8 @@ RexxObject * SysCommand(
     else if (!RXNULLSTRING(retstr)) {  /* we have something in retstr?        */
                                        /* make into a return string           */
       result = new_string(retstr.strptr, retstr.strlength);
-                                       /* try to get the numeric value also */
-      sbrc = (short)((RexxObject *)result)->longValue(NO_LONG);
+      // try to get this
+      result->numberValue(sbrc);
                                        /* user give us a new buffer?          */
       if (retstr.strptr != default_return_buffer)
                                        /* free it                             */

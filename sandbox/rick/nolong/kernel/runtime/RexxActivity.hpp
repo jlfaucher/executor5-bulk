@@ -94,8 +94,8 @@ extern SMTX rexx_resource_semaphore;   /* global kernel semaphore           */
 extern SMTX rexx_start_semaphore;      /* startup semaphore                 */
 
 extern SEV    rexxTimeSliceSemaphore;
-extern ULONG  RexxTimeSliceTimer;
-extern ULONG  rexxTimeSliceTimerOwner;
+extern size_t RexxTimeSliceTimer;
+extern size_t rexxTimeSliceTimerOwner;
 
                                        /* information must be saved and     */
                                        /* restored on nested entries to the */

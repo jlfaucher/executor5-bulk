@@ -873,22 +873,16 @@ BUILTIN(ADDRESS) {
 #define DIGITS_MAX 0
 
 BUILTIN(DIGITS) {
-  LONG  tempDigits;
-
   check_args(DIGITS);                  /* check on required number of args  */
-  tempDigits = context->digits();      /* get the number of digits          */
-  return new_integer(tempDigits);      /* return as an option               */
+  return new_integer(context->digits());   /* return as an option               */
 }
 
 #define FUZZ_MIN 0
 #define FUZZ_MAX 0
 
 BUILTIN(FUZZ) {
-  LONG  tempFuzz;
-
   check_args(FUZZ);                    /* check on required number of args  */
-  tempFuzz = context->fuzz();          /* get the fuzz value                */
-  return new_integer(tempFuzz);        /* return as an integer object       */
+  return new_integer(context->fuzz()); /* return as an integer object       */
 }
 
 #define FORM_MIN 0
@@ -1159,9 +1153,8 @@ BUILTIN(DATE) {
             case 'B':                        /* 'B'asedate                        */
             {
                 /*convert the value                  */
-                int basedays = indate->longValue(9);
-                /* bad value?                        */
-                if (basedays == (int)NO_LONG || !timestamp.setBaseDate(basedays))
+                wholenumber_t basedays;
+                if (!indate->numberValue(basedays) || !timestamp.setBaseDate(basedays))
                 {
                     reportException(Error_Incorrect_call_format_invalid, CHAR_DATE, indate, new_string((char *)&style2, 1));
                 }
@@ -1193,9 +1186,8 @@ BUILTIN(DATE) {
             case 'D':                        /* 'D'ay of year                     */
             {
                 /*convert the value                  */
-                int yearday = indate->longValue(9);
-                /* bad value?                        */
-                if (yearday == (int)NO_LONG || yearday < 0 || yearday > YEAR_DAYS + 1 ||
+                wholenumber_t yearday;
+                if (!indate->numberValue(yearday) || yearday < 0 || yearday > YEAR_DAYS + 1 ||
                     (yearday > YEAR_DAYS && !LeapYear(current.year)))
                 {
                     reportException(Error_Incorrect_call_format_invalid, CHAR_DATE, indate, new_string((char *)&style2, 1));
@@ -1397,22 +1389,22 @@ BUILTIN(TIME) {
 
             case 'H':                        /* 'H'ours format                    */
             {
-                int i = intime->longValue(9);      /* convert the value                 */
-                valid = i !=(int)NO_LONG && timestamp.setHours(i);
+                wholenumber_t i;
+                valid = indate->numberValue(i) && timestamp.setHours(i);
                 break;
             }
 
             case 'S':                        /* 'S'econds format                  */
             {
-                int i = intime->longValue(9);      /* convert the value                 */
-                valid = i != (int)NO_LONG && timestamp.setSeconds(i);
+                wholenumber_t i;
+                valid = indate->numberValue(i) && timestamp.setSeconds(i);
                 break;
             }
 
             case 'M':                        /* 'M'inutes format                  */
             {
-                int i = intime->longValue(9);      /* convert the value                 */
-                valid = i != (int)NO_LONG && timestamp.setMinutes(i);
+                wholenumber_t i;
+                valid = indate->numberValue(i) && timestamp.setMinutes(i);
                 break;
             }
 
@@ -1565,8 +1557,8 @@ BUILTIN(XRANGE) {
   RexxString *result;                  /* XRANGE result                     */
   char startchar;                      /* starting character                */
   char endchar;                        /* ending character                  */
-  LONG   length;                       /* length of result                  */
-  LONG   i;                            /* loop counter                      */
+  stringsize_t  length;                /* length of result                  */
+  stringsize_t   i;                    /* loop counter                      */
 
   fix_args(XRANGE);                    /* expand arguments to full value    */
   startchar = 0;                       /* set default start position        */
@@ -1821,10 +1813,10 @@ BUILTIN(MIN) {
 #define SOURCELINE_n   1
 
 BUILTIN(SOURCELINE) {
-  LONG   line_number;                  /* requested error number            */
+  size_t line_number;                  /* requested error number            */
   RexxObject  *result;                 /* function result                   */
   RexxSource  *source;                 /* current program source            */
-  LONG   size;                         /* size of source program            */
+  size_t size;                         /* size of source program            */
 
   fix_args(SOURCELINE);                /* check on required number of args  */
   source = context->getSource();       /* get current source object         */
@@ -2490,7 +2482,7 @@ BUILTIN(CHANGESTR) {
 BUILTIN(COUNTSTR) {
   RexxString *needle;                  /* needle to change                  */
   RexxString *haystack;                /* target haystack                   */
-  LONG        count;                   /* returned count                    */
+  size_t      count;                   /* returned count                    */
 
   fix_args(COUNTSTR);                  /* check on require number of args   */
                                        /* get string for new                */

@@ -54,7 +54,7 @@ class RexxParseVariable : public RexxVariableBase {
   inline void  operator delete(void *, void *) { ; }
 
   inline RexxParseVariable(RESTORETYPE restoreType) { ; };
-  RexxParseVariable(RexxString *, LONG);
+  RexxParseVariable(RexxString *, size_t);
   void live();
   void liveGeneral();
   void flatten(RexxEnvelope *);
@@ -73,6 +73,6 @@ class RexxParseVariable : public RexxVariableBase {
   RexxString *getName();
 
   RexxString *variableName;            // name of the variable
-  LONG        index;                   /* lookaside table index             */
+  size_t      index;                   /* lookaside table index             */
 };
 #endif

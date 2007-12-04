@@ -74,16 +74,9 @@ typedef REXXOBJECT STRING;             /* REXX string object                */
 /* Constant values (for general use)                                          */
 /* Also in RexxCore.h */
 /******************************************************************************/
-#ifndef NO_INT
-# define NO_INT                0x80000000
-#endif
-#ifndef NO_LONG
-# define NO_LONG               0x80000000
-#endif
 #ifndef NO_CSTRING
 # define NO_CSTRING            NULL
 #endif
-#define NULLOBJ               0L
 
 /******************************************************************************/
 /* New-style macros and functions                                             */

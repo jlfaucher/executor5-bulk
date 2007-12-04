@@ -241,7 +241,7 @@
                                SMTX  rexx_start_semaphore =  {0,0,0};     \
                                SMTX  rexx_wait_queue_semaphore = {0,0,0};
                                SEV   rexxTimeSliceSemaphore = {0,0,0};    \
-                               ULONG rexxTimeSliceTimerOwner;
+                               size_t rexxTimeSliceTimerOwner;
 
 #else
 
@@ -270,7 +270,7 @@ extern int SecureFlag;
                                SMTX  rexx_start_semaphore =  0;     \
                                SMTX  rexx_wait_queue_semaphore = 0; \
                                SEV   rexxTimeSliceSemaphore = 0;    \
-                               ULONG rexxTimeSliceTimerOwner;
+                               size_t rexxTimeSliceTimerOwner;
 #endif
 /******************************************************************************/
 /* REQUIRED:  Define the REXX type for exceptions.  These can be system       */

@@ -341,7 +341,7 @@ void RexxMessage::sendNotification(void)
   RexxObject *listIndex;               /* index of the list as we traverse  */
   RexxMessage *thisMessage;            /* Message object to noitfy          */
   RexxActivity *waitingActivity;       /* activity to notify                */
-  LONG        i;                       /* loop index                        */
+  size_t      i;                       /* loop index                        */
 
                                        /* no longer care about any error    */
                                        /*condition                          */

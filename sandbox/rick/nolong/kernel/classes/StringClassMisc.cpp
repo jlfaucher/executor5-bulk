@@ -318,11 +318,14 @@ RexxObject *DataType(
       break;
 
     case DATATYPE_9DIGITS:             /* NUMERIC DIGITS 9 number           */
-                                       /* good long number                  */
-      if (String->longValue(Numerics::DEFAULT_DIGITS) != (int)NO_LONG)
-                                       /* say it's good                     */
-        Answer = (RexxObject *)TheTrueObject;
-      break;
+    {                                  /* good long number                  */
+        wholenumber_t temp;
+        if (String->numberValue(temp))
+        {
+            Answer = (RexxObject *)TheTrueObject;
+        }
+        break;
+    }
 
     case DATATYPE_HEX:                 /* heXadecimal                       */
                                        /* validate the string               */
@@ -352,7 +355,8 @@ RexxObject *DataType(
 
       case DATATYPE_LOGICAL:           // Test for a valid logical.
           if (Len != 1 || (*Scanp != '1' && *Scanp != '0'))
-          {
+
+            {
               Answer = TheFalseObject;
           }
           else

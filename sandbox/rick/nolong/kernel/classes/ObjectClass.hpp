@@ -248,17 +248,13 @@ inline uintptr_t HASHOREF(RexxVirtualBase *r) { return ((uintptr_t)r) >> OREFSHI
      virtual RexxString  *primitiveMakeString();
      virtual RexxArray   *makeArray();
      virtual RexxString  *stringValue();
-     virtual LONG         longValue(size_t);
      virtual RexxInteger *integerValue(size_t);
-     virtual double       doubleValue();
      virtual bool         numberValue(wholenumber_t &result, size_t precision);
      virtual bool         numberValue(wholenumber_t &result);
      virtual bool         unsignedNumberValue(stringsize_t &result, size_t precision);
      virtual bool         unsignedNumberValue(stringsize_t &result);
      virtual bool         doubleValue(double &result);
      virtual RexxNumberString *numberString();
-     virtual LONG         longValueNoNOSTRING(size_t n) { return this->longValue(n);};
-     virtual double       doubleValueNoNOSTRING() { return this->doubleValue();};
 
      virtual bool         isEqual(RexxObject *);
      virtual bool         isInstanceOf(RexxClass *);
@@ -354,11 +350,7 @@ class RexxObject : public RexxInternalObject {
      virtual bool unsignedNumberValue(stringsize_t &result, size_t precision);
      virtual bool unsignedNumberValue(stringsize_t &result);
      virtual bool doubleValue(double &result);
-     long         longValue(size_t);
-     long         longValueNoNOSTRING(size_t);
      RexxNumberString *numberString();
-     double       doubleValue();
-     double       doubleValueNoNOSTRING();
      RexxInteger *integerValue(size_t);
      RexxString  *makeString();
      RexxString  *primitiveMakeString();
@@ -368,14 +360,15 @@ class RexxObject : public RexxInternalObject {
      RexxString  *requestString();
      RexxString  *requestStringNoNOSTRING();
      RexxInteger *requestInteger(size_t);
-     LONG         requestLong(size_t);
+     bool         requestWholenumber(wholenumber_t &, size_t);
+     bool         requestUnsignedNumber(stringsize_t &, size_t);
      RexxArray   *requestArray();
-     RexxString  *requiredString(LONG);
+     RexxString  *requiredString(int);
      RexxString  *requiredString();
-     RexxInteger *requiredInteger(LONG, size_t);
-     LONG         requiredLong(LONG, size_t precision = Numerics::DEFAULT_DIGITS);
-     LONG         requiredPositive(LONG, size_t precision = Numerics::DEFAULT_DIGITS);
-     LONG         requiredNonNegative(LONG, size_t precision = Numerics::DEFAULT_DIGITS);
+     RexxInteger *requiredInteger(int, size_t);
+     wholenumber_t requiredNumber(int position, size_t precision = Numerics::DEFAULT_DIGITS);
+     stringsize_t requiredPositive(int position, size_t precision = Numerics::DEFAULT_DIGITS);
+     stringsize_t requiredNonNegative(int position, size_t precision = Numerics::DEFAULT_DIGITS);
 
      bool         isEqual(RexxObject *);
      bool         isInstanceOf(RexxClass *);
@@ -396,8 +389,8 @@ class RexxObject : public RexxInternalObject {
      RexxObject  *shriekRun(RexxMethod *, RexxString *, RexxString *, RexxObject **, size_t);
      RexxObject  *run(RexxObject **, size_t);
 
-     RexxObject  *messageSend(RexxString *, LONG, RexxObject **);
-     RexxObject  *messageSend(RexxString *, LONG, RexxObject **, RexxObject *);
+     RexxObject  *messageSend(RexxString *, size_t, RexxObject **);
+     RexxObject  *messageSend(RexxString *, size_t, RexxObject **, RexxObject *);
      RexxMethod  *checkPrivate(RexxMethod *);
      RexxObject  *processUnknown(RexxString *, size_t, RexxObject **);
      RexxObject  *processProtectedMethod(RexxString *, LONG, RexxObject **);

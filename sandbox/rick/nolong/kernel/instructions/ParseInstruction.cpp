@@ -58,7 +58,7 @@ RexxInstructionParse::RexxInstructionParse(
   RexxObject *_expression,             /* string expression source          */
   unsigned short string_source,        /* source of the parsed string       */
   size_t      flags,                   /* option flags                      */
-  LONG        templateCount,           /* count of template items           */
+  size_t      templateCount,           /* count of template items           */
   RexxQueue  *parse_template )         /* parsing template array            */
 /******************************************************************************/
 /* Function:  Complete parse instruction initialization                       */

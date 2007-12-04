@@ -125,7 +125,7 @@ extern char **environ;
 extern char achRexxCurDir[ CCHMAXPATH+2 ];  /* Save current working direct    */
 
 typedef struct _ENVENTRY {                  /* setlocal/endlocal structure    */
-  ULONG    size;                            /* size of the saved memory       */
+  size_t   size;                            /* size of the saved memory       */
 } ENVENTRY;
 
 int putflag = 0;                            /* static or dynamic env memory   */
@@ -735,7 +735,7 @@ REXXOBJECT BuildEnvlist()
 {
   REXXOBJECT  newBuffer;               /* Buffer object to hold env  */
   char      **Environment;             /* environment pointer        */
-  ULONG       size = 0;                /* size of the new buffer     */
+  size_t      size = 0;                /* size of the new buffer     */
   char       *curr_dir;                /* current directory          */
   char       *New;                     /* starting address of buffer */
   Environment = environ;               /* get the ptr to the environ */

@@ -58,14 +58,16 @@
 
 /* Function prototypes for NumberStringClass/StringClass */
 
-ULONG HighBits(ULONG number);
+// TODO:  make all of these functions static methods on numberstring
+
+size_t HighBits(size_t number);
 void Subtract_Numbers( RexxNumberString *larger, const char *largerPtr, long aLargerExp,
                        RexxNumberString *smaller, const char *smallerPtr, long aSmallerExp,
                        RexxNumberString *result, char **resultPtr);
                                             /* ************************************ */
                                             /* Following functions are in oemath2.c */
                                             /* ************************************ */
-char *AddMultiplier( char *, long, char *, int);
+char *AddMultiplier( char *, wholenumber_t, char *, int);
 char * SubtractDivisor(char *data1, size_t length1,
                        char *data2, size_t length2,
                        char *result, int Mult);
@@ -82,7 +84,7 @@ char * MultiplyBaseTen(char *, char *);
 #define ORDCOMP
 
 #define BYTE_SIZE              8                      /* Number of bits in a byte   */
-#define LONGBITS         (sizeof(long) * BYTE_SIZE)   /* Number of bytes in long    */
+#define LONGBITS         (sizeof(size_t) * BYTE_SIZE) /* Number of bytes in long    */
 #define ROUND                  TRUE                   /* Perform rounding           */
 #define NOROUND                FALSE                  /* no Rounding                */
 

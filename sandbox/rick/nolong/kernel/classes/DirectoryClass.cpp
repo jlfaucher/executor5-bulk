@@ -127,13 +127,13 @@ RexxObject *RexxDirectory::entry(
   return this->at(entryName);          /* just return the "at" form         */
 }
 
-long RexxDirectory::items(void)
+size_t RexxDirectory::items(void)
 /******************************************************************************/
 /* Function:  Return the count of items in the directory, including the       */
 /*            number of methods added via set method calls                    */
 /******************************************************************************/
 {
-  LONG    count;                       /* count of items                    */
+  size_t  count;                       /* count of items                    */
 
                                        /* get the direct table size         */
   count = this->contents->totalEntries();
@@ -432,7 +432,7 @@ RexxObject *RexxDirectory::unknown(
 /******************************************************************************/
 {
   RexxString * message_value;          /* value of the message name         */
-  LONG         message_length;         /* length of the message name        */
+  stringsize_t message_length;         /* length of the message name        */
 
                                        /* validate the name                 */
   message_value = REQUIRED_STRING(msgname, ARG_ONE);

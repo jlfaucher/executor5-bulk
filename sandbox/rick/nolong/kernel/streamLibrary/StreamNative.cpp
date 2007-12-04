@@ -1077,13 +1077,13 @@ long write_fixed_line(
 void set_char_read_position(
     REXXOBJECT   self,                 /* target stream object              */
     STREAM_INFO *stream_info,          /* current stream information        */
-    LONG         position,             /* target position                   */
+    size_t       position,             /* target position                   */
     REXXOBJECT   result )              /* notready return result            */
 /******************************************************************************/
 /* Function:   move the character position to a fixed offset                  */
 /******************************************************************************/
 {
-  if (position != NO_LONG) {           /* have a position specified?        */
+  if (position != SIZE_MAX) {          /* have a position specified?        */
 
     if (stream_info->flags.transient)  /* trying to move a transient stream?*/
                                        /* this is an error                  */
@@ -1109,13 +1109,13 @@ void set_char_read_position(
 void set_line_read_position(
     REXXOBJECT   self,                 /* target stream object              */
     STREAM_INFO *stream_info,          /* current stream information        */
-    LONG         position,             /* target position                   */
+    size_t       position,             /* target position                   */
     REXXOBJECT   result )              /* default failure result            */
 /******************************************************************************/
 /* Function:   move the character position to a fixed offset                  */
 /******************************************************************************/
 {
-  if (position != NO_LONG) {           /* have a position specified?        */
+  if (position != SIZE_MAX) {          /* have a position specified?        */
 
     if (stream_info->flags.transient)  /* trying to move a transient stream?*/
                                        /* this is an error                  */
@@ -1174,14 +1174,13 @@ void set_line_read_position(
 void set_char_write_position(
     REXXOBJECT   self,                 /* target stream object              */
     STREAM_INFO *stream_info,          /* current stream information        */
-    LONG         position,             /* target position                   */
+    size_t       position,             /* target position                   */
     REXXOBJECT   result )              /* default failure result            */
 /******************************************************************************/
 /* Function:   move the character position to a fixed offset                  */
 /******************************************************************************/
 {
-  if (position != NO_LONG) {           /* have a position specified?        */
-
+  if (position != SIZE_MAX) {          /* have a position specified?        */
     if (stream_info->flags.transient)  /* trying to move a transient stream?*/
                                        /* this is an error                  */
       send_exception(Error_Incorrect_method_stream_type);
@@ -1200,14 +1199,13 @@ void set_char_write_position(
 void set_line_write_position(
     REXXOBJECT   self,                 /* target stream object              */
     STREAM_INFO *stream_info,          /* current stream information        */
-    LONG         position,             /* target position                   */
+    size_t       position,             /* target position                   */
     REXXOBJECT   result )              /* default failure result            */
 /******************************************************************************/
 /* Function:   move the character position to a fixed offset                  */
 /******************************************************************************/
 {
-  if (position != NO_LONG) {           /* have a position specified?        */
-
+  if (position != SIZE_MAX) {          /* have a position specified?        */
     if (stream_info->flags.transient)  /* trying to move a transient stream?*/
                                        /* this is an error                  */
       send_exception(Error_Incorrect_method_stream_type);
@@ -1623,12 +1621,12 @@ RexxMethod4(REXXOBJECT, stream_charin,
 
    stream_info = get_stream_info();    /* get the stream block              */
    setup_read_stream(OREF_NULLSTRING); /* do needed setup                   */
-   if (position != NO_LONG)            /* have a position?                  */
+   if (position != SIZE_MAX)           /* have a position?                  */
                                        /* set the proper position           */
      set_char_read_position(self, stream_info, position, OREF_NULLSTRING);
    if (read_length == 0)               /* nothing to read?                  */
      return OREF_NULLSTRING;           /* just return a null string         */
-   else if (read_length == NO_LONG)    /* no read length specified?         */
+   else if (read_length == SIZE_MAX)   /* no read length specified?         */
      read_length = 1;                  /* use the default length            */
    else if (read_length < 0)           /* no read requested?                */
                                        /* this is a bad count               */
@@ -1667,7 +1665,7 @@ RexxMethod4(long, stream_charout,
 
    if (string == NULLOBJECT) {         /* nothing to write?                 */
      setup_write_stream(0);            /* do needed setup                   */
-     if (position == NO_LONG)          /* no positioning either?            */
+     if (position == SIZE_MAX)         /* no positioning either?            */
        close_stream(self, stream_info);/* go close this up                  */
      else
                                        /* set the proper position           */
@@ -1677,7 +1675,7 @@ RexxMethod4(long, stream_charout,
    slength = string_length(string);    /* get the string length             */
    sdata = string_data(string);        /* and the string pointer            */
    setup_write_stream(slength);        /* do needed setup                   */
-   if (position != NO_LONG)            /* have a position?                  */
+   if (position != SIZE_MAX)           /* have a position?                  */
                                        /* set the proper position           */
      set_char_write_position(self, stream_info, position, RexxInteger(slength));
                                        /*  keep the write out the info      */
@@ -1706,13 +1704,13 @@ RexxMethod4(REXXOBJECT, stream_linein,
    REXXOBJECT   result;                /* read result                       */
 
    stream_info = get_stream_info();    /* get the stream block              */
-   if (count != NO_LONG) {             /* no read length specified?         */
+   if (count != SIZE_MAX) {            /* no read length specified?         */
      if (count != 1 && count != 0)     /* count out of range?               */
                                        /* this is a bad count               */
        send_exception(Error_Incorrect_method);
    }
    setup_read_stream(OREF_NULLSTRING); /* do needed setup                   */
-   if (position != NO_LONG)            /* have a position?                  */
+   if (position != SIZE_MAX)           /* have a position?                  */
                                        /* set the proper position           */
      set_line_read_position(self, stream_info, position, OREF_NULLSTRING);
    if (count == 0)                     /* nothing to read?                  */
@@ -2005,7 +2003,7 @@ RexxMethod4(long, stream_lineout,
      if (stream_info->flags.binary)    /* opened in binary mode?            */
                                        /* complete the line                 */
        complete_line(self, stream_info);
-     if (position == NO_LONG)          /* no positioning either?            */
+     if (position == SIZE_MAX)         /* no positioning either?            */
        close_stream(self, stream_info);/* go close this up                  */
      else
                                        /* set the proper position           */
@@ -2013,7 +2011,7 @@ RexxMethod4(long, stream_lineout,
      return 0;                         /* no residual                       */
    }
    setup_write_stream(1);              /* do needed setup                   */
-   if (position != NO_LONG)            /* have a position?                  */
+   if (position != SIZE_MAX)           /* have a position?                  */
                                        /* set the proper position           */
      set_line_write_position(self, stream_info, position, IntegerOne);
 /*

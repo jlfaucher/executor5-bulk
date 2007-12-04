@@ -307,40 +307,6 @@ bool RexxString::doubleValue(double &result)
     return false;                      /* not number string, so NODOUBLE    */
 }
 
-long RexxString::longValue(
-     size_t digits)                    /* digits to use                     */
-/******************************************************************************/
-/* Function:  Convert a string object to a long value.  Returns NO_LONG if    */
-/*            it will not convert.                                            */
-/******************************************************************************/
-{
-  RexxNumberString *numberstring;      /* converted numberstring version    */
-
-  if (!(isOfClass(String, this)))          /* subclassed string object?         */
-                                       /* get the string value's long value */
-    return this->requestString()->longValue(digits);
-  numberstring = this->fastNumberString(); /* get the number string version     */
-  if (numberstring != OREF_NULL )      /* convert ok?                       */
-                                       /* convert to integer with proper    */
-                                       /* precision                         */
-    return numberstring->longValue(digits);
-  else
-    return NO_LONG;                    /* return the "not value long" value */
-}
-
-double RexxString::doubleValue()
-/******************************************************************************/
-/* Function:  Convert a string object to a double value                       */
-/******************************************************************************/
-{
-  RexxNumberString *numberDouble;      /* converted number string           */
-
-  numberDouble = this->fastNumberString(); /* convert String to Numberstring    */
-  if (numberDouble != OREF_NULL)       /* Did we get a numberstring?        */
-    return numberDouble->doubleValue();/* Yup, convert it to double         */
-  else
-    return NO_DOUBLE;                  /* not number string, so NODOUBLE    */
-}
 
 RexxNumberString *RexxString::numberString()
 /******************************************************************************/

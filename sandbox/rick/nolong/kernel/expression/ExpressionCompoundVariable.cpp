@@ -56,9 +56,9 @@
 
 RexxCompoundVariable::RexxCompoundVariable(
     RexxString * _stemName,            /* stem retriever                    */
-    LONG         stemIndex,            /* stem lookaside index              */
+    size_t       stemIndex,            /* stem lookaside index              */
     RexxQueue  * tailList,             /* list of tails                     */
-    LONG         TailCount)            /* count of tails                    */
+    size_t       TailCount)            /* count of tails                    */
 /******************************************************************************/
 /* Function:  Complete compound variable initialization                       */
 /******************************************************************************/

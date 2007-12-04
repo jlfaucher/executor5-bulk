@@ -177,250 +177,252 @@ RexxObject *RexxNativeActivation::run(
 /* Function:  Execute a REXX native method                                    */
 /******************************************************************************/
 {
-  PNMF         methp;                  /* method entry point                */
-  char       * itypes;                 /* pointer to method types           */
-  void       * ivalues[16];            /* array of converted arguments      */
-  void      ** ivalp = ivalues;        /* pointer to current value          */
-  char         ibuffer[100];           /* arguments buffer                  */
-  char       * ibufp = ibuffer;        /* current buffer pointer            */
-  char       * tp;                     /* current type                      */
-  size_t       i;                      /* current argument position         */
-  RexxObject * argument;               /* current argument object           */
-  LONG         tempValues;             /* temporary value                   */
-  BOOL         used_arglist;           /* method requested an arglist       */
+    PNMF         methp;                  /* method entry point                */
+    char       * itypes;                 /* pointer to method types           */
+    void       * ivalues[16];            /* array of converted arguments      */
+    void      ** ivalp = ivalues;        /* pointer to current value          */
+    char         ibuffer[100];           /* arguments buffer                  */
+    char       * ibufp = ibuffer;        /* current buffer pointer            */
+    char       * tp;                     /* current type                      */
+    size_t       i;                      /* current argument position         */
+    RexxObject * argument;               /* current argument object           */
+    LONG         tempValues;             /* temporary value                   */
+    BOOL         used_arglist;           /* method requested an arglist       */
 
-  this->arglist = _arglist;            /* save the argument information     */
-  this->argcount = _argcount;          /* set the argument count            */
-  used_arglist = FALSE;                /* no arglist requested              */
-                                       /* get the entry point address       */
-  methp = (PNMF)this->method->getNativeCode()->getEntry();
-  itypes = (*methp)(0);                /* get type information from method  */
-  *ivalues = ibufp;
-  ibufp += tsize[(int)(*itypes)];      /* step over first type              */
-  i = 0;                               /* no arguments used yet             */
-                                       /* loop through the type information */
-  for (tp = itypes+1, ivalp = ivalues+1; *tp; tp++, ivalp++) {
-    *ivalp = ibufp;
-    ibufp += tsize[(int)(*tp)];        /* step over the type                */
-    switch (*tp) {                     /* switch based on this type         */
+    this->arglist = _arglist;            /* save the argument information     */
+    this->argcount = _argcount;          /* set the argument count            */
+    used_arglist = FALSE;                /* no arglist requested              */
+                                         /* get the entry point address       */
+    methp = (PNMF)this->method->getNativeCode()->getEntry();
+    itypes = (*methp)(0);                /* get type information from method  */
+    *ivalues = ibufp;
+    ibufp += tsize[(int)(*itypes)];      /* step over first type              */
+    i = 0;                               /* no arguments used yet             */
+                                         /* loop through the type information */
+    for (tp = itypes+1, ivalp = ivalues+1; *tp; tp++, ivalp++)
+    {
+        *ivalp = ibufp;
+        ibufp += tsize[(int)(*tp)];        /* step over the type                */
+        switch (*tp)
+        {                     /* switch based on this type         */
 
-      case REXXD_OSELF:                /* reference to SELF                 */
-        *((RexxObject **)*ivalp) = this->receiver;
-        break;
-
-      case REXXD_CSELF:                /* reference to CSELF                */
-        *((void **)*ivalp) = this->cself();
-        break;
-
-      case REXXD_BUFFER:               /* reference to Buffered storage     */
-        *((void **)*ivalp) = this->buffer();
-        break;
-
-      case REXXD_ARGLIST:              /* need the argument list            */
-        /* create the argument array */
-        argArray = new (argcount, arglist) RexxArray;
-        *((RexxObject **)*ivalp) = argArray;
-        used_arglist = TRUE;           /* passing along everything          */
-        break;
-
-      case REXXD_MSGNAME:              /* the message name                  */
-        *((RexxObject **)*ivalp) = this->msgname;
-        break;
-
-      default:                         /* still within argument bounds?     */
-        if (i < argcount && arglist[i] != OREF_NULL) {
-          argument = arglist[i];       /* get the next argument             */
-          switch (*tp) {               /* process this type                 */
-
-            case REXXD_OBJECT:         /* arbitrary object reference        */
-              *((RexxObject **)*ivalp) = argument;
-              break;
-
-            case REXXD_int:            /* integer value                     */
-                                       /* try to convert the value          */
-              tempValues = argument->longValue(this->digits());
-                                       /* not convertable?                  */
-              if (tempValues == (long)NO_LONG)
-                                       /* this is an error                  */
-                reportException(Error_Incorrect_method_whole, i+1, argument);
-                                       /* copy over the info                */
-              *((int *)*ivalp) = (int)tempValues;
-              break;
-
-            case REXXD_long:           /* long value                        */
-                                       /* try to convert the value          */
-              tempValues = argument->longValue(this->digits());
-                                       /* not convertable?                  */
-              if (tempValues == (long)NO_LONG)
-                                       /* this is an error                  */
-                reportException(Error_Incorrect_method_whole, i+1, argument);
-                                       /* copy over the info                */
-              *((long *)*ivalp) = tempValues;
-              break;
-
-            case REXXD_double:         /* double value                      */
-              *((double *)*ivalp) = this->getDoubleValue(argument);
-              break;
-
-            case REXXD_CSTRING:        /* ASCII-Z string value              */
-              *((const char **)*ivalp) = this->cstring(argument);
-              break;
-
-            case REXXD_STRING:         /* Required STRING object            */
-            {
-                                         /* force to a string value           */
-                RexxObject *temp = REQUIRED_STRING(argument, i + 1) ;
-                if (temp != argument)    /* new object created?               */
-                                         /* make it safe                      */
-                  this->saveObject(temp);
-                                         /* set the result in                 */
-                *((RexxObject **)*ivalp) = temp;
+            case REXXD_OSELF:                /* reference to SELF                 */
+                *((RexxObject **)*ivalp) = this->receiver;
                 break;
 
-            }
+            case REXXD_CSELF:                /* reference to CSELF                */
+                *((void **)*ivalp) = this->cself();
+                break;
 
-            case REXXD_POINTER:
-              *((void **)*ivalp) = this->pointer(argument);
-              break;
+            case REXXD_BUFFER:               /* reference to Buffered storage     */
+                *((void **)*ivalp) = this->buffer();
+                break;
 
-            default:                   /* something messed up               */
-              logic_error("unsupported native method argument type");
-              break;
-          }
+            case REXXD_ARGLIST:              /* need the argument list            */
+                /* create the argument array */
+                argArray = new (argcount, arglist) RexxArray;
+                *((RexxObject **)*ivalp) = argArray;
+                used_arglist = TRUE;           /* passing along everything          */
+                break;
+
+            case REXXD_MSGNAME:              /* the message name                  */
+                *((RexxObject **)*ivalp) = this->msgname;
+                break;
+
+            default:                         /* still within argument bounds?     */
+                if (i < argcount && arglist[i] != OREF_NULL)
+                {
+                    argument = arglist[i];       /* get the next argument             */
+                    switch (*tp)
+                    {               /* process this type                 */
+
+                        case REXXD_OBJECT:         /* arbitrary object reference        */
+                            *((RexxObject **)*ivalp) = argument;
+                            break;
+
+                        case REXXD_int:            /* integer value                     */
+                            {
+                                wholenumber_t temp;
+                                if (!argument->numberValue(temp, this->digits()))
+                                {
+                                    /* this is an error                  */
+                                    reportException(Error_Incorrect_method_whole, i+1, argument);
+                                }
+                                *((int *)*ivalp) = (int)temp;
+                                break;
+                            }
+
+                        case REXXD_long:           /* long value                        */
+                            {
+                                wholenumber_t temp;
+                                if (!argument->numberValue(temp, this->digits()))
+                                {
+                                    /* this is an error                  */
+                                    reportException(Error_Incorrect_method_whole, i+1, argument);
+                                }
+                                *((long *)*ivalp) = (long)temp;
+                                break;
+                            }
+
+                        case REXXD_double:         /* double value                      */
+                            {
+                                double temp;
+                                if (!argument->numberValue(temp, this->digits()))
+                                {
+                                    /* this is an error                  */
+                                    reportException(Error_Incorrect_method_number, i+1, argument);
+                                }
+                                *((double *)*ivalp) = (double)temp;
+                                break;
+                            }
+
+                        case REXXD_CSTRING:        /* ASCII-Z string value              */
+                            *((const char **)*ivalp) = this->cstring(argument);
+                            break;
+
+                        case REXXD_STRING:         /* Required STRING object            */
+                            {
+                                /* force to a string value           */
+                                RexxObject *temp = REQUIRED_STRING(argument, i + 1) ;
+                                if (temp != argument)    /* new object created?               */
+                                                         /* make it safe                      */
+                                    this->saveObject(temp);
+                                /* set the result in                 */
+                                *((RexxObject **)*ivalp) = temp;
+                                break;
+
+                            }
+
+                        case REXXD_POINTER:
+                            *((void **)*ivalp) = this->pointer(argument);
+                            break;
+
+                        default:                   /* something messed up               */
+                            logic_error("unsupported native method argument type");
+                            break;
+                    }
+                }
+                else
+                {                         /* no value provided, use default    */
+                    switch (*tp)
+                    {
+
+                        case REXXD_STRING:         /* no object here                    */
+                        case REXXD_OBJECT:         /* no object here                    */
+                            *((RexxObject **)*ivalp) = OREF_NULL;
+                            break;
+
+                        case REXXD_int:            /* non-integer value                 */
+                            *((int *)*ivalp) = 0;
+                            break;
+
+                        case REXXD_long:           /* non-existent long                 */
+                            *((long *)*ivalp) = 0;
+                            break;
+
+                        case REXXD_double:         /* non-existent double               */
+                            *((double *)*ivalp) = 0.0;
+                            break;
+
+                        case REXXD_CSTRING:        /* missing character string          */
+                            *((CSTRING *)*ivalp) = NO_CSTRING;
+                            break;
+
+                        case REXXD_POINTER:
+                            *((void **)*ivalp) = NULL;
+                            break;
+
+                        default:                   /* still an error if not there       */
+                            logic_error("unsupported native method argument type");
+                            break;
+                    }
+                }
+                i++;                           /* step to the next argument         */
+                break;
         }
-        else {                         /* no value provided, use default    */
-          switch (*tp) {
-
-            case REXXD_STRING:         /* no object here                    */
-            case REXXD_OBJECT:         /* no object here                    */
-              *((RexxObject **)*ivalp) = OREF_NULL;
-              break;
-
-            case REXXD_int:            /* non-integer value                 */
-              *((int *)*ivalp) = NO_INT;
-              break;
-
-            case REXXD_long:           /* non-existent long                 */
-              *((long *)*ivalp) = NO_LONG;
-              break;
-
-            case REXXD_double:         /* non-existent double               */
-              *((double *)*ivalp) = NO_DOUBLE;
-              break;
-
-            case REXXD_CSTRING:        /* missing character string          */
-              *((CSTRING *)*ivalp) = NO_CSTRING;
-              break;
-
-            case REXXD_POINTER:
-              *((void **)*ivalp) = NULL;
-              break;
-
-            default:                   /* still an error if not there       */
-              logic_error("unsupported native method argument type");
-              break;
-          }
-        }
-        i++;                           /* step to the next argument         */
-        break;
     }
-  }
-  if (i < argcount && !used_arglist)   /* extra, unwanted arguments?        */
-                                       /* got too many                      */
-    reportException(Error_Incorrect_method_maxarg, i);
-                                       /* get a RAISE type return?          */
-  if (setjmp(this->conditionjump) != 0) {
-    // TODO  Use protected object on the result
-    if (this->result != OREF_NULL)     /* have a value?                     */
-      holdObject(this->result);        /* get result held longer            */
-    this->guardOff();                  /* release any variable locks        */
-    this->argcount = 0;                /* make sure we don't try to mark any arguments */
-    this->activity->pop(FALSE);        /* pop this from the activity        */
-    this->setHasNoReferences();        /* mark this as not having references in case we get marked */
-    return this->result;               /* and finished                      */
-  }
+    if (i < argcount && !used_arglist)   /* extra, unwanted arguments?        */
+                                         /* got too many                      */
+        reportException(Error_Incorrect_method_maxarg, i);
+    /* get a RAISE type return?          */
+    if (setjmp(this->conditionjump) != 0)
+    {
+        // TODO  Use protected object on the result
+        if (this->result != OREF_NULL)     /* have a value?                     */
+            holdObject(this->result);        /* get result held longer            */
+        this->guardOff();                  /* release any variable locks        */
+        this->argcount = 0;                /* make sure we don't try to mark any arguments */
+        this->activity->pop(FALSE);        /* pop this from the activity        */
+        this->setHasNoReferences();        /* mark this as not having references in case we get marked */
+        return this->result;               /* and finished                      */
+    }
 
-  activity->releaseAccess();           /* force this to "safe" mode         */
-  (*methp)(ivalues);                   /* process the method call           */
-  activity->requestAccess();           /* now in unsafe mode again          */
+    activity->releaseAccess();           /* force this to "safe" mode         */
+    (*methp)(ivalues);                   /* process the method call           */
+    activity->requestAccess();           /* now in unsafe mode again          */
 
-  /* give up reference to receiver so that it can be garbage collected */
-  this->receiver = OREF_NULL;
+    /* give up reference to receiver so that it can be garbage collected */
+    this->receiver = OREF_NULL;
 
-  // set a default result
-  result = OREF_NULL;
+    // set a default result
+    result = OREF_NULL;
 
-  switch (*itypes) {                   /* now process the return value      */
-    case REXXD_void:                   /* void, this is just a NULL OREF    */
-      result = OREF_NULL;
-      break;
+    switch (*itypes)
+    {                   /* now process the return value      */
+        case REXXD_void:                   /* void, this is just a NULL OREF    */
+            result = OREF_NULL;
+            break;
 
-    case REXXD_OBJECT:                 /* Object reference                  */
-                                       /* no result returned?               */
-      if (*((RexxObject **)*ivalues) != OREF_NULL)
-      {
-                                       /* give a direct pointer to this     */
-          result = *((RexxObject **)*ivalues);
-      }
-      break;
+        case REXXD_OBJECT:                 /* Object reference                  */
+            /* no result returned?               */
+            if (*((RexxObject **)*ivalues) != OREF_NULL)
+            {
+                /* give a direct pointer to this     */
+                result = *((RexxObject **)*ivalues);
+            }
+            break;
 
-    case REXXD_int:                    /* integer value                     */
-      if (*((int *)*ivalues) != (int)NO_INT)/* no value?                         */
-      {
-                                         /* return result as an integer object*/
-          tempValues = *((int *)*ivalues);
-          result = new_integer(tempValues);
-      }
-      break;
+        case REXXD_int:                    /* integer value                     */
+            result = new_integer(*((int *)*ivalues));
+            break;
 
-    case REXXD_long:                   /* long integer value                */
-                                       /* no return value given?            */
-      if (*((long *)*ivalues) != (long)NO_LONG)
-      {
-                                         /* return as an integer value        */
-          tempValues = *((long *)*ivalues);
-          result = new_integer(tempValues);
-      }
-      break;
+        case REXXD_long:                   /* long integer value                */
+            result = new_integer(*((long *)*ivalues));
+            break;
 
-    case REXXD_double:                 /* double value                      */
-                                       /* no value returned?                */
-      if (*((double *)*ivalues) != NO_DOUBLE)
-      {
-                                         /* format the result as a string     */
-          result = new_string(*((double *)*ivalues));
-      }
-      break;
+        case REXXD_double:                 /* double value                      */
+            result = new_integer(*((double *)*ivalues));
+            break;
 
-    case REXXD_CSTRING:                /* ASCII-Z string                    */
-                                       /* no string returned?               */
-      if (*((CSTRING *)*ivalues) != NO_CSTRING)
-      {
-                                         /* convert to a string object        */
-          result = new_string(*((CSTRING *)*ivalues));
-      }
-      break;
+        case REXXD_CSTRING:                /* ASCII-Z string                    */
+            /* no string returned?               */
+            if (*((CSTRING *)*ivalues) != NO_CSTRING)
+            {
+                /* convert to a string object        */
+                result = new_string(*((CSTRING *)*ivalues));
+            }
+            break;
 
-    case REXXD_POINTER:
-      if (*((void **)*ivalues) != NULL)/* no pointer?                       */
-      {
-                                         /* make this an integer value        */
-          result = new_pointer(*((void **)*ivalues));
-      }
-      break;
+        case REXXD_POINTER:
+            if (*((void **)*ivalues) != NULL)/* no pointer?                       */
+            {
+                /* make this an integer value        */
+                result = new_pointer(*((void **)*ivalues));
+            }
+            break;
 
-    default:
-      logic_error("unsupported native method result type");
-      break;
-  }
+        default:
+            logic_error("unsupported native method result type");
+            break;
+    }
 
-  // Use protected object to pass back the result
-  holdObject(result);                  /* get result held longer            */
-  this->guardOff();                    /* release any variable locks        */
-  this->argcount = 0;                  /* make sure we don't try to mark any arguments */
-  this->activity->pop(FALSE);          /* pop this from the activity        */
-  this->setHasNoReferences();          /* mark this as not having references in case we get marked */
-  return (RexxObject *)result;         /* and finished                      */
+    // Use protected object to pass back the result
+    holdObject(result);                  /* get result held longer            */
+    this->guardOff();                    /* release any variable locks        */
+    this->argcount = 0;                  /* make sure we don't try to mark any arguments */
+    this->activity->pop(FALSE);          /* pop this from the activity        */
+    this->setHasNoReferences();          /* mark this as not having references in case we get marked */
+    return(RexxObject *)result;         /* and finished                      */
 }
 
 RexxObject *RexxNativeActivation::saveObject(
@@ -479,8 +481,8 @@ bool RexxNativeActivation::isInteger(
 /* Function:  Validate that an object has an integer value                    */
 /******************************************************************************/
 {
-                                       /* does it convert?                  */
-  return object->longValue(this->digits()) != (long)NO_LONG;
+    wholeNumber_t temp;
+    return object_scope->numberValue(temp, this->digits());
 }
 
 const char *RexxNativeActivation::cstring(
@@ -508,9 +510,11 @@ double RexxNativeActivation::getDoubleValue(
   double r;                            /* returned result                   */
 
                                        /* convert and check result          */
-  if ((r = object->doubleValue()) == NO_DOUBLE)
+  if (!object->doubleValue(r))
+  {
                                        /* conversion error                  */
-    reportException(Error_Execution_nodouble, object);
+      reportException(Error_Execution_nodouble, object);
+  }
   return r;                            /* return converted number           */
 }
 
@@ -520,8 +524,9 @@ bool RexxNativeActivation::isDouble(
 /* Function:  Test to see if an object is a valid double                      */
 /******************************************************************************/
 {
-                                       /* does it convert?                  */
-  return object->doubleValue() != NO_DOUBLE;
+    double r;                            /* returned result                   */
+                                         /* convert and check result          */
+    return object->doubleValue(r);
 }
 
 PVOID RexxNativeActivation::cself()
@@ -892,11 +897,11 @@ nativei1 (int, INTEGER, REXXOBJECT, object)
 /* Function:  External interface to the nativeact object method               */
 /******************************************************************************/
 {
-  int     result;                      /* returned result                   */
+  wholenumber_t result = 0;            /* returned result                   */
 
   native_entry;                        /* synchronize access                */
                                        /* just forward and return           */
-  result = ((RexxObject *)object)->longValue(((RexxNativeActivation *)ActivityManager::currentActivity->current())->digits());
+  ((RexxObject *)object)->numberValue(result, ((RexxNativeActivation *)ActivityManager::currentActivity->current())->digits());
   return_value(result);                /* return converted value            */
 }
 
@@ -905,17 +910,11 @@ nativei1 (size_t, UNSIGNED_INTEGER, REXXOBJECT, object)
 /* Function:  External interface to the nativeact object method               */
 /******************************************************************************/
 {
-  size_t            result;            /* returned result                   */
-  RexxNumberString *argNumStr;         /* numberstring version of this      */
-
+  stringsize_t result = 0;             /* returned result                   */
   native_entry;                        /* synchronize access                */
 
-  result = (ULONG)NO_LONG;             /* set a default return value        */
                                        /* First convert to numberstring     */
-  argNumStr = ((RexxObject *)object)->numberString();
-                                       /* Did object convert?               */
-  if (argNumStr != OREF_NULL)          /* convert to a numberstring?        */
-    argNumStr->ULong(&result);         /* now convert to a ulong            */
+  ((RexxObject *)object)->unsignedNumberValue(result);
   return_value(result);                /* return converted value            */
 }
 
@@ -971,7 +970,7 @@ nativei1 (double, DOUBLE, REXXOBJECT, object)
 /* Function:  External interface to the nativeact object method               */
 /******************************************************************************/
 {
-  double  result;                      /* returned result                   */
+  double  result = 0.0;                /* returned result                   */
   RexxNativeActivation * self;         /* current native activation         */
 
   native_entry;                        /* synchronize access                */

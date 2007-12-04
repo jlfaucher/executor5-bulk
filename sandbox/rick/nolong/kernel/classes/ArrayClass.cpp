@@ -194,7 +194,7 @@ RexxObject  *RexxArray::putRexx(RexxObject **arguments, size_t argCount)
     missing_argument(ARG_ONE);         /* this is an error                  */
                                        /* go validate the index             */
                                        /* have array expanded if necessary  */
-  position = this->validateIndex(arguments + 1, argCount - 1, 2, RaiseBoundsInvalid | ExtendUpper | RaiseBoundsTooMany);
+  this->validateIndex(arguments + 1, argCount - 1, 2, RaiseBoundsInvalid | ExtendUpper | RaiseBoundsTooMany, position);
 
   this->put(value, position);          /* set the new value                 */
   return OREF_NULL;                    /* Make sure RESULT gets dropped     */
@@ -276,9 +276,10 @@ RexxObject  *RexxArray::getRexx(RexxObject **arguments, size_t argCount)
   RexxObject * _result;                /* returned result                   */
 
                                        /* go validate the index             */
-  position = this->validateIndex(arguments, argCount, 1, RaiseBoundsTooMany | RaiseBoundsInvalid);
-  if (position == NO_LONG)             /* not found?                        */
-    _result = TheNilObject;            /* just return .nil                  */
+  if (!this->validateIndex(arguments, argCount, 1, RaiseBoundsTooMany | RaiseBoundsInvalid, position))
+  {
+      _result = TheNilObject;            /* just return .nil                  */
+  }
   else {                               /* return that element               */
     _result = *(this->data() + position - 1);
     if (_result == OREF_NULL)          /* no object there?                  */
@@ -327,9 +328,9 @@ RexxObject  *RexxArray::removeRexx(RexxObject **arguments, size_t argCount)
   size_t position;                     /* array position                    */
 
                                        /* go validate the index             */
-  position = this->validateIndex(arguments, argCount, 1, RaiseBoundsTooMany | RaiseBoundsInvalid);
-  if (position == NO_LONG) {           /* position out of bound?            */
-    result = TheNilObject;             /* yup, return .nil.                 */
+  if (!this->validateIndex(arguments, argCount, 1, RaiseBoundsTooMany | RaiseBoundsInvalid, position))
+  {
+      result = TheNilObject;             /* yup, return .nil.                 */
   }
   else {
                                        /* get the current element           */
@@ -495,20 +496,20 @@ RexxInteger *RexxArray::available(size_t position)
   return (RexxInteger *) ((position < this->size())  ? TheTrueObject : TheFalseObject);
 }
 
-size_t  RexxArray::validateIndex(      /* validate an array index           */
+bool  RexxArray::validateIndex(        /* validate an array index           */
     RexxObject **_index,               /* array index (possibly multi-dim)  */
     size_t       indexCount,           /* size of the index array           */
     size_t       _start,               /* starting point on the array       */
-    size_t       bounds_error)         /* raise errors on out-of-bounds     */
+    size_t       bounds_error,         /* raise errors on out-of-bounds     */
+    stringsize  &position)             // returned position
 /******************************************************************************/
 /* Function:  Process and validate a potentially multi-dimensional array      */
 /*            index.  If the index is out of bounds in any dimension it will  */
-/*            either return NO_LONG or raise an error, depending on the bounds*/
+/*            either return false or raise an error, depending on the bounds  */
 /*            checking parameter.                                             */
 /******************************************************************************/
 {
   RexxObject *value;                   /* individual index value            */
-  size_t  position = 0;                /* converted binary value            */
   size_t  numsubs;                     /* number of subscripts              */
   size_t  i;                           /* loop counter                      */
   size_t  multiplier;                  /* accumlation factor                */
@@ -547,7 +548,7 @@ size_t  RexxArray::validateIndex(      /* validate an array index           */
           this->extendMulti(_index, indexCount, _start);
                                        /* Call us again to get position, now*/
                                        /* That the array is extended.       */
-          return this->validateIndex(_index, indexCount, _start, bounds_error);
+          return this->validateIndex(_index, indexCount, _start, bounds_error, position);
         }
       }
 
@@ -559,10 +560,10 @@ size_t  RexxArray::validateIndex(      /* validate an array index           */
                                        /* report apropriate bounds          */
           reportException(Error_Incorrect_method_maxsub, IntegerOne);
         else
-          return NO_LONG;              /* just report not here              */
+          return false;                /* just report not here              */
       }
       else
-        return NO_LONG;                /* not fixed yet, but don't complain */
+        return false;                  /* not fixed yet, but don't complain */
     }
                                        /* Too few? subscripts?  Say so.     */
     else if (indexCount == 0)
@@ -584,7 +585,7 @@ size_t  RexxArray::validateIndex(      /* validate an array index           */
       else if (bounds_error & RaiseBoundsUpper)
         reportException(Error_Incorrect_method_array, position);
       else
-        position = NO_LONG;            /* just return indicator             */
+        return false;                  /* just return indicator             */
     }
   }
   else {                               /* multidimensional array            */
@@ -614,13 +615,13 @@ size_t  RexxArray::validateIndex(      /* validate an array index           */
             this->extendMulti(_index, indexCount, _start);
                                        /* Call us again to get position, now*/
                                        /* That the array is extended.       */
-            return this->validateIndex(_index, indexCount, _start, bounds_error);
+            return this->validateIndex(_index, indexCount, _start, bounds_error, position);
           }
                                        /* need to raise an error?           */
           else if (bounds_error & RaiseBoundsUpper)
             reportException(Error_Incorrect_method_array, position);
           else
-            return NO_LONG;            /* just return indicator             */
+            return false;              /* just return indicator             */
         }
                                        /* calculate next offset             */
         offset += multiplier * (position - 1);
@@ -646,7 +647,7 @@ size_t  RexxArray::validateIndex(      /* validate an array index           */
          this->extendMuti(_index, indexCount, _start);
                                        /* Call us again to get position, now*/
                                        /* That the array is extended.       */
-         return this->validateIndex(_index, indexCount, _start, bounds_error);
+         return this->validateIndex(_index, indexCount, _start, bounds_error, position);
        }
      }
      else {
@@ -656,7 +657,7 @@ size_t  RexxArray::validateIndex(      /* validate an array index           */
       reportException(Error_Incorrect_method_maxsub, numSize);
 #endif
   }
-  return position;                     /* return the position               */
+  return true;                         /* return the position               */
 }
 
 
@@ -863,11 +864,11 @@ RexxObject  *RexxArray::nextRexx(RexxObject **arguments, size_t argCount)
   RexxObject *result;
   RexxObject **thisObject;
   size_t _arraySize;                    /* size of the array                 */
+  stringsize_t position;
                                        /* go validate the index             */
-  size_t position = this->validateIndex(arguments, argCount, 1, RaiseBoundsTooMany | RaiseBoundsInvalid);
-  // out of bounds results in the .nil object
-  if (position == NO_LONG)
+  if !this->validateIndex(arguments, argCount, 1, RaiseBoundsTooMany | RaiseBoundsInvalid, position))
   {
+    // out of bounds results in the .nil object
       return TheNilObject;
   }
                                        /* get the address of the first      */
@@ -896,8 +897,9 @@ RexxObject  *RexxArray::previousRexx(RexxObject **arguments, size_t argCount)
   RexxObject *result;
   RexxObject **thisObject;
   size_t  _arraySize;                   /* size of the array                 */
+  stringsize_t position;
 
-  size_t position = this->validateIndex(arguments, argCount, 1, RaiseBoundsTooMany | RaiseBoundsInvalid);
+  this->validateIndex(arguments, argCount, 1, RaiseBoundsTooMany | RaiseBoundsInvalid, position);
                                        /* get the index object into an      */
                                        /*integer object                     */
   i = position;
@@ -951,14 +953,17 @@ RexxObject  *RexxArray::hasIndexRexx(RexxObject ** _index, size_t _indexCount)
 /*         being used.  The only error produced is if no parms were passed.   */
 /******************************************************************************/
 {
-  size_t position;                     /* array position                    */
+  stringsize_t position;               /* array position                    */
 
                                        /* go validate the index             */
-  position = this->validateIndex(_index, _indexCount, 1, RaiseBoundsTooMany | RaiseBoundsInvalid);
-  if (position == NO_LONG)             /* not found?                        */
+  if (!this->validateIndex(_index, _indexCount, 1, RaiseBoundsTooMany | RaiseBoundsInvalid, position))
+  {
                                        /* this is false                     */
-    return (RexxObject *)TheFalseObject;
-  else {                               /* check the position                */
+      return (RexxObject *)TheFalseObject;
+
+  }
+  else                                 /* check the position                */
+  {
                                        /* have a real entry?                */
     if (*(this->data() + position - 1) != OREF_NULL)
                                        /* got a true                        */
@@ -2178,8 +2183,8 @@ wholenumber_t RexxArray::sortCompare(RexxObject *comparator, RexxObject *left, R
         reportException(Error_No_result_object_message, OREF_COMPARE);
     }
 
-    wholenumber_t comparison = result->longValue(Numerics::DEFAULT_DIGITS);
-    if (comparison == (wholenumber_t)NO_LONG)
+    wholenumber_t comparison;
+    if (!result->numberValue(comparison, Numerics::DEFAULT_DIGITS)
     {
         reportException(Error_Invalid_whole_number_compare, result);
     }

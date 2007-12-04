@@ -1778,7 +1778,7 @@ void RexxActivation::mergeTraps(
 /*            parent activation's queues.                                     */
 /******************************************************************************/
 {
-  LONG   items;                        /* number of items to merge          */
+  size_t items;                        /* number of items to merge          */
 
   if (source_condition_queue != OREF_NULL) {  /* have something to add?            */
                                        /* no condition queue yet?           */
@@ -2341,10 +2341,10 @@ RexxInteger * RexxActivation::random(
 /*            seed value.                                                     */
 /******************************************************************************/
 {
-   LONG   minimum;                     /* minimum value                     */
-   LONG   maximum;                     /* maximum value                     */
-   ULONG  work;                        /* working random number             */
-   ULONG  seed;                        /* copy of the seed number           */
+   wholenumber_t  minimum;             /* minimum value                     */
+   wholenumber_t  maximum;             /* maximum value                     */
+   size_t work;                        /* working random number             */
+   size_t seed;                        /* copy of the seed number           */
    size_t i;                           /* loop counter                      */
 
                                        /* go get the seed value             */
@@ -3021,8 +3021,11 @@ RexxObject * RexxActivation::command(
       this->traceValue(commandString, TRACE_PREFIX_RESULT);
       instruction_traced = TRUE;       /* we've now traced this             */
     }
+
+    wholenumber_t rcValue;
                                        /* need to trace the RC info too?    */
-    if (instruction_traced && rc->longValue(9) != 0) {
+    if (instruction_traced && rc->numberValue(rcValue) && rcValue != 0)
+    {
                                        /* get RC as a string                */
       rc_trace = rc->stringValue();
                                        /* tack on the return code           */
@@ -3294,11 +3297,11 @@ RexxVariableBase  *RexxActivation::getDirectVariableRetriever(
 /*            no substitution in compound variable tails)                     */
 /******************************************************************************/
 {
-  LONG        scan;                    /* string scan pointer               */
-  BOOL        literal;                 /* literal indicator                 */
-  LONG        length;                  /* length of variable name           */
+  size_t      scan;                    /* string scan pointer               */
+  bool        literal;                 /* literal indicator                 */
+  stringsize_t length;                 /* length of variable name           */
   char        character;               /* current character                 */
-  LONG        nonnumeric;              /* count of non-numeric characters   */
+  size_t      nonnumeric;              /* count of non-numeric characters   */
   char        last;                    /* previous character                */
   size_t      compound;                /* count of period characters        */
 

@@ -385,37 +385,44 @@ RexxString *RexxStem::stringValue()
   return (RexxString *)this->value->stringValue();
 }
 
-long  RexxStem::longValue(size_t precision)
+bool RexxStem::numberValue(wholenumber_t &result, stringsize_t digits)
 /******************************************************************************/
-/* Function:  Forward long request on to the default value                    */
-/******************************************************************************/
-{                                      /* just forward to default value     */
-   return this->value->longValue(precision);
-}
-
-double  RexxStem::doubleValue()
-/******************************************************************************/
-/* Function:  Forward double request on to the default value                  */
+/* Function:  Convert a REXX object to a long value                           */
 /******************************************************************************/
 {
-   return this->value->doubleValue();  /* just forward to default value     */
+    return value->numberValue(result, digits);
 }
 
-long  RexxStem::longValueNoNOSTRING(size_t precision)
+bool RexxStem::numberValue(wholenumber_t &result)
 /******************************************************************************/
-/* Function:  Forward long request on to the default value                    */
-/******************************************************************************/
-{                                      /* just forward to default value     */
-   return this->value->longValueNoNOSTRING(precision);
-}
-
-double  RexxStem::doubleValueNoNOSTRING()
-/******************************************************************************/
-/* Function:  Forward double request on to the default value                  */
+/* Function:  Convert a REXX object to a long value                           */
 /******************************************************************************/
 {
-                                       /* just forward to default value     */
-   return this->value->doubleValueNoNOSTRING();
+    return value->numberValue(result);
+}
+
+bool RexxStem::unsignedNumberValue(stringsize_t &result, stringsize_t digits)
+/******************************************************************************/
+/* Function:  Convert a REXX object to a long value                           */
+/******************************************************************************/
+{
+    return value->unsignedNumberValue(result, digits);
+}
+
+bool RexxStem::unsignedNumberValue(stringsize_t &result)
+/******************************************************************************/
+/* Function:  Convert a REXX object to a long value                           */
+/******************************************************************************/
+{
+    return value->unsignedNumberValue(result);
+}
+
+bool RexxStem::doubleValue(double &result)
+/******************************************************************************/
+/* Function:  Convert a primitive internal object to a double value           */
+/******************************************************************************/
+{
+    return value->doubleValue(result);
 }
 
 RexxNumberString *RexxStem::numberString()
@@ -1001,8 +1008,8 @@ BOOL RexxStem::sort(RexxString *prefix, int order, int type, size_t firstElement
     }
     /* get the integer value of this.  It must be a valid numeric */
     /* value. */
-    size_t count = size_value->longValue(Numerics::DEFAULT_DIGITS);
-    if (count == NO_LONG) {
+    stringsize_t count;
+    if (!size_value->numberValue(count)) {
         return FALSE;
     }
     if (count == 0)         // if the count is zero, sorting is easy!
@@ -1011,7 +1018,7 @@ BOOL RexxStem::sort(RexxString *prefix, int order, int type, size_t firstElement
     }
 
     /* if this is not specified, sort to the end */
-    if (last == ULONG_MAX) {
+    if (last == SIZE_MAX) {
         last = count;
     }
 
@@ -1048,7 +1055,7 @@ BOOL RexxStem::sort(RexxString *prefix, int order, int type, size_t firstElement
 
     char *aData = (char *)array->data(bounds + 1);
 
-    if ((firstcol == 0) && (lastcol == ULONG_MAX)) {
+    if ((firstcol == 0) && (lastcol == SIZE_MAX)) {
       /* no special columns to check */
       switch (type) {
 

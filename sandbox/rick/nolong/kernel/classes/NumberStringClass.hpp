@@ -46,6 +46,7 @@
 
 #include "Numerics.hpp"
 
+// TODO:  redo these
 #define MAXNUM      999999999               /* maximum size of 9 digits int         */
 #define MAXPOSNUM  4294967294u              /* maximum size of a ULONG              */
 #define MAXNEGNUM  2147483647u              /* maximum size of a negative long      */
@@ -75,8 +76,6 @@
       this->length = 1;                     /* Length is 1       */     \
       this->sign = 0;                       /* Make sign Zero.   */     \
       this->exp = 0;                        /* exponent is zero. */
-
-int number_create_integer(const char *, size_t, int, int);
 
 
 #define NumberStringRound(s,d) s->roundUp(s,d)
@@ -117,9 +116,7 @@ int number_create_integer(const char *, size_t, int, int);
     bool         unsignedNumberValue(stringsize_t &result, size_t precision);
     bool         unsignedNumberValue(stringsize_t &result);
     bool         doubleValue(double &result);
-    long        longValue(size_t);
     inline RexxNumberString *numberString() { return this; }
-    double      doubleValue();
     RexxInteger *integerValue(size_t);
     RexxString  *makeString();
     RexxInteger *hasMethod(RexxString *);
@@ -144,7 +141,6 @@ int number_create_integer(const char *, size_t, int, int);
     RexxInteger *strictLessOrEqual(RexxObject *);
     RexxObject  *hashCode();
 
-    int         ULong(size_t *);
     RexxNumberString *clone();
     void        setString(RexxString *);
     void        roundUp(int);
@@ -219,8 +215,8 @@ int number_create_integer(const char *, size_t, int, int);
     RexxObject *orOp(RexxObject *);
     RexxObject *andOp(RexxObject *);
     RexxObject *xorOp(RexxObject *);
-    void        formatLong(int);
-    void        formatULong(size_t);
+    void        formatNumber(int);
+    void        formatUnsignedNumber(size_t);
     int         format(const char *, size_t);
     inline void        setZero() {
                    this->number[0] = '\0';               /* Make value a zero.*/

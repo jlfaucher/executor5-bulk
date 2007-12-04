@@ -219,7 +219,7 @@ void RexxSource::comment()
 {
   int          level;                  /* comment nesting level             */
   unsigned int inch;                   /* next character                    */
-  LONG         startline;              /* starting line for error reports   */
+  size_t       startline;              /* starting line for error reports   */
 
   level = 1;                           /* start the comment nesting         */
   this->line_offset += 2;              /* step over the comment start       */
@@ -261,10 +261,10 @@ unsigned int RexxSource::locateToken(
 {
  unsigned int    inch;                 /* current input character           */
  unsigned int    inch2;                /* secondary input character         */
- LONG            startline;            /* backward reset line number        */
- LONG            startoffset;          /* backward reset offset             */
+ size_t          startline;            /* backward reset line number        */
+ size_t          startoffset;          /* backward reset offset             */
  unsigned int    character;            /* returned character type           */
- BOOL            blanks;               /* are blanks significant?           */
+ bool            blanks;               /* are blanks significant?           */
 
  character = 0;                        /* no specific character type yet    */
                                        /* check if blanks should be returned*/
@@ -275,9 +275,9 @@ unsigned int RexxSource::locateToken(
       previous->classId == TOKEN_LITERAL ||
       previous->classId == TOKEN_RIGHT ||
       previous->classId == TOKEN_SQRIGHT))
-   blanks = TRUE;                      /* blanks are significant here       */
+   blanks = true;                      /* blanks are significant here       */
  else
-   blanks = FALSE;                     /* not looking for blanks            */
+   blanks = false;                     /* not looking for blanks            */
 
                                        /* no more lines in file?            */
  if (this->line_number > this->line_count)
@@ -391,7 +391,7 @@ RexxString *RexxSource::packLiteral(
   int    i;                            /* loop counter                      */
   int    j;                            /* loop counter                      */
   int    k;                            /* loop counter                      */
-  LONG   m;                            /* temporary integer                 */
+  int    m;                            /* temporary integer                 */
   int    byte;                         /* individual byte of literal        */
   int    nibble;                       /* individual nibble of literal      */
   int    oddhex;                       /* odd number of characters in first */
@@ -557,16 +557,16 @@ RexxToken *RexxSource::sourceNextToken(
  RexxToken  *token = OREF_NULL;        /* working token                     */
  RexxString *value;                    /* associate string value            */
  unsigned int inch;                    /* working input character           */
- LONG   eoffset;                       /* location of exponential           */
+ size_t eoffset;                       /* location of exponential           */
  int    state;                         /* state of symbol scanning          */
- LONG   start;                         /* scan start location               */
- LONG   litend;                        /* end of literal data               */
- LONG   length;                        /* length of extracted token         */
+ size_t start;                         /* scan start location               */
+ size_t litend;                        /* end of literal data               */
+ size_t length;                        /* length of extracted token         */
  int    dot_count;                     /* count of periods in symbol        */
  unsigned int literal_delimiter;       /* literal string delimiter          */
  int    type;                          /* type of literal token             */
- LONG   i;                             /* loop counter                      */
- LONG   j;                             /* loop counter                      */
+ size_t i;                             /* loop counter                      */
+ size_t j;                             /* loop counter                      */
  int    subclass;                      /* sub type of the token             */
  int    numeric;                       /* numeric type flag                 */
  SourceLocation location;              /* token location information        */

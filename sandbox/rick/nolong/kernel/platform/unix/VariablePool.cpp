@@ -195,7 +195,7 @@ ULONG SysVariablePool(
   RexxActivation   * activation;       /* most recent REXX activation       */
   RexxObject       * value;            /* fetched value                     */
   ULONG              retcode;          /* composite return code             */
-  LONG               arg_position;     /* requested argument position       */
+  stringsize_t       arg_position;     /* requested argument position       */
   int                code;             /* variable request code             */
   PSHVBLOCK          pshvblock;        /* variable pool request block       */
   LONG               tempSize;
@@ -339,10 +339,8 @@ ULONG SysVariablePool(
       else if (!memcmp(variable->getStringData(), "PARM.", sizeof("PARM.") - 1)) {
                                        /* extract the numeric piece         */
         value = variable->extract(strlen("PARM."), variable->getLength() - strlen("PARM."));
-                                       /* get the binary value              */
-        arg_position = value->longValue(Numerics::DEFAULT_DIGITS);
                                        /* not a good number?                */
-        if (arg_position == (long)NO_LONG || arg_position <= 0)
+        if (!value->unsignedNumberValue(arg_position))
                                        /* this is a bad name                */
           pshvblock->shvret|=RXSHV_BADN;
         else {

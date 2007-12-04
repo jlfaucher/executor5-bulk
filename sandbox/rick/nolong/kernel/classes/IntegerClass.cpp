@@ -186,13 +186,6 @@ void RexxInteger::copyIntoTail(RexxCompoundTail *tail)
   tail->append(stringBuffer, strlen(stringBuffer));
 }
 
-double  RexxInteger::doubleValue()
-/******************************************************************************/
-/* Function:  Convert a string value to a double value;                       */
-/******************************************************************************/
-{
-  return (double)this->value;          /* just let the compiler convert     */
-}
 
 RexxNumberString *RexxInteger::numberString()
 /******************************************************************************/
@@ -204,25 +197,6 @@ RexxNumberString *RexxInteger::numberString()
     return this->stringrep->numberString();
   else                                 /* create a new numberstring         */
     return (RexxNumberString *)new_numberstring((wholenumber_t)this->value);
-}
-
-long RexxInteger::longValue(
-    size_t digits)                     /* digits of precision to use        */
-/******************************************************************************/
-/* Function:  Convert an integer object to a long value under the current     */
-/*            precision.                                                      */
-/******************************************************************************/
-{
-  if (digits == NO_LONG) {             /* Do we need to get current digits  */
-    digits = number_digits();          /*  Yes, go get it.                  */
-    digits = min(digits, 9);           /* 9 is max for default digits.      */
-  }
-                                       /* is the long value expressable as a*/
-                                       /*  whole number in REXX term.       */
-  if (digits < 9 && labs((int)this->value) >= Numerics::validMaxWhole[digits - 1]) {
-      return NO_LONG;                  /* nope, not a valid long.           */
-  }
-  return this->value;                  /* return the value directly         */
 }
 
 
@@ -253,8 +227,6 @@ bool RexxInteger::doubleValue(double &value)
  */
 bool RexxInteger::numberValue(wholenumber_t &result)
 {
-    // get the value for this
-    wholenumber_t value = this->wholeNumber();
                                        /* is the long value expressable as a*/
                                        /*  whole number in REXX term.       */
     if (Numerics::abs(value) >= Numerics::MAX_WHOLENUMBER)
@@ -278,8 +250,6 @@ bool RexxInteger::numberValue(wholenumber_t &result)
  */
 bool RexxInteger::numberValue(wholenumber_t &result, size_t digits)
 {
-    // get the value for this
-    wholenumber_t value = this->wholeNumber();
                                        /* is the long value expressable as a*/
                                        /*  whole number in REXX term.       */
     if (digits < Numerics::DEFAULT_DIGITS && Numerics::abs(value) >= Numerics::validMaxWhole[digits - 1])
@@ -302,16 +272,12 @@ bool RexxInteger::numberValue(wholenumber_t &result, size_t digits)
  */
 bool RexxInteger::unsignedNumberValue(stringsize_t &result)
 {
-    // get the value for this
-    stringsize_t value = this->stringSize();
-                                       /* is the long value expressable as a*/
-                                       /*  whole number in REXX terms.      */
-    if (value >= (stringsize_t)Numerics::MAX_WHOLENUMBER)
+    // this must be non-negative and not out of range
+    if (value < 0  || value >= Numerics::MAX_WHOLENUMBER)
     {
-        return false;                    /* nope, not a valid long.           */
+        return false;
     }
-
-    result = value;                      // return the value
+    result = wholenumber();              // return the value
     return true;                         // this was convertable
 }
 
@@ -328,15 +294,13 @@ bool RexxInteger::unsignedNumberValue(stringsize_t &result)
  */
 bool RexxInteger::unsignedNumberValue(stringsize_t &result, size_t digits)
 {
-    // get the value for this
-    stringsize_t value = this->stringSize();
                                        /* is the long value expressable as a*/
                                        /*  whole number in REXX term.       */
-    if (digits < Numerics::DEFAULT_DIGITS && value >= (stringsize_t)Numerics::validMaxWhole[digits - 1])
+    if (value < 0 || (digits < Numerics::DEFAULT_DIGITS && value >= (stringsize_t)Numerics::validMaxWhole[digits - 1]))
     {
         return false;                      /* nope, not a valid long.           */
     }
-    result = value;                      // return the value
+    result = wholenumber();              // return the value
     return true;                         // this was convertable
 }
 

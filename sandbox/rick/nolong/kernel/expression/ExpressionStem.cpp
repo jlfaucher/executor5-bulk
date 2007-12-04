@@ -36,7 +36,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Translator                                              ExpressionStem.c     */
+/* REXX Translator                                       ExpressionStem.c     */
 /*                                                                            */
 /* Primitive Translator Expression Parsing Stem Reference Class               */
 /*                                                                            */
@@ -54,7 +54,7 @@
 
 RexxStemVariable::RexxStemVariable(
      RexxString * stemName,            /* stem name to access               */
-     LONG         var_index)           /* lookaside index for stem          */
+     size_t       var_index)           /* lookaside index for stem          */
 /******************************************************************************/
 /* Function:  Initialize a translator STEM object                             */
 /******************************************************************************/

@@ -62,39 +62,6 @@ RexxObject *RexxNumberString::##method(RexxObject *operand)\
  }
 
 
-/*********************************************************************/
-/*  Function:  Convert a number string into a RexxInteger object     */
-/*********************************************************************/
-int number_create_integer(const char *thisnum, size_t intlength, int carry, int sign)
-{
-  int intnum;
-  size_t  numpos;
-
-  if (intlength > 10) {                /* too many digits for integer????   */
-    return NO_LONG;
-  }
-  else {
-    intnum = 0;                        /* initialize integer value to 0;    */
-    for (numpos = 1 ; (numpos <= intlength); numpos++ ) {
-                                       /* compute next digit part.          */
-     intnum = (intnum * 10) + (int) *thisnum++ ;
-     // on an overflow, this will wrap to a negative number.
-     if (intnum < 0)
-     {
-         return NO_LONG;
-     }
-    }
-  }
-  if (carry)                           /* have a carry out condition?       */
-    intnum++;                          /* step the number                   */
-                                       /* too big?   can't convert          */
-  if (intnum < 0 || sign == -1 && intnum > (int)MAXNEGNUM) {
-    return NO_LONG;
-  }
-  else {
-    return intnum;                     /* return converted number           */
-  }
-}
 
 /*********************************************************************/
 /*   Function:  Convert the numberstring to ULONG value              */
@@ -681,159 +648,23 @@ bool RexxNumberString::doubleValue(double &result)
     }
 }
 
-long RexxNumberString::longValue(size_t digits)
-/******************************************************************************/
-/* Function:  Convert a number string to a long value                         */
-/******************************************************************************/
-{
-  const char *num;
-  BOOL carry;
-  long intnum;
-  long numexp;
-  size_t numlength, numpos, createdDigits;
-  char  compareChar;
-
-  if (this->sign == 0 )                /* is the number zero ??             */
-    return 0;                          /*  yes, return right away           */
-  else {                               /*  no, check and make sure number is*/
-                                       /*   a integer type number           */
-
-    if (digits == NO_LONG) {           /* were we passed a value to use for */
-                                       /* digits?                           */
-      createdDigits = number_digits();       /* No, Get current digits setting.   */
-      createdDigits = min(createdDigits, 9);  /* 9 is max for default digits.      */
-    } else {
-      createdDigits = digits;           /* Yes, we will use this setting.    */
-    } /* endif */
-
-    if (this->length > createdDigits) {/* is number bigger than Digits      */
-                                       /* Yes need to adjust number down.   */
-     numexp = this->exp + (this->length-createdDigits);
-     numlength = createdDigits;
-
-                                       /* is MSD of numbers being trunc     */
-     if (*(this->number + numlength) >= 5)
-                                       /* Great/equal to 5?  Rounding?      */
-      carry = TRUE;                    /* Yes, indocate rounding for later. */
-     else
-      carry = FALSE;                   /* Nope, make sure we don't round    */
-
-
-    } else {                           /* current length is OK. set         */
-     numlength = this->length;         /*  length and                       */
-     numexp = this->exp;               /*  exp values to numbers.           */
-     carry = FALSE;                    /* We don't have a carry.            */
-    }
-    if (numexp < 0)  {                 /* Is the exponet negative?          */
-     numpos    = -numexp;              /* Get length of num after decimal   */
-
-     if (carry)                        /* Did we have a carry condition?    */
-                                       /* Any 'implied' zero's between      */
-                                       /* decimal point and 1st digit?      */
-       if (numpos == numlength)
-         compareChar = 9;              /* all digits after decimal must     */
-                                       /* be 9. to carry forward            */
-       else
-         return NO_LONG;               /* yes, not a valid whole number.    */
-     else
-       compareChar = '\0';             /* other wise all must be 0.         */
-
-     if (numpos >= numlength ) {       /* all of number after the decimanl  */
-       numpos = numlength;
-       num = this->number;             /* start looking at 1st digit        */
-     }
-     else
-                                       /* set num to 1st digit after decimal*/
-       num = this->number + numlength + numexp;
-
-     for ( ; numpos ; numpos--) {      /* look at all digits for vaility.   */
-      if ( *num++ != compareChar)      /* this the one we're looking for    */
-        return  NO_LONG;               /*   nope, not a valid integer.      */
-     }
-
-     if (-numexp >= (long)numlength)   /* are we carrying                   */
-                                       /* and since we now know all digits  */
-                                       /* are 0 or 9 (if carry), we know the*/
-      if (carry)                       /* answer now.                       */
-        return 1;                      /* if carry then its a 1.            */
-      else
-        return 0;                      /* otherwise its a zero.             */
-
-     intnum = number_create_integer(this->number, numlength + numexp, carry, this->sign);
-     if (intnum == (long)NO_LONG) {    /* Is numebr too big ????            */
-      return NO_LONG;                  /* Yes, return invalid integer....   */
-     }
-
-    }
-    else {                             /* straight out number. just compute.*/
-     intnum = number_create_integer(this->number, numlength, carry, this->sign);
-     if (intnum == (long)NO_LONG) {    /* Is numebr too big ????            */
-      return NO_LONG;                  /* Yes, return invalid integer....   */
-     }
-
-     if (numexp > 0 ) {                /* need to add zeros to the end?     */
-                                       /* Yes, see how many we need to add  */
-                                       /* make sure don't expand past size  */
-                                       /*  of a long....                    */
-      for (numpos = 1 ;numpos <= (size_t)numexp &&
-                       ((this->sign == 1 && intnum < MAXPOSBASE) ||
-                        (this->sign == -1 && intnum < MAXNEGBASE));
-           numpos++ ) {
-       intnum *= 10;                   /*  Add one zero to end of integer   */
-      }
-
-      if (numpos <= (size_t)numexp) {  /* did number exceed limit??         */
-       return NO_LONG;                 /* yes, return error.                */
-      }
-     }
-    }
-                                       /* is long value expressable as a    */
-                                       /*  whole number in REXX term.       */
-    if (createdDigits <= 9 && intnum >= Numerics::validMaxWhole[createdDigits - 1]) {
-      return NO_LONG;                  /* nope, not a valid long.           */
-    }
-
-                                       /* If number is negative, make int   */
-                                       /* neg                               */
-    if (this->sign == -1)
-     intnum = -intnum;
-    return intnum;                     /* return INTEGER object.            */
-  }
-}
-
 RexxInteger *RexxNumberString::integerValue(
     size_t digits )                    /* required precision                */
 /******************************************************************************/
 /* Function:  convert a number string to an integer object                    */
 /******************************************************************************/
 {
-  long integerNumber;                  /* converted value                   */
 
-                                       /* get the long value?               */
-  integerNumber = this->longValue(digits);
-  if (integerNumber == (long)NO_LONG)  /* no good?                          */
-    return (RexxInteger *)TheNilObject;/* just return .nil                  */
-  else
-    return new_integer(integerNumber); /* convert to an integer object      */
+    wholenumber_t integerNumber;       /* converted value                   */
+
+    if (!numberValue(integerNumber, digits())
+    {
+        return (RexxInteger *)TheNilObject;/* just return .nil                  */
+    }
+
+    return new_integer(integerNumber);
 }
 
-double   RexxNumberString::doubleValue()
-/******************************************************************************/
-/* Function:  Convert a number string to a double                             */
-/******************************************************************************/
-{
- RexxString *string;                   /* string version of the number      */
- double doubleNumber;                  /* converted value                   */
-
- string = this->stringValue();         /* get the string value              */
-                                       /* convert the number                */
- doubleNumber = strtod(string->getStringData(), NULL);
-                                       /* out of range?                     */
- if (doubleNumber == +HUGE_VAL || doubleNumber == -HUGE_VAL)
-   return NO_DOUBLE;                   /* got a bad value                   */
- else
-   return doubleNumber;                /* return the converted value        */
-}
 
 /*********************************************************************/
 /*   Function:  Convert the numberstring to unsigned value           */
@@ -1277,7 +1108,7 @@ RexxObject *RexxNumberString::truncInternal(
 /******************************************************************************/
 {
   RexxString *result;                  /* returned result                   */
-  LONG    temp;                        /* temporary string value            */
+  wholenumber_t    temp;               /* temporary string value            */
   long    integer_digits;              /* leading integer digits            */
   size_t  size;                        /* total size of the result          */
   int     signValue;                   /* current sign indicator            */
@@ -1936,7 +1767,7 @@ int RexxNumberString::format(const char *_number, size_t _length)
    return 0;                           /* All done !!                       */
 }
 
-void RexxNumberString::formatLong(int integer)
+void RexxNumberString::formatNumber(wholenumber_t integer)
 /******************************************************************************/
 /* Function : Format the integer num into a numberstring.                     */
 /******************************************************************************/
@@ -1965,7 +1796,7 @@ void RexxNumberString::formatLong(int integer)
   }
 }
 
-void RexxNumberString::formatULong(size_t integer)
+void RexxNumberString::formatUnsignedNumber(size_t integer)
 /******************************************************************************/
 /* Function : Format the integer num into a numberstring.                     */
 /******************************************************************************/
@@ -2140,7 +1971,7 @@ bool RexxNumberString::isEqual(
     return this->stringValue()->isEqual(other);
 }
 
-long RexxNumberString::strictComp(RexxObject *other)
+int  RexxNumberString::strictComp(RexxObject *other)
 /******************************************************************************/
 /* Function:  Compare the two values.                                         */
 /*                                                                            */
@@ -2155,7 +1986,7 @@ long RexxNumberString::strictComp(RexxObject *other)
  return this->stringValue()->strictComp(other);
 }
 
-long RexxNumberString::comp(
+int  RexxNumberString::comp(
     RexxObject *right)                 /* right hand side of compare      */
 /******************************************************************************/
 /* Function:  Do a value comparison of two number strings for the non-strict  */
@@ -2167,14 +1998,14 @@ long RexxNumberString::comp(
 /******************************************************************************/
 {
   RexxNumberString *rightNumber;       /* converted right hand number     */
-  LONG      aLexp;                     /* adjusted left exponent            */
-  LONG      aRexp;                     /* adjusted right exponent           */
+  wholenumber_t      aLexp;            /* adjusted left exponent            */
+  wholenumber_t     aRexp;             /* adjusted right exponent           */
   size_t    aLlen;                     /* adjusted left length              */
   size_t    aRlen;                     /* adjusted right length             */
-  LONG      MinExp;                    /* minimum exponent                  */
+  wholenumber_t      MinExp;                    /* minimum exponent                  */
   size_t    NumberDigits;              /* current digits setting            */
   char     *scan;                      /* scan pointer                      */
-  LONG      rc;                        /* compare result                    */
+  int       rc;                        /* compare result                    */
 
                                        /* the compare is acually done by    */
                                        /* subtracting the two numbers, the  */
@@ -2525,14 +2356,12 @@ RexxInteger *RexxNumberString::Sign()
 /********************************************************************/
 {
  RexxNumberString *NewNumber;          /* rounded number                    */
- LONG tempSign;
 
  NewNumber = this->clone();            /* copy the number                   */
  /* inherit the current numeric settings and perform rounding, if */
  /* necessary */
  NewNumber->setupNumber();
- tempSign = NewNumber->sign;           /* return the rounded sign           */
- return new_integer(tempSign);         /* just return the sign value        */
+ return new_integer(NewNumber->sign);  /* just return the sign value        */
 }
 
 RexxObject  *RexxNumberString::notOp()
@@ -2817,116 +2646,6 @@ RexxString *RexxNumberString::d2xD2c(
   return Retval;                       /* return proper result              */
 }
 
-int RexxNumberString::ULong(
-     size_t*  value)                   /* result length                     */
-/******************************************************************************/
-/* Function:  Convert a valid numberstring to a ULONG value.                  */
-/*   returns TRUE for a sucessfule conversion, FALSE otherwise.               */
-/******************************************************************************/
-{
-  const char *num;
-  BOOL  carry;
-  size_t numlength, numpos;
-  long  numexp;
-  size_t intnum;
-  size_t  resultDigits;
-  char  compareChar;
-
-
-   if (this->sign == -1) {             /*  Anegative numebr?                */
-     return FALSE;
-   }
-   else if (this->sign == 0) {         /* Is number 0?                      */
-     *value = 0;                       /* Yup, return 0 .                   */
-     return TRUE;
-   }
-   else {                              /* positive number convert it.       */
-    resultDigits = 10;
-
-
-
-    if (this->length > resultDigits) { /* is number bigger than max Digits. */
-                                       /* Yes need to adjust number down.   */
-     numexp = this->exp + (this->length - resultDigits);
-     numlength = resultDigits;
-
-                                       /* is MSD of the numbers being trunc */
-     if (*(this->number + numlength) >= 5)
-                                       /* Great/equal to 5?  Rounding?      */
-      carry = TRUE;                    /* Yes, indocate rounding for later. */
-     else
-      carry = FALSE;                   /* Nope, make sure don't round later */
-
-
-    }
-    else {                             /* current length is OK. set         */
-     numlength = this->length;         /*  length and                       */
-     numexp = this->exp;               /*  exp values to numbers.           */
-     carry = FALSE;                    /* We don't have a carry.            */
-    }
-
-    if (numexp < 0)  {                 /* Is the exponet negative?          */
-     numpos    = -numexp;              /*    Get length of num after decimal*/
-     if (carry)                        /* Did we have a carry condition?    */
-       if (numpos == numlength)        /* 'implied' zero's between decimal  */
-                                       /* point and 1st digit?              */
-         compareChar = 9;              /* digits after decimap point must   */
-                                       /* be 9 to carry forward into integer*/
-       else
-         return FALSE;                 /* yes, not a valid whole number.    */
-     else
-       compareChar = '\0';             /* other wise all must be 0.         */
-
-     if (numpos >= numlength ) {       /* all of number after the decimanl  */
-       numpos = numlength;
-       num = this->number;             /* start looking at 1st digit        */
-     } else
-                                       /* set num to 1st digit after decimal*/
-       num = this->number + numlength + numexp;
-
-     for ( ; numpos ; numpos--) {      /* look at all digits for vaility.   */
-      if ( *num++ != compareChar)      /* this digit what we're looking for */
-        return  FALSE;                 /*   nope, not a valid integer.      */
-     }
-
-     if (-numexp >= (long)numlength) { /* carrying and all digits after     */
-                                       /* and since we know all those digit */
-                                       /* are 0 or 9 (if carry), we know the*/
-      if (carry)                       /* answer now.                       */
-        *value = 1;                    /* if carry then its a 1.            */
-      else
-        *value = 0;                    /* otherwise its a zero.             */
-      return TRUE;
-     }
-     // might be too big
-     if (!number_create_uinteger(this->number, numlength + numexp, carry, this->sign, &intnum)) {
-         return FALSE;
-     }
-    }
-    else {                             /* straight out number. just compute.*/
-     if (!number_create_uinteger(this->number, numlength, carry, this->sign, &intnum))
-     {
-         return FALSE;                 /* Yes, return invalid integer....   */
-     }
-
-     if (numexp > 0 ) {                /* do we need to add zeros to end?   */
-                                       /* Yes, see how many we need to add  */
-                                       /* make sure don't expand past size  */
-                                       /*  of a long....                    */
-      for (numpos = 1 ;numpos <= (size_t)numexp && intnum < MAXPOSBASE; numpos++ ) {
-       intnum *= 10;                   /*  Add one zero to end of integer   */
-      }
-
-      if (numpos <= (size_t)numexp) {  /* did number exceed limit??         */
-       return FALSE;                   /* yes, return error.                */
-      }
-     }
-    }
-   *value = intnum;
-   return TRUE;                        /* return INTEGER object.            */
-  }
-}
-
 void  *RexxNumberString::operator new(size_t size, size_t length)
 /******************************************************************************/
 /* Function:  Create a new NumberString object                                */
@@ -3025,7 +2744,7 @@ RexxNumberString *RexxNumberStringClass::newInstance(wholenumber_t integer)
                                        /* at most an integer will be 9      */
                                        /*  digits long.                     */
   newNumber = new (10) RexxNumberString (10);
-  newNumber->formatLong(integer);      /* format the integer                */
+  newNumber->formatNumber(integer);      /* format the integer                */
   return newNumber;
 }
 
@@ -3039,7 +2758,7 @@ RexxNumberString *RexxNumberStringClass::newInstance(stringsize_t integer)
                                        /* at most an integer will be 9      */
                                        /*  digits long.                     */
   newNumber = new (10) RexxNumberString (10);
-  newNumber->formatULong(integer);     /* format the integer                */
+  newNumber->formatUnsignedNumber(integer);     /* format the integer                */
   return newNumber;
 }
 

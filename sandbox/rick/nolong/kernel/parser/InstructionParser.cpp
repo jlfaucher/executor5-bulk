@@ -217,7 +217,7 @@ RexxInstruction *RexxSource::callNew()
 /****************************************************************************/
 {
   RexxObject *newObject;               /* newly created object              */
-  LONG        argCount;                /* call arguments                    */
+  size_t      argCount;                /* call arguments                    */
   RexxToken  *token;                   /* current working token             */
   RexxObject *name;                    /* call name                         */
   int         _keyword;                /* call subkeyword                   */
@@ -738,7 +738,7 @@ RexxInstruction *RexxSource::dropNew()
 /****************************************************************************/
 {
   RexxObject *newObject;               /* newly created object              */
-  LONG        variableCount;           /* count of variables                */
+  size_t      variableCount;           /* count of variables                */
 
                                        /* go process the list               */
   variableCount = this->processVariableList(KEYWORD_DROP);
@@ -831,7 +831,7 @@ RexxInstruction *RexxSource::exposeNew()
 /****************************************************************************/
 {
   RexxObject *newObject;               /* newly created object              */
-  LONG        variableCount;           /* count of variables                */
+  size_t      variableCount;           /* count of variables                */
 
   this->isExposeValid();               /* validate the placement            */
                                        /* go process the list               */
@@ -1635,7 +1635,7 @@ RexxInstruction *RexxSource::procedureNew()
 /****************************************************************************/
 {
   RexxObject *newObject;               /* newly created object              */
-  LONG        variableCount;           /* list of variables                 */
+  size_t      variableCount;           /* list of variables                 */
   RexxToken  *token;                   /* current working token             */
 
   token = nextReal();                  /* get the next token                */
@@ -2129,7 +2129,7 @@ RexxInstruction *RexxSource::traceNew()
   RexxObject *newObject;               /* newly created object              */
   int         setting;                 /* new trace setting                 */
   int         debug;                   /* new debug setting                 */
-  int         debug_skip;              /* amount to skip                    */
+  wholenumber_t debug_skip;            /* amount to skip                    */
   size_t      debug_flags;             /* current debug flags               */
 
   setting = TRACE_NORMAL;              /* set default trace mode            */
@@ -2155,10 +2155,8 @@ RexxInstruction *RexxSource::traceNew()
         if (!token->isEndOfClause())
                                        /* this is an error                  */
           report_error_token(Error_Invalid_data_trace, token);
-                                       /* convert the value                 */
-        debug_skip = REQUEST_LONG(value, NO_LONG);
-
-        if (debug_skip == (int)NO_LONG) {   /* bad value?                        */
+        if (!value->requestNumber(debug_skip, digits()))
+        {
           debug_skip = 0;              /* belt and braces                   */
                                        /* process the setting               */
           this->parseTraceSetting(value, &setting, &debug);
@@ -2174,9 +2172,8 @@ RexxInstruction *RexxSource::traceNew()
       if (!token->isEndOfClause()) /* end of the instruction?           */
                                        /* this is an error                  */
         report_error_token(Error_Invalid_data_trace, token);
-                                       /* convert the value                 */
-      debug_skip = REQUEST_LONG(value, NO_LONG);
-      if (debug_skip == (int)NO_LONG) {     /* bad value?                        */
+      if (!value->requestNumber(debug_skip, digits()))
+      {
         debug_skip = 0;                /* belt and braces                   */
                                        /* process the setting               */
         this->parseTraceSetting(value, &setting, &debug);
@@ -2201,11 +2198,11 @@ RexxInstruction *RexxSource::traceNew()
       if (!token->isEndOfClause())     /* end of the instruction?           */
                                        /* this is an error                  */
         report_error(Error_Invalid_data_trace);
-                                       /* convert the value                 */
-      debug_skip = REQUEST_LONG(value, NO_LONG);
-      if (debug_skip == (int)NO_LONG)  /* bad value?                        */
+      if (!value->requestNumber(debug_skip, digits()))
+      {
                                        /* have an error                     */
         report_error1(Error_Invalid_whole_number_trace, value);
+      }
     }
     else {                             /* implicit value form               */
       previousToken();                 /* step back a token                 */

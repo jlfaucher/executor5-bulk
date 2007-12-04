@@ -159,7 +159,7 @@ void RexxInstructionRaise::execute(
   RexxDirectory *conditionobj;         /* propagated condition object       */
   size_t  count;                       /* count of array expressions        */
   size_t  i;                           /* loop counter                      */
-  LONG    msgNum;                      /* message number                    */
+  wholenumber_t  msgNum;               /* message number                    */
 
   context->traceInstruction(this);     /* trace if necessary                */
   _additional = OREF_NULL;             /* no object yet                     */

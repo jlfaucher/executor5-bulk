@@ -1713,12 +1713,9 @@ RexxObject *RexxMemory::setDump(RexxObject *selection)
 /*  Returned:  Nothing                                                        */
 /******************************************************************************/
 {
-
-  if (selection != OREF_NULL) {
-    if (REQUIRED_LONG(selection, Numerics::DEFAULT_DIGITS, ARG_ONE))
-      this->dumpEnable = false;
-    else
-      this->dumpEnable = true;
+  if (selection != OREF_NULL)
+  {
+      dumpEnable = selection->truthValue();
   }
   return selection;
 }

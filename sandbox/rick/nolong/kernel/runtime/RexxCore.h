@@ -160,7 +160,7 @@ inline long RANDOMIZE(long seed) { return (seed * RANDOM_FACTOR + 1); }
 #define new_method(i,e,a,c)               (new RexxMethod (i, e, a, c))
 #define new_CPPmethod(p,s,c)              (new RexxMethod (p, s, c))
 #define new_nmethod(p,l)                  (TheNativeCodeClass->newClass(p, l))
-#define new_pointer(p)                    (TheIntegerClass->newCache((LONG)p))
+#define new_pointer(p)                    (TheIntegerClass->newCache((uintptr_t)p))
 #define new_smartbuffer()                 (new RexxSmartBuffer(1024))
 #define new_sizedSmartBuffer(size)        (new RexxSmartBuffer(size))
 #define new_stack(s)                      (new(s) RexxStack (s))
@@ -577,17 +577,9 @@ EXTERN RexxInteger * IntegerMinusOne INITGLOBALPTR;  /* Static integer -1       
 
 #define RXROUNDUP(n,to)  ((((n)+(to-1))/(to))*to)
 #define rounddown(n,to)  (((n)/(to))*to)
-#define same_behaviour(oref) ((oref)->behaviour==this->behaviour)
-
-                                       /* current object's behaviour        */
-#define THIS_BEHAVIOUR (this->behaviour)
-#define PASTE3(a1,a2,a3) a1##a2##a3
 
 #define isOfClass(t,r) (r)->isObjectType(The##t##Behaviour)
 #define isOfClassType(t,r) (r)->isObjectType(T_##t)
-
-                                       /* access an object's hash value     */
-#define HASHVALUE(r) ((ULONG)((r)->hashvalue))
 
 /******************************************************************************/
 /* Utility Functions                                                          */
@@ -602,7 +594,7 @@ const char *mempbrk(const char *, const char *, size_t);     /* search for chara
 #define env_find(s) (TheEnvironment->entry(s))
                                        /* various exception/condition       */
                                        /* reporting routines                */
-void missing_argument(LONG position);
+void missing_argument(int position);
 int  message_number(RexxString *);
                                        /* verify argument presence          */
 #define required_arg(arg, position) if (arg == OREF_NULL) missing_argument(ARG_##position)
@@ -617,19 +609,10 @@ int  message_number(RexxString *);
 /* Constant GLobal values (for general use)                                   */
 /******************************************************************************/
 
-/* Also in RexxNativeAPI.h */
-#ifndef NO_INT
-# define NO_INT                0x80000000
-#endif
-#ifndef NO_LONG
-# define NO_LONG               0x80000000
-#endif
 #ifndef NO_CSTRING
 # define NO_CSTRING            NULL
 #endif
 #define NO_RSTRING       NULL
-
-extern double NO_DOUBLE;
 
 /******************************************************************************/
 /* Global Objects - Names                                                     */
@@ -739,21 +722,6 @@ inline RexxArray * REQUEST_ARRAY(RexxObject *obj) { return ((obj)->requestArray(
 /* The next macro is specifically for REQUESTing an INTEGER,                  */
 inline RexxInteger * REQUEST_INTEGER(RexxObject *obj) { return ((obj)->requestInteger(Numerics::DEFAULT_DIGITS));}
 
-/* The next macro is specifically for REQUESTing a LONG value                 */
-inline long REQUEST_LONG(RexxObject *obj, int precision) { return ((obj)->requestLong(precision)); }
-
-/* The next macro is specifically for REQUESTing an LONG value                */
-inline long REQUIRED_LONG(RexxObject *obj, int precision, int position) { return ((obj)->requiredLong(position, precision)); }
-
-/******************************************************************************/
-/* Floating-point conversions                                                 */
-/******************************************************************************/
-
-void db2st (double source, char *target);
-int  st2db (char *source, int length, double *target);
-void ln2db (long source, double *target);
-BOOL double2Float(double value, float *newValue);
-
 /******************************************************************************/
 /* Version number (okver.c)                                                   */
 /******************************************************************************/
@@ -770,6 +738,8 @@ inline RexxObject * callOperatorMethod(RexxObject *object, LONG methodOffset, Re
                                        /* go issue the method               */
   return (object->*((PCPPM1)cppEntry))(argument);
 }
+
+//TODO:  get rid of the native* macros.
 
 /******************************************************************************/
 /* Native method and external interface macros                                */

@@ -1306,7 +1306,7 @@ void  SysRunProgram(
   RexxString  * program_result;        /* returned program result           */
   RexxNativeActivation * newNativeAct; /* Native Activation to run on       */
   size_t        length;                /* return result length              */
-  LONG          return_code;           /* converted return code info        */
+  wholenumber_t return_code;           /* converted return code info        */
 
   tokenize_only = FALSE;               /* default is to run the program     */
                                        /* create the native method to be run*/
@@ -1482,10 +1482,8 @@ void  SysRunProgram(
       *(self->retcode) = 0;            /* set default rc value              */
                                        /* If there is a return val...       */
       if (program_result != OREF_NULL) {
-                                       /* convert to a long value           */
-        return_code = program_result->longValue(Numerics::DEFAULT_DIGITS);
                                        /* if a whole number...              */
-        if (return_code != NO_LONG && return_code <= SHRT_MAX && return_code >= SHRT_MIN)
+        if (program_result(return_code) && return_code <= SHRT_MAX && return_code >= SHRT_MIN)
                                        /* ...copy to return code.           */
           *(self->retcode) = (short)return_code;
       }

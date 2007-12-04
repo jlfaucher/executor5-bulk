@@ -59,7 +59,7 @@ class RexxInstructionParse : public RexxInstruction {
   inline void operator delete(void *) { }
   inline void operator delete(void *, void *) { }
 
-  RexxInstructionParse(RexxObject *, unsigned short, size_t, LONG, RexxQueue *);
+  RexxInstructionParse(RexxObject *, unsigned short, size_t, size_t, RexxQueue *);
   inline RexxInstructionParse(RESTORETYPE restoreType) { ; };
   void execute(RexxActivation *, RexxExpressionStack *);
   void live();

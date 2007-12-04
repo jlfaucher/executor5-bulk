@@ -276,10 +276,10 @@ RexxNumberString *RexxNumberString::Division(RexxNumberString *other, unsigned i
  char *resultPtr, *Output, *rightPtr, *leftPtr, *SaveLeftPtr, *SaveRightPtr;
  int   multiplier, rc;
  int   DivChar, thisDigit;
- long  CalcExp;
+ wholenumber_t  CalcExp;
 
  size_t  NumberDigits, totalDigits, resultDigits;
- ULONG adjustNum1;
+ size_t adjustNum1;
  char leftBufFast[FASTDIGITS];        /* fast allocation if default        */
  char rightBufFast[FASTDIGITS];       /* fast allocation if default        */
  char outBufFast[FASTDIGITS];         /* fast allocation if default        */
@@ -597,8 +597,8 @@ RexxNumberString *RexxNumberString::power(RexxObject *PowerObj)
 /*   Function:          Perform the Arithmetic power operation       */
 /*********************************************************************/
 {
-
- int     powerValue, extra, OldNorm;
+ wholenumber_t powerValue;
+ int     extra, OldNorm;
  size_t  NumberDigits;
  char   *Accum, *AccumPtr, *OutPtr, *TempPtr;
  BOOL    NegativePower;
@@ -610,10 +610,11 @@ RexxNumberString *RexxNumberString::power(RexxObject *PowerObj)
 
   NegativePower = FALSE;               /* Initialize the flags.             */
   required_arg(PowerObj, ONE);         /* must have one argument            */
-                                       /* get the LONG value                */
-  powerValue = REQUEST_LONG(PowerObj, NO_LONG);
-  if (powerValue == (int)NO_LONG)      /*  valid?  no report the exception  */
-     reportException(Error_Invalid_whole_number_power, PowerObj);
+                                       /* get the whole number value        */
+  if (!PowerObj->numberValue(PowerObj, digits()))
+  {
+      reportException(Error_Invalid_whole_number_power, PowerObj);
+  }
 
   if (powerValue < 0) {                /* is the power negative?            */
    NegativePower = TRUE;               /*  yes, mark for later.             */

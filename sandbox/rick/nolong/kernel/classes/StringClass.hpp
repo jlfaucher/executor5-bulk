@@ -109,9 +109,7 @@ class RexxStringClass : public RexxClass {
    bool         unsignedNumberValue(stringsize_t &result, size_t precision);
    bool         unsignedNumberValue(stringsize_t &result);
    bool         doubleValue(double &result);
-   long        longValue(size_t);
    RexxNumberString *numberString();
-   double      doubleValue();
    RexxInteger *integerValue(size_t);
    RexxString  *makeString();
    RexxString  *primitiveMakeString();

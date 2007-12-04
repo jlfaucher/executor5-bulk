@@ -253,7 +253,7 @@ void RexxActivity::generateRandomNumberSeed()
 /******************************************************************************/
 {
   RexxDateTime  timestamp;             /* current timestamp                 */
-  LONG          i;                     /* loop counter                      */
+  int           i;                     /* loop counter                      */
   static int rnd = 0;
 
   rnd++;
@@ -266,13 +266,13 @@ void RexxActivity::generateRandomNumberSeed()
   }
 }
 
-long RexxActivity::error(size_t startDepth)
+wholenumber_t RexxActivity::error(size_t startDepth)
 /******************************************************************************/
 /* Function:  Force error termination on an activity, returning the resulting */
 /*            REXX error code.                                                */
 /******************************************************************************/
 {
-  LONG   rc;                           /* REXX error return code            */
+  wholenumber_t rc;                    /* REXX error return code            */
 
   while (this->depth > startDepth) {   /* while still have activations      */
                                        /* if we have a real activation      */
@@ -287,8 +287,8 @@ long RexxActivity::error(size_t startDepth)
   if (this->conditionobj != OREF_NULL) {
                                        /* force it to display               */
     this->display(this->conditionobj);
-                                       /* get the failure return code       */
-    rc = this->conditionobj->at(OREF_RC)->longValue(Numerics::DEFAULT_DIGITS);
+    // try to convert.  Leaves unchanged if not value
+    this->conditionobj->at(OREF_RC)->numberValue(rc);
   }
   return rc;                           /* return the error code             */
 }
@@ -729,10 +729,10 @@ RexxString *RexxActivity::messageSubstitution(
 /*            error message.                                                  */
 /******************************************************************************/
 {
-  LONG        substitutions;           /* number of substitutions           */
-  LONG        subposition;             /* substitution position             */
-  LONG        i;                       /* loop counter                      */
-  LONG        selector;                /* substitution position             */
+  int         substitutions;           /* number of substitutions           */
+  int         subposition;             /* substitution position             */
+  int         i;                       /* loop counter                      */
+  int         selector;                /* substitution position             */
   RexxString *newmessage;              /* resulting new error message       */
   RexxString *front;                   /* front message part                */
   RexxString *back;                    /* back message part                 */
@@ -2496,14 +2496,7 @@ void process_message_arguments(
 /*            interface string.                                               */
 /******************************************************************************/
 {
-  LONG     i;                          /* loop counter/array index          */
-  PVOID    tempPointer;                /* temp converted pointer            */
-  RXSTRING tempRXSTRING;               /* temp argument rxstring            */
-  RexxObject *tempOREF;                /* temp argument object reference    */
-  LONG     tempLong;                   /* temp converted long               */
-  ULONG    tempULong;                  /* temp converted long               */
-  char     tempChar;                   /* temp character value              */
-  double   tempDouble;                 /* temp double value                 */
+  size_t   i;                          /* loop counter/array index          */
   va_list *subArguments;               /* indirect argument descriptor      */
   const char *subInterface;            /* indirect interface definition     */
 
@@ -2521,6 +2514,7 @@ void process_message_arguments(
 
       case 'b':                        /* BYTE                              */
       case 'c':                        /* CHARACTER                         */
+
                                        /* get the character                 */
         tempChar = (char) va_arg(*arguments, int);
                                        /* create a string object            */
@@ -2536,7 +2530,7 @@ void process_message_arguments(
 
       case 's':                        /* short                             */
                                        /* get the number                    */
-        tempLong = (LONG) (short) va_arg(*arguments, int);
+        tempLong = (long) (short) va_arg(*arguments, int);
                                        /* create an integer object          */
         argument_list->addLast(new_integer(tempLong));
         break;
@@ -2637,44 +2631,70 @@ void process_message_result(
   switch (interfacedefn) {             /* process the return type           */
 
       case 'b':                        /* BOOLEAN                           */
+      {
+        wholenumber_t temp = 0;
+        value->numberValue(temp, digits());
                                        /* get the number                    */
-        (*((bool *)return_pointer)) = value->longValue(NO_LONG) == 0 ? false : true;
+        (*((bool *)return_pointer)) = temp == 0 ? false : true;
         break;
+      }
       case 'c':                        /* CHARACTER                         */
                                        /* get the first character           */
         (*((char *)return_pointer)) = ((RexxString *)value)->getChar(0);
         break;
 
       case 'i':                        /* int                               */
+      {
+        wholenumber_t temp = 0;
+        value->numberValue(temp, digits());
                                        /* get the number                    */
-        (*((int *)return_pointer)) = (int)value->longValue(NO_LONG);
+        (*((int *)return_pointer)) = (int)temp;
         break;
+      }
 
       case 's':                        /* short                             */
+      {
+        wholenumber_t temp = 0;
+        value->numberValue(temp, digits());
                                        /* get the number                    */
-        (*((short *)return_pointer)) = (short)value->longValue(NO_LONG);
+        (*((short *)return_pointer)) = (short)temp;
         break;
+      }
 
       case 'd':                        /* double                            */
       case 'f':                        /* floating point                    */
-                                       /* get the double                    */
-        (*((double *)return_pointer)) = value->doubleValue();
-        break;
+      {
+          double temp = 0.0;
+          value->doubleValue(temp);
+                                         /* get the double                    */
+          (*((double *)return_pointer)) = temp;
+          break;
+      }
 
       case 'g':                        /* ULONG                             */
-                                       /* get the number                    */
-        (*((ULONG *)return_pointer)) = (ULONG)value->longValue(NO_LONG);
-        break;
+      {
+          wholenumber_t temp = 0;
+          value->numberValue(temp, digits());
+          (*((unsigned long *)return_pointer)) = (unsigned long)temp;
+          break;
+      }
 
       case 'h':                        /* unsigned short                   */
+      {
+        wholenumber_t temp = 0;
+        value->numberValue(temp, digits());
                                        /* get the number                    */
-        (*((unsigned short *)return_pointer)) = (unsigned short)value->longValue(NO_LONG);
+        (*((unsigned short *)return_pointer)) = (unsigned short)temp;
         break;
+      }
 
       case 'l':                        /* LONG                              */
-                                       /* get the number                    */
-        (*((ULONG *)return_pointer)) = (ULONG)value->longValue(NO_LONG);
-        break;
+      {
+          wholenumber_t temp = 0;
+          value->numberValue(temp, digits());
+          (*((long *)return_pointer)) = (long)temp;
+          break;
+      }
 
       case 'o':                        /* REXX object reference             */
                                        /* copy the value directly           */
