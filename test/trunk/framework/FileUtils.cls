@@ -161,6 +161,10 @@ return ret
 
   tmpOutFile = 'tmpXXX_delete.me'
 
+  -- Could be spaces in the program path name, especially on Windows.
+  prgName = prgName~strip
+  if prgName~pos(' ') <> 0, prgName~left(1) \== '"' then prgName = enQuote(prgName)
+
   cmd = 'rexx' prgName '>' tmpOutFile stdErrToStdOut
   cmd
   prgRet = RC

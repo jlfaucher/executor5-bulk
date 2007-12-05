@@ -72,6 +72,10 @@
     self~init:super
     finished = .false
 
+    -- Stupid Windows and its stupid spaces in path names.
+    prgName = prgName~strip
+    if prgName~pos(' ') <> 0, prgName~left(1) \== '"' then prgName = '"' || prgName || '"'
+
   ::method getResult unguarded
     expose finished
     guard on when finished
