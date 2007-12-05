@@ -122,16 +122,6 @@ return testUnitList
 -- class named exactly like file
 ::class "decimalFormat.testUnit" subclass TestCase public
 
-::method 'test00'
-    call SysCls
-    say 'ooRexxUnit.cls Version........:' .ooRexxUnit.version
-    say 'Interpreter Name..............:' .local~ooRexxUnit.interpreterName
-    say 'Language Level................:' .local~ooRexxUnit.languageLevel
-    say 'Interpreter Date..............:' .local~ooRexxUnit.interpreterDate
-    say 'Shell Name....................:' .local~ooRexxUnit.shellName
-    say 'OS Name.......................:' .local~ooRexxUnit.OSName
-    say '-'~copies(60)
-
 ::method 'test01Create'
     f = .decimalFormat~new()
     expected = 'a decimalFormat'
