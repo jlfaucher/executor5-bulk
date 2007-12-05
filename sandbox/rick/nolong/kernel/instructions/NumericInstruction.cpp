@@ -82,7 +82,7 @@ void RexxInstructionNumeric::execute(
 {
   RexxObject  *result;                 /* expression evaluation result      */
   RexxString  *stringResult;           /* converted string                  */
-  stringsize   setting;                /* binary form of the setting        */
+  stringsize_t setting;                /* binary form of the setting        */
 
   context->traceInstruction(this);     /* trace if necessary                */
                                        /* process the different types of    */
@@ -98,7 +98,7 @@ void RexxInstructionNumeric::execute(
         result = this->expression->evaluate(context, stack);
         context->traceResult(result);  /* trace if necessary                */
                                        /* bad value?                        */
-        if (!result->requestUnsignedNumber(setting, digits() || setting < 1)
+        if (!result->requestUnsignedNumber(setting, number_digits()) || setting < 1)
         {
                                        /* report an exception               */
             reportException(Error_Invalid_whole_number_digits, result);
@@ -121,7 +121,7 @@ void RexxInstructionNumeric::execute(
         result = this->expression->evaluate(context, stack);
         context->traceResult(result);  /* trace if necessary                */
                                        /* bad value?                        */
-        if (!result->requestUnsignedNumber(setting, digits())
+        if (!result->requestUnsignedNumber(setting, number_digits()))
         {
                                        /* report an exception               */
             reportException(Error_Invalid_whole_number_fuzz, result);

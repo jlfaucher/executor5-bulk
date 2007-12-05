@@ -135,7 +135,7 @@ void process_new_args(
 }
 
 void missing_argument(
-    LONG  argumentPosition)            /* position of the missing argument  */
+    int   argumentPosition)            /* position of the missing argument  */
 /******************************************************************************/
 /* Function:  Raise an error for a missing argument, given the target         */
 /*            position.                                                       */

@@ -62,8 +62,7 @@
 #endif
 
 extern SEV rexxTimeSliceSemaphore;
-extern ULONG  RexxTimeSliceTimer;
-extern ULONG  rexxTimeSliceTimerOwner;
+extern size_t  rexxTimeSliceTimerOwner;
 
 void SysGetCurrentTime(
   RexxDateTime *Date )                 /* returned data structure    */
@@ -101,7 +100,7 @@ void SysGetCurrentTime(
 /*     the time interval expires.                                    */
 /*                                                                   */
 /*********************************************************************/
-BOOL SysTimeSliceElapsed( void )
+bool SysTimeSliceElapsed()
 {
 //  ULONG postCount;
 //                                       /* see how many times timer poped */
@@ -110,7 +109,7 @@ BOOL SysTimeSliceElapsed( void )
   return (0);
 }
 
-void SysStartTimeSlice( void )
+void SysStartTimeSlice()
 /******************************************************************************/
 /* Function:  Make sure we ahve a Timer running and reset TimeSlice Sem       */
 /******************************************************************************/
@@ -118,7 +117,7 @@ void SysStartTimeSlice( void )
 }
 typedef struct {
   HEV sem;                             /* semaphore to wait on              */
-  long time;                           /* timeout value                     */
+  size_t time;                         /* timeout value                     */
 } ASYNC_TIMER_INFO;
 
 /*********************************************************************/

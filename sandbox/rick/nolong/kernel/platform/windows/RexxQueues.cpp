@@ -165,7 +165,7 @@ long rexx_add_queue(
 /********************************************************************************************/
 /* Rexx_push_queue                                                                          */
 /********************************************************************************************/
-RexxMethod1(long, rexx_push_queue,
+RexxMethod1(int, rexx_push_queue,
    REXXOBJECT, queue_line)             /* line to queue                     */
 {
                                        /* push a line onto the queue        */
@@ -175,7 +175,7 @@ RexxMethod1(long, rexx_push_queue,
 /********************************************************************************************/
 /* Rexx_queue_queue                                                                         */
 /********************************************************************************************/
-RexxMethod1(long, rexx_queue_queue,
+RexxMethod1(int, rexx_queue_queue,
    REXXOBJECT, queue_line)             /* line to queue                     */
 {
                                        /* queue a line onto the queue       */
@@ -204,7 +204,7 @@ RexxMethod1(REXXOBJECT, rexx_create_queue,
 /********************************************************************************************/
 /* Rexx_delete_queue                                                                        */
 /********************************************************************************************/
-RexxMethod1(long, rexx_delete_queue,
+RexxMethod1(int, rexx_delete_queue,
   CSTRING, queue_name)
 {
                                        /* just delete the queue             */

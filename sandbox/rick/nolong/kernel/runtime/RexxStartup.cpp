@@ -62,10 +62,9 @@
 #define CCHMAXPATH PATH_MAX+1
 #endif
 
-extern BOOL  ProcessDoneInit;          /* initialization is done            */
-extern BOOL  ProcessColdStart;         /* we're coldstarting this           */
-extern BOOL  ProcessDoneTerm;          /* termination is done               */
-extern BOOL  ProcessFirstThread;       /* first (and primary thread)        */
+extern bool  ProcessDoneInit;          /* initialization is done            */
+extern bool  ProcessDoneTerm;          /* termination is done               */
+extern bool  ProcessFirstThread;       /* first (and primary thread)        */
 
 extern SEV   RexxTerminated;           /* Termination complete semaphore.   */
 extern RexxInteger *ProcessName;
@@ -86,10 +85,9 @@ void kernelShutdown (void)
   EVPOST(RexxTerminated);              /* let anyone who cares know we're done*/
 //  memoryObject.dumpMemoryProfile();    /* optionally dump memory stats      */
   if (!ProcessDoneTerm) {              /* if first time through             */
-    ProcessDoneTerm = TRUE;            /* don't allow a "reterm"            */
-    ProcessDoneInit = FALSE;           /* no longer initialized.            */
-    ProcessColdStart = TRUE;           /* next one is a cold start          */
-    ProcessFirstThread = TRUE;         /* first thread needs to be created  */
+    ProcessDoneTerm = true;            /* don't allow a "reterm"            */
+    ProcessDoneInit = false;           /* no longer initialized.            */
+    ProcessFirstThread = true;         /* first thread needs to be created  */
     memoryObject.freePools();          /* release access to memoryPools     */
   }
 #ifdef SHARED
@@ -102,7 +100,7 @@ void kernelShutdown (void)
 }
 
 
-extern BOOL ProcessSaveImage;
+extern bool ProcessSaveImage;
 
 
 int REXXENTRY RexxTerminate (void)
@@ -116,12 +114,12 @@ int REXXENTRY RexxTerminate (void)
     return 0;
 }
 
-BOOL REXXENTRY RexxInitialize (void)
+bool REXXENTRY RexxInitialize (void)
 /******************************************************************************/
 /* Function:  Perform main kernel initializations                             */
 /******************************************************************************/
 {
-  BOOL result;                         /* initialization result             */
+  bool result;                         /* initialization result             */
 
 #if defined(AIX) || defined(LINUX)
   LONG lRC;                            /* Return Code                       */
@@ -181,7 +179,7 @@ BOOL REXXENTRY RexxInitialize (void)
   MTXRQ(start_semaphore);              /* lock the startup                  */
 
   if (ProcessFirstThread) {            /* if the first time                 */
-    ProcessFirstThread = FALSE;        /* this is the first thread          */
+    ProcessFirstThread = false;        /* this is the first thread          */
     MTXCROPEN(resource_semaphore, "OBJREXXRESSEM");         /* create or open the other          */
     MTXCROPEN(kernel_semaphore, "OBJREXXKERNELSEM");           /* semaphores                        */
 #ifdef FIXEDTIMERS
@@ -192,8 +190,8 @@ BOOL REXXENTRY RexxInitialize (void)
 #if defined(AIX) || defined(LINUX)
     SecureFlag = 1;
 #endif
-    ProcessDoneInit = FALSE;           /* allow for restart :               */
-    ProcessDoneTerm = FALSE;           /* allow for restart :               */
+    ProcessDoneInit = false;           /* allow for restart :               */
+    ProcessDoneTerm = false;           /* allow for restart :               */
     memoryObject.accessPools();        /* Gain access to memory Pools       */
     /* now that we have the shared memory, we can create and */
     /* use semaphores (prereq for AIX, though not for OS/2)  */
@@ -209,12 +207,12 @@ BOOL REXXENTRY RexxInitialize (void)
       RexxMemory::restore();           // go restore the state of the memory object
       ActivityManager::startup();      // go create the local enviroment.
     }
-    ProcessDoneInit = TRUE;            /* we're now initialized             */
+    ProcessDoneInit = true;            /* we're now initialized             */
   }                                    /* end of serialized block of code   */
   return result;                       /* all done                          */
 }
 
-BOOL REXXENTRY RexxQuery (void)
+bool REXXENTRY RexxQuery (void)
 /******************************************************************************/
 /* Function:  Determine if the REXX interpreter is initialized and active     */
 /******************************************************************************/

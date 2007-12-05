@@ -153,7 +153,7 @@ extern int errno;
 #define  VALID_ROUTINE    0            /* Successful completion      */
 
 
-BOOL bErrorFlag = FALSE;
+BOOL bErrorFlag = false;
 
 /* Turn off optimization under Windows. If this is compiler under    */
 /* Windows with the MS Visual C++ copiler and optimization is on     */
@@ -310,7 +310,7 @@ int matherr(struct __exception *x)         /* return string            */
 {
   LONG rc;
   rc = errno;
-  bErrorFlag = TRUE;
+  bErrorFlag = true;
 
   if (x->type == DOMAIN)
   {
@@ -350,12 +350,12 @@ int matherr(struct __exception *x)         /* return string            */
 * Function:  string2ulong(string, number)                           *
 *                                                                   *
 * Purpose:   Validates and converts an ASCII-Z string from string   *
-*            form to an unsigned long.  Returns FALSE if the number *
-*            is not valid, TRUE if the number was successfully      *
+*            form to an unsigned long.  Returns false if the number *
+*            is not valid, true if the number was successfully      *
 *            converted.                                             *
 *                                                                   *
-* RC:        TRUE - Good number converted                           *
-*            FALSE - Invalid number supplied.                       *
+* RC:        true - Good number converted                           *
+*            false - Invalid number supplied.                       *
 *********************************************************************/
 BOOL string2ulong(
   PSZ    string,                       /* string to convert          */
@@ -367,20 +367,20 @@ BOOL string2ulong(
   length = strlen(string);             /* get length of string       */
   if (length == 0 ||                   /* if null string             */
       length > MAX_DIGITS + 1)         /* or too long                */
-    return FALSE;                      /* not valid                  */
+    return false;                      /* not valid                  */
 
   accumulator = 0;                     /* start with zero            */
 
   while (length) {                     /* while more digits          */
     if (!isdigit(*string))             /* not a digit?               */
-      return FALSE;                    /* tell caller                */
+      return false;                    /* tell caller                */
                                        /* add to accumulator         */
     accumulator = accumulator * 10 + (*string - '0');
     length--;                          /* reduce length              */
     string++;                          /* step pointer               */
   }
   *number = accumulator;               /* return the value           */
-  return TRUE;                         /* good number                */
+  return true;                         /* good number                */
 }
 
 /*********************************************************************/
@@ -398,7 +398,7 @@ LONG MathFormatResult(
 
   if (bErrorFlag)                      /* error occured during       */
   {
-    bErrorFlag = FALSE;
+    bErrorFlag = false;
     strcpy(retstr->strptr, "ERROR");   /* matherr has set bErrorFlag */
     retstr->strlength = strlen(retstr->strptr);
     rc = VALID_ROUTINE;

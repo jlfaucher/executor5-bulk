@@ -116,7 +116,7 @@ typedef struct _control {              /* meta date control info            */
 
 typedef FILE_CONTROL *PFILE_CONTROL;   /* pointer to file info              */
 
-extern BOOL ProcessSaveImage;
+extern bool ProcessSaveImage;
 RexxMethod *SysRestoreTranslatedProgram(RexxString *, FILE *Handle);
 
 /*********************************************************************/

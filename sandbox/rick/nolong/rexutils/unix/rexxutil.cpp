@@ -312,9 +312,9 @@ union semun {
 
 extern REXXAPIDATA  *apidata;          /* Global state data          */
 extern INT opencnt[][2];               /* open count array for sems  */
-//extern BOOL WAITANDRESET;              /* for creating sems  */
+//extern bool WAITANDRESET;              /* for creating sems  */
 extern char *resolve_tilde(const char *);
-extern BOOL rexxutil_call;             /* internal call flag         */
+extern bool rexxutil_call;             /* internal call flag         */
 extern RexxMutex rexxutil_call_sem;
 /*extern INT rxstrnicmp(PSZ, PSZ, INT);  */
 
@@ -644,14 +644,14 @@ LONG APIENTRY SysLoadFuncs(
 * Function:  string2ulong(string, number)                           *
 *                                                                   *
 * Purpose:   Validates and converts an ASCII-Z string from string   *
-*            form to an unsigned long.  Returns FALSE if the number *
-*            is not valid, TRUE if the number was successfully      *
+*            form to an unsigned long.  Returns false if the number *
+*            is not valid, true if the number was successfully      *
 *            converted.                                             *
 *                                                                   *
-* RC:        TRUE - Good number converted                           *
-*            FALSE - Invalid number supplied.                       *
+* RC:        true - Good number converted                           *
+*            false - Invalid number supplied.                       *
 *********************************************************************/
-BOOL string2ulong(
+bool string2ulong(
   PSZ    string,                       /* string to convert          */
   PULONG number)                       /* converted number           */
 {
@@ -661,20 +661,20 @@ BOOL string2ulong(
   length = strlen(string);             /* get length of string       */
   if (length == 0 ||                   /* if null string             */
       length > MAX_DIGITS + 1)         /* or too long                */
-    return FALSE;                      /* not valid                  */
+    return false;                      /* not valid                  */
 
   accumulator = 0;                     /* start with zero            */
 
   while (length) {                     /* while more digits          */
     if (!isdigit(*string))             /* not a digit?               */
-      return FALSE;                    /* tell caller                */
+      return false;                    /* tell caller                */
                                        /* add to accumulator         */
     accumulator = accumulator * 10 + (*string - '0');
     length--;                          /* reduce length              */
     string++;                          /* step pointer               */
   }
   *number = accumulator;               /* return the value           */
-  return TRUE;                         /* good number                */
+  return true;                         /* good number                */
 }
 
 #endif
@@ -817,8 +817,8 @@ void CloseFile(
 * Purpose:   Reads a line of data using buffered reads.  At end of  *
 *            file, zero is returned to indicate nothing left.       *
 *                                                                   *
-* RC:        TRUE -  line was read successfully                     *
-*            FALSE - end of file was reached                        *
+* RC:        true -  line was read successfully                     *
+*            false - end of file was reached                        *
 *********************************************************************/
 
 INT GetLine(
@@ -968,8 +968,8 @@ INT GetLine(
 * Purpose:   Reads a line of data using buffered reads.  At end of  *
 *            file, zero is returned to indicate nothing left.       *
 *                                                                   *
-* RC:        TRUE -  line was read successfully                     *
-*            FALSE - end of file was reached                        *
+* RC:        true -  line was read successfully                     *
+*            false - end of file was reached                        *
 *********************************************************************/
 
 //INT GetLine(
@@ -1080,7 +1080,7 @@ ULONG mystrstr(
   CHAR   *needle,
   ULONG   hlen,
   ULONG   nlen,
-  BOOL    sensitive)
+  bool    sensitive)
 
 {
   CHAR line[MAX_LINE_LEN];
@@ -1944,15 +1944,15 @@ LONG RecursiveFindFile(
 * Function:  string2long(string, number)                            *
 *                                                                   *
 * Purpose:   Validates and converts an ASCII-Z string from string   *
-*            form to an unsigned long.  Returns FALSE if the number *
-*            is not valid, TRUE if the number was successfully      *
+*            form to an unsigned long.  Returns false if the number *
+*            is not valid, true if the number was successfully      *
 *            converted.                                             *
 *                                                                   *
-* RC:        TRUE - Good number converted                           *
-*            FALSE - Invalid number supplied.                       *
+* RC:        true - Good number converted                           *
+*            false - Invalid number supplied.                       *
 *********************************************************************/
 
-BOOL string2long(
+bool string2long(
   PSZ string,
   LONG *number)
 {
@@ -1969,20 +1969,20 @@ BOOL string2long(
   length = strlen(string);             /* get length of string       */
   if (length == 0 ||                   /* if null string             */
       length > MAX_DIGITS)             /* or too long                */
-    return FALSE;                      /* not valid                  */
+    return false;                      /* not valid                  */
 
   accumulator = 0;                     /* start with zero            */
 
   while (length) {                     /* while more digits          */
     if (!isdigit(*string))             /* not a digit?               */
-      return FALSE;                    /* tell caller                */
+      return false;                    /* tell caller                */
                                        /* add to accumulator         */
     accumulator = accumulator * 10 + (*string - '0');
     length--;                          /* reduce length              */
     string++;                          /* step pointer               */
   }
   *number = accumulator * sign;        /* return the value           */
-  return TRUE;                         /* good number                */
+  return true;                         /* good number                */
 }
 
 
@@ -1997,10 +1997,10 @@ void restore_terminal(INT signal){
 /******************************************************************************/
 /* getkey                                                                     */
 /******************************************************************************/
-/* echo == FALSE => no echo                                                   */
-/* echo == TRUE  => echo                                                      */
+/* echo == false => no echo                                                   */
+/* echo == true  => echo                                                      */
 /******************************************************************************/
-int getkey(char *ret, BOOL echo){
+int getkey(char *ret, bool echo){
   /* restore original TTY settings on exit */
 
 INT ttyfd = STDIN_FILENO;              /* standard tty filedescriptor        */
@@ -2302,7 +2302,7 @@ LONG APIENTRY SysAddRexxMacro(
       return INVALID_ROUTINE;          /* raise an error             */
   }
   rexxutil_call_sem.request();
-  rexxutil_call = TRUE;                /* no RexxInitialize !        */
+  rexxutil_call = true;                /* no RexxInitialize !        */
                                        /* try to add the macro       */
   rc = RexxAddMacro(args[0].strptr, args[1].strptr, position);
   if(rc)
@@ -2786,9 +2786,9 @@ LONG APIENTRY SysFileSearch(
   ULONG       num = 0;                 /* Line number                */
   ULONG       len;                     /* Length of string           */
   ULONG       len2;                    /* Length of string           */
-  BOOL        linenums = FALSE;        /* Set TRUE for linenums in   */
+  bool        linenums = false;        /* Set true for linenums in   */
                                        /* output                     */
-  BOOL        sensitive = FALSE;       /* Set TRUE for case-sens     */
+  bool        sensitive = false;       /* Set true for case-sens     */
                                        /* search                     */
   RXSTEMDATA  ldp;                     /* stem data                  */
   GetFileData filedata;                /* file read information      */
@@ -2814,10 +2814,10 @@ LONG APIENTRY SysFileSearch(
   if (numargs == 4) {                  /* process options            */
     opts = args[3].strptr;             /* point to the options       */
     if (strstr(opts, "N") || strstr(opts, "n"))
-      linenums = TRUE;
+      linenums = true;
 
     if (strstr(opts, "C") || strstr(opts, "c"))
-      sensitive = TRUE;
+      sensitive = true;
   }
                                        /* Initialize data area       */
   ldp.count = 0;
@@ -3051,7 +3051,7 @@ LONG APIENTRY SysCreateEventSem(
 {
   INT handle;                          /* semaphore handle           */
   INT i;                               /* counter                    */
-  BOOL bwaitreset = FALSE;
+  bool bwaitreset = false;
   int val = 1;
   union semun semopts;               /* for semaphore control      */
 /*  if (numargs > 1)                    Too many arguments?          */
@@ -3067,7 +3067,7 @@ LONG APIENTRY SysCreateEventSem(
 
   if (!args[1].strlength)
   {
-    bwaitreset = TRUE;
+    bwaitreset = true;
   }
 
   if ((numargs) && (args[0].strlength))
@@ -3511,7 +3511,7 @@ LONG APIENTRY SysWaitEventSem(
   PCHAR     character;
   CHAR      c[2]={'\0','\0'};
   pthread_t  thread;                   /* timeout thread             */
-  BOOL bwaitandreset = FALSE;
+  bool bwaitandreset = false;
 //INT     *brk;                        /* timeout and timeout flag   */
 
   if (numargs < 1 ||                   /* too few, or                */
@@ -3569,7 +3569,7 @@ LONG APIENTRY SysWaitEventSem(
     /* try to lock the sem to do the wait                            */
     locksem(apidata->rexxutilsems, handle);
 
-    /* take care, if WAITANDRESET == TRUE don't unlock               */
+    /* take care, if WAITANDRESET == true don't unlock               */
 
     if(!bwaitandreset)
     {
@@ -3631,7 +3631,7 @@ LONG APIENTRY SysWaitEventSem(
       sprintf(retstr->strptr, "%d", 640);/* error timeout            */
     }
     else {/* immediatly release the sem                              */
-    /* take care, if WAITANDRESET == TRUE don't unlock               */
+    /* take care, if WAITANDRESET == true don't unlock               */
       if(!bwaitandreset)
       {
         unlocksem(apidata->rexxutilsems, handle);
@@ -5074,7 +5074,7 @@ LONG APIENTRY SysGetKey(
   PSZ       queuename,                 /* Current queue              */
   PRXSTRING retstr )                   /* Return RXSTRING            */
 {
-  BOOL      echo = TRUE;               /* Set to FALSE if we         */
+  bool      echo = true;               /* Set to false if we         */
                                        /* shouldn't echo             */
   RexxMutex *mutex;                    /* serialization semaphore    */
 
@@ -5086,7 +5086,7 @@ LONG APIENTRY SysGetKey(
 
   if (numargs == 1) {                  /* validate arguments         */
     if (!rxstricmp(args[0].strptr, "NOECHO"))
-      echo = FALSE;
+      echo = false;
     else if (rxstricmp(args[0].strptr, "ECHO"))
       return INVALID_ROUTINE;          /* Invalid option             */
   }
@@ -5472,7 +5472,7 @@ LONG APIENTRY SysDumpVariables(
   LONG      rc;                        /* Ret code                   */
   SHVBLOCK  shvb;
   int       handle;
-  BOOL      fCloseFile = FALSE;
+  bool      fCloseFile = false;
 
   if ( (numargs > 1) ||                /* wrong number of arguments? */
        ((numargs > 0) && !RXVALIDSTRING(args[0])) )
@@ -5481,7 +5481,7 @@ LONG APIENTRY SysDumpVariables(
   if (numargs > 0)
   {
     /* open output file for append */
-    fCloseFile = TRUE;
+    fCloseFile = true;
 
     handle = open(args[0].strptr, O_WRONLY | O_APPEND | O_CREAT, S_IWUSR | S_IRUSR | S_IWGRP | S_IRGRP | S_IWOTH | S_IROTH);
     if(handle < 0)
@@ -5557,8 +5557,8 @@ LONG APIENTRY SysGetFileDateTime(
   struct    stat buf;
   struct    tm *newtime;
   PCHAR     dir_buf = NULL;            /* full directory path        */
-  BOOL      fOk = TRUE;
-  BOOL      alloc_Flag = FALSE;
+  bool      fOk = true;
+  bool      alloc_Flag = false;
 
   if ( (numargs < 1) || (numargs > 2) ||
        ((numargs == 2) && !RXVALIDSTRING(args[1])) )
@@ -5567,7 +5567,7 @@ LONG APIENTRY SysGetFileDateTime(
   if(*(args[0].strptr) == '~')
   {
     dir_buf = resolve_tilde(args[0].strptr);
-    alloc_Flag = TRUE;
+    alloc_Flag = true;
   }
   else
   {
@@ -5576,7 +5576,7 @@ LONG APIENTRY SysGetFileDateTime(
 
   if (stat(dir_buf, &buf) < 0)
   {
-     fOk = FALSE;
+     fOk = false;
   }
 
   if(fOk)
@@ -5613,7 +5613,7 @@ LONG APIENTRY SysGetFileDateTime(
              newtime->tm_sec);
              retstr->strlength = strlen(retstr->strptr);
   }
-  if( (dir_buf) && (alloc_Flag == TRUE) )
+  if( (dir_buf) && (alloc_Flag == true) )
     free(dir_buf);                         /* free the buffer memory  */
   if (!fOk)
     RETVAL(-1)
@@ -5642,14 +5642,14 @@ LONG APIENTRY SysSetFileDateTime(
   PRXSTRING retstr )                   /* Return RXSTRING            */
 {
   LONG      rc;                        /* Ret code                   */
-  BOOL      fOk = TRUE;
-  BOOL      fCloseFile = FALSE;
+  bool      fOk = true;
+  bool      fCloseFile = false;
   struct utimbuf timebuf;
   struct tm *newtime;
   time_t ltime;
   struct stat buf;
   PCHAR  dir_buf = NULL;
-  BOOL      alloc_Flag = FALSE;
+  bool      alloc_Flag = false;
 
   /* we expect one to three parameters, if three parameters are      */
   /* specified then the second may be omitted to set only a new time,*/
@@ -5663,7 +5663,7 @@ LONG APIENTRY SysSetFileDateTime(
   if(*(args[0].strptr) == '~')
   {
     dir_buf = resolve_tilde(args[0].strptr);
-    alloc_Flag = TRUE;
+    alloc_Flag = true;
   }
   else
   {
@@ -5672,7 +5672,7 @@ LONG APIENTRY SysSetFileDateTime(
 
   if (stat(dir_buf, &buf) < 0)
   {
-     fOk =  FALSE;
+     fOk =  false;
   }
 
   if (numargs == 1)
@@ -5681,7 +5681,7 @@ LONG APIENTRY SysSetFileDateTime(
     timebuf.modtime = ltime;
     if (utime(dir_buf, &timebuf) < 0)
     {
-       fOk = FALSE;
+       fOk = false;
     }
   }
   else
@@ -5693,7 +5693,7 @@ LONG APIENTRY SysSetFileDateTime(
        /* parse new date */
        if (sscanf(args[1].strptr, "%4d-%2d-%2d", &newtime->tm_year,
                   &newtime->tm_mon, &newtime->tm_mday) != 3)
-       fOk = FALSE;
+       fOk = false;
        newtime->tm_year -= 1900;
        newtime->tm_mon -= 1;
     }
@@ -5702,18 +5702,18 @@ LONG APIENTRY SysSetFileDateTime(
        /* parse new time */
        if (sscanf(args[2].strptr, "%2d:%2d:%2d", &newtime->tm_hour,
                   &newtime->tm_min, &newtime->tm_sec) != 3)
-            fOk = FALSE;
+            fOk = false;
     }
     ltime = mktime(newtime);
     timebuf.modtime = ltime;
 /*  if (utime(args[0].strptr, &timebuf) < 0)           */
     if (utime(dir_buf, &timebuf) < 0)
     {
-       fOk = FALSE;
+       fOk = false;
     }
   }
 
-  if( (dir_buf) && (alloc_Flag == TRUE) )
+  if( (dir_buf) && (alloc_Flag == true) )
     free(dir_buf);                         /* free the buffer memory  */
   if (fOk)
     RETVAL(0)
@@ -6076,7 +6076,7 @@ LONG APIENTRY SysStemDelete(
   ULONG         ulFirst;
   ULONG         ulItems = 1;
   ULONG         ulCount;
-  BOOL          fOk = TRUE;
+  bool          fOk = true;
 
   if ( (numargs < 2) || (numargs > 3) || /* validate arguments       */
       !RXVALIDSTRING(args[0]) || !RXVALIDSTRING(args[1]) ||
@@ -6151,13 +6151,13 @@ LONG APIENTRY SysStemDelete(
         shvb.shvret = 0;
         rc = RexxVariablePool(&shvb);
         if ((rc != RXSHV_OK) && (rc != RXSHV_NEWV))
-          fOk = FALSE;
+          fOk = false;
 
         /* free memory allocated by REXX */
         free(shvb.shvvalue.strptr);
       }
       else
-        fOk = FALSE;
+        fOk = false;
 
       if (!fOk)
         break;
@@ -6180,7 +6180,7 @@ LONG APIENTRY SysStemDelete(
         shvb.shvret = 0;
         if (RexxVariablePool(&shvb) != RXSHV_OK)
         {
-          fOk = FALSE;
+          fOk = false;
           break;
         } /* endif */
       } /* endfor */
@@ -6202,12 +6202,12 @@ LONG APIENTRY SysStemDelete(
       shvb.shvret = 0;
       rc = RexxVariablePool(&shvb);
       if ((rc != RXSHV_OK) && (rc != RXSHV_NEWV))
-        fOk = FALSE;
+        fOk = false;
     } /* endif */
   }
   else
   {
-    fOk = FALSE;
+    fOk = false;
   } /* endif */
 
   if (fOk)
@@ -6246,7 +6246,7 @@ LONG APIENTRY SysStemInsert(
   ULONG         ulIdx;
   ULONG         ulPosition;
   ULONG         ulCount;
-  BOOL          fOk = TRUE;
+  bool          fOk = true;
 
   if ( (numargs != 3) ||  /* validate arguments       */
       !RXVALIDSTRING(args[0]) || !RXVALIDSTRING(args[1]) ||
@@ -6312,13 +6312,13 @@ LONG APIENTRY SysStemInsert(
         shvb.shvret = 0;
         rc = RexxVariablePool(&shvb);
         if ((rc != RXSHV_OK) && (rc != RXSHV_NEWV))
-          fOk = FALSE;
+          fOk = false;
 
         /* free memory allocated by REXX */
         free(shvb.shvvalue.strptr);
       }
       else
-        fOk = FALSE;
+        fOk = false;
 
       if (!fOk)
         break;
@@ -6339,7 +6339,7 @@ LONG APIENTRY SysStemInsert(
       shvb.shvret = 0;
       rc = RexxVariablePool(&shvb);
       if ((rc != RXSHV_OK) && (rc != RXSHV_NEWV))
-        fOk = FALSE;
+        fOk = false;
     } /* endif */
 
     if (fOk)
@@ -6358,12 +6358,12 @@ LONG APIENTRY SysStemInsert(
       shvb.shvret = 0;
       rc = RexxVariablePool(&shvb);
       if ((rc != RXSHV_OK) && (rc != RXSHV_NEWV))
-        fOk = FALSE;
+        fOk = false;
     } /* endif */
   }
   else
   {
-    fOk = FALSE;
+    fOk = false;
   } /* endif */
 
   if (fOk)
@@ -6411,8 +6411,8 @@ LONG APIENTRY SysStemCopy(
   ULONG         ulFrom = 1;
   ULONG         ulTo = 1;
   ULONG         ulCopyCount = 0;
-  BOOL          fInsert = FALSE;
-  BOOL          fOk = TRUE;
+  bool          fInsert = false;
+  bool          fOk = true;
 
   if ( (numargs < 2) || (numargs > 6) ||  /* validate arguments       */
       !RXVALIDSTRING(args[0]) || !RXVALIDSTRING(args[1]) ||
@@ -6454,11 +6454,11 @@ LONG APIENTRY SysStemCopy(
     {
       case 'I':
       case 'i':
-        fInsert = TRUE;
+        fInsert = true;
         break;
       case 'O':
       case 'o':
-        fInsert = FALSE;
+        fInsert = false;
         break;
       default:
         return INVALID_ROUTINE;
@@ -6486,7 +6486,7 @@ LONG APIENTRY SysStemCopy(
       return INVALID_ROUTINE;
   }
   else
-    fOk = FALSE;
+    fOk = false;
 
   if (fOk)
   {
@@ -6515,7 +6515,7 @@ LONG APIENTRY SysStemCopy(
         ulToCount = 0;
       }
       else
-        fOk = FALSE;
+        fOk = false;
     } /* endif */
 
     if (fOk)
@@ -6558,13 +6558,13 @@ LONG APIENTRY SysStemCopy(
         shvb.shvret = 0;
         rc = RexxVariablePool(&shvb);
         if ((rc != RXSHV_OK) && (rc != RXSHV_NEWV))
-          fOk = FALSE;
+          fOk = false;
 
         /* free memory allocated by REXX */
         free(shvb.shvvalue.strptr);
       }
       else
-        fOk = FALSE;
+        fOk = false;
 
       if (!fOk)
         break;
@@ -6587,7 +6587,7 @@ LONG APIENTRY SysStemCopy(
       shvb.shvret = 0;
       rc = RexxVariablePool(&shvb);
       if ((rc != RXSHV_OK) && (rc != RXSHV_NEWV))
-        fOk = FALSE;
+        fOk = false;
     } /* endif */
   } /* endif */
 
@@ -6620,13 +6620,13 @@ LONG APIENTRY SysStemCopy(
         shvb.shvret = 0;
         rc = RexxVariablePool(&shvb);
         if ((rc != RXSHV_OK) && (rc != RXSHV_NEWV))
-          fOk = FALSE;
+          fOk = false;
 
         /* free memory allocated by REXX */
         free(shvb.shvvalue.strptr);
       }
       else
-        fOk = FALSE;
+        fOk = false;
 
       if (!fOk)
         break;
@@ -6650,7 +6650,7 @@ LONG APIENTRY SysStemCopy(
     shvb.shvret = 0;
     rc = RexxVariablePool(&shvb);
     if ((rc != RXSHV_OK) && (rc != RXSHV_NEWV))
-      fOk = FALSE;
+      fOk = false;
   } /* endif */
 
   if (fOk)

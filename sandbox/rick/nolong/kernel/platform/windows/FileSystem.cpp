@@ -65,15 +65,15 @@
 
 const char *SysFileExtension(const char *);
 RexxString * LocateProgram(RexxString *, const char *[], int);
-BOOL  SearchFileName(const char *, char *);
+bool  SearchFileName(const char *, char *);
 void GetLongName(char *, DWORD);
-BOOL FindFirstFile(const char *Name);
-FILE * SysBinaryFilemode(FILE *, BOOL);
+bool FindFirstFile(const char *Name);
+FILE * SysBinaryFilemode(FILE *, bool);
 int SysFFlush(FILE *);
-BOOL SysFileIsDevice(int fhandle);
+bool SysFileIsDevice(int fhandle);
 int  SysPeekKeyboard(void);
 int SysStat(char * path, struct stat *buffer);
-BOOL SysFileIsPipe(STREAM_INFO * stream_info);
+bool SysFileIsPipe(STREAM_INFO * stream_info);
 
 
 /*********************************************************************/
@@ -167,14 +167,14 @@ RexxString * LocateProgram(
   int          ExtensionSpace;         /* room for an extension             */
 
   // retrofit by IH
-  BOOL         Found;                  /* found the file                    */
+  bool         Found;                  /* found the file                    */
   RexxActivity*activity;               /* the current activity              */
 
   activity = ActivityManager::currentActivity;          /* save the activity                 */
   activity->releaseAccess();           /* release the kernel access         */
 
   Name = InName->getStringData();      /* point to the string data          */
-  Found = FALSE;                       /* no name found yet                 */
+  Found = false;                       /* no name found yet                 */
   Extension = SysFileExtension(Name);  /* locate the file extension start   */
 
   if (!Extension) {                    /* have an extension?                */
@@ -211,7 +211,7 @@ RexxString * LocateProgram(
 /*                                                                   */
 /*********************************************************************/
 
-BOOL SearchFileName(
+bool SearchFileName(
   const char *Name,                    /* name of rexx proc to check        */
   char       *FullName )               /* fully resolved name               */
 {
@@ -225,7 +225,7 @@ BOOL SearchFileName(
 
                        /* if name is too small or big       */
   if (NameLength < 1 || NameLength > CCHMAXPATH)
-    return FALSE;                  /* then Not a rexx proc name         */
+    return false;                  /* then Not a rexx proc name         */
                        /* now try for original name         */
   errorMode = SetErrorMode(SEM_FAILCRITICALERRORS);
   if (GetFullPathName(Name, CCHMAXPATH, (LPTSTR)FullName, &ppszFilePart)) {
@@ -237,7 +237,7 @@ BOOL SearchFileName(
                        /* got it! get its case-preserved long file name */
        GetLongName(FullName, CCHMAXPATH);
        SetErrorMode(errorMode);
-       return TRUE;
+       return true;
      }
   }
                        /* try searching the path            */
@@ -254,11 +254,11 @@ BOOL SearchFileName(
                        /* got it! get its case-preserved long file name */
        GetLongName(FullName, CCHMAXPATH);
        SetErrorMode(errorMode);
-       return TRUE;
+       return true;
      }
 
   SetErrorMode(errorMode);
-  return FALSE;                    /* not found                         */
+  return false;                    /* not found                         */
 }
 
 /****************************************************************************/
@@ -438,7 +438,7 @@ RexxString *SysQualifyFileSystemName(
 }
 
 
-BOOL SearchFirstFile(
+bool SearchFirstFile(
   const char *Name)                     /* name of file with wildcards       */
 {
    HANDLE FindHandle;
@@ -455,26 +455,26 @@ BOOL SearchFirstFile(
       if ((FindData.dwFileAttributes & FILE_ATTRIBUTE_SYSTEM)
       || (FindData.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN)
       || (FindData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
-     return FALSE;
-      else return TRUE;
+     return false;
+      else return true;
    }
-   else return FALSE;
+   else return false;
 }
 
 
-FILE * SysBinaryFilemode(FILE * sfh, BOOL fRead)
+FILE * SysBinaryFilemode(FILE * sfh, bool fRead)
 {
      _setmode( _fileno( sfh ), _O_BINARY );
      return sfh;
 }
 
 
-BOOL SysFileIsDevice(int fhandle)
+bool SysFileIsDevice(int fhandle)
 {
   if( _isatty( fhandle ) )
-     return TRUE;
+     return true;
    else
-     return FALSE;
+     return false;
 }
 
 int SysPeekKeyboard(void)
@@ -495,13 +495,13 @@ int SysStat(char * path, struct stat *buffer)
 }
 
 
-BOOL SysFileIsPipe(STREAM_INFO * stream_info)
+bool SysFileIsPipe(STREAM_INFO * stream_info)
 {
    struct _stat buf;
 
-   if (_fstat( stream_info->fh, &buf )) return FALSE;
+   if (_fstat( stream_info->fh, &buf )) return false;
    else
-       return (buf.st_mode & _S_IFIFO);
+       return (buf.st_mode & _S_IFIFO) != 0;
 }
 
 

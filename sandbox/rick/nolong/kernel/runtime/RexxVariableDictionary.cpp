@@ -349,11 +349,11 @@ bool RexxVariableDictionary::transfer(
   if (this->reserveCount == 1) {       /* only one level of nesting?        */
                                        /* easy, just switch the owner       */
     OrefSet(this, this->reservingActivity, activity);
-    return TRUE;                       /* say this worked                   */
+    return true;                       /* say this worked                   */
   }
   else {                               /* multiple nesting levels           */
     this->release(activity);           /* release this lock                 */
-    return FALSE;                      /* can't do this                     */
+    return false;                      /* can't do this                     */
   }
 }
 

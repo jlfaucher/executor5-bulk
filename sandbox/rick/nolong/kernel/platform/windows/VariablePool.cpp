@@ -97,13 +97,13 @@ typedef SHVBLOCK16 FAR *PSHVBLOCK16;
 /*   lastcol -  last column position to sort                                  */
 /*                                                                            */
 /* Output:                                                                    */
-/*   TRUE if the sort succeeded, FALSE for any parameter errors.              */
+/*   true if the sort succeeded, false for any parameter errors.              */
 /******************************************************************************/
 ULONG REXXENTRY RexxStemSort(char *stemname, int order, int type,
     size_t start, size_t end, size_t firstcol, size_t lastcol)
 {
     if (!RexxQuery())                         /* Are we up?                     */
-      return FALSE;                           /*   No, send nastygram.          */
+      return false;                           /*   No, send nastygram.          */
     else                                      /*   Yes, ship request to kernel  */
       return REXX_STEMSORT(stemname, order, type, start, end, firstcol, lastcol);
 }
@@ -188,7 +188,7 @@ static ULONG copy_value(
 ULONG SysVariablePool(
     RexxNativeActivation * self,       /* current native activation         */
     PVOID                  requests,   /* shared variable request           */
-    BOOL                   enabled)    /* is VP fully enabled               */
+    bool                   enabled)    /* is VP fully enabled               */
 {
   RexxString       * variable;         /* name of the variable              */
   RexxVariableBase * retriever;        /* variable retriever                */
@@ -294,7 +294,7 @@ ULONG SysVariablePool(
     }
   }
   else if ((code == RXSHV_PRIV) &&     /* need to process PRIVATE block?    */
-           (enabled || TRUE)) {        /* and VP is enabled                 */
+           (enabled || true)) {        /* and VP is enabled                 */
                                        /* private block should always be enabled */
                                        /* no name given?                    */
     if (pshvblock->shvname.strptr==NULL)

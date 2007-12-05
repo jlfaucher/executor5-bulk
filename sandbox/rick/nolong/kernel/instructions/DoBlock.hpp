@@ -72,6 +72,7 @@ class RexxDoBlock : public RexxInternalObject {
   inline bool testFor() {return (this->forcount--) <= 0;};
   inline size_t getIndent() { return this->indent; };
   inline void setPrevious(RexxDoBlock *block) { this->previous = block; }
+  inline RexxDoBlock *getPrevious() { return previous; }
 
 protected:
 

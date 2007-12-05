@@ -65,6 +65,8 @@
 #undef   RexxTable                     /* remove a conflict                 */
 
 #include SYSREXXSAA
+#include <math.h>
+#include <limits.h>
 
 static size_t tsize[] = { 0, 0,
                           sizeof(RexxObject *),
@@ -186,12 +188,11 @@ RexxObject *RexxNativeActivation::run(
     char       * tp;                     /* current type                      */
     size_t       i;                      /* current argument position         */
     RexxObject * argument;               /* current argument object           */
-    LONG         tempValues;             /* temporary value                   */
-    BOOL         used_arglist;           /* method requested an arglist       */
+    bool         used_arglist;           /* method requested an arglist       */
 
     this->arglist = _arglist;            /* save the argument information     */
     this->argcount = _argcount;          /* set the argument count            */
-    used_arglist = FALSE;                /* no arglist requested              */
+    used_arglist = false;                /* no arglist requested              */
                                          /* get the entry point address       */
     methp = (PNMF)this->method->getNativeCode()->getEntry();
     itypes = (*methp)(0);                /* get type information from method  */
@@ -222,7 +223,7 @@ RexxObject *RexxNativeActivation::run(
                 /* create the argument array */
                 argArray = new (argcount, arglist) RexxArray;
                 *((RexxObject **)*ivalp) = argArray;
-                used_arglist = TRUE;           /* passing along everything          */
+                used_arglist = true;           /* passing along everything          */
                 break;
 
             case REXXD_MSGNAME:              /* the message name                  */
@@ -252,7 +253,19 @@ RexxObject *RexxNativeActivation::run(
                                 break;
                             }
 
-                        case REXXD_long:           /* long value                        */
+                        case REXXD_size_t:           /* long value                        */
+                            {
+                                stringsize_t temp;
+                                if (!argument->unsignedNumberValue(temp, this->digits()))
+                                {
+                                    /* this is an error                  */
+                                    reportException(Error_Incorrect_method_whole, i+1, argument);
+                                }
+                                *((size_t *)*ivalp) = (size_t)temp;
+                                break;
+                            }
+
+                        case REXXD_ssize_t:           /* long value                        */
                             {
                                 wholenumber_t temp;
                                 if (!argument->numberValue(temp, this->digits()))
@@ -260,14 +273,38 @@ RexxObject *RexxNativeActivation::run(
                                     /* this is an error                  */
                                     reportException(Error_Incorrect_method_whole, i+1, argument);
                                 }
-                                *((long *)*ivalp) = (long)temp;
+                                *((ssize_t *)*ivalp) = (ssize_t)temp;
+                                break;
+                            }
+
+                        case REXXD_stringsize_t:           /* long value                        */
+                            {
+                                stringsize_t temp;
+                                if (!argument->unsignedNumberValue(temp, this->digits()))
+                                {
+                                    /* this is an error                  */
+                                    reportException(Error_Incorrect_method_whole, i+1, argument);
+                                }
+                                *((stringsize_t *)*ivalp) = (stringsize_t)temp;
+                                break;
+                            }
+
+                        case REXXD_wholenumber_t:           /* long value                        */
+                            {
+                                wholenumber_t temp;
+                                if (!argument->numberValue(temp, this->digits()))
+                                {
+                                    /* this is an error                  */
+                                    reportException(Error_Incorrect_method_whole, i+1, argument);
+                                }
+                                *((wholenumber_t *)*ivalp) = (wholenumber_t)temp;
                                 break;
                             }
 
                         case REXXD_double:         /* double value                      */
                             {
                                 double temp;
-                                if (!argument->numberValue(temp, this->digits()))
+                                if (!argument->doubleValue(temp))
                                 {
                                     /* this is an error                  */
                                     reportException(Error_Incorrect_method_number, i+1, argument);
@@ -313,15 +350,27 @@ RexxObject *RexxNativeActivation::run(
                             break;
 
                         case REXXD_int:            /* non-integer value                 */
-                            *((int *)*ivalp) = 0;
+                            *((int *)*ivalp) = INT_MAX;
                             break;
 
-                        case REXXD_long:           /* non-existent long                 */
-                            *((long *)*ivalp) = 0;
+                        case REXXD_size_t:           /* non-existent long                 */
+                            *((size_t *)*ivalp) = SIZE_MAX;
+                            break;
+
+                        case REXXD_ssize_t:           /* non-existent long                 */
+                            *((ssize_t *)*ivalp) = SSIZE_MAX;
+                            break;
+
+                        case REXXD_stringsize_t:      /* non-existent long                 */
+                            *((stringsize_t *)*ivalp) = SIZE_MAX;
+                            break;
+
+                        case REXXD_wholenumber_t:           /* non-existent long                 */
+                            *((wholenumber_t *)*ivalp) = SSIZE_MAX;
                             break;
 
                         case REXXD_double:         /* non-existent double               */
-                            *((double *)*ivalp) = 0.0;
+                            *((double *)*ivalp) = +HUGE_VAL;
                             break;
 
                         case REXXD_CSTRING:        /* missing character string          */
@@ -352,7 +401,7 @@ RexxObject *RexxNativeActivation::run(
             holdObject(this->result);        /* get result held longer            */
         this->guardOff();                  /* release any variable locks        */
         this->argcount = 0;                /* make sure we don't try to mark any arguments */
-        this->activity->pop(FALSE);        /* pop this from the activity        */
+        this->activity->pop(false);        /* pop this from the activity        */
         this->setHasNoReferences();        /* mark this as not having references in case we get marked */
         return this->result;               /* and finished                      */
     }
@@ -386,12 +435,24 @@ RexxObject *RexxNativeActivation::run(
             result = new_integer(*((int *)*ivalues));
             break;
 
-        case REXXD_long:                   /* long integer value                */
-            result = new_integer(*((long *)*ivalues));
+        case REXXD_size_t:                 /* long integer value                */
+            result = new_integer(*((size_t *)*ivalues));
+            break;
+
+        case REXXD_ssize_t:
+            result = new_integer(*((ssize_t *)*ivalues));
+            break;
+
+        case REXXD_stringsize_t:
+            result = new_integer(*((stringsize_t *)*ivalues));
+            break;
+
+        case REXXD_wholenumber_t:
+            result = new_integer(*((wholenumber_t *)*ivalues));
             break;
 
         case REXXD_double:                 /* double value                      */
-            result = new_integer(*((double *)*ivalues));
+            result = new_string(*((double *)*ivalues));
             break;
 
         case REXXD_CSTRING:                /* ASCII-Z string                    */
@@ -420,7 +481,7 @@ RexxObject *RexxNativeActivation::run(
     holdObject(result);                  /* get result held longer            */
     this->guardOff();                    /* release any variable locks        */
     this->argcount = 0;                  /* make sure we don't try to mark any arguments */
-    this->activity->pop(FALSE);          /* pop this from the activity        */
+    this->activity->pop(false);          /* pop this from the activity        */
     this->setHasNoReferences();          /* mark this as not having references in case we get marked */
     return(RexxObject *)result;         /* and finished                      */
 }
@@ -481,8 +542,8 @@ bool RexxNativeActivation::isInteger(
 /* Function:  Validate that an object has an integer value                    */
 /******************************************************************************/
 {
-    wholeNumber_t temp;
-    return object_scope->numberValue(temp, this->digits());
+    wholenumber_t temp;
+    return object->numberValue(temp, this->digits());
 }
 
 const char *RexxNativeActivation::cstring(
@@ -738,7 +799,7 @@ void RexxNativeActivation::resetNext()
 }
 
 
-BOOL RexxNativeActivation::fetchNext(
+bool RexxNativeActivation::fetchNext(
     RexxString **name,                 /* the returned name                 */
     RexxObject **value)                /* the return value                  */
 /******************************************************************************/
@@ -770,7 +831,7 @@ BOOL RexxNativeActivation::fetchNext(
           *name = compound->createCompoundName(stemVar->getName());
                                        /* get the value                     */
           *value = compound->getVariableValue();
-          return TRUE;
+          return true;
         }
         else {                         /* we've reached the end of the stem, reset */
                                        /* to the main dictionary and continue */
@@ -781,7 +842,7 @@ BOOL RexxNativeActivation::fetchNext(
                                        /* get the next variable             */
     variable = nextCurrent()->nextVariable(this);
     if (variable == OREF_NULL) {       /* reached the end of the table      */
-        return FALSE;
+        return false;
     }
     else {                             /* have a real variable              */
                                        /* get the value                     */
@@ -796,7 +857,7 @@ BOOL RexxNativeActivation::fetchNext(
       else {                           /* found a real variable             */
         *value = variable_value;       /* pass back the value (name already set) */
         *name = variable->getName();
-        return TRUE;                   /* we have another variable to return */
+        return true;                   /* we have another variable to return */
       }
     }
   }
@@ -826,7 +887,7 @@ bool RexxNativeActivation::trap(
                                        /* condition to the object           */
       this->objnotify->error(exception_object);
   }
-  return FALSE;                        /* this wasn't handled               */
+  return false;                        /* this wasn't handled               */
 }
 
 void RexxNativeActivation::setObjNotify(
@@ -918,12 +979,12 @@ nativei1 (size_t, UNSIGNED_INTEGER, REXXOBJECT, object)
   return_value(result);                /* return converted value            */
 }
 
-nativei1 (BOOL, ISINTEGER, REXXOBJECT, object)
+nativei1 (bool, ISINTEGER, REXXOBJECT, object)
 /******************************************************************************/
 /* Function:  External interface to the nativeact object method               */
 /******************************************************************************/
 {
-  BOOL result;                         /* returned result                   */
+  bool result;                         /* returned result                   */
   RexxNativeActivation * self;         /* current native activation         */
 
   native_entry;                        /* synchronize access                */
@@ -934,13 +995,13 @@ nativei1 (BOOL, ISINTEGER, REXXOBJECT, object)
   return_value(result);                /* return converted value            */
 }
 
-nativei1 (BOOL, ISASTRING,
+nativei1 (bool, ISASTRING,
     REXXOBJECT, object )                /* object to check                   */
 /******************************************************************************/
 /* Function:  External interface to the nativeact object method               */
 /******************************************************************************/
 {
-  BOOL   result;                       /* returned result                   */
+  bool   result;                       /* returned result                   */
 
   native_entry;                        /* synchronize access                */
                                        /* check that this has correct       */
@@ -981,12 +1042,12 @@ nativei1 (double, DOUBLE, REXXOBJECT, object)
   return_value(result);                /* return converted value            */
 }
 
-nativei1 (BOOL, ISDOUBLE, REXXOBJECT, object)
+nativei1 (bool, ISDOUBLE, REXXOBJECT, object)
 /******************************************************************************/
 /* Function:  External interface to the nativeact object method               */
 /******************************************************************************/
 {
-  BOOL    result;                      /* returned result                   */
+  bool    result;                      /* returned result                   */
   RexxNativeActivation * self;         /* current native activation         */
 
   native_entry;                        /* synchronize access                */
@@ -1243,10 +1304,10 @@ nativei1 (ULONG, VARIABLEPOOL,
                                        /* if access is enabled              */
   if (this->getVpavailable())
                                        /* go process the requests           */
-    result = SysVariablePool(self, pshvblock, TRUE);
+    result = SysVariablePool(self, pshvblock, true);
   else                                 /* Else VP is disabled so...         */
                                        /* call VP only allowing shv_exit    */
-    result = SysVariablePool(self, pshvblock, FALSE);
+    result = SysVariablePool(self, pshvblock, false);
   return_value(result);                /* return this                       */
 }
 
@@ -1281,10 +1342,10 @@ nativei1 (ULONG, VARIABLEPOOL2,
                                        /* if access is enabled              */
   if (this->getVpavailable())
                                        /* go process the requests           */
-    result = SysVariablePool(self, pshvblock, TRUE);
+    result = SysVariablePool(self, pshvblock, true);
   else                                 /* Else VP is disabled so...         */
                                        /* call VP only allowing shv_exit    */
-    result = SysVariablePool(self, pshvblock, FALSE);
+    result = SysVariablePool(self, pshvblock, false);
   return_value(result);                /* return this                       */
 }
 
@@ -1343,7 +1404,7 @@ nativei0 (REXXOBJECT, POP_ENVIRONMENT)
   return_oref(activation->popEnvironment());
 }
 
-BOOL REXXENTRY REXX_ISDIRECTORY(REXXOBJECT object)
+bool REXXENTRY REXX_ISDIRECTORY(REXXOBJECT object)
 /******************************************************************************/
 /* Function:  Validate that an object is a directory                          */
 /******************************************************************************/
@@ -1411,7 +1472,7 @@ nativei7 (ULONG, STEMSORT,
   self = (RexxNativeActivation *)ActivityManager::currentActivity->current();
                                        /* if access is enabled              */
   if (!self->getVpavailable()) {       /* access must be enabled for this to work */
-      return_value(FALSE);
+      return_value(false);
   }
 
   // NB:  The braces here are to ensure the ProtectedObjects get released before the
@@ -1430,7 +1491,7 @@ nativei7 (ULONG, STEMSORT,
 
       if ( (!isOfClass(StemVariable, retriever)) && (!isOfClass(CompoundVariable, retriever)) )
       {
-          return FALSE;
+          return false;
       }
 
     //RexxString *tail = (RexxString *) new_string(OREF_NULL);

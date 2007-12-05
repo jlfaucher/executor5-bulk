@@ -61,7 +61,7 @@ class RexxStemVariable : public RexxVariableBase {
   RexxObject *evaluate(RexxActivation *, RexxExpressionStack *);
   RexxObject *getValue(RexxVariableDictionary *);
   RexxObject *getValue(RexxActivation *);
-  BOOL exists(RexxActivation *);
+  bool exists(RexxActivation *);
   void set(RexxActivation *, RexxObject *) ;
   void set(RexxVariableDictionary *, RexxObject *) ;
   void assign(RexxActivation *, RexxExpressionStack *, RexxObject *);
@@ -70,7 +70,7 @@ class RexxStemVariable : public RexxVariableBase {
   void clearGuard(RexxActivation *);
   void expose(RexxActivation *, RexxExpressionStack *, RexxVariableDictionary *);
   void procedureExpose(RexxActivation *, RexxActivation *, RexxExpressionStack *);
-  BOOL sort(RexxActivation *context, RexxString *prefix, int order, int type, size_t start, size_t end, size_t firstcol, size_t lastcol);
+  bool sort(RexxActivation *context, RexxString *prefix, int order, int type, size_t start, size_t end, size_t firstcol, size_t lastcol);
   inline size_t getIndex() {return this->index;};
 
   RexxString  *stem;                   // the stem variable name

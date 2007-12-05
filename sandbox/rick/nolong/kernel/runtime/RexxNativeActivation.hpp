@@ -86,7 +86,7 @@ class RexxNativeActivation : public RexxActivationBase {
   bool   trap (RexxString *, RexxDirectory *);
   void   setObjNotify(RexxMessage *);
   void   resetNext();
-  BOOL   fetchNext(RexxString **name, RexxObject **value);
+  bool   fetchNext(RexxString **name, RexxObject **value);
 
   inline void   termination() { this->guardOff();}
   inline RexxActivation *sender() {return (RexxActivation *)this->activity->sender((RexxActivationBase *)this);}

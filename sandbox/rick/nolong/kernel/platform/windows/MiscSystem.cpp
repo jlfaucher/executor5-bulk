@@ -52,9 +52,8 @@
 #include <signal.h>
 
 /* special flag for the LPEX message loop problem */
-extern BOOL UseMessageLoop = TRUE;
+extern bool UseMessageLoop = true;
 
-extern ULONG mustCompleteNest;         /* Global variable for MustComplete  */
 extern "C" void activity_thread (RexxActivity *objp);
 
 
@@ -64,7 +63,7 @@ unsigned int iTransClauseCounter=0;    // count of clauses in translator
 extern "C" _declspec(dllimport) HANDLE ExceptionQueueSem;
 extern ULONG ExceptionHostProcessId;
 extern HANDLE ExceptionHostProcess;
-extern BOOL ExceptionConsole;
+extern bool ExceptionConsole;
 static int SignalCount = 0;
 
 RexxString *SysName( void )
@@ -286,21 +285,21 @@ BOOL __stdcall WinConsoleCtrlHandler(DWORD dwCtrlType)
     /* set halt condition for all threads of this process */
   char envp[65];
 
-  if ((dwCtrlType == CTRL_CLOSE_EVENT) || (dwCtrlType == CTRL_SHUTDOWN_EVENT)) return FALSE;  /* send to system */
+  if ((dwCtrlType == CTRL_CLOSE_EVENT) || (dwCtrlType == CTRL_SHUTDOWN_EVENT)) return false;  /* send to system */
 
   /* if RXCTRLBREAK=NO then ignore SIGBREAK exception */
   if (((dwCtrlType == CTRL_BREAK_EVENT) || (dwCtrlType == CTRL_LOGOFF_EVENT)) &&
       (GetEnvironmentVariable("RXCTRLBREAK", envp, 64) > 0)
       && (strcmp("NO",envp) == 0))
-    return TRUE;    /* ignore signal */
+    return true;    /* ignore signal */
 
-  if (dwCtrlType == CTRL_LOGOFF_EVENT) return FALSE;    /* send to system */
+  if (dwCtrlType == CTRL_LOGOFF_EVENT) return false;    /* send to system */
 
   /* Ignore Ctrl+C if console is running in console */
   if (ExceptionConsole)
   {
       GenerateConsoleCtrlEvent(CTRL_BREAK_EVENT, ExceptionHostProcessId);
-      return TRUE;   /* ignore signal */
+      return true;   /* ignore signal */
   }
 
   if (ExceptionQueueSem)
@@ -318,7 +317,7 @@ BOOL __stdcall WinConsoleCtrlHandler(DWORD dwCtrlType)
   }
 
   ActivityManager::haltAllActivities();
-  return TRUE;      /* ignore signal */
+  return true;      /* ignore signal */
 }
 
 

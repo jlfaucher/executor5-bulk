@@ -1194,6 +1194,30 @@ bool RexxObject::requestNumber(wholenumber_t &result, size_t precision)
 }
 
 
+/**
+ * Request an object to convert itself into a number value.
+ *
+ * @param result    The numeric result value.
+ * @param precision The precision used for the conversion.
+ *
+ * @return true if the object converted ok, false for a conversion failure.
+ */
+bool RexxObject::requestUnsignedNumber(stringsize_t &result, size_t precision)
+{
+    if (isBaseClass())
+    {
+        // are we already a base class?
+        // the base classes can handle this directly.
+        return unsignedNumberValue(result, precision);
+    }
+    else
+    {
+        // we need to perform the operation on the string value
+        return unsignedNumberValue(result, precision);
+    }
+}
+
+
 wholenumber_t RexxObject::requiredNumber(
     int    position ,                  /* precision to use                  */
     size_t precision)                  /* argument position for errors      */
@@ -1254,7 +1278,7 @@ stringsize_t RexxObject::requiredNonNegative(
 {
     stringsize_t result;                 /* returned result                   */
 
-    if (!numberValue(result, precision))
+    if (!unsignedNumberValue(result, precision))
     {
         /* raise the error                   */
         reportException(Error_Incorrect_method_nonnegative, position, this);
@@ -1925,7 +1949,7 @@ void        RexxObject::uninit(void)
 
 }
 
-BOOL RexxObject::hasUninitMethod()
+bool RexxObject::hasUninitMethod()
 /******************************************************************************/
 /* Function:  Check to see if an object has an UNINIT method.                 */
 /******************************************************************************/

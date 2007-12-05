@@ -151,10 +151,7 @@ RexxObject *RexxDirectory::itemsRexx(void)
 /*            number of methods added via set method calls                    */
 /******************************************************************************/
 {
-  long tempCount;                      /* temporary count                   */
-
-  tempCount = this->items();           /* return the count as an object     */
-  return (RexxObject *)new_integer(tempCount);
+  return (RexxObject *)new_integer(this->items());
 }
 
 RexxSupplier *RexxDirectory::supplier(void)
@@ -328,7 +325,7 @@ RexxObject *RexxDirectory::hasIndex(
   indexName = REQUIRED_STRING(indexName, ARG_ONE);
                                        /* got a value?                      */
   if (this->contents->stringGet(indexName) != OREF_NULL)
-    return (RexxObject *)TheTrueObject;/* return TRUE                       */
+    return (RexxObject *)TheTrueObject;/* return true                       */
   else {
                                        /* have a table?                     */
     if (this->method_table != OREF_NULL) {

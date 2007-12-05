@@ -98,7 +98,7 @@ typedef struct _SEMCONT {
       int     usecount;                /* semaphore usecount         */
       int     type;                    /* semaphore type: 0=Event    */
                                        /*                 1=Mutex    */
-      BOOL    waitandreset;            /* eventsem second new arg    */
+      bool    waitandreset;            /* eventsem second new arg    */
 } SEMCONT;
 
 

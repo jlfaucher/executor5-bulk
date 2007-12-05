@@ -80,14 +80,14 @@
 
 extern ULONG ExceptionHostProcessId = 0;
 extern HANDLE ExceptionHostProcess = NULL;
-extern BOOL ExceptionConsole = FALSE;
-static BOOL ExplicitConsole;
+extern bool ExceptionConsole = false;
+static bool ExplicitConsole;
 
 #define SHOWWINDOWFLAGS SW_HIDE        // determines visibility of cmd
                                        // window SHOW, HIDE etc...
                                        // function prototypes
-LONG sys_command(const char *cmd, RexxString ** error_failure);
-LONG sysCommandNT(const char *cmd, RexxString ** error_failure, BOOL direct);
+int  sys_command(const char *cmd, RexxString ** error_failure);
+int  sysCommandNT(const char *cmd, RexxString ** error_failure, bool direct);
 // LONG sysCommand32s(char *cmd, RexxString ** error_failure);
 
 /******************************************************************************/
@@ -142,9 +142,9 @@ bool SysExitHandler(
       reportException(Error_System_service_service, exitname);
   }
   if (rc == RXEXIT_HANDLED)            /* Did exit handle task?               */
-    return FALSE;                      /* Yep                                 */
+    return false;                      /* Yep                                 */
   else                                 /* rc = RXEXIT_NOT_HANDLED             */
-    return TRUE;                       /* tell caller to handle               */
+    return true;                       /* tell caller to handle               */
 }
 
 
@@ -176,7 +176,7 @@ RexxObject * SysCommand(
   const char *current_address;         /* Subcom handler that gets cmd        */
   RXSTRING rxstrcmd;                   /* Command to be executed              */
   unsigned short flags = 0;            /* Subcom error flags                  */
-  short    sbrc  = 0;                  /* Subcom return code                  */
+  wholenumber_t  sbrc  = 0;            /* Subcom return code                  */
   RXSTRING retstr;                     /* Subcom result string                */
                                        /* default return code buffer          */
   char     default_return_buffer[DEFRXSTRING];
@@ -195,7 +195,7 @@ RexxObject * SysCommand(
 /* CRITICAL window here -->>  ABSOLUTELY NO KERNEL CALLS ALLOWED              */
 
                                        /* get ready to call the function      */
-  activity->exitKernel(activation, OREF_COMMAND, TRUE);
+  activity->exitKernel(activation, OREF_COMMAND, true);
   rc=RexxCallSubcom(const_cast<char *>(current_address), NULL, &rxstrcmd, &flags, (unsigned short *)&sbrc, (PRXSTRING)&retstr);
   activity->enterKernel();             /* now re-enter the kernel           */
 
@@ -237,8 +237,8 @@ RexxObject * SysCommand(
     else if (!RXNULLSTRING(retstr)) {  /* we have something in retstr?        */
                                        /* make into a return string           */
       result = new_string(retstr.strptr, retstr.strlength);
-      // try to get this
-      result->numberValue(sbrc);
+      // try to get this as a numeric value
+      ((RexxObject *)result)->numberValue(sbrc);
                                        /* user give us a new buffer?          */
       if (retstr.strptr != default_return_buffer)
                                        /* free it                             */
@@ -278,41 +278,41 @@ RexxObject * SysCommand(
 
 
 /* Handle "SET XX=YYY" command in same process */
-BOOL sys_process_set(const char * cmd, LONG * rc)
+bool sys_process_set(const char * cmd, int * rc)
 {
     const char * eqsign;
     const char * st;
     char name[256];
     char value[4096];
     eqsign = strchr(cmd, '=');
-    if (!eqsign) return FALSE;
+    if (!eqsign) return false;
 
     st = &cmd[4];
     while ((*st) && (*st == ' ')) st++;
-    if (st == eqsign) return FALSE;
+    if (st == eqsign) return false;
     strncpy(name, st, eqsign-st);
     name[eqsign-st]='\0';
 
     if (ExpandEnvironmentStrings(eqsign+1, value, 4095)
         && SetEnvironmentVariable(name,value)) *rc = 0; else *rc = GetLastError();
-    return TRUE;
+    return true;
 }
 
 
 /* Handle "CD XXX" command in same process */
-BOOL sys_process_cd(const char * cmd, LONG * rc)
+bool sys_process_cd(const char * cmd, int * rc)
 {
     const char * st;
 
     st = &cmd[3];
     while ((*st) && (*st == ' ')) st++;
-    if (!*st) return FALSE;
+    if (!*st) return false;
 
     if ((strlen(st) == 2) && (st[1] == ':'))
          *rc = _chdrive(toupper( *st ) - 'A' + 1);
     else
          *rc = _chdir(st);
-    return TRUE;
+    return true;
 }
 
 
@@ -333,31 +333,31 @@ BOOL sys_process_cd(const char * cmd, LONG * rc)
 /*             command handler with the command to be executed                */
 /*                                                                            */
 /******************************************************************************/
-LONG sys_command(const char *cmd, RexxString **error_failure)
+int sys_command(const char *cmd, RexxString **error_failure)
 {
   const char *cl_opt = " /c ";         /* "/c" opt for sys cmd handler      */
         char *cmdstring_ptr;           /* Command string pointer            */
   char        cmdstring[CMDBUFSIZENT]; /* Largest cmd we can give system    */
   const char *sys_cmd_handler;         /* Pointer to system cmd handler     */
-  ULONG       length_cmd_handler;      /* Length of cmd handler path/name   */
-  ULONG       max_cmd_length;          /* Maximum size of command           */
-  LONG        rc;                      /* Return code                       */
+  size_t      length_cmd_handler;      /* Length of cmd handler path/name   */
+  size_t      max_cmd_length;          /* Maximum size of command           */
+  int         rc;                      /* Return code                       */
   const char *interncmd;
 
-  ULONG       uMaxStringLength;        // max length of string (system
+  size_t      uMaxStringLength;        // max length of string (system
                                        // specific)
   char        tmp[8];
   size_t      j = 0, i = 0;
   const char *filepart;
-  BOOL        fileFound, searchFile;
-  BOOL        NoDirectInvoc;
-  BOOL        fInQuotes = FALSE;
+  bool        fileFound, searchFile;
+  bool        NoDirectInvoc;
+  bool        fInQuotes = false;
 
                                               /* remove quiet sign              */
   if (cmd[0] == '@') interncmd = cmd + 1; else interncmd = cmd;
 
   /* check for redirection symbols, ignore them when enclosed in double quotes */
-  NoDirectInvoc = FALSE;
+  NoDirectInvoc = false;
   for (i=0; i<strlen(interncmd); i++)
   {
     if (interncmd[i] == '"')
@@ -369,7 +369,7 @@ LONG sys_command(const char *cmd, RexxString **error_failure)
       /* will no longer try to invoke the command directly                 */
       if (!fInQuotes && (strchr("<>|&", interncmd[i]) != NULL))
       {
-        NoDirectInvoc = TRUE;
+        NoDirectInvoc = true;
         break;
       } /* endif */
     } /* endif */
@@ -435,15 +435,15 @@ LONG sys_command(const char *cmd, RexxString **error_failure)
   if (max_cmd_length < strlen(interncmd))   /* If command is too long...      */
     *(interncmd+max_cmd_length) = '\0';     /*  truncate it                   */
 #endif
-  ExceptionConsole = FALSE;
-  ExplicitConsole = FALSE;
+  ExceptionConsole = false;
+  ExplicitConsole = false;
 
   /* check whether or not program to invoke is cmd or command */
   _strupr(strcpy(cmdstring_ptr,&interncmd[j]));
   if (!RUNNING_95)
-      searchFile = (BOOL)strstr(cmdstring_ptr, "CMD");
+      searchFile = strstr(cmdstring_ptr, "CMD") != NULL;
   else
-      searchFile = (BOOL)strstr(cmdstring_ptr, "COMMAND");
+      searchFile = strstr(cmdstring_ptr, "COMMAND") != NULL;
 
   if (searchFile)
   {
@@ -462,22 +462,22 @@ LONG sys_command(const char *cmd, RexxString **error_failure)
       }
 
       if (!RUNNING_95)
-          fileFound = SearchPath(NULL, cmdstring_ptr, ".EXE", CMDBUFSIZENT-1, cmdstring, (LPSTR *)&filepart);
+          fileFound = SearchPath(NULL, cmdstring_ptr, ".EXE", CMDBUFSIZENT-1, cmdstring, (LPSTR *)&filepart) != 0;
       else
-          fileFound = SearchPath(NULL, cmdstring_ptr, ".COM", CMDBUFSIZENT-1, cmdstring, (LPSTR *)&filepart);
+          fileFound = SearchPath(NULL, cmdstring_ptr, ".COM", CMDBUFSIZENT-1, cmdstring, (LPSTR *)&filepart) != 0;
       cmdstring_ptr = cmdstring;           /* Set pointer again to cmd buffer (might have been increased) */
 
       if (fileFound && !stricmp(sys_cmd_handler, cmdstring_ptr))
       {
-          ExceptionConsole = TRUE;
-          ExplicitConsole = TRUE;
+          ExceptionConsole = true;
+          ExplicitConsole = true;
       }
   }
 
   /* first check whether we can run command directly as a program (no file redirection when not cmd or command) */
   if (ExplicitConsole || !NoDirectInvoc)
   {
-      rc = sysCommandNT(&interncmd[j], error_failure, TRUE);
+      rc = sysCommandNT(&interncmd[j], error_failure, true);
       if (*error_failure != OREF_FAILURENAME) return rc;   /* command processed, exit */
       else *error_failure = OREF_NULL;
   }
@@ -494,7 +494,7 @@ LONG sys_command(const char *cmd, RexxString **error_failure)
       strcat(cmdstring_ptr,cl_opt);
   else
   {
-      ExceptionConsole = TRUE;
+      ExceptionConsole = true;
       strcat(cmdstring_ptr," ");
   }
 
@@ -507,10 +507,10 @@ LONG sys_command(const char *cmd, RexxString **error_failure)
   // reflect errors from WinExec; where WinExec rc=0 is mapped to 1
   /****************************************************************************/
                                        // Call system specific routine
-  rc = sysCommandNT(cmdstring_ptr, error_failure, FALSE);
+  rc = sysCommandNT(cmdstring_ptr, error_failure, false);
 //  else rc = sysCommand32s(cmdstring_ptr, error_failure);
 
-  ExceptionConsole = FALSE;
+  ExceptionConsole = false;
   return rc;
 }                                      // SystemCommand
 
@@ -527,14 +527,14 @@ LONG sys_command(const char *cmd, RexxString **error_failure)
  | Notes:      Handles processing of a system command on a Windows NT system  |
  |                                                                      |
   ----------------------------------------------------------------------------*/
-LONG sysCommandNT(const char *cmdstring_ptr, RexxString  **error_failure, BOOL direct)
+int sysCommandNT(const char *cmdstring_ptr, RexxString  **error_failure, bool direct)
 {
   DWORD rc;
   STARTUPINFO siStartInfo;                  // process startup info
   PROCESS_INFORMATION piProcInfo;           // returned process info
   char ctitle[256];
   DWORD creationFlags;
-  BOOL titleChanged;
+  bool titleChanged;
 
   ZeroMemory(&siStartInfo, sizeof(siStartInfo));
   ZeroMemory(&piProcInfo, sizeof(piProcInfo));
@@ -549,7 +549,7 @@ LONG sysCommandNT(const char *cmdstring_ptr, RexxString  **error_failure, BOOL d
   siStartInfo.hStdInput = GetStdHandle(STD_INPUT_HANDLE);
   siStartInfo.hStdOutput = GetStdHandle(STD_OUTPUT_HANDLE);
   siStartInfo.hStdError = GetStdHandle(STD_ERROR_HANDLE);
-  titleChanged = GetConsoleTitle(ctitle, 255);
+  titleChanged = GetConsoleTitle(ctitle, 255) != 0;
   siStartInfo.lpTitle = (LPSTR)cmdstring_ptr;
   creationFlags = GetPriorityClass(GetCurrentProcess()) | CREATE_NEW_PROCESS_GROUP;
   if (!siStartInfo.hStdInput && !siStartInfo.hStdOutput && !titleChanged)  /* is REXXHIDE running without console */
@@ -571,7 +571,7 @@ LONG sysCommandNT(const char *cmdstring_ptr, RexxString  **error_failure, BOOL d
                   (LPSTR)cmdstring_ptr,// address of command line
                   NULL,                // address of process security attrs
                   NULL,                // address of thread security attrs
-                  TRUE,                // new process inherits handles?
+                  true,                // new process inherits handles?
                                        // creation flags
                   creationFlags,
                   NULL,                // address of new environment block

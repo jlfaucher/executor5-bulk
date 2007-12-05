@@ -108,7 +108,7 @@ OTPOBJS=$(OTSOBJ1)  $(OTSOBJ2) $(OTIOBJ1) $(OTIOBJ2) $(OTIOBJ3) \
 OKCOBJ1=$(OR_OUTDIR)\Version.$(OBJ)
 OKCOBJ2= $(OR_OUTDIR)\RexxStartup.$(OBJ)  $(OR_OUTDIR)\Utilities.$(OBJ)
 OKAOBJS= $(OR_OUTDIR)\GlobalData.$(OBJ)  $(OR_OUTDIR)\Initialization.$(OBJ) $(OR_OUTDIR)\GlobalNames.$(OBJ)
-OKLOBJS=$(OR_OUTDIR)\FloatUtilities.$(OBJ)  $(OR_OUTDIR)\Setup.$(OBJ) $(OR_OUTDIR)\InstructionParser.$(OBJ) \
+OKLOBJS=$(OR_OUTDIR)\Setup.$(OBJ) $(OR_OUTDIR)\InstructionParser.$(OBJ) \
         $(OR_OUTDIR)\Scanner.$(OBJ)
 OKCOBJS=$(OKCOBJ1) $(OKCOBJ2) $(OKLOBJS)
 

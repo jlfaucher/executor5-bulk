@@ -94,8 +94,6 @@ extern SMTX rexx_resource_semaphore;   /* global kernel semaphore           */
 extern SMTX rexx_start_semaphore;      /* startup semaphore                 */
 
 extern SEV    rexxTimeSliceSemaphore;
-extern size_t RexxTimeSliceTimer;
-extern size_t rexxTimeSliceTimerOwner;
 
                                        /* information must be saved and     */
                                        /* restored on nested entries to the */
@@ -134,7 +132,7 @@ public:
 
 
    void runThread();
-   long error(size_t);
+   wholenumber_t error(size_t);
    bool        raiseCondition(RexxString *, RexxObject *, RexxString *, RexxObject *, RexxObject *, RexxDirectory *);
    void        raiseException(wholenumber_t, SourceLocation *, RexxSource *, RexxString *, RexxArray *, RexxObject *);
    void        reportAnException(wholenumber_t, const char *);

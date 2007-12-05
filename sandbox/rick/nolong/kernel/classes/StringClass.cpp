@@ -429,7 +429,7 @@ bool RexxString::isEqual(
   other = REQUEST_STRING(otherObj);    /* force into string form            */
   otherLen = other->getLength();            /* get length of second string.      */
   if (otherLen != this->getLength())        /* lengths different?                */
-    return FALSE;                      /* also unequal                      */
+    return false;                      /* also unequal                      */
                                        /* now compare the actual string     */
   return !memcmp(this->getStringData(), other->getStringData(), otherLen);
 }
@@ -447,13 +447,13 @@ bool RexxString::primitiveIsEqual(
   required_arg(otherObj, ONE);         /* this is required.                 */
   if (otherObj == TheNilObject)        // strings never compare equal to the NIL object
   {
-      return FALSE;
+      return false;
   }
 
   other = REQUEST_STRING(otherObj);    /* force into string form            */
   otherLen = other->getLength();            /* get length of second string.      */
   if (otherLen != this->getLength())        /* lengths different?                */
-    return FALSE;                      /* also unequal                      */
+    return false;                      /* also unequal                      */
                                        /* now compare the actual string     */
   return !memcmp(this->getStringData(), other->getStringData(), otherLen);
 }
@@ -503,7 +503,7 @@ wholenumber_t RexxString::compareTo(RexxObject *other )
 }
 
 
-long RexxString::comp(RexxObject *other)
+int RexxString::comp(RexxObject *other)
 /******************************************************************************/
 /* Function:  Do a value comparison of two strings for the non-strict         */
 /*            comparisons.  This returns for the compares:                    */
@@ -540,7 +540,7 @@ long RexxString::comp(RexxObject *other)
   if (((firstNum = this->fastNumberString()) != OREF_NULL) && ((secondNum = other->numberString()) != OREF_NULL ))
                                        /* yes, send converted numbers and do*/
                                        /* the compare                       */
-    return (long) firstNum->comp(secondNum);
+    return firstNum->comp(secondNum);
   second = REQUEST_STRING(other);      /* yes, get a string object.         */
                                        /* objects are converted.  now strip */
                                        /* any leading/trailing blanks.      */
@@ -606,7 +606,7 @@ long RexxString::comp(RexxObject *other)
   return result;                       /* return the compare result         */
 }
 
-long RexxString::strictComp(RexxObject *otherObj)
+int RexxString::strictComp(RexxObject *otherObj)
 /******************************************************************************/
 /* Function:  Do a strict comparison of two strings.  This returns:           */
 /*                                                                            */
@@ -1136,7 +1136,7 @@ bool RexxString::truthValue(int errorCode)
     testString = this->requestString();/* get the real string value         */
   else
     testString = this;                 /* just use the string directly      */
-  if (testString->getLength() != 1L)        /* not exactly 1 character long?     */
+  if (testString->getLength() != 1)    /* not exactly 1 character long?     */
                                        /* report the error                  */
     reportException(errorCode, testString);
   if (*(testString->getStringData()) == '0')/* exactly '0'?                      */
@@ -1147,7 +1147,7 @@ bool RexxString::truthValue(int errorCode)
   return true;                         /* this is true                      */
 }
 
-BOOL RexxString::checkLower()
+bool RexxString::checkLower()
 /******************************************************************************/
 /* Function:  Tests for existence of lowercase characters                     */
 /******************************************************************************/
@@ -1161,13 +1161,13 @@ BOOL RexxString::checkLower()
   while (data < endData) {             /* loop through entire string        */
     if (*data != toupper(*data)) {     /* have something to uppercase?      */
       this->setHasLower();             /* remember we have this             */
-      return TRUE;                     /* just return now                   */
+      return true;                     /* just return now                   */
     }
     data++;                            /* step the position                 */
   }
                                        /* no lowercase?                     */
   this->setUpperOnly();                /* set the upper only attribute      */
-  return FALSE;                        /* return then translation flag      */
+  return false;                        /* return then translation flag      */
 }
 
 RexxString *RexxString::upper()
@@ -1212,17 +1212,17 @@ RexxString *RexxString::stringTrace()
   // greater than 0x7f.
   const unsigned char *Current;        /* current string location           */
   size_t    i;                         /* string length                     */
-  BOOL      NonDisplay;                /* have non-displayables             */
+  bool      NonDisplay;                /* have non-displayables             */
 
   i = this->getLength();               /* get the length                    */
                                        /* point to the start                */
   Current = (const unsigned char *)this->getStringData();
-  NonDisplay = FALSE;                  /* no non-displayable characters     */
+  NonDisplay = false;                  /* no non-displayable characters     */
 
   for (; i > 0; i--) {                 /* loop for the entire string        */
                                        /* control character?                */
     if (*Current < ' ') {
-      NonDisplay = TRUE;               /* got a non-displayable             */
+      NonDisplay = true;               /* got a non-displayable             */
       break;                           /* get out of here                   */
     }
     Current++;                         /* step the pointer                  */
@@ -1506,11 +1506,9 @@ RexxObject *RexxString::xorOp(RexxObject *other)
 /* Function:  Logical XOR of a string with another logical value              */
 /******************************************************************************/
 {
-  BOOL truth;                          /* converted other argument          */
-
   required_arg(other, ONE);            /* make sure the argument is there   */
                                        /* get as a boolean                  */
-  truth = other->truthValue(Error_Logical_value_method);
+  bool truth = other->truthValue(Error_Logical_value_method);
                                        /* first one false?                  */
   if (!this->truthValue(Error_Logical_value_method))
                                        /* value is always the second        */

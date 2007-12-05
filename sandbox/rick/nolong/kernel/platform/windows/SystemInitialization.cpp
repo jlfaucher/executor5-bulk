@@ -75,7 +75,7 @@ HANDLE apiProtect;
 /*                                                                  */
 /* Inputs:             Defined by DllEntryPoint function of Windows */
 /*                                                                  */
-/* Outputs:            TRUE if successful, FALSE if failure.        */
+/* Outputs:            true if successful, false if failure.        */
 /*                                                                  */
 /* Notes:                                                           */
 /*                                                                  */
@@ -86,7 +86,7 @@ BOOL WINAPI DllMain(
   DWORD fdwReason,
   LPVOID lpvReserved)
 {
-  BOOL  fSuccess = true;
+  bool  fSuccess = true;
   ULONG dwSize = sizeof(ULONG);
   char  szMessage[256] = "Open Object Rexx: Not cleanly installed!";
 
@@ -100,7 +100,7 @@ BOOL WINAPI DllMain(
      OryxThreadInit();
 #endif
      if (fSuccess) {
-       RxInterProcessInit(TRUE);
+       RxInterProcessInit(true);
        horyxkDll = hinstDll;            /* keep handle around */
        MTXNCR(apiProtect, "!REXX_API_PROTECT_MTX.0");
      } else

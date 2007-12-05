@@ -310,7 +310,7 @@ private:
   RexxObjectTable  *old2new;           /* remd set                          */
   RexxObjectTable  *uninitTable;       // the table of objects with uninit methods
   size_t            pendingUninits;    // objects waiting to have uninits run
-  bool              processingUninits; // TRUE when we are processing the uninit table
+  bool              processingUninits; // true when we are processing the uninit table
 
   RexxObjectTable  *subClasses;        // the table of subclasses
 

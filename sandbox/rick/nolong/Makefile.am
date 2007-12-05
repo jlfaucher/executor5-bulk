@@ -442,7 +442,6 @@ platform_sources = $(kernel_platform_unix_dir)/ErrorMessages.cpp \
                    $(kernel_platform_unix_dir)/VariablePool.cpp
 #                   $(runtime_dir)/RexxVariableDictionary2.cpp
 runtime_sources  = $(runtime_dir)/DeadObject.cpp \
-                   $(runtime_dir)/FloatUtilities.cpp \
                    $(runtime_dir)/GlobalData.cpp \
                    $(runtime_dir)/GlobalNames.cpp \
                    $(runtime_dir)/Initialization.cpp \

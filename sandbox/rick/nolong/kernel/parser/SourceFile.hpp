@@ -97,7 +97,7 @@ class RexxSource : public RexxInternalObject {
   void        comment();
   void        needVariable(RexxToken *);
   void        needVariableOrDotSymbol(RexxToken *);
-  BOOL        terminator(int, RexxObject *);
+  bool        terminator(int, RexxObject *);
   static int  resolveKeyword(RexxString *token, KeywordEntry *Table, int Table_Size);
   static int  subKeyword(RexxToken *);
   static int  keyword(RexxToken *);
@@ -203,7 +203,7 @@ class RexxSource : public RexxInternalObject {
   RexxObject *parseConditional(int *, int);
   RexxObject *parseLogical(RexxToken *first, int terminators);
 
-  BOOL        terminator(int, RexxToken *);
+  bool        terminator(int, RexxToken *);
   bool        isTraceable();
   inline bool isInterpret() { return (flags & _interpret) != 0; }
 
@@ -219,7 +219,7 @@ class RexxSource : public RexxInternalObject {
   inline RexxToken  *popOperator() { return (RexxToken *)(this->operators->pullRexx()); };
   inline RexxToken  *topOperator() { return (RexxToken *)(this->operators->peek()); };
   inline void        reclaimClause()  { this->flags |= reclaimed; };
-  inline BOOL        atEnd(void) { return (!(this->flags&reclaimed) && (this->line_number > (this->line_count))); };
+  inline bool        atEnd(void) { return (!(this->flags&reclaimed) && (this->line_number > (this->line_count))); };
 
   inline RexxToken  *nextToken() { return clause->next(); }
   inline RexxToken  *nextReal() { return clause->nextRealToken(); }

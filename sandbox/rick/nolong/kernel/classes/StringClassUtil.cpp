@@ -66,10 +66,10 @@ stringsize_t get_length(
     }
     stringsize_t    value;                /* converted number value            */
 
-    if (!unsignedNumberValue(value, precision))
+    if (!argument->unsignedNumberValue(value))
     {
         /* raise the error                   */
-        reportException(Error_Incorrect_method_length, position, this);
+        reportException(Error_Incorrect_method_length, position, argument);
     }
     return value;
 }
@@ -90,10 +90,10 @@ stringsize_t get_position(
     }
     stringsize_t    value;                /* converted number value            */
 
-    if (!unsignedNumberValue(value, precision) || value == 0)
+    if (!argument->unsignedNumberValue(value) || value == 0)
     {
         /* raise the error                   */
-        reportException(Error_Incorrect_method_position, position, this);
+        reportException(Error_Incorrect_method_position, position, argument);
     }
     return value;
 }

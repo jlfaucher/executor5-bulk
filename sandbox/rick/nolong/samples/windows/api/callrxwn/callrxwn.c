@@ -120,11 +120,11 @@ LRESULT CALLBACK MainDlgProc(HWND hwnd, WORD msg, WPARAM wParam, LPARAM lParam)
         EndDialog (hwnd, TRUE);
         return TRUE;
       } else
-        return FALSE;
+        return false;
     break;
 
 
-    default: return FALSE;
+    default: return false;
   } /* end switch(message) */
   return 0;
 }

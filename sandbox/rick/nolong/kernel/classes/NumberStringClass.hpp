@@ -125,8 +125,8 @@
     bool         truthValue(int);
 
     bool        isEqual(RexxObject *);
-    long        strictComp(RexxObject *);
-    long        comp(RexxObject *);
+    int         strictComp(RexxObject *);
+    int         comp(RexxObject *);
     RexxInteger *equal(RexxObject *);
     RexxInteger *strictEqual(RexxObject *);
     RexxInteger *notEqual(RexxObject *);
@@ -156,7 +156,7 @@
     bool        isInstanceOf(RexxClass *);
     RexxMethod   *instanceMethod(RexxString *);
     RexxSupplier *instanceMethods(RexxClass *);
-    inline RexxNumberString *checkNumber(size_t digits, BOOL rounding)
+    inline RexxNumberString *checkNumber(size_t digits, bool rounding)
     {
      if (this->length > digits)            /* is the length larger than digits()*/
                                            /* need to allocate a new number     */
@@ -164,7 +164,7 @@
      return this;                          /* no adjustment required            */
     }
 
-    RexxNumberString *prepareNumber(size_t, BOOL);
+    RexxNumberString *prepareNumber(size_t, bool);
     void              adjustPrecision(char *, size_t);
     void              adjustPrecision();
     inline void       checkPrecision() { if (length > NumDigits) adjustPrecision(); }
@@ -209,7 +209,7 @@
     RexxObject *isInteger();
     RexxString *d2c(RexxObject *);
     RexxString *d2x(RexxObject *);
-    RexxString *d2xD2c(RexxObject *, BOOL);
+    RexxString *d2xD2c(RexxObject *, bool);
     RexxString *concat(RexxObject *);
     RexxString *concatBlank(RexxObject *);
     RexxObject *orOp(RexxObject *);

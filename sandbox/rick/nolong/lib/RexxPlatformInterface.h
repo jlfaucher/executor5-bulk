@@ -54,7 +54,7 @@ void SysGetCurrentTime(RexxDateTime *);/* get the current time              */
 
 #ifndef SysVariablePool
                                        /* process external vpool requests   */
-extern ULONG SysVariablePool(RexxNativeActivation *, PVOID, BOOL);
+extern ULONG SysVariablePool(RexxNativeActivation *, PVOID, bool);
 #endif
 
 #ifndef SysResolveProgramName
@@ -134,7 +134,7 @@ void SysReleaseResultMemory(void *);   /* release a result memory block     */
 
 #ifndef SysExternalFunction
                                        /* call an external function         */
-RexxObject * SysExternalFunction(RexxActivation *, RexxActivity *, RexxString *, RexxString *, RexxObject **, size_t, RexxString *, BOOL *);
+RexxObject * SysExternalFunction(RexxActivation *, RexxActivity *, RexxString *, RexxString *, RexxObject **, size_t, RexxString *, bool *);
 #endif
 
 #ifndef SysGetMacroCode

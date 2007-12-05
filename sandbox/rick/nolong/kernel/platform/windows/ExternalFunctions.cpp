@@ -124,7 +124,7 @@ APIRET APIENTRY RexxExecuteMacroFunction ( char *, PRXSTRING );
 /*                      specified duration (in milliseconds)         */
 /*********************************************************************/
 
-RexxMethod2(REXXOBJECT, sysBeep, long, Frequency, long, Duration)
+RexxMethod2(REXXOBJECT, sysBeep, wholenumber_t, Frequency, wholenumber_t, Duration)
 {
                                        /* out of range?              */
   if (Frequency > MAX_FREQUENCY || Frequency < MIN_FREQUENCY || Duration > MAX_DURATION || Duration < MIN_DURATION)
@@ -381,7 +381,7 @@ RexxMethod1(REXXOBJECT,sysRxfuncquery,CSTRING,name)
 /* Notes:      Searches for a REXX program with the target name and extension */
 /*             and if it finds one, runs the exec passing back the result.    */
 /******************************************************************************/
-BOOL ExecExternalSearch(
+bool ExecExternalSearch(
   RexxActivation * activation,         /* Current Activation                */
   RexxActivity   * activity,           /* activity in use                   */
   RexxString     * target,             /* Name of external function         */
@@ -402,14 +402,14 @@ BOOL ExecExternalSearch(
 /*             target function is found, it executes the function and passes  */
 /*             back the rc in result.                                         */
 /******************************************************************************/
-BOOL MacroSpaceSearch(
+bool MacroSpaceSearch(
   RexxActivation * activation,         /* Current Activation                */
   RexxActivity   * activity,           /* activity in use                   */
   RexxString     * target,             /* Name of external function         */
   RexxObject    ** arguments,          /* Argument array                    */
   size_t           argcount,           /* the count of arguments            */
   RexxString     * calltype,           /* Type of call                      */
-  BOOL             order,              /* Pre/Post order search flag        */
+  int              order,              /* Pre/Post order search flag        */
   RexxObject    ** result )            /* Result of function call           */
 {
 
@@ -423,10 +423,10 @@ BOOL MacroSpaceSearch(
   if (RexxQueryMacro(MacroName, &Position) == 0) {
                                        /* but not at the right time?        */
     if (order == MS_PREORDER && Position == RXMACRO_SEARCH_AFTER)
-      return FALSE;                    /* didn't really find this           */
+      return false;                    /* didn't really find this           */
                                        /* get image of function             */
     if (RexxExecuteMacroFunction(const_cast<char *>(MacroName), &MacroImage) != 0)
-        return FALSE;
+        return false;
                                        /* unflatten the method now          */
     Routine = SysRestoreProgramBuffer(&MacroImage, target);
 
@@ -436,14 +436,14 @@ BOOL MacroSpaceSearch(
        buffer somewhere and do it here. */
     if (MacroImage.strptr) GlobalFree(MacroImage.strptr);
 
-    if (Routine == OREF_NULL) return FALSE;
+    if (Routine == OREF_NULL) return false;
                                        /* run as a call                     */
     *result = Routine->call(activity, (RexxObject *)activation, target, arguments, argcount, calltype, OREF_NULL, EXTERNALCALL);
     /* merge (class) definitions from macro with current settings */
     activation->getSource()->mergeRequired(Routine->getSource());
-    return TRUE;                       /* return success we found it flag   */
+    return true;                       /* return success we found it flag   */
   }
-  return FALSE;                        /* nope, nothing to find here        */
+  return false;                        /* nope, nothing to find here        */
 }
 
 /******************************************************************************/
@@ -462,7 +462,7 @@ BOOL MacroSpaceSearch(
 /*             function is registered.  If it is, it asks the API to invoke   */
 /*             the function, passing the rc back in result.                   */
 /******************************************************************************/
-BOOL RegExternalFunction(
+bool RegExternalFunction(
   RexxActivation * activation,         /* Current Activation                */
   RexxActivity   * activity,           /* activity in use                   */
   RexxString     * target,             /* Name of external function         */
@@ -520,7 +520,7 @@ BOOL RegExternalFunction(
     }
                                        /* Do we have the function?          */
     if (RexxQueryFunction(funcname) != 0)
-      return FALSE;                    /* truely not found                  */
+      return false;                    /* truely not found                  */
   }
 
   /* allocate enough memory for all arguments */
@@ -560,7 +560,7 @@ BOOL RegExternalFunction(
 /* CRITICAL window here -->>  ABSOLUTELY NO KERNEL CALLS ALLOWED            */
 
                                        /* get ready to call the function    */
-  activity->exitKernel(activation, OREF_SYSEXTERNALFUNCTION, TRUE);
+  activity->exitKernel(activation, OREF_SYSEXTERNALFUNCTION, true);
                                        /* now call the external function    */
   rc = RexxCallFunction(const_cast<char *>(funcname), argcount, argrxarray, &functionrc, &funcresult, const_cast<char *>(queuename));
   activity->enterKernel();           /* now re-enter the kernel           */
@@ -590,7 +590,7 @@ BOOL RegExternalFunction(
   else                               /* Bad rc from RexxCallFunction,     */
     reportException(Error_Routine_not_found_name, target);
 
-  return TRUE;                      /* Show what happened                */
+  return true;                      /* Show what happened                */
 }
 
 
@@ -614,14 +614,14 @@ RexxObject * SysExternalFunction(
   RexxObject    ** arguments,          /* Argument array                    */
   size_t           argcount,           /* count of arguments                */
   RexxString     * calltype,           /* Type of call                      */
-  BOOL           * foundFnc)
+  bool           * foundFnc)
 {
   RexxObject * result;                 /* Init function result to null      */
   //RXSTRING  funcresult;                /* Function result                 */
   //unsigned short functionrc;           /* Return code from function       */
   //char      default_return_buffer[10]; /* default return code buffer      */
 
-  *foundFnc = TRUE;
+  *foundFnc = true;
 
   if (!MacroSpaceSearch(activation, activity, target, arguments, argcount, calltype, MS_PREORDER, &result)) {
                                        /* no luck try for a registered func */
@@ -633,7 +633,7 @@ RexxObject * SysExternalFunction(
                                        /* then raise an error               */
         if (!MacroSpaceSearch(activation, activity, target, arguments, argcount, calltype, MS_POSTORDER, &result)) {
 //          reportException(Error_Routine_not_found_name, target);
-            *foundFnc = FALSE;
+            *foundFnc = false;
         }
       }
     }

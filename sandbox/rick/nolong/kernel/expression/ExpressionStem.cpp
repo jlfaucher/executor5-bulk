@@ -189,7 +189,7 @@ void RexxStemVariable::set(
 }
 
 
-BOOL RexxStemVariable::exists(
+bool RexxStemVariable::exists(
   RexxActivation *context)             /* current activation context        */
 /******************************************************************************/
 /*  Function:  Check the existance of a REXX stem variable                    */
@@ -298,7 +298,9 @@ void RexxStemVariable::clearGuard(
   variable = context->getLocalStemVariable(this->stem, this->index);
   variable->uninform(ActivityManager::currentActivity); /* mark the variable entry           */
 }
-BOOL RexxStemVariable::sort(
+
+
+bool RexxStemVariable::sort(
     RexxActivation *context, RexxString *prefix, int order, int type, size_t start,
     size_t end, size_t firstcol, size_t lastcol)
 /******************************************************************************/

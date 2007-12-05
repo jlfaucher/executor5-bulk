@@ -61,7 +61,7 @@ class RexxParseVariable : public RexxVariableBase {
   RexxObject *evaluate(RexxActivation *, RexxExpressionStack *);
   RexxObject *getValue(RexxVariableDictionary *);
   RexxObject *getValue(RexxActivation *);
-  BOOL exists(RexxActivation *);
+  bool exists(RexxActivation *);
   void set(RexxActivation *, RexxObject *) ;
   void set(RexxVariableDictionary *, RexxObject *) ;
   void assign(RexxActivation *, RexxExpressionStack *, RexxObject *);
@@ -71,6 +71,8 @@ class RexxParseVariable : public RexxVariableBase {
   void expose(RexxActivation *, RexxExpressionStack *, RexxVariableDictionary *);
   void procedureExpose(RexxActivation *, RexxActivation *, RexxExpressionStack *);
   RexxString *getName();
+
+protected:
 
   RexxString *variableName;            // name of the variable
   size_t      index;                   /* lookaside table index             */

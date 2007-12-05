@@ -129,8 +129,8 @@ REXXAPIDATA  *apidata = NULL;
 /* Pairs are : 1 - 50, 5 - 51/52, 6 - 53/54, 1 - 60                   */
 INT      iCallSigSet = 0;
 
-//BOOL WAITANDRESET = FALSE;            /* to add SysCreateEventSem Flag  */
-BOOL CALL_BY_RXQUEUE = FALSE;           /* THU021A */
+//bool WAITANDRESET = false;            /* to add SysCreateEventSem Flag  */
+bool CALL_BY_RXQUEUE = false;           /* THU021A */
 
 INT opencnt[MAXUTILSEM][2] = {0};      /* array for remembering the  */
                                        /* open calls to the rexxutil */
@@ -1059,7 +1059,7 @@ LONG  RxFreeMem(
   LONG temp_nblock;
   ULONG previousitem = 0;
   ULONG previousbase  = 0;
-  BOOL found = FALSE;
+  bool found = false;
 
   if(flag == MACROMEM){              /* free in the macro memory pool*/
     mbase = apidata->mbase;          /* get the anchor               */
@@ -1220,7 +1220,7 @@ LONG  RxFreeMemQue(
   LONG temp_nblock;
   ULONG previousitem = 0;
   ULONG previousbase  = 0;
-  BOOL found = FALSE;
+  bool found = false;
 
   if(flag == QMEMNAMEDQUE)               /* free named queue element in the queue pool     */
   {
@@ -1234,7 +1234,7 @@ LONG  RxFreeMemQue(
        } /* endwhile */
        if (base)
        {
-          found = TRUE;
+          found = true;
           if( (previousbase == 0) && (QHDATA(base)->next == 0) )
           {        /*This was the only named queue in shared memory          */
              apidata->base = 0;        /* chain out the base                 */
@@ -1267,7 +1267,7 @@ LONG  RxFreeMemQue(
     {
        if(first == pblock)                           /* that is a queueitem needs to be chained out    */
        {
-          found = TRUE;
+          found = true;
           if( (!previousitem) && (QIDATA(first)->next == 0) ) /* the item to be chained out is the only element in queue  */
           {
              QHDATA(current)->queue_first = 0;
@@ -1299,7 +1299,7 @@ LONG  RxFreeMemQue(
 //          base = next;
 //          if ( base == pblock )
 //          {
-//             found = TRUE;
+//             found = true;
 //             if (QHDATA(base)->next != NULL)
 //             {
 //                QHDATA(previousbase)->next = QHDATA(base)->next;
@@ -1328,7 +1328,7 @@ LONG  RxFreeMemQue(
        } /* endwhile */
        if (session_base)
        {
-          found = TRUE;
+          found = true;
           if( (previousbase == 0) && (QHDATA(session_base)->next == 0) ) /*This was the only named queue in shared memory */
           {
 #ifdef QUEUE_DBG
@@ -1368,7 +1368,7 @@ LONG  RxFreeMemQue(
     {
        if(first == pblock)                           /* that is a queueitem needs to be chained out    */
        {
-          found = TRUE;
+          found = true;
           if( (!previousitem) && (QIDATA(first)->next == 0) ) /* the item to be chained out is the only element in queue  */
           {
              QHDATA(current)->queue_first = 0;

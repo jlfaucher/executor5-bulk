@@ -120,8 +120,8 @@ class RexxStringClass : public RexxClass {
    bool        isEqual(RexxObject *);
    bool        primitiveIsEqual(RexxObject *);
    bool        primitiveCaselessIsEqual(RexxObject *);
-   long        strictComp(RexxObject *);
-   long        comp(RexxObject *);
+   int         strictComp(RexxObject *);
+   int         comp(RexxObject *);
    wholenumber_t compareTo(RexxObject *);
    RexxInteger *equal(RexxObject *);
    RexxInteger *strictEqual(RexxObject *);
@@ -143,7 +143,7 @@ class RexxStringClass : public RexxClass {
    RexxString *concatToCstring(const char *);
    RexxString *concatWithCstring(const char *);
    RexxString *concatBlank(RexxObject *);
-   BOOL        checkLower();
+   bool        checkLower();
    RexxString *upper();
    RexxString *upper(size_t, size_t);
    RexxString *upperRexx(RexxInteger *, RexxInteger *);
@@ -245,7 +245,7 @@ class RexxStringClass : public RexxClass {
    RexxString  *x2b();
    RexxString  *x2c();
    RexxString  *x2d(RexxInteger *);
-   RexxString  *x2dC2d(RexxInteger *, BOOL);
+   RexxString  *x2dC2d(RexxInteger *, bool);
 
    RexxInteger *match(RexxInteger *start_, RexxString *other, RexxInteger *offset_, RexxInteger *len_);
    RexxInteger *caselessMatch(RexxInteger *start_, RexxString *other, RexxInteger *offset_, RexxInteger *len_);

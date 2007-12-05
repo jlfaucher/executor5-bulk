@@ -89,9 +89,7 @@ void RxExitClear(int);
 void RxExitClearNormal();
 
 
-extern BOOL bProcessExitInitFlag;
-
-extern ULONG mustCompleteNest;         /* Global variable for MustComplete  */
+extern bool bProcessExitInitFlag;
 
 unsigned int iClauseCounter=0;         // count of clauses
 unsigned int iTransClauseCounter=0;    // count of clauses in translator
@@ -114,9 +112,9 @@ void SysInitialize(void)
 
 
 /* this is for normal process termination                                     */
-  if (bProcessExitInitFlag == FALSE)
+  if (bProcessExitInitFlag == false)
   {
-     bProcessExitInitFlag = TRUE;
+     bProcessExitInitFlag = true;
      atexit(RxExitClearNormal);
     /* Set the cleanup handler for unconditional process termination          */
     struct sigaction new_action;

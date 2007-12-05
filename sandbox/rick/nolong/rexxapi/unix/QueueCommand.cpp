@@ -81,7 +81,7 @@
 #define CATD_ERR -1
 #endif
 
-extern BOOL CALL_BY_RXQUEUE;
+extern bool CALL_BY_RXQUEUE;
 
 char  line[4096];              /* buffer for data to add to queue    */
 char  work[256];               /* buffer for queue name, if default  */
@@ -114,7 +114,7 @@ int main(
 /*  Initialize string buffers to empty strings:                      */
 /*********************************************************************/
 
-  CALL_BY_RXQUEUE = TRUE;
+  CALL_BY_RXQUEUE = true;
 
   memset(line, '\0', sizeof(line)); /* clear buffer 'line' -for data */
   memset(work, '\0', sizeof(work)); /* clear buffer 'work' -for      */
@@ -378,14 +378,14 @@ ULONG       get_line( char  *buffer,   /* Read buffer                */
                       PULONG linelen)  /* length of line             */
 {
   static char savechar = '\0';         /* cached character           */
-  static BOOL eof = FALSE;             /* not hit eof yet            */
+  static bool eof = false;             /* not hit eof yet            */
   ULONG actual;                        /* actual bytes read          */
   ULONG rc;                            /* DosRead return code        */
   char  newchar;                       /* character read             */
   ULONG length;                        /* length read                */
 
   if (eof)                             /* already hit end?           */
-    return TRUE;                       /* all done                   */
+    return true;                       /* all done                   */
 
   length = 0;                          /* nothing read yet           */
   if (savechar) {                      /* have a saved character     */
@@ -399,10 +399,10 @@ ULONG       get_line( char  *buffer,   /* Read buffer                */
     if (!actual) {                     /* EOF?                       */
       *linelen = length;               /* set length                 */
       if (!length)                     /* nothing read?              */
-        return TRUE;                   /* raise end of file          */
+        return true;                   /* raise end of file          */
       else {
-        eof = TRUE;                    /* quick out next time        */
-        return FALSE;                  /* have real line here        */
+        eof = true;                    /* quick out next time        */
+        return false;                  /* have real line here        */
       }
     }
     if (newchar == '\r') {             /* end of line                */
@@ -412,18 +412,18 @@ ULONG       get_line( char  *buffer,   /* Read buffer                */
                                        /* newline char?              */
       if (!ferror(stdin) && actual && newchar != '\n')
         savechar = newchar;            /* save this for next time    */
-      return FALSE;                    /* should be ok this time     */
+      return false;                    /* should be ok this time     */
     }
     else if (newchar == '\n') {        /* end of line                */
       *linelen = length;               /* passback length read       */
-      return FALSE;                    /* should be ok this time     */
+      return false;                    /* should be ok this time     */
     }
     else if (newchar == 0x1a) {        /* EOF character?             */
       *linelen = length;               /* give length                */
-      eof = TRUE;                      /* set flag for next time     */
+      eof = true;                      /* set flag for next time     */
       if (length)                      /* if something read          */
-        return TRUE;                   /* this is EOF now            */
-      else return FALSE;               /* no error yet               */
+        return true;                   /* this is EOF now            */
+      else return false;               /* no error yet               */
     }
     else {                             /* real character             */
       if (length < bufsize) {          /* room for this?             */
@@ -437,11 +437,11 @@ ULONG       get_line( char  *buffer,   /* Read buffer                */
                                        /* had an error               */
   if (length) {                        /* something read?            */
     *linelen = length;                 /* return this                */
-    eof = TRUE;                        /* can't read more            */
-    return FALSE;                      /* but no error yet           */
+    eof = true;                        /* can't read more            */
+    return false;                      /* but no error yet           */
   }
   else
-    return TRUE;                       /* treat this as an EOF       */
+    return true;                       /* treat this as an EOF       */
 }
 
 

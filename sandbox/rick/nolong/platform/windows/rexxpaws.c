@@ -55,7 +55,6 @@ BOOL   APIENTRY RexxInitialize (void);
 }
 
                                          /* Global inducator */
-extern  _declspec(dllimport) BOOL RexxStartedByApplication;
 extern  _declspec(dllimport) HANDLE RexxTerminated;           /* Termination complete semaphore.   */
 
 //
@@ -98,7 +97,6 @@ int __cdecl main(int argc, char *argv[])
   ULONG argcount;
   RXSTRING rxretbuf;                   // program return buffer
 
-  RexxStartedByApplication = FALSE;    /* Call NOT from internal            */
   rc = 0;                              /* set default return                */
 
    /*

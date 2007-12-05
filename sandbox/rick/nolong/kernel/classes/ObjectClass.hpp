@@ -335,7 +335,7 @@ class RexxObject : public RexxInternalObject {
      virtual RexxString  *defaultName();
      virtual RexxObject  *unknown(RexxString *msg, RexxArray *args){return OREF_NULL;};
      virtual RexxInteger *hasMethod(RexxString *msg);
-             BOOL         hasUninitMethod();
+             bool         hasUninitMethod();
 
      RexxObject *init();
      void        uninit();
@@ -360,7 +360,7 @@ class RexxObject : public RexxInternalObject {
      RexxString  *requestString();
      RexxString  *requestStringNoNOSTRING();
      RexxInteger *requestInteger(size_t);
-     bool         requestWholenumber(wholenumber_t &, size_t);
+     bool         requestNumber(wholenumber_t &, size_t);
      bool         requestUnsignedNumber(stringsize_t &, size_t);
      RexxArray   *requestArray();
      RexxString  *requiredString(int);
@@ -393,7 +393,7 @@ class RexxObject : public RexxInternalObject {
      RexxObject  *messageSend(RexxString *, size_t, RexxObject **, RexxObject *);
      RexxMethod  *checkPrivate(RexxMethod *);
      RexxObject  *processUnknown(RexxString *, size_t, RexxObject **);
-     RexxObject  *processProtectedMethod(RexxString *, LONG, RexxObject **);
+     RexxObject  *processProtectedMethod(RexxString *, size_t, RexxObject **);
      RexxObject  *sendMessage(RexxString *, RexxArray *);
      inline RexxObject  *sendMessage(RexxString *message) { return this->messageSend(message, 0, OREF_NULL); };
      inline RexxObject  *sendMessage(RexxString *message, RexxObject **args, size_t argCount) { return this->messageSend(message, argCount, args); };
@@ -442,7 +442,7 @@ class RexxObject : public RexxInternalObject {
      RexxObject  *unknownRexx(RexxString *, RexxArray *);
      RexxObject  *hasMethodRexx(RexxString *);
      RexxObject  *initProxyRexx(RexxInteger *);
-     BOOL         callSecurityManager(RexxString *, RexxDirectory *);
+     bool         callSecurityManager(RexxString *, RexxDirectory *);
      // compare 2 values for equality, potentially falling back on the
      // "==" method for the test.
      bool inline equalValue(RexxObject *other)

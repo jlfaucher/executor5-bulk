@@ -199,7 +199,7 @@ typedef unsigned __int64 uint64_t;
                                HANDLE rexx_start_semaphore = NULL;      \
                                HANDLE rexx_wait_queue_semaphore = NULL; \
                                HANDLE rexxTimeSliceSemaphore = NULL;    \
-                               ULONG rexxTimeSliceTimerOwner;
+                               HANDLE rexxTimeSliceTimerOwner;
 
 
 /******************************************************************************/
@@ -239,7 +239,7 @@ typedef void (* PTHREADFN)(void *);    /* define a thread function          */
 /******************************************************************************/
 //  Check these changes in oryxthrd.h
 
-//SECURITY_ATTRIBUTES SA_inherit = {sizeof(SECURITY_ATTRIBUTES), NULL, TRUE};
+//SECURITY_ATTRIBUTES SA_inherit = {sizeof(SECURITY_ATTRIBUTES), NULL, true};
 
 #ifdef _DEBUG
 // #define TRACE_SEMAPHORES    /* not necessary to trace MTX and EV macros */
@@ -264,7 +264,7 @@ void SysRelinquish(void);              /* allow the system to run           */
 
 inline void waitHandle(HANDLE s)
 {
-   extern BOOL UseMessageLoop;
+   extern bool UseMessageLoop;
    if (UseMessageLoop)
    {
        do
@@ -292,17 +292,17 @@ inline void waitHandle(HANDLE s)
 #endif
                                        // no wait, return if can't get it
 #define MTXRI(s)      WaitForSingleObject(s,SEM_IMMEDIATE_RETURN)
-#define MTXNOPEN(s,n) s = OpenMutex(MUTEX_ALL_ACCESS, TRUE, n)                 // only used for shared stuff
+#define MTXNOPEN(s,n) s = OpenMutex(MUTEX_ALL_ACCESS, true, n)                 // only used for shared stuff
 #define MTXNCR(s,n)   s = CreateMutex(NULL, FALSE, n)
 
 #ifdef TRACE_SEMAPHORES
 #define EVCR(s)      if (!s) {   \
-s = CreateEvent(NULL, TRUE, TRUE, NULL); \
+s = CreateEvent(NULL, true, true, NULL); \
 printf("Created EV %x in %s line %d\n", s, __FILE__, __LINE__);} \
 else printf("EVCR handle %x not null in %s line %d\n", s, __FILE__, __LINE__)
 
 #else
-#define EVCR(s)       if (!s) s = CreateEvent(NULL, TRUE, TRUE, NULL)
+#define EVCR(s)       if (!s) s = CreateEvent(NULL, true, true, NULL)
 #endif
 
 /* create or open a named event semaphore */
@@ -355,17 +355,17 @@ extern CRITICAL_SECTION Crit_Sec;
 /******************************************************************************/
 
 #ifndef NO_SYSTIMESLICEELAPSED
-inline BOOL SysTimeSliceElapsed( void )
+inline bool SysTimeSliceElapsed( void )
 {
-  extern BOOL rexxTimeSliceElapsed;
+  extern bool rexxTimeSliceElapsed;
                                        /* see if the timer was called*/
   if (rexxTimeSliceElapsed)
   {
-     rexxTimeSliceElapsed = FALSE;
-     return 1;
+     rexxTimeSliceElapsed = false;
+     return true;
   }
   else
-     return 0;                                                                  /* 0 because no wait, only query */
+     return false;                                                              /* 0 because no wait, only query */
 }
 #endif
 
@@ -521,11 +521,11 @@ int SysCreateThread (
 void SysTermination();              // No initialization / termination yet
 
 #define SysInitialize();               //
-extern BOOL HandleException;
+extern bool HandleException;
 
                                        // our signal handling
-inline void SysRegisterSignals(SYSEXCEPTIONBLOCK *e) { HandleException = TRUE; }
-inline void SysDeregisterSignals(SYSEXCEPTIONBLOCK *e) { HandleException = FALSE; }
+inline void SysRegisterSignals(SYSEXCEPTIONBLOCK *e) { HandleException = true; }
+inline void SysDeregisterSignals(SYSEXCEPTIONBLOCK *e) { HandleException = false; }
 
 inline void SysRegisterExceptions(SYSEXCEPTIONBLOCK *e) { ; }
 inline void SysDeregisterExceptions(SYSEXCEPTIONBLOCK *e) { ; }
@@ -555,12 +555,12 @@ inline void SysDeregisterExceptions(SYSEXCEPTIONBLOCK *e) { ; }
  typedef BOOL __stdcall CONSOLECTRLHANDLER(DWORD);
  CONSOLECTRLHANDLER WinConsoleCtrlHandler;
 
- #define WinBeginExceptions SetConsoleCtrlHandler(&WinConsoleCtrlHandler, TRUE);\
+ #define WinBeginExceptions SetConsoleCtrlHandler(&WinConsoleCtrlHandler, true);\
                             __try {
  #define WinEndExceptions } __except ( WinExceptionFilter(GetExceptionCode( ))) {  }\
                             SetConsoleCtrlHandler(&WinConsoleCtrlHandler, FALSE);
 
- extern BOOL HandleException;
+ extern bool HandleException;
  int WinExceptionFilter( int xCode );
 
 

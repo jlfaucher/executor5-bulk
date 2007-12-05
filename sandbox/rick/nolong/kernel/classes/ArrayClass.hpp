@@ -36,7 +36,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Kernel                                                  ArrayClass.hpp   */
+/* REXX Kernel                                               ArrayClass.hpp   */
 /*                                                                            */
 /* Primitive Array Class Definitions                                          */
 /*                                                                            */
@@ -119,7 +119,7 @@ typedef struct copyElelmentParm {
    RexxObject  *append(RexxObject *);
    void         setExpansion(RexxObject * expansion);
    RexxInteger *available(size_t position);
-   size_t       validateIndex(RexxObject **, size_t, size_t, size_t);
+   bool         validateIndex(RexxObject **, size_t, size_t, size_t, stringsize_t &);
    RexxInteger *sizeRexx();
    RexxObject  *firstRexx();
    RexxObject  *lastRexx();
@@ -130,7 +130,7 @@ typedef struct copyElelmentParm {
    RexxObject  *sectionRexx(RexxObject *, RexxObject *);
    RexxObject  *sectionSubclass(size_t, size_t);
    RexxInteger *hasIndex(RexxObject *);
-   size_t       hasIndexNative(size_t);
+   bool         hasIndexNative(size_t);
    RexxObject  *hasIndexRexx(RexxObject **, size_t);
    size_t       numItems();
    RexxObject  *items();

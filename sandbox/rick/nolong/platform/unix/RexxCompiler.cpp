@@ -137,14 +137,14 @@ void DisplayError(ULONG msgid)         /* simplified catalog access@MAE004M */
 
 int main (int argc, char **argv)
 {
-  BOOL silent = FALSE;
+  bool silent = false;
   INT silentp;
   char *ptr;
                                        /* check for /s option               */
   for (silentp = 1; silentp < argc; silentp++) {
     if (argv[silentp][0] == '-' &&
         (argv[silentp][1] == 's' || argv[silentp][1] == 'S')) {
-      silent = TRUE;
+      silent = true;
       break;
     }
   }

@@ -82,8 +82,8 @@ void RexxExpressionStack::flatten(RexxEnvelope * envelope)
 {
   setUpFlatten(RexxExpressionStack)
 
-  long i;                              /* pointer for scanning stack entries*/
-  long count;                          /* number of elements                */
+  size_t i;                            /* pointer for scanning stack entries*/
+  size_t count;                        /* number of elements                */
 
   count = this->top - this->stack;     /* get the total count               */
                                        /* loop through the stack entries    */
@@ -217,7 +217,7 @@ RexxInteger *RexxExpressionStack::optionalIntegerArg(
 /*            convert it into an integer argument.                            */
 /******************************************************************************/
 {
-    RexxArgument *argument = this->peek(position);     /* get the argument in question      */
+    RexxObject *argument = this->peek(position);     /* get the argument in question      */
     if (argument == OREF_NULL)           /* missing an optional argument?     */
     {
         return OREF_NULL;                  /* nothing there                     */

@@ -81,12 +81,11 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-BOOL   APIENTRY RexxInitialize (void);
+bool   APIENTRY RexxInitialize (void);
 #ifdef __cplusplus
 }
 #endif
-extern BOOL RexxStartedByApplication;  /* Global inducator                  */
-extern BOOL ProcessSaveImage;
+extern bool ProcessSaveImage;
 extern HEV  RexxTerminated;            /* Termination complete semaphore.   */
                                        /* semaphore type changed from HEV to OSEM */
                                        /* for AIX.                          */
@@ -101,11 +100,10 @@ int main (int argc, char **argv)
   LONG  argCount;
   char *ptr;
   SHORT rexxrc = 0;                    /* exit List array                   */
-  BOOL from_string = FALSE;            /* running from command line string? */
-  BOOL real_argument = TRUE;           /* running from command line string? */
+  bool from_string = false;            /* running from command line string? */
+  bool real_argument = true;           /* running from command line string? */
   RXSTRING instore[2];
 
-  RexxStartedByApplication = FALSE;    /* Call NOT from internal            */
   rc = 0;                              /* set default return                */
   argCount = 0;                        /* argument to RexxMain              */
   arg_buffer[0] = '\0';                /* default to no argument string     */
@@ -115,11 +113,11 @@ int main (int argc, char **argv)
     if (program_name == NULL && (*(cp=*(argv+i)) == '-'))
       switch (*++cp) {
         case 'i': case 'I':            /* image build                       */
-          ProcessSaveImage = TRUE;     /* say this is a save image          */
+          ProcessSaveImage = true;     /* say this is a save image          */
           break;
 
         case 'e': case 'E':            /* execute from string               */
-          from_string = TRUE;          /* hit the startup flags             */
+          from_string = true;          /* hit the startup flags             */
           if ( argc == i+1 ) {
             break;
           }
@@ -128,7 +126,7 @@ int main (int argc, char **argv)
           instore[0].strlength = strlen(instore[0].strptr);
           instore[1].strptr = NULL;
           instore[1].strlength = 0;
-          real_argument = FALSE;
+          real_argument = false;
           break;
 
         case 'v': case 'V':            /* display version string            */
@@ -149,7 +147,7 @@ int main (int argc, char **argv)
         strcat(arg_buffer, argv[i]);   /* add this to the argument string   */
         ++argCount;
       }
-    real_argument = TRUE;
+    real_argument = true;
     }
   }
                                        /* missing a program name?           */

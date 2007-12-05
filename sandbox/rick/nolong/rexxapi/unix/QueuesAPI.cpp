@@ -811,7 +811,7 @@ ULONG  APIENTRY RexxDeleteQueue(
   ULONG        next_item;              /* next queue item            */
   ULONG        previous;               /* previous list entry        */
   ULONG        current;                /* current list entry         */
-  BOOL found = FALSE;
+  bool found = false;
                                        /* Exception handler record   */
 
   if (!val_queue_name(name))           /* Did the user supply a      */
@@ -831,7 +831,7 @@ ULONG  APIENTRY RexxDeleteQueue(
     if (!rxstricmp(name,               /* if we have a name match    */
                   QHDATA(current)->queue_name))
     {
-      found = TRUE;
+      found = true;
       if (QHDATA(current)->waiting)    /* if someone waiting on this */
       {
         rc=RXQUEUE_ACCESS;             /* tell the caller            */

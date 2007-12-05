@@ -501,7 +501,7 @@ bool  RexxArray::validateIndex(        /* validate an array index           */
     size_t       indexCount,           /* size of the index array           */
     size_t       _start,               /* starting point on the array       */
     size_t       bounds_error,         /* raise errors on out-of-bounds     */
-    stringsize  &position)             // returned position
+    stringsize_t &position)             // returned position
 /******************************************************************************/
 /* Function:  Process and validate a potentially multi-dimensional array      */
 /*            index.  If the index is out of bounds in any dimension it will  */
@@ -866,7 +866,7 @@ RexxObject  *RexxArray::nextRexx(RexxObject **arguments, size_t argCount)
   size_t _arraySize;                    /* size of the array                 */
   stringsize_t position;
                                        /* go validate the index             */
-  if !this->validateIndex(arguments, argCount, 1, RaiseBoundsTooMany | RaiseBoundsInvalid, position))
+  if (!this->validateIndex(arguments, argCount, 1, RaiseBoundsTooMany | RaiseBoundsInvalid, position))
   {
     // out of bounds results in the .nil object
       return TheNilObject;
@@ -974,16 +974,16 @@ RexxObject  *RexxArray::hasIndexRexx(RexxObject ** _index, size_t _indexCount)
   }
 }
 
-size_t RexxArray::hasIndexNative(size_t _index)
+bool RexxArray::hasIndexNative(size_t _index)
 /******************************************************************************/
 /* Function:  Determine if an element exist for a position                    */
 /******************************************************************************/
 {
                                        /* in bounds and here?               */
   if (_index > 0 && _index <= this->size() && *(this->data() + _index - 1) != OREF_NULL)
-    return (size_t)TRUE;               /* this is true                      */
+    return true;                       /* this is true                      */
   else
-    return (size_t)FALSE;              /* nope, don't have it               */
+    return false;                      /* nope, don't have it               */
 }
 
 RexxArray *RexxArray::makeArray(void)
@@ -2184,7 +2184,7 @@ wholenumber_t RexxArray::sortCompare(RexxObject *comparator, RexxObject *left, R
     }
 
     wholenumber_t comparison;
-    if (!result->numberValue(comparison, Numerics::DEFAULT_DIGITS)
+    if (!result->numberValue(comparison, Numerics::DEFAULT_DIGITS))
     {
         reportException(Error_Invalid_whole_number_compare, result);
     }
@@ -2470,12 +2470,12 @@ RexxObject  *RexxArray::of(RexxObject **args, size_t argCount)
 
 #define this ((RexxArray *)self)
 
-native1 (size_t, ARRAY_HASINDEX, size_t, index)
+native1 (bool, ARRAY_HASINDEX, size_t, index)
 /******************************************************************************/
 /* Function:  External interface to the object method                         */
 /******************************************************************************/
 {
-  size_t    result;                    /* method result                     */
+  bool      result;                    /* method result                     */
 
   native_entry;                        /* synchronize access                */
                                        /* just forward and return           */

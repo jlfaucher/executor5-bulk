@@ -1344,7 +1344,7 @@ void RexxActivity::checkDeadLock(
                                        /* waiting on a message object?      */
     if (isOfClass(Message, this->waitingObject))
                                        /* get the activity message is on    */
-      owningActivity = ((RexxMessage *)this->waitingObject)->startActivity;
+      owningActivity = ((RexxMessage *)this->waitingObject)->getActivity();
     else
                                        /* get the locking activity for vdict*/
       owningActivity = ((RexxVariableDictionary *)this->waitingObject)->getReservingActivity();
@@ -2514,61 +2514,47 @@ void process_message_arguments(
 
       case 'b':                        /* BYTE                              */
       case 'c':                        /* CHARACTER                         */
-
-                                       /* get the character                 */
-        tempChar = (char) va_arg(*arguments, int);
+      {
                                        /* create a string object            */
-        argument_list->addLast(new_string(&tempChar, 1));
+        argument_list->addLast(new_string((char) va_arg(*arguments, int)));
         break;
+      }
+
 
       case 'i':                        /* int                               */
-                                       /* get the number                    */
-        tempLong = va_arg(*arguments, int);
                                        /* create an integer object          */
-        argument_list->addLast(new_integer(tempLong));
+        argument_list->addLast(new_integer(va_arg(*arguments, int)));
         break;
 
       case 's':                        /* short                             */
-                                       /* get the number                    */
-        tempLong = (long) (short) va_arg(*arguments, int);
                                        /* create an integer object          */
-        argument_list->addLast(new_integer(tempLong));
+        argument_list->addLast(new_integer((short) va_arg(*arguments, int)));
         break;
 
       case 'd':                        /* double                            */
       case 'f':                        /* floating point                    */
-                                       /* get a double value                */
-        tempDouble = va_arg(*arguments, double);
                                        /* convert to string form            */
-        argument_list->addLast(new_string(tempDouble));
+        argument_list->addLast(new_string((double)va_arg(*arguments, double)));
         break;
 
       case 'g':                        /* ULONG                             */
-                                       /* get the number                    */
-        tempULong = va_arg(*arguments, ULONG);
                                        /* create an integer object          */
-        argument_list->addLast(new_numberstring((stringsize_t)tempULong));
+        argument_list->addLast(new_numberstring((stringsize_t)va_arg(*arguments, size_t)));
         break;
 
       case 'h':                        /* unsigned short                    */
-                                       /* get the number                    */
-        tempLong = (LONG) (unsigned short) va_arg(*arguments, int);
                                        /* create an integer object          */
-        argument_list->addLast(new_integer(tempLong));
+        argument_list->addLast(new_integer((unsigned short) va_arg(*arguments, int)));
         break;
 
       case 'l':                        /* LONG                              */
-                                       /* get the number                    */
-        tempLong = va_arg(*arguments, LONG);
                                        /* create an integer object          */
-        argument_list->addLast(new_integer(tempLong));
+        argument_list->addLast(new_integer(va_arg(*arguments, wholenumber_t)));
         break;
 
       case 'o':                        /* REXX object reference             */
-                                       /* get the OREF                      */
-        tempOREF = va_arg(*arguments, RexxObject *);
                                        /* insert directly into the array    */
-        argument_list->addLast(tempOREF);
+        argument_list->addLast(va_arg(*arguments, RexxObject *));
         break;
 
       case 'A':                        /* REXX array of objects             */
@@ -2577,21 +2563,23 @@ void process_message_arguments(
           RexxArray *tempArray;
           tempArray = va_arg(*arguments, RexxArray *);
                                        /* get the array size                */
-          tempLong = tempArray->size();
+          size_t arraySize = tempArray->size();
                                        /* for each argument,                */
-          for (i = 1; i <= tempLong; i++) {
+          for (i = 1; i <= arraySize; i++) {
                                        /* copy into the argument list       */
             argument_list->addLast(tempArray->get(i));
           }
         }
         break;
 
-      case 'r':                        /* RXSTRING                          */
-                                       /* get the RXSTRING                  */
-        tempRXSTRING = va_arg(*arguments, RXSTRING);
-                                       /* create a string object            */
-        argument_list->addLast(new_string(tempRXSTRING.strptr, tempRXSTRING.strlength));
-        break;
+        case 'r':                        /* RXSTRING                          */
+        {
+                                           /* get the RXSTRING                  */
+            RXSTRING temp = va_arg(*arguments, RXSTRING);
+                                           /* create a string object            */
+            argument_list->addLast(new_string(temp.strptr, temp.strlength));
+            break;
+        }
 
       case 'n':                        /* pointer to somId                  */
       case 'p':                        /* POINTER                           */
@@ -2602,16 +2590,13 @@ void process_message_arguments(
       case 'V':                        /* VOID *?                           */
       case 'R':                        /* RXSTRING *                        */
                                        /* get the pointer                   */
-        tempPointer = va_arg(*arguments, void *);
                                        /* create a pointer object           */
-        argument_list->addLast(new_pointer(tempPointer));
+        argument_list->addLast(new_pointer(va_arg(*arguments, void *)));
         break;
 
       case 'z':                        /* ASCII-Z string                    */
-                                       /* get the pointer                   */
-        tempPointer = va_arg(*arguments, void *);
                                        /* create a string object            */
-        argument_list->addLast(new_string((char *)tempPointer));
+        argument_list->addLast(new_string(va_arg(*arguments, char *)));
         break;
     }
   }
@@ -2633,7 +2618,7 @@ void process_message_result(
       case 'b':                        /* BOOLEAN                           */
       {
         wholenumber_t temp = 0;
-        value->numberValue(temp, digits());
+        value->numberValue(temp, number_digits());
                                        /* get the number                    */
         (*((bool *)return_pointer)) = temp == 0 ? false : true;
         break;
@@ -2646,7 +2631,7 @@ void process_message_result(
       case 'i':                        /* int                               */
       {
         wholenumber_t temp = 0;
-        value->numberValue(temp, digits());
+        value->numberValue(temp, number_digits());
                                        /* get the number                    */
         (*((int *)return_pointer)) = (int)temp;
         break;
@@ -2655,7 +2640,7 @@ void process_message_result(
       case 's':                        /* short                             */
       {
         wholenumber_t temp = 0;
-        value->numberValue(temp, digits());
+        value->numberValue(temp, number_digits());
                                        /* get the number                    */
         (*((short *)return_pointer)) = (short)temp;
         break;
@@ -2674,7 +2659,7 @@ void process_message_result(
       case 'g':                        /* ULONG                             */
       {
           wholenumber_t temp = 0;
-          value->numberValue(temp, digits());
+          value->numberValue(temp, number_digits());
           (*((unsigned long *)return_pointer)) = (unsigned long)temp;
           break;
       }
@@ -2682,7 +2667,7 @@ void process_message_result(
       case 'h':                        /* unsigned short                   */
       {
         wholenumber_t temp = 0;
-        value->numberValue(temp, digits());
+        value->numberValue(temp, number_digits());
                                        /* get the number                    */
         (*((unsigned short *)return_pointer)) = (unsigned short)temp;
         break;
@@ -2691,7 +2676,7 @@ void process_message_result(
       case 'l':                        /* LONG                              */
       {
           wholenumber_t temp = 0;
-          value->numberValue(temp, digits());
+          value->numberValue(temp, number_digits());
           (*((long *)return_pointer)) = (long)temp;
           break;
       }
@@ -2710,7 +2695,7 @@ void process_message_result(
       case 'V':                        /* VOID *?                           */
       case 'R':                        /* RXSTRING *                        */
                                        /* get the pointer value             */
-          (*((PVOID *)return_pointer)) = (void *)((RexxInteger *)object_id)->getValue();
+          (*((void **)return_pointer)) = (void *)((RexxInteger *)object_id)->getValue();
         break;
 
       case 'v':                        /* nothing returned at all           */

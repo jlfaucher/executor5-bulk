@@ -81,7 +81,7 @@ void RexxInstructionOptions::execute(
 
 #ifdef _DEBUG
     if (word->strICompare("DUMPMEMORY")) {
-      TheMemoryObject->dumpEnable = TRUE;
+      TheMemoryObject->dumpEnable = true;
       TheMemoryObject->dump();
     }
 #endif

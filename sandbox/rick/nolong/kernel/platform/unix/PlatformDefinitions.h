@@ -84,46 +84,13 @@
 /* files, any of these items can be deleted from the system specific file and */
 /* and replaced by any replacement #includes at this point.                   */
 /******************************************************************************/
-#ifndef TRUE
-#define TRUE            1
-#endif
-
-#ifndef FALSE
-#define FALSE           0
-#endif
 
 #define HQUEUE          unsigned long
-#define ULONG           unsigned long
-#define PULONG          ULONG *
-#define PVOID           void *
 
-#ifdef LINUX
-#define PPVOID          void **
-#endif
-
-// #define SHORT           short
-#define LONG            long
-#define PLONG           LONG *
-// #define USHORT          unsigned short
-// #define PSHORT          SHORT *
-// #define PUSHORT         USHORT *
-
-// #define UCHAR           unsigned char
-// #define PUCHAR          UCHAR *
-// #define CHAR            char
-// #define PCHAR           CHAR *
-// #define INT             int
-// #define UINT            unsigned int
-// #define PINT            int *
-// #define PCH             PCHAR
-// #define PSZ             PCHAR
 #define APIENTRY
-#define APIRET          ULONG
-// #define CONST           const
+#define APIRET          size_t
 #define LPCTSTR         LPCSTR
-#define BYTE            unsigned char
-#define BOOL            unsigned long
-#define UBYTE           unsigned char
+
 #ifndef TID
 #ifndef LINUX
 #define TID             tid_t
@@ -135,32 +102,9 @@
 #define PID             pid_t
 #endif
 #define VOID            void
-#define near
-#define far
 #define _loadds
 #define PFN             void *
 
-#if defined(LINUX) && defined(PPC)
-#define VAPVOID         void *
-#define VACHAR          int
-#define VAINT           int
-#define VASHORT         int
-#define VAULONG         long long
-#define VAUSHORT        int
-#define VALONG          long long
-#define VAOREF          void *
-
-#else
-#define VAPVOID         PVOID
-#define VACHAR          CHAR
-#define VAINT           INT
-#define VASHORT         SHORT
-#define VAULONG         ULONG
-#define VAUSHORT        USHORT
-#define VALONG          LONG
-#define VAOREF          OREF
-
-#endif
 
 #ifdef LINUX
 #define FNONBLOCK       O_NONBLOCK
@@ -395,7 +339,7 @@ typedef void *(* PTHREADFN)(void *);    /* define a thread function          */
 /*   OS/2 uses the DosStartTimer, continious Asynch Timer.                    */
 /******************************************************************************/
 
-BOOL SysTimeSliceElapsed( void );
+bool SysTimeSliceElapsed();
 
 /******************************************************************************/
 /* REQUIRED:  Routine to start a new TimeSlice period.                        */
@@ -582,7 +526,6 @@ typedef char *(far *REXXENTRY PNMF)(void **);
 /******************************************************************************/
 
 #define DEFRXSTRING 256                /* Default RXSTRING return size      */
-extern ULONG ProcessMustCompleteNest;  /* The must complete nest            */
 
 #ifdef __cplusplus
 extern "C" {

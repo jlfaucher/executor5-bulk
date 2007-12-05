@@ -89,16 +89,15 @@ APIRET REXXENTRY RexxSetYield(PID procid, TID threadid);
 extern CRITICAL_SECTION Crit_Sec = {0};      /* also used by OKACTIVI and OKMEMORY */
 
 extern SEV   RexxTerminated;           /* Termination complete semaphore.   */
-extern BOOL UseMessageLoop;  /* speciality for VAC++ */
+extern bool UseMessageLoop;  /* speciality for VAC++ */
 
 const char * SysFileExtension(const char *);
 RexxMethod *SysRestoreProgramBuffer(PRXSTRING, RexxString *);
 RexxMethod *SysRestoreInstoreProgram(PRXSTRING, RexxString *);
 void SysSaveProgramBuffer(PRXSTRING, RexxMethod *);
 void SysSaveTranslatedProgram(const char *, RexxMethod *);
-BOOL SearchFileName(const char *, char *);
-RexxActivity *activity_getActivity(BOOL *nested);
-extern BOOL RexxStartedByApplication;
+bool SearchFileName(const char *, char *);
+extern bool RexxStartedByApplication;
 
 extern "C" {
 APIRET REXXENTRY RexxTranslateProgram(char *, char *, PRXSYSEXIT);
@@ -154,7 +153,7 @@ typedef struct _RexxStartInfo {
   const char*outputName;               /* compilation output file           */
 } RexxStartInfo;
 
-BOOL HandleException = TRUE;           /* Global switch for Exception Handling */
+bool HandleException = true;           /* Global switch for Exception Handling */
 extern CRITICAL_SECTION waitProtect;
 
 void REXXENTRY RexxCreateDirectory(const char * dirname)
@@ -238,7 +237,7 @@ void WinLeaveKernel(bool execute)
 {
   if (ActivityManager::currentActivity == NULL)
     ActivityManager::currentActivity = WinStore;
-  ActivityManager::currentActivity->pop(FALSE);
+  ActivityManager::currentActivity->pop(false);
   if (execute) {
     ActivityManager::returnActivity(ActivityManager::currentActivity);
     RexxTerminate();
@@ -279,11 +278,11 @@ void REXXENTRY RexxRemoveDirectory(const char *dirname)
 /*                                                                            */
 /* Notes: Remove object from the directory of saved objects.                  */
 /*                                                                            */
-/* Returned:   TRUE - Object disposed ok                                      */
-/*             FALSE - Invalid REXX object                                    */
+/* Returned:   true - Object disposed ok                                      */
+/*             false - Invalid REXX object                                    */
 /******************************************************************************/
 
-BOOL REXXENTRY RexxDispose(const char *dirname, RexxObject *RexxObj)
+bool REXXENTRY RexxDispose(const char *dirname, RexxObject *RexxObj)
 {
   RexxDirectory *locked_objects;       /* directory used to keep objects    */
   RexxString  *index;
@@ -302,9 +301,9 @@ BOOL REXXENTRY RexxDispose(const char *dirname, RexxObject *RexxObj)
                                        /* release the kernel semaphore      */
   ActivityManager::returnActivity(ActivityManager::currentActivity);
   if (RexxObj == TheNilObject)
-    return FALSE;
+    return false;
   else
-    return TRUE;
+    return true;
 }
 
 /******************************************************************************/
@@ -403,12 +402,12 @@ APIRET REXXENTRY RexxCopyMethod(const char *dirname, RexxObject * method, RexxOb
 /* Notes: Make sure that the object specified is acnchored in the directory   */
 /*        specified by dirname.                                               */
 /*                                                                            */
-/* Returned:   TRUE - Valid living REXX OBJECT                                */
-/*             FALSE - Invalid REXX object                                    */
+/* Returned:   true - Valid living REXX OBJECT                                */
+/*             false - Invalid REXX object                                    */
 /*                                                                            */
 /******************************************************************************/
 
-BOOL REXXENTRY RexxValidObject(const char *dirname, RexxObject * object)
+bool REXXENTRY RexxValidObject(const char *dirname, RexxObject * object)
 {
   RexxDirectory *locked_objects;       /* directory used to keep objects    */
   RexxActivity *activity;              /* target activity                   */
@@ -424,9 +423,9 @@ BOOL REXXENTRY RexxValidObject(const char *dirname, RexxObject * object)
                                        /* release the kernel semaphore      */
   ActivityManager::returnActivity(ActivityManager::currentActivity);
   if (object == OREF_NULL)             /* Was the object in the directory ? */
-    return FALSE;                      /* Invalid object                    */
+    return false;                      /* Invalid object                    */
   else
-    return TRUE;                       /* Valid object                      */
+    return true;                       /* Valid object                      */
 }
 
 
@@ -474,7 +473,7 @@ APIRET APIENTRY RexxStart(
   /* the current block is to implement a global counter of how many REXX programs
   are running on the system */
 // I don't see why we should need this block and it causes trouble
-//  orexx_active_sem = OpenSemaphore(SEMAPHORE_ALL_ACCESS, TRUE, "OBJECTREXX_RUNNING");
+//  orexx_active_sem = OpenSemaphore(SEMAPHORE_ALL_ACCESS, true, "OBJECTREXX_RUNNING");
 //  if (orexx_active_sem)
 //     ReleaseSemaphore(orexx_active_sem,1,NULL);
 //  else
@@ -617,7 +616,7 @@ void APIENTRY RexxWaitForTermination(void)
 
 APIRET APIENTRY RexxDidRexxTerminate(void)
 {
-   BOOL rc = TRUE;
+   BOOL rc = true;
    EnterCriticalSection(&waitProtect);
    if (!RexxTerminated) {
      LeaveCriticalSection(&waitProtect);
@@ -638,9 +637,9 @@ APIRET APIENTRY RexxDidRexxTerminate(void)
        memoryObject.unflattenMutex =
        memoryObject.envelopeMutex = 0;
 
-       //return TRUE;
+       //return true;
    }
-   else rc = FALSE;
+   else rc = false;
    LeaveCriticalSection(&waitProtect);
    return rc;
 }
@@ -648,9 +647,9 @@ APIRET APIENTRY RexxDidRexxTerminate(void)
 
 BOOL APIENTRY RexxSetProcessMessages(BOOL onoff)
 {
-   BOOL old;
+   bool old;
    old = UseMessageLoop;
-   UseMessageLoop = onoff;
+   UseMessageLoop = (onoff != 0);
    return old;
 }
 
@@ -1053,7 +1052,7 @@ APIRET REXXENTRY RexxResetTrace(PID procid, TID threadid)
 }
 
 
-VOID REXXENTRY RexxBreakCleanup(VOID){}
+void REXXENTRY RexxBreakCleanup(VOID){}
 
 void translateSource(
    RexxString           * inputName,   /* input program name                */
@@ -1066,7 +1065,7 @@ void translateSource(
   RexxString * fullName;               /* fully resolved input name         */
   RexxMethod * method;                 /* created method                    */
   char         name[CCHMAXPATH + 2];   /* temporary name buffer             */
-  BOOL            fileFound;
+  bool            fileFound;
   RexxActivity*activity;               /* the current activity              */
 
   activity = ActivityManager::currentActivity;          /* save the current activity         */
@@ -1169,7 +1168,7 @@ void CreateMethod(
                                        /* translate this source             */
  *pRexxScriptArgs->pmethod = TheMethodClass->newRexxBuffer(name, source_buffer, (RexxClass *)TheNilObject);
 
- if (pRexxScriptArgs->index == NULLOBJ)
+ if (pRexxScriptArgs->index == OREF_NULL)
                                        /* protect from garbage collect      */
    newNativeAct->saveObject(*pRexxScriptArgs->pmethod);     /* protect from garbage collect      */
  else {
@@ -1179,7 +1178,7 @@ void CreateMethod(
    locked_objects->put(*pRexxScriptArgs->pmethod, new_string((const char *)pRexxScriptArgs->pmethod, sizeof(RexxObject *)));
  }
                                        /* finally, discard our activation   */
- ActivityManager::currentActivity->pop(FALSE);
+ ActivityManager::currentActivity->pop(false);
  return;
 }
 
@@ -1255,7 +1254,7 @@ void RunMethod(
  }
 
                                        /* finally, discard our activation   */
-  ActivityManager::currentActivity->pop(FALSE);
+  ActivityManager::currentActivity->pop(false);
   return;
 }
 
@@ -1274,7 +1273,7 @@ void LoadMethod(
  *pRexxScriptArgs->pmethod =
     SysRestoreProgramBuffer(pRexxScriptArgs->ProgramBuffer, name);
 
- if (pRexxScriptArgs->index != NULLOBJ && *pRexxScriptArgs->pmethod != OREF_NULL) {
+ if (pRexxScriptArgs->index != OREF_NULL && *pRexxScriptArgs->pmethod != OREF_NULL) {
                                        /* Need to keep around for process   */
                                        /* duration.                         */
    locked_objects = (RexxDirectory *)ActivityManager::localEnvironment->at(new_string(pRexxScriptArgs->index));
@@ -1282,7 +1281,7 @@ void LoadMethod(
  }
 
                                        /* finally, discard our activation   */
- ActivityManager::currentActivity->pop(FALSE);
+ ActivityManager::currentActivity->pop(false);
  return;
 }
 /*********************************************************************/
@@ -1291,7 +1290,7 @@ void LoadMethod(
 /*                                                                   */
 /*********************************************************************/
 void  SysRunProgram(
-  PVOID   ControlInfo )                /* flattened control information     */
+  void   *ControlInfo )                /* flattened control information     */
 {
   RexxStartInfo *self;                 /* Rexxstart argument info           */
   RexxArray   * new_arglist;           /* passed on argument list           */
@@ -1300,7 +1299,7 @@ void  SysRunProgram(
   RexxString  * name;                  /* input program name                */
   RexxMethod  * method;                /* translated file image             */
   RexxString  * source_calltype;       /* parse source call type            */
-  BOOL          tokenize_only;         /* don't actually execute program    */
+  bool          tokenize_only;         /* don't actually execute program    */
   RexxString  * initial_address;       /* initial address setting           */
   const char  * file_extension;        /* potential file extension          */
   RexxString  * program_result;        /* returned program result           */
@@ -1308,7 +1307,7 @@ void  SysRunProgram(
   size_t        length;                /* return result length              */
   wholenumber_t return_code;           /* converted return code info        */
 
-  tokenize_only = FALSE;               /* default is to run the program     */
+  tokenize_only = false;               /* default is to run the program     */
                                        /* create the native method to be run*/
                                        /* on the activity                   */
   newNativeAct = new ((RexxObject *)ActivityManager::currentActivity, OREF_NULL, ActivityManager::currentActivity, OREF_PROGRAM, OREF_NULL) RexxNativeActivation;
@@ -1326,7 +1325,7 @@ void  SysRunProgram(
 
 
                                        /* finally, discard our activation   */
-      ActivityManager::currentActivity->pop(FALSE);
+      ActivityManager::currentActivity->pop(false);
       return;
     case LOADMETHOD:
       LoadMethod((RexxScriptInfo *)ControlInfo, newNativeAct);
@@ -1386,9 +1385,9 @@ void  SysRunProgram(
                                        /* have a "//T" in the argument?     */
       if ( (((RexxString *)(new_arglist->get(1)))->caselessPos(OREF_TOKENIZE_ONLY, 0) !=
                               0) && RexxStartedByApplication)
-        tokenize_only = TRUE;          /* don't execute this                */
+        tokenize_only = true;          /* don't execute this                */
     }
-    RexxStartedByApplication = TRUE;
+    RexxStartedByApplication = true;
   }
   switch (self->calltype) {            /* turn calltype into a string       */
 
@@ -1483,13 +1482,13 @@ void  SysRunProgram(
                                        /* If there is a return val...       */
       if (program_result != OREF_NULL) {
                                        /* if a whole number...              */
-        if (program_result(return_code) && return_code <= SHRT_MAX && return_code >= SHRT_MIN)
+        if (program_result->numberValue(return_code) && return_code <= SHRT_MAX && return_code >= SHRT_MIN)
                                        /* ...copy to return code.           */
           *(self->retcode) = (short)return_code;
       }
     }
   }
-  ActivityManager::currentActivity->pop(FALSE);         /* finally, discard our activation   */
+  ActivityManager::currentActivity->pop(false);         /* finally, discard our activation   */
 }
 
 char *REXXENTRY RexxGetVersionInformation()

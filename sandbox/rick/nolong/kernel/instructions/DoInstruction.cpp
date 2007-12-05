@@ -204,7 +204,7 @@ void RexxInstructionDo::terminate(
 /******************************************************************************/
 {
                                        /* perform cleanup                   */
-  context->terminateBlock(doblock->indent);
+  context->terminateBlock(doblock->getIndent());
                                        /* jump to the loop end              */
   context->setNext(this->end->nextInstruction);
 }
@@ -309,7 +309,7 @@ void RexxInstructionDo::execute(
           result = callOperatorMethod(result, OPERATOR_PLUS, OREF_NULL);
           context->traceResult(result);/* trace if necessary                */
                                        /* convert the value                 */
-          if (!result->requestNumber(count, digits())
+          if (!result->requestNumber(count, number_digits()))
           {
                                        /* report an exception               */
               reportException(Error_Invalid_whole_number_repeat, object);
@@ -348,7 +348,7 @@ void RexxInstructionDo::execute(
           result = callOperatorMethod(result, OPERATOR_PLUS, OREF_NULL);
           context->traceResult(result);/* trace if necessary                */
                                        /* convert the value                 */
-          if (!result->requestNumber(count, digits())
+          if (!result->requestNumber(count, number_digits()))
           {
                                        /* report an exception               */
               reportException(Error_Invalid_whole_number_repeat, object);
@@ -379,7 +379,7 @@ void RexxInstructionDo::execute(
                                        /* do initial controlled loop setup  */
         this->controlSetup(context, stack, doblock);
                                        /* fail the initial check?           */
-        if (!this->checkControl(context, stack, doblock, FALSE))
+        if (!this->checkControl(context, stack, doblock, false))
                                        /* cause termination cleanup         */
           this->terminate(context, doblock);
         break;
@@ -389,7 +389,7 @@ void RexxInstructionDo::execute(
         this->controlSetup(context, stack, doblock);
                                        /* fail the initial check or         */
                                        /* the WHILE check?                  */
-        if (!this->checkControl(context, stack, doblock, FALSE) || !this->whileCondition(context, stack))
+        if (!this->checkControl(context, stack, doblock, false) || !this->whileCondition(context, stack))
                                        /* cause termination cleanup         */
           this->terminate(context, doblock);
         break;
@@ -502,7 +502,7 @@ void RexxInstructionDo::controlSetup(
           result = callOperatorMethod(result, OPERATOR_PLUS, OREF_NULL);
           context->traceResult(result);/* trace if necessary                */
                                        /* convert the value                 */
-          if (!result->requestNumber(count, digits())
+          if (!result->requestNumber(count, number_digits()))
           {
                                        /* report an exception               */
               reportException(Error_Invalid_whole_number_for, object);
@@ -673,21 +673,21 @@ void RexxInstructionDo::reExecute(
 
     case CONTROLLED_DO:                /* DO i=expr TO expr BY expr FOR expr*/
                                        /* fail the termination check?       */
-      if (this->checkControl(context, stack, doblock, TRUE))
+      if (this->checkControl(context, stack, doblock, true))
         return;                        /* finish quickly                    */
       break;
 
     case CONTROLLED_UNTIL:             /* DO i=expr ... UNTIL condition     */
                                        /* fail the control check or         */
                                        /* the UNTIL check?                  */
-      if (!this->untilCondition(context, stack) && this->checkControl(context, stack, doblock, TRUE))
+      if (!this->untilCondition(context, stack) && this->checkControl(context, stack, doblock, true))
         return;                        /* finish quickly                    */
       break;
 
     case CONTROLLED_WHILE:             /* DO i=expr ... WHILE condition     */
                                        /* fail the control check or         */
                                        /* the WHILE check?                  */
-      if (this->checkControl(context, stack, doblock, TRUE) && this->whileCondition(context, stack))
+      if (this->checkControl(context, stack, doblock, true) && this->whileCondition(context, stack))
         return;                        /* finish quickly                    */
       break;
   }
@@ -711,9 +711,9 @@ bool RexxInstructionDo::untilCondition(
   result = this->conditional->evaluate(context, stack);
   context->traceResult(result);        /* trace if necessary                */
 
-  /* most comparisons return either TRUE or FALSE directly, so we */
+  /* most comparisons return either true or false directly, so we */
   /* can optimize this check.  UNTIL conditions are more likely to */
-  /* evaluate to FALSE, so we'll check that first */
+  /* evaluate to false, so we'll check that first */
   if (result == TheFalseObject)
   {
       return false;
@@ -740,9 +740,9 @@ bool RexxInstructionDo::whileCondition(
   result = this->conditional->evaluate(context, stack);
   context->traceResult(result);        /* trace if necessary                */
 
-  /* most comparisons return either TRUE or FALSE directly, so we */
+  /* most comparisons return either true or false directly, so we */
   /* can optimize this check.  WHILE conditions are more likely to */
-  /* evaluate to TRUE, so we'll check that first */
+  /* evaluate to true, so we'll check that first */
   if (result == TheTrueObject)
   {
       return true;

@@ -93,13 +93,13 @@ extern "C" {
 /*   lastcol -  last column position to sort                                  */
 /*                                                                            */
 /* Output:                                                                    */
-/*   TRUE if the sort succeeded, FALSE for any parameter errors.              */
+/*   true if the sort succeeded, false for any parameter errors.              */
 /******************************************************************************/
 ULONG REXXENTRY RexxStemSort(char *stemname, int order, int type,
     size_t start, size_t end, size_t firstcol, size_t lastcol)
 {
     if (!RexxQuery())                         /* Are we up?                     */
-      return FALSE;                           /*   No, send nastygram.          */
+      return false;                           /*   No, send nastygram.          */
     else                                      /*   Yes, ship request to kernel  */
       return REXX_STEMSORT(stemname, order, type, start, end, firstcol, lastcol);
 }
@@ -185,20 +185,20 @@ static ULONG copy_value(
 /*                                                                            */
 /* Notes:                                                                     */
 /******************************************************************************/
-ULONG SysVariablePool(
+int SysVariablePool(
     RexxNativeActivation * self,       /* current native activation         */
-    PVOID                  requests,   /* shared variable request           */
-    BOOL                   enabled)    /* is VP fully enabled               */
+    void                 * requests,   /* shared variable request           */
+    bool                   enabled)    /* is VP fully enabled               */
 {
   RexxString       * variable;         /* name of the variable              */
   RexxVariableBase * retriever;        /* variable retriever                */
   RexxActivation   * activation;       /* most recent REXX activation       */
   RexxObject       * value;            /* fetched value                     */
-  ULONG              retcode;          /* composite return code             */
+  int                retcode;          /* composite return code             */
   stringsize_t       arg_position;     /* requested argument position       */
   int                code;             /* variable request code             */
   PSHVBLOCK          pshvblock;        /* variable pool request block       */
-  LONG               tempSize;
+  size_t             tempSize;
 
  retcode = 0;                          /* initialize composite rc           */
 
@@ -292,7 +292,7 @@ ULONG SysVariablePool(
     }
   }
   else if ((code == RXSHV_PRIV) &&     /* need to process PRIVATE block?    */
-           (enabled || TRUE)) {        /* and VP is enabled                 */
+           (enabled || true)) {        /* and VP is enabled                 */
                                        /* private block should always be enabled */
                                        /* no name given?                    */
     if (pshvblock->shvname.strptr==NULL)

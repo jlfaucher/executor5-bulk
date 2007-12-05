@@ -226,7 +226,7 @@ RexxInteger *RexxClass::queryMixinClass()
 /* Function: To check if class_info MIXIN has been set                       */
 /*****************************************************************************/
 {
-                                       /* return TRUE/FALSE indicator       */
+                                       /* return true/false indicator       */
   return this->isMixinClass() ? TheTrueObject : TheFalseObject;
 }
 
@@ -554,7 +554,7 @@ RexxObject *RexxClass::defineMethods(
 /* Function:  Define instance methods on this class object                   */
 /*****************************************************************************/
 {
-  long i;                              /* loop counter                      */
+  HashLink i;                          /* loop counter                      */
   RexxString * index;                  /* method name                       */
   RexxMethod * newMethod;              /* new method to process             */
                                        /* loop thru the methods setting the */

@@ -157,7 +157,7 @@ class ActivationSettings
 #define SCOPE_RESERVED  1
 #define SCOPE_RELEASED  0
 
-RexxObject *buildCompoundVariable(RexxString * variable_name, BOOL direct);
+RexxObject *buildCompoundVariable(RexxString * variable_name, bool direct);
 
 RexxObject * activation_find  (void);
 
@@ -308,7 +308,7 @@ RexxObject * activation_find  (void);
    inline void              setCallType(RexxString *type) {this->settings.calltype = type; }
    inline RexxObject      * getReceiver() { return this->receiver; };
    inline void              pushBlock(RexxDoBlock *block) { block->setPrevious(this->dostack); this->dostack = block; }
-   inline void              popBlock() { RexxDoBlock *temp; temp = this->dostack; this->dostack = temp->previous; temp->setHasNoReferences(); }
+   inline void              popBlock() { RexxDoBlock *temp; temp = this->dostack; this->dostack = temp->getPrevious(); temp->setHasNoReferences(); }
    inline RexxDoBlock     * topBlock() { return this->dostack; }
    inline void              terminateBlock(size_t _indent) { this->popBlock(); this->blockNest--; this->settings.traceindent = _indent; }
    inline void              newDo(RexxDoBlock *block) { this->pushBlock(block); this->blockNest++; this->settings.traceindent++;}
@@ -322,7 +322,7 @@ RexxObject * activation_find  (void);
    inline void              setIndent(size_t v) {this->settings.traceindent=(v); };
    inline size_t            getIndent() {return this->settings.traceindent;};
    inline bool              tracingIntermediates() {return this->settings.intermediate_trace;};
-   inline void              clearTraceSettings() { settings.flags &= ~trace_flags; settings.intermediate_trace = FALSE; }
+   inline void              clearTraceSettings() { settings.flags &= ~trace_flags; settings.intermediate_trace = false; }
    inline bool              tracingResults() {return (this->settings.flags&trace_results) != 0; }
    inline RexxActivity    * getActivity() {return this->activity;};
    inline RexxMethod      * getMethod() {return this->method;};
@@ -363,7 +363,7 @@ RexxObject * activation_find  (void);
    inline void              traceCommand(RexxInstruction * v) { if ((this->settings.flags&trace_commands) != 0) this->traceClause(v, TRACE_PREFIX_CLAUSE); }
    inline bool              tracingCommands(void) { return (this->settings.flags&trace_commands) != 0; }
    inline void              pauseInstruction() {  if ((this->settings.flags&(trace_all | trace_debug)) == (trace_all | trace_debug)) this->debugPause(); };
-   inline int               conditionalPauseInstruction() { return (((this->settings.flags&(trace_all | trace_debug)) == (trace_all | trace_debug)) ? this->debugPause(): FALSE); };
+   inline int               conditionalPauseInstruction() { return (((this->settings.flags&(trace_all | trace_debug)) == (trace_all | trace_debug)) ? this->debugPause(): false); };
    inline void              pauseLabel() { if ((this->settings.flags&(trace_labels | trace_debug)) == (trace_labels | trace_debug)) this->debugPause(); };
    inline void              pauseCommand() { if ((this->settings.flags&(trace_commands | trace_debug)) == (trace_commands | trace_debug)) this->debugPause(); };
 

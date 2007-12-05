@@ -1665,7 +1665,7 @@ RexxObject *RexxMemory::dump(void)
   if (dumpEnable) {
                                        /* don't allow another dump unless   */
                                        /*reset by user                      */
-    memoryObject.dumpEnable = FALSE;
+    memoryObject.dumpEnable = false;
                                        /* first generate the dump by writing*/
                                        /*  each segment to the dumpfile     */
     printf("Dumping object memory to orexdump.dmp\n");
@@ -1715,7 +1715,7 @@ RexxObject *RexxMemory::setDump(RexxObject *selection)
 {
   if (selection != OREF_NULL)
   {
-      dumpEnable = selection->truthValue();
+      dumpEnable = selection->truthValue(Error_Logical_value_method);
   }
   return selection;
 }

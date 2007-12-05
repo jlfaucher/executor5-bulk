@@ -99,13 +99,13 @@ int ValSet(
   size_t   Residue = 0;                /* if space_found, # set members     */
   int      rc;                         /* return code                       */
 
-  rc = FALSE;                          /* default to failure                */
+  rc = false;                          /* default to failure                */
   if (*String != ' ' && *String != '\t') {    /* if no leading blank               */
     SpaceFound = 0;                    /* set initial space flag            */
     Count = 0;                         /* start count with zero             */
     Current = String;                  /* point to start                    */
 
-    rc = TRUE;                         /* default to good now               */
+    rc = true;                         /* default to good now               */
     for (; Length; Length--) {         /* process entire string             */
       c = *Current++;                  /* get char and step pointer         */
                                        /* if c in set                       */
@@ -120,21 +120,21 @@ int ValSet(
           }
                                        /* else if bad position              */
           else if (Residue != (Count % Modulus)) {
-            rc = FALSE;                /* this is an error                  */
+            rc = false;                /* this is an error                  */
             break;                     /* report error                      */
           }
         }
         else {
-          rc = FALSE;                  /* this is an error                  */
+          rc = false;                  /* this is an error                  */
           break;                       /* report error                      */
         }
       }
     }
     if (rc) {                          /* still good?                       */
       if (c == ' ' || c == '\t')       /* if trailing blank                 */
-        rc = FALSE;                    /* report error                      */
+        rc = false;                    /* report error                      */
       else if (SpaceFound && (Count % Modulus) != Residue)
-        rc = FALSE;                    /* grouping problem                  */
+        rc = false;                    /* grouping problem                  */
       else
         *PackedSize = Count;           /* return count of chars             */
     }
@@ -1238,11 +1238,11 @@ RexxInteger *RexxString::verify(
                                        /* get reference string              */
         Reference = ref->getStringData();
         Temp = ReferenceLen;           /* copy the reference length         */
-        Match = FALSE;                 /* no match yet                      */
+        Match = false;                 /* no match yet                      */
 
         while (Temp--) {               /* spin thru reference               */
           if (ch == *Reference++) {    /* in reference ?                    */
-            Match = TRUE;              /* had a match                       */
+            Match = true;              /* had a match                       */
             break;                     /* quit the loop                     */
           }
         }

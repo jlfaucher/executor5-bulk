@@ -64,8 +64,7 @@ BOOL   APIENTRY RexxInitialize (void);
 }
 
                                          /* Global inducator */
-extern  _declspec(dllimport) BOOL RexxStartedByApplication;
-extern  _declspec(dllimport) BOOL ProcessSaveImage;
+extern  _declspec(dllimport) bool ProcessSaveImage;
 extern  _declspec(dllimport) HANDLE RexxTerminated;           /* Termination complete semaphore.   */
 
 //
@@ -97,7 +96,6 @@ int __cdecl main(int argc, char *argv[])
   BOOL real_argument = TRUE;           /* running from command line string? */
   RXSTRING instore[2];
 
-  RexxStartedByApplication = FALSE;    /* Call NOT from internal            */
   rc = 0;                              /* set default return                */
 
    /*
@@ -116,7 +114,7 @@ int __cdecl main(int argc, char *argv[])
     if ((*(cp=*(argv+i)) == '-' || *cp == '/'))
       switch (*++cp) {
         case 'i': case 'I':            /* image build                       */
-          ProcessSaveImage = TRUE;     /* say this is a save image          */
+          ProcessSaveImage = true;     /* say this is a save image          */
           break;
 
         case 'e': case 'E':            /* execute from string               */

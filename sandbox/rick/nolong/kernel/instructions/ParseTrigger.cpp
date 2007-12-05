@@ -77,7 +77,7 @@ stringsize_t RexxTrigger::integerTrigger(
 {
   stringsize_t result;                 /* converted result                  */
                                        /* convert the value                 */
-  if (!trigger->requestUnsignedNumber(result, digits())
+  if (!trigger->requestUnsignedNumber(result, number_digits()))
   {
                                        /* report an exception               */
       reportException(Error_Invalid_whole_number_parse, trigger);

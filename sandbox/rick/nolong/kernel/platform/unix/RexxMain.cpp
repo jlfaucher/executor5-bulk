@@ -87,13 +87,13 @@
                   "http://www.oorexx.org/license.html \n\n"
 
 
-BOOL rexxutil_call = FALSE;
+bool rexxutil_call = false;
 RexxMutex rexxutil_call_sem;
 
 
 SMTX initialize_sem = 0;
 extern SEV   RexxTerminated;               /* Termination complete semaphore.     */
-BOOL         bProcessExitInitFlag = FALSE;
+bool         bProcessExitInitFlag = false;
 int  SecureFlag = 0;
 int  thread_counter = 0;
 
@@ -109,7 +109,7 @@ RexxMethod *SysRestoreProgramBuffer(PRXSTRING, RexxString *);
 void SysSaveProgramBuffer(PRXSTRING, RexxMethod *);
 void SysSaveTranslatedProgram(const char *, RexxMethod *);
 const char *SearchFileName(const char *, char);
-extern BOOL RexxStartedByApplication;
+extern bool RexxStartedByApplication;
 
 extern "C" {
 APIRET REXXENTRY RexxTranslateProgram( char *, char *);
@@ -119,17 +119,17 @@ APIRET REXXENTRY RexxTranslateProgram( char *, char *);
 typedef struct
 
 RexxStartInfo {
-  LONG       argcount;                 /* Number of args in arglist         */
+  size_t     argcount;                 /* Number of args in arglist         */
   PRXSTRING  arglist;                  /* Array of args                     */
   char      *programname;              /* REXX program to run               */
   PRXSTRING  instore;                  /* Instore array                     */
   char      *envname;                  /* Initial cmd environment           */
-  LONG       calltype;                 /* How the program is called         */
+  int        calltype;                 /* How the program is called         */
   PRXSYSEXIT exits;                    /* Array of system exit names        */
   short *    retcode;                  /* Integer form of result            */
   PRXSTRING  result;                   /* Result returned from program      */
   char      *outputName;               /* compilation output file           */
-  BOOL       translating;              /* performing a translation only     */
+  bool       translating;              /* performing a translation only     */
 } RexxStartInfo;
 
 
@@ -139,7 +139,7 @@ RexxStartInfo {
 /*********************************************************************/
 extern "C" {
 void SearchPrecision(
-  PULONG    precision)                 /* required precision         */
+  size_t   *precision)                 /* required precision         */
 {
     *precision = DEFAULT_PRECISION;      /* set default digit count    */
 
@@ -205,12 +205,12 @@ LONG APIENTRY RexxStart(
   RexxStartArguments.result = result;
   RexxStartArguments.outputName = NULL;
                                        /* this is a real execution          */
-  RexxStartArguments.translating = FALSE;
+  RexxStartArguments.translating = false;
   if(!rexxutil_call){                  /* no init if called from a rexxutil */
     RexxInitialize();                  /* Perform any needed inits          */
   }
   else{
-    rexxutil_call = FALSE;
+    rexxutil_call = false;
     rexxutil_call_sem.release();
   }
                                        /* pass along to the real method     */
@@ -274,8 +274,8 @@ LONG APIENTRY ApiRexxStart(
   RexxStartArguments.result = result;
   RexxStartArguments.outputName = NULL;
                                        /* this is a real execution          */
-  RexxStartArguments.translating = FALSE;
-  rexxutil_call = FALSE;
+  RexxStartArguments.translating = false;
+  rexxutil_call = false;
   rexxutil_call_sem.release();
                                        /* pass along to the real method     */
   rc = RexxSendMessage(ActivityManager::localServer, CHAR_RUN_PROGRAM, NULL, "vp", NULL, &RexxStartArguments);
@@ -304,7 +304,7 @@ APIRET REXXENTRY RexxTranslateProgram(
                                        /* and pass along the output name    */
   RexxStartArguments.outputName = outFile;
                                        /* this is a translation step        */
-  RexxStartArguments.translating = TRUE;
+  RexxStartArguments.translating = true;
 
   RexxInitialize();                    /* Perform any needed inits          */
 
@@ -546,12 +546,12 @@ void  SysRunProgram(
 {
   RexxStartInfo *self;                 /* Rexxstart argument info           */
   RexxArray   * new_arglist;           /* passed on argument list           */
-  LONG          i;                     /* loop counter                      */
+  size_t        i;                     /* loop counter                      */
   RexxString  * fullname;              /* fully resolved program name       */
   RexxString  * name;                  /* input program name                */
   RexxMethod  * method;                /* translated file image             */
   RexxString  * source_calltype;       /* parse source call type            */
-  BOOL          tokenize_only;         /* don't actually execute program    */
+  bool          tokenize_only;         /* don't actually execute program    */
   RexxString  * initial_address;       /* initial address setting           */
   const char  * file_extension;        /* potential file extension          */
   RexxString  * program_result;        /* returned program result           */
@@ -559,7 +559,7 @@ void  SysRunProgram(
   size_t        length;                /* return result length              */
   wholenumber_t return_code;           /* converted return code info        */
 
-  tokenize_only = FALSE;               /* default is to run the program     */
+  tokenize_only = false;               /* default is to run the program     */
                                        /* create the native method to be run*/
                                        /* on the activity                   */
   newNativeAct = new ((RexxObject *)ActivityManager::currentActivity, OREF_NULL, ActivityManager::currentActivity, OREF_PROGRAM, OREF_NULL) RexxNativeActivation;
@@ -602,12 +602,12 @@ void  SysRunProgram(
       if (*(self->arglist[0].strptr) == ' ')   /* is there a leading blank?         */
                                        /* replace the first argument        */
         new_arglist->put(new_string(self->arglist[0].strptr+1, self->arglist[0].strlength - 1), 1);
+//TODO:  make this an exclusivity check
                                        /* have a "//T" in the argument?     */
-      if ( (((RexxString *)(new_arglist->get(1)))->pos(OREF_TOKENIZE_ONLY, 0) !=
-                              0) && RexxStartedByApplication)
-        tokenize_only = TRUE;          /* don't execute this                */
+      if ( (((RexxString *)(new_arglist->get(1)))->pos(OREF_TOKENIZE_ONLY, 0) != 0))
+        tokenize_only = true;          /* don't execute this                */
     }
-    RexxStartedByApplication = TRUE;
+    RexxStartedByApplication = true;
   }
   switch (self->calltype) {            /* turn calltype into a string       */
 
@@ -715,7 +715,7 @@ void  SysRunProgram(
       }
     }
   }
-  ActivityManager::currentActivity->pop(FALSE);         /* finally, discard our activation   */
+  ActivityManager::currentActivity->pop(false);         /* finally, discard our activation   */
 }
 
 /* functions for concurrency synchronization/termination               */
@@ -766,7 +766,7 @@ void APIENTRY RexxWaitForTermination(void)
 
 APIRET APIENTRY RexxDidRexxTerminate(void)
 {
-   if (!RexxTerminated) return TRUE;
+   if (!RexxTerminated) return true;
 
    if (RexxTerminated->posted())
    {
@@ -783,9 +783,9 @@ APIRET APIENTRY RexxDidRexxTerminate(void)
        memoryObject.flattenMutex = 0;
        memoryObject.unflattenMutex = 0;
        memoryObject.envelopeMutex = 0;
-       return TRUE;
+       return true;
    }
-   else return FALSE;
+   else return false;
 }
 #endif
 
