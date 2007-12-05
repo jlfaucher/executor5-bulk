@@ -1,0 +1,157 @@
+#!/usr/bin/rexx
+/*
+   name:             Monitor.testGroup
+   author:           Lee Peedin
+   date:             2007/10/09
+   version:          1.0
+
+-- line commented lines are ignored, when building the directory of infos from this header
+   changed:
+
+   languageLevel:    6.02
+   purpose:          Test the methods of the class Monitor class.
+   remark:           ---
+
+   license:          CPL 1.0 (Common Public License v1.0, see below)
+   link:
+
+// category needs not to be numbered, importance is given by position (1=most important)
+   category:         ooRexx
+   category:         Base
+   category:         Class
+   category:         Monitor
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+-------------------------------------------------------------------------------------------
+   /* list of array objects, each containing the testGroup class object and an
+      optional list of mandatory test case methods name                       */
+mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
+testGroupList=.list~of( .array~of(.Monitor.testGroup,  mandatoryTestMethods) )
+
+
+-------------------------------------------------------------------------------------------
+-- ===> the following code needs not to be individualized                              <===
+
+   -- read top comment, containing infos about this program
+arrLines=.array~new
+do i=1 to 150 until arrLines[i]="*/"
+   arrLines[i]=sourceline(i)
+end
+      -- supply information for the testClass(es) in this file; the class attribute
+      -- "TestCaseInfo" (a directory object, index points to a queue) will store
+      -- the parsed infos
+aTestGroupClass=testGroupList~at(testGroupList~first)[1] -- get first testClass
+
+   -- will parse the array lines and store result in class object
+call makeDirTestInfo aTestGroupClass, arrLines
+tmpDir=aTestGroupClass~TestCaseInfo
+parse source s   -- op_sys invocationType fullPathToThisFile
+tmpDir~setentry("test_Case-source", s)
+
+   -- now add this directory to other testCase classes, if any left
+do arr over testGroupList
+   if arr[1]=aTestGroupClass then iterate  -- already handled
+   arr[1]~TestCaseInfo=tmpDir             -- save info in class object
+end
+
+-- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
+-- and set it to .false; this way the independent local invocation of the tests is inhibited
+if .local~hasentry("bRunTestsLocally")=.false then
+   .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
+
+if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
+do
+   ts=.testSuite~new             -- create a testSuite
+   do arr over testGroupList
+      -- create a testSuite for the given test case class, use all its testmethods
+      ts~addTest( .testSuite~new(arr[1]))
+   end
+   testResult=ts~run       -- now run all the tests
+
+    call simpleFormatTestResults testResult
+end
+
+   /* return list of array objects containing test case classes and
+      optionally list of mandatory test methods                      */
+return testGroupList
+
+::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+
+-- class named exactly like file
+::class "Monitor.testGroup" subclass TestCase public
+
+::method 'test_currentA'
+    expected = .stdout
+    self~assertEquals('subTest1',expected,.output~current)
+
+::method 'test_currentB'
+    expected = 'STDOUT'
+    self~assertEquals('subTest2',expected,.output~current)
+
+::method 'test_ZdestinationA'  -- make these be the last tests (Z)
+    o_stream = .stream~new('my.new1')
+    o_stream~open('Write Replace Nobuffer')
+    .local~setentry("output",.monitor~new(o_stream))
+    say .output~current
+    linesInStream = o_stream~lines
+    .output~destination(.stdout)
+    o_stream~close
+    -- Clean Up now in case assert fails
+    if o_stream~query('exists') \= '' then
+        call SysFileDelete('my.new1')
+    expected = 1
+    self~assertEquals('subTest3',expected,linesInStream)
+    self~assertEquals('Output destination should be back to stdout',"STDOUT",.output~current)
+
+::method 'test_ZdestinationB'
+    o_stream = .stream~new('my.new2')
+    o_stream~open('Write Replace Nobuffer')
+    .local~setentry("output",.monitor~new(o_stream))
+    say .output~current
+    linesInStream = o_stream~lines
+    .output~destination(.stdout)
+    the_line = o_stream~linein
+    o_stream~close
+    -- Clean Up now in case assert fails
+    if o_stream~query('exists') \= '' then
+        call SysFileDelete('my.new2')
+    expected = 'my.new2'
+    self~assertEquals('subTest4',expected,the_line)
+    self~assertEquals('Output destination should be back to stdout',"STDOUT",.output~current)
+

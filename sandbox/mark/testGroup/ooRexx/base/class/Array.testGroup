@@ -1,0 +1,1763 @@
+#!/usr/bin/rexx
+/*
+   name:             Array.testGroup
+   author:           Rony G. Flatscher
+   date:             2007-05-29/30
+   version:          1.0.4
+
+-- line commented lines are ignored, when building the directory of infos from this header
+   changed:          2007-06-09, ---rgf, added some non-string objects for testing
+                     2007-06-10, ---rgf, added test cases to test collection object for correct types
+                     2007-07-27, ---rgf, added tests for setlike method arguments being OrderedCollection
+                                         and MapCollection; corrected "sameContent()" to check on
+                                         items and not on index
+                     2007-11-26, ---MM, Further changes I make to this file are recorded in the svn log
+
+   languageLevel:    6.00, 6.02
+   purpose:          Test the methods of the class Array.
+   remark:           ---
+
+   license:          CPL 1.0 (Common Public License v1.0, see below)
+   link:
+
+// category needs not to be numbered, importance is given by position (1=most important)
+   category:         ooRexx
+   category:         Base
+   category:         Class
+   category:         Array
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+-------------------------------------------------------------------------------------------
+-- ===> adapt the "testGroupList" to your testCase classes; each element in the list is <===
+-- ===> an array object, the first element containing the testCase class object, the   <===
+-- ===> second element is a list of test method names which are regarded to be         <===
+-- ===> mandatory (if the list remains empty all test methods are mandatory)           <===
+
+   /* list of array objects, each containing the testGroup class object and an
+      optional list of mandatory test case methods name                       */
+mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
+testGroupList=.list~of( .array~of(.Array.testGroup,  mandatoryTestMethods) )
+
+
+-------------------------------------------------------------------------------------------
+-- ===> the following code needs not to be individualized                              <===
+
+   -- read top comment, containing infos about this program
+arrLines=.array~new
+do i=1 to 150 until arrLines[i]="*/"
+   arrLines[i]=sourceline(i)
+end
+      -- supply information for the testClass(es) in this file; the class attribute
+      -- "TestCaseInfo" (a directory object, index points to a queue) will store
+      -- the parsed infos
+atestGroupClass=testGroupList~at(testGroupList~first)[1] -- get first testClass
+
+   -- will parse the array lines and store result in class object
+call makeDirTestInfo atestGroupClass, arrLines
+tmpDir=atestGroupClass~TestCaseInfo
+parse source s   -- op_sys invocationType fullPathToThisFile
+tmpDir~setentry("test_Case-source", s)
+
+   -- now add this directory to other testCase classes, if any left
+do arr over testGroupList
+   if arr[1]=atestGroupClass then iterate  -- already handled
+   arr[1]~TestCaseInfo=tmpDir             -- save info in class object
+end
+
+-- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
+-- and set it to .false; this way the independent local invocation of the tests is inhibited
+if .local~hasentry("bRunTestsLocally")=.false then
+   .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
+
+if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
+do
+   ts=.testSuite~new             -- create a testSuite
+   do arr over testGroupList
+      -- create a testSuite for the given test case class, use all its testmethods
+      ts~addTest( .testSuite~new(arr[1]))
+   end
+   -- testResult=.testSuite~new(testGroupClass)~run
+   testResult=ts~run       -- now run all the tests
+
+   call simpleFormatTestResults testResult
+end
+
+   /* return list of array objects containing test case classes and
+      optionally list of mandatory test methods                      */
+return testGroupList
+
+
+
+::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+
+   -- class named exactly like file
+::class "Array.testGroup" subclass TestCase public
+
+::method init
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+  forward class (super) continue    -- let superclass initialize
+
+  clz=.Array                        -- collection class object to use
+  bUserDefinedIndex=.false          -- user defined index? (determines what MAKEARRAY returns)
+  bSingleItem      =.true           -- index associates only one item
+
+  collDir=.directory~new            -- define directory containing predefined collections
+  collDir~emptyColl=clz~new
+
+  o1=.object~new
+  o2=.object~new
+
+  collDir~coll_1   =clz~of("1v", "2v", "2v", "2v", o1, o1)
+  collDir~coll_2   =clz~of(            "2v", "2v", o1, o1, o2, o2, "3v")
+
+  collDir~allIndexes1=.array~of(1, 2, 3, 4, 5, 6)
+  collDir~allIndexes2=.array~of(1, 2, 3, 4, 5, 6, 7)
+
+  collDir~allItems1=.array~of("1v", "2v", "2v", "2v", o1, o1)
+  collDir~allItems2=.array~of(            "2v", "2v", o1, o1, o2, o2, "3v")
+
+
+   /* determine resulting collection   */
+  collDir~difference1 =clz~of("1v","2v")  /* coll_1~difference(coll_2) */
+  collDir~difference2 =clz~of(o2, o2, "3v")       /* coll_2~difference(coll_1) */
+
+
+  collDir~interSectionColl=clz~of("2v", "2v", o1, o1)
+
+  collDir~unionColl1      =clz~of("1v", "2v", "2v", "2v", "2v", "2v", o1, o1, o1, o1, o2, o2, "3v")
+  collDir~unionColl2      =clz~of("2v", "2v", "3v", "1v", "2v", "2v", "2v", o1, o1, o2, o2, o1, o1)
+
+  collDir~xorColl1        =clz~of("1v", "2v", o2, o2, "3v")
+  collDir~xorColl2        =clz~of(o2, o2, "3v", "1v", "2v")
+
+
+
+::method "test_allIndexes"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  self~assertTrue("subtest1", sameContent(.bag~new~union(collDir~allIndexes1      ), -
+                                          .bag~new~union(collDir~coll_1~allIndexes)))
+
+  self~assertTrue("subtest2", sameContent(.bag~new~union(collDir~allIndexes2      ), -
+                                          .bag~new~union(collDir~coll_2~allIndexes)))
+
+  tmp=collDir~emptyColl~allIndexes
+  self~assertTrue("subtest3", tmp~isInstanceOf(.array))
+  self~assertEquals("subtest4", 0, tmp~items)
+
+  self~assertEquals("subtest5", collDir~allIndexes1, collDir~coll_1~allIndexes)
+  self~assertEquals("subtest6", collDir~allIndexes2, collDir~coll_2~allIndexes)
+
+
+::method "test_allIndexes_syntax1"
+
+  a=.array~new
+  self~expectSyntax("93.902")
+  a~allIndexes(.nil)
+
+
+::method "test_allItems"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  self~assertTrue("subtest1", sameContent(.bag~new~union(collDir~allItems1      ), -
+                                          .bag~new~union(collDir~coll_1~allItems)))
+
+  self~assertTrue("subtest2", sameContent(.bag~new~union(collDir~allItems2      ), -
+                                          .bag~new~union(collDir~coll_2~allItems)))
+
+  tmp=collDir~emptyColl~allItems
+  self~assertTrue("subtest3", tmp~isInstanceOf(.array))
+  self~assertEquals("subtest4", 0, tmp~items)
+
+  self~assertEquals("subtest5", collDir~allItems1, collDir~coll_1~allItems)
+  self~assertEquals("subtest6", collDir~allItems2, collDir~coll_2~allItems)
+
+
+::method "test_allItems_syntax1"
+
+  a=.array~new
+  self~expectSyntax("93.902")
+  a~allItems(.nil)
+
+
+::method "test_append"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  c1=collDir~coll_1
+  c2=collDir~coll_2
+
+  tmpC1=clz~new
+  do o over c1
+     tmpC1~append(o)
+  end
+
+  tmpC2=clz~new
+  do o over c2
+     tmpC2~append(o)
+  end
+
+  self~assertEquals("subtest01", c1, tmpC1)
+  self~assertEquals("subtest02", c2, tmpC2)
+
+
+::method "test_append_syntax1"
+
+  a=.array~new
+  self~expectSyntax("93.903")
+  a~append
+
+
+::method "test_append_syntax2"
+
+  a=.array~new
+  self~expectSyntax("93.902")
+  a~append(.nil, .nil)
+
+
+::method "test_appendAll"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  tmpColl=clz~new
+
+  ce=collDir~emptyColl
+  c1=collDir~coll_1
+  c2=collDir~coll_2
+
+  self~assertEquals("subtest01", ce, ce~copy~~appendAll(ce))
+
+  self~assertEquals("subtest03", c1, c1~copy~~appendAll(ce))
+  self~assertEquals("subtest04", c2, c2~copy~~appendAll(ce))
+
+  self~assertEquals("subtest05", c1, clz~new~~appendAll(c1))
+  self~assertEquals("subtest06", c2, clz~new~~appendAll(c2))
+  self~assertEquals("subtest07", collDir~unionColl1, c1~copy~~appendAll(c2))
+  self~assertEquals("subtest08", collDir~unionColl2, c2~copy~~appendAll(c1))
+
+
+
+
+::method "test_at"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  coll=collDir~coll_1      -- get the prepared Array
+  self~assertEquals("subtest1", "1v", coll~at(1))
+  self~assertEquals("subtest2", "2v", coll~at(2))
+  self~assertNull(  "subtest3",       coll~at(10))
+
+
+::method "test_at_syntax1"
+
+  a=.array~new
+  self~expectSyntax("93.938")
+  a~at(.nil)
+
+
+::method "test_at_syntax2"
+
+  a=.array~new
+  self~expectSyntax("93.905")
+  a~at(.string)
+
+
+::method "test_[]"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  coll=collDir~coll_1      -- get the prepared Array
+  self~assertEquals("subtest1", "1v", coll~"[]"("1"))
+  self~assertEquals("subtest2", "2v", coll~"[]"("2"))
+  self~assertNull(  "subtest3",      coll~"[]"("10"))
+
+
+
+::method "test_difference"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  ce=collDir~emptyColl
+  c1=collDir~coll_1
+  c2=collDir~coll_2
+
+  self~assertEquals("subtest1", ce, ce~difference(ce))
+
+  self~assertEquals("subtest2", c1, c1~difference(ce))
+  self~assertEquals("subtest3", c2, c2~difference(ce))
+
+  self~assertEquals("subtest4", collDir~difference1, c1~difference(c2))
+  self~assertEquals("subtest5", collDir~difference2, c2~difference(c1))
+
+  self~assertEquals("subtest6", ce, c1~difference(c1))
+  self~assertEquals("subtest7", ce, c2~difference(c2))
+
+
+   -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
+  o1=.object~new
+  c =clz~new~~put("1", "101")~~put("2", "102")~~put(o1, "103")
+  other=.array~new
+  other[104]="2"
+  other[106]=o1
+  d1=clz~of("1")     -- expected result
+  d2=c~difference(other)
+  self~assertTrue("subtest8: 'other' is an 'OrderedCollection'", sameContent(d1, d2))
+
+  -- Simplistic .Array difference .Table test
+  receiverArray = .array~new
+  receiverArray[1] = 'Lemon'
+  receiverArray[2] = 'Orange'
+  receiverArray[3] = 'Dogwood'
+
+  argumentTable = .table~new
+  argumentTable[1] = 'Dogwood'
+  argumentTable[2] = 'Elm'
+  argumentTable[3] = 'Rose'
+  argumentTable[4] = 'Tulip'
+
+  resultObj = receiverArray~difference(argumentTable)
+
+  nl = '0d0a'
+  self~assertTrue("After set-like operation (intersection) result object must be array", resultObj~isA(.array))
+  self~assertSame('Intersection of Lemon Orange Dogwood with Dogwood Elm Rose Tulip' || nl || -
+                  'should have 2 items', 2, resultObj~items)
+  self~assertTrue('Intersection result should have a Lemon item', resultObj~hasItem('Lemon'))
+  self~assertTrue('Intersection result should have an Orange item', resultObj~hasItem('Orange'))
+
+
+
+
+::method "test_empty"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  ce=collDir~emptyColl
+  self~assertTrue("subtest01:", sameContent(ce, ce~copy~~empty))
+
+  c1=collDir~coll_1~copy
+  self~assertTrue("subtest02:", sameContent(ce, c1~copy~~empty))
+
+  c2=collDir~coll_2~copy
+  self~assertTrue("subtest03:", sameContent(ce, c2~copy~~empty))
+
+
+::method "test_empty_syntax"
+
+  a=.array~new
+  self~expectSyntax("93.902")
+  a~empty(.nil)
+
+
+::method "test_hasIndex"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  coll=collDir~coll_1      -- get the prepared Array
+  self~assertTrue( "subtest1", coll~hasIndex("1"))
+  self~assertTrue( "subtest2", coll~hasIndex("2"))
+  self~assertFalse("subtest3", coll~hasIndex("10"))
+
+
+::method "test_hasIndex_syntax1"
+
+  a=.array~new
+  self~expectSyntax("93.901")
+  a~hasIndex
+
+
+::method "test_hasIndex_syntax2"
+
+  a=.array~new
+  self~expectSyntax("93.938")
+  a~hasIndex(.nil)
+
+
+::method "test_hasIndex_syntax3"
+
+  a=.array~new
+  self~expectSyntax("93.905")
+  a~hasIndex(.string)
+
+
+::method "test_hasIndex_syntax4"
+
+  a=.array~of("1")
+  self~expectSyntax("93.926")
+  a~hasIndex(.nil, .nil)
+
+
+::method "test_hasItem"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  coll=collDir~coll_1      -- get the prepared Array
+  self~assertTrue( "subtest1", coll~hasItem("1v"))
+  self~assertTrue( "subtest2", coll~hasItem("2v"))
+  self~assertFalse("subtest3", coll~hasItem("3v"))
+
+
+::method "test_hasItem_syntax1"
+
+  a=.array~new
+  self~expectSyntax("93.903")
+  a~hasItem
+
+
+::method "test_hasItem_syntax2"
+
+  a=.array~new
+  self~expectSyntax("93.902")
+  a~hasItem(.nil, .nil)
+
+
+::method "test_index"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  coll=collDir~coll_1      -- get the prepared Array
+  self~assertEquals("subtest1", "1", coll~index("1v"))
+  self~assertEquals("subtest2", "2", coll~index("2v"))
+  self~assertNull(  "subtest3",      coll~index("3v"))
+
+
+::method "test_index_syntax1"
+
+  a=.array~new
+  self~expectSyntax("93.903")
+  a~index
+
+
+::method "test_index_syntax2"
+
+  a=.array~new
+  self~expectSyntax("93.902")
+  a~index(.nil, .nil)
+
+
+::method "test_interSection"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  ce=collDir~emptyColl
+  c1=collDir~coll_1
+  c2=collDir~coll_2
+  res=collDir~interSectionColl
+
+  self~assertEquals("subtest1", ce, ce~interSection(ce))
+
+  self~assertEquals("subtest2", ce, c1~interSection(ce))
+  self~assertEquals("subtest3", ce, c2~interSection(ce))
+
+  self~assertEquals("subtest4", res, c1~interSection(c2))
+  self~assertEquals("subtest5", res, c2~interSection(c1))
+
+  self~assertEquals("subtest6", c1, c1~interSection(c1))
+  self~assertEquals("subtest7", c2, c2~interSection(c2))
+
+   -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
+  o1=.object~new
+  c =clz~new~~put("1", 101)~~put("2", 102)~~put(o1, 103)
+  other=.array~new
+  other[104]="2"
+  other[106]=o1
+  d1=clz~of("2", o1)          -- expected result
+  d2=c~interSection(other)
+  self~assertTrue("subtest8: 'other' is an 'OrderedCollection'", sameContent(d1, d2))
+
+  -- Simplistic test of array intersect table
+  receiverArray = .array~of("Tree", "Rock", "Planet", "Star")
+  argumentTable = .table~new
+  argumentTable[1] = "Elm"
+  argumentTable[2] = "Rock"
+  argumentTable[3] = "Mars"
+  argumentTable[4] = "Monroe"
+
+  resultObj = receiverArray~intersection(argumentTable)
+
+  nl = '0d0a'x
+  self~assertSame("(1.) result of intersection must be same class as receiver", .array, resultObj~class)
+  self~assertSame("Tree Rock Planet Star intersect Elm Rock Mars Monroe should produce 1 item", 1, resultObj~items)
+
+  self~assertTrue("Result of Tree Rock Planet Star intersect Elm Rock Mars Monroe" || nl || -
+                  "should have Rock item", resultObj~hasItem("Rock"))
+
+  argumentArray = .array~of("Elm", "Rock", "Mars", "Monro")
+  result1 = receiverArray~intersection(argumentArray)
+  result2 = argumentArray~intersection(receiverArray)
+  self~assertSame("(2.) result of intersection must be same class as receiver", .array, result1~class)
+  self~assertSame("(3.) result of intersection must be same class as receiver", .array, result2~class)
+  self~assertTrue("Array A intersect array b should be the same as array B intersect arrry A", sameContent(result1, result2))
+
+
+::method "test_isInstanceOf"     -- test whether collection object is of the correct kind (class)
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  o=collDir~coll_1
+
+  self~assertTrue("01: subclass of .Object", o~isInstanceOf(.Object))
+  self~assertTrue("02: subclass of .Object", o~isInstanceOf(clz))
+
+  if .ooRexxUnit.languageLevel>6.01 then
+     self~assertTrue("03: subclass of .OrderedCollection", o~isInstanceOf(.OrderedCollection))
+
+
+
+::method "test_isEmpty"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  self~assertTrue( "subtest01", collDir~emptyColl~isEmpty)
+  self~assertFalse("subtest02", collDir~coll_1~isEmpty)
+  self~assertFalse("subtest03", collDir~coll_2~isEmpty)
+
+  self~assertTrue( "subtest04", collDir~coll_1~copy~~empty~isEmpty)
+
+
+::method "test_isEmpty_syntax"
+
+  a=.array~new
+  self~expectSyntax("93.902")
+  a~isEmpty(.nil)
+
+
+::method "test_items"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  self~assertEquals("subtest1", 0, collDir~emptyColl~items)
+  self~assertEquals("subtest2", 6, collDir~coll_1~items)
+  self~assertEquals("subtest3", 7, collDir~coll_2~items)
+
+
+::method "test_items_syntax"
+
+  a=.array~new
+  self~expectSyntax("93.902")
+  a~items(.nil)
+
+
+::method "test_makeArray"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  tmp=collDir~coll_1~makeArray
+  self~assertTrue("subtest1", tmp~isInstanceOf(.array))
+  if bUserDefinedIndex then
+     self~assertTrue("subtest2", sameContent(.bag~new~union(tmp                ), -
+                                             .bag~new~union(collDir~allIndexes1)))
+  else
+     self~assertTrue("subtest2", sameContent(.bag~new~union(tmp                ), -
+                                             .bag~new~union(collDir~allItems1)))
+
+
+  tmp=collDir~coll_2~makeArray
+  self~assertTrue("subtest3", tmp~isInstanceOf(.array))
+  if bUserDefinedIndex then
+     self~assertTrue("subtest4", sameContent(.bag~new~union(tmp                ), -
+                                             .bag~new~union(collDir~allIndexes2)))
+  else
+     self~assertTrue("subtest4", sameContent(.bag~new~union(tmp                ), -
+                                             .bag~new~union(collDir~allItems2)))
+
+
+  tmp=collDir~emptyColl~makeArray
+  self~assertTrue("subtest5", tmp~isInstanceOf(.array))
+  self~assertEquals("subtest6", 0, tmp~items)
+
+
+
+::method "test_put"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  tmpColl=clz~new
+  self~assertEquals("subtest01", 0, tmpColl              ~items)
+
+  self~assertEquals("subtest02a", 1, tmpColl~~put("1","1")~items)
+  self~assertTrue(  "subtest02b", tmpColl~hasindex("1"))
+  self~assertTrue(  "subtest02c", tmpColl~hasitem("1"))
+
+  self~assertEquals("subtest03", 2, tmpColl~~put("2","2")~items)
+  self~assertTrue(  "subtest03b", tmpColl~hasindex("2"))
+  self~assertTrue(  "subtest03c", tmpColl~hasitem("2"))
+
+  self~assertEquals("subtest04", 2, tmpColl~~put("3","2")~items)
+  self~assertTrue(  "subtest04b", tmpColl~hasindex("2"))
+  self~assertTrue(  "subtest04c", tmpColl~hasitem("3"))
+
+  self~assertEquals("subtest05", 2, tmpColl~~put("2","2")~items)
+  self~assertTrue(  "subtest05b", tmpColl~hasindex("2"))
+  self~assertTrue(  "subtest05c", tmpColl~hasitem("2"))
+
+  self~assertEquals("subtest06", 3, tmpColl~~put("3","3")~items)
+  self~assertTrue(  "subtest06b", tmpColl~hasindex("3"))
+  self~assertTrue(  "subtest06c", tmpColl~hasitem("3"))
+
+  self~assertTrue("subtest07", sameContent(.bag~of("1","2","3"), tmpColl))
+
+
+::method "test_put_syntax1"
+
+  a=.array~new
+  self~expectSyntax("93.903")
+  a~put
+
+
+::method "test_put_syntax2"
+
+  a=.array~new
+  self~expectSyntax("93.901")
+  a~put(.nil)
+
+
+::method "test_put_syntax3"
+
+  a=.array~new
+  self~expectSyntax("93.938")
+  a~put(.nil,.nil)
+
+
+::method "test_put_syntax4"
+
+  a=.array~new
+  self~expectSyntax("93.905")
+  a~put(.nil,.string)
+
+
+::method "test_[]="
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  tmpColl=clz~new
+  self~assertEquals("subtest01", 0, tmpColl              ~items)
+
+  self~assertEquals("subtest02a", 1, tmpColl~~"[]="("1","1")~items)
+  self~assertTrue(  "subtest02b", tmpColl~hasindex("1"))
+  self~assertTrue(  "subtest02c", tmpColl~hasitem("1"))
+
+  self~assertEquals("subtest03", 2, tmpColl~~"[]="("2","2")~items)
+  self~assertTrue(  "subtest03b", tmpColl~hasindex("2"))
+  self~assertTrue(  "subtest03c", tmpColl~hasitem("2"))
+
+  self~assertEquals("subtest04", 2, tmpColl~~"[]="("3","2")~items)
+  self~assertTrue(  "subtest04b", tmpColl~hasindex("2"))
+  self~assertTrue(  "subtest04c", tmpColl~hasitem("3"))
+
+  self~assertEquals("subtest05", 2, tmpColl~~"[]="("2","2")~items)
+  self~assertTrue(  "subtest05b", tmpColl~hasindex("2"))
+  self~assertTrue(  "subtest05c", tmpColl~hasitem("2"))
+
+  self~assertEquals("subtest06", 3, tmpColl~~"[]="("3","3")~items)
+  self~assertTrue(  "subtest06b", tmpColl~hasindex("3"))
+  self~assertTrue(  "subtest06c", tmpColl~hasitem("3"))
+
+  self~assertTrue("subtest07", sameContent(.bag~of("1","2","3"), tmpColl))
+
+
+
+
+::method "test_remove"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  ce=collDir~emptyColl~copy
+  c1=collDir~coll_1~copy
+
+  self~assertNull("subtest01", ce~remove(98))
+
+  self~assertNull("subtest03", c1~remove(99))
+
+  self~assertEquals("subtest04", "1v", c1~remove("1"))
+  self~assertNull(  "subtest05", c1~remove("1"))
+
+  self~assertEquals("subtest06", "2v", c1~remove("2"))
+  self~assertNull(  "subtest07", c1~remove("2"))
+
+  self~assertEquals("subtest07", "2v", c1~remove("3"))
+  self~assertNull(  "subtest08", c1~remove("3"))
+
+  self~assertEquals("subtest09", "2v", c1~remove("4"))
+  self~assertNull(  "subtest10", c1~remove("4"))
+
+  self~assertEquals("subtest11", o1, c1~remove("5"))
+  self~assertNull(  "subtest12", c1~remove("5"))
+
+  self~assertEquals("subtest13", o1, c1~remove("6"))
+  self~assertNull(  "subtest14", c1~remove("6"))
+
+  self~assertEquals("subtest15", 0, c1~items)
+
+
+::method "test_remove_syntax1"
+
+  a=.array~new
+  self~expectSyntax("93.938")
+  a~remove(.nil)
+
+
+::method "test_remove_syntax2"
+
+  a=.array~new
+  self~expectSyntax("93.905")
+  a~remove(.string)
+
+
+::method "test_remove_syntax3"
+
+  a=.array~of("1")
+  self~expectSyntax("93.926")
+  a~remove(.nil, .nil)
+
+
+::method "test_removeItem"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  ce=collDir~emptyColl~copy
+  c1=collDir~coll_1~copy
+
+  self~assertNull("subtest01", ce~removeItem("1"))
+  self~assertNull("subtest02", ce~removeItem(.nil))
+
+  self~assertNull("subtest03", c1~removeItem("99"))
+
+  self~assertEquals("subtest04", "1v", c1~removeItem("1v"))
+  self~assertNull(  "subtest05", c1~removeItem("1v"))
+
+  self~assertEquals("subtest06", "2v", c1~removeItem("2v"))
+  self~assertEquals("subtest07", "2v", c1~removeItem("2v"))
+  self~assertEquals("subtest08", "2v", c1~removeItem("2v"))
+
+  self~assertEquals("subtest09", o1, c1~removeItem(o1))
+  self~assertEquals("subtest10", o1, c1~removeItem(o1))
+
+  self~assertNull(  "subtest09", c1~removeItem("2"))
+
+  self~assertEquals("subtest10", 0, c1~items)
+
+
+
+::method "test_subset"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  ce=collDir~emptyColl
+  c1=collDir~coll_1
+  c2=collDir~coll_2
+  cu1=collDir~unionColl1
+  cu2=collDir~unionColl2
+
+  self~assertTrue("subtest01", ce~subset(ce))
+  self~assertTrue("subtest02", ce~subset(c1))
+  self~assertTrue("subtest03", ce~subset(c2))
+
+  self~assertTrue("subtest04", c1~subset(c1))
+  self~assertTrue("subtest05", c2~subset(c2))
+
+  self~assertTrue("subtest06", ce~subset(cu))
+
+  self~assertTrue("subtest07", c1~subset(cu1))
+  self~assertTrue("subtest08", c1~subset(cu2))
+
+  self~assertTrue("subtest09", c2~subset(cu1))
+  self~assertTrue("subtest10", c2~subset(cu2))
+
+  self~assertFalse("subtest11", c1~subset(ce))
+  self~assertFalse("subtest12", c1~subset(c2))
+
+  self~assertFalse("subtest13", c2~subset(ce))
+  self~assertFalse("subtest14", c2~subset(c1))
+
+
+   -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
+  o1=.object~new
+  c =clz~new~~put("1", 101)~~put("2", 102)~~put(o1, 103)
+  other=.array~new
+  other[104]="2"
+  other[106]=o1
+  d2=c~subSet(other)
+  self~assertFalse("subtest14: 'other' is an 'OrderedCollection'", d2)
+
+  -- Simplistic test of array~subset(arg) where arg is a table
+  receiverArray = .array~of()
+  argumentTable = .table~new
+  argumentTable[10] = "Barn"
+  argumentTable[20] = "Cabin"
+  argumentTable[30] = "Ranch"
+  argumentTable[40] = "Plow"
+
+  self~assertTrue("The empty set is a subset of every set", receiverArray~subset(argumentTable))
+
+  receiverArray[10] = "Barn"
+  self~assertTrue("Barn is a subset of Barn Cabin Ranch Plow", receiverArray~subset(argumentTable))
+
+  receiverArray[20] = "Cabin cruiser"
+  self~assertFalse("'Barn' 'Cabin cruiser' is not a subset of 'Barn' 'Cabin' 'Ranch' 'Plow'", receiverArray~subset(argumentTable))
+
+   -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
+  other=.array~new
+  other[101]="1"
+  other[102]="2"
+  other[103]="3"
+  other[104]="2"
+  other[106]=o1
+  other[107]=o1
+  d2=c~subSet(other)
+  self~assertTrue("subtest16: 'other' is an 'OrderedCollection'", d2)
+
+
+
+
+
+::method "test_Supplier"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  ce=collDir~emptyColl
+  c1=collDir~coll_1
+
+  self~assertEquals("subtest01", ce, makeColl(clz, ce))
+  self~assertEquals("subtest02", c1, makeColl(clz, c1))
+
+  return
+
+makeColl: procedure
+  use arg clz, tmpColl
+
+  new=clz~new
+  s=tmpColl~supplier
+  do while s~available
+     new~put(s~item, s~index)
+     s~next
+  end
+  return new
+
+
+
+::method "test_union"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  ce=collDir~emptyColl
+  c1=collDir~coll_1
+  c2=collDir~coll_2
+
+  self~assertEquals("subtest1", ce, ce~union(ce))
+
+  self~assertEquals("subtest2", c1, c1~union(ce))
+  self~assertEquals("subtest3", c2, c2~union(ce))
+
+  self~assertEquals("subtest4", c1, ce~union(c1))
+  self~assertEquals("subtest5", c2, ce~union(c2))
+
+  self~assertEquals("subtest6", collDir~unionColl1, c1~union(c2))
+  self~assertEquals("subtest7", collDir~unionColl2, c2~union(c1))
+
+
+   -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
+  o1=.object~new
+  c =clz~new~~put("1", 101)~~put("2", 102)~~put(o1, 103)
+  other=.array~new
+  other[104]="2"
+  other[106]=o1
+  d1=clz~of("1", "2", "2", o1, o1)  -- expected result
+  d2=c~union(other)
+  self~assertTrue("subtest8: 'other' is an 'OrderedCollection'", sameContent(d1, d2))
+
+  -- Simplistic test of array union table
+  receiverArray = .array~new
+  receiverArray[10] = "Elm"
+  receiverArray[13] = "Cadillac"
+  receiverArray[15] = "Morning Glory"
+
+  argumentTable = .table~new
+  argumentTable[a] = "School"
+  argumentTable[b] = "Office"
+  argumentTable[c] = "Church"
+  argumentTable[d] = "Apartment"
+
+  nl = '0d0a'x
+  resultObj = receiverArray~union(argumentTable)
+  self~assertSame("(1.) result of union must be same class as receiver", .array, resultObj~class)
+  self~assertSame("array with 3 distinct items union table with 4 different distinct items" || nl || -
+                  "should result in array with 7 items", 7, resultObj~items)
+
+  self~assertTrue("Result of Elm Cadillac 'Morning Glory union School Office Church Apartment" || nl || -
+                  "must have item Elm", resultObj~hasItem("Elm"))
+  self~assertTrue("Result of Elm Cadillac 'Morning Glory union School Office Church Apartment" || nl || -
+                  "must have item Cadillac", resultObj~hasItem("Cadillac"))
+  self~assertTrue("Result of Elm Cadillac 'Morning Glory union School Office Church Apartment" || nl || -
+                  "must have item Morning Glory", resultObj~hasItem("Morning Glory"))
+  self~assertTrue("Result of Elm Cadillac 'Morning Glory union School Office Church Apartment" || nl || -
+                  "must have item School", resultObj~hasItem("School"))
+  self~assertTrue("Result of Elm Cadillac 'Morning Glory union School Office Church Apartment" || nl || -
+                  "must have item Office", resultObj~hasItem("Office"))
+  self~assertTrue("Result of Elm Cadillac 'Morning Glory union School Office Church Apartment" || nl || -
+                  "must have item Church", resultObj~hasItem("Church"))
+  self~assertTrue("Result of Elm Cadillac 'Morning Glory union School Office Church Apartment" || nl || -
+                  "must have item Apartment", resultObj~hasItem("Apartment"))
+
+
+
+::method "test_xor"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  ce=collDir~emptyColl
+  c1=collDir~coll_1
+  c2=collDir~coll_2
+  res=collDir~xorColl
+
+  self~assertEquals("subtest1", ce, ce~xor(ce))
+
+  self~assertEquals("subtest2", c1, c1~xor(ce))
+  self~assertEquals("subtest3", c2, c2~xor(ce))
+
+  self~assertEquals("subtest4", collDir~xorColl1, c1~xor(c2))
+  self~assertEquals("subtest5", collDir~xorColl2, c2~xor(c1))
+
+  self~assertEquals("subtest6", ce, c1~xor(c1))
+  self~assertEquals("subtest7", ce, c2~xor(c2))
+
+
+   -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
+  o1=.object~new
+  c =clz~new~~put("1", 101)~~put("2", 102)~~put(o1, 103)
+  other=.array~new
+  other[104]="2"
+  other[106]=o1
+  d1=clz~of("1")          -- expected result
+  d2=c~xor(other)
+  self~assertTrue("subtest8: 'other' is an 'OrderedCollection'", sameContent(d1, d2))
+
+  -- Simplistic test of array XOR table
+  receiverArray = .array~new
+  receiverArray[10] = "Elm"
+  receiverArray[13] = "Cadillac"
+  receiverArray[15] = "Morning Glory"
+
+  argumentTable = .table~new
+  argumentTable[a] = "School"
+  argumentTable[b] = "Office"
+  argumentTable[c] = "Church"
+  argumentTable[d] = "Apartment"
+
+  nl = '0d0a'x
+  resultObj = receiverArray~XOR(argumentTable)
+  self~assertSame("(1.) result of XOR must be same class as receiver", .array, resultObj~class)
+  self~assertSame("array with 3 distinct items XOR table with 4 different distinct items" || nl || -
+                  "should result in array with 7 items", 7, resultObj~items)
+
+  self~assertTrue("Result of Elm Cadillac 'Morning Glory' XOR School Office Church Apartment" || nl || -
+                  "must have item Elm", resultObj~hasItem("Elm"))
+  self~assertTrue("Result of Elm Cadillac 'Morning Glory' XOR School Office Church Apartment" || nl || -
+                  "must have item Cadillac", resultObj~hasItem("Cadillac"))
+  self~assertTrue("Result of Elm Cadillac 'Morning Glory' XOR School Office Church Apartment" || nl || -
+                  "must have item Morning Glory", resultObj~hasItem("Morning Glory"))
+  self~assertTrue("Result of Elm Cadillac 'Morning Glory' XOR School Office Church Apartment" || nl || -
+                  "must have item School", resultObj~hasItem("School"))
+  self~assertTrue("Result of Elm Cadillac 'Morning Glory' XOR School Office Church Apartment" || nl || -
+                  "must have item Office", resultObj~hasItem("Office"))
+  self~assertTrue("Result of Elm Cadillac 'Morning Glory' XOR School Office Church Apartment" || nl || -
+                  "must have item Church", resultObj~hasItem("Church"))
+  self~assertTrue("Result of Elm Cadillac 'Morning Glory' XOR School Office Church Apartment" || nl || -
+                  "must have item Apartment", resultObj~hasItem("Apartment"))
+
+
+  receiverArray = .array~new
+  receiverArray[10] = "Elm"
+  receiverArray[13] = "Cadillac"
+  receiverArray[15] = "Desert"
+
+  argumentTable = .table~new
+  argumentTable[a] = "Elm"
+  argumentTable[b] = "Cadillac"
+  argumentTable[c] = "Desert"
+
+  resultObj = receiverArray~XOR(argumentTable)
+  self~assertSame("(2.) result of XOR must be same class as receiver", .array, resultObj~class)
+  self~assertSame("Result of Elm Cadillac Desert XOR Elm Cadillac Desert Desert" || nl || -
+                  "should be empty", 0, resultObj~items)
+
+
+/* ================= additional, ARRAY specific methods =============== */
+
+::method "test_NEW"
+  a=.array~new
+  self~assertEquals("subtest01a", 0, a~dimension)
+  self~assertEquals("subtest01b", 0, a~size)
+  self~assertEquals("subtest01c", 0, a~items)
+
+  a=.array~new(3)
+  self~assertEquals("subtest02a", 1, a~dimension)
+  self~assertEquals("subtest02b", 3, a~dimension(1))
+  self~assertEquals("subtest02c", 3, a~size)
+  self~assertEquals("subtest02d", 0, a~items)
+
+  a=.array~new(3,2)
+  self~assertEquals("subtest03a", 2, a~dimension)
+  self~assertEquals("subtest03b", 3, a~dimension(1))
+  self~assertEquals("subtest03b", 2, a~dimension(2))
+  self~assertEquals("subtest03c", 6, a~size)
+  self~assertEquals("subtest03d", 0, a~items)
+
+
+::method "test_OF"
+
+  a=.array~of
+  self~assertEquals("subtest01a", 1, a~dimension)
+  self~assertEquals("subtest01b", 0, a~size)
+  self~assertEquals("subtest01c", 0, a~items)
+
+  a=.array~of(1,2,3)
+  self~assertEquals("subtest02a", 1, a~dimension)
+  self~assertEquals("subtest02b", 3, a~dimension(1))
+  self~assertEquals("subtest02c", 3, a~size)
+  self~assertEquals("subtest02d", 3, a~items)
+
+
+::method "test_first_last_next_previous"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  a=.array~new       -- no dimension
+  self~assertNull("subtest_01a", a~first)
+  self~assertNull("subtest_01b", a~last)
+  self~assertNull("subtest_01c", a~next(1))
+  self~assertNull("subtest_01d", a~previous(1))
+
+  a[1]="1v"          -- single dimension
+  self~assertEquals("subtest_02a", 1, a~first)
+  self~assertEquals("subtest_02b", 1, a~last)
+  self~assertNull("subtest_02c", a~next(1))
+  self~assertNull("subtest_02d", a~previous(1))
+
+
+  a[15]="2v"
+  self~assertEquals("subtest_03a", 1, a~first)
+  self~assertEquals("subtest_03b", 15, a~last)
+  self~assertEquals("subtest_03c", 15, a~next(1))
+  self~assertEquals("subtest_03d", 15, a~next(2))
+  self~assertEquals("subtest_03e", 1,  a~previous(15))
+  self~assertEquals("subtest_03f", 1,  a~previous(2))
+
+
+::method "test_first_syntax"
+
+  a=.array~new
+  self~expectSyntax("93.902")
+  a~first(.nil)
+
+
+::method "test_last_syntax"
+
+  a=.array~new
+  self~expectSyntax("93.902")
+  a~last(.nil)
+
+
+::method "test_next_syntax1"
+
+  a=.array~new
+  self~expectSyntax("93.901")
+  a~next
+
+
+::method "test_next_syntax2"
+
+  a=.array~new
+  self~expectSyntax("93.938")
+  a~next(.nil)
+
+
+::method "test_next_syntax3"
+
+  a=.array~new
+  self~expectSyntax("93.905")
+  a~next(.string)
+
+
+::method "test_next_syntax4"
+
+  a=.array~of("1")
+  self~expectSyntax("93.926")
+  a~next(.nil, .nil)
+
+
+::method "test_previous_syntax1"
+
+  a=.array~new
+  self~expectSyntax("93.901")
+  a~previous
+
+
+::method "test_previous_syntax2"
+
+  a=.array~new
+  self~expectSyntax("93.938")
+  a~previous(.nil)
+
+
+::method "test_previous_syntax3"
+
+  a=.array~new
+  self~expectSyntax("93.905")
+  a~previous(.string)
+
+
+::method "test_previous_syntax4"
+
+  a=.array~of("1")
+  self~expectSyntax("93.926")
+  a~previous(.nil, .nil)
+
+
+::method "test_MULTIDIMENSIONAL_makeArray"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  tmpColl=.array~new(3,4)
+  tmpColl~~put("1v", 1, 1)~~put("2v", 2,3)~~put("3v", 3, 4)
+  tmpCollArr=.array~of("1v","2v","3v")
+
+  tmp    =tmpColl~makeArray
+
+  self~assertTrue(  "subtest01", tmp~isInstanceOf(.array))
+  self~assertEquals("subtest02", tmpColl~allItems, tmp)
+  self~assertEquals("subtest03", tmpCollArr, tmp)
+
+
+
+
+::method "test_MULTIDIMENSIONAL_AT_[]_HASINDEX"
+  a=.array~new
+  a[1,1,1]="1v"
+  a[1,2,1]="2v"
+  a[3,1,1]="3v"
+
+  idx=.array~of(1,1,1)
+  self~assertEquals("subtest01-a", "1v", a[1,1,1])
+  self~assertEquals("subtest01-b", "1v", a~at(1,1,1))
+  self~assertEquals("subtest01-c", "1v", a~at(idx))
+  self~assertEquals("subtest01-d", "1v", a~"[]"(1,1,1))
+  self~assertEquals("subtest01-e", "1v", a~"[]"(idx))
+  self~assertTrue("subtest01-f", a~hasindex(1,1,1))
+  self~assertTrue("subtest01-g", a~hasindex(idx))
+
+  idx=.array~of(1,2,1)
+  self~assertEquals("subtest02-a", "2v", a[1,2,1])
+  self~assertEquals("subtest02-b", "2v", a~at(1,2,1))
+  self~assertEquals("subtest02-c", "2v", a~at(idx))
+  self~assertEquals("subtest02-d", "2v", a~"[]"(1,2,1))
+  self~assertEquals("subtest02-e", "2v", a~"[]"(idx))
+  self~assertTrue("subtest02-f", a~hasindex(1,2,1))
+  self~assertTrue("subtest02-g", a~hasindex(idx))
+
+  idx=.array~of(3,1,1)
+  self~assertEquals("subtest03-a", "3v", a[3,1,1])
+  self~assertEquals("subtest03-b", "3v", a~at(3,1,1))
+  self~assertEquals("subtest03-c", "3v", a~at(idx))
+  self~assertEquals("subtest03-d", "3v", a~"[]"(3,1,1))
+  self~assertEquals("subtest03-e", "3v", a~"[]"(idx))
+  self~assertTrue("subtest03-f", a~hasindex(3,1,1))
+  self~assertTrue("subtest03-g", a~hasindex(idx))
+
+  idx=.array~of(1,2,3)
+  self~assertNull("subtest04-a", a[1,2,3])
+  self~assertNull("subtest04-b", a~at(1,2,3))
+  self~assertNull("subtest04-c", a~at(idx))
+  self~assertNull("subtest04-d", a~"[]"(1,2,3))
+  self~assertNull("subtest04-e", a~"[]"(idx))
+  self~assertFalse("subtest03-f", a~hasindex(1,2,3))
+  self~assertFalse("subtest03-g", a~hasindex(idx))
+
+
+
+::method "test_MULTIDIMENSIONAL_PUT_[]="
+  a=.array~new
+  idx=.array~of(1,1,1)
+  a[idx]="1v"
+  self~assertEquals("subtest01-a", "1v", a[1,1,1])
+  self~assertEquals("subtest01-b", "1v", a~at(1,1,1))
+  self~assertEquals("subtest01-c", "1v", a~at(idx))
+  self~assertEquals("subtest01-d", "1v", a~"[]"(1,1,1))
+  self~assertEquals("subtest01-e", "1v", a~"[]"(idx))
+
+  idx=.array~of(1,2,1)
+  a~put("2v",idx)
+  self~assertEquals("subtest02-a", "2v", a[1,2,1])
+  self~assertEquals("subtest02-b", "2v", a~at(1,2,1))
+  self~assertEquals("subtest02-c", "2v", a~at(idx))
+  self~assertEquals("subtest02-d", "2v", a~"[]"(1,2,1))
+  self~assertEquals("subtest02-e", "2v", a~"[]"(idx))
+
+  idx=.array~of(3,1,1)
+  a~"[]="("3v",idx)
+  self~assertEquals("subtest03-a", "3v", a[3,1,1])
+  self~assertEquals("subtest03-b", "3v", a~at(3,1,1))
+  self~assertEquals("subtest03-c", "3v", a~at(idx))
+  self~assertEquals("subtest03-d", "3v", a~"[]"(3,1,1))
+  self~assertEquals("subtest03-e", "3v", a~"[]"(idx))
+
+
+
+::method "test_MULTIDIMENSIONAL_first_last_next_previous"
+  a=.array~new(3, 3, 3) -- multiple dimensions
+  f=.array~of(1,1,1) -- first
+  m=.array~of(2,2,2) -- middle
+  l=.array~of(3,3,3) -- last
+  self~assertNull(  "subtest_01a", a~first)
+  self~assertNull(  "subtest_01b", a~last)
+  self~assertNull(  "subtest_01c", a~next(1,1,1))
+  self~assertNull(  "subtest_01d", a~next(2,2,2))
+  self~assertNull(  "subtest_01e", a~next(3,3,3))
+  self~assertNull(  "subtest_01f", a~previous(1,1,1))
+  self~assertNull(  "subtest_01g", a~previous(2,2,2))
+  self~assertNull(  "subtest_01h", a~previous(3,3,3))
+  self~assertNull(  "subtest_01i", a~next(f))
+  self~assertNull(  "subtest_01j", a~next(m))
+  self~assertNull(  "subtest_01k", a~previous(l))
+  self~assertNull(  "subtest_01l", a~previous(m))
+
+  a[f]="1v"
+  a[l]="3v"
+  self~assertEquals("subtest_02a", f, a~first)
+  self~assertEquals("subtest_02b", l, a~last)
+  self~assertEquals("subtest_02c", l, a~next(1,1,1))
+  self~assertEquals("subtest_02d", l, a~next(2,2,2))
+  self~assertEquals("subtest_02e", f, a~previous(2,2,2))
+  self~assertEquals("subtest_02f", f, a~previous(3,3,3))
+  self~assertEquals("subtest_02g", l, a~next(f))
+  self~assertEquals("subtest_02h", l, a~next(m))
+  self~assertEquals("subtest_02i", f, a~previous(l))
+  self~assertEquals("subtest_02j", f, a~previous(m))
+
+  a[m]="2v"
+  self~assertEquals("subtest_03a", f, a~first)
+  self~assertEquals("subtest_03b", l, a~last)
+  self~assertEquals("subtest_03c", m, a~next(1,1,1))
+  self~assertEquals("subtest_03d", l, a~next(2,2,2))
+  self~assertEquals("subtest_03e", f, a~previous(2,2,2))
+  self~assertEquals("subtest_03f", m, a~previous(3,3,3))
+  self~assertEquals("subtest_03g", m, a~next(f))
+  self~assertEquals("subtest_03h", l, a~next(m))
+  self~assertEquals("subtest_03i", m, a~previous(l))
+  self~assertEquals("subtest_03j", f, a~previous(m))
+
+
+::method "test_ARRAY_makeArray"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+
+  tmpColl=collDir~emptyColl
+  tmp    =tmpColl~makeArray
+  self~assertTrue(  "subtest01", tmp~isInstanceOf(.array))
+  self~assertEquals("subtest02", tmpColl~allItems, tmp)
+
+  tmpColl=collDir~coll_1
+  tmp    =tmpColl~makeArray
+  self~assertTrue(  "subtest02", tmp~isInstanceOf(.array))
+  self~assertEquals("subtest03", tmpColl~allItems, tmp)
+
+  tmpColl=collDir~coll_2
+  tmp    =tmpColl~makeArray
+  self~assertTrue(  "subtest04", tmp~isInstanceOf(.array))
+  self~assertEquals("subtest05", tmpColl~allItems, tmp)
+
+
+
+::method "test_dimension_size"
+
+  a=.array~new       -- no dimension
+  self~assertEquals("subtest_01a", 0, a~dimension)
+  self~assertEquals("subtest_01b", 0, a~size)
+  self~assertEquals("subtest_01c", 0, a~items)
+
+  a[1]="1v"          -- single dimension
+  self~assertEquals("subtest_02a", 1, a~dimension)
+  self~assertEquals("subtest_02b", 1, a~size)
+  self~assertEquals("subtest_02c", 1, a~items)
+
+  a=.array~new(15)
+  self~assertEquals("subtest_04a", 1, a~dimension)
+  self~assertEquals("subtest_04b", 15, a~size)
+  self~assertEquals("subtest_04c", 0,  a~items)
+
+  a=.array~new(1, 2, 3) -- multiple dimensions
+  self~assertEquals("subtest_05a", 3, a~dimension)
+  self~assertEquals("subtest_05b", 1*2*3, a~size)
+  self~assertEquals("subtest_05c", 0,     a~items)
+
+  a[2,2,3]="1v"
+  self~assertEquals("subtest_05d", 1,     a~items)
+
+
+::method "test_dimension_syntax1"
+
+  a=.array~new
+  self~expectSyntax("93.938")
+  a~dimension(.nil)
+
+
+::method "test_dimension_syntax2"
+
+  a=.array~new
+  self~expectSyntax("93.905")
+  a~dimension(.string)
+
+
+::method "test_section"
+
+  a1=.array~new
+  a2=a1~section(2)
+  self~assertTrue("subtest_01", a1~items=a2~items)
+
+  a1=.array~of(1)
+  a2=a1~section(2)
+  self~assertTrue("subtest_02a", a2~items=0)
+  a2=a1~section(1)
+  self~assertTrue("subtest_02b", a2~items=1)
+  a2=a1~section(1,0)
+  self~assertTrue("subtest_02c", a2~items=0)
+  a2=a1~section(1,1)
+  self~assertTrue("subtest_02d", a2~items=1)
+  a2=a1~section(1,5)
+  self~assertTrue("subtest_02e", a2~items=1)
+
+  a1=.array~of(1,2,3,4,5)
+  a2=a1~section(2)
+  self~assertTrue("subtest_03a", a2~items=4)
+  self~assertTrue("subtest_03b", testSeq(a1, a2, 2))
+  a2=a1~section(2,2)
+  self~assertTrue("subtest_03c", a2~items=2)
+  self~assertTrue("subtest_03d", testSeq(a1, a2, 2))
+
+  return
+
+
+testSeq: procedure
+  use arg a1, a2, start
+
+  do i=1 to a2~items
+     if a1[i+start-1]<>a2[i] then return .false
+  end
+  return .true
+
+
+::method "test_section_syntax1"
+
+  a=.array~new
+  self~expectSyntax("93.903")
+  a~section
+
+
+::method "test_section_syntax2"
+
+  a=.array~new
+  self~expectSyntax("93.938")
+  a~section(.nil)
+
+
+::method "test_section_syntax3"
+
+  a=.array~new
+  self~expectSyntax("93.905")
+  a~section(.string)
+
+
+::method "test_section_syntax4"
+
+  a=.array~new
+  self~expectSyntax("93.907")
+  a~section(0)
+
+
+::method "test_section_syntax5"
+
+  a=.array~new
+  self~expectSyntax("93.938")
+  a~section(1, .nil)
+
+
+::method "test_section_syntax6"
+
+  a=.array~new
+  self~expectSyntax("93.905")
+  a~section(1, .string)
+
+
+::method "test_section_syntax7"
+
+  a=.array~new
+  self~expectSyntax("93.902")
+  a~section(.nil, .nil, .nil)
+
+
+::method "test_makeString"
+
+  nl=.ooRexxUnit.line.separator     -- get line separator
+  a=.array~new
+  self~assertEquals("subtest_01a", "", a~makestring)
+  self~assertEquals("subtest_01b", "", a~makestring("c"))
+  self~assertEquals("subtest_01c", "", a~makestring("C"))
+  self~assertEquals("subtest_01d", "", a~makestring("l"))
+  self~assertEquals("subtest_01e", "", a~makestring("L"))
+  self~assertEquals("subtest_01f", "", a~makestring(,"~"))
+
+
+  a=.array~of("1v")
+  str1="1v"
+  self~assertEquals("subtest_02a", str1, a~makestring)
+  self~assertEquals("subtest_02b", str1, a~makestring("c"))
+  self~assertEquals("subtest_02c", str1, a~makestring("C"))
+  self~assertEquals("subtest_02d", str1, a~makestring("l"))
+  self~assertEquals("subtest_02e", str1, a~makestring("L"))
+  self~assertEquals("subtest_02f", str1, a~makestring(,"~"))
+
+
+  a=.array~of("1v", "2v", "3v")
+  str1="1v2v3v"
+  str2=str1~insert(nl,4)~insert(nl,2)
+  str3=str1~insert("~",4)~insert("~",2)
+
+  self~assertEquals("subtest_03a", str2, a~makestring)
+  self~assertEquals("subtest_03b", str1, a~makestring("c"))
+  self~assertEquals("subtest_03c", str1, a~makestring("C"))
+  self~assertEquals("subtest_03d", str2, a~makestring("l"))
+  self~assertEquals("subtest_03e", str2, a~makestring("L"))
+  self~assertEquals("subtest_03f", str3, a~makestring(,"~"))
+
+
+  a=.array~of("1v",, "2v",, "3v")
+  str1="1v2v3v"
+  str2=str1~insert(nl,4)~insert(nl,2)
+  str3=str1~insert("~",4)~insert("~",2)
+
+  self~assertEquals("subtest_04a", str2, a~makestring)
+  self~assertEquals("subtest_04b", str1, a~makestring("c"))
+  self~assertEquals("subtest_04c", str1, a~makestring("C"))
+  self~assertEquals("subtest_04d", str2, a~makestring("l"))
+  self~assertEquals("subtest_04e", str2, a~makestring("L"))
+  self~assertEquals("subtest_04f", str3, a~makestring(,"~"))
+
+
+  a=.array~of(.set~new,, "2v",, .directory~new)
+  str1="2v"
+  str2=nl||str1||nl
+  str3="~"str1"~"
+
+  self~assertEquals("subtest_05a", str2, a~makestring)
+  self~assertEquals("subtest_05b", str1, a~makestring("c"))
+  self~assertEquals("subtest_05c", str1, a~makestring("C"))
+  self~assertEquals("subtest_05d", str2, a~makestring("l"))
+  self~assertEquals("subtest_05e", str2, a~makestring("L"))
+  self~assertEquals("subtest_05f", str3, a~makestring(,"~"))
+
+
+  a=.array~new
+  a[1,1]="11v";a[1,2]="12v";a[2,1]="21v";a[2,2]="22v"
+  str1="11v12v21v22v"
+  str2=str1~insert(nl,9)~insert(nl,6)~insert(nl,3)
+  str3=str1~insert("~",9)~insert("~",6)~insert("~",3)
+
+  self~assertEquals("subtest_06a", str2, a~makestring)
+  self~assertEquals("subtest_06b", str1, a~makestring("c"))
+  self~assertEquals("subtest_06c", str1, a~makestring("C"))
+  self~assertEquals("subtest_06d", str2, a~makestring("l"))
+  self~assertEquals("subtest_06e", str2, a~makestring("L"))
+  self~assertEquals("subtest_06f", str3, a~makestring(,"~"))
+
+::method "test_makeString_syntax1"
+
+  a=.array~new
+  self~expectSyntax("93.915")
+  a~makestring("S")
+
+::method "test_makeString_syntax2"
+
+  a=.array~new
+  self~expectSyntax("93.938")
+  a~makestring(.nil)
+
+::method "test_makeString_syntax3"
+
+  a=.array~new
+  self~expectSyntax("93.938")
+  a~makestring(,.nil)
+
+::method "test_makeString_syntax4"
+
+  a=.array~new
+  self~expectSyntax("93.902")
+  a~makestring("C", "~")
+
+::method "test_toString"
+
+  nl=.ooRexxUnit.line.separator     -- get line separator
+  a=.array~new
+  self~assertEquals("subtest_01a", "", a~toString)
+  self~assertEquals("subtest_01b", "", a~toString("C"))
+  self~assertEquals("subtest_01c", "", a~toString("L"))
+
+
+  a=.array~of("1v", "2v", "3v")
+  str1="1v2v3v"
+  str2=str1~insert(nl,4)~insert(nl,2)
+
+  self~assertEquals("subtest_02a", str2, a~toString)
+  self~assertEquals("subtest_02b", str1, a~toString("C"))
+  self~assertEquals("subtest_02c", str2, a~toString("L"))
+
+
+::method "test_sort"
+
+  a=.array~of
+  a1=a~sort
+  self~assertTrue("subtest_01", a1~items=a~items)
+
+  a=.array~of(1)
+  a1=a~sort
+  self~assertTrue("subtest_02", testSeq(a, a1))
+
+  a=.array~of(1,2)
+  a1=a~sort
+  self~assertTrue("subtest_03", testSeq(a, a1))
+
+  a=.array~of(1,2,3)
+  a1=a~sort
+  self~assertTrue("subtest_04", testSeq(a, a1))
+
+  a=.array~of(2,1,3)
+  a1=a~sort
+  a2=.array~of(1,2,3)
+  self~assertTrue("subtest_04", testSeq(a1, a2))
+
+  a=.array~of(2,1,3,2)
+  a1=a~sort
+  a2=.array~of(1,2,2,3)
+  self~assertTrue("subtest_04", testSeq(a1, a2))
+
+  a=.array~of(2,1)
+  a1=a~sort
+  a2=.array~of(1,2)
+  self~assertTrue("subtest_04", testSeq(a1, a2))
+
+  return
+
+
+testSeq: procedure
+  use arg a1, a2
+
+  do i=1 to a1~items
+     if a1[i]<>a2[i] then return .false
+  end
+  return a1~items=a2~items
+
+
+::method "test_stableSort"
+
+  a=.array~of
+  a1=a~stableSort
+  self~assertTrue("subtest_01", a1~items=a~items)
+
+  a=.array~of(1)
+  a1=a~stableSort
+  self~assertTrue("subtest_02", testSeq(a, a1))
+
+  a=.array~of(1,2)
+  a1=a~stableSort
+  self~assertTrue("subtest_03", testSeq(a, a1))
+
+  a=.array~of(1,2,3)
+  a1=a~stableSort
+  self~assertTrue("subtest_04", testSeq(a, a1))
+
+  a=.array~of(2,1,3)
+  a1=a~stableSort
+  a2=.array~of(1,2,3)
+  self~assertTrue("subtest_04", testSeq(a1, a2))
+
+  a=.array~of(2,1,3,2)
+  a1=a~stableSort
+  a2=.array~of(1,2,2,3)
+  self~assertTrue("subtest_04", testSeq(a1, a2))
+
+  a=.array~of(2,1)
+  a1=a~stableSort
+  a2=.array~of(1,2)
+  self~assertTrue("subtest_04", testSeq(a1, a2))
+
+  return
+
+
+testSeq: procedure
+  use arg a1, a2
+
+  do i=1 to a1~items
+     if a1[i]<>a2[i] then return .false
+  end
+  return a1~items=a2~items
+
+
+
+::method "test_sort_with"
+
+  c=.DescendingComparator~new    -- sort descendingly
+  a=.array~of
+  a1=a~sortWith(c)
+  self~assertTrue("subtest_01", a1~items=a~items)
+
+  a=.array~of(1)
+  a1=a~sortWith(c)
+  self~assertTrue("subtest_02", testSeq(a, a1))
+
+  a=.array~of(1,2)
+  a1=a~sortWith(c)
+  a2=.array~of(2,1)
+  self~assertTrue("subtest_03", testSeq(a1, a2))
+
+  a=.array~of(1,2,3)
+  a1=a~sortWith(c)
+  a2=.array~of(3,2,1)
+  self~assertTrue("subtest_04", testSeq(a1, a2))
+
+  a=.array~of(2,1,3)
+  a1=a~sortWith(c)
+  a2=.array~of(3,2,1)
+  self~assertTrue("subtest_04", testSeq(a1, a2))
+
+
+  a=.array~of(2,1,3,2)
+  a1=a~sortWith(c)
+  a2=.array~of(3,2,2,1)
+  self~assertTrue("subtest_04", testSeq(a1, a2))
+
+  a=.array~of(2,1)
+  a1=a~sortWith(c)
+  a2=.array~of(2,1)
+  self~assertTrue("subtest_04", testSeq(a1, a2))
+
+  return
+
+
+testSeq: procedure
+  use arg a1, a2
+
+  do i=1 to a1~items
+     if a1[i]<>a2[i] then return .false
+  end
+  return a1~items=a2~items
+
+
+
+
+::method "test_stableSort_with"
+
+  c=.DescendingComparator~new    -- sort descendingly
+  a=.array~of
+  a1=a~stableSortWith(c)
+  self~assertTrue("subtest_01", a1~items=a~items)
+
+  a=.array~of(1)
+  a1=a~stableSortWith(c)
+  self~assertTrue("subtest_02", testSeq(a, a1))
+
+  a=.array~of(1,2)
+  a1=a~stableSortWith(c)
+  a2=.array~of(2,1)
+  self~assertTrue("subtest_03", testSeq(a1, a2))
+
+  a=.array~of(1,2,3)
+  a1=a~stableSortWith(c)
+  a2=.array~of(3,2,1)
+  self~assertTrue("subtest_04", testSeq(a1, a2))
+
+  a=.array~of(2,1,3)
+  a1=a~stableSortWith(c)
+  a2=.array~of(3,2,1)
+  self~assertTrue("subtest_04", testSeq(a1, a2))
+
+
+  a=.array~of(2,1,3,2)
+  a1=a~stableSortWith(c)
+  a2=.array~of(3,2,2,1)
+  self~assertTrue("subtest_04", testSeq(a1, a2))
+
+  a=.array~of(2,1)
+  a1=a~stableSortWith(c)
+  a2=.array~of(2,1)
+  self~assertTrue("subtest_04", testSeq(a1, a2))
+
+  return
+
+
+testSeq: procedure
+  use arg a1, a2
+
+  do i=1 to a1~items
+     if a1[i]<>a2[i] then return .false
+  end
+  return a1~items=a2~items
+
+
+
+
+
+/* Test whether both collections contain the same entries.
+   returns .true, if the same, .false else
+*/
+::routine "sameContent"
+  use arg coll_1, coll_2
+
+  if coll_1~items<>coll_2~items then      -- not the same amount of objects
+     return .false
+   -- work on a copy
+  tmp=coll_1~copy
+  do o over coll_2
+     -- if \tmp~hasindex(o) then             -- no entry anymore ?
+     if \tmp~hasItem(o) then             -- no entry anymore ?
+        return .false
+
+     -- tmp~remove(o)                        -- remove object
+     tmp~removeItem(o)                        -- remove object
+  end
+
+  return (tmp~items=0)                    -- if the same, then no items left
+
+
+::routine "dumpColl"
+  use arg coll, title
+  if arg(2, "o") then title=coll~class~id "object ("coll~items" entries)"
+                 else title=coll~class~id":" title
+  .output~charout(">>>" title": ")
+  .output~charout(encode(coll))
+  say " <<<"
+  say
+
+
+::routine encode
+  use arg coll
+
+  bFirst=.true
+  tmpStr="("
+  do o over coll
+     if bFirst then bFirst=.false
+               else tmpStr=tmpStr","
+     tmpStr=tmpStr'"'o~string'"'
+  end
+  return tmpStr")"
+
+

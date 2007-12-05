@@ -1,0 +1,790 @@
+#!/usr/bin/rexx
+/*
+   name:             Date.testGroup
+   author:           Rick McGuire
+   date:             2007-09-23
+   version:          1.0.0
+
+-- line commented lines are ignored, when building the directory of infos from this header
+   changed:
+
+   languageLevel:    6.02
+   purpose:          Test the Date() BIF
+   remark:           ---
+
+   license:          CPL 1.0 (Common Public License v1.0, see below)
+   link:             ---
+   needs:            ---
+
+
+   category1:       ooRexx
+   category2:       base
+   category3:       BIF
+
+*/
+
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+
+
+-------------------------------------------------------------------------------------------
+-- ===> adapt the "testGroupList" to your testCase classes; each element in the list is <===
+-- ===> an array object, the first element containing the testCase class object, the   <===
+-- ===> second element is a list of test method names which are regarded to be         <===
+-- ===> mandatory (if the list remains empty all test methods are mandatory)           <===
+
+   /* list of array objects, each containing the testGroup class object and an
+      optional list of mandatory test case methods name                       */
+
+mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
+testGroupList=.list~of( .array~of(.Date.testGroup,  mandatoryTestMethods) )
+
+
+-------------------------------------------------------------------------------------------
+-- ===> the following code needs not to be individualized                              <===
+
+   -- read top comment, containing infos about this program
+arrLines=.array~new
+do i=1 to 150 until arrLines[i]="*/"
+   arrLines[i]=sourceline(i)
+end
+      -- supply information for the testClass(es) in this file; the class attribute
+      -- "TestCaseInfo" (a directory object, index points to a queue) will store
+      -- the parsed infos
+aTestGroupClass=testGroupList~at(testGroupList~first)[1] -- get first testClass
+
+   -- will parse the array lines and store result in class object
+call makeDirTestInfo aTestGroupClass, arrLines
+tmpDir=aTestGroupClass~TestCaseInfo
+parse source s   -- op_sys invocationType fullPathToThisFile
+tmpDir~setentry("test_Case-source", s)
+
+   -- now add this directory to other testCase classes, if any left
+do arr over testGroupList
+   if arr[1]=aTestGroupClass then iterate  -- already handled
+   arr[1]~TestCaseInfo=tmpDir             -- save info in class object
+end
+
+-- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
+-- and set it to .false; this way the independent local invocation of the tests is inhibited
+if .local~hasentry("bRunTestsLocally")=.false then
+   .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
+
+if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
+do
+   ts=.testSuite~new             -- create a testSuite
+   do arr over testGroupList
+      -- create a testSuite for the given test case class, use all its testmethods
+      ts~addTest( .testSuite~new(arr[1]))
+   end
+   -- testResult=.testSuite~new(testGroupClass)~run
+   testResult=ts~run       -- now run all the tests
+
+   call simpleDumpTestResults testResult
+end
+
+   /* return list of array objects containing test case classes and
+      optionally list of mandatory test methods                      */
+return testGroupList
+
+
+
+::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+
+::class "Date.testGroup" subclass TestCase public
+
+
+
+
+::METHOD 'test_standard'
+date = '20070922'
+format = 'S'
+self~assertSame("base              / subtest # 1", date('B', date, format), "732940")
+self~assertSame("days              / subtest # 2", date('D', date, format), "265")
+self~assertSame("european          / subtest # 3", date('E', date, format), "22/09/07")
+self~assertSame("european_no_sep   / subtest # 4", date('E', date, format, ''), "220907")
+self~assertSame("european_dash_sep / subtest # 5", date('E', date, format, '-'), "22-09-07")
+self~assertSame("language          / subtest # 6", date('L', date, format), "22 September 2007")
+self~assertSame("month             / subtest # 7", date('M', date, format), "September")
+self~assertSame("normal            / subtest # 8", date('N', date, format), "22 Sep 2007")
+self~assertSame("normal_no_sep     / subtest # 9", date('N', date, format, ''), "22Sep2007")
+self~assertSame("normal_dash_sep   / subtest # 10", date('N', date, format,'-'), "22-Sep-2007")
+self~assertSame("ordered           / subtest # 11", date('O', date, format), "07/09/22")
+self~assertSame("ordered_no_sep    / subtest # 12", date('O', date, format, ''), "070922")
+self~assertSame("ordered_dash_sep  / subtest # 13", date('O', date, format, '-'), "07-09-22")
+self~assertSame("standard          / subtest # 14", date('S', date, format), "20070922")
+self~assertSame("stardard_no_sep   / subtest # 15", date('S', date, format, ''), "20070922")
+self~assertSame("standard_dash_sep / subtest # 16", date('S', date, format, '-'), "2007-09-22")
+self~assertSame("usa               / subtest # 17", date('U', date, format), "09/22/07")
+self~assertSame("usa_no_sep        / subtest # 18", date('U', date, format, ''), "092207")
+self~assertSame("usa_dash_sep      / subtest # 19", date('U', date, format, '-'), "09-22-07")
+self~assertSame("weekday           / subtest # 20", date('W', date, format), "Saturday")
+
+::METHOD 'test_standard_dash'
+date = '2007-09-22'
+format = 'S'
+sep = '-'
+self~assertSame("base              / subtest # 1", date('B', date, format,, sep), "732940")
+self~assertSame("days              / subtest # 2", date('D', date, format,, sep), "265")
+self~assertSame("european          / subtest # 3", date('E', date, format,, sep), "22/09/07")
+self~assertSame("european_no_sep   / subtest # 4", date('E', date, format, '', sep), "220907")
+self~assertSame("european_dash_sep / subtest # 5", date('E', date, format, '-', sep), "22-09-07")
+self~assertSame("language          / subtest # 6", date('L', date, format,, sep), "22 September 2007")
+self~assertSame("month             / subtest # 7", date('M', date, format,, sep), "September")
+self~assertSame("normal            / subtest # 8", date('N', date, format,, sep), "22 Sep 2007")
+self~assertSame("normal_no_sep     / subtest # 9", date('N', date, format, '', sep), "22Sep2007")
+self~assertSame("normal_dash_sep   / subtest # 10", date('N', date, format,'-', sep), "22-Sep-2007")
+self~assertSame("ordered           / subtest # 11", date('O', date, format,, sep), "07/09/22")
+self~assertSame("ordered_no_sep    / subtest # 12", date('O', date, format, '', sep), "070922")
+self~assertSame("ordered_dash_sep  / subtest # 13", date('O', date, format, '-', sep), "07-09-22")
+self~assertSame("standard          / subtest # 14", date('S', date, format,, sep), "20070922")
+self~assertSame("stardard_no_sep   / subtest # 15", date('S', date, format, '', sep), "20070922")
+self~assertSame("standard_dash_sep / subtest # 16", date('S', date, format, '-', sep), "2007-09-22")
+self~assertSame("usa               / subtest # 17", date('U', date, format,, sep), "09/22/07")
+self~assertSame("usa_no_sep        / subtest # 18", date('U', date, format, '', sep), "092207")
+self~assertSame("usa_dash_sep      / subtest # 19", date('U', date, format, '-', sep), "09-22-07")
+self~assertSame("weekday           / subtest # 20", date('W', date, format,, sep), "Saturday")
+
+::METHOD 'test_standard_null'
+date = '20070922'
+format = 'S'
+sep = ''
+self~assertSame("base              / subtest # 1", date('B', date, format,, sep), "732940")
+self~assertSame("days              / subtest # 2", date('D', date, format,, sep), "265")
+self~assertSame("european          / subtest # 3", date('E', date, format,, sep), "22/09/07")
+self~assertSame("european_no_sep   / subtest # 4", date('E', date, format, '', sep), "220907")
+self~assertSame("european_dash_sep / subtest # 5", date('E', date, format, '-', sep), "22-09-07")
+self~assertSame("language          / subtest # 6", date('L', date, format,, sep), "22 September 2007")
+self~assertSame("month             / subtest # 7", date('M', date, format,, sep), "September")
+self~assertSame("normal            / subtest # 8", date('N', date, format,, sep), "22 Sep 2007")
+self~assertSame("normal_no_sep     / subtest # 9", date('N', date, format, '', sep), "22Sep2007")
+self~assertSame("normal_dash_sep   / subtest # 10", date('N', date, format,'-', sep), "22-Sep-2007")
+self~assertSame("ordered           / subtest # 11", date('O', date, format,, sep), "07/09/22")
+self~assertSame("ordered_no_sep    / subtest # 12", date('O', date, format, '', sep), "070922")
+self~assertSame("ordered_dash_sep  / subtest # 13", date('O', date, format, '-', sep), "07-09-22")
+self~assertSame("standard          / subtest # 14", date('S', date, format,, sep), "20070922")
+self~assertSame("stardard_no_sep   / subtest # 15", date('S', date, format, '', sep), "20070922")
+self~assertSame("standard_dash_sep / subtest # 16", date('S', date, format, '-', sep), "2007-09-22")
+self~assertSame("usa               / subtest # 17", date('U', date, format,, sep), "09/22/07")
+self~assertSame("usa_no_sep        / subtest # 18", date('U', date, format, '', sep), "092207")
+self~assertSame("usa_dash_sep      / subtest # 19", date('U', date, format, '-', sep), "09-22-07")
+self~assertSame("weekday           / subtest # 20", date('W', date, format,, sep), "Saturday")
+
+::METHOD 'test_normal'
+date = '22 Sep 2007'
+format = 'N'
+self~assertSame("base              / subtest # 1", date('B', date, format), "732940")
+self~assertSame("days              / subtest # 2", date('D', date, format), "265")
+self~assertSame("european          / subtest # 3", date('E', date, format), "22/09/07")
+self~assertSame("european_no_sep   / subtest # 4", date('E', date, format, ''), "220907")
+self~assertSame("european_dash_sep / subtest # 5", date('E', date, format, '-'), "22-09-07")
+self~assertSame("language          / subtest # 6", date('L', date, format), "22 September 2007")
+self~assertSame("month             / subtest # 7", date('M', date, format), "September")
+self~assertSame("normal            / subtest # 8", date('N', date, format), "22 Sep 2007")
+self~assertSame("normal_no_sep     / subtest # 9", date('N', date, format, ''), "22Sep2007")
+self~assertSame("normal_dash_sep   / subtest # 10", date('N', date, format,'-'), "22-Sep-2007")
+self~assertSame("ordered           / subtest # 11", date('O', date, format), "07/09/22")
+self~assertSame("ordered_no_sep    / subtest # 12", date('O', date, format, ''), "070922")
+self~assertSame("ordered_dash_sep  / subtest # 13", date('O', date, format, '-'), "07-09-22")
+self~assertSame("standard          / subtest # 14", date('S', date, format), "20070922")
+self~assertSame("stardard_no_sep   / subtest # 15", date('S', date, format, ''), "20070922")
+self~assertSame("standard_dash_sep / subtest # 16", date('S', date, format, '-'), "2007-09-22")
+self~assertSame("usa               / subtest # 17", date('U', date, format), "09/22/07")
+self~assertSame("usa_no_sep        / subtest # 18", date('U', date, format, ''), "092207")
+self~assertSame("usa_dash_sep      / subtest # 19", date('U', date, format, '-'), "09-22-07")
+self~assertSame("weekday           / subtest # 20", date('W', date, format), "Saturday")
+
+::METHOD 'test_normal_dash'
+date = '22-Sep-2007'
+format = 'N'
+sep = '-'
+self~assertSame("base              / subtest # 1", date('B', date, format,, sep), "732940")
+self~assertSame("days              / subtest # 2", date('D', date, format,, sep), "265")
+self~assertSame("european          / subtest # 3", date('E', date, format,, sep), "22/09/07")
+self~assertSame("european_no_sep   / subtest # 4", date('E', date, format, '', sep), "220907")
+self~assertSame("european_dash_sep / subtest # 5", date('E', date, format, '-', sep), "22-09-07")
+self~assertSame("language          / subtest # 6", date('L', date, format,, sep), "22 September 2007")
+self~assertSame("month             / subtest # 7", date('M', date, format,, sep), "September")
+self~assertSame("normal            / subtest # 8", date('N', date, format,, sep), "22 Sep 2007")
+self~assertSame("normal_no_sep     / subtest # 9", date('N', date, format, '', sep), "22Sep2007")
+self~assertSame("normal_dash_sep   / subtest # 10", date('N', date, format,'-', sep), "22-Sep-2007")
+self~assertSame("ordered           / subtest # 11", date('O', date, format,, sep), "07/09/22")
+self~assertSame("ordered_no_sep    / subtest # 12", date('O', date, format, '', sep), "070922")
+self~assertSame("ordered_dash_sep  / subtest # 13", date('O', date, format, '-', sep), "07-09-22")
+self~assertSame("standard          / subtest # 14", date('S', date, format,, sep), "20070922")
+self~assertSame("stardard_no_sep   / subtest # 15", date('S', date, format, '', sep), "20070922")
+self~assertSame("standard_dash_sep / subtest # 16", date('S', date, format, '-', sep), "2007-09-22")
+self~assertSame("usa               / subtest # 17", date('U', date, format,, sep), "09/22/07")
+self~assertSame("usa_no_sep        / subtest # 18", date('U', date, format, '', sep), "092207")
+self~assertSame("usa_dash_sep      / subtest # 19", date('U', date, format, '-', sep), "09-22-07")
+self~assertSame("weekday           / subtest # 20", date('W', date, format,, sep), "Saturday")
+
+::METHOD 'test_normal_null'
+date = '22Sep2007'
+format = 'N'
+sep = ''
+self~assertSame("base              / subtest # 1", date('B', date, format,, sep), "732940")
+self~assertSame("days              / subtest # 2", date('D', date, format,, sep), "265")
+self~assertSame("european          / subtest # 3", date('E', date, format,, sep), "22/09/07")
+self~assertSame("european_no_sep   / subtest # 4", date('E', date, format, '', sep), "220907")
+self~assertSame("european_dash_sep / subtest # 5", date('E', date, format, '-', sep), "22-09-07")
+self~assertSame("language          / subtest # 6", date('L', date, format,, sep), "22 September 2007")
+self~assertSame("month             / subtest # 7", date('M', date, format,, sep), "September")
+self~assertSame("normal            / subtest # 8", date('N', date, format,, sep), "22 Sep 2007")
+self~assertSame("normal_no_sep     / subtest # 9", date('N', date, format, '', sep), "22Sep2007")
+self~assertSame("normal_dash_sep   / subtest # 10", date('N', date, format,'-', sep), "22-Sep-2007")
+self~assertSame("ordered           / subtest # 11", date('O', date, format,, sep), "07/09/22")
+self~assertSame("ordered_no_sep    / subtest # 12", date('O', date, format, '', sep), "070922")
+self~assertSame("ordered_dash_sep  / subtest # 13", date('O', date, format, '-', sep), "07-09-22")
+self~assertSame("standard          / subtest # 14", date('S', date, format,, sep), "20070922")
+self~assertSame("stardard_no_sep   / subtest # 15", date('S', date, format, '', sep), "20070922")
+self~assertSame("standard_dash_sep / subtest # 16", date('S', date, format, '-', sep), "2007-09-22")
+self~assertSame("usa               / subtest # 17", date('U', date, format,, sep), "09/22/07")
+self~assertSame("usa_no_sep        / subtest # 18", date('U', date, format, '', sep), "092207")
+self~assertSame("usa_dash_sep      / subtest # 19", date('U', date, format, '-', sep), "09-22-07")
+self~assertSame("weekday           / subtest # 20", date('W', date, format,, sep), "Saturday")
+
+::METHOD 'test_base'
+date = '732940'
+format = 'B'
+self~assertSame("base              / subtest # 1", date('B', date, format), "732940")
+self~assertSame("days              / subtest # 2", date('D', date, format), "265")
+self~assertSame("european          / subtest # 3", date('E', date, format), "22/09/07")
+self~assertSame("european_no_sep   / subtest # 4", date('E', date, format, ''), "220907")
+self~assertSame("european_dash_sep / subtest # 5", date('E', date, format, '-'), "22-09-07")
+self~assertSame("language          / subtest # 6", date('L', date, format), "22 September 2007")
+self~assertSame("month             / subtest # 7", date('M', date, format), "September")
+self~assertSame("normal            / subtest # 8", date('N', date, format), "22 Sep 2007")
+self~assertSame("normal_no_sep     / subtest # 9", date('N', date, format, ''), "22Sep2007")
+self~assertSame("normal_dash_sep   / subtest # 10", date('N', date, format,'-'), "22-Sep-2007")
+self~assertSame("ordered           / subtest # 11", date('O', date, format), "07/09/22")
+self~assertSame("ordered_no_sep    / subtest # 12", date('O', date, format, ''), "070922")
+self~assertSame("ordered_dash_sep  / subtest # 13", date('O', date, format, '-'), "07-09-22")
+self~assertSame("standard          / subtest # 14", date('S', date, format), "20070922")
+self~assertSame("stardard_no_sep   / subtest # 15", date('S', date, format, ''), "20070922")
+self~assertSame("standard_dash_sep / subtest # 16", date('S', date, format, '-'), "2007-09-22")
+self~assertSame("usa               / subtest # 17", date('U', date, format), "09/22/07")
+self~assertSame("usa_no_sep        / subtest # 18", date('U', date, format, ''), "092207")
+self~assertSame("usa_dash_sep      / subtest # 19", date('U', date, format, '-'), "09-22-07")
+self~assertSame("weekday           / subtest # 20", date('W', date, format), "Saturday")
+
+::METHOD 'test_european'
+date = '22/09/07'
+format = 'E'
+self~assertSame("base              / subtest # 1", date('B', date, format), "732940")
+self~assertSame("days              / subtest # 2", date('D', date, format), "265")
+self~assertSame("european          / subtest # 3", date('E', date, format), "22/09/07")
+self~assertSame("european_no_sep   / subtest # 4", date('E', date, format, ''), "220907")
+self~assertSame("european_dash_sep / subtest # 5", date('E', date, format, '-'), "22-09-07")
+self~assertSame("language          / subtest # 6", date('L', date, format), "22 September 2007")
+self~assertSame("month             / subtest # 7", date('M', date, format), "September")
+self~assertSame("normal            / subtest # 8", date('N', date, format), "22 Sep 2007")
+self~assertSame("normal_no_sep     / subtest # 9", date('N', date, format, ''), "22Sep2007")
+self~assertSame("normal_dash_sep   / subtest # 10", date('N', date, format,'-'), "22-Sep-2007")
+self~assertSame("ordered           / subtest # 11", date('O', date, format), "07/09/22")
+self~assertSame("ordered_no_sep    / subtest # 12", date('O', date, format, ''), "070922")
+self~assertSame("ordered_dash_sep  / subtest # 13", date('O', date, format, '-'), "07-09-22")
+self~assertSame("standard          / subtest # 14", date('S', date, format), "20070922")
+self~assertSame("stardard_no_sep   / subtest # 15", date('S', date, format, ''), "20070922")
+self~assertSame("standard_dash_sep / subtest # 16", date('S', date, format, '-'), "2007-09-22")
+self~assertSame("usa               / subtest # 17", date('U', date, format), "09/22/07")
+self~assertSame("usa_no_sep        / subtest # 18", date('U', date, format, ''), "092207")
+self~assertSame("usa_dash_sep      / subtest # 19", date('U', date, format, '-'), "09-22-07")
+self~assertSame("weekday           / subtest # 20", date('W', date, format), "Saturday")
+
+::METHOD 'test_european_dash'
+date = '22-09-07'
+format = 'E'
+sep = '-'
+self~assertSame("base              / subtest # 1", date('B', date, format,, sep), "732940")
+self~assertSame("days              / subtest # 2", date('D', date, format,, sep), "265")
+self~assertSame("european          / subtest # 3", date('E', date, format,, sep), "22/09/07")
+self~assertSame("european_no_sep   / subtest # 4", date('E', date, format, '', sep), "220907")
+self~assertSame("european_dash_sep / subtest # 5", date('E', date, format, '-', sep), "22-09-07")
+self~assertSame("language          / subtest # 6", date('L', date, format,, sep), "22 September 2007")
+self~assertSame("month             / subtest # 7", date('M', date, format,, sep), "September")
+self~assertSame("normal            / subtest # 8", date('N', date, format,, sep), "22 Sep 2007")
+self~assertSame("normal_no_sep     / subtest # 9", date('N', date, format, '', sep), "22Sep2007")
+self~assertSame("normal_dash_sep   / subtest # 10", date('N', date, format,'-', sep), "22-Sep-2007")
+self~assertSame("ordered           / subtest # 11", date('O', date, format,, sep), "07/09/22")
+self~assertSame("ordered_no_sep    / subtest # 12", date('O', date, format, '', sep), "070922")
+self~assertSame("ordered_dash_sep  / subtest # 13", date('O', date, format, '-', sep), "07-09-22")
+self~assertSame("standard          / subtest # 14", date('S', date, format,, sep), "20070922")
+self~assertSame("stardard_no_sep   / subtest # 15", date('S', date, format, '', sep), "20070922")
+self~assertSame("standard_dash_sep / subtest # 16", date('S', date, format, '-', sep), "2007-09-22")
+self~assertSame("usa               / subtest # 17", date('U', date, format,, sep), "09/22/07")
+self~assertSame("usa_no_sep        / subtest # 18", date('U', date, format, '', sep), "092207")
+self~assertSame("usa_dash_sep      / subtest # 19", date('U', date, format, '-', sep), "09-22-07")
+self~assertSame("weekday           / subtest # 20", date('W', date, format,, sep), "Saturday")
+
+::METHOD 'test_european_null'
+date = '220907'
+format = 'E'
+sep = ''
+self~assertSame("base              / subtest # 1", date('B', date, format,, sep), "732940")
+self~assertSame("days              / subtest # 2", date('D', date, format,, sep), "265")
+self~assertSame("european          / subtest # 3", date('E', date, format,, sep), "22/09/07")
+self~assertSame("european_no_sep   / subtest # 4", date('E', date, format, '', sep), "220907")
+self~assertSame("european_dash_sep / subtest # 5", date('E', date, format, '-', sep), "22-09-07")
+self~assertSame("language          / subtest # 6", date('L', date, format,, sep), "22 September 2007")
+self~assertSame("month             / subtest # 7", date('M', date, format,, sep), "September")
+self~assertSame("normal            / subtest # 8", date('N', date, format,, sep), "22 Sep 2007")
+self~assertSame("normal_no_sep     / subtest # 9", date('N', date, format, '', sep), "22Sep2007")
+self~assertSame("normal_dash_sep   / subtest # 10", date('N', date, format,'-', sep), "22-Sep-2007")
+self~assertSame("ordered           / subtest # 11", date('O', date, format,, sep), "07/09/22")
+self~assertSame("ordered_no_sep    / subtest # 12", date('O', date, format, '', sep), "070922")
+self~assertSame("ordered_dash_sep  / subtest # 13", date('O', date, format, '-', sep), "07-09-22")
+self~assertSame("standard          / subtest # 14", date('S', date, format,, sep), "20070922")
+self~assertSame("stardard_no_sep   / subtest # 15", date('S', date, format, '', sep), "20070922")
+self~assertSame("standard_dash_sep / subtest # 16", date('S', date, format, '-', sep), "2007-09-22")
+self~assertSame("usa               / subtest # 17", date('U', date, format,, sep), "09/22/07")
+self~assertSame("usa_no_sep        / subtest # 18", date('U', date, format, '', sep), "092207")
+self~assertSame("usa_dash_sep      / subtest # 19", date('U', date, format, '-', sep), "09-22-07")
+self~assertSame("weekday           / subtest # 20", date('W', date, format,, sep), "Saturday")
+
+::METHOD 'test_ordered'
+date = '07/09/22'
+format = 'O'
+self~assertSame("base              / subtest # 1", date('B', date, format), "732940")
+self~assertSame("days              / subtest # 2", date('D', date, format), "265")
+self~assertSame("european          / subtest # 3", date('E', date, format), "22/09/07")
+self~assertSame("european_no_sep   / subtest # 4", date('E', date, format, ''), "220907")
+self~assertSame("european_dash_sep / subtest # 5", date('E', date, format, '-'), "22-09-07")
+self~assertSame("language          / subtest # 6", date('L', date, format), "22 September 2007")
+self~assertSame("month             / subtest # 7", date('M', date, format), "September")
+self~assertSame("normal            / subtest # 8", date('N', date, format), "22 Sep 2007")
+self~assertSame("normal_no_sep     / subtest # 9", date('N', date, format, ''), "22Sep2007")
+self~assertSame("normal_dash_sep   / subtest # 10", date('N', date, format,'-'), "22-Sep-2007")
+self~assertSame("ordered           / subtest # 11", date('O', date, format), "07/09/22")
+self~assertSame("ordered_no_sep    / subtest # 12", date('O', date, format, ''), "070922")
+self~assertSame("ordered_dash_sep  / subtest # 13", date('O', date, format, '-'), "07-09-22")
+self~assertSame("standard          / subtest # 14", date('S', date, format), "20070922")
+self~assertSame("stardard_no_sep   / subtest # 15", date('S', date, format, ''), "20070922")
+self~assertSame("standard_dash_sep / subtest # 16", date('S', date, format, '-'), "2007-09-22")
+self~assertSame("usa               / subtest # 17", date('U', date, format), "09/22/07")
+self~assertSame("usa_no_sep        / subtest # 18", date('U', date, format, ''), "092207")
+self~assertSame("usa_dash_sep      / subtest # 19", date('U', date, format, '-'), "09-22-07")
+self~assertSame("weekday           / subtest # 20", date('W', date, format), "Saturday")
+
+::METHOD 'test_ordered_dash'
+date = '07-09-22'
+format = 'O'
+sep = '-'
+self~assertSame("base              / subtest # 1", date('B', date, format,, sep), "732940")
+self~assertSame("days              / subtest # 2", date('D', date, format,, sep), "265")
+self~assertSame("european          / subtest # 3", date('E', date, format,, sep), "22/09/07")
+self~assertSame("european_no_sep   / subtest # 4", date('E', date, format, '', sep), "220907")
+self~assertSame("european_dash_sep / subtest # 5", date('E', date, format, '-', sep), "22-09-07")
+self~assertSame("language          / subtest # 6", date('L', date, format,, sep), "22 September 2007")
+self~assertSame("month             / subtest # 7", date('M', date, format,, sep), "September")
+self~assertSame("normal            / subtest # 8", date('N', date, format,, sep), "22 Sep 2007")
+self~assertSame("normal_no_sep     / subtest # 9", date('N', date, format, '', sep), "22Sep2007")
+self~assertSame("normal_dash_sep   / subtest # 10", date('N', date, format,'-', sep), "22-Sep-2007")
+self~assertSame("ordered           / subtest # 11", date('O', date, format,, sep), "07/09/22")
+self~assertSame("ordered_no_sep    / subtest # 12", date('O', date, format, '', sep), "070922")
+self~assertSame("ordered_dash_sep  / subtest # 13", date('O', date, format, '-', sep), "07-09-22")
+self~assertSame("standard          / subtest # 14", date('S', date, format,, sep), "20070922")
+self~assertSame("stardard_no_sep   / subtest # 15", date('S', date, format, '', sep), "20070922")
+self~assertSame("standard_dash_sep / subtest # 16", date('S', date, format, '-', sep), "2007-09-22")
+self~assertSame("usa               / subtest # 17", date('U', date, format,, sep), "09/22/07")
+self~assertSame("usa_no_sep        / subtest # 18", date('U', date, format, '', sep), "092207")
+self~assertSame("usa_dash_sep      / subtest # 19", date('U', date, format, '-', sep), "09-22-07")
+self~assertSame("weekday           / subtest # 20", date('W', date, format,, sep), "Saturday")
+
+::METHOD 'test_ordered_null'
+date = '070922'
+format = 'O'
+sep = ''
+self~assertSame("base              / subtest # 1", date('B', date, format,, sep), "732940")
+self~assertSame("days              / subtest # 2", date('D', date, format,, sep), "265")
+self~assertSame("european          / subtest # 3", date('E', date, format,, sep), "22/09/07")
+self~assertSame("european_no_sep   / subtest # 4", date('E', date, format, '', sep), "220907")
+self~assertSame("european_dash_sep / subtest # 5", date('E', date, format, '-', sep), "22-09-07")
+self~assertSame("language          / subtest # 6", date('L', date, format,, sep), "22 September 2007")
+self~assertSame("month             / subtest # 7", date('M', date, format,, sep), "September")
+self~assertSame("normal            / subtest # 8", date('N', date, format,, sep), "22 Sep 2007")
+self~assertSame("normal_no_sep     / subtest # 9", date('N', date, format, '', sep), "22Sep2007")
+self~assertSame("normal_dash_sep   / subtest # 10", date('N', date, format,'-', sep), "22-Sep-2007")
+self~assertSame("ordered           / subtest # 11", date('O', date, format,, sep), "07/09/22")
+self~assertSame("ordered_no_sep    / subtest # 12", date('O', date, format, '', sep), "070922")
+self~assertSame("ordered_dash_sep  / subtest # 13", date('O', date, format, '-', sep), "07-09-22")
+self~assertSame("standard          / subtest # 14", date('S', date, format,, sep), "20070922")
+self~assertSame("stardard_no_sep   / subtest # 15", date('S', date, format, '', sep), "20070922")
+self~assertSame("standard_dash_sep / subtest # 16", date('S', date, format, '-', sep), "2007-09-22")
+self~assertSame("usa               / subtest # 17", date('U', date, format,, sep), "09/22/07")
+self~assertSame("usa_no_sep        / subtest # 18", date('U', date, format, '', sep), "092207")
+self~assertSame("usa_dash_sep      / subtest # 19", date('U', date, format, '-', sep), "09-22-07")
+self~assertSame("weekday           / subtest # 20", date('W', date, format,, sep), "Saturday")
+
+::METHOD 'test_usa'
+date = '09/22/07'
+format = 'U'
+self~assertSame("base              / subtest # 1", date('B', date, format), "732940")
+self~assertSame("days              / subtest # 2", date('D', date, format), "265")
+self~assertSame("european          / subtest # 3", date('E', date, format), "22/09/07")
+self~assertSame("european_no_sep   / subtest # 4", date('E', date, format, ''), "220907")
+self~assertSame("european_dash_sep / subtest # 5", date('E', date, format, '-'), "22-09-07")
+self~assertSame("language          / subtest # 6", date('L', date, format), "22 September 2007")
+self~assertSame("month             / subtest # 7", date('M', date, format), "September")
+self~assertSame("normal            / subtest # 8", date('N', date, format), "22 Sep 2007")
+self~assertSame("normal_no_sep     / subtest # 9", date('N', date, format, ''), "22Sep2007")
+self~assertSame("normal_dash_sep   / subtest # 10", date('N', date, format,'-'), "22-Sep-2007")
+self~assertSame("ordered           / subtest # 11", date('O', date, format), "07/09/22")
+self~assertSame("ordered_no_sep    / subtest # 12", date('O', date, format, ''), "070922")
+self~assertSame("ordered_dash_sep  / subtest # 13", date('O', date, format, '-'), "07-09-22")
+self~assertSame("standard          / subtest # 14", date('S', date, format), "20070922")
+self~assertSame("stardard_no_sep   / subtest # 15", date('S', date, format, ''), "20070922")
+self~assertSame("standard_dash_sep / subtest # 16", date('S', date, format, '-'), "2007-09-22")
+self~assertSame("usa               / subtest # 17", date('U', date, format), "09/22/07")
+self~assertSame("usa_no_sep        / subtest # 18", date('U', date, format, ''), "092207")
+self~assertSame("usa_dash_sep      / subtest # 19", date('U', date, format, '-'), "09-22-07")
+self~assertSame("weekday           / subtest # 20", date('W', date, format), "Saturday")
+
+::METHOD 'test_usa_dash'
+date = '09-22-07'
+format = 'U'
+sep = '-'
+self~assertSame("base              / subtest # 1", date('B', date, format,, sep), "732940")
+self~assertSame("days              / subtest # 2", date('D', date, format,, sep), "265")
+self~assertSame("european          / subtest # 3", date('E', date, format,, sep), "22/09/07")
+self~assertSame("european_no_sep   / subtest # 4", date('E', date, format, '', sep), "220907")
+self~assertSame("european_dash_sep / subtest # 5", date('E', date, format, '-', sep), "22-09-07")
+self~assertSame("language          / subtest # 6", date('L', date, format,, sep), "22 September 2007")
+self~assertSame("month             / subtest # 7", date('M', date, format,, sep), "September")
+self~assertSame("normal            / subtest # 8", date('N', date, format,, sep), "22 Sep 2007")
+self~assertSame("normal_no_sep     / subtest # 9", date('N', date, format, '', sep), "22Sep2007")
+self~assertSame("normal_dash_sep   / subtest # 10", date('N', date, format,'-', sep), "22-Sep-2007")
+self~assertSame("ordered           / subtest # 11", date('O', date, format,, sep), "07/09/22")
+self~assertSame("ordered_no_sep    / subtest # 12", date('O', date, format, '', sep), "070922")
+self~assertSame("ordered_dash_sep  / subtest # 13", date('O', date, format, '-', sep), "07-09-22")
+self~assertSame("standard          / subtest # 14", date('S', date, format,, sep), "20070922")
+self~assertSame("stardard_no_sep   / subtest # 15", date('S', date, format, '', sep), "20070922")
+self~assertSame("standard_dash_sep / subtest # 16", date('S', date, format, '-', sep), "2007-09-22")
+self~assertSame("usa               / subtest # 17", date('U', date, format,, sep), "09/22/07")
+self~assertSame("usa_no_sep        / subtest # 18", date('U', date, format, '', sep), "092207")
+self~assertSame("usa_dash_sep      / subtest # 19", date('U', date, format, '-', sep), "09-22-07")
+self~assertSame("weekday           / subtest # 20", date('W', date, format,, sep), "Saturday")
+
+::METHOD 'test_usa_null'
+date = '092207'
+format = 'U'
+sep = ''
+self~assertSame("base              / subtest # 1", date('B', date, format,, sep), "732940")
+self~assertSame("days              / subtest # 2", date('D', date, format,, sep), "265")
+self~assertSame("european          / subtest # 3", date('E', date, format,, sep), "22/09/07")
+self~assertSame("european_no_sep   / subtest # 4", date('E', date, format, '', sep), "220907")
+self~assertSame("european_dash_sep / subtest # 5", date('E', date, format, '-', sep), "22-09-07")
+self~assertSame("language          / subtest # 6", date('L', date, format,, sep), "22 September 2007")
+self~assertSame("month             / subtest # 7", date('M', date, format,, sep), "September")
+self~assertSame("normal            / subtest # 8", date('N', date, format,, sep), "22 Sep 2007")
+self~assertSame("normal_no_sep     / subtest # 9", date('N', date, format, '', sep), "22Sep2007")
+self~assertSame("normal_dash_sep   / subtest # 10", date('N', date, format,'-', sep), "22-Sep-2007")
+self~assertSame("ordered           / subtest # 11", date('O', date, format,, sep), "07/09/22")
+self~assertSame("ordered_no_sep    / subtest # 12", date('O', date, format, '', sep), "070922")
+self~assertSame("ordered_dash_sep  / subtest # 13", date('O', date, format, '-', sep), "07-09-22")
+self~assertSame("standard          / subtest # 14", date('S', date, format,, sep), "20070922")
+self~assertSame("stardard_no_sep   / subtest # 15", date('S', date, format, '', sep), "20070922")
+self~assertSame("standard_dash_sep / subtest # 16", date('S', date, format, '-', sep), "2007-09-22")
+self~assertSame("usa               / subtest # 17", date('U', date, format,, sep), "09/22/07")
+self~assertSame("usa_no_sep        / subtest # 18", date('U', date, format, '', sep), "092207")
+self~assertSame("usa_dash_sep      / subtest # 19", date('U', date, format, '-', sep), "09-22-07")
+self~assertSame("weekday           / subtest # 20", date('W', date, format,, sep), "Saturday")
+
+::METHOD 'test_first_day'
+date = '00010101'
+format = 'S'
+self~assertSame("base              / subtest # 1", date('B', date, format), "0")
+self~assertSame("days              / subtest # 2", date('D', date, format), "1")
+self~assertSame("european          / subtest # 3", date('E', date, format), "01/01/01")
+self~assertSame("european_no_sep   / subtest # 4", date('E', date, format, ''), "010101")
+self~assertSame("european_dash_sep / subtest # 5", date('E', date, format, '-'), "01-01-01")
+self~assertSame("language          / subtest # 6", date('L', date, format), "1 January 0001")
+self~assertSame("month             / subtest # 7", date('M', date, format), "January")
+self~assertSame("normal            / subtest # 8", date('N', date, format), "1 Jan 0001")
+self~assertSame("normal_no_sep     / subtest # 9", date('N', date, format, ''), "1Jan0001")
+self~assertSame("normal_dash_sep   / subtest # 10", date('N', date, format,'-'), "1-Jan-0001")
+self~assertSame("ordered           / subtest # 11", date('O', date, format), "01/01/01")
+self~assertSame("ordered_no_sep    / subtest # 12", date('O', date, format, ''), "010101")
+self~assertSame("ordered_dash_sep  / subtest # 13", date('O', date, format, '-'), "01-01-01")
+self~assertSame("standard          / subtest # 14", date('S', date, format), "00010101")
+self~assertSame("stardard_no_sep   / subtest # 15", date('S', date, format, ''), "00010101")
+self~assertSame("standard_dash_sep / subtest # 16", date('S', date, format, '-'), "0001-01-01")
+self~assertSame("usa               / subtest # 17", date('U', date, format), "01/01/01")
+self~assertSame("usa_no_sep        / subtest # 18", date('U', date, format, ''), "010101")
+self~assertSame("usa_dash_sep      / subtest # 19", date('U', date, format, '-'), "01-01-01")
+self~assertSame("weekday           / subtest # 20", date('W', date, format), "Monday")
+
+::METHOD 'test_lastday'
+date = '99991231'
+format = 'S'
+self~assertSame("base              / subtest # 1", date('B', date, format), "3652058")
+self~assertSame("days              / subtest # 2", date('D', date, format), "365")
+self~assertSame("european          / subtest # 3", date('E', date, format), "31/12/99")
+self~assertSame("european_no_sep   / subtest # 4", date('E', date, format, ''), "311299")
+self~assertSame("european_dash_sep / subtest # 5", date('E', date, format, '-'), "31-12-99")
+self~assertSame("language          / subtest # 6", date('L', date, format), "31 December 9999")
+self~assertSame("month             / subtest # 7", date('M', date, format), "December")
+self~assertSame("normal            / subtest # 8", date('N', date, format), "31 Dec 9999")
+self~assertSame("normal_no_sep     / subtest # 9", date('N', date, format, ''), "31Dec9999")
+self~assertSame("normal_dash_sep   / subtest # 10", date('N', date, format,'-'), "31-Dec-9999")
+self~assertSame("ordered           / subtest # 11", date('O', date, format), "99/12/31")
+self~assertSame("ordered_no_sep    / subtest # 12", date('O', date, format, ''), "991231")
+self~assertSame("ordered_dash_sep  / subtest # 13", date('O', date, format, '-'), "99-12-31")
+self~assertSame("standard          / subtest # 14", date('S', date, format), "99991231")
+self~assertSame("stardard_no_sep   / subtest # 15", date('S', date, format, ''), "99991231")
+self~assertSame("standard_dash_sep / subtest # 16", date('S', date, format, '-'), "9999-12-31")
+self~assertSame("usa               / subtest # 17", date('U', date, format), "12/31/99")
+self~assertSame("usa_no_sep        / subtest # 18", date('U', date, format, ''), "123199")
+self~assertSame("usa_dash_sep      / subtest # 19", date('U', date, format, '-'), "12-31-99")
+self~assertSame("weekday           / subtest # 20", date('W', date, format), "Friday")
+
+::METHOD 'test_early_leap_year'
+date = '20040228'
+format = 'S'
+self~assertSame("base              / subtest # 1", date('B', date, format), "731638")
+self~assertSame("days              / subtest # 2", date('D', date, format), "59")
+self~assertSame("european          / subtest # 3", date('E', date, format), "28/02/04")
+self~assertSame("european_no_sep   / subtest # 4", date('E', date, format, ''), "280204")
+self~assertSame("european_dash_sep / subtest # 5", date('E', date, format, '-'), "28-02-04")
+self~assertSame("language          / subtest # 6", date('L', date, format), "28 February 2004")
+self~assertSame("month             / subtest # 7", date('M', date, format), "February")
+self~assertSame("normal            / subtest # 8", date('N', date, format), "28 Feb 2004")
+self~assertSame("normal_no_sep     / subtest # 9", date('N', date, format, ''), "28Feb2004")
+self~assertSame("normal_dash_sep   / subtest # 10", date('N', date, format,'-'), "28-Feb-2004")
+self~assertSame("ordered           / subtest # 11", date('O', date, format), "04/02/28")
+self~assertSame("ordered_no_sep    / subtest # 12", date('O', date, format, ''), "040228")
+self~assertSame("ordered_dash_sep  / subtest # 13", date('O', date, format, '-'), "04-02-28")
+self~assertSame("standard          / subtest # 14", date('S', date, format), "20040228")
+self~assertSame("stardard_no_sep   / subtest # 15", date('S', date, format, ''), "20040228")
+self~assertSame("standard_dash_sep / subtest # 16", date('S', date, format, '-'), "2004-02-28")
+self~assertSame("usa               / subtest # 17", date('U', date, format), "02/28/04")
+self~assertSame("usa_no_sep        / subtest # 18", date('U', date, format, ''), "022804")
+self~assertSame("usa_dash_sep      / subtest # 19", date('U', date, format, '-'), "02-28-04")
+self~assertSame("weekday           / subtest # 20", date('W', date, format), "Saturday")
+
+::METHOD 'test_late_leap_year'
+date = '20040301'
+format = 'S'
+self~assertSame("base              / subtest # 1", date('B', date, format), "731640")
+self~assertSame("days              / subtest # 2", date('D', date, format), "61")
+self~assertSame("european          / subtest # 3", date('E', date, format), "01/03/04")
+self~assertSame("european_no_sep   / subtest # 4", date('E', date, format, ''), "010304")
+self~assertSame("european_dash_sep / subtest # 5", date('E', date, format, '-'), "01-03-04")
+self~assertSame("language          / subtest # 6", date('L', date, format), "1 March 2004")
+self~assertSame("month             / subtest # 7", date('M', date, format), "March")
+self~assertSame("normal            / subtest # 8", date('N', date, format), "1 Mar 2004")
+self~assertSame("normal_no_sep     / subtest # 9", date('N', date, format, ''), "1Mar2004")
+self~assertSame("normal_dash_sep   / subtest # 10", date('N', date, format,'-'), "1-Mar-2004")
+self~assertSame("ordered           / subtest # 11", date('O', date, format), "04/03/01")
+self~assertSame("ordered_no_sep    / subtest # 12", date('O', date, format, ''), "040301")
+self~assertSame("ordered_dash_sep  / subtest # 13", date('O', date, format, '-'), "04-03-01")
+self~assertSame("standard          / subtest # 14", date('S', date, format), "20040301")
+self~assertSame("stardard_no_sep   / subtest # 15", date('S', date, format, ''), "20040301")
+self~assertSame("standard_dash_sep / subtest # 16", date('S', date, format, '-'), "2004-03-01")
+self~assertSame("usa               / subtest # 17", date('U', date, format), "03/01/04")
+self~assertSame("usa_no_sep        / subtest # 18", date('U', date, format, ''), "030104")
+self~assertSame("usa_dash_sep      / subtest # 19", date('U', date, format, '-'), "03-01-04")
+self~assertSame("weekday           / subtest # 20", date('W', date, format), "Monday")
+
+::METHOD 'test_end_leap_year'
+date = '20041231'
+format = 'S'
+self~assertSame("base              / subtest # 1", date('B', date, format), "731945")
+self~assertSame("days              / subtest # 2", date('D', date, format), "366")
+self~assertSame("european          / subtest # 3", date('E', date, format), "31/12/04")
+self~assertSame("european_no_sep   / subtest # 4", date('E', date, format, ''), "311204")
+self~assertSame("european_dash_sep / subtest # 5", date('E', date, format, '-'), "31-12-04")
+self~assertSame("language          / subtest # 6", date('L', date, format), "31 December 2004")
+self~assertSame("month             / subtest # 7", date('M', date, format), "December")
+self~assertSame("normal            / subtest # 8", date('N', date, format), "31 Dec 2004")
+self~assertSame("normal_no_sep     / subtest # 9", date('N', date, format, ''), "31Dec2004")
+self~assertSame("normal_dash_sep   / subtest # 10", date('N', date, format,'-'), "31-Dec-2004")
+self~assertSame("ordered           / subtest # 11", date('O', date, format), "04/12/31")
+self~assertSame("ordered_no_sep    / subtest # 12", date('O', date, format, ''), "041231")
+self~assertSame("ordered_dash_sep  / subtest # 13", date('O', date, format, '-'), "04-12-31")
+self~assertSame("standard          / subtest # 14", date('S', date, format), "20041231")
+self~assertSame("stardard_no_sep   / subtest # 15", date('S', date, format, ''), "20041231")
+self~assertSame("standard_dash_sep / subtest # 16", date('S', date, format, '-'), "2004-12-31")
+self~assertSame("usa               / subtest # 17", date('U', date, format), "12/31/04")
+self~assertSame("usa_no_sep        / subtest # 18", date('U', date, format, ''), "123104")
+self~assertSame("usa_dash_sep      / subtest # 19", date('U', date, format, '-'), "12-31-04")
+self~assertSame("weekday           / subtest # 20", date('W', date, format), "Friday")
+
+::METHOD 'test_early_non_leap_year'
+date = '20070228'
+format = 'S'
+self~assertSame("base              / subtest # 1", date('B', date, format), "732734")
+self~assertSame("days              / subtest # 2", date('D', date, format), "59")
+self~assertSame("european          / subtest # 3", date('E', date, format), "28/02/07")
+self~assertSame("european_no_sep   / subtest # 4", date('E', date, format, ''), "280207")
+self~assertSame("european_dash_sep / subtest # 5", date('E', date, format, '-'), "28-02-07")
+self~assertSame("language          / subtest # 6", date('L', date, format), "28 February 2007")
+self~assertSame("month             / subtest # 7", date('M', date, format), "February")
+self~assertSame("normal            / subtest # 8", date('N', date, format), "28 Feb 2007")
+self~assertSame("normal_no_sep     / subtest # 9", date('N', date, format, ''), "28Feb2007")
+self~assertSame("normal_dash_sep   / subtest # 10", date('N', date, format,'-'), "28-Feb-2007")
+self~assertSame("ordered           / subtest # 11", date('O', date, format), "07/02/28")
+self~assertSame("ordered_no_sep    / subtest # 12", date('O', date, format, ''), "070228")
+self~assertSame("ordered_dash_sep  / subtest # 13", date('O', date, format, '-'), "07-02-28")
+self~assertSame("standard          / subtest # 14", date('S', date, format), "20070228")
+self~assertSame("stardard_no_sep   / subtest # 15", date('S', date, format, ''), "20070228")
+self~assertSame("standard_dash_sep / subtest # 16", date('S', date, format, '-'), "2007-02-28")
+self~assertSame("usa               / subtest # 17", date('U', date, format), "02/28/07")
+self~assertSame("usa_no_sep        / subtest # 18", date('U', date, format, ''), "022807")
+self~assertSame("usa_dash_sep      / subtest # 19", date('U', date, format, '-'), "02-28-07")
+self~assertSame("weekday           / subtest # 20", date('W', date, format), "Wednesday")
+
+::METHOD 'test_late_non_leap_year'
+date = '20070301'
+format = 'S'
+self~assertSame("base              / subtest # 1", date('B', date, format), "732735")
+self~assertSame("days              / subtest # 2", date('D', date, format), "60")
+self~assertSame("european          / subtest # 3", date('E', date, format), "01/03/07")
+self~assertSame("european_no_sep   / subtest # 4", date('E', date, format, ''), "010307")
+self~assertSame("european_dash_sep / subtest # 5", date('E', date, format, '-'), "01-03-07")
+self~assertSame("language          / subtest # 6", date('L', date, format), "1 March 2007")
+self~assertSame("month             / subtest # 7", date('M', date, format), "March")
+self~assertSame("normal            / subtest # 8", date('N', date, format), "1 Mar 2007")
+self~assertSame("normal_no_sep     / subtest # 9", date('N', date, format, ''), "1Mar2007")
+self~assertSame("normal_dash_sep   / subtest # 10", date('N', date, format,'-'), "1-Mar-2007")
+self~assertSame("ordered           / subtest # 11", date('O', date, format), "07/03/01")
+self~assertSame("ordered_no_sep    / subtest # 12", date('O', date, format, ''), "070301")
+self~assertSame("ordered_dash_sep  / subtest # 13", date('O', date, format, '-'), "07-03-01")
+self~assertSame("standard          / subtest # 14", date('S', date, format), "20070301")
+self~assertSame("stardard_no_sep   / subtest # 15", date('S', date, format, ''), "20070301")
+self~assertSame("standard_dash_sep / subtest # 16", date('S', date, format, '-'), "2007-03-01")
+self~assertSame("usa               / subtest # 17", date('U', date, format), "03/01/07")
+self~assertSame("usa_no_sep        / subtest # 18", date('U', date, format, ''), "030107")
+self~assertSame("usa_dash_sep      / subtest # 19", date('U', date, format, '-'), "03-01-07")
+self~assertSame("weekday           / subtest # 20", date('W', date, format), "Thursday")
+
+::METHOD 'test_end_non_leap_year'
+date = '20071231'
+format = 'S'
+self~assertSame("base              / subtest # 1", date('B', date, format), "733040")
+self~assertSame("days              / subtest # 2", date('D', date, format), "365")
+self~assertSame("european          / subtest # 3", date('E', date, format), "31/12/07")
+self~assertSame("european_no_sep   / subtest # 4", date('E', date, format, ''), "311207")
+self~assertSame("european_dash_sep / subtest # 5", date('E', date, format, '-'), "31-12-07")
+self~assertSame("language          / subtest # 6", date('L', date, format), "31 December 2007")
+self~assertSame("month             / subtest # 7", date('M', date, format), "December")
+self~assertSame("normal            / subtest # 8", date('N', date, format), "31 Dec 2007")
+self~assertSame("normal_no_sep     / subtest # 9", date('N', date, format, ''), "31Dec2007")
+self~assertSame("normal_dash_sep   / subtest # 10", date('N', date, format,'-'), "31-Dec-2007")
+self~assertSame("ordered           / subtest # 11", date('O', date, format), "07/12/31")
+self~assertSame("ordered_no_sep    / subtest # 12", date('O', date, format, ''), "071231")
+self~assertSame("ordered_dash_sep  / subtest # 13", date('O', date, format, '-'), "07-12-31")
+self~assertSame("standard          / subtest # 14", date('S', date, format), "20071231")
+self~assertSame("stardard_no_sep   / subtest # 15", date('S', date, format, ''), "20071231")
+self~assertSame("standard_dash_sep / subtest # 16", date('S', date, format, '-'), "2007-12-31")
+self~assertSame("usa               / subtest # 17", date('U', date, format), "12/31/07")
+self~assertSame("usa_no_sep        / subtest # 18", date('U', date, format, ''), "123107")
+self~assertSame("usa_dash_sep      / subtest # 19", date('U', date, format, '-'), "12-31-07")
+self~assertSame("weekday           / subtest # 20", date('W', date, format), "Monday")
+
+::METHOD 'test_leap_day'
+date = '20040229'
+format = 'S'
+self~assertSame("base              / subtest # 1", date('B', date, format), "731639")
+self~assertSame("days              / subtest # 2", date('D', date, format), "60")
+self~assertSame("european          / subtest # 3", date('E', date, format), "29/02/04")
+self~assertSame("european_no_sep   / subtest # 4", date('E', date, format, ''), "290204")
+self~assertSame("european_dash_sep / subtest # 5", date('E', date, format, '-'), "29-02-04")
+self~assertSame("language          / subtest # 6", date('L', date, format), "29 February 2004")
+self~assertSame("month             / subtest # 7", date('M', date, format), "February")
+self~assertSame("normal            / subtest # 8", date('N', date, format), "29 Feb 2004")
+self~assertSame("normal_no_sep     / subtest # 9", date('N', date, format, ''), "29Feb2004")
+self~assertSame("normal_dash_sep   / subtest # 10", date('N', date, format,'-'), "29-Feb-2004")
+self~assertSame("ordered           / subtest # 11", date('O', date, format), "04/02/29")
+self~assertSame("ordered_no_sep    / subtest # 12", date('O', date, format, ''), "040229")
+self~assertSame("ordered_dash_sep  / subtest # 13", date('O', date, format, '-'), "04-02-29")
+self~assertSame("standard          / subtest # 14", date('S', date, format), "20040229")
+self~assertSame("stardard_no_sep   / subtest # 15", date('S', date, format, ''), "20040229")
+self~assertSame("standard_dash_sep / subtest # 16", date('S', date, format, '-'), "2004-02-29")
+self~assertSame("usa               / subtest # 17", date('U', date, format), "02/29/04")
+self~assertSame("usa_no_sep        / subtest # 18", date('U', date, format, ''), "022904")
+self~assertSame("usa_dash_sep      / subtest # 19", date('U', date, format, '-'), "02-29-04")
+self~assertSame("weekday           / subtest # 20", date('W', date, format), "Sunday")
+
+::METHOD 'test_century'
+date = '19000301'
+format = 'S'
+self~assertSame("base              / subtest # 1", date('B', date, format), "693654")
+self~assertSame("days              / subtest # 2", date('D', date, format), "60")
+self~assertSame("european          / subtest # 3", date('E', date, format), "01/03/00")
+self~assertSame("european_no_sep   / subtest # 4", date('E', date, format, ''), "010300")
+self~assertSame("european_dash_sep / subtest # 5", date('E', date, format, '-'), "01-03-00")
+self~assertSame("language          / subtest # 6", date('L', date, format), "1 March 1900")
+self~assertSame("month             / subtest # 7", date('M', date, format), "March")
+self~assertSame("normal            / subtest # 8", date('N', date, format), "1 Mar 1900")
+self~assertSame("normal_no_sep     / subtest # 9", date('N', date, format, ''), "1Mar1900")
+self~assertSame("normal_dash_sep   / subtest # 10", date('N', date, format,'-'), "1-Mar-1900")
+self~assertSame("ordered           / subtest # 11", date('O', date, format), "00/03/01")
+self~assertSame("ordered_no_sep    / subtest # 12", date('O', date, format, ''), "000301")
+self~assertSame("ordered_dash_sep  / subtest # 13", date('O', date, format, '-'), "00-03-01")
+self~assertSame("standard          / subtest # 14", date('S', date, format), "19000301")
+self~assertSame("stardard_no_sep   / subtest # 15", date('S', date, format, ''), "19000301")
+self~assertSame("standard_dash_sep / subtest # 16", date('S', date, format, '-'), "1900-03-01")
+self~assertSame("usa               / subtest # 17", date('U', date, format), "03/01/00")
+self~assertSame("usa_no_sep        / subtest # 18", date('U', date, format, ''), "030100")
+self~assertSame("usa_dash_sep      / subtest # 19", date('U', date, format, '-'), "03-01-00")
+self~assertSame("weekday           / subtest # 20", date('W', date, format), "Thursday")
+
+::METHOD 'test_olympiad'
+date = '20000229'
+format = 'S'
+self~assertSame("base              / subtest # 1", date('B', date, format), "730178")
+self~assertSame("days              / subtest # 2", date('D', date, format), "60")
+self~assertSame("european          / subtest # 3", date('E', date, format), "29/02/00")
+self~assertSame("european_no_sep   / subtest # 4", date('E', date, format, ''), "290200")
+self~assertSame("european_dash_sep / subtest # 5", date('E', date, format, '-'), "29-02-00")
+self~assertSame("language          / subtest # 6", date('L', date, format), "29 February 2000")
+self~assertSame("month             / subtest # 7", date('M', date, format), "February")
+self~assertSame("normal            / subtest # 8", date('N', date, format), "29 Feb 2000")
+self~assertSame("normal_no_sep     / subtest # 9", date('N', date, format, ''), "29Feb2000")
+self~assertSame("normal_dash_sep   / subtest # 10", date('N', date, format,'-'), "29-Feb-2000")
+self~assertSame("ordered           / subtest # 11", date('O', date, format), "00/02/29")
+self~assertSame("ordered_no_sep    / subtest # 12", date('O', date, format, ''), "000229")
+self~assertSame("ordered_dash_sep  / subtest # 13", date('O', date, format, '-'), "00-02-29")
+self~assertSame("standard          / subtest # 14", date('S', date, format), "20000229")
+self~assertSame("stardard_no_sep   / subtest # 15", date('S', date, format, ''), "20000229")
+self~assertSame("standard_dash_sep / subtest # 16", date('S', date, format, '-'), "2000-02-29")
+self~assertSame("usa               / subtest # 17", date('U', date, format), "02/29/00")
+self~assertSame("usa_no_sep        / subtest # 18", date('U', date, format, ''), "022900")
+self~assertSame("usa_dash_sep      / subtest # 19", date('U', date, format, '-'), "02-29-00")
+self~assertSame("weekday           / subtest # 20", date('W', date, format), "Tuesday")
