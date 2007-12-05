@@ -68,7 +68,7 @@
       optional list of mandatory test case methods name                       */
 
 mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
-testGroupList=.list~of( .array~of(.ooRexx.Base.BIF.testGroup,  mandatoryTestMethods) )
+testGroupList=.list~of( .array~of(.ABBREV.testGroup,  mandatoryTestMethods) )
 
 
 -------------------------------------------------------------------------------------------
@@ -122,7 +122,7 @@ return testGroupList
 
 ::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
 
-::class "ooRexx.Base.bif.ABBREV.testGroup" subclass TestCase public
+::class "ABBREV.testGroup" subclass TestCase public
 
    -- test the ABBREV BIF, using examples from the documentation
 ::method "test_ABBREV"
