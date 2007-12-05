@@ -124,7 +124,7 @@ return testGroupList
 
 ::class "ABBREV.testGroup" subclass TestCase public
 
-   -- test the ABBREV BIF, using examples from the documentation
+   -- test the ABBREV BIF
 ::method "test_ABBREV"
 
    li=10000
@@ -203,7 +203,7 @@ return testGroupList
    self~assertSame("subTest27", .true, ABBREV(inform, info, 3))
    self~assertSame("subTest28", .false, ABBREV(inform, info, 004))
    self~assertSame("subTest29", .true, ABBREV(inform, info, 2E0))
---   self~assertSame("subTest30", .true, ABBREV(inform, info, 02E+00000002))
+   self~assertSame("subTest30", .false, ABBREV(inform, info, 02E+00000002))
    self~assertSame("subTest31", .true, ABBREV(inform, info, '      3    '))
    self~assertSame("subTest32", .true, ABBREV(inform, info, '20202B2033'x))
 --   id=0033; Call VER  ABBREV(inform,info,----3),1
@@ -256,17 +256,129 @@ return testGroupList
    self~assertSame("subTest45", .true, ABBREV(n, 'tr', 2))
    n=17+4
    self~assertSame("subTest46", .true, ABBREV(n, +.2e1, 1))
---   id=0047N; xnam='NOVALUE'; x="ABBREV"(novalue,'NOV'); Call Err; R0047:
---   id=0048N; xnam='NOV'; x="ABBREV"('NOVALUE',nov); Call Err; R0048:
---   id=0049N; xnam='NOVALUE'; x="ABBREV"('NOVALUE','NOV',novalue);
+   self~assertSame("subTest47", .true, ABBREV(novalue, 'NOV'))
+   self~assertSame("subTest48", .true, ABBREV('NOVALUE', nov))
+-- subTest49 is in a method of its own
    self~assertSame("subTest50", .true, ABBREV(novalue, 'NOV'))
+
+   v250='"'||"XRANGE"('00'x,'7E'x)||'""'||"XRANGE"('80'x,'F9'x)||'"'
+   v255="XRANGE"('00'x,'FF'x)
+   v10000 ="COPIES"('123456789Z',1000)
+   v9999  ="LEFT"(v10000,9999)
+   v9998  ="RIGHT"(v10000,9998)
+   v10001.=v10000.||'*'
+   v30    ='abcdefghijklmnopqrstuvwxyz1234'
+   self~assertSame("subTest51", .true, ABBREV('', ''))
+   self~assertSame("subTest52", .true, ABBREV('a', ''))
+   self~assertSame("subTest53", .true, ABBREV(v30, ''))
+   self~assertSame("subTest54", .true, ABBREV(v250, ''))
+   self~assertSame("subTest55", .true, ABBREV(v255, ''))
+   self~assertSame("subTest56", .true, ABBREV(v10000, ''))
+   self~assertSame("subTest57", .true, ABBREV(12+4, ''))
+   self~assertSame("subTest58", .false, ABBREV('', 'X'))
+   self~assertSame("subTest59", .true, ABBREV('a', 'a'))
+   self~assertSame("subTest60", .true, ABBREV(v30, 'abc'))
+   self~assertSame("subTest61", .false, ABBREV(v250, '0001'x))
+   self~assertSame("subTest62", .true, ABBREV(v255, '0001'x))
+   self~assertSame("subTest63", .true, ABBREV(v10000, v9999))
+   self~assertSame("subTest64", .true, ABBREV(12+4, '1'))
+   self~assertSame("subTest65", .false, ABBREV('a', 'b'))
+   self~assertSame("subTest66", .false, ABBREV(v30, 'acb'))
+   self~assertSame("subTest67", .false, ABBREV(v250, '0102'x))
+   self~assertSame("subTest68", .false, ABBREV(v255, 'fffe'x))
+   self~assertSame("subTest69", .false, ABBREV(v10000, v9998))
+   self~assertSame("subTest70", .false, ABBREV(12+4, '2'))
+   self~assertSame("subTest71", .false, ABBREV('aa', 'bb'))
+   self~assertSame("subTest72", .true, ABBREV(v30, v30))
+   self~assertSame("subTest73", .true, ABBREV(v250, v250))
+   self~assertSame("subTest74", .true, ABBREV(v255, v255))
+   self~assertSame("subTest75", .true, ABBREV(v10000, v10000))
+   self~assertSame("subTest76", .true, ABBREV(12+4, '16'))
+   self~assertSame("subTest77", .false, ABBREV('aa', 'aaa'))
+   self~assertSame("subTest78", .false, ABBREV(v30, v30||'5'))
+   self~assertSame("subTest79", .false, ABBREV(v250, v250||'.'))
+   self~assertSame("subTest80", .false, ABBREV(v255, v10000))
+   self~assertSame("subTest81", .false, ABBREV(v10000, v10001))
+   self~assertSame("subTest82", .false, ABBREV(12+4, '16 '))
+   self~assertSame("subTest83", .false, ABBREV(12+4, '4+11+1'))
+   self~assertSame("subTest84", .true, ABBREV('aa', 'a', 0))
+   self~assertSame("subTest85", .true, ABBREV(v30, 'abc', 0))
+   self~assertSame("subTest86", .false, ABBREV(v250, '0001'x, 0))
+   self~assertSame("subTest87", .true, ABBREV(v255, '0001'x, 0))
+   self~assertSame("subTest88", .true, ABBREV(v10000, v9999, 0))
+   self~assertSame("subTest89", .true, ABBREV(12+4, '1', 0))
+   self~assertSame("subTest90", .true, ABBREV('aba', 'ab', 1))
+   self~assertSame("subTest91", .true, ABBREV(v30, 'abc', 2))
+   self~assertSame("subTest92", .false, ABBREV(v250, '0001'x, 1))
+   self~assertSame("subTest93", .true, ABBREV(v255, '000102'x, 2))
+   self~assertSame("subTest94", .true, ABBREV(v10000, v9999, 9998))
+   self~assertSame("subTest95", .true, ABBREV(123+4, '12', 1))
+   self~assertSame("subTest96", .true, ABBREV('aba', 'ab', 2))
+   self~assertSame("subTest97", .true, ABBREV(v30, 'abc', 3))
+   self~assertSame("subTest98", .false, ABBREV(v250, '0001'x, 2))
+   self~assertSame("subTest99", .true, ABBREV(v255, '000102'x, 03))
+   self~assertSame("subTest100", .true, ABBREV(v10000, v9999, 9999))
+   self~assertSame("subTest101", .true, ABBREV(123+4, '12', 2))
+   self~assertSame("subTest102", .false, ABBREV('aba', 'ab', 4))
+   self~assertSame("subTest103", .false, ABBREV(v30, 'abc', 4))
+   self~assertSame("subTest104", .false, ABBREV(v250, '0001'x, 3))
+   self~assertSame("subTest105", .false, ABBREV(v255, '000102'x, 4))
+   self~assertSame("subTest106", .false, ABBREV(v10000, v9999, 10000))
+   self~assertSame("subTest107", .false, ABBREV(123+4, '12', 4))
+   self~assertSame("subTest108", .true, ABBREV(1.00000000000003, 1.00))
+   self~assertSame("subTest109", .true, ABBREV(1.00000000000003, 1.00, 1.00))
+   self~assertSame("subTest110", .true, ABBREV('   1.2E+99999999999999    ', '   1.2E+99', 3))
+   drop noval n
+   self~assertSame("subTest111", .true, ABBREV(noval, n))
+-- subTest112 is in a method of its own
+   self~assertSame("subTest113", .true, ABBREV(n, n))
+   self~assertSame("subTest114", .false, ABBREV('N.NN', n, 3))
+-- subTest115 is in a method of its own
+   three=3
+   self~assertSame("subTest116", .false, ABBREV('NNNN', 'N', three))
+   self~assertSame("subTest117", .true, ABBREV(noval.1, n))
+   self~assertSame("subTest118", .true, ABBREV('NNNN', n))
+   self~assertSame("subTest119", .true, ABBREV('N.NN', n))
+   self~assertSame("subTest120", .false, ABBREV('N.3N', n, 3))
+   /* * check if length is affected by Numeric Digits - it should not be */
+   Numeric Digits 1
+   self~assertSame("subTest121", .false, ABBREV('12345678900987654321', '1234567890012', 12))
+   self~assertSame("subTest122", .true, ABBREV('12345678900987654321', '12345678900', +12))
+   self~assertSame("subTest123", .false, ABBREV('12345678900987654321', '1234567890012', 1e1))
+   self~assertSame("subTest124", .false, ABBREV('12345678900987654321', '1234567890012', +0.01e2))
+
+   -- rexxref documentation tests
    word="Print"
-   self~assertSame("subTest51", .true, ABBREV(word, "Pri"))
+   self~assertSame("subTest200", .true, ABBREV(word, "Pri"))
    word="PRINT"
-   self~assertSame("subTest52", .false, ABBREV(word, "Pri"))
-   self~assertSame("subTest53", .false, ABBREV(word, "PRI", 4))
-   self~assertSame("subTest54", .false, ABBREV(word, "PRY"))
-   self~assertSame("subTest55", .true, ABBREV(word, ""))
-   self~assertSame("subTest56", .false, ABBREV(word, "", 1))
+   self~assertSame("subTest201", .false, ABBREV(word, "Pri"))
+   self~assertSame("subTest202", .false, ABBREV(word, "PRI", 4))
+   self~assertSame("subTest203", .false, ABBREV(word, "PRY"))
+   self~assertSame("subTest204", .true, ABBREV(word, ""))
+   self~assertSame("subTest205", .false, ABBREV(word, "", 1))
+
+
+   -- test the ABBREV BIF
+::method "test_ABBREV_subTest49"
+   self~expectSyntax(40.12)
+   self~assertSame("subTest49", .false, ABBREV('NOVALUE', 'NOV', novalue))
+
+   -- test the ABBREV BIF
+::method "test_ABBREV_subTest112"
+   self~expectSyntax(40.12)
+   self~assertSame("subTest112", .false, ABBREV(noval, 1, n))
+
+   -- test the ABBREV BIF
+::method "test_ABBREV_subTest115"
+   self~expectSyntax(40.12)
+   self~assertSame("subTest115", .false, ABBREV('NNNN', 'N', n))
+
+   -- test the ABBREV BIF
+::method "test_ABBREV_subTest125"
+   self~expectSyntax(40.12)
+   self~assertSame("subTest125", .false, ABBREV('12345678900987654321', '1234567890012', +0.01e1))
+
+
+
 
 
