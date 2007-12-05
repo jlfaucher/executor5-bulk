@@ -1,7 +1,7 @@
 #!/usr/bin/rexx
 /*
    name:             Queue.testGroup
-   author:           Mark Miesfeld
+   authors:          Mark Miesfeld
    date:             2005-12-29
    version:          1.0.1
 
@@ -57,6 +57,19 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+
+-- Create a TestGroup using information specific to this file.
+parse source . . fileSpec;
+
+lines = .array~new
+line = ""
+do i = 1 until lines[i] = "*/"
+  lines[i] = sourceline(i)
+end
+
+group = .TestGroup~new(fileSpec, lines)
+--group = .TestGroup~new("C:\Programs", linesto)
+return group
 
 -- Create the test case list, (use all methods whose names start with test.)
 testGroupList=.list~of( .array~of( .Queue.testGroup, .list~new ) );
@@ -116,7 +129,7 @@ if .bRunTestsLocally = .true then do
     say 'Executing all tests took' time( 'R' ) 'seconds.'
 
   -- Print the results.
-  call simpleDumpTestResults testResult
+  call simpleFormatTestResults testResult
 end
 
 -- Return the test case list.
@@ -126,7 +139,7 @@ return testGroupList
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
   Directives, Classes, or Routines.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::requires 'OOREXXUNIT.CLS';
+::requires 'ooTest.frm'
 
 /* addTestCases( suite, list ) - - - - - - - - - - - - - - - - - - - - - - - -*\
 

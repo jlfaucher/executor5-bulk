@@ -43,10 +43,21 @@
 
 cmdLine = arg(1)
 
-   say "testOORexx vesion 0.0.0"
-   say "testOORexx is not implemented yet"
+   .local~bRunTestsLocally = .false
+   files = .list~of("C:\work.ooRexx\ooRexxUnit\sandbox\ooRexx\base\class\Queue.testGroup")
+   do file over files
+     call (file)
+     obj = RESULT
+   end
+
+   say "Got object from testGroup:" obj
+   say "From file:" obj~pathName
+
+   say
+   say 'Printing test case metadata'
+   j = printTestInfo(obj~testInfo)
 
 return 0
 
-::requires OOREXXUNIT.CLS
+::requires "ooTest.frm"
 

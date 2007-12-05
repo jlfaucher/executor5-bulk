@@ -6,7 +6,7 @@
    name:             ooRexxUnit.cls
    author:           Rony G. Flatscher, Rick McGuire
    date:             2005-08-07
-   version:          1.0.5
+   version:          1.0.6
    changed1:         2005-08-07, ---rgf, moved assertion routines to a class "Assert", which
                                  serves as a superclass for TestCase: this is the junit-approach
                      2005-08-20, ---rgf, added license, assertCount, corrected some little bugs
@@ -151,8 +151,12 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
+-- Define the version number with: X.Y.Z  X is the ooRexxUnit.cls version, Y is
+-- the minimum ooRexx interpreter level required, and Z is the date the version
+-- was changed.
+.local~ooRexxUnit.version=106.320.20071205
+
 .local~chars.NonPrintable=xrange("00"x, "1F"x) || "FF"x  -- define non-printable chars
-.local~ooRexxUnit.version=103.20070530    -- define the version number
 
 parse version interpreterName languageLevel interpreterDate
 .local~ooRexxUnit.interpreterName=interpreterName
@@ -172,10 +176,52 @@ if .ooRexxUnit.directory.separator="\" then     -- DOS-like
 else                                            -- Unix-like
    .local~ooRexxUnit.path.separator=":"
 
+do rtn over .methods
+   .public_routines~put(.methods[rtn], rtn)
+end
+
+-- End of entry point.
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+  Directives, Classes, or Routines.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+
+/** isSubClassOf()
+ *
+ * Tests if an object is a class object that is a subclass of the specified
+ * class.  (Note that this is different then testing that an object is an
+ * instance of a class.)
+ *
+ * During the execution of an automated test suite, TestCase and TestSuite class
+ * objects can be created by different requires directives.  This prevents the
+ * use of a simple comparison to test if an object is a TestCase or TestSuite
+ * class object.  (The same can apply to other classes during the execution of
+ * a lengthy automated test suite.)  This public routine provides a way to
+ * test the class of a class object for this situation.
+ *
+ * @param clz              The object to test.
+ * @param superClassName   A string, the name of the class to test for.
+ *
+ * Return true if the object is a subclass of the specified class, otherwise
+ * false.
+ *
+ */
+::method isSubClassOf
+  use strict arg clz, superClassName
+
+  if \ clz~isA(.class) then return .false
+
+  do while clz<>.nil
+     if clz~id~caselessEquals(superClassName)=1 then   -- o.k. found!
+        return .true
+     clz=clz~superClass    -- look further, get immediate superclass
+  end
+  return .false
+
+::method enQuote
+  return '"' || arg(1)~string || '"'
 
 
-/* *********************************************************************************** */
-/* *********************************************************************************** */
 ::class "TestResult" public
 ::method init
   expose fErrors fFailures fRunTests fStop fTestRuns TestCaseTable logQueue fAssertions
@@ -611,7 +657,7 @@ else                                            -- Unix-like
   clzTCI=self~class~testCaseInfo    -- get access to clz' 'testCaseInfo' dir
   s=clzTCI~entry("test_Case-source")
   if .nil<>s then                   -- if source available, memorize fully qualified file name
-     parse var s . . definedInFile
+     definedInFile=s
   else
     definedInFile="n/a_"self~identityHash -- indicate that no file name available
 
@@ -786,20 +832,6 @@ exceptionHandler:
   end
   return
 
-  /* each TestCase/TestSuite class object could be created by a different requires, causing
-     different class objects to be created than are available in the context of this run */
-::routine isSubClassOf
-  use arg clz, superClassName
-
-  do while clz<>.nil
-     if clz~id~caselessEquals(superClassName)=1 then   -- o.k. found!
-        return .true
-     clz=clz~superClass    -- look further, get immediate superclass
-  end
-  return .false
-
-
-
 
 ::method getTestMethods class -- use reflection to retrieve testmethods, sort alphabetically
   use arg class
@@ -926,8 +958,6 @@ exceptionHandler:
   end
   return tmpStr~string
 
-::routine enQuote             public
-  return '"' || arg(1)~string || '"'
 
 
 -- create
@@ -1069,7 +1099,7 @@ exceptionHandler:
        testUnitList=result    -- retrieve result (a list of array objects)
 */
        testUnitList=callTestUnit(fileName)
-
+       if \ testUnitList~isA(.collection) then iterate  -- DFX TODO temp change while working with TestGroup
        do arr over testUnitList  -- loop over array objects
           classObject   =arr[1]  -- a class object
           mandatoryTests=arr[2]  -- a list
