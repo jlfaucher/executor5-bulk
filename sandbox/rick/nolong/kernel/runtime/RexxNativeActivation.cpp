@@ -590,7 +590,7 @@ bool RexxNativeActivation::isDouble(
     return object->doubleValue(r);
 }
 
-PVOID RexxNativeActivation::cself()
+void *RexxNativeActivation::cself()
 /******************************************************************************/
 /* Function:  Returns "unwrapped" C or C++ object associated with this        */
 /*            object instance.  If the variable CSELF does not exist, then    */
@@ -602,12 +602,12 @@ PVOID RexxNativeActivation::cself()
                                        /* retrieve from object dictionary   */
   C_self = (RexxInteger *)this->methodVariables()->realValue(OREF_CSELF);
   if (C_self != OREF_NULL)             /* got an item?                      */
-    return (PVOID)C_self->getValue();  /* return the pointer value          */
+    return (void *)C_self->getValue(); /* return the pointer value          */
   else
     return NULL;                       /* no object available               */
 }
 
-PVOID RexxNativeActivation::buffer()
+void *RexxNativeActivation::buffer()
 /******************************************************************************/
 /* Function:  Returns "unwrapped" C or C++ object stored in a buffer object.  */
 /*            If the variable CSELF does not exist, then NULL is returned.    */
@@ -618,22 +618,22 @@ PVOID RexxNativeActivation::buffer()
                                        /* retrieve from object dictionary   */
   C_self = (RexxBuffer *)this->methodVariables()->realValue(OREF_CSELF);
   if (C_self != OREF_NULL)             /* got an item?                      */
-    return (PVOID)C_self->address();   /* return a pointer to the address   */
+    return (void *)C_self->address();  /* return a pointer to the address   */
   else
     return NULL;                       /* no object available               */
 }
 
-PVOID RexxNativeActivation::pointer(
+void *RexxNativeActivation::pointer(
     RexxObject *object)                /* object to convert                 */
 /******************************************************************************/
 /* Function:  Return as a pointer the value of an integer                     */
 /******************************************************************************/
 {
                                        /* just "unwrap" the pointer         */
-  return (PVOID)((RexxInteger *)object)->getValue();
+  return (void *)((RexxInteger *)object)->getValue();
 }
 
-RexxObject   *RexxNativeActivation::dispatch()
+RexxObject *RexxNativeActivation::dispatch()
 /******************************************************************************/
 /* Function:  Redispatch an activation on a different activity                */
 /******************************************************************************/
@@ -732,7 +732,7 @@ void RexxNativeActivation::setForm(
     senderAct->setForm(_form);          /* just forward the set              */
 }
 
-void      RexxNativeActivation::guardOff()
+void RexxNativeActivation::guardOff()
 /******************************************************************************/
 /* Function:  Release a variable pool guard lock                              */
 /******************************************************************************/
@@ -1288,57 +1288,19 @@ nativei3 (REXXOBJECT, CONDITION,
   return_oref((ActivityManager::currentActivity->raiseCondition((RexxString *)condition, OREF_NULL, (RexxString *)description, (RexxObject *)additional, OREF_NULL, OREF_NULL)) ? TheTrueObject : TheFalseObject);
 }
 
-nativei1 (ULONG, VARIABLEPOOL,
-     PVOID, pshvblock )                /* chain of variable request blocks  */
+nativei1 (int , VARIABLEPOOL,
+     void *, pshvblock )                /* chain of variable request blocks  */
 /******************************************************************************/
 /* Function:  If variable pool is enabled, return result from SysVariablePool */
 /*             method, otherwise return RXSHV_NOAVL.                          */
 /******************************************************************************/
 {
-  ULONG    result;                     /* variable pool result              */
+  int      result;                     /* variable pool result              */
   RexxNativeActivation * self;         /* current native activation         */
 
   native_entry;                        /* synchronize access                */
                                        /* pick up current activation        */
   self = (RexxNativeActivation *)ActivityManager::currentActivity->current();
-                                       /* if access is enabled              */
-  if (this->getVpavailable())
-                                       /* go process the requests           */
-    result = SysVariablePool(self, pshvblock, true);
-  else                                 /* Else VP is disabled so...         */
-                                       /* call VP only allowing shv_exit    */
-    result = SysVariablePool(self, pshvblock, false);
-  return_value(result);                /* return this                       */
-}
-
-nativei1 (ULONG, VARIABLEPOOL2,
-     PVOID, pshvblock )                /* chain of variable request blocks  */
-/******************************************************************************/
-/* Arguments:  pshvblock - Pointer to a variable request block with           */
-/*                         shvnext being either zero (which means use         */
-/*                         current activation), or an OREF for a              */
-/*                         nativeactobj when we left the kernel.              */
-/*                                                                            */
-/* Returned:  If variable pool is enabled, return result from SysVariablePool */
-/*             method, otherwise return RXSHV_NOAVL.                          */
-/******************************************************************************/
-{
-  ULONG     result;                    /* variable pool result              */
-  RexxNativeActivation * self;         /* current native activation         */
-  RexxNativeActivation * work;         /* nativeact or zero                 */
-  PSHVBLOCK shv;                       /* shvblock address                  */
-
-  native_entry;                        /* synchronize access                */
-                                       /* get activation                    */
-  shv  = (PSHVBLOCK)pshvblock;
-  work = (RexxNativeActivation *)(shv->shvnext);
-  if (work) {
-     self = work;
-     shv->shvnext = 0;                 /* remember, only 1 shvblock         */
-     }
-                                       /* pick up current activation        */
-     else self = (RexxNativeActivation *)ActivityManager::currentActivity->current();
-
                                        /* if access is enabled              */
   if (this->getVpavailable())
                                        /* go process the requests           */
@@ -1453,7 +1415,7 @@ REXXOBJECT REXXENTRY REXX_ENVIRONMENT(void)
   return TheEnvironment;               /* just return the object            */
 }
 
-nativei7 (ULONG, STEMSORT,
+nativei7 (int, STEMSORT,
      CSTRING, stemname, int, order, int, type, size_t, start, size_t, end,
      size_t, firstcol, size_t, lastcol)
 /******************************************************************************/

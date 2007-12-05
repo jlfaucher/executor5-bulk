@@ -380,7 +380,7 @@ ORXHEADERS: $(ORXHEADERS)
 #
 {$(OR_ORYXLSRC)}.cpp{$(OR_OUTDIR)}.obj:
     @ECHO .
-    @ECHO Compiling $(@B).c
+    @ECHO Compiling $(**)
     $(OR_CC)  $(cflags_common) $(cflags_dll) /Fo$(OR_OUTDIR)\$(@B).obj $(Tp)$(OR_ORYXLSRC)\$(@B).cpp $(OR_ORYXINCL)
 
 #

@@ -52,9 +52,18 @@
 #include <stdarg.h>
 #include <string.h>
 #include <ctype.h>
+#include <limits.h>
 
 /* REXX Library definitions */
-#include "RexxLibrary.h"
+#define OREF_NULL NULL                 /* definition of a NULL REXX object  */
+
+// a couple of convience typedefs to make it easier to write code that can be
+// moved to the 4.0 codebase.
+typedef size_t stringsize_t;
+typedef int    wholenumber_t;
+typedef size_t arraysize_t;
+
+#include "RexxPlatformDefinitions.h"
 
 /******************************************************************************/
 /* Literal definitions                                                        */
@@ -83,28 +92,6 @@ const int ARG_EIGHT  = 8;
 const int ARG_NINE   = 9;
 const int ARG_TEN    = 10;
 
-/******************************************************************************/
-/* Constants used for trace prefixes                                          */
-/******************************************************************************/
-
-enum TracePrefixes {
-    TRACE_PREFIX_CLAUSE   ,
-    TRACE_PREFIX_ERROR    ,
-    TRACE_PREFIX_RESULT   ,
-    TRACE_PREFIX_DUMMY    ,
-    TRACE_PREFIX_VARIABLE ,
-    TRACE_PREFIX_DOTVARIABLE ,
-    TRACE_PREFIX_LITERAL  ,
-    TRACE_PREFIX_FUNCTION ,
-    TRACE_PREFIX_PREFIX   ,
-    TRACE_PREFIX_OPERATOR ,
-    TRACE_PREFIX_COMPOUND ,
-    TRACE_PREFIX_MESSAGE  ,
-    TRACE_PREFIX_ARGUMENT ,
-};
-
-#define MAX_TRACEBACK_LIST 80      /* 40 messages are displayed */
-#define MAX_TRACEBACK_INDENT 20    /* 10 messages are indented */
 
 /******************************************************************************/
 /* Constants used for setting trace                                           */
@@ -133,9 +120,9 @@ const int DEBUG_TOGGLE      =  0x04;
 /* Random number generation constants                                         */
 /******************************************************************************/
 
-const long RANDOM_FACTOR = 1664525L;   /* random multiplication factor      */
+const size_t RANDOM_FACTOR = 1664525;   /* random multiplication factor      */
                                        /* randomize a seed number           */
-inline long RANDOMIZE(long seed) { return (seed * RANDOM_FACTOR + 1); }
+inline size_t RANDOMIZE(size_t seed) { return (seed * RANDOM_FACTOR + 1); }
 
 /* Object Reference Assignment */
 #ifndef CHECKOREFS
@@ -177,12 +164,8 @@ typedef struct internalmethodentry {   /* internal method table entry       */
   PFN    entryPoint;                   /* method entry point                */
 } internalMethodEntry;
 
-// a couple of convience typedefs to make it easier to write code that can be
-// moved to the 4.0 codebase.
-typedef size_t stringsize_t;
-typedef int    wholenumber_t;
-typedef size_t arraysize_t;
 
+class RexxExpressionStack;
                                        /* builtin function prototype        */
 typedef RexxObject *builtin_func(RexxActivation *, int, RexxExpressionStack *);
 typedef builtin_func *pbuiltin;        /* pointer to a builtin function     */
@@ -199,10 +182,6 @@ typedef builtin_func *pbuiltin;        /* pointer to a builtin function     */
 #endif
 #ifndef EXTERN
 #define EXTERN extern                  /* turn into external definition     */
-#endif
-
-#ifndef EXTERNMEM
-#define EXTERNMEM extern               /* turn into external definition     */
 #endif
 
 /******************************************************************************/
@@ -234,6 +213,19 @@ typedef builtin_func *pbuiltin;        /* pointer to a builtin function     */
 EXTERN RexxObject* (__stdcall *NovalueCallback)(const char *) INITGLOBALPTR;
 #endif
 
+class RexxClass;
+class RexxDirectory;
+class RexxIntegerClass;
+class RexxListClass;
+class RexxMethodClass;
+class RexxNativeCodeClass;
+class RexxArray;
+class RexxNumberStringClass;
+class RexxStringClass;
+class RexxMemory;
+
+// TODO:  make these into statics inside classes.
+
 EXTERN RexxClass  * TheArrayClass INITGLOBALPTR;     /* array class                       */
 EXTERN RexxClass  * TheClassClass INITGLOBALPTR;     /* class of classes                  */
 EXTERN RexxClass  * TheDirectoryClass INITGLOBALPTR; /* directory class                   */
@@ -242,8 +234,6 @@ EXTERN RexxDirectory * TheEnvironment INITGLOBALPTR; /* environment object      
 EXTERN RexxDirectory * ThePublicRoutines INITGLOBALPTR; /* public_routines directory                */
 EXTERN RexxDirectory * TheStaticRequires INITGLOBALPTR; /* static_requires directory                */
 
-EXTERN MemorySegmentPool *GlobalPoolBase INITGLOBALPTR;
-
 EXTERN RexxDirectory * TheEnvironmentBase INITGLOBALPTR; // environment object base ptr
                                        /* function table                    */
 EXTERN RexxDirectory * TheFunctionsDirectory INITGLOBALPTR;
@@ -251,8 +241,7 @@ EXTERN RexxDirectory * TheFunctionsDirectory INITGLOBALPTR;
 EXTERN RexxIntegerClass  * TheIntegerClass INITGLOBALPTR;
 EXTERN RexxDirectory  * TheKernel INITGLOBALPTR;     /* kernel directory                  */
 EXTERN RexxListClass  * TheListClass INITGLOBALPTR;  /* list class                        */
-EXTERN RexxMemory * TheMemoryObject INITGLOBALPTR;   /* memory object                     */
-EXTERNMEM RexxMemory  memoryObject;   /* memory object                     */
+EXTERN RexxMemory  memoryObject;   /* memory object                     */
 EXTERN RexxClass  * TheMessageClass INITGLOBALPTR;   /* message class                     */
                                        /* method class                      */
 EXTERN RexxMethodClass  * TheMethodClass INITGLOBALPTR;
@@ -614,6 +603,8 @@ int  message_number(RexxString *);
 #endif
 #define NO_RSTRING       NULL
 
+// TODO:  Make these a name space
+
 /******************************************************************************/
 /* Global Objects - Names                                                     */
 /******************************************************************************/
@@ -668,9 +659,13 @@ const size_t A_COUNT   = 127;            /* pass arguments as pointer/count pair
 const int RC_OK         = 0;
 const int RC_LOGIC_ERROR  = 2;
 
+// TODO:  These belong on an activity basis
+
 RexxString *last_msgname (void);       /* last message issued               */
 RexxMethod *last_method  (void);       /* last method invoked               */
 
+
+// MAKE a static method on ClassClass.
                                        /* data converstion and validation   */
                                        /* routines                          */
 void process_new_args(RexxObject **, size_t, RexxObject ***, size_t *, size_t, RexxObject **, RexxObject **);
@@ -732,41 +727,12 @@ RexxString *version_number (void);
 /* Typed method invocation macros                                             */
 /******************************************************************************/
 
-inline RexxObject * callOperatorMethod(RexxObject *object, LONG methodOffset, RexxObject *argument) {
+inline RexxObject * callOperatorMethod(RexxObject *object, size_t methodOffset, RexxObject *argument) {
                                        /* get the entry point               */
   PCPPM cppEntry = object->behaviour->getOperatorMethod(methodOffset);
                                        /* go issue the method               */
   return (object->*((PCPPM1)cppEntry))(argument);
 }
-
-//TODO:  get rid of the native* macros.
-
-/******************************************************************************/
-/* Native method and external interface macros                                */
-/******************************************************************************/
-                                       /* macros for creating methods that  */
-                                       /* are part of the native code       */
-                                       /* interface.  These are used to     */
-                                       /* create directly callable methods  */
-                                       /* that can be called from native    */
-                                       /* methods (via the RexxNativeAPI.h macros)   */
-#define native0(result, name) result REXXENTRY REXX_##name(REXXOBJECT self)
-#define native1(result, name, t1, a1) result REXXENTRY REXX_##name(REXXOBJECT self, t1 a1)
-#define native2(result, name, t1, a1, t2, a2) result REXXENTRY REXX_##name(REXXOBJECT self, t1 a1, t2 a2)
-#define native3(result, name, t1, a1, t2, a2, t3, a3) result REXXENTRY REXX_##name(REXXOBJECT self, t1 a1, t2 a2, t3 a3)
-#define native4(result, name, t1, a1, t2, a2, t3, a3, t4, a4) result REXXENTRY REXX_##name(REXXOBJECT self, t1 a1, t2 a2, t3 a3, t4 a4)
-#define native5(result, name, t1, a1, t2, a2, t3, a3, t4, a4, t5, a5) result REXXENTRY REXX_##name(REXXOBJECT self, t1 a1, t2 a2, t3 a3, t4 a4, t5 a5)
-#define native6(result, name, t1, a1, t2, a2, t3, a3, t4, a4, t5, a5, t6, a6) result REXXENTRY REXX_##name(REXXOBJECT self, t1 a1, t2 a2, t3 a3, t4 a4, t5 a5, t6 a6)
-#define native7(result, name, t1, a1, t2, a2, t3, a3, t4, a4, t5, a5, t6, a6, t7, a7) result REXXENTRY REXX_##name(REXXOBJECT self, t1 a1, t2 a2, t3 a3, t4 a4, t5 a5, t6 a6, t7 a7)
-
-#define nativei0(result, name) result REXXENTRY REXX_##name(void)
-#define nativei1(result, name, t1, a1) result REXXENTRY REXX_##name(t1 a1)
-#define nativei2(result, name, t1, a1, t2, a2) result REXXENTRY REXX_##name(t1 a1, t2 a2)
-#define nativei3(result, name, t1, a1, t2, a2, t3, a3) result REXXENTRY REXX_##name(t1 a1, t2 a2, t3 a3)
-#define nativei4(result, name, t1, a1, t2, a2, t3, a3, t4, a4) result REXXENTRY REXX_##name(t1 a1, t2 a2, t3 a3, t4 a4)
-#define nativei5(result, name, t1, a1, t2, a2, t3, a3, t4, a4, t5, a5) result REXXENTRY REXX_##name(t1 a1, t2 a2, t3 a3, t4 a4, t5 a5)
-#define nativei6(result, name, t1, a1, t2, a2, t3, a3, t4, a4, t5, a5, t6, a6) result REXXENTRY REXX_##name(t1 a1, t2 a2, t3 a3, t4 a4, t5 a5, t6 a6)
-#define nativei7(result, name, t1, a1, t2, a2, t3, a3, t4, a4, t5, a5, t6, a6, t7, a7) result REXXENTRY REXX_##name(t1 a1, t2 a2, t3 a3, t4 a4, t5 a5, t6 a6, t7 a7)
 
                                        /* native method cleanup             */
 #define native_release(value)          ActivityManager::currentActivity->nativeRelease(value)

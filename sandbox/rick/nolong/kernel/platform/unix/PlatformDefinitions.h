@@ -134,13 +134,6 @@
 #define STACKCHECK
 
 /******************************************************************************/
-/* OPTIONAL:  Need support for non-ansi string routines strdup, strupr,       */
-/* strlwr, stricmp, and memicmp.                                              */
-/******************************************************************************/
-
-//#define NEED_NON_ANSI
-
-/******************************************************************************/
 /* OPTIONAL:  No time slicing support for REXX activation yields is available.*/
 /* Code will yield after a given count of instructions.                       */
 /* This option is mutually exclusive with TIMESLICE.                          */
@@ -510,15 +503,9 @@ typedef char *(far *REXXENTRY PNMF)(void **);
 #endif
 
 #define SysThreadArg(a) a->args
-//#define SysCreateThread(PTHREADFN, int, PVOID) LinThreadCreate(PTHREADFN, int, PVOID)
 #define SysInitialAddressName() OREF_INITIALADDRESS
 
 #define SysGetTempFileName()  tmpnam(NULL)
-/******************************************************************************/
-/* REQUIRED:  Define the macro for pointer subtraction                        */
-/******************************************************************************/
-
-#define PTRSUB(f,s) ((char *)(f)-(char *)(s))
 
 /******************************************************************************/
 /* OPTIONAL:  Finally, any other global defined constants for system specific */

@@ -292,11 +292,11 @@ FILE_SYSTEM | FILE_ARCHIVED | MUST_HAVE_DIRECTORY | FILE_DIRECTORY
 /* RxTree Structure used by GetLine, OpenFile and CloseFile          */
 /*********************************************************************/
 typedef struct _GetFileData {
-  PUCHAR       buffer;                 /* file read buffer           */
-  ULONG        size;                   /* file size                  */
-  ULONG        data;                   /* data left in buffer        */
-  ULONG        residual;               /* size left to read          */
-  PUCHAR       scan;                   /* current scan position      */
+  char *       buffer;                 /* file read buffer           */
+  size_t       size;                   /* file size                  */
+  size_t       data;                   /* data left in buffer        */
+  size_t       residual;               /* size left to read          */
+  char *       scan;                   /* current scan position      */
   HANDLE       handle;                 /* file handle                */
 } GetFileData;
 
@@ -305,15 +305,15 @@ typedef struct _GetFileData {
 /*********************************************************************/
 
 typedef struct RxTreeData {
-    ULONG count;                       /* Number of lines processed  */
+    size_t count;                      /* Number of lines processed  */
     SHVBLOCK shvb;                     /* Request block for RxVar    */
-    ULONG stemlen;                     /* Length of stem             */
-    ULONG vlen;                        /* Length of variable value   */
-    CHAR TargetSpec[CCHMAXPATH+1];     /* Target filespec            */
-    CHAR truefile[CCHMAXPATH+1];       /* expanded file name         */
-    CHAR Temp[CCHMAXPATH+80];          /* buffer for returned values */
-    CHAR varname[MAX];                 /* Buffer for variable name   */
-    ULONG nattrib;                     /* New attrib, diff for each  */
+    size_t stemlen;                    /* Length of stem             */
+    size_t vlen;                       /* Length of variable value   */
+    char TargetSpec[CCHMAXPATH+1];     /* Target filespec            */
+    char truefile[CCHMAXPATH+1];       /* expanded file name         */
+    char Temp[CCHMAXPATH+80];          /* buffer for returned values */
+    char varname[MAX];                 /* Buffer for variable name   */
+    size_t nattrib;                    /* New attrib, diff for each  */
 } RXTREEDATA;
 
 /*********************************************************************/
@@ -324,16 +324,16 @@ typedef struct RxTreeData {
 
 typedef struct RxStemData {
     SHVBLOCK shvb;                     /* Request block for RxVar    */
-    CHAR ibuf[IBUF_LEN];               /* Input buffer               */
-    CHAR varname[MAX];                 /* Buffer for the variable    */
+    char ibuf[IBUF_LEN];               /* Input buffer               */
+    char varname[MAX];                 /* Buffer for the variable    */
                                        /* name                       */
-    CHAR stemname[MAX];                /* Buffer for the variable    */
+    char stemname[MAX];                /* Buffer for the variable    */
                                        /* name                       */
-    ULONG stemlen;                     /* Length of stem.            */
-    ULONG vlen;                        /* Length of variable value   */
-    ULONG j;                           /* Temp counter               */
-    ULONG tlong;                       /* Temp counter               */
-    ULONG count;                       /* Number of elements         */
+    size_t stemlen;                    /* Length of stem.            */
+    size_t vlen;                       /* Length of variable value   */
+    size_t j;                          /* Temp counter               */
+    size_t tlong;                      /* Temp counter               */
+    size_t count;                      /* Number of elements         */
                                        /* processed                  */
 } RXSTEMDATA;
 
@@ -343,7 +343,7 @@ typedef struct RxStemData {
 /*   This list is used for registration and deregistration.          */
 /*********************************************************************/
 
-static PSZ  RxFncTable[] =
+static const char *RxFncTable[] =
    {
       "SysCls",
       "SysCurpos",
@@ -443,8 +443,8 @@ static PSZ  RxFncTable[] =
 /*********************************************************************/
 /* Saved character status                                            */
 /*********************************************************************/
-static   INT   ExtendedFlag = 0;       /* extended character saved   */
-static   UCHAR ExtendedChar;           /* saved extended character   */
+static   int   ExtendedFlag = 0;       /* extended character saved   */
+static   char  ExtendedChar;           /* saved extended character   */
 
 /*********************************************************************/
 /* function pointer for GetDiskFreespaceEx for SysDriveInfo          */
@@ -494,7 +494,7 @@ static   P_GDFSE pGetDiskFreeSpaceEx = NULL;
 /****************  REXXUTIL Supporting Functions  ********************/
 /*********************************************************************/
 
-INT ReadNextBuffer( GetFileData *filedata );
+bool ReadNextBuffer( GetFileData *filedata );
 
 /********************************************************************
 * Function:  OpenFile(file, filedata)                               *
@@ -505,8 +505,8 @@ INT ReadNextBuffer( GetFileData *filedata );
 *            1     - file open error occurred                       *
 *********************************************************************/
 
-INT MyOpenFile(
-   PSZ          file,                  /* file name                  */
+bool MyOpenFile(
+   const char  *file,                  /* file name                  */
    GetFileData *filedata )             /* global file information    */
 {
    DWORD       dwSize;                 /* file status information    */
@@ -516,7 +516,7 @@ INT MyOpenFile(
                             FILE_SHARE_READ | FILE_SHARE_WRITE, 0, OPEN_EXISTING,
                             FILE_FLAG_WRITE_THROUGH, 0))
                             == INVALID_HANDLE_VALUE)
-    return 1;                          /* return failure             */
+    return true;                          /* return failure             */
 
                                        /* retrieve the file size     */
   dwSize = GetFileSize(filedata->handle, NULL);
@@ -524,33 +524,33 @@ INT MyOpenFile(
                                        /* size=0                     */
   if (dwSize == 0xffffffff || !dwSize) {
     CloseHandle(filedata->handle);     /* close the file             */
-    return 1;                          /* and quit                   */
+    return true;                       /* and quit                   */
   }
   if (dwSize <= MAX_READ) {            /* less than a single buffer  */
                                        /* allocate buffer for file   */
-    if (!(filedata->buffer = GlobalAlloc(GMEM_ZEROINIT |
+    if (!(filedata->buffer = (char *)GlobalAlloc(GMEM_ZEROINIT |
                                          GMEM_FIXED, dwSize))) {
       CloseHandle(filedata->handle);   /* close the file             */
-      return 1;
+      return true;
     }
     filedata->size = dwSize;           /* save file size             */
     filedata->residual = 0;            /* no left over information   */
                                        /* read the file in           */
     if (!ReadFile(filedata->handle, filedata->buffer, dwSize,
-                &filedata->data, NULL)) {
+                (LPDWORD)&filedata->data, NULL)) {
       GlobalFree(filedata->buffer);    /* free the buffer            */
       CloseHandle(filedata->handle);   /* close the file             */
-      return 1;
+      return true;
     }
 
     filedata->scan = filedata->buffer; /* set position to beginning  */
   }
   else {                               /* need to read partial       */
                                        /* allocate buffer for read   */
-    if (!(filedata->buffer = GlobalAlloc(GMEM_ZEROINIT |
+    if (!(filedata->buffer = (char *)GlobalAlloc(GMEM_ZEROINIT |
                                          GMEM_FIXED, MAX_READ))) {
       CloseHandle(filedata->handle);   /* close the file             */
-      return 1;
+      return true;
     }
 
     filedata->size = dwSize;           /* save file size             */
@@ -560,10 +560,10 @@ INT MyOpenFile(
     if (ReadNextBuffer(filedata)) {
       GlobalFree(filedata->buffer);    /* free the buffer            */
       CloseHandle(filedata->handle);   /* close the file             */
-      return 1;
+      return true;
     }
   }
-  return 0;                            /* file is opened             */
+  return false;                        /* file is opened             */
 }
 
 /********************************************************************
@@ -586,17 +586,17 @@ void CloseFile(
 * RC:        0       buffer was read                                *
 *            1     - error occurred reading buffer                  *
 *********************************************************************/
-INT ReadNextBuffer(
+bool ReadNextBuffer(
    GetFileData  *filedata )            /* global file information    */
 {
-  ULONG     size;                      /* size to read               */
+  size_t    size;                      /* size to read               */
 
                                        /* get size of this read      */
   size = min(MAX_READ, filedata->residual);
 
                                        /* read the file in           */
   if (!ReadFile(filedata->handle, filedata->buffer, size,
-                &filedata->data, NULL))
+                (LPDWORD)&filedata->data, NULL))
       return 1;
 
   if (filedata->data != size)          /* not get all of it?         */
@@ -628,30 +628,30 @@ INT ReadNextBuffer(
 *            false - end of file was reached                        *
 *********************************************************************/
 
-INT GetLine(
-   PSZ          line,                  /* returned line              */
-   ULONG        size,                  /* size of line buffer        */
+bool GetLine(
+   char        *line,                  /* returned line              */
+   size_t       size,                  /* size of line buffer        */
    GetFileData *filedata )             /* file handle                */
 {
-   PUCHAR       scan;                  /* current scan pointer       */
-   ULONG        length;                /* line length                */
-   ULONG        copylength;            /* copied length              */
+   char        *scan;                  /* current scan pointer       */
+   size_t       length;                /* line length                */
+   size_t       copylength;            /* copied length              */
 
 
   if (!(filedata->data)) {             /* if out of current buffer   */
     if (filedata->residual) {          /* may be another buffer      */
       ReadNextBuffer(filedata);        /* try to read one            */
       if (!filedata->data)             /* nothing more?              */
-        return 1;                      /* all done                   */
+        return true;                   /* all done                   */
     }
     else
-      return (1);                      /* return EOF condition       */
+      return true;                     /* return EOF condition       */
   }
                                        /* look for a carriage return */
-  scan = memchr(filedata->scan, CH_NL, filedata->data);
+  scan = (char *)memchr(filedata->scan, CH_NL, filedata->data);
   if (scan) {                          /* found one                  */
                                        /* calculate the length       */
-    length = (ULONG)(scan - filedata->scan);
+    length = scan - filedata->scan;
     copylength = min(length, size);    /* get length to copy         */
                                        /* copy over the data         */
     memcpy(line, filedata->scan, copylength);
@@ -668,19 +668,8 @@ INT GetLine(
     if (!filedata->data) {             /* all used up                */
       if (filedata->residual)          /* more to read               */
         ReadNextBuffer(filedata);      /* read the next buffer       */
-
-//      if (filedata->data &&            /* if more to read            */
-//        *filedata->scan == CH_NL) {    /* may need to skip a char    */
-//        filedata->scan++;              /* step past new line         */
-//        filedata->data--;              /* reduce size by one         */
-//      }
     }
-                                       /* may need to skip a char    */
-//    else if (*filedata->scan == CH_NL) {
-//      filedata->scan++;                /* step past new line         */
-//      filedata->data--;                /* reduce size by one         */
-//    }
-    return 0;                            /* this worked ok           */
+    return false;                        /* this worked ok           */
   }
   else                                   /* ran off the end          */
   {
@@ -708,22 +697,14 @@ INT GetLine(
        memcpy(line, filedata->scan, copylength);
        line[copylength] = '\0';          /* make into ASCIIZ string  */
 
-    /* we don't want the CR character in the result string*/
-    /* we have not found LF, so why look for CR                      */
-//     if ( line[copylength - 1] == CH_CR )
-//     {
-//       line[copylength - 1] = '\0';
-//     } /* endif */
-
      /* all data should be read, filedata->data must be zero         */
        filedata->data -= copylength;
      /* scan should be at the end                                    */
        filedata->scan += copylength;     /* set new scan point       */
 
     /* if no more data to read in the file, return OK     */
-//       if (!filedata->residual && !filedata->data)
        if (!filedata->residual)
-          return 0;
+          return false;
        else
           return GetLine(line + copylength, size - copylength, filedata);
     }
@@ -734,12 +715,6 @@ INT GetLine(
        memcpy(line, filedata->scan, copylength);
        line[copylength] = '\0';          /* make into ASCIIZ string  */
 
-    /* we don't want the CR character in the result string*/
-//     if ( line[copylength - 1] == CH_CR )
-//     {
-//       line[copylength - 1] = '\0';
-//     } /* endif */
-
        filedata->data  = 0;            /* no data in buffer          */
        filedata->scan += filedata->data; /* set scan point to end    */
 
@@ -749,24 +724,9 @@ INT GetLine(
            return GetLine(line + copylength, 0, filedata);
        }
        else
-          return 0;
+          return false;
     }
   }
-
-//    /* if line didn't fit into buffer, then we look at it */
-//    /* as multiple lines                                             */
-//    if ( size > copylength) {
-//      /* buffer was not full, read additional data from file */
-//    } else {
-//      filedata->scan += copylength;    /* set new scan point         */
-//
-//      if (!filedata->data) {           /* all used up                */
-//        if (filedata->residual)        /* more to read               */
-//          ReadNextBuffer(filedata);    /* read the next buffer       */
-//      }
-//
-//      return 0;
-//    } /* endif */
 }
 
 /********************************************************************
@@ -778,9 +738,9 @@ INT GetLine(
 * RC:        0    -  File attributes successfully changed           *
 *            1    -  Unable to change attributes                    *
 *********************************************************************/
-INT  SetFileMode(
-  PSZ      file,                       /* file name                  */
-  ULONG    attr )                      /* new file attributes        */
+bool SetFileMode(
+  const char *file,                    /* file name                  */
+  size_t   attr )                      /* new file attributes        */
 {
 
   DWORD         dwfileattrib;          /* file attributes            */
@@ -790,11 +750,11 @@ INT  SetFileMode(
                                        /* if worked                  */
                                        /* set the attributes         */
     if ((dwfileattrib = SetFileAttributes(file,attr)) != 0)
-      return 0;   /* give back success flag     */
+      return false;   /* give back success flag     */
     else
-      return 1;
+      return true;
   } else
-    return 1;
+    return true;
 }
 
 /********************************************************************
@@ -810,12 +770,12 @@ INT  SetFileMode(
 *********************************************************************/
 
 bool string2long(
-  PSZ string,
-  LONG *number)
+  char *string,
+  int *number)
 {
-  ULONG    accumulator;                /* converted number           */
-  INT      length;                     /* length of number           */
-  INT      sign;                       /* sign of number             */
+  int      accumulator;                /* converted number           */
+  size_t   length;                     /* length of number           */
+  int      sign;                       /* sign of number             */
 
   sign = 1;                            /* set default sign           */
   if (*string == '-') {                /* negative?                  */
@@ -830,7 +790,7 @@ bool string2long(
 
   accumulator = 0;                     /* start with zero            */
 
-  while (length) {                     /* while more digits          */
+  while (length != 0) {                /* while more digits          */
     if (!isdigit(*string))             /* not a digit?               */
       return false;                    /* tell caller                */
                                        /* add to accumulator         */
@@ -855,11 +815,11 @@ bool string2long(
 *********************************************************************/
 
 bool string2ulong(
-  PSZ    string,                       /* string to convert          */
-  PULONG number)                       /* converted number           */
+  char  *string,                       /* string to convert          */
+  size_t *number)                      /* converted number           */
 {
-  ULONG    accumulator;                /* converted number           */
-  INT      length;                     /* length of number           */
+  size_t   accumulator;                /* converted number           */
+  size_t   length;                     /* length of number           */
 
   length = strlen(string);             /* get length of string       */
   if (length == 0 ||                   /* if null string             */
@@ -897,26 +857,27 @@ bool string2ulong(
 * Used By:   SysFileSearch()                                        *
 *********************************************************************/
 
-ULONG mystrstr(
-  CHAR   *haystack,
-  CHAR   *needle,
-  ULONG   hlen,
-  ULONG   nlen,
+char *mystrstr(
+  const char *haystack,
+  const char *needle,
+  size_t  hlen,
+  size_t  nlen,
   bool    sensitive)
-
 {
-  CHAR line[MAX_LINE_LEN];
-  CHAR target[MAX_LINE_LEN];
-  ULONG p;
+// TODO:  This can be made a LOT more efficient
+
+  char line[MAX_LINE_LEN];
+  char target[MAX_LINE_LEN];
+  size_t p;
  /* Copy line  - Change nulls to spaces and uppercase if needed      */
 
-  for (p = 0; p < hlen; p++) {
-
+  for (p = 0; p < hlen; p++)
+  {
     if (haystack[p] == '\0')
       line[p] = ' ';
     else if (sensitive)
       line[p] = haystack[p];
-    else line[p] = (CHAR)toupper(haystack[p]);
+    else line[p] = (char)toupper(haystack[p]);
   }
   line[p] = '\0';
 
@@ -928,11 +889,11 @@ ULONG mystrstr(
       target[p] = ' ';
     else if (sensitive)
       target[p] = needle[p];
-    else target[p] = (CHAR)toupper(needle[p]);
+    else target[p] = (char)toupper(needle[p]);
   }
   target[p] = '\0';
 
-  return ((ULONG)strstr(line, target));
+  return strstr(line, target);
 }
 
 /*****************************************************************
@@ -944,19 +905,23 @@ ULONG mystrstr(
 *                                                                *
 *****************************************************************/
 
-VOID getpath(
-  CHAR *string,
-  CHAR *path,
-  CHAR *filename)
+void getpath(
+  char *string,
+  char *path,
+  char *filename)
 {
-  INT    len;                          /* length of filespec         */
-  INT    LastSlashPos;                 /* position of last slash     */
+  size_t len;                          /* length of filespec         */
+  size_t LastSlashPos;                 /* position of last slash     */
   char   szBuff[MAX_PATH];             /* used to save current dir   */
   char   drv[3];                       /* used to change dir         */
-  INT    i=0;
+  size_t i=0;
 
-  while (string[i] == ' ') i++;        /* skip leading blanks        */
-  if (i) {
+  while (string[i] == ' ')
+  {
+      i++;        /* skip leading blanks        */
+  }
+  if (i > 0)
+  {
       len = strlen(string);            /* Get length of full file    */
       if ((string[i] == '\\' || string[i] == '/') ||  /* if first after blank is \ */
           (string[i] == '.' &&
@@ -1013,7 +978,7 @@ VOID getpath(
       path[LastSlashPos+1] = '\0';     /* make into an ASCII-Z string*/
     }
     else {
-      CHAR fpath[MAX_PATH];
+      char fpath[MAX_PATH];
       char drive[_MAX_DRIVE];
       char dir[_MAX_DIR];
       char fname[_MAX_FNAME];
@@ -2067,7 +2032,7 @@ LONG APIENTRY SysFileSearch(
   PSZ         file;                    /* search file                */
   PSZ         opts;                    /* option string              */
   CHAR        line[MAX_LINE_LEN];      /* Line read from file        */
-  ULONG       ptr;                     /* Pointer to char str found  */
+  char       *ptr;                     /* Pointer to char str found  */
   ULONG       num = 0;                 /* Line number                */
   ULONG       len;                     /* Length of string           */
   ULONG       len2;                    /* Length of string           */
@@ -2123,7 +2088,7 @@ LONG APIENTRY SysFileSearch(
     num++;
     ptr = mystrstr(line, target, len, args[0].strlength, sensitive);
 
-    if (ptr != '\0') {
+    if (ptr != NULL) {
 
       if (linenums) {
         wsprintf(ldp.ibuf, "%d ", num);

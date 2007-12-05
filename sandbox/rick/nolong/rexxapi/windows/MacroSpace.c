@@ -236,7 +236,7 @@ APIENTRY
 RexxAddMacro(
   PSZ    n,                            /* name of macro function     */
   PSZ    s,                            /* name of file               */
-  ULONG  pos )                         /* search order pos request   */
+  size_t pos )                         /* search order pos request   */
 {
   MACRO  p;
   ULONG   rc;
@@ -430,7 +430,7 @@ APIRET APIClearMacroSpace(void)
 APIRET
 APIENTRY
 RexxSaveMacroSpace(
-  ULONG    ac,                         /* count of arguments         */
+  size_t   ac,                         /* count of arguments         */
   PSZ     *av,                         /* argument list              */
   PSZ      fnam )                      /* file name                  */
 {
@@ -604,7 +604,7 @@ APIRET APIList(ULONG kind)
 APIRET
 APIENTRY
 RexxLoadMacroSpace(
-  ULONG    ac,                         /* argument count             */
+  size_t   ac,                         /* argument count             */
   PSZ     *av,                         /* list of argument strings   */
   PSZ      fnam )                      /* file name to load functs   */
 {
@@ -703,7 +703,7 @@ APIRET
 APIENTRY
 RexxReorderMacro(
   PSZ    name,                         /* name of function to change */
-  ULONG  pos )                         /* new position for function  */
+  size_t pos )                         /* new position for function  */
 {
   ULONG  rc;                           /* return code from call      */
 

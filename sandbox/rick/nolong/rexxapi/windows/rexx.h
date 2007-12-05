@@ -65,7 +65,7 @@
 
 typedef unsigned char uint8_t;
 
-#define APIRET ULONG                    // API return types
+#define APIRET size_t                    // API return types
 typedef DWORD PID;                      // process id
 typedef DWORD TID;                      // thread id (ignored on Windows)
 
@@ -73,7 +73,7 @@ typedef DWORD TID;                      // thread id (ignored on Windows)
 #define PCSZ PCSTR
 extern "C" {
 #endif
-   typedef APIRET (APIENTRY *PFN)();       // PFN pointer to a function
+   typedef ULONG (APIENTRY *PFN)();       // PFN pointer to a function
 #ifdef __cplusplus
 }
 #endif
@@ -99,7 +99,7 @@ extern "C" {
 /***    Structure for external interface string (RXSTRING) */
 
 typedef struct _RXSTRING {          /* rxstr */
-        ULONG  strlength;           /*   length of string         */
+        size_t  strlength;           /*   length of string         */
         PCH    strptr;              /*   pointer to string        */
 }  RXSTRING;
 
@@ -129,7 +129,7 @@ typedef RXSYSEXIT *PRXSYSEXIT;         /* pointer to a RXSYSEXIT     */
 #define RXVALIDSTRING(r)     ((r).strptr && (r).strlength)
 #define RXSTRLEN(r)          (RXNULLSTRING(r)?0L:(r).strlength)
 #define RXSTRPTR(r)          (r).strptr
-#define MAKERXSTRING(r,p,l)  {(r).strptr=(PCH)p;(r).strlength=(ULONG)l;}
+#define MAKERXSTRING(r,p,l)  {(r).strptr=(PCH)p;(r).strlength=(size_t)l;}
 
 /* XLATON */
 
@@ -205,8 +205,8 @@ typedef struct _SHVBLOCK {            /* shvb */
     struct _SHVBLOCK  *shvnext;       /* pointer to the next block   */
     RXSTRING           shvname;       /* Pointer to the name buffer  */
     RXSTRING           shvvalue;      /* Pointer to the value buffer */
-    ULONG              shvnamelen;    /* Length of the name value    */
-    ULONG              shvvaluelen;   /* Length of the fetch value   */
+    size_t              shvnamelen;    /* Length of the name value    */
+    size_t              shvvaluelen;   /* Length of the fetch value   */
     uint8_t            shvcode;       /* Function code for this block*/
     uint8_t            shvret;        /* Individual Return Code Flags*/
 }   SHVBLOCK;
@@ -441,20 +441,20 @@ APIRET APIENTRY RexxRegisterSubcomDll (
          PCSZ,                         /* Name of DLL                */
          PCSZ,                         /* Name of procedure in DLL   */
          PUCHAR,                       /* User area                  */
-         ULONG  );                     /* Drop authority.            */
+         size_t  );                     /* Drop authority.            */
 
 typedef APIRET (APIENTRY *PFNREXXREGISTERSUBCOMDLL)(PCSZ, PCSZ, PCSZ,
-                                                    PUCHAR, ULONG);
+                                                    PUCHAR, size_t);
 #else
 APIRET APIENTRY RexxRegisterSubcomDll (
          PSZ,                          /* Name of subcom handler     */
          PSZ,                          /* Name of DLL                */
          PSZ,                          /* Name of procedure in DLL   */
          PUCHAR,                       /* User area                  */
-         ULONG  );                     /* Drop authority.            */
+         size_t  );                     /* Drop authority.            */
 
 typedef APIRET (APIENTRY *PFNREXXREGISTERSUBCOMDLL)(PSZ, PSZ, PSZ,
-                                                    PUCHAR, ULONG);
+                                                    PUCHAR, size_t);
 #endif
 
 
@@ -566,8 +566,8 @@ typedef APIRET (APIENTRY *PFNREXXVARIABLEPOOL)(PSHVBLOCK);
 
 /* This typedef simplifies coding of an External Function.           */
 
-typedef ULONG APIENTRY RexxFunctionHandler(PUCHAR,
-                                  ULONG,
+typedef APIRET APIENTRY RexxFunctionHandler(PUCHAR,
+                                  size_t,
                                   PRXSTRING,
                                   PSZ,
                                   PRXSTRING);
@@ -725,7 +725,7 @@ typedef  struct _RXMSQPSH_PARM {        /* psh */
 /***    Subfunction RXMSQSIZ -- Return the Current Queue Size */
 
 typedef struct _RXMSQSIZ_PARM {        /* siz */
-   ULONG             rxmsq_size;       /* Number of Lines in Queue   */
+   size_t             rxmsq_size;       /* Number of Lines in Queue   */
 }  RXMSQSIZ_PARM;
 
 
@@ -793,7 +793,7 @@ typedef struct _RXDBG_FLAGS {          /* fl Trace flags             */
 
 typedef struct _RXDBGTST_PARM {        /* tst */
    RXDBG_FLAGS rxdbg_flags;            /* Set to run external trace before */
-   ULONG       rxdbg_line;
+   size_t       rxdbg_line;
    RXSTRING    rxdbg_filename;
    RXSTRING    rxdbg_routine;
 }  RXDBGTST_PARM;
@@ -814,20 +814,20 @@ APIRET APIENTRY RexxRegisterExitDll (
          PCSZ,                         /* Name of the DLL            */
          PCSZ,                         /* Name of the procedure      */
          PUCHAR,                       /* User area                  */
-         ULONG );                      /* Drop authority             */
+         size_t );                      /* Drop authority             */
 
 typedef APIRET (APIENTRY *PFNREXXREGISTEREXITDLL)(PCSZ, PCSZ, PCSZ,
-                                                  PUCHAR, ULONG);
+                                                  PUCHAR, size_t);
 #else
 APIRET APIENTRY RexxRegisterExitDll (
          PSZ,                          /* Name of the exit handler   */
          PSZ,                          /* Name of the DLL            */
          PSZ,                          /* Name of the procedure      */
          PUCHAR,                       /* User area                  */
-         ULONG );                      /* Drop authority             */
+         size_t );                      /* Drop authority             */
 
 typedef APIRET (APIENTRY *PFNREXXREGISTEREXITDLL)(PSZ, PSZ, PSZ,
-                                                  PUCHAR, ULONG);
+                                                  PUCHAR, size_t);
 #endif
 
 
@@ -963,17 +963,17 @@ typedef APIRET (APIENTRY *PFNREXXRESETTRACE)(PID, TID);
 APIRET APIENTRY RexxAddMacro(
          PCSZ,                        /* Function to add or change   */
          PCSZ,                        /* Name of file to get function*/
-         ULONG  );                    /* Flag indicating search pos  */
+         size_t  );                    /* Flag indicating search pos  */
 
-typedef APIRET (APIENTRY *PFNREXXADDMACRO)(PCSZ, PCSZ, ULONG);
+typedef APIRET (APIENTRY *PFNREXXADDMACRO)(PCSZ, PCSZ, size_t);
 
 #else
 APIRET APIENTRY RexxAddMacro(
          PSZ,                         /* Function to add or change   */
          PSZ,                         /* Name of file to get function*/
-         ULONG  );                    /* Flag indicating search pos  */
+         size_t  );                    /* Flag indicating search pos  */
 
-typedef APIRET (APIENTRY *PFNREXXADDMACRO)(PSZ, PSZ, ULONG);
+typedef APIRET (APIENTRY *PFNREXXADDMACRO)(PSZ, PSZ, size_t);
 #endif
 
 /***   Uppercase Entry Point Name */
@@ -1003,19 +1003,19 @@ typedef APIRET (APIENTRY *PFNREXXDROPMACRO)(PSZ);
 
 #ifdef __cplusplus
 APIRET APIENTRY RexxSaveMacroSpace (
-         ULONG ,                      /* Argument count (0==save all)*/
+         size_t ,                      /* Argument count (0==save all)*/
          PCSZ *,                      /* List of funct names to save */
          PCSZ);                       /* File to save functions in   */
 
-typedef APIRET (APIENTRY * PFNREXXSAVEMACROSPACE)(ULONG, PCSZ *, PCSZ);
+typedef APIRET (APIENTRY * PFNREXXSAVEMACROSPACE)(size_t, PCSZ *, PCSZ);
 
 #else
 APIRET APIENTRY RexxSaveMacroSpace (
-         ULONG ,                      /* Argument count (0==save all)*/
+         size_t ,                      /* Argument count (0==save all)*/
          PSZ *,                       /* List of funct names to save */
          PSZ);                        /* File to save functions in   */
 
-typedef APIRET (APIENTRY * PFNREXXSAVEMACROSPACE)(ULONG, PSZ *, PSZ);
+typedef APIRET (APIENTRY * PFNREXXSAVEMACROSPACE)(size_t, PSZ *, PSZ);
 #endif
 
 /***   Uppercase Entry Point Name */
@@ -1026,19 +1026,19 @@ typedef APIRET (APIENTRY * PFNREXXSAVEMACROSPACE)(ULONG, PSZ *, PSZ);
 
 #ifdef __cplusplus
 APIRET APIENTRY RexxLoadMacroSpace (
-         ULONG ,                      /* Argument count (0==load all)*/
+         size_t ,                      /* Argument count (0==load all)*/
          PCSZ *,                      /* List of funct names to load */
          PCSZ);                       /* File to load functions from */
 
-typedef APIRET (APIENTRY *PFNREXXLOADMACROSPACE)(ULONG, PCSZ *, PCSZ);
+typedef APIRET (APIENTRY *PFNREXXLOADMACROSPACE)(size_t, PCSZ *, PCSZ);
 
 #else
 APIRET APIENTRY RexxLoadMacroSpace (
-         ULONG ,                      /* Argument count (0==load all)*/
+         size_t ,                      /* Argument count (0==load all)*/
          PSZ *,                       /* List of funct names to load */
          PSZ);                        /* File to load functions from */
 
-typedef APIRET (APIENTRY *PFNREXXLOADMACROSPACE)(ULONG, PSZ *, PSZ);
+typedef APIRET (APIENTRY *PFNREXXLOADMACROSPACE)(size_t, PSZ *, PSZ);
 #endif
 
 /***   Uppercase Entry Point Name */
@@ -1072,16 +1072,16 @@ typedef APIRET (APIENTRY *PFNREXXQUERYMACRO)(PSZ, PUSHORT);
 #ifdef __cplusplus
 APIRET APIENTRY RexxReorderMacro(
          PCSZ,                        /* Name of funct change order  */
-         ULONG  );                    /* New position for function   */
+         size_t  );                    /* New position for function   */
 
-typedef APIRET (APIENTRY *PFNREXXREORDERMACRO)(PCSZ, ULONG);
+typedef APIRET (APIENTRY *PFNREXXREORDERMACRO)(PCSZ, size_t);
 
 #else
 APIRET APIENTRY RexxReorderMacro(
          PSZ,                         /* Name of funct change order  */
-         ULONG  );                    /* New position for function   */
+         size_t  );                    /* New position for function   */
 
-typedef APIRET (APIENTRY *PFNREXXREORDERMACRO)(PSZ, ULONG);
+typedef APIRET (APIENTRY *PFNREXXREORDERMACRO)(PSZ, size_t);
 #endif
 
 
@@ -1137,38 +1137,38 @@ typedef APIRET (APIENTRY *PFNREXXCLEARMACROSPACE)(VOID);
 /***    RexxCreateQueue - Create an External Data Queue */
 
 #ifdef __cplusplus
-ULONG  APIENTRY RexxCreateQueue (
+APIRET  APIENTRY RexxCreateQueue (
         PCSZ,                          /* Name of queue created       */
-        ULONG,                         /* Size of buf for ret name    */
+        size_t,                         /* Size of buf for ret name    */
         PCSZ,                          /* Requested name for queue    */
-        PULONG ) ;                     /* Duplicate name flag.        */
+        size_t * ) ;                     /* Duplicate name flag.        */
 
-typedef ULONG (APIENTRY *PFNREXXCREATEQUEUE)(PCSZ, ULONG, PCSZ, PULONG);
+typedef APIRET (APIENTRY *PFNREXXCREATEQUEUE)(PCSZ, size_t, PCSZ, size_t *);
 
 #else
-ULONG  APIENTRY RexxCreateQueue (
+APIRET  APIENTRY RexxCreateQueue (
         PSZ,                           /* Name of queue created       */
-        ULONG,                         /* Size of buf for ret name    */
+        size_t,                         /* Size of buf for ret name    */
         PSZ,                           /* Requested name for queue    */
-        PULONG ) ;                     /* Duplicate name flag.        */
+        size_t * ) ;                     /* Duplicate name flag.        */
 
-typedef ULONG (APIENTRY *PFNREXXCREATEQUEUE)(PSZ, ULONG, PSZ, PULONG);
+typedef APIRET (APIENTRY *PFNREXXCREATEQUEUE)(PSZ, size_t, PSZ, size_t *);
 #endif
 
 
 /***    RexxDeleteQueue - Delete an External Data Queue */
 
 #ifdef __cplusplus
-ULONG  APIENTRY RexxDeleteQueue (
+APIRET  APIENTRY RexxDeleteQueue (
         PCSZ );                         /* Name of queue to be deleted */
 
-typedef ULONG (APIENTRY *PFNREXXDELETEQUEUE)(PCSZ);
+typedef APIRET (APIENTRY *PFNREXXDELETEQUEUE)(PCSZ);
 
 #else
-ULONG  APIENTRY RexxDeleteQueue (
+APIRET  APIENTRY RexxDeleteQueue (
         PSZ );                         /* Name of queue to be deleted */
 
-typedef ULONG (APIENTRY *PFNREXXDELETEQUEUE)(PSZ);
+typedef APIRET (APIENTRY *PFNREXXDELETEQUEUE)(PSZ);
 #endif
 
 
@@ -1176,62 +1176,62 @@ typedef ULONG (APIENTRY *PFNREXXDELETEQUEUE)(PSZ);
 /***                  entries                                         */
 
 #ifdef __cplusplus
-ULONG  APIENTRY RexxQueryQueue (
+APIRET  APIENTRY RexxQueryQueue (
         PCSZ,                          /* Name of queue to query      */
-        PULONG );                      /* Place to put element count  */
+        size_t * );                      /* Place to put element count  */
 
-typedef ULONG (APIENTRY *PFNREXXQUERYQUEUE)(PCSZ, PULONG);
+typedef APIRET (APIENTRY *PFNREXXQUERYQUEUE)(PCSZ, size_t *);
 
 #else
-ULONG  APIENTRY RexxQueryQueue (
+APIRET  APIENTRY RexxQueryQueue (
         PSZ,                           /* Name of queue to query      */
-        PULONG );                      /* Place to put element count  */
+        size_t * );                      /* Place to put element count  */
 
-typedef ULONG (APIENTRY *PFNREXXQUERYQUEUE)(PSZ, PULONG);
+typedef APIRET (APIENTRY *PFNREXXQUERYQUEUE)(PSZ, size_t *);
 #endif
 
 
 /***    RexxAddQueue - Add an entry to an External Data Queue */
 
 #ifdef __cplusplus
-ULONG  APIENTRY RexxAddQueue (
+APIRET  APIENTRY RexxAddQueue (
         PCSZ,                          /* Name of queue to add to     */
         PRXSTRING,                     /* Data string to add          */
-        ULONG );                       /* Queue type (FIFO|LIFO)      */
+        size_t );                       /* Queue type (FIFO|LIFO)      */
 
-typedef ULONG (APIENTRY *PFNREXXADDQUEUE)(PCSZ, PRXSTRING, ULONG);
+typedef APIRET (APIENTRY *PFNREXXADDQUEUE)(PCSZ, PRXSTRING, size_t);
 
 #else
-ULONG  APIENTRY RexxAddQueue (
+APIRET  APIENTRY RexxAddQueue (
         PSZ,                           /* Name of queue to add to     */
         PRXSTRING,                     /* Data string to add          */
-        ULONG );                       /* Queue type (FIFO|LIFO)      */
+        size_t );                       /* Queue type (FIFO|LIFO)      */
 
-typedef ULONG (APIENTRY *PFNREXXADDQUEUE)(PSZ, PRXSTRING, ULONG);
+typedef APIRET (APIENTRY *PFNREXXADDQUEUE)(PSZ, PRXSTRING, size_t);
 #endif
 
 
 /***    RexxPullQueue - Retrieve data from an External Data Queue */
 
 #ifdef __cplusplus
-ULONG  APIENTRY RexxPullQueue (
+APIRET  APIENTRY RexxPullQueue (
         PCSZ,                          /* Name of queue to read from  */
         PRXSTRING,                     /* RXSTRING to receive data    */
         SYSTEMTIME * PDATETIME,        /* Stor for data date/time     */
-        ULONG );                       /* wait status (WAIT|NOWAIT)   */
+        size_t );                       /* wait status (WAIT|NOWAIT)   */
 
-typedef ULONG (APIENTRY *PFNREXXPULLQUEUE)(PCSZ, PRXSTRING, SYSTEMTIME *,
-                                           ULONG);
+typedef APIRET (APIENTRY *PFNREXXPULLQUEUE)(PCSZ, PRXSTRING, SYSTEMTIME *,
+                                           size_t);
 
 #else
-ULONG  APIENTRY RexxPullQueue (
+APIRET  APIENTRY RexxPullQueue (
         PSZ,                           /* Name of queue to read from  */
         PRXSTRING,                     /* RXSTRING to receive data    */
         SYSTEMTIME * PDATETIME,        /* Stor for data date/time     */
-        ULONG );                       /* wait status (WAIT|NOWAIT)   */
+        size_t );                       /* wait status (WAIT|NOWAIT)   */
 
-typedef ULONG (APIENTRY *PFNREXXPULLQUEUE)(PSZ, PRXSTRING, SYSTEMTIME *,
-                                           ULONG);
+typedef APIRET (APIENTRY *PFNREXXPULLQUEUE)(PSZ, PRXSTRING, SYSTEMTIME *,
+                                           size_t);
 #endif
 
 
@@ -1245,9 +1245,9 @@ typedef ULONG (APIENTRY *PFNREXXPULLQUEUE)(PSZ, PRXSTRING, SYSTEMTIME *,
 /* The following prototypes are always included, because they are    */
 /* common to all interfaces                                          */
 
-ULONG  APIENTRY RexxShutDownAPI(void);
+APIRET  APIENTRY RexxShutDownAPI(void);
 
-typedef ULONG (APIENTRY *PFNREXXSHUTDOWNAPI)(void);
+typedef APIRET (APIENTRY *PFNREXXSHUTDOWNAPI)(void);
 
 /***   Uppercase Entry Point Name */
 #define REXXSHUTDOWNAPI  RexxShutDownAPI
@@ -1256,9 +1256,9 @@ typedef ULONG (APIENTRY *PFNREXXSHUTDOWNAPI)(void);
 /***   RexxAllocateMemory            */
 
 PVOID APIENTRY RexxAllocateMemory(
-                   ULONG );           /* number of bytes to allocate */
+                   size_t );           /* number of bytes to allocate */
 
-typedef PVOID (APIENTRY *PFNREXXALLOCATEMEMORY)(ULONG);
+typedef PVOID (APIENTRY *PFNREXXALLOCATEMEMORY)(size_t);
 
 /***   Uppercase Entry Point Name */
 #define REXXALLOCATEMEMORY RexxAllocateMemory
@@ -1267,11 +1267,11 @@ typedef PVOID (APIENTRY *PFNREXXALLOCATEMEMORY)(ULONG);
 /***   RexxFreeMemory                */
 
 
-ULONG APIENTRY RexxFreeMemory(
+APIRET APIENTRY RexxFreeMemory(
                    PVOID);   /* pointer to the memory returned by    */
                              /* RexxAllocateMemory                   */
 
-typedef ULONG (APIENTRY *PFNREXXFREEMEMORY)(PVOID);
+typedef APIRET (APIENTRY *PFNREXXFREEMEMORY)(PVOID);
 
 /***   Uppercase Entry Point Name */
 #define REXXFREEMEMORY RexxFreeMemory

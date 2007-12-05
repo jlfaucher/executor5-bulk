@@ -42,7 +42,7 @@
 /*                                                                            */
 /******************************************************************************/
 #include <stdio.h>
-#include "RexxLibrary.h"
+#include "RexxCore.h"
 bool  ProcessDoneInit = false;         /* initialization is done            */
 bool  ProcessDoneTerm = false;         /* termination is done               */
 bool  ProcessFirstThread = true;       /* this is the first thread          */

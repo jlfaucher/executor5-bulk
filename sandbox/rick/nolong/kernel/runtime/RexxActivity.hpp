@@ -54,10 +54,35 @@
 
 
 class ProtectedObject;                 // needed for look aheads
+class RexxSource;
+
                                        /* interface values for the          */
                                        /* activity_queue method             */
 #define QUEUE_FIFO 1
 #define QUEUE_LIFO 2
+
+/******************************************************************************/
+/* Constants used for trace prefixes                                          */
+/******************************************************************************/
+
+enum TracePrefixes {
+    TRACE_PREFIX_CLAUSE   ,
+    TRACE_PREFIX_ERROR    ,
+    TRACE_PREFIX_RESULT   ,
+    TRACE_PREFIX_DUMMY    ,
+    TRACE_PREFIX_VARIABLE ,
+    TRACE_PREFIX_DOTVARIABLE ,
+    TRACE_PREFIX_LITERAL  ,
+    TRACE_PREFIX_FUNCTION ,
+    TRACE_PREFIX_PREFIX   ,
+    TRACE_PREFIX_OPERATOR ,
+    TRACE_PREFIX_COMPOUND ,
+    TRACE_PREFIX_MESSAGE  ,
+    TRACE_PREFIX_ARGUMENT ,
+};
+
+#define MAX_TRACEBACK_LIST 80      /* 40 messages are displayed */
+#define MAX_TRACEBACK_INDENT 20    /* 10 messages are indented */
 
 
 typedef enum
@@ -89,7 +114,6 @@ typedef enum
 #define LAST_EXIT 12                   /* top bound of the exits            */
 
 
-extern SMTX rexx_kernel_semaphore;     /* global kernel semaphore           */
 extern SMTX rexx_resource_semaphore;   /* global kernel semaphore           */
 extern SMTX rexx_start_semaphore;      /* startup semaphore                 */
 
@@ -244,7 +268,7 @@ public:
    inline void setSysExit(long exitNum, RexxString *exitName) { this->nestedInfo.sysexits[exitNum -1] = exitName;}
    inline RexxString *querySysExits(long exitNum) {return this->nestedInfo.sysexits[exitNum -1];}
    inline RexxString **getSysExits() {return this->nestedInfo.sysexits;}
-   inline void clearExits() { memset((PVOID)&this->nestedInfo.sysexits, 0, sizeof(this->nestedInfo.sysexits)); }
+   inline void clearExits() { memset((void *)&this->nestedInfo.sysexits, 0, sizeof(this->nestedInfo.sysexits)); }
    inline void saveNestedInfo(NestedActivityState &saveInfo) { saveInfo = nestedInfo; }
    inline void restoreNestedInfo(NestedActivityState &saveInfo) { nestedInfo = saveInfo; }
    inline bool useExitObjects() { return exitObjects; }

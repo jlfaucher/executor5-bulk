@@ -66,9 +66,8 @@
 # include <sched.h>
 #endif
 
-#include "RexxLibrary.h"
-#include "ThreadSupport.hpp"
 #include "RexxCore.h"
+#include "ThreadSupport.hpp"
 #include "ActivityManager.hpp"
 #include <errno.h>
 
@@ -109,7 +108,7 @@ void SysThreadInit(void)
 /*  are no performance improvements.                               */
 /*****************************************************************************/
 
-int SysCreateThread(PTHREADFN threadFnc, size_t stackSize, PVOID args)
+int SysCreateThread(PTHREADFN threadFnc, size_t stackSize, void *args)
 {
    int             rc;
    pthread_t       newThread;
@@ -188,8 +187,8 @@ void SysSetThreadPriority(long tid, int  prio)
 
 char *SysGetThreadStackBase(size_t stacksize)
 {
-  LONG temp;
-  return (char *) ((ULONG)&temp - (ULONG)stacksize);
+  size_t temp;
+  return (char *) ((char *)&temp - stacksize);
 }
 
 /* ********************************************************************** */

@@ -43,10 +43,18 @@
 /* have not overridden these with a define.                                   */
 /*                                                                            */
 /******************************************************************************/
-#ifndef SYSDEF_H
-#define SYSDEF_H
+#ifndef RexxPlatformInterface_H
+#define RexxPlatformInterface_H
 
+class RexxObject;
+class RexxString;
+class RexxInteger;
+class RexxActivity;
+class RexxActivation;
+class RexxMethod;
 class RexxDateTime;
+class RexxNativeActivation;
+class RexxBuffer;
 
 #ifndef SysGetCurrentTime
 void SysGetCurrentTime(RexxDateTime *);/* get the current time              */
@@ -54,7 +62,7 @@ void SysGetCurrentTime(RexxDateTime *);/* get the current time              */
 
 #ifndef SysVariablePool
                                        /* process external vpool requests   */
-extern ULONG SysVariablePool(RexxNativeActivation *, PVOID, bool);
+extern int SysVariablePool(RexxNativeActivation *, void *, bool);
 #endif
 
 #ifndef SysResolveProgramName
@@ -92,10 +100,6 @@ void SysRegisterSignals(SYSEXCEPTIONBLOCK *);
 #ifndef SysDeregisterSignals
                                        /* deregister a signal handler       */
 void SysDeregisterSignals(SYSEXCEPTIONBLOCK *);
-#endif
-
-#ifndef SysProcessName
-RexxObject *SysProcessName(void);      /* get a process "name" object       */
 #endif
 
 #ifndef SysTermination
@@ -259,11 +263,6 @@ void SysTerminateThread(TID threadid);
 #ifndef SysInitializeThread
                                        /* thread being started              */
 void SysInitializeThread();
-#endif
-
-/* defect 2325: CHM added definition of PTRSUB2 for Doug Griswold           */
-#ifndef PTRSUB2
-#define PTRSUB2   PTRSUB
 #endif
 
 /******************************************************************************/

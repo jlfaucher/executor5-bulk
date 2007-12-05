@@ -36,7 +36,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Kernel                                                MethodClass.hpp    */
+/* REXX Kernel                                             MethodClass.hpp    */
 /*                                                                            */
 /* Primitive Kernel Method Class Definitions                                  */
 /*                                                                            */
@@ -45,6 +45,7 @@
 #define Included_RexxMethod
 
 #include "RexxCode.hpp"
+#include "RexxNativeMethod.hpp"
 
 
  class RexxMethod : public RexxObject {

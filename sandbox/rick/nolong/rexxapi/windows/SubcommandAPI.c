@@ -204,7 +204,7 @@ RexxRegisterSubcomDll(
   PSZ   ModuleName,                    /* Name of DLL                */
   PSZ   EntryPoint,                    /* DLL routine name           */
   PUCHAR UserArea,                     /* User data                  */
-  ULONG DropAuth )                     /* Drop Authority             */
+  size_t DropAuth )                    /* Drop Authority             */
 {
   ULONG  rc;                           /* Function return code.      */
                                        /* Register the subcommand.   */
@@ -432,7 +432,7 @@ RexxRegisterExitDll(
   PSZ   ModuleName,                    /* Name of DLL                */
   PSZ   EntryPoint,                    /* DLL routine name           */
   PUCHAR UserArea,                     /* User data                  */
-  ULONG DropAuth )                     /* Drop Authority             */
+  size_t DropAuth )                    /* Drop Authority             */
 {
   ULONG  rc;                           /* Function return code.      */
                                        /* Register the subcommand.   */
@@ -1273,7 +1273,7 @@ LONG memmgrcheckexe(
 /* try to shutdown the RXAPI.EXE */
 /* request from toronto */
 
-ULONG  APIENTRY RexxShutDownAPI(void)
+APIRET APIENTRY RexxShutDownAPI(void)
 {
   int dummy;
 

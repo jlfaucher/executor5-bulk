@@ -143,13 +143,6 @@ typedef unsigned __int64 uint64_t;
 #define STACKCHECK
 
 /******************************************************************************/
-/* OPTIONAL:  Need support for non-ansi string routines strdup, strupr,       */
-/* strlwr, stricmp, and memicmp.                                              */
-/******************************************************************************/
-
-//#define NEED_NON_ANSI
-
-/******************************************************************************/
 /* OPTIONAL:  No time slicing support for REXX activation yields is available.*/
 /* Code will yield after a given count of instructions.                       */
 /******************************************************************************/
@@ -376,7 +369,7 @@ inline bool SysTimeSliceElapsed( void )
 void SysStartTimeSlice(void);
 
 /* Windows needs a special line write function to check stdout output */
-LONG line_write_check(const char * , LONG , FILE * );
+size_t line_write_check(const char * , size_t, FILE * );
 
 /******************************************************************************/
 /* REQUIRED:  Routines to alloc memory passed to external environments        */
@@ -473,12 +466,6 @@ LONG line_write_check(const char * , LONG , FILE * );
 typedef char *(far REXXENTRY *PNMF)(void **);
 
 /******************************************************************************/
-/* REQUIRED:  Define the macro for pointer subtraction                        */
-/******************************************************************************/
-
-#define PTRSUB(f,s) ((char *)(f)-(char *)(s))
-
-/******************************************************************************/
 /* OPTIONAL:  Overrides for any functions defined in sysdef.h.  These         */
 /* can map the calls directly to inline code or comment them out all together.*/
 /******************************************************************************/
@@ -501,16 +488,10 @@ typedef char *(far REXXENTRY *PNMF)(void **);
 #define SysQueryThread() GetCurrentThread()
 #endif
 
-//#define SysGetThreadStackBase() NULL
-
-//#define SysCreateThread(PTHREADFN, int, PVOID) WinCreateThread(PTHREADFN, size_t, PVOID)
-
-//DWORD WinCreateThread(PTHREADFN pThFunc, size_t StackSize, PVOID arg);
-
 int SysCreateThread (
   PTHREADFN ThreadProcedure,           /* address of thread procedure       */
   size_t    StackSize,                 /* required stack size               */
-  PVOID     Arguments );               /* thread procedure argument block   */
+  void     *Arguments );               /* thread procedure argument block   */
 
 
 #define SysValidateAddressName(OREF)   // OS2MISC: Validates address

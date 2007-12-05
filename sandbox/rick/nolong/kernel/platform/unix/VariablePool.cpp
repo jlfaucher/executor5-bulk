@@ -95,11 +95,11 @@ extern "C" {
 /* Output:                                                                    */
 /*   true if the sort succeeded, false for any parameter errors.              */
 /******************************************************************************/
-ULONG REXXENTRY RexxStemSort(char *stemname, int order, int type,
+int REXXENTRY RexxStemSort(char *stemname, int order, int type,
     size_t start, size_t end, size_t firstcol, size_t lastcol)
 {
     if (!RexxQuery())                         /* Are we up?                     */
-      return false;                           /*   No, send nastygram.          */
+      return 0;                               /*   No, send nastygram.          */
     else                                      /*   Yes, ship request to kernel  */
       return REXX_STEMSORT(stemname, order, type, start, end, firstcol, lastcol);
 }
@@ -114,27 +114,27 @@ ULONG REXXENTRY RexxStemSort(char *stemname, int order, int type,
 /*   rc - Composite return code for all request blocks (individual rc's are   */
 /*        set within the shvret fields of each request block).                */
 /******************************************************************************/
-ULONG APIENTRY RexxVariablePool(PSHVBLOCK pshvblock)
+APIRET APIENTRY RexxVariablePool(PSHVBLOCK pshvblock)
 {
 
   if (!RexxQuery())                         /* Are we up?                     */
     return RXSHV_NOAVL;                     /*   No, send nastygram.          */
   else                                      /*   Yes, ship request to kernel  */
-    return REXX_VARIABLEPOOL((PVOID)pshvblock);
+    return REXX_VARIABLEPOOL((void *)pshvblock);
 
 } /* end RexxVariablePool */
 
 /******************************************************************************/
 /* copy_value -                                                               */
 /******************************************************************************/
-static ULONG copy_value(
+static int    copy_value(
     RexxObject * value,                /* value to copy                     */
     RXSTRING   * rxstring,             /* target rxstring                   */
-    ULONG      * length )              /* length field to update            */
+    size_t     * length )              /* length field to update            */
 {
    RexxString * stringValue;           /* converted object value            */
-   ULONG        string_length;         /* length of the string              */
-   ULONG        rc;                    /* return code                       */
+   size_t       string_length;         /* length of the string              */
+   int          rc;                    /* return code                       */
 
    rc = 0;                             /* default to success                */
                                        /* get the string value              */

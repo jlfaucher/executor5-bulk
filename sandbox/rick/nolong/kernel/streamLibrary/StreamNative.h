@@ -279,7 +279,7 @@ bool SysFileIsPipe(STREAM_INFO *);
 #endif
 
 #ifndef SysTellPosition
-LONG SysTellPosition(STREAM_INFO *);
+int SysTellPosition(STREAM_INFO *);
 #endif
 
 #endif

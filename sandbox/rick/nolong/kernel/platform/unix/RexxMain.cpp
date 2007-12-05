@@ -542,7 +542,7 @@ RexxMethod * process_instore(
 /*                                                                   */
 /*********************************************************************/
 void  SysRunProgram(
-  PVOID   ControlInfo )                /* flattened control information     */
+  void   *ControlInfo )                /* flattened control information     */
 {
   RexxStartInfo *self;                 /* Rexxstart argument info           */
   RexxArray   * new_arglist;           /* passed on argument list           */

@@ -83,7 +83,7 @@ LONG APIENTRY RexxTranslateProgram(PSZ, PSZ);
 #endif
 
 
-void DisplayError(ULONG msgid)         /* simplified catalog access@MAE004M */
+void DisplayError(int msgid)           /* simplified catalog access@MAE004M */
 {
 #if defined( HAVE_NL_TYPES_H )
  nl_catd        catd;                  /* catalog descriptor from catopen() */

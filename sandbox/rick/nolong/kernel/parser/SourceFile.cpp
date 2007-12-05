@@ -140,7 +140,7 @@ void RexxSource::initBuffered(
   descriptor.position = 0;             /* fill in the "zeroth" position     */
   descriptor.length = 0;               /* and the length                    */
                                        /* add to the line list              */
-  (((RexxSmartBuffer *)(this->sourceIndices)))->copyData((PVOID)&descriptor, sizeof(descriptor));
+  (((RexxSmartBuffer *)(this->sourceIndices)))->copyData(&descriptor, sizeof(descriptor));
   this->line_count = 0;                /* start with zero lines             */
                                        /* look for an EOF mark              */
   scan = (const char *)memchr(start, ctrl_z, length);
@@ -181,7 +181,7 @@ void RexxSource::initBuffered(
       _current = scan;                 /* copy the scan pointer             */
     }
                                        /* add to the line list              */
-    (((RexxSmartBuffer *)(this->sourceIndices)))->copyData((PVOID)&descriptor, sizeof(descriptor));
+    (((RexxSmartBuffer *)(this->sourceIndices)))->copyData(&descriptor, sizeof(descriptor));
   }
                                        /* throw away the buffer "wrapper"   */
   OrefSet(this, this->sourceIndices, (((RexxSmartBuffer *)(this->sourceIndices)))->buffer);

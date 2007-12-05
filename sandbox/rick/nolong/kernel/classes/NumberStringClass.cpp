@@ -62,41 +62,6 @@ RexxObject *RexxNumberString::##method(RexxObject *operand)\
  }
 
 
-
-/*********************************************************************/
-/*   Function:  Convert the numberstring to ULONG value              */
-/*********************************************************************/
-bool number_create_uinteger(const char *thisnum, size_t intlength, int carry, int sign, size_t *value)
-{
-  size_t intnum;
-  size_t  numpos;
-
-  if (intlength > 10) {                /* too many digits for integer????   */
-    return false;
-  }
-  else {
-    intnum = 0;                        /* initialize integer value to 0;    */
-    for (numpos = 1 ; (numpos <= intlength); numpos++ ) {
-                                       /* is number about to overflow       */
-     if (intnum > MAXPOSBASE || ((intnum == MAXPOSBASE) && (*thisnum > 5))) {
-       return false;                   /* YES, return unconvertable         */
-     }
-                                       /* compute next digit part.          */
-     intnum = (intnum * 10) + (int) *thisnum++ ;
-    }
-  }
-
-  if (carry)                           /* have a carry out condition?       */
-    if (intnum == MAXPOSNUM) {         /* Already at max value?             */
-      return false;                    /* Yup, number too big.              */
-   }
-   else {
-    intnum++;                          /* step the number                   */
-   }
-  *value = intnum;                     /* Assign return value.              */
-  return true;                         /* Indicate sucessfule converison.   */
-}
-
 RexxNumberString::RexxNumberString(size_t len)
 /******************************************************************************/
 /* Function:  low level copy of a number string object                        */

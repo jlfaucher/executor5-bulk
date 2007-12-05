@@ -51,6 +51,13 @@
 #include "Token.hpp"
 #include "Clause.hpp"
 
+class RexxInstruction;
+class RexxInstructionDo;
+class RexxInstructionIf;
+class RexxInstructionForward;
+class RexxExpressionMessage;
+class RexxCompoundVariable;
+
                                        /* handy defines to easy coding      */
 #define new_instruction(name, type) this->sourceNewObject(sizeof(RexxInstruction##type), The##type##InstructionBehaviour, KEYWORD_##name)
 #define new_variable_instruction(name, type, size) this->sourceNewObject(size, The##type##InstructionBehaviour, KEYWORD_##name)

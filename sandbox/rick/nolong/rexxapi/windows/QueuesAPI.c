@@ -691,11 +691,11 @@ LONG   alloc_queue_entry(
 /*  Effects:         New queue created.                              */
 /*                                                                   */
 /*********************************************************************/
-ULONG  APIENTRY RexxCreateQueue(
+APIRET  APIENTRY RexxCreateQueue(
   PSZ     name,                        /* Internal name (returned).  */
-  ULONG   size,                        /* Length of name buffer.     */
+  size_t  size,                        /* Length of name buffer.     */
   PSZ     usrrequest,                  /* Desired name.              */
-  PULONG  pdup)                        /* Duplicate name flag.       */
+  size_t *pdup)                        /* Duplicate name flag.       */
 {
   ULONG        rc= RXQUEUE_OK;
   RXQUEUE_TALK * intercom;
@@ -805,7 +805,7 @@ APIRET APICreateQueue(ULONG Pid, BOOL newProcess)
 /*  Effects:          Queue and all its entries deleted.             */
 /*                                                                   */
 /*********************************************************************/
-ULONG  APIENTRY RexxDeleteQueue(
+APIRET APIENTRY RexxDeleteQueue(
   PSZ name)                            /* name of queue to delete    */
 {
   ULONG        rc = RXQUEUE_NOTREG;    /* return code from call      */
@@ -902,9 +902,9 @@ APIRET APIDeleteQueue(ULONG Pid, BOOL SessionQ)
 /*  Effects:          Count of queue elements.                       */
 /*                                                                   */
 /*********************************************************************/
-ULONG  APIENTRY RexxQueryQueue(
+APIRET APIENTRY RexxQueryQueue(
   PSZ    name,                        /* Queue to query.             */
-  PULONG count)                       /* Length of queue (returned)  */
+  size_t *count)                      /* Length of queue (returned)  */
 {
   ULONG         rc = RXQUEUE_NOTINIT;
   ULONG            pid;
@@ -1005,10 +1005,10 @@ HANDLE GetAccessToHandle(ULONG procid, HANDLE hnd)
 /*                    queue.                                         */
 /*                                                                   */
 /*********************************************************************/
-ULONG  APIENTRY RexxAddQueue(
+APIRET APIENTRY RexxAddQueue(
   PSZ       name,
   PRXSTRING data,
-  ULONG     flag)
+  size_t    flag)
 {
   ULONG        rc;
   ULONG  pid;
@@ -1125,11 +1125,11 @@ APIRET APIAddQueue()
 /*                    queued to the queue data manager.              */
 /*                                                                   */
 /*********************************************************************/
-ULONG  APIENTRY RexxPullQueue(
+APIRET APIENTRY RexxPullQueue(
   PSZ         name,
   PRXSTRING   data_buf,
   SYSTEMTIME * dt,
-  ULONG       waitflag)
+  size_t      waitflag)
 {
 
   ULONG        rc = RXQUEUE_OK;

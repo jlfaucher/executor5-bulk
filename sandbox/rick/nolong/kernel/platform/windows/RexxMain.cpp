@@ -181,7 +181,7 @@ void REXXENTRY RexxCreateDirectory(const char * dirname)
 /*********************************************************************/
 extern "C" {
 void SearchPrecision(
-  PULONG    precision)                 /* required precision         */
+  size_t   *precision)                 /* required precision         */
 {
     *precision = DEFAULT_PRECISION;      /* set default digit count    */
 
@@ -320,9 +320,9 @@ bool REXXENTRY RexxDispose(const char *dirname, RexxObject *RexxObj)
 
 APIRET REXXENTRY RexxResultString(RexxObject * result, PRXSTRING pResultBuffer)
 {
-  LONG  length;
+  size_t  length;
   RexxActivity *activity;              /* target activity                   */
-  ULONG rc = 0;
+  APIRET rc = 0;
   RexxString *string_result;
 
   activity = ActivityManager::getActivity();
@@ -369,7 +369,7 @@ APIRET REXXENTRY RexxCopyMethod(const char *dirname, RexxObject * method, RexxOb
 {
   RexxDirectory *locked_objects;
   RexxActivity *activity;              /* target activity                   */
-  ULONG rc = 0;
+  APIRET rc = 0;
 
                                        /* Find an activity for this thread  */
                                        /* (will create one if necessary)    */
@@ -1191,8 +1191,8 @@ void RunMethod(
   RexxActivity *savedAct;              /* store current activity */
   RexxDirectory *locked_objects;       /* directory used to keep objects    */
                                        /* around for process duration.      */
-  ULONG argcount=1;
-  ULONG arglength=0;
+  size_t argcount=1;
+  size_t arglength=0;
   const char *rexxargument="";
   const char *envname="CMD";           /* ADDRESS environment name          */
   int i;                               // for exit installation

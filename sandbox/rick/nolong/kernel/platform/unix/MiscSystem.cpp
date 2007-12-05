@@ -284,26 +284,6 @@ void SysRegisterSignals(
 /* Function:   Establish exception handlers                                   */
 /******************************************************************************/
 {
-#if !defined(AIX) && !defined(LINUX)
-  PTIB   tibp;                         /* process information block         */
-  PPIB   pibp;                         /* thread information block          */
-  ULONG  NestingLevel;                 /* signal trap nesting level         */
-                                       /* pointer to the exception record   */
-  EXCEPTIONREGISTRATIONRECORD *exception_record;
-
-                                       /* cast to the OS/2 block type       */
-  exception_record = (EXCEPTIONREGISTRATIONRECORD *)exception_info;
-  DosGetInfoBlocks(&tibp, &pibp);      /* get the process and thread blocks */
-                                       /* establish the exception handler   */
-  exception_record->ExceptionHandler = SysExceptionHandler;
-                                       /* register the handler              */
-  DosSetExceptionHandler(exception_info);
-                                       /* running in a PM session?          */
-  if (pibp->pib_ultype != SSF_TYPE_PM) {
-                                       /* Nope setup Ctrl-C exception       */
-    DosSetSignalExceptionFocus(SIG_SETFOCUS, &NestingLevel);
-  }
-#endif   // AIX and LINUX
 }
 
 void SysDeregisterSignals(
@@ -312,19 +292,6 @@ void SysDeregisterSignals(
 /* Function:   Clear out registered exception handlers                        */
 /******************************************************************************/
 {
-#if !defined(AIX) && !defined(LINUX)
-  PTIB   tibp;                         /* process information block         */
-  PPIB   pibp;                         /* thread information block          */
-  ULONG  NestingLevel;                 /* signal trap nesting level         */
-
-  DosGetInfoBlocks(&tibp, &pibp);      /* get the process and thread blocks */
-                                       /* running in a PM session?          */
-  if (pibp->pib_ultype != SSF_TYPE_PM)
-                                       /* NOPE, reset Cntl-C trapping       */
-    DosSetSignalExceptionFocus(SIG_UNSETFOCUS, &NestingLevel);
-                                       /* remove the exception handler      */
-  DosUnsetExceptionHandler(exception_info);
-#endif  // AIX and LINUX
 }
 
 void SysClauseBoundary(RexxActivation *stub)

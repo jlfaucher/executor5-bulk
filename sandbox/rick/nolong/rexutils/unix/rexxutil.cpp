@@ -300,7 +300,6 @@
 #include <termios.h>                   /* needed for SysGetKey       */
 #include "ThreadSupport.hpp"           /* for the SysGetKey semaphore*/
 #include <fnmatch.h>                   /* fnmatch()                  */
-#include "RexxLibrary.h"
 
 #if !defined( HAVE_UNION_SEMUN )
 union semun {

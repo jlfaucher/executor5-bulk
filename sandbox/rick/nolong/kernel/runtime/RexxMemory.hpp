@@ -78,7 +78,10 @@ inline size_t roundObjectResize(size_t n) { return n > LargeObjectMinSize ? RXRO
 
 class RexxActivationFrameBuffer;
 class MemorySegment;
+class MemorySegmentPool;
 class RexxMethod;
+class RexxVariable;
+
 #ifdef _DEBUG
 class RexxMemory;
 #endif

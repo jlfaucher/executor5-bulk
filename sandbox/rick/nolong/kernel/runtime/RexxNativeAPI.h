@@ -218,7 +218,8 @@ r  n##_m (t1 p1, t2 p2, t3 p3, t4 p4, t5 p5, t6 p6)
 #define buffer_put(r,s,b,l)      REXX_BUFFER_COPYDATA(r,s,(CSTRING)b,l)
 
 #define integer_value(r)         REXX_INTEGER_VALUE(r)
-#define pointer_value(r)         ((PVOID)REXX_INTEGER_VALUE(r))
+// TODO:  HACK!!!!!!!!!!!!!!!!
+#define pointer_value(r)         ((void *)REXX_INTEGER_VALUE(r))
 
 #define string_get(r,s,b,l)      REXX_STRING_GET(r,s,b,l)
 #define string_length(r)         REXX_STRING_LENGTH(r)
@@ -246,8 +247,8 @@ r  n##_m (t1 p1, t2 p2, t3 p3, t4 p4, t5 p5, t6 p6)
 /******************************************************************************/
 #define ONULL   REXXOBJECT
 #define OSELF   REXXOBJECT
-#define CSELF   PVOID
-#define BUFFER  PVOID
+#define CSELF   void *
+#define BUFFER  void *
 #define ARGLIST REXXOBJECT
 #define SCOPE   REXXOBJECT
 #define MSGNAME REXXOBJECT
@@ -270,8 +271,8 @@ REXXOBJECT REXXENTRY REXX_ARRAY_NEW2(REXXOBJECT, REXXOBJECT);
 
 char *     REXXENTRY REXX_BUFFER_ADDRESS(REXXOBJECT);
 size_t     REXXENTRY REXX_BUFFER_LENGTH(REXXOBJECT);
-long       REXXENTRY REXX_BUFFER_GETDATA(REXXOBJECT, long, PVOID, ULONG);
-long       REXXENTRY REXX_BUFFER_COPYDATA(REXXOBJECT, long, PVOID, ULONG);
+size_t     REXXENTRY REXX_BUFFER_GETDATA(REXXOBJECT, size_t, void *, size_t);
+size_t     REXXENTRY REXX_BUFFER_COPYDATA(REXXOBJECT, size_t, void *, size_t);
 REXXOBJECT REXXENTRY REXX_BUFFER_NEW(size_t);
 REXXOBJECT REXXENTRY REXX_BUFFER_EXTEND(REXXOBJECT, size_t);
 
@@ -300,9 +301,8 @@ REXXOBJECT REXXENTRY REXX_SETVAR2(CSTRING, REXXOBJECT);
 REXXOBJECT REXXENTRY REXX_SETFUNC(CSTRING, REXXOBJECT);
 REXXOBJECT REXXENTRY REXX_GETFUNCTIONNAMES(char ***, int*);
 REXXOBJECT REXXENTRY REXX_GETVAR(CSTRING);
-ULONG      REXXENTRY REXX_VARIABLEPOOL(PVOID);
-ULONG      REXXENTRY REXX_VARIABLEPOOL2(PVOID);      // for everyone
-ULONG      REXXENTRY REXX_STEMSORT(CSTRING, int, int, size_t, size_t, size_t, size_t);
+int        REXXENTRY REXX_VARIABLEPOOL(void *);
+int        REXXENTRY REXX_STEMSORT(CSTRING, int, int, size_t, size_t, size_t, size_t);
 void       REXXENTRY REXX_ENABLE_VARIABLEPOOL(void);
 void       REXXENTRY REXX_DISABLE_VARIABLEPOOL(void);
 void       REXXENTRY REXX_PUSH_ENVIRONMENT(REXXOBJECT);
@@ -337,9 +337,6 @@ bool       REXXENTRY RexxQuery (void);
 int        REXXENTRY RexxTerminate (void);
 bool       REXXENTRY RexxInitialize (void);
 int        VLAREXXENTRY RexxSendMessage (REXXOBJECT receiver, const char *msgname, REXXOBJECT start_class, const char *interfacedefn, void *result, ...);
-REXXOBJECT REXXENTRY RexxDispatch (REXXOBJECT argList);
-int        VLAREXXENTRY RexxCallProgram (CSTRING filename, CSTRING interfacedefn, PVOID result, ...);
-int        VLAREXXENTRY RexxCallString  (CSTRING filename, CSTRING interfacedefn, PVOID result, ...);
 
 #ifdef __cplusplus
 }

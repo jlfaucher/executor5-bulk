@@ -87,18 +87,14 @@ BOOL WINAPI DllMain(
   LPVOID lpvReserved)
 {
   bool  fSuccess = true;
-  ULONG dwSize = sizeof(ULONG);
+  size_t dwSize = sizeof(size_t);
   char  szMessage[256] = "Open Object Rexx: Not cleanly installed!";
 
    if (fdwReason == DLL_PROCESS_ATTACH) {
 //      RxAPIStartUp();
      InitializeCriticalSection(&waitProtect);  // another critical section is needed...
 /* create critical section at DLL load-time (more secure) */
-#ifdef THREADS
      SysThreadInit();
-#else
-     OryxThreadInit();
-#endif
      if (fSuccess) {
        RxInterProcessInit(true);
        horyxkDll = hinstDll;            /* keep handle around */

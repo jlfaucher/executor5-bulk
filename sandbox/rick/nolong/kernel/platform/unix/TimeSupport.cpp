@@ -102,11 +102,7 @@ void SysGetCurrentTime(
 /*********************************************************************/
 bool SysTimeSliceElapsed()
 {
-//  ULONG postCount;
-//                                       /* see how many times timer poped */
-//  DosQueryEventSem(rexxTimeSliceSemaphore, & postCount);
-//                                       /* return number of times it poped*/
-  return (0);
+  return false;
 }
 
 void SysStartTimeSlice()
@@ -130,7 +126,7 @@ typedef struct {
 /*   Arguments:         info - struct which holds the semaphore      */
 /*                        handle and the timeout value in msecs.     */
 /*********************************************************************/
-void* async_timer(PVOID info)
+void* async_timer(void *info)
 {
                                        /* do wait with apprpriate timeout   */
   (((ASYNC_TIMER_INFO*)info)->sem)->wait(((ASYNC_TIMER_INFO*)info)->time);
@@ -173,7 +169,7 @@ RexxMethod2(void, alarm_startTimer,
   while (numdays > 0) {                /* is it some future day?            */
 
                                        /* start timer to wake up after a day*/
-    rc = SysCreateThread(async_timer, C_STACK_SIZE, (PVOID)&tinfo);
+    rc = SysCreateThread(async_timer, C_STACK_SIZE, (void *)&tinfo);
     if (!rc) {                         /* Error received?                   */
                                        /* raise error                       */
       send_exception(Error_System_service);
@@ -181,12 +177,7 @@ RexxMethod2(void, alarm_startTimer,
     }
 
     semHandle->wait();                 /* wait for semaphore to be posted   */
-//#ifdef AIX
-//    pthread_yield();                 /* give the timer thread a chance    */
-//#else
-//    sched_yield();                   /* give the timer thread a chance    */
     SysThreadYield();                  /* give the timer thread a chance    */
-//#endif
     cancelObj = RexxVarValue("CANCELED");
     cancelVal = REXX_INTEGER_VALUE(cancelObj);
 
@@ -201,19 +192,14 @@ RexxMethod2(void, alarm_startTimer,
   tinfo.sem = semHandle;               /* setup the info for timer thread   */
   tinfo.time = alarmtime;
                                        /* start the timer                   */
-  rc = SysCreateThread(async_timer, C_STACK_SIZE, (PVOID)&tinfo);
+  rc = SysCreateThread(async_timer, C_STACK_SIZE, (void *)&tinfo);
   if (!rc) {                           /* Error received?                   */
                                        /* raise error                       */
      send_exception(Error_System_service);
      return;
   }
   semHandle->wait();                   /* wait for semaphore to be posted   */
-//#ifdef AIX
-//    pthread_yield();                 /* give the timer thread a chance    */
-//#else
-//    sched_yield();                   /* give the timer thread a chance    */
     SysThreadYield();                  /* give the timer thread a chance    */
-//#endif                               /* get the cancel state              */
   return;
 }
 

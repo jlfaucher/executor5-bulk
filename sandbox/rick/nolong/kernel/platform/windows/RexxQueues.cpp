@@ -64,7 +64,7 @@
 RexxMethod0(REXXOBJECT, rexx_query_queue)
 {
    REXXOBJECT queue_name;              /* current queue name                */
-   unsigned long count = 0;            /* count of lines                    */
+   size_t count = 0;                   /* count of lines                    */
    APIRET rc;                          /* queue query return code           */
 
                                        /* get the queue name                */
@@ -190,7 +190,7 @@ RexxMethod1(REXXOBJECT, rexx_create_queue,
 {
    char buf[name_parameter_length+1];  /* creation buffer                   */
    APIRET rc;                          /* creation return code              */
-   unsigned long dup_flag = 0;         /* duplicate name flag               */
+   size_t dup_flag = 0;                /* duplicate name flag               */
 
                                        /* create a queue                    */
    rc = RexxCreateQueue((char *)buf, sizeof(buf), (char *)queue_name, &dup_flag);

@@ -55,10 +55,16 @@
 #define abstractIndex     2            /* location of the abstractMethod    */
 
   class RexxObject;
+  class RexxBehaviour;
   class RexxCompoundTail;
   class RexxCompoundElement;
   class RexxInternalStack;
   class RexxSupplier;
+  class RexxEnvelope;
+  class RexxVariableDictionary;
+  class RexxNumberString;
+  class RexxMethod;
+  class RexxMessage;
 
 
   enum
@@ -526,6 +532,8 @@ protected:
     // this needs to be included in the object state
     HashCode hashValue;
 };
+
+class RexxList;
 
 
 class RexxActivationBase : public RexxInternalObject{

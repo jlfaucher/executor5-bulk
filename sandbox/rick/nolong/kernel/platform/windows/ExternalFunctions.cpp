@@ -99,7 +99,7 @@
 extern HANDLE apiProtect;
 
 typedef struct _ENVENTRY {                  /* setlocal/endlocal structure    */
-  ULONG    DriveNumber;                     /* saved drive                    */
+  size_t   DriveNumber;                     /* saved drive                    */
   char     Directory[DIRLEN];               /* saved current directory        */
   char    *Environment;                     /* saved environment segment      */
   char     Variables[1];                    /* start of variable values       */

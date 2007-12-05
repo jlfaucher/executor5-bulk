@@ -340,27 +340,8 @@ char *SysGetThreadStackBase (size_t StackSize)
 /* Function:  Return a pointer to the current stack base                      */
 /******************************************************************************/
 {
-#if 0  /* this code didn't work */
-   CONTEXT con;
-   MEMORY_BASIC_INFORMATION mbi;
-   PBYTE pbStackCrnt, pbStackBase;
-   SYSTEM_INFO si;
-
-
-   // Use _alloca() to get the current stack pointer
-   pbStackCrnt = (PBYTE) _alloca(1);
-
-   // Find the base of the stack's reserved region.
-   VirtualQuery(pbStackCrnt, &mbi, sizeof(mbi));
-   pbStackBase = (PBYTE) mbi.AllocationBase;
-
-//   if (!GetThreadContext(GetCurrentThread(), &con)) printf("\n Bad error: thread context not received");
-//   return (char *)(con.Esp - StackSize);   /* return calculated stack base         */
-   return (char *) pbStackBase;
-#else
-   LONG temp;
-   return (char *) ((ULONG)&temp - (ULONG)StackSize);
-#endif
+   size_t temp;
+   return (char *)&temp - StackSize;
 }
 
 
@@ -375,7 +356,7 @@ DWORD WINAPI call_thread_function(void * Arguments)
 int SysCreateThread (
   PTHREADFN ThreadProcedure,           /* address of thread procedure       */
   size_t    StackSize,                 /* required stack size               */
-  PVOID     Arguments )                /* thread procedure argument block   */
+  void     *Arguments )                /* thread procedure argument block   */
 /******************************************************************************/
 /* Function:  Create a new thread                                             */
 /******************************************************************************/

@@ -95,15 +95,7 @@
 #endif
 
 #ifndef HQUEUE
-#define HQUEUE          unsigned long
-#endif
-
-#ifndef ULONG
-#define ULONG           unsigned long
-#endif
-
-#ifndef PULONG
-#define PULONG          ULONG *
+#define HQUEUE          size_t
 #endif
 
 #ifndef PVOID
@@ -118,13 +110,6 @@
 #define SHORT           short
 #endif
 
-#ifndef LONG
-#define LONG            long
-#endif
-
-#ifndef PLONG
-#define PLONG           LONG *
-#endif
 
 #ifndef USHORT
 #define USHORT          unsigned short
@@ -183,7 +168,7 @@
 #endif
 
 #ifndef APIRET
-#define APIRET          ULONG
+#define APIRET          size_t
 #endif
 
 #ifndef CONST
@@ -196,10 +181,6 @@
 
 #ifndef BYTE
 #define BYTE            unsigned char
-#endif
-
-#ifndef BOOL
-#define BOOL            unsigned long
 #endif
 
 #ifndef UBYTE
@@ -222,13 +203,6 @@
 #define VOID            void
 #endif
 
-#ifndef near
-#define near
-#endif
-
-#ifndef far
-#define far
-#endif
 
 #ifndef _loadds
 #define _loadds
@@ -246,8 +220,8 @@
 
 /* Structure for external interface string (RXSTRING)  -------------- */
 typedef struct _RXSTRING {             /* rxstring                    */
-        ULONG  strlength;              /*   length of string          */
-        PCH    strptr;                 /*   pointer to string         */
+        size_t strlength;              /*   length of string          */
+        char  *strptr;                 /*   pointer to string         */
 }  RXSTRING;
 
 /* DATETIME structure ----------------------------------------------- */
@@ -262,8 +236,8 @@ typedef struct _REXXDATETIME {        /* REXX time stamp format       */
   unsigned short month;               /* month of the year            */
   unsigned short year;                /* current year                 */
   unsigned short weekday;             /* day of the week              */
-  unsigned long  microseconds;        /* microseconds                 */
-  unsigned long  yearday;             /* day number within the year   */
+  unsigned int   microseconds;        /* microseconds                 */
+  unsigned int   yearday;             /* day number within the year   */
   unsigned short valid;               /* valid time stamp marker      */
 } REXXDATETIME;
                                       /* ---------------------------- */
@@ -278,8 +252,8 @@ typedef RXSTRING     *PRXSTRING;      /* pointer to a RXSTRING        */
 
 /* Structure for system exit block (RXSYSEXIT)  --------------------- */
 typedef struct _RXSYSEXIT {            /* syseexit                    */
-   PSZ   sysexit_name;                 /*   exit handler name         */
-   LONG  sysexit_code;                 /*   exit function code        */
+   const char *sysexit_name;           /*   exit handler name         */
+   int  sysexit_code;                  /*   exit function code        */
 }  RXSYSEXIT;
 
 typedef RXSYSEXIT *PRXSYSEXIT;         /* pointer to a RXSYSEXIT      */
@@ -290,7 +264,7 @@ typedef RXSYSEXIT *PRXSYSEXIT;         /* pointer to a RXSYSEXIT      */
 #define RXVALIDSTRING(r)     ((r).strptr && (r).strlength)
 #define RXSTRLEN(r)          (RXNULLSTRING(r)?0L:(r).strlength)
 #define RXSTRPTR(r)          (r).strptr
-#define MAKERXSTRING(r,p,l)  {(r).strptr=(PCH)p;(r).strlength=(ULONG)l;}
+#define MAKERXSTRING(r,p,l)  {(r).strptr=(PCH)p;(r).strlength=(size_t)l;}
 
 /* Call type codes for use on interpreter startup ------------------- */
 #define RXCOMMAND       0              /* Program called as Command   */
@@ -330,7 +304,7 @@ typedef RXSYSEXIT *PRXSYSEXIT;         /* pointer to a RXSYSEXIT      */
 #define RXSUBCOM_NOMEM     1001       /* Insuff stor to complete req  */
 
 /* Type definition for REXX subcommand handler function pointer ----- */
-typedef LONG (*PRXSUBCOM)(
+typedef APIRET (*PRXSUBCOM)(
                    PRXSTRING,          /* Command string from REXX    */
                    PUSHORT,            /* Return flag (ERROR/FAILURE) */
                    PRXSTRING);         /* RC variable return value    */
@@ -387,8 +361,8 @@ typedef struct _SHVBLOCK {            /* shvb */
     struct _SHVBLOCK  *shvnext;       /* pointer to the next block    */
     RXSTRING           shvname;       /* Pointer to the name buffer   */
     RXSTRING           shvvalue;      /* Pointer to the value buffer  */
-    ULONG              shvnamelen;    /* Length of the name value     */
-    ULONG              shvvaluelen;   /* Length of the fetch value    */
+    size_t             shvnamelen;    /* Length of the name value     */
+    size_t             shvvaluelen;   /* Length of the fetch value    */
     uint8_t            shvcode;       /* Function code for this block */
     uint8_t            shvret;        /* Individual Return Code Flags */
 }   SHVBLOCK;
@@ -506,9 +480,9 @@ typedef SHVBLOCK *PSHVBLOCK;
 typedef PUCHAR PEXIT;                 /* ptr to exit parameter block  */
 
 /* Type definition for REXX exit handler function pointer ----------- */
-typedef LONG (*PRXEXIT)(
-                   LONG,
-                   LONG,
+typedef APIRET (*PRXEXIT)(
+                   int,
+                   int,
                    PEXIT);
                                       /* ---------------------------- */
 #endif                                /* INCL_RXSYSEXIT               */
@@ -560,26 +534,26 @@ extern "C" {
 
 /* Type definition for RexxStart function pointer (dynamic linking)-- */
 typedef APIRET  (*PRXSTART)(
-                   LONG,
+                   int,
                    PRXSTRING,
                    PSZ,
                    PRXSTRING,
                    PSZ,
-                   LONG,
+                   int,
                    PRXSYSEXIT,
-                   PSHORT,
+                   short *,
                    PRXSTRING );
 
 /* Function Prototypes ---------------------------------------------- */
-LONG   APIENTRY RexxStart(
-         LONG ,                        /* Num of args passed to rexx  */
+APIRET APIENTRY RexxStart(
+         int,                          /* Num of args passed to rexx  */
          PRXSTRING,                    /* Array of args passed to rex */
          PSZ,                          /* [d:][path] filename[.ext]   */
          PRXSTRING,                    /* Loc of rexx proc in memory  */
          PSZ,                          /* ASCIIZ initial environment. */
-         LONG ,                        /* type (command,subrtn,funct) */
+         int,                          /* type (command,subrtn,funct) */
          PRXSYSEXIT,                   /* SysExit env. names &  codes */
-         PSHORT,                       /* Ret code from if numeric    */
+         short *,                      /* Ret code from if numeric    */
          PRXSTRING );                  /* Retvalue from the rexx proc */
 
 typedef  void (*PRXWAITFORTERMINATION)(void);
@@ -606,9 +580,9 @@ APIRET APIENTRY RexxDidRexxTerminate(void);
 
 /* Type definition to simplify coding of a Subcommand handler ------- */
 
-typedef ULONG RexxSubcomHandler(PRXSTRING,
-                                PUSHORT,
-                                PRXSTRING);
+typedef APIRET RexxSubcomHandler(PRXSTRING,
+                                 unsigned short *,
+                                 PRXSTRING);
 
 
 /* RexxRegisterSubcomDll -- Register a library entry point ---------- */
@@ -622,7 +596,7 @@ APIRET APIENTRY RexxRegisterSubcomDll (
          PSZ,                          /* Name of library             */
          PSZ,                          /* Name of procedure in library*/
          PUCHAR,                       /* User area                   */
-         ULONG  );                     /* Drop authority.             */
+         size_t );                     /* Drop authority.             */
 
 /* Uppercase Entry Point Name --------------------------------------- */
 #define REXXREGISTERSUBCOMDLL  RexxRegisterSubcomDll
@@ -641,7 +615,7 @@ APIRET APIENTRY RexxRegisterSubcomExe (
 APIRET APIENTRY RexxQuerySubcom(
          PSZ,                          /* Name of the Environment     */
          PSZ,                          /* Library Module Name         */
-         PUSHORT,                      /* Stor for existence code     */
+         unsigned short *,             /* Stor for existence code     */
          PUCHAR );                     /* Stor for user word          */
 
 
@@ -693,11 +667,11 @@ APIRET APIENTRY RexxVariablePool(
 #ifdef INCL_RXFUNC
 
 /* Type definition for REXX external function pointer --------------- */
-typedef ULONG (*PRXFUNC)(
-                   PUCHAR,             /* Name of the function        */
-                   ULONG,              /* Number of arguments         */
+typedef APIRET (*PRXFUNC)(
+                   char *,             /* Name of the function        */
+                   size_t,             /* Number of arguments         */
                    PRXSTRING,          /* Array of argument strings   */
-                   PSZ,                /* Current queue name          */
+                   char *,             /* Current queue name          */
                    PRXSTRING);         /* Returned result string      */
 /* ------------------------------------------------------------------ */
 /* This structure defines one element of an array of blocks whose     */
@@ -709,7 +683,7 @@ typedef ULONG (*PRXFUNC)(
 typedef struct _RXFUNCBLOCK {
   PSZ name;                            /* Name of function            */
   PRXFUNC function;                    /* Pointer to function         */
-  PUCHAR userarea;                     /* pointer to 8-byte user data */
+  char  *userarea;                     /* pointer to 8-byte user data */
 } RXFUNCBLOCK;
 
 /* ------------------------------------------------------------------ */
@@ -720,11 +694,11 @@ typedef USHORT (*PRXINITFUNCPKG)(RXFUNCBLOCK**);
 
 /* This typedef simplifies coding of an External Function ----------- */
 
-typedef ULONG RexxFunctionHandler(PUCHAR,
-                                  ULONG,
-                                  PRXSTRING,
-                                  PSZ,
-                                  PRXSTRING);
+typedef APIRET RexxFunctionHandler(PUCHAR,
+                                   size_t,
+                                   PRXSTRING,
+                                   PSZ,
+                                   PRXSTRING);
 
 /* RexxRegisterFunctionDll - Register a package of external --------- */
 /* function handlers                                                  */
@@ -796,10 +770,10 @@ typedef struct _RXFNC_FLAGS {          /* fl */
 typedef struct _RXFNCCAL_PARM {        /* fnc */
    RXFNC_FLAGS       rxfnc_flags ;     /* function flags              */
    PCHAR             rxfnc_name;       /* Pointer to function name.   */
-   USHORT            rxfnc_namel;      /* Length of function name.    */
+   unsigned short    rxfnc_namel;      /* Length of function name.    */
    PCHAR             rxfnc_que;        /* Current queue name.         */
-   USHORT            rxfnc_quel;       /* Length of queue name.       */
-   USHORT            rxfnc_argc;       /* Number of args in list.     */
+   unsigned short    rxfnc_quel;       /* Length of queue name.       */
+   unsigned short    rxfnc_argc;       /* Number of args in list.     */
    PRXSTRING         rxfnc_argv;       /* Pointer to argument list.   */
    RXSTRING          rxfnc_retc;       /* Return value.               */
 }  RXFNCCAL_PARM;
@@ -817,7 +791,7 @@ typedef struct _RXCMD_FLAGS {          /* fl */
 typedef struct _RXCMDHST_PARM {        /* rx */
    RXCMD_FLAGS       rxcmd_flags;      /* error/failure flags         */
    PCHAR             rxcmd_address;    /* Pointer to address name     */
-   USHORT            rxcmd_addressl;   /* Length of address name      */
+   unsigned short    rxcmd_addressl;   /* Length of address name      */
    PCHAR             rxcmd_dll;        /* Library name for command    */
    USHORT            rxcmd_dll_len;    /* Length of library name      */
    RXSTRING          rxcmd_command;    /* The command string          */
@@ -845,7 +819,7 @@ typedef struct _RXMSQPSH_PARM {        /* psh */
 /* Subfunction RXMSQSIZ -- Return the Current Queue Size ------------ */
 
 typedef struct _RXMSQSIZ_PARM {        /* siz */
-   ULONG             rxmsq_size;       /* Number of Lines in Queue    */
+   size_t            rxmsq_size;       /* Number of Lines in Queue    */
 }  RXMSQSIZ_PARM;
 
 /* Subfunction RXMSQNAM -- Set Current Queue Name ------------------- */
@@ -901,7 +875,7 @@ typedef struct _RXDBG_FLAGS {          /* fl Trace flags              */
 
 typedef struct _RXDBGTST_PARM {   /* tst */
    RXDBG_FLAGS rxdbg_flags;       /* Set to run external trace before */
-   ULONG       rxdbg_line;
+   size_t       rxdbg_line;
    RXSTRING    rxdbg_filename;
    RXSTRING    rxdbg_routine;
 }  RXDBGTST_PARM;                      /* --------------------------- */
@@ -910,8 +884,8 @@ typedef struct _RXDBGTST_PARM {   /* tst */
 /* XLATOFF */
 
 /* This typedef simplifies coding of an Exit handler ---------------- */
-typedef LONG RexxExitHandler(LONG,
-                             LONG,
+typedef APIRET RexxExitHandler(int,
+                             int,
                              PEXIT);
 
 /* RexxRegisterExitDll - Register a system exit --------------------- */
@@ -924,7 +898,7 @@ APIRET APIENTRY RexxRegisterExitDll (
          PSZ,                          /* Name of the library         */
          PSZ,                          /* Name of the procedure       */
          PUCHAR,                       /* User area                   */
-         ULONG );                      /* Drop authority              */
+         size_t );                      /* Drop authority              */
 
 /* Uppercase Entry Point Name --------------------------------------- */
 #define REXXREGISTEREXITDLL  RexxRegisterExitDll
@@ -951,7 +925,7 @@ APIRET APIENTRY RexxDeregisterExit (
 APIRET APIENTRY RexxQueryExit (
          PSZ,                          /* Exit name                   */
          PSZ,                          /* Library module name         */
-         PUSHORT,                      /* Existence flag              */
+         unsigned short *,             /* Existence flag              */
          PUCHAR );                     /* User data                   */
 
 /* Uppercase Entry Point Name --------------------------------------- */
@@ -1049,55 +1023,55 @@ extern "C" {
 /* Type definition for RexxCreateQueue function pointer (dynamic linking)-- */
 
 /* RexxCreateQueue - Create an External Data Queue ------------------ */
-ULONG  APIENTRY RexxCreateQueue (
+APIRET  APIENTRY RexxCreateQueue (
         PSZ,                           /* Name of queue created       */
-        ULONG,                         /* Size of buf for ret name    */
+        size_t,                         /* Size of buf for ret name    */
         PSZ,                           /* Requested name for queue    */
-        PULONG ) ;                     /* Duplicate name flag.        */
+        Psize_t ) ;                     /* Duplicate name flag.        */
 
 /* Type definition for RexxCreateQueue function pointer (dynamic linking)-- */
 
-typedef ULONG (*APIENTRY PFNREXXCREATEQUEUE)(PSZ, ULONG, PSZ, PULONG);
+typedef size_t (*APIENTRY PFNREXXCREATEQUEUE)(PSZ, size_t, PSZ, size_t *);
 
 /* RexxDeleteQueue - Delete an External Data Queue ------------------ */
-ULONG  APIENTRY RexxDeleteQueue (
+APIRET APIENTRY RexxDeleteQueue (
         PSZ );                         /* Name of queue to be deleted */
 
 /* Type definition for RexxDeleteQueue function pointer (dynamic linking)-- */
 
-typedef ULONG (*APIENTRY PFNREXXDELETEQUEUE)(PSZ);
+typedef APIRET (*APIENTRY PFNREXXDELETEQUEUE)(PSZ);
 
 /* RexxQueryQueue - Query an External Data Queue for number of entries*/
-ULONG  APIENTRY RexxQueryQueue (
+APIRET APIENTRY RexxQueryQueue (
         PSZ,                           /* Name of queue to query      */
-        PULONG );                      /* Place to put element count  */
+        size_t * );                      /* Place to put element count  */
 
 /* Type definition for RexxQueryQueue function pointer (dynamic linking)-- */
 
-typedef ULONG (*APIENTRY PFNREXXQUERYQUEUE)(PSZ, PULONG);
+typedef APIRET (*APIENTRY PFNREXXQUERYQUEUE)(PSZ, size_t *);
 
 /* RexxAddQueue - Add an entry to an External Data Queue ------------ */
-ULONG  APIENTRY RexxAddQueue (
+APIRET  APIENTRY RexxAddQueue (
         PSZ,                           /* Name of queue to add to     */
         PRXSTRING,                     /* Data string to add          */
-        ULONG );                       /* Queue type (FIFO|LIFO)      */
+        size_t );                       /* Queue type (FIFO|LIFO)      */
 
 /* Type definition for RexxAddQueue function pointer (dynamic linking)-- */
 
-typedef ULONG (*APIENTRY PFNREXXADDQUEUE)(PSZ, PRXSTRING, ULONG);
+typedef size_t (*APIENTRY PFNREXXADDQUEUE)(PSZ, PRXSTRING, size_t);
 
 /* RexxPullQueue - Retrieve data from an External Data Queue -------- */
-ULONG  APIENTRY RexxPullQueue (
+APIRET  APIENTRY RexxPullQueue (
         PSZ,                           /* Name of queue to read from  */
         PRXSTRING,                     /* RXSTRING to receive data    */
         PDATETIME,                     /* Stor for data date/time     */
-        ULONG );                       /* wait status (WAIT|NOWAIT)   */
+        size_t );                       /* wait status (WAIT|NOWAIT)   */
                                        /* --------------------------- */
 
 /* Type definition for RexxPullQueue function pointer (dynamic linking)-- */
 
-typedef ULONG (*APIENTRY PFNREXXPULLQUEUE)(PSZ, PRXSTRING, PDATETIME,
-                                           ULONG);
+typedef size_t (*APIENTRY PFNREXXPULLQUEUE)(PSZ, PRXSTRING, PDATETIME,
+                                           size_t);
 #ifdef __cplusplus
 }
 #endif
@@ -1122,7 +1096,7 @@ extern "C" {
 APIRET APIENTRY RexxAddMacro (
          PSZ,                         /* Function to add or change    */
          PSZ,                         /* Name of file to get function */
-         ULONG  );                    /* Flag indicating search pos   */
+         size_t  );                    /* Flag indicating search pos   */
 
 /* Uppercase Entry Point Name --------------------------------------- */
 #define REXXADDMACRO  RexxAddMacro
@@ -1136,7 +1110,7 @@ APIRET APIENTRY RexxDropMacro (
 
 /* RexxSaveMacroSpace - Save Macro Space functions to a file -------- */
 APIRET APIENTRY RexxSaveMacroSpace (
-         ULONG ,                      /* Argument count (0==save all) */
+         size_t ,                      /* Argument count (0==save all) */
          PSZ *,                       /* List of funct names to save  */
          PSZ);                        /* File to save functions in    */
 
@@ -1145,7 +1119,7 @@ APIRET APIENTRY RexxSaveMacroSpace (
 
 /* RexxLoadMacroSpace - Load Macro Space functions from a file ------ */
 APIRET APIENTRY RexxLoadMacroSpace (
-         ULONG ,                      /* Argument count (0==load all) */
+         size_t ,                      /* Argument count (0==load all) */
          PSZ *,                       /* List of funct names to load  */
          PSZ);                        /* File to load functions from  */
 
@@ -1165,7 +1139,7 @@ APIRET APIENTRY RexxQueryMacro (
 /* RexxReorderMacro - Change a function's search-order position ----- */
 APIRET APIENTRY RexxReorderMacro(
          PSZ,                         /* Name of funct change order   */
-         ULONG  );                    /* New position for function    */
+         size_t  );                    /* New position for function    */
 
 /* Uppercase Entry Point Name --------------------------------------- */
 #define REXXREORDERMACRO  RexxReorderMacro
@@ -1200,13 +1174,13 @@ extern "C" {
 #endif
 
 APIRET APIENTRY RexxFreeMemory (
-         PVOID );
+         void *);
 
 /* Uppercase Entry Point Name --------------------------------------- */
 #define REXXFREEMEMORY RexxFreeMemory
 
-PVOID  APIENTRY RexxAllocateMemory (
-         ULONG );
+void  *APIENTRY RexxAllocateMemory (
+         size_t );
 
 /* Uppercase Entry Point Name --------------------------------------- */
 #define REXXALLOCATEMEMORY RexxAllocateMemory

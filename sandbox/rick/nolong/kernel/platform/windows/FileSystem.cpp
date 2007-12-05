@@ -306,7 +306,7 @@ void SysLoadImage(
 {
   char      FullName[CCHMAXPATH + 2];  /* temporary name buffer             */
   HANDLE    fileHandle;                /* open file access handle           */
-  ULONG     bytesRead;                 /* number of bytes read              */
+  DWORD     bytesRead;                 /* number of bytes read              */
 
   LPTSTR ppszFilePart=NULL;            // file name only in buffer
 
@@ -325,10 +325,12 @@ void SysLoadImage(
   if (fileHandle == INVALID_HANDLE_VALUE)
     logic_error("no startup image");   /* can't find it                     */
                        /* Read in the size of the image     */
-  ReadFile(fileHandle, imageSize, sizeof(long), &bytesRead, NULL);
+  ReadFile(fileHandle, imageSize, sizeof(size_t), &bytesRead, NULL);
   *imageBuffer = memoryObject.allocateImageBuffer(*imageSize);
                        /* read in the image                 */
-  ReadFile(fileHandle, *imageBuffer, (ULONG)*imageSize, (ULONG *)imageSize, NULL);
+  ReadFile(fileHandle, *imageBuffer, *imageSize, &bytesRead, NULL);
+  // set this to the actual size read.
+  *imageSize = bytesRead;
   CloseHandle(fileHandle);                /* and close the file                */
 }
 
@@ -340,11 +342,11 @@ RexxBuffer *SysReadProgram(
 /*******************************************************************/
 {
   HANDLE        fileHandle;             /* open file access handle           */
-  int      buffersize;                 /* size of read buffer               */
+  size_t   buffersize;                 /* size of read buffer               */
   RexxBuffer * buffer;                 /* buffer object to read file into   */
   RexxActivity*activity;               /* the current activity              */
   BY_HANDLE_FILE_INFORMATION   status; /* file status information           */
-  ULONG        bytesRead;              /* number of bytes read              */
+  DWORD        bytesRead;              /* number of bytes read              */
 
   activity = ActivityManager::currentActivity;          /* save the activity                 */
   activity->releaseAccess();           /* release the kernel access         */
@@ -505,21 +507,21 @@ bool SysFileIsPipe(STREAM_INFO * stream_info)
 }
 
 
-LONG SysTellPosition(STREAM_INFO * stream_info)
+int  SysTellPosition(STREAM_INFO * stream_info)
 {
     if (SysFileIsDevice(stream_info->fh) || SysFileIsPipe(stream_info)) return -1;
     return ftell(stream_info->stream_file);
 }
 
 /* strem_info->stream_file -> sfile, tesul != length */
-LONG line_write_check(const char * buffer, LONG length, FILE * sfile)
+size_t line_write_check(const char * buffer, size_t length, FILE * sfile)
 {
-   LONG result;
+   size_t result;
    result = fwrite(buffer,1,length,sfile);
    if ((result != length) && (ferror(sfile)) && (errno == ENOMEM))
    {
      ULONG ulMod;
-     LONG ulTempValue;
+     size_t ulTempValue;
      const char *pTemp = buffer;
      clearerr(sfile);  /* clear memory err, give a new chance */
      ulTempValue  = length / MAX_STDOUT_LENGTH;

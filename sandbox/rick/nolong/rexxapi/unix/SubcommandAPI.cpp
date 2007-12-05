@@ -59,13 +59,7 @@
 #define  INCL_RXSYSEXIT
 
 #include <stdlib.h>
-#include "PlatformDefinitions.h"
 #include "RexxCore.h"                         /* global REXX declarations       */
-//#include "okactiva.hpp"
-//#include "okstring.hpp"
-//#include "okactivi.hpp"
-#include "RexxLibrary.h"
-//#include "oknativa.hpp"
 #include "RexxNativeAPI.h"
 #include SYSREXXSAA
 #include "SharedMemorySupport.h"

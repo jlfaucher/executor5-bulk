@@ -60,18 +60,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#if !defined(AIX) && !defined(LINUX)
-#define  INCL_DOSSEMAPHORES
-#include "os2.h"
-
-#else
-#include "RexxLibrary.h"
-//#include "aixrexx.h"
-
-#ifdef AIX
 #include "rexx.h"
-#endif
-#endif // AIX and LINUX
 
 #define INCL_REXXSAA
 #include SYSREXXSAA

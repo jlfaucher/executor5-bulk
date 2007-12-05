@@ -168,7 +168,7 @@ RexxActivation::RexxActivation(
   }
   else {                               /* external method activation        */
                                        /* get initial settings template     */
-    memcpy((PVOID)&this->settings, (PVOID)&activationSettingsTemplate, sizeof(this->settings));
+    this->settings = activationSettingsTemplate;
                                        /* set up for internal calls         */
     this->settings.parent_method = this->method;
                                        /* save the source also              */

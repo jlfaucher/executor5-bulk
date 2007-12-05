@@ -70,18 +70,6 @@ extern "C" {
        size_t start, size_t end, size_t firstcol, size_t lastcol);
 }
 
-typedef struct shvnode {                    /* 16-bit variable pool block     */
-    struct shvnode FAR *shvnext;            /* Pointer to the next block      */
-    RXSTRING           shvname;             /* Pointer to the name buffer     */
-    RXSTRING           shvvalue;            /* Pointer to the value buffer    */
-    ULONG              shvnamelen;          /* Length of the name value       */
-    ULONG              shvvaluelen;         /* Length of the fetch value      */
-    uint8_t            shvcode;             /* Function code for this block   */
-    uint8_t            shvret;              /* Individual Return Code Flags   */
-    } SHVBLOCK16;
-
-typedef SHVBLOCK16 FAR *PSHVBLOCK16;
-
 #define IS_EQUAL(s,l)  (s->strCompare(l))
 
 /******************************************************************************/
@@ -99,7 +87,7 @@ typedef SHVBLOCK16 FAR *PSHVBLOCK16;
 /* Output:                                                                    */
 /*   true if the sort succeeded, false for any parameter errors.              */
 /******************************************************************************/
-ULONG REXXENTRY RexxStemSort(char *stemname, int order, int type,
+APIRET REXXENTRY RexxStemSort(char *stemname, int order, int type,
     size_t start, size_t end, size_t firstcol, size_t lastcol)
 {
     if (!RexxQuery())                         /* Are we up?                     */
@@ -118,26 +106,26 @@ ULONG REXXENTRY RexxStemSort(char *stemname, int order, int type,
 /*   rc - Composite return code for all request blocks (individual rc's are   */
 /*        set within the shvret fields of each request block).                */
 /******************************************************************************/
-ULONG REXXENTRY RexxVariablePool(PSHVBLOCK pshvblock)
+APIRET REXXENTRY RexxVariablePool(PSHVBLOCK pshvblock)
 {
 
   if (!RexxQuery())                         /* Are we up?                     */
     return RXSHV_NOAVL;                     /*   No, send nastygram.          */
   else                                      /*   Yes, ship request to kernel  */
-    return REXX_VARIABLEPOOL((PVOID)pshvblock);
+    return REXX_VARIABLEPOOL((void *)pshvblock);
 
 } /* end RexxVariablePool */
 /******************************************************************************/
 /* copy_value -                                                               */
 /******************************************************************************/
-static ULONG copy_value(
+static int copy_value(
     RexxObject * value,                /* value to copy                     */
     RXSTRING   * rxstring,             /* target rxstring                   */
-    ULONG      * length )              /* length field to update            */
+    size_t     * length )              /* length field to update            */
 {
    RexxString * stringValue;           /* converted object value            */
-   ULONG        string_length;         /* length of the string              */
-   ULONG        rc;                    /* return code                       */
+   size_t       string_length;         /* length of the string              */
+   int          rc;                    /* return code                       */
 
    rc = 0;                             /* default to success                */
                                        /* get the string value              */
@@ -145,7 +133,7 @@ static ULONG copy_value(
    string_length = stringValue->getLength();/* get the string length             */
    if (rxstring->strptr == NULL) {          /* no target buffer?            */
                                             /* allocate a new one           */
-     if (NULL == (rxstring->strptr = (char *)GlobalAlloc(GMEM_FIXED, (ULONG) string_length + 1)) )
+     if (NULL == (rxstring->strptr = (char *)GlobalAlloc(GMEM_FIXED, string_length + 1)) )
        return RXSHV_MEMFL;                  /* couldn't allocate, return flag */
      else                                   /* rxstring is same as string     */
        rxstring->strlength = string_length + 1;
@@ -180,25 +168,25 @@ static ULONG copy_value(
 /*              request blocks.                                               */
 /*                                                                            */
 /* Outputs:                                                                   */
-/*   ULONG - Composite return code that results from processing request       */
+/*           Composite return code that results from processing request       */
 /*           blocks.                                                          */
 /*                                                                            */
 /* Notes:                                                                     */
 /******************************************************************************/
-ULONG SysVariablePool(
+int   SysVariablePool(
     RexxNativeActivation * self,       /* current native activation         */
-    PVOID                  requests,   /* shared variable request           */
+    void *                 requests,   /* shared variable request           */
     bool                   enabled)    /* is VP fully enabled               */
 {
   RexxString       * variable;         /* name of the variable              */
   RexxVariableBase * retriever;        /* variable retriever                */
   RexxActivation   * activation;       /* most recent REXX activation       */
   RexxObject       * value;            /* fetched value                     */
-  ULONG              retcode;          /* composite return code             */
+  int                retcode;          /* composite return code             */
   stringsize_t       arg_position;     /* requested argument position       */
   int                code;             /* variable request code             */
   PSHVBLOCK          pshvblock;        /* variable pool request block       */
-  LONG               tempSize;
+  size_t             tempSize;
 
  retcode = 0;                          /* initialize composite rc           */
 
@@ -212,9 +200,6 @@ ULONG SysVariablePool(
 
                                        /* one of the access forms?          */
                                        /* and VP is enabled                 */
-//  if ((code==RXSHV_FETCH || code==RXSHV_SYFET || code==RXSHV_SET || code==RXSHV_SYSET
-//      code==RXSHV_DROPV || code==RXSHV_SYDRO) && (enabled)) {
-
   if ((code==RXSHV_FETCH || code==RXSHV_SYFET) || (code==RXSHV_SET || code==RXSHV_SYSET ||
       code==RXSHV_DROPV || code==RXSHV_SYDRO) && (enabled)) {
                                        /* no name given?                    */
@@ -251,7 +236,7 @@ ULONG SysVariablePool(
                                        /* get the variable value            */
               value = retriever->getValue(activation);
                                        /* copy the value                    */
-            pshvblock->shvret |= copy_value(value, &pshvblock->shvvalue, &pshvblock->shvvaluelen);
+            pshvblock->shvret |= copy_value(value, &pshvblock->shvvalue, (size_t *)&pshvblock->shvvaluelen);
             break;
 
           case RXSHV_SYSET:            /* set operations                    */
@@ -375,63 +360,3 @@ ULONG SysVariablePool(
 }
 
 
-#ifdef BIT16SUPPORT
-/******************************************************************************/
-/* Function name:      Rx32Var()                                              */
-/*                                                                            */
-/* Description:        Process 16-bit RxVar variable pool requests            */
-/*                                                                            */
-/* Function:           Act as an intermediate between the 16-bit RxVar        */
-/*                     interface and the 32-bit RexxVariablePool interface.   */
-/*                     Each 16-bit SHVBLOCK is dechained and converted to a   */
-/*                     32-bit SHVBLOCK that is passed to the 32-bit           */
-/*                     RexxVariablePool interface.                            */
-/*                                                                            */
-/* Inputs:             Chain of SHVBLOCK16s.                                  */
-/*                                                                            */
-/* Outputs:            Return code and return data from the individual        */
-/*                     RexxVariablePool() requests.                           */
-/*                                                                            */
-/* Effects:            Rexx variable pool updated accordingly.                */
-/*                                                                            */
-/* Notes:              This routine is originally from OS2VPOOL.C in "classic"*/
-/*                     Rexx.                                                  */
-/******************************************************************************/
-short REXXENTRY Rx32Var(
-  SHVBLOCK16 *req )                         /* Chain of 16-bit variable pool  */
-                                            /* request blocks                 */
-
-{
-  SHVBLOCK new_req;                         /* new request block              */
-  LONG composite = 0;                       /* composite return code          */
-  LONG return_code;                         /* temporary return code          */
-
-  new_req.shvnext = NULL;                   /* only one block in chain        */
-  new_req.shvret = 0;                       /* zero the return code           */
-
-  while (req) {                             /* while we have blocks copy      */
-                                            /* and convert name               */
-    CopyRX16toRX32(new_req.shvname, req->shvname); /* value too               */
-    CopyRX16toRX32(new_req.shvvalue, req->shvvalue); /* name length           */
-    new_req.shvnamelen = req->shvnamelen;   /* value length                   */
-    new_req.shvvaluelen = req->shvvaluelen;
-    new_req.shvcode = req->shvcode;         /* get the request code call      */
-                                            /* the 32-bit code                */
-    return_code = RexxVariablePool(&new_req);
-
-    if (return_code < 0)                    /* bad entry conditions?          */
-      return (short)return_code;            /* get out                        */
-    composite |= return_code;               /* fill in the composite now      */
-                                            /* copy shvblock back copy and    */
-                                            /* convert name                   */
-    CopyRX32toRX16(req->shvname, new_req.shvname); /* value too               */
-    CopyRX32toRX16(req->shvvalue, new_req.shvvalue); /* name length           */
-    req->shvnamelen = new_req.shvnamelen;   /* value length                   */
-    req->shvvaluelen = new_req.shvvaluelen;
-    req->shvret = new_req.shvret;           /* make sure we have return       */
-    req = (PSHVBLOCK16)(req->shvnext);      /* step to the next block         */
-    req = (PSHVBLOCK16)FN16toFN32(req);     /* convert it to 32-bit           */
-  }
-  return (short)composite;                  /* return the composite rc        */
-} /* end Rx32Var */
-#endif

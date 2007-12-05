@@ -944,7 +944,7 @@ BOOL WINAPI DllMain(
 /*                   NULL if the function fails                      */
 /*                                                                   */
 /*********************************************************************/
-PVOID APIENTRY RexxAllocateMemory(ULONG size)
+void * APIENTRY RexxAllocateMemory(size_t size)
 {
    PVOID pMem;
 
@@ -970,7 +970,7 @@ PVOID APIENTRY RexxAllocateMemory(ULONG size)
 /*  Return Value:    always returns 0 (ULONG)                        */
 /*                                                                   */
 /*********************************************************************/
-ULONG APIENTRY RexxFreeMemory(PVOID pMem)
+APIRET APIENTRY RexxFreeMemory(void * pMem)
 {
     GlobalFree(pMem);
 return 0;

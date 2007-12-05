@@ -588,22 +588,6 @@ RexxString *SysQualifyFileSystemName(
 bool SearchFirstFile(
   const char *Name)                     /* name of file with wildcards       */
 {
-
-
-  /**************** Dummy *********************/
-
-/*  HDIR          hdirFindHandle = HDIR_SYSTEM;
- *  FILEFINDBUF3  FindBuffer     = {0};
- *  ULONG         ulResultBufLen = sizeof(FILEFINDBUF3);
- *  ULONG         ulFindCount    = 1;
- *
- *  return (DosFindFirst( Name,
- *                        &hdirFindHandle,
- *                        FILE_ARCHIVED | FILE_READONLY,
- *                        &FindBuffer,
- *                        ulResultBufLen,
- *                        &ulFindCount,
- *  ************          FIL_STANDARD) == NO_ERROR); */
     return(0);
 }
 

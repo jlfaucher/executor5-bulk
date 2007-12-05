@@ -1577,8 +1577,8 @@ void RexxActivity::checkStackSpace()
 /******************************************************************************/
 {
 #ifdef STACKCHECK
-  long temp;                           /* if checking and there isn't room  */
-  if (PTRSUB2(&temp,this->nestedInfo.stackptr) < MIN_C_STACK && this->stackcheck == true)
+  size_t temp;                          /* if checking and there isn't room  */
+  if ((char *)&temp - (char *)this->nestedInfo.stackptr < MIN_C_STACK && this->stackcheck == true)
                                        /* go raise an exception             */
     reportException(Error_Control_stack_full);
 #endif
@@ -1694,7 +1694,7 @@ bool  RexxActivity::sysExitSioSay(
                                        /* make into RXSTRING form           */
     MAKERXSTRING(exit_parm.rxsio_string, sayoutput->getWritableData(),  sayoutput->getLength());
                                        /* call the handler                  */
-    return SysExitHandler(this, activation, exitname, RXSIO, RXSIOSAY, (PVOID)&exit_parm, false);
+    return SysExitHandler(this, activation, exitname, RXSIO, RXSIOSAY, (void *)&exit_parm, false);
   }
   return true;                         /* exit didn't handle                */
 }
@@ -1716,7 +1716,7 @@ bool RexxActivity::sysExitSioTrc(
                                        /* make into RXSTRING form           */
     MAKERXSTRING(exit_parm.rxsio_string, traceoutput->getWritableData(), traceoutput->getLength());
                                        /* call the handler                  */
-    return SysExitHandler(this, activation, exitname, RXSIO, RXSIOTRC, (PVOID)&exit_parm, false);
+    return SysExitHandler(this, activation, exitname, RXSIO, RXSIOTRC, (void *)&exit_parm, false);
   }
   return true;                         /* exit didn't handle                */
 }
@@ -1743,7 +1743,7 @@ bool RexxActivity::sysExitSioTrd(
                                        /* init shvexit return buffer        */
     this->nestedInfo.shvexitvalue = OREF_NULL;
                                        /* call the handler                  */
-    if (SysExitHandler(this, activation, exitname, RXSIO, RXSIOTRD, (PVOID)&exit_parm, false))
+    if (SysExitHandler(this, activation, exitname, RXSIO, RXSIOTRD, (void *)&exit_parm, false))
       return true;                     /* this wasn't handled               */
                                        /* shv_exit return a value?          */
     if (this->nestedInfo.shvexitvalue != OREF_NULL) {
@@ -1784,7 +1784,7 @@ bool RexxActivity::sysExitSioDtr(
                                        /* init shvexit return buffer        */
     this->nestedInfo.shvexitvalue = OREF_NULL;
                                        /* call the handler                  */
-    if (SysExitHandler(this, activation, exitname, RXSIO, RXSIODTR, (PVOID)&exit_parm, false))
+    if (SysExitHandler(this, activation, exitname, RXSIO, RXSIODTR, (void *)&exit_parm, false))
       return true;                     /* this wasn't handled               */
                                        /* shv_exit return a value?          */
     if (this->nestedInfo.shvexitvalue != OREF_NULL) {
@@ -1916,7 +1916,7 @@ bool RexxActivity::sysExitFunc(
                                        /* init shvexit return buffer        */
     this->nestedInfo.shvexitvalue = OREF_NULL;
                                        /* call the handler                  */
-    wasNotHandled = SysExitHandler(this, activation, exitname, RXFNC, RXFNCCAL, (PVOID)&exit_parm, true);
+    wasNotHandled = SysExitHandler(this, activation, exitname, RXFNC, RXFNCCAL, (void *)&exit_parm, true);
 
     /* release the memory allocated for the arguments */
     // free memory that was needed to pass objects
@@ -2030,7 +2030,7 @@ bool RexxActivity::sysExitCmd(
                                        /* init shvexit return buffer        */
     this->nestedInfo.shvexitvalue = OREF_NULL;
                                        /* call the handler                  */
-    if (SysExitHandler(this, activation, exitname, RXCMD, RXCMDHST, (PVOID)&exit_parm, true))
+    if (SysExitHandler(this, activation, exitname, RXCMD, RXCMDHST, (void *)&exit_parm, true))
       return true;                     /* this wasn't handled               */
     if (exit_parm.rxcmd_flags.rxfcfail)/* need to raise failure condition?  */
 
@@ -2077,7 +2077,7 @@ bool  RexxActivity::sysExitMsqPll(
                                        /* init shvexit return buffer        */
     this->nestedInfo.shvexitvalue = OREF_NULL;
                                        /* call the handler                  */
-    if (SysExitHandler(this, activation, exitname, RXMSQ, RXMSQPLL, (PVOID)&exit_parm, false))
+    if (SysExitHandler(this, activation, exitname, RXMSQ, RXMSQPLL, (void *)&exit_parm, false))
       return true;                     /* this wasn't handled               */
                                        /* Get input string and return it    */
                                        /* shv_exit return a value?          */
@@ -2125,7 +2125,7 @@ bool  RexxActivity::sysExitMsqPsh(
                                        /* make into RXSTRING form           */
     MAKERXSTRING(exit_parm.rxmsq_value, inputstring->getWritableData(), inputstring->getLength());
                                        /* call the handler                  */
-    if (SysExitHandler(this, activation, exitname, RXMSQ, RXMSQPSH, (PVOID)&exit_parm, false))
+    if (SysExitHandler(this, activation, exitname, RXMSQ, RXMSQPSH, (void *)&exit_parm, false))
       return true;                     /* this wasn't handled               */
 
     return false;                      /* this was handled                  */
@@ -2149,7 +2149,7 @@ bool  RexxActivity::sysExitMsqSiz(
   exitname = this->querySysExits(RXMSQ);
   if (exitname != OREF_NULL) {         /* exit enabled?                     */
                                        /* call the handler                  */
-    if (SysExitHandler(this, activation, exitname, RXMSQ, RXMSQSIZ, (PVOID)&exit_parm, false))
+    if (SysExitHandler(this, activation, exitname, RXMSQ, RXMSQSIZ, (void *)&exit_parm, false))
       return true;                     /* this wasn't handled               */
                                        /* Get queue size and return it      */
     tempSize = exit_parm.rxmsq_size;   /* temporary place holder for new_integer */
@@ -2178,7 +2178,7 @@ bool  RexxActivity::sysExitMsqNam(
                                        /* make into RXSTRING form           */
     MAKERXSTRING(exit_parm.rxmsq_name, (*inputstring)->getWritableData(), (*inputstring)->getLength());
                                        /* call the handler                  */
-    if (SysExitHandler(this, activation, exitname, RXMSQ, RXMSQNAM, (PVOID)&exit_parm, false))
+    if (SysExitHandler(this, activation, exitname, RXMSQ, RXMSQNAM, (void *)&exit_parm, false))
       return true;                     /* this wasn't handled               */
     *inputstring = (RexxString *)new_string(exit_parm.rxmsq_name.strptr, exit_parm.rxmsq_name.strlength);
                                        /* user give us a new buffer?        */
@@ -2209,7 +2209,7 @@ bool RexxActivity::sysExitHltTst(
                                        /* init shvexit return buffer        */
     this->nestedInfo.shvexitvalue = OREF_NULL;
                                        /* call the handler                  */
-    if (SysExitHandler(this, activation, exitname, RXHLT, RXHLTTST, (PVOID)&exit_parm, false))
+    if (SysExitHandler(this, activation, exitname, RXHLT, RXHLTTST, (void *)&exit_parm, false))
       return true;                     /* this wasn't handled               */
                                        /* Was halt requested?               */
     if (exit_parm.rxhlt_flags.rxfhhalt == 1) {
@@ -2242,7 +2242,7 @@ bool RexxActivity::sysExitHltClr(
   exitname = this->querySysExits(RXHLT);
   if (exitname != OREF_NULL) {         /* exit enabled?                     */
                                        /* call the handler                  */
-    if (SysExitHandler(this, activation, exitname, RXHLT, RXHLTCLR, (PVOID)&exit_parm, false))
+    if (SysExitHandler(this, activation, exitname, RXHLT, RXHLTCLR, (void *)&exit_parm, false))
       return true;                     /* this wasn't handled               */
     return false;                      /* this was handled                  */
   }
@@ -2266,7 +2266,7 @@ bool  RexxActivity::sysExitTrcTst(
                                        /* Clear Trace bit before  call      */
     exit_parm.rxtrc_flags.rxftrace = 0;
                                        /* call the handler                  */
-    if (SysExitHandler(this, activation, exitname, RXTRC, RXTRCTST, (PVOID)&exit_parm, false))
+    if (SysExitHandler(this, activation, exitname, RXTRC, RXTRCTST, (void *)&exit_parm, false))
       return true;                     /* this wasn't handled               */
                                        /* if not tracing, and now it is     */
                                        /* requsted                          */
@@ -2537,7 +2537,7 @@ void process_message_arguments(
         argument_list->addLast(new_string((double)va_arg(*arguments, double)));
         break;
 
-      case 'g':                        /* ULONG                             */
+      case 'g':                        /* unsigned number                   */
                                        /* create an integer object          */
         argument_list->addLast(new_numberstring((stringsize_t)va_arg(*arguments, size_t)));
         break;
@@ -2604,7 +2604,7 @@ void process_message_arguments(
 
 void process_message_result(
   RexxObject *value,                   /* returned value                    */
-  PVOID    return_pointer,             /* pointer to return value location  */
+  void    *return_pointer,             /* pointer to return value location  */
   char     interfacedefn )             /* interface definition              */
 /******************************************************************************/
 /* Function:  Convert an OREF return value into the requested message return  */
@@ -2656,7 +2656,7 @@ void process_message_result(
           break;
       }
 
-      case 'g':                        /* ULONG                             */
+      case 'g':                        /* unsigned number                   */
       {
           wholenumber_t temp = 0;
           value->numberValue(temp, number_digits());
@@ -2748,7 +2748,7 @@ int RexxActivity::messageSend(
       rc = this->error(startDepth);      /* do error cleanup                  */
   }
   // give uninit objects a chance to run
-  TheMemoryObject->runUninits();
+  memoryObject.runUninits();
   this->restoreNestedInfo(saveInfo);   /* now restore to previous nesting   */
   SysDeregisterSignals(&exreg);        /* deregister the signal handlers    */
   this->popNil();                      /* remove the nil marker             */
@@ -2858,25 +2858,3 @@ RexxObject *RexxActivity::nativeRelease(
   return result;                       /* return the result object          */
 }
 
-
-REXXOBJECT REXXENTRY RexxDispatch (
-  REXXOBJECT argList)                  /* ArgLIst array.                    */
-/******************************************************************************/
-/* Function:  Dispatch message to rexx object.  All args are in a Rexx Array  */
-/******************************************************************************/
-{
-  RexxObject *receiver;                /* receiver of message               */
-  RexxString *message;                 /* message name to send to receiver  */
-  RexxArray  *args;                    /* argument array for message        */
-  RexxObject *result;                  /* returned result object            */
-
-  MTXRQ(kernel_semaphore);             /* get the kernel semophore          */
-
-  receiver = ((RexxArray *)argList)->get(1);
-  message  = (RexxString *)((RexxArray *)argList)->get(2);
-  args     = (RexxArray *)((RexxArray *)argList)->get(3);
-  MTXRL(kernel_semaphore);             /* release kernel lock.              */
-                                       /* process the message               */
-  RexxSendMessage(receiver, message->getStringData(), OREF_NULL, "oA", &result, (RexxObject *)args);
-  return result;                       /* return the message result         */
-}

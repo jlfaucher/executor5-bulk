@@ -198,49 +198,6 @@ typedef struct {
 #define RXQUEUE_WAITACTIVE   13
 
 
-
-/***    RexxCreateQueue - Create an External Data Queue */
-
-
-
-ULONG  APIENTRY RexxCreateQueue (
-        PSZ,                           /* Name of queue created       */
-        ULONG,                         /* Size of buf for ret name    */
-        PSZ,                           /* Requested name for queue    */
-        PULONG ) ;                     /* Duplicate name flag.        */
-
-
-/***    RexxDeleteQueue - Delete an External Data Queue */
-
-ULONG  APIENTRY RexxDeleteQueue (
-        PSZ );                         /* Name of queue to be deleted */
-
-
-/*** RexxQueryQueue - Query an External Data Queue for number of      */
-/***                  entries                                         */
-
-ULONG  APIENTRY RexxQueryQueue (
-        PSZ,                           /* Name of queue to query      */
-        PULONG );                      /* Place to put element count  */
-
-
-/***    RexxAddQueue - Add an entry to an External Data Queue */
-
-ULONG  APIENTRY RexxAddQueue (
-        PSZ,                           /* Name of queue to add to     */
-        PRXSTRING,                     /* Data string to add          */
-        ULONG );                       /* Queue type (FIFO|LIFO)      */
-
-
-/***    RexxPullQueue - Retrieve data from an External Data Queue */
-
-ULONG  APIENTRY RexxPullQueue (
-        PSZ,                           /* Name of queue to read from  */
-        PRXSTRING,                     /* RXSTRING to receive data    */
-        SYSTEMTIME * PDATETIME,
-        ULONG );                       /* wait status (WAIT|NOWAIT)   */
-
-
 #endif /* INCL_RXQUEUE */
 
 #define TERM         0xffff    /* service termination flag           */

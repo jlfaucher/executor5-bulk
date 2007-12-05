@@ -67,9 +67,9 @@ class RexxNativeActivation : public RexxActivationBase {
   const char *cstring(RexxObject *);
   double getDoubleValue(RexxObject *);
   bool   isDouble(RexxObject *);
-  PVOID  cself();
-  PVOID  buffer();
-  PVOID  pointer(RexxObject *);
+  void  *cself();
+  void  *buffer();
+  void  *pointer(RexxObject *);
   RexxObject *dispatch();
   RexxObject *getReceiver() {return  this->receiver;}
   void   traceBack(RexxList *);
@@ -93,7 +93,7 @@ class RexxNativeActivation : public RexxActivationBase {
   inline char        getVpavailable()   {return this->vpavailable;}
   inline RexxMethod *getMethod()        {return this->method;}
   inline RexxString *getMsgname()       {return this->msgname;}
-  inline LONG        nextVariable()     {return this->nextvariable;}
+  inline size_t      nextVariable()     {return this->nextvariable;}
   inline RexxStem   *nextStem()         {return this->nextstem;}
   inline RexxVariableDictionary *nextCurrent()     {return this->nextcurrent;}
   inline RexxCompoundElement *compoundElement() {return this->compoundelement; }
@@ -116,7 +116,7 @@ class RexxNativeActivation : public RexxActivationBase {
   RexxObject     *result;              /* result from RexxRaise call        */
                                        /* running object variable pool      */
   RexxVariableDictionary *objectVariables;
-  LONG            nextvariable;        /* next variable to retrieve         */
+  size_t          nextvariable;        /* next variable to retrieve         */
   RexxVariableDictionary *nextcurrent; /* current processed vdict           */
   RexxCompoundElement *compoundelement;/* current compound variable value   */
   RexxStem *      nextstem;            /* our working stem variable         */
