@@ -1,0 +1,272 @@
+#!/usr/bin/rexx
+/*
+   name:             String.testGroup
+   author:           W. David Ashley
+   date:             2007-12-04
+   version:          1.0.5
+
+-- line commented lines are ignored, when building the directory of infos from this header
+   changed:          2007-12-04, ---wda, initial creation
+
+   languageLevel:    6.02
+   purpose:          Test the ABBREV functions
+   remark:           Initial test unit for demonstration purposes, needs to be completed.
+
+   license:          CPL 1.0 (Common Public License v1.0, see below)
+   link:
+
+   category1:        ooRexx
+   category2:        Base
+   category3:        BIF
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2005-2008 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+
+
+-------------------------------------------------------------------------------------------
+-- ===> adapt the "testGroupList" to your testCase classes; each element in the list is <===
+-- ===> an array object, the first element containing the testCase class object, the   <===
+-- ===> second element is a list of test method names which are regarded to be         <===
+-- ===> mandatory (if the list remains empty all test methods are mandatory)           <===
+
+   /* list of array objects, each containing the testGroup class object and an
+      optional list of mandatory test case methods name                       */
+
+mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
+testGroupList=.list~of( .array~of(.ooRexx.Base.BIF.testGroup,  mandatoryTestMethods) )
+
+
+-------------------------------------------------------------------------------------------
+-- ===> the following code needs not to be individualized                              <===
+
+   -- read top comment, containing infos about this program
+arrLines=.array~new
+do i=1 to 150 until arrLines[i]="*/"
+   arrLines[i]=sourceline(i)
+end
+      -- supply information for the testClass(es) in this file; the class attribute
+      -- "TestCaseInfo" (a directory object, index points to a queue) will store
+      -- the parsed infos
+aTestGroupClass=testGroupList~at(testGroupList~first)[1] -- get first testClass
+
+   -- will parse the array lines and store result in class object
+call makeDirTestInfo aTestGroupClass, arrLines
+tmpDir=aTestGroupClass~TestCaseInfo
+parse source s   -- op_sys invocationType fullPathToThisFile
+tmpDir~setentry("test_Case-source", s)
+
+   -- now add this directory to other testCase classes, if any left
+do arr over testGroupList
+   if arr[1]=aTestGroupClass then iterate  -- already handled
+   arr[1]~TestCaseInfo=tmpDir             -- save info in class object
+end
+
+-- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
+-- and set it to .false; this way the independent local invocation of the tests is inhibited
+if .local~hasentry("bRunTestsLocally")=.false then
+   .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
+
+if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
+do
+   ts=.testSuite~new             -- create a testSuite
+   do arr over testGroupList
+      -- create a testSuite for the given test case class, use all its testmethods
+      ts~addTest( .testSuite~new(arr[1]))
+   end
+   -- testResult=.testSuite~new(testGroupClass)~run
+   testResult=ts~run       -- now run all the tests
+
+   call simpleDumpTestResults testResult
+end
+
+   /* return list of array objects containing test case classes and
+      optionally list of mandatory test methods                      */
+return testGroupList
+
+
+
+::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+
+::class "ooRexx.Base.bif.ABBREV.testGroup" subclass TestCase public
+
+   -- test the ABBREV BIF, using examples from the documentation
+::method "test_ABBREV"
+
+   li=10000
+   s="XRANGE"('00'x,'FF'x)
+   self~assertSame("subTest1", .true, ABBREV('', ''))
+   self~assertSame("subTest2", .false, ABBREV('', 'a'))
+   self~assertSame("subTest3", .true, ABBREV('a', ''))
+   self~assertSame("subTest4", .true, ABBREV('a', 'a'))
+   self~assertSame("subTest5", .false, ABBREV('a', 'b'))
+   id = 6
+   Do i=0 To 256
+      s30="SUBSTR"(s,1,30)
+      t="SUBSTR"(s,1,i)
+      self~assertSame("subTest6-"i, .true, ABBREV(s, t))
+      r="ABBREV"(s30,t)
+      If i<=30 Then
+         self~assertSame("subTest6-"i, .true, ABBREV(s30, t))
+      Else                 /* longer string is never abbrev of shorter */
+         self~assertSame("subTest6-"i, .false, ABBREV(s30, t))
+      End
+   id = 7
+   do i=0 to 255
+      do j=0 to 255
+         s=d2c(i)||d2c(j)                /* s='0000'X...'FFFF'X            */
+         t=d2c(j)                        /* t='00'X...'FF'X                */
+         self~assertSame("subTest7-"i"-"j, (i = j) , ABBREV(s, t, 1))
+         End
+      End
+   s='abcdefghijklmnopqrstuvwxyz1234567890 '
+   slong="COPIES"(s,li)
+   tlong="COPIES"(s,li-1)
+   self~assertSame("subTest8", .true, ABBREV(slong, slong))
+   self~assertSame("subTest9", .true, ABBREV(slong, tlong))
+   tlong=tlong||'x'
+   self~assertSame("subTest10", .false, ABBREV(slong, '00'x))
+   self~assertSame("subTest11", .false, ABBREV(slong, tlong))
+   self~assertSame("subTest12", .true, ABBREV('', '', 0))
+   self~assertSame("subTest13", .false, ABBREV('', '', 1))
+   self~assertSame("subTest14", .false, ABBREV('', 'a', 1))
+   self~assertSame("subTest15", .false, ABBREV('a', '', 1))
+   self~assertSame("subTest16", .true, ABBREV('a', 'a', 0))
+   self~assertSame("subTest17", .true, ABBREV('a', 'a', 1))
+   self~assertSame("subTest18", .false, ABBREV('a', 'a', 2))
+   self~assertSame("subTest19", .false, ABBREV('a', 'b', 1))
+   s="XRANGE"('00'x,'FF'x)
+   Do i=0 To 256
+      s30="SUBSTR"(s,1,30)
+      t="SUBSTR"(s,1,i)
+      i1="MAX"(i-1,0)
+      i2=i+1
+      self~assertSame("subTest20-"i'-1', .true, ABBREV(s, t, i1))
+      self~assertSame("subTest20-"i'-2', .true, ABBREV(s, t, i))
+      self~assertSame("subTest20-"i'-3', .false, ABBREV(s, t, i2))
+      If 15<=i & i<=30 Then
+         self~assertSame("subTest20-"i'-4', .true, ABBREV(s30, t, 15))
+      Else
+         self~assertSame("subTest20-"i'-4', .false, ABBREV(s30, t, 15))
+      End
+   s='abcdefghijklmnopqrstuvwxyz1234567890 '
+   slong="COPIES"(s,li)
+   tlong="COPIES"(s,li-1)
+   self~assertSame("subTest21", .true, ABBREV(slong, slong, 30*li))
+   ll=2**29-1
+   self~assertSame("subTest22", .false, ABBREV(slong, slong, ll))
+--   id=0023S; xrc=xrc1; xre="ABBREV"(slong,slong,1E9); Call ERR; R0023:
+   self~assertSame("subTest24", .true, ABBREV(slong, tlong, (li-1)*length(s)))
+   tlong=tlong||'x'
+   self~assertSame("subTest25", .false, ABBREV(slong, '00'x, 1))
+   self~assertSame("subTest26", .false, ABBREV(slong, tlong, 0000100))
+   /*----------------------------------------------------------------------*/
+   /* length=valid range: positive numbers
+              value vary from (0, 1, 9, 10, 11, 100, 32767, 32768,..)
+                         smaller and longer than information and info */
+   inform='Walter Pachl'
+   info='Wal'
+   self~assertSame("subTest27", .true, ABBREV(inform, info, 3))
+   self~assertSame("subTest28", .false, ABBREV(inform, info, 004))
+   self~assertSame("subTest29", .true, ABBREV(inform, info, 2E0))
+--   self~assertSame("subTest30", .true, ABBREV(inform, info, 02E+00000002))
+   self~assertSame("subTest31", .true, ABBREV(inform, info, '      3    '))
+   self~assertSame("subTest32", .true, ABBREV(inform, info, '20202B2033'x))
+--   id=0033; Call VER  ABBREV(inform,info,----3),1
+--   id=0034S; xrc=xrc1; xre=ABBREV(inform,info,'++2'); Call err; R0034:
+   a=3
+   self~assertSame("subTest35", .true, ABBREV(inform, info, a))
+   self~assertSame("subTest36", .true, ABBREV(inform, info, a-1))
+   /***********************************************************************
+   * check all characters as length, only digits 0..9 must work
+   * as info has 3 characters, abbrev(inform,info) -> 1 for 0...3
+   ***********************************************************************/
+--     information='$#@$#|@&ª#@|$&ª*#@|$&ª*'''
+--     info       ='$#@'
+--     i=0                               /* Do i=0 To 255, actually        */
+--   loop_i:                             /* Variatins of l '00'x...'ff'x   */
+--     l="D2C"(i)
+--     If datatype(l,'W') Then           /* whole number                   */
+--       id=0037'-'i
+--     Else Do
+--       id=0037'S-'i
+--       xrc=xrc1                        /* 911107 PA 40 -> xrc1           */
+--       End
+--     x=ABBREV(information,info,l)      /* must raise syntax if lª=digit  */
+--     If left(id,1)='S' Then
+--       Call err
+--     Else
+--       If 0<=l & l<=3 Then
+--         Call ver x,1
+--       Else
+--         Call ver x,0
+--   R0037:
+--     if i<255 Then Do
+--       i=i+1
+--       signal loop_i
+--       End
+--   id=0038S; xrc=xrc4; xre="ABBREV"(inform,info,-2); Call err; R0038:
+--   id=0039S; xrc=xrc4; xre=ABBREV(inform,info,-0.03E2); Call err; R0039:
+--   id=0040S; xrc=xrc4; xre=ABBREV(inform,info,'  -3 '); Call err; R0040:
+   do i=0 to 255
+      x="D2C"(i)
+      info=x||x||x
+      self~assertSame("subTest42"i'-1', .true, ABBREV(info, x))
+      id=0042'-'i'-2';
+      If "ABBREV"(info,'  ') Then
+         self~assertSame("subTest42"i'-2', .true, ABBREV(info, '  '))
+      End
+   self~assertSame("subTest43", .true, ABBREV('1.000003', 1.000, 5))
+   self~assertSame("subTest44", .true, ABBREV('12345678'x, '123456'x, 2))
+   n='translator'
+   self~assertSame("subTest45", .true, ABBREV(n, 'tr', 2))
+   n=17+4
+   self~assertSame("subTest46", .true, ABBREV(n, +.2e1, 1))
+--   id=0047N; xnam='NOVALUE'; x="ABBREV"(novalue,'NOV'); Call Err; R0047:
+--   id=0048N; xnam='NOV'; x="ABBREV"('NOVALUE',nov); Call Err; R0048:
+--   id=0049N; xnam='NOVALUE'; x="ABBREV"('NOVALUE','NOV',novalue);
+   self~assertSame("subTest50", .true, ABBREV(novalue, 'NOV'))
+   word="Print"
+   self~assertSame("subTest51", .true, ABBREV(word, "Pri"))
+   word="PRINT"
+   self~assertSame("subTest52", .false, ABBREV(word, "Pri"))
+   self~assertSame("subTest53", .false, ABBREV(word, "PRI", 4))
+   self~assertSame("subTest54", .false, ABBREV(word, "PRY"))
+   self~assertSame("subTest55", .true, ABBREV(word, ""))
+   self~assertSame("subTest56", .false, ABBREV(word, "", 1))
+
+
