@@ -127,7 +127,7 @@ return createFile(src, baseName || '.rex')
 return ret
 -- End deleteFile( fileName )
 
-/* execRexxPrg( prgName, output )- - - - - - - - - - - - - - - - - - - - - - -*\
+/* execRexxPrgWithArgs( prgName, params, output )- - - - - - - - - - - - - - -*\
 
   Executes a Rexx program using a separate instance of the interpreter.  This
   function captures the output and the return code from the executed program and
@@ -136,6 +136,10 @@ return ret
   Input:
     prgName REQUIRED
       The Rexx program to execute.
+
+    params  REQUIRED
+      The arguments to the Rexx program.  If the Rexx program has no arguments,
+      either use the empty string, or use the convenience function execRexxPrg
 
     output  REQUIRED  [In / Out]
       An array object in which the the executed program's output is returned.
@@ -146,8 +150,8 @@ return ret
     The return code produced by executing the program on success.  Returns 9999
     for an internal error.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::routine  execRexxPrg public
-  use strict arg prgName, output
+::routine  execRexxPrgWithArgs public
+  use strict arg prgName, params, output
 
   if \ output~isInstanceOf(.array) then return 9999
 
@@ -165,7 +169,7 @@ return ret
   prgName = prgName~strip
   if prgName~pos(' ') <> 0, prgName~left(1) \== '"' then prgName = enQuote(prgName)
 
-  cmd = 'rexx' prgName '>' tmpOutFile stdErrToStdOut
+  cmd = 'rexx' prgName params '>' tmpOutFile stdErrToStdOut
   cmd
   prgRet = RC
 
@@ -179,7 +183,15 @@ return ret
   j = deleteFile(tmpOutFile)
 
 return prgRet
--- End execRexxPrg( prgName, output )
+-- End execRexxPrgWithArgs( prgName, params, output )
+
+/**
+ * This is a convenience method for execRexxPrgWithArgs().
+ */
+::routine  execRexxPrg public
+  use strict arg prgName, output
+return execRexxPrgWithArgs(prgName, "", output)
+
 
 /* indirectRequire( fileName ) - - - - - - - - - - - - - - - - - - - - - - - -*\
 

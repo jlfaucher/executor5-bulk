@@ -67,8 +67,8 @@
   ::method  prgResultCode attribute
 
   ::method init
-    expose prgName finished
-    use arg prgName
+    expose prgName params finished
+    use arg prgName, arguments
     self~init:super
     finished = .false
 
@@ -76,17 +76,20 @@
     prgName = prgName~strip
     if prgName~pos(' ') <> 0, prgName~left(1) \== '"' then prgName = '"' || prgName || '"'
 
+    if arg(2, 'O') then params = ""
+    else params = arg(2)
+
   ::method getResult unguarded
     expose finished
     guard on when finished
     return self~prgResultCode
 
   ::method startProgram
-    expose prgName finished
+    expose prgName params finished
 
     reply 0
 
-    prgName
+    prgName params
     self~prgResultCode = RC
     finished = .true
 
