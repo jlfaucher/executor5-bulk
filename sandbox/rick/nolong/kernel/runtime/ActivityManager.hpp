@@ -50,7 +50,7 @@ public:
     static void liveGeneral();
 
     static void addWaitingActivity(RexxActivity *a, bool release);
-    static bool hasWaiters() { return waitingActivities > 0; }
+    static bool hasWaiters() { return firstWaitingActivity != OREF_NULL; }
     static inline RexxActivity *waitingActivity()
     {
         return firstWaitingActivity;
@@ -58,13 +58,18 @@ public:
     static RexxActivity *findActivity();
     static RexxActivity *findActivity(LONG);
     static RexxActivity *getActivity();
+    static void returnActivity() { returnActivity(currentActivity); }
     static void returnActivity(RexxActivity *);
     static void activityEnded(RexxActivity *);
     static void shutdown();
+    static void checkShutdown();
     static void createInterpreter();
     static void terminateInterpreter();
     static void lockKernel();
     static void unlockKernel();
+    static bool lockKernelImmediate();
+    static void createKernelLock();
+    static void closeKernelLock();
     static void init();
     static RexxActivation *newActivation(RexxObject *receiver, RexxMethod *runMethod, RexxActivity *activity, RexxString *msgname, RexxActivation *activation, int context);
     static void cacheActivation(RexxActivation *activation);
@@ -108,6 +113,8 @@ protected:
     static size_t            waitingActivities; /* number of waiting activities      */
     static bool              processTerminating;  // shutdown processing started
     static size_t            interpreterInstances;  // number of times an interpreter has been created.
+
+    static SMTX              kernelSemaphore;       // global kernel semaphore lock
 };
 
 

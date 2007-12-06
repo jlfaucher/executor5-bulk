@@ -121,21 +121,6 @@ typedef unsigned __int64 uint64_t;
 
 
 /******************************************************************************/
-/* OPTIONAL:  If the implementation is going to support a cross-process       */
-/* shared memory model, then include a define for SHARED                      */
-/******************************************************************************/
-
-/* enable the flag so RexxStart can be called within threads */
-#define SHARED                         // no shared memory sup
-
-/******************************************************************************/
-/* OPTIONAL:  If the implementation is going to support multiple threads,     */
-/* include a define for THREADS.  If not defined, then the REPLY instruction  */
-/* will not work.                                                             */
-/******************************************************************************/
-#define THREADS
-
-/******************************************************************************/
 /* OPTIONAL:  Perform stack bounds checking on new message invocations.  If   */
 /* this is a non-stack based calling convention, or it is not possible to     */
 /* determine the bounds of the stack, leave this undefined.                   */
@@ -187,9 +172,7 @@ typedef unsigned __int64 uint64_t;
 /******************************************************************************/
 #define SMTX HANDLE                 /* semaphore data types              */
 #define SEV  HANDLE
-#define SysSharedSemaphoreDefn HANDLE rexx_kernel_semaphore = NULL;     \
-                               HANDLE rexx_resource_semaphore = NULL;   \
-                               HANDLE rexx_start_semaphore = NULL;      \
+#define SysSharedSemaphoreDefn HANDLE rexx_resource_semaphore = NULL;   \
                                HANDLE rexx_wait_queue_semaphore = NULL; \
                                HANDLE rexxTimeSliceSemaphore = NULL;    \
                                HANDLE rexxTimeSliceTimerOwner;
@@ -230,9 +213,6 @@ typedef void (* PTHREADFN)(void *);    /* define a thread function          */
 /* the REXX library semaphore package, but can be redefined to map directly   */
 /* to system specific functions too.                                          */
 /******************************************************************************/
-//  Check these changes in oryxthrd.h
-
-//SECURITY_ATTRIBUTES SA_inherit = {sizeof(SECURITY_ATTRIBUTES), NULL, true};
 
 #ifdef _DEBUG
 // #define TRACE_SEMAPHORES    /* not necessary to trace MTX and EV macros */
@@ -257,7 +237,7 @@ void SysRelinquish(void);              /* allow the system to run           */
 
 inline void waitHandle(HANDLE s)
 {
-   extern bool UseMessageLoop;
+   extern BOOL UseMessageLoop;
    if (UseMessageLoop)
    {
        do
@@ -271,9 +251,7 @@ inline void waitHandle(HANDLE s)
    }
 }
 
-
 #define MTXRQ(s)      waitHandle(s);
-
 #define MTXRL(s)      ReleaseMutex(s) // clear a semaphore
 #ifdef TRACE_SEMAPHORES
 #define MTXCL(s)      if (!CloseHandle(s)) \

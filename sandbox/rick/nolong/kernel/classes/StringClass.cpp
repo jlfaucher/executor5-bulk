@@ -1894,7 +1894,7 @@ nativei1 (REXXOBJECT, STRING_NEWD, PDBL, number)
 {
   native_entry;                        /* synchronize access                */
                                        /* just forward and return           */
-  return_oref(new_string(*number));
+  return_object(new_string(*number));
 }
 
 nativei1 (REXXOBJECT, STRING_NEW_UPPER, CSTRING, string)
@@ -1904,7 +1904,7 @@ nativei1 (REXXOBJECT, STRING_NEW_UPPER, CSTRING, string)
 {
   native_entry;                        /* synchronize access                */
                                        /* just forward and return           */
-  return_oref(((RexxString *)new_string(string))->upper());
+  return_object(((RexxString *)new_string(string))->upper());
 }
 
 nativei2 (REXXOBJECT, STRING_NEW, CSTRING, string, size_t, length)
@@ -1914,7 +1914,7 @@ nativei2 (REXXOBJECT, STRING_NEW, CSTRING, string, size_t, length)
 {
   native_entry;                        /* synchronize access                */
                                        /* just forward and return           */
-  return_oref(new_string(string, length));
+  return_object(new_string(string, length));
 }
 
 native3 (size_t, STRING_GET, size_t, start, char *, buffer, size_t, bufl)

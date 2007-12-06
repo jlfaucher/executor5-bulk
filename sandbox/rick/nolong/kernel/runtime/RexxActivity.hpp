@@ -93,8 +93,6 @@ typedef enum
 } ActivityException;
 
 #define resource_semaphore     rexx_resource_semaphore
-#define kernel_semaphore       rexx_kernel_semaphore
-#define start_semaphore        rexx_start_semaphore
 
                                        /* system exit definitions           */
                                        /* (these must match the externally  */
@@ -115,7 +113,6 @@ typedef enum
 
 
 extern SMTX rexx_resource_semaphore;   /* global kernel semaphore           */
-extern SMTX rexx_start_semaphore;      /* startup semaphore                 */
 
 extern SEV    rexxTimeSliceSemaphore;
 
@@ -245,6 +242,9 @@ public:
    void deactivate() { nestedCount--; }
    bool isActive() { return nestedCount > 0; }
    bool isInactive() { return nestedCount == 0; }
+   size_t getActivationLevel() { return nestedCount; }
+   void restoreActivationLevel(size_t l) { nestedCount = l; }
+
    bool hasSecurityManager();
    bool callSecurityManager(RexxString *name, RexxDirectory *args);
    RexxObject *nativeRelease(RexxObject *result);

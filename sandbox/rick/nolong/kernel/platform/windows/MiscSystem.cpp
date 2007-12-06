@@ -51,8 +51,7 @@
 #include "SystemVersion.h"
 #include <signal.h>
 
-/* special flag for the LPEX message loop problem */
-extern bool UseMessageLoop = true;
+extern bool UseMessageLoop = false;
 
 extern "C" void activity_thread (RexxActivity *objp);
 

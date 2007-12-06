@@ -390,28 +390,60 @@ RexxObject *RexxNativeActivation::run(
                 break;
         }
     }
-    if (i < argcount && !used_arglist)   /* extra, unwanted arguments?        */
-                                         /* got too many                      */
-        reportException(Error_Incorrect_method_maxarg, i);
-    /* get a RAISE type return?          */
-    if (setjmp(this->conditionjump) != 0)
-    {
-        // TODO  Use protected object on the result
-        if (this->result != OREF_NULL)     /* have a value?                     */
-            holdObject(this->result);        /* get result held longer            */
-        this->guardOff();                  /* release any variable locks        */
-        this->argcount = 0;                /* make sure we don't try to mark any arguments */
-        this->activity->pop(false);        /* pop this from the activity        */
-        this->setHasNoReferences();        /* mark this as not having references in case we get marked */
-        return this->result;               /* and finished                      */
-    }
+  }
+  if (i < argcount && !used_arglist)   /* extra, unwanted arguments?        */
+                                       /* got too many                      */
+    reportException(Error_Incorrect_method_maxarg, i);
 
-    activity->releaseAccess();           /* force this to "safe" mode         */
-    (*methp)(ivalues);                   /* process the method call           */
-    activity->requestAccess();           /* now in unsafe mode again          */
+  size_t activityLevel = this->activity->getActivationLevel();
+                                       /* get a RAISE type return?          */
+  if (setjmp(this->conditionjump) != 0) {
+    // TODO  Use protected object on the result
+    if (this->result != OREF_NULL)     /* have a value?                     */
+      holdObject(this->result);        /* get result held longer            */
+    this->guardOff();                  /* release any variable locks        */
+    this->argcount = 0;                /* make sure we don't try to mark any arguments */
+    // the lock holder gets here by longjmp from a kernel reentry.  We need to
+    // make sure the activation count gets reset, else we'll accumulate bogus
+    // nesting levels that will make it look like this activity is still in use
+    // when in fact we're done with it.
+    this->activity->restoreActivationLevel(activityLevel);
+    this->activity->pop(FALSE);        /* pop this from the activity        */
+    this->setHasNoReferences();        /* mark this as not having references in case we get marked */
+    return this->result;               /* and finished                      */
+  }
+  try
+  {
+      activity->releaseAccess();           /* force this to "safe" mode         */
+      (*methp)(ivalues);                   /* process the method call           */
+      activity->requestAccess();           /* now in unsafe mode again          */
+  }
+  catch (RexxActivation *a)
+  {
+      // it's possible that we can get terminated by a throw during condition processing.
+      // we intercept this here, perform any cleanup we need to perform, then let the
+      // condition trap propagate.
+      this->guardOff();                  /* release any variable locks        */
+      this->argcount = 0;                /* make sure we don't try to mark any arguments */
+      // the lock holder gets here by longjmp from a kernel reentry.  We need to
+      // make sure the activation count gets reset, else we'll accumulate bogus
+      // nesting levels that will make it look like this activity is still in use
+      // when in fact we're done with it.
+      this->activity->restoreActivationLevel(activityLevel);
+      // IMPORTANT NOTE:  We don't pop our activation off the stack.  This will be
+      // handled by the catcher.  Attempting to pop the stack when an error or condition has
+      // occurred can munge the activation stack, resulting bad stuff.
+      this->setHasNoReferences();        /* mark this as not having references in case we get marked */
+      // now rethrow the trapped condition so that real target can handle this.
+      throw;
+  }
 
-    /* give up reference to receiver so that it can be garbage collected */
-    this->receiver = OREF_NULL;
+  // belt and braces...this restores the activity level to whatever
+  // level we had when we made the callout.
+  this->activity->restoreActivationLevel(activityLevel);
+
+  /* give up reference to receiver so that it can be garbage collected */
+  this->receiver = OREF_NULL;
 
     // set a default result
     result = OREF_NULL;
@@ -937,7 +969,7 @@ nativei0 (REXXOBJECT, MSGNAME)
   native_entry;                        /* synchronize access                */
                                        /* pick up current activation        */
   self = (RexxNativeActivation *)ActivityManager::currentActivity->current();
-  return_oref(this->msgname);          /* just forward and return           */
+  return_object(this->msgname);          /* just forward and return           */
 }
 
 nativei0 (REXXOBJECT, RECEIVER)
@@ -950,7 +982,7 @@ nativei0 (REXXOBJECT, RECEIVER)
   native_entry;                        /* synchronize access                */
                                        /* pick up current activation        */
   self = (RexxNativeActivation *)ActivityManager::currentActivity->current();
-  return_oref(this->receiver);         /* just forward and return           */
+  return_object(this->receiver);         /* just forward and return           */
 }
 
 nativei1 (int, INTEGER, REXXOBJECT, object)
@@ -1067,7 +1099,7 @@ nativei3 (REXXOBJECT, SEND,
 /******************************************************************************/
 {
   native_entry;                        /* synchronize access                */
-  return_oref((RexxObject *)receiver->sendMessage((RexxString *)new_string(msgname), (RexxArray *)arguments));
+  return_object((RexxObject *)receiver->sendMessage((RexxString *)new_string(msgname), (RexxArray *)arguments));
 }
 
 nativei2 (REXXOBJECT, SUPER,
@@ -1091,7 +1123,7 @@ nativei2 (REXXOBJECT, SUPER,
                                        /* copying each OREF                 */
     argarray[i-1] = args->get(i);
                                        /* now send the message              */
-  return_oref(this->receiver->messageSend((RexxString *)new_string(msgname), count, argarray, this->receiver->superScope(this->method->getScope())));
+  return_object(this->receiver->messageSend((RexxString *)new_string(msgname), count, argarray, this->receiver->superScope(this->method->getScope())));
 }
 
 nativei2 (REXXOBJECT, SETVAR,
@@ -1113,7 +1145,7 @@ nativei2 (REXXOBJECT, SETVAR,
   variableName = new_string(name);    /* get a string version of this      */
                                        /* do the assignment                 */
   dictionary->set(variableName, (RexxObject *)value);
-  return_oref(OREF_NULL);              /* return nothing                    */
+  return_object(OREF_NULL);              /* return nothing                    */
 }
 
 nativei2 (REXXOBJECT, SETVAR2,
@@ -1136,7 +1168,7 @@ nativei2 (REXXOBJECT, SETVAR2,
                                        /* do the assignment throug retriever*/
   retriever = context->getVariableRetriever(variableName);
   retriever->set(context, (RexxObject *)value);
-  return_oref(OREF_NULL);              /* return nothing                    */
+  return_object(OREF_NULL);              /* return nothing                    */
 }
 
 
@@ -1158,7 +1190,7 @@ nativei2 (REXXOBJECT, SETFUNC,
   activation = self->activity->getCurrentActivation();
 
   activation->addLocalRoutine(new_string(name), (RexxMethod *) value);
-  return_oref(OREF_NULL);              /* return nothing                    */
+  return_object(OREF_NULL);              /* return nothing                    */
 }
 
 /*******************************************************1***/
@@ -1203,7 +1235,7 @@ nativei2 (REXXOBJECT, GETFUNCTIONNAMES,
     }
   }
 
-  return_oref(OREF_NULL);              /* return nothing                    */
+  return_object(OREF_NULL);              /* return nothing                    */
 }
 
 nativei1 (REXXOBJECT, GETVAR,
@@ -1285,7 +1317,7 @@ nativei3 (REXXOBJECT, CONDITION,
 {
   native_entry;                        /* synchronize access                */
                                        /* pass on and raise the condition   */
-  return_oref((ActivityManager::currentActivity->raiseCondition((RexxString *)condition, OREF_NULL, (RexxString *)description, (RexxObject *)additional, OREF_NULL, OREF_NULL)) ? TheTrueObject : TheFalseObject);
+  return_object((ActivityManager::currentActivity->raiseCondition((RexxString *)condition, OREF_NULL, (RexxString *)description, (RexxObject *)additional, OREF_NULL, OREF_NULL)) ? TheTrueObject : TheFalseObject);
 }
 
 nativei1 (int , VARIABLEPOOL,
@@ -1363,7 +1395,7 @@ nativei0 (REXXOBJECT, POP_ENVIRONMENT)
   native_entry;                        /* synchronize access                */
                                        /* pick up current activation        */
   activation = (RexxActivation *)ActivityManager::currentActivity->getCurrentActivation();
-  return_oref(activation->popEnvironment());
+  return_object(activation->popEnvironment());
 }
 
 bool REXXENTRY REXX_ISDIRECTORY(REXXOBJECT object)

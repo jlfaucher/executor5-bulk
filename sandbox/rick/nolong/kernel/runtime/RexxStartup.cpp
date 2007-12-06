@@ -71,7 +71,6 @@ extern RexxInteger *ProcessName;
 
 #if defined(AIX) || defined(LINUX)
 char achRexxCurDir[ CCHMAXPATH+2 ];          /* Save current working direct */
-extern int thread_counter;
 extern int  SecureFlag;
 #endif
 
@@ -80,7 +79,6 @@ void kernelShutdown (void)
 /* Shutdown OREXX System for this process                                     */
 /******************************************************************************/
 {
-  MTXRQ(start_semaphore);              /* serialize startup/shutdown        */
   SysTermination();                    /* cleanup                           */
   EVPOST(RexxTerminated);              /* let anyone who cares know we're done*/
 //  memoryObject.dumpMemoryProfile();    /* optionally dump memory stats      */
@@ -90,13 +88,6 @@ void kernelShutdown (void)
     ProcessFirstThread = true;         /* first thread needs to be created  */
     memoryObject.freePools();          /* release access to memoryPools     */
   }
-#ifdef SHARED
-#if defined(AIX) || defined(LINUX)
-    MTXRL(initialize_sem);
-#else
-    MTXRL(start_semaphore);              /* serialize startup/shutdown        */
-#endif
-#endif
 }
 
 
@@ -147,41 +138,18 @@ bool REXXENTRY RexxInitialize (void)
   setbuf(stdout,NULL);                 /* No buffering                      */
   setbuf(stderr,NULL);
 
-#if defined(AIX) || defined(LINUX)
-#ifdef THREADS
-  if (!thread_counter)                 /*thread_counter is global defined    */
-  {                                    /* and reset in RexxWaitForTermination */
-    thread_counter++;
-    SysThreadInit();                   /* do thread initialization          */
-  }
-#else
-  OryxThreadInit();                    /* do thread initialization          */
-#endif
-#else
-#ifdef THREADS
   SysThreadInit();                     /* do thread initialization          */
-#else
-  OryxThreadInit();                    /* do thread initialization          */
-#endif
-#endif
-
   SysEnterCriticalSection();
 
   result = ProcessFirstThread;         /* check on the first thread         */
 
   // perform activity manager startup for another instance
   ActivityManager::createInterpreter();
-                                       /* make sure we can't loose control  */
-                                       /* durecing creation/opening of THIS */
-                                       /* MUTEX.                            */
-  MTXCROPEN(start_semaphore, "OBJREXXSTARTSEM");  /* get the start semaphore           */
   SysExitCriticalSection();
-  MTXRQ(start_semaphore);              /* lock the startup                  */
-
   if (ProcessFirstThread) {            /* if the first time                 */
     ProcessFirstThread = false;        /* this is the first thread          */
     MTXCROPEN(resource_semaphore, "OBJREXXRESSEM");         /* create or open the other          */
-    MTXCROPEN(kernel_semaphore, "OBJREXXKERNELSEM");           /* semaphores                        */
+    ActivityManager::createKernelLock();
 #ifdef FIXEDTIMERS
     EVCROPEN(rexxTimeSliceSemaphore, "OBJREXXTSSEM");      // originally EVOPEN
 #endif

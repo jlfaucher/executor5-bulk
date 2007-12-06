@@ -2504,7 +2504,7 @@ native1 (REXXOBJECT, ARRAY_AT, size_t, pos)
 {
   native_entry;                        /* synchronize access                */
                                        /* just forward and return           */
-  return_oref(this->get(pos));
+  return_object(this->get(pos));
 }
 
 
@@ -2526,7 +2526,7 @@ nativei1 (REXXOBJECT, ARRAY_NEW,
 {
   native_entry;                        /* synchronize access                */
                                        /* just forward and return           */
-  return_oref(new_array(size));
+  return_object(new_array(size));
 }
 
 nativei1 (REXXOBJECT, ARRAY_NEW1,
@@ -2537,7 +2537,7 @@ nativei1 (REXXOBJECT, ARRAY_NEW1,
 {
   native_entry;                        /* synchronize access                */
                                        /* just forward and return           */
-  return_oref(new_array((RexxObject *)object1));
+  return_object(new_array((RexxObject *)object1));
 }
 
 nativei2 (REXXOBJECT, ARRAY_NEW2,
@@ -2549,5 +2549,5 @@ nativei2 (REXXOBJECT, ARRAY_NEW2,
 {
   native_entry;                        /* synchronize access                */
                                        /* just forward and return           */
-  return_oref(new_array((RexxObject *)object1, (RexxObject *)object2));
+  return_object(new_array((RexxObject *)object1, (RexxObject *)object2));
 }

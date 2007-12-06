@@ -75,9 +75,7 @@
 
 const size_t ACT_STACK_SIZE = 10;
 
-extern SMTX rexx_kernel_semaphore;     /* global kernel semaphore           */
 extern SMTX rexx_resource_semaphore;   /* global kernel semaphore           */
-extern SMTX rexx_start_semaphore;      /* startup semaphore                 */
 
 extern "C" void activity_thread (RexxActivity *objp);
 
@@ -108,6 +106,10 @@ void RexxActivity::runThread()
     SysRegisterExceptions(&exreg);       /* create needed exception handlers  */
     for (;;)
     {
+        // save the actitivation level in case there's an error unwind for an unhandled
+        // exception;
+        size_t activityLevel = 0;
+
         try
         {
             EVWAIT(this->runsem);            /* wait for run permission           */
@@ -123,6 +125,8 @@ void RexxActivity::runThread()
 #endif
 
             this->requestAccess();           /* now get the kernel lock           */
+            this->activate();                // make sure this is marked as active
+            activityLevel = getActivationLevel();
                                              /* get the top activation            */
             this->topActivation->dispatch(); /* go dispatch it                    */
 
@@ -132,8 +136,12 @@ void RexxActivity::runThread()
             this->error(0);
         }
 
+        // make sure we get restored to the same base activation level.
+        restoreActivationLevel(activityLevel);
 
         memoryObject.runUninits();         /* run any needed UNINIT methods now */
+
+        this->deactivate();                // no longer an active activity
 
         EVSET(this->runsem);               /* reset the run semaphore and the   */
         EVSET(this->guardsem);             /* guard semaphore                   */
@@ -767,6 +775,9 @@ RexxString *RexxActivity::messageSubstitution(
                                        /* set the reentry flag              */
           this->requestingString = true;
           this->stackcheck = false;    /* disable the checking              */
+          // save the actitivation level in case there's an error unwind for an unhandled
+          // exception;
+          size_t activityLevel = getActivationLevel();
                                        /* now protect against reentry       */
           try
           {
@@ -777,6 +788,9 @@ RexxString *RexxActivity::messageSubstitution(
           {
               stringVal = value->defaultName();
           }
+
+          // make sure we get restored to the same base activation level.
+          restoreActivationLevel(activityLevel);
                                        /* we're safe again                  */
           this->requestingString = false;
           this->stackcheck = true;     /* disable the checking              */
@@ -1544,10 +1558,9 @@ void RexxActivity::releaseAccess()
 /* Function:  Release exclusive access to the kernel                          */
 /******************************************************************************/
 {
-  ActivityManager::currentActivity = OREF_NULL;         /* no current activity               */
-  // reset the numeric settings
-  Numerics::setDefaultSettings();
-  MTXRL(kernel_semaphore);             /* release the kernel semaphore      */
+    ActivityManager::unlockKernel();
+    // reset the numeric settings
+    Numerics::setDefaultSettings();
 }
 
 void RexxActivity::requestAccess()
@@ -1556,16 +1569,12 @@ void RexxActivity::requestAccess()
 /******************************************************************************/
 {
                                        /* only one there?                   */
-    if (!ActivityManager::hasWaiters())
+    if (ActivityManager::lockKernelImmediate())
     {
-        // there's a good chance we'll get this
-        if (MTXRI(kernel_semaphore) == 0)
-        {
-            ActivityManager::currentActivity = this;          /* set new current activity          */
-            /* and new active settings           */
-            Numerics::setCurrentSettings(numericSettings);
-            return;                          /* get out if we have it             */
-        }
+        ActivityManager::currentActivity = this;          /* set new current activity          */
+        /* and new active settings           */
+        Numerics::setCurrentSettings(numericSettings);
+        return;                          /* get out if we have it             */
     }
     /* can't get it, go stand in line    */
     ActivityManager::addWaitingActivity(this, false);
@@ -2737,6 +2746,10 @@ int RexxActivity::messageSend(
 
   SysRegisterSignals(&exreg);          /* register our signal handlers      */
 
+  // save the actitivation level in case there's an error unwind for an unhandled
+  // exception;
+  size_t activityLevel = getActivationLevel();
+
   try
   {
                                        /* issue a straight message send     */
@@ -2747,6 +2760,9 @@ int RexxActivity::messageSend(
   {
       rc = this->error(startDepth);      /* do error cleanup                  */
   }
+
+  // make sure we get restored to the same base activation level.
+  restoreActivationLevel(activityLevel);
   // give uninit objects a chance to run
   memoryObject.runUninits();
   this->restoreNestedInfo(saveInfo);   /* now restore to previous nesting   */
@@ -2854,7 +2870,7 @@ RexxObject *RexxActivity::nativeRelease(
       activation = (RexxNativeActivation *)ActivityManager::currentActivity->current();
       result = activation->saveObject(result);
   }
-  ActivityManager::currentActivity->releaseAccess(); /* release the kernel lock           */
+  ActivityManager::returnActivity();   /* release the kernel lock           */
   return result;                       /* return the result object          */
 }
 
