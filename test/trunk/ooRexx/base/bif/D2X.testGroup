@@ -317,3 +317,40 @@ return testUnitList
 ::method 'test48'
     self~assertSame('subTest01','00014FBE105',d2x(SUBWORD('082264 352051461 219862623',2,1),copies('1',2)))
 
+-- Documentation examples - Actual verbage from the documentation is commented in each method
+::method 'testDocumentationExamples01'
+-- D2X(9)         ->    "9"
+    self~assertSame('subTest01',"9",d2x(9))
+
+::method 'testDocumentationExamples02'
+-- D2X(129)       ->    "81"
+    self~assertSame('subTest01',"81",d2x(129))
+
+::method 'testDocumentationExamples03'
+-- D2X(129,1)     ->    "1"
+    self~assertSame('subTest01',"1",d2x(129,1))
+
+::method 'testDocumentationExamples04'
+-- D2X(129,2)     ->    "81"
+    self~assertSame('subTest01',"81",d2x(129,2))
+
+::method 'testDocumentationExamples05'
+-- D2X(129,4)     ->    "0081"
+    self~assertSame('subTest01',"0081",d2x(129,4))
+
+::method 'testDocumentationExamples06'
+-- D2X(257,2)     ->    "01"
+    self~assertSame('subTest01',"01",d2x(257,2))
+
+::method 'testDocumentationExamples07'
+-- D2X(-127,2)    ->    "81"
+    self~assertSame('subTest01',"81",d2x(-127,2))
+
+::method 'testDocumentationExamples08'
+-- D2X(-127,4)    ->    "FF81"
+    self~assertSame('subTest01',"FF81",d2x(-127,4))
+
+::method 'testDocumentationExamples09'
+-- D2X(12,0)      ->    ""
+    self~assertSame('subTest01',"",d2x(12,0))
+
