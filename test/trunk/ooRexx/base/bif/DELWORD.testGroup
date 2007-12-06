@@ -194,7 +194,6 @@ return testUnitList
 
 ::method 'test19'
     self~assertSame('subTest01', 'asdf zxcv     ASDF ', delword('61736466207a786376000000000041534446205a584356'x, (3*3*3)/9, 2))
--- call ver delWord('61736466207a786376000000000041534446205a584356'x,(3*3*3)/9,2),'asdf zxcv     ASDF '; R0064:
 
 ::method 'test20'
     self~assertSame('subTest01','',delWord(nv,1,1))
@@ -310,4 +309,25 @@ return testUnitList
 
 ::method 'test45'
     self~assertSame('subTest01','John ',delWord(delWord('John R. Buckley',2,1),delWord('2 3',2,1),delWord('1 2 3',2,2)))
+
+-- Documentation examples - Actual verbage from the documentation is commented in each method
+::method 'testDocumentationExamples01'
+-- DELWORD("Now is the  time",2,2)  ->  "Now time"
+    self~assertSame('subTest01',"Now time",delWord("Now is the  time",2,2))
+
+::method 'testDocumentationExamples02'
+-- DELWORD("Now is the time ",3)    ->  "Now is "
+    self~assertSame('subTest01',"Now is ",delWord("Now is the time ",3))
+
+::method 'testDocumentationExamples03'
+-- DELWORD("Now is the  time",5)    ->  "Now is the  time"
+    self~assertSame('subTest01',"Now is the  time",delWord("Now is the  time",5))
+
+::method 'testDocumentationExamples04'
+-- DELWORD("Now is   the time",3,1) ->  "Now is   time"
+    self~assertSame('subTest01',"Now is   time",delWord("Now is   the time",3,1))
+
+::method 'testDocumentationExamples05'
+-- DELWORD("Now is the  time",2,2)  ->  "Now time"
+    self~assertSame('subTest01',"Now time",delWord("Now is the  time",2,2))
 
