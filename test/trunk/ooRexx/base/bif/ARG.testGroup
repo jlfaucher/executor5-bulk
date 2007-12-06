@@ -1,0 +1,339 @@
+#!/usr/bin/rexx
+/*
+   name:             String.testGroup
+   author:           W. David Ashley
+   date:             2007-12-06
+   version:          1.0.1
+
+-- line commented lines are ignored, when building the directory of infos from this header
+   changed:          2007-12-06, ---wda, initial creation
+
+   languageLevel:    6.02
+   purpose:          Test the ARG function
+   remark:           Initial test unit for demonstration purposes, needs to be completed.
+
+   license:          CPL 1.0 (Common Public License v1.0, see below)
+   link:
+
+   category1:        ooRexx
+   category2:        Base
+   category3:        BIF
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2005-2008 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+
+
+-------------------------------------------------------------------------------------------
+-- ===> adapt the "testGroupList" to your testCase classes; each element in the list is <===
+-- ===> an array object, the first element containing the testCase class object, the   <===
+-- ===> second element is a list of test method names which are regarded to be         <===
+-- ===> mandatory (if the list remains empty all test methods are mandatory)           <===
+
+   /* list of array objects, each containing the testGroup class object and an
+      optional list of mandatory test case methods name                       */
+
+mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
+testGroupList=.list~of( .array~of(.ARG.testGroup,  mandatoryTestMethods) )
+
+
+-------------------------------------------------------------------------------------------
+-- ===> the following code needs not to be individualized                              <===
+
+   -- read top comment, containing infos about this program
+arrLines=.array~new
+do i=1 to 150 until arrLines[i]="*/"
+   arrLines[i]=sourceline(i)
+end
+      -- supply information for the testClass(es) in this file; the class attribute
+      -- "TestCaseInfo" (a directory object, index points to a queue) will store
+      -- the parsed infos
+aTestGroupClass=testGroupList~at(testGroupList~first)[1] -- get first testClass
+
+   -- will parse the array lines and store result in class object
+call makeDirTestInfo aTestGroupClass, arrLines
+tmpDir=aTestGroupClass~TestCaseInfo
+parse source s   -- op_sys invocationType fullPathToThisFile
+tmpDir~setentry("test_Case-source", s)
+
+   -- now add this directory to other testCase classes, if any left
+do arr over testGroupList
+   if arr[1]=aTestGroupClass then iterate  -- already handled
+   arr[1]~TestCaseInfo=tmpDir             -- save info in class object
+end
+
+-- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
+-- and set it to .false; this way the independent local invocation of the tests is inhibited
+if .local~hasentry("bRunTestsLocally")=.false then
+   .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
+
+if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
+do
+   ts=.testSuite~new             -- create a testSuite
+   do arr over testGroupList
+      -- create a testSuite for the given test case class, use all its testmethods
+      ts~addTest( .testSuite~new(arr[1]))
+   end
+   -- testResult=.testSuite~new(testGroupClass)~run
+   testResult=ts~run       -- now run all the tests
+
+   call simpleDumpTestResults testResult
+end
+
+   /* return list of array objects containing test case classes and
+      optionally list of mandatory test methods                      */
+return testGroupList
+
+
+
+::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+
+::class "ARG.testGroup" subclass TestCase public
+
+::method "test_1"
+   Call arg0
+   return
+   arg0:
+   n = "ARG"()
+   self~assertSame("subTest1", "ARG"(), 0)
+   Return 0
+
+::method "test_2"
+   a1=1
+   call argn a1
+   return
+   argn:
+   self~assertSame("subTest2a", "ARG"(), arg(1))
+   DO i=2 to "ARG"()
+      self~assertSame("subTest2b-"i, "ARG"(i), 'a'||i)
+      END
+   DO i=i to 20;
+      self~assertSame("subTest2c-"i, "ARG"(i), '')
+      END
+   RETURN 0
+
+::method "test_3"
+   call argn '1'
+   return
+   argn:
+   self~assertSame("subTest3a", "ARG"(), arg(1))
+   DO i=2 to "ARG"()
+      self~assertSame("subTest3b-"i, "ARG"(i), 'a'||i)
+      END
+   DO i=i to 20;
+      self~assertSame("subTest3c-"i, "ARG"(i), '')
+      END
+   RETURN 0
+
+::method "test_4"
+   a2='a2'; a3='a3'; a4='a4'; a5 ='a5'
+   a6='a6'; a7='a7'; a8='a8'; a9='a9'
+   a1=9
+   call argn a1,a2,a3,a4,a5,a6,a7,a8,a9
+   return
+   argn:
+   self~assertSame("subTest4a", "ARG"(), arg(1))
+   DO i=2 to "ARG"()
+      self~assertSame("subTest4b-"i, "ARG"(i), 'a'||i)
+      END
+   DO i=i to 20;
+      self~assertSame("subTest4c-"i, "ARG"(i), '')
+      END
+   RETURN 0
+
+::method "test_5"
+   call argn '9','a2','a3','a4','a5','a6','a7','a8','a9'
+   return
+   argn:
+   self~assertSame("subTest5a", "ARG"(), arg(1))
+   DO i=2 to "ARG"()
+      self~assertSame("subTest5b-"i, "ARG"(i), 'a'||i)
+      END
+   DO i=i to 20;
+      self~assertSame("subTest5c-"i, "ARG"(i), '')
+      END
+   RETURN 0
+
+::method "test_6"
+   call argn '7','a'||'2','a'||'3','a'||'4','a'||'5','a'||'6','a'||'7'
+   return
+   argn:
+   self~assertSame("subTest6a", "ARG"(), arg(1))
+   DO i=2 to "ARG"()
+      self~assertSame("subTest6b-"i, "ARG"(i), 'a'||i)
+      END
+   DO i=i to 20;
+      self~assertSame("subTest6c-"i, "ARG"(i), '')
+      END
+   RETURN 0
+
+::method "test_7"
+   a2='a2'; a3='a3'; a4='a4'; a5 ='a5'
+   a6='a6'; a7='a7'; a8='a8'; a9='a9'
+   a1=9
+   call argm a1,,a3,,a5,,a7,,a9
+   return
+   argm:
+   self~assertSame("subTest7a", "ARG"(), arg(1))
+   DO i=2 to "ARG"()
+      IF i//2=0 THEN DO;
+         self~assertSame("subTest7b-"i, "ARG"(i), '')
+         END
+      ELSE DO;
+         self~assertSame("subTest7b-"i, "ARG"(i), 'a'||i)
+         END
+      END
+   DO i=i to 20;
+      self~assertSame("subTest7c-"i, "ARG"(i), '')
+      END
+   RETURN 0
+
+::method "test_8"
+   a2='a2'; a3='a3'; a4='a4'; a5 ='a5'
+   a6='a6'; a7='a7'; a8='a8'; a9='a9'
+   a1=9
+   call argm '9',,'a3',,'a5',,'a7',,'a9'
+   return
+   argm:
+   self~assertSame("subTest8a", "ARG"(), arg(1))
+   DO i=2 to "ARG"()
+      IF i//2=0 THEN DO;
+         self~assertSame("subTest8b-"i, "ARG"(i), '')
+         END
+      ELSE DO;
+         self~assertSame("subTest8b-"i, "ARG"(i), 'a'||i)
+         END
+      END
+   DO i=i to 20;
+      self~assertSame("subTest8c-"i, "ARG"(i), '')
+      END
+   RETURN 0
+
+::method "test_9"
+   a2='a2'; a3='a3'; a4='a4'; a5 ='a5'
+   a6='a6'; a7='a7'; a8='a8'; a9='a9'
+   a1=9
+   call argm '9',,'a'||'3',,'a'||'5',,'a'||'7',,'a'||'9'
+   return
+   argm:
+   self~assertSame("subTest9a", "ARG"(), arg(1))
+   DO i=2 to "ARG"()
+      IF i//2=0 THEN DO;
+         self~assertSame("subTest9b-"i, "ARG"(i), '')
+         END
+      ELSE DO;
+         self~assertSame("subTest9b-"i, "ARG"(i), 'a'||i)
+         END
+      END
+   DO i=i to 20;
+      self~assertSame("subTest9c-"i, "ARG"(i), '')
+      END
+   RETURN 0
+
+::method "test_10"
+   -- test the 'E' option
+   a2='a2'; a3='a3'; a4='a4'; a5 ='a5'
+   a6='a6'; a7='a7'; a8='a8'; a9='a9'
+   a1=9
+   call argm a1,,a3,,a5,,a7,,a9
+   return
+   argm:
+   self~assertSame("subTest10a", "ARG"(), arg(1))
+   DO i=2 to "ARG"()
+      IF i//2=0 THEN DO;
+         self~assertSame("subTest10b-"i, "ARG"(i, 'e'), 0)
+         END
+      ELSE DO;
+         self~assertSame("subTest10b-"i, "ARG"(i, 'e'), 1)
+         END
+      END
+   RETURN 0
+
+::method "test_11"
+   -- test the 'O' option
+   a2='a2'; a3='a3'; a4='a4'; a5 ='a5'
+   a6='a6'; a7='a7'; a8='a8'; a9='a9'
+   a1=9
+   call argm a1,,a3,,a5,,a7,,a9
+   return
+   argm:
+   self~assertSame("subTest11a", "ARG"(), arg(1))
+   DO i=2 to "ARG"()
+      IF i//2=0 THEN DO;
+         self~assertSame("subTest11b-"i, "ARG"(i, 'o'), 1)
+         END
+      ELSE DO;
+         self~assertSame("subTest11b-"i, "ARG"(i, 'o'), 0)
+         END
+      END
+   RETURN 0
+
+::method "test_12"
+   -- test the 'N' option
+   a2='a2'; a3='a3'; a4='a4'; a5 ='a5'
+   a6='a6'; a7='a7'; a8='a8'; a9='a9'
+   a1=9
+   call argm a1,,a3,,a5,,a7,,a9
+   return
+   argm:
+   self~assertSame("subTest12a", "ARG"(), arg(1))
+   DO i=2 to "ARG"()
+      IF i//2=0 THEN DO;
+         self~assertSame("subTest12b-"i, "ARG"(i, 'n'), '')
+         END
+      ELSE DO;
+         self~assertSame("subTest12b-"i, "ARG"(i, 'o'), 0)
+         END
+      END
+   RETURN 0
+
+::method "test_13"
+   -- test the 'A' option
+   a2='a2'; a3='a3'; a4='a4'; a5 ='a5'
+   a6='a6'; a7='a7'; a8='a8'; a9='a9'
+   a1=9
+   call argm a1,,a3,,a5,,a7,,a9
+   return
+   argm:
+   self~assertSame("subTest13a", "ARG"(), arg(1))
+   a1 = .array~of(a1,,a3,,a5,,a7,,a9)
+   a2 = arg(1, 'a')
+   do i = 1 to arg()
+      self~assertSame("subTest13b-"i, a1[i], a2[i])
+      end
+   RETURN 0
+
