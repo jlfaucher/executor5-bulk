@@ -339,3 +339,33 @@ return testGroupList
       end
    RETURN 0
 
+::method "test_docs"
+   -- test the rexref documentation examples
+  call name1               -- call procedure without arguments
+  call name2 'a', , 'b'    -- call procedure with arguments
+
+  exit
+
+  name1:
+    self~assertSame("subTestDocs1",  0    , arg()             )
+    self~assertSame("subTestDocs2", ""    , arg(1)            )
+    self~assertSame("subTestDocs3", ""    , arg(2)            )
+    self~assertSame("subTestDocs4", .false, arg(1, 'e')       )
+    self~assertSame("subTestDocs5", .true , arg(1, 'o')       )
+    self~assertSame("subTestDocs6", 0     , arg(1, 'a')~items )
+    return
+
+  name2:
+    self~assertSame("subTestDocs7",   3    , arg()            )
+    self~assertSame("subTestDocs8",  "a"   , arg(1)           )
+    self~assertSame("subTestDocs9",  ""    , arg(2)           )
+    self~assertSame("subTestDocs10", "b"   , arg(3)           )
+    self~assertSame("subTestDocs11", ""    , arg(4)           )
+    self~assertSame("subTestDocs12", .true , arg(1, 'e')      )
+    self~assertSame("subTestDocs13", .false, arg(2, 'e')      )
+    self~assertSame("subTestDocs14", .true , arg(3, 'e')      )
+    self~assertSame("subTestDocs15", .false, arg(1, 'o')      )
+    self~assertSame("subTestDocs16", .true , arg(2, 'o')      )
+    self~assertSame("subTestDocs17", .false, arg(3, 'o')      )
+    return
+
