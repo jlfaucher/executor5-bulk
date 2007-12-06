@@ -6,7 +6,7 @@
    name:             ooRexxUnit.cls
    author:           Rony G. Flatscher, Rick McGuire
    date:             2005-08-07
-   version:          1.0.5
+   version:          1.0.6
    changed1:         2005-08-07, ---rgf, moved assertion routines to a class "Assert", which
                                  serves as a superclass for TestCase: this is the junit-approach
                      2005-08-20, ---rgf, added license, assertCount, corrected some little bugs
@@ -151,8 +151,12 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
+-- Define the version number with: X.Y.Z  Where X is the ooRexxUnit.cls version,
+-- Y is the minimum ooRexx interpreter level required, and Z is the date the
+-- version was changed.
+.local~ooRexxUnit.version=106.320.20071205
+
 .local~chars.NonPrintable=xrange("00"x, "1F"x) || "FF"x  -- define non-printable chars
-.local~ooRexxUnit.version=103.20070530    -- define the version number
 
 parse version interpreterName languageLevel interpreterDate
 .local~ooRexxUnit.interpreterName=interpreterName
@@ -1228,6 +1232,7 @@ pp: procedure
 
    versionStr = .ooRexxUnit.interpreterName .ooRexxUnit.languageLevel .ooRexxUnit.interpreterDate
    say "Interpreter:" versionStr
+   say "ooRexxUnit: " .ooRexxUnit.version
    say
    say "Count of tests ran:            " aTestResult~runCount
    say "Count of successful assertions:" aTestResult~assertCount
@@ -1248,6 +1253,7 @@ pp: procedure
    -- the user.
    if (aTestResult~failureCount + aTestResult~errorCount) > 3 then do
      say "Interpreter:" versionStr
+     say "ooRexxUnit: " .ooRexxUnit.version
      say
      say "Count of tests ran:            " aTestResult~runCount
      say "Count of successful assertions:" aTestResult~assertCount
