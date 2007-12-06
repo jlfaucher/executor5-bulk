@@ -184,6 +184,10 @@ typedef builtin_func *pbuiltin;        /* pointer to a builtin function     */
 #define EXTERN extern                  /* turn into external definition     */
 #endif
 
+#ifndef EXTERNMEM
+#define EXTERNMEM extern               /* turn into external definition     */
+#endif
+
 /******************************************************************************/
 /* Primitive Method Type Definition Macros                                    */
 /******************************************************************************/
@@ -224,6 +228,9 @@ class RexxNumberStringClass;
 class RexxStringClass;
 class RexxMemory;
 
+// this one is special, and is truly global.
+EXTERNMEM RexxMemory  memoryObject;   /* memory object                     */
+
 // TODO:  make these into statics inside classes.
 
 EXTERN RexxClass  * TheArrayClass INITGLOBALPTR;     /* array class                       */
@@ -241,7 +248,6 @@ EXTERN RexxDirectory * TheFunctionsDirectory INITGLOBALPTR;
 EXTERN RexxIntegerClass  * TheIntegerClass INITGLOBALPTR;
 EXTERN RexxDirectory  * TheKernel INITGLOBALPTR;     /* kernel directory                  */
 EXTERN RexxListClass  * TheListClass INITGLOBALPTR;  /* list class                        */
-EXTERN RexxMemory  memoryObject;   /* memory object                     */
 EXTERN RexxClass  * TheMessageClass INITGLOBALPTR;   /* message class                     */
                                        /* method class                      */
 EXTERN RexxMethodClass  * TheMethodClass INITGLOBALPTR;

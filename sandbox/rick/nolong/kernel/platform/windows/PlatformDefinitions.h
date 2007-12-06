@@ -237,7 +237,7 @@ void SysRelinquish(void);              /* allow the system to run           */
 
 inline void waitHandle(HANDLE s)
 {
-   extern BOOL UseMessageLoop;
+   extern bool UseMessageLoop;
    if (UseMessageLoop)
    {
        do

@@ -97,10 +97,6 @@
 #include "APIServiceMessages.h"
 #include "APIServiceSystem.h"
 
-extern UCHAR first_char[];             /* character type table       */
-extern UCHAR lower_case_table[];       /* lower case table for Rexx  */
-extern UCHAR upper_case_table[];       /* upper case table for Rexx  */
-
 /*********************************************************************/
 /*                                                                   */
 /*  Registration types.                                              */

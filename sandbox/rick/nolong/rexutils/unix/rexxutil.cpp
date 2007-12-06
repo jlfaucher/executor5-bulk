@@ -5917,7 +5917,7 @@ int compare_desc_num_cols(const void *arg1, const void *arg2)
   } /* endif */
 }
 
-APIRET APIENTRY RexxStemSort(PCHAR stemname, INT order, INT type,
+APIRET APIENTRY RexxStemSort(const char *stemname, int order, int type,
     size_t start, size_t end, size_t firstcol, size_t lastcol);
 
 /*************************************************************************

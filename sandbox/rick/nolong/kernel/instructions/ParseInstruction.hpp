@@ -45,6 +45,7 @@
 #define Included_RexxInstructionParse
 
 #include "RexxInstruction.hpp"
+#include "ParseTrigger.hpp"
 
 #define parse_upper         0x01       /* doing a parse upper               */
 #define parse_lower         0x02       /* doing a parse lower               */

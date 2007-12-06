@@ -2219,8 +2219,7 @@ void *RexxNilObject::operator new(size_t size)
 
 #include "RexxNativeAPI.h"
 
-native0 (REXXOBJECT, OBJECT_NEW)
-
+REXXOBJECT REXXENTRY REXX_OBJECT_NEW(REXXOBJECT self)
 /******************************************************************************/
 /* Function:  External interface to the nativeact object method               */
 /******************************************************************************/

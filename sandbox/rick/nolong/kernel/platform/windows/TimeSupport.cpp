@@ -186,8 +186,8 @@ RexxMethod2(void, alarm_startTimer,
      return;
   }
                                        /* set the state variables           */
-  RexxVarSet("EVENTSEMHANDLE",RexxInteger((long)SemHandle));
-  RexxVarSet("TIMERSTARTED",RexxTrue);
+  ooRexxVarSet("EVENTSEMHANDLE", ooRexxInteger((long)SemHandle));
+  ooRexxVarSet("TIMERSTARTED", ooRexxTrue);
 
   while (numdays > 0) {                /* is it some future day?            */
 
@@ -215,17 +215,7 @@ RexxMethod2(void, alarm_startTimer,
 
 	EVPOST(SemHandle);
 
-#if 0
-                                       /* wait for semaphore to be posted   */
-    rc = WaitForSingleObject(SemHandle, ulTimeout);
-    if (rc !=  WAIT_OBJECT_0)
-    {                                   /* raise error                       */
-      send_exception(Error_System_service);
-      return;
-    }
-#endif
-                                       /* get the cancel state              */
-    cancelObj = RexxVarValue("CANCELED");
+    cancelObj = ooRexxVarValue("CANCELED");
     cancelVal = REXX_INTEGER_VALUE(cancelObj);
 
     if (cancelVal == 1) {              /* If alarm cancelled?               */

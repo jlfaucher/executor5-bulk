@@ -1863,7 +1863,7 @@ RexxString *RexxString::newRexx(RexxObject **init_args, size_t argCount)
 
 #define this ((RexxString *)self)
 
-native0 (size_t, STRING_LENGTH)
+size_t REXXENTRY REXX_STRING_LENGTH(REXXOBJECT self)
 /******************************************************************************/
 /* Function:  External interface to the object method                         */
 /******************************************************************************/
@@ -1875,7 +1875,7 @@ native0 (size_t, STRING_LENGTH)
   return this->getLength();
 }
 
-native0 (CSTRING, STRING_DATA)
+CSTRING REXXENTRY REXX_STRING_DATA(REXXOBJECT self)
 /******************************************************************************/
 /* Function:  External interface to the object method                         */
 /******************************************************************************/
@@ -1887,17 +1887,18 @@ native0 (CSTRING, STRING_DATA)
   return this->getStringData();
 }
 
-nativei1 (REXXOBJECT, STRING_NEWD, PDBL, number)
+
+REXXOBJECT REXXENTRY REXX_STRING_NEWD(double number)
 /******************************************************************************/
 /* Function:  External interface to the nativeact object method               */
 /******************************************************************************/
 {
   native_entry;                        /* synchronize access                */
                                        /* just forward and return           */
-  return_object(new_string(*number));
+  return_object(new_string(number));
 }
 
-nativei1 (REXXOBJECT, STRING_NEW_UPPER, CSTRING, string)
+REXXOBJECT REXXENTRY REXX_STRING_NEW_UPPER(CSTRING string)
 /******************************************************************************/
 /* Function:  External interface to the nativeact object method               */
 /******************************************************************************/
@@ -1907,7 +1908,7 @@ nativei1 (REXXOBJECT, STRING_NEW_UPPER, CSTRING, string)
   return_object(((RexxString *)new_string(string))->upper());
 }
 
-nativei2 (REXXOBJECT, STRING_NEW, CSTRING, string, size_t, length)
+REXXOBJECT REXXENTRY REXX_STRING_NEW(CSTRING string, size_t length)
 /******************************************************************************/
 /* Function:  External interface to the nativeact object method               */
 /******************************************************************************/
@@ -1917,7 +1918,7 @@ nativei2 (REXXOBJECT, STRING_NEW, CSTRING, string, size_t, length)
   return_object(new_string(string, length));
 }
 
-native3 (size_t, STRING_GET, size_t, start, char *, buffer, size_t, bufl)
+size_t REXXENTRY REXX_STRING_GET(REXXOBJECT self, size_t start, char * buffer, size_t bufl)
 /******************************************************************************/
 /* Function:  External interface to the object method                         */
 /******************************************************************************/

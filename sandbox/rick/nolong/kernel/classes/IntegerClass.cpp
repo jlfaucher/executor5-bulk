@@ -1103,7 +1103,7 @@ void RexxInteger::createClass()
 #include "RexxNativeAPI.h"
 #undef RexxInteger
 
-native0 (int,  INTEGER_VALUE)
+int REXXENTRY REXX_INTEGER_VALUE(REXXOBJECT self)
 /******************************************************************************/
 /* Function:  External interface to the object method                         */
 /******************************************************************************/
@@ -1115,8 +1115,7 @@ native0 (int,  INTEGER_VALUE)
   return ((RexxInteger *)self)->getValue();
 }
 
-nativei1 (REXXOBJECT, INTEGER_NEW,
-         int,  value)                  /* integer value                     */
+REXXOBJECT REXXENTRY REXX_INTEGER_NEW(int value)
 /******************************************************************************/
 /* Function:  External interface to the nativeact object method               */
 /******************************************************************************/

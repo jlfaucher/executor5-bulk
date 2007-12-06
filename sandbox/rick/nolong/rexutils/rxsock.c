@@ -122,7 +122,7 @@
 
 typedef struct
    {
-   PSZ                   pszName;
+   const char *                   pszName;
    RexxFunctionHandler  *pRxFunction;
    } RxSockFuncTableEntry;
 
@@ -249,13 +249,13 @@ void StripBlanks(
  * set a rexx variable
  *------------------------------------------------------------------*/
 void RxVarSet(
-   PSZ pszStem,
-   PSZ pszTail,
-   PSZ pszValue
+   const char * pszStem,
+   const char * pszTail,
+   const char * pszValue
    )
    {
    SHVBLOCK shv;
-   PSZ      pszVariable;
+   char *      pszVariable;
 
    if (!pszStem)
       return;
@@ -300,14 +300,14 @@ void RxVarSet(
 /*------------------------------------------------------------------
  * get a rexx variable - return value must be freed by caller
  *------------------------------------------------------------------*/
-PSZ RxVarGet(
-   PSZ pszStem,
-   PSZ pszTail
+char * RxVarGet(
+   const char * pszStem,
+   const char * pszTail
    )
    {
    SHVBLOCK shv;
-   PSZ      pszVariable;
-   PSZ      pszValue;
+   char *      pszVariable;
+   char *      pszValue;
 
    if (!pszStem)
       return NULL;
@@ -378,15 +378,15 @@ PSZ RxVarGet(
 /*-\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/-*/
 
 /*------------------------------------------------------------------
- * convert a rexx string to a ULONG
+ * convert a rexx string to a size_t
  *------------------------------------------------------------------*/
-ULONG rxs2ulong(
+size_t rxs2size_t(
    PRXSTRING  pRxStr,
    int       *rc
    )
    {
-   ULONG n;
-   PSZ   dummy;
+   size_t n;
+   char *   dummy;
 
    /*---------------------------------------------------------------
     * check for errors
@@ -401,22 +401,22 @@ ULONG rxs2ulong(
     * convert
     *---------------------------------------------------------------*/
    StripBlanks(pRxStr->strptr);
-   n   = (ULONG) strtoul(pRxStr->strptr,&dummy,10);
+   n   = (size_t) strtoul(pRxStr->strptr,&dummy,10);
    *rc = (0 == *dummy);
 
    return n;
    }
 
 /*------------------------------------------------------------------
- * convert a rexx string to a LONG
+ * convert a rexx string to an int
  *------------------------------------------------------------------*/
-LONG rxs2long(
+int rxs2int(
    PRXSTRING  pRxStr,
    int       *rc
    )
    {
-   LONG  n;
-   PSZ   dummy;
+   int   n;
+   char *   dummy;
 
 
    /*---------------------------------------------------------------
@@ -432,7 +432,7 @@ LONG rxs2long(
     * convert
     *---------------------------------------------------------------*/
    StripBlanks(pRxStr->strptr);
-   n   = (LONG) strtoul(pRxStr->strptr,&dummy,10);
+   n   = atoi(pRxStr->strptr);
    *rc = (0 == *dummy);
 
    return n;
@@ -459,8 +459,8 @@ void rxstem2intarray(
    int       **arr
    )
    {
-   PSZ   countStr;
-   PSZ   dummy;
+   char *   countStr;
+   char *   dummy;
    char  numBuff[10];
    char *numString;
    int   i;
@@ -561,13 +561,13 @@ void intarray2rxstem(
  * convert a stemmed variable to a sockaddr
  *------------------------------------------------------------------*/
 void stem2sockaddr(
-   PSZ          pszStem,
+   const char *          pszStem,
    sockaddr_in *pSockAddr
    )
    {
-   PSZ pszFamily = NULL;
-   PSZ pszPort   = NULL;
-   PSZ pszAddr   = NULL;
+   char * pszFamily = NULL;
+   char * pszPort   = NULL;
+   char * pszAddr   = NULL;
 
    if (!pSockAddr || !pszStem)
       return;
@@ -631,10 +631,10 @@ CleanUp:
  *------------------------------------------------------------------*/
 void sockaddr2stem(
    sockaddr_in *pSockAddr,
-   PSZ          pszStem
+   const char *          pszStem
    )
    {
-   UCHAR szBuffer[20];
+   char szBuffer[20];
 
    if (!pSockAddr || !pszStem)
       return;
@@ -642,23 +642,19 @@ void sockaddr2stem(
    /*---------------------------------------------------------------
     * set family
     *---------------------------------------------------------------*/
-   sprintf((PSZ)&szBuffer,"%hd", pSockAddr->sin_family);
-   RxVarSet(pszStem,"family",(PSZ)&szBuffer);
+   sprintf(szBuffer,"%hd", pSockAddr->sin_family);
+   RxVarSet(pszStem,"family",szBuffer);
 
    /*---------------------------------------------------------------
     * set port
     *---------------------------------------------------------------*/
-   sprintf((PSZ)&szBuffer,"%hu",htons(pSockAddr->sin_port));
-   RxVarSet(pszStem,"port",(PSZ)&szBuffer);
+   sprintf(szBuffer,"%hu",htons(pSockAddr->sin_port));
+   RxVarSet(pszStem,"port",szBuffer);
 
    /*---------------------------------------------------------------
     * set address
     *---------------------------------------------------------------*/
-#if defined(OPSYS_AIX) || defined(OPSYS_LINUX)
-   RxVarSet(pszStem,"addr",(PSZ)inet_ntoa(pSockAddr->sin_addr));
-#else
    RxVarSet(pszStem,"addr",inet_ntoa(pSockAddr->sin_addr));
-#endif
    }
 
 /*------------------------------------------------------------------
@@ -666,10 +662,10 @@ void sockaddr2stem(
  *------------------------------------------------------------------*/
 void hostent2stem(
    struct hostent *pHostEnt,
-   PSZ             pszStem
+   const char *             pszStem
    )
    {
-   UCHAR    szBuffer[20];
+   char    szBuffer[20];
    int      count;
    in_addr  addr;
 
@@ -680,7 +676,7 @@ void hostent2stem(
     * set family
     *---------------------------------------------------------------*/
 #if defined(OPSYS_AIX) || defined(OPSYS_LINUX)
-   RxVarSet(pszStem,"name",(PSZ)pHostEnt->h_name);
+   RxVarSet(pszStem,"name",pHostEnt->h_name);
 #else
    RxVarSet(pszStem,"name",pHostEnt->h_name);
 #endif
@@ -690,12 +686,12 @@ void hostent2stem(
     *---------------------------------------------------------------*/
    for (count=0; pHostEnt->h_aliases[count]; count++)
       {
-      sprintf((PSZ)&szBuffer,"alias.%d",count+1);
-      RxVarSet(pszStem,(PSZ)&szBuffer,pHostEnt->h_aliases[count]);
+      sprintf(szBuffer,"alias.%d",count+1);
+      RxVarSet(pszStem,szBuffer,pHostEnt->h_aliases[count]);
       }
 
-   sprintf((PSZ)&szBuffer,"%d",count);
-   RxVarSet(pszStem,"alias.0",(PSZ)&szBuffer);
+   sprintf(szBuffer,"%d",count);
+   RxVarSet(pszStem,"alias.0",szBuffer);
 
    /*---------------------------------------------------------------
     * set addrtype
@@ -705,9 +701,9 @@ void hostent2stem(
    /*---------------------------------------------------------------
     * set addr
     *---------------------------------------------------------------*/
-   addr.s_addr = (*(ULONG *)pHostEnt->h_addr);
+   addr.s_addr = (*(size_t *)pHostEnt->h_addr);
 #if defined(OPSYS_AIX) || defined(OPSYS_LINUX)
-   RxVarSet(pszStem,"addr",(PSZ)inet_ntoa(addr));
+   RxVarSet(pszStem,"addr",inet_ntoa(addr));
 #else
    RxVarSet(pszStem,"addr",inet_ntoa(addr));
 #endif
@@ -726,25 +722,25 @@ void hostent2stem(
     *---------------------------------------------------------------*/
    for (count=0; pHostEnt->h_addr_list[count]; count++)
       {
-      sprintf((PSZ)&szBuffer,"addr.%d",count+1);
-      addr.s_addr = (*(ULONG *)pHostEnt->h_addr_list[count]);
+      sprintf(szBuffer,"addr.%d",count+1);
+      addr.s_addr = (*(size_t *)pHostEnt->h_addr_list[count]);
 
 #if defined(OPSYS_AIX) || defined(OPSYS_LINUX)
-      RxVarSet(pszStem,(PSZ)&szBuffer, (PSZ)inet_ntoa(addr));
+      RxVarSet(pszStem,&szBuffer, inet_ntoa(addr));
 #else
       RxVarSet(pszStem,szBuffer, inet_ntoa(addr));
 #endif
       }
 
-   sprintf((PSZ)&szBuffer,"%d",count);
-   RxVarSet(pszStem,"addr.0",(PSZ)&szBuffer);
+   sprintf(szBuffer,"%d",count);
+   RxVarSet(pszStem,"addr.0",szBuffer);
    }
 
 /*------------------------------------------------------------------
  * convert a string sock option to an integer
  *------------------------------------------------------------------*/
 int rxs2SockOpt(
-   PSZ pszOptName
+   const char * pszOptName
    )
    {
    if (!pszOptName) return 0;
@@ -778,8 +774,8 @@ int rxs2SockOpt(
  *------------------------------------------------------------------*/
 void SetErrno(void)
    {
-   UCHAR szBuff[20];
-   PSZ   pszErrno = (PSZ)&szBuff;
+   char szBuff[20];
+   char *   pszErrno = szBuff;
    int   theErrno;
 
 #if defined(WIN32)
@@ -871,7 +867,7 @@ void SetErrno(void)
       case ENOTEMPTY       : pszErrno = "ENOTEMPTY";            break;
 #endif
       default:
-         sprintf((PSZ)&szBuff,"%d",theErrno);
+         sprintf(szBuff,"%d",theErrno);
       }
 
    RxVarSet("errno",NULL,pszErrno);
@@ -883,8 +879,8 @@ void SetErrno(void)
  *------------------------------------------------------------------*/
 void SetH_Errno(void)
    {
-   UCHAR szBuff[20];
-   PSZ   pszErrno = (PSZ)&szBuff;
+   char szBuff[20];
+   char *pszErrno = szBuff;
    int   theErrno;
 
    theErrno = 1541;
@@ -897,7 +893,7 @@ void SetH_Errno(void)
       case NO_ADDRESS      : pszErrno = "NO_ADDRESS";           break;
 
       default:
-         sprintf((PSZ)&szBuff,"%d",theErrno);
+         sprintf(szBuff,"%d",theErrno);
       }
 
    RxVarSet("h_errno",NULL,pszErrno);
@@ -911,16 +907,16 @@ static int Initialized = 0;
 /*------------------------------------------------------------------
  * Rexx external function gateway
  *------------------------------------------------------------------*/
-ULONG APIENTRY SockFunctionGateWay(
-   PUCHAR     name,
-   ULONG      argc,
+APIRET APIENTRY SockFunctionGateWay(
+   const char *     name,
+   size_t      argc,
    PRXSTRING  argv,
-   PSZ        qName,
+   const char *        qName,
    PRXSTRING  retStr
    )
    {
    int                          i;
-   ULONG                        ulRc;
+   size_t                       ulRc;
    RexxFunctionHandler         *pRxFunc;
 #ifdef WIN32
    WORD wVersionRequested;
@@ -950,7 +946,7 @@ ULONG APIENTRY SockFunctionGateWay(
     * get function
     *---------------------------------------------------------------*/
    for (pRxFunc=NULL, i=0; !pRxFunc && i<RxSockFuncTableSize; i++)
-      if (!stricmp((PSZ)name,RxSockFuncTable[i].pszName))
+      if (!stricmp(name,RxSockFuncTable[i].pszName))
          pRxFunc = RxSockFuncTable[i].pRxFunction;
 
    /*---------------------------------------------------------------
@@ -983,11 +979,11 @@ cleanUp:
 /*------------------------------------------------------------------
  *
  *------------------------------------------------------------------*/
-ULONG APIENTRY SockVersion(
-   PUCHAR     name,
-   ULONG      argc,
+APIRET APIENTRY SockVersion(
+   const char *     name,
+   size_t      argc,
    PRXSTRING  argv,
-   PSZ        qName,
+   const char *        qName,
    PRXSTRING  retStr
    )
    {
@@ -1000,11 +996,11 @@ ULONG APIENTRY SockVersion(
 /*-/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\-*/
 /*-\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/-*/
 #if defined(OPSYS_AIX) || defined(OPSYS_LINUX)
-ULONG APIENTRY SOCKLOADFUNCS         (
-   PUCHAR     name,
-   ULONG      argc,
+APIRET APIENTRY SOCKLOADFUNCS         (
+   const char *     name,
+   size_t      argc,
    PRXSTRING  argv,
-   PSZ        qName,
+   const char *        qName,
    PRXSTRING  retStr
    )
    {
@@ -1015,11 +1011,11 @@ ULONG APIENTRY SOCKLOADFUNCS         (
 /*------------------------------------------------------------------
  * load the function package
  *------------------------------------------------------------------*/
-ULONG APIENTRY SockLoadFuncs         (
-   PUCHAR     name,
-   ULONG      argc,
+APIRET APIENTRY SockLoadFuncs         (
+   const char *     name,
+   size_t      argc,
    PRXSTRING  argv,
-   PSZ        qName,
+   const char *        qName,
    PRXSTRING  retStr
    )
    {
@@ -1044,7 +1040,7 @@ ULONG APIENTRY SockLoadFuncs         (
       }
 
    for (i=0; i<RxSockFuncTableSize; i++)
-      RexxRegisterFunctionDll(RxSockFuncTable[i].pszName,
+      RexxRegisterFunctionDll(const_cast<char *)(RxSockFuncTable[i].pszName),
                               PROG_NAME,
                               "SockFunctionGateWay");
    return 0;
@@ -1056,11 +1052,11 @@ ULONG APIENTRY SockLoadFuncs         (
 /*------------------------------------------------------------------
  * drop the function package
  *------------------------------------------------------------------*/
-ULONG APIENTRY SockDropFuncs         (
-   PUCHAR     name,
-   ULONG      argc,
+APIRET APIENTRY SockDropFuncs         (
+   const char *     name,
+   size_t      argc,
    PRXSTRING  argv,
-   PSZ        qName,
+   const char *        qName,
    PRXSTRING  retStr
    )
    {
@@ -1074,7 +1070,7 @@ ULONG APIENTRY SockDropFuncs         (
    RexxDeregisterFunction("SockLoadFuncs");
 
    for (i=0; i<RxSockFuncTableSize; i++)
-      RexxDeregisterFunction(RxSockFuncTable[i].pszName);
+      RexxDeregisterFunction(const_cast<char *>(RxSockFuncTable[i].pszName));
 
 #ifdef WIN32
    WSACleanup();                       // deregister from Windows Sockets
@@ -1088,11 +1084,11 @@ ULONG APIENTRY SockDropFuncs         (
 /*------------------------------------------------------------------
  * cause a trap to unload the DLL
  *------------------------------------------------------------------*/
-ULONG APIENTRY SockDie               (
-   PUCHAR     name,
-   ULONG      argc,
+APIRET APIENTRY SockDie               (
+   const char *     name,
+   size_t      argc,
    PRXSTRING  argv,
-   PSZ        qName,
+   const char *        qName,
    PRXSTRING  retStr
    )
    {
@@ -1108,10 +1104,10 @@ ULONG APIENTRY SockDie               (
 /*------------------------------------------------------------------
  * load the function package
  *------------------------------------------------------------------*/
-USHORT SockLoadFuncs(RXFUNCBLOCK **FuncBlock )
+int SockLoadFuncs(RXFUNCBLOCK **FuncBlock )
 {
    *FuncBlock = RxSockFuncBlock;
-   return((USHORT) 0);
+   return 0;
 }
 #endif
 

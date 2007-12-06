@@ -132,7 +132,7 @@ RexxMethod2(REXXOBJECT, sysBeep, wholenumber_t, Frequency, wholenumber_t, Durati
     send_exception(Error_Incorrect_call);
 
   Beep(Frequency, Duration);           /* sound beep                 */
-  return RexxString("");               /* always returns a null      */
+  return ooRexxString("");             /* always returns a null      */
 }
 
 /*********************************************************************/
@@ -177,7 +177,6 @@ RexxMethod1(REXXOBJECT, sysDirectory, CSTRING, dir)
   int rc = 0;
 
   if (dir != NO_CSTRING)
-//     rc = SetCurrentDirectory(dir);
   {
       if ((strlen(dir) == 2) && (dir[1] == ':'))
          rc = _chdrive(toupper( dir[0] ) - 'A' + 1);
@@ -185,8 +184,7 @@ RexxMethod1(REXXOBJECT, sysDirectory, CSTRING, dir)
          rc = _chdir(dir);
   }
                                        /* Return the current directory    */
-//  return (rc == 0) || (GetCurrentDirectory(CCHMAXPATH,buffer) == NULL) ? RexxString("") : RexxString(buffer);
-  return (rc != 0) || (_getcwd(buffer,CCHMAXPATH) == NULL) ? RexxString("") : RexxString(buffer);
+  return (rc != 0) || (_getcwd(buffer,CCHMAXPATH) == NULL) ? ooRexxString("") : ooRexxString(buffer);
 }
 
 
@@ -220,7 +218,7 @@ RexxMethod2 (REXXOBJECT, sysFilespec, CSTRING, Option, CSTRING, Name)
         ScanPtr = (const char *)memchr(Name, ':', NameLength);
         if (ScanPtr)                   /* found one?                        */
                                        /* create result string              */
-          Retval = RexxStringL(Name, ScanPtr - Name + 1);
+          Retval = ooRexxStringL(Name, ScanPtr - Name + 1);
       }
       break;
 
@@ -243,7 +241,7 @@ RexxMethod2 (REXXOBJECT, sysFilespec, CSTRING, Option, CSTRING, Name)
               }
               if (PathEnd)             /* have backslashes?                 */
                                        /* extract the path                  */
-                Retval = RexxStringL(ScanPtr, PathEnd - ScanPtr + 1);
+                Retval = ooRexxStringL(ScanPtr, PathEnd - ScanPtr + 1);
             }
           }
           else {
@@ -259,7 +257,7 @@ RexxMethod2 (REXXOBJECT, sysFilespec, CSTRING, Option, CSTRING, Name)
               PathPtr = mempbrk(PathPtr, "\\/", EndPtr-PathPtr);
             }
                                        /* extract the path                  */
-            Retval = RexxStringL(Name, PathEnd - Name + 1); //retrofit by IH
+            Retval = ooRexxStringL(Name, PathEnd - Name + 1); //retrofit by IH
           }
         }
       }
@@ -284,7 +282,7 @@ RexxMethod2 (REXXOBJECT, sysFilespec, CSTRING, Option, CSTRING, Name)
             }
             if (PathEnd < EndPtr)      /* stuff to return?                  */
                                        /* extract the name                  */
-              Retval = RexxStringL(PathEnd, EndPtr - PathEnd);
+              Retval = ooRexxStringL(PathEnd, EndPtr - PathEnd);
           }
           else {
             PathPtr = ScanPtr + 1;     /* save start position               */
@@ -299,11 +297,11 @@ RexxMethod2 (REXXOBJECT, sysFilespec, CSTRING, Option, CSTRING, Name)
             }
             if (PathEnd < EndPtr)      /* stuff to return?                  */
                                        /* extract the name                  */
-              Retval = RexxStringL(PathEnd, EndPtr - PathEnd);
+              Retval = ooRexxStringL(PathEnd, EndPtr - PathEnd);
           }
         }
         else
-          Retval = RexxString(Name);   /* entire string is a name           */
+          Retval = ooRexxString(Name); /* entire string is a name           */
       }
       break;                           /* finished                          */
 

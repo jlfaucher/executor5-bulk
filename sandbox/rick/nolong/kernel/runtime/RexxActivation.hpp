@@ -52,6 +52,9 @@
 #include "RexxCode.hpp"
 #include "ActivityManager.hpp"
 
+
+class RexxInstructionCallBase;
+
 #define trace_debug         0x00000001 /* interactive trace mode flag       */
 #define trace_all           0x00000002 /* trace all instructions            */
 #define trace_results       0x00000004 /* trace all results                 */

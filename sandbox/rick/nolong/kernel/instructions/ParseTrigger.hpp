@@ -53,6 +53,9 @@
 #define TRIGGER_PLUS_LENGTH 7
 #define TRIGGER_MINUS_LENGTH 8
 
+class RexxTarget;
+class RexxVariableBase;
+
 class RexxTrigger : public RexxInternalObject {
  public:
   void        *operator new(size_t, int);

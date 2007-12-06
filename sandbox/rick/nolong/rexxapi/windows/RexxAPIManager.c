@@ -106,10 +106,6 @@ char **APInamedObjects = NormalNamedObjects;
 #include "APIServiceSystem.h"
 #include "SystemVersion.h"
 
-extern UCHAR first_char[];             /* character type table       */
-extern UCHAR lower_case_table[];       /* lower case table for Rexx  */
-extern UCHAR upper_case_table[];       /* upper case table for Rexx  */
-
 #define SZUPPER_BUF       256          /* uppercase buf size         */
 #define ALREADY_INIT      1            /* queue manager status       */
 #define NO              0

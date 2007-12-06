@@ -539,7 +539,7 @@ void CreateRexxCondData(
   pRexxCondData->rc = message_number((RexxString *)conditionobj->at(OREF_RC));
 
   message = (RexxString *)conditionobj->at(OREF_NAME_MESSAGE);
-  if ( (RexxObject*) message != RexxNil) {
+  if ( (RexxObject*) message != ooRexxNil) {
                                        /* get the length                    */
     length = message->getLength() + 1;
                                        /* allocate a new RXSTRING buffer    */

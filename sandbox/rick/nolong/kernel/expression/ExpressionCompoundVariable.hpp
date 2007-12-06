@@ -46,6 +46,8 @@
 
 #include "ExpressionBaseVariable.hpp"
 
+class RexxQueue;
+
 /* Prototypes of external subroutine */
 
 class RexxCompoundVariable : public RexxVariableBase {

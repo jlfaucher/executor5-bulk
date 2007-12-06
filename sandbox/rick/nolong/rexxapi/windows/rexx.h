@@ -566,10 +566,10 @@ typedef APIRET (APIENTRY *PFNREXXVARIABLEPOOL)(PSHVBLOCK);
 
 /* This typedef simplifies coding of an External Function.           */
 
-typedef APIRET APIENTRY RexxFunctionHandler(PUCHAR,
+typedef APIRET APIENTRY RexxFunctionHandler(const char *,
                                   size_t,
                                   PRXSTRING,
-                                  PSZ,
+                                  const char *,
                                   PRXSTRING);
 
 /***    RexxRegisterFunctionDll - Register a function in the AFT */

@@ -84,13 +84,13 @@ extern _declspec(dllexport) CRITICAL_SECTION nest; /* must complete nest count  
 /*                                                                   */
 /*********************************************************************/
 
-VOID  memupper(location, length)
-  PUCHAR   location;                   /* location to uppercase      */
-  ULONG    length;                     /* length to uppercase        */
+void  memupper(
+  char    *location,                   /* location to uppercase      */
+  size_t   length)                     /* length to uppercase        */
 {
   for (; length--; location++)         /* loop for entire string     */
                                        /* uppercase in place         */
-    *location = upper_case_table[*location];
+    *location = toupper(*location);
 }
 
 

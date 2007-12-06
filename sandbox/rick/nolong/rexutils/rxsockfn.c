@@ -119,11 +119,11 @@
 /*------------------------------------------------------------------
  * sock_errno()
  *------------------------------------------------------------------*/
-ULONG APIENTRY SockSock_Errno(
-   PUCHAR     name,
-   ULONG      argc,
+APIRET APIENTRY SockSock_Errno(
+   const char *     name,
+   size_t      argc,
    PRXSTRING  argv,
-   PSZ        qName,
+   const char * qName,
    PRXSTRING  retStr
    )
    {
@@ -138,11 +138,11 @@ ULONG APIENTRY SockSock_Errno(
 /*------------------------------------------------------------------
  * psock_errno()
  *------------------------------------------------------------------*/
-ULONG APIENTRY SockPSock_Errno(
-   PUCHAR     name,
-   ULONG      argc,
+APIRET APIENTRY SockPSock_Errno(
+   const char *     name,
+   size_t      argc,
    PRXSTRING  argv,
-   PSZ        qName,
+   const char * qName,
    PRXSTRING  retStr
    )
    {
@@ -161,11 +161,11 @@ ULONG APIENTRY SockPSock_Errno(
 /*------------------------------------------------------------------
  * accept()
  *------------------------------------------------------------------*/
-ULONG APIENTRY SockAccept(
-   PUCHAR     name,
-   ULONG      argc,
+APIRET APIENTRY SockAccept(
+   const char *     name,
+   size_t      argc,
    PRXSTRING  argv,
-   PSZ        qName,
+   const char * qName,
    PRXSTRING  retStr
    )
    {
@@ -189,7 +189,7 @@ ULONG APIENTRY SockAccept(
    /*---------------------------------------------------------------
     * get sock
     *---------------------------------------------------------------*/
-   sock = rxs2long(&(argv[0]),&rc);
+   sock = rxs2int(&(argv[0]),&rc);
    if (!rc)
       return 40;
 
@@ -219,11 +219,11 @@ ULONG APIENTRY SockAccept(
 /*------------------------------------------------------------------
  * bind()
  *------------------------------------------------------------------*/
-ULONG APIENTRY SockBind(
-   PUCHAR     name,
-   ULONG      argc,
+APIRET APIENTRY SockBind(
+   const char *     name,
+   size_t      argc,
    PRXSTRING  argv,
-   PSZ        qName,
+   const char * qName,
    PRXSTRING  retStr
    )
    {
@@ -246,7 +246,7 @@ ULONG APIENTRY SockBind(
    /*---------------------------------------------------------------
     * get sock
     *---------------------------------------------------------------*/
-   sock = rxs2long(&(argv[0]),&rc);
+   sock = rxs2int(&(argv[0]),&rc);
    if (!rc)
       return 40;
 
@@ -274,11 +274,11 @@ ULONG APIENTRY SockBind(
 /*------------------------------------------------------------------
  * close()
  *------------------------------------------------------------------*/
-ULONG APIENTRY SockClose(
-   PUCHAR     name,
-   ULONG      argc,
+APIRET APIENTRY SockClose(
+   const char *     name,
+   size_t      argc,
    PRXSTRING  argv,
-   PSZ        qName,
+   const char * qName,
    PRXSTRING  retStr
    )
    {
@@ -291,11 +291,11 @@ ULONG APIENTRY SockClose(
 /*------------------------------------------------------------------
  * connect()
  *------------------------------------------------------------------*/
-ULONG APIENTRY SockConnect(
-   PUCHAR     name,
-   ULONG      argc,
+APIRET APIENTRY SockConnect(
+   const char *     name,
+   size_t      argc,
    PRXSTRING  argv,
-   PSZ        qName,
+   const char * qName,
    PRXSTRING  retStr
    )
    {
@@ -318,7 +318,7 @@ ULONG APIENTRY SockConnect(
    /*---------------------------------------------------------------
     * get sock
     *---------------------------------------------------------------*/
-   sock = rxs2long(&(argv[0]),&rc);
+   sock = rxs2int(&(argv[0]),&rc);
    if (!rc)
       return 40;
 
@@ -346,11 +346,11 @@ ULONG APIENTRY SockConnect(
 /*------------------------------------------------------------------
  * gethostbyaddr()
  *------------------------------------------------------------------*/
-ULONG APIENTRY SockGetHostByAddr(
-   PUCHAR     name,
-   ULONG      argc,
+APIRET APIENTRY SockGetHostByAddr(
+   const char *     name,
+   size_t      argc,
    PRXSTRING  argv,
-   PSZ        qName,
+   const char * qName,
    PRXSTRING  retStr
    )
    {
@@ -384,7 +384,7 @@ ULONG APIENTRY SockGetHostByAddr(
    if (2 == argc)
       domain = AF_INET;
    else
-      domain = rxs2long(&(argv[2]),&rc);
+      domain = rxs2int(&(argv[2]),&rc);
 
    /*---------------------------------------------------------------
     * call function
@@ -409,11 +409,11 @@ ULONG APIENTRY SockGetHostByAddr(
 /*------------------------------------------------------------------
  *  gethostbyname()
  *------------------------------------------------------------------*/
-ULONG APIENTRY SockGetHostByName(
-   PUCHAR     name,
-   ULONG      argc,
+APIRET APIENTRY SockGetHostByName(
+   const char *     name,
+   size_t      argc,
    PRXSTRING  argv,
-   PSZ        qName,
+   const char * qName,
    PRXSTRING  retStr
    )
    {
@@ -462,11 +462,11 @@ ULONG APIENTRY SockGetHostByName(
 /*------------------------------------------------------------------
  *  gethostid()
  *------------------------------------------------------------------*/
-ULONG APIENTRY SockGetHostId(
-   PUCHAR     name,
-   ULONG      argc,
+APIRET APIENTRY SockGetHostId(
+   const char *     name,
+   size_t      argc,
    PRXSTRING  argv,
-   PSZ        qName,
+   const char * qName,
    PRXSTRING  retStr
    )
    {
@@ -536,11 +536,11 @@ ULONG APIENTRY SockGetHostId(
 /*------------------------------------------------------------------
  * getpeername()
  *------------------------------------------------------------------*/
-ULONG APIENTRY SockGetPeerName(
-   PUCHAR     name,
-   ULONG      argc,
+APIRET APIENTRY SockGetPeerName(
+   const char *     name,
+   size_t      argc,
    PRXSTRING  argv,
-   PSZ        qName,
+   const char * qName,
    PRXSTRING  retStr
    )
    {
@@ -564,7 +564,7 @@ ULONG APIENTRY SockGetPeerName(
    /*---------------------------------------------------------------
     * get sock
     *---------------------------------------------------------------*/
-   sock = rxs2long(&(argv[0]),&rc);
+   sock = rxs2int(&(argv[0]),&rc);
    if (!rc)
       return 40;
 
@@ -593,11 +593,11 @@ ULONG APIENTRY SockGetPeerName(
 /*------------------------------------------------------------------
  *  getsockname()
  *------------------------------------------------------------------*/
-ULONG APIENTRY SockGetSockName(
-   PUCHAR     name,
-   ULONG      argc,
+APIRET APIENTRY SockGetSockName(
+   const char *     name,
+   size_t      argc,
    PRXSTRING  argv,
-   PSZ        qName,
+   const char * qName,
    PRXSTRING  retStr
    )
    {
@@ -621,7 +621,7 @@ ULONG APIENTRY SockGetSockName(
    /*---------------------------------------------------------------
     * get sock
     *---------------------------------------------------------------*/
-   sock = rxs2long(&(argv[0]),&rc);
+   sock = rxs2int(&(argv[0]),&rc);
    if (!rc)
       return 40;
 
@@ -650,11 +650,11 @@ ULONG APIENTRY SockGetSockName(
 /*------------------------------------------------------------------
  *  getsockopt()
  *------------------------------------------------------------------*/
-ULONG APIENTRY SockGetSockOpt(
-   PUCHAR     name,
-   ULONG      argc,
+APIRET APIENTRY SockGetSockOpt(
+   const char *     name,
+   size_t      argc,
    PRXSTRING  argv,
-   PSZ        qName,
+   const char * qName,
    PRXSTRING  retStr
    )
    {
@@ -685,7 +685,7 @@ ULONG APIENTRY SockGetSockOpt(
    /*---------------------------------------------------------------
     * get sock
     *---------------------------------------------------------------*/
-   sock = rxs2long(&(argv[0]),&rc);
+   sock = rxs2int(&(argv[0]),&rc);
    if (!rc)
       return 40;
 
@@ -792,11 +792,11 @@ ULONG APIENTRY SockGetSockOpt(
 /*------------------------------------------------------------------
  *  ioctl()
  *------------------------------------------------------------------*/
-ULONG APIENTRY SockIoctl(
-   PUCHAR     name,
-   ULONG      argc,
+APIRET APIENTRY SockIoctl(
+   const char *     name,
+   size_t      argc,
    PRXSTRING  argv,
-   PSZ        qName,
+   const char * qName,
    PRXSTRING  retStr
    )
    {
@@ -824,7 +824,7 @@ ULONG APIENTRY SockIoctl(
    /*---------------------------------------------------------------
     * get sock
     *---------------------------------------------------------------*/
-   sock = rxs2long(&(argv[0]),&rc);
+   sock = rxs2int(&(argv[0]),&rc);
    if (!rc)
       return 40;
 
@@ -842,7 +842,7 @@ ULONG APIENTRY SockIoctl(
    if      (!stricmp(argv[1].strptr,"FIONBIO"))
       {
       cmd      = FIONBIO;
-      dataBuff = rxs2long(&(argv[2]),&rc);
+      dataBuff = rxs2int(&(argv[2]),&rc);
       data     = &dataBuff;
       len      = sizeof(int);
       }
@@ -900,11 +900,11 @@ ULONG APIENTRY SockIoctl(
 /*------------------------------------------------------------------
  *  listen()
  *------------------------------------------------------------------*/
-ULONG APIENTRY SockListen(
-   PUCHAR     name,
-   ULONG      argc,
+APIRET APIENTRY SockListen(
+   const char *     name,
+   size_t      argc,
    PRXSTRING  argv,
-   PSZ        qName,
+   const char * qName,
    PRXSTRING  retStr
    )
    {
@@ -927,14 +927,14 @@ ULONG APIENTRY SockListen(
    /*---------------------------------------------------------------
     * get sock
     *---------------------------------------------------------------*/
-   sock = rxs2long(&(argv[0]),&rc);
+   sock = rxs2int(&(argv[0]),&rc);
    if (!rc)
       return 40;
 
    /*---------------------------------------------------------------
     * get addr
     *---------------------------------------------------------------*/
-   backlog = rxs2long(&(argv[1]),&rc);
+   backlog = rxs2int(&(argv[1]),&rc);
    if (!rc)
       return 40;
 
@@ -957,11 +957,11 @@ ULONG APIENTRY SockListen(
 /*------------------------------------------------------------------
  *  recv()
  *------------------------------------------------------------------*/
-ULONG APIENTRY SockRecv(
-   PUCHAR     name,
-   ULONG      argc,
+APIRET APIENTRY SockRecv(
+   const char *     name,
+   size_t      argc,
    PRXSTRING  argv,
-   PSZ        qName,
+   const char * qName,
    PRXSTRING  retStr
    )
    {
@@ -990,7 +990,7 @@ ULONG APIENTRY SockRecv(
    /*---------------------------------------------------------------
     * get sock
     *---------------------------------------------------------------*/
-   sock = rxs2long(&(argv[0]),&chk);
+   sock = rxs2int(&(argv[0]),&chk);
    if (!chk)
       return 40;
 
@@ -1002,7 +1002,7 @@ ULONG APIENTRY SockRecv(
    /*---------------------------------------------------------------
     * get data length
     *---------------------------------------------------------------*/
-   dataLen = rxs2long(&(argv[2]),&chk);
+   dataLen = rxs2int(&(argv[2]),&chk);
    if (!chk)
       return 40;
 
@@ -1071,11 +1071,11 @@ ULONG APIENTRY SockRecv(
 /*------------------------------------------------------------------
  *  recvfrom()
  *------------------------------------------------------------------*/
-ULONG APIENTRY SockRecvFrom(
-   PUCHAR     name,
-   ULONG      argc,
+APIRET APIENTRY SockRecvFrom(
+   const char *     name,
+   size_t      argc,
    PRXSTRING  argv,
-   PSZ        qName,
+   const char * qName,
    PRXSTRING  retStr
    )
    {
@@ -1108,7 +1108,7 @@ ULONG APIENTRY SockRecvFrom(
    /*---------------------------------------------------------------
     * get sock
     *---------------------------------------------------------------*/
-   sock = rxs2long(&(argv[0]),&chk);
+   sock = rxs2int(&(argv[0]),&chk);
    if (!chk)
       return 40;
 
@@ -1120,7 +1120,7 @@ ULONG APIENTRY SockRecvFrom(
    /*---------------------------------------------------------------
     * get data length
     *---------------------------------------------------------------*/
-   dataLen = rxs2long(&(argv[2]),&chk);
+   dataLen = rxs2int(&(argv[2]),&chk);
    if (!chk)
       return 40;
 
@@ -1203,11 +1203,11 @@ ULONG APIENTRY SockRecvFrom(
 /*------------------------------------------------------------------
  *  select()
  *------------------------------------------------------------------*/
-ULONG APIENTRY SockSelect(
-   PUCHAR     name,
-   ULONG      argc,
+APIRET APIENTRY SockSelect(
+   const char *     name,
+   size_t      argc,
    PRXSTRING  argv,
-   PSZ        qName,
+   const char * qName,
    PRXSTRING  retStr
    )
    {
@@ -1392,11 +1392,11 @@ ULONG APIENTRY SockSelect(
 /*------------------------------------------------------------------
  * send()
  *------------------------------------------------------------------*/
-ULONG APIENTRY SockSend(
-   PUCHAR     name,
-   ULONG      argc,
+APIRET APIENTRY SockSend(
+   const char *     name,
+   size_t      argc,
    PRXSTRING  argv,
-   PSZ        qName,
+   const char * qName,
    PRXSTRING  retStr
    )
    {
@@ -1423,7 +1423,7 @@ ULONG APIENTRY SockSend(
    /*---------------------------------------------------------------
     * get sock
     *---------------------------------------------------------------*/
-   sock = rxs2long(&(argv[0]),&chk);
+   sock = rxs2int(&(argv[0]),&chk);
    if (!chk)
       return 40;
 
@@ -1476,11 +1476,11 @@ ULONG APIENTRY SockSend(
 /*------------------------------------------------------------------
  * sendto()
  *------------------------------------------------------------------*/
-ULONG APIENTRY SockSendTo(
-   PUCHAR     name,
-   ULONG      argc,
+APIRET APIENTRY SockSendTo(
+   const char *     name,
+   size_t      argc,
    PRXSTRING  argv,
-   PSZ        qName,
+   const char * qName,
    PRXSTRING  retStr
    )
    {
@@ -1509,7 +1509,7 @@ ULONG APIENTRY SockSendTo(
    /*---------------------------------------------------------------
     * get sock
     *---------------------------------------------------------------*/
-   sock = rxs2long(&(argv[0]),&chk);
+   sock = rxs2int(&(argv[0]),&chk);
    if (!chk)
       return 40;
 
@@ -1571,11 +1571,11 @@ ULONG APIENTRY SockSendTo(
 /*------------------------------------------------------------------
  * setsockopt()
  *------------------------------------------------------------------*/
-ULONG APIENTRY SockSetSockOpt(
-   PUCHAR     name,
-   ULONG      argc,
+APIRET APIENTRY SockSetSockOpt(
+   const char *     name,
+   size_t      argc,
    PRXSTRING  argv,
-   PSZ        qName,
+   const char * qName,
    PRXSTRING  retStr
    )
    {
@@ -1606,7 +1606,7 @@ ULONG APIENTRY SockSetSockOpt(
    /*---------------------------------------------------------------
     * get sock
     *---------------------------------------------------------------*/
-   sock = rxs2long(&(argv[0]),&rc);
+   sock = rxs2int(&(argv[0]),&rc);
    if (!rc)
       return 40;
 
@@ -1639,7 +1639,7 @@ ULONG APIENTRY SockSetSockOpt(
          ptr = &intVal;
          len = sizeof(int);
 
-         intVal = (int) rxs2long(&(argv[3]),&rc);
+         intVal = (int) rxs2int(&(argv[3]),&rc);
          break;
 
       case SO_LINGER:
@@ -1657,7 +1657,7 @@ ULONG APIENTRY SockSetSockOpt(
          ptr = &longVal;
          len = sizeof(long);
 
-         longVal = rxs2long(&(argv[3]),&rc);
+         longVal = rxs2int(&(argv[3]),&rc);
          break;
 
       case SO_ERROR:
@@ -1686,11 +1686,11 @@ ULONG APIENTRY SockSetSockOpt(
 /*------------------------------------------------------------------
  * shutdown()
  *------------------------------------------------------------------*/
-ULONG APIENTRY SockShutDown(
-   PUCHAR     name,
-   ULONG      argc,
+APIRET APIENTRY SockShutDown(
+   const char *     name,
+   size_t      argc,
    PRXSTRING  argv,
-   PSZ        qName,
+   const char * qName,
    PRXSTRING  retStr
    )
    {
@@ -1713,14 +1713,14 @@ ULONG APIENTRY SockShutDown(
    /*---------------------------------------------------------------
     * get sock
     *---------------------------------------------------------------*/
-   sock = rxs2long(&(argv[0]),&rc);
+   sock = rxs2int(&(argv[0]),&rc);
    if (!rc)
       return 40;
 
    /*---------------------------------------------------------------
     * get how
     *---------------------------------------------------------------*/
-   how = rxs2long(&(argv[1]),&rc);
+   how = rxs2int(&(argv[1]),&rc);
    if (!rc)
       return 40;
 
@@ -1743,11 +1743,11 @@ ULONG APIENTRY SockShutDown(
 /*------------------------------------------------------------------
  *  sock_init()
  *------------------------------------------------------------------*/
-ULONG APIENTRY SockInit(
-   PUCHAR     name,
-   ULONG      argc,
+APIRET APIENTRY SockInit(
+   const char *     name,
+   size_t      argc,
    PRXSTRING  argv,
-   PSZ        qName,
+   const char * qName,
    PRXSTRING  retStr
    )
    {
@@ -1782,11 +1782,11 @@ ULONG APIENTRY SockInit(
 /*------------------------------------------------------------------
  * socket()
  *------------------------------------------------------------------*/
-ULONG APIENTRY SockSocket(
-   PUCHAR     name,
-   ULONG      argc,
+APIRET APIENTRY SockSocket(
+   const char *     name,
+   size_t      argc,
    PRXSTRING  argv,
-   PSZ        qName,
+   const char * qName,
    PRXSTRING  retStr
    )
    {
@@ -1866,11 +1866,11 @@ ULONG APIENTRY SockSocket(
 /*------------------------------------------------------------------
  * soclose()
  *------------------------------------------------------------------*/
-ULONG APIENTRY SockSoClose(
-   PUCHAR     name,
-   ULONG      argc,
+APIRET APIENTRY SockSoClose(
+   const char *     name,
+   size_t      argc,
    PRXSTRING  argv,
-   PSZ        qName,
+   const char * qName,
    PRXSTRING  retStr
    )
    {
@@ -1892,7 +1892,7 @@ ULONG APIENTRY SockSoClose(
    /*---------------------------------------------------------------
     * get sock
     *---------------------------------------------------------------*/
-   sock = rxs2long(&(argv[0]),&rc);
+   sock = rxs2int(&(argv[0]),&rc);
    if (!rc)
       return 40;
 

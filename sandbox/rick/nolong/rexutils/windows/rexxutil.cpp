@@ -194,7 +194,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <conio.h>
-#include "APIUtil.h"
 #include <math.h>
 #include <limits.h>
 #include "wintypes.h"
@@ -493,6 +492,28 @@ static   P_GDFSE pGetDiskFreeSpaceEx = NULL;
 /****************  REXXUTIL Supporting Functions  ********************/
 /****************  REXXUTIL Supporting Functions  ********************/
 /*********************************************************************/
+
+/*********************************************************************/
+/*                                                                   */
+/*   Subroutine Name:   memupper                                     */
+/*                                                                   */
+/*   Descriptive Name:  uppercase a memory location                  */
+/*                                                                   */
+/*   Entry Point:       memupper                                     */
+/*                                                                   */
+/*   Input:             memory to upper case                         */
+/*                      length of memory location                    */
+/*                                                                   */
+/*********************************************************************/
+
+void  memupper(
+  char    *location,                   /* location to uppercase      */
+  size_t   length)                     /* length to uppercase        */
+{
+  for (; length--; location++)         /* loop for entire string     */
+                                       /* uppercase in place         */
+    *location = toupper(*location);
+}
 
 bool ReadNextBuffer( GetFileData *filedata );
 
@@ -1588,8 +1609,8 @@ LONG APIENTRY SysCurPos(
   PRXSTRING retstr )                   /* Return RXSTRING            */
 {
 
-  LONG   inrow;                        /* Row to change to           */
-  LONG   incol;                        /* Col to change to           */
+  int    inrow;                        /* Row to change to           */
+  int    incol;                        /* Col to change to           */
   COORD NewHome;                       /* Position to move cursor    */
   CONSOLE_SCREEN_BUFFER_INFO csbiInfo; /* Console information        */
   HANDLE hStdout;                      /* Handle to Standard Out     */
@@ -2042,7 +2063,7 @@ LONG APIENTRY SysFileSearch(
   bool        sensitive = false;       /* Set true for case-sens     */
                                        /* search                     */
   RXSTEMDATA  ldp;                     /* stem data                  */
-  PUCHAR      buffer_pointer;          /* current buffer pointer     */
+  char       *buffer_pointer;          /* current buffer pointer     */
   GetFileData filedata;                /* file read information      */
 
   BUILDRXSTRING(retstr, NO_UTIL_ERROR);/* pass back result           */
@@ -2175,7 +2196,7 @@ LONG APIENTRY SysFileTree(
   CHAR        buff2[MAX];              /* buffer2 ...alloc new mem...*/
   CHAR       *FileSpec = buff1;        /* File spec to look for      */
   CHAR       *path = buff2;            /* path to search along       */
-  PUCHAR      optptr;                  /* option scan pointer        */
+  const char *optptr;                  /* option scan pointer        */
   ULONG       options;                 /* Mask of options            */
   ULONG       y;                       /* Temp counter (II)          */
   INT         smask[5];                /* Source attribute mask      */
@@ -2604,7 +2625,7 @@ LONG APIENTRY SysIni(
       WildCard == true) {
     lSize = 0x0000ffffL;
                                        /* Allocate a large buffer    */
-    if (!(Val = GlobalAlloc(GPTR, lSize))) {
+    if (!(Val = (char *)GlobalAlloc(GPTR, lSize))) {
       BUILDRXSTRING(retstr, ERROR_NOMEM);
       return VALID_ROUTINE;
     }
@@ -2628,7 +2649,7 @@ LONG APIENTRY SysIni(
     }
     else if (WildCard == false) {
       if (lSize > buffersize)
-        if (!(retstr->strptr = GlobalAlloc(GMEM_FIXED, lSize))) { /* use GlobalAlloc */
+        if (!(retstr->strptr = (PCH)GlobalAlloc(GMEM_FIXED, lSize))) { /* use GlobalAlloc */
           if (GlobalFlags(Val) != GMEM_INVALID_HANDLE) GlobalFree(Val);  /* release buffer */
           BUILDRXSTRING(retstr, ERROR_NOMEM);
           return VALID_ROUTINE;
@@ -2841,7 +2862,7 @@ LONG APIENTRY SysGetErrortext(
     retstr->strptr[0] = 0x00;
   else {                               /* succeeded                  */
     if (strlen(errmsg)>=retstr->strlength)
-      retstr->strptr = GlobalAlloc(GMEM_ZEROINIT | GMEM_FIXED, strlen(errmsg+1));
+      retstr->strptr = (PCH)GlobalAlloc(GMEM_ZEROINIT | GMEM_FIXED, strlen(errmsg+1));
     strcpy(retstr->strptr,errmsg);
     LocalFree(errmsg);
   }
@@ -3057,9 +3078,9 @@ LONG APIENTRY SysSearchPath(
   PSZ       queuename,                 /* Current queue              */
   PRXSTRING retstr )                   /* Return RXSTRING            */
 {
-  UCHAR    szFullPath[_MAX_PATH];      /* returned file name         */
-  UCHAR    szCurDir[MAX_ENVVAR + _MAX_PATH]; /* current directory    */
-  UCHAR    szEnvStr[MAX_ENVVAR];
+  char     szFullPath[_MAX_PATH];      /* returned file name         */
+  char     szCurDir[MAX_ENVVAR + _MAX_PATH]; /* current directory    */
+  char     szEnvStr[MAX_ENVVAR];
   PSZ      opts;                       /* option string              */
 
   LPTSTR pszOnlyFileName;              /* parm for searchpath        */
@@ -3140,7 +3161,7 @@ LONG APIENTRY SysSleep(
 
   LONG secs;                           /* Time to sleep in secs      */
   MSG msg;
-  bool UseMsgLoop;                     /* for VAC++                  */
+  BOOL UseMsgLoop;                     /* for VAC++                  */
 
   LONG milliseconds;
   LONG secs_buf;
@@ -3198,7 +3219,7 @@ LONG APIENTRY SysSleep(
 //    return INVALID_ROUTINE;            /* raise error if bad         */
 
   /* for VAC++ begin*/
-  UseMsgLoop = RexxSetProcessMessages(true); /* retrieve current setting */
+  UseMsgLoop = RexxSetProcessMessages(TRUE); /* retrieve current setting */
   RexxSetProcessMessages(UseMsgLoop);  /* set back settings          */
 
   if (UseMsgLoop)
@@ -3307,12 +3328,12 @@ LONG APIENTRY SysTextScreenRead(
   PRXSTRING retstr )                   /* Return RXSTRING            */
 {
 
-  LONG  row;                           /* Row from which to start    */
-  LONG  col;                           /* Column from which to start */
-  LONG  len;                           /* nunber of chars to be read */
-  LONG  lPos,lPosOffSet;               /* positioning                */
+  int   row;                           /* Row from which to start    */
+  int   col;                           /* Column from which to start */
+  int   len;                           /* nunber of chars to be read */
+  int   lPos,lPosOffSet;               /* positioning                */
                                        /* (132x50)                   */
-  LONG lBufferLen = 16000;             /* default: 200x80 characters */
+  int  lBufferLen = 16000;             /* default: 200x80 characters */
 
   COORD coordLine;                     /* coordinates of where to    */
                                        /* read characters from       */
@@ -3346,7 +3367,7 @@ LONG APIENTRY SysTextScreenRead(
 
   if (len > (LONG)retstr->strlength) {
                                        /* allocate a new one         */
-    if (!(temp_strptr = GlobalAlloc(GMEM_FIXED , len))) { /* use GlobalAlloc */
+    if (!(temp_strptr = (PCH)GlobalAlloc(GMEM_FIXED , len))) { /* use GlobalAlloc */
       BUILDRXSTRING(retstr, ERROR_NOMEM);
       return VALID_ROUTINE        ;
     }
@@ -3441,8 +3462,8 @@ LONG APIENTRY RxWinExec(
   PRXSTRING retstr )                   /* Return RXSTRING            */
 {
 
-  ULONG       CmdShow;                 /* show window style flags    */
-  INT         index;                   /* table index                */
+  int         CmdShow;                 /* show window style flags    */
+  int         index;                   /* table index                */
   ULONG       pid;                     /* PID or error return code   */
   ULONG       length;                  /* length of option           */
   STARTUPINFO si;
@@ -3506,7 +3527,7 @@ ULONG  show_flags[] =                  /* show window styles        */
   ZeroMemory(&si, sizeof(si));
   si.cb = sizeof(si);
   si.dwFlags = STARTF_USESHOWWINDOW;
-  si.wShowWindow = CmdShow;
+  si.wShowWindow = (WORD)CmdShow;
 
   if ( CreateProcess(NULL, (LPSTR)args[0].strptr, NULL, NULL, FALSE, 0, NULL,
                      NULL, &si, &procInfo ) ) {
@@ -3817,7 +3838,7 @@ LONG APIENTRY SysFileSystemType(
   PSZ       queuename,                 /* Current queue              */
   PRXSTRING retstr )                   /* Return RXSTRING            */
 {
-  UCHAR *      drive;
+  char *      drive;
   CHAR chDriveLetter[4];
   UINT errorMode;
 
@@ -3888,7 +3909,7 @@ LONG APIENTRY SysVolumeLabel(
   PSZ       queuename,                 /* Current queue              */
   PRXSTRING retstr )                   /* Return RXSTRING            */
 {
-  UCHAR *      drive;
+  char  *      drive;
   CHAR chDriveLetter[4];
 
                                        /* validate arguments         */
@@ -4033,7 +4054,7 @@ LONG APIENTRY SysReleaseMutexSem(
   if (numargs != 1)                    /* Only one argument accepted */
     return INVALID_ROUTINE;            /* raise error condition      */
                                        /* get a binary handle        */
-  if (!string2ulong(args[0].strptr, (PULONG)&handle))
+  if (!string2ulong(args[0].strptr, (size_t *)&handle))
     return INVALID_ROUTINE;            /* raise error if bad         */
   if (!ReleaseMutex(handle))
      RETVAL(GetLastError())
@@ -4063,7 +4084,7 @@ LONG APIENTRY SysCloseMutexSem(
   if (numargs != 1)                    /* Only one argument accepted */
     return INVALID_ROUTINE;            /* raise error condition      */
                                        /* get a binary handle        */
-  if (!string2ulong(args[0].strptr, (PULONG)&handle))
+  if (!string2ulong(args[0].strptr, (size_t *)&handle))
     return INVALID_ROUTINE;            /* raise error if bad         */
   if (!CloseHandle(handle))
      RETVAL(GetLastError())
@@ -4090,7 +4111,7 @@ LONG APIENTRY SysRequestMutexSem(
 {
   HANDLE    handle;                    /* mutex handle               */
   APIRET    rc;                        /* creation return code       */
-  LONG      timeout;                   /* timeout value              */
+  int       timeout;                   /* timeout value              */
 
   if (numargs < 1 ||                   /* too few, or                */
       numargs > 2 ||                   /* too many, or               */
@@ -4103,7 +4124,7 @@ LONG APIENTRY SysRequestMutexSem(
       return INVALID_ROUTINE;          /* raise error if bad         */
   }
                                        /* get a binary handle        */
-  if (!string2ulong(args[0].strptr, (PULONG)&handle))
+  if (!string2ulong(args[0].strptr, (size_t *)&handle))
     return INVALID_ROUTINE;            /* raise error if bad         */
                                        /* request the semaphore      */
   rc = WaitForSingleObject(handle, timeout);
@@ -4219,7 +4240,7 @@ LONG APIENTRY SysPostEventSem(
   if (numargs != 1)                    /* Only one argument accepted */
     return INVALID_ROUTINE;            /* raise error condition      */
                                        /* get a binary handle        */
-  if (!string2ulong(args[0].strptr, (PULONG)&handle))
+  if (!string2ulong(args[0].strptr, (size_t *)&handle))
     return INVALID_ROUTINE;            /* raise error if bad         */
   if (!SetEvent(handle))
      RETVAL(GetLastError())
@@ -4249,7 +4270,7 @@ LONG APIENTRY SysResetEventSem(
   if (numargs != 1)                    /* Only one argument accepted */
     return INVALID_ROUTINE;            /* raise error condition      */
                                        /* get a binary handle        */
-  if (!string2ulong(args[0].strptr, (PULONG)&handle))
+  if (!string2ulong(args[0].strptr, (size_t *)&handle))
     return INVALID_ROUTINE;            /* raise error if bad         */
   if (!ResetEvent(handle))
      RETVAL(GetLastError())
@@ -4280,7 +4301,7 @@ LONG APIENTRY SysPulseEventSem(
   if (numargs != 1)                    /* Only one argument accepted */
     return INVALID_ROUTINE;            /* raise error condition      */
                                        /* get a binary handle        */
-  if (!string2ulong(args[0].strptr, (PULONG)&handle))
+  if (!string2ulong(args[0].strptr, (size_t *)&handle))
     return INVALID_ROUTINE;            /* raise error if bad         */
   if (!PulseEvent(handle))
      RETVAL(GetLastError())
@@ -4311,7 +4332,7 @@ LONG APIENTRY SysCloseEventSem(
   if (numargs != 1)                    /* Only one argument accepted */
     return INVALID_ROUTINE;            /* raise error condition      */
                                        /* get a binary handle        */
-  if (!string2ulong(args[0].strptr, (PULONG)&handle))
+  if (!string2ulong(args[0].strptr, (size_t *)&handle))
     return INVALID_ROUTINE;            /* raise error if bad         */
   if (!CloseHandle(handle))
      RETVAL(GetLastError())
@@ -4338,7 +4359,7 @@ LONG APIENTRY SysWaitEventSem(
 {
   HANDLE    handle;                    /* mutex handle               */
   APIRET    rc;                        /* creation return code       */
-  LONG      timeout;                   /* timeout value              */
+  int       timeout;                   /* timeout value              */
 
   if (numargs < 1 ||                   /* too few, or                */
       numargs > 2 ||                   /* too many, or               */
@@ -4351,7 +4372,7 @@ LONG APIENTRY SysWaitEventSem(
       return INVALID_ROUTINE;          /* raise error if bad         */
   }
                                        /* get a binary handle        */
-  if (!string2ulong(args[0].strptr, (PULONG)&handle))
+  if (!string2ulong(args[0].strptr, (size_t *)&handle))
     return INVALID_ROUTINE;            /* raise error if bad         */
                                        /* request the semaphore      */
   rc = WaitForSingleObject(handle, timeout);
@@ -4382,8 +4403,8 @@ LONG APIENTRY SysSetPriority(
   PSZ       queuename,                 /* Current queue              */
   PRXSTRING retstr )                   /* Return RXSTRING            */
 {
-  LONG      class;                     /* priority class             */
-  LONG      level;                     /* priority level             */
+  int       pclass;                    /* priority class             */
+  int       level;                     /* priority level             */
   APIRET    rc;                        /* creation return code       */
   HANDLE    process;
   HANDLE    thread;
@@ -4396,11 +4417,11 @@ LONG APIENTRY SysSetPriority(
       !RXVALIDSTRING(args[0]))         /* first is omitted           */
     return INVALID_ROUTINE;            /* raise error condition      */
 
-  if (string2long(args[0].strptr, &class))
+  if (string2long(args[0].strptr, &pclass))
   {
-    if (class < 0 || class > 3)
+    if (pclass < 0 || pclass > 3)
         return INVALID_ROUTINE;        /* raise error condition      */
-    switch (class) {
+    switch (pclass) {
        case 0: iclass = IDLE_PRIORITY_CLASS;
                break;
        case 1: iclass = NORMAL_PRIORITY_CLASS;
@@ -4575,12 +4596,12 @@ LONG APIENTRY SysShutDownSystem(
   PSZ       queuename,                 /* Current queue              */
   PRXSTRING retstr )                   /* Return RXSTRING            */
 {
-  UCHAR * machine = NULL;
-  UCHAR * message = NULL;
-  ULONG  timeout= 0;
+  char  * machine = NULL;
+  char  * message = NULL;
+  size_t timeout= 0;
   LONG  rc = 0;
-  bool forceClose = false;
-  bool reboot = false;
+  size_t forceClose = false;
+  size_t reboot = false;
 
   if (numargs>5)                       /* arguments specified?       */
     return INVALID_ROUTINE;            /* raise the error            */
@@ -4661,7 +4682,7 @@ LONG APIENTRY SysWaitNamedPipe(
   PSZ       queuename,                 /* Current queue              */
   PRXSTRING retstr )                   /* Return RXSTRING            */
 {
-  LONG        timeout;                 /* timeout value              */
+  int         timeout;                 /* timeout value              */
 
   if (numargs < 1 ||                   /* wrong number of arguments? */
       numargs > 2 ||
@@ -4713,7 +4734,7 @@ LONG  ValidateMath(
   LONG      numargs,                   /* Number of arguments.       */
   RXSTRING  args[],                    /* Function arguments.        */
   double   *x,                         /* input number               */
-  PULONG    precision )                /* returned precision         */
+  size_t   *precision )                /* returned precision         */
 {
   LONG      rc;                        /* validation code            */
 
@@ -4750,7 +4771,7 @@ LONG  ValidateTrig(
   double    angle;                     /* working angle              */
   double    nsi;                       /* convertion factor          */
   double    nco;                       /* convertion factor          */
-  ULONG     precision;                 /* returned precision         */
+  size_t    precision;                 /* returned precision         */
   double    result;                    /* result                     */
 
   rc = VALID_ROUTINE;                  /* set default completion     */
@@ -4872,7 +4893,7 @@ LONG  ValidateArcTrig(
   double    angle;                     /* working angle              */
   double    nsi;                       /* convertion factor          */
   double    nco;                       /* convertion factor          */
-  ULONG     precision;                 /* returned precision         */
+  size_t    precision;                 /* returned precision         */
   double    x;                         /* input number               */
 
   rc = VALID_ROUTINE;                  /* set default completion     */
@@ -4950,7 +4971,7 @@ LONG  APIENTRY SysSqrt(                /* Square root function.      */
   PRXSTRING retstr )                   /* Return RXSTRING            */
 {
   double    x;                         /* input number               */
-  ULONG     precision;                 /* precision used             */
+  size_t    precision;                 /* precision used             */
   LONG      rc;                        /* function return code       */
 
                                        /* validate the inputs        */
@@ -4970,7 +4991,7 @@ LONG  APIENTRY SysExp(                 /* Exponential function.      */
   PRXSTRING retstr )                   /* Return RXSTRING            */
 {
   double    x;                         /* input number               */
-  ULONG     precision;                 /* precision used             */
+  size_t    precision;                 /* precision used             */
   LONG      rc;                        /* validation return code     */
 
                                        /* validate the inputs        */
@@ -4990,7 +5011,7 @@ LONG  APIENTRY SysLog(                 /* Logarithm function.        */
   PRXSTRING retstr )                   /* Return RXSTRING            */
 {
   double    x;                         /* input number               */
-  ULONG     precision;                 /* precision used             */
+  size_t    precision;                 /* precision used             */
   LONG      rc;                        /* validation return code     */
 
                                        /* validate the inputs        */
@@ -5010,7 +5031,7 @@ LONG  APIENTRY SysLog10(               /* Log base 10 function.      */
   PRXSTRING retstr )                   /* Return RXSTRING            */
 {
   double    x;                         /* input number               */
-  ULONG     precision;                 /* precision used             */
+  size_t    precision;                 /* precision used             */
   LONG      rc;                        /* validation return code     */
 
                                        /* validate the inputs        */
@@ -5030,7 +5051,7 @@ LONG  APIENTRY SysSinH(                /* Hyperbolic sine function.  */
   PRXSTRING retstr )                   /* Return RXSTRING            */
 {
   double    x;                         /* input number               */
-  ULONG     precision;                 /* precision used             */
+  size_t    precision;                 /* precision used             */
   LONG      rc;                        /* validation return code     */
 
                                        /* validate the inputs        */
@@ -5050,7 +5071,7 @@ LONG  APIENTRY SysCosH(                /* Hyperbolic cosine funct.   */
   PRXSTRING retstr )                   /* Return RXSTRING            */
 {
   double    x;                         /* input number               */
-  ULONG     precision;                 /* precision used             */
+  size_t    precision;                 /* precision used             */
   LONG      rc;                        /* validation return code     */
 
                                        /* validate the inputs        */
@@ -5070,7 +5091,7 @@ LONG  APIENTRY SysTanH(                /* Hyperbolic tangent funct.  */
   PRXSTRING retstr )                   /* Return RXSTRING            */
 {
   double    x;                         /* input number               */
-  ULONG     precision;                 /* precision used             */
+  size_t    precision;                 /* precision used             */
   LONG      rc;                        /* validation return code     */
 
                                        /* validate the inputs        */
@@ -5104,7 +5125,7 @@ LONG  APIENTRY SysPower(               /* Power function.           */
 {
   double    x;                         /* input number               */
   double    y;                         /* second input number        */
-  ULONG     precision;                 /* precision used             */
+  size_t    precision;                 /* precision used             */
   LONG      rc;                        /* validation code            */
 
   rc = VALID_ROUTINE;                  /* set default completion     */
@@ -5212,7 +5233,7 @@ LONG  APIENTRY SysPi(                  /* Pi function                */
   PSZ       queuename,                 /* Current queue              */
   PRXSTRING retstr )                   /* Return RXSTRING            */
 {
-  ULONG     precision;                 /* required precision         */
+  size_t    precision;                 /* required precision         */
 
   precision = DEFAULT_PRECISION;       /* set default precision      */
   if (numargs > 1 ||                   /* too many arguments?        */
@@ -5362,7 +5383,7 @@ LONG APIENTRY SysDumpVariables(
         if (buffer_size - offset < new_size) {
           buffer_size = new_size + offset;
         }
-        buffer = realloc(buffer,buffer_size);
+        buffer = (char *)realloc(buffer,buffer_size);
         current = buffer + offset;
         end = buffer + buffer_size;
       }
@@ -5422,7 +5443,7 @@ LONG APIENTRY SysSetFileDateTime(
   PSZ       queuename,                 /* Current queue              */
   PRXSTRING retstr )                   /* Return RXSTRING            */
 {
-  bool      fOk = true;
+  BOOL      fOk = TRUE;
   HANDLE    setFile = NULL;
   FILETIME  sFileTime;
   FILETIME  sLocalFileTime;
@@ -5511,7 +5532,7 @@ LONG APIENTRY SysGetFileDateTime(
   PSZ       queuename,                 /* Current queue              */
   PRXSTRING retstr )                   /* Return RXSTRING            */
 {
-  bool      fOk = true;
+  BOOL      fOk = TRUE;
   HANDLE    setFile = NULL;
   FILETIME  sFileTime;
   FILETIME  sLocalFileTime;
@@ -5583,7 +5604,8 @@ LONG APIENTRY SysGetFileDateTime(
     return VALID_ROUTINE;
 }
 
-APIRET APIENTRY RexxStemSort(PCHAR stemname, INT order, INT type,
+
+APIRET APIENTRY RexxStemSort(const char *stemname, int order, int type,
     size_t start, size_t end, size_t firstcol, size_t lastcol);
 
 /*************************************************************************
@@ -6498,7 +6520,7 @@ LONG APIENTRY SysFromUniCode(
   ULONG iBytesNeeded;
   DWORD dwFlags = 0;
   char  *strDefaultChar = NULL;
-  bool  bUsedDefaultChar = false;
+  BOOL  bUsedDefaultChar = FALSE;
   UINT  len, codePage;
   char* str = NULL;
   char* strptr = NULL;
@@ -6574,7 +6596,7 @@ LONG APIENTRY SysFromUniCode(
   }
 
   /* Allocate space for the string, to allow double zero byte termination */
-  if (!(strptr = GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT, args[0].strlength + 4)))
+  if (!(strptr = (char *)GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT, args[0].strlength + 4)))
     return INVALID_ROUTINE;
   memcpy ( (void*)strptr, (void*)args[0].strptr, (size_t)args[0].strlength ) ;
 
@@ -6591,7 +6613,7 @@ LONG APIENTRY SysFromUniCode(
   if (iBytesNeeded == 0) RETVAL(GetLastError())  // call to function fails
 
   // hard error, stop
-  if (!(str = GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT, iBytesNeeded + 4)))
+  if (!(str = (char *)GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT, iBytesNeeded + 4)))
   {
     GlobalFree(strptr);          // free allocated string
     return INVALID_ROUTINE;
@@ -6821,7 +6843,7 @@ LONG APIENTRY SysToUniCode(
   ulDataLen = (ulWCharsNeeded)*2;
 
   // hard error, stop
-  if (!(lpwstr = GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT, ulDataLen+4)))
+  if (!(lpwstr = (LPWSTR)GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT, ulDataLen+4)))
     return INVALID_ROUTINE;
 
 
@@ -6866,7 +6888,7 @@ LONG APIENTRY SysWinGetPrinters(
 {
   DWORD realSize = 0;
   DWORD entries = 0;
-  bool  fSuccess = false;
+  BOOL  fSuccess = FALSE;
   char  szBuffer[256];
   PRINTER_INFO_2 *pResult;
   DWORD currentSize = 10*sizeof(PRINTER_INFO_2)*sizeof(char);
@@ -6883,7 +6905,7 @@ LONG APIENTRY SysWinGetPrinters(
     return INVALID_ROUTINE;
 
   while (fSuccess == false) {
-    fSuccess = EnumPrinters(PRINTER_ENUM_LOCAL|PRINTER_ENUM_CONNECTIONS, NULL, 2, pArray, currentSize, &realSize, &entries);
+    fSuccess = EnumPrinters(PRINTER_ENUM_LOCAL|PRINTER_ENUM_CONNECTIONS, NULL, 2, (LPBYTE)pArray, currentSize, &realSize, &entries);
     if (currentSize < realSize) {
       currentSize = realSize;
       realSize = 0;

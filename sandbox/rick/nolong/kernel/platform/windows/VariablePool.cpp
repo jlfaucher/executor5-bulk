@@ -65,10 +65,8 @@
 #include "RexxNativeAPI.h"                  /* Get C-method declares, etc.    */
 #include SYSREXXSAA
 
-extern "C" {
-   APIRET APIENTRY RexxStemSort(char *stemname, int order, int type,
-       size_t start, size_t end, size_t firstcol, size_t lastcol);
-}
+APIRET APIENTRY RexxStemSort(const char *stemname, int order, int type,
+    size_t start, size_t end, size_t firstcol, size_t lastcol);
 
 #define IS_EQUAL(s,l)  (s->strCompare(l))
 
@@ -87,7 +85,7 @@ extern "C" {
 /* Output:                                                                    */
 /*   true if the sort succeeded, false for any parameter errors.              */
 /******************************************************************************/
-APIRET REXXENTRY RexxStemSort(char *stemname, int order, int type,
+APIRET REXXENTRY RexxStemSort(const char *stemname, int order, int type,
     size_t start, size_t end, size_t firstcol, size_t lastcol)
 {
     if (!RexxQuery())                         /* Are we up?                     */

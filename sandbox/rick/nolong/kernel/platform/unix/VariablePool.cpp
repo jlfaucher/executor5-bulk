@@ -74,7 +74,7 @@
 #include <stdlib.h>
 
 extern "C" {
-   APIRET APIENTRY RexxStemSort(char *stemname, int order, int type,
+   APIRET APIENTRY RexxStemSort(const char *stemname, int order, int type,
        size_t start, size_t end, size_t firstcol, size_t lastcol);
 }
 
@@ -95,7 +95,7 @@ extern "C" {
 /* Output:                                                                    */
 /*   true if the sort succeeded, false for any parameter errors.              */
 /******************************************************************************/
-int REXXENTRY RexxStemSort(char *stemname, int order, int type,
+APIRET REXXENTRY RexxStemSort(const char *stemname, int order, int type,
     size_t start, size_t end, size_t firstcol, size_t lastcol)
 {
     if (!RexxQuery())                         /* Are we up?                     */

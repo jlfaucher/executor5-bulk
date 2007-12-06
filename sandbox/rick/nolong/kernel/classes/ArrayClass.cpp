@@ -2470,7 +2470,7 @@ RexxObject  *RexxArray::of(RexxObject **args, size_t argCount)
 
 #define this ((RexxArray *)self)
 
-native1 (bool, ARRAY_HASINDEX, size_t, index)
+bool REXXENTRY REXX_ARRAY_HASINDEX(REXXOBJECT self, size_t index)
 /******************************************************************************/
 /* Function:  External interface to the object method                         */
 /******************************************************************************/
@@ -2485,7 +2485,7 @@ native1 (bool, ARRAY_HASINDEX, size_t, index)
 }
 
 
-native0 (size_t, ARRAY_SIZE)
+size_t REXXENTRY REXX_ARRAY_SIZE(REXXOBJECT self)
 /******************************************************************************/
 /* Function:  External interface to the nativeact object method               */
 /******************************************************************************/
@@ -2497,7 +2497,7 @@ native0 (size_t, ARRAY_SIZE)
   return this->size();                 /* forward the method                */
 }
 
-native1 (REXXOBJECT, ARRAY_AT, size_t, pos)
+REXXOBJECT REXXENTRY REXX_ARRAY_AT(REXXOBJECT self, size_t pos)
 /******************************************************************************/
 /* Function:  External interface to the nativeact object method               */
 /******************************************************************************/
@@ -2508,7 +2508,7 @@ native1 (REXXOBJECT, ARRAY_AT, size_t, pos)
 }
 
 
-native2 (void, ARRAY_PUT, REXXOBJECT, object, size_t, pos)
+void REXXENTRY REXX_ARRAY_PUT(REXXOBJECT self, REXXOBJECT object, size_t pos)
 /******************************************************************************/
 /* Function:  External interface to the nativeact object method               */
 /******************************************************************************/
@@ -2518,8 +2518,8 @@ native2 (void, ARRAY_PUT, REXXOBJECT, object, size_t, pos)
   return_void;                         /* and return nothing                */
 }
 
-nativei1 (REXXOBJECT, ARRAY_NEW,
-         size_t, size)                 /* size to allocate                  */
+
+REXXOBJECT REXXENTRY REXX_ARRAY_NEW(size_t size)
 /******************************************************************************/
 /* Function:  External interface to the nativeact object method               */
 /******************************************************************************/
@@ -2529,8 +2529,7 @@ nativei1 (REXXOBJECT, ARRAY_NEW,
   return_object(new_array(size));
 }
 
-nativei1 (REXXOBJECT, ARRAY_NEW1,
-         REXXOBJECT, object1)          /* object to include                 */
+REXXOBJECT REXXENTRY REXX_ARRAY_NEW1(REXXOBJECT object1)
 /******************************************************************************/
 /* Function:  External interface to the nativeact object method               */
 /******************************************************************************/
@@ -2540,9 +2539,7 @@ nativei1 (REXXOBJECT, ARRAY_NEW1,
   return_object(new_array((RexxObject *)object1));
 }
 
-nativei2 (REXXOBJECT, ARRAY_NEW2,
-         REXXOBJECT, object1,          /* object to include                 */
-         REXXOBJECT, object2)          /* second object to include          */
+REXXOBJECT REXXENTRY REXX_ARRAY_NEW2(REXXOBJECT object1, REXXOBJECT object2)
 /******************************************************************************/
 /* Function:  External interface to the nativeact object method               */
 /******************************************************************************/

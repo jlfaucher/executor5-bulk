@@ -81,7 +81,7 @@ inline STREAM_INFO * get_verified_stream_info(STREAM_INFO * StreamBuffer) {
     return StreamBuffer; }
 
 
-#define temp_buffer(length) (char *)buffer_address(RexxBuffer(length))
+#define temp_buffer(length) (char *)buffer_address(ooRexxBuffer(length))
 #define get_buffer(length)  allocate_stream_buffer(stream_info, length)
 
 #define errcode Error_Incorrect_call
@@ -211,11 +211,11 @@ char *allocate_stream_buffer(
     return stream_info->bufferAddress; /* return the existing one           */
   if (length < default_buffer_size)    /* smaller than the minimum?         */
     length = default_buffer_size;      /* get the larger one                */
-  buffer = RexxBuffer(length);         /* get a buffer                      */
+  buffer = ooRexxBuffer(length);       /* get a buffer                      */
                                        /* save the start address            */
   stream_info->bufferAddress = buffer_address(buffer);
   stream_info->bufferLength = length;  /* and the length                    */
-  RexxVarSet(c_stream_buffer, buffer); /* associate with this instance      */
+  ooRexxVarSet(c_stream_buffer, buffer);/* associate with this instance      */
   return stream_info->bufferAddress;   /* return the starting address       */
 }
 
@@ -326,7 +326,7 @@ void stream_error(
     clearerr(stream_info->stream_file);/* clear any errors                  */
   } /* endif */                        /* change for defect 31, CHM         */
                                        /* raise this as a notready condition*/
-  RexxRaiseCondition("NOTREADY", RexxString(stream_info->name_parameter), self, result);
+  ooRexxRaiseCondition("NOTREADY", ooRexxString(stream_info->name_parameter), self, result);
 }
 
 void stream_eof(
@@ -341,7 +341,7 @@ void stream_eof(
                                        /* place this in an eof state        */
   stream_info->state = stream_eof_state;
                                        /* raise this as a notready condition*/
-  RexxRaiseCondition("NOTREADY", RexxString(stream_info->name_parameter), self, result);
+  ooRexxRaiseCondition("NOTREADY", ooRexxString(stream_info->name_parameter), self, result);
 }
 
 void stream_check_eof(
@@ -622,7 +622,7 @@ TTS *ttsp;
    if (NULL == open_stream_by_handle(fdopen_type)) {
      sprintf(work, "ERROR:%d", errno); /* format the error return           */
                                        /* go raise a notready condition     */
-     stream_error(self, stream_info, errno, RexxString(work));
+     stream_error(self, stream_info, errno, ooRexxString(work));
    }
                                              /* if nobuffer requested set it in the stream block */
    if (i_nobuffer)
@@ -743,7 +743,7 @@ void implicit_open(
        if (result == NULLOBJECT) {     /* no result given?                  */
                                        /* format the error return           */
          sprintf(work, "ERROR:%d", errno);
-         result = RexxString(work);    /* go raise a notready condition     */
+         result = ooRexxString(work);  /* go raise a notready condition     */
        }
                                        /* go raise a notready condition     */
        stream_error(self, stream_info, errno, result);
@@ -939,7 +939,7 @@ REXXOBJECT read_stream_line(           /* read a line from an I/O stream    */
      stream_eof(self, stream_info, OREF_NULLSTRING);
    else {
                                        /* create a result string            */
-     string = RexxStringL(buffer, result);
+     string = ooRexxStringL(buffer, result);
      if (update_position)              /* need to move read position?       */
                                        /* update the read position          */
        stream_info->char_read_position += result;
@@ -1016,7 +1016,7 @@ void complete_line(
                                        /*  keep the write out the info      */
     if (write_stream_line(stream_info, buffer, write_length) != 0)
                                        /* raise this as a notready condition*/
-      RexxRaiseCondition("NOTREADY", RexxString(stream_info->name_parameter), self, IntegerOne);
+      ooRexxRaiseCondition("NOTREADY", ooRexxString(stream_info->name_parameter), self, IntegerOne);
   }
 }
 
@@ -1057,7 +1057,7 @@ void set_char_read_position(
       send_exception(Error_Incorrect_method_stream_type);
     if (position < 1)                  /* too small?                        */
                                        /* report an error also              */
-      send_exception1(Error_Incorrect_method_positive, RexxArray2(IntegerOne, RexxInteger(position)));
+      send_exception1(Error_Incorrect_method_positive, ooRexxArray2(IntegerOne, ooRexxInteger(position)));
                                        /* make sure we're within the bounds */
     if (stream_size(stream_info) >= position) {
                                        /* try to move to the new position   */
@@ -1089,7 +1089,7 @@ void set_line_read_position(
       send_exception(Error_Incorrect_method_stream_type);
     if (position < 1)                  /* too small?                        */
                                        /* report an error also              */
-      send_exception1(Error_Incorrect_method_positive, RexxArray2(IntegerOne, RexxInteger(position)));
+      send_exception1(Error_Incorrect_method_positive, ooRexxArray2(IntegerOne, ooRexxInteger(position)));
     if (position == 1) {               /* going to the start?               */
                                        /* set the position to the beginning */
       stream_info->line_read_char_position = 1;
@@ -1153,7 +1153,7 @@ void set_char_write_position(
       send_exception(Error_Incorrect_method_stream_type);
     if (position < 1)                  /* too small?                        */
                                        /* report an error also              */
-      send_exception1(Error_Incorrect_method_positive, RexxArray2(IntegerOne, RexxInteger(position)));
+      send_exception1(Error_Incorrect_method_positive, ooRexxArray2(IntegerOne, ooRexxInteger(position)));
                                        /* try to move to the new position   */
     if (set_stream_position(position - 1))
                                        /* go raise appropriate notready     */
@@ -1178,7 +1178,7 @@ void set_line_write_position(
       send_exception(Error_Incorrect_method_stream_type);
     if (position < 1)                  /* too small?                        */
                                        /* report an error also              */
-      send_exception1(Error_Incorrect_method_positive, RexxArray2(IntegerOne, RexxInteger(position)));
+      send_exception1(Error_Incorrect_method_positive, ooRexxArray2(IntegerOne, ooRexxInteger(position)));
     if (position == 1) {               /* going to the start?               */
                                        /* set the position to the beginning */
       stream_info->line_write_char_position = 1;
@@ -1474,7 +1474,7 @@ REXXOBJECT read_variable_line(
      stream_info->line_read_position++;/* we've moved one line              */
    }
                                        /* return the new string             */
-   return RexxStringL(read_buffer, line_length);
+   return ooRexxStringL(read_buffer, line_length);
 }
 
 /********************************************************************************************/
@@ -1976,7 +1976,7 @@ RexxMethod2(CSTRING, stream_close,
    {
       stream_info->bufferAddress = NULL;
       stream_info->bufferLength = 0;
-      RexxVarSet(c_stream_buffer, OREF_NULL);  // stream object now loses reference to buffer object
+      ooRexxVarSet(c_stream_buffer, OREF_NULL);  // stream object now loses reference to buffer object
    }
 
    return "READY:";                    /* return the success indicator      */
@@ -1996,7 +1996,7 @@ RexxMethod2(CSTRING, stream_flush,
    if (buffer_flush != 0) {            /* try to flush                      */
      sprintf(work, "ERROR:%d", errno); /* format the error return           */
                                        /* go raise a notready condition     */
-     stream_error(self, stream_info, errno, RexxString(work));
+     stream_error(self, stream_info, errno, ooRexxString(work));
    }
    return "READY:";                    /* return success indicator          */
 }
@@ -2267,7 +2267,7 @@ TTS *ttsp;
                                        /* format the error return           */
        sprintf(work, "ERROR:%d", errno);
                                        /* go raise a notready condition     */
-       stream_error(self, stream_info, errno, RexxString(work));
+       stream_error(self, stream_info, errno, ooRexxString(work));
      }
      stream_info->flags.read_only = 1; /* set the read_only flag            */
                                        /* and clear all of the write        */
@@ -2331,7 +2331,7 @@ TTS *ttsp;
    if (stream_info->stream_file == NULL) {
      sprintf(work, "ERROR:%d", errno); /* format the error return           */
                                        /* go raise a notready condition     */
-     stream_error(self, stream_info, errno, RexxString(work));
+     stream_error(self, stream_info, errno, ooRexxString(work));
    }
 
    fstat(stream_info->fh, &stat_info); /* get the file information          */
@@ -2550,7 +2550,7 @@ TTS *ttsp;
                                        /* position offset must be specified */
    if (!(position_flags & position_offset_specified))
                                        /* this is an error                  */
-     send_exception1(Error_Incorrect_call_noarg, RexxArray2(RexxString("SEEK"),RexxString("offset")));
+     send_exception1(Error_Incorrect_call_noarg, ooRexxArray2(ooRexxString("SEEK"), ooRexxString("offset")));
                                        /* if direction was not specified    */
                                        /*   default from start (absolute)   */
    if (0 == from_start + from_end + forward + labs((signed)backward)) {
@@ -2640,7 +2640,7 @@ TTS *ttsp;
    if (!stream_info->stream_file) {    /* check file existence              */
      sprintf(work, "ERROR:%d", ENOENT);
                                        /* raise notready condition          */
-     stream_error(self, stream_info, ENOENT, RexxString(work));
+     stream_error(self, stream_info, ENOENT, ooRexxString(work));
    }
                                        /* if offset was specified as zero   */
                                        /* set the system position according */
@@ -3344,7 +3344,7 @@ RexxMethod1(REXXOBJECT, query_size,
 
    stream_info = get_stream_info();    /* get the stream block              */
                                        /* return the stream size            */
-   return get_file_statistics(stream_info, &stat_info) ? RexxString("") : RexxInteger(stat_info.st_size);
+   return get_file_statistics(stream_info, &stat_info) ? ooRexxString("") : ooRexxInteger(stat_info.st_size);
 }
 
 /********************************************************************************************/
@@ -3470,7 +3470,7 @@ RexxMethod1(REXXOBJECT, stream_description,
       result = "READY:";
       break;
   }
-  return RexxString(result);           /* return as a string value          */
+  return ooRexxString(result);         /* return as a string value          */
 }
 
 /********************************************************************************************/
@@ -3484,9 +3484,9 @@ RexxMethod1(REXXOBJECT, stream_init,
    REXXOBJECT   stream_block;          /* allocated stream block            */
 
                                        /* get a stream block                */
-   stream_block = RexxBuffer(sizeof(STREAM_INFO));
+   stream_block = ooRexxBuffer(sizeof(STREAM_INFO));
                                        /* associate with this instance      */
-   RexxVarSet(c_stream_info, stream_block);
+   ooRexxVarSet(c_stream_info, stream_block);
                                        /* address the block                 */
    stream_info = (STREAM_INFO *)buffer_address(stream_block);
                                        /* clear out the block               */

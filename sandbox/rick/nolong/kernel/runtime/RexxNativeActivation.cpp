@@ -390,60 +390,62 @@ RexxObject *RexxNativeActivation::run(
                 break;
         }
     }
-  }
-  if (i < argcount && !used_arglist)   /* extra, unwanted arguments?        */
-                                       /* got too many                      */
-    reportException(Error_Incorrect_method_maxarg, i);
+    if (i < argcount && !used_arglist)   /* extra, unwanted arguments?        */
+    {
+                                         /* got too many                      */
+        reportException(Error_Incorrect_method_maxarg, i);
+    }
 
-  size_t activityLevel = this->activity->getActivationLevel();
-                                       /* get a RAISE type return?          */
-  if (setjmp(this->conditionjump) != 0) {
-    // TODO  Use protected object on the result
-    if (this->result != OREF_NULL)     /* have a value?                     */
-      holdObject(this->result);        /* get result held longer            */
-    this->guardOff();                  /* release any variable locks        */
-    this->argcount = 0;                /* make sure we don't try to mark any arguments */
-    // the lock holder gets here by longjmp from a kernel reentry.  We need to
-    // make sure the activation count gets reset, else we'll accumulate bogus
-    // nesting levels that will make it look like this activity is still in use
-    // when in fact we're done with it.
+    size_t activityLevel = this->activity->getActivationLevel();
+    /* get a RAISE type return?          */
+    if (setjmp(this->conditionjump) != 0)
+    {
+        // TODO  Use protected object on the result
+        if (this->result != OREF_NULL)     /* have a value?                     */
+            holdObject(this->result);        /* get result held longer            */
+        this->guardOff();                  /* release any variable locks        */
+        this->argcount = 0;                /* make sure we don't try to mark any arguments */
+        // the lock holder gets here by longjmp from a kernel reentry.  We need to
+        // make sure the activation count gets reset, else we'll accumulate bogus
+        // nesting levels that will make it look like this activity is still in use
+        // when in fact we're done with it.
+        this->activity->restoreActivationLevel(activityLevel);
+        this->activity->pop(FALSE);        /* pop this from the activity        */
+        this->setHasNoReferences();        /* mark this as not having references in case we get marked */
+        return this->result;               /* and finished                      */
+    }
+    try
+    {
+        activity->releaseAccess();           /* force this to "safe" mode         */
+        (*methp)(ivalues);                   /* process the method call           */
+        activity->requestAccess();           /* now in unsafe mode again          */
+    }
+    catch (RexxActivation *)
+    {
+        // it's possible that we can get terminated by a throw during condition processing.
+        // we intercept this here, perform any cleanup we need to perform, then let the
+        // condition trap propagate.
+        this->guardOff();                  /* release any variable locks        */
+        this->argcount = 0;                /* make sure we don't try to mark any arguments */
+        // the lock holder gets here by longjmp from a kernel reentry.  We need to
+        // make sure the activation count gets reset, else we'll accumulate bogus
+        // nesting levels that will make it look like this activity is still in use
+        // when in fact we're done with it.
+        this->activity->restoreActivationLevel(activityLevel);
+        // IMPORTANT NOTE:  We don't pop our activation off the stack.  This will be
+        // handled by the catcher.  Attempting to pop the stack when an error or condition has
+        // occurred can munge the activation stack, resulting bad stuff.
+        this->setHasNoReferences();        /* mark this as not having references in case we get marked */
+        // now rethrow the trapped condition so that real target can handle this.
+        throw;
+    }
+
+    // belt and braces...this restores the activity level to whatever
+    // level we had when we made the callout.
     this->activity->restoreActivationLevel(activityLevel);
-    this->activity->pop(FALSE);        /* pop this from the activity        */
-    this->setHasNoReferences();        /* mark this as not having references in case we get marked */
-    return this->result;               /* and finished                      */
-  }
-  try
-  {
-      activity->releaseAccess();           /* force this to "safe" mode         */
-      (*methp)(ivalues);                   /* process the method call           */
-      activity->requestAccess();           /* now in unsafe mode again          */
-  }
-  catch (RexxActivation *a)
-  {
-      // it's possible that we can get terminated by a throw during condition processing.
-      // we intercept this here, perform any cleanup we need to perform, then let the
-      // condition trap propagate.
-      this->guardOff();                  /* release any variable locks        */
-      this->argcount = 0;                /* make sure we don't try to mark any arguments */
-      // the lock holder gets here by longjmp from a kernel reentry.  We need to
-      // make sure the activation count gets reset, else we'll accumulate bogus
-      // nesting levels that will make it look like this activity is still in use
-      // when in fact we're done with it.
-      this->activity->restoreActivationLevel(activityLevel);
-      // IMPORTANT NOTE:  We don't pop our activation off the stack.  This will be
-      // handled by the catcher.  Attempting to pop the stack when an error or condition has
-      // occurred can munge the activation stack, resulting bad stuff.
-      this->setHasNoReferences();        /* mark this as not having references in case we get marked */
-      // now rethrow the trapped condition so that real target can handle this.
-      throw;
-  }
 
-  // belt and braces...this restores the activity level to whatever
-  // level we had when we made the callout.
-  this->activity->restoreActivationLevel(activityLevel);
-
-  /* give up reference to receiver so that it can be garbage collected */
-  this->receiver = OREF_NULL;
+    /* give up reference to receiver so that it can be garbage collected */
+    this->receiver = OREF_NULL;
 
     // set a default result
     result = OREF_NULL;
@@ -517,6 +519,7 @@ RexxObject *RexxNativeActivation::run(
     this->setHasNoReferences();          /* mark this as not having references in case we get marked */
     return(RexxObject *)result;         /* and finished                      */
 }
+
 
 RexxObject *RexxNativeActivation::saveObject(
     RexxObject *objr)                  /* object to save                    */
@@ -959,7 +962,7 @@ void * RexxNativeActivation::operator new(size_t size,
 
 #define this ((RexxNativeActivation *)self)
 
-nativei0 (REXXOBJECT, MSGNAME)
+REXXOBJECT REXXENTRY REXX_MSGNAME()
 /******************************************************************************/
 /* Function:  External interface to the nativeact object method               */
 /******************************************************************************/
@@ -972,7 +975,7 @@ nativei0 (REXXOBJECT, MSGNAME)
   return_object(this->msgname);          /* just forward and return           */
 }
 
-nativei0 (REXXOBJECT, RECEIVER)
+REXXOBJECT REXXENTRY REXX_RECEIVER()
 /******************************************************************************/
 /* Function:  External interface to the nativeact object method               */
 /******************************************************************************/
@@ -985,7 +988,7 @@ nativei0 (REXXOBJECT, RECEIVER)
   return_object(this->receiver);         /* just forward and return           */
 }
 
-nativei1 (int, INTEGER, REXXOBJECT, object)
+int REXXENTRY REXX_INTEGER(REXXOBJECT object)
 /******************************************************************************/
 /* Function:  External interface to the nativeact object method               */
 /******************************************************************************/
@@ -998,7 +1001,7 @@ nativei1 (int, INTEGER, REXXOBJECT, object)
   return_value(result);                /* return converted value            */
 }
 
-nativei1 (size_t, UNSIGNED_INTEGER, REXXOBJECT, object)
+size_t REXXENTRY REXX_UNSIGNED_INTEGER(REXXOBJECT object)
 /******************************************************************************/
 /* Function:  External interface to the nativeact object method               */
 /******************************************************************************/
@@ -1011,7 +1014,7 @@ nativei1 (size_t, UNSIGNED_INTEGER, REXXOBJECT, object)
   return_value(result);                /* return converted value            */
 }
 
-nativei1 (bool, ISINTEGER, REXXOBJECT, object)
+bool REXXENTRY REXX_ISINTEGER(REXXOBJECT object)
 /******************************************************************************/
 /* Function:  External interface to the nativeact object method               */
 /******************************************************************************/
@@ -1027,8 +1030,7 @@ nativei1 (bool, ISINTEGER, REXXOBJECT, object)
   return_value(result);                /* return converted value            */
 }
 
-nativei1 (bool, ISASTRING,
-    REXXOBJECT, object )                /* object to check                   */
+bool REXXENTRY REXX_ISSTRING(REXXOBJECT object)
 /******************************************************************************/
 /* Function:  External interface to the nativeact object method               */
 /******************************************************************************/
@@ -1042,7 +1044,7 @@ nativei1 (bool, ISASTRING,
   return_value(result);                /* return indicator                  */
 }
 
-nativei1 (CSTRING, STRING, REXXOBJECT, object)
+CSTRING REXXENTRY REXX_STRING(REXXOBJECT object)
 /******************************************************************************/
 /* Function:  External interface to the nativeact object method               */
 /******************************************************************************/
@@ -1058,7 +1060,8 @@ nativei1 (CSTRING, STRING, REXXOBJECT, object)
   return_value(result);                /* return converted value            */
 }
 
-nativei1 (double, DOUBLE, REXXOBJECT, object)
+
+double REXXENTRY REXX_DOUBLE(REXXOBJECT object)
 /******************************************************************************/
 /* Function:  External interface to the nativeact object method               */
 /******************************************************************************/
@@ -1074,7 +1077,7 @@ nativei1 (double, DOUBLE, REXXOBJECT, object)
   return_value(result);                /* return converted value            */
 }
 
-nativei1 (bool, ISDOUBLE, REXXOBJECT, object)
+bool REXXENTRY REXX_ISDOUBLE(REXXOBJECT object)
 /******************************************************************************/
 /* Function:  External interface to the nativeact object method               */
 /******************************************************************************/
@@ -1090,10 +1093,7 @@ nativei1 (bool, ISDOUBLE, REXXOBJECT, object)
   return_value(result);                /* return converted value            */
 }
 
-nativei3 (REXXOBJECT, SEND,
-     REXXOBJECT,  receiver,            /* receiver of the message           */
-     CSTRING,     msgname,             /* the name of the message           */
-     REXXOBJECT,  arguments)           /* message arguments                 */
+REXXOBJECT REXXENTRY REXX_SEND(REXXOBJECT receiver, CSTRING msgname, REXXOBJECT arguments)
 /******************************************************************************/
 /* Function:  Issue a full scale send_message from native code                */
 /******************************************************************************/
@@ -1102,9 +1102,7 @@ nativei3 (REXXOBJECT, SEND,
   return_object((RexxObject *)receiver->sendMessage((RexxString *)new_string(msgname), (RexxArray *)arguments));
 }
 
-nativei2 (REXXOBJECT, SUPER,
-     char *,       msgname,            /* message name                      */
-     REXXOBJECT,  arguments)           /* argument array                    */
+REXXOBJECT REXXENTRY REXX_SUPER(CSTRING msgname, REXXOBJECT arguments)
 /******************************************************************************/
 /* Function:  Forward a message to a super class from native code             */
 /******************************************************************************/
@@ -1126,9 +1124,7 @@ nativei2 (REXXOBJECT, SUPER,
   return_object(this->receiver->messageSend((RexxString *)new_string(msgname), count, argarray, this->receiver->superScope(this->method->getScope())));
 }
 
-nativei2 (REXXOBJECT, SETVAR,
-     CSTRING, name,                    /* variable name                     */
-     REXXOBJECT,  value )              /* new variable value                */
+REXXOBJECT REXXENTRY REXX_SETVAR(CSTRING name, REXXOBJECT value)
 /******************************************************************************/
 /* Function:  Set the value of an object variable                             */
 /******************************************************************************/
@@ -1148,58 +1144,11 @@ nativei2 (REXXOBJECT, SETVAR,
   return_object(OREF_NULL);              /* return nothing                    */
 }
 
-nativei2 (REXXOBJECT, SETVAR2,
-     char *, name,                     /* variable name                     */
-     REXXOBJECT,  value )              /* new variable value                */
-/******************************************************************************/
-/* Function:  Set the value of a variable in current variable pool            */
-/******************************************************************************/
-{
-  RexxNativeActivation   * self;       /* current native activation         */
-                                       /* variable name                     */
-  RexxString             * variableName;
-  RexxVariableBase       * retriever;
-
-  native_entry;                        /* synchronize access                */
-                                       /* pick up current activation        */
-  self = (RexxNativeActivation *)ActivityManager::currentActivity->current();
-  RexxActivation *context = (RexxActivation *)this->activity->sender(this);
-  variableName = new_string(name);    /* get a string version of this      */
-                                       /* do the assignment throug retriever*/
-  retriever = context->getVariableRetriever(variableName);
-  retriever->set(context, (RexxObject *)value);
-  return_object(OREF_NULL);              /* return nothing                    */
-}
-
-
-nativei2 (REXXOBJECT, SETFUNC,
-     char *, name,                     /* function name                     */
-     REXXOBJECT,  value )              /* method                            */
-{
-  RexxNativeActivation   * self;       /* current native activation         */
-
-  RexxActivity           * activity;
-  RexxActivation         * activation;
-
-  native_entry;                        /* synchronize access                */
-                                       /* pick up current activation        */
-
-  self = (RexxNativeActivation *)ActivityManager::currentActivity->current();
-  activity = self->activity;           /* find the current activity         */
-                                       /* get the current activation        */
-  activation = self->activity->getCurrentActivation();
-
-  activation->addLocalRoutine(new_string(name), (RexxMethod *) value);
-  return_object(OREF_NULL);              /* return nothing                    */
-}
-
 /*******************************************************1***/
 /* return the names of all public routines in the current */
 /* activation context. *the caller* must free the memory! */
 /**********************************************************/
-nativei2 (REXXOBJECT, GETFUNCTIONNAMES,
-     char***, names,            /* array to hold names         */
-     int *,  num)               /* number of elements in array */
+REXXOBJECT REXXENTRY REXX_GETFUNCTIONNAMES(char *** names, int * num)
 {
   RexxNativeActivation   * self;       /* current native activation         */
 
@@ -1238,8 +1187,7 @@ nativei2 (REXXOBJECT, GETFUNCTIONNAMES,
   return_object(OREF_NULL);              /* return nothing                    */
 }
 
-nativei1 (REXXOBJECT, GETVAR,
-    CSTRING, name )                      /* variable name                     */
+REXXOBJECT REXXENTRY REXX_GETVAR(CSTRING name)
 /******************************************************************************/
 /* Function:  Retrieve the value of an object variable                        */
 /******************************************************************************/
@@ -1267,9 +1215,7 @@ nativei1 (REXXOBJECT, GETVAR,
   return value;                        /* pool                              */
 }
 
-nativei2 (void, EXCEPT,
-     int,  errorcode,                  /* error message number              */
-     REXXOBJECT, value )               /* substitution value                */
+void REXXENTRY REXX_EXCEPT(int errorcode, REXXOBJECT value)
 /******************************************************************************/
 /* Function:  Raise an exception on behalf of native code                     */
 /******************************************************************************/
@@ -1281,11 +1227,8 @@ nativei2 (void, EXCEPT,
     reportException(errorcode, (RexxArray *)value);
 }
 
-nativei4 (void, RAISE,
-     CSTRING, condition,               /* name of the condition             */
-     REXXOBJECT,  description,         /* description object                */
-     REXXOBJECT,  additional,          /* additional information            */
-     REXXOBJECT,  result )             /* optional result                   */
+
+void REXXENTRY REXX_RAISE(CSTRING condition, REXXOBJECT description, REXXOBJECT additional, REXXOBJECT result)
 /******************************************************************************/
 /* Function:  Raise a condition on behalf of native code                      */
 /******************************************************************************/
@@ -1307,10 +1250,8 @@ nativei4 (void, RAISE,
   longjmp(this->conditionjump, 1);     /* now go process the return         */
 }
 
-nativei3 (REXXOBJECT, CONDITION,
-     REXXOBJECT, condition,            /* condition to raise              */
-     REXXOBJECT, description,          /* description information         */
-     REXXOBJECT, additional )          /* additional exception info       */
+
+REXXOBJECT REXXENTRY REXX_CONDITION(REXXOBJECT condition, REXXOBJECT description, REXXOBJECT additional)
 /******************************************************************************/
 /* Function:  Raise a condition on behalf of native code                      */
 /******************************************************************************/
@@ -1320,8 +1261,8 @@ nativei3 (REXXOBJECT, CONDITION,
   return_object((ActivityManager::currentActivity->raiseCondition((RexxString *)condition, OREF_NULL, (RexxString *)description, (RexxObject *)additional, OREF_NULL, OREF_NULL)) ? TheTrueObject : TheFalseObject);
 }
 
-nativei1 (int , VARIABLEPOOL,
-     void *, pshvblock )                /* chain of variable request blocks  */
+
+int REXXENTRY REXX_VARIABLEPOOL(void *pshvblock)
 /******************************************************************************/
 /* Function:  If variable pool is enabled, return result from SysVariablePool */
 /*             method, otherwise return RXSHV_NOAVL.                          */
@@ -1343,35 +1284,8 @@ nativei1 (int , VARIABLEPOOL,
   return_value(result);                /* return this                       */
 }
 
-nativei0 (void, ENABLE_VARIABLEPOOL)
-/******************************************************************************/
-/* Function:  External interface to the nativeact object method               */
-/******************************************************************************/
-{
-  RexxNativeActivation * self;         /* current native activation         */
 
-  native_entry;                        /* synchronize access                */
-                                       /* pick up current activation        */
-  self = (RexxNativeActivation *)ActivityManager::currentActivity->current();
-  this->enableVariablepool();          /* go enable the pool                */
-  return_void;                         /* no return value                   */
-}
-
-nativei0 (void, DISABLE_VARIABLEPOOL)
-/******************************************************************************/
-/* Function:  External interface to the nativeact object method               */
-/******************************************************************************/
-{
-  RexxNativeActivation * self;         /* current native activation         */
-
-  native_entry;                        /* synchronize access                */
-                                       /* pick up current activation        */
-  self = (RexxNativeActivation *)ActivityManager::currentActivity->current();
-  this->vpavailable = false;           /* dis-allow the calls               */
-  return_void;                         /* no return value                   */
-}
-
- nativei1 (void, PUSH_ENVIRONMENT, REXXOBJECT, environment)
+void REXXENTRY REXX_PUSH_ENVIRONMENT(REXXOBJECT environment)
 /******************************************************************************/
 /* Function:  External interface to the nativeact object method               */
 /******************************************************************************/
@@ -1385,7 +1299,8 @@ nativei0 (void, DISABLE_VARIABLEPOOL)
   return_void;                         /* no return value                   */
 }
 
-nativei0 (REXXOBJECT, POP_ENVIRONMENT)
+
+REXXOBJECT REXXENTRY REXX_POP_ENVIRONMENT()
 /******************************************************************************/
 /* Function:  External interface to the nativeact object method               */
 /******************************************************************************/
@@ -1398,6 +1313,7 @@ nativei0 (REXXOBJECT, POP_ENVIRONMENT)
   return_object(activation->popEnvironment());
 }
 
+
 bool REXXENTRY REXX_ISDIRECTORY(REXXOBJECT object)
 /******************************************************************************/
 /* Function:  Validate that an object is a directory                          */
@@ -1407,7 +1323,8 @@ bool REXXENTRY REXX_ISDIRECTORY(REXXOBJECT object)
   return object != NULL && isOfClass(Directory, object);
 }
 
-REXXOBJECT REXXENTRY REXX_NIL(void)
+
+REXXOBJECT REXXENTRY REXX_NIL()
 /******************************************************************************/
 /* Function:  Return REXX .nil object to native code                          */
 /******************************************************************************/
@@ -1415,7 +1332,7 @@ REXXOBJECT REXXENTRY REXX_NIL(void)
   return TheNilObject;                 /* just return the object            */
 }
 
-REXXOBJECT REXXENTRY REXX_TRUE(void)
+REXXOBJECT REXXENTRY REXX_TRUE()
 /******************************************************************************/
 /* Function:  Return REXX TRUE object to native code                          */
 /******************************************************************************/
@@ -1423,7 +1340,7 @@ REXXOBJECT REXXENTRY REXX_TRUE(void)
   return TheTrueObject;                /* just return the object            */
 }
 
-REXXOBJECT REXXENTRY REXX_FALSE(void)
+REXXOBJECT REXXENTRY REXX_FALSE()
 /******************************************************************************/
 /* Function:  Return REXX FALSE object to native code                         */
 /******************************************************************************/
@@ -1431,7 +1348,7 @@ REXXOBJECT REXXENTRY REXX_FALSE(void)
   return TheFalseObject;               /* just return the object            */
 }
 
-REXXOBJECT REXXENTRY REXX_LOCAL(void)
+REXXOBJECT REXXENTRY REXX_LOCAL()
 /******************************************************************************/
 /* Function:  Return REXX .local object to native code                        */
 /******************************************************************************/
@@ -1439,7 +1356,7 @@ REXXOBJECT REXXENTRY REXX_LOCAL(void)
   return ActivityManager::localEnvironment;  /* just return the local environment */
 }
 
-REXXOBJECT REXXENTRY REXX_ENVIRONMENT(void)
+REXXOBJECT REXXENTRY REXX_ENVIRONMENT()
 /******************************************************************************/
 /* Function:  Return REXX .environment object to native code                  */
 /******************************************************************************/
@@ -1447,9 +1364,7 @@ REXXOBJECT REXXENTRY REXX_ENVIRONMENT(void)
   return TheEnvironment;               /* just return the object            */
 }
 
-nativei7 (int, STEMSORT,
-     CSTRING, stemname, int, order, int, type, size_t, start, size_t, end,
-     size_t, firstcol, size_t, lastcol)
+int REXXENTRY REXX_STEMSORT(CSTRING stemname, int order, int type, size_t start, size_t end, size_t firstcol, size_t lastcol)
 /******************************************************************************/
 /* Function:  Perform a sort on stem data.  If everything works correctly,    */
 /*             this returns zero, otherwise an appropriate error value.       */
@@ -1514,7 +1429,7 @@ nativei7 (int, STEMSORT,
   return_value(result);
 }
 
-nativei0 (void, GUARD_ON)
+void REXXENTRY REXX_GUARD_ON()
 /******************************************************************************/
 /* Function:  External interface to implement method guarding                 */
 /******************************************************************************/
@@ -1528,7 +1443,7 @@ nativei0 (void, GUARD_ON)
     native_release(OREF_NULL);           /* release the kernel access         */
 }
 
-nativei0 (void, GUARD_OFF)
+void REXXENTRY REXX_GUARD_OFF()
 /******************************************************************************/
 /* Function:  External interface to implement method guarding                 */
 /******************************************************************************/

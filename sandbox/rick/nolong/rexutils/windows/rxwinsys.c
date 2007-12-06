@@ -178,7 +178,7 @@ BOOL IsRunningNT()
 
     version_info.dwOSVersionInfoSize = sizeof(version_info);
     GetVersionEx(&version_info);
-    if (version_info.dwPlatformId == VER_PLATFORM_WIN32_NT) return true; // Windows NT
+    if (version_info.dwPlatformId == VER_PLATFORM_WIN32_NT) return TRUE; // Windows NT
     else return FALSE;                                              // Windows 95
 }
 
@@ -864,8 +864,7 @@ BOOL ProgmanCmd(LPSTR lpszCmd)
     DdeDisconnect(hConv);
     DdeUninitialize(dwDDEInst);
 
-    if (!exRes) return FALSE;
-    return true;
+    return exRes != 0;
 }
 
 
@@ -1005,7 +1004,7 @@ BOOL LeavePM(BOOL bSaveGroups)
 //  szDesktopDir   - Drive and Path of the Desktop to be returned
 //  lpcbData       _ Max Size of szDesktopDir on entry, Size of szDesktopDir on exit
 //
-//   return :  true  - No error
+//   return :  TRUE  - No error
 //             FALSE - Error
 //-----------------------------------------------------------------------------
 #define IDS_REGISTRY_KEY_CURRENT_SHELLFOLDER "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders"
@@ -1035,7 +1034,7 @@ BOOL GetCurrentUserDesktopLocation ( LPBYTE szDesktopDir, LPDWORD  lpcbData )
                            lpcbData)) == ERROR_SUCCESS )    // .. returned here
       {
         RegCloseKey ( hKey ) ;
-        return true ;
+        return TRUE ;
       }
       RegCloseKey ( hKey ) ;
    }
@@ -1057,7 +1056,7 @@ BOOL GetCurrentUserDesktopLocation ( LPBYTE szDesktopDir, LPDWORD  lpcbData )
 //  szDesktopDir   - Drive and Path of the Desktop to be returned
 //  lpcbData       _ Max Size of szDesktopDir on entry, Size of szDesktopDir on exit
 //
-//   return :  true  - No error
+//   return :  TRUE  - No error
 //             FALSE - Error
 //-----------------------------------------------------------------------------
 #define IDS_REGISTRY_KEY_ALL_NT_SHELLFOLDER "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders"
@@ -1107,7 +1106,7 @@ BOOL GetAllUserDesktopLocation ( LPBYTE szDesktopDir, LPDWORD  lpcbData )
                                  lpcbData)) == ERROR_SUCCESS )    // .. returned here
       {
         RegCloseKey ( hKey ) ;
-        return true ;
+        return TRUE ;
       }
       RegCloseKey ( hKey ) ;
    }
@@ -1143,7 +1142,7 @@ BOOL GetAllUserDesktopLocation ( LPBYTE szDesktopDir, LPDWORD  lpcbData )
 //                                           MINIMIZED
 //                                           MAXIMIZED    window
 //
-//   return :  true  - No error
+//   return :  TRUE  - No error
 //             FALSE - Error
 //-----------------------------------------------------------------------------
 
@@ -2215,7 +2214,7 @@ ULONG APIENTRY WSEventLog(
 
                //get time and date
                //DateTime = localtime(&pEvLogRecord->TimeGenerated);   // convert to local time
-               DateTime = localtime(&pEvLogRecord->TimeWritten);   // convert to local time
+               DateTime = localtime((const time_t *)&pEvLogRecord->TimeWritten);   // convert to local time
                strftime(date, MAX_TIME_DATE,"%x", DateTime);
                strftime(time, MAX_TIME_DATE,"%X", DateTime);
 
