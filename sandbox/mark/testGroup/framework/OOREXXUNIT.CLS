@@ -151,9 +151,9 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
--- Define the version number with: X.Y.Z  X is the ooRexxUnit.cls version, Y is
--- the minimum ooRexx interpreter level required, and Z is the date the version
--- was changed.
+-- Define the version number with: X.Y.Z  Where X is the ooRexxUnit.cls version,
+-- Y is the minimum ooRexx interpreter level required, and Z is the date the
+-- version was changed.
 .local~ooRexxUnit.version=106.320.20071205
 
 .local~chars.NonPrintable=xrange("00"x, "1F"x) || "FF"x  -- define non-printable chars
@@ -1258,6 +1258,7 @@ pp: procedure
 
    versionStr = .ooRexxUnit.interpreterName .ooRexxUnit.languageLevel .ooRexxUnit.interpreterDate
    say "Interpreter:" versionStr
+   say "ooRexxUnit: " .ooRexxUnit.version
    say
    say "Count of tests ran:            " aTestResult~runCount
    say "Count of successful assertions:" aTestResult~assertCount
@@ -1278,6 +1279,7 @@ pp: procedure
    -- the user.
    if (aTestResult~failureCount + aTestResult~errorCount) > 3 then do
      say "Interpreter:" versionStr
+     say "ooRexxUnit: " .ooRexxUnit.version
      say
      say "Count of tests ran:            " aTestResult~runCount
      say "Count of successful assertions:" aTestResult~assertCount

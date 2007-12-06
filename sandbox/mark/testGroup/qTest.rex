@@ -1,4 +1,8 @@
 
+  do i = 1 to 100000
+    if i // 1000 == 0 then say time('L')
+  end
+
   parse source . . s
   group = .TestGroup~new(s)
 
