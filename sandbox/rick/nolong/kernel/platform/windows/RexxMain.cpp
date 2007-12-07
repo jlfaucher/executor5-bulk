@@ -131,22 +131,22 @@ typedef struct _RexxScriptInfo {       /* Control info used by various API's*/
 } RexxScriptInfo;
 
 typedef struct _ConditionData {
-  long   code;
-  long   rc;
+  int    code;
+  int    rc;
   RXSTRING message;
   RXSTRING errortext;
-  long   position;
+  size_t  position;
   RXSTRING program;
 } ConditionData;
 
 typedef struct _RexxStartInfo {
-  short runtype;                       /* How source should be handled      */
-  LONG       argcount;                 /* Number of args in arglist         */
+  int   runtype;                       /* How source should be handled      */
+  size_t     argcount;                 /* Number of args in arglist         */
   PRXSTRING  arglist;                  /* Array of args                     */
   const char*programname;              /* REXX program to run               */
   PRXSTRING  instore;                  /* Instore array                     */
   const char*envname;                  /* Initial cmd environment           */
-  short      calltype;                 /* How the program is called         */
+  int        calltype;                 /* How the program is called         */
   PRXSYSEXIT exits;                    /* Array of system exit names        */
   short *    retcode;                  /* Integer form of result            */
   PRXSTRING  result;                   /* Result returned from program      */
@@ -528,7 +528,7 @@ void CreateRexxCondData(
   ConditionData *pRexxCondData)        /* returned condition data           */
 
 {
-  LONG  length;
+  size_t length;
   RexxString *message;
   RexxString *errortext;
   RexxString *program;
@@ -1284,7 +1284,7 @@ void  SysRunProgram(
 {
   RexxStartInfo *self;                 /* Rexxstart argument info           */
   RexxArray   * new_arglist;           /* passed on argument list           */
-  LONG          i;                     /* loop counter                      */
+  size_t        i;                     /* loop counter                      */
   RexxString  * fullname;              /* fully resolved program name       */
   RexxString  * name;                  /* input program name                */
   RexxMethod  * method;                /* translated file image             */

@@ -6955,7 +6955,7 @@ LONG APIENTRY SysWinGetPrinters(
   }
   free(pArray);
 
-  sprintf(retstr->strptr,"%s",fSuccess==true?"0":"1");
+  sprintf(retstr->strptr,"%s",fSuccess==TRUE?"0":"1");
   retstr->strlength = strlen(retstr->strptr);
 
   return VALID_ROUTINE;
