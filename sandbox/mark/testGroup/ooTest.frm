@@ -199,6 +199,27 @@
 
 -- End of class: TestGroup
 
+/* class: ooTestCase - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+    ooTest Cases are used to test the ooRexx interpreter package.
+
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class 'ooTestCase' public subclass TestCase
+
+  -- ooTestType  The type of test cases contained in this test case class.  The
+  -- default type is "UNIT" and other typical types are "STRESS", "SAMPLE",
+  -- "GUI_SAMPLE", "DOC_EXAMPLE", etc..
+  ::attribute ooTestType get
+  ::attribute ooTestType set private
+
+  ::method init class
+    forward class (super) continue
+    self~ooTestType = "UNIT"
+
+  -- End init( )
+
+-- End of class: ooTestCase
+
 /** printTestInfo()
  *
  * Debugging method to print out the information in the TestInfo class attribute
