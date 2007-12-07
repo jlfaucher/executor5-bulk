@@ -248,54 +248,114 @@ void StripBlanks(
 /*------------------------------------------------------------------
  * set a rexx variable
  *------------------------------------------------------------------*/
+void RxVarSet(const char * pszStem, const char * pszTail, const char * pszValue )
+{
+    SHVBLOCK shv;
+    char *pszVariable;
+
+    if (!pszStem)
+        return;
+
+    /*---------------------------------------------------------------
+     * get variable name
+     *---------------------------------------------------------------*/
+    pszVariable = (char *)malloc(1+strlen(pszStem)+strlen(pszTail));
+    if (!pszVariable)
+        return;
+
+    strcpy(pszVariable,pszStem);
+    strcat(pszVariable,pszTail);
+
+    /*---------------------------------------------------------------
+     * set shv values
+     *---------------------------------------------------------------*/
+    shv.shvcode            = RXSHV_SYSET;
+    shv.shvnext            = NULL;
+    shv.shvname.strptr     = pszVariable;
+    shv.shvname.strlength  = strlen(pszVariable);
+    shv.shvvalue.strptr    = const_cast<PCH>(pszValue);
+    shv.shvvalue.strlength = strlen(pszValue);
+
+    RexxVariablePool(&shv);
+
+    /*---------------------------------------------------------------
+     * free temp var, if we used it
+     *---------------------------------------------------------------*/
+    free(pszVariable);
+}
+
+/*------------------------------------------------------------------
+ * set a rexx variable
+ *------------------------------------------------------------------*/
 void RxVarSet(
-   const char * pszStem,
-   const char * pszTail,
+   const char * pszVariable,
    const char * pszValue
    )
    {
    SHVBLOCK shv;
-   char *      pszVariable;
 
-   if (!pszStem)
+   if (!pszVariable)
       return;
-
-   /*---------------------------------------------------------------
-    * get variable name
-    *---------------------------------------------------------------*/
-   if (!pszTail)
-      pszVariable = pszStem;
-
-   else
-      {
-      pszVariable = (char *)malloc(1+strlen(pszStem)+strlen(pszTail));
-      if (!pszVariable)
-         return;
-
-      strcpy(pszVariable,pszStem);
-      strcat(pszVariable,pszTail);
-      }
-
-   StripBlanks(pszVariable);
 
    /*---------------------------------------------------------------
     * set shv values
     *---------------------------------------------------------------*/
    shv.shvcode            = RXSHV_SYSET;
    shv.shvnext            = NULL;
-   shv.shvname.strptr     = pszVariable;
+   shv.shvname.strptr     = const_cast<PCH>(pszVariable);
    shv.shvname.strlength  = strlen(pszVariable);
-   shv.shvvalue.strptr    = pszValue;
+   shv.shvvalue.strptr    = const_cast<PCH>(pszValue);
    shv.shvvalue.strlength = strlen(pszValue);
 
    RexxVariablePool(&shv);
-
-   /*---------------------------------------------------------------
-    * free temp var, if we used it
-    *---------------------------------------------------------------*/
-   if (pszStem != pszVariable)
-      free(pszVariable);
    }
+
+/*------------------------------------------------------------------
+ * get a rexx variable - return value must be freed by caller
+ *------------------------------------------------------------------*/
+char * RxVarGet(const char * pszVariable)
+{
+    SHVBLOCK shv;
+    char *      pszValue;
+
+    /*---------------------------------------------------------------
+     * set shv values
+     *---------------------------------------------------------------*/
+    shv.shvcode            = RXSHV_SYFET;
+    shv.shvnext            = NULL;
+    shv.shvname.strptr     = const_cast<PCH>(pszVariable);
+    shv.shvname.strlength  = strlen(pszVariable);
+    shv.shvvalue.strptr    = NULL;
+
+    RexxVariablePool(&shv);
+
+    /*---------------------------------------------------------------
+     * check for errors
+     *---------------------------------------------------------------*/
+    if (!shv.shvvalue.strptr)
+        return NULL;
+
+    /*---------------------------------------------------------------
+     * make copy of value, + 1 for hex 0 (not added by rexx)
+     *---------------------------------------------------------------*/
+    pszValue = (char *)malloc(shv.shvvalue.strlength+1);
+    if (!pszValue)
+        return NULL;
+
+    /*---------------------------------------------------------------
+     * copy value into new buffer, free old buffer, return new buffer
+     *---------------------------------------------------------------*/
+    memcpy(pszValue,shv.shvvalue.strptr,shv.shvvalue.strlength);
+    pszValue[shv.shvvalue.strlength] = 0;
+
+#if defined(OPSYS_AIX) || defined(OPSYS_LINUX)
+    free(shv.shvvalue.strptr);
+#else
+    GlobalFree(shv.shvvalue.strptr);
+#endif
+
+    return pszValue;
+}
 
 /*------------------------------------------------------------------
  * get a rexx variable - return value must be freed by caller
@@ -306,28 +366,18 @@ char * RxVarGet(
    )
    {
    SHVBLOCK shv;
-   char *      pszVariable;
-   char *      pszValue;
+   char *pszVariable;
+   char *pszValue;
 
-   if (!pszStem)
+  if (!pszStem)
       return NULL;
 
-   /*---------------------------------------------------------------
-    * get variable name
-    *---------------------------------------------------------------*/
-   if (!pszTail)
-      pszVariable = pszStem;
-   else
-      {
-      pszVariable = (char *)malloc(1+strlen(pszStem)+strlen(pszTail));
-      if (!pszVariable)
-         return NULL;
+    pszVariable = (char *)malloc(1+strlen(pszStem)+strlen(pszTail));
+    if (!pszVariable)
+       return NULL;
 
-      strcpy(pszVariable,pszStem);
-      strcat(pszVariable,pszTail);
-      }
-
-   StripBlanks(pszVariable);
+    strcpy(pszVariable,pszStem);
+    strcat(pszVariable,pszTail);
 
    /*---------------------------------------------------------------
     * set shv values
@@ -343,8 +393,7 @@ char * RxVarGet(
    /*---------------------------------------------------------------
     * free temp var, if we used it
     *---------------------------------------------------------------*/
-   if (pszStem != pszVariable)
-      free(pszVariable);
+   free(pszVariable);
 
    /*---------------------------------------------------------------
     * check for errors
@@ -400,7 +449,6 @@ size_t rxs2size_t(
    /*---------------------------------------------------------------
     * convert
     *---------------------------------------------------------------*/
-   StripBlanks(pRxStr->strptr);
    n   = (size_t) strtoul(pRxStr->strptr,&dummy,10);
    *rc = (0 == *dummy);
 
@@ -416,8 +464,6 @@ int rxs2int(
    )
    {
    int   n;
-   char *   dummy;
-
 
    /*---------------------------------------------------------------
     * check for errors
@@ -431,10 +477,7 @@ int rxs2int(
    /*---------------------------------------------------------------
     * convert
     *---------------------------------------------------------------*/
-   StripBlanks(pRxStr->strptr);
    n   = atoi(pRxStr->strptr);
-   *rc = (0 == *dummy);
-
    return n;
    }
 
@@ -480,7 +523,6 @@ void rxstem2intarray(
    /*---------------------------------------------------------------
     * convert to an integer
     *---------------------------------------------------------------*/
-   StripBlanks(countStr);
    *count  = (int) strtoul(countStr,&dummy,10);
    if (0 != *dummy)
       {
@@ -509,7 +551,6 @@ void rxstem2intarray(
       {
       sprintf(numBuff,"%d",i+1);
       numString = RxVarGet(pRxStr->strptr,numBuff);
-      StripBlanks(numString);
       (*arr)[i]  = (int) strtoul(numString,&dummy,10);
       free(numString);
       }
@@ -702,11 +743,8 @@ void hostent2stem(
     * set addr
     *---------------------------------------------------------------*/
    addr.s_addr = (*(size_t *)pHostEnt->h_addr);
-#if defined(OPSYS_AIX) || defined(OPSYS_LINUX)
    RxVarSet(pszStem,"addr",inet_ntoa(addr));
-#else
    RxVarSet(pszStem,"addr",inet_ntoa(addr));
-#endif
 
    /*---------------------------------------------------------------
     * this is an  extension to the os/2 version.   Dale Posey.
@@ -725,11 +763,7 @@ void hostent2stem(
       sprintf(szBuffer,"addr.%d",count+1);
       addr.s_addr = (*(size_t *)pHostEnt->h_addr_list[count]);
 
-#if defined(OPSYS_AIX) || defined(OPSYS_LINUX)
-      RxVarSet(pszStem,&szBuffer, inet_ntoa(addr));
-#else
       RxVarSet(pszStem,szBuffer, inet_ntoa(addr));
-#endif
       }
 
    sprintf(szBuffer,"%d",count);
@@ -870,7 +904,7 @@ void SetErrno(void)
          sprintf(szBuff,"%d",theErrno);
       }
 
-   RxVarSet("errno",NULL,pszErrno);
+   RxVarSet("errno",pszErrno);
    }
 
 
@@ -896,7 +930,7 @@ void SetH_Errno(void)
          sprintf(szBuff,"%d",theErrno);
       }
 
-   RxVarSet("h_errno",NULL,pszErrno);
+   RxVarSet("h_errno",pszErrno);
    }
 
 /*-/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\-*/
@@ -1040,7 +1074,7 @@ APIRET APIENTRY SockLoadFuncs         (
       }
 
    for (i=0; i<RxSockFuncTableSize; i++)
-      RexxRegisterFunctionDll(const_cast<char *)(RxSockFuncTable[i].pszName),
+      RexxRegisterFunctionDll(const_cast<char *>(RxSockFuncTable[i].pszName),
                               PROG_NAME,
                               "SockFunctionGateWay");
    return 0;

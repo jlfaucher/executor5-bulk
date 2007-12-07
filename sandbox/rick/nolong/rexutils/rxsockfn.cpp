@@ -359,7 +359,7 @@ APIRET APIENTRY SockGetHostByAddr(
    int             domain;
    long            addr;
    int             rc;
-   PSZ             pszStem;
+   const char *    pszStem;
 
    /*---------------------------------------------------------------
     * initialize return value to empty string
@@ -418,8 +418,8 @@ APIRET APIENTRY SockGetHostByName(
    )
    {
    struct hostent *pHostEnt;
-   PSZ             pszName;
-   PSZ             pszStem;
+   const char *    pszName;
+   const char *    pszStem;
 
    /*---------------------------------------------------------------
     * initialize return value to empty string
@@ -474,7 +474,7 @@ APIRET APIENTRY SockGetHostId(
    char    *addr;
 
 #ifdef WIN32
-   UCHAR    pszBuff[64];                    // buffer for ip address
+   char     pszBuff[64];                    // buffer for ip address
    PHOSTENT pHostEnt;                       // ptr to hostent structure
    /*
     *   Retrieve my ip address.  Assuming the hosts file in
@@ -493,31 +493,31 @@ APIRET APIENTRY SockGetHostId(
            retStr->strlength = strlen(retStr->strptr);
            return 0;
    }
-   ia.s_addr = (*(ULONG *)pHostEnt->h_addr);// in network byte order already
+   ia.s_addr = (*(unsigned long *)pHostEnt->h_addr);// in network byte order already
    addr = inet_ntoa(ia);
 #else
 #if defined(OPSYS_AIX) || defined(OPSYS_LINUX)
    #define h_addr h_addr_list[0]
 
-   UCHAR    pszBuff[64];                    /* buffer for ip address*/
+   char     pszBuff[64];                    /* buffer for ip address*/
    struct hostent * pHostEnt;               /* ptr to hostent structure*/
 
                                                  /*get our name*/
-   if (gethostname((PSZ)pszBuff, sizeof(pszBuff)))
+   if (gethostname(pszBuff, sizeof(pszBuff)))
    {
            strcpy(retStr->strptr,"0.0.0.0");
            retStr->strlength = strlen(retStr->strptr);
            return 0;
    }
-   pHostEnt = gethostbyname((PSZ)pszBuff);     /* get our ip address */
+   pHostEnt = gethostbyname(pszBuff);     /* get our ip address */
    if (!pHostEnt)
    {
            strcpy(retStr->strptr,"0.0.0.0");
            retStr->strlength = strlen(retStr->strptr);
            return 0;
    }
-   ia.s_addr = (*(ULONG *)pHostEnt->h_addr);// in network byte order already
-   addr = (PSZ)inet_ntoa(ia);
+   ia.s_addr = (*(unsigned long *)pHostEnt->h_addr);// in network byte order already
+   addr = inet_ntoa(ia);
 #else
    ia.s_addr = htonl(gethostid());
    addr = inet_ntoa(ia);
@@ -665,7 +665,7 @@ APIRET APIENTRY SockGetSockOpt(
    int            intVal;
    long           longVal;
    socklen_t      len;
-   void          *ptr;
+   char          *ptr;
    RXSTRING       rxVar;
    char           pBuffer[30];
    SHVBLOCK       shv;
@@ -718,18 +718,18 @@ APIRET APIENTRY SockGetSockOpt(
    switch(opt)
       {
       case SO_LINGER:
-         ptr = &lingStruct;
+         ptr = (char *)&lingStruct;
          len = sizeof(lingStruct);
          break;
 
       case SO_RCVBUF:
       case SO_SNDBUF:
-         ptr = &longVal;
+         ptr = (char *)&longVal;
          len = sizeof(long);
          break;
 
       default:
-         ptr = &intVal;
+         ptr = (char *)&intVal;
          len = sizeof(int);
       }
 
@@ -865,7 +865,7 @@ APIRET APIENTRY SockIoctl(
     * make call
     *---------------------------------------------------------------*/
 #ifdef WIN32
-   rc = ioctlsocket(sock,cmd,data);
+   rc = ioctlsocket(sock,cmd,(u_long *)data);
 #else
    rc = ioctl(sock,cmd,data,len);
 #endif
@@ -969,8 +969,8 @@ APIRET APIENTRY SockRecv(
    int       dataLen;
    int       flags;
    RXSTRING  rxVar;
-   LONG      rc;
-   PSZ       pBuffer;
+   int       rc;
+   char *    pBuffer;
    SHVBLOCK  shv;
    int       chk;
 
@@ -1012,7 +1012,7 @@ APIRET APIENTRY SockRecv(
    flags = 0;
    if (4 == argc)
       {
-      PSZ pszWord;
+      const char *pszWord;
 
       // strtok modifies the tokenized string.  That's against the rules of
       // usage here, so we need to make a copy first.
@@ -1031,7 +1031,7 @@ APIRET APIENTRY SockRecv(
    /*---------------------------------------------------------------
     * allocate memory for data
     *---------------------------------------------------------------*/
-   pBuffer = (PSZ)malloc(dataLen);
+   pBuffer = (char *)malloc(dataLen);
    if (!pBuffer)
       return 5;
 
@@ -1160,7 +1160,7 @@ APIRET APIENTRY SockRecvFrom(
    /*---------------------------------------------------------------
     * allocate memory for data
     *---------------------------------------------------------------*/
-   pBuffer = (PSZ)malloc(dataLen);
+   pBuffer = (char *)malloc(dataLen);
    if (!pBuffer)
       return 5;
 
@@ -1588,7 +1588,7 @@ APIRET APIENTRY SockSetSockOpt(
    long           longVal1;
    long           longVal2;
    int            len;
-   void          *ptr;
+   char          *ptr;
 
    /*---------------------------------------------------------------
     * initialize return value, check parms
@@ -1636,14 +1636,14 @@ APIRET APIENTRY SockSetSockOpt(
    switch (opt)
       {
       default:
-         ptr = &intVal;
+         ptr = (char *)&intVal;
          len = sizeof(int);
 
          intVal = (int) rxs2int(&(argv[3]),&rc);
          break;
 
       case SO_LINGER:
-         ptr = &lingStruct;
+         ptr = (char *)&lingStruct;
          len = sizeof(lingStruct);
 
          sscanf(argv[3].strptr,"%ld %ld",&longVal1,&longVal2);
@@ -1654,7 +1654,7 @@ APIRET APIENTRY SockSetSockOpt(
 
       case SO_RCVBUF:
       case SO_SNDBUF:
-         ptr = &longVal;
+         ptr = (char *)&longVal;
          len = sizeof(long);
 
          longVal = rxs2int(&(argv[3]),&rc);

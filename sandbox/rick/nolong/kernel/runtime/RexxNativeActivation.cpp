@@ -68,21 +68,26 @@
 #include <math.h>
 #include <limits.h>
 
-static size_t tsize[] = { 0, 0,
-                          sizeof(RexxObject *),
-                          sizeof(int),
-                          sizeof(long),
-                          sizeof(double),
-                          sizeof(CSTRING),
-                          sizeof(RexxObject *),      /* OSELF */
-                          sizeof(RexxObject *),      /* ARGLIST */
-                          sizeof(RexxObject *),      /* MSGNAME */
-                          sizeof(RexxObject *),      /* SCOPE */
-                          sizeof(void *),            /* POINTER */
-                          sizeof(void *),            /* CSELF */
-                          sizeof(RexxObject *),      /* STRING */
-                          sizeof(void *)             /* BUFFER */
-                        };
+static size_t tsize[] = {
+    0,                        // not used
+    0,                        // void
+    sizeof(RexxObject *),
+    sizeof(int),
+    sizeof(size_t),
+    sizeof(ssize_t),
+    sizeof(stringsize_t),
+    sizeof(wholenumber_t),
+    sizeof(double),
+    sizeof(CSTRING),
+    sizeof(RexxObject *),      /* OSELF */
+    sizeof(RexxObject *),      /* ARGLIST */
+    sizeof(RexxObject *),      /* MSGNAME */
+    sizeof(RexxObject *),      /* SCOPE */
+    sizeof(void *),            /* POINTER */
+    sizeof(void *),            /* CSELF */
+    sizeof(RexxObject *),      /* STRING */
+    sizeof(void *)             /* BUFFER */
+};
 
 void RexxNativeActivation::live()
 /******************************************************************************/
