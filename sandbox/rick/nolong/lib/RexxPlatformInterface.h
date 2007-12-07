@@ -174,12 +174,12 @@ char *SysGetThreadStackBase(size_t);   /* query current thread stack start  */
 
 #ifndef SysCreateThread
                                        /* create a new thread               */
-int SysCreateThread (PTHREADFN, size_t, PVOID);
+int SysCreateThread (PTHREADFN, size_t, void *);
 #endif
 
 #ifndef SysLoadProcedure
                                        /* load a named procedure            */
-PFN SysLoadProcedure (RexxInteger *, RexxString *);
+void *SysLoadProcedure (RexxInteger *, RexxString *);
 #endif
 
 #ifndef SysLoadLibrary

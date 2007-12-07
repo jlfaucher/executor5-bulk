@@ -85,11 +85,8 @@
 /* and replaced by any replacement #includes at this point.                   */
 /******************************************************************************/
 
-#define HQUEUE          unsigned long
-
 #define APIENTRY
 #define APIRET          size_t
-#define LPCTSTR         LPCSTR
 
 #ifndef TID
 #ifndef LINUX
@@ -101,10 +98,6 @@
 #ifndef PID
 #define PID             pid_t
 #endif
-#define VOID            void
-#define _loadds
-#define PFN             void *
-
 
 #ifdef LINUX
 #define FNONBLOCK       O_NONBLOCK
@@ -113,7 +106,6 @@
 
 #define SysCall
 #define SysCallV
-//#define PATH_MAX        POSIX_PATH_MAX
 
 #define RXTRACE_SUPPORT
 
@@ -414,7 +406,7 @@ void SysStartTimeSlice( void );
 /******************************************************************************/
 
                                        /* pointer to native method function */
-typedef char *(far *REXXENTRY PNMF)(void **);
+typedef char *(*REXXENTRY PNMF)(void **);
 
 /******************************************************************************/
 /* OPTIONAL:  Overrides for any functions defined in sysdef.h.  These         */
@@ -435,12 +427,7 @@ typedef char *(far *REXXENTRY PNMF)(void **);
 #define SysINTName() new_string("LINUX",5)
                                        // Thread yielding functions in
                                        // threading package
-//#define SysThreadYield()   sched_yield()
 #endif
-//#define SysQueryThreadID() LinThreadQueryID()
-//#define SysGetThreadStackBase(int) NULL
-
-//#define SysTerminateThread(t) { pthread_detach((t)); }
 
 #ifdef AIX
 #define SysIsThreadEqual(pth1, pth2) (pthread_equal(pth1, pth2))
@@ -462,8 +449,6 @@ typedef char *(far *REXXENTRY PNMF)(void **);
 extern "C" {
 #endif
 char * APIENTRY RexxGetVersionInformation(void);
-//void SysResetEventSem (SEV *psem);     /* reset an event semaphore          */
-//void SysCreateMutexSem (SMTX *psem);   /* create/open a mutex semaphore     */
 #ifdef SEMAPHORE_DEBUG
 void SysRequestMutexSem (SMTX psem);   /* request a mutex semaphore         */
                                        /* request a mutex (immediate return)*/

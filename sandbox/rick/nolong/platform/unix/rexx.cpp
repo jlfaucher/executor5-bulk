@@ -62,33 +62,39 @@
 
 #include "rexx.h"
 
-#define INCL_REXXSAA
-#include SYSREXXSAA
-
-//int    APIENTRY RexxTerminate (void);
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 bool   APIENTRY RexxInitialize (void);
+char * APIENTRY RexxGetVersionInformation(void);
 #ifdef __cplusplus
 }
 #endif
+// TODO:  This should be defined in a common header file that is also included by 
+// PlatformDefinitions.h
+
+#if defined(AIX)
+#define SYSINITIALADDRESS "ksh"
+#elif defined(OPSYS_SUN)
+#define SYSINITIALADDRESS "sh"
+#else
+#define SYSINITIALADDRESS "bash"
+#endif
+
 extern bool ProcessSaveImage;
-extern HEV  RexxTerminated;            /* Termination complete semaphore.   */
                                        /* semaphore type changed from HEV to OSEM */
                                        /* for AIX.                          */
 int main (int argc, char **argv)
 {
-  INT   i;                             /* loop counter                      */
-  LONG  rc;                            /* actually running program RC       */
-  char *program_name;                  /* name to run                       */
+  int   i;                             /* loop counter                      */
+  int   rc;                            /* actually running program RC       */
+  const char *program_name;            /* name to run                       */
   char  arg_buffer[8192];              /* starting argument buffer          */
-  char *cp;                            /* option character pointer          */
+  const char *cp;                      /* option character pointer          */
   RXSTRING argument;                   /* rexxstart argument                */
-  LONG  argCount;
+  size_t argCount;
   char *ptr;
-  SHORT rexxrc = 0;                    /* exit List array                   */
+  short rexxrc = 0;                    /* exit List array                   */
   bool from_string = false;            /* running from command line string? */
   bool real_argument = true;           /* running from command line string? */
   RXSTRING instore[2];
@@ -160,35 +166,30 @@ int main (int argc, char **argv)
 
     if (from_string)
     {
-      rc = RexxStart((LONG)       argCount,         /* number of arguments    */
-                     (PRXSTRING)  &argument,        /* array of arguments     */
-                     (PSZ)        program_name,     /* INSTORE                */
-                     (PRXSTRING)  instore,          /* rexx code from -e      */
-                     (PSZ)        SYSINITIALADDRESS,/* command env. name      */
-                     (LONG)       RXCOMMAND,        /* code for how invoked   */
-                                  NULL,
-                     (PSHORT)     &rexxrc,          /* REXX program output    */
-                                  NULL);            /* REXX program output    */
+      rc = RexxStart(argCount,         /* number of arguments    */
+                     &argument,        /* array of arguments     */
+                     const_cast<char *>(program_name),     /* INSTORE                */
+                     instore,          /* rexx code from -e      */
+                     const_cast<char *>(SYSINITIALADDRESS),/* command env. name      */
+                     RXCOMMAND,        /* code for how invoked   */
+                     NULL,
+                     &rexxrc,          /* REXX program output    */
+                     NULL);            /* REXX program output    */
     }
     else
     {
-      rc = RexxStart((LONG)       argCount,         /* number of arguments    */
-                     (PRXSTRING)  &argument,        /* array of arguments     */
-                     (PSZ)        program_name,     /* name of REXX file      */
-                     (PRXSTRING)  0,                /* no instore used        */
-                     (PSZ)        SYSINITIALADDRESS,/* command env. name      */
-                     (LONG)       RXCOMMAND,        /* code for how invoked   */
-                                  NULL,
-                     (PSHORT)     &rexxrc,          /* REXX program output    */
-                                  NULL);            /* REXX program output    */
+      rc = RexxStart(argCount,         /* number of arguments    */
+                     &argument,        /* array of arguments     */
+                     const_cast<char *>(program_name),     /* name of REXX file      */
+                     0,                /* no instore used        */
+                     const_cast<char *>(SYSINITIALADDRESS),/* command env. name      */
+                     RXCOMMAND,        /* code for how invoked   */
+                     NULL,
+                     &rexxrc,          /* REXX program output    */
+                     NULL);            /* REXX program output    */
     }
 
     RexxWaitForTermination();
-
-//    EVWAIT(RexxTerminated);
-//    EVCL(RexxTerminated);
-//    DosWaitEventSem(RexxTerminated,SEM_INDEFINITE_WAIT);
-//    DosCloseEventSem(RexxTerminated);
   }
   return rc ? rc : rexxrc;
 
