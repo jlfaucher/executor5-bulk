@@ -354,19 +354,34 @@ return testUnitList
     end
 
 ::method 'test04'  -- Additional tests added by Lee
-    self~assertTrue('subtest01',datatype(0,  'O'))
+    self~assertTrue('subtest01',datatype(0,'O'))
 
 ::method 'test05'
-    self~assertTrue('subtest01',datatype(1,  'O'))
+    self~assertTrue('subtest01',datatype(1,'O'))
 
 ::method 'test06'
-    self~assertFalse('subtest02',datatype(2,  'O'))
+    self~assertFalse('subtest02',datatype(2,'O'))
 
 ::method 'test07'
-    self~assertFalse('subtest03',datatype(-1, 'O'))
+    self~assertFalse('subtest03',datatype(-1,'O'))
 
 ::method 'test08'
-    self~assertFalse('subtest04',datatype('', 'O'))
+    self~assertFalse('subtest04',datatype('','O'))
+
+-- Found some more tests to add
+::method 'test09'
+    numeric digits 3
+    a0 = 0
+    a1 = 1
+    self~assertSame('subTest01','1',datatype(999,'w'))
+    self~assertSame('subTest02',a1,datatype(1.004,'w'))
+    self~assertSame('subTest03','0',datatype(1.005,'w'))
+    self~assertSame('subTest04',a0,datatype(1.00E+3,'w'))
+    self~assertSame('subTest05','0',datatype(-1.23456789012345E-2,'w'))
+
+::method 'test10'
+    numeric digits 4
+    self~assertSame('subTest01','1',datatype(1000,'w'))
 
 ::routine dts
     parse arg a
