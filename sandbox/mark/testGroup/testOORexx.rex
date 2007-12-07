@@ -43,12 +43,22 @@
 
 cmdLine = arg(1)
 
+  os = "Windows Linux SunOS MacOSx"
+
+  do word over os~space(1)~makearray(" ")
+    say word
+  end
+  return
+
    .local~bRunTestsLocally = .false
-   files = .list~of("C:\work.ooRexx\ooRexxUnit\sandbox\ooRexx\base\class\Queue.testGroup")
+   files = .list~of("C:\work.ooRexx\ooRexxUnit\sandbox\ooRexx\base\class\Queue.testGroup",     -
+                    "C:\work.ooRexx\ooRexxUnit\sandbox\ooRexx\doc\rexxref\chapter7\Section4.testGroup"  -
+                   )
    do file over files
      call (file)
      obj = RESULT
    end
+
 
    say "Got object from testGroup:" obj
    say "From file:" obj~pathName
@@ -60,4 +70,3 @@ cmdLine = arg(1)
 return 0
 
 ::requires "ooTest.frm"
-

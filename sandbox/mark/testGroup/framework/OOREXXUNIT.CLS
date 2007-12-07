@@ -151,33 +151,36 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
--- Define the version number with: X.Y.Z  Where X is the ooRexxUnit.cls version,
--- Y is the minimum ooRexx interpreter level required, and Z is the date the
--- version was changed.
-.local~ooRexxUnit.version=106.320.20071205
+if \ .local~hasEntry(ooRexxUnit.version) then do
 
-.local~chars.NonPrintable=xrange("00"x, "1F"x) || "FF"x  -- define non-printable chars
+  -- Define the version number with: X.Y.Z  Where X is the ooRexxUnit.cls
+  -- version, Y is the minimum ooRexx interpreter level required, and Z is the
+  -- date the version was changed.
+  .local~ooRexxUnit.version=106.320.20071205
 
-parse version interpreterName languageLevel interpreterDate
-.local~ooRexxUnit.interpreterName=interpreterName
-.local~ooRexxUnit.languageLevel=languageLevel
-.local~ooRexxUnit.interpreterDate=interpreterDate
+  .local~chars.NonPrintable=xrange("00"x, "1F"x) || "FF"x  -- define non-printable chars
 
-.local~ooRexxUnit.shellName=ooRexxUnit.getShellName()
-.local~ooRexxUnit.OSName   =ooRexxUnit.getOSName()
+  parse version interpreterName languageLevel interpreterDate
+  .local~ooRexxUnit.interpreterName=interpreterName
+  .local~ooRexxUnit.languageLevel=languageLevel
+  .local~ooRexxUnit.interpreterDate=interpreterDate
 
-      -- define end-of-line chars
-.local~ooRexxUnit.line.separator=.endOfLine
+  .local~ooRexxUnit.shellName=ooRexxUnit.getShellName()
+  .local~ooRexxUnit.OSName   =ooRexxUnit.getOSName()
 
-      -- get and memorize the path.separator on this system
-.local~ooRexxUnit.directory.separator=filespec("Path", directory())~left(1)
-if .ooRexxUnit.directory.separator="\" then     -- DOS-like
-   .local~ooRexxUnit.path.separator=";"
-else                                            -- Unix-like
-   .local~ooRexxUnit.path.separator=":"
+  -- define end-of-line chars
+  .local~ooRexxUnit.line.separator=.endOfLine
 
-do rtn over .methods
-   .public_routines~put(.methods[rtn], rtn)
+  -- get and memorize the path.separator on this system
+  .local~ooRexxUnit.directory.separator=filespec("Path", directory())~left(1)
+  if .ooRexxUnit.directory.separator="\" then     -- DOS-like
+     .local~ooRexxUnit.path.separator=";"
+  else                                            -- Unix-like
+     .local~ooRexxUnit.path.separator=":"
+
+  do rtn over .methods
+     .public_routines~put(.methods[rtn], rtn)
+  end
 end
 
 -- End of entry point.
@@ -217,6 +220,7 @@ end
      clz=clz~superClass    -- look further, get immediate superclass
   end
   return .false
+-- End isSubClassOf()
 
 ::method enQuote
   return '"' || arg(1)~string || '"'
@@ -790,10 +794,10 @@ exceptionHandler:
 /* *********************************************************************************** */
 ::class "TestSuite" subclass TestCase public
 ::method init
-  expose fTestList
+  expose testQueue
 
   forward class (super) continue
-  fTestList=.queue~new
+  testQueue=.queue~new
 
       -- a class object, use reflection and create test cases
   if arg()>0 then       -- args there ?
@@ -856,18 +860,18 @@ exceptionHandler:
 
 
 ::method addTest
-  expose fTestList
+  expose testQueue
   use strict arg aTestCase
 
   if \isSubClassOf(aTestCase~class, "TestCase") then
      raise syntax 88.914 array ("'aTestCase'", "'TestCase' or 'TestSuite'")
 
-  fTestList~queue(aTestCase)
+  testQueue~queue(aTestCase)
   self~countTestCases = self~countTestCases+1
 
 
 ::method run
-  expose fTestList
+  expose testQueue
   use arg aTestResult, bGiveFeedback=.false
 
   if \datatype(bGiveFeedback,"O") then
@@ -882,7 +886,7 @@ exceptionHandler:
 
   aTestResult~startTest(self)       -- remember test started
   self~setUp                        -- make sure setup is invoked before testSuite runs
-  do aTestCase over fTestList while aTestResult~shouldStop=.false
+  do aTestCase over testQueue while aTestResult~shouldStop=.false
      aTestCase~run(aTestResult, bGiveFeedback)
   end
   self~tearDown                     -- make sure tearDown is invoked after testSuite ran
@@ -1169,16 +1173,18 @@ syntax:
    program is running.  Provides an uniform method for test cases to determine
    which operating system they are executing on.
 
-   Returns: WINDOWS, LINUX, SUNOS, or AIX.  (As of ooRexx 3.1.2)
+   The possible list of return words as of ooRexx 3.2.0 is:
+
+     WINDOWS, LINUX, SUNOS, AIX, MACOSX, CYGNUS, FREEBSD, and NETBSD
+
+   Although it is doubtful that ooRexx is compilable on CYGNUS, FREEBSD, or
+   NETBSD.
 */
 ::routine ooRexxUnit.getOSName public
 
   parse upper source os .
-  if os~abbrev("WIN") then
-    return "WINDOWS"
-
+  if os~abbrev("WIN") then os = "WINDOWS"
   return os
-
 
 
 

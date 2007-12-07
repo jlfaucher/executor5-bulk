@@ -79,44 +79,138 @@
   -- tests  A table of Test classes indexed by their category.
   ::attribute tests private
 
+  -- currentTypes  A set of the categories of tests this group currently contains.
+  ::attribute currentTypes get
+  ::attribute currentTypes set private
+
+  -- machineOS  The operating system this group is executing on.
+  ::attribute machineOS private
+
+  -- knownOSes  A set containing all the possible OSes that ooRexx will run on.
+  -- This set is intended to be immutable.  If / when ooRexx is compilable on
+  -- addtional operating systems, the set will need to be updated.
+  ::attribute knownOSes get
+  ::attribute knownOSes set private
+
+  -- allowedOSes  A set containing the OSes the tests in this group can execute
+  -- on.  By default the set contains all known OSes.
+  ::attribute allowedOSes get
+  ::attribute allowedOSes set private
+
   -- hasTests  True if this group has any executable tests, otherwise false.
   ::attribute hasTests get
   ::attribute hasTests set private
 
 
+  /** init()
+   *
+   * Initializes a new test group instance.
+   *
+   * @param fileSpec  REQUIRED
+   *   The path name of the file this test group represents.  The file must
+   *   exist.  Relative path names are acceptable, if they will resolve from the
+   *   current working directory.  This is UNLIKELY to be the case in an
+   *   automated test run, so the fully qualified path name is usually needed.
+   *
+   * @param data      OPTIONAL
+   *   An array of lines containing the metadata from the file header for this
+   *   test group.  This is only useful if the file header is in the format
+   *   specified in the ooTest Framework reference.
+   */
   ::method init
-    use strict arg fileSpec, src = (.array~new)
+    use strict arg fileSpec, data = (.array~new)
 
     fObj = .stream~new(fileSpec)
     self~pathName = fObj~query("EXISTS")
     if self~pathName == "" then
       raise syntax 88.917 array ("1 'fileSpec'", "must be an existing file path name")
 
-    if \ src~isInstanceOf(.array) then
-      raise syntax 88.914 array ("2 'src'", "Array")
+    if \ data~isInstanceOf(.array) then
+      raise syntax 88.914 array ("2 'data'", "Array")
 
     self~tests = .table~new
     self~hasTests = .false
+    self~currentTypes = .set~new
 
-    self~createMetaData(src)
+    -- All possible OS words are put into the allowed OSes set, although it is
+    -- doubtful that ooRexx is compiled on the last 3.
+    self~knownOSes = .set~of('WINDOWS', 'LINUX', 'SUNOS', 'AIX', 'MACOSX', 'CYGNUS', 'FREEBSD', 'NETBSD')
+    self~allowedOSes = self~knownOSes~copy
+    self~machineOS = .ooRexxUnit.OSName
+
+    self~createMetaData(data)
 
   -- End init( )
 
-  /** addTest()
+  /** restrictOS()
    *
-   * Adds a test class to this group.
+   * Alerts this test group that the tests it contains are operating system
+   * specific.  By default tests in a test group are expected to execute on the
+   * set of all OSes that ooRexx runs on.  However, test groups can be
+   * restricted to only produce test suites for a subset of those OSes.
+   *
+   * @param acceptable
+   *   A set of OS words that this test group should be restricted to.  This can
+   *   be either a string of blank separated OS words, or a set of the OS words.
+   *   Case is not significant.  The set must be a subset of the known OS words.
    *
    */
-  ::method addTest
-    use arg strict test
+  ::method restrictOS
+    use strict arg acceptable
 
-    if \ isSubClassOf(test, "TestCase") then
-      raise syntax 88.914 array ("1 'test'", "TestCase")
+    s = .set~new
+    select
+      when acceptable~isA(.string) then do os over acceptable~space(1)~makearray(" ")
+        s~put(os~translate)
+      end
 
-    if isSubClassOf(test, "TestSuite") then
-      raise syntax 88.917 array ("1 'test'", "can not be a TestSuite subclass")
+      when acceptable~isA(.set) then do os over = acceptable
+        s~put(os~translate)
+      end
 
-  -- End addTest()
+      otherwise raise syntax 88.914 array ("1 'acceptable'", "'String' or 'Set'")
+    end
+    -- End select
+
+    if \ s~subset(self~knownOSes) then
+      raise syntax 88.914 array ("1 'acceptable'", "is not a subset of the known operating systems")
+
+    self~allowedOSes = s
+    if \ self~allowedOSes~hasIndex(self~machineOS) then self~hasTests = .false
+
+  -- End restrictOS()
+
+  /** add()
+   *
+   * Adds a test class object to this group.  The class object has to be a
+   * direct subclass of ooTestCase.
+   *
+   */
+  ::method add
+    expose tests
+    use strict arg test
+
+    if \ isSubClassOf(test, "ooTestCase") then
+      raise syntax 88.917 array ("1 'test'", "must be a subclass of the ooTestCase class. Found:" test)
+
+    if tests~hasIndex(test~ooTestType) then
+      raise syntax 88.917 array ("1 'test'", "this test group already contains a test of type" test~ooTestType)
+
+    tests[test~ooTestType] = test
+    self~hasTests = .true
+
+  -- End add()
+
+  ::method suite
+    expose tests
+    use strict arg type, testSuite = (.TestSuite~new)
+
+    do t over type
+      testClass = tests[t~translate]
+      if testClass <> .nil then testSuite~addTest(.TestSuite~new(testClass))
+    end
+
+  return testSuite
 
   /** createMetaData()
    *
@@ -126,7 +220,7 @@
    *
    */
   ::method createMetaData private
-    use arg src
+    use arg data
 
     data = .directory~new
     data~setentry("test_Case-source", self~pathName);
@@ -135,7 +229,7 @@
     tOut=xrange("A","Z")||xrange("a","z")
     tIn =xrange("A","Z")||xrange("a","z")||xrange()
 
-    do line over src
+    do line over data
       line = line~strip
       ch = line~left(2)
       if ch == "--" | ch == "/*" | ch == "*/" then iterate
@@ -209,8 +303,8 @@
   -- ooTestType  The type of test cases contained in this test case class.  The
   -- default type is "UNIT" and other typical types are "STRESS", "SAMPLE",
   -- "GUI_SAMPLE", "DOC_EXAMPLE", etc..
-  ::attribute ooTestType get
-  ::attribute ooTestType set private
+  ::attribute ooTestType get class
+  ::attribute ooTestType set class private
 
   ::method init class
     forward class (super) continue

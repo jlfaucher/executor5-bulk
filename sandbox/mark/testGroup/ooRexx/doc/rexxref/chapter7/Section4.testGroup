@@ -63,7 +63,7 @@ cmdLine = arg(1)
   if \ .local~hasentry("bRunTestsLocally") then runTests = .true
   else runTests = .bRunTestsLocally
 
-  parse source s
+  parse source . . s
 
   lines=.array~new
   do i=1 to 150 until lines[i]="*/"
@@ -85,7 +85,7 @@ return group
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
   Directives, Classes, or Routines.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::requires 'OOREXXUNIT.CLS'
+::requires 'ooTest.frm'
 
 ::class "Section4_tests" subclass ooTestCase public
 
