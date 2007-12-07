@@ -41,6 +41,8 @@
 #define WINRXAPI_H_INCLUDED
 #include <setjmp.h>
 
+#include "rexx.h"
+
 #include "APIServiceTables.h"
 #define  MAXNAMESIZE      30           /* maximum internal name size */
 #define  REGNOOFTYPES      3           /* Number of types supported. */
@@ -112,7 +114,7 @@ typedef struct _GLOBALREXXAPIDATA {    /* Do not move next two items */
   PVOID         comblock[NUMBEROFCOMBLOCKS];
   ULONG         comblockQueue_ExtensionLevel;
   ULONG         comblockMacro_ExtensionLevel;
-  PID           MemMgrPid;
+  process_id_t  MemMgrPid;
   ULONG         MemMgrVersion;         /* to check if dlls match */
   RXAPI_MESSAGE msg;
   LONG          UID;
@@ -165,41 +167,6 @@ typedef struct {
 
 #define  RXFMLIFO   1                  /* fifo/lifo addition         */
 
-/***    Queing Services */
-#ifdef INCL_RXQUEUE
-
-/***    Request flags for External Data Queue access */
-
-#define RXQUEUE_FIFO          0    /* Access queue first-in-first-out */
-#define RXQUEUE_LIFO          1    /* Access queue last-in-first-out  */
-
-#define RXQUEUE_NOWAIT        0    /* Wait for data if queue empty    */
-#define RXQUEUE_WAIT          1    /* Don't wait on an empty queue    */
-#define RXQUEUE_ENDWAIT          2
-
-
-/***    Return Codes from RxQueue interface */
-
-#define RXQUEUE_OK            0        /* Successful return           */
-#define RXQUEUE_NOTINIT       1000     /* Queues not initialized      */
-
-#define RXQUEUE_STORAGE       1        /* Ret info buf not big enough */
-#define RXQUEUE_SIZE          2        /* Data size > 64K-64          */
-#define RXQUEUE_DUP           3        /* Attempt-duplicate queue name*/
-#define RXQUEUE_NOEMEM     1002        /* failure in api manager      */
-#define RXQUEUE_BADQNAME      5        /* Not a valid queue name      */
-#define RXQUEUE_PRIORITY      6        /* Not accessed as LIFO|FIFO   */
-#define RXQUEUE_BADWAITFLAG   7        /* Not accessed as WAIT|NOWAIT */
-#define RXQUEUE_EMPTY         8        /* No data in queue            */
-#define RXQUEUE_NOTREG        9        /* Queue does not exist        */
-#define RXQUEUE_ACCESS       10        /* Queue busy and wait active  */
-#define RXQUEUE_MAXREG       11        /* No memory to create a queue */
-#define RXQUEUE_MEMFAIL      12        /* Failure in memory management*/
-#define RXQUEUE_WAITACTIVE   13
-
-
-#endif /* INCL_RXQUEUE */
-
 #define TERM         0xffff    /* service termination flag           */
 #define TEST         0xfffe    /* service test flag                  */
 #define INIT         0xfffd    /* service initialization             */
@@ -208,10 +175,6 @@ typedef struct {
 #define FREE_MEMORY  0xfffa    /* free memory                        */
 #define FREE_POOL    0xfff9    /* free memory pool                   */
 #define INIT_POOL    0xfff8    /* initialize memory pool             */
-
-
-#define DosEnterMustComplete(ptr) EnterCriticalSection(ptr)
-#define DosExitMustComplete(ptr) LeaveCriticalSection(ptr)
 
 #define MUTEXCOUNT 6
 #define API_API 0
@@ -284,7 +247,7 @@ LONG            FillAPIComBlock(HAPIBLOCK *,
 ULONG  RxGetModAddress( PSZ       dll_name,
                         PSZ       function_name,
                         PULONG    error_codes,
-                        PFN *     function_address,
+                        REXXPFN * function_address,
                         PULONG    call_type);
 ULONG get_session(void);
 BOOL  Initialize( VOID ) ;

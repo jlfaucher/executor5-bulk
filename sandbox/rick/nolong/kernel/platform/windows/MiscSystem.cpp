@@ -89,14 +89,6 @@ void SysTermination(void)
 {
 }
 
-//void SysInitialize(void)
-/******************************************************************************/
-/* Function:   Perform system specific initialization.  For OS/2, this means  */
-/*             declare the exit list processor.                               */
-/******************************************************************************/
-//{
-//   DosExitList(EXLST_ADD,(PFNEXITLIST)exit_handler);
-//}
 
 RexxString *SysVersion(void)
 /******************************************************************************/
@@ -117,7 +109,7 @@ RexxString *SysVersion(void)
 }
 
 
-PFN SysLoadProcedure(
+void *SysLoadProcedure(
   RexxInteger * LibraryHandle,         /* library load handle               */
   RexxString  * Procedure)             /* required procedure name           */
 /******************************************************************************/
@@ -136,7 +128,7 @@ PFN SysLoadProcedure(
   if ( !(Function =(PFN)GetProcAddress(Handle, Name)) )
                                        /* report an exception               */
     reportException(Error_External_name_not_found_method, Procedure);
-  return Function;                     /* return the pointer information    */
+  return (void *)Function;             /* return the pointer information    */
 }
 
 RexxInteger * SysLoadLibrary(

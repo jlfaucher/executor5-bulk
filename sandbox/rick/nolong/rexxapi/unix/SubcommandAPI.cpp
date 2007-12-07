@@ -54,14 +54,8 @@
 # include "config.h"
 #endif
 
-#define  INCL_RXFUNC
-#define  INCL_RXSUBCOM
-#define  INCL_RXSYSEXIT
-
 #include <stdlib.h>
-#include "RexxCore.h"                         /* global REXX declarations       */
-#include "RexxNativeAPI.h"
-#include SYSREXXSAA
+#include "rexx.h"
 #include "SharedMemorySupport.h"
 #include "SystemSemaphores.h"
 #include "SubcommandAPI.h"
@@ -106,13 +100,11 @@ char   szLibName[MAXNAME +1];                  /* External lib name           */
 LONG  RegQuery(PSZ, PSZ, PUSHORT, unsigned char *, LONG );
 LONG dllcheck(PSZ, PSZ, LONG);        // Check against duplicating
 LONG execheck(PSZ, LONG );
-LONG  RegLoad(PSZ, PSZ, LONG , PFN *, PULONG, PVOID*);
+LONG  RegLoad(PSZ, PSZ, LONG , void **, PULONG, PVOID*);
 LONG  RegDrop(PSZ, PSZ, LONG );       // Drop an api block from the chain
 LONG  RegRegisterExe(PSZ, PFN, unsigned char *, LONG, LONG);
 LONG  RegRegisterDll(PSZ, PSZ, PSZ, unsigned char *, ULONG, LONG);
-//PAPIBLOCK search(PSZ, PSZ, LONG );
 APIBLOCK *RegSearch(PSZ, LONG, char);
-//APIBLOCK *dllsearch(PSZ, PSZ, LONG );
 
 
 /********************************************************************/
@@ -288,7 +280,7 @@ APIRET APIENTRY RexxRegisterSubcomDll(
 
 APIRET APIENTRY RexxRegisterSubcomExe(
   PSZ   EnvName,                       /* Subcom name                */
-  PFN   EntryPoint,                    /* DLL routine name           */
+  void *EntryPoint,                    /* DLL routine name           */
   unsigned char *UserArea)             /* User data                  */
 {
   ULONG  rc;                           /* Function return code.      */
@@ -339,7 +331,7 @@ APIRET APIENTRY RexxCallFunction (
   PRXFUNC    func_address;             /* addr for transfer to call  */
   PVOID plib = NULL;                   /* Dll handle                 */
 
-  if (!(rc=RegLoad(dname, NULL, REGFUNCTION, (PFN *)&func_address,
+  if (!(rc=RegLoad(dname, NULL, REGFUNCTION, (void **)&func_address,
        &calltype, &plib))) {
 
                                        /* call                       */
@@ -380,7 +372,7 @@ APIRET APIENTRY RexxLoadSubcom(
 {
   ULONG  calltype;                     /* Routine calltype (not used)*/
   ULONG  rc;                           /* Function return code.      */
-  PFN a;                               /* Address of Subcom.         */
+  void *a;                             /* Address of Subcom.         */
   PVOID plib = NULL;                   /* DLL handle                 */
 
                                        /* Load routine into memory   */
@@ -421,7 +413,7 @@ APIRET APIENTRY RexxCallSubcom(
   ULONG calltype;
   PVOID plib = NULL;
 
- if (!(rc=RegLoad(name, dll, REGSUBCOMM, (PFN *)&subcom_addr,
+ if (!(rc=RegLoad(name, dll, REGSUBCOMM, (void **)&subcom_addr,
       &calltype, &plib))) {
 
     *sbrc = (USHORT)(                /* Call subcom environment w/ */
@@ -527,7 +519,7 @@ APIRET APIENTRY RexxDeregisterSubcom(
 
 APIRET APIENTRY RexxRegisterExitExe(
   PSZ   EnvName,                       /* exit name                  */
-  PFN   EntryPoint,                    /* DLL routine name           */
+  void *EntryPoint,                    /* DLL routine name           */
   unsigned char *UserArea )            /* User data                  */
 {
   ULONG  rc;                           /* Function return code.      */
@@ -677,7 +669,7 @@ LONG APIENTRY RexxCallExit(
   ULONG calltype;
   PVOID plib = NULL;
 
-  if (!(rc=RegLoad(name, dll, REGSYSEXIT, (PFN *)&exit_address,
+  if (!(rc=RegLoad(name, dll, REGSYSEXIT, (void **)&exit_address,
        &calltype, &plib))) {
                                        /* call                       */
     rc = (LONG )(*exit_address)(fnc, subfnc, param_block);
@@ -754,7 +746,7 @@ APIRET APIENTRY RexxRegisterFunctionDll(
 
 APIRET APIENTRY RexxRegisterFunctionExe(
   PSZ   EnvName,                       /* Subcom name                */
-  PFN   EntryPoint )                   /* DLL routine name           */
+  void *EntryPoint )                   /* DLL routine name           */
 {
   ULONG  rc;                           /* Function return code.      */
                                        /* Register the subcommand.   */
@@ -938,7 +930,7 @@ LONG RegRegisterDll(
 
 LONG  RegRegisterExe(
   PSZ   EnvName,                       /* Subcom name                */
-  PFN   EntryPoint,                    /* DLL routine name           */
+  void *EntryPoint,                    /* DLL routine name           */
   unsigned char *UserArea,             /* User data                  */
   LONG  type,                          /* Registration type.         */
   LONG  CallType )                     /* 32- or 16-bit call outs    */
@@ -1283,7 +1275,7 @@ LONG  RegLoad(
   PSZ name,                            /* the Subcommand Environment */
   PSZ dll,                             /* Module name of its' DLL    */
   LONG  type,                          /* Load type.                 */
-  PFN *paddress,                       /* Function addr (returned if */
+  void **paddress,                     /* Function addr (returned if */
                                        /* function properly loaded). */
   PULONG calltype,                     /* type of DLL procedure      */
   PVOID *plib)
@@ -1961,7 +1953,7 @@ extern "C" {
 
 APIRET APIENTRY RexxRegisterFunction(
   PSZ   EnvName,                       /* Subcom name                */
-  PFN   EntryPoint )                   /* DLL routine name           */
+  void *EntryPoint )                   /* DLL routine name           */
 {
   ULONG  rc;                           /* Function return code.      */
                                        /* Register the subcommand.   */
@@ -1980,7 +1972,7 @@ APIRET APIENTRY RexxRegisterFunction(
 
 APIRET APIENTRY RexxRegisterSubcom(
   PSZ   EnvName,                       /* Subcom name                */
-  PFN   EntryPoint,                    /* DLL routine name           */
+  void *EntryPoint,                    /* DLL routine name           */
   unsigned char *UserArea )            /* User data                  */
 {
   ULONG  rc;                           /* Function return code.      */

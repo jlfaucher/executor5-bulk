@@ -68,12 +68,8 @@
 /* In addition, functions in this module may establish data that              */
 /* must persist after the calling process terminates.                         */
 /******************************************************************************/
-
-#define INCL_RXMACRO
-
 #include <stdio.h>
 #include "PlatformDefinitions.h"
-#include SYSREXXSAA
 #include <stdlib.h>
 #include <string.h>
 #include "APIDefinitions.h"

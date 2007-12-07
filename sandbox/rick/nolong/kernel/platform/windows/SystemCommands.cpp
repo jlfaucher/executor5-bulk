@@ -51,20 +51,12 @@
 #include <process.h>
 #include <stdlib.h>
 
-#define INCL_RXSUBCOM                  /* Include subcom declares        */
-#define INCL_RXFUNC                    /* and external function...       */
-#define INCL_RXSYSEXIT                 /* and system exits               */
-#define INCL_INTEGER
-#define INCL_ARRAY
-
 #include "RexxCore.h"                    /* global REXX declarations     */
 #include "StringClass.hpp"
 #include "RexxActivity.hpp"
 #include "RexxNativeAPI.h"             /* Lot's of useful REXX macros    */
 #include "ActivityManager.hpp"
 #include "ProtectedObject.hpp"
-
-#include SYSREXXSAA                    /* Include REXX header            */
 
 #define CMDBUFSIZE32S 260              /* Max size of executable cmd     */
 #define CMDBUFSIZENT 8092              /* Max size of executable cmd     */

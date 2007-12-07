@@ -63,49 +63,11 @@
 #include <config.h>
 #endif
 
-// The limit values for the portable int types are only included in C++ if the
-// following is defined before including stdint.h.
-#define __STDC_LIMIT_MACROS
-
-#ifdef HAVE_STDINT_H
-#include <stdint.h>
-#endif
-
-// this does not always end up getting defined on all platforms (e.g, the Mac).
-#ifndef INT64_MAX
-#define INT64_MAX        9223372036854775807LL
-#endif
-
-
-/******************************************************************************/
-/* REQUIRED:  The following type definitions are used throughout the REXX     */
-/* kernel code, so definitions are required for all of these.  If the system  */
-/* in questions (e.g., OS/2) provides definitions for these via other include */
-/* files, any of these items can be deleted from the system specific file and */
-/* and replaced by any replacement #includes at this point.                   */
-/******************************************************************************/
-
-#define APIENTRY
-#define APIRET          size_t
-
-#ifndef TID
-#ifndef LINUX
-#define TID             tid_t
-#else
-#define TID             pthread_t
-#endif
-#endif
-#ifndef PID
-#define PID             pid_t
-#endif
 
 #ifdef LINUX
 #define FNONBLOCK       O_NONBLOCK
 #endif
 
-
-#define SysCall
-#define SysCallV
 
 #define RXTRACE_SUPPORT
 
@@ -153,11 +115,10 @@
 #include "ThreadSupport.hpp"
 #include "SystemSemaphores.h"
 
-#define KMTX INT               /* kernel semaphore ID               */
+#define KMTX int               /* kernel semaphore ID               */
 #define SMTX RexxMutex *       /* semaphore data types              */
 #define HMTX SMTX
 #define SEV  RexxSemaphore *
-#define HEV  SEV
                              // semaphore definitions and init
 //#ifdef AIX
 extern SMTX initialize_sem;
@@ -183,21 +144,6 @@ typedef int SYSEXCEPTIONBLOCK;
 /******************************************************************************/
 
 typedef void *(* PTHREADFN)(void *);    /* define a thread function          */
-
-/******************************************************************************/
-/* REQUIRED:  Define any special requirements for external entry calls back   */
-/* into the interpreter.  The default is no special requirements.             */
-/******************************************************************************/
-
-#define REXXENTRY APIENTRY
-
-/******************************************************************************/
-/* REQUIRED:  This was needed for Windows. Any entry points containing        */
-/* variable length arguments need to use __cdecl calling convention.          */
-/******************************************************************************/
-
-#define VLAREXXENTRY APIENTRY          /* external entry points       */
-#define VLAENTRY                       /* internal entry points       */
 
 /******************************************************************************/
 /* REQUIRED:  Definitions for REXX semaphore functions.  These default to     */
@@ -321,11 +267,6 @@ void SysStartTimeSlice( void );
 
 #define INIT_SEM_NAME "INIT_SEM"
 
-//******************************************************************************
-// REQUIRED:  Define name of rexxsaa.h toolkit header file for your platform
-//******************************************************************************
-#define SYSREXXSAA "rexx.h"
-
 /******************************************************************************/
 /* Priority values used for adjusting thead priorities                        */
 /******************************************************************************/
@@ -448,7 +389,7 @@ typedef char *(*REXXENTRY PNMF)(void **);
 #ifdef __cplusplus
 extern "C" {
 #endif
-char * APIENTRY RexxGetVersionInformation(void);
+char * APIENTRY RexxGetVersionInformation();
 #ifdef SEMAPHORE_DEBUG
 void SysRequestMutexSem (SMTX psem);   /* request a mutex semaphore         */
                                        /* request a mutex (immediate return)*/
@@ -461,9 +402,6 @@ LONG SysRequestImmediateMutexSem (SMTX psem);
                                        /* both functions can only be used   */
                                        /* without a return value & radix=10 */
 #define _ultoa(val, str, radix)  sprintf(str, "%u", val)
-
-//#include "olcrtmis.h"
-
 
 #ifdef __cplusplus
 }

@@ -55,7 +55,6 @@
 #include "RexxActivity.hpp"
 #include "SourceFile.hpp"
 #include "ProtectedObject.hpp"
-#include SYSREXXSAA
 
 /*********************************************************************/
 /*         Definitions for use by the Meta I/O functionality         */

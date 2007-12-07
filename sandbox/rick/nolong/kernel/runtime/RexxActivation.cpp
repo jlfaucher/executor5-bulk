@@ -72,12 +72,6 @@
 #include "ExpressionCompoundVariable.hpp"
 #include "ProtectedObject.hpp"
 
-#define INCL_RXSYSEXIT
-#define INCL_RXMACRO   /* we now need macrospace definitions */
-#define INCL_RXOBJECT  /* use Object REXX defines from REXXSAA.H */
-#include SYSREXXSAA
-
-
 /* max instructions without a yield */
 #define MAX_INSTRUCTIONS  100
                                        /* routine to restore the Environment*/

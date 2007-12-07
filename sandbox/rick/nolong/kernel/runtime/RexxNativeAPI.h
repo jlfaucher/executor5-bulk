@@ -41,14 +41,12 @@
 /* Header file for REXX methods written in C.                                 */
 /*                                                                            */
 /******************************************************************************/
-#ifndef ORYX_H_INCLUDED
-#define ORYX_H_INCLUDED
+#ifndef RexxNativeAPI_H_INCLUDED
+#define RexxNativeAPI_H_INCLUDED
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include SYSREXXSAA                    /* include REXX APIs also            */
 
 /******************************************************************************/
 /* Types (for general use)                                                    */

@@ -60,14 +60,14 @@ typedef struct apireg_node {
     PSZ    apidll_name;                /* module name                */
     PSZ    apidll_proc;                /* procedure name             */
     UCHAR  apiuser[USERLENGTH];        /* user area                  */
-    PFN    apiaddr;                    /* routine address            */
+    void  *apiaddr;                    /* routine address            */
     LONG   apitype;                    /* 16 or 32-bit flag          */
     ULONG  apimod_handle;              /* dynalink module handle     */
     ULONG  apidrop_auth;               /* Permission to drop         */
-    PID    apipid;                     /* Pid of Registrant          */
+    process_id_t  apipid;              /* Pid of Registrant          */
     ULONG  apisid;                     /* Session ID.                */
     ULONG  apisize;                    /* actual total size of block */
-    PID   *pUserPIDs;                  /* processes using this block */
+    process_id_t *pUserPIDs;           /* processes using this block */
     ULONG  uPIDBlockSize;              /* size of array of PIDs      */
     } APIBLOCK;
 

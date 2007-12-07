@@ -47,7 +47,6 @@
 # include "config.h"
 #endif
 
-#define INCL_BASE                      /* Include OS/2 definitions          */
 #include <limits.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -63,7 +62,6 @@
 
 #include "PlatformDefinitions.h"        /* added for cat name + defs          */
 #include "RexxMessageNumbers.h"
-#include SYSREXXSAA
 
 #define BUFFERLEN         256           /* Length of message bufs used        */
 #define CCHMAXPATH PATH_MAX+1

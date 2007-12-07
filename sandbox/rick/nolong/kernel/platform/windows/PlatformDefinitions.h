@@ -61,66 +61,6 @@
 #define C_STACK_SIZE 60000
 
 /******************************************************************************/
-/* REQUIRED:  The following type definitions are used throughout the REXX     */
-/* kernel code, so definitions are required for all of these.  If the system  */
-/* in questions provides definitions for these via other include              */
-/* files, any of these items can be deleted from the system specific file and */
-/* and replaced by any replacement #includes at this point.                   */
-/******************************************************************************/
- /* Windows style definitions */
- #include <windows.h>                   // required for windows apps
-
-/* include windows debugging function definition */
-#include "DebugOutput.h"
-
-#define UBYTE           unsigned char     // Not defined in windows
-#define _loadds                           //
-#define _Optlink
-#define SysCall _cdecl
-#define SysCallV __cdecl
-
-typedef          char  int8_t;
-typedef unsigned char uint8_t;
-typedef          short  int16_t;
-typedef unsigned short uint16_t;
-typedef          int    int32_t;
-typedef unsigned int   uint32_t;
-
-typedef INT_PTR   intptr_t;
-typedef UINT_PTR  uintptr_t;
-typedef SSIZE_T   ssize_t;
-typedef signed __int64 int64_t;
-typedef unsigned __int64 uint64_t;
-
-#define UINT64_MAX (~((uint64_t)0))
-#define INT64_MAX  ((int64_t)(UINT64_MAX >> 1))
-#define INT64_MIN  ((int64_t)UINT64_MAX)
-
-#ifndef SIZE_MAX
-#define SIZE_MAX		(~((size_t)0))
-#endif
-#define SSIZE_MAX		((ssize_t)(SIZE_MAX >> 1))
-#define SSIZE_MIN		((ssize_t)SIZE_MAX)
-
-#define UINTPTR_MAX     (~((uintptr_t)0))
-#define INTPTR_MAX      ((intptr_t)(UINTPTR_MAX >> 1))
-#define INTPTR_MIN      ((intptr_t)UINTPTR_MAX)
-
-#define UINT32_MAX        (~((uint32_t)0))
-#define INT32_MAX         ((int32_t)(UINT32_MAX >> 1))
-#define INT32_MIN         ((int32_t)UINT32_MAX)
-
-#define UINT16_MAX        (~((uint16_t)0))
-#define INT16_MAX         ((int16_t)(UINT16_MAX >> 1))
-#define INT16_MIN         ((int16_t)UINT16_MAX)
-
-#define UINT8_MAX        (~((uint8_t)0))
-#define INT8_MAX         ((int8_t)(UINT8_MAX >> 1))
-#define INT8_MIN         ((int8_t)UINT8_MAX)
-
-
-
-/******************************************************************************/
 /* OPTIONAL:  Perform stack bounds checking on new message invocations.  If   */
 /* this is a non-stack based calling convention, or it is not possible to     */
 /* determine the bounds of the stack, leave this undefined.                   */
@@ -145,13 +85,6 @@ typedef unsigned __int64 uint64_t;
 #define TIMESLICE
 #define FIXEDTIMERS
 
-/******************************************************************************/
-/* OPTIONAL:  Enable the storage of activities in a directory instead of an   */
-/* array. If this option is disabled, all threadIDs will be stored in a table */
-/* (the threadTable) to get the index of the activity                         */
-/* (Important for high IDs like on Windows 95)                                */
-/******************************************************************************/
-#define HIGHTID
 /* this symbol should be also defined using HIGHTID because of                */
 /* SetThreadPriority. This API needs the threads handle, not it's ID.         */
 /* Without the ThreadTable we don't get the handle so we have to store it     */
@@ -390,12 +323,6 @@ size_t line_write_check(const char * , size_t, FILE * );
 #define INIT_SEM_NAME "INIT_SEM"
 
 /******************************************************************************/
-/* OPTIONAL:  Define name of rexxsaa.h toolkit header file for                */
-/******************************************************************************/
-// Call ours REXXWIN.H
-#define SYSREXXSAA "REXX.H"
-
-/******************************************************************************/
 /* REQUIRED:  Name of the file used to store the external message repository  */
 /******************************************************************************/
 #define REXXMESSAGEFILE    "winatab.rc"
@@ -452,15 +379,9 @@ typedef char *(far REXXENTRY *PNMF)(void **);
 
 #define DEFRXSTRING 256                 /* Default RXSTRING return size      */
 
-#if 0
-#define SysSetThreadPriority(a, b) SetThreadPriority((HANDLE)a, b)
-#endif
-                                        // Thread yielding funcs in olthread.c
 #define SysThreadYield()
 
-#ifdef HIGHTID
 #define SysQueryThreadID() GetCurrentThreadId()
-#endif
 
 #ifdef THREADHANDLE
 #define SysQueryThread() GetCurrentThread()

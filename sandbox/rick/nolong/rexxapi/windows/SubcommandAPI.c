@@ -147,14 +147,14 @@ extern REXXAPIDATA * RexxinitExports;   /* Global state data  */
 /*                                                                   */
 /*********************************************************************/
 
-LONG  RegQuery(PSZ, PSZ, PUSHORT, PUCHAR, LONG );
-LONG  RegLoad(PSZ, PSZ, LONG , PFN *, PULONG);
-LONG  RegDrop(PSZ, PSZ, LONG );
-LONG  RegRegisterExe(PSZ, PFN, PUCHAR, LONG, LONG);
-LONG  RegRegisterDll(PSZ, PSZ, PSZ, PUCHAR, ULONG, LONG);
-APIBLOCK *memmgrsearch(PSZ, PSZ, LONG );
-LONG memmgrcheckexe(PSZ, LONG );
-LONG memmgrcheckdll(PSZ, PSZ, LONG);
+LONG  RegQuery(const char *, const char *, PUSHORT, PUCHAR, LONG );
+LONG  RegLoad(const char *, const char *, LONG , REXXPFN *, PULONG);
+LONG  RegDrop(const char *, const char *, LONG );
+LONG  RegRegisterExe(const char *, REXXPFN, PUCHAR, LONG, LONG);
+LONG  RegRegisterDll(const char *, const char *, const char *, PUCHAR, ULONG, LONG);
+APIBLOCK *memmgrsearch(const char *, const char *, LONG );
+LONG memmgrcheckexe(const char *, LONG );
+LONG memmgrcheckdll(const char *, const char *, LONG);
 
 extern _declspec(dllimport) CRITICAL_SECTION nest;
 
@@ -196,10 +196,10 @@ extern LOCALREXXAPIDATA RexxinitLocal;
 APIRET
 APIENTRY
 RexxRegisterSubcomDll(
-  PSZ   EnvName,                       /* Subcom name                */
-  PSZ   ModuleName,                    /* Name of DLL                */
-  PSZ   EntryPoint,                    /* DLL routine name           */
-  PUCHAR UserArea,                     /* User data                  */
+  const char *   EnvName,                       /* Subcom name                */
+  const char *   ModuleName,                    /* Name of DLL                */
+  const char *   EntryPoint,                    /* DLL routine name           */
+  const char *   UserArea,                     /* User data                  */
   size_t DropAuth )                    /* Drop Authority             */
 {
   ULONG  rc;                           /* Function return code.      */
@@ -238,8 +238,8 @@ RexxRegisterSubcomDll(
 APIRET
 APIENTRY
 RexxRegisterSubcomExe(
-  PSZ   EnvName,                       /* Subcom name                */
-  PFN   EntryPoint,                    /* DLL routine name           */
+  const char *  EnvName,               /* Subcom name                */
+  REXXPFN   EntryPoint,                /* DLL routine name           */
   PUCHAR UserArea )                    /* User data                  */
 {
   ULONG  rc;                           /* Function return code.      */
@@ -270,8 +270,8 @@ RexxRegisterSubcomExe(
 APIRET
 APIENTRY
 RexxDeregisterSubcom(
-  PSZ name,                            /* Environment Name           */
-  PSZ dllname )                        /* Associated Name (of DLL)   */
+  const char * name,                            /* Environment Name           */
+  const char * dllname )                        /* Associated Name (of DLL)   */
 {
   ULONG  rc;                           /* Function return code.      */
   rc = RegDrop(name, dllname, REGSUBCOMM);/* Drop the subcommand.    */
@@ -304,8 +304,8 @@ RexxDeregisterSubcom(
 APIRET
 APIENTRY
 RexxQuerySubcom(
-  PSZ     name,                        /* Environment Name           */
-  PSZ     dll,                         /* Associated Name (of DLL)   */
+  const char *     name,                        /* Environment Name           */
+  const char *     dll,                         /* Associated Name (of DLL)   */
   PUSHORT exist,                       /* existence information      */
   PUCHAR  userword )                   /* data from registration     */
 {
@@ -333,12 +333,12 @@ RexxQuerySubcom(
 /*********************************************************************/
 
 APIRET APIENTRY RexxLoadSubcom(
-  PSZ name,                            /* Name of Subcommand Environ */
-  PSZ dll )                            /* Module name of its' DLL    */
+  const char * name,                   /* Name of Subcommand Environ */
+  const char * dll )                   /* Module name of its' DLL    */
 {
   ULONG  calltype;                     /* Routine calltype (not used)*/
   ULONG  rc;                           /* Function return code.      */
-  PFN a;                               /* Address of Subcom.         */
+  REXXPFN a;                           /* Address of Subcom.         */
 
                                        /* Load routine into memory   */
   rc = RegLoad(name, dll, REGSUBCOMM, &a, &calltype);
@@ -365,8 +365,8 @@ APIRET APIENTRY RexxLoadSubcom(
 /*********************************************************************/
 
 APIRET APIENTRY RexxCallSubcom(
-  PSZ name,                            /* the Subcommand Environment */
-  PSZ dll,                             /* Module name of its' DLL    */
+  const char * name,                            /* the Subcommand Environment */
+  const char * dll,                             /* Module name of its' DLL    */
   PRXSTRING cmd,                       /* Command string to be passed*/
   PUSHORT flags,                       /* Used to notify errors      */
   PUSHORT sbrc,                        /* return code from handler   */
@@ -377,7 +377,7 @@ APIRET APIENTRY RexxCallSubcom(
   ULONG  calltype;                     /* type of call to make       */
 
                                        /* Load the handler           */
-  if (!(rc=RegLoad(name, dll, REGSUBCOMM, (PFN *)&subcom_addr,
+  if (!(rc=RegLoad(name, dll, REGSUBCOMM, (REXXPFN *)&subcom_addr,
       &calltype))) {
       *sbrc = (USHORT) (                /* Call subcom environment w/ */
           (* subcom_addr ) (           /* The ptr to environmnt entry*/
@@ -424,9 +424,9 @@ APIRET APIENTRY RexxCallSubcom(
 APIRET
 APIENTRY
 RexxRegisterExitDll(
-  PSZ   EnvName,                       /* Exit name                  */
-  PSZ   ModuleName,                    /* Name of DLL                */
-  PSZ   EntryPoint,                    /* DLL routine name           */
+  const char *   EnvName,                       /* Exit name                  */
+  const char *   ModuleName,                    /* Name of DLL                */
+  const char *   EntryPoint,                    /* DLL routine name           */
   PUCHAR UserArea,                     /* User data                  */
   size_t DropAuth )                    /* Drop Authority             */
 {
@@ -466,9 +466,9 @@ RexxRegisterExitDll(
 APIRET
 APIENTRY
 RexxRegisterExitExe(
-  PSZ   EnvName,                       /* exit name                  */
-  PFN   EntryPoint,                    /* DLL routine name           */
-  PUCHAR UserArea )                    /* User data                  */
+  const char *   EnvName,               /* exit name                  */
+  REXXPFN EntryPoint,                   /* DLL routine name           */
+  PUCHAR  UserArea )                    /* User data                  */
 {
   ULONG  rc;                           /* Function return code.      */
                                        /* Register the exit          */
@@ -497,8 +497,8 @@ RexxRegisterExitExe(
 APIRET
 APIENTRY
 RexxDeregisterExit(
-  PSZ name,                            /* Environment Name           */
-  PSZ dllname )                        /* Associated Name (of DLL)   */
+  const char * name,                            /* Environment Name           */
+  const char * dllname )                        /* Associated Name (of DLL)   */
 {
   ULONG  rc;                           /* Function return code.      */
   rc = RegDrop(name, dllname, REGSYSEXIT);/* Drop the subcommand.    */
@@ -531,8 +531,8 @@ RexxDeregisterExit(
 APIRET
 APIENTRY
 RexxQueryExit(
-  PSZ name,                            /* Environment Name           */
-  PSZ dll,                             /* Associated Name (of DLL)   */
+  const char * name,                            /* Environment Name           */
+  const char * dll,                             /* Associated Name (of DLL)   */
   PUSHORT exist,                       /* existence information      */
   PUCHAR  userword )                   /* data from registration     */
 {
@@ -562,19 +562,19 @@ RexxQueryExit(
 /*********************************************************************/
 
 LONG APIENTRY RexxCallExit(
-  PSZ name,                            /* Exit name.                 */
-  PSZ dll,                             /* dll name.                  */
+  const char * name,                   /* Exit name.                 */
+  const char * dll,                    /* dll name.                  */
   LONG  fnc,                           /* Exit function.             */
   LONG  subfnc,                        /* Exit subfunction.          */
   PEXIT param_block )                  /* Exit parameter block.      */
 {
-  PFN exit_address;                    /* Exit's calling address.    */
+  REXXPFN exit_address;                /* Exit's calling address.    */
   LONG     rc;                         /* Function return code.      */
   ULONG    calltype;                   /* Type of call to make       */
 
   rc = 0;
 
-  if (!RegLoad(name, dll, REGSYSEXIT, (PFN *)&exit_address,
+  if (!RegLoad(name, dll, REGSYSEXIT, (REXXPFN *)&exit_address,
       &calltype)) {
                                        /* Exit loaded successfully;  */
                                        /* let it set the return code */
@@ -616,9 +616,9 @@ LONG APIENTRY RexxCallExit(
 APIRET
 APIENTRY
 RexxRegisterFunctionDll(
-  PSZ   EnvName,                       /* Subcom name                */
-  PSZ   ModuleName,                    /* Name of DLL                */
-  PSZ   EntryPoint )                   /* DLL routine name           */
+  const char *   EnvName,                       /* Subcom name                */
+  const char *   ModuleName,                    /* Name of DLL                */
+  const char *   EntryPoint )                   /* DLL routine name           */
 {
   ULONG  rc;                           /* Function return code.      */
                                        /* Register the subcommand.   */
@@ -655,8 +655,8 @@ RexxRegisterFunctionDll(
 APIRET
 APIENTRY
 RexxRegisterFunctionExe(
-  PSZ   EnvName,                       /* Subcom name                */
-  PFN   EntryPoint )                   /* DLL routine name           */
+  const char *   EnvName,              /* Subcom name                */
+  REXXPFN   EntryPoint )               /* DLL routine name           */
 {
   ULONG  rc;                           /* Function return code.      */
                                        /* Register the subcommand.   */
@@ -683,7 +683,7 @@ RexxRegisterFunctionExe(
 APIRET
 APIENTRY
 RexxDeregisterFunction(
-  PSZ name )                           /* Environment Name           */
+  const char * name )                           /* Environment Name           */
 {
   ULONG  rc;                           /* Function return code.      */
 
@@ -712,7 +712,7 @@ RexxDeregisterFunction(
 APIRET
 APIENTRY
 RexxQueryFunction(
-  PSZ name )                           /* Environment Name           */
+  const char * name )                           /* Environment Name           */
 {
   ULONG  rc;                           /* General Return code holder */
   USHORT exist;                        /* existance flage            */
@@ -762,12 +762,12 @@ RexxQueryFunction(
 /*********************************************************************/
                                        /*                            */
 APIRET APIENTRY RexxCallFunction(
-PSZ           fn,                      /* name of function to call   */
+const char *           fn,             /* name of function to call   */
 ULONG         ac,                      /* number of arguments        */
 PRXSTRING     av,                      /* argument array             */
 PUSHORT       rc,                      /* return code from call      */
 PRXSTRING     sel,                     /* storage for returned data  */
-PSZ           qnam )                   /* name of active queue       */
+const char *           qnam )          /* name of active queue       */
 {
   RexxFunctionHandler *func_address;   /* address of external func   */
   ULONG       lrc;                     /* local return code          */
@@ -775,7 +775,7 @@ PSZ           qnam )                   /* name of active queue       */
 
   lrc = 0;
                                        /* Load the handler           */
-  if (!(lrc=RegLoad(fn, NULL, REGFUNCTION, (PFN *)&func_address,
+  if (!(lrc=RegLoad(fn, NULL, REGFUNCTION, (REXXPFN *)&func_address,
       &calltype))) {
       *rc = (USHORT)(*func_address)(fn,/* send function name to call */
                 ac,                    /*   and argument count       */
@@ -814,9 +814,9 @@ PSZ           qnam )                   /* name of active queue       */
 /*********************************************************************/
 
 LONG  RegRegisterDll(
-  PSZ   EnvName,                       /* Subcom name                */
-  PSZ   ModuleName,                    /* Name of DLL                */
-  PSZ   EntryPoint,                    /* DLL routine name           */
+  const char *   EnvName,                       /* Subcom name                */
+  const char *   ModuleName,                    /* Name of DLL                */
+  const char *   EntryPoint,                    /* DLL routine name           */
   PUCHAR UserArea,                     /* User data                  */
   ULONG DropAuth,                      /* Drop Authority             */
   LONG  type )                         /* Registration type.         */
@@ -890,8 +890,8 @@ LONG  RegRegisterDll(
 /*********************************************************************/
 
 LONG  RegRegisterExe(
-  PSZ   EnvName,                       /* Subcom name                */
-  PFN   EntryPoint,                    /* DLL routine name           */
+  const char *   EnvName,              /* Subcom name                */
+  REXXPFN   EntryPoint,                /* DLL routine name           */
   PUCHAR UserArea,                     /* User data                  */
   LONG  type,                          /* Registration type.         */
   LONG  CallType )                     /* 32- or 16-bit call outs    */
@@ -956,8 +956,8 @@ LONG  RegRegisterExe(
 /*********************************************************************/
 
 LONG  RegDrop(
-  PSZ name,                            /* Environment Name           */
-  PSZ dll,                             /* Associated Name (of DLL)   */
+  const char * name,                            /* Environment Name           */
+  const char * dll,                             /* Associated Name (of DLL)   */
   LONG  type )                         /* Registration type.         */
 {
   APIBLOCK *cblock = NULL;             /* Working ptr, current block */
@@ -1014,8 +1014,8 @@ LONG  RegDrop(
 /*********************************************************************/
 
 LONG  RegQuery(
-  PSZ name,                            /* Environment Name           */
-  PSZ dll,                             /* Associated Name (of DLL)   */
+  const char * name,                            /* Environment Name           */
+  const char * dll,                             /* Associated Name (of DLL)   */
   PUSHORT exist,                       /* existence information      */
   PUCHAR  usrwrd,                      /* data from registration     */
   LONG  type )                         /* Registration type.         */
@@ -1070,10 +1070,10 @@ LONG  RegQuery(
 /*********************************************************************/
 
 LONG  RegLoad(
-  PSZ name,                            /* the Subcommand Environment */
-  PSZ dll,                             /* Module name of its' DLL    */
+  const char * name,                   /* the Subcommand Environment */
+  const char * dll,                    /* Module name of its' DLL    */
   LONG  type,                          /* Load type.                 */
-  PFN *paddress,                       /* Function addr (returned if */
+  REXXPFN *paddress,                   /* Function addr (returned if */
                                        /* function properly loaded). */
   PULONG calltype )                    /* type of DLL procedure      */
 {                                      /*                            */
@@ -1146,8 +1146,8 @@ LONG  RegLoad(
 /*********************************************************************/
 
 APIBLOCK *memmgrsearch(
-  PSZ name,                            /* Name to find               */
-  PSZ dll,                             /* Dynalink Name to find.     */
+  const char * name,                            /* Name to find               */
+  const char * dll,                             /* Dynalink Name to find.     */
   LONG  type )                         /* Type of name to find.      */
 {
 
@@ -1198,8 +1198,8 @@ APIBLOCK *memmgrsearch(
 /*********************************************************************/
 
 LONG memmgrcheckdll(
-  PSZ name,                            /* Name to find               */
-  PSZ dll,                             /* Dynalink Name to find.     */
+  const char * name,                            /* Name to find               */
+  const char * dll,                             /* Dynalink Name to find.     */
   LONG  type )                         /* Type of name to find.      */
 {
 
@@ -1244,7 +1244,7 @@ LONG memmgrcheckdll(
 /*********************************************************************/
 
 LONG memmgrcheckexe(
-  PSZ name,                            /* Name to find               */
+  const char * name,                            /* Name to find               */
   LONG  type )                         /* Type of name to find.      */
 {
 

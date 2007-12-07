@@ -69,11 +69,6 @@
 #include <sys/types.h>
 #include <pwd.h>
 
-#define INCL_RXSUBCOM                       /* Include subcom declares        */
-#define INCL_RXFUNC                         /* and external function...       */
-#define INCL_RXSYSEXIT                      /* and system exits               */
-#define INCL_RXMACRO                        /* and system exits               */
-
 #include "RexxCore.h"                         /* global REXX definitions        */
 #include "StringClass.hpp"
 #include "ArrayClass.hpp"
@@ -82,7 +77,6 @@
 #include "MethodClass.hpp"
 #include "SourceFile.hpp"
 #include "RexxNativeAPI.h"                           /* Lot's of useful REXX macros    */
-#include SYSREXXSAA                         /* Include REXX header            */
 #include "SubcommandAPI.h"
 #include "RexxAPIManager.h"
 #include "APIUtilities.h"

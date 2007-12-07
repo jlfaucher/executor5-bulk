@@ -60,7 +60,6 @@
 /*                                                                            */
 /******************************************************************************/
 
-#define INCL_RXSHV                          /* Get shared variable pool stuff */
 #include "RexxCore.h"                         /* Object REXX kernel declares    */
 #include "StringClass.hpp"
 #include "ArrayClass.hpp"
@@ -70,7 +69,6 @@
 #include "RexxVariableDictionary.hpp"
 #include "ExpressionBaseVariable.hpp"
 #include "RexxNativeAPI.h"                           /* Get C-method declares, etc.    */
-#include SYSREXXSAA                         /* Documented REXX API's          */
 #include <stdlib.h>
 
 extern "C" {

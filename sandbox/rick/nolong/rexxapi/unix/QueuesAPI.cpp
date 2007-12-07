@@ -73,10 +73,6 @@
 /*                                                                            */
 /******************************************************************************/
 
-#define INCL_RXQUEUE
-#define INCL_RXSUBCOM
-#include "PlatformDefinitions.h"
-#include SYSREXXSAA
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>

@@ -44,18 +44,11 @@
 #include <string.h>                    /* Get strcpy, strcat, etc.          */
 #include <stdlib.h>
 
-#define INCL_RXSUBCOM                  /* Include subcom declares           */
-#define INCL_RXFUNC                    /* and external function...          */
-#define INCL_RXSYSEXIT                 /* and system exits                  */
-#define INCL_RXQUEUE                   /* enable RxQueue_x() ability        */
-
 #include "RexxCore.h"                    /* global REXX declarations          */
 #include "StringClass.hpp"
 #include "RexxNativeAPI.h"                      /* Lot's of useful REXX macros       */
 #include "StreamNative.h"
 #include "ActivityManager.hpp"
-
-#include SYSREXXSAA                    /* Include REXX header               */
 #include "SubcommandAPI.h"             /* Get private REXXAPI API's         */
 
 /********************************************************************************************/

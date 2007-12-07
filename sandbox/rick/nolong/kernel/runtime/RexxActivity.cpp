@@ -69,9 +69,6 @@
 #include "RexxMemory.hpp"
 #include "RexxVariableDictionary.hpp"
 #include "ProtectedObject.hpp"
-#define INCL_RXSYSEXIT
-#define INCL_RXOBJECT
-#include SYSREXXSAA
 
 const size_t ACT_STACK_SIZE = 10;
 

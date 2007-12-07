@@ -107,9 +107,6 @@ void SysInitialize(void)
 /* Function:   Perform system specific initialization.                        */
 /******************************************************************************/
 {
-//   DosExitList(EXLST_ADD,(PFNEXITLIST)exit_handler);
-//SysThreadInit();             /* initialize the main thread of the main process*/
-
 
 /* this is for normal process termination                                     */
   if (bProcessExitInitFlag == false)
@@ -151,14 +148,14 @@ RexxString *SysVersion(void)
   return new_string(info.release);    /* return as a string                */
 }
 
-PFN SysLoadProcedure(
+void *SysLoadProcedure(
   RexxInteger * LibraryHandle,         /* library load handle               */
   RexxString  * Procedure)             /* required procedure name           */
 /******************************************************************************/
 /* Function:  Resolve a named procedure in a library                          */
 /******************************************************************************/
 {
-   PFN load_address;
+   void *load_address;
    load_address = dlsym((void *)LibraryHandle->getValue(), Procedure->getStringData());
    if (load_address == NULL)
    {

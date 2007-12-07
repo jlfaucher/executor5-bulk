@@ -636,7 +636,7 @@ LONG  FillAPIComBlock(
 ULONG  RxGetModAddress( PSZ       dll_name,
                         PSZ       function_name,
                         PULONG    error_codes,
-                        PFN *     function_address,
+                        REXXPFN * function_address,
                         PULONG    call_type)
 {
    ULONG    rc = 0 ;                   /* Function result.           */

@@ -58,18 +58,12 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#define INCL_RXSUBCOM                       /* Include subcom declares        */
-#define INCL_RXFUNC                         /* and external function...       */
-#define INCL_RXSYSEXIT                      /* and system exits               */
-#define ALL_RETURN_CODES
-
 #include "RexxCore.h"                         /* global REXX declarations       */
 #include "StringClass.hpp"
 #include "RexxActivity.hpp"
 #include "RexxNativeAPI.h"                           /* Lot's of useful REXX macros    */
 #include "ActivityManager.hpp"
 
-#include SYSREXXSAA                         /* Include REXX header            */
 #include "SystemCommands.h"
 #include "SubcommandAPI.h"                  /* Get private REXX API's         */
 #include <sys/types.h>

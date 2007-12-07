@@ -233,7 +233,7 @@ extern "C" {
 #include "NativeMethods.h"             /* bring in the internal list        */
 
 #undef  INTERNAL_METHOD
-#define INTERNAL_METHOD(name) {#name , (PFN)name},
+#define INTERNAL_METHOD(name) {#name , (PNMF)name},
 
 internalMethodEntry internalMethodTable[] = {
 #include "NativeMethods.h"             /* bring in the internal method table*/

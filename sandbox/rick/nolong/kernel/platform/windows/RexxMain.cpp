@@ -48,15 +48,6 @@
 #include <limits.h>
 #include <signal.h>
 
-#define INCL_REXXSAA
-#define INCL_DOSPROCESS
-#define INCL_DOSMEMMGR
-#define INCL_DOSEXCEPTIONS
-#define INCL_DOSFILEMGR
-#define INCL_DOSQUEUES
-#define INCL_DOSSEMAPHORES
-// #define MAX_REXX_PROGS 0xFFFF
-
 #include "RexxCore.h"                    /* bring in global defines           */
 #include "StringClass.hpp"
 #include "RexxBuffer.hpp"
@@ -71,7 +62,6 @@
 #include "RexxVariableDictionary.hpp"
 #include "IntegerClass.hpp"
 #include "RexxNativeAPI.h"                      /* REXX interface/native method code */
-#include SYSREXXSAA
 #include "APIServiceTables.h"
 #include "SubcommandAPI.h"
 #include "RexxAPIManager.h"

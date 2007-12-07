@@ -199,33 +199,12 @@
 # include "config.h"
 #endif
 
-/* Include files */
-
-#define  INCL_WPCLASS
-#define  INCL_WINWORKPLACE
-#define  INCL_WINSHELLDATA
-#define  INCL_WINSWITCHLIST
-#define  INCL_WINPROGRAMLIST
-#define  INCL_WINPOINTERS
-#define  INCL_SHLERRORS
-#define  INCL_DOS
-#define  INCL_DOSFILEMGR
-#define  INCL_DOSMEMMGR
-#define  INCL_DOSFILEMGR
-#define  INCL_DOSNMPIPES
-#define  INCL_DOSNLS
-#define  INCL_ERRORS
-#define  INCL_REXXSAA
-#define  INCL_RXMACRO
-#define  INCL_KBD
-#define  INCL_VIO
-
 #include "PlatformDefinitions.h"
 #if defined( HAVE_LOCALE_H )
 # include <locale.h>
 #endif
 
-#include SYSREXXSAA
+#include "rexx.h"
 #include "RexxAPIManager.h"
 #include "APIUtilities.h"
 

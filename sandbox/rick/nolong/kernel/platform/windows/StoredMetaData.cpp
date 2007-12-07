@@ -43,9 +43,6 @@
 /*                                                                   */
 /*********************************************************************/
 
-#define  INCL_ERRORS
-#define  INCL_DOSQUEUES
-#define  INCL_REXXSAA
 #include "RexxCore.h"
 #include "StringClass.hpp"
 #include "RexxBuffer.hpp"
@@ -56,7 +53,6 @@
 #include "SourceFile.hpp"
 #include "ActivityManager.hpp"
 #include "ProtectedObject.hpp"
-#include SYSREXXSAA
 
 /*********************************************************************/
 /*         Definitions for use by the Meta I/O functionality         */

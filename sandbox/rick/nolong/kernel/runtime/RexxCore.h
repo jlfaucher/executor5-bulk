@@ -47,6 +47,8 @@
 #ifndef RexxCore_INCLUDED
 #define RexxCore_INCLUDED
 
+#include "rexx.h"                 // this is the core to everything
+
 /* ANSI C definitions */
 #include <stdio.h>
 #include <stdarg.h>
@@ -161,7 +163,7 @@ inline size_t RANDOMIZE(size_t seed) { return (seed * RANDOM_FACTOR + 1); }
 
 typedef struct internalmethodentry {   /* internal method table entry       */
   const char *entryName;               /* internal entry point name         */
-  PFN    entryPoint;                   /* method entry point                */
+  PNMF   entryPoint;                   /* method entry point                */
 } internalMethodEntry;
 
 

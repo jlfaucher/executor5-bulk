@@ -35,8 +35,7 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-#include "PlatformDefinitions.h"
-#include SYSREXXSAA
+#include "rexx.h"
 #include "ThreadSupport.hpp"
 #include "APIDefinitions.h"
 

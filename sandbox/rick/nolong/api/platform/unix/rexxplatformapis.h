@@ -1,12 +1,12 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2008 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.oorexx.org/license.html                          */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -35,61 +35,33 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-/******************************************************************************/
-/* REXX Kernel                                         RexxNativeMethod.hpp   */
-/*                                                                            */
-/* Primitive Native Code Class Definitions                                    */
-/*                                                                            */
-/******************************************************************************/
-#ifndef Included_RexxNativeCode
-#define Included_RexxNativeCode
+#ifndef REXXPLATFORMAPIS_INCLUDED
+#define REXXPLATFORMAPIS_INCLUDED
 
-class RexxNativeCode : public RexxInternalObject {
-  public:
-   inline void *operator new(size_t size, void *ptr) { return ptr; }
-   void        *operator new(size_t size);
-   inline void  operator delete(void *) { ; }
-   inline void  operator delete(void *, void *) { ; }
+/***    RexxPullQueue - Retrieve data from an External Data Queue */
+typedef struct _REXXDATETIME {         /* REXX time stamp format            */
+  uint16_t       hours;                /* hour of the day (24-hour)         */
+  uint16_t       minutes;              /* minute of the hour                */
+  uint16_t       seconds;              /* second of the minute              */
+  uint16_t       hundredths;           /* hundredths of a second            */
+  uint16_t       day;                  /* day of the month                  */
+  uint16_t       month;                /* month of the year                 */
+  uint16_t       year;                 /* current year                      */
+  uint16_t       weekday;              /* day of the week                   */
+  uint32_t       microseconds;         /* microseconds                      */
+  uint32_t       yearday;              /* day number within the year        */
+  bool           valid;                /* valid time stamp marker           */
+} REXXDATETIME;
 
-   inline RexxNativeCode(RESTORETYPE restoreType) { ; };
-   RexxNativeCode(RexxString *, RexxString *, PNMF, size_t);
-   void        reinit(RexxInteger *);
-   void        live();
-   void        liveGeneral();
-   void        flatten(RexxEnvelope *envelope);
-   RexxObject *unflatten(RexxEnvelope *envelope);
+/***    RexxPullQueue - Retrieve data from an External Data Queue */
 
-   inline PNMF        getEntry() { return this->entry; };
-   inline void        setEntry(PNMF v) { this->entry = v; };
-   static void        createClass();
-   static void        restoreClass();
+APIRET APIENTRY RexxPullQueue (
+        const char *,                          /* Name of queue to read from  */
+        PRXSTRING,                             /* RXSTRING to receive data    */
+        REXXDATETIME *,                        /* Stor for data date/time     */
+        unsigned int);                         /* wait status (WAIT|NOWAIT)   */
+typedef APIRET (APIENTRY *PFNREXXPULLQUEUE)(const char *, PCONSTRXSTRING, REXXDATETIME *,
+                                           unsigned int);
 
-protected:
-   RexxString *library;               // the library name
-   RexxString *procedure;             /* External Procedur name            */
-   PNMF        entry;                 /* method entry point.               */
-   size_t      index;                 /* internal native method            */
-};
+#endif /* REXXPLATFORMAPIS_INCLUDED */
 
-class RexxNativeCodeClass : public RexxClass {
-  public:
-   inline RexxNativeCodeClass(RESTORETYPE restoreType) { ; };
-   RexxNativeCodeClass();
-
-   void       *operator new(size_t size, void *ptr) { return ptr; };
-   void       *operator new(size_t size, size_t size1, const char *className, RexxBehaviour *classBehave, RexxBehaviour *instance) { return new (size, className, classBehave, instance) RexxClass; }
-   RexxNativeCode *newClass(RexxString *, RexxString *);
-
-   void        restore();
-   void        live();
-   void        liveGeneral();
-   void        reload(RexxDirectory *);
-   RexxDirectory  * load(RexxString *);
-   RexxNativeCode * newInternal(size_t);
-   inline RexxDirectory  * getLibraries() { return this->libraries; };
-
-protected:
-
-   RexxDirectory *libraries;           /* directory of loaded libraries     */
-};
-#endif

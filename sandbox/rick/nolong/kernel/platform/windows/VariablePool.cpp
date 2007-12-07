@@ -53,7 +53,6 @@
 /*                     pools                                                  */
 /*                                                                            */
 /******************************************************************************/
-#define INCL_RXSHV                          /* Get shared variable pool stuff */
 #include "RexxCore.h"                       /* Object REXX kernel declares    */
 #include "StringClass.hpp"
 #include "ArrayClass.hpp"
@@ -63,7 +62,6 @@
 #include "RexxVariableDictionary.hpp"
 #include "ExpressionBaseVariable.hpp"
 #include "RexxNativeAPI.h"                  /* Get C-method declares, etc.    */
-#include SYSREXXSAA
 
 APIRET APIENTRY RexxStemSort(const char *stemname, int order, int type,
     size_t start, size_t end, size_t firstcol, size_t lastcol);

@@ -1,12 +1,12 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2008 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.oorexx.org/license.html                          */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -35,61 +35,164 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-/******************************************************************************/
-/* REXX Kernel                                         RexxNativeMethod.hpp   */
-/*                                                                            */
-/* Primitive Native Code Class Definitions                                    */
-/*                                                                            */
-/******************************************************************************/
-#ifndef Included_RexxNativeCode
-#define Included_RexxNativeCode
+#ifndef REXXPLATFORMDEFS_INCLUDED
+#define REXXPLATFORMDEFS_INCLUDED
 
-class RexxNativeCode : public RexxInternalObject {
-  public:
-   inline void *operator new(size_t size, void *ptr) { return ptr; }
-   void        *operator new(size_t size);
-   inline void  operator delete(void *) { ; }
-   inline void  operator delete(void *, void *) { ; }
-
-   inline RexxNativeCode(RESTORETYPE restoreType) { ; };
-   RexxNativeCode(RexxString *, RexxString *, PNMF, size_t);
-   void        reinit(RexxInteger *);
-   void        live();
-   void        liveGeneral();
-   void        flatten(RexxEnvelope *envelope);
-   RexxObject *unflatten(RexxEnvelope *envelope);
-
-   inline PNMF        getEntry() { return this->entry; };
-   inline void        setEntry(PNMF v) { this->entry = v; };
-   static void        createClass();
-   static void        restoreClass();
-
-protected:
-   RexxString *library;               // the library name
-   RexxString *procedure;             /* External Procedur name            */
-   PNMF        entry;                 /* method entry point.               */
-   size_t      index;                 /* internal native method            */
-};
-
-class RexxNativeCodeClass : public RexxClass {
-  public:
-   inline RexxNativeCodeClass(RESTORETYPE restoreType) { ; };
-   RexxNativeCodeClass();
-
-   void       *operator new(size_t size, void *ptr) { return ptr; };
-   void       *operator new(size_t size, size_t size1, const char *className, RexxBehaviour *classBehave, RexxBehaviour *instance) { return new (size, className, classBehave, instance) RexxClass; }
-   RexxNativeCode *newClass(RexxString *, RexxString *);
-
-   void        restore();
-   void        live();
-   void        liveGeneral();
-   void        reload(RexxDirectory *);
-   RexxDirectory  * load(RexxString *);
-   RexxNativeCode * newInternal(size_t);
-   inline RexxDirectory  * getLibraries() { return this->libraries; };
-
-protected:
-
-   RexxDirectory *libraries;           /* directory of loaded libraries     */
-};
+#if !defined(AIX) && !defined(LINUX)
+#define AIX                           /* Default definition for AIX          */
 #endif
+
+#ifndef TRUE
+#define TRUE            1
+#endif
+
+#ifndef FALSE
+#define FALSE           0
+#endif
+
+#ifndef HQUEUE
+#define HQUEUE          unsigned long
+#endif
+
+#ifndef ULONG
+#define ULONG           unsigned long
+#endif
+
+#ifndef PULONG
+#define PULONG          ULONG *
+#endif
+
+#ifndef PVOID
+#define PVOID           void *
+#endif
+
+#ifndef PPVOID
+#define PPVOID          void **
+#endif
+
+#ifndef SHORT
+#define SHORT           short
+#endif
+
+#ifndef LONG
+#define LONG            long
+#endif
+
+#ifndef PLONG
+#define PLONG           LONG *
+#endif
+
+#ifndef USHORT
+#define USHORT          unsigned short
+#endif
+
+#ifndef PSHORT
+#define PSHORT          SHORT *
+#endif
+
+#ifndef PUSHORT
+#define PUSHORT         USHORT *
+#endif
+
+#ifndef UCHAR
+#define UCHAR           unsigned char
+#endif
+
+#ifndef PUCHAR
+#define PUCHAR          UCHAR *
+#endif
+
+#ifndef CHAR
+#define CHAR            char
+#endif
+
+#ifndef PCHAR
+#define PCHAR           CHAR *
+#endif
+
+#ifndef INT
+#define INT             int
+#endif
+
+#ifndef UINT
+#define UINT            unsigned int
+#endif
+
+#ifndef PUINT
+#define PUINT           unsigned int *
+#endif
+
+#ifndef PINT
+#define PINT            int *
+#endif
+
+#ifndef PCH
+#define PCH             PCHAR
+#endif
+
+#ifndef PSZ
+#define PSZ             PCHAR
+#endif
+
+#ifndef APIENTRY
+#define APIENTRY
+#endif
+
+#ifndef APIRET
+#define APIRET          ULONG
+#endif
+
+#ifndef CONST
+#define CONST           const
+#endif
+
+#ifndef LPCTSTR
+#define LPCTSTR         LPCSTR
+#endif
+
+#ifndef BYTE
+#define BYTE            unsigned char
+#endif
+
+#ifndef BOOL
+#define BOOL            unsigned long
+#endif
+
+#ifndef UBYTE
+#define UBYTE           unsigned char
+#endif
+
+#ifndef TID
+#ifndef LINUX
+#define TID             tid_t
+#else
+#define TID             pthread_t
+#endif
+#endif
+
+#ifndef PID
+#define PID             pid_t
+#endif
+
+#ifndef VOID
+#define VOID            void
+#endif
+
+#ifndef near
+#define near
+#endif
+
+#ifndef far
+#define far
+#endif
+
+#ifndef _loadds
+#define _loadds
+#endif
+
+#ifndef PFN
+#define PFN             void *
+#endif
+
+#endif /* REXXPLATFORMDEFS_INCLUDED */
+

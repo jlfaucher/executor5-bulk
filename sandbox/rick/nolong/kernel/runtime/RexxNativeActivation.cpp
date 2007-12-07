@@ -41,8 +41,6 @@
 /* Primitive Native Activation Class                                          */
 /*                                                                            */
 /******************************************************************************/
-#define INCL_REXXSAA
-
 #include "RexxCore.h"
 #include "StringClass.hpp"
 #include "ArrayClass.hpp"
@@ -59,12 +57,8 @@
 #include "RexxInstruction.hpp"
 #include "ExpressionBaseVariable.hpp"
 #include "ProtectedObject.hpp"
-
-
 #include "RexxNativeAPI.h"                      /* bring in the native code defines  */
-#undef   RexxTable                     /* remove a conflict                 */
 
-#include SYSREXXSAA
 #include <math.h>
 #include <limits.h>
 
@@ -199,7 +193,7 @@ RexxObject *RexxNativeActivation::run(
     this->argcount = _argcount;          /* set the argument count            */
     used_arglist = false;                /* no arglist requested              */
                                          /* get the entry point address       */
-    methp = (PNMF)this->method->getNativeCode()->getEntry();
+    methp = this->method->getNativeCode()->getEntry();
     itypes = (*methp)(0);                /* get type information from method  */
     *ivalues = ibufp;
     ibufp += tsize[(int)(*itypes)];      /* step over first type              */
@@ -415,7 +409,7 @@ RexxObject *RexxNativeActivation::run(
         // nesting levels that will make it look like this activity is still in use
         // when in fact we're done with it.
         this->activity->restoreActivationLevel(activityLevel);
-        this->activity->pop(FALSE);        /* pop this from the activity        */
+        this->activity->pop(false);        /* pop this from the activity        */
         this->setHasNoReferences();        /* mark this as not having references in case we get marked */
         return this->result;               /* and finished                      */
     }

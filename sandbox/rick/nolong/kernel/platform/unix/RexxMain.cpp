@@ -54,9 +54,6 @@
 # include <sched.h>
 #endif
 
-#define INCL_REXXSAA
-#define INCL_RXMACRO
-
 #include "RexxCore.h"                    /* bring in global defines           */
 #include "StringClass.hpp"
 #include "RexxBuffer.hpp"
@@ -68,7 +65,6 @@
 #include "RexxActivity.hpp"
 #include "SourceFile.hpp"
 #include "RexxNativeAPI.h"                      /* REXX interface/native method code */
-#include SYSREXXSAA
 
 #include "RexxAPIManager.h"
 #include "APIDefinitions.h"
@@ -794,7 +790,7 @@ APIRET APIENTRY RexxDidRexxTerminate(void)
 /*********************************************************************/
 
 extern "C" {
-char *APIENTRY RexxGetVersionInformation(void)
+char *APIENTRY RexxGetVersionInformation()
 {
   void *    pVersionString = NULL;
 
