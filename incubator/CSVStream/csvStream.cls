@@ -1,40 +1,17 @@
-/*----------------------------------------------------------------------------*/
-/*                                                                            */
-/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
-/*                                                                            */
-/* This program and the accompanying materials are made available under       */
-/* the terms of the Common Public License v1.0 which accompanies this         */
-/* distribution. A copy is also available at the following address:           */
-/* http://www.oorexx.org/license.html                                         */
-/*                                                                            */
-/* Redistribution and use in source and binary forms, with or                 */
-/* without modification, are permitted provided that the following            */
-/* conditions are met:                                                        */
-/*                                                                            */
-/* Redistributions of source code must retain the above copyright             */
-/* notice, this list of conditions and the following disclaimer.              */
-/* Redistributions in binary form must reproduce the above copyright          */
-/* notice, this list of conditions and the following disclaimer in            */
-/* the documentation and/or other materials provided with the distribution.   */
-/*                                                                            */
-/* Neither the name of Rexx Language Association nor the names                */
-/* of its contributors may be used to endorse or promote products             */
-/* derived from this software without specific prior written permission.      */
-/*                                                                            */
-/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
-/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
-/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
-/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
-/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
-/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
-/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
-/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
-/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
-/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
-/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
-/*                                                                            */
-/*----------------------------------------------------------------------------*/
-
+/* ========================================================================= */
+/* csvStream ooRexx stream subclass for CSV file handling                    */
+/* sahananda               windhorse:evolution                 November 2006 */
+/* Version 1.04                                                January  2007 */
+/*                                                                           */
+/* Amendments                                                                */
+/* 1.01   Dec06 SN Headers inserted by close method / general tidy up        *//*{1.01}*/
+/* 1.02 28Dec06 SN Allow specification of delimiter / qualifier              *//*{1.02}*/
+/*                 Bugfix for non - header files looking for headers         *//*{1.02}*/
+/* 1.03 29Dec06 SN Cope with no parm passed to CSVLineOut                    *//*{1.03}*/
+/* 1.04 05Jan07 SN Accept STEM data with headers & fix firstcolumn bug       *//*{1.04}*/
+/* 1.06 07Dec07 SN performance enhancements                                  *//*{1.05}*/
+/*                                                                           */
+/*                                                                           */
 /* ========================================================================= */
 ::class CsvStream subclass Stream Public
 /* ========================================================================= */
@@ -47,9 +24,9 @@
 ::method values             Attribute         -- table for headered i/o
 ::method rawText            Attribute         -- copy of last line read
 ::method skipHeaders        Attribute         -- switch can be set before open
-::method lineEnd            Attribute         -- string used for line terminations
-::method Delimiter          Attribute         -- seperates CSV fields
-::method Qualifier          Attribute         -- Surrounds literals
+::method lineEnd            Attribute      -- string used for line terminations
+::method Delimiter          Attribute         -- seperates CSV fields          /*{1.02}*/
+::method Qualifier          Attribute         -- Surrounds literals            /*{1.02}*/
 /* ------------------------------------------------------------------------- */
 ::method Init
 /* ------------------------------------------------------------------------- */
@@ -62,9 +39,9 @@ self~values             = .nil     /* replaced with a table by headered read */
 self~OriginalRawHeaders = ''
 self~rawText            = ''
 self~headerLineAbsent   = .false
-self~delimiter          = ','     /* seperates fields in a CSV file          */
-self~qualifier          = '"'     /* surrounds literal fields                */
-self~openArgs           = .nil
+self~delimiter          = ','     /* seperates fields in a CSV file          *//*{1.02}*/
+self~qualifier          = '"'     /* surrounds literal fields                *//*{1.02}*/
+self~openArgs           = .nil                                                 /*{1.05}*/
 
 self~init:super(parms)                        /* let stream class initialise */
 
@@ -112,61 +89,68 @@ then x = self~lineIn:super
 /* ------------------------------------------------------------------------- */
 ::method csvLineIn
 /* ------------------------------------------------------------------------- */
+expose qualifier delimiter rawtext lineend                                     /*{1.05}*/
 
-if self~openArgs = .nil then self~open
+if self~openArgs = .nil then self~open                                         /*{1.05}*/
 
-self~rawText  = ''
+rawText       = ''                                                             /*{1.05}*/
 inLiteral     = .false
 fieldNo       = 1
 fieldText     = ''
 csvFields     = .array~new
 literalFields = .set~new
-blip          = self~qualifier
-blipBlip      = self~qualifier~copies(2)
+blip          = qualifier                                                      /*{1.05}*/
+blipBlip      = qualifier~copies(2)                                            /*{1.05}*/
 
 do until (inLiteral  = .false) ,
    |     (self~chars = 0     )
 
    text = self~lineIn                              /* get a line of csv text */
 
-   if   self~rawtext = '' ,                        /* not really a csv file  */
-   &    text~verify(self~delimiter||self~qualifier,'m')=0
-   then text = text||self~delimiter
+   if   rawtext = '' ,                             /* not really a csv file  *//*{1.05}*/
+   &    text~verify(delimiter||qualifier,'m')=0                                /*{1.05}*/
+   then text = text||delimiter                                                 /*{1.05}*/
 
-   if   self~rawText = ''                     /* maintain linetext attribute */
-   then self~rawText = text
+   if   rawText = ''                          /* maintain linetext attribute *//*{1.05}*/
+   then rawText = text                                                         /*{1.05}*/
    else do                                    /* this is a multiline field   */
-      self~rawText = self~rawText || self~lineEnd || text
-      fieldText    = fieldText    || self~lineEnd
+      rawText   = rawText || lineEnd || text                                   /*{1.05}*/
+      fieldText = fieldText || lineEnd                                         /*{1.05}*/
    end /* Do */
 
-   do while text \== ''
-      parse var text char 2 text        /* first char of text goes into char */
+   textlength = text~Length                                                    /*{1.05}*/
 
+   i = 0                                                                       /*{1.05}*/
+   do forever                                                                  /*{1.05}*/
+      i = i + 1                                                                /*{1.05}*/
+      if i > textLength then leave                                             /*{1.05}*/
+                                                                               /*{1.05}*/
       select
-         when char = self~qualifier
+         when text~matchChar(i,qualifier)                                      /*{1.05}*/
             then do
                inLiteral = 1 - inLiteral
-               fieldText = fieldText || char
+               fieldText = fieldText || qualifier                              /*{1.05}*/
             end /* DO */
 
-         when (char = self~delimiter | text == '') ,
-         &    (\inliteral                        )           /* end of field */
+         when (text~matchchar(i,delimiter) ,                                   /*{1.05}*/
+               | text == '' | i = textlength) ,                                /*{1.05}*/
+         &    (\inliteral                              )     /* end of field *//*{1.05}*/
             then do
 
-               if char \= self~delimiter then fieldText = fieldText||char
+               if \text~matchchar(i,delimiter)                                 /*{1.05}*/
+               then fieldText = fieldText || text~substr(i,1)                  /*{1.05}*/
 
                /* if field encased in '"'s then strip them */
-               if (fieldText~left(1)  = self~qualifier) ,
-               &  (fieldText~right(1) = self~qualifier) ,
-               &  (fieldText~length   > 1             )
+               if  fieldText~matchChar(1,qualifier)                ,           /*{1.05}*/
+               &   fieldText~matchChar(fieldText~length,qualifier) ,           /*{1.05}*/
+               &   (fieldText~length   > 1        )                            /*{1.05}*/
                then do
                   fieldText = fieldText~substr(2, fieldText~length - 2)
                   literalFields~put(fieldNo)
                end /* Do */
 
                /* '"' are represented in text as '""' */
-               fieldText = fieldText~changeStr(blipBlip,blip)
+               fieldText = fieldText~changeStr(blipBlip,blip)                  /*{1.02}*/
 
                csvFields[fieldNo] = fieldText
                fieldNo            = fieldNo + 1
@@ -174,14 +158,16 @@ do until (inLiteral  = .false) ,
             end /* DO */
 
          otherwise
-            fieldText = fieldText || char
+            fieldText = fieldText || text~substr(i,1)                          /*{1.05}*/
       end /* select */
 
-      if   (text        == '') ,                  /* natural end of row?     */
+      if   (i = textlength   ) ,                  /* natural end of row?     *//*{1.05}*/
       &    (\inLiteral       ) ,
       &    (fieldText  \== '')
-      then text = self~delimiter                  /* implied field seperator */
-
+      then do                                                                  /*{1.05}*/
+         text = text||delimiter                   /* implied field seperator *//*{1.05}*/
+         textLength = textLength + 1                                           /*{1.05}*/
+      end                                                                      /*{1.05}*/
    end /* DO */
 end /* DO */
 
@@ -215,16 +201,16 @@ then do
    return
 end /* DO */
 
-parse upper value data~class~string with . dataCollectionType .
+parse upper value data~class~string with . dataCollectionType .                /*{1.04}*/
 
-select
+select                                                                         /*{1.04}*/
    /* if we have been passed a table or stem, convert it to an array */
    when (self~fileHasHeaders = .true                       ),
-   &    .set~of('TABLE','STEM')~hasIndex(dataCollectionType)
+   &    .set~of('TABLE','STEM')~hasIndex(dataCollectionType)                   /*{1.04}*/
    then do
       dataArray = .array~new
       do name over data
-         if (name = 0) & (dataCollectionType = 'STEM') then iterate
+         if (name = 0) & (dataCollectionType = 'STEM') then iterate            /*{1.04}*/
          column = 0
          do i = 1 to self~headers~last
             if self~headers~field(i)~name = name
@@ -238,7 +224,7 @@ select
             column = self~headers~last + 1
             self~headers~field(column)~name = name
          end /* DO */
-         dataArray[column] = data[name]
+         dataArray[column] = data[name]                                        /*{1.04}*/
       end /* DO */
       data = dataArray
    end /* DO */
@@ -256,37 +242,37 @@ end /* select */
 text = ''
 do i = 1 to data~last
 
-   if self~fileHasHeaders            /* force literal field even if numeric? */
-   then forceLiteral = (self~Headers~field(i)~literal = .true)
-   else forceLiteral = .false
+   if self~fileHasHeaders            /* force literal field even if numeric? *//*{1.02}*/
+   then forceLiteral = (self~Headers~field(i)~literal = .true)                 /*{1.02}*/
+   else forceLiteral = .false                                                  /*{1.02}*/
 
    select
       when data[i] = .nil                                   /*      no value */
-         then text = text||self~delimiter
+         then text = text||self~delimiter                                      /*{1.02}*/
       when ( data[i]~datatype('n') ,                        /* numeric value */
-        |    data[i] == ''        ),
-      &    \forceLiteral
-         then text = text||self~delimiter||data[i]~strip
-      when data[i]~left(1)  = self~qualifier ,     /* literal already quoted */
-      &    data[i]~right(1) = self~qualifier ,
+        |    data[i] == ''        ),                                           /*{1.03}*/
+      &    \forceLiteral                                                       /*{1.02}*/
+         then text = text||self~delimiter||data[i]~strip                       /*{1.02}*/
+      when data[i]~left(1)  = self~qualifier ,     /* literal already quoted *//*{1.02}*/
+      &    data[i]~right(1) = self~qualifier ,                                 /*{1.02}*/
       &    data[i]~length > 1
       then do
          text = text                                                        ||,
-                self~delimiter                                              ||,
-                self~qualifier                                              ||,
-                data[i]~substr(2,data[i]~length-2)~changeStr(blip,blipBlip) ||,
-                self~delimiter
-         if   self~fileHasHeaders
-         then self~Headers~field(i)~literal = .true
+                self~delimiter                                              ||,/*{1.02}*/
+                self~qualifier                                              ||,/*{1.02}*/
+                data[i]~substr(2,data[i]~length-2)~changeStr(blip,blipBlip) ||,/*{1.02}*/
+                self~delimiter                                                 /*{1.02}*/
+         if   self~fileHasHeaders                                              /*{1.02}*/
+         then self~Headers~field(i)~literal = .true                            /*{1.02}*/
       end /* Do */
       otherwise                                             /* literal value */
          text = text                                                        ||,
-                self~delimiter                                              ||,
-                self~qualifier                                              ||,
-                data[i]~changeStr(blip,blipBlip)                            ||,
-                self~qualifier
-         if   self~fileHasHeaders
-         then self~Headers~field(i)~literal = .true
+                self~delimiter                                              ||,/*{1.02}*/
+                self~qualifier                                              ||,/*{1.02}*/
+                data[i]~changeStr(blip,blipBlip)                            ||,/*{1.02}*/
+                self~qualifier                                                 /*{1.02}*/
+         if   self~fileHasHeaders                                              /*{1.02}*/
+         then self~Headers~field(i)~literal = .true                            /*{1.02}*/
    end /* select */
 end /* DO */
 
@@ -306,12 +292,12 @@ then do                                               /* maintain headers    */
    do i = 1 to self~headers~last
       if   self~headers~field(i) = .nil
       then headertext = headerText                                          ||,
-                        self~delimiter
+                        self~delimiter                                         /*{1.02}*/
       else headertext = headerText                                          ||,
-                        self~delimiter                                      ||,
-                        self~qualifier                                      ||,
+                        self~delimiter                                      ||,/*{1.02}*/
+                        self~qualifier                                      ||,/*{1.02}*/
                         self~headers~field(i)~name                          ||,
-                        self~qualifier
+                        self~qualifier                                         /*{1.02}*/
    end /* DO */
    parse var headerText . 2 headerText
    if headerText \= self~originalRawHeaders , /* headers need replacing      */
@@ -392,8 +378,8 @@ return self~FieldArray[no]
 /* ------------------------------------------------------------------------- */
 ::method last
 /* ------------------------------------------------------------------------- */
-if self~fieldArray~last = .nil
-then return 0
+if self~fieldArray~last = .nil                                                 /*{1.04}*/
+then return 0                                                                  /*{1.04}*/
 else return self~fieldArray~last
 
 /* ========================================================================= */
@@ -405,5 +391,3 @@ else return self~fieldArray~last
 /* ------------------------------------------------------------------------- */
 
 /* ========================================================================= */
-
-
