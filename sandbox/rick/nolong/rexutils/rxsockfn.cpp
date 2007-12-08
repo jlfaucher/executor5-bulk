@@ -119,18 +119,12 @@
 /*------------------------------------------------------------------
  * sock_errno()
  *------------------------------------------------------------------*/
-APIRET APIENTRY SockSock_Errno(
-   const char *     name,
-   size_t      argc,
-   PRXSTRING  argv,
-   const char * qName,
-   PRXSTRING  retStr
-   )
-   {
-   retStr->strlength = 0;
-   int2rxs(sock_errno(),retStr);
-   return 0;
-   }
+APIRET APIENTRY SockSock_Errno(const char *name, size_t argc, PCONSTRXSTRING argv, const char *qName, PRXSTRING  retStr)
+{
+    retStr->strlength = 0;
+    int2rxs(sock_errno(),retStr);
+    return 0;
+}
 
 /*-/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\-*/
 /*-\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/-*/
@@ -138,22 +132,16 @@ APIRET APIENTRY SockSock_Errno(
 /*------------------------------------------------------------------
  * psock_errno()
  *------------------------------------------------------------------*/
-APIRET APIENTRY SockPSock_Errno(
-   const char *     name,
-   size_t      argc,
-   PRXSTRING  argv,
-   const char * qName,
-   PRXSTRING  retStr
-   )
-   {
+APIRET APIENTRY SockPSock_Errno(const char *name, size_t argc, PCONSTRXSTRING argv, const char *qName, PRXSTRING  retStr)
+{
 
-   retStr->strlength = 0;
-   if (argc == 1)
-     psock_errno(argv[0].strptr);
-   else
-    psock_errno("");
-   return 0;
-   }
+    retStr->strlength = 0;
+    if (argc == 1)
+        psock_errno(argv[0].strptr);
+    else
+        psock_errno("");
+    return 0;
+}
 
 /*-/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\-*/
 /*-\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/-*/
@@ -161,57 +149,51 @@ APIRET APIENTRY SockPSock_Errno(
 /*------------------------------------------------------------------
  * accept()
  *------------------------------------------------------------------*/
-APIRET APIENTRY SockAccept(
-   const char *     name,
-   size_t      argc,
-   PRXSTRING  argv,
-   const char * qName,
-   PRXSTRING  retStr
-   )
-   {
-   sockaddr_in  addr;
-   int          sock;
-   int          rc;
-   socklen_t    nameLen;
+APIRET APIENTRY SockAccept(const char *name, size_t argc, PCONSTRXSTRING argv, const char *qName, PRXSTRING  retStr)
+{
+    sockaddr_in  addr;
+    int          sock;
+    int          rc;
+    socklen_t    nameLen;
 
-   /*---------------------------------------------------------------
-    * initialize return value, check parms
-    *---------------------------------------------------------------*/
-   retStr->strlength = 0;
+    /*---------------------------------------------------------------
+     * initialize return value, check parms
+     *---------------------------------------------------------------*/
+    retStr->strlength = 0;
 
-   if ((argc < 1) || (argc > 2))
-      return 40;
+    if ((argc < 1) || (argc > 2))
+        return 40;
 
-   /* check for omitted arguments that might cause a trap*/
-   if (!argv[0].strptr || ((argc == 2) && !argv[1].strptr))
-      return 40;
+    /* check for omitted arguments that might cause a trap*/
+    if (!argv[0].strptr || ((argc == 2) && !argv[1].strptr))
+        return 40;
 
-   /*---------------------------------------------------------------
-    * get sock
-    *---------------------------------------------------------------*/
-   sock = rxs2int(&(argv[0]),&rc);
-   if (!rc)
-      return 40;
+    /*---------------------------------------------------------------
+     * get sock
+     *---------------------------------------------------------------*/
+    sock = rxs2int(&(argv[0]),&rc);
+    if (!rc)
+        return 40;
 
-   /*---------------------------------------------------------------
-    * call function
-    *---------------------------------------------------------------*/
-   nameLen = sizeof(addr);
-   rc = accept(sock,(struct sockaddr *)&addr,&nameLen);
+    /*---------------------------------------------------------------
+     * call function
+     *---------------------------------------------------------------*/
+    nameLen = sizeof(addr);
+    rc = accept(sock,(struct sockaddr *)&addr,&nameLen);
 
-   /*---------------------------------------------------------------
-    * set addr, if asked for
-    *---------------------------------------------------------------*/
-   if (2 == argc)
-      sockaddr2stem(&addr,argv[1].strptr);
+    /*---------------------------------------------------------------
+     * set addr, if asked for
+     *---------------------------------------------------------------*/
+    if (2 == argc)
+        sockaddr2stem(&addr,argv[1].strptr);
 
-   /*---------------------------------------------------------------
-    * set return code
-    *---------------------------------------------------------------*/
-   int2rxs(rc,retStr);
+    /*---------------------------------------------------------------
+     * set return code
+     *---------------------------------------------------------------*/
+    int2rxs(rc,retStr);
 
-   return 0;
-   }
+    return 0;
+}
 
 /*-/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\-*/
 /*-\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/-*/
@@ -219,54 +201,48 @@ APIRET APIENTRY SockAccept(
 /*------------------------------------------------------------------
  * bind()
  *------------------------------------------------------------------*/
-APIRET APIENTRY SockBind(
-   const char *     name,
-   size_t      argc,
-   PRXSTRING  argv,
-   const char * qName,
-   PRXSTRING  retStr
-   )
-   {
-   sockaddr_in  addr;
-   int          sock;
-   int          rc;
+APIRET APIENTRY SockBind(const char *name, size_t argc, PCONSTRXSTRING argv, const char *qName, PRXSTRING  retStr)
+{
+    sockaddr_in  addr;
+    int          sock;
+    int          rc;
 
-   /*---------------------------------------------------------------
-    * initialize return value, check parms
-    *---------------------------------------------------------------*/
-   retStr->strlength = 0;
+    /*---------------------------------------------------------------
+     * initialize return value, check parms
+     *---------------------------------------------------------------*/
+    retStr->strlength = 0;
 
-   if (argc != 2)
-      return 40;
+    if (argc != 2)
+        return 40;
 
-   /* check for omitted arguments that might cause a trap*/
-   if (!argv[0].strptr || !argv[1].strptr)
-      return 40;
+    /* check for omitted arguments that might cause a trap*/
+    if (!argv[0].strptr || !argv[1].strptr)
+        return 40;
 
-   /*---------------------------------------------------------------
-    * get sock
-    *---------------------------------------------------------------*/
-   sock = rxs2int(&(argv[0]),&rc);
-   if (!rc)
-      return 40;
+    /*---------------------------------------------------------------
+     * get sock
+     *---------------------------------------------------------------*/
+    sock = rxs2int(&(argv[0]),&rc);
+    if (!rc)
+        return 40;
 
-   /*---------------------------------------------------------------
-    * get addr
-    *---------------------------------------------------------------*/
-   stem2sockaddr(argv[1].strptr,&addr);
+    /*---------------------------------------------------------------
+     * get addr
+     *---------------------------------------------------------------*/
+    stem2sockaddr(argv[1].strptr,&addr);
 
-   /*---------------------------------------------------------------
-    * call function
-    *---------------------------------------------------------------*/
-   rc = bind(sock,(struct sockaddr *)&addr,sizeof(addr));
+    /*---------------------------------------------------------------
+     * call function
+     *---------------------------------------------------------------*/
+    rc = bind(sock,(struct sockaddr *)&addr,sizeof(addr));
 
-   /*---------------------------------------------------------------
-    * set return code
-    *---------------------------------------------------------------*/
-   int2rxs(rc,retStr);
+    /*---------------------------------------------------------------
+     * set return code
+     *---------------------------------------------------------------*/
+    int2rxs(rc,retStr);
 
-   return 0;
-   }
+    return 0;
+}
 
 /*-/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\-*/
 /*-\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/-*/
@@ -274,16 +250,10 @@ APIRET APIENTRY SockBind(
 /*------------------------------------------------------------------
  * close()
  *------------------------------------------------------------------*/
-APIRET APIENTRY SockClose(
-   const char *     name,
-   size_t      argc,
-   PRXSTRING  argv,
-   const char * qName,
-   PRXSTRING  retStr
-   )
-   {
-   return SockSoClose(name,argc,argv,qName,retStr);
-   }
+APIRET APIENTRY SockClose(const char *name, size_t argc, PCONSTRXSTRING argv, const char *qName, PRXSTRING  retStr)
+{
+    return SockSoClose(name,argc,argv,qName,retStr);
+}
 
 /*-/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\-*/
 /*-\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/-*/
@@ -291,54 +261,48 @@ APIRET APIENTRY SockClose(
 /*------------------------------------------------------------------
  * connect()
  *------------------------------------------------------------------*/
-APIRET APIENTRY SockConnect(
-   const char *     name,
-   size_t      argc,
-   PRXSTRING  argv,
-   const char * qName,
-   PRXSTRING  retStr
-   )
-   {
-   sockaddr_in  addr;
-   int          sock;
-   int          rc;
+APIRET APIENTRY SockConnect(const char *name, size_t argc, PCONSTRXSTRING argv, const char *qName, PRXSTRING  retStr)
+{
+    sockaddr_in  addr;
+    int          sock;
+    int          rc;
 
-   /*---------------------------------------------------------------
-    * initialize return value, check parms
-    *---------------------------------------------------------------*/
-   retStr->strlength = 0;
+    /*---------------------------------------------------------------
+     * initialize return value, check parms
+     *---------------------------------------------------------------*/
+    retStr->strlength = 0;
 
-   if (argc != 2)
-      return 40;
+    if (argc != 2)
+        return 40;
 
-   /* check for omitted arguments that might cause a trap*/
-   if (!argv[0].strptr || !argv[1].strptr)
-      return 40;
+    /* check for omitted arguments that might cause a trap*/
+    if (!argv[0].strptr || !argv[1].strptr)
+        return 40;
 
-   /*---------------------------------------------------------------
-    * get sock
-    *---------------------------------------------------------------*/
-   sock = rxs2int(&(argv[0]),&rc);
-   if (!rc)
-      return 40;
+    /*---------------------------------------------------------------
+     * get sock
+     *---------------------------------------------------------------*/
+    sock = rxs2int(&(argv[0]),&rc);
+    if (!rc)
+        return 40;
 
-   /*---------------------------------------------------------------
-    * get addr
-    *---------------------------------------------------------------*/
-   stem2sockaddr(argv[1].strptr,&addr);
+    /*---------------------------------------------------------------
+     * get addr
+     *---------------------------------------------------------------*/
+    stem2sockaddr(argv[1].strptr,&addr);
 
-   /*---------------------------------------------------------------
-    * call function
-    *---------------------------------------------------------------*/
-   rc = connect(sock,(struct sockaddr *)&addr,sizeof(addr));
+    /*---------------------------------------------------------------
+     * call function
+     *---------------------------------------------------------------*/
+    rc = connect(sock,(struct sockaddr *)&addr,sizeof(addr));
 
-   /*---------------------------------------------------------------
-    * set return code
-    *---------------------------------------------------------------*/
-   int2rxs(rc,retStr);
+    /*---------------------------------------------------------------
+     * set return code
+     *---------------------------------------------------------------*/
+    int2rxs(rc,retStr);
 
-   return 0;
-   }
+    return 0;
+}
 
 /*-/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\-*/
 /*-\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/-*/
@@ -346,62 +310,56 @@ APIRET APIENTRY SockConnect(
 /*------------------------------------------------------------------
  * gethostbyaddr()
  *------------------------------------------------------------------*/
-APIRET APIENTRY SockGetHostByAddr(
-   const char *     name,
-   size_t      argc,
-   PRXSTRING  argv,
-   const char * qName,
-   PRXSTRING  retStr
-   )
-   {
+APIRET APIENTRY SockGetHostByAddr(const char *name, size_t argc, PCONSTRXSTRING argv, const char *qName, PRXSTRING  retStr)
+{
 
-   struct hostent *pHostEnt;
-   int             domain;
-   long            addr;
-   int             rc;
-   const char *    pszStem;
+    struct hostent *pHostEnt;
+    int             domain;
+    long            addr;
+    int             rc;
+    const char *    pszStem;
 
-   /*---------------------------------------------------------------
-    * initialize return value to empty string
-    *---------------------------------------------------------------*/
-   retStr->strlength = 0;
+    /*---------------------------------------------------------------
+     * initialize return value to empty string
+     *---------------------------------------------------------------*/
+    retStr->strlength = 0;
 
-   /*---------------------------------------------------------------
-    * get parms
-    *---------------------------------------------------------------*/
-   if ((argc < 2) | (argc > 3))
-      return 40;
+    /*---------------------------------------------------------------
+     * get parms
+     *---------------------------------------------------------------*/
+    if ((argc < 2) | (argc > 3))
+        return 40;
 
-   /* check for omitted arguments that might cause a trap*/
-   if (!argv[0].strptr || !argv[1].strptr ||
-       ((argc == 3) && !argv[2].strptr))
-      return 40;
+    /* check for omitted arguments that might cause a trap*/
+    if (!argv[0].strptr || !argv[1].strptr ||
+        ((argc == 3) && !argv[2].strptr))
+        return 40;
 
-   addr = inet_addr(argv[0].strptr);
+    addr = inet_addr(argv[0].strptr);
 
-   pszStem = argv[1].strptr;
+    pszStem = argv[1].strptr;
 
-   if (2 == argc)
-      domain = AF_INET;
-   else
-      domain = rxs2int(&(argv[2]),&rc);
+    if (2 == argc)
+        domain = AF_INET;
+    else
+        domain = rxs2int(&(argv[2]),&rc);
 
-   /*---------------------------------------------------------------
-    * call function
-    *---------------------------------------------------------------*/
-   pHostEnt = gethostbyaddr((char*)&addr,sizeof(addr),domain);
+    /*---------------------------------------------------------------
+     * call function
+     *---------------------------------------------------------------*/
+    pHostEnt = gethostbyaddr((char*)&addr,sizeof(addr),domain);
 
-   if (!pHostEnt)
-      int2rxs(0,retStr);
+    if (!pHostEnt)
+        int2rxs(0,retStr);
 
-   else
-      {
-      hostent2stem(pHostEnt,pszStem);
-      int2rxs(1,retStr);
-      }
+    else
+    {
+        hostent2stem(pHostEnt,pszStem);
+        int2rxs(1,retStr);
+    }
 
-   return 0;
-   }
+    return 0;
+}
 
 /*-/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\-*/
 /*-\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/-*/
@@ -409,52 +367,46 @@ APIRET APIENTRY SockGetHostByAddr(
 /*------------------------------------------------------------------
  *  gethostbyname()
  *------------------------------------------------------------------*/
-APIRET APIENTRY SockGetHostByName(
-   const char *     name,
-   size_t      argc,
-   PRXSTRING  argv,
-   const char * qName,
-   PRXSTRING  retStr
-   )
-   {
-   struct hostent *pHostEnt;
-   const char *    pszName;
-   const char *    pszStem;
+APIRET APIENTRY SockGetHostByName(const char *name, size_t argc, PCONSTRXSTRING argv, const char *qName, PRXSTRING  retStr)
+{
+    struct hostent *pHostEnt;
+    const char *    pszName;
+    const char *    pszStem;
 
-   /*---------------------------------------------------------------
-    * initialize return value to empty string
-    *---------------------------------------------------------------*/
-   retStr->strlength = 0;
+    /*---------------------------------------------------------------
+     * initialize return value to empty string
+     *---------------------------------------------------------------*/
+    retStr->strlength = 0;
 
-   /*---------------------------------------------------------------
-    * get parms
-    *---------------------------------------------------------------*/
-   if (argc != 2)
-      return 40;
+    /*---------------------------------------------------------------
+     * get parms
+     *---------------------------------------------------------------*/
+    if (argc != 2)
+        return 40;
 
-   pszName = argv[0].strptr;
-   pszStem = argv[1].strptr;
+    pszName = argv[0].strptr;
+    pszStem = argv[1].strptr;
 
-   /* check for omitted arguments that might cause a trap*/
-   if (!pszName || !pszStem || !argv[0].strlength || !argv[1].strlength)
-      return 40;
+    /* check for omitted arguments that might cause a trap*/
+    if (!pszName || !pszStem || !argv[0].strlength || !argv[1].strlength)
+        return 40;
 
-   /*---------------------------------------------------------------
-    * call function
-    *---------------------------------------------------------------*/
-   pHostEnt = gethostbyname(pszName);
+    /*---------------------------------------------------------------
+     * call function
+     *---------------------------------------------------------------*/
+    pHostEnt = gethostbyname(pszName);
 
-   if (!pHostEnt)
-      int2rxs(0,retStr);
+    if (!pHostEnt)
+        int2rxs(0,retStr);
 
-   else
-      {
-      hostent2stem(pHostEnt,pszStem);
-      int2rxs(1,retStr);
-      }
+    else
+    {
+        hostent2stem(pHostEnt,pszStem);
+        int2rxs(1,retStr);
+    }
 
-   return 0;
-   }
+    return 0;
+}
 
 /*-/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\-*/
 /*-\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/-*/
@@ -462,73 +414,67 @@ APIRET APIENTRY SockGetHostByName(
 /*------------------------------------------------------------------
  *  gethostid()
  *------------------------------------------------------------------*/
-APIRET APIENTRY SockGetHostId(
-   const char *     name,
-   size_t      argc,
-   PRXSTRING  argv,
-   const char * qName,
-   PRXSTRING  retStr
-   )
-   {
-   in_addr ia;
-   char    *addr;
+APIRET APIENTRY SockGetHostId(const char *name, size_t argc, PCONSTRXSTRING argv, const char *qName, PRXSTRING  retStr)
+{
+    in_addr ia;
+    char    *addr;
 
 #ifdef WIN32
-   char     pszBuff[64];                    // buffer for ip address
-   PHOSTENT pHostEnt;                       // ptr to hostent structure
-   /*
-    *   Retrieve my ip address.  Assuming the hosts file in
-    *   in %systemroot%/system/drivers/etc/hosts contains my computer name.
-    */                                      //get our name
-   if (gethostname(pszBuff, sizeof(pszBuff)))
-   {
-           strcpy(retStr->strptr,"0.0.0.0");
-           retStr->strlength = strlen(retStr->strptr);
-           return 0;
-   }
-   pHostEnt = gethostbyname(pszBuff);       // get our ip address
-   if (!pHostEnt)
-   {
-           strcpy(retStr->strptr,"0.0.0.0");
-           retStr->strlength = strlen(retStr->strptr);
-           return 0;
-   }
-   ia.s_addr = (*(unsigned long *)pHostEnt->h_addr);// in network byte order already
-   addr = inet_ntoa(ia);
+    char     pszBuff[64];                    // buffer for ip address
+    PHOSTENT pHostEnt;                       // ptr to hostent structure
+    /*
+     *   Retrieve my ip address.  Assuming the hosts file in
+     *   in %systemroot%/system/drivers/etc/hosts contains my computer name.
+     */                                      //get our name
+    if (gethostname(pszBuff, sizeof(pszBuff)))
+    {
+        strcpy(retStr->strptr,"0.0.0.0");
+        retStr->strlength = strlen(retStr->strptr);
+        return 0;
+    }
+    pHostEnt = gethostbyname(pszBuff);       // get our ip address
+    if (!pHostEnt)
+    {
+        strcpy(retStr->strptr,"0.0.0.0");
+        retStr->strlength = strlen(retStr->strptr);
+        return 0;
+    }
+    ia.s_addr = (*(unsigned long *)pHostEnt->h_addr);// in network byte order already
+    addr = inet_ntoa(ia);
 #else
 #if defined(OPSYS_AIX) || defined(OPSYS_LINUX)
-   #define h_addr h_addr_list[0]
+#define h_addr h_addr_list[0]
 
-   char     pszBuff[64];                    /* buffer for ip address*/
-   struct hostent * pHostEnt;               /* ptr to hostent structure*/
+    char     pszBuff[64];                    /* buffer for ip address*/
+    struct hostent * pHostEnt;               /* ptr to hostent structure*/
 
-                                                 /*get our name*/
-   if (gethostname(pszBuff, sizeof(pszBuff)))
-   {
-           strcpy(retStr->strptr,"0.0.0.0");
-           retStr->strlength = strlen(retStr->strptr);
-           return 0;
-   }
-   pHostEnt = gethostbyname(pszBuff);     /* get our ip address */
-   if (!pHostEnt)
-   {
-           strcpy(retStr->strptr,"0.0.0.0");
-           retStr->strlength = strlen(retStr->strptr);
-           return 0;
-   }
-   ia.s_addr = (*(unsigned long *)pHostEnt->h_addr);// in network byte order already
-   addr = inet_ntoa(ia);
+    /*get our name*/
+    if (gethostname(pszBuff, sizeof(pszBuff)))
+    {
+        strcpy(retStr->strptr,"0.0.0.0");
+        retStr->strlength = strlen(retStr->strptr);
+        return 0;
+    }
+    pHostEnt = gethostbyname(pszBuff);     /* get our ip address */
+    if (!pHostEnt)
+    {
+        strcpy(retStr->strptr,"0.0.0.0");
+        retStr->strlength = strlen(retStr->strptr);
+        return 0;
+    }
+    ia.s_addr = (*(unsigned long *)pHostEnt->h_addr);// in network byte order already
+    addr = inet_ntoa(ia);
 #else
-   ia.s_addr = htonl(gethostid());
-   addr = inet_ntoa(ia);
+    ia.s_addr = htonl(gethostid());
+    addr = inet_ntoa(ia);
 #endif
 #endif
 
-   sprintf(retStr->strptr,"%s",addr);
-   retStr->strlength = strlen(retStr->strptr);
+    sprintf(retStr->strptr,"%s",addr);
+    retStr->strlength = strlen(retStr->strptr);
 
-   return 0;
-   }
+    return 0;
+}
 
 /*-/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\-*/
 /*-\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/-*/
@@ -536,56 +482,50 @@ APIRET APIENTRY SockGetHostId(
 /*------------------------------------------------------------------
  * getpeername()
  *------------------------------------------------------------------*/
-APIRET APIENTRY SockGetPeerName(
-   const char *     name,
-   size_t      argc,
-   PRXSTRING  argv,
-   const char * qName,
-   PRXSTRING  retStr
-   )
-   {
-   sockaddr_in  addr;
-   int          sock;
-   int          rc;
-   socklen_t    nameLen;
+APIRET APIENTRY SockGetPeerName(const char *name, size_t argc, PCONSTRXSTRING argv, const char *qName, PRXSTRING  retStr)
+{
+    sockaddr_in  addr;
+    int          sock;
+    int          rc;
+    socklen_t    nameLen;
 
-   /*---------------------------------------------------------------
-    * initialize return value, check parms
-    *---------------------------------------------------------------*/
-   retStr->strlength = 0;
+    /*---------------------------------------------------------------
+     * initialize return value, check parms
+     *---------------------------------------------------------------*/
+    retStr->strlength = 0;
 
-   if (argc != 2)
-      return 40;
+    if (argc != 2)
+        return 40;
 
-   /* check for omitted arguments that might cause a trap*/
-   if (!argv[0].strptr || !argv[1].strptr || !argv[1].strlength)
-      return 40;
+    /* check for omitted arguments that might cause a trap*/
+    if (!argv[0].strptr || !argv[1].strptr || !argv[1].strlength)
+        return 40;
 
-   /*---------------------------------------------------------------
-    * get sock
-    *---------------------------------------------------------------*/
-   sock = rxs2int(&(argv[0]),&rc);
-   if (!rc)
-      return 40;
+    /*---------------------------------------------------------------
+     * get sock
+     *---------------------------------------------------------------*/
+    sock = rxs2int(&(argv[0]),&rc);
+    if (!rc)
+        return 40;
 
-   /*---------------------------------------------------------------
-    * call function
-    *---------------------------------------------------------------*/
-   nameLen = sizeof(addr);
-   rc = getpeername(sock,(struct sockaddr *)&addr,&nameLen);
+    /*---------------------------------------------------------------
+     * call function
+     *---------------------------------------------------------------*/
+    nameLen = sizeof(addr);
+    rc = getpeername(sock,(struct sockaddr *)&addr,&nameLen);
 
-   /*---------------------------------------------------------------
-    * write address to stem
-    *---------------------------------------------------------------*/
-   sockaddr2stem(&addr,argv[1].strptr);
+    /*---------------------------------------------------------------
+     * write address to stem
+     *---------------------------------------------------------------*/
+    sockaddr2stem(&addr,argv[1].strptr);
 
-   /*---------------------------------------------------------------
-    * set return code
-    *---------------------------------------------------------------*/
-   int2rxs(rc,retStr);
+    /*---------------------------------------------------------------
+     * set return code
+     *---------------------------------------------------------------*/
+    int2rxs(rc,retStr);
 
-   return 0;
-   }
+    return 0;
+}
 
 /*-/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\-*/
 /*-\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/-*/
@@ -593,56 +533,50 @@ APIRET APIENTRY SockGetPeerName(
 /*------------------------------------------------------------------
  *  getsockname()
  *------------------------------------------------------------------*/
-APIRET APIENTRY SockGetSockName(
-   const char *     name,
-   size_t      argc,
-   PRXSTRING  argv,
-   const char * qName,
-   PRXSTRING  retStr
-   )
-   {
-   sockaddr_in  addr;
-   int          sock;
-   int          rc;
-   socklen_t    nameLen;
+APIRET APIENTRY SockGetSockName(const char *name, size_t argc, PCONSTRXSTRING argv, const char *qName, PRXSTRING  retStr)
+{
+    sockaddr_in  addr;
+    int          sock;
+    int          rc;
+    socklen_t    nameLen;
 
-   /*---------------------------------------------------------------
-    * initialize return value, check parms
-    *---------------------------------------------------------------*/
-   retStr->strlength = 0;
+    /*---------------------------------------------------------------
+     * initialize return value, check parms
+     *---------------------------------------------------------------*/
+    retStr->strlength = 0;
 
-   if (argc != 2)
-      return 40;
+    if (argc != 2)
+        return 40;
 
-   /* check for omitted arguments that might cause a trap*/
-   if (!argv[0].strptr || !argv[1].strptr || !argv[1].strlength)
-      return 40;
+    /* check for omitted arguments that might cause a trap*/
+    if (!argv[0].strptr || !argv[1].strptr || !argv[1].strlength)
+        return 40;
 
-   /*---------------------------------------------------------------
-    * get sock
-    *---------------------------------------------------------------*/
-   sock = rxs2int(&(argv[0]),&rc);
-   if (!rc)
-      return 40;
+    /*---------------------------------------------------------------
+     * get sock
+     *---------------------------------------------------------------*/
+    sock = rxs2int(&(argv[0]),&rc);
+    if (!rc)
+        return 40;
 
-   /*---------------------------------------------------------------
-    * call function
-    *---------------------------------------------------------------*/
-   nameLen = sizeof(addr);
-   rc = getsockname(sock,(struct sockaddr *)&addr,&nameLen);
+    /*---------------------------------------------------------------
+     * call function
+     *---------------------------------------------------------------*/
+    nameLen = sizeof(addr);
+    rc = getsockname(sock,(struct sockaddr *)&addr,&nameLen);
 
-   /*---------------------------------------------------------------
-    * write address to stem
-    *---------------------------------------------------------------*/
-   sockaddr2stem(&addr,argv[1].strptr);
+    /*---------------------------------------------------------------
+     * write address to stem
+     *---------------------------------------------------------------*/
+    sockaddr2stem(&addr,argv[1].strptr);
 
-   /*---------------------------------------------------------------
-    * set return code
-    *---------------------------------------------------------------*/
-   int2rxs(rc,retStr);
+    /*---------------------------------------------------------------
+     * set return code
+     *---------------------------------------------------------------*/
+    int2rxs(rc,retStr);
 
-   return 0;
-   }
+    return 0;
+}
 
 /*-/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\-*/
 /*-\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/-*/
@@ -650,141 +584,135 @@ APIRET APIENTRY SockGetSockName(
 /*------------------------------------------------------------------
  *  getsockopt()
  *------------------------------------------------------------------*/
-APIRET APIENTRY SockGetSockOpt(
-   const char *     name,
-   size_t      argc,
-   PRXSTRING  argv,
-   const char * qName,
-   PRXSTRING  retStr
-   )
-   {
-   int            sock;
-   int            rc;
-   int            opt;
-   struct linger  lingStruct;
-   int            intVal;
-   long           longVal;
-   socklen_t      len;
-   char          *ptr;
-   RXSTRING       rxVar;
-   char           pBuffer[30];
-   SHVBLOCK       shv;
+APIRET APIENTRY SockGetSockOpt(const char *name, size_t argc, PCONSTRXSTRING argv, const char *qName, PRXSTRING  retStr)
+{
+    int            sock;
+    int            rc;
+    int            opt;
+    struct linger  lingStruct;
+    int            intVal;
+    long           longVal;
+    socklen_t      len;
+    char          *ptr;
+    CONSTRXSTRING  rxVar;
+    char           pBuffer[30];
+    SHVBLOCK       shv;
 
-   /*---------------------------------------------------------------
-    * initialize return value, check parms
-    *---------------------------------------------------------------*/
-   retStr->strlength = 0;
+    /*---------------------------------------------------------------
+     * initialize return value, check parms
+     *---------------------------------------------------------------*/
+    retStr->strlength = 0;
 
-   if (argc != 4)
-      return 40;
+    if (argc != 4)
+        return 40;
 
-   /* check for omitted arguments that might cause a trap*/
-   if (!argv[0].strptr || !argv[2].strptr || !argv[1].strlength)
-      return 40;
+    /* check for omitted arguments that might cause a trap*/
+    if (!argv[0].strptr || !argv[2].strptr || !argv[1].strlength)
+        return 40;
 
-   /*---------------------------------------------------------------
-    * get sock
-    *---------------------------------------------------------------*/
-   sock = rxs2int(&(argv[0]),&rc);
-   if (!rc)
-      return 40;
+    /*---------------------------------------------------------------
+     * get sock
+     *---------------------------------------------------------------*/
+    sock = rxs2int(&(argv[0]),&rc);
+    if (!rc)
+        return 40;
 
-   /*---------------------------------------------------------------
-    * check level
-    *---------------------------------------------------------------*/
-   if (!argv[1].strptr)
-      return 40;
+    /*---------------------------------------------------------------
+     * check level
+     *---------------------------------------------------------------*/
+    if (!argv[1].strptr)
+        return 40;
 
-   if (stricmp("SOL_SOCKET",argv[1].strptr))
-      return 40;
+    if (stricmp("SOL_SOCKET",argv[1].strptr))
+        return 40;
 
-   /*---------------------------------------------------------------
-    * get option name
-    *---------------------------------------------------------------*/
-   opt = rxs2SockOpt(argv[2].strptr);
+    /*---------------------------------------------------------------
+     * get option name
+     *---------------------------------------------------------------*/
+    opt = rxs2SockOpt(argv[2].strptr);
 
-   /*---------------------------------------------------------------
-    * get variable name
-    *---------------------------------------------------------------*/
-   rxVar = argv[3];
-   if (!rxVar.strptr || !rxVar.strlength)
-      return 40;
+    /*---------------------------------------------------------------
+     * get variable name
+     *---------------------------------------------------------------*/
+    rxVar = argv[3];
+    if (!rxVar.strptr || !rxVar.strlength)
+        return 40;
 
-   /*---------------------------------------------------------------
-    * set up buffer
-    *---------------------------------------------------------------*/
-   longVal = intVal = 0; /* to eliminate compiler warning */
+    /*---------------------------------------------------------------
+     * set up buffer
+     *---------------------------------------------------------------*/
+    longVal = intVal = 0; /* to eliminate compiler warning */
 
-   switch(opt)
-      {
-      case SO_LINGER:
-         ptr = (char *)&lingStruct;
-         len = sizeof(lingStruct);
-         break;
+    switch (opt)
+    {
+        case SO_LINGER:
+            ptr = (char *)&lingStruct;
+            len = sizeof(lingStruct);
+            break;
 
-      case SO_RCVBUF:
-      case SO_SNDBUF:
-         ptr = (char *)&longVal;
-         len = sizeof(long);
-         break;
+        case SO_RCVBUF:
+        case SO_SNDBUF:
+            ptr = (char *)&longVal;
+            len = sizeof(long);
+            break;
 
-      default:
-         ptr = (char *)&intVal;
-         len = sizeof(int);
-      }
+        default:
+            ptr = (char *)&intVal;
+            len = sizeof(int);
+    }
 
-   /*---------------------------------------------------------------
-    * make call
-    *---------------------------------------------------------------*/
-   rc = getsockopt(sock,SOL_SOCKET,opt,ptr,&len);
+    /*---------------------------------------------------------------
+     * make call
+     *---------------------------------------------------------------*/
+    rc = getsockopt(sock,SOL_SOCKET,opt,ptr,&len);
 
-   /*---------------------------------------------------------------
-    * set return value
-    *---------------------------------------------------------------*/
-   switch(opt)
-      {
-      case SO_LINGER:
-         sprintf(pBuffer,"%ld %ld",
-                 (long) lingStruct.l_onoff, (long) lingStruct.l_linger);
-         break;
+    /*---------------------------------------------------------------
+     * set return value
+     *---------------------------------------------------------------*/
+    switch (opt)
+    {
+        case SO_LINGER:
+            sprintf(pBuffer,"%ld %ld",
+                    (long) lingStruct.l_onoff, (long) lingStruct.l_linger);
+            break;
 
-      case SO_TYPE:
-         switch (intVal)
+        case SO_TYPE:
+            switch (intVal)
             {
-            case SOCK_STREAM: strcpy(pBuffer,"STREAM"); break;
-            case SOCK_DGRAM:  strcpy(pBuffer,"DGRAM");  break;
-            case SOCK_RAW:    strcpy(pBuffer,"RAW");    break;
-            default:          strcpy(pBuffer,"UNKNOWN");
+                case SOCK_STREAM: strcpy(pBuffer,"STREAM"); break;
+                case SOCK_DGRAM:  strcpy(pBuffer,"DGRAM");  break;
+                case SOCK_RAW:    strcpy(pBuffer,"RAW");    break;
+                default:          strcpy(pBuffer,"UNKNOWN");
             }
-         break;
+            break;
 
-      case SO_RCVBUF:
-      case SO_SNDBUF:
-         sprintf(pBuffer,"%ld",(long) longVal);
-         break;
+        case SO_RCVBUF:
+        case SO_SNDBUF:
+            sprintf(pBuffer,"%ld",(long) longVal);
+            break;
 
-      default:
-         sprintf(pBuffer,"%ld",(long) intVal);
-      }
+        default:
+            sprintf(pBuffer,"%ld",(long) intVal);
+    }
 
-   /*---------------------------------------------------------------
-    * set variable
-    *---------------------------------------------------------------*/
-   shv.shvcode            = RXSHV_SYSET;
-   shv.shvnext            = NULL;
-   shv.shvname            = rxVar;
-   shv.shvvalue.strptr    = pBuffer;
-   shv.shvvalue.strlength = strlen(pBuffer);
+    /*---------------------------------------------------------------
+     * set variable
+     *---------------------------------------------------------------*/
+    shv.shvcode            = RXSHV_SYSET;
+    shv.shvnext            = NULL;
+    shv.shvname            = rxVar;
+    shv.shvvalue.strptr    = pBuffer;
+    shv.shvvalue.strlength = strlen(pBuffer);
 
-   RexxVariablePool(&shv);
+    RexxVariablePool(&shv);
 
-   /*---------------------------------------------------------------
-    * set return code
-    *---------------------------------------------------------------*/
-   int2rxs(rc,retStr);
+    /*---------------------------------------------------------------
+     * set return code
+     *---------------------------------------------------------------*/
+    int2rxs(rc,retStr);
 
-   return 0;
-   }
+    return 0;
+}
 
 /*-/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\-*/
 /*-\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/-*/
@@ -792,107 +720,102 @@ APIRET APIENTRY SockGetSockOpt(
 /*------------------------------------------------------------------
  *  ioctl()
  *------------------------------------------------------------------*/
-APIRET APIENTRY SockIoctl(
-   const char *     name,
-   size_t      argc,
-   PRXSTRING  argv,
-   const char * qName,
-   PRXSTRING  retStr
-   )
-   {
-   int        sock;
-   int        cmd;
-   void      *data;
-   int        dataBuff;
-   int        len;
-   int        rc;
-   SHVBLOCK   shv;
-   char       pBuffer[20];
+APIRET APIENTRY SockIoctl(const char *name, size_t argc, PCONSTRXSTRING argv, const char *qName, PRXSTRING  retStr)
+{
+    int        sock;
+    int        cmd;
+    void      *data;
+    int        dataBuff;
+    int        len;
+    int        rc;
+    SHVBLOCK   shv;
+    char       pBuffer[20];
 
-   /*---------------------------------------------------------------
-    * initialize return value, check parms
-    *---------------------------------------------------------------*/
-   retStr->strlength = 0;
+    /*---------------------------------------------------------------
+     * initialize return value, check parms
+     *---------------------------------------------------------------*/
+    retStr->strlength = 0;
 
-   if (argc != 3)
-      return 40;
+    if (argc != 3)
+        return 40;
 
-   /* check for omitted arguments that might cause a trap*/
-   if (!argv[0].strptr)
-      return 40;
+    /* check for omitted arguments that might cause a trap*/
+    if (!argv[0].strptr)
+        return 40;
 
-   /*---------------------------------------------------------------
-    * get sock
-    *---------------------------------------------------------------*/
-   sock = rxs2int(&(argv[0]),&rc);
-   if (!rc)
-      return 40;
+    /*---------------------------------------------------------------
+     * get sock
+     *---------------------------------------------------------------*/
+    sock = rxs2int(&(argv[0]),&rc);
+    if (!rc)
+        return 40;
 
-   /*---------------------------------------------------------------
-    * get command and data
-    *---------------------------------------------------------------*/
-   if (!argv[1].strptr || !argv[1].strlength)
-      return 40;
+    /*---------------------------------------------------------------
+     * get command and data
+     *---------------------------------------------------------------*/
+    if (!argv[1].strptr || !argv[1].strlength)
+        return 40;
 
-   if (!argv[2].strptr || !argv[2].strlength)
-      return 40;
+    if (!argv[2].strptr || !argv[2].strlength)
+        return 40;
 
-   cmd = 0; /* to eliminate compiler warning */
+    cmd = 0; /* to eliminate compiler warning */
 
-   if      (!stricmp(argv[1].strptr,"FIONBIO"))
-      {
-      cmd      = FIONBIO;
-      dataBuff = rxs2int(&(argv[2]),&rc);
-      data     = &dataBuff;
-      len      = sizeof(int);
-      }
+    if (!stricmp(argv[1].strptr,"FIONBIO"))
+    {
+        cmd      = FIONBIO;
+        dataBuff = rxs2int(&(argv[2]),&rc);
+        data     = &dataBuff;
+        len      = sizeof(int);
+    }
 
-   else if (!stricmp(argv[1].strptr,"FIONREAD"))
-      {
-      cmd  = FIONREAD;
-      data = &dataBuff;
-      len  = sizeof(dataBuff);
-      }
+    else if (!stricmp(argv[1].strptr,"FIONREAD"))
+    {
+        cmd  = FIONREAD;
+        data = &dataBuff;
+        len  = sizeof(dataBuff);
+    }
 
-   else
-      {
-      strcpy(retStr->strptr,"-1");
-      retStr->strlength = strlen(retStr->strptr);
-      return 0;
-      }
+    else
+    {
+        strcpy(retStr->strptr,"-1");
+        retStr->strlength = strlen(retStr->strptr);
+        return 0;
+    }
 
-   /*---------------------------------------------------------------
-    * make call
-    *---------------------------------------------------------------*/
+    /*---------------------------------------------------------------
+     * make call
+     *---------------------------------------------------------------*/
 #ifdef WIN32
-   rc = ioctlsocket(sock,cmd,(u_long *)data);
+    rc = ioctlsocket(sock,cmd,(u_long *)data);
 #else
-   rc = ioctl(sock,cmd,data,len);
+    rc = ioctl(sock,cmd,data,len);
 #endif
 
-   /*---------------------------------------------------------------
-    * set output for FIONREAD
-    *---------------------------------------------------------------*/
-   if (cmd == FIONREAD)
-      {
-      sprintf(pBuffer,"%ld",(long) dataBuff);
+    /*---------------------------------------------------------------
+     * set output for FIONREAD
+     *---------------------------------------------------------------*/
+    if (cmd == FIONREAD)
+    {
+        sprintf(pBuffer,"%ld",(long) dataBuff);
 
-      shv.shvcode            = RXSHV_SYSET;
-      shv.shvnext            = NULL;
-      shv.shvname            = argv[2];
-      shv.shvvalue.strptr    = pBuffer;
-      shv.shvvalue.strlength = strlen(pBuffer);
+        shv.shvcode            = RXSHV_SYSET;
+        shv.shvnext            = NULL;
+        shv.shvname.strptr     = argv[2].strptr;
+        shv.shvname.strlength  = argv[2].strlength;
+        shv.shvvalue.strptr    = pBuffer;
+        shv.shvvalue.strlength = strlen(pBuffer);
 
-      RexxVariablePool(&shv);
-      }
+        RexxVariablePool(&shv);
+    }
 
-   /*---------------------------------------------------------------
-    * set return code
-    *---------------------------------------------------------------*/
-   int2rxs(rc,retStr);
+    /*---------------------------------------------------------------
+     * set return code
+     *---------------------------------------------------------------*/
+    int2rxs(rc,retStr);
 
-   return 0;
-   }
+    return 0;
+}
 
 /*-/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\-*/
 /*-\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/-*/
@@ -900,56 +823,50 @@ APIRET APIENTRY SockIoctl(
 /*------------------------------------------------------------------
  *  listen()
  *------------------------------------------------------------------*/
-APIRET APIENTRY SockListen(
-   const char *     name,
-   size_t      argc,
-   PRXSTRING  argv,
-   const char * qName,
-   PRXSTRING  retStr
-   )
-   {
-   int  sock;
-   int  rc;
-   int  backlog;
+APIRET APIENTRY SockListen(const char *name, size_t argc, PCONSTRXSTRING argv, const char *qName, PRXSTRING  retStr)
+{
+    int  sock;
+    int  rc;
+    int  backlog;
 
-   /*---------------------------------------------------------------
-    * initialize return value, check parms
-    *---------------------------------------------------------------*/
-   retStr->strlength = 0;
+    /*---------------------------------------------------------------
+     * initialize return value, check parms
+     *---------------------------------------------------------------*/
+    retStr->strlength = 0;
 
-   if (argc != 2)
-      return 40;
+    if (argc != 2)
+        return 40;
 
-   /* check for omitted arguments that might cause a trap*/
-   if (!argv[0].strptr || !argv[1].strptr)
-      return 40;
+    /* check for omitted arguments that might cause a trap*/
+    if (!argv[0].strptr || !argv[1].strptr)
+        return 40;
 
-   /*---------------------------------------------------------------
-    * get sock
-    *---------------------------------------------------------------*/
-   sock = rxs2int(&(argv[0]),&rc);
-   if (!rc)
-      return 40;
+    /*---------------------------------------------------------------
+     * get sock
+     *---------------------------------------------------------------*/
+    sock = rxs2int(&(argv[0]),&rc);
+    if (!rc)
+        return 40;
 
-   /*---------------------------------------------------------------
-    * get addr
-    *---------------------------------------------------------------*/
-   backlog = rxs2int(&(argv[1]),&rc);
-   if (!rc)
-      return 40;
+    /*---------------------------------------------------------------
+     * get addr
+     *---------------------------------------------------------------*/
+    backlog = rxs2int(&(argv[1]),&rc);
+    if (!rc)
+        return 40;
 
-   /*---------------------------------------------------------------
-    * call function
-    *---------------------------------------------------------------*/
-   rc = listen(sock,backlog);
+    /*---------------------------------------------------------------
+     * call function
+     *---------------------------------------------------------------*/
+    rc = listen(sock,backlog);
 
-   /*---------------------------------------------------------------
-    * set return code
-    *---------------------------------------------------------------*/
-   int2rxs(rc,retStr);
+    /*---------------------------------------------------------------
+     * set return code
+     *---------------------------------------------------------------*/
+    int2rxs(rc,retStr);
 
-   return 0;
-   }
+    return 0;
+}
 
 /*-/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\-*/
 /*-\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/-*/
@@ -957,113 +874,107 @@ APIRET APIENTRY SockListen(
 /*------------------------------------------------------------------
  *  recv()
  *------------------------------------------------------------------*/
-APIRET APIENTRY SockRecv(
-   const char *     name,
-   size_t      argc,
-   PRXSTRING  argv,
-   const char * qName,
-   PRXSTRING  retStr
-   )
-   {
-   int       sock;
-   int       dataLen;
-   int       flags;
-   RXSTRING  rxVar;
-   int       rc;
-   char *    pBuffer;
-   SHVBLOCK  shv;
-   int       chk;
+APIRET APIENTRY SockRecv(const char *name, size_t argc, PCONSTRXSTRING argv, const char *qName, PRXSTRING  retStr)
+{
+    int       sock;
+    int       dataLen;
+    int       flags;
+    CONSTRXSTRING  rxVar;
+    int       rc;
+    char *    pBuffer;
+    SHVBLOCK  shv;
+    int       chk;
 
-   /*---------------------------------------------------------------
-    * initialize return value to empty string
-    *---------------------------------------------------------------*/
-   retStr->strlength = 0;
+    /*---------------------------------------------------------------
+     * initialize return value to empty string
+     *---------------------------------------------------------------*/
+    retStr->strlength = 0;
 
-   if ((argc < 3) || (argc > 4))
-      return 40;
+    if ((argc < 3) || (argc > 4))
+        return 40;
 
-   /* check for omitted arguments that might cause a trap*/
-   if (!argv[0].strptr || !argv[1].strptr || !argv[2].strptr ||
-       ((argc == 4) && (!argv[3].strptr || !argv[3].strlength)))
-      return 40;
+    /* check for omitted arguments that might cause a trap*/
+    if (!argv[0].strptr || !argv[1].strptr || !argv[2].strptr ||
+        ((argc == 4) && (!argv[3].strptr || !argv[3].strlength)))
+        return 40;
 
-   /*---------------------------------------------------------------
-    * get sock
-    *---------------------------------------------------------------*/
-   sock = rxs2int(&(argv[0]),&chk);
-   if (!chk)
-      return 40;
+    /*---------------------------------------------------------------
+     * get sock
+     *---------------------------------------------------------------*/
+    sock = rxs2int(&(argv[0]),&chk);
+    if (!chk)
+        return 40;
 
-   /*---------------------------------------------------------------
-    * get variable name
-    *---------------------------------------------------------------*/
-   rxVar = argv[1];
+    /*---------------------------------------------------------------
+     * get variable name
+     *---------------------------------------------------------------*/
+    rxVar = argv[1];
 
-   /*---------------------------------------------------------------
-    * get data length
-    *---------------------------------------------------------------*/
-   dataLen = rxs2int(&(argv[2]),&chk);
-   if (!chk)
-      return 40;
+    /*---------------------------------------------------------------
+     * get data length
+     *---------------------------------------------------------------*/
+    dataLen = rxs2int(&(argv[2]),&chk);
+    if (!chk)
+        return 40;
 
-   /*---------------------------------------------------------------
-    * get flags
-    *---------------------------------------------------------------*/
-   flags = 0;
-   if (4 == argc)
-      {
-      const char *pszWord;
+    /*---------------------------------------------------------------
+     * get flags
+     *---------------------------------------------------------------*/
+    flags = 0;
+    if (4 == argc)
+    {
+        const char *pszWord;
 
-      // strtok modifies the tokenized string.  That's against the rules of
-      // usage here, so we need to make a copy first.
-      char *flagStr = strdup(argv[3].strptr);
+        // strtok modifies the tokenized string.  That's against the rules of
+        // usage here, so we need to make a copy first.
+        char *flagStr = strdup(argv[3].strptr);
 
-      pszWord = strtok(flagStr," ");
-      while (pszWord)
-         {
-         if      (!stricmp(pszWord,"MSG_OOB"))  flags |= MSG_OOB;
-         else if (!stricmp(pszWord,"MSG_PEEK")) flags |= MSG_PEEK;
-         pszWord = strtok(NULL," ");
-         }
-      free(flagStr);
-      }
+        pszWord = strtok(flagStr," ");
+        while (pszWord)
+        {
+            if (!stricmp(pszWord,"MSG_OOB"))  flags |= MSG_OOB;
+            else if (!stricmp(pszWord,"MSG_PEEK")) flags |= MSG_PEEK;
+            pszWord = strtok(NULL," ");
+        }
+        free(flagStr);
+    }
 
-   /*---------------------------------------------------------------
-    * allocate memory for data
-    *---------------------------------------------------------------*/
-   pBuffer = (char *)malloc(dataLen);
-   if (!pBuffer)
-      return 5;
+    /*---------------------------------------------------------------
+     * allocate memory for data
+     *---------------------------------------------------------------*/
+    pBuffer = (char *)malloc(dataLen);
+    if (!pBuffer)
+        return 5;
 
-   /*---------------------------------------------------------------
-    * call function
-    *---------------------------------------------------------------*/
-   rc = recv(sock,pBuffer,dataLen,flags);
+    /*---------------------------------------------------------------
+     * call function
+     *---------------------------------------------------------------*/
+    rc = recv(sock,pBuffer,dataLen,flags);
 
-   if (-1 == rc)
-      dataLen = 0;
-   else
-      dataLen = rc;
-   /*---------------------------------------------------------------
-    * set variable
-    *---------------------------------------------------------------*/
-   shv.shvcode            = RXSHV_SYSET;
-   shv.shvnext            = NULL;
-   shv.shvname            = rxVar;
-   shv.shvvalue.strptr    = pBuffer;
-   shv.shvvalue.strlength = dataLen;
+    if (-1 == rc)
+        dataLen = 0;
+    else
+        dataLen = rc;
+    /*---------------------------------------------------------------
+     * set variable
+     *---------------------------------------------------------------*/
+    shv.shvcode            = RXSHV_SYSET;
+    shv.shvnext            = NULL;
+    shv.shvname            = rxVar;
+    shv.shvvalue.strptr    = pBuffer;
+    shv.shvvalue.strlength = dataLen;
 
-   RexxVariablePool(&shv);
+    RexxVariablePool(&shv);
 
-   free(pBuffer);
+    free(pBuffer);
 
-   /*---------------------------------------------------------------
-    * set return code
-    *---------------------------------------------------------------*/
-   int2rxs(rc,retStr);
+    /*---------------------------------------------------------------
+     * set return code
+     *---------------------------------------------------------------*/
+    int2rxs(rc,retStr);
 
-   return 0;
-   }
+    return 0;
+}
 
 /*-/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\-*/
 /*-\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/-*/
@@ -1071,320 +982,308 @@ APIRET APIENTRY SockRecv(
 /*------------------------------------------------------------------
  *  recvfrom()
  *------------------------------------------------------------------*/
-APIRET APIENTRY SockRecvFrom(
-   const char *     name,
-   size_t      argc,
-   PRXSTRING  argv,
-   const char * qName,
-   PRXSTRING  retStr
-   )
-   {
-   int       sock;
-   int       dataLen;
-   int       flags;
-   RXSTRING  rxVar;
-   LONG      rc;
-   PSZ       pBuffer;
-   PSZ       pStem;
-   SHVBLOCK  shv;
-   int       chk;
-   sockaddr_in addr;
-   socklen_t   addr_size;
+APIRET APIENTRY SockRecvFrom(const char *name, size_t argc, PCONSTRXSTRING argv, const char *qName, PRXSTRING  retStr)
+{
+    int       sock;
+    int       dataLen;
+    int       flags;
+    CONSTRXSTRING  rxVar;
+    LONG      rc;
+    PSZ       pBuffer;
+    const char *pStem;
+    SHVBLOCK  shv;
+    int       chk;
+    sockaddr_in addr;
+    socklen_t   addr_size;
 
-   /*---------------------------------------------------------------
-    * initialize return value to empty string
-    *---------------------------------------------------------------*/
-   retStr->strlength = 0;
+    /*---------------------------------------------------------------
+     * initialize return value to empty string
+     *---------------------------------------------------------------*/
+    retStr->strlength = 0;
 
-   if ((argc < 4) || (argc > 5))
-      return 40;
+    if ((argc < 4) || (argc > 5))
+        return 40;
 
-   /* check for omitted arguments that might cause a trap*/
-   if (!argv[0].strptr || !argv[1].strptr || !argv[2].strptr ||
-       !argv[3].strptr || !argv[3].strlength ||
-       ((argc == 5) && (!argv[4].strptr || !argv[4].strlength)))
-      return 40;
+    /* check for omitted arguments that might cause a trap*/
+    if (!argv[0].strptr || !argv[1].strptr || !argv[2].strptr ||
+        !argv[3].strptr || !argv[3].strlength ||
+        ((argc == 5) && (!argv[4].strptr || !argv[4].strlength)))
+        return 40;
 
-   /*---------------------------------------------------------------
-    * get sock
-    *---------------------------------------------------------------*/
-   sock = rxs2int(&(argv[0]),&chk);
-   if (!chk)
-      return 40;
+    /*---------------------------------------------------------------
+     * get sock
+     *---------------------------------------------------------------*/
+    sock = rxs2int(&(argv[0]),&chk);
+    if (!chk)
+        return 40;
 
-   /*---------------------------------------------------------------
-    * get variable name
-    *---------------------------------------------------------------*/
-   rxVar = argv[1];
+    /*---------------------------------------------------------------
+     * get variable name
+     *---------------------------------------------------------------*/
+    rxVar = argv[1];
 
-   /*---------------------------------------------------------------
-    * get data length
-    *---------------------------------------------------------------*/
-   dataLen = rxs2int(&(argv[2]),&chk);
-   if (!chk)
-      return 40;
+    /*---------------------------------------------------------------
+     * get data length
+     *---------------------------------------------------------------*/
+    dataLen = rxs2int(&(argv[2]),&chk);
+    if (!chk)
+        return 40;
 
-   /*---------------------------------------------------------------
-    * get flags
-    *---------------------------------------------------------------*/
-   flags = 0;
-   if (5 == argc)
-      {
-      PSZ pszWord;
+    /*---------------------------------------------------------------
+     * get flags
+     *---------------------------------------------------------------*/
+    flags = 0;
+    if (5 == argc)
+    {
+        PSZ pszWord;
 
-      // strtok modifies the tokenized string.  That's against the rules of
-      // usage here, so we need to make a copy first.
-      char *flagStr = strdup(argv[3].strptr);
+        // strtok modifies the tokenized string.  That's against the rules of
+        // usage here, so we need to make a copy first.
+        char *flagStr = strdup(argv[3].strptr);
 
-      pszWord = strtok(flagStr," ");
-      while (pszWord)
-         {
-         if      (!stricmp(pszWord,"MSG_OOB"))  flags |= MSG_OOB;
-         else if (!stricmp(pszWord,"MSG_PEEK")) flags |= MSG_PEEK;
+        pszWord = strtok(flagStr," ");
+        while (pszWord)
+        {
+            if (!stricmp(pszWord,"MSG_OOB"))  flags |= MSG_OOB;
+            else if (!stricmp(pszWord,"MSG_PEEK")) flags |= MSG_PEEK;
 
-         pszWord = strtok(NULL," ");
-         }
-      free(flagStr);
-      }
-   /*---------------------------------------------------------------
-    * get address
-    *---------------------------------------------------------------*/
+            pszWord = strtok(NULL," ");
+        }
+        free(flagStr);
+    }
+    /*---------------------------------------------------------------
+     * get address
+     *---------------------------------------------------------------*/
 
-   if (argc == 5)
-    pStem=argv[4].strptr;
-   else
-    pStem=argv[3].strptr;
-   stem2sockaddr(pStem,&addr);
-   addr_size=sizeof(addr);
+    if (argc == 5)
+        pStem=argv[4].strptr;
+    else
+        pStem=argv[3].strptr;
+    stem2sockaddr(pStem,&addr);
+    addr_size=sizeof(addr);
 
-   /*---------------------------------------------------------------
-    * allocate memory for data
-    *---------------------------------------------------------------*/
-   pBuffer = (char *)malloc(dataLen);
-   if (!pBuffer)
-      return 5;
+    /*---------------------------------------------------------------
+     * allocate memory for data
+     *---------------------------------------------------------------*/
+    pBuffer = (char *)malloc(dataLen);
+    if (!pBuffer)
+        return 5;
 
-   /*---------------------------------------------------------------
-    * call function
-    *---------------------------------------------------------------*/
-   rc = recvfrom(sock,pBuffer,dataLen,flags,(struct sockaddr *)&addr,&addr_size);
+    /*---------------------------------------------------------------
+     * call function
+     *---------------------------------------------------------------*/
+    rc = recvfrom(sock,pBuffer,dataLen,flags,(struct sockaddr *)&addr,&addr_size);
 
-   if (-1 == rc)
-      dataLen = 0;
-   else
-      dataLen = rc;
+    if (-1 == rc)
+        dataLen = 0;
+    else
+        dataLen = rc;
 
 
-   sockaddr2stem(&addr,pStem);
+    sockaddr2stem(&addr,pStem);
 
-   /*---------------------------------------------------------------
-    * set variable
-    *---------------------------------------------------------------*/
-   shv.shvcode            = RXSHV_SYSET;
-   shv.shvnext            = NULL;
-   shv.shvname            = rxVar;
-   shv.shvvalue.strptr    = pBuffer;
-   shv.shvvalue.strlength = dataLen;
+    /*---------------------------------------------------------------
+     * set variable
+     *---------------------------------------------------------------*/
+    shv.shvcode            = RXSHV_SYSET;
+    shv.shvnext            = NULL;
+    shv.shvname            = rxVar;
+    shv.shvvalue.strptr    = pBuffer;
+    shv.shvvalue.strlength = dataLen;
 
-   RexxVariablePool(&shv);
+    RexxVariablePool(&shv);
 
-   free(pBuffer);
+    free(pBuffer);
 
-   /*---------------------------------------------------------------
-    * set return code
-    *---------------------------------------------------------------*/
-   int2rxs(rc,retStr);
+    /*---------------------------------------------------------------
+     * set return code
+     *---------------------------------------------------------------*/
+    int2rxs(rc,retStr);
 
-   return 0;
-   }
+    return 0;
+}
 
 /*-/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\-*/
 /*-\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/-*/
 /*------------------------------------------------------------------
  *  select()
  *------------------------------------------------------------------*/
-APIRET APIENTRY SockSelect(
-   const char *     name,
-   size_t      argc,
-   PRXSTRING  argv,
-   const char * qName,
-   PRXSTRING  retStr
-   )
-   {
+APIRET APIENTRY SockSelect(const char *name, size_t argc, PCONSTRXSTRING argv, const char *qName, PRXSTRING  retStr)
+{
 #if defined(OPSYS_LINUX)
-   struct timespec  timeOutS;
-   struct timespec *timeOutP;
+    struct timespec  timeOutS;
+    struct timespec *timeOutP;
 #else
-   struct timeval  timeOutS;
-   struct timeval *timeOutP;
+    struct timeval  timeOutS;
+    struct timeval *timeOutP;
 #endif
-   int             rCount;
-   int             wCount;
-   int             eCount;
-   int            *rArray;
-   int            *wArray;
-   int            *eArray;
-   int             i;
-   int             j;
-   int             rc;
+    int             rCount;
+    int             wCount;
+    int             eCount;
+    int            *rArray;
+    int            *wArray;
+    int            *eArray;
+    int             i;
+    int             j;
+    int             rc;
 #if defined(OPSYS_LINUX)
-   fd_set   rSetS, *rSet = &rSetS;
-   fd_set   wSetS, *wSet = &wSetS;
-   fd_set   eSetS, *eSet = &eSetS;
+    fd_set   rSetS, *rSet = &rSetS;
+    fd_set   wSetS, *wSet = &wSetS;
+    fd_set   eSetS, *eSet = &eSetS;
 #else
-   struct fd_set   rSetS, *rSet = &rSetS;
-   struct fd_set   wSetS, *wSet = &wSetS;
-   struct fd_set   eSetS, *eSet = &eSetS;
+    struct fd_set   rSetS, *rSet = &rSetS;
+    struct fd_set   wSetS, *wSet = &wSetS;
+    struct fd_set   eSetS, *eSet = &eSetS;
 #endif
-   int             max;
+    int             max;
 
-   /*---------------------------------------------------------------
-    * initialize return value to empty string
-    *---------------------------------------------------------------*/
-   retStr->strlength = 0;
+    /*---------------------------------------------------------------
+     * initialize return value to empty string
+     *---------------------------------------------------------------*/
+    retStr->strlength = 0;
 
-   if ((argc < 3) || (argc > 4))
-      return 40;
+    if ((argc < 3) || (argc > 4))
+        return 40;
 
-   /*---------------------------------------------------------------
-    * get timeout value
-    *---------------------------------------------------------------*/
-   if ((argc == 3) || !argv[3].strptr || !argv[3].strlength)
-      timeOutP = NULL;
+    /*---------------------------------------------------------------
+     * get timeout value
+     *---------------------------------------------------------------*/
+    if ((argc == 3) || !argv[3].strptr || !argv[3].strlength)
+        timeOutP = NULL;
 
-   else
-      {
-      long to;
+    else
+    {
+        long to;
 
-      to = strtol(argv[3].strptr,NULL,10);
+        to = strtol(argv[3].strptr,NULL,10);
 
-      if (to < 0)
-         to = 0;
+        if (to < 0)
+            to = 0;
 
-      timeOutS.tv_sec  = to;
+        timeOutS.tv_sec  = to;
 #if defined(OPSYS_LINUX)
-      timeOutS.tv_nsec = 0;
+        timeOutS.tv_nsec = 0;
 #else
-      timeOutS.tv_usec = 0;
+        timeOutS.tv_usec = 0;
 #endif
-      timeOutP = &timeOutS;
-      }
+        timeOutP = &timeOutS;
+    }
 
-   /*---------------------------------------------------------------
-    * get arrays of sockets
-    *---------------------------------------------------------------*/
-   if (argv[0].strptr && argv[0].strlength)
-      rxstem2intarray(&(argv[0]),&rCount,&rArray);
-   else
-      {
-      rCount = 0;
-      rArray = NULL;
-      }
+    /*---------------------------------------------------------------
+     * get arrays of sockets
+     *---------------------------------------------------------------*/
+    if (argv[0].strptr && argv[0].strlength)
+        rxstem2intarray(&(argv[0]),&rCount,&rArray);
+    else
+    {
+        rCount = 0;
+        rArray = NULL;
+    }
 
-   if (argv[1].strptr && argv[1].strlength)
-      rxstem2intarray(&(argv[1]),&wCount,&wArray);
-   else
-      {
-      wCount = 0;
-      wArray = NULL;
-      }
+    if (argv[1].strptr && argv[1].strlength)
+        rxstem2intarray(&(argv[1]),&wCount,&wArray);
+    else
+    {
+        wCount = 0;
+        wArray = NULL;
+    }
 
-   if (argv[2].strptr && argv[2].strlength)
-      rxstem2intarray(&(argv[2]),&eCount,&eArray);
-   else
-      {
-      eCount = 0;
-      eArray = NULL;
-      }
+    if (argv[2].strptr && argv[2].strlength)
+        rxstem2intarray(&(argv[2]),&eCount,&eArray);
+    else
+    {
+        eCount = 0;
+        eArray = NULL;
+    }
 
 /*------------------------------------------------------------------
  * unix-specific stuff
  *------------------------------------------------------------------*/
-   /*---------------------------------------------------------------
-    * fill in fd_set's
-    *---------------------------------------------------------------*/
-   FD_ZERO(rSet);
-   FD_ZERO(wSet);
-   FD_ZERO(eSet);
+    /*---------------------------------------------------------------
+     * fill in fd_set's
+     *---------------------------------------------------------------*/
+    FD_ZERO(rSet);
+    FD_ZERO(wSet);
+    FD_ZERO(eSet);
 
-   for (i=0; i<rCount; i++) FD_SET(rArray[i],rSet);
-   for (i=0; i<wCount; i++) FD_SET(wArray[i],wSet);
-   for (i=0; i<eCount; i++) FD_SET(eArray[i],eSet);
+    for (i=0; i<rCount; i++) FD_SET(rArray[i],rSet);
+    for (i=0; i<wCount; i++) FD_SET(wArray[i],wSet);
+    for (i=0; i<eCount; i++) FD_SET(eArray[i],eSet);
 
-   /*---------------------------------------------------------------
-    * get max number
-    *---------------------------------------------------------------*/
-   max = 0;
-   for (i=0; i<rCount; i++) if (rArray[i] > max) max = rArray[i];
-   for (i=0; i<wCount; i++) if (wArray[i] > max) max = wArray[i];
-   for (i=0; i<eCount; i++) if (eArray[i] > max) max = eArray[i];
+    /*---------------------------------------------------------------
+     * get max number
+     *---------------------------------------------------------------*/
+    max = 0;
+    for (i=0; i<rCount; i++) if (rArray[i] > max) max = rArray[i];
+    for (i=0; i<wCount; i++) if (wArray[i] > max) max = wArray[i];
+    for (i=0; i<eCount; i++) if (eArray[i] > max) max = eArray[i];
 
-   /*---------------------------------------------------------------
-    * make the call
-    *---------------------------------------------------------------*/
-   rc = select(max+1,rSet,wSet,eSet,timeOutP);
+        /*---------------------------------------------------------------
+         * make the call
+         *---------------------------------------------------------------*/
+    rc = select(max+1,rSet,wSet,eSet,timeOutP);
 
-   /*---------------------------------------------------------------
-    * fix up the socket arrays
-    *---------------------------------------------------------------*/
-   if (rc != 0)
-      {
-      j = 0;
-      for (i=0; i<rCount; i++)
-         {
-         if (FD_ISSET(rArray[i],rSet))
+    /*---------------------------------------------------------------
+     * fix up the socket arrays
+     *---------------------------------------------------------------*/
+    if (rc != 0)
+    {
+        j = 0;
+        for (i=0; i<rCount; i++)
+        {
+            if (FD_ISSET(rArray[i],rSet))
             {
-            rArray[j] = rArray[i];
-            j++;
+                rArray[j] = rArray[i];
+                j++;
             }
-         }
-      rCount = j;
+        }
+        rCount = j;
 
-      j = 0;
-      for (i=0; i<wCount; i++)
-         {
-         if (FD_ISSET(wArray[i],wSet))
+        j = 0;
+        for (i=0; i<wCount; i++)
+        {
+            if (FD_ISSET(wArray[i],wSet))
             {
-            wArray[j] = wArray[i];
-            j++;
+                wArray[j] = wArray[i];
+                j++;
             }
-         }
-      wCount = j;
+        }
+        wCount = j;
 
-      j = 0;
-      for (i=0; i<eCount; i++)
-         {
-         if (FD_ISSET(eArray[i],eSet))
+        j = 0;
+        for (i=0; i<eCount; i++)
+        {
+            if (FD_ISSET(eArray[i],eSet))
             {
-            eArray[j] = eArray[i];
-            j++;
+                eArray[j] = eArray[i];
+                j++;
             }
-         }
-      eCount = j;
-      }
+        }
+        eCount = j;
+    }
 
 
-   /*---------------------------------------------------------------
-    * reset the stem variables
-    *---------------------------------------------------------------*/
-   if (rArray) intarray2rxstem(&(argv[0]),rCount,rArray);
-   if (wArray) intarray2rxstem(&(argv[1]),wCount,wArray);
-   if (eArray) intarray2rxstem(&(argv[2]),eCount,eArray);
+    /*---------------------------------------------------------------
+     * reset the stem variables
+     *---------------------------------------------------------------*/
+    if (rArray) intarray2rxstem(&(argv[0]),rCount,rArray);
+    if (wArray) intarray2rxstem(&(argv[1]),wCount,wArray);
+    if (eArray) intarray2rxstem(&(argv[2]),eCount,eArray);
 
-   /*---------------------------------------------------------------
-    * free arrays
-    *---------------------------------------------------------------*/
-   if (rArray) free(rArray);
-   if (wArray) free(wArray);
-   if (eArray) free(eArray);
+    /*---------------------------------------------------------------
+     * free arrays
+     *---------------------------------------------------------------*/
+    if (rArray) free(rArray);
+    if (wArray) free(wArray);
+    if (eArray) free(eArray);
 
-   /*---------------------------------------------------------------
-    * set return code
-    *---------------------------------------------------------------*/
-   int2rxs(rc,retStr);
+    /*---------------------------------------------------------------
+     * set return code
+     *---------------------------------------------------------------*/
+    int2rxs(rc,retStr);
 
-   return 0;
-   }
+    return 0;
+}
 
 /*-/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\-*/
 /*-\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/-*/
@@ -1392,83 +1291,77 @@ APIRET APIENTRY SockSelect(
 /*------------------------------------------------------------------
  * send()
  *------------------------------------------------------------------*/
-APIRET APIENTRY SockSend(
-   const char *     name,
-   size_t      argc,
-   PRXSTRING  argv,
-   const char * qName,
-   PRXSTRING  retStr
-   )
-   {
-   int      sock;
-   int      dataLen;
-   PSZ      data;
-   int      flags;
-   LONG     rc;
-   int      chk;
+APIRET APIENTRY SockSend(const char *name, size_t argc, PCONSTRXSTRING argv, const char *qName, PRXSTRING  retStr)
+{
+    int      sock;
+    int      dataLen;
+    const char *data;
+    int      flags;
+    LONG     rc;
+    int      chk;
 
-   /*---------------------------------------------------------------
-    * initialize return value to empty string
-    *---------------------------------------------------------------*/
-   retStr->strlength = 0;
+    /*---------------------------------------------------------------
+     * initialize return value to empty string
+     *---------------------------------------------------------------*/
+    retStr->strlength = 0;
 
-   if ((argc < 2) || (argc > 3))
-      return 40;
+    if ((argc < 2) || (argc > 3))
+        return 40;
 
-   /* check for omitted arguments that might cause a trap*/
-   if (!argv[0].strptr ||
-       ((argc == 3) && (!argv[2].strptr || !argv[2].strlength)))
-      return 40;
+    /* check for omitted arguments that might cause a trap*/
+    if (!argv[0].strptr ||
+        ((argc == 3) && (!argv[2].strptr || !argv[2].strlength)))
+        return 40;
 
-   /*---------------------------------------------------------------
-    * get sock
-    *---------------------------------------------------------------*/
-   sock = rxs2int(&(argv[0]),&chk);
-   if (!chk)
-      return 40;
+    /*---------------------------------------------------------------
+     * get sock
+     *---------------------------------------------------------------*/
+    sock = rxs2int(&(argv[0]),&chk);
+    if (!chk)
+        return 40;
 
-   /*---------------------------------------------------------------
-    * get data length
-    *---------------------------------------------------------------*/
-   dataLen = argv[1].strlength;
-   data    = argv[1].strptr;
-   if (!data || !dataLen)
-      return 40;
+    /*---------------------------------------------------------------
+     * get data length
+     *---------------------------------------------------------------*/
+    dataLen = argv[1].strlength;
+    data    = argv[1].strptr;
+    if (!data || !dataLen)
+        return 40;
 
-   /*---------------------------------------------------------------
-    * get flags
-    *---------------------------------------------------------------*/
-   flags = 0;
-   if (3 == argc)
-      {
-      PSZ pszWord;
-      // strtok modifies the tokenized string.  That's against the rules of
-      // usage here, so we need to make a copy first.
-      char *flagStr = strdup(argv[2].strptr);
+    /*---------------------------------------------------------------
+     * get flags
+     *---------------------------------------------------------------*/
+    flags = 0;
+    if (3 == argc)
+    {
+        PSZ pszWord;
+        // strtok modifies the tokenized string.  That's against the rules of
+        // usage here, so we need to make a copy first.
+        char *flagStr = strdup(argv[2].strptr);
 
-      pszWord = strtok(flagStr," ");
-      while (pszWord)
-         {
-         if      (!stricmp(pszWord,"MSG_OOB"))       flags |= MSG_OOB;
-         else if (!stricmp(pszWord,"MSG_DONTROUTE")) flags |= MSG_DONTROUTE;
+        pszWord = strtok(flagStr," ");
+        while (pszWord)
+        {
+            if (!stricmp(pszWord,"MSG_OOB"))       flags |= MSG_OOB;
+            else if (!stricmp(pszWord,"MSG_DONTROUTE")) flags |= MSG_DONTROUTE;
 
-         pszWord = strtok(NULL," ");
-         }
-      free(flagStr);
-      }
+            pszWord = strtok(NULL," ");
+        }
+        free(flagStr);
+    }
 
-   /*---------------------------------------------------------------
-    * call function
-    *---------------------------------------------------------------*/
-   rc = send(sock,data,dataLen,flags);
+    /*---------------------------------------------------------------
+     * call function
+     *---------------------------------------------------------------*/
+    rc = send(sock,data,dataLen,flags);
 
-   /*---------------------------------------------------------------
-    * set return code
-    *---------------------------------------------------------------*/
-   int2rxs(rc,retStr);
+    /*---------------------------------------------------------------
+     * set return code
+     *---------------------------------------------------------------*/
+    int2rxs(rc,retStr);
 
-   return 0;
-   }
+    return 0;
+}
 
 /*-/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\-*/
 /*-\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/-*/
@@ -1476,209 +1369,197 @@ APIRET APIENTRY SockSend(
 /*------------------------------------------------------------------
  * sendto()
  *------------------------------------------------------------------*/
-APIRET APIENTRY SockSendTo(
-   const char *     name,
-   size_t      argc,
-   PRXSTRING  argv,
-   const char * qName,
-   PRXSTRING  retStr
-   )
-   {
-   int      sock;
-   int      dataLen;
-   PSZ      data;
-   int      flags;
-   LONG     rc;
-   int      chk;
-   sockaddr_in addr;
-   PSZ         pStem;
+APIRET APIENTRY SockSendTo(const char *name, size_t argc, PCONSTRXSTRING argv, const char *qName, PRXSTRING  retStr)
+{
+    int      sock;
+    int      dataLen;
+    const char *data;
+    int      flags;
+    LONG     rc;
+    int      chk;
+    sockaddr_in addr;
+    const char *pStem;
 
-   /*---------------------------------------------------------------
-    * initialize return value to empty string
-    *---------------------------------------------------------------*/
-   retStr->strlength = 0;
+    /*---------------------------------------------------------------
+     * initialize return value to empty string
+     *---------------------------------------------------------------*/
+    retStr->strlength = 0;
 
-   if ((argc < 3) || (argc > 4))
-      return 40;
+    if ((argc < 3) || (argc > 4))
+        return 40;
 
-   /* check for omitted arguments that might cause a trap*/
-   if (!argv[0].strptr || !argv[2].strptr || !argv[2].strlength ||
-       ((argc == 4) && (!argv[3].strptr || !argv[3].strlength)))
-      return 40;
+    /* check for omitted arguments that might cause a trap*/
+    if (!argv[0].strptr || !argv[2].strptr || !argv[2].strlength ||
+        ((argc == 4) && (!argv[3].strptr || !argv[3].strlength)))
+        return 40;
 
-   /*---------------------------------------------------------------
-    * get sock
-    *---------------------------------------------------------------*/
-   sock = rxs2int(&(argv[0]),&chk);
-   if (!chk)
-      return 40;
+    /*---------------------------------------------------------------
+     * get sock
+     *---------------------------------------------------------------*/
+    sock = rxs2int(&(argv[0]),&chk);
+    if (!chk)
+        return 40;
 
-   /*---------------------------------------------------------------
-    * get data length
-    *---------------------------------------------------------------*/
-   dataLen = argv[1].strlength;
-   data    = argv[1].strptr;
-   if (!data || !dataLen)
-      return 40;
+    /*---------------------------------------------------------------
+     * get data length
+     *---------------------------------------------------------------*/
+    dataLen = argv[1].strlength;
+    data    = argv[1].strptr;
+    if (!data || !dataLen)
+        return 40;
 
-   /*---------------------------------------------------------------
-    * get flags
-    *---------------------------------------------------------------*/
-   flags = 0;
-   if (4 == argc)
-      {
-      PSZ pszWord;
-      // strtok modifies the tokenized string.  That's against the rules of
-      // usage here, so we need to make a copy first.
-      char *flagStr = strdup(argv[2].strptr);
+    /*---------------------------------------------------------------
+     * get flags
+     *---------------------------------------------------------------*/
+    flags = 0;
+    if (4 == argc)
+    {
+        PSZ pszWord;
+        // strtok modifies the tokenized string.  That's against the rules of
+        // usage here, so we need to make a copy first.
+        char *flagStr = strdup(argv[2].strptr);
 
-      pszWord = strtok(flagStr," ");
+        pszWord = strtok(flagStr," ");
 
-      while (pszWord)
-         {
-         if (!stricmp(pszWord,"MSG_DONTROUTE"))
-          flags |= MSG_DONTROUTE;
-         pszWord = strtok(NULL," ");
-         }
-      free(flagStr);
-      }
+        while (pszWord)
+        {
+            if (!stricmp(pszWord,"MSG_DONTROUTE"))
+                flags |= MSG_DONTROUTE;
+            pszWord = strtok(NULL," ");
+        }
+        free(flagStr);
+    }
 
-   /*---------------------------------------------------------------
-    * get address
-    *---------------------------------------------------------------*/
+    /*---------------------------------------------------------------
+     * get address
+     *---------------------------------------------------------------*/
 
-   if (argc == 4)
-    pStem=argv[3].strptr;
-   else
-    pStem=argv[2].strptr;
-   stem2sockaddr(pStem,&addr);
+    if (argc == 4)
+        pStem=argv[3].strptr;
+    else
+        pStem=argv[2].strptr;
+    stem2sockaddr(pStem,&addr);
 
-   /*---------------------------------------------------------------
-    * call function
-    *---------------------------------------------------------------*/
-   rc = sendto(sock,data,dataLen,flags,(struct sockaddr *)&addr,sizeof(addr));
+    /*---------------------------------------------------------------
+     * call function
+     *---------------------------------------------------------------*/
+    rc = sendto(sock,data,dataLen,flags,(struct sockaddr *)&addr,sizeof(addr));
 
-   /*---------------------------------------------------------------
-    * set return code
-    *---------------------------------------------------------------*/
-   int2rxs(rc,retStr);
+    /*---------------------------------------------------------------
+     * set return code
+     *---------------------------------------------------------------*/
+    int2rxs(rc,retStr);
 
-   return 0;
-   }
+    return 0;
+}
 
 /*-/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\-*/
 /*-\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/-*/
 /*------------------------------------------------------------------
  * setsockopt()
  *------------------------------------------------------------------*/
-APIRET APIENTRY SockSetSockOpt(
-   const char *     name,
-   size_t      argc,
-   PRXSTRING  argv,
-   const char * qName,
-   PRXSTRING  retStr
-   )
-   {
-   int            sock;
-   int            rc;
-   int            opt;
-   struct linger  lingStruct;
-   int            intVal;
-   long           longVal;
-   long           longVal1;
-   long           longVal2;
-   int            len;
-   char          *ptr;
+APIRET APIENTRY SockSetSockOpt(const char *name, size_t argc, PCONSTRXSTRING argv, const char *qName, PRXSTRING  retStr)
+{
+    int            sock;
+    int            rc;
+    int            opt;
+    struct linger  lingStruct;
+    int            intVal;
+    long           longVal;
+    long           longVal1;
+    long           longVal2;
+    int            len;
+    char          *ptr;
 
-   /*---------------------------------------------------------------
-    * initialize return value, check parms
-    *---------------------------------------------------------------*/
-   retStr->strlength = 0;
+    /*---------------------------------------------------------------
+     * initialize return value, check parms
+     *---------------------------------------------------------------*/
+    retStr->strlength = 0;
 
-   if (argc != 4)
-      return 40;
+    if (argc != 4)
+        return 40;
 
-   /* check for omitted arguments that might cause a trap*/
-   if (!argv[0].strptr || !argv[2].strptr ||
-       !argv[1].strlength || !argv[2].strlength)
-      return 40;
+    /* check for omitted arguments that might cause a trap*/
+    if (!argv[0].strptr || !argv[2].strptr ||
+        !argv[1].strlength || !argv[2].strlength)
+        return 40;
 
-   /*---------------------------------------------------------------
-    * get sock
-    *---------------------------------------------------------------*/
-   sock = rxs2int(&(argv[0]),&rc);
-   if (!rc)
-      return 40;
+    /*---------------------------------------------------------------
+     * get sock
+     *---------------------------------------------------------------*/
+    sock = rxs2int(&(argv[0]),&rc);
+    if (!rc)
+        return 40;
 
-   /*---------------------------------------------------------------
-    * check level
-    *---------------------------------------------------------------*/
-   if (!argv[1].strptr)
-      return 40;
+    /*---------------------------------------------------------------
+     * check level
+     *---------------------------------------------------------------*/
+    if (!argv[1].strptr)
+        return 40;
 
-   if (stricmp("SOL_SOCKET",argv[1].strptr))
-      return 40;
+    if (stricmp("SOL_SOCKET",argv[1].strptr))
+        return 40;
 
-   /*---------------------------------------------------------------
-    * get option name
-    *---------------------------------------------------------------*/
-   opt = rxs2SockOpt(argv[2].strptr);
+    /*---------------------------------------------------------------
+     * get option name
+     *---------------------------------------------------------------*/
+    opt = rxs2SockOpt(argv[2].strptr);
 
-   /*---------------------------------------------------------------
-    * check value for a valid string
-    *---------------------------------------------------------------*/
-   if (!argv[3].strptr || !argv[3].strlength)
-      return 40;
+    /*---------------------------------------------------------------
+     * check value for a valid string
+     *---------------------------------------------------------------*/
+    if (!argv[3].strptr || !argv[3].strlength)
+        return 40;
 
-   /*---------------------------------------------------------------
-    * get option value
-    *---------------------------------------------------------------*/
-   switch (opt)
-      {
-      default:
-         ptr = (char *)&intVal;
-         len = sizeof(int);
+    /*---------------------------------------------------------------
+     * get option value
+     *---------------------------------------------------------------*/
+    switch (opt)
+    {
+        default:
+            ptr = (char *)&intVal;
+            len = sizeof(int);
 
-         intVal = (int) rxs2int(&(argv[3]),&rc);
-         break;
+            intVal = (int) rxs2int(&(argv[3]),&rc);
+            break;
 
-      case SO_LINGER:
-         ptr = (char *)&lingStruct;
-         len = sizeof(lingStruct);
+        case SO_LINGER:
+            ptr = (char *)&lingStruct;
+            len = sizeof(lingStruct);
 
-         sscanf(argv[3].strptr,"%ld %ld",&longVal1,&longVal2);
-         lingStruct.l_onoff  = (u_short)longVal1;
-         lingStruct.l_linger = (u_short)longVal2;
+            sscanf(argv[3].strptr,"%ld %ld",&longVal1,&longVal2);
+            lingStruct.l_onoff  = (u_short)longVal1;
+            lingStruct.l_linger = (u_short)longVal2;
 
-         break;
+            break;
 
-      case SO_RCVBUF:
-      case SO_SNDBUF:
-         ptr = (char *)&longVal;
-         len = sizeof(long);
+        case SO_RCVBUF:
+        case SO_SNDBUF:
+            ptr = (char *)&longVal;
+            len = sizeof(long);
 
-         longVal = rxs2int(&(argv[3]),&rc);
-         break;
+            longVal = rxs2int(&(argv[3]),&rc);
+            break;
 
-      case SO_ERROR:
-      case SO_TYPE:
-         strcpy(retStr->strptr,"-1");
-         retStr->strlength = strlen(retStr->strptr);
-         return 0;
-      }
+        case SO_ERROR:
+        case SO_TYPE:
+            strcpy(retStr->strptr,"-1");
+            retStr->strlength = strlen(retStr->strptr);
+            return 0;
+    }
 
-   /*---------------------------------------------------------------
-    * make call
-    *---------------------------------------------------------------*/
-   rc = setsockopt(sock,SOL_SOCKET,opt,ptr,len);
+    /*---------------------------------------------------------------
+     * make call
+     *---------------------------------------------------------------*/
+    rc = setsockopt(sock,SOL_SOCKET,opt,ptr,len);
 
-   /*---------------------------------------------------------------
-    * set return code
-    *---------------------------------------------------------------*/
-   int2rxs(rc,retStr);
+    /*---------------------------------------------------------------
+     * set return code
+     *---------------------------------------------------------------*/
+    int2rxs(rc,retStr);
 
-   return 0;
-   }
+    return 0;
+}
 
 /*-/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\-*/
 /*-\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/-*/
@@ -1686,56 +1567,50 @@ APIRET APIENTRY SockSetSockOpt(
 /*------------------------------------------------------------------
  * shutdown()
  *------------------------------------------------------------------*/
-APIRET APIENTRY SockShutDown(
-   const char *     name,
-   size_t      argc,
-   PRXSTRING  argv,
-   const char * qName,
-   PRXSTRING  retStr
-   )
-   {
-   int sock;
-   int how;
-   int rc;
+APIRET APIENTRY SockShutDown(const char *name, size_t argc, PCONSTRXSTRING argv, const char *qName, PRXSTRING  retStr)
+{
+    int sock;
+    int how;
+    int rc;
 
-   /*---------------------------------------------------------------
-    * initialize return value to empty string
-    *---------------------------------------------------------------*/
-   retStr->strlength = 0;
+    /*---------------------------------------------------------------
+     * initialize return value to empty string
+     *---------------------------------------------------------------*/
+    retStr->strlength = 0;
 
-   if (argc != 2)
-      return 40;
+    if (argc != 2)
+        return 40;
 
-   /* check for omitted arguments that might cause a trap*/
-   if (!argv[0].strptr || !argv[1].strptr)
-      return 40;
+    /* check for omitted arguments that might cause a trap*/
+    if (!argv[0].strptr || !argv[1].strptr)
+        return 40;
 
-   /*---------------------------------------------------------------
-    * get sock
-    *---------------------------------------------------------------*/
-   sock = rxs2int(&(argv[0]),&rc);
-   if (!rc)
-      return 40;
+    /*---------------------------------------------------------------
+     * get sock
+     *---------------------------------------------------------------*/
+    sock = rxs2int(&(argv[0]),&rc);
+    if (!rc)
+        return 40;
 
-   /*---------------------------------------------------------------
-    * get how
-    *---------------------------------------------------------------*/
-   how = rxs2int(&(argv[1]),&rc);
-   if (!rc)
-      return 40;
+    /*---------------------------------------------------------------
+     * get how
+     *---------------------------------------------------------------*/
+    how = rxs2int(&(argv[1]),&rc);
+    if (!rc)
+        return 40;
 
-   /*---------------------------------------------------------------
-    * call function
-    *---------------------------------------------------------------*/
-   rc = shutdown(sock,how);
+    /*---------------------------------------------------------------
+     * call function
+     *---------------------------------------------------------------*/
+    rc = shutdown(sock,how);
 
-   /*---------------------------------------------------------------
-    * set return code
-    *---------------------------------------------------------------*/
-   int2rxs(rc,retStr);
+    /*---------------------------------------------------------------
+     * set return code
+     *---------------------------------------------------------------*/
+    int2rxs(rc,retStr);
 
-   return 0;
-   }
+    return 0;
+}
 
 /*-/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\-*/
 /*-\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/-*/
@@ -1743,38 +1618,32 @@ APIRET APIENTRY SockShutDown(
 /*------------------------------------------------------------------
  *  sock_init()
  *------------------------------------------------------------------*/
-APIRET APIENTRY SockInit(
-   const char *     name,
-   size_t      argc,
-   PRXSTRING  argv,
-   const char * qName,
-   PRXSTRING  retStr
-   )
-   {
-   int rc;
+APIRET APIENTRY SockInit(const char *name, size_t argc, PCONSTRXSTRING argv, const char *qName, PRXSTRING  retStr)
+{
+    int rc;
 #ifdef WIN32
-   WORD wVersionRequested;
-   WSADATA wsaData;
+    WORD wVersionRequested;
+    WSADATA wsaData;
 #endif
-   /*---------------------------------------------------------------
-    * initialize return value to empty string
-    *---------------------------------------------------------------*/
-   retStr->strlength = 0;
+    /*---------------------------------------------------------------
+     * initialize return value to empty string
+     *---------------------------------------------------------------*/
+    retStr->strlength = 0;
 
-   if (argc)
-      return 40;
+    if (argc)
+        return 40;
 
 #if defined(WIN32)
-   wVersionRequested = MAKEWORD( 1, 1 );
-   rc = WSAStartup( wVersionRequested, &wsaData );
+    wVersionRequested = MAKEWORD( 1, 1 );
+    rc = WSAStartup( wVersionRequested, &wsaData );
 #else
-   rc = 0;
+    rc = 0;
 #endif
 
-   int2rxs(rc,retStr);
+    int2rxs(rc,retStr);
 
-   return 0;
-   }
+    return 0;
+}
 
 /*-/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\-*/
 /*-\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/-*/
@@ -1782,83 +1651,73 @@ APIRET APIENTRY SockInit(
 /*------------------------------------------------------------------
  * socket()
  *------------------------------------------------------------------*/
-APIRET APIENTRY SockSocket(
-   const char *     name,
-   size_t      argc,
-   PRXSTRING  argv,
-   const char * qName,
-   PRXSTRING  retStr
-   )
-   {
-   int domain;
-   int type;
-   int protocol;
-   PSZ pszDomain;
-   PSZ pszType;
-   PSZ pszProtocol;
-   int sock;
+APIRET APIENTRY SockSocket(const char *name, size_t argc, PCONSTRXSTRING argv, const char *qName, PRXSTRING  retStr)
+{
+    int domain;
+    int type;
+    int protocol;
+    const char *pszDomain;
+    const char *pszType;
+    const char *pszProtocol;
+    int sock;
 
-   /*---------------------------------------------------------------
-    * initialize return value to empty string
-    *---------------------------------------------------------------*/
-   retStr->strlength = 0;
+    /*---------------------------------------------------------------
+     * initialize return value to empty string
+     *---------------------------------------------------------------*/
+    retStr->strlength = 0;
 
-   if (argc != 3)
-      return 40;
+    if (argc != 3)
+        return 40;
 
-   /*---------------------------------------------------------------
-    * get parms
-    *---------------------------------------------------------------*/
-   pszDomain   = argv[0].strptr;
-   pszType     = argv[1].strptr;
-   pszProtocol = argv[2].strptr;
+    /*---------------------------------------------------------------
+     * get parms
+     *---------------------------------------------------------------*/
+    pszDomain   = argv[0].strptr;
+    pszType     = argv[1].strptr;
+    pszProtocol = argv[2].strptr;
 
-   if (!pszDomain || !pszType || !pszProtocol)
-      return 40;
+    if (!pszDomain || !pszType || !pszProtocol)
+        return 40;
 
-   /* check for omitted arguments that might cause a trap*/
-   if (!argv[0].strlength || !argv[1].strlength || !argv[2].strlength)
-      return 40;
+    /* check for omitted arguments that might cause a trap*/
+    if (!argv[0].strlength || !argv[1].strlength || !argv[2].strlength)
+        return 40;
 
-   StripBlanks(pszDomain);
-   StripBlanks(pszType);
-   StripBlanks(pszProtocol);
+    if (!stricmp(pszDomain,"AF_INET")) domain = AF_INET;
+    else
+        return 40;
 
-   if      (!stricmp(pszDomain,"AF_INET")) domain = AF_INET;
-   else
-      return 40;
+    if (!stricmp(pszType,"SOCK_STREAM")) type = SOCK_STREAM;
+    else if (!stricmp(pszType,"SOCK_DGRAM" )) type = SOCK_DGRAM;
+    else if (!stricmp(pszType,"SOCK_RAW"   )) type = SOCK_RAW;
+    else
+        return 40;
 
-   if      (!stricmp(pszType,"SOCK_STREAM")) type = SOCK_STREAM;
-   else if (!stricmp(pszType,"SOCK_DGRAM" )) type = SOCK_DGRAM;
-   else if (!stricmp(pszType,"SOCK_RAW"   )) type = SOCK_RAW;
-   else
-      return 40;
-
-   if      (!stricmp(pszProtocol,"IPPROTO_UDP"))
-    protocol = IPPROTO_UDP;
-   else if (!stricmp(pszProtocol,"IPPROTO_TCP"))
-    protocol = IPPROTO_TCP;
+    if (!stricmp(pszProtocol,"IPPROTO_UDP"))
+        protocol = IPPROTO_UDP;
+    else if (!stricmp(pszProtocol,"IPPROTO_TCP"))
+        protocol = IPPROTO_TCP;
 /*   else if (!stricmp(pszProtocol,"IPPROTO_ICMP"))
     protocol = IPPROTO_ICMP;
    else if (!stricmp(pszProtocol,"IPPROTO_RAW"))
     protocol = IPPROTO_RAW; */  /* Not supported !! */
-   else if (!stricmp(pszProtocol,"0"          ))
-    protocol = 0;
-   else
-      return 40;
+    else if (!stricmp(pszProtocol,"0"          ))
+        protocol = 0;
+    else
+        return 40;
 
-   /*---------------------------------------------------------------
-    * call function
-    *---------------------------------------------------------------*/
-   sock = socket(domain,type,protocol);
+    /*---------------------------------------------------------------
+     * call function
+     *---------------------------------------------------------------*/
+    sock = socket(domain,type,protocol);
 
-   /*---------------------------------------------------------------
-    * set return code
-    *---------------------------------------------------------------*/
-   int2rxs(sock,retStr);
+    /*---------------------------------------------------------------
+     * set return code
+     *---------------------------------------------------------------*/
+    int2rxs(sock,retStr);
 
-   return 0;
-   }
+    return 0;
+}
 
 /*-/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\-*/
 /*-\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/-*/
@@ -1866,50 +1725,44 @@ APIRET APIENTRY SockSocket(
 /*------------------------------------------------------------------
  * soclose()
  *------------------------------------------------------------------*/
-APIRET APIENTRY SockSoClose(
-   const char *     name,
-   size_t      argc,
-   PRXSTRING  argv,
-   const char * qName,
-   PRXSTRING  retStr
-   )
-   {
-   int sock;
-   int rc;
+APIRET APIENTRY SockSoClose(const char *name, size_t argc, PCONSTRXSTRING argv, const char *qName, PRXSTRING  retStr)
+{
+    int sock;
+    int rc;
 
-   /*---------------------------------------------------------------
-    * initialize return value to empty string
-    *---------------------------------------------------------------*/
-   retStr->strlength = 0;
+    /*---------------------------------------------------------------
+     * initialize return value to empty string
+     *---------------------------------------------------------------*/
+    retStr->strlength = 0;
 
-   if (argc != 1)
-      return 40;
+    if (argc != 1)
+        return 40;
 
-   /* check for omitted arguments that might cause a trap*/
-   if (!argv[0].strptr)
-      return 40;
+    /* check for omitted arguments that might cause a trap*/
+    if (!argv[0].strptr)
+        return 40;
 
-   /*---------------------------------------------------------------
-    * get sock
-    *---------------------------------------------------------------*/
-   sock = rxs2int(&(argv[0]),&rc);
-   if (!rc)
-      return 40;
+    /*---------------------------------------------------------------
+     * get sock
+     *---------------------------------------------------------------*/
+    sock = rxs2int(&(argv[0]),&rc);
+    if (!rc)
+        return 40;
 
-   /*---------------------------------------------------------------
-    * call function
-    *---------------------------------------------------------------*/
+    /*---------------------------------------------------------------
+     * call function
+     *---------------------------------------------------------------*/
 #if defined(WIN32)
-   rc = closesocket(sock);
+    rc = closesocket(sock);
 #else
-   rc = close(sock);
+    rc = close(sock);
 #endif
 
-   /*---------------------------------------------------------------
-    * set return code
-    *---------------------------------------------------------------*/
-   int2rxs(rc,retStr);
+    /*---------------------------------------------------------------
+     * set return code
+     *---------------------------------------------------------------*/
+    int2rxs(rc,retStr);
 
-   return 0;
-   }
+    return 0;
+}
 

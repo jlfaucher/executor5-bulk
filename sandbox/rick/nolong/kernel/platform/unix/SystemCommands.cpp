@@ -136,7 +136,7 @@ bool SysExitHandler(
   activity->exitKernel(activation, OREF_SYSEXITHANDLER, enable);
 
                                        /* go call the handler               */
-rc = RexxCallExit(const_cast<char *>(handler_name), NULL, function, subfunction, (PEXIT)exitbuffer);
+rc = RexxCallExit(handler_name, NULL, function, subfunction, (PEXIT)exitbuffer);
 
 
   activity->enterKernel();             /* now re-enter the kernel           */
@@ -185,7 +185,7 @@ RexxObject * SysCommand(
 {
   int          rc    = 0;              /* Return code from call             */
   const char  *current_address;        /* Subcom handler that gets cmd      */
-  RXSTRING     rxstrcmd;               /* Command to be executed            */
+  CONSTRXSTRING     rxstrcmd;          /* Command to be executed            */
   unsigned short flags = 0;            /* Subcom error flags                */
   short        sbrc  = 0;              /* Subcom return code                */
   RXSTRING     retstr;                 /* Subcom result string              */
@@ -203,7 +203,7 @@ RexxObject * SysCommand(
   MAKERXSTRING(retstr, default_return_buffer, DEFRXSTRING);
 
                                        /* set up the command RXSTRING       */
-  MAKERXSTRING(rxstrcmd, const_cast<char *>(command->getStringData()), command->getLength());
+  MAKERXSTRING(rxstrcmd, command->getStringData(), command->getLength());
 
                                        /* get the current environment       */
   current_address = environment->getStringData();
@@ -225,7 +225,7 @@ RexxObject * SysCommand(
   sbrc = 0;                               /* set initial subcom return code */
                                        /* get ready to call the function    */
   activity->exitKernel(activation, OREF_COMMAND, true);
-  rc=RexxCallSubcom(const_cast<char *>(current_address), NULL, &rxstrcmd, &flags, (unsigned short *)&sbrc, (PRXSTRING)&retstr);
+  rc=RexxCallSubcom(current_address, NULL, &rxstrcmd, &flags, (unsigned short *)&sbrc, (PRXSTRING)&retstr);
   activity->enterKernel();             /* now re-enter the kernel           */
 
 /* END CRITICAL window here -->>  kernel calls now allowed again            */

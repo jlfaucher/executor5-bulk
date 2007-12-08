@@ -225,7 +225,7 @@ RexxArray *RexxDirectory::allIndexes(void)
     wholenumber_t count = this->items();
     RexxArray *result = (RexxArray *)new_array(count);
     ProtectedObject p(result);
-    arraysize_t out = 1;
+    size_t out = 1;
     // we're working directly off of the contents.
     RexxHashTable *hashTab = this->contents;
 

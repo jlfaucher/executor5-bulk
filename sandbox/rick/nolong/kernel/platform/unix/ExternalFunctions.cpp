@@ -128,7 +128,7 @@ REXXOBJECT BuildEnvlist(void);
 RexxMethod *SysRestoreProgramBuffer(PRXSTRING, RexxString *);
 void RestoreEnvironment( void * );
 
-APIRET APIENTRY RexxExecuteMacroFunction ( char *, PRXSTRING );
+APIRET APIENTRY RexxExecuteMacroFunction (const char *, PRXSTRING );
 
 /*********************************************************************/
 /*                                                                   */
@@ -390,7 +390,7 @@ RexxMethod3(REXXOBJECT,sysRxfuncadd,CSTRING,name,CSTRING,module,CSTRING,proc)
     proc = name;                       /* use the defined name              */
                                        /* try to register the function      */
 
-  if ((RexxRegisterFunctionDll(const_cast<char *>(name), const_cast<char *>(module), const_cast<char *>(proc))) == RXFUNC_NOTREG){
+  if ((RexxRegisterFunctionDll(name, module, proc) == RXFUNC_NOTREG){
     return TheTrueObject;              /* this failed                       */
   } else {
     return TheFalseObject;             /* this worked ok                    */
@@ -407,7 +407,7 @@ RexxMethod1(REXXOBJECT,sysRxfuncdrop,CSTRING,name)
                                        /* raise an error                    */
     send_exception(Error_Incorrect_call);
                                        /* try to drop the function          */
-  if (!RexxDeregisterFunction(const_cast<char *>(name)))
+  if (!RexxDeregisterFunction(name))
     return TheFalseObject;
   else
     return TheTrueObject;
@@ -423,7 +423,7 @@ RexxMethod1(REXXOBJECT,sysRxfuncquery,CSTRING,name)
   if (name == NO_CSTRING)              /* must have a name                  */
                                        /* raise an error                    */
     send_exception(Error_Incorrect_call);
-    if (!RexxQueryFunction(const_cast<char *>(name))) /* is it not there?                  */
+    if (!RexxQueryFunction(name))      /* is it not there?                  */
     return TheFalseObject;             /* this failed  (function found!)    */
     else
       return TheTrueObject;            /* this worked ok  (no function!)    */
@@ -486,7 +486,8 @@ bool MacroSpaceSearch(
 
   MacroName = target->getStringData(); /* point to the string data          */
                                        /* did we find this one?             */
-  if (RexxQueryMacro(const_cast<char *>(MacroName), &Position) == 0) {
+  if (RexxQueryMacro(MacroName, &Position) == 0)
+  {
                                        /* but not at the right time?        */
     if (order == MS_PREORDER && Position == RXMACRO_SEARCH_AFTER)
       return false;                    /* didn't really find this           */
@@ -495,7 +496,7 @@ bool MacroSpaceSearch(
       /* call APISTARTUP to be sure that the ptr remains valid.             */
       APISTARTUP(MACROCHAIN);
 
-      if (RexxExecuteMacroFunction(const_cast<char *>(MacroName), &MacroImage) != 0)
+      if (RexxExecuteMacroFunction(MacroName, &MacroImage) != 0)
       {
          APICLEANUP(MACROCHAIN);
          return false;
@@ -554,21 +555,21 @@ bool RegExternalFunction(
 
   funcname = target->getStringData();  /* point to the function name        */
                                        /* Do we have the function?          */
-  if (RexxQueryFunction(const_cast<char *>(funcname)) != 0) {
+  if (RexxQueryFunction(funcname) != 0) {
                                        /* this a system routine?            */
     if (memicmp(funcname, "SYS", 3) == 0) {
                                        /* try to register SysLoadFuncs      */
-      if (RexxRegisterFunctionDll(const_cast<char *>("SYSLOADFUNCS"), const_cast<char *>("rexxutil"), const_cast<char *>("SysLoadFuncs")) == 0) {
+      if (RexxRegisterFunctionDll("SYSLOADFUNCS", "rexxutil", "SysLoadFuncs") == 0) {
                                        /* first registration?               */
                                        /* set up an result RXSTRING         */
         MAKERXSTRING(funcresult, default_return_buffer, sizeof(default_return_buffer));
                                        /* call the function loader          */
-        RexxCallFunction(const_cast<char *>("SYSLOADFUNCS"), 0, (PRXSTRING)NULL, &functionrc, &funcresult, const_cast<char *>(""));
+        RexxCallFunction("SYSLOADFUNCS", 0, (PRXSTRING)NULL, &functionrc, &funcresult, "");
 
       }
     }
                                        /* Do we have the function?          */
-    if (RexxQueryFunction(const_cast<char *>(funcname)) != 0)
+    if (RexxQueryFunction(funcname) != 0)
       return false;                    /* truely not found                  */
   }
 
@@ -615,7 +616,7 @@ bool RegExternalFunction(
                                        /* get ready to call the function    */
   activity->exitKernel(activation, OREF_SYSEXTERNALFUNCTION, true);
                                        /* now call the external function    */
-  rc = RexxCallFunction(const_cast<char *>(funcname), argcount, argrxarray, &functionrc, &funcresult, const_cast<char *>(queuename));
+  rc = RexxCallFunction(funcname, argcount, argrxarray, &functionrc, &funcresult, queuename);
   activity->enterKernel();             /* now re-enter the kernel           */
 
 /* END CRITICAL window here -->>  kernel calls now allowed again            */
@@ -706,7 +707,7 @@ RexxMethod * SysGetMacroCode(
   /* call APISTARTUP to be sure that the ptr remains valid.             */
   APISTARTUP(MACROCHAIN);
 
-  if (RexxExecuteMacroFunction(const_cast<char *>(MacroName->getStringData()), &MacroImage) == 0)
+  if (RexxExecuteMacroFunction(MacroName->getStringData(), &MacroImage) == 0)
     method = SysRestoreProgramBuffer(&MacroImage, MacroName);
 
   APICLEANUP(MACROCHAIN);          /* now we have a copy of the routine */
@@ -755,7 +756,7 @@ REXXOBJECT BuildEnvlist()
   size += 4;                           /* this is for the size itself*/
                                        /* Now we have the size for   */
                                        /* allocating the new buffer  */
-  newBuffer = RexxBuffer(size);        /* let's do it                */
+  newBuffer = ooRexxBuffer(size);      /* let's do it                */
                                        /* Get starting address of buf*/
   New = (char*)buffer_address(newBuffer);
   ((ENVENTRY*)New)->size = size;       /* first write the size       */

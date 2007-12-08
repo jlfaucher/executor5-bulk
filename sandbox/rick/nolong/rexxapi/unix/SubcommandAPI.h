@@ -84,11 +84,11 @@ APIRET APIENTRY RexxLoadSubcom(
 #pragma linkage(RexxCallSubcom, system)
 #endif
 APIRET APIENTRY RexxCallSubcom(
-         PSZ,                          /* Name of Subcommand Environ */
-         PSZ,                          /* Module name of its DLL     */
-         PRXSTRING,                    /* Command string to be passed*/
-         PUSHORT,                      /* Stor for error flag notice */
-         PUSHORT,                      /* Stor for rc from handler   */
+         const char *,                 /* Name of Subcommand Environ */
+         const char *,                 /* Module name of its DLL     */
+         PCONSTRXSTRING,               /* Command string to be passed*/
+         size_t *,                     /* Stor for error flag notice */
+         size_t *,                     /* Stor for rc from handler   */
          PRXSTRING );                  /* Stor for returned string   */
 
 /***   Uppercase Entry Point Name */

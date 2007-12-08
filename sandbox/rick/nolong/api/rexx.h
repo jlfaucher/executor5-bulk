@@ -75,7 +75,7 @@ typedef struct _RXSTRING {             /* rxstr                      */
 } RXSTRING;
 
 typedef struct _CONSTRXSTRING {        /* const rxstr                */
-    const size_t  strlength;           /*   length of string         */
+    size_t  strlength;                 /*   length of string         */
     const char   *strptr;              /*   pointer to string        */
 } CONSTRXSTRING;
 
@@ -95,7 +95,7 @@ typedef CONSTRXSTRING *PCONSTRXSTRING; /* pointer to a RXSTRING      */
 /***    Structure for system exit block (RXSYSEXIT) 32-bit */
 
 typedef struct _RXSYSEXIT {            /* syse */
-   char *sysexit_name;                 /* subcom enviro for sysexit  */
+   const char *sysexit_name;           /* subcom enviro for sysexit  */
    int   sysexit_code;                 /* sysexit function code      */
 }  RXSYSEXIT;
 typedef RXSYSEXIT *PRXSYSEXIT;         /* pointer to a RXSYSEXIT     */
@@ -109,7 +109,7 @@ typedef RXSYSEXIT *PRXSYSEXIT;         /* pointer to a RXSYSEXIT     */
 
 typedef struct _SHVBLOCK {            /* shvb */
     struct _SHVBLOCK  *shvnext;       /* pointer to the next block   */
-    RXSTRING           shvname;       /* Pointer to the name buffer  */
+    CONSTRXSTRING      shvname;       /* Pointer to the name buffer  */
     RXSTRING           shvvalue;      /* Pointer to the value buffer */
     size_t             shvnamelen;    /* Length of the name value    */
     size_t             shvvaluelen;   /* Length of the fetch value   */
@@ -129,6 +129,8 @@ typedef char *PEXIT;                  /* ptr to exit parameter block */
 #include "rexxapidefs.h"
 #include "rexxplatformdefs.h"          // Platform specific stuff
 
+typedef size_t stringsize_t;           // a Rexx string size
+typedef ssize_t wholenumber_t;         // a Rexx whole number
 
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
@@ -144,8 +146,8 @@ typedef char *PEXIT;                  /* ptr to exit parameter block */
 extern "C" {
 #endif
 
-APIRET APIENTRY RexxStart (
-         size_t                        /* Num of args passed to rexx */
+int APIENTRY RexxStart (
+         size_t,                       /* Num of args passed to rexx */
          PCONSTRXSTRING,               /* Array of args passed to rex */
          const char *,                 /* [d:][path] filename[.ext]  */
          PRXSTRING,                    /* Loc of rexx proc in memory */
@@ -154,7 +156,7 @@ APIRET APIENTRY RexxStart (
          PRXSYSEXIT,                   /* SysExit env. names &  codes */
          short *,                      /* Ret code from if numeric   */
          PRXSTRING );                  /* Retvalue from the rexx proc */
-typedef APIRET (APIENTRY *PFNREXXSTART)(int, PCONSTRXSTRING, const char *, PRXSTRING,
+typedef APIRET (APIENTRY *PFNREXXSTART)(size_t, PCONSTRXSTRING, const char *, PRXSTRING,
                                         const char *, int, PRXSYSEXIT, short *,
                                         PRXSTRING);
 #define REXXSTART RexxStart
@@ -234,10 +236,10 @@ typedef APIRET (APIENTRY *PFNREXXVARIABLEPOOL)(PSHVBLOCK);
 
 /* This typedef simplifies coding of an External Function.           */
 
-typedef unsigned int APIENTRY RexxFunctionHandler(char *,
-                                  unsigned int,
+typedef unsigned int APIENTRY RexxFunctionHandler(const char *,
+                                  size_t,
                                   PCONSTRXSTRING,
-                                  char *,
+                                  const char *,
                                   PRXSTRING);
 
 /***    RexxRegisterFunctionDll - Register a function in the AFT */
@@ -347,7 +349,7 @@ typedef struct _RXMSQSIZ_PARM {        /* siz */
 /***    Subfunction RXMSQNAM -- Set Current Queue Name */
 
 typedef struct _RXMSQNAM_PARM {        /* nam */
-   CONSTRXSTRING     rxmsq_name;       /* RXSTRING containing        */
+   RXSTRING     rxmsq_name;            /* RXSTRING containing        */
                                        /* queue name.                */
 }  RXMSQNAM_PARM;
 
@@ -568,11 +570,11 @@ typedef APIRET (APIENTRY *PFNREXXCLEARMACROSPACE)(void);
 /***    RexxCreateQueue - Create an External Data Queue */
 
 APIRET APIENTRY RexxCreateQueue (
-        const char *,                          /* Name of queue created       */
+        char *,                                /* Name of queue created       */
         size_t,                                /* Size of buf for ret name    */
-        char *,                                /* Requested name for queue    */
+        const char *,                          /* Requested name for queue    */
         unsigned int *);                       /* Duplicate name flag.        */
-typedef APIRET (APIENTRY *PFNREXXCREATEQUEUE)(const char *, unsigned int, const char *, unsigned int *);
+typedef APIRET (APIENTRY *PFNREXXCREATEQUEUE)(char *, size_t, const char *, unsigned int *);
 
 
 /***    RexxDeleteQueue - Delete an External Data Queue */

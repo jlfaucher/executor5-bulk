@@ -60,6 +60,8 @@
 #define TOTAL_STACK_SIZE 1024*512
 #define C_STACK_SIZE 60000
 
+#define SysCall _cdecl
+
 /******************************************************************************/
 /* OPTIONAL:  Perform stack bounds checking on new message invocations.  If   */
 /* this is a non-stack based calling convention, or it is not possible to     */
@@ -287,7 +289,7 @@ size_t line_write_check(const char * , size_t, FILE * );
 /******************************************************************************/
 
 #define SysAllocateExternalMemory(s) GlobalAlloc(0, (s))
-#define SysFreeExternalMemory(p) GlobalFree((p))
+#define SysFreeExternalMemory(p) GlobalFree((HGLOBAL)(p))
 
 
 /******************************************************************************/

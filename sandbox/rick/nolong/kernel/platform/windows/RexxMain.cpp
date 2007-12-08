@@ -132,7 +132,7 @@ typedef struct _ConditionData {
 typedef struct _RexxStartInfo {
   int   runtype;                       /* How source should be handled      */
   size_t     argcount;                 /* Number of args in arglist         */
-  PRXSTRING  arglist;                  /* Array of args                     */
+  PCONSTRXSTRING  arglist;             /* Array of args                     */
   const char*programname;              /* REXX program to run               */
   PRXSTRING  instore;                  /* Instore array                     */
   const char*envname;                  /* Initial cmd environment           */
@@ -432,20 +432,20 @@ bool REXXENTRY RexxValidObject(const char *dirname, RexxObject * object)
 /*   Mainline (16-bit) path looks like this:                                  */
 /*     REXXSAA => RexxStart32 => RexxStart => RexxMain => server_RexxStart    */
 /******************************************************************************/
-APIRET APIENTRY RexxStart(
-  LONG argcount,                       /* Number of args in arglist         */
-  PRXSTRING arglist,                   /* Array of args                     */
-  PCSZ programname,                    /* REXX program to run               */
+int APIENTRY RexxStart(
+  size_t argcount,                     /* Number of args in arglist         */
+  PCONSTRXSTRING arglist,              /* Array of args                     */
+  const char *programname,             /* REXX program to run               */
   PRXSTRING instore,                   /* Instore array                     */
-  PCSZ envname,                        /* Initial cmd environment           */
-  LONG  calltype,                      /* How the program is called         */
+  const char *envname,                 /* Initial cmd environment           */
+  int   calltype,                      /* How the program is called         */
   PRXSYSEXIT exits,                    /* Array of system exit names        */
   short * retcode,                     /* Integer form of result            */
   PRXSTRING result)                    /* Result returned from program      */
 
 {
 
-  LONG     rc;                         /* RexxStart return code             */
+  int      rc;                         /* RexxStart return code             */
 // HANDLE   orexx_active_sem;
 
   WinBeginExceptions                   /* Begin of exception handling       */
@@ -1085,7 +1085,7 @@ RexxMethod * process_instore(
                                        /* see if this exists                */
     if (!RexxQueryMacro(name->getStringData(), (unsigned short *)&temp)) {
                                        /* get image of function             */
-      RexxExecuteMacroFunction(const_cast<char *>(name->getStringData()), &buffer);
+      RexxExecuteMacroFunction(name->getStringData(), &buffer);
                                        /* go convert into a method          */
       method = SysRestoreProgramBuffer(&buffer, name);
 

@@ -787,7 +787,7 @@ RexxArray *RexxStem::allItems()
     // populate it, using the same traversal logic as before
     RexxArray *array = new_array(items());
     // we index the array with a origin-one index, so we start with one this time
-    arraysize_t count = 1;
+    size_t count = 1;
 
     RexxCompoundElement *variable = tails.first();
     while (variable != OREF_NULL)
@@ -830,9 +830,9 @@ RexxCompoundElement *RexxStem::findByValue(RexxObject *target)
  *
  * @return The number of non-dropped items.
  */
-arraysize_t RexxStem::items()
+size_t RexxStem::items()
 {
-    arraysize_t count = 0;
+    size_t count = 0;
 
     RexxCompoundElement *variable = tails.first();
     while (variable != OREF_NULL)
@@ -895,7 +895,7 @@ RexxSupplier *RexxStem::supplier()
 {
     // essentially the same logic as allItems(), but both the item and the
     // tail value are accumulated.
-    arraysize_t count = 0;
+    size_t count = 0;
     RexxCompoundElement *variable = tails.first();
     while (variable != OREF_NULL)
     {
@@ -928,6 +928,7 @@ RexxSupplier *RexxStem::supplier()
 }
 
 
+// TODO:  qsort has some portability problems.  Replace with custom version
 
 /******************************************************************************/
 /* Function:  Below are a series of comparison routines used by the qsort()   */

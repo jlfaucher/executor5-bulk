@@ -104,7 +104,7 @@ REXXOBJECT BuildEnvlist(void);
 void RestoreEnvironment( void * );
 
 extern "C" {
-APIRET APIENTRY RexxExecuteMacroFunction ( char *, PRXSTRING );
+APIRET APIENTRY RexxExecuteMacroFunction (const char *, PRXSTRING );
 }
 
 /*********************************************************************/
@@ -416,7 +416,7 @@ bool MacroSpaceSearch(
     if (order == MS_PREORDER && Position == RXMACRO_SEARCH_AFTER)
       return false;                    /* didn't really find this           */
                                        /* get image of function             */
-    if (RexxExecuteMacroFunction(const_cast<char *>(MacroName), &MacroImage) != 0)
+    if (RexxExecuteMacroFunction(MacroName, &MacroImage) != 0)
         return false;
                                        /* unflatten the method now          */
     Routine = SysRestoreProgramBuffer(&MacroImage, target);
@@ -466,10 +466,10 @@ bool RegExternalFunction(
   const char *queuename;               /* Pointer to active queue name      */
   long      rc;                        /* RexxCallFunction return code      */
   size_t    argindex;                  /* Index into arg array              */
-  PRXSTRING argrxarray;                /* Array of args in PRXSTRING form   */
+  PCONSTRXSTRING argrxarray;           /* Array of args in PRXSTRING form   */
   RXSTRING  funcresult;                /* Function result                   */
   RexxString * argument;               /* current argument                  */
-  unsigned short functionrc;           /* Return code from function         */
+  int functionrc;                      /* Return code from function         */
                                        /* default return code buffer        */
   char      default_return_buffer[DEFRXSTRING];
 
@@ -491,13 +491,13 @@ bool RegExternalFunction(
         /* SysLoadFunc is not registered */
         /* register and call SysLoadFunc */
 
-        if (RexxRegisterFunctionDll((char *)"SYSLOADFUNCS", (char *)"REXXUTIL", (char *)"SysLoadFuncs") == 0)
+        if (RexxRegisterFunctionDll("SYSLOADFUNCS", "REXXUTIL", "SysLoadFuncs") == 0)
         {
                                        /* first registration?               */
                                        /* set up an result RXSTRING         */
           MAKERXSTRING(funcresult, default_return_buffer, sizeof(default_return_buffer));
                                        /* call the function loader          */
-          RexxCallFunction("SYSLOADFUNCS", 0, (PRXSTRING)NULL, &functionrc, &funcresult, "");
+          RexxCallFunction("SYSLOADFUNCS", 0, (PCONSTRXSTRING)NULL, &functionrc, &funcresult, "");
 
         }
       }
@@ -505,7 +505,7 @@ bool RegExternalFunction(
       {
         /* SysloadFunc is registered, call it */
         MAKERXSTRING(funcresult, default_return_buffer, sizeof(default_return_buffer));
-        RexxCallFunction("SYSLOADFUNCS", 0, (PRXSTRING)NULL, &functionrc, &funcresult, "");
+        RexxCallFunction("SYSLOADFUNCS", 0, (PCONSTRXSTRING)NULL, &functionrc, &funcresult, "");
       }
       MTXRL(apiProtect);
     }
@@ -516,7 +516,7 @@ bool RegExternalFunction(
 
   /* allocate enough memory for all arguments */
   /* at least one item needs to be allocated to prevent error reporting */
-  argrxarray = (PRXSTRING) SysAllocateResultMemory(sizeof(RXSTRING)*max(argcount,1));
+  argrxarray = (PCONSTRXSTRING) SysAllocateResultMemory(sizeof(CONSTRXSTRING)*max(argcount,1));
   if (argrxarray == OREF_NULL)    /* memory error?                   */
       reportException(Error_System_resources);
                                        /* create RXSTRING arguments         */
@@ -534,7 +534,7 @@ bool RegExternalFunction(
                                        /* set the RXSTRING length           */
       argrxarray[argindex].strlength = argument->getLength();
                                        /* and pointer                       */
-      argrxarray[argindex].strptr = argument->getWritableData();
+      argrxarray[argindex].strptr = argument->getStringData();
     }
     else {                           /* have an omitted argument          */
                                        /* give it zero length               */
@@ -553,7 +553,7 @@ bool RegExternalFunction(
                                        /* get ready to call the function    */
   activity->exitKernel(activation, OREF_SYSEXTERNALFUNCTION, true);
                                        /* now call the external function    */
-  rc = RexxCallFunction(const_cast<char *>(funcname), argcount, argrxarray, &functionrc, &funcresult, const_cast<char *>(queuename));
+  rc = RexxCallFunction(funcname, argcount, argrxarray, &functionrc, &funcresult, queuename);
   activity->enterKernel();           /* now re-enter the kernel           */
 
 /* END CRITICAL window here -->>  kernel calls now allowed again            */
@@ -645,7 +645,7 @@ RexxMethod * SysGetMacroCode(
   RexxMethod   * method = OREF_NULL;
 
   MacroImage.strptr = NULL;
-  if (RexxExecuteMacroFunction(const_cast<char *>(MacroName->getStringData()), &MacroImage) == 0)
+  if (RexxExecuteMacroFunction(MacroName->getStringData(), &MacroImage) == 0)
     method = SysRestoreProgramBuffer(&MacroImage, MacroName);
 
   /* On Windows we need to free the allocated buffer for the macro */

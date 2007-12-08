@@ -54,8 +54,8 @@ extern "C" internalMethodEntry internalMethodTable[];
      RexxNativeCode::RexxNativeCode(
      RexxString *_procedure,            /* procedure to load                 */
      RexxString *_library,              /* library to load from              */
-     void       *_entry,                /* Entry point address for method    */
-     int         _index )               /* internal method index             */
+     PNMF        _entry,                /* Entry point address for method    */
+     size_t      _index )               /* internal method index             */
 /****************************************************************************/
 /* Function:  Initialize a REXX native code object                          */
 /****************************************************************************/
@@ -211,7 +211,7 @@ RexxNativeCode *RexxNativeCodeClass::newClass(
 {
   RexxNativeCode *newMethod;           /* new code to return                */
   RexxDirectory  *libinfo;             /* Library info table for library    */
-  PMNF            entry;               /* routine entry point address       */
+  PNMF            entry;               /* routine entry point address       */
 
   libinfo = this->load(_library);       /* Load the library.                 */
   if (libinfo != OREF_NULL) {          /* library loaded ok?                */
@@ -220,7 +220,7 @@ RexxNativeCode *RexxNativeCodeClass::newClass(
     newMethod = (RexxNativeCode *)libinfo->entry(_procedure);
     if (newMethod == OREF_NULL) {      /* not there yet?                    */
                                        /* resolve the function address      */
-      entry = (PMNT)SysLoadProcedure((RexxInteger *)libinfo->at(OREF_NULLSTRING), _procedure);
+      entry = (PNMF)SysLoadProcedure((RexxInteger *)libinfo->at(OREF_NULLSTRING), _procedure);
                                        /* unknown, create a new one.        */
                                        /* Get new object                    */
       newMethod = new RexxNativeCode (_procedure, _library, entry, 0);
@@ -235,7 +235,7 @@ RexxNativeCode *RexxNativeCodeClass::newClass(
 }
 
 RexxNativeCode *RexxNativeCodeClass::newInternal(
-    size_tindex )                     /* index of the internal REXX method */
+    size_t index)                     /* index of the internal REXX method */
 /******************************************************************************/
 /* Function:  Create a new native method from the internal REXX table         */
 /******************************************************************************/

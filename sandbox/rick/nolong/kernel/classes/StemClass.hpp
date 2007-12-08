@@ -85,7 +85,7 @@ class RexxSupplier;
   RexxObject  *request(RexxString *);
   RexxObject   *empty();
   RexxObject   *isEmpty();
-  arraysize_t  items();
+  size_t        items();
 
   void        dropValue();
   RexxObject *unknown (RexxString *, RexxArray *);

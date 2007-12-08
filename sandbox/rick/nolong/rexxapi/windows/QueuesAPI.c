@@ -95,14 +95,14 @@
 /*                Function prototypes for local routines.            */
 /*********************************************************************/
 
-PQUEUEHEADER  qusearch(PSZ);
-PQUEUEHEADER  search_session(ULONG pid, PULONG cnt);
-ULONG  search_session_in_API(PULONG cnt, BOOL newprocess);
-LONG   val_queue_name(PSZ);
-LONG   allocate_queue_entry(PQUEUEITEM *,ULONG, PUCHAR);
+PQUEUEHEADER  qusearch(const char *);
+PQUEUEHEADER  search_session(process_id_t pid, size_t *cnt);
+process_id_t  search_session_in_API(size_t *cnt, BOOL newprocess);
+int    val_queue_name(const char *);
+int    allocate_queue_entry(PQUEUEITEM *, size_t, char *);
 BOOL   CheckQueueComBlock();
 void ReturnQueueItem(PQUEUEITEM element);
-LONG alloc_queue_entry(ULONG size,PQUEUEITEM * element,PUCHAR data);
+int  alloc_queue_entry(size_t size,PQUEUEITEM * element, const char *data);
 
 extern ULONG queue_get_pid(DWORD * envchars);
 extern BOOL MapComBlock(int chain);
@@ -111,9 +111,9 @@ extern void UnmapComBlock(int chain);
 /* functions called by RXAPI.EXE */
 extern _declspec(dllexport) APIRET APIAddQueue(void);
 extern _declspec(dllexport) APIRET APIPullQueue(void);
-extern _declspec(dllexport) APIRET APICreateQueue(ULONG Pid, BOOL newProcess);
-extern _declspec(dllexport) APIRET APISessionQueue(ULONG Pid, BOOL newProcess);
-extern _declspec(dllexport) APIRET APIDeleteQueue(ULONG Pid, BOOL SessionQ);
+extern _declspec(dllexport) APIRET APICreateQueue(process_id_t Pid, BOOL newProcess);
+extern _declspec(dllexport) APIRET APISessionQueue(process_id_t Pid, BOOL newProcess);
+extern _declspec(dllexport) APIRET APIDeleteQueue(process_id_t Pid, BOOL SessionQ);
 extern _declspec(dllexport) LONG APIQueryQueue(void);
 
 extern REXXAPIDATA * RexxinitExports;   /* Global state data  */
@@ -122,10 +122,9 @@ extern REXXAPIDATA * RexxinitExports;   /* Global state data  */
 extern LOCALREXXAPIDATA  RexxinitLocal;   /* Global state data  */
 
 /* the masks had to be changed because of win95 using high session IDs */
-CHAR name_mask[]="S%08xQ%010u";        /* here to be overlayed       */
-CHAR rxqueue_name_mask[]="S%08xQ%010u";
+char name_mask[]="S%08xQ%010u";        /* here to be overlayed       */
+char rxqueue_name_mask[]="S%08xQ%010u";
 
-#define PPVOID VOID**
 #define get_process() GetCurrentProcess()
 #define get_session() GetCurrentProcessId()
 
@@ -134,8 +133,8 @@ extern _declspec(dllexport) CRITICAL_SECTION nest={0}; /* must complete nest cou
 
 extern HANDLE ExceptionQueueSem = NULL;
 
-RXQUEUE_TALK * FillQueueComBlock(BOOL add, DWORD addflag, DWORD waitflag, PCHAR data, ULONG datalen,
-                                        HANDLE waitsem, PSZ name, ULONG pid)
+RXQUEUE_TALK * FillQueueComBlock(BOOL add, DWORD addflag, DWORD waitflag, const char *data, size_t datalen,
+                                        HANDLE waitsem, const char *name, process_id_t pid)
 {
     RXQUEUE_TALK * icom;
 
@@ -170,7 +169,7 @@ RXQUEUE_TALK * FillQueueComBlock(BOOL add, DWORD addflag, DWORD waitflag, PCHAR 
             memcpy(icom->queue_item.queue_element,data,datalen);
         }
         icom->queue_item.size = datalen;
-        icom->queue_item.queue_element = (PCHAR) sizeof(RXQUEUE_TALK);   /* set relative pointer */
+        icom->queue_item.queue_element = (char *)sizeof(RXQUEUE_TALK);   /* set relative pointer */
     }
     return LRX.comblock[API_QUEUE];
 }
@@ -181,11 +180,11 @@ void ReturnQueueItem(PQUEUEITEM element)
    RXQUEUE_TALK * intercom;
    intercom = (RXQUEUE_TALK *) RX.comblock[API_QUEUE];
 
-   intercom->queue_item.queue_element = (PUCHAR)(intercom + 1);   /* absolute address */
+   intercom->queue_item.queue_element = (char *)(intercom + 1);   /* absolute address */
    memcpy(intercom->queue_item.queue_element,element->queue_element, element->size);
    intercom->queue_item.size = element->size;
    intercom->queue_item.addtime = element->addtime;
-   intercom->queue_item.queue_element = (PCHAR) sizeof(RXQUEUE_TALK);   /* return relative address */
+   intercom->queue_item.queue_element = (char *)sizeof(RXQUEUE_TALK);   /* return relative address */
 }
 
 
@@ -208,7 +207,7 @@ void ReturnQueueItem(PQUEUEITEM element)
 /*                                                                   */
 /*********************************************************************/
 PQUEUEHEADER  qusearch(
-  PSZ  name)
+  const char *name)
 {
   PQUEUEHEADER current;                  /* Current queue element      */
   PQUEUEHEADER previous;                 /* Previous queue element     */
@@ -218,7 +217,7 @@ PQUEUEHEADER  qusearch(
 
   while (current) {                    /* while more queues          */
                                        /* if we have a match         */
-    if (!rxstricmp(name,current->queue_name)) {
+    if (!_stricmp(name,current->queue_name)) {
       if (previous) {                  /* if we have a predecessor   */
         EnterCriticalSection(&nest);   /* make sure we can complete  */
         previous->next =               /* rearrange the chain to     */
@@ -252,7 +251,7 @@ PQUEUEHEADER  qusearch(
 /*  Output:          Address of the queue header.                    */
 /*                                                                   */
 /*********************************************************************/
-PQUEUEHEADER  search_session(ULONG pid, PULONG cnt)
+PQUEUEHEADER  search_session(process_id_t pid, size_t *cnt)
 {
    PQUEUEHEADER current;               /* Current queue element      */
    PQUEUEHEADER previous;              /* Previous queue element     */
@@ -310,7 +309,7 @@ PQUEUEHEADER  search_session(ULONG pid, PULONG cnt)
 /*  Output:          Success/failure return code.                    */
 /*                                                                   */
 /*********************************************************************/
-static INT create_queue_sem(
+static int create_queue_sem(
     PQUEUEHEADER   queue)              /* new queue                  */
 {
   SECURITY_ATTRIBUTES sa;
@@ -338,7 +337,7 @@ static INT create_queue_sem(
 /*  Output:          None                                            */
 /*                                                                   */
 /*********************************************************************/
-static VOID delete_queue_sem(
+static void delete_queue_sem(
     PQUEUEHEADER   queue)              /* deleted queue              */
 {
   CloseHandle(queue->waitsem);
@@ -382,14 +381,14 @@ ULONG queue_get_pid(DWORD * envchars)
 /*  Output:          pid of the queue owner.                         */
 /*                                                                   */
 /*********************************************************************/
-ULONG  search_session_in_API(PULONG cnt, BOOL newprocess)
+process_id_t search_session_in_API(size_t *cnt, BOOL newprocess)
 {
   DWORD  envvalue;
-  CHAR   envbuffer[ENVBUFSIZE+1];
-  ULONG pid;
+  char   envbuffer[ENVBUFSIZE+1];
+  process_id_t pid;
 
   pid = queue_get_pid(&envvalue);
-  *cnt = (ULONG) MySendMessage(RXAPI_QUEUESESSION,
+  *cnt = MySendMessage(RXAPI_QUEUESESSION,
                                    (WPARAM)pid,
                                    (LPARAM)newprocess);
 
@@ -424,13 +423,12 @@ ULONG  search_session_in_API(PULONG cnt, BOOL newprocess)
 /*  Output:          return code indicating validity                 */
 /*                                                                   */
 /*********************************************************************/
-static LONG   val_queue_name(
-  PSZ   usrname)                       /* User's name.               */
+static int val_queue_name(const char *usrname)
 {
-   LONG        rc;                     /* Return code.               */
-   PSZ         valptr;                 /* Used to validate name.     */
+   int         rc;                     /* Return code.               */
+   const char *valptr;                 /* Used to validate name.     */
    char        ch;
-   ULONG       namelen;                /* Length of the user's name. */
+   size_t      namelen;                /* Length of the user's name. */
 
    if (!usrname)                       /* NULL is OK.                */
       return (1);                      /* return code indication     */
@@ -613,17 +611,17 @@ LONG   queue_allocate_session(
 /*                                                                   */
 /*********************************************************************/
 
-LONG   alloc_queue_entry(
-  ULONG       size,                   /* size of queue entry.        */
-  PQUEUEITEM  * element,                /* Address of queue element    */
-  PUCHAR      data)                   /* actual queue data           */
+int    alloc_queue_entry(
+  size_t      size,                   /* size of queue entry.        */
+  PQUEUEITEM  * element,              /* Address of queue element    */
+  const char *data)                   /* actual queue data           */
 {
-   LONG     rc = RXQUEUE_OK;          /* Function result.            */
+   int      rc = RXQUEUE_OK;          /* Function result.            */
                                       /* first allocate header block */
    *element = (PQUEUEITEM) GlobalAlloc(GMEM_FIXED | GMEM_ZEROINIT, sizeof(QUEUEITEM)+size);
    if (!*element) return RXQUEUE_MEMFAIL;
 
-   (*element)->queue_element = (PUCHAR)((*element)+1);
+   (*element)->queue_element = (char *)((*element)+1);
                                       /* next get the queue element  */
                                       /* copy the queue data in      */
                                       /* if we actually have any     */
@@ -688,9 +686,9 @@ LONG   alloc_queue_entry(
 /*                                                                   */
 /*********************************************************************/
 APIRET  APIENTRY RexxCreateQueue(
-  PSZ     name,                        /* Internal name (returned).  */
+  char   *name,                        /* Internal name (returned).  */
   size_t  size,                        /* Length of name buffer.     */
-  PSZ     usrrequest,                  /* Desired name.              */
+  const char *usrrequest,              /* Desired name.              */
   size_t *pdup)                        /* Duplicate name flag.       */
 {
   ULONG        rc= RXQUEUE_OK;
@@ -699,7 +697,7 @@ APIRET  APIENTRY RexxCreateQueue(
   if (usrrequest) {                    /* given a name?              */
                                        /* Is the user's name valid?  */
     if ((!val_queue_name(usrrequest)) ||
-        (!rxstricmp(usrrequest,        /* cannot create a queue named*/
+        (!_stricmp(usrrequest,        /* cannot create a queue named*/
         "SESSION"))) {                 /* "SESSION"                  */
       return (RXQUEUE_BADQNAME);       /* return with proper code    */
     }
@@ -802,12 +800,12 @@ APIRET APICreateQueue(ULONG Pid, BOOL newProcess)
 /*                                                                   */
 /*********************************************************************/
 APIRET APIENTRY RexxDeleteQueue(
-  PSZ name)                            /* name of queue to delete    */
+  const char *name)                    /* name of queue to delete    */
 {
   ULONG        rc = RXQUEUE_NOTREG;    /* return code from call      */
   RXQUEUE_TALK * intercom;
 
-  if (!rxstricmp(name,"SESSION"))      /* trying to delete "SESSION" */
+  if (!_stricmp(name,"SESSION"))      /* trying to delete "SESSION" */
     return (RXQUEUE_BADQNAME);         /*   then signal an error     */
 
   if (!val_queue_name(name))           /* Did the user supply a      */
@@ -846,7 +844,7 @@ APIRET APIDeleteQueue(ULONG Pid, BOOL SessionQ)
 
     while (current) {                    /* loop until done            */
         if ((SessionQ && (current->queue_session == Pid))
-           || (!SessionQ && !rxstricmp(intercom->qName,current->queue_name)))
+           || (!SessionQ && !_stricmp(intercom->qName,current->queue_name)))
         {
             if (current->waiting) {          /* if someone waiting on this */
                 rc=RXQUEUE_ACCESS;             /* tell the caller            */
@@ -899,7 +897,7 @@ APIRET APIDeleteQueue(ULONG Pid, BOOL SessionQ)
 /*                                                                   */
 /*********************************************************************/
 APIRET APIENTRY RexxQueryQueue(
-  PSZ    name,                        /* Queue to query.             */
+  const char *name,                   /* Queue to query.             */
   size_t *count)                      /* Length of queue (returned)  */
 {
   ULONG         rc = RXQUEUE_NOTINIT;
@@ -914,7 +912,7 @@ APIRET APIENTRY RexxQueryQueue(
 
   APISTARTUP_QUEUE();
 
-  if (!rxstricmp(name,"SESSION")) {    /* trying to delete "SESSION" */
+  if (!_stricmp(name,"SESSION")) {    /* trying to delete "SESSION" */
       pid = search_session_in_API(count, FALSE);        /* get current session queue  */
       if (pid)                      /* found or allocated?        */
           rc = RXQUEUE_OK;                 /* set return code            */
@@ -1002,8 +1000,8 @@ HANDLE GetAccessToHandle(ULONG procid, HANDLE hnd)
 /*                                                                   */
 /*********************************************************************/
 APIRET APIENTRY RexxAddQueue(
-  PSZ       name,
-  PRXSTRING data,
+  const char *name,
+  PCONSTRXSTRING data,
   size_t    flag)
 {
   ULONG        rc;
@@ -1023,7 +1021,7 @@ APIRET APIENTRY RexxAddQueue(
   if (!CheckQueueComBlock())
       return(RXQUEUE_MEMFAIL);
 
-  if (!rxstricmp(name,"SESSION"))
+  if (!_stricmp(name,"SESSION"))
      pid = queue_get_pid(&count);
   else
      pid = 0;
@@ -1122,7 +1120,7 @@ APIRET APIAddQueue()
 /*                                                                   */
 /*********************************************************************/
 APIRET APIENTRY RexxPullQueue(
-  PSZ         name,
+  const char *name,
   PRXSTRING   data_buf,
   SYSTEMTIME * dt,
   size_t      waitflag)
@@ -1147,7 +1145,7 @@ APIRET APIENTRY RexxPullQueue(
   if (!CheckQueueComBlock())
       return(RXQUEUE_MEMFAIL);
 
-  if (!rxstricmp(name,"SESSION"))
+  if (!_stricmp(name,"SESSION"))
      pid = queue_get_pid(&envvalue);
 
   APISTARTUP_QUEUE();

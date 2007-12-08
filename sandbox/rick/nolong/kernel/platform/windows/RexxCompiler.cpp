@@ -68,7 +68,7 @@ void DisplayError(HINSTANCE hDll, int err_no)
 }
 
 
-int SysCallV main(int argc, char **argv)
+int SysCall main(int argc, char **argv)
 {
   char fn[2][BUFFERLEN];
   int  silent = 0;

@@ -117,11 +117,14 @@ REM set up the directory search orders for the source include files
 REM
 set OR_ORYXINCL=-I%OR_ORYXLSRC%\ -I%OR_ORYXAPI%\ -I%OR_ORYXAPIWIN%\ %OR_KERNELINCL% -I%OR_ORYXWSRC%\ -I%OR_ORYXASRC%\ -I%APLATFORM% -I%XPLATFORM% -I%OR_ORYXOODSRC%\ -I%OR_ORYXFSRC%\ -I%OR_ORYXOLESRC%\ -I%OR_ORYXAXSCRIPT%\ -I%OR_ORYXMSRC%\
 set OR_ORYXRCINCL=-I%KMESSAGES%
-
 REM
 REM set up the search order for the dependency list
 REM
-set OR_SP={%OR_KERNELPATH%;%OR_ORYXLSRC%;%OR_ORYXAPI;;%OR_ORYXAPIWIN;%OR_ORYXWSRC%;%OR_ORYXASRC%;}
+set OR_SP={%OR_KERNELPATH%;%OR_ORYXLSRC%;%OR_ORYXAPI;%OR_ORYXAPIWIN;%OR_ORYXWSRC%;%OR_ORYXASRC%;}
+REM
+REM set up the search order for the api samples
+REM
+set SAMPLEPATH=%OR_ORYXAPI%;%OR_ORYXAPIWIN%
 REM
 REM set up the windows link flag to indicate that link debug info is wanted
 REM

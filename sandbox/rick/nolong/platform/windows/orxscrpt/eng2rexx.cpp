@@ -861,25 +861,19 @@ void __stdcall parseText(void *arguments)
   FPRINTF(logfile,"RexxStart()\n");
 #endif
   // run this
-  rc = RexxStart( (LONG)       0,                     // no arguments
-                  (PRXSTRING)  NULL,                  // the argument pointer
-                  (PSZ)        "Rexx/ParseText",      // name of script
-                  (PRXSTRING)  instore,               // instore parameters
-                  (PSZ)        NULL,                  // command environment name
-                  (LONG)       RXSUBROUTINE,          // invoke as COMMAND
-                  (PRXSYSEXIT) exit_list,             // exit list (catch exit only)
-                  (PSHORT)     &rexxrc,               // rexx result code
-                  (PRXSTRING)  &rexxretval);          // rexx program result
+  rc = RexxStart(0,                     // no arguments
+                 NULL,                  // the argument pointer
+                 "Rexx/ParseText",      // name of script
+                 instore,               // instore parameters
+                 NULL,                  // command environment name
+                 RXSUBROUTINE,          // invoke as COMMAND
+                 exit_list,             // exit list (catch exit only)
+                 &rexxrc,               // rexx result code
+                 &rexxretval);          // rexx program result
 #if defined(DEBUGZ)
   FPRINTF2(logfile,"done with RexxStart (RC = %d)\n",rexxrc);
 #endif
   *result = (int) rexxrc;
-
-  // during exits in REXX the exit handler will add elements to
-  // an engine-specific list...
-  //RexxWaitForTermination();   //hm... maybe this will not return until all paired rexxinitialize() rexxterminate()'s are thru (end of engine...!!)
-  RexxDidRexxTerminate();
-//  FPRINTF(logfile,"done with RexxWaitForTermination\n");
 
   // we do not need any return value...
   if (rexxretval.strptr) GlobalFree(rexxretval.strptr);

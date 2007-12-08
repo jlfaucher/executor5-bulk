@@ -132,11 +132,11 @@ RexxMethod0(REXXOBJECT, rexx_linein_queue)
 /********************************************************************************************/
 /* add a line to a rexx queue                                                               */
 /********************************************************************************************/
-long rexx_add_queue(
+int rexx_add_queue(
   REXXOBJECT  queue_line,              /* line to add                       */
   int         order )                  /* queuing order                     */
 {
-   RXSTRING rx_string;                 /* rxstring to return                */
+   CONSTRXSTRING rx_string;            /* rxstring to return                */
    APIRET rc;                          /* queue return code                 */
    REXXOBJECT queue_name;              /* current queue name                */
 
@@ -146,10 +146,10 @@ long rexx_add_queue(
    queue_name = ooRexxVarValue("NAMED_QUEUE");
    REXX_GUARD_OFF();                   /* turn off the guard lock           */
                                        /*  move the info to rxstring        */
-   rx_string.strptr = const_cast<char *>(string_data(queue_line));
+   rx_string.strptr = string_data(queue_line);
    rx_string.strlength = string_length(queue_line);
                                        /*  move the line to the queue       */
-   rc = RexxAddQueue(const_cast<char *>(string_data(queue_name)), &rx_string, order);
+   rc = RexxAddQueue(string_data(queue_name), &rx_string, order);
    if (rc != 0)                        /* stream error?                     */
      send_exception1(Error_System_service_service, ooRexxArray1(ooRexxString("SYSTEM QUEUE")));
    return rc;                          /* return the result                 */

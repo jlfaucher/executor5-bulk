@@ -133,31 +133,6 @@ INT rxmemicmp(
     return 0;
 }
 
-/*********************************************************************/
-/*                                                                   */
-/*   Subroutine Name:   rxstricmp                                    */
-/*                                                                   */
-/*   Descriptive Name:  case insensitive string compare              */
-/*                                                                   */
-/*   Entry Point:       rxstricmp                                    */
-/*                                                                   */
-/*   Input:             pointers to two ASCII strings                */
-/*                                                                   */
-/*********************************************************************/
-int rxstricmp(
-  char *    s1,                        /* first string location      */
-  char *    s2 )                       /* second string location     */
-{
-  while ( 1 ) {
-    if ( ( tolower(*s1) != tolower(*s2) ) || !*s1 )
-      break;
-
-    ++s1;
-    ++s2;
-  }
-
-  return ( (int)tolower(*s1) - (int)tolower(*s2) );
-}
 
 /*********************************************************************/
 /*                                                                   */
@@ -367,7 +342,7 @@ APIBLOCK *exesearch(                   /* Function Declaration.      */
   while (cblock) {                     /* Run through the list       */
     if ((process_id_t)pid == cblock->apipid ) {
                                        /* Comp name with passed name */
-    if((!rxstricmp(APIBLOCKNAME(cblock),name)) &&
+    if((!_stricmp(APIBLOCKNAME(cblock),name)) &&
         !APIBLOCKDLLNAME(cblock)) {    /* and not a dll              */
       if (previous) {                  /* if not at front            */
         previous->next =               /* rearrange the chain to move*/
@@ -429,10 +404,10 @@ APIBLOCK *dllsearch(
     if(((APIBLOCKDLLPROC(cblock))&&    /* If no proc name, is .exe   */
         (strlen(APIBLOCKDLLPROC(cblock))))&& /* which we don't want. */
                                        /* If environment names match */
-       (!rxstricmp(APIBLOCKNAME(cblock),name))
+       (!_stricmp(APIBLOCKNAME(cblock),name))
         && (!dll[0]                    /* And passed dll name is NULL*/
         || (APIBLOCKDLLNAME(cblock)    /* Or exists a stored dll name*/
-        && (!rxstricmp(APIBLOCKDLLNAME(cblock), /* And               */
+        && (!_stricmp(APIBLOCKDLLNAME(cblock), /* And               */
         dll))                          /* it matches the passed one  */
         ))) {                          /* Then                       */
       if (previous) {                  /* if not at front            */
@@ -481,7 +456,7 @@ LONG APIexecheck(
 
   cblock = RX.baseblock[type];         /* Working ptr, current block*/
   while (cblock) {                     /* Run through the list       */
-    if (!rxstricmp(APIBLOCKNAME(cblock), /* Comp name w/ passed name */
+    if (!_stricmp(APIBLOCKNAME(cblock), /* Comp name w/ passed name */
         name)) {                       /* if found a matching name   */
       if (!APIBLOCKDLLNAME(cblock)) {  /* if not a dll type and      */
         if ((process_id_t)pid == cblock->apipid){ /* matching process info    */
@@ -530,11 +505,11 @@ LONG APIdllcheck(
   PAPIBLOCK cblock = RX.baseblock[type];/* Working ptr, current block */
 
   while (cblock) {                     /* While another block        */
-    if (!rxstricmp(APIBLOCKNAME(cblock), /* Com name with passed name*/
+    if (!_stricmp(APIBLOCKNAME(cblock), /* Com name with passed name*/
         name)) {                       /* if found a matching name   */
       rc = RXSUBCOM_DUP;               /* then set the duplicate rc  */
                                        /* if a registered dll name & */
-      if ((APIBLOCKDLLNAME(cblock)) && (!rxstricmp((APIBLOCKDLLNAME(cblock)),dllname)))
+      if ((APIBLOCKDLLNAME(cblock)) && (!_stricmp((APIBLOCKDLLNAME(cblock)),dllname)))
       {                                /* it matches the dll name passed in */
         rc = RXSUBCOM_NOTREG;          /* then set appropiate rc     */
         if (type != REGSUBCOMM) {
@@ -586,10 +561,10 @@ LONG  APIregdrop(
     dll = NULL;                        /* make it really null        */
 
   while (cblock != NULL) {
-   if ((!rxstricmp(APIBLOCKNAME(cblock), name) &&
+   if ((!_stricmp(APIBLOCKNAME(cblock), name) &&
        (!dll)) ||
        (APIBLOCKDLLNAME(cblock) && dll &&
-        !rxstricmp(APIBLOCKDLLNAME(cblock), dll))) {
+        !_stricmp(APIBLOCKDLLNAME(cblock), dll))) {
      if (!cblock->apidrop_auth ||
          (cblock->apidrop_auth == 1 &&
           cblock->apipid == (process_id_t)pid   )) {

@@ -218,7 +218,6 @@ VOID CALLBACK SleepTimerProc( HWND, UINT, UINT, DWORD);
 #define CH_NL          '\n'            /* new line character         */
 #define AllocFlag      PAG_COMMIT | PAG_WRITE  /* for DosAllocMem    */
 #define RNDFACTOR      1664525L
-#define rxstricmp(a,b) _stricmp(a,b)
 #define MAX_ENVVAR     1024
 #define MAX_LINE_LEN   4096            /* max line length            */
 
@@ -1683,9 +1682,9 @@ LONG APIENTRY SysCurState(
                                        /* Get the cursor info        */
   GetConsoleCursorInfo(hStdout,&CursorInfo);
                                        /* Get state and validate     */
-  if (rxstricmp(args[0].strptr, "ON") == 0)
+  if (_stricmp(args[0].strptr, "ON") == 0)
     CursorInfo.bVisible = true;
-  else if (rxstricmp(args[0].strptr, "OFF") == 0)
+  else if (_stricmp(args[0].strptr, "OFF") == 0)
     CursorInfo.bVisible = FALSE;
   else
     return INVALID_ROUTINE;            /* Invalid state              */
@@ -2440,9 +2439,9 @@ LONG APIENTRY SysGetKey(
     return INVALID_ROUTINE;            /* raise an error             */
 
   if (numargs == 1) {                  /* validate arguments         */
-    if (!rxstricmp(args[0].strptr, "NOECHO"))
+    if (!_stricmp(args[0].strptr, "NOECHO"))
       echo = false;
-    else if (rxstricmp(args[0].strptr, "ECHO"))
+    else if (_stricmp(args[0].strptr, "ECHO"))
       return INVALID_ROUTINE;          /* Invalid option             */
   }
   if (ExtendedFlag) {                  /* if have an extended        */
@@ -2581,7 +2580,7 @@ LONG APIENTRY SysIni(
     Val = args[3].strptr;
                                        /* Check KEY and APP values   */
                                        /* for "WildCard"             */
-  if (!rxstricmp(App, "ALL:")) {
+  if (!_stricmp(App, "ALL:")) {
     App = "";
     QueryApps = true;
     WildCard = true;
@@ -2592,7 +2591,7 @@ LONG APIENTRY SysIni(
       x = 2;                           /* Arg number of STEM variable*/
   }
 
-  else if (!rxstricmp(Key, "ALL:")) {
+  else if (!_stricmp(Key, "ALL:")) {
     Key = "";
     Val = "";
     QueryApps = false;
@@ -2621,7 +2620,7 @@ LONG APIENTRY SysIni(
   }
 
                                          /* get value if is a query    */
-  if ((numargs == 3 && rxstricmp(Key, "DELETE:")) ||
+  if ((numargs == 3 && _stricmp(Key, "DELETE:")) ||
       WildCard == true) {
     lSize = 0x0000ffffL;
                                        /* Allocate a large buffer    */
@@ -2661,12 +2660,12 @@ LONG APIENTRY SysIni(
   }
   else {                               /* Set or delete Key          */
 
-    if (!rxstricmp(Key, "DELETE:") || (numargs == 2) ||
+    if (!_stricmp(Key, "DELETE:") || (numargs == 2) ||
         !RXVALIDSTRING(args[2]))
                                        /* Delete application and all */
                                        /* associated keys            */
       Error = !WritePrivateProfileString(App, NULL, NULL, IniFile);
-    else if (!rxstricmp(Val, "DELETE:") ||
+    else if (!_stricmp(Val, "DELETE:") ||
         !RXVALIDSTRING(args[3]))
                                        /* Delete a single key        */
       Error = !WritePrivateProfileString(App, Key, NULL, IniFile);
@@ -3219,8 +3218,8 @@ LONG APIENTRY SysSleep(
 //    return INVALID_ROUTINE;            /* raise error if bad         */
 
   /* for VAC++ begin*/
-  UseMsgLoop = RexxSetProcessMessages(TRUE); /* retrieve current setting */
-  RexxSetProcessMessages(UseMsgLoop);  /* set back settings          */
+  UseMsgLoop = TRUE;                     /* retrieve current setting */
+//  RexxSetProcessMessages(UseMsgLoop);  /* set back settings          */
 
   if (UseMsgLoop)
   {
@@ -5399,8 +5398,8 @@ LONG APIENTRY SysDumpVariables(
       current += 3;
 
       /* free memory allocated by REXX */
-      GlobalFree(shvb.shvname.strptr);
-      GlobalFree(shvb.shvvalue.strptr);
+      RexxFreeMemory((void *)shvb.shvname.strptr);
+      RexxFreeMemory((void *)shvb.shvvalue.strptr);
 
       /* leave loop if this was the last var */
       if (shvb.shvret & RXSHV_LVAR)
@@ -6541,19 +6540,19 @@ LONG APIENTRY SysFromUniCode(
     codePage = GetOEMCP();
   else
   {
-    if (rxstricmp(args[1].strptr, "THREAD_ACP") == 0)
+    if (_stricmp(args[1].strptr, "THREAD_ACP") == 0)
       codePage = CP_THREAD_ACP;
-    else if (rxstricmp(args[1].strptr,"ACP") == 0)
+    else if (_stricmp(args[1].strptr,"ACP") == 0)
       codePage = CP_ACP;
-    else if (rxstricmp(args[1].strptr,"MACCP") == 0)
+    else if (_stricmp(args[1].strptr,"MACCP") == 0)
       codePage = CP_MACCP;
-    else if (rxstricmp(args[1].strptr,"OEMCP") == 0)
+    else if (_stricmp(args[1].strptr,"OEMCP") == 0)
       codePage = CP_OEMCP;
-    else if (rxstricmp(args[1].strptr,"SYMBOL") == 0)
+    else if (_stricmp(args[1].strptr,"SYMBOL") == 0)
       codePage = CP_SYMBOL;
-    else if (rxstricmp(args[1].strptr,"UTF7") == 0)
+    else if (_stricmp(args[1].strptr,"UTF7") == 0)
       codePage = CP_UTF7;
-    else if (rxstricmp(args[1].strptr,"UTF8") == 0)
+    else if (_stricmp(args[1].strptr,"UTF8") == 0)
       codePage = CP_UTF8;
     else
       codePage = atoi(args[1].strptr);
@@ -6789,19 +6788,19 @@ LONG APIENTRY SysToUniCode(
     codePage = GetOEMCP();
   else
   {
-    if (rxstricmp(args[1].strptr,"THREAD_ACP") == 0)
+    if (_stricmp(args[1].strptr,"THREAD_ACP") == 0)
       codePage = CP_THREAD_ACP;
-    else if (rxstricmp(args[1].strptr,"ACP") == 0)
+    else if (_stricmp(args[1].strptr,"ACP") == 0)
       codePage = CP_ACP;
-    else if (rxstricmp(args[1].strptr,"MACCP") == 0)
+    else if (_stricmp(args[1].strptr,"MACCP") == 0)
       codePage = CP_MACCP;
-    else if (rxstricmp(args[1].strptr,"OEMCP") == 0)
+    else if (_stricmp(args[1].strptr,"OEMCP") == 0)
       codePage = CP_OEMCP;
-    else if (rxstricmp(args[1].strptr,"SYMBOL") == 0)
+    else if (_stricmp(args[1].strptr,"SYMBOL") == 0)
       codePage = CP_SYMBOL;
-    else if (rxstricmp(args[1].strptr,"UTF7") == 0)
+    else if (_stricmp(args[1].strptr,"UTF7") == 0)
       codePage = CP_UTF7;
-    else if (rxstricmp(args[1].strptr,"UTF8") == 0)
+    else if (_stricmp(args[1].strptr,"UTF8") == 0)
       codePage = CP_UTF8;
     else
       codePage = atoi(args[1].strptr);

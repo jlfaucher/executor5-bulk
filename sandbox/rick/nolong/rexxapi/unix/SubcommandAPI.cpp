@@ -876,7 +876,6 @@ LONG RegRegisterDll(
       if (UserArea)                  /* Copy the user data         */
          memcpy(cblock->apiuser,UserArea, USERLENGTH);
       cblock->apidrop_auth = DropAuth;/* and drop authority        */
-      cblock->apitype = 0;           /* call type determined later */
       cblock->apipid = pidProcID;    /* copy the process Group ID  */
       cblock->apiownpid = pidOwnID;  /* copy the process ID        */
 //    if ( apidata->baseblock[type] != 1 )
@@ -928,15 +927,14 @@ LONG RegRegisterDll(
 /*                                                                   */
 /*********************************************************************/
 
-LONG  RegRegisterExe(
-  PSZ   EnvName,                       /* Subcom name                */
-  void *EntryPoint,                    /* DLL routine name           */
+int  RegRegisterExe(
+  const char *EnvName,                 /* Subcom name                */
+  void *EntryPoint,                    /* entry point address        */
   unsigned char *UserArea,             /* User data                  */
-  LONG  type,                          /* Registration type.         */
-  LONG  CallType )                     /* 32- or 16-bit call outs    */
+  int   type)                          /* Registration type.         */
 {
   PAPIBLOCK cblock ;                   /* Working ptr, current block */
-  LONG rc;
+  int  rc;
   pid_t pidProcID;
   pid_t pidOwnID;
 
@@ -945,7 +943,6 @@ LONG  RegRegisterExe(
                                        /* check against duplicating  */
   rc = execheck(EnvName, type);
                                        /* if we can still register...*/
-//if (rc == RXSUBCOM_NOTREG || rc == RXSUBCOM_DUP) {
   if (rc == RXSUBCOM_NOTREG )
   {
       /***************************************************************/
@@ -953,7 +950,6 @@ LONG  RegRegisterExe(
       /* tion data.  Otherwise, return RXSUBCOM_NOMEM.               */
       /***************************************************************/
 
-//  EnterMustComplete();               /* enter critical section     */
     if( ! RxAllocAPIBlock( &cblock,
                      EnvName, NULL, NULL))
     {

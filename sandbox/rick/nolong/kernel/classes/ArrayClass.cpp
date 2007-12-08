@@ -1008,10 +1008,10 @@ RexxArray *RexxArray::allItems(void)
     RexxArray *newArray = (RexxArray *)new_array(this->numItems());
 
     // we need to fill in based on actual items, not the index.
-    arraysize_t count = 0;
+    size_t count = 0;
     RexxObject **item = this->data();
     // loop through the array, copying all of the items.
-    for (arraysize_t iterator = 0; iterator < this->size(); iterator++ )
+    for (size_t iterator = 0; iterator < this->size(); iterator++ )
     {
         // if this is a real array item, copy over to the result
         if (item[iterator] != OREF_NULL)
@@ -1036,10 +1036,10 @@ RexxArray *RexxArray::allIndexes(void)
     ProtectedObject p(newArray);
 
     // we need to fill in based on actual items, not the index.
-    arraysize_t count = 0;
+    size_t count = 0;
     RexxObject **item = this->data();
     // loop through the array, copying all of the items.
-    for (arraysize_t iterator = 0; iterator < this->size(); iterator++ )
+    for (size_t iterator = 0; iterator < this->size(); iterator++ )
     {
         // if this is a real array item, add an integer index item to the
         // result collection.
@@ -1341,9 +1341,9 @@ RexxArray *RexxArray::extend(          /* join two arrays into one          */
  *
  * @return The numeric index of the item.
  */
-arraysize_t RexxArray::findSingleIndexItem(RexxObject *item)
+size_t RexxArray::findSingleIndexItem(RexxObject *item)
 {
-    for (arraysize_t i = 1; i <= this->size(); i++)
+    for (size_t i = 1; i <= this->size(); i++)
     {
         RexxObject *test = get(i);
 
@@ -1436,7 +1436,7 @@ RexxObject *RexxArray::index(RexxObject *target)
     required_arg(target, ONE);
     // see if we have this item.  If not, then
     // we return .nil.
-    arraysize_t _index = findSingleIndexItem(target);
+    size_t _index = findSingleIndexItem(target);
 
     if (_index == 0)
     {
@@ -1460,7 +1460,7 @@ RexxObject *RexxArray::removeItem(RexxObject *target)
     required_arg(target, ONE);
     // see if we have this item.  If not, then
     // we return .nil.
-    arraysize_t _index = findSingleIndexItem(target);
+    size_t _index = findSingleIndexItem(target);
 
     if (_index == 0)
     {
@@ -2199,7 +2199,7 @@ wholenumber_t RexxArray::sortCompare(RexxObject *comparator, RexxObject *left, R
  */
 RexxArray *RexxArray::sortRexx()
 {
-    arraysize_t count = numItems();
+    size_t count = numItems();
     if (count == 0)         // if the count is zero, sorting is easy!
     {
         return this;
@@ -2207,7 +2207,7 @@ RexxArray *RexxArray::sortRexx()
 
     // make sure this is a non-sparse array.  Checking up front means we don't
     // need to check on each compare operation.
-    for (arraysize_t i = 1; i <= count; i++)
+    for (size_t i = 1; i <= count; i++)
     {
         if (get(i) == OREF_NULL)
         {
@@ -2230,7 +2230,7 @@ RexxArray *RexxArray::sortWithRexx(RexxObject *comparator)
 {
     required_arg(comparator, ONE);
 
-    arraysize_t count = numItems();
+    size_t count = numItems();
     if (count <= 1)         // if the count is zero, sorting is easy!
     {
         return this;
@@ -2238,7 +2238,7 @@ RexxArray *RexxArray::sortWithRexx(RexxObject *comparator)
 
     // make sure this is a non-sparse array.  Checking up front means we don't
     // need to check on each compare operation.
-    for (arraysize_t i = 1; i <= count; i++)
+    for (size_t i = 1; i <= count; i++)
     {
         if (get(i) == OREF_NULL)
         {
@@ -2259,7 +2259,7 @@ RexxArray *RexxArray::sortWithRexx(RexxObject *comparator)
  */
 RexxArray *RexxArray::stableSortRexx()
 {
-    arraysize_t count = numItems();
+    size_t count = numItems();
     if (count == 0)         // if the count is zero, sorting is easy!
     {
         return this;
@@ -2267,7 +2267,7 @@ RexxArray *RexxArray::stableSortRexx()
 
     // make sure this is a non-sparse array.  Checking up front means we don't
     // need to check on each compare operation.
-    for (arraysize_t i = 1; i <= count; i++)
+    for (size_t i = 1; i <= count; i++)
     {
         if (get(i) == OREF_NULL)
         {
@@ -2294,7 +2294,7 @@ RexxArray *RexxArray::stableSortWithRexx(RexxObject *comparator)
 {
     required_arg(comparator, ONE);
 
-    arraysize_t count = numItems();
+    size_t count = numItems();
     if (count <= 1)         // if the count is zero, sorting is easy!
     {
         return this;
@@ -2302,7 +2302,7 @@ RexxArray *RexxArray::stableSortWithRexx(RexxObject *comparator)
 
     // make sure this is a non-sparse array.  Checking up front means we don't
     // need to check on each compare operation.
-    for (arraysize_t i = 1; i <= count; i++)
+    for (size_t i = 1; i <= count; i++)
     {
         if (get(i) == OREF_NULL)
         {

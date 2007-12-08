@@ -149,7 +149,7 @@ class RexxMethodClass : public RexxClass {
   RexxMethod  *newRexx(RexxObject **, size_t);
   RexxMethod  *newRexxBuffer(RexxString *, RexxBuffer *, RexxClass  *);
   RexxMethod  *newNative(RexxString *, RexxString *, RexxClass  *);
-  RexxMethod  *newEntry(void *);
+  RexxMethod  *newEntry(PNMF);
   RexxMethod  *restore(RexxBuffer *, char *);
   RexxMethod  *newFile(RexxString *);
   RexxMethod  *newFileRexx(RexxString *);

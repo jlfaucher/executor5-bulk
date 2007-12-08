@@ -59,12 +59,6 @@
 /* REXX Library definitions */
 #define OREF_NULL NULL                 /* definition of a NULL REXX object  */
 
-// a couple of convience typedefs to make it easier to write code that can be
-// moved to the 4.0 codebase.
-typedef size_t stringsize_t;
-typedef int    wholenumber_t;
-typedef size_t arraysize_t;
-
 #include "RexxPlatformDefinitions.h"
 
 /******************************************************************************/

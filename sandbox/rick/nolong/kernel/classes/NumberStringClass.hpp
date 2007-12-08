@@ -215,7 +215,7 @@
     RexxObject *orOp(RexxObject *);
     RexxObject *andOp(RexxObject *);
     RexxObject *xorOp(RexxObject *);
-    void        formatNumber(int);
+    void        formatNumber(wholenumber_t);
     void        formatUnsignedNumber(size_t);
     int         format(const char *, size_t);
     inline void        setZero() {

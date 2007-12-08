@@ -116,22 +116,21 @@ int main()
     /* This is the interpreter invocation. ---------------------------- */
 
     rc=RexxStart(
-            (LONG)       0,                    /* number of arguments   */
-            (PRXSTRING)  NULL,                 /* array of arguments    */
-            (PSZ)        "startrx1.rex",       /* name of Rexx file     */
-            (PRXSTRING)  NULL,                 /* No INSTORE used       */
-            (PSZ)        "ksh",                /* Command env. name     */
-            (LONG)       RXCOMMAND,            /* Code for how invoked  */
-            (PRXSYSEXIT) NULL,                 /* No EXITs on this call */
-            (PSHORT)     &rexxrc,              /* Rexx program output   */
-            (PRXSTRING)  &rexxretval );        /* Rexx program output   */
+            0,                    /* number of arguments   */
+            NULL,                 /* array of arguments    */
+            "startrx1.rex",       /* name of Rexx file     */
+            NULL,                 /* No INSTORE used       */
+            "ksh",                /* Command env. name     */
+            RXCOMMAND,            /* Code for how invoked  */
+            NULL,                 /* No EXITs on this call */
+            &rexxrc,              /* Rexx program output   */
+            &rexxretval );        /* Rexx program output   */
 
     printf("CALLREXX1 - Back from REXXSTART:  Return Code: %d\n", rc);
     printf("CALLREXX1 - RESULT-LENGTH:           %d\n", rexxretval.strlength);
     printf("CALLREXX1 - RESULT-Value:            %s\n", rexxretval.strptr);
 
-    RexxWaitForTermination();
-    free(rexxretval.strptr);
+    RexxReleaseResultMemory(rexxretval.strptr);
 
     printf("Press Enter to continue\n");
     scanf("%c", &val);
@@ -149,22 +148,21 @@ int main()
     rexxretval.strlength = 100;
 
     rc=RexxStart(
-            (LONG)       0,                    /* number of arguments   */
-            (PRXSTRING)  NULL,                 /* array of arguments    */
-            (PSZ)        "startrx1.rex",       /* name of Rexx file     */
-            (PRXSTRING)  NULL,                 /* No INSTORE used       */
-            (PSZ)        "ksh",                /* Command env. name     */
-            (LONG)       RXCOMMAND,            /* Code for how invoked  */
-            (PRXSYSEXIT) NULL,                 /* No EXITs on this call */
-            (PSHORT)     &rexxrc,              /* Rexx program output   */
-            (PRXSTRING)  &rexxretval );        /* Rexx program output   */
+            0,                    /* number of arguments   */
+            NULL,                 /* array of arguments    */
+            "startrx1.rex",       /* name of Rexx file     */
+            NULL,                 /* No INSTORE used       */
+            "ksh",                /* Command env. name     */
+            RXCOMMAND,            /* Code for how invoked  */
+            NULL,                 /* No EXITs on this call */
+            &rexxrc,              /* Rexx program output   */
+            &rexxretval );        /* Rexx program output   */
 
     printf("CALLREXX1 - Back from REXXSTART:  Return Code: %d\n", rc);
     printf("CALLREXX1 - RESULT-LENGTH:           %d\n", rexxretval.strlength);
     printf("CALLREXX1 - RESULT-Value:            %s\n", rexxretval.strptr);
 
-    RexxWaitForTermination();
-    free(rexxretval.strptr);
+    RexxReleaseResultMemory(rexxretval.strptr);
 
     printf("Press Enter to continue\n");
     scanf("%c", &val);
@@ -187,22 +185,21 @@ int main()
     printf("The Length of the Resultstring is %d\n", rexxretval.strlength);
 
     rc=RexxStart(
-            (LONG)       0,                    /* number of arguments   */
-            (PRXSTRING)  NULL,                 /* array of arguments    */
-            (PSZ)        "startrx1.rex",       /* name of Rexx file     */
-            (PRXSTRING)  NULL,                 /* No INSTORE used       */
-            (PSZ)        "ksh",                /* Command env. name     */
-            (LONG)       RXCOMMAND,            /* Code for how invoked  */
-            (PRXSYSEXIT) NULL,                 /* No EXITs on this call */
-            (PSHORT)     &rexxrc,              /* Rexx program output   */
-            (PRXSTRING)  &rexxretval );        /* Rexx program output   */
+            0,                    /* number of arguments   */
+            NULL,                 /* array of arguments    */
+            "startrx1.rex",       /* name of Rexx file     */
+            NULL,                 /* No INSTORE used       */
+            "ksh",                /* Command env. name     */
+            RXCOMMAND,            /* Code for how invoked  */
+            NULL,                 /* No EXITs on this call */
+            &rexxrc,              /* Rexx program output   */
+            &rexxretval );        /* Rexx program output   */
 
     printf("CALLREXX1 - Back from REXXSTART:  Return Code: %d\n", rc);
     printf("CALLREXX1 - RESULT-LENGTH:           %d\n", rexxretval.strlength);
     printf("CALLREXX1 - RESULT-Value:            %s\n", rexxretval.strptr);
 
-    RexxWaitForTermination();
-    free(rexxretval.strptr);
+    RexxReleaseResultMemory(rexxretval.strptr);
 
     printf("Press Enter to continue\n");
     scanf("%c", &val);
@@ -225,22 +222,21 @@ int main()
     MAKERXSTRING(arg[3], str4, strlen(str4)); /* create input argument 4*/
 
     rc=RexxStart(
-            (LONG)       4,                    /* number of arguments   */
-            (PRXSTRING)  arg,                  /* array of arguments    */
-            (PSZ)        "startrx2.rex",       /* name of Rexx file     */
-            (PRXSTRING)  NULL,                 /* No INSTORE used       */
-            (PSZ)        "ksh",                /* Command env. name     */
-            (LONG)       RXCOMMAND,            /* Code for how invoked  */
-            (PRXSYSEXIT) NULL,                 /* No EXITs on this call */
-            (PSHORT)     &rexxrc,              /* Rexx program output   */
-            (PRXSTRING)  &rexxretval );        /* Rexx program output   */
+            4,                    /* number of arguments   */
+            arg,                  /* array of arguments    */
+            "startrx2.rex",       /* name of Rexx file     */
+            NULL,                 /* No INSTORE used       */
+            "ksh",                /* Command env. name     */
+            RXCOMMAND,            /* Code for how invoked  */
+            NULL,                 /* No EXITs on this call */
+            &rexxrc,              /* Rexx program output   */
+            &rexxretval );        /* Rexx program output   */
 
     printf("CALLREXX1 - Back from REXXSTART:  Return Code: %d\n", rc);
     printf("CALLREXX1 - RESULT-LENGTH:           %d\n", rexxretval.strlength);
     printf("CALLREXX1 - RESULT-Value:            %s\n", rexxretval.strptr);
 
-    RexxWaitForTermination();
-    free(rexxretval.strptr);
+    RexxFreeMemory(rexxretval.strptr);
 
     printf("Press Enter to continue\n");
     scanf("%c", &val);
@@ -258,22 +254,21 @@ int main()
     rexxretval.strlength = 0;     /* initialize return-length to zero   */
 
     rc=RexxStart(
-            (LONG)       2,                    /* number of arguments   */
-            (PRXSTRING)  arg,                  /* array of arguments    */
-            (PSZ)        "startrx2.rex",       /* name of Rexx file     */
-            (PRXSTRING)  NULL,                 /* No INSTORE used       */
-            (PSZ)        "ksh",                /* Command env. name     */
-            (LONG)       RXCOMMAND,            /* Code for how invoked  */
-            (PRXSYSEXIT) NULL,                 /* No EXITs on this call */
-            (PSHORT)     &rexxrc,              /* Rexx program output   */
-            (PRXSTRING)  &rexxretval );        /* Rexx program output   */
+            2,                    /* number of arguments   */
+            arg,                  /* array of arguments    */
+            "startrx2.rex",       /* name of Rexx file     */
+            NULL,                 /* No INSTORE used       */
+            "ksh",                /* Command env. name     */
+            RXCOMMAND,            /* Code for how invoked  */
+            NULL,                 /* No EXITs on this call */
+            &rexxrc,              /* Rexx program output   */
+            &rexxretval );        /* Rexx program output   */
 
     printf("CALLREXX1 - Back from REXXSTART:  Return Code: %d\n", rc);
     printf("CALLREXX1 - RESULT-LENGTH:           %d\n", rexxretval.strlength);
     printf("CALLREXX1 - RESULT-Value:            %s\n", rexxretval.strptr);
 
-    RexxWaitForTermination();
-    free(rexxretval.strptr);
+    RexxFreeMemory(rexxretval.strptr);
 
     printf("Press Enter to continue\n");
     scanf("%c", &val);
@@ -292,22 +287,21 @@ int main()
     rexxretval.strlength = 0;     /* initialize return-length to zero   */
 
     rc=RexxStart(
-            (LONG)       0,                    /* number of arguments   */
-            (PRXSTRING)  NULL,                 /* array of arguments    */
-            (PSZ)        "startrx3.rex",       /* name of Rexx file     */
-            (PRXSTRING)  NULL,                 /* No INSTORE used       */
-            (PSZ)        "ksh",                /* Command env. name     */
-            (LONG)       RXCOMMAND,            /* Code for how invoked  */
-            (PRXSYSEXIT) NULL,                 /* No EXITs on this call */
-            (PSHORT)     &rexxrc,              /* Rexx program output   */
-            (PRXSTRING)  &rexxretval );        /* Rexx program output   */
+            0,                    /* number of arguments   */
+            NULL,                 /* array of arguments    */
+            "startrx3.rex",       /* name of Rexx file     */
+            NULL,                 /* No INSTORE used       */
+            "ksh",                /* Command env. name     */
+            RXCOMMAND,            /* Code for how invoked  */
+            NULL,                 /* No EXITs on this call */
+            &rexxrc,              /* Rexx program output   */
+            &rexxretval );        /* Rexx program output   */
 
     printf("CALLREXX1 - Back from REXXSTART:  Return Code: %d\n", rc);
     printf("CALLREXX1 - RESULT-LENGTH:           %d\n", rexxretval.strlength);
     printf("CALLREXX1 - RESULT-Value:            %s\n", rexxretval.strptr);
 
-    RexxWaitForTermination();
-    free(rexxretval.strptr);
+    RexxFreeMemory(rexxretval.strptr);
 
     printf("Press Enter to continue\n");
     scanf("%c", &val);
@@ -327,22 +321,21 @@ int main()
     instore[1].strlength = 0;
 
     rc=RexxStart(
-            (LONG)       0,                    /* number of arguments   */
-            (PRXSTRING)  NULL,                 /* array of arguments    */
-            (PSZ)        NULL,                 /* name of Rexx file     */
-            (PRXSTRING)  instore,              /* No INSTORE used       */
-            (PSZ)        "ksh",                /* Command env. name     */
-            (LONG)       RXCOMMAND,            /* Code for how invoked  */
-            (PRXSYSEXIT) NULL,                 /* No EXITs on this call */
-            (PSHORT)     &rexxrc,              /* Rexx program output   */
-            (PRXSTRING)  &rexxretval );        /* Rexx program output   */
+             0,                    /* number of arguments   */
+             NULL,                 /* array of arguments    */
+             NULL,                 /* name of Rexx file     */
+             instore,              /* No INSTORE used       */
+             "ksh",                /* Command env. name     */
+             RXCOMMAND,            /* Code for how invoked  */
+             NULL,                 /* No EXITs on this call */
+             &rexxrc,              /* Rexx program output   */
+             &rexxretval );        /* Rexx program output   */
 
     printf("CALLREXX1 - Back from REXXSTART:  Return Code: %d\n", rc);
     printf("CALLREXX1 - RESULT-LENGTH:           %d\n", rexxretval.strlength);
     printf("CALLREXX1 - RESULT-Value:            %s\n", rexxretval.strptr);
 
-    RexxWaitForTermination();
-    free(rexxretval.strptr);
+    RexxFreeMemory(rexxretval.strptr);
 
     printf("Press Enter to continue\n");
     scanf("%c", &val);
@@ -359,23 +352,22 @@ int main()
     instore[0].strlength = 0;
 
     rc=RexxStart(
-            (LONG)       0,                    /* number of arguments   */
-            (PRXSTRING)  NULL,                 /* array of arguments    */
-            (PSZ)        NULL,                 /* name of Rexx file     */
-            (PRXSTRING)  instore,              /* No INSTORE used       */
-            (PSZ)        "ksh",                /* Command env. name     */
-            (LONG)       RXCOMMAND,            /* Code for how invoked  */
-            (PRXSYSEXIT) NULL,                 /* No EXITs on this call */
-            (PSHORT)     &rexxrc,              /* Rexx program output   */
-            (PRXSTRING)  &rexxretval );        /* Rexx program output   */
+             0,                    /* number of arguments   */
+             NULL,                 /* array of arguments    */
+             NULL,                 /* name of Rexx file     */
+             instore,              /* No INSTORE used       */
+             "ksh",                /* Command env. name     */
+             RXCOMMAND,            /* Code for how invoked  */
+             NULL,                 /* No EXITs on this call */
+             &rexxrc,              /* Rexx program output   */
+             &rexxretval );        /* Rexx program output   */
 
     printf("CALLREXX1 - Back from REXXSTART:  Return Code: %d\n", rc);
     printf("CALLREXX1 - RESULT-LENGTH:           %d\n", rexxretval.strlength);
     printf("CALLREXX1 - RESULT-Value:            %s\n", rexxretval.strptr);
 
-    RexxWaitForTermination();
-    free(rexxretval.strptr);
-    free(instore[1].strptr);
+    RexxFreeMemory(rexxretval.strptr);
+    RexxFreeMemory(instore[1].strptr);
 
     printf("Press Enter to continue\n");
     scanf("%c", &val);
@@ -394,22 +386,21 @@ int main()
     rexxretval.strlength = 0;     /* initialize return-length to zero   */
 
     rc=RexxStart(
-            (LONG)       0,                    /* number of arguments   */
-            (PRXSTRING)  NULL,                 /* array of arguments    */
-            (PSZ)        "load_macro.rex",     /* name of Rexx file     */
-            (PRXSTRING)  NULL,                 /* No INSTORE used       */
-            (PSZ)        "ksh",                /* Command env. name     */
-            (LONG)       RXCOMMAND,            /* Code for how invoked  */
-            (PRXSYSEXIT) NULL,                 /* No EXITs on this call */
-            (PSHORT)     &rexxrc,              /* Rexx program output   */
-            (PRXSTRING)  &rexxretval );        /* Rexx program output   */
+             0,                    /* number of arguments   */
+             NULL,                 /* array of arguments    */
+             "load_macro.rex",     /* name of Rexx file     */
+             NULL,                 /* No INSTORE used       */
+             "ksh",                /* Command env. name     */
+             RXCOMMAND,            /* Code for how invoked  */
+             NULL,                 /* No EXITs on this call */
+             &rexxrc,              /* Rexx program output   */
+             &rexxretval );        /* Rexx program output   */
 
     printf("CALLREXX1 - Back from REXXSTART:  Return Code: %d\n", rc);
     printf("CALLREXX1 - RESULT-LENGTH:           %d\n", rexxretval.strlength);
     printf("CALLREXX1 - RESULT-Value:            %s\n", rexxretval.strptr);
 
-    RexxWaitForTermination();
-    free(rexxretval.strptr);
+    RexxFreeMemory(rexxretval.strptr);
 
     printf("Press Enter to continue\n");
     scanf("%c", &val);
@@ -434,22 +425,21 @@ int main()
     instore[0].strlength = 0;
 
     rc=RexxStart(
-            (LONG)       0,                    /* number of arguments   */
-            (PRXSTRING)  NULL,                 /* array of arguments    */
-            (PSZ)        "upload.rex",         /* name of Rexx file     */
-            (PRXSTRING)  instore,              /* No INSTORE used       */
-            (PSZ)        "ksh",                /* Command env. name     */
-            (LONG)       RXCOMMAND,            /* Code for how invoked  */
-            (PRXSYSEXIT) NULL,                 /* No EXITs on this call */
-            (PSHORT)     &rexxrc,              /* Rexx program output   */
-            (PRXSTRING)  &rexxretval );        /* Rexx program output   */
+             0,                    /* number of arguments   */
+             NULL,                 /* array of arguments    */
+             "upload.rex",         /* name of Rexx file     */
+             instore,              /* No INSTORE used       */
+             "ksh",                /* Command env. name     */
+             RXCOMMAND,            /* Code for how invoked  */
+             NULL,                 /* No EXITs on this call */
+             &rexxrc,              /* Rexx program output   */
+             &rexxretval );        /* Rexx program output   */
 
     printf("CALLREXX1 - Back from REXXSTART:  Return Code: %d\n", rc);
     printf("CALLREXX1 - RESULT-LENGTH:           %d\n", rexxretval.strlength);
     printf("CALLREXX1 - RESULT-Value:            %s\n", rexxretval.strptr);
 
-    RexxWaitForTermination();
-    free(rexxretval.strptr);
+    RexxFreeMemory(rexxretval.strptr);
 
     printf("Press Enter to continue\n");
     scanf("%c", &val);
@@ -463,22 +453,21 @@ int main()
     scanf("%c", &val);
 
     rc=RexxStart(
-            (LONG)       0,                    /* number of arguments   */
-            (PRXSTRING)  NULL,                 /* array of arguments    */
-            (PSZ)        "del_macro.rex",      /* name of Rexx file     */
-            (PRXSTRING)  NULL,                 /* No INSTORE used       */
-            (PSZ)        "ksh",                /* Command env. name     */
-            (LONG)       RXCOMMAND,            /* Code for how invoked  */
-            (PRXSYSEXIT) NULL,                 /* No EXITs on this call */
-            (PSHORT)     &rexxrc,              /* Rexx program output   */
-            (PRXSTRING)  &rexxretval );        /* Rexx program output   */
+             0,                    /* number of arguments   */
+             NULL,                 /* array of arguments    */
+             "del_macro.rex",      /* name of Rexx file     */
+             NULL,                 /* No INSTORE used       */
+             "ksh",                /* Command env. name     */
+             RXCOMMAND,            /* Code for how invoked  */
+             NULL,                 /* No EXITs on this call */
+             &rexxrc,              /* Rexx program output   */
+             &rexxretval );        /* Rexx program output   */
 
     printf("CALLREXX1 - Back from REXXSTART:  Return Code: %d\n", rc);
     printf("CALLREXX1 - RESULT-LENGTH:           %d\n", rexxretval.strlength);
     printf("CALLREXX1 - RESULT-Value:            %s\n", rexxretval.strptr);
 
-    RexxWaitForTermination();
-    free(rexxretval.strptr);
+    RexxFreeMemory(rexxretval.strptr);
 
     printf("Press Enter to continue\n");
     scanf("%c", &val);

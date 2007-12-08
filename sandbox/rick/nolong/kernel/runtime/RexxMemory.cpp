@@ -71,7 +71,7 @@ RexxMemory memoryObject;
 
 RexxDirectory *RexxMemory::globalStrings = OREF_NULL;
 
-static void SysCall logMemoryCheck(FILE *outfile, const char *message, ...)
+static void logMemoryCheck(FILE *outfile, const char *message, ...)
 {
     va_list args;
     va_start(args, message);

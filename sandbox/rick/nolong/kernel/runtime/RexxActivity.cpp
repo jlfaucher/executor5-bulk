@@ -1825,7 +1825,7 @@ bool RexxActivity::sysExitFunc(
   RXFNCCAL_PARM exit_parm;             /* exit parameters                   */
   char          retbuffer[DEFRXSTRING];/* Default result buffer             */
   long          argindex;              /* Counter for arg array             */
-  PRXSTRING     argrxarray;            /* Array of args in PRXSTRING form   */
+  PCONSTRXSTRING argrxarray;           /* Array of args in PRXSTRING form   */
   RexxString   *temp;                  /* temporary argument                */
   RexxString   *stdqueue;              /* current REXX queue                */
   RexxDirectory *securityArgs;         /* security check arguments          */
@@ -1886,8 +1886,8 @@ bool RexxActivity::sysExitFunc(
     /* allocate enough memory for all arguments.           */
     /* At least one item needs to be allocated in order to avoid an error   */
     /* in the sysexithandler!                                               */
-    argrxarray = (PRXSTRING) SysAllocateResultMemory(
-                    sizeof(RXSTRING) * max(exit_parm.rxfnc_argc,1));
+    argrxarray = (PCONSTRXSTRING) SysAllocateResultMemory(
+                    sizeof(CONSTRXSTRING) * max(exit_parm.rxfnc_argc,1));
     if (argrxarray == OREF_NULL)       /* memory error?                     */
       reportException(Error_System_resources);
                                        /* give the arg array pointer        */
@@ -1897,9 +1897,10 @@ bool RexxActivity::sysExitFunc(
                                        /* get the next argument             */
       if (this->exitObjects == true) {
         // store pointers to rexx objects
-        argrxarray[argindex].strlength = 8; // pointer length in ASCII
-        argrxarray[argindex].strptr = (char *)SysAllocateExternalMemory(16);
-        sprintf(argrxarray[argindex].strptr,"%p",arguments[argindex]); // ptr to object
+          char *value = (char *)SysAllocateExternalMemory(16);
+          sprintf(value, "%p", arguments[argindex]); // ptr to object
+          argrxarray[argindex].strlength = 8; // pointer length in ASCII
+          argrxarray[argindex].strptr = value;
       } else {
         // classic REXX style interface
         temp = (RexxString *)arguments[argindex];

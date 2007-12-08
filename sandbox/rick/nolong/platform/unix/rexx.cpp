@@ -70,7 +70,7 @@ char * APIENTRY RexxGetVersionInformation(void);
 #ifdef __cplusplus
 }
 #endif
-// TODO:  This should be defined in a common header file that is also included by 
+// TODO:  This should be defined in a common header file that is also included by
 // PlatformDefinitions.h
 
 #if defined(AIX)
@@ -168,9 +168,9 @@ int main (int argc, char **argv)
     {
       rc = RexxStart(argCount,         /* number of arguments    */
                      &argument,        /* array of arguments     */
-                     const_cast<char *>(program_name),     /* INSTORE                */
+                     program_name,     /* INSTORE                */
                      instore,          /* rexx code from -e      */
-                     const_cast<char *>(SYSINITIALADDRESS),/* command env. name      */
+                     SYSINITIALADDRESS,/* command env. name      */
                      RXCOMMAND,        /* code for how invoked   */
                      NULL,
                      &rexxrc,          /* REXX program output    */
@@ -180,16 +180,14 @@ int main (int argc, char **argv)
     {
       rc = RexxStart(argCount,         /* number of arguments    */
                      &argument,        /* array of arguments     */
-                     const_cast<char *>(program_name),     /* name of REXX file      */
+                     program_name,     /* name of REXX file      */
                      0,                /* no instore used        */
-                     const_cast<char *>(SYSINITIALADDRESS),/* command env. name      */
+                     SYSINITIALADDRESS,/* command env. name      */
                      RXCOMMAND,        /* code for how invoked   */
                      NULL,
                      &rexxrc,          /* REXX program output    */
                      NULL);            /* REXX program output    */
     }
-
-    RexxWaitForTermination();
   }
   return rc ? rc : rexxrc;
 

@@ -111,6 +111,7 @@ APIRET REXXENTRY RexxVariablePool(PSHVBLOCK pshvblock)
     return REXX_VARIABLEPOOL((void *)pshvblock);
 
 } /* end RexxVariablePool */
+
 /******************************************************************************/
 /* copy_value -                                                               */
 /******************************************************************************/
@@ -269,7 +270,7 @@ int   SysVariablePool(
     }
     else {                             /* need to copy the name and value   */
                                        /* copy the name                     */
-      pshvblock->shvret |= copy_value(name, &pshvblock->shvname, &pshvblock->shvnamelen);
+      pshvblock->shvret |= copy_value(name, (PRXSTRING)&pshvblock->shvname, &pshvblock->shvnamelen);
                                        /* copy the value                    */
       pshvblock->shvret |= copy_value(value, &pshvblock->shvvalue, &pshvblock->shvvaluelen);
     }
@@ -338,12 +339,6 @@ int   SysVariablePool(
       else
         pshvblock->shvret|=RXSHV_BADN; /* this is a bad name                */
     }
-  }
-  else if (code == RXSHV_EXIT) {       /* need to set a return value for    */
-                                       /* external function or sys exit     */
-
-                                       /* Set ret value in the activity     */
-     self->activity->setShvVal(new_string(pshvblock->shvvalue.strptr, pshvblock->shvvalue.strlength));
   }
   else if (enabled)                    /* if get here and VP is enabled     */
     pshvblock->shvret |= RXSHV_BADF;   /* bad function                      */

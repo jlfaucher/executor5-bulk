@@ -485,12 +485,12 @@ RexxMethod * process_instore(
 
   if (instore[0].strptr == NULL && instore[1].strptr == NULL) {
                                        /* see if this exists                */
-    if (!RexxQueryMacro(const_cast<char *>(name->getStringData()), (unsigned short *)&temp)) {
+    if (!RexxQueryMacro(name->getStringData(), (unsigned short *)&temp)) {
       /* The ExecMacro func returns a ptr to the shared memory. So we must  */
       /* call APISTARTUP to be sure that the ptr remains valid.             */
       APISTARTUP(MACROCHAIN);
                                        /* get the image of function         */
-      RexxExecuteMacroFunction(const_cast<char *>(name->getStringData()), &buffer);
+      RexxExecuteMacroFunction(name->getStringData(), &buffer);
                                        /* unflatten the method now          */
       Routine = SysRestoreProgramBuffer(&buffer, name);
       APICLEANUP(MACROCHAIN);

@@ -54,7 +54,6 @@ typedef struct apireg_node {
     char   apidll_proc[MAXNAME];       /* procedure name               */
     char   apiuser[USERLENGTH];        /* user area                    */
     PFN    apiaddr;                    /* routine address              */
-    LONG   apitype;                    /* 16 or 32-bit flag            */
     PVOID  apimod_handle;              /* dynalink module handle       */
     ULONG  apidrop_auth;               /* Permission to drop           */
     PID    apipid;                     /* Pid of Registrant            */

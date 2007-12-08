@@ -89,6 +89,9 @@ typedef QUEUEHEADER *PQUEUEHEADER;     /* pointer to a queue header  */
 
 #define qhdr_size sizeof(QUEUEHEADER)
 
+#define RXQUEUE_WAITACTIVE   13
+#define RXQUEUE_ENDWAIT          2
+
 typedef  struct {
    UINT message;
    WPARAM wParam;
@@ -228,27 +231,18 @@ VOID RxFreeProcessSubcomList(ULONG pid);
 ULONG RxQueueDetach(ULONG pid);
 ULONG RxInterProcessInit(BOOL sessionqueue);
 
-#ifdef INCL_RXMACRO
 
-    APIRET APIENTRY RexxExecuteMacroFunction (
-           PSZ,                   /* name of function to locate      */
-           PRXSTRING );           /* pointer to return pcode+lits    */
-#endif /* INCL_RXMACRO */
+APIRET APIENTRY RexxExecuteMacroFunction (
+       const char *,          /* name of function to locate      */
+       PRXSTRING );           /* pointer to return pcode+lits    */
 
 #ifdef __cplusplus
 }
 #endif
 
 ULONG           RxAPIStartUp(int chain);
-LONG            FillAPIComBlock(HAPIBLOCK *,
-                                PSZ,
-                                PSZ,
-                                PSZ);
-ULONG  RxGetModAddress( PSZ       dll_name,
-                        PSZ       function_name,
-                        PULONG    error_codes,
-                        REXXPFN * function_address,
-                        PULONG    call_type);
+int             FillAPIComBlock(HAPIBLOCK *, const char *, const char *, const char *);
+int  RxGetModAddress(const char *dll_name, char *function_name, size_t *error_codes, REXXPFN *function_address);
 ULONG get_session(void);
 BOOL  Initialize( VOID ) ;
 
