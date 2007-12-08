@@ -472,5 +472,20 @@ return testGroupList
    self~expectSyntax(40.23)
    self~assertSame("subTest97", BITAND('abc'x,'abc'x,'1 11'x),'abc'x)
 
-return
+-- rexxref documentation tests
+
+::method "test_201"
+   self~assertSame("subTest201", BITAND('12'x),'12'x)
+
+::method "test_202"
+   self~assertSame("subTest202", BITAND('73'x, '27'x),'23'x)
+
+::method "test_203"
+   self~assertSame("subTest203", BITAND('13'x, '5555'x),'1155'x)
+
+::method "test_204"
+   self~assertSame("subTest203", BITAND('13'x, '5555'x, '74'x),'1154'x)
+
+::method "test_205"
+   self~assertSame("subTest205", BITAND('pQrs', , 'DF'x),'PQRS')
 
