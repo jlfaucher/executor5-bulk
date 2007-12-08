@@ -87,7 +87,7 @@ class RexxMutex {
 };
 
 typedef struct _sysThreadArg {
-        long    threadId;
+        thread_id_t threadId;
         pthread_attr_t  threadAttr;
         void*   args;
 } SysThreadArg;

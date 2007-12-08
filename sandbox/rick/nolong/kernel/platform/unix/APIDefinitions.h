@@ -56,8 +56,8 @@ typedef struct apireg_node {
     PFN    apiaddr;                    /* routine address              */
     PVOID  apimod_handle;              /* dynalink module handle       */
     ULONG  apidrop_auth;               /* Permission to drop           */
-    PID    apipid;                     /* Pid of Registrant            */
-    PID    apiownpid;                  /* Pid of owner                 */
+    process_id_t    apipid;                     /* Pid of Registrant            */
+    process_id_t    apiownpid;                  /* Pid of owner                 */
     LONG   apiFunRegFlag;              /* Main reg set to >0<          */
     } APIBLOCK;
 

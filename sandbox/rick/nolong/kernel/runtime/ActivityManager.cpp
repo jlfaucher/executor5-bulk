@@ -592,7 +592,7 @@ void ActivityManager::yieldCurrentActivity()
 }
 
 
-RexxActivity *ActivityManager::findActivity(LONG threadId)
+RexxActivity *ActivityManager::findActivity(thread_id_t threadId)
 /******************************************************************************/
 /* Function:  Locate the activity associated with a thread                    */
 /******************************************************************************/

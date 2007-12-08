@@ -158,7 +158,7 @@ void RexxActivity::runThread()
     SysDeregisterExceptions(&exreg);     /* remove exception trapping         */
     // tell the activity manager we're going away
     ActivityManager::activityEnded(this);
-    SysTerminateThread((TID)this->threadid);  /* system specific thread termination*/
+    SysTerminateThread((thread_id_t)this->threadid);  /* system specific thread termination*/
     return;                              /* finished                          */
 }
 
@@ -1598,12 +1598,12 @@ RexxObject *RexxActivity::localMethod()
   return ActivityManager::localEnvironment; // just return the .local directory
 }
 
-long  RexxActivity::threadIdMethod()
+thread_id_t  RexxActivity::threadIdMethod()
 /******************************************************************************/
 /* Function:  Retrieve the activities threadid                                */
 /******************************************************************************/
 {
-  return (long)this->threadid;         /* just return the thread id info    */
+  return this->threadid;                 /* just return the thread id info    */
 }
 
 void  RexxActivity::setShvVal(

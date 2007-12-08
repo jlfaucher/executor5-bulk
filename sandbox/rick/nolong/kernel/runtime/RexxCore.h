@@ -618,25 +618,6 @@ int  message_number(RexxString *);
 
 #include "ObjectClass.hpp"               /* get real definition of Object     */
 
-
-/******************************************************************************/
-/* Method pointer special types                                               */
-/******************************************************************************/
-
- typedef RexxObject *  (RexxObject::*PCPPM0)();
- typedef RexxObject *  (RexxObject::*PCPPM1)(RexxObject *);
- typedef RexxObject *  (RexxObject::*PCPPM2)(RexxObject *, RexxObject *);
- typedef RexxObject *  (RexxObject::*PCPPM3)(RexxObject *, RexxObject *, RexxObject *);
- typedef RexxObject *  (RexxObject::*PCPPM4)(RexxObject *, RexxObject *, RexxObject *, RexxObject *);
- typedef RexxObject *  (RexxObject::*PCPPM5)(RexxObject *, RexxObject *, RexxObject *, RexxObject *, RexxObject *);
- typedef RexxObject *  (RexxObject::*PCPPM6)(RexxObject *, RexxObject *, RexxObject *, RexxObject *, RexxObject *, RexxObject *);
- typedef RexxObject *  (RexxObject::*PCPPM7)(RexxObject *, RexxObject *, RexxObject *, RexxObject *, RexxObject *, RexxObject *, RexxObject *);
- typedef RexxObject *  (RexxObject::*PCPPMA1)(RexxArray *);
- typedef RexxObject *  (RexxObject::*PCPPMC1)(RexxObject **, size_t);
-                                       /* pointer to method function        */
- typedef RexxObject *  (VLAENTRY RexxObject::*PCPPM) (...);
- #define CPPM(n) ((PCPPM)&n)
-
  #include "TableClass.hpp"
  #include "StackClass.hpp"
  #include "RexxMemory.hpp"               /* memory next, to get OrefSet       */

@@ -56,7 +56,7 @@ public:
         return firstWaitingActivity;
     }
     static RexxActivity *findActivity();
-    static RexxActivity *findActivity(LONG);
+    static RexxActivity *findActivity(thread_id_t);
     static RexxActivity *getActivity();
     static void returnActivity() { returnActivity(currentActivity); }
     static void returnActivity(RexxActivity *);

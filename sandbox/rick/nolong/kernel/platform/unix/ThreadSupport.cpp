@@ -165,15 +165,15 @@ void SysInitializeThread()
 {
 }
 
-void SysTerminateThread(TID threadid)
+void SysTerminateThread(thread_id_t threadid)
 /* terminate a thread created with SysCreateThread()                             */
 {
    pthread_detach(threadid);
 }
 
-int SysQueryThreadID()
+thread_id_t SysQueryThreadID()
 {
-    return (int)pthread_self();      /* just call the correct function */
+    return (thread_id_t)pthread_self();      /* just call the correct function */
 }
 
 

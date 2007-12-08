@@ -383,7 +383,7 @@ typedef char *(far REXXENTRY *PNMF)(void **);
 
 #define SysThreadYield()
 
-#define SysQueryThreadID() GetCurrentThreadId()
+#define SysQueryThreadID() ((thread_id_t)GetCurrentThreadId())
 
 #ifdef THREADHANDLE
 #define SysQueryThread() GetCurrentThread()

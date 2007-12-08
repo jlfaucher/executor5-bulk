@@ -65,7 +65,7 @@ static TIMERPROC lpTimerProc;
 
 #ifdef TIMESLICE
 extern SEV   RexxTerminated;           /* Termination complete semaphore.   */
-extern int REXXENTRY RexxSetYield(PID procid, TID threadid);
+extern int REXXENTRY RexxSetYield(process_id_t procid, thread_id_t threadid);
 extern bool rexxTimeSliceElapsed;
 #endif
 

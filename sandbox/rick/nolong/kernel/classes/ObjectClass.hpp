@@ -512,7 +512,9 @@ class RexxObject : public RexxInternalObject {
  typedef RexxObject *  (RexxObject::*PCPPMA1)(RexxArray *);
  typedef RexxObject *  (RexxObject::*PCPPMC1)(RexxObject **, size_t);
 
- typedef int          (RexxObject::*DispatchMethod)(RexxActivity *, void *);
+                                       /* pointer to method function        */
+ typedef RexxObject *  (RexxObject::*PCPPM)();
+ #define CPPM(n) ((PCPPM)&n)
 
 
 class RexxNilObject : public RexxObject {

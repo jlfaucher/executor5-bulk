@@ -207,8 +207,8 @@ public:
    void        checkStackSpace();
    void        terminateActivity();
    RexxObject *localMethod();
-   long threadIdMethod();
-   bool isThread(long id) { return threadid == id; }
+   thread_id_t threadIdMethod();
+   bool isThread(thread_id_t id) { return threadid == id; }
    void setShvVal(RexxString *);
    inline bool isClauseExitUsed() { return this->nestedInfo.clauseExitUsed; }
    void queryTrcHlt();
@@ -318,7 +318,7 @@ public:
    SEV      runsem;                    /* activity run control semaphore    */
    size_t   size;                      /* size of activation stack          */
    size_t   depth;                     /* depth of activation stack         */
-   LONG     threadid;                  /* thread id                         */
+   thread_id_t threadid;               /* thread id                         */
    NumericSettings *numericSettings;   /* current activation setting values */
 
    int      priority;                  /* activity priority value           */

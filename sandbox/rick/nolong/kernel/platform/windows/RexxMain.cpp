@@ -72,7 +72,7 @@
 #include <io.h>
 
 #ifdef TIMESLICE                       /* System Yielding function prototype*/
-APIRET REXXENTRY RexxSetYield(PID procid, TID threadid);
+APIRET REXXENTRY RexxSetYield(process_id_t procid, thread_id_t threadid);
 #endif /*timeslice*/
 
 
@@ -913,7 +913,7 @@ APIRET REXXENTRY RexxTranslateProgram(
 /*         a system yield via activity_relinquish.                            */
 /*                                                                            */
 /******************************************************************************/
-APIRET REXXENTRY RexxSetYield(PID procid, TID threadid)
+APIRET REXXENTRY RexxSetYield(process_id_t procid, thread_id_t threadid)
 {
   if (RexxQuery()) {                        /* Are we up?                     */
     if (ActivityManager::yieldActivity(threadid))    /* Set yield condition?           */
@@ -939,7 +939,7 @@ APIRET REXXENTRY RexxSetYield(PID procid, TID threadid)
 /* Notes:      Sends request to the activity to flip on the halt flag in the  */
 /*             target activation.                                             */
 /******************************************************************************/
-APIRET REXXENTRY RexxSetHalt(PID procid, TID threadid)
+APIRET REXXENTRY RexxSetHalt(process_id_t procid, thread_id_t threadid)
 {
   if (RexxQuery())
   {                        /* Are we up?                     */
@@ -976,7 +976,7 @@ APIRET REXXENTRY RexxSetHalt(PID procid, TID threadid)
 /*                                                                            */
 /******************************************************************************/
 
-APIRET InternSetResetTrace(PID procid, TID threadid, bool flag)
+APIRET InternSetResetTrace(process_id_t procid, thread_id_t threadid, bool flag)
 {
     if (RexxQuery())
     {                        /* Are we up?                     */
@@ -1008,7 +1008,7 @@ APIRET InternSetResetTrace(PID procid, TID threadid, bool flag)
 /* Notes:      Sends request to the activity to turn on interactive trace in  */
 /*             the target activation.                                         */
 /******************************************************************************/
-APIRET REXXENTRY RexxSetTrace(PID procid, TID threadid)
+APIRET REXXENTRY RexxSetTrace(process_id_t procid, thread_id_t threadid)
 {
   return (InternSetResetTrace(procid, threadid, true));     /* 1 to set trace on */
 }
@@ -1026,7 +1026,7 @@ APIRET REXXENTRY RexxSetTrace(PID procid, TID threadid)
 /* Notes:      Sends request to the activity to turn off interactive trace in */
 /*             the target activation.                                         */
 /******************************************************************************/
-APIRET REXXENTRY RexxResetTrace(PID procid, TID threadid)
+APIRET REXXENTRY RexxResetTrace(process_id_t procid, thread_id_t threadid)
 {
   return (InternSetResetTrace(procid, threadid, false));  /* 0 to set trace off */
 }
