@@ -78,6 +78,8 @@ runtime_dir = $(kernel_dir)/runtime
 streamlibrary_dir = $(kernel_dir)/streamLibrary
 messages_dir = $(kernel_dir)/messages
 lib_dir = $(top_srcdir)/lib
+api_dir = $(top_srcdir)/api
+platform_api_dir = $(api_dir)/platform/unix
 
 rexutils_dir = $(top_srcdir)/rexutils
 rexutils_unix_dir = $(rexutils_dir)/unix
@@ -300,7 +302,11 @@ pkgdata_SCRIPTS = $(platform_unix_dir)/rexx.sh $(platform_unix_dir)/rexx.csh
 #
 # headers to install
 #
-include_HEADERS = $(rexxapi_unix_dir)/rexx.h
+include_HEADERS = $(api_dir)/rexx.h \
+                  $(api_dir)/rexxapidefs.h \
+                  $(platform_api_dir)/rexxapitypes.h \
+                  $(platform_api_dir)/rexxplatformapis.h \
+                  $(platform_api_dir)/rexxplatformdefs.h \
 
 #
 # man pages to install
