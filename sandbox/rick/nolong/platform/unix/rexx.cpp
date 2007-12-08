@@ -91,7 +91,7 @@ int main (int argc, char **argv)
   const char *program_name;            /* name to run                       */
   char  arg_buffer[8192];              /* starting argument buffer          */
   const char *cp;                      /* option character pointer          */
-  RXSTRING argument;                   /* rexxstart argument                */
+  CONSTRXSTRING argument;              /* rexxstart argument                */
   size_t argCount;
   char *ptr;
   short rexxrc = 0;                    /* exit List array                   */

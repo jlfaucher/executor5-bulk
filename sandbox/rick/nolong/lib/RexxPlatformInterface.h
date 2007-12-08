@@ -253,7 +253,7 @@ void SysLoadImage(char **, size_t *);    /* load the image file               */
 
 #ifndef SysTerminateThread
                                        /* thread being terminated           */
-void SysTerminateThread(TID threadid);
+void SysTerminateThread(thread_id_t threadid);
 #endif
 
 #ifndef SysIsThreadEqual
