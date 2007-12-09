@@ -154,25 +154,6 @@ return testGroupList
 
 
    -- test the BIF, using examples from the documentation
-::method "test_BITAND"
-    self~assertSame("subTest1", '12'x   , BITAND('12'x)               )
-    self~assertSame("subTest2", '23'x   , BITAND('73'x,'27'x)         )
-    self~assertSame("subTest3", '1155'x , BITAND('13'x,'5555'x)       )
-    self~assertSame("subTest4", '1154'x , BITAND('13'x,'5555'x,'74'x) )
-    self~assertSame("subTest5", 'PQRS'  , BITAND('pQrS', ,'DF'x)      )
-
-
-   -- test the BIF, using examples from the documentation
-::method "test_BITOR"
-    self~assertSame("subTest1", '12'x   , BITOR('12'x)               )
-    self~assertSame("subTest2", '35'x   , BITOR('15'x,'24'x)         )
-    self~assertSame("subTest3", '3556'x , BITOR('15'x,'2456'x)       )
-    self~assertSame("subTest4", '35F6'x , BITOR('15'x,'2456'x,'F0'x) )
-    self~assertSame("subTest5", '5D5D'x , BITOR('1111'x, ,'4D'x)     )
-    self~assertSame("subTest6", 'pqrs'  , BITOR('pQrS', ,'20'x)      )
-
-
-   -- test the BIF, using examples from the documentation
 ::method "test_BITXOR"
     self~assertSame("subTest1", '12'x     , BITXOR('12'x)                  )
     self~assertSame("subTest2", '30'x     , BITXOR('12'x,'22'x)            )
