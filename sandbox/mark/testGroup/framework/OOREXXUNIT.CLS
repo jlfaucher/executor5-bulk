@@ -178,6 +178,9 @@ if \ .local~hasEntry(ooRexxUnit.version) then do
   else                                            -- Unix-like
      .local~ooRexxUnit.path.separator=":"
 
+  -- Put the default test result class into the environment.
+  .local~ooRexxUnit.default.TestResult.Class = .TestResult
+
   do rtn over .methods
      .public_routines~put(.methods[rtn], rtn)
   end
@@ -213,7 +216,6 @@ end
   use strict arg clz, superClassName
 
   if \ clz~isA(.class) then return .false
-
   do while clz<>.nil
      if clz~id~caselessEquals(superClassName)=1 then   -- o.k. found!
         return .true
@@ -222,8 +224,65 @@ end
   return .false
 -- End isSubClassOf()
 
+/** Simple convenience function to enclose a string in double quotes          */
 ::method enQuote
   return '"' || arg(1)~string || '"'
+-- End enQuoute()
+
+/* pathCompact( path, len, sl )- - - - - - - - - - - - - - - - - - - - - - - -*\
+
+  Takes a long path name and compacts it to a shorter path name by removing some
+  path components in the middle of the path name and replacing them with
+  ellipses (...)
+
+  Input:
+    path REQUIRED
+      The path name to compact.
+
+    len  REQUIRED
+      The maximum length of the returned compacted path.
+
+    sl   REQUIRED
+      The path component separator character, i.e., a backward slash on Windows.
+
+  Returns:
+    A compacted path no longer than specified.  If the input path name is
+    already less than or equal to the specified length, it is returned
+    unchanged.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::method pathCompact public
+  use strict arg path, len, sl
+
+  if path~length <= len then return path
+
+  -- Get position of directory separator after character 15
+  fp = path~pos(sl, 15)
+
+  -- Divide into leading and trailing pieces.  Leading piece, add "..."
+  leading = path~left(fp) || "..."
+  trailing = path~substr(fp)
+
+  -- Find a position of the directory separator in the trailing part, such that
+  -- when the trailing part starts there, the overall length of the resulting
+  -- string is the specified length, or shorter.
+  trailPos = trailing~pos(sl, trailing~length - (len - leading~length))
+  if trailPos == 0 then do
+    -- The last component of the path is too long, shorten the leading.
+    leading = "..."
+    trailPos = trailing~pos(sl, trailing~length - (len - leading~length))
+  end
+
+  if trailPos == 0 then do
+    -- Still too long, just use the last len characters.
+    leading = ""
+    trailing = trailing~right(len)
+  end
+  else do
+    trailing = trailing~substr(trailPos)
+  end
+
+return leading || trailing
+-- End pathCompact( path, len, sl )
 
 
 ::class "TestResult" public
@@ -342,7 +401,7 @@ end
 
 /* *********************************************************************************** */
 /* *********************************************************************************** */
-::class "Assert" public
+::class "Assert" public mixinclass Object
 
 ::method init
   expose fAssertions          -- count assertions, ooRexxUnit only
@@ -640,7 +699,7 @@ end
 
 /* *********************************************************************************** */
 /* *********************************************************************************** */
-::class "TestCase" subclass "Assert" public
+::class "TestCase" public inherit "Assert"
 
 ::method init class
   self~defaultTestResultClass=.TestResult -- set default: use TestResult class
@@ -665,7 +724,6 @@ end
   else
     definedInFile="n/a_"self~identityHash -- indicate that no file name available
 
-
   self~init:super    -- let superclass initialize
 
 ::method definedInFile attribute    -- allows to quickly get filename from which test case is taken
@@ -674,6 +732,12 @@ end
 
 
 ::method createResult      -- creates a default TestResult object
+  -- Use the default class in the environment, if it exists, before using the
+  -- self~class~defaultTestResultClass.
+  if .local~hasEntry(ooRexxUnit.default.TestResult.Class) then do
+    if .ooRexxUnit.default.TestResult.Class~isA(.class) then
+      return .ooRexxUnit.default.TestResult.Class~new
+  end
   return self~class~defaultTestResultClass~new
 
 ::method "countTestCases=" private  -- set method
@@ -872,14 +936,10 @@ exceptionHandler:
 
 ::method run
   expose testQueue
-  use arg aTestResult, bGiveFeedback=.false
+  use arg aTestResult = (self~createResult), bGiveFeedback = .false
 
   if \datatype(bGiveFeedback,"O") then
      raise syntax 93.903 array (bGiveFeedback) -- raise error
-
-   -- make sure an instance of .TestResult is used
-  if arg(1, 'O') then aTestResult=self~createResult
-  else aTestResult=arg(1)
 
   if bGiveFeedback then
      .error~say( "running testSuite" pp(self~string"@"self~identityHash) "with" pp(self~countTestCases) "test cases ...")
@@ -1103,7 +1163,7 @@ exceptionHandler:
        testUnitList=result    -- retrieve result (a list of array objects)
 */
        testUnitList=callTestUnit(fileName)
-       if \ testUnitList~isA(.collection) then iterate  -- DFX TODO temp change while working with TestGroup
+
        do arr over testUnitList  -- loop over array objects
           classObject   =arr[1]  -- a class object
           mandatoryTests=arr[2]  -- a list
@@ -1435,59 +1495,4 @@ return a
   end
 
 return 0
-
-/* pathCompact( path, len, sl )- - - - - - - - - - - - - - - - - - - - - - - -*\
-
-  Takes a long path name and compacts it to a shorter path name by removing some
-  path components in the middle of the path name and replacing them with
-  ellipses (...)
-
-  Input:
-    path REQUIRED
-      The path name to compact.
-
-    len  REQUIRED
-      The maximum length of the returned compacted path.
-
-    sl   REQUIRED
-      The path component separator character, i.e., a backward slash on Windows.
-
-  Returns:
-    A compacted path no longer than specified.  If the input path name is
-    already less than or equal to the specified length, it is returned
-    unchanged.
-\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::routine pathCompact public
-  use arg path, len, sl
-
-  if path~length <= len then return path
-
-  -- Get position of directory separator after character 15
-  fp = path~pos(sl, 15)
-
-  -- Divide into leading and trailing pieces.  Leading piece, add "..."
-  leading = path~left(fp) || "..."
-  trailing = path~substr(fp)
-
-  -- Find a position of the directory separator in the trailing part, such that
-  -- when the trailing part starts there, the overall length of the resulting
-  -- string is the specified length, or shorter.
-  trailPos = trailing~pos(sl, trailing~length - (len - leading~length))
-  if trailPos == 0 then do
-    -- The last component of the path is too long, shorten the leading.
-    leading = "..."
-    trailPos = trailing~pos(sl, trailing~length - (len - leading~length))
-  end
-
-  if trailPos == 0 then do
-    -- Still too long, just use the last len characters.
-    leading = ""
-    trailing = trailing~right(len)
-  end
-  else do
-    trailing = trailing~substr(trailPos)
-  end
-
-return leading || trailing
--- End pathCompact( path, len, sl )
 

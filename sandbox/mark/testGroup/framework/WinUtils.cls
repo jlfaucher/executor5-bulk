@@ -75,7 +75,7 @@
     -- Stupid Windows and its stupid spaces in path names.
     prgName = prgName~strip
     if prgName~pos(' ') <> 0, prgName~left(1) \== '"' then prgName = enQuote(prgName)
-    prgName = enQuote(prgName); say 'Just enqouted !!!!!!!!!!!!!!!!!!!!'
+    prgName = enQuote(prgName)
     if arg(2, 'O') then params = ""
     else params = arg(2)
 

@@ -58,41 +58,35 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-  testGroupList = .list~of(.array~of(.LINES.testGroup, .list~new))
+  parse source . . s
 
-  srcLines = .array~new
-  do i = 1 to 150 until srcLines[i] = "*/"
-     srcLines[i] = sourceline(i)
+  lines=.array~new
+  do i=1 to 150 until lines[i]="*/"
+     lines[i]=sourceline(i)
   end
 
-  call makeDirTestInfo .LINES.testGroup, srcLines
+  group = .TestGroup~new(s, lines)
+  group~add(.LINES.testGroup)
 
-  parse source s
-  .LINES.testGroup~testCaseInfo~setentry("test_Case-source", s)
+  if group~isAutomatedTest then return group
 
-  if \ .local~hasentry("bRunTestsLocally") then
-     .local~bRunTestsLocally = .true
+  suite = group~suite
+  testResult = suite~run
+  testResult~print("Test of the LINES BIF")
 
-  if .bRunTestsLocally == .true then do
-    ts = .TestSuite~new
-    ts~addTest(.TestSuite~new(.LINES.testGroup))
-
-    testResult = ts~run
-    call simpleFormatTestResults testResult
-  end
-
-return testGroupList
+return testResult
 -- End of entry point.
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
   Directives, Classes, or Routines.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::requires "FileUtils.cls"
+::requires 'ooTest.frm'
 
 /* class: LINES.testGroup- - - - - - - - - - - - - - - - - - - - - - - - - - -*\
 
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class "LINES.testGroup" public subclass TestCase
+::class "LINES.testGroup" public subclass ooTestCase
 
   ::method test_stdin_normal
 

@@ -66,47 +66,47 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-use arg cmdLine
+cmdLine = arg(1)
 
   -- Only execute on Windows and Linux (if shell is bash.)
+  /*
   if .ooRexxUnit.OSName \= "WINDOWS" & .ooRexxUnit.OSName \== "LINUX" then return .list~new
   if .ooRexxUnit.OSName == "LINUX" & .ooRexxUnit.shellName \== "bash" then return .list~new
+  */
+  say "FIX ME SOURCEFILE.TESTGROUP"
 
-  testGroupList = .list~of(.array~of(.SourceFile.testGroup, .list~new))
+  if \ .local~hasentry("bRunTestsLocally") then runTests = .true
+  else runTests = .bRunTestsLocally
 
-  srcLines = .array~new
-  do i = 1 to 150 until srcLines[i] = "*/"
-     srcLines[i] = sourceline(i)
+  parse source . . s
+
+  lines=.array~new
+  do i=1 to 150 until lines[i]="*/"
+     lines[i]=sourceline(i)
   end
 
-  call makeDirTestInfo .SourceFile.testGroup, srcLines
+  group = .TestGroup~new(s, lines)
+  group~add(.SourceFile.testGroup)
 
-  parse source s
-  .SourceFile.testGroup~testCaseInfo~setentry("test_Case-source", s)
-
-  if \ .local~hasentry("bRunTestsLocally") then
-     .local~bRunTestsLocally = .true
-
-  if .bRunTestsLocally == .true then do
-    ts = .TestSuite~new
-    ts~addTest(.TestSuite~new(.SourceFile.testGroup))
-
-    testResult = ts~run
-    call simpleFormatTestResults testResult
+  if runTests then do
+    suite = group~suite
+    testResult = suite~run
+    j = simpleFormatTestResults(testResult)
   end
 
-return testGroupList
+return group
 -- End of entry point.
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
   Directives, Classes, or Routines.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::requires "FileUtils.cls"   -- FileUtils.cls has a requires for OOREXXUNIT.CLS
+::requires 'ooTest.frm'
 
 /* class: SourceFile.testGroup - - - - - - - - - - - - - - - - - - - - - - - -*\
 
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class SourceFile.testGroup public subclass TestCase
+::class 'SourceFile.testGroup' public subclass ooTestCase
 
   -- Notes for logical not.  The logical not character is 0xAA.  How it appears
   -- on a screen or in an editor is dependent on a number of things, like the

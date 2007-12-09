@@ -113,10 +113,10 @@ end
       optionally list of mandatory test methods                      */
 return testGroupList
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm'     -- load the ooRexxUnit classes
 
 -- class named exactly like file
-::class "TimeSpan.testGroup" subclass TestCase public
+::class "TimeSpan.testGroup" subclass ooTestCase public
 
 ::method 'test_fromDays'
     expected = '1.12:00:00.000000'

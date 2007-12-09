@@ -74,7 +74,7 @@ cmdLine = arg(1)
   group~add(.Section4_tests)
 
   if runTests then do
-    suite = group~getSuite
+    suite = group~suite
     testResult = suite~run
     j = simpleFormatTestResults(testResult)
   end

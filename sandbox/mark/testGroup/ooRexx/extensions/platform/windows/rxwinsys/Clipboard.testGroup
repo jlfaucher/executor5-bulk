@@ -59,75 +59,46 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+  parse source . . s
 
--- This is a Windows specific test case.  If not on Windows, don't execute and
--- return an empty list to a, possible, caller.
-    if .ooRexxUnit.OSName <> "WINDOWS" then return .list~new
+  lines=.array~new
+  do i=1 to 150 until lines[i]="*/"
+     lines[i]=sourceline(i)
+  end
+                      3/0
+  group = .TestGroup~new(s, lines)
+  group~add(.Clipboard.testGroup)
 
-    -- Now that we know we are on a Windows box, add the required winsystm.cls
-    --
+  -- This is a Windows specific test.
+  group~restrictOS("WINDOWS")
+
+  say 'FIXME FIXME CLIPBOARD.TESTGROUP'
+  -- If we are on Windows, load winsystm.cls, otherwise don't.
+  if .ooRexxUnit.OSName == "WINDOWS" then do
     -- Use indirectRequire() to create a rexx program file with the requires
     -- directive for winsystm.cls.  If an empty string is returned, that
-    -- indicates an error happned, so return the empty list.  Otherwise, call
-    -- the program file, which will add the winsystm.cls definitions to this
-    -- process, and the test cases can execute.  Delete the temporary program
-    -- file.
+    -- indicates an error happned, so mark the test group as having no
+    -- executable tests.  Otherwise, call the program file, which will add the
+    -- winsystm.cls definitions to this process, and the test cases can execute.
+    -- Delete the temporary program file.
     prgFile = indirectRequire('winsystm.cls')
-    if prgFile == "" then return .list~new
-    call (prgFile)
-    j = deleteFile(prgFile)
 
--------------------------------------------------------------------------------------------
-   /* list of array objects, each containing the testGroup class object and an
-      optional list of mandatory test case methods name                       */
-mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
-testGroupList=.list~of(.array~of(.Clipboard.testGroup, mandatoryTestMethods))
+    if prgFile == "" then do
+      group~markNoTests("Error loading winsystm.cls. Clipboard test requires winsystm.cls")
+    end
+    else do
+      call (prgFile)
+      j = deleteFile(prgFile)
+    end
+  end
 
--------------------------------------------------------------------------------------------
--- ===> the following code needs not to be individualized                              <===
+  if runTests then do
+    suite = group~suite
+    testResult = suite~run
+    j = simpleFormatTestResults(testResult)
+  end
 
-   -- read top comment, containing infos about this program
-arrLines=.array~new
-do i=1 to 150 until arrLines[i]="*/"
-   arrLines[i]=sourceline(i)
-end
-      -- supply information for the testClass(es) in this file; the class attribute
-      -- "TestCaseInfo" (a directory object, index points to a queue) will store
-      -- the parsed infos
-aTestGroupClass=testGroupList~at(testGroupList~first)[1] -- get first testClass
-
-   -- will parse the array lines and store result in class object
-call makeDirTestInfo aTestGroupClass, arrLines
-tmpDir=aTestGroupClass~TestCaseInfo
-parse source s   -- op_sys invocationType fullPathToThisFile
-tmpDir~setentry("test_Case-source", s)
-   -- now add this directory to other testCase classes, if any left
-do arr over testGroupList
-   if arr[1]=aTestGroupClass then iterate  -- already handled
-   arr[1]~TestCaseInfo=tmpDir             -- save info in class object
-end
-
--- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
--- and set it to .false; this way the independent local invocation of the tests is inhibited
-if .local~hasentry("bRunTestsLocally")=.false then
-   .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
-
-if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
-do
-   ts=.testSuite~new             -- create a testSuite
-   do arr over testGroupList
-      -- create a testSuite for the given test case class, use all its testmethods
-      ts~addTest( .testSuite~new(arr[1]))
-   end
-   -- testResult=.testSuite~new(testGroupClass)~run
-   testResult=ts~run       -- now run all the tests
-
-    call simpleFormatTestResults testResult
-end
-
-   /* return list of array objects containing test case classes and
-      optionally list of mandatory test methods                      */
-return testGroupList
+return group
 -- End of entry point.
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
@@ -135,9 +106,9 @@ return testGroupList
   OOREXXUNIT.CLS
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::requires "FileUtils.cls"
+::requires 'ooTest.frm'
 
--- class named exactly like file
-::class "Clipboard.testGroup" subclass TestCase public
+::class "Clipboard.testGroup" subclass ooTestCase public
 
 ::method 'test_01Create'
     .local~cp = .WindowsClipBoard~new

@@ -122,10 +122,10 @@ return testGroupList
 
 
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm'     -- load the ooRexxUnit classes
 
    -- class named exactly like file
-::class "Table.testGroup" subclass TestCase public
+::class "Table.testGroup" subclass ooTestCase public
 
 ::method init
   expose collDir clz bUserDefinedIndex bSingleItem o1 o2

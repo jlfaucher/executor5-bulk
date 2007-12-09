@@ -59,8 +59,7 @@
 /*----------------------------------------------------------------------------*/
 cmdLine = arg(1)
 
-  if \ .local~hasentry("bRunTestsLocally") then runTests = .true
-  else runTests = .bRunTestsLocally
+  .Queue.testGroup~setVerbose(cmdLine)
 
   -- Create a TestGroup using information specific to this file.
   parse source . . fileSpec;
@@ -71,16 +70,17 @@ cmdLine = arg(1)
   end
 
   group = .TestGroup~new(fileSpec, lines)
-  group~add(.Queue.testGroup)
 
-  if runTests then do
-    suite = group~getSuite
-    testResult = suite~run
-    j = simpleFormatTestResults(testResult)
-  end
+  names = "test_new test_newReptitively test_[] test_[]="
+  group~addWithCollection(.Queue.testGroup, names)
 
-return group
+  if group~isAutomatedTest then return group
 
+  suite = group~suite
+  testResult = suite~run
+  testResult~print
+
+return testResult
 -- End of entry point.
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
@@ -232,6 +232,8 @@ return group
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
   ::method  'test_[]'
 
+    if self~class~verbose > 2 then say '*In test_[]     This test is not implemented'
+
 
   -- End test_[]( )
 
@@ -245,6 +247,7 @@ return group
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
   ::method  'test_[]='
 
+    if self~class~verbose > 2 then say '*In test_[]=    This test is not implemented'
 
   -- End test_[]=( )
 
@@ -842,20 +845,14 @@ return group
   when the test unit is fully implemented.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 
-  -- Attribute-like: verbose                 public / private
+  -- verbose                 public / private
   --   Flag used while implementing this test unit.  Controls if extra messages
   --   are printed to the console while this test unit is executed.  Turn on
   --   by calling this program file using an arg of exactly 'verboseN', where
   --   N is an integer from 1 to 10.   Anything else turns the extra messages
   --   off.  The higher N, the more verbose.
-  ::method  verbose class
-    expose verbose
-  return verbose
-
-  ::method  'verbose=' class private
-    expose verbose
-  use arg verbose
-  -- End verbose( )
+  ::attribute verbose get class
+  ::attribute verbose set class private
 
   /* init( ) - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
 
@@ -868,7 +865,6 @@ return group
       0, always.
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
   ::method  init class
-    use arg
     self~verbose = 0
     forward class (super)
   return 0

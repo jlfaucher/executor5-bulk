@@ -120,9 +120,9 @@ return testGroupList
 
 
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm'     -- load the ooRexxUnit classes
 
-::class "SAY.testGroup" subclass TestCase public
+::class "SAY.testGroup" subclass ooTestCase public
 
 ::method setUp
    .output~destination(.myLogger~new)     -- let the SAY messages be sent to the local logger class

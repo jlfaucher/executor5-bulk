@@ -43,29 +43,23 @@
 
 cmdLine = arg(1)
 
-  os = "Windows Linux SunOS MacOSx"
-
-  do word over os~space(1)~makearray(" ")
-    say word
-  end
-  return
-
    .local~bRunTestsLocally = .false
-   files = .list~of("C:\work.ooRexx\ooRexxUnit\sandbox\ooRexx\base\class\Queue.testGroup",     -
-                    "C:\work.ooRexx\ooRexxUnit\sandbox\ooRexx\doc\rexxref\chapter7\Section4.testGroup"  -
-                   )
-   do file over files
-     call (file)
-     obj = RESULT
+
+   testResult = .ooRexxUnit.default.TestResult.Class~new
+   finder = .ooTestFinder~new("ooRexx", ".testGroup")
+   containers = finder~seek(testResult); say 'containers items:' containers~items
+
+   suite = .TestSuite~new
+   j = time('E')
+   do container over containers
+     container~suite(suite)
    end
+   say 'Took' time('E') 'seconds to build suite'
 
-
-   say "Got object from testGroup:" obj
-   say "From file:" obj~pathName
-
-   say
-   say 'Printing test case metadata'
-   j = printTestInfo(obj~testInfo)
+   say 'running test suite'
+   suite~run(testResult)
+   say 'test result:' testResult
+   testResult~print("My Title", 3)
 
 return 0
 
