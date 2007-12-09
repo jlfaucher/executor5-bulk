@@ -329,7 +329,7 @@ RexxObject * activation_find  (void);
    inline bool              tracingResults() {return (this->settings.flags&trace_results) != 0; }
    inline RexxActivity    * getActivity() {return this->activity;};
    inline RexxMethod      * getMethod() {return this->method;};
-   inline RexxString      * getMsgname() {return this->settings.msgname;};
+   inline RexxString      * getMessageName() {return this->settings.msgname;};
    inline RexxString      * getCallname() {return this->settings.msgname;};
    inline RexxInstruction * getCurrent() {return this->current;};
    inline void              getSettings(ActivationSettings &s) {this->settings = s;};

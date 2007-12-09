@@ -396,23 +396,6 @@ RexxObject *RexxNativeActivation::run(
     }
 
     size_t activityLevel = this->activity->getActivationLevel();
-    /* get a RAISE type return?          */
-    if (setjmp(this->conditionjump) != 0)
-    {
-        // TODO  Use protected object on the result
-        if (this->result != OREF_NULL)     /* have a value?                     */
-            holdObject(this->result);        /* get result held longer            */
-        this->guardOff();                  /* release any variable locks        */
-        this->argcount = 0;                /* make sure we don't try to mark any arguments */
-        // the lock holder gets here by longjmp from a kernel reentry.  We need to
-        // make sure the activation count gets reset, else we'll accumulate bogus
-        // nesting levels that will make it look like this activity is still in use
-        // when in fact we're done with it.
-        this->activity->restoreActivationLevel(activityLevel);
-        this->activity->pop(false);        /* pop this from the activity        */
-        this->setHasNoReferences();        /* mark this as not having references in case we get marked */
-        return this->result;               /* and finished                      */
-    }
     try
     {
         activity->releaseAccess();           /* force this to "safe" mode         */
@@ -437,6 +420,22 @@ RexxObject *RexxNativeActivation::run(
         this->setHasNoReferences();        /* mark this as not having references in case we get marked */
         // now rethrow the trapped condition so that real target can handle this.
         throw;
+    }
+    catch (RexxNativeActivation *)
+    {
+        // TODO  Use protected object on the result
+        if (this->result != OREF_NULL)     /* have a value?                     */
+            holdObject(this->result);        /* get result held longer            */
+        this->guardOff();                  /* release any variable locks        */
+        this->argcount = 0;                /* make sure we don't try to mark any arguments */
+        // the lock holder gets here by longjmp from a kernel reentry.  We need to
+        // make sure the activation count gets reset, else we'll accumulate bogus
+        // nesting levels that will make it look like this activity is still in use
+        // when in fact we're done with it.
+        this->activity->restoreActivationLevel(activityLevel);
+        this->activity->pop(false);        /* pop this from the activity        */
+        this->setHasNoReferences();        /* mark this as not having references in case we get marked */
+        return this->result;               /* and finished                      */
     }
 
     // belt and braces...this restores the activity level to whatever
@@ -934,6 +933,30 @@ void RexxNativeActivation::setObjNotify(
 }
 
 
+/**
+ * Raise a condition on behalf of a native method.  This method
+ * does not return.
+ *
+ * @param condition  The condition type to raise.
+ * @param description
+ *                   The condition description string.
+ * @param additional The additional information associated with this condition.
+ * @param result     The result object.
+ */
+void RexxNativeActivation::raiseCondition(RexxString *condition, RexxString *description, RexxObject *additional, RexxObject *result)
+{
+    this->result = (RexxObject *)result; /* save the result                   */
+                                         /* go raise the condition            */
+    this->activity->raiseCondition(condition, OREF_NULL, description, additional, result, OREF_NULL);
+
+    // We only return here if no activation above us has trapped this.  If we do return, then
+    // we terminate the call by throw this up the stack.
+    throw this;
+}
+
+
+
+
 void * RexxNativeActivation::operator new(size_t size,
      RexxObject         * receiver,    /* receiver object                   */
      RexxMethod         * method,      /* method to run                     */
@@ -971,7 +994,7 @@ REXXOBJECT REXXENTRY REXX_MSGNAME()
   native_entry;                        /* synchronize access                */
                                        /* pick up current activation        */
   self = (RexxNativeActivation *)ActivityManager::currentActivity->current();
-  return_object(this->msgname);          /* just forward and return           */
+  return_object(this->getMessageName()); /* just forward and return           */
 }
 
 REXXOBJECT REXXENTRY REXX_RECEIVER()
@@ -984,7 +1007,7 @@ REXXOBJECT REXXENTRY REXX_RECEIVER()
   native_entry;                        /* synchronize access                */
                                        /* pick up current activation        */
   self = (RexxNativeActivation *)ActivityManager::currentActivity->current();
-  return_object(this->receiver);         /* just forward and return           */
+  return_object(this->getReceiver());  /* just forward and return           */
 }
 
 int REXXENTRY REXX_INTEGER(REXXOBJECT object)
@@ -1120,7 +1143,7 @@ REXXOBJECT REXXENTRY REXX_SUPER(CSTRING msgname, REXXOBJECT arguments)
                                        /* copying each OREF                 */
     argarray[i-1] = args->get(i);
                                        /* now send the message              */
-  return_object(this->receiver->messageSend((RexxString *)new_string(msgname), count, argarray, this->receiver->superScope(this->method->getScope())));
+  return_object(this->getReceiver()->messageSend((RexxString *)new_string(msgname), count, argarray, this->getReceiver()->superScope(this->getMethod()->getScope())));
 }
 
 REXXOBJECT REXXENTRY REXX_SETVAR(CSTRING name, REXXOBJECT value)
@@ -1162,9 +1185,9 @@ REXXOBJECT REXXENTRY REXX_GETFUNCTIONNAMES(char *** names, int * num)
                                        /* pick up current activation        */
 
   self = (RexxNativeActivation *)ActivityManager::currentActivity->current();
-  activity = self->activity;           /* find the current activity         */
+  activity = self->getActivity();      /* find the current activity         */
                                        /* get the current activation        */
-  activation = self->activity->getCurrentActivation();
+  activation = self->getCurrentActivation();
 
   *num = 0;
   RexxDirectory *routines = activation->getPublicRoutines();
@@ -1237,16 +1260,8 @@ void REXXENTRY REXX_RAISE(CSTRING condition, REXXOBJECT description, REXXOBJECT 
   native_entry;                        /* synchronize access                */
                                        /* pick up current activation        */
   self = (RexxNativeActivation *)ActivityManager::currentActivity->current();
-  this->result = (RexxObject *)result; /* save the result                   */
                                        /* go raise the condition            */
-  ActivityManager::currentActivity->raiseCondition(new_string(condition), OREF_NULL, (RexxString *)description, (RexxObject *)additional, (RexxObject *)result, OREF_NULL);
-
-  // Using throw would be preferred here, but the compiler won't allow us to
-  // do a throw across the C function call boundary.  We need to use longjmp
-  // instead. This won't effect our object unwinding yet, as we're in control
-  // of things.  It would be better if the functions used RAISE and then
-  // returned to the caller, but that's a bit more involved at this point.
-  longjmp(this->conditionjump, 1);     /* now go process the return         */
+  this->raiseCondition(new_string(condition), (RexxString *)description, (RexxObject *)additional, (RexxObject *)result);
 }
 
 
@@ -1387,7 +1402,7 @@ int REXXENTRY REXX_STEMSORT(CSTRING stemname, int order, int type, size_t start,
   // currentActivity gets zeroed out.
   {
       /* get the REXX activation */
-      RexxActivation *activation = self->activity->getCurrentActivation();
+      RexxActivation *activation = self->getCurrentActivation();
 
       /* get the stem name as a string */
       RexxString *variable = new_string(stemname);

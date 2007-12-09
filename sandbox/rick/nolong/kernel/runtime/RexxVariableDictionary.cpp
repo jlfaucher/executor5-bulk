@@ -114,7 +114,7 @@ RexxObject  *RexxVariableDictionary::realValue(
 RexxCompoundElement *RexxVariableDictionary::getCompoundVariable(
      RexxString *stemName,             /* name of stem for compound         */
      RexxObject **tail,                /* tail of the compound element      */
-     LONG        tailCount)            /* number of tail pieces             */
+     size_t      tailCount)            /* number of tail pieces             */
 /******************************************************************************/
 /* Function:  Retrieve a compound variable, returning OREF_NULL if the        */
 /*            variable does not exist.                                        */
@@ -133,7 +133,7 @@ RexxCompoundElement *RexxVariableDictionary::getCompoundVariable(
 RexxObject *RexxVariableDictionary::getCompoundVariableValue(
      RexxString *stemName,             /* name of stem for compound         */
      RexxObject **tail,                /* tail of the compound element      */
-     LONG        tailCount)            /* number of tail pieces             */
+     size_t      tailCount)            /* number of tail pieces             */
 /******************************************************************************/
 /* Function:  Retrieve a compound variable, returning default value if the    */
 /*            variable does not exist.  This does not raise NOVALUE.          */

@@ -87,12 +87,14 @@ class RexxNativeActivation : public RexxActivationBase {
   void   setObjNotify(RexxMessage *);
   void   resetNext();
   bool   fetchNext(RexxString **name, RexxObject **value);
+  void   raiseCondition(RexxString *condition, RexxString *description, RexxObject *additional, RexxObject *result);
 
   inline void   termination() { this->guardOff();}
   inline RexxActivation *sender() {return (RexxActivation *)this->activity->sender((RexxActivationBase *)this);}
+  inline RexxActivation *getCurrentActivation() { return activity->getCurrentActivation(); }
   inline char        getVpavailable()   {return this->vpavailable;}
   inline RexxMethod *getMethod()        {return this->method;}
-  inline RexxString *getMsgname()       {return this->msgname;}
+  inline RexxString *getMessageName()   {return this->msgname;}
   inline size_t      nextVariable()     {return this->nextvariable;}
   inline RexxStem   *nextStem()         {return this->nextstem;}
   inline RexxVariableDictionary *nextCurrent()     {return this->nextcurrent;}
@@ -101,6 +103,7 @@ class RexxNativeActivation : public RexxActivationBase {
   inline void        setNextCurrent(RexxVariableDictionary *vdict)     {this->nextcurrent = vdict;}
   inline void        setNextStem(RexxStem *stemVar)     {this->nextstem = stemVar;}
   inline void        setCompoundElement(RexxCompoundElement *element)     {this->compoundelement = element;}
+  inline RexxActivity *getActivity() { return activity; }
 
 protected:
 
@@ -124,6 +127,5 @@ protected:
   size_t          argcount;            /* size of the argument list         */
   bool            vpavailable;         /* Variable pool access flag         */
   int             object_scope;        /* reserve/release state of variables*/
-  jmp_buf         conditionjump;       /* condition trap recovery location  */
 };
 #endif
