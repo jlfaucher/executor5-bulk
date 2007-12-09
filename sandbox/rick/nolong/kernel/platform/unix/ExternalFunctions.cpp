@@ -557,7 +557,7 @@ bool RegExternalFunction(
                                        /* Do we have the function?          */
   if (RexxQueryFunction(funcname) != 0) {
                                        /* this a system routine?            */
-    if (memicmp(funcname, "SYS", 3) == 0) {
+    if (CaselessCompare(funcname, "SYS", 3) == 0) {
                                        /* try to register SysLoadFuncs      */
       if (RexxRegisterFunctionDll("SYSLOADFUNCS", "rexxutil", "SysLoadFuncs") == 0) {
                                        /* first registration?               */

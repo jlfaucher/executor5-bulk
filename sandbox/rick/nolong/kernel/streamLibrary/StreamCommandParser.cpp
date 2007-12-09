@@ -136,7 +136,7 @@ int  parser(TTS *ttsp, const char *TokenString, void *userparms)
    while ((result = gettoken(TokenString,tsp)) == 0) {
      for (work_ttsp = ttsp;            /* check against the table           */
          (*(work_ttsp->token)) &&
-         (memicmp(work_ttsp->token, tsp->string, tsp->length));
+         (CaselessCompare(work_ttsp->token, tsp->string, tsp->length));
        work_ttsp++ ) {
      }
      if (!*(work_ttsp->token)) {       /* no token found?                   */

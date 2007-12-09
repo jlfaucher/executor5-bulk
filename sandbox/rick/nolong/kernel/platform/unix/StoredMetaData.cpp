@@ -106,7 +106,7 @@ RexxMethod *SysRestoreProgram(
   FILE         *Handle;                /* file handle                       */
   RexxMethod   *Method;                /* unflattened method                */
   char          fileTag[sizeof(magicNumber)];
-  LONG          buffersize,            /* size of the buffer                */
+  size_t        buffersize,            /* size of the buffer                */
                 position;              /* Temp file location                */
   RexxBuffer  * buffer;                /* Buffer to unflatten               */
 
@@ -189,7 +189,7 @@ RexxMethod *SysRestoreProgramBuffer(
   char         *MethodInfo;            /* buffered flattened method         */
   char         *StartPointer;          /* start of buffered information     */
   RexxBuffer  * Buffer;                /* Buffer to unflatten               */
-  LONG          BufferSize;            /* size of the buffer                */
+  size_t        BufferSize;            /* size of the buffer                */
   RexxMethod  * Method;                /* unflattened method                */
   RexxSource  * Source;                /* REXX source object                */
 
@@ -239,7 +239,7 @@ void SysSaveProgramBuffer(
   RexxBuffer  * MethodBuffer;          /* flattened method                  */
   RexxSmartBuffer *FlatBuffer;         /* flattened smart buffer            */
   char         *BufferAddress;         /* address of flattened method data  */
-  LONG          BufferLength;          /* length of the flattened method    */
+  size_t        BufferLength;          /* length of the flattened method    */
   RexxString  * Version;               /* REXX version string               */
 
   ProtectedObject p(Method);
@@ -285,7 +285,7 @@ void SysSaveTranslatedProgram(
   RexxBuffer *  MethodBuffer;          /* flattened method                  */
   RexxSmartBuffer *FlatBuffer;         /* flattened smart buffer            */
   char         *BufferAddress;         /* address of flattened method data  */
-  LONG          BufferLength;          /* length of the flattened method    */
+  size_t        BufferLength;          /* length of the flattened method    */
   RexxString  * Version;               /* REXX version string               */
   RexxActivity *activity;              /* the current activity              */
 
@@ -339,7 +339,7 @@ RexxMethod *SysRestoreTranslatedProgram(
   FILE_CONTROL  Control;               /* control information               */
   char         *StartPointer;          /* start of buffered method          */
   RexxBuffer   *Buffer;                /* Buffer to unflatten               */
-  LONG          BufferSize;            /* size of the buffer                */
+  size_t        BufferSize;            /* size of the buffer                */
   RexxMethod   *Method;                /* unflattened method                */
   RexxSource   *Source;                /* REXX source object                */
   RexxActivity *activity;              /* the current activity              */

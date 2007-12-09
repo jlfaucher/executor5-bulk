@@ -328,7 +328,7 @@ class RexxStringClass : public RexxClass {
        if (compareLength > other->length) {
            compareLength = other->length;
        }
-       int result = memicmp(stringData, other->stringData, compareLength);
+       int result = CaselessCompare(stringData, other->stringData, compareLength);
        if (result == 0) {
            if (length > other->length) {
                result = 1;
@@ -387,7 +387,7 @@ class RexxStringClass : public RexxClass {
                compareLength = stringLength;
            }
 
-           result = memicmp(stringData + startCol, other->stringData + startCol, compareLength);
+           result = CaselessCompare(stringData + startCol, other->stringData + startCol, compareLength);
            if (result == 0 && stringLength < colLength) {
                if (length > other->length) {
                    result = 1;

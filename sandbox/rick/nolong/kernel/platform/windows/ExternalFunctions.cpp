@@ -479,7 +479,7 @@ bool RegExternalFunction(
   if (RexxQueryFunction(funcname) != 0) {  /* is the function registered ?  */
 
                                        /* this a system routine?            */
-    if (memicmp(funcname, "SYS", 3) == 0) {
+    if (CaselessCompare(funcname, "SYS", 3) == 0) {
       MTXRQ(apiProtect);               /* protect these instructions        */
                                        /* from concurrent access of multiple*/
                                        /* processes                         */

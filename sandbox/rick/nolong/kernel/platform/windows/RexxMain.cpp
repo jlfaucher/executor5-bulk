@@ -1031,9 +1031,6 @@ APIRET REXXENTRY RexxResetTrace(process_id_t procid, thread_id_t threadid)
   return (InternSetResetTrace(procid, threadid, false));  /* 0 to set trace off */
 }
 
-
-void REXXENTRY RexxBreakCleanup(VOID){}
-
 void translateSource(
    RexxString           * inputName,   /* input program name                */
    RexxNativeActivation * newNativeAct,/* base activation                   */

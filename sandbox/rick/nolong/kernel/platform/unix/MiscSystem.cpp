@@ -172,24 +172,22 @@ RexxInteger * SysLoadLibrary(
 {
   RexxString *result;
   RexxString *tempresult;
-  LONG plib;
+  void *plib;
 
   result = (RexxString*) new_string("lib");
   result = result->concatWithCstring(Library->getStringData());
   result = result->concatWithCstring(ORX_SHARED_LIBRARY_EXT);
   tempresult = (RexxString *)result->copy();
 
-  if (!(plib = (LONG) dlopen(result->getStringData(), RTLD_LAZY )))
+  if (!(plib = dlopen(result->getStringData(), RTLD_LAZY )))
   {
-//     result = result->concatToCstring("/usr/lib/");
-
-     if (!(plib = (LONG) dlopen(result->getStringData(), RTLD_LAZY )))
+     if (!(plib = dlopen(result->getStringData(), RTLD_LAZY )))
      {
         fprintf(stderr, " *** Error dlopen: %s\n", dlerror());
         reportException(Error_Execution_library, tempresult);
      }
   }
-  return new_integer((LONG)plib);
+  return new_pointer(plib);
 }
 
 #define MAX_ADDRESS_NAME_LENGTH  250   /* maximum command environment name  */

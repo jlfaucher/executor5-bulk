@@ -109,22 +109,21 @@ extern bool RexxStartedByApplication;
 
 extern "C" {
 APIRET REXXENTRY RexxTranslateProgram( char *, char *);
-//LONG APIENTRY RexxMain(LONG, PRXSTRING, char *, PRXSTRING, char *, LONG, PRXSYSEXIT, short *, PRXSTRING);
 }
 
 typedef struct
 
 RexxStartInfo {
   size_t     argcount;                 /* Number of args in arglist         */
-  PRXSTRING  arglist;                  /* Array of args                     */
-  char      *programname;              /* REXX program to run               */
+  PCONSTRXSTRING  arglist;             /* Array of args                     */
+  const char *programname;             /* REXX program to run               */
   PRXSTRING  instore;                  /* Instore array                     */
-  char      *envname;                  /* Initial cmd environment           */
+  const char *envname;                 /* Initial cmd environment           */
   int        calltype;                 /* How the program is called         */
   PRXSYSEXIT exits;                    /* Array of system exit names        */
   short *    retcode;                  /* Integer form of result            */
   PRXSTRING  result;                   /* Result returned from program      */
-  char      *outputName;               /* compilation output file           */
+  const char *outputName;              /* compilation output file           */
   bool       translating;              /* performing a translation only     */
 } RexxStartInfo;
 
@@ -170,20 +169,20 @@ void SearchPrecision(
 /*   Mainline path looks like this:                                           */
 /*     RexxStart => server_RexxStart                                          */
 /******************************************************************************/
-LONG APIENTRY RexxStart(
-  LONG argcount,                       /* Number of args in arglist         */
-  PRXSTRING arglist,                   /* Array of args                     */
-  char *programname,                   /* REXX program to run               */
+int  APIENTRY RexxStart(
+  size_t argcount,                     /* Number of args in arglist         */
+  PCONSTRXSTRING arglist,              /* Array of args                     */
+  const char *programname,             /* REXX program to run               */
   PRXSTRING instore,                   /* Instore array                     */
-  char *envname,                       /* Initial cmd environment           */
-  LONG calltype,                       /* How the program is called         */
+  const char *envname,                 /* Initial cmd environment           */
+  size_t calltype,                     /* How the program is called         */
   PRXSYSEXIT exits,                    /* Array of system exit names        */
   short * retcode,                     /* Integer form of result            */
   PRXSTRING result)                    /* Result returned from program      */
 
 {
 
-  LONG     rc;                         /* RexxStart return code             */
+  int      rc;                         /* RexxStart return code             */
   RexxStartInfo RexxStartArguments;    /* entry argument information        */
 
                                        /* copy all of the arguments into    */
@@ -217,7 +216,6 @@ LONG APIENTRY RexxStart(
 
 
 
-//#ifdef AIX
 /******************************************************************************/
 /* Name:       ApiRexxStart                                  (like RexxStart) */
 /*                                                                            */
@@ -238,13 +236,13 @@ LONG APIENTRY RexxStart(
 /*   Mainline path looks like this:                                           */
 /*     RexxStart => server_RexxStart                                          */
 /******************************************************************************/
-LONG APIENTRY ApiRexxStart(
-  LONG argcount,                       /* Number of args in arglist         */
-  PRXSTRING arglist,                   /* Array of args                     */
-  char *programname,                   /* REXX program to run               */
+int  APIENTRY ApiRexxStart(
+  size_t argcount,                     /* Number of args in arglist         */
+  PCONSTRXSTRING arglist,              /* Array of args                     */
+  const char *programname,             /* REXX program to run               */
   PRXSTRING instore,                   /* Instore array                     */
-  char *envname,                       /* Initial cmd environment           */
-  LONG calltype,                       /* How the program is called         */
+  const char *envname,                 /* Initial cmd environment           */
+  size_t calltype,                     /* How the program is called         */
   PRXSYSEXIT exits,                    /* Array of system exit names        */
   short * retcode,                     /* Integer form of result            */
   PRXSTRING result)                    /* Result returned from program      */
@@ -252,7 +250,7 @@ LONG APIENTRY ApiRexxStart(
 {
 
 
-  LONG     rc;                         /* RexxStart return code             */
+  int      rc;                         /* RexxStart return code             */
   RexxStartInfo RexxStartArguments;    /* entry argument information        */
 
                                        /* copy all of the arguments into    */
@@ -277,7 +275,6 @@ LONG APIENTRY ApiRexxStart(
   rc = RexxSendMessage(ActivityManager::localServer, CHAR_RUN_PROGRAM, NULL, "vp", NULL, &RexxStartArguments);
   return -rc;                          /* return the error code (negated)   */
 }
-//#endif /* AIX */
 
 /******************************************************************************/
 /* Name:       RexxTranslateProgram                                           */
@@ -290,7 +287,7 @@ APIRET REXXENTRY RexxTranslateProgram(
    char *inFile,                       /* input source program              */
    char *outFile )                     /* output file name                  */
 {
-  LONG     rc;                         /* RexxStart return code             */
+  APIRET   rc;                         /* RexxStart return code             */
   RexxStartInfo RexxStartArguments;    /* entry argument information        */
 
                                        /* clear the RexxStart block         */
@@ -309,35 +306,6 @@ APIRET REXXENTRY RexxTranslateProgram(
   RexxTerminate();                     /* perform needed termination        */
   return rc;                           /* return the error code             */
 }
-
-#ifdef TIMESLICE
-/******************************************************************************/
-/* Name:       RexxSetYield                                                   */
-/*                                                                            */
-/* Arguments:  procid - Process id of target REXX procedure                   */
-/*             threadid - Thread id of target REXX procedure                  */
-/*                                                                            */
-/* Returned:   rc - RXARI_OK (halt condition set)                             */
-/*                  RXARI_NOT_FOUND (couldn't find threadid)                  */
-/*                                                                            */
-/* Notes:  activity_setyield -> activation_yield ->..->activity_relinquish    */
-/*         Causes bits in top activation to be flipped which will cause       */
-/*         a system yield via activity_relinquish.                            */
-/*                                                                            */
-/******************************************************************************/
-APIRET REXXENTRY RexxSetYield(process_id_t procid, thread_id_t threadid)
-{
-  if (RexxQuery()) {                        /* Are we up?                     */
-    if(activity_sysyield(threadid,NULL))    /* Set yield condition?           */
-      return (RXARI_OK);                    /* Yes, return okay               */
-    else
-      return (RXARI_NOT_FOUND);             /* Couldn't find threadid         */
-    }
-  else
-    return (RXARI_NOT_FOUND);               /* REXX not running, error...     */
-}
-
-#endif /* TIMESLICE*/
 
 /******************************************************************************/
 /* Name:       RexxSetHalt                                                    */
@@ -435,9 +403,6 @@ APIRET REXXENTRY RexxResetTrace(process_id_t procid, thread_id_t threadid)
     }
     return RXARI_NOT_FOUND;     /* REXX not running, error...     */
 }
-
-
-VOID REXXENTRY RexxBreakCleanup(VOID){}
 
 
 void translateSource(
@@ -717,8 +682,6 @@ void  SysRunProgram(
 /* functions for concurrency synchronization/termination               */
 
 
-#if defined(AIX) || defined(LINUX)
-
 void APIENTRY RexxWaitForTermination(void)
 {
 /* the while loop is necessary to prevent that in parallel processing              */
@@ -781,7 +744,6 @@ APIRET APIENTRY RexxDidRexxTerminate(void)
    }
    else return false;
 }
-#endif
 
 /*********************************************************************/
 /*                                                                   */

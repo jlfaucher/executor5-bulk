@@ -100,7 +100,7 @@ extern char achRexxCurDir[ CCHMAXPATH+2 ];  /* Save current working direct    */
 
 char * args[MAX_COMMAND_ARGS+1];            /* Array for argument parsing */
 
-LONG sys_command(const char *cmd, CMD_TYPE local_env_type);
+int sys_command(const char *cmd, CMD_TYPE local_env_type);
 void scan_cmd(const char *parm_cmd, char **args);
 
 /******************************************************************************/
@@ -652,9 +652,9 @@ bool sys_process_cd(const char * cmd, int * rc)
 /*             and invoke the shell indicated by the local_env_type argument. */
 /*             This is modeled after command handling done in Classic REXX.   */
 /******************************************************************************/
-LONG sys_command(const char *cmd, CMD_TYPE local_env_type)
+int  sys_command(const char *cmd, CMD_TYPE local_env_type)
 {
-  LONG        rc;                      /* Return code                       */
+  int         rc;                      /* Return code                       */
   int         pid;                     /* process id of child from fork     */
   int         status;
 #ifdef LINUX
