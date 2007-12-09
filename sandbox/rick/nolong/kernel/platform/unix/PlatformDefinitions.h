@@ -398,6 +398,8 @@ int SysRequestImmediateMutexSem (SMTX psem);
                                        /* without a return value & radix=10 */
 #define _ultoa(val, str, radix)  sprintf(str, "%u", val)
 
+#include "APIDefinitions.h"
+
 #ifdef __cplusplus
 }
 #endif

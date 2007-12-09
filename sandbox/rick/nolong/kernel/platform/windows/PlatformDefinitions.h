@@ -395,7 +395,7 @@ int SysCreateThread (
 
 void SysTermination();              // No initialization / termination yet
 
-#define SysInitialize();               //
+#define SysInitialize()
 extern bool HandleException;
 
                                        // our signal handling

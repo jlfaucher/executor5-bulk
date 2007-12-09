@@ -54,11 +54,6 @@
 #include "MethodClass.hpp"
 #include "RexxNativeAPI.h"
 #include "StackClass.hpp"
-#include <limits.h>
-#include <unistd.h>
-#include "APIDefinitions.h"
-
-#define CCHMAXPATH PATH_MAX+1
 
 extern bool  ProcessDoneInit;          /* initialization is done            */
 extern bool  ProcessDoneTerm;          /* termination is done               */
@@ -67,8 +62,6 @@ extern bool  ProcessFirstThread;       /* first (and primary thread)        */
 extern SEV   RexxTerminated;           /* Termination complete semaphore.   */
 extern RexxInteger *ProcessName;
 
-char achRexxCurDir[ CCHMAXPATH+2 ];          /* Save current working direct */
-extern int  SecureFlag;
 
 void kernelShutdown (void)
 /******************************************************************************/
@@ -108,27 +101,6 @@ bool REXXENTRY RexxInitialize (void)
 {
   bool result;                         /* initialization result             */
 
-  int  lRC;                            /* Return Code                       */
-  if (!getcwd(achRexxCurDir, CCHMAXPATH))    /* Save current working direct */
-  {
-    strncpy( achRexxCurDir, getenv("PWD"), CCHMAXPATH);
-    achRexxCurDir[CCHMAXPATH - 1] = '\0';
-    if (achRexxCurDir[0] != '/' )
-    {
-      fprintf(stderr," *** ERROR: No current working directory for REXX!\n");
-      exit(-1);                              /* all done ERROR end          */
-    }
-    else
-      lRC = RxAPIHOMEset();            /* Set the REXX HOME                 */
-  }
-  lRC = RxAPIHOMEset();                /* Set the REXX HOME                 */
-
-  if ( lRC )
-  {
-    fprintf(stderr," *** ERROR: No HOME or RXHOME directory for REXX!\n");
-    exit(-1);                                /* all done ERROR end          */
-  }
-
   setbuf(stdout,NULL);                 /* No buffering                      */
   setbuf(stderr,NULL);
 
@@ -149,14 +121,9 @@ bool REXXENTRY RexxInitialize (void)
 #endif
     EVCR(RexxTerminated);              /* Create the terminated semaphore   */
     EVSET(RexxTerminated);             /* make sure Semaphore is UnPosted   */
-    SecureFlag = 1;
     ProcessDoneInit = false;           /* allow for restart :               */
     ProcessDoneTerm = false;           /* allow for restart :               */
     memoryObject.accessPools();        /* Gain access to memory Pools       */
-    /* now that we have the shared memory, we can create and */
-    /* use semaphores (prereq for AIX, though not for OS/2)  */
-    /* (with one exception: startsem, which seems to be      */
-    /* needed to serialize the shared memory setup)          */
     SysInitialize();                   /* perform other system init work    */
 
     if (ProcessSaveImage)              /* need to create the image?         */

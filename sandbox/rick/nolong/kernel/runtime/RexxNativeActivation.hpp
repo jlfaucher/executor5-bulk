@@ -95,7 +95,7 @@ class RexxNativeActivation : public RexxActivationBase {
   inline char        getVpavailable()   {return this->vpavailable;}
   inline RexxMethod *getMethod()        {return this->method;}
   inline RexxString *getMessageName()   {return this->msgname;}
-  inline size_t      nextVariable()     {return this->nextvariable;}
+  inline int         nextVariable()     {return this->nextvariable;}
   inline RexxStem   *nextStem()         {return this->nextstem;}
   inline RexxVariableDictionary *nextCurrent()     {return this->nextcurrent;}
   inline RexxCompoundElement *compoundElement() {return this->compoundelement; }
@@ -120,7 +120,7 @@ protected:
   RexxObject     *result;              /* result from RexxRaise call        */
                                        /* running object variable pool      */
   RexxVariableDictionary *objectVariables;
-  size_t          nextvariable;        /* next variable to retrieve         */
+  int             nextvariable;        /* next variable to retrieve         */
   RexxVariableDictionary *nextcurrent; /* current processed vdict           */
   RexxCompoundElement *compoundelement;/* current compound variable value   */
   RexxStem *      nextstem;            /* our working stem variable         */
