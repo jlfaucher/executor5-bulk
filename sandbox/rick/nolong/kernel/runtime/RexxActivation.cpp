@@ -3308,7 +3308,7 @@ RexxVariableBase  *RexxActivation::getDirectVariableRetriever(
   else
     literal = false;                   /* not a literal value               */
                                        /* have a valid length?              */
-  if (length <= MAX_SYMBOL_LENGTH && length > 0) {
+  if (length <= (size_t)MAX_SYMBOL_LENGTH && length > 0) {
     compound = 0;                      /* no periods yet                    */
     scan = 0;                          /* start at string beginning         */
     nonnumeric = 0;                    /* count of non-numeric characters   */

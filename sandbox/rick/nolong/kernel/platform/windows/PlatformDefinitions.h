@@ -366,13 +366,6 @@ size_t line_write_check(const char * , size_t, FILE * );
 #endif
 
 /******************************************************************************/
-/* REQUIRED:  Define the REXX type for a native method function               */
-/******************************************************************************/
-
-                                       /* pointer to native method function */
-typedef char *(far REXXENTRY *PNMF)(void **);
-
-/******************************************************************************/
 /* OPTIONAL:  Overrides for any functions defined in sysdef.h.  These         */
 /* can map the calls directly to inline code or comment them out all together.*/
 /******************************************************************************/

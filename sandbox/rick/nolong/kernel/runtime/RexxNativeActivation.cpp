@@ -943,9 +943,9 @@ void RexxNativeActivation::setObjNotify(
  * @param additional The additional information associated with this condition.
  * @param result     The result object.
  */
-void RexxNativeActivation::raiseCondition(RexxString *condition, RexxString *description, RexxObject *additional, RexxObject *result)
+void RexxNativeActivation::raiseCondition(RexxString *condition, RexxString *description, RexxObject *additional, RexxObject *_result)
 {
-    this->result = (RexxObject *)result; /* save the result                   */
+    this->result = (RexxObject *)_result; /* save the result                   */
                                          /* go raise the condition            */
     this->activity->raiseCondition(condition, OREF_NULL, description, additional, result, OREF_NULL);
 

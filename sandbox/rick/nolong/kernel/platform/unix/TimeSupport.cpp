@@ -48,9 +48,8 @@
 #if defined(OPSYS_SUN)
 #include <sched.h>
 #endif
-#include "PlatformDefinitions.h"
-#include "ThreadSupport.hpp"
 #include "RexxCore.h"
+#include "ThreadSupport.hpp"
 #include "IntegerClass.hpp"
 #include "RexxNativeAPI.h"                    /* Method macros */
 #include "RexxDateTime.hpp"
@@ -67,13 +66,8 @@ extern size_t  rexxTimeSliceTimerOwner;
 void SysGetCurrentTime(
   RexxDateTime *Date )                 /* returned data structure    */
 {
-//  time_t Tp;                         /* long int for               */
-//  time_t *Tpnt = NULL;
-//  time_t *Clock;
   struct tm *SystemDate;               /* system date structure ptr  */
   struct timeval tv;
-//  Tp = time(Tpnt);                   /* get time long              */
-//  Clock = &Tp;
   gettimeofday(&tv, NULL);
 
 #ifdef AIX
@@ -111,8 +105,9 @@ void SysStartTimeSlice()
 /******************************************************************************/
 {
 }
+
 typedef struct {
-  HEV sem;                             /* semaphore to wait on              */
+  SEV sem;                             /* semaphore to wait on              */
   size_t time;                         /* timeout value                     */
 } ASYNC_TIMER_INFO;
 
@@ -147,21 +142,21 @@ void* async_timer(void *info)
 /*********************************************************************/
 
 RexxMethod2(void, alarm_startTimer,
-                     long, numdays,
-                     long, alarmtime)
+                     wholenumber_t, numdays,
+                     wholenumber_t, alarmtime)
 {
   APIRET rc;                           /* return code                       */
   RexxSemaphore sem;                   /* Event-semaphore                   */
-  HEV semHandle;                       /* semaphore handle                  */
-  long msecInADay = 86400000;          /* number of milliseconds in a day   */
+  SEV semHandle;                       /* semaphore handle                  */
+  int  msecInADay = 86400000;          /* number of milliseconds in a day   */
   REXXOBJECT cancelObj;                /* place object to check for cancel  */
-  long cancelVal;                      /* value of cancel                   */
+  int  cancelVal;                      /* value of cancel                   */
   ASYNC_TIMER_INFO tinfo;              /* info for the timer thread         */
 
   semHandle = &sem;
                                        /* set the state variables           */
-  RexxVarSet("EVENTSEMHANDLE",RexxInteger((long)semHandle));
-  RexxVarSet("TIMERSTARTED",RexxTrue);
+  ooRexxVarSet("EVENTSEMHANDLE", ooRexxInteger((uintptr_t)semHandle));
+  ooRexxVarSet("TIMERSTARTED", ooRexxTrue);
   /* setup the info for the timer thread                                    */
   tinfo.sem = semHandle;
   tinfo.time = msecInADay;
@@ -178,7 +173,7 @@ RexxMethod2(void, alarm_startTimer,
 
     semHandle->wait();                 /* wait for semaphore to be posted   */
     SysThreadYield();                  /* give the timer thread a chance    */
-    cancelObj = RexxVarValue("CANCELED");
+    cancelObj = ooRexxVarValue("CANCELED");
     cancelVal = REXX_INTEGER_VALUE(cancelObj);
 
     if (cancelVal == 1) {              /* If alarm cancelled?               */
@@ -216,10 +211,10 @@ RexxMethod2(void, alarm_startTimer,
 
 
 RexxMethod1(void, alarm_stopTimer,
-               long, eventSemHandle)
+               size_t, eventSemHandle)
 {
-  HEV    hev = (HEV)eventSemHandle;    /* event semaphore handle            */
-  hev->post();                         /* Post the event semaphore          */
+  SEV    sev = (SEV)eventSemHandle;    /* event semaphore handle            */
+  sev->post();                         /* Post the event semaphore          */
   return;
 }
 

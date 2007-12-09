@@ -1567,7 +1567,7 @@ void RexxMemory::saveImage(void)
   MemoryStats _imageStats;
                                        /* array of objects needed at front  */
                                        /*of image for faster restore.       */
-  LONG  i;                             /* loop counter                      */
+  int   i;                             /* loop counter                      */
   RexxArray *primitive_behaviours;     /* saved array of behaviours         */
   RexxArray *saveArray;                /* array of objects needed at front  */
 
@@ -1969,7 +1969,8 @@ RexxObject *RexxMemory::checkSetOref(
 
                                        /* Is the new value a real object?   */
   }
-  else if (value && value != (RexxObject *)TheBehaviourBehaviour && value != (RexxObject *)RexxBehaviour::getPrimitiveBehaviour(T_behaviour) && !objectReferenceOK(value)) {
+  else if (value && (RexxBehaviour *)value != TheBehaviourBehaviour && (RexxBehaviour *)value != RexxBehaviour::getPrimitiveBehaviour(T_behaviour) && !objectReferenceOK(value)) 
+  {
     allOK = false;                     /* No, put out the info              */
     outFileName = SysGetTempFileName();/* Get a temporary file name for out */
     outfile = fopen(outFileName,"wb");

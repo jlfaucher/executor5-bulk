@@ -1887,7 +1887,7 @@ bool RexxActivity::sysExitFunc(
     /* At least one item needs to be allocated in order to avoid an error   */
     /* in the sysexithandler!                                               */
     argrxarray = (PCONSTRXSTRING) SysAllocateResultMemory(
-                    sizeof(CONSTRXSTRING) * max(exit_parm.rxfnc_argc,1));
+                    sizeof(CONSTRXSTRING) * Numerics::maxVal((size_t)exit_parm.rxfnc_argc, (size_t)1));
     if (argrxarray == OREF_NULL)       /* memory error?                     */
       reportException(Error_System_resources);
                                        /* give the arg array pointer        */
@@ -1931,7 +1931,7 @@ bool RexxActivity::sysExitFunc(
     {
         for (argindex=0; argindex < exit_parm.rxfnc_argc; argindex++)
         {
-            SysFreeExternalMemory(argrxarray[argindex].strptr);
+            SysFreeExternalMemory((void *)argrxarray[argindex].strptr);
         }
     }
     SysReleaseResultMemory(argrxarray);
@@ -2772,7 +2772,7 @@ int RexxActivity::messageSend(
 
 #include "RexxNativeAPI.h"             /* bring in the external definitions */
 
-int VLAREXXENTRY RexxSendMessage (
+int REXXENTRY RexxSendMessage (
   REXXOBJECT  receiver,                /* receiving object                  */
   const char *msgname,                 /* message to send                   */
   REXXOBJECT  start_class,             /* lookup starting class             */

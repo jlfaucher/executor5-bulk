@@ -669,7 +669,7 @@ bool SysFileIsPipe(STREAM_INFO * stream_info)
 }
 
 
-size_t SysTellPosition(STREAM_INFO * stream_info)
+int SysTellPosition(STREAM_INFO * stream_info)
 {                                                 /* flags.std has been changed */
    if (stream_info->flags.bstd || stream_info->fh == stdin_handle) return -1;
     return ftell(stream_info->stream_file);

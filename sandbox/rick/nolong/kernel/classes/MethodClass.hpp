@@ -47,7 +47,6 @@
 #include "RexxCode.hpp"
 #include "RexxNativeMethod.hpp"
 
-
  class RexxMethod : public RexxObject {
   public:
   void *operator new(size_t);

@@ -165,7 +165,7 @@ void SysThreadInit(void);              /* do system thread initialization   */
 #endif
 
 #ifndef SysQueryThreadID
-int SysQueryThreadID(void);            /* query the current thread          */
+thread_id_t SysQueryThreadID();        /* query the current thread          */
 #endif
 
 #ifndef SysGetThreadStackBase

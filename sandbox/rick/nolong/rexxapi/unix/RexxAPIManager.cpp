@@ -479,16 +479,16 @@ void RxAPICleanUp(INT chain, INT iSigCntl)
 /*                                                                   */
 /*********************************************************************/
 
-LONG RxAPIHOMEset( void )
+int  RxAPIHOMEset( void )
 {
-  char * pcharHome;                       /* Pointer to environmet var HOME */
+  const char * pcharHome;                 /* Pointer to environmet var HOME */
 //char   charCodeHome = '/';              /* RXHOME or HOME var is used     */
   int    iHandleHome;                     /* File handle for IPC anchor     */
   struct stat statbuf;                    /* structure for stat system calls*/
 #if defined( HAVE_GETPWUID )
   struct passwd * pstUsrDat;
 #endif
-  char *pcharUsername;
+  const char *pcharUsername;
 
   if (!(pcharHome = getenv("RXHOME")))    /* Get pointer to group home var  */
   {

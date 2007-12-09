@@ -346,13 +346,6 @@ void SysStartTimeSlice( void );
 #define OPT_CHAR  '-'                  /* Option char for UNIX               */
 
 /******************************************************************************/
-/* REQUIRED:  Define the REXX type for a native method function               */
-/******************************************************************************/
-
-                                       /* pointer to native method function */
-typedef char *(*REXXENTRY PNMF)(void **);
-
-/******************************************************************************/
 /* OPTIONAL:  Overrides for any functions defined in sysdef.h.  These         */
 /* can map the calls directly to inline code or comment them out all together.*/
 /* The following lines are examples from the OS/2 code.                       */

@@ -94,7 +94,7 @@ int  SecureFlag = 0;
 int  thread_counter = 0;
 
 
-APIRET APIENTRY RexxExecuteMacroFunction ( char *, PRXSTRING );
+APIRET APIENTRY RexxExecuteMacroFunction (const char *, PRXSTRING );
 
 #ifdef TIMESLICE                       /* System Yielding function prototype*/
 APIRET REXXENTRY RexxSetYield(process_id_t procid, thread_id_t threadid);
@@ -408,7 +408,7 @@ APIRET REXXENTRY RexxResetTrace(process_id_t procid, thread_id_t threadid)
 void translateSource(
    RexxString           * inputName,   /* input program name                */
    RexxNativeActivation * newNativeAct,/* base activation                   */
-   char                 * outputName ) /* output file name                  */
+   const char           * outputName ) /* output file name                  */
 /******************************************************************************/
 /* Function:  Process instorage execution arguments                           */
 /******************************************************************************/

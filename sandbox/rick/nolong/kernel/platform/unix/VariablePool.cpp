@@ -202,7 +202,7 @@ int SysVariablePool(
 
     pshvblock = (PSHVBLOCK)requests;      /* copy the request block pointer    */
                                           /* get the variable dictionary       */
-    activation = self->activity->getCurrentActivation();
+    activation = self->getCurrentActivation();
 
     while (pshvblock)
     {                   /* while more request blocks         */
@@ -221,7 +221,7 @@ int SysVariablePool(
             else
             {
                 /* get the variable as a string      */
-                variable = new_string((char *)pshvblock->shvname.strptr, pshvblock->shvname.strlength);
+                variable = new_string(pshvblock->shvname.strptr, pshvblock->shvname.strlength);
                 /* symbolic access?                  */
                 if (code == RXSHV_SYFET || code == RXSHV_SYSET || code == RXSHV_SYDRO)
                     /* get a symbolic retriever          */
@@ -292,7 +292,11 @@ int SysVariablePool(
             else
             {                             /* need to copy the name and value   */
                                           /* copy the name                     */
-                pshvblock->shvret |= copy_value(name, &pshvblock->shvname, &pshvblock->shvnamelen);
+                RXSTRING temp; 
+                temp.strptr = const_cast<char *>(pshvblock->shvname.strptr); 
+                temp.strlength = pshvblock->shvname.strlength;
+                pshvblock->shvret |= copy_value(name, &temp, &pshvblock->shvnamelen);
+                pshvblock->shvname.strptr = temp.strptr;
                 /* copy the value                    */
                 pshvblock->shvret |= copy_value(_value, &pshvblock->shvvalue, &pshvblock->shvvaluelen);
             }
@@ -307,7 +311,7 @@ int SysVariablePool(
             else
             {
                 /* get the variable as a string      */
-                variable = new_string((char *)pshvblock->shvname.strptr, pshvblock->shvname.strlength);
+                variable = new_string(pshvblock->shvname.strptr, pshvblock->shvname.strlength);
                 /* want the version string?          */
                 if (IS_EQUAL(variable, "VERSION"))
                 {

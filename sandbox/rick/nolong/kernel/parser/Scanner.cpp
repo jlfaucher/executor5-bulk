@@ -755,7 +755,7 @@ RexxToken *RexxSource::sourceNextToken(
         value = this->commonString(value);
                                        /* record current position in clause */
         this->clause->setEnd(this->line_number, this->line_offset);
-        if (length > MAX_SYMBOL_LENGTH)/* result too long?                  */
+        if (length > (size_t)MAX_SYMBOL_LENGTH)/* result too long?                  */
                                        /* report the error                  */
           report_error1(Error_Name_too_long_name, value);
         inch = this->current[start];   /* get the first character           */

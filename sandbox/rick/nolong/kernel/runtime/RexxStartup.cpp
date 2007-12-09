@@ -54,13 +54,11 @@
 #include "MethodClass.hpp"
 #include "RexxNativeAPI.h"
 #include "StackClass.hpp"
-#if defined(AIX) || defined(LINUX)
 #include <limits.h>
 #include <unistd.h>
 #include "APIDefinitions.h"
 
 #define CCHMAXPATH PATH_MAX+1
-#endif
 
 extern bool  ProcessDoneInit;          /* initialization is done            */
 extern bool  ProcessDoneTerm;          /* termination is done               */
@@ -69,10 +67,8 @@ extern bool  ProcessFirstThread;       /* first (and primary thread)        */
 extern SEV   RexxTerminated;           /* Termination complete semaphore.   */
 extern RexxInteger *ProcessName;
 
-#if defined(AIX) || defined(LINUX)
 char achRexxCurDir[ CCHMAXPATH+2 ];          /* Save current working direct */
 extern int  SecureFlag;
-#endif
 
 void kernelShutdown (void)
 /******************************************************************************/
@@ -112,8 +108,7 @@ bool REXXENTRY RexxInitialize (void)
 {
   bool result;                         /* initialization result             */
 
-#if defined(AIX) || defined(LINUX)
-  LONG lRC;                            /* Return Code                       */
+  int  lRC;                            /* Return Code                       */
   if (!getcwd(achRexxCurDir, CCHMAXPATH))    /* Save current working direct */
   {
     strncpy( achRexxCurDir, getenv("PWD"), CCHMAXPATH);
@@ -133,7 +128,6 @@ bool REXXENTRY RexxInitialize (void)
     fprintf(stderr," *** ERROR: No HOME or RXHOME directory for REXX!\n");
     exit(-1);                                /* all done ERROR end          */
   }
-#endif
 
   setbuf(stdout,NULL);                 /* No buffering                      */
   setbuf(stderr,NULL);
@@ -155,9 +149,7 @@ bool REXXENTRY RexxInitialize (void)
 #endif
     EVCR(RexxTerminated);              /* Create the terminated semaphore   */
     EVSET(RexxTerminated);             /* make sure Semaphore is UnPosted   */
-#if defined(AIX) || defined(LINUX)
     SecureFlag = 1;
-#endif
     ProcessDoneInit = false;           /* allow for restart :               */
     ProcessDoneTerm = false;           /* allow for restart :               */
     memoryObject.accessPools();        /* Gain access to memory Pools       */

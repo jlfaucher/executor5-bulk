@@ -86,7 +86,7 @@ typedef struct _CONSTRXSTRING {        /* const rxstr                */
 #define RXVALIDSTRING(r)     ((r).strptr != 0 && (r).strlength == 0)
 #define RXSTRLEN(r)          (RXNULLSTRING(r) ? 0 : (r).strlength)
 #define RXSTRPTR(r)          )(r).strptr)
-#define MAKERXSTRING(r,p,l)  { (r).strptr = (char *)p; (r).strlength=(size_t)l; }
+#define MAKERXSTRING(r,p,l)  { (r).strptr = p; (r).strlength = l; }
 
 
 typedef RXSTRING      *PRXSTRING;      /* pointer to a RXSTRING      */

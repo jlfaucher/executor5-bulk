@@ -187,7 +187,7 @@ RexxObject * SysCommand(
   const char  *current_address;        /* Subcom handler that gets cmd      */
   CONSTRXSTRING     rxstrcmd;          /* Command to be executed            */
   unsigned short flags = 0;            /* Subcom error flags                */
-  short        sbrc  = 0;              /* Subcom return code                */
+  wholenumber_t sbrc  = 0;             /* Subcom return code                */
   RXSTRING     retstr;                 /* Subcom result string              */
   CMD_TYPE     local_env_type;
   const char * shell_cmd;
@@ -225,7 +225,7 @@ RexxObject * SysCommand(
   sbrc = 0;                               /* set initial subcom return code */
                                        /* get ready to call the function    */
   activity->exitKernel(activation, OREF_COMMAND, true);
-  rc=RexxCallSubcom(current_address, NULL, &rxstrcmd, &flags, (unsigned short *)&sbrc, (PRXSTRING)&retstr);
+  rc=RexxCallSubcom(current_address, NULL, &rxstrcmd, &flags, &sbrc, &retstr);
   activity->enterKernel();             /* now re-enter the kernel           */
 
 /* END CRITICAL window here -->>  kernel calls now allowed again            */

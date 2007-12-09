@@ -245,7 +245,7 @@ void SysSaveProgramBuffer(
   ProtectedObject p(Method);
   FlatBuffer = Method->saveMethod();   /* flatten the method                */
                                        /* retrieve the length of the buffer */
-  BufferLength = (LONG)FlatBuffer->current;
+  BufferLength = FlatBuffer->current;
   MethodBuffer = FlatBuffer->buffer;   /* get to the actual data buffer     */
   BufferAddress = MethodBuffer->data;  /* retrieve buffer starting address  */
                                        /* get the final buffer              */
@@ -297,7 +297,7 @@ void SysSaveTranslatedProgram(
   FlatBuffer = Method->saveMethod();   /* flatten the method                */
   ProtectedObject p2(FlatBuffer);
                                        /* retrieve the length of the buffer */
-  BufferLength = (LONG)FlatBuffer->current;
+  BufferLength = FlatBuffer->current;
   MethodBuffer = FlatBuffer->buffer;   /* get to the actual data buffer     */
   BufferAddress = MethodBuffer->data;  /* retrieve buffer starting address  */
                                        /* clear out the cntrol info         */

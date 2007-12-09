@@ -100,6 +100,7 @@ typedef struct _SEMCONT {
       bool    waitandreset;            /* eventsem second new arg    */
 } SEMCONT;
 
+int RxAPIHOMEset(); 
 
 #define EVENT 0                        /* event semaphore            */
 #define MUTEX 1                        /* mutex semaphore            */

@@ -43,6 +43,13 @@
 /******************************************************************************/
 #ifndef Included_RexxNativeCode
 #define Included_RexxNativeCode
+                                       /* pointer to native method function */
+typedef char *(REXXENTRY *PNMF)(void **);
+
+typedef struct internalmethodentry {   /* internal method table entry       */
+  const char *entryName;               /* internal entry point name         */
+  PNMF   entryPoint;                   /* method entry point                */
+} internalMethodEntry;
 
 class RexxNativeCode : public RexxInternalObject {
   public:

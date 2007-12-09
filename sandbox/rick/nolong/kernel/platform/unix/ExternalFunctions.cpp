@@ -144,7 +144,7 @@ RexxMethod2(REXXOBJECT, sysBeep, wholenumber_t, Frequency, wholenumber_t, Durati
 {
                                         /* console beep for Unix     */
   printf("\a");
-  return RexxString("");                /* always returns a null     */
+  return ooRexxString("");              /* always returns a null     */
 }
 
 /*********************************************************************/
@@ -318,11 +318,9 @@ RexxMethod1(REXXOBJECT, sysDirectory, CSTRING, dir)
      strncpy( achRexxCurDir, getenv("PWD"), CCHMAXPATH);
      achRexxCurDir[CCHMAXPATH - 1] = '\0';
      if ((achRexxCurDir[0] != '/' ) || (rc != 0))
-       return RexxString("");                /* No directory returned       */
+       return ooRexxString("");              /* No directory returned       */
   }
-//strcpy(achRexxCurDir, buffer);             /* Save current working direct */
-
-  return RexxString(achRexxCurDir);          /* Return the current directory*/
+  return ooRexxString(achRexxCurDir);        /* Return the current directory*/
 }
 
 
@@ -356,17 +354,17 @@ RexxMethod2 (REXXOBJECT, sysFilespec, CSTRING, Option, CSTRING, Name)
          if (PathEnd)                    /* if there is a path spec. , return */
                                          /* up to and including last slash.   */
                                          /* else return OREF_NULLSTRING       */
-           Retval = RexxStringL(Name, PathEnd - Name + 1);
+           Retval = ooRexxStringL(Name, PathEnd - Name + 1);
       }
       break;                           /* finished                            */
 
       case FILESPEC_NAME:              /* extract the file name               */
       {                                /* everything to right of slash        */
          if ((PathEnd) && (PathEnd != EndPtr))
-            Retval = RexxStringL(PathEnd + 1, EndPtr - PathEnd);
+            Retval = ooRexxStringL(PathEnd + 1, EndPtr - PathEnd);
 
          if (!PathEnd)                 /* there was no path spec.             */
-            Retval = RexxString(Name);
+            Retval = ooRexxString(Name);
       }
       break;                           /* finished                          */
 
@@ -390,10 +388,10 @@ RexxMethod3(REXXOBJECT,sysRxfuncadd,CSTRING,name,CSTRING,module,CSTRING,proc)
     proc = name;                       /* use the defined name              */
                                        /* try to register the function      */
 
-  if ((RexxRegisterFunctionDll(name, module, proc) == RXFUNC_NOTREG){
-    return TheTrueObject;              /* this failed                       */
+  if (RexxRegisterFunctionDll(name, module, proc) == RXFUNC_NOTREG){
+    return ooRexxTrue;                 /* this failed                       */
   } else {
-    return TheFalseObject;             /* this worked ok                    */
+    return ooRexxFalse;                /* this worked ok                    */
   }
 }
 
@@ -408,9 +406,9 @@ RexxMethod1(REXXOBJECT,sysRxfuncdrop,CSTRING,name)
     send_exception(Error_Incorrect_call);
                                        /* try to drop the function          */
   if (!RexxDeregisterFunction(name))
-    return TheFalseObject;
+    return ooRexxFalse;   
   else
-    return TheTrueObject;
+    return ooRexxTrue;    
 
 }
 
@@ -424,9 +422,9 @@ RexxMethod1(REXXOBJECT,sysRxfuncquery,CSTRING,name)
                                        /* raise an error                    */
     send_exception(Error_Incorrect_call);
     if (!RexxQueryFunction(name))      /* is it not there?                  */
-    return TheFalseObject;             /* this failed  (function found!)    */
+    return ooRexxFalse;                /* this failed  (function found!)    */
     else
-      return TheTrueObject;            /* this worked ok  (no function!)    */
+      return ooRexxTrue;               /* this worked ok  (no function!)    */
 }
 
 /******************************************************************************/
@@ -451,13 +449,11 @@ bool ExecExternalSearch(
   RexxString     * target,             /* Name of external function         */
   RexxString     * parent,             /* Parent program                    */
   RexxObject    ** arguments,          /* Argument array                    */
-//RexxArray      * argarray,           /* Argument array                    */
   size_t           argcount,           /* the count of arguments            */
   RexxString     * calltype,           /* Type of call                      */
   RexxObject    ** result )            /* Result of function call           */
 {
                                        /* have activation do the call       */
-//return activation->callExternalRexx(target, parent, argarray, calltype, result);
   return activation->callExternalRexx(target, parent, arguments, argcount, calltype, result);
 }
 
@@ -474,7 +470,6 @@ bool MacroSpaceSearch(
   RexxString     * target,             /* Name of external function         */
   RexxObject    ** arguments,          /* Argument array                    */
   size_t           argcount,           /* the count of arguments            */
-//RexxArray      * argarray,           /* Argument array                    */
   RexxString     * calltype,           /* Type of call                      */
   bool             order,              /* Pre/Post order search flag        */
   RexxObject    ** result )            /* Result of function call           */
@@ -537,7 +532,6 @@ bool RegExternalFunction(
   RexxString     * target,             /* Name of external function         */
   RexxObject    ** arguments,          /* Argument array                    */
   size_t           argcount,           /* the count of arguments            */
-//RexxArray      * argarray,           /* Argument array                    */
   RexxString     * calltype,           /* Type of call                      */
   RexxObject    ** result )            /* Result of function call           */
 {
@@ -545,10 +539,10 @@ bool RegExternalFunction(
   const char   *queuename;             /* Pointer to active queue name      */
   int           rc;                    /* RexxCallFunction return code      */
   size_t    argindex;                  /* Index into arg array              */
-  PRXSTRING     argrxarray;            /* Array of args in PRXSTRING form   */
+  PCONSTRXSTRING     argrxarray;       /* Array of args in PRXSTRING form   */
   RXSTRING      funcresult;            /* Function result                   */
   RexxString  * argument;              /* current argument                  */
-  unsigned short functionrc;           /* Return code from function         */
+  int           functionrc;            /* Return code from function         */
 
                                        /* default return code buffer        */
   char      default_return_buffer[DEFRXSTRING];
@@ -564,7 +558,7 @@ bool RegExternalFunction(
                                        /* set up an result RXSTRING         */
         MAKERXSTRING(funcresult, default_return_buffer, sizeof(default_return_buffer));
                                        /* call the function loader          */
-        RexxCallFunction("SYSLOADFUNCS", 0, (PRXSTRING)NULL, &functionrc, &funcresult, "");
+        RexxCallFunction("SYSLOADFUNCS", 0, NULL, &functionrc, &funcresult, "");
 
       }
     }
@@ -573,17 +567,14 @@ bool RegExternalFunction(
       return false;                    /* truely not found                  */
   }
 
-//argcount = argarray->size();         /* Get number of args                */
-
   /* allocate enough memory for all arguments */
   /* at least one item needs to be allocated to prevent error reporting */
-  argrxarray = (PRXSTRING) SysAllocateResultMemory(sizeof(RXSTRING)*max(argcount,1));
+  argrxarray = (PCONSTRXSTRING) SysAllocateResultMemory(sizeof(RXSTRING)* Numerics::maxVal(argcount, (stringsize_t)1));
   if (argrxarray == OREF_NULL)    /* memory error?                   */
       reportException(Error_System_resources);
                                        /* create RXSTRING arguments         */
   for (argindex=0; argindex<argcount; argindex++) {
                                        /* get the next argument             */
-//  argument = (RexxString *)argarray->get(argindex + 1);
     argument = (RexxString *)arguments[argindex];
     if (argument != OREF_NULL) {       /* have an argument?                 */
                                        /* force to string form              */
@@ -597,7 +588,7 @@ bool RegExternalFunction(
                                        /* set the RXSTRING length           */
       argrxarray[argindex].strlength = argument->getLength();
                                        /* and pointer                       */
-      argrxarray[argindex].strptr = argument->getWritableData();
+      argrxarray[argindex].strptr = argument->getStringData();
     }
     else {                             /* have an omitted argument          */
                                        /* give it zero length               */
@@ -664,7 +655,6 @@ RexxObject * SysExternalFunction(
   RexxString     * parent,             /* Parent program                    */
   RexxObject    ** arguments,          /* Argument array                    */
   size_t           argcount,           /* count of arguments                */
-//RexxArray      * argarray,           /* Argument array                    */
   RexxString     * calltype,           /* Type of call                      */
   bool           * foundFnc)
 {
@@ -816,7 +806,7 @@ void RestoreEnvironment(
   current += 4;                        /* update the pointer         */
   if(chdir(current) == -1)             /* restore the curr dir       */
       send_exception1(Error_System_service_service,
-                   RexxArray1(RexxString("ERROR CHANGING DIRECTORY")));
+                   ooRexxArray1(ooRexxString("ERROR CHANGING DIRECTORY")));
   current += strlen(current);          /* update the pointer         */
   current++;                           /* jump over '\0'             */
   if(!putflag){                        /* first change in the        */
@@ -861,7 +851,7 @@ void RestoreEnvironment(
     }
     if(putenv(current) == -1)
       send_exception1(Error_System_service_service,
-        RexxArray1(RexxString("ERROR RESTORING ENVIRONMENT VARIABLE")));
+        ooRexxArray1(ooRexxString("ERROR RESTORING ENVIRONMENT VARIABLE")));
     if(del)                            /* if there was an old entry  */
       free(del);                       /* free it                    */
   }

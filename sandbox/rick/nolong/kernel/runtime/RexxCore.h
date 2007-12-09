@@ -155,10 +155,6 @@ inline size_t RANDOMIZE(size_t seed) { return (seed * RANDOM_FACTOR + 1); }
 #define MSSCPP 0                       /* C++ class method start index      */
 
 
-typedef struct internalmethodentry {   /* internal method table entry       */
-  const char *entryName;               /* internal entry point name         */
-  PNMF   entryPoint;                   /* method entry point                */
-} internalMethodEntry;
 
 
 class RexxExpressionStack;
