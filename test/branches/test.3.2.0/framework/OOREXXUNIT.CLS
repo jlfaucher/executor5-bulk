@@ -1143,16 +1143,18 @@ syntax:
    program is running.  Provides an uniform method for test cases to determine
    which operating system they are executing on.
 
-   Returns: WINDOWS, LINUX, SUNOS, or AIX.  (As of ooRexx 3.1.2)
+   The possible list of return words as of ooRexx 3.2.0 is:
+
+     WINDOWS, LINUX, SUNOS, AIX, MACOSX, CYGNUS, FREEBSD, and NETBSD
+
+   Although it is doubtful that ooRexx is compilable on CYGNUS, FREEBSD, or
+   NETBSD.
 */
 ::routine ooRexxUnit.getOSName public
 
   parse upper source os .
-  if os~abbrev("WIN") then
-    return "WINDOWS"
-
+  if os~abbrev("WIN") then os = "WINDOWS"
   return os
-
 
 
 
