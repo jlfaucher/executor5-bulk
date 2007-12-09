@@ -208,10 +208,10 @@ RexxNumberString *RexxInteger::numberString()
  * @return true if this converted ok, false for any errors.  This always
  *         returns true for the Integer class.
  */
-bool RexxInteger::doubleValue(double &value)
+bool RexxInteger::doubleValue(double &result)
 {
     // just let the compiler convert
-    value = (double)this->wholeNumber();
+    result = (double)this->wholeNumber();
     return true;
 }
 

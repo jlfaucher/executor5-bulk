@@ -59,6 +59,9 @@
 #define TOTAL_STACK_SIZE 1024*512
 #define C_STACK_SIZE TOTAL_STACK_SIZE
 
+// No definition needed on Linux systems. 
+#define SysCall
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif

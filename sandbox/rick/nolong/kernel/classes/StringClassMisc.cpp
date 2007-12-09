@@ -667,7 +667,7 @@ size_t RexxString::lastPos(RexxString  *needle, size_t _start)
     else
     {
         // get the start position for the search.
-        haystackLen = min(_start, haystackLen);
+        haystackLen = Numerics::min(_start, haystackLen);
                                          /* do the search                     */
         const char *matchLocation = lastPos(needle->getStringData(), needleLen, this->getStringData(), haystackLen);
         if (matchLocation == NULL)
@@ -706,7 +706,7 @@ size_t RexxString::caselessLastPos(RexxString *needle, size_t _start)
     else
     {
         // get the start position for the search.
-        haystackLen = min(_start, haystackLen);
+        haystackLen = Numerics::min(_start, haystackLen);
                                          /* do the search                     */
         const char *matchLocation = caselessLastPos(needle->getStringData(), needleLen, this->getStringData(), haystackLen);
         if (matchLocation == NULL)
@@ -1489,7 +1489,7 @@ RexxInteger *RexxString::compareToRexx(RexxString *other, RexxInteger *start_, R
     other = stringArgument(other, ARG_ONE);
 
     stringsize_t _start = optionalPositionArgument(start_, 1, ARG_TWO);
-    stringsize_t len = optionalLengthArgument(len_, max(getLength(), other->getLength()) - _start + 1, ARG_THREE);
+    stringsize_t len = optionalLengthArgument(len_, Numerics::max(getLength(), other->getLength()) - _start + 1, ARG_THREE);
 
     return primitiveCompareTo(other, _start, len);
 }
@@ -1525,10 +1525,10 @@ RexxInteger *RexxString::primitiveCompareTo(RexxString *other, stringsize_t _sta
 
     _start--;      // make the starting point origin zero
 
-    myLength = min(len, myLength - _start);
-    otherLength = min(len, otherLength - _start);
+    myLength = Numerics::min(len, myLength - _start);
+    otherLength = Numerics::min(len, otherLength - _start);
 
-    len = min(myLength, otherLength);
+    len = Numerics::min(myLength, otherLength);
 
     wholenumber_t result = memcmp(getStringData() + _start, other->getStringData() + _start, len);
 
@@ -1575,7 +1575,7 @@ RexxInteger *RexxString::caselessCompareToRexx(RexxString *other, RexxInteger *s
     other = stringArgument(other, ARG_ONE);
 
     stringsize_t _start = optionalPositionArgument(start_, 1, ARG_TWO);
-    stringsize_t len = optionalLengthArgument(len_, max(getLength(), other->getLength()) - _start + 1, ARG_THREE);
+    stringsize_t len = optionalLengthArgument(len_, Numerics::max(getLength(), other->getLength()) - _start + 1, ARG_THREE);
 
     return primitiveCaselessCompareTo(other, _start, len);
 }
@@ -1613,10 +1613,10 @@ RexxInteger *RexxString::primitiveCaselessCompareTo(RexxString *other, stringsiz
 
     _start--;      // make the starting point origin zero
 
-    myLength = min(len, myLength - _start);
-    otherLength = min(len, otherLength - _start);
+    myLength = Numerics::min(len, myLength - _start);
+    otherLength = Numerics::min(len, otherLength - _start);
 
-    len = min(myLength, otherLength);
+    len = Numerics::min(myLength, otherLength);
 
     wholenumber_t result = CaselessCompare(getStringData() + _start, other->getStringData() + _start, len);
 

@@ -97,11 +97,12 @@ class RexxNativeActivation : public RexxActivationBase {
   inline RexxStem   *nextStem()         {return this->nextstem;}
   inline RexxVariableDictionary *nextCurrent()     {return this->nextcurrent;}
   inline RexxCompoundElement *compoundElement() {return this->compoundelement; }
-  inline void        setNextVariable(LONG value)           {this->nextvariable = value;}
+  inline void        setNextVariable(size_t value)           {this->nextvariable = value;}
   inline void        setNextCurrent(RexxVariableDictionary *vdict)     {this->nextcurrent = vdict;}
   inline void        setNextStem(RexxStem *stemVar)     {this->nextstem = stemVar;}
   inline void        setCompoundElement(RexxCompoundElement *element)     {this->compoundelement = element;}
 
+protected:
 
   RexxMethod     *method;              /* Method to run                     */
   RexxString     *msgname;             /* name of the message running       */

@@ -1158,7 +1158,7 @@ RexxObject *RexxNumberString::truncInternal(
         if (needed_digits != 0) {      /* decimals requested?               */
           *resultPtr++ = '.';          /* add a trailing decimal point      */
                                        /* get count to add                  */
-          temp = min(needed_digits, this->length - integer_digits);
+          temp = Numerics::min(needed_digits, this->length - integer_digits);
                                        /* fill in the digits                */
           fill_digits(resultPtr, this->number + integer_digits, temp);
           resultPtr += temp;           /* step over the digits              */
@@ -1185,7 +1185,7 @@ RexxObject *RexxNumberString::truncInternal(
           resultPtr += -integer_digits;/* step over the digits              */
           needed_digits += integer_digits; /* reduce needed_digits          */
                                        /* get count to add                  */
-          temp = min(needed_digits, this->length);
+          temp = Numerics::min(needed_digits, this->length);
                                        /* fill in the digits                */
           fill_digits(resultPtr, this->number, temp);
           resultPtr += temp;           /* step over the digits              */

@@ -330,7 +330,7 @@ REXXOBJECT REXXENTRY REXX_TABLE_REMOVE(REXXOBJECT, REXXOBJECT);
 bool       REXXENTRY RexxQuery (void);
 int        REXXENTRY RexxTerminate (void);
 bool       REXXENTRY RexxInitialize (void);
-int        VLAREXXENTRY RexxSendMessage (REXXOBJECT receiver, const char *msgname, REXXOBJECT start_class, const char *interfacedefn, void *result, ...);
+int        REXXENTRY RexxSendMessage (REXXOBJECT receiver, const char *msgname, REXXOBJECT start_class, const char *interfacedefn, void *result, ...);
 
 #ifdef __cplusplus
 }

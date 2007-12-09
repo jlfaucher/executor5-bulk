@@ -683,7 +683,7 @@ inline RexxString *REQUEST_STRING(RexxObject *object)
 /* The next routine is specifically for REQUESTing a STRING needed as a method*/
 /* argument.  This raises an error if the object cannot be converted to a     */
 /* string value.                                                              */
-inline RexxString * REQUIRED_STRING(RexxObject *object, LONG position)
+inline RexxString * REQUIRED_STRING(RexxObject *object, int position)
 {
   if (object == OREF_NULL)             /* missing argument?                 */
     missing_argument(position);        /* raise an error                    */
