@@ -70,8 +70,6 @@ char * APIENTRY RexxGetVersionInformation(void);
 #ifdef __cplusplus
 }
 #endif
-// TODO:  This should be defined in a common header file that is also included by
-// PlatformDefinitions.h
 
 #if defined(AIX)
 #define SYSINITIALADDRESS "ksh"

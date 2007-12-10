@@ -175,7 +175,7 @@ typedef struct _REXXAPIDATA {          /* Do not move next two items */
   MEMORYBASE    macro_base;            /* Memory management chain    */
   process_id_t  ProcessId;             /* Current process id         */
   thread_id_t   ThreadId;              /* Current thread id          */
-  size_t        SessionId;             /* Current session id         */
+  process_id_t  SessionId;             /* Current session id         */
   size_t        mbase;                 /* ptr to macro space fnc lst */
   char         *macrobase;             /* Pointer to Macro Space memory pool    */
   int           mbasememId;            /* memory ID of the pool      */

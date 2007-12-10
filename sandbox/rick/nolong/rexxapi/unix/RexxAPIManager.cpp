@@ -175,6 +175,7 @@ int RxAPIStartUp(int chain)
     int         ShmemId = 0;
     int         semrc, value;
     size_t      current;                   /* session queue              */
+    key_t       ipckey = 0; 
     shmid_ds    buf;                       /* buf to hold memory info    */
     int         used;                      /* semaphore used flag        */
     int         lRC;

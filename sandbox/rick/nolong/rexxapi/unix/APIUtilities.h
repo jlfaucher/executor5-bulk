@@ -38,7 +38,7 @@
 #include <signal.h>
 
 
-void Queue_Detach(size_t);
+void Queue_Detach(process_id_t);
 size_t search_session();
 int  RxFreeMem(size_t, size_t, int);
 int  RxAllocMem(size_t *, size_t, int);

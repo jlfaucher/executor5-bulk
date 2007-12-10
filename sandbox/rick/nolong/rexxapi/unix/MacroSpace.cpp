@@ -94,7 +94,6 @@ extern REXXAPIDATA  *apidata;          /* Global state data          */
 #define SPT  strptr
 
 static RXSTRING RXSTRING_EMPTY = { 0, NULL };
-static CONSTRXSTRING CONSTRXSTRING_EMPTY = { 0, NULL };
 
 #define RXVERSION  "REXXSAA 4.00"      /* interpreter version str    */
 #define RXVERSIZE  12                  /* size of RXVERSION str      */
@@ -105,24 +104,24 @@ static CONSTRXSTRING CONSTRXSTRING_EMPTY = { 0, NULL };
 /*****        Macro Space Function List Access Functions         *****/
 /*********************************************************************/
 
-static int does_exist(const char *, size_t *); 
+static size_t does_exist(const char *, size_t *); 
 static int callrexx(const char *, PMACRO); 
-static int file_read(FILE *, void *, size_t);
+static int file_read(FILE *, char *, size_t);
 static int makelst(size_t ,const char **, size_t **); 
 static int request(size_t, const char **, const char *); 
-static int file_write(FILE *, void *, size_t); 
+static int file_write(FILE *, const char *, size_t); 
 static void freelst(size_t *, size_t);
 static int macrofile_open(const char *, FILE **);
 static int ldmacro(size_t, const char **,FILE*); 
 static int saved_macro(const char *, PMACRO); 
-size_t dup_list(PMACRO); 
+int dup_list(PMACRO); 
 
 /*********************************************************************/
 /*****              RXSTRING Manipulation Functions              *****/
 /*********************************************************************/
 static int rxstrfrmfile(FILE *, PRXSTRING, size_t, PMEMORYBASE);             
 static void rxstrfree(size_t, RXSTRING); 
-int rxstrdup(RXSTRING); 
+size_t rxstrdup(RXSTRING); 
 static size_t rxstrlen(RXSTRING);
 static void rximagefree(size_t, size_t);  
 static int rxstrtofile(FILE *,const char *, size_t); 
@@ -159,7 +158,7 @@ APIRET APIENTRY RexxAddMacro(
   if (pos != RXMACRO_SEARCH_BEFORE &&  /* if pos flag not before and */
        pos != RXMACRO_SEARCH_AFTER )   /*   not after, then          */
     rc = RXMACRO_INVALID_POSITION;     /*   return proper error code */
-  else if (p=does_exist(n,NULL)) {     /* found name, so change it   */
+  else if ((p=does_exist(n,NULL))) {     /* found name, so change it   */
     if ( !(rc = callrexx(s, &w))) {    /* call REXXSAA to get image  */
 #ifdef ORXAP_DEBUG
   fprintf(stderr," %s:1 RexxAddMacro address of MDATA = %x.\n", __FILE__ ,
@@ -200,7 +199,7 @@ APIRET APIENTRY RexxAddMacro(
          removeshmem(apidata->mbasememId);/* remove the macro memory */
          detachshmem(apidata->macrobase); /* force the deletion      */
          apidata->macrobase = NULL;       /* reset memory pointer    */
-         apidata->macrocount = NULL;      /* reset macro counter     */
+         apidata->macrocount = 0;         /* reset macro counter     */
        }
      }
   }                                    /*                            */
@@ -241,7 +240,7 @@ APIRET APIENTRY RexxDropMacro(
 
   APISTARTUP(MACROCHAIN);              /* do common entry code       */
 
-    if (p=does_exist(n,&t)) {          /* found name, so delete it   */
+    if ((p=does_exist(n,&t))) {        /* found name, so delete it   */
       if (t)
         MDATA(t)->next = MDATA(p)->next;/* if previous, go around it */
 
@@ -249,8 +248,7 @@ APIRET APIENTRY RexxDropMacro(
                                        /* free this block's string   */
       rximagefree(MDATA(p)->image, MDATA(p)->i_size);
                                        /* free this block's storage  */
-    RxFreeMem(((char*)MDATA(p)) - apidata->macrobase),
-                                           MACROSIZE, MACROMEM);
+    RxFreeMem(((char*)MDATA(p)) - apidata->macrobase, MACROSIZE, MACROMEM);
     (apidata->macrocount)--;           /* decrement macro counter    */
     if(apidata->macrocount == 0){      /* if now the chain is empty  */
       removeshmem(apidata->mbasememId);/* remove the macro memory    */
@@ -289,8 +287,8 @@ APIRET APIENTRY RexxClearMacroSpace()
       removeshmem(apidata->mbasememId);/* remove the macro memory    */
       detachshmem(apidata->macrobase); /* force the deletion         */
       apidata->macrobase = NULL;       /* reset memory pointer       */
-      apidata->mbase = NULL;           /* reset the anchor           */
-      apidata->macrocount = NULL;      /* reset function counter     */
+      apidata->mbase = 0;              /* reset the anchor           */
+      apidata->macrocount = 0;         /* reset function counter     */
        rc = RXMACRO_OK;                /* set return code to success */
   }                                    /* end of "for..." loop       */
   else rc = RXMACRO_NOT_FOUND;         /* otherwise macro not found  */
@@ -349,21 +347,21 @@ APIRET APIENTRY RexxSaveMacroSpace(
   else if((f = fopen(fnam,"w+")) == NULL)
     rc = RXMACRO_FILE_ERROR;           /* was some sort of file error*/
   else {                               /* otherwise ready to write.. */
-    rc = file_write(f,(PVOID)RXVERSION,/* write version to the file  */
+    rc = file_write(f,(const char *)RXVERSION,/* write version to the file  */
                     RXVERSIZE);        /*                            */
     if (!rc) {                         /* if file write was ok...    */
       i = SIGNATURE;                   /* get internal file flag     */
-      rc = file_write(f, (PVOID)&i,    /* write flag to the file     */
+      rc = file_write(f, (const char *)&i,   /* write flag to the file     */
                       sizeof(i));      /*                            */
     }                                  /*                            */
     if (!rc)                           /* if file write was ok...    */
       rc = file_write(f,               /* write func count to file   */
-           (PVOID)&(apidata->mcount),sizeof(apidata->mcount));
+           (const char *)&(apidata->mcount),sizeof(apidata->mcount));
                                        /* for each entry in tmp list */
     for(i=0; !rc && i < apidata->mcount; i++)
                                        /* write the macro function   */
                                        /*   headers to the file      */
-      rc = file_write(f,(PVOID)(apidata->macrobase+list[i]),
+      rc = file_write(f,(const char *)(apidata->macrobase+list[i]),
                       MACROSIZE);
                                        /* for each entry in tmp list */
     for(i=0; !rc && i < apidata->mcount; i++)
@@ -445,8 +443,8 @@ APIRET APIENTRY RexxQueryMacro(
 
   APISTARTUP(MACROCHAIN);              /* do common entry code       */
 
-  if(tmp=does_exist(name,NULL)){       /* if macro exists, then      */
-    *pos = (USHORT)MDATA(tmp)->srch_pos;/*   return position and     */
+  if((tmp=does_exist(name,NULL))){     /* if macro exists, then      */
+    *pos = MDATA(tmp)->srch_pos;       /*   return position and     */
     rc = RXMACRO_OK;                   /*   set return to successful */
   }                                    /*                            */
   else rc = RXMACRO_NOT_FOUND;         /* set return code to failure */
@@ -482,7 +480,7 @@ APIRET APIENTRY RexxReorderMacro(
        pos != RXMACRO_SEARCH_AFTER )   /*   not after, then          */
     rc = RXMACRO_INVALID_POSITION;     /*   return proper error code */
   else
-    if (tmp=does_exist(name,NULL)) { /* if macro exists, then      */
+    if ((tmp=does_exist(name,NULL))) { /* if macro exists, then      */
       MDATA(tmp)->srch_pos = pos;      /*   set search order pos and */
       rc = RXMACRO_OK;                 /*   set return to successful */
     }                                  /* end of "if exists..."      */
@@ -514,7 +512,7 @@ APIRET APIENTRY RexxExecuteMacroFunction(
   size_t tmp;                          /* temp macro pointer         */
   APIRET rc;                           /* return code from function  */
 
-  if(tmp=does_exist(name,NULL)){       /* if name exists in list...  */
+  if((tmp=does_exist(name,NULL))){     /* if name exists in list...  */
                                        /* copy string and            */
     (*p).strptr = (apidata->macrobase+(MDATA(tmp)->image));
     (*p).strlength = MDATA(tmp)->i_size;/* it's size                */
@@ -550,7 +548,7 @@ size_t does_exist(
   size_t work = 0;                      /* pointer to move thru list  */
   size_t temp = 0;                      /*                            */
 
-  for (temp=NULL, work=apidata->mbase; /* start at beginning of list */
+  for (temp=0, work=apidata->mbase;    /* start at beginning of list */
        work &&                         /*   and, while still valid   */
                                        /*   and not the correct one, */
          strcasecmp(MDATA(work)->name,name);
@@ -577,14 +575,12 @@ static int callrexx(
   const char *fnam,
   PMACRO current)
 {
-  size_t fsize = NULL;
+  size_t fsize = 0;
   FILE      *f;
   CONSTRXSTRING   av;
   RXSTRING   m[2];
   size_t       i;
   int        rc;
-  REXX       *addr;
-  void      *plib;
   short      retval;
   struct stat       finfo;
 
@@ -651,12 +647,11 @@ static int callrexx(
 static int rxstrfrmfile(FILE *file, PRXSTRING r, size_t size, PMEMORYBASE  memory_pool )             /* Memory pool for the read   */
 {
   int    rc      = 0;
-  key_t key;                           /* key for the memory segment */
 
   r->SLN = size;
   if (size)                            /* if bytes to read           */
     if ((r->SPT = (char*)malloc((size_t)size)) != NULL )
-      rc=file_read(file,(void*)(r->SPT),size); /*read the information*/
+      rc=file_read(file,(char *)(r->SPT),size); /*read the information*/
     else rc = RXMACRO_NO_STORAGE;      /* error during allocation    */
   return rc;                           /* return the error code      */
 }
@@ -678,10 +673,10 @@ static int rxstrfrmfile(FILE *file, PRXSTRING r, size_t size, PMEMORYBASE  memor
 /*********************************************************************/
 static int file_read(
   FILE  *f,
-  void  *b,
+  char  *b,
   size_t l )
 {
-   int    rc;
+   size_t    rc;
                                        /* if read from disk is ok ...*/
   if ((rc = fread(b, 1, l, f)))
     if (rc != l)                       /* but not all read ...       */
@@ -893,11 +888,11 @@ static int request(
 /*********************************************************************/
 static int file_write(
   FILE  *f,
-  void  *b,
+  const char *b,
   size_t l )
 {
 
-   int    rc;
+  size_t  rc;
                                        /* if write to disk is ok ... */
   if ((rc = fwrite(b, 1, l, f)))
     if (rc != l)                       /* but not all read ...       */
@@ -976,13 +971,13 @@ static int macrofile_open(
   if((*fp = fopen(fnam,"r")) == NULL)  /* open the file for read     */
     return(RXMACRO_FILE_ERROR);        /* there was file error       */
 
-  if (file_read(*fp, (PVOID)buf,       /* read signature from file   */
+  if (file_read(*fp, (char *)buf,      /* read signature from file   */
                            RXVERSIZE)) /*                            */
     rc = RXMACRO_FILE_ERROR;           /* there was file error       */
   else if (memcmp(buf, RXVERSION,      /* if interpreter version     */
                   RXVERSIZE) )         /*   doesnt match current ver */
     rc = RXMACRO_SIGNATURE_ERROR;      /* the signatures didnot match*/
-  else if (file_read(*fp, (PVOID)&i,   /* read signature from file   */
+  else if (file_read(*fp, (char *)&i,   /* read signature from file   */
                      sizeof(i)))       /*                            */
     rc = RXMACRO_FILE_ERROR;           /* there was file error       */
   else if (i!=SIGNATURE)               /* if signatures dont match or*/
@@ -1018,14 +1013,14 @@ static int ldmacro(
   const char **av,
   FILE    *f )
 {
-  PMACRO tbase,wbase,w;
+  PMACRO tbase, w;
   size_t tbase_size;                   /* size of allocated temp stor*/
-  int    rc,i;
+  int    rc;
+  size_t i;
   RXSTRING p;
-  size_t tmp;
 
                                        /* read macro function count  */
-  if (file_read(f, (void *)&(apidata->mcount),
+  if (file_read(f, (char *)&(apidata->mcount),
                      sizeof(apidata->mcount)))
     return(RXMACRO_FILE_ERROR);        /* there was file error       */
 
@@ -1037,14 +1032,14 @@ static int ldmacro(
   if (tbase == NULL)
     return(RXMACRO_NO_STORAGE);        /* no memory available        */
 
-  if (file_read(f, (PVOID)tbase,       /*read macro headers from file*/
+  if (file_read(f, (char *)tbase,  /*read macro headers from file*/
                 tbase_size)) {
     free((void *)tbase);               /* free temp list buffer      */
     return(RXMACRO_FILE_ERROR);        /* there was file error       */
   }
 
   for (i=0; i < (apidata->mcount); i++) {
-    tbase[i].image = NULL;             /* make sure there is no garbg*/
+    tbase[i].image = 0;                /* make sure there is no garbg*/
     tbase[i].temp_buf = RXSTRING_EMPTY;
   }
 
@@ -1122,7 +1117,7 @@ static int saved_macro(
   PMACRO      chain )                  /* list to search             */
 {
                                        /* start at beginning of list */
-  for (int i=0;i<(apidata->mcount);i++) {
+  for (size_t i=0;i<(apidata->mcount);i++) {
                                        /*   and, while still valid   */
     if (!strcasecmp(chain->name,name))  /* if there,                  */
       return (YES);                    /*   return YES               */
@@ -1151,20 +1146,19 @@ int dup_list(
 {
   size_t t      = 0;                    /* pointer to loop thru list  */
   size_t image;                         /* offset to the image space  */
-  size_t retval = 0;                    /* pointer for return value   */
   int new_mcount = 0, add = 0;
   PMACRO loop;
   size_t del;
 
   /* calculate how much macros to add                                 */
   loop = old;
-  for (int i=0;i<(apidata->mcount);i++){ /*scan old list               */
+  for (size_t i=0;i<(apidata->mcount);i++){ /*scan old list               */
     if((loop->temp_buf).strlength != 0)  /* if there is a image        */
       add++;                             /*  count this                 */
     loop++;                              /* step to the next one        */
   }
 
-  for (int j=0;j<(apidata->mcount);j++){     /* scan old list...   */
+  for (size_t j=0;j<(apidata->mcount);j++){     /* scan old list...   */
     if((old->temp_buf).strlength != 0){ /* if we should copy this  */
       if (!RxAllocMem(&t,               /* if storage can be created  */
               MACROSIZE,
@@ -1201,7 +1195,7 @@ int dup_list(
       RxFreeMem(MDATA(del)->image,MDATA(del)->i_size, MACROMEM);
       RxFreeMem(del,MACROSIZE,MACROMEM);/* free the header */
     }
-    apidata->mcount = NULL;            /* nothing was added          */
+    apidata->mcount = 0;               /* nothing was added          */
     return (0);                        /* error condition            */
   }                                    /* end "if we stopped..."     */
   apidata->mcount = new_mcount;        /* remember how many added    */
