@@ -318,10 +318,10 @@ APIRET APIENTRY RexxCallFunction (
     const char *act_q)             /* Name of active data queue  */
 {
   APIRET rc = 1;
-  RexxFunctionHandler func_address; /* addr for transfer to call  */
+  RexxFunctionHandler *func_address; /* addr for transfer to call  */
   void *plib = NULL;               /* Dll handle                 */
 
-  if (!(rc=RegLoad(dname, NULL, REGFUNCTION, (REXXPFN *)&func_address, &plib))) 
+  if (!(rc=RegLoad(dname, NULL, REGFUNCTION, (REXXPFN *)&func_address, &plib)))
   {
                                        /* call                       */
     *funcrc = (*func_address)(         /* unsigned char added        */
@@ -391,7 +391,7 @@ APIRET APIENTRY RexxCallSubcom(
   wholenumber_t *sbrc,                 /* return code from handler   */
   PRXSTRING rv )                       /* rxstring to pass back info */
 {
-  RexxSubcomHandler  subcom_addr;  /* addr for transfer to call  */
+  RexxSubcomHandler  *subcom_addr;      /* addr for transfer to call  */
   APIRET rc;
   void *plib = NULL;
 
@@ -493,7 +493,7 @@ APIRET APIENTRY RexxDeregisterSubcom(
 
 APIRET APIENTRY RexxRegisterExitExe(
   const char *   EnvName,              /* exit name                  */
-  void *EntryPoint,                    /* DLL routine name           */
+  REXXPFN EntryPoint,                  /* DLL routine name           */
   const char *UserArea )               /* User data                  */
 {
                                        /* Register the exit          */
@@ -626,11 +626,11 @@ int APIENTRY RexxCallExit(
   int   subfnc,                        /* Exit subfunction.          */
   PEXIT param_block )                  /* Exit parameter block.      */
 {
-  RexxExitHandler exit_address;        /* Exit's calling address.    */
+  RexxExitHandler *exit_address;       /* Exit's calling address.    */
   int      rc;                         /* Function return code.      */
   void *plib = NULL;
 
-  if (!(rc=RegLoad(name, dll, REGSYSEXIT, (REXXPFN *)&exit_address, &plib))) 
+  if (!(rc=RegLoad(name, dll, REGSYSEXIT, (REXXPFN *)&exit_address, &plib)))
   {
                                        /* call                       */
     rc = (*exit_address)(fnc, subfnc, param_block);
@@ -679,7 +679,7 @@ APIRET APIENTRY RexxRegisterFunctionDll(
  return (RegRegisterDll(EnvName, ModuleName, EntryPoint, NULL,RXSUBCOM_DROPPABLE, REGFUNCTION));
                                             /* to new entrypoint name  */
 }
- 
+
 /*********************************************************************/
 /*                                                                   */
 /*  Function Name:  RexxRegisterFunctionExe                          */

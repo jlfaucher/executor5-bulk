@@ -72,7 +72,7 @@ FILE * SysBinaryFilemode(FILE *, bool);
 int SysFFlush(FILE *);
 bool SysFileIsDevice(int fhandle);
 int  SysPeekKeyboard(void);
-int SysStat(char * path, struct stat *buffer);
+int SysStat(const char * path, struct stat *buffer);
 bool SysFileIsPipe(STREAM_INFO * stream_info);
 
 
@@ -485,7 +485,7 @@ int SysPeekKeyboard(void)
 }
 
 
-int SysStat(char * path, struct stat *buffer)
+int SysStat(const char * path, struct stat *buffer)
 {
    unsigned int errorMode;
    int    retstat;

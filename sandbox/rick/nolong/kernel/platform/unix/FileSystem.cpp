@@ -650,7 +650,7 @@ int SysPeekSTD(STREAM_INFO *stream_info)
 }
 #endif
 
-int SysStat(char * PathName, struct stat * Buffer)
+int SysStat(const char * PathName, struct stat * Buffer)
 {
   int rc;
 
