@@ -271,7 +271,7 @@ int SysPeekSTD(STREAM_INFO *);
 #endif
 
 #ifndef SysStat
-int SysStat(char *, struct stat *);
+int SysStat(const char *, struct stat *);
 #endif
 
 #ifndef SysFileIsPipe

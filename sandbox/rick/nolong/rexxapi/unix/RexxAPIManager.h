@@ -121,8 +121,8 @@ typedef struct _QUEUEHEADER {
     size_t waiting;                    /* count of processes waiting */
     size_t item_count;                 /* number of items in queue   */
     process_id_t waitprocess;          /* process waiting on queue   */
-    KMTX  waitsem;                     /* event semaphore for pull   */
-    KMTX  enqsem;                      /* pull exclusion semaphore   */
+    int   waitsem;                     /* event semaphore for pull   */
+    int   enqsem;                      /* pull exclusion semaphore   */
     size_t     queue_first;            /* first queue item           */
     size_t     queue_last;             /* last queue item            */
     char   queue_name[MAXNAME];        /* queue name                 */
@@ -163,7 +163,7 @@ typedef struct _REXXAPIDATA {          /* Do not move next two items */
   size_t        qmemtop;               /* number of bytes used in the queue space */
   int           qsemfree[MAXSEM+1];    /* Indicates the unused semaphores */
   int           qsemcount;             /* semaphore count            */
-  KMTX          rexxapisemaphore;      /* Initialization semaphore and queue semaphores  */
+  int           rexxapisemaphore;      /* Initialization semaphore and queue semaphores  */
   process_id_t  init_processid;        /* Initial processid          */
   size_t        num_sessions;          /* Number of possible sessions*/
   size_t        baseblock[REGNOOFTYPES];/* Registration chains(offsets)*/

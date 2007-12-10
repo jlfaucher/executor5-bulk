@@ -817,7 +817,7 @@ void read_setup(                       /* setup for a read operation        */
                                        /* get the current stream position   */
    tell_position = tell_stream_position;
                                        /* at the correct position?          */
-   if (tell_position != -1 && (stream_info->char_read_position - 1) != tell_position) {
+   if (tell_position != -1 && (stream_info->char_read_position - 1) != (size_t)tell_position) {
                                        /* do a seek to char_read_position   */
      if (set_stream_position(stream_info->char_read_position - 1))
                                        /* go raise a notready condition     */
@@ -860,7 +860,7 @@ void write_setup(                      /* setup for a write operation       */
                                        /* get the current stream position   */
    tell_position = tell_stream_position;
                                        /* at the correct position?          */
-   if (tell_position != -1 && (stream_info->char_write_position - 1) != tell_position) {
+   if (tell_position != -1 && (stream_info->char_write_position - 1) != (size_t)tell_position) {
 
       if  (!stream_info->flags.append){/* not opened for append?            */
                                        /* set stream back to write position */
@@ -916,7 +916,7 @@ REXXOBJECT read_stream_line(           /* read a line from an I/O stream    */
 /******************************************************************************/
 {
    size_t     result;                  /* residual character count          */
-   REXXOBJECT string;                  /* returned string                   */
+   REXXOBJECT string = NULL;           /* returned string                   */
 
 /* This is a patch for a defect in the Microsoft C++ Runtime-Library
    If an odd number of bytes is written to a device without buffering,
@@ -1232,7 +1232,7 @@ size_t scan_forward_lines(             /* move forward a number of lines    */
   char  *buffer,                       /* start of buffer                   */
   size_t length,                       /* buffer length                     */
   size_t*count,                        /* count to move                     */
-  char  *end_char,                     /* end-of-line marker                */
+  const char  *end_char,               /* end-of-line marker                */
   size_t end_size )                    /* size of end-of-line marker        */
 /******************************************************************************/
 /* Function: move forward a number of lines in a buffer                       */
@@ -1276,10 +1276,10 @@ size_t scan_forward_lines(             /* move forward a number of lines    */
   return endptr - buffer + 1;          /* return the final count            */
 }
 
-size_t count_stream_lines(               /* count lines in a buffer           */
+size_t count_stream_lines(             /* count lines in a buffer           */
   char  *buffer,                       /* start of buffer                   */
   size_t length,                       /* buffer length                     */
-  char  *end_char,                     /* end-of-line marker                */
+  const char  *end_char,               /* end-of-line marker                */
   size_t end_size )                    /* size of end-of-line marker        */
 /******************************************************************************/
 /* Function: Return count of lines found in a buffer                          */
@@ -1322,7 +1322,7 @@ size_t count_stream_lines(               /* count lines in a buffer           */
 REXXOBJECT read_variable_line(
     REXXOBJECT   self,                 /* target stream object              */
     STREAM_INFO *stream_info,          /* current stream information        */
-    char        *end_char,             /* end-of-line marker                */
+    const char  *end_char,             /* end-of-line marker                */
     size_t       end_size )            /* size of end-of-line marker        */
 /******************************************************************************/
 /* Function:   read in a variable length record                               */
@@ -1450,7 +1450,7 @@ REXXOBJECT read_variable_line(
                                        /* this is an eof condition          */
        stream_eof(self, stream_info, OREF_NULLSTRING);
    }
-   if (line_length == -1) {            /* no ending character found?        */
+   if (line_length == (size_t)-1) {    /* no ending character found?        */
      line_length = buffer_length;      /* get the buffer length             */
      if (line_length == 1) {           /* exactly one character read?       */
        if (*read_buffer == end_char[0])
@@ -1903,7 +1903,7 @@ RexxMethod4(size_t, stream_lineout,
                                        /* this is an error                  */
        send_exception(Error_Incorrect_call);
                                        /* same length as record length?     */
-     if (stream_info->stream_reclength == (signed)slength)
+     if (stream_info->stream_reclength == slength)
                                        /* just write out the line as is     */
        result = write_stream_line(stream_info, sdata, stream_info->stream_reclength);
      else                              /* write out the line                */
@@ -3359,7 +3359,7 @@ RexxMethod1(CSTRING, query_time,
 
    stream_info = get_stream_info();    /* get the stream block              */
                                        /* return the stream time            */
-   return get_file_statistics(stream_info, &stat_info) ? (char *)""  : stream_time;
+   return get_file_statistics(stream_info, &stat_info) ? ""  : stream_time;
 }
 
 /********************************************************************************************/
@@ -3370,7 +3370,7 @@ RexxMethod1(CSTRING, stream_state,
      BUFFER, StreamBuffer )            /* stream information block          */
 {
   STREAM_INFO *stream_info;            /* stream information                */
-  char        *result;                 /* returned result                   */
+  const char  *result = NULL;          /* returned result                   */
 
   stream_info = get_stream_info();     /* get the stream block              */
   switch (stream_info->state) {        /* process the different states      */
@@ -3403,7 +3403,7 @@ RexxMethod1(REXXOBJECT, stream_description,
 {
   STREAM_INFO *stream_info;            /* stream information                */
   char         work[200];              /* temp buffer                       */
-  char        *result;                 /* result string                     */
+  const char  *result = NULL;          /* result string                     */
 
   stream_info = get_stream_info();     /* get the stream block              */
   switch (stream_info->state) {        /* process the different states      */

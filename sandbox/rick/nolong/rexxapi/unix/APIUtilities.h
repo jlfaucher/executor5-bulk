@@ -43,10 +43,8 @@ size_t search_session();
 int  RxFreeMem(size_t, size_t, int);
 int  RxAllocMem(size_t *, size_t, int);
 void detachall(int);                      /* routine to detach all shared memory blocks  */
-void EnterMustComplete(void);
-void ExitMustComplete(void);
 void RxExitClear(int);
-size_t RxAPIStartUp(int);
+int RxAPIStartUp(int);
 void RxAPICleanUp(int, int);
 int  CheckForMemory();
 int  RxFreeMemQue(size_t, size_t, int, size_t);
