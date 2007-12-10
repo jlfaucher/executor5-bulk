@@ -154,27 +154,6 @@ return testGroupList
 
 
    -- test the BIF, using examples from the documentation
-::method "test_C2D"
-    self~assertSame("subTest1" , 0     ,  C2D('')       )
-
-    self~assertSame("subTest2" , 9     ,  C2D('09'X)    )
-    self~assertSame("subTest3" , 129   ,  C2D('81'X)    )
-    self~assertSame("subTest4" , 65409 ,  C2D('FF81'X)  )
-    self~assertSame("subTest5" , 0     ,  C2D("")       )
-    self~assertSame("subTest6" , 97    ,  C2D('a')      )
-
-    self~assertSame("subTest7" , -127  ,  C2D('81'X,1)  )
-    self~assertSame("subTest8" , 129   ,  C2D('81'X,2)  )
-    self~assertSame("subTest9" , -127  ,  C2D('FF81'X,2))
-    self~assertSame("subTest10", -127  , C2D('FF81'X,1) )
-    self~assertSame("subTest11", 127   , C2D('FF7F'X,1) )
-    self~assertSame("subTest12", -3967 , C2D('F081'X,2) )
-    self~assertSame("subTest13", -127  , C2D('F081'X,1) )
-    self~assertSame("subTest14", 0     , C2D('0031'X,0) )
-
-
-
-   -- test the BIF, using examples from the documentation
 ::method "test_C2X"
     self~assertSame("subTest1", ""       , C2X('')     )
 
