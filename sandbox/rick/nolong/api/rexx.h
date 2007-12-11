@@ -81,11 +81,11 @@ typedef struct _CONSTRXSTRING {        /* const rxstr                */
 
 /***    Macros for RexxString manipulation                   */
 
-#define RXNULLSTRING(r)      ((r).strptr == 0)
-#define RXZEROLENSTRING(r)   ((r).strptr != 0 && (r).strlength == 0)
-#define RXVALIDSTRING(r)     ((r).strptr != 0 && (r).strlength == 0)
+#define RXNULLSTRING(r)      ((r).strptr == NULL)
+#define RXZEROLENSTRING(r)   ((r).strptr != NULL && (r).strlength == 0)
+#define RXVALIDSTRING(r)     ((r).strptr != NULL && (r).strlength != 0)
 #define RXSTRLEN(r)          (RXNULLSTRING(r) ? 0 : (r).strlength)
-#define RXSTRPTR(r)          )(r).strptr)
+#define RXSTRPTR(r)          ((r).strptr)
 #define MAKERXSTRING(r,p,l)  { (r).strptr = p; (r).strlength = l; }
 
 

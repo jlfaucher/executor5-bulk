@@ -467,18 +467,22 @@ bool RexxNumberString::numberValue(wholenumber_t &result, size_t numDigits)
     // is this easily within limits (very common)?
     if (length <= numDigits && numberExp >= 0)
     {
-        if (!createUnsignedValue(number, length, false, numberExp, SSIZE_MAX, intnum))
+        if (!createUnsignedValue(number, length, false, numberExp, Numerics::MAX_WHOLENUMBER, intnum))
         {
             return false;                   // too big to handle
         }
         // adjust for the sign
         result = ((wholenumber_t)intnum) * sign;
+        return true;
     }
 
     // this number either has decimals, or needs to be truncated/rounded because of
     // the conversion digits value.  We need to make adjustments.
 
-    checkIntegerDigits(numDigits, numberLength, numberExp, carry);
+    if (!checkIntegerDigits(numDigits, numberLength, numberExp, carry))
+    {
+        return false;
+    }
 
     // if because of this adjustment, the decimal point lies to the left
     // of our first digit, then this value truncates to 0 (or 1, if a carry condition
@@ -497,14 +501,14 @@ bool RexxNumberString::numberValue(wholenumber_t &result, size_t numDigits)
     if (numberExp < 0)
     {
         // now convert this into an unsigned value
-        if (!createUnsignedValue(number, numberLength + numberExp, carry, 0, SSIZE_MAX, intnum))
+        if (!createUnsignedValue(number, numberLength + numberExp, carry, 0, Numerics::MAX_WHOLENUMBER, intnum))
         {
             return false;                   // to big to handle
         }
     }
     else
     {                             /* straight out number. just compute.*/
-        if (!createUnsignedValue(number, numberLength, carry, numberExp, SSIZE_MAX, intnum))
+        if (!createUnsignedValue(number, numberLength, carry, numberExp, Numerics::MAX_WHOLENUMBER, intnum))
         {
             return false;                   // to big to handle
         }
@@ -542,18 +546,21 @@ bool RexxNumberString::unsignedNumberValue(stringsize_t &result, size_t numDigit
     // is this easily within limits (very common)?
     if (length <= numDigits && numberExp >= 0)
     {
-        if (!createUnsignedValue(number, length, false, numberExp, SIZE_MAX, intnum))
+        if (!createUnsignedValue(number, length, false, numberExp, Numerics::MAX_WHOLENUMBER, intnum))
         {
             return false;                   // too big to handle
         }
-        // adjust for the sign
+        // we can just return this directly.
         result = intnum;
+        return true;
     }
 
     // this number either has decimals, or needs to be truncated/rounded because of
     // the conversion digits value.  We need to make adjustments.
-
-    checkIntegerDigits(numDigits, numberLength, numberExp, carry);
+    if (!checkIntegerDigits(numDigits, numberLength, numberExp, carry))
+    {
+        return false;
+    }
 
     // if because of this adjustment, the decimal point lies to the left
     // of our first digit, then this value truncates to 0 (or 1, if a carry condition
@@ -572,14 +579,14 @@ bool RexxNumberString::unsignedNumberValue(stringsize_t &result, size_t numDigit
     if (numberExp < 0)
     {
         // now convert this into an unsigned value
-        if (!createUnsignedValue(number, numberLength + numberExp, carry, 0, SIZE_MAX, intnum))
+        if (!createUnsignedValue(number, numberLength + numberExp, carry, 0, Numerics::MAX_WHOLENUMBER, intnum))
         {
             return false;                   // to big to handle
         }
     }
     else
     {                             /* straight out number. just compute.*/
-        if (!createUnsignedValue(number, numberLength, carry, numberExp, SIZE_MAX, intnum))
+        if (!createUnsignedValue(number, numberLength, carry, numberExp, Numerics::MAX_WHOLENUMBER, intnum))
         {
             return false;                   // to big to handle
         }
@@ -893,7 +900,10 @@ bool RexxNumberString::int64Value(int64_t *result, stringsize_t numDigits)
     // this number either has decimals, or needs to be truncated/rounded because of
     // the conversion digits value.  We need to make adjustments.
 
-    checkIntegerDigits(numDigits, numberLength, numberExp, carry);
+    if (!checkIntegerDigits(numDigits, numberLength, numberExp, carry))
+    {
+        return false;
+    }
 
     // if because of this adjustment, the decimal point lies to the left
     // of our first digit, then this value truncates to 0 (or 1, if a carry condition

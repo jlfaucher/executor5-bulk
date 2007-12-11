@@ -69,7 +69,7 @@ stringsize_t get_length(
     if (!argument->unsignedNumberValue(value))
     {
         /* raise the error                   */
-        reportException(Error_Incorrect_method_length, position, argument);
+        reportException(Error_Incorrect_method_length, argument);
     }
     return value;
 }
@@ -93,7 +93,7 @@ stringsize_t get_position(
     if (!argument->unsignedNumberValue(value) || value == 0)
     {
         /* raise the error                   */
-        reportException(Error_Incorrect_method_position, position, argument);
+        reportException(Error_Incorrect_method_position, argument);
     }
     return value;
 }

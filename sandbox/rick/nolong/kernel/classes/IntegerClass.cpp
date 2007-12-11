@@ -229,7 +229,7 @@ bool RexxInteger::numberValue(wholenumber_t &result)
 {
                                        /* is the long value expressable as a*/
                                        /*  whole number in REXX term.       */
-    if (Numerics::abs(value) >= Numerics::MAX_WHOLENUMBER)
+    if (Numerics::abs(value) > Numerics::MAX_WHOLENUMBER)
     {
         return false;                    /* nope, not a valid long.           */
     }
@@ -252,7 +252,7 @@ bool RexxInteger::numberValue(wholenumber_t &result, size_t digits)
 {
                                        /* is the long value expressable as a*/
                                        /*  whole number in REXX term.       */
-    if (digits < Numerics::DEFAULT_DIGITS && Numerics::abs(value) >= Numerics::validMaxWhole[digits - 1])
+    if (digits < Numerics::DEFAULT_DIGITS && Numerics::abs(value) > Numerics::validMaxWhole[digits - 1])
     {
         return false;                      /* nope, not a valid long.           */
     }
@@ -273,7 +273,7 @@ bool RexxInteger::numberValue(wholenumber_t &result, size_t digits)
 bool RexxInteger::unsignedNumberValue(stringsize_t &result)
 {
     // this must be non-negative and not out of range
-    if (value < 0  || value >= Numerics::MAX_WHOLENUMBER)
+    if (value < 0  || value > Numerics::MAX_WHOLENUMBER)
     {
         return false;
     }

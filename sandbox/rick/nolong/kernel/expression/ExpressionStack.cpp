@@ -200,7 +200,7 @@ RexxInteger *RexxExpressionStack::requiredIntegerArg(
     if (!argument->requestNumber(numberValue, Numerics::DEFAULT_DIGITS))
     {
         /* report an exception               */
-        reportException(Error_Incorrect_call_whole, function, argument - position, argument);
+        reportException(Error_Incorrect_call_whole, function, argcount - position, argument);
     }
     RexxInteger *newInt = new_integer(numberValue);   /* create an integer object          */
     this->replace(position, newInt);     /* replace the argument              */
@@ -231,7 +231,7 @@ RexxInteger *RexxExpressionStack::optionalIntegerArg(
     if (!argument->requestNumber(numberValue, Numerics::DEFAULT_DIGITS))
     {
         /* report an exception               */
-        reportException(Error_Incorrect_call_whole, function, argument - position, argument);
+        reportException(Error_Incorrect_call_whole, function, argcount - position, argument);
     }
     RexxInteger *newInt = new_integer(numberValue);   /* create an integer object          */
     this->replace(position, newInt);     /* replace the argument              */

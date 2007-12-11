@@ -93,7 +93,7 @@ int message_number(
 
   if (*decimalPoint) {                 /* Was there a decimal point specified?*/
                                        /* is the subcode invalid or too big?*/
-    if (new_string(decimalPoint + 1, errorcode->getLength() - count -1)->numberValue(secondary) || secondary < 0  || secondary >= 1000) {
+    if (!new_string(decimalPoint + 1, errorcode->getLength() - count -1)->numberValue(secondary) || secondary < 0  || secondary >= 1000) {
                                        /* Yes, raise an error.              */
         reportException(Error_Expression_result_raise);
     }
