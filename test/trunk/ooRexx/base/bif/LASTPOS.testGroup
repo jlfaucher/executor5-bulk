@@ -1,0 +1,444 @@
+#!/usr/bin/rexx
+/*
+   name:             LASTPOS.testUnit
+   author:           Lee Peedin
+   date:             2007/12/11
+   version:          1.0
+
+-- line commented lines are ignored, when building the directory of infos from this header
+   changed:
+
+   languageLevel:    6.02
+   purpose:          Test the LASTPOS BIF
+   remark:           ---
+
+   license:          CPL 1.0 (Common Public License v1.0, see below)
+   link:
+
+// category needs not to be numbered, importance is given by position (1=most important)
+   category1:        ooRexx
+   category2:        Base
+   category3:        BIF
+
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+-------------------------------------------------------------------------------------------
+   /* list of array objects, each containing the testUnit class object and an
+      optional list of mandatory test case methods name                       */
+    mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
+    testUnitList=.list~of(.array~of(.LASTPOS.testGroup, mandatoryTestMethods))
+
+-------------------------------------------------------------------------------------------
+-- ===> the following code needs not to be individualized                              <===
+
+   -- read top comment, containing infos about this program
+    arrLines=.array~new
+    do i=1 to 150 until arrLines[i]="*/"
+        arrLines[i]=sourceline(i)
+    end
+      -- supply information for the testClass(es) in this file; the class attribute
+      -- "TestCaseInfo" (a directory object, index points to a queue) will store
+      -- the parsed infos
+    aTestUnitClass=testUnitList~at(testUnitList~first)[1] -- get first testClass
+
+   -- will parse the array lines and store result in class object
+    call makeDirTestInfo aTestUnitClass, arrLines
+    tmpDir=aTestUnitClass~TestCaseInfo
+    parse source s   -- op_sys invocationType fullPathToThisFile
+    tmpDir~setentry("test_Case-source", s)
+   -- now add this directory to other testCase classes, if any left
+    do arr over testUnitList
+        if arr[1]=aTestUnitClass then
+            iterate  -- already handled
+        arr[1]~TestCaseInfo=tmpDir             -- save info in class object
+    end
+
+-- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
+-- and set it to .false; this way the independent local invocation of the tests is inhibited
+    if .local~hasentry("bRunTestsLocally")=.false then
+        .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
+
+    if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
+        do
+            ts=.testSuite~new             -- create a testSuite
+            do arr over testUnitList
+                -- create a testSuite for the given test case class, use all its testmethods
+                ts~addTest( .testSuite~new(arr[1]))
+            end
+            -- testResult=.testSuite~new(testUnitClass)~run
+            testResult=ts~run       -- now run all the tests
+
+            call simpleFormatTestResults testResult
+        end
+
+   /* return list of array objects containing test case classes and
+      optionally list of mandatory test methods                      */
+return testUnitList
+
+::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+
+-- class named exactly like file
+::class "LASTPOS.testGroup" subclass TestCase public
+
+::method 'test000'
+    .local~v26 = 'A B C D E F G H I J K L M N O P Q R S T U V W X Y Z'
+    .local~v8 = 'one two  three   four    five     six      seven       eight'
+    .local~v8. = v8
+    .local~XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    .local~v10000 = COPIES('J ',9999)||'K '
+    .local~vwbw = 'John'||COPIES(' ',10000)||'Buckley'
+    .local~vwbwwbw = 'J'||COPIES(' ',5000)||COPIES('*',10000)||COPIES(' ',5000)||'R'
+    .local~vc1x = '412042'x
+    .local~vc140x = '41202042'x
+    .local~vc7x = '472048'x
+    .local~vc740x = '47202048'x
+    .local~vxnx = '7a786376000000000041534446'x
+
+
+::method 'test001'
+    self~assertSame('subTest01','0',lastPos('',''))
+
+::method 'test002'
+    self~assertSame('subTest01','1',lastPos(' ',' '))
+
+::method 'test003'
+    self~assertSame('subTest01','1',lastPos('WORD1','WORD1 WORD2'))
+
+::method 'test004'
+    self~assertSame('subTest01','7',lastPos('WORD2','WORD1 WORD2'))
+
+::method 'test005'
+    self~assertSame('subTest01','0',lastPos('WORD3','WORD1 WORD2'))
+
+::method 'test006'
+    self~assertSame('subTest01','1',lastPos('4a'x,'4a'x))
+
+::method 'test007'
+    self~assertSame('subTest01','0',lastPos('4b'x,'4a'x))
+
+::method 'test008'
+    self~assertSame('subTest01','1',lastPos('WORD','WORD'))
+
+::method 'test009'
+    self~assertSame('subTest01','0',lastPos('DROW','WORD'))
+
+::method 'test010'
+    self~assertSame('subTest01','0',lastPos('20202020204a522020202020'x,'4a52'x))
+
+::method 'test011'
+    self~assertSame('subTest01','0',lastPos('20202020204a20522020202020'x,'4a52'x))
+
+::method 'test012'
+    self~assertSame('subTest01','1',lastPos(.vc1x,'4120422043204420452046204720482049204a204b204c204d'x))
+
+::method 'test013'
+    self~assertSame('subTest01','0',lastPos(.vc140x,'4120422043204420452046204720482049204a204b204c204d'x))
+
+::method 'test014'
+    self~assertSame('subTest01','13',lastPos(.vc7x,'4120422043204420452046204720482049204a204b204c204d'x))
+
+::method 'test015'
+    self~assertSame('subTest01','0',lastPos(.vc740x,'4120422043204420452046204720482049204a204b204c204d'x))
+
+::method 'test016'
+    self~assertSame('subTest01','1',lastPos('A',.v26))
+
+::method 'test017'
+    self~assertSame('subTest01','19',lastPos('J',.v26))
+
+::method 'test018'
+    self~assertSame('subTest01','51',lastPos('Z',.v26))
+
+::method 'test019'
+    self~assertSame('subTest01','0',lastPos('0',.v26))
+
+::method 'test020'
+    self~assertSame('subTest01','0',lastPos('()',.v26))
+
+::method 'test021'
+    self~assertSame('subTest01','0',lastPos('A     B     C     D     E     ',.v26))
+
+::method 'test022'
+    self~assertSame('subTest01','0',lastPos('V     W     X     Y     Z     ',.v26))
+
+::method 'test023'
+    self~assertSame('subTest01','0',lastPos('X     Y     Z     A     B     ',.v26))
+
+::method 'test024'
+    numeric digits 1
+    self~assertSame('subTest01','16',lastPos(+19,12+6 12+7 12+8 12+9))
+
+::method 'test025'
+    numeric digits 1
+    self~assertSame('subTest01','0',lastPos(+19,'12+6 12+7 12+8 12+9'))
+
+::method 'test026'
+    numeric digits 1
+    self~assertSame('subTest01','6',lastPos(+14,12+1 12+2 12+3 12+4))
+
+::method 'test027'
+    numeric digits 1
+    self~assertSame('subTest01','0',lastPos(+14,'12+1 12+2 12+3 12+4'))
+
+::method 'test028'
+    self~assertSame('subTest01','4',lastPos(+19,12+6 12+7 12+8 12+9))
+
+::method 'test029'
+    self~assertSame('subTest01','0',lastPos(+19,'12+6 12+7 12+8 12+9'))
+
+::method 'test030'
+    self~assertSame('subTest01','4',lastPos(+14,12+1 12+2 12+3 12+4))
+
+::method 'test031'
+    self~assertSame('subTest01','0',lastPos(+14,'12+1 12+2 12+3 12+4'))
+
+::method 'test032'
+    self~assertSame('subTest01',1,lastPos(nv.,'NV.'))
+
+::method 'test033'
+    self~assertSame('subTest01',1,lastPos('NV.',nv.))
+    --call ver lastPos('NV.',nv.),1
+
+::method 'test034'
+    self~assertSame('subTest01','1',lastPos(nv,'NV'))
+
+::method 'test035'
+    self~assertSame('subTest01','1',lastPos(nv.,'NV.'))
+
+::method 'test036'
+    self~assertSame('subTest01','1',lastPos(nv.10,'NV.10'))
+
+::method 'test037'
+    self~assertSame('subTest01','1',lastPos('NV',nv))
+
+::method 'test038'
+    self~assertSame('subTest01','1',lastPos('NV.',nv.))
+
+::method 'test039'
+    self~assertSame('subTest01','1',lastPos('NV.10',nv.10))
+
+::method 'test040'
+    self~assertSame('subTest01','0',lastPos('qwer zxcv ASDF','     asdf qwer zxcv     ASDF QWER ZXCV'))
+
+::method 'test041'
+    self~assertSame('subTest01','1',lastPos('one',.v8))
+
+::method 'test042'
+    self~assertSame('subTest01','0',lastPos('two                three four',.v8))
+
+::method 'test043'
+    self~assertSame('subTest01','0',lastPos('seven eight nine',.v8))
+
+::method 'test044'
+    self~assertSame('subTest01','0',lastPos('41534446202020'x,'6173646620717765722041534446205157455220'x))
+
+::method 'test045'
+    self~assertSame('subTest01','0',lastPos('20202041534446'x,'6173646620717765722041534446205157455220'x))
+
+
+
+
+/*
+::method 'test0'
+    self~assertSame('subTest01',,lastPos())
+    self~expectSyntax()
+
+
+
+::method 'test0'
+    self~assertSame('subTest01',,lastPos())
+--call ver lastPos('204153444620'x,'6173646620717765722041534446205157455220'x),'10'; R0089:
+
+::method 'test0'
+    self~assertSame('subTest01',,lastPos())
+--call ver lastPos('7a786376'x,'61736466207a786376000000000041534446205a584356'x),'6'; R0090:
+
+::method 'test0'
+    self~assertSame('subTest01',,lastPos())
+--call ver lastPos('41534446'x,'61736466207a786376000000000041534446205a584356'x),'15'; R0091:
+
+::method 'test0'
+    self~assertSame('subTest01',,lastPos())
+--call ver lastPos(.vxnx,'61736466207a786376000000000041534446205a584356'x),'6'; R0092:
+
+::method 'test0'
+    self~assertSame('subTest01',,lastPos())
+--call ver lastPos('J',v10000),'19997'; R0093:
+
+::method 'test0'
+    self~assertSame('subTest01',,lastPos())
+--call ver lastPos('J  K',v10000),'0'; R0094:
+
+::method 'test0'
+    self~assertSame('subTest01',,lastPos())
+--call ver lastPos('J K',v10000),'19997'; R0095:
+
+::method 'test0'
+    self~assertSame('subTest01',,lastPos())
+--call ver lastPos('K',v10000),'19999'; R0096:
+
+::method 'test0'
+    self~assertSame('subTest01',,lastPos())
+--call ver lastPos('K J',v10000),'0'; R0097:
+
+::method 'test0'
+    self~assertSame('subTest01',,lastPos())
+--call ver lastPos('1',XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX),'1'; R0099:
+
+::method 'test0'
+    self~assertSame('subTest01',,lastPos())
+--call ver lastPos('35'x,XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX),'9'; R0100:
+
+::method 'test0'
+    self~assertSame('subTest01',,lastPos())
+--call ver lastPos('35202020202020202020203620372020202020202020202038'x,XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX),'0'; R0101:
+
+::method 'test0'
+    self~assertSame('subTest01',,lastPos())
+--call ver lastPos('J '||copies('*',10000),vwbwwbw),'0'; R0102:
+
+::method 'test0'
+    self~assertSame('subTest01',,lastPos())
+--call ver lastPos(copies('*',10000)||' R',vwbwwbw),'0'; R0103:
+
+::method 'test0'
+    self~assertSame('subTest01',,lastPos())
+--call ver lastPos('J',vwbwwbw),'1'; R0104:
+
+::method 'test0'
+    self~assertSame('subTest01',,lastPos())
+--call ver lastPos(copies('*',10000),vwbwwbw),'5002'; R0105:
+
+::method 'test0'
+    self~assertSame('subTest01',,lastPos())
+--call ver lastPos('R',vwbwwbw),'20002'; R0106:
+
+::method 'test0'
+    self~assertSame('subTest01',,lastPos())
+--call ver lastPos('John',vwbw),'1'; R0107:
+
+::method 'test0'
+    self~assertSame('subTest01',,lastPos())
+--call ver lastPos('Buckley',vwbw),'10005'; R0108:
+
+::method 'test0'
+    self~assertSame('subTest01',,lastPos())
+--call ver lastPos('John Buckley',vwbw),'0'; R0109:
+
+::method 'test0'
+    self~assertSame('subTest01',,lastPos())
+--call ver lastPos('Buckley John',vwbw),'0'; R0110:
+
+::method 'test0'
+    self~assertSame('subTest01',,lastPos())
+--call ver lastPos(00345,(00345 03450 34500)),'1'; R0111:
+
+::method 'test0'
+    self~assertSame('subTest01',,lastPos())
+--call ver lastPos(00345          03450,(00345 03450 34500)),'1'; R0112:
+
+::method 'test0'
+    self~assertSame('subTest01',,lastPos())
+--call ver lastPos(34500,(00345 03450 34500)),'13'; R0113:
+
+::method 'test0'
+    self~assertSame('subTest01',,lastPos())
+--call ver lastPos(34500                    00,(00345 03450 34500)),'0'; R0114:
+
+::method 'test0'
+    self~assertSame('subTest01',,lastPos())
+--call ver lastPos(3 4||copies(' ',10000)||5,(3 4 5)),'0'; R0115:
+
+::method 'test0'
+    self~assertSame('subTest01',,lastPos())
+--call ver lastPos('one two three five',(.v8)),'0'; R0116:
+
+::method 'test0'
+    self~assertSame('subTest01',,lastPos())
+--call ver lastPos('four'||copies(' ',50000)||'five six',(.v8.)),'0'; R0117:
+
+::method 'test0'
+    self~assertSame('subTest01',,lastPos())
+--call ver lastPos('three four five',(.v8.10)),'0'; R0118:
+
+::method 'test0'
+    self~assertSame('subTest01',,lastPos())
+--call ver lastPos('seven eight nine',(.v8.10)),'0'; R0119:
+
+::method 'test0'
+    self~assertSame('subTest01',,lastPos())
+--call ver lastPos('ten',(.v8.10)),'0'; R0120:
+
+::method 'test0'
+    self~assertSame('subTest01',,lastPos())
+--call ver lastPos('Z Z',.v26||' '||REVERSE(.v26)),'51'; R0121:
+
+::method 'test0'
+    self~assertSame('subTest01',,lastPos())
+--call ver lastPos('Y Z Z Y',.v26' 'REVERSE(.v26)),'49'; R0122:
+
+::method 'test0'
+    self~assertSame('subTest01',,lastPos())
+--call ver lastPos('X Y Z Z Y',.v26 REVERSE(.v26)),'47'; R0123:
+
+::method 'test0'
+    self~assertSame('subTest01',,lastPos())
+--call ver lastPos('z z',.v26||' '||REVERSE(.v26)),'0'; R0124:
+
+::method 'test0'
+    self~assertSame('subTest01',,lastPos())
+--call ver lastPos('y z z y',.v26' 'REVERSE(.v26)),'0'; R0125:
+
+::method 'test0'
+    self~assertSame('subTest01',,lastPos())
+--call ver lastPos('x y z z y',.v26 REVERSE(.v26)),'0'; R0126:
+
+::method 'test0'
+    self~assertSame('subTest01',,lastPos())
+--call ver lastPos('two three',SUBSTR('one two three four',5,9)),'1'; R0137:
+
+::method 'test0'
+    self~assertSame('subTest01',,lastPos())
+--call ver lastPos('NUM                       CHAR',DATATYPE(6) DATATYPE('A')),'0'; R0138:
+
+::method 'test0'
+    self~assertSame('subTest01',,lastPos())
+--call ver lastPos('num                       char',DATATYPE(6) DATATYPE('A')),'0'; R0139:
+
+*/
