@@ -58,28 +58,25 @@
 #include <sys/stat.h>
 #include <errno.h>
 
-#define INCL_REXXSAA
 #include "rexx.h"
 
-PCHAR   pcharTemp;
+char   *pcharTemp;
 
 int main()
 {
-    RXSTRING arg[4];                      /* argument string for Rexx   */
+    CONSTRXSTRING arg[4];                 /* argument string for Rexx   */
     RXSTRING rexxretval;                  /* return value from Rexx     */
     RXSTRING instore[2];                  /* in storage parms           */
-    CHAR     *pszTemp;
-    PRXSTART FuncAddress;
+    char     *pszTemp;
     APIRET   rc = 0;                      /* return code from Rexx      */
-    LONG     rexxrc = 0;                  /* return code from function  */
+    short    rexxrc = 0;                  /* return code from function  */
 
-    CHAR    val;
-    CHAR    *str1 = "Arg number one";                 /* text to swap   */
-    CHAR    *str2 = "Arg number two";                 /* text to swap   */
-    CHAR    *str3 = "Arg number three";               /* text to swap   */
-    CHAR    *str4 = "Arg number four";                /* text to swap   */
-    CHAR    *prg1 = "say Arg(1)";                     /* text to swap   */
-    CHAR    *sync_tst = "call time 'Reset';" \
+    char    val;
+    const char *str1 = "Arg number one";                 /* text to swap   */
+    const char *str2 = "Arg number two";                 /* text to swap   */
+    const char *str3 = "Arg number three";               /* text to swap   */
+    const char *str4 = "Arg number four";                /* text to swap   */
+    const char *sync_tst = "call time 'Reset';" \
                         "object1 = .example~new;" \
                         "object2 = .example~new;" \
                         "object3 = .example~new;" \
@@ -130,7 +127,7 @@ int main()
     printf("CALLREXX1 - RESULT-LENGTH:           %d\n", rexxretval.strlength);
     printf("CALLREXX1 - RESULT-Value:            %s\n", rexxretval.strptr);
 
-    RexxReleaseResultMemory(rexxretval.strptr);
+    RexxFreeMemory(rexxretval.strptr);
 
     printf("Press Enter to continue\n");
     scanf("%c", &val);
@@ -162,7 +159,7 @@ int main()
     printf("CALLREXX1 - RESULT-LENGTH:           %d\n", rexxretval.strlength);
     printf("CALLREXX1 - RESULT-Value:            %s\n", rexxretval.strptr);
 
-    RexxReleaseResultMemory(rexxretval.strptr);
+    RexxFreeMemory(rexxretval.strptr);
 
     printf("Press Enter to continue\n");
     scanf("%c", &val);
@@ -199,7 +196,7 @@ int main()
     printf("CALLREXX1 - RESULT-LENGTH:           %d\n", rexxretval.strlength);
     printf("CALLREXX1 - RESULT-Value:            %s\n", rexxretval.strptr);
 
-    RexxReleaseResultMemory(rexxretval.strptr);
+    RexxFreeMemory(rexxretval.strptr);
 
     printf("Press Enter to continue\n");
     scanf("%c", &val);
@@ -315,7 +312,7 @@ int main()
     printf("Press Enter to continue\n");
     scanf("%c", &val);
 
-    instore[0].strptr = sync_tst;
+    instore[0].strptr = const_cast<char *>(sync_tst);
     instore[0].strlength = strlen(instore[0].strptr);
     instore[1].strptr = NULL;
     instore[1].strlength = 0;

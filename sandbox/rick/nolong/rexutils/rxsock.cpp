@@ -59,10 +59,6 @@
 
 #ifdef OPSYS_LINUX
   #define SO_USELOOPBACK  0x0040    /* bypass hardware when possible         */
-//#define SO_SNDLOWAT     0x1003    /* send low-water mark                   */
-//#define SO_RCVLOWAT     0x1004    /* receive low-water mark                */
-//#define SO_SNDTIMEO     0x1005    /* send timeout                          */
-//#define SO_RCVTIMEO     0x1006    /* receive timeout                       */
 #endif
 
 /*------------------------------------------------------------------
@@ -117,9 +113,7 @@ typedef struct
 
 RxSockFuncTableEntry RxSockFuncTable[] =
 {
-//#if defined(WIN32) || defined(OPSYS_LINUX)
     TABLEENTRY( SockDropFuncs             )
-//#endif
     TABLEENTRY( SockAccept                )
     TABLEENTRY( SockBind                  )
     TABLEENTRY( SockClose                 )
@@ -150,43 +144,6 @@ RxSockFuncTableEntry RxSockFuncTable[] =
 #define RxSockFuncTableSize \
    (sizeof RxSockFuncTable / sizeof RxSockFuncTable[0] )
 
-#if defined(OPSYS_AIX31) || defined(OPSYS_LINUX)
-    #define RFB_TABLEENTRY(fun) { #fun , SockFunctionGateWay, NULL},
-
-RXFUNCBLOCK RxSockFuncBlock[] =
-{
-    RFB_TABLEENTRY( SockAccept                )
-    RFB_TABLEENTRY( SockBind                  )
-    RFB_TABLEENTRY( SockClose                 )
-    RFB_TABLEENTRY( SockConnect               )
-    RFB_TABLEENTRY( SockGetHostByAddr         )
-    RFB_TABLEENTRY( SockGetHostByName         )
-    RFB_TABLEENTRY( SockGetHostId             )
-    RFB_TABLEENTRY( SockGetPeerName           )
-    RFB_TABLEENTRY( SockGetSockName           )
-    RFB_TABLEENTRY( SockGetSockOpt            )
-    RFB_TABLEENTRY( SockInit                  )
-    RFB_TABLEENTRY( SockIoctl                 )
-    RFB_TABLEENTRY( SockListen                )
-    RFB_TABLEENTRY( SockPSock_Errno           )
-    RFB_TABLEENTRY( SockRecv                  )
-    RFB_TABLEENTRY( SockRecvFrom              )
-    RFB_TABLEENTRY( SockSelect                )
-    RFB_TABLEENTRY( SockSend                  )
-    RFB_TABLEENTRY( SockSendTo                )
-    RFB_TABLEENTRY( SockSetSockOpt            )
-    RFB_TABLEENTRY( SockShutDown              )
-    RFB_TABLEENTRY( SockSocket                )
-    RFB_TABLEENTRY( SockSock_Errno            )
-    RFB_TABLEENTRY( SockSoClose               )
-    RFB_TABLEENTRY( SockVersion               )
-    {
-        NULL, NULL, NULL
-    }
-};
-
-#endif
-
 /*-/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\-*/
 /*-\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/-*/
 
@@ -194,7 +151,7 @@ RXFUNCBLOCK RxSockFuncBlock[] =
 /*------------------------------------------------------------------
  * stricmp for aix
  *------------------------------------------------------------------*/
-int stricmp(char *op1, char *op2)
+int stricmp(const char *op1, const char *op2)
 {
     for (; tolower(*op1) == tolower(*op2); op1++,op2++)
         if (*op1 == 0)
@@ -594,12 +551,12 @@ void stem2sockaddr(const char * pszStem, sockaddr_in *pSockAddr)
     if (!stricmp(pszFamily,"AF_INET"))
         pSockAddr->sin_family = AF_INET;
     else
-        pSockAddr->sin_family = (SHORT) strtol(pszFamily,NULL,10);
+        pSockAddr->sin_family = strtol(pszFamily,NULL,10);
 
     /*---------------------------------------------------------------
      * get port
      *---------------------------------------------------------------*/
-    pSockAddr->sin_port = (USHORT) strtoul(pszPort,NULL,10);
+    pSockAddr->sin_port = strtoul(pszPort,NULL,10);
     pSockAddr->sin_port = htons(pSockAddr->sin_port);
 
     /*---------------------------------------------------------------
@@ -954,10 +911,9 @@ APIRET APIENTRY SockVersion(const char *name, size_t argc, PCONSTRXSTRING argv, 
     return 0;
 }
 
-#if !defined(OPSYS_AIX31)
 /*-/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\-*/
 /*-\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/-*/
-    #if defined(OPSYS_AIX) || defined(OPSYS_LINUX)
+#if defined(OPSYS_AIX) || defined(OPSYS_LINUX)
 APIRET APIENTRY SOCKLOADFUNCS(const char *name, size_t argc, PCONSTRXSTRING argv, const char *qName, PRXSTRING  retStr)
 {
     return(SockLoadFuncs( name, argc, argv, qName, retStr ));
@@ -1038,15 +994,5 @@ APIRET APIENTRY SockDie(const char *name, size_t argc, PCONSTRXSTRING argv, cons
     return 0;
 }
 
-#else
-/*------------------------------------------------------------------
- * load the function package
- *------------------------------------------------------------------*/
-int SockLoadFuncs(RXFUNCBLOCK **FuncBlock )
-{
-    *FuncBlock = RxSockFuncBlock;
-    return 0;
-}
-#endif
 
 

@@ -175,7 +175,7 @@ int  APIENTRY RexxStart(
   const char *programname,             /* REXX program to run               */
   PRXSTRING instore,                   /* Instore array                     */
   const char *envname,                 /* Initial cmd environment           */
-  size_t calltype,                     /* How the program is called         */
+  int  calltype,                       /* How the program is called         */
   PRXSYSEXIT exits,                    /* Array of system exit names        */
   short * retcode,                     /* Integer form of result            */
   PRXSTRING result)                    /* Result returned from program      */
@@ -242,7 +242,7 @@ int  APIENTRY ApiRexxStart(
   const char *programname,             /* REXX program to run               */
   PRXSTRING instore,                   /* Instore array                     */
   const char *envname,                 /* Initial cmd environment           */
-  size_t calltype,                     /* How the program is called         */
+  int    calltype,                     /* How the program is called         */
   PRXSYSEXIT exits,                    /* Array of system exit names        */
   short * retcode,                     /* Integer form of result            */
   PRXSTRING result)                    /* Result returned from program      */

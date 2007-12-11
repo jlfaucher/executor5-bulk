@@ -50,7 +50,6 @@ typedef struct _REXXDATETIME {         /* REXX time stamp format            */
   uint16_t       weekday;              /* day of the week                   */
   uint32_t       microseconds;         /* microseconds                      */
   uint32_t       yearday;              /* day number within the year        */
-  bool           valid;                /* valid time stamp marker           */
 } REXXDATETIME;
 
 /***    RexxPullQueue - Retrieve data from an External Data Queue */

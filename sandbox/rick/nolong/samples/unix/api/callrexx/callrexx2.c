@@ -60,33 +60,29 @@
 #include <sys/stat.h>
 #include <errno.h>
 
-#define INCL_REXXSAA
 #include "rexx.h"
 
 char   *pcharTemp;
 
-int main()
+int main(int argc, char **argv)
 {
-    RXSTRING arg[4];                        /* argument string for Rexx  */
+    CONSTRXSTRING arg[4];                   /* argument string for Rexx  */
     RXSTRING rexxretval;                    /* return value from Rexx    */
     RXSTRING instore[2];                    /* in storage parms          */
     char     *pszTemp;
-    PRXSTART FuncAddress;
-    PRXWAITFORTERMINATION  WaitForTermFuncPtr;
-    char    *ret_val = NULL;
+    PFNREXXSTART FuncAddress;
     void    *pLibHandle = NULL;             /* Library handle             */
     APIRET   rc = 0;                        /* return code from Rexx      */
-    LONG     rexxrc = 0;                    /* return code from function  */
-    char    *pszLibraryName = "librexx.so"; /* define the library name    */
+    short    rexxrc = 0;                    /* return code from function  */
+    const char *pszLibraryName = "librexx.so"; /* define the library name    */
 
     char    val;
-    char    *str1 = "Arg number one";                   /* text to swap   */
-    char    *str2 = "Arg number two";                   /* text to swap   */
-    char    *str3 = "Arg number three";                 /* text to swap   */
-    char    *str4 = "Arg number four";                  /* text to swap   */
-    char    *prg1 = "say Arg(1)";                       /* text to swap   */
+    const char *str1 = "Arg number one";                   /* text to swap   */
+    const char *str2 = "Arg number two";                   /* text to swap   */
+    const char *str3 = "Arg number three";                 /* text to swap   */
+    const char *str4 = "Arg number four";                  /* text to swap   */
 
-    char    *sync_tst = "call time 'Reset';" \
+    const char *sync_tst = "call time 'Reset';" \
                         "object1 = .example~new;" \
                         "object2 = .example~new;" \
                         "object3 = .example~new;" \
@@ -102,14 +98,14 @@ int main()
                         "exit;" \
                         "::REQUIRES 'example.rex'";
 
-    if (!(pLibHandle = dlopen("librexx.so", RTLD_LAZY )))
+    if (!(pLibHandle = dlopen(pszLibraryName, RTLD_LAZY )))
     {                            /* Load and resolve symbols immediately  */
       fprintf(stderr, " *** Unable to load library %s !\nError message: %s\n",
                pszLibraryName, dlerror());
       return 99;
     }
 
-    if(!(FuncAddress = (PRXSTART) dlsym(pLibHandle, "RexxStart")))
+    if(!(FuncAddress = (PFNREXXSTART) dlsym(pLibHandle, "RexxStart")))
     {
       rc = 1;                               /* could not resolve          */
       fprintf(stderr, " *** Unable to load function %s !\nError message: %s\n",
@@ -153,7 +149,6 @@ int main()
     printf("CALLREXX2 - RESULT-LENGTH:           %d\n", rexxretval.strlength);
     printf("CALLREXX2 - RESULT-Value:            %s\n", rexxretval.strptr);
 
-    // TODO:  Resolve RexxFreeMemory
     RexxFreeMemory(rexxretval.strptr);
 
     printf("Press Enter to continue\n");
@@ -340,7 +335,7 @@ int main()
     printf("Press Enter to continue\n");
     scanf("%c", &val);
 
-    instore[0].strptr = sync_tst;
+    instore[0].strptr = (char *)sync_tst;
     instore[0].strlength = strlen(instore[0].strptr);
     instore[1].strptr = NULL;
     instore[1].strlength = 0;
@@ -498,5 +493,6 @@ int main()
     scanf("%c", &val);
 
     system("clear");
+    return 0; 
 }
 

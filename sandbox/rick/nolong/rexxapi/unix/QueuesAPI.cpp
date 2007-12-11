@@ -629,7 +629,6 @@ void GetDateTime(REXXDATETIME *datetime){
   datetime->weekday      = dt->tm_wday;
   datetime->microseconds = 0;         /* not possible                 */
   datetime->yearday      = dt->tm_yday;
-  datetime->valid        = 1;
 }
 
 /*********************************************************************/

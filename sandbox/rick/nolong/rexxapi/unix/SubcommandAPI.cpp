@@ -104,7 +104,7 @@ int dllcheck(const char *, const char *, int);    // Check against duplicating
 int execheck(const char *, int);
 int RegLoad(const char *, const char *, int , void **, void **);
 int  RegDrop(const char *, const char *, int);       // Drop an api block from the chain
-int  RegRegisterExe(const char *, REXXPFN, const char *, size_t);
+int  RegRegisterExe(const char *, REXXPFN, const char *, int);
 int  RegRegisterDll(const char *, const char *, const char *, const char *, size_t, int);
 APIBLOCK *RegSearch(const char *, int, char);
 

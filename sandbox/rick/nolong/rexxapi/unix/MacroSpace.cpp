@@ -86,7 +86,7 @@
 #include <dlfcn.h>
 
 int  APIENTRY ApiRexxStart(size_t argcount, PCONSTRXSTRING arglist, const char *programname,
-    PRXSTRING instore, const char *envname, size_t calltype, PRXSYSEXIT exits, short * retcode, PRXSTRING result);       
+    PRXSTRING instore, const char *envname, int calltype, PRXSYSEXIT exits, short * retcode, PRXSTRING result);       
 
 extern REXXAPIDATA  *apidata;          /* Global state data          */
 

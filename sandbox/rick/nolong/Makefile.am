@@ -648,6 +648,8 @@ librexxutil_la_LDFLAGS = $(VERSION_INFO) @ORX_LDFLAGS_LIBRARY@
 #
 librxmath_la_CXXFLAGS = $(COMMON_CPPFLAGS) \
                         -I$(top_srcdir)/lib \
+                        -I$(api_dir) \
+                        -I$(platform_api_dir) \
                         -I$(kernel_dir) \
                         -I$(messages_dir) \
                         -I$(kernel_platform_common_dir) \
@@ -667,13 +669,15 @@ librxmath_la_LDFLAGS = $(VERSION_INFO) @ORX_LDFLAGS_LIBRARY@
 #################### librxsock.so ################
 # Preprocessor flags for librxsock.so
 #
-librxsock_la_CFLAGS = $(COMMON_CPPFLAGS) \
+librxsock_la_CXXFLAGS = $(COMMON_CPPFLAGS) \
+                      -I$(api_dir) \
+                      -I$(platform_api_dir) \
                       -I$(rexxapi_unix_dir)
 #
 # Sources for librxsock.so
 #
-librxsock_la_SOURCES = $(rexutils_dir)/rxsock.c \
-                       $(rexutils_dir)/rxsockfn.c
+librxsock_la_SOURCES = $(rexutils_dir)/rxsock.cpp \
+                       $(rexutils_dir)/rxsockfn.cpp
 #
 # Extra libraries for librxsock.so (maybe)
 #
@@ -685,6 +689,8 @@ librxsock_la_LDFLAGS = $(VERSION_INFO) @ORX_LDFLAGS_LIBRARY@
 #
 librxregexp_la_CXXFLAGS = $(COMMON_CPPFLAGS) \
                           -I$(top_srcdir)/lib \
+                          -I$(api_dir) \
+                          -I$(platform_api_dir) \
                           -I$(kernel_dir) \
                           -I$(expression_dir) \
                           -I$(classes_dir) \
