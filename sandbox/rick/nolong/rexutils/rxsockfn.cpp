@@ -70,29 +70,24 @@
 #include <errno.h>
 
 #if !defined(WIN32)
-# include <netdb.h>
-# include <netinet/in.h>
+#include <netdb.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 # ifdef __APPLE__
    // need to define this for Mac OSX 10.2
-#  define _BSD_SOCKLEN_T_
-# endif
-# include <sys/socket.h>
-# include <sys/ioctl.h>
-# include <sys/time.h>
-# include <unistd.h>
-
-# if defined( HAVE_SYS_SELECT_H )
-#  include <sys/select.h>
-# endif
-# if defined( HAVE_SYS_FILIO_H )
-#  include <sys/filio.h>
-# endif
+#define _BSD_SOCKLEN_T_
 #endif
+#include <sys/socket.h>
+#include <sys/ioctl.h>
+#include <sys/time.h>
+#include <unistd.h>
 
-#if defined(OPSYS_AIX)
-/* #define _Seg16             */
-   #define APIENTRY
-   typedef long NativeInt;
+#if defined( HAVE_SYS_SELECT_H )
+#include <sys/select.h>
+#endif
+#if defined( HAVE_SYS_FILIO_H )
+#include <sys/filio.h>
+#endif
 #endif
 
 #if defined(WIN32)                     // define errno equivalents for windows
@@ -988,8 +983,8 @@ APIRET APIENTRY SockRecvFrom(const char *name, size_t argc, PCONSTRXSTRING argv,
     int       dataLen;
     int       flags;
     CONSTRXSTRING  rxVar;
-    LONG      rc;
-    PSZ       pBuffer;
+    int       rc;
+    char     *pBuffer;
     const char *pStem;
     SHVBLOCK  shv;
     int       chk;
@@ -1035,7 +1030,7 @@ APIRET APIENTRY SockRecvFrom(const char *name, size_t argc, PCONSTRXSTRING argv,
     flags = 0;
     if (5 == argc)
     {
-        PSZ pszWord;
+        const char *pszWord;
 
         // strtok modifies the tokenized string.  That's against the rules of
         // usage here, so we need to make a copy first.
@@ -1110,13 +1105,8 @@ APIRET APIENTRY SockRecvFrom(const char *name, size_t argc, PCONSTRXSTRING argv,
  *------------------------------------------------------------------*/
 APIRET APIENTRY SockSelect(const char *name, size_t argc, PCONSTRXSTRING argv, const char *qName, PRXSTRING  retStr)
 {
-#if defined(OPSYS_LINUX)
-    struct timespec  timeOutS;
-    struct timespec *timeOutP;
-#else
     struct timeval  timeOutS;
     struct timeval *timeOutP;
-#endif
     int             rCount;
     int             wCount;
     int             eCount;
@@ -1161,11 +1151,7 @@ APIRET APIENTRY SockSelect(const char *name, size_t argc, PCONSTRXSTRING argv, c
             to = 0;
 
         timeOutS.tv_sec  = to;
-#if defined(OPSYS_LINUX)
-        timeOutS.tv_nsec = 0;
-#else
         timeOutS.tv_usec = 0;
-#endif
         timeOutP = &timeOutS;
     }
 
@@ -1297,7 +1283,7 @@ APIRET APIENTRY SockSend(const char *name, size_t argc, PCONSTRXSTRING argv, con
     int      dataLen;
     const char *data;
     int      flags;
-    LONG     rc;
+    APIRET   rc;
     int      chk;
 
     /*---------------------------------------------------------------
@@ -1334,7 +1320,7 @@ APIRET APIENTRY SockSend(const char *name, size_t argc, PCONSTRXSTRING argv, con
     flags = 0;
     if (3 == argc)
     {
-        PSZ pszWord;
+        const char *pszWord;
         // strtok modifies the tokenized string.  That's against the rules of
         // usage here, so we need to make a copy first.
         char *flagStr = strdup(argv[2].strptr);
@@ -1375,7 +1361,7 @@ APIRET APIENTRY SockSendTo(const char *name, size_t argc, PCONSTRXSTRING argv, c
     int      dataLen;
     const char *data;
     int      flags;
-    LONG     rc;
+    APIRET   rc;
     int      chk;
     sockaddr_in addr;
     const char *pStem;
@@ -1414,7 +1400,7 @@ APIRET APIENTRY SockSendTo(const char *name, size_t argc, PCONSTRXSTRING argv, c
     flags = 0;
     if (4 == argc)
     {
-        PSZ pszWord;
+        const char *pszWord;
         // strtok modifies the tokenized string.  That's against the rules of
         // usage here, so we need to make a copy first.
         char *flagStr = strdup(argv[2].strptr);

@@ -90,7 +90,7 @@ bool SearchFileName(const char *, char *);
 extern bool RexxStartedByApplication;
 
 extern "C" {
-APIRET REXXENTRY RexxTranslateProgram(char *, char *, PRXSYSEXIT);
+APIRET REXXENTRY RexxTranslateProgram(const char *, const char *, PRXSYSEXIT);
 char *REXXENTRY RexxGetVersionInformation();
 }
 
@@ -865,8 +865,8 @@ APIRET REXXENTRY RexxLoadMethod(const char *dirname, PRXSTRING scriptData, RexxO
 /*                                                                            */
 /******************************************************************************/
 APIRET REXXENTRY RexxTranslateProgram(
-   char     *inFile,                   /* input source program              */
-   char     *outFile,                  /* output file name                  */
+   const char     *inFile,             /* input source program              */
+   const char     *outFile,            /* output file name                  */
    PRXSYSEXIT   exits)                 /* system exits                      */
 {
   LONG     rc;                         /* RexxStart return code             */

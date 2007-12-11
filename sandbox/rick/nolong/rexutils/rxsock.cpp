@@ -93,6 +93,7 @@
 #include <netdb.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
+#include <arpa/inet.h>
 #endif
 
 /*------------------------------------------------------------------
@@ -706,7 +707,7 @@ int rxs2SockOpt(const char * pszOptName)
 void SetErrno(void)
 {
     char szBuff[20];
-    char *   pszErrno = szBuff;
+    const char *pszErrno = szBuff;
     int   theErrno;
 
 #if defined(WIN32)
@@ -801,7 +802,7 @@ void SetErrno(void)
             sprintf(szBuff,"%d",theErrno);
     }
 
-    RxVarSet("errno",pszErrno);
+    RxVarSet("errno", pszErrno);
 }
 
 
@@ -811,7 +812,7 @@ void SetErrno(void)
 void SetH_Errno(void)
 {
     char szBuff[20];
-    char *pszErrno = szBuff;
+    const char *pszErrno = szBuff;
     int   theErrno;
 
     theErrno = 1541;
@@ -840,7 +841,7 @@ static int Initialized = 0;
  *------------------------------------------------------------------*/
 APIRET APIENTRY SockFunctionGateWay(const char *name, size_t argc, PCONSTRXSTRING argv, const char *qName, PRXSTRING  retStr)
 {
-    int                          i;
+    size_t                       i;
     size_t                       ulRc;
     RexxFunctionHandler         *pRxFunc;
 #ifdef WIN32
@@ -925,7 +926,7 @@ APIRET APIENTRY SOCKLOADFUNCS(const char *name, size_t argc, PCONSTRXSTRING argv
  *------------------------------------------------------------------*/
 APIRET APIENTRY SockLoadFuncs(const char *name, size_t argc, PCONSTRXSTRING argv, const char *qName, PRXSTRING  retStr)
 {
-    int i;
+    size_t i;
 
     /*---------------------------------------------------------------
      * initialize return value to empty string
@@ -958,7 +959,7 @@ APIRET APIENTRY SockLoadFuncs(const char *name, size_t argc, PCONSTRXSTRING argv
  *------------------------------------------------------------------*/
 APIRET APIENTRY SockDropFuncs(const char *name, size_t argc, PCONSTRXSTRING argv, const char *qName, PRXSTRING  retStr)
 {
-    int i;
+    size_t i;
 
     /*---------------------------------------------------------------
      * initialize return value to empty string

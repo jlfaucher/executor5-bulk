@@ -75,7 +75,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-LONG APIENTRY RexxTranslateProgram(PSZ, PSZ);
+APIRET APIENTRY RexxTranslateProgram(const char *, const char *);
 #ifdef __cplusplus
 }
 #endif
@@ -87,7 +87,7 @@ void DisplayError(int msgid)           /* simplified catalog access@MAE004M */
  nl_catd        catd;                  /* catalog descriptor from catopen() */
 #endif
  int            set_num = 1;           /* message set 1 from catalog        */
- PSZ            message;               /* message pointer                   */
+ const char    *message;               /* message pointer                   */
  char           DataArea[256];         /* buf to return message             */
 
 #if defined( HAVE_CATOPEN )
@@ -136,7 +136,7 @@ void DisplayError(int msgid)           /* simplified catalog access@MAE004M */
 int main (int argc, char **argv)
 {
   bool silent = false;
-  INT silentp;
+  int silentp;
   char *ptr;
                                        /* check for /s option               */
   for (silentp = 1; silentp < argc; silentp++) {

@@ -78,7 +78,7 @@
 #define SECOND_PARAMETER 0             /* 0 for no  NL_CAT_LOCALE    */
 #endif
 
-void parmerr(ULONG);
+void parmerr(size_t); 
 
 int main(                              /* Program Begins             */
 int     argc,                          /* Argument count             */
