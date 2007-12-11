@@ -62,13 +62,13 @@
 # include <nl_types.h>
 #endif
 
-#include "PlatformDefinitions.h"
 #include <limits.h>
 #include <stdio.h>             /* needed for screen output           */
 #include <stdlib.h>            /* needed for miscellaneous functions */
 #include <string.h>            /* needed for string functions        */
 #include "RexxAPIManager.h"
 #include "rexx.h"              /* needed for queue functions & codes */
+#include "PlatformDefinitions.h"
 #include "RexxMessageNumbers.h"
 
 #define RXQUEUE_CLEAR    -2    /* used for queue mode CLEAR flag     */

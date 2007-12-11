@@ -611,10 +611,9 @@ rxdelipc_SOURCES =  $(rexxapi_unix_dir)/APIManagerShutdown.cpp
 #
 # Preprocessor flags for rxdelipc
 #
-rxdelipc_CXXFLAGS  = $(COMMON_CPPFLAGS)
-#                    -I$(top_srcdir)/lib \
-#                    -I$(kernel_platform_unix_dir) \
-#                    -I$(top_srcdir)/kernel/messages
+rxdelipc_CXXFLAGS  = $(COMMON_CPPFLAGS) \
+                     -I$(api_dir) \
+                     -I$(platform_api_dir)  
 #
 # Extra libraries for rxdelipc
 #
