@@ -552,12 +552,12 @@ void stem2sockaddr(const char * pszStem, sockaddr_in *pSockAddr)
     if (!stricmp(pszFamily,"AF_INET"))
         pSockAddr->sin_family = AF_INET;
     else
-        pSockAddr->sin_family = strtol(pszFamily,NULL,10);
+        pSockAddr->sin_family = (short)strtol(pszFamily,NULL,10);
 
     /*---------------------------------------------------------------
      * get port
      *---------------------------------------------------------------*/
-    pSockAddr->sin_port = strtoul(pszPort,NULL,10);
+    pSockAddr->sin_port = (unsigned short)strtoul(pszPort,NULL,10);
     pSockAddr->sin_port = htons(pSockAddr->sin_port);
 
     /*---------------------------------------------------------------
