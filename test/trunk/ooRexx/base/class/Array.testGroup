@@ -284,14 +284,14 @@ return testGroupList
 ::method "test_at_syntax1"
 
   a=.array~new
-  self~expectSyntax("93.938")
+  self~expectSyntax("93.907")
   a~at(.nil)
 
 
 ::method "test_at_syntax2"
 
   a=.array~new
-  self~expectSyntax("93.905")
+  self~expectSyntax("93.907")
   a~at(.string)
 
 
@@ -397,14 +397,14 @@ return testGroupList
 ::method "test_hasIndex_syntax2"
 
   a=.array~new
-  self~expectSyntax("93.938")
+  self~expectSyntax("93.907")
   a~hasIndex(.nil)
 
 
 ::method "test_hasIndex_syntax3"
 
   a=.array~new
-  self~expectSyntax("93.905")
+  self~expectSyntax("93.907")
   a~hasIndex(.string)
 
 
@@ -635,14 +635,14 @@ return testGroupList
 ::method "test_put_syntax3"
 
   a=.array~new
-  self~expectSyntax("93.938")
+  self~expectSyntax("93.907")
   a~put(.nil,.nil)
 
 
 ::method "test_put_syntax4"
 
   a=.array~new
-  self~expectSyntax("93.905")
+  self~expectSyntax("93.907")
   a~put(.nil,.string)
 
 
@@ -711,14 +711,14 @@ return testGroupList
 ::method "test_remove_syntax1"
 
   a=.array~new
-  self~expectSyntax("93.938")
+  self~expectSyntax("93.907")
   a~remove(.nil)
 
 
 ::method "test_remove_syntax2"
 
   a=.array~new
-  self~expectSyntax("93.905")
+  self~expectSyntax("93.907")
   a~remove(.string)
 
 
@@ -1080,14 +1080,14 @@ makeColl: procedure
 ::method "test_next_syntax2"
 
   a=.array~new
-  self~expectSyntax("93.938")
+  self~expectSyntax("93.907")
   a~next(.nil)
 
 
 ::method "test_next_syntax3"
 
   a=.array~new
-  self~expectSyntax("93.905")
+  self~expectSyntax("93.907")
   a~next(.string)
 
 
@@ -1108,14 +1108,14 @@ makeColl: procedure
 ::method "test_previous_syntax2"
 
   a=.array~new
-  self~expectSyntax("93.938")
+  self~expectSyntax("93.907")
   a~previous(.nil)
 
 
 ::method "test_previous_syntax3"
 
   a=.array~new
-  self~expectSyntax("93.905")
+  self~expectSyntax("93.907")
   a~previous(.string)
 
 
@@ -1308,14 +1308,14 @@ makeColl: procedure
 ::method "test_dimension_syntax1"
 
   a=.array~new
-  self~expectSyntax("93.938")
+  self~expectSyntax("93.907")
   a~dimension(.nil)
 
 
 ::method "test_dimension_syntax2"
 
   a=.array~new
-  self~expectSyntax("93.905")
+  self~expectSyntax("93.907")
   a~dimension(.string)
 
 
@@ -1367,14 +1367,14 @@ testSeq: procedure
 ::method "test_section_syntax2"
 
   a=.array~new
-  self~expectSyntax("93.938")
+  self~expectSyntax("93.907")
   a~section(.nil)
 
 
 ::method "test_section_syntax3"
 
   a=.array~new
-  self~expectSyntax("93.905")
+  self~expectSyntax("93.907")
   a~section(.string)
 
 
@@ -1388,14 +1388,14 @@ testSeq: procedure
 ::method "test_section_syntax5"
 
   a=.array~new
-  self~expectSyntax("93.938")
+  self~expectSyntax("93.906")
   a~section(1, .nil)
 
 
 ::method "test_section_syntax6"
 
   a=.array~new
-  self~expectSyntax("93.905")
+  self~expectSyntax("93.906")
   a~section(1, .string)
 
 
@@ -1543,17 +1543,17 @@ testSeq: procedure
   a=.array~of(2,1,3)
   a1=a~sort
   a2=.array~of(1,2,3)
-  self~assertTrue("subtest_04", testSeq(a1, a2))
+  self~assertTrue("subtest_05", testSeq(a1, a2))
 
   a=.array~of(2,1,3,2)
   a1=a~sort
   a2=.array~of(1,2,2,3)
-  self~assertTrue("subtest_04", testSeq(a1, a2))
+  self~assertTrue("subtest_06", testSeq(a1, a2))
 
   a=.array~of(2,1)
   a1=a~sort
   a2=.array~of(1,2)
-  self~assertTrue("subtest_04", testSeq(a1, a2))
+  self~assertTrue("subtest_07", testSeq(a1, a2))
 
   return
 
