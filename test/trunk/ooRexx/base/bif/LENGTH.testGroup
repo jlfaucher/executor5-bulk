@@ -1,0 +1,233 @@
+#!/usr/bin/rexx
+/*
+   name:             LENGTH.testUnit
+   author:           Lee Peedin
+   date:             2007/12/11
+   version:          1.0
+
+-- line commented lines are ignored, when building the directory of infos from this header
+   changed:
+
+   languageLevel:    6.02
+   purpose:          Test the LENGTH BIF
+   remark:           ---
+
+   license:          CPL 1.0 (Common Public License v1.0, see below)
+   link:
+
+// category needs not to be numbered, importance is given by position (1=most important)
+   category1:        ooRexx
+   category2:        Base
+   category3:        BIF
+
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYright HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYright   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+-------------------------------------------------------------------------------------------
+   /* list of array objects, each containing the testUnit class object and an
+      optional list of mandatory test case methods name                       */
+    mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
+    testUnitList=.list~of(.array~of(.LENGTH.testGroup, mandatoryTestMethods))
+
+-------------------------------------------------------------------------------------------
+-- ===> the following code needs not to be individualized                              <===
+
+   -- read top comment, containing infos about this program
+    arrLines=.array~new
+    do i=1 to 150 until arrLines[i]="*/"
+        arrLines[i]=sourceline(i)
+    end
+      -- supply information for the testClass(es) in this file; the class attribute
+      -- "TestCaseInfo" (a directory object, index points to a queue) will store
+      -- the parsed infos
+    aTestUnitClass=testUnitList~at(testUnitList~first)[1] -- get first testClass
+
+   -- will parse the array lines and store result in class object
+    call makeDirTestInfo aTestUnitClass, arrLines
+    tmpDir=aTestUnitClass~TestCaseInfo
+    parse source s   -- op_sys invocationType fullPathToThisFile
+    tmpDir~setentry("test_Case-source", s)
+   -- now add this directory to other testCase classes, if any left
+    do arr over testUnitList
+        if arr[1]=aTestUnitClass then
+            iterate  -- already handled
+        arr[1]~TestCaseInfo=tmpDir             -- save info in class object
+    end
+
+-- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
+-- and set it to .false; this way the independent local invocation of the tests is inhibited
+    if .local~hasentry("bRunTestsLocally")=.false then
+        .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
+
+    if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
+        do
+            ts=.testSuite~new             -- create a testSuite
+            do arr over testUnitList
+                -- create a testSuite for the given test case class, use all its testmethods
+                ts~addTest( .testSuite~new(arr[1]))
+            end
+            -- testResult=.testSuite~new(testUnitClass)~run
+            testResult=ts~run       -- now run all the tests
+
+            call simpleFormatTestResults testResult
+        end
+
+   /* return list of array objects containing test case classes and
+      optionally list of mandatory test methods                      */
+return testUnitList
+
+::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+
+-- class named exactly like file
+::class "LENGTH.testGroup" subclass TestCase public
+
+::method 'test000'
+    .local~v1 = 'a'
+    .local~v30 = copies('8',28)||'  '
+    .local~v255 = xrange('01'x,'ff'x)
+    .local~v256 = xrange('88'x,'87'x)
+    .local~v32768 = copies('*',32768)
+    .local~v100000 = right('z',100000)
+
+::method 'test001'
+    self~assertSame('subTest01','0',length(''))
+
+::method 'test002'
+    self~assertSame('subTest01','0',length(''x))
+
+::method 'test0003'
+--    self~assertSame('subTest01','0',length('00'x))
+-- call ver length('00'x),'0'; R0033:
+
+::method 'test004'
+    self~assertSame('subTest01','2',length('00'))
+
+::method 'test005'
+    self~assertSame('subTest01','1',length(.v1))
+
+::method 'test006'
+    self~assertSame('subTest01','30',length(.v30))
+
+::method 'test007'
+    self~assertSame('subTest01','255',length(.v255))
+
+::method 'test008'
+    self~assertSame('subTest01','256',length(.v256))
+
+::method 'test009'
+    self~assertSame('subTest01','32768',length(.v32768))
+
+::method 'test010'
+    self~assertSame('subTest01','100000',length(.v100000))
+
+::method 'test011'
+    self~assertSame('subTest01','250',length('zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz'))
+
+::method 'test012'
+    zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz = '1'
+    self~assertSame('subTest01','1',length(zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz))
+
+::method 'test013'
+    zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz = '1'
+    self~assertSame('subTest01','4',length(zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz||'...'))
+
+::method 'test014'
+    zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz = '1'
+    self~assertSame('subTest01','100001',length((zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz)||(.v100000)))
+
+::method 'test015'
+    xre = '200'
+    self~assertSame('subTest01',.true,length('8888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888'X) == xre)
+
+::method 'test016'
+    self~assertSame('subTest01','6',length(length(.v100000)))
+
+::method 'test017'
+    self~assertSame('subTest01','9',length(length(.v100000)||'abc'))
+
+::method 'test018'
+    self~assertSame('subTest01','2',length(17+4))
+
+::method 'test019'
+    self~assertSame('subTest01','14',length(+10000000000000000000000000000000000))
+
+::method 'test020'
+    self~assertSame('subTest01','36',length('+10000000000000000000000000000000000'))
+
+::method 'test021'
+    len1 = 1
+    self~assertSame('subTest01',len1,length(1.0000000001**1000000))
+
+::method 'test022'
+    self~assertSame('subTest01','4',length(1111))
+
+::method 'test023'
+    self~assertSame('subTest01','4',length('1111'))
+
+::method 'test024'
+    self~assertSame('subTest01','4',length('f1f1f1f1'x))
+
+::method 'test025'
+    self~assertSame('subTest01','3',length(...))
+
+::method 'test026'
+    self~assertSame('subTest01','2',length(nv))
+
+::method 'test027'
+    self~assertSame('subTest01','3',length(nv.))
+
+::method 'test028'
+    self~assertSame('subTest01','4',length(nv.i))
+
+::method 'test029'
+    self~assertSame('subTest01','4',length(nv.i))
+
+::method 'test030'
+    self~assertSame('subTest01',8,length('abcdefgh'))
+
+::method 'test040'
+    .local~remove(v1)
+    .local~remove(v30)
+    .local~remove(v255)
+    .local~remove(v256)
+    .local~remove(v32768)
+    .local~remove(v100000)
+
+
+
+
