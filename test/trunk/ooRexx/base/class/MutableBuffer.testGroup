@@ -126,7 +126,7 @@ return testGroupList
    self~expectSyntax(93.938)
    b = .mutableBuffer~new(.nil)
 ::method "testInstance3"
-   self~expectSyntax(93.938)
+   self~expectSyntax(93.923)
    b = .mutableBuffer~new("",.nil)
 ::method "testInstance4"
    self~expectSyntax(93.938)
@@ -182,7 +182,7 @@ return testGroupList
    b~insert("",,,.nil)
 ::METHOD "testInsertSyntax5"
    b = .mutableBuffer~new("123456")
-   self~expectSyntax(93.938)
+   self~expectSyntax(93.923)
    b~insert("",.nil,.nil,.nil)
 ::METHOD "testInsertSyntax6"
    b = .mutableBuffer~new("123456")
@@ -226,7 +226,7 @@ return testGroupList
    b~overlay("",,,.nil)
 ::METHOD "testOverlaySyntax5"
    b = .mutableBuffer~new("123456")
-   self~expectSyntax(93.938)
+   self~expectSyntax(93.924)
    b~overlay("",.nil,.nil,.nil)
 ::METHOD "testOverlaySyntax6"
    b = .mutableBuffer~new("123456")
@@ -251,7 +251,7 @@ return testGroupList
    b~delete()
 ::METHOD "testDeleteSyntax2"
    b = .mutableBuffer~new("1234567890")
-   self~expectSyntax(93.938)
+   self~expectSyntax(93.924)
    b~delete(.nil)
 ::METHOD "testDeleteSyntax3"
    b = .mutableBuffer~new("1234567890")
@@ -259,7 +259,7 @@ return testGroupList
    b~delete(0)
 ::METHOD "testDeleteSyntax4"
    b = .mutableBuffer~new("1234567890")
-   self~expectSyntax(93.938)
+   self~expectSyntax(93.923)
    b~delete(1,.nil)
 ::METHOD "testDeleteSyntax5"
    b = .mutableBuffer~new("1234567890")
@@ -291,7 +291,7 @@ return testGroupList
 
 ::METHOD "testPosSyntax4"
    b = .mutableBuffer~new("1234567890")
-   self~expectSyntax(93.938)
+   self~expectSyntax(93.924)
    b~pos("1",.nil)
 
 ::METHOD "testLastpos"
@@ -319,7 +319,7 @@ return testGroupList
 
 ::METHOD "testLastPosSyntax4"
    b = .mutableBuffer~new("1234567890")
-   self~expectSyntax(93.938)
+   self~expectSyntax(93.924)
    b~lastPos("1",.nil)
 
 ::METHOD "testSubChar"
@@ -339,12 +339,12 @@ return testGroupList
 
 ::METHOD "testSubCharSyntax3"
    b = .mutableBuffer~new("1234567890")
-   self~expectSyntax(93.938)
+   self~expectSyntax(93.924)
    b~subChar(.nil)
 
 ::METHOD "testSubCharSyntax4"
    b = .mutableBuffer~new("1234567890")
-   self~expectSyntax(93.905)
+   self~expectSyntax(93.924)
    b~subChar("a")
 
 ::METHOD "testSubStr"
@@ -361,7 +361,7 @@ return testGroupList
 
 ::METHOD "testSubStrSyntax2"
    b = .mutableBuffer~new("1234567890")
-   self~expectSyntax(93.938)
+   self~expectSyntax(93.924)
    b~subStr(.nil)
 
 ::METHOD "testSubStrSyntax3"
@@ -371,12 +371,12 @@ return testGroupList
 
 ::METHOD "testSubStrSyntax4"
    b = .mutableBuffer~new("1234567890")
-   self~expectSyntax(93.938)
+   self~expectSyntax(93.924)
    b~subStr(.nil,0)
 
 ::METHOD "testSubStrSyntax5"
    b = .mutableBuffer~new("1234567890")
-   self~expectSyntax(93.938)
+   self~expectSyntax(93.923)
    b~subStr(1,.nil)
 
 ::METHOD "testSubStrSyntax6"
@@ -444,11 +444,11 @@ return testGroupList
    b~setBufferSize()
 ::METHOD "testSetBufferSizeSyntax2"
    b = .mutablebuffer~new
-   self~expectSyntax(93.905)
+   self~expectSyntax(93.923)
    b~setBufferSize("")
 ::METHOD "testSetBufferSizeSyntax3"
    b = .mutablebuffer~new
-   self~expectSyntax(93.938)
+   self~expectSyntax(93.923)
    b~setBufferSize(.nil)
 ::METHOD "testSetBufferSizeSyntax4"
    b = .mutablebuffer~new
