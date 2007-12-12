@@ -3895,11 +3895,11 @@ default separator is the newline character.</para>
 nl = "0d0a"x
 string = "hello"nl"world"nl"this is an array."
 array = string~makeArray
-say "the second line is:" array[2]
+say "the second line is:" array[2]  /*  world  */
 
 string = "hello*world*this is an array."
 array = string~makeArray("*")
-say "the third line is:" array[3]
+say "the third line is:" array[3]  /*  this is an array.  */
 ]]>
 </programlisting>
 </section>
