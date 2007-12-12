@@ -3581,7 +3581,7 @@ the same comparison performed by the "==" comparison method.
 ]]>
 </programlisting>
 
-<para>Returns the receiving string, a number, rounded and formatted.</para>
+<para>Returns a copy of the receiving string, a number, rounded and formatted.</para>
 <para>The number is first rounded according to standard Rexx rules, as though
 the operation <computeroutput>receiving_string+0</computeroutput> had been
 carried out. If you
@@ -3692,9 +3692,10 @@ See <link linkend="mthObjectHashCode">hashCode Method</link> for details.
 ]]>
 </programlisting>
 
-<para>Inserts the string <emphasis role="italic">new</emphasis>, padded or
-truncated to length <emphasis role="italic">length</emphasis>, into the
-receiving string. after the <emphasis role="italic">n</emphasis>th character.
+<para>Returns a copy of the receiver string with the string
+<emphasis role="italic">new</emphasis>, padded or truncated
+to length <emphasis role="italic">length</emphasis>, inserted after
+the <emphasis role="italic">n</emphasis>th character.
 The default value for <emphasis role="italic">n</emphasis> is
 <computeroutput>0</computeroutput>, which means insertion at the beginning
 of the string. If specified, <emphasis role="italic">n</emphasis> and
@@ -4077,7 +4078,7 @@ for information about the MIN built-in function.)</para>
 ]]>
 </programlisting>
 
-<para>Returns the receiving string, which, starting at the
+<para>Returns a copy of the receiving string, which, starting at the
 <emphasis role="italic">n</emphasis>th character,
 is overlaid with the string <emphasis role="italic">new</emphasis>,
 padded or truncated to length <emphasis role="italic">length</emphasis>.
@@ -4162,7 +4163,7 @@ for information about the POS built-in function.)</para>
 ]]>
 </programlisting>
 
-<para>Returns the receiving string reversed.</para>
+<para>Returns a copy of the receiving string reversed.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>reverse method</secondary></indexterm>
@@ -4267,9 +4268,9 @@ for information about the SIGN built-in function.)</para>
 ]]>
 </programlisting>
 
-<para>Returns the blank-delimited words in the receiving string, with
+<para>Returns a copy of receiving string, with
 <emphasis role="italic">n</emphasis>&nbsp;<emphasis role="italic">pad</emphasis>
-characters between each word. If you specify
+characters between each blank-delimited word. If you specify
 <emphasis role="italic">n</emphasis>, it must
 be a positive whole number or zero. If it is
 <computeroutput>0</computeroutput>, all blanks are
@@ -4319,7 +4320,7 @@ for information about the SPACE built-in function.)</para>
 ]]>
 </programlisting>
 
-<para>Returns the receiving string with leading characters, trailing characters,
+<para>Returns a copy of the receiving string with leading characters, trailing characters,
 or both, removed, based on the <emphasis role="italic">option</emphasis> you
 specify. The following are valid <emphasis role="italic">option</emphasis>s.
 (You need to specify only the first capitalized
@@ -4482,9 +4483,9 @@ function.)</para>
 ]]>
 </programlisting>
 
-<para>Returns the receiving string with each character translated to another
-character or unchanged. You can also use this method to reorder the characters
-in the receiving string.</para>
+<para>Returns a copy of the receiving string with each character translated to
+another character or unchanged. You can also use this method to reorder the
+characters in the output table. (See last example)</para>
 <para>The output table is <emphasis role="italic">tableo</emphasis>
 and the input translation table is <emphasis role="italic">tablei</emphasis>.
 <emphasis role="bold">translate</emphasis> searches
