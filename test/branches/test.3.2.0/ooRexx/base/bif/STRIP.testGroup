@@ -1,0 +1,280 @@
+#!/usr/bin/rexx
+/*
+   name:             STRIP.testUnit
+   author:           Lee Peedin
+   date:             2007/12/13
+   version:          1.0
+
+-- line commented lines are ignored, when building the directory of infos from this header
+   changed:
+
+   languageLevel:    6.02
+   purpose:          Test the STRIP BIF
+   remark:           ---
+
+   license:          CPL 1.0 (Common Public License v1.0, see below)
+   link:
+
+// category needs not to be numbered, importance is given by position (1=most important)
+   category1:        ooRexx
+   category2:        Base
+   category3:        BIF
+
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYright HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYright   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+-------------------------------------------------------------------------------------------
+   /* list of array objects, each containing the testUnit class object and an
+      optional list of mandatory test case methods name                       */
+    mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
+    testUnitList=.list~of(.array~of(.STRIP.testGroup, mandatoryTestMethods))
+
+-------------------------------------------------------------------------------------------
+-- ===> the following code needs not to be individualized                              <===
+
+   -- read top comment, containing infos about this program
+    arrLines=.array~new
+    do i=1 to 150 until arrLines[i]="*/"
+        arrLines[i]=sourceline(i)
+    end
+      -- supply information for the testClass(es) in this file; the class attribute
+      -- "TestCaseInfo" (a directory object, index points to a queue) will store
+      -- the parsed infos
+    aTestUnitClass=testUnitList~at(testUnitList~first)[1] -- get first testClass
+
+   -- will parse the array lines and store result in class object
+    call makeDirTestInfo aTestUnitClass, arrLines
+    tmpDir=aTestUnitClass~TestCaseInfo
+    parse source s   -- op_sys invocationType fullPathToThisFile
+    tmpDir~setentry("test_Case-source", s)
+   -- now add this directory to other testCase classes, if any left
+    do arr over testUnitList
+        if arr[1]=aTestUnitClass then
+            iterate  -- already handled
+        arr[1]~TestCaseInfo=tmpDir             -- save info in class object
+    end
+
+-- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
+-- and set it to .false; this way the independent local invocation of the tests is inhibited
+    if .local~hasentry("bRunTestsLocally")=.false then
+        .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
+
+    if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
+        do
+            ts=.testSuite~new             -- create a testSuite
+            do arr over testUnitList
+                -- create a testSuite for the given test case class, use all its testmethods
+                ts~addTest( .testSuite~new(arr[1]))
+            end
+            -- testResult=.testSuite~new(testUnitClass)~run
+            testResult=ts~run       -- now run all the tests
+
+            call simpleFormatTestResults testResult
+        end
+
+   /* return list of array objects containing test case classes and
+      optionally list of mandatory test methods                      */
+return testUnitList
+
+::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+
+-- class named exactly like file
+::class "STRIP.testGroup" subclass TestCase public
+
+::method 'test000'
+    .local~v100001 = copies('*',50000)||'a'||copies('*',50000)
+    .local~vr1 = copies(' ',50)||.v100001||copies(' ',50)
+    .local~vr2 = '     '||copies('Y',256)
+    .local~v255 = copies('X',255)
+    .local~v256 = copies('Y',256)
+    .local~b50 = copies(' ',50)
+
+::method 'test001'
+    self~assertSame('subTest01','',strip('','B'))
+
+::method 'test002'
+    self~assertSame('subTest01','1',strip('1','B',' '))
+
+::method 'test003'
+    self~assertSame('subTest01',' @@aaa@@ ',strip('@ @@aaa@@ @',,'@'))
+
+::method 'test004'
+    self~expectSyntax(93.922)
+    xre = strip('@ @@aaa@@ @',,'')
+
+::method 'test005'
+    self~assertSame('subTest01','aaa',strip('@@@aaa@@@',,'@'))
+
+::method 'test006'
+    self~expectSyntax(93.922)
+    xre = strip('@@@aaa@@@',,'@@')
+
+::method 'test007'
+    self~assertSame('subTest01','aaa@@@',strip('@@@aaa@@@','L','@'))
+
+::method 'test008'
+    self~assertSame('subTest01','@@@aaa',strip('@@@aaa@@@','T','@'))
+
+::method 'test009'
+    self~assertSame('subTest01','aaa',strip('@@@aaa@@@','B','@'))
+
+::method 'test010'
+    self~assertSame('subTest01','aaa',strip('@@@aaa@@@','B','40'x))
+
+::method 'test011'
+    self~assertSame('subTest01','aaa',strip(' aaa '))
+
+::method 'test012'
+    self~assertSame('subTest01','aaa ',strip(' aaa ','L'))
+
+::method 'test013'
+    self~assertSame('subTest01',' aaa',strip(' aaa ','T'))
+
+::method 'test014'
+    self~assertSame('subTest01','aaa',strip(' aaa ','B'))
+
+::method 'test015'
+    self~assertSame('subTest01',' aaa ',strip(' aaa ','B','5B'X))
+
+::method 'test016'
+    self~assertSame('subTest01','aaa',strip(' aaa ','B',' '))
+
+::method 'test017'
+    self~expectSyntax(93.922)
+    xre = strip(' aaa ','B','  ')
+
+::method 'test018'
+    self~expectSyntax(93.915)
+    xre=strip(' aaa ','x',' ')
+
+::method 'test019'
+    self~assertSame('subTest01','asdfgasdfgasdfgasdfgasdfgasdfg',strip(' asdfgasdfgasdfgasdfgasdfgasdfg ','BLT','20'x))
+
+::method 'test020'
+    self~assertSame('subTest01',.v255||'     ',strip('     '||.v255||'     ','4c4254'x,' '))
+-- call ver strip('     '||.v255||'     ','4c4254'x,' '),.v255||'     '; R0051:
+
+::method 'test021'
+    self~assertSame('subTest01',.vr2,strip('     '||.v256||'     ','TBL'))
+
+::method 'test022'
+    self~assertSame('subTest01','asdfgasdfgasdfgasdfgasdfgasdfg',strip(' asdfgasdfgasdfgasdfgasdfgasdfg ','blt','20'x))
+
+::method 'test023'
+    self~assertSame('subTest01',.v255||'     ',strip('     '||.v255||'     ','6c6274'x,' '))
+
+::method 'test024'
+    self~assertSame('subTest01','     '||.v256,strip('     '||.v256||'     ','tbl'))
+
+::method 'test025'
+    self~assertSame('subTest01','@     asdf     @',strip('     @     asdf     @     '))
+
+::method 'test026'
+    self~assertSame('subTest01','asdfgasdfgasdfgasdfgasdfgasdfg',strip(' asdfgasdfgasdfgasdfgasdfgasdfg ',BLT,'20'x))
+
+::method 'test027'
+    self~assertSame('subTest01',.v255||'     ',strip('     '||.v255||'     ',LTB,' '))
+
+::method 'test028'
+    self~assertSame('subTest01','     '||.v256,strip('     '||.v256||'     ',TBL))
+
+::method 'test029'
+    self~assertSame('subTest01','asdfgasdfgasdfgasdfgasdfgasdfg',strip(' asdfgasdfgasdfgasdfgasdfgasdfg ',blt,'20'x))
+
+::method 'test030'
+    self~assertSame('subTest01',.v255||'     ',strip('     '||.v255||'     ',ltb,' '))
+
+::method 'test031'
+    self~assertSame('subTest01','     '||.v256,strip('     '||.v256||'     ',tbl))
+
+::method 'test032'
+    self~expectSyntax(93.922)
+    xre = strip('no.v1',,no.v2)
+
+::method 'test033'
+    self~assertSame('subTest01','0',strip(202+202,,'4'))
+-- call ver strip(202+202,,'4'),'0'; R0075:
+
+::method 'test034'
+    self~assertSame('subTest01','0',strip(020+020,,'4'))
+-- call ver strip(020+020,,'4'),'0'; R0076:
+
+::method 'test035'
+    self~assertSame('subTest01','+',strip('44+44',,4))
+-- call ver strip('44+44',,4),'+'; R0077:
+
+::method 'test036'
+    self~assertSame('subTest01','+',strip('44+44',,2+2))
+-- call ver strip('44+44',,2+2),'+'; R0078:
+
+::method 'test037'
+    self~assertSame('subTest01','4c4254'x,strip('202020204c4254202020'x,'B'))
+-- call ver strip('202020204c4254202020'x,'B'),'4c4254'x; R0079:
+
+::method 'test038'
+    self~assertSame('subTest01','JJ',strip(strip('JJBBJJBBJJ',,'J'),strip('JJBBJJBBJJ',,'J'),strip('--B--','B','-')))
+-- call ver strip(strip('JJBBJJBBJJ',,'J'),strip('JJBBJJBBJJ',,'J'),strip('--B--','B','-')),'JJ'; R0088:
+
+::method 'test039'
+    self~assertSame('subTest01','a',strip(.v100001,,'*'))
+-- call ver strip(.v100001,,'*'),'a'; R0090:
+
+::method 'test040'
+    self~assertSame('subTest01',.b50||copies('*',50000)||'a',strip(.b50||.v100001,,'*'))
+-- call ver strip(.b50||.v100001,,'*'),.b50||copies('*',50000)||'a'; R0091:
+
+::method 'test041'
+    self~assertSame('subTest01',.vr1,strip(.b50||.v100001||.b50,,'*'))
+-- call ver strip(.b50||.v100001||.b50,,'*'),.vr1; R0092:
+
+::method 'test042'
+    self~assertSame('subTest01','a'||copies('*',50000)||.b50,strip(.v100001||.b50,,'*'))
+-- call ver strip(.v100001||.b50,,'*'),'a'||copies('*',50000)||.b50; R0093:
+
+::method 'test043'
+    .local~remove(v100001)
+    .local~remove(vr1)
+    .local~remove(vr2)
+    .local~remove(v255)
+    .local~remove(v256)
+    .local~remove(b50)
+
+
+
+
+
