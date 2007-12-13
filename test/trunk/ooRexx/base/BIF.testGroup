@@ -154,40 +154,6 @@ return testGroupList
 
 
    -- test the BIF, using examples from the documentation
-::method "test_CHANGESTR"
-    self~assertSame("subTest1", '000'    , CHANGESTR('1','101100',"")  )
-    self~assertSame("subTest2", 'X0XX00' , CHANGESTR('1','101100','X') )
-
-   -- new tests
-    self~assertSame("subTest3", '101100' , CHANGESTR('','101100','X')  )
-    self~assertSame("subTest4", ''       , CHANGESTR('1',''     ,'X')  )
-
-   -- new tests: optional, trailing "count" argument
-    self~assertSame("subTest5", 'ha-lo' , CHANGESTR('l','hallo','-',1)  )
-    self~assertSame("subTest6", 'ha--o' , CHANGESTR('l','hallo','-',2)  )
-    self~assertSame("subTest7", 'ha--o' , CHANGESTR('l','hallo','-',3)  )
-
-::method "test_changeStr_error_93.907"
-    self~expectSyntax(93.907)
-    a=changestr('a','aha','A',0)
-
-   -- test the BIF, using examples from the documentation
-::method "test_COMPARE"
-    self~assertSame("subTest1", 0 , COMPARE('abc','abc')     )
-    self~assertSame("subTest2", 2 , COMPARE('abc','ak')      )
-    self~assertSame("subTest3", 0 , COMPARE('ab ','ab')      )
-    self~assertSame("subTest4", 0 , COMPARE('ab ','ab',' ')  )
-    self~assertSame("subTest5", 3 , COMPARE('ab ','ab','x')  )
-    self~assertSame("subTest6", 5 , COMPARE('ab-- ','ab','-'))
-
-   -- new tests
-    self~assertSame("subTest7", 0 ,  COMPARE(''     ,''  ,'-'))
-    self~assertSame("subTest8", 2 ,  COMPARE(' '    ,'  ','-'))
-    self~assertSame("subTest9", 2 ,  COMPARE('  '   ,' ' ,'-'))
-    self~assertSame("subTest10", 0 , COMPARE(' '    ,' ' ,'-'))
-
-
-   -- test the BIF, using examples from the documentation
 ::method "test_COPIES"
     self~assertSame("subTest1", 'abcabcabc' , COPIES('abc',3))
     self~assertSame("subTest2", ""          , COPIES('abc',0))
