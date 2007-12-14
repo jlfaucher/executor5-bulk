@@ -1,0 +1,264 @@
+#!/usr/bin/rexx
+/*
+   name:             TRUNC.testUnit
+   author:           Lee Peedin
+   date:             2007/12/13
+   version:          1.0
+
+-- line commented lines are ignored, when building the directory of infos from this header
+   changed:
+
+   languageLevel:    6.02
+   purpose:          Test the TRUNC BIF
+   remark:           ---
+
+   license:          CPL 1.0 (Common Public License v1.0, see below)
+   link:
+
+// category needs not to be numbered, importance is given by position (1=most important)
+   category1:        ooRexx
+   category2:        Base
+   category3:        BIF
+
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYright HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYright   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+-------------------------------------------------------------------------------------------
+   /* list of array objects, each containing the testUnit class object and an
+      optional list of mandatory test case methods name                       */
+    mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
+    testUnitList=.list~of(.array~of(.TRUNC.testGroup, mandatoryTestMethods))
+
+-------------------------------------------------------------------------------------------
+-- ===> the following code needs not to be individualized                              <===
+
+   -- read top comment, containing infos about this program
+    arrLines=.array~new
+    do i=1 to 150 until arrLines[i]="*/"
+        arrLines[i]=sourceline(i)
+    end
+      -- supply information for the testClass(es) in this file; the class attribute
+      -- "TestCaseInfo" (a directory object, index points to a queue) will store
+      -- the parsed infos
+    aTestUnitClass=testUnitList~at(testUnitList~first)[1] -- get first testClass
+
+   -- will parse the array lines and store result in class object
+    call makeDirTestInfo aTestUnitClass, arrLines
+    tmpDir=aTestUnitClass~TestCaseInfo
+    parse source s   -- op_sys invocationType fullPathToThisFile
+    tmpDir~setentry("test_Case-source", s)
+   -- now add this directory to other testCase classes, if any left
+    do arr over testUnitList
+        if arr[1]=aTestUnitClass then
+            iterate  -- already handled
+        arr[1]~TestCaseInfo=tmpDir             -- save info in class object
+    end
+
+-- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
+-- and set it to .false; this way the independent local invocation of the tests is inhibited
+    if .local~hasentry("bRunTestsLocally")=.false then
+        .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
+
+    if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
+        do
+            ts=.testSuite~new             -- create a testSuite
+            do arr over testUnitList
+                -- create a testSuite for the given test case class, use all its testmethods
+                ts~addTest( .testSuite~new(arr[1]))
+            end
+            -- testResult=.testSuite~new(testUnitClass)~run
+            testResult=ts~run       -- now run all the tests
+
+            call simpleFormatTestResults testResult
+        end
+
+   /* return list of array objects containing test case classes and
+      optionally list of mandatory test methods                      */
+return testUnitList
+
+::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+
+-- class named exactly like file
+::class "TRUNC.testGroup" subclass TestCase public
+
+::method 'test000'
+    .local~v2 = 2
+    .local~v10 = 10
+    .local~v50 = 50.00
+    .local~v60 = 60.99
+    .local~vzeros = copies('0',10000)
+    .local~vnines = copies('9',250)
+
+::method 'test001'
+    self~assertSame('subTest01','0',trunc(0))
+
+::method 'test002'
+    self~assertSame('subTest01','0.00',trunc( -0.0067 ,2))
+
+::method 'test003'
+    self~assertSame('subTest01','0.00',trunc('-0.0067',2))
+
+::method 'test004'
+    self~assertSame('subTest01','0',trunc('-0'))
+
+::method 'test005'
+    self~assertSame('subTest01','1',trunc(000001))
+
+::method 'test006'
+    self~assertSame('subTest01','5',trunc(.5E+1))
+
+::method 'test007'
+    self~assertSame('subTest01','9',trunc('     9     '))
+
+::method 'test008'
+    self~assertSame('subTest01','11',trunc('3131'x))
+
+::method 'test009'
+    self~assertSame('subTest01','-4927',trunc(-4927.99))
+
+::method 'test010'
+    self~assertSame('subTest01','50',trunc(.v50))
+
+::method 'test011'
+    self~assertSame('subTest01','110',trunc(.v50+.v60))
+
+::method 'test012'
+    self~assertSame('subTest01',42,trunc(21.001*2))
+
+::method 'test013'
+    self~assertSame('subTest01','-2000',trunc('-'||'2'||'.'||'E'||'+'||'3'))
+
+::method 'test014'
+    self~expectSyntax(93.943)
+    xre = trunc('AB.CD')
+
+::method 'test015'
+    self~assertSame('subTest01',102939,trunc(102938.999999))
+
+::method 'test016'
+    self~assertSame('subTest01',0,trunc(.1111111111))
+
+::method 'test017'
+    self~assertSame('subTest01',1,trunc(.9999999999))
+
+::method 'test018'
+    self~assertSame('subTest01',255,trunc('  000255  ','30'x))
+
+::method 'test019'
+    self~assertSame('subTest01',256.00000,trunc(.000256E+6,' 5 '))
+
+::method 'test020'
+    self~assertSame('subTest01',32768.32770,trunc(.3276832768E+5,.005E+3))
+
+::method 'test021'
+    self~assertSame('subTest01',65536.6554000000,trunc(65536.65536,.v10))
+
+::method 'test022'
+    self~assertSame('subTest01',65536.65540000000000000000,trunc(65536.65536,.v10*2))
+
+::method 'test023'
+    self~expectSyntax(40.12)
+    xre=trunc(100000,'V')
+
+::method 'test024'
+    self~assertSame('subTest01',65536.65,trunc(          65536.65536       ,   2                   ))
+
+::method 'test025'
+    self~assertSame('subTest01',0.1111111110,trunc(.1111111111,.v10))
+
+::method 'test026'
+    self~assertSame('subTest01','1.'||copies('0',42),trunc(.9999999999,.v10+32))
+
+::method 'test027'
+    numeric digits 10
+    self~assertSame('subTest01',0.11111,trunc(.1111111111,.v10/.v2))
+
+::method 'test028'
+    numeric digits 10
+    self~assertSame('subTest01',0.1111111111,trunc(.1111111111,.v10))
+
+::method 'test029'
+    numeric digits 10
+    self~assertSame('subTest01','0.9999999999'||copies('0',32),trunc(.9999999999,.v10+32))
+
+::method 'test030'
+    self~assertSame('subTest01','1'||copies('0',250)||'.00000',trunc(.vnines,5))
+
+::method 'test031'
+    self~assertSame('subTest01','0.0000000000',trunc(.vzeros,10))
+
+::method 'test032'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = copies('3',100000)
+    self~assertSame('subTest01',copies('3',9)||copies('0',99991)||'.000000000000000',trunc(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,15))
+
+::method 'test033'
+    self~expectSyntax(93.943)
+    xre=trunc(nov,5)
+
+::method 'test034'
+    self~expectSyntax(40.12)
+    xre=trunc(5,nov)
+
+::method 'test035'
+    self~expectSyntax(40.12)
+    xre=trunc(nov1,no.v2)
+
+::method 'test036'
+    self~expectSyntax(93.943)
+    xre=trunc(nov,5)
+
+::method 'test037'
+    self~expectSyntax(40.12)
+    xre=trunc(5,nov)
+
+::method 'test038'
+    self~expectSyntax(40.12)
+    xre=trunc(nov1,no.v2)
+
+::method 'test039'
+    self~assertSame('subTest01','77.9900',trunc(trunc(77.77)||'.'||trunc(99.99),trunc(4,2)))
+
+::method 'test040'
+    .local~remove(v2)
+    .local~remove(v10)
+    .local~remove(v50)
+    .local~remove(v60)
+    .local~remove(vzeros)
+    .local~remove(vnines)
+
+
