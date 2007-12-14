@@ -46,7 +46,7 @@
 #include "ArrayClass.hpp"
 #include "DirectoryClass.hpp"
 #include "MethodClass.hpp"
-#include "RexxNativeMethod.hpp"
+#include "RexxNativeCode.hpp"
 #include "RexxActivation.hpp"
 #include "RexxNativeActivation.hpp"
 #include "RexxBuffer.hpp"

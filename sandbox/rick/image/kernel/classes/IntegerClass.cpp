@@ -1093,7 +1093,7 @@ void RexxInteger::createClass()
                                        /*  and needs to override the NEW    */
                                        /*  method to provide caching        */
                                        /*  support for integers.            */
-  SUBCLASS_CREATE(Integer, "String", RexxIntegerClass);
+  CLASS_CREATE(Integer, "String", RexxIntegerClass);
                                        /*  initialize our static array of   */
                                        /*  cached integers                  */
   new (TheIntegerClass) RexxIntegerClass();

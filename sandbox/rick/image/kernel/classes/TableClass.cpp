@@ -195,7 +195,7 @@ RexxTable *RexxTable::newInstance()
 /* Function:  Create an instance of a table                                   */
 /******************************************************************************/
 {
-  return (RexxTable *)new_hashCollection(RexxHashTable::DEFAULT_HASH_SIZE, sizeof(RexxTable), T_table);
+  return (RexxTable *)new_hashCollection(RexxHashTable::DEFAULT_HASH_SIZE, sizeof(RexxTable), T_Table);
 }
 
 RexxObjectTable *RexxObjectTable::newInstance(size_t size)
@@ -204,7 +204,7 @@ RexxObjectTable *RexxObjectTable::newInstance(size_t size)
 /******************************************************************************/
 {
                                        /* get a new object                  */
-  return (RexxObjectTable *)new_hashCollection(size, sizeof(RexxObjectTable), T_table);
+  return (RexxObjectTable *)new_hashCollection(size, sizeof(RexxObjectTable), T_Table);
 }
 
 RexxObject *RexxObjectTable::put(

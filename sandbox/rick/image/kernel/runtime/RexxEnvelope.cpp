@@ -51,6 +51,7 @@
 #include "ArrayClass.hpp"
 #include "RexxEnvelope.hpp"
 #include "MethodClass.hpp"
+#include "ActivityManager.hpp"
 
 RexxEnvelope::RexxEnvelope()
 /******************************************************************************/
@@ -297,7 +298,7 @@ void RexxEnvelope::puff(
         {
 
             /* Yes, lets get the behaviour Object*/
-            RexxBehaviour *objBehav = (RexxBehaviour *)(((long)(puffObject->behaviour) & ~BEHAVIOUR_NON_PRIMITIVE) + sourceBuffer->address());
+            RexxBehaviour *objBehav = (RexxBehaviour *)(((uintptr_t)(puffObject->behaviour) & ~BEHAVIOUR_NON_PRIMITIVE) + sourceBuffer->address());
             /* Resolve the static behaviour info */
             objBehav->resolveNonPrimitiveBehaviour();
             /* Set this objects behaviour.       */
@@ -308,11 +309,9 @@ void RexxEnvelope::puff(
         }
         else
         {
-            /* originally a primitive;  the      */
-            /* type number is the behaviour      */
-            primitiveTypeNum = (int)(puffObject->behaviour);
-            /* was a primitive, stays a primitive*/
-            puffObject->behaviour = RexxBehaviour::getPrimitiveBehaviour(primitiveTypeNum);
+            // convert this from a type number to the actuall class.  This will unnormalize the
+            // type number to the different object classes.
+            puffObject->behaviour = RexxBehaviour::restoreSavedPrimitiveBehaviour(puffObject->behaviour);
         }
         /* Force fix-up of                   */
         /*VirtualFunctionTable,              */
@@ -408,9 +407,15 @@ size_t RexxEnvelope::copyBuffer(
     }
     else
     {
-        // just replace the behaviour with its type number.  This will be used
+        // transient classes should never be flattened.  This is a problem if we encounter one
+        if (newObj->behaviour->isTransientClass())
+        {
+            reportException(Error_Interpretation);
+        }
+
+        // just replace the behaviour with its normalized type number.  This will be used
         // to restore it later.
-        newObj->behaviour = (RexxBehaviour *)newObj->behaviour->getClassType();
+        newObj->behaviour = newObj->behaviour->getSavedPrimitiveBehaviour();
     }
     // if we flattened an object from oldspace, we just copied everything.  Make sure
     // this is no longer marked as oldspace

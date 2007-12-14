@@ -175,7 +175,6 @@ instructionsHeaders = $(instructions_dir)/AddressInstruction.hpp \
                       $(instructions_dir)/SignalInstruction.hpp \
                       $(instructions_dir)/ThenInstruction.hpp \
                       $(instructions_dir)/TraceInstruction.hpp \
-                      $(instructions_dir)/UseInstruction.hpp \
                       $(instructions_dir)/UseStrictInstruction.hpp
 parserHeaders = $(parser_dir)/Clause.hpp \
                 $(parser_dir)/SourceFile.hpp \
@@ -189,6 +188,7 @@ platformHeaders = $(kernel_platform_unix_dir)/APIDefinitions.h \
                   $(kernel_platform_unix_dir)/ThreadSupport.hpp
 platformcommonHeaders =
 runtimeHeaders = $(runtime_dir)/DeadObject.hpp \
+                 $(runtime_dir)/ClassTypeCodes.h \
                  $(runtime_dir)/GlobalNames.h \
                  $(runtime_dir)/MemorySegment.hpp \
                  $(runtime_dir)/MemoryStats.hpp \
@@ -199,6 +199,7 @@ runtimeHeaders = $(runtime_dir)/DeadObject.hpp \
                  $(runtime_dir)/RexxActivationStack.hpp \
                  $(runtime_dir)/RexxActivity.hpp \
                  $(runtime_dir)/ActivityManager.hpp \
+                 $(runtime_dir)/LibraryManager.hpp \
                  $(runtime_dir)/ProtectedObject.hpp \
                  $(runtime_dir)/RexxBehaviour.hpp \
                  $(runtime_dir)/RexxBuffer.hpp \
@@ -220,7 +221,7 @@ runtimeHeaders = $(runtime_dir)/DeadObject.hpp \
                  $(runtime_dir)/RexxMisc.hpp \
                  $(runtime_dir)/RexxNativeAPI.h \
                  $(runtime_dir)/RexxNativeActivation.hpp \
-                 $(runtime_dir)/RexxNativeMethod.hpp \
+                 $(runtime_dir)/RexxNativeCode.hpp \
                  $(runtime_dir)/RexxSmartBuffer.hpp \
                  $(runtime_dir)/RexxVariable.hpp \
                  $(runtime_dir)/RexxVariableDictionary.hpp
@@ -422,7 +423,6 @@ instructions_sources  = $(instructions_dir)/AddressInstruction.cpp \
                         $(instructions_dir)/SignalInstruction.cpp \
                         $(instructions_dir)/ThenInstruction.cpp \
                         $(instructions_dir)/TraceInstruction.cpp \
-                        $(instructions_dir)/UseInstruction.cpp \
                         $(instructions_dir)/UseStrictInstruction.cpp
 parser_sources = $(parser_dir)/Clause.cpp \
                  $(parser_dir)/KeywordConstants.cpp \
@@ -460,6 +460,7 @@ runtime_sources  = $(runtime_dir)/DeadObject.cpp \
                    $(runtime_dir)/RexxActivationStack.cpp \
                    $(runtime_dir)/RexxActivity.cpp \
                    $(runtime_dir)/ActivityManager.cpp \
+                   $(runtime_dir)/LibraryManager.cpp \
                    $(runtime_dir)/RexxBehaviour.cpp \
                    $(runtime_dir)/RexxBuffer.cpp \
                    $(runtime_dir)/RexxCode.cpp \
@@ -476,7 +477,7 @@ runtime_sources  = $(runtime_dir)/DeadObject.cpp \
                    $(runtime_dir)/RexxMemory.cpp \
                    $(runtime_dir)/RexxMisc.cpp \
                    $(runtime_dir)/RexxNativeActivation.cpp \
-                   $(runtime_dir)/RexxNativeMethod.cpp \
+                   $(runtime_dir)/RexxNativeCode.cpp \
                    $(runtime_dir)/RexxSmartBuffer.cpp \
                    $(runtime_dir)/RexxStartup.cpp \
                    $(runtime_dir)/RexxVariable.cpp \
@@ -613,7 +614,7 @@ rxdelipc_SOURCES =  $(rexxapi_unix_dir)/APIManagerShutdown.cpp
 #
 rxdelipc_CXXFLAGS  = $(COMMON_CPPFLAGS) \
                      -I$(api_dir) \
-                     -I$(platform_api_dir)  
+                     -I$(platform_api_dir)
 #
 # Extra libraries for rxdelipc
 #

@@ -58,7 +58,7 @@
                                        /* be defined in the same order as   */
                                        /* the operator defines in Token.h*/
 
-PCPPM stringOperatorMethods[] = {      /* table of string operator methods  */
+PCPPM StringOperatorMethods[] = {      /* table of string operator methods  */
    NULL,                               /* first entry not used              */
    (PCPPM)&RexxString::plus,
    (PCPPM)&RexxString::minus,
@@ -97,7 +97,7 @@ PCPPM stringOperatorMethods[] = {      /* table of string operator methods  */
 };
 
                                        /* numberstring operator methods     */
-PCPPM numberstringOperatorMethods[] = {
+PCPPM NumberStringOperatorMethods[] = {
    NULL,                               /* first entry not used              */
    (PCPPM)&RexxNumberString::plus,
    (PCPPM)&RexxNumberString::minus,
@@ -136,7 +136,7 @@ PCPPM numberstringOperatorMethods[] = {
    (PCPPM)&RexxNumberString::operatorNot,
 };
 
-PCPPM integerOperatorMethods[] = {     /* integer operator methods          */
+PCPPM IntegerOperatorMethods[] = {     /* integer operator methods          */
    NULL,                               /* first entry not used              */
    (PCPPM)&RexxInteger::plus,
    (PCPPM)&RexxInteger::minus,
@@ -220,25 +220,12 @@ PCPPM objectOperatorMethods[] = {      /* object operator methods           */
 #define CLASS_EXTERNAL(n, t) RexxBehaviour(T_##n, (PCPPM *)objectOperatorMethods),
 #define CLASS_EXTERNAL_STRING(n, t) RexxBehaviour(T_##n, (PCPPM *)n##OperatorMethods),
 
-RexxBehaviour RexxBehaviour::primitiveBehaviours[highest_T + 1] = {/* table of primitive behaviours     */
+// our table of primitive behaviours
+RexxBehaviour RexxBehaviour::primitiveBehaviours[T_Last_Class_Type + 1] =
+{
 #include "PrimitiveClasses.h"          /* generate table from header        */
 };
 
 SysSharedSemaphoreDefn                 /* semaphore definitions             */
                                        /* defined in xxxdef.h               */
 
-extern "C" {
-
-#define INTERNAL_METHOD(name) extern "C" char * REXXENTRY name(void **);
-
-#include "NativeMethods.h"             /* bring in the internal list        */
-
-#undef  INTERNAL_METHOD
-#define INTERNAL_METHOD(name) {#name , (PNMF)name},
-
-internalMethodEntry internalMethodTable[] = {
-#include "NativeMethods.h"             /* bring in the internal method table*/
-   {NULL, NULL}                        /* final empty entry                 */
-};
-
-}

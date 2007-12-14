@@ -220,6 +220,6 @@ RexxRelation *RexxRelation::newInstance()
 {
                                        /* Get new object                    */
                                        /* get a new object and hash         */
-  return (RexxRelation *)new_hashCollection(RexxHashTable::DEFAULT_HASH_SIZE, sizeof(RexxRelation), T_relation);
+  return (RexxRelation *)new_hashCollection(RexxHashTable::DEFAULT_HASH_SIZE, sizeof(RexxRelation), T_Relation);
 }
 

@@ -69,7 +69,7 @@
 
  #include "MethodClass.hpp"               /* method used early                 */
  #include "RexxCode.hpp"                /* now various code classes          */
- #include "RexxNativeMethod.hpp"
+ #include "RexxNativeCode.hpp"
  #include "ExpressionStack.hpp"               /* now main driver classes           */
  #include "RexxActivation.hpp"
  #include "RexxActivity.hpp"
@@ -128,7 +128,6 @@
  #include "QueueInstruction.hpp"
  #include "RaiseInstruction.hpp"
  #include "TraceInstruction.hpp"
- #include "UseInstruction.hpp"
  #include "UseStrictInstruction.hpp"
 
  #include "CallInstruction.hpp"                /* call/signal instructions          */
@@ -155,7 +154,7 @@
 #undef CLASS_EXTERNAL_STRING
 
 
-void *RexxMemory::VFTArray[highest_T + 1] = {NULL};   //wge NULL
+void *RexxMemory::VFTArray[T_Last_Class_Type + 1] = {NULL};
                                        /* Following macros will generate    */
                                        /* code to call each class construct */
                                        /* so that the VFT info gets filled  */

@@ -2210,9 +2210,9 @@ void *RexxNilObject::operator new(size_t size)
     // some of the methods during setup but before the image save, we'll update the
     // behaviour type information so that it will restore with the correct virtual
     // function table pointer.
-    RexxObject *newObj = new_object(size, T_object);
+    RexxObject *newObj = new_object(size, T_Object);
     // we need to switch the virtual method table pointer new.
-    newObj->setVirtualFunctions(RexxMemory::VFTArray[T_nil_object]);
+    newObj->setVirtualFunctions(RexxMemory::VFTArray[T_NilObject]);
     return newObj;
 }
 

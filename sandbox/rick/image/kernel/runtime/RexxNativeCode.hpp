@@ -36,30 +36,43 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Kernel                                             UseInstruction.hpp */
+/* REXX Kernel                                         RexxNativeMethod.hpp   */
 /*                                                                            */
-/* Primitive USE instruction Class Definitions                                */
+/* Primitive Native Code Class Definitions                                    */
 /*                                                                            */
 /******************************************************************************/
-#ifndef Included_RexxInstructionUse
-#define Included_RexxInstructionUse
+#ifndef Included_RexxNativeCode
+#define Included_RexxNativeCode
+                                       /* pointer to native method function */
+typedef char *(REXXENTRY *PNMF)(void **);
 
-#include "RexxInstruction.hpp"
+class RexxNativeCode : public RexxInternalObject {
+  public:
+   inline void *operator new(size_t size, void *ptr) { return ptr; }
+   void        *operator new(size_t size);
+   inline void  operator delete(void *) { ; }
+   inline void  operator delete(void *, void *) { ; }
 
-class RexxInstructionUse : public RexxInstruction {
- public:
-  inline void *operator new(size_t size, void *ptr) {return ptr;}
-  inline void  operator delete(void *, void *) { }
-  inline void  operator delete(void *) { }
+   inline RexxNativeCode(RESTORETYPE restoreType) { ; };
+   RexxNativeCode(RexxString *, RexxString *, PNMF);
+   RexxNativeCode(PNMF, size_t);
+   RexxNativeCode(PNMF);
+   void        reinit(RexxInteger *);
+   void        live();
+   void        liveGeneral();
+   void        flatten(RexxEnvelope *envelope);
+   RexxObject *unflatten(RexxEnvelope *envelope);
 
-  RexxInstructionUse(size_t, RexxQueue *);
-  inline RexxInstructionUse(RESTORETYPE restoreType) { ; };
-  void live();
-  void liveGeneral();
-  void flatten(RexxEnvelope *);
-  void execute(RexxActivation *, RexxExpressionStack *);
+   inline PNMF        getEntry() { return this->entry; };
+   inline void        setEntry(PNMF v) { this->entry = v; };
+   static void        createClass();
+   static void        restoreClass();
 
-  size_t variableCount;                // count of variables for USE
-  RexxVariableBase *variables[1];      /* List of variables for USE         */
+protected:
+   RexxString *library;               // the library name
+   RexxString *procedure;             /* External Procedur name            */
+   PNMF        entry;                 /* method entry point.               */
+   size_t      index;                 /* internal native method            */
 };
+
 #endif

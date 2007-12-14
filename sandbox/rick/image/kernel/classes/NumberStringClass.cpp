@@ -2628,7 +2628,7 @@ void  *RexxNumberString::operator new(size_t size, size_t length)
 {
   RexxNumberString *newNumber;
 
-  newNumber = (RexxNumberString *)new_object(size + length, T_numberstring);
+  newNumber = (RexxNumberString *)new_object(size + length, T_NumberString);
                                        /* initialize the new object         */
   newNumber->setHasNoReferences();     /* Let GC know no to bother with LIVE*/
   return newNumber;                    /* return the new numberstring       */

@@ -1,7 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2008 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -36,79 +35,50 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Kernel                                            RexxMemorystats.hpp */
-/*                                                                            */
-/* Primitive DeadObject class definitions                                     */
-/*                                                                            */
-/******************************************************************************/
+#ifndef Included_LibraryManager
+#define Included_LibraryManager
 
-#ifndef Included_MemoryStats
-#define Included_MemoryStats
+#include "RexxNativeCode.hpp"
 
-#include "ClassTypeCodes.h"
+class RexxDirectory;
 
-class MemoryStats;
-/* a class for collecting object statistics */
-class ObjectStats {
 
-  public:
-    inline ObjectStats() : count(0), size(0) {}
+class InternalMethodEntry
+{
+public:
+    inline InternalMethodEntry(const char *n, PNMF e) : entryName(n), entryPoint(e) { }
 
-    inline void clear() { count = 0; size = 0; }
-    inline void logObject(RexxObject *obj) { count++; size += obj->getObjectSize(); }
-    void   printStats(int type);
-
-  protected:
-
-    size_t count;
-    size_t size;
+    const char *entryName;
+    PNMF   entryPoint;
 };
 
-/* a class for collecting segment set statistics */
-class SegmentStats {
-  friend class MemoryStats;
-  friend class MemorySegmentSet;
 
-  public:
-    SegmentStats(const char *id) :
-        count(0), largestSegment(0), smallestSegment(0),
-        totalBytes(0), liveBytes(0), deadBytes(0),
-        liveObjects(0), deadObjects(0),
-        name(id) { }
+class LibraryManager
+{
+public:
+    static void init();
+    static void live();
+    static void liveGeneral();
+    static inline RexxDirectory *getLibraries() { return libraries; }
+    static void restore(RexxDirectory *savedLibraries);
+    static void reload();
+    static RexxNativeCode *createNativeCode(RexxString *procedure, RexxString *library);
+    static RexxNativeCode *createInternalNativeCode(size_t index);
+    static void reloadLibrary(RexxString *libraryName, RexxDirectory *libraryInfo);
+    static RexxDirectory *loadLibrary(RexxString *libraryName);
+    static inline PNMF resolveInternalMethod(size_t index) { return internalMethodTable[index].entryPoint; }
+    static PNMF resolveExternalMethod(RexxString *procedure, RexxString *library);
+    static size_t resolveInternalMethod(RexxString *name);
 
-    void    clear();
-    void    recordObject(MemoryStats *memStats, char *obj);
-    void    printStats();
-
-  protected:
-
-    size_t count;
-    size_t largestSegment;
-    size_t smallestSegment;
-
-    size_t totalBytes;
-    size_t liveBytes;
-    size_t deadBytes;
-    size_t liveObjects;
-    size_t deadObjects;
-    const char *name;
+protected:
+    // directory of loaded libraries
+    static RexxDirectory *libraries;
+    // table of internal native methods.
+    static InternalMethodEntry internalMethodTable[];
 };
 
-class MemoryStats {
-  public:
-    inline MemoryStats() :
-        normalStats("Normal allocation segment set"),
-        largeStats("Large allocation segment pool") {}
 
-    void logObject(RexxObject *obj);
-    void printSavedImageStats();
-    void printMemoryStats();
-    void clear();
-
-    SegmentStats normalStats;
-    SegmentStats largeStats;
-
-    ObjectStats objectStats[T_Last_Class_Type + 1];
-};
+inline RexxNativeCode *new_native_code(RexxString *p, RexxString *l) { return LibraryManager::createNativeCode(p, l); }
 
 #endif
+

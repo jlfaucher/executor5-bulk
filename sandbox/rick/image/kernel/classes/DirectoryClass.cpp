@@ -750,6 +750,6 @@ RexxDirectory *RexxDirectory::newInstance()
 /******************************************************************************/
 {
                                        /* get a new object and hash         */
-  return (RexxDirectory *)new_hashCollection(RexxHashTable::DEFAULT_HASH_SIZE, sizeof(RexxDirectory), T_directory);
+  return (RexxDirectory *)new_hashCollection(RexxHashTable::DEFAULT_HASH_SIZE, sizeof(RexxDirectory), T_Directory);
 }
 

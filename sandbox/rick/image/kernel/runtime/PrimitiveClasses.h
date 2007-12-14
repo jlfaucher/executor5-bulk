@@ -43,203 +43,130 @@
                                        /* IMPORTANT NOTE:  The includes in  */
                                        /* this file must be in the same     */
                                        /* order as the class type number    */
-                                       /* definitions in RexxCore.H           */
+                                       /* definitions in RexxCore.H         */
                                        /* Object MUST be included 1st       */
-CLASS_EXTERNAL(object, RexxObject)
-CLASS_EXTERNAL(object_class, RexxClass)
+CLASS_EXTERNAL(Object, RexxObject)
+CLASS_EXTERNAL(ObjectClass, RexxClass)
+
+CLASS_EXTERNAL(Class, RexxClass)
+CLASS_EXTERNAL(ClassClass, RexxClass)
+
+CLASS_EXTERNAL(Array, RexxArray)
+CLASS_EXTERNAL(ArrayClass, RexxClass)
+
+CLASS_EXTERNAL(Directory, RexxDirectory)
+CLASS_EXTERNAL(DirectoryClass, RexxClass)
+
+CLASS_EXTERNAL_STRING(Integer, RexxInteger)
+CLASS_EXTERNAL(IntegerClass, RexxIntegerClass)
+
+CLASS_EXTERNAL(List, RexxList)
+CLASS_EXTERNAL(ListClass, RexxClass)
+
+CLASS_EXTERNAL(Message, RexxMessage)
+CLASS_EXTERNAL(MessageClass, RexxClass)
+
+CLASS_EXTERNAL(Method, RexxMethod)
+CLASS_EXTERNAL(MethodClass,  RexxClass)
+
+CLASS_EXTERNAL_STRING(NumberString, RexxNumberString)
+CLASS_EXTERNAL(NumberStringClass, RexxClass)
+
+CLASS_EXTERNAL(Queue, RexxQueue)
+CLASS_EXTERNAL(QueueClass, RexxClass)
+
+CLASS_EXTERNAL(Stem, RexxStem)
+CLASS_EXTERNAL(StemClass, RexxClass)
+
+CLASS_EXTERNAL_STRING(String, RexxString)
+CLASS_EXTERNAL(StringClass, RexxStringClass)
+
+CLASS_EXTERNAL(Supplier, RexxSupplier)
+CLASS_EXTERNAL(SupplierClass, RexxClass)
+
+CLASS_EXTERNAL(Table, RexxTable)
+CLASS_EXTERNAL(TableClass, RexxClass)
+
+CLASS_EXTERNAL(Relation, RexxRelation)
+CLASS_EXTERNAL(RelationClass, RexxClass)
+
+CLASS_EXTERNAL(MutableBuffer, RexxMutableBuffer)
+CLASS_EXTERNAL(MutableBufferClass, RexxClass)
+
+
+CLASS_INTERNAL(NilObject, RexxNilObject)
+CLASS_INTERNAL(Behaviour, RexxBehaviour)
+CLASS_INTERNAL(RexxSource, RexxSource)
+CLASS_INTERNAL(RexxCode, RexxCode)
+CLASS_INTERNAL(NativeCode, RexxNativeCode)
+
+CLASS_INTERNAL(Buffer, RexxBuffer)
+CLASS_INTERNAL(HashTable, RexxHashTable)
+CLASS_INTERNAL(ListTable, RexxListTable)
+CLASS_INTERNAL(SmartBuffer, RexxSmartBuffer)
+
+CLASS_INTERNAL(Variable, RexxVariable)
+CLASS_INTERNAL(VariableDictionary, RexxVariableDictionary)
+CLASS_INTERNAL(VariableTerm, RexxParseVariable)
+CLASS_INTERNAL(CompoundVariableTerm, RexxCompoundVariable)
+CLASS_INTERNAL(StemVariableTerm, RexxStemVariable)
+CLASS_INTERNAL(DotVariableTerm, RexxDotVariable)
+CLASS_INTERNAL(IndirectVariableTerm, RexxVariableReference)
+CLASS_INTERNAL(FunctionCallTerm, RexxExpressionFunction)
+CLASS_INTERNAL(MessageSendTerm, RexxExpressionMessage)
+CLASS_INTERNAL(UnaryOperatorTerm, RexxUnaryOperator)
+CLASS_INTERNAL(BinaryOperatorTerm, RexxBinaryOperator)
+CLASS_INTERNAL(LogicalTerm, RexxExpressionLogical)
+
+
+CLASS_INTERNAL(Instruction, RexxInstruction)
+CLASS_INTERNAL(AddressInstruction, RexxInstructionAddress)
+CLASS_INTERNAL(AssignmentInstruction, RexxInstructionAssignment)
+CLASS_INTERNAL(CallInstruction, RexxInstructionCall)
+CLASS_INTERNAL(CommandInstruction, RexxInstructionCommand)
+CLASS_INTERNAL(DoInstruction,RexxInstructionDo)
+CLASS_INTERNAL(DropInstruction, RexxInstructionDrop)
+CLASS_INTERNAL(ElseInstruction, RexxInstructionElse)
+CLASS_INTERNAL(EndInstruction, RexxInstructionEnd)
+CLASS_INTERNAL(EndIfInstruction, RexxInstructionEndIf)
+CLASS_INTERNAL(ExitInstruction, RexxInstructionExit)
+CLASS_INTERNAL(ExposeInstruction, RexxInstructionExpose)
+CLASS_INTERNAL(ForwardInstruction, RexxInstructionForward)
+CLASS_INTERNAL(GuardInstruction, RexxInstructionGuard)
+CLASS_INTERNAL(IfInstruction, RexxInstructionIf)
+CLASS_INTERNAL(InterpretInstruction, RexxInstructionInterpret)
+CLASS_INTERNAL(LabelInstruction, RexxInstructionLabel)
+CLASS_INTERNAL(LeaveInstruction, RexxInstructionLeave)
+CLASS_INTERNAL(MessageInstruction, RexxInstructionMessage)
+CLASS_INTERNAL(NopInstruction, RexxInstructionNop)
+CLASS_INTERNAL(NumericInstruction, RexxInstructionNumeric)
+CLASS_INTERNAL(OptionsInstruction, RexxInstructionOptions)
+CLASS_INTERNAL(OtherwiseInstruction, RexxInstructionOtherWise)
+CLASS_INTERNAL(ParseInstruction, RexxInstructionParse)
+CLASS_INTERNAL(ProcedureInstruction, RexxInstructionProcedure)
+CLASS_INTERNAL(QueueInstruction, RexxInstructionQueue)
+CLASS_INTERNAL(RaiseInstruction, RexxInstructionRaise)
+CLASS_INTERNAL(ReplyInstruction, RexxInstructionReply)
+CLASS_INTERNAL(ReturnInstruction, RexxInstructionReturn)
+CLASS_INTERNAL(SayInstruction, RexxInstructionSay)
+CLASS_INTERNAL(SelectInstruction, RexxInstructionSelect)
+CLASS_INTERNAL(SignalInstruction, RexxInstructionSignal)
+CLASS_INTERNAL(ThenInstruction, RexxInstructionThen)
+CLASS_INTERNAL(TraceInstruction, RexxInstructionTrace)
+CLASS_INTERNAL(UseInstruction, RexxInstructionUseStrict)
+
+CLASS_INTERNAL(CompoundElement, RexxCompoundElement)
+CLASS_INTERNAL(ParseTrigger, RexxTrigger)
+
+CLASS_INTERNAL(Memory, RexxObject)
+CLASS_INTERNAL(InternalStack, RexxInternalStack)
+CLASS_INTERNAL(Stack, RexxStack)
+CLASS_INTERNAL(Activity, RexxActivity)
+CLASS_INTERNAL(Activation, RexxActivation)
+CLASS_INTERNAL(NativeActivation, RexxNativeActivation)
+CLASS_INTERNAL(ActivationFrameBuffer, RexxActivationFrameBuffer)
+CLASS_INTERNAL(Envelope, RexxEnvelope)
+CLASS_INTERNAL(Clause, RexxClause)
+CLASS_INTERNAL(Token, RexxToken)
+CLASS_INTERNAL(DoBlock, RexxDoBlock)
 
-CLASS_EXTERNAL(class, RexxClass)
-CLASS_EXTERNAL(class_class, RexxClass)
-
-CLASS_EXTERNAL(array, RexxArray)
-CLASS_EXTERNAL(array_class, RexxClass)
-
-CLASS_EXTERNAL(directory, RexxDirectory)
-CLASS_EXTERNAL(directory_class, RexxClass)
-
-CLASS_EXTERNAL(envelope, RexxEnvelope)
-CLASS_EXTERNAL(envelope_class, RexxClass)
-
-CLASS_EXTERNAL_STRING(integer, RexxInteger)
-CLASS_EXTERNAL(integer_class, RexxIntegerClass)
-
-CLASS_EXTERNAL(list, RexxList)
-CLASS_EXTERNAL(list_class, RexxClass)
-
-CLASS_EXTERNAL(message, RexxMessage)
-CLASS_EXTERNAL(message_class, RexxClass)
-
-CLASS_EXTERNAL(method,  RexxMethod)
-CLASS_EXTERNAL(method_class,  RexxClass)
-
-CLASS_EXTERNAL_STRING(numberstring, RexxNumberString)
-CLASS_EXTERNAL(numberstring_class, RexxClass)
-
-CLASS_EXTERNAL(queue, RexxQueue)
-CLASS_EXTERNAL(queue_class, RexxClass)
-
-CLASS_EXTERNAL(stem, RexxStem)
-CLASS_EXTERNAL(stem_class, RexxClass)
-
-CLASS_EXTERNAL_STRING(string, RexxString)
-CLASS_EXTERNAL(string_class, RexxStringClass)
-
-CLASS_EXTERNAL(supplier, RexxSupplier)
-CLASS_EXTERNAL(supplier_class, RexxClass)
-
-CLASS_EXTERNAL(table, RexxTable)
-CLASS_EXTERNAL(table_class, RexxClass)
-
-CLASS_EXTERNAL(relation, RexxRelation)
-CLASS_EXTERNAL(relation_class, RexxClass)
-                                       // Avoid nasty constructor problem.
-                                       //  Beside don't need this anyway.
-CLASS_EXTERNAL(memory, RexxObject)
-
-CLASS_EXTERNAL(mutablebuffer, RexxMutableBuffer) // warning: order important!!!
-CLASS_EXTERNAL(mutablebuffer_class, RexxClass)   // RexxMutableBufferClass
-
-CLASS_EXTERNAL(nil_object, RexxNilObject)
-
-/* start of internal only classes */
-CLASS_INTERNAL(intstack, RexxInternalStack)
-
-CLASS_INTERNAL(activation, RexxActivation)
-
-CLASS_INTERNAL(activity, RexxActivity)
-
-CLASS_INTERNAL(behaviour, RexxBehaviour)
-
-CLASS_INTERNAL(buffer, RexxBuffer)
-
-CLASS_INTERNAL(corral, RexxObject)
-
-CLASS_INTERNAL(hashtab, RexxHashTable)
-
-CLASS_INTERNAL(listtable, RexxListTable)
-
-CLASS_INTERNAL(rexxmethod, RexxCode)
-
-CLASS_INTERNAL(nmethod, RexxNativeCode)
-
-CLASS_INTERNAL(nmethod_class, RexxNativeCodeClass)
-
-CLASS_INTERNAL(nativeact, RexxNativeActivation)
-
-CLASS_INTERNAL(smartbuffer, RexxSmartBuffer)
-
-CLASS_INTERNAL(stack, RexxStack)
-
-CLASS_INTERNAL(variable, RexxVariable)
-
-CLASS_INTERNAL(vdict, RexxVariableDictionary)
-
-CLASS_INTERNAL(clause, RexxClause)
-
-CLASS_INTERNAL(source, RexxSource)
-
-CLASS_INTERNAL(token, RexxToken)
-
-CLASS_INTERNAL(parse_instruction, RexxInstruction)
-
-CLASS_INTERNAL(parse_address, RexxInstructionAddress)
-
-CLASS_INTERNAL(parse_assignment, RexxInstructionAssignment)
-
-CLASS_INTERNAL(parse_block, RexxDoBlock)
-
-CLASS_INTERNAL(parse_call, RexxInstructionCall)
-
-CLASS_INTERNAL(parse_command, RexxInstructionCommand)
-
-CLASS_INTERNAL(parse_compound, RexxCompoundVariable)
-
-CLASS_INTERNAL(parse_do,RexxInstructionDo)
-
-CLASS_INTERNAL(parse_dot_variable, RexxDotVariable)
-
-CLASS_INTERNAL(parse_drop, RexxInstructionDrop)
-
-CLASS_INTERNAL(parse_else, RexxInstructionElse)
-
-CLASS_INTERNAL(parse_end, RexxInstructionEnd)
-
-CLASS_INTERNAL(parse_endif, RexxInstructionEndIf)
-
-CLASS_INTERNAL(parse_exit, RexxInstructionExit)
-
-CLASS_INTERNAL(parse_expose, RexxInstructionExpose)
-
-CLASS_INTERNAL(parse_forward, RexxInstructionForward)
-
-CLASS_INTERNAL(parse_function, RexxExpressionFunction)
-
-CLASS_INTERNAL(parse_guard, RexxInstructionGuard)
-
-CLASS_INTERNAL(parse_if, RexxInstructionIf)
-
-CLASS_INTERNAL(parse_interpret, RexxInstructionInterpret)
-
-CLASS_INTERNAL(parse_label, RexxInstructionLabel)
-
-CLASS_INTERNAL(parse_leave, RexxInstructionLeave)
-
-CLASS_INTERNAL(parse_message, RexxInstructionMessage)
-
-CLASS_INTERNAL(parse_message_send, RexxExpressionMessage)
-
-CLASS_INTERNAL(parse_nop, RexxInstructionNop)
-
-CLASS_INTERNAL(parse_numeric, RexxInstructionNumeric)
-
-CLASS_INTERNAL(parse_operator, RexxExpressionOperator)
-
-CLASS_INTERNAL(parse_options, RexxInstructionOptions)
-
-CLASS_INTERNAL(parse_otherwise, RexxInstructionOtherWise)
-
-CLASS_INTERNAL(parse_parse, RexxInstructionParse)
-
-CLASS_INTERNAL(parse_procedure, RexxInstructionProcedure)
-
-CLASS_INTERNAL(parse_queue, RexxInstructionQueue)
-
-CLASS_INTERNAL(parse_raise, RexxInstructionRaise)
-
-CLASS_INTERNAL(parse_reply, RexxInstructionReply)
-
-CLASS_INTERNAL(parse_return, RexxInstructionReturn)
-
-CLASS_INTERNAL(parse_say, RexxInstructionSay)
-
-CLASS_INTERNAL(parse_select, RexxInstructionSelect)
-
-CLASS_INTERNAL(parse_signal, RexxInstructionSignal)
-
-CLASS_INTERNAL(parse_stem, RexxStemVariable)
-
-CLASS_INTERNAL(parse_then, RexxInstructionThen)
-
-CLASS_INTERNAL(parse_trace, RexxInstructionTrace)
-
-CLASS_INTERNAL(parse_trigger, RexxTrigger)
-
-CLASS_INTERNAL(parse_use, RexxInstructionUse)
-
-CLASS_INTERNAL(parse_variable, RexxParseVariable)
-
-CLASS_INTERNAL(parse_varref, RexxVariableReference)
-
-CLASS_INTERNAL(compound_element, RexxCompoundElement)
-
-CLASS_INTERNAL(activation_frame_buffer, RexxActivationFrameBuffer)
-
-CLASS_INTERNAL(parse_unary_operator, RexxUnaryOperator)
-
-CLASS_INTERNAL(parse_binary_operator, RexxBinaryOperator)
-
-CLASS_INTERNAL(parse_labeled_select, RexxInstructionLabeledSelect)
-
-CLASS_INTERNAL(parse_logical, RexxExpressionLogical)
-
-CLASS_INTERNAL(parse_use_strict, RexxInstructionUseStrict)
