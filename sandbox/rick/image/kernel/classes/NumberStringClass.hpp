@@ -226,6 +226,8 @@
                 }
 
     static PCPPM operatorMethods[];
+    static RexxClass *classInstance;
+
     char  number[4];
  };
 

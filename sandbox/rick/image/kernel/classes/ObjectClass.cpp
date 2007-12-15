@@ -59,6 +59,12 @@
 #include "SourceFile.hpp"
 #include "ProtectedObject.hpp"
 
+
+
+// singleton class instance
+RexxClass *RexxObject::classInstance = OREF_NULL;
+
+
 // TODO:  Make this activity based.
 static RexxString *msgname_save;       /* last issued message               */
 static RexxMethod *method_save;        /* last issued method object         */

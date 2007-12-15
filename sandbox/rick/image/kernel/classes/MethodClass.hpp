@@ -47,6 +47,8 @@
 #include "RexxCode.hpp"
 #include "RexxNativeCode.hpp"
 
+class RexxMethodClass;
+
  class RexxMethod : public RexxObject {
   public:
   void *operator new(size_t);
@@ -110,6 +112,8 @@
    inline void setPublicRoutines(RexxDirectory *r) { getSource()->setPublicRoutines(r); }
    inline RexxDirectory *getLocalRoutines() { return getSource()->getLocalRoutines(); }
    inline RexxDirectory *getPublicRoutines() { return getSource()->getPublicRoutines(); }
+
+   static RexxMethodClass *classInstance;
 
  protected:
    enum

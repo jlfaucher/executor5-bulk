@@ -51,6 +51,10 @@
 #include "RexxBuiltinFunctions.h"                          /* Gneral purpose BIF Header file       */
 #include "ProtectedObject.hpp"
 
+
+// singleton class instance
+RexxClass *RexxMutableBuffer::classInstance = OREF_NULL;
+
 #define DEFAULT_BUFFER_LENGTH 256
 
 RexxMutableBuffer *RexxMutableBufferClass::newRexx(RexxObject **args, size_t argc)

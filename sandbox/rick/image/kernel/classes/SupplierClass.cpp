@@ -48,6 +48,9 @@
 #include "SupplierClass.hpp"
 #include "ActivityManager.hpp"
 
+// singleton class instance
+RexxClass *RexxSupplier::classInstance = OREF_NULL;
+
 
 RexxSupplier::RexxSupplier(
   RexxArray  *_values,                 /* array of values                   */

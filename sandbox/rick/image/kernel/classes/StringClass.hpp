@@ -417,6 +417,7 @@ class RexxStringClass : public RexxClass {
    // NB:  newRexx() cannot be static and exported as an ooRexx method.
           RexxString *newRexx(RexxObject **, size_t);
    static PCPPM operatorMethods[];
+   static RexxClass *classInstance;
 
  protected:
 

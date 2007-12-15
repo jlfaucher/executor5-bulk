@@ -54,6 +54,9 @@
 #include "RexxBuiltinFunctions.h"                          /* Gneral purpose BIF Header file       */
 #include "ProtectedObject.hpp"
 
+// singleton class instance
+RexxClass *RexxString::classInstance = OREF_NULL;
+
 HashCode RexxString::hash()
 /******************************************************************************/
 /* Function:  retrieve the hash value of a string object                      */

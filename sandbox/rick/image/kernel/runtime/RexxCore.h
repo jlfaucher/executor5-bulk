@@ -212,9 +212,24 @@ EXTERNMEM RexxMemory  memoryObject;   /* memory object                     */
 
 // TODO:  make these into statics inside classes.
 
-EXTERN RexxClass  * TheArrayClass INITGLOBALPTR;     /* array class                       */
-EXTERN RexxClass  * TheClassClass INITGLOBALPTR;     /* class of classes                  */
-EXTERN RexxClass  * TheDirectoryClass INITGLOBALPTR; /* directory class                   */
+#define TheArrayClass RexxArray::classInstance
+#define TheClassClass RexxClass::classInstance
+#define TheDirectoryClass RexxDirectory::classInstance
+#define TheIntegerClass RexxInteger::classInstance
+#define TheListClass RexxList::classInstance
+#define TheMessageClass RexxMessage::classInstance
+#define TheMethodClass RexxMethod::classInstance
+#define TheNumberStringClass RexxNumberString::classInstance
+#define TheObjectClass RexxObject::classInstance
+#define TheQueueClass RexxQueue::classInstance
+#define TheStemClass RexxStem::classInstance
+#define TheStringClass RexxString::classInstance
+#define TheMutableBufferClass RexxMutableBuffer::classInstance
+#define TheSupplierClass RexxSupplier::classInstance
+#define TheTableClass RexxTable::classInstance
+#define TheRelationClass RexxRelation::classInstance
+
+
 EXTERN RexxDirectory * TheEnvironment INITGLOBALPTR; /* environment object                */
 
 EXTERN RexxDirectory * ThePublicRoutines INITGLOBALPTR; /* public_routines directory                */
@@ -223,37 +238,19 @@ EXTERN RexxDirectory * TheStaticRequires INITGLOBALPTR; /* static_requires direc
 EXTERN RexxDirectory * TheEnvironmentBase INITGLOBALPTR; // environment object base ptr
                                        /* function table                    */
 EXTERN RexxDirectory * TheFunctionsDirectory INITGLOBALPTR;
-                                       /* integer class                     */
-EXTERN RexxIntegerClass  * TheIntegerClass INITGLOBALPTR;
 EXTERN RexxDirectory  * TheKernel INITGLOBALPTR;     /* kernel directory                  */
-EXTERN RexxListClass  * TheListClass INITGLOBALPTR;  /* list class                        */
-EXTERN RexxClass  * TheMessageClass INITGLOBALPTR;   /* message class                     */
-                                       /* method class                      */
-EXTERN RexxMethodClass  * TheMethodClass INITGLOBALPTR;
                                        /* native method class               */
 EXTERN RexxObject * TheNilObject INITGLOBALPTR;      /* nil object                        */
 EXTERN RexxArray  * TheNullArray INITGLOBALPTR;      /* null arg list                     */
                                        /* null pointer object, pointer to   */
                                        /*NULL                               */
 EXTERN RexxInteger* TheNullPointer INITGLOBALPTR;
-                                       /* NumberString class                */
-EXTERN RexxNumberStringClass  * TheNumberStringClass INITGLOBALPTR;
-EXTERN RexxClass  * TheObjectClass INITGLOBALPTR;    /* generic object class              */
-EXTERN RexxClass  * TheQueueClass INITGLOBALPTR;     /* queue class                       */
                                        /* Predefined variable retrievers    */
 EXTERN RexxDirectory * TheCommonRetrievers INITGLOBALPTR;
-EXTERN RexxClass  * TheStemClass INITGLOBALPTR;      /* stem class                        */
-                                       /* string class                      */
-EXTERN RexxStringClass  * TheStringClass INITGLOBALPTR;
-                                       /* mutablebuffer class                */
-EXTERN RexxClass  * TheMutableBufferClass INITGLOBALPTR;
                                        /* saved array of primitive          */
                                        /*behaviours                         */
 EXTERN RexxObject * TheSavedBehaviours INITGLOBALPTR;
-EXTERN RexxClass  * TheSupplierClass INITGLOBALPTR;  /* supplier class                    */
 EXTERN RexxDirectory * TheSystem INITGLOBALPTR;     /* system directory                  */
-EXTERN RexxClass  * TheTableClass INITGLOBALPTR;     /* table class                       */
-EXTERN RexxClass  * TheRelationClass INITGLOBALPTR;  /* relation class                    */
 
 EXTERN RexxInteger * TheFalseObject INITGLOBALPTR;   /* false object                      */
 EXTERN RexxInteger * TheTrueObject INITGLOBALPTR;    /* true object                       */

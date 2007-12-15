@@ -58,6 +58,10 @@
 #include "ProtectedObject.hpp"
 #include <ctype.h>
 
+
+// singleton class instance
+RexxMethodClass *RexxMethod::classInstance = OREF_NULL;
+
 RexxMethod::RexxMethod(
     size_t method,                     /* method table index                */
     PCPPM entry,                       /* method entry point                */

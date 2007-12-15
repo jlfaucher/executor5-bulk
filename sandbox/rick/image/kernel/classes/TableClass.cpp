@@ -48,6 +48,9 @@
 #include "ActivityManager.hpp"
 #include "RexxNativeAPI.h"
 
+// singleton class instance
+RexxClass *RexxTable::classInstance = OREF_NULL;
+
 RexxObject *RexxTable::addOffset(
   size_t      _value,                   /* object to add                     */
   RexxObject *_index)                   /* added index                       */

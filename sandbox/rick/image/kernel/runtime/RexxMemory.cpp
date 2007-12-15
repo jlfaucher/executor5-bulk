@@ -56,6 +56,10 @@
 #include "RexxActivation.hpp"
 #include "ActivityManager.hpp"
 #include "LibraryManager.hpp"
+#include "MessageClass.hpp"
+#include "MethodClass.hpp"
+#include "RelationClass.hpp"
+#include "SupplierClass.hpp"
 
 // restore a class from its
 // associated primitive behaviour

@@ -54,6 +54,12 @@
 #include "RexxBuiltinFunctions.h"                     /* Gneral purpose BIF Header file    */
 #include "Numerics.hpp"
 
+
+
+// singleton class instance
+RexxClass *RexxNumberString::classInstance = OREF_NULL;
+
+
 /* MHES 20050108 deprecated */
 #define string_forwarder(method)\
 RexxObject *RexxNumberString::##method(RexxObject *operand)\

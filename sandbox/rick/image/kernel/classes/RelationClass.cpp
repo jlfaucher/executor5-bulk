@@ -36,7 +36,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Kernel                                                  RelationClass.c     */
+/* REXX Kernel                                            RelationClass.c     */
 /*                                                                            */
 /* Primitive Table Class                                                      */
 /*                                                                            */
@@ -46,6 +46,9 @@
 #include "ArrayClass.hpp"
 #include "RelationClass.hpp"
 #include "SupplierClass.hpp"
+
+// singleton class instance
+RexxClass *RexxRelation::classInstance = OREF_NULL;
 
 RexxObject *RexxRelation::removeItem(
   RexxObject *_value,                  /* value part of the tuple           */

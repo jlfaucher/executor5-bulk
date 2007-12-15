@@ -78,6 +78,11 @@
 #include "ActivityManager.hpp"
 #include "ProtectedObject.hpp"
 
+
+// singleton class instance
+RexxClass *RexxArray::classInstance = OREF_NULL;
+
+
 void RexxArray::init(size_t _size, size_t maxSize)
 /******************************************************************************/
 /* Function:  Initialize an array                                             */

@@ -51,6 +51,8 @@ void integer_create (void);
 #define INTEGERCACHESIZE 100
 #define MAX_INTEGER_LENGTH 10
 
+class RexxIntegerClass;
+
 class RexxInteger : public RexxObject {
  public:
   inline RexxInteger(RESTORETYPE restoreType) { ; };
@@ -146,6 +148,7 @@ class RexxInteger : public RexxObject {
 
   static void createClass();
   static PCPPM operatorMethods[];
+  static RexxIntegerClass *classInstance;
 
 protected:
 

@@ -54,6 +54,9 @@
 #include "Numerics.hpp"
 
 
+
+// singleton class instance
+RexxIntegerClass *RexxInteger::classInstance = OREF_NULL;
                                        /* define an operator forwarding     */
                                        /* method                            */
 

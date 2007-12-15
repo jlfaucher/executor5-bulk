@@ -50,6 +50,9 @@
 #include "RexxActivation.hpp"
 #include "ProtectedObject.hpp"
 
+// singleton class instance
+RexxClass *RexxDirectory::classInstance = OREF_NULL;
+
 void RexxDirectory::live()
 /******************************************************************************/
 /* Function:  Normal garbage collection live marking                          */
