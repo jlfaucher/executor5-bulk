@@ -129,3 +129,23 @@ return testGroupList
    self~assertTrue(.true)     -- o.k., test went o.k. count assertion
    self~assertSame(retc, '')
 
+-- rexxref documentation tests
+
+::method "test_101"
+   -- Note: this only works on some Windows implementations. It is ignored
+   --       on Windows 95 and all *nix versions.
+   /* C scale */
+   note.1 = 262    /* middle C */
+   note.2 = 294    /*    D     */
+   note.3 = 330    /*    E     */
+   note.4 = 349    /*    F     */
+   note.5 = 392    /*    G     */
+   note.6 = 440    /*    A     */
+   note.7 = 494    /*    B     */
+   note.8 = 523    /*    C     */
+   do i = 1 to 8
+      call beep note.i, 250    /* hold each note for */
+                              /* one-quarter second */
+      end
+   self~assertTrue(.true)     -- o.k., test went o.k. count assertion
+
