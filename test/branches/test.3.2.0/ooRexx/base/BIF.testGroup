@@ -151,22 +151,6 @@ return testGroupList
 
 ::class "ooRexx.Base.BIF.testGroup" subclass TestCase public
 
-   -- test the BIF, using examples from the documentation
-::method "test_ABS"
-
-   self~assertSame("subTest1",  12.3 , ABS('12.3'),   )
-   self~assertSame("subTest2",  0.307, ABS(' -0.307'),)
-
-      -- new tests
-   self~assertSame("subTest3",  0    , ABS(' -0'),    )
-   self~assertSame("subTest4",  0    , ABS(' +0'),    )
-   self~assertSame("subTest5",  0    , ABS(' - 0 '),  )
-   self~assertSame("subTest6",  0    , ABS(' + 0 '),  )
-   self~assertSame("subTest7",  1    , ABS(' -1'),    )
-   self~assertSame("subTest8",  1    , ABS(' +1'),    )
-   self~assertSame("subTest9",  1    , ABS(' - 1 '),  )
-   self~assertSame("subTest10", 1    , ABS(' + 1 '),  )
-
 
    -- test the BIF
 ::method "test_ADDRESS"
