@@ -154,17 +154,6 @@ return testGroupList
 
 
    -- test the BIF, using examples from the documentation
-::method "test_BITXOR"
-    self~assertSame("subTest1", '12'x     , BITXOR('12'x)                  )
-    self~assertSame("subTest2", '30'x     , BITXOR('12'x,'22'x)            )
-    self~assertSame("subTest3", '3011'x   , BITXOR('1211'x,'22'x)          )
-    self~assertSame("subTest4", '555544'x , BITXOR('1111'x,'444444'x)      )
-    self~assertSame("subTest5", '555504'x , BITXOR('1111'x,'444444'x,'40'x))
-    self~assertSame("subTest6", '5C5C'x   , BITXOR('1111'x, ,'4D'x)        )
-    self~assertSame("subTest7", 'E53302'x , BITXOR('C711'x,'222222'x,' ')  )
-
-
-   -- test the BIF, using examples from the documentation
 ::method "test_C2D"
     self~assertSame("subTest1" , 0     ,  C2D('')       )
 
