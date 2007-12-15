@@ -154,15 +154,6 @@ return testGroupList
 
 
    -- test the BIF, using examples from the documentation
-::method "test_C2X"
-    self~assertSame("subTest1", ""       , C2X('')     )
-
-    self~assertSame("subTest2", '0123'   , C2X('0123'X)) /* '30313233'X in ASCII */
-    self~assertSame("subTest3", '5A4438' , C2X('ZD8')  ) /* '354134343338'X in ASCII */
-
-
-
-   -- test the BIF, using examples from the documentation
 ::method "test_CENTER"
     self~assertSame("subTest1", '  ABC  '  , CENTER(abc,7)            )
     self~assertSame("subTest2", '--ABC---' , CENTER(abc,8,'-')        )
