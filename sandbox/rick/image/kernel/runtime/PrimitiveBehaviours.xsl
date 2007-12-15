@@ -70,6 +70,8 @@ RexxBehaviour RexxBehaviour::primitiveBehaviours[T_Last_Primitive_Class + 1] =
            <xsl:text>
     RexxBehaviour(T_</xsl:text><xsl:value-of select="@id"/><xsl:text>, (PCPPM *)RexxObject::operatorMethods),</xsl:text>
        </xsl:if>
+       <xsl:text>
+    RexxBehaviour(T_</xsl:text><xsl:value-of select="@id"/><xsl:text>Class, (PCPPM *)RexxObject::operatorMethods),</xsl:text>
    </xsl:for-each>
 
    <xsl:for-each select="Internal/Class">

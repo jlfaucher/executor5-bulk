@@ -423,7 +423,7 @@ void RexxMemory::buildVirtualFunctionTable()
    objectPtr = new (objectPtr) RexxTrigger(RESTOREIMAGE);
    virtualFunctionTable[T_ParseTrigger] = *((void **)objectPtr);
    
-   objectPtr = new (objectPtr) RexxMemory(RESTOREIMAGE);
+   objectPtr = new (objectPtr) RexxObject(RESTOREIMAGE);
    virtualFunctionTable[T_Memory] = *((void **)objectPtr);
    
    objectPtr = new (objectPtr) RexxInternalStack(RESTOREIMAGE);

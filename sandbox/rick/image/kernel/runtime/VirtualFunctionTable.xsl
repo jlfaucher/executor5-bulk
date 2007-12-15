@@ -110,10 +110,18 @@ void RexxMemory::buildVirtualFunctionTable()
    </xsl:for-each>
 
    <xsl:for-each select="Transient/Class">
+   <xsl:if test="@objectvirtual">
+   <xsl:text>
+   objectPtr = new (objectPtr) RexxObject(RESTOREIMAGE);
+   virtualFunctionTable[T_</xsl:text><xsl:value-of select="@id"/><xsl:text>] = *((void **)objectPtr);
+   </xsl:text>
+   </xsl:if>
+   <xsl:if test="not(@objectvirtual)">
    <xsl:text>
    objectPtr = new (objectPtr) </xsl:text><xsl:value-of select="@class"/><xsl:text>(RESTOREIMAGE);
    virtualFunctionTable[T_</xsl:text><xsl:value-of select="@id"/><xsl:text>] = *((void **)objectPtr);
    </xsl:text>
+   </xsl:if>
    </xsl:for-each>
 
    <xsl:text>
