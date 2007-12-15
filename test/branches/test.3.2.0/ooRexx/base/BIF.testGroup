@@ -152,57 +152,6 @@ return testGroupList
 ::class "ooRexx.Base.BIF.testGroup" subclass TestCase public
 
 
-   -- test the BIF
-::method "test_ADDRESS"
-
-   addr=address()       -- get default address environment (e.g. cmd.exe, bash, etc.)
-   self~assertNotSame("subTest1",  addr~string~strip, "")   -- make sure something is returned
-   self~assertNotSame("subTest2",  addr, .nil)              -- make sure something is returned
-
-   -- test for default command processor
-   parse source os .             -- get name of operating system
-   os1=os~left(1)~translate      -- get first character in uppercase
-   if pos(os1, "O W") > 0 then   -- OS2, Windows ?
-   do
-      self~assertSame("subTest3 - default address environment for" pp(os)"="pp(addr) "not" pp("CMD"), "CMD",  addr)
-   end
-   else if os1=="L" then         -- Linux
-   do
-      self~assertSame("subTest3 - default address environment for" pp(os)"="pp(addr) "not" pp("bash"), "bash", addr)
-   end
-
-
-   -- test the BIF, using examples from the documentation
-::method "test_ARG"
-  call name1               -- call procedure without arguments
-  call name2 'a', , 'b'    -- call procedure with arguments
-
-  exit
-
-  name1:
-    self~assertSame("subTest1",  0    , arg()             )
-    self~assertSame("subTest2", ""    , arg(1)            )
-    self~assertSame("subTest3", ""    , arg(2)            )
-    self~assertSame("subTest4", .false, arg(1, 'e')       )
-    self~assertSame("subTest5", .true , arg(1, 'o')       )
-    self~assertSame("subTest6", 0     , arg(1, 'a')~items )
-    return
-
-  name2:
-    self~assertSame("subTest7",   3    , arg()            )
-    self~assertSame("subTest8",  "a"   , arg(1)           )
-    self~assertSame("subTest9",  ""    , arg(2)           )
-    self~assertSame("subTest10", "b"   , arg(3)           )
-    self~assertSame("subTest11", ""    , arg(4)           )
-    self~assertSame("subTest12", .true , arg(1, 'e')      )
-    self~assertSame("subTest13", .false, arg(2, 'e')      )
-    self~assertSame("subTest14", .true , arg(3, 'e')      )
-    self~assertSame("subTest15", .false, arg(1, 'o')      )
-    self~assertSame("subTest16", .true , arg(2, 'o')      )
-    self~assertSame("subTest17", .false, arg(3, 'o')      )
-    return
-
-
 
    -- test the BIF
 ::method "test_BEEP"
