@@ -332,8 +332,10 @@ return testGroupList
    self~assertSame("subTest13a", "ARG"(), arg(1))
    a1 = .array~of(a1,,a3,,a5,,a7,,a9)
    a2 = arg(1, 'a')
+   self~assertSame("subTest13b", a1~items, a2~items)
+   self~assertSame("subTest13c", arg(), a2~last)
    do i = 1 to arg()
-      self~assertSame("subTest13b-"i, a1[i], a2[i])
+      self~assertSame("subTest13d-"i, a1[i], a2[i])
       end
    RETURN 0
 
