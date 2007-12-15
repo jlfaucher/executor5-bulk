@@ -2750,3 +2750,44 @@ RexxNumberString *RexxNumberStringClass::newInstance(int64_t integer)
     newNumber->formatInt64(integer);  /* format the integer                */
     return newNumber;
 }
+
+                                       /* numberstring operator methods     */
+PCPPM RexxNumberString::operatorMethods[] =
+{
+   NULL,                               /* first entry not used              */
+   (PCPPM)&RexxNumberString::plus,
+   (PCPPM)&RexxNumberString::minus,
+   (PCPPM)&RexxNumberString::multiply,
+   (PCPPM)&RexxNumberString::divide,
+   (PCPPM)&RexxNumberString::integerDivide,
+   (PCPPM)&RexxNumberString::remainder,
+   (PCPPM)&RexxNumberString::power,
+   (PCPPM)&RexxNumberString::concat,
+   (PCPPM)&RexxNumberString::concat, /* Duplicate entry neccessary        */
+   (PCPPM)&RexxNumberString::concatBlank,
+   (PCPPM)&RexxNumberString::equal,
+   (PCPPM)&RexxNumberString::notEqual,
+   (PCPPM)&RexxNumberString::isGreaterThan,
+   (PCPPM)&RexxNumberString::isLessOrEqual,
+   (PCPPM)&RexxNumberString::isLessThan,
+   (PCPPM)&RexxNumberString::isGreaterOrEqual,
+                           /* Duplicate entry neccessary        */
+   (PCPPM)&RexxNumberString::isGreaterOrEqual,
+   (PCPPM)&RexxNumberString::isLessOrEqual,
+   (PCPPM)&RexxNumberString::strictEqual,
+   (PCPPM)&RexxNumberString::strictNotEqual,
+   (PCPPM)&RexxNumberString::strictGreaterThan,
+   (PCPPM)&RexxNumberString::strictLessOrEqual,
+   (PCPPM)&RexxNumberString::strictLessThan,
+   (PCPPM)&RexxNumberString::strictGreaterOrEqual,
+                           /* Duplicate entry neccessary        */
+   (PCPPM)&RexxNumberString::strictGreaterOrEqual,
+   (PCPPM)&RexxNumberString::strictLessOrEqual,
+   (PCPPM)&RexxNumberString::notEqual,
+                           /* Duplicate entry neccessary        */
+   (PCPPM)&RexxNumberString::notEqual,
+   (PCPPM)&RexxNumberString::andOp,
+   (PCPPM)&RexxNumberString::orOp,
+   (PCPPM)&RexxNumberString::xorOp,
+   (PCPPM)&RexxNumberString::operatorNot,
+};

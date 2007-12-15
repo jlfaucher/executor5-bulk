@@ -155,7 +155,7 @@ void RexxMemory::init(bool _restoringImage)
   globalStrings = OREF_NULL;
 
   // get our table of virtual functions setup first thing.
-  buildVFTArray();
+  buildVirtualFunctionTable();
 
                                        /* NOTE: we don't set livestack      */
                                        /*via the  OrefSet macro, since we   */
@@ -805,7 +805,7 @@ void RexxMemory::restoreImage()
     ((RexxObject *)objectPointer)->setOldSpace();
                                      /* Force fix-up of                   */
                                      /*VirtualFunctionTable,              */
-    ((RexxObject *)objectPointer)->setVirtualFunctions(VFTArray[primitiveTypeNum]);
+    ((RexxObject *)objectPointer)->setVirtualFunctions(virtualFunctionTable[primitiveTypeNum]);
 
                                      /* Do this object have any           */
                                      /*references?                        */
@@ -997,7 +997,7 @@ RexxObject *RexxMemory::oldObject(size_t requestLength)
   /* those are a separate category of object. */
   if (newObj != OREF_NULL) {
       // initialize the hash table object
-      newObj->initializeNewObject(requestLength, markWord, VFTArray[T_Object], TheObjectBehaviour);
+      newObj->initializeNewObject(requestLength, markWord, virtualFunctionTable[T_Object], TheObjectBehaviour);
   }
 
   /* return the newly allocated object to our caller */
@@ -1054,7 +1054,7 @@ RexxObject *RexxMemory::newObject(size_t requestLength, size_t type)
       }
   }
 
-  newObj->initializeNewObject(markWord, VFTArray[type], RexxBehaviour::getPrimitiveBehaviour(type));
+  newObj->initializeNewObject(markWord, virtualFunctionTable[type], RexxBehaviour::getPrimitiveBehaviour(type));
 
   if (this->saveStack != OREF_NULL) {
                                        /* saveobj doesn't get turned on     */
@@ -1125,7 +1125,7 @@ RexxArray  *RexxMemory::newObjects(
     }
   }
 
-  largeObject->initializeNewObject(markWord, VFTArray[T_Object], TheObjectBehaviour);
+  largeObject->initializeNewObject(markWord, virtualFunctionTable[T_Object], TheObjectBehaviour);
 
   if (this->saveStack != OREF_NULL) {
                                        /* saveobj doesn't get turned on     */
@@ -1163,7 +1163,7 @@ RexxArray  *RexxMemory::newObjects(
   /* Otherwise OrefOK (CHECKOREFS) will fail */
 
   // initialize the hash table object
-  largeObject->initializeNewObject(objSize, markWord, VFTArray[objectType], RexxBehaviour::getPrimitiveBehaviour(objectType));
+  largeObject->initializeNewObject(objSize, markWord, virtualFunctionTable[objectType], RexxBehaviour::getPrimitiveBehaviour(objectType));
 
   for (i=1 ;i < count ; i++ ) {
     /* IH: Loop one time less than before because first object is initialized
@@ -1341,7 +1341,7 @@ RexxObject *RexxMemory::temporaryObject(size_t requestLength)
                                        /* setup the new object header for   */
                                        /*use                                */
   // initialize the hash table object
-  newObj->initializeNewObject(allocationLength, markWord, VFTArray[T_Object], TheObjectBehaviour);
+  newObj->initializeNewObject(allocationLength, markWord, virtualFunctionTable[T_Object], TheObjectBehaviour);
   return newObj;                       /* and return it                     */
 }
 

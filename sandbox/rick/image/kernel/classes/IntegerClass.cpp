@@ -1100,6 +1100,47 @@ void RexxInteger::createClass()
 
 }
 
+
+PCPPM RexxInteger::operatorMethods[] =
+{
+   NULL,
+   (PCPPM)&RexxInteger::plus,
+   (PCPPM)&RexxInteger::minus,
+   (PCPPM)&RexxInteger::multiply,
+   (PCPPM)&RexxInteger::divide,
+   (PCPPM)&RexxInteger::integerDivide,
+   (PCPPM)&RexxInteger::remainder,
+   (PCPPM)&RexxInteger::power,
+   (PCPPM)&RexxInteger::concat,
+   (PCPPM)&RexxInteger::concat, /* Duplicate entry neccessary        */
+   (PCPPM)&RexxInteger::concatBlank,
+   (PCPPM)&RexxInteger::equal,
+   (PCPPM)&RexxInteger::notEqual,
+   (PCPPM)&RexxInteger::isGreaterThan,
+   (PCPPM)&RexxInteger::isLessOrEqual,
+   (PCPPM)&RexxInteger::isLessThan,
+   (PCPPM)&RexxInteger::isGreaterOrEqual,
+                              /* Duplicate entry neccessary        */
+   (PCPPM)&RexxInteger::isGreaterOrEqual,
+   (PCPPM)&RexxInteger::isLessOrEqual,
+   (PCPPM)&RexxInteger::strictEqual,
+   (PCPPM)&RexxInteger::strictNotEqual,
+   (PCPPM)&RexxInteger::strictGreaterThan,
+   (PCPPM)&RexxInteger::strictLessOrEqual,
+   (PCPPM)&RexxInteger::strictLessThan,
+   (PCPPM)&RexxInteger::strictGreaterOrEqual,
+                              /* Duplicate entry neccessary        */
+   (PCPPM)&RexxInteger::strictGreaterOrEqual,
+   (PCPPM)&RexxInteger::strictLessOrEqual,
+   (PCPPM)&RexxInteger::notEqual,
+   (PCPPM)&RexxInteger::notEqual,
+   (PCPPM)&RexxInteger::andOp,
+   (PCPPM)&RexxInteger::orOp,
+   (PCPPM)&RexxInteger::xorOp,
+   (PCPPM)&RexxInteger::operatorNot,
+};
+
+
 #include "RexxNativeAPI.h"
 #undef RexxInteger
 

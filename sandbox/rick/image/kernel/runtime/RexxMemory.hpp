@@ -246,7 +246,7 @@ class RexxMemory : public RexxObject {
   inline RexxDirectory *getGlobalStrings() { return globalStrings; }
 
   static void restore();
-  static void buildVFTArray();
+  static void buildVirtualFunctionTable();
   static void create();
   static void createImage();
   static RexxString *getGlobalName(const char *value);
@@ -254,7 +254,7 @@ class RexxMemory : public RexxObject {
   static RexxArray *saveStrings();
   static void restoreStrings(RexxArray *stringArray);
 
-  static void *VFTArray[];             /* table of virtual functions        */
+  static void *virtualFunctionTable[];             /* table of virtual functions        */
   static PCPPM exportedMethods[];      /* start of exported methods table   */
 
   uint16_t markWord;                   /* current marking counter           */

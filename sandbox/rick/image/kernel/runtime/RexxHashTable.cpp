@@ -139,7 +139,7 @@ RexxTable *RexxHashTable::newInstance(
   bytes = newObj->getObjectSize() - companionSize;
 
   // initialize the hash table object
-  ((RexxObject *)newHash)->initializeNewObject(bytes, memoryObject.markWord, RexxMemory::VFTArray[T_HashTable], TheHashTableBehaviour);
+  ((RexxObject *)newHash)->initializeNewObject(bytes, memoryObject.markWord, RexxMemory::virtualFunctionTable[T_HashTable], TheHashTableBehaviour);
                                        /* reduce the companion size         */
   newObj->setObjectSize(companionSize);
   newHash->size = bucketSize;          /* record the size                   */

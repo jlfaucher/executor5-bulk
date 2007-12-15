@@ -326,8 +326,6 @@ int  message_number(RexxString *);
 #define GLOBAL_NAME(name, value) EXTERN RexxString * OREF_##name INITGLOBALPTR;
 #include "GlobalNames.h"
 
-#ifndef GDATA_BUILD_BEHAVIOURS
-
 #include "ObjectClass.hpp"               /* get real definition of Object     */
 
  #include "TableClass.hpp"
@@ -338,8 +336,6 @@ int  message_number(RexxString *);
  #include "RexxEnvelope.hpp"                /* envelope is needed for flattens   */
  #include "RexxActivity.hpp"               /* activity is needed for errors     */
  #include "NumberStringClass.hpp"               /* added to make 'number_digits()'   */
-
-#endif
                                        /* in 'ArrayClass.c' visible            */
 /******************************************************************************/
 /* Method arguments special codes                                             */

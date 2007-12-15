@@ -50,7 +50,6 @@
 #include "SupplierClass.hpp"
 #include "ProtectedObject.hpp"
 
-extern PCPPM objectOperatorMethods[];
 
 RexxBehaviour::RexxBehaviour(
     size_t          newTypenum,        /* class type number                 */
@@ -190,7 +189,7 @@ RexxObject *RexxBehaviour::copy()
                                        /* copy those also                   */
     OrefSet(newBehaviour, newBehaviour->instanceMethodDictionary, (RexxTable *)this->instanceMethodDictionary->copy());
                                        /* use default operator methods set  */
-  newBehaviour->operatorMethods = (PCPPM *)objectOperatorMethods;
+  newBehaviour->operatorMethods = RexxObject::operatorMethods;
                                        /* all copied behaviours are         */
                                        /* non-primitive ones                */
   newBehaviour->setNonPrimitive();

@@ -1,4 +1,8 @@
-/*----------------------------------------------------------------------------*/
+<?xml version="1.0"?>
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:output method="text"/>
+<xsl:template match="Classes">
+<xsl:text>/*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
 /* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
@@ -6,7 +10,7 @@
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.oorexx.org/license.html                          */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -36,21 +40,44 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Kernel                                                  okgdata.c     */
+/* REXX  Support                                                              */
 /*                                                                            */
-/* Global Data                                                                */
+/* Defines for mapping class ids to behaviours                                */
 /*                                                                            */
+/*        -- DO NOT CHANGE THIS FILE, ALL CHANGES WILL BE LOST! --            */
 /******************************************************************************/
-#define GDATA                          /* prevent some RexxCore.h declares    */
-#define EXTERN                         /* keep RexxCore.h from using extern   */
-// explicitly initialize global variable declares.
-#define INITGLOBALDATA = NULL
 
-#include "RexxCore.h"
-#include "StringClass.hpp"
-#include "MethodClass.hpp"
-#include "RexxNativeAPI.h"
+#ifndef PrimitiveBehaviourNames_Included
+#define PrimitiveBehaviourNames_Included
 
-SysSharedSemaphoreDefn                 /* semaphore definitions             */
-                                       /* defined in xxxdef.h               */
+    </xsl:text>
 
+    <xsl:for-each select="Exported/Class">
+        <xsl:text>
+#define The</xsl:text><xsl:value-of select="@id"/><xsl:text>Behaviour      (&amp;RexxBehaviour::primitiveBehaviours[T_</xsl:text><xsl:value-of select="@id"/><xsl:text>]}
+#define The</xsl:text><xsl:value-of select="@id"/><xsl:text>ClassBehaviour    &amp;RexxBehaviour::primitiveBehaviours[T_</xsl:text><xsl:value-of select="@id"/><xsl:text>Class]</xsl:text>
+    </xsl:for-each>
+
+    <xsl:for-each select="Internal/Class">
+        <xsl:text>
+#define The</xsl:text><xsl:value-of select="@id"/><xsl:text>Behaviour      (&amp;RexxBehaviour::primitiveBehaviours[T_</xsl:text><xsl:value-of select="@id"/><xsl:text>])</xsl:text>
+    </xsl:for-each>
+
+    <xsl:for-each select="Transient/Class">
+        <xsl:text>
+#define The</xsl:text><xsl:value-of select="@id"/><xsl:text>Behaviour      (&amp;RexxBehaviour::primitiveBehaviours[T_</xsl:text><xsl:value-of select="@id"/><xsl:text>])</xsl:text>
+    </xsl:for-each>
+
+    <xsl:text>
+
+
+/* -------------------------------------------------------------------------- */
+/* --            ==================================================        -- */
+/* --            DO NOT CHANGE THIS FILE, ALL CHANGES WILL BE LOST!        -- */
+/* --            ==================================================        -- */
+/* -------------------------------------------------------------------------- */
+#endif
+</xsl:text>
+</xsl:template>
+<xsl:template match="CopyRight"></xsl:template>
+</xsl:stylesheet>

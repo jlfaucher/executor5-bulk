@@ -1,4 +1,8 @@
-/*----------------------------------------------------------------------------*/
+<?xml version="1.0"?>
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:output method="text"/>
+<xsl:template match="Classes">
+<xsl:text>/*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
 /* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
@@ -6,7 +10,7 @@
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.oorexx.org/license.html                          */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -36,21 +40,57 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Kernel                                                  okgdata.c     */
+/* REXX Kernel                                                                */
 /*                                                                            */
-/* Global Data                                                                */
+/* Build the table of virtual functions assigned to Rexx class instances      */
 /*                                                                            */
 /******************************************************************************/
-#define GDATA                          /* prevent some RexxCore.h declares    */
-#define EXTERN                         /* keep RexxCore.h from using extern   */
-// explicitly initialize global variable declares.
-#define INITGLOBALDATA = NULL
+
+/* -------------------------------------------------------------------------- */
+/* --            ==================================================        -- */
+/* --            DO NOT CHANGE THIS FILE, ALL CHANGES WILL BE LOST!        -- */
+/* --            ==================================================        -- */
+/* -------------------------------------------------------------------------- */
 
 #include "RexxCore.h"
+#include "RexxBehaviour.hpp"
 #include "StringClass.hpp"
-#include "MethodClass.hpp"
-#include "RexxNativeAPI.h"
+#include "IntegerClass.hpp"
+#include "NumberStringClass.hpp"
 
-SysSharedSemaphoreDefn                 /* semaphore definitions             */
-                                       /* defined in xxxdef.h               */
+// the table of primitive behaviours
+RexxBehaviour RexxBehaviour::primitiveBehaviours[T_Last_Primitive_Class + 1] =
+{</xsl:text>
+   <xsl:for-each select="Exported/Class">
+       <xsl:if test="@operators">
+           <xsl:text>
+    RexxBehaviour(T_</xsl:text><xsl:value-of select="@id"/><xsl:text>, (PCPPM *)</xsl:text><xsl:value-of select="@class"/><xsl:text>::operatorMethods),</xsl:text>
+       </xsl:if>
+       <xsl:if test="not(@operators)">
+           <xsl:text>
+    RexxBehaviour(T_</xsl:text><xsl:value-of select="@id"/><xsl:text>, (PCPPM *)RexxObject::operatorMethods),</xsl:text>
+       </xsl:if>
+   </xsl:for-each>
 
+   <xsl:for-each select="Internal/Class">
+       <xsl:text>
+    RexxBehaviour(T_</xsl:text><xsl:value-of select="@id"/><xsl:text>, (PCPPM *)RexxObject::operatorMethods),</xsl:text>
+   </xsl:for-each>
+
+   <xsl:for-each select="Transient/Class">
+       <xsl:text>
+    RexxBehaviour(T_</xsl:text><xsl:value-of select="@id"/><xsl:text>, (PCPPM *)RexxObject::operatorMethods),</xsl:text>
+   </xsl:for-each>
+
+<xsl:text>
+};
+
+
+/* --            ==================================================        -- */
+/* --            DO NOT CHANGE THIS FILE, ALL CHANGES WILL BE LOST!        -- */
+/* --            ==================================================        -- */
+/* -------------------------------------------------------------------------- */
+</xsl:text>
+</xsl:template>
+<xsl:template match="CopyRight"></xsl:template>
+</xsl:stylesheet>

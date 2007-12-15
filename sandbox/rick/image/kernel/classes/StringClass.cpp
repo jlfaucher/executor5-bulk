@@ -1701,7 +1701,7 @@ RexxString *RexxString::newString(const char *string, size_t length)
                                        /* set the behaviour from the class*/
   newObj->setBehaviour(TheStringBehaviour);
                                        /* set the virtual function table    */
-  newObj->setVirtualFunctions(RexxMemory::VFTArray[T_String]);
+  newObj->setVirtualFunctions(RexxMemory::virtualFunctionTable[T_String]);
                                        /* clear the front part              */
   newObj->clearObject(sizeof(RexxString));
   newObj->setLength(length);           /* save the length                   */
@@ -1737,7 +1737,7 @@ RexxString *RexxString::rawString(size_t length)
                                        /* set the behaviour from the class*/
   newObj->setBehaviour(TheStringBehaviour);
                                        /* set the virtual function table    */
-  newObj->setVirtualFunctions(RexxMemory::VFTArray[T_String]);
+  newObj->setVirtualFunctions(RexxMemory::virtualFunctionTable[T_String]);
                                        /* clear the front part              */
   newObj->clearObject(sizeof(RexxString));
   newObj->setLength(length);           /* save the length                   */
@@ -1780,7 +1780,7 @@ RexxString *RexxString::newUpperString(const char * string, stringsize_t length)
     /* set the behaviour from the class*/
     newObj->setBehaviour(TheStringBehaviour);
     /* set the virtual function table    */
-    newObj->setVirtualFunctions(RexxMemory::VFTArray[T_String]);
+    newObj->setVirtualFunctions(RexxMemory::virtualFunctionTable[T_String]);
     /* clear the front part              */
     newObj->clearObject(sizeof(RexxString));
     newObj->length = length;             /* save the length                   */
@@ -1858,6 +1858,47 @@ RexxString *RexxString::newRexx(RexxObject **init_args, size_t argCount)
   string->sendMessage(OREF_INIT, init_args, argCount);
   return string;                       /* return the new string             */
 }
+
+
+PCPPM RexxString::operatorMethods[] =
+{
+   NULL,                               /* first entry not used              */
+   (PCPPM)&RexxString::plus,
+   (PCPPM)&RexxString::minus,
+   (PCPPM)&RexxString::multiply,
+   (PCPPM)&RexxString::divide,
+   (PCPPM)&RexxString::integerDivide,
+   (PCPPM)&RexxString::remainder,
+   (PCPPM)&RexxString::power,
+   (PCPPM)&RexxString::concatRexx,
+   (PCPPM)&RexxString::concatRexx,
+   (PCPPM)&RexxString::concatBlank,
+   (PCPPM)&RexxString::equal,
+   (PCPPM)&RexxString::notEqual,
+   (PCPPM)&RexxString::isGreaterThan,
+   (PCPPM)&RexxString::isLessOrEqual,
+   (PCPPM)&RexxString::isLessThan,
+   (PCPPM)&RexxString::isGreaterOrEqual,
+                              /* Duplicate entry neccessary        */
+   (PCPPM)&RexxString::isGreaterOrEqual,
+   (PCPPM)&RexxString::isLessOrEqual,
+   (PCPPM)&RexxString::strictEqual,
+   (PCPPM)&RexxString::strictNotEqual,
+   (PCPPM)&RexxString::strictGreaterThan,
+   (PCPPM)&RexxString::strictLessOrEqual,
+   (PCPPM)&RexxString::strictLessThan,
+   (PCPPM)&RexxString::strictGreaterOrEqual,
+                              /* Duplicate entry neccessary        */
+   (PCPPM)&RexxString::strictGreaterOrEqual,
+   (PCPPM)&RexxString::strictLessOrEqual,
+   (PCPPM)&RexxString::notEqual,
+   (PCPPM)&RexxString::notEqual, /* Duplicate entry neccessary        */
+   (PCPPM)&RexxString::andOp,
+   (PCPPM)&RexxString::orOp,
+   (PCPPM)&RexxString::xorOp,
+   (PCPPM)&RexxString::operatorNot,
+};
+
 
 #include "RexxNativeAPI.h"
 

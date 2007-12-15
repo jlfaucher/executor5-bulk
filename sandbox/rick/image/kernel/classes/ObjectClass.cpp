@@ -2212,9 +2212,47 @@ void *RexxNilObject::operator new(size_t size)
     // function table pointer.
     RexxObject *newObj = new_object(size, T_Object);
     // we need to switch the virtual method table pointer new.
-    newObj->setVirtualFunctions(RexxMemory::VFTArray[T_NilObject]);
+    newObj->setVirtualFunctions(RexxMemory::virtualFunctionTable[T_NilObject]);
     return newObj;
 }
+
+
+PCPPM RexxObject::operatorMethods[] =
+{
+   NULL,
+   (PCPPM)&RexxObject::operator_plus,
+   (PCPPM)&RexxObject::operator_minus,
+   (PCPPM)&RexxObject::operator_multiply,
+   (PCPPM)&RexxObject::operator_divide,
+   (PCPPM)&RexxObject::operator_integerDivide,
+   (PCPPM)&RexxObject::operator_remainder,
+   (PCPPM)&RexxObject::operator_power,
+   (PCPPM)&RexxObject::operator_abuttal,
+   (PCPPM)&RexxObject::operator_concat,
+   (PCPPM)&RexxObject::operator_concatBlank,
+   (PCPPM)&RexxObject::operator_equal,
+   (PCPPM)&RexxObject::operator_notEqual,
+   (PCPPM)&RexxObject::operator_isGreaterThan,
+   (PCPPM)&RexxObject::operator_isBackslashGreaterThan,
+   (PCPPM)&RexxObject::operator_isLessThan,
+   (PCPPM)&RexxObject::operator_isBackslashLessThan,
+   (PCPPM)&RexxObject::operator_isGreaterOrEqual,
+   (PCPPM)&RexxObject::operator_isLessOrEqual,
+   (PCPPM)&RexxObject::operator_strictEqual,
+   (PCPPM)&RexxObject::operator_strictNotEqual,
+   (PCPPM)&RexxObject::operator_strictGreaterThan,
+   (PCPPM)&RexxObject::operator_strictBackslashGreaterThan,
+   (PCPPM)&RexxObject::operator_strictLessThan,
+   (PCPPM)&RexxObject::operator_strictBackslashLessThan,
+   (PCPPM)&RexxObject::operator_strictGreaterOrEqual,
+   (PCPPM)&RexxObject::operator_strictLessOrEqual,
+   (PCPPM)&RexxObject::operator_lessThanGreaterThan,
+   (PCPPM)&RexxObject::operator_greaterThanLessThan,
+   (PCPPM)&RexxObject::operator_and,
+   (PCPPM)&RexxObject::operator_or,
+   (PCPPM)&RexxObject::operator_xor,
+   (PCPPM)&RexxObject::operator_not,
+};
 
 
 #include "RexxNativeAPI.h"

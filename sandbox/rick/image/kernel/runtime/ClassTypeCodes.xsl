@@ -1,6 +1,8 @@
-
-
-/*----------------------------------------------------------------------------*/
+<?xml version="1.0"?>
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:output method="text"/>
+<xsl:template match="Classes">
+<xsl:text>/*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
 /* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
@@ -50,126 +52,56 @@
 #define ClassTypeCodes_Included
 
 typedef enum
-{
-    T_First_Primitive_Class = 0,
-    T_First_Exported_Class = 0,
+{</xsl:text>
+<xsl:variable name="firstexported" select="0"/>
+<xsl:variable name="lastexported" select="$firstexported + ((count(Exported/Class) * 2) - 1)"/>
+<xsl:text>
+    T_First_Primitive_Class = </xsl:text><xsl:value-of select="$firstexported"/><xsl:text>,
+    T_First_Exported_Class = </xsl:text><xsl:value-of select="$firstexported"/><xsl:text>,
+</xsl:text>
 
-    T_Object = 0,
-    T_ObjectClass = 1,
-    T_Class = 2,
-    T_ClassClass = 3,
-    T_Array = 4,
-    T_ArrayClass = 5,
-    T_Directory = 6,
-    T_DirectoryClass = 7,
-    T_Integer = 8,
-    T_IntegerClass = 9,
-    T_List = 10,
-    T_ListClass = 11,
-    T_Message = 12,
-    T_MessageClass = 13,
-    T_Method = 14,
-    T_MethodClass = 15,
-    T_NumberString = 16,
-    T_NumberStringClass = 17,
-    T_Queue = 18,
-    T_QueueClass = 19,
-    T_Stem = 20,
-    T_StemClass = 21,
-    T_String = 22,
-    T_StringClass = 23,
-    T_Supplier = 24,
-    T_SupplierClass = 25,
-    T_Table = 26,
-    T_TableClass = 27,
-    T_Relation = 28,
-    T_RelationClass = 29,
-    T_MutableBuffer = 30,
-    T_MutableBufferClass = 31,
+    <xsl:for-each select="Exported/Class">
+<xsl:text>
+    T_</xsl:text><xsl:value-of select="@id"/><xsl:text> = </xsl:text><xsl:value-of select="$firstexported + ((position() - 1) * 2)"/><xsl:text>,
+    T_</xsl:text><xsl:value-of select="@id"/><xsl:text>Class = </xsl:text><xsl:value-of select="$firstexported + (((position() - 1) * 2) + 1)"/><xsl:text>,</xsl:text>
+    </xsl:for-each>
+<xsl:text>
 
-    T_Last_Exported_Class = 31,
-    
-    T_First_Internal_Class = 32,
+    T_Last_Exported_Class = </xsl:text><xsl:value-of select="$lastexported"/><xsl:text>,
+    </xsl:text>
 
-    T_NilObject = 32,
-    T_Behaviour = 33,
-    T_RexxSource = 34,
-    T_RexxCode = 35,
-    T_NativeCode = 36,
-    T_Buffer = 37,
-    T_HashTable = 38,
-    T_ListTable = 39,
-    T_SmartBuffer = 40,
-    T_Variable = 41,
-    T_VariableDictionary = 42,
-    T_VariableTerm = 43,
-    T_CompoundVariableTerm = 44,
-    T_StemVariableTerm = 45,
-    T_DotVariableTerm = 46,
-    T_IndirectVariableTerm = 47,
-    T_FunctionCallTerm = 48,
-    T_MessageSendTerm = 49,
-    T_UnaryOperatorTerm = 50,
-    T_BinaryOperatorTerm = 51,
-    T_LogicalTerm = 52,
-    T_Instruction = 53,
-    T_AddressInstruction = 54,
-    T_AssignmentInstruction = 55,
-    T_CallInstruction = 56,
-    T_CommandInstruction = 57,
-    T_DoInstruction = 58,
-    T_DropInstruction = 59,
-    T_ElseInstruction = 60,
-    T_EndInstruction = 61,
-    T_EndIfInstruction = 62,
-    T_ExitInstruction = 63,
-    T_ExposeInstruction = 64,
-    T_ForwardInstruction = 65,
-    T_GuardInstruction = 66,
-    T_IfInstruction = 67,
-    T_InterpretInstruction = 68,
-    T_LabelInstruction = 69,
-    T_LeaveInstruction = 70,
-    T_MessageInstruction = 71,
-    T_NopInstruction = 72,
-    T_NumericInstruction = 73,
-    T_OptionsInstruction = 74,
-    T_OtherwiseInstruction = 75,
-    T_ParseInstruction = 76,
-    T_ProcedureInstruction = 77,
-    T_QueueInstruction = 78,
-    T_RaiseInstruction = 79,
-    T_ReplyInstruction = 80,
-    T_ReturnInstruction = 81,
-    T_SayInstruction = 82,
-    T_SelectInstruction = 83,
-    T_SignalInstruction = 84,
-    T_ThenInstruction = 85,
-    T_TraceInstruction = 86,
-    T_UseInstruction = 87,
-    T_CompoundElement = 88,
-    T_ParseTrigger = 89,
+<xsl:variable name="firstinternal" select="$lastexported + 1"/>
+<xsl:variable name="lastinternal" select="$firstinternal + (count(Internal/Class) - 1)"/>
+<xsl:text>
+    T_First_Internal_Class = </xsl:text><xsl:value-of select="$firstinternal"/><xsl:text>,
+</xsl:text>
 
-    T_Last_Internal_Class = 89,
-    
-    T_First_Transient_Class = 90,
+    <xsl:for-each select="Internal/Class">
+<xsl:text>
+    T_</xsl:text><xsl:value-of select="@id"/><xsl:text> = </xsl:text><xsl:value-of select="$firstinternal + (position() - 1)"/><xsl:text>,</xsl:text>
+    </xsl:for-each>
+<xsl:text>
 
-    T_Memory = 90,
-    T_InternalStack = 91,
-    T_Stack = 92,
-    T_Activity = 93,
-    T_Activation = 94,
-    T_NativeActivation = 95,
-    T_ActivationFrameBuffer = 96,
-    T_Envelope = 97,
-    T_Clause = 98,
-    T_Token = 99,
-    T_DoBlock = 100,
+    T_Last_Internal_Class = </xsl:text><xsl:value-of select="$lastinternal"/><xsl:text>,
+    </xsl:text>
 
-    T_Last_Transient_Class = 100,
-    T_Last_Primitive_Class = 100,
-    T_Last_Class_Type = 100,
-    
+<xsl:variable name="firsttransient" select="$lastinternal + 1"/>
+<xsl:variable name="lasttransient" select="$firsttransient + (count(Transient/Class) - 1)"/>
+<xsl:text>
+    T_First_Transient_Class = </xsl:text><xsl:value-of select="$firsttransient"/><xsl:text>,
+</xsl:text>
+
+    <xsl:for-each select="Transient/Class">
+<xsl:text>
+    T_</xsl:text><xsl:value-of select="@id"/><xsl:text> = </xsl:text><xsl:value-of select="$firsttransient + (position() - 1)"/><xsl:text>,</xsl:text>
+    </xsl:for-each>
+<xsl:text>
+
+    T_Last_Transient_Class = </xsl:text><xsl:value-of select="$lasttransient"/><xsl:text>,
+    T_Last_Primitive_Class = </xsl:text><xsl:value-of select="$lasttransient"/><xsl:text>,
+    T_Last_Class_Type = </xsl:text><xsl:value-of select="$lasttransient"/><xsl:text>,
+    </xsl:text>
+    <xsl:text>
 } ClassTypeCode;
 
 /* -------------------------------------------------------------------------- */
@@ -178,4 +110,8 @@ typedef enum
 /* --            ==================================================        -- */
 /* -------------------------------------------------------------------------- */
 #endif
+</xsl:text>
+</xsl:template>
 
+<xsl:template match="CopyRight"></xsl:template>
+</xsl:stylesheet>

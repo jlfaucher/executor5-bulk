@@ -145,6 +145,7 @@ class RexxInteger : public RexxObject {
   inline RexxString *getStringrep() {return this->stringrep;}
 
   static void createClass();
+  static PCPPM operatorMethods[];
 
 protected:
 

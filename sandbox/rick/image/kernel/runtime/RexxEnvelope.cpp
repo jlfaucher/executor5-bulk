@@ -315,7 +315,7 @@ void RexxEnvelope::puff(
         }
         /* Force fix-up of                   */
         /*VirtualFunctionTable,              */
-        ((RexxObject *)bufferPointer)->setVirtualFunctions(RexxMemory::VFTArray[primitiveTypeNum]);
+        ((RexxObject *)bufferPointer)->setVirtualFunctions(RexxMemory::virtualFunctionTable[primitiveTypeNum]);
         puffObject->setObjectLive(memoryObject.markWord);  /* Then Mark this object as live.    */
                                            /* Mark other referenced objs        */
                                            /* Note that this flavor of          */
