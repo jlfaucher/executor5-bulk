@@ -124,97 +124,196 @@ return testGroupList
 
 ::class "ABS.testGroup" subclass TestCase public
 
-   -- test the ABS BIF
-::method "test_ABS"
-
-   a=11111111
-   b=-33333333
-   n=-33333333
+::method "test_1"
    self~assertSame("subTest1", ABS(5555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555), '5.55555556E+249')
+
+::method "test_2"
    self~assertSame("subTest2", ABS(-99999%3), 33333)
+
+::method "test_3"
    self~assertSame("subTest3", ABS(5555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555/3), 1.85185185E+249)
+
+::method "test_4"
    self~assertSame("subTest4", ABS(003), '3')
+
+::method "test_5"
    self~assertSame("subTest5", ABS(-000003), '3')
+
+::method "test_6"
    self~assertSame("subTest6", ABS(-.003E17), '3E+14')
+
+::method "test_7"
    self~assertSame("subTest7", ABS(.03E2), '3')
+
+::method "test_8"
    self~assertSame("subTest8", ABS(copies(' ',1000)'   3  '), '3')
+
+::method "test_9"
    self~assertSame("subTest9", ABS('   3  '), '3')
+
+::method "test_10"
    self~assertSame("subTest10", ABS(' + 31 '), '31')
+
+::method "test_11"
    self~assertSame("subTest11", ABS(' - 31 '), '31')
+
+::method "test_12"
    self~assertSame("subTest12", ABS( 0 + 31 ), '31')
+
+::method "test_13"
    self~assertSame("subTest13", ABS( 0 + '  31 ' ), '31')
-   -- subTest14 is in its own method
-   self~assertSame("subTest15", ABS('300  '), '300')
-   self~assertSame("subTest16", ABS('          300'), '300')
-   self~assertSame("subTest17", ABS('2B303033'x), '3')
-   self~assertSame("subTest18", ABS(a), '11111111')
-   self~assertSame("subTest19", ABS(a+b), '22222222')
-   self~assertSame("subTest20", "ABS"(2-9), '7')
-   self~assertSame("subTest21", ABS('-'||2||'.'||'E+3'), '2000')
-   -- subTest22 is in its own method
-   self~assertSame("subTest23", 'ABS'('-4.2'), '4.2')
-   self~assertSame("subTest24", '414253'x( -4.2), '4.2')
-   Numeric Digits 5
-   Numeric Form Engineering
-   self~assertSame("subTest25", ABS(n), '33.333E+6')
-   self~assertSame("subTest26", ABS(-n), '33.333E+6')
-   self~assertSame("subTest27", "ABS"(1E-0234567890), 10E-234567891)
-   self~assertSame("subTest28", "ABS"(10.5e12-1389004007), '10.499E+12')
-   -- subTest29 is in its own method
-   -- subTest30 is in its own method
-   -- subTest31 is in its own method
-   -- subTest32 is in its own method
-   stem.=-18.000000000000000004
-   self~assertSame("subTest33", ABs(stem.four ), '18.000')
-   Numeric Digits 10000
-   li=Copies('6',8000)
-   self~assertSame("subTest34", ABs(li), copies('6', 8000))
-   self~assertSame("subTest35", ABs('12.3'), '12.3')
-   self~assertSame("subTest36", ABs('-0.307'), '0.307')
-   self~assertSame("subTest37", 0, ABS(' -0'))
-   self~assertSame("subTest38", 0, ABS(' +0'))
-   self~assertSame("subTest39", 0, ABS(' - 0 '))
-   self~assertSame("subTest40", 0, ABS(' + 0 '))
-   self~assertSame("subTest41", 1, ABS(' -1'))
-   self~assertSame("subTest42", 1, ABS(' +1'))
-   self~assertSame("subTest43", 1, ABS(' - 1 '))
-   self~assertSame("subTest44", 1, ABS(' + 1 '))
 
-   -- rexxref documentation tests
-   self~assertSame("subTest101", 12.3, ABS('12.3'))
-   self~assertSame("subTest102", 0.307, ABS(' -0.307'))
-
-
-   -- test the ABS BIF
-::method "test_ABS_subTest14"
+::method "test_14"
    self~expectSyntax(93.943)
    self~assertSame("subTest14", ABS(' 0 + 31 '), '31')
 
-   -- test the ABS BIF
-::method "test_ABS_subTest22"
-   self~expectSyntax(93.943)
-   self~assertSame("subTestss", ABS('a'), 'a')
+::method "test_15"
+   self~assertSame("subTest15", ABS('300  '), '300')
 
-   -- test the ABS BIF
-::method "test_ABS_subTest29"
-   self~expectSyntax(93.943)
-   self~assertSame("subTestss", ABS(1E1234567890), 1)
+::method "test_16"
+   self~assertSame("subTest16", ABS('          300'), '300')
 
-   -- test the ABS BIF
-::method "test_ABS_subTest30"
-   self~expectSyntax(93.943)
-   self~assertSame("subTestss", ABS(novalue), 1)
+::method "test_17"
+   self~assertSame("subTest17", ABS('2B303033'x), '3')
 
-   -- test the ABS BIF
-::method "test_ABS_subTest31"
+::method "test_18"
+   a=11111111
+   self~assertSame("subTest18", ABS(a), '11111111')
+
+::method "test_19"
+   a=11111111
+   b=-33333333
+   self~assertSame("subTest19", ABS(a+b), '22222222')
+
+::method "test_20"
+   self~assertSame("subTest20", "ABS"(2-9), '7')
+
+::method "test_21"
+   self~assertSame("subTest21", ABS('-'||2||'.'||'E+3'), '2000')
+
+::method "test_22"
+   self~expectSyntax(93.943)
+   self~assertSame("subTest22", ABS('a'), 'a')
+
+::method "test_23"
+   self~assertSame("subTest23", 'ABS'('-4.2'), '4.2')
+
+::method "test_24"
+   self~assertSame("subTest24", '414253'x( -4.2), '4.2')
+
+::method "test_25"
+   n=-33333333
+   Numeric Digits 5
+   Numeric Form Engineering
+   self~assertSame("subTest25", ABS(n), '33.333E+6')
+
+::method "test_26"
+   n=-33333333
+   Numeric Digits 5
+   Numeric Form Engineering
+   self~assertSame("subTest26", ABS(-n), '33.333E+6')
+
+::method "test_27"
+   n=-33333333
+   Numeric Digits 5
+   Numeric Form Engineering
+   self~assertSame("subTest27", "ABS"(1E-0234567890), 10E-234567891)
+
+::method "test_28"
+   Numeric Digits 5
+   Numeric Form Engineering
+   self~assertSame("subTest28", "ABS"(10.5e12-1389004007), '10.499E+12')
+
+::method "test_29"
+   self~expectSyntax(93.943)
+   self~assertSame("subTest29", ABS(1E1234567890), 1)
+
+::method "test_30"
+   self~expectSyntax(93.943)
+   self~assertSame("subTest30", ABS(novalue), 1)
+
+::method "test_31"
    self~expectSyntax(93.943)
    three = 3
-   self~assertSame("subTestss", ABS(stem.three), 3)
+   self~assertSame("subTest31", ABS(stem.three), 3)
 
-   -- test the ABS BIF
 ::method "test_ABS_subTest32"
    self~expectSyntax(93.943)
    self~assertSame("subTestss", ABS(invalid), 3)
+
+::method "test_33"
+   Numeric Digits 5
+   Numeric Form Engineering
+   stem.=-18.000000000000000004
+   self~assertSame("subTest33", ABs(stem.four ), '18.000')
+
+::method "test_34"
+   Numeric Digits 10000
+   Numeric Form Engineering
+   li=Copies('6',8000)
+   self~assertSame("subTest34", ABs(li), copies('6', 8000))
+
+::method "test_35"
+   Numeric Digits 10000
+   Numeric Form Engineering
+   self~assertSame("subTest35", ABs('12.3'), '12.3')
+
+::method "test_36"
+   Numeric Digits 10000
+   Numeric Form Engineering
+   self~assertSame("subTest36", ABs('-0.307'), '0.307')
+
+::method "test_37"
+   Numeric Digits 10000
+   Numeric Form Engineering
+   self~assertSame("subTest37", 0, ABS(' -0'))
+
+::method "test_38"
+   Numeric Digits 10000
+   Numeric Form Engineering
+   self~assertSame("subTest38", 0, ABS(' +0'))
+
+::method "test_39"
+   Numeric Digits 10000
+   Numeric Form Engineering
+   self~assertSame("subTest39", 0, ABS(' - 0 '))
+
+::method "test_40"
+   Numeric Digits 10000
+   Numeric Form Engineering
+   self~assertSame("subTest40", 0, ABS(' + 0 '))
+
+::method "test_41"
+   Numeric Digits 10000
+   Numeric Form Engineering
+   self~assertSame("subTest41", 1, ABS(' -1'))
+
+::method "test_42"
+   Numeric Digits 10000
+   Numeric Form Engineering
+   self~assertSame("subTest42", 1, ABS(' +1'))
+
+::method "test_43"
+   Numeric Digits 10000
+   Numeric Form Engineering
+   self~assertSame("subTest43", 1, ABS(' - 1 '))
+
+::method "test_44"
+   Numeric Digits 10000
+   Numeric Form Engineering
+   self~assertSame("subTest44", 1, ABS(' + 1 '))
+
+   -- rexxref documentation tests
+
+::method "test_101"
+   self~assertSame("subTest101", 12.3, ABS('12.3'))
+
+::method "test_102"
+   self~assertSame("subTest102", 0.307, ABS(' -0.307'))
+
+
+
+
 
 
 
