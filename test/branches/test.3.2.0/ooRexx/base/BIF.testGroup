@@ -153,13 +153,6 @@ return testGroupList
 
 
 
-   -- test the BIF
-::method "test_BEEP"
-
-   call beep 262 /* middle C */, 1  /* 1/1000 second or standard beep */
-   self~assertTrue(.true)     -- o.k., test went o.k. count assertion
-
-
    -- test the BIF, using examples from the documentation
 ::method "test_BITAND"
     self~assertSame("subTest1", '12'x   , BITAND('12'x)               )
