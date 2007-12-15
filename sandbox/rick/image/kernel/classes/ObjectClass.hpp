@@ -535,6 +535,8 @@ public:
 
     virtual HashCode getHashValue();
 
+    static RexxObject *nilObject;
+
 protected:
     // we want .NIL to have a static hash value after the image restore, so
     // this needs to be included in the object state

@@ -81,6 +81,7 @@
 
 // singleton class instance
 RexxClass *RexxArray::classInstance = OREF_NULL;
+RexxArray *RexxArray::nullArray = OREF_NULL;
 
 
 void RexxArray::init(size_t _size, size_t maxSize)

@@ -57,6 +57,22 @@
 
 // singleton class instance
 RexxIntegerClass *RexxInteger::classInstance = OREF_NULL;
+
+RexxInteger *RexxInteger::falseObject = OREF_NULL;
+RexxInteger *RexxInteger::trueObject = OREF_NULL;
+RexxInteger *RexxInteger::nullPointer = OREF_NULL;
+
+RexxInteger *RexxInteger::integerZero = OREF_NULL;
+RexxInteger *RexxInteger::integerOne = OREF_NULL;
+RexxInteger *RexxInteger::integerTwo = OREF_NULL;
+RexxInteger *RexxInteger::integerThree = OREF_NULL;
+RexxInteger *RexxInteger::integerFour = OREF_NULL;
+RexxInteger *RexxInteger::integerFive = OREF_NULL;
+RexxInteger *RexxInteger::integerSix = OREF_NULL;
+RexxInteger *RexxInteger::integerSeven = OREF_NULL;
+RexxInteger *RexxInteger::integerEight = OREF_NULL;
+RexxInteger *RexxInteger::integerNine = OREF_NULL;
+RexxInteger *RexxInteger::integerMinusOne = OREF_NULL;
                                        /* define an operator forwarding     */
                                        /* method                            */
 

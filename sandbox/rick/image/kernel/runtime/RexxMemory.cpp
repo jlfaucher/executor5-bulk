@@ -80,6 +80,13 @@ RexxMemory memoryObject;
 #define MaxImageSize 1200000         /* maximum startup image size */
 
 RexxDirectory *RexxMemory::globalStrings = OREF_NULL;
+RexxDirectory *RexxMemory::environment = OREF_NULL;       // global environment
+RexxDirectory *RexxMemory::publicRoutines = OREF_NULL;    // statically defined public routines
+RexxDirectory *RexxMemory::staticRequires = OREF_NULL;    // statically defined requires
+RexxDirectory *RexxMemory::functionsDir = OREF_NULL;      // statically defined requires
+RexxDirectory *RexxMemory::commonRetrievers = OREF_NULL;
+RexxDirectory *RexxMemory::kernel = OREF_NULL;
+RexxDirectory *RexxMemory::system = OREF_NULL;
 
 static void logMemoryCheck(FILE *outfile, const char *message, ...)
 {

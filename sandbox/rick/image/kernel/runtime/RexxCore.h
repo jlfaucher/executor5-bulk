@@ -229,43 +229,33 @@ EXTERNMEM RexxMemory  memoryObject;   /* memory object                     */
 #define TheTableClass RexxTable::classInstance
 #define TheRelationClass RexxRelation::classInstance
 
+#define TheEnvironment RexxMemory::environment
+#define ThePublicRoutines RexxMemory::publicRoutines
+#define TheStaticRequires RexxMemory::staticRequires
+#define TheFunctionsDirectory RexxMemory::functionsDir
+#define TheCommonRetrievers RexxMemory::commonRetrievers
+#define TheKernel RexxMemory::kernel
+#define TheSystem RexxMemory::system
 
-EXTERN RexxDirectory * TheEnvironment INITGLOBALPTR; /* environment object                */
+#define TheNilObject RexxNilObject::nilObject
 
-EXTERN RexxDirectory * ThePublicRoutines INITGLOBALPTR; /* public_routines directory                */
-EXTERN RexxDirectory * TheStaticRequires INITGLOBALPTR; /* static_requires directory                */
+#define TheNullArray RexxArray::nullArray
 
-EXTERN RexxDirectory * TheEnvironmentBase INITGLOBALPTR; // environment object base ptr
-                                       /* function table                    */
-EXTERN RexxDirectory * TheFunctionsDirectory INITGLOBALPTR;
-EXTERN RexxDirectory  * TheKernel INITGLOBALPTR;     /* kernel directory                  */
-                                       /* native method class               */
-EXTERN RexxObject * TheNilObject INITGLOBALPTR;      /* nil object                        */
-EXTERN RexxArray  * TheNullArray INITGLOBALPTR;      /* null arg list                     */
-                                       /* null pointer object, pointer to   */
-                                       /*NULL                               */
-EXTERN RexxInteger* TheNullPointer INITGLOBALPTR;
-                                       /* Predefined variable retrievers    */
-EXTERN RexxDirectory * TheCommonRetrievers INITGLOBALPTR;
-                                       /* saved array of primitive          */
-                                       /*behaviours                         */
-EXTERN RexxObject * TheSavedBehaviours INITGLOBALPTR;
-EXTERN RexxDirectory * TheSystem INITGLOBALPTR;     /* system directory                  */
+#define TheFalseObject RexxInteger::falseObject
+#define TheTrueObject RexxInteger::trueObject
+#define TheNullPointer RexxInteger::nullPointer
 
-EXTERN RexxInteger * TheFalseObject INITGLOBALPTR;   /* false object                      */
-EXTERN RexxInteger * TheTrueObject INITGLOBALPTR;    /* true object                       */
-EXTERN RexxInteger * IntegerZero INITGLOBALPTR;      /* Static integer 0                  */
-EXTERN RexxInteger * IntegerOne INITGLOBALPTR;       /* Static integer 1                  */
-EXTERN RexxInteger * IntegerTwo INITGLOBALPTR;       /* Static integer 2                  */
-EXTERN RexxInteger * IntegerThree INITGLOBALPTR;     /* Static integer 3                  */
-EXTERN RexxInteger * IntegerFour INITGLOBALPTR;      /* Static integer 4                  */
-EXTERN RexxInteger * IntegerFive INITGLOBALPTR;      /* Static integer 5                  */
-EXTERN RexxInteger * IntegerSix INITGLOBALPTR;       /* Static integer 6                  */
-EXTERN RexxInteger * IntegerSeven INITGLOBALPTR;     /* Static integer 7                  */
-EXTERN RexxInteger * IntegerEight INITGLOBALPTR;     /* Static integer 8                  */
-EXTERN RexxInteger * IntegerNine INITGLOBALPTR;      /* Static integer 9                  */
-EXTERN RexxInteger * IntegerMinusOne INITGLOBALPTR;  /* Static integer -1                 */
-
+#define IntegerZero RexxInteger::integerZero
+#define IntegerOne RexxInteger::integerOne
+#define IntegerTwo RexxInteger::integerTwo
+#define IntegerThree RexxInteger::integerThree
+#define IntegerFour RexxInteger::integerFour
+#define IntegerFive RexxInteger::integerFive
+#define IntegerSix RexxInteger::integerSix
+#define IntegerSeven RexxInteger::integerSeven
+#define IntegerEight RexxInteger::integerEight
+#define IntegerNine RexxInteger::integerNine
+#define IntegerMinusOne RexxInteger::integerMinusOne
 
 #include "ClassTypeCodes.h"
 

@@ -150,6 +150,22 @@ class RexxInteger : public RexxObject {
   static PCPPM operatorMethods[];
   static RexxIntegerClass *classInstance;
 
+  static RexxInteger *falseObject;
+  static RexxInteger *trueObject;
+  static RexxInteger *nullPointer;
+
+  static RexxInteger *integerZero;
+  static RexxInteger *integerOne;
+  static RexxInteger *integerTwo;
+  static RexxInteger *integerThree;
+  static RexxInteger *integerFour;
+  static RexxInteger *integerFive;
+  static RexxInteger *integerSix;
+  static RexxInteger *integerSeven;
+  static RexxInteger *integerEight;
+  static RexxInteger *integerNine;
+  static RexxInteger *integerMinusOne;
+
 protected:
 
     RexxString *stringrep;              /* integer string representation     */

@@ -63,6 +63,7 @@
 
 // singleton class instance
 RexxClass *RexxObject::classInstance = OREF_NULL;
+RexxObject *RexxNilObject::nilObject = OREF_NULL;
 
 
 // TODO:  Make this activity based.

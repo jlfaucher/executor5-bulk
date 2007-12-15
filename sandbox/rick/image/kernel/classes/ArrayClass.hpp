@@ -180,6 +180,7 @@ typedef struct copyElelmentParm {
 
    // singleton class instance;
    static RexxClass *classInstance;
+   static RexxArray *nullArray;
 
  protected:
 

@@ -263,6 +263,14 @@ class RexxMemory : public RexxObject {
   SMTX envelopeMutex;
   RexxVariable *variableCache;         /* our cache of variable objects     */
 
+  static RexxDirectory *environment;      // global environment
+  static RexxDirectory *publicRoutines;   // statically defined public routines
+  static RexxDirectory *staticRequires;   // statically defined requires
+  static RexxDirectory *functionsDir;     // statically defined requires
+  static RexxDirectory *commonRetrievers; // statically defined requires
+  static RexxDirectory *kernel;           // the kernel directory
+  static RexxDirectory *system;           // the system directory
+
 private:
 
 /******************************************************************************/
