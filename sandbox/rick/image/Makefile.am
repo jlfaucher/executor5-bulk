@@ -102,6 +102,8 @@ COMMON_CPPFLAGS = -DORX_VER=$(ORX_MAJOR) -DORX_REL=$(ORX_MINOR) -DORX_MOD=$(ORX_
 
 messageXML = $(messages_dir)/rexxmsg.xml
 
+classesXML = $(runtime_dir)/PrimitiveClasses.xml
+
 #
 # header files for source distribution
 #
@@ -194,7 +196,7 @@ runtimeHeaders = $(runtime_dir)/DeadObject.hpp \
                  $(runtime_dir)/MemoryStats.hpp \
                  $(runtime_dir)/NativeMethods.h \
                  $(runtime_dir)/Numerics.hpp \
-                 $(runtime_dir)/PrimitiveClasses.h \
+                 $(runtime_dir)/PrimitiveBehaviourNames.h \
                  $(runtime_dir)/RexxActivation.hpp \
                  $(runtime_dir)/RexxActivationStack.hpp \
                  $(runtime_dir)/RexxActivity.hpp \
@@ -451,11 +453,11 @@ platform_sources = $(kernel_platform_unix_dir)/ErrorMessages.cpp \
 runtime_sources  = $(runtime_dir)/DeadObject.cpp \
                    $(runtime_dir)/GlobalData.cpp \
                    $(runtime_dir)/GlobalNames.cpp \
-                   $(runtime_dir)/Initialization.cpp \
                    $(runtime_dir)/MemorySegment.cpp \
                    $(runtime_dir)/MemoryStats.cpp \
                    $(runtime_dir)/NativeRoot.cpp \
                    $(runtime_dir)/Numerics.cpp \
+                   $(runtime_dir)/PrimitiveBehaviours.cpp \
                    $(runtime_dir)/RexxActivation.cpp \
                    $(runtime_dir)/RexxActivationStack.cpp \
                    $(runtime_dir)/RexxActivity.cpp \
@@ -484,7 +486,8 @@ runtime_sources  = $(runtime_dir)/DeadObject.cpp \
                    $(runtime_dir)/RexxVariableDictionary.cpp \
                    $(runtime_dir)/Setup.cpp \
                    $(runtime_dir)/Utilities.cpp \
-                   $(runtime_dir)/Version.cpp
+                   $(runtime_dir)/Version.cpp \
+                   $(runtime_dir)/VirtualFunctionTable.cpp
 streamlibrary_sources = $(streamlibrary_dir)/StreamCommandParser.cpp \
                         $(streamlibrary_dir)/StreamNative.cpp
 lib_sources = $(lib_dir)/LocalProcessData.cpp
@@ -729,6 +732,18 @@ $(messages_dir)/RexxMessageTable.h: $(messages_dir)/RexxMessageTable.xsl $(messa
 
 $(messages_dir)/gencat.inp: $(kernel_platform_unix_dir)/UnixGencat.xsl $(messageXML)
 	sh ./xsl.sh $(@) $(messageXML) $(kernel_platform_unix_dir)/UnixGencat.xsl
+
+$(runtime_dir)/ClassTypeCodes.h: $(runtime_dir)/ClassTypeCodes.xsl $(classesXML)
+	sh ./xsl.sh $(@) $(classesXML) $(runtime_dir)/ClassTypeCodes.xsl
+
+$(runtime_dir)/PrimitiveBehaviourNames.h: $(runtime_dir)/PrimitiveBehaviourNames.xsl $(classesXML)
+	sh ./xsl.sh $(@) $(classesXML) $(runtime_dir)/PrimitiveBehaviourNames.xsl
+
+$(runtime_dir)/PrimitiveBehaviours.cpp: $(runtime_dir)/PrimitiveBehaviours.xsl $(classesXML)
+	sh ./xsl.sh $(@) $(classesXML) $(runtime_dir)/PrimitiveBehaviours.xsl
+
+$(runtime_dir)/VirtualFunctionTables.cpp: $(runtime_dir)/VirtualFunctionTable.xsl $(classesXML)
+	sh ./xsl.sh $(@) $(classesXML) $(runtime_dir)/VirtualFunctionTable.xsl
 
 rexx.img: rexx librexxutil.la $(core_classes) $(core_platform_classes)
 	cp $(rexxclasses_dir)/*.orx .
