@@ -154,12 +154,6 @@ return testGroupList
 
 
    -- test the BIF, using examples from the documentation
-::method "test_COPIES"
-    self~assertSame("subTest1", 'abcabcabc' , COPIES('abc',3))
-    self~assertSame("subTest2", ""          , COPIES('abc',0))
-
-
-   -- test the BIF, using examples from the documentation
 ::method "test_COUNTSTR"
     self~assertSame("subTest1", 4 , COUNTSTR('1','101101') )
     self~assertSame("subTest2", 1 , COUNTSTR('KK','J0KKK0'))
