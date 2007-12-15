@@ -154,14 +154,6 @@ return testGroupList
 
 
    -- test the BIF, using examples from the documentation
-::method "test_CENTER"
-    self~assertSame("subTest1", '  ABC  '  , CENTER(abc,7)            )
-    self~assertSame("subTest2", '--ABC---' , CENTER(abc,8,'-')        )
-    self~assertSame("subTest3", 'e blue s' , CENTRE('The blue sky',8) )
-    self~assertSame("subTest4", 'e blue '  , CENTRE('The blue sky',7) )
-
-
-   -- test the BIF, using examples from the documentation
 ::method "test_CHANGESTR"
     self~assertSame("subTest1", '000'    , CHANGESTR('1','101100',"")  )
     self~assertSame("subTest2", 'X0XX00' , CHANGESTR('1','101100','X') )
