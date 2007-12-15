@@ -83,7 +83,7 @@ use arg cmdLine
     ts~addTest( .TestSuite~new( .Chapter5Section1.testGroup ) )
 
     testResult = ts~run
-    call simpleDumpTestResults testResult
+    call simpleFormatTestResults testResult
   end
 
 return testGroupList
@@ -135,7 +135,7 @@ return testGroupList
     msg1=world~start("HELLO")
     self~assertTrue("msg1 must be a Message object", msg1~class == .Message)
 
-    j = SysSleep(.001)
+    j = SysSleep(.025)
 
     msg2=.message~new(world,"HELLO")~~start
     self~assertTrue("msg2 must be a Message object", msg2~class == .Message)
@@ -150,7 +150,7 @@ return testGroupList
     -- In addition the return of the hello method has the long time appended to
     -- it.  So the message result is a string, but should not be the exact same
     -- string.
-    self~assertFalse("result strings should not be exactly equal", res1 == res2)
+    self~assertNotSame("result strings should not be exactly equal", res1, res2)
 
   -- End test_object_start( )
 
