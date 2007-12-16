@@ -149,4 +149,18 @@ return testUnitList
     v127 = 127
     self~assertSame('subTest01',"    xre = sourceLine(novalue)",sourceLine(v127))
 
+::method 'test_negative_number'
+    self~expectSyntax(40.14)
+    src = sourceLine(-25000)
 
+::method 'test_non_integer_number'
+    self~expectSyntax(40.12)
+    src = sourceLine(15.450)
+
+::method 'test_too_large_a_number'
+    self~expectSyntax(40.34)
+    src = sourceLine(15000)
+
+::method 'test_too_large_by_one'
+    self~expectSyntax(40.34)
+    src = sourceLine(167)
