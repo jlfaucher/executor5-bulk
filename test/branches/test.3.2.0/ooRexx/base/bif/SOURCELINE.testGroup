@@ -149,6 +149,18 @@ return testUnitList
     v127 = 127
     self~assertSame('subTest01',"    xre = sourceLine(novalue)",sourceLine(v127))
 
+::method 'test_line_one'
+    -- Note that for the first line, the hash bang is converted to a line
+    -- comment.  This is what allows the inclusion of the illegal character in
+    -- a Rexx program.
+    l1 = "#!/usr/bin/rexx"
+    l1 = translate(l1, "--", "#!")
+    self~assertSame('sourceline(1) must equal first line', l1, sourceLine(1))
+
+::method 'test_last_line'
+    lastLine = "    src = sourceLine(179)"
+    self~assertSame('Text from last line should match sourceline(174)', lastLine, sourceLine(178))
+
 ::method 'test_negative_number'
     self~expectSyntax(40.14)
     src = sourceLine(-25000)
@@ -163,4 +175,4 @@ return testUnitList
 
 ::method 'test_too_large_by_one'
     self~expectSyntax(40.34)
-    src = sourceLine(167)
+    src = sourceLine(179)
