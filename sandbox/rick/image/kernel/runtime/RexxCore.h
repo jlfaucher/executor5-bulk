@@ -353,8 +353,6 @@ const int NONNEGATIVE = 2;             /* integer must be non-negative      */
 const int WHOLE       = 3;             /* integer must be whole             */
 
 
-#ifndef GDATA
-
 // some very common class tests
 inline bool isString(RexxObject *o) { return isOfClass(String, o); }
 inline bool isInteger(RexxObject *o) { return isOfClass(Integer, o); }
@@ -362,18 +360,15 @@ inline bool isArray(RexxObject *o) { return isOfClass(Array, o); }
 inline bool isStem(RexxObject *o) { return isOfClass(Stem, o); }
 inline bool isActivation(RexxObject *o) { return isOfClass(Activation, o); }
 inline bool isMethod(RexxObject *o) { return isOfClass(Method, o); }
-#endif
 
 
 /* The next macro is specifically for REQUESTing a STRING, since there are    */
 /* four primitive classes that are equivalents for strings.  It will trap on  */
 /* OREF_NULL. */
-#ifndef GDATA
 inline RexxString *REQUEST_STRING(RexxObject *object)
 {
   return (isOfClass(String, object) ? (RexxString *)object : (object)->requestString());
 }
-#endif
 
 /* The next routine is specifically for REQUESTing a STRING needed as a method*/
 /* argument.  This raises an error if the object cannot be converted to a     */
@@ -412,14 +407,4 @@ inline RexxObject * callOperatorMethod(RexxObject *object, size_t methodOffset, 
   return (object->*((PCPPM1)cppEntry))(argument);
 }
 
-                                       /* native method cleanup             */
-#define native_release(value)          ActivityManager::currentActivity->nativeRelease(value)
-                                       /* macro for common native entry     */
-#define native_entry  ActivityManager::getActivity();
-                                       /* value termination routine         */
-#define return_object(value)  return (REXXOBJECT)native_release(value);
-                                       /* return for no value returns       */
-#define return_void native_release(OREF_NULL); return;
-                                       /* return for non-oref values        */
-#define return_value(value) native_release(OREF_NULL); return value;
 #endif

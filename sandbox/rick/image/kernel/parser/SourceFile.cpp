@@ -82,13 +82,6 @@
 
 #define HOLDSIZE         60            /* room for 60 temporaries           */
 
-/* globals for block count based yielding support  */
-#ifdef  NOTIMER
-extern unsigned int iTransClauseCounter; /* defined in WinYield.c           */
-                                         /* cnt of blocks translated        */
-#define CLAUSESPERYIELD 100              /* yield every n blocks            */
-#endif
-
 typedef struct _LINE_DESCRIPTOR {
   size_t position;                     /* position within the buffer        */
   size_t length;                       /* length of the line                */
@@ -2898,10 +2891,6 @@ RexxMethod *RexxSource::translateBlock(
         break;
     }
     this->nextClause();                /* get the next physical clause      */
-#ifdef NOTIMER
-    if (!(iTransClauseCounter++ % CLAUSESPERYIELD))
-      ActivityManager::currentActivity->relinquish();   /* yield to other system processes   */
-#endif
   }
                                        /* now go resolve any label targets  */
   _instruction = (RexxInstruction *)(this->calls->removeFirst());

@@ -240,6 +240,7 @@ class RexxMemory : public RexxObject {
   void        checkAllocs();
   RexxObject *dumpImageStats();
   void        createLocks();
+  void        closeLocks();
   void        scavengeSegmentSets(MemorySegmentSet *requester, size_t allocationLength);
   void        setUpMemoryTables(RexxObjectTable *old2newTable);
   void        forceUninits();

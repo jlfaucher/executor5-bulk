@@ -1180,7 +1180,7 @@ REXXOBJECT REXXENTRY REXX_INTEGER_NEW(int value)
 /* Function:  External interface to the nativeact object method               */
 /******************************************************************************/
 {
-  native_entry;                        /* synchronize access                */
+    NativeContextBlock context;
                                        /* just forward and return           */
-  return_object(new_integer(value));
+    return context.protect(new_integer(value));
 }

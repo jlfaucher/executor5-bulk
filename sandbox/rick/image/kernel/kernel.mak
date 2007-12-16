@@ -125,7 +125,8 @@ OKPOBJ4=$(OR_OUTDIR)\QueueClass.$(OBJ)  $(OR_OUTDIR)\SupplierClass.$(OBJ)  \
 	$(OR_OUTDIR)\PrimitiveBehaviours.$(OBJ) $(OR_OUTDIR)\VirtualFunctionTable.$(OBJ)
 OKPOBJ5=$(OR_OUTDIR)\IntegerClass.$(OBJ)    $(OR_OUTDIR)\NumberStringClass.$(OBJ)
 OKIOBJ1=$(OR_OUTDIR)\RexxActivation.$(OBJ) $(OR_OUTDIR)\RexxActivity.$(OBJ) $(OR_OUTDIR)\KeywordConstants.$(OBJ)  \
-        $(OR_OUTDIR)\RexxBehaviour.$(OBJ)  $(OR_OUTDIR)\RexxBuffer.$(OBJ) $(OR_OUTDIR)\ActivityManager.$(OBJ)
+        $(OR_OUTDIR)\RexxBehaviour.$(OBJ)  $(OR_OUTDIR)\RexxBuffer.$(OBJ) $(OR_OUTDIR)\ActivityManager.$(OBJ) \
+	$(OR_OUTDIR)\Interpreter.$(OBJ)
 OKIOBJ2=$(OR_OUTDIR)\RexxHashTable.$(OBJ)   $(OR_OUTDIR)\RexxCode.$(OBJ) $(OR_OUTDIR)\LibraryManager.$(OBJ) \
         $(OR_OUTDIR)\RexxListTable.$(OBJ) $(OR_OUTDIR)\RexxNativeActivation.$(OBJ) $(OR_OUTDIR)\RexxNativeCode.$(OBJ)
 OKIOBJ3=$(OR_OUTDIR)\RexxCollection.$(OBJ)   $(OR_OUTDIR)\RexxSmartBuffer.$(OBJ) $(OR_OUTDIR)\StackClass.$(OBJ)  \

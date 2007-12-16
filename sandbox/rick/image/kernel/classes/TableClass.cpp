@@ -256,9 +256,9 @@ REXXOBJECT REXXENTRY REXX_TABLE_ADD(REXXOBJECT self, REXXOBJECT object, REXXOBJE
 /* Function:  External interface to the nativeact object method               */
 /******************************************************************************/
 {
-  native_entry;                        /* synchronize access                */
+    NativeContextBlock context;
                                        /* just forward and return           */
-  return_object(this->add((RexxObject *)object, (RexxObject *)index));
+    return context.protect(this->add((RexxObject *)object, (RexxObject *)index));
 }
 
 REXXOBJECT REXXENTRY REXX_TABLE_REMOVE(REXXOBJECT self, REXXOBJECT index)
@@ -266,9 +266,9 @@ REXXOBJECT REXXENTRY REXX_TABLE_REMOVE(REXXOBJECT self, REXXOBJECT index)
 /* Function:  External interface to the nativeact object method               */
 /******************************************************************************/
 {
-  native_entry;                        /* synchronize access                */
+    NativeContextBlock context;
                                        /* just forward and return           */
-  return_object(this->remove((RexxObject *)index));
+    return context.protect(this->remove((RexxObject *)index));
 }
 
 REXXOBJECT REXXENTRY REXX_TABLE_GET(REXXOBJECT self, REXXOBJECT index)
@@ -276,8 +276,8 @@ REXXOBJECT REXXENTRY REXX_TABLE_GET(REXXOBJECT self, REXXOBJECT index)
 /* Function:  External interface to the nativeact object method               */
 /******************************************************************************/
 {
-  native_entry;                        /* synchronize access                */
+    NativeContextBlock context;
                                        /* just forward and return           */
-  return_object(this->get((RexxObject *)index));
+    return context.protect(this->get((RexxObject *)index));
 }
 

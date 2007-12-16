@@ -2269,7 +2269,7 @@ REXXOBJECT REXXENTRY REXX_OBJECT_NEW(REXXOBJECT self)
 /* Function:  External interface to the nativeact object method               */
 /******************************************************************************/
 {
-  native_entry;                        /* synchronize access              */
+    NativeContextBlock context;
                                        /* just forward and return         */
-  return_object(new ((RexxClass *)self) RexxObject);
+    return context.protect(new ((RexxClass *)self) RexxObject);
 }

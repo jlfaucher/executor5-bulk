@@ -958,8 +958,6 @@ void RexxMemory::collect()
 /* objects, followed by sweep of each of the segment sets.                    */
 /******************************************************************************/
 {
-  SysEnterCriticalSection();
-
   collections++;
   verboseMessage("Begin collecting memory, cycle #%d after %d allocations.\n", collections, allocations);
   allocations = 0;
@@ -984,8 +982,6 @@ void RexxMemory::collect()
 
   verboseMessage("End collecting memory\n");
   verboseMessage("Object save table contains %d objects\n", this->saveTable->items());
-
-  SysExitCriticalSection();
 }
 
 RexxObject *RexxMemory::oldObject(size_t requestLength)
@@ -1535,7 +1531,6 @@ void RexxMemory::orphanCheckMark(RexxObject *markObject, RexxObject **pMarkObjec
                                         /* Make sure we exit the GC critical */
                                         /*  otherwise the cleanup from logic */
                                         /*  error will hang !!!              */
-        SysExitCriticalSection();
         /* we would have crashed soon anyway!*/
         logic_error("Bad Object found during GC !\n");
     }
@@ -1858,12 +1853,11 @@ void RexxMemory::setObjectOffset(size_t offset)
    if (MTXRI(this->unflattenMutex)) {
     /* Nope, have to wait for it. Get current activity. */
     RexxActivity * currentActivity = ActivityManager::currentActivity;
-    /* release kernel access. */
-    currentActivity->releaseAccess();
-    /* wait for current unflatten to end */
-    MTXRQ(this->unflattenMutex);
-    /* get kernel access back. */
-    currentActivity->requestAccess();
+    {
+        UnsafeBlock releaser;
+        /* wait for current unflatten to end */
+        MTXRQ(this->unflattenMutex);
+    }
    }
   }
   else {
@@ -1894,10 +1888,10 @@ void      RexxMemory::setEnvelope(RexxEnvelope *_envelope)
                                        /* Get current activity.             */
     RexxActivity *currentActivity = ActivityManager::currentActivity;
                                        /* release kernel access.            */
-    currentActivity->releaseAccess();
-    MTXRQ(this->envelopeMutex);        /* wait for current unflat to end    */
-                                       /* get kernel access back.           */
-    currentActivity->requestAccess();
+    {
+        UnsafeBlock releaser;
+        MTXRQ(this->envelopeMutex);        /* wait for current unflat to end    */
+    }
    }
   }
   else {
@@ -2036,10 +2030,10 @@ RexxStack *RexxMemory::getFlattenStack(void)
                                        /* Get current activity.             */
     RexxActivity *currentActivity = ActivityManager::currentActivity;
                                        /* release kernel access.            */
-    currentActivity->releaseAccess();
-    MTXRQ(this->flattenMutex);         /* wait for current flattento end    */
-                                       /* get kernel access back.           */
-    currentActivity->requestAccess();
+    {
+        UnsafeBlock releaser;
+        MTXRQ(this->flattenMutex);         /* wait for current flattento end    */
+    }
   }
                                        /* create a temporary stack          */
   this->flattenStack = new (LiveStackSize, true) RexxStack (LiveStackSize);
@@ -2183,9 +2177,26 @@ void RexxMemory::createLocks()
                                        /* Create/Open Shared MUTEX      */
                                        /* Semophores used to serialize  */
                                        /* the flatten/unflatten process */
-  MTXCR(memoryObject.flattenMutex);
-  MTXCR(memoryObject.unflattenMutex);
-  MTXCR(memoryObject.envelopeMutex);
+  MTXCR(flattenMutex);
+  MTXCR(unflattenMutex);
+  MTXCR(envelopeMutex);
+}
+
+void RexxMemory::closeLocks()
+/******************************************************************************/
+/* Function:  Do the initial lock creation for memory setup.                  */
+/******************************************************************************/
+{
+                                       /* Create/Open Shared MUTEX      */
+                                       /* Semophores used to serialize  */
+                                       /* the flatten/unflatten process */
+  MTXCR(flattenMutex);
+  MTXCR(unflattenMutex);
+  MTXCR(envelopeMutex);
+  flattenMutex = 0;
+  unflattenMutex = 0;
+  envelopeMutex = 0;
+
 }
 
 

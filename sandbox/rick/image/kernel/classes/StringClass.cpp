@@ -1937,9 +1937,9 @@ REXXOBJECT REXXENTRY REXX_STRING_NEWD(double number)
 /* Function:  External interface to the nativeact object method               */
 /******************************************************************************/
 {
-  native_entry;                        /* synchronize access                */
+    NativeContextBlock context;
                                        /* just forward and return           */
-  return_object(new_string(number));
+    return context.protect(new_string(number));
 }
 
 REXXOBJECT REXXENTRY REXX_STRING_NEW_UPPER(CSTRING string)
@@ -1947,9 +1947,9 @@ REXXOBJECT REXXENTRY REXX_STRING_NEW_UPPER(CSTRING string)
 /* Function:  External interface to the nativeact object method               */
 /******************************************************************************/
 {
-  native_entry;                        /* synchronize access                */
+    NativeContextBlock context;
                                        /* just forward and return           */
-  return_object(((RexxString *)new_string(string))->upper());
+    return context.protect(((RexxString *)new_string(string))->upper());
 }
 
 REXXOBJECT REXXENTRY REXX_STRING_NEW(CSTRING string, size_t length)
@@ -1957,9 +1957,9 @@ REXXOBJECT REXXENTRY REXX_STRING_NEW(CSTRING string, size_t length)
 /* Function:  External interface to the nativeact object method               */
 /******************************************************************************/
 {
-  native_entry;                        /* synchronize access                */
+    NativeContextBlock context;
                                        /* just forward and return           */
-  return_object(new_string(string, length));
+    return context.protect(new_string(string, length));
 }
 
 size_t REXXENTRY REXX_STRING_GET(REXXOBJECT self, size_t start, char * buffer, size_t bufl)
