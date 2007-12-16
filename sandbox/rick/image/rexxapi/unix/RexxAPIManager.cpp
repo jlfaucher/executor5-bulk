@@ -76,6 +76,7 @@
 #endif
 
 #include "RexxCore.h"
+#include "ActivityManager.hpp"
 #include <stdio.h>
 #include <stdlib.h>
 #include "RexxAPIManager.h"

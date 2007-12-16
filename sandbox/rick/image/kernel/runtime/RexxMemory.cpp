@@ -1851,8 +1851,6 @@ void RexxMemory::setObjectOffset(size_t offset)
    /* have a value, starting unflatten.  See if we can get MUTEX */
    /* immed */
    if (MTXRI(this->unflattenMutex)) {
-    /* Nope, have to wait for it. Get current activity. */
-    RexxActivity * currentActivity = ActivityManager::currentActivity;
     {
         UnsafeBlock releaser;
         /* wait for current unflatten to end */
@@ -1885,8 +1883,6 @@ void      RexxMemory::setEnvelope(RexxEnvelope *_envelope)
                                        /* See if we can get MUTEX immed     */
    if (MTXRI(this->envelopeMutex)) {
                                        /* Nope, have to wait for it.        */
-                                       /* Get current activity.             */
-    RexxActivity *currentActivity = ActivityManager::currentActivity;
                                        /* release kernel access.            */
     {
         UnsafeBlock releaser;
@@ -2027,8 +2023,6 @@ RexxStack *RexxMemory::getFlattenStack(void)
 {
    if (MTXRI(this->flattenMutex)) {
                                        /* Nope, have to wait for it.        */
-                                       /* Get current activity.             */
-    RexxActivity *currentActivity = ActivityManager::currentActivity;
                                        /* release kernel access.            */
     {
         UnsafeBlock releaser;

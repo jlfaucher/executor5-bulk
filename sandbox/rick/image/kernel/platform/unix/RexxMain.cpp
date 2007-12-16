@@ -70,6 +70,7 @@
 #include "APIDefinitions.h"
 #include "SubcommandAPI.h"
 #include "APIUtilities.h"
+#include "Interpreter.hpp"
        /* support macros                    */
 
 
@@ -687,7 +688,7 @@ void APIENTRY RexxWaitForTermination(void)
      SysThreadYield();
    }
    // do termination stuff
-   Interpreter::termination();
+   Interpreter::terminate();
 }
 
 

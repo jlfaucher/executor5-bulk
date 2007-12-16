@@ -57,7 +57,7 @@ class RexxMutableBufferClass : public RexxClass {
 };
 
  class RexxMutableBuffer : public RexxObject {
-     friend RexxMutableBufferClass;
+     friend class RexxMutableBufferClass;
   public:
    inline void       *operator new(size_t size, void *ptr){return ptr;};
    inline             RexxMutableBuffer() {;} ;
