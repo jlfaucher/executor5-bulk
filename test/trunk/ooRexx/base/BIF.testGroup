@@ -1117,54 +1117,6 @@ return testGroupList
 
 
    -- test the BIF, using examples from the documentation
-::method "test_TIME"
-    self~assertSame("subTest1"  , "11:27am"  , time('C','11:27:21')    )
-    self~assertSame("subTest2"  , "11:27:00" , time('N','11:27am','C') )
-
-    self~assertEquals("subTest3", 1020       , TIME('M','5:00pm','C')  )
-
-      --   TIME()     '16:54:22'
-      --   TIME('C')  '4:54pm'
-      --   TIME('H')  '16'
-      --   TIME('L')  '16:54:22.120000' /* Perhaps */
-      --   TIME('M')  '1014'            /* 54 + 60*16 */
-      --   TIME('N')  '16:54:22'
-      --   TIME('S')  '60862'           /* 22 + 60*(54+60*16) */
-
-   -- new tests
-
-   -- all date() and time() calls within a statement use the same dateTime
-
-   -- subTest
-      parse value time() time('C') with hh":"mm":"ss h1":"m1 +3 ampm
-      self~assertTrue("subTest4", (hh>11 & ampm="pm") | (hh<12 & ampm="am"))  -- check for correct usage of am/pm
-
-   -- subTest
-      parse value time() time('H') with hh":"mm":"ss h1
-      self~assertTrue("subTest5", (hh=h1) )
-
-   -- subTest, check for microseconds
-      parse value time() time('L') with hh":"mm":"ss"."uu
-      self~assertTrue("subTest6", (datatype(uu,"w") & (length(uu)=6)) )
-
-   -- subTest
-      parse value time() time('M') with hh":"mm":"ss m1
-      self~assertTrue("subTest7", ((hh*60+mm)=m1))
-
-   -- subTest
-      parse value time() time('N') with t1 t2
-      self~assertTrue("subTest8", (t1==t2) )
-
-   -- subTest
-      parse value time() time('S') with hh":"mm":"ss s1
-      self~assertTrue("subTest9", ((hh*60*60+mm*60+ss)=s1))
-
-
-    self~assertEquals("subTest10", 17    , TIME('H','5:00pm','C'))
-    self~assertEquals("subTest11", 61200 , TIME('S','5:00pm','C'))
-
-
-   -- test the BIF, using examples from the documentation
 ::method "test_TRANSLATE"
     self~assertSame("subTest1" , 'ABCDEF' , TRANSLATE('abcdef')                  )
     self~assertSame("subTest2" , 'ab2d1f' , TRANSLATE('abcdef','12','ec')        )
