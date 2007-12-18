@@ -111,7 +111,7 @@ do
    -- testResult=.testSuite~new(testGroupClass)~run
    testResult=ts~run       -- now run all the tests
 
-   call simpleDumpTestResults testResult
+   call simpleFormatTestResults testResult
 end
 
    /* return list of array objects containing test case classes and
@@ -348,25 +348,6 @@ return testGroupList
    self~assertSame("subTest5-9", cb2a, '0')
    self~assertTrue("subTest5-10", cb3a>='5')
    self~assertTrue("subTest5-10", cb4a>='13')
-
-
-::method "test_6"
-   -- This doesn't work. The first time that time() is called will cause the
-   -- entire method to abort.
-   validopts='CEFHLMNRST'
-   do i = 0 to 255
-      a = d2c(i)
-      if verify(translate(a), validopts) = 1 then do
-         self~expectSyntax(40.904)
-         z = time(a)
-         self~assertTrue("subTest6-"i, 1)
-         end
-      else do
-         self~clearCondition()
-         z = time(a)
-         self~assertTrue("subTest6-"i, 1)
-         end
-      end
 
 
 ::method "test_7"
@@ -687,4 +668,1290 @@ return
    Queue cb5 cb6
    Call SCBTIMEA
    return
+
+/**
+ * Methods below here test all possible characters as options to time.  The
+ * method text was generated with a simple Rexx program.
+ *
+ * validopts = 'CEFHLMNRST'
+ */
+::method test_invalidOpt_hex_0
+   a = d2c(0)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_1
+   a = d2c(1)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_2
+   a = d2c(2)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_3
+   a = d2c(3)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_4
+   a = d2c(4)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_5
+   a = d2c(5)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_6
+   a = d2c(6)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_7
+   a = d2c(7)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_8
+   a = d2c(8)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_9
+   a = d2c(9)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_A
+   a = d2c(10)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_B
+   a = d2c(11)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_C
+   a = d2c(12)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_D
+   a = d2c(13)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_E
+   a = d2c(14)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_F
+   a = d2c(15)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_10
+   a = d2c(16)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_11
+   a = d2c(17)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_12
+   a = d2c(18)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_13
+   a = d2c(19)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_14
+   a = d2c(20)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_15
+   a = d2c(21)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_16
+   a = d2c(22)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_17
+   a = d2c(23)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_18
+   a = d2c(24)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_19
+   a = d2c(25)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_1A
+   a = d2c(26)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_1B
+   a = d2c(27)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_1C
+   a = d2c(28)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_1D
+   a = d2c(29)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_1E
+   a = d2c(30)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_1F
+   a = d2c(31)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_20
+   a = d2c(32)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_21
+   a = d2c(33)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_22
+   a = d2c(34)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_23
+   a = d2c(35)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_24
+   a = d2c(36)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_25
+   a = d2c(37)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_26
+   a = d2c(38)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_27
+   a = d2c(39)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_28
+   a = d2c(40)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_29
+   a = d2c(41)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_2A
+   a = d2c(42)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_2B
+   a = d2c(43)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_2C
+   a = d2c(44)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_2D
+   a = d2c(45)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_2E
+   a = d2c(46)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_2F
+   a = d2c(47)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_30
+   a = d2c(48)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_31
+   a = d2c(49)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_32
+   a = d2c(50)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_33
+   a = d2c(51)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_34
+   a = d2c(52)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_35
+   a = d2c(53)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_36
+   a = d2c(54)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_37
+   a = d2c(55)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_38
+   a = d2c(56)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_39
+   a = d2c(57)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_3A
+   a = d2c(58)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_3B
+   a = d2c(59)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_3C
+   a = d2c(60)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_3D
+   a = d2c(61)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_3E
+   a = d2c(62)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_3F
+   a = d2c(63)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_40
+   a = d2c(64)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_41
+   a = d2c(65)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_42
+   a = d2c(66)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_validOpt_bigChar_C
+   a = d2c(67)
+   y = time(a); z = time(a)
+   self~assertEquals(y, z)
+
+::method test_invalidOpt_hex_44
+   a = d2c(68)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_validOpt_bigChar_E
+   a = d2c(69)
+   y = time(a); z = time(a)
+   self~assertEquals(y, z)
+
+::method test_validOpt_bigChar_F
+   a = d2c(70)
+   y = time(a); z = time(a)
+   self~assertEquals(y, z)
+
+::method test_invalidOpt_hex_47
+   a = d2c(71)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_validOpt_bigChar_H
+   a = d2c(72)
+   y = time(a); z = time(a)
+   self~assertEquals(y, z)
+
+::method test_invalidOpt_hex_49
+   a = d2c(73)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_4A
+   a = d2c(74)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_4B
+   a = d2c(75)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_validOpt_bigChar_L
+   a = d2c(76)
+   y = time(a); z = time(a)
+   self~assertEquals(y, z)
+
+::method test_validOpt_bigChar_M
+   a = d2c(77)
+   y = time(a); z = time(a)
+   self~assertEquals(y, z)
+
+::method test_validOpt_bigChar_N
+   a = d2c(78)
+   y = time(a); z = time(a)
+   self~assertEquals(y, z)
+
+::method test_invalidOpt_hex_4F
+   a = d2c(79)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_50
+   a = d2c(80)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_51
+   a = d2c(81)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_validOpt_bigChar_R
+   a = d2c(82)
+   y = time(a); z = time(a)
+   self~assertEquals(y, z)
+
+::method test_validOpt_bigChar_S
+   a = d2c(83)
+   y = time(a); z = time(a)
+   self~assertEquals(y, z)
+
+::method test_validOpt_bigChar_T
+   a = d2c(84)
+   y = time(a); z = time(a)
+   self~assertEquals(y, z)
+
+::method test_invalidOpt_hex_55
+   a = d2c(85)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_56
+   a = d2c(86)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_57
+   a = d2c(87)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_58
+   a = d2c(88)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_59
+   a = d2c(89)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_5A
+   a = d2c(90)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_5B
+   a = d2c(91)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_5C
+   a = d2c(92)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_5D
+   a = d2c(93)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_5E
+   a = d2c(94)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_5F
+   a = d2c(95)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_60
+   a = d2c(96)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_61
+   a = d2c(97)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_62
+   a = d2c(98)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_validOpt_littleChar_c
+   a = d2c(99)
+   y = time(a); z = time(a)
+   self~assertEquals(y, z)
+
+::method test_invalidOpt_hex_64
+   a = d2c(100)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_validOpt_littleChar_e
+   a = d2c(101)
+   y = time(a); z = time(a)
+   self~assertEquals(y, z)
+
+::method test_validOpt_littleChar_f
+   a = d2c(102)
+   y = time(a); z = time(a)
+   self~assertEquals(y, z)
+
+::method test_invalidOpt_hex_67
+   a = d2c(103)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_validOpt_littleChar_h
+   a = d2c(104)
+   y = time(a); z = time(a)
+   self~assertEquals(y, z)
+
+::method test_invalidOpt_hex_69
+   a = d2c(105)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_6A
+   a = d2c(106)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_6B
+   a = d2c(107)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_validOpt_littleChar_l
+   a = d2c(108)
+   y = time(a); z = time(a)
+   self~assertEquals(y, z)
+
+::method test_validOpt_littleChar_m
+   a = d2c(109)
+   y = time(a); z = time(a)
+   self~assertEquals(y, z)
+
+::method test_validOpt_littleChar_n
+   a = d2c(110)
+   y = time(a); z = time(a)
+   self~assertEquals(y, z)
+
+::method test_invalidOpt_hex_6F
+   a = d2c(111)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_70
+   a = d2c(112)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_71
+   a = d2c(113)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_validOpt_littleChar_r
+   a = d2c(114)
+   y = time(a); z = time(a)
+   self~assertEquals(y, z)
+
+::method test_validOpt_littleChar_s
+   a = d2c(115)
+   y = time(a); z = time(a)
+   self~assertEquals(y, z)
+
+::method test_validOpt_littleChar_t
+   a = d2c(116)
+   y = time(a); z = time(a)
+   self~assertEquals(y, z)
+
+::method test_invalidOpt_hex_75
+   a = d2c(117)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_76
+   a = d2c(118)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_77
+   a = d2c(119)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_78
+   a = d2c(120)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_79
+   a = d2c(121)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_7A
+   a = d2c(122)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_7B
+   a = d2c(123)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_7C
+   a = d2c(124)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_7D
+   a = d2c(125)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_7E
+   a = d2c(126)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_7F
+   a = d2c(127)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_80
+   a = d2c(128)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_81
+   a = d2c(129)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_82
+   a = d2c(130)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_83
+   a = d2c(131)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_84
+   a = d2c(132)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_85
+   a = d2c(133)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_86
+   a = d2c(134)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_87
+   a = d2c(135)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_88
+   a = d2c(136)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_89
+   a = d2c(137)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_8A
+   a = d2c(138)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_8B
+   a = d2c(139)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_8C
+   a = d2c(140)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_8D
+   a = d2c(141)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_8E
+   a = d2c(142)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_8F
+   a = d2c(143)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_90
+   a = d2c(144)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_91
+   a = d2c(145)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_92
+   a = d2c(146)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_93
+   a = d2c(147)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_94
+   a = d2c(148)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_95
+   a = d2c(149)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_96
+   a = d2c(150)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_97
+   a = d2c(151)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_98
+   a = d2c(152)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_99
+   a = d2c(153)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_9A
+   a = d2c(154)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_9B
+   a = d2c(155)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_9C
+   a = d2c(156)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_9D
+   a = d2c(157)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_9E
+   a = d2c(158)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_9F
+   a = d2c(159)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_A0
+   a = d2c(160)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_A1
+   a = d2c(161)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_A2
+   a = d2c(162)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_A3
+   a = d2c(163)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_A4
+   a = d2c(164)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_A5
+   a = d2c(165)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_A6
+   a = d2c(166)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_A7
+   a = d2c(167)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_A8
+   a = d2c(168)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_A9
+   a = d2c(169)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_AA
+   a = d2c(170)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_AB
+   a = d2c(171)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_AC
+   a = d2c(172)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_AD
+   a = d2c(173)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_AE
+   a = d2c(174)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_AF
+   a = d2c(175)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_B0
+   a = d2c(176)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_B1
+   a = d2c(177)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_B2
+   a = d2c(178)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_B3
+   a = d2c(179)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_B4
+   a = d2c(180)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_B5
+   a = d2c(181)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_B6
+   a = d2c(182)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_B7
+   a = d2c(183)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_B8
+   a = d2c(184)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_B9
+   a = d2c(185)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_BA
+   a = d2c(186)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_BB
+   a = d2c(187)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_BC
+   a = d2c(188)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_BD
+   a = d2c(189)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_BE
+   a = d2c(190)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_BF
+   a = d2c(191)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_C0
+   a = d2c(192)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_C1
+   a = d2c(193)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_C2
+   a = d2c(194)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_C3
+   a = d2c(195)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_C4
+   a = d2c(196)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_C5
+   a = d2c(197)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_C6
+   a = d2c(198)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_C7
+   a = d2c(199)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_C8
+   a = d2c(200)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_C9
+   a = d2c(201)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_CA
+   a = d2c(202)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_CB
+   a = d2c(203)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_CC
+   a = d2c(204)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_CD
+   a = d2c(205)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_CE
+   a = d2c(206)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_CF
+   a = d2c(207)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_D0
+   a = d2c(208)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_D1
+   a = d2c(209)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_D2
+   a = d2c(210)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_D3
+   a = d2c(211)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_D4
+   a = d2c(212)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_D5
+   a = d2c(213)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_D6
+   a = d2c(214)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_D7
+   a = d2c(215)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_D8
+   a = d2c(216)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_D9
+   a = d2c(217)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_DA
+   a = d2c(218)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_DB
+   a = d2c(219)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_DC
+   a = d2c(220)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_DD
+   a = d2c(221)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_DE
+   a = d2c(222)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_DF
+   a = d2c(223)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_E0
+   a = d2c(224)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_E1
+   a = d2c(225)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_E2
+   a = d2c(226)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_E3
+   a = d2c(227)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_E4
+   a = d2c(228)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_E5
+   a = d2c(229)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_E6
+   a = d2c(230)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_E7
+   a = d2c(231)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_E8
+   a = d2c(232)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_E9
+   a = d2c(233)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_EA
+   a = d2c(234)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_EB
+   a = d2c(235)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_EC
+   a = d2c(236)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_ED
+   a = d2c(237)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_EE
+   a = d2c(238)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_EF
+   a = d2c(239)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_F0
+   a = d2c(240)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_F1
+   a = d2c(241)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_F2
+   a = d2c(242)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_F3
+   a = d2c(243)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_F4
+   a = d2c(244)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_F5
+   a = d2c(245)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_F6
+   a = d2c(246)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_F7
+   a = d2c(247)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_F8
+   a = d2c(248)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_F9
+   a = d2c(249)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_FA
+   a = d2c(250)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_FB
+   a = d2c(251)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_FC
+   a = d2c(252)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_FD
+   a = d2c(253)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_FE
+   a = d2c(254)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_FF
+   a = d2c(255)
+   self~expectSyntax(40.904)
+   z = time(a)
 
