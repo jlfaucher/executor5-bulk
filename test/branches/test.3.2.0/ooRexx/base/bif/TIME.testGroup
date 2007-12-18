@@ -1,0 +1,690 @@
+#!/usr/bin/rexx
+/*
+   name:             Time.testGroup
+   author:           W. David Ashley
+   date:             2007-12-17
+   version:          1.0.1
+
+-- line commented lines are ignored, when building the directory of infos from this header
+   changed:          2007-12-17, ---wda, initial creation
+
+   languageLevel:    6.02
+   purpose:          Test the TIME function
+   remark:           Initial test unit for demonstration purposes, needs to be completed.
+
+   license:          CPL 1.0 (Common Public License v1.0, see below)
+   link:
+
+   category1:        ooRexx
+   category2:        Base
+   category3:        BIF
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2005-2008 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+
+
+-------------------------------------------------------------------------------------------
+-- ===> adapt the "testGroupList" to your testCase classes; each element in the list is <===
+-- ===> an array object, the first element containing the testCase class object, the   <===
+-- ===> second element is a list of test method names which are regarded to be         <===
+-- ===> mandatory (if the list remains empty all test methods are mandatory)           <===
+
+   /* list of array objects, each containing the testGroup class object and an
+      optional list of mandatory test case methods name                       */
+
+mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
+testGroupList=.list~of( .array~of(.TIME.testGroup,  mandatoryTestMethods) )
+
+
+-------------------------------------------------------------------------------------------
+-- ===> the following code needs not to be individualized                              <===
+
+   -- read top comment, containing infos about this program
+arrLines=.array~new
+do i=1 to 150 until arrLines[i]="*/"
+   arrLines[i]=sourceline(i)
+end
+      -- supply information for the testClass(es) in this file; the class attribute
+      -- "TestCaseInfo" (a directory object, index points to a queue) will store
+      -- the parsed infos
+aTestGroupClass=testGroupList~at(testGroupList~first)[1] -- get first testClass
+
+   -- will parse the array lines and store result in class object
+call makeDirTestInfo aTestGroupClass, arrLines
+tmpDir=aTestGroupClass~TestCaseInfo
+parse source s   -- op_sys invocationType fullPathToThisFile
+tmpDir~setentry("test_Case-source", s)
+
+   -- now add this directory to other testCase classes, if any left
+do arr over testGroupList
+   if arr[1]=aTestGroupClass then iterate  -- already handled
+   arr[1]~TestCaseInfo=tmpDir             -- save info in class object
+end
+
+-- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
+-- and set it to .false; this way the independent local invocation of the tests is inhibited
+if .local~hasentry("bRunTestsLocally")=.false then
+   .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
+
+if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
+do
+   ts=.testSuite~new             -- create a testSuite
+   do arr over testGroupList
+      -- create a testSuite for the given test case class, use all its testmethods
+      ts~addTest( .testSuite~new(arr[1]))
+   end
+   -- testResult=.testSuite~new(testGroupClass)~run
+   testResult=ts~run       -- now run all the tests
+
+   call simpleDumpTestResults testResult
+end
+
+   /* return list of array objects containing test case classes and
+      optionally list of mandatory test methods                      */
+return testGroupList
+
+
+::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+
+::class "TIME.testGroup" subclass TestCase public
+
+::method "test_1"
+   Numeric Digits 20                   /* PA 881104 added                */
+   -- Say 'Caution: This is a long running Test Case. ***********************'
+   -- Say '******************************************************************'
+
+   tx=TIME( )||'**'||TIME('l')||'*'||TIME('h')||'*'||TIME('m')||'*'||,
+    TIME('s')||'*'||TIME('e')||'*'||TIME('r')||'*'||,
+    TIME('c')||'*'||TIME('n')'**'||,
+    TIME('L')||'*'||TIME('H')||'*'||TIME('M')||'*'||,
+    TIME('S')||'*'||TIME('E')||'*'||TIME('R')||'*'||,
+    TIME('C')||'*'||TIME('N')
+   Parse Var tx tt '**' tx '**' ty
+   Parse Var tt tth ':' ttm ':' tts
+   Parse Var tx txl '*' txh '*' txm '*' txs '*' txe '*' txr '*' txc '*' txn
+   Parse Var ty tyl '*' tyh '*' tym '*' tys '*' tye '*' tyr '*' tyc '*' tyn
+   v.1='l'; v.2='h'; v.3='m'; v.4='s'; v.5='e'; v.6='r'; v.7='c'
+   v.8='L'; v.9='H'; v.a='M'; v.b='s'; v.c='E'; v.d='R'; v.e='C'
+   v.f='n'; v.g='N'
+   vx=TIME( )||'**'||TIME(v.1)||'*'||TIME(v.2)||'*'||TIME(v.3)||'*'||,
+    TIME(v.4)||'*'||TIME(v.5)||'*'||TIME(v.6)||'*'||,
+    TIME(v.7)||'*'||TIME(v.f)'**'||,
+    TIME(v.8)||'*'||TIME(v.9)||'*'||TIME(v.a)||'*'||,
+    TIME(v.b)||'*'||TIME(v.c)||'*'||TIME(v.d)||'*'||,
+    TIME(v.e)||'*'||TIME(v.g)
+   Parse Var vx vt '**' vx '**' vy
+   Parse Var vt vth ':' vtm ':' vts
+   Parse Var vx vxl '*' vxh '*' vxm '*' vxs '*' vxe '*' vxr '*' vxc '*' vxn
+   Parse Var vy vyl '*' vyh '*' vym '*' vys '*' vye '*' vyr '*' vyc '*' vyn
+
+   self~assertSame("subTest1-1", tt, txn)
+   self~assertSame("subTest1-2", txn, tyn)
+   self~assertSame("subTest1-3", vt, vxn)
+   self~assertSame("subTest1-4", vxn, vyn)
+
+   self~assertSame("subTest1-5", tx, ty)
+   self~assertSame("subTest1-6", txm, ttm+60*tth)
+   self~assertSame("subTest1-7", txs, tts+60*(ttm+60*tth))
+   If tth<10 Then self~assertSame("subTest1-8", txh, right(tth, 1))
+   else self~assertSame("subTest1-8", txh, tth)
+
+   -- self~assertSame("subTest1-9", vx, vy)
+   self~assertSame("subTest1-10", vxm, vtm+60*vth)
+   self~assertSame("subTest1-11", vxs, vts+60*(vtm+60*vth))
+   If vth<10 Then self~assertSame("subTest1-12", vxh, right(vth,1))
+   else self~assertSame("subTest1-12", vxh, vth)
+
+   self~assertSame("subTest1-13", txe, txr)
+   self~assertSame("subTest1-14", txe, '0')
+
+   self~assertSame("subTest1-15", vxe, vxr)
+
+   self~assertSame("subTest1-16", txl, tyl)
+   self~assertSame("subTest1-17", vxl, vyl)
+
+   Parse Var txl txlh ':' txlm ':' txls '.' txlms
+   Parse Var vxl vxlh ':' vxlm ':' vxls '.' vxlms
+   tmsc=SUBSTR(txl,9,7)
+   vmsc=SUBSTR(vxl,9,7)
+   Numeric Digits 20
+   txlc=txls+60*(txlm+60*txlh)+tmsc
+   vxlc=vxls+60*(vxlm+60*vxlh)+vmsc
+   xlc=vxlc-txlc
+
+   self~assertSame("subTest1-18", vxr, xlc)
+
+   Parse Var txc txch ':' txcx
+   txcm=SUBSTR(txcx,1,2)
+   txct=SUBSTR(txcx,3,2)
+   tth1=RIGHT(tth,1)
+   Select
+     When tth=0  Then self~assertSame("subTest1-19", txch txct, 12 'am')
+     When tth<10 Then self~assertSame("subTest1-19", txch txct, tth1 'am')
+     When tth<12 Then self~assertSame("subTest1-19", txch txct, tth 'am')
+     When tth=12 Then self~assertSame("subTest1-19", txch txct, tth 'pm')
+     When tth>12 Then self~assertSame("subTest1-19", txch+12 txct, tth 'pm')
+     Otherwise self~assertFalse("subTest1-19", 1)
+   End
+   self~assertSame("subTest1-20", txcm, ttm)
+
+   Parse Var txc txch ':' txcx
+   txcm=SUBSTR(txcx,1,2)
+   txct=SUBSTR(txcx,3,2)
+   tth1=RIGHT(tth,1)
+   Select
+     When tth=0  Then self~assertSame("subTest1-21", (txch txct), '12 am')
+     When tth<10 Then self~assertSame("subTest1-21", (txch txct), (tth1 'am'))
+     When tth<12 Then self~assertSame("subTest1-21", (txch txct), (tth 'am'))
+     When tth=12 Then self~assertSame("subTest1-21", (txch txct), (tth 'pm'))
+     When tth>12 Then self~assertSame("subTest1-21", (txch+12 txct), (tth 'pm'))
+     Otherwise self~assertFalse("subTest1-21", 1)
+   End
+   self~assertSame("subTest1-22", txcm, ttm)
+
+   If TIME()<tt Then Do
+     Say 'Midnight occurred while this test case was running'
+     Say 'Results might be suspect.'
+   End
+
+
+::method "test_2"
+   cb1=TIME('r')||'*'||TIME('R')
+   Call sysSLEEP '1'
+   Call SUB1
+   Call sysSLEEP '1'
+   cb4=TIME('r')||'*'||TIME('R')
+   Parse Var cb1 cb1a '*' cb1b
+   Parse Var cb2 cb2a '*' cb2b
+   Parse Var cb3 cb3a '*' cb3b
+   Parse Var cb4 cb4a '*' cb4b
+
+   -- There is something wrong here. I do not see how tests 2-2, 2-3 and 2-4
+   -- will ever be the same. Test 2-1 works because it is the first test in
+   -- this method and the reset will return zero both times. In the other tests
+   -- the first reset will return a number but the second will return zero since
+   -- Rexx forces both TIME functions to be evaluated together.
+   self~assertSame("subTest2-1", cb1a, cb1b)
+   -- self~assertSame("subTest2-2", cb2a, cb2b)
+   -- self~assertSame("subTest2-3", cb3a, cb3b)
+   -- self~assertSame("subTest2-4", cb4a, cb4b)
+
+   self~assertTrue("subTest2-5", cb2a>='1')
+   self~assertTrue("subTest2-6", cb3a>='5')
+   self~assertTrue("subTest2-7", cb4a>='7')
+   return
+
+   SUB1:
+   cb2=TIME('r')||'*'||TIME('R')
+   Call sysSLEEP '5'
+   cb3='54494d45'x('r')||'*'||TIME('R')
+   Return
+
+
+::method "test_3"
+   cb1=TIME('r')||'*'||TIME('R')
+   Call sysSLEEP '1'
+   Call SUB2
+   Call sysSLEEP '1'
+   cb4=TIME('r')||'*'||TIME('R')
+   Parse Var cb1 cb1a '*' cb1b
+   Parse Var cb2 cb2a '*' cb2b
+   Parse Var cb3 cb3a '*' cb3b
+   Parse Var cb4 cb4a '*' cb4b
+   Parse Var cb5 cb5a '*' cb5b
+   Parse Var cb6 cb6a '*' cb6b
+
+   -- Note:This has the same problem as test_2.
+   self~assertSame("subTest3-1", cb1a, cb1b)
+   -- self~assertSame("subTest3-2", cb2a, cb2b)
+   -- self~assertSame("subTest3-3", cb3a, cb3b)
+   -- self~assertSame("subTest3-4", cb4a, cb4b)
+   -- self~assertSame("subTest3-5", cb5a, cb5b)
+   -- self~assertSame("subTest3-6", cb6a, cb6b)
+
+   self~assertTrue("subTest3-7", cb5a>='1')
+   self~assertTrue("subTest3-8", cb6a>='5')
+   self~assertTrue("subTest3-9", cb2a>='1')
+   self~assertTrue("subTest3-10", cb3a>='5')
+   self~assertTrue("subTest3-11", cb4a>='13')
+   return
+
+   SUB1:
+   cb2=TIME('r')||'*'||TIME('R')
+   Call sysSLEEP '5'
+   cb3='54494d45'x('r')||'*'||TIME('R')
+   Return
+   SUB2:
+   cb5='TIME'('r')||'*'||TIME('R')
+   Call sysSLEEP '5'
+   cb6="TIME"('r')||'*'||TIME('R')
+   Call sysSLEEP '1'
+   Call SUB1
+   Return
+
+
+::method "test_4"
+   cb1=TIME('r')||'*'||TIME('R')
+   Call sysSLEEP '1'
+   Call SCBTIMEA
+   Call sysSLEEP '1'
+   cb4=TIME('r')||'*'||TIME('R')
+   Pull cb2 cb3
+   Parse Var cb1 cb1a '*' cb1b
+   Parse Var cb2 cb2a '*' cb2b
+   Parse Var cb3 cb3a '*' cb3b
+   Parse Var cb4 cb4a '*' cb4b
+
+   -- Note:This has the same problem as test_2.
+   self~assertSame("subTest4-1", cb1a, cb1b)
+   self~assertSame("subTest4-2", cb2a, cb2b)
+   -- self~assertSame("subTest4-3", cb3a, cb3b)
+   -- self~assertSame("subTest4-4", cb4a, cb4b)
+
+   self~assertSame("subTest4-5", cb2a, '0')
+   self~assertTrue("subTest4-6", cb3a>='5')
+   self~assertTrue("subTest4-7", cb4a>='7')
+
+
+::method "test_5"
+   cb1=TIME('r')||'*'||TIME('R')
+   Call sysSLEEP '1'
+   Call SCBTIMEB
+   Call sysSLEEP '1'
+   Pull cb5 cb6
+   Pull cb2 cb3
+   cb4=TIME('r')||'*'||TIME('R')
+   Parse Var cb1 cb1a '*' cb1b
+   Parse Var cb2 cb2a '*' cb2b
+   Parse Var cb3 cb3a '*' cb3b
+   Parse Var cb4 cb4a '*' cb4b
+   Parse Var cb5 cb5a '*' cb5b
+   Parse Var cb6 cb6a '*' cb6b
+
+   -- Note:This has the same problem as test_2.
+   self~assertSame("subTest5-1", cb1a, cb1b)
+   self~assertSame("subTest5-2", cb2a, cb2b)
+   -- self~assertSame("subTest5-3", cb3a, cb3b)
+   -- self~assertSame("subTest5-4", cb4a, cb4b)
+   self~assertSame("subTest5-5", cb5a, cb5b)
+   -- self~assertSame("subTest5-6", cb6a, cb6b)
+
+   self~assertSame("subTest5-7", cb5a, '0')
+   self~assertTrue("subTest5-8", cb6a>='5')
+   self~assertSame("subTest5-9", cb2a, '0')
+   self~assertTrue("subTest5-10", cb3a>='5')
+   self~assertTrue("subTest5-10", cb4a>='13')
+
+
+::method "test_6"
+   -- This doesn't work. The first time that time() is called will cause the
+   -- entire method to abort.
+   validopts='CEFHLMNRST'
+   do i = 0 to 255
+      a = d2c(i)
+      if verify(translate(a), validopts) = 1 then do
+         self~expectSyntax(40.904)
+         z = time(a)
+         self~assertTrue("subTest6-"i, 1)
+         end
+      else do
+         self~clearCondition()
+         z = time(a)
+         self~assertTrue("subTest6-"i, 1)
+         end
+      end
+
+
+::method "test_7"
+   Call time 'r'                       /* reset the timer for the next  */
+   xxyy=1                              /* do very little work           */
+   tx=TIME( )||'**'||TIME('life')||'*'||TIME('honour')||'*'||,
+    TIME('micro')||'*'||TIME('short')||'*'||,
+    TIME('europe')||'*'||TIME('rage')||'*'||,
+    TIME('carbon')||'**'||,
+    TIME('LIFE')||'*'||TIME('HONOUR')||'*'||,
+    TIME('MICRO')||'*'||TIME('SHORT')||'*'||,
+    TIME('EUROPE')||'*'||TIME('RAGE')||'*'||,
+    TIME('CARBON')
+   Parse Var tx tt '**' tx '**' ty
+   Parse Var tt tth ':' ttm ':' tts
+   Parse Var tx txl '*' txh '*' txm '*' txs '*' txe '*' txr '*' txc
+   Parse Var ty tyl '*' tyh '*' tym '*' tys '*' tye '*' tyr '*' tyc
+   v.1='life'; v.2='honour'; v.3='micro'; v.4='short'; v.5='europe';
+   v.6='rage'; v.7='carbon'; v.8='LIFE'; v.9='HONOUR'; v.a='MICRO';
+   v.b='SHORT'; v.c='EUROPE'; v.d='RAGE'; v.e='CARBON'
+   vx=TIME( )||'**'||TIME(v.1)||'*'||TIME(v.2)||'*'||TIME(v.3)||'*'||,
+    TIME(v.4)||'*'||TIME(v.5)||'*'||TIME(v.6)||'*'||,
+    TIME(v.7)||'**'||,
+    TIME(v.8)||'*'||TIME(v.9)||'*'||TIME(v.a)||'*'||,
+    TIME(v.b)||'*'||TIME(v.c)||'*'||TIME(v.d)||'*'||,
+    TIME(v.e)
+   Parse Var vx vt '**' vx '**' vy
+   Parse Var vt vth ':' vtm ':' vts
+   Parse Var vx vxl '*' vxh '*' vxm '*' vxs '*' vxe '*' vxr '*' vxc
+   Parse Var vy vyl '*' vyh '*' vym '*' vys '*' vye '*' vyr '*' vyc
+
+   -- self~assertSame("subTest7-1", tx, ty)
+   self~assertSame("subTest7-2", txm, ttm+60*tth)
+   self~assertSame("subTest7-3", txs, tts+60*(ttm+60*tth))
+   If tth<10 Then self~assertSame("subTest7-4", txh, right(tth, 1))
+   else self~assertSame("subTest7-4", txh, tth)
+
+   -- self~assertSame("subTest7-5", vx, vy)
+   self~assertSame("subTest7-6", vxm, vtm+60*vth)
+   self~assertSame("subTest7-7", vxs, vts+60*(vtm+60*vth))
+   If vth<10 Then self~assertSame("subTest7-8", vxh, right(vth, 1))
+   else self~assertSame("subTest7-8", vxh, vth)
+
+   self~assertSame("subTest7-9", txe, txr)
+   self~assertTrue("subTest7-10", txe<='1')
+
+   self~assertSame("subTest7-11", vxe, vxr)
+
+   self~assertSame("subTest7-12", txl, tyl)
+   self~assertSame("subTest7-13", vxl, vyl)
+
+   Parse Var txl txlh ':' txlm ':' txls '.' txlms
+   Parse Var vxl vxlh ':' vxlm ':' vxls '.' vxlms
+   tmsc=SUBSTR(txl,9,7)
+   vmsc=SUBSTR(vxl,9,7)
+   Numeric Digits 20
+   txlc=txls+60*(txlm+60*txlh)+tmsc
+   vxlc=vxls+60*(vxlm+60*vxlh)+vmsc
+   xlc=vxlc-txlc
+
+   self~assertSame("subTest7-14", vxr, xlc)
+
+
+::method "test_8"
+   cb1=TIME('rage')||'*'||TIME('RAGE')
+   Call sysSLEEP '1'
+   Call SUB3
+   Call sysSLEEP '1'
+   cb4=TIME('rage')||'*'||TIME('RAGE')
+   Parse Var cb1 cb1a '*' cb1b
+   Parse Var cb2 cb2a '*' cb2b
+   Parse Var cb3 cb3a '*' cb3b
+   Parse Var cb4 cb4a '*' cb4b
+
+   -- Note:This has the same problem as test_2.
+   self~assertSame("subTest8-1", cb1a, cb1b)
+   -- self~assertSame("subTest8-2", cb2a, cb2b)
+   -- self~assertSame("subTest8-3", cb3a, cb3b)
+   -- self~assertSame("subTest8-4", cb4a, cb4b)
+
+   self~assertTrue("subTest8-5", cb2a>='1')
+   self~assertTrue("subTest8-6", cb3a>='5')
+   self~assertTrue("subTest8-7", cb4a>='7')
+
+   SUB1:
+   cb2=TIME('r')||'*'||TIME('R')
+   Call sysSLEEP '5'
+   cb3='54494d45'x('r')||'*'||TIME('R')
+   Return
+   SUB2:
+   cb5='TIME'('r')||'*'||TIME('R')
+   Call sysSLEEP '5'
+   cb6="TIME"('r')||'*'||TIME('R')
+   Call sysSLEEP '1'
+   Call SUB1
+   Return
+   SUB3:
+   cb2=TIME('rage')||'*'||TIME('RAGE')
+   Call sysSLEEP '5'
+   cb3=TIME('rage')||'*'||TIME('R-12')
+   Return
+
+
+   ::method "test_9"
+   cb1=TIME('rage')||'*'||TIME('RAGE')
+   Call sysSLEEP '1'
+   Call SUB4
+   Call sysSLEEP '1'
+   cb4=TIME('rage')||'*'||TIME('RAGE')
+   Parse Var cb1 cb1a '*' cb1b
+   Parse Var cb2 cb2a '*' cb2b
+   Parse Var cb3 cb3a '*' cb3b
+   Parse Var cb4 cb4a '*' cb4b
+   Parse Var cb5 cb5a '*' cb5b
+   Parse Var cb6 cb6a '*' cb6b
+
+   -- Note:This has the same problem as test_2.
+   self~assertSame("subTest9-1", cb1a, cb1b)
+   -- self~assertSame("subTest9-2", cb2a, cb2b)
+   -- self~assertSame("subTest9-3", cb3a, cb3b)
+   -- self~assertSame("subTest9-4", cb4a, cb4b)
+   -- self~assertSame("subTest9-5", cb5a, cb5b)
+   -- self~assertSame("subTest9-6", cb6a, cb6b)
+
+   self~assertTrue("subTest9-7", cb5a>='1')
+   self~assertTrue("subTest9-8", cb6a>='5')
+   self~assertTrue("subTest9-9", cb2a>='1')
+   self~assertTrue("subTest9-10", cb3a>='5')
+   self~assertTrue("subTest9-11", cb4a>='13')
+
+   SUB1:
+   cb2=TIME('r')||'*'||TIME('R')
+   Call sysSLEEP '5'
+   cb3='54494d45'x('r')||'*'||TIME('R')
+   Return
+   SUB2:
+   cb5='TIME'('r')||'*'||TIME('R')
+   Call sysSLEEP '5'
+   cb6="TIME"('r')||'*'||TIME('R')
+   Call sysSLEEP '1'
+   Call SUB1
+   Return
+   SUB3:
+   cb2=TIME('rage')||'*'||TIME('RAGE')
+   Call sysSLEEP '5'
+   cb3=TIME('rage')||'*'||TIME('R-12')
+   Return
+   SUB4:
+   cb5=TIME('rage')||'*'||TIME('RAGE 27')
+   Call sysSLEEP '5'
+   cb6=TIME('rage')||'*'||TIME('RAGE')
+   Call sysSLEEP '1'
+   Call SUB1
+   Return
+
+
+::method "test_10"
+   cb1=TIME('rage')||'*'||TIME('RAGE')
+   Call sysSLEEP '1'
+   Call SCBTIMEC
+   Call sysSLEEP '1'
+   cb4=TIME('rage')||'*'||TIME('RAGE')
+   Pull cb2 cb3
+   Parse Var cb1 cb1a '*' cb1b
+   Parse Var cb2 cb2a '*' cb2b
+   Parse Var cb3 cb3a '*' cb3b
+   Parse Var cb4 cb4a '*' cb4b
+
+   -- Note:This has the same problem as test_2.
+   self~assertSame("subTest10-1", cb1a, cb1b)
+   self~assertSame("subTest10-2", cb2a, cb2b)
+   -- self~assertSame("subTest10-3", cb3a, cb3b)
+   -- self~assertSame("subTest10-4", cb4a, cb4b)
+
+   self~assertSame("subTest10-5", cb2a, '0')
+   self~assertTrue("subTest10-6", cb3a>='5')
+   self~assertTrue("subTest10-7", cb4a>='7')
+
+
+::method "test_11"
+   cb1=TIME('rage')||'*'||TIME('RAGE')
+   Call sysSLEEP '1'
+   Call SCBTIMED
+   Call sysSLEEP '1'
+   Pull cb5 cb6
+   Pull cb2 cb3
+   cb4=TIME('rage')||'*'||TIME('RAGE')
+   Parse Var cb1 cb1a '*' cb1b
+   Parse Var cb2 cb2a '*' cb2b
+   Parse Var cb3 cb3a '*' cb3b
+   Parse Var cb4 cb4a '*' cb4b
+   Parse Var cb5 cb5a '*' cb5b
+   Parse Var cb6 cb6a '*' cb6b
+
+   -- Note:This has the same problem as test_2.
+   self~assertSame("subTest11-1", cb1a, cb1b)
+   self~assertSame("subTest11-2", cb2a, cb2b)
+   -- self~assertSame("subTest11-3", cb3a, cb3b)
+   -- self~assertSame("subTest11-4", cb4a, cb4b)
+   self~assertSame("subTest11-5", cb5a, cb5b)
+   -- self~assertSame("subTest11-6", cb6a, cb6b)
+
+   self~assertSame("subTest11-7", cb5a, '0')
+   self~assertTRUE("subTest11-8", cb6a>='5')
+   self~assertSame("subTest11-9", cb2a, '0')
+   self~assertTRUE("subTest11-10", cb3a>='5')
+   self~assertTRUE("subTest11-11", cb4a>='13')
+
+
+::method "test_12"
+   parse value time() time('C') with hh":"mm":"ss h1":"m1 +3 ampm
+   self~assertTrue("subTest12", (hh>11 & ampm="pm") | (hh<12 & ampm="am"))  -- check for correct usage of am/pm
+
+
+::method "test_13"
+   parse value time() time('H') with hh":"mm":"ss h1
+   self~assertTrue("subTest13", (hh=h1) )
+
+
+::method "test_14"
+   parse value time() time('L') with hh":"mm":"ss"."uu
+   self~assertTrue("subTest14", (datatype(uu,"w") & (length(uu)=6)) )
+
+
+::method "test_15"
+   parse value time() time('M') with hh":"mm":"ss m1
+   self~assertTrue("subTest15", ((hh*60+mm)=m1))
+
+
+::method "test_16"
+   parse value time() time('N') with t1 t2
+   self~assertTrue("subTest16", (t1==t2) )
+
+
+::method "test_17"
+   parse value time() time('S') with hh":"mm":"ss s1
+   self~assertTrue("subTest17", ((hh*60*60+mm*60+ss)=s1))
+
+
+::method "test_18"
+   self~assertEquals("subTest10", 17    , TIME('H','5:00pm','C'))
+   self~assertEquals("subTest18", 61200 , TIME('S','5:00pm','C'))
+
+return
+
+
+-- rexxref documentation tests
+
+::method "test_101"
+   self~assertSame("subTest101"  , "11:27am"  , time('C','11:27:21')    )
+   self~assertSame("subTest102"  , "11:27:00" , time('N','11:27am','C') )
+   self~assertEquals("subTest103", 1020       , TIME('M','5:00pm','C')  )
+
+
+
+
+
+
+::routine SCBTIMEA
+   /* Test elapsed clock: time('R')
+   *  Notes: Midnight must not occur during the execution of this exec.
+   *         This is an external subroutine for test of Elapsed clock
+   *         integrity.
+   */
+   Parse Version version
+   Parse Source fn
+   cb2=TIME('r')||'*'||TIME('R')
+   Call sysSLEEP(5)
+   cb3=TIME('r')||'*'||TIME('R')
+   Queue cb2 cb3
+   return
+
+
+::routine SCBTIMEB
+   /* Test elapsed clock: time('R')
+   *  Notes: Midnight must not occur during the execution of this exec.
+   *         This is an external subroutine for test of Elapsed clock
+   *         integrity.
+   */
+   Parse Version version
+   Parse Source fn
+   cb5=TIME('r')||'*'||TIME('R')
+   Call sysSLEEP(5)
+   cb6=TIME('r')||'*'||TIME('R')
+   Call sysSLEEP(1)
+   Queue cb5 cb6
+   Call SCBTIMEA
+   return
+
+
+::routine SCBTIMEC
+   /* Test elapsed clock: time('RAGE')
+   *  Notes: Midnight must not occur during the execution of this exec.
+   *         This is an external subroutine for test of Elapsed clock
+   *         integrity.
+   */
+   Parse Version version
+   Parse Source fn
+   cb2=TIME('rage')||'*'||TIME('RAGE')
+   Call sysSLEEP(5)
+   cb3=TIME('rage')||'*'||TIME('RAGE')
+   Queue cb2 cb3
+   return
+
+
+::routine SCBTIMED
+   /* Test elapsed clock: time('RAGE')
+   *  Notes: Midnight must not occur during the execution of this exec.
+   *         This is an external subroutine for test of Elapsed clock
+   *         integrity.
+   */
+   Parse Version version
+   Parse Source fn
+   cb5=TIME('rage')||'*'||TIME('RAGE')
+   Call sysSLEEP(5)
+   cb6=TIME('rage')||'*'||TIME('RAGE')
+   Call sysSLEEP(1)
+   Queue cb5 cb6
+   Call SCBTIMEA
+   return
+
