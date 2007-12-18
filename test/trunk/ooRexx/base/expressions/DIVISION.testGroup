@@ -1,0 +1,504 @@
+#!/usr/bin/rexx
+/*
+   name:             Expression testGroup
+   author:           W. David Ashley
+   date:             2007-12-18
+   version:          1.0.1
+
+-- line commented lines are ignored, when building the directory of infos from this header
+   changed:          2007-12-18, ---wda, initial creation
+
+   languageLevel:    6.02
+   purpose:          Test Rexx division expressions
+   remark:           Initial test unit for demonstration purposes, needs to be completed.
+
+   license:          CPL 1.0 (Common Public License v1.0, see below)
+   link:
+
+   category1:        ooRexx
+   category2:        Base
+   category3:        expressions
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2005-2008 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+
+
+-------------------------------------------------------------------------------------------
+-- ===> adapt the "testGroupList" to your testCase classes; each element in the list is <===
+-- ===> an array object, the first element containing the testCase class object, the   <===
+-- ===> second element is a list of test method names which are regarded to be         <===
+-- ===> mandatory (if the list remains empty all test methods are mandatory)           <===
+
+   /* list of array objects, each containing the testGroup class object and an
+      optional list of mandatory test case methods name                       */
+
+mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
+testGroupList=.list~of( .array~of(.DIVISION.testGroup,  mandatoryTestMethods) )
+
+
+-------------------------------------------------------------------------------------------
+-- ===> the following code needs not to be individualized                              <===
+
+   -- read top comment, containing infos about this program
+arrLines=.array~new
+do i=1 to 150 until arrLines[i]="*/"
+   arrLines[i]=sourceline(i)
+end
+      -- supply information for the testClass(es) in this file; the class attribute
+      -- "TestCaseInfo" (a directory object, index points to a queue) will store
+      -- the parsed infos
+aTestGroupClass=testGroupList~at(testGroupList~first)[1] -- get first testClass
+
+   -- will parse the array lines and store result in class object
+call makeDirTestInfo aTestGroupClass, arrLines
+tmpDir=aTestGroupClass~TestCaseInfo
+parse source s   -- op_sys invocationType fullPathToThisFile
+tmpDir~setentry("test_Case-source", s)
+
+   -- now add this directory to other testCase classes, if any left
+do arr over testGroupList
+   if arr[1]=aTestGroupClass then iterate  -- already handled
+   arr[1]~TestCaseInfo=tmpDir             -- save info in class object
+end
+
+-- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
+-- and set it to .false; this way the independent local invocation of the tests is inhibited
+if .local~hasentry("bRunTestsLocally")=.false then
+   .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
+
+if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
+do
+   ts=.testSuite~new             -- create a testSuite
+   do arr over testGroupList
+      -- create a testSuite for the given test case class, use all its testmethods
+      ts~addTest( .testSuite~new(arr[1]))
+   end
+   -- testResult=.testSuite~new(testGroupClass)~run
+   testResult=ts~run       -- now run all the tests
+
+   call simpleDumpTestResults testResult
+end
+
+   /* return list of array objects containing test case classes and
+      optionally list of mandatory test methods                      */
+return testGroupList
+
+
+
+::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+
+::class "DIVISION.testGroup" subclass TestCase public
+
+::method "test_1"
+   self~assertSame("subTest1", 999999999E99 / 1.0, 9.99999999E+107)
+
+::method "test_2"
+   self~assertSame("subTest2", 45.876E-15 / 1, 0.000000000000045876)
+
+::method "test_3"
+   self~assertSame("subTest3", 45.876E-15 / 12.3E-23, 372975610)
+
+::method "test_4"
+   self~assertSame("subTest4", 1E88 / 123456789123456789E67, 8100.00007)
+
+::method "test_5"
+   self~assertSame("subTest5", 123E12 / 12312332434543E88, 9.98998368E-88)
+
+::method "test_6"
+   self~assertSame("subTest6", 12123123123E-354 / 102938098E9345, 1.17771004E-9697)
+
+::method "test_7"
+   self~assertSame("subTest7", 11E999999 / 11E-999999, 1E+1999998)
+
+::method "test_8"
+   self~assertSame("subTest8", 11E-999999 / 11E-9999997, 1E+8999998)
+
+::method "test_9"
+   self~assertSame("subTest9", 11E-999999 / 11E-999997, 0.01)
+
+::method "test_10"
+   self~assertSame("subTest10", 11E-999999 / 11E999999, 1E-1999998)
+
+::method "test_11"
+   self~assertSame("subTest11", 12E12 / 120000000E5, 1)
+
+::method "test_12"
+   self~assertSame("subTest12", 1E100 / 1E100, 1)
+
+::method "test_13"
+   self~assertSame("subTest13", 12E12 / 333, 3.6036036E+10)
+
+::method "test_14"
+   self~assertSame("subTest14", "-12E12" / 333, -3.6036036E+10)
+
+::method "test_15"
+   self~assertSame("subTest15", 12E12 / "-333", -3.6036036E+10)
+
+::method "test_16"
+   self~assertSame("subTest16", "-12E12" / "-333", 3.6036036E+10)
+
+::method "test_17"
+   self~assertSame("subTest17", 12E12 / 333, 3.6036036E+10)
+
+::method "test_18"
+   Numeric Digits 20
+   self~assertSame("subTest18", 12E12 / 333, 36036036036.036036036)
+
+::method "test_19"
+   self~assertSame("subTest19", 12000000000000 / 333, 3.6036036E+10)
+
+::method "test_20"
+   self~assertSame("subTest20", 10E1000 / 10E99999, 1E-98999)
+
+::method "test_21"
+   self~assertSame("subTest21", 999999999E99999 / 999999999E99999999, 1E-99900000)
+
+::method "test_22"
+   self~assertSame("subTest22", 500 / 5, 100)
+
+::method "test_23"
+   self~assertSame("subTest23", 12345 / 7, 1763.57143)
+
+::method "test_24"
+   self~assertSame("subTest24", 77E-20 / 7, 1.1E-19)
+
+::method "test_25"
+   self~assertSame("subTest25", 345 / 6, 57.5)
+
+::method "test_26"
+   self~assertSame("subTest26", 1000 / 25, 40)
+
+::method "test_27"
+   self~assertSame("subTest27", 13 / "-2592", -0.0050154321)
+
+::method "test_28"
+   self~assertSame("subTest28", 999999999E99 / 1.0, 9.99999999E+107)
+
+::method "test_29"
+   self~assertSame("subTest29", 4 / 1000, 0.004)
+
+::method "test_30"
+   self~assertSame("subTest30", 1000E-3 / 300, 0.00333333333)
+
+::method "test_31"
+   self~assertSame("subTest31", 123E34 / 456E12, 2.69736842E+21)
+
+::method "test_32"
+   self~assertSame("subTest32", 123E-65 / "-456E+54", -2.69736842E-120)
+
+::method "test_33"
+   self~assertSame("subTest33", "-123E-34" / "-456E-3", 2.69736842E-32)
+
+::method "test_34"
+   self~assertSame("subTest34", 12300 / 456, 26.9736842)
+
+::method "test_35"
+   self~assertSame("subTest35", 01230.0 / 4560.00, 0.269736842)
+
+::method "test_36"
+   self~assertSame("subTest36", 123.04500 / 12.00500, 10.2494794)
+
+::method "test_37"
+   self~assertSame("subTest37", 123.456 / 345.45678, 0.35737032)
+
+::method "test_38"
+   self~assertSame("subTest38", 123456.789012 / 12345.56789123, 10.0000899)
+
+::method "test_39"
+   self~assertSame("subTest39", 100 / "-11",-9.09090909)
+
+::method "test_40"
+   self~assertSame("subTest40", 123.4E-3 / 2, 0.0617)
+
+::method "test_41"
+   self~assertSame("subTest41", 23.9E-8 / 3, 0.0000000796666667)
+
+::method "test_42"
+   self~assertSame("subTest42", 45.8786E-15 / 23E-7, 0.0000000199472174)
+
+::method "test_43"
+   self~assertSame("subTest43", "-56.78E-5" / "-6787.76E-15", 83650571)
+
+::method "test_44"
+   self~assertSame("subTest44", 3456757 / 8768E-34, 3.94246921E+36)
+
+::method "test_45"
+   self~assertSame("subTest45", 56E-2 / 67E-2, 0.835820896)
+
+::method "test_46"
+   self~assertSame("subTest46", 12.00 / 1.005000, 11.9402985)
+
+::method "test_47"
+   self~assertSame("subTest47", 1E9 / 999999999E19, 1E-19)
+
+::method "test_48"
+   self~assertSame("subTest48", 9218374.9128374 / 98123749821.299873242345, 0.000093946419)
+
+::method "test_49"
+   Numeric Digits 15
+   self~assertSame("subTest49", 1111111111111 / 1111111111111, 1)
+
+::method "test_50"
+   Numeric Digits 5
+   self~assertSame("subTest50", 1111111111111 / 1111111111111, 1)
+
+::method "test_51"
+   Numeric Digits 30
+   self~assertSame("subTest51", 9999999999999 / 9999999999999, 1)
+
+::method "test_52"
+   Numeric Digits 5
+   self~assertSame("subTest52", 9999999999999 / 9999999999999, 1)
+
+::method "test_53"
+   Numeric Form ENGINEERING
+   self~assertSame("subTest53", 999999999E99 / 1.0, 999.999999E+105)
+
+::method "test_54"
+   Numeric Form ENGINEERING
+   self~assertSame("subTest54", 45.876E-15 / 1, 0.000000000000045876)
+
+::method "test_55"
+   Numeric Form ENGINEERING
+   self~assertSame("subTest55", 45.876E-15 / 12.3E-23, 372975610)
+
+::method "test_56"
+   Numeric Form ENGINEERING
+   self~assertSame("subTest56", 1E88 / 123456789123456789E67, 8100.00007)
+
+::method "test_57"
+   Numeric Form ENGINEERING
+   self~assertSame("subTest57", 123E12 / 12312332434543E88,998.998368E-90)
+
+::method "test_58"
+   Numeric Form ENGINEERING
+   self~assertSame("subTest58", 12123123123E-354 / 102938098E9345, 117.771004E-9699)
+
+::method "test_59"
+   Numeric Form ENGINEERING
+   self~assertSame("subTest59", 11E999999 / 11E-999999, 1E+1999998)
+
+::method "test_60"
+   Numeric Form ENGINEERING
+   self~assertSame("subTest60", 11E-999999 / 11E-9999997, 10E+8999997)
+
+::method "test_61"
+   Numeric Form ENGINEERING
+   self~assertSame("subTest61", 11E-999999 / 11E-999997, 0.01)
+
+::method "test_62"
+   Numeric Form ENGINEERING
+   self~assertSame("subTest62", 11E-999999 / 11E999999, 1E-1999998)
+
+::method "test_63"
+   Numeric Form ENGINEERING
+   self~assertSame("subTest63", 12E12 / 120000000E5, 1)
+
+::method "test_64"
+   Numeric Form ENGINEERING
+   self~assertSame("subTest64", 1E100 / 1E100, 1)
+
+::method "test_65"
+   Numeric Form ENGINEERING
+   self~assertSame("subTest65", 12E12 / 333, 36.036036E+9)
+
+::method "test_66"
+   Numeric Form ENGINEERING
+   self~assertSame("subTest66", "-12E12" / 333, -36.036036E+9)
+
+::method "test_67"
+   Numeric Form ENGINEERING
+   self~assertSame("subTest67", 12E12 / "-333", -36.036036E+9)
+
+::method "test_68"
+   Numeric Form ENGINEERING
+   self~assertSame("subTest68", "-12E12" / "-333", 36.036036E+9)
+
+::method "test_69"
+   Numeric Form ENGINEERING
+   self~assertSame("subTest69", 12E12 / 333, 36.036036E+9)
+
+::method "test_70"
+   Numeric Form ENGINEERING
+   Numeric Digits 20
+   self~assertSame("subTest70", 12E12 / 333, 36036036036.036036036)
+
+::method "test_71"
+   Numeric Form ENGINEERING
+   self~assertSame("subTest71", 12000000000000 / 333, 36.036036E+9)
+
+::method "test_72"
+   Numeric Form ENGINEERING
+   self~assertSame("subTest72", 10E1000 / 10E99999, 10E-99000)
+
+::method "test_73"
+   Numeric Form ENGINEERING
+   self~assertSame("subTest73", 999999999E99999 / 999999999E99999999, 1E-99900000)
+
+::method "test_74"
+   Numeric Form ENGINEERING
+   self~assertSame("subTest74", 500 / 5, 100)
+
+::method "test_75"
+   Numeric Form ENGINEERING
+   self~assertSame("subTest75", 12345 / 7, 1763.57143)
+
+::method "test_76"
+   Numeric Form ENGINEERING
+   self~assertSame("subTest76", 77E-20 / 7, 110E-21)
+
+::method "test_77"
+   Numeric Form ENGINEERING
+   self~assertSame("subTest77", 45 / 6, 7.5)
+
+::method "test_78"
+   Numeric Form ENGINEERING
+   self~assertSame("subTest78", 1000 / 25, 40)
+
+::method "test_79"
+   Numeric Form ENGINEERING
+   self~assertSame("subTest79", 13 / "-2592", -0.0050154321)
+
+::method "test_80"
+   Numeric Form ENGINEERING
+   self~assertSame("subTest80", 999999999E99 / 1.0, 999.999999E+105)
+
+::method "test_81"
+   Numeric Form ENGINEERING
+   self~assertSame("subTest81", 4 / 1000, 0.004)
+
+::method "test_82"
+   Numeric Form ENGINEERING
+   self~assertSame("subTest82", 1000E-3 / 300, 0.00333333333)
+
+::method "test_83"
+   Numeric Form ENGINEERING
+   self~assertSame("subTest83", 123E34 / 456E12, 2.69736842E+21)
+
+::method "test_84"
+   Numeric Form ENGINEERING
+   self~assertSame("subTest84", 123E-65 / "-456E+54", -2.69736842E-120)
+
+::method "test_85"
+   Numeric Form ENGINEERING
+   self~assertSame("subTest85", "-123E-34" / "-456E-3", 26.9736842E-33)
+
+::method "test_86"
+   Numeric Form ENGINEERING
+   self~assertSame("subTest86", 12300 / 456, 26.9736842)
+
+::method "test_87"
+   Numeric Form ENGINEERING
+   self~assertSame("subTest87", 01230.0 / 4560.00, 0.269736842)
+
+::method "test_88"
+   Numeric Form ENGINEERING
+   self~assertSame("subTest88", 123.04500 / 12.00500, 10.2494794)
+
+::method "test_89"
+   Numeric Form ENGINEERING
+   self~assertSame("subTest89", 123.456 / 345.45678, 0.35737032)
+
+::method "test_90"
+   Numeric Form ENGINEERING
+   self~assertSame("subTest90", 123456.789012 / 12345.56789123, 10.0000899)
+
+::method "test_91"
+   Numeric Form ENGINEERING
+   self~assertSame("subTest91", 100 / "-11", -9.09090909)
+
+::method "test_92"
+   Numeric Form ENGINEERING
+   self~assertSame("subTest92", 123.4E-3 / 2, 0.0617)
+
+::method "test_93"
+   Numeric Form ENGINEERING
+   self~assertSame("subTest93", 23.9E-8 / 3, 0.0000000796666667)
+
+::method "test_94"
+   Numeric Form ENGINEERING
+   self~assertSame("subTest94", 45.8786E-15 / 23E-7, 0.0000000199472174)
+
+::method "test_95"
+   Numeric Form ENGINEERING
+   self~assertSame("subTest95", "-56.78E-5" / "-6787.76E-15", 83650571)
+
+::method "test_96"
+   Numeric Form ENGINEERING
+   self~assertSame("subTest96", 3456757 / 8768E-34, 3.94246921E+36)
+
+::method "test_97"
+   Numeric Form ENGINEERING
+   self~assertSame("subTest97", 56E-2 / 67E-2, 0.835820896)
+
+::method "test_98"
+   Numeric Form ENGINEERING
+   self~assertSame("subTest98", 12.00 / 1.005000, 11.9402985)
+
+::method "test_99"
+   Numeric Form ENGINEERING
+   self~assertSame("subTest99", 1E9 / 999999999E19, 100E-21)
+
+::method "test_100"
+   Numeric Form ENGINEERING
+   self~assertSame("subTest100", 9218374.9128374 / 98123749821.299873242345, 0.000093946419)
+
+::method "test_101"
+   Numeric Form ENGINEERING
+   Numeric Digits 15
+   self~assertSame("subTest101", 1111111111111 / 1111111111111, 1)
+
+::method "test_102"
+   Numeric Form ENGINEERING
+   Numeric Digits 5
+   self~assertSame("subTest102", 1111111111111 / 1111111111111, 1)
+
+::method "test_103"
+   Numeric Form ENGINEERING
+   Numeric Digits 30
+   self~assertSame("subTest103", 9999999999999 / 9999999999999, 1)
+
+::method "test_104"
+   Numeric Form ENGINEERING
+   Numeric Digits 5
+   self~assertSame("subTest104", 9999999999999 / 9999999999999, 1)
+return
+
+   -- rexxref documentation tests
+
+
