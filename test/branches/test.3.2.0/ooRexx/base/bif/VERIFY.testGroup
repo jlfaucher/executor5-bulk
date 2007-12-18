@@ -4,6 +4,8 @@
    author:           Lee Peedin
    date:             2007/12/15
    version:          1.0
+   date:             2007/12/18
+   version:          1.1
 
 -- line commented lines are ignored, when building the directory of infos from this header
    changed:
@@ -437,4 +439,16 @@ return testUnitList
     .local~remove(vm)
     .local~remove(v2)
 
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_VERIFY"
+    self~assertEquals("subTest1" , 0 , VERIFY('123','1234567890')         )
+    self~assertEquals("subTest2" , 2 , VERIFY('1Z3','1234567890')         )
+    self~assertEquals("subTest3" , 1 , VERIFY('AB4T','1234567890')        )
+    self~assertEquals("subTest4" , 3 , VERIFY('AB4T','1234567890','M')    )
+    self~assertEquals("subTest5" , 1 , VERIFY('AB4T','1234567890','N')    )
+    self~assertEquals("subTest6" , 4 , VERIFY('1P3Q4','1234567890', ,3)   )
+    self~assertEquals("subTest7" , 2 , VERIFY('123','',N,2)               )  --
+    self~assertEquals("subTest8" , 3 , VERIFY('ABCDE','', ,3)             )  --
+    self~assertEquals("subTest9" , 6 , VERIFY('AB3CD5','1234567890','M',4))
 

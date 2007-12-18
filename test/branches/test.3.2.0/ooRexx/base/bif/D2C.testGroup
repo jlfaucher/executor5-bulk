@@ -4,6 +4,8 @@
    author:           Lee Peedin
    date:             2007/12/06
    version:          1.0
+   date:             2007/12/18
+   version:          1.1
 
 -- line commented lines are ignored, when building the directory of infos from this header
    changed:
@@ -289,39 +291,20 @@ return testUnitList
     numeric digits 150
     self~assertSame('subTest01','14FBE105'x,d2c(d2c('944617126997049751089')))
 
--- Documentation examples - Actual verbage from the documentation is commented in each method
-::method 'testDocumentationExamples01'
--- D2C(65)      ->   "A"      /* "41"x is an ASCII "A"               */
-    self~assertSame('subTest01',"A",d2c(65))
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_D2C"
+    self~assertSame("subTest1", 'A'                  , D2C(65)    )
+    self~assertSame("subTest2", 'A'                  , D2C(65,1)  )
+    self~assertSame("subTest3", right('A', 2, "00"x) , D2C(65,2)  )
+    self~assertSame("subTest4", right('A', 5, "00"x) , D2C(65,5)  )
+    self~assertSame("subTest5", 'm'                  , D2C(109)   ) /* '6D'x is an ASCII 'm' */
+    self~assertSame("subTest6", '93'x                , D2C(-109,1)) /* '93'x is an ASCII 'ô' */
+    self~assertSame("subTest7", right('L', 2, "00"x) , D2C(76,2)  ) /* '4C'x is an ASCII ' L' */
+    self~assertSame("subTest8", right('L', 2, "FF"x) , D2C(-180,2))
 
-::method 'testDocumentationExamples02'
--- D2C(65,1)    ->   "A"
-    self~assertSame('subTest02',"A",d2c(65,1))
-
-::method 'testDocumentationExamples03'
--- D2C(65,2)    ->   " A"     /* the leading character is a "00"x    */
-    self~assertSame('subTest03','00'x"A",d2c(65,2))
-
-::method 'testDocumentationExamples04'
--- D2C(65,5)    ->   "    A"  /* the leading characters are "00"x    */
-    self~assertSame('subTest04','00'x'00'x'00'x'00'x"A",d2c(65,5))
-
-::method 'testDocumentationExamples05'
--- D2C(109)     ->   "m"      /* "6D"x  is an ASCII "m"              */
-    self~assertSame('subTest05',"m",d2c(109))
-
-::method 'testDocumentationExamples06'
--- D2C(-109,1)  ->   "ô"      /* "93"x is an ASCII "ô"   */
---    self~assertSame('subTest06',"ô",d2c(-109,1))
-    self~assertSame('subTest06',"93"x,d2c(-109,1))
-
-::method 'testDocumentationExamples07'
--- D2C(76,2)    ->   " L"     /* "4C"x  is an ASCII "L"              */
-    self~assertSame('subTest07','00'x"L",d2c(76,2))
-
-::method 'testDocumentationExamples08'
--- D2C(-180,2)  ->   " L"     /* the leading character is a "FF"x    */
-    self~assertSame('subTest08','FF'x"L",d2c(-180,2))
+   -- new tests
+    self~assertSame("subTest9", ""                   , D2C(-180,0))
 
 
 

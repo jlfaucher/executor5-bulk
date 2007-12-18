@@ -4,6 +4,8 @@
    author:           Lee Peedin
    date:             2007/12/07
    version:          1.0
+   date:             2007/12/18
+   version:          1.1
 
 -- line commented lines are ignored, when building the directory of infos from this header
    changed:
@@ -899,8 +901,40 @@ self~assertSame("usa_no_sep        / subtest # 18", date('U', date, format, ''),
 self~assertSame("usa_dash_sep      / subtest # 19", date('U', date, format, '-'), "02-29-00")
 self~assertSame("weekday           / subtest # 20", date('W', date, format), "Tuesday")
 
-
-
 ::routine leapyear
     return((arg(1)//4=0)&(0=(arg(1)//100=0)))|(arg(1)//400=0)
+
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_DATE"
+    tmpD='13 Nov 1996'
+
+    self~assertSame("subTest1" , '13 Nov 1996'      , DATE(   , tmpD ))
+    self~assertSame("subTest2" , 728975             , DATE('B', tmpD ))             -- error: 728609             )
+    self~assertSame("subTest3" , 318                , DATE('D', tmpD ))             -- error: 317                )
+    self~assertSame("subTest4" , '13/11/96'         , DATE('E', tmpD ))
+    self~assertSame("subTest5" , '13 November 1996' , DATE('L', tmpD ))
+    self~assertSame("subTest6" , 'November'         , DATE('M', tmpD ))
+    self~assertSame("subTest7" , '13 Nov 1996'      , DATE('N', tmpD ))
+    self~assertSame("subTest8" , '96/11/13'         , DATE('O', tmpD ))
+    self~assertSame("subTest9" , '19961113'         , DATE('S', tmpD ))
+    self~assertSame("subTest10", '11/13/96'         , DATE('U', tmpD ))
+    self~assertSame("subTest11", 'Wednesday'        , DATE('W', tmpD ))             -- error: 'Monday'           )
+
+    self~assertSame("subTest12", '23/02/13' , DATE('O','13 Feb 1923') )
+    self~assertSame("subTest13", '50/06/01' , DATE('O','06/01/50','U'))
+
+    self~assertSame("subTest14", '1996-02-13'  , DATE('S','13 Feb 1996','N','-'))
+    self~assertSame("subTest15", '13Feb1996'   , DATE('N','13 Feb 1996','N',"") )
+    self~assertSame("subTest16", '13-Feb-1996' , DATE('N','13 Feb 1996','N','-'))
+    self~assertSame("subTest17", '500601'      , DATE('O','06/01/50','U',"")    )
+    self~assertSame("subTest18", '13.02.96'    , DATE('E','02/13/96','U','.')   )
+    self~assertSame("subTest19", '26_Mar_1998' , DATE('N', '26 Mar 1998', ,'_') )
+
+    -- self~assertSame("subTest20", DATE('S','1996-11-13','S', ,"",'-'), '19961113' ) -- error: more than 5 arg() !
+    self~assertSame("subTest20", '19961113' , DATE('S','1996-11-13','S',"",'-')  )
+
+    self~assertSame("subTest21", '19961113' , DATE('S','13-Nov-1996','N',"",'-') )
+    self~assertSame("subTest22", '500601'   , DATE('O','06*01*50','U',"",'*')    )
+    self~assertSame("subTest23", '02/13/96' , DATE('U','13.Feb.1996','N', ,'.')  )
 

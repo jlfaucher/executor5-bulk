@@ -4,6 +4,8 @@
    author:           Lee Peedin
    date:             2007/12/07
    version:          1.0
+   date:             2007/12/18
+   version:          1.1
 
 -- line commented lines are ignored, when building the directory of infos from this header
    changed:
@@ -2712,5 +2714,23 @@ return testUnitList
 
 ::method test654
 --    self~assertSame('subTest01','1E+1',format(9.99999999,1,0,0,1))
+
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_FORMAT"
+    self~assertSame("subTest1" , '   3'             , FORMAT('3',4)               )
+    self~assertSame("subTest2" , '   2'             , FORMAT('1.73',4,0)          )
+    self~assertSame("subTest3" , '   1.730'         , FORMAT('1.73',4,3)          )
+    self~assertSame("subTest4" , '  -0.8'           , FORMAT('-.76',4,1)          )
+    self~assertSame("subTest5" , '   3.03'          , FORMAT('3.03',4)            )
+    self~assertSame("subTest6" , '-12.7300'         , FORMAT(' - 12.73', ,4)      )
+    self~assertSame("subTest7" , '-12.73'           , FORMAT(' - 12.73')          )
+    self~assertSame("subTest8" , '0'                , FORMAT('0.000')             )
+
+    self~assertSame("subTest9" , '1.234573E+04'     , FORMAT('12345.73', , ,2,2)  ) --
+    self~assertSame("subTest10", '1.235E+4'         , FORMAT('12345.73', ,3, ,0)  )
+    self~assertSame("subTest11", '1.235'            , FORMAT('1.234573', ,3, ,0)  )
+    self~assertSame("subTest12", '12345.73'         , FORMAT('12345.73', , ,3,6)  )
+    self~assertSame("subTest13", '123456700000.000' , FORMAT('1234567e5', ,3,0)   )
 
 

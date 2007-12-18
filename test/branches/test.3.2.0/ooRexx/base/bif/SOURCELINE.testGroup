@@ -4,8 +4,8 @@
 
    name:             SOURCELINE.testUnit
    author:           Lee Peedin
-   date:             2007/12/13
-   version:          1.0
+   date:             2007/12/13  2007/12/18
+   version:          1.0         1.1
 
 -- line commented lines are ignored, when building the directory of infos from this header
    changed:
@@ -158,8 +158,8 @@ return testUnitList
     self~assertSame('sourceline(1) must equal first line', l1, sourceLine(1))
 
 ::method 'test_last_line'
-    lastLine = "    src = sourceLine(179)"
-    self~assertSame('Text from last line should match sourceline(178)', lastLine, sourceLine(178))
+    lastLine = "    end"
+    self~assertSame('Text from last line should match sourceline(178)', lastLine, sourceLine(197))
 
 ::method 'test_negative_number'
     self~expectSyntax(40.14)
@@ -175,4 +175,23 @@ return testUnitList
 
 ::method 'test_too_large_by_one'
     self~expectSyntax(40.34)
-    src = sourceLine(179)
+    src = sourceLine(198)
+
+-- from bif.testgroup
+::method "test_SOURCELINE"
+    -- self~assertEquals("subTest1" , SOURCELINE(1)   ,  "/*"  )
+
+    self~assertTrue("subTest1"   , datatype(sourceline(), "N"))
+    self~assertEquals("subTest2" , "/*"  , SOURCELINE(2)  )
+
+    -- get operating system
+    parse upper source opsys +1
+    if pos(opsys, "WO")=0 then      -- assuming Unix based operating system
+    do
+         -- assuming hash-bang characters get removed on Unix by the opsys/shell
+       self~assertEquals("subTest3a (Unix-based)" , ""  , SOURCELINE(1)  )
+    end
+    else                            -- Windows or OS/2
+    do
+       self~assertEquals("subTest3b (Windows)" , "/usr/bin/rexx"   , SOURCELINE(1)~substr(3)  )
+    end

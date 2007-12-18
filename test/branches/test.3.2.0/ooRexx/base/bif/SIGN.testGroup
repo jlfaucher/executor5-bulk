@@ -4,6 +4,8 @@
    author:           Lee Peedin
    date:             2007/12/13
    version:          1.0
+   date:             2007/12/18
+   version:          1.1
 
 -- line commented lines are ignored, when building the directory of infos from this header
    changed:
@@ -280,5 +282,14 @@ return testUnitList
     x = sign(x)
     self~assertSame('subTest01',1,x)
 
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_SIGN"
+    self~assertEquals("subTest1" ,  1 , SIGN('12.3')    )
+    self~assertEquals("subTest2" , -1 , SIGN(' -0.307') )
+    self~assertEquals("subTest3" ,  0 , SIGN(0.0)       )
+
+   -- new tests
+    self~assertEquals("subTest4" ,  0 , SIGN(-0.0)      )
 
 

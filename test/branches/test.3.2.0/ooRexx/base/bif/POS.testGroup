@@ -4,6 +4,8 @@
    author:           Lee Peedin
    date:             2007/12/12
    version:          1.0
+   date:             2007/12/18
+   version:          1.1
 
 -- line commented lines are ignored, when building the directory of infos from this header
    changed:
@@ -458,4 +460,16 @@ return testUnitList
     b = xrange('i','s')
     c = 6
     self~assertSame('subTest01','9',pos(b,a,c))
+
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_POS"
+    self~assertEquals("subTest1" , 6,  POS('day','Saturday')   )
+    self~assertEquals("subTest2" , 0,  POS('x','abc def ghi')  )
+    self~assertEquals("subTest3" , 4,  POS(' ','abc def ghi')  )
+    self~assertEquals("subTest4" , 8,  POS(' ','abc def ghi',5))
+
+   -- new test
+    self~assertEquals("subTest5" , 0, POS('','abc def ghi',5)  )
+
 

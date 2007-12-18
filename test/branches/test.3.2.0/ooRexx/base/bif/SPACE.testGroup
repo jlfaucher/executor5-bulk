@@ -4,6 +4,8 @@
    author:           Lee Peedin
    date:             2007/12/13
    version:          1.0
+   date:             2007/12/18
+   version:          1.1
 
 -- line commented lines are ignored, when building the directory of infos from this header
    changed:
@@ -364,5 +366,24 @@ return testUnitList
     .local~remove(v14)
     .local~remove(v19)
     .local~remove(v8)
+
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_SPACE"
+    self~assertSame("subTest1" , 'abc def'   , SPACE('abc def ')       )
+    self~assertSame("subTest2" , 'abc   def' , SPACE('  abc def',3)    )
+    self~assertSame("subTest3" , 'abc def'   , SPACE('abc  def ',1)    )
+    self~assertSame("subTest4" , 'abcdef'    , SPACE('abc  def ',0)    )
+    self~assertSame("subTest5" , 'abc++def'  , SPACE('abc  def ',2,'+'))
+
+   -- new tests
+    self~assertSame("subTest6" , '' , SPACE('     ',0) )
+    self~assertSame("subTest7" , '' , SPACE('     ',1) )
+    self~assertSame("subTest8" , '' , SPACE('     ',2) )
+    self~assertSame("subTest9" , '' , SPACE('     ',3) )
+    self~assertSame("subTest10", '' , SPACE(''     ,0) )
+    self~assertSame("subTest11", '' , SPACE(''     ,1) )
+    self~assertSame("subTest12", '' , SPACE(''     ,2) )
+    self~assertSame("subTest13", '' , SPACE(''     ,3) )
 
 

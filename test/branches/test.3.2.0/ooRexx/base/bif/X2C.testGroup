@@ -2,8 +2,8 @@
 /*
    name:             X2C.testUnit
    author:           Lee Peedin
-   date:             2007/12/17
-   version:          1.0
+   date:             2007/12/18
+   version:          1.1
 
 -- line commented lines are ignored, when building the directory of infos from this header
    changed:
@@ -307,4 +307,12 @@ return testUnitList
     .local~remove(vn21)
     .local~remove(vn42)
 
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_X2C"
+    self~assertSame("subTest1" , 'Hello' /* ASCII */ , X2C('4865 6c6c 6f') )
+    self~assertSame("subTest2" , '72s'   /* ASCII */ , X2C('3732 73')      )
+
+   -- new tests
+    self~assertSame("subTest3" , ''      /* ASCII */ , X2C('')             )
 
