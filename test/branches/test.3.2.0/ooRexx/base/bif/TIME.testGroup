@@ -218,10 +218,10 @@ return testGroupList
    End
    self~assertSame("subTest1-22", txcm, ttm)
 
-   If TIME()<tt Then Do
-     Say 'Midnight occurred while this test case was running'
-     Say 'Results might be suspect.'
-   End
+   -- If the test was run around midnight and the time went from before midnight
+   -- to after midnight in the middle of the test, the results are not valid.
+   self~assertFalse('Midnight occurred while this test case was running.' || .endOfLine || -
+                    'Test results are not valid.',  TIME()<tt)
 
 
 ::method "test_2"
