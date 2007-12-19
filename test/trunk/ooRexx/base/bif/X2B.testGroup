@@ -2,8 +2,8 @@
 /*
    name:             X2B.testUnit
    author:           Lee Peedin
-   date:             2007/12/17
-   version:          1.0
+   date:             2007/12/18
+   version:          1.1
 
 -- line commented lines are ignored, when building the directory of infos from this header
    changed:
@@ -366,5 +366,15 @@ return testUnitList
 ::method 'test071'
     self~assertSame('subTest01','00101000',x2b(subStr('0192837465abcdefgh',4,2)))
 
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_X2B"
+    self~assertEquals("subTest1" , '11000011'     , X2B('C3')  )
+    self~assertEquals("subTest2" , '0111'         , X2B('7')   )
+    self~assertEquals("subTest3" , '000111000001' , X2B('1 C1'))
+
+   -- new tests
+    self~assertEquals("subTest4" , '' , X2B(''))
+    self~assertEquals("subTest4" , '' , X2B(''))
 
 

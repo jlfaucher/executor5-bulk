@@ -4,6 +4,8 @@
    author:           W. David Ashley
    date:             2007-12-17
    version:          1.0.1
+   date:             2007/12/18
+   version:          1.1
 
 -- line commented lines are ignored, when building the directory of infos from this header
    changed:          2007-12-17, ---wda, initial creation
@@ -1942,4 +1944,205 @@ return
    a = d2c(255)
    self~expectSyntax(40.904)
    z = time(a)
+
+-- from time.testgroup 12/18/07 Lee Peedin
+::METHOD 'test_civil_morning'
+time = '4:47am'
+format = 'C'
+self~assertSame("civil / subtest # 1", time('C', time, format), "4:47am")
+self~assertSame("hours / subtest # 2", time('H', time, format), "4")
+self~assertSame("long  / subtest # 3", time('L', time, format), "04:47:00.000000")
+self~assertSame("long  / subtest # 4", time('M', time, format), "287")
+self~assertSame("long  / subtest # 5", time('N', time, format), "04:47:00")
+self~assertSame("long  / subtest # 6", time('S', time, format), "17220")
+
+::METHOD 'test_civil_afternoon'
+time = '4:47pm'
+format = 'C'
+self~assertSame("civil / subtest # 1", time('C', time, format), "4:47pm")
+self~assertSame("hours / subtest # 2", time('H', time, format), "16")
+self~assertSame("long  / subtest # 3", time('L', time, format), "16:47:00.000000")
+self~assertSame("long  / subtest # 4", time('M', time, format), "1007")
+self~assertSame("long  / subtest # 5", time('N', time, format), "16:47:00")
+self~assertSame("long  / subtest # 6", time('S', time, format), "60420")
+
+::METHOD 'test_hours_morning'
+time = '4'
+format = 'H'
+self~assertSame("civil / subtest # 1", time('C', time, format), "4:00am")
+self~assertSame("hours / subtest # 2", time('H', time, format), "4")
+self~assertSame("long  / subtest # 3", time('L', time, format), "04:00:00.000000")
+self~assertSame("long  / subtest # 4", time('M', time, format), "240")
+self~assertSame("long  / subtest # 5", time('N', time, format), "04:00:00")
+self~assertSame("long  / subtest # 6", time('S', time, format), "14400")
+
+::METHOD 'test_hours_afternoon'
+time = '16'
+format = 'H'
+self~assertSame("civil / subtest # 1", time('C', time, format), "4:00pm")
+self~assertSame("hours / subtest # 2", time('H', time, format), "16")
+self~assertSame("long  / subtest # 3", time('L', time, format), "16:00:00.000000")
+self~assertSame("long  / subtest # 4", time('M', time, format), "960")
+self~assertSame("long  / subtest # 5", time('N', time, format), "16:00:00")
+self~assertSame("long  / subtest # 6", time('S', time, format), "57600")
+
+::METHOD 'test_long_morning'
+time = '06:47:49.384783'
+format = 'L'
+self~assertSame("civil / subtest # 1", time('C', time, format), "6:47am")
+self~assertSame("hours / subtest # 2", time('H', time, format), "6")
+self~assertSame("long  / subtest # 3", time('L', time, format), "06:47:49.384783")
+self~assertSame("long  / subtest # 4", time('M', time, format), "407")
+self~assertSame("long  / subtest # 5", time('N', time, format), "06:47:49")
+self~assertSame("long  / subtest # 6", time('S', time, format), "24469")
+
+::METHOD 'test_long_afternoon'
+time = '16:47:49.387902'
+format = 'L'
+self~assertSame("civil / subtest # 1", time('C', time, format), "4:47pm")
+self~assertSame("hours / subtest # 2", time('H', time, format), "16")
+self~assertSame("long  / subtest # 3", time('L', time, format), "16:47:49.387902")
+self~assertSame("long  / subtest # 4", time('M', time, format), "1007")
+self~assertSame("long  / subtest # 5", time('N', time, format), "16:47:49")
+self~assertSame("long  / subtest # 6", time('S', time, format), "60469")
+
+::METHOD 'test_minutes_morning'
+time = '250'
+format = 'M'
+self~assertSame("civil / subtest # 1", time('C', time, format), "4:10am")
+self~assertSame("hours / subtest # 2", time('H', time, format), "4")
+self~assertSame("long  / subtest # 3", time('L', time, format), "04:10:00.000000")
+self~assertSame("long  / subtest # 4", time('M', time, format), "250")
+self~assertSame("long  / subtest # 5", time('N', time, format), "04:10:00")
+self~assertSame("long  / subtest # 6", time('S', time, format), "15000")
+
+::METHOD 'test_minutes_afternoon'
+time = '1012'
+format = 'M'
+self~assertSame("civil / subtest # 1", time('C', time, format), "4:52pm")
+self~assertSame("hours / subtest # 2", time('H', time, format), "16")
+self~assertSame("long  / subtest # 3", time('L', time, format), "16:52:00.000000")
+self~assertSame("long  / subtest # 4", time('M', time, format), "1012")
+self~assertSame("long  / subtest # 5", time('N', time, format), "16:52:00")
+self~assertSame("long  / subtest # 6", time('S', time, format), "60720")
+
+::METHOD 'test_normal_morning'
+time = '06:47:49'
+format = 'N'
+self~assertSame("civil / subtest # 1", time('C', time, format), "6:47am")
+self~assertSame("hours / subtest # 2", time('H', time, format), "6")
+self~assertSame("long  / subtest # 3", time('L', time, format), "06:47:49.000000")
+self~assertSame("long  / subtest # 4", time('M', time, format), "407")
+self~assertSame("long  / subtest # 5", time('N', time, format), "06:47:49")
+self~assertSame("long  / subtest # 6", time('S', time, format), "24469")
+
+::METHOD 'test_normal_afternoon'
+time = '16:47:49'
+format = 'N'
+self~assertSame("civil / subtest # 1", time('C', time, format), "4:47pm")
+self~assertSame("hours / subtest # 2", time('H', time, format), "16")
+self~assertSame("long  / subtest # 3", time('L', time, format), "16:47:49.000000")
+self~assertSame("long  / subtest # 4", time('M', time, format), "1007")
+self~assertSame("long  / subtest # 5", time('N', time, format), "16:47:49")
+self~assertSame("long  / subtest # 6", time('S', time, format), "60469")
+
+::METHOD 'test_seconds_morning'
+time = '1517'
+format = 'S'
+self~assertSame("civil / subtest # 1", time('C', time, format), "12:25am")
+self~assertSame("hours / subtest # 2", time('H', time, format), "0")
+self~assertSame("long  / subtest # 3", time('L', time, format), "00:25:17.000000")
+self~assertSame("long  / subtest # 4", time('M', time, format), "25")
+self~assertSame("long  / subtest # 5", time('N', time, format), "00:25:17")
+self~assertSame("long  / subtest # 6", time('S', time, format), "1517")
+
+::METHOD 'test_seconds_afternoon'
+time = '60801'
+format = 'S'
+self~assertSame("civil / subtest # 1", time('C', time, format), "4:53pm")
+self~assertSame("hours / subtest # 2", time('H', time, format), "16")
+self~assertSame("long  / subtest # 3", time('L', time, format), "16:53:21.000000")
+self~assertSame("long  / subtest # 4", time('M', time, format), "1013")
+self~assertSame("long  / subtest # 5", time('N', time, format), "16:53:21")
+self~assertSame("long  / subtest # 6", time('S', time, format), "60801")
+
+::METHOD 'test_start_day'
+time = '00:00:00.000000'
+format = 'L'
+self~assertSame("civil / subtest # 1", time('C', time, format), "12:00am")
+self~assertSame("hours / subtest # 2", time('H', time, format), "0")
+self~assertSame("long  / subtest # 3", time('L', time, format), "00:00:00.000000")
+self~assertSame("long  / subtest # 4", time('M', time, format), "0")
+self~assertSame("long  / subtest # 5", time('N', time, format), "00:00:00")
+self~assertSame("long  / subtest # 6", time('S', time, format), "0")
+
+::METHOD 'test_past_start_day'
+time = '00:00:00.000001'
+format = 'L'
+self~assertSame("civil / subtest # 1", time('C', time, format), "12:00am")
+self~assertSame("hours / subtest # 2", time('H', time, format), "0")
+self~assertSame("long  / subtest # 3", time('L', time, format), "00:00:00.000001")
+self~assertSame("long  / subtest # 4", time('M', time, format), "0")
+self~assertSame("long  / subtest # 5", time('N', time, format), "00:00:00")
+self~assertSame("long  / subtest # 6", time('S', time, format), "0")
+
+::METHOD 'test_ten_morning'
+time = '10:00:00.000000'
+format = 'L'
+self~assertSame("civil / subtest # 1", time('C', time, format), "10:00am")
+self~assertSame("hours / subtest # 2", time('H', time, format), "10")
+self~assertSame("long  / subtest # 3", time('L', time, format), "10:00:00.000000")
+self~assertSame("long  / subtest # 4", time('M', time, format), "600")
+self~assertSame("long  / subtest # 5", time('N', time, format), "10:00:00")
+self~assertSame("long  / subtest # 6", time('S', time, format), "36000")
+
+::METHOD 'test_almost_noon'
+time = '11:59:59.999999'
+format = 'L'
+self~assertSame("civil / subtest # 1", time('C', time, format), "11:59am")
+self~assertSame("hours / subtest # 2", time('H', time, format), "11")
+self~assertSame("long  / subtest # 3", time('L', time, format), "11:59:59.999999")
+self~assertSame("long  / subtest # 4", time('M', time, format), "719")
+self~assertSame("long  / subtest # 5", time('N', time, format), "11:59:59")
+self~assertSame("long  / subtest # 6", time('S', time, format), "43199")
+
+::METHOD 'test_noon'
+time = '12:00:00.000000'
+format = 'L'
+self~assertSame("civil / subtest # 1", time('C', time, format), "12:00pm")
+self~assertSame("hours / subtest # 2", time('H', time, format), "12")
+self~assertSame("long  / subtest # 3", time('L', time, format), "12:00:00.000000")
+self~assertSame("long  / subtest # 4", time('M', time, format), "720")
+self~assertSame("long  / subtest # 5", time('N', time, format), "12:00:00")
+self~assertSame("long  / subtest # 6", time('S', time, format), "43200")
+
+::METHOD 'test_past_noon'
+time = '12:00:00.000001'
+format = 'L'
+self~assertSame("civil / subtest # 1", time('C', time, format), "12:00pm")
+self~assertSame("hours / subtest # 2", time('H', time, format), "12")
+self~assertSame("long  / subtest # 3", time('L', time, format), "12:00:00.000001")
+self~assertSame("long  / subtest # 4", time('M', time, format), "720")
+self~assertSame("long  / subtest # 5", time('N', time, format), "12:00:00")
+self~assertSame("long  / subtest # 6", time('S', time, format), "43200")
+
+::METHOD 'test_ten_night'
+time = '22:00:00.000000'
+format = 'L'
+self~assertSame("civil / subtest # 1", time('C', time, format), "10:00pm")
+self~assertSame("hours / subtest # 2", time('H', time, format), "22")
+self~assertSame("long  / subtest # 3", time('L', time, format), "22:00:00.000000")
+self~assertSame("long  / subtest # 4", time('M', time, format), "1320")
+self~assertSame("long  / subtest # 5", time('N', time, format), "22:00:00")
+self~assertSame("long  / subtest # 6", time('S', time, format), "79200")
+
+::METHOD 'test_end_day'
+time = '23:59:59.999999'
+format = 'L'
+self~assertSame("civil / subtest # 1", time('C', time, format), "11:59pm")
+self~assertSame("hours / subtest # 2", time('H', time, format), "23")
+self~assertSame("long  / subtest # 3", time('L', time, format), "23:59:59.999999")
+self~assertSame("long  / subtest # 4", time('M', time, format), "1439")
+self~assertSame("long  / subtest # 5", time('N', time, format), "23:59:59")
+self~assertSame("long  / subtest # 6", time('S', time, format), "86399")
 

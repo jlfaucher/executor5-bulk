@@ -4,6 +4,8 @@
    author:           Lee Peedin
    date:             2007/12/12
    version:          1.0
+   date:             2007/12/18
+   version:          1.1
 
 -- line commented lines are ignored, when building the directory of infos from this header
    changed:
@@ -229,5 +231,15 @@ return testUnitList
     numeric digits 10
     hansjako. = 13
     self~assertSame('subTest01','31',reverse(value(reverse(.okajsnah))))
+
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_REVERSE"
+    self~assertSame("subTest1" , '.cBA' , REVERSE('ABc.'))
+    self~assertSame("subTest2" , ' ZYX' , REVERSE('XYZ '))
+
+   -- new tests
+    self~assertSame("subTest3" , ''     , REVERSE(''    ))
+    self~assertSame("subTest4" , ''     , REVERSE(''    ))
 
 

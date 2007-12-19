@@ -4,6 +4,8 @@
    author:           Lee Peedin
    date:             2007/12/11
    version:          1.0
+   date:             2007/12/18
+   version:          1.1
 
 -- line commented lines are ignored, when building the directory of infos from this header
    changed:
@@ -726,4 +728,18 @@ return testUnitList
     .local~remove(vc7x)
     .local~remove(vc740x)
     .local~remove(vxnx)
+
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_LASTPOS"
+    self~assertEquals("subTest1" , 8  , LASTPOS(' ','abc def ghi')  )
+    self~assertEquals("subTest2" , 0  , LASTPOS(' ','abcdefghi')    )
+    self~assertEquals("subTest3" , 4  , LASTPOS('xy','efgxyz')      )
+    self~assertEquals("subTest4" , 4  , LASTPOS(' ','abc def ghi',7))
+
+   -- new tests
+    self~assertEquals("subTest5" , 0  , LASTPOS('','abc def ghi',7))
+    self~assertEquals("subTest6" , 0  , LASTPOS('','')             )
+
+
 

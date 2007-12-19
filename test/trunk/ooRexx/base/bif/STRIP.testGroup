@@ -4,6 +4,8 @@
    author:           Lee Peedin
    date:             2007/12/13
    version:          1.0
+   date:             2007/12/18
+   version:          1.1
 
 -- line commented lines are ignored, when building the directory of infos from this header
    changed:
@@ -502,4 +504,16 @@ return testUnitList
     .local~remove(xr)
     .local~remove(xr2)
 
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_STRIP"
+    self~assertSame("subTest1" , 'ab c'    , STRIP('  ab c  ')      )
+    self~assertSame("subTest2" , 'ab c  '  , STRIP('  ab c  ','L')  )
+    self~assertSame("subTest3" , '  ab c'  , STRIP('  ab c  ','t')  )
+    self~assertSame("subTest4" , '12.7'    , STRIP('12.7000', ,0)   )
+    self~assertSame("subTest5" , '12.7'    , STRIP('0012.700', ,0)  )
+
+   -- new tests
+    self~assertSame("subTest6" , ''        , STRIP(''    ) )
+    self~assertSame("subTest7" , ''        , STRIP('    ') )
 

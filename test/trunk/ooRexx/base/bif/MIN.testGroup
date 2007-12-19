@@ -4,6 +4,8 @@
    author:           Lee Peedin
    date:             2007/12/11
    version:          1.0
+   date:             2007/12/18
+   version:          1.1
 
 -- line commented lines are ignored, when building the directory of infos from this header
    changed:
@@ -118,34 +120,35 @@ return testUnitList
 
 ::method 'test001'
     self~assertSame('subTest01','1.00',min(1.00,1))
--- call ver Min(1.00,1),'1.00'; R0011:
 
 ::method 'test002'
     self~assertSame('subTest01','1',min(1,1.00))
--- call ver Min(1,1.00),'1'; R0012:
 
 ::method 'test003'
     self~assertSame('subTest01','12345678.0',min(12345678.00, 12345678))
--- call ver Min(12345678.00, 12345678),'12345678.0'; R0021:
 
 ::method 'test004'
     self~assertSame('subTest01','12345678',min(12345678, 12345678.00))
--- call ver Min(12345678, 12345678.00),'12345678'; R0022:
 
 ::method 'test005'
     self~assertSame('subTest01',12345679,min(12345679, 12345678.96))
--- call ver Min(12345679, 12345678.96),12345679; R0024:
 
 ::method 'test006'
     self~assertSame('subTest01','-12345678.0',min('-12345678.00', -12345678))
--- call ver Min('-12345678.00', -12345678),'-12345678.0'; R0028:
 
 ::method 'test007'
     self~assertSame('subTest01','-12345678',min(-12345678, '-12345678.00'))
--- call ver Min(-12345678, '-12345678.00'),'-12345678'; R0029:
 
 ::method 'test008'
     self~assertSame('subTest01',-12345679.0,min('-12345678.96', -12345679))
--- call ver Min('-12345678.96', -12345679),-12345679.0; R0030:
+
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_MIN"
+    self~assertEquals("subTest1" , 6     , MIN(12,6,7,9)                                             )
+    self~assertEquals("subTest2" , 17.03 , MIN(17.3,19,17.03)                                        )
+    self~assertEquals("subTest3" , -7    , MIN(-7,-3,-4.3)                                           )
+    self~assertEquals("subTest4" , 1     , MIN(21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1))
+
 
 

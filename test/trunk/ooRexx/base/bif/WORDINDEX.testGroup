@@ -4,6 +4,8 @@
    author:           Lee Peedin
    date:             2007/12/17
    version:          1.0
+   date:             2007/12/18
+   version:          1.1
 
 -- line commented lines are ignored, when building the directory of infos from this header
    changed:
@@ -385,5 +387,11 @@ return testUnitList
     .local~remove(vwbwwbw)
     .local~remove(v19)
     .local~remove(v14)
+
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_WORDINDEX"
+    self~assertEquals("subTest1" , 8 , WORDINDEX('Now is the time',3))
+    self~assertEquals("subTest2" , 0 , WORDINDEX('Now is the time',6))
 
 

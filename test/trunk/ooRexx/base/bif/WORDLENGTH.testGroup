@@ -2,8 +2,8 @@
 /*
    name:             WORDLENGTH.testUnit
    author:           Lee Peedin
-   date:             2007/12/17
-   version:          1.0
+   date:             2007/12/18
+   version:          1.1
 
 -- line commented lines are ignored, when building the directory of infos from this header
    changed:
@@ -382,4 +382,10 @@ return testUnitList
     .local~remove(v19)
     .local~remove(v14)
 
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_WORDLENGTH"
+    self~assertEquals("subTest1" , 2 , WORDLENGTH('Now is the time',2)   )
+    self~assertEquals("subTest2" , 5 , WORDLENGTH('Now comes the time',2))
+    self~assertEquals("subTest3" , 0 , WORDLENGTH('Now is the time',6)   )
 

@@ -4,6 +4,8 @@
    author:           Lee Peedin
    date:             2007/12/11
    version:          1.0
+   date:             2007/12/18
+   version:          1.1
 
 -- line commented lines are ignored, when building the directory of infos from this header
    changed:
@@ -151,5 +153,13 @@ return testUnitList
 
 ::method 'test012'
     self~assertSame('subTest01',-12345679,max(-12345679, '-12345678.96'))
+
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_MAX"
+    self~assertEquals("subTest1" , 12  , MAX(12,6,7,9)                                             )
+    self~assertEquals("subTest2" , 19  , MAX(17.3,19,17.03)                                        )
+    self~assertEquals("subTest3" , -3  , MAX(-7,-3,-4.3)                                           )
+    self~assertEquals("subTest4" , 21  , MAX(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21))
 
 

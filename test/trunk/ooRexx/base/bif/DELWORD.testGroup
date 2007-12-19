@@ -4,6 +4,8 @@
    author:           Lee Peedin
    date:             2007/12/06
    version:          1.0
+   date:             2007/12/18
+   version:          1.1
 
 -- line commented lines are ignored, when building the directory of infos from this header
    changed:
@@ -310,24 +312,16 @@ return testUnitList
 ::method 'test45'
     self~assertSame('subTest01','John ',delWord(delWord('John R. Buckley',2,1),delWord('2 3',2,1),delWord('1 2 3',2,2)))
 
--- Documentation examples - Actual verbage from the documentation is commented in each method
-::method 'testDocumentationExamples01'
--- DELWORD("Now is the  time",2,2)  ->  "Now time"
-    self~assertSame('subTest01',"Now time",delWord("Now is the  time",2,2))
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_DELWORD"
+    self~assertSame("subTest1" , 'Now time'        , DELWORD('Now is the time',2,2))
+    self~assertSame("subTest2" , 'Now is '         , DELWORD('Now is the time ',3) )
+    self~assertSame("subTest3" , 'Now is the time' , DELWORD('Now is the time',5)  )
+    self~assertSame("subTest4" , 'Now is time'     , DELWORD('Now is the time',3,1))
+    self~assertSame("subTest5" , 'Now time'        , DELWORD('Now is the time',2,2))
 
-::method 'testDocumentationExamples02'
--- DELWORD("Now is the time ",3)    ->  "Now is "
-    self~assertSame('subTest01',"Now is ",delWord("Now is the time ",3))
-
-::method 'testDocumentationExamples03'
--- DELWORD("Now is the  time",5)    ->  "Now is the  time"
-    self~assertSame('subTest01',"Now is the  time",delWord("Now is the  time",5))
-
-::method 'testDocumentationExamples04'
--- DELWORD("Now is   the time",3,1) ->  "Now is   time"
-    self~assertSame('subTest01',"Now is   time",delWord("Now is   the time",3,1))
-
-::method 'testDocumentationExamples05'
--- DELWORD("Now is the  time",2,2)  ->  "Now time"
-    self~assertSame('subTest01',"Now time",delWord("Now is the  time",2,2))
+   -- new tests
+    self~assertSame("subTest4" , 'Now is the time' , DELWORD('Now is the time',3,0))
+    self~assertSame("subTest4" , 'Now is the time' , DELWORD('Now is the time',1,0))
 

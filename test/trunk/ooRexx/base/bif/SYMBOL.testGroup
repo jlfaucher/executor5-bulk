@@ -4,6 +4,8 @@
    author:           Lee Peedin
    date:             2007/12/13
    version:          1.0
+   date:             2007/12/18
+   version:          1.1
 
 -- line commented lines are ignored, when building the directory of infos from this header
    changed:
@@ -199,5 +201,24 @@ return testUnitList
 
 ::method 'test028'
     self~assertSame('subTest01','LIT',symbol('1Garbage+1'))
+
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_SYMBOL"
+    /* following: Drop A.3; J=3 */
+    drop a.3
+    j=3
+
+    self~assertEquals("subTest1" , 'VAR'                           , SYMBOL('J')   )
+    self~assertEquals("subTest2" , 'LIT' /* has tested "3" */      , SYMBOL(J)     )
+    self~assertEquals("subTest3" , 'LIT' /* has tested A.3 */      , SYMBOL('a.j') )
+    self~assertEquals("subTest4" , 'LIT' /* a constant symbol */   , SYMBOL(2)     )
+    self~assertEquals("subTest5" , 'BAD' /* not a valid symbol */  , SYMBOL('*')   )
+
+   -- new tests
+    self~assertEquals("subTest6" , 'LIT' /* not a valid symbol */  , SYMBOL('.')   )
+    self~assertEquals("subTest7" , 'LIT' /* not a valid symbol */  , SYMBOL('.a')  )
+    self~assertEquals("subTest8" , 'BAD' /* not a valid symbol */  , SYMBOL('')    )
+    self~assertEquals("subTest9" , 'BAD' /* not a valid symbol */  , SYMBOL('  ')  )
 
 

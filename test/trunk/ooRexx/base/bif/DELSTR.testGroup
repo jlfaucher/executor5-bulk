@@ -4,6 +4,8 @@
    author:           Lee Peedin
    date:             2007/12/06
    version:          1.0
+   date:             2007/12/18
+   version:          1.1
 
 -- line commented lines are ignored, when building the directory of infos from this header
    changed:
@@ -339,17 +341,18 @@ return testUnitList
     v30 = 'abcdefghijklmnopqrstuvwxyz1234'
     self~assertSame('subtest01','fghijklmnopqrxyz1234',delStr(delStr(v30,1,5),delStr('123',2)||delStr('456',2),delStr(567,2)))
 
--- Documentation examples - Actual verbage from the documentation is commented in each method
-::method 'testDocumentationExamples01'
--- delStr("abcd",3)       ->    "ab"
-    self~assertSame('subTest01',"ab",delStr("abcd",3))
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_DELSTR"
+    self~assertSame("subTest1" , 'ab'    , DELSTR('abcd',3)   )
+    self~assertSame("subTest2" , 'abe'   , DELSTR('abcde',3,2))
+    self~assertSame("subTest3" , 'abcde' , DELSTR('abcde',6)  )
 
-::method 'testDocumentationExamples02'
--- delStr("abcde",3,2)    ->    "abe"
-    self~assertSame('subTest01',"abe",delStr("abcde",3,2))
-
-::method 'testDocumentationExamples03'
--- delStr("abcde",6)      ->    "abcde"
-    self~assertSame('subTest01',"abcde",delStr("abcde",6))
-
+   -- new tests
+    self~assertSame("subTest4" , ''      , DELSTR('abcde',1)  )
+    self~assertSame("subTest5" , 'bcde'  , DELSTR('abcde',1,1))
+    self~assertSame("subTest6" , 'abcde' , DELSTR('abcde',1,0))
+    self~assertSame("subTest7" , 'abcde' , DELSTR('abcde',3,0))
+    self~assertSame("subTest8" , 'abde'  , DELSTR('abcde',3,1))
+    self~assertSame("subTest9" , 'abcde' , DELSTR('abcde',9)  )
 

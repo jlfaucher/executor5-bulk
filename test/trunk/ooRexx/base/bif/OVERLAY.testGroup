@@ -4,6 +4,8 @@
    author:           Lee Peedin
    date:             2007/12/12
    version:          1.0
+   date:             2007/12/18
+   version:          1.1
 
 -- line commented lines are ignored, when building the directory of infos from this header
    changed:
@@ -368,5 +370,28 @@ return testUnitList
     .local~remove(vres5)
     .local~remove(vres6)
     .local~remove(vres7)
+
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_OVERLAY"
+    self~assertSame("subTest1" , 'ab def'    , OVERLAY(' ','abcdef',3)      )
+    self~assertSame("subTest2" , 'ab. ef'    , OVERLAY('.','abcdef',3,2)    )
+    self~assertSame("subTest3" , 'qqcd'      , OVERLAY('qq','abcd')         )
+    self~assertSame("subTest4" , 'abcqq'     , OVERLAY('qq','abcd',4)       )
+    self~assertSame("subTest5" , 'abc+123+++', OVERLAY('123','abc',5,6,'+') )
+
+   -- new tests
+    self~assertSame("subTest6" , 'abc'       , OVERLAY('','abc',3)          )
+    self~assertSame("subTest7" , 'abc'       , OVERLAY('','abc',3, 0)       )
+    self~assertSame("subTest8" , 'ab '       , OVERLAY('','abc',3, 1)       )
+    self~assertSame("subTest9" , 'abc   '    , OVERLAY('','abc',6, 1)       )
+
+    self~assertSame("subTest10", 'abc'       , OVERLAY('  ','abc',3, 0)     )
+    self~assertSame("subTest11", 'ab '       , OVERLAY('  ','abc',3, 1)     )
+    self~assertSame("subTest12", 'abc   '    , OVERLAY('  ','abc',6, 1)     )
+
+    self~assertSame("subTest13", 'abc'       , OVERLAY('12','abc',3, 0)     )
+    self~assertSame("subTest14", 'ab3'       , OVERLAY('34','abc',3, 1)     )
+    self~assertSame("subTest15", 'abc  5'    , OVERLAY('56','abc',6, 1)     )
 
 

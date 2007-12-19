@@ -2,8 +2,8 @@
 /*
    name:             WORDPOS.testUnit
    author:           Lee Peedin
-   date:             2007/12/17
-   version:          1.0
+   date:             2007/12/18
+   version:          1.1
 
 -- line commented lines are ignored, when building the directory of infos from this header
    changed:
@@ -759,4 +759,15 @@ return testUnitList
     .local~remove(vc7x)
     .local~remove(vc740x)
     .local~remove(vxnx)
+
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_WORDPOS"
+    self~assertEquals("subTest1" , 3 , WORDPOS('the','now is the time')     )
+    self~assertEquals("subTest2" , 0 , WORDPOS('The','now is the time')     )
+    self~assertEquals("subTest3" , 2 , WORDPOS('is the','now is the time')  )
+    self~assertEquals("subTest4" , 2 , WORDPOS('is the','now is the time')  )
+    self~assertEquals("subTest5" , 0 , WORDPOS('is time ','now is the time'))
+    self~assertEquals("subTest6" , 2 , WORDPOS('be','To be or not to be')   )
+    self~assertEquals("subTest7" , 6 , WORDPOS('be','To be or not to be',3) )
 

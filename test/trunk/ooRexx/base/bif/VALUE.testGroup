@@ -4,6 +4,8 @@
    author:           Lee Peedin
    date:             2007/12/14
    version:          1.0
+   date:             2007/12/18
+   version:          1.1
 
 -- line commented lines are ignored, when building the directory of infos from this header
    changed:
@@ -381,6 +383,40 @@ return testUnitList
     self~assertSame('subTest06',translate(ln),value(ln))
     self~assertSame('subTest07',translate(ln),value(ln,c))
     self~assertSame('subTest08',c,value(ln))
+
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_VALUE"
+    /* After: Drop A3; A33=7; K=3; fred='K'; list.5='Hi' */
+    Drop A3; A33=7; K=3; fred='K'; list.5='Hi'
+
+    self~assertSame("subTest1" , 'A3' , VALUE('a'k)    )  /* looks up A3 */
+    self~assertSame("subTest2" , '7'  , VALUE('a'k||k) )
+    self~assertSame("subTest3" , 'K'  , VALUE('fred')  )  /* looks up FRED */
+    self~assertSame("subTest4" , '3'  , VALUE(fred)    )  /* looks up K */
+    self~assertSame("subTest5" , '3'  , VALUE(fred,5)  )  /* looks up K and then sets K=5 */
+    self~assertSame("subTest6" , '5'  , VALUE(fred)    )  /* looks up K */
+    self~assertSame("subTest7" , 'Hi' , VALUE('LIST.'k))  /* looks up LIST.5 */
+
+   --
+    /* Given that an external variable FRED has a value of 4 */
+    share = 'ENVIRONMENT'
+    call value 'FRED', 4, share  -- set FRED to 4
+    self~assertEquals("subTest8" , 4 , VALUE('FRED',7,share))/* says '4' and assigns */
+                                                             /* FRED a new value of 7 */
+    self~assertEquals("subTest9" , 7 , VALUE('FRED', ,share)) /* says '7' */
+
+    call value 'FRED', .nil, share  -- delete 'FRED' from environment
+    self~assertSame("subTest10"  , "", VALUE('FRED', ,share))
+
+   -- test set/getting .environment-entries
+    call value 'UhU', 1, ''         -- define entry 'UHU' in .environment
+    self~assertSame("subTest11"  , 1, VALUE('UhU',   , ''))
+    call value 'UhU', .nil, ''      -- set entry in .environment to .nil
+    self~assertSame("subTest12"  , .nil, VALUE('UhU', , ''))
+    .environment~remove('UHU')      -- delete entry in .environment
+    self~assertSame("subTest13"  , '.UHU', VALUE('UhU', , ''))
+
 
 
 

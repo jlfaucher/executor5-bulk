@@ -2,8 +2,8 @@
 /*
    name:             WORDS.testUnit
    author:           Lee Peedin
-   date:             2007/12/17
-   version:          1.0
+   date:             2007/12/18
+   version:          1.1
 
 -- line commented lines are ignored, when building the directory of infos from this header
    changed:
@@ -259,5 +259,14 @@ return testUnitList
     .local~remove(vwbwwbw)
     .local~remove(v19)
     .local~remove(v14)
+
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_WORDS"
+    self~assertEquals("subTest1" , 4 , WORDS('Now is the time'))
+    self~assertEquals("subTest2" , 0 , WORDS(' ')              )
+
+   -- new tests
+    self~assertEquals("subTest3" , 0 , WORDS('')               )
 
 

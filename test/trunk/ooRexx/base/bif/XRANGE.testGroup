@@ -4,6 +4,8 @@
    author:           Lee Peedin
    date:             2007/12/18
    version:          1.0
+   date:             2007/12/18
+   version:          1.1
 
 -- line commented lines are ignored, when building the directory of infos from this header
    changed:
@@ -257,6 +259,23 @@ myxrange:
         return substr(h,i+1,j-i+1)
     else
         return substr(h,i+1,256-i)||substr(h,1,j+1)
+
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_XRANGE"
+    self~assertSame("subTest1" , 'abcdef'         , XRANGE('a','f')      )
+    self~assertSame("subTest2" , '0304050607'x    , XRANGE('03'x,'07'x)  )
+    self~assertSame("subTest3" , '0001020304'x    , XRANGE(,'04'x)       )
+    self~assertSame("subTest4" , 'FEFF000102'x    , XRANGE('FE'x,'02'x)  )
+    self~assertSame("subTest5" , 'ij' /* ASCII */ , XRANGE('i','j')      )
+
+   -- new tests
+    chars=""
+    do i=0 to 255
+       chars=chars||d2c(i)
+    end
+    self~assertSame("subTest6", chars , XRANGE()            )
+    self~assertSame("subTest7", chars , XRANGE("00"x, "ff"x))
 
 
 
