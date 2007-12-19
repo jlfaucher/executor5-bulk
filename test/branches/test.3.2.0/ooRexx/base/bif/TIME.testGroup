@@ -165,7 +165,7 @@ return testGroupList
    If tth<10 Then self~assertSame("subTest1-8", txh, right(tth, 1))
    else self~assertSame("subTest1-8", txh, tth)
 
-   -- self~assertSame("subTest1-9", vx, vy)
+   self~assertSame("subTest1-9", vx, vy)
    self~assertSame("subTest1-10", vxm, vtm+60*vth)
    self~assertSame("subTest1-11", vxs, vts+60*(vtm+60*vth))
    If vth<10 Then self~assertSame("subTest1-12", vxh, right(vth,1))
@@ -235,15 +235,10 @@ return testGroupList
    Parse Var cb3 cb3a '*' cb3b
    Parse Var cb4 cb4a '*' cb4b
 
-   -- There is something wrong here. I do not see how tests 2-2, 2-3 and 2-4
-   -- will ever be the same. Test 2-1 works because it is the first test in
-   -- this method and the reset will return zero both times. In the other tests
-   -- the first reset will return a number but the second will return zero since
-   -- Rexx forces both TIME functions to be evaluated together.
    self~assertSame("subTest2-1", cb1a, cb1b)
-   -- self~assertSame("subTest2-2", cb2a, cb2b)
-   -- self~assertSame("subTest2-3", cb3a, cb3b)
-   -- self~assertSame("subTest2-4", cb4a, cb4b)
+   self~assertSame("subTest2-2", cb2a, cb2b)
+   self~assertSame("subTest2-3", cb3a, cb3b)
+   self~assertSame("subTest2-4", cb4a, cb4b)
 
    self~assertTrue("subTest2-5", cb2a>='1')
    self~assertTrue("subTest2-6", cb3a>='5')
@@ -270,13 +265,12 @@ return testGroupList
    Parse Var cb5 cb5a '*' cb5b
    Parse Var cb6 cb6a '*' cb6b
 
-   -- Note:This has the same problem as test_2.
    self~assertSame("subTest3-1", cb1a, cb1b)
-   -- self~assertSame("subTest3-2", cb2a, cb2b)
-   -- self~assertSame("subTest3-3", cb3a, cb3b)
-   -- self~assertSame("subTest3-4", cb4a, cb4b)
-   -- self~assertSame("subTest3-5", cb5a, cb5b)
-   -- self~assertSame("subTest3-6", cb6a, cb6b)
+   self~assertSame("subTest3-2", cb2a, cb2b)
+   self~assertSame("subTest3-3", cb3a, cb3b)
+   self~assertSame("subTest3-4", cb4a, cb4b)
+   self~assertSame("subTest3-5", cb5a, cb5b)
+   self~assertSame("subTest3-6", cb6a, cb6b)
 
    self~assertTrue("subTest3-7", cb5a>='1')
    self~assertTrue("subTest3-8", cb6a>='5')
@@ -311,11 +305,10 @@ return testGroupList
    Parse Var cb3 cb3a '*' cb3b
    Parse Var cb4 cb4a '*' cb4b
 
-   -- Note:This has the same problem as test_2.
    self~assertSame("subTest4-1", cb1a, cb1b)
    self~assertSame("subTest4-2", cb2a, cb2b)
-   -- self~assertSame("subTest4-3", cb3a, cb3b)
-   -- self~assertSame("subTest4-4", cb4a, cb4b)
+   self~assertSame("subTest4-3", cb3a, cb3b)
+   self~assertSame("subTest4-4", cb4a, cb4b)
 
    self~assertSame("subTest4-5", cb2a, '0')
    self~assertTrue("subTest4-6", cb3a>='5')
@@ -337,13 +330,12 @@ return testGroupList
    Parse Var cb5 cb5a '*' cb5b
    Parse Var cb6 cb6a '*' cb6b
 
-   -- Note:This has the same problem as test_2.
    self~assertSame("subTest5-1", cb1a, cb1b)
    self~assertSame("subTest5-2", cb2a, cb2b)
-   -- self~assertSame("subTest5-3", cb3a, cb3b)
-   -- self~assertSame("subTest5-4", cb4a, cb4b)
+   self~assertSame("subTest5-3", cb3a, cb3b)
+   self~assertSame("subTest5-4", cb4a, cb4b)
    self~assertSame("subTest5-5", cb5a, cb5b)
-   -- self~assertSame("subTest5-6", cb6a, cb6b)
+   self~assertSame("subTest5-6", cb6a, cb6b)
 
    self~assertSame("subTest5-7", cb5a, '0')
    self~assertTrue("subTest5-8", cb6a>='5')
@@ -381,13 +373,13 @@ return testGroupList
    Parse Var vx vxl '*' vxh '*' vxm '*' vxs '*' vxe '*' vxr '*' vxc
    Parse Var vy vyl '*' vyh '*' vym '*' vys '*' vye '*' vyr '*' vyc
 
-   -- self~assertSame("subTest7-1", tx, ty)
+   self~assertSame("subTest7-1", tx, ty)
    self~assertSame("subTest7-2", txm, ttm+60*tth)
    self~assertSame("subTest7-3", txs, tts+60*(ttm+60*tth))
    If tth<10 Then self~assertSame("subTest7-4", txh, right(tth, 1))
    else self~assertSame("subTest7-4", txh, tth)
 
-   -- self~assertSame("subTest7-5", vx, vy)
+   self~assertSame("subTest7-5", vx, vy)
    self~assertSame("subTest7-6", vxm, vtm+60*vth)
    self~assertSame("subTest7-7", vxs, vts+60*(vtm+60*vth))
    If vth<10 Then self~assertSame("subTest7-8", vxh, right(vth, 1))
@@ -424,11 +416,10 @@ return testGroupList
    Parse Var cb3 cb3a '*' cb3b
    Parse Var cb4 cb4a '*' cb4b
 
-   -- Note:This has the same problem as test_2.
    self~assertSame("subTest8-1", cb1a, cb1b)
-   -- self~assertSame("subTest8-2", cb2a, cb2b)
-   -- self~assertSame("subTest8-3", cb3a, cb3b)
-   -- self~assertSame("subTest8-4", cb4a, cb4b)
+   self~assertSame("subTest8-2", cb2a, cb2b)
+   self~assertSame("subTest8-3", cb3a, cb3b)
+   self~assertSame("subTest8-4", cb4a, cb4b)
 
    self~assertTrue("subTest8-5", cb2a>='1')
    self~assertTrue("subTest8-6", cb3a>='5')
@@ -466,13 +457,12 @@ return testGroupList
    Parse Var cb5 cb5a '*' cb5b
    Parse Var cb6 cb6a '*' cb6b
 
-   -- Note:This has the same problem as test_2.
    self~assertSame("subTest9-1", cb1a, cb1b)
-   -- self~assertSame("subTest9-2", cb2a, cb2b)
-   -- self~assertSame("subTest9-3", cb3a, cb3b)
-   -- self~assertSame("subTest9-4", cb4a, cb4b)
-   -- self~assertSame("subTest9-5", cb5a, cb5b)
-   -- self~assertSame("subTest9-6", cb6a, cb6b)
+   self~assertSame("subTest9-2", cb2a, cb2b)
+   self~assertSame("subTest9-3", cb3a, cb3b)
+   self~assertSame("subTest9-4", cb4a, cb4b)
+   self~assertSame("subTest9-5", cb5a, cb5b)
+   self~assertSame("subTest9-6", cb6a, cb6b)
 
    self~assertTrue("subTest9-7", cb5a>='1')
    self~assertTrue("subTest9-8", cb6a>='5')
@@ -518,11 +508,10 @@ return testGroupList
    Parse Var cb3 cb3a '*' cb3b
    Parse Var cb4 cb4a '*' cb4b
 
-   -- Note:This has the same problem as test_2.
    self~assertSame("subTest10-1", cb1a, cb1b)
    self~assertSame("subTest10-2", cb2a, cb2b)
-   -- self~assertSame("subTest10-3", cb3a, cb3b)
-   -- self~assertSame("subTest10-4", cb4a, cb4b)
+   self~assertSame("subTest10-3", cb3a, cb3b)
+   self~assertSame("subTest10-4", cb4a, cb4b)
 
    self~assertSame("subTest10-5", cb2a, '0')
    self~assertTrue("subTest10-6", cb3a>='5')
@@ -544,13 +533,12 @@ return testGroupList
    Parse Var cb5 cb5a '*' cb5b
    Parse Var cb6 cb6a '*' cb6b
 
-   -- Note:This has the same problem as test_2.
    self~assertSame("subTest11-1", cb1a, cb1b)
    self~assertSame("subTest11-2", cb2a, cb2b)
-   -- self~assertSame("subTest11-3", cb3a, cb3b)
-   -- self~assertSame("subTest11-4", cb4a, cb4b)
+   self~assertSame("subTest11-3", cb3a, cb3b)
+   self~assertSame("subTest11-4", cb4a, cb4b)
    self~assertSame("subTest11-5", cb5a, cb5b)
-   -- self~assertSame("subTest11-6", cb6a, cb6b)
+   self~assertSame("subTest11-6", cb6a, cb6b)
 
    self~assertSame("subTest11-7", cb5a, '0')
    self~assertTRUE("subTest11-8", cb6a>='5')
