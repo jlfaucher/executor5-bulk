@@ -1,0 +1,251 @@
+#!/usr/bin/rexx
+/*
+   name:             ERRORTEXT.testUnit
+   author:           Lee Peedin
+   date:             2007/12/07
+   version:          1.0
+   date:             2007/12/18
+   version:          1.1
+
+-- line commented lines are ignored, when building the directory of infos from this header
+   changed:
+
+   languageLevel:    6.02
+   purpose:          Test the ERRORTEXT BIF
+   remark:           ---
+
+   license:          CPL 1.0 (Common Public License v1.0, see below)
+   link:
+
+// category needs not to be numbered, importance is given by position (1=most important)
+   category1:        ooRexx
+   category2:        Base
+   category3:        BIF
+
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+-------------------------------------------------------------------------------------------
+   /* list of array objects, each containing the testUnit class object and an
+      optional list of mandatory test case methods name                       */
+    mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
+    testUnitList=.list~of(.array~of(.ERRORTEXT.testGroup, mandatoryTestMethods))
+
+-------------------------------------------------------------------------------------------
+-- ===> the following code needs not to be individualized                              <===
+
+   -- read top comment, containing infos about this program
+    arrLines=.array~new
+    do i=1 to 150 until arrLines[i]="*/"
+        arrLines[i]=sourceline(i)
+    end
+      -- supply information for the testClass(es) in this file; the class attribute
+      -- "TestCaseInfo" (a directory object, index points to a queue) will store
+      -- the parsed infos
+    aTestUnitClass=testUnitList~at(testUnitList~first)[1] -- get first testClass
+
+   -- will parse the array lines and store result in class object
+    call makeDirTestInfo aTestUnitClass, arrLines
+    tmpDir=aTestUnitClass~TestCaseInfo
+    parse source s   -- op_sys invocationType fullPathToThisFile
+    tmpDir~setentry("test_Case-source", s)
+   -- now add this directory to other testCase classes, if any left
+    do arr over testUnitList
+        if arr[1]=aTestUnitClass then
+            iterate  -- already handled
+        arr[1]~TestCaseInfo=tmpDir             -- save info in class object
+    end
+
+-- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
+-- and set it to .false; this way the independent local invocation of the tests is inhibited
+    if .local~hasentry("bRunTestsLocally")=.false then
+        .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
+
+    if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
+        do
+            ts=.testSuite~new             -- create a testSuite
+            do arr over testUnitList
+                -- create a testSuite for the given test case class, use all its testmethods
+                ts~addTest( .testSuite~new(arr[1]))
+            end
+            -- testResult=.testSuite~new(testUnitClass)~run
+            testResult=ts~run       -- now run all the tests
+
+            call simpleFormatTestResults testResult
+        end
+
+   /* return list of array objects containing test case classes and
+      optionally list of mandatory test methods                      */
+return testUnitList
+
+::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+
+-- class named exactly like file
+::class "ERRORTEXT.testGroup" subclass TestCase public
+
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_ERRORTEXT"
+    self~assertSame("subTest-2" , 'Label not found' , ERRORTEXT(16))
+    self~assertSame("subTest-1" , ""                , ERRORTEXT(60))
+
+   -- additional tests by Walter Pachl (2005-10-14)
+    self~assertSame('subTest1' , ''                                        , ERRORTEXT(1) )
+    self~assertSame('subTest2' , ''                                        , ERRORTEXT(2) )
+    self~assertSame('subTest3' , 'Failure during initialization'           , ERRORTEXT(3) )
+    self~assertSame('subTest4' , 'Program interrupted'                     , ERRORTEXT(4) )
+    self~assertSame('subTest5' , 'System resources exhausted'              , ERRORTEXT(5) )
+    self~assertSame('subTest6' , 'Unmatched "/*" or quote'                 , ERRORTEXT(6) )
+    self~assertSame('subTest7' , 'WHEN or OTHERWISE expected'              , ERRORTEXT(7) )
+    self~assertSame('subTest8' , 'Unexpected THEN or ELSE'                 , ERRORTEXT(8) )
+    self~assertSame('subTest9' , 'Unexpected WHEN or OTHERWISE'            , ERRORTEXT(9) )
+    self~assertSame('subTest10', 'Unexpected or unmatched END'             , ERRORTEXT(10))
+    self~assertSame('subTest11', 'Control stack full'                      , ERRORTEXT(11))
+    self~assertSame('subTest12', ''                                        , ERRORTEXT(12))
+    self~assertSame('subTest13', 'Invalid character in program'            , ERRORTEXT(13))
+    self~assertSame('subTest14', 'Incomplete DO/SELECT/IF'                 , ERRORTEXT(14))
+    self~assertSame('subTest15', 'Invalid hexadecimal or binary string'    , ERRORTEXT(15))
+    self~assertSame('subTest16', 'Label not found'                         , ERRORTEXT(16))
+    self~assertSame('subTest17', 'Unexpected PROCEDURE'                    , ERRORTEXT(17))
+    self~assertSame('subTest18', 'THEN expected'                           , ERRORTEXT(18))
+    self~assertSame('subTest19', 'String or symbol expected'               , ERRORTEXT(19))
+    self~assertSame('subTest20', 'Symbol expected'                         , ERRORTEXT(20))
+    self~assertSame('subTest21', 'Invalid data on end of clause'           , ERRORTEXT(21))
+    self~assertSame('subTest22', 'Invalid character string'                , ERRORTEXT(22))
+    self~assertSame('subTest23', 'Invalid data string'                     , ERRORTEXT(23))
+    self~assertSame('subTest24', 'Invalid TRACE request'                   , ERRORTEXT(24))
+    self~assertSame('subTest25', 'Invalid subkeyword found'                , ERRORTEXT(25))
+    self~assertSame('subTest26', 'Invalid whole number'                    , ERRORTEXT(26))
+    self~assertSame('subTest27', 'Invalid DO syntax'                       , ERRORTEXT(27))
+    self~assertSame('subTest28', 'Invalid LEAVE or ITERATE'                , ERRORTEXT(28))
+    self~assertSame('subTest29', 'Environment name too long'               , ERRORTEXT(29))
+    self~assertSame('subTest30', 'Name or string too long'                 , ERRORTEXT(30))
+    self~assertSame('subTest31', 'Name starts with number or "."'          , ERRORTEXT(31))
+    self~assertSame('subTest32', ''                                        , ERRORTEXT(32))
+    self~assertSame('subTest33', 'Invalid expression result'               , ERRORTEXT(33))
+    self~assertSame('subTest34', 'Logical value not 0 or 1'                , ERRORTEXT(34))
+    self~assertSame('subTest35', 'Invalid expression'                      , ERRORTEXT(35))
+    self~assertSame('subTest36', 'Unmatched "(" or "[" in expression'      , ERRORTEXT(36))
+    self~assertSame('subTest37', 'Unexpected ",", ")", or "]"'             , ERRORTEXT(37))
+    self~assertSame('subTest38', 'Invalid template or pattern'             , ERRORTEXT(38))
+    self~assertSame('subTest39', 'Evaluation stack overflow'               , ERRORTEXT(39))
+    self~assertSame('subTest40', 'Incorrect call to routine'               , ERRORTEXT(40))
+    self~assertSame('subTest41', 'Bad arithmetic conversion'               , ERRORTEXT(41))
+    self~assertSame('subTest42', 'Arithmetic overflow/underflow'           , ERRORTEXT(42))
+    self~assertSame('subTest43', 'Routine not found'                       , ERRORTEXT(43))
+    self~assertSame('subTest44', 'Function or message did not return data' , ERRORTEXT(44))
+    self~assertSame('subTest45', 'No data specified on function RETURN'    , ERRORTEXT(45))
+    self~assertSame('subTest46', 'Invalid variable reference'              , ERRORTEXT(46))
+    self~assertSame('subTest47', 'Unexpected label'                        , ERRORTEXT(47))
+    self~assertSame('subTest48', 'Failure in system service'               , ERRORTEXT(48))
+    self~assertSame('subTest49', 'Interpretation error'                    , ERRORTEXT(49))
+    self~assertSame('subTest50', ''                                        , ERRORTEXT(50))
+    self~assertSame('subTest51', ''                                        , ERRORTEXT(51))
+    self~assertSame('subTest52', ''                                        , ERRORTEXT(52))
+    self~assertSame('subTest53', ''                                        , ERRORTEXT(53))
+    self~assertSame('subTest54', ''                                        , ERRORTEXT(54))
+    self~assertSame('subTest55', ''                                        , ERRORTEXT(55))
+    self~assertSame('subTest56', ''                                        , ERRORTEXT(56))
+    self~assertSame('subTest57', ''                                        , ERRORTEXT(57))
+    self~assertSame('subTest58', ''                                        , ERRORTEXT(58))
+    self~assertSame('subTest59', ''                                        , ERRORTEXT(59))
+    self~assertSame('subTest60', ''                                        , ERRORTEXT(60))
+    self~assertSame('subTest61', ''                                        , ERRORTEXT(61))
+    self~assertSame('subTest62', ''                                        , ERRORTEXT(62))
+    self~assertSame('subTest63', ''                                        , ERRORTEXT(63))
+    self~assertSame('subTest64', ''                                        , ERRORTEXT(64))
+    self~assertSame('subTest65', ''                                        , ERRORTEXT(65))
+    self~assertSame('subTest66', ''                                        , ERRORTEXT(66))
+    self~assertSame('subTest67', ''                                        , ERRORTEXT(67))
+    self~assertSame('subTest68', ''                                        , ERRORTEXT(68))
+    self~assertSame('subTest69', ''                                        , ERRORTEXT(69))
+    self~assertSame('subTest70', ''                                        , ERRORTEXT(70))
+    self~assertSame('subTest71', ''                                        , ERRORTEXT(71))
+    self~assertSame('subTest72', ''                                        , ERRORTEXT(72))
+    self~assertSame('subTest73', ''                                        , ERRORTEXT(73))
+    self~assertSame('subTest74', ''                                        , ERRORTEXT(74))
+    self~assertSame('subTest75', ''                                        , ERRORTEXT(75))
+    self~assertSame('subTest76', ''                                        , ERRORTEXT(76))
+    self~assertSame('subTest77', ''                                        , ERRORTEXT(77))
+    self~assertSame('subTest78', ''                                        , ERRORTEXT(78))
+    self~assertSame('subTest79', ''                                        , ERRORTEXT(79))
+    self~assertSame('subTest80', ''                                        , ERRORTEXT(80))
+    self~assertSame('subTest81', ''                                        , ERRORTEXT(81))
+    self~assertSame('subTest82', ''                                        , ERRORTEXT(82))
+    self~assertSame('subTest83', ''                                        , ERRORTEXT(83))
+    self~assertSame('subTest84', ''                                        , ERRORTEXT(84))
+    self~assertSame('subTest85', ''                                        , ERRORTEXT(85))
+    self~assertSame('subTest86', ''                                        , ERRORTEXT(86))
+    self~assertSame('subTest87', ''                                        , ERRORTEXT(87))
+    self~assertSame('subTest88', 'Invalid argument'                        , ERRORTEXT(88))
+    self~assertSame('subTest89', 'Variable or message term expected'       , ERRORTEXT(89))
+    self~assertSame('subTest90', 'External name not found'                 , ERRORTEXT(90))
+    self~assertSame('subTest91', 'No result object'                        , ERRORTEXT(91))
+    self~assertSame('subTest92', 'OLE error'                               , ERRORTEXT(92))
+    self~assertSame('subTest93', 'Incorrect call to method'                , ERRORTEXT(93))
+    self~assertSame('subTest94', ''                                        , ERRORTEXT(94))
+    self~assertSame('subTest95', ''                                        , ERRORTEXT(95))
+    self~assertSame('subTest96', ''                                        , ERRORTEXT(96))
+    self~assertSame('subTest97', 'Object method not found'                 , ERRORTEXT(97))
+    self~assertSame('subTest98', 'Execution error'                         , ERRORTEXT(98))
+    self~assertSame('subTest99', 'Translation error'                       , ERRORTEXT(99))
+
+    self~assertTrue("subTest100", test100())
+    self~assertTrue("subTest101", test101())
+
+    return
+
+    ----------------------------------------------------------------------
+
+    test100: procedure  -- nonexisting error text number
+       signal on syntax name test100syntax
+       call errortext(100) -- should invoke a syntax error
+       return .false       -- arriving here is an error!
+    test100syntax:         -- syntax error # 40.903
+       return condition("o")~code=40.903
+
+    ----------------------------------------------------------------------
+
+    test101: procedure  -- not using a whole number as index
+       signal on syntax name test101syntax
+       a='blabla';
+       errortext(a)        -- should invoke a syntax error
+       return .false
+    test101syntax:         -- syntax error # 40.12
+       return condition("o")~code=40.12
+
