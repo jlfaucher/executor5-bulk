@@ -43,7 +43,9 @@
    version:          0.1.0
 
    purpose:          An extension to the ooRexxUnit framework providing function
-                     and features specific to testing the ooRexx package.
+                     and features specific to testing the ooRexx interpreter and
+                     its distribution package.
+
                      Although others may find this framework useful, its primary
                      design goal is to fit the needs of the ooRexx development
                      team.
@@ -122,6 +124,35 @@ return s
 return a
 -- End makeSetOfWords()
 
+
+/** TestContainer
+ *    Defines an interface for a test container.
+ * DFX TODO finish doc here.
+ */
+::class 'TestContainer' public
+::method isEmpty            abstract
+::method hasTests           abstract
+::method hasTestTypes       abstract
+::method testCount          abstract
+::method getNoTestsReason   abstract
+
+
+/** TestCollectingParameter
+  *   Defines an interface for a test data collecting parameter.  ooTestResult
+  *   (and TestResult really) apply the 'Collecting Parameter' design pattern.
+  * DFX TODO finish up doc here.
+  */
+::class 'TestCollectingParameter' public subclass TestResult
+::method addOmission    abstract
+::method getOmissions   abstract
+::method addException   abstract
+::method getExceptions  abstract
+::method addEvent       abstract
+::method getEvents      abstract
+::method setVerbosity   abstract
+::method getVerbosity   abstract
+
+
 /* class: ooTestCase - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
 
     ooTestCases are used to test the ooRexx interpreter package.  An ooTestCase
@@ -150,7 +181,7 @@ return a
   ::method init class
     forward class (super) continue
 
-    -- Use the ooTestResult has the default test result.
+    -- Use the ooTestResult as the default test result.
     self~defaultTestResultClass = .ooTestResult
     self~ooTestType = "UNIT"
 
@@ -173,20 +204,6 @@ return a
 -- End of class: ooTestCase
 */
 
-/** Define an interface for a test data collecting parameter.  ooTestResult (and
-  * TestResult really) apply the 'Collecting Parameter' design pattern.
-  * DFX TODO finish up doc here.
-  */
-::class 'TestCollectingParameter' public subclass TestResult
-::method getOmissions   abstract
-::method addOmission    abstract
-::method getExceptions  abstract
-::method addException   abstract
-::method getEvents      abstract
-::method addEvent       abstract
-::method setVerbosity   abstract
-::method getVerbosity   abstract
-
 /* class: ooTestResult - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
 
 
@@ -200,38 +217,39 @@ return a
   ::attribute verbose    private
 
   ::method init
+    use arg verbosity = 0
     forward class (super) continue
 
     self~omissions = .queue~new
     self~exceptions = .queue~new
     self~events = .queue~new
-    self~verbose = 0
+    self~verbose = verbosity
 
   -- End init( )
 
   ::method addOmission
-    use arg omission
+    use strict arg omission
     self~omissions~queue(omission)
 
   ::method getOmissions
     return self~omissions
 
   ::method addException
-    use arg exception
+    use strict arg exception
     self~exceptions~queue(exception)
 
   ::method getExceptions
     return self~exceptions
 
   ::method addEvent
-    use arg event
+    use strict arg event
     self~events~queue(event)
 
   ::method getEvents
     return self~events
 
   ::method setVerbosity
-    use arg level
+    use strict arg level
     self~verbose = level  -- DFX TODO check valid param.
 
   ::method getVerbosity
@@ -474,14 +492,6 @@ return a
     end
 
 -- End of class: ooTestResult
-
-/** Define an interface for a test container. DFX TODO finish doc here. */
-::class 'TestContainer' public
-::method isEmpty            abstract
-::method hasTests           abstract
-::method hasTestTypes       abstract
-::method testCount          abstract
-::method getNoTestsReason   abstract
 
 /* class: TestGroup- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
 
