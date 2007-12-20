@@ -38,18 +38,21 @@
 
 /**
  * testOORexx is a planned future replacement for runTestGroups.  It is not
- * implemented.
+ * fully implemented.
  */
-
 cmdLine = arg(1)
 
    .local~bRunTestsLocally = .false
 
+   baseDir = "ooRexx"
+   --baseDir = "ooRexx\samples"
+
    testResult = .ooRexxUnit.default.TestResult.Class~new
-   finder = .ooTestFinder~new("ooRexx", ".testGroup")
+   finder = .ooTestFinder~new(baseDir, ".testGroup")
    containers = finder~seek(testResult); say 'containers items:' containers~items
 
    suite = .TestSuite~new
+   suite~indicateProgress(.true)
    j = time('E')
    do container over containers
      container~suite(suite)

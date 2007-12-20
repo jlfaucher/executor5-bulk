@@ -504,6 +504,61 @@ return a
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class "TestGroup" public subclass TestContainer
 
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+  Methods implementating the TestContainer interface.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+
+  -- True if no tests have been added to this test container, otherwise false.
+  ::method isEmpty
+    return (self~tests~items == 0)
+  -- End isEmpty()
+
+  -- True if this group has any executable tests, otherwise false.
+  ::attribute hasTests get
+  ::attribute hasTests set private
+
+  /** hasTestTypes()
+   *
+   * Returns true if this group has tests for all the types of tests specified,
+   * otherwise returns false.
+   *
+   * @param types REQUIRED
+   *   The test type keywords to check for.  This can be a blank delimited
+   *   string of words or any .collection object whose items are the words.
+   *   Case is not significant.
+   *
+   */
+  ::method hasTestTypes
+    use strict arg types
+
+    s = makeSetOfWords(types)
+    if s == .nil then
+       raise syntax 88.917 array ("1 'types'", "must be a string or a collection of words")
+
+  return s~subset(self~currentTypes)
+  -- End hasTestTypes()
+
+  -- The number of test case classes this group contains.
+  ::attribute testCount get
+  ::attribute testCount set private
+
+  /** getNoTestsReason
+   *
+   * A test group can contain tests, but not have any executable tests.  When
+   * this is the case, the getNoTestsReason method returns the reason.
+   *
+   * Returns the reason why this test container has no executable tests, or the
+   * empty string if this container does have executable tests.
+   */
+  ::method getNoTestsReason
+    if self~hasTests then return ""
+    else return self~noTests_Reason
+  -- End getNoTestReason()
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+  End of TestContainer interface implementation.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+
   -- The fully qualified path name of the file this test group represents.
   ::attribute pathName get
   ::attribute pathName set private
@@ -556,10 +611,6 @@ return a
   ::attribute allowedOSes get
   ::attribute allowedOSes set private
 
-  -- True if this group has any executable tests, otherwise false.
-  ::attribute hasTests get
-  ::attribute hasTests set private
-
   -- A string containing an explanation as to why this group has no executable
   -- tests.
   ::attribute noTests_Reason private
@@ -567,10 +618,6 @@ return a
   -- Private state variable used to mark that this group has no executable tests
   -- and that should not change.
   ::attribute mustNotExecute private
-
-  -- The number of test case classes this group contains.
-  ::attribute testCount get
-  ::attribute testCount set private
 
 
   /** init()
@@ -626,31 +673,6 @@ return a
     self~createMetaData(data)
 
   -- End init( )
-
-  ::method isEmpty
-    return (self~tests~items == 0)
-  -- End isEmpty()
-
-  /** hasTestTypes()
-   *
-   * Returns true if this group has tests for all the types of tests specified,
-   * otherwise returns false.
-   *
-   * @param types REQUIRED
-   *   The test type keywords to check for.  This can be a blank delimited
-   *   string of words or any .collection object whose items are the words.
-   *   Case is not significant.
-   *
-   */
-  ::method hasTestTypes
-    use strict arg types
-
-    s = makeSetOfWords(types)
-    if s == .nil then
-       raise syntax 88.917 array ("1 'types'", "must be a string or a collection of words")
-
-  return s~subset(self~currentTypes)
-  -- End hasTestType()
 
   /** hasTestType()
    *
@@ -720,6 +742,9 @@ return a
 
     if \ reason~isA(.string) then
       raise syntax 88.914 array ("1 'reason'", "String")
+
+    if reason == "" then
+      raise syntax 88.917 array  ("1 'reason'", "A reason must be supplied to mark a test group as having no tests")
 
     self~hasTests = .false
     self~noTests_Reason = reason
@@ -870,15 +895,21 @@ return a
     if \ self~hasTests then return testSuite
 
     do tClass over tests~allItems
-      testSuite~addTest(.TestSuite~new(tClass))
+      suite = .TestSuite~new(tClass)
+      suite~definedInFile = self~pathName
+      testSuite~addTest(suite)
     end
 
     do obj over testsWithSuite~allItems
-      testSuite~addTest(obj~getSuite)
+      suite = obj~getSuite
+      suite~definedInFile = self~pathName
+      testSuite~addTest(suite)
     end
 
     do obj over testCollections~allItems
-      testSuite~addTest(obj~getSuite)
+      suite = obj~getSuite
+      suite~definedInFile = self~pathName
+      testSuite~addTest(suite)
     end
 
   return testSuite
@@ -900,6 +931,8 @@ return a
   ::method suiteForTestTypes
     expose tests testsWithSuite testCollections
     use strict arg type, testSuite = (.TestSuite~new)
+
+    testSuite~definedInFile = self~pathName
 
     if \ self~hasTests then return testSuite
 
@@ -1081,7 +1114,7 @@ return suite
         when \ container~hasTests then do
           reason = "Test container has no executable tests"
           o = .OmissionData~new(fileName, reason)
-          o~additional = "Reason" container~getNoTestsReason
+          o~additional = "Reason:" container~getNoTestsReason
           testResult~addOmission(o)
           iterate
         end

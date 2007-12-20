@@ -862,6 +862,7 @@ exceptionHandler:
 
   forward class (super) continue
   testQueue=.queue~new
+  self~showProgress = .false
 
       -- a class object, use reflection and create test cases
   if arg()>0 then       -- args there ?
@@ -933,6 +934,18 @@ exceptionHandler:
   testQueue~queue(aTestCase)
   self~countTestCases = self~countTestCases+1
 
+::attribute showProgress get
+::attribute showProgress set private
+
+::method indicateProgress
+  use strict arg indicate
+
+  if \ indicate~isA(.string) then
+    raise syntax 88.914 array ("1 'indicate'", "String")
+  if \ indicate~datatype('O') then
+    raise syntax 88.916 array ("1 'indicate'", "true or false", indicate)
+
+  self~showProgress = indicate
 
 ::method run
   expose testQueue
@@ -947,6 +960,7 @@ exceptionHandler:
   aTestResult~startTest(self)       -- remember test started
   self~setUp                        -- make sure setup is invoked before testSuite runs
   do aTestCase over testQueue while aTestResult~shouldStop=.false
+     if self~showProgress then say "Executing test cases from" 'pathCompact'(aTestCase~definedInFile, 60, .ooRexxUnit.directory.separator)
      aTestCase~run(aTestResult, bGiveFeedback)
   end
   self~tearDown                     -- make sure tearDown is invoked after testSuite ran
