@@ -470,7 +470,6 @@ runtime_sources  = $(runtime_dir)/DeadObject.cpp \
                    $(runtime_dir)/LibraryManager.cpp \
                    $(runtime_dir)/Interpreter.cpp \
                    $(runtime_dir)/RexxBehaviour.cpp \
-                   $(runtime_dir)/RexxBuffer.cpp \
                    $(runtime_dir)/RexxCode.cpp \
                    $(runtime_dir)/RexxCollection.cpp \
                    $(runtime_dir)/RexxCompoundElement.cpp \

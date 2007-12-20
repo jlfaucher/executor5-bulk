@@ -59,6 +59,7 @@
 #include "RexxActivation.hpp"
 #include "ThreadSupport.hpp"
 #include "ActivityManager.hpp"
+#include "PointerClass.hpp"
 #include <stdlib.h>
 #include <unistd.h>
 #include <errno.h>

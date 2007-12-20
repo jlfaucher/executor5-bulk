@@ -63,7 +63,7 @@ public:
     RexxObject  *notEqual(RexxObject *other);
     virtual HashCode getHashValue();
 
-    RexxObject *RexxPointer::newRexx(RexxObject **args, size_t argc);
+    RexxObject *newRexx(RexxObject **args, size_t argc);
 
     static void createInstance();
 

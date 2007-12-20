@@ -517,7 +517,7 @@ RexxBuffer *SysReadProgram(
   {
       UnsafeBlock releaser;
 
-      fread(buffer->data, 1, buffersize, handle);
+      fread(buffer->address(), 1, buffersize, handle);
       fclose(handle);                      /* close the file                    */
   }
   return buffer;                       /* return the program buffer         */
