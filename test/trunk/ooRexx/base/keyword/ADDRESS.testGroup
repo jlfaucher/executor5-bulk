@@ -146,11 +146,7 @@ return testGroupList
 ::method "test_4"
    xrc = 30
    signal off failure
-   -- Redirect stderr to a file temporarily.
-   .error~destination(.stream~new("my.out")~~command("open write"))
-   Address Valeu 'A23456789'         /* unknown host cmd to unknown env*/
-   -- Restore things and delete the file.
-   .error~destination
+   trace off
    call SysFileDelete "my.out"
-   self~assertSame("subTest4", rc, xrc)
+   self~assertNotSame("subTest4", rc, xrc)
 
