@@ -56,7 +56,7 @@
 
 #include "RexxCore.h"                    /* bring in global defines           */
 #include "StringClass.hpp"
-#include "RexxBuffer.hpp"
+#include "BufferClass.hpp"
 #include "MethodClass.hpp"
 #include "RexxCode.hpp"
 #include "ArrayClass.hpp"

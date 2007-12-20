@@ -47,7 +47,7 @@
 
 #include "RexxCore.h"
 #include "StringClass.hpp"
-#include "RexxBuffer.hpp"
+#include "BufferClass.hpp"
 #include "RexxNativeAPI.h"
 #include "ProtectedObject.hpp"
 #include <string.h>

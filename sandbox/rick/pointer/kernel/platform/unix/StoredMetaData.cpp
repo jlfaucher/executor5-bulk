@@ -48,7 +48,7 @@
 #define INCL_REXX_STREAM
 #include "RexxCore.h"
 #include "StringClass.hpp"
-#include "RexxBuffer.hpp"
+#include "BufferClass.hpp"
 #include "RexxSmartBuffer.hpp"
 #include "MethodClass.hpp"
 #include "RexxCode.hpp"
