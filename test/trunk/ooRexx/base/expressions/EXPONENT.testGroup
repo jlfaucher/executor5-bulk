@@ -111,7 +111,7 @@ do
    -- testResult=.testSuite~new(testGroupClass)~run
    testResult=ts~run       -- now run all the tests
 
-   call simpleDumpTestResults testResult
+   call simpleFormatTestResults testResult
 end
 
    /* return list of array objects containing test case classes and
@@ -309,11 +309,11 @@ return testGroupList
    self~expectSyntax(26.8)
    Numeric Digits 1
    self~assertSame("subTest60", 2 ** 100, 1)
- 
 
 
 
- 
+
+
 
 ::method "test_61"
    self~assertSame("subTest61", 0 ** 0.0, 1)

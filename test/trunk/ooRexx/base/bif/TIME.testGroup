@@ -12,7 +12,13 @@
 
    languageLevel:    6.02
    purpose:          Test the TIME function
-   remark:           Initial test unit for demonstration purposes, needs to be completed.
+   remark:           Initial test unit for the time() BIF.  It is always helpful
+                     for others to review test cases for accuracy and completeness.
+
+                     Many of the test cases in this group test the elapsed clock.
+                     These tests are not valid if the time crosses midnight
+                     during the test.  Asserts are used to ensure that this does
+                     not happen.
 
    license:          CPL 1.0 (Common Public License v1.0, see below)
    link:
@@ -125,6 +131,13 @@ return testGroupList
 
 ::class "TIME.testGroup" subclass TestCase public
 
+/** midnightDidNotHappen()  Used to ensure a test involving the elapsed time
+ *  clock does not start before midnight and finish after midnight.
+ */
+::method midnightDidNotHappen private
+   use strict arg startTime
+   return (time() > startTime)
+
 ::method "test_1"
    Numeric Digits 20                   /* PA 881104 added                */
    -- Say 'Caution: This is a long running Test Case. ***********************'
@@ -218,13 +231,10 @@ return testGroupList
    End
    self~assertSame("subTest1-22", txcm, ttm)
 
-   If TIME()<tt Then Do
-     Say 'Midnight occurred while this test case was running'
-     Say 'Results might be suspect.'
-   End
-
 
 ::method "test_2"
+   currentTime = time()
+
    cb1=TIME('r')||'*'||TIME('R')
    Call sysSLEEP '1'
    Call SUB1
@@ -234,6 +244,10 @@ return testGroupList
    Parse Var cb2 cb2a '*' cb2b
    Parse Var cb3 cb3a '*' cb3b
    Parse Var cb4 cb4a '*' cb4b
+
+   -- Ensure we did not cross midnight.
+   self~assertTrue('Midnight did not occur while this test case was running.', -
+                   self~midnightDidNotHappen(currentTime))
 
    self~assertSame("subTest2-1", cb1a, cb1b)
    self~assertSame("subTest2-2", cb2a, cb2b)
@@ -253,6 +267,8 @@ return testGroupList
 
 
 ::method "test_3"
+   currentTime = time()
+
    cb1=TIME('r')||'*'||TIME('R')
    Call sysSLEEP '1'
    Call SUB2
@@ -264,6 +280,10 @@ return testGroupList
    Parse Var cb4 cb4a '*' cb4b
    Parse Var cb5 cb5a '*' cb5b
    Parse Var cb6 cb6a '*' cb6b
+
+   -- Ensure we did not cross midnight.
+   self~assertTrue('Midnight did not occur while this test case was running.', -
+                   self~midnightDidNotHappen(currentTime))
 
    self~assertSame("subTest3-1", cb1a, cb1b)
    self~assertSame("subTest3-2", cb2a, cb2b)
@@ -294,6 +314,9 @@ return testGroupList
 
 
 ::method "test_4"
+   currentTime = time()
+
+   currentTime = time()
    cb1=TIME('r')||'*'||TIME('R')
    Call sysSLEEP '1'
    Call SCBTIMEA
@@ -304,6 +327,10 @@ return testGroupList
    Parse Var cb2 cb2a '*' cb2b
    Parse Var cb3 cb3a '*' cb3b
    Parse Var cb4 cb4a '*' cb4b
+
+   -- Ensure we did not cross midnight.
+   self~assertTrue('Midnight did not occur while this test case was running.', -
+                   self~midnightDidNotHappen(currentTime))
 
    self~assertSame("subTest4-1", cb1a, cb1b)
    self~assertSame("subTest4-2", cb2a, cb2b)
@@ -316,6 +343,8 @@ return testGroupList
 
 
 ::method "test_5"
+   currentTime = time()
+
    cb1=TIME('r')||'*'||TIME('R')
    Call sysSLEEP '1'
    Call SCBTIMEB
@@ -329,6 +358,10 @@ return testGroupList
    Parse Var cb4 cb4a '*' cb4b
    Parse Var cb5 cb5a '*' cb5b
    Parse Var cb6 cb6a '*' cb6b
+
+   -- Ensure we did not cross midnight.
+   self~assertTrue('Midnight did not occur while this test case was running.', -
+                   self~midnightDidNotHappen(currentTime))
 
    self~assertSame("subTest5-1", cb1a, cb1b)
    self~assertSame("subTest5-2", cb2a, cb2b)
@@ -406,6 +439,8 @@ return testGroupList
 
 
 ::method "test_8"
+   currentTime = time()
+
    cb1=TIME('rage')||'*'||TIME('RAGE')
    Call sysSLEEP '1'
    Call SUB3
@@ -415,6 +450,10 @@ return testGroupList
    Parse Var cb2 cb2a '*' cb2b
    Parse Var cb3 cb3a '*' cb3b
    Parse Var cb4 cb4a '*' cb4b
+
+   -- Ensure we did not cross midnight.
+   self~assertTrue('Midnight did not occur while this test case was running.', -
+                   self~midnightDidNotHappen(currentTime))
 
    self~assertSame("subTest8-1", cb1a, cb1b)
    self~assertSame("subTest8-2", cb2a, cb2b)
@@ -444,7 +483,9 @@ return testGroupList
    Return
 
 
-   ::method "test_9"
+::method "test_9"
+   currentTime = time()
+
    cb1=TIME('rage')||'*'||TIME('RAGE')
    Call sysSLEEP '1'
    Call SUB4
@@ -456,6 +497,10 @@ return testGroupList
    Parse Var cb4 cb4a '*' cb4b
    Parse Var cb5 cb5a '*' cb5b
    Parse Var cb6 cb6a '*' cb6b
+
+   -- Ensure we did not cross midnight.
+   self~assertTrue('Midnight did not occur while this test case was running.', -
+                   self~midnightDidNotHappen(currentTime))
 
    self~assertSame("subTest9-1", cb1a, cb1b)
    self~assertSame("subTest9-2", cb2a, cb2b)
@@ -497,6 +542,8 @@ return testGroupList
 
 
 ::method "test_10"
+   currentTime = time()
+
    cb1=TIME('rage')||'*'||TIME('RAGE')
    Call sysSLEEP '1'
    Call SCBTIMEC
@@ -507,6 +554,10 @@ return testGroupList
    Parse Var cb2 cb2a '*' cb2b
    Parse Var cb3 cb3a '*' cb3b
    Parse Var cb4 cb4a '*' cb4b
+
+   -- Ensure we did not cross midnight.
+   self~assertTrue('Midnight did not occur while this test case was running.', -
+                   self~midnightDidNotHappen(currentTime))
 
    self~assertSame("subTest10-1", cb1a, cb1b)
    self~assertSame("subTest10-2", cb2a, cb2b)
@@ -519,6 +570,8 @@ return testGroupList
 
 
 ::method "test_11"
+   currentTime = time()
+
    cb1=TIME('rage')||'*'||TIME('RAGE')
    Call sysSLEEP '1'
    Call SCBTIMED
@@ -532,6 +585,10 @@ return testGroupList
    Parse Var cb4 cb4a '*' cb4b
    Parse Var cb5 cb5a '*' cb5b
    Parse Var cb6 cb6a '*' cb6b
+
+   -- Ensure we did not cross midnight.
+   self~assertTrue('Midnight did not occur while this test case was running.', -
+                   self~midnightDidNotHappen(currentTime))
 
    self~assertSame("subTest11-1", cb1a, cb1b)
    self~assertSame("subTest11-2", cb2a, cb2b)
