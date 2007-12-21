@@ -1056,15 +1056,15 @@ RexxArray *RexxList::weakReferenceArray()
 /******************************************************************************/
 {
     LISTENTRY *element;                  /* current working entry             */
-    size_t      next;                    /* next item to process              */
+    size_t      i;                       /* next item to process              */
 
-    next = this->firstIndex();           /* point to the first element        */
+    i = this->firstIndex();              /* point to the first element        */
     size_t itemCount = this->count;
     while (itemCount--)                  /* step through the array elements   */
     {
-        element = ENTRY_POINTER(next);   /* get the next item                 */
+        element = ENTRY_POINTER(i);      /* get the next item                 */
         // step to the next element now, so we can remove this one
-        next = element->next;
+        i = element->next;
 
         // get the reference value
         WeakReference *ref = (WeakReference *)element->value;
@@ -1081,15 +1081,15 @@ RexxArray *RexxList::weakReferenceArray()
     // we've removed the dead references, so make a second pass copying
     // the real values into the returned array
     RexxArray *array = (RexxArray *)new_array(this->count);
-    next = this->firstIndex();           /* point to the first element        */
-    for (size_t i = 1; i <= this->count; i++) /* step through the array elements   */
+    i = this->firstIndex();              /* point to the first element        */
+    for (size_t j = 1; i <= this->count; j++) /* step through the array elements   */
     {
-        element = ENTRY_POINTER(next);   /* get the next item                 */
+        element = ENTRY_POINTER(i);      /* get the next item                 */
                                          /* copy over to the array            */
         // get the reference value
         WeakReference *ref = (WeakReference *)element->value;
-        array->put(ref->get(), i);
-        next = element->next;            /* get the next pointer              */
+        array->put(ref->get(), j);
+        i = element->next;               /* get the next pointer              */
     }
     return array;                        /* return the array element          */
 }

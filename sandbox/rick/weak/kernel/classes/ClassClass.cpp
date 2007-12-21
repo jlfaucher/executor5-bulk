@@ -668,7 +668,7 @@ void  RexxClass::updateSubClasses()
 /******************************************************************************/
 {
   size_t       index;                  /* subclass index number             */
-  RexxArray   *subClasses;             /* array of class subclasses         */
+  RexxArray   *subClassList;           /* array of class subclasses         */
                                        /* start out the class mdict with    */
                                        /* a clear mdict and scopes tables   */
   this->behaviour->setMethodDictionary(OREF_NULL);
@@ -684,14 +684,14 @@ void  RexxClass::updateSubClasses()
                                        // impact on metaclasses.
   this->createClassBehaviour(this->behaviour);
 
-  subClasses = this->getSubClasses();  /* get the subclasses list           */
-  ProtectedObject p(subClasses);
+  subClassList = this->getSubClasses(); /* get the subclasses list           */
+  ProtectedObject p(subClassList);
                                        /* loop thru the subclass doing the  */
                                        /* same for each of them             */
-  for (index = 1; index <= subClasses->size(); index++) {
+  for (index = 1; index <= subClassList->size(); index++) {
                                        /* get the next subclass             */
                                        /* and recursively update them       */
-    ((RexxClass *)subClasses->get(index))->updateSubClasses();
+    ((RexxClass *)subClassList->get(index))->updateSubClasses();
   }
 }
 
@@ -701,20 +701,20 @@ void RexxClass::updateInstanceSubClasses()
 /******************************************************************************/
 {
   size_t        index;                 /* working index                     */
-  RexxArray   *subClasses;             /* array of class subclasses         */
+  RexxArray   *subClassList;           /* array of class subclasses         */
                                        /* create the instance behaviour from*/
                                        /* the instance superclass list      */
   this->instanceBehaviour->setMethodDictionary(OREF_NULL);
   this->instanceBehaviour->setScopes(OREF_NULL);
   this->createInstanceBehaviour(this->instanceBehaviour);
-  subClasses = this->getSubClasses();  /* get the subclasses list           */
-  ProtectedObject p(subClasses);
+  subClassList = this->getSubClasses(); /* get the subclasses list           */
+  ProtectedObject p(subClassList);
                                        /* loop thru the subclass doing the  */
                                        /* same for each of them             */
-  for (index = 1; index <= subClasses->size(); index++) {
+  for (index = 1; index <= subClassList->size(); index++) {
                                        /* get the next subclass             */
                                        /* recursively update these          */
-    ((RexxClass *)subClasses->get(index))->updateInstanceSubClasses();
+    ((RexxClass *)subClassList->get(index))->updateInstanceSubClasses();
   }
 }
 
@@ -1042,8 +1042,8 @@ void RexxClass::removeSubclass(RexxClass *c)
     while (index != LIST_END)
     {
         WeakReference *ref = (WeakReference *)subClasses->getValue(index);
-        RexxObject *subclass = ref->get();
-        if (subclass == c)
+        RexxObject *sc = ref->get();
+        if (sc == c)
         {
             subClasses->removeIndex(index);
             return;
