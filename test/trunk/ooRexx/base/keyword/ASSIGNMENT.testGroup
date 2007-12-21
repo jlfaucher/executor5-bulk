@@ -599,3 +599,30 @@ return testGroupList
    self~assertSame("subTest6-46", trace,46)
    self~assertSame("subTest6-48", upper,48)
 
+::method "test_7"
+   /* check all 256 possible bit combinations */
+   Do i=0 To 255
+      id=i||'-th'
+      Parse Value 256 i With val n b
+      Do j=1 To 8
+         val=val/2
+         x=n%val; n=n-x*val; b=b||x
+         End
+      z=b2x(b)
+      self~assertSame("subTest7-1-"i, x2c(z), d2c(i))
+      Interpret 'x='''||left(b,4)||copies(' ',random(3))||right(b,4)||'''b'
+      self~assertSame("subTest7-1-"i, x2c(z), x)
+      End
+
+::method "test_8"
+   Numeric Digits 1000
+   maxbits=800              /* the longest bit string accepted by OS/2 */
+                            /* and OS/400, and the SAA stated minimum  */
+   b=copies('1',maxbits)
+   Interpret 'x='''||b||'''b'
+   n=0; Do i=1 To length(b); n=n*2+1; End
+   self~assertSame("subTest8", c2d(x), n)
+   b=b||1
+   id=201s; xrc=30
+   Interpret 'x='''||b||'''b'
+
