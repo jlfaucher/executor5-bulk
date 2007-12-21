@@ -126,7 +126,7 @@ return testGroupList
 
 ::class "COPIES.testGroup" subclass TestCase public
 
-
+-- set 1 (Literal/Literal)
 ::method 'test001'
     self~expectSyntax(40.3)
     xre = copies('',)
@@ -574,6 +574,7 @@ return testGroupList
     self~expectSyntax(93.906)
     xre = copies('58205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820'X,' -256 ')
 
+-- set 2 (Variable/Literal)
 ::method 'test137'
     .local~vnull = ''
     .local~vblank = ' '
@@ -1069,29 +1070,625 @@ return testGroupList
     .local~remove(v1xb)
     .local~remove(v125bx)
 
+-- set 3 (Variable/Variable)
 
+::method 'test278'
+    .local~n000 = '000'
+    .local~n001 = '001'
+    .local~n0010 = '0010'
+    .local~n0011 = '0011'
+    .local~n00255 = '00255'
+    .local~n00256 = '00256'
+    .local~n0032768 = '0032768'
+    .local~n009 = '009'
+    .local~n00E2 = '0.00E2'
+    .local~n01E1 = '0.01E1'
+    .local~n01E2 = '0.01E2'
+    .local~n09E1 = '0.09E1'
+    .local~n09E2 = '0.09E2'
+    .local~n1 = '1'
+    .local~n10 = '10'
+    .local~n10E1 = '0.10E1'
+    .local~n10E2 = '0.10E2'
+    .local~n11 = '11'
+    .local~n11E1 = '0.11E1'
+    .local~n11E2 = '0.11E2'
+    .local~n255 = '255'
+    .local~n255E2 = '0.255E2'
+    .local~n255E3 = '0.255E3'
+    .local~n256 = '256'
+    .local~n256E2 = '0.256E2'
+    .local~n256E3 = '0.256E3'
+    .local~n32768 = '32768'
+    .local~n65536E4 = '0.65536E4'
+    .local~n9 = '9'
+    .local~nF0x = '30'x
+    .local~nF1F0x = '3130'x
+    .local~nF1F1x = '3131'x
+    .local~nF1x = '31'x
+    .local~nF2F5F5x = '323535'x
+    .local~nF2F5F6x = '323536'x
+    .local~nF6F5F5F3F6x = '3635353336'x
+    .local~nF9x = '39'x
+    .local~nFFx = 'FF'x
+    .local~nl0 = ' 0 '
+    .local~nl1 = ' 1 '
+    .local~nl10 = ' 10 '
+    .local~nl11 = ' 11 '
+    .local~nl255 = ' 255 '
+    .local~nl256 = ' 256 '
+    .local~nl32768 = ' 32768 '
+    .local~nl65536 = ' 65536 '
+    .local~nl9 = ' 9 '
+    .local~nn0 = ' -0 '
+    .local~nn1 = ' -1 '
+    .local~nn10 = ' -10 '
+    .local~nn11 = ' -11 '
+    .local~nn131072 = ' -131072 '
+    .local~nn255 = ' -255 '
+    .local~nn256 = ' -256 '
+    .local~nn32768 = ' -32768 '
+    .local~nn65536 = ' -65536 '
+    .local~nn9 = ' -9 '
+    .local~nnull = ''
+    .local~np0 = ' +0 '
+    .local~np1 = ' +1 '
+    .local~np10 = ' +10 '
+    .local~np11 = ' +11 '
+    .local~np131072 = ' +131072 '
+    .local~np255 = ' +255 '
+    .local~np256 = ' +256 '
+    .local~np32768 = ' +32768 '
+    .local~np65536 = ' +65536 '
+    .local~np9 = ' +9 '
+    .local~nzero = '0'
+    .local~v125b = COPIES('X ',125)
+    .local~v125bx = COPIES('5820'x,125)
+    .local~v15b = 'Q E A D Z C Q E A D Z C Q E A '
+    .local~v15bx = '71206520612064207a20632071206520612064207a206320712065206120'x
+    .local~v1wb = 'ASDF     '
+    .local~v1xb = '617364662020202020'x
+    .local~v250 = COPIES('X',250)
+    .local~v2c = 'AS'
+    .local~v2x = '6173'x
+    .local~v30 = 'QWERASDFZXCVQWERASDFZXCVQWERAS'
+    .local~v30x = '71776572617364667a78637671776572617364667a786376717765726173'x
+    .local~v3w = 'ASDF QWER ZXCV'
+    .local~v3wx = '617364662071776572207a786376'x
+    .local~v4c = 'ASDF'
+    .local~v4x = '61736466'x
+    .local~vb1w = '     ASDF'
+    .local~vb1x = '202020202061736466'x
+    .local~vblank = ' '
+    .local~vnull = ''
+    .local~vx40 = '20'x
+    .local~vxnull = ''X
 
+::method 'test279'
+    self~expectSyntax(40.12)
+    xre = copies(.vnull,.nnull)
 
+::method 'test280'
+    self~assertSame('subTest01','',copies(.vnull,.nzero))
 
+::method 'test281'
+    self~assertSame('subTest01','',copies(.vnull,.nF1x))
 
+::method 'test282'
+    self~assertSame('subTest01','',copies(.vnull,.n09E2))
 
+::method 'test283'
+    self~expectSyntax(40.12)
+    xre = copies(.vnull,.n09E1)
 
+::method 'test284'
+    self~assertSame('subTest01','',copies(.vnull,.n0010))
 
+::method 'test285'
+    self~assertSame('subTest01','',copies(.vnull,.nl11))
 
+::method 'test286'
+    self~assertSame('subTest01','',copies(.vnull,.np255))
 
+::method 'test287'
+    self~expectSyntax(93.906)
+    xre = copies(.vnull,.nn256)
 
+::method 'test288'
+    self~assertSame('subTest01',' ',copies(.vblank,.n1))
 
+::method 'test289'
+    self~assertSame('subTest01','         ',copies(.vblank,.nF9x))
 
+::method 'test290'
+    self~assertSame('subTest01','          ',copies(.vblank,.n10E2))
 
+::method 'test291'
+    self~assertSame('subTest01','           ',copies(.vblank,.n0011))
 
+::method 'test292'
+    self~assertSame('subTest01',copies(' ',255),copies(.vblank,.nl255))
 
+::method 'test293'
+    self~assertSame('subTest01',copies(' ',256),copies(.vblank,.np256))
 
+::method 'test294'
+    self~expectSyntax(93.906)
+    xre = copies(.vblank,.nn32768)
 
+::method 'test295'
+    self~assertSame('subTest01','ASDFASDFASDFASDFASDFASDFASDFASDFASDF',copies(.v4c,.n9))
 
+::method 'test296'
+    self~assertSame('subTest01','ASDFASDFASDFASDFASDFASDFASDFASDFASDFASDF',copies(.v4c,.nF1F0x))
 
+::method 'test297'
+    self~assertSame('subTest01','ASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDF',copies(.v4c,.n11E2))
 
+::method 'test298'
+    self~expectSyntax(40.12)
+    xre = copies(.v4c,.n11E1)
 
+::method 'test299'
+    self~assertSame('subTest01',copies('ASDF',255),copies(.v4c,.n00255))
 
+::method 'test300'
+    self~assertSame('subTest01',copies('ASDF',256),copies(.v4c,.nl256))
+
+::method 'test301'
+    self~assertSame('subTest01',copies('ASDF',32768),copies(.v4c,.np32768))
+
+::method 'test302'
+    self~expectSyntax(93.906)
+    xre = copies(.v4c,.nn65536)
+
+::method 'test303'
+    self~assertSame('subTest01','ASASASASASASASASASAS',copies(.v2c,.n10))
+
+::method 'test304'
+    self~assertSame('subTest01','ASASASASASASASASASASAS',copies(.v2c,.nF1F1x))
+
+::method 'test305'
+    self~assertSame('subTest01',copies('AS',255),copies(.v2c,.n255E3))
+
+::method 'test306'
+    self~expectSyntax(40.12)
+    xre = copies(.v2c,.n255E2)
+
+::method 'test307'
+    self~assertSame('subTest01',copies('AS',256),copies(.v2c,.n00256))
+
+::method 'test308'
+    self~assertSame('subTest01',copies('AS',32768),copies(.v2c,.nl32768))
+
+::method 'test309'
+    self~assertSame('subTest01',copies('AS',65536),copies(.v2c,.np65536))
+
+::method 'test310'
+    self~expectSyntax(93.906)
+    xre = copies(.v2c,.nn131072)
+
+::method 'test311'
+    self~assertSame('subTest01',copies('QWERASDFZXCVQWERASDFZXCVQWERAS',11),copies(.v30,.n11))
+
+::method 'test312'
+    self~assertSame('subTest01',copies('QWERASDFZXCVQWERASDFZXCVQWERAS',255),copies(.v30,.nF2F5F5x))
+
+::method 'test313'
+    self~assertSame('subTest01',copies('QWERASDFZXCVQWERASDFZXCVQWERAS',256),copies(.v30,.n256E3))
+
+::method 'test314'
+    self~expectSyntax(40.12)
+    xre = copies(.v30,.n256E2)
+
+::method 'test315'
+    self~assertSame('subTest01','',copies(.v30,.nn0))
+
+::method 'test316'
+    self~assertSame('subTest01',copies('Q E A D Z C Q E A D Z C Q E A ',255),copies(.v15b,.n255))
+
+::method 'test317'
+    self~assertSame('subTest01',copies('Q E A D Z C Q E A D Z C Q E A ',256),copies(.v15b,.nF2F5F6x))
+
+::method 'test318'
+    self~assertSame('subTest01','',copies(.v15b,.np0))
+
+::method 'test319'
+    self~expectSyntax(93.906)
+    xre = copies(.v15b,.nn1)
+
+::method 'test320'
+    self~assertSame('subTest01',copies('X',64000),copies(.v250,.n256))
+
+::method 'test321'
+    self~expectSyntax(40.12)
+    xre = copies(.v250,.n65536E4)
+
+::method 'test322'
+    self~assertSame('subTest01','',copies(.v250,.nl0))
+
+::method 'test323'
+    self~assertSame('subTest01',copies('X',250),copies(.v250,.np1))
+
+::method 'test324'
+    self~expectSyntax(93.906)
+    xre = copies(.v250,.nn9)
+
+::method 'test325'
+    self~assertSame('subTest01',copies('     ASDF     ASDF',16384),copies(.vb1w,.n32768))
+
+::method 'test326'
+    self~assertSame('subTest01','',copies(.vb1w,.n000))
+
+::method 'test327'
+    self~assertSame('subTest01','     ASDF',copies(.vb1w,.nl1))
+
+::method 'test328'
+    self~assertSame('subTest01','     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF',copies(.vb1w,.np9))
+
+::method 'test329'
+    self~expectSyntax(93.906)
+    xre = copies(.vb1w,.nn10)
+
+::method 'test330'
+    self~assertSame('subTest01','',copies(.v3w,.n00E2))
+
+::method 'test331'
+    self~assertSame('subTest01','ASDF QWER ZXCV',copies(.v3w,.n001))
+
+::method 'test332'
+    self~assertSame('subTest01',copies('ASDF QWER ZXCV',8)||'ASDF QWER ZXCV',copies(.v3w,.nl9))
+
+::method 'test333'
+    self~assertSame('subTest01',copies('ASDF QWER ZXCVASDF QWER ZXCV',5),copies(.v3w,.np10))
+
+::method 'test334'
+    self~expectSyntax(93.906)
+    xre = copies(.v3w,.nn11)
+
+::method 'test335'
+    self~assertSame('subTest01','',copies(.v1wb,.nF0x))
+
+::method 'test336'
+    self~assertSame('subTest01','ASDF     ',copies(.v1wb,.n01E2))
+
+::method 'test337'
+    self~expectSyntax(40.12)
+    xre = copies(.v1wb,.n01E1)
+
+::method 'test338'
+    self~assertSame('subTest01','ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ',copies(.v1wb,.n009))
+
+::method 'test339'
+    self~assertSame('subTest01','ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ',copies(.v1wb,.nl10))
+
+::method 'test340'
+    self~assertSame('subTest01','ASDF     '||copies('ASDF     ASDF     ',5),copies(.v1wb,.np11))
+
+::method 'test341'
+    self~expectSyntax(93.906)
+    xre = copies(.v1wb,.nn255)
+
+::method 'test342'
+    self~assertSame('subTest01','',copies(.v125b,.nzero))
+
+::method 'test343'
+    self~assertSame('subTest01',copies('X ',125),copies(.v125b,.nF1x))
+
+::method 'test344'
+    self~assertSame('subTest01',copies('X ',1125),copies(.v125b,.n09E2))
+
+::method 'test345'
+    self~expectSyntax(40.12)
+    xre = copies(.v125b,.n09E1)
+
+::method 'test346'
+    self~assertSame('subTest01',copies('X ',1250),copies(.v125b,.n0010))
+
+::method 'test347'
+    self~assertSame('subTest01',copies('X ',1375),copies(.v125b,.nl11))
+
+::method 'test348'
+    self~assertSame('subTest01',copies('X ',31875),copies(.v125b,.np255))
+
+::method 'test349'
+    self~expectSyntax(93.906)
+    xre = copies(.v125b,.nn256)
+
+::method 'test350'
+    self~assertSame('subTest01','',copies(.vxnull,.n1))
+
+::method 'test351'
+    self~assertSame('subTest01','',copies(.vxnull,.nF9x))
+
+::method 'test352'
+    self~assertSame('subTest01','',copies(.vxnull,.n10E2))
+
+::method 'test353'
+    self~assertSame('subTest01','',copies(.vxnull,.n10E1))
+
+::method 'test354'
+    self~assertSame('subTest01','',copies(.vxnull,.n0011))
+
+::method 'test355'
+    self~assertSame('subTest01','',copies(.vxnull,.nl255))
+
+::method 'test356'
+    self~assertSame('subTest01','',copies(.vxnull,.np256))
+
+::method 'test357'
+    self~expectSyntax(93.906)
+    xre = copies(.vxnull,.nn32768)
+
+::method 'test358'
+    self~assertSame('subTest01','         ',copies(.vx40,.n9))
+
+::method 'test359'
+    self~assertSame('subTest01','          ',copies(.vx40,.nF1F0x))
+
+::method 'test360'
+    self~assertSame('subTest01','           ',copies(.vx40,.n11E2))
+
+::method 'test361'
+    self~expectSyntax(40.12)
+    xre = copies(.vx40,.n11E1)
+
+::method 'test362'
+    self~assertSame('subTest01',copies('20'x,255),copies(.vx40,.n00255))
+
+::method 'test363'
+    self~assertSame('subTest01',copies('20'x,256),copies(.vx40,.nl256))
+
+::method 'test364'
+    self~assertSame('subTest01',copies('20'x,32768),copies(.vx40,.np32768))
+
+::method 'test365'
+    self~assertSame('subTest01','asdfasdfasdfasdfasdfasdfasdfasdfasdfasdf',copies(.v4x,.n10))
+
+::method 'test366'
+    self~assertSame('subTest01','asdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf',copies(.v4x,.nF1F1x))
+
+::method 'test367'
+    self~assertSame('subTest01',copies('61736466'x,255),copies(.v4x,.n255E3))
+
+::method 'test368'
+    self~expectSyntax(40.12)
+    xre = copies(.v4x,.n255E2)
+
+::method 'test369'
+    self~assertSame('subTest01',copies('6173646661736466'x,128),copies(.v4x,.n00256))
+
+::method 'test370'
+    self~assertSame('subTest01',copies('6173646661736466'x,16384),copies(.v4x,.nl32768))
+
+::method 'test371'
+    self~assertSame('subTest01','asasasasasasasasasasas',copies(.v2x,.n11))
+
+::method 'test372'
+    self~expectSyntax(40.12)
+    xre = copies(.v2x,.nFFx)
+
+::method 'test373'
+    self~assertSame('subTest01',copies('6173'x,256),copies(.v2x,.n256E3))
+
+::method 'test374'
+    self~expectSyntax(40.12)
+    xre = copies(.v2x,.n256E2)
+
+::method 'test375'
+    self~assertSame('subTest01',copies('61736173'x,16384),copies(.v2x,.n0032768))
+
+::method 'test376'
+    self~assertSame('subTest01',copies('61736173'x,32768),copies(.v2x,.nl65536))
+
+::method 'test377'
+    self~assertSame('subTest01',copies('61736173'x,65536),copies(.v2x,.np131072))
+
+::method 'test378'
+    self~assertSame('subTest01','',copies(.v2x,.nn0))
+
+::method 'test379'
+    self~assertSame('subTest01',copies('71776572617364667a78637671776572617364667a786376717765726173'x,255),copies(.v30x,.n255))
+
+::method 'test380'
+    self~assertSame('subTest01',copies('71776572617364667a78637671776572617364667a786376717765726173'x,256),copies(.v30x,.nF2F5F6x))
+
+::method 'test381'
+    self~assertSame('subTest01',copies('71776572617364667a78637671776572617364667a786376717765726173'x,256),copies(.v30x,.n256))
+
+::method 'test382'
+    self~assertSame('subTest01','',copies(.v30x,.np0))
+
+::method 'test383'
+    self~expectSyntax(93.906)
+    xre = copies(.v30x,.nn1)
+
+::method 'test384'
+    self~assertSame('subTest01',copies('71206520612064207a20632071206520612064207a206320712065206120'x,256),copies(.v15bx,.n256))
+
+::method 'test385'
+    self~expectSyntax(40.12)
+    xre = copies(.v15bx,.n65536E4)
+
+::method 'test386'
+    self~assertSame('subTest01','',copies(.v15bx,.nl0))
+
+::method 'test387'
+    self~assertSame('subTest01','q e a d z c q e a d z c q e a ',copies(.v15bx,.np1))
+
+::method 'test388'
+    self~expectSyntax(93.906)
+    xre = copies(.v15bx,.nn9)
+
+::method 'test389'
+    self~assertSame('subTest01','',copies(.vb1x,.n000))
+
+::method 'test390'
+    self~assertSame('subTest01','     asdf',copies(.vb1x,.nl1))
+
+::method 'test391'
+    self~assertSame('subTest01',copies('202020202061736466'x,9),copies(.vb1x,.np9))
+
+::method 'test392'
+    self~expectSyntax(93.906)
+    xre = copies(.vb1x,.nn10)
+
+::method 'test393'
+    self~assertSame('subTest01','',copies(.v3wx,.n00E2))
+
+::method 'test394'
+    self~assertSame('subTest01','asdf qwer zxcv',copies(.v3wx,.n001))
+
+::method 'test395'
+    self~assertSame('subTest01',copies('617364662071776572207a786376'x,9),copies(.v3wx,.nl9))
+
+::method 'test396'
+    self~assertSame('subTest01',copies('617364662071776572207a786376'x,10),copies(.v3wx,.np10))
+
+::method 'test397'
+    self~expectSyntax(93.906)
+    xre = copies(.v3wx,.nn11)
+
+::method 'test398'
+    self~assertSame('subTest01','',copies(.v1xb,.nF0x))
+
+::method 'test399'
+    self~assertSame('subTest01','asdf     ',copies(.v1xb,.n01E2))
+
+::method 'test400'
+    self~expectSyntax(40.12)
+    xre = copies(.v1xb,.n01E1)
+
+::method 'test401'
+    self~assertSame('subTest01','asdf     asdf     asdf     asdf     asdf     asdf     asdf     asdf     asdf     ',copies(.v1xb,.n009))
+
+::method 'test402'
+    self~assertSame('subTest01','asdf     asdf     asdf     asdf     asdf     asdf     asdf     asdf     asdf     asdf     ',copies(.v1xb,.nl10))
+
+::method 'test403'
+    self~assertSame('subTest01',copies('617364662020202020'x,11),copies(.v1xb,.np11))
+
+::method 'test404'
+    self~expectSyntax(93.906)
+    xre = copies(.v1xb,.nn255)
+
+::method 'test405'
+    self~assertSame('subTest01','',copies(.v125bx,.nzero))
+
+::method 'test406'
+    self~assertSame('subTest01',copies('X ',125),copies(.v125bx,.nF1x))
+
+::method 'test407'
+    self~assertSame('subTest01',copies('X ',1125),copies(.v125bx,.n09E2))
+
+::method 'test408'
+    self~expectSyntax(40.12)
+    xre = copies(.v125bx,.n09E1)
+
+::method 'test409'
+    self~assertSame('subTest01',copies('X ',1250),copies(.v125bx,.n0010))
+
+::method 'test410'
+    self~assertSame('subTest01',copies('X ',1375),copies(.v125bx,.nl11))
+
+::method 'test411'
+    self~assertSame('subTest01',copies('X ',31875),copies(.v125bx,.np255))
+
+::method 'test412'
+    self~expectSyntax(93.906)
+    xre = copies(.v125bx,.nn256)
+
+::method 'test413'
+    .local~remove(n000)
+    .local~remove(n001)
+    .local~remove(n0010)
+    .local~remove(n0011)
+    .local~remove(n00255)
+    .local~remove(n00256)
+    .local~remove(n0032768)
+    .local~remove(n009)
+    .local~remove(n00E2)
+    .local~remove(n01E1)
+    .local~remove(n01E2)
+    .local~remove(n09E1)
+    .local~remove(n09E2)
+    .local~remove(n1)
+    .local~remove(n10)
+    .local~remove(n10E1)
+    .local~remove(n10E2)
+    .local~remove(n11)
+    .local~remove(n11E1)
+    .local~remove(n11E2)
+    .local~remove(n255)
+    .local~remove(n255E2)
+    .local~remove(n255E3)
+    .local~remove(n256)
+    .local~remove(n256E2)
+    .local~remove(n256E3)
+    .local~remove(n32768)
+    .local~remove(n65536E4)
+    .local~remove(n9)
+    .local~remove(nF0x)
+    .local~remove(nF1F0x)
+    .local~remove(nF1F1x)
+    .local~remove(nF1x)
+    .local~remove(nF2F5F5x)
+    .local~remove(nF2F5F6x)
+    .local~remove(nF6F5F5F3F6x)
+    .local~remove(nF9x)
+    .local~remove(nFFx)
+    .local~remove(nl0)
+    .local~remove(nl1)
+    .local~remove(nl10)
+    .local~remove(nl11)
+    .local~remove(nl255)
+    .local~remove(nl256)
+    .local~remove(nl32768)
+    .local~remove(nl65536)
+    .local~remove(nl9)
+    .local~remove(nn0)
+    .local~remove(nn1)
+    .local~remove(nn10)
+    .local~remove(nn11)
+    .local~remove(nn131072)
+    .local~remove(nn255)
+    .local~remove(nn256)
+    .local~remove(nn32768)
+    .local~remove(nn65536)
+    .local~remove(nn9)
+    .local~remove(nnull)
+    .local~remove(np0)
+    .local~remove(np1)
+    .local~remove(np10)
+    .local~remove(np11)
+    .local~remove(np131072)
+    .local~remove(np255)
+    .local~remove(np256)
+    .local~remove(np32768)
+    .local~remove(np65536)
+    .local~remove(np9)
+    .local~remove(nzero)
+    .local~remove(v125b)
+    .local~remove(v125bx)
+    .local~remove(v15b)
+    .local~remove(v15bx)
+    .local~remove(v1wb)
+    .local~remove(v1xb)
+    .local~remove(v250)
+    .local~remove(v2c)
+    .local~remove(v2x)
+    .local~remove(v30)
+    .local~remove(v30x)
+    .local~remove(v3w)
+    .local~remove(v3wx)
+    .local~remove(v4c)
+    .local~remove(v4x)
+    .local~remove(vb1w)
+    .local~remove(vb1x)
+    .local~remove(vblank)
+    .local~remove(vnull)
+    .local~remove(vx40)
+    .local~remove(vxnull)
 
 -- rexxref documentation tests
 
