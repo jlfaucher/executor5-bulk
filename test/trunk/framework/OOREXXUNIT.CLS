@@ -176,6 +176,13 @@ if .ooRexxUnit.directory.separator="\" then     -- DOS-like
 else                                            -- Unix-like
    .local~ooRexxUnit.path.separator=":"
 
+-- Capture the ooRexxUnit framework directory and ensure it is in the path.
+parse source . . fileSpec
+.local~ooRexxUnit.dir = fileSpec~left(fileSpec~caseLessPos("OOREXXUNIT.CLS") - 2 )
+currentPath = value("PATH", , 'ENVIRONMENT')
+if currentPath~caseLessPos(.ooRexxUnit.dir) == 0 then
+   oldPath = value("PATH", .ooRexxUnit.dir || .ooRexxUnit.path.separator || currentPath, 'ENVIRONMENT')
+
 
 
 /* *********************************************************************************** */
