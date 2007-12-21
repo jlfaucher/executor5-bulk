@@ -1,7 +1,7 @@
 /* ========================================================================= */
 /* csvStream ooRexx stream subclass for CSV file handling                    */
 /* sahananda               windhorse:evolution                 November 2006 */
-/* Version 1.04                                                January  2007 */
+/* Version 1.06                                                December 2007 */
 /*                                                                           */
 /* Amendments                                                                */
 /* 1.01   Dec06 SN Headers inserted by close method / general tidy up        *//*{1.01}*/
@@ -10,7 +10,7 @@
 /* 1.03 29Dec06 SN Cope with no parm passed to CSVLineOut                    *//*{1.03}*/
 /* 1.04 05Jan07 SN Accept STEM data with headers & fix firstcolumn bug       *//*{1.04}*/
 /* 1.05 07Dec07 SN performance enhancements                                  *//*{1.05}*/
-/*                                                                           */
+/* 1.06 21Dec07 SN 3.2 has .endOfLine const so drop discovery process        *//*{1.06}*/
 /*                                                                           */
 /* ========================================================================= */
 
@@ -83,7 +83,7 @@ self~openArgs           = .nil                                                 /
 
 self~init:super(parms)                        /* let stream class initialise */
 
-self~lineEnd            = .endOfLine          /* line terminator for this os */
+self~lineEnd            = .endOfLine          /* line terminator for this os *//*{1.06}*/
 
 /* ------------------------------------------------------------------------- */
 ::method Open
@@ -166,7 +166,7 @@ do until (inLiteral  = .false) ,
       select
          when text~matchChar(i,qualifier)                                      /*{1.05}*/
             then do
-               inLiteral = 1 - inLiteral
+               inLiteral = \inLiteral                                          /*{1.05}*/
                fieldText = fieldText || qualifier                              /*{1.05}*/
             end /* DO */
 
