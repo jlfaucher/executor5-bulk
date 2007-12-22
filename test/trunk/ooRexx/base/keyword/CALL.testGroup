@@ -125,19 +125,17 @@ return testGroupList
 ::class "CALL.testGroup" subclass TestCase public
 
 ::method "test_1"
-say .ooRexxUnit.dir
-
    -- Create our external functions. There are 3 of them.
-   sl = .ooRexxUnit.directory.separator
+   path = .ooRexxUnit.dir || .ooRexxUnit.directory.separator
    src = .array~new()
    src[1] = "Parse Version version"
    src[2] = "Parse Source fn"
    src[3] = "Return '4'"
-   call createFile src, .ooRexxUnit.dir || sl || 'SCICAL1A'
+   call createFile src, path'SCICAL1A'
    src[3] = "Return 3"
-   call createFile src, .ooRexxUnit.dir || sl || 'SCICAL1B'
+   call createFile src, path'SCICAL1B'
    src[3] = "Return 4"
-   call createFile src, .ooRexxUnit.dir || sl || 'SCICAL1C'
+   call createFile src, path'SCICAL1C'
 
    -- now do the tests
    call junktest; sigl0=sigl /* base to check sigl       */
@@ -159,9 +157,9 @@ say .ooRexxUnit.dir
    self~assertSame("subTest1b", (sigl1 sigl2 sigl3),(sigl0+1) (sigl0+2) (sigl0+3))
 
    -- now remove the external functions
-   call deleteFile .ooRexxUnit.dir || sl || 'SCICAL1A'
-   call deleteFile .ooRexxUnit.dir || sl || 'SCICAL1B'
-   call deleteFile .ooRexxUnit.dir || sl || 'SCICAL1C'
+   call deleteFile path'SCICAL1A'
+   call deleteFile path'SCICAL1B'
+   call deleteFile path'SCICAL1C'
 
    return
 
@@ -184,7 +182,7 @@ say .ooRexxUnit.dir
 
 ::method "test_3"
    -- Create our external functions. There are 3 of them.
-   sl = .ooRexxUnit.directory.separator
+   path = .ooRexxUnit.dir || .ooRexxUnit.directory.separator
    src = .array~new()
    src[1] = "Parse Source fn"
    src[2] = "   num=Arg()"
@@ -193,7 +191,7 @@ say .ooRexxUnit.dir
    src[5] = "     sum=sum+Arg(i)"
    src[6] = "     End"
    src[7] = "   Return sum"
-   call createFile src, .ooRexxUnit.dir || sl || 'SCICAL1D'
+   call createFile src, path'SCICAL1D'
 
    -- now do the tests
    call createFile src, .ooRexxUnit.dir || sl || 'SCICAL1A'
@@ -238,8 +236,7 @@ say .ooRexxUnit.dir
                  a.11,a.12,a.13,a.14,a.15,a.16,a.17,a.18,a.19,a.20,a.21
 
    -- now remove the external functions
-   call deleteFile .ooRexxUnit.dir || sl || 'SCICAL1D'
-   call deleteFile .ooRexxUnit.dir || sl || 'SCICAL1A'
+   call deleteFile path'SCICAL1D'
    return
 
    a:
