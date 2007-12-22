@@ -1,0 +1,284 @@
+#!/usr/bin/rexx
+/*
+   name:             CALL.testGroup
+   author:           W. David Ashley
+   date:             2007-12-21
+   version:          1.0.0
+
+-- line commented lines are ignored, when building the directory of infos from this header
+   changed:          ---
+
+   languageLevel:    6.02
+   purpose:          Test the CALL and function invocation
+   remark:
+
+   license:          CPL 1.0 (Common Public License v1.0, see below)
+   link:
+
+   category1:        ooRexx
+   category2:        Base
+   category3:        keyword
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+
+
+-------------------------------------------------------------------------------------------
+-- ===> adapt the "testGroupList" to your testCase classes; each element in the list is <===
+-- ===> an array object, the first element containing the testCase class object, the   <===
+-- ===> second element is a list of test method names which are regarded to be         <===
+-- ===> mandatory (if the list remains empty all test methods are mandatory)           <===
+
+   /* list of array objects, each containing the testGroup class object and an
+      optional list of mandatory test case methods name                       */
+
+mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
+testGroupList=.list~of( .array~of(.CALL.testGroup,  mandatoryTestMethods) )
+
+-------------------------------------------------------------------------------------------
+-- ===> the following code needs not to be individualized                              <===
+
+   -- read top comment, containing infos about this program
+arrLines=.array~new
+do i=1 to 150 until arrLines[i]="*/"
+   arrLines[i]=sourceline(i)
+end
+      -- supply information for the testClass(es) in this file; the class attribute
+      -- "TestCaseInfo" (a directory object, index points to a queue) will store
+      -- the parsed infos
+aTestGroupClass=testGroupList~at(testGroupList~first)[1] -- get first testClass
+
+   -- will parse the array lines and store result in class object
+call makeDirTestInfo aTestGroupClass, arrLines
+tmpDir=aTestGroupClass~TestCaseInfo
+parse source s   -- op_sys invocationType fullPathToThisFile
+tmpDir~setentry("test_Case-source", s)
+
+   -- now add this directory to other testCase classes, if any left
+do arr over testGroupList
+   if arr[1]=aTestGroupClass then iterate  -- already handled
+   arr[1]~TestCaseInfo=tmpDir             -- save info in class object
+end
+
+-- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
+-- and set it to .false; this way the independent local invocation of the tests is inhibited
+if .local~hasentry("bRunTestsLocally")=.false then
+   .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
+
+if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
+do
+   ts=.testSuite~new             -- create a testSuite
+   do arr over testGroupList
+      -- create a testSuite for the given test case class, use all its testmethods
+      ts~addTest( .testSuite~new(arr[1]))
+   end
+   -- testResult=.testSuite~new(testGroupClass)~run
+   testResult=ts~run       -- now run all the tests
+
+   call simpleDumpTestResults testResult
+end
+
+   /* return list of array objects containing test case classes and
+      optionally list of mandatory test methods                      */
+return testGroupList
+
+
+
+::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'FileUtils.cls'    -- load the FileUtils classes
+
+::class "CALL.testGroup" subclass TestCase public
+
+::method "test_1"
+say .ooRexxUnit.dir
+
+   -- Create our external functions. There are 3 of them.
+   sl = .ooRexxUnit.directory.separator
+   src = .array~new()
+   src[1] = "Parse Version version"
+   src[2] = "Parse Source fn"
+   src[3] = "Return '4'"
+   call createFile src, .ooRexxUnit.dir || sl || 'SCICAL1A'
+   src[3] = "Return 3"
+   call createFile src, .ooRexxUnit.dir || sl || 'SCICAL1B'
+   src[3] = "Return 4"
+   call createFile src, .ooRexxUnit.dir || sl || 'SCICAL1C'
+
+   -- now do the tests
+   call junktest; sigl0=sigl /* base to check sigl       */
+   call internal1
+   Call internal2; s=s||left(result,1); sigl2=sigl
+   cALL internal3; sigl3=sigl
+   CALL,
+        'SCICAL1A'; s=s||result
+   call/**/"XRANGE" '5','5'; s=s||result
+   call left '6789',1; s=s||result
+   call scical1B; s=s||result;
+   call scical1C; s=s||result;
+   call 15
+   Call 15.3
+   Call .
+   CAll ,
+   abcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghij
+   self~assertSame("subTest1a", s,'12345634DEFG')
+   self~assertSame("subTest1b", (sigl1 sigl2 sigl3),(sigl0+1) (sigl0+2) (sigl0+3))
+
+   -- now remove the external functions
+   call deleteFile .ooRexxUnit.dir || sl || 'SCICAL1A'
+   call deleteFile .ooRexxUnit.dir || sl || 'SCICAL1B'
+   call deleteFile .ooRexxUnit.dir || sl || 'SCICAL1C'
+
+   return
+
+   internal1: s='1'; sigl1=sigl; Return
+   internal2: Procedure; Return '2'
+   internal3: Procedure Expose s; s=s'3'; Return
+   LEFT: Return "LEFT"("ARG"(1),1); /* internal routine overrides bif   */
+                                    /* unless literal as function-name  */
+   15:   s=s||'D'; Return
+   15.3: s=s||'E'; Return
+   .:    s=s||'F'; Return
+   abcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghij:
+         s=s||'G'; Return 0
+   -- this routine is here just so the caller can set sigl
+   junktest: return
+
+::method "test_2"
+   self~expectSyntax(41.1)
+   call sub('a'+2)                  /* invalid expression */
+
+::method "test_3"
+   -- Create our external functions. There are 3 of them.
+   sl = .ooRexxUnit.directory.separator
+   src = .array~new()
+   src[1] = "Parse Source fn"
+   src[2] = "   num=Arg()"
+   src[3] = "   sum=0"
+   src[4] = "   Do i=1 To num"
+   src[5] = "     sum=sum+Arg(i)"
+   src[6] = "     End"
+   src[7] = "   Return sum"
+   call createFile src, .ooRexxUnit.dir || sl || 'SCICAL1D'
+
+   -- now do the tests
+   call createFile src, .ooRexxUnit.dir || sl || 'SCICAL1A'
+   ai=0
+   Call a a(0),a(1),a(2),a(3),a(4),a(5),a(6),a(7),a(8),a(9)
+   self~assertSame("subTest3", result,xrange('0','9'))
+
+   ai=0
+   Call a a(0),a(1),a(2),a(3),a(4),a(5),a(6),a(7),a(8),a(9),10
+   self~assertSame("subTest3b", result,'012345678910')
+
+   v202='vVv'
+   v203="COPIES"('xx',5000)
+   v207.='ab'
+   v207.1='cd'
+   Call sub0201 'abc'; self~assertSame("subTest3-201", result,201)
+   Call sub0202 v202;  self~assertSame("subTest3-202", result,0202)
+   Call sub0203 v203;  self~assertSame("subTest3-203", result,203)
+   Call sub0204 (2+3); self~assertSame("subTest3-204", result,204)
+   Numeric Digits 2
+   Call sub0205 +205;  self~assertSame("subTest3-205", '2.1E+2',+result)
+   Numeric Digits 9
+   Call sub0206 12a,'0102'X;
+                       self~assertSame("subTest3-206", result, '0201'x)
+   Call sub0207 v207.,v207.1
+                       self~assertSame("subTest3-207", result, 'abcd')
+   Call sub0208 '',''; self~assertSame("subTest3-208", result, '')
+   Call sub0209 bitor('0102'X,'2011'X),'a,' 'b,' 'and c'
+                       self~assertSame("subTest3-209", result, 'a,*b,*and*c')
+   Do i=1 to 21
+     a.i=i
+     End
+   Call a20 a.1, a.2, a.3, a.4, a.5, a.6, a.7, a.8, a.9, a.10,,
+            a.11,a.12,a.13,a.14,a.15,a.16,a.17,a.18,a.19,a.20
+   self~assertSame("subTest3-210", result, 210)
+   Call scical1d a.1, a.2, a.3, a.4, a.5, a.6, a.7, a.8, a.9, a.10,,
+                 a.11,a.12,a.13,a.14,a.15,a.16,a.17,a.18,a.19,a.20
+   self~assertSame("subTest3-210a", result, 210)
+   Call a20 a.1, a.2, a.3, a.4, a.5, a.6, a.7, a.8, a.9, a.10,,
+            a.11,a.12,a.13,a.14,a.15,a.16,a.17,a.18,a.19,a.20,a.21
+   Call scical1d a.1, a.2, a.3, a.4, a.5, a.6, a.7, a.8, a.9, a.10,,
+                 a.11,a.12,a.13,a.14,a.15,a.16,a.17,a.18,a.19,a.20,a.21
+
+   -- now remove the external functions
+   call deleteFile .ooRexxUnit.dir || sl || 'SCICAL1D'
+   call deleteFile .ooRexxUnit.dir || sl || 'SCICAL1A'
+   return
+
+   a:
+   If "ARG"()>1 Then Do;               /* concatenate all arguments      */
+      s='';
+      Do ai=1 To "ARG"();
+         self~assertSame("subTest3-"ai, (ai-1),"ARG"(ai))
+         s=s||"ARG"(ai);
+         End;
+      Return s
+      End
+                                       /* call as argument expression    */
+   self~assertSame("subTest3a", "ARG"(1),ai)
+   ai=ai+1;                            /* increment to new number        */
+   Return ai-1                         /* return old number as value     */
+
+   sub0201: self~assertSame("subTest201", arg(1), 'abc'); Return '201'
+   sub0202: self~assertSame("subTest202", arg(1), 'vVv'); Return 0202
+   sub0203: self~assertSame("subTest203", arg(1), "COPIES"('x',10000)); Return +0.0203e+004
+   sub0204: self~assertSame("subTest204", arg(1), ""5); Return 200+4
+   sub0205: Numeric Digits 9
+            self~assertSame("subTest205", arg(1), "2.1E+2"); Return 205
+   sub0206: self~assertSame("subTest206a", arg(1), "12A")
+            self~assertSame("subTest206b", arg(2), "0102"X)
+            Return "RIGHT"("ARG"(2),1)"LEFT"("ARG"(2),1)
+   sub0207: self~assertSame("subTest207a", arg(1), "ab")
+            self~assertSame("subTest207b", arg(2), "cd")
+            Return "ARG"(1)||"ARG"(2)
+   sub0208: self~assertSame("subTest208a", arg(1), "")
+            self~assertSame("subTest208b", arg(2), ""x)
+            v208=''
+            Return "ARG"(1)||"ARG"(2)||v208
+   sub0209: self~assertSame("subTest209a", arg(1), "2113"X)
+            self~assertSame("subTest209b", arg(2), 'a, b, and c')
+            Return "TRANSLATE"("ARG"(2),'*','             ')
+   a20: Procedure
+        sum=0
+        Do i=1 To arg()
+           sum=sum+Arg(i)
+           End
+        Return sum
+
