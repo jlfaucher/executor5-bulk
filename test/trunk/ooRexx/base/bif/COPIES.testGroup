@@ -2273,9 +2273,287 @@ return testGroupList
     .local~remove(nl65536)
     .local~remove(np131072)
 
+-- set 5 (BIF,Literal) & (BIF/BIF) & (Integer Expr.)
+::method 'test550'
+    .local~nv1 = 1
+    .local~nv2 = 2
+    .local~nv3 = 3
+    .local~nv4 = 4
+    .local~nv6 = 6
+    .local~nv7 = 7
+    .local~nv8 = 8
+    .local~nv9 = 9
+    .local~nv10 = 10
+    .local~nv11 = 11
+    .local~nv12 = 12
+    .local~nv19 = 19
+    .local~nv21 = 21
+    .local~nv42 = 42
+    .local~nv61 = 61
+    .local~nv84 = 84
+    .local~nv100 = 100
+    .local~nv500 = 500
+    .local~nv600 = 600
+    .local~s1 = address()
+    .local~s2 = 'Label not found'
+
+::method 'test551'
+    self~assertSame('subTest01','1111111111',copies(abbrev(copies,'COP',3),'3130'x))
+
+::method 'test552'
+    self~assertSame('subTest01',.s1||.s1,copies(address(),'  2  '))
+
+::method 'test553'
+    self~assertSame('subTest01',copies('30113213'X,5),copies(bitand('pQrS',,'BF'X),005))
+
+::method 'test554'
+    self~assertSame('subTest01',copies('fred',40),copies(bitor('fred',,'20'x),'3430'x))
+
+::method 'test555'
+    self~assertSame('subTest01',copies('653302'X,3),copies(bitxor('4711'x,'222222'x,' '),'33'x))
+
+::method 'test556'
+    self~assertSame('subTest01','   ER      ER      ER      ER      ER      ER      ER      ER      ER      ER   ',copies(center('ER',8),'10'))
+
+::method 'test557'
+    self~assertSame('subTest01','   RE      RE      RE      RE      RE      RE      RE      RE      RE      RE   ',copies(centre('RE',8),'10'))
+
+::method 'test558'
+    self~assertSame('subTest01','00',copies(compare('ab--','ab','-'),' +2 '))
+
+::method 'test559'
+    self~assertSame('subTest01','ASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDF',copies(copies('ASDF',2),'9'))
+
+::method 'test560'
+    self~assertSame('subTest01','CHARCHARCHARCHARCHAR',copies(dataType('ASDF'),5))
+
+::method 'test561'
+    self~assertSame('subTest01','ASDRZXCVASDRZXCVASDRZXCVASDRZXCVASDRZXCVASDRZXCVASDRZXCVASDRZXCVASDRZXCVASDRZXCVASDRZXCVASDRZXCV',copies(DELSTR('ASDFQWERZXCV',4,4),0.12E2))
+
+::method 'test562'
+    self~assertSame('subTest01','5757575757575757575757575757575757575757575757575757575757575757575757575757575757575757575757575757'X,copies(D2C(87),'0050'))
+
+::method 'test563'
+    self~assertSame('subTest01','5757575757575757575757575757575757575757575757575757575757575757575757575757575757575757575757575757',copies(D2X(87),' 0050 '))
+
+::method 'test564'
+    self~assertSame('subTest01',copies(.s2,45),copies(ERRORTEXT(16),45))
+
+::method 'test565'
+    self~assertSame('subTest01','  -0.8  -0.8  -0.8  -0.8  -0.8  -0.8  -0.8  -0.8',copies(FORMAT('-.76',4,1),8))
+
+::method 'test566'
+    self~assertSame('subTest01',copies('abc++123+++',56),copies(INSERT('123','abc',5,6,'+'),56))
+
+::method 'test567'
+    self~assertSame('subTest01','13131313131313131313131313',copies(LASTPOS('z','zxcvasdfzxcvzxcv'),13))
+
+::method 'test568'
+    self~assertSame('subTest01','ASDF    ASDF    ASDF    ASDF    ASDF    ASDF    ASDF    ASDF    ASDF    ASDF    ',copies(LEFT('ASDF',8),'10'))
+
+::method 'test569'
+    self~assertSame('subTest01','abc+123+++abc+123+++abc+123+++abc+123+++abc+123+++abc+123+++abc+123+++abc+123+++abc+123+++abc+123+++',copies(OVERLAY('123','abc',5,6,'+'),10))
+
+::method 'test570'
+    self~assertSame('subTest01','00000000000000000',copies(QUEUED(),17))
+
+::method 'test571'
+    self~assertSame('subTest01','FDSAFDSAFDSAFDSAFDSAFDSAFDSAFDSAFDSA',copies(REVERSE('ASDF'),' 9 '))
+
+::method 'test572'
+    self~assertSame('subTest01','    ASDF    ASDF    ASDF    ASDF    ASDF    ASDF    ASDF    ASDF    ASDF    ASDF',copies(RIGHT('ASDF',8),'10'))
+
+::method 'test573'
+    self~assertSame('subTest01','     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF',copies(STRIP('     ASDF     ','T'),' +10 '))
+
+::method 'test574'
+    self~assertSame('subTest01','xcv...xcv...xcv...xcv...xcv...xcv...xcv...xcv...xcv...xcv...xcv...xcv...xcv...xcv...xcv...xcv...xcv...xcv...xcv...xcv...xcv...xcv...xcv...xcv...xcv...xcv...',copies(SUBSTR('zxcv',2,6,'.'),26))
+
+::method 'test575'
+    self~assertSame('subTest01','hands,hands,hands,hands,hands,',copies(SUBWORD('flowers and birds are hands,',5),5))
+
+::method 'test576'
+    self~assertSame('subTest01','BADBADBADBADBADBADBADBADBADBADBADBADBAD',copies(SYMBOL('*'),13E0))
+
+::method 'test577'
+    self~assertSame('subTest01','theyªholdªme,ªtheyªholdªme,ªtheyªholdªme,ªtheyªholdªme,ª',copies(TRANSLATE('they hold me, ','ª',' '),00004))
+
+::method 'test578'
+    self~assertSame('subTest01',copies('127.097',70),copies(TRUNC(127.09782,3),'+7E1'))
+
+::method 'test579'
+    x1 = 'x2'
+    x2 = 'ASDFZXCVQWER'
+    self~assertSame('subTest01',copies(x2,135),copies(VALUE(x1),135))
+
+::method 'test580'
+    self~assertSame('subTest01',copies('3',333),copies(VERIFY('AB4T','1234567890','M'),333))
+
+::method 'test581'
+    self~assertSame('subTest01','66666',copies(WORDINDEX('I am loved all day.',3),'2035'x))
+
+::method 'test582'
+    self~assertSame('subTest01','7777',copies(WORDLENGTH('Winter melts to Spring,',4),'         4          '))
+
+::method 'test583'
+    self~assertSame('subTest01',copies('4',131072),copies(WORDS('I dry my eyes,'),131072))
+
+::method 'test584'
+    self~assertSame('subTest01','57'X,copies(X2C(57),' 1 '))
+
+::method 'test585'
+    self~assertSame('subTest01','4444444444444444444444444444444444444444444444444444444444444444444444444444444444444444',copies(ABS(-44),ABS(-44)))
+
+::method 'test586'
+    self~assertSame('subTest01',copies('65',66),copies(C2D('A'),C2D('B')))
+
+::method 'test587'
+    self~assertSame('subTest01',copies('4153',26),copies(C2X('AS'),C2X('&')))
+
+::method 'test588'
+    self~assertSame('subTest01',copies('9',57),copies(DIGITS(),X2D(C2X(DIGITS()))))
+
+::method 'test589'
+    self~assertSame('subTest01','121212121212121212121212121212121212121212121212',copies(LENGTH('asdfqwerzxcv'),LENGTH(C2X('asdfqwerzxcv'))))
+
+::method 'test590'
+    self~expectSyntax(40.12)
+    xre = copies(MAX(-7,-3,-4.3),MIN(ABS(-7),ABS(-3.5),ABS(-4)))
+
+::method 'test591'
+    self~assertSame('subTest01','-7-7-7-7-7-7-7',copies(MIN(-7,-3,-4.3),MAX(ABS(-7),ABS(-3.5),ABS(-4))))
+
+::method 'test592'
+    self~expectSyntax(93.906)
+    xre = copies(SIGN(' -0.307 '),SIGN(-4))
+
+::method 'test593'
+    self~assertSame('subTest01','holdholdholdholdholdholdholdholdhold',copies(WORD('they hold me,',2),WORD('4 7 6 3 2 9 8 0 5 7',6)))
+
+::method 'test594'
+    self~expectSyntax(40.12)
+    xre = copies(XRANGE('i','j'),XRANGE('i','j'))
+
+::method 'test595'
+    self~assertSame('subTest01','65536655366553665536655366553665536655366553665536655366553665536655366553665536655366553665536655366553665536',copies(X2D(10000),X2D(16)))
+
+::method 'test596'
+    self~assertSame('subTest01','ASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDF',copies('ASDF',7+11))
+
+::method 'test597'
+    self~assertSame('subTest01','ASASASASASASASASASASASASASASASAS',copies('AS',2**4))
+
+::method 'test598'
+    self~assertSame('subTest01',copies('QWERASDFZXCVQWERASDFZXCVQWERAS',42),copies('QWERASDFZXCVQWERASDFZXCVQWERAS',84-42))
+
+::method 'test599'
+    self~assertSame('subTest01',copies('ASDF     ',42),copies('ASDF     ',6*7))
+
+::method 'test600'
+    self~expectSyntax(93.906)
+    xre = copies('     ASDF',9-10)
+
+::method 'test601'
+    self~assertSame('subTest01',copies('ASDF     ',42),copies('ASDF     ',2*3*7))
+
+::method 'test602'
+    self~assertSame('subTest01',copies('QWERASDFZXCVQWERASDFZXCVQWERAS',7),copies('QWERASDFZXCVQWERASDFZXCVQWERAS',21/3))
+
+::method 'test603'
+    self~assertSame('subTest01','666666666666666666',copies(42/7,7+11))
+
+::method 'test604'
+    self~assertSame('subTest01','519519519519519519519519519519519519519519519519',copies(19+500,2**4))
+
+::method 'test605'
+    self~assertSame('subTest01','-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20',copies(((2**3)*2)-12*((8**2)-61),84-42))
+
+::method 'test606'
+    self~expectSyntax(93.906)
+    xre = copies((1+1+1+1+1+1+1)*(1+1+1+1+1+1),9-10)
+
+::method 'test607'
+    self~assertSame('subTest01','424242424242424242424242424242424242424242424242424242424242424242424242424242424242',copies(((2*2*2)-2)*((2*2*2)-1),2*3*7))
+
+::method 'test608'
+    self~assertSame('subTest01','42424242424242',copies((21/3)*(600/100),21/3))
+
+::method 'test609'
+    self~assertSame('subTest01','ASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDF',copies('ASDF',.nv7+.nv11))
+
+::method 'test610'
+    self~assertSame('subTest01','ASASASASASASASASASASASASASASASAS',copies('AS',.nv2**.nv4))
+
+::method 'test611'
+    self~assertSame('subTest01',copies('QWERASDFZXCVQWERASDFZXCVQWERAS',.nv42),copies('QWERASDFZXCVQWERASDFZXCVQWERAS',.nv84-.nv42))
+
+::method 'test612'
+    self~assertSame('subTest01',copies('QWERASDFZXCVQWERASDFZXCVQWERAS',.nv42),copies('QWERASDFZXCVQWERASDFZXCVQWERAS',.nv6*.nv7))
+
+::method 'test613'
+    self~expectSyntax(93.906)
+    xre = copies('     ASDF',.nv9-.nv10)
+
+::method 'test614'
+    self~assertSame('subTest01',copies('ASDF     ',.nv42),copies('ASDF     ',.nv2*.nv3*.nv7))
+
+::method 'test615'
+    self~assertSame('subTest01',copies('QWERASDFZXCVQWERASDFZXCVQWERAS',.nv7),copies('QWERASDFZXCVQWERASDFZXCVQWERAS',.nv21/.nv3))
+
+::method 'test616'
+    self~assertSame('subTest01','666666666666666666',copies(.nv42/.nv7,.nv7+.nv11))
+
+::method 'test617'
+    self~assertSame('subTest01','519519519519519519519519519519519519519519519519',copies(.nv19+.nv500,.nv2**.nv4))
+
+::method 'test618'
+    self~assertSame('subTest01','-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20-20',copies(((.nv2**.nv3)*.nv2)-.nv12*((.nv8**.nv2)-.nv61),.nv84-.nv42))
+
+::method 'test619'
+    self~assertSame('subTest01','424242424242424242424242424242424242424242424242424242424242424242424242424242424242',copies(((.nv2*.nv2*.nv2)-.nv2)*((.nv2*.nv2*.nv2)-.nv1),.nv2*.nv3*.nv7))
+
+::method 'test620'
+    self~assertSame('subTest01','42424242424242',copies((.nv21/.nv3)*(.nv600/.nv100),.nv21/.nv3))
+
+::method 'test621'
+    .local~remove(nv1)
+    .local~remove(nv2)
+    .local~remove(nv3)
+    .local~remove(nv4)
+    .local~remove(nv6)
+    .local~remove(nv7)
+    .local~remove(nv8)
+    .local~remove(nv9)
+    .local~remove(nv10)
+    .local~remove(nv11)
+    .local~remove(nv12)
+    .local~remove(nv19)
+    .local~remove(nv21)
+    .local~remove(nv42)
+    .local~remove(nv61)
+    .local~remove(nv84)
+    .local~remove(nv100)
+    .local~remove(nv500)
+    .local~remove(nv600)
+    .local~remove(s1)
+    .local~remove(s2)
+
+-- set 6 (copies(string,x00..xff) loop test)
+::method 'test622'
+    x = 0
+    ctr = 0
+    do while x < 256
+        a = x~d2c
+        if a~datatype('n') then
+            do
+                z = copies('JOHN',a)
+                ctr += 1
+                self~assertSame('subTest'ctr~right(2,'0'),4 * a,length(z))
+            end
+        x += 1
+    end
 
 -- rexxref documentation tests
-
 ::method "test_101"
     self~assertSame("subTest101", 'abcabcabc' , copies('abc',3))
 
