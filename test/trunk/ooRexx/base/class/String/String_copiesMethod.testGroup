@@ -1,0 +1,572 @@
+#!/usr/bin/rexx
+/*
+   name:             String_copiesMethod.testGroup
+   author:           Lee Peedin
+   date:             2007-12-20
+   version:          1.0.0
+
+-- line commented lines are ignored, when building the directory of infos from this header
+
+   languageLevel:    6.02
+   purpose:          Test the copies method of the class String.
+   remark:           Initial test unit for demonstration purposes, needs to be completed.
+
+   license:          CPL 1.0 (Common Public License v1.0, see below)
+   link:
+
+// category needs not to be numbered, importance is given by position (1=most important)
+   category:         ooRexx
+   category:         Base
+   category:         Class
+   category:         String
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 - 2008 Rexx Language Association. All rights reserved.  */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+
+-------------------------------------------------------------------------------------------
+-- ===> adapt the "testGroupList" to your testCase classes; each element in the list is <===
+-- ===> an array object, the first element containing the testCase class object, the   <===
+-- ===> second element is a list of test method names which are regarded to be         <===
+-- ===> mandatory (if the list remains empty all test methods are mandatory)           <===
+
+   /* list of array objects, each containing the testGroup class object and an
+      optional list of mandatory test case methods name                       */
+mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
+testGroupList=.list~of( .array~of(.String_copiesMethod.testGroup,  mandatoryTestMethods) )
+
+
+-------------------------------------------------------------------------------------------
+-- ===> the following code needs not to be individualized                              <===
+
+   -- read top comment, containing infos about this program
+arrLines=.array~new
+do i=1 to 150 until arrLines[i]="*/"
+   arrLines[i]=sourceline(i)
+end
+      -- supply information for the testClass(es) in this file; the class attribute
+      -- "TestCaseInfo" (a directory object, index points to a queue) will store
+      -- the parsed infos
+aTestGroupClass=testGroupList~at(testGroupList~first)[1] -- get first testClass
+
+   -- will parse the array lines and store result in class object
+call makeDirTestInfo aTestGroupClass, arrLines
+tmpDir=aTestGroupClass~TestCaseInfo
+parse source s   -- op_sys invocationType fullPathToThisFile
+tmpDir~setentry("test_Case-source", s)
+
+   -- now add this directory to other testCase classes, if any left
+do arr over testGroupList
+   if arr[1]=aTestGroupClass then iterate  -- already handled
+   arr[1]~TestCaseInfo=tmpDir             -- save info in class object
+end
+
+-- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
+-- and set it to .false; this way the independent local invocation of the tests is inhibited
+if .local~hasentry("bRunTestsLocally")=.false then
+   .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
+
+if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
+do
+   ts=.testSuite~new             -- create a testSuite
+   do arr over testGroupList
+      -- create a testSuite for the given test case class, use all its testmethods
+      ts~addTest( .testSuite~new(arr[1]))
+   end
+   -- testResult=.testSuite~new(testGroupClass)~run
+   testResult=ts~run       -- now run all the tests
+
+   call simpleFormatTestResults testResult
+end
+
+   /* return list of array objects containing test case classes and
+      optionally list of mandatory test methods                      */
+return testGroupList
+
+::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+
+::class "String_copiesMethod.testGroup" subclass TestCase public
+
+-- set 1 (Literal/Literal)
+::method 'test001'
+    self~expectSyntax(93.903)
+    xre = ''~copies()
+
+::method 'test002'
+    self~assertSame('subTest01','',''~copies('0'))
+
+::method 'test003'
+    self~assertSame('subTest01','',''~copies('31'x))
+
+::method 'test004'
+    self~assertSame('subTest01','',''~copies('0.09E2'))
+
+::method 'test005'
+    self~expectSyntax(93.905)
+    xre = ''~copies('0.09E1')
+
+::method 'test006'
+    self~assertSame('subTest01','',''~copies('0010'))
+
+::method 'test007'
+    self~assertSame('subTest01','',''~copies(' 11 '))
+
+::method 'test008'
+    self~assertSame('subTest01','',''~copies(' +255 '))
+
+::method 'test009'
+    self~expectSyntax(93.906)
+    xre = ''~copies(' -256 ')
+
+::method 'test010'
+    self~assertSame('subTest01',' ',' '~copies('1'))
+
+::method 'test011'
+    self~assertSame('subTest01','         ',' '~copies('39'x))
+
+::method 'test012'
+    self~assertSame('subTest01','          ',' '~copies('0.10E2'))
+
+::method 'test013'
+    self~assertSame('subTest01',' ',' '~copies('0.10E1'))
+
+::method 'test014'
+    self~assertSame('subTest01','           ',' '~copies('0011'))
+
+::method 'test015'
+    self~assertSame('subTest01',' '~copies(255),' '~copies(' 255 '))
+
+::method 'test016'
+    self~assertSame('subTest01',' '~copies(256),' '~copies(' +256 '))
+
+::method 'test017'
+    self~expectSyntax(93.906)
+    xre = ' '~copies(' -32768 ')
+
+::method 'test018'
+    self~assertSame('subTest01','ASDFASDFASDFASDFASDFASDFASDFASDFASDF','ASDF'~copies('9'))
+
+::method 'test019'
+    self~assertSame('subTest01','ASDFASDFASDFASDFASDFASDFASDFASDFASDFASDF','ASDF'~copies('3130'x))
+
+::method 'test020'
+    self~assertSame('subTest01','ASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDF','ASDF'~copies('0.11E2'))
+
+::method 'test021'
+    self~expectSyntax(93.905)
+    xre = 'ASDF'~copies('0.11E1')
+
+::method 'test022'
+    self~assertSame('subTest01','ASDF'~copies(255),'ASDF'~copies('00255'))
+
+::method 'test023'
+    self~assertSame('subTest01','ASDF'~copies(256),'ASDF'~copies(' 256 '))
+
+::method 'test024'
+    self~assertSame('subTest01','ASDF'~copies(32768),'ASDF'~copies(' +32768 '))
+
+::method 'test025'
+    self~expectSyntax(93.906)
+    xre = 'ASDF'~copies(' -65536 ')
+
+::method 'test026'
+    self~assertSame('subTest01','ASASASASASASASASASAS','AS'~copies('10'))
+
+::method 'test027'
+    self~assertSame('subTest01','ASASASASASASASASASASAS','AS'~copies('3131'x))
+
+::method 'test028'
+    self~assertSame('subTest01','AS'~copies(255),'AS'~copies('0.255E3'))
+
+::method 'test029'
+    self~expectSyntax(93.905)
+    xre = 'AS'~copies('0.255E2')
+
+::method 'test030'
+    self~assertSame('subTest01','AS'~copies(256),'AS'~copies('00256'))
+
+::method 'test031'
+    self~assertSame('subTest01','AS'~copies(32768),'AS'~copies(' 32768 '))
+
+::method 'test032'
+    self~assertSame('subTest01','AS'~copies(65536),'AS'~copies(' +65536 '))
+
+::method 'test033'
+    self~expectSyntax(93.906)
+    xre = 'AS'~copies(' -131072 ')
+
+::method 'test034'
+    self~assertSame('subTest01','QWERASDFZXCVQWERASDFZXCVQWERAS'~copies(11),'QWERASDFZXCVQWERASDFZXCVQWERAS'~copies('11'))
+
+::method 'test035'
+    self~assertSame('subTest01','QWERASDFZXCVQWERASDFZXCVQWERAS'~copies(255),'QWERASDFZXCVQWERASDFZXCVQWERAS'~copies('323535'x))
+
+::method 'test036'
+    self~assertSame('subTest01','QWERASDFZXCVQWERASDFZXCVQWERAS'~copies(256),'QWERASDFZXCVQWERASDFZXCVQWERAS'~copies('0.256E3'))
+
+::method 'test037'
+    self~expectSyntax(93.905)
+    xre = 'QWERASDFZXCVQWERASDFZXCVQWERAS'~copies('0.256E2')
+
+::method 'test038'
+    self~assertSame('subTest01','','QWERASDFZXCVQWERASDFZXCVQWERAS'~copies(' -0 '))
+
+::method 'test039'
+    self~assertSame('subTest01','Q E A D Z C Q E A D Z C Q E A '~copies(255),'Q E A D Z C Q E A D Z C Q E A '~copies('255'))
+
+::method 'test040'
+    self~assertSame('subTest01','Q E A D Z C Q E A D Z C Q E A '~copies(256),'Q E A D Z C Q E A D Z C Q E A '~copies('323536'x))
+
+::method 'test041'
+    self~assertSame('subTest01','','Q E A D Z C Q E A D Z C Q E A '~copies(' +0 '))
+
+::method 'test042'
+    self~expectSyntax(93.906)
+    xre = 'Q E A D Z C Q E A D Z C Q E A '~copies(' -1 ')
+
+::method 'test043'
+    self~assertSame('subTest01','X'~copies(64000),'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'~copies('256'))
+
+::method 'test044'
+    self~expectSyntax(93.905)
+    xre = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'~copies('0.65536E4')
+
+::method 'test045'
+    self~assertSame('subTest01','','XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'~copies(' 0 '))
+
+::method 'test046'
+    self~assertSame('subTest01','X'~copies(250),'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'~copies(' +1 '))
+
+::method 'test047'
+    self~expectSyntax(93.906)
+    xre = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'~copies(' -9 ')
+
+::method 'test048'
+    self~assertSame('subTest01','','     ASDF'~copies('000'))
+
+::method 'test049'
+    self~assertSame('subTest01','     ASDF','     ASDF'~copies(' 1 '))
+
+::method 'test050'
+    self~assertSame('subTest01','     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF','     ASDF'~copies(' +9 '))
+
+::method 'test051'
+    self~expectSyntax(93.906)
+    xre = '     ASDF'~copies(' -10 ')
+
+::method 'test052'
+    self~assertSame('subTest01','','ASDF QWER ZXCV'~copies('0.00E2'))
+
+::method 'test053'
+    self~assertSame('subTest01','','ASDF QWER ZXCV'~copies('0.00E1'))
+
+::method 'test054'
+    self~assertSame('subTest01','ASDF QWER ZXCV','ASDF QWER ZXCV'~copies('001'))
+
+::method 'test055'
+    self~assertSame('subTest01','ASDF QWER ZXCV'~copies(8)||'ASDF QWER ZXCV','ASDF QWER ZXCV'~copies(' 9 '))
+
+::method 'test056'
+    self~assertSame('subTest01',('ASDF QWER ZXCV'||'ASDF QWER ZXCV')~copies(5),'ASDF QWER ZXCV'~copies(' +10 '))
+
+::method 'test057'
+    self~expectSyntax(93.906)
+    xre = 'ASDF QWER ZXCV'~copies(' -11 ')
+
+::method 'test058'
+    self~assertSame('subTest01','','ASDF     '~copies('30'x))
+
+::method 'test059'
+    self~assertSame('subTest01','ASDF     ','ASDF     '~copies('0.01E2'))
+
+::method 'test060'
+    self~expectSyntax(93.905)
+    xre = 'ASDF     '~copies('0.01E1')
+
+::method 'test061'
+    self~assertSame('subTest01','ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ','ASDF     '~copies('009'))
+
+::method 'test062'
+    self~assertSame('subTest01','ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ','ASDF     '~copies(' 10 '))
+
+::method 'test063'
+    self~assertSame('subTest01','ASDF     '||('ASDF     '||'ASDF     ')~copies(5),'ASDF     '~copies(' +11 '))
+
+::method 'test064'
+    self~expectSyntax(93.906)
+    xre = 'ASDF     '~copies(' -255 ')
+
+::method 'test065'
+    self~assertSame('subTest01','','X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X '~copies('0'))
+
+::method 'test066'
+    self~assertSame('subTest01','X '~copies(125),'X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X '~copies('31'x))
+
+::method 'test067'
+    self~assertSame('subTest01','X '~copies(1125),'X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X '~copies('0.09E2'))
+
+::method 'test068'
+    self~expectSyntax(93.905)
+    xre = 'X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X '~copies('0.09E1')
+
+::method 'test069'
+    self~assertSame('subTest01','X '~copies(1250),'X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X '~copies('0010'))
+
+::method 'test070'
+    self~assertSame('subTest01','X '~copies(1375),'X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X '~copies(' 11 '))
+
+::method 'test071'
+    self~assertSame('subTest01','X '~copies(31875),'X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X '~copies(' +255 '))
+
+::method 'test072'
+    self~expectSyntax(93.906)
+    xre = 'X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X '~copies(' -256 ')
+
+::method 'test073'
+    self~assertSame('subTest01','',''X~copies('1'))
+
+::method 'test074'
+    self~assertSame('subTest01','',''X~copies('39'x))
+
+::method 'test075'
+    self~assertSame('subTest01','',''X~copies('0.10E2'))
+
+::method 'test076'
+    self~expectSyntax(93.905)
+    xre = ''X~copies('0.10E0')
+
+::method 'test077'
+    self~assertSame('subTest01','',''X~copies('0011'))
+
+::method 'test078'
+    self~assertSame('subTest01','',''X~copies(' 255 '))
+
+::method 'test079'
+    self~assertSame('subTest01','',''X~copies(' +256 '))
+
+::method 'test080'
+    self~expectSyntax(93.906)
+    xre = ''X~copies(' -32768 ')
+
+::method 'test081'
+    self~assertSame('subTest01','         ','20'x~copies('9'))
+
+::method 'test082'
+    self~assertSame('subTest01','          ','20'x~copies('3130'x))
+
+::method 'test083'
+    self~assertSame('subTest01','           ','20'x~copies('0.11E2'))
+
+::method 'test084'
+    self~expectSyntax(93.905)
+    xre = '20'x~copies('0.11E1')
+
+::method 'test085'
+    self~assertSame('subTest01',' '~copies(255),'20'x~copies('00255'))
+
+::method 'test086'
+    self~assertSame('subTest01',' '~copies(256),'20'x~copies(' 256 '))
+
+::method 'test087'
+    self~assertSame('subTest01',' '~copies(32768),'20'x~copies(' +32768 '))
+
+::method 'test088'
+    self~assertSame('subTest01','asdfasdfasdfasdfasdfasdfasdfasdfasdfasdf','61736466'x~copies('10'))
+
+::method 'test089'
+    self~assertSame('subTest01','asdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf','61736466'x~copies('3131'x))
+
+::method 'test090'
+    self~assertSame('subTest01','asdf'~copies(255),'61736466'x~copies('0.255E3'))
+
+::method 'test091'
+    self~expectSyntax(93.905)
+    xre = '61736466'x~copies('0.255E2')
+
+::method 'test092'
+    self~assertSame('subTest01','asdfasdf'~copies(128),'61736466'x~copies('00256'))
+
+::method 'test093'
+    self~assertSame('subTest01','asdfasdf'~copies(16384),'61736466'x~copies(' 32768 '))
+
+::method 'test094'
+    self~assertSame('subTest01','asasasasasasasasasasas','6173'x~copies('11'))
+
+::method 'test095'
+    self~expectSyntax(93.905)
+    xre = '6173'x~copies('FF'x)
+
+::method 'test096'
+    self~assertSame('subTest01','as'~copies(256),'6173'x~copies('0.256E3'))
+
+::method 'test097'
+    self~expectSyntax(93.905)
+    xre = '6173'x~copies('0.256E2')
+
+::method 'test098'
+    self~assertSame('subTest01','asas'~copies(16384),'6173'x~copies('0032768'))
+
+::method 'test099'
+    self~assertSame('subTest01','asas'~copies(32768),'6173'x~copies(' 65536 '))
+
+::method 'test100'
+    self~assertSame('subTest01','asas'~copies(65536),'6173'x~copies(' +131072 '))
+
+::method 'test101'
+    self~assertSame('subTest01','','6173'x~copies(' -0 '))
+
+::method 'test102'
+    self~assertSame('subTest01','qwerasdfzxcvqwerasdfzxcvqweras'~copies(255),'71776572617364667a78637671776572617364667a786376717765726173'x~copies('255'))
+
+::method 'test103'
+    self~assertSame('subTest01','qwerasdfzxcvqwerasdfzxcvqweras'~copies(256),'71776572617364667a78637671776572617364667a786376717765726173'x~copies('323536'x))
+
+::method 'test104'
+    self~assertSame('subTest01','qwerasdfzxcvqwerasdfzxcvqweras'~copies(256),'71776572617364667a78637671776572617364667a786376717765726173'x~copies('256'))
+
+::method 'test105'
+    self~assertSame('subTest01','','71776572617364667a78637671776572617364667a786376717765726173'x~copies(' +0 '))
+
+::method 'test106'
+    self~expectSyntax(93.906)
+    xre = '71776572617364667a78637671776572617364667a786376717765726173'x~copies(' -1 ')
+
+::method 'test107'
+    self~assertSame('subTest01','q e a d z c q e a d z c q e a '~copies(256),'71206520612064207a20632071206520612064207a206320712065206120'x~copies('256'))
+
+::method 'test108'
+    self~expectSyntax(93.905)
+    xre = '71206520612064207a20632071206520612064207a206320712065206120'x~copies('0.65536E4')
+
+::method 'test109'
+    self~assertSame('subTest01','','71206520612064207a20632071206520612064207a206320712065206120'x~copies(' 0 '))
+
+::method 'test110'
+    self~assertSame('subTest01','q e a d z c q e a d z c q e a ','71206520612064207a20632071206520612064207a206320712065206120'x~copies(' +1 '))
+
+::method 'test111'
+    self~expectSyntax(93.906)
+    xre = '71206520612064207a20632071206520612064207a206320712065206120'x~copies(' -9 ')
+
+::method 'test112'
+    self~assertSame('subTest01','     asdf'~copies(32768),'202020202061736466'x~copies('32768'))
+
+::method 'test113'
+    self~assertSame('subTest01','','202020202061736466'x~copies('000'))
+
+::method 'test114'
+    self~assertSame('subTest01','     asdf','202020202061736466'x~copies(' 1 '))
+
+::method 'test115'
+    self~assertSame('subTest01','     asdf'~copies(9),'202020202061736466'x~copies(' +9 '))
+
+::method 'test116'
+    self~expectSyntax(93.906)
+    xre = '202020202061736466'x~copies(' -10 ')
+
+::method 'test117'
+    self~assertSame('subTest01','','617364662071776572207a786376'x~copies('0.00E2'))
+
+::method 'test118'
+    self~assertSame('subTest01','asdf qwer zxcv','617364662071776572207a786376'x~copies('001'))
+
+::method 'test119'
+    self~assertSame('subTest01','asdf qwer zxcv'~copies(9),'617364662071776572207a786376'x~copies(' 9 '))
+
+::method 'test120'
+    self~assertSame('subTest01','asdf qwer zxcv'~copies(10),'617364662071776572207a786376'x~copies(' +10 '))
+
+::method 'test121'
+    self~expectSyntax(93.906)
+    xre = '617364662071776572207a786376'x~copies(' -11 ')
+
+::method 'test122'
+    self~assertSame('subTest01','','617364662020202020'x~copies('30'x))
+
+::method 'test123'
+    self~assertSame('subTest01','asdf     ','617364662020202020'x~copies('0.01E2'))
+
+::method 'test124'
+    self~expectSyntax(93.905)
+    xre = '617364662020202020'x~copies('0.01E1')
+
+::method 'test125'
+    self~assertSame('subTest01','asdf     asdf     asdf     asdf     asdf     asdf     asdf     asdf     asdf     ','617364662020202020'x~copies('009'))
+
+::method 'test126'
+    self~assertSame('subTest01','asdf     asdf     asdf     asdf     asdf     asdf     asdf     asdf     asdf     asdf     ','617364662020202020'x~copies(' 10 '))
+
+::method 'test127'
+    self~assertSame('subTest01','asdf     '~copies(11),'617364662020202020'x~copies(' +11 '))
+
+::method 'test128'
+    self~expectSyntax(93.906)
+    xre = '617364662020202020'x~copies(' -255 ')
+
+::method 'test129'
+    xre = ''
+    self~assertSame('subTest01',.true,'58205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820'X~copies('0') == xre)
+
+::method 'test130'
+    xre = 'X '~copies(125)
+    self~assertSame('subTest01',.true,'58205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820'X~copies('31'x) == xre)
+
+::method 'test131'
+    xre = 'X '~copies(1125)
+    self~assertSame('subTest01',.true,'58205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820'X~copies('0.09E2') == xre)
+
+::method 'test132'
+    self~expectSyntax(93.905)
+    xre = '58205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820'X~copies('0.09E1')
+
+::method 'test133'
+    xre = 'X '~copies(1250)
+    self~assertSame('subTest01',.true,'58205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820'X~copies('0010') == xre)
+
+::method 'test134'
+    xre = 'X '~copies(1375)
+    self~assertSame('subTest01',.true,'58205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820'X~copies(' 11 ') == xre)
+
+::method 'test135'
+    xre = 'X '~copies(31875)
+    self~assertSame('subTest01',.true,'58205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820'X~copies(' +255 ') == xre)
+
+::method 'test136'
+    self~expectSyntax(93.906)
+    xre = '58205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820'X~copies(' -256 ')
+
+
