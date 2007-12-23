@@ -1070,7 +1070,9 @@ return
 ::method test_validOpt_bigChar_E
    a = d2c(69)
    y = time(a); z = time(a)
-   self~assertEquals(y, z)
+   -- On a fast system and since the above is 2 separate instructions, z can be
+   -- slightly greate than y
+   self~assertTrue(y <= z)
 
 ::method test_validOpt_bigChar_F
    a = d2c(70)
@@ -1105,7 +1107,9 @@ return
 ::method test_validOpt_bigChar_L
    a = d2c(76)
    y = time(a); z = time(a)
-   self~assertEquals(y, z)
+   -- On a fast system and since the above is 2 separate instructions, z can be
+   -- slightly greate than y
+   self~assertTrue(y <= z)
 
 ::method test_validOpt_bigChar_M
    a = d2c(77)
@@ -1135,7 +1139,9 @@ return
 ::method test_validOpt_bigChar_R
    a = d2c(82)
    y = time(a); z = time(a)
-   self~assertEquals(y, z)
+   -- On a fast system and since the above is 2 separate instructions, z can be
+   -- slightly greate than y
+   self~assertTrue(y <= z)
 
 ::method test_validOpt_bigChar_S
    a = d2c(83)
@@ -1230,7 +1236,9 @@ return
 ::method test_validOpt_littleChar_e
    a = d2c(101)
    y = time(a); z = time(a)
-   self~assertEquals(y, z)
+   -- On a fast system and since the above is 2 separate instructions, z can be
+   -- slightly greate than y
+   self~assertTrue(y <= z)
 
 ::method test_validOpt_littleChar_f
    a = d2c(102)
@@ -1265,7 +1273,9 @@ return
 ::method test_validOpt_littleChar_l
    a = d2c(108)
    y = time(a); z = time(a)
-   self~assertEquals(y, z)
+   -- On a fast system and since the above is 2 separate instructions, z can be
+   -- slightly greate than y
+   self~assertTrue(y <= z)
 
 ::method test_validOpt_littleChar_m
    a = d2c(109)
@@ -1295,7 +1305,9 @@ return
 ::method test_validOpt_littleChar_r
    a = d2c(114)
    y = time(a); z = time(a)
-   self~assertEquals(y, z)
+   -- On a fast system and since the above is 2 separate instructions, z can be
+   -- slightly greate than y
+   self~assertTrue(y <= z)
 
 ::method test_validOpt_littleChar_s
    a = d2c(115)
