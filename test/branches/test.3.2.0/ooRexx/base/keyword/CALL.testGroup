@@ -194,7 +194,6 @@ return testGroupList
    call createFile src, path'SCICAL3A'
 
    -- now do the tests
-   call createFile src, .ooRexxUnit.dir || sl || 'SCICAL1A'
    ai=0
    Call a a(0),a(1),a(2),a(3),a(4),a(5),a(6),a(7),a(8),a(9)
    self~assertSame("subTest3", result,xrange('0','9'))
@@ -659,7 +658,7 @@ return testGroupList
    Call h 'h'; self~assertSame("subTest7-8", (result i),'h 6')
    Call i 'i'; self~assertSame("subTest7-9", (result i),'i 6')
    Call k 'k'; self~assertSame("subTest7-10", (result i),'k 7')
-    
+
    i=0
    self~assertSame("subTest7-11", (a('a') i b('b') i c('c') i),'a 1 b 2 c 3')
    self~assertSame("subTest7-12", (d('d') i),'d 4')
@@ -669,23 +668,23 @@ return testGroupList
    self~assertSame("subTest7-16", (h('h') i),'h 6')
    self~assertSame("subTest7-17", (i('i') i),'i 6')
    self~assertSame("subTest7-18", (k('k') i),'k 7')
-   return    
-    
+   return
+
    a: b:
    c:
      i=i+1
      Return("ARG"(1))
-    
+
    d: e:
    f: Procedure Expose j i j k
      i=i+1
      Return("ARG"(1))
-    
+
    g: h:
    i: Procedure
      i=1
      Return("ARG"(1))
-    
+
    k: Procedure Expose i
      i=i+1
      Return("ARG"(1))
