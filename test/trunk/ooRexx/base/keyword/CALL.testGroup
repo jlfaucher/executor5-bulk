@@ -110,7 +110,7 @@ do
    -- testResult=.testSuite~new(testGroupClass)~run
    testResult=ts~run       -- now run all the tests
 
-   call simpleDumpTestResults testResult
+   call simpleFormatTestResults testResult
 end
 
    /* return list of array objects containing test case classes and
@@ -319,7 +319,7 @@ return testGroupList
               self~assertSame("subTest4-"i"-"j"-"k"2", subdff,'100 0 SCIENTIFIC')
               self~assertSame("subTest4-"i"-"j"-"k"3", novalued_var,'NOVALUED_VAR')
               self~assertSame("subTest4-"i"-"j"-"k"4", novalued_var,'NOVALUED_VAR')
-              Call gt "TIME"('E'),1
+              id=1001; Call gt "TIME"('E'),1
               self~assertSame("subTest4-"i"-"j"-"k"5", "ADDRESS"(),cmd)
               End
            ic=ic+1
@@ -327,6 +327,7 @@ return testGroupList
         End
      self~assertSame("subTest4-3", ic,15)
      End
+   self~assertSame("Okay count should be 4", 4, cnt.ok)
 
    -- now remove the external functions
    call deleteFile path'SCICAL4A'
@@ -342,7 +343,7 @@ return testGroupList
      Numeric Form Scientific
      Signal On Novalue
      Signal Off Syntax
-     Call gt "TIME"('E'),1
+     id=1004; Call gt "TIME"('E'),1
      tt="TIME"('R')
      id=1005; Call lt "TIME"('E'),1
      dff=digits() fuzz() form()
@@ -354,21 +355,13 @@ return testGroupList
       Address ''
       self~assertSame("subTest4-subret", "ADDRESS"(),'')
       Return dff
-   gt: Procedure Expose id cnt.
-      If arg(1)>arg(2) Then
-       cnt.ok=cnt.ok+1
-      Else
-       Call emsg 'Error in GT:' arg(1) '<=' arg(2)
+   gt: Procedure Expose id cnt. self
+      self~assertTrue("subTest4-gt id:" id, arg(1)>arg(2))
+      cnt.ok=cnt.ok+1
       Return
-   lt: Procedure Expose id cnt.
-      If arg(1)<arg(2) Then
-       cnt.ok=cnt.ok+1
-      Else
-        Call emsg 'Error in LT:' arg(1) '>=' arg(2)
-      Return
-   emsg: Procedure Expose id cnt.
-      Say 'Problem with id='id',' arg(1)
-      cnt.err=cnt.err+1
+   lt: Procedure Expose id cnt. self
+      self~assertTrue("subTest4-lt id:" id, arg(1)<arg(2))
+      cnt.ok=cnt.ok+1
       Return
 
 ::method "test_5"
