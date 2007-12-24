@@ -176,6 +176,11 @@ if .ooRexxUnit.directory.separator="\" then     -- DOS-like
 else                                            -- Unix-like
    .local~ooRexxUnit.path.separator=":"
 
+-- Define a 'marker' that can be used to flag a known test case failure.  The
+-- marker should be placed in the 'message' argument to one of the assert
+-- methods.
+.local~ooRexxUnit.knownBugFlag = "tracker bug #"
+
 -- Capture the ooRexxUnit framework directory and ensure it is in the path.
 parse source . . fileSpec
 .local~ooRexxUnit.dir = fileSpec~left(fileSpec~caseLessPos("OOREXXUNIT.CLS") - 2 )
@@ -1231,24 +1236,30 @@ pp: procedure
  *  with an attempt made to keep all lines no longer than 80 characers wide.
  */
 ::routine simpleFormatTestResults public
-   use arg aTestResult, title
+   use strict arg aTestResult, title = "", suppress = .false
 
-   if arg()>1 & title<>"" then do
+   if title<>"" then do
+      say
       say title
       say
    end
 
-   versionStr = .ooRexxUnit.interpreterName .ooRexxUnit.languageLevel .ooRexxUnit.interpreterDate
-   say "Interpreter:" versionStr
-   say "ooRexxUnit: " .ooRexxUnit.version
-   say
-   say "Count of tests ran:            " aTestResult~runCount
-   say "Count of successful assertions:" aTestResult~assertCount
-   say "Count of failures:             " aTestResult~failureCount
-   say "Count of errors:               " aTestResult~errorCount
-   say
+   knownBugs = 0
+   if suppress then knownBugs = countMarkedFailures(aTestResult)
+
+   stats = .directory~new
+   stats[interpreterVersion] = .ooRexxUnit.interpreterName .ooRexxUnit.languageLevel .ooRexxUnit.interpreterDate
+   stats[frameworkVersion]   = .ooRexxUnit.version
+   stats[tests]              = aTestResult~runCount
+   stats[goodAsserts]        = aTestResult~assertCount
+   stats[failures]           = aTestResult~failureCount - knownBugs
+   stats[known]              = knownBugs
+   stats[errors]             = aTestResult~errorCount
+
+   z = printStats(stats)
 
    if aTestResult~failureCount > 0 then do co over aTestResult~failures
+      if suppress, isKnownBug(co) then iterate
       z = printFailureInfo(co~ooRexxUnit.condition)
    end
 
@@ -1259,18 +1270,68 @@ pp: procedure
    -- If a number of failure or error information lines are printed, re-display
    -- the summary statistics again so that the number of failures is obvious to
    -- the user.
-   if (aTestResult~failureCount + aTestResult~errorCount) > 3 then do
-     say "Interpreter:" versionStr
-     say "ooRexxUnit: " .ooRexxUnit.version
-     say
-     say "Count of tests ran:            " aTestResult~runCount
-     say "Count of successful assertions:" aTestResult~assertCount
-     say "Count of failures:             " aTestResult~failureCount
-     say "Count of errors:               " aTestResult~errorCount
-     say
-   end
+   if (stats[failures] + aTestResult~errorCount) > 3 then z = printStats(stats)
 
 return 0
+
+/**
+ * Private routine printStats()
+ *
+ * Helper routine for simpleFormatTestResults().
+ */
+::routine printStats
+   use arg stats
+
+   say "Interpreter:" stats[interpreterVersion]
+   say "ooRexxUnit: " stats[frameworkVersion]
+   say
+   say "Tests ran:              " stats[tests]
+   say "Successful assertions:  " stats[goodAsserts]
+
+   if stats[known] > 0 then do
+     say "Failures:               " stats[failures] + stats[known]
+     say "  (documented failures:)" stats[known]
+   end
+   else do
+     say "Failures:               " stats[failures]
+   end
+
+   say "Errors:                 " stats[errors]
+   say
+
+return 0
+
+/**
+ * Private routine countMarkedFailures()
+ *
+ * Helper routine for simpleFormatTestResults().  Count the number of failures
+ * that have been flagged as known.
+ */
+::routine countMarkedFailures
+   use arg aTestResult
+
+   known = 0
+   do conditionObject over aTestResult~failures
+     if isKnownBug(conditionObject) then known += 1
+   end
+return known
+
+/**
+ * Private routine isKnownBug()
+ *
+ *  Helper routine for simpleFormatTestResults().  Return true if the object is
+ *  flagged as being a known bug.
+ */
+::routine isKnownBug
+   use arg failureObject
+
+   if \ failureObject~isA(.directory) then return .false
+
+   if failureObject~hasEntry("OOREXXUNIT.CONDITION") then do
+     return failureObject["OOREXXUNIT.CONDITION"]~pos(.ooRexxUnit.knownBugFlag) <> 0
+   end
+
+return .false
 
 /**
  * Private routine printFailureInfo()
