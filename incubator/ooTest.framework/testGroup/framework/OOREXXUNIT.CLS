@@ -329,7 +329,7 @@ return leading || trailing
 
   dateTime=pp(date("s") time("L"))
   TestCaseTable[aTestCase]~queue(dateTime": endTest")
-  dir=.directory~new ~~setentry("OOREXXUNIT.CONDITION", dateTime":" pp("endTest") makeTestCaseString(aTestCase) )
+  dir=.directory~new ~~setentry("OOREXXUNIT.CONDITION", dateTime":" pp("endTest") aTestCase~string)
 
   -- save class' 'testCaseInfo' with test case for later analysis
   dir~setentry("OOREXXUNIT.class_testCaseInfo", aTestCase~class~testCaseInfo)
@@ -378,7 +378,7 @@ return leading || trailing
 
   dateTime=pp(date("s") time("L"))
   TestCaseTable[aTestCase]~queue(dateTime": startTest")
-  dir=.directory~new ~~setentry("OOREXXUNIT.CONDITION", dateTime":" pp("startTest") makeTestCaseString(aTestCase))
+  dir=.directory~new ~~setentry("OOREXXUNIT.CONDITION", dateTime":" pp("startTest") aTestCase~string)
 
   -- save class' 'testCaseInfo' with test case for later analysis
   dir~setentry("OOREXXUNIT.class_testCaseInfo", aTestCase~class~testCaseInfo)
@@ -403,19 +403,17 @@ return leading || trailing
 /* *********************************************************************************** */
 ::class "Assert" public mixinclass Object
 
+::attribute fAssertions private
+
 ::method init
-  expose fAssertions          -- count assertions, ooRexxUnit only
-  fAssertions=0
+  self~fAssertions=0
 
-::method assertCount          -- ooRex only
-  expose fAssertions          -- count assertions, ooRexxUnit only
-  return fAssertions
-
-::method fAssertions attribute private    -- ooRexxUnit only
+::method assertCount
+  return self~fAssertions     -- count assertions, ooRexxUnit only
 
    -- assertions will raise a user error, if they do not hold
 ::method assertEquals
-  expose fAssertions          -- count assertions, ooRexxUnit only
+
   if arg()=2 then             -- no failure message supplied
   do
      bEquals=(arg(1)=arg(2))
@@ -427,7 +425,7 @@ return leading || trailing
 
      if bEquals then
      do
-        fAssertions=fAssertions+1
+        self~fAssertions += 1
         return -- assertion holds
      end
      self~fail("@assertFailure assertEquals: expected="formatObjectInfo(arg(1))", actual="formatObjectInfo(arg(2))"."||"09"x)
@@ -442,7 +440,7 @@ return leading || trailing
 
   if bEquals then
   do
-     fAssertions=fAssertions+1
+     self~fAssertions += 1
      return    -- assertion holds
   end
 
@@ -453,12 +451,12 @@ return leading || trailing
 
 
 ::method assertFalse
-  expose fAssertions          -- count assertions, ooRexxUnit only
+
   if arg()=1 then             -- no failure message supplied
   do
      if arg(1)=.false then
      do
-        fAssertions=fAssertions+1
+        self~fAssertions += 1
         return   -- assertion holds
      end
      self~fail("@assertFailure assertFalse: expected=[0], actual="ppp(arg(1))"."||"09"x)
@@ -466,7 +464,7 @@ return leading || trailing
 
   if arg(2)=.false then
   do
-     fAssertions=fAssertions+1
+     self~fAssertions += 1
      return      -- assertion holds
   end
 
@@ -476,7 +474,7 @@ return leading || trailing
 
    -- assertions will raise a user error, if they do not hold
 ::method assertNotEquals      -- ooRexxUnit only, 2006-12-30
-  expose fAssertions          -- count assertions, ooRexxUnit only
+
   if arg()=2 then             -- no failure message supplied
   do
      bEquals=(arg(1)=arg(2))
@@ -488,7 +486,7 @@ return leading || trailing
 
      if \bEquals then
      do
-        fAssertions=fAssertions+1
+        self~fAssertions += 1
         return -- assertion holds
      end
      self~fail("@assertFailure assertNotEquals: expected="formatObjectInfo(arg(1), "\= ")", actual="formatObjectInfo(arg(2))"."||"09"x)
@@ -503,7 +501,7 @@ return leading || trailing
 
   if \bEquals then
   do
-     fAssertions=fAssertions+1
+     self~fAssertions += 1
      return    -- assertion holds
   end
 
@@ -513,12 +511,12 @@ return leading || trailing
 
 
 ::method assertNotNull
-  expose fAssertions          -- count assertions, ooRexxUnit only
+
   if arg()=1 then             -- no failure message supplied
   do
      if .nil<>arg(1) then
      do
-        fAssertions=fAssertions+1
+        self~fAssertions += 1
         return    -- assertion holds
      end
      self~fail("@assertFailure assertNotNull: expected=[\= [.nil]], actual=[.nil]."||"09"x)
@@ -526,7 +524,7 @@ return leading || trailing
 
   if .nil<>arg(2) then
   do
-     fAssertions=fAssertions+1
+     self~fAssertions += 1
      return       -- assertion holds
   end
 
@@ -535,39 +533,35 @@ return leading || trailing
 
 
 ::method assertNotSame
-  expose fAssertions          -- count assertions, ooRexxUnit only
+
   if arg()=2 then             -- no failure message supplied
   do
      if (arg(1)==arg(2))=.false then
      do
-        fAssertions=fAssertions+1
+        self~fAssertions += 1
         return  -- assertion holds
      end
 
      self~fail("@assertFailure assertNotSame: expected="formatObjectInfo(arg(1), "\== ")", actual="formatObjectInfo(arg(2))"."||"09"x)
-
-     -- self~fail("@assertFailure assertNotSame: not expected="ppp(arg(1)~string "<hashValue:" getEscapedhashValue(arg(1))">")", received="ppp(arg(2)~string "<hashValue:" getEscapedhashValue(arg(2))">")"."||"09"x)
   end
 
   if (arg(2)==arg(3))=.false then
   do
-     fAssertions=fAssertions+1
+     self~fAssertions += 1
      return     -- assertion holds
   end
-
-  -- sTmp="@assertFailure assertNotSame: not expected="ppp(arg(2)~string "<hashValue:" getEscapedhashValue(arg(2))">")", received="ppp(arg(3)~string "<hashValue:" getEscapedhashValue(arg(3))">")"."||"09"x
 
   sTmp="@assertFailure assertNotSame: expected="formatObjectInfo(arg(2), "\== ")", actual="formatObjectInfo(arg(3))"."||"09"x
   self~fail(sTmp || arg(1))      -- fail with msg
 
 
 ::method assertNull
-  expose fAssertions          -- count assertions, ooRexxUnit only
+
   if arg()=1 then             -- no failure message supplied
   do
      if .nil=arg(1) then
      do
-        fAssertions=fAssertions+1
+        self~fAssertions += 1
         return     -- assertion holds
      end
      self~fail("@assertFailure assertNull: expected=[.nil], actual="ppp(arg(1))"."||"09"x)
@@ -575,7 +569,7 @@ return leading || trailing
 
   if .nil=arg(2)then
   do
-     fAssertions=fAssertions+1
+     self~fAssertions += 1
      return         -- assertion holds
   end
 
@@ -584,12 +578,12 @@ return leading || trailing
 
 
 ::method assertSame
-  expose fAssertions          -- count assertions, ooRexxUnit only
+
   if arg()=2 then             -- no failure message supplied
   do
      if (arg(1)==arg(2))=.true then
      do
-        fAssertions=fAssertions+1
+        self~fAssertions += 1
         return-- assertion holds
      end
      -- self~fail("@assertFailure assertSame: expected="ppp(arg(1)~string "<hashValue:" getEscapedhashValue(arg(1))">")", received="ppp(arg(2)~string "<hashValue:" getEscapedhashValue(arg(2))">")"."||"09"x)
@@ -598,7 +592,7 @@ return leading || trailing
 
   if (arg(2)==arg(3))=.true then
   do
-     fAssertions=fAssertions+1
+     self~fAssertions += 1
      return   -- assertion holds
   end
 
@@ -607,12 +601,12 @@ return leading || trailing
 
 
 ::method assertTrue
-  expose fAssertions          -- count assertions, ooRexxUnit only
+
   if arg()=1 then             -- no failure message supplied
   do
      if arg(1)=.true then
      do
-        fAssertions=fAssertions+1
+        self~fAssertions += 1
         return    -- assertion holds
      end
      self~fail("@assertFailure assertTrue: expected=[1], actual="ppp(arg(1))"."||"09"x)
@@ -620,7 +614,7 @@ return leading || trailing
 
   if arg(2)=.true then
   do
-     fAssertions=fAssertions+1
+     self~fAssertions += 1
      return       -- assertion holds
   end
 
@@ -660,7 +654,7 @@ return leading || trailing
 
 
 ::method checkCondition
-  expose conditionExpected conditionName errorCode fAssertions
+  expose conditionExpected conditionName errorCode
   use arg receivedCondition
 
   if receivedCondition~condition == conditionName then
@@ -672,7 +666,7 @@ return leading || trailing
               return .false
           end
       end
-      fAssertions=fAssertions+1        -- asserted that expected conditionName has occurred!
+      self~fAssertions += 1            -- assert that expected conditionName has occurred!
       return .true
   end
   return .false
@@ -841,8 +835,13 @@ exceptionHandler:
   expose fName
   parse arg fName
 
-::method string      -- create a string representation, counterpart to Java's toString()
-  return  makeTestCaseString(self)
+/** Create a string representation of this test case, a counterpart to Java's
+ *  toString()
+ */
+::method string
+  className=self~class~id   -- get class name
+  return "testCase:" pp(self~getName) "(a" || addN(className) className || "@" || -
+          self~definedInFile")"
 
 
 ::method setUp       -- will get implemented in subclasses (allows to create a test-environment)
@@ -850,7 +849,6 @@ exceptionHandler:
 
 ::method tearDown    -- will get implemented in subclasses (allows to remove a test-environment)
   NOP                -- indicate that emptiness is intended
-
 
 
 
@@ -1071,15 +1069,6 @@ exceptionHandler:
 
   if "aeiou"~caselessPos(name~left(1))>0 then return "n"
   return ""
-
-/* *********************************************************************************** */
-/* *********************************************************************************** */
-::routine makeTestCaseString -- string to represent an instance of a TestCase
-  use arg aTestCase
-  className=aTestCase~class~id   -- get class name
-  return "testCase:" pp(aTestCase~getName) "(a" || addN(className) className || "@" || -
-                 aTestCase~definedInFile")"
-
 
 /* *********************************************************************************** */
 /* *********************************************************************************** */
