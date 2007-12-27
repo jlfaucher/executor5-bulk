@@ -122,7 +122,7 @@ return testGroupList
 ::class "String_absMethod.testGroup" subclass TestCase public
 
 ::method "test_1"
-   self~assertSame("subTest1", (5555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555)~abs,'5.55555556E+249')
+   self~assertSame("subTest1", 5555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555~abs,'5.55555556E+249')
 
 ::method "test_2"
    self~assertSame("subTest2", (-99999%3)~abs,33333)
@@ -131,7 +131,7 @@ return testGroupList
    self~assertSame("subTest3", (5555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555/3)~abs,1.85185185E+249)
 
 ::method "test_4"
-   self~assertSame("subTest4", (003)~abs,'3')
+   self~assertSame("subTest4", 003~abs,'3')
 
 ::method "test_5"
    self~assertSame("subTest5", (-000003)~abs,'3')
@@ -140,42 +140,42 @@ return testGroupList
    self~assertSame("subTest6", (-.003E17)~abs,'3E+14')
 
 ::method "test_7"
-   self~assertSame("subTest7", (.03E2)~abs,'3')
+   self~assertSame("subTest7", .03E2~abs,'3')
 
 ::method "test_8"
    self~assertSame("subTest8", (copies(' ',1000)'   3  ')~abs, '3')
 
 ::method "test_9"
-   self~assertSame("subTest9", ('   3  ')~abs,'3')
+   self~assertSame("subTest9", '   3  '~abs,'3')
 
 ::method "test_10"
-   self~assertSame("subTest10", (' + 31 ')~abs,'31')
+   self~assertSame("subTest10", ' + 31 '~abs,'31')
 
 ::method "test_11"
-   self~assertSame("subTest11", (' - 31 ')~abs,'31')
+   self~assertSame("subTest11", ' - 31 '~abs,'31')
 
 ::method "test_12"
-   self~assertSame("subTest12", ( 0 + 31 )~abs,'31')
+   self~assertSame("subTest12",  0 + 31 ~abs,'31')
 
 ::method "test_13"
    self~assertSame("subTest13", ( 0 + '  31 ' )~abs,'31')
 
 ::method "test_14"
    self~expectSyntax(93.943)
-   self~assertSame("subTest14", (' 0 + 31 ')~abs,'31')
+   self~assertSame("subTest14", ' 0 + 31 '~abs,'31')
 
 ::method "test_15"
-   self~assertSame("subTest15", ('300  ')~abs,'300')
+   self~assertSame("subTest15", '300  '~abs,'300')
 
 ::method "test_16"
-   self~assertSame("subTest16", ('          300')~abs,'300')
+   self~assertSame("subTest16", '          300'~abs,'300')
 
 ::method "test_17"
-   self~assertSame("subTest17", ('2B303033'x)~abs,'3')
+   self~assertSame("subTest17", '2B303033'x~abs,'3')
 
 ::method "test_18"
    a=11111111
-   self~assertSame("subTest18", (a)~abs,'11111111')
+   self~assertSame("subTest18", a~abs,'11111111')
 
 ::method "test_19"
    a=11111111
@@ -190,10 +190,10 @@ return testGroupList
 
 ::method "test_22"
    self~expectSyntax(93.943)
-   self~assertSame("subTest22", ('a')~abs,'a')
+   self~assertSame("subTest22", 'a'~abs,'a')
 
 ::method "test_23"
-   self~assertSame("subTest23", ('-4.2')~abs,'4.2')
+   self~assertSame("subTest23", '-4.2'~abs,'4.2')
 
 ::method "test_24"
    self~assertSame("subTest24", '414253'x( -4.2), '4.2')
@@ -202,7 +202,7 @@ return testGroupList
    n=-33333333
    Numeric Digits 5
    Numeric Form Engineering
-   self~assertSame("subTest25", (n)~abs,'33.333E+6')
+   self~assertSame("subTest25", n~abs,'33.333E+6')
 
 ::method "test_26"
    n=-33333333
@@ -214,98 +214,98 @@ return testGroupList
    n=-33333333
    Numeric Digits 5
    Numeric Form Engineering
-   self~assertSame("subTest27", (1E-0234567890)~abs,10E-234567891)
+   self~assertSame("subTest27", 1E-0234567890~abs,10E-234567891)
 
 ::method "test_28"
    Numeric Digits 5
    Numeric Form Engineering
-   self~assertSame("subTest28", (10.5e12-1389004007)~abs,'10.499E+12')
+   self~assertSame("subTest28", 10.5e12-1389004007~abs,'10.499E+12')
 
 ::method "test_29"
    self~expectSyntax(93.943)
-   self~assertSame("subTest29", (1E1234567890)~abs,1)
+   self~assertSame("subTest29", 1E1234567890~abs,1)
 
 ::method "test_30"
    self~expectSyntax(93.943)
-   self~assertSame("subTest30", (novalue)~abs,1)
+   self~assertSame("subTest30", novalue~abs,1)
 
 ::method "test_31"
    self~expectSyntax(93.943)
    three = 3
-   self~assertSame("subTest31", (stem.three)~abs,3)
+   self~assertSame("subTest31", stem.three~abs,3)
 
 ::method "test_abs_subtest32"
    self~expectSyntax(93.943)
-   self~assertSame("subTestss", (invalid)~abs,3)
+   self~assertSame("subTestss", invalid~abs,3)
 
 ::method "test_33"
    Numeric Digits 5
    Numeric Form Engineering
    stem.=-18.000000000000000004
-   self~assertSame("subTest33", (stem.four )~abs,'18.000')
+   self~assertSame("subTest33", stem.four~abs,'18.000')
 
 ::method "test_34"
    Numeric Digits 10000
    Numeric Form Engineering
    li=Copies('6',8000)
-   self~assertSame("subTest34", (li)~abs,copies('6', 8000))
+   self~assertSame("subTest34", li~abs,copies('6', 8000))
 
 ::method "test_35"
    Numeric Digits 10000
    Numeric Form Engineering
-   self~assertSame("subTest35", ('12.3')~abs,'12.3')
+   self~assertSame("subTest35", '12.3'~abs,'12.3')
 
 ::method "test_36"
    Numeric Digits 10000
    Numeric Form Engineering
-   self~assertSame("subTest36", ('-0.307')~abs,'0.307')
+   self~assertSame("subTest36", '-0.307'~abs,'0.307')
 
 ::method "test_37"
    Numeric Digits 10000
    Numeric Form Engineering
-   self~assertSame("subTest37", 0, (' -0')~abs)
+   self~assertSame("subTest37", 0, ' -0'~abs)
 
 ::method "test_38"
    Numeric Digits 10000
    Numeric Form Engineering
-   self~assertSame("subTest38", 0, (' +0')~abs)
+   self~assertSame("subTest38", 0, ' +0'~abs)
 
 ::method "test_39"
    Numeric Digits 10000
    Numeric Form Engineering
-   self~assertSame("subTest39", 0, (' - 0 ')~abs)
+   self~assertSame("subTest39", 0, ' - 0 '~abs)
 
 ::method "test_40"
    Numeric Digits 10000
    Numeric Form Engineering
-   self~assertSame("subTest40", 0, (' + 0 ')~abs)
+   self~assertSame("subTest40", 0, ' + 0 '~abs)
 
 ::method "test_41"
    Numeric Digits 10000
    Numeric Form Engineering
-   self~assertSame("subTest41", 1, (' -1')~abs)
+   self~assertSame("subTest41", 1, ' -1'~abs)
 
 ::method "test_42"
    Numeric Digits 10000
    Numeric Form Engineering
-   self~assertSame("subTest42", 1, (' +1')~abs)
+   self~assertSame("subTest42", 1, ' +1'~abs)
 
 ::method "test_43"
    Numeric Digits 10000
    Numeric Form Engineering
-   self~assertSame("subTest43", 1, (' - 1 ')~abs)
+   self~assertSame("subTest43", 1, ' - 1 '~abs)
 
 ::method "test_44"
    Numeric Digits 10000
    Numeric Form Engineering
-   self~assertSame("subTest44", 1, (' + 1 ')~abs)
+   self~assertSame("subTest44", 1, ' + 1 '~abs)
 
    -- rexxref documentation tests
 
 ::method "test_101"
-   self~assertSame("subTest101", 12.3, ('12.3')~abs)
+   self~assertSame("subTest101", 12.3, '12.3'~abs)
 
 ::method "test_102"
-   self~assertSame("subTest102", 0.307, (' -0.307')~abs)
+   self~assertSame("subTest102", 0.307, ' -0.307'~abs)
 
 

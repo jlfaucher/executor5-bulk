@@ -127,43 +127,43 @@ return testGroupList
 
 ::method "test_2"
    self~expectSyntax(93.932)
-   self~assertSame("subTest2", (' ')~b2x, ' ')
+   self~assertSame("subTest2", ' '~b2x, ' ')
 
 ::method "test_3"
-   self~assertSame("subTest3", ('1111')~b2x, 'F')
+   self~assertSame("subTest3", '1111'~b2x, 'F')
 
 ::method "test_4"
-   self~assertSame("subTest4", ('0001 0001')~b2x, '11')
+   self~assertSame("subTest4", '0001 0001'~b2x, '11')
 
 ::method "test_5"
-   self~assertSame("subTest5", ('1 0001')~b2x, '11')
+   self~assertSame("subTest5", '1 0001'~b2x, '11')
 
 ::method "test_6"
    self~expectSyntax(93.932)
-   self~assertSame("subTest6", (' 1111')~b2x, 'F')
+   self~assertSame("subTest6", ' 1111'~b2x, 'F')
 
 ::method "test_7"
    self~expectSyntax(93.932)
-   self~assertSame("subTest7", (' 0001 0001')~b2x, '11')
+   self~assertSame("subTest7", ' 0001 0001'~b2x, '11')
 
 ::method "test_8"
    self~expectSyntax(93.932)
-   self~assertSame("subTest8", (' 1 0001')~b2x, '11')
+   self~assertSame("subTest8", ' 1 0001'~b2x, '11')
 
 ::method "test_9"
    self~expectSyntax(93.932)
-   self~assertSame("subTest9", ('1111 ')~b2x, '1')
+   self~assertSame("subTest9", '1111 '~b2x, '1')
 
 ::method "test_10"
    self~expectSyntax(93.932)
-   self~assertSame("subTest10", ('0001 0001 ')~b2x, '11')
+   self~assertSame("subTest10", '0001 0001 '~b2x, '11')
 
 ::method "test_11"
    self~expectSyntax(93.932)
-   self~assertSame("subTest11", ('1 0001 ')~b2x, '11')
+   self~assertSame("subTest11", '1 0001 '~b2x, '11')
 
 ::method "test_12"
-   self~assertSame("subTest12", (1111)~b2x, 'F')
+   self~assertSame("subTest12", 1111~b2x, 'F')
 
 ::method "test_13"
    self~assertSame("subTest13", ( 1111)~b2x, 'F')
@@ -203,19 +203,19 @@ return testGroupList
 
 ::method "test_25"
    self~expectSyntax(93.932)
-   self~assertSame("subTest25", (' 1 0001')~b2x, '11')
+   self~assertSame("subTest25", ' 1 0001'~b2x, '11')
 
 ::method "test_26"
    self~expectSyntax(93.932)
-   self~assertSame("subTest26", ('1 0001 ')~b2x, '11')
+   self~assertSame("subTest26", '1 0001 '~b2x, '11')
 
 ::method "test_27"
    self~expectSyntax(93.934)
-   self~assertSame("subTest27", (Xrange('00'x,'FF'x))~b2x, '11')
+   self~assertSame("subTest27", Xrange('00'x,'FF'x)~b2x, '11')
 
 ::method "test_28"
    self~expectSyntax(93.934)
-   self~assertSame("subTest28", (Copies('AB',50000))~b2x, '11')
+   self~assertSame("subTest28", Copies('AB',50000)~b2x, '11')
 
 ::method "test_29"
    self~expectSyntax(93.934)
@@ -236,14 +236,14 @@ return testGroupList
 -- rexxref documentation tests
 
 ::method "test_101"
-   self~assertSame("subTest101", ('11000011')~b2x, 'C3')
+   self~assertSame("subTest101", '11000011'~b2x, 'C3')
 
 ::method "test_102"
-   self~assertSame("subTest102", ('10111')~b2x, '17')
+   self~assertSame("subTest102", '10111'~b2x, '17')
 
 ::method "test_103"
-   self~assertSame("subTest103", ('101')~b2x, '5')
+   self~assertSame("subTest103", '101'~b2x, '5')
 
 ::method "test_104"
-   self~assertSame("subTest104", ('1 1111 0000')~b2x, '1F0')
+   self~assertSame("subTest104", '1 1111 0000'~b2x, '1F0')
 

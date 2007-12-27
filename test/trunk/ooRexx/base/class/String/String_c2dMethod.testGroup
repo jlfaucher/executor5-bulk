@@ -126,28 +126,28 @@ return testGroupList
 
 ::method "test_2"
    vnull=''
-   self~assertSame("subTest2", (vnull)~c2d(),'0')
+   self~assertSame("subTest2", vnull~c2d(),'0')
 
 ::method "test_3"
-   self~assertSame("subTest3", (''x)~c2d(),'0')
+   self~assertSame("subTest3", ''x~c2d(),'0')
 
 ::method "test_4"
    vnullx=''x
-   self~assertSame("subTest4", (vnullx)~c2d(),'0')
+   self~assertSame("subTest4", vnullx~c2d(),'0')
 
 ::method "test_5"
    NUMERIC DIGITS 5000
-   self~assertSame("subTest5", ('ROBERTrobertROBERTrobertROBERT')~c2d(),'568080015352033871793933420740353466052840140384757156478248729736204884')
+   self~assertSame("subTest5", 'ROBERTrobertROBERTrobertROBERT'~c2d(),'568080015352033871793933420740353466052840140384757156478248729736204884')
 
 ::method "test_6"
    NUMERIC DIGITS 5000
    v30c='ROBERTrobertROBERTrobertROBERT'
-   self~assertSame("subTest6", (v30c)~c2d(),'568080015352033871793933420740353466052840140384757156478248729736204884')
+   self~assertSame("subTest6", v30c~c2d(),'568080015352033871793933420740353466052840140384757156478248729736204884')
 
 ::method "test_7"
    NUMERIC DIGITS 5000
    v30x='178E2AB06C6DA2E2A284B01007818435EB8F83F6493A3C2C3C49EFEC5800'x
-   self~assertSame("subTest7", (v30x)~c2d(),'162572974095606466301624124686282447156845298215730782823583198695151616')
+   self~assertSame("subTest7", v30x~c2d(),'162572974095606466301624124686282447156845298215730782823583198695151616')
 
 ::method "test_8"
    self~assertSame("subTest8", (21*2)~c2d(),'13362')
@@ -161,29 +161,29 @@ return testGroupList
    self~assertSame("subTest10", (v21*v2)~c2d(),'13362')
 
 ::method "test_11"
-   self~assertSame("subTest11", ('')~c2d(0),'0')
+   self~assertSame("subTest11", ''~c2d(0),'0')
 
 ::method "test_12"
    vnull=''
-   self~assertSame("subTest12", (vnull)~c2d(0),'0')
+   self~assertSame("subTest12", vnull~c2d(0),'0')
 
 ::method "test_13"
-   self~assertSame("subTest13", (''x)~c2d(0),'0')
+   self~assertSame("subTest13", ''x~c2d(0),'0')
 
 ::method "test_14"
    vnullx=''x
-   self~assertSame("subTest14", (vnullx)~c2d(0),'0')
+   self~assertSame("subTest14", vnullx~c2d(0),'0')
 
 ::method "test_15"
-   self~assertSame("subTest15", ('ROBERTrobertROBERTrobertROBERT')~c2d(0),'0')
+   self~assertSame("subTest15", 'ROBERTrobertROBERTrobertROBERT'~c2d(0),'0')
 
 ::method "test_16"
    v30c='ROBERTrobertROBERTrobertROBERT'
-   self~assertSame("subTest16", (v30c)~c2d(0),'0')
+   self~assertSame("subTest16", v30c~c2d(0),'0')
 
 ::method "test_17"
    v30x='178E2AB06C6DA2E2A284B01007818435EB8F83F6493A3C2C3C49EFEC5800'x
-   self~assertSame("subTest17", (v30x)~c2d(0),'0')
+   self~assertSame("subTest17", v30x~c2d(0),'0')
 
 ::method "test_18"
    self~assertSame("subTest18", (21*2)~c2d(0),'0')
@@ -203,34 +203,34 @@ return testGroupList
 ::method "test_22"
    self~expectSyntax(93.923)
    vnull=''
-   self~assertSame("subTest22", ('')~c2d(-1),'-1')
+   self~assertSame("subTest22", ''~c2d(-1),'-1')
 
 ::method "test_23"
    self~expectSyntax(93.923)
-   self~assertSame("subTest23", (vnull)~c2d(-1),'-1')
+   self~assertSame("subTest23", vnull~c2d(-1),'-1')
 
 ::method "test_24"
    self~expectSyntax(93.923)
    vnull=''
-   self~assertSame("subTest24", (vnull)~c2d(-1),'-1')
+   self~assertSame("subTest24", vnull~c2d(-1),'-1')
 
 ::method "test_25"
    self~expectSyntax(93.923)
    vnullx=''x
-   self~assertSame("subTest25", (vnullx)~c2d(-1),'-1')
+   self~assertSame("subTest25", vnullx~c2d(-1),'-1')
 
 ::method "test_26"
    self~expectSyntax(93.923)
-   self~assertSame("subTest26", ('ROBERTrobertROBERTrobertROBERT')~c2d(-1),'-1')
+   self~assertSame("subTest26", 'ROBERTrobertROBERTrobertROBERT'~c2d(-1),'-1')
 
 ::method "test_27"
    self~expectSyntax(93.923)
-   self~assertSame("subTest27", (v30c)~c2d(-1),'-1')
+   self~assertSame("subTest27", v30c~c2d(-1),'-1')
 
 ::method "test_28"
    self~expectSyntax(93.923)
    v30x='178E2AB06C6DA2E2A284B01007818435EB8F83F6493A3C2C3C49EFEC5800'x
-   self~assertSame("subTest28", (v30x)~c2d(-1),'-1')
+   self~assertSame("subTest28", v30x~c2d(-1),'-1')
 
 ::method "test_29"
    self~expectSyntax(93.923)
@@ -248,22 +248,22 @@ return testGroupList
 
 ::method "test_32"
    NUMERIC DIGITS 5000
-   self~assertSame("subTest32", ('ROBERTrobertROBERTrobertROBERT')~c2d(29),'2136814915207641224283440033637378951849204666785458954921743384662612')
+   self~assertSame("subTest32", 'ROBERTrobertROBERTrobertROBERT'~c2d(29),'2136814915207641224283440033637378951849204666785458954921743384662612')
 
 ::method "test_33"
    NUMERIC DIGITS 5000
    v30c='ROBERTrobertROBERTrobertROBERT'
-   self~assertSame("subTest33", (v30c)~c2d(' 29 '),'2136814915207641224283440033637378951849204666785458954921743384662612')
+   self~assertSame("subTest33", v30c~c2d(' 29 '),'2136814915207641224283440033637378951849204666785458954921743384662612')
 
 ::method "test_34"
    NUMERIC DIGITS 5000
    v30x='178E2AB06C6DA2E2A284B01007818435EB8F83F6493A3C2C3C49EFEC5800'x
-   self~assertSame("subTest34", (v30x)~c2d(00029),'-3068938227367064596810016008366163701981317116358494500317382676031488')
+   self~assertSame("subTest34", v30x~c2d(00029),'-3068938227367064596810016008366163701981317116358494500317382676031488')
 
 ::method "test_35"
    self~expectSyntax(93.936)
    v30x='178E2AB06C6DA2E2A284B01007818435EB8F83F6493A3C2C3C49EFEC5800'x
-   self~assertSame("subTest35", (v30x)~c2d(00029),'-3068938227367064596810016008366163701981317116358494500317382676031488')
+   self~assertSame("subTest35", v30x~c2d(00029),'-3068938227367064596810016008366163701981317116358494500317382676031488')
 
 ::method "test_36"
    self~assertSame("subTest36", (21*2)~c2d(' 001 '),'50')
@@ -278,26 +278,26 @@ return testGroupList
 
 ::method "test_39"
    self~expectSyntax(93.936)
-   self~assertSame("subTest39", ('ROBERTrobertROBERTrobertROBERT')~c2d('3330'x),'568080015352033871793933420740353466052840140384757156478248729736204884')
+   self~assertSame("subTest39", 'ROBERTrobertROBERTrobertROBERT'~c2d('3330'x),'568080015352033871793933420740353466052840140384757156478248729736204884')
 
 ::method "test_40"
    NUMERIC DIGITS 5000
-   self~assertSame("subTest40", ('ROBERTrobertROBERTrobertROBERT')~c2d('3330'x),'568080015352033871793933420740353466052840140384757156478248729736204884')
+   self~assertSame("subTest40", 'ROBERTrobertROBERTrobertROBERT'~c2d('3330'x),'568080015352033871793933420740353466052840140384757156478248729736204884')
 
 ::method "test_41"
    self~expectSyntax(93.923)
    v30c='ROBERTrobertROBERTrobertROBERT'
-   self~assertSame("subTest41", (v30c)~c2d("'F3F0'x"),'1')
+   self~assertSame("subTest41", v30c~c2d("'F3F0'x"),'1')
 
 ::method "test_42"
    self~expectSyntax(93.936)
    v30x='178E2AB06C6DA2E2A284B01007818435EB8F83F6493A3C2C3C49EFEC5800'x
-   self~assertSame("subTest42", (v30x)~c2d(15*2),'162572974095606466301624124686282447156845298215730782823583198695151616')
+   self~assertSame("subTest42", v30x~c2d(15*2),'162572974095606466301624124686282447156845298215730782823583198695151616')
 
 ::method "test_43"
    NUMERIC DIGITS 5000
    v30x='178E2AB06C6DA2E2A284B01007818435EB8F83F6493A3C2C3C49EFEC5800'x
-   self~assertSame("subTest43", (v30x)~c2d(15*2),'162572974095606466301624124686282447156845298215730782823583198695151616')
+   self~assertSame("subTest43", v30x~c2d(15*2),'162572974095606466301624124686282447156845298215730782823583198695151616')
 
 ::method "test_44"
    self~expectSyntax(93.923)
@@ -313,31 +313,31 @@ return testGroupList
 
 ::method "test_47"
    self~expectSyntax(93.936)
-   self~assertSame("subTest47", ('ROBERTrobertROBERTrobertROBERT')~c2d(0031),'568080015352033871793933420740353466052840140384757156478248729736204884')
+   self~assertSame("subTest47", 'ROBERTrobertROBERTrobertROBERT'~c2d(0031),'568080015352033871793933420740353466052840140384757156478248729736204884')
 
 ::method "test_48"
    NUMERIC DIGITS 5000
-   self~assertSame("subTest48", ('ROBERTrobertROBERTrobertROBERT')~c2d(0031),'568080015352033871793933420740353466052840140384757156478248729736204884')
+   self~assertSame("subTest48", 'ROBERTrobertROBERTrobertROBERT'~c2d(0031),'568080015352033871793933420740353466052840140384757156478248729736204884')
 
 ::method "test_49"
    self~expectSyntax(93.936)
    v30c='ROBERTrobertROBERTrobertROBERT'
-   self~assertSame("subTest49", (v30c)~c2d(' 0031 '),'568080015352033871793933420740353466052840140384757156478248729736204884')
+   self~assertSame("subTest49", v30c~c2d(' 0031 '),'568080015352033871793933420740353466052840140384757156478248729736204884')
 
 ::method "test_50"
    NUMERIC DIGITS 5000
    v30c='ROBERTrobertROBERTrobertROBERT'
-   self~assertSame("subTest50", (v30c)~c2d(' 0031 '),'568080015352033871793933420740353466052840140384757156478248729736204884')
+   self~assertSame("subTest50", v30c~c2d(' 0031 '),'568080015352033871793933420740353466052840140384757156478248729736204884')
 
 ::method "test_51"
    self~expectSyntax(93.936)
    v30x='178E2AB06C6DA2E2A284B01007818435EB8F83F6493A3C2C3C49EFEC5800'x
-   self~assertSame("subTest51", (v30x)~c2d(.0031E4),'162572974095606466301624124686282447156845298215730782823583198695151616')
+   self~assertSame("subTest51", v30x~c2d(.0031E4),'162572974095606466301624124686282447156845298215730782823583198695151616')
 
 ::method "test_52"
    NUMERIC DIGITS 5000
    v30x='178E2AB06C6DA2E2A284B01007818435EB8F83F6493A3C2C3C49EFEC5800'x
-   self~assertSame("subTest52", (v30x)~c2d(.0031E4),'162572974095606466301624124686282447156845298215730782823583198695151616')
+   self~assertSame("subTest52", v30x~c2d(.0031E4),'162572974095606466301624124686282447156845298215730782823583198695151616')
 
 ::method "test_53"
    self~assertSame("subTest53", (21*2)~c2d(' .003E3 '),'13362')
@@ -352,92 +352,92 @@ return testGroupList
    self~assertSame("subTest55", (v21*v2)~c2d("'33'x"),'13362')
 
 ::method "test_56"
-   self~assertSame("subTest56", (nv)~c2d,'20054')
+   self~assertSame("subTest56", nv~c2d,'20054')
 
 ::method "test_57"
-   self~assertSame("subTest57", (nv.)~c2d,'5133870')
+   self~assertSame("subTest57", nv.~c2d,'5133870')
 
 ::method "test_58"
    self~expectSyntax(93.936)
-   self~assertSame("subTest58", (nv.10)~c2d,'336453316912')
+   self~assertSame("subTest58", nv.10~c2d,'336453316912')
 
 ::method "test_59"
    NUMERIC DIGITS 5000
-   self~assertSame("subTest59", (nv.10)~c2d,'336453316912')
+   self~assertSame("subTest59", nv.10~c2d,'336453316912')
 
 ::method "test_60"
-   self~assertSame("subTest60", (nv)~c2d,'20054')
+   self~assertSame("subTest60", nv~c2d,'20054')
 
 ::method "test_61"
-   self~assertSame("subTest61", (nv.)~c2d,5133870)
+   self~assertSame("subTest61", nv.~c2d,5133870)
 
 ::method "test_62"
    self~expectSyntax(93.936)
-   self~assertSame("subTest62", (nv.10)~c2d,336453316912)
+   self~assertSame("subTest62", nv.10~c2d,336453316912)
 
 ::method "test_63"
    NUMERIC DIGITS 5000
-   self~assertSame("subTest63", (nv.10)~c2d,336453316912)
+   self~assertSame("subTest63", nv.10~c2d,336453316912)
 
 ::method "test_64"
    NUMERIC DIGITS 72
-   self~assertSame("subTest64", ('ROBERTrobertROBERTrobertROBERT')~c2d,'568080015352033871793933420740353466052840140384757156478248729736204884')
+   self~assertSame("subTest64", 'ROBERTrobertROBERTrobertROBERT'~c2d,'568080015352033871793933420740353466052840140384757156478248729736204884')
 
 ::method "test_65"
    NUMERIC DIGITS 72
    v30c='ROBERTrobertROBERTrobertROBERT'
-   self~assertSame("subTest65", (v30c)~c2d,'568080015352033871793933420740353466052840140384757156478248729736204884')
+   self~assertSame("subTest65", v30c~c2d,'568080015352033871793933420740353466052840140384757156478248729736204884')
 
 ::method "test_66"
    NUMERIC DIGITS 72
-   self~assertSame("subTest66", ('ROBERTrobertROBERTrobertROBERT')~c2d(10*3),'568080015352033871793933420740353466052840140384757156478248729736204884')
+   self~assertSame("subTest66", 'ROBERTrobertROBERTrobertROBERT'~c2d(10*3),'568080015352033871793933420740353466052840140384757156478248729736204884')
 
 ::method "test_67"
    self~expectSyntax(93.923)
    NUMERIC DIGITS 72
    v30c='ROBERTrobertROBERTrobertROBERT'
-   self~assertSame("subTest67", (v30c)~c2d(' 60*.5 '),'568080015352033871793933420740353466052840140384757156478248729736204884')
+   self~assertSame("subTest67", v30c~c2d(' 60*.5 '),'568080015352033871793933420740353466052840140384757156478248729736204884')
 
 ::method "test_68"
    NUMERIC DIGITS 72
-   self~assertSame("subTest68", ('ROBERTrobertROBERTrobertROBERT')~c2d(31),'568080015352033871793933420740353466052840140384757156478248729736204884')
+   self~assertSame("subTest68", 'ROBERTrobertROBERTrobertROBERT'~c2d(31),'568080015352033871793933420740353466052840140384757156478248729736204884')
 
 ::method "test_69"
    NUMERIC DIGITS 72
    v30c='ROBERTrobertROBERTrobertROBERT'
-   self~assertSame("subTest69", (v30c)~c2d(' 31 '),'568080015352033871793933420740353466052840140384757156478248729736204884')
+   self~assertSame("subTest69", v30c~c2d(' 31 '),'568080015352033871793933420740353466052840140384757156478248729736204884')
 
 ::method "test_70"
    self~expectSyntax(93.936)
    NUMERIC DIGITS 71
    v30x='178E2AB06C6DA2E2A284B01007818435EB8F83F6493A3C2C3C49EFEC5800'x
-   self~assertSame("subTest70", (v30x)~c2d,'568080015352033871793933420740353466052840140384757156478248729736204884')
+   self~assertSame("subTest70", v30x~c2d,'568080015352033871793933420740353466052840140384757156478248729736204884')
 
 ::method "test_71"
    self~expectSyntax(93.936)
    NUMERIC DIGITS 71
    v30x='178E2AB06C6DA2E2A284B01007818435EB8F83F6493A3C2C3C49EFEC5800'x
-   self~assertSame("subTest71", (v30x)~c2d(0030),'568080015352033871793933420740353466052840140384757156478248729736204884')
+   self~assertSame("subTest71", v30x~c2d(0030),'568080015352033871793933420740353466052840140384757156478248729736204884')
 
 ::method "test_72"
    self~expectSyntax(93.936)
    NUMERIC DIGITS 71
    v30x='178E2AB06C6DA2E2A284B01007818435EB8F83F6493A3C2C3C49EFEC5800'x
-   self~assertSame("subTest72", (v30x)~c2d(' 0031 '),'568080015352033871793933420740353466052840140384757156478248729736204884')
+   self~assertSame("subTest72", v30x~c2d(' 0031 '),'568080015352033871793933420740353466052840140384757156478248729736204884')
 
 ::method "test_73"
    NUMERIC DIGITS 70
-   self~assertSame("subTest73", ('ROBERTrobertROBERTrobertROBERT')~c2d(.29E2),'2136814915207641224283440033637378951849204666785458954921743384662612')
+   self~assertSame("subTest73", 'ROBERTrobertROBERTrobertROBERT'~c2d(.29E2),'2136814915207641224283440033637378951849204666785458954921743384662612')
 
 ::method "test_74"
    NUMERIC DIGITS 70
    v30c='ROBERTrobertROBERTrobertROBERT'
-   self~assertSame("subTest74", (v30c)~c2d(' .29E2 '),'2136814915207641224283440033637378951849204666785458954921743384662612')
+   self~assertSame("subTest74", v30c~c2d(' .29E2 '),'2136814915207641224283440033637378951849204666785458954921743384662612')
 
 ::method "test_75"
    NUMERIC DIGITS 70
    v30x='178E2AB06C6DA2E2A284B01007818435EB8F83F6493A3C2C3C49EFEC5800'x
-   self~assertSame("subTest75", (v30x)~c2d('3239'x),'-3068938227367064596810016008366163701981317116358494500317382676031488')
+   self~assertSame("subTest75", v30x~c2d('3239'x),'-3068938227367064596810016008366163701981317116358494500317382676031488')
 
 ::method "test_76"
    self~expectSyntax(93.936)
@@ -644,38 +644,38 @@ return testGroupList
    v10='034356388326450378309860601'
    v250FFx251r=v01||v02||v03||v04||v05||v06||v07||v08||v09||v10
 
-   self~assertSame("subTest87a", (v250c)~c2d(),v250cr)
-   self~assertSame("subTest87b", (v250x)~c2d(),v250xr)
-   self~assertSame("subTest87c", (v250c)~c2d(0),'0')
-   self~assertSame("subTest87d", (v250x)~c2d(0),'0')
-   self~assertSame("subTest87e", (v250c)~c2d(249),v250c249r)
-   self~assertSame("subTest87f", (v250x)~c2d(249),v250x249r)
+   self~assertSame("subTest87a", v250c~c2d(),v250cr)
+   self~assertSame("subTest87b", v250x~c2d(),v250xr)
+   self~assertSame("subTest87c", v250c~c2d(0),'0')
+   self~assertSame("subTest87d", v250x~c2d(0),'0')
+   self~assertSame("subTest87e", v250c~c2d(249),v250c249r)
+   self~assertSame("subTest87f", v250x~c2d(249),v250x249r)
    self~assertSame("subTest87g", (v00x||v250c)~c2d(249),v250c249r)
    self~assertSame("subTest87h", (v00x||v250x)~c2d(249),v250x249r)
    self~assertSame("subTest87i", (vFFx||v250c)~c2d(249),v250c249r)
    self~assertSame("subTest87j", (vFFx||v250x)~c2d(249),v250x249r)
-   self~assertSame("subTest87k", (v250c)~c2d(250),v250c250r)
-   self~assertSame("subTest87l", (v250x)~c2d(250),v250x250r)
+   self~assertSame("subTest87k", v250c~c2d(250),v250c250r)
+   self~assertSame("subTest87l", v250x~c2d(250),v250x250r)
    self~assertSame("subTest87m", (v00x||v250c)~c2d(250),v250c250r)
    self~assertSame("subTest87n", (v00x||v250x)~c2d(250),v250x250r)
    self~assertSame("subTest87o", (vFFx||v250c)~c2d(250),v250c250r)
    self~assertSame("subTest87p", (vFFx||v250x)~c2d(250),v250x250r)
    NUMERIC DIGITS 602
-   self~assertSame("subTest87q", (v250c)~c2d(),v250cr)
-   self~assertSame("subTest87r", (v250x)~c2d(),v250xr)
+   self~assertSame("subTest87q", v250c~c2d(),v250cr)
+   self~assertSame("subTest87r", v250x~c2d(),v250xr)
    NUMERIC DIGITS 600
-   self~assertSame("subTest87s", (v250c)~c2d(249),v250c249r)
-   self~assertSame("subTest87t", (v250x)~c2d(249),v250x249r)
+   self~assertSame("subTest87s", v250c~c2d(249),v250c249r)
+   self~assertSame("subTest87t", v250x~c2d(249),v250x249r)
    NUMERIC DIGITS 602
-   self~assertSame("subTest87u", (v250c)~c2d(250),v250c250r)
-   self~assertSame("subTest87v", (v250x)~c2d(250),v250x250r)
+   self~assertSame("subTest87u", v250c~c2d(250),v250c250r)
+   self~assertSame("subTest87v", v250x~c2d(250),v250x250r)
 
 ::method "test_88"
    x=0
    LOOP1:
    id='00001-'||x
-   a=(x)~d2c
-   z=(a)~c2d
+   a=x~d2c
+   z=a~c2d
    self~assertSame("subTest88-"||x, z,x)
    x=x+1
    If x<256 Then Signal LOOP1
@@ -684,8 +684,8 @@ return testGroupList
    x=0
    LOOP2:
    id='00002-'||x
-   a=(x)~d2c
-   z=(a)~c2d(1)
+   a=x~d2c
+   z=a~c2d(1)
    If z<0 Then z=z+256
    self~assertSame("subTest89-"||x, z,x)
    x=x+1
@@ -695,8 +695,8 @@ return testGroupList
    x=0
    LOOP3:
    id='00003-'||x
-   a=(x)~d2c
-   z=(a)~c2d(2)
+   a=x~d2c
+   z=a~c2d(2)
    self~assertSame("subTest90-"||x, z,x)
    x=x+1
    If x<256 Then Signal LOOP3
@@ -733,44 +733,44 @@ return testGroupList
 -- rexxref documentation tests
 
 ::method "test_201"
-    self~assertSame("subTest201" , 0     ,  ('')~c2d()       )
+    self~assertSame("subTest201" , 0     ,  ''~c2d()       )
 
 ::method "test_202"
-    self~assertSame("subTest202" , 9     ,  ('09'X)~c2d()    )
+    self~assertSame("subTest202" , 9     ,  '09'X~c2d()    )
 
 ::method "test_203"
-    self~assertSame("subTest203" , 129   ,  ('81'X)~c2d()    )
+    self~assertSame("subTest203" , 129   ,  '81'X~c2d()    )
 
 ::method "test_204"
-    self~assertSame("subTest204" , 65409 ,  ('FF81'X)~c2d()  )
+    self~assertSame("subTest204" , 65409 ,  'FF81'X~c2d()  )
 
 ::method "test_205"
-    self~assertSame("subTest205" , 0     ,  ("")~c2d()       )
+    self~assertSame("subTest205" , 0     ,  ""~c2d()       )
 
 ::method "test_206"
-    self~assertSame("subTest206" , 97    ,  ('a')~c2d()      )
+    self~assertSame("subTest206" , 97    ,  'a'~c2d()      )
 
 ::method "test_207"
-    self~assertSame("subTest207" , -127  ,  ('81'X)~c2d(1)  )
+    self~assertSame("subTest207" , -127  ,  '81'X~c2d(1)  )
 
 ::method "test_208"
-    self~assertSame("subTest208" , 129   ,  ('81'X)~c2d(2)  )
+    self~assertSame("subTest208" , 129   ,  '81'X~c2d(2)  )
 
 ::method "test_209"
-    self~assertSame("subTest209" , -127  ,  ('FF81'X)~c2d(2))
+    self~assertSame("subTest209" , -127  ,  'FF81'X~c2d(2))
 
 ::method "test_210"
-    self~assertSame("subTest210", -127  , ('FF81'X)~c2d(1) )
+    self~assertSame("subTest210", -127  , 'FF81'X~c2d(1) )
 
 ::method "test_211"
-    self~assertSame("subTest211", 127   , ('FF7F'X)~c2d(1) )
+    self~assertSame("subTest211", 127   , 'FF7F'X~c2d(1) )
 
 ::method "test_212"
-    self~assertSame("subTest212", -3967 , ('F081'X)~c2d(2) )
+    self~assertSame("subTest212", -3967 , 'F081'X~c2d(2) )
 
 ::method "test_213"
-    self~assertSame("subTest213", -127  , ('F081'X)~c2d(1) )
+    self~assertSame("subTest213", -127  , 'F081'X~c2d(1) )
 
 ::method "test_214"
-    self~assertSame("subTest214", 0     , ('0031'X)~c2d(0) )
+    self~assertSame("subTest214", 0     , '0031'X~c2d(0) )
 

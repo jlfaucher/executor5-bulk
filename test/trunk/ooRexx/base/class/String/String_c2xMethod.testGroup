@@ -122,28 +122,28 @@ return testGroupList
 ::class "String_c2xMethod.testGroup" subclass TestCase public
 
 ::method "test_1"
-   self~assertSame("subTest1", ('')~c2x(),'')
+   self~assertSame("subTest1", ''~c2x(),'')
 
 ::method "test_2"
-   self~assertSame("subTest2", ('*')~c2x(),'2A')
+   self~assertSame("subTest2", '*'~c2x(),'2A')
 
 ::method "test_3"
    v30='AbCdEfGhIjKlMnOpQrStUvWxYz1234'
-   self~assertSame("subTest3", (v30)~c2x(),'4162436445664768496A4B6C4D6E4F705172537455765778597A31323334')
+   self~assertSame("subTest3", v30~c2x(),'4162436445664768496A4B6C4D6E4F705172537455765778597A31323334')
 
 ::method "test_4"
-   self~assertSame("subTest4", ('ªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªª')~c2x(),COPIES('AA',250))
+   self~assertSame("subTest4", 'ªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªª'~c2x(),COPIES('AA',250))
 
 ::method "test_5"
    v100000=COPIES('JR',50000)
-   self~assertSame("subTest5", (v100000)~c2x(),COPIES('4A52',50000))
+   self~assertSame("subTest5", v100000~c2x(),COPIES('4A52',50000))
 
 ::method "test_6"
    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX='International Business Machines'
-   self~assertSame("subTest6", (XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX)~c2x(),'496E7465726E6174696F6E616C20427573696E657373204D616368696E6573')
+   self~assertSame("subTest6", XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~c2x(),'496E7465726E6174696F6E616C20427573696E657373204D616368696E6573')
 
 ::method "test_7"
-   self~assertSame("subTest7", ('D1D9'x)~c2x(),'D1D9')
+   self~assertSame("subTest7", 'D1D9'x~c2x(),'D1D9')
 
 ::method "test_8"
    self~assertSame("subTest8", (+00000000000000000000000000000000000000000000000000000000000000042)~c2x(),'3432')
@@ -159,7 +159,7 @@ return testGroupList
 
 ::method "test_12"
    vn42=42
-   self~assertSame("subTest12", (vn42)~c2x(),'3432')
+   self~assertSame("subTest12", vn42~c2x(),'3432')
 
 ::method "test_13"
    vn2=2
@@ -187,7 +187,7 @@ return testGroupList
 ::method "test_18"
    NUMERIC DIGITS 1
    vn42=42
-   self~assertSame("subTest18", (vn42)~c2x(),'3432')
+   self~assertSame("subTest18", vn42~c2x(),'3432')
 
 ::method "test_19"
    NUMERIC DIGITS 1
@@ -203,58 +203,58 @@ return testGroupList
    self~assertSame("subTest20", ((vn7*vn3)*vn2)~c2x(),'34452B31')
 
 ::method "test_21"
-   self~assertSame("subTest21", (nv)~c2x(),'4E56')
+   self~assertSame("subTest21", nv~c2x(),'4E56')
 
 ::method "test_22"
-   self~assertSame("subTest22", (nv.)~c2x(),'4E562E')
+   self~assertSame("subTest22", nv.~c2x(),'4E562E')
 
 ::method "test_23"
-   self~assertSame("subTest23", (nv.10)~c2x(),'4E562E3130')
+   self~assertSame("subTest23", nv.10~c2x(),'4E562E3130')
 
 ::method "test_24"
-   self~assertSame("subTest24", (nv.10)~c2x(),'4E562E3130')
+   self~assertSame("subTest24", nv.10~c2x(),'4E562E3130')
 
 ::method "test_25"
-   self~assertSame("subTest25", (DATATYPE(6))~c2x(),'4E554D')
+   self~assertSame("subTest25", DATATYPE(6)~c2x(),'4E554D')
 
 ::method "test_26"
-   self~assertSame("subTest26", (SUBSTR('John R. Buckley',2,13))~c2x(),'6F686E20522E204275636B6C65')
+   self~assertSame("subTest26", SUBSTR('John R. Buckley',2,13)~c2x(),'6F686E20522E204275636B6C65')
 
 ::method "test_27"
-   self~assertSame("subTest27", (WORD('Now is the time',4))~c2x(),'74696D65')
+   self~assertSame("subTest27", WORD('Now is the time',4)~c2x(),'74696D65')
 
 ::method "test_28"
-   self~assertSame("subTest28", (SUBWORD('Now is the time',2,2))~c2x(),'697320746865')
+   self~assertSame("subTest28", SUBWORD('Now is the time',2,2)~c2x(),'697320746865')
 
 ::method "test_29"
-   self~assertSame("subTest29", (MAX(0,2,4,6,8,10))~c2x(),'3130')
+   self~assertSame("subTest29", MAX(0,2,4,6,8,10)~c2x(),'3130')
 
 ::method "test_30"
-   self~assertSame("subTest30", ('John')~c2x(),'4A6F686E')
+   self~assertSame("subTest30", 'John'~c2x(),'4A6F686E')
 
 ::method "test_31"
-   self~assertSame("subTest31", (copies('John',2))~c2x(),'4A6F686E4A6F686E')
+   self~assertSame("subTest31", copies('John',2)~c2x(),'4A6F686E4A6F686E')
 
 ::method "test_32"
    self~assertSame("subTest32", X2C(('JR')~c2x),'JR')
 
 ::method "test_33"
-   self~assertSame("subTest33", (X2C('D1D9'))~c2x(),'D1D9')
+   self~assertSame("subTest33", X2C('D1D9')~c2x(),'D1D9')
 
 ::method "test_34"
-   self~assertSame("subTest34", (C2X('1'))~c2x(),'3331')
+   self~assertSame("subTest34", C2X('1')~c2x(),'3331')
 
 ::method "test_35"
    self~expectSyntax(93.902)
-   self~assertSame("subTest35", ('1')~c2x(1),'3331')
+   self~assertSame("subTest35", '1'~c2x(1),'3331')
 
 -- rexxref documentation tests
 ::method "test_101"
-    self~assertSame("subTest101", ""       , ('')~c2x()     )
+    self~assertSame("subTest101", ""       , ''~c2x()     )
 
 ::method "test_102"
-    self~assertSame("subTest102", '0123'   , ('0123'X)~c2x()) /* '30313233'X in ASCII */
+    self~assertSame("subTest102", '0123'   , '0123'X~c2x()) /* '30313233'X in ASCII */
 
 ::method "test_103"
-    self~assertSame("subTest103", '5A4438' , ('ZD8')~c2x()  ) /* '354134343338'X in ASCII */
+    self~assertSame("subTest103", '5A4438' , 'ZD8'~c2x()  ) /* '354134343338'X in ASCII */
 
