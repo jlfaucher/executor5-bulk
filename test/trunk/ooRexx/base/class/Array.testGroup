@@ -3,7 +3,7 @@
    name:             Array.testGroup
    author:           Rony G. Flatscher
    date:             2007-05-29/30
-   version:          1.0.4
+   version:          1.0.5
 
 -- line commented lines are ignored, when building the directory of infos from this header
    changed:          2007-06-09, ---rgf, added some non-string objects for testing
@@ -358,7 +358,7 @@ return testGroupList
 
 
 
-::method "test_empty"
+::method "test_empty_with_of"
   expose collDir clz bUserDefinedIndex bSingleItem
 
   ce=collDir~emptyColl
@@ -370,6 +370,101 @@ return testGroupList
   c2=collDir~coll_2~copy
   self~assertTrue("subtest03:", sameContent(ce, c2~copy~~empty))
 
+  a = .array~of('dog', 'cat', 'bird')
+  self~assertSame('array a must have 3 items', 3, a~items)
+  a~empty
+  self~assertSame('array a must have 0 items after empty', 0, a~items)
+  self~assertTrue('array a must be empty after empty', a~isEmpty)
+
+::method "test_empty_with_of_and_add_more"
+  z = .array~of('dog', 'cat', 'bird')
+  self~assertSame('array z must have 3 items', 3, z~items)
+  z[4] = 'lion'
+  z[5] = 'lion'
+  z[6] = 'lion'
+  z[7] = 'lion'
+  z[8] = 'lion'
+  z[9] = 'lion'
+  self~assertSame('array z must have 9 items', 9, z~items)
+  z~empty
+  self~assertSame('array z must have 0 items after empty', 0, z~items)
+  self~assertTrue('array z must be empty after empty', z~isEmpty)
+
+::method test_empty_with_interpet_and_of
+
+  arrayStr = '1, '~copies(10000)
+  interpret 'z = .array~of(' arrayStr ')'
+
+  self~assertSame('created array must have 10000 items', 10000, z~items)
+  z~empty
+  self~assertSame('array z after empty must have 0 itmes', 0, z~items)
+
+::method test_empty_with_str_makearray
+  yStr = '1 '~copies(10000)
+  y = yStr~makearray(" ")
+  self~assertSame('array y must have 10,000 items', 10000, y~items)
+  y~empty
+  self~assertSame('array y must have 0 items after emtpy', 0, y~items)
+
+::method test_empty_with_new_small
+  b =.array~new
+  b[1] = 1
+  b[2] = 1
+  b[3] = 1
+  b[4] = 1
+  b[5] = 1
+  b[6] = 1
+  self~assertSame('array b must have 6 items', 6, b~items)
+  b~empty
+  self~assertTrue('array b must be empty after empty', b~isEmpty)
+  self~assertSame('array b must have 0 items after empty', 0, b~items)
+
+::method test_empty_with_new_big
+  c = .array~new
+  do i = 1 to 10000
+    c[i] = 1
+  end
+  self~assertSame('array c must have 10,000 items', 10000, c~items)
+  c~empty
+  self~assertSame('array c must have 0 items after empty', 0, c~items)
+
+::method test_empty_new_append_small
+
+  d = .array~new
+  d~append(1)
+  d~append(2)
+  d~append(3)
+  d~append(4)
+  d~append(5)
+  d~append(6)
+  d~append(7)
+  d~append(8)
+  d~append(9)
+  self~assertSame('array d must have 9 items', 9, d~items)
+  d~empty
+  self~assertSame('array d must have 0 items after empty', 0, d~items)
+
+::method test_empty_new_append_big
+  e = .array~new
+  do i = 1 to 10000
+    e~append(i)
+  end
+  self~assertSame('array e must have 10,000 items', 10000, e~items)
+  e~empty
+  self~assertSame('array e must have 0 items after empty', 0, e~items)
+
+::method test_empty_when_empty
+
+  e = .array~new
+  self~assertTrue('new array must be empty', e~isEmpty)
+
+  e~empty
+  self~assertSame('emtpy on empty array leaves empty array', .true, e~isEmpty)
+
+  do i = 1 to 20
+    e~empty
+    self~assertSame('empty for the' i 'time(s) leaves array with 0 items', 0, e~items)
+  end
 
 ::method "test_empty_syntax"
 
