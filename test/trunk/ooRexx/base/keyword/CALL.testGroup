@@ -356,11 +356,11 @@ return testGroupList
       self~assertSame("subTest4-subret", "ADDRESS"(),'')
       Return dff
    gt: Procedure Expose id cnt. self
-      self~assertTrue("subTest4-gt id:" id, arg(1)>arg(2))
+      self~assertTrue("subTest4-gt id:" id "TIME('E')>1", arg(1)>arg(2))
       cnt.ok=cnt.ok+1
       Return
    lt: Procedure Expose id cnt. self
-      self~assertTrue("subTest4-lt id:" id, arg(1)<arg(2))
+      self~assertTrue("subTest4-lt id:" id "TIME('E')>1", arg(1)<arg(2))
       cnt.ok=cnt.ok+1
       Return
 
