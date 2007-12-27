@@ -231,7 +231,6 @@ return testUnitList
 
 ::method 'test033'
     self~assertSame('subTest01',1,lastPos('NV.',nv.))
-    --call ver lastPos('NV.',nv.),1
 
 ::method 'test034'
     self~assertSame('subTest01','1',lastPos(nv,'NV'))
@@ -340,7 +339,6 @@ return testUnitList
 
 ::method 'test067'
     self~assertSame('subTest01','1',lastPos(00345,(00345 03450 34500)))
---call ver lastPos(00345,(00345 03450 34500)),'1'; R0111:
 
 ::method 'test068'
     self~assertSame('subTest01','1',lastPos(00345          03450,(00345 03450 34500)))
