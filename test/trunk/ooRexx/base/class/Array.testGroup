@@ -356,9 +356,7 @@ return testGroupList
   self~assertTrue('Intersection result should have an Orange item', resultObj~hasItem('Orange'))
 
 
-
-
-::method "test_empty_with_of"
+::method test_empty
   expose collDir clz bUserDefinedIndex bSingleItem
 
   ce=collDir~emptyColl
@@ -370,6 +368,7 @@ return testGroupList
   c2=collDir~coll_2~copy
   self~assertTrue("subtest03:", sameContent(ce, c2~copy~~empty))
 
+::method "test_empty_with_of"
   a = .array~of('dog', 'cat', 'bird')
   self~assertSame('array a must have 3 items', 3, a~items)
   a~empty
@@ -452,6 +451,64 @@ return testGroupList
   self~assertSame('array e must have 10,000 items', 10000, e~items)
   e~empty
   self~assertSame('array e must have 0 items after empty', 0, e~items)
+
+
+::method test_empty_then_append
+  e = .array~new
+  do i = 1 to 10000
+    e~append(i)
+  end
+  self~assertSame('array e must have 10,000 items', 10000, e~items)
+  e~empty
+  self~assertSame('array e must have 0 items after empty', 0, e~items)
+
+  do i = 1 to 10000
+    e~append(.object~new)
+  end
+  self~assertSame('array e must have 10,000 items after empty then append', 10000, e~items)
+
+  do i = 1 to 10000 by 4
+    e~remove(i)
+  end
+  self~assertSame('array e must have 7500 itmes after removing 25%', 7500, e~items)
+
+  f = e~makearray
+  self~assertSame('array f must have 7500 itmes after makearray', 7500, f~items)
+  do i = 1 to f~items
+    self~assertSame('each item must be remoable and an instance of .Object', .object, f~remove(i)~class)
+  end
+
+::method test_multidimension_empty
+
+  a = .array~new
+  a[1,1] = 'cat'
+  a[1,2] = 'dog'
+  a[1,3] = 'rat'
+  a[2,1] = 'cat house'
+  a[2,2] = 'dog house'
+  a[2,3] = 'rat house'
+  a[3,1] = 1
+  a[3,2] = 2
+  a[3,3] = 3
+  self~assertSame('array a must have 9 items', 9, a~items)
+  a~empty
+  self~assertSame('array a must have 0 items after empty', 0, a~items)
+
+
+::method test_multidimension_empty_big
+
+  a = .array~new
+  do i = 1 to 10
+    do j = 1 to 10
+      do k = 1 to 10
+        a[i,j,k] = i + j + k
+      end
+    end
+  end
+  self~assertSame('array a must have 1,000 items', 1000, a~items)
+  a~empty
+  self~assertSame('array a must have 0 items after empty', 0, a~items)
+
 
 ::method test_empty_when_empty
 
