@@ -121,6 +121,7 @@ return testGroupList
 
 
 ::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'FileUtils.cls'
 
 ::class "DO.testGroup" subclass TestCase public
 
@@ -1512,4 +1513,311 @@ return testGroupList
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 0/**/by/**/ -4 /**/to/**/ -10;is=is+1;
    End
    self~AssertSame("subTest375", is, 0)
+
+::method "test_DO_standardTest2A"
+   i=0
+   Do cv=13; If i>10 Then Leave; i=i+1; End;
+   self~AssertSame("subTest1", (cv i),(24 11))
+   i=0;j=1
+   Do cv.j= 13; If i>10 Then Leave; i=i+1; End;
+   self~AssertSame("subTest2", (cv.j i),(24 11))
+   i=0;
+   Do cv. = 13; If i>10 Then Leave; i=i+1; End;
+   self~AssertSame("subTest3", (cv. i),(24 11))
+   b=0                                   /* cv=expression    */
+   Do cv=1+3; IF b=1; Then Leave; b=1; End
+   self~AssertSame("subTest4", cv,5)
+   o='';C=0                                          /* are funct.calls  */
+   Do cv=f('I',1) By f('B',2) To F('T',3) For F('F',4); c=c+1; End;
+   self~AssertSame("subTest5", (cv O C),'5 IBTF 2')
+   o='';C=0                                          /*different sequence*/
+   Do cv=f('I',1) By f('B',2) For F('F',40) To F('T',3); c=c+1; End;
+   self~AssertSame("subTest6", (cv O C),'5 IBFT 2')
+   Do i=010     To  1 By 3; Call err;      End
+   self~AssertSame("subTest7", i,'10')
+   Do i=010     To 11 While i=0; Call err; End
+   self~AssertSame("subTest8", i,'10')
+   Do i=010     To  1 Until 3=3; Call err; End
+   self~AssertSame("subTest9", i,'10')
+   Do i=010     To 30 Until i>10;          End
+   self~AssertSame("subTest10", i,'11')
+   Do i=010     To 30 Until i<100;         End
+   self~AssertSame("subTest11", i,'10')
+   Do i=010e+00 To 20 By -3; Call err;     End
+   self~AssertSame("subTest12", i,'10')
+   Do i=1       To 20 For 0; Call err;     End
+   self~AssertSame("subTest13", i,'1')
+   Do i=1       To 20 For 1;               End
+   self~AssertSame("subTest13", i,'2')
+
+   f: o=o||"ARG"(1); Return "ARG"(2)
+
+::method "test_DO_standardTest2B"
+   c=0;                                    /* cv=simple   var. */
+   Do cv=1   To 5 ; c=c+1; End;
+   self~AssertSame("subTest1", (c cv),(5 6))
+   c=0; j=1;                              /* cv=compound var. */
+   Do cv.j=1 To 5 ; c=c+1; End;
+   self~AssertSame("subTest2", (c cv.j),(5 6))
+   c=0;                                   /* cv=stem          */
+   Do cv. =1 To 5 ; c=c+1; End;
+   self~AssertSame("subTest3", (c cv.),(5 6))
+
+::method "test_DO_standardTest2C"
+   -- Create our external functions.
+   path = .ooRexxUnit.dir || .ooRexxUnit.directory.separator
+   src = .array~new()
+   src[1] = "Parse Version version"
+   src[2] = "Parse Source fn"
+   src[3] = "extloop:"
+   src[4] = "c=0"
+   src[5] = "Do i=1 to 3"
+   src[6] = "c=c+1"
+   src[7] = "If c=2 Then Return c"
+   src[8] = "End"
+   src[9] = "Return 99"
+   call createFile src, path'SCIDOS2A'
+
+   -- now do the tests
+   expri.1=6; expri.2=3; expri.3=0; expri.4=-3; expri.5=-6
+   exprb.1=4; exprb.2=3; exprb.3=-3;exprb.4=-4
+   exprt.1=10;exprt.2=5; exprt.3=0; exprt.4=-5; exprt.5=-10;
+   exprf.1=15; exprf.2=7 ; exprf.3=0 ;
+   is.=0
+   Do i=1 to 5;
+      Do b=1 to 4;
+         Do t=1 to 5;
+            Do f=1 to 3;
+               Do k=expri.i For exprf.f By exprb.b To exprt.t
+               is.i.b.t.f=(is.i.b.t.f)+1
+               End k
+            End f
+         End t
+      End b
+   End i
+   Do i=1 to 5;
+      Do b=1 to 4;
+         Do t=1 to 5;
+            Do f=1 to 3;
+            self~AssertSame("subTest1-"i"-"||b"-"t"-"f, is.i.b.t.f,"SCIDOS2A"(expri.i exprb.b exprt.t exprf.f))
+            End f
+         End t
+      End b
+   End i
+
+   -- now remove the external functions
+   call deleteFile path'SCIDOS2A'
+
+::method "test_DO_standardTest2D"
+   c=0 ; b.=2; t.=3; f.=4
+   do cv=1 By b. To t. For f.; c=c+1; End;
+   self~AssertSame("subTest1", (cv c),(5 2))
+
+::method "test_DO_standardTest2E"
+   i=0;
+   Do 7       ; i=i+1; End;                  /* exprr = constant         */
+   self~AssertSame("subTest1", i,7)
+   i=0; exprr=7;
+   Do exprr   ; i=i+1; End;                  /* exprr = variable         */
+   self~AssertSame("subTest2", i,7)
+   i.=0; exprr.4=4;exprr.5=5;exprr.6=6;
+   Do j=4 to 6
+      Do exprr.j ; i.j=(i.j)+1; End;         /* exprr = compound variable*/
+   End
+   self~AssertSame("subTest3", (i.4 i.5 i.6),(4 5 6))
+   i=0;
+   Do ((7*exprr)+1)/exprr.5 ; i=i+1; End;    /* exprr = expression       */
+   self~AssertSame("subTest4", i,10)
+
+::method "test_DO_standardTest2F"
+   i=0;
+   Do 7  While i<5 ; i=i+1; End;                       /* exprw=constant */
+   self~AssertSame("subTest1", i,5)
+   i=0; exprw=5
+   Do 7  While i<exprw ; i=i+1; exprw=exprw+1; End;    /* exprr=variable */
+   self~AssertSame("subTest2", (i exprw),(7 12))
+   i.=0; exprw.4=4;exprw.5=5;exprw.6=6;
+   Do j=4 to 6
+      Do 7  While i.j<exprw.j; i.j=(i.j)+1;End;   /* exprr=compound variable*/
+   End
+   self~AssertSame("subTest3", (i.4 i.5 i.6),(4 5 6))
+   i=0; exprw=5;
+   Do 7 While i<((7*exprw)-15)/exprw.5 ; i=i+1; End;  /* exprr=expression*/
+   self~AssertSame("subTest4", i,4)
+   i=0;
+   Do 7  Until i> 5 ; i=i+1; End;                      /* expru=constant */
+   self~AssertSame("subTest5", i,6)
+   i=0; expru=5
+   Do 7  Until i>=expru ; i=i+1; expru=expru+1;End;    /* expru=variable */
+   self~AssertSame("subTest6", (i expru),(7 12))
+   expru=5
+   i.=0; expru.4=4;expru.5=5;expru.6=6;
+   Do j=4 to 6
+      Do 7  Until i.j>=expru.j; i.j=(i.j)+1; End;  /*expru=compound variable*/
+   End
+   self~AssertSame("subTest7", (i.4 i.5 i.6),(4 5 6))
+   i=0;
+   Do 7 Until i>=((7*expru)-15)/expru.5 ; i=i+1; End; /* expru=expression*/
+   self~AssertSame("subTest8", i,4)
+
+::method "test_DO_standardTest2G"
+   wn=12; i=0
+   DO wn;  i=i+1 ;END                        /* exprr= n            */
+   self~AssertSame("subTest1", i,12)
+   i=0
+   DO j=0 by wn to 144; i=i+1 ;END           /* exprb= wn           */
+   self~AssertSame("subTest2", i,13)
+   i=0
+   DO j=0 to wn ; i=i+1 ;END                 /* exprt=wn            */
+   self~AssertSame("subTest3", i,13)
+   i=0
+   DO j=0 to 12 until i>wn; i=i+1 ;END      /* expru=wn            */
+   self~AssertSame("subTest4", i,13)
+   i=0
+   DO j=0 to 12 while i<=wn; i=i+1 ;END      /* exprw=wn            */
+   self~AssertSame("subTest5", i,13)
+   NUMERIC DIGITS 1
+   i=0; k=-9
+   DO j=0 by wn to 144; i=i+1; k=k+1; If k=8 Then Leave; End;
+   self~AssertSame("subTest6", (j i k wn),(1E+2 1E+1 8 12))
+   i=0
+   DO j=0 to wn ; i=i+1 ; If i= 1E+1 Then Leave; End;
+   self~AssertSame("subTest7", (j i wn),(5 6 12))
+   i=0
+   DO j=0 to 12 until i>wn ; i=i+1 ;If i= 1E+1 Then Leave; End;
+   self~AssertSame("subTest8", (j i wn),(5 6 12))
+   i=0
+   DO j=0 to 12 while i<=wn; i=i+1 ; If i=1E+1 Then Leave; End;
+   self~AssertSame("subTest9", (j i wn),(5 6 12))
+
+::method "test_DO_standardTest2H"
+   Drop a.
+   DO I=01.2 TO 5.2
+     a.i=i
+   END
+   self~AssertSame("subTest40", (a.1.2 a.2.2 a.3.2 a.4.2 a.5.2),(1.2 2.2 3.2 4.2 5.2))
+
+::method "test_DO_standardTest2I"
+   j=0; Do To   = 1 By 1 To 5; j=j+1;End;
+   self~AssertSame("subTest1", j,5)
+   j=0; Do By   = 1 By 1 To 5; j=j+1;End;
+   self~AssertSame("subTest2", j,5)
+   j=0; Do For  = 1 By 1 To 5; j=j+1;End;
+   self~AssertSame("subTest3", j,5)
+   j=0; Do Until= 1 By 1 To 5; j=j+1;End;
+   self~AssertSame("subTest4", j,5)
+   j=0; Do While= 1 By 1 To 5; j=j+1;End;
+   self~AssertSame("subTest5", j,5)
+
+::method "test_DO_standardTest2J"
+   forever=5;
+   k=0; Do i=1 to FOREVER  ; k=k+1;          End;
+   self~AssertSame("subTest1", k,5)
+   k=0; Do i=1 by FOREVER to 15 ; k=k+1;     End;
+   self~AssertSame("subTest2", k,3)
+   k=0; Do i=1 by 5 for FOREVER ; k=k+1;     End;
+   self~AssertSame("subTest3", k,5)
+   k=0; Do FOREVER = 1 to 6; k=k+1;         End;
+   self~AssertSame("subTest4", k,6)
+
+::method "test_DO_standardTest2K"
+   SELECT;
+      WHEN i=k THEN self~assertFalse("subTest1", 1)
+      WHEN i=j Then self~assertFalse("subTest2", 1)
+      OTHERWISE     self~assertTrue("subTest3", 1)
+      END;
+   drop a; i=1;k=1;                    /* force NOVALUE             N0012*/
+   SELECT;
+      WHEN i=k THEN Do;            /* NOVALUE in THEN                */
+         self~assertTrue("subTest4", 1);End;
+      OTHERWISE self~assertFalse("subTest5", 1)
+   END;
+   drop a; i=1;k=2;                    /* force NOVALUE             N0013*/
+   SELECT;
+      WHEN i=k THEN self~assertFalse("subTest6", 1)
+      OTHERWISE     Do;            /* Novalue in OTHERWISE           */
+         self~assertTrue("subTest7", 1);End;
+      END;
+
+::method "test_DO_standardTest2L"
+   SELECT;
+      WHEN i=k THEN self~assertFalse("subTest1", 1)
+      WHEN i=j Then self~assertFalse("subTest2", 1)
+      OTHERWISE self~assertTrue("subTest1", 3)
+      END
+   i=1;k=1;
+   SELECT;
+      WHEN i=k THEN self~assertTrue("subTest4", 1)
+      OTHERWISE self~assertFalse("subTest5", 1)
+      END
+
+::method "test_DO_standardTest2M"
+   -- Create our external functions.
+   path = .ooRexxUnit.dir || .ooRexxUnit.directory.separator
+   src = .array~new()
+   src[1] = "Parse Version version"
+   src[2] = "Parse Source fn"
+   src[3] = "extloop:"
+   src[4] = "c=0"
+   src[5] = "Do i=1 to 3"
+   src[6] = "c=c+1"
+   src[7] = "If c=2 Then Return c"
+   src[8] = "End"
+   src[9] = "Return 99"
+   call createFile src, path'SCIDOS2A'
+
+   -- now do the tests
+   c=0
+   Call intloop
+   self~AssertSame("subTest1", c,2)
+   result=17
+   Call SCIDOS2A
+   self~AssertSame("subTest2", RESULT,2)
+
+   -- now remove the external functions
+   call deleteFile path'SCIDOS2A'
+
+   intloop:
+   Do i=1 to 3
+      c=c+1
+      if c=2 Then Return                /* results c=2                    */
+      End
+
+::method "test_DO_standardTest2N"
+   j=0
+   Do i=2 by 0 to 10
+    j=j+1; If j>1000 Then leave;
+   End
+   self~AssertSame("subTest1", j,1001)
+
+::method "test_DO_standardTest2O"
+   do i=1 to 10
+      i=2 * i                       /* change value of control variable*/
+      End
+   self~AssertSame("subTest1", i,15)
+
+::method "test_DO_standardTest2P"
+   i=1 ; a.=0 ; c=0 ;
+   Do a.i=1 To 7                    /* cv flipflops btw a.1 and a.2   */
+      c=c+1
+      If i=1 Then i=2;
+      Else Do; i=1; id='00F'||c; self~AssertSame("subTest1", a.1,a.2); End;
+      End
+   self~AssertSame("subTest2", c,14)
+
+::method "test_DO_standardTest2Q"
+   j=0
+   Do WHILE 6=6                        /* loops forever                  */
+      j=j+1; If j>1000 Then leave;
+      End
+   self~AssertSame("subTest1", j, 1001)
+   i=1
+   a.1=2;a.2=4;a.3=8;a.4=16;
+   Do a.i=a.i  to 16                   /* loops until i=4                */
+      i=i+1;
+      End
+   self~AssertSame("subTest2", i, 4)
+   self~AssertSame("subTest3", (a.1 a.2 a.3 a.4),'2 5 9 17')
+
+
 
