@@ -1567,15 +1567,13 @@ return testGroupList
    -- Create our external functions.
    path = .ooRexxUnit.dir || .ooRexxUnit.directory.separator
    src = .array~new()
-   src[1] = "Parse Version version"
-   src[2] = "Parse Source fn"
-   src[3] = "extloop:"
-   src[4] = "c=0"
-   src[5] = "Do i=1 to 3"
-   src[6] = "c=c+1"
-   src[7] = "If c=2 Then Return c"
-   src[8] = "End"
-   src[9] = "Return 99"
+   src[1] = "Parse arg ii bb tt ff ."
+   src[2] = "extloop:"
+   src[3] = "c=0"
+   src[4] = "Do k=ii for ff by bb to tt"
+   src[5] = "c=c+1"
+   src[6] = "End"
+   src[7] = "Return c"
    call createFile src, path'SCIDOS2A'
 
    -- now do the tests
@@ -1743,7 +1741,7 @@ return testGroupList
    SELECT;
       WHEN i=k THEN self~assertFalse("subTest1", 1)
       WHEN i=j Then self~assertFalse("subTest2", 1)
-      OTHERWISE self~assertTrue("subTest1", 3)
+      OTHERWISE self~assertTrue("subTest1", 1)
       END
    i=1;k=1;
    SELECT;
