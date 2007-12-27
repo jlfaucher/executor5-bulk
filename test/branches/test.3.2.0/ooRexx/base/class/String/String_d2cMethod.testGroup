@@ -132,7 +132,7 @@ return testGroupList
     self~assertSame('subTest01','D9'x,num217~d2c)
 
 ::method 'test04'
-    self~assertSame('subTest01','01F4'x,('353030'x)~d2c)
+    self~assertSame('subTest01','01F4'x,'353030'x~d2c)
 
 ::method 'test05'
     self~assertSame('subTest01','074049A8'x,121653672~d2c)
@@ -170,10 +170,10 @@ return testGroupList
     v09 = '195800409786083152913776902127918630077641743932097160272544'
     v10 = '57637891941312587717764400411421385408982726881092425574514687'
     vlong = v01||v02||v03||v04||v05||v06||v07||v08||v09||v10
-    self~assertSame('subTest01','7F'x||'FF'x~copies(249),(vlong)~d2c)
+    self~assertSame('subTest01','7F'x||'FF'x~copies(249),vlong~d2c)
 
 ::method 'test11'
-    self~assertSame('subTest01','0D'x,(13.0000000000000000009)~d2c)
+    self~assertSame('subTest01','0D'x,13.0000000000000000009~d2c)
 
 ::method 'test12'
     self~expectSyntax(93.929)
@@ -190,17 +190,17 @@ return testGroupList
 
 ::method 'test15'
     self~expectSyntax(93.927)
-    r = d2c(-1)
+    r = (-1)~d2c
 
 ::method 'test16'
     self~expectSyntax(93.927)
-    r = d2c(-209)
+    r = (-209)~d2c
 
 ::method 'test17'
-    self~assertSame('subTest01','D1'x,(000000000000000000000000000000000000000000000000000000000000000209)~d2c)
+    self~assertSame('subTest01','D1'x,000000000000000000000000000000000000000000000000000000000000000209~d2c)
 
 ::method 'test18'
-    self~assertSame('subTest01','D1'x,(2.09E+2)~d2c)
+    self~assertSame('subTest01','D1'x,2.09E+2~d2c)
 
 ::method 'test19'
     self~assertSame('subTest01','',0~d2c(0))
@@ -239,16 +239,16 @@ return testGroupList
     self~assertSame('subTest01','D9'x,'323137'x~d2c(1))
 
 ::method 'test31'
-    self~assertSame('subTest01','0000D9'x,('323137'x)~d2c(3))
+    self~assertSame('subTest01','0000D9'x,'323137'x~d2c(3))
 
 ::method 'test32'
-    self~assertSame('subTest01',copies('00'x,249)||'D9'x,('323137'x)~d2c(250))
+    self~assertSame('subTest01',copies('00'x,249)||'D9'x,'323137'x~d2c(250))
 
 ::method 'test33'
-    self~assertSame('subTest01',copies('00'x,250)||'D9'x,('323137'x)~d2c(251))
+    self~assertSame('subTest01',copies('00'x,250)||'D9'x,'323137'x~d2c(251))
 
 ::method 'test34'
-    self~assertSame('subTest01',copies('00'x,9999)||'D9'x,('323137'x)~d2c(10000))
+    self~assertSame('subTest01',copies('00'x,9999)||'D9'x,'323137'x~d2c(10000))
 
 ::method 'test35'
     self~assertSame('subTest01',copies('FF'x,249)||'27'x,(-'323137'x)~d2c(250))
@@ -261,12 +261,12 @@ return testGroupList
 
 ::method 'test38'
     self~expectSyntax(93.929)
-    r = d2c('7474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474')
+    r = '7474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474'~d2c
 
 ::method 'test39'
     v251 = copies('74',125)||'7'
     self~expectSyntax(93.929)
-    r = d2c(v251)
+    r = v251~d2c
 
 ::method 'test40'
     v100000z = copies('0',100000)||'209'
@@ -292,7 +292,7 @@ return testGroupList
 
 ::method 'test42'
     numeric digits 150
-    self~assertSame('subTest01','14FBE105'x,('944617126997049751089'~d2c)~d2c)
+    self~assertSame('subTest01','14FBE105'x,'944617126997049751089'~d2c~d2c)
 
 -- from bif.testgroup
    -- test the BIF, using examples from the documentation
