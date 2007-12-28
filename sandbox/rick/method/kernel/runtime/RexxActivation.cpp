@@ -123,8 +123,6 @@ RexxActivation::RexxActivation(RexxActivity* _activity, RexxMethod * _method, Re
     this->sender = _activity->getCurrentActivation();
     this->execution_state = ACTIVE;      /* we are now in active execution    */
     this->object_scope = SCOPE_RELEASED; /* scope not reserved yet            */
-    // and the call type is METHOD
-    this->settings.calltype = OREF_METHODNAME;
     /* create a new evaluation stack.  This must be done before a */
     /* local variable frame is created. */
     this->setHasNoReferences();          /* during allocateStack..            */
@@ -152,6 +150,8 @@ RexxActivation::RexxActivation(RexxActivity* _activity, RexxMethod * _method, Re
     this->random_seed = this->activity->getRandomSeed();
                                        /* copy the source security manager  */
     this->settings.securityManager = this->code->getSecurityManager();
+    // and the call type is METHOD
+    this->settings.calltype = OREF_METHODNAME;
 }
 
 

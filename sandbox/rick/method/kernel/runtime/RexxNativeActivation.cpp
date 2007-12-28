@@ -419,6 +419,13 @@ void RexxNativeActivation::run(
     }
     catch (RexxActivation *)
     {
+        // if we're not the current kernel holder when things return, make sure we
+        // get the lock before we continue
+        if (ActivityManager::currentActivity != activity)
+        {
+            activity->requestAccess();
+        }
+
         // it's possible that we can get terminated by a throw during condition processing.
         // we intercept this here, perform any cleanup we need to perform, then let the
         // condition trap propagate.
@@ -438,9 +445,12 @@ void RexxNativeActivation::run(
     }
     catch (RexxNativeActivation *)
     {
-        // TODO  Use protected object on the result
-        if (this->result != OREF_NULL)     /* have a value?                     */
-            holdObject(this->result);        /* get result held longer            */
+        // if we're not the current kernel holder when things return, make sure we
+        // get the lock before we continue
+        if (ActivityManager::currentActivity != activity)
+        {
+            activity->requestAccess();
+        }
         this->guardOff();                  /* release any variable locks        */
         this->argcount = 0;                /* make sure we don't try to mark any arguments */
         // the lock holder gets here by longjmp from a kernel reentry.  We need to
@@ -452,6 +462,7 @@ void RexxNativeActivation::run(
         this->setHasNoReferences();        /* mark this as not having references in case we get marked */
         // set the return value and get outta here
         resultObj = this->result;
+        return;
     }
 
     // belt and braces...this restores the activity level to whatever

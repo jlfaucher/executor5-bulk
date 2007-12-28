@@ -1086,7 +1086,7 @@ RexxArray *RexxList::weakReferenceArray()
     // the real values into the returned array
     RexxArray *array = (RexxArray *)new_array(this->count);
     i = this->firstIndex();              /* point to the first element        */
-    for (size_t j = 1; i <= this->count; j++) /* step through the array elements   */
+    for (size_t j = 1; j <= this->count; j++) /* step through the array elements   */
     {
         element = ENTRY_POINTER(i);      /* get the next item                 */
                                          /* copy over to the array            */
