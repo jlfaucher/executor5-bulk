@@ -179,6 +179,522 @@ return testGroupList
 ::method "test_14"
    NUMERIC DIGITS 500
    self~assertSame("subTest14", COPIES('9',499)+1,'1'||COPIES('0',499))
+
+::method "test_15"
+   Numeric Digits 12
+   Numeric Fuzz    2
+   Numeric Form Engineering
+   a1=digits() fuzz() form()
+   Call X
+   a4=digits() fuzz() form()
+   Pull a2
+   Pull a3
+   self~assertSame("subTest1", a1,'12 2 ENGINEERING')
+   self~assertSame("subTest2", a2,'12 2 ENGINEERING')
+   self~assertSame("subTest3", a3,'9 0 SCIENTIFIC')
+   self~assertSame("subTest4", a4,'12 2 ENGINEERING')
    return
+
+   X: Procedure
+   a2=digits() fuzz() form()
+   Numeric Digits  9
+   Numeric Fuzz    0
+   Numeric Form
+   a3=digits() fuzz() form()
+   Queue a2
+   Queue a3
+   Return
  
+::method "test_16"
+   Numeric Digits 1
+   Parse Value digits() fuzz() form() With dig fuz for
+
+   self~assertSame("subTest1", (dig fuz for),('1 0 SCIENTIFIC'))
+
+   Numeric Digits 2
+   Parse Value '123456789.123456789.' With a +12 b
+   self~assertSame("subTest2", a,'123456789.12')
+
+   Parse Value '123456789.123456789.' With a 12 b
+   self~assertSame("subTest3", a,'123456789.1')
+ 
+::method "test_17"
+   self~expectSyntax(26.2)
+   Numeric Digits 1
+   i4=0; Do 12; i4=i4+1; End
+ 
+::method "test_18"
+   self~expectSyntax(26.3)
+   Numeric Digits 1
+   i4=0; Do i=1 by 2 For 12; i4=i4+1; End
+   return
+
+::method "test_19"
+   Numeric Digits 13
+   self~assertSame("subTest1", digits(),13)
+
+::method "test_20"
+   Numeric Digits 13
+   Numeric Fuzz 12
+   self~assertSame("subTest1", digits(),13)
+
+::method "test_21"
+   self~expectSyntax(33.1)
+   Numeric Fuzz 0
+   Numeric Digits 2
+   Numeric Fuzz 12
+
+::method "test_22"
+   self~expectSyntax(24.901)
+   Numeric Digits 1
+   Trace 13
+
+::method "test_23"
+   self~expectSyntax(26.11)
+   Numeric Digits 1
+   Say    100%3
+
+::method "test_24"
+   self~expectSyntax(26.12)
+   Numeric Digits 1
+   Say    100//3
+
+::method "test_25"
+   Numeric Digits 1
+   s=''
+   Do i=01.2 to 5
+     s=s i
+     End
+   self~assertSame("subTest1", s,' 1 2 3 4 5')
+
+::method "test_26"
+   Numeric Digits 1
+   s=''
+   Do i=1 to 10
+     s=s||i||'/'
+     If length(s)>30 Then Leave
+     End
+   self~assertSame("subTest1", s,'1/2/3/4/5/6/7/8/9/1E+1/1E+1/1E+1/1E+1/')
+
+::method "test_27"
+   Numeric Digits 13
+   Numeric Digits
+   self~assertSame("subTest1", dig(),9)
+   return
+   dig: Return digits()
+
+::method "test_28"
+   self~expectSyntax(26.5)
+   Numeric Digits ''
+
+::method "test_30"
+   self~expectSyntax(26.5)
+   Numeric Digits ' '
+
+::method "test_31"
+   self~expectSyntax(26.5)
+   Numeric Digits 9999999999
+
+::method "test_32"
+   self~expectSyntax(26.5)
+   Numeric Digits +12.5
+
+::method "test_33"
+   self~assertSame("subTest1", dig(),9)
+   Numeric Digits +12.0
+   self~assertSame("subTest2", dig(),12)
+   return
+   dig: Return digits()
+
+::method "test_34"
+   Numeric Digits 1.1E1+1.0
+   self~assertSame("subTest1", dig(),12)
+   return
+   dig: Return digits()
+
+::method "test_35"
+   self~expectSyntax(26.5)
+   Numeric Digits 2
+   Numeric Digits '  + .111E+03  '  ;
+
+::method "test_36"
+   Numeric Digits 3
+   Numeric Digits '  + .111E+03  '  ;
+   self~assertSame("subTest1", dig(),111)
+   return
+   dig: Return digits()
+
+::method "test_37"
+   self~expectSyntax(26.5)
+   Numeric Digits 2
+   Numeric Digits + .111E+03
+
+::method "test_38"
+   self~expectSyntax(26.5)
+   Numeric Digits 2
+   Numeric Digits +'   .111E+03'
+
+::method "test_39"
+   self~expectSyntax(26.5)
+   Numeric Digits 2
+   Numeric Digits -' - .111E+03'
+
+::method "test_40"
+   Numeric Digits 2
+   Numeric Digits intfun1()
+   self~assertSame("subTest1", dig(),1)
+   return
+   intfun1: Return 1
+   dig: Return digits()
+
+::method "test_41"
+   Numeric Digits RANDOM(8,8)
+   self~assertSame("subTest1", dig(),8)
+   return
+   dig: Return digits()
+
+::method "test_42"
+   a.=11
+   a.a=12
+   sv=13
+   i='A'
+   Numeric,
+    Digits,
+    a.
+   self~assertSame("subTest1", dig(),11)
+   Numeric Digits a.i
+   self~assertSame("subTest2", dig(),12)
+   Numeric Digits sv
+   self~assertSame("subTest3", dig(),13)
+   /**/Numeric/**/Digits/**/3/**/
+   self~assertSame("subTest4", dig(),3)
+   dig: Return digits()
+
+::method "test_43"
+   Numeric dIGITs '33'x
+   self~assertSame("subTest1", dig(),3)
+   return
+   dig: Return digits()
+
+::method "test_44"
+   self~expectSyntax(26.5)
+   Numeric Digits 13 FORM ENGINEERING
+
+::method "test_45"
+   self~expectSyntax(26.5)
+   FORM='FORM'; ENGINEERING='ENGINEERING'
+   Numeric Digits 13 FORM ENGINEERING
+
+::method "test_46"
+   FORM=''; ENGINEERING=''
+   Numeric Digits 13 FORM ENGINEERING
+   self~assertSame("subTest1", dig(),13)
+   return
+   dig: Return digits()
+
+::method "test_47"
+   Numeric Digits 1000
+   Numeric Fuzz
+   self~assertSame("subTest1", fuz(),0)
+   return
+   fuz: Return fuzz()
+
+::method "test_48"
+   self~expectSyntax(26.6)
+   Numeric Digits 1000
+   Numeric Fuzz ''
+
+::method "test_49"
+   self~expectSyntax(26.6)
+   Numeric Digits 1000
+   Numeric Fuzz ' '
+
+::method "test_50"
+   self~expectSyntax(26.6)
+   Numeric Digits 1000
+   Numeric Fuzz 9999999999
+
+::method "test_51"
+   self~expectSyntax(26.6)
+   Numeric Digits 1000
+   Numeric Fuzz +12.5
+   return
+
+::method "test_52"
+   self~assertSame("subTest1", fuz(),0)
+   return
+   fuz: Return fuzz()
+
+::method "test_53"
+   Numeric Digits 1000
+   Numeric Fuzz +12.0
+   self~assertSame("subTest1", fuz(),12)
+   return
+   fuz: Return fuzz()
+
+::method "test_54"
+   Numeric Digits 1000
+   Numeric Fuzz 1.1E1+1.0
+   self~assertSame("subTest1", fuz(),12)
+   return
+   fuz: Return fuzz()
+
+::method "test_55"
+   Numeric Digits 1000
+   Numeric Fuzz intfun1()
+   self~assertSame("subTest1", fuz(),1)
+   return
+   fuz: Return fuzz()
+   intfun1: Return 1
+
+::method "test_56"
+   Numeric Digits 1000
+   Numeric Fuzz RANDOM(8,8)
+   self~assertSame("subTest1", fuz(),8)
+   return
+   fuz: Return fuzz()
+
+::method "test_57"
+   Numeric Digits 1000
+   a.=11
+   Numeric,
+    Fuzz,
+    a.,
+    ;
+   self~assertSame("subTest1", fuz(),11)
+   return
+   fuz: Return fuzz()
+
+::method "test_58"
+   Numeric Digits 1000
+   a.=11
+   i='A'
+   Numeric Fuzz a.i
+   self~assertSame("subTest1", fuz(),11)
+   return
+   fuz: Return fuzz()
+
+::method "test_59"
+   Numeric Digits 1000
+   sv=13
+   Numeric Fuzz sv
+   self~assertSame("subTest1", fuz(),13)
+   return
+   fuz: Return fuzz()
+
+::method "test_60"
+   Numeric Digits 1000
+   /**/Numeric/**/Fuzz/**/3/**/
+   self~assertSame("subTest1", fuz(),3)
+   return
+   fuz: Return fuzz()
+
+::method "test_61"
+   self~expectSyntax(26.6)
+   Numeric Digits 1000
+   Numeric Fuzz 13 FORM ENGINEERING; Call err; R1021:
+   return
+
+::method "test_62"
+   sc='SCIENTIFIC'
+   Numeric Form
+   self~assertSame("subTest1", for(),sc)
+   return
+   for: Return form()
+
+::method "test_63"
+   self~expectSyntax(25.11)
+   Numeric Form ''
+
+::method "test_64"
+   self~expectSyntax(25.11)
+   Numeric Form ' '
+
+::method "test_65"
+   self~expectSyntax(25.11)
+   Numeric Form 'terrible'
+
+::method "test_66"
+   self~expectSyntax(25.11)
+   Numeric Form 'ENGI' 'NEERING'
+
+::method "test_67"
+   sc='SCIENTIFIC'
+   self~assertSame("subTest1", for(),sc)
+   return
+   for: Return form()
+
+::method "test_68"
+   en='ENGINEERING'
+   Numeric Form Value 'ENGINEERING'
+   self~assertSame("subTest1", for(),en)
+   return
+   for: Return form()
+
+::method "test_69"
+   sc='SCIENTIFIC'
+   Numeric Form Value 'SCIENTI'||'FI'||'43'x
+   self~assertSame("subTest1", for(),sc)
+   return
+   for: Return form()
+
+::method "test_70"
+   self~expectSyntax(25.11)
+   Numeric Form Value 'engineering'
+
+::method "test_71"
+   sc='SCIENTIFIC'
+   Numeric Form scientific
+   self~assertSame("subTest1", for(),sc)
+   return
+   for: Return form()
+
+::method "test_72"
+   en='ENGINEERING'
+   Numeric Form Value engineering
+   self~assertSame("subTest1", for(),en)
+   return
+   for: Return form()
+
+::method "test_73"
+   self~expectSyntax(25.11)
+   Numeric Form Value 'scientific'
+
+::method "test_74"
+   en='ENGINEERING'
+   Numeric Form Value intfun('f')
+   self~assertSame("subTest1", for(),en)
+   return
+   intfun: If "ARG"(1)='f' Then Return 'ENGINEERING'
+   for: Return form()
+
+::method "test_75"
+   self~expectSyntax(25.11)
+   Numeric Form Value substr('veryengineering',5);
+
+::method "test_76"
+   sc='SCIENTIFIC'
+   a.='ENGINEERING'
+   a.a='SCIENTIFIC'
+   sv='ENGINEERING'
+   i='A'
+   Numeric Form Value a.i
+   self~assertSame("subTest1", for(),sc)
+   return
+   for: Return form()
+
+::method "test_77"
+   sv='ENGINEERING'
+   en='ENGINEERING'
+   Numeric Form Value sv
+   self~assertSame("subTest1", for(),en)
+   return
+   for: Return form()
+
+::method "test_78"
+   self~expectSyntax(25.11)
+   Numeric Form Value 13 FORM ENGINEERING
+
+::method "test_79"
+   self~expectSyntax(25.11)
+   FORM='FORM'; ENGINEERING='ENGINEERING'
+   Numeric Form Value 13 FORM ENGINEERING;
+
+::method "test_80"
+   self~expectSyntax(25.11)
+   FORM=''; ENGINEERING=''
+   Numeric Form Value ENGINEERING FORM ENGINEERING;
+ 
+::method "test_81"
+   Numeric Digits 12
+   Numeric Fuzz 9
+   Numeric Form Engineering
+   self~assertSame("subTest1", ("DIGITS"() "FUZZ"() "FORM"()),(12 9 'ENGINEERING'))
+   Parse Value digits() fuzz() form() With X
+   self~assertSame("subTest2", X,'12 9 ENGINEERING')
+ 
+::method "test_82"
+   Numeric Digits 12
+   Numeric Fuzz 9
+   Numeric Form Engineering
+   Numeric Digits 999999999
+   self~assertTrue("subTest1", 1)
+ 
+::method "test_83"
+   self~expectSyntax(33.1)
+   Numeric Digits 12
+   Numeric Fuzz 9
+   Numeric Form Engineering
+   Numeric Fuzz   999999998
+
+::method "test_84"
+   Numeric Form Value E||N||G||I||N||E||E||R||I||N||G
+   self~assertTrue("subTest1", 1)
+
+::method "test_85"
+   Numeric Form Value E||N||G||I||N||E||E||R||I||N||G
+   self~assertSame("subTest1", case(), 'ENGINEERING')
+   Numeric Form Value S||C||I||E||N||T||I||F||I||C
+   self~assertSame("subTest2", case(), 'SCIENTIFIC')
+   return
+   case:
+   case=form()
+   Return case
+
+::method "test_86"
+   self~expectSyntax(25.11)
+   Numeric Form Value 'engineering'
+
+::method "test_87"
+   self~expectSyntax(25.11)
+   Numeric Form Value 'scientific'
+
+::method "test_88"
+   str='ENGINEERING'
+   Numeric Form Value str
+   self~assertSame("subTest1", case(), str)
+   str='SCIENTIFIC'
+   Numeric Form Value str
+   self~assertSame("subTest2", case(), str)
+   return
+   case:
+   case=form()
+   Return case
+
+::method "test_89"
+   str.1='ENGINEERING'
+   Numeric Form Value str.1
+   self~assertSame("subTest1", case(), str.1)
+   str.2='SCIENTIFIC'
+   Numeric Form Value str.2
+   self~assertSame("subTest2", case(), str.2)
+   return
+   case:
+   case=form()
+   Return case
+
+::method "test_90"
+   str.='ENGINEERING'
+   Numeric Form Value str.
+   self~assertSame("subTest1", case(), str.)
+   str.='SCIENTIFIC'
+   Numeric Form Value str.
+   self~assertSame("subTest2", case(), str.)
+   return
+   case:
+   case=form()
+   Return case
+
+::method "test_91"
+   case=''
+   str='ENGINEERINGSCIENTIFIC'
+   Numeric Form Value 'SUBSTR'(str,1,11)
+   self~assertSame("subTest1", case(), SUBSTR(str,1,11))
+   str='ENGINEERINGSCIENTIFIC'
+   Numeric Form Value 'SUBSTR'(str,12,10)
+   self~assertSame("subTest1", case(), SUBSTR(str,12,10))
+   return
+   case:
+   case=form()
+   Return case
 
