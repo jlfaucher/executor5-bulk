@@ -189,7 +189,6 @@ return testUnitList
 
 ::method 'test020'
     self~assertSame('subTest01',.v255||'     ',strip('     '||.v255||'     ','4c4254'x,' '))
--- call ver strip('     '||.v255||'     ','4c4254'x,' '),.v255||'     '; R0051:
 
 ::method 'test021'
     self~assertSame('subTest01',.vr2,strip('     '||.v256||'     ','TBL'))
@@ -230,43 +229,33 @@ return testUnitList
 
 ::method 'test033'
     self~assertSame('subTest01','0',strip(202+202,,'4'))
--- call ver strip(202+202,,'4'),'0'; R0075:
 
 ::method 'test034'
     self~assertSame('subTest01','0',strip(020+020,,'4'))
--- call ver strip(020+020,,'4'),'0'; R0076:
 
 ::method 'test035'
     self~assertSame('subTest01','+',strip('44+44',,4))
--- call ver strip('44+44',,4),'+'; R0077:
 
 ::method 'test036'
     self~assertSame('subTest01','+',strip('44+44',,2+2))
--- call ver strip('44+44',,2+2),'+'; R0078:
 
 ::method 'test037'
     self~assertSame('subTest01','4c4254'x,strip('202020204c4254202020'x,'B'))
--- call ver strip('202020204c4254202020'x,'B'),'4c4254'x; R0079:
 
 ::method 'test038'
     self~assertSame('subTest01','JJ',strip(strip('JJBBJJBBJJ',,'J'),strip('JJBBJJBBJJ',,'J'),strip('--B--','B','-')))
--- call ver strip(strip('JJBBJJBBJJ',,'J'),strip('JJBBJJBBJJ',,'J'),strip('--B--','B','-')),'JJ'; R0088:
 
 ::method 'test039'
     self~assertSame('subTest01','a',strip(.v100001,,'*'))
--- call ver strip(.v100001,,'*'),'a'; R0090:
 
 ::method 'test040'
     self~assertSame('subTest01',.b50||copies('*',50000)||'a',strip(.b50||.v100001,,'*'))
--- call ver strip(.b50||.v100001,,'*'),.b50||copies('*',50000)||'a'; R0091:
 
 ::method 'test041'
     self~assertSame('subTest01',.vr1,strip(.b50||.v100001||.b50,,'*'))
--- call ver strip(.b50||.v100001||.b50,,'*'),.vr1; R0092:
 
 ::method 'test042'
     self~assertSame('subTest01','a'||copies('*',50000)||.b50,strip(.v100001||.b50,,'*'))
--- call ver strip(.v100001||.b50,,'*'),'a'||copies('*',50000)||.b50; R0093:
 
 ::method 'test043'
     .local~remove(v100001)
