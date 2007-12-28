@@ -71,9 +71,7 @@
 
   if group~isAutomatedTest then return group
 
-  suite = group~suite
-  testResult = suite~run
-  testResult~print
+  testResult = group~suite~run~~print
 
 return testResult
 -- End of entry point.
@@ -81,7 +79,6 @@ return testResult
 ::requires 'ooTest.frm'     -- load the ooRexxUnit classes
 
 
-   -- class named exactly like file
 ::class "Method.testGroup" subclass ooTestCase public
 
 ::method "test_New_And_Source"

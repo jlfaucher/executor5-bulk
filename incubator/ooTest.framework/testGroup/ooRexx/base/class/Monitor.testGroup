@@ -69,16 +69,13 @@
 
   if group~isAutomatedTest then return group
 
-  suite = group~suite
-  testResult = suite~run
-  testResult~print
+  testResult = group~suite~run~~print
 
 return testResult
 -- End of entry point.
 
 ::requires 'ooTest.frm'     -- load the ooRexxUnit classes
 
--- class named exactly like file
 ::class "Monitor.testGroup" subclass ooTestCase public
 
 ::method 'test_currentA'

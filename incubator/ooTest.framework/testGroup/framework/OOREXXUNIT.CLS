@@ -224,10 +224,27 @@ end
   return .false
 -- End isSubClassOf()
 
-/** Simple convenience function to enclose a string in double quotes          */
-::method enQuote
-  return '"' || arg(1)~string || '"'
--- End enQuoute()
+/** isBoolean()
+ *
+ * Tests if an object is a boolean (.true or .false.)
+ *
+ * Note that this function will always return true or false so that it is always
+ * safe to use in an logical expression.  If no argument is supplied (which of
+ * course makes no sense) then false is returned.
+ *
+ * @param obj   The object to test.
+ *
+ * Returns true if the object is strictly true, otherwise false.
+ */
+::method  isBoolean
+  use arg obj
+  if arg(1, 'E') then do
+    if obj~isA(.string) then do
+      if obj~datatype('O') then return .true
+    end
+  end
+return .false
+-- End isBoolean()
 
 /* pathCompact( path, len, sl )- - - - - - - - - - - - - - - - - - - - - - - -*\
 
@@ -284,6 +301,11 @@ end
 return leading || trailing
 -- End pathCompact( path, len, sl )
 
+
+/** Simple convenience function to enclose a string in double quotes          */
+::method enQuote
+  return '"' || arg(1)~string || '"'
+-- End enQuoute()
 
 ::class "TestResult" public
 ::method init
@@ -855,12 +877,13 @@ exceptionHandler:
 /* *********************************************************************************** */
 /* *********************************************************************************** */
 ::class "TestSuite" subclass TestCase public
+
+::attribute testQueue private
+
 ::method init
-  expose testQueue
 
   forward class (super) continue
-  testQueue=.queue~new
-  self~showProgress = .false
+  self~testQueue = .queue~new
 
       -- a class object, use reflection and create test cases
   if arg()>0 then       -- args there ?
@@ -877,9 +900,9 @@ exceptionHandler:
      else if arg1~isA(.class), isSubClassOf(arg1, "TestCase") then
      do
         testCaseClass=arg1
-        fTestMethods.=self~class~getTestMethods(testCaseClass)
-        do i=1 to fTestMethods.0          -- iterate over all test methods
-           self~addTest(testCaseClass~new(fTestMethods.i))
+        testMethods=self~class~getTestMethods(testCaseClass)
+        do name over testMethods          -- iterate over all test methods
+           self~addTest(testCaseClass~new(name))
         end
         return
      end
@@ -901,64 +924,50 @@ exceptionHandler:
 
 
 ::method getTestMethods class -- use reflection to retrieve testmethods, sort alphabetically
-  use arg class
+  use strict arg classObj
 
-  fTestMethods.0=0      -- set index to 0
-   -- now get the test methods, i.e. methods starting with "TEST"
-  methSupplier=class~methods(.nil)-- only get methods of the receiver class (= testClass)
+  if \ classObj~isA(.class) then
+    raise syntax 88.914 array ("1 'classObj'", 'Class')
+
+  -- Get the test methods names.  By convention this is all methods starting
+  -- with "TEST"
+  testMethodNames = .array~new
+
+ -- Only get methods of the receiver class (= testClass)
+  methSupplier = classObj~methods(.nil)
   do while methSupplier~available -- iterate over supplied methods
-     name=methSupplier~index
-     if name~left(4)~translate="TEST" then   -- a test method in hand
-     do
-        i=fTestMethods.0+1
-        fTestMethods.i= name      -- index should be uppercase for sorting
-        fTestMethods.0=i
-     end
+     name = methSupplier~index
+     if name~left(4)="TEST" then testMethodNames~append(name)
      methSupplier~next
   end
 
-  call sysStemSort fTestMethods. -- sort test methods into ascending order
-  return fTestMethods.           -- return stem
-
+  return testMethodNames~sort
 
 
 ::method addTest
-  expose testQueue
   use strict arg aTestCase
 
   if \isSubClassOf(aTestCase~class, "TestCase") then
      raise syntax 88.914 array ("'aTestCase'", "'TestCase' or 'TestSuite'")
 
-  testQueue~queue(aTestCase)
-  self~countTestCases = self~countTestCases+1
+  self~testQueue~queue(aTestCase)
+  self~countTestCases += 1
 
-::attribute showProgress get
-::attribute showProgress set private
-
-::method indicateProgress
-  use strict arg indicate
-
-  if \ indicate~isA(.string) then
-    raise syntax 88.914 array ("1 'indicate'", "String")
-  if \ indicate~datatype('O') then
-    raise syntax 88.916 array ("1 'indicate'", "true or false", indicate)
-
-  self~showProgress = indicate
 
 ::method run
-  expose testQueue
   use arg aTestResult = (self~createResult), bGiveFeedback = .false
 
-  if \datatype(bGiveFeedback,"O") then
+  if \isBoolean(bGiveFeedback) then
      raise syntax 93.903 array (bGiveFeedback) -- raise error
 
   if bGiveFeedback then
      .error~say( "running testSuite" pp(self~string"@"self~identityHash) "with" pp(self~countTestCases) "test cases ...")
 
+  tests = self~testQueue
+
   aTestResult~startTest(self)       -- remember test started
   self~setUp                        -- make sure setup is invoked before testSuite runs
-  do aTestCase over testQueue while aTestResult~shouldStop=.false
-     if self~showProgress then say "Executing test cases from" 'pathCompact'(aTestCase~definedInFile, 60, .ooRexxUnit.directory.separator)
+  do aTestCase over tests while aTestResult~shouldStop=.false
      aTestCase~run(aTestResult, bGiveFeedback)
   end
   self~tearDown                     -- make sure tearDown is invoked after testSuite ran

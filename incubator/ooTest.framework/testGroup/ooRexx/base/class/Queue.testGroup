@@ -71,14 +71,11 @@ cmdLine = arg(1)
 
   group = .TestGroup~new(fileSpec, lines)
 
-  names = "test_new test_newReptitively test_[] test_[]="
-  group~addWithCollection(.Queue.testGroup, names)
+  group~add(.Queue.testGroup)
 
   if group~isAutomatedTest then return group
 
-  suite = group~suite
-  testResult = suite~run
-  testResult~print
+  testResult = group~suite~run~~print
 
 return testResult
 -- End of entry point.

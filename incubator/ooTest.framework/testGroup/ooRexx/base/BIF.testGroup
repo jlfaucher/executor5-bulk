@@ -82,7 +82,6 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-
   parse source . . s
 
   lines=.array~new
@@ -95,9 +94,7 @@
 
   if group~isAutomatedTest then return group
 
-  suite = group~suite
-  testResult = suite~run
-  testResult~print
+  testResult = group~suite~run~~print
 
 return testResult
 -- End of entry point.

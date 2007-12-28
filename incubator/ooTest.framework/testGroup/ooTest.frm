@@ -190,19 +190,62 @@ return a
 -- End of class: ooTestCase
 
 
-/*
+/* class: ooTestSuite- - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class 'ooTestSuite' public subclass TestSuite
 
-  ::method init class
+  ::attribute showProgress get
+  ::attribute showProgress set
+    expose showProgress
+    use strict arg show
+
+    if \ isBoolean(show) then
+      raise syntax 88.916 array ("1 'show'", "true or false", show)
+
+    showProgress = show
+
+  ::attribute beVerbose get
+  ::attribute beVerbose set
+    expose beVerbose
+    use strict arg verbose
+
+    if \ isBoolean(verbose) then
+      raise syntax 88.916 array ("1 'verbose'", "true or false", verbose)
+
+    beVerbose = verbose
+
+  ::method init
     forward class (super) continue
 
-    -- Use the ooTestResult has the default test result.
-    self~defaultTestResultClass:super = .ooTestResult
-
+    self~showProgress = .false
+    self~veVerbose = .false
   -- End init( )
 
--- End of class: ooTestCase
-*/
+  ::method run
+    use arg aTestResult = (self~createResult), bGiveFeedback = .false
+
+    if \isBoolean(bGiveFeedback) then
+       raise syntax 93.903 array (bGiveFeedback) -- raise error
+
+    if bGiveFeedback then
+       .error~say( "running testSuite" pp(self~string"@"self~identityHash) "with" pp(self~countTestCases) "test cases ...")
+
+    tests = self~testQueue
+
+    aTestResult~startTest(self)       -- remember test started
+    self~setUp                        -- make sure setup is invoked before testSuite runs
+    do aTestCase over tests while aTestResult~shouldStop=.false
+       if self~showProgress then say "Executing test cases from" 'pathCompact'(aTestCase~definedInFile, 60, .ooRexxUnit.directory.separator)
+       aTestCase~run(aTestResult, bGiveFeedback)
+    end
+    self~tearDown                     -- make sure tearDown is invoked after testSuite ran
+    aTestResult~endTest(self)         -- remember test ended
+
+    return aTestResult
+
+-- End of class: ooTestSuite
+
 
 /* class: ooTestResult - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
 
@@ -1174,6 +1217,7 @@ return suite
 ::attribute severity
 ::attribute msg
 ::attribute conditionData
+
 ::method init
   expose severity msg conditionData
   use arg severity, msg, conditionData

@@ -52,7 +52,7 @@ cmdLine = arg(1)
    containers = finder~seek(testResult); say 'containers items:' containers~items
 
    suite = .TestSuite~new
-   suite~indicateProgress(.true)
+   --suite~indicateProgress('dog')
    j = time('E')
    do container over containers
      container~suite(suite)

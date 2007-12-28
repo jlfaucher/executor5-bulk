@@ -85,17 +85,26 @@
   group = .TestGroup~new(fileSpec, lines)
   group~restrictOS("WINDOWS")
 
-  -- The test cases in this GUI test need to execute in order.  So we use a
+  -- 1.) The test cases in this GUI test need to execute in order.  So we use a
   -- method that places the individual test cases into the test suite in the
-  -- order we specify.
+  -- order we specify. fetchMethodNames() returns an array of the test method
+  -- names.  The order of the names in the array will be the order the tests
+  -- are executed.
+  --
+  -- 2.) The test cases require the 'winsystm.cls' file.  Since this file only
+  -- exists in a Windows ooRexx installation, a normal ::requires directive
+  -- causes an ugly error if this .testGroup is run on a non-Windows system.  To
+  -- fix this, a custom TestSuite (.FNDlgTestSuite) is used.  The custom test
+  -- suite provides a setUp() method.  The setUp() method of a TestSuite is
+  -- invoked immediately prior to the exeuction of the tests in the test suite.
+  -- The setUp() method for .FNDlgTestSuite performs the necessary work to get
+  -- the winsystm.cls classes loaded.
   group~addWithCollection(.fileNameDialog_demo.testGroup, fetchMethodNames(), .FNDlgTestSuite)
 
   if group~isAutomatedTest then return group
 
   -- Not an automated test, execute the tests now.
-  suite = group~suite
-  testResult = suite~run
-  testResult~print
+  testResult = group~suite~run~~print
 
 return testResult
 -- End of entry point.
