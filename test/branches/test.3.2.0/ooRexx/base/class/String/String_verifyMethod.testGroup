@@ -1,0 +1,464 @@
+#!/usr/bin/rexx
+/*
+   name:             String_verifyMethod.testGroup
+   author:           Lee Peedin
+   date:             2007-12-28
+   version:          1.0.0
+
+-- line commented lines are ignored, when building the directory of infos from this header
+
+   languageLevel:    6.02
+   purpose:          Test the verify method of the class String.
+   remark:           Initial test unit for demonstration purposes, needs to be completed.
+
+   license:          CPL 1.0 (Common Public License v1.0, see below)
+   link:
+
+// category needs not to be numbered, importance is given by position (1=most important)
+   category:         ooRexx
+   category:         Base
+   category:         Class
+   category:         String
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 - 2008 Rexx Language Association. All rights reserved.  */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+
+-------------------------------------------------------------------------------------------
+-- ===> adapt the "testGroupList" to your testCase classes; each element in the list is <===
+-- ===> an array object, the first element containing the testCase class object, the   <===
+-- ===> second element is a list of test method names which are regarded to be         <===
+-- ===> mandatory (if the list remains empty all test methods are mandatory)           <===
+
+   /* list of array objects, each containing the testGroup class object and an
+      optional list of mandatory test case methods name                       */
+mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
+testGroupList=.list~of( .array~of(.String_verifyMethod.testGroup,  mandatoryTestMethods) )
+
+
+-------------------------------------------------------------------------------------------
+-- ===> the following code needs not to be individualized                              <===
+
+   -- read top comment, containing infos about this program
+arrLines=.array~new
+do i=1 to 150 until arrLines[i]="*/"
+   arrLines[i]=sourceline(i)
+end
+      -- supply information for the testClass(es) in this file; the class attribute
+      -- "TestCaseInfo" (a directory object, index points to a queue) will store
+      -- the parsed infos
+aTestGroupClass=testGroupList~at(testGroupList~first)[1] -- get first testClass
+
+   -- will parse the array lines and store result in class object
+call makeDirTestInfo aTestGroupClass, arrLines
+tmpDir=aTestGroupClass~TestCaseInfo
+parse source s   -- op_sys invocationType fullPathToThisFile
+tmpDir~setentry("test_Case-source", s)
+
+   -- now add this directory to other testCase classes, if any left
+do arr over testGroupList
+   if arr[1]=aTestGroupClass then iterate  -- already handled
+   arr[1]~TestCaseInfo=tmpDir             -- save info in class object
+end
+
+-- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
+-- and set it to .false; this way the independent local invocation of the tests is inhibited
+if .local~hasentry("bRunTestsLocally")=.false then
+   .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
+
+if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
+do
+   ts=.testSuite~new             -- create a testSuite
+   do arr over testGroupList
+      -- create a testSuite for the given test case class, use all its testmethods
+      ts~addTest( .testSuite~new(arr[1]))
+   end
+   -- testResult=.testSuite~new(testGroupClass)~run
+   testResult=ts~run       -- now run all the tests
+
+   call simpleFormatTestResults testResult
+end
+
+   /* return list of array objects containing test case classes and
+      optionally list of mandatory test methods                      */
+return testGroupList
+
+::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+
+::class "String_verifyMethod.testGroup" subclass TestCase public
+
+::method 'test000'
+    .local~v0 = ''
+    .local~v1 = '*'
+    .local~v100000 = copies('1234567890',10000)
+    .local~vm = 'm'
+    .local~v2 = 2
+
+::method 'test001'
+    self~assertSame('subTest01','0',''~verify(''))
+
+::method 'test002'
+    self~assertSame('subTest01','1','a'~verify(''))
+
+::method 'test003'
+    self~assertSame('subTest01','1','A'~verify(''))
+
+::method 'test004'
+    self~assertSame('subTest01','0','A'~verify('AAAAAAAAAA'))
+
+::method 'test005'
+    self~assertSame('subTest01','0','AAAAAAAAAA'~verify('A'))
+
+::method 'test006'
+    self~assertSame('subTest01','1','ab'~verify(''))
+
+::method 'test007'
+    self~assertSame('subTest01','0','ab'~verify('ab'))
+
+::method 'test008'
+    self~assertSame('subTest01','1','AB'~verify(''))
+
+::method 'test009'
+    self~assertSame('subTest01','3','ABC'~verify('AB'))
+
+::method 'test010'
+    self~assertSame('subTest01','1','abcdefghijklmnopqrstuvwxyz1234'~verify(''))
+
+::method 'test011'
+    self~assertSame('subTest01','1','ABCDEFGHIJKLMNOPQRSTUVWXYZ1234'~verify(''))
+
+::method 'test012'
+    self~assertSame('subTest01','0','A'~verify('ABCDEFGHIJKLMNOPQRSTUVWXYZ1234'))
+
+::method 'test013'
+    self~assertSame('subTest01','0','R'~verify('ABCDEFGHIJKLMNOPQRSTUVWXYZ1234'))
+
+::method 'test014'
+    self~assertSame('subTest01','0','4'~verify('ABCDEFGHIJKLMNOPQRSTUVWXYZ1234'))
+
+::method 'test015'
+    self~assertSame('subTest01','0','A'~verify("ABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghij"))
+
+::method 'test016'
+    self~assertSame('subTest01','0','f'~verify("ABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghij"))
+
+::method 'test017'
+    self~assertSame('subTest01','0','j'~verify("ABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghij"))
+
+::method 'test018'
+    self~assertSame('subTest01','1','A'~verify("ABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghij",'M',1-0))
+
+::method 'test019'
+    self~assertSame('subTest01','0','f'~verify("ABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghij",'m',2*1))
+
+::method 'test020'
+    self~assertSame('subTest01','0','j'~verify("ABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghij",'Micheal Jackson',251))
+
+::method 'test021'
+    xre = 0
+    self~assertSame('subTest01',.true,'A'~verify("ABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghij",,000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001) == xre)
+
+::method 'test022'
+    xre = '0'
+    self~assertSame('subTest01',.true,'f'~verify("ABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghij",,'3030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303032'x) == xre)
+
+::method 'test023'
+    self~assertSame('subTest01','0','j'~verify("ABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghij",,251))
+
+::method 'test024'
+    self~assertSame('subTest01','0','j'~verify("ABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghij",,251.00000001))
+
+::method 'test025'
+    self~expectSyntax(93.905)
+    xre = 'j'~verify("ABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghij",,251.0000009)
+
+::method 'test026'
+    self~assertSame('subTest01','1','333333333333333333333333333333333333333333333333'x~verify(''))
+
+::method 'test027'
+    self~assertSame('subTest01','1',1bcde~verify(''))
+
+::method 'test028'
+    self~assertSame('subTest01','1','ABCDEFG'~verify('HIJKLMN'))
+
+::method 'test029'
+    self~assertSame('subTest01',1,nova.~verify(''))
+
+::method 'test030'
+    self~expectSyntax(93.938)
+    xre = ''~verify(nova.)
+
+::method 'test031'
+    self~expectSyntax(93.905)
+    xre = ''~verify('',,nov)
+
+::method 'test032'
+    self~expectSyntax(93.905)
+    xre = ''~verify('',,noval.12)
+
+::method 'test033'
+    self~assertSame('subTest01','1',nov~verify(''))
+
+::method 'test034'
+    self~assertSame('subTest01','1',nova.~verify(''))
+
+::method 'test035'
+    self~assertSame('subTest01','1',noval.12~verify(''))
+
+::method 'test036'
+    self~assertSame('subTest01','0',''~verify(nov))
+
+::method 'test037'
+    self~expectSyntax(93.938)
+    xre = ''~verify(nova.)
+
+::method 'test038'
+    self~assertSame('subTest01','0',''~verify(noval.12))
+
+::method 'test039'
+    self~expectSyntax(93.915)
+    xre = ''~verify('',xov)
+
+::method 'test040'
+    self~expectSyntax(93.938)
+    xre = ''~verify('',xova.)
+
+::method 'test041'
+    self~expectSyntax(93.915)
+    xre = ''~verify('',xoval.12)
+
+::method 'test042'
+    self~expectSyntax(93.905)
+    xre = ''~verify('',,xov)
+
+::method 'test043'
+    self~expectSyntax(93.905)
+    xre = ''~verify('',,xova.)
+
+::method 'test044'
+    self~expectSyntax(93.905)
+    xre = ''~verify('',,xoval.12)
+
+::method 'test045'
+    self~assertSame('subTest01','0',''~verify('',nov))
+
+::method 'test046'
+    self~expectSyntax(93.938)
+    xre = ''~verify('',nova.)
+
+::method 'test047'
+    self~assertSame('subTest01','0',''~verify('',noval.12))
+
+::method 'test048'
+    self~expectSyntax(93.905)
+    xre = ''~verify('',,nov)
+
+::method 'test049'
+    self~expectSyntax(93.905)
+    xre = ''~verify('',,nova.)
+
+::method 'test050'
+    self~expectSyntax(93.905)
+    xre = ''~verify('',,noval.12)
+
+::method 'test051'
+    self~assertSame('subTest01','0',.v0~verify(''))
+
+::method 'test052'
+    self~assertSame('subTest01','1',.v1~verify(''))
+
+::method 'test053'
+    v2. = '67'
+    self~assertSame('subTest01','1',v2.~verify(''))
+
+::method 'test054'
+    v30.30 = 'abcdefghijklmnopqrstuvwxyz1234'
+    self~assertSame('subTest01','1',v30.30~verify(''))
+
+::method 'test055'
+    self~assertSame('subTest01','1',.v100000~verify(''))
+
+::method 'test056'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = 'John R. Buckley'
+    self~assertSame('subTest01','1',XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~verify('R.'))
+
+::method 'test057'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = 'John R. Buckley'
+    self~assertSame('subTest01','0','R.'~verify(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX))
+
+::method 'test058_bif'      -- to be removed
+    v2. = '67'
+   self~assertSame('subTest01','0',verify(.v1,v2.,.vm,.v2))
+
+::method 'test058'
+    v2. = '67'
+    self~assertSame('subTest01','0',.v1~verify(v2.,.vm,.v2))
+
+::method 'test059'
+    self~assertSame('subTest01','0','1'~verify(.v100000))
+
+::method 'test060'
+    self~assertSame('subTest01','0',(2*3)~verify(.v100000))
+
+::method 'test061'
+    self~assertSame('subTest01','0',(9-9)~verify(.v100000))
+
+::method 'test062'
+    self~assertSame('subTest01','1',(112+11)~verify(''))
+
+::method 'test063'
+    self~assertSame('subTest01','1',+1.e28~verify(''))
+
+::method 'test064'
+    numeric digits 1
+    self~assertSame('subTest01','0',(2*3)~verify(.v100000))
+
+::method 'test065'
+    numeric digits 1
+    self~assertSame('subTest01','0',(9-9)~verify(.v100000))
+
+::method 'test066'
+    numeric digits 1
+    self~assertSame('subTest01','1',(112+11)~verify(''))
+
+::method 'test067'
+    numeric digits 1
+    self~assertSame('subTest01','1',(+1.e28)~verify(''))
+
+::method 'test068'
+    self~assertSame('subTest01','0','abc'~verify('',.vm))
+
+::method 'test069'
+    self~assertSame('subTest01','1','abc'~verify('','n'))
+
+::method 'test070'
+    self~expectSyntax(93.915)
+    xre = 'abc'~verify('','o')
+
+::method 'test071'
+    self~assertSame('subTest01','0',''~verify('','m'))
+
+::method 'test072'
+    self~assertSame('subTest01','0',''~verify('','n'))
+
+::method 'test073'
+    self~expectSyntax(93.915)
+    xre = ''~verify('','o')
+
+::method 'test074'
+    self~assertSame('subTest01','1','abc'~verify(''))
+
+::method 'test075'
+    self~assertSame('subTest01','0','abc'~verify('','m',4))
+
+::method 'test076'
+    self~assertSame('subTest01','0','abc'~verify('','n',4))
+
+::method 'test077'
+    self~expectSyntax(93.915)
+    xre = 'abc'~verify('','o',4)
+
+::method 'test078'
+    self~expectSyntax(93.924)
+    xre = 'abc'~verify('','m',0)
+
+::method 'test079'
+    self~assertSame('subTest01','0','ABC'~verify('DEF',Match))
+
+::method 'test080'
+    self~assertSame('subTest01','1','ABC'~verify('ABC',mona lisa))
+
+::method 'test081'
+    self~assertSame('subTest01','0','ABC'~verify('XYZ',MAMAMAMAMAMAMAMA))
+
+::method 'test082'
+    self~assertSame('subTest01','0','ABC'~verify('XYZ',Mother Night by Kurt Vonigut))
+
+::method 'test083'
+    self~assertSame('subTest01','0','ABC'~verify('DEF','Match'))
+
+::method 'test084'
+    self~assertSame('subTest01','0','414243'x~verify('444546'x,'4d61746368'x,'31'x))
+
+::method 'test085'
+    self~assertSame('subTest01','1','ABC'~verify('ABC','mona lisa'))
+
+::method 'test086'
+    self~assertSame('subTest01','0','ABC'~verify('XYZ','MAMAMAMAMAMAMAMA'))
+
+::method 'test087'
+    self~assertSame('subTest01','0','ABC'~verify('XYZ','Mother Night by Kurt Vonigut'))
+
+::method 'test088'
+    self~assertSame('subTest01','0','ABC'~verify('XYZ','6d'x))
+
+::method 'test089'
+    self~assertSame('subTest01','0','ABC'~verify('XYZ','4d'x          ))
+
+::method 'test090'
+    self~assertSame('subTest01','0',subStr('ABCDEFG',2,5)~verify(word('A BCDEF G',2)))
+
+::method 'test091'
+    self~assertSame('subTest01','1','BCDEF'~verify('BCDEF',subStr('lmnop',2),dataType(6,'N')))
+
+::method 'test092'
+    self~assertSame('subTest01','0',dataType(6)~verify(dataType('A'),subStr(dataType(6),3),dataType(6,'A')))
+
+::method 'test093'
+--    self~assertSame('subTest01','0',verify('ABC'~verify('ABC'),'ABABABABAC'~verify('AB'),,'A'~verify('')))
+    self~assertSame('subTest01','0','ABC'~verify('ABC')~verify('ABABABABAC'~verify('AB'),,'A'~verify('')))
+
+::method 'test094'
+    .local~remove(v0)
+    .local~remove(v1)
+    .local~remove(v100000)
+    .local~remove(vm)
+    .local~remove(v2)
+
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_VERIFY"
+    self~assertEquals("subTest1" , 0 , '123'~VERIFY('1234567890')         )
+    self~assertEquals("subTest2" , 2 , '1Z3'~VERIFY('1234567890')         )
+    self~assertEquals("subTest3" , 1 , 'AB4T'~VERIFY('1234567890')        )
+    self~assertEquals("subTest4" , 3 , 'AB4T'~VERIFY('1234567890','M')    )
+    self~assertEquals("subTest5" , 1 , 'AB4T'~VERIFY('1234567890','N')    )
+    self~assertEquals("subTest6" , 4 , '1P3Q4'~VERIFY('1234567890', ,3)   )
+    self~assertEquals("subTest7" , 2 , '123'~VERIFY('',N,2)               )  --
+    self~assertEquals("subTest8" , 3 , 'ABCDE'~VERIFY('', ,3)             )  --
+    self~assertEquals("subTest9" , 6 , 'AB3CD5'~VERIFY('1234567890','M',4))
+
