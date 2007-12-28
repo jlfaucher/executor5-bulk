@@ -224,15 +224,12 @@ return testUnitList
 
 ::method 'test027'
     self~assertSame('subTest01','NV',subWord(nv,1))
---call ver SUBWORD(nv,1),'NV'; R0069:
 
 ::method 'test028'
     self~assertSame('subTest01','NV.',subWord(nv.,1))
---call ver SUBWORD(nv.,1),'NV.'; R0070:
 
 ::method 'test029'
     self~assertSame('subTest01','NV.10',subWord(nv.10,1))
---call ver SUBWORD(nv.10,1),'NV.10'; R0071:
 
 ::method 'test030'
     self~expectSyntax(40.12)
@@ -308,11 +305,9 @@ return testUnitList
 
 ::method 'test051'
     self~assertSame('subTest01','4 5',subWord((3 4 5),2))
---call ver SUBWORD((3 4 5),2),'4 5'; R0103:
 
 ::method 'test052'
     self~assertSame('subTest01','5',subWord((3 4 5),3))
---call ver SUBWORD((3 4 5),3),'5'; R0104:
 
 ::method 'test053'
     self~assertSame('subTest01','',subWord((3 4 5),4))
@@ -542,7 +537,6 @@ return testUnitList
 
 ::method 'test117'
     self~assertSame('subTest01','J K',subWord(.v10000,9999,2))
---call ver SUBWORD(.v10000,9999,2),'J K'; R0094:
 
 ::method 'test118'
     self~assertSame('subTest01','K',subWord(.v10000,10000,2))
