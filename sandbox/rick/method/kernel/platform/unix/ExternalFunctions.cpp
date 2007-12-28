@@ -502,7 +502,7 @@ bool MacroSpaceSearch(
       APICLEANUP(MACROCHAIN);          /* now we have a copy of the routine */
       if (Routine == OREF_NULL) return false;
     Routine->call(activity, (RexxObject *)activation, target, arguments, argcount, calltype, OREF_NULL, EXTERNALCALL, result);
-    activation->getSource()->mergeRequired(Routine->getSource());
+    activation->getSource()->mergeRequired(((RexxCode *)Routine->getCode())->getSourceObject());
     return true;                       /* return success we found it flag   */
   }
   return false;                        /* nope, nothing to find here        */

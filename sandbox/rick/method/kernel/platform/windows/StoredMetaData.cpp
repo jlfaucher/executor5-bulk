@@ -212,7 +212,6 @@ RexxMethod *SysRestoreProgram(
                                        /* "puff" this out usable form       */
   Method = TheMethodClass->restore(Buffer, StartPointer);
   ProtectedObject p1(Method);
-                        /* buffer need not to be holded because it is now an envelope and referenced by Method */
   Source = ((RexxCode*)Method->getCode())->getSourceObject();   /* and now the source object         */
                                        /* switch the file name (this might  */
                                        /* be different than the name        */
@@ -525,7 +524,6 @@ RexxMethod *SysRestoreTranslatedProgram(
                                        /* "puff" this out usable form       */
   Method = TheMethodClass->restore(Buffer, StartPointer);
   ProtectedObject p2(Method);
-                        /* buffer need not to be holded because it is now an envelope and referenced by Method */
   Source = ((RexxCode*)Method->getCode())->getSourceObject();   /* and now the source object         */
                                        /* switch the file name (this might  */
                                        /* be different than the name        */

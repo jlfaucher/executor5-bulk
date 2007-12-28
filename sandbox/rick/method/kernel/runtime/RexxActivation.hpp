@@ -212,9 +212,9 @@ RexxObject * activation_find  (void);
 
    RexxObject *run(RexxObject *_receiver, RexxString *msgname, RexxObject **_arglist,
        size_t _argcount, RexxInstruction * start, ProtectedObject &resultObj);
-   inline     RexxObject *run(RexxObject **arglist, size_t argcount, ProtectedObject &result)
+   inline     RexxObject *run(RexxObject **_arglist, size_t _argcount, ProtectedObject &_result)
    {
-       return run(OREF_NULL, OREF_NULL, arglist, argcount, OREF_NULL, result);
+       return run(OREF_NULL, OREF_NULL, _arglist, _argcount, OREF_NULL, _result);
    }
    void              reply(RexxObject *);
    RexxObject      * forward(RexxObject *, RexxString *, RexxObject *, RexxObject **, size_t, bool);
