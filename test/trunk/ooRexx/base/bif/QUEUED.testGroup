@@ -102,7 +102,7 @@
                 ts~addTest( .testSuite~new(arr[1]))
             end
             -- testResult=.testSuite~new(testUnitClass)~run
-            testResult=ts~run       -- now run all the tests
+            testResult=ts~run(,.true)       -- now run all the tests
 
             call simpleFormatTestResults testResult
         end
