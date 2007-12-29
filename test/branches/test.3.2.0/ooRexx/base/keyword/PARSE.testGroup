@@ -3949,3 +3949,540 @@ do_test_linein: procedure             -- create external Rexx program for testin
    delimxx='xx'
    Parse Var v v1 v2 =6 v3 v4 +(delimxx) v5 v6
 
+::method "Test_542"
+   a=1
+   x=8; y=9; Parse Var/**/a x y;
+   self~assertSame("subTest1", x"."y,"1"||"."||"")
+
+::method "Test_543"
+   a=1
+   x=8; y=9; Parse Var,
+   a x/**/y;
+   self~assertSame("subTest1", x"."y,"1"||"."||"")
+
+::method "Test_544"
+   a=1
+   x=8; y=9; Parse Var/**/a xy;
+   self~assertSame("subTest1", x"."y,"8"||"."||"9")
+
+::method "Test_545"
+   a=1
+   x=8; y=9; Parse Var/**/a x1y;
+   self~assertSame("subTest1", x"."y,"8"||"."||"9")
+
+::method "Test_546"
+   a=1
+   x=8; y=9; Parse Var,
+   a 1 y;
+   self~assertSame("subTest1", x"."y,"8"||"."||"1")
+
+::method "Test_547"
+   a=1
+   x=8; y=9; Parse Var a 1/**/y;
+   self~assertSame("subTest1", x"."y,"8"||"."||"1")
+
+::method "Test_548"
+   self~expectSyntax(26.4)
+   a=1
+   x=8; y=9; Parse Var/**/a 1y;
+
+::method "Test_549"
+   self~expectSyntax(26.4)
+   a=1
+   x=8; y=9; Parse Var a 11y;
+
+::method "Test_550"
+   self~expectSyntax(26.4)
+   a=1
+   x=8; y=9; Parse Var/**/a 1a y;
+
+::method "Test_551"
+   self~expectSyntax(26.4)
+   a=1
+   x=8; y=9; Parse Var a 1a/**/y;
+
+::method "Test_552"
+   self~expectSyntax(26.4)
+   a=1
+   x=8; y=9; Parse Var a 1ay;
+
+::method "Test_553"
+   self~expectSyntax(26.4)
+   a=1
+   x=8; y=9; Parse Var,
+    a 1a1y;
+
+::method "Test_554"
+   a=1
+   x=8; y=9; Parse Var/**/a (a) y;
+   self~assertSame("subTest1", x"."y,"8"||"."||"")
+
+::method "Test_555"
+   a=1
+   x=8; y=9; Parse Var a (a)/**/y;
+   self~assertSame("subTest1", x"."y,"8"||"."||"")
+
+::method "Test_556"
+   a=1
+   x=8; y=9; Parse Var/**/a (a)y;
+   self~assertSame("subTest1", x"."y,"8"||"."||"")
+
+::method "Test_557"
+   self~expectSyntax(26.4)
+   a=1
+   x=8; y=9; Parse Var,
+    a (a)1y;
+
+::method "Test_558"
+   self~expectSyntax(26.4)
+   a=1
+   x=8; y=9; Parse Var/**/a (b)1y;
+
+::method "Test_559"
+   a=1
+   x=8; y=9; Parse Var,
+    a +1 y;
+   self~assertSame("subTest1", x"."y,"8"||"."||"")
+
+::method "Test_560"
+   a=1
+   x=8; y=9; Parse Var/**/a +1/**/y;
+   self~assertSame("subTest1", x"."y,"8"||"."||"")
+
+::method "Test_561"
+   a=1
+   x=8; y=9; Parse Var,
+    a/**/x y;
+   self~assertSame("subTest1", x"."y,"1"||"."||"")
+
+::method "Test_562"
+   a=1
+   x=8; y=9; Parse Var,
+    a/**/x/**/y;
+   self~assertSame("subTest1", x"."y,"1"||"."||"")
+
+::method "Test_563"
+   a=1
+   x=8; y=9; Parse Var/**/a/**/xy;
+   self~assertSame("subTest1", x"."y,"8"||"."||"9")
+
+::method "Test_564"
+   a=1
+   x=8; y=9; Parse Var,
+    a/**/x1y;
+   self~assertSame("subTest1", x"."y,"8"||"."||"9")
+
+::method "Test_565"
+   a=1
+   x=8; y=9; Parse Var/**/a/**/1 y;
+   self~assertSame("subTest1", x"."y,"8"||"."||"1")
+
+::method "Test_566"
+   a=1
+   x=8; y=9; Parse Var a/**/1/**/y;
+   self~assertSame("subTest1", x"."y,"8"||"."||"1")
+
+::method "Test_567"
+   a=1
+   x=8; y=9; Parse Var,
+    a/**/(a) y;
+   self~assertSame("subTest1", x"."y,"8"||"."||"")
+
+::method "Test_568"
+   a=1
+   x=8; y=9; Parse Var a/**/(a)/**/y;
+   self~assertSame("subTest1", x"."y,"8"||"."||"")
+
+::method "Test_569"
+   a=1
+   x=8; y=9; Parse Var,
+    a/**/(a)y;
+   self~assertSame("subTest1", x"."y,"8"||"."||"")
+
+::method "Test_570"
+   self~expectSyntax(26.4)
+   a=1
+   x=8; y=9; Parse Var,
+   a/**/(a)1y;
+
+::method "Test_571"
+   self~expectSyntax(26.4)
+   a=1
+   x=8; y=9; Parse Var/**/a/**/(b)1y;
+
+::method "Test_572"
+   self~expectSyntax(26.4)
+   a=1
+   x=8; y=9; Parse Var,
+    a/**/(c)1y;
+
+::method "Test_573"
+   a=1
+   x=8; y=9; Parse Var a/**/+1 y;
+   self~assertSame("subTest1", x"."y,"8"||"."||"")
+
+::method "Test_574"
+   a=1
+   x=8; y=9; Parse Var/**/a/**/+1/**/y
+   self~assertSame("subTest1", x"."y,"8"||"."||"")
+
+::method "Test_575"
+   self~expectSyntax(26.4)
+   a=1
+   x=8; y=9; Parse Var,
+    a/**/+1y
+
+::method "Test_576"
+   self~expectSyntax(26.4)
+   a=1
+   x=8; y=9; Parse Var a/**/+11y
+
+::method "Test_577"
+   a=1
+   x=8; y=9; Parse Var a(a) y
+   self~assertSame("subTest1", x"."y,"8"||"."||"")
+
+::method "Test_578"
+   a=1
+   x=8; y=9; Parse Var/**/a(a)/**/y
+   self~assertSame("subTest1", x"."y,"8"||"."||"")
+
+::method "Test_579"
+   a=1
+   x=8; y=9; Parse Var,
+    a(a)y
+   self~assertSame("subTest1", x"."y,"8"||"."||"")
+
+::method "Test_580"
+   self~expectSyntax(26.4)
+   a=1
+   x=8; y=9; Parse Var/**/a(a)1y
+
+::method "Test_581"
+   a=1
+   x=8; y=9; Parse Var a+1 y
+   self~assertSame("subTest1", x"."y,"8"||"."||"")
+
+::method "Test_582"
+   a=1
+   x=8; y=9; Parse Var/**/a+1/**/y
+   self~assertSame("subTest1", x"."y,"8"||"."||"")
+
+::method "Test_583"
+   self~expectSyntax(26.4)
+   a=1
+   x=8; y=9; Parse Var,
+    a+1y
+
+::method "Test_584"
+   self~expectSyntax(26.4)
+   a=1
+   x=8; y=9; Parse Var/**/a+11y
+
+::method "Test_585"
+   var='abcdef'
+   Parse Var var x1
+   self~assertSame("subTest1", x1,var)
+
+::method "Test_586"
+   var='abcdef'
+   Parse Var var 0 x2
+   self~assertSame("subTest1", x2,var)
+
+::method "Test_587"
+   var='abcdef'
+   Parse Var var 1 x3
+   self~assertSame("subTest1", x3,var)
+
+::method "Test_588"
+   var='abcdef'
+   Parse Value 'a b  1  2  3   1   2   3   4         ' With,
+                a b i1 i2 i3 i.1 i.2 i.3 i.4 .
+   Parse Var var x1 2
+   self~assertSame("subTest1", x1,a)
+
+::method "Test_589"
+   var='abcdef'
+   Parse Value 'a b  1  2  3   1   2   3   4         ' With,
+                a b i1 i2 i3 i.1 i.2 i.3 i.4 .
+   Parse Var var 1 x2 2
+   self~assertSame("subTest1", x2,a)
+
+::method "Test_590"
+   var='abcdef'
+   Parse Value 'a b  1  2  3   1   2   3   4         ' With,
+                a b i1 i2 i3 i.1 i.2 i.3 i.4 .
+   Parse Var var 1 x3 2
+   self~assertSame("subTest1", x3,a)
+    
+::method "Test_591"
+   var='abcdef'
+   Parse Value 'a b  1  2  3   1   2   3   4         ' With,
+                a b i1 i2 i3 i.1 i.2 i.3 i.4 .
+   Parse Var var x.1 2
+   self~assertSame("subTest1", x.1,a)
+    
+::method "Test_592"
+   var='abcdef'
+   Parse Value 'a b  1  2  3   1   2   3   4         ' With,
+                a b i1 i2 i3 i.1 i.2 i.3 i.4 .
+   Parse Var var 1 x.2 2
+   self~assertSame("subTest1", x.2,a)
+    
+::method "Test_593"
+   var='abcdef'
+   Parse Value 'a b  1  2  3   1   2   3   4         ' With,
+                a b i1 i2 i3 i.1 i.2 i.3 i.4 .
+   Parse Var var 1 x.3 2
+   self~assertSame("subTest1", x.3,a)
+    
+::method "Test_594"
+   var='abcdef'
+   Parse Value 'a b  1  2  3   1   2   3   4         ' With,
+                a b i1 i2 i3 i.1 i.2 i.3 i.4 .
+   id=0010; Parse Var var x.4 1
+   self~assertSame("subTest1", x.4,var)
+    
+::method "Test_595"
+   var='abcdef'
+   Parse Value 'a b  1  2  3   1   2   3   4         ' With,
+                a b i1 i2 i3 i.1 i.2 i.3 i.4 .
+   Parse Value 'abcdef' With x1
+   self~assertSame("subTest1", x1,var)
+    
+::method "Test_596"
+   var='abcdef'
+   Parse Value 'a b  1  2  3   1   2   3   4         ' With,
+                a b i1 i2 i3 i.1 i.2 i.3 i.4 .
+   Parse Value 'abcdef' With 1 x2
+   self~assertSame("subTest1", x2,var)
+    
+::method "Test_597"
+   var='abcdef'
+   Parse Value 'a b  1  2  3   1   2   3   4         ' With,
+                a b i1 i2 i3 i.1 i.2 i.3 i.4 .
+   Parse Value 'abcdef' With 1 x3
+   self~assertSame("subTest1", x3,var)
+    
+::method "Test_598"
+   var='abcdef'
+   Parse Value 'a b  1  2  3   1   2   3   4         ' With,
+                a b i1 i2 i3 i.1 i.2 i.3 i.4 .
+   Parse Value 'abcdef' With x1 2
+   self~assertSame("subTest1", x1,a)
+    
+::method "Test_599"
+   var='abcdef'
+   Parse Value 'a b  1  2  3   1   2   3   4         ' With,
+                a b i1 i2 i3 i.1 i.2 i.3 i.4 .
+   Parse Value 'abcdef' With 1 x2 2
+   self~assertSame("subTest1", x2,a)
+    
+::method "Test_600"
+   var='abcdef'
+   Parse Value 'a b  1  2  3   1   2   3   4         ' With,
+                a b i1 i2 i3 i.1 i.2 i.3 i.4 .
+   Parse Value 'abcdef' With 1 x3 2
+   self~assertSame("subTest1", x3,a)
+    
+::method "Test_601"
+   var='abcdef'
+   Parse Value 'a b  1  2  3   1   2   3   4         ' With,
+                a b i1 i2 i3 i.1 i.2 i.3 i.4 .
+   Parse Value 'abcdef' With x.1 2
+   self~assertSame("subTest1", x.1,a)
+    
+::method "Test_602"
+   var='abcdef'
+   Parse Value 'a b  1  2  3   1   2   3   4         ' With,
+                a b i1 i2 i3 i.1 i.2 i.3 i.4 .
+   Parse Value 'abcdef' With 1 x.2 2
+   self~assertSame("subTest1", x.2,a)
+    
+::method "Test_603"
+   var='abcdef'
+   Parse Value 'a b  1  2  3   1   2   3   4         ' With,
+                a b i1 i2 i3 i.1 i.2 i.3 i.4 .
+   Parse Value 'abcdef' With       x.3 2
+   self~assertSame("subTest1", x.3,a)
+    
+::method "Test_604"
+   var2='bcdef'
+   Parse Value 'a b  1  2  3   1   2   3   4         ' With,
+                a b i1 i2 i3 i.1 i.2 i.3 i.4 .
+   Parse Value 'abcdef' With 'a' x1
+   self~assertSame("subTest1", x1,var2)
+    
+::method "Test_605"
+   var='abcdef'
+   Parse Value 'a b  1  2  3   1   2   3   4         ' With,
+                a b i1 i2 i3 i.1 i.2 i.3 i.4 .
+   Parse Value 'abcdef' With 'a' 1 x2
+   self~assertSame("subTest1", x2,var)
+    
+::method "Test_606"
+   var='abcdef'
+   Parse Value 'a b  1  2  3   1   2   3   4         ' With,
+                a b i1 i2 i3 i.1 i.2 i.3 i.4 .
+   Parse Value 'abcdef' With 'a' 1 x3
+   self~assertSame("subTest1", x3,var)
+    
+::method "Test_607"
+   var='abcdef'
+   Parse Value 'a b  1  2  3   1   2   3   4         ' With,
+                a b i1 i2 i3 i.1 i.2 i.3 i.4 .
+   Parse Value 'abcdef' With 'a' x1 +1
+   self~assertSame("subTest1", x1,a)
+    
+::method "Test_608"
+   var='abcdef'
+   Parse Value 'a b  1  2  3   1   2   3   4         ' With,
+                a b i1 i2 i3 i.1 i.2 i.3 i.4 .
+   Parse Value 'abcdef' With 'a' 1 x2 +1
+   self~assertSame("subTest1", x2,a)
+    
+::method "Test_609"
+   var='abcdef'
+   Parse Value 'a b  1  2  3   1   2   3   4         ' With,
+                a b i1 i2 i3 i.1 i.2 i.3 i.4 .
+   Parse Value 'abcdef' With 'a' 1 x3 +1
+   self~assertSame("subTest1", x3,a)
+    
+::method "Test_610"
+   var='abcdef'
+   Parse Value 'a b  1  2  3   1   2   3   4         ' With,
+                a b i1 i2 i3 i.1 i.2 i.3 i.4 .
+   Parse Value 'abcdef' With 'a' x.1 3
+   self~assertSame("subTest1", x.1,b)
+    
+::method "Test_611"
+   var='abcdef'
+   Parse Value 'a b  1  2  3   1   2   3   4         ' With,
+                a b i1 i2 i3 i.1 i.2 i.3 i.4 .
+   Parse Value 'abcdef' With 'a' 1 x.2 3
+   self~assertSame("subTest1", x.2,'ab')
+    
+::method "Test_612"
+   var='abcdef'
+   Parse Value 'a b  1  2  3   1   2   3   4         ' With,
+                a b i1 i2 i3 i.1 i.2 i.3 i.4 .
+   Parse Value 'abcdef' With 'a'       x.3 3
+   self~assertSame("subTest1", x.3,b)
+    
+::method "Test_613"
+   v='some value, or another.'
+   Parse Arg , a
+   self~assertSame("subTest1", a,'')
+    
+::method "Test_614"
+   Queue 'some string, or another'
+   Parse Pull , c
+   self~assertSame("subTest1", c,'')
+/*
+   i1=''
+*/
+    
+::method "Test_615"
+   Parse Source , d
+   self~assertSame("subTest1", d,'')
+    
+::method "Test_616"
+   Parse Value 'some value, or another.' With , e
+   self~assertSame("subTest1", e,'')
+    
+::method "Test_617"
+   v='some value, or another.'
+   Parse Var v , f
+   self~assertSame("subTest1", f,'')
+    
+::method "Test_618"
+   Parse Version , g
+   self~assertSame("subTest1", g,'')
+    
+::method "Test_619"
+   Parse Arg, a
+   self~assertSame("subTest1", a,'')
+    
+::method "Test_620"
+   Queue 'some string, or another'
+   Parse Pull, c
+   self~assertSame("subTest1", c,'')
+    
+::method "Test_621"
+   Parse Source, d
+   self~assertSame("subTest1", d,'')
+    
+::method "Test_622"
+   Parse Value 'some value, or another.' With, e
+   self~assertSame("subTest1", e,'')
+    
+::method "Test_623"
+   v='some value, or another.'
+   Parse Var v, f
+   self~assertSame("subTest1", f,'')
+    
+::method "Test_624"
+   Parse Version, g
+   self~assertSame("subTest1", g,'')
+    
+::method "Test_625"
+   Parse Arg,,
+    a ;
+   self~assertSame("subTest1", a,'')
+    
+::method "Test_626"
+   Queue 'some string, or another'
+   Parse Pull,,
+    c ;
+   self~assertSame("subTest1", c,'')
+    
+::method "Test_627"
+   Parse Source,,
+    d ;
+   self~assertSame("subTest1", d,'')
+    
+::method "Test_628"
+   Parse Value 'some value, or another.' With,,
+    e ;
+   self~assertSame("subTest1", e,'')
+    
+::method "Test_629"
+   v='some value, or another.'
+   Parse Var v,,
+    f ;
+   self~assertSame("subTest1", f,'')
+    
+::method "Test_630"
+   Parse Version,,
+    g ;
+   self~assertSame("subTest1", g,'')
+    
+::method "Test_631"
+   Parse Arg,,,,,,,,,,,,,,,,,,, a
+   self~assertSame("subTest1", a,'')
+    
+::method "Test_632"
+   Queue 'some string, or another'
+   Parse Pull,,,,,,,,,,,,,,,,,,, c
+   self~assertSame("subTest1", c,'')
+    
+::method "Test_633"
+   Parse Source,,,,,,,,,,,,,,,,,,, d
+   self~assertSame("subTest1", d,'')
+    
+::method "Test_634"
+   Parse Value 'some value, or another.' With, e
+   self~assertSame("subTest1", e,'')
+    
+::method "Test_635"
+   v='some value, or another.'
+   Parse Var v,,,,,,,,,,,,,,,,,,, f
+   self~assertSame("subTest1", f,'')
+    
+::method "Test_636"
+   Parse Version,,,,,,,,,,,,,,,,,,, g
+   self~assertSame("subTest1", g,'')
+ 
+
+
+
