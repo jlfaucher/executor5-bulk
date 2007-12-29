@@ -4650,23 +4650,23 @@ do_test_linein: procedure             -- create external Rexx program for testin
    self~assertSame("subTest5", v5,'    1    2     3  ')
   
 ::method "Test_656"
-   lw="COPIES"('A',1000)              /* a real long word               */
-   sw='b'                            /* a short word                   */
+   lw="COPIES"('A',1000)
+   sw='b'               
    string="SPACE"(lw  sw   lw    sw sw,4)
    Parse Var string a
    self~assertSame("subTest1", a,string)
   
 ::method "Test_657"
-   lw="COPIES"('A',1000)              /* a real long word               */
-   sw='b'                            /* a short word                   */
+   lw="COPIES"('A',1000)
+   sw='b'               
    string="SPACE"(lw  sw   lw    sw sw,4)
    Parse Var string a b
    self~assertSame("subTest1", a,lw)
    self~assertSame("subTest2", b,'   '"SPACE"(sw   lw    sw sw,4))
   
 ::method "Test_658"
-   lw="COPIES"('A',1000)              /* a real long word               */
-   sw='b'                            /* a short word                   */
+   lw="COPIES"('A',1000)
+   sw='b'               
    string="SPACE"(lw  sw   lw    sw sw,4)
    Parse Var string a b c d e f
    self~assertSame("subTest1", a,lw)
@@ -4759,9 +4759,35 @@ do_test_linein: procedure             -- create external Rexx program for testin
    Parse Arg word1 string1, string2, num
    Return
  
+::method "Test_671"
+   Parse Value 'aaa bbb  ccc   ddd  eee  ' With 'aaa bbb  c' a b c d . +999
+   self~assertSame("subTest1", a,'aaa')
+   self~assertSame("subTest2", b,'bbb')
+   self~assertSame("subTest3", c,'ccc')
+   self~assertSame("subTest4", d,'ddd')
  
- 
- 
-
-
+::method "Test_672"
+   b=''
+   cl='124 125 126 255 256 257 2000 '2**24-1
+   Do ci=1 To Words(cl)
+      c=Word(cl,ci)
+      If c>1000000 Then Iterate
+      If c>2000 Then Do;
+         cc=c%10 ; cr=c//10
+         a="COPIES"('1111111110',cc)
+         If cr<>0 Then Do j=1 to cr;
+            a=a||1;
+            End j
+         End
+      Else Do; cc=c%2;cr=c//2
+         a="COPIES"('10',cc)
+         If cr<>0 Then a=a||1
+         End
+      Do i=1 Until a=''
+         Parse Var a a.i '0' a
+--       If c>1000 Then Do; If i//1000=0 Then Say i a.i; End
+--       Else Do; If i//100=0  Then Say i a.i; End
+         End i
+      self~assertTrue("subTest1-"ci, 1)
+      End
 
