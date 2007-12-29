@@ -386,8 +386,8 @@ return testGroupList
   z[9] = 'lion'
   self~assertSame('array z must have 9 items', 9, z~items)
   z~empty
-  self~assertSame('tracker bug # 1858730  array z must have 0 items after empty', 0, z~items)
-  self~assertTrue('tracker bug # 1858730  array z must be empty after empty', z~isEmpty)
+  self~assertSame(.ooRexxUnit.knownBugFlag '1858730  array z must have 0 items after empty', 0, z~items)
+  self~assertTrue(.ooRexxUnit.knownBugFlag '1858730  array z must be empty after empty', z~isEmpty)
 
 ::method test_empty_with_interpet_and_of
 
@@ -415,8 +415,8 @@ return testGroupList
   b[6] = 1
   self~assertSame('array b must have 6 items', 6, b~items)
   b~empty
-  self~assertTrue('tracker bug # 1858730  array b must be empty after empty', b~isEmpty)
-  self~assertSame('tracker bug # 1858730  array b must have 0 items after empty', 0, b~items)
+  self~assertTrue(.ooRexxUnit.knownBugFlag '1858730  array b must be empty after empty', b~isEmpty)
+  self~assertSame(.ooRexxUnit.knownBugFlag '1858730  array b must have 0 items after empty', 0, b~items)
 
 ::method test_empty_with_new_big
   c = .array~new
@@ -425,7 +425,7 @@ return testGroupList
   end
   self~assertSame('array c must have 10,000 items', 10000, c~items)
   c~empty
-  self~assertSame('tracker bug # 1858730  array c must have 0 items after empty', 0, c~items)
+  self~assertSame(.ooRexxUnit.knownBugFlag '1858730  array c must have 0 items after empty', 0, c~items)
 
 ::method test_empty_new_append_small
 
@@ -441,7 +441,7 @@ return testGroupList
   d~append(9)
   self~assertSame('array d must have 9 items', 9, d~items)
   d~empty
-  self~assertSame('tracker bug # 1858730  array d must have 0 items after empty', 0, d~items)
+  self~assertSame(.ooRexxUnit.knownBugFlag '1858730  array d must have 0 items after empty', 0, d~items)
 
 ::method test_empty_new_append_big
   e = .array~new
@@ -450,7 +450,7 @@ return testGroupList
   end
   self~assertSame('array e must have 10,000 items', 10000, e~items)
   e~empty
-  self~assertSame('tracker bug # 1858730  array e must have 0 items after empty', 0, e~items)
+  self~assertSame(.ooRexxUnit.knownBugFlag '1858730  array e must have 0 items after empty', 0, e~items)
 
 
 ::method test_empty_then_append
@@ -460,7 +460,7 @@ return testGroupList
   end
   self~assertSame('array e must have 10,000 items', 10000, e~items)
   e~empty
-  self~assertSame('tracker bug # 1858730  array e must have 0 items after empty', 0, e~items)
+  self~assertSame(.ooRexxUnit.knownBugFlag '1858730  array e must have 0 items after empty', 0, e~items)
 
   do i = 1 to 10000
     e~append(.object~new)
@@ -492,7 +492,7 @@ return testGroupList
   a[3,3] = 3
   self~assertSame('array a must have 9 items', 9, a~items)
   a~empty
-  self~assertSame('tracker bug # 1858730  array a must have 0 items after empty', 0, a~items)
+  self~assertSame(.ooRexxUnit.knownBugFlag '1858730  array a must have 0 items after empty', 0, a~items)
 
 
 ::method test_multidimension_empty_big
@@ -507,7 +507,7 @@ return testGroupList
   end
   self~assertSame('array a must have 1,000 items', 1000, a~items)
   a~empty
-  self~assertSame('tracker bug # 1858730  array a must have 0 items after empty', 0, a~items)
+  self~assertSame(.ooRexxUnit.knownBugFlag '1858730  array a must have 0 items after empty', 0, a~items)
 
 
 ::method test_empty_when_empty
