@@ -7,6 +7,7 @@
    changed:          2007-01-24, --rgf, using "ooRexxUnit.getShellName()" for determining the
                                         shell to ADDRESS
                      2007-06-10, --rgf, added test cases for the new parse features in 3.2
+                     2007-12-28, --wda, added standard tests
 
 -- line commented lines are ignored, when building the directory of infos from this header
 
@@ -542,5 +543,3409 @@ do_test_linein: procedure             -- create external Rexx program for testin
   self~assertNull(  "subtest_06",     a[5]    )
   self~assertEquals("subtest_07", a5, d~word5 )
 
+::method "Test_1"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 1 v1 v2 v3 v4 1 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB**a*x y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
 
+::method "Test_2"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 1 v1 v2 v3 v4 "b" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******bAA*BB  a x y z   b  u v w <")
+
+::method "Test_3"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 1 v1 v2 v3 v4 "*" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB**a*x y z   b  u v w ***<")
+
+::method "Test_4"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 1 v1 v2 v3 v4 20 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB**a*x y z   **b* u v w <")
+
+::method "Test_5"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 1 v1 v2 v3 v4 10 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB*****a*x y z   b  u v w <")
+
+::method "Test_6"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 1 v1 v2 v3 v4 3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bb******AA*BB  a x y z   b  u v w <")
+
+::method "Test_7"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 1 v1 v2 v3 v4 +3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbA******A*BB  a x y z   b  u v w <")
+
+::method "Test_8"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 1 v1 v2 v3 v4 -3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB**a*x y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_9"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 1 v1 v2 v3 v4 +0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB**a*x y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_10"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 1 v1 v2 v3 v4 -100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB**a*x y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_11"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 1 v1 v2 v3 v4 +100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB**a*x y z   b  u v w ***<")
+
+::method "Test_12"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "a" v1 v2 v3 v4 1 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">x*y**z*  b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_13"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "a" v1 v2 v3 v4 "b" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">x*y**z*  **u*v w <")
+
+::method "Test_14"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "a" v1 v2 v3 v4 "*" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">x*y**z*  b  u v w ***<")
+
+::method "Test_15"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "a" v1 v2 v3 v4 20 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">x*y**z*  **b* u v w <")
+
+::method "Test_16"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "a" v1 v2 v3 v4 10 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">x*y**z*  b  u v w **a*x y z   b  u v w <")
+
+::method "Test_17"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "a" v1 v2 v3 v4 3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">x*y**z*  b  u v w **AA*BB  a x y z   b  u v w <")
+
+::method "Test_18"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "a" v1 v2 v3 v4 +3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">a*x*****y*z   b  u v w <")
+
+::method "Test_19"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "a" v1 v2 v3 v4 -3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">a*x**y*z   b  u v w **B* a x y z   b  u v w <")
+
+::method "Test_20"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "a" v1 v2 v3 v4 +0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">a*x**y*z   b  u v w **a*x y z   b  u v w <")
+
+::method "Test_21"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "a" v1 v2 v3 v4 -100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">a*x**y*z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_22"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "a" v1 v2 v3 v4 +100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">a*x**y*z   b  u v w ***<")
+
+::method "Test_23"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "*" v1 v2 v3 v4 1 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_24"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "*" v1 v2 v3 v4 "b" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">*******<")
+
+::method "Test_25"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "*" v1 v2 v3 v4 "*" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">*******<")
+
+::method "Test_26"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "*" v1 v2 v3 v4 20 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******b* u v w <")
+
+::method "Test_27"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "*" v1 v2 v3 v4 10 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******a*x y z   b  u v w <")
+
+::method "Test_28"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "*" v1 v2 v3 v4 3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******AA*BB  a x y z   b  u v w <")
+
+::method "Test_29"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "*" v1 v2 v3 v4 +3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">*******<")
+
+::method "Test_30"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "*" v1 v2 v3 v4 -3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******w*<")
+
+::method "Test_31"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "*" v1 v2 v3 v4 +0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">*******<")
+
+::method "Test_32"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "*" v1 v2 v3 v4 -100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_33"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "*" v1 v2 v3 v4 +100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">*******<")
+
+::method "Test_34"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 10 v1 v2 v3 v4 1 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">a*x**y*z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_35"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 10 v1 v2 v3 v4 "b" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">a*x**y*z   **u*v w <")
+
+::method "Test_36"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 10 v1 v2 v3 v4 "*" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">a*x**y*z   b  u v w ***<")
+
+::method "Test_37"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 10 v1 v2 v3 v4 20 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">a*x**y*z   **b* u v w <")
+
+::method "Test_38"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 10 v1 v2 v3 v4 10 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">a*x**y*z   b  u v w **a*x y z   b  u v w <")
+
+::method "Test_39"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 10 v1 v2 v3 v4 3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">a*x**y*z   b  u v w **AA*BB  a x y z   b  u v w <")
+
+::method "Test_40"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 10 v1 v2 v3 v4 +3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">a*x*****y*z   b  u v w <")
+
+::method "Test_41"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 10 v1 v2 v3 v4 -3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">a*x**y*z   b  u v w **B* a x y z   b  u v w <")
+
+::method "Test_42"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 10 v1 v2 v3 v4 +0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">a*x**y*z   b  u v w **a*x y z   b  u v w <")
+
+::method "Test_43"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 10 v1 v2 v3 v4 -100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">a*x**y*z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_44"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 10 v1 v2 v3 v4 +100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">a*x**y*z   b  u v w ***<")
+
+::method "Test_45"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 40 v1 v2 v3 v4 1 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_46"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 40 v1 v2 v3 v4 "b" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">*******<")
+
+::method "Test_47"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 40 v1 v2 v3 v4 "*" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">*******<")
+
+::method "Test_48"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 40 v1 v2 v3 v4 20 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******b* u v w <")
+
+::method "Test_49"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 40 v1 v2 v3 v4 10 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******a*x y z   b  u v w <")
+
+::method "Test_50"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 40 v1 v2 v3 v4 3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******AA*BB  a x y z   b  u v w <")
+
+::method "Test_51"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 40 v1 v2 v3 v4 +3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">*******<")
+
+::method "Test_52"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 40 v1 v2 v3 v4 -3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******w*<")
+
+::method "Test_53"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 40 v1 v2 v3 v4 +0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">*******<")
+
+::method "Test_54"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 40 v1 v2 v3 v4 -100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_55"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 40 v1 v2 v3 v4 +100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">*******<")
+
+::method "Test_56"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v +10 v1 v2 v3 v4 1 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">x*y**z*  b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_57"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v +10 v1 v2 v3 v4 "b" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">x*y**z*  **u*v w <")
+
+::method "Test_58"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v +10 v1 v2 v3 v4 "*" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">x*y**z*  b  u v w ***<")
+
+::method "Test_59"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v +10 v1 v2 v3 v4 20 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">x*y**z*  **b* u v w <")
+
+::method "Test_60"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v +10 v1 v2 v3 v4 10 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">x*y**z*  b  u v w **a*x y z   b  u v w <")
+
+::method "Test_61"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v +10 v1 v2 v3 v4 3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">x*y**z*  b  u v w **AA*BB  a x y z   b  u v w <")
+
+::method "Test_62"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v +10 v1 v2 v3 v4 +3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">x******y*z   b  u v w <")
+
+::method "Test_63"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v +10 v1 v2 v3 v4 -3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">x*y**z*  b  u v w **a*x y z   b  u v w <")
+
+::method "Test_64"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v +10 v1 v2 v3 v4 +0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">x*y**z*  b  u v w **x*y z   b  u v w <")
+
+::method "Test_65"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v +10 v1 v2 v3 v4 -100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">x*y**z*  b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_66"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v +10 v1 v2 v3 v4 +100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">x*y**z*  b  u v w ***<")
+
+::method "Test_67"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v -12 v1 v2 v3 v4 1 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB**a*x y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_68"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v -12 v1 v2 v3 v4 "b" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******bAA*BB  a x y z   b  u v w <")
+
+::method "Test_69"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v -12 v1 v2 v3 v4 "*" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB**a*x y z   b  u v w ***<")
+
+::method "Test_70"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v -12 v1 v2 v3 v4 20 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB**a*x y z   **b* u v w <")
+
+::method "Test_71"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v -12 v1 v2 v3 v4 10 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB*****a*x y z   b  u v w <")
+
+::method "Test_72"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v -12 v1 v2 v3 v4 3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bb******AA*BB  a x y z   b  u v w <")
+
+::method "Test_73"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v -12 v1 v2 v3 v4 +3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbA******A*BB  a x y z   b  u v w <")
+
+::method "Test_74"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v -12 v1 v2 v3 v4 -3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB**a*x y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_75"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v -12 v1 v2 v3 v4 +0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB**a*x y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_76"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v -12 v1 v2 v3 v4 -100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB**a*x y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_77"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v -12 v1 v2 v3 v4 +100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB**a*x y z   b  u v w ***<")
+
+::method "Test_78"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 0 v1 v2 v3 v4 1 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB**a*x y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_79"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 0 v1 v2 v3 v4 "b" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******bAA*BB  a x y z   b  u v w <")
+
+::method "Test_80"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 0 v1 v2 v3 v4 "*" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB**a*x y z   b  u v w ***<")
+
+::method "Test_81"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 0 v1 v2 v3 v4 20 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB**a*x y z   **b* u v w <")
+
+::method "Test_82"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 0 v1 v2 v3 v4 10 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB*****a*x y z   b  u v w <")
+
+::method "Test_83"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 0 v1 v2 v3 v4 3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bb******AA*BB  a x y z   b  u v w <")
+
+::method "Test_84"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 0 v1 v2 v3 v4 +3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbA******A*BB  a x y z   b  u v w <")
+
+::method "Test_85"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 0 v1 v2 v3 v4 -3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB**a*x y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_86"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 0 v1 v2 v3 v4 +0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB**a*x y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_87"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 0 v1 v2 v3 v4 -100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB**a*x y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_88"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 0 v1 v2 v3 v4 +100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB**a*x y z   b  u v w ***<")
+
+::method "Test_89"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 101 v1 v2 v3 v4 1 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_90"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 101 v1 v2 v3 v4 "b" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">*******<")
+
+::method "Test_91"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 101 v1 v2 v3 v4 "*" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">*******<")
+
+::method "Test_92"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 101 v1 v2 v3 v4 20 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******b* u v w <")
+
+::method "Test_93"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 101 v1 v2 v3 v4 10 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******a*x y z   b  u v w <")
+
+::method "Test_94"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 101 v1 v2 v3 v4 3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******AA*BB  a x y z   b  u v w <")
+
+::method "Test_95"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 101 v1 v2 v3 v4 +3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">*******<")
+
+::method "Test_96"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 101 v1 v2 v3 v4 -3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******w*<")
+
+::method "Test_97"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 101 v1 v2 v3 v4 +0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">*******<")
+
+::method "Test_98"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 101 v1 v2 v3 v4 -100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_99"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 101 v1 v2 v3 v4 +100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">*******<")
+
+::method "Test_100"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "XXX" v1 v2 v3 v4 1 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_101"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "XXX" v1 v2 v3 v4 "b" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">*******<")
+
+::method "Test_102"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "XXX" v1 v2 v3 v4 "*" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">*******<")
+
+::method "Test_103"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "XXX" v1 v2 v3 v4 20 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******b* u v w <")
+
+::method "Test_104"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "XXX" v1 v2 v3 v4 10 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******a*x y z   b  u v w <")
+
+::method "Test_105"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "XXX" v1 v2 v3 v4 3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******AA*BB  a x y z   b  u v w <")
+
+::method "Test_106"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "XXX" v1 v2 v3 v4 +3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">*******<")
+
+::method "Test_107"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "XXX" v1 v2 v3 v4 -3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******w*<")
+
+::method "Test_108"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "XXX" v1 v2 v3 v4 +0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">*******<")
+
+::method "Test_109"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "XXX" v1 v2 v3 v4 -100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_110"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "XXX" v1 v2 v3 v4 +100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">*******<")
+
+::method "Test_111"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "bA" v1 v2 v3 v4 1 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">A*BB**a*x y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_112"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "bA" v1 v2 v3 v4 "b" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">A*BB**a*x y z   **u*v w <")
+
+::method "Test_113"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "bA" v1 v2 v3 v4 "*" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">A*BB**a*x y z   b  u v w ***<")
+
+::method "Test_114"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "bA" v1 v2 v3 v4 20 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">A*BB**a*x y z   **b* u v w <")
+
+::method "Test_115"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "bA" v1 v2 v3 v4 10 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">A*BB*****a*x y z   b  u v w <")
+
+::method "Test_116"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "bA" v1 v2 v3 v4 3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">A*BB**a*x y z   b  u v w **AA*BB  a x y z   b  u v w <")
+
+::method "Test_117"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "bA" v1 v2 v3 v4 +3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bAA******BB* a x y z   b  u v w <")
+
+::method "Test_118"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "bA" v1 v2 v3 v4 -3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bAA*BB**a*x y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_119"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "bA" v1 v2 v3 v4 +0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bAA*BB**a*x y z   b  u v w **bAA*BB  a x y z   b  u v w <")
+
+::method "Test_120"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "bA" v1 v2 v3 v4 -100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bAA*BB**a*x y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_121"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "bA" v1 v2 v3 v4 +100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bAA*BB**a*x y z   b  u v w ***<")
+
+::method "Test_123"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 "a" v3 v4 "b" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **x*y z   **u*v w <")
+
+::method "Test_124"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 "a" v3 v4 "*" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **x*y z   b  u v w ***<")
+
+::method "Test_125"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 "a" v3 v4 20 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **x*y z   **b* u v w <")
+
+::method "Test_126"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 "a" v3 v4 10 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **x*y z   b  u v w **a*x y z   b  u v w <")
+
+::method "Test_127"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 "a" v3 v4 3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **x*y z   b  u v w **AA*BB  a x y z   b  u v w <")
+
+::method "Test_128"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 "a" v3 v4 +3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **a*x**y*z   b  u v w <")
+
+::method "Test_129"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 "a" v3 v4 -3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **a*x y z   b  u v w **B* a x y z   b  u v w <")
+
+::method "Test_130"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 "a" v3 v4 +0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **a*x y z   b  u v w **a*x y z   b  u v w <")
+
+::method "Test_131"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 "a" v3 v4 -100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **a*x y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_132"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 "a" v3 v4 +100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **a*x y z   b  u v w ***<")
+
+::method "Test_133"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 "*" v3 v4 "b" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w ******<")
+
+::method "Test_134"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 "*" v3 v4 "*" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w ******<")
+
+::method "Test_135"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 "*" v3 v4 20 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w *****b* u v w <")
+
+::method "Test_136"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 "*" v3 v4 10 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w *****a*x y z   b  u v w <")
+
+::method "Test_137"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 "*" v3 v4 3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w *****AA*BB  a x y z   b  u v w <")
+
+::method "Test_138"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 "*" v3 v4 +3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w ******<")
+
+::method "Test_139"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 "*" v3 v4 -3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w *****w*<")
+
+::method "Test_140"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 "*" v3 v4 +0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w ******<")
+
+::method "Test_141"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 "*" v3 v4 -100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w *****bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_142"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 "*" v3 v4 +100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w ******<")
+
+::method "Test_143"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 10 v3 v4 "b" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **a*x y z   **u*v w <")
+
+::method "Test_144"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 10 v3 v4 "*" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **a*x y z   b  u v w ***<")
+
+::method "Test_145"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 10 v3 v4 20 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **a*x y z   **b* u v w <")
+
+::method "Test_146"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 10 v3 v4 10 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **a*x y z   b  u v w **a*x y z   b  u v w <")
+
+::method "Test_147"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 10 v3 v4 3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **a*x y z   b  u v w **AA*BB  a x y z   b  u v w <")
+
+::method "Test_148"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 10 v3 v4 +3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **a*x**y*z   b  u v w <")
+
+::method "Test_149"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 10 v3 v4 -3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **a*x y z   b  u v w **B* a x y z   b  u v w <")
+
+::method "Test_150"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 10 v3 v4 +0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **a*x y z   b  u v w **a*x y z   b  u v w <")
+
+::method "Test_151"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 10 v3 v4 -100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **a*x y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_152"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 10 v3 v4 +100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **a*x y z   b  u v w ***<")
+
+::method "Test_153"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 40 v3 v4 "b" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w ******<")
+
+::method "Test_154"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 40 v3 v4 "*" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w ******<")
+
+::method "Test_155"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 40 v3 v4 20 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w *****b* u v w <")
+
+::method "Test_156"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 40 v3 v4 10 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w *****a*x y z   b  u v w <")
+
+::method "Test_157"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 40 v3 v4 3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w *****AA*BB  a x y z   b  u v w <")
+
+::method "Test_158"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 40 v3 v4 +3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w ******<")
+
+::method "Test_159"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 40 v3 v4 -3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w *****w*<")
+
+::method "Test_160"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 40 v3 v4 +0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w ******<")
+
+::method "Test_161"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 40 v3 v4 -100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w *****bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_162"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 40 v3 v4 +100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w ******<")
+
+::method "Test_163"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 +10 v3 v4 "b" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a**x*y z   **u*v w <")
+
+::method "Test_164"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 +10 v3 v4 "*" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a**x*y z   b  u v w ***<")
+
+::method "Test_165"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 +10 v3 v4 20 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a**x*y z   **b* u v w <")
+
+::method "Test_166"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 +10 v3 v4 10 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a**x*y z   b  u v w **a*x y z   b  u v w <")
+
+::method "Test_167"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 +10 v3 v4 3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a**x*y z   b  u v w **AA*BB  a x y z   b  u v w <")
+
+::method "Test_168"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 +10 v3 v4 +3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a**x***y*z   b  u v w <")
+
+::method "Test_169"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 +10 v3 v4 -3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a**x*y z   b  u v w **a*x y z   b  u v w <")
+
+::method "Test_170"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 +10 v3 v4 +0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a**x*y z   b  u v w **x*y z   b  u v w <")
+
+::method "Test_171"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 +10 v3 v4 -100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a**x*y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_172"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 +10 v3 v4 +100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a**x*y z   b  u v w ***<")
+
+::method "Test_173"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 -12 v3 v4 "b" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w *****bAA*BB  a x y z   b  u v w <")
+
+::method "Test_174"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 -12 v3 v4 "*" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **bbAA*BB  a x y z   b  u v w ***<")
+
+::method "Test_175"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 -12 v3 v4 20 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **bbAA*BB  a x y z   **b* u v w <")
+
+::method "Test_176"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 -12 v3 v4 10 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **bbAA*BB  **a*x y z   b  u v w <")
+
+::method "Test_177"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 -12 v3 v4 3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **bb***AA*BB  a x y z   b  u v w <")
+
+::method "Test_178"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 -12 v3 v4 +3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **bbA***A*BB  a x y z   b  u v w <")
+
+::method "Test_179"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 -12 v3 v4 -3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **bbAA*BB  a x y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_180"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 -12 v3 v4 +0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **bbAA*BB  a x y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_181"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 -12 v3 v4 -100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **bbAA*BB  a x y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_182"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 -12 v3 v4 +100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **bbAA*BB  a x y z   b  u v w ***<")
+
+::method "Test_183"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 0 v3 v4 "b" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w *****bAA*BB  a x y z   b  u v w <")
+
+::method "Test_184"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 0 v3 v4 "*" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **bbAA*BB  a x y z   b  u v w ***<")
+
+::method "Test_185"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 0 v3 v4 20 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **bbAA*BB  a x y z   **b* u v w <")
+
+::method "Test_186"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 0 v3 v4 10 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **bbAA*BB  **a*x y z   b  u v w <")
+
+::method "Test_187"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 0 v3 v4 3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **bb***AA*BB  a x y z   b  u v w <")
+
+::method "Test_188"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 0 v3 v4 +3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **bbA***A*BB  a x y z   b  u v w <")
+
+::method "Test_189"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 0 v3 v4 -3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **bbAA*BB  a x y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_190"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 0 v3 v4 +0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **bbAA*BB  a x y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_191"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 0 v3 v4 -100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **bbAA*BB  a x y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_192"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 0 v3 v4 +100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **bbAA*BB  a x y z   b  u v w ***<")
+
+::method "Test_193"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 101 v3 v4 "b" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w ******<")
+
+::method "Test_194"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 101 v3 v4 "*" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w ******<")
+
+::method "Test_195"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 101 v3 v4 20 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w *****b* u v w <")
+
+::method "Test_196"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 101 v3 v4 10 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w *****a*x y z   b  u v w <")
+
+::method "Test_197"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 101 v3 v4 3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w *****AA*BB  a x y z   b  u v w <")
+
+::method "Test_198"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 101 v3 v4 +3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w ******<")
+
+::method "Test_199"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 101 v3 v4 -3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w *****w*<")
+
+::method "Test_200"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 101 v3 v4 +0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w ******<")
+
+::method "Test_201"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 101 v3 v4 -100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w *****bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_202"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 101 v3 v4 +100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w ******<")
+
+::method "Test_203"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 "XXX" v3 v4 "b" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w ******<")
+
+::method "Test_204"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 "XXX" v3 v4 "*" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w ******<")
+
+::method "Test_205"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 "XXX" v3 v4 20 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w *****b* u v w <")
+
+::method "Test_206"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 "XXX" v3 v4 10 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w *****a*x y z   b  u v w <")
+
+::method "Test_207"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 "XXX" v3 v4 3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w *****AA*BB  a x y z   b  u v w <")
+
+::method "Test_208"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 "XXX" v3 v4 +3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w ******<")
+
+::method "Test_209"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 "XXX" v3 v4 -3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w *****w*<")
+
+::method "Test_210"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 "XXX" v3 v4 +0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w ******<")
+
+::method "Test_211"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 "XXX" v3 v4 -100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w *****bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_212"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 "XXX" v3 v4 +100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w ******<")
+
+::method "Test_213"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 "bA" v3 v4 "b" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">b***A*BB  a x y z   **u*v w <")
+
+::method "Test_214"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 "bA" v3 v4 "*" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">b***A*BB  a x y z   b  u v w ***<")
+
+::method "Test_215"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 "bA" v3 v4 20 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">b***A*BB  a x y z   **b* u v w <")
+
+::method "Test_216"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 "bA" v3 v4 10 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">b***A*BB  **a*x y z   b  u v w <")
+
+::method "Test_217"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 "bA" v3 v4 3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">b***A*BB  a x y z   b  u v w **AA*BB  a x y z   b  u v w <")
+
+::method "Test_218"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 "bA" v3 v4 +3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">b***bAA***BB* a x y z   b  u v w <")
+
+::method "Test_219"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 "bA" v3 v4 -3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">b***bAA*BB  a x y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_220"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 "bA" v3 v4 +0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">b***bAA*BB  a x y z   b  u v w **bAA*BB  a x y z   b  u v w <")
+
+::method "Test_221"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 "bA" v3 v4 -100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">b***bAA*BB  a x y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_222"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v v1 v2 "bA" v3 v4 +100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">b***bAA*BB  a x y z   b  u v w ***<")
+
+::method "Test_223"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 "a" "b" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **3*4**u*v w <")
+
+::method "Test_224"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 "a" "*" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **3*4***<")
+
+::method "Test_225"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 "a" 20 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **3*4**b* u v w <")
+
+::method "Test_226"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 "a" 10 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **3*4**a*x y z   b  u v w <")
+
+::method "Test_227"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 "a" 3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **3*4**AA*BB  a x y z   b  u v w <")
+
+::method "Test_228"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 "a" +3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **3*4**y*z   b  u v w <")
+
+::method "Test_229"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 "a" -3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **3*4**B* a x y z   b  u v w <")
+
+::method "Test_230"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 "a" +0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **3*4**a*x y z   b  u v w <")
+
+::method "Test_231"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 "a" -0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **3*4**a*x y z   b  u v w <")
+
+::method "Test_232"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 "a" 0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **3*4**bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_233"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 "a" -100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **3*4**bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_234"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 "a" +100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **3*4***<")
+
+::method "Test_235"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 "*" "b" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4***<")
+
+::method "Test_236"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 "*" "*" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4***<")
+
+::method "Test_237"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 "*" 20 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4**b* u v w <")
+
+::method "Test_238"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 "*" 10 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4**a*x y z   b  u v w <")
+
+::method "Test_239"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 "*" 3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4**AA*BB  a x y z   b  u v w <")
+
+::method "Test_240"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 "*" +3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4***<")
+
+::method "Test_241"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 "*" -3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4**w*<")
+
+::method "Test_242"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 "*" +0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4***<")
+
+::method "Test_243"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 "*" -0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4***<")
+
+::method "Test_244"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 "*" 0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4**bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_245"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 "*" -100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4**bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_246"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 "*" +100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4***<")
+
+::method "Test_247"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 10 "b" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **3*4**u*v w <")
+
+::method "Test_248"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 10 "*" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **3*4***<")
+
+::method "Test_249"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 10 20 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **3*4**b* u v w <")
+
+::method "Test_250"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 10 10 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **3*4**a*x y z   b  u v w <")
+
+::method "Test_251"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 10 3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **3*4**AA*BB  a x y z   b  u v w <")
+
+::method "Test_252"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 10 +3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **3*4**y*z   b  u v w <")
+
+::method "Test_253"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 10 -3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **3*4**B* a x y z   b  u v w <")
+
+::method "Test_254"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 10 +0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **3*4**a*x y z   b  u v w <")
+
+::method "Test_255"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 10 -0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **3*4**a*x y z   b  u v w <")
+
+::method "Test_256"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 10 0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **3*4**bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_257"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 10 -100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **3*4**bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_258"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 10 +100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **3*4***<")
+
+::method "Test_259"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 40 "b" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4***<")
+
+::method "Test_260"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 40 "*" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4***<")
+
+::method "Test_261"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 40 20 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4**b* u v w <")
+
+::method "Test_262"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 40 10 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4**a*x y z   b  u v w <")
+
+::method "Test_263"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 40 3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4**AA*BB  a x y z   b  u v w <")
+
+::method "Test_264"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 40 +3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4***<")
+
+::method "Test_265"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 40 -3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4**w*<")
+
+::method "Test_266"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 40 +0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4***<")
+
+::method "Test_267"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 40 -0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4***<")
+
+::method "Test_268"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 40 0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4**bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_269"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 40 -100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4**bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_270"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 40 +100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4***<")
+
+::method "Test_271"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 +10 "b" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a**3*4**u*v w <")
+
+::method "Test_272"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 +10 "*" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a**3*4***<")
+
+::method "Test_273"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 +10 20 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a**3*4**b* u v w <")
+
+::method "Test_274"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 +10 10 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a**3*4**a*x y z   b  u v w <")
+
+::method "Test_275"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 +10 3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a**3*4**AA*BB  a x y z   b  u v w <")
+
+::method "Test_276"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 +10 +3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a**3*4**y*z   b  u v w <")
+
+::method "Test_277"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 +10 -3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a**3*4**a*x y z   b  u v w <")
+
+::method "Test_278"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 +10 +0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a**3*4**x*y z   b  u v w <")
+
+::method "Test_279"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 +10 -0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a**3*4**x*y z   b  u v w <")
+
+::method "Test_280"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 +10 0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a**3*4**bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_281"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 +10 -100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a**3*4**bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_282"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 +10 +100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a**3*4***<")
+
+::method "Test_283"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 -12 "b" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4**bAA*BB  a x y z   b  u v w <")
+
+::method "Test_284"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 -12 "*" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4***<")
+
+::method "Test_285"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 -12 20 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4**b* u v w <")
+
+::method "Test_286"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 -12 10 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4**a*x y z   b  u v w <")
+
+::method "Test_287"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 -12 3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4**AA*BB  a x y z   b  u v w <")
+
+::method "Test_288"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 -12 +3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4**A*BB  a x y z   b  u v w <")
+
+::method "Test_289"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 -12 -3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4**bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_290"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 -12 +0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4**bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_291"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 -12 -0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4**bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_292"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 -12 0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4**bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_293"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 -12 -100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4**bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_294"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 -12 +100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4***<")
+
+::method "Test_295"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 0 "b" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4**bAA*BB  a x y z   b  u v w <")
+
+::method "Test_296"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 0 "*" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4***<")
+
+::method "Test_297"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 0 20 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4**b* u v w <")
+
+::method "Test_298"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 0 10 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4**a*x y z   b  u v w <")
+
+::method "Test_299"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 0 3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4**AA*BB  a x y z   b  u v w <")
+
+::method "Test_300"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 0 +3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4**A*BB  a x y z   b  u v w <")
+
+::method "Test_301"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 0 -3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4**bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_302"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 0 +0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4**bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_303"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 0 -0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4**bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_304"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 0 0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4**bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_305"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 0 -100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4**bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_306"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 0 +100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4***<")
+
+::method "Test_307"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 101 "b" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4***<")
+
+::method "Test_308"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 101 "*" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4***<")
+
+::method "Test_309"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 101 20 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4**b* u v w <")
+
+::method "Test_310"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 101 10 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4**a*x y z   b  u v w <")
+
+::method "Test_311"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 101 3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4**AA*BB  a x y z   b  u v w <")
+
+::method "Test_312"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 101 +3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4***<")
+
+::method "Test_313"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 101 -3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4**w*<")
+
+::method "Test_314"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 101 +0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4***<")
+
+::method "Test_315"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 101 -0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4***<")
+
+::method "Test_316"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 101 0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4**bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_317"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 101 -100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4**bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_318"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 101 +100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4***<")
+
+::method "Test_319"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 "XXX" "b" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4***<")
+
+::method "Test_320"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 "XXX" "*" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4***<")
+
+::method "Test_321"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 "XXX" 20 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4**b* u v w <")
+
+::method "Test_322"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 "XXX" 10 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4**a*x y z   b  u v w <")
+
+::method "Test_323"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 "XXX" 3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4**AA*BB  a x y z   b  u v w <")
+
+::method "Test_324"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 "XXX" +3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4***<")
+
+::method "Test_325"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 "XXX" -3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4**w*<")
+
+::method "Test_326"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 "XXX" +0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4***<")
+
+::method "Test_327"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 "XXX" -0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4***<")
+
+::method "Test_328"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 "XXX" 0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4**bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_329"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 "XXX" -100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4**bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_330"
+   v="bbAA BB  a x y z   b  u v w "; v3=3; v4=4
+   Parse Var v v1 v2 "XXX" +100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **3*4***<")
+
+::method "Test_331"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 1 v1 v2 v3 v4 1 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB**a*x y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_332"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 1 v1 v2 v3 v4 "b" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******bAA*BB  a x y z   b  u v w <")
+
+::method "Test_333"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 1 v1 v2 v3 v4 "*" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB**a*x y z   b  u v w ***<")
+
+::method "Test_334"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 1 v1 v2 v3 v4 20 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB**a*x y z   **b* u v w <")
+
+::method "Test_335"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 1 v1 v2 v3 v4 10 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB*****a*x y z   b  u v w <")
+
+::method "Test_336"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 1 v1 v2 v3 v4 3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bb******AA*BB  a x y z   b  u v w <")
+
+::method "Test_337"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 1 v1 v2 v3 v4 +3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbA******A*BB  a x y z   b  u v w <")
+
+::method "Test_338"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 1 v1 v2 v3 v4 -3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB**a*x y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_339"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 1 v1 v2 v3 v4 +0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB**a*x y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_340"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 1 v1 v2 v3 v4 -100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB**a*x y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_341"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 1 v1 v2 v3 v4 +100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB**a*x y z   b  u v w ***<")
+
+::method "Test_342"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "a" v1 v2 v3 v4 1 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">x*y**z*  b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_343"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "a" v1 v2 v3 v4 "b" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">x*y**z*  **u*v w <")
+
+::method "Test_344"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "a" v1 v2 v3 v4 "*" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">x*y**z*  b  u v w ***<")
+
+::method "Test_345"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "a" v1 v2 v3 v4 20 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">x*y**z*  **b* u v w <")
+
+::method "Test_346"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "a" v1 v2 v3 v4 10 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">x*y**z*  b  u v w **a*x y z   b  u v w <")
+
+::method "Test_347"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "a" v1 v2 v3 v4 3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">x*y**z*  b  u v w **AA*BB  a x y z   b  u v w <")
+
+::method "Test_348"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "a" v1 v2 v3 v4 +3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">a*x*****y*z   b  u v w <")
+
+::method "Test_349"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "a" v1 v2 v3 v4 -3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">a*x**y*z   b  u v w **B* a x y z   b  u v w <")
+
+::method "Test_350"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "a" v1 v2 v3 v4 +0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">a*x**y*z   b  u v w **a*x y z   b  u v w <")
+
+::method "Test_351"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "a" v1 v2 v3 v4 -100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">a*x**y*z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_352"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "a" v1 v2 v3 v4 +100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">a*x**y*z   b  u v w ***<")
+
+::method "Test_353"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "*" v1 v2 v3 v4 1 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_354"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "*" v1 v2 v3 v4 "b" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">*******<")
+
+::method "Test_355"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "*" v1 v2 v3 v4 "*" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">*******<")
+
+::method "Test_356"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "*" v1 v2 v3 v4 20 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******b* u v w <")
+
+::method "Test_357"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "*" v1 v2 v3 v4 10 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******a*x y z   b  u v w <")
+
+::method "Test_358"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "*" v1 v2 v3 v4 3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******AA*BB  a x y z   b  u v w <")
+
+::method "Test_359"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "*" v1 v2 v3 v4 +3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">*******<")
+
+::method "Test_360"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "*" v1 v2 v3 v4 -3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******w*<")
+
+::method "Test_361"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "*" v1 v2 v3 v4 +0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">*******<")
+
+::method "Test_362"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "*" v1 v2 v3 v4 -100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_363"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "*" v1 v2 v3 v4 +100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">*******<")
+
+::method "Test_364"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 10 v1 v2 v3 v4 1 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">a*x**y*z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_365"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 10 v1 v2 v3 v4 "b" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">a*x**y*z   **u*v w <")
+
+::method "Test_366"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 10 v1 v2 v3 v4 "*" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">a*x**y*z   b  u v w ***<")
+
+::method "Test_367"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 10 v1 v2 v3 v4 20 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">a*x**y*z   **b* u v w <")
+
+::method "Test_368"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 10 v1 v2 v3 v4 10 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">a*x**y*z   b  u v w **a*x y z   b  u v w <")
+
+::method "Test_369"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 10 v1 v2 v3 v4 3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">a*x**y*z   b  u v w **AA*BB  a x y z   b  u v w <")
+
+::method "Test_370"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 10 v1 v2 v3 v4 +3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">a*x*****y*z   b  u v w <")
+
+::method "Test_371"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 10 v1 v2 v3 v4 -3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">a*x**y*z   b  u v w **B* a x y z   b  u v w <")
+
+::method "Test_372"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 10 v1 v2 v3 v4 +0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">a*x**y*z   b  u v w **a*x y z   b  u v w <")
+
+::method "Test_373"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 10 v1 v2 v3 v4 -100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">a*x**y*z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_374"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 10 v1 v2 v3 v4 +100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">a*x**y*z   b  u v w ***<")
+
+::method "Test_375"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 40 v1 v2 v3 v4 1 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_376"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 40 v1 v2 v3 v4 "b" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">*******<")
+
+::method "Test_377"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 40 v1 v2 v3 v4 "*" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">*******<")
+
+::method "Test_378"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 40 v1 v2 v3 v4 20 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******b* u v w <")
+
+::method "Test_379"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 40 v1 v2 v3 v4 10 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******a*x y z   b  u v w <")
+
+::method "Test_380"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 40 v1 v2 v3 v4 3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******AA*BB  a x y z   b  u v w <")
+
+::method "Test_381"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 40 v1 v2 v3 v4 +3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">*******<")
+
+::method "Test_382"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 40 v1 v2 v3 v4 -3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******w*<")
+
+::method "Test_383"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 40 v1 v2 v3 v4 +0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">*******<")
+
+::method "Test_384"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 40 v1 v2 v3 v4 -100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_385"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 40 v1 v2 v3 v4 +100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">*******<")
+
+::method "Test_386"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v +10 v1 v2 v3 v4 1 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">x*y**z*  b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_387"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v +10 v1 v2 v3 v4 "b" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">x*y**z*  **u*v w <")
+
+::method "Test_388"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v +10 v1 v2 v3 v4 "*" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">x*y**z*  b  u v w ***<")
+
+::method "Test_389"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v +10 v1 v2 v3 v4 20 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">x*y**z*  **b* u v w <")
+
+::method "Test_390"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v +10 v1 v2 v3 v4 10 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">x*y**z*  b  u v w **a*x y z   b  u v w <")
+
+::method "Test_391"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v +10 v1 v2 v3 v4 3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">x*y**z*  b  u v w **AA*BB  a x y z   b  u v w <")
+
+::method "Test_392"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v +10 v1 v2 v3 v4 +3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">x******y*z   b  u v w <")
+
+::method "Test_393"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v +10 v1 v2 v3 v4 -3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">x*y**z*  b  u v w **a*x y z   b  u v w <")
+
+::method "Test_394"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v +10 v1 v2 v3 v4 +0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">x*y**z*  b  u v w **x*y z   b  u v w <")
+
+::method "Test_395"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v +10 v1 v2 v3 v4 -100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">x*y**z*  b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_396"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v +10 v1 v2 v3 v4 +100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">x*y**z*  b  u v w ***<")
+
+::method "Test_397"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v -12 v1 v2 v3 v4 1 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB**a*x y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_398"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v -12 v1 v2 v3 v4 "b" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******bAA*BB  a x y z   b  u v w <")
+
+::method "Test_399"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v -12 v1 v2 v3 v4 "*" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB**a*x y z   b  u v w ***<")
+
+::method "Test_400"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v -12 v1 v2 v3 v4 20 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB**a*x y z   **b* u v w <")
+
+::method "Test_401"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v -12 v1 v2 v3 v4 10 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB*****a*x y z   b  u v w <")
+
+::method "Test_402"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v -12 v1 v2 v3 v4 3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bb******AA*BB  a x y z   b  u v w <")
+
+::method "Test_403"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v -12 v1 v2 v3 v4 +3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbA******A*BB  a x y z   b  u v w <")
+
+::method "Test_404"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v -12 v1 v2 v3 v4 -3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB**a*x y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_405"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v -12 v1 v2 v3 v4 +0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB**a*x y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_406"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v -12 v1 v2 v3 v4 -100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB**a*x y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_407"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v -12 v1 v2 v3 v4 +100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB**a*x y z   b  u v w ***<")
+
+::method "Test_408"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 0 v1 v2 v3 v4 1 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB**a*x y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_409"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 0 v1 v2 v3 v4 "b" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******bAA*BB  a x y z   b  u v w <")
+
+::method "Test_410"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 0 v1 v2 v3 v4 "*" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB**a*x y z   b  u v w ***<")
+
+::method "Test_411"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 0 v1 v2 v3 v4 20 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB**a*x y z   **b* u v w <")
+
+::method "Test_412"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 0 v1 v2 v3 v4 10 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB*****a*x y z   b  u v w <")
+
+::method "Test_413"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 0 v1 v2 v3 v4 3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bb******AA*BB  a x y z   b  u v w <")
+
+::method "Test_414"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 0 v1 v2 v3 v4 +3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbA******A*BB  a x y z   b  u v w <")
+
+::method "Test_415"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 0 v1 v2 v3 v4 -3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB**a*x y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_416"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 0 v1 v2 v3 v4 +0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB**a*x y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_417"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 0 v1 v2 v3 v4 -100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB**a*x y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_418"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 0 v1 v2 v3 v4 +100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB**a*x y z   b  u v w ***<")
+
+::method "Test_419"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 101 v1 v2 v3 v4 1 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_420"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 101 v1 v2 v3 v4 "b" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">*******<")
+
+::method "Test_421"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 101 v1 v2 v3 v4 "*" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">*******<")
+
+::method "Test_422"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 101 v1 v2 v3 v4 20 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******b* u v w <")
+
+::method "Test_423"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 101 v1 v2 v3 v4 10 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******a*x y z   b  u v w <")
+
+::method "Test_424"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 101 v1 v2 v3 v4 3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******AA*BB  a x y z   b  u v w <")
+
+::method "Test_425"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 101 v1 v2 v3 v4 +3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">*******<")
+
+::method "Test_426"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 101 v1 v2 v3 v4 -3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******w*<")
+
+::method "Test_427"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 101 v1 v2 v3 v4 +0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">*******<")
+
+::method "Test_428"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 101 v1 v2 v3 v4 -100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_429"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v 101 v1 v2 v3 v4 +100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">*******<")
+
+::method "Test_430"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "XXX" v1 v2 v3 v4 1 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_431"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "XXX" v1 v2 v3 v4 "b" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">*******<")
+
+::method "Test_432"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "XXX" v1 v2 v3 v4 "*" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">*******<")
+
+::method "Test_433"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "XXX" v1 v2 v3 v4 20 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******b* u v w <")
+
+::method "Test_434"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "XXX" v1 v2 v3 v4 10 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******a*x y z   b  u v w <")
+
+::method "Test_435"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "XXX" v1 v2 v3 v4 3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******AA*BB  a x y z   b  u v w <")
+
+::method "Test_436"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "XXX" v1 v2 v3 v4 +3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">*******<")
+
+::method "Test_437"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "XXX" v1 v2 v3 v4 -3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******w*<")
+
+::method "Test_438"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "XXX" v1 v2 v3 v4 +0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">*******<")
+
+::method "Test_439"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "XXX" v1 v2 v3 v4 -100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">******bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_440"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "XXX" v1 v2 v3 v4 +100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">*******<")
+
+::method "Test_441"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "bA" v1 v2 v3 v4 1 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">A*BB**a*x y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_442"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "bA" v1 v2 v3 v4 "b" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">A*BB**a*x y z   **u*v w <")
+
+::method "Test_443"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "bA" v1 v2 v3 v4 "*" v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">A*BB**a*x y z   b  u v w ***<")
+
+::method "Test_444"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "bA" v1 v2 v3 v4 20 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">A*BB**a*x y z   **b* u v w <")
+
+::method "Test_445"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "bA" v1 v2 v3 v4 10 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">A*BB*****a*x y z   b  u v w <")
+
+::method "Test_446"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "bA" v1 v2 v3 v4 3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">A*BB**a*x y z   b  u v w **AA*BB  a x y z   b  u v w <")
+
+::method "Test_447"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "bA" v1 v2 v3 v4 +3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bAA******BB* a x y z   b  u v w <")
+
+::method "Test_448"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "bA" v1 v2 v3 v4 -3 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bAA*BB**a*x y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_449"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "bA" v1 v2 v3 v4 +0 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bAA*BB**a*x y z   b  u v w **bAA*BB  a x y z   b  u v w <")
+
+::method "Test_450"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "bA" v1 v2 v3 v4 -100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bAA*BB**a*x y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_451"
+   v="bbAA BB  a x y z   b  u v w "
+   Parse Var v "bA" v1 v2 v3 v4 +100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bAA*BB**a*x y z   b  u v w ***<")
+
+::method "Test_452"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =10 v3 v4 =8 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **a*x y z   b  u v w **a*x y z   b  u v w <")
+
+::method "Test_453"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =10 v3 v4 =7 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **a*x y z   b  u v w **B* a x y z   b  u v w <")
+
+::method "Test_454"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =10 v3 v4 =100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **a*x y z   b  u v w ***<")
+
+::method "Test_455"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =10 v3 v4 =(delim20) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **a*x y z   **b* u v w <")
+
+::method "Test_456"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =10 v3 v4 =(delim10) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **a*x y z   b  u v w **a*x y z   b  u v w <")
+
+::method "Test_457"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =10 v3 v4 =(delim3) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **a*x y z   b  u v w **AA*BB  a x y z   b  u v w <")
+
+::method "Test_458"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =10 v3 v4 +(delim3) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **a*x**y*z   b  u v w <")
+
+::method "Test_459"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =10 v3 v4 -(delim3) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **a*x y z   b  u v w **B* a x y z   b  u v w <")
+
+::method "Test_460"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =10 v3 v4 +(delim0) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **a*x y z   b  u v w **a*x y z   b  u v w <")
+
+::method "Test_461"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =10 v3 v4 -(delim100) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **a*x y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_462"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =10 v3 v4 +(delim100) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **a*x y z   b  u v w ***<")
+
+::method "Test_463"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =6 v3 v4 =8 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA***BB***a*x y z   b  u v w <")
+
+::method "Test_464"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =6 v3 v4 =7 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA***B***B* a x y z   b  u v w <")
+
+::method "Test_465"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =6 v3 v4 =100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA***BB* a x y z   b  u v w ***<")
+
+::method "Test_466"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =6 v3 v4 =(delim20) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA***BB* a x y z   **b* u v w <")
+
+::method "Test_467"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =6 v3 v4 =(delim10) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA***BB* **a*x y z   b  u v w <")
+
+::method "Test_468"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =6 v3 v4 =(delim3) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA***BB* a x y z   b  u v w **AA*BB  a x y z   b  u v w <")
+
+::method "Test_469"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =6 v3 v4 +(delim3) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA***BB***a*x y z   b  u v w <")
+
+::method "Test_470"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =6 v3 v4 -(delim3) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA***BB* a x y z   b  u v w **AA*BB  a x y z   b  u v w <")
+
+::method "Test_471"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =6 v3 v4 +(delim0) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA***BB* a x y z   b  u v w **BB* a x y z   b  u v w <")
+
+::method "Test_472"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =6 v3 v4 -(delim100) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA***BB* a x y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_473"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =6 v3 v4 +(delim100) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA***BB* a x y z   b  u v w ***<")
+
+::method "Test_474"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =(delim10) v3 v4 =8 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **a*x y z   b  u v w **a*x y z   b  u v w <")
+
+::method "Test_475"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =(delim10) v3 v4 =7 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **a*x y z   b  u v w **B* a x y z   b  u v w <")
+
+::method "Test_476"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =(delim10) v3 v4 =100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **a*x y z   b  u v w ***<")
+
+::method "Test_477"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =(delim10) v3 v4 =(delim20) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **a*x y z   **b* u v w <")
+
+::method "Test_478"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =(delim10) v3 v4 =(delim10) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **a*x y z   b  u v w **a*x y z   b  u v w <")
+
+::method "Test_479"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =(delim10) v3 v4 =(delim3) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **a*x y z   b  u v w **AA*BB  a x y z   b  u v w <")
+
+::method "Test_480"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =(delim10) v3 v4 +(delim3) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **a*x**y*z   b  u v w <")
+
+::method "Test_481"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =(delim10) v3 v4 -(delim3) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **a*x y z   b  u v w **B* a x y z   b  u v w <")
+
+::method "Test_482"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =(delim10) v3 v4 +(delim0) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **a*x y z   b  u v w **a*x y z   b  u v w <")
+
+::method "Test_483"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =(delim10) v3 v4 -(delim100) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **a*x y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_484"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =(delim10) v3 v4 +(delim100) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  **a*x y z   b  u v w ***<")
+
+::method "Test_485"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =(delim40) v3 v4 =8 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w *****a*x y z   b  u v w <")
+
+::method "Test_486"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =(delim40) v3 v4 =7 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w *****B* a x y z   b  u v w <")
+
+::method "Test_487"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =(delim40) v3 v4 =100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w ******<")
+
+::method "Test_488"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =(delim40) v3 v4 =(delim20) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w *****b* u v w <")
+
+::method "Test_489"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =(delim40) v3 v4 =(delim10) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w *****a*x y z   b  u v w <")
+
+::method "Test_490"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =(delim40) v3 v4 =(delim3) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w *****AA*BB  a x y z   b  u v w <")
+
+::method "Test_491"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =(delim40) v3 v4 +(delim3) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w ******<")
+
+::method "Test_492"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =(delim40) v3 v4 -(delim3) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w *****w*<")
+
+::method "Test_493"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =(delim40) v3 v4 +(delim0) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w ******<")
+
+::method "Test_494"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =(delim40) v3 v4 -(delim100) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w *****bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_495"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =(delim40) v3 v4 +(delim100) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w ******<")
+
+::method "Test_496"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 +(delim10) v3 v4 =8 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a**x*y z   b  u v w **a*x y z   b  u v w <")
+
+::method "Test_497"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 +(delim10) v3 v4 =7 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a**x*y z   b  u v w **B* a x y z   b  u v w <")
+
+::method "Test_498"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 +(delim10) v3 v4 =100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a**x*y z   b  u v w ***<")
+
+::method "Test_499"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 +(delim10) v3 v4 =(delim20) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a**x*y z   **b* u v w <")
+
+::method "Test_500"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 +(delim10) v3 v4 =(delim10) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a**x*y z   b  u v w **a*x y z   b  u v w <")
+
+::method "Test_501"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 +(delim10) v3 v4 =(delim3) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a**x*y z   b  u v w **AA*BB  a x y z   b  u v w <")
+
+::method "Test_502"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 +(delim10) v3 v4 +(delim3) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a**x***y*z   b  u v w <")
+
+::method "Test_503"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 +(delim10) v3 v4 -(delim3) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a**x*y z   b  u v w **a*x y z   b  u v w <")
+
+::method "Test_504"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 +(delim10) v3 v4 +(delim0) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a**x*y z   b  u v w **x*y z   b  u v w <")
+
+::method "Test_505"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 +(delim10) v3 v4 -(delim100) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a**x*y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_506"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 +(delim10) v3 v4 +(delim100) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a**x*y z   b  u v w ***<")
+
+::method "Test_507"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 -(delim12) v3 v4 =8 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **bbAA*BB**a*x y z   b  u v w <")
+
+::method "Test_508"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 -(delim12) v3 v4 =7 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **bbAA*B**B* a x y z   b  u v w <")
+
+::method "Test_509"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 -(delim12) v3 v4 =100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **bbAA*BB  a x y z   b  u v w ***<")
+
+::method "Test_510"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 -(delim12) v3 v4 =(delim20) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **bbAA*BB  a x y z   **b* u v w <")
+
+::method "Test_511"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 -(delim12) v3 v4 =(delim10) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **bbAA*BB  **a*x y z   b  u v w <")
+
+::method "Test_512"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 -(delim12) v3 v4 =(delim3) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **bb***AA*BB  a x y z   b  u v w <")
+
+::method "Test_513"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 -(delim12) v3 v4 +(delim3) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **bbA***A*BB  a x y z   b  u v w <")
+
+::method "Test_514"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 -(delim12) v3 v4 -(delim3) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **bbAA*BB  a x y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_515"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 -(delim12) v3 v4 +(delim0) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **bbAA*BB  a x y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_516"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 -(delim12) v3 v4 -(delim100) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **bbAA*BB  a x y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_517"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 -(delim12) v3 v4 +(delim100) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **bbAA*BB  a x y z   b  u v w ***<")
+
+::method "Test_518"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =(delim0) v3 v4 =8 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **bbAA*BB**a*x y z   b  u v w <")
+
+::method "Test_519"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =(delim0) v3 v4 =7 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **bbAA*B**B* a x y z   b  u v w <")
+
+::method "Test_520"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =(delim0) v3 v4 =100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **bbAA*BB  a x y z   b  u v w ***<")
+
+::method "Test_521"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =(delim0) v3 v4 =(delim20) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **bbAA*BB  a x y z   **b* u v w <")
+
+::method "Test_522"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =(delim0) v3 v4 =(delim10) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **bbAA*BB  **a*x y z   b  u v w <")
+
+::method "Test_523"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =(delim0) v3 v4 =(delim3) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **bb***AA*BB  a x y z   b  u v w <")
+
+::method "Test_524"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =(delim0) v3 v4 +(delim3) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **bbA***A*BB  a x y z   b  u v w <")
+
+::method "Test_525"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =(delim0) v3 v4 -(delim3) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **bbAA*BB  a x y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_526"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =(delim0) v3 v4 +(delim0) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **bbAA*BB  a x y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_527"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =(delim0) v3 v4 -(delim100) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **bbAA*BB  a x y z   b  u v w **bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_528"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =(delim0) v3 v4 +(delim100) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w **bbAA*BB  a x y z   b  u v w ***<")
+
+::method "Test_529"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =(delim101) v3 v4 =8 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w *****a*x y z   b  u v w <")
+
+::method "Test_530"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =(delim101) v3 v4 =7 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w *****B* a x y z   b  u v w <")
+
+::method "Test_531"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =(delim101) v3 v4 =100 v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w ******<")
+
+::method "Test_532"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =(delim101) v3 v4 =(delim20) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w *****b* u v w <")
+
+::method "Test_533"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =(delim101) v3 v4 =(delim10) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w *****a*x y z   b  u v w <")
+
+::method "Test_534"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =(delim101) v3 v4 =(delim3) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w *****AA*BB  a x y z   b  u v w <")
+
+::method "Test_535"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =(delim101) v3 v4 +(delim3) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w ******<")
+
+::method "Test_536"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =(delim101) v3 v4 -(delim3) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w *****w*<")
+
+::method "Test_537"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =(delim101) v3 v4 +(delim0) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w ******<")
+
+::method "Test_538"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =(delim101) v3 v4 -(delim100) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w *****bbAA*BB  a x y z   b  u v w <")
+
+::method "Test_539"
+   v="bbAA BB  a x y z   b  u v w "
+   delim10="10"
+   delim40="40"
+   delim12="12"
+   delim0="0"
+   delim101="101"
+   delim20="20"
+   delim3="3"
+   delim100="100"
+   Parse Var v v1 v2 =(delim101) v3 v4 +(delim100) v5 v6
+   self~assertSame("subTest1", ('>'v1'*'v2'**'v3'*'v4'**'v5'*'v6'<'),">bbAA*BB  a x y z   b  u v w ******<")
+
+::method "Test_540"
+   self~expectSyntax(26.4)
+   v="bbAA BB  a x y z   b  u v w "
+   delimxx='xx'
+   Parse Var v v1 v2 =6 v3 v4 =(delimxx) v5 v6
+
+::method "Test_541"
+   self~expectSyntax(26.4)
+   v="bbAA BB  a x y z   b  u v w "
+   delimxx='xx'
+   Parse Var v v1 v2 =6 v3 v4 +(delimxx) v5 v6
 
