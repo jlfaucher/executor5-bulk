@@ -313,6 +313,7 @@ if currentPath~caseLessPos(.ooRexxUnit.dir) == 0 then
 ::method init
   expose fAssertions          -- count assertions, ooRexxUnit only
   fAssertions=0
+  self~clearCondition
 
 ::method assertCount          -- ooRex only
   expose fAssertions          -- count assertions, ooRexxUnit only
@@ -535,71 +536,96 @@ if currentPath~caseLessPos(.ooRexxUnit.dir) == 0 then
   self~fail(sTmp || arg(1))      -- fail with msg
 
 
+/** fail()
+ * Raise an application definable syntax error (since ooRexx 3.1).  A
+ * description is supplied so test methods are able to find out that the
+ * ooRexxUnit framework raised this.
+ *
+ * Need to raise a syntax error, because USER exception needs to be propagated
+ */
 ::method fail
-       -- ooRexx: need to raise a syntax error, because USER exception needs to be propageted
-  if arg()=0 then msg=""
-             else msg=arg(1)
-
-   -- use application definable syntax error (since ooRexx 3.1), supply description for
-   -- test methods to be able to find out that the ooRexxUnit framework raised it
+  use arg msg = ""
   RAISE syntax 93.964 array (msg) description ("ooRexxUnit.cls - source of syntax exception 'FAIL' method invocation in class 'ASSERT'.")
 
 
+::attribute conditionExpected private
+::attribute conditionName private
+::attribute conditionCode private
+::attribute conditionMsg private
 
-::method conditionExpected attribute
 
 ::method clearCondition
-  expose conditionExpected
-  conditionExpected = .false
+  self~conditionExpected = .false
+  self~conditionName = .nil
+  self~conditionCode = .nil
+  self~conditionMsg = .nil
 
+/** expectSyntax()
+ * The syntax error code to expect is required.
+ */
 ::method expectSyntax
-  expose conditionExpected conditionName errorCode
-  parse arg errorCode       -- retrieve errorCode
-  conditionName="SYNTAX"
-  conditionExpected=.true
+  use strict arg errorCode, msg = .nil
 
-  -- self~expectCondition( "SYNTAX", arg(1) )
+  self~conditionExpected = .true
+  self~conditionName = "SYNTAX"
+  self~conditionCode = errorCode
+  self~conditionMsg = msg
 
+
+/** expectCondition()
+ * Only the name of the condition is required, and it can be two words.  E.g.
+ * "USER SOMETHING"
+ */
 ::method expectCondition
-  expose conditionExpected conditionName
-  use arg conditionName           -- only name of condition is expected, can be two words, e.g. "USER SOMETHING"
-  conditionExpected = .true
+  use strict arg name, msg = .nil
+
+  self~conditionExpected = .true
+  self~conditionName = name
+  self~conditionMsg = msg
 
 
+/** checkCondition()
+ * Return true if the condition raised matches the condition expected, otherwise
+ * return false.
+ */
 ::method checkCondition
-  expose conditionExpected conditionName errorCode fAssertions
+  expose fAssertions
   use arg receivedCondition
 
-  if receivedCondition~condition == conditionName then
-  do
-      if conditionName == "SYNTAX" then
-      do
-          if errorCode <> receivedCondition~code then
-          do
-              return .false
-          end
-      end
-      fAssertions=fAssertions+1        -- asserted that expected conditionName has occurred!
-      return .true
+  if self~conditionExpected, self~conditionName == receivedCondition~condition then do
+     -- For a syntax error, the actual error code has to match the expected error code.
+     if self~conditionName == "SYNTAX", self~conditionCode <> receivedCondition~code then
+        return .false
+
+     fAssertions=fAssertions+1        -- asserted that expected conditionName has occurred!
+     return .true
   end
   return .false
 
 
-
-   /* Method that will fail, if a condition was expected, but had not been raised. */
+/** check4ConditionFailure()
+ * Forces an assert failure if a condition is expected to be raised.  The
+ * assumption is that this method is invoked when a condition has not been
+ * raised.
+ */
 ::method check4ConditionFailure
-  expose conditionExpected conditionName errorCode
 
-  if conditionExpected=.true then
-  do
-     if conditionName="SYNTAX" then
-        tmpStr=conditionName errorCode    -- supply the expected errorCode with the expected exception
+  if self~conditionExpected then do
+     tmpStr = self~conditionName
+     assertName = 'expectCondtion'
+
+     if tmpStr == "SYNTAX", self~conditionCode <> .nil then do
+        tmpStr = tmpStr self~conditionCode
+        assertName = 'expectSyntax'
+     end
+
+     if self~conditionMsg == .nil then
+        tmpStr = "@assertFailure" assertName "expected condition" pp(tmpStr) "was not raised."||"09"x
      else
-        tmpStr=conditionName
+        tmpStr = "@assertFailure" assertName "expected condition" pp(tmpStr) "was not raised."||"09"x||self~conditionMsg
 
-     sTmp="@assertFailure check4ConditionFailure: expected condition" pp(tmpStr) "was not raised."||"09"x
-
-     self~fail(sTmp)                -- fail with msg
+     -- Fail with msg
+     self~fail(tmpStr)
   end
 
 
@@ -1449,7 +1475,7 @@ return a
 
   line = info[1]
   if line~abbrev("@assert") then do
-    if line~word(2)~abbrev('check4Condition') then do
+    if line~word(2)~abbrev('expect') then do
       parse var line . '['expected']' .
       assert = "Error should be raised"
       actual = "Not raised"
