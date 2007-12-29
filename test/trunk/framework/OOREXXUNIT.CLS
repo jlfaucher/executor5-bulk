@@ -548,7 +548,8 @@ if currentPath~caseLessPos(.ooRexxUnit.dir) == 0 then
   RAISE syntax 93.964 array (msg) description ("ooRexxUnit.cls - source of syntax exception 'FAIL' method invocation in class 'ASSERT'.")
 
 
-::attribute conditionExpected private
+::attribute conditionExpected get
+::attribute conditionExpected set private
 ::attribute conditionName private
 ::attribute conditionCode private
 ::attribute conditionMsg private
@@ -716,7 +717,7 @@ exceptionHandler:
 
    co=condition("O")    -- get the condition directory object
 
-   if self~conditionExpected=.true then
+   if self~conditionExpected then
    do
        if self~checkCondition(co) then
           return aTestResult
