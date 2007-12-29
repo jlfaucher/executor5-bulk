@@ -4378,9 +4378,6 @@ do_test_linein: procedure             -- create external Rexx program for testin
    Queue 'some string, or another'
    Parse Pull , c
    self~assertSame("subTest1", c,'')
-/*
-   i1=''
-*/
     
 ::method "Test_615"
    Parse Source , d
@@ -4482,6 +4479,180 @@ do_test_linein: procedure             -- create external Rexx program for testin
 ::method "Test_636"
    Parse Version,,,,,,,,,,,,,,,,,,, g
    self~assertSame("subTest1", g,'')
+ 
+::method "Test_637"
+   fcnt=0
+   Parse Value f() With
+   self~assertSame("subTest1", fcnt,1)
+   return
+   f:
+     fcnt=fcnt+1
+     Return 'f ff fff'
+    
+::method "Test_638"
+   Do i=1 to 3
+     Queue i
+     End
+   Parse Pull
+   self~assertSame("subTest1", "QUEUED"(),2)
+   Parse Pull one, two
+   self~assertSame("subTest2", one,2)
+   self~assertSame("subTest3", two,'')
+   Parse Pull three,four
+   self~assertSame("subTest4", three,3)
+   self~assertSame("subTest5", four,'')
+    
+::method "Test_639"
+   Parse Var noval x 1 y
+   self~assertSame("subTest1", y,'NOVAL')
+    
+::method "Test_640"
+   Parse Value '' With x
+   self~assertSame("subTest1", x,'')
+    
+::method "Test_641"
+   Parse Value '' With 1 x
+   self~assertSame("subTest1", x,'')
+ 
+::method "Test_642"
+   s='  this   is  a   string to    be   parsed,   ain''t   it    1    2  '
+   Parse Var s v1 v2  'st' v3 v4 'ai'
+   self~assertSame("subTest1", v1,'this')
+   self~assertSame("subTest2", v2,'  is  a   ')
+   self~assertSame("subTest3", v3,'ring')
+   self~assertSame("subTest4", v4,'to    be   parsed,   ')
+    
+::method "Test_643"
+   s='  this   is  a   string to    be   parsed,   ain''t   it    1    2  '
+   Parse Var s 'nix' v1 0 v2
+   Parse Var s 'nix' w1 1 w2
+   self~assertSame("subTest1", v1,'')
+   self~assertSame("subTest2", v2,s)
+   self~assertSame("subTest3", w1,'')
+   self~assertSame("subTest4", w2,s)
+    
+::method "Test_644"
+   s='  this   is  a   string to    be   parsed,   ain''t   it    1    2  '
+   Parse Var s '  ' v1 v2 '  '
+   self~assertSame("subTest1", v1,'this')
+   self~assertSame("subTest2", v2,'')
+    
+::method "Test_645"
+   s='  this   is  a   string to    be   parsed,   ain''t   it    1    2  '
+   Parse Var s 'nix' v1 0 v2
+   Parse Var s a.1 a.2 a.3 a.4 a.5 a.6 a.7 a.8 a.9 a.10 a.11 a.12 a.13 a.14
+   Do i=1 to 14; 
+      self~assertSame("subTest1-"i, a.i,"WORD"(s,i))
+      end;
+    
+::method "Test_646"
+   s='  this   is  a   string to    be   parsed,   ain''t   it    1    2  '
+   Parse Var s '2' -2 v +3
+   self~assertSame("subTest1", v,'  2')
+    
+::method "Test_647"
+   s='  this   is  a   string to    be   parsed,   ain''t   it    1    2  '
+   x='this'
+   y='is'
+   Parse Var s i j cmp.i cmp.j
+   self~assertSame("subTest1", cmp.x,'a')
+   self~assertSame("subTest2", cmp.y,"SUBSTR"(s,16))
+    
+::method "Test_648"
+   s='  this   is  a   string to    be   parsed,   ain''t   it    1    2  '
+   x='this'
+   y='is'
+   Parse Var s i j cmp.i cmp.j cmp. .
+   self~assertSame("subTest1", cmp.x,'to')
+   self~assertSame("subTest2", cmp.y,'to')
+    
+::method "Test_649"
+   xsa="XRANGE"('00'x,'ff'x)
+   do i=0 To 255
+      c="D2C"(i)
+      If c='*' Then xs=' 'xsa' '; Else xs='*'xsa'*'
+      Parse Var xs a (c) b
+      self~assertSame("subTest1-1-"i, a,"LEFT"(xs,i+1))
+      self~assertSame("subTest1-2-"i, b,"SUBSTR"(xs,i+3))
+      End
+    
+::method "Test_650"
+   xsb=''
+   do i=1 to length(xsa)
+      xsb=xsb||substr(xsa,i,1)||' '
+      End
+   Parse Var xsb a.1  a.2  a.3  a.4  a.5  a.6  a.7  a.8  a.9  a.10,
+                 a.11 a.12 a.13 a.14 a.15 a.16 a.17 a.18 a.19 a.20,
+                 a.21 a.22 a.23 a.24 a.25 a.26 a.27 a.28 a.29 a.30,
+                 a.31 a.32 a.33 a.34 a.35 a.36 a.37 a.38 a.39 a.40,
+                 a.41 a.42 a.43 a.44 a.45 a.46 a.47 a.48 a.49 a.50 .
+   Do i=1 To 50
+      self~assertSame("subTest1-"i, a.i,"WORD"(xsb,i))
+      End
+    
+::method "Test_651"
+   t='1234567890abcdefghijklmnopqrstuvwxyz'
+   Parse Var t 0 v1 10
+   self~assertSame("subTest1", v1,'123456789')
+   Parse Var t 2 v2 10
+   self~assertSame("subTest2", v2,'23456789')
+   Parse Var t +2 v3 10
+   self~assertSame("subTest3", v3,'3456789')
+   Parse Var t 10000 -880 v4 10
+   self~assertSame("subTest4", v4,'123456789')
+   Parse Var t '' -2 v5 10
+   self~assertSame("subTest5", v5,'yz')
+   Parse Var t '6' v6 +2
+   self~assertSame("subTest6", v6,'67')
+   Parse Var t 77 v7 100
+   self~assertSame("subTest7", v7,'')
+    
+::method "Test_652"
+   Call sub 010,020,030,040,050,060,070,080,090,100
+   self~assertSame("subTest1", result,'010.')
+   return
+   sub:
+     Parse Arg a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,,
+               b1,b2,b3,b4,b5,b6,b7,b8,b9,b10,,
+               c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,,
+               d1,d2,d3,d4,d5,d6,d7,d8,d9,d10
+   Return a1||'.'||d10
+    
+::method "Test_653"
+   Call sub2 010,020,030,040,050,060,070,080,090,100
+   self~assertSame("subTest1", result,'010.')
+   return
+   sub2:
+     Parse Arg a1,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,d10
+     Return a1||'.'||d10
+    
+::method "Test_654"
+   Call sub 010,020,030,040,050,060,070,080,090,100,,
+            110,120,130,140,150,160,170,180,190,200,,
+            210,220,230,240,250,260,270,280,290,300,,
+            310,320,330,340,350,360,370,380,390,400
+   self~assertSame("subTest1", result,'010.400')
+   return
+   sub:
+     Parse Arg a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,,
+               b1,b2,b3,b4,b5,b6,b7,b8,b9,b10,,
+               c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,,
+               d1,d2,d3,d4,d5,d6,d7,d8,d9,d10
+   Return a1||'.'||d10
+    
+::method "Test_655"
+   ss='  some    blanks   that     must     dis-appear     1    2     3  '
+   Parse Var ss v1 v2 v3 'dis' v4 v5
+   self~assertSame("subTest1", v1,'some')
+   self~assertSame("subTest1", v2,'blanks')
+   self~assertSame("subTest1", v3,'  that     must     ')
+   self~assertSame("subTest1", v4,'-appear')
+   self~assertSame("subTest1", v5,'    1    2     3  ')
+    
+    
+ 
+ 
+ 
  
 
 
