@@ -4644,12 +4644,120 @@ do_test_linein: procedure             -- create external Rexx program for testin
    ss='  some    blanks   that     must     dis-appear     1    2     3  '
    Parse Var ss v1 v2 v3 'dis' v4 v5
    self~assertSame("subTest1", v1,'some')
-   self~assertSame("subTest1", v2,'blanks')
-   self~assertSame("subTest1", v3,'  that     must     ')
-   self~assertSame("subTest1", v4,'-appear')
-   self~assertSame("subTest1", v5,'    1    2     3  ')
-    
-    
+   self~assertSame("subTest2", v2,'blanks')
+   self~assertSame("subTest3", v3,'  that     must     ')
+   self~assertSame("subTest4", v4,'-appear')
+   self~assertSame("subTest5", v5,'    1    2     3  ')
+  
+::method "Test_656"
+   lw="COPIES"('A',1000)              /* a real long word               */
+   sw='b'                            /* a short word                   */
+   string="SPACE"(lw  sw   lw    sw sw,4)
+   Parse Var string a
+   self~assertSame("subTest1", a,string)
+  
+::method "Test_657"
+   lw="COPIES"('A',1000)              /* a real long word               */
+   sw='b'                            /* a short word                   */
+   string="SPACE"(lw  sw   lw    sw sw,4)
+   Parse Var string a b
+   self~assertSame("subTest1", a,lw)
+   self~assertSame("subTest2", b,'   '"SPACE"(sw   lw    sw sw,4))
+  
+::method "Test_658"
+   lw="COPIES"('A',1000)              /* a real long word               */
+   sw='b'                            /* a short word                   */
+   string="SPACE"(lw  sw   lw    sw sw,4)
+   Parse Var string a b c d e f
+   self~assertSame("subTest1", a,lw)
+   self~assertSame("subTest2", b,sw)
+   self~assertSame("subTest3", c,lw)
+   self~assertSame("subTest4", d,sw)
+   self~assertSame("subTest5", e,sw)
+   self~assertSame("subTest6", f,'')
+  
+::method "Test_659"
+   Parse Value 'This is a sentence.' With v1 v2 v3
+   self~assertSame("subTest1", v1,'This')
+   self~assertSame("subTest2", v2,'is')
+   self~assertSame("subTest3", v3,'a sentence.')
+  
+::method "Test_660"
+   Parse Value 'This is    a sentence. ' With v1 v2 v3
+   self~assertSame("subTest1", v3,'   a sentence. ')
+  
+::method "Test_661"
+   Parse Value '  This   is      a sentence. ' With w1 w2 rest
+   self~assertSame("subTest1", w1,'This')
+   self~assertSame("subTest2", w2,'is')
+   self~assertSame("subTest3", rest,'     a sentence. ')
+  
+::method "Test_662"
+   Parse Upper Value '  This   is      a sentence. ' With w1 w2 rest
+   self~assertSame("subTest1", w1,'THIS')
+   self~assertSame("subTest2", w2,'IS')
+   self~assertSame("subTest3", rest,'     A SENTENCE. ')
+  
+::method "Test_663"
+   Parse Value 'To be, or not to be?' With w1 ',' w2
+   self~assertSame("subTest1", w1,'To be')
+   self~assertSame("subTest2", w2,' or not to be?')
+  
+::method "Test_664"
+   Parse Value 'To be, or not to be?' With w1 ',' w2 w3 w4
+   self~assertSame("subTest1", w1,'To be')
+   self~assertSame("subTest2", w2,'or')
+   self~assertSame("subTest3", w3,'not')
+   self~assertSame("subTest4", w4,'to be?')
+  
+::method "Test_665"
+   comma=','
+   Parse Value 'To be, or not to be?' With x1 (comma) x2 x3 x4
+   self~assertSame("subTest1", x1,'To be')
+   self~assertSame("subTest2", x2,'or')
+   self~assertSame("subTest3", x3,'not')
+   self~assertSame("subTest4", x4,'to be?')
+  
+::method "Test_666"
+   Parse Value '123 456 +.,.-1E+25 12 34 56 uvwxyz' With,
+    a '+'+1 b +3
+   self~assertSame("subTest1", a,'123 456 ')
+   self~assertSame("subTest2", b,'.,.')
+  
+::method "Test_667"
+   Parse Value 'abcdefghijklmnopqrstuvwxyz' With,
+    5 a 10 b 15 c 20 d
+   self~assertSame("subTest1", a,'efghi')
+   self~assertSame("subTest2", b,'jklmn')
+   self~assertSame("subTest3", c,'opqrs')
+   self~assertSame("subTest3", d,'tuvwxyz')
+  
+::method "Test_668"
+   input='L/look for/1 10'
+   Parse var input verb 2 delim +1 string (delim) rest
+   self~assertSame("subTest1", verb,'L')
+   self~assertSame("subTest2", delim,'/')
+   self~assertSame("subTest3", string,'look for')
+   self~assertSame("subTest4", rest,'1 10')
+  
+  
+::method "Test_669"
+   Parse Value 'word string1, string2, 120' With word1 string1, string2, num
+   self~assertSame("subTest1", word1,'word')
+   self~assertSame("subTest2", string1,'string1, string2, 120')
+   self~assertSame("subTest3", string2,'')
+   self~assertSame("subTest3", num,'')
+  
+::method "Test_670"
+   Call sub99 word string1, string2, 120
+   self~assertSame("subTest1", word1,'WORD')
+   self~assertSame("subTest2", string1,'STRING1')
+   self~assertSame("subTest3", string2,'STRING2')
+   self~assertSame("subTest4", num,'120')
+  
+   sub99:
+   Parse Arg word1 string1, string2, num
+   Return
  
  
  
