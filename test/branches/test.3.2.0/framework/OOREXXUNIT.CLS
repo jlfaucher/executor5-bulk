@@ -693,33 +693,36 @@ if currentPath~caseLessPos(.ooRexxUnit.dir) == 0 then
   if bGiveFeedback then
      .error~say( "... running TestCase object" pp(self~string) "..." )
 
-  call doTheTest self, fName, aTestResult  -- carry out the testmethod
-  self~tearDown                     -- make sure tearDown is invoked after test
-  aTestResult~endTest(self)         -- remember test ended
+  self~doTheTest(fName, aTestResult)  -- carry out the testmethod
+  self~tearDown                       -- make sure tearDown is invoked after test
+  aTestResult~endTest(self)           -- remember test ended
 
   return aTestResult
 
-doTheTest: procedure    -- make sure exceptions are trapped locally
-   use arg self, strM, aTestResult
+::method doTheTest private
+   use arg methodName, aTestResult
 
-   -- user exception not interceptable at this stage anymore, hence using SYNTAX exceptions
-   -- signal on user AssertionFailedError name exceptionHandler
-
+   -- Trap all conditions propagated from the invocation of the test case
+   -- method, or from the check4ConditionFailure method.
    signal on any name exceptionHandler
-   .message~new(self, strM)~send -- create the message object and send it
 
-   self~check4ConditionFailure   -- check, if a condition was expected and if so, fail
+   -- The test case method itself is invoked by creating a message object and
+   -- sending it to ourself.
+   .message~new(self, methodName)~send
+
+   -- The test case method completed without raising a condition.  The last step
+   -- is to check if the test case *exepected* a condition to be raised.
+   self~check4ConditionFailure
    return aTestResult
 
 exceptionHandler:
 
    co=condition("O")    -- get the condition directory object
 
-   if self~conditionExpected=.true then
-   do
-       if self~checkCondition(co) then
-          return aTestResult
-   end
+   -- If a condition was expected to be raised, and this condition matches the
+   -- expected condition, then the test passed, just return.
+   if self~conditionExpected, self~checkCondition(co) then return aTestResult
+
    condition=condition("C")      -- get the condition
    additional=condition("A")     -- get additional msg, if any
 
