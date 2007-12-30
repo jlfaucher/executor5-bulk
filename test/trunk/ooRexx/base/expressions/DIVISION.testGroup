@@ -1253,3 +1253,146 @@ return testGroupList
    Numeric Digits 5
    self~assertSame("subTest366", 5678932 % 378678, 14)
  
+::method "test_367"
+   minval=1e-999999999
+   maxval=1e+999999999
+   minv=1e+999999999
+   al=1e+999999999
+   self~assertSame("subTest1", minval / minval / (2+3),'0.2')
+   self~assertSame("subTest2", maxval / maxval / minval,'1E+999999999')
+   self~assertSame("subTest3", maxval / (100 + maxval -100),'1')
+   self~assertSame("subTest4", maxval / minv || 'al','1al')
+   self~assertSame("subTest5", minv || al / maxval,'1E+9999999991')
+ 
+::method "test_368"
+   self~assertSame("subTest1", 17/2=2,'0')
+ 
+::method "test_369"
+   self~assertSame("subTest1", 2=2/17,'0')
+ 
+::method "test_370"
+   self~assertSame("subTest1", 17/2>3,'1')
+ 
+::method "test_371"
+   self~assertSame("subTest1", 3>2/.5,'0')
+ 
+::method "test_372"
+   self~assertSame("subTest1", 17/2<3,'0')
+ 
+::method "test_373"
+   self~assertSame("subTest1", 3<2/.5,'1')
+ 
+::method "test_374"
+   self~assertSame("subTest1", 17/2<>2,'1')
+ 
+::method "test_375"
+   self~assertSame("subTest1", 2<>2/17,'1')
+ 
+::method "test_376"
+   self~assertSame("subTest1", 17/2><2,'1')
+ 
+::method "test_377"
+   self~assertSame("subTest1", 2><2/17,'1')
+ 
+::method "test_378"
+   self~assertSame("subTest1", 17/2\=2,'1')
+ 
+::method "test_379"
+   self~assertSame("subTest1", 2\=2/17,'1')
+ 
+::method "test_380"
+   self~assertSame("subTest1", 5/3>=2,'0')
+ 
+::method "test_381"
+   self~assertSame("subTest1", 5/3>=3,'0')
+ 
+::method "test_382"
+   self~assertSame("subTest1", 3>=3/.25,'0')
+ 
+::method "test_383"
+   self~assertSame("subTest1", 3>=2/.25,'0')
+ 
+::method "test_384"
+   self~assertSame("subTest1", 17/2<=3,'0')
+ 
+::method "test_385"
+   self~assertSame("subTest1", 17/2<=2,'0')
+ 
+::method "test_386"
+   self~assertSame("subTest1", 2<=3/.25,'1')
+ 
+::method "test_387"
+   self~assertSame("subTest1", 2<=2/.25,'1')
+ 
+::method "test_388"
+   self~assertSame("subTest1", 17/2==2,'0')
+ 
+::method "test_390"
+   self~assertSame("subTest1", 2==2/17,'0')
+ 
+::method "test_391"
+   self~expectSyntax(34.901)
+   xre=17/1&0
+ 
+::method "test_392"
+   self~expectSyntax(34.901)
+   xre=1&1/17
+ 
+::method "test_393"
+   self~expectSyntax(34.901)
+   xre=17/1|0
+ 
+::method "test_394"
+   self~expectSyntax(34.901)
+   xre=0|1/17
+ 
+::method "test_395"
+   self~expectSyntax(34.901)
+   xre=17/1&&0
+ 
+::method "test_396"
+   self~expectSyntax(34.901)
+   xre=0&&1/17
+ 
+::method "test_397"
+   self~assertSame("subTest1", 5/3\<2,'0')
+ 
+::method "test_398"
+   self~assertSame("subTest1", 5/3\<2,'0')
+ 
+::method "test_399"
+   self~assertSame("subTest1", 3\<3/.25,'0')
+ 
+::method "test_400"
+   self~assertSame("subTest1", 3\<2/.25,'0')
+ 
+::method "test_401"
+   self~assertSame("subTest1", 17/2\>3,'0')
+ 
+::method "test_402"
+   self~assertSame("subTest1", 17/2\>2,'0')
+ 
+::method "test_403"
+   self~assertSame("subTest1", 2\>3/.25,'1')
+ 
+::method "test_404"
+   self~assertSame("subTest1", 2\>2/.25,'1')
+ 
+::method "test_405"
+   self~assertSame("subTest1", 17/2\=2,'1')
+ 
+::method "test_406"
+   self~assertSame("subTest1", 17/2\==2,'1')
+ 
+::method "test_407"
+   self~assertSame("subTest1", 2\==2/17,'1')
+ 
+::method "test_408"
+   self~assertSame("subTest1", 2\=2/.5,'1')
+ 
+::method "test_409"
+   self~assertSame("subTest1", 17/2\==2,'1')
+ 
+::method "test_410"
+   self~assertSame("subTest1", 2\==2/17,'1')
+ 
