@@ -1,28 +1,28 @@
 #!/usr/bin/rexx
 /*
-   name:             Date.testGroup
-   author:           Rick McGuire
-   date:             2007-09-23
-   version:          1.0.0
+   name:             DATE.testUnit
+   author:           Lee Peedin
+   date:             2007/12/07
+   version:          1.0
+   date:             2007/12/18
+   version:          1.1
 
 -- line commented lines are ignored, when building the directory of infos from this header
    changed:
 
    languageLevel:    6.02
-   purpose:          Test the Date() BIF
+   purpose:          Test the DATE BIF
    remark:           ---
 
    license:          CPL 1.0 (Common Public License v1.0, see below)
-   link:             ---
-   needs:            ---
+   link:
 
-
-   category1:       ooRexx
-   category2:       base
-   category3:       BIF
+// category needs not to be numbered, importance is given by position (1=most important)
+   category1:        ooRexx
+   category2:        Base
+   category3:        BIF
 
 */
-
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
@@ -126,11 +126,132 @@ return testGroupList
 
 ::requires 'ooTest.frm'     -- load the ooRexxUnit classes
 
-::class "Date.testGroup" subclass ooTestCase public
 
+::method 'test01'
+    self~expectSyntax(40.904)
+    date('*')
 
+::method 'test02'
+    self~expectSyntax(40.904)
+    date('Z')
 
+::method 'test03'
+    validopts = 'bdemnosuwBDEMNOSUW'
+    do i = 1 to length(validopts) / 2
+        a = substr('*@A1B2C3D4EFGHIJKLMNOPQRSTUVWXYZ',i,i)
+        b = substr(validopts,i,1)
+        c = translate(b)
+        self~assertSame('subTest'i~right(2,'0'),date(b||a),date(b))
+    end
 
+::method 'test04'
+    validopts = 'bdemnosuwBDEMNOSUW'
+    do i = 1 to length(validopts) / 2
+        a = substr('*@A1B2C3D4EFGHIJKLMNOPQRSTUVWXYZ',i,i)
+        b = substr(validopts,i,1)
+        c = translate(b)
+        self~assertSame('subTest'i~right(2,'0'),date(b||a),date(c))
+    end
+
+::method 'test05'
+    day.00='Sunday'
+    day.01='Monday'
+    day.02='Tuesday'
+    day.03='Wednesday'
+    day.04='Thursday'
+    day.05='Friday'
+    day.06='Saturday'
+
+    month.01='January'
+    month.02='February'
+    month.03='March'
+    month.04='April'
+    month.05='May'
+    month.06='June'
+    month.07='July'
+    month.08='August'
+    month.09='September'
+    month.10='October'
+    month.11='November'
+    month.12='December'
+
+    x = 0
+
+    validopts = 'bdemnosuwBDEMNOSUW'
+
+    do while x < 256
+        a = d2c(x)
+        if verify(a,validopts) then
+            goodopt = .false
+        else
+            goodopt = .true
+
+        dx = date()
+        dy = date()
+        do i = 1 to length(validopts) / 2
+            dx ||= '*'date(substr(validopts,i,1))
+            dy ||= '*'date(translate(substr(validopts,i,1)))
+        end
+
+        parse var dx d0 '*' db '*' dd '*' de '*' dm '*' dn '*' do '*' ds '*' du '*' dw
+        parse var d0 d0dd d0mon d0yyyy
+        parse var de dedd '/' demm '/' deyy
+        parse var do doyy '/' domm '/' dodd
+        parse var ds dsyy 5  dsmm 7 dsdd
+        parse var du dumm '/' dudd '/' duyy
+        year  = dsyy
+        month = dsmm
+        day   = dsdd
+
+        pdays = 0
+        do i = (year % 100) * 100 to year - 1
+            if leapyear(i) then
+                pdays += 366
+            else
+                pdays += 365
+        end
+
+        cdays = 0
+        do i = 1 to month-1
+            if i= 1 | i = 3 | i = 5 | i = 7 | i = 8 | i = 10 | i = 12 then
+                cdays += 31
+            else
+                if i = 2 then
+                    if leapyear(year) then
+                        cdays += 29
+                    else
+                        cdays += 28
+                else
+                    cdays += 30
+        end
+
+        cdays += day
+        days = pdays + cdays
+
+        self~assertSame('subTestA'||x~right(3,'0'),dy,dx)
+
+        self~assertSame('subTestB'||x~right(3,'0'),d0dd,strip(day,'l',0))
+        self~assertSame('subTestC'||x~right(3,'0'),d0mon,SUBSTR(month.month,1,3))
+        self~assertSame('subTestD'||x~right(3,'0'),d0yyyy,year)
+        self~assertSame('subTestE'||x~right(3,'0'),cdays,dd)
+        self~assertSame('subTestF'||x~right(3,'0'),right(year//100,2,0),deyy)
+        self~assertSame('subTestG'||x~right(3,'0'),month,demm)
+        self~assertSame('subTestH'||x~right(3,'0'),day,dedd)
+        self~assertSame('subTestI'||x~right(3,'0'),month.month,dm)
+        self~assertSame('subTestJ'||x~right(3,'0'),year,dsyy)
+        self~assertSame('subTestK'||x~right(3,'0'),month,dsmm)
+        self~assertSame('subTestL'||x~right(3,'0'),day,dsdd)
+        self~assertSame('subTestM'||x~right(3,'0'),right(year//100,2,0),duyy)
+        self~assertSame('subTestN'||x~right(3,'0'),month,dumm)
+        self~assertSame('subTestO'||x~right(3,'0'),day,dudd)
+
+        wdi = right((days-2)//7,2,'0')
+        self~assertSame('subTestP'||x~right(3,'0'),day.wdi,dw)
+        self~assertSame('subTestQ'||x~right(3,'0'),date('n'),date())
+        x += 1
+    end
+
+-- Methods taken directly from Rick's generated testGroup
 ::METHOD 'test_standard'
 date = '20070922'
 format = 'S'
@@ -788,3 +909,41 @@ self~assertSame("usa               / subtest # 17", date('U', date, format), "02
 self~assertSame("usa_no_sep        / subtest # 18", date('U', date, format, ''), "022900")
 self~assertSame("usa_dash_sep      / subtest # 19", date('U', date, format, '-'), "02-29-00")
 self~assertSame("weekday           / subtest # 20", date('W', date, format), "Tuesday")
+
+::routine leapyear
+    return((arg(1)//4=0)&(0=(arg(1)//100=0)))|(arg(1)//400=0)
+
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_DATE"
+    tmpD='13 Nov 1996'
+
+    self~assertSame("subTest1" , '13 Nov 1996'      , DATE(   , tmpD ))
+    self~assertSame("subTest2" , 728975             , DATE('B', tmpD ))             -- error: 728609             )
+    self~assertSame("subTest3" , 318                , DATE('D', tmpD ))             -- error: 317                )
+    self~assertSame("subTest4" , '13/11/96'         , DATE('E', tmpD ))
+    self~assertSame("subTest5" , '13 November 1996' , DATE('L', tmpD ))
+    self~assertSame("subTest6" , 'November'         , DATE('M', tmpD ))
+    self~assertSame("subTest7" , '13 Nov 1996'      , DATE('N', tmpD ))
+    self~assertSame("subTest8" , '96/11/13'         , DATE('O', tmpD ))
+    self~assertSame("subTest9" , '19961113'         , DATE('S', tmpD ))
+    self~assertSame("subTest10", '11/13/96'         , DATE('U', tmpD ))
+    self~assertSame("subTest11", 'Wednesday'        , DATE('W', tmpD ))             -- error: 'Monday'           )
+
+    self~assertSame("subTest12", '23/02/13' , DATE('O','13 Feb 1923') )
+    self~assertSame("subTest13", '50/06/01' , DATE('O','06/01/50','U'))
+
+    self~assertSame("subTest14", '1996-02-13'  , DATE('S','13 Feb 1996','N','-'))
+    self~assertSame("subTest15", '13Feb1996'   , DATE('N','13 Feb 1996','N',"") )
+    self~assertSame("subTest16", '13-Feb-1996' , DATE('N','13 Feb 1996','N','-'))
+    self~assertSame("subTest17", '500601'      , DATE('O','06/01/50','U',"")    )
+    self~assertSame("subTest18", '13.02.96'    , DATE('E','02/13/96','U','.')   )
+    self~assertSame("subTest19", '26_Mar_1998' , DATE('N', '26 Mar 1998', ,'_') )
+
+    -- self~assertSame("subTest20", DATE('S','1996-11-13','S', ,"",'-'), '19961113' ) -- error: more than 5 arg() !
+    self~assertSame("subTest20", '19961113' , DATE('S','1996-11-13','S',"",'-')  )
+
+    self~assertSame("subTest21", '19961113' , DATE('S','13-Nov-1996','N',"",'-') )
+    self~assertSame("subTest22", '500601'   , DATE('O','06*01*50','U',"",'*')    )
+    self~assertSame("subTest23", '02/13/96' , DATE('U','13.Feb.1996','N', ,'.')  )
+
