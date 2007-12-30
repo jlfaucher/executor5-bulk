@@ -2206,7 +2206,7 @@ RexxObject * RexxActivation::internalCall(
   this->activity->push(newActivation); /* push on the activity stack        */
                                        /* run the internal routine on the   */
                                        /* new activation                    */
-  return newActivation->run(OREF_NULL, OREF_NULL, _arguments, _argcount, target, returnObject);
+  return newActivation->run(receiver, OREF_NULL, _arguments, _argcount, target, returnObject);
 }
 
 RexxObject * RexxActivation::internalCallTrap(

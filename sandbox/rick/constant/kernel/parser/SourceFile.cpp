@@ -119,7 +119,7 @@ void RexxSource::initBuffered(
 
                                        /* set the source buffer             */
   OrefSet(this, this->sourceBuffer, (RexxBuffer *)source_buffer);
-  OrefSet(this, this->sourceIndices, (RexxBuffer *)new_smartbuffer());
+  OrefSet(this, this->sourceIndices, (RexxBuffer *)new RexxSmartBuffer(1024));
                                        /* point to the data part            */
   start = ((RexxBuffer *)this->sourceBuffer)->address();
                                        /* get the buffer length             */
@@ -875,7 +875,7 @@ void RexxSource::globalSetup()
 /******************************************************************************/
 {
                                        /* holding pen for temporaries       */
-  OrefSet(this, this->holdstack, new_stack(HOLDSIZE));
+  OrefSet(this, this->holdstack, new (HOLDSIZE) RexxStack(HOLDSIZE));
                                        /* create a save table               */
   OrefSet(this, this->savelist, new_object_table());
                                        /* allocate global control tables    */
