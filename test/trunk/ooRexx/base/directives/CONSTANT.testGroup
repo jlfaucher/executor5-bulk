@@ -1,0 +1,284 @@
+#!/usr/bin/rexx
+/*
+   name:             CONSTANT.testGroup
+   author:           Rick McGuire
+   date:             2007-12-29
+   version:          1.0.0
+
+-- line commented lines are ignored, when building the directory of infos from this header
+   changed:          ---
+
+   languageLevel:    6.03
+   purpose:          Test the ::CONSTANT directive
+   remark:
+
+   license:          CPL 1.0 (Common Public License v1.0, see below)
+   link:
+
+   category1:        ooRexx
+   category2:        Base
+   category3:        directive
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2008 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+
+
+-------------------------------------------------------------------------------------------
+-- ===> adapt the "testGroupList" to your testCase classes; each element in the list is <===
+-- ===> an array object, the first element containing the testCase class object, the   <===
+-- ===> second element is a list of test method names which are regarded to be         <===
+-- ===> mandatory (if the list remains empty all test methods are mandatory)           <===
+
+   /* list of array objects, each containing the testGroup class object and an
+      optional list of mandatory test case methods name                       */
+
+mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
+testGroupList=.list~of( .array~of(.CONSTANT.testGroup,  mandatoryTestMethods) )
+
+-------------------------------------------------------------------------------------------
+-- ===> the following code needs not to be individualized                              <===
+
+   -- read top comment, containing infos about this program
+arrLines=.array~new
+do i=1 to 150 until arrLines[i]="*/"
+   arrLines[i]=sourceline(i)
+end
+      -- supply information for the testClass(es) in this file; the class attribute
+      -- "TestCaseInfo" (a directory object, index points to a queue) will store
+      -- the parsed infos
+aTestGroupClass=testGroupList~at(testGroupList~first)[1] -- get first testClass
+
+   -- will parse the array lines and store result in class object
+call makeDirTestInfo aTestGroupClass, arrLines
+tmpDir=aTestGroupClass~TestCaseInfo
+parse source s   -- op_sys invocationType fullPathToThisFile
+tmpDir~setentry("test_Case-source", s)
+
+   -- now add this directory to other testCase classes, if any left
+do arr over testGroupList
+   if arr[1]=aTestGroupClass then iterate  -- already handled
+   arr[1]~TestCaseInfo=tmpDir             -- save info in class object
+end
+
+-- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
+-- and set it to .false; this way the independent local invocation of the tests is inhibited
+if .local~hasentry("bRunTestsLocally")=.false then
+   .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
+
+if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
+do
+   ts=.testSuite~new             -- create a testSuite
+   do arr over testGroupList
+      -- create a testSuite for the given test case class, use all its testmethods
+      ts~addTest( .testSuite~new(arr[1]))
+   end
+   -- testResult=.testSuite~new(testGroupClass)~run
+   testResult=ts~run       -- now run all the tests
+
+   call simpleDumpTestResults testResult
+end
+
+   /* return list of array objects containing test case classes and
+      optionally list of mandatory test methods                      */
+return testGroupList
+
+
+
+::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+
+::class "CONSTANT.testGroup" subclass TestCase public
+
+::method "test_direct_definition"
+
+  self~assertEquals("s1_class", "Fred", .test~s1)
+  self~assertEquals("s2_class", "Rick", .test~s2)
+  self~assertEquals("s3_class", " ", .test~s3)
+  self~assertEquals("s4_class", " ", .test~s4)
+  self~assertEquals("n1_class", "1", .test~n1)
+  self~assertEquals("n2_class", "1.00000000000000000000", .test~n2)
+  self~assertEquals("n3_class", ".23", .test~n3)
+  self~assertEquals("n4_class", "1E4", .test~n4)
+  self~assertEquals("n5_class", "1E-4", .test~n5)
+  self~assertEquals("n6_class", "1E+4", .test~n6)
+  self~assertEquals("n7_class", "23.38885e-5", .test~n7)
+  self~assertEquals("c1_class", ".NIL", .test~c1)
+  self~assertEquals("c2_class", ".", .test~c2)
+
+  t = .test~new
+
+  self~assertEquals("s1_instance", "Fred", t~s1)
+  self~assertEquals("s2_instance", "Rick", t~s2)
+  self~assertEquals("s3_instance", " ", t~s3)
+  self~assertEquals("s4_instance", " ", t~s4)
+  self~assertEquals("n1_instance", "1", t~n1)
+  self~assertEquals("n2_instance", "1.00000000000000000000", t~n2)
+  self~assertEquals("n3_instance", ".23", t~n3)
+  self~assertEquals("n4_instance", "1E4", t~n4)
+  self~assertEquals("n5_instance", "1E-4", t~n5)
+  self~assertEquals("n6_instance", "1E+4", t~n6)
+  self~assertEquals("n7_instance", "23.38885e-5", t~n7)
+  self~assertEquals("c1_instance", ".NIL", t~c1)
+  self~assertEquals("c2_instance", ".", t~c2)
+
+  self~assertEquals("s1_instance_class", "Fred", t~class~s1)
+  self~assertEquals("s2_instance_class", "Rick", t~class~s2)
+  self~assertEquals("s3_instance_class", " ", t~class~s3)
+  self~assertEquals("s4_instance_class", " ", t~class~s4)
+  self~assertEquals("n1_instance_class", "1", t~class~n1)
+  self~assertEquals("n2_instance_class", "1.00000000000000000000", t~class~n2)
+  self~assertEquals("n3_instance_class", ".23", t~class~n3)
+  self~assertEquals("n4_instance_class", "1E4", t~class~n4)
+  self~assertEquals("n5_instance_class", "1E-4", t~class~n5)
+  self~assertEquals("n6_instance_class", "1E+4", t~class~n6)
+  self~assertEquals("n7_instance_class", "23.38885e-5", t~class~n7)
+  self~assertEquals("c1_instance_class", ".NIL", t~class~c1)
+  self~assertEquals("c2_instance_class", ".", t~class~c2)
+
+
+::method "test_subclass_definition"
+
+  self~assertEquals("s1_class", "Fred", .test2~s1)
+  self~assertEquals("s2_class", "Rick", .test2~s2)
+  self~assertEquals("s3_class", " ", .test2~s3)
+  self~assertEquals("s4_class", " ", .test2~s4)
+  self~assertEquals("n1_class", "1", .test2~n1)
+  self~assertEquals("n2_class", "1.00000000000000000000", .test2~n2)
+  self~assertEquals("n3_class", ".23", .test2~n3)
+  self~assertEquals("n4_class", "1E4", .test2~n4)
+  self~assertEquals("n5_class", "1E-4", .test2~n5)
+  self~assertEquals("n6_class", "1E+4", .test2~n6)
+  self~assertEquals("n7_class", "23.38885e-5", .test2~n7)
+  self~assertEquals("c1_class", ".NIL", .test2~c1)
+  self~assertEquals("c2_class", ".", .test2~c2)
+
+  t = .test2~new
+
+  self~assertEquals("s1_instance", "Fred", t~s1)
+  self~assertEquals("s2_instance", "Rick", t~s2)
+  self~assertEquals("s3_instance", " ", t~s3)
+  self~assertEquals("s4_instance", " ", t~s4)
+  self~assertEquals("n1_instance", "1", t~n1)
+  self~assertEquals("n2_instance", "1.00000000000000000000", t~n2)
+  self~assertEquals("n3_instance", ".23", t~n3)
+  self~assertEquals("n4_instance", "1E4", t~n4)
+  self~assertEquals("n5_instance", "1E-4", t~n5)
+  self~assertEquals("n6_instance", "1E+4", t~n6)
+  self~assertEquals("n7_instance", "23.38885e-5", t~n7)
+  self~assertEquals("c1_instance", ".NIL", t~c1)
+  self~assertEquals("c2_instance", ".", t~c2)
+
+  self~assertEquals("s1_instance_class", "Fred", t~class~s1)
+  self~assertEquals("s2_instance_class", "Rick", t~class~s2)
+  self~assertEquals("s3_instance_class", " ", t~class~s3)
+  self~assertEquals("s4_instance_class", " ", t~class~s4)
+  self~assertEquals("n1_instance_class", "1", t~class~n1)
+  self~assertEquals("n2_instance_class", "1.00000000000000000000", t~class~n2)
+  self~assertEquals("n3_instance_class", ".23", t~class~n3)
+  self~assertEquals("n4_instance_class", "1E4", t~class~n4)
+  self~assertEquals("n5_instance_class", "1E-4", t~class~n5)
+  self~assertEquals("n6_instance_class", "1E+4", t~class~n6)
+  self~assertEquals("n7_instance_class", "23.38885e-5", t~class~n7)
+  self~assertEquals("c1_instance_class", ".NIL", t~class~c1)
+  self~assertEquals("c2_instance_class", ".", t~class~c2)
+
+
+::method "test_mixinclass_definition"
+
+  self~assertEquals("s1_class", "Fred", .test3~s1)
+  self~assertEquals("s2_class", "Rick", .test3~s2)
+  self~assertEquals("s3_class", " ", .test3~s3)
+  self~assertEquals("s4_class", " ", .test3~s4)
+  self~assertEquals("n1_class", "1", .test3~n1)
+  self~assertEquals("n2_class", "1.00000000000000000000", .test3~n2)
+  self~assertEquals("n3_class", ".23", .test3~n3)
+  self~assertEquals("n4_class", "1E4", .test3~n4)
+  self~assertEquals("n5_class", "1E-4", .test3~n5)
+  self~assertEquals("n6_class", "1E+4", .test3~n6)
+  self~assertEquals("n7_class", "23.38885e-5", .test3~n7)
+  self~assertEquals("c1_class", ".NIL", .test3~c1)
+  self~assertEquals("c2_class", ".", .test3~c2)
+
+  t = .test3~new
+
+  self~assertEquals("s1_instance", "Fred", t~s1)
+  self~assertEquals("s2_instance", "Rick", t~s2)
+  self~assertEquals("s3_instance", " ", t~s3)
+  self~assertEquals("s4_instance", " ", t~s4)
+  self~assertEquals("n1_instance", "1", t~n1)
+  self~assertEquals("n2_instance", "1.00000000000000000000", t~n2)
+  self~assertEquals("n3_instance", ".23", t~n3)
+  self~assertEquals("n4_instance", "1E4", t~n4)
+  self~assertEquals("n5_instance", "1E-4", t~n5)
+  self~assertEquals("n6_instance", "1E+4", t~n6)
+  self~assertEquals("n7_instance", "23.38885e-5", t~n7)
+  self~assertEquals("c1_instance", ".NIL", t~c1)
+  self~assertEquals("c2_instance", ".", t~c2)
+
+  self~assertEquals("s1_instance_class", "Fred", t~class~s1)
+  self~assertEquals("s2_instance_class", "Rick", t~class~s2)
+  self~assertEquals("s3_instance_class", " ", t~class~s3)
+  self~assertEquals("s4_instance_class", " ", t~class~s4)
+  self~assertEquals("n1_instance_class", "1", t~class~n1)
+  self~assertEquals("n2_instance_class", "1.00000000000000000000", t~class~n2)
+  self~assertEquals("n3_instance_class", ".23", t~class~n3)
+  self~assertEquals("n4_instance_class", "1E4", t~class~n4)
+  self~assertEquals("n5_instance_class", "1E-4", t~class~n5)
+  self~assertEquals("n6_instance_class", "1E+4", t~class~n6)
+  self~assertEquals("n7_instance_class", "23.38885e-5", t~class~n7)
+  self~assertEquals("c1_instance_class", ".NIL", t~class~c1)
+  self~assertEquals("c2_instance_class", ".", t~class~c2)
+
+
+::class test mixinclass object
+::CONSTANT s1 'Fred'
+::constant S2 "Rick"
+::constant s3 '20'x
+::ConStanT 'S4' '00100000'b
+::constant 'n1' 1
+::constant 'n2' 1.00000000000000000000
+::constant 'N3' .23
+::constant n4 1e4
+::constant n5 1e-4
+::constant n6 1e+4
+::constant n7 23.38885e-5
+::constant c1 .nil
+::constant c2 .
+
+::class test2 subclass test
+
+::class test3 inherit test
