@@ -181,6 +181,9 @@ if \ .local~hasEntry(ooRexxUnit.version) then do
   -- Put the default test result class into the environment.
   .local~ooRexxUnit.default.TestResult.Class = .TestResult
 
+  -- Define a 'marker' that can be used to flag a known test case failure.
+  .local~ooRexxUnit.knownBugFlag = "tracker bug #"
+
   do rtn over .methods
      .public_routines~put(.methods[rtn], rtn)
   end
@@ -302,10 +305,71 @@ return leading || trailing
 -- End pathCompact( path, len, sl )
 
 
-/** Simple convenience function to enclose a string in double quotes          */
+/** enQuote()
+ * Enclose a string in double quotes.
+ */
 ::method enQuote
   return '"' || arg(1)~string || '"'
--- End enQuoute()
+
+/** pp()
+ * Enclose a string value in square brackets "pretty print."
+ */
+::routine pp public  -- "pretty print" ;)
+  return "[" || arg(1)~string || "]"
+
+/** ppp()
+ * Enclose a string value in square brackets, escaping non-printable chars as
+ * Rexx concatenated Rexx hex strings.
+*/
+::method ppp
+  use arg string
+
+  if verify(string, .chars.NonPrintable, "Match")>0 then
+     return "[" || escapeString(string) || "]" -- escape non-printable characters
+
+  return "[" || string || "]"
+
+/** escapeStrin()
+ * Wscape non-printable characters in string.
+ */
+::method escapeString
+  use arg str
+  tmpStr=.mutableBuffer~new
+
+  do forever while str<>""
+     start=verify(str, .chars.nonPrintable, "Match")
+     if start>0 then    -- non-printing char found, look for printable char after it
+     do
+            -- find non-matching position, deduct one to point to last non-printable chars in string
+        end=verify(str, .chars.nonPrintable, "Nomatch", start)-1
+        if end=-1 then   -- no non-matching (=ending) position found: rest is non-printable
+           end=length(str)
+
+        if start>1 then -- printable chars before section with non-printable chars ?
+        do
+           chunk=enQuote(substr(str, 1, start-1))
+           if tmpStr~length<>0 then tmpStr~~append(" || ")~~append(chunk)
+                               else tmpStr~append(chunk)
+        end
+
+            -- extract non-printable chars, encode them as a Rexx hex string
+        chunk=enQuote(substr(str, start, end-start+1)~c2x) || "x"
+
+        if tmpStr~length<>0 then tmpStr~~append(" || ")~~append(chunk)
+                            else tmpStr~append(chunk)
+
+            -- extract non-processed part of string
+        str=substr(str, end+1)   -- get remaining string
+     end
+     else   -- only printable chars available respectively left
+     do
+        if tmpStr~length<>0 then tmpStr~~append(" || ")~~append(enquote(str))
+                            else tmpStr~append(str)
+        leave         -- str=""
+     end
+  end
+  return tmpStr~string
+
 
 ::class "TestResult" public
 ::method init
@@ -428,7 +492,8 @@ return leading || trailing
 ::attribute fAssertions private
 
 ::method init
-  self~fAssertions=0
+  self~fAssertions = 0
+  self~clearCondition
 
 ::method assertCount
   return self~fAssertions     -- count assertions, ooRexxUnit only
@@ -644,71 +709,96 @@ return leading || trailing
   self~fail(sTmp || arg(1))      -- fail with msg
 
 
+/** fail()
+ * Raise an application definable syntax error (since ooRexx 3.1).  A
+ * description is supplied so test methods are able to find out that the
+ * ooRexxUnit framework raised this.
+ *
+ * Need to raise a syntax error, because USER exception needs to be propagated
+ */
 ::method fail
-       -- ooRexx: need to raise a syntax error, because USER exception needs to be propageted
-  if arg()=0 then msg=""
-             else msg=arg(1)
-
-   -- use application definable syntax error (since ooRexx 3.1), supply description for
-   -- test methods to be able to find out that the ooRexxUnit framework raised it
+  use arg msg = ""
   RAISE syntax 93.964 array (msg) description ("ooRexxUnit.cls - source of syntax exception 'FAIL' method invocation in class 'ASSERT'.")
 
 
+::attribute conditionExpected private
+::attribute conditionName private
+::attribute conditionCode private
+::attribute conditionMsg private
 
-::method conditionExpected attribute
 
 ::method clearCondition
-  expose conditionExpected
-  conditionExpected = .false
+  self~conditionExpected = .false
+  self~conditionName = .nil
+  self~conditionCode = .nil
+  self~conditionMsg = .nil
 
+/** expectSyntax()
+ * The syntax error code to expect is required.
+ */
 ::method expectSyntax
-  expose conditionExpected conditionName errorCode
-  parse arg errorCode       -- retrieve errorCode
-  conditionName="SYNTAX"
-  conditionExpected=.true
+  use strict arg errorCode, msg = .nil
 
-  -- self~expectCondition( "SYNTAX", arg(1) )
+  self~conditionExpected = .true
+  self~conditionName = "SYNTAX"
+  self~conditionCode = errorCode
+  self~conditionMsg = msg
 
+
+/** expectCondition()
+ * Only the name of the condition is required, and it can be two words.  E.g.
+ * "USER SOMETHING"
+ */
 ::method expectCondition
-  expose conditionExpected conditionName
-  use arg conditionName           -- only name of condition is expected, can be two words, e.g. "USER SOMETHING"
-  conditionExpected = .true
+  use strict arg name, msg = .nil
+
+  self~conditionExpected = .true
+  self~conditionName = name
+  self~conditionMsg = msg
 
 
+/** checkCondition()
+ * Return true if the condition raised matches the condition expected, otherwise
+ * return false.
+ */
 ::method checkCondition
-  expose conditionExpected conditionName errorCode
+
   use arg receivedCondition
 
-  if receivedCondition~condition == conditionName then
-  do
-      if conditionName == "SYNTAX" then
-      do
-          if errorCode <> receivedCondition~code then
-          do
-              return .false
-          end
-      end
-      self~fAssertions += 1            -- assert that expected conditionName has occurred!
-      return .true
+  if self~conditionExpected, self~conditionName == receivedCondition~condition then do
+     -- For a syntax error, the actual error code has to match the expected error code.
+     if self~conditionName == "SYNTAX", self~conditionCode <> receivedCondition~code then
+        return .false
+
+     self~fAssertions += 1            -- assert that expected conditionName has occurred!
+     return .true
   end
   return .false
 
 
-
-   /* Method that will fail, if a condition was expected, but had not been raised. */
+/** check4ConditionFailure()
+ * Forces an assert failure if a condition is expected to be raised.  The
+ * assumption is that this method is invoked when a condition has not been
+ * raised.
+ */
 ::method check4ConditionFailure
-  expose conditionExpected conditionName errorCode
 
-  if conditionExpected=.true then
-  do
-     if conditionName="SYNTAX" then
-        tmpStr=conditionName errorCode    -- supply the expected errorCode with the expected exception
+  if self~conditionExpected then do
+     tmpStr = self~conditionName
+     assertName = 'expectCondtion'
+
+     if tmpStr == "SYNTAX", self~conditionCode <> .nil then do
+        tmpStr = tmpStr self~conditionCode
+        assertName = 'expectSyntax'
+     end
+
+     if self~conditionMsg == .nil then
+        tmpStr = "@assertFailure" assertName "expected condition" pp(tmpStr) "was not raised."||"09"x
      else
-        tmpStr=conditionName
+        tmpStr = "@assertFailure" assertName "expected condition" pp(tmpStr) "was not raised."||"09"x||self~conditionMsg
 
-     sTmp="@assertFailure check4ConditionFailure: expected condition" pp(tmpStr) "was not raised."||"09"x
-
-     self~fail(sTmp)                -- fail with msg
+     -- Fail with msg
+     self~fail(tmpStr)
   end
 
 
@@ -782,33 +872,36 @@ return leading || trailing
   if bGiveFeedback then
      .error~say( "... running TestCase object" pp(self~string) "..." )
 
-  call doTheTest self, fName, aTestResult  -- carry out the testmethod
-  self~tearDown                     -- make sure tearDown is invoked after test
-  aTestResult~endTest(self)         -- remember test ended
+  self~doTheTest(fName, aTestResult)  -- carry out the testmethod
+  self~tearDown                       -- make sure tearDown is invoked after test
+  aTestResult~endTest(self)           -- remember test ended
 
   return aTestResult
 
-doTheTest: procedure    -- make sure exceptions are trapped locally
-   use arg self, strM, aTestResult
+::method doTheTest private
+   use arg methodName, aTestResult
 
-   -- user exception not interceptable at this stage anymore, hence using SYNTAX exceptions
-   -- signal on user AssertionFailedError name exceptionHandler
-
+   -- Trap all conditions propagated from the invocation of the test case
+   -- method, or from the check4ConditionFailure method.
    signal on any name exceptionHandler
-   .message~new(self, strM)~send -- create the message object and send it
 
-   self~check4ConditionFailure   -- check, if a condition was expected and if so, fail
+   -- The test case method itself is invoked by creating a message object and
+   -- sending it to ourself.
+   .message~new(self, methodName)~send
+
+   -- The test case method completed without raising a condition.  The last step
+   -- is to check if the test case *exepected* a condition to be raised.
+   self~check4ConditionFailure
    return aTestResult
 
 exceptionHandler:
 
    co=condition("O")    -- get the condition directory object
 
-   if self~conditionExpected=.true then
-   do
-       if self~checkCondition(co) then
-          return aTestResult
-   end
+   -- If a condition was expected to be raised, and this condition matches the
+   -- expected condition, then the test passed, just return.
+   if self~conditionExpected, self~checkCondition(co) then return aTestResult
+
    condition=condition("C")      -- get the condition
    additional=condition("A")     -- get additional msg, if any
 
@@ -986,62 +1079,6 @@ exceptionHandler:
   if arg(1)=.true then return arg(2)
                   else return arg(3)
 
-
-/* *********************************************************************************** */
-/* *********************************************************************************** */
-::routine pp public  -- "pretty print" ;) encloses string value in square brackets
-  return "[" || arg(1)~string || "]"
-
-/* *********************************************************************************** */
-/* *********************************************************************************** */
-/* encloses string value in square brackets, escapes non-printable chars as Rexx
-   concatenated Rexx hex strings
-*/
-::routine ppp public  -- "printable pretty print" ;)
-  parse arg string    -- retrieve string value of argument
-
-  if verify(string, .chars.NonPrintable, "Match")>0 then
-     return "[" || escapeString(string) || "]" -- escape non-printable characters
-
-  return "[" || string || "]"
-
-::routine escapeString        public   -- escape non-printable characters in string
-  parse arg str
-  tmpStr=.mutableBuffer~new
-
-  do forever while str<>""
-     start=verify(str, .chars.nonPrintable, "Match")
-     if start>0 then    -- non-printing char found, look for printable char after it
-     do
-            -- find non-matching position, deduct one to point to last non-printable chars in string
-        end=verify(str, .chars.nonPrintable, "Nomatch", start)-1
-        if end=-1 then   -- no non-matching (=ending) position found: rest is non-printable
-           end=length(str)
-
-        if start>1 then -- printable chars before section with non-printable chars ?
-        do
-           chunk=enQuote(substr(str, 1, start-1))
-           if tmpStr~length<>0 then tmpStr~~append(" || ")~~append(chunk)
-                               else tmpStr~append(chunk)
-        end
-
-            -- extract non-printable chars, encode them as a Rexx hex string
-        chunk=enQuote(substr(str, start, end-start+1)~c2x) || "x"
-
-        if tmpStr~length<>0 then tmpStr~~append(" || ")~~append(chunk)
-                            else tmpStr~append(chunk)
-
-            -- extract non-processed part of string
-        str=substr(str, end+1)   -- get remaining string
-     end
-     else   -- only printable chars available respectively left
-     do
-        if tmpStr~length<>0 then tmpStr~~append(" || ")~~append(enquote(str))
-                            else tmpStr~append(str)
-        leave         -- str=""
-     end
-  end
-  return tmpStr~string
 
 
 
