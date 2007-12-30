@@ -6,7 +6,7 @@
    name:             ooRexxUnit.cls
    author:           Rony G. Flatscher, Rick McGuire
    date:             2005-08-07
-   version:          1.0.6
+   version:          1.0.7
    changed1:         2005-08-07, ---rgf, moved assertion routines to a class "Assert", which
                                  serves as a superclass for TestCase: this is the junit-approach
                      2005-08-20, ---rgf, added license, assertCount, corrected some little bugs
@@ -154,7 +154,7 @@
 -- Define the version number with: X.Y.Z  Where X is the ooRexxUnit.cls version,
 -- Y is the minimum ooRexx interpreter level required, and Z is the date the
 -- version was changed.
-.local~ooRexxUnit.version=106.320.20071205
+.local~ooRexxUnit.version=107.320.20071229
 
 .local~chars.NonPrintable=xrange("00"x, "1F"x) || "FF"x  -- define non-printable chars
 
