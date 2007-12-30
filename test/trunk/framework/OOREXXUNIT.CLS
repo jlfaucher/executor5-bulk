@@ -1293,7 +1293,7 @@ pp: procedure
    end
 
    if aTestResult~errorCount > 0 then do co over aTestResult~errors
-      z = printErrorInfo(co~ooRexxUnit.condition)
+      z = printErrorInfo(co~ooRexxUnit.condition, co)
    end
 
    -- If a number of failure or error information lines are printed, re-display
@@ -1391,7 +1391,7 @@ return 0
  *  Helper routine for simpleFormatTestResults()
  */
 ::routine printErrorInfo
-  use arg co
+  use arg co, conditionObj
 
   parse var co dateTime "[error]" idStuff "--->" additionalStuff
   dateTime = dateTime~strip~strip('T', ':')
@@ -1409,6 +1409,13 @@ return 0
     say "  Event:" info
     if additional~items > 1 then do i = 2 to additional~items
       say "   " additional[i]
+    end
+
+    -- We can probably add the file and line number for unexpected errors.  The
+    -- file name is not necessarily the same as the test group file.
+    if conditionObj~program <> .nil, conditionObj~position <> .nil then do
+      say "    File:" pathCompact(conditionObj~program, 68, .ooRexxUnit.directory.separator)
+      say "    Line:" conditionObj~position
     end
   end
   say
