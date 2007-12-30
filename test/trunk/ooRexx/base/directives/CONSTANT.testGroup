@@ -69,6 +69,7 @@
 
 mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
 testGroupList=.list~of( .array~of(.CONSTANT.testGroup,  mandatoryTestMethods) )
+testGroupList~insert(.array~of(.ConstantSyntaxErrs, mandatoryTestMethods))
 
 -------------------------------------------------------------------------------------------
 -- ===> the following code needs not to be individualized                              <===
@@ -110,7 +111,7 @@ do
    -- testResult=.testSuite~new(testGroupClass)~run
    testResult=ts~run       -- now run all the tests
 
-   call simpleDumpTestResults testResult
+   call simpleFormatTestResults testResult
 end
 
    /* return list of array objects containing test case classes and
@@ -119,7 +120,7 @@ return testGroupList
 
 
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires "FileUtils.cls"    -- load the ooRexxUnit classes
 
 ::class "CONSTANT.testGroup" subclass TestCase public
 
@@ -282,3 +283,161 @@ return testGroupList
 ::class test2 subclass test
 
 ::class test3 inherit test
+
+
+/** This class tests syntax errors for the constant directive.  Since putting
+ *  incorrect syntax for the directive in this file would cause the test group
+ *  to not run, the bad syntax tests are done by writing out a Rexx program
+ *  with the incorrect syntax.
+ */
+::class "ConstantSyntaxErrs" public subclass TestCase
+
+  ::attribute functionFileName
+
+  ::method setUp
+     file = .ooRexxUnit.dir || .ooRexxUnit.directory.separator || 'testConstant.rex'
+
+     src = .array~new()
+     src[1] = "/* This is a temporary file for testing the constant directive. */"
+     src[2] = "/* This file can always be deleted. */"
+     src[3] = ""
+     src[4] = "t = .TestClass~new"
+     src[5] = ""
+     self~functionFileName = createFile(src, file)
+
+     -- If self~functionFileName is the empty string, an error happened.  It
+     -- would be nice at this point to end the test.
+
+  -- tearDown() is invoked after every test case method has executed.  Use this
+  -- opportunity to ensure that the temporary files are deleted.
+  ::method tearDown
+    j = deleteFile(self~functionFileName)
+
+  ::method test_bad_syntax_object
+
+    -- First assert that the start of the source file has been created.  This
+    -- allows for failing the test if there is some problem creating the file.
+    self~assertNotSame("Must be able to create source file", "", self~functionFileName)
+
+    src = .array~new
+    src[1] = "return 0"
+    src[2] = "::class 'TestClass'"
+    src[3] = "::constant MESSAGE_PRODUCER (.Message~class)"
+    name = addToFile(src, self~functionFileName)
+
+    self~expectSyntax(19.916)
+    ret = 'testConstant'()
+
+  ::method  test_duplicate_name
+    self~assertNotSame("Must be able to create source file", "", self~functionFileName)
+
+    src = .array~new
+    src[1] = "return 0"
+    src[2] = ""
+    src[3] = "::class 'TestClass'"
+    src[4] = "::constant PI 3.14195"
+    src[5] = "::constant ZERO 0.0"
+    src[6] = "::constant PI 3.14195"
+    name = addToFile(src, self~functionFileName)
+
+    self~expectSyntax(99.932)
+    ret = 'testConstant'()
+
+  ::method  test_duplicate_name_floating_methods
+    self~assertNotSame("Must be able to create source file", "", self~functionFileName)
+
+    src = .array~new
+    src[1] = "return 0"
+    src[2] = ""
+    src[3] = "::constant MAX_DOGS_PER_HOUSEHOLD 6"
+    src[4] = "::constant MAX_CATS_PER_HOUSEHOLD 0"
+    src[5] = "::constant MAX_CATS_PER_HOUSEHOLD 0"
+    src[6] = ""
+    src[7] = "::class 'TestClass'"
+    src[8] = "::constant PI 3.14195"
+    src[9] = "::constant ZERO 0.0"
+    name = addToFile(src, self~functionFileName)
+
+    self~expectSyntax(99.932)
+    ret = 'testConstant'()
+
+  ::method  test_code_after_directive
+    self~assertNotSame("Must be able to create source file", "", self~functionFileName)
+
+    src = .array~new
+    src[1] = "return .TestClass~MAX_DOGS_PER_HOUSEHOLD"
+    src[2] = ""
+    src[3] = "::class 'TestClass'"
+    src[4] = "::constant PI 3.14195"
+    src[5] = "::constant ZERO 0.0"
+    src[6] = "::constant MAX_DOGS_PER_HOUSEHOLD 6"
+    src[7] = "  return 14"
+    src[8] = "::constant MAX_CATS_PER_HOUSEHOLD 0"
+    name = addToFile(src, self~functionFileName)
+
+    self~expectSyntax(99.916)
+    ret = 'testConstant'()
+
+  ::method  test_code_after_directive_floating_method
+    self~assertNotSame("Must be able to create source file", "", self~functionFileName)
+
+    src = .array~new
+    src[1] = "::constant MAX_DOGS_PER_HOUSEHOLD 6"
+    src[2] = "::constant MAX_CATS_PER_HOUSEHOLD 0"
+    src[3] = ""
+    src[4] = "return 0"
+    src[5] = ""
+    src[6] = "::class 'TestClass'"
+    src[7] = "::constant PI 3.14195"
+    src[8] = "::constant ZERO 0.0"
+    name = addToFile(src, self~functionFileName)
+
+    self~expectSyntax(99.916)
+    ret = 'testConstant'()
+
+  ::method  test_extra_values
+    self~assertNotSame("Must be able to create source file", "", self~functionFileName)
+
+    src = .array~new
+    src[1] = "return 0"
+    src[2] = ""
+    src[3] = "::class 'TestClass'"
+    src[4] = "::constant PI 3.14195"
+    src[5] = "::constant ZERO 0.0"
+    src[6] = "::constant MAX_NUMS 5 6 7"
+    name = addToFile(src, self~functionFileName)
+
+    self~expectSyntax(21.913)
+    ret = 'testConstant'()
+
+  ::method  test_no_values
+    self~assertNotSame("Must be able to create source file", "", self~functionFileName)
+
+    src = .array~new
+    src[1] = "return 0"
+    src[2] = ""
+    src[3] = "::class 'TestClass'"
+    src[4] = "::constant PI"
+    src[5] = "::constant ZERO 0.0"
+    src[6] = "::constant MAX_NUMS 5"
+    name = addToFile(src, self~functionFileName)
+
+    self~expectSyntax(19.916)
+    ret = 'testConstant'()
+
+  ::method  test_math_expression
+    self~assertNotSame("Must be able to create source file", "", self~functionFileName)
+
+    src = .array~new
+    src[1] = "return 0"
+    src[2] = ""
+    src[3] = "::class 'TestClass'"
+    src[4] = "::constant NO_ERR_RC       0"
+    src[5] = "::constant BAD_FILENAME_RC 0 + 1"
+    src[6] = "::constant READONLY_RC     0 + 2"
+    src[7] = "::constant ZERO 0.0"
+    src[8] = "::constant MAX_NUMS 5"
+    name = addToFile(src, self~functionFileName)
+
+    self~expectSyntax(21.913)
+    ret = 'testConstant'()
