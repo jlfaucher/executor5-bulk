@@ -115,14 +115,14 @@
 
 int int_var = 1;
 
-extern ULONG queue_get_pid(DWORD * envchars);
+extern process_id_t queue_get_pid(size_t* envchars);
 
 /*********************************************************************/
 /* Errors returned by the module loader and address finder.          */
 /*********************************************************************/
 
 typedef struct _loaderr {
-   ULONG     errors[2];                /* two entries                */
+   int       errors[2];                /* two entries                */
 }  loaderr;
 
 /*********************************************************************/
@@ -550,7 +550,7 @@ int APIENTRY RexxCallExit(
   PEXIT param_block )                  /* Exit parameter block.      */
 {
   REXXPFN exit_address;                /* Exit's calling address.    */
-  APIRET   rc;                         /* Function return code.      */
+  int      rc;                         /* Function return code.      */
 
   rc = 0;
 
@@ -558,7 +558,7 @@ int APIENTRY RexxCallExit(
   {
                                        /* Exit loaded successfully;  */
                                        /* let it set the return code */
-      rc = (*exit_address)(fnc, subfnc, param_block);
+      rc = (int)(*exit_address)(fnc, subfnc, param_block);
   }
   else                                 /* Some failure occurred.     */
       rc = (-1);
@@ -1234,7 +1234,7 @@ int memmgrcheckexe(
 
 APIRET APIENTRY RexxShutDownAPI(void)
 {
-  int dummy;
+  size_t dummy;
 
   if (!API_RUNNING()) return(0);
 

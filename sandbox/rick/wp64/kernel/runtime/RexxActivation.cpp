@@ -257,7 +257,6 @@ RexxObject * RexxActivation::run(RexxObject *_receiver, RexxString *msgname, Rex
 /******************************************************************************/
 {
     RexxActivationBase*activation;       /* used for unwinding activations    */
-    size_t             i;                /* loop counter                      */
     RexxActivity      *oldActivity;      /* old activity                      */
 #ifndef FIXEDTIMERS                      /* currently disabled                */
     size_t             instructionCount; /* instructions without yielding     */
@@ -436,7 +435,7 @@ RexxObject * RexxActivation::run(RexxObject *_receiver, RexxString *msgname, Rex
                 oldActivity = this->activity;      /* save the current activity         */
                                                    /* clone the current activity        */
                 this->activity = new_activity();
-                for (i = 1; i <= LAST_EXIT; i++)   /* copy any exit handlers            */
+                for (int i = 1; i <= LAST_EXIT; i++) /* copy any exit handlers            */
                 {
                                                    /* from old activity to the new one  */
                     this->activity->setSysExit(i, oldActivity->querySysExits(i));
@@ -593,13 +592,13 @@ RexxString * RexxActivation::traceSetting()
   if (this->settings.flags&trace_debug) {
     setting[0] = '?';                  /* add the question mark             */
                                        /* add current trace option          */
-    setting[1] = this->settings.traceoption;
+    setting[1] = (char)this->settings.traceoption;
                                        /* create a string form              */
     return new_string(setting, 2);
   }
   else {                               /* no debug prefix                   */
                                        /* add current trace option          */
-    setting[0] = this->settings.traceoption;
+    setting[0] = (char)this->settings.traceoption;
                                        /* create a string form              */
     return new_string(setting, 1);
   }
@@ -613,8 +612,8 @@ RexxString * RexxActivation::traceSetting()
  */
 void RexxActivation::setTrace(RexxString *setting)
 {
-    int    newsetting;                   /* new trace setting                 */
-    int    debug;                        /* new debug setting                 */
+    size_t newsetting;                   /* new trace setting                 */
+    size_t debug;                        /* new debug setting                 */
 
     getSource()->parseTraceSetting(setting, &newsetting, &debug);
                                        /* now change the setting            */
@@ -623,8 +622,8 @@ void RexxActivation::setTrace(RexxString *setting)
 
 
 void RexxActivation::setTrace(
-    int   traceoption,                 /* new trace setting                 */
-    int   debugoption )                /* new interactive debug setting     */
+    size_t traceoption,                 /* new trace setting                 */
+    size_t debugoption )                /* new interactive debug setting     */
 /******************************************************************************/
 /* Function:  Set a new trace setting for a REXX program                      */
 /******************************************************************************/
@@ -3433,12 +3432,13 @@ RexxObject *buildCompoundVariable(
   RexxObject *   tailPart;             /* tail element retriever            */
   size_t  position;                    /* scan position within compound name*/
   size_t  start;                       /* starting scan position            */
-  int     length;                      /* length of tail section            */
+  size_t  length;                      /* length of tail section            */
 
   length = variable_name->getLength();      /* get the string length             */
   position = 0;                        /* start scanning at first character */
                                        /* scan to the first period          */
-  while (variable_name->getChar(position) != '.') {
+  while (variable_name->getChar(position) != '.')
+  {
     position++;                        /* step to the next character        */
     length--;                          /* reduce the length also            */
   }
