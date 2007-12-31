@@ -1,0 +1,322 @@
+#!/usr/bin/rexx
+/*
+   name:             String_x2cMethod.testGroup
+   author:           Lee Peedin
+   date:             2007-12-31
+   version:          1.0.0
+
+-- line commented lines are ignored, when building the directory of infos from this header
+
+   languageLevel:    6.02
+   purpose:          Test the x2c method of the class String.
+   remark:           Initial test unit for demonstration purposes, needs to be completed.
+
+   license:          CPL 1.0 (Common Public License v1.0, see below)
+   link:
+
+// category needs not to be numbered, importance is given by position (1=most important)
+   category:         ooRexx
+   category:         Base
+   category:         Class
+   category:         String
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 - 2008 Rexx Language Association. All rights reserved.  */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+
+-------------------------------------------------------------------------------------------
+-- ===> adapt the "testGroupList" to your testCase classes; each element in the list is <===
+-- ===> an array object, the first element containing the testCase class object, the   <===
+-- ===> second element is a list of test method names which are regarded to be         <===
+-- ===> mandatory (if the list remains empty all test methods are mandatory)           <===
+
+   /* list of array objects, each containing the testGroup class object and an
+      optional list of mandatory test case methods name                       */
+mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
+testGroupList=.list~of( .array~of(.String_x2cMethod.testGroup,  mandatoryTestMethods) )
+
+
+-------------------------------------------------------------------------------------------
+-- ===> the following code needs not to be individualized                              <===
+
+   -- read top comment, containing infos about this program
+arrLines=.array~new
+do i=1 to 150 until arrLines[i]="*/"
+   arrLines[i]=sourceline(i)
+end
+      -- supply information for the testClass(es) in this file; the class attribute
+      -- "TestCaseInfo" (a directory object, index points to a queue) will store
+      -- the parsed infos
+aTestGroupClass=testGroupList~at(testGroupList~first)[1] -- get first testClass
+
+   -- will parse the array lines and store result in class object
+call makeDirTestInfo aTestGroupClass, arrLines
+tmpDir=aTestGroupClass~TestCaseInfo
+parse source s   -- op_sys invocationType fullPathToThisFile
+tmpDir~setentry("test_Case-source", s)
+
+   -- now add this directory to other testCase classes, if any left
+do arr over testGroupList
+   if arr[1]=aTestGroupClass then iterate  -- already handled
+   arr[1]~TestCaseInfo=tmpDir             -- save info in class object
+end
+
+-- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
+-- and set it to .false; this way the independent local invocation of the tests is inhibited
+if .local~hasentry("bRunTestsLocally")=.false then
+   .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
+
+if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
+do
+   ts=.testSuite~new             -- create a testSuite
+   do arr over testGroupList
+      -- create a testSuite for the given test case class, use all its testmethods
+      ts~addTest( .testSuite~new(arr[1]))
+   end
+   -- testResult=.testSuite~new(testGroupClass)~run
+   testResult=ts~run       -- now run all the tests
+
+   call simpleFormatTestResults testResult
+end
+
+   /* return list of array objects containing test case classes and
+      optionally list of mandatory test methods                      */
+return testGroupList
+
+::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+
+::class "String_x2cMethod.testGroup" subclass TestCase public
+
+::method 'test000'
+    .local~v255b = copies('D1',255)
+    .local~v256b = copies('5C',256)
+    .local~v32768b = copies('7E',32768)
+    .local~v100000b = strip(copies('7C ',100000))
+    .local~vn2 = 2
+    .local~vn3 = 3
+    .local~vn7 = 7
+    .local~vn21 = 21
+    .local~vn42 = 42
+
+::method 'test001'
+    self~expectSyntax(93.933)
+    xre = '*'~x2c()
+
+::method 'test002'
+    self~assertSame('subTest01','',''~x2c())
+
+::method 'test003'
+    self~assertSame('subTest01','0A'X,'A'~x2c())
+
+::method 'test004'
+    self~assertSame('subTest01','F8'X,'F8'~x2c())
+
+::method 'test005'
+    self~expectSyntax(93.933)
+    xre = '4a'x~x2c()
+
+::method 'test006'
+    self~assertSame('subTest01','0BD1D9'X,'BD1D9'~x2c())
+
+::method 'test007'
+    self~assertSame('subTest01','0BD1D9'X,'B D1 D9'~x2c())
+
+::method 'test008'
+    self~assertSame('subTest01','D1D9C2A483929385A8'X,'D1 D9 C2 A4 83 92 93 85 A8'~x2c())
+
+::method 'test009'
+    self~assertSame('subTest01','D1D940C2A483929385A8'X,'D1D940C2A483929385A8'~x2c())
+
+::method 'test010'
+    self~expectSyntax(93.931)
+    xre = 'D1D940C2A483929385A8     '~x2c()
+
+::method 'test011'
+    self~expectSyntax(93.931)
+    xre = '     D1D940C2A483929385A8'~x2c()
+
+::method 'test012'
+    self~expectSyntax(93.931)
+    xre = 'D 1 D 9 4 0 C 2 A 4 8 3 9 2 9 3 8 5 A 8'~x2c()
+
+::method 'test013'
+    self~assertSame('subTest01','D140D940C2A483929385A8'X,'D140D940C2A483929385A8'~x2c())
+
+::method 'test014'
+    self~assertSame('subTest01',copies('D1'x,255),.v255b~x2c())
+
+::method 'test015'
+    self~assertSame('subTest01',copies('7E'X,32768),.v32768b~x2c())
+
+::method 'test016'
+    self~assertSame('subTest01',copies('7C'X,100000),.v100000b~x2c())
+
+::method 'test017'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = 'D14BD94BC2A483929385A8'
+    self~assertSame('subTest01','D14BD94BC2A483929385A8'X,XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~x2c())
+
+::method 'test018'
+    self~assertSame('subTest01','0123456789ABCDEF'X,'0123456789abcdef'~x2c())
+
+::method 'test019'
+    self~assertSame('subTest01','0123456789ABCDEF'X,'0123456789ABCDEF'~x2c())
+
+::method 'test020'
+    self~expectSyntax(93.933)
+    xre = '0123456789ABCDEFG'~x2c()
+
+::method 'test021'
+    self~assertSame('subTest01','001234'X,'01234'~x2c())
+
+::method 'test022'
+    self~assertSame('subTest01','056789'X,'56789'~x2c())
+
+::method 'test023'
+    self~assertSame('subTest01','01E2'X,'1E2'~x2c())
+
+::method 'test024'
+    self~expectSyntax(93.933)
+    xre = '1E+2'~x2c()
+
+::method 'test025'
+    self~expectSyntax(93.933)
+    xre = '2.55E2'~x2c()
+
+::method 'test026'
+    self~assertSame('subTest01','0100'X,(+1E2)~x2c)
+
+::method 'test027'
+    self~assertSame('subTest01','0100'X,(+1E+2)~x2c)
+
+::method 'test028'
+    self~assertSame('subTest01','0255'X,(+2.55E2)~x2c)
+
+::method 'test029'
+    self~assertSame('subTest01','42'X,(+42)~x2c)
+
+::method 'test030'
+    self~assertSame('subTest01','42'X,(.vn42)~x2c)
+
+::method 'test031'
+    numeric digits 1
+    self~expectSyntax(93.933)
+    xre = (+1E2)~x2c
+
+::method 'test032'
+    numeric digits 1
+    self~expectSyntax(93.933)
+    xre = (+1E+2)~x2c
+
+::method 'test033'
+    numeric digits 1
+    self~expectSyntax(93.933)
+    xre = (+2.55E2)~x2c
+
+::method 'test034'
+    numeric digits 1
+    self~expectSyntax(93.933)
+    xre = (+42)~x2c
+
+::method 'test035'
+    self~assertSame('subTest01','42'X,.vn42~x2c())
+
+::method 'test036'
+    self~expectSyntax(93.933)
+    xre = nv~x2c()
+
+::method 'test037'
+    self~expectSyntax(93.933)
+    xre = nv.~x2c()
+
+::method 'test038'
+    self~expectSyntax(93.933)
+    xre = nv.~x2c()
+
+::method 'test039'
+    self~expectSyntax(93.933)
+    xre = nv.10~x2c()
+
+::method 'test040'
+    self~expectSyntax(93.933)
+    xre = nv~x2c()
+
+::method 'test041'
+    self~expectSyntax(93.933)
+    xre = nv.~x2c()
+
+::method 'test042'
+    self~expectSyntax(93.933)
+    xre = nv.10~x2c()
+
+::method 'test043'
+    self~assertSame('subTest01','JR',c2x('JR')~x2c())
+
+::method 'test044'
+    self~assertSame('subTest01','0192837465ABCDEF'X,subStr('0192837465abcdefghijklmnop',1,16)~x2c())
+
+::method 'test045'
+    self~assertSame('subTest01','D1D9'X,d2x(53721)~x2c())
+
+::method 'test046'
+    self~assertSame('subTest01','01'X,dataType(6,'N')~x2c())
+
+::method 'test047'
+    self~expectSyntax(93.933)
+    xre = dataType(6)~x2c()
+
+::method 'test048'
+    self~assertSame('subTest01','12'x,'3132'~x2c()~x2c())
+
+::method 'test049'
+    .local~remove(v255b)
+    .local~remove(v256b)
+    .local~remove(v32768b)
+    .local~remove(v100000b)
+    .local~remove(vn2)
+    .local~remove(vn3)
+    .local~remove(vn7)
+    .local~remove(vn21)
+    .local~remove(vn42)
+
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_X2C"
+    self~assertSame("subTest1" , 'Hello' /* ASCII */ , '4865 6c6c 6f'~X2C() )
+    self~assertSame("subTest2" , '72s'   /* ASCII */ , '3732 73'~X2C()      )
+
+   -- new tests
+    self~assertSame("subTest3" , ''      /* ASCII */ , ''~X2C()             )
