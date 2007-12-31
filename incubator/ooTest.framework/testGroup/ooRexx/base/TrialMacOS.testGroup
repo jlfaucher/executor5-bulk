@@ -1,7 +1,25 @@
 #!/usr/bin/rexx
+/*
+   name:             TrialMacOS.testGroup
+   authors:          Mark Miesfeld
+   date:             2007-12-30
+   version:          1.0.0
+
+   languageLevel:    6.0
+   purpose:          Testing the ooTest framework
+   remark:           This test group restricts itself to only run on the Mac
+
+
+   license:          CPL 1.0 (Common Public License v1.0, see below)
+   link:
+
+   category1:        ooRexx
+   category2:        Base
+   category3:        Framework test
+*/
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2005 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -35,40 +53,158 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+  parse source . . s
 
-/**
- * testOORexx is a planned future replacement for runTestGroups.  It is not
- * fully implemented.
- */
-cmdLine = arg(1)
+  lines=.array~new
+  do i=1 to 150 until lines[i]="*/"
+     lines[i]=sourceline(i)
+  end
 
-   absoluteBegin = .TimeSpan~new(time('F'))
+  group = .TestGroup~new(s, lines)
+  group~add(.TrialMacOS)
+  group~restrictOS("MACOSX")
 
-   .local~bRunTestsLocally = .false
+  if group~isAutomatedTest then return group
 
-   baseDir = "ooRexx"
-   --baseDir = "ooRexx\samples"
+  testResult = group~suite~run~~print
 
-   testResult = .ooRexxUnit.default.TestResult.Class~new
-   testResult~setVerbosity(10)
-   finder = .ooTestFinder~new(baseDir, ".testGroup")
-   containers = finder~seek(testResult); say 'containers items:' containers~items
+return testResult
+-- End of entry point.
 
-   suite = .ooTestSuite~new
-   suite~showProgress = .false
-   j = time('E')
-   do container over containers
-     container~suite(suite)
-   end
-   say 'Took' time('E') 'seconds to build suite'
+::requires 'ooTest.frm'     -- load the ooRexxUnit classes
 
-   say 'Executing automated test suite.'
-   suite~run(testResult)
-   say 'test result:' testResult
-   testResult~print("My Title", 3)
+::class "TrialMacOS" subclass ooTestCase public
 
-   absoluteEnd = .TimeSpan~new(time('F'))
-   say 'Total time:' (absoluteEnd - absoluteBegin)
-return 0
+::method "test_+="
 
-::requires "ooTest.frm"
+  i1=0
+  i2=0
+  do i=-5 to +5 by 0.1
+     i1 =i1+1.01+i
+     i2+=   1.01+i
+  end
+  self~assertEquals("subtest_01", i1, i2)
+
+  i3=0
+  i3+=10
+  self~assertEquals("subtest_02", 10, i3)
+
+
+::method "test_-="
+
+  i1=0
+  i2=0
+  do i=-5 to +5 by 0.1
+     i1 =i1-1.01-i
+     i2-=   1.01-i
+  end
+  self~assertEquals("subtest_01", i1, i2)
+
+  i3=0
+  i3-=10
+  self~assertEquals("subtest_02", -10, i3)
+
+
+::method "test_/="
+
+  i1=1
+  i2=1
+  do i=-5 to +5 by 0.1
+     i1 =i1/(1.01+i)
+     i2/=   (1.01+i)
+  end
+  self~assertEquals("subtest_01", i1, i2)
+
+  i3=13
+  i3/=10
+  self~assertEquals("subtest_02", 1.3, i3)
+
+
+::method "test_//="
+
+  i1=13
+  i2=13
+  i1 =i1//(1.01+2)
+  i2//=   (1.01+2)
+  self~assertEquals("subtest_01", i1, i2)
+
+  i3=13
+  i3//=10
+  self~assertEquals("subtest_02", 3, i3)
+
+
+
+::method "test_%="
+
+  i1=13
+  i2=13
+  i1 =i1%(1.01+2)
+  i2%=   (1.01+2)
+  self~assertEquals("subtest_01", i1, i2)
+
+  i3=13
+  i3%=10
+  self~assertEquals("subtest_02", 1, i3)
+
+
+::method "test_*="
+
+  i1=13
+  i2=13
+  i1 =i1*(1.01+2)
+  i2*=   (1.01+2)
+  self~assertEquals("subtest_01", i1, i2)
+
+  i3=13
+  i3*=10
+  self~assertEquals("subtest_02", 130, i3)
+
+
+::method "test_**="
+
+  i1=13
+  i2=13
+  i1 =i1**(1+2)
+  i2**=   (1+2)
+  self~assertEquals("subtest_01", i1, i2)
+
+  i3=3
+  i3**=4
+  self~assertEquals("subtest_02", 81, i3)
+
+
+::method "test_|="
+
+  i1=.false
+  i2=.false
+  i1 =i1|.true
+  i2|=   .true
+  self~assertEquals("subtest_01", i1, i2)
+
+
+::method "test_&="
+
+  i1=.false
+  i2=.false
+  i1 =i1&.true
+  i2&=   .true
+  self~assertEquals("subtest_01", i1, i2)
+
+
+::method "test_&&="
+
+  i1=.false
+  i2=.false
+  i1 =i1&&.true
+  i2&&=   .true
+  self~assertEquals("subtest_01", i1, i2)
+
+
+::method "test_||="
+
+  i1=.false
+  i2=.false
+  i1 =i1||.true
+  i2||=   .true
+  self~assertEquals("subtest_01", i1, i2)
+

@@ -184,6 +184,13 @@ if \ .local~hasEntry(ooRexxUnit.version) then do
   -- Define a 'marker' that can be used to flag a known test case failure.
   .local~ooRexxUnit.knownBugFlag = "tracker bug #"
 
+  -- Capture the ooRexxUnit framework directory and ensure it is in the path.
+  parse source . . fileSpec
+  .local~ooRexxUnit.dir = fileSpec~left(fileSpec~caseLessPos("OOREXXUNIT.CLS") - 2 )
+  currentPath = value("PATH", , 'ENVIRONMENT')
+  if currentPath~caseLessPos(.ooRexxUnit.dir) == 0 then
+     oldPath = value("PATH", .ooRexxUnit.dir || .ooRexxUnit.path.separator || currentPath, 'ENVIRONMENT')
+
   do rtn over .methods
      .public_routines~put(.methods[rtn], rtn)
   end
@@ -201,12 +208,11 @@ end
  * class.  (Note that this is different then testing that an object is an
  * instance of a class.)
  *
- * During the execution of an automated test suite, TestCase and TestSuite class
- * objects can be created by different requires directives.  This prevents the
- * use of a simple comparison to test if an object is a TestCase or TestSuite
- * class object.  (The same can apply to other classes during the execution of
- * a lengthy automated test suite.)  This public routine provides a way to
- * test the class of a class object for this situation.
+ * During the execution of an automated test suite, many of the framework's
+ * class objects can be created by different requires directives.  This prevents
+ * the use of a simple comparison to test if an object is a specific class
+ * object.  This public routine provides a way to test the class of a class
+ * object for this situation.
  *
  * @param clz              The object to test.
  * @param superClassName   A string, the name of the class to test for.
@@ -249,7 +255,24 @@ end
 return .false
 -- End isBoolean()
 
-/* pathCompact( path, len, sl )- - - - - - - - - - - - - - - - - - - - - - - -*\
+/** isWholeRange()
+ * Tests if an object is a whole number within the range of min and max.
+ *
+ * @param number  REQUIRED  The object to test.
+ * @param min     REQUIRED  The minimal value of the range.
+ * @param max     REQURIED  The maximal value of the range.
+ */
+::method isWholeRange
+  use strict arg number, min, max
+  if number~isA(.String) then do
+    if number~dataType('W') then do
+      if number >= min, number <= max then return .true
+    end
+  end
+return .false
+-- End isWholeRange()
+
+/* pathCompact( path, len )- - - - - - - - - - - - - - - - - - - - - - - - - -*\
 
   Takes a long path name and compacts it to a shorter path name by removing some
   path components in the middle of the path name and replacing them with
@@ -262,18 +285,17 @@ return .false
     len  REQUIRED
       The maximum length of the returned compacted path.
 
-    sl   REQUIRED
-      The path component separator character, i.e., a backward slash on Windows.
-
   Returns:
     A compacted path no longer than specified.  If the input path name is
     already less than or equal to the specified length, it is returned
     unchanged.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::method pathCompact public
-  use strict arg path, len, sl
+  use strict arg path, len
 
   if path~length <= len then return path
+
+  sl = .ooRexxUnit.directory.separator
 
   -- Get position of directory separator after character 15
   fp = path~pos(sl, 15)
@@ -302,7 +324,7 @@ return .false
   end
 
 return leading || trailing
--- End pathCompact( path, len, sl )
+-- End pathCompact( path, len )
 
 
 /** enQuote()
@@ -314,7 +336,7 @@ return leading || trailing
 /** pp()
  * Enclose a string value in square brackets "pretty print."
  */
-::routine pp public  -- "pretty print" ;)
+::method pp public
   return "[" || arg(1)~string || "]"
 
 /** ppp()
@@ -329,8 +351,8 @@ return leading || trailing
 
   return "[" || string || "]"
 
-/** escapeStrin()
- * Wscape non-printable characters in string.
+/** escapeString()
+ * Escape non-printable characters in string.
  */
 ::method escapeString
   use arg str
@@ -371,7 +393,76 @@ return leading || trailing
   return tmpStr~string
 
 
-::class "TestResult" public
+/** timeStamp()
+ * Return a date / time string.  This allows a consistent format of time stamps
+ * throughout the test framework.
+ */
+::method timeStamp
+  return pp(date("S") time("L"))
+
+
+/* class: NoiseAdjustable- - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+    A class that allows adjusting the level of ouput ("noise") produced.
+
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class "NoiseAdjustable" public mixinclass Object
+
+  -- Want to use the new ::constant directive here.  <grin>
+  /*
+  ::constant MAX_VERBOSTIY 10
+  ::constant MIN_VERBOSITY  0
+  ::constant DEFAULT_VERBOSITY  2
+  */
+  ::method MAX_VERBOSITY     class; return 10
+  ::method MIN_VERBOSITY     class; return  0
+  ::method DEFAULT_VERBOSITY class; return 10
+  ::method MAX_VERBOSITY;           return 10
+  ::method MIN_VERBOSITY;           return  0
+  ::method DEFAULT_VERBOSITY;       return  2
+
+  ::attribute verbose private
+
+  ::method setVerbosity
+    use strict arg level
+           say 'in setVerbosity'
+    if \ isWholeRange(level, self~MIN_VERBOSITY, self~MAX_VERBOSITY) then
+      raise syntax 88.907 array("1 'level'", self~MIN_VERBOSITY, self~MAX_VERBOSITY, level)
+    self~verbose = level
+
+  ::method getVerbosity
+    return self~verbose
+
+-- End of class: NoiseAdjustable
+
+
+
+/** class:  TestCollectingParameter
+  *   Defines an interface for a test data collecting parameter.  The TestResult
+  *   class and subclasses apply the 'Collecting Parameter' design pattern.
+  *   This object is used to collect data throughout the execution of a test.
+  */
+::class 'TestCollectingParameter' public inherit NoiseAdjustable
+
+/** Ouputs in some manner the formatted data of this collecting parameter.    */
+::method print          abstract
+
+/** Sets the default formatter class to use when print() is invoked.          */
+::method setFormatter   abstract
+
+/** Returns the current default formatter class of this collecting parameter  */
+::method getFormatter   abstract
+
+
+
+::class "TestResult" public subclass TestCollectingParameter
+
+::attribute logQueue               -- ooRexxUnit only
+::attribute TestCaseTable          -- ooRexxUnit only
+
+-- The default formatter class for this test result.
+::attribute formatter private
+
 ::method init
   expose fErrors fFailures fRunTests fStop fTestRuns TestCaseTable logQueue fAssertions
       -- initialize object variables
@@ -385,8 +476,8 @@ return leading || trailing
 
   TestCaseTable=.table~new
 
-::method logQueue attribute               -- ooRexxUnit only
-::method TestCaseTable attribute          -- ooRexxUnit only
+  self~setVerbosity(self~DEFAULT_VERBOSITY)
+  self~formatter = .SimpleFormatter
 
 ::method addError       -- ooRexxUnit only, allows to be overriden/intercepted by subclasses
   expose fErrors TestCaseTable logQueue
@@ -413,7 +504,7 @@ return leading || trailing
   expose TestCaseTable fStop logQueue fAssertions
   use arg aTestCase
 
-  dateTime=pp(date("s") time("L"))
+  dateTime=timeStamp()
   TestCaseTable[aTestCase]~queue(dateTime": endTest")
   dir=.directory~new ~~setentry("OOREXXUNIT.CONDITION", dateTime":" pp("endTest") aTestCase~string)
 
@@ -462,7 +553,7 @@ return leading || trailing
   if TestCaseTable~hasindex(aTestCase)=.false then -- already a queue created for it?
      TestCaseTable[aTestCase]=.queue~new
 
-  dateTime=pp(date("s") time("L"))
+  dateTime=timeStamp()
   TestCaseTable[aTestCase]~queue(dateTime": startTest")
   dir=.directory~new ~~setentry("OOREXXUNIT.CONDITION", dateTime":" pp("startTest") aTestCase~string)
 
@@ -483,6 +574,73 @@ return leading || trailing
 
   return (fErrors~items+fFailures~items)=0
 
+::method print
+  formatter = self~formatter~new(self)
+  formatter~print
+
+::method setFormatter
+  use arg formatterClass
+
+  if \ isSubclassOf(.ResultFormatter, "ResultFormatter") then
+     raise syntax 88.914 array ("1 'formatterClass'", "ResultFormatter")
+  self~formatter = formatterClass
+
+::method getFormatter
+  return self~formatter
+
+/* class: ResultFormatter- - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+    An interface for an object that can format, and then output, the data
+    contained in a test collecting parameter.
+
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class 'ResultFormatter' public inherit NoiseAdjustable
+
+::attribute testResult private
+
+::method init
+  use strict arg testResult
+
+  if \ isSubClassOf(testResult~class, "TestCollectingParameter") then
+     raise syntax 88.914 array ("1 'testResult'", "TestCollectingParameter")
+
+  self~testResult = testResult
+  self~setVerbosity(self~DEFAULT_VERBOSITY)
+
+::method print abstract
+
+
+/* class: SimpleFormatter- - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+    Formats and prints to the console a simple rendition of a test result's
+    data.
+
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class 'SimpleFormatter' public subclass ResultFormatter
+
+::method print
+  say "Not implemented yet.  I don't know how to format my data."
+
+
+/* class: ProblemReport- - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+    A base class for data objects describing problems that arise during the
+    execution of tests.
+
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class 'ProblemReport' public
+
+::attribute when get
+::attribute when set private
+
+::attribute where get
+::attribute where set private
+
+::method init
+  use strict arg dateTime, file = .nil, ...
+
+  self~when = dateTime
+  self~where = file
 
 
 /* *********************************************************************************** */
@@ -807,13 +965,13 @@ return leading || trailing
 /* *********************************************************************************** */
 ::class "TestCase" public inherit "Assert"
 
+::attribute defaultTestResultClass class
+::attribute TestCaseInfo class
+
 ::method init class
   self~defaultTestResultClass=.TestResult -- set default: use TestResult class
   self~TestCaseInfo=.directory~new
   forward class (super)
-
-::method defaultTestResultClass class attribute -- ooRexxUnit only
-::method TestCaseInfo class attribute
 
 
 ::method init        -- constructor
@@ -918,7 +1076,7 @@ exceptionHandler:
 
    if co~code=93.964 then     -- o.k. an own raised exception (using new ooRexx 3.1 application defined syntax error)
    do
-      tmpString=pp(date("S") time("L"))":" pp("failure") self~string || iif(strAdditional="", "", " --->" strAdditional)
+      tmpString=timeStamp()":" pp("failure") self~string || iif(strAdditional="", "", " --->" strAdditional)
       co~setentry("OOREXXUNIT.CONDITION", tmpString)  -- add ooRexxUnit-infos with condition object
       aTestResult~addFailure(self, co)    -- save the condition object
    end
@@ -934,7 +1092,7 @@ exceptionHandler:
       if .nil<>co~message then
          tmpInfo=tmpInfo || co~message   -- add error message
 
-      tmpString=pp(date("S") time("L"))":" pp("error") self~string "--->" tmpInfo
+      tmpString=timeStamp()":" pp("error") self~string "--->" tmpInfo
       co~setentry("OOREXXUNIT.CONDITION", tmpString)  -- add ooRexxUnit-infos with condition object
       aTestResult~addError(self, co)      -- save the condition object
    end
@@ -1050,8 +1208,8 @@ exceptionHandler:
 ::method run
   use arg aTestResult = (self~createResult), bGiveFeedback = .false
 
-  if \isBoolean(bGiveFeedback) then
-     raise syntax 93.903 array (bGiveFeedback) -- raise error
+  if \ isBoolean(bGiveFeedback) then
+    raise syntax 88.916 array ("2 'bGiveFeedback'", "true or false", bGivefeedback)
 
   if bGiveFeedback then
      .error~say( "running testSuite" pp(self~string"@"self~identityHash) "with" pp(self~countTestCases) "test cases ...")
@@ -1472,7 +1630,7 @@ return 0
   parse var lastPart cls "@" file ")"
   clsName = cls~word(2)
 
-  if file~length > 70 then file = pathCompact(file, 70, .ooRexxUnit.directory.separator)
+  if file~length > 70 then file = pathCompact(file, 70)
   t = .table~new
   t['name']  = tcName
   t['class'] = clsName

@@ -48,7 +48,10 @@
 
                      Although others may find this framework useful, its primary
                      design goal is to fit the needs of the ooRexx development
-                     team.
+                     team.  Classes in this framework are not guaranteed to be
+                     backwards compatible with previous versions of this
+                     framework as the ooRexx committers may decide to break
+                     compatibility to further the goals of the project.
 
    category:         Framework
 */
@@ -59,6 +62,13 @@ if \ .local~hasEntry('OOTEST_FRAMEWORK_VERSION') then do
   -- Replace the default test result class in the environment with the ooRexx
   -- project's default class.
   .local~ooRexxUnit.default.TestResult.Class = .ooTestResult
+
+  -- Capture the ooTest framework directory and ensure it is in the path.
+  parse source . . fileSpec
+  .local~ooTest.dir = fileSpec~left(fileSpec~caseLessPos("ooTest.frm") - 2 )
+  currentPath = value("PATH", , 'ENVIRONMENT')
+  if currentPath~caseLessPos(.ooTest.dir) == 0 then
+     oldPath = value("PATH", .ooTest.dir || .ooRexxUnit.path.separator || currentPath, 'ENVIRONMENT')
 
   do rtn over .methods
      .public_routines~put(.methods[rtn], rtn)
@@ -71,12 +81,10 @@ end
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::requires "OOREXXUNIT.CLS"
 
-
 ::method makeSetOfWords
   use strict arg wordCollection, upper = .true
 
-  if \ upper~isA(.string) then upper = .true
-  if \ upper~dataType('O') then upper = .true
+  if \ isBoolean(upper) then upper = .true
 
   s = .set~new
   select
@@ -87,6 +95,7 @@ end
 
     when wordCollection~isA(.collection) then do w over wordCollection
       if \ w~isA(.string) then return .nil
+      if w~words <> 1 then return .nil
       if upper then s~put(w~translate)
       else s~put(w)
     end
@@ -125,32 +134,55 @@ return a
 -- End makeSetOfWords()
 
 
-/** TestContainer
- *    Defines an interface for a test container.
- * DFX TODO finish doc here.
+/** class:  TestContainer
+ * Defines an interface for a test container.  Objects containing tests that
+ * implement the TestContainer interface can be 'found' by the ooTestFinder
+ * class.
  */
 ::class 'TestContainer' public
-::method isEmpty            abstract
-::method hasTests           abstract
-::method hasTestTypes       abstract
-::method testCount          abstract
-::method getNoTestsReason   abstract
+
+/** isEmpty() Returns true or false.  True if the container has no tests,
+ * otherwise false.
+ */
+::method isEmpty abstract
+
+/** hasTests() Returns true or false. True if the container contains some
+ * executable tests, otherwise false.  Note that containing executable tests is
+ * not the same as simply containing tests.
+ */
+::method hasTests abstract
+
+/** hasTestTypes() Returns true or false.  When passed an object as arg 1, the
+ * test container determines if it does or does not have tests under the
+ * constraints of the object.
+ */
+::method hasTestTypes abstract
+
+/** testCount() Returns the number of tests the container has.
+ */
+::method testCount abstract
+
+/** getNoTestsReason() Returns a descriptive string, presumably explaining why
+ * the container has no tests.
+ */
+::method getNoTestsReason abstract
 
 
-/** TestCollectingParameter
-  *   Defines an interface for a test data collecting parameter.  ooTestResult
-  *   (and TestResult really) apply the 'Collecting Parameter' design pattern.
+/** class:  ooTestCollectingParameter
+  *   Defines an interface extended from TestResult for a collecting parameter
+  *   used specifically for testing the ooRexx intepreter and its distribution
+  *   packages.
   * DFX TODO finish up doc here.
   */
-::class 'TestCollectingParameter' public subclass TestResult
+::class 'ooTestCollectingParameter' public subclass TestResult
 ::method addOmission    abstract
 ::method getOmissions   abstract
+::method omissionCount  abstract
 ::method addException   abstract
 ::method getExceptions  abstract
+::method exceptionCount abstract
 ::method addEvent       abstract
 ::method getEvents      abstract
-::method setVerbosity   abstract
-::method getVerbosity   abstract
 
 
 /* class: ooTestCase - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
@@ -201,8 +233,7 @@ return a
     use strict arg show
 
     if \ isBoolean(show) then
-      raise syntax 88.916 array ("1 'show'", "true or false", show)
-
+      raise syntax 88.900 array ("showProgess must be set to true or false; found:" show)
     showProgress = show
 
   ::attribute beVerbose get
@@ -211,107 +242,91 @@ return a
     use strict arg verbose
 
     if \ isBoolean(verbose) then
-      raise syntax 88.916 array ("1 'verbose'", "true or false", verbose)
-
+      raise syntax 88.900 array ("beVerbose must be set to true or false; found:" verbose)
     beVerbose = verbose
 
   ::method init
     forward class (super) continue
 
     self~showProgress = .false
-    self~veVerbose = .false
+    self~beVerbose = .false
   -- End init( )
 
+  /** run()
+   * Executes the tests in this test suite.  Over-rides the superclass method.
+   *
+   * @param testResult    OPTIONAL    (ooTestCollectingParameter)
+   *   The collecting parameter to use for the execution of the tests.  The
+   *   default
+   */
   ::method run
-    use arg aTestResult = (self~createResult), bGiveFeedback = .false
+    use arg testResult = (self~createResult), verbose = (self~beVerbose)
 
-    if \isBoolean(bGiveFeedback) then
-       raise syntax 93.903 array (bGiveFeedback) -- raise error
+    if \ isBoolean(verbose) then
+      raise syntax 88.916 array ("2 'verbose'", "true or false", verbose)
 
-    if bGiveFeedback then
-       .error~say( "running testSuite" pp(self~string"@"self~identityHash) "with" pp(self~countTestCases) "test cases ...")
+    if verbose then
+      say "Executing testSuite" pp(self~string"@"self~identityHash) "with" pp(self~countTestCases) "test cases ..."
 
     tests = self~testQueue
 
-    aTestResult~startTest(self)       -- remember test started
-    self~setUp                        -- make sure setup is invoked before testSuite runs
-    do aTestCase over tests while aTestResult~shouldStop=.false
-       if self~showProgress then say "Executing test cases from" 'pathCompact'(aTestCase~definedInFile, 60, .ooRexxUnit.directory.separator)
-       aTestCase~run(aTestResult, bGiveFeedback)
-    end
-    self~tearDown                     -- make sure tearDown is invoked after testSuite ran
-    aTestResult~endTest(self)         -- remember test ended
+    -- If we are already verbose, we don't need to show progress.
+    show = (self~showProgress & \verbose)
 
-    return aTestResult
+    -- Mark the test starting and invoke the test suite setUp method.
+    testResult~startTest(self)
+    self~setUp(testResult)
+
+    do test over tests while \ testResult~shouldStop
+       if show then say "Executing tests from" pathCompact(test~definedInFile, 58)
+       test~run(testResult, verbose)
+    end
+
+    -- Invoke the the test suite tearDown method and mark the test has ended.
+    self~tearDown
+    testResult~endTest(self)
+
+    return testResult
+  -- End run()
 
 -- End of class: ooTestSuite
 
 
-/* class: ooTestResult - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+/* class: ConsoleFormatter - - - - - - - - - - - - - - - - - - - - - - - - - -*\
 
+    A console formatter formats the information from a test result and prints
+    it out to the console.
 
-  exception omission
+    The format of the information is designed to be "console-friendly."  The
+    information is broken up into lines, with an attempt made to keep all lines
+    no longer than 80 characers wide.
+
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class 'ooTestResult' public subclass TestCollectingParameter
+::class 'ConsoleFormatter' public subclass ResultFormatter
 
-  ::attribute omissions  private
-  ::attribute exceptions private
-  ::attribute events     private
-  ::attribute verbose    private
-
+  /** init()
+   *
+   */
   ::method init
-    use arg verbosity = 0
+    use strict arg testResult
     forward class (super) continue
 
-    self~omissions = .queue~new
-    self~exceptions = .queue~new
-    self~events = .queue~new
-    self~verbose = verbosity
-
-  -- End init( )
-
-  ::method addOmission
-    use strict arg omission
-    self~omissions~queue(omission)
-
-  ::method getOmissions
-    return self~omissions
-
-  ::method addException
-    use strict arg exception
-    self~exceptions~queue(exception)
-
-  ::method getExceptions
-    return self~exceptions
-
-  ::method addEvent
-    use strict arg event
-    self~events~queue(event)
-
-  ::method getEvents
-    return self~events
-
-  ::method setVerbosity
-    use strict arg level
-    self~verbose = level  -- DFX TODO check valid param.
-
-  ::method getVerbosity
-    return self~verbose
+    -- We need an ooTestCollectingParameter.
+    if \ isSubClassOf(testResult~class, "ooTestCollectingParameter") then
+       raise syntax 88.914 array ("1 'testResult'", "ooTestCollectingParameter")
+    self~testResult = testResult
 
   /** print()
    *
    * Prints the data collected by this test result in a "console-friendly"
-   * manner.  The information is broken up into lines, with an attempt made to
-   * keep all lines no longer than 80 characers wide.
+   * manner.
    *
    * @param title    OPTIONAL    (String)
    *   Adds a title to the output.
    *
    * @param level   OPTIONAL    (Whole Number)
    *   Sets the verbosity level of the print out.  Values are 0 through 10, with
-   *   lesser numbers meaning lesser verbosity.  The default level is 0.
-   *   Numbers less than 0 set verbose to 0, numbers higher than 10 set verbos
-   *   to 10.
+   *   lesser numbers meaning lesser verbosity.  The default level is 1.
    */
   ::method print
     use arg title = "", level = 0
@@ -319,12 +334,8 @@ return a
     if \ title~isA(.string) then
       raise syntax 88.914 array ("1 'title'", "String")
 
-    if \ level~isA(.string), \ level~datatype('W') then
-      raise syntax 88.903 array ("2 'level'", level)
-
-    if level < 0 then level = 0
-    if level > 10 then level = 10
-    self~setVerbosity(level)
+    if arg(1, 'E') then self~setVerbosity(level)
+    data = self~testResult
 
     if title<>"" then do
       say title
@@ -335,40 +346,40 @@ return a
     say "Interpreter:" versionStr
     say "ooRexxUnit: " .ooRexxUnit.version
     say
-    say "Count of tests ran:            " self~runCount
-    say "Count of successful assertions:" self~assertCount
-    say "Count of failures:             " self~failureCount
-    say "Count of errors:               " self~errorCount
-    say "Count of exceptions:           " self~exceptions~items
-    say "Count of skipped files:        " self~omissions~items
+    say "Count of tests ran:            " data~runCount
+    say "Count of successful assertions:" data~assertCount
+    say "Count of failures:             " data~failureCount
+    say "Count of errors:               " data~errorCount
+    say "Count of exceptions:           " data~exceptionCount
+    say "Count of skipped files:        " data~omissionCount
     say
 
-    if self~failureCount > 0 then do co over self~failures                 -- DFX TODO fix this rough outline
+    if data~failureCount > 0 then do co over data~failures                 -- DFX TODO fix this rough outline
       self~printFailureInfo(co~ooRexxUnit.condition)
     end
 
-    if self~errorCount > 0 then do co over self~errors
+    if data~errorCount > 0 then do co over data~errors
       self~printErrorInfo(co~ooRexxUnit.condition)
     end
-
+    say 'verbosity:' self~getVerbosity
     if self~getVerbosity > 2 then do
-      if self~exceptions~items > 0 then self~printExceptions
-      if self~omissions~items > 0 then self~printOmissions
+      if data~exceptionCount > 0 then self~printExceptions
+      if data~omissionCount > 0 then self~printOmissions
     end
 
     -- If a number of failure or error information lines are printed, re-display
     -- the summary statistics again so that the number of failures is obvious to
     -- the user.
-    if (self~failureCount + self~errorCount) > 3 | self~getVerbosity > 2 then do
+    if (data~failureCount + data~errorCount) > 3 | self~getVerbosity > 2 then do
       say "Interpreter:" versionStr
       say "ooRexxUnit: " .ooRexxUnit.version
       say
-      say "Count of tests ran:            " self~runCount
-      say "Count of successful assertions:" self~assertCount
-      say "Count of failures:             " self~failureCount
-      say "Count of errors:               " self~errorCount
-      say "Count of exceptions:           " self~exceptions~items
-      say "Count of skipped files:        " self~omissions~items
+      say "Count of tests ran:            " data~runCount
+      say "Count of successful assertions:" data~assertCount
+      say "Count of failures:             " data~failureCount
+      say "Count of errors:               " data~errorCount
+      say "Count of exceptions:           " data~exceptionCount
+      say "Count of skipped files:        " data~omissionCount
       say
     end
 
@@ -438,7 +449,7 @@ return a
     parse var lastPart cls "@" file ")"
     clsName = cls~word(2)
 
-    if file~length > 70 then file = 'pathCompact'(file, 70, .ooRexxUnit.directory.separator)
+    if file~length > 70 then file = pathCompact(file, 70)
     t = .table~new
     t['name']  = tcName
     t['class'] = clsName
@@ -513,28 +524,85 @@ return a
 
   ::method printExceptions private      -- DFX TODO fix this rough outline
 
-    q = self~getExceptions
+    q = self~testResult~getExceptions
     do e over q
-      say "[Framework exception]" "Unknown date / time"
-      say "  File:" 'pathCompact'(e~file, 70, .ooRexxUnit.directory.separator)
-      say "  Type:" e~type
+      say "[Framework exception]" e~when
+      say "  File:" pathCompact(e~where, 70)
+      if e~line <> -1 then say "  Line:" e~line
+      say "  Type:" e~type "Severity:" e~severity
       say " " e~getMessage
       say
     end
 
   ::method printOmissions private       -- DFX TODO fix this rough outline
 
-    q = self~getOmissions
+    q = self~testResult~getOmissions
     do o over q
       say "[Skipped test group]"
-      say "  File:" 'pathCompact'(o~file, 70, .ooRexxUnit.directory.separator)
+      say "  File:" pathCompact(o~where, 70)
       say " " o~reason
       if o~additional \== .nil then
         say " " o~additional
       say
     end
 
+-- End of class ConsoleFormatter
+
+/* class: ooTestResult - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class 'ooTestResult' public subclass ooTestCollectingParameter
+
+  ::attribute omissions  private
+  ::attribute exceptions private
+  ::attribute events     private
+
+  ::method init
+    use arg verbosity = 1
+    forward class (super) continue
+
+    self~omissions = .queue~new
+    self~exceptions = .queue~new
+    self~events = .queue~new
+
+    -- If verbosity is specified, use it to over-ride the default.
+    if arg(1, 'E') then self~setVerbosity(verbosity)
+
+    -- Over-ride the default formatter
+    self~formatter = .ConsoleFormatter
+
+  -- End init( )
+
+  ::method addOmission
+    use strict arg omission
+    self~omissions~queue(omission)
+
+  ::method getOmissions
+    return self~omissions
+
+  ::method omissionCount
+    return self~omissions~items
+
+  ::method addException
+    use strict arg exception
+    self~exceptions~queue(exception)
+
+  ::method getExceptions
+    return self~exceptions
+
+  ::method exceptionCount
+    return self~exceptions~items
+
+  ::method addEvent
+    use strict arg event
+    self~events~queue(event)
+
+  ::method getEvents
+    return self~events
+
 -- End of class: ooTestResult
+
 
 /* class: TestGroup- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
 
@@ -562,8 +630,8 @@ return a
 
   /** hasTestTypes()
    *
-   * Returns true if this group has tests for all the types of tests specified,
-   * otherwise returns false.
+   * Returns true if this group has any tests matching the types of tests
+   * specified, otherwise returns false.
    *
    * @param types REQUIRED
    *   The test type keywords to check for.  This can be a blank delimited
@@ -578,7 +646,9 @@ return a
     if s == .nil then
        raise syntax 88.917 array ("1 'types'", "must be a string or a collection of words")
 
-  return s~subset(self~currentTypes)
+    if \ self~hasTests then return .false
+
+  return s~intersection(self~currentTypes)~items <> 0
   -- End hasTestTypes()
 
   -- The number of test case classes this group contains.
@@ -630,8 +700,8 @@ return a
   ::attribute testsWithSuite private
 
   -- A table of Test classes, with an accompanying set of individual methods for
-  -- that Test class, indexed by their category.  Optionally, there may be a
-  -- Suite associated with each Test class.
+  -- that Test class, indexed by their category.  There is a Suite associated
+  -- with each Test class, by default ooTestSuite.
   ::attribute testCollections private
 
   -- A set of the categories of tests this group currently contains.
@@ -719,7 +789,7 @@ return a
 
   /** hasTestType()
    *
-   * Returns true if this group has a test for the type of tests specified,
+   * Returns true if this group has a test for the type of test specified,
    * otherwise returns false.
    *
    * @param type REQUIRED
@@ -748,8 +818,9 @@ return a
    *
    * @param acceptable
    *   A set of OS words that this test group should be restricted to.  This can
-   *   be either a string of blank separated OS words, or a set of the OS words.
-   *   Case is not significant.  The set must be a subset of the known OS words.
+   *   be either a string of blank separated OS words, or a collection of the OS
+   *   words. Case is not significant.  The collection must be a subset of the
+   *   known OS words.
    *
    */
   ::method restrictOS
@@ -761,9 +832,10 @@ return a
        raise syntax 88.917 array ("1 'acceptable'", "must be a string or a collection of words")
 
     if \ s~subset(knownOSes) then
-      raise syntax 88.917 array ("1 'acceptable'", "is not a subset of the known operating systems")
+      raise syntax 88.917 array ("1 'acceptable'", "is not a subset of the known operating systems. Found:" acceptable)
 
     self~allowedOSes = s
+
     if \ s~hasIndex(self~machineOS) then do
       self~hasTests = .false
       self~mustNotExecute = .true
@@ -794,6 +866,14 @@ return a
     self~mustNotExecute = .true
   -- End markNoTests()
 
+  /** wordSetToString()
+   *
+   * Takes a set of words and turns it into a blank delimited string of words.
+   * Note that this is a private method and no error checking is done.
+   *
+   * @param wordSet REQUIRED  (Set)
+   *   The set to work with.
+   */
   ::method wordSetToString private
     use arg wordSet
     s = .mutableBuffer~new
@@ -850,14 +930,14 @@ return a
     if \ isSubClassOf(test, "ooTestCase") then
       raise syntax 88.917 array ("1 'test'", "must be a subclass of the ooTestCase class. Found:" test)
 
-    if \ isSubClassOf(suite, "TestSuite") then
-      raise syntax 88.917 array ("2 'suite'", "must be a subclass of the TestSuite class. Found:" suite)
+    if \ isSubClassOf(suite, "ooTestSuite") then
+      raise syntax 88.917 array ("2 'suite'", "must be a subclass of the ooTestSuite class. Found:" suite)
 
     if testsWithSuite~hasIndex(test~ooTestType) then
       raise syntax 88.917 array ("1 'test'", "is a test type ("test~ooTestType") already contained by this test group.")
 
     test~testCaseInfo = self~testInfo
-    testsWithSuite[test~ooTestType] = .TestAndSuite~new(test, suite)
+    testsWithSuite[test~ooTestType] = .TestWithSuite~new(test, suite)
     self~currentTypes~put(test~ooTestType)
     self~testCount += 1
 
@@ -873,7 +953,7 @@ return a
    * When this group is asked to return a suite of its executable tests, a suite
    * will be constructed using the test class and the method names.  If the
    * optional test suite is specified, that suite will be used for the
-   * construction.
+   * construction, otherwise the default ooTestSuite will be used.
    *
    * @param test   REQUIRED  (subclass of ooTestCase)
    *   The test case class object to be added to this group of test classes.
@@ -886,14 +966,14 @@ return a
    *   to the resulting test suite in the same order as they are in the
    *   collection.
    *
-   * @param suite  OPTIONAL  (subclass of TestSuite)
+   * @param suite  OPTIONAL  (subclass of ooTestSuite)
    *   Specifies the test suite class to use in the construction of a test suite
-   *   containing these test cases.
+   *   containing these test cases.  This defaults to the ooTestSuite class.
    *
    */
   ::method addWithCollection
     expose testCollections
-    use strict arg test, names, suite = .nil
+    use strict arg test, names, suite = .ooTestSuite
 
     if \ isSubClassOf(test, "ooTestCase") then
       raise syntax 88.917 array ("1 'test'", "must be a subclass of the ooTestCase class. Found:" test)
@@ -904,14 +984,14 @@ return a
     if methods == .nil then
        raise syntax 88.917 array ("2 'names'", "must be a string or collection of method names")
 
-    if suite \== .nil, \ isSubClassOf(suite, "TestSuite") then
-      raise syntax 88.917 array ("3 'suite'", "if used, must be a subclass of the TestSuite class. Found:" suite)
+    if \ isSubClassOf(suite, "ooTestSuite") then
+      raise syntax 88.917 array ("3 'suite'", "if used, must be a subclass of the ooTestSuite class. Found:" suite)
 
     if testCollections~hasIndex(test~ooTestType) then
       raise syntax 88.917 array ("1 'test'", "is a test type ("test~ooTestType") already contained by this test group.")
 
     test~testCaseInfo = self~testInfo
-    testCollections[test~ooTestType] = .TestCollection~new(test, methods, suite)
+    testCollections[test~ooTestType] = .TestWithSuiteAndNames~new(test, methods, suite)
     self~currentTypes~put(test~ooTestType)
     self~testCount += 1
 
@@ -924,21 +1004,21 @@ return a
    * Returns a test suite containing all the executable tests, of any test type,
    * to the caller.
    *
-   * @param testSuite  OPTIONAL  (subclass of TestSuite)
+   * @param testSuite  OPTIONAL  (subclass of ooTestSuite)
    *   If a test suite object is passed in, the tests will be added to that test
    *   suite.  Otherwise a new test suite is constructed and returned.
    */
   ::method suite
     expose tests testsWithSuite testCollections
-    use arg testSuite = (.TestSuite~new)
+    use arg testSuite = (.ooTestSuite~new)
 
-    if \ isSubClassOf(testSuite~class, "TestSuite") then
-      raise syntax 88.917 array ("1 'testSuite'", "if used, must be a subclass of the TestSuite class. Found:" testSuite)
+    if \ isSubClassOf(testSuite~class, "ooTestSuite") then
+      raise syntax 88.917 array ("1 'testSuite'", "if used, must be a subclass of the ooTestSuite class. Found:" testSuite)
 
     if \ self~hasTests then return testSuite
 
     do tClass over tests~allItems
-      suite = .TestSuite~new(tClass)
+      suite = .ooTestSuite~new(tClass)
       suite~definedInFile = self~pathName
       testSuite~addTest(suite)
     end
@@ -962,26 +1042,52 @@ return a
    * Returns a test suite containing all the executable tests, of the specified
    * test type(s), to the caller.
    *
-   * @param type  REQUIRED  (String or Collection)
+   * @param types  REQUIRED  (String or Collection)
    *   The test type keyword or keywords whose tests should be returned. This
    *   can be a single keyword, a string of blank delimited keywords, or any
    *   Collection object whose items are the keywords.
    *
-   * @param testSuite  OPTIONAL  (subclass of TestSuite)
+   * @param testSuite  OPTIONAL  (subclass of ooTestSuite)
    *   If a test suite object is passed in, the tests will be added to that test
    *   suite.  Otherwise a new test suite is constructed and returned.
    */
   ::method suiteForTestTypes
     expose tests testsWithSuite testCollections
-    use strict arg type, testSuite = (.TestSuite~new)
+    use strict arg types, testSuite = (.ooTestSuite~new)
 
-    testSuite~definedInFile = self~pathName
+    testTypes = makeSetOfWords(types)
+    if testTypes == .nil then
+       raise syntax 88.917 array ("1 'types'", "must be a string or a collection of words")
+
+    if \ isSubClassOf(testSuite~class, "ooTestSuite") then
+      raise syntax 88.917 array ("2 'testSuite'", "if used, must be a subclass of the ooTestSuite class. Found:" testSuite)
 
     if \ self~hasTests then return testSuite
 
-    do t over type
-      testClass = tests[t~translate]
-      if testClass <> .nil then testSuite~addTest(.TestSuite~new(testClass))
+    testTypes = self~currentTypes~intersection(testTypes)
+    if testType~items == 0 then return testSuite
+
+    do t over testTypes
+      testClass = tests[t]
+      if testClass <> .nil then do
+        suite = .ooTestSuite~new(testClass)
+        suite~definedInFile = self~pathName
+        testSuite~addTest(suite)
+      end
+
+      obj = testsWithSuite[t]
+      if obj <> .nil then do
+        suite = obj~getSuite
+        suite~definedInFile = self~pathName
+        testSuite~addTest(suite)
+      end
+
+      obj = testCollections[t]
+      if obj <> .nil then do
+        suite = obj~getSuite
+        suite~definedInFile = self~pathName
+        testSuite~addTest(suite)
+      end
     end
 
   return testSuite
@@ -1068,8 +1174,12 @@ return a
 -- End of class: TestGroup
 
 
-/** Simple helper class to store a test case class and a test suite class. */
-::class 'TestAndSuite'
+/* class: TestWithSuite- - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+  Simple helper class to store a test case class and a test suite class.
+
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class 'TestWithSuite' public
 ::attribute testClass
 ::attribute suiteClass
 
@@ -1080,16 +1190,19 @@ return a
 ::method getSuite
   expose testClass suiteClass
 return suiteClass~new(testClass)
--- End of class: TestAndSuite
+-- End of class: TestWithSuite
 
 
-/** Simple helper class to store a test case class, a collection of test case
- *  names, and an optional test suite class.
- */
-::class 'TestCollection'
-::attribute testClass
-::attribute names
-::attribute suiteClass
+/* class: TestWithSuiteAndNames- - - - - - - - - - - - - - - - - - - - - - - -*\
+
+  Simple helper class to store a test case class, a collection of test case
+  names, and a test suite class.
+
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class 'TestWithSuiteAndNames' public
+::attribute testClass private
+::attribute names private
+::attribute suiteClass private
 
 ::method init
   expose testClass names suiteClass
@@ -1105,7 +1218,7 @@ return suiteClass~new(testClass)
   end
 
 return suite
--- End of class: TestAndSuite
+-- End of class: TestWithSuiteAndNames
 
 
 /* class: ooTestFinder - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
@@ -1116,29 +1229,43 @@ return suite
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class 'ooTestFinder' public
 
+  ::attribute testTypes private
+  ::attribute fileSpec private
+
   ::method init
-    expose testTypes fileSpec
-    use arg root, extension, testTypes
+    use strict arg root, extension, types = .nil
 
     sl = .ooRexxUnit.directory.separator
     if root~right(1) == sl then root = root~strip('T', sl)
     if extension~left(1) == '.' then extension = extension~strip('L', '.')
     fileSpec = root || sl || "*." || extension
 
-    if arg(3, 'O') then do
-      testTypes = .set~new
-    end
+    self~testTypes = types
+    self~fileSpec = fileSpec
 
   -- End init()
 
   ::method seek
-    expose fileSpec testTypes
+    expose testTypes fileSpec
     use strict arg testResult
-    say 'in seek filespec:' fileSpec
-    j = SysFileTree(fileSpec, files., "FOS")
+
+    if \ isSubClassOf(testResult~class, "ooTestCollectingParameter") then
+      raise syntax 88.917 array ("1 'testResult'", "must be a subclass of the ooTestCollectingParameter class. Found:" testResult)
+
     q = .queue~new
-    do i = 1 to files.0
-      fileName = files.i
+    files = self~findFiles
+
+    if files~items == 0 then do
+      err = .ExceptionData~new(timeStamp(), fileSpec)
+      err~type = "Anomaly"
+      err~severity = "Warning"
+      err~msg = "No test containers found matching search paramters."
+      testResult~addException(err)
+      return q
+    end
+
+
+    do fileName over files
       container = self~getContainer(fileName)
 
       select
@@ -1149,23 +1276,29 @@ return suite
 
         when \ isSubClassOf(container~class, "TestContainer") then do
           reason = "Object returned is not a test container.  Object is:" container
-          o = .OmissionData~new(fileName, reason)
+          o = .OmissionData~new(timeStamp(), fileName, reason)
           testResult~addOmission(o)
           iterate
         end
 
         when \ container~hasTests then do
           reason = "Test container has no executable tests"
-          o = .OmissionData~new(fileName, reason)
+          o = .OmissionData~new(timeStamp(), fileName, reason)
           o~additional = "Reason:" container~getNoTestsReason
           testResult~addOmission(o)
           iterate
         end
 
+        -- If testTypes are .nil then the caller wants any executable tests from
+        -- the container.  We know the container has tests.
+        when testTypes == .nil then q~queue(container)
+
+        -- Caller wants a certain type of tests.
         when \ container~hasTestTypes(testTypes) then do
           reason = "Container has no executable tests of specified test types"
-          o = .OmissionData~new(fileName, reason)
+          o = .OmissionData~new(timeStamp(), fileName, reason)
           o~additional = "Specified Test Types:" testTypes
+          o~additionalObject = testTypes
           testResult~addOmission(o)
           iterate
         end
@@ -1173,8 +1306,9 @@ return suite
         otherwise q~queue(container)
       end
       -- End select
-
     end
+    -- End do fileName over files
+
   return q
   -- End seek()
 
@@ -1188,43 +1322,94 @@ return suite
 
     callError:
       conditionData = condition('O')
-      err = .ExceptionData~new("Fatal", "Initial call of Test Group failed", conditionData)
-      err~type = "Trap"
-      err~file = file
-      err~classObj = .nil
-      err~line = .nil
+      err = .ExceptionData~new(timeStamp(), file, conditionData)
+      err~msg = "Initial call of Test Group failed"
 
   return err
   -- End getContainer()
 
+  /** findFiles()
+   *
+   * An enhancement is to match includes and excludes.
+   */
+  ::method findFiles private
+    expose fileSpec
+    say 'in find files filespec:' fileSpec
+
+    f = .array~new
+    j = SysFileTree(fileSpec, files., "FOS")
+    do i = 1 to files.0
+      f~append(files.i)
+    end
+
+  return f
+
 -- End of class: ooTestFinder
 
-::class 'OmissionData'     -- DFX TODO fix this rough outline
-::attribute file
-::attribute reason
-::attribute additional
 
-::method init
-  expose file reason
-  use arg file, reason
-  self~additional = .nil
+/* class: OmissionData - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
 
-::class 'ExceptionData'    -- DFX TODO fix this rough outline
-::attribute type
-::attribute file
-::attribute classObj
-::attribute line
-::attribute severity
-::attribute msg
-::attribute conditionData
+    A data object containing information on why a test file was ommitted from
+    a group of tests.  At a minimum the object contains a time stamp, the name
+    of the file, and a reason as to why it was omitted.
 
-::method init
-  expose severity msg conditionData
-  use arg severity, msg, conditionData
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class 'OmissionData' public subclass ProblemReport
 
-::method getMessage
-  expose severity msg
-return severity || .endOfLine || "   " msg
+  ::attribute reason get
+  ::attribute reason set private
+
+  ::attribute additional
+  ::attribute additionalObject
+
+  ::method init
+    forward class (super) continue
+
+    if arg(3, 'E') then self~reason = arg(3)
+    else self~reason = "Unknown"
+
+    self~additional = .nil
+    self~additionalObject = .nil
+
+-- End of class: OmissionData
+
+/* class: ExceptionData- - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+    A data object containing information concerning an unrecoverable error that
+    occurred during the execution of tests.
+
+    These are errors that are not directly related to the execution of a test.
+    For example, errors that happen during some set up prior to actually
+    invoking a test case method.
+
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class 'ExceptionData' public subclass ProblemReport
+  ::attribute type
+  ::attribute severity
+  ::attribute line
+  ::attribute classObject
+  ::attribute msg
+  ::attribute conditionObject
+
+  ::method init
+    use arg timeStamp, file, cObj = .nil
+    forward class (super) continue
+
+    self~type = "Trap"
+    self~severity = "Fatal"
+
+    if cObj <> .nil, cObj~position <> .nil then self~line = cObj~position
+    else self~line = -1
+
+    self~msg = ""
+    self~classObject = .nil
+    self~conditionObject = cObj
+
+  ::method getMessage
+    expose severity msg
+  return severity || .endOfLine || "   " msg
+
+-- End of class: OmissionData
 
 /** printTestInfo()
  *
