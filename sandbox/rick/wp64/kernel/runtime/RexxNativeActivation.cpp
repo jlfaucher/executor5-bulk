@@ -859,7 +859,7 @@ void RexxNativeActivation::resetNext()
 /* Function: Reset the next state of the variable pool                        */
 /******************************************************************************/
 {
-  this->nextvariable = -1;             /* turn off next index               */
+  this->nextvariable = SIZE_MAX;       /* turn off next index               */
   this->nextcurrent = OREF_NULL;       /* clear the next value              */
   this->nextstem = OREF_NULL;          /* clear the secondary pointer       */
   this->compoundelement = OREF_NULL;
@@ -881,7 +881,7 @@ bool RexxNativeActivation::fetchNext(
   if (nextCurrent() == OREF_NULL) {
     /* grab the activation context */
     RexxActivation *act = activity->getCurrentActivation();
-    setNextVariable(-1);               /* request the first item            */
+    setNextVariable(SIZE_MAX);         /* request the first item            */
     /* Get the local variable dictionary from the context. */
     setNextCurrent(act->getLocalVariables());
                                        /* we are not on a stem              */

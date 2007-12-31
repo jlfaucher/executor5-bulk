@@ -4774,7 +4774,7 @@ void RexxSource::parseTraceSetting(
 
         case '?':                      /* debug toggle character            */
                                        /* already toggling?                 */
-          if (*debug == DEBUG_TOGGLE)
+          if (*debug == (size_t)DEBUG_TOGGLE)
             *debug = DEBUG_IGNORE;     /* this is back to no change at all  */
           else
             *debug = DEBUG_TOGGLE;     /* need to toggle the debug mode     */

@@ -1691,7 +1691,7 @@ RexxInstruction *RexxSource::raiseNew()
   bool                   raiseReturn;  /* return form                       */
 
 
-  arrayCount = -1;                     /* clear out the temporaries         */
+  arrayCount = SIZE_MAX;               /* clear out the temporaries         */
   _expression = OREF_NULL;
   description = OREF_NULL;
   additional = OREF_NULL;
@@ -1773,7 +1773,7 @@ RexxInstruction *RexxSource::raiseNew()
 
       case SUBKEY_ADDITIONAL:          /* RAISE ... ADDITIONAL expr         */
                                        /* have a additional already?        */
-        if (additional != OREF_NULL || arrayCount != -1)
+        if (additional != OREF_NULL || arrayCount != SIZE_MAX)
                                        /* this is invalid                   */
           syntaxError(Error_Invalid_subkeyword_additional);
                                        /* get the keyword value             */
@@ -1787,7 +1787,7 @@ RexxInstruction *RexxSource::raiseNew()
 
       case SUBKEY_ARRAY:               /* RAISE ... ARRAY expr              */
                                        /* have a additional already?        */
-        if (additional != OREF_NULL || arrayCount != -1)
+        if (additional != OREF_NULL || arrayCount != SIZE_MAX)
                                        /* this is invalid                   */
           syntaxError(Error_Invalid_subkeyword_additional);
         token = nextReal();            /* get the next token                */
@@ -1829,7 +1829,7 @@ RexxInstruction *RexxSource::raiseNew()
     }
     token = nextReal();                /* step to the next keyword          */
   }
-  if (arrayCount != -1)                /* have the array version?           */
+  if (arrayCount != SIZE_MAX)          /* have the array version?           */
                                        /* create a new translator object    */
     newObject = new_variable_instruction(RAISE, Raise, sizeof(RexxInstructionRaise) + (arrayCount - 1) * sizeof(RexxObject *));
   else                                 /* static instruction size           */
