@@ -684,7 +684,7 @@ return testGroupList
 
 ::method "test_8"
    x=0; Call 0001
-   self~assertSame("subTest7-18", x, 10)
+   self~assertSame("subTest88", x, 10)
    return
 
    0003: x=x+1; Call 0004; Return /* 0003 */
@@ -699,6 +699,23 @@ return testGroupList
    0002: x=x+1; Call 0003; Return /* 0008 */
    0011: Return
 
+::method "test_9"
+   Call on Notready
+   mode='c'
+   cndd='A/B/C'
+   chk=id
+   String="x=Linein('A/B/C')"
+   Interpret String
+   self~assertSame("subTest9", chk,'*')
+   Return
+    
+   Notready:
+   self~assertSame("subTest9a", condition('cs'),'NOTREADY')
+   self~assertSame("subTest9b", condition('d'),cndd)
+   self~assertSame("subTest9c", condition('i'),'CALL')
+   self~assertSame("subTest9d", condition('s'),'DELAY')
+   chk='*'
+   return
 
 
 
