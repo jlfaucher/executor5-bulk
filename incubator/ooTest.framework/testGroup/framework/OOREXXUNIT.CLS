@@ -425,7 +425,7 @@ return leading || trailing
 
   ::method setVerbosity
     use strict arg level
-           say 'in setVerbosity'
+
     if \ isWholeRange(level, self~MIN_VERBOSITY, self~MAX_VERBOSITY) then
       raise syntax 88.907 array("1 'level'", self~MIN_VERBOSITY, self~MAX_VERBOSITY, level)
     self~verbose = level
@@ -434,7 +434,6 @@ return leading || trailing
     return self~verbose
 
 -- End of class: NoiseAdjustable
-
 
 
 /** class:  TestCollectingParameter
@@ -453,6 +452,7 @@ return leading || trailing
 /** Returns the current default formatter class of this collecting parameter  */
 ::method getFormatter   abstract
 
+-- End of class TestCollectingParameter
 
 
 ::class "TestResult" public subclass TestCollectingParameter
@@ -465,10 +465,10 @@ return leading || trailing
 
 ::method init
   expose fErrors fFailures fRunTests fStop fTestRuns TestCaseTable logQueue fAssertions
-      -- initialize object variables
+
   fErrors=.queue~new
   fFailures=.queue~new
-  logQueue=.queue~new  -- ooRexxUnit only, logs all
+  logQueue=.queue~new
 
   fAssertions=0
   fRunTests=0
@@ -479,22 +479,26 @@ return leading || trailing
   self~setVerbosity(self~DEFAULT_VERBOSITY)
   self~formatter = .SimpleFormatter
 
-::method addError       -- ooRexxUnit only, allows to be overriden/intercepted by subclasses
+::method addError
   expose fErrors TestCaseTable logQueue
-  use arg aTestCase, co
+  use arg aTestCase, errData
 
-  fErrors~queue(co)     -- enqueue the condition object; cf. entry "OOREXXUNIT.CONDITION"
-  logQueue~queue(co)
-  TestCaseTable[aTestCase]~queue("   " co~ooRexxUnit.Condition) -- "--->" pp(msg))
+  fErrors~queue(errData)
+  logQueue~queue(errData)
+
+  -- TODO find out who uses this info and tell them it is broke.
+  TestCaseTable[aTestCase]~queue(errData)
 
 
-::method addFailure     -- ooRexxUnit only, allows to be overriden/intercepted by subclasses
+::method addFailure
   expose fFailures TestCaseTable logQueue
-  use arg aTestCase, co
+  use arg aTestCase, failData
 
-  fFailures~queue(co)   -- enqueue the condition object; cf. entry "OOREXXUNIT.CONDITION"
-  logQueue~queue(co)
-  TestCaseTable[aTestCase]~queue("   " co~ooRexxUnit.Condition)
+  fFailures~queue(failData)
+  logQueue~queue(failData)
+
+  -- TODO find out who uses this info and tell them it is broke.
+  TestCaseTable[aTestCase]~queue(failData)
 
 ::method assertCount    -- ooRexxUnit only
   expose fAssertions
@@ -555,7 +559,7 @@ return leading || trailing
 
   dateTime=timeStamp()
   TestCaseTable[aTestCase]~queue(dateTime": startTest")
-  dir=.directory~new ~~setentry("OOREXXUNIT.CONDITION", dateTime":" pp("startTest") aTestCase~string)
+  dir=.directory~new~~setentry("OOREXXUNIT.CONDITION", dateTime":" pp("startTest") aTestCase~string)
 
   -- save class' 'testCaseInfo' with test case for later analysis
   dir~setentry("OOREXXUNIT.class_testCaseInfo", aTestCase~class~testCaseInfo)
@@ -574,19 +578,35 @@ return leading || trailing
 
   return (fErrors~items+fFailures~items)=0
 
+/** print()
+ * Output the result data using our formatter.
+ */
 ::method print
   formatter = self~formatter~new(self)
   formatter~print
 
+/** setFormatter()
+ * Change the current default formatter class for this test result to that
+ * specified.
+ *
+ * @param formatterClass  REQUIRED  (ResultFormatter)
+ *   The new default formatter class for this test result.
+ */
 ::method setFormatter
-  use arg formatterClass
+  use strict arg formatterClass
 
   if \ isSubclassOf(.ResultFormatter, "ResultFormatter") then
      raise syntax 88.914 array ("1 'formatterClass'", "ResultFormatter")
   self~formatter = formatterClass
 
+/** getFormatter()
+ * Returns the current default formatter class for this test result.
+ */
 ::method getFormatter
   return self~formatter
+
+-- End of class TestResult
+
 
 /* class: ResultFormatter- - - - - - - - - - - - - - - - - - - - - - - - - - -*\
 
@@ -597,17 +617,25 @@ return leading || trailing
 ::class 'ResultFormatter' public inherit NoiseAdjustable
 
 ::attribute testResult private
+::attribute title private
 
 ::method init
-  use strict arg testResult
+  use strict arg testResult, title = ""
 
   if \ isSubClassOf(testResult~class, "TestCollectingParameter") then
      raise syntax 88.914 array ("1 'testResult'", "TestCollectingParameter")
 
   self~testResult = testResult
+  self~title = title
   self~setVerbosity(self~DEFAULT_VERBOSITY)
 
+/** print()  Format and output the data of this formatter's test result. */
 ::method print abstract
+
+/** setTitle()  Set a title for this formatter's output. */
+::method setTitle abstract
+
+-- End of class ResultFormatter
 
 
 /* class: SimpleFormatter- - - - - - - - - - - - - - - - - - - - - - - - - - -*\
@@ -618,8 +646,140 @@ return leading || trailing
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class 'SimpleFormatter' public subclass ResultFormatter
 
+::method setTitle
+  use strict arg title
+  self~title = title
+
 ::method print
-  say "Not implemented yet.  I don't know how to format my data."
+  aTestResult = self~testResult
+
+  if self~title <> "" then do
+    say self~title
+    say
+  end
+
+  say "nr of test runs:            " aTestResult~runCount
+  say "nr of successful assertions:" aTestResult~assertCount
+
+  say "nr of failures:             " aTestResult~failureCount
+  if aTestResult~failureCount > 0 then do data over aTestResult~failures
+    say "  " self~failureToString(data)
+  end
+
+  say "nr of errors:               " aTestResult~errorCount
+  if aTestResult~errorCount > 0 then do err over aTestResult~errors
+    say "  " self~errorToString(err)
+  end
+
+::method failureToString private
+  use arg data
+
+  str = data~when":" pp("failure") data~testString "---> @assertFailure" -
+        data~type": expected="data~expected", actual="data~actual"."
+
+  if data~msg <> "" then str = str ||"09"x || data~msg
+
+return str
+
+::method errorToString private
+  use arg data
+
+  str = data~when':' pp('error') data~testString '---> condition' -
+        pp(data~event) 'raised unexpectedly.'
+
+  if data~conditionObj~message <> .nil then str = str || '09'x || data~conditionObj~message
+
+return str
+
+-- End of class SimpleFormatter
+
+
+/* class: SimpleConsoleFormatter - - - - - - - - - - - - - - - - - - - - - - -*\
+
+    Formats a test result's data and prints it in a console friendly manner.
+
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class 'SimpleConsoleFormatter' public subclass ResultFormatter
+
+::method setTitle
+  use strict arg title
+  self~title = title
+
+::method print
+  aTestResult = self~testResult
+
+  if self~title <> "" then do
+    say self~title
+    say
+  end
+
+   versionStr = .ooRexxUnit.interpreterName .ooRexxUnit.languageLevel .ooRexxUnit.interpreterDate
+   say "Interpreter:" versionStr
+   say "ooRexxUnit: " .ooRexxUnit.version
+   say
+   say "Count of tests ran:            " aTestResult~runCount
+   say "Count of successful assertions:" aTestResult~assertCount
+   say "Count of failures:             " aTestResult~failureCount
+   say "Count of errors:               " aTestResult~errorCount
+   say
+
+   if aTestResult~failureCount > 0 then do data over aTestResult~failures
+      self~printFailureInfo(data)
+   end
+
+   if aTestResult~errorCount > 0 then do data over aTestResult~errors
+      self~printErrorInfo(data)
+   end
+
+   -- If a number of failure or error information lines are printed, re-display
+   -- the summary statistics again so that the number of failures is obvious to
+   -- the user.
+   if (aTestResult~failureCount + aTestResult~errorCount) > 3 then do
+     say "Interpreter:" versionStr
+     say "ooRexxUnit: " .ooRexxUnit.version
+     say
+     say "Count of tests ran:            " aTestResult~runCount
+     say "Count of successful assertions:" aTestResult~assertCount
+     say "Count of failures:             " aTestResult~failureCount
+     say "Count of errors:               " aTestResult~errorCount
+     say
+   end
+
+
+::method printFailureInfo private
+  use arg data
+
+  say "[failure]" data~when
+  say "  Test:  " pp(data~testname)
+  say "  Class: " data~className
+  say "  File:  " pathCompact(data~where, 70)
+  say "  Failed:" data~type
+  say "    Expected:" data~expected
+  say "    Actual:  " data~actual
+
+  if data~msg \== "" then
+    say "    "data~msg
+  say
+
+::method printErrorInfo private
+  use arg data
+
+  -- It is possible that the error happened in a file other than the test case
+  -- file.  Most often the files are the same.
+  different = (data~where~compareTo(data~conditionObj~program) <> 0)
+
+  say "[error]" data~when
+  say "  Test: " pp(data~testName)
+  say "  Class:" data~className
+  say "  File: " pathCompact(data~where, 70)
+  say "  Event:" pp(data~event) "raised unexpectedly."
+  say "    "data~conditionObj~message
+  if different then
+    say "    Program:" pathCompact(data~conditionObj~program, 60)
+  say "    Line:   " data~conditionObj~position
+  say
+
+-- End of class SimpleFormatter
 
 
 /* class: ProblemReport- - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
@@ -643,8 +803,76 @@ return leading || trailing
   self~where = file
 
 
-/* *********************************************************************************** */
-/* *********************************************************************************** */
+/* class: AssertFailure- - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+    AssertFailure is a report of a test case failure.  A test case fails when an
+    assertion does not hold.
+
+    This class holds the details of the test case failure.  The time of the
+    failure, the assertion that did not hold, the test case name, etc..
+
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class 'AssertFailure' public subclass ProblemReport
+
+::attribute type get
+::attribute type set private
+
+::attribute expected
+::attribute actual
+::attribute msg
+::attribute line
+::attribute className
+::attribute testName
+::attribute testString
+
+::method init
+  use strict arg dateTime, file, type
+  forward class (super) continue
+
+  self~type = type
+  self~expected = .nil
+  self~actual = .nil
+  self~line = -1
+  self~className = .nil
+  self~testName = .nil
+  self~testString = .nil
+
+
+/* class: ErrorData- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+    ErrorData is a report of an unexpected error during the execution of a test
+    case.
+
+    This class holds the details of the error.  The time of the error, the name
+    of the test case executing at the time of the error etc..
+
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class 'ErrorData' public subclass ProblemReport
+
+::attribute event get
+::attribute event set private
+
+::attribute className
+::attribute testName
+::attribute testString
+::attribute conditionObj
+
+::method init
+  use strict arg dateTime, file, event
+  forward class (super) continue
+
+  self~event = event
+  self~className = .nil
+  self~testName = .nil
+  self~testString = .nil
+  self~conditionObj = .nil
+
+
+/* class: Assert - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+    Assertions will raise a user error, if they do not hold.
+
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class "Assert" public mixinclass Object
 
 ::attribute fAssertions private
@@ -656,227 +884,255 @@ return leading || trailing
 ::method assertCount
   return self~fAssertions     -- count assertions, ooRexxUnit only
 
-   -- assertions will raise a user error, if they do not hold
+/** assertEquals()
+ * Checks if two objects are equal, or, if not, checks that the two objects are
+ * equal collection objects.
+ */
 ::method assertEquals
 
-  if arg()=2 then             -- no failure message supplied
-  do
-     bEquals=(arg(1)=arg(2))
-         -- values are not equal, but both are collections, test for equality
-     if \bEquals then
-     do
-         bEquals=isCollEqual(arg(1), arg(2))
-     end
-
-     if bEquals then
-     do
-        self~fAssertions += 1
-        return -- assertion holds
-     end
-     self~fail("@assertFailure assertEquals: expected="formatObjectInfo(arg(1))", actual="formatObjectInfo(arg(2))"."||"09"x)
+  -- If 2 args then no failure message is supplied.
+  if arg() = 2 then do
+    msg      = ""
+    expected = arg(1)
+    actual   = arg(2)
+  end
+  else do
+    msg      = arg(1)
+    expected = arg(2)
+    actual   = arg(3)
   end
 
-  bEquals=(arg(2)=arg(3))
-         -- values are not equal, but both are collections, test for equality
-  if \bEquals then
-  do
-      bEquals=isCollEqual(arg(2), arg(3))
+  if \ (expected = actual) then do
+    if \ isCollEqual(expected, actual) then do
+      data = .AssertFailure~new(timeStamp(), self~definedInFile, "assertEquals")
+
+      data~expected = formatObjectInfo(expected)
+      data~actual = formatObjectInfo(actual)
+      data~msg = msg
+      data~line = -1
+
+      self~fail(data)
+    end
   end
 
-  if bEquals then
-  do
-     self~fAssertions += 1
-     return    -- assertion holds
+  -- Assertion holds
+  self~fAssertions += 1
+
+
+::method assertNotEquals
+
+  if arg() = 2 then do
+    msg      = ""
+    expected = arg(1)
+    actual   = arg(2)
+  end
+  else do
+    msg      = arg(1)
+    expected = arg(2)
+    actual   = arg(3)
   end
 
-  sTmp="@assertFailure assertEquals: expected="formatObjectInfo(arg(2))", actual="formatObjectInfo(arg(3))"."||"09"x
-  self~fail(sTmp || arg(1))      -- fail with msg
-
-
-
-
-::method assertFalse
-
-  if arg()=1 then             -- no failure message supplied
-  do
-     if arg(1)=.false then
-     do
-        self~fAssertions += 1
-        return   -- assertion holds
-     end
-     self~fail("@assertFailure assertFalse: expected=[0], actual="ppp(arg(1))"."||"09"x)
+  -- If the 2 objects are not equal AND they are not 2 equal collections ...
+  if \ (expected = actual), \ isCollEqual(expected, actual) then do
+    -- ... the assertion holds
+    self~fAssertions += 1
+    return
   end
 
-  if arg(2)=.false then
-  do
-     self~fAssertions += 1
-     return      -- assertion holds
-  end
+  data = .AssertFailure~new(timeStamp(), self~definedInFile, "assertNotEquals")
 
-  sTmp="@assertFailure assertFalse: expected=[0], actual="ppp(arg(2))"."||"09"x
-  self~fail(sTmp || arg(1))      -- fail with msg
+  data~expected = formatObjectInfo(expected)
+  data~actual = formatObjectInfo(actual)
+  data~msg = msg
+  data~line = -1
 
-
-   -- assertions will raise a user error, if they do not hold
-::method assertNotEquals      -- ooRexxUnit only, 2006-12-30
-
-  if arg()=2 then             -- no failure message supplied
-  do
-     bEquals=(arg(1)=arg(2))
-         -- values are not equal, but both are collections, test for equality
-     if \bEquals then
-     do
-         bEquals=isCollEqual(arg(1), arg(2))
-     end
-
-     if \bEquals then
-     do
-        self~fAssertions += 1
-        return -- assertion holds
-     end
-     self~fail("@assertFailure assertNotEquals: expected="formatObjectInfo(arg(1), "\= ")", actual="formatObjectInfo(arg(2))"."||"09"x)
-  end
-
-  bEquals=(arg(2)=arg(3))
-         -- values are not equal, but both are collections, test for equality
-  if \bEquals then
-  do
-      bEquals=isCollEqual(arg(2), arg(3))
-  end
-
-  if \bEquals then
-  do
-     self~fAssertions += 1
-     return    -- assertion holds
-  end
-
-  sTmp="@assertFailure assertNotEquals: expected=["formatObjectInfo(arg(2), "\= ")", actual="formatObjectInfo(arg(3))"."||"09"x
-  self~fail(sTmp || arg(1))      -- fail with msg
-
-
-
-::method assertNotNull
-
-  if arg()=1 then             -- no failure message supplied
-  do
-     if .nil<>arg(1) then
-     do
-        self~fAssertions += 1
-        return    -- assertion holds
-     end
-     self~fail("@assertFailure assertNotNull: expected=[\= [.nil]], actual=[.nil]."||"09"x)
-  end
-
-  if .nil<>arg(2) then
-  do
-     self~fAssertions += 1
-     return       -- assertion holds
-  end
-
-  sTmp="@assertFailure assertNotNull: expected=[\= [.nil]], actual=[.nil]."||"09"x
-  self~fail(sTmp || arg(1))      -- fail with msg
-
-
-::method assertNotSame
-
-  if arg()=2 then             -- no failure message supplied
-  do
-     if (arg(1)==arg(2))=.false then
-     do
-        self~fAssertions += 1
-        return  -- assertion holds
-     end
-
-     self~fail("@assertFailure assertNotSame: expected="formatObjectInfo(arg(1), "\== ")", actual="formatObjectInfo(arg(2))"."||"09"x)
-  end
-
-  if (arg(2)==arg(3))=.false then
-  do
-     self~fAssertions += 1
-     return     -- assertion holds
-  end
-
-  sTmp="@assertFailure assertNotSame: expected="formatObjectInfo(arg(2), "\== ")", actual="formatObjectInfo(arg(3))"."||"09"x
-  self~fail(sTmp || arg(1))      -- fail with msg
+  self~fail(data)
 
 
 ::method assertNull
 
-  if arg()=1 then             -- no failure message supplied
-  do
-     if .nil=arg(1) then
-     do
-        self~fAssertions += 1
-        return     -- assertion holds
-     end
-     self~fail("@assertFailure assertNull: expected=[.nil], actual="ppp(arg(1))"."||"09"x)
+  if arg()=1 then do
+    msg    = ""
+    actual = arg(1)
+  end
+  else do
+    msg    = arg(1)
+    actual = arg(2)
   end
 
-  if .nil=arg(2)then
-  do
-     self~fAssertions += 1
-     return         -- assertion holds
+  if \ (.nil = actual) then do
+    data = .AssertFailure~new(timeStamp(), self~definedInFile, "assertNull")
+
+    data~expected = "[.nil]"
+    data~actual = ppp(actual)
+    data~msg = msg
+    data~line = -1
+
+    self~fail(data)
   end
 
-  sTmp="@assertFailure assertNull: expected=[.nil], actual="ppp(arg(2))"."||"09"x
-  self~fail(sTmp || arg(1))      -- fail with msg
+  -- Assertion holds.
+  self~fAssertions += 1
+
+
+::method assertNotNull
+
+  if arg()=1 then do
+    msg    = ""
+    actual = arg(1)
+  end
+  else do
+    msg    = arg(1)
+    actual = arg(2)
+  end
+
+  if (.nil = actual) then do
+    data = .AssertFailure~new(timeStamp(), self~definedInFile, "assertNotNull")
+
+    data~expected = "[Not .nil]"
+    data~actual = "[.nil]"
+    data~msg = msg
+    data~line = -1
+
+    self~fail(data)
+  end
+
+  -- Assertion holds.
+  self~fAssertions += 1
 
 
 ::method assertSame
 
-  if arg()=2 then             -- no failure message supplied
-  do
-     if (arg(1)==arg(2))=.true then
-     do
-        self~fAssertions += 1
-        return-- assertion holds
-     end
-     -- self~fail("@assertFailure assertSame: expected="ppp(arg(1)~string "<hashValue:" getEscapedhashValue(arg(1))">")", received="ppp(arg(2)~string "<hashValue:" getEscapedhashValue(arg(2))">")"."||"09"x)
-     self~fail("@assertFailure assertSame: expected="formatObjectInfo(arg(1))", actual="formatObjectInfo(arg(2))"."||"09"x)
+  if arg() = 2 then do
+    msg      = ""
+    expected = arg(1)
+    actual   = arg(2)
+  end
+  else do
+    msg      = arg(1)
+    expected = arg(2)
+    actual   = arg(3)
   end
 
-  if (arg(2)==arg(3))=.true then
-  do
-     self~fAssertions += 1
-     return   -- assertion holds
+  if \ (expected == actual) then do
+    data = .AssertFailure~new(timeStamp(), self~definedInFile, "assertSame")
+
+    data~expected = formatObjectInfo(expected)
+    data~actual = formatObjectInfo(actual)
+    data~msg = msg
+    data~line = -1
+
+    self~fail(data)
   end
 
-  sTmp="@assertFailure assertSame: expected="formatObjectInfo(arg(2))", actual="formatObjectInfo(arg(3))"."||"09"x
-  self~fail(sTmp || arg(1))      -- fail with msg
+  -- Assertion holds.
+  self~fAssertions += 1
+
+
+::method assertNotSame
+
+  if arg() = 2 then do
+    msg      = ""
+    expected = arg(1)
+    actual   = arg(2)
+  end
+  else do
+    msg      = arg(1)
+    expected = arg(2)
+    actual   = arg(3)
+  end
+
+  if (expected == actual) then do
+    data = .AssertFailure~new(timeStamp(), self~definedInFile, "assertNotSame")
+
+    data~expected = formatObjectInfo(expected)
+    data~actual = formatObjectInfo(actual)
+    data~msg = msg
+    data~line = -1
+
+    self~fail(data)
+  end
+
+  -- Assertion holds.
+  self~fAssertions += 1
 
 
 ::method assertTrue
 
-  if arg()=1 then             -- no failure message supplied
-  do
-     if arg(1)=.true then
-     do
-        self~fAssertions += 1
-        return    -- assertion holds
-     end
-     self~fail("@assertFailure assertTrue: expected=[1], actual="ppp(arg(1))"."||"09"x)
+  if arg() = 1 then do
+    msg    = ""
+    actual = arg(1)
+  end
+  else do
+    msg    = arg(1)
+    actual = arg(2)
   end
 
-  if arg(2)=.true then
-  do
-     self~fAssertions += 1
-     return       -- assertion holds
+  if \ (actual = .true) then do
+    data = .AssertFailure~new(timeStamp(), self~definedInFile, "assertTrue")
+
+    data~expected = "[1]"
+    data~actual = ppp(actual)
+    data~msg = msg
+    data~line = -1
+
+    self~fail(data)
   end
 
-  sTmp="@assertFailure assertTrue: expected=[1], actual="ppp(arg(2))"."||"09"x
-  self~fail(sTmp || arg(1))      -- fail with msg
+  -- Assertion holds.
+  self~fAssertions += 1
+
+
+::method assertFalse
+
+  if arg() = 1 then do
+    msg    = ""
+    actual = arg(1)
+  end
+  else do
+    msg    = arg(1)
+    actual = arg(2)
+  end
+
+  if \ (actual = .false) then do
+    data = .AssertFailure~new(timeStamp(), self~definedInFile, "assertFalse")
+
+    data~expected = "[0]"
+    data~actual = ppp(actual)
+    data~msg = msg
+    data~line = -1
+
+    self~fail(data)
+  end
+
+  -- Assertion holds.
+  self~fAssertions += 1
 
 
 /** fail()
- * Raise an application definable syntax error (since ooRexx 3.1).  A
- * description is supplied so test methods are able to find out that the
- * ooRexxUnit framework raised this.
+ * Raise an application definable syntax condition with code 93.964.  The
+ * exception handler for the test case method execution will check for this
+ * specific code and know that the 'syntax' condition is actually a condition
+ * raised by the framework for a test case failure.
  *
- * Need to raise a syntax error, because USER exception needs to be propagated
+ * The data failure object is passed through to the exception handler in index
+ * 2 of the additional array.  Index 1 of the array contains a distinctive
+ * message to further ensure that the exception handler will know that the
+ * condition is raised by the framework.
+ *
+ * We raise a syntax condition because syntax conditions are propagated from
+ * an active message invocation (the test case method invocation) to the clause
+ * containing the message invocation.  This allows the exception handler to trap
+ * the failed test case.
+ *
+ * @param data  REQUIRED  (AssertFailure)  Data concerning the failure.
  */
 ::method fail
-  use arg msg = ""
-  RAISE syntax 93.964 array (msg) description ("ooRexxUnit.cls - source of syntax exception 'FAIL' method invocation in class 'ASSERT'.")
+  use strict arg data
+
+  msg = "ooRexxUnit.cls - source of syntax exception 'FAIL' method invocation in class 'ASSERT'."
+
+  RAISE syntax 93.964 array (msg, data)
 
 
 ::attribute conditionExpected private
@@ -928,7 +1184,7 @@ return leading || trailing
      if self~conditionName == "SYNTAX", self~conditionCode <> receivedCondition~code then
         return .false
 
-     self~fAssertions += 1            -- assert that expected conditionName has occurred!
+     self~fAssertions += 1
      return .true
   end
   return .false
@@ -942,21 +1198,23 @@ return leading || trailing
 ::method check4ConditionFailure
 
   if self~conditionExpected then do
-     tmpStr = self~conditionName
-     assertName = 'expectCondtion'
+     expected = self~conditionName
+     type = 'expectCondtion'
 
-     if tmpStr == "SYNTAX", self~conditionCode <> .nil then do
-        tmpStr = tmpStr self~conditionCode
-        assertName = 'expectSyntax'
+     if expected == "SYNTAX", self~conditionCode <> .nil then do
+        expected = expected self~conditionCode
+        type = 'expectSyntax'
      end
 
-     if self~conditionMsg == .nil then
-        tmpStr = "@assertFailure" assertName "expected condition" pp(tmpStr) "was not raised."||"09"x
-     else
-        tmpStr = "@assertFailure" assertName "expected condition" pp(tmpStr) "was not raised."||"09"x||self~conditionMsg
+    data = .AssertFailure~new(timeStamp(), self~definedInFile, type)
 
-     -- Fail with msg
-     self~fail(tmpStr)
+    data~line = -1
+    data~expected = expected
+    data~actual = "Not raised"
+    if self~conditionMsg <> .nil then data~msg = self~conditionMsg
+    else data~msg = ""
+
+    self~fail(data)
   end
 
 
@@ -1054,50 +1312,43 @@ return leading || trailing
 
 exceptionHandler:
 
-   co=condition("O")    -- get the condition directory object
+  -- Get the condition object.  (The condition object is a Directory object.)
+  cObj = condition("O")
 
-   -- If a condition was expected to be raised, and this condition matches the
-   -- expected condition, then the test passed, just return.
-   if self~conditionExpected, self~checkCondition(co) then return aTestResult
+  -- If a condition was expected to be raised AND this condition matches the
+  -- expected condition, then the test passed so just return.
+  if self~conditionExpected, self~checkCondition(cObj) then return aTestResult
 
-   condition=condition("C")      -- get the condition
-   additional=condition("A")     -- get additional msg, if any
+  -- If the condition code is 93.964 then this condition was raised by the
+  -- framework to signal a test case failure.  The data failue object is at
+  -- index 2 of the additional array.
+  if cObj~code = 93.964 then do
+    data = cObj~additional[2]
 
-   strAdditional=""     -- message(s)
-   if additional~class=.array then
-   do
-      items=additional~items
-      do i=1 to items
-         strAdditional=strAdditional || additional[i]
-         if i<items then strAdditional=strAdditional || "0d0a"x  -- add a CRLF
-      end
-      strAdditional=strAdditional
-   end
+    -- It does not seem conceivable that data is not the object I think it is.
+    -- The best thing to do would be to check if it is an AssertFailure object
+    -- and, if not, create an ErrorData object and do aTestResult~addError()
+    -- Skipping that for now.
 
-   if co~code=93.964 then     -- o.k. an own raised exception (using new ooRexx 3.1 application defined syntax error)
-   do
-      tmpString=timeStamp()":" pp("failure") self~string || iif(strAdditional="", "", " --->" strAdditional)
-      co~setentry("OOREXXUNIT.CONDITION", tmpString)  -- add ooRexxUnit-infos with condition object
-      aTestResult~addFailure(self, co)    -- save the condition object
-   end
-   else     -- unexpected/untested failure, ie. an "error"
-   do
-      tmpInfo=co~condition
+    data~className = self~class~id
+    data~testName = self~getName
+    data~testString = self~string
+    aTestResult~addFailure(self, data)
+  end
+  else do
+    -- This is an unexpected, unanticipated error.
+    event = cObj~condition
+    if cObj~hasentry("CODE") then event = event cObj~code
 
-      if co~hasentry("CODE") then
-         tmpInfo=tmpInfo co~code
+    err = .ErrorData~new(timeStamp(), self~definedInFile, event)
+    err~className = self~class~id
+    err~testName = self~getName
+    err~testString = self~string
+    err~conditionObj = cObj
+    aTestResult~addError(self, err)
+  end
 
-      tmpInfo="condition" pp(tmpInfo) "raised unexpectedly." || "09"x
-
-      if .nil<>co~message then
-         tmpInfo=tmpInfo || co~message   -- add error message
-
-      tmpString=timeStamp()":" pp("error") self~string "--->" tmpInfo
-      co~setentry("OOREXXUNIT.CONDITION", tmpString)  -- add ooRexxUnit-infos with condition object
-      aTestResult~addError(self, co)      -- save the condition object
-   end
-
-   return aTestResult   -- rgf, 2006-04-08
+  return aTestResult
 
 
 ::method getName     -- returns the name for this TestCase
@@ -1323,36 +1574,6 @@ exceptionHandler:
 
 
 
-   -- simple dumping of the testResult data
-::routine simpleDumpTestResults public
-   use arg aTestResult, title
-
-   if arg()>1 & title<>"" then
-   do
-      say title
-      say
-   end
-
-   say "nr of test runs:            " aTestResult~runCount
-   say "nr of successful assertions:" aTestResult~assertCount
-
-   say "nr of failures:             " aTestResult~failureCount
-   if aTestResult~failureCount>0 then
-   do
-      do co over aTestResult~failures
-         say "  " co~ooRexxUnit.condition
-      end
-   end
-
-   say "nr of errors:               " aTestResult~errorCount
-   if aTestResult~errorCount>0 then
-   do
-      do co over aTestResult~errors
-         say "  " co~ooRexxUnit.condition
-      end
-   end
-
-
    -- create a testSuite object by calling the supplied testCaseFileList; needs testCase programs
    -- modelled after the example programs
 ::routine makeTestSuiteFromFileList public
@@ -1514,6 +1735,14 @@ pp: procedure
    return "[" || a~string || "]"
 
 
+   -- simple dumping of the testResult data
+::routine simpleDumpTestResults public
+   use arg aTestResult, title = ""
+
+   f = .SimpleFormatter~new(aTestResult, title)
+   f~print
+
+
 /**
  * Public routine simpleFormatTestResults()
  *
@@ -1522,184 +1751,7 @@ pp: procedure
  *  with an attempt made to keep all lines no longer than 80 characers wide.
  */
 ::routine simpleFormatTestResults public
-   use arg aTestResult, title
+   use arg aTestResult, title = ""
 
-   if arg()>1 & title<>"" then do
-      say title
-      say
-   end
-
-   versionStr = .ooRexxUnit.interpreterName .ooRexxUnit.languageLevel .ooRexxUnit.interpreterDate
-   say "Interpreter:" versionStr
-   say "ooRexxUnit: " .ooRexxUnit.version
-   say
-   say "Count of tests ran:            " aTestResult~runCount
-   say "Count of successful assertions:" aTestResult~assertCount
-   say "Count of failures:             " aTestResult~failureCount
-   say "Count of errors:               " aTestResult~errorCount
-   say
-
-   if aTestResult~failureCount > 0 then do co over aTestResult~failures
-      z = printFailureInfo(co~ooRexxUnit.condition)
-   end
-
-   if aTestResult~errorCount > 0 then do co over aTestResult~errors
-      z = printErrorInfo(co~ooRexxUnit.condition)
-   end
-
-   -- If a number of failure or error information lines are printed, re-display
-   -- the summary statistics again so that the number of failures is obvious to
-   -- the user.
-   if (aTestResult~failureCount + aTestResult~errorCount) > 3 then do
-     say "Interpreter:" versionStr
-     say "ooRexxUnit: " .ooRexxUnit.version
-     say
-     say "Count of tests ran:            " aTestResult~runCount
-     say "Count of successful assertions:" aTestResult~assertCount
-     say "Count of failures:             " aTestResult~failureCount
-     say "Count of errors:               " aTestResult~errorCount
-     say
-   end
-
-return 0
-
-/**
- * Private routine printFailureInfo()
- *
- *  Helper routine for simpleFormatTestResults()
- */
-::routine printFailureInfo
-  use arg co
-
-  parse var co dateTime "[failure]" idStuff "--->" additionalStuff
-  dateTime = dateTime~strip~strip('T', ':')
-
-  idTable = decomposeTestCaseID(idStuff)
-  additional = decomposeAdditional(additionalStuff)
-
-  say "[failure]" dateTime
-  say "  Test:  "  idTable['name']
-  say "  Class: "  idTable['class']
-  say "  File:  "  idTable['file']
-  if additional~items > 0 then ret = printAssertInfo(additional)
-  say
-
-return 0
-
-/**
- * Private routine printErrorInfo()
- *
- *  Helper routine for simpleFormatTestResults()
- */
-::routine printErrorInfo
-  use arg co
-
-  parse var co dateTime "[error]" idStuff "--->" additionalStuff
-  dateTime = dateTime~strip~strip('T', ':')
-
-  idTable = decomposeTestCaseID(idStuff)
-  additional = decomposeAdditional(additionalStuff)
-
-  say "[error]" dateTime
-  say "  Test: "  idTable['name']
-  say "  Class:"  idTable['class']
-  say "  File: "  idTable['file']
-
-  if additional~items > 0 then do
-    parse value additional[1] with c info
-    say "  Event:" info
-    if additional~items > 1 then do i = 2 to additional~items
-      say "   " additional[i]
-    end
-  end
-  say
-
-return 0
-
-/**
- * Private routine decomposeTestCaseID()
- *
- *  Helper routine for simpleFormatTestResults()
- */
-::routine decomposeTestCaseID
-  use arg id
-
-  id = id~strip
-  parse var id tcWord tcName lastPart
-  tcName = tcName~substr(2, tcName~length - 2)
-  parse var lastPart cls "@" file ")"
-  clsName = cls~word(2)
-
-  if file~length > 70 then file = pathCompact(file, 70)
-  t = .table~new
-  t['name']  = tcName
-  t['class'] = clsName
-  t['file']  = file
-
-return t
-
-/**
- * Private routine decomposeAdditional()
- *
- *  Helper routine for simpleFormatTestResults()
- */
-::routine decomposeAdditional
-  use arg extraStuff
-
-  extraStuff = extraStuff~strip
-  eol = .ooRexxUnit.line.separator
-  tab = '09'x
-  a = .array~new
-
-  do while extraStuff~pos(eol) <> 0
-    parse var extraStuff lead eol extraStuff
-    do while lead~pos(tab) <> 0
-      parse var lead line (tab) lead
-      a[a~items + 1] = line
-    end
-    a[a~items + 1] = lead
-  end
-
-  do while extraStuff~pos(tab) <> 0
-    parse var extraStuff line (tab) extraStuff
-    a[a~items + 1] = line
-  end
-  a[a~items + 1] = extraStuff
-
-return a
-
-/**
- * Private routine printAssertInfo()
- *
- *  Helper routine for simpleFormatTestResults()
- */
-::routine printAssertInfo
-  use arg info
-
-  line = info[1]
-  if line~abbrev("@assert") then do
-    if line~word(2)~abbrev('check4Condition') then do
-      parse var line . '['expected']' .
-      assert = "Error should be raised"
-      actual = "Not raised"
-    end
-    else do
-      parse var line atWord assert "expected=" expected ", actual=" actual
-      assert = assert~strip~strip('T', ':')
-      actual = actual~strip('T', '.')
-    end
-    say "  Failed:" assert
-    say "    Expected:" expected
-    say "    Actual:  " actual
-  end
-  else do
-    say "  General failure:"
-    say "   " line
-  end
-
-  if info~items > 1 then do i = 2 to info~items
-    say "   " info[i]
-  end
-
-return 0
-
+   f = .SimpleConsoleFormatter~new(aTestResult, title)
+   f~print

@@ -65,7 +65,10 @@ cmdLine = arg(1)
    say 'Executing automated test suite.'
    suite~run(testResult)
    say 'test result:' testResult
-   testResult~print("My Title", 3)
+
+   --testResult~print("My Title", 3)
+   --call simpleFormatTestResults testResult, "My Title"
+   call simpleDumpTestResults testResult, "My Title"
 
    absoluteEnd = .TimeSpan~new(time('F'))
    say 'Total time:' (absoluteEnd - absoluteBegin)
