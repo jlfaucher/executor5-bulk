@@ -377,6 +377,9 @@ return testGroupList
     self~assertEquals("subTest1" , '11000011'     , 'C3'~X2B()  )
     self~assertEquals("subTest2" , '0111'         , '7'~X2B()   )
     self~assertEquals("subTest3" , '000111000001' , '1 C1'~X2B())
+    self~assertSame("subTest4" , '11000011'    , 'C3'x~C2X~X2B   )    --
+    self~assertSame("subTest5" , '10000001'    , '129'~D2X~X2B   )
+    self~assertSame("subTest6" , '1100'        , '12'~D2X~X2B    )
 
    -- new tests
     self~assertEquals("subTest4" , '' , ''~X2B())

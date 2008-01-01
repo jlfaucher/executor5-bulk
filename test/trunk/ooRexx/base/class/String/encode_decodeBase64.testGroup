@@ -1,33 +1,14 @@
 #!/usr/bin/rexx
 /*
-   name:             String.testGroup
-   author:           Rony G. Flatscher
-   date:             2005-08-07
-   version:          1.0.3
+   name:             Encode_DecodeBase64.testGroup
+   author:           Lee Peedin
+   date:             2008-01-01
+   version:          1.0.0
 
 -- line commented lines are ignored, when building the directory of infos from this header
-   changed:          2005-08-21, ---rgf, renamed the testGroup-class to match exactly the
-                             file name, i.e. a dot (.) between class name and "testGroup";
-                             added convention to return a list of arrays containing the
-                             test case class object and an optional list of mandatory test
-                             case methods from it
-                     2005-10-20, ---rgf, completed the String's class method tests from the docs
-                     2006-06-18, ---rgf, corrected a bug in TEST_DATATYPE, enquiting "-1" in
-                             "subTest3"
-                     2006-10-15, ---rgf, added "test_EnCodeBase64_DecodeBase64"
-                     2006-10-21, ---rgf, added own (old) Rexx-implementation for
-                                         en/de-coding base64 to test the C-implementation against
-                     2007-03-21, ---rgf, added test for SUBCHAR (available with 6.01)
-                                         changed sequence of expected/actual values to match the meaning
-                                         in the failure message(s)
-                     2007-06-10, ---rgf, added test cases for LOWER and UPPER
-                     2007-06-23, ---rgf, added test case for 'caselessWordPos'
-                     2007-07-10, ---rgf, changed names of test cases, added various caseless tests
-                     2007-09-16, ---rgf, added tests for new 'count' argument in [caseless]changeStr()
-                     2008-01-01, Lee Peedin - moved tests to individual testGroups
 
    languageLevel:    6.02
-   purpose:          Test the methods of the class String.
+   purpose:          Test the Encode_DecodeBase64 method of the class String.
    remark:           Initial test unit for demonstration purposes, needs to be completed.
 
    license:          CPL 1.0 (Common Public License v1.0, see below)
@@ -41,7 +22,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2005-2007 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007 - 2008 Rexx Language Association. All rights reserved.  */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -86,7 +67,7 @@
    /* list of array objects, each containing the testGroup class object and an
       optional list of mandatory test case methods name                       */
 mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
-testGroupList=.list~of( .array~of(.String.testGroup,  mandatoryTestMethods) )
+testGroupList=.list~of( .array~of(.Encode_DecodeBase64.testGroup,  mandatoryTestMethods) )
 
 
 -------------------------------------------------------------------------------------------
@@ -129,7 +110,7 @@ do
    -- testResult=.testSuite~new(testGroupClass)~run
    testResult=ts~run       -- now run all the tests
 
-   call simpleDumpTestResults testResult
+   call simpleFormatTestResults testResult
 end
 
    /* return list of array objects containing test case classes and
@@ -138,12 +119,140 @@ return testGroupList
 
 ::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
 
-   -- class named exactly like file
-::class "String.testGroup" subclass TestCase public
+::class "Encode_DecodeBase64.testGroup" subclass TestCase public
 
-::method "test_STRING"
-   self~assertSame("subTest1" , ''    , ''~STRING         )
-   self~assertSame("subTest2" , ' '   , ' '~STRING        )
-   self~assertSame("subTest3" , 'ab'  , 'ab'~STRING       )
-   self~assertSame("subTest3" , ' ab ', ' ab '~STRING     )
+::method setup       -- add entries to .local
+      /* define data needed for the Rexx implementation of encodeBase64 and decodeBase64  */
+   .local~base64.padChar="="                    -- use equal sign as a pad char
+   .local~base64.mimeTable= "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/" ||,
+                                 padChar        -- trailing space indicator
+
+   .local~base64.base64  = xrange("00"x, "3F"x) -- all 64 possible 6-bits values
+
+::method tearDown    -- remove entries from .local
+   .local~remove("BASE64.PADCHAR")
+   .local~remove("BASE64.MIMETABLE")
+   .local~remove("BASE64.BASE64")
+
+  -- test {de|en}codeBase64
+  /* based on newsgroup article:
+         From: "Salvador Parra Camacho" <sparrac@gmail.com>
+         Newsgroups: comp.lang.rexx
+         Subject: encodebase64 method of the String class in ooRexx 3.1
+         Date: 14 Oct 2006 12:31:13 -0700
+         Organization: http://groups.google.com
+  */
+::method "test_EncodeBase64_DecodeBase64"
+   allChars=xrange("00"x, "ff"x) -- create a string with all 8-Bit chars
+   do i=1 to allChars~length
+      a=allChars~left(i)         -- create a string from the left
+      self~assertSame("subTest"i"a", a, a~encodeBase64~decodeBase64)  -- test whether same value
+      -- self~assertEquals("subTest"i, a, a1~encodeBase64~decodeBase64)  -- test whether same value
+
+      b=allChars~right(i)        -- create a string from the right
+      self~assertSame("subTest"i"b", b, b~encodeBase64~decodeBase64)  -- test whether same value
+   end
+
+   a="Hello world"
+   a1=a~encodeBase64          -- encode the string with ooRexx
+      -- "Hello world" encoded value from Perl, Ruby, etc. according to Salvador's article
+   a2="SGVsbG8gd29ybGQ="
+
+   self~assertSame("subTest257" , a , a2~decodeBase64 )
+   self~assertSame("subTest258" , a , a1~decodeBase64 )
+
+::method "used_to_test_rexx_enDecoding" -- "test_Enbase64_Debase64"
+   allChars=xrange("00"x, "ff"x) -- create a string with all 8-Bit chars
+   do i=1 to allChars~length
+      a=allChars~left(i)         -- create a string from the left
+      self~assertSame("subTest"i"a", a, debase64(enbase64(a)))  -- test whether same value
+
+      b=allChars~right(i)        -- create a string from the right
+      self~assertSame("subTest"i"b", b, debase64(enbase64(b)))  -- test whether same value
+   end
+
+
+
+/* Systematically test built-in method vs. a Rexx-solution (c) Rony G. Flatscher */
+::method "test_EncodeBase64"
+   allChars=xrange("00"x, "ff"x) -- create a string with all 8-Bit chars
+
+   do i=1 to allChars~length
+      a=allChars~left(i)         -- create a string from the left
+      self~assertSame("subTest"i, enbase64(a), a~encodeBase64)  -- test whether same value
+      -- self~assertEquals("subTest"i, enbase64(a), a~encodeBase64)  -- test whether same value
+   end
+
+
+/* Systematically test built-in method vs. a Rexx-solution (c) Rony G. Flatscher */
+::method "test_DecodeBase64"
+   allChars=xrange("00"x, "ff"x) -- create a string with all 8-Bit chars
+
+   do i=1 to allChars~length
+      a=allChars~left(i)         -- create a string from the left
+      a2=enbase64(a)             -- base64 encode it
+      self~assertSame("subTest"i, a, a2~decodeBase64)  -- test whether same value
+      -- self~assertEquals("subTest"i, a, a2~decodeBase64)  -- test whether same value
+   end
+
+
+
+/* Systematically test built-in method vs. a Rexx-solution (c) Rony G. Flatscher */
+-- enbase64: procedure expose mimeTable padChar base64
+::routine enbase64
+     parse arg data
+
+           -- do we need to pad the data at the end?
+     pad = 3-length(data) // 3   -- get rest of integer division
+     if pad<>3 then data=data || copies("00"x, pad)      -- add blanks to get to multiple of 3's
+     data=x2b(c2x(data))         -- turn all data into a bitstring
+
+     new=.mutableBuffer~new
+     do while data <> ""
+        parse var data nr1 +6 nr2 +6 nr3 +6 nr4 +6 data    -- get data of 3 bytes in six-bit-packs
+
+        -- new = new || x2c(b2x(nr1)) || x2c(b2x(nr2)) || x2c(b2x(nr3)) || x2c(b2x(nr4))  -- add them to result
+        new~~append(x2c(b2x(nr1))) ~~append(x2c(b2x(nr2))) ~~append(x2c(b2x(nr3)))
+        new~~append(x2c(b2x(nr4)))  -- add them to result
+     end
+
+     new=translate(new~string, .base64.mimeTable, .base64.base64)     -- translate to table chars
+
+     if pad<>3 then         -- not a multiple of 3, then indicate pads with "="
+        new = overlay( copies(.base64.padChar, pad), new, (length(new)-pad+1) )
+     return new
+
+
+::routine deBase64 public
+  use arg data
+
+  pos=pos(.base64.padChar,data)        -- find pad character
+  if pos<>0 then
+  do
+     pnum = length(data) - pos + 1   -- how many are there (1 or 2) ?
+     if pnum>2 then pnum=0   -- something went wrong, there shouldn't be more than two, reset
+  end
+  else
+     pnum = 0
+
+  data=translate(data, .base64.base64, .base64.mimetable)    -- translate from table
+
+        -- check if data is missing, if so pad with "00"x
+  pad = length(data) // 4       -- get rest of integer division
+  if pad<>0 then data=data || copies("00"x, 4-pad)      -- add blanks to get to multiple of 4's
+
+  data=x2b(c2x(data))   -- now turn data into a bitstring
+
+  new=.mutableBuffer~new
+  do while data<>""
+     parse var data . +2 nr5 +6 . +2 nr6 +6 . +2 nr7 +6 .+2 nr8 +6 data
+
+     if data = "" then  -- last round, nothing left after this one
+        new~append(left( x2c(b2x(nr5 ||nr6 || nr7 || nr8)), 3-pnum)) -- use only non-chunked bytes
+     else
+        new~append(x2c(b2x(nr5 ||nr6 || nr7 || nr8)))
+  end
+  return new~string
+
+
 
