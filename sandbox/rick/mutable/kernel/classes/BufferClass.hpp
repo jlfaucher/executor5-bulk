@@ -59,13 +59,13 @@
   inline size_t getLength(void) { return this->size; };
   inline char *address(void) {return this->data; }
   inline void copyData(size_t offset, const char *string, size_t length) { memcpy(this->data + offset, string, length); }
-  inline void openGap(size_t offset, size_t size, size_t tailSize)
+  inline void openGap(size_t offset, size_t _size, size_t tailSize)
   {
-      memmove(address() + offset + size, address() + offset, tailSize);
+      memmove(address() + offset + _size, address() + offset, tailSize);
   }
-  inline void closeGap(size_t offset, size_t size, size_t tailSize)
+  inline void closeGap(size_t offset, size_t _size, size_t tailSize)
   {
-      memmove(address() + offset, address() + offset + size, tailSize);
+      memmove(address() + offset, address() + offset + _size, tailSize);
   }
   inline void setData(size_t offset, char character, size_t length)
   {

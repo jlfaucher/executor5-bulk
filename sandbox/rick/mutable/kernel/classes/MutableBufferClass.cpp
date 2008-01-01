@@ -428,7 +428,7 @@ RexxObject *RexxMutableBuffer::setBufferSize(RexxInteger *size)
         // reallocate the buffer
         RexxBuffer *newBuffer = new_buffer(newsize);
         // if we're shrinking this, it truncates.
-        dataLength = min(dataLength, newsize);
+        dataLength = Numerics::minVal(dataLength, newsize);
         newBuffer->copyData(0, data->address(), dataLength);
         // replace the old buffer
         OrefSet(this, this->data, newBuffer);
