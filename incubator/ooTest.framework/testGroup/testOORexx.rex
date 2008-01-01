@@ -66,7 +66,9 @@ cmdLine = arg(1)
    suite~run(testResult)
    say 'test result:' testResult
 
-   testResult~print("My Title", 3)
+   formatter = testResult~getFormatter~new(testResult)
+
+   formatter~print("My Title", 3)
    --call simpleFormatTestResults testResult, "My Title"
    --call simpleDumpTestResults testResult, "My Title"
 
