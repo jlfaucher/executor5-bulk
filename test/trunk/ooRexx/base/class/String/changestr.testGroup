@@ -148,3 +148,20 @@ return testGroupList
 ::method "test_102"
    self~assertSame("subTest102", 'X0XX00' , '101100'~CHANGESTR('1','X') )
 
+::method "test_CHANGESTR"
+   -- new tests
+    self~assertSame("subTest3", '101100' , '101100'~changestr('','X')  )
+    self~assertSame("subTest4", ''       , ''~changestr('1','X')  )
+
+   -- new tests: optional, trailing "count" argument
+    self~assertSame("subTest5", 'ha-lo' , 'hallo'~changeStr('l','-',1)  )
+    self~assertSame("subTest6", 'ha--o' , 'hallo'~changeStr('l','-',2)  )
+    self~assertSame("subTest7", 'ha--o' , 'hallo'~changestr('l','-',3)  )
+
+::method "test_changeStr_error_93.907"
+    self~expectSyntax(93.907)
+    'aha'~changeStr('a','A',0)
+
+
+
+
