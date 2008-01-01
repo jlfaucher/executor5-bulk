@@ -1,33 +1,14 @@
 #!/usr/bin/rexx
 /*
-   name:             String.testGroup
-   author:           Rony G. Flatscher
-   date:             2005-08-07
-   version:          1.0.3
+   name:             caselessLastpos.testGroup
+   author:           Lee Peedin
+   date:             2008-01-01
+   version:          1.0.0
 
 -- line commented lines are ignored, when building the directory of infos from this header
-   changed:          2005-08-21, ---rgf, renamed the testGroup-class to match exactly the
-                             file name, i.e. a dot (.) between class name and "testGroup";
-                             added convention to return a list of arrays containing the
-                             test case class object and an optional list of mandatory test
-                             case methods from it
-                     2005-10-20, ---rgf, completed the String's class method tests from the docs
-                     2006-06-18, ---rgf, corrected a bug in TEST_DATATYPE, enquiting "-1" in
-                             "subTest3"
-                     2006-10-15, ---rgf, added "test_EnCodeBase64_DecodeBase64"
-                     2006-10-21, ---rgf, added own (old) Rexx-implementation for
-                                         en/de-coding base64 to test the C-implementation against
-                     2007-03-21, ---rgf, added test for SUBCHAR (available with 6.01)
-                                         changed sequence of expected/actual values to match the meaning
-                                         in the failure message(s)
-                     2007-06-10, ---rgf, added test cases for LOWER and UPPER
-                     2007-06-23, ---rgf, added test case for 'caselessWordPos'
-                     2007-07-10, ---rgf, changed names of test cases, added various caseless tests
-                     2007-09-16, ---rgf, added tests for new 'count' argument in [caseless]changeStr()
-                     2008-01-01, Lee Peedin - moved tests to individual testGroups
 
    languageLevel:    6.02
-   purpose:          Test the methods of the class String.
+   purpose:          Test the caselessLastpos method of the class String.
    remark:           Initial test unit for demonstration purposes, needs to be completed.
 
    license:          CPL 1.0 (Common Public License v1.0, see below)
@@ -41,7 +22,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2005-2007 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007 - 2008 Rexx Language Association. All rights reserved.  */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -86,7 +67,7 @@
    /* list of array objects, each containing the testGroup class object and an
       optional list of mandatory test case methods name                       */
 mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
-testGroupList=.list~of( .array~of(.String.testGroup,  mandatoryTestMethods) )
+testGroupList=.list~of( .array~of(.caselessLastpos.testGroup,  mandatoryTestMethods) )
 
 
 -------------------------------------------------------------------------------------------
@@ -129,7 +110,7 @@ do
    -- testResult=.testSuite~new(testGroupClass)~run
    testResult=ts~run       -- now run all the tests
 
-   call simpleDumpTestResults testResult
+   call simpleFormatTestResults testResult
 end
 
    /* return list of array objects containing test case classes and
@@ -138,12 +119,12 @@ return testGroupList
 
 ::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
 
-   -- class named exactly like file
-::class "String.testGroup" subclass TestCase public
+::class "caselessLastpos.testGroup" subclass TestCase public
 
-::method "test_STRING"
-   self~assertSame("subTest1" , ''    , ''~STRING         )
-   self~assertSame("subTest2" , ' '   , ' '~STRING        )
-   self~assertSame("subTest3" , 'ab'  , 'ab'~STRING       )
-   self~assertSame("subTest3" , ' ab ', ' ab '~STRING     )
+::method "test_LastPos_caseless"
+
+   self~assertEquals("subTest1" , 4 , 'efgxyz'~caselessLastPos('xy')       )
+   self~assertEquals("subTest2" , 4 , 'efgxyz'~caselessLastPos('XY')       )
+   self~assertEquals("subTest3" , 4 , 'efgxyz'~caselessLastPos('Xy')       )
+   self~assertEquals("subTest4" , 4 , 'efgxyz'~caselessLastPos('xY')       )
 
