@@ -709,44 +709,34 @@ return testUnitList
 ::method 'test181'
     v8. = .v8
     self~assertSame('subTest01','3',wordPos('three four five',(v8.10),3))
---call ver wordPos('three four five',(v8.10),3),'3'; R0172:
 
 ::method 'test182'
     v8. = .v8
     self~assertSame('subTest01','0',wordPos('three four five',(v8.10),8))
---call ver wordPos('three four five',(v8.10),8),'0'; R0173:
 
 ::method 'test183'
     self~assertSame('subTest01','26',wordPos('Z Z',.v26||' '||reverse(.v26),23))
---call ver wordPos('Z Z',.v26||' '||reverse(.v26),23),'26'; R0174:
 
 ::method 'test184'
     self~assertSame('subTest01','25',wordPos('Y Z Z Y',.v26' 'reverse(.v26),25))
---call ver wordPos('Y Z Z Y',.v26' 'reverse(.v26),25),'25'; R0175:
 
 ::method 'test185'
     self~assertSame('subTest01','0',wordPos('X Y Z Z Y',.v26 reverse(.v26),25))
---call ver wordPos('X Y Z Z Y',.v26 reverse(.v26),25),'0'; R0176:
 
 ::method 'test186'
     self~assertSame('subTest01','1',wordPos('two three',subStr('one two three four',5,9),1))
---call ver wordPos('two three',subStr('one two three four',5,9),1),'1'; R0190:
 
 ::method 'test187'
     self~assertSame('subTest01','0',wordPos('two three',subStr('one two three four',5,9),2))
---call ver wordPos('two three',subStr('one two three four',5,9),2),'0'; R0191:
 
 ::method 'test188'
     self~assertSame('subTest01','1',wordPos('NUM                       CHAR',dataType(6) dataType('A'),1))
---call ver wordPos('NUM                       CHAR',dataType(6) dataType('A'),1),'1'; R0192:
 
 ::method 'test189'
     self~assertSame('subTest01','0',wordPos('NUM                       CHAR',dataType(6) dataType('A'),2))
---call ver wordPos('NUM                       CHAR',dataType(6) dataType('A'),2),'0'; R0193:
 
 ::method 'test190'
     self~assertSame('subTest01','0',wordPos('NUM                       CHAR',dataType(6) dataType('A'),3))
---call ver wordPos('NUM                       CHAR',dataType(6) dataType('A'),3),'0'; R0194:
 
 ::method 'test191'
     .local~remove(v26)
