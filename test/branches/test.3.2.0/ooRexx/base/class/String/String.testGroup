@@ -260,19 +260,6 @@ return testGroupList
    self~assertSame("subTest6" , "Open Object Rexx" , ('Open'  'Object')  ~' '('Rexx') )
    self~assertSame("subTest7" , "Open Object Rexx" , 'Open'~' '('Object')~' '('Rexx') )
 
-   -- test the BIF, using examples from the documentation
-::method "test_BITXOR"
-
-   self~assertSame("subTest1" , '12'x     , '12'x~BITXOR                     )
-   self~assertSame("subTest2" , '30'x     , '12'x~BITXOR('22'x)              )
-   self~assertSame("subTest3" , '3011'x   , '1211'x~BITXOR('22'x)            )
-   self~assertSame("subTest4" , '555544'x , '1111'x~BITXOR('444444'x)        )
-   self~assertSame("subTest5" , '555504'x , '1111'x~BITXOR('444444'x,'40'x)  )
-   self~assertSame("subTest6" , '5C5C'x   , '1111'x~BITXOR(,'4D'x)           )
-   self~assertSame("subTest7" , 'E53302'x , 'C711'x~BITXOR('222222'x,' ')    ) /* ASCII */
-
-   -- test the BIF, using examples from the documentation
-   -- test the BIF, using examples from the documentation
 ::method "test_COMPARE"
 
    self~assertEquals("subTest1" , 0 , 'abc'  ~COMPARE('abc')    )
