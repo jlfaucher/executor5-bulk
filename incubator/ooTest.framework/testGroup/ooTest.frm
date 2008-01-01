@@ -301,8 +301,12 @@ return a
     information is broken up into lines, with an attempt made to keep all lines
     no longer than 80 characers wide.
 
+    ConsoleFormatter works with an ooTestCollectingParameter test result and
+    therefore has more infomation available to it than SimpleConsoleFormatter.
+    This allows for more comprehensive reporting.
+
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class 'ConsoleFormatter' public subclass ResultFormatter
+::class 'ConsoleFormatter' public subclass SimpleConsoleFormatter
 
   /** init()
    *
@@ -322,23 +326,23 @@ return a
    * manner.
    *
    * @param title    OPTIONAL    (String)
-   *   Adds a title to the output.
+   *   Adds a title to the output.  Resets the default title for this
+   *   formatter to that specified.
    *
    * @param level   OPTIONAL    (Whole Number)
-   *   Sets the verbosity level of the print out.  Values are 0 through 10, with
-   *   lesser numbers meaning lesser verbosity.  The default level is 1.
+   *   Sets the verbosity level of the print out.  Resets the default verbosity
+   *   for this fromatter.
    */
   ::method print
-    use arg title = "", level = 0
+    use arg title = (self~title), level = (self~getVerbosity)
 
-    if \ title~isA(.string) then
-      raise syntax 88.914 array ("1 'title'", "String")
+    if arg(1, 'E') then self~setTitle(title)
+    if arg(2, 'E') then self~setVerbosity(level)
 
-    if arg(1, 'E') then self~setVerbosity(level)
-    data = self~testResult
+    tResult = self~testResult
 
-    if title<>"" then do
-      say title
+    if self~title<>"" then do
+      say self~title
       say
     end
 
@@ -346,205 +350,69 @@ return a
     say "Interpreter:" versionStr
     say "ooRexxUnit: " .ooRexxUnit.version
     say
-    say "Count of tests ran:            " data~runCount
-    say "Count of successful assertions:" data~assertCount
-    say "Count of failures:             " data~failureCount
-    say "Count of errors:               " data~errorCount
-    say "Count of exceptions:           " data~exceptionCount
-    say "Count of skipped files:        " data~omissionCount
+    say "Count of tests ran:            " tResult~runCount
+    say "Count of successful assertions:" tResult~assertCount
+    say "Count of failures:             " tResult~failureCount
+    say "Count of errors:               " tResult~errorCount
+    say "Count of exceptions:           " tResult~exceptionCount
+    say "Count of skipped files:        " tResult~omissionCount
     say
 
-    if data~failureCount > 0 then do co over data~failures                 -- DFX TODO fix this rough outline
-      self~printFailureInfo(co~ooRexxUnit.condition)
+    if tResult~failureCount > 0 then do data over tResult~failures
+      self~printFailureInfo(data)
     end
 
-    if data~errorCount > 0 then do co over data~errors
-      self~printErrorInfo(co~ooRexxUnit.condition)
+    if tResult~errorCount > 0 then do data over tResult~errors
+      self~printErrorInfo(data)
     end
-    say 'verbosity:' self~getVerbosity
-    if self~getVerbosity > 2 then do
-      if data~exceptionCount > 0 then self~printExceptions
-      if data~omissionCount > 0 then self~printOmissions
+
+    if tResult~exceptionCount > 0 then do data over tResult~getExceptions
+      self~printExceptions(data)
+    end
+
+
+    if self~getVerbosity > 2, tResult~omissionCount > 0 then do data over tResult~getOmissions
+      self~printOmissions(data)
     end
 
     -- If a number of failure or error information lines are printed, re-display
     -- the summary statistics again so that the number of failures is obvious to
     -- the user.
-    if (data~failureCount + data~errorCount) > 3 | self~getVerbosity > 2 then do
+    if (tResult~failureCount + tResult~errorCount + tResult~exceptionCount) > 3 | self~getVerbosity > 2 then do
       say "Interpreter:" versionStr
       say "ooRexxUnit: " .ooRexxUnit.version
       say
-      say "Count of tests ran:            " data~runCount
-      say "Count of successful assertions:" data~assertCount
-      say "Count of failures:             " data~failureCount
-      say "Count of errors:               " data~errorCount
-      say "Count of exceptions:           " data~exceptionCount
-      say "Count of skipped files:        " data~omissionCount
+      say "Count of tests ran:            " tResult~runCount
+      say "Count of successful assertions:" tResult~assertCount
+      say "Count of failures:             " tResult~failureCount
+      say "Count of errors:               " tResult~errorCount
+      say "Count of exceptions:           " tResult~exceptionCount
+      say "Count of skipped files:        " tResult~omissionCount
       say
     end
 
   -- End print()
 
-  /** printFailureInfo()
-   *
-   * Helper method for print()
-   */
-  ::method printFailureInfo private
-    use arg co
-
-    parse var co dateTime "[failure]" idStuff "--->" additionalStuff
-    dateTime = dateTime~strip~strip('T', ':')
-
-    idTable = self~decomposeTestCaseID(idStuff)
-    additional = self~decomposeAdditional(additionalStuff)
-
-    say "[failure]" dateTime
-    say "  Test:  "  idTable['name']
-    say "  Class: "  idTable['class']
-    say "  File:  "  idTable['file']
-    if additional~items > 0 then self~printAssertInfo(additional)
-    say
-
-  return 0
-
-  /** printErrorInfo()
-   *
-   * Helper method for print()
-   */
-  ::method printErrorInfo private
-    use arg co
-
-    parse var co dateTime "[error]" idStuff "--->" additionalStuff
-    dateTime = dateTime~strip~strip('T', ':')
-
-    idTable = self~decomposeTestCaseID(idStuff)
-    additional = self~decomposeAdditional(additionalStuff)
-
-    say "[error]" dateTime
-    say "  Test: "  idTable['name']
-    say "  Class:"  idTable['class']
-    say "  File: "  idTable['file']
-
-    if additional~items > 0 then do
-      parse value additional[1] with c info
-      say "  Event:" info
-      if additional~items > 1 then do i = 2 to additional~items
-        say "   " additional[i]
-      end
-    end
-    say
-
-  -- End printErrorInfo()
-
-  /** decomposeTestCaseID()
-   *
-   * Helper method for print()
-   */
-  ::method decomposeTestCaseID private
-    use arg id
-
-    id = id~strip
-    parse var id tcWord tcName lastPart
-    tcName = tcName~substr(2, tcName~length - 2)
-    parse var lastPart cls "@" file ")"
-    clsName = cls~word(2)
-
-    if file~length > 70 then file = pathCompact(file, 70)
-    t = .table~new
-    t['name']  = tcName
-    t['class'] = clsName
-    t['file']  = file
-
-  return t
-  -- End decomposeTestCaseInfo()
-
-  /** decomposeAdditional()
-   *
-   * Helper method for print()
-   */
-  ::method decomposeAdditional private
-    use arg extraStuff
-
-    extraStuff = extraStuff~strip
-    eol = .ooRexxUnit.line.separator
-    tab = '09'x
-    a = .array~new
-
-    do while extraStuff~pos(eol) <> 0
-      parse var extraStuff lead eol extraStuff
-      do while lead~pos(tab) <> 0
-        parse var lead line (tab) lead
-        a[a~items + 1] = line
-      end
-      a[a~items + 1] = lead
-    end
-
-    do while extraStuff~pos(tab) <> 0
-      parse var extraStuff line (tab) extraStuff
-      a[a~items + 1] = line
-    end
-    a[a~items + 1] = extraStuff
-
-  return a
-  -- End decomposeAdditional()
-
-  /** printAssertInfo()
-   *
-   * Helper method for print()
-   */
-  ::method printAssertInfo private
-    use arg info
-
-    line = info[1]
-    if line~abbrev("@assert") then do
-      if line~word(2)~abbrev('check4Condition') then do
-        parse var line . '['expected']' .
-        assert = "Error should be raised"
-        actual = "Not raised"
-      end
-      else do
-        parse var line atWord assert "expected=" expected ", actual=" actual
-        assert = assert~strip~strip('T', ':')
-        actual = actual~strip('T', '.')
-      end
-      say "  Failed:" assert
-      say "    Expected:" expected
-      say "    Actual:  " actual
-    end
-    else do
-      say "  General failure:"
-      say "   " line
-    end
-
-    if info~items > 1 then do i = 2 to info~items
-      say "   " info[i]
-    end
-
-  -- End printAssertInfo()
 
   ::method printExceptions private      -- DFX TODO fix this rough outline
+    use arg err
 
-    q = self~testResult~getExceptions
-    do e over q
-      say "[Framework exception]" e~when
-      say "  File:" pathCompact(e~where, 70)
-      if e~line <> -1 then say "  Line:" e~line
-      say "  Type:" e~type "Severity:" e~severity
-      say " " e~getMessage
-      say
-    end
+    say "[Framework exception]" err~when
+    say "  File:" pathCompact(err~where, 70)
+    if err~line <> -1 then say "  Line:" err~line
+    say "  Type:" err~type "Severity:" err~severity
+    say " " err~getMessage
+    say
 
   ::method printOmissions private       -- DFX TODO fix this rough outline
+    use arg o
 
-    q = self~testResult~getOmissions
-    do o over q
-      say "[Skipped test group]"
-      say "  File:" pathCompact(o~where, 70)
-      say " " o~reason
-      if o~additional \== .nil then
-        say " " o~additional
-      say
-    end
+    say "[Skipped test group]"
+    say "  File:" pathCompact(o~where, 70)
+    say " " o~reason
+    if o~additional \== .nil then
+      say " " o~additional
+    say
 
 -- End of class ConsoleFormatter
 
