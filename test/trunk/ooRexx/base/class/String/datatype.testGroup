@@ -565,3 +565,8 @@ return erg
     self~assertFalse( "subTest43", '1E9'  ~datatype('9')  ) -- ?
     numeric digits a
 
+::method "test_DATATYPE_9"
+   self~assertTrue( "subTest4" , '12'~DATATYPE('9')           )
+   self~assertTrue( "subTest5" , '-12'~DATATYPE('9')           )
+
+
