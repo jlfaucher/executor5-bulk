@@ -150,11 +150,11 @@ return testGroupList
     self~assertSame('subtest01',copies('\',10000),copies('5C'x,10000)~delstr('+999999999'))
 
 ::method 'test09'
-    self~expectSyntax(93.924)
+    self~expectSyntax(93.905)
     r = copies('5C'x,10000)~delstr('5E+9999')
 
 ::method 'test10'
-    self~expectSyntax(93.924)
+    self~expectSyntax(93.905)
     r = copies('5C'x,10000)~delstr('5E+9999')
 
 ::method 'test11'
@@ -174,7 +174,7 @@ return testGroupList
 
 ::method 'test14'
     v30 = 'abcdefghijklmnopqrstuvwxyz1234'
-    self~expectSyntax(93.924)
+    self~expectSyntax(93.905)
     r = v30~delstr(1.2)
 
 ::method 'test15'
@@ -182,11 +182,11 @@ return testGroupList
     r = v30~delstr('-31')
 
 ::method 'test16'
-    self~expectSyntax(93.924)
+    self~expectSyntax(93.905)
     r = 'hasdghj'~delstr(1E10)
 
 ::method 'test17'
-    self~expectSyntax(93.924)
+    self~expectSyntax(93.905)
     r = 'hasdghj'~delstr('cc'x)
 
 ::method 'test18'
@@ -274,7 +274,7 @@ return testGroupList
     self~assertSame('subtest01','7+7+7 84/4 700-699','2*7 7+7+7+7+7+7 84/4 700-699'~delstr(699-698,5*2))
 
 ::method 'test41'
-    self~expectSyntax(93.924)
+    self~expectSyntax(93.905)
     r = '2*7 7+7+7+7+7+7 84/4 700-699'~delstr('699-698',5*2)
 
 ::method 'test42'
@@ -296,27 +296,27 @@ return testGroupList
     self~assertSame('subtest01','',nv.10~delstr(1,60))
 
 ::method 'test47'
-    self~expectSyntax(93.924)
+    self~expectSyntax(93.905)
     r = 'nv'~delstr(nv,3)
 
 ::method 'test48'
-    self~expectSyntax(93.924)
+    self~expectSyntax(93.905)
     r = 'nv.'~delstr(nv.,4)
 
 ::method 'test49'
-    self~expectSyntax(93.924)
+    self~expectSyntax(93.905)
     r = 'nv.10'~delstr(nv.10,6)
 
 ::method 'test50'
-    self~expectSyntax(93.923)
+    self~expectSyntax(93.905)
     r = 'nv.'~delstr(1,nv.)
 
 ::method 'test51'
-    self~expectSyntax(93.923)
+    self~expectSyntax(93.905)
     r = 'nv.10'~delstr(1,nv.10)
 
 ::method 'test52'
-    self~expectSyntax(93.924)
+    self~expectSyntax(93.905)
     r = noval1~delstr(noval2,noval3)
 
 ::method 'test53'

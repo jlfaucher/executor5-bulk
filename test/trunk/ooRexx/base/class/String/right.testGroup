@@ -1,14 +1,14 @@
 #!/usr/bin/rexx
 /*
-   name:             String_leftMethod.testGroup
+   name:             String_rightMethod.testGroup
    author:           Lee Peedin
-   date:             2007-12-24
+   date:             2007-12-28
    version:          1.0.0
 
 -- line commented lines are ignored, when building the directory of infos from this header
 
    languageLevel:    6.02
-   purpose:          Test the left method of the class String.
+   purpose:          Test the right method of the class String.
    remark:           Initial test unit for demonstration purposes, needs to be completed.
 
    license:          CPL 1.0 (Common Public License v1.0, see below)
@@ -67,7 +67,7 @@
    /* list of array objects, each containing the testGroup class object and an
       optional list of mandatory test case methods name                       */
 mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
-testGroupList=.list~of( .array~of(.String_leftMethod.testGroup,  mandatoryTestMethods) )
+testGroupList=.list~of( .array~of(.String_rightMethod.testGroup,  mandatoryTestMethods) )
 
 
 -------------------------------------------------------------------------------------------
@@ -119,10 +119,11 @@ return testGroupList
 
 ::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
 
-::class "String_leftMethod.testGroup" subclass TestCase public
+::class "String_rightMethod.testGroup" subclass TestCase public
 
 ::method 'test000'
     .local~v1 = '*'
+    .local~v30 = 'abcdefghijklmnopqrstuvwxyz1234'
     .local~v256 = copies('12345678',32)
     .local~v10000 = copies('\',10000)
     .local~vn256 = 256
@@ -135,139 +136,178 @@ return testGroupList
 
 ::method 'test001'
     self~expectSyntax(93.903)
-    xre = ''~left(,)
+--    xre = right(,)
+    xre = ''~right()
 
 ::method 'test002'
-    self~expectSyntax(93.903)
-    xre = ''~left(,1)
+--    self~expectSyntax(40.5)
+--    xre = right(,1)
 
 ::method 'test003'
     self~expectSyntax(93.903)
-    xre = 'ABCDEFG'~left(,)
+    xre = 'ABCDEFG'~right()
 
 ::method 'test004'
-    self~assertSame('subTest01','*'||copies(' ',9999),.v1~left(00010000))
+    self~assertSame('subTest01','',''~right(0))
 
 ::method 'test005'
-    self~assertSame('subTest01','a','6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'x~left(.01E2))
+    self~assertSame('subTest01',copies(' ',9999)||'*',.v1~right(00010000))
 
 ::method 'test006'
-    self~assertSame('subTest01',.v256||copies(' ',32512),copies('12345678',32)~left(' 32768 '))
+    self~assertSame('subTest01','4','6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'x~right(.01E2))
 
 ::method 'test007'
-    self~assertSame('subTest01','\\\\\\\\\',.v10000~left('39'x))
+    self~assertSame('subTest01',copies(' ',32512)||.v256,copies('12345678',32)~right(' 32768 '))
 
 ::method 'test008'
-    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1234567890'
-    self~assertSame('subTest01','1234567890'||copies(' ',246),XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~left(.vn256))
+    self~assertSame('subTest01','\\\\\\\\\',.v10000~right('39'x))
 
 ::method 'test009'
-    self~assertSame('subTest01','8888888888','88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888'~left(5*2))
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1234567890'
+    self~assertSame('subTest01',copies(' ',246)'1234567890',XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~right(.vn256))
 
 ::method 'test010'
-    self~assertSame('subTest01','A','A B C D E F G h i j l k m n o p'~left(0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001))
+    self~assertSame('subTest01','8888888888','88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888'~right(5*2))
 
 ::method 'test011'
+    self~assertSame('subTest01','p','A B C D E F G h i j l k m n o p'~right(0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001))
+
+::method 'test0012'
     xre = '\'
-    self~assertSame('subTest01',.true,.v10000~left('3030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303031'x) == xre)
+    self~assertSame('subTest01',.true,.v10000~right('3030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303031'x) == xre)
 
-::method 'test012'
-    xre = 'ab'
-    self~assertSame('subTest01',.true,'6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'x~left('3030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303032'x) == xre)
-
-::method 'test013'
-    self~expectSyntax(93.922)
-    xre = ''~LEFT(0,'xx')
+::method 'test0013'
+    xre = '34'
+    self~assertSame('subTest01',.true,'6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'x~right('3030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303032'x) == xre)
 
 ::method 'test014'
-    self~assertSame('subTest01','*'||copies(' ',9999),.v1~left(00010000,' '))
+    self~expectSyntax(93.922)
+    xre = ''~right(0,'xx')
 
 ::method 'test015'
-    self~assertSame('subTest01',.v256||copies('X',32512),copies('12345678',32)~left(' 32768 ','X'))
+    self~assertSame('subTest01',copies(' ',9999)||'*',.v1~right(00010000,' '))
 
 ::method 'test016'
-    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1234567890'
-    self~assertSame('subTest01','1234567890'||copies('*',246),XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~left(.vn256,.v1))
+    self~assertSame('subTest01',copies('X',32512)||.v256,copies('12345678',32)~right(' 32768 ','X'))
 
 ::method 'test017'
-    self~assertSame('subTest01','8888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888',left('88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888',50*2,3+4))
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1234567890'
+    self~assertSame('subTest01',copies('*',246)||'1234567890',XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~right(.vn256,.v1))
 
 ::method 'test018'
-    self~assertSame('subTest01','NV.**',nv.~left(5,'*'))
+    self~assertSame('subTest01','8888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888','88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888'~right(50*2,3+4))
 
 ::method 'test019'
-    self~expectSyntax(93.923)
-    xre = 'nv'~left(nv,'*')
+    self~expectSyntax(93.905)
+    xre = 'nv'~right(nv,'*')
 
 ::method 'test020'
-    self~expectSyntax(93.923)
-    xre = 'nv.'~left(nv.,'*')
+    self~expectSyntax(93.905)
+    xre = 'nv.'~right(nv.,'*')
 
 ::method 'test021'
-    self~expectSyntax(93.923)
-    xre = 'nv.10'~left(nv.10,'*')
+    self~expectSyntax(93.905)
+    xre = 'nv.10'~right(nv.10,'*')
 
 ::method 'test022'
     self~expectSyntax(93.922)
-    xre = 'nv'~left(5,nv)
+    xre = 'nv'~right(5,nv)
 
 ::method 'test023'
     self~expectSyntax(93.938)
-    xre = 'nv.'~left(5,nv.)
+    xre = 'nv.'~right(5,nv.)
 
 ::method 'test024'
     self~expectSyntax(93.922)
-    xre = 'nv.10'~left(5,nv.10)
+    xre = 'nv.10'~right(5,nv.10)
 
 ::method 'test025'
-    self~expectSyntax(93.923)
-    xre = noval1~left(noval2,noval3)
+    self~expectSyntax(93.905)
+    xre = noval1~right(noval2,noval3)
 
 ::method 'test026'
-    numeric digits 1
-    self~assertSame('subTest01','3E+19',(25+4)~left(2+3,3*3))
+    self~assertSame('subTest01','***NV',nv~right(5,'*'))
 
 ::method 'test027'
-    numeric digits 1
-    self~assertSame('subTest01','4E+1444444444444444444444444444444444444',(21*2)~left(21+21,6-2))
+    self~assertSame('subTest01','**NV.',nv.~right(5,'*'))
 
 ::method 'test028'
-    numeric digits 1
-    self~assertSame('subTest01','3E+19',(.vn25+.vn4)~left(.vn2+.vn3,.vn3*.vn3))
+    self~assertSame('subTest01','NV.10',nv.10~right(5,'*'))
 
 ::method 'test029'
-    numeric digits 1
-    self~assertSame('subTest01','4E+1444444444444444444444444444444444444',(.vn21*.vn2)~left(.vn21+.vn21,.vn6-.vn2))
+    self~expectSyntax(93.905)
+    xre = 'nv'~right(nv,'*')
 
 ::method 'test030'
-    self~assertSame('subTest01','29999',(25+4)~left(2+3,3*3))
+    self~expectSyntax(93.905)
+    xre = 'nv.'~right(nv.,'*')
 
 ::method 'test031'
-    self~assertSame('subTest01','424444444444444444444444444444444444444444',(21*2)~left(21+21,6-2))
+    self~expectSyntax(93.905)
+    xre = 'nv.10'~right(nv.10,'*')
 
 ::method 'test032'
-    self~assertSame('subTest01','29999',(.vn25+.vn4)~left(.vn2+.vn3,.vn3*.vn3))
+    self~expectSyntax(93.922)
+    xre = 'nv'~right(5,nv)
 
 ::method 'test033'
-    self~assertSame('subTest01','424444444444444444444444444444444444444444',(.vn21*.vn2)~left(.vn21+.vn21,.vn6-.vn2))
+    self~expectSyntax(93.938)
+    xre = 'nv.'~right(5,nv.)
 
 ::method 'test034'
-    self~assertSame('subTest01','******JOHN++',right('JOHN',10,'*')~left(right('0000000012',2),CENTER('---+---',1)))
+    self~expectSyntax(93.922)
+    xre = 'nv.10'~right(5,nv.10)
 
 ::method 'test035'
-    self~assertSame('subTest01','hn Ro11111',subStr('John Robert',3,5)~left(dataType(6,'N')||'0',dataType(7,'N')))
+    self~expectSyntax(93.905)
+    xre = noval1~right(noval2,noval3)
 
 ::method 'test036'
-    self~assertSame('subTest01','J   R   B&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&',SPACE('J R B',3)~left(C2D('J'),STRIP('     &     ')))
+    numeric digits 1
+    self~assertSame('subTest01','93E+1',(25+4)~right(2+3,3*3))
 
 ::method 'test037'
-    self~assertSame('subTest01','John1234','John'~left(5,'1')~left(6,'2')~left(7,'3')~left(8,'4'))
+    numeric digits 1
+    self~assertSame('subTest01','4444444444444444444444444444444444444E+1',(21*2)~right(21+21,6-2))
 
 ::method 'test038'
-    self~assertSame('subTest01','John*XXXXXXX','John'~left(5,'*')~left('0123456789'~left(3),'XYZ'~left(1)))
+    numeric digits 1
+    self~assertSame('subTest01','93E+1',(.vn25+.vn4)~right(.vn2+.vn3,.vn3*.vn3))
 
 ::method 'test039'
+    numeric digits 1
+    self~assertSame('subTest01','4444444444444444444444444444444444444E+1',(.vn21*.vn2)~right(.vn21+.vn21,.vn6-.vn2))
+
+::method 'test040'
+    self~assertSame('subTest01','99929',(25+4)~right(2+3,3*3))
+
+::method 'test041'
+    self~assertSame('subTest01','444444444444444444444444444444444444444442',(21*2)~right(21+21,6-2))
+
+::method 'test042'
+    self~assertSame('subTest01','99929',(.vn25+.vn4)~right(.vn2+.vn3,.vn3*.vn3))
+
+::method 'test043'
+    self~assertSame('subTest01','444444444444444444444444444444444444444442',(.vn21*.vn2)~right(.vn21+.vn21,.vn6-.vn2))
+
+::method 'test044'
+    self~assertSame('subTest01','','JOHN'~left(10,'*')~right('0000000012'~left(2)),center('---+---',1))
+
+::method 'test045'
+    self~assertSame('subTest01','11111hn Ro',subStr('John Robert',3,5)~right(datatype(6,'N')||'0',datatype(7,'N')))
+
+::method 'test046'
+    self~assertSame('subTest01','&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&J   R   B',space('J R B',3)~right(c2d('J'),strip('     &     ')))
+
+::method 'test047'
+    self~assertSame('subTest01','4321John','John'~right(5,'1')~right(6,'2')~right(7,'3')~right(8,'4'))
+
+::method 'test048'
+    self~assertSame('subTest01','ZZZZZ*John',right(right('John',5,'*'),right('9876543210',2),right('XYZ',1)))
+
+::method 'test049'
     .local~remove(v1)
+    .local~remove(v30)
     .local~remove(v256)
     .local~remove(v10000)
     .local~remove(vn256)
@@ -279,14 +319,14 @@ return testGroupList
     .local~remove(vn25)
 
 -- from bif.testgroup
-   -- test the BIF, using examples from the documentation
-::method "test_LEFT"
-    self~assertSame("subTest1" , 'abc d   ' , 'abc d'~LEFT(8)    )
-    self~assertSame("subTest2" , 'abc d...' , 'abc d'~LEFT(8,'.'))
-    self~assertSame("subTest3" , 'abc  de'  , 'abc  def'~LEFT(7) )
+-- test the BIF, using examples from the documentation
+::method "test_RIGHT"
+    self~assertSame("subTest1" , '  abc  d'    , 'abc  d'~RIGHT(8)   )
+    self~assertSame("subTest2" , 'c def'       , 'abc def'~RIGHT(5)  )
+    self~assertSame("subTest3" , '00012'       , '12'~RIGHT(5,'0')   )
 
    -- new tests
-    self~assertSame("subTest4" , 'a'        , 'abc  def'~LEFT(1) )
-    self~assertSame("subTest5" , ''         , 'abc  def'~LEFT(0) )
-
+    self~assertSame("subTest4" , '   '         , ''~RIGHT( 3)        )
+    self~assertSame("subTest5" , ''            , ''~RIGHT( 0)        )
+    self~assertSame("subTest6" , ''            , '123'~RIGHT( 0)     )
 
