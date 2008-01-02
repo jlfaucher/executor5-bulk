@@ -150,6 +150,25 @@ return testGroupList
     self~expectSyntax(93.907)
     'aha'~caselessChangeStr('a','A',0)
 
+::method "test_1"
+   self~assertSame("subTest1", '101100' , '101100'~caselessChangeStr('','X')  )
+
+::method "test_2"
+   self~assertSame("subTest2", ''       , ''~caselessChangeStr('1','X')  )
+
+::method "test_4"
+   self~assertSame("subTest4", 'ha-lo' , 'hallo'~caselessChangeStr('l','-',1)  )
+
+::method "test_5"
+   self~assertSame("subTest5", 'ha--o' , 'hallo'~caselessChangeStr('l','-',2)  )
+
+::method "test_6"
+   self~assertSame("subTest6", 'ha--o' , 'hallo'~caselessChangeStr('l','-',3)  )
+
+::method "test_7"
+   self~expectSyntax(93.907)
+   a='aha'~caselessChangeStr('a','A',0)
+
 
 
 
