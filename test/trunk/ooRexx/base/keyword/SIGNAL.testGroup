@@ -136,6 +136,18 @@ return testGroupList
    return
 
 ::method "test_2"
+   signal on syntax
+   raise syntax 41.1
+   self~assertTrue("subTest_1", 0)
+   return
+
+   syntax:
+   self~assertSame("subTest1a", condition('cs'),'SYNTAX')
+   self~assertSame("subTest1b", condition('i'),'SIGNAL')
+   self~assertSame("subTest1c", condition('s'),'OFF')
+   return
+
+::method "test_3"
    signal on novalue
    a = z
    self~assertTrue("subTest_2", 0)
@@ -145,5 +157,61 @@ return testGroupList
    self~assertSame("subTest2a", condition('cs'),'NOVALUE')
    self~assertSame("subTest2b", condition('i'),'SIGNAL')
    self~assertSame("subTest2c", condition('s'),'OFF')
+   return
+
+::method "test_4"
+-- This test does not work properly yet
+   return
+   signal on novalue
+   raise novalue
+   self~assertTrue("subTest_2", 0)
+   return
+
+   novalue:
+   self~assertSame("subTest2a", condition('cs'),'NOVALUE')
+   self~assertSame("subTest2b", condition('i'),'SIGNAL')
+   self~assertSame("subTest2c", condition('s'),'OFF')
+   return
+
+::method "test_5"
+-- This test does not work properly yet
+   return
+   signal on error
+   a = 10101k
+   self~assertTrue("subTest_1", 0)
+   return
+
+   error:
+   self~assertSame("subTest1a", condition('cs'),'ERROR')
+   self~assertSame("subTest1b", condition('i'),'SIGNAL')
+   self~assertSame("subTest1c", condition('s'),'OFF')
+   return
+
+::method "test_6"
+-- This test does not work properly yet
+   return
+   signal on error
+   raise error 22
+   self~assertTrue("subTest_1", 0)
+   return
+
+   error:
+   self~assertSame("subTest1a", condition('cs'),'ERROR')
+   self~assertSame("subTest1b", condition('i'),'SIGNAL')
+   self~assertSame("subTest1c", condition('s'),'OFF')
+   return
+
+::method "test_7"
+-- This test does not work properly yet
+   return
+   signal on user badvalue
+   raise user badvalue
+   self~assertTrue("subTest_1", 0)
+   return
+
+   user:
+   self~assertSame("subTest1a", condition('cs'),'USER')
+   self~assertSame("subTest1b", condition('i'),'SIGNAL')
+   self~assertSame("subTest1c", condition('s'),'OFF')
    return
 
