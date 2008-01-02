@@ -68,12 +68,12 @@
 
   if group~isAutomatedTest then return group
 
-  testResult = group~suite~run~~print
+  testResult = group~suite~execute~~print
 
 return testResult
 -- End of entry point.
 
-::requires 'ooTest.frm'     -- load the ooRexxUnit classes
+::requires 'ooTest.frm'     -- load the framework classes
 
 ::class "Assignments.testGroup" subclass ooTestCase public
 

@@ -104,7 +104,7 @@
   if group~isAutomatedTest then return group
 
   -- Not an automated test, execute the tests now.
-  testResult = group~suite~run~~print
+  testResult = group~suite~execute~~print
 
 return testResult
 -- End of entry point.

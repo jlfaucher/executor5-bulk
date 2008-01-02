@@ -67,7 +67,7 @@ testCaseFileList = .list~of(                                                   -
                             )
 
 ts=makeTestSuiteFromFileList(testCaseFileList)  -- create the testSuite object
-tr=ts~run   -- run all the tests in the testSuite, retrieve the testResult object
+tr=ts~execute   -- run all the tests in the testSuite, retrieve the testResult object
 
             -- show brief results
 call simpleDumpTestResults tr, "ooRexxBase.runTests (run all of the base testUnit tests)"

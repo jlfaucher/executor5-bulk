@@ -55,7 +55,7 @@ cmdLine = arg(1)
    containers = finder~seek(testResult); say 'containers items:' containers~items
 
    suite = .ooTestSuite~new
-   suite~showProgress = .false
+   suite~showProgress = .true
    j = time('E')
    do container over containers
      container~suite(suite)
@@ -63,7 +63,7 @@ cmdLine = arg(1)
    say 'Took' time('E') 'seconds to build suite'
 
    say 'Executing automated test suite.'
-   suite~run(testResult)
+   suite~execute(testResult)
    say 'test result:' testResult
 
    formatter = testResult~getFormatter~new(testResult)

@@ -538,9 +538,9 @@ return leading || trailing
   return fFailures
 
 
-::method run            -- convenience method to run given TestCase
+::method execute            -- convenience method to run given TestCase
   use arg aTestCase
-  return aTestCase~run(self)
+  return aTestCase~execute(self)
 
 ::method runCount       -- gets the number of run tests
   expose fRunTests
@@ -1272,7 +1272,7 @@ return str
   return fCountTestCases
 
 
-::method run            -- will get implemented in subclasses
+::method execute            -- will get implemented in subclasses
   expose fName
   use arg aTestResult, bGiveFeedback=.false
 
@@ -1368,11 +1368,26 @@ exceptionHandler:
           self~definedInFile")"
 
 
-::method setUp       -- will get implemented in subclasses (allows to create a test-environment)
-  NOP                -- indicate that emptiness is intended
+/** setUp()
+ * setUp is invoked immediately prior the invocation of *each* individual test
+ * case method.  If needed, subclasses of TestCase can implement this method to
+ * provide some type of pre-test set up.  Normally this is not needed.
+ *
+ * NOP is used to indicate that this method body is empty on purpose.
+ */
+::method setUp
+  NOP
 
-::method tearDown    -- will get implemented in subclasses (allows to remove a test-environment)
-  NOP                -- indicate that emptiness is intended
+/** tearDown()
+ * tearDown is the counter-point to setUp.  It is invoked immediately after the
+ * invocation of *each* individual test case method.  If needed, subclasses of
+ * TestCase can implement this method to provide some type of post-test clean
+ * up.  Normally this is not needed.
+ *
+ * NOP is used to indicate that this method body is empty on purpose.
+ */
+::method tearDown
+  NOP
 
 
 
@@ -1456,7 +1471,7 @@ exceptionHandler:
   self~countTestCases += 1
 
 
-::method run
+::method execute
   use arg aTestResult = (self~createResult), bGiveFeedback = .false
 
   if \ isBoolean(bGiveFeedback) then
@@ -1470,12 +1485,35 @@ exceptionHandler:
   aTestResult~startTest(self)       -- remember test started
   self~setUp                        -- make sure setup is invoked before testSuite runs
   do aTestCase over tests while aTestResult~shouldStop=.false
-     aTestCase~run(aTestResult, bGiveFeedback)
+     aTestCase~execute(aTestResult, bGiveFeedback)
   end
   self~tearDown                     -- make sure tearDown is invoked after testSuite ran
   aTestResult~endTest(self)         -- remember test ended
 
   return aTestResult
+
+
+/** setUp()
+ * setUp is invoked immediately prior to the invocation of this test suite's
+ * run() method.
+ * case method.  If needed, subclasses of TestCase can implement this method to
+ * provide some type of pre-test set up.  Normally this is not needed.
+ *
+ * NOP is used to indicate that this method body is empty on purpose.
+ */
+::method setUp
+  NOP
+
+/** tearDown()
+ * tearDown is the counter-point to setUp.  It is invoked immediately after the
+ * invocation of *each* individual test case method.  If needed, subclasses of
+ * TestCase can implement this method to provide some type of post-test clean
+ * up.  Normally this is not needed.
+ *
+ * NOP is used to indicate that this method body is empty on purpose.
+ */
+::method tearDown
+  NOP
 
 
 /* *********************************************************************************** */

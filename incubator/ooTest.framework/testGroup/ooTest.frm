@@ -252,14 +252,18 @@ return a
     self~beVerbose = .false
   -- End init( )
 
-  /** run()
+  /** execute()
    * Executes the tests in this test suite.  Over-rides the superclass method.
    *
    * @param testResult    OPTIONAL    (ooTestCollectingParameter)
-   *   The collecting parameter to use for the execution of the tests.  The
-   *   default
+   *   The CollectingParameter object (a test result in plain words) to use for
+   *   the execution of the tests.  The default ooTest framework test result is
+   *   used if this argument is omitted.  (Which is most likely .ooTestResult)
+   *
+   * @return  Returns the test result object used for the execution of the
+   *          tests.
    */
-  ::method run
+  ::method execute
     use arg testResult = (self~createResult), verbose = (self~beVerbose)
 
     if \ isBoolean(verbose) then
@@ -279,7 +283,7 @@ return a
 
     do test over tests while \ testResult~shouldStop
        if show then say "Executing tests from" pathCompact(test~definedInFile, 58)
-       test~run(testResult, verbose)
+       test~execute(testResult, verbose)
     end
 
     -- Invoke the the test suite tearDown method and mark the test has ended.
@@ -1143,10 +1147,13 @@ return suite
         end
 
         when \ isSubClassOf(container~class, "TestContainer") then do
-          reason = "Object returned is not a test container.  Object is:" container
-          o = .OmissionData~new(timeStamp(), fileName, reason)
-          testResult~addOmission(o)
-          iterate
+          obj = self~maybeCreateContainer(container, fileName)
+          if obj~isA(.OmissionData) then do
+            testResult~addOmission(obj)
+            iterate
+          end
+
+          q~queue(obj)
         end
 
         when \ container~hasTests then do
@@ -1211,6 +1218,89 @@ return suite
     end
 
   return f
+
+  /** maybeCreateContainer()
+   * Attempts to create a TestGroup from object.  This is a temporary method,
+   * used to ease the migration from ooRexxUnit 1 to ooRexxUnit 2.
+   *
+   */
+  ::method maybeCreateContainer private
+    use arg obj, fileName
+
+    -- Try to determine if this is an old-style .testUnit list.  If it is, it
+    -- can be converted to a test group.  If it isn't add the file to the
+    -- omitted files list.
+
+    reason = "Conversion attempt failed. Object not a test container.  Object is:" obj
+    data = .OmissionData~new(timeStamp(), fileName, reason)
+    if \ self~objectIsTestUnitList(obj, data) then return data
+
+    src = self~getHeader(fileName)
+    if src~items == 0 then do
+      reason = "Attempt to convert old-style TestUnit list into a TestGroup failed"
+      o = .OmissionData~new(timeStamp(), fileName, reason)
+      o~additonal = "Error reading header source lines from the file."
+      return 0
+    end
+
+    -- Okay, an old-style TestUnit list, and we have the header meta-data.
+    -- Create a TestGroup and populate it with the TestCase class(es) from the
+    -- file.
+    group = .TestGroup~new(fileName, src)
+
+    -- objectIsTestUnitList() has already done our error checking for us.
+    do a over obj
+      group~add(a[1])
+      if a[2]~isEmpty then iterate
+      group~addWithCollection(a[1], a[2])
+    end
+
+    return group
+
+  ::method getHeader private
+    use arg file
+
+    f = .stream~new(file)
+		f~open("READ")
+		if f~State <> "READY" then do
+      -- Most likely will not happen, but if it does, return an empty array.
+      return .array~new
+    end
+
+    lines = .array~new
+    do i = 1 while f~state == "READY"
+      lines[i] = f~linein
+      if lines[i] = "*/" then leave
+    end
+    f~close
+
+  return lines
+
+  ::method objectIsTestUnitList
+    use arg obj, data
+
+    if obj~isA(.list) then do a over obj
+      if \ a~isA(.array) then do
+        data~addtional = "Item in TestUnit list is not an array"
+        return .false
+      end
+      if a~items \== 2 then do
+        data~addtional = "Array item in TestUnit list does not have 2 indexes"
+        return .false
+      end
+      if \ isSubclassOf(a[1], "TestCase") then do
+        data~addtional = "Index 1 of array item is not subclass of TestCase"
+        return .false
+      end
+      if \ a[2]~isA(.list) then do
+        data~addtional = "Index 2 of array item is not a .List"
+        return .false
+      end
+      return .true
+    end
+
+    data~addtional = "obj is not a list"
+  return .false
 
 -- End of class: ooTestFinder
 

@@ -87,7 +87,7 @@ cmdLine = arg(1)
 
    ts=makeTestSuiteFromFileList(list)  -- create the testSuite object
    call time "Reset"    -- start timer
-   tr=ts~run   -- run all the tests in the testSuite, retrieve the testResult object
+   tr=ts~execute   -- run all the tests in the testSuite, retrieve the testResult object
    e=time("Elapsed")
 
                -- show brief results
