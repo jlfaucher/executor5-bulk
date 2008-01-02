@@ -110,7 +110,7 @@ do
    -- testResult=.testSuite~new(testGroupClass)~run
    testResult=ts~run       -- now run all the tests
 
-   call simpleDumpTestResults testResult
+   call simpleFormatTestResults testResult
 end
 
    /* return list of array objects containing test case classes and
@@ -160,10 +160,17 @@ return testGroupList
    return
 
 ::method "test_4"
--- This test does not work properly yet
-   return
+-- This test does not work as David expected, see notes
+   --return
    signal on novalue
-   call myproc
+   -- call myproc  SEE also NOTES in test_6() and test7()
+   /* NOTE: I think myproc is running in the context of the test_4() method.
+      So, raising user badvalue causes a return from the test_4() method, not
+      just a return from myproc.  Is this correct?
+
+      Same basic thing in test_7
+   */
+   .SignalHelper~new~~doTest_4
    self~assertTrue("subTest_4", 0)
    return
 
@@ -191,10 +198,17 @@ return testGroupList
    return
 
 ::method "test_6"
--- This test does not work properly yet
-   return
+-- This test did not work as David expected, see notes.
+   --return
    signal on error
-   call myproc
+   --call myproc
+   /* NOTE: I think myproc is running in the context of the test_6() method.
+      So, raising user badvalue causes a return from the test_6() method, not
+      just a return from myproc.  Is this correct?
+
+      Same basic thing in test_7
+   */
+   .SignalHelper~new~~doTest_6
    self~assertTrue("subTest_6", 0)
    return
 
@@ -204,25 +218,47 @@ return testGroupList
    self~assertSame("subTest6c", condition('s'),'OFF')
    return
 
-   myproc:
+   /*
+   myproc: procedure
    raise error 44.1
    return
+   */
 
 ::method "test_7"
 -- This test does not work properly yet
-   return
+--   return
    signal on user badvalue
-   call myproc
+   --call myproc
+   .SignalHelper~new~~doTest_7
    self~assertTrue("subTest_1", 0)
    return
 
-   user:
-   self~assertSame("subTest1a", condition('cs'),'USER')
+   badvalue:
+   --self~assertSame("subTest1a", condition('cs'),'USER')
+   /* NOTE condition('cs') is USER BADVALUE, not USER as David expected.  Is
+      this correct?
+   */
+   self~assertSame("subTest1a", condition('cs'),'USER BADVALUE')
    self~assertSame("subTest1b", condition('i'),'SIGNAL')
    self~assertSame("subTest1c", condition('s'),'OFF')
    return
 
-   myproc:
+   myproc: procedure
    raise user badvalue
    return
+
+
+::class 'SignalHelper'
+
+::method doTest_4
+   raise novalue
+   return
+
+::method doTest_6
+   raise error 44.1
+   return
+
+::method doTest_7
+  raise user badvalue
+  return
 
