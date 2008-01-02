@@ -150,62 +150,69 @@ return testGroupList
 ::method "test_3"
    signal on novalue
    a = z
-   self~assertTrue("subTest_2", 0)
+   self~assertTrue("subTest_3", 0)
    return
 
    novalue:
-   self~assertSame("subTest2a", condition('cs'),'NOVALUE')
-   self~assertSame("subTest2b", condition('i'),'SIGNAL')
-   self~assertSame("subTest2c", condition('s'),'OFF')
+   self~assertSame("subTest3a", condition('cs'),'NOVALUE')
+   self~assertSame("subTest3b", condition('i'),'SIGNAL')
+   self~assertSame("subTest3c", condition('s'),'OFF')
    return
 
 ::method "test_4"
 -- This test does not work properly yet
    return
    signal on novalue
-   raise novalue
-   self~assertTrue("subTest_2", 0)
+   call myproc
+   self~assertTrue("subTest_4", 0)
    return
 
    novalue:
-   self~assertSame("subTest2a", condition('cs'),'NOVALUE')
-   self~assertSame("subTest2b", condition('i'),'SIGNAL')
-   self~assertSame("subTest2c", condition('s'),'OFF')
+   self~assertSame("subTest4a", condition('cs'),'NOVALUE')
+   self~assertSame("subTest4b", condition('i'),'SIGNAL')
+   self~assertSame("subTest4c", condition('s'),'OFF')
+   return
+
+   myproc:
+   raise novalue
    return
 
 ::method "test_5"
--- This test does not work properly yet
-   return
    signal on error
-   a = 10101k
-   self~assertTrue("subTest_1", 0)
+   trace off
+   'zxyabc' -- deliberate error, this command should not be found!
+   self~assertTrue("subTest_5", 0)
    return
 
    error:
-   self~assertSame("subTest1a", condition('cs'),'ERROR')
-   self~assertSame("subTest1b", condition('i'),'SIGNAL')
-   self~assertSame("subTest1c", condition('s'),'OFF')
+   self~assertSame("subTest5a", condition('cs'),'ERROR')
+   self~assertSame("subTest5b", condition('i'),'SIGNAL')
+   self~assertSame("subTest5c", condition('s'),'OFF')
    return
 
 ::method "test_6"
 -- This test does not work properly yet
    return
    signal on error
-   raise error 22
-   self~assertTrue("subTest_1", 0)
+   call myproc
+   self~assertTrue("subTest_6", 0)
    return
 
    error:
-   self~assertSame("subTest1a", condition('cs'),'ERROR')
-   self~assertSame("subTest1b", condition('i'),'SIGNAL')
-   self~assertSame("subTest1c", condition('s'),'OFF')
+   self~assertSame("subTest6a", condition('cs'),'ERROR')
+   self~assertSame("subTest6b", condition('i'),'SIGNAL')
+   self~assertSame("subTest6c", condition('s'),'OFF')
+   return
+
+   myproc:
+   raise error 44.1
    return
 
 ::method "test_7"
 -- This test does not work properly yet
    return
    signal on user badvalue
-   raise user badvalue
+   call myproc
    self~assertTrue("subTest_1", 0)
    return
 
@@ -213,5 +220,9 @@ return testGroupList
    self~assertSame("subTest1a", condition('cs'),'USER')
    self~assertSame("subTest1b", condition('i'),'SIGNAL')
    self~assertSame("subTest1c", condition('s'),'OFF')
+   return
+
+   myproc:
+   raise user badvalue
    return
 
