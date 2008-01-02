@@ -294,34 +294,6 @@ return testGroupList
    self~expectSyntax(93.924)
    b~pos("1",.nil)
 
-::METHOD "testLastpos"
-   b = .mutableBuffer~new("01234567890")
-
-   self~assertEquals("Wrong position 1",5,b~lastpos("4"))
-   self~assertEquals("Wrong position 2",6,b~lastpos("56"))
-   self~assertEquals("Wrong position 3",0,b~lastpos("6",2))
-   self~assertEquals("Wrong position 4",9,b~lastpos("8",99))
-   self~assertEquals("Wrong position 5",0,b~lastpos("x",99))
-::METHOD "testLastPosSyntax1"
-   b = .mutableBuffer~new("1234567890")
-   self~expectSyntax(93.903)
-   b~lastPos()
-
-::METHOD "testLastPosSyntax2"
-   b = .mutableBuffer~new("1234567890")
-   self~expectSyntax(93.938)
-   b~lastPos(.nil)
-
-::METHOD "testLastPosSyntax3"
-   b = .mutableBuffer~new("1234567890")
-   self~expectSyntax(93.924)
-   b~lastPos("1",-1)
-
-::METHOD "testLastPosSyntax4"
-   b = .mutableBuffer~new("1234567890")
-   self~expectSyntax(93.924)
-   b~lastPos("1",.nil)
-
 ::METHOD "testSubChar"
    b = .mutableBuffer~new("1234567890")
 
