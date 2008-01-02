@@ -713,9 +713,91 @@ return testGroupList
    self~assertSame("subTest9a", condition('cs'),'NOTREADY')
    self~assertSame("subTest9b", condition('d'),cndd)
    self~assertSame("subTest9c", condition('i'),'CALL')
-   self~assertSame("subTest9d", condition('s'),'DELAY')
+   self~assertSame("subTest1c", condition('s'),'DELAY')
    chk='*'
    return
 
+::method "test_10"
+   call on error
+   trace off
+   caught = .false
+   'zxyabc' -- deliberate error, this command should not be found!
+   if \caught then self~assertTrue("subTest_1", 0)
+   return
 
+   error:
+   self~assertSame("subTest1a", condition('cs'),'ERROR')
+   self~assertSame("subTest1b", condition('i'),'CALL')
+   self~assertSame("subTest1c", condition('s'),'DELAY')
+   caught = .true
+   return
+
+::method "test_11"
+   call on error
+   caught = .false
+   call myproc
+   if \caught then self~assertTrue("subTest_1", 0)
+   return
+
+   error:
+   self~assertSame("subTest1a", condition('cs'),'ERROR')
+   self~assertSame("subTest1b", condition('i'),'CALL')
+   self~assertSame("subTest1c", condition('s'),'DELAY')
+   caught = .true
+   return
+
+   myproc:
+   raise error 44.1 return
+   return
+
+::method "test_12"
+   call on user badvalue
+   caught = .false
+   call myproc
+   if \caught then self~assertTrue("subTest_1", 0)
+   return
+
+   badvalue:
+   self~assertSame("subTest1a", condition('cs'),'USER BADVALUE')
+   self~assertSame("subTest1b", condition('i'),'CALL')
+   self~assertSame("subTest1c", condition('s'),'DELAY')
+   caught = .true
+   return
+
+   myproc:
+   raise user badvalue return
+   return
+
+::method "test_13"
+   call on failure
+   trace off
+   caught = .false
+   'zxyabc' -- deliberate failure, this command should not be found!
+   if \caught then self~assertTrue("subTest_1", 0)
+   return
+
+   failure:
+   self~assertSame("subTest1a", condition('cs'),'FAILURE')
+   self~assertSame("subTest1b", condition('i'),'CALL')
+   self~assertSame("subTest1c", condition('s'),'DELAY')
+   caught = .true
+   return
+
+::method "test_14"
+   call on failure
+   caught = .false
+   call myproc
+   if \caught then self~assertTrue("subTest_1", 0)
+   return
+
+   failure:
+   self~assertSame("subTest1a", condition('cs'),'FAILURE')
+   self~assertSame("subTest1b", condition('i'),'CALL')
+   self~assertSame("subTest1c", condition('s'),'DELAY')
+   caught = .true
+   return
+
+   myproc:
+   raise failure 44.1 return
+   return
 
