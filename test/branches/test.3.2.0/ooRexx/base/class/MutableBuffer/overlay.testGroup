@@ -429,4 +429,47 @@ return testGroupList
     .local~remove(vres6)
     .local~remove(vres7)
 
+::METHOD "testOverlay"
+   b = .mutableBuffer~new("1234567890")
+   self~AssertEquals("Length incorrect before",10,b~length)
+   b~overlay("abc")
+   self~AssertEquals("Overlay failed 1","abc4567890",b~string)
+   b~overlay("abcABCabc")
+   self~AssertEquals("Overlay failed 2", "abcABCabc0",b~string)
+   b~overlay("abcABCabc",2)
+   self~AssertEquals("Overlay failed 3", "aabcABCabc",b~string)
+   b~overlay("abc",1,0,"+")
+   self~AssertEquals("Overlay failed 4", "aabcABCabc",b~string)
+   b~overlay("abc",12,4,"+")
+   self~AssertEquals("Overlay failed 4", "aabcABCabc+abc+",b~string)
+   self~AssertEquals("Length incorrect after",15,b~length)
+::METHOD "testOverlaySyntax1"
+   b = .mutableBuffer~new("123456")
+   self~expectSyntax(93.903)
+   b~overlay()
+::METHOD "testOverlaySyntax2"
+   b = .mutableBuffer~new("123456")
+   self~expectSyntax(93.924)
+   b~overlay("",-1)
+::METHOD "testOverlaySyntax3"
+   b = .mutableBuffer~new("123456")
+   self~expectSyntax(93.938)
+   b~overlay(.nil)
+::METHOD "testOverlaySyntax4"
+   b = .mutableBuffer~new("123456")
+   self~expectSyntax(93.938)
+   b~overlay("",,,.nil)
+::METHOD "testOverlaySyntax5"
+   b = .mutableBuffer~new("123456")
+   self~expectSyntax(93.938)
+   b~overlay("",.nil,.nil,.nil)
+::METHOD "testOverlaySyntax6"
+   b = .mutableBuffer~new("123456")
+   self~expectSyntax(93.924)
+   b~overlay("",0,-1,0)
+::METHOD "testOverlaySyntax7"
+   b = .mutableBuffer~new("123456")
+   self~expectSyntax(93.922)
+   b~overlay("",,10,"  ")
+
 

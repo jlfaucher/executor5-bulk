@@ -128,3 +128,29 @@ return testGroupList
     self~assertSame("subTest3" ,  'c',  mb~SUBCHAR(3)     )
     self~assertSame("subTest4" ,  '' ,  mb~SUBCHAR(4)     )
 
+::METHOD "testSubChar"
+   b = .mutableBuffer~new("1234567890")
+
+   self~assertEquals("Wrong char 1",4,b~subchar(4))
+   self~assertEquals("Wrong char 2",,b~subchar(99))
+::METHOD "testSubCharSyntax1"
+   b = .mutableBuffer~new("1234567890")
+   self~expectSyntax(93.903)
+   b~subChar()
+
+::METHOD "testSubCharSyntax2"
+   b = .mutableBuffer~new("1234567890")
+   self~expectSyntax(93.924)
+   b~subChar(0)
+
+::METHOD "testSubCharSyntax3"
+   b = .mutableBuffer~new("1234567890")
+   self~expectSyntax(93.938)
+   b~subChar(.nil)
+
+::METHOD "testSubCharSyntax4"
+   b = .mutableBuffer~new("1234567890")
+   self~expectSyntax(93.905)
+   b~subChar("a")
+
+
