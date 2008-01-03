@@ -787,7 +787,7 @@ return str
   use arg data
 
   say "[failure]" data~when
-  say "  Test:  " pp(data~testname)
+  say "  Test:  " data~testname
   say "  Class: " data~className
   say "  File:  " pathCompact(data~where, 70)
   say "  Failed:" data~type
@@ -806,7 +806,7 @@ return str
   different = (data~where~compareTo(data~conditionObj~program) <> 0)
 
   say "[error]" data~when
-  say "  Test: " pp(data~testName)
+  say "  Test: " data~testName
   say "  Class:" data~className
   say "  File: " pathCompact(data~where, 70)
   say "  Event:" pp(data~event) "raised unexpectedly."
@@ -1833,3 +1833,5 @@ pp: procedure
 
    f = .SimpleConsoleFormatter~new(aTestResult, title)
    f~print
+
+return 0

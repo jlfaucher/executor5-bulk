@@ -312,6 +312,13 @@ return a
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class 'ConsoleFormatter' public subclass SimpleConsoleFormatter
 
+  ::attribute rexxVersion get
+  ::attribute rexxVersion set private
+  ::attribute unitVersion get
+  ::attribute unitVersion set private
+  ::attribute ooTestVersion get
+  ::attribute ooTestVersion set private
+
   /** init()
    *
    */
@@ -323,6 +330,11 @@ return a
     if \ isSubClassOf(testResult~class, "ooTestCollectingParameter") then
        raise syntax 88.914 array ("1 'testResult'", "ooTestCollectingParameter")
     self~testResult = testResult
+
+    parse version self~rexxVersion
+    self~unitVersion = .ooRexxUnit.version
+    self~ooTestVersion - .ooTest.version
+
 
   /** print()
    *
@@ -427,8 +439,10 @@ return a
 ::class 'ooTestResult' public subclass ooTestCollectingParameter
 
   ::attribute notifications  private
-  ::attribute exceptions private
-  ::attribute events     private
+  ::attribute exceptions     private
+  ::attribute events         private
+  ::attribute knownFailures  private
+  ::attribute newFailures    private
 
   ::method init
     use arg verbosity = 1
@@ -437,6 +451,8 @@ return a
     self~notifications = .queue~new
     self~exceptions = .queue~new
     self~events = .queue~new
+    self~knownFailures = .queue~new
+    self~newFailures = .queue~new
 
     -- If verbosity is specified, use it to over-ride the default.
     if arg(1, 'E') then self~setVerbosity(verbosity)
@@ -445,6 +461,14 @@ return a
     self~formatter = .ConsoleFormatter
 
   -- End init( )
+
+  ::method addFailure
+    use arg strict testCase, failData
+    forward class (super) continue
+
+    if failData~msg~abbrev(.ooRexxUnit.knownBugFlag) then self~knownFailures~queue(failData)
+    else self~newFailures~queue(failData)
+
 
   ::method addNotification
     use strict arg notification
