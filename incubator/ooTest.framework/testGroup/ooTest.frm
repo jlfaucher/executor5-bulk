@@ -175,9 +175,9 @@ return a
   * DFX TODO finish up doc here.
   */
 ::class 'ooTestCollectingParameter' public subclass TestResult
-::method addOmission    abstract
-::method getOmissions   abstract
-::method omissionCount  abstract
+::method addNotification    abstract
+::method getNotifications   abstract
+::method notificationCount  abstract
 ::method addException   abstract
 ::method getExceptions  abstract
 ::method exceptionCount abstract
@@ -316,7 +316,7 @@ return a
    *
    */
   ::method init
-    use strict arg testResult
+    use strict arg testResult, title = ""
     forward class (super) continue
 
     -- We need an ooTestCollectingParameter.
@@ -359,7 +359,7 @@ return a
     say "Count of failures:             " tResult~failureCount
     say "Count of errors:               " tResult~errorCount
     say "Count of exceptions:           " tResult~exceptionCount
-    say "Count of skipped files:        " tResult~omissionCount
+    say "Count of skipped files:        " tResult~notificationCount
     say
 
     if tResult~failureCount > 0 then do data over tResult~failures
@@ -375,8 +375,8 @@ return a
     end
 
 
-    if self~getVerbosity > 2, tResult~omissionCount > 0 then do data over tResult~getOmissions
-      self~printOmissions(data)
+    if self~getVerbosity > 2, tResult~notificationCount > 0 then do data over tResult~getNotifications
+      self~printnotifications(data)
     end
 
     -- If a number of failure or error information lines are printed, re-display
@@ -391,7 +391,7 @@ return a
       say "Count of failures:             " tResult~failureCount
       say "Count of errors:               " tResult~errorCount
       say "Count of exceptions:           " tResult~exceptionCount
-      say "Count of skipped files:        " tResult~omissionCount
+      say "Count of skipped files:        " tResult~notificationCount
       say
     end
 
@@ -408,7 +408,7 @@ return a
     say " " err~getMessage
     say
 
-  ::method printOmissions private       -- DFX TODO fix this rough outline
+  ::method printnotifications private       -- DFX TODO fix this rough outline
     use arg o
 
     say "[Skipped test group]"
@@ -426,7 +426,7 @@ return a
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class 'ooTestResult' public subclass ooTestCollectingParameter
 
-  ::attribute omissions  private
+  ::attribute notifications  private
   ::attribute exceptions private
   ::attribute events     private
 
@@ -434,7 +434,7 @@ return a
     use arg verbosity = 1
     forward class (super) continue
 
-    self~omissions = .queue~new
+    self~notifications = .queue~new
     self~exceptions = .queue~new
     self~events = .queue~new
 
@@ -446,15 +446,15 @@ return a
 
   -- End init( )
 
-  ::method addOmission
-    use strict arg omission
-    self~omissions~queue(omission)
+  ::method addNotification
+    use strict arg notification
+    self~notifications~queue(notification)
 
-  ::method getOmissions
-    return self~omissions
+  ::method getNotifications
+    return self~notifications
 
-  ::method omissionCount
-    return self~omissions~items
+  ::method notificationCount
+    return self~notifications~items
 
   ::method addException
     use strict arg exception
@@ -647,12 +647,8 @@ return a
     self~machineOS = .ooRexxUnit.OSName
 
     -- Determine if an automated test run is taking place.
-    if \ .local~hasentry("bRunTestsLocally") then
-      self~isAutomatedTest = .false
-    else if .bRunTestsLocally~isA(.string), .bRunTestsLocally~dataType('O') then
-      self~isAutomatedTest = (\ .bRunTestsLocally)
-    else
-      self~isAutomatedTest = .false
+    if isBoolean(.bRunTestsLocally) then self~isAutomatedTest = (\ .bRunTestsLocally)
+    else self~isAutomatedTest = .false
 
     -- Create the metadata directory for this group.
     self~createMetaData(data)
@@ -1148,8 +1144,8 @@ return suite
 
         when \ isSubClassOf(container~class, "TestContainer") then do
           obj = self~maybeCreateContainer(container, fileName)
-          if obj~isA(.OmissionData) then do
-            testResult~addOmission(obj)
+          if obj~isA(.Notification) then do
+            testResult~addNotification(obj)
             iterate
           end
 
@@ -1157,10 +1153,10 @@ return suite
         end
 
         when \ container~hasTests then do
-          reason = "Test container has no executable tests"
-          o = .OmissionData~new(timeStamp(), fileName, reason)
-          o~additional = "Reason:" container~getNoTestsReason
-          testResult~addOmission(o)
+          n = .Notification~new(timeStamp(), fileName, .Notification~SKIP_TYPE)
+          n~reason = "Test container has no executable tests"
+          n~additional = container~getNoTestsReason
+          testResult~addNotification(n)
           iterate
         end
 
@@ -1170,11 +1166,11 @@ return suite
 
         -- Caller wants a certain type of tests.
         when \ container~hasTestTypes(testTypes) then do
-          reason = "Container has no executable tests of specified test types"
-          o = .OmissionData~new(timeStamp(), fileName, reason)
-          o~additional = "Specified Test Types:" testTypes
-          o~additionalObject = testTypes
-          testResult~addOmission(o)
+          n = .Notification~new(timeStamp(), fileName, .Notification~SKIP_TYPE)
+          n~reason = "Container has no executable tests of specified test types"
+          n~additional = "Specified Test Types:" testTypes
+          n~additionalObject = testTypes
+          testResult~addNotification(n)
           iterate
         end
 
@@ -1231,15 +1227,15 @@ return suite
     -- can be converted to a test group.  If it isn't add the file to the
     -- omitted files list.
 
-    reason = "Conversion attempt failed. Object not a test container.  Object is:" obj
-    data = .OmissionData~new(timeStamp(), fileName, reason)
+    data = .Notification~new(timeStamp(), fileName, .Notification~SKIP_TYPE)
+    data~reason = "Attempt to convert returned object into a TestGroup failed"
     if \ self~objectIsTestUnitList(obj, data) then return data
 
     src = self~getHeader(fileName)
     if src~items == 0 then do
       reason = "Attempt to convert old-style TestUnit list into a TestGroup failed"
-      o = .OmissionData~new(timeStamp(), fileName, reason)
-      o~additonal = "Error reading header source lines from the file."
+      n = .Notification~new(timeStamp(), fileName, reason)
+      n~additonal = "Error reading header source lines from the file."
       return 0
     end
 
@@ -1299,37 +1295,70 @@ return suite
       return .true
     end
 
-    data~addtional = "obj is not a list"
+    data~addtional = "Object is not a list, object is:" obj
   return .false
 
 -- End of class: ooTestFinder
 
 
-/* class: OmissionData - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+/* class: Notification - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
 
-    A data object containing information on why a test file was ommitted from
-    a group of tests.  At a minimum the object contains a time stamp, the name
-    of the file, and a reason as to why it was omitted.
+    A data object containing information concerning status, events, or other
+    things that might need to be logged during the execution of a test, usually
+    the execution of an automated suite of tests.
+
+    At a minimum the object contains a time stamp, the name of the relevant
+    file, and the notification type.  3 notification types are defined: SKIPPED,
+    WARNING, MESSAGE.
 
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class 'OmissionData' public subclass ProblemReport
+::class 'Notification' public subclass ProblemReport
 
-  ::attribute reason get
-  ::attribute reason set private
+  /* Would prefer to use the CONSTANT directive */
+  ::method SKIP_TYPE class; return 1
+  ::method WARN_TYPE class; return 2
+  ::method TEXT_TYPE class; return 3
+  ::method SKIP_TYPE;       return 1
+  ::method WARN_TYPE;       return 2
+  ::method TEXT_TYPE;       return 3
+
+  ::attribute reason
+  ::attribute message
+  ::attribute warning
 
   ::attribute additional
   ::attribute additionalObject
 
   ::method init
+    use strict arg dateTime, file, type
     forward class (super) continue
 
-    if arg(3, 'E') then self~reason = arg(3)
-    else self~reason = "Unknown"
+    if \ isWholeRange(type, self~SKIP_TYPE, self~TEXT_TYPE) then
+      raise syntax 88.907 array("3 'type'", self~SKIP_TYPE, self~TEXT_TYPE, type)
+
+    select
+      when type == self~SKIP_TYPE then do
+        self~reason = "Reason is unknown"
+        self~warning = .nil
+        self~message = .nil
+      end
+      when type == self~WARN_TYPE then do
+        self~reason = .nil
+        self~warning = "Warning is unknown"
+        self~message = .nil
+      end
+      otherwise do
+        self~reason = .nil
+        self~warning = .nil
+        self~message = "Message is unknown"
+      end
+    end
+    -- End select
 
     self~additional = .nil
     self~additionalObject = .nil
 
--- End of class: OmissionData
+-- End of class: Notification
 
 /* class: ExceptionData- - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
 
@@ -1367,7 +1396,7 @@ return suite
     expose severity msg
   return severity || .endOfLine || "   " msg
 
--- End of class: OmissionData
+-- End of class: ExceptionData
 
 /** printTestInfo()
  *

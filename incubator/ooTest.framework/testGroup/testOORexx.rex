@@ -50,30 +50,33 @@ cmdLine = arg(1)
    --baseDir = "ooRexx\samples"
 
    testResult = .ooRexxUnit.default.TestResult.Class~new
-   testResult~setVerbosity(10)
+   testResult~setVerbosity(3)
    finder = .ooTestFinder~new(baseDir, ".testGroup")
    containers = finder~seek(testResult); say 'containers items:' containers~items
+   searchEnd = .TimeSpan~new(time('F'))
 
    suite = .ooTestSuite~new
-   suite~showProgress = .true
+   suite~showProgress = .false
    j = time('E')
    do container over containers
      container~suite(suite)
    end
-   say 'Took' time('E') 'seconds to build suite'
+   suiteEnd = .TimeSpan~new(time('F'))
 
    say 'Executing automated test suite.'
    suite~execute(testResult)
    say 'test result:' testResult
+   testEnd = .TimeSpan~new(time('F'))
 
-   formatter = testResult~getFormatter~new(testResult)
-
-   formatter~print("My Title", 3)
+   testResult~print("My Title", 3)
    --call simpleFormatTestResults testResult, "My Title"
    --call simpleDumpTestResults testResult, "My Title"
 
    absoluteEnd = .TimeSpan~new(time('F'))
-   say 'Total time:' (absoluteEnd - absoluteBegin)
+   say 'File search:   ' (searchEnd - absoluteBegin)
+   say 'Suite Build:   ' (suiteEnd - searchEnd)
+   say 'Test execution:' (testEnd - suiteEnd)
+   say 'Total time:    ' (absoluteEnd - absoluteBegin)
 return 0
 
 ::requires "ooTest.frm"

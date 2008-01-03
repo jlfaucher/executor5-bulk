@@ -351,6 +351,15 @@ return leading || trailing
 
   return "[" || string || "]"
 
+/** addN
+ * If name starts with a vowel, then "n" is returned, "" else
+ */
+::method addN
+  parse arg name
+
+  if "aeiou"~caselessPos(name~left(1))>0 then return "n"
+  return ""
+
 /** escapeString()
  * Escape non-printable characters in string.
  */
@@ -579,10 +588,27 @@ return leading || trailing
   return (fErrors~items+fFailures~items)=0
 
 /** print()
- * Output the result data using our formatter.
+ * Output the result data using our assigned formatter.
+ *
+ * @param title    OPTIONAL    (String)
+ *   Passes a title on to the formatter.
+ *
+ * @param level   OPTIONAL    (Whole Number)
+ *   Sets the verbosity level of the print out by over-riding the verbosity
+ *   level of this test result.  By default the verbosity of the print out will
+ *   be that of this test result.
  */
 ::method print
-  formatter = self~formatter~new(self)
+  use arg title = "", level = (self~getVerbosity)
+
+  if \ title~isA(.string) then
+    raise syntax 88.91a4 array ("1 'title'", "String")
+
+  formatter = self~formatter~new(self, title)
+
+  if arg(2, 'E') then formatter~setVerbosity(level)
+  else formatter~setVerbosity(self~getVerbosity)
+
   formatter~print
 
 /** setFormatter()
@@ -595,7 +621,7 @@ return leading || trailing
 ::method setFormatter
   use strict arg formatterClass
 
-  if \ isSubclassOf(.ResultFormatter, "ResultFormatter") then
+  if \ isSubclassOf(formatterClass, "ResultFormatter") then
      raise syntax 88.914 array ("1 'formatterClass'", "ResultFormatter")
   self~formatter = formatterClass
 
@@ -625,6 +651,10 @@ return leading || trailing
   if \ isSubClassOf(testResult~class, "TestCollectingParameter") then
      raise syntax 88.914 array ("1 'testResult'", "TestCollectingParameter")
 
+  if \ title~isA(.string) then
+    raise syntax 88.91a4 array ("2 'title'", "String")
+
+
   self~testResult = testResult
   self~title = title
   self~setVerbosity(self~DEFAULT_VERBOSITY)
@@ -648,6 +678,10 @@ return leading || trailing
 
 ::method setTitle
   use strict arg title
+
+  if \ title~isA(.string) then
+    raise syntax 88.914 array ("1 'title'", "String")
+
   self~title = title
 
 ::method print
@@ -703,6 +737,9 @@ return str
 
 ::method setTitle
   use strict arg title
+  if \ title~isA(.String) then
+    raise syntax 88.914 array ("1 'title'", .string~id)
+
   self~title = title
 
 ::method print
@@ -906,8 +943,8 @@ return str
     if \ isCollEqual(expected, actual) then do
       data = .AssertFailure~new(timeStamp(), self~definedInFile, "assertEquals")
 
-      data~expected = formatObjectInfo(expected)
-      data~actual = formatObjectInfo(actual)
+      data~expected = self~formatObjectInfo(expected)
+      data~actual = self~formatObjectInfo(actual)
       data~msg = msg
       data~line = -1
 
@@ -941,8 +978,8 @@ return str
 
   data = .AssertFailure~new(timeStamp(), self~definedInFile, "assertNotEquals")
 
-  data~expected = formatObjectInfo(expected)
-  data~actual = formatObjectInfo(actual)
+  data~expected = self~formatObjectInfo(expected)
+  data~actual = self~formatObjectInfo(actual)
   data~msg = msg
   data~line = -1
 
@@ -1017,8 +1054,8 @@ return str
   if \ (expected == actual) then do
     data = .AssertFailure~new(timeStamp(), self~definedInFile, "assertSame")
 
-    data~expected = formatObjectInfo(expected)
-    data~actual = formatObjectInfo(actual)
+    data~expected = self~formatObjectInfo(expected)
+    data~actual = self~formatObjectInfo(actual)
     data~msg = msg
     data~line = -1
 
@@ -1045,8 +1082,8 @@ return str
   if (expected == actual) then do
     data = .AssertFailure~new(timeStamp(), self~definedInFile, "assertNotSame")
 
-    data~expected = formatObjectInfo(expected)
-    data~actual = formatObjectInfo(actual)
+    data~expected = self~formatObjectInfo(expected)
+    data~actual = self~formatObjectInfo(actual)
     data~msg = msg
     data~line = -1
 
@@ -1216,6 +1253,12 @@ return str
 
     self~fail(data)
   end
+
+
+::method formatObjectInfo private
+  use arg o, hint = ""
+
+  return pp(hint || ppp(o~string)", identityHash="enQuote(o~identityHash))
 
 
 
@@ -1495,22 +1538,33 @@ exceptionHandler:
 
 /** setUp()
  * setUp is invoked immediately prior to the invocation of this test suite's
- * run() method.
- * case method.  If needed, subclasses of TestCase can implement this method to
- * provide some type of pre-test set up.  Normally this is not needed.
+ * execute() method.  That means it will be invoked exactly once prior to the
+ * execution of the tests contained in this test suite.
+ *
+ * Subclass the TestSuite class and implement a setUp method to provide a method
+ * that will run prior to the execution of all tests the test suite contains.
  *
  * NOP is used to indicate that this method body is empty on purpose.
+ *
+ * Note:  When subclassing the TestSuite, do not inovke the superclass setUp()
+ * method.  That will invoke the TestCase setUp() method, which is normally not
+ * what is desired.
  */
 ::method setUp
   NOP
 
 /** tearDown()
  * tearDown is the counter-point to setUp.  It is invoked immediately after the
- * invocation of *each* individual test case method.  If needed, subclasses of
- * TestCase can implement this method to provide some type of post-test clean
- * up.  Normally this is not needed.
+ * execution of all test cases contained by this test suite has finished.
+ *
+ * Subclasses of TestSuite can implement this method to provide some a clean up
+ * method that is invoked after all the test cases have been executed.
  *
  * NOP is used to indicate that this method body is empty on purpose.
+ *
+ * Note:  When subclassing the TestSuite, do not inovke the superclass
+ * tearDown() method.  That will invoke the TestCase tearDown() method, which is
+ * normally not what is desired.
  */
 ::method tearDown
   NOP
@@ -1527,14 +1581,6 @@ exceptionHandler:
                   else return arg(3)
 
 
-
-
--- create
-::routine formatObjectInfo public
-  use arg o, hint
-  if arg(2, 'omitted') then hint=""
-
-  return pp(hint || ppp(o~string)", identityHash="enQuote(o~identityHash))
 
 
    /* function returning .true, if both collections can be regarded to be equal (i.e.,
@@ -1557,12 +1603,6 @@ exceptionHandler:
 
 /* *********************************************************************************** */
 /* *********************************************************************************** */
-::routine addN       -- if string starts with a vowel, then "n" is returned, "" else
-  parse arg name
-
-  if "aeiou"~caselessPos(name~left(1))>0 then return "n"
-  return ""
-
 /* *********************************************************************************** */
 /* *********************************************************************************** */
    -- parse file-info into the supplied directory object
