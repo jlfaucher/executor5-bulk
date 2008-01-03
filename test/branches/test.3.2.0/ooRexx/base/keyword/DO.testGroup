@@ -274,40 +274,42 @@ return testGroupList
 
    self~assertEquals("subtest_12: leaving 'aha1'!", 1, i)
 
-     -- test 4
+
+::method "test_DO_lable_works_with_interpret"
    str="i=0                                                                    ;" -
    "DO label aha1                                                              ;" -
-   "   self~assertTrue(""subtest_15: LABEL subkeyword on DO known"", .true)    ;" -
    "   i=i+1                                                                   ;" -
    "   DO label aha2                                                           ;" -
-   "      self~assertTrue(""subtest_16: LABEL subkeyword on DO known"", .true) ;" -
    "      leave aha2                                                           ;" -
-   "      self~fail(""subtest_17: 'leave aha2' did not work!"")                ;" -
+   "      i = 9                                                                ;" -
    "   end                                                                     ;" -
    "   i=i+1                                                                   ;" -
    "END aha1                                                                   ;" -
-   "self~assertEquals(""subtest_18: leaving 'aha2'!"", 2, i)                   ;"
 
    interpret str
 
+   self~assertNotEquals("i must be incremented", 0, i)
+   self~assertNotEquals("Leave aha2 did not work", 10, i)
+   self~assertEquals("Do loops with label must leave i == 2", 2, i)
 
-::method "test_DO_LABEL_error 10.2"
+
+::method "test_DO_LABEL_interpret_with_error"
+
+   -- This test case should produce a synatx error because the label on the END
+   -- keyword must match the label on the matching DO.  Test just that and
+   -- nothing else.
 
    str="i=0                                                                    ;" -
    "DO label aha1                                                              ;" -
-   "   self~assertTrue(""subtest_01: LABEL subkeyword on DO known"", .true)    ;" -
    "   i=i+1                                                                   ;" -
    "   do label aha2                                                           ;" -
-   "      self~assertTrue(""subtest_02: LABEL subkeyword on DO known"", .true) ;" -
    "      leave aha2                                                           ;" -
-   "      self~fail(""subtest_03: 'leave aha2' did not work!"")                ;" -
    "   end                                                                     ;" -
    "   i=i+1                                                                   ;" -
    "   leave                                                                   ;" -
    "END nixi                                                                   ;" -
-   "self~assertEquals(""subtest_04: leaving 'aha2'!"", 2, i)                   ;"
 
-   self~expectSyntax( 10.2 )
+   self~expectSyntax(10.2)
    interpret str
 
 ::method "test_DO_standardTest1"
@@ -2601,7 +2603,7 @@ return testGroupList
    Do i=-1 To 10
      self~AssertSame("subTest5-69-"i, a.i,(0<i&i<9))
      End
-    
+
 ::method "test_DO_standardTest5-70"
    expri=1
    exprb=2
@@ -2622,18 +2624,18 @@ return testGroupList
      If k>31 Then exprb=-1
      End
    self~AssertSame("subTest5-70-3", k,32)
-    
+
 ::method "test_DO_standardTest5-71"
    self~AssertSame("subTest5-71-1", fact(10),(2*3*4*5*6*7*8*9)0)
    self~AssertSame("subTest5-71-2", fact(10),3628800)
    self~AssertSame("subTest5-71-3", fact(11),facti(11))
    return
-    
+
    fact: Procedure
      Arg n
      If n=0 Then Return 1
      Else Return n*fact(n-1)
-    
+
    facti:
      factin=1
      Do factii=2 To "ARG"(1)
@@ -2670,15 +2672,15 @@ return testGroupList
    self~expectSyntax(41.1)
    a='a'
    Do i=1 By a; If i=2 Then self~assertTrue("subTest1", 0); End;
-    
+
 ::method "test_DO_standardTest5-78"
    self~expectSyntax(34.3)
    Do 100 While z; Call err;                  End;
-    
+
 ::method "test_DO_standardTest5-79"
    self~expectSyntax(34.4)
    Do i=1 By 1 Until z; If i=2 Then self~assertTrue("subTest1", 0); End;
-    
+
 ::method "test_DO_standardTest5-80"
    self~expectSyntax(41.1)
    Do i=1 By a; If i=2 Then self~assertTrue("subTest1", 0); End;
