@@ -1,0 +1,265 @@
+#!/usr/bin/rexx
+/*
+   name:             length.testGroup
+   author:           Lee Peedin
+   date:             2008-01-02
+   version:          1.0.0
+
+-- line commented lines are ignored, when building the directory of infos from this header
+
+   languageLevel:    6.02
+   purpose:          Test the length method of the class MutableBuffer.
+   remark:           Initial test unit for demonstration purposes, needs to be completed.
+
+   license:          CPL 1.0 (Common Public License v1.0, see below)
+   link:
+
+// category needs not to be numbered, importance is given by position (1=most important)
+   category:         ooRexx
+   category:         Base
+   category:         Class
+   category:         Mutablebuffer
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 - 2008 Rexx Language Association. All rights reserved.  */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+
+-------------------------------------------------------------------------------------------
+-- ===> adapt the "testGroupList" to your testCase classes; each element in the list is <===
+-- ===> an array object, the first element containing the testCase class object, the   <===
+-- ===> second element is a list of test method names which are regarded to be         <===
+-- ===> mandatory (if the list remains empty all test methods are mandatory)           <===
+
+   /* list of array objects, each containing the testGroup class object and an
+      optional list of mandatory test case methods name                       */
+mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
+testGroupList=.list~of( .array~of(.length.testGroup,  mandatoryTestMethods) )
+
+
+-------------------------------------------------------------------------------------------
+-- ===> the following code needs not to be individualized                              <===
+
+   -- read top comment, containing infos about this program
+arrLines=.array~new
+do i=1 to 150 until arrLines[i]="*/"
+   arrLines[i]=sourceline(i)
+end
+      -- supply information for the testClass(es) in this file; the class attribute
+      -- "TestCaseInfo" (a directory object, index points to a queue) will store
+      -- the parsed infos
+aTestGroupClass=testGroupList~at(testGroupList~first)[1] -- get first testClass
+
+   -- will parse the array lines and store result in class object
+call makeDirTestInfo aTestGroupClass, arrLines
+tmpDir=aTestGroupClass~TestCaseInfo
+parse source s   -- op_sys invocationType fullPathToThisFile
+tmpDir~setentry("test_Case-source", s)
+
+   -- now add this directory to other testCase classes, if any left
+do arr over testGroupList
+   if arr[1]=aTestGroupClass then iterate  -- already handled
+   arr[1]~TestCaseInfo=tmpDir             -- save info in class object
+end
+
+-- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
+-- and set it to .false; this way the independent local invocation of the tests is inhibited
+if .local~hasentry("bRunTestsLocally")=.false then
+   .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
+
+if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
+do
+   ts=.testSuite~new             -- create a testSuite
+   do arr over testGroupList
+      -- create a testSuite for the given test case class, use all its testmethods
+      ts~addTest( .testSuite~new(arr[1]))
+   end
+   -- testResult=.testSuite~new(testGroupClass)~run
+   testResult=ts~run       -- now run all the tests
+
+   call simpleFormatTestResults testResult
+end
+
+   /* return list of array objects containing test case classes and
+      optionally list of mandatory test methods                      */
+return testGroupList
+
+::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+
+::class "length.testGroup" subclass TestCase public
+
+::method 'test000'
+    .local~v1 = 'a'
+    .local~v30 = copies('8',28)||'  '
+    .local~v255 = xrange('01'x,'ff'x)
+    .local~v256 = xrange('88'x,'87'x)
+    .local~v32768 = copies('*',32768)
+    .local~v100000 = right('z',100000)
+
+::method 'test001'
+    mb = .mutablebuffer~new('')
+    self~assertSame('subTest01','0',mb~length())
+
+::method 'test002'
+    mb = .mutablebuffer~new(''x)
+    self~assertSame('subTest01','0',mb~length())
+
+::method 'test0003'
+    mb = .mutablebuffer~new('00'x)
+    self~assertSame('subTest01','1',mb~length())
+
+::method 'test004'
+    mb = .mutablebuffer~new('00')
+    self~assertSame('subTest01','2',mb~length())
+
+::method 'test005'
+    mb = .mutablebuffer~new(.v1)
+    self~assertSame('subTest01','1',mb~length())
+
+::method 'test006'
+    mb = .mutablebuffer~new(.v30)
+    self~assertSame('subTest01','30',mb~length())
+
+::method 'test007'
+    mb = .mutablebuffer~new(.v255)
+    self~assertSame('subTest01','255',mb~length())
+
+::method 'test008'
+    mb = .mutablebuffer~new(.v256)
+    self~assertSame('subTest01','256',mb~length())
+
+::method 'test009'
+    mb = .mutablebuffer~new(.v32768)
+    self~assertSame('subTest01','32768',mb~length())
+
+::method 'test010'
+    mb = .mutablebuffer~new(.v100000)
+    self~assertSame('subTest01','100000',mb~length())
+
+::method 'test011'
+    mb = .mutablebuffer~new('zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz')
+    self~assertSame('subTest01','250',mb~length())
+
+::method 'test012'
+    zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz = '1'
+    mb = .mutablebuffer~new(zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz)
+    self~assertSame('subTest01','1',mb~length())
+
+::method 'test013'
+    zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz = '1'
+    mb = .mutablebuffer~new((zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz||'...'))
+    self~assertSame('subTest01','4',mb~length())
+
+::method 'test014'
+    zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz = '1'
+    mb = .mutablebuffer~new((zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz||.v100000))
+    self~assertSame('subTest01','100001',mb~length())
+
+::method 'test015'
+    xre = '200'
+    mb = .mutablebuffer~new('8888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888'X)
+    self~assertSame('subTest01',.true,mb~length() == xre)
+
+::method 'test016'
+    mb = .mutablebuffer~new(.v100000~length())
+    self~assertSame('subTest01','6',mb~length())
+
+::method 'test017'
+    mb = .mutablebuffer~new(.v100000~length()||'abc')
+    self~assertSame('subTest01','9',mb~length())
+
+::method 'test018'
+    mb = .mutablebuffer~new(17+4)
+    self~assertSame('subTest01','2',mb~length())
+
+::method 'test019'
+    mb = .mutablebuffer~new(+10000000000000000000000000000000000)
+    self~assertSame('subTest01','14',mb~length())
+
+::method 'test020'
+    mb = .mutablebuffer~new('+10000000000000000000000000000000000')
+    self~assertSame('subTest01','36',mb~length())
+
+::method 'test021'
+    len1 = 1
+    mb = .mutablebuffer~new(1.0000000001**1000000)
+    self~assertSame('subTest01',len1,mb~length())
+
+::method 'test022'
+    mb = .mutablebuffer~new(1111)
+    self~assertSame('subTest01','4',mb~length())
+
+::method 'test023'
+    mb = .mutablebuffer~new('1111')
+    self~assertSame('subTest01','4',mb~length())
+
+::method 'test024'
+    mb = .mutablebuffer~new('f1f1f1f1'x)
+    self~assertSame('subTest01','4',mb~length())
+
+::method 'test025'
+    mb = .mutablebuffer~new(...)
+    self~assertSame('subTest01','3',mb~length())
+
+::method 'test026'
+    mb = .mutablebuffer~new(nv)
+    self~assertSame('subTest01','2',mb~length())
+
+::method 'test027'
+    mb = .mutablebuffer~new(nv.~string)
+    self~assertSame('subTest01','3',mb~length())
+
+::method 'test028'
+    mb = .mutablebuffer~new(nv.i)
+    self~assertSame('subTest01','4',mb~length())
+
+::method 'test029'
+    mb = .mutablebuffer~new(nv.i)
+    self~assertSame('subTest01','4',mb~length())
+
+::method 'test030'
+    mb = .mutablebuffer~new('abcdefgh')
+    self~assertSame('subTest01',8,mb~length())
+
+::method 'test040'
+    .local~remove(v1)
+    .local~remove(v30)
+    .local~remove(v255)
+    .local~remove(v256)
+    .local~remove(v32768)
+    .local~remove(v100000)
+
+
