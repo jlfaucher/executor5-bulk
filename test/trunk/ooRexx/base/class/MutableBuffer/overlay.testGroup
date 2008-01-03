@@ -162,242 +162,243 @@ return testGroupList
 
 ::method 'test004'
     mb = .mutablebuffer~new(.vblank)
-    self~assertSame('subTest01',' ',mb~overLay(''))
+    self~assertSame('subTest01',' ',mb~overLay('')~string)
 
 ::method 'test005'
     mb = .mutablebuffer~new('*')
-    self~assertSame('subTest01',' ',mb~overLay('20'x))
+    self~assertSame('subTest01',' ',mb~overLay('20'x)~string)
 
 ::method 'test006'
     mb = .mutablebuffer~new('6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'x)
-    self~assertSame('subTest01','*bcdefghijklmnopqrstuvwxyz1234',mb~overLay(.v1))
+    self~assertSame('subTest01','*bcdefghijklmnopqrstuvwxyz1234',mb~overLay(.v1)~string)
 
-/*
 ::method 'test007'
     mb = .mutablebuffer~new(.v256)
-    self~assertSame('subTest01',.v30||subStr(.v256,31),mb~overLay('abcdefghijklmnopqrstuvwxyz1234'))
+    self~assertSame('subTest01',.v30||subStr(.v256,31),mb~overLay('abcdefghijklmnopqrstuvwxyz1234')~string)
 
 ::method 'test008'
     mb = .mutablebuffer~new(copies('\',10000))
-    self~assertSame('subTest01',.v256||subStr(.v10000,257),mb~overLay(.v256))
+    self~assertSame('subTest01',.v256||subStr(.v10000,257),mb~overLay(.v256)~string)
 
 ::method 'test009'
     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1234567890'
     mb = .mutablebuffer~new(.v1)
-    self~assertSame('subTest01','1234567890',mb~overLay(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX))
+    self~assertSame('subTest01','1234567890',mb~overLay(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX)~string)
 
 ::method 'test010'
     mb = .mutablebuffer~new('*')
     self~expectSyntax(93.924)
     xre = mb~overLay('20'x,0)
-*/
 
-/*
 ::method 'test011'
-    mb = .mutablebuffer~new()
-    self~assertSame('subTest01','*bcdefghijklmnopqrstuvwxyz1234','6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'x~overLay(.v1,1))
+    mb = .mutablebuffer~new('6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'x)
+    self~assertSame('subTest01','*bcdefghijklmnopqrstuvwxyz1234',mb~overLay(.v1,1)~string)
 
 ::method 'test012'
-    mb = .mutablebuffer~new()
-    self~assertSame('subTest01','*bcdefghijklmnopqrstuvwxyz1234','6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'x~overLay(.v1,0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001))
+    mb = .mutablebuffer~new('6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'x)
+    self~assertSame('subTest01','*bcdefghijklmnopqrstuvwxyz1234',mb~overLay(.v1,0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001)~string)
 
 ::method 'test013'
-    mb = .mutablebuffer~new()
-    self~assertSame('subTest01','a*cdefghijklmnopqrstuvwxyz1234','6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'x~overLay(.v1,0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002))
+    mb = .mutablebuffer~new('6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'x)
+    self~assertSame('subTest01','a*cdefghijklmnopqrstuvwxyz1234',mb~overLay(.v1,0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002)~string)
 
 ::method 'test014'
-    mb = .mutablebuffer~new()
-    self~assertSame('subTest01',.vres1,.v256~overLay('abcdefghijklmnopqrstuvwxyz1234',9))
+    mb = .mutablebuffer~new(.v256)
+    self~assertSame('subTest01',.vres1,mb~overLay('abcdefghijklmnopqrstuvwxyz1234',9)~string)
 
 ::method 'test015'
-    mb = .mutablebuffer~new()
-    self~assertSame('subTest01',.vres2,copies('\',10000)~overLay(.v256,10))
+    mb = .mutablebuffer~new(copies('\',10000))
+    self~assertSame('subTest01',.vres2,mb~overLay(.v256,10)~string)
 
 ::method 'test016'
     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1234567890'
-    mb = .mutablebuffer~new()
-    self~assertSame('subTest01','*         1234567890',.v1~overLay(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,11))
+    mb = .mutablebuffer~new(.v1)
+    self~assertSame('subTest01','*         1234567890',mb~overLay(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,11)~string)
 
 ::method 'test017'
-    mb = .mutablebuffer~new()
-    self~assertSame('subTest01','*'||copies(' ',254),'*'~overLay('20'x,255))
+    mb = .mutablebuffer~new('*')
+    self~assertSame('subTest01','*'||copies(' ',254),mb~overLay('20'x,255)~string)
 
 ::method 'test018'
-    mb = .mutablebuffer~new()
-    self~assertSame('subTest01',.v30||copies(' ',225)||'*','6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'x~overLay(.v1,256))
+    mb = .mutablebuffer~new('6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'x)
+    self~assertSame('subTest01',.v30||copies(' ',225)||'*',mb~overLay(.v1,256)~string)
 
 ::method 'test019'
-    mb = .mutablebuffer~new()
-    self~assertSame('subTest01',.vres3,.v256~overLay('abcdefghijklmnopqrstuvwxyz1234',32768))
+    mb = .mutablebuffer~new(.v256)
+    self~assertSame('subTest01',.vres3,mb~overLay('abcdefghijklmnopqrstuvwxyz1234',32768)~string)
 
 ::method 'test020'
-    mb = .mutablebuffer~new()
-    self~assertSame('subTest01',copies('\',9999)||.v256,copies('\',10000)~overLay(.v256,10000))
+    mb = .mutablebuffer~new(copies('\',10000))
+    self~assertSame('subTest01',copies('\',9999)||.v256,mb~overLay(.v256,10000)~string)
 
 ::method 'test021'
-    mb = .mutablebuffer~new()
-    self~assertSame('subTest01','*'||copies(' ',9999),'6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'x~overLay(.v1,1,10000))
+    mb = .mutablebuffer~new('6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'x)
+    self~assertSame('subTest01','*'||copies(' ',9999),mb~overLay(.v1,1,10000)~string)
 
 ::method 'test022'
-    mb = .mutablebuffer~new()
-    self~assertSame('subTest01',.vres6,.v256~overLay('abcdefghijklmnopqrstuvwxyz1234',9,32768))
+    mb = .mutablebuffer~new(.v256)
+    self~assertSame('subTest01',.vres6,mb~overLay('abcdefghijklmnopqrstuvwxyz1234',9,32768)~string)
 
 ::method 'test023'
-    mb = .mutablebuffer~new()
-    self~assertSame('subTest01',.vres7,copies('\',10000)~overLay(.v256,10,255))
+    mb = .mutablebuffer~new(copies('\',10000))
+    self~assertSame('subTest01',.vres7,mb~overLay(.v256,10,255)~string)
 
 ::method 'test024'
     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1234567890'
-    mb = .mutablebuffer~new()
-    self~assertSame('subTest01',.v1||'         '||'1234567890'||' ',.v1~overLay(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,11,11))
+    mb = .mutablebuffer~new(.v1)
+    self~assertSame('subTest01',.v1||'         '||'1234567890'||' ',mb~overLay(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,11,11)~string)
 
 ::method 'test025'
-    mb = .mutablebuffer~new()
-    self~assertSame('subTest01',.v1||copies(' ',253)||'20'x||copies(' ',8),'*'~overLay('20'x,255,9))
+    mb = .mutablebuffer~new('*')
+    self~assertSame('subTest01',.v1||copies(' ',253)||'20'x||copies(' ',8),mb~overLay('20'x,255,9)~string)
 
 ::method 'test026'
-    mb = .mutablebuffer~new()
-    self~assertSame('subTest01',.v30||copies(' ',225)||.v1,'6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'x~overLay(.v1,256,1))
+    mb = .mutablebuffer~new('6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'x)
+    self~assertSame('subTest01',.v30||copies(' ',225)||.v1,mb~overLay(.v1,256,1)~string)
 
 ::method 'test027'
-    mb = .mutablebuffer~new()
-    self~assertSame('subTest01',.vres5,.v256~overLay('abcdefghijklmnopqrstuvwxyz1234',32768,0))
+    mb = .mutablebuffer~new(.v256)
+    self~assertSame('subTest01',.vres5,mb~overLay('abcdefghijklmnopqrstuvwxyz1234',32768,0)~string)
 
 ::method 'test028'
-    mb = .mutablebuffer~new()
-    self~assertSame('subTest01','*'||copies('\',9999),'6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'x~overLay(.v1,1,10000,'5C'x))
+    mb = .mutablebuffer~new('6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'x)
+    self~assertSame('subTest01','*'||copies('\',9999),mb~overLay(.v1,1,10000,'5C'x)~string)
 
 ::method 'test029'
-    mb = .mutablebuffer~new()
-    self~assertSame('subTest01',.vres6,.v256~overLay('abcdefghijklmnopqrstuvwxyz1234',9,32768,' '))
+    mb = .mutablebuffer~new(.v256)
+    self~assertSame('subTest01',.vres6,mb~overLay('abcdefghijklmnopqrstuvwxyz1234',9,32768,' ')~string)
 
 ::method 'test030'
-    mb = .mutablebuffer~new()
+    mb = .mutablebuffer~new(copies('\',10000))
     self~expectSyntax(93.922)
-    xre = copies('\',10000)~overLay(.v256,10,255,'xx')
+    xre = mb~overLay(.v256,10,255,'xx')
 
 ::method 'test031'
     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1234567890'
-    mb = .mutablebuffer~new()
-    self~assertSame('subTest01',.v1||'|||||||||'||'1234567890'||'|',.v1~overLay(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,11,11,'|'))
+    mb = .mutablebuffer~new(.v1)
+    self~assertSame('subTest01',.v1||'|||||||||'||'1234567890'||'|',mb~overLay(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,11,11,'|')~string)
 
 ::method 'test032'
-    mb = .mutablebuffer~new()
-    self~assertSame('subTest01',.v1||copies('4',253)||'20'x||copies('4',8),'*'~overLay('20'x,255,9,2+2))
+    mb = .mutablebuffer~new('*')
+    self~assertSame('subTest01',.v1||copies('4',253)||'20'x||copies('4',8),mb~overLay('20'x,255,9,2+2)~string)
 
 ::method 'test033'
-    mb = .mutablebuffer~new()
-    self~assertSame('subTest01',.v30||copies('@',225)||.v1,'6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'x~overLay(.v1,256,1,.v1a))
+    mb = .mutablebuffer~new('6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'x)
+    self~assertSame('subTest01',.v30||copies('@',225)||.v1,mb~overLay(.v1,256,1,.v1a)~string)
 
 ::method 'test034'
-    mb = .mutablebuffer~new()
+    mb = .mutablebuffer~new(.v256)
     self~expectSyntax(93.922)
-    xre = .v256~overLay('abcdefghijklmnopqrstuvwxyz1234',32768,0,6+6)
+    xre = mb~overLay('abcdefghijklmnopqrstuvwxyz1234',32768,0,6+6)
 
 ::method 'test035'
-    mb = .mutablebuffer~new()
+    mb = .mutablebuffer~new('nv.')
     self~expectSyntax(93.938)
-    xre = 'nv.'~overLay(nv.,1,60,'1')
+    xre = mb~overLay(nv.,1,60,'1')
 
 ::method 'test036'
-    mb = .mutablebuffer~new()
+    mb = .mutablebuffer~new(noval2)
     self~expectSyntax(93.905)
-    xre = noval2~overLay(noval1,noval3,noval4,noval5)
+    xre = mb~overLay(noval1,noval3,noval4,noval5)
 
 ::method 'test037'
-    mb = .mutablebuffer~new()
+    mb = .mutablebuffer~new('nv')
     self~expectSyntax(93.905)
-    xre = 'nv'~overLay('nv',nv,3,'1')
+    xre = mb~overLay('nv',nv,3,'1')
 
 ::method 'test038'
-    mb = .mutablebuffer~new()
+    mb = .mutablebuffer~new('nv.')
     self~expectSyntax(93.905)
-    xre = 'nv.'~overLay('nv.',nv.,60,'1')
+    xre = mb~overLay('nv.',nv.,60,'1')
 
 ::method 'test039'
-    mb = .mutablebuffer~new()
+    mb = .mutablebuffer~new('nv.10')
     self~expectSyntax(93.905)
-    xre = 'nv.10'~overLay('nv.10',nv.10,100,'1')
+    xre = mb~overLay('nv.10',nv.10,100,'1')
 
 ::method 'test040'
-    mb = .mutablebuffer~new()
+    mb = .mutablebuffer~new('nv')
     self~expectSyntax(93.922)
-    xre = 'nv'~overLay('nv',1,3,nv)
+    xre = mb~overLay('nv',1,3,nv)
 
 ::method 'test041'
-    mb = .mutablebuffer~new()
+    mb = .mutablebuffer~new('nv.')
     self~expectSyntax(93.938)
-    xre = 'nv.'~overLay('nv.',1,60,nv.)
+    xre = mb~overLay('nv.',1,60,nv.)
 
 ::method 'test042'
-    mb = .mutablebuffer~new()
+    mb = .mutablebuffer~new('nv.10')
     self~expectSyntax(93.922)
-    xre = 'nv.10'~overLay('nv.10',1,100,nv.10)
+    xre = mb~overLay('nv.10',1,100,nv.10)
 
 ::method 'test043'
-    mb = .mutablebuffer~new()
+    mb = .mutablebuffer~new(noval2)
     self~expectSyntax(93.905)
-    xre = noval2~overLay(noval1,noval3,noval4,noval5)
+    xre = mb~overLay(noval1,noval3,noval4,noval5)
 
 ::method 'test044'
-    mb = .mutablebuffer~new()
-    self~assertSame('subTest01','042888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888',0000~overLay(2*21,1+1,100*2,4+4))
+    mb = .mutablebuffer~new(0000)
+    self~assertSame('subTest01','042888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888',mb~overLay(2*21,1+1,100*2,4+4)~string)
 
 ::method 'test045'
-    mb = .mutablebuffer~new()
-    self~assertSame('subTest01','0429999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999',(+0000)~overLay(+42,4*.5,42*5,4+5))
+    mb = .mutablebuffer~new(+0000)
+    self~assertSame('subTest01','0429999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999',mb~overLay(+42,4*.5,42*5,4+5)~string)
 
 ::method 'test046'
-    mb = .mutablebuffer~new()
-    self~assertSame('subTest01','4266666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666',(+12345)~overLay(7*3*2,5-4,50*2,2+4))
+    mb = .mutablebuffer~new(+12345)
+    self~assertSame('subTest01','4266666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666',mb~overLay(7*3*2,5-4,50*2,2+4)~string)
 
 ::method 'test047'
-    mb = .mutablebuffer~new()
-    self~assertSame('subTest01','042'||copies('8',198),.vn0000~overLay(.vn2*.vn21,.vn1+.vn1,.vn100*.vn2,.vn4+.vn4))
+    mb = .mutablebuffer~new(.vn0000)
+    self~assertSame('subTest01','042'||copies('8',198),mb~overLay(.vn2*.vn21,.vn1+.vn1,.vn100*.vn2,.vn4+.vn4)~string)
 
 ::method 'test048'
     vn.5 = .5
-    mb = .mutablebuffer~new()
-    self~assertSame('subTest01','042'||copies('9',208),.vn0000~overLay(.vn42,.vn4*vn.5,.vn42*.vn5,.vn4+.vn5))
+    mb = .mutablebuffer~new(.vn0000)
+    self~assertSame('subTest01','042'||copies('9',208),mb~overLay(.vn42,.vn4*vn.5,.vn42*.vn5,.vn4+.vn5)~string)
 
 ::method 'test049'
-    mb = .mutablebuffer~new()
-    self~assertSame('subTest01','4266666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666',.vn12345~overLay(.vn7*.vn3*.vn2,.vn5-.vn4,.vn50*.vn2,.vn2+.vn4))
+    mb = .mutablebuffer~new(.vn12345)
+    self~assertSame('subTest01','4266666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666',mb~overLay(.vn7*.vn3*.vn2,.vn5-.vn4,.vn50*.vn2,.vn2+.vn4)~string)
 
 ::method 'test050'
     numeric digits 1
     vn.5 = .5
-    mb = .mutablebuffer~new()
-    self~assertSame('subTest01','04E+18888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888',0000~overLay(2*21,1+1,100*2,4+4))
-    self~assertSame('subTest02','04E+19999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999',(+0000)~overLay(+42,4*.5,42*5,4+5))
-    self~assertSame('subTest03','4E+1666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666',(+12345)~overLay(7*3*2,5-4,50*2,2+4))
-    self~assertSame('subTest04','04E+1'||copies('8',196),.vn0000~overLay(.vn2*.vn21,.vn1+.vn1,.vn100*.vn2,.vn4+.vn4))
-    self~assertSame('subTest05','042'||copies('9',198),.vn0000~overLay(.vn42,.vn4*vn.5,.vn42*.vn5,.vn4+.vn5))
-    self~assertSame('subTest06','4E+1666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666',.vn12345~overLay(.vn7*.vn3*.vn2,.vn5-.vn4,.vn50*.vn2,.vn2+.vn4))
+    mb = .mutablebuffer~new(0000)
+    self~assertSame('subTest01','04E+18888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888',mb~overLay(2*21,1+1,100*2,4+4)~string)
+    mb = .mutablebuffer~new(+0000)
+    self~assertSame('subTest02','04E+19999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999',mb~overLay(+42,4*.5,42*5,4+5)~string)
+    mb = .mutablebuffer~new(+12345)
+    self~assertSame('subTest03','4E+1666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666',mb~overLay(7*3*2,5-4,50*2,2+4)~string)
+    mb = .mutablebuffer~new(.vn0000)
+    self~assertSame('subTest04','04E+1'||copies('8',196),mb~overLay(.vn2*.vn21,.vn1+.vn1,.vn100*.vn2,.vn4+.vn4)~string)
+    self~assertSame('subTest05','042'||copies('9',198),mb~overLay(.vn42,.vn4*vn.5,.vn42*.vn5,.vn4+.vn5)~string)
+    mb = .mutablebuffer~new(.vn12345)
+    self~assertSame('subTest06','4E+1666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666',mb~overLay(.vn7*.vn3*.vn2,.vn5-.vn4,.vn50*.vn2,.vn2+.vn4)~string)
 
 ::method 'test051'
-    mb = .mutablebuffer~new()
-    self~assertSame('subTest01','*bcdefghijklmnopqrstuvwxyz1***',copies(.v1,30)~overLay(subStr(.v30,2,28),pos('O','WORD'),x2d(1A),dataType(6,'N')))
+    mb = .mutablebuffer~new(copies(.v1,30))
+    self~assertSame('subTest01','*bcdefghijklmnopqrstuvwxyz1***',mb~overLay(subStr(.v30,2,28),pos('O','WORD'),x2d(1A),dataType(6,'N'))~string)
 
 ::method 'test052'
-    mb = .mutablebuffer~new()
-    self~assertSame('subTest01','ab|||||||||*'||copies('d1'x,11),left(.v30,11)~overLay(right(.v1,10,'|'),center('135',1),subStr('321',2),d2c(209)))
+    mb = .mutablebuffer~new(left(.v30,11))
+    self~assertSame('subTest01','ab|||||||||*'||copies('d1'x,11),mb~overLay(right(.v1,10,'|'),center('135',1),subStr('321',2),d2c(209))~string)
 
 ::method 'test053'
-    mb = .mutablebuffer~new()
-    self~assertSame('subTest01','5'||copies('0',c2d('J')-1),right('',5,'0')~overLay(word(1+2 2+3 ,2),dataType(7,'N'),c2d('J'),pos('O','')))
+    mb = .mutablebuffer~new(right('',5,'0'))
+    self~assertSame('subTest01','5'||copies('0',c2d('J')-1),mb~overLay(word(1+2 2+3 ,2),dataType(7,'N'),c2d('J'),pos('O',''))~string)
 
 ::method 'test054'
-    mb = .mutablebuffer~new()
-    self~assertSame('subTest01','John R. Buckley','        Buckley'~overLay('     R.'~overLay(' ohn'~overLay('J'))))
+    mb = .mutablebuffer~new('        Buckley')
+    self~assertSame('subTest01','John R. Buckley',mb~overLay('     R.'~overLay(' ohn'~overLay('J')))~string)
 
 ::method 'test055'
-    mb = .mutablebuffer~new()
-    self~assertSame('subTest01','Johnley',' uckley'~overLay('B')~overLay(' ohn'~overLay('J')))
+    mb = .mutablebuffer~new(' uckley')
+    self~assertSame('subTest01','Johnley',mb~overLay('B')~overLay(' ohn'~overLay('J'))~string)
 
 ::method 'test056'
-    mb = .mutablebuffer~new()
-    self~assertSame('subTest01','BuckleyRRJohnRRRRRRR','Buckley'~overLay('John','00'~overLay('1'),'01'~overLay('1'),'X'~overLay('R')))
+    mb = .mutablebuffer~new('Buckley')
+    self~assertSame('subTest01','BuckleyRRJohnRRRRRRR',mb~overLay('John','00'~overLay('1'),'01'~overLay('1'),'X'~overLay('R'))~string)
 
 ::method 'test057'
     .local~remove(vnull)
@@ -428,4 +429,4 @@ return testGroupList
     .local~remove(vres6)
     .local~remove(vres7)
 
-*/
+
