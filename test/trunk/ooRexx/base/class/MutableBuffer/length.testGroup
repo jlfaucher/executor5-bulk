@@ -262,6 +262,31 @@ return testGroupList
     .local~remove(v32768)
     .local~remove(v100000)
 
+::method 'testLength'
+   b = .mutableBuffer~new("1234")
+   self~assertEquals("Wrong length",4,b~length)
+
+   b = .mutableBuffer~new("123")
+   self~AssertEquals("Length incorrect before",3,b~length)
+
+   b~append("abc")
+   self~AssertEquals("Length incorrect after",6,b~length)
+
+   b = .mutableBuffer~new("123456")
+   self~AssertEquals("Length incorrect before",6,b~length)
+
+   b = .mutableBuffer~new("123456")
+   b~insert("abc")
+   b~insert("abc",7,,"+")
+   b~insert("abc",1,0,"+")
+   self~AssertEquals("Length incorrect after",12,b~length)
+
+   b = .mutableBuffer~new("1234567890")
+   self~AssertEquals("Length incorrect before",10,b~length)
+   b~delete(11)
+   b~delete(1,2)
+   self~AssertEquals("Length incorrect after",8,b~length)
+
 
 
 

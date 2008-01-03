@@ -557,3 +557,32 @@ return testGroupList
     mb = .mutablebuffer~new(a)
     self~assertSame('subTest01','9',mb~pos(b,c))
 
+::METHOD "testPos"
+   b = .mutableBuffer~new("1234567890")
+
+   self~assertEquals("Wrong position 1",4,b~pos("4"))
+   self~assertEquals("Wrong position 2",4,b~pos("4",2))
+   self~assertEquals("Wrong position 3",0,b~pos("4",99))
+   self~assertEquals("Wrong position 4",0,b~pos("x"))
+   self~assertEquals("Wrong position 5",4,b~pos("456"))
+::METHOD "testPosSyntax1"
+   b = .mutableBuffer~new("1234567890")
+   self~expectSyntax(93.903)
+   b~pos()
+
+::METHOD "testPosSyntax2"
+   b = .mutableBuffer~new("1234567890")
+   self~expectSyntax(93.938)
+   b~pos(.nil)
+
+::METHOD "testPosSyntax3"
+   b = .mutableBuffer~new("1234567890")
+   self~expectSyntax(93.924)
+   b~pos("1",-1)
+
+::METHOD "testPosSyntax4"
+   b = .mutableBuffer~new("1234567890")
+   self~expectSyntax(93.938)
+   b~pos("1",.nil)
+
+

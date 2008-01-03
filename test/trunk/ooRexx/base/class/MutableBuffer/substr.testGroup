@@ -528,3 +528,50 @@ return testGroupList
     .local~remove(v256)
     .local~remove(v10000)
 
+::METHOD "testSubStr"
+   b = .mutableBuffer~new("1234567890")
+
+   self~assertEquals("Wrong string 1","234567890",b~substr(2))
+   self~assertEquals("Wrong string 2","1",b~substr(1,1))
+   self~assertEquals("Wrong string 3","4",b~substr(4,1,"#"))
+   self~assertEquals("Wrong string 4","0#",b~substr(10,2,"#"))
+::METHOD "testSubStrSyntax1"
+   b = .mutableBuffer~new("1234567890")
+   self~expectSyntax(93.903)
+   b~subStr()
+
+::METHOD "testSubStrSyntax2"
+   b = .mutableBuffer~new("1234567890")
+   self~expectSyntax(93.938)
+   b~subStr(.nil)
+
+::METHOD "testSubStrSyntax3"
+   b = .mutableBuffer~new("1234567890")
+   self~expectSyntax(93.924)
+   b~subStr(0)
+
+::METHOD "testSubStrSyntax4"
+   b = .mutableBuffer~new("1234567890")
+   self~expectSyntax(93.938)
+   b~subStr(.nil,0)
+
+::METHOD "testSubStrSyntax5"
+   b = .mutableBuffer~new("1234567890")
+   self~expectSyntax(93.938)
+   b~subStr(1,.nil)
+
+::METHOD "testSubStrSyntax6"
+   b = .mutableBuffer~new("1234567890")
+   self~expectSyntax(93.923)
+   b~subStr(1,-1)
+
+::METHOD "testSubStrSyntax7"
+   b = .mutableBuffer~new("1234567890")
+   self~expectSyntax(93.938)
+   b~subStr(1,1,.nil)
+
+::METHOD "testSubStrSyntax8"
+   b = .mutableBuffer~new("1234567890")
+   self~expectSyntax(93.922)
+   b~subStr(1,1,"  ")
+
