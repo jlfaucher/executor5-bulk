@@ -160,17 +160,8 @@ return testGroupList
    return
 
 ::method "test_4"
--- This test does not work as David expected, see notes
-   --return
    signal on novalue
-   -- call myproc  SEE also NOTES in test_6() and test7()
-   /* NOTE: I think myproc is running in the context of the test_4() method.
-      So, raising user badvalue causes a return from the test_4() method, not
-      just a return from myproc.  Is this correct?
-
-      Same basic thing in test_7
-   */
-   .SignalHelper~new~~doTest_4
+   call myproc
    self~assertTrue("subTest_4", 0)
    return
 
@@ -181,7 +172,7 @@ return testGroupList
    return
 
    myproc:
-   raise novalue
+   raise novalue return
    return
 
 ::method "test_5"
@@ -198,17 +189,8 @@ return testGroupList
    return
 
 ::method "test_6"
--- This test did not work as David expected, see notes.
-   --return
    signal on error
-   --call myproc
-   /* NOTE: I think myproc is running in the context of the test_6() method.
-      So, raising user badvalue causes a return from the test_6() method, not
-      just a return from myproc.  Is this correct?
-
-      Same basic thing in test_7
-   */
-   .SignalHelper~new~~doTest_6
+   call myproc
    self~assertTrue("subTest_6", 0)
    return
 
@@ -218,47 +200,52 @@ return testGroupList
    self~assertSame("subTest6c", condition('s'),'OFF')
    return
 
-   /*
    myproc: procedure
-   raise error 44.1
+   raise error 44.1 return
    return
-   */
 
 ::method "test_7"
--- This test does not work properly yet
---   return
    signal on user badvalue
-   --call myproc
-   .SignalHelper~new~~doTest_7
+   call myproc
    self~assertTrue("subTest_1", 0)
    return
 
    badvalue:
-   --self~assertSame("subTest1a", condition('cs'),'USER')
-   /* NOTE condition('cs') is USER BADVALUE, not USER as David expected.  Is
-      this correct?
-   */
    self~assertSame("subTest1a", condition('cs'),'USER BADVALUE')
    self~assertSame("subTest1b", condition('i'),'SIGNAL')
    self~assertSame("subTest1c", condition('s'),'OFF')
    return
 
    myproc: procedure
-   raise user badvalue
+   raise user badvalue return
    return
 
-
-::class 'SignalHelper'
-
-::method doTest_4
-   raise novalue
+::method "test_8"
+   signal on failure
+   trace off
+   'zxyabc' -- deliberate failure, this command should not be found!
+   self~assertTrue("subTest_5", 0)
    return
 
-::method doTest_6
-   raise error 44.1
+   failure:
+   self~assertSame("subTest5a", condition('cs'),'FAILURE')
+   self~assertSame("subTest5b", condition('i'),'SIGNAL')
+   self~assertSame("subTest5c", condition('s'),'OFF')
    return
 
-::method doTest_7
-  raise user badvalue
-  return
+::method "test_9"
+   signal on failure
+   call myproc
+   self~assertTrue("subTest_6", 0)
+   return
+
+   failure:
+   self~assertSame("subTest5a", condition('cs'),'FAILURE')
+   self~assertSame("subTest6b", condition('i'),'SIGNAL')
+   self~assertSame("subTest6c", condition('s'),'OFF')
+   return
+
+   myproc: procedure
+   raise failure 44.1 return
+   return
 
