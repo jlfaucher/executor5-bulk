@@ -63,6 +63,8 @@
 /*----------------------------------------------------------------------------*/
 cmdLine = arg(1)
 
+   absoluteBegin = .TimeSpan~new(time('F'))
+
    -- Quick check for incorrect command line.
    if cmdLine~words > 5 then return doHelp()
 
@@ -89,10 +91,13 @@ cmdLine = arg(1)
    do i=1 to tests.0
       list~insert(tests.i)
    end
+   searchEnd = .TimeSpan~new(time('F'))
 
    ts=makeTestSuiteFromFileList(list)  -- create the testSuite object
    call time "Reset"      -- start timer
+   suiteEnd = .TimeSpan~new(time('F'))
    tr=ts~run( , feedback) -- run all the tests in the testSuite, retrieve the testResult object
+   testEnd = .TimeSpan~new(time('F'))
    e=time("Elapsed")
 
                -- show brief results
@@ -113,6 +118,11 @@ cmdLine = arg(1)
    end
    -- End select
 
+   absoluteEnd = .TimeSpan~new(time('F'))
+   say 'File search:   ' (searchEnd - absoluteBegin)
+   say 'Suite Build:   ' (suiteEnd - searchEnd)
+   say 'Test execution:' (testEnd - suiteEnd)
+   say 'Total time:    ' (absoluteEnd - absoluteBegin)
 
 return 0
 
