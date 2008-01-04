@@ -132,7 +132,7 @@ return testGroupList
    b = .mutableBuffer~new("1234567890")
 
    self~assertEquals("Wrong char 1",4,b~subchar(4))
-   self~assertEquals("Wrong char 2",,b~subchar(99))
+   self~assertEquals("Wrong char 2","",b~subchar(99))
 ::METHOD "testSubCharSyntax1"
    b = .mutableBuffer~new("1234567890")
    self~expectSyntax(93.903)
