@@ -191,9 +191,11 @@ if \ .local~hasEntry(ooRexxUnit.version) then do
   if currentPath~caseLessPos(.ooRexxUnit.dir) == 0 then
      oldPath = value("PATH", .ooRexxUnit.dir || .ooRexxUnit.path.separator || currentPath, 'ENVIRONMENT')
 
+  /*
   do rtn over .methods
      .public_routines~put(.methods[rtn], rtn)
   end
+  */
 end
 
 -- End of entry point.
@@ -221,17 +223,36 @@ end
  * false.
  *
  */
-::method isSubClassOf
+::routine isSubClassOf public
   use strict arg clz, superClassName
 
+  --say 'superClassName:' superClassName 'class id:' clz~id
+
   if \ clz~isA(.class) then return .false
-  do while clz<>.nil
-     if clz~id~caselessEquals(superClassName)=1 then   -- o.k. found!
-        return .true
-     clz=clz~superClass    -- look further, get immediate superclass
+  if clz~id~caselessEquals(superClassName) then return .true
+  supers = clz~superClasses
+  --say '  Supers items:' supers~items
+  if supers~items == 0 then return .false
+
+  --
+  do cObj over supers
+    --say '    superclass id' cObj~id
+    if cObj~id~caselessEquals(superClassName) then return .true
+  end
+
+  do cObj over supers
+    if isSubClassOf(cObj, superClassName) then return .true
   end
   return .false
 -- End isSubClassOf()
+
+::routine querySuperClasses public
+  use arg classObj
+  classes = classObj~superClasses
+  do c over classes
+    say c
+  end
+return 0
 
 /** isBoolean()
  *
@@ -245,7 +266,7 @@ end
  *
  * Returns true if the object is strictly true, otherwise false.
  */
-::method  isBoolean
+::routine isBoolean public
   use arg obj
   if arg(1, 'E') then do
     if obj~isA(.string) then do
@@ -262,7 +283,7 @@ return .false
  * @param min     REQUIRED  The minimal value of the range.
  * @param max     REQURIED  The maximal value of the range.
  */
-::method isWholeRange
+::routine isWholeRange public
   use strict arg number, min, max
   if number~isA(.String) then do
     if number~dataType('W') then do
@@ -290,7 +311,7 @@ return .false
     already less than or equal to the specified length, it is returned
     unchanged.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::method pathCompact public
+::routine pathCompact public
   use strict arg path, len
 
   if path~length <= len then return path
@@ -330,20 +351,20 @@ return leading || trailing
 /** enQuote()
  * Enclose a string in double quotes.
  */
-::method enQuote
+::routine enQuote public
   return '"' || arg(1)~string || '"'
 
 /** pp()
  * Enclose a string value in square brackets "pretty print."
  */
-::method pp public
+::routine pp public
   return "[" || arg(1)~string || "]"
 
 /** ppp()
  * Enclose a string value in square brackets, escaping non-printable chars as
  * Rexx concatenated Rexx hex strings.
 */
-::method ppp
+::routine ppp public
   use arg string
 
   if verify(string, .chars.NonPrintable, "Match")>0 then
@@ -354,7 +375,7 @@ return leading || trailing
 /** addN
  * If name starts with a vowel, then "n" is returned, "" else
  */
-::method addN
+::routine addN public
   parse arg name
 
   if "aeiou"~caselessPos(name~left(1))>0 then return "n"
@@ -363,7 +384,7 @@ return leading || trailing
 /** escapeString()
  * Escape non-printable characters in string.
  */
-::method escapeString
+::routine escapeString public
   use arg str
   tmpStr=.mutableBuffer~new
 
@@ -406,7 +427,7 @@ return leading || trailing
  * Return a date / time string.  This allows a consistent format of time stamps
  * throughout the test framework.
  */
-::method timeStamp
+::routine timeStamp public
   return pp(date("S") time("L"))
 
 
@@ -926,18 +947,7 @@ return str
  * equal collection objects.
  */
 ::method assertEquals
-
-  -- If 2 args then no failure message is supplied.
-  if arg() = 2 then do
-    msg      = ""
-    expected = arg(1)
-    actual   = arg(2)
-  end
-  else do
-    msg      = arg(1)
-    expected = arg(2)
-    actual   = arg(3)
-  end
+  use strict arg expected, actual, msg = ""
 
   if \ (expected = actual) then do
     if \ isCollEqual(expected, actual) then do
@@ -957,17 +967,7 @@ return str
 
 
 ::method assertNotEquals
-
-  if arg() = 2 then do
-    msg      = ""
-    expected = arg(1)
-    actual   = arg(2)
-  end
-  else do
-    msg      = arg(1)
-    expected = arg(2)
-    actual   = arg(3)
-  end
+  use strict arg expected, actual, msg = ""
 
   -- If the 2 objects are not equal AND they are not 2 equal collections ...
   if \ (expected = actual), \ isCollEqual(expected, actual) then do
@@ -987,15 +987,7 @@ return str
 
 
 ::method assertNull
-
-  if arg()=1 then do
-    msg    = ""
-    actual = arg(1)
-  end
-  else do
-    msg    = arg(1)
-    actual = arg(2)
-  end
+  use strict arg actual, msg = ""
 
   if \ (.nil = actual) then do
     data = .AssertFailure~new(timeStamp(), self~definedInFile, "assertNull")
@@ -1013,15 +1005,7 @@ return str
 
 
 ::method assertNotNull
-
-  if arg()=1 then do
-    msg    = ""
-    actual = arg(1)
-  end
-  else do
-    msg    = arg(1)
-    actual = arg(2)
-  end
+  use strict arg actual, msg = ""
 
   if (.nil = actual) then do
     data = .AssertFailure~new(timeStamp(), self~definedInFile, "assertNotNull")
@@ -1039,17 +1023,7 @@ return str
 
 
 ::method assertSame
-
-  if arg() = 2 then do
-    msg      = ""
-    expected = arg(1)
-    actual   = arg(2)
-  end
-  else do
-    msg      = arg(1)
-    expected = arg(2)
-    actual   = arg(3)
-  end
+  use strict arg expected, actual, msg = ""
 
   if \ (expected == actual) then do
     data = .AssertFailure~new(timeStamp(), self~definedInFile, "assertSame")
@@ -1067,17 +1041,7 @@ return str
 
 
 ::method assertNotSame
-
-  if arg() = 2 then do
-    msg      = ""
-    expected = arg(1)
-    actual   = arg(2)
-  end
-  else do
-    msg      = arg(1)
-    expected = arg(2)
-    actual   = arg(3)
-  end
+  use strict arg expected, actual, msg = ""
 
   if (expected == actual) then do
     data = .AssertFailure~new(timeStamp(), self~definedInFile, "assertNotSame")
@@ -1095,15 +1059,7 @@ return str
 
 
 ::method assertTrue
-
-  if arg() = 1 then do
-    msg    = ""
-    actual = arg(1)
-  end
-  else do
-    msg    = arg(1)
-    actual = arg(2)
-  end
+  use strict arg actual, msg = ""
 
   if \ (actual = .true) then do
     data = .AssertFailure~new(timeStamp(), self~definedInFile, "assertTrue")
@@ -1121,15 +1077,7 @@ return str
 
 
 ::method assertFalse
-
-  if arg() = 1 then do
-    msg    = ""
-    actual = arg(1)
-  end
-  else do
-    msg    = arg(1)
-    actual = arg(2)
-  end
+  use strict arg actual, msg = ""
 
   if \ (actual = .false) then do
     data = .AssertFailure~new(timeStamp(), self~definedInFile, "assertFalse")
@@ -1167,6 +1115,9 @@ return str
 ::method fail
   use strict arg data
 
+  -- DFX TODO Some exsiting test cases call fail() directly.  Need to check if
+  -- data is a simple .String and if so, create an AssertFailure object from
+  -- that string.
   msg = "ooRexxUnit.cls - source of syntax exception 'FAIL' method invocation in class 'ASSERT'."
 
   RAISE syntax 93.964 array (msg, data)

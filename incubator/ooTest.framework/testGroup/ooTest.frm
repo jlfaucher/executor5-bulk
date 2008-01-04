@@ -70,9 +70,11 @@ if \ .local~hasEntry('OOTEST_FRAMEWORK_VERSION') then do
   if currentPath~caseLessPos(.ooTest.dir) == 0 then
      oldPath = value("PATH", .ooTest.dir || .ooRexxUnit.path.separator || currentPath, 'ENVIRONMENT')
 
+  /*
   do rtn over .methods
      .public_routines~put(.methods[rtn], rtn)
   end
+  */
 end
 -- End of entry point.
 
@@ -81,7 +83,7 @@ end
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::requires "OOREXXUNIT.CLS"
 
-::method makeSetOfWords
+::routine makeSetOfWords public
   use strict arg wordCollection, upper = .true
 
   if \ isBoolean(upper) then upper = .true
@@ -107,7 +109,7 @@ end
 return s
 -- End makeSetOfWords()
 
-::method makeArrayOfWords
+::routine makeArrayOfWords public
   use strict arg wordCollection, upper = .true
 
   if \ upper~isA(.string) then upper = .true
@@ -139,7 +141,8 @@ return a
  * implement the TestContainer interface can be 'found' by the ooTestFinder
  * class.
  */
-::class 'TestContainer' public
+--::class 'TestContainer' public
+::class 'TestContainer' public mixinclass Object
 
 /** isEmpty() Returns true or false.  True if the container has no tests,
  * otherwise false.
@@ -333,7 +336,7 @@ return a
 
     parse version self~rexxVersion
     self~unitVersion = .ooRexxUnit.version
-    self~ooTestVersion - .ooTest.version
+    self~ooTestVersion = .ooTest.version
 
 
   /** print()
@@ -463,7 +466,7 @@ return a
   -- End init( )
 
   ::method addFailure
-    use arg strict testCase, failData
+    use strict arg testCase, failData
     forward class (super) continue
 
     if failData~msg~abbrev(.ooRexxUnit.knownBugFlag) then self~knownFailures~queue(failData)
@@ -509,7 +512,7 @@ return a
     the Test Group handles some of the rote chores used in configuring the Test.
 
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class "TestGroup" public subclass TestContainer
+::class "TestGroup" public subclass Object inherit TestContainer
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
   Methods implementating the TestContainer interface.
@@ -1253,6 +1256,7 @@ return suite
 
     data = .Notification~new(timeStamp(), fileName, .Notification~SKIP_TYPE)
     data~reason = "Attempt to convert returned object into a TestGroup failed"
+    data~additional = ""
     if \ self~objectIsTestUnitList(obj, data) then return data
 
     src = self~getHeader(fileName)
@@ -1301,25 +1305,25 @@ return suite
 
     if obj~isA(.list) then do a over obj
       if \ a~isA(.array) then do
-        data~addtional = "Item in TestUnit list is not an array"
+        data~additional = "Item in TestUnit list is not an array"
         return .false
       end
       if a~items \== 2 then do
-        data~addtional = "Array item in TestUnit list does not have 2 indexes"
+        data~additional = "Array item in TestUnit list does not have 2 indexes"
         return .false
       end
       if \ isSubclassOf(a[1], "TestCase") then do
-        data~addtional = "Index 1 of array item is not subclass of TestCase"
+        data~additional = "Index 1 of array item is not subclass of TestCase"
         return .false
       end
       if \ a[2]~isA(.list) then do
-        data~addtional = "Index 2 of array item is not a .List"
+        data~additional = "Index 2 of array item is not a .List"
         return .false
       end
       return .true
     end
 
-    data~addtional = "Object is not a list, object is:" obj
+    data~additional = "Object is not a list, object is:" obj
   return .false
 
 -- End of class: ooTestFinder

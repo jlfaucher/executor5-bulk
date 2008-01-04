@@ -3,6 +3,9 @@
   c = .set~new
   say 's subset c' s~subset(c)
 
+  supers = .Object~superClasses
+  say 'Object has' supers~items 'super classess'
+  return 0
   group = .TestGroup~new("ooRexx\base\Assignments.testGroup")
   say 'group is a TestContainer:' group~isA(.TestContainer)
   say 'group has tests:         ' group~hasTests
@@ -24,4 +27,29 @@
     say 'good .nil is not a collection'
   end
 
+  say 'Query super classes of TestGroup:'
+  j = querySuperClasses(.TestGroup)
+
+  say 'TestGroup is a subclass of TestContainer:' .TestGroup~isSubClassOf(.TestContainer)
+  say 'TestGroup is a TestContainer:            ' .TestGroup~isA(.TestContainer)
+  say 'TestGroup is a Class:                    ' .TestGroup~isA(.Class)
+  say 'group is a Class:                        ' group~isA(.Class)
+  say 'group is a TestContainer:                ' group~isA(.TestContainer)
+  if group~isA(.class) then do
+    say 'group is a subclass of TestContainer:    ' group~isSubClassOf(.TestContainer)
+  end
+
+  cObj = 'doIt'('TestGroup')
+  say 'cObj is a class:' cObj~isA(.class)
+  say 'cObj is a subclass of TestContainer:' cObj~isSubClassOf(.TestContainer)
+
+  obj = 'doIt'('group')
+  say 'obj is a class:        ' obj~isA(.class)
+  say 'obj is a TestGroup:    ' obj~isA(.TestGroup)
+  say 'obj is a TestContainer:' obj~isA(.TestContainer)
+
 ::requires "ooTest.frm"
+
+::routine readIt
+  say 'class.name:' .ooRexxUnit.class.name
+return 0

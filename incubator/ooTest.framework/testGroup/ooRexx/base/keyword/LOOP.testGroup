@@ -225,39 +225,39 @@ return testResult
 
    self~assertEquals("subtest_12: leaving 'aha1'!", 1, i)
 
-     -- test 4
+
+::method 'test_LOOP_LABEL_with_interpret'
+
    str="i=0                                                                    ;" -
    "LOOP label aha1                                                              ;" -
-   "   self~assertTrue(""subtest_13: LABEL subkeyword on LOOP known"", .true)    ;" -
    "   i=i+1                                                                   ;" -
    "   loop label aha2                                                           ;" -
-   "      self~assertTrue(""subtest_14: LABEL subkeyword on LOOP known"", .true) ;" -
    "      leave aha2                                                           ;" -
-   "      self~fail(""subtest_15: 'leave aha2' did not work!"")                ;" -
+   "      i = 10                                                               ;" -
    "   end                                                                     ;" -
    "   i=i+1                                                                   ;" -
    "   leave                                                                   ;" -
    "END aha1                                                                   ;" -
-   "self~assertEquals(""subtest_16: leaving 'aha2'!"", 2, i)                   ;"
 
    interpret str
+   self~assertNotEquals("i must be incremented", 0, i)
+   self~assertNotEquals("Leave aha2 must work", 11, i)
+   self~assertEquals("Loop with label must leave i == 2", 2, i)
 
 
 ::method "test_LOOP_LABEL_error 10.2"
 
    str="i=0                                                                    ;" -
    "LOOP label aha1                                                              ;" -
-   "   self~assertTrue(""subtest_01: LABEL subkeyword on LOOP known"", .true)    ;" -
    "   i=i+1                                                                   ;" -
    "   do label aha2                                                           ;" -
-   "      self~assertTrue(""subtest_02: LABEL subkeyword on LOOP known"", .true) ;" -
    "      leave aha2                                                           ;" -
-   "      self~fail(""subtest_03: 'leave aha2' did not work!"")                ;" -
+   "      i = 22                                                               ;" -
+   "      i = 23                                                               ;" -
    "   end                                                                     ;" -
    "   i=i+1                                                                   ;" -
    "   leave                                                                   ;" -
    "END nixi                                                                   ;" -
-   "self~assertEquals(""subtest_04: leaving 'aha2'!"", 2, i)                   ;"
 
    self~expectSyntax( 10.2 )
    interpret str

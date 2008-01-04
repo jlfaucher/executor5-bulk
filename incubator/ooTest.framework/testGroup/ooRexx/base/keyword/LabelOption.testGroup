@@ -122,40 +122,42 @@ return testResult
 
    self~assertEquals("subtest_04: leaving 'aha1'!", 1, i)
 
-     -- test 3
+::method "test_DO_lable_works_with_interpret"
    str="i=0                                                                    ;" -
    "DO label aha1                                                              ;" -
-   "   self~assertTrue(""subtest_01: LABEL subkeyword on DO known"", .true)    ;" -
    "   i=i+1                                                                   ;" -
-   "   do label aha2                                                           ;" -
-   "      self~assertTrue(""subtest_02: LABEL subkeyword on DO known"", .true) ;" -
+   "   DO label aha2                                                           ;" -
    "      leave aha2                                                           ;" -
-   "      self~fail(""subtest_03: 'leave aha2' did not work!"")                ;" -
+   "      i = 9                                                                ;" -
    "   end                                                                     ;" -
    "   i=i+1                                                                   ;" -
    "END aha1                                                                   ;" -
-   "self~assertEquals(""subtest_04: leaving 'aha2'!"", 2, i)                   ;"
 
    interpret str
 
+   self~assertNotEquals("i must be incremented", 0, i)
+   self~assertNotEquals("Leave aha2 did not work", 10, i)
+   self~assertEquals("Do loops with label must leave i == 2", 2, i)
 
-::method "test_DO_LABEL_error 10.2"
+
+::method "test_DO_LABEL_interpret_with_error"
+
+   -- This test case should produce a synatx error because the label on the END
+   -- keyword must match the label on the matching DO.  Test just that and
+   -- nothing else.
+
    str="i=0                                                                    ;" -
    "DO label aha1                                                              ;" -
-   "   self~assertTrue(""subtest_01: LABEL subkeyword on DO known"", .true)    ;" -
    "   i=i+1                                                                   ;" -
    "   do label aha2                                                           ;" -
-   "      self~assertTrue(""subtest_02: LABEL subkeyword on DO known"", .true) ;" -
    "      leave aha2                                                           ;" -
-   "      self~fail(""subtest_03: 'leave aha2' did not work!"")                ;" -
    "   end                                                                     ;" -
    "   i=i+1                                                                   ;" -
+   "   leave                                                                   ;" -
    "END nixi                                                                   ;" -
-   "self~assertEquals(""subtest_04: leaving 'aha2'!"", 2, i)                   ;"
 
-   self~expectSyntax( 10.2 )
+   self~expectSyntax(10.2)
    interpret str
-
 
 
 ::method "test_LOOP_LABEL"
@@ -206,39 +208,39 @@ return testResult
 
    self~assertEquals("subtest_04: leaving 'aha1'!", 1, i)
 
-     -- test 4
+::method 'test_LOOP_label_with_interpret'
+
    str="i=0                                                                    ;" -
    "LOOP label aha1                                                              ;" -
-   "   self~assertTrue(""subtest_01: LABEL subkeyword on LOOP known"", .true)    ;" -
    "   i=i+1                                                                   ;" -
    "   loop label aha2                                                           ;" -
-   "      self~assertTrue(""subtest_02: LABEL subkeyword on LOOP known"", .true) ;" -
    "      leave aha2                                                           ;" -
-   "      self~fail(""subtest_03: 'leave aha2' did not work!"")                ;" -
+   "      i = 22                                                               ;" -
+   "      i = 26                                                               ;" -
+   "      i = 27                                                               ;" -
    "   end                                                                     ;" -
    "   i=i+1                                                                   ;" -
    "   leave                                                                   ;" -
    "END aha1                                                                   ;" -
-   "self~assertEquals(""subtest_04: leaving 'aha2'!"", 2, i)                   ;"
 
    interpret str
 
+   self~assertNotEquals("With LOOP label, i must be incremented", 0, i)
+   self~assertNotEquals("Leave aha2 did not work", 28, i)
+   self~assertEquals("LOOP with label must leave i == 2", 2, i)
 
-::method "test_LOOP_LABEL_error 10.2"
+
+::method "test_LOOP_LABEL_interpret_with_error_10.2"
 
    str="i=0                                                                    ;" -
    "LOOP label aha1                                                              ;" -
-   "   self~assertTrue(""subtest_01: LABEL subkeyword on LOOP known"", .true)    ;" -
    "   i=i+1                                                                   ;" -
    "   do label aha2                                                           ;" -
-   "      self~assertTrue(""subtest_02: LABEL subkeyword on LOOP known"", .true) ;" -
    "      leave aha2                                                           ;" -
-   "      self~fail(""subtest_03: 'leave aha2' did not work!"")                ;" -
    "   end                                                                     ;" -
    "   i=i+1                                                                   ;" -
    "   leave                                                                   ;" -
    "END nixi                                                                   ;" -
-   "self~assertEquals(""subtest_04: leaving 'aha2'!"", 2, i)                   ;"
 
    self~expectSyntax( 10.2 )
    interpret str
@@ -311,24 +313,22 @@ return testResult
 
 ::method "test_SELECT_LABEL_error 10.4"
 
-   str="i=0                                                                    ;" -
-   "SELECT label aha1                                                          ;" -
-   "   when i=-1 then  nop                                                     ;" -
-   "   when i=0 then                                                           ;" -
-   "            do                                                             ;" -
-   "               self~assertTrue(""subtest_01: LABEL subkeyword on SELECT known"", .true)    ;" -
-   "               i=i+1                                                                   ;" -
-   "               do label aha2                                                           ;" -
-   "                  self~assertTrue(""subtest_02: LABEL subkeyword on SELECT known"", .true) ;" -
-   "                  leave aha2                                                           ;" -
-   "                  self~fail(""subtest_03: 'leave aha2' did not work!"")                ;" -
-   "               end                                                                     ;" -
-   "               i=i+1                                                                   ;" -
-   "               leave                                                                   ;" -
-   "            end                                                            ;" -
-   "   otherwise nop                                                           ;" -
-   "END nixi                                                                   ;" -
-   "self~assertEquals(""subtest_04: leaving 'aha2'!"", 2, i)                   ;"
+   -- This test should produce a syntax error, test just that.
+   str="i=0                       ;" -
+   "SELECT label aha1             ;" -
+   "   when i=-1 then  nop        ;" -
+   "   when i=0 then              ;" -
+   "            do                ;" -
+   "               i=i+1          ;" -
+   "               do label aha2  ;" -
+   "                  leave aha2  ;" -
+   "                  i = i + 10  ;" -
+   "               end            ;" -
+   "               i=i+1          ;" -
+   "               leave          ;" -
+   "            end               ;" -
+   "   otherwise nop              ;" -
+   "END nixi                      ;" -
 
    self~expectSyntax( 10.4 )
    interpret str
