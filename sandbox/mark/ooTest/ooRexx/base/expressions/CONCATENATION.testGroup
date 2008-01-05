@@ -1,0 +1,542 @@
+#!/usr/bin/rexx
+/*
+   name:             Concatenation operator testGroup
+   author:           W. David Ashley
+   date:             2007-12-29
+   version:          1.0.1
+
+-- line commented lines are ignored, when building the directory of infos from this header
+   changed:          2007-12-29, ---wda, initial creation
+
+   languageLevel:    6.02
+   purpose:          Test Rexx concatenation operators
+
+   license:          CPL 1.0 (Common Public License v1.0, see below)
+   link:
+
+   category1:        ooRexx
+   category2:        Base
+   category3:        expressions
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2005-2008 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+
+
+-------------------------------------------------------------------------------------------
+-- ===> adapt the "testGroupList" to your testCase classes; each element in the list is <===
+-- ===> an array object, the first element containing the testCase class object, the   <===
+-- ===> second element is a list of test method names which are regarded to be         <===
+-- ===> mandatory (if the list remains empty all test methods are mandatory)           <===
+
+   /* list of array objects, each containing the testGroup class object and an
+      optional list of mandatory test case methods name                       */
+
+mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
+testGroupList=.list~of( .array~of(.CONCATENATION.testGroup,  mandatoryTestMethods) )
+
+
+-------------------------------------------------------------------------------------------
+-- ===> the following code needs not to be individualized                              <===
+
+   -- read top comment, containing infos about this program
+arrLines=.array~new
+do i=1 to 150 until arrLines[i]="*/"
+   arrLines[i]=sourceline(i)
+end
+      -- supply information for the testClass(es) in this file; the class attribute
+      -- "TestCaseInfo" (a directory object, index points to a queue) will store
+      -- the parsed infos
+aTestGroupClass=testGroupList~at(testGroupList~first)[1] -- get first testClass
+
+   -- will parse the array lines and store result in class object
+call makeDirTestInfo aTestGroupClass, arrLines
+tmpDir=aTestGroupClass~TestCaseInfo
+parse source s   -- op_sys invocationType fullPathToThisFile
+tmpDir~setentry("test_Case-source", s)
+
+   -- now add this directory to other testCase classes, if any left
+do arr over testGroupList
+   if arr[1]=aTestGroupClass then iterate  -- already handled
+   arr[1]~TestCaseInfo=tmpDir             -- save info in class object
+end
+
+-- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
+-- and set it to .false; this way the independent local invocation of the tests is inhibited
+if .local~hasentry("bRunTestsLocally")=.false then
+   .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
+
+if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
+do
+   ts=.testSuite~new             -- create a testSuite
+   do arr over testGroupList
+      -- create a testSuite for the given test case class, use all its testmethods
+      ts~addTest( .testSuite~new(arr[1]))
+   end
+   -- testResult=.testSuite~new(testGroupClass)~run
+   testResult=ts~run       -- now run all the tests
+
+   call simpleDumpTestResults testResult
+end
+
+   /* return list of array objects containing test case classes and
+      optionally list of mandatory test methods                      */
+return testGroupList
+
+
+
+::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+
+::class "CONCATENATION.testGroup" subclass TestCase public
+
+::method "test_1"
+   a="abcdefg"'00'x
+   b="abcdefgh"
+   c="abcdefg "
+   d=" abcdefg"
+   e='00'x"abcdefg"
+   f=" abcdefg "
+   g='00'x"abcdefg"'00'x
+   self~assertSame("subTest1", (a==a) (b==a) (c==a) (d==a) (e==a) (f==a) (g==a),'1 0 0 0 0 0 0')
+   self~assertSame("subTest2", (a==b) (b==b) (c==b) (d==b) (e==b) (f==b) (g==b),'0 1 0 0 0 0 0')
+   self~assertSame("subTest3", (a==c) (b==c) (c==c) (d==c) (e==c) (f==c) (g==c),'0 0 1 0 0 0 0')
+   self~assertSame("subTest4", (a==d) (b==d) (c==d) (d==d) (e==d) (f==d) (g==d),'0 0 0 1 0 0 0')
+   self~assertSame("subTest5", (a==e) (b==e) (c==e) (d==e) (e==e) (f==e) (g==e),'0 0 0 0 1 0 0')
+   self~assertSame("subTest6", (a==f) (b==f) (c==f) (d==f) (e==f) (f==f) (g==f),'0 0 0 0 0 1 0')
+   self~assertSame("subTest7", (a==g) (b==g) (c==g) (d==g) (e==g) (f==g) (g==g),'0 0 0 0 0 0 1')
+   self~assertSame("subTest8", (a=a) (b=a) (c=a) (d=a) (e=a) (f=a) (g=a),'1 0 0 0 0 0 0')
+   self~assertSame("subTest9", (a=b) (b=b) (c=b) (d=b) (e=b) (f=b) (g=b),'0 1 0 0 0 0 0')
+   self~assertSame("subTest10", (a=c) (b=c) (c=c) (d=c) (e=c) (f=c) (g=c),'0 0 1 1 0 1 0')
+   self~assertSame("subTest11", (a=d) (b=d) (c=d) (d=d) (e=d) (f=d) (g=d),'0 0 1 1 0 1 0')
+   self~assertSame("subTest12", (a=e) (b=e) (c=e) (d=e) (e=e) (f=e) (g=e),'0 0 0 0 1 0 0')
+   self~assertSame("subTest13", (a=f) (b=f) (c=f) (d=f) (e=f) (f=f) (g=f),'0 0 1 1 0 1 0')
+   self~assertSame("subTest14", (a=g) (b=g) (c=g) (d=g) (e=g) (f=g) (g=g),'0 0 0 0 0 0 1')
+   self~assertSame("subTest15", (a\==a) (b\==a) (c\==a) (d\==a) (e\==a) (f\==a) (g\==a),'0 1 1 1 1 1 1')
+   self~assertSame("subTest16", (a\==b) (b\==b) (c\==b) (d\==b) (e\==b) (f\==b) (g\==b),'1 0 1 1 1 1 1')
+   self~assertSame("subTest17", (a\==c) (b\==c) (c\==c) (d\==c) (e\==c) (f\==c) (g\==c),'1 1 0 1 1 1 1')
+   self~assertSame("subTest18", (a\==d) (b\==d) (c\==d) (d\==d) (e\==d) (f\==d) (g\==d),'1 1 1 0 1 1 1')
+   self~assertSame("subTest19", (a\==e) (b\==e) (c\==e) (d\==e) (e\==e) (f\==e) (g\==e),'1 1 1 1 0 1 1')
+   self~assertSame("subTest20", (a\==f) (b\==f) (c\==f) (d\==f) (e\==f) (f\==f) (g\==f),'1 1 1 1 1 0 1')
+   self~assertSame("subTest21", (a\==g) (b\==g) (c\==g) (d\==g) (e\==g) (f\==g) (g\==g),'1 1 1 1 1 1 0')
+   self~assertSame("subTest22", (a\==a) (b\==a) (c\==a) (d\==a) (e\==a) (f\==a) (g\==a),'0 1 1 1 1 1 1')
+   self~assertSame("subTest23", (a\==b) (b\==b) (c\==b) (d\==b) (e\==b) (f\==b) (g\==b),'1 0 1 1 1 1 1')
+   self~assertSame("subTest24", (a\==c) (b\==c) (c\==c) (d\==c) (e\==c) (f\==c) (g\==c),'1 1 0 1 1 1 1')
+   self~assertSame("subTest25", (a\==d) (b\==d) (c\==d) (d\==d) (e\==d) (f\==d) (g\==d),'1 1 1 0 1 1 1')
+   self~assertSame("subTest26", (a\==e) (b\==e) (c\==e) (d\==e) (e\==e) (f\==e) (g\==e),'1 1 1 1 0 1 1')
+   self~assertSame("subTest27", (a\==f) (b\==f) (c\==f) (d\==f) (e\==f) (f\==f) (g\==f),'1 1 1 1 1 0 1')
+   self~assertSame("subTest28", (a\==g) (b\==g) (c\==g) (d\==g) (e\==g) (f\==g) (g\==g),'1 1 1 1 1 1 0')
+   self~assertSame("subTest29", (a\==a) (b\==a) (c\==a) (d\==a) (e\==a) (f\==a) (g\==a),'0 1 1 1 1 1 1')
+   self~assertSame("subTest30", (a\==b) (b\==b) (c\==b) (d\==b) (e\==b) (f\==b) (g\==b),'1 0 1 1 1 1 1')
+   self~assertSame("subTest31", (a\==c) (b\==c) (c\==c) (d\==c) (e\==c) (f\==c) (g\==c),'1 1 0 1 1 1 1')
+   self~assertSame("subTest32", (a\==d) (b\==d) (c\==d) (d\==d) (e\==d) (f\==d) (g\==d),'1 1 1 0 1 1 1')
+   self~assertSame("subTest33", (a\==e) (b\==e) (c\==e) (d\==e) (e\==e) (f\==e) (g\==e),'1 1 1 1 0 1 1')
+   self~assertSame("subTest34", (a\==f) (b\==f) (c\==f) (d\==f) (e\==f) (f\==f) (g\==f),'1 1 1 1 1 0 1')
+   self~assertSame("subTest35", (a\==g) (b\==g) (c\==g) (d\==g) (e\==g) (f\==g) (g\==g),'1 1 1 1 1 1 0')
+   self~assertSame("subTest36", (a\=a) (b\=a) (c\=a) (d\=a) (e\=a) (f\=a) (g\=a),'0 1 1 1 1 1 1')
+   self~assertSame("subTest37", (a\=b) (b\=b) (c\=b) (d\=b) (e\=b) (f\=b) (g\=b),'1 0 1 1 1 1 1')
+   self~assertSame("subTest38", (a\=c) (b\=c) (c\=c) (d\=c) (e\=c) (f\=c) (g\=c),'1 1 0 0 1 0 1')
+   self~assertSame("subTest39", (a\=d) (b\=d) (c\=d) (d\=d) (e\=d) (f\=d) (g\=d),'1 1 0 0 1 0 1')
+   self~assertSame("subTest40", (a\=e) (b\=e) (c\=e) (d\=e) (e\=e) (f\=e) (g\=e),'1 1 1 1 0 1 1')
+   self~assertSame("subTest41", (a\=f) (b\=f) (c\=f) (d\=f) (e\=f) (f\=f) (g\=f),'1 1 0 0 1 0 1')
+   self~assertSame("subTest42", (a\=g) (b\=g) (c\=g) (d\=g) (e\=g) (f\=g) (g\=g),'1 1 1 1 1 1 0')
+   self~assertSame("subTest43", (a\=a) (b\=a) (c\=a) (d\=a) (e\=a) (f\=a) (g\=a),'0 1 1 1 1 1 1')
+   self~assertSame("subTest44", (a\=b) (b\=b) (c\=b) (d\=b) (e\=b) (f\=b) (g\=b),'1 0 1 1 1 1 1')
+   self~assertSame("subTest45", (a\=c) (b\=c) (c\=c) (d\=c) (e\=c) (f\=c) (g\=c),'1 1 0 0 1 0 1')
+   self~assertSame("subTest46", (a\=d) (b\=d) (c\=d) (d\=d) (e\=d) (f\=d) (g\=d),'1 1 0 0 1 0 1')
+   self~assertSame("subTest47", (a\=e) (b\=e) (c\=e) (d\=e) (e\=e) (f\=e) (g\=e),'1 1 1 1 0 1 1')
+   self~assertSame("subTest48", (a\=f) (b\=f) (c\=f) (d\=f) (e\=f) (f\=f) (g\=f),'1 1 0 0 1 0 1')
+   self~assertSame("subTest49", (a\=g) (b\=g) (c\=g) (d\=g) (e\=g) (f\=g) (g\=g),'1 1 1 1 1 1 0')
+   self~assertSame("subTest50", (a\=a) (b\=a) (c\=a) (d\=a) (e\=a) (f\=a) (g\=a),'0 1 1 1 1 1 1')
+   self~assertSame("subTest51", (a\=b) (b\=b) (c\=b) (d\=b) (e\=b) (f\=b) (g\=b),'1 0 1 1 1 1 1')
+   self~assertSame("subTest52", (a\=c) (b\=c) (c\=c) (d\=c) (e\=c) (f\=c) (g\=c),'1 1 0 0 1 0 1')
+   self~assertSame("subTest53", (a\=d) (b\=d) (c\=d) (d\=d) (e\=d) (f\=d) (g\=d),'1 1 0 0 1 0 1')
+   self~assertSame("subTest54", (a\=e) (b\=e) (c\=e) (d\=e) (e\=e) (f\=e) (g\=e),'1 1 1 1 0 1 1')
+   self~assertSame("subTest55", (a\=f) (b\=f) (c\=f) (d\=f) (e\=f) (f\=f) (g\=f),'1 1 0 0 1 0 1')
+   self~assertSame("subTest56", (a\=g) (b\=g) (c\=g) (d\=g) (e\=g) (f\=g) (g\=g),'1 1 1 1 1 1 0')
+   self~assertSame("subTest57", (a>>a) (b>>a) (c>>a) (d>>a) (e>>a) (f>>a) (g>>a),'0 1 1 0 0 0 0')
+   self~assertSame("subTest58", (a>>b) (b>>b) (c>>b) (d>>b) (e>>b) (f>>b) (g>>b),'0 0 0 0 0 0 0')
+   self~assertSame("subTest59", (a>>c) (b>>c) (c>>c) (d>>c) (e>>c) (f>>c) (g>>c),'0 1 0 0 0 0 0')
+   self~assertSame("subTest60", (a>>d) (b>>d) (c>>d) (d>>d) (e>>d) (f>>d) (g>>d),'1 1 1 0 0 1 0')
+   self~assertSame("subTest61", (a>>e) (b>>e) (c>>e) (d>>e) (e>>e) (f>>e) (g>>e),'1 1 1 1 0 1 1')
+   self~assertSame("subTest62", (a>>f) (b>>f) (c>>f) (d>>f) (e>>f) (f>>f) (g>>f),'1 1 1 0 0 0 0')
+   self~assertSame("subTest63", (a>>g) (b>>g) (c>>g) (d>>g) (e>>g) (f>>g) (g>>g),'1 1 1 1 0 1 0')
+   self~assertSame("subTest64", (a>a) (b>a) (c>a) (d>a) (e>a) (f>a) (g>a),'0 1 1 1 0 1 0')
+   self~assertSame("subTest65", (a>b) (b>b) (c>b) (d>b) (e>b) (f>b) (g>b),'0 0 0 0 0 0 0')
+   self~assertSame("subTest66", (a>c) (b>c) (c>c) (d>c) (e>c) (f>c) (g>c),'0 1 0 0 0 0 0')
+   self~assertSame("subTest67", (a>d) (b>d) (c>d) (d>d) (e>d) (f>d) (g>d),'0 1 0 0 0 0 0')
+   self~assertSame("subTest68", (a>e) (b>e) (c>e) (d>e) (e>e) (f>e) (g>e),'1 1 1 1 0 1 0')
+   self~assertSame("subTest69", (a>f) (b>f) (c>f) (d>f) (e>f) (f>f) (g>f),'0 1 0 0 0 0 0')
+   self~assertSame("subTest70", (a>g) (b>g) (c>g) (d>g) (e>g) (f>g) (g>g),'1 1 1 1 1 1 0')
+   self~assertSame("subTest71", (a<<a) (b<<a) (c<<a) (d<<a) (e<<a) (f<<a) (g<<a),'0 0 0 1 1 1 1')
+   self~assertSame("subTest72", (a<<b) (b<<b) (c<<b) (d<<b) (e<<b) (f<<b) (g<<b),'1 0 1 1 1 1 1')
+   self~assertSame("subTest73", (a<<c) (b<<c) (c<<c) (d<<c) (e<<c) (f<<c) (g<<c),'1 0 0 1 1 1 1')
+   self~assertSame("subTest74", (a<<d) (b<<d) (c<<d) (d<<d) (e<<d) (f<<d) (g<<d),'0 0 0 0 1 0 1')
+   self~assertSame("subTest75", (a<<e) (b<<e) (c<<e) (d<<e) (e<<e) (f<<e) (g<<e),'0 0 0 0 0 0 0')
+   self~assertSame("subTest76", (a<<f) (b<<f) (c<<f) (d<<f) (e<<f) (f<<f) (g<<f),'0 0 0 1 1 0 1')
+   self~assertSame("subTest77", (a<<g) (b<<g) (c<<g) (d<<g) (e<<g) (f<<g) (g<<g),'0 0 0 0 1 0 0')
+   self~assertSame("subTest78", (a<a) (b<a) (c<a) (d<a) (e<a) (f<a) (g<a),'0 0 0 0 1 0 1')
+   self~assertSame("subTest79", (a<b) (b<b) (c<b) (d<b) (e<b) (f<b) (g<b),'1 0 1 1 1 1 1')
+   self~assertSame("subTest80", (a<c) (b<c) (c<c) (d<c) (e<c) (f<c) (g<c),'1 0 0 0 1 0 1')
+   self~assertSame("subTest81", (a<d) (b<d) (c<d) (d<d) (e<d) (f<d) (g<d),'1 0 0 0 1 0 1')
+   self~assertSame("subTest82", (a<e) (b<e) (c<e) (d<e) (e<e) (f<e) (g<e),'0 0 0 0 0 0 1')
+   self~assertSame("subTest83", (a<f) (b<f) (c<f) (d<f) (e<f) (f<f) (g<f),'1 0 0 0 1 0 1')
+   self~assertSame("subTest84", (a<g) (b<g) (c<g) (d<g) (e<g) (f<g) (g<g),'0 0 0 0 0 0 0')
+   self~assertSame("subTest85", (a><a) (b><a) (c><a) (d><a) (e><a) (f><a) (g><a),'0 1 1 1 1 1 1')
+   self~assertSame("subTest86", (a><b) (b><b) (c><b) (d><b) (e><b) (f><b) (g><b),'1 0 1 1 1 1 1')
+   self~assertSame("subTest87", (a><c) (b><c) (c><c) (d><c) (e><c) (f><c) (g><c),'1 1 0 0 1 0 1')
+   self~assertSame("subTest88", (a><d) (b><d) (c><d) (d><d) (e><d) (f><d) (g><d),'1 1 0 0 1 0 1')
+   self~assertSame("subTest89", (a><e) (b><e) (c><e) (d><e) (e><e) (f><e) (g><e),'1 1 1 1 0 1 1')
+   self~assertSame("subTest90", (a><f) (b><f) (c><f) (d><f) (e><f) (f><f) (g><f),'1 1 0 0 1 0 1')
+   self~assertSame("subTest91", (a><g) (b><g) (c><g) (d><g) (e><g) (f><g) (g><g),'1 1 1 1 1 1 0')
+   self~assertSame("subTest92", (a<>a) (b<>a) (c<>a) (d<>a) (e<>a) (f<>a) (g<>a),'0 1 1 1 1 1 1')
+   self~assertSame("subTest93", (a<>b) (b<>b) (c<>b) (d<>b) (e<>b) (f<>b) (g<>b),'1 0 1 1 1 1 1')
+   self~assertSame("subTest94", (a<>c) (b<>c) (c<>c) (d<>c) (e<>c) (f<>c) (g<>c),'1 1 0 0 1 0 1')
+   self~assertSame("subTest95", (a<>d) (b<>d) (c<>d) (d<>d) (e<>d) (f<>d) (g<>d),'1 1 0 0 1 0 1')
+   self~assertSame("subTest96", (a<>e) (b<>e) (c<>e) (d<>e) (e<>e) (f<>e) (g<>e),'1 1 1 1 0 1 1')
+   self~assertSame("subTest97", (a<>f) (b<>f) (c<>f) (d<>f) (e<>f) (f<>f) (g<>f),'1 1 0 0 1 0 1')
+   self~assertSame("subTest98", (a<>g) (b<>g) (c<>g) (d<>g) (e<>g) (f<>g) (g<>g),'1 1 1 1 1 1 0')
+   self~assertSame("subTest99", (a>>=a) (b>>=a) (c>>=a) (d>>=a) (e>>=a) (f>>=a) (g>>=a),'1 1 1 0 0 0 0')
+   self~assertSame("subTest100", (a>>=b) (b>>=b) (c>>=b) (d>>=b) (e>>=b) (f>>=b) (g>>=b),'0 1 0 0 0 0 0')
+   self~assertSame("subTest101", (a>>=c) (b>>=c) (c>>=c) (d>>=c) (e>>=c) (f>>=c) (g>>=c),'0 1 1 0 0 0 0')
+   self~assertSame("subTest102", (a>>=d) (b>>=d) (c>>=d) (d>>=d) (e>>=d) (f>>=d) (g>>=d),'1 1 1 1 0 1 0')
+   self~assertSame("subTest103", (a>>=e) (b>>=e) (c>>=e) (d>>=e) (e>>=e) (f>>=e) (g>>=e),'1 1 1 1 1 1 1')
+   self~assertSame("subTest104", (a>>=f) (b>>=f) (c>>=f) (d>>=f) (e>>=f) (f>>=f) (g>>=f),'1 1 1 0 0 1 0')
+   self~assertSame("subTest105", (a>>=g) (b>>=g) (c>>=g) (d>>=g) (e>>=g) (f>>=g) (g>>=g),'1 1 1 1 0 1 1')
+   self~assertSame("subTest106", (a>=a) (b>=a) (c>=a) (d>=a) (e>=a) (f>=a) (g>=a),'1 1 1 1 0 1 0')
+   self~assertSame("subTest107", (a>=b) (b>=b) (c>=b) (d>=b) (e>=b) (f>=b) (g>=b),'0 1 0 0 0 0 0')
+   self~assertSame("subTest108", (a>=c) (b>=c) (c>=c) (d>=c) (e>=c) (f>=c) (g>=c),'0 1 1 1 0 1 0')
+   self~assertSame("subTest109", (a>=d) (b>=d) (c>=d) (d>=d) (e>=d) (f>=d) (g>=d),'0 1 1 1 0 1 0')
+   self~assertSame("subTest110", (a>=e) (b>=e) (c>=e) (d>=e) (e>=e) (f>=e) (g>=e),'1 1 1 1 1 1 0')
+   self~assertSame("subTest111", (a>=f) (b>=f) (c>=f) (d>=f) (e>=f) (f>=f) (g>=f),'0 1 1 1 0 1 0')
+   self~assertSame("subTest112", (a>=g) (b>=g) (c>=g) (d>=g) (e>=g) (f>=g) (g>=g),'1 1 1 1 1 1 1')
+   self~assertSame("subTest113", (a<<=a) (b<<=a) (c<<=a) (d<<=a) (e<<=a) (f<<=a) (g<<=a),'1 0 0 1 1 1 1')
+   self~assertSame("subTest114", (a<<=b) (b<<=b) (c<<=b) (d<<=b) (e<<=b) (f<<=b) (g<<=b),'1 1 1 1 1 1 1')
+   self~assertSame("subTest115", (a<<=c) (b<<=c) (c<<=c) (d<<=c) (e<<=c) (f<<=c) (g<<=c),'1 0 1 1 1 1 1')
+   self~assertSame("subTest116", (a<<=d) (b<<=d) (c<<=d) (d<<=d) (e<<=d) (f<<=d) (g<<=d),'0 0 0 1 1 0 1')
+   self~assertSame("subTest117", (a<<=e) (b<<=e) (c<<=e) (d<<=e) (e<<=e) (f<<=e) (g<<=e),'0 0 0 0 1 0 0')
+   self~assertSame("subTest118", (a<<=f) (b<<=f) (c<<=f) (d<<=f) (e<<=f) (f<<=f) (g<<=f),'0 0 0 1 1 1 1')
+   self~assertSame("subTest119", (a<<=g) (b<<=g) (c<<=g) (d<<=g) (e<<=g) (f<<=g) (g<<=g),'0 0 0 0 1 0 1')
+   self~assertSame("subTest120", (a<=a) (b<=a) (c<=a) (d<=a) (e<=a) (f<=a) (g<=a),'1 0 0 0 1 0 1')
+   self~assertSame("subTest121", (a<=b) (b<=b) (c<=b) (d<=b) (e<=b) (f<=b) (g<=b),'1 1 1 1 1 1 1')
+   self~assertSame("subTest122", (a<=c) (b<=c) (c<=c) (d<=c) (e<=c) (f<=c) (g<=c),'1 0 1 1 1 1 1')
+   self~assertSame("subTest123", (a<=d) (b<=d) (c<=d) (d<=d) (e<=d) (f<=d) (g<=d),'1 0 1 1 1 1 1')
+   self~assertSame("subTest124", (a<=e) (b<=e) (c<=e) (d<=e) (e<=e) (f<=e) (g<=e),'0 0 0 0 1 0 1')
+   self~assertSame("subTest125", (a<=f) (b<=f) (c<=f) (d<=f) (e<=f) (f<=f) (g<=f),'1 0 1 1 1 1 1')
+   self~assertSame("subTest126", (a<=g) (b<=g) (c<=g) (d<=g) (e<=g) (f<=g) (g<=g),'0 0 0 0 0 0 1')
+   self~assertSame("subTest127", (a\>>a) (b\>>a) (c\>>a) (d\>>a) (e\>>a) (f\>>a) (g\>>a),'1 0 0 1 1 1 1')
+   self~assertSame("subTest128", (a\>>b) (b\>>b) (c\>>b) (d\>>b) (e\>>b) (f\>>b) (g\>>b),'1 1 1 1 1 1 1')
+   self~assertSame("subTest129", (a\>>c) (b\>>c) (c\>>c) (d\>>c) (e\>>c) (f\>>c) (g\>>c),'1 0 1 1 1 1 1')
+   self~assertSame("subTest130", (a\>>d) (b\>>d) (c\>>d) (d\>>d) (e\>>d) (f\>>d) (g\>>d),'0 0 0 1 1 0 1')
+   self~assertSame("subTest131", (a\>>e) (b\>>e) (c\>>e) (d\>>e) (e\>>e) (f\>>e) (g\>>e),'0 0 0 0 1 0 0')
+   self~assertSame("subTest132", (a\>>f) (b\>>f) (c\>>f) (d\>>f) (e\>>f) (f\>>f) (g\>>f),'0 0 0 1 1 1 1')
+   self~assertSame("subTest133", (a\>>g) (b\>>g) (c\>>g) (d\>>g) (e\>>g) (f\>>g) (g\>>g),'0 0 0 0 1 0 1')
+   self~assertSame("subTest134", (a\>a) (b\>a) (c\>a) (d\>a) (e\>a) (f\>a) (g\>a),'1 0 0 0 1 0 1')
+   self~assertSame("subTest135", (a\>b) (b\>b) (c\>b) (d\>b) (e\>b) (f\>b) (g\>b),'1 1 1 1 1 1 1')
+   self~assertSame("subTest136", (a\>c) (b\>c) (c\>c) (d\>c) (e\>c) (f\>c) (g\>c),'1 0 1 1 1 1 1')
+   self~assertSame("subTest137", (a\>d) (b\>d) (c\>d) (d\>d) (e\>d) (f\>d) (g\>d),'1 0 1 1 1 1 1')
+   self~assertSame("subTest138", (a\>e) (b\>e) (c\>e) (d\>e) (e\>e) (f\>e) (g\>e),'0 0 0 0 1 0 1')
+   self~assertSame("subTest139", (a\>f) (b\>f) (c\>f) (d\>f) (e\>f) (f\>f) (g\>f),'1 0 1 1 1 1 1')
+   self~assertSame("subTest140", (a\>g) (b\>g) (c\>g) (d\>g) (e\>g) (f\>g) (g\>g),'0 0 0 0 0 0 1')
+   self~assertSame("subTest141", (a\<<a) (b\<<a) (c\<<a) (d\<<a) (e\<<a) (f\<<a) (g\<<a),'1 1 1 0 0 0 0')
+   self~assertSame("subTest142", (a\<<b) (b\<<b) (c\<<b) (d\<<b) (e\<<b) (f\<<b) (g\<<b),'0 1 0 0 0 0 0')
+   self~assertSame("subTest143", (a\<<c) (b\<<c) (c\<<c) (d\<<c) (e\<<c) (f\<<c) (g\<<c),'0 1 1 0 0 0 0')
+   self~assertSame("subTest144", (a\<<d) (b\<<d) (c\<<d) (d\<<d) (e\<<d) (f\<<d) (g\<<d),'1 1 1 1 0 1 0')
+   self~assertSame("subTest145", (a\<<e) (b\<<e) (c\<<e) (d\<<e) (e\<<e) (f\<<e) (g\<<e),'1 1 1 1 1 1 1')
+   self~assertSame("subTest146", (a\<<f) (b\<<f) (c\<<f) (d\<<f) (e\<<f) (f\<<f) (g\<<f),'1 1 1 0 0 1 0')
+   self~assertSame("subTest147", (a\<<g) (b\<<g) (c\<<g) (d\<<g) (e\<<g) (f\<<g) (g\<<g),'1 1 1 1 0 1 1')
+   self~assertSame("subTest148", (a\<a) (b\<a) (c\<a) (d\<a) (e\<a) (f\<a) (g\<a),'1 1 1 1 0 1 0')
+   self~assertSame("subTest149", (a\<b) (b\<b) (c\<b) (d\<b) (e\<b) (f\<b) (g\<b),'0 1 0 0 0 0 0')
+   self~assertSame("subTest150", (a\<c) (b\<c) (c\<c) (d\<c) (e\<c) (f\<c) (g\<c),'0 1 1 1 0 1 0')
+   self~assertSame("subTest151", (a\<d) (b\<d) (c\<d) (d\<d) (e\<d) (f\<d) (g\<d),'0 1 1 1 0 1 0')
+   self~assertSame("subTest152", (a\<e) (b\<e) (c\<e) (d\<e) (e\<e) (f\<e) (g\<e),'1 1 1 1 1 1 0')
+   self~assertSame("subTest153", (a\<f) (b\<f) (c\<f) (d\<f) (e\<f) (f\<f) (g\<f),'0 1 1 1 0 1 0')
+   self~assertSame("subTest154", (a\<g) (b\<g) (c\<g) (d\<g) (e\<g) (f\<g) (g\<g),'1 1 1 1 1 1 1')
+   self~assertSame("subTest155", (a\>>a) (b\>>a) (c\>>a) (d\>>a) (e\>>a) (f\>>a) (g\>>a),'1 0 0 1 1 1 1')
+   self~assertSame("subTest156", (a\>>b) (b\>>b) (c\>>b) (d\>>b) (e\>>b) (f\>>b) (g\>>b),'1 1 1 1 1 1 1')
+   self~assertSame("subTest157", (a\>>c) (b\>>c) (c\>>c) (d\>>c) (e\>>c) (f\>>c) (g\>>c),'1 0 1 1 1 1 1')
+   self~assertSame("subTest158", (a\>>d) (b\>>d) (c\>>d) (d\>>d) (e\>>d) (f\>>d) (g\>>d),'0 0 0 1 1 0 1')
+   self~assertSame("subTest159", (a\>>e) (b\>>e) (c\>>e) (d\>>e) (e\>>e) (f\>>e) (g\>>e),'0 0 0 0 1 0 0')
+   self~assertSame("subTest160", (a\>>f) (b\>>f) (c\>>f) (d\>>f) (e\>>f) (f\>>f) (g\>>f),'0 0 0 1 1 1 1')
+   self~assertSame("subTest161", (a\>>g) (b\>>g) (c\>>g) (d\>>g) (e\>>g) (f\>>g) (g\>>g),'0 0 0 0 1 0 1')
+   self~assertSame("subTest162", (a\>a) (b\>a) (c\>a) (d\>a) (e\>a) (f\>a) (g\>a),'1 0 0 0 1 0 1')
+   self~assertSame("subTest163", (a\>b) (b\>b) (c\>b) (d\>b) (e\>b) (f\>b) (g\>b),'1 1 1 1 1 1 1')
+   self~assertSame("subTest164", (a\>c) (b\>c) (c\>c) (d\>c) (e\>c) (f\>c) (g\>c),'1 0 1 1 1 1 1')
+   self~assertSame("subTest165", (a\>d) (b\>d) (c\>d) (d\>d) (e\>d) (f\>d) (g\>d),'1 0 1 1 1 1 1')
+   self~assertSame("subTest166", (a\>e) (b\>e) (c\>e) (d\>e) (e\>e) (f\>e) (g\>e),'0 0 0 0 1 0 1')
+   self~assertSame("subTest167", (a\>f) (b\>f) (c\>f) (d\>f) (e\>f) (f\>f) (g\>f),'1 0 1 1 1 1 1')
+   self~assertSame("subTest168", (a\>g) (b\>g) (c\>g) (d\>g) (e\>g) (f\>g) (g\>g),'0 0 0 0 0 0 1')
+   self~assertSame("subTest169", (a\<<a) (b\<<a) (c\<<a) (d\<<a) (e\<<a) (f\<<a) (g\<<a),'1 1 1 0 0 0 0')
+   self~assertSame("subTest170", (a\<<b) (b\<<b) (c\<<b) (d\<<b) (e\<<b) (f\<<b) (g\<<b),'0 1 0 0 0 0 0')
+   self~assertSame("subTest171", (a\<<c) (b\<<c) (c\<<c) (d\<<c) (e\<<c) (f\<<c) (g\<<c),'0 1 1 0 0 0 0')
+   self~assertSame("subTest172", (a\<<d) (b\<<d) (c\<<d) (d\<<d) (e\<<d) (f\<<d) (g\<<d),'1 1 1 1 0 1 0')
+   self~assertSame("subTest173", (a\<<e) (b\<<e) (c\<<e) (d\<<e) (e\<<e) (f\<<e) (g\<<e),'1 1 1 1 1 1 1')
+   self~assertSame("subTest174", (a\<<f) (b\<<f) (c\<<f) (d\<<f) (e\<<f) (f\<<f) (g\<<f),'1 1 1 0 0 1 0')
+   self~assertSame("subTest175", (a\<<g) (b\<<g) (c\<<g) (d\<<g) (e\<<g) (f\<<g) (g\<<g),'1 1 1 1 0 1 1')
+   self~assertSame("subTest176", (a\<a) (b\<a) (c\<a) (d\<a) (e\<a) (f\<a) (g\<a),'1 1 1 1 0 1 0')
+   self~assertSame("subTest177", (a\<b) (b\<b) (c\<b) (d\<b) (e\<b) (f\<b) (g\<b),'0 1 0 0 0 0 0')
+   self~assertSame("subTest178", (a\<c) (b\<c) (c\<c) (d\<c) (e\<c) (f\<c) (g\<c),'0 1 1 1 0 1 0')
+   self~assertSame("subTest179", (a\<d) (b\<d) (c\<d) (d\<d) (e\<d) (f\<d) (g\<d),'0 1 1 1 0 1 0')
+   self~assertSame("subTest180", (a\<e) (b\<e) (c\<e) (d\<e) (e\<e) (f\<e) (g\<e),'1 1 1 1 1 1 0')
+   self~assertSame("subTest181", (a\<f) (b\<f) (c\<f) (d\<f) (e\<f) (f\<f) (g\<f),'0 1 1 1 0 1 0')
+   self~assertSame("subTest182", (a\<g) (b\<g) (c\<g) (d\<g) (e\<g) (f\<g) (g\<g),'1 1 1 1 1 1 1')
+ 
+::method "test_2"
+   a="abcdefg"'00'x
+   b="abcdefgh"
+   c="abcdefg "
+   d=" abcdefg"
+   e='00'x"abcdefg"
+   f=" abcdefg "
+   g='00'x"abcdefg"'00'x
+   self~assertSame("subTest1", (a==a) (b==a) (c==a) (d==a) (e==a) (f==a) (g==a),'1 0 0 0 0 0 0')
+   self~assertSame("subTest2", (a==b) (b==b) (c==b) (d==b) (e==b) (f==b) (g==b),'0 1 0 0 0 0 0')
+   self~assertSame("subTest3", (a==c) (b==c) (c==c) (d==c) (e==c) (f==c) (g==c),'0 0 1 0 0 0 0')
+   self~assertSame("subTest4", (a==d) (b==d) (c==d) (d==d) (e==d) (f==d) (g==d),'0 0 0 1 0 0 0')
+   self~assertSame("subTest5", (a==e) (b==e) (c==e) (d==e) (e==e) (f==e) (g==e),'0 0 0 0 1 0 0')
+   self~assertSame("subTest6", (a==f) (b==f) (c==f) (d==f) (e==f) (f==f) (g==f),'0 0 0 0 0 1 0')
+   self~assertSame("subTest7", (a==g) (b==g) (c==g) (d==g) (e==g) (f==g) (g==g),'0 0 0 0 0 0 1')
+   self~assertSame("subTest8", (a=a) (b=a) (c=a) (d=a) (e=a) (f=a) (g=a),'1 0 0 0 0 0 0')
+   self~assertSame("subTest9", (a=b) (b=b) (c=b) (d=b) (e=b) (f=b) (g=b),'0 1 0 0 0 0 0')
+   self~assertSame("subTest10", (a=c) (b=c) (c=c) (d=c) (e=c) (f=c) (g=c),'0 0 1 1 0 1 0')
+   self~assertSame("subTest11", (a=d) (b=d) (c=d) (d=d) (e=d) (f=d) (g=d),'0 0 1 1 0 1 0')
+   self~assertSame("subTest12", (a=e) (b=e) (c=e) (d=e) (e=e) (f=e) (g=e),'0 0 0 0 1 0 0')
+   self~assertSame("subTest13", (a=f) (b=f) (c=f) (d=f) (e=f) (f=f) (g=f),'0 0 1 1 0 1 0')
+   self~assertSame("subTest14", (a=g) (b=g) (c=g) (d=g) (e=g) (f=g) (g=g),'0 0 0 0 0 0 1')
+   self~assertSame("subTest15", (a\==a) (b\==a) (c\==a) (d\==a) (e\==a) (f\==a) (g\==a),'0 1 1 1 1 1 1')
+   self~assertSame("subTest16", (a\==b) (b\==b) (c\==b) (d\==b) (e\==b) (f\==b) (g\==b),'1 0 1 1 1 1 1')
+   self~assertSame("subTest17", (a\==c) (b\==c) (c\==c) (d\==c) (e\==c) (f\==c) (g\==c),'1 1 0 1 1 1 1')
+   self~assertSame("subTest18", (a\==d) (b\==d) (c\==d) (d\==d) (e\==d) (f\==d) (g\==d),'1 1 1 0 1 1 1')
+   self~assertSame("subTest19", (a\==e) (b\==e) (c\==e) (d\==e) (e\==e) (f\==e) (g\==e),'1 1 1 1 0 1 1')
+   self~assertSame("subTest20", (a\==f) (b\==f) (c\==f) (d\==f) (e\==f) (f\==f) (g\==f),'1 1 1 1 1 0 1')
+   self~assertSame("subTest21", (a\==g) (b\==g) (c\==g) (d\==g) (e\==g) (f\==g) (g\==g),'1 1 1 1 1 1 0')
+   self~assertSame("subTest22", (a\==a) (b\==a) (c\==a) (d\==a) (e\==a) (f\==a) (g\==a),'0 1 1 1 1 1 1')
+   self~assertSame("subTest23", (a\==b) (b\==b) (c\==b) (d\==b) (e\==b) (f\==b) (g\==b),'1 0 1 1 1 1 1')
+   self~assertSame("subTest24", (a\==c) (b\==c) (c\==c) (d\==c) (e\==c) (f\==c) (g\==c),'1 1 0 1 1 1 1')
+   self~assertSame("subTest25", (a\==d) (b\==d) (c\==d) (d\==d) (e\==d) (f\==d) (g\==d),'1 1 1 0 1 1 1')
+   self~assertSame("subTest26", (a\==e) (b\==e) (c\==e) (d\==e) (e\==e) (f\==e) (g\==e),'1 1 1 1 0 1 1')
+   self~assertSame("subTest27", (a\==f) (b\==f) (c\==f) (d\==f) (e\==f) (f\==f) (g\==f),'1 1 1 1 1 0 1')
+   self~assertSame("subTest28", (a\==g) (b\==g) (c\==g) (d\==g) (e\==g) (f\==g) (g\==g),'1 1 1 1 1 1 0')
+   self~assertSame("subTest29", (a\==a) (b\==a) (c\==a) (d\==a) (e\==a) (f\==a) (g\==a),'0 1 1 1 1 1 1')
+   self~assertSame("subTest30", (a\==b) (b\==b) (c\==b) (d\==b) (e\==b) (f\==b) (g\==b),'1 0 1 1 1 1 1')
+   self~assertSame("subTest31", (a\==c) (b\==c) (c\==c) (d\==c) (e\==c) (f\==c) (g\==c),'1 1 0 1 1 1 1')
+   self~assertSame("subTest32", (a\==d) (b\==d) (c\==d) (d\==d) (e\==d) (f\==d) (g\==d),'1 1 1 0 1 1 1')
+   self~assertSame("subTest33", (a\==e) (b\==e) (c\==e) (d\==e) (e\==e) (f\==e) (g\==e),'1 1 1 1 0 1 1')
+   self~assertSame("subTest34", (a\==f) (b\==f) (c\==f) (d\==f) (e\==f) (f\==f) (g\==f),'1 1 1 1 1 0 1')
+   self~assertSame("subTest35", (a\==g) (b\==g) (c\==g) (d\==g) (e\==g) (f\==g) (g\==g),'1 1 1 1 1 1 0')
+   self~assertSame("subTest36", (a\=a) (b\=a) (c\=a) (d\=a) (e\=a) (f\=a) (g\=a),'0 1 1 1 1 1 1')
+   self~assertSame("subTest37", (a\=b) (b\=b) (c\=b) (d\=b) (e\=b) (f\=b) (g\=b),'1 0 1 1 1 1 1')
+   self~assertSame("subTest38", (a\=c) (b\=c) (c\=c) (d\=c) (e\=c) (f\=c) (g\=c),'1 1 0 0 1 0 1')
+   self~assertSame("subTest39", (a\=d) (b\=d) (c\=d) (d\=d) (e\=d) (f\=d) (g\=d),'1 1 0 0 1 0 1')
+   self~assertSame("subTest40", (a\=e) (b\=e) (c\=e) (d\=e) (e\=e) (f\=e) (g\=e),'1 1 1 1 0 1 1')
+   self~assertSame("subTest41", (a\=f) (b\=f) (c\=f) (d\=f) (e\=f) (f\=f) (g\=f),'1 1 0 0 1 0 1')
+   self~assertSame("subTest42", (a\=g) (b\=g) (c\=g) (d\=g) (e\=g) (f\=g) (g\=g),'1 1 1 1 1 1 0')
+   self~assertSame("subTest43", (a\=a) (b\=a) (c\=a) (d\=a) (e\=a) (f\=a) (g\=a),'0 1 1 1 1 1 1')
+   self~assertSame("subTest44", (a\=b) (b\=b) (c\=b) (d\=b) (e\=b) (f\=b) (g\=b),'1 0 1 1 1 1 1')
+   self~assertSame("subTest45", (a\=c) (b\=c) (c\=c) (d\=c) (e\=c) (f\=c) (g\=c),'1 1 0 0 1 0 1')
+   self~assertSame("subTest46", (a\=d) (b\=d) (c\=d) (d\=d) (e\=d) (f\=d) (g\=d),'1 1 0 0 1 0 1')
+   self~assertSame("subTest47", (a\=e) (b\=e) (c\=e) (d\=e) (e\=e) (f\=e) (g\=e),'1 1 1 1 0 1 1')
+   self~assertSame("subTest48", (a\=f) (b\=f) (c\=f) (d\=f) (e\=f) (f\=f) (g\=f),'1 1 0 0 1 0 1')
+   self~assertSame("subTest49", (a\=g) (b\=g) (c\=g) (d\=g) (e\=g) (f\=g) (g\=g),'1 1 1 1 1 1 0')
+   self~assertSame("subTest50", (a\=a) (b\=a) (c\=a) (d\=a) (e\=a) (f\=a) (g\=a),'0 1 1 1 1 1 1')
+   self~assertSame("subTest51", (a\=b) (b\=b) (c\=b) (d\=b) (e\=b) (f\=b) (g\=b),'1 0 1 1 1 1 1')
+   self~assertSame("subTest52", (a\=c) (b\=c) (c\=c) (d\=c) (e\=c) (f\=c) (g\=c),'1 1 0 0 1 0 1')
+   self~assertSame("subTest53", (a\=d) (b\=d) (c\=d) (d\=d) (e\=d) (f\=d) (g\=d),'1 1 0 0 1 0 1')
+   self~assertSame("subTest54", (a\=e) (b\=e) (c\=e) (d\=e) (e\=e) (f\=e) (g\=e),'1 1 1 1 0 1 1')
+   self~assertSame("subTest55", (a\=f) (b\=f) (c\=f) (d\=f) (e\=f) (f\=f) (g\=f),'1 1 0 0 1 0 1')
+   self~assertSame("subTest56", (a\=g) (b\=g) (c\=g) (d\=g) (e\=g) (f\=g) (g\=g),'1 1 1 1 1 1 0')
+   self~assertSame("subTest57", (a>>a) (b>>a) (c>>a) (d>>a) (e>>a) (f>>a) (g>>a),'0 1 1 0 0 0 0')
+   self~assertSame("subTest58", (a>>b) (b>>b) (c>>b) (d>>b) (e>>b) (f>>b) (g>>b),'0 0 0 0 0 0 0')
+   self~assertSame("subTest59", (a>>c) (b>>c) (c>>c) (d>>c) (e>>c) (f>>c) (g>>c),'0 1 0 0 0 0 0')
+   self~assertSame("subTest60", (a>>d) (b>>d) (c>>d) (d>>d) (e>>d) (f>>d) (g>>d),'1 1 1 0 0 1 0')
+   self~assertSame("subTest61", (a>>e) (b>>e) (c>>e) (d>>e) (e>>e) (f>>e) (g>>e),'1 1 1 1 0 1 1')
+   self~assertSame("subTest62", (a>>f) (b>>f) (c>>f) (d>>f) (e>>f) (f>>f) (g>>f),'1 1 1 0 0 0 0')
+   self~assertSame("subTest63", (a>>g) (b>>g) (c>>g) (d>>g) (e>>g) (f>>g) (g>>g),'1 1 1 1 0 1 0')
+   self~assertSame("subTest64", (a>a) (b>a) (c>a) (d>a) (e>a) (f>a) (g>a),'0 1 1 1 0 1 0')
+   self~assertSame("subTest65", (a>b) (b>b) (c>b) (d>b) (e>b) (f>b) (g>b),'0 0 0 0 0 0 0')
+   self~assertSame("subTest66", (a>c) (b>c) (c>c) (d>c) (e>c) (f>c) (g>c),'0 1 0 0 0 0 0')
+   self~assertSame("subTest67", (a>d) (b>d) (c>d) (d>d) (e>d) (f>d) (g>d),'0 1 0 0 0 0 0')
+   self~assertSame("subTest68", (a>e) (b>e) (c>e) (d>e) (e>e) (f>e) (g>e),'1 1 1 1 0 1 0')
+   self~assertSame("subTest69", (a>f) (b>f) (c>f) (d>f) (e>f) (f>f) (g>f),'0 1 0 0 0 0 0')
+   self~assertSame("subTest70", (a>g) (b>g) (c>g) (d>g) (e>g) (f>g) (g>g),'1 1 1 1 1 1 0')
+   self~assertSame("subTest71", (a<<a) (b<<a) (c<<a) (d<<a) (e<<a) (f<<a) (g<<a),'0 0 0 1 1 1 1')
+   self~assertSame("subTest72", (a<<b) (b<<b) (c<<b) (d<<b) (e<<b) (f<<b) (g<<b),'1 0 1 1 1 1 1')
+   self~assertSame("subTest73", (a<<c) (b<<c) (c<<c) (d<<c) (e<<c) (f<<c) (g<<c),'1 0 0 1 1 1 1')
+   self~assertSame("subTest74", (a<<d) (b<<d) (c<<d) (d<<d) (e<<d) (f<<d) (g<<d),'0 0 0 0 1 0 1')
+   self~assertSame("subTest75", (a<<e) (b<<e) (c<<e) (d<<e) (e<<e) (f<<e) (g<<e),'0 0 0 0 0 0 0')
+   self~assertSame("subTest76", (a<<f) (b<<f) (c<<f) (d<<f) (e<<f) (f<<f) (g<<f),'0 0 0 1 1 0 1')
+   self~assertSame("subTest77", (a<<g) (b<<g) (c<<g) (d<<g) (e<<g) (f<<g) (g<<g),'0 0 0 0 1 0 0')
+   self~assertSame("subTest78", (a<a) (b<a) (c<a) (d<a) (e<a) (f<a) (g<a),'0 0 0 0 1 0 1')
+   self~assertSame("subTest79", (a<b) (b<b) (c<b) (d<b) (e<b) (f<b) (g<b),'1 0 1 1 1 1 1')
+   self~assertSame("subTest80", (a<c) (b<c) (c<c) (d<c) (e<c) (f<c) (g<c),'1 0 0 0 1 0 1')
+   self~assertSame("subTest81", (a<d) (b<d) (c<d) (d<d) (e<d) (f<d) (g<d),'1 0 0 0 1 0 1')
+   self~assertSame("subTest82", (a<e) (b<e) (c<e) (d<e) (e<e) (f<e) (g<e),'0 0 0 0 0 0 1')
+   self~assertSame("subTest83", (a<f) (b<f) (c<f) (d<f) (e<f) (f<f) (g<f),'1 0 0 0 1 0 1')
+   self~assertSame("subTest84", (a<g) (b<g) (c<g) (d<g) (e<g) (f<g) (g<g),'0 0 0 0 0 0 0')
+   self~assertSame("subTest85", (a><a) (b><a) (c><a) (d><a) (e><a) (f><a) (g><a),'0 1 1 1 1 1 1')
+   self~assertSame("subTest86", (a><b) (b><b) (c><b) (d><b) (e><b) (f><b) (g><b),'1 0 1 1 1 1 1')
+   self~assertSame("subTest87", (a><c) (b><c) (c><c) (d><c) (e><c) (f><c) (g><c),'1 1 0 0 1 0 1')
+   self~assertSame("subTest88", (a><d) (b><d) (c><d) (d><d) (e><d) (f><d) (g><d),'1 1 0 0 1 0 1')
+   self~assertSame("subTest89", (a><e) (b><e) (c><e) (d><e) (e><e) (f><e) (g><e),'1 1 1 1 0 1 1')
+   self~assertSame("subTest90", (a><f) (b><f) (c><f) (d><f) (e><f) (f><f) (g><f),'1 1 0 0 1 0 1')
+   self~assertSame("subTest91", (a><g) (b><g) (c><g) (d><g) (e><g) (f><g) (g><g),'1 1 1 1 1 1 0')
+   self~assertSame("subTest92", (a<>a) (b<>a) (c<>a) (d<>a) (e<>a) (f<>a) (g<>a),'0 1 1 1 1 1 1')
+   self~assertSame("subTest93", (a<>b) (b<>b) (c<>b) (d<>b) (e<>b) (f<>b) (g<>b),'1 0 1 1 1 1 1')
+   self~assertSame("subTest94", (a<>c) (b<>c) (c<>c) (d<>c) (e<>c) (f<>c) (g<>c),'1 1 0 0 1 0 1')
+   self~assertSame("subTest95", (a<>d) (b<>d) (c<>d) (d<>d) (e<>d) (f<>d) (g<>d),'1 1 0 0 1 0 1')
+   self~assertSame("subTest96", (a<>e) (b<>e) (c<>e) (d<>e) (e<>e) (f<>e) (g<>e),'1 1 1 1 0 1 1')
+   self~assertSame("subTest97", (a<>f) (b<>f) (c<>f) (d<>f) (e<>f) (f<>f) (g<>f),'1 1 0 0 1 0 1')
+   self~assertSame("subTest98", (a<>g) (b<>g) (c<>g) (d<>g) (e<>g) (f<>g) (g<>g),'1 1 1 1 1 1 0')
+   self~assertSame("subTest99", (a>>=a) (b>>=a) (c>>=a) (d>>=a) (e>>=a) (f>>=a) (g>>=a),'1 1 1 0 0 0 0')
+   self~assertSame("subTest100", (a>>=b) (b>>=b) (c>>=b) (d>>=b) (e>>=b) (f>>=b) (g>>=b),'0 1 0 0 0 0 0')
+   self~assertSame("subTest101", (a>>=c) (b>>=c) (c>>=c) (d>>=c) (e>>=c) (f>>=c) (g>>=c),'0 1 1 0 0 0 0')
+   self~assertSame("subTest102", (a>>=d) (b>>=d) (c>>=d) (d>>=d) (e>>=d) (f>>=d) (g>>=d),'1 1 1 1 0 1 0')
+   self~assertSame("subTest103", (a>>=e) (b>>=e) (c>>=e) (d>>=e) (e>>=e) (f>>=e) (g>>=e),'1 1 1 1 1 1 1')
+   self~assertSame("subTest104", (a>>=f) (b>>=f) (c>>=f) (d>>=f) (e>>=f) (f>>=f) (g>>=f),'1 1 1 0 0 1 0')
+   self~assertSame("subTest105", (a>>=g) (b>>=g) (c>>=g) (d>>=g) (e>>=g) (f>>=g) (g>>=g),'1 1 1 1 0 1 1')
+   self~assertSame("subTest106", (a>=a) (b>=a) (c>=a) (d>=a) (e>=a) (f>=a) (g>=a),'1 1 1 1 0 1 0')
+   self~assertSame("subTest107", (a>=b) (b>=b) (c>=b) (d>=b) (e>=b) (f>=b) (g>=b),'0 1 0 0 0 0 0')
+   self~assertSame("subTest108", (a>=c) (b>=c) (c>=c) (d>=c) (e>=c) (f>=c) (g>=c),'0 1 1 1 0 1 0')
+   self~assertSame("subTest109", (a>=d) (b>=d) (c>=d) (d>=d) (e>=d) (f>=d) (g>=d),'0 1 1 1 0 1 0')
+   self~assertSame("subTest110", (a>=e) (b>=e) (c>=e) (d>=e) (e>=e) (f>=e) (g>=e),'1 1 1 1 1 1 0')
+   self~assertSame("subTest111", (a>=f) (b>=f) (c>=f) (d>=f) (e>=f) (f>=f) (g>=f),'0 1 1 1 0 1 0')
+   self~assertSame("subTest112", (a>=g) (b>=g) (c>=g) (d>=g) (e>=g) (f>=g) (g>=g),'1 1 1 1 1 1 1')
+   self~assertSame("subTest113", (a<<=a) (b<<=a) (c<<=a) (d<<=a) (e<<=a) (f<<=a) (g<<=a),'1 0 0 1 1 1 1')
+   self~assertSame("subTest114", (a<<=b) (b<<=b) (c<<=b) (d<<=b) (e<<=b) (f<<=b) (g<<=b),'1 1 1 1 1 1 1')
+   self~assertSame("subTest115", (a<<=c) (b<<=c) (c<<=c) (d<<=c) (e<<=c) (f<<=c) (g<<=c),'1 0 1 1 1 1 1')
+   self~assertSame("subTest116", (a<<=d) (b<<=d) (c<<=d) (d<<=d) (e<<=d) (f<<=d) (g<<=d),'0 0 0 1 1 0 1')
+   self~assertSame("subTest117", (a<<=e) (b<<=e) (c<<=e) (d<<=e) (e<<=e) (f<<=e) (g<<=e),'0 0 0 0 1 0 0')
+   self~assertSame("subTest118", (a<<=f) (b<<=f) (c<<=f) (d<<=f) (e<<=f) (f<<=f) (g<<=f),'0 0 0 1 1 1 1')
+   self~assertSame("subTest119", (a<<=g) (b<<=g) (c<<=g) (d<<=g) (e<<=g) (f<<=g) (g<<=g),'0 0 0 0 1 0 1')
+   self~assertSame("subTest120", (a<=a) (b<=a) (c<=a) (d<=a) (e<=a) (f<=a) (g<=a),'1 0 0 0 1 0 1')
+   self~assertSame("subTest121", (a<=b) (b<=b) (c<=b) (d<=b) (e<=b) (f<=b) (g<=b),'1 1 1 1 1 1 1')
+   self~assertSame("subTest122", (a<=c) (b<=c) (c<=c) (d<=c) (e<=c) (f<=c) (g<=c),'1 0 1 1 1 1 1')
+   self~assertSame("subTest123", (a<=d) (b<=d) (c<=d) (d<=d) (e<=d) (f<=d) (g<=d),'1 0 1 1 1 1 1')
+   self~assertSame("subTest124", (a<=e) (b<=e) (c<=e) (d<=e) (e<=e) (f<=e) (g<=e),'0 0 0 0 1 0 1')
+   self~assertSame("subTest125", (a<=f) (b<=f) (c<=f) (d<=f) (e<=f) (f<=f) (g<=f),'1 0 1 1 1 1 1')
+   self~assertSame("subTest126", (a<=g) (b<=g) (c<=g) (d<=g) (e<=g) (f<=g) (g<=g),'0 0 0 0 0 0 1')
+   self~assertSame("subTest127", (a\>>a) (b\>>a) (c\>>a) (d\>>a) (e\>>a) (f\>>a) (g\>>a),'1 0 0 1 1 1 1')
+   self~assertSame("subTest128", (a\>>b) (b\>>b) (c\>>b) (d\>>b) (e\>>b) (f\>>b) (g\>>b),'1 1 1 1 1 1 1')
+   self~assertSame("subTest129", (a\>>c) (b\>>c) (c\>>c) (d\>>c) (e\>>c) (f\>>c) (g\>>c),'1 0 1 1 1 1 1')
+   self~assertSame("subTest130", (a\>>d) (b\>>d) (c\>>d) (d\>>d) (e\>>d) (f\>>d) (g\>>d),'0 0 0 1 1 0 1')
+   self~assertSame("subTest131", (a\>>e) (b\>>e) (c\>>e) (d\>>e) (e\>>e) (f\>>e) (g\>>e),'0 0 0 0 1 0 0')
+   self~assertSame("subTest132", (a\>>f) (b\>>f) (c\>>f) (d\>>f) (e\>>f) (f\>>f) (g\>>f),'0 0 0 1 1 1 1')
+   self~assertSame("subTest133", (a\>>g) (b\>>g) (c\>>g) (d\>>g) (e\>>g) (f\>>g) (g\>>g),'0 0 0 0 1 0 1')
+   self~assertSame("subTest134", (a\>a) (b\>a) (c\>a) (d\>a) (e\>a) (f\>a) (g\>a),'1 0 0 0 1 0 1')
+   self~assertSame("subTest135", (a\>b) (b\>b) (c\>b) (d\>b) (e\>b) (f\>b) (g\>b),'1 1 1 1 1 1 1')
+   self~assertSame("subTest136", (a\>c) (b\>c) (c\>c) (d\>c) (e\>c) (f\>c) (g\>c),'1 0 1 1 1 1 1')
+   self~assertSame("subTest137", (a\>d) (b\>d) (c\>d) (d\>d) (e\>d) (f\>d) (g\>d),'1 0 1 1 1 1 1')
+   self~assertSame("subTest138", (a\>e) (b\>e) (c\>e) (d\>e) (e\>e) (f\>e) (g\>e),'0 0 0 0 1 0 1')
+   self~assertSame("subTest139", (a\>f) (b\>f) (c\>f) (d\>f) (e\>f) (f\>f) (g\>f),'1 0 1 1 1 1 1')
+   self~assertSame("subTest140", (a\>g) (b\>g) (c\>g) (d\>g) (e\>g) (f\>g) (g\>g),'0 0 0 0 0 0 1')
+   self~assertSame("subTest141", (a\<<a) (b\<<a) (c\<<a) (d\<<a) (e\<<a) (f\<<a) (g\<<a),'1 1 1 0 0 0 0')
+   self~assertSame("subTest142", (a\<<b) (b\<<b) (c\<<b) (d\<<b) (e\<<b) (f\<<b) (g\<<b),'0 1 0 0 0 0 0')
+   self~assertSame("subTest143", (a\<<c) (b\<<c) (c\<<c) (d\<<c) (e\<<c) (f\<<c) (g\<<c),'0 1 1 0 0 0 0')
+   self~assertSame("subTest144", (a\<<d) (b\<<d) (c\<<d) (d\<<d) (e\<<d) (f\<<d) (g\<<d),'1 1 1 1 0 1 0')
+   self~assertSame("subTest145", (a\<<e) (b\<<e) (c\<<e) (d\<<e) (e\<<e) (f\<<e) (g\<<e),'1 1 1 1 1 1 1')
+   self~assertSame("subTest146", (a\<<f) (b\<<f) (c\<<f) (d\<<f) (e\<<f) (f\<<f) (g\<<f),'1 1 1 0 0 1 0')
+   self~assertSame("subTest147", (a\<<g) (b\<<g) (c\<<g) (d\<<g) (e\<<g) (f\<<g) (g\<<g),'1 1 1 1 0 1 1')
+   self~assertSame("subTest148", (a\<a) (b\<a) (c\<a) (d\<a) (e\<a) (f\<a) (g\<a),'1 1 1 1 0 1 0')
+   self~assertSame("subTest149", (a\<b) (b\<b) (c\<b) (d\<b) (e\<b) (f\<b) (g\<b),'0 1 0 0 0 0 0')
+   self~assertSame("subTest150", (a\<c) (b\<c) (c\<c) (d\<c) (e\<c) (f\<c) (g\<c),'0 1 1 1 0 1 0')
+   self~assertSame("subTest151", (a\<d) (b\<d) (c\<d) (d\<d) (e\<d) (f\<d) (g\<d),'0 1 1 1 0 1 0')
+   self~assertSame("subTest152", (a\<e) (b\<e) (c\<e) (d\<e) (e\<e) (f\<e) (g\<e),'1 1 1 1 1 1 0')
+   self~assertSame("subTest153", (a\<f) (b\<f) (c\<f) (d\<f) (e\<f) (f\<f) (g\<f),'0 1 1 1 0 1 0')
+   self~assertSame("subTest154", (a\<g) (b\<g) (c\<g) (d\<g) (e\<g) (f\<g) (g\<g),'1 1 1 1 1 1 1')
+   self~assertSame("subTest155", (a\>>a) (b\>>a) (c\>>a) (d\>>a) (e\>>a) (f\>>a) (g\>>a),'1 0 0 1 1 1 1')
+   self~assertSame("subTest156", (a\>>b) (b\>>b) (c\>>b) (d\>>b) (e\>>b) (f\>>b) (g\>>b),'1 1 1 1 1 1 1')
+   self~assertSame("subTest157", (a\>>c) (b\>>c) (c\>>c) (d\>>c) (e\>>c) (f\>>c) (g\>>c),'1 0 1 1 1 1 1')
+   self~assertSame("subTest158", (a\>>d) (b\>>d) (c\>>d) (d\>>d) (e\>>d) (f\>>d) (g\>>d),'0 0 0 1 1 0 1')
+   self~assertSame("subTest159", (a\>>e) (b\>>e) (c\>>e) (d\>>e) (e\>>e) (f\>>e) (g\>>e),'0 0 0 0 1 0 0')
+   self~assertSame("subTest160", (a\>>f) (b\>>f) (c\>>f) (d\>>f) (e\>>f) (f\>>f) (g\>>f),'0 0 0 1 1 1 1')
+   self~assertSame("subTest161", (a\>>g) (b\>>g) (c\>>g) (d\>>g) (e\>>g) (f\>>g) (g\>>g),'0 0 0 0 1 0 1')
+   self~assertSame("subTest162", (a\>a) (b\>a) (c\>a) (d\>a) (e\>a) (f\>a) (g\>a),'1 0 0 0 1 0 1')
+   self~assertSame("subTest163", (a\>b) (b\>b) (c\>b) (d\>b) (e\>b) (f\>b) (g\>b),'1 1 1 1 1 1 1')
+   self~assertSame("subTest164", (a\>c) (b\>c) (c\>c) (d\>c) (e\>c) (f\>c) (g\>c),'1 0 1 1 1 1 1')
+   self~assertSame("subTest165", (a\>d) (b\>d) (c\>d) (d\>d) (e\>d) (f\>d) (g\>d),'1 0 1 1 1 1 1')
+   self~assertSame("subTest166", (a\>e) (b\>e) (c\>e) (d\>e) (e\>e) (f\>e) (g\>e),'0 0 0 0 1 0 1')
+   self~assertSame("subTest167", (a\>f) (b\>f) (c\>f) (d\>f) (e\>f) (f\>f) (g\>f),'1 0 1 1 1 1 1')
+   self~assertSame("subTest168", (a\>g) (b\>g) (c\>g) (d\>g) (e\>g) (f\>g) (g\>g),'0 0 0 0 0 0 1')
+   self~assertSame("subTest169", (a\<<a) (b\<<a) (c\<<a) (d\<<a) (e\<<a) (f\<<a) (g\<<a),'1 1 1 0 0 0 0')
+   self~assertSame("subTest170", (a\<<b) (b\<<b) (c\<<b) (d\<<b) (e\<<b) (f\<<b) (g\<<b),'0 1 0 0 0 0 0')
+   self~assertSame("subTest171", (a\<<c) (b\<<c) (c\<<c) (d\<<c) (e\<<c) (f\<<c) (g\<<c),'0 1 1 0 0 0 0')
+   self~assertSame("subTest172", (a\<<d) (b\<<d) (c\<<d) (d\<<d) (e\<<d) (f\<<d) (g\<<d),'1 1 1 1 0 1 0')
+   self~assertSame("subTest173", (a\<<e) (b\<<e) (c\<<e) (d\<<e) (e\<<e) (f\<<e) (g\<<e),'1 1 1 1 1 1 1')
+   self~assertSame("subTest174", (a\<<f) (b\<<f) (c\<<f) (d\<<f) (e\<<f) (f\<<f) (g\<<f),'1 1 1 0 0 1 0')
+   self~assertSame("subTest175", (a\<<g) (b\<<g) (c\<<g) (d\<<g) (e\<<g) (f\<<g) (g\<<g),'1 1 1 1 0 1 1')
+   self~assertSame("subTest176", (a\<a) (b\<a) (c\<a) (d\<a) (e\<a) (f\<a) (g\<a),'1 1 1 1 0 1 0')
+   self~assertSame("subTest177", (a\<b) (b\<b) (c\<b) (d\<b) (e\<b) (f\<b) (g\<b),'0 1 0 0 0 0 0')
+   self~assertSame("subTest178", (a\<c) (b\<c) (c\<c) (d\<c) (e\<c) (f\<c) (g\<c),'0 1 1 1 0 1 0')
+   self~assertSame("subTest179", (a\<d) (b\<d) (c\<d) (d\<d) (e\<d) (f\<d) (g\<d),'0 1 1 1 0 1 0')
+   self~assertSame("subTest180", (a\<e) (b\<e) (c\<e) (d\<e) (e\<e) (f\<e) (g\<e),'1 1 1 1 1 1 0')
+   self~assertSame("subTest181", (a\<f) (b\<f) (c\<f) (d\<f) (e\<f) (f\<f) (g\<f),'0 1 1 1 0 1 0')
+   self~assertSame("subTest182", (a\<g) (b\<g) (c\<g) (d\<g) (e\<g) (f\<g) (g\<g),'1 1 1 1 1 1 1')
+
+    
+::method "test_3"
+   a="abcdefg"'01'x
+   b="abcdefgh"
+   nb="abcdefgh"
+   c="abcdefg "
+   d=" abcdefg"
+   e='01'x"abcdefg"
+   f=" abcdefg "
+   g='01'x"abcdefg"'01'x
+   self~assertSame("subTest1", b b,'abcdefgh abcdefgh')
+   self~assertSame("subTest2", b || b,'abcdefghabcdefgh')
+   self~assertSame("subTest3", b "" b,'abcdefgh  abcdefgh')
+   self~assertSame("subTest4", b""nb,'abcdefghabcdefgh')
+   self~assertSame("subTest5", 'Test the concatenation of "'a'" with "'a'" : "'a || a'"','Test the concatenation of "abcdefg" with "abcdefg" : "abcdefgabcdefg"')
+   self~assertSame("subTest6", 'Test the concatenation of "'a'" with "'nb'" : "'a || b'"','Test the concatenation of "abcdefg" with "abcdefgh" : "abcdefgabcdefgh"')
+   self~assertSame("subTest7", 'Test the concatenation of "'a'" with "'c'" : "'a || c'"','Test the concatenation of "abcdefg" with "abcdefg " : "abcdefgabcdefg "')
+   self~assertSame("subTest8", 'Test the concatenation of "'a'" with "'d'" : "'a || d'"','Test the concatenation of "abcdefg" with " abcdefg" : "abcdefg abcdefg"')
+   self~assertSame("subTest9", 'Test the concatenation of "'a'" with "'e'" : "'a || e'"','Test the concatenation of "abcdefg" with "abcdefg" : "abcdefgabcdefg"')
+   self~assertSame("subTest10", 'Test the concatenation of "'a'" with "'f'" : "'a || f'"','Test the concatenation of "abcdefg" with " abcdefg " : "abcdefg abcdefg "')
+   self~assertSame("subTest11", 'Test the concatenation of "'a'" with "'g'" : "'a || g'"','Test the concatenation of "abcdefg" with "abcdefg" : "abcdefgabcdefg"')
+   self~assertSame("subTest12", a b c d e f g,'abcdefg abcdefgh abcdefg   abcdefg abcdefg  abcdefg  abcdefg')
+   self~assertSame("subTest13", a || b || c || d || e || f || g,'abcdefgabcdefghabcdefg  abcdefgabcdefg abcdefg abcdefg')
+   self~assertSame("subTest14", a || b c || d e || f g,'abcdefgabcdefgh abcdefg  abcdefg abcdefg abcdefg  abcdefg')
+   self~assertSame("subTest15", a "" b "" c "" d "" e "" f "" g,'abcdefg  abcdefgh  abcdefg    abcdefg  abcdefg   abcdefg   abcdefg')
+   self~assertSame("subTest16", a""nb""c""d""e""f""g,'abcdefgabcdefghabcdefg  abcdefgabcdefg abcdefg abcdefg')
+   self~assertSame("subTest17", a""nb||c "" d""e||f  g,'abcdefgabcdefghabcdefg    abcdefgabcdefg abcdefg  abcdefg')
+   self~assertSame("subTest18", (a) (b) (c) (d) (e) (f) (g),'abcdefg abcdefgh abcdefg   abcdefg abcdefg  abcdefg  abcdefg')
+   self~assertSame("subTest19", (a)(b)(c)(d)(e)(f)(g),'abcdefgabcdefghabcdefg  abcdefgabcdefg abcdefg abcdefg')
+   self~assertSame("subTest20", ( a )( b )( c )( d )( e )( f )( g ),'abcdefgabcdefghabcdefg  abcdefgabcdefg abcdefg abcdefg')
+   self~assertSame("subTest21", a 1+1 b 1+2 c 1+3 d 1+4 e 1+5 f 1+6 g,'abcdefg 2 abcdefgh 3 abcdefg  4  abcdefg 5 abcdefg 6  abcdefg  7 abcdefg')
+   self~assertSame("subTest22", a (1+1) b (1+2) c (1+3) d (1+4) e (1+5) f (1+6) g,'abcdefg 2 abcdefgh 3 abcdefg  4  abcdefg 5 abcdefg 6  abcdefg  7 abcdefg')
+   self~assertSame("subTest23", (a=a) (a=b) (a=c) (a=d) (a=e) (a=f) (a=g),'1 0 0 0 0 0 0')
+   self~assertSame("subTest24", (a=a)(a=b)(a=c)(a=d)(a=e)(a=f)(a=g),'1000000')
+ 

@@ -1,0 +1,321 @@
+#!/usr/bin/rexx
+/*
+   name:             String_absMethod.testGroup
+   author:           Lee Peedin
+   date:             2007-12-20
+   version:          1.0.0
+
+-- line commented lines are ignored, when building the directory of infos from this header
+
+   languageLevel:    6.02
+   purpose:          Test the abs method of the class String.
+   remark:           Initial test unit for demonstration purposes, needs to be completed.
+
+   license:          CPL 1.0 (Common Public License v1.0, see below)
+   link:
+
+// category needs not to be numbered, importance is given by position (1=most important)
+   category:         ooRexx
+   category:         Base
+   category:         Class
+   category:         String
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 - 2008 Rexx Language Association. All rights reserved.  */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+
+-------------------------------------------------------------------------------------------
+-- ===> adapt the "testGroupList" to your testCase classes; each element in the list is <===
+-- ===> an array object, the first element containing the testCase class object, the   <===
+-- ===> second element is a list of test method names which are regarded to be         <===
+-- ===> mandatory (if the list remains empty all test methods are mandatory)           <===
+
+   /* list of array objects, each containing the testGroup class object and an
+      optional list of mandatory test case methods name                       */
+mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
+testGroupList=.list~of( .array~of(.String_absMethod.testGroup,  mandatoryTestMethods) )
+
+
+-------------------------------------------------------------------------------------------
+-- ===> the following code needs not to be individualized                              <===
+
+   -- read top comment, containing infos about this program
+arrLines=.array~new
+do i=1 to 150 until arrLines[i]="*/"
+   arrLines[i]=sourceline(i)
+end
+      -- supply information for the testClass(es) in this file; the class attribute
+      -- "TestCaseInfo" (a directory object, index points to a queue) will store
+      -- the parsed infos
+aTestGroupClass=testGroupList~at(testGroupList~first)[1] -- get first testClass
+
+   -- will parse the array lines and store result in class object
+call makeDirTestInfo aTestGroupClass, arrLines
+tmpDir=aTestGroupClass~TestCaseInfo
+parse source s   -- op_sys invocationType fullPathToThisFile
+tmpDir~setentry("test_Case-source", s)
+
+   -- now add this directory to other testCase classes, if any left
+do arr over testGroupList
+   if arr[1]=aTestGroupClass then iterate  -- already handled
+   arr[1]~TestCaseInfo=tmpDir             -- save info in class object
+end
+
+-- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
+-- and set it to .false; this way the independent local invocation of the tests is inhibited
+if .local~hasentry("bRunTestsLocally")=.false then
+   .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
+
+if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
+do
+   ts=.testSuite~new             -- create a testSuite
+   do arr over testGroupList
+      -- create a testSuite for the given test case class, use all its testmethods
+      ts~addTest( .testSuite~new(arr[1]))
+   end
+   -- testResult=.testSuite~new(testGroupClass)~run
+   testResult=ts~run       -- now run all the tests
+
+   call simpleFormatTestResults testResult
+end
+
+   /* return list of array objects containing test case classes and
+      optionally list of mandatory test methods                      */
+return testGroupList
+
+::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+
+::class "String_absMethod.testGroup" subclass TestCase public
+
+::method "test_1"
+   self~assertSame("subTest1", 5555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555~abs,'5.55555556E+249')
+
+::method "test_2"
+   self~assertSame("subTest2", (-99999%3)~abs,33333)
+
+::method "test_3"
+   self~assertSame("subTest3", (5555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555/3)~abs,1.85185185E+249)
+
+::method "test_4"
+   self~assertSame("subTest4", 003~abs,'3')
+
+::method "test_5"
+   self~assertSame("subTest5", (-000003)~abs,'3')
+
+::method "test_6"
+   self~assertSame("subTest6", (-.003E17)~abs,'3E+14')
+
+::method "test_7"
+   self~assertSame("subTest7", .03E2~abs,'3')
+
+::method "test_8"
+   self~assertSame("subTest8", (copies(' ',1000)'   3  ')~abs, '3')
+
+::method "test_9"
+   self~assertSame("subTest9", '   3  '~abs,'3')
+
+::method "test_10"
+   self~assertSame("subTest10", ' + 31 '~abs,'31')
+
+::method "test_11"
+   self~assertSame("subTest11", ' - 31 '~abs,'31')
+
+::method "test_12"
+   self~assertSame("subTest12",  0 + 31 ~abs,'31')
+
+::method "test_13"
+   self~assertSame("subTest13", ( 0 + '  31 ' )~abs,'31')
+
+::method "test_14"
+   self~expectSyntax(93.943)
+   self~assertSame("subTest14", ' 0 + 31 '~abs,'31')
+
+::method "test_15"
+   self~assertSame("subTest15", '300  '~abs,'300')
+
+::method "test_16"
+   self~assertSame("subTest16", '          300'~abs,'300')
+
+::method "test_17"
+   self~assertSame("subTest17", '2B303033'x~abs,'3')
+
+::method "test_18"
+   a=11111111
+   self~assertSame("subTest18", a~abs,'11111111')
+
+::method "test_19"
+   a=11111111
+   b=-33333333
+   self~assertSame("subTest19", (a+b)~abs,'22222222')
+
+::method "test_20"
+   self~assertSame("subTest20", (2-9)~abs,'7')
+
+::method "test_21"
+   self~assertSame("subTest21", ('-'||2||'.'||'E+3')~abs,'2000')
+
+::method "test_22"
+   self~expectSyntax(93.943)
+   self~assertSame("subTest22", 'a'~abs,'a')
+
+::method "test_23"
+   self~assertSame("subTest23", '-4.2'~abs,'4.2')
+
+::method "test_24"
+   self~assertSame("subTest24", '414253'x( -4.2), '4.2')
+
+::method "test_25"
+   n=-33333333
+   Numeric Digits 5
+   Numeric Form Engineering
+   self~assertSame("subTest25", n~abs,'33.333E+6')
+
+::method "test_26"
+   n=-33333333
+   Numeric Digits 5
+   Numeric Form Engineering
+   self~assertSame("subTest26", (-n)~abs,'33.333E+6')
+
+::method "test_27"
+   n=-33333333
+   Numeric Digits 5
+   Numeric Form Engineering
+   self~assertSame("subTest27", 1E-0234567890~abs,10E-234567891)
+
+::method "test_28"
+   Numeric Digits 5
+   Numeric Form Engineering
+   self~assertSame("subTest28", 10.5e12-1389004007~abs,'10.499E+12')
+
+::method "test_29"
+   self~expectSyntax(93.943)
+   self~assertSame("subTest29", 1E1234567890~abs,1)
+
+::method "test_30"
+   self~expectSyntax(93.943)
+   self~assertSame("subTest30", novalue~abs,1)
+
+::method "test_31"
+   self~expectSyntax(93.943)
+   three = 3
+   self~assertSame("subTest31", stem.three~abs,3)
+
+::method "test_abs_subtest32"
+   self~expectSyntax(93.943)
+   self~assertSame("subTestss", invalid~abs,3)
+
+::method "test_33"
+   Numeric Digits 5
+   Numeric Form Engineering
+   stem.=-18.000000000000000004
+   self~assertSame("subTest33", stem.four~abs,'18.000')
+
+::method "test_34"
+   Numeric Digits 10000
+   Numeric Form Engineering
+   li=Copies('6',8000)
+   self~assertSame("subTest34", li~abs,copies('6', 8000))
+
+::method "test_35"
+   Numeric Digits 10000
+   Numeric Form Engineering
+   self~assertSame("subTest35", '12.3'~abs,'12.3')
+
+::method "test_36"
+   Numeric Digits 10000
+   Numeric Form Engineering
+   self~assertSame("subTest36", '-0.307'~abs,'0.307')
+
+::method "test_37"
+   Numeric Digits 10000
+   Numeric Form Engineering
+   self~assertSame("subTest37", 0, ' -0'~abs)
+
+::method "test_38"
+   Numeric Digits 10000
+   Numeric Form Engineering
+   self~assertSame("subTest38", 0, ' +0'~abs)
+
+::method "test_39"
+   Numeric Digits 10000
+   Numeric Form Engineering
+   self~assertSame("subTest39", 0, ' - 0 '~abs)
+
+::method "test_40"
+   Numeric Digits 10000
+   Numeric Form Engineering
+   self~assertSame("subTest40", 0, ' + 0 '~abs)
+
+::method "test_41"
+   Numeric Digits 10000
+   Numeric Form Engineering
+   self~assertSame("subTest41", 1, ' -1'~abs)
+
+::method "test_42"
+   Numeric Digits 10000
+   Numeric Form Engineering
+   self~assertSame("subTest42", 1, ' +1'~abs)
+
+::method "test_43"
+   Numeric Digits 10000
+   Numeric Form Engineering
+   self~assertSame("subTest43", 1, ' - 1 '~abs)
+
+::method "test_44"
+   Numeric Digits 10000
+   Numeric Form Engineering
+   self~assertSame("subTest44", 1, ' + 1 '~abs)
+
+   -- rexxref documentation tests
+
+::method "test_101"
+   self~assertSame("subTest101", 12.3, '12.3'~abs)
+
+::method "test_102"
+   self~assertSame("subTest102", 0.307, ' -0.307'~abs)
+
+      -- new tests
+   self~assertEquals("subTest03", 0 ,  ' -0'~ABS   )
+   self~assertEquals("subTest04", 0 ,  ' +0'~ABS   )
+   self~assertEquals("subTest05", 0 ,  ' - 0 '~ABS )
+   self~assertEquals("subTest06", 0 ,  ' + 0 '~ABS )
+   self~assertEquals("subTest07", 1 ,  ' -1'~ABS   )
+   self~assertEquals("subTest08", 1 ,  ' +1'~ABS   )
+   self~assertEquals("subTest09", 1 ,  ' - 1 '~ABS )
+   self~assertEquals("subTest10", 1 ,  ' + 1 '~ABS )
+
+

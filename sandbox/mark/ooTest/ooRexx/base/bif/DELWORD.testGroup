@@ -1,0 +1,327 @@
+#!/usr/bin/rexx
+/*
+   name:             DELWORD.testUnit
+   author:           Lee Peedin
+   date:             2007/12/06
+   version:          1.0
+   date:             2007/12/18
+   version:          1.1
+
+-- line commented lines are ignored, when building the directory of infos from this header
+   changed:
+
+   languageLevel:    6.02
+   purpose:          Test the DELWORD BIF
+   remark:           ---
+
+   license:          CPL 1.0 (Common Public License v1.0, see below)
+   link:
+
+// category needs not to be numbered, importance is given by position (1=most important)
+   category1:        ooRexx
+   category2:        Base
+   category3:        BIF
+
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+-------------------------------------------------------------------------------------------
+   /* list of array objects, each containing the testUnit class object and an
+      optional list of mandatory test case methods name                       */
+    mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
+    testUnitList=.list~of(.array~of(.DELWORD.testGroup, mandatoryTestMethods))
+
+-------------------------------------------------------------------------------------------
+-- ===> the following code needs not to be individualized                              <===
+
+   -- read top comment, containing infos about this program
+    arrLines=.array~new
+    do i=1 to 150 until arrLines[i]="*/"
+        arrLines[i]=sourceline(i)
+    end
+      -- supply information for the testClass(es) in this file; the class attribute
+      -- "TestCaseInfo" (a directory object, index points to a queue) will store
+      -- the parsed infos
+    aTestUnitClass=testUnitList~at(testUnitList~first)[1] -- get first testClass
+
+   -- will parse the array lines and store result in class object
+    call makeDirTestInfo aTestUnitClass, arrLines
+    tmpDir=aTestUnitClass~TestCaseInfo
+    parse source s   -- op_sys invocationType fullPathToThisFile
+    tmpDir~setentry("test_Case-source", s)
+   -- now add this directory to other testCase classes, if any left
+    do arr over testUnitList
+        if arr[1]=aTestUnitClass then
+            iterate  -- already handled
+        arr[1]~TestCaseInfo=tmpDir             -- save info in class object
+    end
+
+-- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
+-- and set it to .false; this way the independent local invocation of the tests is inhibited
+    if .local~hasentry("bRunTestsLocally")=.false then
+        .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
+
+    if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
+        do
+            ts=.testSuite~new             -- create a testSuite
+            do arr over testUnitList
+                -- create a testSuite for the given test case class, use all its testmethods
+                ts~addTest( .testSuite~new(arr[1]))
+            end
+            -- testResult=.testSuite~new(testUnitClass)~run
+            testResult=ts~run       -- now run all the tests
+
+            call simpleFormatTestResults testResult
+        end
+
+   /* return list of array objects containing test case classes and
+      optionally list of mandatory test methods                      */
+return testUnitList
+
+::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+
+-- class named exactly like file
+::class "DELWORD.testGroup" subclass TestCase public
+
+::method 'test01'
+    self~assertSame('subTest01','',delWord('',1,1))
+
+::method 'test02'
+    self~expectSyntax(40.12)
+    r = delWord('delWord1 delWord2',1.000000009,1.000000009)
+
+::method 'test03'
+    self~expectSyntax(40.12)
+    r = delWord('delWord1 delWord2',2.000000009,2.000000009)
+
+::method 'test04'
+    self~assertSame('subTest01','delWord2',delWord('delWord1 delWord2',1.000000004,1.000000004))
+
+::method 'test05'
+    self~assertSame('subTest01','delWord1 ',delWord('delWord1 delWord2',2.000000004,2.000000004))
+
+::method 'test06'
+    zeros1 = copies('0',10000)||'1'
+    self~assertSame('subTest01','',delWord('4a'x,zeros1,2))
+
+::method 'test07'
+    vblank = ' '
+    self~assertSame('subTest01',' ',delWord(vblank,2.55*200-255,1))
+
+::method 'test08'
+    self~assertSame('subTest01','delWord',delWord('delWord','31'x,'30'x))
+
+::method 'test09'
+    self~expectSyntax(93.924)
+    r = delWord('delWord','30'x,'30'x)
+
+::method 'test10'
+    self~expectSyntax(93.924)
+    r = delWord(' ','30'x,'30'x)
+
+::method 'test11'
+    self~assertSame('subTest01','',delWord('4a52'x,1E0,1E0))
+
+::method 'test12'
+    self~assertSame('subTest01','JR',delWord('4a52'x,2E0,1E0))
+
+::method 'test13'
+    self~assertSame('subTest01','C D E F G H I J K L M N O',delWord('4120422043204420452046204720482049204a204b204c204d204e204f'x,' 1',' 2'))
+
+::method 'test14'
+    numeric digits 1
+    v26 = 'A B C D E F G H I J K L M N O P Q R S T U V W X Y Z'
+    v19 = '19'
+    v14 = '14'
+    self~assertSame('subTest01','A B C D E F G H I J K X Y Z',delWord(v26,'1'||'2','1'||'2'))
+    self~assertSame('subTest02','A B C D E F G H I J K X Y Z',delWord(v26,' +12 ',' +12 '))
+    self~assertSame('subTest03','A B C D E F G H I T U V W X Y Z',delWord(v26,+12,+12))
+    self~assertSame('subTest04','A B C D E F G H I J K X Y Z',delWord(v26,12,12))
+    self~assertSame('subTest05','A B C D E F G H I J K L M N O P Q R ',delWord(v26,v19,v19))
+    self~assertSame('subTest06','A B C D E F G H I J K L M ',delWord(v26,v14,v14))
+    self~assertSame('subTest07','',delWord(12+6,1,1))
+    self~assertSame('subTest08','',delWord('12+6',1,1))
+
+::method 'test15'
+    self~assertSame('subTest01','     asdf qwer zxcv     ',delWord('     asdf qwer zxcv     ASDF QWER ZXCV','.004E3','.003E3'))
+
+::method 'test16'
+    v8 = 'one two  three   four    five     six      seven       eight'
+    self~assertSame('subTest01','one two  three   eight',delWord(v8,-4+8,-4+8))
+
+::method 'test17'
+    v8 = 'one two  three   four    five     six      seven       eight'
+    self~expectSyntax(93.924)
+    r = delWord(v8,-4-8,-4+8)
+
+::method 'test18'
+    v8 = 'one two  three   four    five     six      seven       eight'
+    self~expectSyntax(40.12)
+    r = delWord(v8,1,1.5)
+
+::method 'test19'
+    self~assertSame('subTest01', 'asdf zxcv     ASDF ', delword('61736466207a786376000000000041534446205a584356'x, (3*3*3)/9, 2))
+
+::method 'test20'
+    self~assertSame('subTest01','',delWord(nv,1,1))
+
+::method 'test21'
+    self~assertSame('subTest01','',delWord(nv.,1,1))
+
+::method 'test22'
+    self~assertSame('subTest01','',delWord(nv.10,1,1))
+
+::method 'test23'
+    self~expectSyntax(40.12)
+    r = delWord(v125,nv,1)
+
+::method 'test24'
+    self~expectSyntax(40.12)
+    r = delWord(v125,nv.,1)
+
+::method 'test25'
+    self~expectSyntax(40.12)
+    r = delWord(v125,nv.10,1)
+
+::method 'test26'
+    self~expectSyntax(40.12)
+    r = delWord(v125,1,nv)
+
+::method 'test27'
+    self~expectSyntax(40.12)
+    r = delWord(v125,1,nv.)
+
+::method 'test28'
+    self~expectSyntax(40.12)
+    r = delWord(v125,1,nv.10)
+
+::method 'test29'
+    self~expectSyntax(40.12)
+    r = delWord(novala,novalb,novalc)
+
+::method 'test31'
+    v10000 = copies('J ',9999)||'K '
+    self~assertSame('subTest01',copies('J ',9998),delWord(v10000,9999,2))
+    self~assertSame('subTest02',copies('J ',9999),delWord(v10000,10000,2))
+    self~assertSame('subTest03',v10000,delWord(v10000,10001,2))
+
+::method 'test32'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~assertSame('subTest01','1 2 3 4 5 6 ',delWord(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,7,2+3))
+
+::method 'test33'
+    vwbwwbw = 'J'||copies(' ',5000)||copies('*',10000)||copies(' ',5000)||'R'
+    self~assertSame('subTest01',subword(vwbwwbw,2),delWord(vwbwwbw,1,1))
+    self~assertSame('subTest02',subword(vwbwwbw,3),delWord(vwbwwbw,1,2))
+    self~assertSame('subTest03','J'||copies(' ',5000)||'R',delWord(vwbwwbw,2,1))
+    self~assertSame('subTest04',substr(vwbwwbw,1,5001),delWord(vwbwwbw,2,2))
+    self~assertSame('subTest05',substr(vwbwwbw,1,20001),delWord(vwbwwbw,3,1))
+
+::method 'test34'
+    vwbw = 'John'||copies(' ',10000)||'Buckley'
+    self~assertSame('subTest01',subword(vwbw,2),delWord(vwbw,1,1))
+    self~assertSame('subTest02',substr(vwbw,1,10004),delWord(vwbw,2,1))
+    self~assertSame('subTest03','',delWord(vwbw,1,2))
+    self~assertSame('subTest04',substr(vwbw,1,10004),delWord(vwbw,2,2))
+
+::method 'test35'
+    self~assertSame('subTest01','',delWord((00345),1,1))
+
+::method 'test36'
+    self~assertSame('subTest01','',delWord((00345),1,2))
+
+::method 'test37'
+    self~assertSame('subTest01','',delWord((3 4 5),1,3))
+
+::method 'test38'
+    self~assertSame('subTest01','3 ',delWord((3 4 5),2,2))
+
+::method 'test39'
+    self~assertSame('subTest01','3 4 ',delWord((3 4 5),3,1))
+
+::method 'test40'
+    self~assertSame('subTest01','3 4 5',delWord((3 4 5),4,4))
+-- call ver delWord((3 4 5),4,4),'3 4 5'; R0114:
+
+::method 'test41'
+    v8 = 'one two  three   four    five     six      seven       eight'
+    self~assertSame('subTest01','',delWord((v8),1,8))
+    self~assertSame('subTest02','one two  three   four    five     ',delWord((v8),6,4))
+    self~assertSame('subTest03','one two  three   four    five     six      seven       ',delWord((v8),8,3))
+
+    v8. = v8
+    self~assertSame('subTest04','',delWord((v8.),1,8))
+    self~assertSame('subTest05','one ',delWord((v8.),2,8))
+    self~assertSame('subTest06','one two  three   four    five     six      seven       eight',delWord((v8.),9,1))
+    self~assertSame('subTest07','one two  three   ',delWord((v8.10),4,5))
+    self~assertSame('subTest08','one two  three   four    ',delWord((v8.10),5,5))
+    self~assertSame('subTest09','one two  three   four    five     ',delWord((v8.10),6,4))
+
+::method 'test42'
+    v26 = 'A B C D E F G H I J K L M N O P Q R S T U V W X Y Z'
+    zeros1 = copies('0',10000)||'1'
+
+    self~assertSame('subTest01','Y X W V U T S R Q P O N M L K J I H G F E D C B A',delWord(v26||' '||reverse(v26),1,27))
+    self~assertSame('subTest02','A B C D E F G H I J K L M N O P Q R S T U V W X Y Y X W V U T S R Q P O N M L K J I H G F E D C B A',delWord(v26' 'reverse(v26),26,2))
+    self~assertSame('subTest03','A B C D E F G H I J K L M N O P Q R S T U V W X Y Z ',delWord(v26 reverse(v26),27,26))
+    self~assertSame('subTest04','one seven',delWord('one two three four five six seven',2,substr('3 4 5 6 7',5,1)))
+    self~assertSame('subTest05','A B C D E F G H I J K L M N O P Q R S T U V W X Y Z',delWord(v26,length(translate(v26,'',' ')),zeros1))
+    self~assertSame('subTest06','A B C D E F G H I J K L M N O P Q R S T U ',delWord(v26,x2d(16),x2d('A')))
+
+::method 'test43'
+    self~assertSame('subTest01','NUM ',delWord(datatype(6) datatype('A'),2,datatype(7,'N')))
+
+::method 'test44'
+    self~assertSame('subTest01','Incorrect ',delWord(errortext(40),LASTPOS('O','WORD'),WORDlength('J. R. BUCKLEY',3)))
+
+::method 'test45'
+    self~assertSame('subTest01','John ',delWord(delWord('John R. Buckley',2,1),delWord('2 3',2,1),delWord('1 2 3',2,2)))
+
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_DELWORD"
+    self~assertSame("subTest1" , 'Now time'        , DELWORD('Now is the time',2,2))
+    self~assertSame("subTest2" , 'Now is '         , DELWORD('Now is the time ',3) )
+    self~assertSame("subTest3" , 'Now is the time' , DELWORD('Now is the time',5)  )
+    self~assertSame("subTest4" , 'Now is time'     , DELWORD('Now is the time',3,1))
+    self~assertSame("subTest5" , 'Now time'        , DELWORD('Now is the time',2,2))
+
+   -- new tests
+    self~assertSame("subTest4" , 'Now is the time' , DELWORD('Now is the time',3,0))
+    self~assertSame("subTest4" , 'Now is the time' , DELWORD('Now is the time',1,0))
+

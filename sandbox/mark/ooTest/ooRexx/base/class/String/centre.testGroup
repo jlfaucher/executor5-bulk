@@ -1,0 +1,492 @@
+#!/usr/bin/rexx
+/*
+   name:             String_centreMethod.testGroup
+   author:           Lee Peedin
+   date:             2007-12-20
+   version:          1.0.0
+
+-- line commented lines are ignored, when building the directory of infos from this header
+
+   languageLevel:    6.02
+   purpose:          Test the centre method of the class String.
+   remark:           Initial test unit for demonstration purposes, needs to be completed.
+
+   license:          CPL 1.0 (Common Public License v1.0, see below)
+   link:
+
+// category needs not to be numbered, importance is given by position (1=most important)
+   category:         ooRexx
+   category:         Base
+   category:         Class
+   category:         String
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 - 2008 Rexx Language Association. All rights reserved.  */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+
+-------------------------------------------------------------------------------------------
+-- ===> adapt the "testGroupList" to your testCase classes; each element in the list is <===
+-- ===> an array object, the first element containing the testCase class object, the   <===
+-- ===> second element is a list of test method names which are regarded to be         <===
+-- ===> mandatory (if the list remains empty all test methods are mandatory)           <===
+
+   /* list of array objects, each containing the testGroup class object and an
+      optional list of mandatory test case methods name                       */
+mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
+testGroupList=.list~of( .array~of(.String_centreMethod.testGroup,  mandatoryTestMethods) )
+
+
+-------------------------------------------------------------------------------------------
+-- ===> the following code needs not to be individualized                              <===
+
+   -- read top comment, containing infos about this program
+arrLines=.array~new
+do i=1 to 150 until arrLines[i]="*/"
+   arrLines[i]=sourceline(i)
+end
+      -- supply information for the testClass(es) in this file; the class attribute
+      -- "TestCaseInfo" (a directory object, index points to a queue) will store
+      -- the parsed infos
+aTestGroupClass=testGroupList~at(testGroupList~first)[1] -- get first testClass
+
+   -- will parse the array lines and store result in class object
+call makeDirTestInfo aTestGroupClass, arrLines
+tmpDir=aTestGroupClass~TestCaseInfo
+parse source s   -- op_sys invocationType fullPathToThisFile
+tmpDir~setentry("test_Case-source", s)
+
+   -- now add this directory to other testCase classes, if any left
+do arr over testGroupList
+   if arr[1]=aTestGroupClass then iterate  -- already handled
+   arr[1]~TestCaseInfo=tmpDir             -- save info in class object
+end
+
+-- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
+-- and set it to .false; this way the independent local invocation of the tests is inhibited
+if .local~hasentry("bRunTestsLocally")=.false then
+   .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
+
+if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
+do
+   ts=.testSuite~new             -- create a testSuite
+   do arr over testGroupList
+      -- create a testSuite for the given test case class, use all its testmethods
+      ts~addTest( .testSuite~new(arr[1]))
+   end
+   -- testResult=.testSuite~new(testGroupClass)~run
+   testResult=ts~run       -- now run all the tests
+
+   call simpleFormatTestResults testResult
+end
+
+   /* return list of array objects containing test case classes and
+      optionally list of mandatory test methods                      */
+return testGroupList
+
+::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+
+::class "String_centreMethod.testGroup" subclass TestCase public
+
+::method "test_1"
+   self~assertSame("subTest1", ''~centre(0),'')
+
+::method "test_2"
+   self~assertSame("subTest2", ''~centre(1),' ')
+
+::method "test_3"
+   self~assertSame("subTest3", ''~centre(2),'  ')
+
+::method "test_4"
+   self~assertSame("subTest4", ''~centre(100000),copies(' ',100000))
+
+::method "test_5"
+   n30=30
+   self~assertSame("subTest5", ''~centre(n30    ),'                              ')
+
+::method "test_6"
+   self~assertSame("subTest6", 'X'~centre(0),'')
+
+::method "test_7"
+   self~assertSame("subTest7", 'X'~centre(1),'X')
+
+::method "test_8"
+   self~assertSame("subTest8", 'X'~centre(4),' X  ')
+
+::method "test_9"
+   self~assertSame("subTest9", 'X'~centre(30),'              X               ')
+
+::method "test_10"
+   self~assertSame("subTest10", '41'x~centre(3),' A ')
+
+::method "test_11"
+   self~expectSyntax(93.923)
+   self~assertSame("subTest11", 'abc'~centre('-123'),'abc')
+
+::method "test_12"
+   self~assertSame("subTest12", '03bc'x~centre(3),'03bc20'x)
+
+::method "test_13"
+   self~assertSame("subTest13", "3 bc de"X~centre(0001e1),'20202003bcde20202020'x)
+
+::method "test_14"
+   v.30='1234567890abcdefghijklmnopqrst'
+   n31=31
+   self~assertSame("subTest14", v.30~centre(n31),'1234567890abcdefghijklmnopqrst ')
+
+::method "test_15"
+   v255.=copies('*',255)
+   self~assertSame("subTest15", v255.~centre(155),copies('*',155))
+
+::method "test_16"
+   v255.=copies('*',255)
+   v256=v255.||'<'
+   self~assertSame("subTest16", v256~centre(256),v256)
+
+::method "test_17"
+   v100000=Copies('abcd',25000)
+   self~assertSame("subTest17", v100000~centre(1),'d')
+
+::method "test_18"
+   self~assertSame("subTest18", "1234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234"X~centre(2),'1234'x)
+
+::method "test_19"
+   z=Copies('19',125)
+   self~assertSame("subTest19", z~centre(0.13e2),'1919191919191')
+
+::method "test_20"
+   self~assertSame("subTest20", ('an expression' '+'||'others')~centre(40),'         an expression +others          ')
+
+::method "test_21"
+   self~assertSame("subTest21", (17+4)~centre(99+0),'                                                21                                                 ')
+
+::method "test_22"
+   self~assertSame("subTest22", (12345/3)~centre(12345/3),COPIES(' ',2055)||'4115'||copies(' ',2056))
+
+::method "test_23"
+   self~expectSyntax(93.905)
+   self~assertSame("subTest23", (1E-122/7)~centre(1e+122/7),'')
+
+::method "test_24"
+   resa=copies(' ',59)||'ff'x||copies(' ',60)
+   self~assertSame("subTest24", SUBSTR('FFFFFF20FF'x,3,1)~centre(120),resa)
+
+::method "test_25"
+   self~assertSame("subTest25", 'echoed'~centre(12),'   echoed   ')
+
+::method "test_26"
+   self~assertSame("subTest26", copies('one more Time',2)~centre('32'x),'eo')
+
+::method "test_27"
+   self~assertSame("subTest27", 'from outside'~centre(copies(3,2)),'          from outside           ')
+
+::method "test_28"
+   self~assertSame("subTest28", (''||'')~centre(33),'                                 ')
+
+::method "test_29"
+   self~assertSame("subTest29", copies('3'x,2)~centre(pos('o','nmopq')),'030320'x)
+
+::method "test_30"
+   self~expectSyntax(93.905)
+   self~assertSame("subTest30", '1'~centre(nv1),'1')
+
+::method "test_31"
+   self~expectSyntax(93.905)
+   self~assertSame("subTest31", '3'~centre(nv2.3),'1')
+
+::method "test_32"
+   self~expectSyntax(93.905)
+   self~assertSame("subTest32", '2'~centre(nv2.),'1')
+
+::method "test_33"
+   self~expectSyntax(93.905)
+   self~assertSame("subTest33", '3'~centre(nv2.3),'1')
+
+::method "test_34"
+   self~expectSyntax(93.905)
+   self~assertSame("subTest34", nv2.3~centre(nv2.3),'1')
+
+::method "test_35"
+   self~expectSyntax(93.905)
+   self~assertSame("subTest35", nv2.3~centre(nv2.3),'1')
+
+::method "test_36"
+   self~expectSyntax(93.905)
+   self~assertSame("subTest36", nv1~centre(nv1),'1')
+
+::method "test_37"
+   self~expectSyntax(93.905)
+   self~assertSame("subTest37", nv2.~centre(nv2.),'1')
+
+::method "test_38"
+   self~expectSyntax(93.905)
+   self~assertSame("subTest38", nv2.3~centre(nv2.3),'1')
+
+::method "test_39"
+   self~assertSame("subTest39", '12345ZYXWV'~centre(15),'  12345ZYXWV   ')
+
+::method "test_40"
+   self~assertSame("subTest40", '12345ZYXWV'~centre(00015),'  12345ZYXWV   ')
+
+::method "test_41"
+   self~assertSame("subTest41", '12345ZYXWV'~centre(0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000015),'  12345ZYXWV   ')
+
+::method "test_42"
+   self~expectSyntax(93.905)
+   self~assertSame("subTest42", '12345ZYXWV'~centre(.15),'  12345ZYXWV   ')
+
+::method "test_43"
+   self~expectSyntax(93.905)
+   self~assertSame("subTest43", '12345ZYXWV'~centre(-.315),'  12345ZYXWV   ')
+
+::method "test_44"
+   self~assertSame("subTest44", '12345ZYXWV'~centre('    15      '),'  12345ZYXWV   ')
+
+::method "test_45"
+   self~expectSyntax(93.923)
+   self~assertSame("subTest45", '12345ZYXWV'~centre('    -5      '),'')
+
+::method "test_46"
+   self~expectSyntax(93.923)
+   self~assertSame("subTest46", '12345ZYXWV'~centre('   - 5      '),'')
+
+::method "test_47"
+   self~expectSyntax(93.905)
+   self~assertSame("subTest47", '12345ZYXWV'~centre('   --5      '),'')
+
+::method "test_48"
+   self~assertSame("subTest48", '12345ZYXWV'~centre('2B30303135'x),'  12345ZYXWV   ')
+
+::method "test_49"
+   self~assertSame("subTest49", '12345ZYXWV'~centre(15+0),'  12345ZYXWV   ')
+
+::method "test_50"
+   self~assertSame("subTest50", '12345ZYXWV'~centre(15-12),'45Z')
+
+::method "test_51"
+   n15=15
+   self~assertSame("subTest51", '12345ZYXWV'~centre(n15),'  12345ZYXWV   ')
+
+::method "test_52"
+   sn15.=15
+   self~assertSame("subTest52", '12345ZYXWV'~centre(sn15.),'  12345ZYXWV   ')
+
+::method "test_53"
+   sn15.1=15
+   self~assertSame("subTest53", '12345ZYXWV'~centre(sn15.1),'  12345ZYXWV   ')
+
+::method "test_54"
+   n15=15
+   sn15.1=15
+   self~assertSame("subTest54", '12345ZYXWV'~centre(n15+sn15.1+3),'           12345ZYXWV            ')
+
+::method "test_55"
+   self~assertSame("subTest55", 'abcde'~centre(3),'bcd')
+
+::method "test_56"
+   self~assertSame("subTest56", ''~centre(1),' ')
+
+::method "test_57"
+   AA  ='A'
+   self~assertSame("subTest57", AA~centre(3),' 'AA' ')
+
+::method "test_58"
+   AA30 ='AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+   self~assertSame("subTest58", AA30~centre(32),' 'AA30' ')
+
+::method "test_59"
+   AA255="COPIES"('AAAAAAAAAA',25)'AAAAA'
+   self~assertSame("subTest59", AA255~centre(255),AA255)
+
+::method "test_60"
+   AA256="COPIES"('AAAAAAAAAA',25)'AAAAAA'
+   self~assertSame("subTest60", AA256~centre(3),'AAA')
+
+::method "test_61"
+   AA256="COPIES"('AAAAAAAAAA',25)'AAAAAA'
+   AAlon="COPIES"('AAAAAAAAAA',3815)
+   self~assertSame("subTest61", AAlon~centre(256),AA256)
+
+::method "test_62"
+   self~assertSame("subTest62", ''~centre(32767),copies(' ',32767))
+
+::method "test_63"
+   self~assertSame("subTest63", ''~centre(32768),copies(' ',32768))
+
+::method "test_64"
+   AA  ='A'
+   self~assertSame("subTest64", AA~centre(3),' A ')
+
+::method "test_65"
+   AA  ='A'
+   self~assertSame("subTest65", AA~centre(003),' A ')
+
+::method "test_66"
+   AA  ='A'
+   self~assertSame("subTest66", AA~centre(.03E2),' A ')
+
+::method "test_67"
+   AA  ='A'
+   self~assertSame("subTest67", AA~centre('   3  '),' A ')
+
+::method "test_68"
+   AA  ='A'
+   self~assertSame("subTest68", AA~centre('2B303033'x),' A ')
+
+::method "test_69"
+   AA  ='A'
+   a=1
+   self~assertSame("subTest69", AA~centre(a),'A')
+
+::method "test_70"
+   AA  ='A'
+   a=1
+   b=2
+   self~assertSame("subTest70", AA~centre(a+b),' A ')
+
+::method "test_71"
+   self~expectSyntax(93.923)
+   AA  ='A'
+   self~assertSame("subTest71", AA~centre(-2),' A ')
+
+::method "test_72"
+   self~expectSyntax(93.923)
+   AA  ='A'
+   self~assertSame("subTest72", AA~centre(-0.03E2),' A ')
+
+::method "test_73"
+   self~expectSyntax(93.923)
+   AA  ='A'
+   self~assertSame("subTest73", AA~centre('  -3 '),' A ')
+
+::method "test_74"
+   self~assertSame("subTest74", 'abcde'~centre(3),'bcd')
+
+::method "test_75"
+   self~assertSame("subTest75", ''~centre(1),' ')
+
+::method "test_76"
+   Z1  ='A'
+   self~assertSame("subTest76", Z1~centre(3),' 'Z1' ')
+
+::method "test_77"
+   Z30 ='AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+   self~assertSame("subTest77", Z30~centre(32),' 'Z30' ')
+
+::method "test_78"
+   Z255="COPIES"('AAAAAAAAAA',25)'AAAAA'
+   self~assertSame("subTest78", Z255~centre(255),Z255)
+
+::method "test_79"
+   Z256="COPIES"('AAAAAAAAAA',25)'AAAAAA'
+   self~assertSame("subTest79", Z256~centre(3),'AAA')
+
+::method "test_80"
+   Z256="COPIES"('AAAAAAAAAA',25)'AAAAAA'
+   Zlon="COPIES"('AAAAAAAAAA',3815)
+   self~assertSame("subTest80", Zlon~centre(256),Z256)
+
+::method "test_81"
+   self~assertSame("subTest81", ''~centre(32767),copies(' ',32767))
+
+::method "test_82"
+   self~assertSame("subTest82", ''~centre(32768),copies(' ',32768))
+
+::method "test_83"
+   Do i=0 To 255
+      P=d2c(i)
+      self~assertSame("subTest83-"i, 'S'~centre(3,p),p'S'p)
+   End
+
+::method "test_84"
+   Z1  ='A'
+   self~assertSame("subTest84", Z1~centre(3),' A ')
+
+::method "test_85"
+   Z1  ='A'
+   self~assertSame("subTest85", Z1~centre(003),' A ')
+
+::method "test_86"
+   Z1  ='A'
+   self~assertSame("subTest86", Z1~centre(.03E2),' A ')
+
+::method "test_87"
+   Z1  ='A'
+   self~assertSame("subTest87", Z1~centre('   3  '),' A ')
+
+::method "test_88"
+   Z1  ='A'
+   self~assertSame("subTest88", Z1~centre('2B303033'x),' A ')
+
+::method "test_89"
+   Z1  ='A'
+   a=1
+   self~assertSame("subTest89", Z1~centre(a),'A')
+
+::method "test_90"
+   Z1  ='A'
+   a=1
+   b=2
+   self~assertSame("subTest90", Z1~centre(a+b),' A ')
+
+::method "test_91"
+   self~expectSyntax(93.923)
+   Z1  ='A'
+   self~assertSame("subTest91", Z1~centre(-2),' A ')
+
+::method "test_92"
+   self~expectSyntax(93.923)
+   Z1  ='A'
+   self~assertSame("subTest92", Z1~centre(-0.03E2),' A ')
+
+::method "test_93"
+   self~expectSyntax(93.923)
+   Z1  ='A'
+   self~assertSame("subTest93", Z1~centre('  -3 '),' A ')
+
+-- rexxref documentation tests
+::method "test_201"
+    self~assertSame("subTest201", '  ABC  '  , abc~centre(7)            )
+
+::method "test_202"
+    self~assertSame("subTest202", '--ABC---' , abc~centre(8,'-')        )
+
+::method "test_203"
+    self~assertSame("subTest203", 'e blue s' , 'The blue sky'~centre(8) )
+
+::method "test_204"
+    self~assertSame("subTest204", 'e blue '  , 'The blue sky'~centre(7) )
+

@@ -1,0 +1,475 @@
+#!/usr/bin/rexx
+/*
+   name:             overlay.testGroup
+   author:           Lee Peedin
+   date:             2008-01-02
+   version:          1.0.0
+
+-- line commented lines are ignored, when building the directory of infos from this header
+
+   languageLevel:    6.02
+   purpose:          Test the overlay method of the class MutableBuffer.
+   remark:           Initial test unit for demonstration purposes, needs to be completed.
+
+   license:          CPL 1.0 (Common Public License v1.0, see below)
+   link:
+
+// category needs not to be numbered, importance is given by position (1=most important)
+   category:         ooRexx
+   category:         Base
+   category:         Class
+   category:         Mutablebuffer
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 - 2008 Rexx Language Association. All rights reserved.  */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+
+-------------------------------------------------------------------------------------------
+-- ===> adapt the "testGroupList" to your testCase classes; each element in the list is <===
+-- ===> an array object, the first element containing the testCase class object, the   <===
+-- ===> second element is a list of test method names which are regarded to be         <===
+-- ===> mandatory (if the list remains empty all test methods are mandatory)           <===
+
+   /* list of array objects, each containing the testGroup class object and an
+      optional list of mandatory test case methods name                       */
+mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
+testGroupList=.list~of( .array~of(.overlay.testGroup,  mandatoryTestMethods) )
+
+
+-------------------------------------------------------------------------------------------
+-- ===> the following code needs not to be individualized                              <===
+
+   -- read top comment, containing infos about this program
+arrLines=.array~new
+do i=1 to 150 until arrLines[i]="*/"
+   arrLines[i]=sourceline(i)
+end
+      -- supply information for the testClass(es) in this file; the class attribute
+      -- "TestCaseInfo" (a directory object, index points to a queue) will store
+      -- the parsed infos
+aTestGroupClass=testGroupList~at(testGroupList~first)[1] -- get first testClass
+
+   -- will parse the array lines and store result in class object
+call makeDirTestInfo aTestGroupClass, arrLines
+tmpDir=aTestGroupClass~TestCaseInfo
+parse source s   -- op_sys invocationType fullPathToThisFile
+tmpDir~setentry("test_Case-source", s)
+
+   -- now add this directory to other testCase classes, if any left
+do arr over testGroupList
+   if arr[1]=aTestGroupClass then iterate  -- already handled
+   arr[1]~TestCaseInfo=tmpDir             -- save info in class object
+end
+
+-- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
+-- and set it to .false; this way the independent local invocation of the tests is inhibited
+if .local~hasentry("bRunTestsLocally")=.false then
+   .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
+
+if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
+do
+   ts=.testSuite~new             -- create a testSuite
+   do arr over testGroupList
+      -- create a testSuite for the given test case class, use all its testmethods
+      ts~addTest( .testSuite~new(arr[1]))
+   end
+   -- testResult=.testSuite~new(testGroupClass)~run
+   testResult=ts~run       -- now run all the tests
+
+   call simpleFormatTestResults testResult
+end
+
+   /* return list of array objects containing test case classes and
+      optionally list of mandatory test methods                      */
+return testGroupList
+
+::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+
+::class "overlay.testGroup" subclass TestCase public
+
+::method 'test000'
+    .local~vnull = ''
+    .local~vblank = ' '
+    .local~v1 = '*'
+    .local~v1a = '@'
+    .local~v30 = 'abcdefghijklmnopqrstuvwxyz1234'
+    .local~v256 = copies('12345678',32)
+    .local~v10000 = copies('\',10000)
+    .local~vn0000 = 0000
+    .local~vn1 = 1
+    .local~vn2 = 2
+    .local~vn3 = 3
+    .local~vn4 = 4
+    .local~vn5 = 5
+    .local~vn7 = 7
+    .local~vn10 = 10
+    .local~vn21 = 21
+    .local~vn42 = 42
+    .local~vn50 = 50
+    .local~vn100 = 100
+    .local~vn12345 = 12345
+    .local~vres1 = subStr(.v256,1,8)||.v30||subStr(.v256,39)
+    .local~vres2 = subStr(.v10000,1,9)||.v256||subStr(.v10000,266)
+    .local~vres3 = .v256||copies(' ',32511)||'abcdefghijklmnopqrstuvwxyz1234'
+    .local~vres4 = .v256||copies('>',32511)||'abcdefghijklmnopqrstuvwxyz1234'
+    .local~vres5 = .v256||copies(' ',32511)
+    .local~vres6 = '12345678'||.v30||copies(' ',32738)
+    .local~vres7 = '\\\\\\\\\'||subStr(.v256,1,255)||copies('\',9736)
+
+::method 'test001'
+    mb = .mutablebuffer~new('')
+    self~expectSyntax(93.903)
+    xre = mb~overlay()
+
+::method 'test003'
+    mb = .mutablebuffer~new('ABC')
+    self~expectSyntax(93.903)
+    xre = mb~overLay()
+
+::method 'test004'
+    mb = .mutablebuffer~new(.vblank)
+    self~assertSame('subTest01',' ',mb~overLay('')~string)
+
+::method 'test005'
+    mb = .mutablebuffer~new('*')
+    self~assertSame('subTest01',' ',mb~overLay('20'x)~string)
+
+::method 'test006'
+    mb = .mutablebuffer~new('6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'x)
+    self~assertSame('subTest01','*bcdefghijklmnopqrstuvwxyz1234',mb~overLay(.v1)~string)
+
+::method 'test007'
+    mb = .mutablebuffer~new(.v256)
+    self~assertSame('subTest01',.v30||subStr(.v256,31),mb~overLay('abcdefghijklmnopqrstuvwxyz1234')~string)
+
+::method 'test008'
+    mb = .mutablebuffer~new(copies('\',10000))
+    self~assertSame('subTest01',.v256||subStr(.v10000,257),mb~overLay(.v256)~string)
+
+::method 'test009'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1234567890'
+    mb = .mutablebuffer~new(.v1)
+    self~assertSame('subTest01','1234567890',mb~overLay(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX)~string)
+
+::method 'test010'
+    mb = .mutablebuffer~new('*')
+    self~expectSyntax(93.924)
+    xre = mb~overLay('20'x,0)
+
+::method 'test011'
+    mb = .mutablebuffer~new('6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'x)
+    self~assertSame('subTest01','*bcdefghijklmnopqrstuvwxyz1234',mb~overLay(.v1,1)~string)
+
+::method 'test012'
+    mb = .mutablebuffer~new('6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'x)
+    self~assertSame('subTest01','*bcdefghijklmnopqrstuvwxyz1234',mb~overLay(.v1,0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001)~string)
+
+::method 'test013'
+    mb = .mutablebuffer~new('6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'x)
+    self~assertSame('subTest01','a*cdefghijklmnopqrstuvwxyz1234',mb~overLay(.v1,0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002)~string)
+
+::method 'test014'
+    mb = .mutablebuffer~new(.v256)
+    self~assertSame('subTest01',.vres1,mb~overLay('abcdefghijklmnopqrstuvwxyz1234',9)~string)
+
+::method 'test015'
+    mb = .mutablebuffer~new(copies('\',10000))
+    self~assertSame('subTest01',.vres2,mb~overLay(.v256,10)~string)
+
+::method 'test016'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1234567890'
+    mb = .mutablebuffer~new(.v1)
+    self~assertSame('subTest01','*         1234567890',mb~overLay(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,11)~string)
+
+::method 'test017'
+    mb = .mutablebuffer~new('*')
+    self~assertSame('subTest01','*'||copies(' ',254),mb~overLay('20'x,255)~string)
+
+::method 'test018'
+    mb = .mutablebuffer~new('6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'x)
+    self~assertSame('subTest01',.v30||copies(' ',225)||'*',mb~overLay(.v1,256)~string)
+
+::method 'test019'
+    mb = .mutablebuffer~new(.v256)
+    self~assertSame('subTest01',.vres3,mb~overLay('abcdefghijklmnopqrstuvwxyz1234',32768)~string)
+
+::method 'test020'
+    mb = .mutablebuffer~new(copies('\',10000))
+    self~assertSame('subTest01',copies('\',9999)||.v256,mb~overLay(.v256,10000)~string)
+
+::method 'test021'
+    mb = .mutablebuffer~new('6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'x)
+    self~assertSame('subTest01','*'||copies(' ',9999),mb~overLay(.v1,1,10000)~string)
+
+::method 'test022'
+    mb = .mutablebuffer~new(.v256)
+    self~assertSame('subTest01',.vres6,mb~overLay('abcdefghijklmnopqrstuvwxyz1234',9,32768)~string)
+
+::method 'test023'
+    mb = .mutablebuffer~new(copies('\',10000))
+    self~assertSame('subTest01',.vres7,mb~overLay(.v256,10,255)~string)
+
+::method 'test024'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1234567890'
+    mb = .mutablebuffer~new(.v1)
+    self~assertSame('subTest01',.v1||'         '||'1234567890'||' ',mb~overLay(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,11,11)~string)
+
+::method 'test025'
+    mb = .mutablebuffer~new('*')
+    self~assertSame('subTest01',.v1||copies(' ',253)||'20'x||copies(' ',8),mb~overLay('20'x,255,9)~string)
+
+::method 'test026'
+    mb = .mutablebuffer~new('6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'x)
+    self~assertSame('subTest01',.v30||copies(' ',225)||.v1,mb~overLay(.v1,256,1)~string)
+
+::method 'test027'
+    mb = .mutablebuffer~new(.v256)
+    self~assertSame('subTest01',.vres5,mb~overLay('abcdefghijklmnopqrstuvwxyz1234',32768,0)~string)
+
+::method 'test028'
+    mb = .mutablebuffer~new('6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'x)
+    self~assertSame('subTest01','*'||copies('\',9999),mb~overLay(.v1,1,10000,'5C'x)~string)
+
+::method 'test029'
+    mb = .mutablebuffer~new(.v256)
+    self~assertSame('subTest01',.vres6,mb~overLay('abcdefghijklmnopqrstuvwxyz1234',9,32768,' ')~string)
+
+::method 'test030'
+    mb = .mutablebuffer~new(copies('\',10000))
+    self~expectSyntax(93.922)
+    xre = mb~overLay(.v256,10,255,'xx')
+
+::method 'test031'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1234567890'
+    mb = .mutablebuffer~new(.v1)
+    self~assertSame('subTest01',.v1||'|||||||||'||'1234567890'||'|',mb~overLay(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,11,11,'|')~string)
+
+::method 'test032'
+    mb = .mutablebuffer~new('*')
+    self~assertSame('subTest01',.v1||copies('4',253)||'20'x||copies('4',8),mb~overLay('20'x,255,9,2+2)~string)
+
+::method 'test033'
+    mb = .mutablebuffer~new('6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'x)
+    self~assertSame('subTest01',.v30||copies('@',225)||.v1,mb~overLay(.v1,256,1,.v1a)~string)
+
+::method 'test034'
+    mb = .mutablebuffer~new(.v256)
+    self~expectSyntax(93.922)
+    xre = mb~overLay('abcdefghijklmnopqrstuvwxyz1234',32768,0,6+6)
+
+::method 'test035'
+    mb = .mutablebuffer~new('nv.')
+    self~expectSyntax(93.938)
+    xre = mb~overLay(nv.,1,60,'1')
+
+::method 'test036'
+    mb = .mutablebuffer~new(noval2)
+    self~expectSyntax(93.905)
+    xre = mb~overLay(noval1,noval3,noval4,noval5)
+
+::method 'test037'
+    mb = .mutablebuffer~new('nv')
+    self~expectSyntax(93.905)
+    xre = mb~overLay('nv',nv,3,'1')
+
+::method 'test038'
+    mb = .mutablebuffer~new('nv.')
+    self~expectSyntax(93.905)
+    xre = mb~overLay('nv.',nv.,60,'1')
+
+::method 'test039'
+    mb = .mutablebuffer~new('nv.10')
+    self~expectSyntax(93.905)
+    xre = mb~overLay('nv.10',nv.10,100,'1')
+
+::method 'test040'
+    mb = .mutablebuffer~new('nv')
+    self~expectSyntax(93.922)
+    xre = mb~overLay('nv',1,3,nv)
+
+::method 'test041'
+    mb = .mutablebuffer~new('nv.')
+    self~expectSyntax(93.938)
+    xre = mb~overLay('nv.',1,60,nv.)
+
+::method 'test042'
+    mb = .mutablebuffer~new('nv.10')
+    self~expectSyntax(93.922)
+    xre = mb~overLay('nv.10',1,100,nv.10)
+
+::method 'test043'
+    mb = .mutablebuffer~new(noval2)
+    self~expectSyntax(93.905)
+    xre = mb~overLay(noval1,noval3,noval4,noval5)
+
+::method 'test044'
+    mb = .mutablebuffer~new(0000)
+    self~assertSame('subTest01','042888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888',mb~overLay(2*21,1+1,100*2,4+4)~string)
+
+::method 'test045'
+    mb = .mutablebuffer~new(+0000)
+    self~assertSame('subTest01','0429999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999',mb~overLay(+42,4*.5,42*5,4+5)~string)
+
+::method 'test046'
+    mb = .mutablebuffer~new(+12345)
+    self~assertSame('subTest01','4266666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666',mb~overLay(7*3*2,5-4,50*2,2+4)~string)
+
+::method 'test047'
+    mb = .mutablebuffer~new(.vn0000)
+    self~assertSame('subTest01','042'||copies('8',198),mb~overLay(.vn2*.vn21,.vn1+.vn1,.vn100*.vn2,.vn4+.vn4)~string)
+
+::method 'test048'
+    vn.5 = .5
+    mb = .mutablebuffer~new(.vn0000)
+    self~assertSame('subTest01','042'||copies('9',208),mb~overLay(.vn42,.vn4*vn.5,.vn42*.vn5,.vn4+.vn5)~string)
+
+::method 'test049'
+    mb = .mutablebuffer~new(.vn12345)
+    self~assertSame('subTest01','4266666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666',mb~overLay(.vn7*.vn3*.vn2,.vn5-.vn4,.vn50*.vn2,.vn2+.vn4)~string)
+
+::method 'test050'
+    numeric digits 1
+    vn.5 = .5
+    mb = .mutablebuffer~new(0000)
+    self~assertSame('subTest01','04E+18888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888',mb~overLay(2*21,1+1,100*2,4+4)~string)
+    mb = .mutablebuffer~new(+0000)
+    self~assertSame('subTest02','04E+19999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999',mb~overLay(+42,4*.5,42*5,4+5)~string)
+    mb = .mutablebuffer~new(+12345)
+    self~assertSame('subTest03','4E+1666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666',mb~overLay(7*3*2,5-4,50*2,2+4)~string)
+    mb = .mutablebuffer~new(.vn0000)
+    self~assertSame('subTest04','04E+1'||copies('8',196),mb~overLay(.vn2*.vn21,.vn1+.vn1,.vn100*.vn2,.vn4+.vn4)~string)
+    self~assertSame('subTest05','042'||copies('9',198),mb~overLay(.vn42,.vn4*vn.5,.vn42*.vn5,.vn4+.vn5)~string)
+    mb = .mutablebuffer~new(.vn12345)
+    self~assertSame('subTest06','4E+1666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666',mb~overLay(.vn7*.vn3*.vn2,.vn5-.vn4,.vn50*.vn2,.vn2+.vn4)~string)
+
+::method 'test051'
+    mb = .mutablebuffer~new(copies(.v1,30))
+    self~assertSame('subTest01','*bcdefghijklmnopqrstuvwxyz1***',mb~overLay(subStr(.v30,2,28),pos('O','WORD'),x2d(1A),dataType(6,'N'))~string)
+
+::method 'test052'
+    mb = .mutablebuffer~new(left(.v30,11))
+    self~assertSame('subTest01','ab|||||||||*'||copies('d1'x,11),mb~overLay(right(.v1,10,'|'),center('135',1),subStr('321',2),d2c(209))~string)
+
+::method 'test053'
+    mb = .mutablebuffer~new(right('',5,'0'))
+    self~assertSame('subTest01','5'||copies('0',c2d('J')-1),mb~overLay(word(1+2 2+3 ,2),dataType(7,'N'),c2d('J'),pos('O',''))~string)
+
+::method 'test054'
+    mb = .mutablebuffer~new('        Buckley')
+    self~assertSame('subTest01','John R. Buckley',mb~overLay('     R.'~overLay(' ohn'~overLay('J')))~string)
+
+::method 'test055'
+    mb = .mutablebuffer~new(' uckley')
+    self~assertSame('subTest01','Johnley',mb~overLay('B')~overLay(' ohn'~overLay('J'))~string)
+
+::method 'test056'
+    mb = .mutablebuffer~new('Buckley')
+    self~assertSame('subTest01','BuckleyRRJohnRRRRRRR',mb~overLay('John','00'~overLay('1'),'01'~overLay('1'),'X'~overLay('R'))~string)
+
+::method 'test057'
+    .local~remove(vnull)
+    .local~remove(vblank)
+    .local~remove(v1)
+    .local~remove(v1a)
+    .local~remove(v30)
+    .local~remove(v256)
+    .local~remove(v10000)
+    .local~remove(vn0000)
+    .local~remove(vn1)
+    .local~remove(vn2)
+    .local~remove(vn3)
+    .local~remove(vn4)
+    .local~remove(vn5)
+    .local~remove(vn7)
+    .local~remove(vn10)
+    .local~remove(vn21)
+    .local~remove(vn42)
+    .local~remove(vn50)
+    .local~remove(vn100)
+    .local~remove(vn12345)
+    .local~remove(vres1)
+    .local~remove(vres2)
+    .local~remove(vres3)
+    .local~remove(vres4)
+    .local~remove(vres5)
+    .local~remove(vres6)
+    .local~remove(vres7)
+
+::METHOD "testOverlay"
+   b = .mutableBuffer~new("1234567890")
+   self~AssertEquals("Length incorrect before",10,b~length)
+   b~overlay("abc")
+   self~AssertEquals("Overlay failed 1","abc4567890",b~string)
+   b~overlay("abcABCabc")
+   self~AssertEquals("Overlay failed 2", "abcABCabc0",b~string)
+   b~overlay("abcABCabc",2)
+   self~AssertEquals("Overlay failed 3", "aabcABCabc",b~string)
+   b~overlay("abc",1,0,"+")
+   self~AssertEquals("Overlay failed 4", "aabcABCabc",b~string)
+   b~overlay("abc",12,4,"+")
+   self~AssertEquals("Overlay failed 4", "aabcABCabc+abc+",b~string)
+   self~AssertEquals("Length incorrect after",15,b~length)
+::METHOD "testOverlaySyntax1"
+   b = .mutableBuffer~new("123456")
+   self~expectSyntax(93.903)
+   b~overlay()
+::METHOD "testOverlaySyntax2"
+   b = .mutableBuffer~new("123456")
+   self~expectSyntax(93.924)
+   b~overlay("",-1)
+::METHOD "testOverlaySyntax3"
+   b = .mutableBuffer~new("123456")
+   self~expectSyntax(93.938)
+   b~overlay(.nil)
+::METHOD "testOverlaySyntax4"
+   b = .mutableBuffer~new("123456")
+   self~expectSyntax(93.938)
+   b~overlay("",,,.nil)
+::METHOD "testOverlaySyntax5"
+   b = .mutableBuffer~new("123456")
+   self~expectSyntax(93.938)
+   b~overlay("",.nil,.nil,.nil)
+::METHOD "testOverlaySyntax6"
+   b = .mutableBuffer~new("123456")
+   self~expectSyntax(93.924)
+   b~overlay("",0,-1,0)
+::METHOD "testOverlaySyntax7"
+   b = .mutableBuffer~new("123456")
+   self~expectSyntax(93.922)
+   b~overlay("",,10,"  ")
+
+
