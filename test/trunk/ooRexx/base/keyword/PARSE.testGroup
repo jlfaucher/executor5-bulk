@@ -336,7 +336,10 @@ return testGroupList
     call arg_sub "aHa" olala, "AHA", "OLALA", 1, "aHa"
 
     -- LINEIN: needs to read from STDIN
-    call do_test_linein self     -- supply testcase object for carrying out assertion
+    call do_test_linein
+    tmpRC = result
+
+    self~assertSame("subTest-do_test_linein-procedure", 17, tmpRC)
 
     -- PULL
     push "80 4"
@@ -393,7 +396,6 @@ return testGroupList
 
 
 do_test_linein: procedure             -- create external Rexx program for testing
-   use arg objTC                       -- retrieve object representing this testCase
 
    filename="tmpTestPARSElinein"
    fileInput=filename||"_input.txt"
@@ -432,8 +434,7 @@ do_test_linein: procedure             -- create external Rexx program for testin
    call sysFileDelete fileName  -- delete file
    call sysFileDelete fileInput -- delete file
 
-   objTC~assertSame("subTest-do_test_linein-procedure", 17, tmpRC)
-   return
+   return tmpRC
 
 
   -- ---> ---> END: from "rexxref" (v.3.0.0 rev2 2005-05-31, chapter 10 Parsing: END <--- <---
@@ -4214,272 +4215,272 @@ do_test_linein: procedure             -- create external Rexx program for testin
                 a b i1 i2 i3 i.1 i.2 i.3 i.4 .
    Parse Var var 1 x3 2
    self~assertSame("subTest1", x3,a)
-    
+
 ::method "Test_591"
    var='abcdef'
    Parse Value 'a b  1  2  3   1   2   3   4         ' With,
                 a b i1 i2 i3 i.1 i.2 i.3 i.4 .
    Parse Var var x.1 2
    self~assertSame("subTest1", x.1,a)
-    
+
 ::method "Test_592"
    var='abcdef'
    Parse Value 'a b  1  2  3   1   2   3   4         ' With,
                 a b i1 i2 i3 i.1 i.2 i.3 i.4 .
    Parse Var var 1 x.2 2
    self~assertSame("subTest1", x.2,a)
-    
+
 ::method "Test_593"
    var='abcdef'
    Parse Value 'a b  1  2  3   1   2   3   4         ' With,
                 a b i1 i2 i3 i.1 i.2 i.3 i.4 .
    Parse Var var 1 x.3 2
    self~assertSame("subTest1", x.3,a)
-    
+
 ::method "Test_594"
    var='abcdef'
    Parse Value 'a b  1  2  3   1   2   3   4         ' With,
                 a b i1 i2 i3 i.1 i.2 i.3 i.4 .
    id=0010; Parse Var var x.4 1
    self~assertSame("subTest1", x.4,var)
-    
+
 ::method "Test_595"
    var='abcdef'
    Parse Value 'a b  1  2  3   1   2   3   4         ' With,
                 a b i1 i2 i3 i.1 i.2 i.3 i.4 .
    Parse Value 'abcdef' With x1
    self~assertSame("subTest1", x1,var)
-    
+
 ::method "Test_596"
    var='abcdef'
    Parse Value 'a b  1  2  3   1   2   3   4         ' With,
                 a b i1 i2 i3 i.1 i.2 i.3 i.4 .
    Parse Value 'abcdef' With 1 x2
    self~assertSame("subTest1", x2,var)
-    
+
 ::method "Test_597"
    var='abcdef'
    Parse Value 'a b  1  2  3   1   2   3   4         ' With,
                 a b i1 i2 i3 i.1 i.2 i.3 i.4 .
    Parse Value 'abcdef' With 1 x3
    self~assertSame("subTest1", x3,var)
-    
+
 ::method "Test_598"
    var='abcdef'
    Parse Value 'a b  1  2  3   1   2   3   4         ' With,
                 a b i1 i2 i3 i.1 i.2 i.3 i.4 .
    Parse Value 'abcdef' With x1 2
    self~assertSame("subTest1", x1,a)
-    
+
 ::method "Test_599"
    var='abcdef'
    Parse Value 'a b  1  2  3   1   2   3   4         ' With,
                 a b i1 i2 i3 i.1 i.2 i.3 i.4 .
    Parse Value 'abcdef' With 1 x2 2
    self~assertSame("subTest1", x2,a)
-    
+
 ::method "Test_600"
    var='abcdef'
    Parse Value 'a b  1  2  3   1   2   3   4         ' With,
                 a b i1 i2 i3 i.1 i.2 i.3 i.4 .
    Parse Value 'abcdef' With 1 x3 2
    self~assertSame("subTest1", x3,a)
-    
+
 ::method "Test_601"
    var='abcdef'
    Parse Value 'a b  1  2  3   1   2   3   4         ' With,
                 a b i1 i2 i3 i.1 i.2 i.3 i.4 .
    Parse Value 'abcdef' With x.1 2
    self~assertSame("subTest1", x.1,a)
-    
+
 ::method "Test_602"
    var='abcdef'
    Parse Value 'a b  1  2  3   1   2   3   4         ' With,
                 a b i1 i2 i3 i.1 i.2 i.3 i.4 .
    Parse Value 'abcdef' With 1 x.2 2
    self~assertSame("subTest1", x.2,a)
-    
+
 ::method "Test_603"
    var='abcdef'
    Parse Value 'a b  1  2  3   1   2   3   4         ' With,
                 a b i1 i2 i3 i.1 i.2 i.3 i.4 .
    Parse Value 'abcdef' With       x.3 2
    self~assertSame("subTest1", x.3,a)
-    
+
 ::method "Test_604"
    var2='bcdef'
    Parse Value 'a b  1  2  3   1   2   3   4         ' With,
                 a b i1 i2 i3 i.1 i.2 i.3 i.4 .
    Parse Value 'abcdef' With 'a' x1
    self~assertSame("subTest1", x1,var2)
-    
+
 ::method "Test_605"
    var='abcdef'
    Parse Value 'a b  1  2  3   1   2   3   4         ' With,
                 a b i1 i2 i3 i.1 i.2 i.3 i.4 .
    Parse Value 'abcdef' With 'a' 1 x2
    self~assertSame("subTest1", x2,var)
-    
+
 ::method "Test_606"
    var='abcdef'
    Parse Value 'a b  1  2  3   1   2   3   4         ' With,
                 a b i1 i2 i3 i.1 i.2 i.3 i.4 .
    Parse Value 'abcdef' With 'a' 1 x3
    self~assertSame("subTest1", x3,var)
-    
+
 ::method "Test_607"
    var='abcdef'
    Parse Value 'a b  1  2  3   1   2   3   4         ' With,
                 a b i1 i2 i3 i.1 i.2 i.3 i.4 .
    Parse Value 'abcdef' With 'a' x1 +1
    self~assertSame("subTest1", x1,a)
-    
+
 ::method "Test_608"
    var='abcdef'
    Parse Value 'a b  1  2  3   1   2   3   4         ' With,
                 a b i1 i2 i3 i.1 i.2 i.3 i.4 .
    Parse Value 'abcdef' With 'a' 1 x2 +1
    self~assertSame("subTest1", x2,a)
-    
+
 ::method "Test_609"
    var='abcdef'
    Parse Value 'a b  1  2  3   1   2   3   4         ' With,
                 a b i1 i2 i3 i.1 i.2 i.3 i.4 .
    Parse Value 'abcdef' With 'a' 1 x3 +1
    self~assertSame("subTest1", x3,a)
-    
+
 ::method "Test_610"
    var='abcdef'
    Parse Value 'a b  1  2  3   1   2   3   4         ' With,
                 a b i1 i2 i3 i.1 i.2 i.3 i.4 .
    Parse Value 'abcdef' With 'a' x.1 3
    self~assertSame("subTest1", x.1,b)
-    
+
 ::method "Test_611"
    var='abcdef'
    Parse Value 'a b  1  2  3   1   2   3   4         ' With,
                 a b i1 i2 i3 i.1 i.2 i.3 i.4 .
    Parse Value 'abcdef' With 'a' 1 x.2 3
    self~assertSame("subTest1", x.2,'ab')
-    
+
 ::method "Test_612"
    var='abcdef'
    Parse Value 'a b  1  2  3   1   2   3   4         ' With,
                 a b i1 i2 i3 i.1 i.2 i.3 i.4 .
    Parse Value 'abcdef' With 'a'       x.3 3
    self~assertSame("subTest1", x.3,b)
-    
+
 ::method "Test_613"
    v='some value, or another.'
    Parse Arg , a
    self~assertSame("subTest1", a,'')
-    
+
 ::method "Test_614"
    Queue 'some string, or another'
    Parse Pull , c
    self~assertSame("subTest1", c,'')
-    
+
 ::method "Test_615"
    Parse Source , d
    self~assertSame("subTest1", d,'')
-    
+
 ::method "Test_616"
    Parse Value 'some value, or another.' With , e
    self~assertSame("subTest1", e,'')
-    
+
 ::method "Test_617"
    v='some value, or another.'
    Parse Var v , f
    self~assertSame("subTest1", f,'')
-    
+
 ::method "Test_618"
    Parse Version , g
    self~assertSame("subTest1", g,'')
-    
+
 ::method "Test_619"
    Parse Arg, a
    self~assertSame("subTest1", a,'')
-    
+
 ::method "Test_620"
    Queue 'some string, or another'
    Parse Pull, c
    self~assertSame("subTest1", c,'')
-    
+
 ::method "Test_621"
    Parse Source, d
    self~assertSame("subTest1", d,'')
-    
+
 ::method "Test_622"
    Parse Value 'some value, or another.' With, e
    self~assertSame("subTest1", e,'')
-    
+
 ::method "Test_623"
    v='some value, or another.'
    Parse Var v, f
    self~assertSame("subTest1", f,'')
-    
+
 ::method "Test_624"
    Parse Version, g
    self~assertSame("subTest1", g,'')
-    
+
 ::method "Test_625"
    Parse Arg,,
     a ;
    self~assertSame("subTest1", a,'')
-    
+
 ::method "Test_626"
    Queue 'some string, or another'
    Parse Pull,,
     c ;
    self~assertSame("subTest1", c,'')
-    
+
 ::method "Test_627"
    Parse Source,,
     d ;
    self~assertSame("subTest1", d,'')
-    
+
 ::method "Test_628"
    Parse Value 'some value, or another.' With,,
     e ;
    self~assertSame("subTest1", e,'')
-    
+
 ::method "Test_629"
    v='some value, or another.'
    Parse Var v,,
     f ;
    self~assertSame("subTest1", f,'')
-    
+
 ::method "Test_630"
    Parse Version,,
     g ;
    self~assertSame("subTest1", g,'')
-    
+
 ::method "Test_631"
    Parse Arg,,,,,,,,,,,,,,,,,,, a
    self~assertSame("subTest1", a,'')
-    
+
 ::method "Test_632"
    Queue 'some string, or another'
    Parse Pull,,,,,,,,,,,,,,,,,,, c
    self~assertSame("subTest1", c,'')
-    
+
 ::method "Test_633"
    Parse Source,,,,,,,,,,,,,,,,,,, d
    self~assertSame("subTest1", d,'')
-    
+
 ::method "Test_634"
    Parse Value 'some value, or another.' With, e
    self~assertSame("subTest1", e,'')
-    
+
 ::method "Test_635"
    v='some value, or another.'
    Parse Var v,,,,,,,,,,,,,,,,,,, f
    self~assertSame("subTest1", f,'')
-    
+
 ::method "Test_636"
    Parse Version,,,,,,,,,,,,,,,,,,, g
    self~assertSame("subTest1", g,'')
- 
+
 ::method "Test_637"
    fcnt=0
    Parse Value f() With
@@ -4488,7 +4489,7 @@ do_test_linein: procedure             -- create external Rexx program for testin
    f:
      fcnt=fcnt+1
      Return 'f ff fff'
-    
+
 ::method "Test_638"
    Do i=1 to 3
      Queue i
@@ -4501,19 +4502,19 @@ do_test_linein: procedure             -- create external Rexx program for testin
    Parse Pull three,four
    self~assertSame("subTest4", three,3)
    self~assertSame("subTest5", four,'')
-    
+
 ::method "Test_639"
    Parse Var noval x 1 y
    self~assertSame("subTest1", y,'NOVAL')
-    
+
 ::method "Test_640"
    Parse Value '' With x
    self~assertSame("subTest1", x,'')
-    
+
 ::method "Test_641"
    Parse Value '' With 1 x
    self~assertSame("subTest1", x,'')
- 
+
 ::method "Test_642"
    s='  this   is  a   string to    be   parsed,   ain''t   it    1    2  '
    Parse Var s v1 v2  'st' v3 v4 'ai'
@@ -4521,7 +4522,7 @@ do_test_linein: procedure             -- create external Rexx program for testin
    self~assertSame("subTest2", v2,'  is  a   ')
    self~assertSame("subTest3", v3,'ring')
    self~assertSame("subTest4", v4,'to    be   parsed,   ')
-    
+
 ::method "Test_643"
    s='  this   is  a   string to    be   parsed,   ain''t   it    1    2  '
    Parse Var s 'nix' v1 0 v2
@@ -4530,26 +4531,26 @@ do_test_linein: procedure             -- create external Rexx program for testin
    self~assertSame("subTest2", v2,s)
    self~assertSame("subTest3", w1,'')
    self~assertSame("subTest4", w2,s)
-    
+
 ::method "Test_644"
    s='  this   is  a   string to    be   parsed,   ain''t   it    1    2  '
    Parse Var s '  ' v1 v2 '  '
    self~assertSame("subTest1", v1,'this')
    self~assertSame("subTest2", v2,'')
-    
+
 ::method "Test_645"
    s='  this   is  a   string to    be   parsed,   ain''t   it    1    2  '
    Parse Var s 'nix' v1 0 v2
    Parse Var s a.1 a.2 a.3 a.4 a.5 a.6 a.7 a.8 a.9 a.10 a.11 a.12 a.13 a.14
-   Do i=1 to 14; 
+   Do i=1 to 14;
       self~assertSame("subTest1-"i, a.i,"WORD"(s,i))
       end;
-    
+
 ::method "Test_646"
    s='  this   is  a   string to    be   parsed,   ain''t   it    1    2  '
    Parse Var s '2' -2 v +3
    self~assertSame("subTest1", v,'  2')
-    
+
 ::method "Test_647"
    s='  this   is  a   string to    be   parsed,   ain''t   it    1    2  '
    x='this'
@@ -4557,7 +4558,7 @@ do_test_linein: procedure             -- create external Rexx program for testin
    Parse Var s i j cmp.i cmp.j
    self~assertSame("subTest1", cmp.x,'a')
    self~assertSame("subTest2", cmp.y,"SUBSTR"(s,16))
-    
+
 ::method "Test_648"
    s='  this   is  a   string to    be   parsed,   ain''t   it    1    2  '
    x='this'
@@ -4565,7 +4566,7 @@ do_test_linein: procedure             -- create external Rexx program for testin
    Parse Var s i j cmp.i cmp.j cmp. .
    self~assertSame("subTest1", cmp.x,'to')
    self~assertSame("subTest2", cmp.y,'to')
-    
+
 ::method "Test_649"
    xsa="XRANGE"('00'x,'ff'x)
    do i=0 To 255
@@ -4575,7 +4576,7 @@ do_test_linein: procedure             -- create external Rexx program for testin
       self~assertSame("subTest1-1-"i, a,"LEFT"(xs,i+1))
       self~assertSame("subTest1-2-"i, b,"SUBSTR"(xs,i+3))
       End
-    
+
 ::method "Test_650"
    xsb=''
    do i=1 to length(xsa)
@@ -4589,7 +4590,7 @@ do_test_linein: procedure             -- create external Rexx program for testin
    Do i=1 To 50
       self~assertSame("subTest1-"i, a.i,"WORD"(xsb,i))
       End
-    
+
 ::method "Test_651"
    t='1234567890abcdefghijklmnopqrstuvwxyz'
    Parse Var t 0 v1 10
@@ -4606,7 +4607,7 @@ do_test_linein: procedure             -- create external Rexx program for testin
    self~assertSame("subTest6", v6,'67')
    Parse Var t 77 v7 100
    self~assertSame("subTest7", v7,'')
-    
+
 ::method "Test_652"
    Call sub 010,020,030,040,050,060,070,080,090,100
    self~assertSame("subTest1", result,'010.')
@@ -4617,7 +4618,7 @@ do_test_linein: procedure             -- create external Rexx program for testin
                c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,,
                d1,d2,d3,d4,d5,d6,d7,d8,d9,d10
    Return a1||'.'||d10
-    
+
 ::method "Test_653"
    Call sub2 010,020,030,040,050,060,070,080,090,100
    self~assertSame("subTest1", result,'010.')
@@ -4625,7 +4626,7 @@ do_test_linein: procedure             -- create external Rexx program for testin
    sub2:
      Parse Arg a1,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,d10
      Return a1||'.'||d10
-    
+
 ::method "Test_654"
    Call sub 010,020,030,040,050,060,070,080,090,100,,
             110,120,130,140,150,160,170,180,190,200,,
@@ -4639,7 +4640,7 @@ do_test_linein: procedure             -- create external Rexx program for testin
                c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,,
                d1,d2,d3,d4,d5,d6,d7,d8,d9,d10
    Return a1||'.'||d10
-    
+
 ::method "Test_655"
    ss='  some    blanks   that     must     dis-appear     1    2     3  '
    Parse Var ss v1 v2 v3 'dis' v4 v5
@@ -4648,25 +4649,25 @@ do_test_linein: procedure             -- create external Rexx program for testin
    self~assertSame("subTest3", v3,'  that     must     ')
    self~assertSame("subTest4", v4,'-appear')
    self~assertSame("subTest5", v5,'    1    2     3  ')
-  
+
 ::method "Test_656"
    lw="COPIES"('A',1000)
-   sw='b'               
+   sw='b'
    string="SPACE"(lw  sw   lw    sw sw,4)
    Parse Var string a
    self~assertSame("subTest1", a,string)
-  
+
 ::method "Test_657"
    lw="COPIES"('A',1000)
-   sw='b'               
+   sw='b'
    string="SPACE"(lw  sw   lw    sw sw,4)
    Parse Var string a b
    self~assertSame("subTest1", a,lw)
    self~assertSame("subTest2", b,'   '"SPACE"(sw   lw    sw sw,4))
-  
+
 ::method "Test_658"
    lw="COPIES"('A',1000)
-   sw='b'               
+   sw='b'
    string="SPACE"(lw  sw   lw    sw sw,4)
    Parse Var string a b c d e f
    self~assertSame("subTest1", a,lw)
@@ -4675,41 +4676,41 @@ do_test_linein: procedure             -- create external Rexx program for testin
    self~assertSame("subTest4", d,sw)
    self~assertSame("subTest5", e,sw)
    self~assertSame("subTest6", f,'')
-  
+
 ::method "Test_659"
    Parse Value 'This is a sentence.' With v1 v2 v3
    self~assertSame("subTest1", v1,'This')
    self~assertSame("subTest2", v2,'is')
    self~assertSame("subTest3", v3,'a sentence.')
-  
+
 ::method "Test_660"
    Parse Value 'This is    a sentence. ' With v1 v2 v3
    self~assertSame("subTest1", v3,'   a sentence. ')
-  
+
 ::method "Test_661"
    Parse Value '  This   is      a sentence. ' With w1 w2 rest
    self~assertSame("subTest1", w1,'This')
    self~assertSame("subTest2", w2,'is')
    self~assertSame("subTest3", rest,'     a sentence. ')
-  
+
 ::method "Test_662"
    Parse Upper Value '  This   is      a sentence. ' With w1 w2 rest
    self~assertSame("subTest1", w1,'THIS')
    self~assertSame("subTest2", w2,'IS')
    self~assertSame("subTest3", rest,'     A SENTENCE. ')
-  
+
 ::method "Test_663"
    Parse Value 'To be, or not to be?' With w1 ',' w2
    self~assertSame("subTest1", w1,'To be')
    self~assertSame("subTest2", w2,' or not to be?')
-  
+
 ::method "Test_664"
    Parse Value 'To be, or not to be?' With w1 ',' w2 w3 w4
    self~assertSame("subTest1", w1,'To be')
    self~assertSame("subTest2", w2,'or')
    self~assertSame("subTest3", w3,'not')
    self~assertSame("subTest4", w4,'to be?')
-  
+
 ::method "Test_665"
    comma=','
    Parse Value 'To be, or not to be?' With x1 (comma) x2 x3 x4
@@ -4717,13 +4718,13 @@ do_test_linein: procedure             -- create external Rexx program for testin
    self~assertSame("subTest2", x2,'or')
    self~assertSame("subTest3", x3,'not')
    self~assertSame("subTest4", x4,'to be?')
-  
+
 ::method "Test_666"
    Parse Value '123 456 +.,.-1E+25 12 34 56 uvwxyz' With,
     a '+'+1 b +3
    self~assertSame("subTest1", a,'123 456 ')
    self~assertSame("subTest2", b,'.,.')
-  
+
 ::method "Test_667"
    Parse Value 'abcdefghijklmnopqrstuvwxyz' With,
     5 a 10 b 15 c 20 d
@@ -4731,7 +4732,7 @@ do_test_linein: procedure             -- create external Rexx program for testin
    self~assertSame("subTest2", b,'jklmn')
    self~assertSame("subTest3", c,'opqrs')
    self~assertSame("subTest3", d,'tuvwxyz')
-  
+
 ::method "Test_668"
    input='L/look for/1 10'
    Parse var input verb 2 delim +1 string (delim) rest
@@ -4739,33 +4740,33 @@ do_test_linein: procedure             -- create external Rexx program for testin
    self~assertSame("subTest2", delim,'/')
    self~assertSame("subTest3", string,'look for')
    self~assertSame("subTest4", rest,'1 10')
-  
-  
+
+
 ::method "Test_669"
    Parse Value 'word string1, string2, 120' With word1 string1, string2, num
    self~assertSame("subTest1", word1,'word')
    self~assertSame("subTest2", string1,'string1, string2, 120')
    self~assertSame("subTest3", string2,'')
    self~assertSame("subTest3", num,'')
-  
+
 ::method "Test_670"
    Call sub99 word string1, string2, 120
    self~assertSame("subTest1", word1,'WORD')
    self~assertSame("subTest2", string1,'STRING1')
    self~assertSame("subTest3", string2,'STRING2')
    self~assertSame("subTest4", num,'120')
-  
+
    sub99:
    Parse Arg word1 string1, string2, num
    Return
- 
+
 ::method "Test_671"
    Parse Value 'aaa bbb  ccc   ddd  eee  ' With 'aaa bbb  c' a b c d . +999
    self~assertSame("subTest1", a,'aaa')
    self~assertSame("subTest2", b,'bbb')
    self~assertSame("subTest3", c,'ccc')
    self~assertSame("subTest4", d,'ddd')
- 
+
 ::method "Test_672"
    b=''
    cl='124 125 126 255 256 257 2000 '2**24-1
