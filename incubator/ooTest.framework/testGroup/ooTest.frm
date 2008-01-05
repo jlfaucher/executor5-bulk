@@ -70,11 +70,6 @@ if \ .local~hasEntry('OOTEST_FRAMEWORK_VERSION') then do
   if currentPath~caseLessPos(.ooTest.dir) == 0 then
      oldPath = value("PATH", .ooTest.dir || .ooRexxUnit.path.separator || currentPath, 'ENVIRONMENT')
 
-  /*
-  do rtn over .methods
-     .public_routines~put(.methods[rtn], rtn)
-  end
-  */
 end
 -- End of entry point.
 
@@ -166,7 +161,7 @@ return a
 ::method testCount abstract
 
 /** getNoTestsReason() Returns a descriptive string, presumably explaining why
- * the container has no tests.
+ * the container has no executable tests.
  */
 ::method getNoTestsReason abstract
 
@@ -339,6 +334,17 @@ return a
     self~ooTestVersion = .ooTest.version
 
 
+  /** printBrief()
+   * The least possible print out.
+   */
+  ::method printBrief
+    use arg tResult
+
+    say 'Tests:   ' tResult~runCount
+    say 'Failures:' tResult~failureCount
+    say 'Errors:  ' tResult~errorCount + tResultExceptionCount
+    say
+
   /** print()
    *
    * Prints the data collected by this test result in a "console-friendly"
@@ -359,6 +365,12 @@ return a
     if arg(2, 'E') then self~setVerbosity(level)
 
     tResult = self~testResult
+    verbose = self~getVerbosity
+
+    if verbose == 0 then do
+      self~printBrief(testResult)
+      return
+    end
 
     if self~title<>"" then do
       say self~title

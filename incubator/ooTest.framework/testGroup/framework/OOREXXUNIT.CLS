@@ -191,11 +191,6 @@ if \ .local~hasEntry(ooRexxUnit.version) then do
   if currentPath~caseLessPos(.ooRexxUnit.dir) == 0 then
      oldPath = value("PATH", .ooRexxUnit.dir || .ooRexxUnit.path.separator || currentPath, 'ENVIRONMENT')
 
-  /*
-  do rtn over .methods
-     .public_routines~put(.methods[rtn], rtn)
-  end
-  */
 end
 
 -- End of entry point.
@@ -216,25 +211,27 @@ end
  * object.  This public routine provides a way to test the class of a class
  * object for this situation.
  *
- * @param clz              The object to test.
- * @param superClassName   A string, the name of the class to test for.
+ * @param cObj            REQUIRED  The object to test.
+ * @param superClassName  REQUIRED  A string, the name of the class to test for.
  *
  * Return true if the object is a subclass of the specified class, otherwise
  * false.
  *
  */
 ::routine isSubClassOf public
-  use strict arg clz, superClassName
+  use strict arg cObj, superClassName
 
-  --say 'superClassName:' superClassName 'class id:' clz~id
 
-  if \ clz~isA(.class) then return .false
-  if clz~id~caselessEquals(superClassName) then return .true
-  supers = clz~superClasses
-  --say '  Supers items:' supers~items
+  -- This is a recursive function and these are the base cases.
+
+  if \ cObj~isA(.class) then return .false
+
+  if cObj~id~caselessEquals(superClassName) then return .true
+
+  supers = cObj~superClasses
   if supers~items == 0 then return .false
 
-  --
+  -- Do a breadth-first search
   do cObj over supers
     --say '    superclass id' cObj~id
     if cObj~id~caselessEquals(superClassName) then return .true

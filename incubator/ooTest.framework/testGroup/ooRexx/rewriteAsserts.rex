@@ -1,13 +1,72 @@
+#!/usr/bin/rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2008 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
 
+/*
+   name:             rewriteAsserts.rex
+   authors:          Mark Miesfeld
+   date:             2008-01-05
+   version:          0.1.0
+
+   purpose:          A brute force parser that rewrites the assertXXX() methods.
+                     This is really a throw away program, it is just being
+                     retained in case it can be tweaked and used in the future
+                     for some pupose.
+*/
+cmdLine = arg(1)
 
   .local~eol = .endOfLine
+
+  -- If command line is exactly "FINALIZE" then all the *.testGroupX files will
+  -- be copied over to the matching *.testGroup file and the testGoupX file
+  -- will be deleted.
+
+  if cmdLine == "FINALIZE" then do
+    z = doFinalize()
+    return
+  end
+
   .local~logger = .stream~new("AssertRewrite.log")
   .logger~open("WRITE REPLACE")
   .logger~lineout(.eol)
   .logger~lineout('Swap args in all assert methods.')
   .logger~lineout(.eol)
 
-  files = findFiles()
+  files = findFiles('*.testGroup')
 
   do file over files
     .logger~lineout('Working on:' file)
@@ -21,8 +80,40 @@
 
   .logger~close
 
-return
+return 0
 
+::routine doFinalize
+
+  .local~logger = .stream~new("Finalize.log")
+  .logger~open("WRITE REPLACE")
+  .logger~lineout('Make all *.testGroupX files the real *.testGroup file.')
+  .logger~lineout(.eol)
+
+  parse upper source os .
+  if os~abbrev("WIN") then os = "WINDOWS"
+
+  select
+    when os == "WINDOWS" then do
+      copyCmd = 'copy /Y /V'
+      delCmd = 'del /f'
+    end
+    when os == "LINUX" then do
+      copyCmd = 'mv'
+      delCmd = 'rm'
+    end
+    otherwise raise syntax 93.964 array ("Application can only run Windows or Linux")
+  end
+
+  files = findFiles("*.testGroupX")
+  do file over files
+    tGroup = file~strip('T', "X")
+    .logger~lineout("Overwriting" filespec('N', tGroup) "with" filespec('N', file))
+    copyCmd file tGroup
+    delCmd tGroup
+  end
+  .logger~close
+
+return 0
 
 ::routine writeNew
   use arg file
@@ -357,7 +448,12 @@ return .false
       msg = msg~strip('B')
       expected = expected~strip('L', ",")~strip('B')
       actual = actual~strip('L', ",")~strip('B')
-      line = pre || expected || "," actual || "," msg || post
+
+      -- Remove simple subTestXXX messages
+      if msg~caselessPos("subtest") <> 0, msg~words() < 4 then
+        line = pre || expected || "," actual || post
+      else
+        line = pre || expected || "," actual || "," msg || post
     end
 
     when max == 2 & commas~items == 1 then do
@@ -369,7 +465,12 @@ return .false
       parse var fix msg =(c1) actual
       msg = msg~strip('B')
       actual = actual~strip('L', ",")~strip('B')
-      line = pre || actual || "," msg || post
+
+      -- Remove simple subTestXXX messages
+      if msg~caselessPos("subtest") <> 0, msg~words() < 4 then
+        line = pre || actual || post
+      else
+        line = pre || actual || "," msg || post
     end
 
     when max == 1 & commas~items == 0 then do
@@ -491,7 +592,8 @@ return l
 
 
 ::routine findFiles
-  fileSpec = '*.testGroup'
+  use arg fileSpec
+
   .logger~lineout('Find files filespec:' fileSpec)
 
   f = .array~new
