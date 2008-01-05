@@ -1494,6 +1494,21 @@ return a
       assert = assert~strip~strip('T', ':')
       actual = actual~strip('T', '.')
     end
+
+    if expected~length > 256 then do
+      pre = expected~left(6)
+      post = expected~substr(expected~caselessPos(", identityHash="))
+      fix = '<String to long to print ('expected~length' chars)>'
+      expected = pre fix post
+    end
+
+    if actual~length > 256 then do
+      pre = actual~left(6)
+      post = actual~substr(actual~caselessPos(", identityHash="))
+      fix = '<String to long to print ('actual~length' chars)>'
+      actual = pre  fix  post
+    end
+
     say "  Failed:" assert
     say "    Expected:" expected
     say "    Actual:  " actual
