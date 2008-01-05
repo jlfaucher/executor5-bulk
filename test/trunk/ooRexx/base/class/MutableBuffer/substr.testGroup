@@ -162,7 +162,7 @@ return testGroupList
     self~assertSame('subTest01',,mb~substr('+999999999'))
 
 ::method 'test009'
-    self~expectSyntax(93.905)
+    self~expectSyntax(93.924)
     mb = .mutablebuffer~new(copies('5C'x,10000))
     xre = mb~substr('5E+9999')
 
@@ -193,7 +193,7 @@ return testGroupList
     self~assertSame('subTest01','klmnopqrstuvwxyz1234',mb~substr('+'||'30303131'x||'.'||'3030'x||'e'||'30'x||000))
 
 ::method 'test016'
-    self~expectSyntax(93.905)
+    self~expectSyntax(93.924)
     mb = .mutablebuffer~new(.v30)
     xre = mb~substr(1.2)
 
@@ -203,12 +203,12 @@ return testGroupList
     xre = mb~substr('-31')
 
 ::method 'test018'
-    self~expectSyntax(93.905)
+    self~expectSyntax(93.924)
     mb = .mutablebuffer~new('hasdghj')
     xre = mb~substr(1E10)
 
 ::method 'test019'
-    self~expectSyntax(93.905)
+    self~expectSyntax(93.924)
     mb = .mutablebuffer~new('hasdghj')
     xre = mb~substr('cc'x)
 
@@ -350,7 +350,7 @@ return testGroupList
 
 ::method 'test052'
     mb = .mutablebuffer~new('2*7 7+7+7+7+7+7 84/4 700-699')
-    self~expectSyntax(93.905)
+    self~expectSyntax(93.924)
     xre = mb~substr('699-698',5*2)
 
 ::method 'test053'
@@ -390,33 +390,33 @@ return testGroupList
     self~assertSame('subTest01','NV.10*******************************************************',mb~substr(1,60,'*'))
 
 ::method 'test061'
-    self~expectSyntax(93.905)
+    self~expectSyntax(93.924)
     mb = .mutablebuffer~new('nv')
     xre = mb~substr(nv,3,'*')
 
 ::method 'test062'
     mb = .mutablebuffer~new('nv.')
-    self~expectSyntax(93.905)
+    self~expectSyntax(93.924)
     xre = mb~substr(nv.,4,'*')
 
 ::method 'test063'
     mb = .mutablebuffer~new('nv.10')
-    self~expectSyntax(93.905)
+    self~expectSyntax(93.924)
     xre = mb~substr(nv.10,6,'*')
 
 ::method 'test064'
     mb = .mutablebuffer~new('nv')
-    self~expectSyntax(93.905)
+    self~expectSyntax(93.923)
     xre = mb~substr(1,nv,'*')
 
 ::method 'test065'
     mb = .mutablebuffer~new('nv.')
-    self~expectSyntax(93.905)
+    self~expectSyntax(93.923)
     xre = mb~substr(1,nv.,'*')
 
 ::method 'test066'
     mb = .mutablebuffer~new('nv.10')
-    self~expectSyntax(93.905)
+    self~expectSyntax(93.923)
     xre = mb~substr(1,nv.10,'*')
 
 ::method 'test067'
@@ -436,37 +436,37 @@ return testGroupList
 
 ::method 'test070'
     mb = .mutablebuffer~new(noval1)
-    self~expectSyntax(93.905)
+    self~expectSyntax(93.924)
     xre = mb~substr(noval2,noval3,noval4)
 
 ::method 'test071'
     mb = .mutablebuffer~new('nv')
-    self~expectSyntax(93.905)
+    self~expectSyntax(93.924)
     xre = mb~substr(nv,3,'*')
 
 ::method 'test072'
     mb = .mutablebuffer~new('nv.')
-    self~expectSyntax(93.905)
+    self~expectSyntax(93.924)
     xre = mb~substr(nv.,4,'*')
 
 ::method 'test073'
     mb = .mutablebuffer~new('nv.10')
-    self~expectSyntax(93.905)
+    self~expectSyntax(93.924)
     xre = mb~substr(nv.10,6,'*')
 
 ::method 'test074'
     mb = .mutablebuffer~new('nv')
-    self~expectSyntax(93.905)
+    self~expectSyntax(93.923)
     xre = mb~substr(1,nv,'*')
 
 ::method 'test075'
     mb = .mutablebuffer~new('nv.')
-    self~expectSyntax(93.905)
+    self~expectSyntax(93.923)
     xre = mb~substr(1,nv.,'*')
 
 ::method 'test076'
     mb = .mutablebuffer~new('nv.10')
-    self~expectSyntax(93.905)
+    self~expectSyntax(93.923)
     xre = mb~substr(1,nv.10,'*')
 
 ::method 'test077'
@@ -486,7 +486,7 @@ return testGroupList
 
 ::method 'test080'
     mb = .mutablebuffer~new(noval1)
-    self~expectSyntax(93.905)
+    self~expectSyntax(93.924)
     xre = mb~substr(noval2,noval3,noval4)
 
 ::method 'test081'
@@ -542,7 +542,7 @@ return testGroupList
 
 ::METHOD "testSubStrSyntax2"
    b = .mutableBuffer~new("1234567890")
-   self~expectSyntax(93.938)
+   self~expectSyntax(93.924)
    b~subStr(.nil)
 
 ::METHOD "testSubStrSyntax3"
@@ -552,12 +552,12 @@ return testGroupList
 
 ::METHOD "testSubStrSyntax4"
    b = .mutableBuffer~new("1234567890")
-   self~expectSyntax(93.938)
+   self~expectSyntax(93.924)
    b~subStr(.nil,0)
 
 ::METHOD "testSubStrSyntax5"
    b = .mutableBuffer~new("1234567890")
-   self~expectSyntax(93.938)
+   self~expectSyntax(93.923)
    b~subStr(1,.nil)
 
 ::METHOD "testSubStrSyntax6"
