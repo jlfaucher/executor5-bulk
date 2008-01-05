@@ -708,7 +708,7 @@ return testGroupList
    Interpret String
    self~assertSame("subTest9", chk,'*')
    Return
-    
+
    Notready:
    self~assertSame("subTest9a", condition('cs'),'NOTREADY')
    self~assertSame("subTest9b", condition('d'),cndd)
@@ -720,9 +720,17 @@ return testGroupList
 ::method "test_10"
    call on error
    trace off
+
+   -- Prevent error messages from the shell printing on the console.
+   select
+     when .ooRexxUnit.OSName == "WINDOWS"then toNull = '1>nul 2>&1'
+     when .ooRexxUnit.OSName == "LINUX"then toNull = '>/dev/null 2>&1'
+     otherwise toNull = "" -- Not sure what works on other OSes
+   end
+
    caught = .false
-   'zxyabc' -- deliberate error, this command should not be found!
-   if \caught then self~assertTrue("subTest_1", 0)
+   'zxyabc' toNull -- deliberate error, this command should not be found!
+   self~assertTrue("Error should be caught", caught)
    return
 
    error:
@@ -771,9 +779,17 @@ return testGroupList
 ::method "test_13"
    call on failure
    trace off
+
+   -- Prevent error messages from the shell printing on the console.
+   select
+     when .ooRexxUnit.OSName == "WINDOWS"then toNull = '1>nul 2>&1'
+     when .ooRexxUnit.OSName == "LINUX"then toNull = '>/dev/null 2>&1'
+     otherwise toNull = "" -- Not sure what works on other OSes
+   end
+
    caught = .false
-   'zxyabc' -- deliberate failure, this command should not be found!
-   if \caught then self~assertTrue("subTest_1", 0)
+   'zxyabc' toNull    -- deliberate failure, this command should not be found!
+   self~assertTrue("Error should be caught", caught)
    return
 
    failure:
