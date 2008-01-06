@@ -129,355 +129,355 @@ return testUnitList
     .local~vxnx = '7a786376000000000041534446'x
 
 ::method 'test001'
-    self~assertSame('subTest01','0',wordPos('',''))
+    self~assertSame('0', wordPos('',''))
 
 ::method 'test002'
-    self~assertSame('subTest01','0',wordPos(' ',' '))
+    self~assertSame('0', wordPos(' ',' '))
 
 ::method 'test003'
-    self~assertSame('subTest01','1',wordPos('WORD1','WORD1 WORD2'))
+    self~assertSame('1', wordPos('WORD1','WORD1 WORD2'))
 
 ::method 'test004'
-    self~assertSame('subTest01','2',wordPos('WORD2','WORD1 WORD2'))
+    self~assertSame('2', wordPos('WORD2','WORD1 WORD2'))
 
 ::method 'test005'
-    self~assertSame('subTest01','0',wordPos('WORD3','WORD1 WORD2'))
+    self~assertSame('0', wordPos('WORD3','WORD1 WORD2'))
 
 ::method 'test006'
-    self~assertSame('subTest01','1',wordPos('4a'x,'4a'x))
+    self~assertSame('1', wordPos('4a'x,'4a'x))
 
 ::method 'test007'
-    self~assertSame('subTest01','0',wordPos('4b'x,'4a'x))
+    self~assertSame('0', wordPos('4b'x,'4a'x))
 
 ::method 'test008'
-    self~assertSame('subTest01','1',wordPos('WORD','WORD'))
+    self~assertSame('1', wordPos('WORD','WORD'))
 
 ::method 'test009'
-    self~assertSame('subTest01','0',wordPos('DROW','WORD'))
+    self~assertSame('0', wordPos('DROW','WORD'))
 
 ::method 'test010'
-    self~assertSame('subTest01','1',wordPos('20202020204a522020202020'x,'4a52'x))
+    self~assertSame('1', wordPos('20202020204a522020202020'x,'4a52'x))
 
 ::method 'test011'
-    self~assertSame('subTest01','0',wordPos('20202020204a20522020202020'x,'4a52'x))
+    self~assertSame('0', wordPos('20202020204a20522020202020'x,'4a52'x))
 
 ::method 'test012'
-    self~assertSame('subTest01','1',wordPos(.vc1x,'4120422043204420452046204720482049204a204b204c204d'x))
+    self~assertSame('1', wordPos(.vc1x,'4120422043204420452046204720482049204a204b204c204d'x))
 
 ::method 'test013'
-    self~assertSame('subTest01','1',wordPos(.vc140x,'4120422043204420452046204720482049204a204b204c204d'x))
+    self~assertSame('1', wordPos(.vc140x,'4120422043204420452046204720482049204a204b204c204d'x))
 
 ::method 'test014'
-    self~assertSame('subTest01','7',wordPos(.vc7x,'4120422043204420452046204720482049204a204b204c204d'x))
+    self~assertSame('7', wordPos(.vc7x,'4120422043204420452046204720482049204a204b204c204d'x))
 
 ::method 'test015'
-    self~assertSame('subTest01','7',wordPos(.vc740x,'4120422043204420452046204720482049204a204b204c204d'x))
+    self~assertSame('7', wordPos(.vc740x,'4120422043204420452046204720482049204a204b204c204d'x))
 
 ::method 'test016'
-    self~assertSame('subTest01','1',wordPos('A',.v26))
+    self~assertSame('1', wordPos('A',.v26))
 
 ::method 'test017'
-    self~assertSame('subTest01','10',wordPos('J',.v26))
+    self~assertSame('10', wordPos('J',.v26))
 
 ::method 'test018'
-    self~assertSame('subTest01','26',wordPos('Z',.v26))
+    self~assertSame('26', wordPos('Z',.v26))
 
 ::method 'test019'
-    self~assertSame('subTest01','0',wordPos('0',.v26))
+    self~assertSame('0', wordPos('0',.v26))
 
 ::method 'test020'
-    self~assertSame('subTest01','0',wordPos('()',.v26))
+    self~assertSame('0', wordPos('()',.v26))
 
 ::method 'test021'
-    self~assertSame('subTest01','1',wordPos('A     B     C     D     E     ',.v26))
+    self~assertSame('1', wordPos('A     B     C     D     E     ',.v26))
 
 ::method 'test022'
-    self~assertSame('subTest01','22',wordPos('V     W     X     Y     Z     ',.v26))
+    self~assertSame('22', wordPos('V     W     X     Y     Z     ',.v26))
 
 ::method 'test023'
-    self~assertSame('subTest01','0',wordPos('X     Y     Z     A     B     ',.v26))
+    self~assertSame('0', wordPos('X     Y     Z     A     B     ',.v26))
 
 ::method 'test024'
     numeric digits 1
-    self~assertSame('subTest01','1',wordPos(+19,12+6 12+7 12+8 12+9))
+    self~assertSame('1', wordPos(+19,12+6 12+7 12+8 12+9))
 
 ::method 'test025'
     numeric digits 1
-    self~assertSame('subTest01','0',wordPos(+19,'12+6 12+7 12+8 12+9'))
+    self~assertSame('0', wordPos(+19,'12+6 12+7 12+8 12+9'))
 
 ::method 'test026'
     numeric digits 1
-    self~assertSame('subTest01','1',wordPos(+14,12+1 12+2 12+3 12+4))
+    self~assertSame('1', wordPos(+14,12+1 12+2 12+3 12+4))
 
 ::method 'test027'
     numeric digits 1
-    self~assertSame('subTest01','0',wordPos(+14,'12+1 12+2 12+3 12+4'))
+    self~assertSame('0', wordPos(+14,'12+1 12+2 12+3 12+4'))
 
 ::method 'test028'
-    self~assertSame('subTest01','2',wordPos(+19,12+6 12+7 12+8 12+9))
+    self~assertSame('2', wordPos(+19,12+6 12+7 12+8 12+9))
 
 ::method 'test029'
-    self~assertSame('subTest01','0',wordPos(+19,'12+6 12+7 12+8 12+9'))
+    self~assertSame('0', wordPos(+19,'12+6 12+7 12+8 12+9'))
 
 ::method 'test030'
-    self~assertSame('subTest01','2',wordPos(+14,12+1 12+2 12+3 12+4))
+    self~assertSame('2', wordPos(+14,12+1 12+2 12+3 12+4))
 
 ::method 'test031'
-    self~assertSame('subTest01','0',wordPos(+14,'12+1 12+2 12+3 12+4'))
+    self~assertSame('0', wordPos(+14,'12+1 12+2 12+3 12+4'))
 
 ::method 'test032'
-    self~assertSame('subTest01','1',wordPos(nv,'NV'))
+    self~assertSame('1', wordPos(nv,'NV'))
 
 ::method 'test033'
-    self~assertSame('subTest01','1',wordPos(nv.,'NV.'))
+    self~assertSame('1', wordPos(nv.,'NV.'))
 
 ::method 'test034'
-    self~assertSame('subTest01','1',wordPos(nv.10,'NV.10'))
+    self~assertSame('1', wordPos(nv.10,'NV.10'))
 
 ::method 'test035'
-    self~assertSame('subTest01','1',wordPos('NV',nv))
+    self~assertSame('1', wordPos('NV',nv))
 
 ::method 'test036'
-    self~assertSame('subTest01','1',wordPos('NV.',nv.))
+    self~assertSame('1', wordPos('NV.',nv.))
 
 ::method 'test037'
-    self~assertSame('subTest01','1',wordPos('NV.10',nv.10))
+    self~assertSame('1', wordPos('NV.10',nv.10))
 
 ::method 'test038'
-    self~assertSame('subTest01','2',wordPos('qwer zxcv ASDF','     asdf qwer zxcv     ASDF QWER ZXCV'))
+    self~assertSame('2', wordPos('qwer zxcv ASDF','     asdf qwer zxcv     ASDF QWER ZXCV'))
 
 ::method 'test039'
-    self~assertSame('subTest01','1',wordPos('one',.v8))
+    self~assertSame('1', wordPos('one',.v8))
 
 ::method 'test040'
-    self~assertSame('subTest01','2',wordPos('two                three four',.v8))
+    self~assertSame('2', wordPos('two                three four',.v8))
 
 ::method 'test041'
-    self~assertSame('subTest01','0',wordPos('seven eight nine',.v8))
+    self~assertSame('0', wordPos('seven eight nine',.v8))
 
 ::method 'test042'
-    self~assertSame('subTest01','3',wordPos('41534446202020'x,'6173646620717765722041534446205157455220'x))
+    self~assertSame('3', wordPos('41534446202020'x,'6173646620717765722041534446205157455220'x))
 
 ::method 'test043'
-    self~assertSame('subTest01','3',wordPos('20202041534446'x,'6173646620717765722041534446205157455220'x))
+    self~assertSame('3', wordPos('20202041534446'x,'6173646620717765722041534446205157455220'x))
 
 ::method 'test044'
-    self~assertSame('subTest01','3',wordPos('204153444620'x,'6173646620717765722041534446205157455220'x))
+    self~assertSame('3', wordPos('204153444620'x,'6173646620717765722041534446205157455220'x))
 
 ::method 'test045'
-    self~assertSame('subTest01','0',wordPos('7a786376'x,'61736466207a786376000000000041534446205a584356'x))
+    self~assertSame('0', wordPos('7a786376'x,'61736466207a786376000000000041534446205a584356'x))
 
 ::method 'test046'
-    self~assertSame('subTest01','0',wordPos('41534446'x,'61736466207a786376000000000041534446205a584356'x))
+    self~assertSame('0', wordPos('41534446'x,'61736466207a786376000000000041534446205a584356'x))
 
 ::method 'test047'
-    self~assertSame('subTest01','2',wordPos(.vxnx,'61736466207a786376000000000041534446205a584356'x))
+    self~assertSame('2', wordPos(.vxnx,'61736466207a786376000000000041534446205a584356'x))
 
 ::method 'test048'
-    self~assertSame('subTest01','1',wordPos('J',.v10000))
+    self~assertSame('1', wordPos('J',.v10000))
 
 ::method 'test049'
-    self~assertSame('subTest01','9999',wordPos('J  K',.v10000))
+    self~assertSame('9999', wordPos('J  K',.v10000))
 
 ::method 'test050'
-    self~assertSame('subTest01','9999',wordPos('J K',.v10000))
+    self~assertSame('9999', wordPos('J K',.v10000))
 
 ::method 'test051'
-    self~assertSame('subTest01','10000',wordPos('K',.v10000))
+    self~assertSame('10000', wordPos('K',.v10000))
 
 ::method 'test052'
-    self~assertSame('subTest01','0',wordPos('K J',.v10000))
+    self~assertSame('0', wordPos('K J',.v10000))
 
 ::method 'test053'
     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
-    self~assertSame('subTest01','1',wordPos('1',XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX))
+    self~assertSame('1', wordPos('1',XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX))
 
 ::method 'test054'
     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
-    self~assertSame('subTest01','5',wordPos('35'x,XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX))
+    self~assertSame('5', wordPos('35'x,XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX))
 
 ::method 'test055'
     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
-    self~assertSame('subTest01','5',wordPos('35202020202020202020203620372020202020202020202038'x,XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX))
+    self~assertSame('5', wordPos('35202020202020202020203620372020202020202020202038'x,XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX))
 
 ::method 'test056'
-    self~assertSame('subTest01','1',wordPos('J '||copies('*',10000),.vwbwwbw))
+    self~assertSame('1', wordPos('J '||copies('*',10000),.vwbwwbw))
 
 ::method 'test057'
-    self~assertSame('subTest01','2',wordPos(copies('*',10000)||' R',.vwbwwbw))
+    self~assertSame('2', wordPos(copies('*',10000)||' R',.vwbwwbw))
 
 ::method 'test058'
-    self~assertSame('subTest01','1',wordPos('J',.vwbwwbw))
+    self~assertSame('1', wordPos('J',.vwbwwbw))
 
 ::method 'test059'
-    self~assertSame('subTest01','2',wordPos(copies('*',10000),.vwbwwbw))
+    self~assertSame('2', wordPos(copies('*',10000),.vwbwwbw))
 
 ::method 'test060'
-    self~assertSame('subTest01','3',wordPos('R',.vwbwwbw))
+    self~assertSame('3', wordPos('R',.vwbwwbw))
 
 ::method 'test061'
-    self~assertSame('subTest01','1',wordPos('John',.vwbw))
+    self~assertSame('1', wordPos('John',.vwbw))
 
 ::method 'test062'
-    self~assertSame('subTest01','2',wordPos('Buckley',.vwbw))
+    self~assertSame('2', wordPos('Buckley',.vwbw))
 
 ::method 'test063'
-    self~assertSame('subTest01','1',wordPos('John Buckley',.vwbw))
+    self~assertSame('1', wordPos('John Buckley',.vwbw))
 
 ::method 'test064'
-    self~assertSame('subTest01','0',wordPos('Buckley John',.vwbw))
+    self~assertSame('0', wordPos('Buckley John',.vwbw))
 
 ::method 'test065'
-    self~assertSame('subTest01','1',wordPos(00345,(00345 03450 34500)))
+    self~assertSame('1', wordPos(00345,(00345 03450 34500)))
 
 ::method 'test066'
-    self~assertSame('subTest01','1',wordPos(00345          03450,(00345 03450 34500)))
+    self~assertSame('1', wordPos(00345          03450,(00345 03450 34500)))
 
 ::method 'test067'
-    self~assertSame('subTest01','3',wordPos(34500,(00345 03450 34500)))
+    self~assertSame('3', wordPos(34500,(00345 03450 34500)))
 
 ::method 'test068'
-    self~assertSame('subTest01','0',wordPos(34500                    00,(00345 03450 34500)))
+    self~assertSame('0', wordPos(34500                    00,(00345 03450 34500)))
 
 ::method 'test069'
-    self~assertSame('subTest01','1',wordPos(3 4||copies(' ',10000)||5,(3 4 5)))
+    self~assertSame('1', wordPos(3 4||copies(' ',10000)||5,(3 4 5)))
 
 ::method 'test070'
-    self~assertSame('subTest01','0',wordPos('one two three five',(.v8)))
+    self~assertSame('0', wordPos('one two three five',(.v8)))
 
 ::method 'test071'
     v8. = .v8
-    self~assertSame('subTest01','4',wordPos('four'||copies(' ',50000)||'five six',(v8.)))
+    self~assertSame('4', wordPos('four'||copies(' ',50000)||'five six',(v8.)))
 
 ::method 'test072'
     v8. = .v8
-    self~assertSame('subTest01','3',wordPos('three four five',(v8.10)))
+    self~assertSame('3', wordPos('three four five',(v8.10)))
 
 ::method 'test073'
     v8. = .v8
-    self~assertSame('subTest01','0',wordPos('seven eight nine',(v8.10)))
+    self~assertSame('0', wordPos('seven eight nine',(v8.10)))
 
 ::method 'test074'
     v8. = .v8
-    self~assertSame('subTest01','0',wordPos('ten',(v8.10)))
+    self~assertSame('0', wordPos('ten',(v8.10)))
 
 ::method 'test075'
-    self~assertSame('subTest01','26',wordPos('Z Z',.v26||' '||reverse(.v26)))
+    self~assertSame('26', wordPos('Z Z',.v26||' '||reverse(.v26)))
 
 ::method 'test076'
-    self~assertSame('subTest01','25',wordPos('Y Z Z Y',.v26' 'reverse(.v26)))
+    self~assertSame('25', wordPos('Y Z Z Y',.v26' 'reverse(.v26)))
 
 ::method 'test077'
-    self~assertSame('subTest01','24',wordPos('X Y Z Z Y',.v26 reverse(.v26)))
+    self~assertSame('24', wordPos('X Y Z Z Y',.v26 reverse(.v26)))
 
 ::method 'test078'
-    self~assertSame('subTest01','0',wordPos('z z',.v26||' '||reverse(.v26)))
+    self~assertSame('0', wordPos('z z',.v26||' '||reverse(.v26)))
 
 ::method 'test079'
-    self~assertSame('subTest01','0',wordPos('y z z y',.v26' 'reverse(.v26)))
+    self~assertSame('0', wordPos('y z z y',.v26' 'reverse(.v26)))
 
 ::method 'test080'
-    self~assertSame('subTest01','0',wordPos('x y z z y',.v26 reverse(.v26)))
+    self~assertSame('0', wordPos('x y z z y',.v26 reverse(.v26)))
 
 ::method 'test081'
-    self~assertSame('subTest01','1',wordPos('two three',subStr('one two three four',5,9)))
+    self~assertSame('1', wordPos('two three',subStr('one two three four',5,9)))
 
 ::method 'test082'
-    self~assertSame('subTest01','1',wordPos('NUM                       CHAR',dataType(6) dataType('A')))
+    self~assertSame('1', wordPos('NUM                       CHAR',dataType(6) dataType('A')))
 
 ::method 'test083'
-    self~assertSame('subTest01','0',wordPos('num                       char',dataType(6) dataType('A')))
+    self~assertSame('0', wordPos('num                       char',dataType(6) dataType('A')))
 
 ::method 'test084'
-    self~assertSame('subTest01','3',wordPos('WORD1','WORD1 WORD2 WORD1 WORD2',3))
+    self~assertSame('3', wordPos('WORD1','WORD1 WORD2 WORD1 WORD2',3))
 
 ::method 'test085'
-    self~assertSame('subTest01','4',wordPos('WORD2','WORD1 WORD2 WORD1 WORD2',3))
+    self~assertSame('4', wordPos('WORD2','WORD1 WORD2 WORD1 WORD2',3))
 
 ::method 'test086'
-    self~assertSame('subTest01','0',wordPos('WORD3','WORD1 WORD2 WORD1 WORD2',3))
+    self~assertSame('0', wordPos('WORD3','WORD1 WORD2 WORD1 WORD2',3))
 
 ::method 'test087'
-    self~assertSame('subTest01','1',wordPos('4a'x,'4a'x,1))
+    self~assertSame('1', wordPos('4a'x,'4a'x,1))
 
 ::method 'test088'
-    self~assertSame('subTest01','0',wordPos('4a'x,'4a'x,2))
+    self~assertSame('0', wordPos('4a'x,'4a'x,2))
 
 ::method 'test089'
     self~expectSyntax(93.924)
     xre = wordPos('4b'x,'4a'x,0)
 
 ::method 'test090'
-    self~assertSame('subTest01','0',wordPos('4b'x,'4a'x,1))
+    self~assertSame('0', wordPos('4b'x,'4a'x,1))
 
 ::method 'test091'
-    self~assertSame('subTest01','1',wordPos('20202020204a522020202020'x,'4a52'x,1))
+    self~assertSame('1', wordPos('20202020204a522020202020'x,'4a52'x,1))
 
 ::method 'test092'
-    self~assertSame('subTest01','0',wordPos('20202020204a522020202020'x,'4a52'x,2))
+    self~assertSame('0', wordPos('20202020204a522020202020'x,'4a52'x,2))
 
 ::method 'test093'
-    self~assertSame('subTest01','1',wordPos(.vc1x,'4120422043204420452046204720482049204a204b204c204d'x,1))
+    self~assertSame('1', wordPos(.vc1x,'4120422043204420452046204720482049204a204b204c204d'x,1))
 
 ::method 'test094'
-    self~assertSame('subTest01','0',wordPos(.vc1x,'4120422043204420452046204720482049204a204b204c204d'x,2))
+    self~assertSame('0', wordPos(.vc1x,'4120422043204420452046204720482049204a204b204c204d'x,2))
 
 ::method 'test095'
-    self~assertSame('subTest01','1',wordPos(.vc140x,'4120422043204420452046204720482049204a204b204c204d'x,1))
+    self~assertSame('1', wordPos(.vc140x,'4120422043204420452046204720482049204a204b204c204d'x,1))
 
 ::method 'test096'
-    self~assertSame('subTest01','0',wordPos(.vc140x,'4120422043204420452046204720482049204a204b204c204d'x,2))
+    self~assertSame('0', wordPos(.vc140x,'4120422043204420452046204720482049204a204b204c204d'x,2))
 
 ::method 'test097'
-    self~assertSame('subTest01','0',wordPos(.vc7x,'4120422043204420452046204720482049204a204b204c204d'x,13))
+    self~assertSame('0', wordPos(.vc7x,'4120422043204420452046204720482049204a204b204c204d'x,13))
 
 ::method 'test098'
-    self~assertSame('subTest01','0',wordPos(.vc740x,'4120422043204420452046204720482049204a204b204c204d'x,14))
+    self~assertSame('0', wordPos(.vc740x,'4120422043204420452046204720482049204a204b204c204d'x,14))
 
 ::method 'test099'
-    self~assertSame('subTest01','1',wordPos('A',.v26,1))
+    self~assertSame('1', wordPos('A',.v26,1))
 
 ::method 'test100'
-    self~assertSame('subTest01','0',wordPos('A',.v26,2))
+    self~assertSame('0', wordPos('A',.v26,2))
 
 ::method 'test101'
-    self~assertSame('subTest01','10',wordPos('J',.v26,'39'x))
+    self~assertSame('10', wordPos('J',.v26,'39'x))
 
 ::method 'test102'
-    self~assertSame('subTest01','10',wordPos('J',.v26,X2D('A')))
+    self~assertSame('10', wordPos('J',.v26,X2D('A')))
 
 ::method 'test103'
-    self~assertSame('subTest01','0',wordPos('J',.v26,'3131'x))
+    self~assertSame('0', wordPos('J',.v26,'3131'x))
 
 ::method 'test104'
-    self~assertSame('subTest01','26',wordPos('Z',.v26,' 25 '))
+    self~assertSame('26', wordPos('Z',.v26,' 25 '))
 
 ::method 'test105'
-    self~assertSame('subTest01','0',wordPos('0',.v26,1))
+    self~assertSame('0', wordPos('0',.v26,1))
 
 ::method 'test106'
     self~expectSyntax(93.924)
     xre = wordPos('A     B     C     D     E     ',.v26,-1)
 
 ::method 'test107'
-    self~assertSame('subTest01','22',wordPos('V     W     X     Y     Z     ',.v26,.22E02+0))
+    self~assertSame('22', wordPos('V     W     X     Y     Z     ',.v26,.22E02+0))
 
 ::method 'test108'
-    self~assertSame('subTest01','22',wordPos('V     W     X     Y     Z     ',.v26,.22E02))
+    self~assertSame('22', wordPos('V     W     X     Y     Z     ',.v26,.22E02))
 
 ::method 'test109'
-    self~assertSame('subTest01','0',wordPos('X     Y     Z     A     B     ',.v26,'.22E02'))
+    self~assertSame('0', wordPos('X     Y     Z     A     B     ',.v26,'.22E02'))
 
 ::method 'test110'
     numeric digits 1
-    self~assertSame('subTest01','24',wordPos('Z','A Z C E G H I J K L M N O P Q R S T U V W X Y Z',+19))
+    self~assertSame('24', wordPos('Z','A Z C E G H I J K L M N O P Q R S T U V W X Y Z',+19))
 
 ::method 'test111'
     numeric digits 1
-    self~assertSame('subTest01','24',wordPos('Z','A Z C D F H I J K L M N O P Q R S T U V W X Y Z',+14))
+    self~assertSame('24', wordPos('Z','A Z C D F H I J K L M N O P Q R S T U V W X Y Z',+14))
 
 ::method 'test112'
-    self~assertSame('subTest01','26',wordPos('Z','A Z C D E F G H I J K L M N O P Q R S T U V W X Y Z',+19))
+    self~assertSame('26', wordPos('Z','A Z C D E F G H I J K L M N O P Q R S T U V W X Y Z',+19))
 
 ::method 'test113'
     self~expectSyntax(40.12)
@@ -496,22 +496,22 @@ return testUnitList
     xre = wordPos(noval1,noval2,noval3)
 
 ::method 'test117'
-    self~assertSame('subTest01','1',wordPos(nv,'NV',1))
+    self~assertSame('1', wordPos(nv,'NV',1))
 
 ::method 'test118'
-    self~assertSame('subTest01','1',wordPos(nv.,'NV.',1))
+    self~assertSame('1', wordPos(nv.,'NV.',1))
 
 ::method 'test119'
-    self~assertSame('subTest01','1',wordPos(nv.10,'NV.10',1))
+    self~assertSame('1', wordPos(nv.10,'NV.10',1))
 
 ::method 'test120'
-    self~assertSame('subTest01','1',wordPos('NV',nv,1))
+    self~assertSame('1', wordPos('NV',nv,1))
 
 ::method 'test121'
-    self~assertSame('subTest01','1',wordPos('NV.',nv.,1))
+    self~assertSame('1', wordPos('NV.',nv.,1))
 
 ::method 'test122'
-    self~assertSame('subTest01','1',wordPos('NV.10',nv.10,1))
+    self~assertSame('1', wordPos('NV.10',nv.10,1))
 
 ::method 'test123'
     self~expectSyntax(40.12)
@@ -530,96 +530,96 @@ return testUnitList
     xre = wordPos(noval1,noval2,noval3)
 
 ::method 'test127'
-    self~assertSame('subTest01','2',wordPos('qwer zxcv ASDF','     asdf qwer zxcv     ASDF QWER ZXCV',2))
+    self~assertSame('2', wordPos('qwer zxcv ASDF','     asdf qwer zxcv     ASDF QWER ZXCV',2))
 
 ::method 'test128'
-    self~assertSame('subTest01','0',wordPos('qwer zxcv ASDF','     asdf qwer zxcv     ASDF QWER ZXCV',5))
+    self~assertSame('0', wordPos('qwer zxcv ASDF','     asdf qwer zxcv     ASDF QWER ZXCV',5))
 
 ::method 'test129'
-    self~assertSame('subTest01','1',wordPos('one',.v8,1*1))
+    self~assertSame('1', wordPos('one',.v8,1*1))
 
 ::method 'test130'
-    self~assertSame('subTest01','0',wordPos('one',.v8,2*1))
+    self~assertSame('0', wordPos('one',.v8,2*1))
 
 ::method 'test131'
-    self~assertSame('subTest01','2',wordPos('two                three four',.v8,'000001'))
+    self~assertSame('2', wordPos('two                three four',.v8,'000001'))
 
 ::method 'test132'
-    self~assertSame('subTest01','2',wordPos('two                three four',.v8,000002))
+    self~assertSame('2', wordPos('two                three four',.v8,000002))
 
 ::method 'test133'
-    self~assertSame('subTest01',"0",wordPos('two                three four',.v8,3.00))
+    self~assertSame("0", wordPos('two                three four',.v8,3.00))
 
 ::method 'test134'
-    self~assertSame('subTest01','3',wordPos('41534446202020'x,'6173646620717765722041534446205157455220'x,2))
+    self~assertSame('3', wordPos('41534446202020'x,'6173646620717765722041534446205157455220'x,2))
 
 ::method 'test135'
-    self~assertSame('subTest01','3',wordPos('41534446202020'x,'6173646620717765722041534446205157455220'x,3))
+    self~assertSame('3', wordPos('41534446202020'x,'6173646620717765722041534446205157455220'x,3))
 
 ::method 'test136'
-    self~assertSame('subTest01','0',wordPos('41534446202020'x,'6173646620717765722041534446205157455220'x,4))
+    self~assertSame('0', wordPos('41534446202020'x,'6173646620717765722041534446205157455220'x,4))
 
 ::method 'test137'
-    self~assertSame('subTest01','3',wordPos('20202041534446'x,'6173646620717765722041534446205157455220'x,3))
+    self~assertSame('3', wordPos('20202041534446'x,'6173646620717765722041534446205157455220'x,3))
 
 ::method 'test138'
-    self~assertSame('subTest01','0',wordPos('20202041534446'x,'6173646620717765722041534446205157455220'x,4))
+    self~assertSame('0', wordPos('20202041534446'x,'6173646620717765722041534446205157455220'x,4))
 
 ::method 'test139'
-    self~assertSame('subTest01','0',wordPos('20202041534446'x,'6173646620717765722041534446205157455220'x,5))
+    self~assertSame('0', wordPos('20202041534446'x,'6173646620717765722041534446205157455220'x,5))
 
 ::method 'test140'
-    self~assertSame('subTest01','3',wordPos('204153444620'x,'6173646620717765722041534446205157455220'x,1))
+    self~assertSame('3', wordPos('204153444620'x,'6173646620717765722041534446205157455220'x,1))
 
 ::method 'test141'
-    self~assertSame('subTest01','3',wordPos('204153444620'x,'6173646620717765722041534446205157455220'x,2))
+    self~assertSame('3', wordPos('204153444620'x,'6173646620717765722041534446205157455220'x,2))
 
 ::method 'test142'
-    self~assertSame('subTest01','0',wordPos('204153444620'x,'6173646620717765722041534446205157455220'x,4))
+    self~assertSame('0', wordPos('204153444620'x,'6173646620717765722041534446205157455220'x,4))
 
 ::method 'test143'
-    self~assertSame('subTest01','0',wordPos('7a786376'x,'61736466207a786376000000000041534446205a584356'x))
+    self~assertSame('0', wordPos('7a786376'x,'61736466207a786376000000000041534446205a584356'x))
 
 ::method 'test144'
-    self~assertSame('subTest01','0',wordPos('41534446'x,'61736466207a786376000000000041534446205a584356'x))
+    self~assertSame('0', wordPos('41534446'x,'61736466207a786376000000000041534446205a584356'x))
 
 ::method 'test145'
-    self~assertSame('subTest01','2',wordPos(.vxnx,'61736466207a786376000000000041534446205a584356'x))
+    self~assertSame('2', wordPos(.vxnx,'61736466207a786376000000000041534446205a584356'x))
 
 ::method 'test146'
-    self~assertSame('subTest01','9999',wordPos('J',.v10000,9999))
+    self~assertSame('9999', wordPos('J',.v10000,9999))
 
 ::method 'test147'
-    self~assertSame('subTest01','9999',wordPos('J  K',.v10000,'39393939'x))
+    self~assertSame('9999', wordPos('J  K',.v10000,'39393939'x))
 
 ::method 'test148'
-    self~assertSame('subTest01','9999',wordPos('J K',.v10000,'9999'))
+    self~assertSame('9999', wordPos('J K',.v10000,'9999'))
 
 ::method 'test149'
-    self~assertSame('subTest01','10000',wordPos('K',.v10000,009999))
+    self~assertSame('10000', wordPos('K',.v10000,009999))
 
 ::method 'test150'
-    self~assertSame('subTest01','0',wordPos('K J',.v10000,'009999'))
+    self~assertSame('0', wordPos('K J',.v10000,'009999'))
 
 ::method 'test151'
     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
-    self~assertSame('subTest01','1',wordPos('1',XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,1))
+    self~assertSame('1', wordPos('1',XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,1))
 
 ::method 'test152'
     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
-    self~assertSame('subTest01','0',wordPos('1',XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,9))
+    self~assertSame('0', wordPos('1',XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,9))
 
 ::method 'test153'
     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
-    self~assertSame('subTest01','5',wordPos('35'x,XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,'34'x))
+    self~assertSame('5', wordPos('35'x,XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,'34'x))
 
 ::method 'test154'
     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
-    self~assertSame('subTest01','5',wordPos('35'x,XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,'35'x))
+    self~assertSame('5', wordPos('35'x,XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,'35'x))
 
 ::method 'test155'
     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
-    self~assertSame('subTest01','0',wordPos('35'x,XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,'36'x))
+    self~assertSame('0', wordPos('35'x,XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,'36'x))
 
 ::method 'test156'
     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
@@ -637,115 +637,115 @@ return testUnitList
     xre = wordPos('352020202020202020203620372020202020202020202038'x,XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,"'36'x")
 
 ::method 'test159'
-    self~assertSame('subTest01','1',wordPos('J '||copies('*',10000),.vwbwwbw,1))
+    self~assertSame('1', wordPos('J '||copies('*',10000),.vwbwwbw,1))
 
 ::method 'test160'
-    self~assertSame('subTest01','0',wordPos('J '||copies('*',10000),.vwbwwbw,0+2))
+    self~assertSame('0', wordPos('J '||copies('*',10000),.vwbwwbw,0+2))
 
 ::method 'test161'
-    self~assertSame('subTest01','0',wordPos(copies('*',10000)||' R',.vwbwwbw,'3'))
+    self~assertSame('0', wordPos(copies('*',10000)||' R',.vwbwwbw,'3'))
 
 ::method 'test162'
-    self~assertSame('subTest01','0',wordPos(copies('*',10000)||' R',.vwbwwbw,'04'))
+    self~assertSame('0', wordPos(copies('*',10000)||' R',.vwbwwbw,'04'))
 
 ::method 'test163'
-    self~assertSame('subTest01','1',wordPos('J',.vwbwwbw,1))
+    self~assertSame('1', wordPos('J',.vwbwwbw,1))
 
 ::method 'test164'
-    self~assertSame('subTest01','0',wordPos('J',.vwbwwbw,2))
+    self~assertSame('0', wordPos('J',.vwbwwbw,2))
 
 ::method 'test165'
-    self~assertSame('subTest01','2',wordPos(copies('*',10000),.vwbwwbw,'32'x))
+    self~assertSame('2', wordPos(copies('*',10000),.vwbwwbw,'32'x))
 
 ::method 'test166'
-    self~assertSame('subTest01','0',wordPos(copies('*',10000),.vwbwwbw,'33'x))
+    self~assertSame('0', wordPos(copies('*',10000),.vwbwwbw,'33'x))
 
 ::method 'test167'
-    self~assertSame('subTest01','0',wordPos('R',.vwbwwbw,'000004'))
+    self~assertSame('0', wordPos('R',.vwbwwbw,'000004'))
 
 ::method 'test168'
-    self~assertSame('subTest01','0',wordPos('R',.vwbwwbw,'000005'))
+    self~assertSame('0', wordPos('R',.vwbwwbw,'000005'))
 
 ::method 'test169'
-    self~assertSame('subTest01','1',wordPos('John',.vwbw,1))
+    self~assertSame('1', wordPos('John',.vwbw,1))
 
 ::method 'test170'
-    self~assertSame('subTest01','0',wordPos('John',.vwbw,2))
+    self~assertSame('0', wordPos('John',.vwbw,2))
 
 ::method 'test171'
-    self~assertSame('subTest01','2',wordPos('Buckley',.vwbw,1))
+    self~assertSame('2', wordPos('Buckley',.vwbw,1))
 
 ::method 'test172'
-    self~assertSame('subTest01','2',wordPos('Buckley',.vwbw,2))
+    self~assertSame('2', wordPos('Buckley',.vwbw,2))
 
 ::method 'test173'
-    self~assertSame('subTest01','1',wordPos('John Buckley',.vwbw,1))
+    self~assertSame('1', wordPos('John Buckley',.vwbw,1))
 
 ::method 'test174'
-    self~assertSame('subTest01','0',wordPos('John Buckley',.vwbw,2))
+    self~assertSame('0', wordPos('John Buckley',.vwbw,2))
 
 ::method 'test175'
-    self~assertSame('subTest01','1',wordPos(3 4||copies(' ',10000)||5,(3 4 5),1))
+    self~assertSame('1', wordPos(3 4||copies(' ',10000)||5,(3 4 5),1))
 
 ::method 'test176'
-    self~assertSame('subTest01','0',wordPos(3 4||copies(' ',10000)||5,(3 4 5),2))
+    self~assertSame('0', wordPos(3 4||copies(' ',10000)||5,(3 4 5),2))
 
 ::method 'test177'
     v8. = .v8
-    self~assertSame('subTest01','4',wordPos('four'||copies(' ',50000)||'five six',(v8.),3))
+    self~assertSame('4', wordPos('four'||copies(' ',50000)||'five six',(v8.),3))
 
 ::method 'test178'
     v8. = .v8
-    self~assertSame('subTest01','4',wordPos('four'||copies(' ',50000)||'five six',(v8.),4))
+    self~assertSame('4', wordPos('four'||copies(' ',50000)||'five six',(v8.),4))
 
 ::method 'test179'
     v8. = .v8
-    self~assertSame('subTest01','0',wordPos('four'||copies(' ',50000)||'five six',(v8.),5))
+    self~assertSame('0', wordPos('four'||copies(' ',50000)||'five six',(v8.),5))
 
 ::method 'test180'
     v8. = .v8
-    self~assertSame('subTest01','3',wordPos('three four five',(v8.10),1))
+    self~assertSame('3', wordPos('three four five',(v8.10),1))
 
 ::method 'test181'
     v8. = .v8
-    self~assertSame('subTest01','3',wordPos('three four five',(v8.10),3))
+    self~assertSame('3', wordPos('three four five',(v8.10),3))
 --call ver wordPos('three four five',(v8.10),3),'3'; R0172:
 
 ::method 'test182'
     v8. = .v8
-    self~assertSame('subTest01','0',wordPos('three four five',(v8.10),8))
+    self~assertSame('0', wordPos('three four five',(v8.10),8))
 --call ver wordPos('three four five',(v8.10),8),'0'; R0173:
 
 ::method 'test183'
-    self~assertSame('subTest01','26',wordPos('Z Z',.v26||' '||reverse(.v26),23))
+    self~assertSame('26', wordPos('Z Z',.v26||' '||reverse(.v26),23))
 --call ver wordPos('Z Z',.v26||' '||reverse(.v26),23),'26'; R0174:
 
 ::method 'test184'
-    self~assertSame('subTest01','25',wordPos('Y Z Z Y',.v26' 'reverse(.v26),25))
+    self~assertSame('25', wordPos('Y Z Z Y',.v26' 'reverse(.v26),25))
 --call ver wordPos('Y Z Z Y',.v26' 'reverse(.v26),25),'25'; R0175:
 
 ::method 'test185'
-    self~assertSame('subTest01','0',wordPos('X Y Z Z Y',.v26 reverse(.v26),25))
+    self~assertSame('0', wordPos('X Y Z Z Y',.v26 reverse(.v26),25))
 --call ver wordPos('X Y Z Z Y',.v26 reverse(.v26),25),'0'; R0176:
 
 ::method 'test186'
-    self~assertSame('subTest01','1',wordPos('two three',subStr('one two three four',5,9),1))
+    self~assertSame('1', wordPos('two three',subStr('one two three four',5,9),1))
 --call ver wordPos('two three',subStr('one two three four',5,9),1),'1'; R0190:
 
 ::method 'test187'
-    self~assertSame('subTest01','0',wordPos('two three',subStr('one two three four',5,9),2))
+    self~assertSame('0', wordPos('two three',subStr('one two three four',5,9),2))
 --call ver wordPos('two three',subStr('one two three four',5,9),2),'0'; R0191:
 
 ::method 'test188'
-    self~assertSame('subTest01','1',wordPos('NUM                       CHAR',dataType(6) dataType('A'),1))
+    self~assertSame('1', wordPos('NUM                       CHAR',dataType(6) dataType('A'),1))
 --call ver wordPos('NUM                       CHAR',dataType(6) dataType('A'),1),'1'; R0192:
 
 ::method 'test189'
-    self~assertSame('subTest01','0',wordPos('NUM                       CHAR',dataType(6) dataType('A'),2))
+    self~assertSame('0', wordPos('NUM                       CHAR',dataType(6) dataType('A'),2))
 --call ver wordPos('NUM                       CHAR',dataType(6) dataType('A'),2),'0'; R0193:
 
 ::method 'test190'
-    self~assertSame('subTest01','0',wordPos('NUM                       CHAR',dataType(6) dataType('A'),3))
+    self~assertSame('0', wordPos('NUM                       CHAR',dataType(6) dataType('A'),3))
 --call ver wordPos('NUM                       CHAR',dataType(6) dataType('A'),3),'0'; R0194:
 
 ::method 'test191'
@@ -763,11 +763,11 @@ return testUnitList
 -- from bif.testgroup
    -- test the BIF, using examples from the documentation
 ::method "test_WORDPOS"
-    self~assertEquals("subTest1" , 3 , WORDPOS('the','now is the time')     )
-    self~assertEquals("subTest2" , 0 , WORDPOS('The','now is the time')     )
-    self~assertEquals("subTest3" , 2 , WORDPOS('is the','now is the time')  )
-    self~assertEquals("subTest4" , 2 , WORDPOS('is the','now is the time')  )
-    self~assertEquals("subTest5" , 0 , WORDPOS('is time ','now is the time'))
-    self~assertEquals("subTest6" , 2 , WORDPOS('be','To be or not to be')   )
-    self~assertEquals("subTest7" , 6 , WORDPOS('be','To be or not to be',3) )
+    self~assertEquals(3, WORDPOS('the','now is the time'))
+    self~assertEquals(0, WORDPOS('The','now is the time'))
+    self~assertEquals(2, WORDPOS('is the','now is the time'))
+    self~assertEquals(2, WORDPOS('is the','now is the time'))
+    self~assertEquals(0, WORDPOS('is time ','now is the time'))
+    self~assertEquals(2, WORDPOS('be','To be or not to be'))
+    self~assertEquals(6, WORDPOS('be','To be or not to be',3))
 

@@ -119,42 +119,42 @@ return testUnitList
 ::class "DIGITS.testGroup" subclass ooTestCase public
 
 ::method 'test01'
-    self~assertSame('subTest01','9',digits())
+    self~assertSame('9', digits())
 
 ::method 'test02'
-    self~assertSame('subTest01','0',fuzz())
+    self~assertSame('0', fuzz())
 
 ::method 'test03'
-    self~assertSame('subTest01','SCIENTIFIC',form())
+    self~assertSame('SCIENTIFIC', form())
 
 ::method 'test04'
     numeric digits '3130'x
-    self~assertSame('subTest01','10',digits())
+    self~assertSame('10', digits())
 
 ::method 'test05'
     numeric digits '3130'x
     numeric fuzz '39'x
-    self~assertSame('subTest01',9,fuzz())
+    self~assertSame(9, fuzz())
 
 ::method 'test06'
     numeric digits .11E+2
     numeric fuzz .10E+2
-    self~assertSame('subTest01',11,digits())
-    self~assertSame('subTest02',10,fuzz())
+    self~assertSame(11, digits())
+    self~assertSame(10, fuzz())
 
 ::method 'test07'
     v16 = 16
     v15 = 15
     numeric digits v16
     numeric fuzz v15
-    self~assertSame('subTest01',16,digits())
-    self~assertSame('subTest02',15,fuzz())
+    self~assertSame(16, digits())
+    self~assertSame(15, fuzz())
 
 ::method 'test08'
     numeric digits 200 + 55
     numeric fuzz   200 + 54
-    self~assertSame('subTest01',255,digits())
-    self~assertSame('subTest02',254,fuzz())
+    self~assertSame(255, digits())
+    self~assertSame(254, fuzz())
 
 ::method 'test09'
     v55  = 55
@@ -162,30 +162,30 @@ return testUnitList
     v200 = 200
     numeric digits v200 + v56
     numeric fuzz v200 + v55
-    self~assertSame('subTest01',256,digits())
-    self~assertSame('subTest02',255,fuzz())
+    self~assertSame(256, digits())
+    self~assertSame(255, fuzz())
 
 ::method 'test10'
     numeric fuzz 0
     numeric digits 9
-    self~assertSame('subTest01','SCIENTIFIC',form())
+    self~assertSame('SCIENTIFIC', form())
 
     numeric form ENGINEERING
-    self~assertSame('subTest02','ENGINEERING',form())
+    self~assertSame('ENGINEERING', form())
 
 ::method 'test11'
     numeric form VALUE '534349454e5449464943'x
-    self~assertSame('subTest01','SCIENTIFIC',form())
+    self~assertSame('SCIENTIFIC', form())
 
 ::method 'test12'
-    self~assertSame('subTest01','1.2E+17',1.2E17+0)
+    self~assertSame('1.2E+17', 1.2E17+0)
 
 ::method 'test13'
     numeric digits 30
     numeric form VALUE D2C(83785541140138055747325511)
-    self~assertSame('subTest01','ENGINEERING',form())
+    self~assertSame('ENGINEERING', form())
     numeric digits 9
-    self~assertSame('subTest01','120E+15',1.2E17+0)
+    self~assertSame('120E+15', 1.2E17+0)
 
 -- Some additional syntax checks added by Lee
 ::method 'test14'
@@ -211,118 +211,118 @@ return testUnitList
 
    -- test the BIF
 ::method "test_DIGITS"
-    self~assertTrue("subTest1", datatype(digits(),"N"))  -- make sure a number is returned
-    self~assertTrue("subTest2", digits()>0            )  -- make sure a number is returned
+    self~assertTrue(datatype(digits(),"N"))  -- make sure a number is returned
+    self~assertTrue(digits()>0)  -- make sure a number is returned
 
 -- from bif.testgroup
    -- test the BIF, using examples from the documentation
 ::method "test_ERRORTEXT"
-    self~assertSame("subTest-2" , 'Label not found' , ERRORTEXT(16))
-    self~assertSame("subTest-1" , ""                , ERRORTEXT(60))
+    self~assertSame('Label not found', ERRORTEXT(16))
+    self~assertSame("", ERRORTEXT(60))
 
    -- additional tests by Walter Pachl (2005-10-14)
-    self~assertSame('subTest1' , ''                                        , ERRORTEXT(1) )
-    self~assertSame('subTest2' , ''                                        , ERRORTEXT(2) )
-    self~assertSame('subTest3' , 'Failure during initialization'           , ERRORTEXT(3) )
-    self~assertSame('subTest4' , 'Program interrupted'                     , ERRORTEXT(4) )
-    self~assertSame('subTest5' , 'System resources exhausted'              , ERRORTEXT(5) )
-    self~assertSame('subTest6' , 'Unmatched "/*" or quote'                 , ERRORTEXT(6) )
-    self~assertSame('subTest7' , 'WHEN or OTHERWISE expected'              , ERRORTEXT(7) )
-    self~assertSame('subTest8' , 'Unexpected THEN or ELSE'                 , ERRORTEXT(8) )
-    self~assertSame('subTest9' , 'Unexpected WHEN or OTHERWISE'            , ERRORTEXT(9) )
-    self~assertSame('subTest10', 'Unexpected or unmatched END'             , ERRORTEXT(10))
-    self~assertSame('subTest11', 'Control stack full'                      , ERRORTEXT(11))
-    self~assertSame('subTest12', ''                                        , ERRORTEXT(12))
-    self~assertSame('subTest13', 'Invalid character in program'            , ERRORTEXT(13))
-    self~assertSame('subTest14', 'Incomplete DO/SELECT/IF'                 , ERRORTEXT(14))
-    self~assertSame('subTest15', 'Invalid hexadecimal or binary string'    , ERRORTEXT(15))
-    self~assertSame('subTest16', 'Label not found'                         , ERRORTEXT(16))
-    self~assertSame('subTest17', 'Unexpected PROCEDURE'                    , ERRORTEXT(17))
-    self~assertSame('subTest18', 'THEN expected'                           , ERRORTEXT(18))
-    self~assertSame('subTest19', 'String or symbol expected'               , ERRORTEXT(19))
-    self~assertSame('subTest20', 'Symbol expected'                         , ERRORTEXT(20))
-    self~assertSame('subTest21', 'Invalid data on end of clause'           , ERRORTEXT(21))
-    self~assertSame('subTest22', 'Invalid character string'                , ERRORTEXT(22))
-    self~assertSame('subTest23', 'Invalid data string'                     , ERRORTEXT(23))
-    self~assertSame('subTest24', 'Invalid TRACE request'                   , ERRORTEXT(24))
-    self~assertSame('subTest25', 'Invalid subkeyword found'                , ERRORTEXT(25))
-    self~assertSame('subTest26', 'Invalid whole number'                    , ERRORTEXT(26))
-    self~assertSame('subTest27', 'Invalid DO syntax'                       , ERRORTEXT(27))
-    self~assertSame('subTest28', 'Invalid LEAVE or ITERATE'                , ERRORTEXT(28))
-    self~assertSame('subTest29', 'Environment name too long'               , ERRORTEXT(29))
-    self~assertSame('subTest30', 'Name or string too long'                 , ERRORTEXT(30))
-    self~assertSame('subTest31', 'Name starts with number or "."'          , ERRORTEXT(31))
-    self~assertSame('subTest32', ''                                        , ERRORTEXT(32))
-    self~assertSame('subTest33', 'Invalid expression result'               , ERRORTEXT(33))
-    self~assertSame('subTest34', 'Logical value not 0 or 1'                , ERRORTEXT(34))
-    self~assertSame('subTest35', 'Invalid expression'                      , ERRORTEXT(35))
-    self~assertSame('subTest36', 'Unmatched "(" or "[" in expression'      , ERRORTEXT(36))
-    self~assertSame('subTest37', 'Unexpected ",", ")", or "]"'             , ERRORTEXT(37))
-    self~assertSame('subTest38', 'Invalid template or pattern'             , ERRORTEXT(38))
-    self~assertSame('subTest39', 'Evaluation stack overflow'               , ERRORTEXT(39))
-    self~assertSame('subTest40', 'Incorrect call to routine'               , ERRORTEXT(40))
-    self~assertSame('subTest41', 'Bad arithmetic conversion'               , ERRORTEXT(41))
-    self~assertSame('subTest42', 'Arithmetic overflow/underflow'           , ERRORTEXT(42))
-    self~assertSame('subTest43', 'Routine not found'                       , ERRORTEXT(43))
-    self~assertSame('subTest44', 'Function or message did not return data' , ERRORTEXT(44))
-    self~assertSame('subTest45', 'No data specified on function RETURN'    , ERRORTEXT(45))
-    self~assertSame('subTest46', 'Invalid variable reference'              , ERRORTEXT(46))
-    self~assertSame('subTest47', 'Unexpected label'                        , ERRORTEXT(47))
-    self~assertSame('subTest48', 'Failure in system service'               , ERRORTEXT(48))
-    self~assertSame('subTest49', 'Interpretation error'                    , ERRORTEXT(49))
-    self~assertSame('subTest50', ''                                        , ERRORTEXT(50))
-    self~assertSame('subTest51', ''                                        , ERRORTEXT(51))
-    self~assertSame('subTest52', ''                                        , ERRORTEXT(52))
-    self~assertSame('subTest53', ''                                        , ERRORTEXT(53))
-    self~assertSame('subTest54', ''                                        , ERRORTEXT(54))
-    self~assertSame('subTest55', ''                                        , ERRORTEXT(55))
-    self~assertSame('subTest56', ''                                        , ERRORTEXT(56))
-    self~assertSame('subTest57', ''                                        , ERRORTEXT(57))
-    self~assertSame('subTest58', ''                                        , ERRORTEXT(58))
-    self~assertSame('subTest59', ''                                        , ERRORTEXT(59))
-    self~assertSame('subTest60', ''                                        , ERRORTEXT(60))
-    self~assertSame('subTest61', ''                                        , ERRORTEXT(61))
-    self~assertSame('subTest62', ''                                        , ERRORTEXT(62))
-    self~assertSame('subTest63', ''                                        , ERRORTEXT(63))
-    self~assertSame('subTest64', ''                                        , ERRORTEXT(64))
-    self~assertSame('subTest65', ''                                        , ERRORTEXT(65))
-    self~assertSame('subTest66', ''                                        , ERRORTEXT(66))
-    self~assertSame('subTest67', ''                                        , ERRORTEXT(67))
-    self~assertSame('subTest68', ''                                        , ERRORTEXT(68))
-    self~assertSame('subTest69', ''                                        , ERRORTEXT(69))
-    self~assertSame('subTest70', ''                                        , ERRORTEXT(70))
-    self~assertSame('subTest71', ''                                        , ERRORTEXT(71))
-    self~assertSame('subTest72', ''                                        , ERRORTEXT(72))
-    self~assertSame('subTest73', ''                                        , ERRORTEXT(73))
-    self~assertSame('subTest74', ''                                        , ERRORTEXT(74))
-    self~assertSame('subTest75', ''                                        , ERRORTEXT(75))
-    self~assertSame('subTest76', ''                                        , ERRORTEXT(76))
-    self~assertSame('subTest77', ''                                        , ERRORTEXT(77))
-    self~assertSame('subTest78', ''                                        , ERRORTEXT(78))
-    self~assertSame('subTest79', ''                                        , ERRORTEXT(79))
-    self~assertSame('subTest80', ''                                        , ERRORTEXT(80))
-    self~assertSame('subTest81', ''                                        , ERRORTEXT(81))
-    self~assertSame('subTest82', ''                                        , ERRORTEXT(82))
-    self~assertSame('subTest83', ''                                        , ERRORTEXT(83))
-    self~assertSame('subTest84', ''                                        , ERRORTEXT(84))
-    self~assertSame('subTest85', ''                                        , ERRORTEXT(85))
-    self~assertSame('subTest86', ''                                        , ERRORTEXT(86))
-    self~assertSame('subTest87', ''                                        , ERRORTEXT(87))
-    self~assertSame('subTest88', 'Invalid argument'                        , ERRORTEXT(88))
-    self~assertSame('subTest89', 'Variable or message term expected'       , ERRORTEXT(89))
-    self~assertSame('subTest90', 'External name not found'                 , ERRORTEXT(90))
-    self~assertSame('subTest91', 'No result object'                        , ERRORTEXT(91))
-    self~assertSame('subTest92', 'OLE error'                               , ERRORTEXT(92))
-    self~assertSame('subTest93', 'Incorrect call to method'                , ERRORTEXT(93))
-    self~assertSame('subTest94', ''                                        , ERRORTEXT(94))
-    self~assertSame('subTest95', ''                                        , ERRORTEXT(95))
-    self~assertSame('subTest96', ''                                        , ERRORTEXT(96))
-    self~assertSame('subTest97', 'Object method not found'                 , ERRORTEXT(97))
-    self~assertSame('subTest98', 'Execution error'                         , ERRORTEXT(98))
-    self~assertSame('subTest99', 'Translation error'                       , ERRORTEXT(99))
+    self~assertSame('', ERRORTEXT(1))
+    self~assertSame('', ERRORTEXT(2))
+    self~assertSame('Failure during initialization', ERRORTEXT(3))
+    self~assertSame('Program interrupted', ERRORTEXT(4))
+    self~assertSame('System resources exhausted', ERRORTEXT(5))
+    self~assertSame('Unmatched "/*" or quote', ERRORTEXT(6))
+    self~assertSame('WHEN or OTHERWISE expected', ERRORTEXT(7))
+    self~assertSame('Unexpected THEN or ELSE', ERRORTEXT(8))
+    self~assertSame('Unexpected WHEN or OTHERWISE', ERRORTEXT(9))
+    self~assertSame('Unexpected or unmatched END', ERRORTEXT(10))
+    self~assertSame('Control stack full', ERRORTEXT(11))
+    self~assertSame('', ERRORTEXT(12))
+    self~assertSame('Invalid character in program', ERRORTEXT(13))
+    self~assertSame('Incomplete DO/SELECT/IF', ERRORTEXT(14))
+    self~assertSame('Invalid hexadecimal or binary string', ERRORTEXT(15))
+    self~assertSame('Label not found', ERRORTEXT(16))
+    self~assertSame('Unexpected PROCEDURE', ERRORTEXT(17))
+    self~assertSame('THEN expected', ERRORTEXT(18))
+    self~assertSame('String or symbol expected', ERRORTEXT(19))
+    self~assertSame('Symbol expected', ERRORTEXT(20))
+    self~assertSame('Invalid data on end of clause', ERRORTEXT(21))
+    self~assertSame('Invalid character string', ERRORTEXT(22))
+    self~assertSame('Invalid data string', ERRORTEXT(23))
+    self~assertSame('Invalid TRACE request', ERRORTEXT(24))
+    self~assertSame('Invalid subkeyword found', ERRORTEXT(25))
+    self~assertSame('Invalid whole number', ERRORTEXT(26))
+    self~assertSame('Invalid DO syntax', ERRORTEXT(27))
+    self~assertSame('Invalid LEAVE or ITERATE', ERRORTEXT(28))
+    self~assertSame('Environment name too long', ERRORTEXT(29))
+    self~assertSame('Name or string too long', ERRORTEXT(30))
+    self~assertSame('Name starts with number or "."', ERRORTEXT(31))
+    self~assertSame('', ERRORTEXT(32))
+    self~assertSame('Invalid expression result', ERRORTEXT(33))
+    self~assertSame('Logical value not 0 or 1', ERRORTEXT(34))
+    self~assertSame('Invalid expression', ERRORTEXT(35))
+    self~assertSame('Unmatched "(" or "[" in expression', ERRORTEXT(36))
+    self~assertSame('Unexpected ",", ")", or "]"', ERRORTEXT(37))
+    self~assertSame('Invalid template or pattern', ERRORTEXT(38))
+    self~assertSame('Evaluation stack overflow', ERRORTEXT(39))
+    self~assertSame('Incorrect call to routine', ERRORTEXT(40))
+    self~assertSame('Bad arithmetic conversion', ERRORTEXT(41))
+    self~assertSame('Arithmetic overflow/underflow', ERRORTEXT(42))
+    self~assertSame('Routine not found', ERRORTEXT(43))
+    self~assertSame('Function or message did not return data', ERRORTEXT(44))
+    self~assertSame('No data specified on function RETURN', ERRORTEXT(45))
+    self~assertSame('Invalid variable reference', ERRORTEXT(46))
+    self~assertSame('Unexpected label', ERRORTEXT(47))
+    self~assertSame('Failure in system service', ERRORTEXT(48))
+    self~assertSame('Interpretation error', ERRORTEXT(49))
+    self~assertSame('', ERRORTEXT(50))
+    self~assertSame('', ERRORTEXT(51))
+    self~assertSame('', ERRORTEXT(52))
+    self~assertSame('', ERRORTEXT(53))
+    self~assertSame('', ERRORTEXT(54))
+    self~assertSame('', ERRORTEXT(55))
+    self~assertSame('', ERRORTEXT(56))
+    self~assertSame('', ERRORTEXT(57))
+    self~assertSame('', ERRORTEXT(58))
+    self~assertSame('', ERRORTEXT(59))
+    self~assertSame('', ERRORTEXT(60))
+    self~assertSame('', ERRORTEXT(61))
+    self~assertSame('', ERRORTEXT(62))
+    self~assertSame('', ERRORTEXT(63))
+    self~assertSame('', ERRORTEXT(64))
+    self~assertSame('', ERRORTEXT(65))
+    self~assertSame('', ERRORTEXT(66))
+    self~assertSame('', ERRORTEXT(67))
+    self~assertSame('', ERRORTEXT(68))
+    self~assertSame('', ERRORTEXT(69))
+    self~assertSame('', ERRORTEXT(70))
+    self~assertSame('', ERRORTEXT(71))
+    self~assertSame('', ERRORTEXT(72))
+    self~assertSame('', ERRORTEXT(73))
+    self~assertSame('', ERRORTEXT(74))
+    self~assertSame('', ERRORTEXT(75))
+    self~assertSame('', ERRORTEXT(76))
+    self~assertSame('', ERRORTEXT(77))
+    self~assertSame('', ERRORTEXT(78))
+    self~assertSame('', ERRORTEXT(79))
+    self~assertSame('', ERRORTEXT(80))
+    self~assertSame('', ERRORTEXT(81))
+    self~assertSame('', ERRORTEXT(82))
+    self~assertSame('', ERRORTEXT(83))
+    self~assertSame('', ERRORTEXT(84))
+    self~assertSame('', ERRORTEXT(85))
+    self~assertSame('', ERRORTEXT(86))
+    self~assertSame('', ERRORTEXT(87))
+    self~assertSame('Invalid argument', ERRORTEXT(88))
+    self~assertSame('Variable or message term expected', ERRORTEXT(89))
+    self~assertSame('External name not found', ERRORTEXT(90))
+    self~assertSame('No result object', ERRORTEXT(91))
+    self~assertSame('OLE error', ERRORTEXT(92))
+    self~assertSame('Incorrect call to method', ERRORTEXT(93))
+    self~assertSame('', ERRORTEXT(94))
+    self~assertSame('', ERRORTEXT(95))
+    self~assertSame('', ERRORTEXT(96))
+    self~assertSame('Object method not found', ERRORTEXT(97))
+    self~assertSame('Execution error', ERRORTEXT(98))
+    self~assertSame('Translation error', ERRORTEXT(99))
 
-    self~assertTrue("subTest100", test100())
-    self~assertTrue("subTest101", test101())
+    self~assertTrue(test100())
+    self~assertTrue(test101())
 
     return
 

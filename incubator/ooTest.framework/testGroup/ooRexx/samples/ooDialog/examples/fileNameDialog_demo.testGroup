@@ -173,15 +173,15 @@ return tests
     self~class~stop = .true
 
     home = value("REXX_HOME", , 'ENVIRONMENT')
-    self~assertTrue("ooRexx must be installed and REXX_HOME set", home~length > 0)
+    self~assertTrue(home~length > 0, "ooRexx must be installed and REXX_HOME set")
 
     home = home || '\samples\fileNameDialog_demo.rex'
     j = SysFileTree(home, f., 'FOS')
-    self~assertTrue("SysFileTree must not fail", j == 0)
-    self~assertTrue("Example program must be located", f.0 == 1)
+    self~assertTrue(j == 0, "SysFileTree must not fail")
+    self~assertTrue(f.0 == 1, "Example program must be located")
 
     prgPathName = f.1
-    self~assertTrue("Example program must exist", .stream~new(prgPathName)~query("EXISTS")~length <> 0)
+    self~assertTrue(.stream~new(prgPathName)~query("EXISTS")~length <> 0, "Example program must exist")
     self~class~prgPath = prgPathName
     self~class~stop = .false
 
@@ -192,15 +192,15 @@ return tests
     launcher = .ProgramLauncher~new(self~class~prgPath)
     ret = launcher~startProgram
 
-    self~assertEquals('launcher~startProgram should return 0',    0,     ret)
+    self~assertEquals(0, ret, 'launcher~startProgram should return 0')
 
     wf = .WindowFinder~new
 
     -- We know the example program puts up an InfoDialog first.
     wnd = wf~getWindow("Information")
 
-    self~assertEquals('Must have a WindowObject object', .WindowObject, wnd~class)
-    self~assertEquals('Window must have Information title', "Information", wnd~title)
+    self~assertEquals(.WindowObject, wnd~class, 'Must have a WindowObject object')
+    self~assertEquals("Information", wnd~title, 'Window must have Information title')
 
     -- Click the okay button to close the InfoDialog and bring up the main screen.
     wnd~pushButton("OK")
@@ -221,8 +221,8 @@ return tests
     wnd = wf~getWindow("FileNameDialog Demonstration", , .5)
 
     -- Assert that we found the main window of the program.
-    self~assertEquals('Must have a WindowObject object', wnd~class, .WindowObject)
-    self~assertEquals('Window must have proper program title', "FileNameDialog Demonstration", wnd~title)
+    self~assertEquals(wnd~class, .WindowObject, 'Must have a WindowObject object')
+    self~assertEquals("FileNameDialog Demonstration", wnd~title, 'Window must have proper program title')
 
     self~class~stop = .false
 
@@ -232,7 +232,7 @@ return tests
 
     wf = self~class~windowFinder
     wnd = wf~getWindow("FileNameDialog Demonstration", , .5)
-    self~assertEquals('Window must have proper program title', "FileNameDialog Demonstration", wnd~title)
+    self~assertEquals("FileNameDialog Demonstration", wnd~title, 'Window must have proper program title')
 
     -- First option is radio button, ID 101.  But it should be already selected,
     -- so we just need to click the Ok button.  OK button has ID 1, so sending
@@ -241,8 +241,8 @@ return tests
 
     wnd = wf~getWindow("Open a File", , .5)
 
-    self~assertEquals('Must have a WindowObject object', .WindowObject, wnd~class)
-    self~assertNotNull('Open File dialog must be active (option 1 clicked.)',  wnd)
+    self~assertEquals(.WindowObject, wnd~class, 'Must have a WindowObject object')
+    self~assertNotNull(wnd, 'Open File dialog must be active (option 1 clicked.)')
 
     -- The cancel button has ID of 2, sending a command of 2 has the effect of
     -- clicking the cancel button.  In the sample program, if the user did not
@@ -251,7 +251,7 @@ return tests
     -- next.)
     wnd~sendCommand(2)
     wnd = wf~getWindow("Error", , .5)
-    self~assertNotNull('Open File dialog canceled (option 1) must have ErrorDialog',  wnd)
+    self~assertNotNull(wnd, 'Open File dialog canceled (option 1) must have ErrorDialog')
 
     -- Push OK button, should be back to main screen.
     wnd~pushButton("OK")
@@ -293,7 +293,7 @@ return tests
 
     -- Step 4 assert that we get the correct return code for a successful
     -- execution of the example program.
-    self~assertEquals("fileNameDialog_demo return code should be 37", ret, 37)
+    self~assertEquals(ret, 37, "fileNameDialog_demo return code should be 37")
 
   -- End test_999_exampleQuit()
 

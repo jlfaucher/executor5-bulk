@@ -73,9 +73,9 @@ return testResult
 ::method "testInstance1"
    b = .nil
    b = .mutableBuffer~new("1234")
-   self~assertNotNull("Failed to get instance", b)
-   self~assertEquals("Wrong data contained","1234",b~string)
-   self~assertEquals("Wrong length",4,b~length)
+   self~assertNotNull(b, "Failed to get instance")
+   self~assertEquals("1234", b~string, "Wrong data contained")
+   self~assertEquals(4, b~length, "Wrong length")
 ::method "testInstance2"
    self~expectSyntax(93.938)
    b = .mutableBuffer~new(.nil)
@@ -90,14 +90,14 @@ return testResult
    b = .mutableBuffer~new("",-1)
 ::method "testInstance6"
    b = .mutableBuffer~new(123,1)
-   self~AssertEquals("wrong String value", b~string, 123)
+   self~AssertEquals(b~string, 123, "wrong String value")
 
 ::METHOD "testAppend"
    b = .mutableBuffer~new("123")
-   self~AssertEquals("Length incorrect before",3,b~length)
+   self~AssertEquals(3, b~length, "Length incorrect before")
    b~append("abc")
-   self~AssertEquals("Append failed 1","123abc",b~string)
-   self~AssertEquals("Length incorrect after",6,b~length)
+   self~AssertEquals("123abc", b~string, "Append failed 1")
+   self~AssertEquals(6, b~length, "Length incorrect after")
 ::METHOD "testAppendSyntax1"
    b = .mutableBuffer~new
    self~expectSyntax(93.903)
@@ -109,14 +109,14 @@ return testResult
 
 ::METHOD "testInsert"
    b = .mutableBuffer~new("123456")
-   self~AssertEquals("Length incorrect before",6,b~length)
+   self~AssertEquals(6, b~length, "Length incorrect before")
    b~insert("abc")
-   self~AssertEquals("Append failed 1","abc123456",b~string)
+   self~AssertEquals("abc123456", b~string, "Append failed 1")
    b~insert("abc",7,,"+")
-   self~AssertEquals("Append failed 2","abc1234abc56",b~string)
+   self~AssertEquals("abc1234abc56", b~string, "Append failed 2")
    b~insert("abc",1,0,"+")
-   self~AssertEquals("Append failed 3","abc1234abc56",b~string)
-   self~AssertEquals("Length incorrect after",12,b~length)
+   self~AssertEquals("abc1234abc56", b~string, "Append failed 3")
+   self~AssertEquals(12, b~length, "Length incorrect after")
 
 ::METHOD "testInsertSyntax1"
    b = .mutableBuffer~new("123456")
@@ -150,18 +150,18 @@ return testResult
 
 ::METHOD "testOverlay"
    b = .mutableBuffer~new("1234567890")
-   self~AssertEquals("Length incorrect before",10,b~length)
+   self~AssertEquals(10, b~length, "Length incorrect before")
    b~overlay("abc")
-   self~AssertEquals("Overlay failed 1","abc4567890",b~string)
+   self~AssertEquals("abc4567890", b~string, "Overlay failed 1")
    b~overlay("abcABCabc")
-   self~AssertEquals("Overlay failed 2", "abcABCabc0",b~string)
+   self~AssertEquals("abcABCabc0", b~string, "Overlay failed 2")
    b~overlay("abcABCabc",2)
-   self~AssertEquals("Overlay failed 3", "aabcABCabc",b~string)
+   self~AssertEquals("aabcABCabc", b~string, "Overlay failed 3")
    b~overlay("abc",1,0,"+")
-   self~AssertEquals("Overlay failed 4", "aabcABCabc",b~string)
+   self~AssertEquals("aabcABCabc", b~string, "Overlay failed 4")
    b~overlay("abc",12,4,"+")
-   self~AssertEquals("Overlay failed 4", "aabcABCabc+abc+",b~string)
-   self~AssertEquals("Length incorrect after",15,b~length)
+   self~AssertEquals("aabcABCabc+abc+", b~string, "Overlay failed 4")
+   self~AssertEquals(15, b~length, "Length incorrect after")
 ::METHOD "testOverlaySyntax1"
    b = .mutableBuffer~new("123456")
    self~expectSyntax(93.903)
@@ -193,12 +193,12 @@ return testResult
 
 ::METHOD "testDelete"
    b = .mutableBuffer~new("1234567890")
-   self~AssertEquals("Length incorrect before",10,b~length)
+   self~AssertEquals(10, b~length, "Length incorrect before")
    b~delete(11)
-   self~AssertEquals("Delete failed 1","1234567890",b~string)
+   self~AssertEquals("1234567890", b~string, "Delete failed 1")
    b~delete(1,2)
-   self~AssertEquals("Delete failed 2","34567890",b~string)
-   self~AssertEquals("Length incorrect after",8,b~length)
+   self~AssertEquals("34567890", b~string, "Delete failed 2")
+   self~AssertEquals(8, b~length, "Length incorrect after")
 ::METHOD "testDeleteSyntax1"
    b = .mutableBuffer~new("1234567890")
    self~expectSyntax(93.903)
@@ -223,11 +223,11 @@ return testResult
 ::METHOD "testPos"
    b = .mutableBuffer~new("1234567890")
 
-   self~assertEquals("Wrong position 1",4,b~pos("4"))
-   self~assertEquals("Wrong position 2",4,b~pos("4",2))
-   self~assertEquals("Wrong position 3",0,b~pos("4",99))
-   self~assertEquals("Wrong position 4",0,b~pos("x"))
-   self~assertEquals("Wrong position 5",4,b~pos("456"))
+   self~assertEquals(4, b~pos("4"), "Wrong position 1")
+   self~assertEquals(4, b~pos("4",2), "Wrong position 2")
+   self~assertEquals(0, b~pos("4",99), "Wrong position 3")
+   self~assertEquals(0, b~pos("x"), "Wrong position 4")
+   self~assertEquals(4, b~pos("456"), "Wrong position 5")
 ::METHOD "testPosSyntax1"
    b = .mutableBuffer~new("1234567890")
    self~expectSyntax(93.903)
@@ -251,11 +251,11 @@ return testResult
 ::METHOD "testLastpos"
    b = .mutableBuffer~new("01234567890")
 
-   self~assertEquals("Wrong position 1",5,b~lastpos("4"))
-   self~assertEquals("Wrong position 2",6,b~lastpos("56"))
-   self~assertEquals("Wrong position 3",0,b~lastpos("6",2))
-   self~assertEquals("Wrong position 4",9,b~lastpos("8",99))
-   self~assertEquals("Wrong position 5",0,b~lastpos("x",99))
+   self~assertEquals(5, b~lastpos("4"), "Wrong position 1")
+   self~assertEquals(6, b~lastpos("56"), "Wrong position 2")
+   self~assertEquals(0, b~lastpos("6",2), "Wrong position 3")
+   self~assertEquals(9, b~lastpos("8",99), "Wrong position 4")
+   self~assertEquals(0, b~lastpos("x",99), "Wrong position 5")
 ::METHOD "testLastPosSyntax1"
    b = .mutableBuffer~new("1234567890")
    self~expectSyntax(93.903)
@@ -279,8 +279,8 @@ return testResult
 ::METHOD "testSubChar"
    b = .mutableBuffer~new("1234567890")
 
-   self~assertEquals("Wrong char 1",4,b~subchar(4))
-   self~assertEquals("Wrong char 2",,b~subchar(99))
+   self~assertEquals(4, b~subchar(4), "Wrong char 1")
+   self~assertEquals("", b~subchar(99), "Wrong char 2")
 ::METHOD "testSubCharSyntax1"
    b = .mutableBuffer~new("1234567890")
    self~expectSyntax(93.903)
@@ -304,10 +304,10 @@ return testResult
 ::METHOD "testSubStr"
    b = .mutableBuffer~new("1234567890")
 
-   self~assertEquals("Wrong string 1","234567890",b~substr(2))
-   self~assertEquals("Wrong string 2","1",b~substr(1,1))
-   self~assertEquals("Wrong string 3","4",b~substr(4,1,"#"))
-   self~assertEquals("Wrong string 4","0#",b~substr(10,2,"#"))
+   self~assertEquals("234567890", b~substr(2), "Wrong string 1")
+   self~assertEquals("1", b~substr(1,1), "Wrong string 2")
+   self~assertEquals("4", b~substr(4,1,"#"), "Wrong string 3")
+   self~assertEquals("0#", b~substr(10,2,"#"), "Wrong string 4")
 ::METHOD "testSubStrSyntax1"
    b = .mutableBuffer~new("1234567890")
    self~expectSyntax(93.903)
@@ -349,34 +349,34 @@ return testResult
    b~subStr(1,1,"  ")
 ::METHOD "testGetBufferSize"
    b = .mutableBuffer~new("")
-   self~assertEquals("Buffer size incorrect 1",256,b~getBufferSize)
+   self~assertEquals(256, b~getBufferSize, "Buffer size incorrect 1")
    b = .mutableBuffer~new("",1)
-   self~assertEquals("Buffer size incorrect 2",1,b~getBufferSize)
+   self~assertEquals(1, b~getBufferSize, "Buffer size incorrect 2")
    b~append("  ")
-   self~assertEquals("Buffer size incorrect 3",2,b~getBufferSize)
+   self~assertEquals(2, b~getBufferSize, "Buffer size incorrect 3")
 
 ::METHOD "testSetBufferSize"
    b = .mutableBuffer~new("1234567890")
    b~setBufferSize(5)
-   self~assertEquals("Buffer not truncated","12345",b~string)
-   self~assertEquals("Buffer returning wrong buffer size",5,b~getBufferSize)
+   self~assertEquals("12345", b~string, "Buffer not truncated")
+   self~assertEquals(5, b~getBufferSize, "Buffer returning wrong buffer size")
 
    b = .mutablebuffer~new("123")
    b~setBufferSize(0)
-   self~assertEquals("MutableBuffer string should be empty string","",b~string)
-   self~assertEquals("MutableBuffer buffer size should be 256 after setting to 0",256,b~getBufferSize)
+   self~assertEquals("", b~string, "MutableBuffer string should be empty string")
+   self~assertEquals(256, b~getBufferSize, "MutableBuffer buffer size should be 256 after setting to 0")
 
    b = .mutablebuffer~new("My local work")
    b~setBufferSize(109873451)
-   self~assertEquals("Set buffer to large size, string should not change","My local work",b~string)
-   self~assertEquals("Buffer size should be 109873451 after setting to 109873451",109873451,b~getBufferSize)
+   self~assertEquals("My local work", b~string, "Set buffer to large size, string should not change")
+   self~assertEquals(109873451, b~getBufferSize, "Buffer size should be 109873451 after setting to 109873451")
 
    /* This test works (as it should.)  Deferring its inclusion while I think
     * about a mechanism to exclude some tests at run time.  MarkM
 
    b~setBufferSize(999999999)
-   self~assertEquals("Set buffer to large size, string should not change","My local work",b~string)
-   self~assertEquals("Buffer size should be 999999999 after setting to 999999999",999999999,b~getBufferSize)
+   self~assertEquals("My local work", b~string, "Set buffer to large size, string should not change")
+   self~assertEquals(999999999, b~getBufferSize, "Buffer size should be 999999999 after setting to 999999999")
    */
 
    /* This test does not work.  In StringClassUtil.cpp the get_length() function
@@ -388,8 +388,8 @@ return testResult
 
    numeric digits 11
    b~setBufferSize(2147483647)
-   self~assertEquals("Set buffer to vey large size, string should not change","My local work",b~string)
-   self~assertEquals("Buffer size should be 2147483647 after setting to 2147483647",2147483647,b~getBufferSize)
+   self~assertEquals("My local work", b~string, "Set buffer to vey large size, string should not change")
+   self~assertEquals(2147483647, b~getBufferSize, "Buffer size should be 2147483647 after setting to 2147483647")
    */
 
 ::METHOD "testSetBufferSizeSyntax1"

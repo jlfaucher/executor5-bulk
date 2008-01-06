@@ -3,9 +3,13 @@
   c = .set~new
   say 's subset c' s~subset(c)
 
-  supers = .Object~superClasses
-  say 'Object has' supers~items 'super classess'
-  return 0
+  cData = .ConditionData~new(timeStamp(), "E:\file", 'BOGUS')
+  say 'cData when:    ' cData~when
+  say 'cData where:   ' cData~where
+  say 'cData type:    ' cData~type
+  say 'cData c object:' cData~conditionObject
+  say
+
   group = .TestGroup~new("ooRexx\base\Assignments.testGroup")
   say 'group is a TestContainer:' group~isA(.TestContainer)
   say 'group has tests:         ' group~hasTests

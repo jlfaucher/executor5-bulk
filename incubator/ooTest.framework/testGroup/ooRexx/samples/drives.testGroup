@@ -112,16 +112,16 @@ return testResult
     self~class~stop = .true
 
     fileSearch = value("REXX_HOME", , 'ENVIRONMENT')
-    self~assertTrue("ooRexx must be installed normally with REXX_HOME set", fileSearch~length > 0)
+    self~assertTrue(fileSearch~length > 0, "ooRexx must be installed normally with REXX_HOME set")
 
     -- Look, recursively, for the drives.rex example under the samples directory.
     fileSearch = fileSearch || '\samples\drives.rex'
     j = SysFileTree(fileSearch, f., 'FOS')
-    self~assertTrue("SysFileTree must not fail", j == 0)
-    self~assertTrue("Sample program, drives.rex, must be located", f.0 == 1)
+    self~assertTrue(j == 0, "SysFileTree must not fail")
+    self~assertTrue(f.0 == 1, "Sample program, drives.rex, must be located")
 
     prgPathName = f.1
-    self~assertTrue("drives.rex must exist", .stream~new(prgPathName)~query("EXISTS")~length <> 0)
+    self~assertTrue(.stream~new(prgPathName)~query("EXISTS")~length <> 0, "drives.rex must exist")
     self~class~prgPath = prgPathName
     self~class~stop = .false
 
@@ -150,13 +150,13 @@ return testResult
     ret = execRexxPrg(self~class~prgPath, self~class~prgOutput)
 
     -- Check that there is not an internal error.
-    self~assertNotSame('execRexxPrg() must be called correctly', 9999, ret)
+    self~assertNotSame(9999, ret, 'execRexxPrg() must be called correctly')
 
     -- Check that some output was produced.
-    self~assertTrue('drives.rex must produce some output', self~class~prgOutput~items > 0)
+    self~assertTrue(self~class~prgOutput~items > 0, 'drives.rex must produce some output')
 
     -- Check that we got a 0 rc, which is what drives.rex returns on completion.
-    self~assertSame('drives.rex should run and return 0', 0, ret)
+    self~assertSame(0, ret, 'drives.rex should run and return 0')
 
     -- All okay, keep going.
     self~class~stop = .false
@@ -185,7 +185,7 @@ return testResult
     -- start of the line, because the actual value of the whole line will vary
     -- from computer to computer.
     do i = 1 to 7
-      self~assertTrue('Line' j 'must start with:' expected[i], out[j]~abbrev(expected[i]))
+      self~assertTrue(out[j]~abbrev(expected[i]), 'Line' j 'must start with:' expected[i])
       j -= 1
     end
 

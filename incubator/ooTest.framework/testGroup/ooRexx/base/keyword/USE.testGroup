@@ -79,9 +79,9 @@ return testResult
 ::method "test_USE"
   o1=.object~new
 
-  self~assertEquals("subtest_01", o1  , test_01(o1))
-  self~assertEquals("subtest_02", .nil, test_02())
-  self~assertEquals("subtest_03", o1  , test_03( ,o1))
+  self~assertEquals(o1, test_01(o1))
+  self~assertEquals(.nil, test_02())
+  self~assertEquals(o1, test_03( ,o1))
 
   return
 
@@ -102,12 +102,12 @@ test_03: procedure
 ::method "test_USE_STRICT"
   o1=.object~new
 
-  self~assertEquals("subtest_01", o1  , test_01(o1))
-  self~assertEquals("subtest_02", .nil, test_02())
-  self~assertEquals("subtest_03", o1  , test_03( ,o1))
-  self~assertEquals("subtest_04", .nil, test_04( ))
-  self~assertEquals("subtest_05", .nil, test_05( ))
-  self~assertEquals("subtest_05", o1,   test_06(o1, "aha", .nil, "no..." ))
+  self~assertEquals(o1, test_01(o1))
+  self~assertEquals(.nil, test_02())
+  self~assertEquals(o1, test_03( ,o1))
+  self~assertEquals(.nil, test_04( ))
+  self~assertEquals(.nil, test_05( ))
+  self~assertEquals(o1, test_06(o1, "aha", .nil, "no..." ))
 
   return
 
@@ -177,13 +177,13 @@ test:
 
   call test_01 a1, a2, a3, a4, a5
 
-  self~assertEquals("subtest_01", a1, d~word1 )
-  self~assertNull(  "subtest_02",     a[1]    )
-  self~assertEquals("subtest_03", a2, a[2]    )
-  self~assertEquals("subtest_04", a3, a[3]    )
-  self~assertEquals("subtest_05", a4, a[4]    )
-  self~assertNull(  "subtest_06",     a[5]    )
-  self~assertEquals("subtest_07", a5, d~word5 )
+  self~assertEquals(a1, d~word1)
+  self~assertNull(a[1])
+  self~assertEquals(a2, a[2])
+  self~assertEquals(a3, a[3])
+  self~assertEquals(a4, a[4])
+  self~assertNull(a[5])
+  self~assertEquals(a5, d~word5)
   return
 
 test_01:

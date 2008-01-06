@@ -273,6 +273,23 @@ return 0
 return .false
 -- End isBoolean()
 
+/** isPositive()
+ * Tests if an object is a positive, whole number.
+ *
+ * @param number  REQUIRED  The object to test.
+ *
+ * Returns true if the object is strictly a whole number greater than zero.
+ */
+::routine isPositive public
+  use strict arg number
+  if number~isA(.String) then do
+    if number~dataType('W') then do
+      if number > 0 then return .true
+    end
+  end
+return .false
+-- End isBoolean()
+
 /** isWholeRange()
  * Tests if an object is a whole number within the range of min and max.
  *
@@ -620,7 +637,7 @@ return leading || trailing
   use arg title = "", level = (self~getVerbosity)
 
   if \ title~isA(.string) then
-    raise syntax 88.91a4 array ("1 'title'", "String")
+    raise syntax 88.914 array ("1 'title'", "String")
 
   formatter = self~formatter~new(self, title)
 
@@ -670,7 +687,7 @@ return leading || trailing
      raise syntax 88.914 array ("1 'testResult'", "TestCollectingParameter")
 
   if \ title~isA(.string) then
-    raise syntax 88.91a4 array ("2 'title'", "String")
+    raise syntax 88.914 array ("2 'title'", "String")
 
 
   self~testResult = testResult
@@ -739,7 +756,7 @@ return str
   str = data~when':' pp('error') data~testString '---> condition' -
         pp(data~event) 'raised unexpectedly.'
 
-  if data~conditionObj~message <> .nil then str = str || '09'x || data~conditionObj~message
+  if data~conditionObject~message <> .nil then str = str || '09'x || data~conditionObject~message
 
 return str
 
@@ -808,6 +825,7 @@ return str
   say "  Test:  " data~testname
   say "  Class: " data~className
   say "  File:  " pathCompact(data~where, 70)
+  say "  Line:  " data~line
   say "  Failed:" data~type
   say "    Expected:" data~expected
   say "    Actual:  " data~actual
@@ -821,29 +839,32 @@ return str
 
   -- It is possible that the error happened in a file other than the test case
   -- file.  Most often the files are the same.
-  different = (data~where~compareTo(data~conditionObj~program) <> 0)
+  different = (data~where~compareTo(data~conditionObject~program) <> 0)
 
   say "[error]" data~when
   say "  Test: " data~testName
   say "  Class:" data~className
   say "  File: " pathCompact(data~where, 70)
-  say "  Event:" pp(data~event) "raised unexpectedly."
-  say "    "data~conditionObj~message
+  say "  Event:" pp(data~type) "raised unexpectedly."
+  say "    "data~conditionObject~message
   if different then
-    say "    Program:" pathCompact(data~conditionObj~program, 60)
-  say "    Line:   " data~conditionObj~position
+    say "    Program:" pathCompact(data~conditionObject~program, 60)
+  say "    Line:   " data~line
+  if data~conditionObject~traceBack~isA(.list) then do line over data~conditionObject~traceBack
+    say line
+  end
   say
 
 -- End of class SimpleFormatter
 
 
-/* class: ProblemReport- - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+/* class: ReportData - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
 
-    A base class for data objects describing problems that arise during the
-    execution of tests.
+    A base class for data objects reporting problems, events, or infomation
+    during the execution of tests using the ooRexxUnit framework.
 
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class 'ProblemReport' public
+::class 'ReportData' public
 
 ::attribute when get
 ::attribute when set private
@@ -851,76 +872,113 @@ return str
 ::attribute where get
 ::attribute where set private
 
+::attribute type get
+::attribute type set private
+
 ::method init
-  use strict arg dateTime, file = .nil, ...
+  expose when where type
+  use strict arg when, where, type, ...
 
-  self~when = dateTime
-  self~where = file
 
+/* class: TestProblem- - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+    The superclass for reporting problems during the execution of tests.
+
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class 'TestProblem' public subclass ReportData
+
+::attribute className
+::attribute testName
+::attribute testString
+
+::attribute conditionObject get
+::attribute conditionObject set
+  expose conditionObject
+  use strict arg cObj
+  if \ self~isConditionObj(cObj) then
+    raise syntax 88.900 array ("conditionObject must be set to the object returned from CONDITION('O')")
+  conditionObject = cObj
+
+::method init
+  expose conditionObject lineNumber
+  forward class (super) continue
+
+  conditionObject = .nil
+  lineNumber = .nil
+
+  self~className = .nil
+  self~testName = .nil
+  self~testString = .nil
+
+::method setLine
+  expose lineNumber
+  use strict arg number
+  if \ isPositive(number) then
+    raise syntax 88.905 array ("1 'number'", number)
+  lineNumber = number
+
+::method line
+  expose lineNumber conditionObject
+
+  if lineNumber \== .nil then return lineNumber
+
+  if conditionObject == .nil then do
+    lineNumber = -1
+  end
+  else if \ conditionObject~traceBack~isA(.list) then do
+    lineNumber = -1
+  end
+  else do
+    parse value conditionObject~traceBack~lastItem with number "*-*" .
+    lineNumber = number~strip
+    if \ isPositive(lineNumber) then lineNumber = -1
+  end
+
+  return lineNumber
+
+::method isConditionObj private
+  use strict arg cObj
+  if cObj~isA(.directory), cObj~hasEntry("CONDITION"), cObj~hasEntry("INSTRUCTION") then return .true
+  return .false
 
 /* class: AssertFailure- - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
 
     AssertFailure is a report of a test case failure.  A test case fails when an
     assertion does not hold.
 
-    This class holds the details of the test case failure.  The time of the
-    failure, the assertion that did not hold, the test case name, etc..
-
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class 'AssertFailure' public subclass ProblemReport
-
-::attribute type get
-::attribute type set private
+::class 'AssertFailure' public subclass TestProblem
 
 ::attribute expected
 ::attribute actual
 ::attribute msg
-::attribute line
-::attribute className
-::attribute testName
-::attribute testString
 
 ::method init
-  use strict arg dateTime, file, type
   forward class (super) continue
 
-  self~type = type
   self~expected = .nil
   self~actual = .nil
-  self~line = -1
-  self~className = .nil
-  self~testName = .nil
-  self~testString = .nil
+  self~msg = .nil
 
 
-/* class: ErrorData- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+/* class: ErrorReport- - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
 
-    ErrorData is a report of an unexpected error during the execution of a test
+    ErrorReports are used for unexpected errors during the execution of a test
     case.
 
-    This class holds the details of the error.  The time of the error, the name
-    of the test case executing at the time of the error etc..
+    When an unexpected error happens during the execution of a test case, there
+    is always a condition object at the time the error is trapped.  So, unlike
+    AssertFailures, the condition object is required to instantiate an error
+    report.
 
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class 'ErrorData' public subclass ProblemReport
-
-::attribute event get
-::attribute event set private
-
-::attribute className
-::attribute testName
-::attribute testString
-::attribute conditionObj
+::class 'ErrorReport' public subclass TestProblem
 
 ::method init
-  use strict arg dateTime, file, event
+  use strict arg dateTime, file, type, cObj
   forward class (super) continue
 
-  self~event = event
-  self~className = .nil
-  self~testName = .nil
-  self~testString = .nil
-  self~conditionObj = .nil
+  self~conditionObject = cObj
 
 
 /* class: Assert - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
@@ -948,20 +1006,12 @@ return str
 
   if \ (expected = actual) then do
     if \ isCollEqual(expected, actual) then do
-      data = .AssertFailure~new(timeStamp(), self~definedInFile, "assertEquals")
-
-      data~expected = self~formatObjectInfo(expected)
-      data~actual = self~formatObjectInfo(actual)
-      data~msg = msg
-      data~line = -1
-
-      self~fail(data)
+      self~fail(self~makeFailure(expected, actual, msg, "assertEquals"))
     end
   end
 
   -- Assertion holds
   self~fAssertions += 1
-
 
 ::method assertNotEquals
   use strict arg expected, actual, msg = ""
@@ -973,28 +1023,14 @@ return str
     return
   end
 
-  data = .AssertFailure~new(timeStamp(), self~definedInFile, "assertNotEquals")
-
-  data~expected = self~formatObjectInfo(expected)
-  data~actual = self~formatObjectInfo(actual)
-  data~msg = msg
-  data~line = -1
-
-  self~fail(data)
+  self~fail(self~makeFailure(expected, actual, msg, "asserNottEquals"))
 
 
 ::method assertNull
   use strict arg actual, msg = ""
 
   if \ (.nil = actual) then do
-    data = .AssertFailure~new(timeStamp(), self~definedInFile, "assertNull")
-
-    data~expected = "[.nil]"
-    data~actual = ppp(actual)
-    data~msg = msg
-    data~line = -1
-
-    self~fail(data)
+    self~fail(self~makeFailure("[.nil]", actual, msg, "assertNull"))
   end
 
   -- Assertion holds.
@@ -1005,14 +1041,7 @@ return str
   use strict arg actual, msg = ""
 
   if (.nil = actual) then do
-    data = .AssertFailure~new(timeStamp(), self~definedInFile, "assertNotNull")
-
-    data~expected = "[Not .nil]"
-    data~actual = "[.nil]"
-    data~msg = msg
-    data~line = -1
-
-    self~fail(data)
+    self~fail(self~makeFailure("[Not .nil]", "[.nil]", msg, "assertNotNull"))
   end
 
   -- Assertion holds.
@@ -1023,14 +1052,7 @@ return str
   use strict arg expected, actual, msg = ""
 
   if \ (expected == actual) then do
-    data = .AssertFailure~new(timeStamp(), self~definedInFile, "assertSame")
-
-    data~expected = self~formatObjectInfo(expected)
-    data~actual = self~formatObjectInfo(actual)
-    data~msg = msg
-    data~line = -1
-
-    self~fail(data)
+    self~fail(self~makeFailure(expected, actual, msg, "assertSame"))
   end
 
   -- Assertion holds.
@@ -1041,14 +1063,7 @@ return str
   use strict arg expected, actual, msg = ""
 
   if (expected == actual) then do
-    data = .AssertFailure~new(timeStamp(), self~definedInFile, "assertNotSame")
-
-    data~expected = self~formatObjectInfo(expected)
-    data~actual = self~formatObjectInfo(actual)
-    data~msg = msg
-    data~line = -1
-
-    self~fail(data)
+    self~fail(self~makeFailure(expected, actual, msg, "assertNotSame"))
   end
 
   -- Assertion holds.
@@ -1059,14 +1074,7 @@ return str
   use strict arg actual, msg = ""
 
   if \ (actual = .true) then do
-    data = .AssertFailure~new(timeStamp(), self~definedInFile, "assertTrue")
-
-    data~expected = "[1]"
-    data~actual = ppp(actual)
-    data~msg = msg
-    data~line = -1
-
-    self~fail(data)
+    self~fail(self~makeFailure("[1]", actual, msg, "assertTrue"))
   end
 
   -- Assertion holds.
@@ -1077,14 +1085,7 @@ return str
   use strict arg actual, msg = ""
 
   if \ (actual = .false) then do
-    data = .AssertFailure~new(timeStamp(), self~definedInFile, "assertFalse")
-
-    data~expected = "[0]"
-    data~actual = ppp(actual)
-    data~msg = msg
-    data~line = -1
-
-    self~fail(data)
+    self~fail(self~makeFailure("[0]", actual, msg, "assertFalse"))
   end
 
   -- Assertion holds.
@@ -1193,7 +1194,6 @@ return str
 
     data = .AssertFailure~new(timeStamp(), self~definedInFile, type)
 
-    data~line = -1
     data~expected = expected
     data~actual = "Not raised"
     if self~conditionMsg <> .nil then data~msg = self~conditionMsg
@@ -1201,6 +1201,22 @@ return str
 
     self~fail(data)
   end
+
+
+::method makeFailure private
+  use strict arg expected, actual, msg, type
+
+  data = .AssertFailure~new(timeStamp(), self~definedInFile, type)
+
+  if expected~left(1) == "[", expected~right(1) == "]" then data~expected = expected
+  else data~expected = self~formatObjectInfo(expected)
+
+  if actual~left(1) == "[", actual~right(1) == "]" then data~actual = actual
+  else data~actual = self~formatObjectInfo(actual)
+
+  data~msg = msg
+
+  return data
 
 
 ::method formatObjectInfo private
@@ -1311,31 +1327,31 @@ exceptionHandler:
   if self~conditionExpected, self~checkCondition(cObj) then return aTestResult
 
   -- If the condition code is 93.964 then this condition was raised by the
-  -- framework to signal a test case failure.  The data failue object is at
+  -- framework to signal a test case failure.  The assert failue object is at
   -- index 2 of the additional array.
   if cObj~code = 93.964 then do
     data = cObj~additional[2]
 
     -- It does not seem conceivable that data is not the object I think it is.
     -- The best thing to do would be to check if it is an AssertFailure object
-    -- and, if not, create an ErrorData object and do aTestResult~addError()
+    -- and, if not, create an ErrorReport object and do aTestResult~addError()
     -- Skipping that for now.
 
     data~className = self~class~id
     data~testName = self~getName
     data~testString = self~string
+    data~conditionObject = cObj
     aTestResult~addFailure(self, data)
   end
   else do
     -- This is an unexpected, unanticipated error.
-    event = cObj~condition
-    if cObj~hasentry("CODE") then event = event cObj~code
+    type = cObj~condition
+    if cObj~hasentry("CODE") then type = type cObj~code
 
-    err = .ErrorData~new(timeStamp(), self~definedInFile, event)
+    err = .ErrorReport~new(timeStamp(), self~definedInFile, event, cObj)
     err~className = self~class~id
     err~testName = self~getName
     err~testString = self~string
-    err~conditionObj = cObj
     aTestResult~addError(self, err)
   end
 

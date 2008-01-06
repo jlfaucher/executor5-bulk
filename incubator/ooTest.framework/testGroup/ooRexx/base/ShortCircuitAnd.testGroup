@@ -89,7 +89,7 @@ return testResult
         i=i+1
      end
   end
-  self~assertEquals("subtest_01", 1, i)
+  self~assertEquals(1, i)
 
 
 
@@ -102,7 +102,7 @@ return testResult
      when .true, .true, .true          then i=i+1
      otherwise  i=99
   end
-  self~assertEquals("subtest_01", 1, i)
+  self~assertEquals(1, i)
 
 
 ::method "test_do_while"
@@ -111,7 +111,7 @@ return testResult
   do while .true, .true, i=0, .true
      i=i+1
   end
-  self~assertEquals("subtest_01", 1, i)
+  self~assertEquals(1, i)
 
 
 ::method "test_do_until"
@@ -120,7 +120,7 @@ return testResult
   do until .true, .true, i>2, .true
      i=i+1
   end
-  self~assertEquals("subtest_01", 3, i)
+  self~assertEquals(3, i)
 
 
 ::method "test_loop_while"
@@ -129,7 +129,7 @@ return testResult
   loop while .true, .true, i=0, .true
      i=i+1
   end
-  self~assertEquals("subtest_01", 1, i)
+  self~assertEquals(1, i)
 
 
 ::method "test_loop_until"
@@ -138,7 +138,7 @@ return testResult
   loop until .true, .true, i>2, .true
      i=i+1
   end
-  self~assertEquals("subtest_01", 3, i)
+  self~assertEquals(3, i)
 
 
 

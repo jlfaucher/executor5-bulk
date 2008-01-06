@@ -86,29 +86,29 @@ return testResult
    -- test the ABBREV BIF, using examples from the documentation
 ::method "test_SAY"
    SAY                        -- outputs empty string
-   self~assertEquals("subTest_01", "", .output~current~pull)
+   self~assertEquals("", .output~current~pull)
 
    SAY ""                     -- output empty string
-   self~assertEquals("subTest_02", "", .output~current~pull)
+   self~assertEquals("", .output~current~pull)
 
    a="   "                    -- output blank string
    say a
    tmp=.output~current~pull
-   self~assertEquals("subTest_03",  "", tmp)
-   self~assertNotSame("subTest_04", "", tmp)
-   self~assertSame(   "subTest_05", a,  tmp)
+   self~assertEquals("", tmp)
+   self~assertNotSame("", tmp)
+   self~assertSame(a, tmp)
 
    a=" anton was here, berta too...  " -- output non-blank string
    say a
    tmp=.output~current~pull
-   self~assertEquals("subTest_06",  a, tmp)
-   self~assertSame(  "subTest_07",  a,  tmp)
+   self~assertEquals(a, tmp)
+   self~assertSame(a, tmp)
 
    a=xrange("00"x, "ff"x)             -- output all characters, including control characters
    say a
    tmp=.output~current~pull
-   self~assertEquals("subTest_06",  a, tmp)
-   self~assertSame(  "subTest_07",  a,  tmp)
+   self~assertEquals(a, tmp)
+   self~assertSame(a, tmp)
 
 
 

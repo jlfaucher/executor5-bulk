@@ -84,14 +84,14 @@ return testResult
    -- ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !
    -- ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !
 ::method "test_line_entry"
-     self~assertTrue("subTest # 1: is [.LINE] a wholeNumber?", .line~datatype("Whole"))
+     self~assertTrue(.line~datatype("Whole"), "subTest # 1: is [.LINE] a wholeNumber?")
 
    -- ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !
    -- ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !
 
    tmpLine=94    -->  the following line *MUST* *BE* on line # tmpLine, otherwise the test fails !!
    msg = "subTest '.LINE', this statement *MUST* start/be on line #" tmpLine "in the source code!"
-   self~assertSame(msg, tmpLine, .LINE)
+   self~assertSame(tmpLine, .LINE, msg)
    -- ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !
    -- ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !
 
@@ -109,7 +109,7 @@ return testResult
 
   do i=1 to words(entries)
      w=word(entries,i)        -- extract word
-     self~assertTrue("subTest" i "entry=["w"]", .local~hasEntry(w))
+     self~assertTrue(.local~hasEntry(w), "subTest" i "entry=["w"]")
   end
 
 
@@ -167,7 +167,7 @@ return testResult
 
   do i=1 to words(entries)
      w=word(entries,i)        -- extract word
-     self~assertTrue("subTest #" i "entry=["w"]", .environment~hasEntry(w))
+     self~assertTrue(.environment~hasEntry(w), "subTest #" i "entry=["w"]")
   end
 
 ::method "test_environment_directory_class_object_entries"
@@ -219,66 +219,66 @@ return testResult
 
   do i=1 to words(entries)
      w=word(entries,i)        -- extract word
-     self~assertTrue("subTest #" i "is entry=["w"] a class object?", .environment~Entry(w)~isA(.class))
+     self~assertTrue(.environment~Entry(w)~isA(.class), "subTest #" i "is entry=["w"] a class object?")
   end
 
 ::method "test_error_monitor"
-  self~assertTrue(".error~current=.stdErr", .error~current=.stdErr)
+  self~assertTrue(.error~current=.stdErr, ".error~current=.stdErr")
 
 ::method "test_input_monitor"
-  self~assertTrue(".input~current=.stdIn", .input~current=.stdIn)
+  self~assertTrue(.input~current=.stdIn, ".input~current=.stdIn")
 
 ::method "test_output_monitor"
-  self~assertTrue(".output~current=.stdOut", .output~current=.stdOut)
+  self~assertTrue(.output~current=.stdOut, ".output~current=.stdOut")
 
 
 ::method "test_local_monitor_objects"
   entries="ERROR INPUT OUTPUT"
   do i=1 to words(entries)
      w=word(entries,i)        -- extract word
-     self~assertTrue("subTest #" i "is [."w"] a monitor object?", value("."w)~isA(.monitor))
+     self~assertTrue(value("."w)~isA(.monitor), "subTest #" i "is [."w"] a monitor object?")
   end
 
 ::method "test_local_stream_objects"
   entries="STDERR STDIN STDOUT"
   do i=1 to words(entries)
      w=word(entries,i)        -- extract word
-     self~assertTrue("subTest #" i "is [."w"] a stream object?", value("."w)~isA(.stream))
+     self~assertTrue(value("."w)~isA(.stream), "subTest #" i "is [."w"] a stream object?")
   end
 
 ::method "test_stdqueue"
-  self~assertTrue("subTest: .STDQUEUE~isA(.RexxQueue)", .STDQUE~isA(.RexxQueue))
+  self~assertTrue(.STDQUE~isA(.RexxQueue))
 
 ::method "test_true"
-  self~assertTrue(".true", .true)
+  self~assertTrue(.true, ".true")
 
 ::method "test_false"
-  self~assertFalse(".false", .false)
+  self~assertFalse(.false, ".false")
 
 
 
 ::method "test_rs"
 
-  self~assertEquals("subTest_01: .RS not set", ".RS", .RS)
+  self~assertEquals(".RS", .RS, "subTest_01: .RS not set")
 
    /* test command execution without error/failure */
   select
     when .ooRexxUnit.shellName~translate == "CMD" then do
       address cmd "exit"
-      self~assertEquals("subTest_02: .RS=0", 0, .RS)
+      self~assertEquals(0, .RS)
     end
     when .ooRexxUnit.shellName~translate == "BASH" then do
       address "bash" "exit"
-      self~assertEquals("subTest_02: .RS=0", 0, .RS)
+      self~assertEquals(0, .RS)
     end
     when .ooRexxUnit.shellName~translate == "CSH" then do
       address "csh" "exit"
-      self~assertEquals("subTest_02: .RS=0", 0, .RS)
+      self~assertEquals(0, .RS)
     end
     otherwise do
       -- Don't address to a specific environment.
       "exit"
-      self~assertEquals("subTest_02: .RS=0", 0, .RS)
+      self~assertEquals(0, .RS)
     end
   end
   -- End select
@@ -290,7 +290,7 @@ return testResult
   self~fail("subTest_02: .RS not '0'")
   self~fail("subTest_02: ERROR condition not trapped by 'SIGNAL ON ERROR' !")
 error_label:
-  self~assertEquals("subTest_02: .RS=1 (command raised an ERROR condition)", 1, .RS)
+  self~assertEquals(1, .RS, "subTest_02: .RS=1 (command raised an ERROR condition)")
 
 
    /* test FAILURE condition */
@@ -298,7 +298,7 @@ error_label:
   call failure_proc
   self~fail("subTest_03: FAILURE condition not trapped by 'SIGNAL ON FAILURE' !")
 failure_label:
-  self~assertEquals("subTest_03: .RS=-1 (command raised an FAILURE condition)", -1, .RS)
+  self~assertEquals(-1, .RS, "subTest_03: .RS=-1 (command raised an FAILURE condition)")
 
   return
 

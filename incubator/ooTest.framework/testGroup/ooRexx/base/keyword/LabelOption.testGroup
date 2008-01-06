@@ -80,47 +80,47 @@ return testResult
       -- test 1
    i=0
    DO label aha1
-      self~assertTrue("subtest_01: LABEL subkeyword on DO known", .true)
+      self~assertTrue(.true, "subtest_01: LABEL subkeyword on DO known")
       i=i+1
       do label aha2
-         self~assertTrue("subtest_02: LABEL subkeyword on DO known", .true)
+         self~assertTrue(.true, "subtest_02: LABEL subkeyword on DO known")
          leave aha2
          self~fail("subtest_03: 'leave aha2' did not work!")
       end
       i=i+1
    END aha1
 
-   self~assertEquals("subtest_04: leaving 'aha2'!", 2, i)
+   self~assertEquals(2, i, "subtest_04: leaving 'aha2'!")
 
       -- test 2
    i=0
    DO label aha1
-      self~assertTrue("subtest_01: LABEL subkeyword on DO known", .true)
+      self~assertTrue(.true, "subtest_01: LABEL subkeyword on DO known")
       i=i+1
       do label aha2
-         self~assertTrue("subtest_02: LABEL subkeyword on DO known", .true)
+         self~assertTrue(.true, "subtest_02: LABEL subkeyword on DO known")
          leave aha1
          self~fail("subtest_03: 'leave aha2' did not work!")
       end aha2
       i=i+1
    END aha1
 
-   self~assertEquals("subtest_04: leaving 'aha1'!", 1, i)
+   self~assertEquals(1, i, "subtest_04: leaving 'aha1'!")
 
       -- test 2
    i=0
    DO label aha1
-      self~assertTrue("subtest_01: LABEL subkeyword on DO known", .true)
+      self~assertTrue(.true, "subtest_01: LABEL subkeyword on DO known")
       i=i+1
       do i=1 to 15
-         self~assertTrue("subtest_02: LABEL subkeyword on DO known", .true)
+         self~assertTrue(.true, "subtest_02: LABEL subkeyword on DO known")
          leave aha1
          self~fail("subtest_03: 'leave aha2' did not work!")
       end i
       i=i+1
    END aha1
 
-   self~assertEquals("subtest_04: leaving 'aha1'!", 1, i)
+   self~assertEquals(1, i, "subtest_04: leaving 'aha1'!")
 
 ::method "test_DO_lable_works_with_interpret"
    str="i=0                                                                    ;" -
@@ -135,9 +135,9 @@ return testResult
 
    interpret str
 
-   self~assertNotEquals("i must be incremented", 0, i)
-   self~assertNotEquals("Leave aha2 did not work", 10, i)
-   self~assertEquals("Do loops with label must leave i == 2", 2, i)
+   self~assertNotEquals(0, i, "i must be incremented")
+   self~assertNotEquals(10, i, "Leave aha2 did not work")
+   self~assertEquals(2, i, "Do loops with label must leave i == 2")
 
 
 ::method "test_DO_LABEL_interpret_with_error"
@@ -164,10 +164,10 @@ return testResult
       -- test 1
    i=0
    LOOP label aha1
-      self~assertTrue("subtest_01: LABEL subkeyword on LOOP known", .true)
+      self~assertTrue(.true, "subtest_01: LABEL subkeyword on LOOP known")
       i=i+1
       loop label aha2
-         self~assertTrue("subtest_02: LABEL subkeyword on LOOP known", .true)
+         self~assertTrue(.true, "subtest_02: LABEL subkeyword on LOOP known")
          leave aha2
          self~fail("subtest_03: 'leave aha2' did not work!")
       end
@@ -175,30 +175,30 @@ return testResult
       leave aha1
    END aha1
 
-   self~assertEquals("subtest_04: leaving 'aha2'!", 2, i)
+   self~assertEquals(2, i, "subtest_04: leaving 'aha2'!")
 
       -- test 2
    i=0
    LOOP label aha1
-      self~assertTrue("subtest_01: LABEL subkeyword on LOOP known", .true)
+      self~assertTrue(.true, "subtest_01: LABEL subkeyword on LOOP known")
       i=i+1
       loop label aha2
-         self~assertTrue("subtest_02: LABEL subkeyword on LOOP known", .true)
+         self~assertTrue(.true, "subtest_02: LABEL subkeyword on LOOP known")
          leave aha1
          self~fail("subtest_03: 'leave aha2' did not work!")
       end aha2
       i=i+1
    END aha1
 
-   self~assertEquals("subtest_04: leaving 'aha1'!", 1, i)
+   self~assertEquals(1, i, "subtest_04: leaving 'aha1'!")
 
       -- test 3
    i=0
    LOOP label aha1
-      self~assertTrue("subtest_01: LABEL subkeyword on LOOP known", .true)
+      self~assertTrue(.true, "subtest_01: LABEL subkeyword on LOOP known")
       i=i+1
       loop i=1 to 15
-         self~assertTrue("subtest_02: LABEL subkeyword on LOOP known", .true)
+         self~assertTrue(.true, "subtest_02: LABEL subkeyword on LOOP known")
          leave aha1
          self~fail("subtest_03: 'leave aha2' did not work!")
       end i
@@ -206,7 +206,7 @@ return testResult
       leave
    END aha1
 
-   self~assertEquals("subtest_04: leaving 'aha1'!", 1, i)
+   self~assertEquals(1, i, "subtest_04: leaving 'aha1'!")
 
 ::method 'test_LOOP_label_with_interpret'
 
@@ -225,9 +225,9 @@ return testResult
 
    interpret str
 
-   self~assertNotEquals("With LOOP label, i must be incremented", 0, i)
-   self~assertNotEquals("Leave aha2 did not work", 28, i)
-   self~assertEquals("LOOP with label must leave i == 2", 2, i)
+   self~assertNotEquals(0, i, "With LOOP label, i must be incremented")
+   self~assertNotEquals(28, i, "Leave aha2 did not work")
+   self~assertEquals(2, i, "LOOP with label must leave i == 2")
 
 
 ::method "test_LOOP_LABEL_interpret_with_error_10.2"
@@ -254,10 +254,10 @@ return testResult
       when i=-1 then nop
       when i=0  then
                 do
-                   self~assertTrue("subtest_01: LABEL subkeyword on SELECT known", .true)
+                   self~assertTrue(.true, "subtest_01: LABEL subkeyword on SELECT known")
                    i=i+1
                    DO label aha2
-                      self~assertTrue("subtest_02: LABEL subkeyword on SELECT known", .true)
+                      self~assertTrue(.true, "subtest_02: LABEL subkeyword on SELECT known")
                       leave aha2
                       self~fail("subtest_03: 'leave aha2' did not work!")
                    end
@@ -267,7 +267,7 @@ return testResult
      otherwise  nop
    END aha1
 
-   self~assertEquals("subtest_04: leaving 'aha2'!", 2, i)
+   self~assertEquals(2, i, "subtest_04: leaving 'aha2'!")
 
       -- test 2
    i=0
@@ -275,10 +275,10 @@ return testResult
       when i=-1 then nop
       when i=0  then
                 do
-                   self~assertTrue("subtest_01: LABEL subkeyword on SELECT known", .true)
+                   self~assertTrue(.true, "subtest_01: LABEL subkeyword on SELECT known")
                    i=i+1
                    do label aha2
-                      self~assertTrue("subtest_02: LABEL subkeyword on SELECT known", .true)
+                      self~assertTrue(.true, "subtest_02: LABEL subkeyword on SELECT known")
                       leave aha1
                       self~fail("subtest_03: 'leave aha2' did not work!")
                    end aha2
@@ -287,7 +287,7 @@ return testResult
       otherwise  nop
    END aha1
 
-   self~assertEquals("subtest_04: leaving 'aha1'!", 1, i)
+   self~assertEquals(1, i, "subtest_04: leaving 'aha1'!")
 
       -- test 3
    i=0
@@ -295,10 +295,10 @@ return testResult
       when i=-1 then nop
       when i=0  then
                 do
-                   self~assertTrue("subtest_01: LABEL subkeyword on SELECT known", .true)
+                   self~assertTrue(.true, "subtest_01: LABEL subkeyword on SELECT known")
                    i=i+1
                    do i=1 to 15
-                      self~assertTrue("subtest_02: LABEL subkeyword on SELECT known", .true)
+                      self~assertTrue(.true, "subtest_02: LABEL subkeyword on SELECT known")
                       leave aha1
                       self~fail("subtest_03: 'leave aha2' did not work!")
                    end i
@@ -308,7 +308,7 @@ return testResult
       otherwise  nop
    END aha1
 
-   self~assertEquals("subtest_04: leaving 'aha1'!", 1, i)
+   self~assertEquals(1, i, "subtest_04: leaving 'aha1'!")
 
 
 ::method "test_SELECT_LABEL_error 10.4"

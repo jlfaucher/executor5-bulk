@@ -1163,8 +1163,7 @@ return suite
     files = self~findFiles
 
     if files~items == 0 then do
-      err = .ExceptionData~new(timeStamp(), fileSpec)
-      err~type = "Anomaly"
+      err = .ExceptionData~new(timeStamp(), fileSpec, "Anomly")
       err~severity = "Warning"
       err~msg = "No test containers found matching search paramters."
       testResult~addException(err)
@@ -1232,7 +1231,8 @@ return suite
 
     callError:
       conditionData = condition('O')
-      err = .ExceptionData~new(timeStamp(), file, conditionData)
+      err = .ExceptionData~new(timeStamp(), file, "Trap")
+      err~conditionObject = condition('O')
       err~msg = "Initial call of Test Group failed"
 
   return err
@@ -1352,7 +1352,7 @@ return suite
     WARNING, MESSAGE.
 
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class 'Notification' public subclass ProblemReport
+::class 'Notification' public subclass ReportData
 
   /* Would prefer to use the CONSTANT directive */
   ::method SKIP_TYPE class; return 1
@@ -1403,38 +1403,35 @@ return suite
 /* class: ExceptionData- - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
 
     A data object containing information concerning an unrecoverable error that
-    occurred during the execution of tests.
+    occurred during the execution of an automated group of tests.
 
-    These are errors that are not directly related to the execution of a test.
-    For example, errors that happen during some set up prior to actually
-    invoking a test case method.
+    Errors that occur during the invocation a test case method are trapped by
+    the exception handle.  However, it is also possible for errors to occur
+    during other phases of an an automated test.  For example, errors that
+    happen during some set up prior to actually invoking a test case method.
 
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class 'ExceptionData' public subclass ProblemReport
-  ::attribute type
+::class 'ExceptionData' public subclass TestProblem
+
   ::attribute severity
-  ::attribute line
-  ::attribute classObject
   ::attribute msg
-  ::attribute conditionObject
 
   ::method init
-    use arg timeStamp, file, cObj = .nil
     forward class (super) continue
 
-    self~type = "Trap"
     self~severity = "Fatal"
-
-    if cObj <> .nil, cObj~position <> .nil then self~line = cObj~position
-    else self~line = -1
-
     self~msg = ""
-    self~classObject = .nil
-    self~conditionObject = cObj
 
   ::method getMessage
-    expose severity msg
-  return severity || .endOfLine || "   " msg
+
+    if self~type == "Trap", self~conditionObject \== .nil then
+      msg = self~conditionObject~message
+    else if self~msg \== "" then
+      msg = self~msg
+    else
+      msg = "n/a"
+
+    return msg
 
 -- End of class: ExceptionData
 

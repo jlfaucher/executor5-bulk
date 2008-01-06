@@ -85,12 +85,12 @@ return testResult
   name="AHA"
   value="say 'hello'; say; say 'hallo';"
   m=.method~new(key, value)
-  self~assertSame("subtest_01", value, m~source~at(1))
+  self~assertSame(value, m~source~at(1))
 
 
   value2=.array~of("say 'hello';", "say;", "say 'hallo';")
   m2=.method~new(key, value2)
-  self~assertEquals("subtest_02", value2, m2~source)
+  self~assertEquals(value2, m2~source)
 
 
   value3=.array~of("EXPOSE logLevel; parse arg logLevel;" ,-
@@ -98,7 +98,7 @@ return testResult
                    "-- some line comment " ,-
                    "say 'hello world' " )
   m3=.method~new(key, value3)
-  self~assertEquals("subtest_03", value3, m3~source)
+  self~assertEquals(value3, m3~source)
 
 
   value4=.array~of("EXPOSE logLevel; parse arg logLevel;" ,-
@@ -108,8 +108,8 @@ return testResult
   m4=.method~new(key, value4)
   src4=m4~source
   do i=1 to value4~items
-     self~assertEquals("subtest_04-"i, value4[i], src4[i])
+     self~assertEquals(value4[i], src4[i])
   end
 
-  self~assertEquals("subtest_04", value4, m4~source)
+  self~assertEquals(value4, m4~source)
 

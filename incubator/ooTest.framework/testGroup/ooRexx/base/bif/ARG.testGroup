@@ -129,7 +129,7 @@ return testGroupList
    return
    arg0:
    n = "ARG"()
-   self~assertSame("subTest1", "ARG"(), 0)
+   self~assertSame("ARG"(), 0)
    Return 0
 
 ::method "test_2"
@@ -137,12 +137,12 @@ return testGroupList
    call argn a1
    return
    argn:
-   self~assertSame("subTest2a", "ARG"(), arg(1))
+   self~assertSame("ARG"(), arg(1))
    DO i=2 to "ARG"()
-      self~assertSame("subTest2b-"i, "ARG"(i), 'a'||i)
+      self~assertSame("ARG"(i), 'a'||i)
       END
    DO i=i to 20;
-      self~assertSame("subTest2c-"i, "ARG"(i), '')
+      self~assertSame("ARG"(i), '')
       END
    RETURN 0
 
@@ -150,12 +150,12 @@ return testGroupList
    call argn '1'
    return
    argn:
-   self~assertSame("subTest3a", "ARG"(), arg(1))
+   self~assertSame("ARG"(), arg(1))
    DO i=2 to "ARG"()
-      self~assertSame("subTest3b-"i, "ARG"(i), 'a'||i)
+      self~assertSame("ARG"(i), 'a'||i)
       END
    DO i=i to 20;
-      self~assertSame("subTest3c-"i, "ARG"(i), '')
+      self~assertSame("ARG"(i), '')
       END
    RETURN 0
 
@@ -166,12 +166,12 @@ return testGroupList
    call argn a1,a2,a3,a4,a5,a6,a7,a8,a9
    return
    argn:
-   self~assertSame("subTest4a", "ARG"(), arg(1))
+   self~assertSame("ARG"(), arg(1))
    DO i=2 to "ARG"()
-      self~assertSame("subTest4b-"i, "ARG"(i), 'a'||i)
+      self~assertSame("ARG"(i), 'a'||i)
       END
    DO i=i to 20;
-      self~assertSame("subTest4c-"i, "ARG"(i), '')
+      self~assertSame("ARG"(i), '')
       END
    RETURN 0
 
@@ -179,12 +179,12 @@ return testGroupList
    call argn '9','a2','a3','a4','a5','a6','a7','a8','a9'
    return
    argn:
-   self~assertSame("subTest5a", "ARG"(), arg(1))
+   self~assertSame("ARG"(), arg(1))
    DO i=2 to "ARG"()
-      self~assertSame("subTest5b-"i, "ARG"(i), 'a'||i)
+      self~assertSame("ARG"(i), 'a'||i)
       END
    DO i=i to 20;
-      self~assertSame("subTest5c-"i, "ARG"(i), '')
+      self~assertSame("ARG"(i), '')
       END
    RETURN 0
 
@@ -192,12 +192,12 @@ return testGroupList
    call argn '7','a'||'2','a'||'3','a'||'4','a'||'5','a'||'6','a'||'7'
    return
    argn:
-   self~assertSame("subTest6a", "ARG"(), arg(1))
+   self~assertSame("ARG"(), arg(1))
    DO i=2 to "ARG"()
-      self~assertSame("subTest6b-"i, "ARG"(i), 'a'||i)
+      self~assertSame("ARG"(i), 'a'||i)
       END
    DO i=i to 20;
-      self~assertSame("subTest6c-"i, "ARG"(i), '')
+      self~assertSame("ARG"(i), '')
       END
    RETURN 0
 
@@ -208,17 +208,17 @@ return testGroupList
    call argm a1,,a3,,a5,,a7,,a9
    return
    argm:
-   self~assertSame("subTest7a", "ARG"(), arg(1))
+   self~assertSame("ARG"(), arg(1))
    DO i=2 to "ARG"()
       IF i//2=0 THEN DO;
-         self~assertSame("subTest7b-"i, "ARG"(i), '')
+         self~assertSame("ARG"(i), '')
          END
       ELSE DO;
-         self~assertSame("subTest7b-"i, "ARG"(i), 'a'||i)
+         self~assertSame("ARG"(i), 'a'||i)
          END
       END
    DO i=i to 20;
-      self~assertSame("subTest7c-"i, "ARG"(i), '')
+      self~assertSame("ARG"(i), '')
       END
    RETURN 0
 
@@ -229,17 +229,17 @@ return testGroupList
    call argm '9',,'a3',,'a5',,'a7',,'a9'
    return
    argm:
-   self~assertSame("subTest8a", "ARG"(), arg(1))
+   self~assertSame("ARG"(), arg(1))
    DO i=2 to "ARG"()
       IF i//2=0 THEN DO;
-         self~assertSame("subTest8b-"i, "ARG"(i), '')
+         self~assertSame("ARG"(i), '')
          END
       ELSE DO;
-         self~assertSame("subTest8b-"i, "ARG"(i), 'a'||i)
+         self~assertSame("ARG"(i), 'a'||i)
          END
       END
    DO i=i to 20;
-      self~assertSame("subTest8c-"i, "ARG"(i), '')
+      self~assertSame("ARG"(i), '')
       END
    RETURN 0
 
@@ -250,17 +250,17 @@ return testGroupList
    call argm '9',,'a'||'3',,'a'||'5',,'a'||'7',,'a'||'9'
    return
    argm:
-   self~assertSame("subTest9a", "ARG"(), arg(1))
+   self~assertSame("ARG"(), arg(1))
    DO i=2 to "ARG"()
       IF i//2=0 THEN DO;
-         self~assertSame("subTest9b-"i, "ARG"(i), '')
+         self~assertSame("ARG"(i), '')
          END
       ELSE DO;
-         self~assertSame("subTest9b-"i, "ARG"(i), 'a'||i)
+         self~assertSame("ARG"(i), 'a'||i)
          END
       END
    DO i=i to 20;
-      self~assertSame("subTest9c-"i, "ARG"(i), '')
+      self~assertSame("ARG"(i), '')
       END
    RETURN 0
 
@@ -272,13 +272,13 @@ return testGroupList
    call argm a1,,a3,,a5,,a7,,a9
    return
    argm:
-   self~assertSame("subTest10a", "ARG"(), arg(1))
+   self~assertSame("ARG"(), arg(1))
    DO i=2 to "ARG"()
       IF i//2=0 THEN DO;
-         self~assertSame("subTest10b-"i, "ARG"(i, 'e'), 0)
+         self~assertSame("ARG"(i, 'e'), 0)
          END
       ELSE DO;
-         self~assertSame("subTest10b-"i, "ARG"(i, 'e'), 1)
+         self~assertSame("ARG"(i, 'e'), 1)
          END
       END
    RETURN 0
@@ -291,13 +291,13 @@ return testGroupList
    call argm a1,,a3,,a5,,a7,,a9
    return
    argm:
-   self~assertSame("subTest11a", "ARG"(), arg(1))
+   self~assertSame("ARG"(), arg(1))
    DO i=2 to "ARG"()
       IF i//2=0 THEN DO;
-         self~assertSame("subTest11b-"i, "ARG"(i, 'o'), 1)
+         self~assertSame("ARG"(i, 'o'), 1)
          END
       ELSE DO;
-         self~assertSame("subTest11b-"i, "ARG"(i, 'o'), 0)
+         self~assertSame("ARG"(i, 'o'), 0)
          END
       END
    RETURN 0
@@ -310,13 +310,13 @@ return testGroupList
    call argm a1,,a3,,a5,,a7,,a9
    return
    argm:
-   self~assertSame("subTest12a", "ARG"(), arg(1))
+   self~assertSame("ARG"(), arg(1))
    DO i=2 to "ARG"()
       IF i//2=0 THEN DO;
-         self~assertSame("subTest12b-"i, "ARG"(i, 'n'), '')
+         self~assertSame("ARG"(i, 'n'), '')
          END
       ELSE DO;
-         self~assertSame("subTest12b-"i, "ARG"(i, 'o'), 0)
+         self~assertSame("ARG"(i, 'o'), 0)
          END
       END
    RETURN 0
@@ -329,13 +329,13 @@ return testGroupList
    call argm a1,,a3,,a5,,a7,,a9
    return
    argm:
-   self~assertSame("subTest13a", "ARG"(), arg(1))
+   self~assertSame("ARG"(), arg(1))
    a1 = .array~of(a1,,a3,,a5,,a7,,a9)
    a2 = arg(1, 'a')
-   self~assertSame("subTest13b", a1~items, a2~items)
-   self~assertSame("subTest13c", arg(), a2~last)
+   self~assertSame(a1~items, a2~items)
+   self~assertSame(arg(), a2~last)
    do i = 1 to arg()
-      self~assertSame("subTest13d-"i, a1[i], a2[i])
+      self~assertSame(a1[i], a2[i])
       end
    RETURN 0
 
@@ -347,25 +347,25 @@ return testGroupList
   exit
 
   name1:
-    self~assertSame("subTestDocs1",  0    , arg()             )
-    self~assertSame("subTestDocs2", ""    , arg(1)            )
-    self~assertSame("subTestDocs3", ""    , arg(2)            )
-    self~assertSame("subTestDocs4", .false, arg(1, 'e')       )
-    self~assertSame("subTestDocs5", .true , arg(1, 'o')       )
-    self~assertSame("subTestDocs6", 0     , arg(1, 'a')~items )
+    self~assertSame(0, arg())
+    self~assertSame("", arg(1))
+    self~assertSame("", arg(2))
+    self~assertSame(.false, arg(1, 'e'))
+    self~assertSame(.true, arg(1, 'o'))
+    self~assertSame(0, arg(1, 'a')~items)
     return
 
   name2:
-    self~assertSame("subTestDocs7",   3    , arg()            )
-    self~assertSame("subTestDocs8",  "a"   , arg(1)           )
-    self~assertSame("subTestDocs9",  ""    , arg(2)           )
-    self~assertSame("subTestDocs10", "b"   , arg(3)           )
-    self~assertSame("subTestDocs11", ""    , arg(4)           )
-    self~assertSame("subTestDocs12", .true , arg(1, 'e')      )
-    self~assertSame("subTestDocs13", .false, arg(2, 'e')      )
-    self~assertSame("subTestDocs14", .true , arg(3, 'e')      )
-    self~assertSame("subTestDocs15", .false, arg(1, 'o')      )
-    self~assertSame("subTestDocs16", .true , arg(2, 'o')      )
-    self~assertSame("subTestDocs17", .false, arg(3, 'o')      )
+    self~assertSame(3, arg())
+    self~assertSame("a", arg(1))
+    self~assertSame("", arg(2))
+    self~assertSame("b", arg(3))
+    self~assertSame("", arg(4))
+    self~assertSame(.true, arg(1, 'e'))
+    self~assertSame(.false, arg(2, 'e'))
+    self~assertSame(.true, arg(3, 'e'))
+    self~assertSame(.false, arg(1, 'o'))
+    self~assertSame(.true, arg(2, 'o'))
+    self~assertSame(.false, arg(3, 'o'))
     return
 

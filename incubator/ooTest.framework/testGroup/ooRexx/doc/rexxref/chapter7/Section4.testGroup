@@ -109,6 +109,6 @@ return group
    do i = 1 to 8
       call beep note.i, 250    /* hold each note for one-quarter second */
       ret = RESULT
-      self~assertSame("Calling beep should procduce a result in RC", "", ret)
+      self~assertSame("", ret, "Calling beep should procduce a result in RC")
       end
-   self~assertTrue("Call beep loop ran 8 times", i == (8 + 1))
+   self~assertTrue(i == (8 + 1), "Call beep loop ran 8 times")

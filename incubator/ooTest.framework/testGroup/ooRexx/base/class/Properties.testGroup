@@ -173,7 +173,7 @@ return testResult
 
 ::method "test_GETPROPERTY_DEFAULT_VALUE"
    val="aha"
-   self~assertEquals("subtest_01", val, .properties~new~getProperty(x, val))
+   self~assertEquals(val, .properties~new~getProperty(x, val))
 
 
 
@@ -209,9 +209,9 @@ return testResult
    p=.properties~new
    key="a"
    val=1
-   self~assertEquals("subtest_01", val, p~getWHOLE(key, val))
+   self~assertEquals(val, p~getWHOLE(key, val))
    val=0
-   self~assertEquals("subtest_02", val, p~getWHOLE(key, val))
+   self~assertEquals(val, p~getWHOLE(key, val))
 
 
    -- SETLOGICAL
@@ -237,16 +237,16 @@ return testResult
 ::method "tst_GETLOGICAL_ERR_02"
    p=.properties~new                -- create empty Properties
    self~expectSyntax(34.904)        -- expect a syntax exception (not a logical value!)
-   self~assertNull("subtest_00b", props~getLogical(key)  )
+   self~assertNull(props~getLogical(key))
 
 
 ::method "test_GETLOGICAL_DEFAULT"
    p=.properties~new
    key="a"
    val=1
-   self~assertEquals("subtest_01", val, p~getLOGICAL(key, val))
+   self~assertEquals(val, p~getLOGICAL(key, val))
    val=0
-   self~assertEquals("subtest_02", val, p~getLOGICAL(key, val))
+   self~assertEquals(val, p~getLOGICAL(key, val))
 
 
 
@@ -292,14 +292,14 @@ return testResult
   self~internal_setup
   str=.stream~new(.testData~files[1])
   props=.properties~load(str)
-  self~assertEquals("subtest_01 - using class method 'load'", 2, props~items)
+  self~assertEquals(2, props~items, "subtest_01 - using class method 'load'")
 
   s=.testData~dirData~supplier   -- were the entries retrieved correctly?
   n=1
   do while s~available
      n=n+1
-     self~assertTrue("subtest_"right(n,2,0), props~hasIndex(s~index))
-     self~assertSame("subtest_"right(n,2,0), s~item, props[s~index])
+     self~assertTrue(props~hasIndex(s~index))
+     self~assertSame(s~item, props[s~index])
      s~next
   end
   str~close
@@ -313,14 +313,14 @@ return testResult
   str=.stream~new(.testData~files[1])
   props=.properties~new
   props~load(str)
-  self~assertEquals("subtest_01 - using class method 'load'", 2, props~items)
+  self~assertEquals(2, props~items, "subtest_01 - using class method 'load'")
 
   s=.testData~dirData~supplier   -- were the entries retrieved correctly?
   n=1
   do while s~available
      n=n+1
-     self~assertTrue("props-subtest_"right(n,2,0), props~hasIndex(s~index))
-     self~assertSame("props-subtest_"right(n,2,0), s~item, props[s~index])
+     self~assertTrue(props~hasIndex(s~index))
+     self~assertSame(s~item, props[s~index])
      s~next
   end
   str~close
@@ -339,7 +339,7 @@ return testResult
      n=n+1
      val1=props[idx]
      val2=props2[idx]
-     self~assertEquals("props2-subtest_"right(n,2,0), val1, val2)
+     self~assertEquals(val1, val2)
   end
   self~internal_tearDown
 
@@ -350,14 +350,14 @@ return testResult
   str=.testData~files[1]
   props=.properties~new
   props~load(str)
-  self~assertEquals("subtest_01 - using class method 'load'", 2, props~items)
+  self~assertEquals(2, props~items, "subtest_01 - using class method 'load'")
 
   s=.testData~dirData~supplier   -- were the entries retrieved correctly?
   n=1
   do while s~available
      n=n+1
-     self~assertTrue("props-subtest_"right(n,2,0), props~hasIndex(s~index))
-     self~assertSame("props-subtest_"right(n,2,0), s~item, props[s~index])
+     self~assertTrue(props~hasIndex(s~index))
+     self~assertSame(s~item, props[s~index])
      s~next
   end
 
@@ -371,7 +371,7 @@ return testResult
      n=n+1
      val1=props[idx]
      val2=props2[idx]
-     self~assertEquals("props2-subtest_"right(n,2,0), val1, val2)
+     self~assertEquals(val1, val2)
   end
   self~internal_tearDown
 
@@ -384,41 +384,41 @@ return testResult
   logVal="true"
 
 
-  self~assertNull("subtest_00a", props~getProperty(key) )
+  self~assertNull(props~getProperty(key))
 
   props~setProperty(key, val)
-  self~assertEquals("subtest_01a", val,    props~getProperty(key)  )
-  self~assertEquals("subtest_02a", val,    props~getWhole(key)     )
+  self~assertEquals(val, props~getProperty(key))
+  self~assertEquals(val, props~getWhole(key))
 
   props~setLogical(key, val)
-  self~assertEquals("subtest_03a", logVal, props~getProperty(key)  )
-  self~assertEquals("subtest_04a", val,    props~getLogical(key)   )
+  self~assertEquals(logVal, props~getProperty(key))
+  self~assertEquals(val, props~getLogical(key))
 
   props~setWhole(key, val)
-  self~assertEquals("subtest_05a", val,    props~getProperty(key)  )
-  self~assertEquals("subtest_06a", val,    props~getWhole(key)     )
+  self~assertEquals(val, props~getProperty(key))
+  self~assertEquals(val, props~getWhole(key))
 
   props~setLogical(key, val)
-  self~assertEquals("subtest_07a", logVal, props~getProperty(key)  )
-  self~assertEquals("subtest_08a", val,    props~getLogical(key)   )
+  self~assertEquals(logVal, props~getProperty(key))
+  self~assertEquals(val, props~getLogical(key))
 
 
   key="rgf"
   val=0
   logVal="false"
   props~setProperty(key, val)
-  self~assertEquals("subtest_01b", val,    props~getProperty(key)  )
-  self~assertEquals("subtest_02b", val,    props~getWhole(key)     )
+  self~assertEquals(val, props~getProperty(key))
+  self~assertEquals(val, props~getWhole(key))
 
   props~setLogical(key, val)
-  self~assertEquals("subtest_03b", logVal, props~getProperty(key)  )
-  self~assertEquals("subtest_04b", val,    props~getLogical(key)   )
+  self~assertEquals(logVal, props~getProperty(key))
+  self~assertEquals(val, props~getLogical(key))
 
   props~setWhole(key, val)
-  self~assertEquals("subtest_05b", val,    props~getProperty(key)  )
-  self~assertEquals("subtest_06b", val,    props~getWhole(key)     )
+  self~assertEquals(val, props~getProperty(key))
+  self~assertEquals(val, props~getWhole(key))
 
   props~setLogical(key, val)
-  self~assertEquals("subtest_07b", logVal, props~getProperty(key)  )
-  self~assertEquals("subtest_08b", val,    props~getLogical(key)   )
+  self~assertEquals(logVal, props~getProperty(key))
+  self~assertEquals(val, props~getLogical(key))
 

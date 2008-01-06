@@ -136,38 +136,37 @@ syntax:
 
   -- call dumpCO co  -- dump content of condition object (a directory)
 
-  self~assertNotNull("subTest_01", co~additional)
+  self~assertNotNull(co~additional)
 
   a=co~additional    -- get additional array
-  self~assertEquals( "subTest_02", a.1, a[1])
-  self~assertEquals( "subTest_03", a.2, a[2])
-  self~assertEquals( "subTest_04", a.3, a[3])
+  self~assertEquals(a.1, a[1])
+  self~assertEquals(a.2, a[2])
+  self~assertEquals(a.3, a[3])
 
-  self~assertEquals( "subTest_05", 40.12, co~code)
+  self~assertEquals(40.12, co~code)
 
-  self~assertEquals( "subTest_06", "SYNTAX", co~condition)
+  self~assertEquals("SYNTAX", co~condition)
 
-  self~assertEquals( "subTest_07", "", co~description)
+  self~assertEquals("", co~description)
 
-  self~assertEquals( "subtest_08", "Incorrect call to routine", co~errortext)
+  self~assertEquals("Incorrect call to routine", co~errortext)
 
-  self~assertEquals( "subTest_09", "SIGNAL", co~instruction)
+  self~assertEquals("SIGNAL", co~instruction)
 
-  self~assertEquals( "subTest_10", a.1" argument "a.2" must be a whole number; found "||'"'a.3||'"', -
-                                             co~message)
+  self~assertEquals(a.1" argument "a.2" must be a whole number; found "||'"'a.3||'"', co~message)
 
-  self~assertEquals( "subTest_11", rgf_Sigl, co~position)
+  self~assertEquals(rgf_Sigl, co~position)
 
   parse source . . full_path
-  self~assertEquals( "subTest_12", full_path, co~program)
+  self~assertEquals(full_path, co~program)
 
-  self~assertFalse(  "subTest_13", co~propagated)
+  self~assertFalse(co~propagated)
 
-  self~assertEquals( "subTest_14", 40   , co~rc  )
+  self~assertEquals(40, co~rc)
 
-  self~assertNull(   "subTest_15", co~result)
+  self~assertNull(co~result)
 
-  self~assertNull(   "subTest_16", co~source)
+  self~assertNull(co~source)
 
 
 ::method "test_RAISE_SYNTAX_ADDITIONAL"
@@ -187,38 +186,37 @@ syntax:
 
   -- call dumpCO co  -- dump content of condition object (a directory)
 
-  self~assertNotNull("subTest_01", co~additional)
+  self~assertNotNull(co~additional)
 
   a=co~additional    -- get additional array
-  self~assertEquals( "subTest_02", a.1, a[1])
-  self~assertEquals( "subTest_03", a.2, a[2])
-  self~assertEquals( "subTest_04", a.3, a[3])
+  self~assertEquals(a.1, a[1])
+  self~assertEquals(a.2, a[2])
+  self~assertEquals(a.3, a[3])
 
-  self~assertEquals( "subTest_05", 40.12, co~code)
+  self~assertEquals(40.12, co~code)
 
-  self~assertEquals( "subTest_06", "SYNTAX", co~condition)
+  self~assertEquals("SYNTAX", co~condition)
 
-  self~assertEquals( "subTest_07", "", co~description)
+  self~assertEquals("", co~description)
 
-  self~assertEquals( "subtest_08", "Incorrect call to routine", co~errortext)
+  self~assertEquals("Incorrect call to routine", co~errortext)
 
-  self~assertEquals( "subTest_09", "SIGNAL", co~instruction)
+  self~assertEquals("SIGNAL", co~instruction)
 
-  self~assertEquals( "subTest_10", a.1" argument "a.2" must be a whole number; found "||'"'a.3||'"', -
-                                             co~message)
+  self~assertEquals(a.1" argument "a.2" must be a whole number; found "||'"'a.3||'"', co~message)
 
-  self~assertEquals( "subTest_11", rgf_Sigl, co~position)
+  self~assertEquals(rgf_Sigl, co~position)
 
   parse source . . full_path
-  self~assertEquals( "subTest_12", full_path, co~program)
+  self~assertEquals(full_path, co~program)
 
-  self~assertFalse(  "subTest_13", co~propagated)
+  self~assertFalse(co~propagated)
 
-  self~assertEquals( "subTest_14", 40   , co~rc  )
+  self~assertEquals(40, co~rc)
 
-  self~assertNull(   "subTest_15", co~result)
+  self~assertNull(co~result)
 
-  self~assertNull(   "subTest_16", co~source)
+  self~assertNull(co~source)
 
 
 
@@ -239,38 +237,37 @@ syntax:
 
   -- call dumpCO co  -- dump content of condition object (a directory)
 
-  self~assertNotNull("subTest_01", co~additional)
+  self~assertNotNull(co~additional)
 
   a=co~additional    -- get additional array
-  self~assertEquals( "subTest_02", a.1, a[1])
-  self~assertEquals( "subTest_03", a.2, a[2])
-  self~assertEquals( "subTest_04", a.3, a[3])
+  self~assertEquals(a.1, a[1])
+  self~assertEquals(a.2, a[2])
+  self~assertEquals(a.3, a[3])
 
-  self~assertEquals( "subTest_05", 40.12, co~code)
+  self~assertEquals(40.12, co~code)
 
-  self~assertEquals( "subTest_06", "SYNTAX", co~condition)
+  self~assertEquals("SYNTAX", co~condition)
 
-  self~assertEquals( "subTest_07", "", co~description)
+  self~assertEquals("", co~description)
 
-  self~assertEquals( "subtest_08", "Incorrect call to routine", co~errortext)
+  self~assertEquals("Incorrect call to routine", co~errortext)
 
-  self~assertEquals( "subTest_09", "SIGNAL", co~instruction)
+  self~assertEquals("SIGNAL", co~instruction)
 
-  self~assertEquals( "subTest_10", a.1" argument "a.2" must be a whole number; found "||'"'a.3||'"', -
-                                             co~message)
+  self~assertEquals(a.1" argument "a.2" must be a whole number; found "||'"'a.3||'"', co~message)
 
-  self~assertEquals( "subTest_11", rgf_Sigl, co~position)
+  self~assertEquals(rgf_Sigl, co~position)
 
   parse source . . full_path
-  self~assertEquals( "subTest_12", full_path, co~program)
+  self~assertEquals(full_path, co~program)
 
-  self~assertFalse(  "subTest_13", co~propagated)
+  self~assertFalse(co~propagated)
 
-  self~assertEquals( "subTest_14", 40   , co~rc  )
+  self~assertEquals(40, co~rc)
 
-  self~assertNull(   "subTest_15", co~result)
+  self~assertNull(co~result)
 
-  self~assertNull(   "subTest_16", co~source)
+  self~assertNull(co~source)
 
 
 
@@ -294,39 +291,38 @@ syntax:
 
   -- call dumpCO co  -- dump content of condition object (a directory)
 
-  self~assertNotNull("subTest_01", co~additional)
+  self~assertNotNull(co~additional)
 
   a=co~additional    -- get additional array
-  self~assertEquals( "subTest_02", a.1, a[1])
-  self~assertEquals( "subTest_03", a.2, a[2])
-  self~assertEquals( "subTest_04", a.3, a[3])
+  self~assertEquals(a.1, a[1])
+  self~assertEquals(a.2, a[2])
+  self~assertEquals(a.3, a[3])
 
-  self~assertEquals( "subTest_05", 40.12, co~code)
+  self~assertEquals(40.12, co~code)
 
-  self~assertEquals( "subTest_06", "SYNTAX", co~condition)
+  self~assertEquals("SYNTAX", co~condition)
 
-  self~assertEquals( "subTest_07", "", co~description)
+  self~assertEquals("", co~description)
 
-  self~assertEquals( "subtest_08", "Incorrect call to routine", co~errortext)
+  self~assertEquals("Incorrect call to routine", co~errortext)
 
-  self~assertEquals( "subTest_09", "SIGNAL", co~instruction)
+  self~assertEquals("SIGNAL", co~instruction)
 
-  self~assertEquals( "subTest_10", a.1" argument "a.2" must be a whole number; found "||'"'a.3||'"', -
-                                             co~message)
+  self~assertEquals(a.1" argument "a.2" must be a whole number; found "||'"'a.3||'"', co~message)
 
-  self~assertEquals( "subTest_11", rgf_Sigl, co~position)
+  self~assertEquals(rgf_Sigl, co~position)
 
   parse source . . full_path
-  self~assertEquals( "subTest_12", full_path, co~program)
+  self~assertEquals(full_path, co~program)
 
-  self~assertFalse(  "subTest_13", co~propagated)
+  self~assertFalse(co~propagated)
 
-  self~assertEquals( "subTest_14", 40   , co~rc  )
+  self~assertEquals(40, co~rc)
 
-  self~assertNotNull("subTest_15_a", co~result)
-  self~assertEquals( "subTest_15_b", str, co~result)
+  self~assertNotNull(co~result)
+  self~assertEquals(str, co~result)
 
-  self~assertNull(   "subTest_16", co~source)
+  self~assertNull(co~source)
 
 
 ::method "test_RAISE_SYNTAX_RETURN_01"
@@ -346,38 +342,37 @@ syntax:
 
   -- call dumpCO co  -- dump content of condition object (a directory)
 
-  self~assertNotNull("subTest_01", co~additional)
+  self~assertNotNull(co~additional)
 
   a=co~additional    -- get additional array
-  self~assertEquals( "subTest_02", a.1, a[1])
-  self~assertEquals( "subTest_03", a.2, a[2])
-  self~assertEquals( "subTest_04", a.3, a[3])
+  self~assertEquals(a.1, a[1])
+  self~assertEquals(a.2, a[2])
+  self~assertEquals(a.3, a[3])
 
-  self~assertEquals( "subTest_05", 40.12, co~code)
+  self~assertEquals(40.12, co~code)
 
-  self~assertEquals( "subTest_06", "SYNTAX", co~condition)
+  self~assertEquals("SYNTAX", co~condition)
 
-  self~assertEquals( "subTest_07", "", co~description)
+  self~assertEquals("", co~description)
 
-  self~assertEquals( "subtest_08", "Incorrect call to routine", co~errortext)
+  self~assertEquals("Incorrect call to routine", co~errortext)
 
-  self~assertEquals( "subTest_09", "SIGNAL", co~instruction)
+  self~assertEquals("SIGNAL", co~instruction)
 
-  self~assertEquals( "subTest_10", a.1" argument "a.2" must be a whole number; found "||'"'a.3||'"', -
-                                             co~message)
+  self~assertEquals(a.1" argument "a.2" must be a whole number; found "||'"'a.3||'"', co~message)
 
-  self~assertEquals( "subTest_11", rgf_Sigl, co~position)
+  self~assertEquals(rgf_Sigl, co~position)
 
   parse source . . full_path
-  self~assertEquals( "subTest_12", full_path, co~program)
+  self~assertEquals(full_path, co~program)
 
-  self~assertFalse(  "subTest_13", co~propagated)
+  self~assertFalse(co~propagated)
 
-  self~assertEquals( "subTest_14", 40   , co~rc  )
+  self~assertEquals(40, co~rc)
 
-  self~assertNull(   "subTest_15", co~result)
+  self~assertNull(co~result)
 
-  self~assertNull(   "subTest_16", co~source)
+  self~assertNull(co~source)
 
 
 
@@ -401,39 +396,38 @@ syntax:
 
   -- call dumpCO co  -- dump content of condition object (a directory)
 
-  self~assertNotNull("subTest_01", co~additional)
+  self~assertNotNull(co~additional)
 
   a=co~additional    -- get additional array
-  self~assertEquals( "subTest_02", a.1, a[1])
-  self~assertEquals( "subTest_03", a.2, a[2])
-  self~assertEquals( "subTest_04", a.3, a[3])
+  self~assertEquals(a.1, a[1])
+  self~assertEquals(a.2, a[2])
+  self~assertEquals(a.3, a[3])
 
-  self~assertEquals( "subTest_05", 40.12, co~code)
+  self~assertEquals(40.12, co~code)
 
-  self~assertEquals( "subTest_06", "SYNTAX", co~condition)
+  self~assertEquals("SYNTAX", co~condition)
 
-  self~assertEquals( "subTest_07", "", co~description)
+  self~assertEquals("", co~description)
 
-  self~assertEquals( "subtest_08", "Incorrect call to routine", co~errortext)
+  self~assertEquals("Incorrect call to routine", co~errortext)
 
-  self~assertEquals( "subTest_09", "SIGNAL", co~instruction)
+  self~assertEquals("SIGNAL", co~instruction)
 
-  self~assertEquals( "subTest_10", a.1" argument "a.2" must be a whole number; found "||'"'a.3||'"', -
-                                             co~message)
+  self~assertEquals(a.1" argument "a.2" must be a whole number; found "||'"'a.3||'"', co~message)
 
-  self~assertEquals( "subTest_11", rgf_Sigl, co~position)
+  self~assertEquals(rgf_Sigl, co~position)
 
   parse source . . full_path
-  self~assertEquals( "subTest_12", full_path, co~program)
+  self~assertEquals(full_path, co~program)
 
-  self~assertFalse(  "subTest_13", co~propagated)
+  self~assertFalse(co~propagated)
 
-  self~assertEquals( "subTest_14", 40   , co~rc  )
+  self~assertEquals(40, co~rc)
 
-  self~assertNotNull("subTest_15_a", co~result)
-  self~assertEquals( "subTest_15_b", str, co~result)
+  self~assertNotNull(co~result)
+  self~assertEquals(str, co~result)
 
-  self~assertNull(   "subTest_16", co~source)
+  self~assertNull(co~source)
 
 
 
@@ -457,39 +451,38 @@ syntax:
 
   -- call dumpCO co  -- dump content of condition object (a directory)
 
-  self~assertNotNull("subTest_01", co~additional)
+  self~assertNotNull(co~additional)
 
   a=co~additional    -- get additional array
-  self~assertEquals( "subTest_02", a.1, a[1])
-  self~assertEquals( "subTest_03", a.2, a[2])
-  self~assertEquals( "subTest_04", a.3, a[3])
+  self~assertEquals(a.1, a[1])
+  self~assertEquals(a.2, a[2])
+  self~assertEquals(a.3, a[3])
 
-  self~assertEquals( "subTest_05", 40.12, co~code)
+  self~assertEquals(40.12, co~code)
 
-  self~assertEquals( "subTest_06", "SYNTAX", co~condition)
+  self~assertEquals("SYNTAX", co~condition)
 
-  self~assertEquals( "subTest_07", "", co~description)
+  self~assertEquals("", co~description)
 
-  self~assertEquals( "subtest_08", "Incorrect call to routine", co~errortext)
+  self~assertEquals("Incorrect call to routine", co~errortext)
 
-  self~assertEquals( "subTest_09", "SIGNAL", co~instruction)
+  self~assertEquals("SIGNAL", co~instruction)
 
-  self~assertEquals( "subTest_10", a.1" argument "a.2" must be a whole number; found "||'"'a.3||'"', -
-                                             co~message)
+  self~assertEquals(a.1" argument "a.2" must be a whole number; found "||'"'a.3||'"', co~message)
 
-  self~assertEquals( "subTest_11", rgf_Sigl, co~position)
+  self~assertEquals(rgf_Sigl, co~position)
 
   parse source . . full_path
-  self~assertEquals( "subTest_12", full_path, co~program)
+  self~assertEquals(full_path, co~program)
 
-  self~assertTrue(   "subTest_13", co~propagated)
+  self~assertTrue(co~propagated)
 
-  self~assertEquals( "subTest_14", 40   , co~rc  )
+  self~assertEquals(40, co~rc)
 
-  self~assertNotNull("subTest_15_a", co~result)
-  self~assertEquals( "subTest_15_b", str, co~result)
+  self~assertNotNull(co~result)
+  self~assertEquals(str, co~result)
 
-  self~assertNull(   "subTest_16", co~source)
+  self~assertNull(co~source)
   exit
 
 

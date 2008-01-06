@@ -130,27 +130,27 @@ return testGroupList
   ::method  test_object_start
 
     world=.WorldObject~new
-    self~assertTrue("world object must be a WorldObj object", world~class == .WorldObject)
+    self~assertTrue(world~class == .WorldObject, "world object must be a WorldObj object")
 
     msg1=world~start("HELLO")
-    self~assertTrue("msg1 must be a Message object", msg1~class == .Message)
+    self~assertTrue(msg1~class == .Message, "msg1 must be a Message object")
 
     j = SysSleep(.025)
 
     msg2=.message~new(world,"HELLO")~~start
-    self~assertTrue("msg2 must be a Message object", msg2~class == .Message)
+    self~assertTrue(msg2~class == .Message, "msg2 must be a Message object")
 
     -- Now test that each message result is correct.  The result should begin
     -- with Hello world.
     res1 = msg1~result
-    self~assertTrue("result should begin with Hello World for msg1", res1~abbrev("Hello world"))
+    self~assertTrue(res1~abbrev("Hello world"), "result should begin with Hello World for msg1")
     res2 = msg2~result
-    self~assertTrue("result should begin with Hello World for msg2", res2~abbrev("Hello world"))
+    self~assertTrue(res2~abbrev("Hello world"), "result should begin with Hello World for msg2")
 
     -- In addition the return of the hello method has the long time appended to
     -- it.  So the message result is a string, but should not be the exact same
     -- string.
-    self~assertNotSame("result strings should not be exactly equal", res1, res2)
+    self~assertNotSame(res1, res2, "result strings should not be exactly equal")
 
   -- End test_object_start( )
 
@@ -168,15 +168,15 @@ return testGroupList
   ::method  test_object_isInstanceOf
 
     obj = "abc"
-    self~assertTrue("abc should be instance of .String", obj~isInstanceOf(.String))
-    self~assertTrue("abc should be instance of .Object", obj~isInstanceOf(.Object))
-    self~assertFalse("abc should not be instance of .MutableBuffer", obj~isInstanceOf(.MutableBuffer))
+    self~assertTrue(obj~isInstanceOf(.String), "abc should be instance of .String")
+    self~assertTrue(obj~isInstanceOf(.Object), "abc should be instance of .Object")
+    self~assertFalse(obj~isInstanceOf(.MutableBuffer), "abc should not be instance of .MutableBuffer")
 
     -- Note that section 5.1.1.12 is for the isA method which is declared to be
     -- an alias for isInstanceOf.
-    self~assertTrue("abc should be instance of .String", obj~isA(.String))
-    self~assertTrue("abc should be instance of .Object", obj~isA(.Object))
-    self~assertFalse("abc should not be instance of .MutableBuffer", obj~isA(.MutableBuffer))
+    self~assertTrue(obj~isA(.String), "abc should be instance of .String")
+    self~assertTrue(obj~isA(.Object), "abc should be instance of .Object")
+    self~assertFalse(obj~isA(.MutableBuffer), "abc should not be instance of .MutableBuffer")
 
   -- End test_object_isInstanceOf( )
 
@@ -201,14 +201,14 @@ return testGroupList
   ::method  test_object_ObjectNameEquals
 
     points=.array~of("N","S","E","W")
-    self~assertTrue("points must be an array", points~class == .Array)
+    self~assertTrue(points~class == .Array, "points must be an array")
 
     -- Need to change the example slightly to test
-    self~assertSame("objectName should still be an Array", points~objectName, "an Array")
+    self~assertSame(points~objectName, "an Array", "objectName should still be an Array")
 
     points~objectName=("compass")
-    self~assertSame("objectName should now be compass", points~objectName, "compass")
-    self~assertSame("default name should still be an Array", points~defaultName, "an Array")
+    self~assertSame(points~objectName, "compass", "objectName should now be compass")
+    self~assertSame(points~defaultName, "an Array", "default name should still be an Array")
 
     -- say points
     --
@@ -216,7 +216,7 @@ return testGroupList
     -- compass is an object.  The following commented out assertion fails
     -- because the two objects are *not* the same.
     /*
-    self~assertSame("string representation should be compass", points, "compass")
+    self~assertSame(points, "compass", "string representation should be compass")
     */
 
     -- So, a little creativity.  We need a way to capture a say statement, but
@@ -238,8 +238,8 @@ return testGroupList
     inObj~close
     j = SysFileDelete(fName)
 
-    self~assertSame("string representation should be compass", pointsStr, "compass")
-    self~assertSame("points is still an array, should be 'E'", points[3], "E")
+    self~assertSame(pointsStr, "compass", "string representation should be compass")
+    self~assertSame(points[3], "E", "points is still an array, should be 'E'")
 
   -- End test_object_ObjectNameEquals( )
 

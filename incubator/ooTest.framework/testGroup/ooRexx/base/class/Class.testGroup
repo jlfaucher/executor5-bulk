@@ -119,39 +119,39 @@ return testResult
 
 ::METHOD "test_BASECLASS"
 
-  self~assertSame("subTest1", .object          , .object~baseclass)
-  self~assertSame("subTest2", .Vehicle         , .RoadVehicle~baseclass)
-  self~assertSame("subTest3", .Vehicle         , .WaterVehicle~baseclass)
-  self~assertSame("subTest4", .AmphibianVehicle, .AmphibianVehicle~baseclass)
+  self~assertSame(.object, .object~baseclass)
+  self~assertSame(.Vehicle, .RoadVehicle~baseclass)
+  self~assertSame(.Vehicle, .WaterVehicle~baseclass)
+  self~assertSame(.AmphibianVehicle, .AmphibianVehicle~baseclass)
 
 
 
 ::METHOD "test_DEFAULTNAME"
 
-  self~assertEquals("subTest1", "The Object class"        , .object~defaultName)
-  self~assertEquals("subTest2", "The FAHRZEUG class"      , .fahrzeug~defaultName)
-  self~assertEquals("subTest3", "The WasserFahrzeug class", .wasserfahrzeug~defaultName)
+  self~assertEquals("The Object class", .object~defaultName)
+  self~assertEquals("The FAHRZEUG class", .fahrzeug~defaultName)
+  self~assertEquals("The WasserFahrzeug class", .wasserfahrzeug~defaultName)
 
 
 ::METHOD "test_DEFINE"
 
   .test_a~define("TESTMETHOD", "return 'test'" )  -- define a method
   o1=.test_a~new                 -- create an instance
-  self~assertEquals("subTest1", "test", o1~testmethod)
-  self~assertTrue(  "subTest2", o1~hasmethod("TESTMETHOD"))
+  self~assertEquals("test", o1~testmethod)
+  self~assertTrue(o1~hasmethod("TESTMETHOD"))
 
-  self~assertNotNull("subTest2_01", .test_a~method("testmethod"))
+  self~assertNotNull(.test_a~method("testmethod"))
 
       -- "unaccessible" means that from now on the method cannot resolved, even if it existed in a superclass!
   .test_a~define("testmethod")   -- make it unaccessible for new instances
-  self~assertNull("subTest2_02", .test_a~method("testmethod"))
+  self~assertNull(.test_a~method("testmethod"))
 
-  self~assertEquals("subTest3", "test", o1~testmethod)
-  self~assertTrue(  "subTest4", o1~hasmethod("TESTMETHOD"))
+  self~assertEquals("test", o1~testmethod)
+  self~assertTrue(o1~hasmethod("TESTMETHOD"))
 
   o2=.test_a~new                 -- create an instance
-  self~assertFalse( "subTest5", o2~hasmethod("TESTMETHOD"))
-  self~assertTrue(  "subTest6", test_method_not_available(o2))
+  self~assertFalse(o2~hasmethod("TESTMETHOD"))
+  self~assertTrue(test_method_not_available(o2))
   return
 
 test_method_not_available: procedure
@@ -167,31 +167,31 @@ any:
 
   .test_b2~define("TESTMETHOD", "return self~testMethod:super 'test'" )  -- define a method
   o1=.test_b2~new                 -- create an instance
-  self~assertEquals("subTest1", "test_b1 test", o1~testmethod)
-  self~assertTrue(  "subTest2", o1~hasmethod("TESTMETHOD"))
-  self~assertTrue(  "subTest2b", o1~hasmethod("someMethod"))
+  self~assertEquals("test_b1 test", o1~testmethod)
+  self~assertTrue(o1~hasmethod("TESTMETHOD"))
+  self~assertTrue(o1~hasmethod("someMethod"))
 
      -- make TESTMETHOD unaccessible for new instances, even if superclass implements it!
   .test_b2~define("testmethod")
 
    -- existing instance not affected
-  self~assertEquals("subTest3", "test_b1 test", o1~testmethod)
-  self~assertTrue(  "subTest4", o1~hasmethod("TESTMETHOD"))
-  self~assertTrue(  "subTest4b", o1~hasmethod("someMethod"))
+  self~assertEquals("test_b1 test", o1~testmethod)
+  self~assertTrue(o1~hasmethod("TESTMETHOD"))
+  self~assertTrue(o1~hasmethod("someMethod"))
 
    -- new instance has no access to "TESTMETHOD"
   o2=.test_b2~new                 -- create an instance
-  self~assertFalse( "subTest5", o2~hasmethod("TESTMETHOD"))
-  self~assertTrue(  "subTest6", test_method_not_available(o2))
+  self~assertFalse(o2~hasmethod("TESTMETHOD"))
+  self~assertTrue(test_method_not_available(o2))
 
    -- now testing DELETE
      -- this should nullify the effect of making method unavailable via DEFINE()
   .test_b2~delete("testmethod")  -- method gets deleted from .TEST_B2, not from .TEST_B1 !
   o3=.test_b2~new
 
-  self~assertEquals("subTest7", "test_b1", o3~testmethod)
-  self~assertTrue(  "subTest8", o3~hasmethod("TESTMETHOD"))
-  self~assertTrue(  "subTest8b", o3~hasmethod("someMethod"))
+  self~assertEquals("test_b1", o3~testmethod)
+  self~assertTrue(o3~hasmethod("TESTMETHOD"))
+  self~assertTrue(o3~hasmethod("someMethod"))
 
   return
 
@@ -207,37 +207,37 @@ any:
 ::method "test_ENHANCED"
 
   o=.test_c~enhanced(.methods)      -- create an instance enhanced with the floating methods
-  self~assertEquals("subTest1", "set by floating_method_1", o~floating_method_1)
-  self~assertEquals("subTest2", "set by floating_method_2", o~floating_method_2)
-  self~assertEquals("subTest3", "set by floating_method_3", o~floating_method_3)
-  self~assertEquals("subTest4", "set by floating_method_3", o~fm_object        )
+  self~assertEquals("set by floating_method_1", o~floating_method_1)
+  self~assertEquals("set by floating_method_2", o~floating_method_2)
+  self~assertEquals("set by floating_method_3", o~floating_method_3)
+  self~assertEquals("set by floating_method_3", o~fm_object)
   tmp="   olah! oho! ah-sooo! "
   o~fm_object=tmp
-  self~assertEquals("subTest5", tmp, o~fm_object        )
-  self~assertSame("subTest6", tmp, o~fm_object        )
+  self~assertEquals(tmp, o~fm_object)
+  self~assertSame(tmp, o~fm_object)
 
   tmpArg="This is an argument text."
   o2=.test_c~enhanced(.methods, tmpArg)
-  self~assertEquals("subTest7", "set by floating_method_1", o2~floating_method_1)
-  self~assertEquals("subTest8", "set by floating_method_2", o2~floating_method_2)
-  self~assertEquals("subTest9", "set by floating_method_3", o2~floating_method_3)
-  self~assertEquals("subTest10", "set by floating_method_3", o2~fm_object        )
+  self~assertEquals("set by floating_method_1", o2~floating_method_1)
+  self~assertEquals("set by floating_method_2", o2~floating_method_2)
+  self~assertEquals("set by floating_method_3", o2~floating_method_3)
+  self~assertEquals("set by floating_method_3", o2~fm_object)
   tmp="   olah! oho! ah-sooo! "
   o2~fm_object=tmp
-  self~assertEquals("subTest11", tmp, o2~fm_object        )
-  self~assertSame("subTest12", tmp, o2~fm_object        )
+  self~assertEquals(tmp, o2~fm_object)
+  self~assertSame(tmp, o2~fm_object)
 
-  self~assertEquals("subTest13", tmpArg, o2~rgf)
+  self~assertEquals(tmpArg, o2~rgf)
   o2~rgf=tmp
-  self~assertEquals("subTest14", tmp, o2~rgf)
-  self~assertSame("subTest15",   tmp, o2~rgf)
+  self~assertEquals(tmp, o2~rgf)
+  self~assertSame(tmp, o2~rgf)
 
 
 ::method "test_ID"
 
-  self~assertEquals("subTest01", "Object", .object~id)
-  self~assertEquals("subTest02", "FAHRZEUG", .fahrzeug~id)
-  self~assertEquals("subTest03", "WasserFahrzeug", .wasserFahrzeug~id)
+  self~assertEquals("Object", .object~id)
+  self~assertEquals("FAHRZEUG", .fahrzeug~id)
+  self~assertEquals("WasserFahrzeug", .wasserFahrzeug~id)
 
 
 ::method "test_INIT_INHERIT_UNINHERIT_SUBCLASS_MIXINCLASS_QUERYMIXINCLASS"
@@ -296,47 +296,47 @@ any:
 
    ------------ assertions
       -- assert BASECLASS
-   self~assertSame("subTest_01", rgf_vehicle          , rgf_vehicle~baseclass           )
-   self~assertSame("subTest_02", rgf_vehicle          , rgf_road_vehicle~baseclass      )
-   self~assertSame("subTest_03", rgf_vehicle          , rgf_water_vehicle~baseclass     )
-   self~assertSame("subTest_04", rgf_amphibian_vehicle, rgf_amphibian_vehicle~baseclass )
+   self~assertSame(rgf_vehicle, rgf_vehicle~baseclass)
+   self~assertSame(rgf_vehicle, rgf_road_vehicle~baseclass)
+   self~assertSame(rgf_vehicle, rgf_water_vehicle~baseclass)
+   self~assertSame(rgf_amphibian_vehicle, rgf_amphibian_vehicle~baseclass)
 
       -- assert DEFAULTNAME
-   self~assertEquals("subTest_05", "The" vehicle_Name "class"           , rgf_vehicle~defaultname           )
-   self~assertEquals("subTest_06", "The" road_Vehicle_Name "class"      , rgf_road_vehicle~defaultname      )
-   self~assertEquals("subTest_07", "The" water_Vehicle_Name "class"     , rgf_water_vehicle~defaultname     )
-   self~assertEquals("subTest_08", "The" amphibian_Vehicle_Name "class" , rgf_amphibian_vehicle~defaultname )
+   self~assertEquals("The" vehicle_Name "class", rgf_vehicle~defaultname)
+   self~assertEquals("The" road_Vehicle_Name "class", rgf_road_vehicle~defaultname)
+   self~assertEquals("The" water_Vehicle_Name "class", rgf_water_vehicle~defaultname)
+   self~assertEquals("The" amphibian_Vehicle_Name "class", rgf_amphibian_vehicle~defaultname)
 
       -- assert ID
-   self~assertEquals("subTest_09", vehicle_Name           , rgf_vehicle~id           )
-   self~assertEquals("subTest_10", road_Vehicle_Name      , rgf_road_vehicle~id      )
-   self~assertEquals("subTest_11", water_Vehicle_Name     , rgf_water_vehicle~id     )
-   self~assertEquals("subTest_12", amphibian_Vehicle_Name , rgf_amphibian_vehicle~id )
+   self~assertEquals(vehicle_Name, rgf_vehicle~id)
+   self~assertEquals(road_Vehicle_Name, rgf_road_vehicle~id)
+   self~assertEquals(water_Vehicle_Name, rgf_water_vehicle~id)
+   self~assertEquals(amphibian_Vehicle_Name, rgf_amphibian_vehicle~id)
 
       -- assert method lookup
-   self~assertEquals("subTest_13", rgf_vehicle_show_off, vo~show_off )
-   self~assertEquals("subTest_14", rgf_vehicle_drive   , vo~drive    )
-   self~assertEquals("subTest_15", rgf_vehicle_swim    , vo~swim     )
+   self~assertEquals(rgf_vehicle_show_off, vo~show_off)
+   self~assertEquals(rgf_vehicle_drive, vo~drive)
+   self~assertEquals(rgf_vehicle_swim, vo~swim)
 
-   self~assertEquals("subTest_16", rgf_vehicle_show_off      , rvo~show_off )
-   self~assertEquals("subTest_17", rvo_name || drive_string  , rvo~drive    )
-   self~assertEquals("subTest_18", rgf_vehicle_swim          , rvo~swim     )
+   self~assertEquals(rgf_vehicle_show_off, rvo~show_off)
+   self~assertEquals(rvo_name || drive_string, rvo~drive)
+   self~assertEquals(rgf_vehicle_swim, rvo~swim)
 
-   self~assertEquals("subTest_19", rgf_vehicle_show_off      , wvo~show_off )
-   self~assertEquals("subTest_20", rgf_vehicle_drive         , wvo~drive    )
-   self~assertEquals("subTest_21", wvo_name || swim_string   , wvo~swim     )
+   self~assertEquals(rgf_vehicle_show_off, wvo~show_off)
+   self~assertEquals(rgf_vehicle_drive, wvo~drive)
+   self~assertEquals(wvo_name || swim_string, wvo~swim)
 
    tmp_drive=avo_name || drive_string
    tmp_swim =avo_name || swim_string
    tmp_amph = tmp_swim tmp_drive
-   self~assertEquals("subTest_22", tmp_amph , avo~show_off )
-   self~assertEquals("subTest_23", tmp_drive, avo~drive    )
-   self~assertEquals("subTest_24", tmp_swim , avo~swim     )
+   self~assertEquals(tmp_amph, avo~show_off)
+   self~assertEquals(tmp_drive, avo~drive)
+   self~assertEquals(tmp_swim, avo~swim)
 
-   self~assertFalse("subTest_25", rgf_vehicle~queryMixinclass)
-   self~assertTrue( "subTest_26", rgf_road_vehicle~queryMixinclass)
-   self~assertTrue( "subTest_27", rgf_water_vehicle~queryMixinclass)
-   self~assertFalse("subTest_28", rgf_amphibian_vehicle~queryMixinclass)
+   self~assertFalse(rgf_vehicle~queryMixinclass)
+   self~assertTrue(rgf_road_vehicle~queryMixinclass)
+   self~assertTrue(rgf_water_vehicle~queryMixinclass)
+   self~assertFalse(rgf_amphibian_vehicle~queryMixinclass)
 
 
    ------------ uninherit "RGF_WATER_VEHICLE"
@@ -345,9 +345,9 @@ any:
    tmp_drive= avo_name || drive_string
    tmp_swim = rgf_vehicle_swim
    tmp_amph = tmp_swim tmp_drive
-   self~assertEquals("subTest_29", tmp_amph , avo~show_off )
-   self~assertEquals("subTest_30", tmp_drive, avo~drive    )
-   self~assertEquals("subTest_31", tmp_swim , avo~swim     )
+   self~assertEquals(tmp_amph, avo~show_off)
+   self~assertEquals(tmp_drive, avo~drive)
+   self~assertEquals(tmp_swim, avo~swim)
 
 
    ------------ inherit "RGF_WATER_VEHICLE" again !
@@ -356,9 +356,9 @@ any:
    tmp_drive=avo_name || drive_string
    tmp_swim =avo_name || swim_string
    tmp_amph = tmp_swim tmp_drive
-   self~assertEquals("subTest_32", tmp_amph , avo~show_off )
-   self~assertEquals("subTest_33", tmp_drive, avo~drive    )
-   self~assertEquals("subTest_34", tmp_swim , avo~swim     )
+   self~assertEquals(tmp_amph, avo~show_off)
+   self~assertEquals(tmp_drive, avo~drive)
+   self~assertEquals(tmp_swim, avo~swim)
 
 ::METHOD "test_INHERIT_01"
    self~expectSyntax(98.942)     -- reflect USE STRICT ARG error message
@@ -384,15 +384,15 @@ any:
 
 
 ::method "test_METACLASS"
-   self~assertSame("subTest_01", .class, .object~metaclass)
-   self~assertSame("subTest_02", .class, .class~metaclass)
+   self~assertSame(.class, .object~metaclass)
+   self~assertSame(.class, .class~metaclass)
 
    cl=.object~mixinclass("test_mixin_01",    .counter)
-   self~assertSame("subTest_03", .counter,   cl~metaclass)
+   self~assertSame(.counter, cl~metaclass)
    cl=.object~mixinclass("test_mixin_01",    .singleton)
-   self~assertSame("subTest_04", .singleton, cl~metaclass)
+   self~assertSame(.singleton, cl~metaclass)
 
-   self~assertSame("subTest_05", .class, .counter~class)
+   self~assertSame(.class, .counter~class)
 
 
 
@@ -404,8 +404,8 @@ any:
    do i
       a2=cl~new      -- create an object
    end
-   self~assertEquals("subTest_01", 5, cl~counter)  -- test whether five instances have been created
-   self~assertSame("subTest_02", a1, a2)  -- test whether singleton instances
+   self~assertEquals(5, cl~counter)  -- test whether five instances have been created
+   self~assertSame(a1, a2)  -- test whether singleton instances
 
 
 ::method "test_METACLASS_SingletonCounter_via_normal_inheritance"
@@ -416,20 +416,20 @@ any:
    do i
       a2=cl~new      -- create an object
    end
-   self~assertSame(  "subTest_01", a1, a2)  -- test whether singleton instances
-   self~assertEquals("subTest_02", 1, cl~counter)  -- test whether five instances have been created
+   self~assertSame(a1, a2)  -- test whether singleton instances
+   self~assertEquals(1, cl~counter)  -- test whether five instances have been created
 
 
 
 
 ::method "test_METHOD"
 
-   self~assertNotNull("subTest_01", m=.WaterVehicle~method("swim"))
+   self~assertNotNull(m=.WaterVehicle~method("swim"))
 
    -- testing for undefined method took place in "test_DEFINE" above
 
    self~expectSyntax(97.1)
-   self~assertNull("subTest_02", m=.WaterVehicle~method("swimmolilily"))
+   self~assertNull(m=.WaterVehicle~method("swimmolilily"))
 
 
 
@@ -440,22 +440,22 @@ any:
    a_wv=getBags(.WaterVehicle~methods(.nil)) -- get only WaterVehicle methods
    a_wv_all=getBags(.WaterVehicle~methods)   -- get all methods
 
-   self~assertTrue("subTest_01", a_o[1]~Subset(a_wv_all[1]) )
-   self~assertTrue("subTest_02", a_o[2]~Subset(a_wv_all[2]) )
+   self~assertTrue(a_o[1]~Subset(a_wv_all[1]))
+   self~assertTrue(a_o[2]~Subset(a_wv_all[2]))
 
-   self~assertTrue("subTest_03", a_v[1]~Subset(a_wv_all[1]) )
-   self~assertTrue("subTest_04", a_v[2]~Subset(a_wv_all[2]) )
+   self~assertTrue(a_v[1]~Subset(a_wv_all[1]))
+   self~assertTrue(a_v[2]~Subset(a_wv_all[2]))
 
-   self~assertTrue("subTest_05", a_wv[1]~Subset(a_wv_all[1]) )
-   self~assertTrue("subTest_06", a_wv[2]~Subset(a_wv_all[2]) )
+   self~assertTrue(a_wv[1]~Subset(a_wv_all[1]))
+   self~assertTrue(a_wv[2]~Subset(a_wv_all[2]))
 
    do i=1 to 2
       tmp=.bag~new~union(a_o[i])~union(a_v[i])~union(a_wv[i])
-      self~assertTrue("subTest_07_"i, tmp~subset(a_wv_all[i]))
-      self~assertTrue("subTest_07_"i, a_wv_all[i]~subset(tmp))
+      self~assertTrue(tmp~subset(a_wv_all[i]))
+      self~assertTrue(a_wv_all[i]~subset(tmp))
    end
 
-   self~assertEquals("subTest_08", a_wv_all[1]~items, a_o[1]~items + a_v[1]~items + a_wv[1]~items)
+   self~assertEquals(a_wv_all[1]~items, a_o[1]~items + a_v[1]~items + a_wv[1]~items)
 
    return
 
@@ -485,7 +485,7 @@ getBags: procedure         -- return indices in an index bag, and method items i
    do i
       cl~new      -- create an object
    end
-   self~assertTrue("subTest_01", cl~counter=5)  -- test whether five instances have been created
+   self~assertTrue(cl~counter=5)  -- test whether five instances have been created
 
 
       -- test counter metaclass, enhance class methods
@@ -495,8 +495,8 @@ getBags: procedure         -- return indices in an index bag, and method items i
    do i
       a1=cl~new      -- create an object
    end
-   self~assertTrue("subTest_02", cl~counter=5)  -- test whether five instances have been created
-   self~assertEquals("subTest_03", str, cl~fm_object)
+   self~assertTrue(cl~counter=5)  -- test whether five instances have been created
+   self~assertEquals(str, cl~fm_object)
 
 
       -- test singleton metaclass
@@ -506,7 +506,7 @@ getBags: procedure         -- return indices in an index bag, and method items i
    do i
       a2=cl~new      -- create an object
    end
-   self~assertSame("subTest_04", a1, a2)  -- test whether instances are singletons
+   self~assertSame(a1, a2)  -- test whether instances are singletons
 
 
 ::method "test_MIXINCLASS_01"
@@ -530,8 +530,8 @@ getBags: procedure         -- return indices in an index bag, and method items i
    do i
       a2=cl~new      -- create an object
    end
-   self~assertEquals("subTest_01", 1, cl~counter)  -- test whether five instances have been created
-   self~assertSame("subTest_02", a1, a2)  -- test whether singleton instances
+   self~assertEquals(1, cl~counter)  -- test whether five instances have been created
+   self~assertSame(a1, a2)  -- test whether singleton instances
 
 
 ::method "test_MIXINCLASS_MULTIPLE_INHERITANCE_ON_METACLASSES_02"    -- just the arguments, rest already tested
@@ -544,8 +544,8 @@ getBags: procedure         -- return indices in an index bag, and method items i
    do i
       a2=cl~new      -- create an object
    end
-   self~assertSame(  "subTest_01", a1, a2)  -- test whether singleton instances
-   self~assertEquals("subTest_02", 5, cl~counter)  -- test whether five instances have been created
+   self~assertSame(a1, a2)  -- test whether singleton instances
+   self~assertEquals(5, cl~counter)  -- test whether five instances have been created
 
 
 ::method "test_MIXINCLASS_MULTIPLE_INHERITANCE_ON_METACLASSES_03"    -- just the arguments, rest already tested
@@ -558,8 +558,8 @@ getBags: procedure         -- return indices in an index bag, and method items i
    do i
       a2=cl~new      -- create an object
    end
-   self~assertEquals("subTest_01", 1, cl~counter)  -- test whether five instances have been created
-   self~assertSame("subTest_02", a1, a2)  -- test whether singleton instances
+   self~assertEquals(1, cl~counter)  -- test whether five instances have been created
+   self~assertSame(a1, a2)  -- test whether singleton instances
 
 
 ::method "test_MIXINCLASS_MULTIPLE_INHERITANCE_ON_METACLASSES_04"    -- just the arguments, rest already tested
@@ -572,13 +572,13 @@ getBags: procedure         -- return indices in an index bag, and method items i
    do i
       a2=cl~new      -- create an object
    end
-   self~assertSame("subTest_01", a1, a2)  -- test whether singleton instances
-   self~assertEquals("subTest_02", 5, cl~counter)  -- test whether five instances have been created
+   self~assertSame(a1, a2)  -- test whether singleton instances
+   self~assertEquals(5, cl~counter)  -- test whether five instances have been created
 
 
 ::method "test_MULTIPLE_INHERITANCE_WITH_MULTIPLE_METACLASSES"
 
-   self~assertEquals("subTest_01", "'123.'", .class123~info)
+   self~assertEquals("'123.'", .class123~info)
 
 
 ::method "test_NEW"
@@ -592,7 +592,7 @@ getBags: procedure         -- return indices in an index bag, and method items i
    do i
       cl~new      -- create an object
    end
-   self~assertTrue("subTest_01", cl~counter=5)  -- test whether five instances have been created
+   self~assertTrue(cl~counter=5)  -- test whether five instances have been created
 
 
       -- test counter metaclass, enhance class methods
@@ -602,8 +602,8 @@ getBags: procedure         -- return indices in an index bag, and method items i
    do i
       a1=cl~new      -- create an object
    end
-   self~assertTrue("subTest_02", cl~counter=5)  -- test whether five instances have been created
-   self~assertEquals("subTest_03", str, cl~fm_object)
+   self~assertTrue(cl~counter=5)  -- test whether five instances have been created
+   self~assertEquals(str, cl~fm_object)
 
 
       -- test singleton metaclass
@@ -613,7 +613,7 @@ getBags: procedure         -- return indices in an index bag, and method items i
    do i
       a2=cl~new      -- create an object
    end
-   self~assertSame("subTest_04", a1, a2)  -- test whether instances are singletons
+   self~assertSame(a1, a2)  -- test whether instances are singletons
 
 
 ::method "test_SUBCLASS_01"
@@ -636,8 +636,8 @@ getBags: procedure         -- return indices in an index bag, and method items i
    do i
       a2=cl~new      -- create an object
    end
-   self~assertEquals("subTest_01", 1, cl~counter)  -- test whether five instances have been created
-   self~assertSame("subTest_02", a1, a2)  -- test whether singleton instances
+   self~assertEquals(1, cl~counter)  -- test whether five instances have been created
+   self~assertSame(a1, a2)  -- test whether singleton instances
 
 
 ::method "test_SUBCLASS_MULTIPLE_INHERITANCE_ON_METACLASSES_02"    -- just the arguments, rest already tested
@@ -650,8 +650,8 @@ getBags: procedure         -- return indices in an index bag, and method items i
    do i
       a2=cl~new      -- create an object
    end
-   self~assertSame(  "subTest_01", a1, a2)  -- test whether singleton instances
-   self~assertEquals("subTest_02", 5, cl~counter)  -- test whether five instances have been created
+   self~assertSame(a1, a2)  -- test whether singleton instances
+   self~assertEquals(5, cl~counter)  -- test whether five instances have been created
 
 
 ::method "test_SUBCLASS_MULTIPLE_INHERITANCE_ON_METACLASSES_03"    -- just the arguments, rest already tested
@@ -664,8 +664,8 @@ getBags: procedure         -- return indices in an index bag, and method items i
    do i
       a2=cl~new      -- create an object
    end
-   self~assertEquals("subTest_01", 1, cl~counter)  -- test whether five instances have been created
-   self~assertSame("subTest_02", a1, a2)  -- test whether singleton instances
+   self~assertEquals(1, cl~counter)  -- test whether five instances have been created
+   self~assertSame(a1, a2)  -- test whether singleton instances
 
 
 ::method "test_SUBCLASS_MULTIPLE_INHERITANCE_ON_METACLASSES_04"    -- just the arguments, rest already tested
@@ -678,23 +678,23 @@ getBags: procedure         -- return indices in an index bag, and method items i
    do i
       a2=cl~new      -- create an object
    end
-   self~assertSame("subTest_01", a1, a2)  -- test whether singleton instances
-   self~assertEquals("subTest_02", 5, cl~counter)  -- test whether five instances have been created
+   self~assertSame(a1, a2)  -- test whether singleton instances
+   self~assertEquals(5, cl~counter)  -- test whether five instances have been created
 
 
 
 ::method "test_SUBCLASSES"
 
-   self~assertTrue("subTest_01: '.object~subclasses~items>15'",  .object~subclasses~items>15)
-   self~assertTrue("subTest_02: '.relation~subclasses~items>0'", .relation~subclasses~items>0)
-   self~assertTrue("subTest_03: '.alarm~subclasses~items=0'",    .alarm~subclasses~items=0)
+   self~assertTrue(.object~subclasses~items>15)
+   self~assertTrue(.relation~subclasses~items>0)
+   self~assertTrue(.alarm~subclasses~items=0)
 
 
 
 ::method "test_SUPERCLASSES"
 
-   self~assertTrue("subTest_01: '.object~superclasses~items=0'", .object~superclasses~items=0)
-   self~assertEquals("subTest_02", 2, .relation~superclasses~items)
+   self~assertTrue(.object~superclasses~items=0)
+   self~assertEquals(2, .relation~superclasses~items)
 
 
 

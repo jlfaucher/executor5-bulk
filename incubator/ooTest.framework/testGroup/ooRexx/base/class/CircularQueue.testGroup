@@ -101,18 +101,18 @@ return testResult
    u=.CircularQueue~new(-1)
 
 ::method "test_INIT_ARG_4"
-   self~assertEquals("subTest1", 3, .CircularQueue~new(3)~size)
-   self~assertEquals("subTest2", 0, .CircularQueue~new(0)~size)
+   self~assertEquals(3, .CircularQueue~new(3)~size)
+   self~assertEquals(0, .CircularQueue~new(0)~size)
 
 
    -- test OF (class method) ---------------------------------------------
 ::method "test_OF"
    u0=.CircularQueue~of
    u3=.CircularQueue~of(1,2,3)
-   self~assertEquals("subTest1", 0, u0~items)
-   self~assertEquals("subTest2", 0, u0~size)
-   self~assertEquals("subTest3", 3, u3~items)
-   self~assertEquals("subTest4", 3, u3~size)
+   self~assertEquals(0, u0~items)
+   self~assertEquals(0, u0~size)
+   self~assertEquals(3, u3~items)
+   self~assertEquals(3, u3~size)
 
 
    -- test SIZE method ---------------------------------------------
@@ -132,8 +132,8 @@ return testResult
    u0=.CircularQueue~of
    u3=.CircularQueue~of(1,2,3)
 
-   self~assertEquals("subTest2", 0, u0~size)
-   self~assertEquals("subTest4", 3, u3~size)
+   self~assertEquals(0, u0~size)
+   self~assertEquals(3, u3~size)
 
 
    -- test RESIZE method ---------------------------------------------
@@ -160,19 +160,19 @@ return testResult
 ::method "test_RESIZE_2"
    u0=.CircularQueue~of
    u3=.CircularQueue~of(1,2,3)
-   self~assertEquals("subTest1", 0, u0~items)
-   self~assertEquals("subTest2", 0, u0~size)
+   self~assertEquals(0, u0~items)
+   self~assertEquals(0, u0~size)
    u0~resize(1)
-   self~assertEquals("subTest3", 0, u0~items)
-   self~assertEquals("subTest4", 1, u0~size)
+   self~assertEquals(0, u0~items)
+   self~assertEquals(1, u0~size)
 
    u3~resize(2, "LIFO")
-   self~assertEquals("subTest5", 2, u3~items)
-   self~assertEquals("subTest6", 2, u3~size)
+   self~assertEquals(2, u3~items)
+   self~assertEquals(2, u3~size)
 
    u3~resize(0)
-   self~assertEquals("subTest7", 0, u3~items)
-   self~assertEquals("subTest8", 0, u3~size)
+   self~assertEquals(0, u3~items)
+   self~assertEquals(0, u3~size)
 
 
    -- test QUEUE method ---------------------------------------------
@@ -186,15 +186,15 @@ return testResult
 
 ::method "test_QUEUE_2"
    u0=.CircularQueue~new(0)         -- empty queue (size=0, items=0)
-   self~assertEquals("subTest1", 0, u0~~queue(1)~items)
+   self~assertEquals(0, u0~~queue(1)~items)
 
    u3=.CircularQueue~of(1,2,3)      -- queue of three elements
    a=.array~of(1,2,3)               -- test sequence #1
-   self~assertTrue("subTest2", testSequence(u3, a))
+   self~assertTrue(testSequence(u3, a))
 
    u3~~queue(4)~~queue(5)
    a=.array~of(3,4,5)               -- test sequence #1
-   self~assertTrue("subTest3", testSequence(u3, a))
+   self~assertTrue(testSequence(u3, a))
 
 
    -- test PUSH method ---------------------------------------------
@@ -208,15 +208,15 @@ return testResult
 
 ::method "test_PUSH_2"
    u0=.CircularQueue~new(0)         -- empty queue (size=0, items=0)
-   self~assertEquals("subTest1", 0, u0~~push(1)~items)
+   self~assertEquals(0, u0~~push(1)~items)
 
    u3=.CircularQueue~of(1,2,3)      -- queue of three elements
    a=.array~of(1,2,3)               -- test sequence #1
-   self~assertTrue("subTest2", testSequence(u3, a))
+   self~assertTrue(testSequence(u3, a))
 
    u3~~push(4)~~push(5)
    a=.array~of(5,4,3)               -- test sequence #1
-   self~assertTrue("subTest3", testSequence(u3, a))
+   self~assertTrue(testSequence(u3, a))
 
 
 
@@ -231,30 +231,30 @@ return testResult
 
 ::method "test_MAKEARRAY_2"
    u0=.CircularQueue~of
-   self~assertEquals("subTest1", 0, u0~makearray~items)
+   self~assertEquals(0, u0~makearray~items)
 
    u3=.CircularQueue~of(1,2,3)
    m=u3~makearray
-   self~assertEquals("subTest2", 3, m~items)
+   self~assertEquals(3, m~items)
    a=.array~of(1,2,3)
-   self~assertTrue("subTest3", testSequence(m, a))
-   -- self~assertTrue("subTest3", testSequence(m, .array~of(1,2,3)))
+   self~assertTrue(testSequence(m, a))
+   -- self~assertTrue(testSequence(m, .array~of(1,2,3)))
 
    m=u3~makearray("FIFO")
-   self~assertEquals("subTest4", 3, m~items)
-   self~assertTrue("subTest5", testSequence(m, .array~of(1,2,3)))
+   self~assertEquals(3, m~items)
+   self~assertTrue(testSequence(m, .array~of(1,2,3)))
 
    m=u3~makearray("FIFO")
-   self~assertEquals("subTest5", 3, m~items)
-   self~assertFalse("subTest6", testSequence(m, .array~of(3,2,1)))
+   self~assertEquals(3, m~items)
+   self~assertFalse(testSequence(m, .array~of(3,2,1)))
 
    m=u3~makearray("LIFO")
-   self~assertEquals("subTest7", 3, m~items)
-   self~assertFalse("subTest8", testSequence(m, .array~of(1,5,3)))
+   self~assertEquals(3, m~items)
+   self~assertFalse(testSequence(m, .array~of(1,5,3)))
 
    m=u3~makearray("LIFO")
-   self~assertEquals("subTest9", 3, m~items)
-   self~assertTrue("subTest10", testSequence(m, .array~of(3,2,1)))
+   self~assertEquals(3, m~items)
+   self~assertTrue(testSequence(m, .array~of(3,2,1)))
 
 
 
@@ -269,30 +269,30 @@ return testResult
 
 ::method "test_SUPPLIER_2"
    u0=.CircularQueue~of
-   self~assertEquals("subTest1", 0, countSupplierItems(u0~supplier))
+   self~assertEquals(0, countSupplierItems(u0~supplier))
 
    u3=.CircularQueue~of(1,2,3)
    m=u3~SUPPLIER
-   self~assertEquals("subTest2", 3, countSupplierItems(m))
-   self~assertTrue("subTest3", testSequence(m, .array~of(1,2,3)))
-   -- self~assertTrue("subTest3", testSequence(m, .array~of(1,2,3)))
+   self~assertEquals(3, countSupplierItems(m))
+   self~assertTrue(testSequence(m, .array~of(1,2,3)))
+   -- self~assertTrue(testSequence(m, .array~of(1,2,3)))
 
    m=u3~SUPPLIER("FIFO")
-   self~assertEquals("subTest4", 3, countSupplierItems(m))
-   -- self~assertEquals("subTest4", 3, countSupplierItems(u3~supplier("FIFO")))
-   self~assertTrue("subTest5", testSequence(m, .array~of(1,2,3)))
+   self~assertEquals(3, countSupplierItems(m))
+   -- self~assertEquals(3, countSupplierItems(u3~supplier("FIFO")))
+   self~assertTrue(testSequence(m, .array~of(1,2,3)))
 
    m=u3~SUPPLIER
-   self~assertEquals("subTest5", 3, countSupplierItems(m))
-   self~assertFalse("subTest6", testSequence(m, .array~of(3,2,1)))
+   self~assertEquals(3, countSupplierItems(m))
+   self~assertFalse(testSequence(m, .array~of(3,2,1)))
 
    m=u3~SUPPLIER("LIFO")
-   self~assertEquals("subTest7", 3, countSupplierItems(m))
-   self~assertFalse("subTest8", testSequence(m, .array~of(1,5,3)))
+   self~assertEquals(3, countSupplierItems(m))
+   self~assertFalse(testSequence(m, .array~of(1,5,3)))
 
    m=u3~SUPPLIER("LIFO")
-   self~assertEquals("subTest9", 3, countSupplierItems(m))
-   self~assertTrue("subTest10", testSequence(m, .array~of(3,2,1)))
+   self~assertEquals(3, countSupplierItems(m))
+   self~assertTrue(testSequence(m, .array~of(3,2,1)))
    return
 
 
@@ -331,43 +331,43 @@ countSupplierItems: procedure
 ::method "test_STRING_2"
    u0=.CircularQueue~of
    u3=.CircularQueue~of(1,2,3)
-   self~assertEquals("subTest1", "",      u0~string)
-   self~assertEquals("subTest2", "1,2,3", u3~string)
+   self~assertEquals("", u0~string)
+   self~assertEquals("1,2,3", u3~string)
 
-   self~assertEquals("subTest3a", "",       u0~string("-")        )
-   self~assertEquals("subTest3b", "",       u0~string("-", "FIFO"))
-   self~assertEquals("subTest3c", "",       u0~string("-", "LIFO"))
-   self~assertEquals("subTest3d", "",       u0~string("-", "L"   ))
+   self~assertEquals("", u0~string("-"))
+   self~assertEquals("", u0~string("-", "FIFO"))
+   self~assertEquals("", u0~string("-", "LIFO"))
+   self~assertEquals("", u0~string("-", "L"   ))
 
-   self~assertEquals("subTest4a", "1-2-3", u3~string("-")         )
-   self~assertEquals("subTest4b", "123",   u3~string("")          )
-   self~assertEquals("subTest4c", "321",   u3~string("", "LIFO")  )
-   self~assertEquals("subTest4d", "3-2-1", u3~string("-", "LIFO") )
-   self~assertEquals("subTest4e", "3,2,1", u3~string(, "LIFO")    )
+   self~assertEquals("1-2-3", u3~string("-"))
+   self~assertEquals("123", u3~string(""))
+   self~assertEquals("321", u3~string("", "LIFO"))
+   self~assertEquals("3-2-1", u3~string("-", "LIFO"))
+   self~assertEquals("3,2,1", u3~string(, "LIFO"))
 
 
 ::method "test_Queue_Push_Empty"
    u0=.CircularQueue~of
-   self~assertEquals("subTest1a", .nil, u0~queue("1"))
-   self~assertEquals("subTest1b", .nil, u0~queue("2"))
-   self~assertEquals("subTest2a", .nil, u0~ push("1"))
-   self~assertEquals("subTest2b", .nil, u0~ push("2"))
+   self~assertEquals(.nil, u0~queue("1"))
+   self~assertEquals(.nil, u0~queue("2"))
+   self~assertEquals(.nil, u0~ push("1"))
+   self~assertEquals(.nil, u0~ push("2"))
 
 ::method "test_Queue_Fill"
    u1=.CircularQueue~new(2)
-   self~assertEquals("subTest3a", .nil, u1~queue("1"))
-   self~assertEquals("subTest3b", .nil, u1~queue("2"))
-   self~assertEquals("subTest3c",    1, u1~queue("3"))
-   self~assertEquals("subTest3c",    2, u1~queue("4"))
-   self~assertEquals("subTest3c",    3, u1~queue("5"))
+   self~assertEquals(.nil, u1~queue("1"))
+   self~assertEquals(.nil, u1~queue("2"))
+   self~assertEquals(1, u1~queue("3"))
+   self~assertEquals(2, u1~queue("4"))
+   self~assertEquals(3, u1~queue("5"))
 
 ::method "test_Queue_Push"
    u1=.CircularQueue~new(2)
-   self~assertEquals("subTest3a", .nil, u1~push("1"))
-   self~assertEquals("subTest3b", .nil, u1~push("2"))
-   self~assertEquals("subTest3c",    1, u1~push("3"))
-   self~assertEquals("subTest3c",    2, u1~push("4"))
-   self~assertEquals("subTest3c",    3, u1~push("5"))
+   self~assertEquals(.nil, u1~push("1"))
+   self~assertEquals(.nil, u1~push("2"))
+   self~assertEquals(1, u1~push("3"))
+   self~assertEquals(2, u1~push("4"))
+   self~assertEquals(3, u1~push("5"))
 
 
 

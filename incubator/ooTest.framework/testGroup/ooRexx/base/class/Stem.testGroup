@@ -120,17 +120,17 @@ return testResult
   expose collDir clz bUserDefinedIndex bSingleItem
 
   coll=collDir~coll_1      -- get the prepared Stem
-  self~assertEquals("subtest1", "1", coll~at("1"))
-  self~assertEquals("subtest2", "2", coll~at("2"))
-  self~assertEquals("subtest2a", coll, coll~at)
+  self~assertEquals("1", coll~at("1"))
+  self~assertEquals("2", coll~at("2"))
+  self~assertEquals(coll, coll~at)
 
   val="oha, Dackel"
-  self~assertEquals("subtest3", val, coll~at(val))
+  self~assertEquals(val, coll~at(val))
 
   a.=clz~new("def")
-  self~assertEquals("subtest4", a.     , a.~at)
-  self~assertEquals("subtest5", a.||val, a.~at(val))
-  self~assertEquals("subtest6", a.||1"."2"."3, a.~at(1,2,3))
+  self~assertEquals(a., a.~at)
+  self~assertEquals(a.||val, a.~at(val))
+  self~assertEquals(a.||1"."2"."3, a.~at(1,2,3))
 
 
 
@@ -138,19 +138,19 @@ return testResult
   expose collDir clz bUserDefinedIndex bSingleItem
 
   coll=collDir~coll_1      -- get the prepared Stem
-  self~assertEquals("subtest1", "1", coll~"[]"("1"))
-  self~assertEquals("subtest2", "2", coll~"[]"("2"))
-  self~assertEquals("subtest2a", coll~string, coll~"[]")
-  self~assertEquals("subtest2b", coll       , coll~"[]")
+  self~assertEquals("1", coll~"[]"("1"))
+  self~assertEquals("2", coll~"[]"("2"))
+  self~assertEquals(coll~string, coll~"[]")
+  self~assertEquals(coll, coll~"[]")
 
   val="oha, Dackel"
-  self~assertEquals("subtest3", val, coll~"[]"(val))
+  self~assertEquals(val, coll~"[]"(val))
 
   a.=clz~new("def")
-  self~assertEquals("subtest4", a.~string, a.~"[]")
-  self~assertEquals("subtest4a", a.      , a.~"[]")
-  self~assertEquals("subtest5", a.||val, a.~"[]"(val))
-  self~assertEquals("subtest6", a.||1"."2"."3, a.~"[]"(1,2,3))
+  self~assertEquals(a.~string, a.~"[]")
+  self~assertEquals(a., a.~"[]")
+  self~assertEquals(a.||val, a.~"[]"(val))
+  self~assertEquals(a.||1"."2"."3, a.~"[]"(1,2,3))
 
 
 
@@ -158,29 +158,25 @@ return testResult
 ::method "test_allIndexes"
   expose collDir clz bUserDefinedIndex bSingleItem
 
-  self~assertTrue("subtest1", sameContent(.bag~new~union(collDir~allIndexes1      ), -
-                                          .bag~new~union(collDir~coll_1~allIndexes)))
+  self~assertTrue(sameContent(.bag~new~union(collDir~allIndexes1      ),                                            .bag~new~union(collDir~coll_1~allIndexes)))
 
-  self~assertTrue("subtest2", sameContent(.bag~new~union(collDir~allIndexes2      ), -
-                                          .bag~new~union(collDir~coll_2~allIndexes)))
+  self~assertTrue(sameContent(.bag~new~union(collDir~allIndexes2      ),                                            .bag~new~union(collDir~coll_2~allIndexes)))
 
   tmp=collDir~emptyColl~allIndexes
-  self~assertTrue("subtest3", tmp~isInstanceOf(.array))
-  self~assertEquals("subtest4", 0, tmp~items)
+  self~assertTrue(tmp~isInstanceOf(.array))
+  self~assertEquals(0, tmp~items)
 
 
 ::method "test_allItems"
   expose collDir clz bUserDefinedIndex bSingleItem
 
-  self~assertTrue("subtest1", sameContent(.bag~new~union(collDir~allItems1      ), -
-                                          .bag~new~union(collDir~coll_1~allItems)))
+  self~assertTrue(sameContent(.bag~new~union(collDir~allItems1      ),                                            .bag~new~union(collDir~coll_1~allItems)))
 
-  self~assertTrue("subtest2", sameContent(.bag~new~union(collDir~allItems2      ), -
-                                          .bag~new~union(collDir~coll_2~allItems)))
+  self~assertTrue(sameContent(.bag~new~union(collDir~allItems2      ),                                            .bag~new~union(collDir~coll_2~allItems)))
 
   tmp=collDir~emptyColl~allItems
-  self~assertTrue("subtest3", tmp~isInstanceOf(.array))
-  self~assertEquals("subtest4", 0, tmp~items)
+  self~assertTrue(tmp~isInstanceOf(.array))
+  self~assertEquals(0, tmp~items)
 
 
 
@@ -191,16 +187,16 @@ return testResult
   c1=collDir~coll_1
   c2=collDir~coll_2
 
-  self~assertTrue("subtest1", sameContent(ce, ce~difference(ce)))
+  self~assertTrue(sameContent(ce, ce~difference(ce)))
 
-  self~assertTrue("subtest2", sameContent(c1, c1~difference(ce)))
-  self~assertTrue("subtest3", sameContent(c2, c2~difference(ce)))
+  self~assertTrue(sameContent(c1, c1~difference(ce)))
+  self~assertTrue(sameContent(c2, c2~difference(ce)))
 
-  self~assertTrue("subtest4", sameContent(collDir~difference1, c1~difference(c2)))
-  self~assertTrue("subtest5", sameContent(collDir~difference2, c2~difference(c1)))
+  self~assertTrue(sameContent(collDir~difference1, c1~difference(c2)))
+  self~assertTrue(sameContent(collDir~difference2, c2~difference(c1)))
 
-  self~assertTrue("subtest6", sameContent(ce, c1~difference(c1)))
-  self~assertTrue("subtest7", sameContent(ce, c2~difference(c2)))
+  self~assertTrue(sameContent(ce, c1~difference(c1)))
+  self~assertTrue(sameContent(ce, c2~difference(c2)))
 
 
    -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
@@ -213,7 +209,7 @@ return testResult
   d1=clz~new~~put("1", "1")
   d2=c~difference(other)
 
-  self~assertTrue("subtest8: 'other' is an 'OrderedCollection'", sameContent(d1, d2))
+  self~assertTrue(sameContent(d1, d2), "subtest8: 'other' is an 'OrderedCollection'")
 
    -- now test where other is a MapCollection: "makeArray" returns "allItems"
   other=.table~new
@@ -223,7 +219,7 @@ return testResult
                  -- expected result
   d1=clz~new~~put("1", "1")
   d2=c~difference(other)
-  self~assertTrue("subtest9: 'other' is a 'MapCollection'", sameContent(d1, d2))
+  self~assertTrue(sameContent(d1, d2), "subtest9: 'other' is a 'MapCollection'")
 
 
 
@@ -231,22 +227,22 @@ return testResult
   expose collDir clz bUserDefinedIndex bSingleItem
 
   ce=collDir~emptyColl
-  self~assertTrue("subtest01:", sameContent(ce, ce~copy~~empty))
+  self~assertTrue(sameContent(ce, ce~copy~~empty))
 
   c1=collDir~coll_1~copy
-  self~assertTrue("subtest02:", sameContent(ce, c1~copy~~empty))
+  self~assertTrue(sameContent(ce, c1~copy~~empty))
 
   c2=collDir~coll_2~copy
-  self~assertTrue("subtest03:", sameContent(ce, c2~copy~~empty))
+  self~assertTrue(sameContent(ce, c2~copy~~empty))
 
 
 ::method "test_hasIndex"
   expose collDir clz bUserDefinedIndex bSingleItem
 
   coll=collDir~coll_1      -- get the prepared Stem
-  self~assertTrue( "subtest1", coll~hasIndex("1"))
-  self~assertTrue( "subtest2", coll~hasIndex("2"))
-  self~assertFalse("subtest3", coll~hasIndex("3"))
+  self~assertTrue(coll~hasIndex("1"))
+  self~assertTrue(coll~hasIndex("2"))
+  self~assertFalse(coll~hasIndex("3"))
 
 
 
@@ -254,18 +250,18 @@ return testResult
   expose collDir clz bUserDefinedIndex bSingleItem
 
   coll=collDir~coll_1      -- get the prepared Stem
-  self~assertTrue( "subtest1", coll~hasItem("1"))
-  self~assertTrue( "subtest2", coll~hasItem("2"))
-  self~assertFalse("subtest3", coll~hasItem("3"))
+  self~assertTrue(coll~hasItem("1"))
+  self~assertTrue(coll~hasItem("2"))
+  self~assertFalse(coll~hasItem("3"))
 
 
 ::method "test_index"
   expose collDir clz bUserDefinedIndex bSingleItem
 
   coll=collDir~coll_1      -- get the prepared Stem
-  self~assertEquals("subtest1", "1", coll~index("1"))
-  self~assertEquals("subtest2", "2", coll~index("2"))
-  self~assertNull(  "subtest3",      coll~index("3"))
+  self~assertEquals("1", coll~index("1"))
+  self~assertEquals("2", coll~index("2"))
+  self~assertNull(coll~index("3"))
 
 
 
@@ -277,15 +273,15 @@ return testResult
   c2=collDir~coll_2
   res=collDir~interSectionColl
 
-  self~assertTrue("subtest1", sameContent(ce, ce~interSection(ce)))
-  self~assertTrue("subtest2", sameContent(ce, c1~interSection(ce)))
-  self~assertTrue("subtest3", sameContent(ce, c2~interSection(ce)))
+  self~assertTrue(sameContent(ce, ce~interSection(ce)))
+  self~assertTrue(sameContent(ce, c1~interSection(ce)))
+  self~assertTrue(sameContent(ce, c2~interSection(ce)))
 
-  self~assertTrue("subtest4", sameContent(res, c1~interSection(c2)))
-  self~assertTrue("subtest5", sameContent(res, c2~interSection(c1)))
+  self~assertTrue(sameContent(res, c1~interSection(c2)))
+  self~assertTrue(sameContent(res, c2~interSection(c1)))
 
-  self~assertTrue("subtest6", sameContent(c1, c1~interSection(c1)))
-  self~assertTrue("subtest7", sameContent(c2, c2~interSection(c2)))
+  self~assertTrue(sameContent(c1, c1~interSection(c1)))
+  self~assertTrue(sameContent(c2, c2~interSection(c2)))
 
 
    -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
@@ -298,7 +294,7 @@ return testResult
   d1=clz~new~~put("a", "a")~~put(2,2)~~put(o1,o1)
   d2=c~interSection(other)
 
-  self~assertTrue("subtest8: 'other' is an 'OrderedCollection'", sameContent(d1, d2))
+  self~assertTrue(sameContent(d1, d2), "subtest8: 'other' is an 'OrderedCollection'")
 
    -- now test where other is a MapCollection: "makeArray" returns "allItems"
   other=.table~new
@@ -308,7 +304,7 @@ return testResult
                  -- expected result
   d1=clz~new~~put("<2-value>", "2")~~put("<o1-value>", o1)~~put("a","a")
   d2=c~interSection(other)
-  self~assertTrue("subtest9: 'other' is a 'MapCollection'", sameContent(d1, d2))
+  self~assertTrue(sameContent(d1, d2), "subtest9: 'other' is a 'MapCollection'")
 
 
 
@@ -317,31 +313,31 @@ return testResult
 
   o=collDir~coll_1
 
-  self~assertTrue("01: subclass of .Object", o~isInstanceOf(.Object))
-  self~assertTrue("02: subclass of .Object", o~isInstanceOf(clz))
+  self~assertTrue(o~isInstanceOf(.Object), "01: subclass of .Object")
+  self~assertTrue(o~isInstanceOf(clz), "02: subclass of .Object")
 
   if .ooRexxUnit.languageLevel>6.01 then
-     self~assertTrue("03: subclass of .OrderedCollection", o~isInstanceOf(.MapCollection))
+     self~assertTrue(o~isInstanceOf(.MapCollection), "03: subclass of .OrderedCollection")
 
 
 
 ::method "test_isEmpty"
   expose collDir clz bUserDefinedIndex bSingleItem
 
-  self~assertTrue( "subtest01", collDir~emptyColl~isEmpty)
-  self~assertFalse("subtest02", collDir~coll_1~isEmpty)
-  self~assertFalse("subtest03", collDir~coll_2~isEmpty)
+  self~assertTrue(collDir~emptyColl~isEmpty)
+  self~assertFalse(collDir~coll_1~isEmpty)
+  self~assertFalse(collDir~coll_2~isEmpty)
 
-  self~assertTrue( "subtest04", collDir~coll_1~copy~~empty~isEmpty)
+  self~assertTrue(collDir~coll_1~copy~~empty~isEmpty)
 
 
 
 ::method "test_items"
   expose collDir clz bUserDefinedIndex bSingleItem
 
-  self~assertEquals("subtest1", 0, collDir~emptyColl~items)
-  self~assertEquals("subtest2", 3, collDir~coll_1~items)
-  self~assertEquals("subtest3", 4, collDir~coll_2~items)
+  self~assertEquals(0, collDir~emptyColl~items)
+  self~assertEquals(3, collDir~coll_1~items)
+  self~assertEquals(4, collDir~coll_2~items)
 
 
 
@@ -349,28 +345,24 @@ return testResult
   expose collDir clz bUserDefinedIndex bSingleItem
 
   tmp=collDir~coll_1~makeArray
-  self~assertTrue("subtest1", tmp~isInstanceOf(.array))
+  self~assertTrue(tmp~isInstanceOf(.array))
   if bUserDefinedIndex then
-     self~assertTrue("subtest2", sameContent(.bag~new~union(tmp                ), -
-                                             .bag~new~union(collDir~allIndexes1)))
+     self~assertTrue(sameContent(.bag~new~union(tmp                ),                                               .bag~new~union(collDir~allIndexes1)))
   else
-     self~assertTrue("subtest2", sameContent(.bag~new~union(tmp                ), -
-                                             .bag~new~union(collDir~allItems1)))
+     self~assertTrue(sameContent(.bag~new~union(tmp                ),                                               .bag~new~union(collDir~allItems1)))
 
 
   tmp=collDir~coll_2~makeArray
-  self~assertTrue("subtest3", tmp~isInstanceOf(.array))
+  self~assertTrue(tmp~isInstanceOf(.array))
   if bUserDefinedIndex then
-     self~assertTrue("subtest4", sameContent(.bag~new~union(tmp                ), -
-                                             .bag~new~union(collDir~allIndexes2)))
+     self~assertTrue(sameContent(.bag~new~union(tmp                ),                                               .bag~new~union(collDir~allIndexes2)))
   else
-     self~assertTrue("subtest4", sameContent(.bag~new~union(tmp                ), -
-                                             .bag~new~union(collDir~allItems2)))
+     self~assertTrue(sameContent(.bag~new~union(tmp                ),                                               .bag~new~union(collDir~allItems2)))
 
 
   tmp=collDir~emptyColl~makeArray
-  self~assertTrue("subtest5", tmp~isInstanceOf(.array))
-  self~assertEquals("subtest6", 0, tmp~items)
+  self~assertTrue(tmp~isInstanceOf(.array))
+  self~assertEquals(0, tmp~items)
 
 
 
@@ -378,58 +370,58 @@ return testResult
   expose collDir clz bUserDefinedIndex bSingleItem
 
   tmpColl=clz~new
-  self~assertEquals("subtest01", 0, tmpColl              ~items)
+  self~assertEquals(0, tmpColl              ~items)
 
-  self~assertEquals("subtest02a", 1, tmpColl~~put("1","1")~items)
-  self~assertTrue(  "subtest02b", tmpColl~hasindex("1"))
-  self~assertTrue(  "subtest02c", tmpColl~hasitem("1"))
+  self~assertEquals(1, tmpColl~~put("1","1")~items)
+  self~assertTrue(tmpColl~hasindex("1"))
+  self~assertTrue(tmpColl~hasitem("1"))
 
-  self~assertEquals("subtest03", 2, tmpColl~~put("2","2")~items)
-  self~assertTrue(  "subtest03b", tmpColl~hasindex("2"))
-  self~assertTrue(  "subtest03c", tmpColl~hasitem("2"))
+  self~assertEquals(2, tmpColl~~put("2","2")~items)
+  self~assertTrue(tmpColl~hasindex("2"))
+  self~assertTrue(tmpColl~hasitem("2"))
 
-  self~assertEquals("subtest04", 2, tmpColl~~put("3","2")~items)
-  self~assertTrue(  "subtest04b", tmpColl~hasindex("2"))
-  self~assertTrue(  "subtest04c", tmpColl~hasitem("3"))
+  self~assertEquals(2, tmpColl~~put("3","2")~items)
+  self~assertTrue(tmpColl~hasindex("2"))
+  self~assertTrue(tmpColl~hasitem("3"))
 
-  self~assertEquals("subtest05", 2, tmpColl~~put("2","2")~items)
-  self~assertTrue(  "subtest05b", tmpColl~hasindex("2"))
-  self~assertTrue(  "subtest05c", tmpColl~hasitem("2"))
+  self~assertEquals(2, tmpColl~~put("2","2")~items)
+  self~assertTrue(tmpColl~hasindex("2"))
+  self~assertTrue(tmpColl~hasitem("2"))
 
-  self~assertEquals("subtest06", 3, tmpColl~~put("3","3")~items)
-  self~assertTrue(  "subtest06b", tmpColl~hasindex("3"))
-  self~assertTrue(  "subtest06c", tmpColl~hasitem("3"))
+  self~assertEquals(3, tmpColl~~put("3","3")~items)
+  self~assertTrue(tmpColl~hasindex("3"))
+  self~assertTrue(tmpColl~hasitem("3"))
 
-  self~assertTrue("subtest07", sameContent(.bag~of("1","2","3"), tmpColl))
+  self~assertTrue(sameContent(.bag~of("1","2","3"), tmpColl))
 
 
 ::method "test_[]="
   expose collDir clz bUserDefinedIndex bSingleItem
 
   tmpColl=clz~new
-  self~assertEquals("subtest01", 0, tmpColl              ~items)
+  self~assertEquals(0, tmpColl              ~items)
 
-  self~assertEquals("subtest02a", 1, tmpColl~~"[]="("1","1")~items)
-  self~assertTrue(  "subtest02b", tmpColl~hasindex("1"))
-  self~assertTrue(  "subtest02c", tmpColl~hasitem("1"))
+  self~assertEquals(1, tmpColl~~"[]="("1","1")~items)
+  self~assertTrue(tmpColl~hasindex("1"))
+  self~assertTrue(tmpColl~hasitem("1"))
 
-  self~assertEquals("subtest03", 2, tmpColl~~"[]="("2","2")~items)
-  self~assertTrue(  "subtest03b", tmpColl~hasindex("2"))
-  self~assertTrue(  "subtest03c", tmpColl~hasitem("2"))
+  self~assertEquals(2, tmpColl~~"[]="("2","2")~items)
+  self~assertTrue(tmpColl~hasindex("2"))
+  self~assertTrue(tmpColl~hasitem("2"))
 
-  self~assertEquals("subtest04", 2, tmpColl~~"[]="("3","2")~items)
-  self~assertTrue(  "subtest04b", tmpColl~hasindex("2"))
-  self~assertTrue(  "subtest04c", tmpColl~hasitem("3"))
+  self~assertEquals(2, tmpColl~~"[]="("3","2")~items)
+  self~assertTrue(tmpColl~hasindex("2"))
+  self~assertTrue(tmpColl~hasitem("3"))
 
-  self~assertEquals("subtest05", 2, tmpColl~~"[]="("2","2")~items)
-  self~assertTrue(  "subtest05b", tmpColl~hasindex("2"))
-  self~assertTrue(  "subtest05c", tmpColl~hasitem("2"))
+  self~assertEquals(2, tmpColl~~"[]="("2","2")~items)
+  self~assertTrue(tmpColl~hasindex("2"))
+  self~assertTrue(tmpColl~hasitem("2"))
 
-  self~assertEquals("subtest06", 3, tmpColl~~"[]="("3","3")~items)
-  self~assertTrue(  "subtest06b", tmpColl~hasindex("3"))
-  self~assertTrue(  "subtest06c", tmpColl~hasitem("3"))
+  self~assertEquals(3, tmpColl~~"[]="("3","3")~items)
+  self~assertTrue(tmpColl~hasindex("3"))
+  self~assertTrue(tmpColl~hasitem("3"))
 
-  self~assertTrue("subtest07", sameContent(.bag~of("1","2","3"), tmpColl))
+  self~assertTrue(sameContent(.bag~of("1","2","3"), tmpColl))
 
 
 
@@ -443,15 +435,15 @@ return testResult
   c2=collDir~coll_2
   cu=collDir~unionColl
 
-  self~assertTrue("subtest01", sameContent(ce, ce~copy~~putAll(ce)))
-  self~assertTrue("subtest03", sameContent(c1, c1~copy~~putAll(ce)))
-  self~assertTrue("subtest04", sameContent(c2, c2~copy~~putAll(ce)))
+  self~assertTrue(sameContent(ce, ce~copy~~putAll(ce)))
+  self~assertTrue(sameContent(c1, c1~copy~~putAll(ce)))
+  self~assertTrue(sameContent(c2, c2~copy~~putAll(ce)))
 
-  self~assertTrue("subtest05", sameContent(c1, clz~new~~putAll(c1)))
-  self~assertTrue("subtest06", sameContent(c2, clz~new~~putAll(c2)))
+  self~assertTrue(sameContent(c1, clz~new~~putAll(c1)))
+  self~assertTrue(sameContent(c2, clz~new~~putAll(c2)))
 
-  self~assertTrue("subtest07", sameContent(cu, c1~copy~~putAll(c2)))
-  self~assertTrue("subtest08", sameContent(cu, c2~copy~~putAll(c1)))
+  self~assertTrue(sameContent(cu, c1~copy~~putAll(c2)))
+  self~assertTrue(sameContent(cu, c2~copy~~putAll(c1)))
 
 
 
@@ -461,21 +453,21 @@ return testResult
   ce=collDir~emptyColl~copy
   c1=collDir~coll_1~copy
 
-  self~assertNull("subtest01", ce~remove("1"))
-  self~assertNull("subtest02", ce~remove(""))
+  self~assertNull(ce~remove("1"))
+  self~assertNull(ce~remove(""))
 
-  self~assertNull("subtest03", c1~remove("99"))
+  self~assertNull(c1~remove("99"))
 
-  self~assertEquals("subtest04", "1", c1~remove("1"))
-  self~assertNull(  "subtest05", c1~remove("1"))
+  self~assertEquals("1", c1~remove("1"))
+  self~assertNull(c1~remove("1"))
 
-  self~assertEquals("subtest06", "2", c1~remove("2"))
-  self~assertNull(  "subtest07", c1~remove("2"))
+  self~assertEquals("2", c1~remove("2"))
+  self~assertNull(c1~remove("2"))
 
-  self~assertEquals("subtest08", o1, c1~remove("o1"))
-  self~assertNull(  "subtest09", c1~remove("o1"))
+  self~assertEquals(o1, c1~remove("o1"))
+  self~assertNull(c1~remove("o1"))
 
-  self~assertEquals("subtest10", 0, c1~items)
+  self~assertEquals(0, c1~items)
 
 
 
@@ -485,21 +477,21 @@ return testResult
   ce=collDir~emptyColl~copy
   c1=collDir~coll_1~copy
 
-  self~assertNull("subtest01", ce~removeItem("1"))
-  self~assertNull("subtest02", ce~removeItem(.nil))
+  self~assertNull(ce~removeItem("1"))
+  self~assertNull(ce~removeItem(.nil))
 
-  self~assertNull("subtest03", c1~removeItem("99"))
+  self~assertNull(c1~removeItem("99"))
 
-  self~assertEquals("subtest04", "1", c1~removeItem("1"))
-  self~assertNull(  "subtest05", c1~removeItem("1"))
+  self~assertEquals("1", c1~removeItem("1"))
+  self~assertNull(c1~removeItem("1"))
 
-  self~assertEquals("subtest06", "2", c1~removeItem("2"))
-  self~assertNull(  "subtest07", c1~removeItem("2"))
+  self~assertEquals("2", c1~removeItem("2"))
+  self~assertNull(c1~removeItem("2"))
 
-  self~assertEquals("subtest07", o1, c1~removeItem(o1))
-  self~assertNull(  "subtest08", c1~removeItem(o1))
+  self~assertEquals(o1, c1~removeItem(o1))
+  self~assertNull(c1~removeItem(o1))
 
-  self~assertEquals("subtest09", 0, c1~items)
+  self~assertEquals(0, c1~items)
 
 
 
@@ -511,22 +503,22 @@ return testResult
   c2=collDir~coll_2
   cu=collDir~unionColl
 
-  self~assertTrue("subtest01", ce~subset(ce))
-  self~assertTrue("subtest02", ce~subset(c1))
-  self~assertTrue("subtest03", ce~subset(c2))
+  self~assertTrue(ce~subset(ce))
+  self~assertTrue(ce~subset(c1))
+  self~assertTrue(ce~subset(c2))
 
-  self~assertTrue("subtest04", c1~subset(c1))
-  self~assertTrue("subtest05", c2~subset(c2))
+  self~assertTrue(c1~subset(c1))
+  self~assertTrue(c2~subset(c2))
 
-  self~assertTrue("subtest06", ce~subset(cu))
-  self~assertTrue("subtest07", c1~subset(cu))
-  self~assertTrue("subtest08", c2~subset(cu))
+  self~assertTrue(ce~subset(cu))
+  self~assertTrue(c1~subset(cu))
+  self~assertTrue(c2~subset(cu))
 
-  self~assertFalse("subtest10", c1~subset(ce))
-  self~assertFalse("subtest11", c1~subset(c2))
+  self~assertFalse(c1~subset(ce))
+  self~assertFalse(c1~subset(c2))
 
-  self~assertFalse("subtest12", c2~subset(ce))
-  self~assertFalse("subtest13", c2~subset(c1))
+  self~assertFalse(c2~subset(ce))
+  self~assertFalse(c2~subset(c1))
 
 
    -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
@@ -536,7 +528,7 @@ return testResult
   other[104]="2"
   other[106]=o1
   d2=c~subSet(other)
-  self~assertFalse("subtest14: 'other' is an 'OrderedCollection'", d2)
+  self~assertFalse(d2, "subtest14: 'other' is an 'OrderedCollection'")
 
    -- now test where other is a 'MapCollection': "makeArray" returns "allItems"
   other=.table~new   -- use a table which is set-like
@@ -544,7 +536,7 @@ return testResult
   other[o1] =o1
   d2=c~subSet(other)
 
-  self~assertFalse("subtest15: 'other' is a 'MapCollection'", d2)
+  self~assertFalse(d2, "subtest15: 'other' is a 'MapCollection'")
 
 
 
@@ -557,7 +549,7 @@ return testResult
   other[106]=o1
   other[107]=o1
   d2=c~subSet(other)
-  self~assertTrue("subtest16: 'other' is an 'OrderedCollection'", d2)
+  self~assertTrue(d2, "subtest16: 'other' is an 'OrderedCollection'")
 
    -- now test where other is a 'MapCollection': "makeArray" returns "allItems"
   other=.table~new
@@ -567,7 +559,7 @@ return testResult
   other["3"] ="3"
   d2=c~subSet(other)
 
-  self~assertTrue("subtest17: 'other' is a 'MapCollection'", d2)
+  self~assertTrue(d2, "subtest17: 'other' is a 'MapCollection'")
 
 
 
@@ -577,8 +569,8 @@ return testResult
   ce=collDir~emptyColl
   c1=collDir~coll_1
 
-  self~assertTrue("subtest01", sameContent(ce, makeColl(clz, ce)))
-  self~assertTrue("subtest02", sameContent(c1, makeColl(clz, c1)))
+  self~assertTrue(sameContent(ce, makeColl(clz, ce)))
+  self~assertTrue(sameContent(c1, makeColl(clz, c1)))
 
   return
 
@@ -603,16 +595,16 @@ makeColl: procedure
   c2=collDir~coll_2
   res=collDir~unionColl
 
-  self~assertTrue("subtest1", sameContent(ce, ce~union(ce)))
+  self~assertTrue(sameContent(ce, ce~union(ce)))
 
-  self~assertTrue("subtest2", sameContent(c1, c1~union(ce)))
-  self~assertTrue("subtest3", sameContent(c2, c2~union(ce)))
+  self~assertTrue(sameContent(c1, c1~union(ce)))
+  self~assertTrue(sameContent(c2, c2~union(ce)))
 
-  self~assertTrue("subtest4", sameContent(c1, ce~union(c1)))
-  self~assertTrue("subtest5", sameContent(c2, ce~union(c2)))
+  self~assertTrue(sameContent(c1, ce~union(c1)))
+  self~assertTrue(sameContent(c2, ce~union(c2)))
 
-  self~assertTrue("subtest6", sameContent(res, c1~union(c2)))
-  self~assertTrue("subtest7", sameContent(res, c2~union(c1)))
+  self~assertTrue(sameContent(res, c1~union(c2)))
+  self~assertTrue(sameContent(res, c2~union(c1)))
 
 
    -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
@@ -625,7 +617,7 @@ makeColl: procedure
   d1=clz~new
   d1~~put(1,1)~~put(2,2)~~put(2,2)~~put(o1,o1)~~put(o1,o1)
   d2=c~union(other)
-  self~assertTrue("subtest8: 'other' is an 'OrderedCollection'", sameContent(d1, d2))
+  self~assertTrue(sameContent(d1, d2), "subtest8: 'other' is an 'OrderedCollection'")
 
    -- now test where other is a 'MapCollection': "makeArray" returns "allItems"
   other=.table~new
@@ -633,7 +625,7 @@ makeColl: procedure
   other[o1] =o1
   d2=c~union(other)
 
-  self~assertTrue("subtest9: 'other' is a 'MapCollection'", sameContent(d1, d2))
+  self~assertTrue(sameContent(d1, d2), "subtest9: 'other' is a 'MapCollection'")
 
 
 
@@ -645,16 +637,16 @@ makeColl: procedure
   c2=collDir~coll_2
   res=collDir~xorColl
 
-  self~assertTrue("subtest1", sameContent(ce, ce~xor(ce)))
-  self~assertTrue("subtest2", sameContent(c1, c1~xor(ce)))
+  self~assertTrue(sameContent(ce, ce~xor(ce)))
+  self~assertTrue(sameContent(c1, c1~xor(ce)))
 
-  self~assertTrue("subtest3", sameContent(c2, c2~xor(ce)))
+  self~assertTrue(sameContent(c2, c2~xor(ce)))
 
-  self~assertTrue("subtest4", sameContent(res, c1~xor(c2)))
-  self~assertTrue("subtest5", sameContent(res, c2~xor(c1)))
+  self~assertTrue(sameContent(res, c1~xor(c2)))
+  self~assertTrue(sameContent(res, c2~xor(c1)))
 
-  self~assertTrue("subtest6", sameContent(ce, c1~xor(c1)))
-  self~assertTrue("subtest7", sameContent(ce, c2~xor(c2)))
+  self~assertTrue(sameContent(ce, c1~xor(c1)))
+  self~assertTrue(sameContent(ce, c2~xor(c2)))
 
 
    -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
@@ -664,7 +656,7 @@ makeColl: procedure
   other[106]=o1
   d1=clz~new~~put(1,1)     -- expected result
   d2=c~xor(other)
-  self~assertTrue("subtest8: 'other' is an 'OrderedCollection'", sameContent(d1, d2))
+  self~assertTrue(sameContent(d1, d2), "subtest8: 'other' is an 'OrderedCollection'")
 
    -- now test where other is a 'MapCollection': "makeArray" returns "allItems"
   other=.table~new
@@ -672,7 +664,7 @@ makeColl: procedure
   other[o1] =o1
   d2=c~xor(other)
 
-  self~assertTrue("subtest9: 'other' is a 'MapCollection'", sameContent(d1, d2))
+  self~assertTrue(sameContent(d1, d2), "subtest9: 'other' is a 'MapCollection'")
 
 
 
@@ -688,46 +680,46 @@ makeColl: procedure
 
          /* explicitly created stem object      */
   s=clz~new          -- no default value given, hence empty string ""
-  self~assertSame("subtest_01a", ""     , s~at       )
-  self~assertSame("subtest_01b", "1"    , s~at("1")  )
-  self~assertSame("subtest_01c", "aha"  , s~at("aha"))
-  self~assertSame("subtest_01d", "1.A.1", s~at(1, "A", 1))
+  self~assertSame("", s~at)
+  self~assertSame("1", s~at("1"))
+  self~assertSame("aha", s~at("aha"))
+  self~assertSame("1.A.1", s~at(1, "A", 1))
 
-  self~assertSame("subtest_02a", ""     , s~"[]"       )
-  self~assertSame("subtest_02b", "1"    , s~"[]"("1")  )
-  self~assertSame("subtest_02c", "aha"  , s~"[]"("aha"))
-  self~assertSame("subtest_02d", "1.A.1", s~"[]"(1, "A", 1))
+  self~assertSame("", s~"[]")
+  self~assertSame("1", s~"[]"("1"))
+  self~assertSame("aha", s~"[]"("aha"))
+  self~assertSame("1.A.1", s~"[]"(1, "A", 1))
 
        /* implicitly created stem object, using stem name as default value  */
-  self~assertSame("subtest_03a", "A."     , a.~at       )
-  self~assertSame("subtest_03b", "A.1"    , a.~at("1")  )
-  self~assertSame("subtest_03c", "A.aha"  , a.~at("aha"))
-  self~assertSame("subtest_03d", "A.1.A.1", a.~at(1, "A", 1))
+  self~assertSame("A.", a.~at)
+  self~assertSame("A.1", a.~at("1"))
+  self~assertSame("A.aha", a.~at("aha"))
+  self~assertSame("A.1.A.1", a.~at(1, "A", 1))
 
-  self~assertSame("subtest_04a", "A."     , a.~"[]"       )
-  self~assertSame("subtest_04b", "A.1"    , a.~"[]"("1")  )
-  self~assertSame("subtest_04c", "A.aha"  , a.~"[]"("aha"))
-  self~assertSame("subtest_04d", "A.1.A.1", a.~"[]"(1, "A", 1))
+  self~assertSame("A.", a.~"[]")
+  self~assertSame("A.1", a.~"[]"("1"))
+  self~assertSame("A.aha", a.~"[]"("aha"))
+  self~assertSame("A.1.A.1", a.~"[]"(1, "A", 1))
 
       /* explicitly created stem object, changing default values */
   defVal1="DefaultValue1"
   defVal2="DefaultValue2"
   s=clz~new(defVal1)
 
-  self~assertSame("subtest_05a", defVal1, s~at  )
-  self~assertSame("subtest_05b", defVal1, s~"[]")
+  self~assertSame(defVal1, s~at)
+  self~assertSame(defVal1, s~"[]")
 
-  self~assertEquals("subtest_06a", 0, s~items)
+  self~assertEquals(0, s~items)
   s~put("1", "1")
-  self~assertEquals("subtest_06b", 1, s~items)
+  self~assertEquals(1, s~items)
 
          /* resetting default value, will empty stem  */
   s~put(defVal2)
-  self~assertSame("subtest_07a", defVal2, s~at  )
-  self~assertSame("subtest_07b", defVal2, s~"[]")
-  self~assertEquals("subtest_08a", 0, s~items)
+  self~assertSame(defVal2, s~at)
+  self~assertSame(defVal2, s~"[]")
+  self~assertEquals(0, s~items)
   s~put("1", "1")
-  self~assertEquals("subtest_08b", 1, s~items)
+  self~assertEquals(1, s~items)
 
 
 
