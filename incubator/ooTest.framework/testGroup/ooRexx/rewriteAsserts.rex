@@ -109,7 +109,7 @@ return 0
     tGroup = file~strip('T', "X")
     .logger~lineout("Overwriting" filespec('N', tGroup) "with" filespec('N', file))
     copyCmd file tGroup
-    delCmd tGroup
+    delCmd file
   end
   .logger~close
 
@@ -450,7 +450,7 @@ return .false
       actual = actual~strip('L', ",")~strip('B')
 
       -- Remove simple subTestXXX messages
-      if msg~caselessPos("subtest") <> 0, msg~words() < 4 then
+      if msg~caselessPos("subtest") <> 0, msg~words() < 3 then
         line = pre || expected || "," actual || post
       else
         line = pre || expected || "," actual || "," msg || post
@@ -467,7 +467,7 @@ return .false
       actual = actual~strip('L', ",")~strip('B')
 
       -- Remove simple subTestXXX messages
-      if msg~caselessPos("subtest") <> 0, msg~words() < 4 then
+      if msg~caselessPos("subtest") <> 0, msg~words() < 3 then
         line = pre || actual || post
       else
         line = pre || actual || "," msg || post
