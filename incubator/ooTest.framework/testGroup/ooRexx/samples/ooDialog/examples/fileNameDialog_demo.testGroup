@@ -112,8 +112,8 @@ return testResult
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
   Directives, Classes, or Routines.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::requires "FileUtils.cls"
 ::requires 'ooTest.frm'
+::requires "FileUtils.cls"
 
 /** fetchMehodNames()
  * This is a helper function that creates an array of the test methods.  The
@@ -128,18 +128,17 @@ return testResult
   tests[5] = 'test_exampleQuit'
 return tests
 
-::class 'FNDlgTestSuite' subclass TestSuite
+::class 'FNDlgTestSuite' subclass ooTestSuite
 
 ::method setUp
+  use arg testResult
   say 'In my test suite at set up'
-  say 'self class:' self~class
-  say 'self has method TestCaseInfo:' self~hasMethod('TestCaseInfo')
-  say 'TestCaseInfo is a directory: ' self~testCaseInfo~isA(.directory)
-  parse source . . fileSpec
-  say 'My file is:' fileSpec
-  say 'My error is on line:' .line
 
-  j = printTestInfo(.fileNameDialog_demo.testGroup~testCaseInfo)
+  parse source . . fileSpec
+  say 'My file is:         ' filespec('N', fileSpec)
+  say 'My error is on line:' .line
+  say 'Should stop:        ' testResult~shouldStop
+
   prgFile = indirectRequire('WinUtils.cls')
 
   if prgFile == "" then do
@@ -166,8 +165,21 @@ return tests
   invoked in order, sorted by method name, by the framework.  This fact is
   used to ensure the correct order of execution.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class 'fileNameDialog_demo.testGroup' public -
-        subclass ooTestCase
+::class 'fileNameDialog_demo.testGroup' public subclass ooTestCase
+
+  /** init() class method
+   * Over-ride init so that we can set the test type for this test case.
+   */
+  ::method init class
+    forward class (super) continue
+    self~ooTestType = self~GUI_SAMPLE_TEST
+
+    self~init:super
+    self~prgPath = ""
+    self~launcher = ""
+    self~stop = .false
+    self~windowFinder = ""
+
 
   ::method test_ooRexxInstalled
     self~class~stop = .true
@@ -317,7 +329,7 @@ return tests
 
   return self~findAndCloseFNDlg(wf)
 
-  ::method findAndCloseFNFlg
+  ::method findAndCloseFNDlg
     use arg wf
 
     wnd = wf~getWindow("Open a File")
@@ -349,13 +361,6 @@ return tests
     wnd~sendCommand(2)
     wnd = wf~getWindow("Error")
   return self~closeFromMsgBox(wf, wnd)
-
-  ::method init class
-    self~init:super
-    self~prgPath = ""
-    self~launcher = ""
-    self~stop = .false
-    self~windowFinder = ""
 
   ::method prgPath      attribute class
   ::method stop         attribute class

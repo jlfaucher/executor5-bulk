@@ -76,6 +76,7 @@
     prgName = prgName~strip
     if prgName~pos(' ') <> 0, prgName~left(1) \== '"' then prgName = enQuote(prgName)
     prgName = enQuote(prgName)
+
     if arg(2, 'O') then params = ""
     else params = arg(2)
 

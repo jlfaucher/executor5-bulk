@@ -6,7 +6,7 @@
    name:             ooRexxUnit.cls
    author:           Rony G. Flatscher, Rick McGuire
    date:             2005-08-07
-   version:          1.0.6
+   version:          2.0.0
    changed1:         2005-08-07, ---rgf, moved assertion routines to a class "Assert", which
                                  serves as a superclass for TestCase: this is the junit-approach
                      2005-08-20, ---rgf, added license, assertCount, corrected some little bugs
@@ -86,6 +86,7 @@
                      2007-08-18, ---mm,  - add public routine simpleFormatTestResults()
                      2007-10-10, ---rgf, - enhanced framework to allow accepting testSuite objects at testSuite
                                            creation time (and also collections of test cases)
+                     2008-01-07  ---mm,  - Major re-work of the framework, bumping level to 2.0.0
 
 
    language-level:   6.0.2
@@ -94,8 +95,15 @@
 
    purpose:          Supply the base classes for a JUnit compliant testing framework for ooRexx
 
-   remark:           Wherever possible the JUnit class and method names are used to help ease
-                     the understanding.
+   remark:           The original design tried, wherever possible, to use the JUnit class and
+                     method names in an effort to make ooRexxUnit easier to understand.  However,
+                     this lead to some poor design choices in spots and this design goal no
+                     longer has a high priority in ooRexxUnit 2.0.0.
+
+                     Nevetheless, ooRexxUnitstill sticks closely to the design of JUnit 3.8.x
+                     and persons familiar with JUnit should have no trouble in understanding
+                     ooRexxUnit.  For an excellent overview of this design read the cookstour
+                     document, the link to which is provided below.
 
    license:          CPL 1.0 (Common Public License v1.0, see below)
 
@@ -156,7 +164,7 @@ if \ .local~hasEntry(ooRexxUnit.version) then do
   -- Define the version number with: X.Y.Z  Where X is the ooRexxUnit.cls
   -- version, Y is the minimum ooRexx interpreter level required, and Z is the
   -- date the version was changed.
-  .local~ooRexxUnit.version=106.320.20071205
+  .local~ooRexxUnit.version=200.320.20080107
 
   .local~chars.NonPrintable=xrange("00"x, "1F"x) || "FF"x  -- define non-printable chars
 
@@ -221,9 +229,7 @@ end
 ::routine isSubClassOf public
   use strict arg cObj, superClassName
 
-
   -- This is a recursive function and these are the base cases.
-
   if \ cObj~isA(.class) then return .false
 
   if cObj~id~caselessEquals(superClassName) then return .true
@@ -233,10 +239,10 @@ end
 
   -- Do a breadth-first search
   do cObj over supers
-    --say '    superclass id' cObj~id
     if cObj~id~caselessEquals(superClassName) then return .true
   end
 
+  -- The recursive part.
   do cObj over supers
     if isSubClassOf(cObj, superClassName) then return .true
   end

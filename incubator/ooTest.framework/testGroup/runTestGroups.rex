@@ -63,8 +63,10 @@
 /*----------------------------------------------------------------------------*/
 cmdLine = arg(1)
 
+   absoluteBegin = .TimeSpan~new(time('F'))
+
    -- Quick check for incorrect command line.
-   if cmdLine~words > 4 then return doHelp()
+   if cmdLine~words > 5 then return doHelp()
 
    cmdOpts = .set~new
    if hasHelpOpt(cmdLine, cmdOpts) then return doHelp()
@@ -72,6 +74,7 @@ cmdLine = arg(1)
    switches = getSysFileTreeOpts(cmdOpts)
    formatter = getFormatterOpt(cmdOpts)
    feedback = getFeedbackOpt(cmdOpts)
+   suppressKnownBugs = getSuppressOpt(cmdOpts)
 
    -- If options are added, getSearchFile() has to remain last because it takes
    -- whatever is left.
@@ -88,33 +91,38 @@ cmdLine = arg(1)
    do i=1 to tests.0
       list~insert(tests.i)
    end
+   searchEnd = .TimeSpan~new(time('F'))
 
    ts=makeTestSuiteFromFileList(list)  -- create the testSuite object
    call time "Reset"      -- start timer
-   tr=ts~execute( , feedback) -- run all the tests in the testSuite, retrieve the testResult object
+   suiteEnd = .TimeSpan~new(time('F'))
+   tr=ts~run( , feedback) -- run all the tests in the testSuite, retrieve the testResult object
+   testEnd = .TimeSpan~new(time('F'))
    e=time("Elapsed")
 
                -- show brief results
    parse source . . s                  -- get full path to this program
    this=filespec("Name", s)            -- extract file name
 
+   title = pp(this) "processed:" pp(searchFile) "with" pp(switches) || .endOfLine || -
+           "found" pp(tests.0) "file(s), elapsed time:" pp(e) "sec(s)"
+
    select
-      when formatter == 1 then do
-         call simpleDumpTestResults tr, pp(this) "processed:" pp(searchFile) "with" pp(switches),
-                                        "found" pp(tests.0) "file(s), elapsed time:" pp(e) "sec(s)"
-      end
-      when formatter == 2 then do
-         z = simpleFormatTestResults(tr, pp(this) "processed:" pp(searchFile) "with" pp(switches) -
-                                        "found" pp(tests.0) "file(s), elapsed time:" pp(e) "sec(s)")
-      end
-      otherwise do
+      when formatter == 1 then call simpleDumpTestResults tr, title
+
+      when formatter == 2 then z = simpleFormatTestResults(tr, title, suppressKnownBugs)
+
+      otherwise
         -- Should never really happen.
-         call simpleDumpTestResults tr, pp(this) "processed:" pp(searchFile) "with" pp(switches),
-                                        "found" pp(tests.0) "file(s), elapsed time:" pp(e) "sec(s)"
-      end
+         call simpleDumpTestResults tr, title
    end
    -- End select
 
+   absoluteEnd = .TimeSpan~new(time('F'))
+   say 'File search:   ' (searchEnd - absoluteBegin)
+   say 'Suite Build:   ' (suiteEnd - searchEnd)
+   say 'Test execution:' (testEnd - suiteEnd)
+   say 'Total time:    ' (absoluteEnd - absoluteBegin)
 
 return 0
 
@@ -169,6 +177,13 @@ return switches
    if .nil <> opt then feedback = .true
 return feedback
 
+::routine getSuppressOpt
+   use arg cmdOpts
+   suppress = .false
+   opt = cmdOpts~remove("-s")
+   if .nil <> opt then suppress = .true
+return suppress
+
 ::routine hasHelpOpt
    use arg cmdLine, cmdOpts
 
@@ -192,6 +207,7 @@ return h~intersection(cmdOpts)~items <> 0
    say
    say "  -r      look in subdirectories recursively"
    say "  -v      verbose (pass the 'feedback == true' option to TestSuite::run)"
+   say "  -s      suppress failure notices for known bugs"
    say '  -[1-9]  select formatter for printing results'
    say '            currently valid values are:'
    say '            -1 == simpleDumpTestResults()'

@@ -42,10 +42,12 @@
    date:             2008-01-05
    version:          0.1.0
 
-   purpose:          A brute force parser that rewrites the assertXXX() methods.
-                     This is really a throw away program, it is just being
-                     retained in case it can be tweaked and used in the future
-                     for some pupose.
+   purpose:          A brute force parser that rewrites .testGroup files.  This
+                     is really a throw away program, as its primary purpose is
+                     to rewrite the assertXXX() methods.
+
+                     It is being retained in case it can be tweaked and used in
+                     the future for some similar pupose.
 */
 cmdLine = arg(1)
 
@@ -115,9 +117,10 @@ return 0
     .logger~lineout("Overwriting" filespec('N', tGroup) "with" filespec('N', file))
     copyCmd file tGroup
     delCmd file
-
-    if os == "WINDOWS" then return doConvert(.logger)
   end
+
+  if os == "WINDOWS" then return doConvert(.logger)
+
   .logger~close
 
 return 0
@@ -193,12 +196,41 @@ return 0
   use arg fsObj, lines
 
   okay = .true
+  subclassDone = .false
+  requiresDone = .false
 
   do i = 1 to lines~items
+    line = lines[i]
+
     select
-      when lines[i]~caselessPos("self~assertEquals(") <> 0 then do
-        h = .AssertHolder~new(lines, lines[i], i)
-        --say 'line:' lines[i]
+      when \ requiresDone then do
+        if line~word(1)~caselessAbbrev("::requires"), line~word(2)~caselessPos("ooRexxUnit.cls") <> 0 then do
+          line = "::requires 'ooTest.frm'" line~subword(3)
+          requiresDone = .true
+        end
+      end
+
+      when \ subclassDone then do
+        if line~caselessWordPos("subclass") <> 0, line~caselessPos("TestCase") <> 0 then do
+          -- TestCase may or may not be quoted.
+          pStart = line~caselessWordPos("subclass")
+          pEnd = pStart + 1
+          if line~word(pEnd)~caselessPos("TestCase") <> 0 then do
+            pre = line~subword(1, pStart - 1)
+            endWords = line~words - pEnd
+            if endWords > 0 then post = line~subword(pEnd + 1, endWords)
+
+            line = pre "subclass ooTestCase"
+            if endWords > 0 then line = line post
+
+            subclassDone = .true
+          end
+        end
+      end
+
+      when line~caselessPos("self~assertEquals(") <> 0 then do
+        h = .AssertHolder~new(lines, line, i)
+        --say 'line:' line
         line = maybeJoinLines(h)
         if line~dataType('O') then do
           okay = .false
@@ -220,9 +252,9 @@ return 0
         line = swapArgs(2, line, parenStart, parenEnd, i)
       end
 
-      when lines[i]~caselessPos("self~assertNotEquals(") <> 0 then do
-        h = .AssertHolder~new(lines, lines[i], i)
-        -- say 'line:' lines[i]
+      when line~caselessPos("self~assertNotEquals(") <> 0 then do
+        h = .AssertHolder~new(lines, line, i)
+        -- say 'line:' line
         line = maybeJoinLines(h)
         -- say 'line:' line
         if line~dataType('O') then do
@@ -246,9 +278,9 @@ return 0
         line = swapArgs(2, line, parenStart, parenEnd, i)
       end
 
-      when lines[i]~caselessPos("self~assertNull(") <> 0 then do
-        h = .AssertHolder~new(lines, lines[i], i)
-        -- say 'line:' lines[i]
+      when line~caselessPos("self~assertNull(") <> 0 then do
+        h = .AssertHolder~new(lines, line, i)
+        -- say 'line:' line
         line = maybeJoinLines(h)
         if line~dataType('O') then do
           okay = .false
@@ -270,9 +302,9 @@ return 0
         line = swapArgs(1, line, parenStart, parenEnd, i)
       end
 
-      when lines[i]~caselessPos("self~assertNotNull(") <> 0 then do
-        h = .AssertHolder~new(lines, lines[i], i)
-        -- say 'line:' lines[i]
+      when line~caselessPos("self~assertNotNull(") <> 0 then do
+        h = .AssertHolder~new(lines, line, i)
+        -- say 'line:' line
         line = maybeJoinLines(h)
         if line~dataType('O') then do
           okay = .false
@@ -294,9 +326,9 @@ return 0
         line = swapArgs(1, line, parenStart, parenEnd, i)
       end
 
-      when lines[i]~caselessPos("self~assertSame(") <> 0 then do
-        h = .AssertHolder~new(lines, lines[i], i)
-        -- say 'line:' lines[i]
+      when line~caselessPos("self~assertSame(") <> 0 then do
+        h = .AssertHolder~new(lines, line, i)
+        -- say 'line:' line
         line = maybeJoinLines(h)
         if line~dataType('O') then do
           okay = .false
@@ -318,9 +350,9 @@ return 0
         line = swapArgs(2, line, parenStart, parenEnd, i)
       end
 
-      when lines[i]~caselessPos("self~assertNotSame(") <> 0 then do
-        h = .AssertHolder~new(lines, lines[i], i)
-        -- say 'line:' lines[i]
+      when line~caselessPos("self~assertNotSame(") <> 0 then do
+        h = .AssertHolder~new(lines, line, i)
+        -- say 'line:' line
         line = maybeJoinLines(h)
         if line~dataType('O') then do
           okay = .false
@@ -342,9 +374,9 @@ return 0
         line = swapArgs(2, line, parenStart, parenEnd, i)
       end
 
-      when lines[i]~caselessPos("self~assertTrue(") <> 0 then do
-        h = .AssertHolder~new(lines, lines[i], i)
-        -- say 'line:' lines[i]
+      when line~caselessPos("self~assertTrue(") <> 0 then do
+        h = .AssertHolder~new(lines, line, i)
+        -- say 'line:' line
         line = maybeJoinLines(h)
         if line~dataType('O') then do
           okay = .false
@@ -366,9 +398,9 @@ return 0
         line = swapArgs(1, line, parenStart, parenEnd, i)
       end
 
-      when lines[i]~caselessPos("self~assertFalse(") <> 0 then do
-        h = .AssertHolder~new(lines, lines[i], i)
-        -- say 'line:' lines[i]
+      when line~caselessPos("self~assertFalse(") <> 0 then do
+        h = .AssertHolder~new(lines, line, i)
+        -- say 'line:' line
         line = maybeJoinLines(h)
         if line~dataType('O') then do
           okay = .false
@@ -391,7 +423,7 @@ return 0
       end
 
       otherwise
-        line = lines[i]
+        NOP
 
     end
     -- End select
@@ -402,6 +434,20 @@ return 0
     end
 
     fsObj~lineout(line)
+  end
+
+  if \ subclassDone then do
+    .logger~lineout("Logic Error subclass TestCase not changed to subclass ooTestCase")
+    .logger~lineout("  No asserts will have been rewritten")
+    .logger~lineout("  Error Error")
+    okay = .false
+  end
+
+  if \ requiresDone then do
+    .logger~lineout("Logic Error ::requires ooRexxUnit.cls not changed to ::requires 'ooTest.frm'")
+    .logger~lineout("  No asserts will have been rewritten")
+    .logger~lineout("  Error Error")
+    okay = .false
   end
 
   if \ okay then .logger~lineout("  Error Error")
@@ -531,8 +577,9 @@ return .false
     otherwise do
       .logger~lineout("  Error parsing commas.  Max and comma count make no sense!!!")
       .logger~lineout("  Working on line" i "Max:" max "Comma count:" commas~items)
+      .logger~lineout("  Most likely unmatched quotes, edit this line by hand")
       .logger~lineout("  ##################################")
-      line = .false
+      -- Don't return false, keep going.
     end
   end
   -- End select
