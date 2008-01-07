@@ -1108,14 +1108,13 @@ return str
  * containing the message invocation.  This allows the exception handler to trap
  * the failed test case.
  *
- * @param data  REQUIRED  (AssertFailure)  Data concerning the failure.
+ * @param data  REQUIRED (AssertFailure or String)  Data concerning the failure.
  */
 ::method fail
   use strict arg data
 
-  -- DFX TODO Some exsiting test cases call fail() directly.  Need to check if
-  -- data is a simple .String and if so, create an AssertFailure object from
-  -- that string.
+  if data~isA(.String) then data = self~makeFailure("n/a", "n/a", data, "fail")
+
   msg = "ooRexxUnit.cls - source of syntax exception 'FAIL' method invocation in class 'ASSERT'."
 
   RAISE syntax 93.964 array (msg, data)

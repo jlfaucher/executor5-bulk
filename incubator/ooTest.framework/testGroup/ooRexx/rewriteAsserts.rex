@@ -60,6 +60,11 @@ cmdLine = arg(1)
     return
   end
 
+  if cmdLine == 'DOS2UNIX' then do
+    z = doConvert()
+    return
+  end
+
   .local~logger = .stream~new("AssertRewrite.log")
   .logger~open("WRITE REPLACE")
   .logger~lineout(.eol)
@@ -110,10 +115,56 @@ return 0
     .logger~lineout("Overwriting" filespec('N', tGroup) "with" filespec('N', file))
     copyCmd file tGroup
     delCmd file
+
+    if os == "WINDOWS" then return doConvert(.logger)
   end
   .logger~close
 
 return 0
+
+::routine doConvert
+  use arg logger
+
+  if arg(1, 'O') | \logger~isA(.stream) then do
+    .local~logger = .stream~new("Dos2Unix.log")
+    .logger~open("WRITE REPLACE")
+    .logger~lineout('Convert line endings on all *.testGroup files to LF.')
+    .logger~lineout(.eol)
+    logger = .logger
+  end
+
+  parse upper source os .
+  if \ os~abbrev("WIN") then do
+    logger~lineout('  On a non-Windows box, conversion should be unnecessary.')
+    logger~lineout("  Quitting")
+    logger~lineout("")
+    logger~close
+    return 0
+  end
+
+  'which dos2unix 1>nul 2>&1'
+  ret = RC
+  if ret <> 0 then do
+    logger~lineout('  Does not appear that the GnuWin32 utils are installed on')
+    logger~lineout('  this system.  Need dos2unix to convert line endings.')
+    logger~lineout("  Quitting")
+    logger~lineout("")
+    logger~close
+    return 0
+  end
+
+  files = findFiles("*.testGroup")
+  do file over files
+    logger~lineout("  Converting" filespec('N', file))
+    'dos2unix -U' file
+  end
+
+  logger~lineout("Done")
+  logger~lineout("")
+  logger~close
+
+return 0
+
 
 ::routine writeNew
   use arg file

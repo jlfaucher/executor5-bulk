@@ -41,7 +41,7 @@
  * fully implemented.
  */
 cmdLine = arg(1)
-
+   say 'command line is empty string:' (cmdLine == "")
    absoluteBegin = .TimeSpan~new(time('F'))
 
    .local~bRunTestsLocally = .false
@@ -49,8 +49,8 @@ cmdLine = arg(1)
    baseDir = "ooRexx"
    --baseDir = "ooRexx\samples"
 
-   testResult = .ooRexxUnit.default.TestResult.Class~new
-   testResult~setVerbosity(3)
+   testResult = .ooRexxUnit.default.TestResult.Class~new(0)
+   --testResult~setVerbosity(0)
    finder = .ooTestFinder~new(baseDir, ".testGroup")
    containers = finder~seek(testResult); say 'containers items:' containers~items
    searchEnd = .TimeSpan~new(time('F'))
@@ -65,10 +65,9 @@ cmdLine = arg(1)
 
    say 'Executing automated test suite.'
    suite~execute(testResult)
-   say 'test result:' testResult
    testEnd = .TimeSpan~new(time('F'))
 
-   testResult~print("My Title", 3)
+   testResult~print("My Title")
    --call simpleFormatTestResults testResult, "My Title"
    --call simpleDumpTestResults testResult, "My Title"
 

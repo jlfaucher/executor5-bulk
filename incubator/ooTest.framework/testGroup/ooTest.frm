@@ -340,9 +340,11 @@ return a
   ::method printBrief
     use arg tResult
 
-    say 'Tests:   ' tResult~runCount
-    say 'Failures:' tResult~failureCount
-    say 'Errors:  ' tResult~errorCount + tResultExceptionCount
+    say
+    say ' '~copies(20) 'ooTest'
+    say '  Tests:   ' tResult~runCount
+    say '  Failures:' tResult~failureCount
+    say '  Errors:  ' tResult~errorCount + tResult~ExceptionCount
     say
 
   /** print()
@@ -368,7 +370,7 @@ return a
     verbose = self~getVerbosity
 
     if verbose == 0 then do
-      self~printBrief(testResult)
+      self~printBrief(tResult)
       return
     end
 
@@ -459,15 +461,23 @@ return a
   ::attribute knownFailures  private
   ::attribute newFailures    private
 
+  ::attribute newFailureCount   set private
+  ::attribute newFailureCount   get
+  ::attribute knownFailureCount set private
+  ::attribute knownFailureCount get
+
   ::method init
-    use arg verbosity = 1
-    forward class (super) continue
+    expose newFailureCount knownFailureCount
+    use arg verbosity
+    self~init:super
 
     self~notifications = .queue~new
     self~exceptions = .queue~new
     self~events = .queue~new
     self~knownFailures = .queue~new
     self~newFailures = .queue~new
+    newFailureCount = 0
+    knownFailureCount = 0
 
     -- If verbosity is specified, use it to over-ride the default.
     if arg(1, 'E') then self~setVerbosity(verbosity)
@@ -478,12 +488,18 @@ return a
   -- End init( )
 
   ::method addFailure
+    expose newFailureCount knownFailureCount
     use strict arg testCase, failData
     forward class (super) continue
 
-    if failData~msg~abbrev(.ooRexxUnit.knownBugFlag) then self~knownFailures~queue(failData)
-    else self~newFailures~queue(failData)
-
+    if failData~msg~abbrev(.ooRexxUnit.knownBugFlag) then do
+      self~knownFailures~queue(failData)
+      knownFailureCount += 1
+    end
+    else do
+      self~newFailures~queue(failData)
+      newFailureCount += 1
+    end
 
   ::method addNotification
     use strict arg notification
@@ -1341,65 +1357,6 @@ return suite
 -- End of class: ooTestFinder
 
 
-/* class: Notification - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
-
-    A data object containing information concerning status, events, or other
-    things that might need to be logged during the execution of a test, usually
-    the execution of an automated suite of tests.
-
-    At a minimum the object contains a time stamp, the name of the relevant
-    file, and the notification type.  3 notification types are defined: SKIPPED,
-    WARNING, MESSAGE.
-
-\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class 'Notification' public subclass ReportData
-
-  /* Would prefer to use the CONSTANT directive */
-  ::method SKIP_TYPE class; return 1
-  ::method WARN_TYPE class; return 2
-  ::method TEXT_TYPE class; return 3
-  ::method SKIP_TYPE;       return 1
-  ::method WARN_TYPE;       return 2
-  ::method TEXT_TYPE;       return 3
-
-  ::attribute reason
-  ::attribute message
-  ::attribute warning
-
-  ::attribute additional
-  ::attribute additionalObject
-
-  ::method init
-    use strict arg dateTime, file, type
-    forward class (super) continue
-
-    if \ isWholeRange(type, self~SKIP_TYPE, self~TEXT_TYPE) then
-      raise syntax 88.907 array("3 'type'", self~SKIP_TYPE, self~TEXT_TYPE, type)
-
-    select
-      when type == self~SKIP_TYPE then do
-        self~reason = "Reason is unknown"
-        self~warning = .nil
-        self~message = .nil
-      end
-      when type == self~WARN_TYPE then do
-        self~reason = .nil
-        self~warning = "Warning is unknown"
-        self~message = .nil
-      end
-      otherwise do
-        self~reason = .nil
-        self~warning = .nil
-        self~message = "Message is unknown"
-      end
-    end
-    -- End select
-
-    self~additional = .nil
-    self~additionalObject = .nil
-
--- End of class: Notification
-
 /* class: ExceptionData- - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
 
     A data object containing information concerning an unrecoverable error that
@@ -1434,6 +1391,95 @@ return suite
     return msg
 
 -- End of class: ExceptionData
+
+
+::class 'NotificationTypes' mixinclass Object
+  /* Would prefer to use the CONSTANT directive */
+  ::method MIN_TYPE  class; return 1
+
+  ::method SKIP_TYPE class; return 1
+  ::method WARN_TYPE class; return 2
+  ::method TEXT_TYPE class; return 3
+  ::method STEP_TYPE class; return 4
+  ::method MAX_TYPE  class; return 4
+  ::method MIN_TYPE;        return 1
+  ::method SKIP_TYPE;       return 1
+  ::method WARN_TYPE;       return 2
+  ::method TEXT_TYPE;       return 3
+  ::method STEP_TYPE;       return 4
+
+  ::method MAX_TYPE;        return 4
+
+
+/* class: Notification - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+    A data object containing information concerning status, events, or other
+    things that might need to be logged during the execution of a test, usually
+    the execution of an automated suite of tests.
+
+    At a minimum the object contains a time stamp, the name of the relevant
+    file, and the notification type.  3 notification types are defined: SKIPPED,
+    WARNING, MESSAGE.
+
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class 'Notification' public subclass ReportData inherit NotificationTypes
+
+  ::attribute reason
+  ::attribute message
+  ::attribute warning
+
+  ::attribute additional
+  ::attribute additionalObject
+
+  ::method init
+    use strict arg dateTime, file, type
+    forward class (super) continue
+
+    if \ isWholeRange(type, self~MIN_TYPE, self~MAX_TYPE) then
+      raise syntax 88.907 array("3 'type'", self~MIN_TYPE, self~MAX_TYPE, type)
+
+    select
+      when type == self~SKIP_TYPE then do
+        self~reason = "Reason is unknown"
+        self~warning = .nil
+        self~message = .nil
+      end
+      when type == self~WARN_TYPE then do
+        self~reason = .nil
+        self~warning = "Warning is unknown"
+        self~message = .nil
+      end
+      otherwise do
+        self~reason = .nil
+        self~warning = .nil
+        self~message = "Message is unknown"
+      end
+    end
+    -- End select
+
+    self~additional = .nil
+    self~additionalObject = .nil
+
+-- End of class: Notification
+
+/* class: PhaseReport- - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+  A type of a notification containging data concerning a phase of the overall
+  execution of a group of tests.  By definition, a phase covers some period of
+  time and phase reports contain a begin and end time and can produce the
+  duration of the phase.
+
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class 'PhaseReport' public subclass Notification
+
+
+  ::method init
+    use strict arg dateTime, file, id
+    self~init:super(dataTime, file, self~STEP_TYPE)
+
+
+-- End of class: PhaseReport
+
 
 /** printTestInfo()
  *
